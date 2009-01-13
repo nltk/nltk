@@ -125,6 +125,7 @@ class Variable(object):
     def __repr__(self):
         return 'Variable(\'' + self.name + '\')'
 
+
 def unique_variable(pattern=None):
     """
     param pattern: C{Variable} that is being replaced.  The new variable must
@@ -135,6 +136,17 @@ def unique_variable(pattern=None):
     else:
         prefix = 'z'
     return Variable(prefix + str(_counter.get()))
+
+def skolem_function(univ_scope=None):
+    """
+    Return a skolem function over the variables in univ_scope
+    param univ_scope
+    """
+    skolem = VariableExpression(Variable('F%s' % _counter.get()))
+    if univ_scope:
+        for v in list(univ_scope):
+            skolem = skolem(VariableExpression(v))
+    return skolem
 
 
 class Type:
@@ -1193,7 +1205,7 @@ class LogicParser(object):
                 tok = self._buffer[self._currentIndex+location]
             return tok
         except IndexError:
-            raise UnexpectedTokenException, 'The given location is out of range'
+            raise ParseException, 'More tokens expected.'
 
     def isvariable(self, tok):
         return tok not in Tokens.TOKENS
@@ -1293,11 +1305,12 @@ class LogicParser(object):
         accum = self.parse_Expression(False)
         while vars:
             var = vars.pop()
-            if not isinstance(self.make_VariableExpression(var), 
-                              IndividualVariableExpression):
+            varex = self.make_VariableExpression(var)
+            if not isinstance(varex, IndividualVariableExpression) and \
+               not isinstance(varex, FunctionVariableExpression):
                 raise ParseException('\'%s\' is an illegal variable name.  '
-                                     'Only individual variables may be '
-                                     'quantified.' % var)
+                                     'Only individual variables and function '
+                                     'variables may be quantified.' % var)
             accum = self.make_QuanifiedExpression(factory, Variable(var), accum)
         return accum
     

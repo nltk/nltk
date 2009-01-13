@@ -14,7 +14,6 @@ a first-order model.
 import evaluate
 import re
 import nltk
-from nltk.internals import Counter
 from logic import *
 
 ##############################################################
@@ -223,7 +222,7 @@ def skolemize(expression, univ_scope=None):
         if isinstance(negated, AllExpression):
             term = skolemize(-negated.term, univ_scope)
             if univ_scope:
-                return term.replace(negated.variable, _get_skolem_function(univ_scope))
+                return term.replace(negated.variable, skolem_function(univ_scope))
             else:
                 skolem_constant = VariableExpression(unique_variable())
                 return term.replace(negated.variable, skolem_constant)
@@ -255,7 +254,7 @@ def skolemize(expression, univ_scope=None):
     elif isinstance(expression, ExistsExpression):
         term = skolemize(expression.term, univ_scope)
         if univ_scope:
-            return term.replace(expression.variable, _get_skolem_function(univ_scope))
+            return term.replace(expression.variable, skolem_function(univ_scope))
         else:
             skolem_constant = VariableExpression(unique_variable())
             return term.replace(expression.variable, skolem_constant)
@@ -278,18 +277,6 @@ def to_cnf(first, second):
         return r_first & r_second
     else:
         return first | second
-
-_skolem_function_counter = Counter()
-
-def _get_skolem_function(univ_scope):
-    """
-    Return a skolem function over the variables in univ_scope
-    """
-    skolem_function = VariableExpression(
-                            Variable('F%s' % _skolem_function_counter.get()))
-    for v in list(univ_scope):
-        skolem_function = skolem_function(VariableExpression(v))
-    return skolem_function
 
 
 def demo_model0():
