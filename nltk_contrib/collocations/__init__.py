@@ -24,7 +24,6 @@ measures are provided in L{bigram_measures} and L{trigram_measures}.
 """
 
 # Possible TODOs:
-# - separate arguments for candidates and use ngram_freq, etc. functions;
 # - consider the distinction between f(x,_) and f(x) and whether our
 #   approximation is good enough for fragmented data, and mention the approximation;
 # - add methods to compare different association measures' results

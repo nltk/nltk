@@ -21,6 +21,8 @@ n_xx counts (*, *), i.e. any bigram
 import math as _math
 _ln = lambda x: _math.log(x, 2.0)
 
+_SMOOTHING = .000001
+
 
 class BigramAssociationMeasureI(object):
     """Interface for a bigram association measure function"""
@@ -30,9 +32,9 @@ class BigramAssociationMeasureI(object):
 
 def _contingency(n_ii, n_ix, n_xi, n_xx):
     """Calculates values of a bigram contingency table."""
-    n_io = n_ix - n_ii
     n_oi = n_xi - n_ii
-    return (n_ii, n_io, n_oi, n_xx - n_ii - n_io - n_oi)
+    n_io = n_ix - n_ii
+    return (n_ii, n_oi, n_io, n_xx - n_ii - n_oi - n_io)
 
 
 def raw_freq(n_ii, n_ix, n_xi, n_xx):
@@ -58,7 +60,8 @@ def pmi(n_ii, n_ix, n_xi, n_xx):
 
 def phi_sq(n_ii, n_ix, n_xi, n_xx):
     """Scores bigrams using phi-square, the square of the Pearson correlation
-    coefficient."""
+    coefficient.
+    """
     n_ii, n_io, n_oi, n_oo = _contingency(n_ii, n_ix, n_xi, n_xx)
 
     return (float((n_ii*n_oo - n_io*n_oi)**2) /
@@ -67,13 +70,16 @@ def phi_sq(n_ii, n_ix, n_xi, n_xx):
 
 def chi_sq(n_ii, n_ix, n_xi, n_xx):
     """Scores bigrams using chi-square, i.e. phi-sq multiplied by the number
-    of bigrams."""
+    of bigrams.
+    """
     return n_xx * phi_sq(n_ii, n_ix, n_xi, n_xx)
 
 
 def student_t(n_ii, n_ix, n_xi, n_xx):
-    """Scores bigrams using Student's t."""
-    return (n_ii - float(n_ix*n_xi)/n_xx) / (n_ii +.000001) ** .5
+    """Scores bigrams using Student's t test with independence hypothesis
+    for unigrams.
+    """
+    return (n_ii - float(n_ix*n_xi) / n_xx) / (n_ii + _SMOOTHING) ** .5
 
 
 def dice(n_ii, n_ix, n_xi, n_xx):
