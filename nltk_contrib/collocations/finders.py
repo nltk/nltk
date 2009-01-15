@@ -4,8 +4,6 @@
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
-#
-
 """
 Classes to aid in the finding and ranking of collocations within a corpus.
 
@@ -199,14 +197,15 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
                         n_all)
 
 
-def demo(scorer=None):
-    """Finds bigram collocations in the files of the WebText corpus given a
-    bigram scorer (defaults to mi_like).
-    """
+def demo(scorer=None, compare_scorer=None):
+    """Finds trigram collocations in the files of the WebText corpus."""
+    import measures
+    import rank
 
     if scorer is None:
-        import measures
-        scorer = measures.BigramAssocMeasures().mi_like
+        scorer = measures.BigramAssocMeasures.likelihood_ratio
+    if compare_scorer is None:
+        compare_scorer = measures.BigramAssocMeasures.raw_freq
 
     from nltk import corpus
         
@@ -221,8 +220,12 @@ def demo(scorer=None):
         cf.apply_freq_filter(3)
         cf.apply_word_filter(word_filter)
 
-        print file, [' '.join(tup)
-                for tup in cf.top_n(scorer, 15)]
+        print file
+        print '\t', [' '.join(tup) for tup in cf.top_n(scorer, 15)]
+        print '\t Correlation to %s: %0.4f' % (compare_scorer.__name__,
+                rank.spearman_correlation(
+                    rank.ranks_from_scores(cf.score_ngrams(scorer)),
+                    rank.ranks_from_scores(cf.score_ngrams(compare_scorer))))
 
 
 if __name__ == '__main__':
@@ -232,4 +235,9 @@ if __name__ == '__main__':
         scorer = eval('measures.BigramAssocMeasures().' + sys.argv[1])
     except IndexError:
         scorer = None
-    demo(scorer)
+    try:
+        compare_scorer = eval('measures.BigramAssocMeasures().' + sys.argv[2])
+    except IndexError:
+        compare_scorer = None
+
+    demo(scorer, compare_scorer)

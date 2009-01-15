@@ -27,8 +27,6 @@ measures are provided in L{bigram_measures} and L{trigram_measures}.
 # Possible TODOs:
 # - consider the distinction between f(x,_) and f(x) and whether our
 #   approximation is good enough for fragmented data, and mention it
-# - add Spearman's rank correlation coefficient to compare different association
-#   measures' results
 # - add a n-gram collocation finder with measures which only utilise n-gram
 #   and unigram counts (raw_freq, pmi, student_t)
 

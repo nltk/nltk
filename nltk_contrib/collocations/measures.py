@@ -70,16 +70,14 @@ class NgramAssocMeasures(object):
         """Scores ngrams by their frequency"""
         return float(marginals[NGRAM]) / marginals[TOTAL]
 
-    class MILikeScorer(object):
-        def __init__(self, power=3):
-            self.power = power
-
-        def __call__(self, *marginals):
-            """Scores ngrams using a variant of mutual information"""
-            return (marginals[NGRAM] ** self.power /
-                    float(_product(marginals[UNIGRAMS])))
-
-    mi_like = MILikeScorer()
+    @staticmethod
+    def mi_like(*marginals, **kwargs):
+        """Scores ngrams using a variant of mutual information. The keyword
+        argument power sets an exponent (default 3) for the numerator. No
+        logarithm of the result is calculated.
+        """
+        return (marginals[NGRAM] ** kwargs.get('power', 3) /
+                float(_product(marginals[UNIGRAMS])))
 
     @classmethod
     def pmi(cls, *marginals):
