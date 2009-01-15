@@ -1,0 +1,71 @@
+==============
+ Collocations
+==============
+
+Overview
+~~~~~~~~
+
+    >>> from nltk_contrib.collocations import *
+
+Filtering candidates
+~~~~~~~~~~~~~~~~~~~~
+
+Association measures
+~~~~~~~~~~~~~~~~~~~~
+
+Student's t: (examples from Manning and Schutze 5.3.2)
+
+   >>> print '%0.4f' % bigram_measures.student_t(8, (15828, 4675), 14307668)
+   0.9999
+   >>> print '%0.4f' % bigram_measures.student_t(20, (42, 20), 14307668)
+   4.4721
+
+Chi-square: (example from Manning and Schutze 5.3.3)
+
+   >>> print '%0.2f' % bigram_measures.chi_sq(8, (15828, 4675), 14307668)
+   1.55
+
+Ranking and correlation
+~~~~~~~~~~~~~~~~~~~~~~~
+
+It is useful to consider the results of finding collocations as a ranking, and
+the rankings output using different association measures can be compared using
+the Spearman correlation coefficient.
+
+Ranks can be assigned to a sorted list of results trivially by assigning
+strictly increasing ranks to each result:
+
+    >>> results_list = ['item1', 'item2', 'item3', 'item4', 'item5']
+    >>> print list(ranks_from_sequence(results_list))
+    [('item1', 0), ('item2', 1), ('item3', 2), ('item4', 3), ('item5', 4)]
+
+If scores are available for each result, we may allow sufficiently similar
+results (differing by no more than rank_gap) to be assigned the same rank:
+
+    >>> results_scored = [('item1', 50.0), ('item2', 40.0), ('item3', 38.0),
+    ...                   ('item4', 35.0), ('item5', 14.0)]
+    >>> print list(ranks_from_scores(results_scored, rank_gap=5))
+    [('item1', 0), ('item2', 1), ('item3', 1), ('item4', 1), ('item5', 4)]
+
+The Spearman correlation coefficient gives a number from -1.0 to 1.0 comparing
+two rankings. A coefficient of 1.0 indicates identical rankings; -1.0 indicates
+exact opposite rankings.
+
+    >>> print '%0.1f' % spearman_correlation(
+    ...         ranks_from_sequence(results_list),
+    ...         ranks_from_sequence(results_list))
+    1.0
+    >>> print '%0.1f' % spearman_correlation(
+    ...         ranks_from_sequence(reversed(results_list)),
+    ...         ranks_from_sequence(results_list))
+    -1.0
+    >>> results_list2 = ['item2', 'item3', 'item1', 'item5', 'item4']
+    >>> print '%0.1f' % spearman_correlation(
+    ...        ranks_from_sequence(results_list),
+    ...        ranks_from_sequence(results_list2))
+    0.6
+    >>> print '%0.1f' % spearman_correlation(
+    ...        ranks_from_sequence(reversed(results_list)),
+    ...        ranks_from_sequence(results_list2))
+    -0.6
+
