@@ -232,11 +232,11 @@ if __name__ == '__main__':
     import sys
     import measures
     try:
-        scorer = eval('measures.BigramAssocMeasures().' + sys.argv[1])
+        scorer = eval('measures.BigramAssocMeasures.' + sys.argv[1])
     except IndexError:
         scorer = None
     try:
-        compare_scorer = eval('measures.BigramAssocMeasures().' + sys.argv[2])
+        compare_scorer = eval('measures.BigramAssocMeasures.' + sys.argv[2])
     except IndexError:
         compare_scorer = None
 
