@@ -32,12 +32,15 @@ measures are provided in L{bigram_measures} and L{trigram_measures}.
 
 from finders import *
 import measures
+from rank import *
 
 bigram_measures = measures.BigramAssocMeasures()
 trigram_measures = measures.TrigramAssocMeasures()
 
 __all__ = ['BigramCollocationFinder', 'TrigramCollocationFinder',
-           'bigram_measures', 'trigram_measures', 'demo']
+           'bigram_measures', 'trigram_measures', 'demo',
+           'spearman_correlation', 'ranks_from_sequence',
+           'ranks_from_scores']
 
 ######################################################################
 #{ Deprecated
