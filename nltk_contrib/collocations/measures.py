@@ -92,7 +92,8 @@ class NgramAssocMeasures(object):
         """Scores ngrams using Student's t test with independence hypothesis
         for unigrams, as in Manning and Schutze 5.3.2.
         """
-        return (marginals[NGRAM] - _product(marginals[UNIGRAMS]) /
+        return ((marginals[NGRAM] * marginals[TOTAL] -
+                 _product(marginals[UNIGRAMS])) /
                 (marginals[TOTAL] ** (cls._n - 1) *
                 (marginals[NGRAM] + _SMALL) ** .5))
 
