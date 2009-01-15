@@ -202,8 +202,8 @@ English.
     ... can start with non-capitalized words.  i is a good variable
     ... name.
     ... """
-    >>> tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-    >>> print '\n-----\n'.join(tokenizer.tokenize(text.strip()))
+    >>> sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> print '\n-----\n'.join(sent_detector.tokenize(text.strip()))
     Punkt knows that the periods in Mr. Smith and Johann S. Bach
     do not mark sentence boundaries.
     -----
@@ -216,17 +216,25 @@ English.
 (Note that whitespace from the original text, including newlines, is
 retained in the output.)
 
+Punctuation following sentences can be included with the realign_boundaries
+flag:
+   
+    >>> text = """
+    ... (How does it deal with this parenthesis?)  "It should be part of the
+    ... previous sentence."
+    ... """
+    >>> print '\n-----\n'.join(
+    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True))
+    (How does it deal with this parenthesis?)
+    -----
+    "It should be part of the
+    previous sentence."
+
 The `nltk.tokenize.punkt` module also defines `PunktWordTokenizer`,
-which uses a series of regular expressions to divide a word into
-tokens:
+which uses a regular expression to divide a text into tokens, leaving all
+periods attached to words, but separating off other punctuation:
 
     >>> PunktWordTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
-    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
-     'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
-
-This word tokenizer is also available as a function:
-
-    >>> punkt_word_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
      'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
 
