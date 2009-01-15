@@ -431,7 +431,7 @@ def _collect_one_synset(word, synset, synset_relations):
 #        s = s[:-2] + ']  '
 #    else: # It's a synset
     def format_lemma(w):
-        w = w.replace('_', '1 ')
+        w = w.replace('_', ' ')
         if w.lower() == word:
             return _bold(w)
         else:
