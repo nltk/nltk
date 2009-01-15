@@ -19,7 +19,7 @@ n_xx counts (*, *), i.e. any bigram
 """
 
 import math as _math
-_ln = lambda x: _math.log(x, 2.0)
+_log = lambda x: _math.log(x, 2.0)
 
 _SMALL = 1e-20
 
@@ -65,7 +65,7 @@ def pmi(n_ii, n_ix, n_xi, n_xx):
     """Scores bigrams by pointwise mutual information, as in Manning and
     Schutze 5.4.
     """
-    return _ln(n_ii * n_xx) - _ln(n_ix * n_xi)
+    return _log(n_ii * n_xx) - _log(n_ix * n_xi)
 
 
 def phi_sq(*marginals):
@@ -109,7 +109,7 @@ def _likelihood(k, n, x):
         x -= _SMALL
     elif x == 0.0:
         x += _SMALL
-    return k * _ln(x) + (n - k) * _ln(1 - x)
+    return k * _log(x) + (n - k) * _log(1 - x)
 
     
 def likelihood_ratio(n_ii, n_ix, n_xi, n_xx):
@@ -130,14 +130,14 @@ def likelihood_ratio(*marginals):
     """Scores bigrams using likelihood ratios as in Manning and Schutze 5.3.4.
     """
     cont = _contingency(*marginals)
-    return 2 * sum(obs * _ln(float(obs) / exp + _SMALL)
+    return 2 * sum(obs * _log(float(obs) / exp + _SMALL)
                    for obs, exp in zip(cont, _expected_values(cont)))
 
 
 def poisson_stirling(n_ii, n_ix, n_xi, n_xx):
     """Scores bigrams using the Poisson-Stirling measure."""
     exp = n_ix * n_xi / float(n_xx)
-    return n_ii * (_ln(n_ii / exp) - 1)
+    return n_ii * (_log(n_ii / exp) - 1)
 
 
 def tmi(*marginals):
@@ -145,5 +145,5 @@ def tmi(*marginals):
     cont = _contingency(*marginals)
     exps = _expected_values(cont)
     n_xx = float(marginals[-1])
-    return sum(obs / n_xx * _ln(float(obs) / (exp + _SMALL) + _SMALL)
+    return sum(obs / n_xx * _log(float(obs) / (exp + _SMALL) + _SMALL)
                for obs, exp in zip(cont, exps))
