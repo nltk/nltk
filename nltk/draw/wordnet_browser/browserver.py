@@ -115,7 +115,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
             # This doesn't seem to work with MWEs.
             type = 'text/html'
             parts = (sp.split("?")[1]).split("&")
-            word = [p.split("=")[1] 
+            word = [p.split("=")[1].replace("+", " ") 
                     for p in parts if p.startswith("nextWord")][0]
             page, word = page_from_word(word)
         elif sp.startswith("lookup_"):
