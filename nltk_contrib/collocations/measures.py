@@ -4,6 +4,11 @@
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
+"""
+Provides scoring functions for a number of association measures through a
+generic, abstract implementation in L{NgramAssocMeasures}, and n-specific
+L{BigramAssocMeasures} and L{TrigramAssocMeasures}.
+"""
 
 import math as _math
 _log = lambda x: _math.log(x, 2.0)
@@ -48,10 +53,11 @@ class NgramAssocMeasures(object):
         raise NotImplementedError, ("The contingency table is not available"
                                     "in the general ngram case")
 
-    def _expected_values(self, cont):
+    @classmethod
+    def _expected_values(cls, cont):
         """Calculates expected values for a contingency table."""
         n_all = sum(cont)
-        bits = [1 << i for i in range(self._n)]
+        bits = [1 << i for i in range(cls._n)]
 
         # For each contingency table cell
         for i in range(len(cont)):
@@ -75,48 +81,54 @@ class NgramAssocMeasures(object):
 
     mi_like = MILikeScorer()
 
-    def pmi(self, *marginals):
+    @classmethod
+    def pmi(cls, *marginals):
         """Scores ngrams by pointwise mutual information, as in Manning and
         Schutze 5.4.
         """
-        return (_log(marginals[NGRAM] * marginals[TOTAL] ** (self._n - 1)) -
+        return (_log(marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)) -
                 _log(_product(marginals[UNIGRAMS])))
 
-    def student_t(self, *marginals):
+    @classmethod
+    def student_t(cls, *marginals):
         """Scores ngrams using Student's t test with independence hypothesis
         for unigrams, as in Manning and Schutze 5.3.2.
         """
         return (marginals[NGRAM] - _product(marginals[UNIGRAMS]) /
-                (marginals[TOTAL] ** (self._n - 1) *
+                (marginals[TOTAL] ** (cls._n - 1) *
                 (marginals[NGRAM] + _SMALL) ** .5))
 
-    def chi_sq(self, *marginals):
+    @classmethod
+    def chi_sq(cls, *marginals):
         """Scores ngrams using Pearson's chi-square as in Manning and Schutze
         5.3.3.
         """
-        cont = self._contingency(*marginals)
-        exps = self._expected_values(cont)
+        cont = cls._contingency(*marginals)
+        exps = cls._expected_values(cont)
         return sum((obs - exp) ** 2 / (exp + _SMALL)
                    for obs, exp in zip(cont, exps))
 
-    def likelihood_ratio(self, *marginals):
+    @classmethod
+    def likelihood_ratio(cls, *marginals):
         """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
         """
-        cont = self._contingency(*marginals)
+        cont = cls._contingency(*marginals)
         # I don't understand why this negation is needed
-        return ((-1) ** self._n * 2 *
+        return ((-1) ** cls._n * 2 *
                 sum(obs * _log(float(obs) / (exp + _SMALL) + _SMALL)
-                    for obs, exp in zip(cont, self._expected_values(cont))))
+                    for obs, exp in zip(cont, cls._expected_values(cont))))
 
-    def poisson_stirling(self, *marginals):
+    @classmethod
+    def poisson_stirling(cls, *marginals):
         """Scores ngrams using the Poisson-Stirling measure."""
         exp = (_product(marginals[UNIGRAMS]) /
-              float(marginals[TOTAL] ** (self._n - 1)))
+              float(marginals[TOTAL] ** (cls._n - 1)))
         return marginals[NGRAM] * (_log(marginals[NGRAM] / exp) - 1)
 
-    def jaccard(self, *marginals):
+    @classmethod
+    def jaccard(cls, *marginals):
         """Scores ngrams using the Jaccard index."""
-        cont = self._contingency(*marginals)
+        cont = cls._contingency(*marginals)
         return float(cont[0]) / sum(cont[:-1])
 
 
@@ -152,20 +164,22 @@ class BigramAssocMeasures(NgramAssocMeasures):
         for i in range(4):
             yield (cont[i] + cont[i ^ 1]) * (cont[i] + cont[i ^ 2]) / float(n_xx)
 
-    def phi_sq(self, *marginals):
+    @classmethod
+    def phi_sq(cls, *marginals):
         """Scores bigrams using phi-square, the square of the Pearson correlation
         coefficient.
         """
-        n_ii, n_io, n_oi, n_oo = self._contingency(*marginals)
+        n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
 
         return (float((n_ii*n_oo - n_io*n_oi)**2) /
                 ((n_ii + n_io) * (n_ii + n_oi) * (n_io + n_oo) * (n_oi + n_oo)))
 
-    def chi_sq(self, n_ii, (n_ix, n_xi), n_xx):
+    @classmethod
+    def chi_sq(cls, n_ii, (n_ix, n_xi), n_xx):
         """Scores bigrams using chi-square, i.e. phi-sq multiplied by the number
         of bigrams, as in Manning and Schutze 5.3.3.
         """
-        return n_xx * self.phi_sq(n_ii, (n_ix, n_xi), n_xx)
+        return n_xx * cls.phi_sq(n_ii, (n_ix, n_xi), n_xx)
 
     @staticmethod
     def dice(n_ii, (n_ix, n_xi), n_xx):
@@ -210,3 +224,4 @@ class TrigramAssocMeasures(NgramAssocMeasures):
 
         return (n_iii, n_oii, n_ioi, n_ooi,
                 n_iio, n_oio, n_ioo, n_ooo)
+

@@ -172,6 +172,13 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
             tfd.inc((w1, w2, w3))
         return cls(wfd, bfd, wildfd, tfd)
 
+    def bigram_finder(self):
+        """Constructs a bigram collocation finder with the bigram and unigram
+        data from this finder. Note that this does not include any filtering
+        applied to this finder.
+        """
+        return BigramCollocationFinder(self.word_fd, self.bigram_fd)
+
     def score_ngram(self, score_fn, w1, w2, w3):
         """Returns the score for a given trigram using the given scoring
         function.
