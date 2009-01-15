@@ -21,7 +21,7 @@ n_xx counts (*, *), i.e. any bigram
 import math as _math
 _ln = lambda x: _math.log(x, 2.0)
 
-_SMOOTHING = .000001
+_SMALL = 1e-20
 
 
 class BigramAssociationMeasureI(object):
@@ -31,10 +31,18 @@ class BigramAssociationMeasureI(object):
 
 
 def _contingency(n_ii, n_ix, n_xi, n_xx):
-    """Calculates values of a bigram contingency table."""
+    """Calculates values of a bigram contingency table from marginal values."""
     n_oi = n_xi - n_ii
     n_io = n_ix - n_ii
     return (n_ii, n_oi, n_io, n_xx - n_ii - n_oi - n_io)
+
+
+def _expected_values(cont):
+    """Calculates expected values for a contingency table."""
+    n_xx = sum(cont)
+    # For each contingency table cell
+    for i in range(4):
+        yield (cont[i] + cont[i ^ 1]) * (cont[i] + cont[i ^ 2]) / float(n_xx)
 
 
 def raw_freq(n_ii, n_ix, n_xi, n_xx):
@@ -54,15 +62,17 @@ mi_like = MILikeScorer()
 
 
 def pmi(n_ii, n_ix, n_xi, n_xx):
-    """Scores bigrams by pointwise mutual information"""
+    """Scores bigrams by pointwise mutual information, as in Manning and
+    Schutze 5.4.
+    """
     return _ln(n_ii * n_xx) - _ln(n_ix * n_xi)
 
 
-def phi_sq(n_ii, n_ix, n_xi, n_xx):
+def phi_sq(*marginals):
     """Scores bigrams using phi-square, the square of the Pearson correlation
     coefficient.
     """
-    n_ii, n_io, n_oi, n_oo = _contingency(n_ii, n_ix, n_xi, n_xx)
+    n_ii, n_io, n_oi, n_oo = _contingency(*marginals)
 
     return (float((n_ii*n_oo - n_io*n_oi)**2) /
             ((n_ii + n_io) * (n_ii + n_oi) * (n_io + n_oo) * (n_oi + n_oo)))
@@ -79,7 +89,7 @@ def student_t(n_ii, n_ix, n_xi, n_xx):
     """Scores bigrams using Student's t test with independence hypothesis
     for unigrams, as in Manning and Schutze 5.3.2.
     """
-    return (n_ii - float(n_ix*n_xi) / n_xx) / (n_ii + _SMOOTHING) ** .5
+    return (n_ii - float(n_ix*n_xi) / n_xx) / (n_ii + _SMALL) ** .5
 
 
 def dice(n_ii, n_ix, n_xi, n_xx):
@@ -87,18 +97,18 @@ def dice(n_ii, n_ix, n_xi, n_xx):
     return 2 * float(n_ii) / (n_ix + n_xi)
 
 
-def jaccard(BigramAssociationMeasureI):
+def jaccard(*marginals):
     """Scores bigrams using the Jaccard index (= dice / (2*dice))."""
-    n_ii, n_io, n_oi, n_oo = _contingency(n_ii, n_ix, n_xi, n_xx)
+    n_ii, n_io, n_oi, n_oo = _contingency(*marginals)
     return float(n_ii) / (n_ii + n_io + n_oi)
                    
 
 def _likelihood(k, n, x):
     """Binomial log-likelihood function"""
     if x == 1.0:
-        x -= _SMOOTHING
+        x -= _SMALL
     elif x == 0.0:
-        x += _SMOOTHING
+        x += _SMALL
     return k * _ln(x) + (n - k) * _ln(1 - x)
 
     
@@ -114,3 +124,26 @@ def likelihood_ratio(n_ii, n_ix, n_xi, n_xx):
             _likelihood(n_ii, n_ix, p1) -
             _likelihood(n_xi - n_ii, n_xx - n_ix, p2))
 
+
+# An alternative implementation: which do we keep?
+def likelihood_ratio(*marginals):
+    """Scores bigrams using likelihood ratios as in Manning and Schutze 5.3.4.
+    """
+    cont = _contingency(*marginals)
+    return 2 * sum(obs * _ln(float(obs) / exp + _SMALL)
+                   for obs, exp in zip(cont, _expected_values(cont)))
+
+
+def poisson_stirling(n_ii, n_ix, n_xi, n_xx):
+    """Scores bigrams using the Poisson-Stirling measure."""
+    exp = n_ix * n_xi / float(n_xx)
+    return n_ii * (_ln(n_ii / exp) - 1)
+
+
+def tmi(*marginals):
+    """Scores bigrams using True Mutual Information."""
+    cont = _contingency(*marginals)
+    exps = _expected_values(cont)
+    n_xx = float(marginals[-1])
+    return sum(obs / n_xx * _ln(float(obs) / (exp + _SMALL) + _SMALL)
+               for obs, exp in zip(cont, exps))

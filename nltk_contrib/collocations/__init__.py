@@ -10,6 +10,7 @@ Tools to identify X{collocation}s --- words that often appear consecutively
 --- within corpora. They may also be used to find other X{association}s between
 word occurrences.
 See Manning and Schutze ch. 5 at http://nlp.stanford.edu/fsnlp/promo/colloc.pdf
+and the Text::NSP Perl package at http://ngram.sourceforge.net
 
 Finding collocations requires first calculating the frequencies of words and
 their appearance in the context of other words. Often the collection of words
@@ -29,7 +30,7 @@ measures are provided in L{bigram_measures} and L{trigram_measures}.
 # - add Spearman's rank correlation coefficient to compare different association
 #   measures' results
 # - add a n-gram collocation finder with measures which only utilise n-gram
-#   and unigram counts
+#   and unigram counts (raw_freq, pmi, student_t)
 
 from finders import *
 import bigram_measures
