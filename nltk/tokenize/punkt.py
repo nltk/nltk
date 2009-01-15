@@ -1146,8 +1146,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
                     last_break = match.start(2)
         yield text[last_break:]
 
-    @staticmethod
-    def _realign_boundaries(sents):
+    def _realign_boundaries(self, sents):
         """
         Attempts to realign punctuation that falls after the period but
         should otherwise be included in the same sentence.
