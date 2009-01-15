@@ -100,7 +100,7 @@ class PunktLanguageVars(object):
     """sentence internal punctuation, which indicates an abbreviation if
     preceded by a period-final token."""
 
-    re_boundary_realignment = re.compile(r'["\')\]}]+?(?: |(?=--)|$)',
+    re_boundary_realignment = re.compile(r'["\')\]}]+?(?:\s+|(?=--)|$)',
             re.MULTILINE)
     """Used to realign punctuation that should be included in a sentence
     although it follows the period (or ?, !)."""
