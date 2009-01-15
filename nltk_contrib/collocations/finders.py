@@ -191,3 +191,38 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
                         (n_ixx, n_xix, n_xxi),
                         n_all)
 
+
+def demo(scorer=None):
+    """Finds bigram collocations in the files of the WebText corpus given a
+    bigram scorer (defaults to mi_like).
+    """
+
+    if scorer is None:
+        import measures
+        scorer = measures.BigramAssocMeasures().mi_like
+
+    from nltk import corpus
+        
+    ignored_words = corpus.stopwords.words('english')
+    word_filter = lambda w: len(w) < 3 or w.lower() in ignored_words
+
+    for file in corpus.webtext.files():
+        words = [word.lower()
+                 for word in corpus.webtext.words(file)]
+
+        cf = BigramCollocationFinder.from_words(words)
+        cf.apply_freq_filter(3)
+        cf.apply_word_filter(word_filter)
+
+        print file, [' '.join(tup)
+                for tup in cf.top_n(scorer, 15)]
+
+
+if __name__ == '__main__':
+    import sys
+    import measures
+    try:
+        scorer = eval('measures.BigramAssocMeasures().' + sys.argv[1])
+    except IndexError:
+        scorer = None
+    demo(scorer)
