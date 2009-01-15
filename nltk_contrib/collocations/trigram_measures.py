@@ -5,10 +5,12 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
+
+# FIXME: docstring not current
 """
 A number of functions to score trigram associations. Each association measure
 is provided as a function with eight arguments:
-    trigram_score_fn(n_iii, n_iix, n_ixi, n_xii, n_ixx, n_xix, n_xxi, n_xxx)
+    trigram_score_fn(n_iii, (n_iix, n_ixi, n_xii), (n_ixx, n_xix, n_xxi), n_xxx)
 Each argument counts the occurrences of a particular event in a corpus. The
 letter i in the suffix refers to the appearance of the word in question, while
 x indicates to the appearance of any word. Thus, for example:
@@ -26,15 +28,15 @@ _SMALL = 1e-20
 class TrigramAssociationMeasureI(object):
     """Interface for a trigram association measure function"""
     def __call__(self, n_iii,
-             n_iix, n_ixi, n_xii,
-             n_ixx, n_xix, n_xxi,
+             (n_iix, n_ixi, n_xii),
+             (n_ixx, n_xix, n_xxi),
              n_xxx):
         raise AssertionError, "This is an interface"
 
 
 def _contingency(n_iii,
-             n_iix, n_ixi, n_xii,
-             n_ixx, n_xix, n_xxi,
+             (n_iix, n_ixi, n_xii),
+             (n_ixx, n_xix, n_xxi),
              n_xxx):
     """Calculates values of a trigram contingency table (or cube) from marginal
     values.
@@ -63,8 +65,8 @@ def _expected_values(cont):
 
 
 def raw_freq(n_iii,
-             n_iix, n_ixi, n_xii,
-             n_ixx, n_xix, n_xxi,
+             (n_iix, n_ixi, n_xii),
+             (n_ixx, n_xix, n_xxi),
              n_xxx):
     """Scores trigrams by their frequency"""
     return float(n_iii) / n_xxx
@@ -75,8 +77,8 @@ class MILikeScorer(TrigramAssociationMeasureI):
         self.power = power
 
     def __call__(self, n_iii,
-             n_iix, n_ixi, n_xii,
-             n_ixx, n_xix, n_xxi,
+             (n_iix, n_ixi, n_xii),
+             (n_ixx, n_xix, n_xxi),
              n_xxx):
         """Scores trigrams using a variant of mutual information"""
         return n_iii ** self.power / float(n_ixx * n_xix * n_xxi)
@@ -85,8 +87,8 @@ mi_like = MILikeScorer()
 
 
 def pmi(n_iii,
-             n_iix, n_ixi, n_xii,
-             n_ixx, n_xix, n_xxi,
+             (n_iix, n_ixi, n_xii),
+             (n_ixx, n_xix, n_xxi),
              n_xxx):
     """Scores trigrams by pointwise mutual information, as in Manning and
     Schutze 5.4.
@@ -95,8 +97,8 @@ def pmi(n_iii,
 
 
 def student_t(n_iii,
-             n_iix, n_ixi, n_xii,
-             n_ixx, n_xix, n_xxi,
+             (n_iix, n_ixi, n_xii),
+             (n_ixx, n_xix, n_xxi),
              n_xxx):
     """Scores trigrams using Student's t test with independence hypothesis
     for unigrams, as in Manning and Schutze 5.3.2.
@@ -125,8 +127,8 @@ def likelihood_ratio(*marginals):
 
 
 def poisson_stirling(n_iii,
-             n_iix, n_ixi, n_xii,
-             n_ixx, n_xix, n_xxi,
+             (n_iix, n_ixi, n_xii),
+             (n_ixx, n_xix, n_xxi),
              n_xxx):
     """Scores trigrams using the Poisson-Stirling measure."""
     exp = n_ixx * n_xix * n_xxi / float(n_xxx * n_xxx)

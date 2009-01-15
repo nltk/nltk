@@ -33,8 +33,9 @@ measures are provided in L{bigram_measures} and L{trigram_measures}.
 #   and unigram counts (raw_freq, pmi, student_t)
 
 from finders import *
-import bigram_measures
-import trigram_measures
+import measures
+bigram_measures = measures.BigramAssocMeasures()
+trigram_measures = measures.TrigramAssocMeasures()
 
 __all__ = ['BigramCollocationFinder', 'TrigramCollocationFinder',
            'bigram_measures', 'trigram_measures']

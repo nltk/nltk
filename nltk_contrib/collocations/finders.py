@@ -122,18 +122,17 @@ class BigramCollocationFinder(AbstractCollocationFinder):
                 bfd.inc((w1, w2))
         return cls(wfd, bfd)
 
-    def score_ngram(self, score_fn, w1, w2, n_all=None):
+    def score_ngram(self, score_fn, w1, w2):
         """Returns the score for a given bigram using the given scoring
         function.
         """
-        if n_all is None:
-            n_all = self.word_fd.N()
+        n_all = self.word_fd.N()
         n_ii = self.ngram_fd[(w1, w2)]
         if not n_ii:
             return
         n_ix = self.word_fd[w1]
         n_xi = self.word_fd[w2]
-        return score_fn(n_ii, n_ix, n_xi, n_all)
+        return score_fn(n_ii, (n_ix, n_xi), n_all)
 
 
 class TrigramCollocationFinder(AbstractCollocationFinder):
@@ -173,13 +172,11 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
             tfd.inc((w1, w2, w3))
         return cls(wfd, bfd, wildfd, tfd)
 
-    def score_ngram(self, score_fn, w1, w2, w3, n_all=None):
+    def score_ngram(self, score_fn, w1, w2, w3):
         """Returns the score for a given trigram using the given scoring
         function.
         """
-        if n_all is None:
-            n_all = self.word_fd.N()
-
+        n_all = self.word_fd.N()
         n_iii = self.ngram_fd[(w1, w2, w3)]
         if not n_iii:
             return
@@ -190,42 +187,7 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         n_xix = self.word_fd[w2]
         n_xxi = self.word_fd[w3]
         return score_fn(n_iii,
-                        n_ixx, n_xix, n_xxi,
-                        n_iix, n_ixi, n_xii,
+                        (n_iix, n_ixi, n_xii),
+                        (n_ixx, n_xix, n_xxi),
                         n_all)
 
-
-def demo(scorer=None):
-    """Finds bigram collocations in the files of the WebText corpus given a
-    bigram scorer (defaults to mi_like).
-    """
-
-    if scorer is None:
-        import bigram_measures
-        scorer = bigram_measures.mi_like
-
-    from nltk import corpus
-        
-    ignored_words = corpus.stopwords.words('english')
-    word_filter = lambda w: len(w) < 3 or w.lower() in ignored_words
-
-    for file in corpus.webtext.files():
-        words = [word.lower()
-                 for word in corpus.webtext.words(file)]
-
-        cf = BigramCollocationFinder.from_words(words)
-        cf.apply_freq_filter(3)
-        cf.apply_word_filter(word_filter)
-
-        print file, [' '.join(tup)
-                for tup in cf.top_n(scorer, 15)]
-
-
-if __name__ == '__main__':
-    import sys
-    import bigram_measures
-    try:
-        scorer = eval('bigram_measures.' + sys.argv[1])
-    except IndexError:
-        scorer = None
-    demo(scorer)

@@ -5,10 +5,11 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
+# FIXME: docstring not current
 """
 A number of functions to score bigram associations. Each association measure
 is provided as a function with four arguments:
-    bigram_score_fn(n_ii, n_ix, n_xi, n_xx)
+    bigram_score_fn(n_ii, (n_ix, n_xi), n_xx)
 Each argument counts the occurrences of a particular event in a corpus. The
 letter i in the suffix refers to the appearance of the word in question, while
 x indicates to the appearance of any word. Thus:
@@ -26,11 +27,11 @@ _SMALL = 1e-20
 
 class BigramAssociationMeasureI(object):
     """Interface for a bigram association measure function"""
-    def __call__(self, n_ii, n_ix, n_xi, n_xx):
+    def __call__(self, n_ii, (n_ix, n_xi), n_xx):
         raise AssertionError, "This is an interface"
 
 
-def _contingency(n_ii, n_ix, n_xi, n_xx):
+def _contingency(n_ii, (n_ix, n_xi), n_xx):
     """Calculates values of a bigram contingency table from marginal values."""
     n_oi = n_xi - n_ii
     n_io = n_ix - n_ii
@@ -45,7 +46,7 @@ def _expected_values(cont):
         yield (cont[i] + cont[i ^ 1]) * (cont[i] + cont[i ^ 2]) / float(n_xx)
 
 
-def raw_freq(n_ii, n_ix, n_xi, n_xx):
+def raw_freq(n_ii, (n_ix, n_xi), n_xx):
     """Scores bigrams by their frequency"""
     return float(n_ii) / n_xx
 
@@ -54,14 +55,14 @@ class MILikeScorer(BigramAssociationMeasureI):
     def __init__(self, power=3):
         self.power = power
 
-    def __call__(self, n_ii, n_ix, n_xi, n_xx):
+    def __call__(self, n_ii, (n_ix, n_xi), n_xx):
         """Scores bigrams using a variant of mutual information"""
         return n_ii ** self.power / float(n_ix * n_xi)
 
 mi_like = MILikeScorer()
 
 
-def pmi(n_ii, n_ix, n_xi, n_xx):
+def pmi(n_ii, (n_ix, n_xi), n_xx):
     """Scores bigrams by pointwise mutual information, as in Manning and
     Schutze 5.4.
     """
@@ -78,21 +79,21 @@ def phi_sq(*marginals):
             ((n_ii + n_io) * (n_ii + n_oi) * (n_io + n_oo) * (n_oi + n_oo)))
 
 
-def chi_sq(n_ii, n_ix, n_xi, n_xx):
+def chi_sq(n_ii, (n_ix, n_xi), n_xx):
     """Scores bigrams using chi-square, i.e. phi-sq multiplied by the number
     of bigrams, as in Manning and Schutze 5.3.3.
     """
-    return n_xx * phi_sq(n_ii, n_ix, n_xi, n_xx)
+    return n_xx * phi_sq(n_ii, (n_ix, n_xi), n_xx)
 
 
-def student_t(n_ii, n_ix, n_xi, n_xx):
+def student_t(n_ii, (n_ix, n_xi), n_xx):
     """Scores bigrams using Student's t test with independence hypothesis
     for unigrams, as in Manning and Schutze 5.3.2.
     """
     return (n_ii - float(n_ix*n_xi) / n_xx) / (n_ii + _SMALL) ** .5
 
 
-def dice(n_ii, n_ix, n_xi, n_xx):
+def dice(n_ii, (n_ix, n_xi), n_xx):
     """Scores bigrams using Dice's coefficient."""
     return 2 * float(n_ii) / (n_ix + n_xi)
 
@@ -112,7 +113,7 @@ def _likelihood(k, n, x):
     return k * _log(x) + (n - k) * _log(1 - x)
 
     
-def likelihood_ratio(n_ii, n_ix, n_xi, n_xx):
+def likelihood_ratio(n_ii, (n_ix, n_xi), n_xx):
     """Scores bigrams using likelihood ratios as in Manning and Schutze 5.3.4.
     """
     p = float(n_xi) / n_xx
@@ -134,7 +135,7 @@ def likelihood_ratio(*marginals):
                    for obs, exp in zip(cont, _expected_values(cont)))
 
 
-def poisson_stirling(n_ii, n_ix, n_xi, n_xx):
+def poisson_stirling(n_ii, (n_ix, n_xi), n_xx):
     """Scores bigrams using the Poisson-Stirling measure."""
     exp = n_ix * n_xi / float(n_xx)
     return n_ii * (_log(n_ii / exp) - 1)
