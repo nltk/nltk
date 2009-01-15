@@ -12,7 +12,7 @@ import itertools as it
 import cPickle
 import base64
 
-from nltk import defaultdict
+from collections import defaultdict
 from nltk.corpus import wordnet
 from nltk.internals import deprecated
 
