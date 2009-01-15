@@ -69,7 +69,7 @@ def student_t(n_iii,
              n_iix, n_ixi, n_xii,
              n_xxx):
     """Scores trigrams using Student's t test with independence hypothesis
-    for unigrams.
+    for unigrams, as in Manning and Schutze 5.3.2.
     """
     return ((n_iii - (n_ixx * n_xix * n_xxi) / (n_xxx * n_xxx)) /
             (n_iii + _SMOOTHING) ** .5)
@@ -80,7 +80,9 @@ def chi_sq(n_iii,
              n_ixx, n_xix, n_xxi,
              n_iix, n_ixi, n_xii,
              n_xxx):
-    """Scores trigrams using Pearson's chi-square."""
+    """Scores trigrams using Pearson's chi-square as in Manning and Schutze
+    5.3.3.
+    """
 
     cont = _contingency(n_iii,
              n_ixx, n_xix, n_xxi,

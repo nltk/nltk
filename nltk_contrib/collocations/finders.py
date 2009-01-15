@@ -195,14 +195,13 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
                         n_all)
 
 
-def test():
-    """Finds bigram collocations in the files of the WebText corpus."""
+def demo(scorer=None):
+    """Finds bigram collocations in the files of the WebText corpus given a
+    bigram scorer (defaults to mi_like).
+    """
 
-    import sys
-    import bigram_measures
-    try:
-        scorer = eval('bigram_measures.' + sys.argv[1])
-    except IndexError:
+    if scorer is None:
+        import bigram_measures
         scorer = bigram_measures.mi_like
 
     from nltk import corpus
@@ -223,4 +222,10 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    import sys
+    import bigram_measures
+    try:
+        scorer = eval('bigram_measures.' + sys.argv[1])
+    except IndexError:
+        scorer = None
+    demo(scorer)

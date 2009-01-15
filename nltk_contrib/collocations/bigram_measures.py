@@ -70,14 +70,14 @@ def phi_sq(n_ii, n_ix, n_xi, n_xx):
 
 def chi_sq(n_ii, n_ix, n_xi, n_xx):
     """Scores bigrams using chi-square, i.e. phi-sq multiplied by the number
-    of bigrams.
+    of bigrams, as in Manning and Schutze 5.3.3.
     """
     return n_xx * phi_sq(n_ii, n_ix, n_xi, n_xx)
 
 
 def student_t(n_ii, n_ix, n_xi, n_xx):
     """Scores bigrams using Student's t test with independence hypothesis
-    for unigrams.
+    for unigrams, as in Manning and Schutze 5.3.2.
     """
     return (n_ii - float(n_ix*n_xi) / n_xx) / (n_ii + _SMOOTHING) ** .5
 
@@ -92,4 +92,25 @@ def jaccard(BigramAssociationMeasureI):
     n_ii, n_io, n_oi, n_oo = _contingency(n_ii, n_ix, n_xi, n_xx)
     return float(n_ii) / (n_ii + n_io + n_oi)
                    
+
+def _likelihood(k, n, x):
+    """Binomial log-likelihood function"""
+    if x == 1.0:
+        x -= _SMOOTHING
+    elif x == 0.0:
+        x += _SMOOTHING
+    return k * _ln(x) + (n - k) * _ln(1 - x)
+
+    
+def likelihood_ratio(n_ii, n_ix, n_xi, n_xx):
+    """Scores bigrams using likelihood ratios as in Manning and Schutze 5.3.4.
+    """
+    p = float(n_xi) / n_xx
+    p1 = float(n_ii) / n_ix
+    p2 = float(n_xi - n_ii) / (n_xx - n_ix)
+    return -2 * (
+            _likelihood(n_ii, n_ix, p) +
+            _likelihood(n_xi - n_ii, n_xx - n_ix, p) -
+            _likelihood(n_ii, n_ix, p1) -
+            _likelihood(n_xi - n_ii, n_xx - n_ix, p2))
 

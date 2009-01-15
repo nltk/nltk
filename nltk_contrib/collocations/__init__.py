@@ -25,9 +25,11 @@ measures are provided in L{bigram_measures} and L{trigram_measures}.
 
 # Possible TODOs:
 # - consider the distinction between f(x,_) and f(x) and whether our
-#   approximation is good enough for fragmented data, and mention the approximation;
-# - add methods to compare different association measures' results
-# - is it better to refer to things as bigrams/trigrams, or pairs/triples?
+#   approximation is good enough for fragmented data, and mention it
+# - add Spearman's rank correlation coefficient to compare different association
+#   measures' results
+# - add a n-gram collocation finder with measures which only utilise n-gram
+#   and unigram counts
 
 from finders import *
 import bigram_measures
