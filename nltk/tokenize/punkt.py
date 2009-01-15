@@ -91,6 +91,15 @@ class PunktLanguageVars(object):
 
     __slots__ = ('_re_period_context', '_re_word_tokenizer')
 
+    def __getstate__(self):
+        # All modifications to the class are performed by inheritance.
+        # Non-default parameters to be pickled must be defined in the inherited
+        # class.
+        return 1
+
+    def __setstate__(self, state):
+        return 1
+
     sent_end_chars = ('.', '?', '!')
     """Characters which are candidates for sentence boundaries"""
 
