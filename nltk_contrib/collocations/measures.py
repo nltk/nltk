@@ -103,8 +103,8 @@ class NgramAssocMeasures(object):
         """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
         """
         cont = self._contingency(*marginals)
-        # Although probably obvious, I don't understand why this negation is needed
-        return (-1 ** self._n * 2 *
+        # I don't understand why this negation is needed
+        return ((-1) ** self._n * 2 *
                 sum(obs * _log(float(obs) / (exp + _SMALL) + _SMALL)
                     for obs, exp in zip(cont, self._expected_values(cont))))
 
