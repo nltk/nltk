@@ -54,6 +54,12 @@ class NgramAssocMeasures(object):
         raise NotImplementedError, ("The contingency table is not available"
                                     "in the general ngram case")
 
+    @staticmethod
+    def _marginals(*contingency):
+        """Calculates values of contingency table marginals from its values."""
+        raise NotImplementedError, ("The contingency table is not available"
+                                    "in the general ngram case")
+
     @classmethod
     def _expected_values(cls, cont):
         """Calculates expected values for a contingency table."""
@@ -157,6 +163,11 @@ class BigramAssocMeasures(NgramAssocMeasures):
         return (n_ii, n_oi, n_io, n_xx - n_ii - n_oi - n_io)
 
     @staticmethod
+    def _marginals(n_ii, n_oi, n_io, n_oo):
+        """Calculates values of contingency table marginals from its values."""
+        return (n_ii, (n_oi + n_ii, n_io + n_ii), n_oo + n_oi + n_io + n_ii)
+
+    @staticmethod
     def _expected_values(cont):
         """Calculates expected values for a contingency table."""
         n_xx = sum(cont)
@@ -224,4 +235,43 @@ class TrigramAssocMeasures(NgramAssocMeasures):
 
         return (n_iii, n_oii, n_ioi, n_ooi,
                 n_iio, n_oio, n_ioo, n_ooo)
+
+    @staticmethod
+    def _marginals(*contingency):
+        """Calculates values of contingency table marginals from its values."""
+        n_iii, n_oii, n_ioi, n_ooi, n_iio, n_oio, n_ioo, n_ooo = contingency
+        return (n_iii,
+                (n_iii + n_iio, n_iii + n_ioi, n_iii + n_oii),
+                (n_iii + n_ioi + n_iio + n_ioo,
+                 n_iii + n_oii + n_iio + n_oio,
+                 n_iii + n_oii + n_ioi + n_ooi),
+                sum(contingency))
+
+
+class ContingencyMeasures(object):
+    """Wraps NgramAssocMeasures classes such that the arguments of association
+    measures are contingency table values rather than marginals.
+    """
+
+    def __init__(self, measures):
+        """Constructs a ContingencyMeasures given a NgramAssocMeasures class"""
+        self.__class__.__name__ = 'Contingency' + measures.__class__.__name__
+        for k in dir(measures):
+            if k.startswith('__'):
+                continue
+            v = getattr(measures, k)
+            if not k.startswith('_'):
+                v = self._make_contingency_fn(measures, v)
+            setattr(self, k, v)
+
+    @staticmethod
+    def _make_contingency_fn(measures, old_fn):
+        """From an association measure function, produces a new function which
+        accepts contingency table values as its arguments.
+        """
+        def res(*contingency):
+            return old_fn(*measures._marginals(*contingency))
+        res.__doc__ = old_fn.__doc__
+        res.__name__ = old_fn.__name__
+        return res
 
