@@ -527,5 +527,32 @@ Bug 160: wup_similarity breaks when the two synsets have no common hypernym
     >>> t = wn.synsets('titan')[1]
     >>> m = wn.synsets('male')[1]
     >>> t.wup_similarity(m)
+    0.40000000000000002
+
+    >>> t = wn.synsets('titan')[1]
+    >>> s = wn.synsets('say', wn.VERB)[0]
+    >>> t.wup_similarity(s)
     -1
 
+Bug 21: "instance of" not included in LCS (very similar to bug 160)
+
+    >>> a = wn.synsets("writings")[0]
+    >>> b = wn.synsets("scripture")[0]
+    >>> brown_ic = wordnet_ic.ic('ic-brown.dat')
+    >>> wn.jcn_similarity(a, b, brown_ic)
+    0.17546021191621833
+
+Bug 221: Verb root IC is zero
+
+    >>> from nltk.corpus.reader.wordnet import information_content
+    >>> s = wn.synsets('say', wn.VERB)[0]
+    >>> information_content(s, brown_ic)
+    4.6237121100177792
+
+Bug 161: Comparison between WN keys/lemmas should not be case sensitive
+
+    >>> k = wn.synsets("jefferson")[0].lemmas[0].key
+    >>> wn.lemma_from_key(k)
+    Lemma('jefferson.n.01.Jefferson')
+    >>> wn.lemma_from_key(k.upper())
+    Lemma('jefferson.n.01.Jefferson')

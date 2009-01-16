@@ -211,6 +211,9 @@ class WordNetCorpusReader(CorpusReader):
         raise WordNetError('no lemma %r in %r' % (lemma_name, synset_name))
 
     def lemma_from_key(self, key):
+        # Keys are case sensitive and always lower-case
+        key = key.lower()
+
         lemma_name, lex_sense = key.split('%')
         pos_number, lexname_index, lex_id, _, _ = lex_sense.split(':')
         pos = self._pos_names[int(pos_number)]
@@ -395,7 +398,7 @@ class WordNetCorpusReader(CorpusReader):
                 head_name = head_id = ''
             tup = (lemma.name, WordNetCorpusReader._pos_numbers[synset.pos],
                    lemma._lexname_index, lemma._lex_id, head_name, head_id)
-            lemma.key = '%s%%%d:%02d:%02d:%s:%s' % tup
+            lemma.key = ('%s%%%d:%02d:%02d:%s:%s' % tup).lower()
  
         # the canonical name is based on the first lemma
         lemma_name = synset.lemmas[0].name.lower()
@@ -611,8 +614,8 @@ class WordNetICCorpusReader(CorpusReader):
         @return: An information content dictionary
         """
         ic = {}
-        ic[NOUN] = defaultdict(int)
-        ic[VERB] = defaultdict(int)
+        ic[NOUN] = defaultdict(float)
+        ic[VERB] = defaultdict(float)
         for num, line in enumerate(self.open(icfile)):
             if num == 0: # skip the header
                 continue
@@ -620,8 +623,9 @@ class WordNetICCorpusReader(CorpusReader):
             offset = int(fields[0][:-1])
             value = float(fields[1])
             pos = _get_pos(fields[0])
-            if num == 1: # store root count
-                ic[pos][0] = value
+            if len(fields) == 3 and fields[2] == "ROOT":
+                # Store root count.
+                ic[pos][0] += value
             if value != 0:
                 ic[pos][offset] = value
         return ic
@@ -945,7 +949,8 @@ class Synset(_WordNetObject):
 
     def common_hypernyms(self, other):
         """
-        Find all synsets that are hypernyms of this synset and the other synset.
+        Find all synsets that are hypernyms of this synset and the
+        other synset.
 
         @type  other: L{Synset}
         @param other: other input synset.
@@ -1106,6 +1111,10 @@ class Synset(_WordNetObject):
         return lin_similarity(self, other, ic, verbose)
 
     def _iter_hypernym_lists(self):
+        """
+        @return: An iterator over L{Synset}s that are either proper
+        hypernyms or instance of hypernyms of the synset.
+        """
         todo = [self]
         seen = set()
         while todo:
@@ -1114,7 +1123,8 @@ class Synset(_WordNetObject):
             yield todo
             todo = [hypernym
                     for synset in todo
-                    for hypernym in synset.hypernyms()
+                    for hypernym in (synset.hypernyms() + \
+                        synset.instance_hypernyms())
                     if hypernym not in seen]
 
     def __repr__(self):
@@ -1231,8 +1241,9 @@ def wup_similarity(synset1, synset2, verbose=False):
     if subsumer.pos != NOUN:
         depth += 1
 
-    # Get the shortest path from the LCS to each of the synsets it is subsuming.
-    # Add this to the LCS path length to get the path length from each synset to the root.
+    # Get the shortest path from the LCS to each of the synsets it is
+    # subsuming.  Add this to the LCS path length to get the path
+    # length from each synset to the root.
     len1 = synset1.shortest_path_distance(subsumer) + depth
     len2 = synset2.shortest_path_distance(subsumer) + depth
     return (2.0 * depth) / (len1 + len2)
@@ -1370,21 +1381,32 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
 def _lcs_ic(synset1, synset2, ic, verbose=False):
     """
     Get the information content of the least common subsumer that has
-    the highest information content value.
+    the highest information content value.  If two nodes have no
+    explicit common subsumer, assume that they share an artificial
+    root node that is the hypernym of all explicit roots.
 
     @type  synset1: L{Synset}
     @param synset1: First input synset.
     @type  synset2: L{Synset}
-    @param synset2: Second input synset.
+    @param synset2: Second input synset.  Must be the same part of
+    speech as the first synset.
     @type  ic: C{dict}
     @param ic: an information content object (as returned by L{load_ic()}).
-    @return: The information content of the two synsets and their most informative subsumer
+    @return: The information content of the two synsets and their most
+    informative subsumer
     """
+    if synset1.pos != synset2.pos:
+        raise WordNetError('Computing the least common subsumer requires ' + \
+                           '%s and %s to have the same part of speech.' % \
+                               (synset1, synset2))
 
     ic1 = information_content(synset1, ic)
     ic2 = information_content(synset2, ic)
-    subsumer_ic = max(information_content(s, ic)
-                      for s in synset1.common_hypernyms(synset2))
+    subsumers = synset1.common_hypernyms(synset2)
+    if len(subsumers) == 0:
+        subsumer_ic = 0
+    else:
+        subsumer_ic = max(information_content(s, ic) for s in subsumers)
 
     if verbose:
         print "> LCS Subsumer by content:", subsumer_ic
