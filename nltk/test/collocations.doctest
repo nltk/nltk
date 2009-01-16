@@ -13,17 +13,39 @@ Filtering candidates
 Association measures
 ~~~~~~~~~~~~~~~~~~~~
 
-Student's t: (examples from Manning and Schutze 5.3.2)
+A number of measures are available to score collocations. We test their
+calculation using some known values presented in Manning and Schutze's
+text and other papers.
+
+Student's t: examples from Manning and Schutze 5.3.2
 
    >>> print '%0.4f' % bigram_measures.student_t(8, (15828, 4675), 14307668)
    0.9999
    >>> print '%0.4f' % bigram_measures.student_t(20, (42, 20), 14307668)
    4.4721
 
-Chi-square: (example from Manning and Schutze 5.3.3)
+Chi-square: examples from Manning and Schutze 5.3.3
 
    >>> print '%0.2f' % bigram_measures.chi_sq(8, (15828, 4675), 14307668)
    1.55
+   >>> print '%0.0f' % bigram_measures.chi_sq(59, (67, 65), 571007)
+   456400
+
+Likelihood ratios: examples from Dunning, CL, 1993
+
+   >>> print '%0.2f' % bigram_measures.likelihood_ratio(110, (2552, 221), 31777)
+   270.72
+   >>> print '%0.2f' % bigram_measures.likelihood_ratio(8, (13, 32), 31777)
+   95.29
+
+Pointwise Mutual Information: examples from Manning and Schutze 5.4
+
+   >>> print '%0.2f' % bigram_measures.pmi(20, (42, 20), 14307668)
+   18.38
+   >>> print '%0.2f' % bigram_measures.pmi(20, (15019, 15629), 14307668)
+   0.29
+
+TODO: Find authoritative results for trigrams.
 
 Ranking and correlation
 ~~~~~~~~~~~~~~~~~~~~~~~
