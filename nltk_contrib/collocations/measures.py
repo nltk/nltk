@@ -11,7 +11,8 @@ L{BigramAssocMeasures} and L{TrigramAssocMeasures}.
 """
 
 import math as _math
-_log = lambda x: _math.log(x, 2.0)
+_log2 = lambda x: _math.log(x, 2.0)
+_ln = _math.log
 
 _product = lambda s: reduce(lambda x, y: x * y, s)
 
@@ -84,8 +85,8 @@ class NgramAssocMeasures(object):
         """Scores ngrams by pointwise mutual information, as in Manning and
         Schutze 5.4.
         """
-        return (_log(marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)) -
-                _log(_product(marginals[UNIGRAMS])))
+        return (_log2(marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)) -
+                _log2(_product(marginals[UNIGRAMS])))
 
     @classmethod
     def student_t(cls, *marginals):
@@ -114,7 +115,7 @@ class NgramAssocMeasures(object):
         cont = cls._contingency(*marginals)
         # I don't understand why this negation is needed
         return ((-1) ** cls._n * 2 *
-                sum(obs * _log(float(obs) / (exp + _SMALL) + _SMALL)
+                sum(obs * _ln(float(obs) / (exp + _SMALL) + _SMALL)
                     for obs, exp in zip(cont, cls._expected_values(cont))))
 
     @classmethod
@@ -122,7 +123,7 @@ class NgramAssocMeasures(object):
         """Scores ngrams using the Poisson-Stirling measure."""
         exp = (_product(marginals[UNIGRAMS]) /
               float(marginals[TOTAL] ** (cls._n - 1)))
-        return marginals[NGRAM] * (_log(marginals[NGRAM] / exp) - 1)
+        return marginals[NGRAM] * (_log2(marginals[NGRAM] / exp) - 1)
 
     @classmethod
     def jaccard(cls, *marginals):
