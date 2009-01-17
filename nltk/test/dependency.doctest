@@ -55,7 +55,7 @@ Projective Dependency Parsing
     
     >>> dp = ProjectiveDependencyParser(grammar)
     >>> for t in dp.parse(['the', 'price', 'of', 'the', 'stock', 'fell']):
-    ...     print tree
+    ...     print t
     (fell (price the of the) stock)
     (fell (price the of) (stock the))
     (fell (price the (of (stock the))))
