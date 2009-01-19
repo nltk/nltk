@@ -73,7 +73,7 @@ class AbstractCollocationFinder(object):
         function provided.
         """
         for tup in self.ngram_fd:
-            score = self.score_ngram(*((score_fn,) + tup))
+            score = self.score_ngram(score_fn, *tup)
             if score is not None:
                 yield tup, score
 
