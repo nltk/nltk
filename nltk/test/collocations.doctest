@@ -20,7 +20,7 @@ measured using Pointwise Mutual Information.
      ('leaf', 'plucked')]
 
 While these words are highly collocated, the expressions are also very
-infrequent. Therefore it is useful to apply filters, such as ignoring all
+infrequent.  Therefore it is useful to apply filters, such as ignoring all
 bigrams which occur less than three times in the corpus:
 
     >>> finder.apply_freq_filter(3)
@@ -95,7 +95,7 @@ Filtering candidates
 ~~~~~~~~~~~~~~~~~~~~
 
 All the ngrams in a text are often too many to be useful when finding
-collocations. It is generally useful to remove some words or punctuation,
+collocations.  It is generally useful to remove some words or punctuation,
 and to require a minimum frequency for candidate collocations.
 
 Given our sample text above, if we remove all trigrams containing personal
@@ -129,9 +129,20 @@ lack sufficient evidence about their significance as collocations:
 Association measures
 ~~~~~~~~~~~~~~~~~~~~
 
-A number of measures are available to score collocations. We test their
-calculation using some known values presented in Manning and Schutze's
-text and other papers.
+A number of measures are available to score collocations or other associations.
+The arguments to measure functions are marginals of a contingency table, in the
+bigram case (n_ii, (n_ix, n_xi), n_xx):
+
+            w1    ~w1
+         ------ ------
+     w2 | n_ii | n_oi | = n_xi
+         ------ ------
+    ~w2 | n_io | n_oo |
+         ------ ------
+         = n_ix        TOTAL = n_xx
+
+We test their calculation using some known values presented in Manning and
+Schutze's text and other papers.
 
 Student's t: examples from Manning and Schutze 5.3.2
 
@@ -166,9 +177,18 @@ TODO: Find authoritative results for trigrams.
 Using contingency table values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   >>> print '%0.2f' % (ContingencyMeasures(bigram_measures)
-   ...         .likelihood_ratio(8, 5, 24, 31740))
+While frequency counts make marginals readily available for collocation
+finding, it is common to find published contingency table values. The
+collocations package therefore provides a wrapper, ContingencyMeasures, which
+wraps an association measures class, providing association measures which
+take contingency values as arguments, (n_ii, n_io, n_oi, n_oo) in the
+bigram case.
+
+   >>> cont_bigram_measures = ContingencyMeasures(bigram_measures)
+   >>> print '%0.2f' % cont_bigram_measures.likelihood_ratio(8, 5, 24, 31740)
    95.29
+   >>> print '%0.2f' % cont_bigram_measures.chi_sq(8, 15820, 4667, 14287173)
+   1.55
 
 Ranking and correlation
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -193,7 +213,7 @@ results (differing by no more than rank_gap) to be assigned the same rank:
     [('item1', 0), ('item2', 1), ('item3', 1), ('item4', 1), ('item5', 4)]
 
 The Spearman correlation coefficient gives a number from -1.0 to 1.0 comparing
-two rankings. A coefficient of 1.0 indicates identical rankings; -1.0 indicates
+two rankings.  A coefficient of 1.0 indicates identical rankings; -1.0 indicates
 exact opposite rankings.
 
     >>> print '%0.1f' % spearman_correlation(
