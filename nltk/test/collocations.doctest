@@ -29,7 +29,7 @@ bigrams which occur less than three times in the corpus:
      ('ewe', 'lambs'), ('many', 'colors'), ('burnt', 'offering'),
      ('Paddan', 'Aram'), ('east', 'wind'), ('living', 'creature')]
 
-We similarly find collocations among tagged words:
+We may similarly find collocations among tagged words:
 
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.brown.tagged_words('ca01', simplify_tags=True))
@@ -94,6 +94,37 @@ Alternatively, we can select those above a minimum score value:
 Filtering candidates
 ~~~~~~~~~~~~~~~~~~~~
 
+All the ngrams in a text are often too many to be useful when finding
+collocations. It is generally useful to remove some words or punctuation,
+and to require a minimum frequency for candidate collocations.
+
+Given our sample text above, if we remove all trigrams containing personal
+pronouns from candidature, score_ngrams should return 6 less results, and
+'do not like' will be the only candidate which occurs more than once:
+
+    >>> len(finder.score_ngrams(trigram_measures.raw_freq))
+    14
+    >>> finder.apply_word_filter(lambda w: w in ('I', 'me'))
+    >>> len(finder.score_ngrams(trigram_measures.raw_freq))
+    8
+    >>> sorted(finder.above_score(trigram_measures.raw_freq,
+    ...                           1.0 / len(nltk.trigrams(tokens))))
+    [('do', 'not', 'like')]
+
+Sometimes a filter is a function on the whole ngram, rather than each word,
+such as if we may permit 'and' to appear in the middle of a trigram, but
+not on either edge:
+
+    >>> finder.apply_ngram_filter(lambda w1, w2, w3: 'and' in (w1, w3))
+    >>> len(finder.score_ngrams(trigram_measures.raw_freq))
+    6
+
+Finally, it is often important to remove low frequency candidates, as we
+lack sufficient evidence about their significance as collocations:
+
+    >>> finder.apply_freq_filter(2)
+    >>> len(finder.score_ngrams(trigram_measures.raw_freq))
+    1
 
 Association measures
 ~~~~~~~~~~~~~~~~~~~~
