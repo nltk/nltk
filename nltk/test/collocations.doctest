@@ -5,10 +5,95 @@
 Overview
 ~~~~~~~~
 
+Collocations are expressions of multiple words which commonly co-occur. For
+example, the top ten bigram collocations in Genesis are listed below, as
+measured using Pointwise Mutual Information.
+
+    >>> import nltk
     >>> from nltk_contrib.collocations import *
+    >>> finder = BigramCollocationFinder.from_words(
+    ...     nltk.corpus.genesis.words('english-web.txt'))
+    >>> finder.top_n(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+    [('cutting', 'instrument'), ('sewed', 'fig'), ('sweet', 'savor'),
+     ('Ben', 'Ammi'), ('appoint', 'overseers'), ('olive', 'leaf'),
+     ('months', 'later'), ('remaining', 'silent'), ('seek', 'occasion'),
+     ('leaf', 'plucked')]
+
+While these words are highly collocated, the expressions are also very
+infrequent. Therefore it is useful to apply filters, such as ignoring all
+bigrams which occur less than three times in the corpus:
+
+    >>> finder.apply_freq_filter(3)
+    >>> finder.top_n(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+    [('Lahai', 'Roi'), ('gray', 'hairs'), ('Beer', 'Lahai'), ('Most', 'High'),
+     ('ewe', 'lambs'), ('many', 'colors'), ('burnt', 'offering'),
+     ('Paddan', 'Aram'), ('east', 'wind'), ('living', 'creature')]
+
+We similarly find collocations among tagged words:
+
+    >>> finder = BigramCollocationFinder.from_words(
+    ...     nltk.corpus.brown.tagged_words('ca01', simplify_tags=True))
+    >>> finder.top_n(bigram_measures.pmi, 5)  # doctest: +NORMALIZE_WHITESPACE
+    [(('weekend', 'N'), ('duty', 'N')),
+     (('top', 'ADJ'), ('official', 'N')),
+     (('George', 'NP'), ('P.', 'NP')),
+     (('medical', 'ADJ'), ('intern', 'N')),
+     (('1962', 'NUM'), ("governor's", 'N'))]
+
+Or tags alone:
+    
+    >>> finder = BigramCollocationFinder.from_words(t for w, t in
+    ...     nltk.corpus.brown.tagged_words('ca01', simplify_tags=True))
+    >>> finder.top_n(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+    [(':', '('), ('(', 'NUM'), ('NUM', ')'), (':', 'NUM'), (')', 'NUM'),
+     ('-', 'WH'), ('VN', ':'), ('``', 'EX'), ('EX', 'MOD'), ('WH', 'VBZ')]
+
+Finders
+~~~~~~~
+
+The collocations package provides collocation finders which by default
+consider all ngrams in a text as candidate collocations:
+
+    >>> text = "I do not like green eggs and ham, I do not like them Sam I am!"
+    >>> tokens = nltk.wordpunct_tokenize(text)
+    >>> finder = BigramCollocationFinder.from_words(tokens)
+    >>> scored = finder.score_ngrams(bigram_measures.raw_freq)
+    >>> sorted(bigram for bigram, score in scored)  # doctest: +NORMALIZE_WHITESPACE
+    [(',', 'I'), ('I', 'am'), ('I', 'do'), ('Sam', 'I'), ('am', '!'),
+     ('and', 'ham'), ('do', 'not'), ('eggs', 'and'), ('green', 'eggs'),
+     ('ham', ','), ('like', 'green'), ('like', 'them'), ('not', 'like'),
+     ('them', 'Sam')]
+
+We could otherwise construct the collocation finder from manually-derived
+FreqDists:
+    
+    >>> word_fd = nltk.FreqDist(tokens)
+    >>> bigram_fd = nltk.FreqDist(nltk.bigrams(tokens))
+    >>> finder = BigramCollocationFinder(word_fd, bigram_fd)
+    >>> scored == finder.score_ngrams(bigram_measures.raw_freq)
+    True
+
+A similar interface is provided for trigrams:
+
+    >>> finder = TrigramCollocationFinder.from_words(tokens)
+    >>> scored = finder.score_ngrams(trigram_measures.raw_freq)
+    >>> set(trigram for trigram, score in scored) == set(nltk.trigrams(tokens))
+    True
+
+We may want to select only the top n results:
+
+    >>> sorted(finder.top_n(trigram_measures.raw_freq, 2))
+    [('I', 'do', 'not'), ('do', 'not', 'like')]
+
+Alternatively, we can select those above a minimum score value:
+
+    >>> sorted(finder.above_score(trigram_measures.raw_freq,
+    ...                           1.0 / len(nltk.trigrams(tokens))))
+    [('I', 'do', 'not'), ('do', 'not', 'like')]
 
 Filtering candidates
 ~~~~~~~~~~~~~~~~~~~~
+
 
 Association measures
 ~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +131,13 @@ Pointwise Mutual Information: examples from Manning and Schutze 5.4
    0.29
 
 TODO: Find authoritative results for trigrams.
+
+Using contingency table values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   >>> print '%0.2f' % (ContingencyMeasures(bigram_measures)
+   ...         .likelihood_ratio(8, 5, 24, 31740))
+   95.29
 
 Ranking and correlation
 ~~~~~~~~~~~~~~~~~~~~~~~
