@@ -77,23 +77,6 @@ class NgramAssocMeasures(object):
         """Scores ngrams by their frequency"""
         return float(marginals[NGRAM]) / marginals[TOTAL]
 
-    @staticmethod
-    def mi_like(*marginals, **kwargs):
-        """Scores ngrams using a variant of mutual information. The keyword
-        argument power sets an exponent (default 3) for the numerator. No
-        logarithm of the result is calculated.
-        """
-        return (marginals[NGRAM] ** kwargs.get('power', 3) /
-                float(_product(marginals[UNIGRAMS])))
-
-    @classmethod
-    def pmi(cls, *marginals):
-        """Scores ngrams by pointwise mutual information, as in Manning and
-        Schutze 5.4.
-        """
-        return (_log2(marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)) -
-                _log2(_product(marginals[UNIGRAMS])))
-
     @classmethod
     def student_t(cls, *marginals):
         """Scores ngrams using Student's t test with independence hypothesis
@@ -113,6 +96,23 @@ class NgramAssocMeasures(object):
         exps = cls._expected_values(cont)
         return sum((obs - exp) ** 2 / (exp + _SMALL)
                    for obs, exp in zip(cont, exps))
+
+    @staticmethod
+    def mi_like(*marginals, **kwargs):
+        """Scores ngrams using a variant of mutual information. The keyword
+        argument power sets an exponent (default 3) for the numerator. No
+        logarithm of the result is calculated.
+        """
+        return (marginals[NGRAM] ** kwargs.get('power', 3) /
+                float(_product(marginals[UNIGRAMS])))
+
+    @classmethod
+    def pmi(cls, *marginals):
+        """Scores ngrams by pointwise mutual information, as in Manning and
+        Schutze 5.4.
+        """
+        return (_log2(marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)) -
+                _log2(_product(marginals[UNIGRAMS])))
 
     @classmethod
     def likelihood_ratio(cls, *marginals):
@@ -151,6 +151,15 @@ class BigramAssocMeasures(NgramAssocMeasures):
     n_ix counts (w1, *)
     n_xi counts (*, w2)
     n_xx counts (*, *), i.e. any bigram
+
+    This may be shown with respect to a contingency table:
+                w1    ~w1
+             ------ ------
+         w2 | n_ii | n_oi | = n_xi
+             ------ ------
+        ~w2 | n_io | n_oo |
+             ------ ------
+             = n_ix        TOTAL = n_xx
     """
 
     _n = 2
