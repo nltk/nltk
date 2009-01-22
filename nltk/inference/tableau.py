@@ -79,8 +79,7 @@ class Tableau(Prover):
     
         #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
         agenda.mark_alls_fresh();
-        args = current.uncurry()[1]
-        return self._attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current, False)]), debug+1) 
+        return self._attempt_proof(agenda, accessible_vars|set(current.args), atoms|set([(current, False)]), debug+1) 
         
     def _attempt_proof_prop(self, current, agenda, accessible_vars, atoms, debug):
         # Check if the branch is closed.  Return 'True' if it is
@@ -100,8 +99,7 @@ class Tableau(Prover):
     
         #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
         agenda.mark_alls_fresh();
-        args = current.term.uncurry()[1]
-        return self._attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current.term, True)]), debug+1) 
+        return self._attempt_proof(agenda, accessible_vars|set(current.term.args), atoms|set([(current.term, True)]), debug+1) 
         
     def _attempt_proof_n_prop(self, current, agenda, accessible_vars, atoms, debug):
         # Check if the branch is closed.  Return 'True' if it is
