@@ -483,7 +483,7 @@ def tableau_test(c, ps=None, verbose=False):
     else:
         ps = []
         pps = []
-    print '%s |- %s: %s' % (', '.join(ps), pc, HigherOrderTableau().prove(pc, pps, verbose=verbose)[0])
+    print '%s |- %s: %s' % (', '.join(ps), pc, Tableau().prove(pc, pps, verbose=verbose)[0])
 
 if __name__ == '__main__':
     testTableau()
