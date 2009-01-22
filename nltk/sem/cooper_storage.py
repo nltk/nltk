@@ -62,7 +62,7 @@ class CooperStore(object):
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
-                quant, varex = tuple(bindop.uncurry()[1])
+                quant, varex = tuple(bindop.args)
                 # use var to make an abstraction over the current term and then
                 # apply the quantifier to it
                 term = ApplicationExpression(quant, LambdaExpression(varex.variable, term))

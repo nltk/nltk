@@ -701,6 +701,8 @@ class ApplicationExpression(Expression):
 
     def uncurry(self):
         """
+        Uncurry this application expression
+        
         return: A tuple (base-function, arg-list)
         """
         function = self.function
@@ -710,7 +712,8 @@ class ApplicationExpression(Expression):
             args.insert(0, function.argument)
             function = function.function
         return (function, args)
-
+    
+    args = property(lambda self: self.uncurry()[1], doc="uncurried arg-list")
 
 class AbstractVariableExpression(Expression):
     """This class represents a variable to be used as a predicate or entity"""
