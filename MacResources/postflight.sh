@@ -19,8 +19,9 @@ else
    PYVER=`python -V 2>&1 | sed 's/Python \([0-9]\.[0-9]\).*/\1/'`
    PYMAJOR=`echo $PYVER | sed 's/\([0-9]\)\.\([0-9]\)/\1/'`
    PYMINOR=`echo $PYVER | sed 's/\([0-9]\)\.\([0-9]\)/\2/'`
-   if [ [ "$PYMAJOR" -ge  "$MINPYVERMAJOR" ] \
-      -o [ "$PYMAJOR" -eq  "$MINPYVERMAJOR" -a "$PYMINOR" -ge  "$MINPYVERMINOR" ] ]
+   if [[ ( "$PYMAJOR" -ge  "$MINPYVERMAJOR"  ) \
+      || ( "$PYMAJOR" -eq  "$MINPYVERMAJOR" && "$PYMINOR" -ge  "$MINPYVERMINOR" ) ]]
+
    then 
       /usr/bin/sudo python ./setup.py install
    else
