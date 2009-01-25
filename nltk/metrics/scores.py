@@ -16,8 +16,8 @@ try:
 except ImportError:
     betai = None
 
-from util import LazyConcatenation, LazyMap, LazyZip
-from probability import FreqDist
+from nltk.util import LazyConcatenation, LazyMap, LazyZip
+from nltk.probability import FreqDist
 
 def accuracy(reference, test):
     """
