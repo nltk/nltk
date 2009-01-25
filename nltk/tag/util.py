@@ -9,6 +9,7 @@
 import re
 
 from nltk.internals import deprecated
+from nltk.metrics import accuracy as _accuracy
 
 def str2tuple(s, sep='/'):
     """
@@ -62,7 +63,6 @@ def untag(tagged_sentence):
     """
     return [w for (w, t) in tagged_sentence]
 
-from nltk import evaluate
 def accuracy(tagger, gold):
     """
     Score the accuracy of the tagger against the gold standard.
@@ -78,7 +78,7 @@ def accuracy(tagger, gold):
     tagged_sents = tagger.batch_tag([untag(sent) for sent in gold])
     gold_tokens = sum(gold, [])
     test_tokens = sum(tagged_sents, [])
-    return evaluate.accuracy(gold_tokens, test_tokens)
+    return _accuracy(gold_tokens, test_tokens)
 
 ######################################################################
 #{ Deprecated

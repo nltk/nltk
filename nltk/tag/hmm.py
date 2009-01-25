@@ -76,7 +76,7 @@ from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
      DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, \
      MutableProbDist, MLEProbDist
 from nltk.internals import deprecated
-from nltk.evaluate import accuracy as accuracy_
+from nltk.metrics import accuracy as _accuracy
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
 
 from api import *
@@ -784,7 +784,7 @@ class HiddenMarkovModelTagger(TaggerI):
         test_tags = LazyConcatenation(LazyMap(tags, test_sequence))
         predicted_tags = LazyConcatenation(LazyMap(tags, predicted_sequence))
                 
-        acc = accuracy_(test_tags, predicted_tags)
+        acc = _accuracy(test_tags, predicted_tags)
 
         count = sum([len(sent) for sent in test_sequence])
 
