@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
-from nltk.evaluate import precision, recall, accuracy, f_measure
+from nltk.metrics import precision, recall, accuracy, f_measure
 
 from nltk.chunk.util import conllstr2tree
 

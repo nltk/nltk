@@ -18,7 +18,7 @@ from api import *
 ## EVALUATION
 ##//////////////////////////////////////////////////////
 
-from nltk import evaluate
+from nltk.metrics import accuracy as _accuracy
 def accuracy(chunker, gold):
     """
     Score the accuracy of the chunker against the gold standard.
@@ -41,13 +41,13 @@ def accuracy(chunker, gold):
 
 #    print 'GOLD:', gold_tags[:50]
 #    print 'TEST:', test_tags[:50]
-    return evaluate.accuracy(gold_tags, test_tags)
+    return _accuracy(gold_tags, test_tags)
 
 
 # Patched for increased performance by Yoav Goldberg <yoavg@cs.bgu.ac.il>, 2006-01-13
 #  -- statistics are evaluated only on demand, instead of at every sentence evaluation
 #
-# SB: use nltk.evaluate for precision/recall scoring?
+# SB: use nltk.metrics for precision/recall scoring?
 #
 class ChunkScore(object):
     """

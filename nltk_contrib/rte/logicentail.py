@@ -7,7 +7,6 @@
 # For license information, see LICENSE.TXT
 
 from nltk.corpus import rte
-from nltk import evaluate
 from nltk import wordnet
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tokenize import word_tokenize

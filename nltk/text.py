@@ -13,7 +13,7 @@ from nltk.probability import ConditionalFreqDist as CFD
 from nltk.compat import defaultdict
 from nltk.util import ngrams, tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
-from nltk.evaluate import f_measure
+from nltk.metrics import f_measure
 
 def find_collocations(tokens, num=20):
     """
