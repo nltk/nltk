@@ -374,6 +374,8 @@ class Expression(SubstituteBindingsI):
         return NegatedExpression(self)
     
     def negate(self):
+        """If this is a negated expression, remove the negation.  
+        Otherwise add a negation."""
         return -self
     
     def __and__(self, other):
@@ -1031,6 +1033,10 @@ class NegatedExpression(Expression):
         """@see: Expression.visit()"""
         return combinator(function(self.term))
         
+    def negate(self):
+        """@see: Expression.negate()"""
+        return self.term
+    
     def __eq__(self, other):
         return isinstance(other, NegatedExpression) and self.term == other.term
 
