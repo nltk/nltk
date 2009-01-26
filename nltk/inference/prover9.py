@@ -161,9 +161,11 @@ class Prover9Parent(object):
                 '/usr/local/share/prover9']
     
     def _find_binary(self, name, verbose=False):
-        
+        binary_locations = self.binary_locations()
+        if self._binary_location is not None:
+            binary_locations += [self._binary_location]
         return internals.find_binary(name, 
-            searchpath=self.binary_locations()+[self._binary_location], 
+            searchpath=binary_locations, 
             env_vars=['PROVER9HOME'],
             url='http://www.cs.unm.edu/~mccune/prover9/',
             binary_names=[name, name + '.exe'],
