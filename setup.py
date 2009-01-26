@@ -45,6 +45,7 @@ setup(
                 'nltk.draw',
                 'nltk.draw.wordnet_browser',
                 'nltk.inference',
+                'nltk.metrics',
                 'nltk.misc',
                 'nltk.model',
                 'nltk.parse',
