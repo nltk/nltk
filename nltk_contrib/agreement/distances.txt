@@ -1,6 +1,0 @@
-stat	stat	0
-ireq	ireq	0
-chck	chck	0
-stat	ireq	1
-stat	chck	0.5
-ireq	chck	0.5

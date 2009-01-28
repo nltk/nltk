@@ -5,7 +5,52 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
-from distance_metric import *
+
+"""
+Implementations of inter-annotator agreement coefficients surveyed by Artstein
+and Poesio (2007), Inter-Coder Agreement for Computational Linguistics.
+
+An agreement coefficient calculates the amount that annotators agreed on label 
+assignments beyond what is expected by chance.
+
+In defining the AnnotationTask class, we use naming conventions similar to the 
+paper's terminology.  There are three types of objects in an annotation task: 
+
+    the coders (variables "c" and "C")
+    the items to be annotated (variables "i" and "I")
+    the potential categories to be assigned (variables "k" and "K")
+
+Additionally, it is often the case that we don't want to treat two different 
+labels as complete disagreement, and so the AnnotationTask constructor can also
+take a distance metric as a final argument.  Distance metrics are simply 
+functions that take two arguments, and return a value between 0.0 and 1.0 
+indicating the distance between them.  If not supplied, the default is binary 
+comparison between the arguments.
+
+The simplest way to initialize an AnnotationTask is with a list of equal-length 
+lists, each containing a coder's assignments for all objects in the task:
+
+    task = AnnotationTask([],[],[])
+
+Alpha (Krippendorff 1980)
+Kappa (Cohen 1960)
+S (Bennet, Albert and Goldstein 1954)
+Pi (Scott 1955)
+
+
+TODO: Describe handling of multiple coders and missing data
+
+Expected results from the Artstein and Poesio survey paper:
+
+>>> t = AnnotationTask(data=[x.split() for x in open("%sartstein_poesio_example.txt" % (__file__.replace("__init__.py", "")))])
+>>> t.avg_Ao()
+0.88
+>>> t.pi()
+0.7995322418977614
+>>> t.S()
+0.81999999999999984
+"""
+
 import logging
 
 
@@ -31,7 +76,7 @@ class AnnotationTask:
         self.K = set()
         self.C = set()
         self.data = []
-        if(data != None):
+        if data != None:
             self.load_array(data)
 
     def __str__(self):
@@ -68,11 +113,11 @@ class AnnotationTask:
         """Implements the "n-notation" used in Artstein and Poesio (2007)
 
         """
-        if(k != None and i == None and c == None):
+        if k != None and i == None and c == None:
             ret = len(filter(lambda x:k == x['labels'], self.data))
-        elif(k != None and i != None and c == None):
+        elif k != None and i != None and c == None:
             ret = len(filter(lambda x:k == x['labels'] and i == x['item'], self.data))
-        elif(k != None and c != None and i==None):
+        elif k != None and c != None and i==None:
             ret = len(filter(lambda x:k == x['labels'] and c == x['coder'], self.data))
         else:
             print "You must pass either i or c, not both!"
@@ -125,7 +170,8 @@ class AnnotationTask:
         """
         total = 0.0
         for i in self.I:
-            total += self.distance(filter(lambda x:x['coder']==cA and x['item']==i, self.data)[0]['labels'], filter(lambda x:x['coder']==cB and x['item']==i, self.data)[0]['labels'])
+            total += self.distance(filter(lambda x:x['coder']==cA and x['item']==i, self.data)[0]['labels'],
+                                   filter(lambda x:x['coder']==cB and x['item']==i, self.data)[0]['labels'])
         ret = total / (len(self.I) * max_distance)
         logging.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
         return ret
@@ -137,7 +183,7 @@ class AnnotationTask:
         vals = {}
         for cA in self.C:
             for cB in self.C:
-                if(not frozenset([cA,cB]) in vals.keys() and not cA == cB):
+                if (not frozenset([cA,cB]) in vals.keys() and not cA == cB):
                     vals[frozenset([cA, cB])] = self.Do_Kw_pairwise(cA, cB, max_distance)
         ret = sum(vals.values()) / len(vals)
         logging.debug("Observed disagreement: %f", ret)
@@ -185,7 +231,7 @@ class AnnotationTask:
         vals = {}
         for a in self.C:
             for b in self.C:
-                if(a == b or "%s%s" % (b, a) in vals):
+                if a == b or "%s%s" % (b, a) in vals:
                     continue
                 vals["%s%s" % (a, b)] = self.kappa_pairwise(a, b)
         ret = sum(vals.values()) / float(len(vals))
@@ -226,14 +272,14 @@ class AnnotationTask:
         vals = {}
         for a in self.C:
             for b in self.C:
-                if(a == b or frozenset([a, b]) in vals):
+                if a == b or frozenset([a, b]) in vals:
                     continue
                 vals[frozenset([a, b])] = self.weighted_kappa_pairwise(a, b)
         ret = sum(vals.values()) / float(len(vals))
         return ret
 
 
-if(__name__ == '__main__'):
+if __name__ == '__main__':
 
     import re
     import optparse
@@ -270,19 +316,20 @@ if(__name__ == '__main__'):
     for l in open(options.file):
         toks = l.split(options.columnsep)
         coder, object, labels = toks[0], str(toks[1:-1]), frozenset(toks[-1].strip().split(options.labelsep))
-        if((options.include == options.exclude) or
-           (len(options.include) > 0 and coder in options.include) or
-           (len(options.exclude) > 0 and coder not in options.exclude)):
+        if ((options.include == options.exclude) or
+            (len(options.include) > 0 and coder in options.include) or
+            (len(options.exclude) > 0 and coder not in options.exclude)):
             data.append((coder, object, labels))
 
-    if(options.presence):
+    if options.presence:
         task = AnnotationTask(data, getattr(distance_metric, options.distance)(options.presence))
     else:
         task = AnnotationTask(data, getattr(distance_metric, options.distance))
 
-    if(options.thorough):
+    if options.thorough:
         pass
     else:
         print getattr(task, options.agreement)()
 
     logging.shutdown()
+

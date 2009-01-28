@@ -15,7 +15,9 @@ from scores import *
 from confusionmatrix import *
 from editdistance import *
 from windowdiff import *
+from agreement import *
 
 __all__ = ['ConfusionMatrix', 'accuracy',
            'f_measure', 'log_likelihood', 'precision', 'recall',
-           'approxrand', 'edit_dist', 'windowdiff']
+           'approxrand', 'edit_dist', 'windowdiff',
+           'AnnotationTask', ]

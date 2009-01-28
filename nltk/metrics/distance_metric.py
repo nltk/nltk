@@ -6,10 +6,8 @@
 # For license information, see LICENSE.TXT
 #
 
-# function prototype?
 
-
-def binary(label1,label2):
+def binary(label1, label2):
     """Simple equality test.
 
     0.0 if the labels are identical, 1.0 if they are different.
@@ -21,20 +19,20 @@ def binary(label1,label2):
     1.0
     """
 
-    if(label1==label2):
+    if label1 == label2:
         return 0.0
     else:
         return 1.0
 
 
-def jaccard(label1,label2):
+def jaccard(label1, label2):
     """Distance metric comparing set-similarity.
 
     """
     return (len(label1.union(label2)) - len(label1.intersection(label2)))/float(len(label1.union(label2)))
 
 
-def masi(label1,label2):
+def masi(label1, label2):
     """Distance metric that takes into account partial agreement when multiple
     labels are assigned.
 
@@ -66,7 +64,6 @@ def presence(label):
     """Higher-order function to test presence of a given label
 
     """
-    print "test"
     return lambda x,y: 1.0*((label in x) == (label in y))
 
 
@@ -77,7 +74,7 @@ def fractional_presence(label):
 def custom(file):
     data = {}
     for l in open(file):
-        labelA,labelB,dist = l.strip().split("\t")
+        labelA, labelB, dist = l.strip().split("\t")
         labelA = frozenset([labelA])
         labelB = frozenset([labelB])
         data[frozenset([labelA,labelB])] = float(dist)
