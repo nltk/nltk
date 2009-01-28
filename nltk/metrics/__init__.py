@@ -14,10 +14,20 @@ Classes and methods for scoring processing modules.
 from scores import *
 from confusionmatrix import *
 from editdistance import *
+from distance import *
 from windowdiff import *
 from agreement import *
+from association import *
+from spearman import *
 
 __all__ = ['ConfusionMatrix', 'accuracy',
            'f_measure', 'log_likelihood', 'precision', 'recall',
            'approxrand', 'edit_dist', 'windowdiff',
-           'AnnotationTask', ]
+           'AnnotationTask', 'spearman_correlation',
+           'ranks_from_sequence', 'ranks_from_scores',
+           'NgramAssocMeasures', 'BigramAssocMeasures',
+           'TrigramAssocMeasures', 'ContingencyMeasures',
+           'binary_distance', 'jaccard_distance',
+           'masi_distance', 'interval_distance',
+           'custom_distance',
+           'presence', 'fractional_presence']

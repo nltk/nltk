@@ -1,11 +1,12 @@
-# Natural Language Toolkit: Collocation Finders
+# Natural Language Toolkit: Spearman Rank Correlation
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
+
 """
-Tools for ranking results from collocation finders, and comparing these ranks.
+Tools for comparing ranked lists.
 """
 
 def _rank_dists(ranks1, ranks2):

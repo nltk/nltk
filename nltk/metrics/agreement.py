@@ -52,7 +52,7 @@ Expected results from the Artstein and Poesio survey paper:
 """
 
 import logging
-
+from distance import *
 
 class AnnotationTask:
     """Represents an annotation task, i.e. people assign labels to items.
@@ -67,7 +67,7 @@ class AnnotationTask:
     is the MASI metric, which requires Python sets.
     """
 
-    def __init__(self, data=None, distance=binary):
+    def __init__(self, data=None, distance=binary_distance):
         """Initialize an empty annotation task.
 
         """
@@ -283,11 +283,11 @@ if __name__ == '__main__':
 
     import re
     import optparse
-    import distance_metric
+    import distance
 
     # process command-line arguments
     parser = optparse.OptionParser()
-    parser.add_option("-d", "--distance", dest="distance", default="binary",
+    parser.add_option("-d", "--distance", dest="distance", default="binary_distance",
                       help="distance metric to use")
     parser.add_option("-a", "--agreement", dest="agreement", default="kappa",
                       help="agreement coefficient to calculate")
@@ -308,6 +308,10 @@ if __name__ == '__main__':
     parser.add_option("-T", "--thorough", dest="thorough", default=False, action="store_true",
                       help="calculate agreement for every subset of the annotators")
     (options, remainder) = parser.parse_args()
+    
+    if not options.file:
+        parser.print_help()
+        exit()
 
     logging.basicConfig(level=50 - 10 * int(options.verbose))
 
@@ -322,9 +326,9 @@ if __name__ == '__main__':
             data.append((coder, object, labels))
 
     if options.presence:
-        task = AnnotationTask(data, getattr(distance_metric, options.distance)(options.presence))
+        task = AnnotationTask(data, getattr(distance, options.distance)(options.presence))
     else:
-        task = AnnotationTask(data, getattr(distance_metric, options.distance))
+        task = AnnotationTask(data, getattr(distance, options.distance))
 
     if options.thorough:
         pass

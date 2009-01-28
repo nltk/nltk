@@ -72,6 +72,7 @@ from chunk import *
 from stem import *
 from classify import *
 from model import *
+from collocations import *
 from misc import *
 
 from internals import config_java

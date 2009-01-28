@@ -1,9 +1,10 @@
-# Natural Language Toolkit: Bigram Assoc Measures
+# Natural Language Toolkit: Ngram Association Measures
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
+
 """
 Provides scoring functions for a number of association measures through a
 generic, abstract implementation in L{NgramAssocMeasures}, and n-specific

@@ -58,7 +58,6 @@ setup(
                 'nltk.wordnet.browser',
                 'nltk.etree',
                 'nltk_contrib',
-                'nltk_contrib.agreement',
                 'nltk_contrib.bioreader',
                 'nltk_contrib.ccg',
                 'nltk_contrib.classifier',

@@ -10,7 +10,7 @@ example, the top ten bigram collocations in Genesis are listed below, as
 measured using Pointwise Mutual Information.
 
     >>> import nltk
-    >>> from nltk_contrib.collocations import *
+    >>> from nltk.collocations import *
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.genesis.words('english-web.txt'))
     >>> finder.top_n(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
@@ -184,6 +184,7 @@ wraps an association measures class, providing association measures which
 take contingency values as arguments, (n_ii, n_io, n_oi, n_oo) in the
 bigram case.
 
+   >>> from nltk.metrics import ContingencyMeasures
    >>> cont_bigram_measures = ContingencyMeasures(bigram_measures)
    >>> print '%0.2f' % cont_bigram_measures.likelihood_ratio(8, 5, 24, 31740)
    95.29
@@ -200,6 +201,7 @@ the Spearman correlation coefficient.
 Ranks can be assigned to a sorted list of results trivially by assigning
 strictly increasing ranks to each result:
 
+    >>> from nltk.metrics.spearman import *
     >>> results_list = ['item1', 'item2', 'item3', 'item4', 'item5']
     >>> print list(ranks_from_sequence(results_list))
     [('item1', 0), ('item2', 1), ('item3', 2), ('item4', 3), ('item5', 4)]
