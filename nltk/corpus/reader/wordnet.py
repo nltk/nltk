@@ -129,6 +129,11 @@ class WordNetCorpusReader(CorpusReader):
         
         Map from lemma -> pos -> synset_index -> offset"""
         
+        self._synset_offset_cache = defaultdict(dict)
+        """A cache so we don't have to reconstuct synsets
+
+        Map from pos -> offset -> synset"""
+        
         self._data_file_map = {}
         self._exception_map = {}
         self._lexnames = []
@@ -285,6 +290,10 @@ class WordNetCorpusReader(CorpusReader):
         return self._data_file_map[pos]
             
     def _synset_from_pos_and_offset(self, pos, offset):
+        # Check to see if the synset is in the cache
+        if self._synset_offset_cache[pos].has_key(offset):
+            return self._synset_offset_cache[pos][offset]
+
         data_file = self._data_file(pos)
         data_file.seek(offset)
         data_file_line = data_file.readline()
