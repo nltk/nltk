@@ -7,8 +7,8 @@
 # For license information, see LICENSE.TXT
 
 PYTHON = python
-VERSION = $(shell python -c 'import nltk; print nltk.__version__')
-NLTK_URL = $(shell python -c 'import nltk; print nltk.__url__')
+VERSION = $(shell $(PYTHON) -c 'import nltk; print nltk.__version__' | sed '/^Warning: */d')
+NLTK_URL = $(shell $(PYTHON) -c 'import nltk; print nltk.__url__' | sed '/^Warning: */d')
 GOOGLE_ACCT = StevenBird1
 UPLOAD = $(PYTHON) tools/googlecode_upload.py --project=nltk --config-dir=none --user=$(GOOGLE_ACCT) --labels=Featured
 
@@ -216,7 +216,6 @@ clean:	clean_up
 	$(MAKE) -C doc clean
 	$(MAKE) -C doc_contrib clean
 	$(MAKE) -C javasrc clean
-	$(MAKE) -C tools/mac clean
 	rm -f nltk/nltk.jar
 
 clean_up: clean_code
