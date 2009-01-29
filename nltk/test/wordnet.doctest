@@ -86,6 +86,19 @@ Synsets
 Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.
 
+Note that some relations are defined by WordNet only over Lemmas:
+
+    >>> good = wn.synset('good.a.01')
+    >>> good.antonyms()
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'Synset' object has no attribute 'antonyms'
+    >>> good.lemmas[0].antonyms()
+    [Lemma('bad.a.01.bad')]
+
+The relations that are currently defined in this way are `antonyms`,
+`derivationally_related_forms` and `pertainyms`.
+
 Original API
 ------------
 
@@ -169,6 +182,18 @@ Word Senses
     Lemma('eat.v.04.eat') None
     Lemma('consume.v.05.eat') None
     Lemma('corrode.v.01.eat') None
+
+Lemmas can also have relations between them:
+
+    >>> vocal = wn.lemma('vocal.a.01.vocal')
+    >>> vocal.derivationally_related_forms()
+    [Lemma('vocalize.v.02.vocalize')]
+    >>> vocal.pertainyms()
+    [Lemma('voice.n.02.voice')]
+    >>> vocal.antonyms()
+    [Lemma('instrumental.a.01.instrumental')]
+
+The three relations above exist only on lemmas, not on synsets.
 
 Original API
 ------------

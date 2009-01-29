@@ -309,7 +309,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def _synset_from_pos_and_offset(self, pos, offset):
         # Check to see if the synset is in the cache
-        if self._synset_offset_cache[pos].has_key(offset):
+        if offset in self._synset_offset_cache[pos]:
             return self._synset_offset_cache[pos][offset]
 
         data_file = self._data_file(pos)
@@ -317,6 +317,7 @@ class WordNetCorpusReader(CorpusReader):
         data_file_line = data_file.readline()
         synset = self._synset_from_pos_and_line(pos, data_file_line)
         assert synset.offset == offset
+        self._synset_offset_cache[pos][offset] = synset
         return synset
 
     def _synset_from_pos_and_line(self, pos, data_file_line):
@@ -490,9 +491,9 @@ class WordNetCorpusReader(CorpusReader):
                 # generate synsets for each line in the POS file
                 offset = data_file.tell()
                 line = data_file.readline()
-                while line != '':
+                while line:
                     if not line[0].isspace():
-                        if self._synset_offset_cache[pos_tag].has_key(offset):
+                        if offset in self._synset_offset_cache[pos_tag]:
                             # See if the synset is cached
                             synset = self._synset_offset_cache[pos][offset]
                         else:
@@ -735,9 +736,6 @@ class WordNetError(Exception):
 class _WordNetObject(object):
     """A common base class for lemmas and synsets."""
 
-    def antonyms(self):
-        return self._related('!')
-
     def hypernyms(self):
         return self._related('@')
 
@@ -771,9 +769,6 @@ class _WordNetObject(object):
     def attributes(self):
         return self._related('=')
 
-    def derivationally_related_forms(self):
-        return self._related('+')
-
     def entailments(self):
         return self._related('*')
 
@@ -788,9 +783,6 @@ class _WordNetObject(object):
 
     def similar_tos(self):
         return self._related('&')
-
-    def pertainyms(self):
-        return self._related('\\')
 
     def __hash__(self):
         return hash(self.name)
@@ -881,6 +873,15 @@ class Lemma(_WordNetObject):
         """Return the frequency count for this Lemma"""
         return self._wordnet_corpus_reader.lemma_count(self)
 
+    def antonyms(self):
+        return self._related('!')
+
+    def derivationally_related_forms(self):
+        return self._related('+')
+
+    def pertainyms(self):
+        return self._related('\\')
+
 class Synset(_WordNetObject):
     """Create a Synset from a "<lemma>.<pos>.<number>" string where:
     <lemma> is the word's morphological stem
@@ -908,7 +909,6 @@ class Synset(_WordNetObject):
         http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
     These methods all return lists of Synsets.
 
-    antonyms
     hypernyms
     instance_hypernyms
     hyponyms
@@ -920,13 +920,11 @@ class Synset(_WordNetObject):
     substance_meronyms
     part_meronyms
     attributes
-    derivationally_related_forms
     entailments
     causes
     also_sees
     verb_groups
     similar_tos
-    pertainyms
 
     Additionally, Synsets support the following methods specific to the
     hypernym relation:
@@ -934,6 +932,13 @@ class Synset(_WordNetObject):
     root_hypernyms
     common_hypernyms
     lowest_common_hypernyms
+
+    Note that Synsets do not support the following relations because
+    these are defined by WordNet as lexical relations:
+
+    antonyms
+    derivationally_related_forms
+    pertainyms
     """
     def __init__(self, wordnet_corpus_reader):
         self._wordnet_corpus_reader = wordnet_corpus_reader
