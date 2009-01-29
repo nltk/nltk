@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collocations and Association Measures 
 #
-# Copyright (C) 2001-2008 NLTK Project
+# Copyright (C) 2001-2009 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 #         Steven Bird <sb@csse.unimelb.edu.au> (incorporate into NLTK)
 # URL: <http://nltk.org>

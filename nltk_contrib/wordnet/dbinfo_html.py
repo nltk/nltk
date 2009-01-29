@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet Interface: Graphical WordNet Browser
 #
-# Copyright (C) 2007 - 2008 NLTK Project
+# Copyright (C) 2001-2009 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT

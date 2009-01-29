@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK) MUC-6 Corpus Reader
 #
-# Copyright (C) 2008 NLTK Project 
+# Copyright (C) 2001-2009 NLTK Project 
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: http://nltk.org
 # For license information, see LICENSE.TXT

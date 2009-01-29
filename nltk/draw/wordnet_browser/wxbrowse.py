@@ -2,7 +2,7 @@
 #
 # Wordnet Interface: Graphical Wordnet Browser
 # 
-# Copyright (C) 2007 - 2008 NLTK Project
+# Copyright (C) 2001-2009 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 #         Paul Bone <pbone@students.csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>

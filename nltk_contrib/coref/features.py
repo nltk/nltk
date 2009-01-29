@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK) Coreference Feature Functions
 #
-# Copyright (C) 2008 NLTK Project 
+# Copyright (C) 2001-2009 NLTK Project 
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 # URL: <http://www.nltk.org/>
