@@ -569,3 +569,12 @@ Bug 161: Comparison between WN keys/lemmas should not be case sensitive
     Lemma('jefferson.n.01.Jefferson')
     >>> wn.lemma_from_key(k.upper())
     Lemma('jefferson.n.01.Jefferson')
+
+Bug 99: WordNet root_hypernyms gives incorrect results
+
+    >>> from nltk.corpus import wordnet as wn
+    >>> for s in wn.all_synsets(wn.NOUN):
+    ...     if s.root_hypernyms()[0] != wn.synset('entity.n.01'):
+    ...             print s, s.root_hypernyms()
+    ... 
+    >>> 
