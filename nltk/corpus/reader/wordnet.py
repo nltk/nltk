@@ -926,7 +926,8 @@ class Synset(_WordNetObject):
             next_synset = todo.pop()
             if next_synset not in seen:
                 seen.add(next_synset)
-                next_hypernyms = next_synset.hypernyms()
+                next_hypernyms = next_synset.hypernyms() + \
+                    next_synset.instance_hypernyms()
                 if not next_hypernyms:
                     result.append(next_synset)
                 else:
