@@ -473,6 +473,9 @@ class WordNetCorpusReader(CorpusReader):
         else:
             pos_tags = [pos]
 
+        cache = self._synset_offset_cache
+        from_pos_and_line = self._synset_from_pos_and_line
+
         # generate all synsets for each part of speech
         for pos_tag in pos_tags:
             # Open the file for reading.  Note that we can not re-use
@@ -489,16 +492,17 @@ class WordNetCorpusReader(CorpusReader):
                 line = data_file.readline()
                 while line:
                     if not line[0].isspace():
-                        if offset in self._synset_offset_cache[pos_tag]:
+                        if offset in cache[pos_tag]:
                             # See if the synset is cached
-                            synset = self._synset_offset_cache[pos][offset]
+                            synset = cache[pos][offset]
                         else:
                             # Otherwise, parse the line
-                            synset = self._synset_from_pos_and_line(pos_tag, line)
-                            self._synset_offset_cache[pos_tag][offset] = synset
+                            synset = from_pos_and_line(pos_tag, line)
+                            cache[pos_tag][offset] = synset
 
-                        # adjective satellites are in the same file as adjectives
-                        # so only yield the synset if it's actually a satellite
+                        # adjective satellites are in the same file as
+                        # adjectives so only yield the synset if it's actually
+                        # a satellite
                         if pos_tag == ADJ_SAT:
                             if synset.pos == pos_tag:
                                 yield synset
@@ -575,7 +579,8 @@ class WordNetCorpusReader(CorpusReader):
         """
 
         if pos is None:
-            analyses = chain(a for p in POS_LIST for a in self._morphy(form, p))
+            morphy = self._morphy
+            analyses = chain(a for p in POS_LIST for a in morphy(form, p))
         else:
             analyses = self._morphy(form, pos)
 
@@ -990,10 +995,11 @@ class Synset(_WordNetObject):
         """
 
         if "_max_depth" not in self.__dict__:
-            if self.hypernyms() == []:
+            hypernyms = self.hypernyms()
+            if not hypernyms:
                 self._max_depth = 0
             else:
-                self._max_depth = 1 + max(h.max_depth() for h in self.hypernyms())
+                self._max_depth = 1 + max(h.max_depth() for h in hypernyms)
         return self._max_depth
 
     def min_depth(self):
@@ -1003,10 +1009,11 @@ class Synset(_WordNetObject):
         """
 
         if "_min_depth" not in self.__dict__:
-            if self.hypernyms() == []:
+            hypernyms = self.hypernyms()
+            if not hypernyms:
                 self._min_depth = 0
             else:
-                self._min_depth = 1 + min(h.min_depth() for h in self.hypernyms())
+                self._min_depth = 1 + min(h.min_depth() for h in hypernyms)
         return self._min_depth
 
     def closure(self, rel, depth=-1):
@@ -1021,9 +1028,10 @@ class Synset(_WordNetObject):
         from nltk.util import breadth_first
         synset_offsets = []
         for synset in breadth_first(self, lambda s:s[rel], depth):
-            if synset.offset != self.offset and synset.offset not in synset_offsets:
-                synset_offsets.append(synset.offset)
-                yield synset
+            if synset.offset != self.offset:
+                if synset.offset not in synset_offsets:
+                    synset_offsets.append(synset.offset)
+                    yield synset
 
     def hypernym_paths(self):
         """
@@ -1098,11 +1106,11 @@ class Synset(_WordNetObject):
     def shortest_path_distance(self, other):
         """
         Returns the distance of the shortest path linking the two synsets (if
-        one exists). For each synset, all the ancestor nodes and their distances
-        are recorded and compared. The ancestor node common to both synsets that
-        can be reached with the minimum number of traversals is used. If no
-        ancestor nodes are common, -1 is returned. If a node is compared with
-        itself 0 is returned.
+        one exists). For each synset, all the ancestor nodes and their
+        distances are recorded and compared. The ancestor node common to both
+        synsets that can be reached with the minimum number of traversals is
+        used. If no ancestor nodes are common, -1 is returned. If a node is
+        compared with itself 0 is returned.
 
         @type  other: L{Synset}
         @param other: The Synset to which the shortest path will be found.
@@ -1284,7 +1292,8 @@ def lch_similarity(synset1, synset2, verbose=False):
     @return: A score denoting the similarity of the two L{Synset}s,
         normally greater than 0. -1 is returned if no connecting path
         could be found. If a L{Synset} is compared with itself, the
-        maximum score is returned, which varies depending on the taxonomy depth.
+        maximum score is returned, which varies depending on the taxonomy
+        depth.
     """
 
     if synset1.pos != synset2.pos:
@@ -1439,7 +1448,8 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     @param synset1: First input synset.
     @type  synset2: L{Synset}
     @param synset2: Second input synset.
-    @return: The ancestor synset common to both input synsets which is also the LCS.
+    @return: The ancestor synset common to both input synsets which is also the
+    LCS.
     """
     subsumer = None
     max_min_path_length = -1
@@ -1528,7 +1538,8 @@ def information_content(synset, ic):
     try:
         icpos = ic[synset.pos]
     except KeyError:
-        raise WordNetError('Information content file has no entries for part-of-speech: %s' % synset.pos)
+        msg = 'Information content file has no entries for part-of-speech: %s'
+        raise WordNetError(msg % synset.pos)
 
     return -math.log(icpos[synset.offset] / icpos[0])
 
@@ -1541,7 +1552,8 @@ def _get_pos(field):
     elif field[-1] == 'v':
         return VERB
     else:
-        raise ValueError, "Unidentified part of speech in WordNet Information Content file"
+        msg = "Unidentified part of speech in WordNet Information Content file"
+        raise ValueError(msg)
 
 
 ######################################################################
