@@ -279,7 +279,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
             num_toks = len(tokens)
             new_filepos = self._stream.tell()
             assert new_filepos > filepos, (
-                'block reader %s() should consume at least 1 byte' %
+                'block reader %s() should consume at least 1 byte (filepos=%d)' %
                 (self.read_block.__name__, filepos))
 
             # Update our cache.
