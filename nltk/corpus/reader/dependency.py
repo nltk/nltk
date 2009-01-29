@@ -52,13 +52,13 @@ class DependencyCorpusReader(CorpusReader):
         return concat([DependencyCorpusView(filename, False, True, True)
                                   for filename in self.abspaths(files)])
     
-    def dependency_sent_tree(self , lineNumber , files=None):
+    def dependency_sent_tree(self, lineNumber, files=None):
         sents=concat([DependencyCorpusView(filename, False, True, True)
                                   for filename in self.abspaths(files)])
-        dg=DependencyGraph().read(sents[lineNumber])
+        dg=DependencyGraph(sents[lineNumber])
         return dg.deptree()
 
-    def dependency_sent_showTree(self , lineNumber , files=None):
+    def dependency_sent_showTree(self, lineNumber, files=None):
         tree=self.dependency_sent_tree(lineNumber,files)
         tree.draw()
         
