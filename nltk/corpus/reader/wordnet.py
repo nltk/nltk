@@ -133,6 +133,11 @@ class WordNetCorpusReader(CorpusReader):
         """A cache so we don't have to reconstuct synsets
 
         Map from pos -> offset -> synset"""
+
+        self._max_depth = defaultdict(dict)
+        """A lookup for the maximum depth of each part of speech.  Useful for
+        the lch similarity metric.
+        """
         
         self._data_file_map = {}
         self._exception_map = {}
@@ -203,6 +208,19 @@ class WordNetCorpusReader(CorpusReader):
                 terms = line.split()
                 self._exception_map[pos][terms[0]] = terms[1:]
         self._exception_map[ADJ_SAT] = self._exception_map[ADJ]
+
+    def _compute_max_depth(self, pos):
+        """
+        Compute the max depth for the given part of speech.  This is
+        used by the lch similarity metric.
+        """
+        depth = 0
+        for ii in self.all_synsets(pos):
+            try:
+                depth = max(depth, ii.max_depth())
+            except RuntimeError:
+                print ii
+        self._max_depth[pos] = depth
 
     #////////////////////////////////////////////////////////////
     # Loading Lemmas
@@ -1257,10 +1275,15 @@ def lch_similarity(synset1, synset2, verbose=False):
         maximum score is returned, which varies depending on the taxonomy depth.
     """
 
-    taxonomy_depths = {NOUN: 19, VERB: 13}
-    if synset1.pos not in taxonomy_depths.keys():
-        raise TypeError, "Can only calculate similarity for nouns or verbs"
-    depth = taxonomy_depths[synset1.pos]
+    if synset1.pos != synset2.pos:
+        raise WordNetError('Computing the lch similarity requires ' + \
+                           '%s and %s to have the same part of speech.' % \
+                               (synset1, synset2))
+
+    if synset1.pos not in synset1._wordnet_corpus_reader._max_depth:
+        synset1._wordnet_corpus_reader._compute_max_depth(synset1.pos)
+
+    depth = synset1._wordnet_corpus_reader._max_depth[synset1.pos]
 
     distance = synset1.shortest_path_distance(synset2)
     if distance >= 0:
