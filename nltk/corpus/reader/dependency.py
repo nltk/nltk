@@ -13,14 +13,14 @@ from nltk.tokenize import *
 from util import *
 from api import *
 
-class DependencyCorpusReader(CorpusReader):
+class DependencyCorpusReader(SyntaxCorpusReader):
         
-    def __init__(self, root, files,
-                 sep='/', word_tokenizer=TabTokenizer(),
+    def __init__(self, root, files, encoding=None,
+                 word_tokenizer=TabTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block):
         
-        CorpusReader.__init__(self, root, files)
+        CorpusReader.__init__(self, root, files, encoding)
             
     #########################################################
 
@@ -48,20 +48,11 @@ class DependencyCorpusReader(CorpusReader):
             return concat([DependencyCorpusView(filename, True, True, False)
                                   for filename in self.abspaths(files)])
 
-    def dependency_sents(self, files=None):
-        return concat([DependencyCorpusView(filename, False, True, True)
-                                  for filename in self.abspaths(files)])
-    
-    def dependency_sent_tree(self, lineNumber, files=None):
+    def parsed_sents(self, files=None):
         sents=concat([DependencyCorpusView(filename, False, True, True)
                                   for filename in self.abspaths(files)])
-        dg=DependencyGraph(sents[lineNumber])
-        return dg.deptree()
+        return [DependencyGraph(sent) for sent in sents]
 
-    def dependency_sent_showTree(self, lineNumber, files=None):
-        tree=self.dependency_sent_tree(lineNumber,files)
-        tree.draw()
-        
 
 class DependencyCorpusView(StreamBackedCorpusView):
     _DOCSTART = '-DOCSTART- -DOCSTART- O\n' #dokumentu hasiera definitzen da
@@ -80,12 +71,21 @@ class DependencyCorpusView(StreamBackedCorpusView):
         # Strip off the docstart marker, if present.
         if sent.startswith(self._DOCSTART):
             sent = sent[len(self._DOCSTART):].lstrip()
-        if not self._dependencies:    #If it is necessary to show the dependences the line does not need any change
-            lines = [line.split('\t') for line in sent.split('\n')] #divide the line in 4 parts [word,category,dep_number,dep_type]
-            if self._tagged:
-                sent = [(word, tag) for (word, tag, dep_num, dep_type) in lines]
+        
+        # extract word and tag from any of the formats
+        if not self._dependencies:
+            lines = [line.split('\t') for line in sent.split('\n')]
+            if len(lines[0]) == 3 or len(lines[0]) == 4:
+                sent = [(line[0], line[1]) for line in lines]
+            elif len(lines[0]) == 10:
+                sent = [(line[1], line[4]) for line in lines]
             else:
-                sent = [word for (word, tag, dep_num, dep_type) in lines]
+                raise ValueError('Unexpected number of fields in dependency tree file')
+
+            # discard tags if they weren't requested
+            if not self._tagged:
+                sent = [word for (word, tag) in sent]
+                
         # Return the result.
         if self._group_by_sent:
             return [sent]
