@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Wordnet Stemmer
 #
-# Copyright (C) 2001-2008 NLTK Project
+# Copyright (C) 2001-2009 NLTK Project
 # Author: Oliver Steele <steele@osteele.com>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>

@@ -4,7 +4,7 @@ Authors: Steven Bird <sb@csse.unimelb.edu.au>
          Edward Loper <edloper@gradient.cis.upenn.edu>
          Ewan Klein <ewan@inf.ed.ac.uk>
 
-Copyright (C) 2001-2008 NLTK Project
+Copyright (C) 2001-2009 NLTK Project
 
 For license information, see LICENSE.txt
 

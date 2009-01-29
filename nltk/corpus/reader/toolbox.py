@@ -2,7 +2,7 @@
 
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2008 NLTK Project
+# Copyright (C) 2001-2009 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
 #         Steven Bird <sb@csse.unimelb.edu.au>

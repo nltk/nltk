@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Wordnet Interface: Dictionary classes
 #
-# Copyright (C) 2001-2008 NLTK Project
+# Copyright (C) 2001-2009 NLTK Project
 # Author: Oliver Steele <steele@osteele.com>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
 #         Steven Bird <sb@csse.unimelb.edu.au>
