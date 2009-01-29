@@ -190,7 +190,7 @@ class DependencyGraph(object):
             if w != ',': return w
         return w
 
-    def _deptree(self, i):
+    def _tree(self, i):
         """
         Recursive function for turning dependency graphs into
         NLTK trees.
@@ -207,10 +207,10 @@ class DependencyGraph(object):
         if len(deps) == 0:
             return word
         else:
-            return Tree(word, [self._deptree(j) for j in deps])
+            return Tree(word, [self._tree(j) for j in deps])
 
 
-    def deptree(self):
+    def tree(self):
         """
         Starting with the C{root} node, build a dependency tree using the NLTK 
         L{Tree} constructor. Dependency labels are omitted.
@@ -218,7 +218,7 @@ class DependencyGraph(object):
         node = self.root
         word = node['word']
         deps = node['deps']
-        return Tree(word, [self._deptree(i) for i in deps])
+        return Tree(word, [self._tree(i) for i in deps])
 
     def _hd(self, i):
         try:
@@ -268,6 +268,14 @@ class DependencyGraph(object):
         return [] 
                 
     def to_conll(self, style):
+        """
+        The dependency graph in CoNLL format.
+        
+        @param style: the style to use for the format (3, 4, 10 columns)
+        @type style: C{int}
+        @rtype: C{str}
+        """
+        
         lines = []
         for i, node in enumerate(self.nodelist[1:]):
             word, tag, head, rel = node['word'], node['tag'], node['head'], node['rel']
@@ -331,7 +339,7 @@ Nov.    NNP     9       VMOD
 29      CD      16      NMOD
 .       .       9       VMOD
 """)
-    tree = dg.deptree()
+    tree = dg.tree()
     print tree.pprint()
     if nx:
         #currently doesn't work
@@ -348,7 +356,7 @@ Nov.    NNP     9       VMOD
         NX.draw_networkx_labels(g, pos, dg.nx_labels)
         P.xticks([])
         P.yticks([])
-        P.savefig('deptree.png')
+        P.savefig('tree.png')
         P.show()
 
 
@@ -358,7 +366,7 @@ def conll_demo():
     a CoNLL format dependency tree.
     """
     dg = DependencyGraph(conll_data1)
-    tree = dg.deptree()
+    tree = dg.tree()
     print tree.pprint()
     print dg
     print dg.to_conll(4)
@@ -368,7 +376,7 @@ def conll_file_demo():
     graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]
     for graph in graphs:
-        tree = graph.deptree()
+        tree = graph.tree()
         print '\n' + tree.pprint()
 
 def cycle_finding_demo():
