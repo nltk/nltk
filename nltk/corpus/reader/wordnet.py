@@ -488,9 +488,18 @@ class WordNetCorpusReader(CorpusReader):
             
             try:
                 # generate synsets for each line in the POS file
-                for line in data_file:
+                offset = data_file.tell()
+                line = data_file.readline()
+                while line != '':
                     if not line[0].isspace():
-                        synset = self._synset_from_pos_and_line(pos_tag, line)
+                        if self._synset_offset_cache[pos_tag].has_key(offset):
+                            # See if the synset is cached
+                            synset = self._synset_offset_cache[pos][offset]
+                        else: 
+                            # Otherwise, parse the line
+                            synset = self._synset_from_pos_and_line(pos_tag, line)
+                            self._synset_offset_cache[pos_tag][offset] = synset
+
                         # adjective satellites are in the same file as adjectives
                         # so only yield the synset if it's actually a satellite
                         if pos_tag == ADJ_SAT:
@@ -501,6 +510,8 @@ class WordNetCorpusReader(CorpusReader):
                         # that adjectives also include adjective satellites)
                         else:
                             yield synset
+                    offset = data_file.tell()
+                    line = data_file.readline()
      
             # close the extra file handle we opened
             finally:
