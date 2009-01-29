@@ -11,6 +11,7 @@ from urllib import quote_plus, unquote_plus
 import itertools as it
 import cPickle
 import base64
+import copy
 
 from collections import defaultdict
 from nltk.corpus import wordnet
@@ -396,7 +397,6 @@ def _collect_one_synset(word, synset, synset_relations):
     @return: The HTML string built for this synset
     @rtype: str
     '''
-    u_c = uniq_cntr()
     if isinstance(synset, tuple): # It's a word
         raise NotImplementedError("word not supported by _collect_one_synset")
 #        form_str,(synset,oppo,forms) = s_or_w
@@ -412,9 +412,8 @@ def _collect_one_synset(word, synset, synset_relations):
     pos_tuple = _pos_match((synset.pos, None, None))
     assert pos_tuple != None, "pos_tuple is null: synset.pos: %s" % synset.pos
     descr = pos_tuple[2]
-    new_synset_relations = synset_relations.copy()
-    new_synset_relations[synset.name] = set()
-    ref = Reference(word, new_synset_relations)
+    ref = copy.deepcopy(Reference(word, synset_relations))
+    ref.toggle_synset(synset)
     synset_label = typ + ";"
     if synset.name in synset_relations.keys():
         synset_label = _bold(synset_label)
@@ -486,11 +485,13 @@ def _synset_relations(word, synset, synset_relations):
 
     if not synset.name in synset_relations.keys():
         return ""
+    ref = Reference(word, synset_relations)
     
     def make_synset_html((db_name, disp_names, rels)):
-        return ' / '.join("<i>%s</i>" % r for r in disp_names) + '\n'
-#            (_rel_ref(word, synset_keys, r) for r in disp_names)) \
-#            + '\n'
+        return ' / '.join('<i>%s</i>' % make_lookup_link(
+                copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
+                r)
+            for r in disp_names) + '\n'
 
     html = '<ul>' + \
         '\n'.join(("<li>%s</li>" % make_synset_html(x) for x 
@@ -786,6 +787,33 @@ class Reference(object):
         # to represent the complete object.
         string = cPickle.dumps((self.word, self.synset_relations), -1)
         return base64.urlsafe_b64encode(string)
+
+    def toggle_synset_relation(self, synset, relation):
+        """
+        Toggle the display of the relations for the given synset and
+        relation type.
+
+        This function will throw a KeyError if the synset is currently
+        not being displayed.
+        """
+        if relation in self.synset_relations[synset.name]:
+            self.synset_relations[synset.name].remove(relation)
+        else:
+            self.synset_relations[synset.name].add(relation)
+
+        return self
+
+    def toggle_synset(self, synset):
+        """
+        Toggle displaying of the relation types for the given synset
+        """
+        if synset.name in self.synset_relations.keys():
+            del self.synset_relations[synset.name]
+        else:
+            self.synset_relations[synset.name] = set()
+
+        return self
+
 
 def decode_reference(string):
     """
