@@ -7,10 +7,6 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import collections as _collections
-import glob as _glob
-import os as _os
-import warnings as _warnings
 import math
 import re
 from itertools import islice, chain
@@ -518,7 +514,6 @@ class WordNetCorpusReader(CorpusReader):
             finally:
                 data_file.close()
 
-
     #////////////////////////////////////////////////////////////
     # Misc
     #////////////////////////////////////////////////////////////
@@ -691,6 +686,7 @@ class WordNetICCorpusReader(CorpusReader):
     """
     A corpus reader for the WordNet information content corpus.
     """
+
     def __init__(self, root, files):
         CorpusReader.__init__(self, root, files)
 
@@ -940,6 +936,7 @@ class Synset(_WordNetObject):
     derivationally_related_forms
     pertainyms
     """
+
     def __init__(self, wordnet_corpus_reader):
         self._wordnet_corpus_reader = wordnet_corpus_reader
         # All of these attributes get initialized by
@@ -1148,7 +1145,6 @@ class Synset(_WordNetObject):
 
         return path_distance
 
-
     def tree(self, rel, depth=-1, cut_mark=None):
         """
         >>> dog = Synset('dog.n.01')
@@ -1237,7 +1233,6 @@ class Synset(_WordNetObject):
         return [get_synset(pos, offset) for pos, offset in pointer_tuples]
 
 
-
 ######################################################################
 # Similarity metrics
 ######################################################################
@@ -1274,6 +1269,7 @@ def path_similarity(synset1, synset2, verbose=False):
     else:
         return -1
 
+
 def lch_similarity(synset1, synset2, verbose=False):
     """
     Leacock Chodorow Similarity:
@@ -1306,6 +1302,7 @@ def lch_similarity(synset1, synset2, verbose=False):
         return -math.log((distance + 1) / (2.0 * depth))
     else:
         return -1
+
 
 def wup_similarity(synset1, synset2, verbose=False):
     """
@@ -1354,6 +1351,7 @@ def wup_similarity(synset1, synset2, verbose=False):
     len2 = synset2.shortest_path_distance(subsumer) + depth
     return (2.0 * depth) / (len1 + len2)
 
+
 def res_similarity(synset1, synset2, ic, verbose=False):
     """
     Resnik Similarity:
@@ -1375,6 +1373,7 @@ def res_similarity(synset1, synset2, ic, verbose=False):
 
     ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
     return lcs_ic
+
 
 def jcn_similarity(synset1, synset2, ic, verbose=False):
     """
@@ -1406,6 +1405,7 @@ def jcn_similarity(synset1, synset2, ic, verbose=False):
 
     return 1 / (ic1 + ic2 - 2 * lcs_ic)
 
+
 def lin_similarity(synset1, synset2, ic, verbose=False):
     """
     Lin Similarity:
@@ -1427,6 +1427,7 @@ def lin_similarity(synset1, synset2, ic, verbose=False):
 
     ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
     return (2.0 * lcs_ic) / (ic1 + ic2)
+
 
 def _lcs_by_depth(synset1, synset2, verbose=False):
     """
@@ -1484,6 +1485,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
         print "> LCS Subsumer by depth:", subsumer
     return subsumer
 
+
 def _lcs_ic(synset1, synset2, ic, verbose=False):
     """
     Get the information content of the least common subsumer that has
@@ -1519,6 +1521,7 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
 
     return ic1, ic2, subsumer_ic
 
+
 # Utility functions
 
 def information_content(synset, ic):
@@ -1539,6 +1542,7 @@ def _get_pos(field):
         return VERB
     else:
         raise ValueError, "Unidentified part of speech in WordNet Information Content file"
+
 
 ######################################################################
 # Demo
