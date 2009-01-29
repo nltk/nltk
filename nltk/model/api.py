@@ -15,7 +15,7 @@ class ModelI(object):
         raise NotImplementedError()
 
     def logprob(self, word, context):
-        '''Evaluate the log probability of this word in this context.'''
+        '''Evaluate the (negative) log probability of this word in this context.'''
         raise NotImplementedError()
 
     def choose_random_word(self, context):

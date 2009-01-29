@@ -7,6 +7,7 @@
 
 import random
 from itertools import chain
+from math import log
 
 from nltk.probability import ConditionalProbDist, ConditionalFreqDist, MLEProbDist
 from nltk.util import ingrams
@@ -52,7 +53,7 @@ class NgramModel(ModelI):
         self._model = ConditionalProbDist(cfd, estimator, False, len(cfd))
 
         # recursively construct the lower-order models
-        if n>1:
+        if n > 1:
             self._backoff = NgramModel(n-1, train, estimator)
 
     # Katz Backoff probability
@@ -76,6 +77,11 @@ class NgramModel(ModelI):
         else:
             return 1
 
+    def logprob(self, word, context):
+        '''Evaluate the (negative) log probability of this word in this context.'''
+        
+        return -log(self.prob(word, context)) 
+        
     # NB, this will always start with same word since model
     # is trained on a single text
     def generate(self, num_words, context=()):
@@ -101,9 +107,9 @@ class NgramModel(ModelI):
 
         e = 0.0
         for i in range(self._n - 1, len(text)):
-            context = tuple(text[i - self._n + 1, i - 1])
+            context = tuple(text[i - self._n + 1 : i - 1])
             token = text[i]
-            e -= self.logprob(token, context)
+            e += self.logprob(token, context)
         return e
 
     def __contains__(self, item):
