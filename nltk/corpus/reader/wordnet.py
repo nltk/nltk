@@ -16,8 +16,9 @@ import re
 from itertools import islice, chain
 
 from nltk import defaultdict
-from nltk.util import binary_search_file as _binary_search_file
 from nltk.corpus.reader import CorpusReader
+from nltk.util import binary_search_file as _binary_search_file
+from nltk.probability import FreqDist
 
 ######################################################################
 ## Table of Contents
@@ -586,6 +587,62 @@ class WordNetCorpusReader(CorpusReader):
         # look for substitutions
         for f in try_substitutions(form):
             yield f + suffix
+
+    #////////////////////////////////////////////////////////////
+    # Create information content from corpus
+    #////////////////////////////////////////////////////////////
+    def ic(self, corpus, weight_senses_equally = False, smoothing = 1.0):
+        """
+        Creates an information content lookup dictionary from a corpus.  
+
+        @type corpus: L{CorpusReader} 
+        @param corpus: The corpus from which we create an information
+        content dictionary.
+        @type weight_senses_equally: L{bool}
+        @param weight_senses_equally: If this is True, gives all
+        possible senses equal weight rather than dividing by the
+        number of possible senses.  (If a word has 3 synses, each
+        sense gets 0.3333 per appearance when this is False, 1.0 when
+        it is true.)
+        @param smoothing: How much do we smooth synset counts (default is 1.0)
+        @type smoothing: L{float}
+        @return: An information content dictionary
+        """
+        counts = FreqDist()
+        for ww in corpus.words():
+            counts.inc(ww)
+
+        ic = {}
+        for pp in POS_LIST:
+            ic[pp] = defaultdict(float)
+        
+        # Initialize the counts with the smoothing value
+        if smoothing > 0.0:
+            for ss in all_synsets():
+                pos = ss.pos
+                if pos == ADJ_SAT: pos = ADJ
+                ic[pos][ss.offset] = smoothing
+
+        for ww in counts:
+            possible_synsets = self.synsets(ww)
+            if len(possible_synsets) == 0:
+                continue
+
+            # Distribute weight among possible synsets
+            weight = float(counts[ww])
+            if not weight_senses_equally:
+                weight /= float(len(possible_synsets))
+
+            for ss in possible_synsets:
+                pos = ss.pos
+                if pos == ADJ_SAT: pos = ADJ
+                for level in ss._iter_hypernym_lists():
+                    for hh in level:
+                        ic[pos][hh.offset] += weight
+                # Add the weight to the root
+                ic[pos][0] += weight
+        return ic
+
 
 ######################################################################
 ## WordNet Information Content Corpus Reader

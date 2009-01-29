@@ -286,14 +286,25 @@ Load an information content file from the wordnet_ic corpus.
     >>> brown_ic = wordnet_ic.ic('ic-brown.dat')
     >>> semcor_ic = wordnet_ic.ic('ic-semcor.dat')
 
+Or you can create an information content dictionary from a corpus (or
+anything that has a words() method).
+
+   >>> from nltk.corpus import genesis
+   >>> genesis_ic = wn.ic(genesis, False, 0.0)
+
 ``synset1.res_similarity(synset2, ic):``
 Resnik Similarity:
 Return a score denoting how similar two word senses are, based on the
 Information Content (IC) of the Least Common Subsumer (most specific
-ancestor node).
+ancestor node).  Note that for any similarity measure that uses
+information content, the result is dependent on the corpus used to
+generate the information content and the specifics of how the
+information content was created.
 
     >>> dog.res_similarity(cat, brown_ic)
     7.9116665090365768
+    >>> dog.res_similarity(cat, genesis_ic)
+    8.3222633693905816
 
 ``synset1.jcn_similarity(synset2, ic):``
 Jiang-Conrath Similarity
@@ -304,6 +315,8 @@ given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
 
     >>> dog.jcn_similarity(cat, brown_ic)
     0.44977552855167391
+    >>> dog.jcn_similarity(cat, genesis_ic)
+    0.40657997045227057
 
 ``synset1.lin_similarity(synset2, ic):``
 Lin Similarity:
