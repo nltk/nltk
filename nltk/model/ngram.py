@@ -80,7 +80,7 @@ class NgramModel(ModelI):
     def logprob(self, word, context):
         '''Evaluate the (negative) log probability of this word in this context.'''
         
-        return -log(self.prob(word, context)) 
+        return -log(self.prob(word, context), 2) 
         
     # NB, this will always start with same word since model
     # is trained on a single text

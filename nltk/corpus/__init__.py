@@ -97,6 +97,10 @@ conll2000 = LazyCorpusLoader(
 conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', 
     ('LOC', 'PER', 'ORG', 'MISC'))
+conll2007 = LazyCorpusLoader(
+    'conll2007', DependencyCorpusReader, '.*\.(test|train).*') 
+dependency_treebank = LazyCorpusLoader(
+    'dependency_treebank', DependencyCorpusReader, '.*\.dp') 
 floresta = LazyCorpusLoader(
     'floresta', BracketParseCorpusReader, r'(?!\.).*\.ptb', '#',
     tag_mapping_function=simplify_tag)
