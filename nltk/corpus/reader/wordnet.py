@@ -93,7 +93,7 @@ class WordNetCorpusReader(CorpusReader):
     """
     A corpus reader used to access wordnet or its variants.
     """
-    
+
     _ENCODING = None # what encoding should we be using, if any?
 
     #{ Part-of-speech constants
@@ -111,7 +111,7 @@ class WordNetCorpusReader(CorpusReader):
 
     #: A list of file identifiers for all the files used by this
     #: corpus reader.
-    _FILES = ('cntlist.rev', 'lexnames', 'index.sense', 
+    _FILES = ('cntlist.rev', 'lexnames', 'index.sense',
               'index.adj', 'index.adv', 'index.noun', 'index.verb',
               'data.adj', 'data.adv', 'data.noun', 'data.verb',
               'adj.exc', 'adv.exc', 'noun.exc', 'verb.exc', )
@@ -125,10 +125,10 @@ class WordNetCorpusReader(CorpusReader):
                               encoding=self._ENCODING)
 
         self._lemma_pos_offset_map = defaultdict(dict)
-        """A index that provides the file offset 
-        
+        """A index that provides the file offset
+
         Map from lemma -> pos -> synset_index -> offset"""
-        
+
         self._synset_offset_cache = defaultdict(dict)
         """A cache so we don't have to reconstuct synsets
 
@@ -138,7 +138,7 @@ class WordNetCorpusReader(CorpusReader):
         """A lookup for the maximum depth of each part of speech.  Useful for
         the lch similarity metric.
         """
-        
+
         self._data_file_map = {}
         self._exception_map = {}
         self._lexnames = []
@@ -164,37 +164,37 @@ class WordNetCorpusReader(CorpusReader):
             for i, line in enumerate(self.open('index.%s' % suffix)):
                 if line.startswith(' '):
                     continue
-    
+
                 next = iter(line.split()).next
                 try:
-    
+
                     # get the lemma and part-of-speech
                     lemma = next()
                     pos = next()
-    
+
                     # get the number of synsets for this lemma
                     n_synsets = int(next())
                     assert n_synsets > 0
-    
+
                     # get the pointer symbols for all synsets of this lemma
                     n_pointers = int(next())
                     _ = [next() for _ in xrange(n_pointers)]
-    
+
                     # same as number of synsets
                     n_senses = int(next())
                     assert n_synsets == n_senses
-    
+
                     # get number of senses ranked according to frequency
                     _ = int(next())
-    
+
                     # get synset offsets
                     synset_offsets = [int(next()) for _ in xrange(n_synsets)]
-    
+
                 # raise more informative error with file name and line number
                 except (AssertionError, ValueError), e:
                     tup = ('index.%s' % suffix), (i + 1), e
                     raise WordNetError('file %s, line %i: %s' % tup)
-    
+
                 # map lemmas and parts of speech to synsets
                 self._lemma_pos_offset_map[lemma][pos] = synset_offsets
                 if pos == ADJ:
@@ -225,7 +225,7 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     # Loading Lemmas
     #////////////////////////////////////////////////////////////
-                
+
     def lemma(self, name):
         synset_name, lemma_name = name.rsplit('.', 1)
         synset = self.synset(synset_name)
@@ -252,22 +252,22 @@ class WordNetCorpusReader(CorpusReader):
             raise WordNetError("No synset found for key %r" % key)
         offset = int(synset_line.split()[1])
         synset = self._synset_from_pos_and_offset(pos, offset)
-        
+
         # return the corresponding lemma
         for lemma in synset.lemmas:
             if lemma.key == key:
                 return lemma
         raise WordNetError("No lemma found for for key %r" % key)
-        
+
     #////////////////////////////////////////////////////////////
     # Loading Synsets
     #////////////////////////////////////////////////////////////
-                
+
     def synset(self, name):
         # split name into lemma, part of speech and synset number
         lemma, pos, synset_index_str = name.lower().split('.')
         synset_index = int(synset_index_str) - 1
-        
+
         # get the offset for this synset
         try:
             offset = self._lemma_pos_offset_map[lemma][pos][synset_index]
@@ -295,18 +295,18 @@ class WordNetCorpusReader(CorpusReader):
 
         # Return the synset object.
         return synset
-        
+
     def _data_file(self, pos):
         """
         Return an open file pointer for the data file for the given
-        part of speech.  
+        part of speech.
         """
         if pos == ADJ_SAT: pos = ADJ
         if self._data_file_map.get(pos) is None:
             filename = 'data.%s' % self._FILEMAP[pos]
             self._data_file_map[pos] = self.open(filename)
         return self._data_file_map[pos]
-            
+
     def _synset_from_pos_and_offset(self, pos, offset):
         # Check to see if the synset is in the cache
         if self._synset_offset_cache[pos].has_key(offset):
@@ -427,20 +427,20 @@ class WordNetCorpusReader(CorpusReader):
             tup = (lemma.name, WordNetCorpusReader._pos_numbers[synset.pos],
                    lemma._lexname_index, lemma._lex_id, head_name, head_id)
             lemma.key = ('%s%%%d:%02d:%02d:%s:%s' % tup).lower()
- 
+
         # the canonical name is based on the first lemma
         lemma_name = synset.lemmas[0].name.lower()
         offsets = self._lemma_pos_offset_map[lemma_name][synset.pos]
         sense_index = offsets.index(synset.offset)
         tup = lemma_name, synset.pos, sense_index + 1
         synset.name = '%s.%s.%02i' % tup
-        
+
         return synset
-        
+
     #////////////////////////////////////////////////////////////
     # Retrieve synsets and lemmas.
     #////////////////////////////////////////////////////////////
-                
+
     def synsets(self, lemma, pos=None):
         """Load all synsets with a given lemma and part of speech tag.
         If no pos is specified, all synsets for all parts of speech
@@ -449,14 +449,14 @@ class WordNetCorpusReader(CorpusReader):
         lemma = lemma.lower()
         get_synset = self._synset_from_pos_and_offset
         index = self._lemma_pos_offset_map
-    
+
         if pos is None:
             pos = POS_LIST
-    
+
         return [get_synset(p, offset)
                 for p in pos
                 for offset in index[self.morphy(lemma,p)].get(p, [])]
-    
+
     def lemmas(self, lemma, pos=None):
         return [lemma_obj
                 for synset in self.synsets(lemma, pos)
@@ -475,7 +475,7 @@ class WordNetCorpusReader(CorpusReader):
             pos_tags = self._FILEMAP.keys()
         else:
             pos_tags = [pos]
-    
+
         # generate all synsets for each part of speech
         for pos_tag in pos_tags:
             # Open the file for reading.  Note that we can not re-use
@@ -485,7 +485,7 @@ class WordNetCorpusReader(CorpusReader):
             if pos_tag == ADJ_SAT: pos_tag = ADJ
             filename = 'data.%s' % self._FILEMAP[pos_tag]
             data_file = self.open(filename)
-            
+
             try:
                 # generate synsets for each line in the POS file
                 offset = data_file.tell()
@@ -495,7 +495,7 @@ class WordNetCorpusReader(CorpusReader):
                         if self._synset_offset_cache[pos_tag].has_key(offset):
                             # See if the synset is cached
                             synset = self._synset_offset_cache[pos][offset]
-                        else: 
+                        else:
                             # Otherwise, parse the line
                             synset = self._synset_from_pos_and_line(pos_tag, line)
                             self._synset_offset_cache[pos_tag][offset] = synset
@@ -505,18 +505,18 @@ class WordNetCorpusReader(CorpusReader):
                         if pos_tag == ADJ_SAT:
                             if synset.pos == pos_tag:
                                 yield synset
-    
+
                         # for all other POS tags, yield all synsets (this means
                         # that adjectives also include adjective satellites)
                         else:
                             yield synset
                     offset = data_file.tell()
                     line = data_file.readline()
-     
+
             # close the extra file handle we opened
             finally:
                 data_file.close()
-    
+
 
     #////////////////////////////////////////////////////////////
     # Misc
@@ -539,7 +539,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def lch_similarity(self, synset1, synset2, verbose=False):
         return synset1.lch_similarity(synset2, verbose)
-        
+
     def wup_similarity(self, synset1, synset2, verbose=False):
         return synset1.wup_similarity(synset2, verbose)
 
@@ -548,10 +548,10 @@ class WordNetCorpusReader(CorpusReader):
 
     def jcn_similarity(self, synset1, synset2, ic, verbose=False):
         return synset1.jcn_similarity(synset2, ic, verbose)
-    
+
     def lin_similarity(self, synset1, synset2, ic, verbose=False):
         return synset1.lin_similarity(synset2, ic, verbose)
-    
+
     #////////////////////////////////////////////////////////////
     # Morphy
     #////////////////////////////////////////////////////////////
@@ -563,7 +563,7 @@ class WordNetCorpusReader(CorpusReader):
         part of speech, by checking WordNet's list of exceptional
         forms, and by recursively stripping affixes for this part of
         speech until a form in WordNet is found.
-        
+
         >>> morphy('dogs')
         'dog'
         >>> morphy('churches')
@@ -577,14 +577,14 @@ class WordNetCorpusReader(CorpusReader):
         'book'
         >>> morphy('book', wn.ADJ)
         """
-        
+
         if pos is None:
             analyses = chain(a for p in POS_LIST for a in self._morphy(form, p))
         else:
             analyses = self._morphy(form, pos)
-        
+
         # get the first one we find
-        first = list(islice(analyses, 1)) 
+        first = list(islice(analyses, 1))
         if len(first) == 1:
             return first[0]
         else:
@@ -600,9 +600,9 @@ class WordNetCorpusReader(CorpusReader):
         ADV:  []}
 
     def _morphy(self, form, pos):
-        exceptions = self._exception_map[pos] 
+        exceptions = self._exception_map[pos]
         substitutions = self.MORPHOLOGICAL_SUBSTITUTIONS[pos]
-    
+
         def try_substitutions(form):
             if form in self._lemma_pos_offset_map and \
                     pos in self._lemma_pos_offset_map[form]:
@@ -611,7 +611,7 @@ class WordNetCorpusReader(CorpusReader):
                 if form.endswith(old): # recurse
                     for f in try_substitutions(form[:-len(old)] + new):
                         yield f
-                
+
         # check if the form is exceptional
         if form in exceptions:
             for f in exceptions[form]:
@@ -621,7 +621,7 @@ class WordNetCorpusReader(CorpusReader):
             form = form[:-3]
         else:
             suffix = ''
-    
+
         # look for substitutions
         for f in try_substitutions(form):
             yield f + suffix
@@ -631,9 +631,9 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     def ic(self, corpus, weight_senses_equally = False, smoothing = 1.0):
         """
-        Creates an information content lookup dictionary from a corpus.  
+        Creates an information content lookup dictionary from a corpus.
 
-        @type corpus: L{CorpusReader} 
+        @type corpus: L{CorpusReader}
         @param corpus: The corpus from which we create an information
         content dictionary.
         @type weight_senses_equally: L{bool}
@@ -653,7 +653,7 @@ class WordNetCorpusReader(CorpusReader):
         ic = {}
         for pp in POS_LIST:
             ic[pp] = defaultdict(float)
-        
+
         # Initialize the counts with the smoothing value
         if smoothing > 0.0:
             for ss in all_synsets():
@@ -703,7 +703,7 @@ class WordNetICCorpusReader(CorpusReader):
         and return a dictionary.  This dictionary has just two keys,
         NOUN and VERB, whose values are dictionaries that map from
         synsets to information content values.
-    
+
         @type  icfile: L{str}
         @param icfile: The name of the wordnet_ic file (e.g. "ic-brown.dat")
         @return: An information content dictionary
@@ -734,7 +734,7 @@ class WordNetError(Exception):
 
 class _WordNetObject(object):
     """A common base class for lemmas and synsets."""
-    
+
     def antonyms(self):
         return self._related('!')
 
@@ -805,7 +805,7 @@ class Lemma(_WordNetObject):
     """
     The lexical entry for a single morphological form of a
     sense-disambiguated word.
-    
+
     Create a Lemma from a "<word>.<pos>.<number>.<lemma>" string where:
     <word> is the morphological stem identifying the synset
     <pos> is one of the module attributes ADJ, ADJ_SAT, ADV, NOUN or VERB
@@ -864,7 +864,7 @@ class Lemma(_WordNetObject):
         self.frame_ids = []
         self._lexname_index = lexname_index
         self._lex_id = lex_id
-        
+
         self.key = None # gets set later.
 
     def __repr__(self):
@@ -939,7 +939,7 @@ class Synset(_WordNetObject):
         self._wordnet_corpus_reader = wordnet_corpus_reader
         # All of these attributes get initialized by
         # WordNetCorpusReader._synset_from_pos_and_line()
-        
+
         self.pos = None
         self.offset = None
         self.name = None
@@ -956,7 +956,7 @@ class Synset(_WordNetObject):
 
     def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
-        
+
         result = []
         seen = set()
         todo = [self]
@@ -1010,7 +1010,7 @@ class Synset(_WordNetObject):
     def closure(self, rel, depth=-1):
         """Return the transitive closure of source under the rel
         relationship, breadth-first
-    
+
         >>> dog = Synset('dog.n.01')
         >>> hyp = lambda: s:s.hypernyms()
         >>> dog.closure(hyp)
@@ -1059,7 +1059,7 @@ class Synset(_WordNetObject):
                            for other_synsets in other._iter_hypernym_lists()
                            for other_synset in other_synsets)
         return list(self_synsets.intersection(other_synsets))
-    
+
     def lowest_common_hypernyms(self, other):
         """Get the lowest synset that both synsets have as a hypernym."""
 
@@ -1071,7 +1071,7 @@ class Synset(_WordNetObject):
         synsets.intersection_update(others)
 
         try:
-            max_depth = max(s.min_depth() for s in synsets) 
+            max_depth = max(s.min_depth() for s in synsets)
             return [s for s in synsets if s.min_depth() == max_depth]
         except ValueError:
             return []
@@ -1130,7 +1130,7 @@ class Synset(_WordNetObject):
                         d[key] = value
                 else:
                     d[key] = value
-        
+
         # For each ancestor synset common to both subject synsets, find the
         # connecting path length. Return the shortest of these.
 
@@ -1146,7 +1146,7 @@ class Synset(_WordNetObject):
 
     def tree(self, rel, depth=-1, cut_mark=None):
         """
-        >>> dog = Synset('dog.n.01')        
+        >>> dog = Synset('dog.n.01')
         >>> hyp = lambda s:s.hypernyms()
         >>> from pprint import pprint
         >>> pprint(dog.tree(hyp))
@@ -1173,7 +1173,7 @@ class Synset(_WordNetObject):
                      [Synset('entity.n.01')]]]]]]]]]]]]]]
         """
 
-        tree = [self]        
+        tree = [self]
         if depth != 0:
             tree += [x.tree(rel, depth-1, cut_mark) for x in rel(self)]
         elif cut_mark:
@@ -1181,7 +1181,7 @@ class Synset(_WordNetObject):
         return tree
 
     # interface to similarity methods
-     
+
     def path_similarity(self, other, verbose=False):
         path_similarity.__doc__
         return path_similarity(self, other, verbose)
@@ -1189,7 +1189,7 @@ class Synset(_WordNetObject):
     def lch_similarity(self, other, verbose=False):
         lch_similarity.__doc__
         return lch_similarity(self, other, verbose)
-        
+
     def wup_similarity(self, other, verbose=False):
         wup_similarity.__doc__
         return wup_similarity(self, other, verbose)
@@ -1201,7 +1201,7 @@ class Synset(_WordNetObject):
     def jcn_similarity(self, other, ic, verbose=False):
         jcn_similarity.__doc__
         return jcn_similarity(self, other, ic, verbose)
-    
+
     def lin_similarity(self, other, ic, verbose=False):
         lin_similarity.__doc__
         return lin_similarity(self, other, ic, verbose)
@@ -1333,7 +1333,7 @@ def wup_similarity(synset1, synset2, verbose=False):
         return -1
 
     subsumer = subsumers[0]
-    
+
     # Get the longest path from the LCS to the root,
     # including two corrections:
     # - add one because the calculations include both the start and end nodes
@@ -1391,7 +1391,7 @@ def jcn_similarity(synset1, synset2, ic, verbose=False):
 
     if synset1 == synset2:
         return _INF
-    
+
     ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
 
     # If either of the input synsets are the root synset, or have a
@@ -1439,7 +1439,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     max_min_path_length = -1
 
     subsumers = synset1.common_hypernyms(synset2)
-    
+
     if verbose:
         print "> Subsumers1:", subsumers
 
@@ -1453,7 +1453,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
                 eliminated.add(s2)
     if verbose:
         print "> Eliminated:", eliminated
-    
+
     subsumers = [s for s in subsumers if s not in eliminated]
 
     if verbose:
@@ -1511,7 +1511,7 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
 
     if verbose:
         print "> LCS Subsumer by content:", subsumer_ic
-    
+
     return ic1, ic2, subsumer_ic
 
 # Utility functions
@@ -1524,7 +1524,7 @@ def information_content(synset, ic):
 
     return -math.log(icpos[synset.offset] / icpos[0])
 
- 
+
 # get the part of speech (NOUN or VERB) from the information content record
 # (each identifier has a 'n' or 'v' suffix)
 def _get_pos(field):
@@ -1566,7 +1566,7 @@ def demo():
 
     print zap_n_synsets
     print zap_v_synsets
-    
+
     print "Navigations:"
     print S('travel.v.01').hypernyms()
     print S('travel.v.02').hypernyms()
@@ -1609,7 +1609,7 @@ def demo():
     print S('fall.v.12').root_hypernyms()
 
     print S('person.n.01').lowest_common_hypernyms(S('dog.n.01'))
-    
+
     print S('dog.n.01').path_similarity(S('cat.n.01'))
     print S('dog.n.01').lch_similarity(S('cat.n.01'))
     print S('dog.n.01').wup_similarity(S('cat.n.01'))
@@ -1618,7 +1618,7 @@ def demo():
                                  '.*\.dat')
     ic = wnic.ic('ic-brown.dat')
     print S('dog.n.01').jcn_similarity(S('cat.n.01'), ic)
-    
+
     ic = wnic.ic('ic-semcor.dat')
     print S('dog.n.01').lin_similarity(S('cat.n.01'), ic)
 
