@@ -2,9 +2,6 @@
 WordNet Interface
 =================
 
-The WordNet interface is new in NLTK 0.9.6.  To help with transition, information about the older
-pywordnet-based version is retained here.
-
 WordNet is now just another NLTK corpus reader, and can be imported like this:
 
     >>> from nltk.corpus import wordnet as wn
@@ -38,34 +35,6 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
     >>> wn.lemma('dog.n.01.dog').synset
     Synset('dog.n.01')
 
-Original API
-------------
-
-A `Word` is an index into the database. More specifically, a list of
-the Senses of the supplied word string. These senses can be accessed
-via index notation ``word[n]`` or via the ``word.getSenses()`` method.
-
-    >>> from nltk.wordnet import *
-    
-    >>> N['dog']
-    dog (noun)
-    >>> N.word('dog')
-    dog (noun)
-    >>> N['dog'].pos
-    'noun'
-    >>> N['dog'].form
-    'dog'
-    >>> N['dog'].taggedSenseCount
-    1
-    >>> N['dog'].synsets()
-    [{noun: dog, domestic_dog, Canis_familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot_dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
-    >>> N['dog'].isTagged()
-    True
-    >>> str(N['dog'])
-    'dog (noun)'
-
-
-
 
 -------
 Synsets
@@ -98,57 +67,6 @@ Note that some relations are defined by WordNet only over Lemmas:
 
 The relations that are currently defined in this way are `antonyms`,
 `derivationally_related_forms` and `pertainyms`.
-
-Original API
-------------
-
-Senses can be retrieved via
-synset.senses() or through the index notations synset[0],
-synset[string], or synset[word]. Synsets are related to other
-synsets, and we can get a dictionary of relations using the
-relations() function.
-
-    >>> N['dog'][0]
-    {noun: dog, domestic_dog, Canis_familiaris}
-
-    >>> N['dog'][0].relations()
-    {'hypernym': [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}], 'part holonym': [{noun: flag}], 'member meronym': [{noun: Canis, genus_Canis}, {noun: pack}], 'hyponym': [{noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}, {noun: cur, mongrel, mutt}, {noun: lapdog}, {noun: toy_dog, toy}, {noun: hunting_dog}, {noun: working_dog}, {noun: dalmatian, coach_dog, carriage_dog}, {noun: basenji}, {noun: pug, pug-dog}, {noun: Leonberg}, {noun: Newfoundland, Newfoundland_dog}, {noun: Great_Pyrenees}, {noun: spitz}, {noun: griffon, Brussels_griffon, Belgian_griffon}, {noun: corgi, Welsh_corgi}, {noun: poodle, poodle_dog}, {noun: Mexican_hairless}]}
-
-    >>> N['dog'][0].relations()[HYPERNYM]
-    [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}]
-
-    >>> N['dog'][0][HYPERNYM]
-    [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}]
-
-    >>> len(N['dog'][0])
-    3
-    >>> N['cat'][6]
-    {noun: big_cat, cat}
-
-hypernyms(self):
-Get the set of parent hypernym synsets of this synset.
-
-closure(HYPERNYM):
-Get the path(s) from this synset to the root, where each path is a
-list of the synset nodes traversed on the way to the root.
-
-hypernym_distances(self, distance):
-Get the path(s) from this synset to the root, counting the distance
-of each node from the initial node on the way. A list of
-(synset, distance) tuples is returned.
-
-shortest_path_distance(self, other_synset):
-Returns the distance of the shortest path linking the two synsets (if
-one exists). For each synset, all the ancestor nodes and their distances
-are recorded and compared. The ancestor node common to both synsets that
-can be reached with the minimum number of traversals is used. If no
-ancestor nodes are common, -1 is returned. If a node is compared with
-itself 0 is returned.
-
-getIC(self, freq_data):
-Get the Information Content (IC) value of this `Synset`, using
-the supplied dict 'freq_data'.
-
 
 
 -----------
@@ -195,27 +113,6 @@ Lemmas can also have relations between them:
 
 The three relations above exist only on lemmas, not on synsets.
 
-Original API
-------------
-
-A pairing between a word and a sense.
-
-    >>> w = word('eat', 'v')
-    >>> w.senseCounts()
-    [61, 13, 4, None, None, None]
-    >>> w[2].words
-    ['feed', 'eat']
-    >>> s = w[2].wordSense('eat')
-    >>> s
-    eat (verb) 3
-    >>> s.count()
-    4
-    >>> k = s.senseKey
-    >>> k
-    'eat%2:34:02::'
-    >>> WordSense(k).synset()
-    {verb: feed, eat}
-
 -----------
 Verb Frames
 -----------
@@ -244,15 +141,6 @@ Verb Frames
     ['Somebody stretch something', 'Somebody stretch']
     Lemma('stretch.v.02.extend') [8]
     ['Somebody extend something']
-
-Original API
-------------
-
-    >>> V['think'][0].verbFrames
-    (5, 9)
-
-    >>> V['think'][0].verbFrameStrings
-    ['Something think something Adjective/Noun', 'Somebody think somebody']
 
 
 ----------
@@ -353,59 +241,6 @@ given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
     >>> dog.lin_similarity(cat, semcor_ic)
     0.88632886280862277
 
-Original API
-------------
-
-    >>> N['poodle'][0].path_similarity(N['dalmatian'][1])
-    0.33333333333333331
-    >>> N['dog'][0].path_similarity(N['cat'][0])
-    0.20000000000000001
-    >>> V['run'][0].path_similarity(V['walk'][0])
-    0.25
-    >>> V['run'][0].path_similarity(V['think'][0])
-    -1
-
-    >>> N['poodle'][0].lch_similarity(N['dalmatian'][1])
-    2.5389738710582761
-    >>> N['dog'][0].lch_similarity(N['cat'][0])
-    2.0281482472922856
-    >>> V['run'][0].lch_similarity(V['walk'][0])
-    1.8718021769015913
-    >>> V['run'][0].lch_similarity(V['think'][0])
-    -1
-
-    >>> N['poodle'][0].wup_similarity(N['dalmatian'][1])
-    0.93333333333333335
-    >>> N['dog'][0].wup_similarity(N['cat'][0])
-    0.8571428571428571
-    >>> V['run'][0].wup_similarity(V['walk'][0])
-    0.5714285714285714
-    >>> V['run'][0].wup_similarity(V['think'][0])
-    -1
-
-    >>> ic = nltk.wordnet.load_ic('ic-bnc-resnik.dat')
-    >>> furnace = nltk.wordnet.N['furnace'][0]
-    >>> stove = nltk.wordnet.N['stove'][0]
-    >>> furnace.res_similarity(stove, ic) # doctest: +ELLIPSIS
-    2.52024528...
-
-    >>> ic = nltk.wordnet.load_ic('ic-brown.dat')
-    >>> furnace.jcn_similarity(stove, ic) # doctest: +ELLIPSIS
-    0.0640910491...
-
-    >>> ic = nltk.wordnet.load_ic('ic-semcor.dat')
-    >>> furnace.lin_similarity(stove, ic) # doctest: +ELLIPSIS
-    0.229384690...
-
-word(form, pos=NOUN):
-Return a word with the given lexical form and pos.
-
-sense(form, pos=NOUN, senseno=0):
-Lookup a sense by its sense number. Used by repr(sense).
-
-synset(pos, offset):
-Lookup a synset by its offset. Used by repr(synset).
-
 
 ---------------------
 Access to all Synsets
@@ -446,58 +281,6 @@ Walk through the noun synsets looking at their hypernyms:
     Synset('thing.n.12') [Synset('physical_entity.n.01')]
     Synset('object.n.01') [Synset('physical_entity.n.01')]
 
-Original API
-------------
-
-Dictionary classes, which allow users to access
-Wordnet data via a handy dict notation. Also defined are the
-low level _IndexFile class and various file utilities, which do the actual
-lookups in the Wordnet database files.
-
-Dictionary:
-A Dictionary contains all the Words in a given part of speech. Four
-dictionaries, bound to N, V, ADJ, and ADV, are bound by default in
-__init.py__.
-
-Indexing a dictionary by a string retrieves the word named by that
-string, e.g. dict['dog'].  Indexing by an integer n retrieves the
-nth word, e.g.  dict[0].  Access by an arbitrary integer is very
-slow except in the special case where the words are accessed
-sequentially; this is to support the use of dictionaries as the
-range of a for statement and as the sequence argument to map and
-filter.
-
-    >>> N.pos
-    'noun'
-    >>> N['dog']
-    dog (noun)
-    >>> N['inu']
-    Traceback (most recent call last):
-       ...
-    KeyError: "'inu' is not in the 'noun' database"
-        
-If index is a String, return the Word whose form is
-index.  If index is an integer n, return the Word
-indexed by the n'th Word in the Index file.
-        
-    >>> N['dog']
-    dog (noun)
-    >>> N[0]
-    'hood (noun)
- 
-get(self, key, default=None): Return the Word whose form is key, or default.
-
-    >>> N.get('dog')
-    dog (noun)
-    >>> N.get('inu')
-
-has_key(self, form): Checks if the supplied argument is an index into
-this dictionary. 
-
-    >>> N.has_key('dog')
-    True
-    >>> N.has_key('inu')
-    False
 
 ------
 Morphy
