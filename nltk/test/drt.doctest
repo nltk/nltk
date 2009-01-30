@@ -2,8 +2,6 @@
  Discourse Representation Theory
 ================================
 
-.. include:: ../../doc/definitions.rst
-
     >>> from nltk.sem import logic
 
 Overview

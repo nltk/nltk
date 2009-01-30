@@ -82,7 +82,7 @@ A similar interface is provided for trigrams:
 
 We may want to select only the top n results:
 
-    >>> sorted(finder.nbest(trigram_measures.raw_freq, 2))
+    >>> sorted(finder.nbesttop_nbest(trigram_measures.raw_freq, 2))
     [('I', 'do', 'not'), ('do', 'not', 'like')]
 
 Alternatively, we can select those above a minimum score value:
@@ -131,7 +131,7 @@ Association measures
 
 A number of measures are available to score collocations or other associations.
 The arguments to measure functions are marginals of a contingency table, in the
-bigram case (n_ii, (n_ix, n_xi), n_xx):
+bigram case (n_ii, (n_ix, n_xi), n_xx)::
 
             w1    ~w1
          ------ ------

@@ -297,12 +297,16 @@ ares', ',', 'frente_a', 'los', '0,9349_d\xc3\xb3lares', 'de', 'esta', 'ma\xc3\xb
 xc3\xb3', 'el', 'cambio', 'oficial', 'del', 'euro', 'en', 'los', '0,9355_d\xc3\xb3lares', '.'], ...]
     >>> conll2007.parsed_sents('cat.train')[0]
     <DependencyGraph with 38 nodes>
-    >>> conll2007.parsed_sents('cat.train')[0].tree()
-    Tree('fortaleci\xc3\xb3', [Tree('aumento', ['El', Tree('del', [Tree('\xc3\xadndice', [Tree('de', [Tree('desempleo', ['estadounidense'])])])])])
-, 'hoy', 'considerablemente', Tree('al', [Tree('euro', [Tree('cotizaba', [',', 'que', Tree('a', [Tree('15.35', ['las', 'GMT'])]), 'se', Tree('en', 
-[Tree('mercado', ['el', Tree('de', ['divisas']), Tree('de', ['Fr\xc3\xa1ncfort'])])]), Tree('a', ['0,9452_d\xc3\xb3lares']), Tree('frente_a', [',',
- Tree('0,9349_d\xc3\xb3lares', ['los', Tree('de', [Tree('ma\xc3\xb1ana', ['esta'])])])])])])]), '.'])
-
+    >>> conll2007.parsed_sents('cat.train')[0].tree() # doctest: +NORMALIZE_WHITESPACE
+    Tree('fortaleci\xc3\xb3',
+        [Tree('aumento', ['El', Tree('del', [Tree('\xc3\xadndice',
+            [Tree('de', [Tree('desempleo', ['estadounidense'])])])])]),
+        'hoy', 'considerablemente',
+        Tree('al', [Tree('euro', [Tree('cotizaba', [',', 'que',
+            Tree('a', [Tree('15.35', ['las', 'GMT'])]), 'se', Tree('en',
+                [Tree('mercado', ['el', Tree('de', ['divisas']), Tree('de', ['Fr\xc3\xa1ncfort'])])]),
+            Tree('a', ['0,9452_d\xc3\xb3lares']),
+            Tree('frente_a', [',', Tree('0,9349_d\xc3\xb3lares', ['los', Tree('de', [Tree('ma\xc3\xb1ana', ['esta'])])])])])])]), '.'])
 
 NLTK also provides a corpus reader for the York-Toronto-Helsinki
 Parsed Corpus of Old English Prose (YCOE); but the corpus itself is
