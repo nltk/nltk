@@ -54,8 +54,6 @@ setup(
                 'nltk.tag',
                 'nltk.test',
                 'nltk.tokenize',
-                'nltk.wordnet',
-                'nltk.wordnet.browser',
                 'nltk.etree',
                 'nltk_contrib',
                 'nltk_contrib.bioreader',
@@ -88,6 +86,8 @@ setup(
                 'nltk_contrib.tiger.query',
                 'nltk_contrib.tiger.utils',
                 'nltk_contrib.toolbox',
+                'nltk_contrib.wordnet',
+                'nltk_contrib.wordnet.browser',
                 'yaml'
                 ],
     )
