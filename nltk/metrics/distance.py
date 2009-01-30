@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 #
 
-from internals import deprecated
+from nltk.internals import deprecated
 
 def _edit_dist_init(len1, len2):
     lev = []

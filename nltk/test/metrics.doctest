@@ -1,0 +1,83 @@
+=======
+Metrics
+=======
+
+The `nltk.metrics` package provides a variety of *evaluation measures*
+which can be used for a wide variety of NLP tasks.
+
+   >>> from nltk.metrics import *
+
+------------------
+Standard IR Scores
+------------------
+
+We can use standard scores from information retrieval to test the
+performance of taggers, chunkers, etc.
+
+    >>> reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
+    >>> test    = 'DET VB VB DET NN NN NN IN DET NN'.split()
+    >>> accuracy(reference, test)
+    0.80000000000000004
+    
+
+The following measures apply to sets:
+
+    >>> reference_set = set(reference)
+    >>> test_set = set(test)
+    >>> precision(reference_set, test_set)
+    1.0
+    >>> recall(reference_set, test_set)
+    0.80000000000000004
+    >>> f_measure(reference_set, test_set)
+    0.88888888888888884
+
+Measuring the likelihood of the data, given probability distributions:
+
+    >>> from nltk import FreqDist, MLEProbDist
+    >>> pdist1 = MLEProbDist(FreqDist("aldjfalskfjaldsf"))
+    >>> pdist2 = MLEProbDist(FreqDist("aldjfalssjjlldss"))
+    >>> log_likelihood(['a', 'd'], [pdist1, pdist2])
+    -2.707518749639422
+
+
+----------------
+Distance Metrics
+----------------
+
+String edit distance (Levenshtein):
+
+    >>> edit_distance("rain", "shine")
+    3
+
+Other distance measures:
+
+    >>> s1 = set([1,2,3,4])
+    >>> s2 = set([3,4,5])
+    >>> binary_distance(s1, s2)
+    1.0
+    >>> jaccard_distance(s1, s2)
+    0.59999999999999998
+    >>> masi_distance(s1, s2)
+    0.5
+
+----------------------
+Miscellaneous Measures
+----------------------
+
+Rank Correlation works with two dictionaries mapping keys to ranks.  The dictionaries should have the same set of keys.
+
+    >>> spearman_correlation({'e':1, 't':2, 'a':3}, {'e':1, 'a':2, 't':3})
+    0.5
+
+Windowdiff uses a sliding window in comparing two segmentations of the same input (e.g. tokenizations, chunkings).
+Segmentations are represented using strings of zeros and ones.
+
+    >>> s1 = "00000010000000001000000"
+    >>> s2 = "00000001000000010000000"
+    >>> s3 = "00010000000000000001000"
+    >>> windowdiff(s1, s1, 3)
+    0
+    >>> windowdiff(s1, s2, 3)
+    4
+    >>> windowdiff(s2, s3, 3)
+    16
