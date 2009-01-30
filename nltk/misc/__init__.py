@@ -7,3 +7,5 @@
 
 from chomsky import generate_chomsky
 from wordfinder import word_finder
+from minimalset import MinimalSet
+
