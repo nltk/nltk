@@ -13,7 +13,6 @@ Classes and methods for scoring processing modules.
 
 from scores import *
 from confusionmatrix import *
-from editdistance import *
 from distance import *
 from windowdiff import *
 from agreement import *
@@ -22,7 +21,7 @@ from spearman import *
 
 __all__ = ['ConfusionMatrix', 'accuracy',
            'f_measure', 'log_likelihood', 'precision', 'recall',
-           'approxrand', 'edit_dist', 'windowdiff',
+           'approxrand', 'edit_distance', 'edit_dist', 'windowdiff',
            'AnnotationTask', 'spearman_correlation',
            'ranks_from_sequence', 'ranks_from_scores',
            'NgramAssocMeasures', 'BigramAssocMeasures',
