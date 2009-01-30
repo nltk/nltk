@@ -108,7 +108,7 @@ class AbstractCollocationFinder(object):
         return sorted(self._score_ngrams(score_fn),
                       key=_itemgetter(1), reverse=True)
 
-    def top_n(self, score_fn, n):
+    def nbest(self, score_fn, n):
         """Returns the top n ngrams when scored by the given function."""
         return [p for p,s in self.score_ngrams(score_fn)[:n]]
 
@@ -137,8 +137,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         wfd = FreqDist()
         bfd = FreqDist()
 
-        words = _itertools.chain(words, (None,))
-        for w1, w2 in ingrams(words, 2):
+        for w1, w2 in ingrams(words, 2, pad_right=True):
             wfd.inc(w1)
             if w2 is not None:
                 bfd.inc((w1, w2))
@@ -182,8 +181,7 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         bfd = FreqDist()
         tfd = FreqDist()
 
-        words = _itertools.chain(words, (None,None,))
-        for w1, w2, w3 in ingrams(words, 3):
+        for w1, w2, w3 in ingrams(words, 3, pad_right=True):
             wfd.inc(w1)
             if w2 is None:
                 continue
@@ -244,7 +242,7 @@ def demo(scorer=None, compare_scorer=None):
         cf.apply_word_filter(word_filter)
 
         print file
-        print '\t', [' '.join(tup) for tup in cf.top_n(scorer, 15)]
+        print '\t', [' '.join(tup) for tup in cf.nbest(scorer, 15)]
         print '\t Correlation to %s: %0.4f' % (compare_scorer.__name__,
                 spearman_correlation(
                     ranks_from_scores(cf.score_ngrams(scorer)),

@@ -13,7 +13,7 @@ import pydoc
 import bisect
 import os
 
-from itertools import islice
+from itertools import islice, chain
 from pprint import pprint
 from collections import defaultdict
 
@@ -294,7 +294,7 @@ def clean_url(url):
 
 # add a flag to pad the sequence so we get peripheral ngrams?
 
-def ngrams(sequence, n):
+def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
     A utility that produces a sequence of ngrams from a sequence of items.
     For example:
@@ -302,20 +302,36 @@ def ngrams(sequence, n):
     >>> ngrams([1,2,3,4,5], 3)
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
     
-    Use ingram for an iterator version of this function.
+    Use ingram for an iterator version of this function.  Set pad_left
+    or pad_right to true in order to get additional ngrams:
+    
+    >>> ngrams([1,2,3,4,5], 2, pad_right=True)
+    [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
     @param sequence: the source data to be converted into ngrams
     @type sequence: C{sequence} or C{iterator}
     @param n: the degree of the ngrams
     @type n: C{int}
+    @param pad_left: whether the ngrams should be left-padded
+    @type pad_left: C{boolean}
+    @param pad_right: whether the ngrams should be right-padded
+    @type pad_right: C{boolean}
+    @param pad_symbol: the symbol to use for padding (default is None)
+    @type pad_symbol: C{any}
     @return: The ngrams
     @rtype: C{list} of C{tuple}s
     """
 
-    count = max(0, len(list(sequence)) - n + 1)
+    if pad_left:
+        sequence = chain((pad_symbol,) * (n-1), sequence)
+    if pad_right:
+        sequence = chain(sequence, (pad_symbol,) * (n-1))
+    sequence = list(sequence)
+    
+    count = max(0, len(sequence) - n + 1)
     return [tuple(sequence[i:i+n]) for i in range(count)]
 
-def bigrams(sequence):
+def bigrams(sequence, **kwargs):
     """
     A utility that produces a sequence of bigrams from a sequence of items.
     For example:
@@ -330,9 +346,9 @@ def bigrams(sequence):
     @return: The bigrams
     @rtype: C{list} of C{tuple}s
     """
-    return ngrams(sequence, 2)
+    return ngrams(sequence, 2, **kwargs)
 
-def trigrams(sequence):
+def trigrams(sequence, **kwargs):
     """
     A utility that produces a sequence of trigrams from a sequence of items.
     For example:
@@ -347,9 +363,9 @@ def trigrams(sequence):
     @return: The trigrams
     @rtype: C{list} of C{tuple}s
     """
-    return ngrams(sequence, 3)
+    return ngrams(sequence, 3, **kwargs)
 
-def ingrams(sequence, n):
+def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
     A utility that produces an iterator over ngrams generated from a sequence of items.
     
@@ -358,17 +374,32 @@ def ingrams(sequence, n):
     >>> list(ingrams([1,2,3,4,5], 3))
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
     
-    Use ngrams for a list version of this function.
+    Use ngrams for a list version of this function.  Set pad_left
+    or pad_right to true in order to get additional ngrams:
+    
+    >>> list(ingrams([1,2,3,4,5], 2, pad_right=True))
+    [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
     @param sequence: the source data to be converted into ngrams
     @type sequence: C{sequence} or C{iterator}
     @param n: the degree of the ngrams
     @type n: C{int}
+    @param pad_left: whether the ngrams should be left-padded
+    @type pad_left: C{boolean}
+    @param pad_right: whether the ngrams should be right-padded
+    @type pad_right: C{boolean}
+    @param pad_symbol: the symbol to use for padding (default is None)
+    @type pad_symbol: C{any}
     @return: The ngrams
     @rtype: C{iterator} of C{tuple}s
     """
 
     sequence = iter(sequence)
+    if pad_left:
+        sequence = chain((pad_symbol,) * (n-1), sequence)
+    if pad_right:
+        sequence = chain(sequence, (pad_symbol,) * (n-1))
+
     history = []
     while n > 1:
         history.append(sequence.next())
@@ -378,7 +409,7 @@ def ingrams(sequence, n):
         yield tuple(history)
         del history[0]
         
-def ibigrams(sequence):
+def ibigrams(sequence, **kwargs):
     """
     A utility that produces an iterator over bigrams generated from a sequence of items.
     
@@ -395,10 +426,10 @@ def ibigrams(sequence):
     @rtype: C{iterator} of C{tuple}s
     """
 
-    for item in ingrams(sequence, 2):
+    for item in ingrams(sequence, 2, **kwargs):
         yield item
         
-def itrigrams(sequence):
+def itrigrams(sequence, **kwargs):
     """
     A utility that produces an iterator over trigrams generated from a sequence of items.
     
@@ -415,7 +446,7 @@ def itrigrams(sequence):
     @rtype: C{iterator} of C{tuple}s
     """
 
-    for item in ingrams(sequence, 3):
+    for item in ingrams(sequence, 3, **kwargs):
         yield item
         
 ##########################################################################
