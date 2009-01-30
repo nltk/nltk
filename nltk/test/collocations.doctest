@@ -13,7 +13,7 @@ measured using Pointwise Mutual Information.
     >>> from nltk.collocations import *
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.genesis.words('english-web.txt'))
-    >>> finder.top_n(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+    >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
     [('cutting', 'instrument'), ('sewed', 'fig'), ('sweet', 'savor'),
      ('Ben', 'Ammi'), ('appoint', 'overseers'), ('olive', 'leaf'),
      ('months', 'later'), ('remaining', 'silent'), ('seek', 'occasion'),
@@ -24,7 +24,7 @@ infrequent.  Therefore it is useful to apply filters, such as ignoring all
 bigrams which occur less than three times in the corpus:
 
     >>> finder.apply_freq_filter(3)
-    >>> finder.top_n(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+    >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
     [('Lahai', 'Roi'), ('gray', 'hairs'), ('Beer', 'Lahai'), ('Most', 'High'),
      ('ewe', 'lambs'), ('many', 'colors'), ('burnt', 'offering'),
      ('Paddan', 'Aram'), ('east', 'wind'), ('living', 'creature')]
@@ -33,7 +33,7 @@ We may similarly find collocations among tagged words:
 
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.brown.tagged_words('ca01', simplify_tags=True))
-    >>> finder.top_n(bigram_measures.pmi, 5)  # doctest: +NORMALIZE_WHITESPACE
+    >>> finder.nbest(bigram_measures.pmi, 5)  # doctest: +NORMALIZE_WHITESPACE
     [(('weekend', 'N'), ('duty', 'N')),
      (('top', 'ADJ'), ('official', 'N')),
      (('George', 'NP'), ('P.', 'NP')),
@@ -44,7 +44,7 @@ Or tags alone:
     
     >>> finder = BigramCollocationFinder.from_words(t for w, t in
     ...     nltk.corpus.brown.tagged_words('ca01', simplify_tags=True))
-    >>> finder.top_n(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+    >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
     [(':', '('), ('(', 'NUM'), ('NUM', ')'), (':', 'NUM'), (')', 'NUM'),
      ('-', 'WH'), ('VN', ':'), ('``', 'EX'), ('EX', 'MOD'), ('WH', 'VBZ')]
 
@@ -82,7 +82,7 @@ A similar interface is provided for trigrams:
 
 We may want to select only the top n results:
 
-    >>> sorted(finder.top_n(trigram_measures.raw_freq, 2))
+    >>> sorted(finder.nbest(trigram_measures.raw_freq, 2))
     [('I', 'do', 'not'), ('do', 'not', 'like')]
 
 Alternatively, we can select those above a minimum score value:

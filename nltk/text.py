@@ -14,24 +14,7 @@ from nltk.compat import defaultdict
 from nltk.util import ngrams, tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
 from nltk.metrics import f_measure
-
-def find_collocations(tokens, num=20):
-    """
-    Return a list of the C{num} most prevelent collocations in the
-    given text, in descending order of prevelence.
-
-    @param num: The number of collocations to produce.
-    @type num: C{int}
-    """
-    from operator import itemgetter
-    text = [w for w in tokens if len(w)>2]
-    vocab = FreqDist(tokens)
-    fd = FreqDist(tuple(text[i:i+2])
-                  for i in range(len(text)-1))
-    scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(vocab[w1] * vocab[w2]))
-              for w1, w2 in fd]
-    scored.sort(key=itemgetter(1), reverse=True)
-    return [collocation for (collocation, score) in scored[:num]]
+from nltk.collocations import BigramCollocationFinder, bigram_measures
 
 
 class ContextIndex(object):
@@ -335,8 +318,13 @@ class Text(object):
         """
         if '_collocations' not in self.__dict__:
             print "Building collocations list"
-            self._collocations = find_collocations(self, None)
-        colloc_strings = [w1+' '+w2 for w1, w2 in self._collocations[:num]]
+            from nltk.corpus import stopwords
+            ignored_words = stopwords.words('english')
+            finder = BigramCollocationFinder.from_words(self.tokens) 
+            finder.apply_freq_filter(2)
+            finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
+            self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
+        colloc_strings = [w1+' '+w2 for w1, w2 in self._collocations]
         print tokenwrap(colloc_strings, separator="; ")
 
     def count(self, word):
