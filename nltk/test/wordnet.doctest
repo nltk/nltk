@@ -2,7 +2,11 @@
 WordNet Interface
 =================
 
-WordNet is now just another NLTK corpus reader, and can be imported like this:
+WordNet is accessed just another NLTK corpus reader, and can be imported like this:
+
+    >>> from nltk.corpus import wordnet
+    
+For more compact code, we recommend:
 
     >>> from nltk.corpus import wordnet as wn
 
@@ -297,40 +301,9 @@ Look up forms not in WordNet, with the help of Morphy:
     [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'), Synset('deny.v.04'),
     Synset('deny.v.05'), Synset('traverse.v.03'), Synset('deny.v.07')]
 
----------------------------------------------------------------------------
+----------------
 Regression Tests
----------------------------------------------------------------------------
-
-Bug 1796793: WordNet verbFrameStrings
-
-    >>> w = nltk.wordnet.V['fly']
-    >>> s = w.synsets()[0]
-    >>> s.verbFrameStrings
-    ['Something fly', 'Somebody fly', 'Something is flying PP', 'Somebody fly PP']
-
-#Bug 1940398 UnboundLocalError in wordnet.util line 426
-#
-#    >>> from nltk.wordnet import util
-#    >>> util.getIndex('good-for-nothing')
-#    good-for-nothing (noun)
-#    >>> util.getIndex('good for nothing')
-#    good-for-nothing (noun)
-
-Bug: __hash__ method not properly implemented for Synset, Word, WordSense
-
-    >>> from nltk.wordnet import N
-    >>> word1 = N['kin']
-    >>> word2 = N['kin']
-    >>> hash(word1) == hash(word2)
-    True
-    >>> syn1 = word1.synsets()[0]
-    >>> syn2 = word2.synsets()[0]
-    >>> hash(syn1) == hash(syn2)
-    True
-    >>> sense1 = syn1.wordSenses[0]
-    >>> sense2 = syn2.wordSenses[0]
-    >>> hash(sense1) == hash(sense2)
-    True
+----------------
 
 Bug 85: morphy returns the base form of a word, if it's input is given
 as a base form for a POS for which that word is not defined:
