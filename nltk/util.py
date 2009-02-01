@@ -15,7 +15,7 @@ import os
 
 from itertools import islice, chain
 from pprint import pprint
-from collections import defaultdict
+from nltk.compat import defaultdict
 
 from nltk.internals import Deprecated, slice_bounds
 
@@ -238,7 +238,7 @@ def guess_encoding(data):
 ##########################################################################
 
 def invert_dict(d):
-    from nltk import defaultdict
+    from nltk.compat import defaultdict
     inverted_dict = defaultdict(list)
     for key in d:
         for term in d[key]:
