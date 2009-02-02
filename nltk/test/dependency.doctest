@@ -39,7 +39,7 @@ Using the dependency-parsed version of the Penn Treebank corpus sample.
 
     >>> from nltk.corpus import dependency_treebank
     >>> t = dependency_treebank.parsed_sents()[0]
-    >>> print t.to_conll(3)
+    >>> print t.to_conll(3)  # doctest: +NORMALIZE_WHITESPACE
     Pierre  NNP 3
     Vinken  NNP 9
     ,   ,   3
@@ -58,7 +58,6 @@ Using the dependency-parsed version of the Penn Treebank corpus sample.
     Nov.    NNP 10
     29  CD  17
     .   .   9
-    
 
 Projective Dependency Parsing
 -----------------------------

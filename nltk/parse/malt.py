@@ -169,8 +169,8 @@ def demo():
     maltParser = MaltParser()
     maltParser.train([dg1,dg2], verbose=verbose)
 
-    print maltParser.parse('John sees Mary', verbose=verbose).deptree().pprint()
-    print maltParser.parse('a man runs', verbose=verbose).deptree().pprint()
+    print maltParser.parse('John sees Mary', verbose=verbose).tree().pprint()
+    print maltParser.parse('a man runs', verbose=verbose).tree().pprint()
     
 if __name__ == '__main__':
     demo()

@@ -82,7 +82,7 @@ A similar interface is provided for trigrams:
 
 We may want to select only the top n results:
 
-    >>> sorted(finder.nbesttop_nbest(trigram_measures.raw_freq, 2))
+    >>> sorted(finder.nbest(trigram_measures.raw_freq, 2))
     [('I', 'do', 'not'), ('do', 'not', 'like')]
 
 Alternatively, we can select those above a minimum score value:

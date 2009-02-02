@@ -204,7 +204,7 @@ class ProjectiveDependencyParser(object):
             dg = DependencyGraph(conll_format)
 #           if self.meets_arity(dg):
             graphs.append(dg)
-            trees.append(dg.deptree())
+            trees.append(dg.tree())
         return trees
             
 
@@ -307,7 +307,7 @@ class ProbabilisticProjectiveDependencyParser(object):
             dg = DependencyGraph(conll_format)
             score = self.compute_prob(dg)
             if score > max_score:
-                max_parse = dg.deptree()
+                max_parse = dg.tree()
                 max_score = score
         return [max_parse, max_score]
 

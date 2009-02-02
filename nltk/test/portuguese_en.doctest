@@ -188,14 +188,13 @@ training up a unigram tagger:
 
     >>> tagger1 = nltk.UnigramTagger(train, backoff=tagger0)
     >>> nltk.tag.accuracy(tagger1, test)
-    0.85145700071073205
+    0.87064676616915426
 
 Next a bigram tagger:
 
     >>> tagger2 = nltk.BigramTagger(train, backoff=tagger1)
     >>> nltk.tag.accuracy(tagger2, test)
-    0.86922530206112292
-
+    0.89019189765458417
 
 
 Sentence Segmentation
@@ -279,12 +278,12 @@ and print them in descending order of frequency:
 
     >>> fd = nltk.FreqDist(w.lower() for w in floresta.words() if w not in stopwords)
     >>> for word in fd.keys()[:20]:
-    ...     print word, fd[word]
+    ...     print word, fd[word]    # doctest: +NORMALIZE_WHITESPACE
     , 13444
     . 7725
     « 2369
     » 2310
-    é 1137
+    é 1305
     o 1086
     } 1047
     { 1044
