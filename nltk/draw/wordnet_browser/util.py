@@ -230,7 +230,15 @@ CLASS_CATEGORY = 11
 DERIVATIONALLY_RELATED_FORM = 25
 
 
-def get_relations_data(synset): 
+def lemma_property(word, synset, func):
+
+    def flattern(l):
+        return reduce(lambda l, x: l+x, [], l)
+
+    return flattern([func(l) for l in synset.lemmas if l.name == word]),
+
+
+def get_relations_data(word, synset): 
     """
     Get synset relations data for a synset.  Note that this doesn't
     yet support things such as full hyponym vs direct hyponym.
@@ -249,9 +257,9 @@ def get_relations_data(synset):
                 (MEMBER_HOLONYM, ['Member holonyms'], synset.member_holonyms()),
                 (MEMBER_MERONYM, ['Member meronyms'], synset.member_meronyms()),
                 (ATTRIBUTE, ['Attributes'], synset.attributes()),
-                (ANTONYM, ["antonyms"], synset.antonyms()),
+                (ANTONYM, ["antonyms"], lemma_property(word, synset, lambda l: l.antonyms())),
                 (DERIVATIONALLY_RELATED_FORM, ["Derivationally related form"], 
-                   synset.derivationally_related_forms()))
+                   lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
 #            (VERB_GROUP , ),
 #            (CLAUSE , ),
 #            (ALSO_SEE , ),
@@ -495,7 +503,7 @@ def _synset_relations(word, synset, synset_relations):
 
     html = '<ul>' + \
         '\n'.join(("<li>%s</li>" % make_synset_html(x) for x 
-                   in get_relations_data(synset)
+                   in get_relations_data(word, synset)
                    if x[2] != [])) + \
         '</ul>'
 
