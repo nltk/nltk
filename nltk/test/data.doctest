@@ -31,22 +31,12 @@ The ``nltk:`` protocol is used by default if no protocol is specified:
     <nltk.tokenize.punkt.PunktSentenceTokenizer object at ...>
 
 But it is also possible to load resources from ``http:``, ``ftp:``,
-and ``file:`` URLs:
-
-    >>> # Load a grammar from the NLTK webpage.
-    >>> cfg = nltk.data.load('http://example.com/path/to/toy.cfg')
-    >>> print cfg # doctest: +ELLIPSIS
-    Grammar with 14 productions (start state = S)
-        S -> NP VP
-        PP -> P NP
-        ...
-        P -> 'on'
-        P -> 'in'
+and ``file:`` URLs, e.g. ``cfg = nltk.data.load('http://example.com/path/to/toy.cfg')``
 
     >>> # Load a grammar using an absolute path.
     >>> url = 'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg')
-    >>> url # doctest: +ELLIPSIS
-    'file:/.../grammars/toy.cfg'
+    >>> url
+    'file:/usr/share/nltk_data/grammars/sample_grammars/toy.cfg'
     >>> print nltk.data.load(url) # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
         S -> NP VP
@@ -71,7 +61,7 @@ currently supported by the data module are described by the dictionary
     pickle  A serialized python object, stored using the pickle module.
     raw     The raw (byte string) contents of a file.
     val     A semantic valuation, parsed by nltk.sem.parse_valuation().
-    yaml    A serialzied python object, stored using the yaml module.
+    yaml    A serialized python object, stored using the yaml module.
 
 `nltk.data.load()` will raise a ValueError if a bad format name is
 specified:
