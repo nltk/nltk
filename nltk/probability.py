@@ -273,13 +273,14 @@ class FreqDist(dict):
 
     def plot(self, *args, **kwargs):
         """
-        Plot samples from the frequency distribution (cumulative),
+        Plot samples from the frequency distribution
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
         plotted.  If two integer parameters m, n are supplied, plot a
         subset of the samples, beginning with m and stopping at n-1.
+        For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
-        
+
         @param title: The title for the graph
         @type title: C{str}
         @param cumulative: A flag to specify whether the plot is cumulative (default = False)
@@ -320,10 +321,9 @@ class FreqDist(dict):
         """
         Tabulate the given samples from the frequency distribution (cumulative),
         displaying the most frequent sample first.
-        If no samples are specified, use the most frequent num samples.
         (Requires Matplotlib to be installed.)
         
-        @param samples: The samples to plot (default is most frequent samples)
+        @param samples: The samples to plot (default is all samples)
         @type samples: C{list}
         @param title: The title for the graph
         @type title: C{str}
@@ -1471,8 +1471,9 @@ class ConditionalFreqDist(object):
 
     def plot(self, *args, **kwargs):
         """
-        Plot the given samples from the conditional frequency
-        distribution (cumulative).  (Requires Matplotlib to be installed.)
+        Plot the given samples from the conditional frequency distribution.
+        For a cumulative plot, specify cumulative=True.
+        (Requires Matplotlib to be installed.)
         
         @param samples: The samples to plot
         @type samples: C{list}
