@@ -453,7 +453,7 @@ class FreqDist(dict):
         @return: A string representation of this C{FreqDist}.
         @rtype: string
         """
-        return '<FreqDist with %d samples>' % self.N()
+        return '<FreqDist with %d outcomes>' % self.N()
 
     def __str__(self):
         """
