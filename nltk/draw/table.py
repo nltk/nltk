@@ -1056,19 +1056,18 @@ def demo():
                   reprfunc=(lambda i,j,s: '  %s' % s))
     table.pack(expand=True, fill='both')
 
-    from nltk import wordnet
+    from nltk.corpus import wordnet
     from nltk.corpus import brown
     for word, pos in sorted(set(brown.tagged_words()[:500])):
         if pos[0] != 'N': continue
         word = word.lower()
-        if word not in wordnet.N: continue
-        for synset in wordnet.N[word].synsets():
-            hyper = synset.relations().get(wordnet.HYPERNYM, [''])[0]
-            hypo = synset.relations().get(wordnet.HYPONYM, [''])[0]
+        for synset in wordnet.synsets(word):
+            hyper = (synset.hypernyms()+[''])[0]
+            hypo = (synset.hyponyms()+[''])[0]
             table.append([word,
-                          getattr(synset, 'gloss', '*none*'),
-                          getattr(hyper, 'gloss', '*none*'),
-                          getattr(hypo, 'gloss', '*none*')])
+                          getattr(synset, 'definition', '*none*'),
+                          getattr(hyper, 'definition', '*none*'),
+                          getattr(hypo, 'definition', '*none*')])
 
     table.columnconfig('Word', background='#afa')
     table.columnconfig('Synset', background='#efe')
