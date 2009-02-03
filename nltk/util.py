@@ -991,13 +991,19 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
     @param key: the identifier we are searching for.
     @return: The line from the file with first word key.
     """
-    from stat import ST_SIZE
     
     key = key + ' '
     keylen = len(key)
-    start, end = 0, os.stat(file.name)[ST_SIZE] - 1
+    start = 0
     currentDepth = 0
-    
+
+    if hasattr(file, 'name'):
+        end = os.stat(file.name).st_size - 1
+    else:
+        file.seek(0, 2)
+        end = file.tell() - 1
+        file.seek(0)
+        
     while start < end:
         lastState = start, end
         middle = (start + end) / 2
