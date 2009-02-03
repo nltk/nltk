@@ -43,7 +43,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
     _SHORTID_RE = re.compile(r'[\d+.\-]+$')
     """Regular expression that matches shortids"""
     
-    _INDEX_RE = re.compile(r'<MEMBER name="\??([^"]+)" wn="([^"]*)"/?>|'
+    _INDEX_RE = re.compile(r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^>]+>|'
                            r'<VNSUBCLASS ID="([^"]+)"/?>')
     """Regular expression used by L{_index()} to quickly scan the corpus
        for basic information."""
