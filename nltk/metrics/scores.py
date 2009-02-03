@@ -16,7 +16,8 @@ try:
 except ImportError:
     betai = None
 
-from nltk.util import LazyConcatenation, LazyMap, LazyZip
+from nltk.util import LazyConcatenation, LazyMap
+from itertools import izip
 from nltk.probability import FreqDist
 
 def accuracy(reference, test):
@@ -37,7 +38,7 @@ def accuracy(reference, test):
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")
     num_correct = 0
-    for x, y in LazyZip(reference, test):
+    for x, y in izip(reference, test):
         if x == y:
             num_correct += 1
     return float(num_correct) / len(reference)
@@ -55,6 +56,10 @@ def precision(reference, test):
     @param test: A set of values to compare against the reference set.
     @rtype: C{float} or C{None}
     """
+    if (not hasattr(reference, 'intersection') or
+        not hasattr(test, 'intersection')):
+        raise TypeError('reference and test should be sets')
+    
     if len(test) == 0:
         return None
     else:
@@ -73,6 +78,10 @@ def recall(reference, test):
     @param test: A set of values to compare against the reference set.
     @rtype: C{float} or C{None}
     """
+    if (not hasattr(reference, 'intersection') or
+        not hasattr(test, 'intersection')):
+        raise TypeError('reference and test should be sets')
+    
     if len(reference) == 0:
         return None
     else:
