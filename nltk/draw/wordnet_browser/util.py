@@ -233,9 +233,14 @@ DERIVATIONALLY_RELATED_FORM = 25
 def lemma_property(word, synset, func):
 
     def flattern(l):
-        return reduce(lambda l, x: l+x, [], l)
+        if l == []:
+            return []
+        elif l[0] == []:
+            return flattern(l[1:])
+        else:
+            return [l[0]] + flattern(l[1:])
 
-    return flattern([func(l) for l in synset.lemmas if l.name == word]),
+    return flattern([func(l) for l in synset.lemmas if l.name == word])
 
 
 def get_relations_data(word, synset): 
@@ -244,21 +249,33 @@ def get_relations_data(word, synset):
     yet support things such as full hyponym vs direct hyponym.
     """
     if synset.pos == wordnet.NOUN:
-        return ((HYPONYM, ['Hyponyms'], synset.hyponyms()),
-                (INSTANCE_HYPONYM , ['Instance hyponyms'], synset.instance_hyponyms()),
-                (HYPERNYM, ['Direct hypernyms', 'Inherited hypernyms', 'Sister terms'], 
+        return ((HYPONYM, 'Hyponyms', 
+                   synset.hyponyms()),
+                (INSTANCE_HYPONYM , 'Instance hyponyms', 
+                   synset.instance_hyponyms()),
+                (HYPERNYM, 'Direct hypernyms',
                    synset.hypernyms()),
-                (INSTANCE_HYPERNYM , ['Instance hypernyms'], synset.instance_hypernyms()),
+#  hypernyms', 'Sister terms', 
+                (INSTANCE_HYPERNYM , 'Instance hypernyms', 
+                   synset.instance_hypernyms()),
 #            (CLASS_REGIONAL, ['domain term region'], ),
-                (PART_HOLONYM, ['Part holonyms'], synset.part_holonyms()),
-                (PART_MERONYM, ['Part meronyms'], synset.part_meronyms()),
-                (SUBSTANCE_HOLONYM, ['Substance holonyms'], synset.substance_holonyms()),
-                (SUBSTANCE_MERONYM, ['Substance meronyms'], synset.substance_meronyms()),
-                (MEMBER_HOLONYM, ['Member holonyms'], synset.member_holonyms()),
-                (MEMBER_MERONYM, ['Member meronyms'], synset.member_meronyms()),
-                (ATTRIBUTE, ['Attributes'], synset.attributes()),
-                (ANTONYM, ["antonyms"], lemma_property(word, synset, lambda l: l.antonyms())),
-                (DERIVATIONALLY_RELATED_FORM, ["Derivationally related form"], 
+                (PART_HOLONYM, 'Part holonyms', 
+                   synset.part_holonyms()),
+                (PART_MERONYM, 'Part meronyms', 
+                   synset.part_meronyms()),
+                (SUBSTANCE_HOLONYM, 'Substance holonyms', 
+                   synset.substance_holonyms()),
+                (SUBSTANCE_MERONYM, 'Substance meronyms', 
+                   synset.substance_meronyms()),
+                (MEMBER_HOLONYM, 'Member holonyms', 
+                   synset.member_holonyms()),
+                (MEMBER_MERONYM, 'Member meronyms', 
+                   synset.member_meronyms()),
+                (ATTRIBUTE, 'Attributes', 
+                   synset.attributes()),
+                (ANTONYM, "Antonyms", 
+                   lemma_property(word, synset, lambda l: l.antonyms())),
+                (DERIVATIONALLY_RELATED_FORM, "Derivationally related form", 
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
 #            (VERB_GROUP , ),
 #            (CLAUSE , ),
@@ -495,11 +512,19 @@ def _synset_relations(word, synset, synset_relations):
         return ""
     ref = Reference(word, synset_relations)
     
-    def make_synset_html((db_name, disp_names, rels)):
-        return ' / '.join('<i>%s</i>' % make_lookup_link(
+    def make_synset_html((db_name, disp_name, rels)):
+        synset_html = '<i>%s</i>\n' % \
+            make_lookup_link(
                 copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
-                r)
-            for r in disp_names) + '\n'
+                disp_name)
+
+        if db_name in ref.synset_relations[synset.name]:
+             synset_html += '<ul>%s</ul>\n' % \
+                ''.join("<li>%s</li>\n" % 
+                        make_lookup_link(
+                          Reference(s.lemma_names[0]), s.lemma_names[0]) for s in rels)
+
+        return synset_html
 
     html = '<ul>' + \
         '\n'.join(("<li>%s</li>" % make_synset_html(x) for x 
