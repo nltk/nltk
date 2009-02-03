@@ -22,7 +22,7 @@ The two serialization outputs are I{rtuple} and I{clause}.
 
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
-from nltk import defaultdict
+from nltk.compat import defaultdict
 
 from string import join
 import re
