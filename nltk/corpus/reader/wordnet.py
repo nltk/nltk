@@ -515,7 +515,10 @@ class WordNetCorpusReader(CorpusReader):
                     line = data_file.readline()
 
             # close the extra file handle we opened
-            finally:
+            except:
+                data_file.close()
+                raise
+            else:
                 data_file.close()
 
     #////////////////////////////////////////////////////////////
