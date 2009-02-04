@@ -229,6 +229,8 @@ CLASS_CATEGORY = 11
 
 DERIVATIONALLY_RELATED_FORM = 25
 
+INDIRECT_HYPERNYMS = 26
+
 
 def lemma_property(word, synset, func):
 
@@ -243,6 +245,12 @@ def lemma_property(word, synset, func):
     return flattern([func(l) for l in synset.lemmas if l.name == word])
 
 
+def rebuild_tree(orig_tree):
+    node = orig_tree[0]
+    children = orig_tree[1:]
+    return (node, [rebuild_tree(t) for t in children])
+
+
 def get_relations_data(word, synset): 
     """
     Get synset relations data for a synset.  Note that this doesn't
@@ -255,6 +263,8 @@ def get_relations_data(word, synset):
                    synset.instance_hyponyms()),
                 (HYPERNYM, 'Direct hypernyms',
                    synset.hypernyms()),
+                (INDIRECT_HYPERNYMS, 'Indirect hypernyms',
+                   rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
 #  hypernyms', 'Sister terms', 
                 (INSTANCE_HYPERNYM , 'Instance hypernyms', 
                    synset.instance_hypernyms()),
@@ -511,6 +521,17 @@ def _synset_relations(word, synset, synset_relations):
     if not synset.name in synset_relations.keys():
         return ""
     ref = Reference(word, synset_relations)
+
+    def relation_html(r):
+        try:
+            # Assume that r is a Synset.
+            return make_lookup_link(Reference(r.lemma_names[0]), r.lemma_names[0])
+        except AttributeError:
+            # if not it's probably a tuple containing a Synset and a
+            # list of similar tuples.  This forms a tree of synsets.
+            return "%s\n<ul>%s</ul>\n" % \
+                (relation_html(r[0]), 
+                 ''.join('<li>%s</li>\n' % relation_html(sr) for sr in r[1]))
     
     def make_synset_html((db_name, disp_name, rels)):
         synset_html = '<i>%s</i>\n' % \
@@ -520,9 +541,7 @@ def _synset_relations(word, synset, synset_relations):
 
         if db_name in ref.synset_relations[synset.name]:
              synset_html += '<ul>%s</ul>\n' % \
-                ''.join("<li>%s</li>\n" % 
-                        make_lookup_link(
-                          Reference(s.lemma_names[0]), s.lemma_names[0]) for s in rels)
+                ''.join("<li>%s</li>\n" % relation_html(r) for r in rels)
 
         return synset_html
 
