@@ -79,9 +79,9 @@ import string
 
 from nltk import parse, tokenize
 
-from util import *
-from tree import *
-from cfg import CFGEditor
+from nltk.draw.util import *
+from nltk.draw.tree import *
+from nltk.draw.cfg import CFGEditor
 
         
 class ShiftReduceDemo(object):

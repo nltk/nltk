@@ -107,9 +107,9 @@ The second alternative to browse the database
 # need to be develop to ensure this continues to work in the face of
 # changes to other NLTK packages.
 
-from browserver import demo as browser
+from browserver import wnb
 
 def demo():
-    browser()
+    wnb()
 
 

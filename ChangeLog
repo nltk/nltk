@@ -1,3 +1,26 @@
+Version 0.9.8 2009-02-04
+
+NLTK:
+* New metrics package with inter-annotator agreement scores,
+  distance metrics, rank correlation
+* New collocations package (Joel Nothman)
+* Many clean-ups to WordNet package (Steven Bethard, Jordan Boyd-Graber)
+* Moved old pywordnet-based WordNet package to nltk_contrib
+* More work on WordNet browser (Paul Bone)
+* New interface to dependency treebank corpora
+* Moved MinimalSet class into nltk.misc package
+* Put NLTK applications in new nltk.app package
+* Many other improvements incl semantics package, toolbox, MaltParser
+* Fixes for Python 2.4 compatibility
+
+Data:
+* Corrected identifiers in Dependency Treebank corpus
+* Basque and Catalan Dependency Treebanks (CoNLL 2007)
+* PE08 Parser Evalution data 
+
+Book:
+* Ongoing editorial corrections
+
 Version 0.9.7 2008-12-19
 
 NLTK:

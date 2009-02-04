@@ -217,7 +217,7 @@ def get_unique_counter_from_url(sp):
         return None
 
 
-def demo(port=8000, runBrowser=True, logfilename=None):
+def wnb(port=8000, runBrowser=True, logfilename=None):
     """
     Run NLTK Wordnet Browser Server.
     
@@ -322,5 +322,5 @@ if __name__ == '__main__':
     if help_mode:
         usage()
     else:
-        demo(port, not server_mode, logfilename)
+        wnb(port, not server_mode, logfilename)
 

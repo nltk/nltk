@@ -23,8 +23,7 @@ import re
 import random
 
 from nltk import corpus, Tree, chunk
-
-from util import *
+from nltk.draw.util import *
 
 class RegexpChunkDemo(object):
     """

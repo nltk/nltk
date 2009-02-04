@@ -10,8 +10,7 @@ import threading
 
 from nltk import corpus, FreqDist
 from nltk.text import Text as TextDomain
-
-from util import *
+from nltk.draw.util import *
 
 CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
 ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
