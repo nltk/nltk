@@ -533,14 +533,14 @@ def _synset_relations(word, synset, synset_relations):
             return make_lookup_link(Reference(r.lemma_names[0]), r.lemma_names[0])
         elif type(r) == Lemma:
             return relation_html(r.synset)
-        elif type(r) == list:
+        elif type(r) == tuple:
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
             return "%s\n<ul>%s</ul>\n" % \
                 (relation_html(r[0]), 
                  ''.join('<li>%s</li>\n' % relation_html(sr) for sr in r[1]))
         else:
-            raise TypeError("r must be a synset, lemma or list, it was: %s" % type(r))
+            raise TypeError("r must be a synset, lemma or list, it was: type(r) = %s, r = %s" % (type(r), r))
 
     def make_synset_html((db_name, disp_name, rels)):
         synset_html = '<i>%s</i>\n' % \
