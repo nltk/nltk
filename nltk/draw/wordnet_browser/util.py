@@ -15,6 +15,7 @@ import copy
 
 from collections import defaultdict
 from nltk.corpus import wordnet
+from nltk.corpus.reader.wordnet import Synset, Lemma
 from nltk.internals import deprecated
 
 __all__ = ['get_static_index_page',
@@ -213,7 +214,7 @@ MEMBER_MERONYM = 9
 VERB_GROUP = 10
 INSTANCE_HYPONYM = 12
 INSTANCE_HYPERNYM = 13
-CLAUSE = 14
+CAUSE = 14
 ALSO_SEE = 15
 SIMILAR = 16
 ENTAILMENT = 17
@@ -237,10 +238,8 @@ def lemma_property(word, synset, func):
     def flattern(l):
         if l == []:
             return []
-        elif l[0] == []:
-            return flattern(l[1:])
         else:
-            return [l[0]] + flattern(l[1:])
+            return l[0] + flattern(l[1:])
 
     return flattern([func(l) for l in synset.lemmas if l.name == word])
 
@@ -287,18 +286,25 @@ def get_relations_data(word, synset):
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form", 
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
-#            (VERB_GROUP , ),
-#            (CLAUSE , ),
-#            (ALSO_SEE , ),
-#            (SIMILAR , ),
-#            (ENTAILMENT , ),
-#            (FRAMES , ),
-#            (PERTAINYM , ),
-#            (CLASS_CATEGORY , ),
-#            (CLASS_USAGE , ),
-#            (CLASS_REGIONAL , ),
-#            (CLASS_USAGE , ),
-#            (CLASS_CATEGORY , ),
+    elif synset.pos == wordnet.VERB:
+        return ((ANTONYM, 'Antonym',
+                   lemma_property(word, synset, lambda l: l.antonyms())),
+                (HYPONYM, 'Hyponym',
+                   synset.hyponyms()),
+                (HYPERNYM, 'Direct hypernyms',
+                   synset.hypernyms()),
+                (INDIRECT_HYPERNYMS, 'Indirect hypernyms',
+                   rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
+                (ENTAILMENT, 'Entailments',
+                   synset.entailments()),
+                (CAUSE, 'Causes',
+                   synset.causes()),
+                (ALSO_SEE, 'Also see',
+                   synset.also_sees()),
+                (VERB_GROUP, 'Verb Groups',
+                   synset.verb_groups()),
+                (DERIVATIONALLY_RELATED_FORM, "Derivationally related form", 
+                   lemma_property(word, synset, lambda l: l.derivationally_related_forms())))                
     else:
         return []
 
@@ -523,16 +529,19 @@ def _synset_relations(word, synset, synset_relations):
     ref = Reference(word, synset_relations)
 
     def relation_html(r):
-        try:
-            # Assume that r is a Synset.
+        if type(r) == Synset:
             return make_lookup_link(Reference(r.lemma_names[0]), r.lemma_names[0])
-        except AttributeError:
-            # if not it's probably a tuple containing a Synset and a
-            # list of similar tuples.  This forms a tree of synsets.
+        elif type(r) == Lemma:
+            return relation_html(r.synset)
+        elif type(r) == list:
+            # It's probably a tuple containing a Synset and a list of
+            # similar tuples.  This forms a tree of synsets.
             return "%s\n<ul>%s</ul>\n" % \
                 (relation_html(r[0]), 
                  ''.join('<li>%s</li>\n' % relation_html(sr) for sr in r[1]))
-    
+        else:
+            raise TypeError("r must be a synset, lemma or list, it was: %s" % type(r))
+
     def make_synset_html((db_name, disp_name, rels)):
         synset_html = '<i>%s</i>\n' % \
             make_lookup_link(
