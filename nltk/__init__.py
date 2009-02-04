@@ -81,7 +81,7 @@ import chat, chunk, corpus, parse, metrics, sem, stem, tag, tokenize
 
 # Import Tkinter-based modules if Tkinter is installed
 try:
-    import draw
+    import app, draw
     from downloader import download, download_shell, download_gui  # should just be the GUI in here
 except ImportError:
-    print "Warning: draw and downloader modules not loaded (please install Tkinter library)."
+    print "Warning: app, draw and downloader packages not loaded (please install Tkinter library)."

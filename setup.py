@@ -36,6 +36,7 @@ setup(
     #############################################
     ## Package List
     packages = ['nltk',
+                'nltk.app',
                 'nltk.chat',
                 'nltk.chunk',
                 'nltk.classify',

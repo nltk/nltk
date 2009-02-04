@@ -12,15 +12,9 @@
 try:
     import Tkinter
     from cfg import *
-    from chart import *
     from plot import *
-    from rdparser import *
-    from srparser import *
     from tree import *
     from dispersion import dispersion_plot
-    from rechunkparser import RegexpChunkDemo
-    from concordance import pos_concordance
-    from nemo import finding_nemo
 
     # Make sure that nltk.draw.cfg and nltk.draw.tree refer to the correct
     # modules (and not to nltk.cfg & nltk.tree)
