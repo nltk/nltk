@@ -12,8 +12,7 @@ from string import join
 import threading
 
 from nltk import corpus
-
-from util import *
+from nltk.draw.util import *
 
 WORD_OR_TAG = '[^/ ]+'
 BOUNDARY = r'\b'

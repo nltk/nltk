@@ -15,8 +15,7 @@ from matplotlib.figure import Figure
 from nltk.corpus import gutenberg
 from nltk.text import Text
 from nltk import FreqDist, bigrams
-
-from util import *
+from nltk.draw.util import *
 
 def plot_word_freq_dist(text):
     fd = text.vocab()

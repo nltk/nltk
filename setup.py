@@ -37,6 +37,7 @@ setup(
     ## Package List
     packages = ['nltk',
                 'nltk.app',
+                'nltk.app.wordnet_browser',
                 'nltk.chat',
                 'nltk.chunk',
                 'nltk.classify',
@@ -44,7 +45,6 @@ setup(
                 'nltk.corpus.reader',
                 'nltk.cluster',
                 'nltk.draw',
-                'nltk.draw.wordnet_browser',
                 'nltk.inference',
                 'nltk.metrics',
                 'nltk.misc',
