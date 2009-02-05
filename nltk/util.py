@@ -457,7 +457,10 @@ class OrderedDict(dict):
     def __init__(self, data=None, **kwargs):
         self._keys = self.keys(data, kwargs.get('keys'))
         self._default_factory = kwargs.get('default_factory')
-        dict.__init__(self, data)
+        if data is None:
+            dict.__init__(self)
+        else:
+            dict.__init__(self, data)
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
