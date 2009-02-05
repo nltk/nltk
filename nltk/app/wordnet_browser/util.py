@@ -157,8 +157,26 @@ def get_relations_data(word, synset):
                    synset.verb_groups()),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form", 
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))                
+    elif synset.pos == wordnet.ADJ or synset.pos == wordnet.ADJ_SAT:
+        return ((ANTONYM, 'Antonym',
+                   lemma_property(word, synset, lambda l: l.antonyms())),
+                (SIMILAR, 'Similar to',
+                   synset.similar_tos()),
+                # Participle of verb - not supported by corpus
+                (PERTAINYM, 'Pertainyms',
+                   lemma_property(word, synset, lambda l: l.pertainyms())),
+                (ATTRIBUTE, 'Attributes',
+                   synset.attributes()),
+                (ALSO_SEE, 'Also see',
+                   synset.also_sees()))
+    elif synset.pos == wordnet.ADV:
+        # This is weird. adverbs such as 'quick' and 'fast' don't seem
+        # to have antonyms returned by the corpus.a
+        return ((ANTONYM, 'Antonym',
+                   lemma_property(word, synset, lambda l: l.antonyms())),)
+                # Derived from adjective - not supported by corpus
     else:
-        return []
+        raise TypeError("Unhandles synset POS type: " + str(synset.pos))
 
 
 html_header = '''
