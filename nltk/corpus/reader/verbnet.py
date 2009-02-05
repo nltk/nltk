@@ -136,7 +136,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         else:
             raise ValueError('Unknown identifier %s' % fileid_or_classid)
 
-    def files(self, vnclass_ids=None):
+    def fileids(self, vnclass_ids=None):
         """
         Return a list of files that make up this corpus.  If
         C{vnclass_ids} is specified, then return the files that make
@@ -149,6 +149,12 @@ class VerbnetCorpusReader(XMLCorpusReader):
         else:
             return [self._class_to_fileid[self.longid(vnclass_id)]
                     for vnclass_id in vnclass_ids]
+
+    #{ Deprecated since 0.9.7
+    @deprecated("Use corpus.files() instead")
+    def files(self, vnclass_ids=None):
+        return self.fileids(vnclass_ids)
+    #}
     
     ######################################################################
     #{ Index Initialization

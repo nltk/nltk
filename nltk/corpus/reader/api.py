@@ -116,7 +116,7 @@ class CorpusReader(object):
             path = '%s' % self._root.path
         return '<%s in %r>' % (self.__class__.__name__, path)
 
-    def files(self):
+    def fileids(self):
         """
         Return a list of file identifiers for the files that make up
         this corpus.
@@ -193,9 +193,14 @@ class CorpusReader(object):
 
         @type: L{PathPointer}""")
 
+    #{ Deprecated since 0.9.7
+    @deprecated("Use corpus.fileids() instead")
+    def files(self): return self.fileids()
+    #}
+
     #{ Deprecated since 0.9.1
     @deprecated("Use corpus.files() instead")
-    def _get_items(self): return self.files()
+    def _get_items(self): return self.fileids()
     items = property(_get_items)
 
     @deprecated("Use corpus.abspaths() instead")
@@ -293,7 +298,7 @@ class CategorizedCorpusReader(object):
             for line in self.open(self._file).readlines():
                 line = line.strip()
                 file_id, categories = line.split(self._delimiter, 1)
-                if file_id not in self.files():
+                if file_id not in self.fileids():
                     raise ValueError('In category mapping file %s: %s '
                                      'not found' % (catfile, file_id))
                 for category in categories.split(self._delimiter):
@@ -315,13 +320,13 @@ class CategorizedCorpusReader(object):
             files = [files]
         return sorted(sum((self._f2c[d] for d in files), []))
 
-    def files(self, categories=None):
+    def fileids(self, categories=None):
         """
         Return a list of file identifiers for the files that make up
         this corpus, or that make up the given category(s) if specified.
         """
         if categories is None:
-            return super(CategorizedCorpusReader, self).files()
+            return super(CategorizedCorpusReader, self).fileids()
         elif isinstance(categories, basestring):
             if self._f2c is None: self._init()
             return sorted(self._c2f[categories])
