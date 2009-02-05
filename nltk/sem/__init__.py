@@ -18,9 +18,10 @@ from logic import *
 
 try:
     import sqlite3
-    
+except ImportError:
+    import warnings
+    warnings.warn("nltk.sem.relextract and nltk.sem.chat80 modules not "
+                  "loaded (please install sqlite3 library")
+else:    
     from relextract import *
     from chat80 import *
-
-except ImportError:
-    print "Warning: nltk.sem.relextract and nltk.sem.chat80 modules\nnot loaded (please install sqlite3 library)."
