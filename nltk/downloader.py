@@ -161,8 +161,13 @@ they didn't download that model.
 default: unzip or not?
     
 """
-import time, re, os, zipfile, sys, hashlib, textwrap, threading, itertools
+import time, re, os, zipfile, sys, textwrap, threading, itertools
 from cStringIO import StringIO
+try:
+    from hashlib import md5
+except:
+    from md5 import md5
+    
 try:
     TKINTER = True
     from Tkinter import *
