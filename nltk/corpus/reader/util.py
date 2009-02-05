@@ -249,6 +249,12 @@ class StreamBackedCorpusView(AbstractLazySequence):
     # If we wanted to be thread-safe, then this method would need to
     # do some locking.
     def iterate_from(self, start_tok):
+        # Start by feeding from the cache, if possible.
+        if self._cache[0] <= start_tok < self._cache[1]:
+            for tok in self._cache[2][start_tok-self._cache[0]:]:
+                yield tok
+                start_tok += 1
+        
         # Decide where in the file we should start.  If `start` is in
         # our mapping, then we can jump straight to the correct block;
         # otherwise, start at the last block we've processed.
@@ -299,17 +305,18 @@ class StreamBackedCorpusView(AbstractLazySequence):
                         'inconsistent block reader (num chars read)')
                     assert toknum+num_toks == self._toknum[block_index], (
                         'inconsistent block reader (num tokens returned)')
-                    
+
+            # If we reached the end of the file, then update self._len
+            if new_filepos == self._eofpos:
+                self._len = toknum + num_toks
             # Generate the tokens in this block (but skip any tokens
             # before start_tok).  Note that between yields, our state
             # may be modified.
             for tok in tokens[max(0, start_tok-toknum):]:
                 yield tok
             # If we're at the end of the file, then we're done.
-            # Set our length and terminate the generator.
             assert new_filepos <= self._eofpos
             if new_filepos == self._eofpos:
-                self._len = toknum + num_toks
                 break
             # Update our indices
             toknum += num_toks
