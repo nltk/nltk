@@ -25,13 +25,13 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'wordpunct_tokenize', 'regexp_tokenize', 'word_tokenize',
            'SExprTokenizer', 'sexpr_tokenize', 'line_tokenize',
            'PunktWordTokenizer', 'PunktSentenceTokenizer',
-           'TreebankWordTokenizer',
+           'TreebankWordTokenizer', 'sent_tokenize', 'word_tokenize'
            ]
 
 # Standard sentence tokenizer.
 def sent_tokenize(text):
     """
-    Use NLTK's currently recommented sentence tokenizer to tokenize
+    Use NLTK's currently recommended sentence tokenizer to tokenize
     sentences in the given text.  Currently, this uses
     L{PunktSentenceTokenizer}.
     """
@@ -42,7 +42,7 @@ def sent_tokenize(text):
 _word_tokenize = TreebankWordTokenizer().tokenize
 def word_tokenize(text):
     """
-    Use NLTK's currently recommented word tokenizer to tokenize words
+    Use NLTK's currently recommended word tokenizer to tokenize words
     in the given sentence.  Currently, this uses
     L{TreebankWordTokenizer}.  This tokenizer should be fed a single
     sentence at a time.
