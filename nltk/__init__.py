@@ -80,8 +80,15 @@ from internals import config_java
 import chat, chunk, corpus, parse, metrics, sem, stem, tag, tokenize
 
 # Import Tkinter-based modules if Tkinter is installed
+from downloader import download, download_shell
 try:
-    import app, draw
-    from downloader import download, download_shell, download_gui  # should just be the GUI in here
+    import Tkinter
 except ImportError:
-    print "Warning: app, draw and downloader packages not loaded (please install Tkinter library)."
+    import warnings
+    warnings.warn("draw module, app module, and gui downloader not loaded "
+                  "(please install Tkinter library).")
+else:
+    import draw, app
+=======
+    import app, draw
+    from downloader import download_gui
