@@ -15,7 +15,9 @@ from simple import *
 from regexp import *
 from punkt import *
 from sexpr import *
+from treebank import *
 from nltk.internals import deprecated
+import nltk
 
 __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',
@@ -23,7 +25,29 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'wordpunct_tokenize', 'regexp_tokenize', 'word_tokenize',
            'SExprTokenizer', 'sexpr_tokenize', 'line_tokenize',
            'PunktWordTokenizer', 'PunktSentenceTokenizer',
+           'TreebankWordTokenizer',
            ]
+
+# Standard sentence tokenizer.
+def sent_tokenize(text):
+    """
+    Use NLTK's currently recommented sentence tokenizer to tokenize
+    sentences in the given text.  Currently, this uses
+    L{PunktSentenceTokenizer}.
+    """
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    return tokenizer.tokenize(text)
+    
+# Standard word tokenizer.
+_word_tokenize = TreebankWordTokenizer().tokenize
+def word_tokenize(text):
+    """
+    Use NLTK's currently recommented word tokenizer to tokenize words
+    in the given sentence.  Currently, this uses
+    L{TreebankWordTokenizer}.  This tokenizer should be fed a single
+    sentence at a time.
+    """
+    return _word_tokenize(text)
 
 ######################################################################
 #{ Deprecated since 0.8
