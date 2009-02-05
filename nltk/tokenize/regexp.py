@@ -126,8 +126,11 @@ class WordPunctTokenizer(RegexpTokenizer):
     def __init__(self):
         RegexpTokenizer.__init__(self, r'\w+|[^\w\s]+')
 
-class WordTokenizer(RegexpTokenizer):
+class WordTokenizer(RegexpTokenizer, Deprecated):
     """
+    B{If you want to tokenize words, you should probably use
+    TreebankWordTokenizer or word_tokenize() instead.}
+    
     A tokenizer that divides a text into sequences of alphabetic
     characters.  Any non-alphabetic characters are discarded.  E.g.:
 
@@ -153,4 +156,3 @@ def regexp_tokenize(text, pattern, gaps=False, discard_empty=True,
 
 blankline_tokenize = BlanklineTokenizer().tokenize
 wordpunct_tokenize = WordPunctTokenizer().tokenize
-word_tokenize = WordTokenizer().tokenize
