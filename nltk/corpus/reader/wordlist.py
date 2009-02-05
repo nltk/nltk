@@ -40,7 +40,7 @@ class SwadeshCorpusReader(WordListCorpusReader):
         @return: a tuple of words for the specified files.
         """
         if not files:
-            files = self.files()
+            files = self.fileids()
 
         wordlists = [self.words(f) for f in files]
         return zip(*wordlists)

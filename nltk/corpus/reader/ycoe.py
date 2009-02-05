@@ -43,8 +43,8 @@ class YCOECorpusReader(CorpusReader):
             self.root.join('pos'), '.*', '.pos', encoding=encoding)
 
         # Make sure we have a consistent set of items:
-        documents = set(f[:-4] for f in self._psd_reader.files())
-        if set(f[:-4] for f in self._pos_reader.files()) != documents:
+        documents = set(f[:-4] for f in self._psd_reader.fileids())
+        if set(f[:-4] for f in self._pos_reader.fileids()) != documents:
             raise ValueError('Items in "psd" and "pos" '
                              'subdirectories do not match.')
 
@@ -69,7 +69,7 @@ class YCOECorpusReader(CorpusReader):
         # Strip off the '.pos' and '.psd' extensions.
         return sorted(set(f[:-4] for f in files))
 
-    def files(self, documents=None):
+    def fileids(self, documents=None):
         """
         Return a list of file identifiers for the files that make up
         this corpus, or that store the given document(s) if specified.

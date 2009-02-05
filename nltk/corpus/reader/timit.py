@@ -170,7 +170,7 @@ class TimitCorpusReader(CorpusReader):
         self.speakers = tuple(sorted(set(u.split('/')[0]
                                          for u in self._utterances)))
 
-    def files(self, filetype=None):
+    def fileids(self, filetype=None):
         """
         Return a list of file identifiers for the files that make up
         this corpus.
@@ -181,7 +181,7 @@ class TimitCorpusReader(CorpusReader):
             C{wav}, or C{metadata},
         """
         if filetype is None:
-            return CorpusReader.files(self)
+            return CorpusReader.fileids(self)
         elif filetype in ('txt', 'wrd', 'phn', 'wav'):
             return ['%s.%s' % (u, filetype) for u in self._utterances]
         elif filetype == 'metadata':
@@ -189,7 +189,7 @@ class TimitCorpusReader(CorpusReader):
         else:
             raise ValueError('Bad value for filetype: %r' % filetype)
 
-    def utterances(self, dialect=None, sex=None, spkrid=None,
+    def utteranceids(self, dialect=None, sex=None, spkrid=None,
                    sent_type=None, sentid=None):
         """
         @return: A list of the utterance identifiers for all
@@ -238,7 +238,7 @@ class TimitCorpusReader(CorpusReader):
     def utterance(self, spkrid, sentid):
         return '%s/%s' % (spkrid, sentid)
 
-    def spkrutterances(self, speaker):
+    def spkrutteranceids(self, speaker):
         """
         @return: A list of all utterances associated with a given
         speaker.
@@ -408,10 +408,21 @@ class TimitCorpusReader(CorpusReader):
         print >>sys.stderr, ("you must install pygame or ossaudiodev "
                              "for audio playback.")
 
+    #{ Deprecated since 0.9.7
+    @deprecated("Use corpus.files() instead")
+    def files(self, filetype=None): return self.fileids(filetype)
+    @deprecated("Use corpus.utteranceids() instead")
+    def utterances(self, dialect=None, sex=None, spkrid=None,
+                   sent_type=None, sentid=None):
+        return self.utteranceids(dialect, sex, spkrid, sent_type, sentid)
+    @deprecated("Use corpus.spkrutteranceids() instead")
+    def spkrutterances(self, speaker): return self.utteranceids(speaker)
+    #}
+        
     #{ Deprecated since 0.9.1
-    @deprecated("Use utterances(spkrid=...) instead.")
+    @deprecated("Use utteranceids(spkrid=...) instead.")
     def spkritems(self, spkrid):
-        return self.utterances(spkrid=spkrid)
+        return self.utteranceids(spkrid=spkrid)
     #}
 
     #{ Deprecated since 0.8
