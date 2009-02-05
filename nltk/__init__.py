@@ -88,7 +88,5 @@ except ImportError:
     warnings.warn("draw module, app module, and gui downloader not loaded "
                   "(please install Tkinter library).")
 else:
-    import draw, app
-=======
     import app, draw
     from downloader import download_gui
