@@ -680,6 +680,12 @@ def split_pysrc_into_statements(s):
 ###########################################################################
 
 def run(names, optionflags, verbosity):
+    # temporary hack:
+#    for name in names:
+#        testfile(name, optionflags=optionflags, verbose=True,
+#                 module_relative=False)
+#    return
+
     suite = unittest.TestSuite()
     for name in names:
         try:
