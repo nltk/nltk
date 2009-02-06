@@ -4,6 +4,7 @@ Taggers
 
 Overview
 ~~~~~~~~
+
 The ``nltk.tag`` module defines functions and classes for manipulating
 *tagged tokens*, which combine a basic token value with a tag.  *Tags*
 are case-sensitive strings that identify some property of a token,
@@ -12,6 +13,14 @@ such as its part of speech.  Tagged tokens are encoded as tuples
 the word ``'fly'`` with a noun part of speech tag (``'NN'``):
 
     >>> tagged_tok = ('fly', 'NN')
+
+An off-the-shelf tagger is available.  It uses the Penn Treebank tagset:
+
+    >>> from nltk import pos_tag, word_tokenize
+    >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+    [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
+    'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
+    ('.', '.')]
 
 String Representation for Tagged Tokens
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
