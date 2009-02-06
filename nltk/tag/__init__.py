@@ -18,10 +18,14 @@ from simplify import *
 from sequential import *
 from brill import *
 from tnt import *
+import nltk
 
 __all__ = [
     # Tagger interface
     'TaggerI',
+
+    # Standard POS tagger
+    'pos_tag', 'batch_pos_tag',
     
     # Should these be included:?
     #'SequentialBackoffTagger', 'ContextTagger',
@@ -48,6 +52,25 @@ try:
 except ImportError:
     pass
 
+# Standard treebank POS tagger
+_POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
+def pos_tag(tokens):
+    """
+    Use NLTK's currently recommended part of speech tagger to
+    tag the given list of tokens.  Currently, this uses
+    L{PunktSentenceTokenizer}.
+    """
+    tagger = nltk.data.load(_POS_TAGGER)
+    return tagger.tag(tokens)
+
+def batch_pos_tag(sentences):
+    """
+    Use NLTK's currently recommended part of speech tagger to tag the
+    given list of sentences, each consisting of a list of tokens.
+    Currently, this uses L{ClassifierBasedPOSTagger}.
+    """
+    tagger = nltk.data.load(_POS_TAGGER)
+    return tagger.batch_tag(sentences)
 
 ######################################################################
 #{ Deprecated
