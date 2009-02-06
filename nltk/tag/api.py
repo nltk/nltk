@@ -11,7 +11,9 @@ Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
 
-from nltk.internals import overridden
+from nltk.internals import overridden, deprecated
+from nltk.metrics import accuracy as _accuracy
+from util import untag
 
 class TaggerI(object):
     """
@@ -35,19 +37,58 @@ class TaggerI(object):
 
         @rtype: C{list} of C{(token, tag)}
         """
-        if overridden(self.batch_tag):
-            return self.batch_tag([tokens])[0]
+        if overridden(self.tag_sents):
+            return self.tag_sents([tokens])[0]
         else:
             raise NotImplementedError()
 
+    @deprecated('Use tag_sents instead.')
     def batch_tag(self, sentences):
+        tag_sents(self, sentences)
+
+    def tag_sents(self, sentences):
         """
         Apply L{self.tag()} to each element of C{sentences}.  I.e.:
 
-            >>> return [self.tag(tokens) for tokens in sentences]
+            >>> return [self.tag(sent) for sent in sentences]
         """
-        return [self.tag(tokens) for tokens in sentences]
+        return [self.tag(sent) for sent in sentences]
 
+    def evaluate(self, gold):
+        """
+        Score the accuracy of the tagger against the gold standard.
+        Strip the tags from the gold standard text, retag it using
+        the tagger, then compute the accuracy score.
+
+        @type gold: C{list} of C{(token, tag)}
+        @param gold: The list of tagged tokens to score the tagger on.
+        @rtype: C{float}
+        """
+        return self.evaluate_sents([gold])
+        
+    def evaluate_sents(self, gold):
+        """
+        Score the accuracy of the tagger against the gold standard.
+        Strip the tags from the gold standard text, retag it using
+        the tagger, then compute the accuracy score.
+
+        @type gold: C{list} of C{list} of C{(token, tag)}
+        @param gold: The list of tagged sentences to score the tagger on.
+        @rtype: C{float}
+        """
+
+        tagged_sents = self.tag_sents([untag(sent) for sent in gold])
+        gold_tokens = sum(gold, [])
+        test_tokens = sum(tagged_sents, [])
+        return _accuracy(gold_tokens, test_tokens)
+
+    def _check_params(self, train_words, train_sents, model):
+        if train_words and train_sents:
+            raise ValueError('Must not specify both word-level and sentence-level training data.')
+        train = train_words or train_sents
+        if (train and model) or (not train and not model):
+            raise ValueError('Must specify either training data or trained model.')
+        
 class FeaturesetTaggerI(TaggerI):
     """
     A tagger that requires tokens to be I{featuresets}.  A featureset
@@ -55,7 +96,7 @@ class FeaturesetTaggerI(TaggerI):
     values}.  See L{nltk.classify} for more information about features
     and featuresets.
     """
-    
+
     
 class HiddenMarkovModelTaggerTransformI(object):
     """
