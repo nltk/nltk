@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2009 NLTK Project
+# Copyright (C) 2001-2009 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -29,7 +29,7 @@ class TreebankWordTokenizer(TokenizerI):
       - weren't S{-} were n't
 
     This tokenizer assumes that sentences have already been tokenized.
-    Therefore, periods are only split off as seperate tokens when they
+    Therefore, periods are only split off as separate tokens when they
     occur at the end of the string.
     """
     # List of contractions adapted from Robert MacIntyre's tokenizer.
@@ -53,17 +53,17 @@ class TreebankWordTokenizer(TokenizerI):
         for regexp in self.CONTRACTIONS3:
             text = regexp.sub(r'\1 \2 \3', text)
 
-        # Seperate most punctuation
+        # Separate most punctuation
         text = re.sub(r"([^\w\.\'\-\/,&])", r' \1 ', text)
 
-        # Seperate commas if they're followed by space.
-        # (E.g., don't seperate 2,500)
+        # Separate commas if they're followed by space.
+        # (E.g., don't separate 2,500)
         text = re.sub(r"(,\s)", r' \1', text)
 
-        # Seperate single quotes if they're followed by a space.
+        # Separate single quotes if they're followed by a space.
         text = re.sub(r"('\s)", r' \1', text)
 
-        # Seperate periods that come before newline or end of string.
+        # Separate periods that come before newline or end of string.
         text = re.sub('\. *(\n|$)', ' . ', text)
 
         return text.split()
