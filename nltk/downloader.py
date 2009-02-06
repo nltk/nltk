@@ -1856,7 +1856,7 @@ def md5_hexdigest(file):
     if isinstance(file, basestring):
         file = open(file, 'rb')
     
-    md5_digest = hashlib.md5()
+    md5_digest = md5()
     while True:
         block = file.read(1024*16) # 16k blocks
         if not block: break

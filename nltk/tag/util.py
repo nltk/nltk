@@ -63,22 +63,10 @@ def untag(tagged_sentence):
     """
     return [w for (w, t) in tagged_sentence]
 
+@deprecated("use tagger.evaluate_sents(gold)")
 def accuracy(tagger, gold):
-    """
-    Score the accuracy of the tagger against the gold standard.
-    Strip the tags from the gold standard text, retag it using
-    the tagger, then compute the accuracy score.
+    return tagger.evaluate_sents(gold)
 
-    @type tagger: C{TaggerI}
-    @param tagger: The tagger being evaluated.
-    @type gold: C{list} of C{Token}
-    @param gold: The list of tagged tokens to score the tagger on.
-    @rtype: C{float}
-    """
-    tagged_sents = tagger.batch_tag([untag(sent) for sent in gold])
-    gold_tokens = sum(gold, [])
-    test_tokens = sum(tagged_sents, [])
-    return _accuracy(gold_tokens, test_tokens)
 
 ######################################################################
 #{ Deprecated

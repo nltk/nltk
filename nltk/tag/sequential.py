@@ -22,7 +22,6 @@ backoff tagger for any other C{SequentialBackoffTagger}.
 import re, yaml
 
 from nltk import FreqDist, ConditionalFreqDist
-from nltk.internals import deprecated, Deprecated
 from nltk.classify.naivebayes import NaiveBayesClassifier
 
 from api import *
@@ -103,12 +102,6 @@ class SequentialBackoffTagger(TaggerI):
         """
         raise AssertionError('SequentialBackoffTagger is an abstract class')
 
-    #////////////////////////////////////////////////////////////
-    #{ Deprecated
-    
-    @deprecated('Use batch_tag instead.')
-    def tag_sents(self, sents, verbose=False):
-        self.tag_batch(sents, verbose)
 
 class ContextTagger(SequentialBackoffTagger):
     """
@@ -175,6 +168,13 @@ class ContextTagger(SequentialBackoffTagger):
             fewer than C{cutoff} times, then exclude it from the
             context-to-tag table for the new tagger.
         """
+
+        # temporary check, since default behavior has changed in 0.9.8
+        if not (isinstance(tagged_corpus[0], list)
+                and isinstance(tagged_corpus[0][1], str)):
+            raise ValueError("Tagger training data not in expected format: " +
+                             "Use XTagger(<tagged words>) or XTagger(train_sents=<tagged sents>)")
+        
         token_count = hit_count = 0
 
         # A context is considered 'useful' if it's not already tagged
@@ -249,8 +249,8 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
     """
     yaml_tag = '!nltk.NgramTagger'
     
-    def __init__(self, n, train=None, model=None, backoff=None,
-                 cutoff=0, verbose=False):
+    def __init__(self, n, train_words=None, train_sents=None, model=None,
+                 backoff=None, cutoff=0, verbose=False):
         """
         Train a new C{NgramTagger} using the given training data or
         the supplied model.  In particular, construct a new tagger
@@ -259,8 +259,10 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
         contexts that are already tagged perfectly by the backoff
         tagger.
         
-        @param train: A tagged corpus.  Each item should be
-            a C{list} of C{(word, tag)} tuples.
+        @param train_words: A tagged corpus consisting of a C{list} of
+            of C{(word, tag)} tuples.
+        @param train_sents: A tagged corpus consisting of a C{list} of tagged
+            sentences, where each sentence is a C{list} of C{(word, tag)} tuples.
         @param backoff: A backoff tagger, to be used by the new
             tagger if it encounters an unknown context.
         @param cutoff: If the most likely tag for a context occurs
@@ -268,12 +270,14 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
             context-to-tag table for the new tagger.
         """
         self._n = n
+        self._check_params(train_words, train_sents, model)
         
-        if (train and model) or (not train and not model):
-            raise ValueError('Must specify either training data or trained model.')
         ContextTagger.__init__(self, model, backoff)
-        if train:
-            self._train(train, cutoff, verbose)
+        
+        if train_words or train_sents:
+            if train_words:
+                train_sents = [train_words]
+            self._train(train_sents, cutoff, verbose)
             
     def context(self, tokens, index, history):
         tag_context = tuple(history[max(0,index-self._n+1):index])
@@ -287,9 +291,10 @@ class UnigramTagger(NgramTagger):
     """
     yaml_tag = '!nltk.UnigramTagger'
 
-    def __init__(self, train=None, model=None, backoff=None,
-                 cutoff=0, verbose=False):
-        NgramTagger.__init__(self, 1, train, model, backoff, cutoff, verbose)
+    def __init__(self, train_words=None, train_sents=None, model=None,
+                 backoff=None, cutoff=0, verbose=False):
+        NgramTagger.__init__(self, 1, train_words, train_sents, model,
+                             backoff, cutoff, verbose)
 
     def context(self, tokens, index, history):
         return tokens[index]
@@ -305,9 +310,10 @@ class BigramTagger(NgramTagger):
     """
     yaml_tag = '!nltk.BigramTagger'
 
-    def __init__(self, train=None, model=None, backoff=None,
-                 cutoff=0, verbose=False):
-        NgramTagger.__init__(self, 2, train, model, backoff, cutoff, verbose)
+    def __init__(self, train_words=None, train_sents=None, model=None,
+                 backoff=None, cutoff=0, verbose=False):
+        NgramTagger.__init__(self, 2, train_words, train_sents, model,
+                             backoff, cutoff, verbose)
 
 
 class TrigramTagger(NgramTagger):
@@ -320,9 +326,10 @@ class TrigramTagger(NgramTagger):
     """
     yaml_tag = '!nltk.TrigramTagger'
 
-    def __init__(self, train=None, model=None, backoff=None,
-                 cutoff=0, verbose=False):
-        NgramTagger.__init__(self, 3, train, model, backoff, cutoff, verbose)
+    def __init__(self, train_words=None, train_sents=None, model=None,
+                 backoff=None, cutoff=0, verbose=False):
+        NgramTagger.__init__(self, 3, train_words, train_sents, model,
+                             backoff, cutoff, verbose)
 
 
 class AffixTagger(ContextTagger, yaml.YAMLObject):
@@ -337,8 +344,8 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
     """
     yaml_tag = '!nltk.AffixTagger'
 
-    def __init__(self, train=None, model=None, affix_length=-3,
-                 min_stem_length=2, backoff=None, cutoff=0, verbose=False):
+    def __init__(self, train_words=None, train_sents=None, model=None,
+                 affix_length=-3, min_stem_length=2, backoff=None, cutoff=0, verbose=False):
         """
         Construct a new affix tagger.
         
@@ -349,16 +356,17 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
             C{min_stem_length+abs(affix_length)} will be assigned a
             tag of C{None} by this tagger.
         """
-        if (train and model) or (not train and not model):
-            raise ValueError('Must specify either training data or '
-                             'trained model')
+        self._check_params(train_words, train_sents, model)
+        
         ContextTagger.__init__(self, model, backoff)
 
         self._affix_length = affix_length
         self._min_word_length = min_stem_length + abs(affix_length)
 
-        if train:
-            self._train(train, cutoff, verbose)
+        if train_words or train_sents:
+            if train_words:
+                train_sents = [train_words]
+            self._train(train_sents, cutoff, verbose)
 
     def context(self, tokens, index, history):
         token = tokens[index]
@@ -413,7 +421,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     should be performed; and C{history} is list of the tags for all
     tokens before C{index}.
     """
-    def __init__(self, feature_detector, train=None, 
+    def __init__(self, feature_detector, train_words=None, train_sents=None, 
                  classifier_builder=NaiveBayesClassifier.train,
                  classifier=None, backoff=None,
                  cutoff_prob=None, verbose=False):
@@ -424,8 +432,11 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
             featureset input for the classifier::
                 feature_detector(tokens, index, history) -> featureset
 
-        @param train: A tagged corpus.  Each item should be a C{list}
+        @param train_words: A tagged corpus consisting of a C{list} of
             of C{(word, tag)} tuples.
+            
+        @param train_sents: A tagged corpus consisting of a C{list} of tagged
+            sentences, where each sentence is a C{list} of C{(word, tag)} tuples.
             
         @param backoff: A backoff tagger, to be used by the new tagger
             if it encounters an unknown context.
@@ -447,11 +458,9 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
             back on its backoff tagger if the probability of the most
             likely tag is less than C{cutoff_prob}.
         """
+        self._check_params(train_words, train_sents, model)
+
         SequentialBackoffTagger.__init__(self, backoff)
-        
-        if (train and classifier) or (not train and not classifier):
-            raise ValueError('Must specify either training data or '
-                             'trained classifier.')
         
         self._feature_detector = feature_detector
         """The feature detector function, used to generate a featureset
@@ -464,9 +473,11 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         
         self._classifier = classifier
         """The classifier used to choose a tag for each token."""
-        
-        if train:
-            self._train(train, classifier_builder, verbose)
+
+        if train_words or train_sents:
+            if train_words:
+                train_sents = [train_words]
+            self._train(train_sents, classifier_builder, verbose)
 
     def choose_tag(self, tokens, index, history):
         # Use our feature detector to get the featureset.
@@ -490,14 +501,20 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         Build a new classifier, based on the given training data
         (C{tagged_corpus}).
         """
+
+        # temporary check, since default behavior has changed in 0.9.8
+        if not (isinstance(tagged_corpus[0], list)
+                and isinstance(tagged_corpus[0][1], str)):
+            raise ValueError("Tagger training data not in expected format: " +
+                             "Use XTagger(<tagged words>) or XTagger(train_sents=<tagged sents>)")
+
         classifier_corpus = []
         if verbose:
             print 'Constructing training corpus for classifier.'
         
         for sentence in tagged_corpus:
             history = []
-            untagged_sentence = [tok for (tok, tag) in sentence]
-            tags = [tag for (tok, tag) in sentence]
+            untagged_sentence, tags = zip(*sentence)
             for index in range(len(sentence)):
                 featureset = self._feature_detector(untagged_sentence,
                                                     index, history)

@@ -25,7 +25,7 @@ __all__ = [
     'TaggerI',
 
     # Standard POS tagger
-    'pos_tag', 'batch_pos_tag',
+    'pos_tag', 'pos_tag_sents',
     
     # Should these be included:?
     #'SequentialBackoffTagger', 'ContextTagger',
@@ -57,71 +57,15 @@ _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
 def pos_tag(tokens):
     """
     Use NLTK's currently recommended part of speech tagger to
-    tag the given list of tokens.  Currently, this uses
-    L{PunktSentenceTokenizer}.
+    tag the given list of tokens.
     """
     tagger = load(_POS_TAGGER)
     return tagger.tag(tokens)
 
-def batch_pos_tag(sentences):
+def pos_tag_sents(sentences):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
-    Currently, this uses L{ClassifierBasedPOSTagger}.
     """
     tagger = load(_POS_TAGGER)
-    return tagger.batch_tag(sentences)
-
-######################################################################
-#{ Deprecated
-######################################################################
-from nltk.internals import Deprecated
-class TagI(TaggerI, Deprecated):
-    """Use nltk.TaggerI instead."""
-class SequentialBackoff(SequentialBackoffTagger, Deprecated):
-    """Use nltk.SequentialBackoffTagger instead.  Note: the methods
-    used to subclass SequentialBackoffTagger do not match those of
-    the old nltk.tag.SequentialBackoff; see the api docs for info."""
-class Ngram(SequentialBackoffTagger, Deprecated):
-    """Use nltk.NgramTagger instead.  Note: NgramTagger.train() is now
-    a factory method."""
-    def __init__(self, n, cutoff=1, backoff=None):
-        SequentialBackoffTagger.__init__(self, backoff)
-        self._cutoff = cutoff
-        self._n = n
-    def train(self, tagged_corpus, verbose=False):
-        self._tagger = NgramTagger.train(
-            tagged_corpus, self._n, self.backoff, self._cutoff, verbose)
-    def choose_tag(self, tokens, index, history):
-        return self._tagger.choose_tag(tokens, index, history)
-class Unigram(Ngram, Deprecated):
-    """Use nltk.UnigramTagger instead."""
-    def __init__(self, cutoff=1, backoff=None):
-        Ngram.__init__(self, 1, cutoff, backoff)
-class Bigram(Ngram, Deprecated):
-    """Use nltk.BigramTagger instead."""
-    def __init__(self, cutoff=1, backoff=None):
-        Ngram.__init__(self, 2, cutoff, backoff)
-class Trigram(Ngram, Deprecated):
-    """Use nltk.TrigramTagger instead."""
-    def __init__(self, cutoff=1, backoff=None):
-        Ngram.__init__(self, 3, cutoff, backoff)
-class Affix(SequentialBackoffTagger, Deprecated):
-    """Use nltk.AffixTagger instead."""
-    def __init__(self, length, minlength, backoff=None):
-        SequentialBackoffTagger.__init__(self, backoff)
-        self._len = length
-        self._minlen = minlength
-        self._cutoff = cutoff
-    def train(self, tagged_corpus):
-        self._tagger = AffixTagger.train(
-            tagged_corpus, self._minlen, self._len, self.backoff)
-    def choose_tag(self, tokens, index, history):
-        return self._tagger.choose_tag(tokens, index, history)
-class Lookup(UnigramTagger, Deprecated):
-    """Use UnigramTagger instead."""
-class Regexp(RegexpTagger, Deprecated):
-    """Use RegexpTagger instead."""
-
-    
-    
+    return tagger.tag_sents(sentences)
