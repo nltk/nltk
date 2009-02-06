@@ -18,7 +18,7 @@ from simplify import *
 from sequential import *
 from brill import *
 from tnt import *
-import nltk
+from nltk.data import load
 
 __all__ = [
     # Tagger interface
@@ -60,7 +60,7 @@ def pos_tag(tokens):
     tag the given list of tokens.  Currently, this uses
     L{PunktSentenceTokenizer}.
     """
-    tagger = nltk.data.load(_POS_TAGGER)
+    tagger = load(_POS_TAGGER)
     return tagger.tag(tokens)
 
 def batch_pos_tag(sentences):
@@ -69,7 +69,7 @@ def batch_pos_tag(sentences):
     given list of sentences, each consisting of a list of tokens.
     Currently, this uses L{ClassifierBasedPOSTagger}.
     """
-    tagger = nltk.data.load(_POS_TAGGER)
+    tagger = load(_POS_TAGGER)
     return tagger.batch_tag(sentences)
 
 ######################################################################
