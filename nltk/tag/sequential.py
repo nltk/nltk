@@ -169,9 +169,13 @@ class ContextTagger(SequentialBackoffTagger):
             context-to-tag table for the new tagger.
         """
 
-        # temporary check, since default behavior has changed in 0.9.8
-        if not (isinstance(tagged_corpus[0], list)
-                and isinstance(tagged_corpus[0][1], str)):
+        # Temporary check, since default behavior has changed in 0.9.8:
+        # The tagged corpus should consist of (non-empty) sentences
+        #   and sentences should consist of tagged tuples.
+        # Too much or too little nesting will cause a ValueError
+        try:
+            assert isinstance(tagged_corpus[0][0], tuple)
+        except Exception:
             raise ValueError("Tagger training data not in expected format: " +
                              "Use XTagger(<tagged words>) or XTagger(train_sents=<tagged sents>)")
         
@@ -502,9 +506,13 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         (C{tagged_corpus}).
         """
 
-        # temporary check, since default behavior has changed in 0.9.8
-        if not (isinstance(tagged_corpus[0], list)
-                and isinstance(tagged_corpus[0][1], str)):
+        # Temporary check, since default behavior has changed in 0.9.8:
+        # The tagged corpus should consist of (non-empty) sentences
+        #   and sentences should consist of tagged tuples.
+        # Too much or too little nesting will cause a ValueError
+        try:
+            assert isinstance(tagged_corpus[0][0], tuple)
+        except Exception:
             raise ValueError("Tagger training data not in expected format: " +
                              "Use XTagger(<tagged words>) or XTagger(train_sents=<tagged sents>)")
 
