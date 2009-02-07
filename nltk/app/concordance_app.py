@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Concordance Search Demo
+# Natural Language Toolkit: Concordance Application
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
@@ -523,12 +523,11 @@ class ConcordanceSearchModel(object):
                     new.append(BOUNDARY + term + '/' + WORD_OR_TAG + BOUNDARY)
             return ' '.join(new)
         
-def pos_concordance():
+def app():
     d = ConcordanceSearchView()
     d.mainloop()
         
-def demo():
-    pos_concordance()
-
 if __name__ == '__main__':
-    demo()
+    app()
+
+__all__ = ['app']

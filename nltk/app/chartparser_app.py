@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Chart Parser Demo
+# Natural Language Toolkit: Chart Parser Application
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
@@ -325,7 +325,7 @@ class ChartResultsView(object):
 
         if toplevel:
             self._root = Tkinter.Toplevel(parent)
-            self._root.title('Chart Parsing Demo: Results')
+            self._root.title('Chart Parser Application: Results')
             self._root.bind('<Control-q>', self.destroy)
         else:
             self._root = Tkinter.Frame(parent)
@@ -836,7 +836,7 @@ class ChartComparer(object):
 
 class ChartView(object):
     """
-    A component for viewing charts.  This is used by C{ChartDemo} to
+    A component for viewing charts.  This is used by C{ChartParserApp} to
     allow students to interactively experiment with various chart
     parsing techniques.  It is also used by C{Chart.draw()}.
 
@@ -1639,11 +1639,11 @@ class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule): pass
 class PseudoEarleyEdgeRule(EdgeRule, PseudoEarleyRule): pass
 
 #######################################################################
-# Chart Demo
+# Chart Parser Application
 #######################################################################
 
-class ChartDemo(object):
-    def __init__(self, grammar, tokens, title='Chart Parsing Demo'):
+class ChartParserApp(object):
+    def __init__(self, grammar, tokens, title='Chart Parser Application'):
         # Initialize the parser
         self._init_parser(grammar, tokens)
         
@@ -1990,16 +1990,16 @@ class ChartDemo(object):
         self._animating = 0
         # The default font's not very legible; try using 'fixed' instead. 
         try:
-            ShowText(self._root, 'Help: Chart Parser Demo',
+            ShowText(self._root, 'Help: Chart Parser Application',
                      (__doc__).strip(), width=75, font='fixed')
         except:
-            ShowText(self._root, 'Help: Chart Parser Demo',
+            ShowText(self._root, 'Help: Chart Parser Application',
                      (__doc__).strip(), width=75)
 
     def about(self, *e):
-        ABOUT = ("NLTK Chart Parser Demo\n"+
+        ABOUT = ("NLTK Chart Parser Application\n"+
                  "Written by Edward Loper")
-        tkMessageBox.showinfo('About: Chart Parser Demo', ABOUT)
+        tkMessageBox.showinfo('About: Chart Parser Application', ABOUT)
 
     #////////////////////////////////////////////////////////////
     # File Menu
@@ -2249,7 +2249,7 @@ class ChartDemo(object):
     def earley_algorithm(self, *e):
         self.apply_strategy(self._EARLEY, PseudoEarleyEdgeRule)
         
-def demo():
+def app():
     grammar = parse_cfg("""
     # Grammatical productions.
         S -> NP VP
@@ -2273,11 +2273,11 @@ def demo():
         print '    ', repr(rule)+','
     print ')'
     print 'tokens = %r' % tokens
-    print 'Calling "ChartDemo(grammar, tokens)"...'
-    ChartDemo(grammar, tokens).mainloop()
+    print 'Calling "ChartParserApp(grammar, tokens)"...'
+    ChartParserApp(grammar, tokens).mainloop()
         
 if __name__ == '__main__':
-    demo()
+    app()
 
     # Chart comparer:
     #charts = ['/tmp/earley.pickle',
@@ -2291,4 +2291,6 @@ if __name__ == '__main__':
     #p = pstats.Stats('/tmp/profile.out')
     #p.strip_dirs().sort_stats('time', 'cum').print_stats(60)
     #p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
+
+__all__ = ['app']
 

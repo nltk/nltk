@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Shift/Reduce Parser Demo
+# Natural Language Toolkit: Shift-Reduce Parser Application
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
@@ -8,9 +8,9 @@
 # $Id$
 
 """
-A graphical tool for exploring the shift/reduce parser.
+A graphical tool for exploring the shift-reduce parser.
 
-The shift/reduce parser maintains a stack, which records the structure
+The shift-reduce parser maintains a stack, which records the structure
 of the portion of the text that has been parsed.  The stack is
 initially empty.  Its contents are shown on the left side of the main
 canvas.
@@ -84,9 +84,9 @@ from nltk.draw.tree import *
 from nltk.draw.cfg import CFGEditor
 
         
-class ShiftReduceDemo(object):
+class ShiftReduceApp(object):
     """
-    A graphical tool for exploring the shift/reduce parser.  The tool
+    A graphical tool for exploring the shift-reduce parser.  The tool
     displays the parser's stack and the remaining text, and allows the
     user to control the parser's operation.  In particular, the user
     can shift tokens onto the stack, and can perform reductions on the
@@ -100,7 +100,7 @@ class ShiftReduceDemo(object):
 
         # Set up the main window.
         self._top = Tk()
-        self._top.title('Shift Reduce Parser Demo')
+        self._top.title('Shift Reduce Parser Application')
 
         # Animations.  animating_lock is a lock to prevent the demo
         # from performing new operations while it's animating.
@@ -460,7 +460,7 @@ class ShiftReduceDemo(object):
 
     def reset(self, *e):
         self._parser.initialize(self._sent)
-        self._lastoper1['text'] = 'Reset Demo'
+        self._lastoper1['text'] = 'Reset App'
         self._lastoper2['text'] = ''
         self._redraw()
 
@@ -541,16 +541,16 @@ class ShiftReduceDemo(object):
     def help(self, *e):
         # The default font's not very legible; try using 'fixed' instead. 
         try:
-            ShowText(self._top, 'Help: Chart Parser Demo',
+            ShowText(self._top, 'Help: Shift-Reduce Parser Application',
                      (__doc__).strip(), width=75, font='fixed')
         except:
-            ShowText(self._top, 'Help: Chart Parser Demo',
+            ShowText(self._top, 'Help: Shift-Reduce Parser Application',
                      (__doc__).strip(), width=75)
 
     def about(self, *e):
-        ABOUT = ("NLTK Shift-Reduce Parser Demo\n"+
+        ABOUT = ("NLTK Shift-Reduce Parser Application\n"+
                  "Written by Edward Loper")
-        TITLE = 'About: Shift-Reduce Parser Demo'
+        TITLE = 'About: Shift-Reduce Parser Application'
         try:
             from tkMessageBox import Message
             Message(message=ABOUT, title=TITLE).show()
@@ -766,9 +766,9 @@ class ShiftReduceDemo(object):
                 stackwidget['color'] = 'black'
         
     
-def demo():
+def app():
     """
-    Create a shift reduce parser demo, using a simple grammar and
+    Create a shift reduce parser app, using a simple grammar and
     text. 
     """
     
@@ -801,7 +801,9 @@ def demo():
     # tokenize the sentence
     sent = 'my dog saw a man in the park with a statue'.split()
 
-    ShiftReduceDemo(grammar, sent).mainloop()
+    ShiftReduceApp(grammar, sent).mainloop()
 
 if __name__ == '__main__':
-    demo()
+    app()
+
+__all__ = ['app']
