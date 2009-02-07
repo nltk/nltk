@@ -37,7 +37,6 @@ setup(
     ## Package List
     packages = ['nltk',
                 'nltk.app',
-                'nltk.app.wordnet_browser',
                 'nltk.chat',
                 'nltk.chunk',
                 'nltk.classify',
@@ -88,7 +87,6 @@ setup(
                 'nltk_contrib.tiger.utils',
                 'nltk_contrib.toolbox',
                 'nltk_contrib.wordnet',
-                'nltk_contrib.wordnet.browser',
                 'yaml'
                 ],
     )

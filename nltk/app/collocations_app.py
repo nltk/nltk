@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Collocations Demo 
+# Natural Language Toolkit: Collocations Application 
 # Much of the GUI code is imported from concordance.py; We intend to merge these tools together
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
@@ -320,12 +320,11 @@ class CollocationsModel:
 def collocations():
 	colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations[:num]]
 
-def launch_view():
+def app():
     c = CollocationsView()
     c.mainloop()
         
-def demo():
-    launch_view()
-
 if __name__ == '__main__':
-    demo()
+    app()
+
+__all__ = ['app']

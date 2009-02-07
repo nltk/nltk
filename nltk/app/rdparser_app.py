@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Recursive Descent Parser Demo
+# Natural Language Toolkit: Recursive Descent Parser Application
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
@@ -74,7 +74,7 @@ from nltk.draw.util import *
 from nltk.draw.tree import *
 from nltk.draw.cfg import *
         
-class RecursiveDescentDemo(object):
+class RecursiveDescentApp(object):
     """
     A graphical tool for exploring the recursive descent parser.  The tool
     displays the parser's tree and the remaining text, and allows the
@@ -90,7 +90,7 @@ class RecursiveDescentDemo(object):
 
         # Set up the main window.
         self._top = Tk()
-        self._top.title('Recursive Descent Parser Demo')
+        self._top.title('Recursive Descent Parser Application')
 
         # Set up key bindings.
         self._init_bindings()
@@ -489,7 +489,7 @@ class RecursiveDescentDemo(object):
     def reset(self, *e):
         self._autostep = 0
         self._parser.initialize(self._sent)
-        self._lastoper1['text'] = 'Reset Demo'
+        self._lastoper1['text'] = 'Reset Application'
         self._lastoper2['text'] = ''
         self._redraw()
 
@@ -580,9 +580,9 @@ class RecursiveDescentDemo(object):
             return 0
 
     def about(self, *e):
-        ABOUT = ("NLTK Recursive Descent Parser Demo\n"+
+        ABOUT = ("NLTK Recursive Descent Parser Application\n"+
                  "Written by Edward Loper")
-        TITLE = 'About: Recursive Descent Parser Demo'
+        TITLE = 'About: Recursive Descent Parser Application'
         try:
             from tkMessageBox import Message
             Message(message=ABOUT, title=TITLE).show()
@@ -593,10 +593,10 @@ class RecursiveDescentDemo(object):
         self._autostep = 0
         # The default font's not very legible; try using 'fixed' instead. 
         try:
-            ShowText(self._top, 'Help: Recursive Descent Parser Demo',
+            ShowText(self._top, 'Help: Recursive Descent Parser Application',
                      (__doc__).strip(), width=75, font='fixed')
         except:
-            ShowText(self._top, 'Help: Recursive Descent Parser Demo',
+            ShowText(self._top, 'Help: Recursive Descent Parser Application',
                      (__doc__).strip(), width=75)
 
     def postscript(self, *e):
@@ -861,7 +861,7 @@ class RecursiveDescentDemo(object):
         self._sent = sentence.split() #[XX] use tagged?
         self.reset()
 
-def demo():
+def app():
     """
     Create a recursive descent parser demo, using a simple grammar and
     text.
@@ -883,7 +883,11 @@ def demo():
 
     sent = 'the dog saw a man in the park'.split()
 
-    RecursiveDescentDemo(grammar, sent).mainloop()
+    RecursiveDescentApp(grammar, sent).mainloop()
 
-if __name__ == '__main__': demo()
+if __name__ == '__main__':
+    app()
+
+__all__ = ['app']
+
         

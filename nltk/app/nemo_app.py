@@ -133,7 +133,7 @@ def launchRefresh(_):
     rz.fld.after_idle(rz.refresh)
 
 
-def finding_nemo():
+def app():
     global root, sz, rz, rex0
     root = tk.Tk()
     root.resizable(height=False,width=True)
@@ -151,4 +151,6 @@ def finding_nemo():
     root.mainloop()
 
 if __name__ == '__main__':
-    finding_nemo()
+    app()
+
+__all__ = ['app']

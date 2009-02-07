@@ -62,9 +62,11 @@ class PylabTkView(object):
         if in_idle(): return
         self.top.mainloop(*args, **kwargs)
 
-def demo():
+def app():
     t1 = Text(gutenberg.words('melville-moby_dick.txt'))
     plot_word_freq_dist(t1)
     
 if __name__ == '__main__':
-    demo()
+    app()
+
+__all__ = ['app']

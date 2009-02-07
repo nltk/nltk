@@ -1,3 +1,326 @@
+# Natural Language Toolkit: WordNet Browser Application
+#
+# Copyright (C) 2001-2009 NLTK Project
+# Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+#         Paul Bone <pbone@students.csse.unimelb.edu.au>
+# URL: <http://www.nltk.org/>
+# For license information, see LICENSE.TXT
+
+"""
+A WordNet Browser application which launches the default browser
+(if it is not already running) and opens a new tab with a connection
+to http://localhost:port/ .  It also starts an HTTP server on the
+specified port and begins serving browser requests.  The default
+port is 8000.  (For command-line help, run "python wordnet -h")
+This application requires that the user's web browser supports
+Javascript.
+"""
+
+# TODO: throughout this package variable names and docstrings need
+# modifying to be compliant with NLTK's coding standards.  Tests also
+# need to be develop to ensure this continues to work in the face of
+# changes to other NLTK packages.
+
+#!/usr/bin/env python
+#
+# Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+#
+# Copyright (C) 2001-2009 NLTK Project
+# Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+#         Paul Bone <pbone@students.csse.unimelb.edu.au>
+# URL: <http://www.nltk.org/>
+# For license information, see LICENSE.TXT
+
+"""
+BrowServer is a server for browsing the NLTK Wordnet database It first
+launches a browser client to be used for browsing and then starts
+serving the requests of that and maybe other clients
+
+Usage::
+
+    browserver.py -h
+    browserver.py [-s] [-p <port>]
+
+Options::
+
+    -h or --help
+        Display this help message.
+
+    -l <file> or --log-file <file>
+        Logs messages to the given file, If this option is not specified
+        messages are silently dropped.
+
+    -p <port> or --port <port>
+        Run the web server on this TCP port, defaults to 8000.
+
+    -s or --server-mode
+        Do not start a web browser, and do not allow a user to
+        shotdown the server through the web interface.
+"""
+
+# Allow this program to run inside the NLTK source tree.
+from sys import path
+
+import os
+from sys import argv
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from urllib import unquote_plus
+import webbrowser
+import datetime
+import re
+import threading
+import time
+import getopt
+import base64
+
+# now included in local file
+# from util import html_header, html_trailer, \
+#    get_static_index_page, get_static_page_by_path, \
+#    page_from_word, page_from_href
+
+firstClient = True
+
+# True if we're not also running a web browser.  The value f server_mode
+# gets set by demo().
+server_mode = None 
+
+# If set this is a file object for writting log messages.
+logfile = None
+
+
+class MyServerHandler(BaseHTTPRequestHandler):
+
+    def do_HEAD(self):
+        self.send_head()
+
+    def do_GET(self):
+        global firstClient
+        sp = self.path[1:]
+        if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
+            if server_mode:
+                page = "Server must be killed with SIGTERM."
+                type = "text/plain"
+            else:
+                print 'Server shutting down!'
+                os._exit(0)
+
+        elif sp == 'favicon.ico':
+            type = 'image/x-icon'
+            page = favicon_data()
+            
+        elif sp == '': # First request.
+            type = 'text/html'
+            if not server_mode and firstClient:
+                firstClient = False
+                page = get_static_index_page(True)
+            else:
+                page = get_static_index_page(False)
+            word = 'green'
+        
+        elif sp.endswith('.html'): # Trying to fetch a HTML file TODO:
+            type = 'text/html'
+            usp = unquote_plus(sp)
+            if usp == 'NLTK Wordnet Browser Database Info.html':
+                word = '* Database Info *'
+                if os.path.isfile(usp):
+                    page = open(usp).read()
+                else:
+                    page = (html_header % word) + \
+                        '<p>The database info file:'\
+                        '<p><b>' + usp + '</b>' + \
+                        '<p>was not found. Run this:' + \
+                        '<p><b>python dbinfo_html.py</b>' + \
+                        '<p>to produce it.' + html_trailer
+            else:
+                # Handle files here.
+                word = sp
+                page = get_static_page_by_path(usp)
+        elif sp.startswith("search"):
+            # This doesn't seem to work with MWEs.
+            type = 'text/html'
+            parts = (sp.split("?")[1]).split("&")
+            word = [p.split("=")[1].replace("+", " ") 
+                    for p in parts if p.startswith("nextWord")][0]
+            page, word = page_from_word(word)
+        elif sp.startswith("lookup_"):
+            # TODO add a variation of this that takes a non ecoded word or MWE.
+            type = 'text/html'
+            sp = sp[len("lookup_"):]
+            page, word = page_from_href(sp)
+        elif sp == "start_page":
+            # if this is the first request we should display help
+            # information, and possibly set a default word.
+            type = 'text/html'
+            page, word = page_from_word("wordnet")
+        else:
+            type = 'text/plain'
+            page = "Could not parse request: '%s'" % sp
+
+        # Send result.
+        self.send_head(type)
+        self.wfile.write(page)
+
+
+    def send_head(self, type=None):
+        self.send_response(200)
+        self.send_header('Content-type', type)
+        self.end_headers()
+
+    def log_message(self, format, *args):
+        global logfile
+
+        if logfile:
+            logfile.write(
+                "%s - - [%s] %s\n" %
+                (self.address_string(),
+                 self.log_date_time_string(),
+                 format%args))
+
+
+# This data was encoded with the following procedure
+def encode_icon():
+    f = open("favicon.ico", "rb")
+    s = f.read()
+    f.close()
+
+    def split(s):
+        if len(s) <= 72:
+            return [s]
+        else:
+            return [s[0:72]] + split(s[72:])
+
+    print split(base64.urlsafe_b64encode(s))
+
+
+FAVICON_BASE64_DATA = \
+['AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAD___8A9___ANb3_wDO9_8AjPf_ALXv_wCc7_8AjO__AHvv_wBz7_8Aa-__AKXn',
+ '_wCc5_8AlOf_AITn_wBz5_8Aa-f_AGPn_wBa5_8Ac97_AGve_wBj3v8AWt7_AFLe_wBK3v8A',
+ 'Qt7_AFrW_wBS1v8AStb_AELW_wA51v8AMdb_ACnO_wAhzv8AGM7_ABjG_wD___cA__f3APf3',
+ '9wB73vcAUtb3AErW9wAhxvcAAMb3AFLO7wAYxu8AEMbvACG95wAYvecA9-fWAHPG1gBKvdYA',
+ 'Ob3WACG91gDv3s4Axt7OACm1zgCMtb0ASq29ACGlvQBStbUAUq21ADGttQA5pbUA3satAEqc',
+ 'rQDWvaUAY62lAOfGnADWvZwAtbWcAJStnADGrZQAzq2MAIycjABznIwAa5yMAN61hADWrXsA',
+ 'zq17AMalewCtpXsAa4x7AMaccwC9nHMAtZRzAISUcwBrjHMAzqVrALWUawCtlGsArYxrAHuE',
+ 'awBre2sAY3trAHuEYwBzhGMAc3tjAGt7YwDGlFoAvYxaAGNzWgBSa1oAxpRSAK2MUgDGjEoA',
+ 'vYxKAL2ESgC1hEoArYRKAIRzSgB7a0oAc2tKAGtrSgBaY0oAtYRCAK17QgCle0IApXM5AJxz',
+ 'OQCcazkAjGMxAIRaMQBzWjEAa1oxAIRaKQB7ShAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAGFh4YLAYAAAAAAAAAAAAHGB4gIBYWBgAAAAAAAAAAFhgzQR45MixGMQAA',
+ 'AAAAABQYTF0WbzplWQAAAABFVEgKFExdFG59eywWCwBAdHRJCgpLXRhxe3IvIiIDT2p0VAdh',
+ 'fn5xbzplciAwFFNqanQ3BwoKChYYGB4gICxYanRqalRPWVRZRhMYHiAYTmlqdnZ2dnh5eX1G',
+ 'FhgeFEVjaT1SVithKzg7WhMYGAsATmM9UjgwXDt2eFsIFgcAAAAAFDRDLUo-bnhZAAAAAAAA',
+ 'AAgwRS1cO3Z2WgAAAAAAAAADUTZHbVJ0d0kAAAAAAAAAADFPY2pqZEgAAAAAAAAA__8AAP__',
+ 'AAD__wAAsaEAAE5eAABOXgAA__4AAPv_AAD__wAA__8AAM3-AADw_wAA__8AAML-AAD__wAA',
+ 'xf4=']
+
+
+def favicon_data():
+    """
+    Return the data for the favicon image.
+    """
+    return base64.urlsafe_b64decode(''.join(FAVICON_BASE64_DATA))
+
+
+def get_unique_counter_from_url(sp):
+    """
+    Extract the unique counter from the URL if it has one.  Otherwise return
+    null.
+    """
+    pos = sp.rfind('%23')
+    if pos != -1:
+        return int(sp[(pos + 3):])
+    else:
+        return None
+
+
+def wnb(port=8000, runBrowser=True, logfilename=None):
+    """
+    Run NLTK Wordnet Browser Server.
+    
+    @param port: The port number for the server to listen on, defaults to
+                 8000
+    @type  port: C{int}
+
+    @param runBrowser: True to start a web browser and point it at the web
+                       server.
+    @type  runBrowser: C{boolean}
+    """
+    # The webbrowser module is unpredictable, typically it blocks if it uses
+    # a console web browser, and doesn't block if it uses a GUI webbrowser,
+    # so we need to force it to have a clear correct behaviour.
+    # 
+    # Normally the server should run for as long as the user wants. they
+    # should idealy be able to control this from the UI by closing the
+    # window or tab.  Second best would be clicking a button to say
+    # 'Shutdown' that first shutsdown the server and closes the window or
+    # tab, or exits the text-mode browser.  Both of these are unfreasable.
+    #
+    # The next best alternative is to start the server, have it close when
+    # it receives SIGTERM (default), and run the browser as well.  The user
+    # may have to shutdown both programs.
+    #
+    # Since webbrowser may block, and the webserver will block, we must run
+    # them in seperate threads.
+    #
+    global server_mode, logfile
+    server_mode = not runBrowser
+
+    # Setup logging.
+    if logfilename:
+        try:
+            logfile = open(logfilename, "a", 1) # 1 means 'line buffering'
+        except IOError, e:
+            sys.stderr.write("Couldn't open %s for writing: %s", 
+                             logfilename, e)
+            sys.exit(1)
+    else:
+        logfile = None
+
+    # Compute URL and start web browser
+    url = 'http://localhost:' + str(port)
+    if runBrowser:
+        server_ready = threading.Event()
+        browser_thread = startBrowser(url, server_ready)
+
+    # Start the server.
+    server = HTTPServer(('', port), MyServerHandler)
+    if logfile:
+        logfile.write(
+            'NLTK Wordnet browser server running serving: %s\n' % url)
+    if runBrowser:
+        server_ready.set()
+    
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    
+    if runBrowser:
+        browser_thread.join()
+
+
+def startBrowser(url, server_ready):
+    def run():
+        server_ready.wait()
+        time.sleep(1) # Wait a little bit more, there's still the chance of
+                      # a race condition.
+        webbrowser.open(url, new = 2, autoraise = 1)
+    t = threading.Thread(target=run)
+    t.start()
+    return t
+
+#####################################################################
+# Utilities
+#####################################################################
+
 # Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
 #
 # Copyright (C) 2001-2009 NLTK Project
@@ -505,10 +828,9 @@ def page_from_reference(href):
     
 
 
-################################################################################
-#
-# Static pages.
-#
+#####################################################################
+# Static pages
+#####################################################################
 
 def get_static_page_by_path(path):
     """
@@ -583,181 +905,6 @@ There are also word level (lexical) relations recorded in the Wordnet database. 
 </html>
 """
 
-def get_static_wx_help_page():
-    """
-    Return static WX help page.
-    """
-    return \
-"""
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2009 NLTK Project
-            Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://www.nltk.org/>
-            For license information, see LICENSE.TXT -->
-     <head>
-          <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
-          <title>NLTK Wordnet Browser display of: * Help *</title>
-     </head>
-<body bgcolor='#F5F5F5' text='#000000'>
-<h2>NLTK Wordnet Browser Help</h2>
-<p>The NLTK Wordnet Browser is a tool to use in browsing the Wordnet database. It tries to behave like the Wordnet project's web browser but the difference is that the NLTK Wordnet Browser uses a local Wordnet database. The NLTK Wordnet Browser has only a part of normal browser functionality and it is <b>not</b> an Internet browser.</p>
-<p>For background information on Wordnet, see the Wordnet project home page: <b>http://wordnet.princeton.edu/</b>. For more information on the NLTK project, see the project home: <b>http://nltk.sourceforge.net/</b>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
-<h3>The User Interface</h3>
-<p>The user interface is a so called <b>notebook</b> interface. This
-is familiar nowadays for almost everyone from Internet browsers,
-for example. It consists of one or more independent pages often
-(and here also) called <b>tabsheets</b>.</p>
-<p>Every tabsheet contains its own search history which can be
-browsed back and forth at will. The result of a new word search
-will be shown on the currently active tabsheet if nothing else is
-wanted. It is also possible to open a new tabsheet for the search
-word given.</p>
-<p>The position and size of the browser window as well as font size can be adjusted and the selections are retained between sessions.</p>
-<h3>Word search</h3>
-<p>The word to be searched is typed into the <b>Word(s):</b> field and the search started with Enter or by clicking the <b>Search the word(s)</b> button. There is no uppercase/lowercase distinction: the search word is transformed to lowercase before the search.</p>
-<p>In addition, the word does not have to be in base form. The browser tries to find the possible base form(s) by making certain morphological substitutions. Typing <b>fLIeS</b> as an obscure example gives one <a href="MfLIeS">this</a>. Click the previous link to see what this kind of search looks like and then come back to this page by clicking the <b>Previous Page</b> button.</p>
-<p>The result of a search is a display of one or more
-<b>synsets</b> for every part of speech in which a form of the
-search word was found to occur. A synset is a set of words
-having the same sense or meaning. Each word in a synset that is
-underlined is a hyperlink which can be clicked to trigger an
-automatic search for that word.</p>
-<p>Every synset has a hyperlink <b>S:</b> at the start of its
-display line. Clicking that symbol shows you the name of every
-<b>relation</b> that this synset is part of. Every relation name is a hyperlink that opens up a display for that relation. Clicking it another time closes the display again. Clicking another relation name on a line that has an opened relation closes the open relation and opens the clicked relation.</p>
-<p>It is also possible to give two or more words or collocations to be searched at the same time separating them with a comma like this <a href="Mcheer up,clear up">cheer up,clear up</a>, for example. Click the previous link to see what this kind of search looks like and then come back to this page by clicking the <b>Previous Page</b> button. As you could see the search result includes the synsets found in the same order than the forms were given in the search field.</p>
-<p>
-There are also word level (lexical) relations recorded in the Wordnet database. Opening this kind of relation displays lines with a hyperlink <b>W:</b> at their beginning. Clicking this link shows more info on the word in question.</p>
-<h3>Menu Structure</h3>
-The browser has a menubar that you can use to invoke a set of
-different operations. Most of the menu selections also have a
-corresponding keyboard shortcut.
-<h4>The File Menu</h4>
-<p>Using the file menu you can <b>open</b> a previously saved NLTK
-Wordnet Browser page. Note that only pages saved with this browser
-can be read.</p>
-<p>And as indicated above you can <b>save</b> a search page. The
-resulting file is a normal HTML mode file which can be viewed,
-printed etc. as any other HTML file.</p>
-<p>You can also <b>print</b> a page and <b>preview</b> a page to be
-printed. The selected printing settings are remembered during the
-session.</p>
-<h4>The Tabsheets Menu</h4>
-<p>You can <b>open an empty tabsheet</b> and <b>close</b> the
-currently active tabsheet.</p>
-<p>When you enter a new search word in the search word field you
-can make the search result be shown in a <b>new tabsheet</b>.</p>
-<h4>Page History</h4>
-You can browse the page history of the currently active tabsheet
-either <b>forwards</b> or <b>backwards</b>. <b>Next Page</b>
-browses towards the newer pages and <b>Previous Page</b> towards
-the older pages.
-<h4>The View Menu</h4>
-<p>You can <b>increase</b>, <b>decrease</b> and <b>normalize</b>
-the font size. The font size chosen is retained between
-sessions.</p>
-<p>You can choose <b>Show Database Info</b> to see the word, synset and relation counts by POS as well as one example word (as a hyperlink) for every relation&amp;POS pair occuring.</p>
-<p>You can view the <b>HTML source</b> of a page if you are
-curious.</p>
-<h4>The Help Menu</h4>
-You can view this <b>help text</b> as you already know. The
-<b>about</b> selection tells you something about the program.
-<h3>The Keyboard Shortcuts</h3>
-<p>The following keyboard shortcuts can be used to quickly launch
-the desired operation.</p>
-<table border="1" cellpadding="1" cellspacing="1" summary="">
-<col align="center">
-<col align="center">
-<tr>
-<th>Keyboard Shortcut</th>
-<th>Operation</th>
-</tr>
-<tr>
-<td>Ctrl+O</td>
-<td>Open a file</td>
-</tr>
-<tr>
-<td>Ctrl+S</td>
-<td>Save current page as</td>
-</tr>
-<tr>
-<td>Ctrl+P</td>
-<td>Print current page</td>
-</tr>
-<tr>
-<td>Ctrl+T</td>
-<td>Open a new (empty) tabsheet</td>
-</tr>
-<tr>
-<td>Ctrl+W</td>
-<td>Close the current tabsheet</td>
-</tr>
-<tr>
-<td>Ctrl+LinkClick</td>
-<td>Open the link in a new unfocused tabsheet</td>
-</tr>
-<tr>
-<td>Ctrl+Shift+LinkClick</td>
-<td>Opent the link in a new focused tabsheet</td>
-</tr>
-<tr>
-<td>Alt+Enter (1)</td>
-<td>Show the word in search word field in a new tabsheet</td>
-</tr>
-<tr>
-<td>Alt+LeftArrow</td>
-<td>Previous page in page history</td>
-</tr>
-<tr>
-<td>Ctrl+LeftArrow (2)</td>
-<td>Previous page in page history</td>
-</tr>
-<tr>
-<td>Alt+RightArrow</td>
-<td>Next page in page history</td>
-</tr>
-<tr>
-<td>Ctlr+RightArrow (2)</td>
-<td>Next page in page history</td>
-</tr>
-<tr>
-<td>Ctrl++/Ctrl+Numpad+/Ctrl+UpArrow (3)</td>
-<td>Increase font size</td>
-</tr>
-<tr>
-<td>Ctrl+-/Ctrl+Numpad-/Ctrl+DownArrow (3)</td>
-<td>Decrease font size</td>
-</tr>
-<tr>
-<td>Ctrl+0 (4)</td>
-<td>Normal font size</td>
-</tr>
-<tr>
-<td>Ctrl+U</td>
-<td>Show HTML source</td>
-</tr>
-</table>
-<dl>
-<dt>(1)</dt>
-<dd>This works only when the search word field is active i.e. the
-caret is in it.</dd>
-<dt>(2)</dt>
-<dd>These are nonstandard combinations, the usual ones being
-Alt+LeftArrow and Alt+RightArrow. These are still functional because there used to be difficulties with the standard ones earlier in the life of this program. Use these if the standard combinations do not work properly for you.</dd>
-<dt>(3)</dt>
-<dd>There are so many of these combinations because the usual i.e.
-Ctrl++/Ctrl+- combinations did not work on the author's laptop and
-the Numpad combinations were cumbersome to use. Hopefully the first
-ones work on the computers of others.</dd>
-<dt>(4)</dt>
-<dd>This combination Ctrl+0 is "Ctrl+zero" not "Ctrl+ou".</dd>
-</dl>
-</body>
-</html>
-"""
-
 
 def get_static_welcome_message():
     """
@@ -797,7 +944,7 @@ def get_static_index_page(with_shutdown):
             URL: <http://www.nltk.org/>
             For license information, see LICENSE.TXT -->
      <HEAD>
-	     <TITLE>NLTK Wordnet Browser</TITLE>
+         <TITLE>NLTK Wordnet Browser</TITLE>
      </HEAD>
 
 <frameset rows="7%%,93%%">
@@ -830,16 +977,16 @@ def get_static_upper_page(with_shutdown):
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
         URL: <http://www.nltk.org/>
         For license information, see LICENSE.TXT -->
-	<head>
+    <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>Untitled Document</title>
-	</head>
-	<body>
-	<form method="GET" action="search" target="body">
-	        Current Word:&nbsp;<input type="text" id="currentWord" size="10" disabled>
-			Next Word:&nbsp;<input type="text" id="nextWord" name="nextWord" size="10">
-			<input name="searchButton" type="submit" value="Search">
-	</form>
+        <title>Untitled Document</title>
+    </head>
+    <body>
+    <form method="GET" action="search" target="body">
+            Current Word:&nbsp;<input type="text" id="currentWord" size="10" disabled>
+            Next Word:&nbsp;<input type="text" id="nextWord" name="nextWord" size="10">
+            <input name="searchButton" type="submit" value="Search">
+    </form>
         <a target="body" href="web_help.html">Help</a>
         %s
 
@@ -852,3 +999,39 @@ def get_static_upper_page(with_shutdown):
         shutdown_link = ""
     
     return template % shutdown_link
+
+
+
+def usage():
+    """
+    Display the command line help message.
+    """
+    print __doc__
+
+def app():
+    # Parse and interpret options.
+    (opts, _) = getopt.getopt(argv[1:], "l:p:sh", 
+                              ["logfile=", "port=", "server-mode", "help"])
+    port = 8000
+    server_mode = False
+    help_mode = False
+    logfilename = None
+    for (opt, value) in opts:
+        if (opt == "-l") or (opt == "--logfile"):
+            logfilename = str(value)
+        elif (opt == "-p") or (opt == "--port"):
+            port = int(value)
+        elif (opt == "-s") or (opt == "--server-mode"):
+            server_mode = True
+        elif (opt == "-h") or (opt == "--help"):
+            help_mode = True
+
+    if help_mode:
+        usage()
+    else:
+        wnb(port, not server_mode, logfilename)
+
+if __name__ == '__main__':
+    app()
+
+__all__ = ['app']

@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Regexp Chunk Parser Demo
+# Natural Language Toolkit: Regexp Chunk Parser Application
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
@@ -25,7 +25,7 @@ import random
 from nltk import corpus, Tree, chunk
 from nltk.draw.util import *
 
-class RegexpChunkDemo(object):
+class RegexpChunkApp(object):
     """
     A graphical tool for exploring the regular expression based chunk
     parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
@@ -326,7 +326,7 @@ class RegexpChunkDemo(object):
         # Set up the main window.
         top = self.top = Tk()
         top.geometry('+50+50')
-        top.title('Regexp Chunk Parser Demo')
+        top.title('Regexp Chunk Parser App')
         top.bind('<Control-q>', self.destroy)
 
         # Varaible that restricts how much of the devset we look at.
@@ -377,7 +377,7 @@ class RegexpChunkDemo(object):
         menubar = Menu(parent)
 
         filemenu = Menu(menubar, tearoff=0)
-        filemenu.add_command(label='Reset Demo', underline=0,
+        filemenu.add_command(label='Reset Application', underline=0,
                              command=self.reset)
         filemenu.add_command(label='Save Current Grammar', underline=0,
                              accelerator='Ctrl-s',
@@ -1215,9 +1215,9 @@ class RegexpChunkDemo(object):
         out.close()
 
     def about(self, *e):
-        ABOUT = ("NLTK RegExp Chunk Parser Demo\n"+
+        ABOUT = ("NLTK RegExp Chunk Parser Application\n"+
                  "Written by Edward Loper")
-        TITLE = 'About: Regular Expression Chunk Parser Demo'
+        TITLE = 'About: Regular Expression Chunk Parser Application'
         try:
             from tkMessageBox import Message
             Message(message=ABOUT, title=TITLE).show()
@@ -1247,8 +1247,11 @@ class RegexpChunkDemo(object):
         if in_idle(): return
         self.top.mainloop(*args, **kwargs)
 
-def demo():
-    RegexpChunkDemo().mainloop()
+def app():
+    RegexpChunkApp().mainloop()
     
 if __name__ == '__main__':
-    demo()
+    app()
+
+__all__ = ['app']
+
