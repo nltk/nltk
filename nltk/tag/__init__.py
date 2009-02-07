@@ -18,7 +18,7 @@ from simplify import *
 from sequential import *
 from brill import *
 from tnt import *
-from nltk.data import load
+import nltk
 
 __all__ = [
     # Tagger interface
@@ -59,7 +59,7 @@ def pos_tag(tokens):
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
     """
-    tagger = load(_POS_TAGGER)
+    tagger = nltk.data.load(_POS_TAGGER)
     return tagger.tag(tokens)
 
 def pos_tag_sents(sentences):
@@ -67,5 +67,5 @@ def pos_tag_sents(sentences):
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
     """
-    tagger = load(_POS_TAGGER)
+    tagger = nltk.data.load(_POS_TAGGER)
     return tagger.tag_sents(sentences)
