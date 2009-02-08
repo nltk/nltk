@@ -21,11 +21,13 @@ The corpus contains the following files: APW_19980314, APW_19980424,
 APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
-from nltk import chunk
 import codecs
+
+from nltk import chunk
 from nltk.internals import deprecated
+
+from api import *
+from util import *
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.
@@ -63,21 +65,21 @@ class IEERDocument:
 class IEERCorpusReader(CorpusReader):
     """
     """
-    def raw(self, files=None):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
-    def docs(self, files=None):
-        return concat([StreamBackedCorpusView(filename, self._read_block,
+    def docs(self, fileids=None):
+        return concat([StreamBackedCorpusView(fileid, self._read_block,
                                               encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
     
-    def parsed_docs(self, files=None):
-        return concat([StreamBackedCorpusView(filename,
+    def parsed_docs(self, fileids=None):
+        return concat([StreamBackedCorpusView(fileid,
                                               self._read_parsed_block,
                                               encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
     def _read_parsed_block(self,stream):
         # TODO: figure out while empty documents are being returned

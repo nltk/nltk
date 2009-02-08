@@ -22,13 +22,17 @@ Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """       
 
-from nltk.corpus.reader.util import *
-from api import *
-from nltk.tokenize import *
-import os, re, xml.sax
+import os
+import re
+import xml.sax
 from xmldocs import XMLCorpusReader
+
+from nltk.tokenize import *
 from nltk.etree import ElementTree
 from nltk.internals import deprecated
+
+from util import *
+from api import *
 
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
@@ -42,17 +46,17 @@ class SensevalInstance(object):
                 (self.word, self.position, self.context, self.senses))
 
 class SensevalCorpusReader(CorpusReader):
-    def instances(self, files=None):
-        return concat([SensevalCorpusView(filename, enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+    def instances(self, fileids=None):
+        return concat([SensevalCorpusView(fileid, enc)
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, files=None):
+    def raw(self, fileids=None):
         """
-        @return: the text contents of the given files, as a single string.
+        @return: the text contents of the given fileids, as a single string.
         """
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
     
     def _entry(self, tree):
         elts = []
@@ -76,8 +80,8 @@ class SensevalCorpusReader(CorpusReader):
     #}
     
 class SensevalCorpusView(StreamBackedCorpusView):
-    def __init__(self, filename, encoding):
-        StreamBackedCorpusView.__init__(self, filename, encoding=encoding)
+    def __init__(self, fileid, encoding):
+        StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)
 
         self._word_tokenizer = WhitespaceTokenizer()
         self._lexelt_starts = [0] # list of streampos

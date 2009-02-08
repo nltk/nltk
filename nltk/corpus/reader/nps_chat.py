@@ -5,46 +5,49 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import re
+import textwrap
+
 from nltk.compat import *
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.xmldocs import *
 from nltk.util import LazyConcatenation
 from nltk.internals import ElementWrapper
-import re, textwrap
+
+from util import *
+from api import *
+from xmldocs import *
 
 class NPSChatCorpusReader(XMLCorpusReader):
 
-    def __init__(self, root, files, wrap_etree=False, tag_mapping_function=None):
-        XMLCorpusReader.__init__(self, root, files, wrap_etree)
+    def __init__(self, root, fileids, wrap_etree=False, tag_mapping_function=None):
+        XMLCorpusReader.__init__(self, root, fileids, wrap_etree)
         self._tag_mapping_function = tag_mapping_function
 
-    def xml_posts(self, files=None):
+    def xml_posts(self, fileids=None):
         if self._wrap_etree:
-            return concat([XMLCorpusView(filename, 'Session/Posts/Post',
+            return concat([XMLCorpusView(fileid, 'Session/Posts/Post',
                                          self._wrap_elt)
-                           for filename in self.abspaths(files)])
+                           for fileid in self.abspaths(fileids)])
         else:
-            return concat([XMLCorpusView(filename, 'Session/Posts/Post')
-                           for filename in self.abspaths(files)])
+            return concat([XMLCorpusView(fileid, 'Session/Posts/Post')
+                           for fileid in self.abspaths(fileids)])
 
-    def posts(self, files=None):
-        return concat([XMLCorpusView(filename, 'Session/Posts/Post/terminals',
+    def posts(self, fileids=None):
+        return concat([XMLCorpusView(fileid, 'Session/Posts/Post/terminals',
                                      self._elt_to_words)
-                       for filename in self.abspaths(files)])
+                       for fileid in self.abspaths(fileids)])
 
-    def tagged_posts(self, files=None, simplify_tags=False):
+    def tagged_posts(self, fileids=None, simplify_tags=False):
         def reader(elt, handler):
             return self._elt_to_tagged_words(elt, handler, simplify_tags)
-        return concat([XMLCorpusView(filename, 'Session/Posts/Post/terminals',
+        return concat([XMLCorpusView(fileid, 'Session/Posts/Post/terminals',
                                      reader)
-                       for filename in self.abspaths(files)])
+                       for fileid in self.abspaths(fileids)])
 
-    def words(self, files=None):
-        return LazyConcatenation(self.posts(files))
+    def words(self, fileids=None):
+        return LazyConcatenation(self.posts(fileids))
 
-    def tagged_words(self, files=None, simplify_tags=False):
-        return LazyConcatenation(self.tagged_posts(files, simplify_tags))
+    def tagged_words(self, fileids=None, simplify_tags=False):
+        return LazyConcatenation(self.tagged_posts(fileids, simplify_tags))
 
     def _wrap_elt(self, elt, handler):
         return ElementWrapper(elt)

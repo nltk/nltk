@@ -5,10 +5,12 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
-from nltk.tag import str2tuple
 import re
+
+from nltk.tag import str2tuple
+
+from util import *
+from api import *
 
 class SwitchboardUtterance(list):
     """

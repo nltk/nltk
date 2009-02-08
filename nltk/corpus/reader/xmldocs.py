@@ -11,15 +11,17 @@ Corpus reader for corpora whose documents are xml files.
 (note -- not named 'xml' to avoid conflicting w/ standard xml package)
 """
 
-from nltk.corpus.reader.api import CorpusReader
-from nltk.corpus.reader.util import *
-from nltk.data import SeekableUnicodeStreamReader
-from nltk.internals import deprecated, ElementWrapper
 import codecs
 
 # Use the c version of ElementTree, which is faster, if possible:
 try: from xml.etree import cElementTree as ElementTree
 except ImportError: from nltk.etree import ElementTree
+
+from nltk.data import SeekableUnicodeStreamReader
+from nltk.internals import deprecated, ElementWrapper
+
+from api import CorpusReader
+from util import *
 
 class XMLCorpusReader(CorpusReader):
     """
@@ -29,14 +31,14 @@ class XMLCorpusReader(CorpusReader):
     C{encoding} argument, because the unicode encoding is specified by
     the XML files themselves.  See the XML specs for more info.
     """
-    def __init__(self, root, files, wrap_etree=False):
+    def __init__(self, root, fileids, wrap_etree=False):
         self._wrap_etree = wrap_etree
-        CorpusReader.__init__(self, root, files)
+        CorpusReader.__init__(self, root, fileids)
         
     def xml(self, fileid=None):
         # Make sure we have exactly one file -- no concatenating XML.
-        if fileid is None and len(self._files) == 1:
-            fileid = self._files[0]
+        if fileid is None and len(self._fileids) == 1:
+            fileid = self._fileids[0]
         if not isinstance(fileid, basestring):
             raise TypeError('Expected a single file identifier string')
         # Read the XML in using ElementTree.
@@ -47,10 +49,10 @@ class XMLCorpusReader(CorpusReader):
         # Return the ElementTree element.
         return elt
 
-    def raw(self, files=None):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .xml() instead.")
@@ -96,7 +98,7 @@ class XMLCorpusView(StreamBackedCorpusView):
     #: The number of characters read at a time by this corpus reader.
     _BLOCK_SIZE = 1024
 
-    def __init__(self, filename, tagspec, elt_handler=None):
+    def __init__(self, fileid, tagspec, elt_handler=None):
         """
         Create a new corpus view based on a specified XML file.
 
@@ -128,14 +130,14 @@ class XMLCorpusView(StreamBackedCorpusView):
            tuple of XML tag names, indicating which tags have not yet
            been closed."""
 
-        encoding = self._detect_encoding(filename)
-        StreamBackedCorpusView.__init__(self, filename, encoding=encoding)
+        encoding = self._detect_encoding(fileid)
+        StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)
 
-    def _detect_encoding(self, filename):
-        if isinstance(filename, PathPointer):
-            s = filename.open().readline()
+    def _detect_encoding(self, fileid):
+        if isinstance(fileid, PathPointer):
+            s = fileid.open().readline()
         else:
-            s = open(filename, 'rb').readline()
+            s = open(fileid, 'rb').readline()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):

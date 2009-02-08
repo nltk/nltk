@@ -19,14 +19,17 @@ an Old English prose text. Tags used within each text complies
 to the YCOE standard: http://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
 """
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+import os
+import re
+
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
 from string import split
-import os, re
 from nltk.internals import deprecated
+
+from util import *
+from api import *
 
 class YCOECorpusReader(CorpusReader):
     """
@@ -48,26 +51,26 @@ class YCOECorpusReader(CorpusReader):
             raise ValueError('Items in "psd" and "pos" '
                              'subdirectories do not match.')
 
-        files = sorted(['%s.psd' % doc for doc in documents] +
+        fileids = sorted(['%s.psd' % doc for doc in documents] +
                        ['%s.pos' % doc for doc in documents])
-        CorpusReader.__init__(self, root, files, encoding)
+        CorpusReader.__init__(self, root, fileids, encoding)
         self._documents = tuple(sorted(documents))
 
-    def documents(self, files=None):
+    def documents(self, fileids=None):
         """
         Return a list of document identifiers for all documents in
         this corpus, or for the documents with the given file(s) if
         specified.
         """
-        if files is None:
+        if fileids is None:
             return self._documents
-        if isinstance(files, basestring):
-            files = [files]
-        for f in files:
-            if f not in self._files:
-                raise KeyError('File id %s not found' % files)
+        if isinstance(fileids, basestring):
+            fileids = [fileids]
+        for f in fileids:
+            if f not in self._fileids:
+                raise KeyError('File id %s not found' % fileids)
         # Strip off the '.pos' and '.psd' extensions.
-        return sorted(set(f[:-4] for f in files))
+        return sorted(set(f[:-4] for f in fileids))
 
     def fileids(self, documents=None):
         """
@@ -75,15 +78,15 @@ class YCOECorpusReader(CorpusReader):
         this corpus, or that store the given document(s) if specified.
         """
         if documents is None:
-            return self._files
+            return self._fileids
         elif isinstance(documents, basestring):
             documents = [documents]
         return sorted(set(['%s.pos' % doc for doc in documents] +
                           ['%s.psd' % doc for doc in documents]))
 
-    def _getfiles(self, documents, subcorpus):
+    def _getfileids(self, documents, subcorpus):
         """
-        Helper that selects the appropraite files for a given set of
+        Helper that selects the appropriate fileids for a given set of
         documents from a given subcorpus (pos or psd).
         """
         if documents is None:
@@ -105,19 +108,19 @@ class YCOECorpusReader(CorpusReader):
     
     # Delegate to one of our two sub-readers:
     def words(self, documents=None):
-        return self._pos_reader.words(self._getfiles(documents, 'pos'))
+        return self._pos_reader.words(self._getfileids(documents, 'pos'))
     def sents(self, documents=None):
-        return self._pos_reader.sents(self._getfiles(documents, 'pos'))
+        return self._pos_reader.sents(self._getfileids(documents, 'pos'))
     def paras(self, documents=None):
-        return self._pos_reader.paras(self._getfiles(documents, 'pos'))
+        return self._pos_reader.paras(self._getfileids(documents, 'pos'))
     def tagged_words(self, documents=None):
-        return self._pos_reader.tagged_words(self._getfiles(documents, 'pos'))
+        return self._pos_reader.tagged_words(self._getfileids(documents, 'pos'))
     def tagged_sents(self, documents=None):
-        return self._pos_reader.tagged_sents(self._getfiles(documents, 'pos'))
+        return self._pos_reader.tagged_sents(self._getfileids(documents, 'pos'))
     def tagged_paras(self, documents=None):
-        return self._pos_reader.tagged_paras(self._getfiles(documents, 'pos'))
+        return self._pos_reader.tagged_paras(self._getfileids(documents, 'pos'))
     def parsed_sents(self, documents=None):
-        return self._psd_reader.parsed_sents(self._getfiles(documents, 'psd'))
+        return self._psd_reader.parsed_sents(self._getfileids(documents, 'psd'))
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() or "
@@ -262,4 +265,3 @@ documents = {
     'cowsgosp.o3': 'West-Saxon Gospels',
     'cowulf.o34': 'Wulfstan\'s Homilies'
     }
-

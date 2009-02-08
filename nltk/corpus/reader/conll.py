@@ -7,21 +7,24 @@
 # For license information, see LICENSE.TXT
 
 """
-Read CoNLL-style chunk files.
+Read CoNLL-style chunk fileids.
 """       
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+import os
+import codecs
+import textwrap
+
 from nltk import chunk, tree, Tree
-import os, codecs
 from nltk.internals import deprecated
 from nltk import Tree, LazyMap, LazyConcatenation
-import textwrap
+
+from util import *
+from api import *
 
 class ConllCorpusReader(CorpusReader):
     """
     A corpus reader for CoNLL-style files.  These files consist of a
-    series of sentences, seperated by blank lines.  Each sentence is
+    series of sentences, separated by blank lines.  Each sentence is
     encoded using a table (or I{grid}) of values, where each line
     corresponds to a single word, and each column corresponds to an
     annotation type.  The set of columns used by CoNLL-style files can
@@ -59,7 +62,7 @@ class ConllCorpusReader(CorpusReader):
     # Constructor
     #/////////////////////////////////////////////////////////////////
     
-    def __init__(self, root, files, columntypes,
+    def __init__(self, root, fileids, columntypes,
                  chunk_types=None, top_node='S', pos_in_tree=False,
                  srl_includes_roleset=True, encoding=None,
                  tree_class=Tree):
@@ -73,101 +76,101 @@ class ConllCorpusReader(CorpusReader):
         self._top_node = top_node # for chunks
         self._srl_includes_roleset = srl_includes_roleset
         self._tree_class = tree_class
-        CorpusReader.__init__(self, root, files, encoding)
+        CorpusReader.__init__(self, root, fileids, encoding)
 
     #/////////////////////////////////////////////////////////////////
     # Data Access Methods
     #/////////////////////////////////////////////////////////////////
 
-    def raw(self, files=None):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
-    def words(self, files=None):
+    def words(self, fileids=None):
         self._require(self.WORDS)
-        return LazyConcatenation(LazyMap(self._get_words, self._grids(files)))
+        return LazyConcatenation(LazyMap(self._get_words, self._grids(fileids)))
 
-    def sents(self, files=None):
+    def sents(self, fileids=None):
         self._require(self.WORDS)
-        return LazyMap(self._get_words, self._grids(files))
+        return LazyMap(self._get_words, self._grids(fileids))
 
-    def tagged_words(self, files=None):
+    def tagged_words(self, fileids=None):
         self._require(self.WORDS, self.POS)
         return LazyConcatenation(LazyMap(self._get_tagged_words,
-                                         self._grids(files)))
+                                         self._grids(fileids)))
 
-    def tagged_sents(self, files=None):
+    def tagged_sents(self, fileids=None):
         self._require(self.WORDS, self.POS)
-        return LazyMap(self._get_tagged_words, self._grids(files))
+        return LazyMap(self._get_tagged_words, self._grids(fileids))
 
-    def chunked_words(self, files=None, chunk_types=None):
+    def chunked_words(self, fileids=None, chunk_types=None):
         self._require(self.WORDS, self.POS, self.CHUNK)
         if chunk_types is None: chunk_types = self._chunk_types
         def get_chunked_words(grid): # capture chunk_types as local var
             return self._get_chunked_words(grid, chunk_types)
         return LazyConcatenation(LazyMap(get_chunked_words,
-                                         self._grids(files)))
+                                         self._grids(fileids)))
 
-    def chunked_sents(self, files=None, chunk_types=None):
+    def chunked_sents(self, fileids=None, chunk_types=None):
         self._require(self.WORDS, self.POS, self.CHUNK)
         if chunk_types is None: chunk_types = self._chunk_types
         def get_chunked_words(grid): # capture chunk_types as local var
             return self._get_chunked_words(grid, chunk_types)
-        return LazyMap(get_chunked_words, self._grids(files))
+        return LazyMap(get_chunked_words, self._grids(fileids))
     
-    def parsed_sents(self, files=None, pos_in_tree=None):
+    def parsed_sents(self, fileids=None, pos_in_tree=None):
         self._require(self.WORDS, self.POS, self.TREE)
         if pos_in_tree is None: pos_in_tree = self._pos_in_tree
         def get_parsed_sent(grid): # capture pos_in_tree as local var
             return self._get_parsed_sent(grid, pos_in_tree)
-        return LazyMap(get_parsed_sent, self._grids(files))
+        return LazyMap(get_parsed_sent, self._grids(fileids))
 
-    def srl_spans(self, files=None):
+    def srl_spans(self, fileids=None):
         self._require(self.SRL)
-        return LazyMap(self._get_srl_spans, self._grids(files))
+        return LazyMap(self._get_srl_spans, self._grids(fileids))
 
-    def srl_instances(self, files=None, pos_in_tree=None, flatten=True):
+    def srl_instances(self, fileids=None, pos_in_tree=None, flatten=True):
         self._require(self.WORDS, self.POS, self.TREE, self.SRL)
         if pos_in_tree is None: pos_in_tree = self._pos_in_tree
         def get_srl_instances(grid): # capture pos_in_tree as local var
             return self._get_srl_instances(grid, pos_in_tree)
-        result = LazyMap(get_srl_instances, self._grids(files))
+        result = LazyMap(get_srl_instances, self._grids(fileids))
         if flatten: result = LazyConcatenation(result)
         return result
 
-    def iob_words(self, files=None):
+    def iob_words(self, fileids=None):
         """
         @return: a list of word/tag/IOB tuples 
         @rtype: C{list} of C{tuple}
-        @param files: the list of files that make up this corpus 
-        @type files: C{None} or C{str} or C{list}
+        @param fileids: the list of fileids that make up this corpus 
+        @type fileids: C{None} or C{str} or C{list}
         """
         self._require(self.WORDS, self.POS, self.CHUNK)
         return LazyConcatenation(LazyMap(self._get_iob_words,
-                                         self._grids(files)))
+                                         self._grids(fileids)))
 
-    def iob_sents(self, files=None):
+    def iob_sents(self, fileids=None):
         """
         @return: a list of lists of word/tag/IOB tuples 
         @rtype: C{list} of C{list}
-        @param files: the list of files that make up this corpus 
-        @type files: C{None} or C{str} or C{list}
+        @param fileids: the list of fileids that make up this corpus 
+        @type fileids: C{None} or C{str} or C{list}
         """
         self._require(self.WORDS, self.POS, self.CHUNK)
-        return LazyMap(self._get_iob_words, self._grids(files))
+        return LazyMap(self._get_iob_words, self._grids(fileids))
     
     #/////////////////////////////////////////////////////////////////
     # Grid Reading
     #/////////////////////////////////////////////////////////////////
     
-    def _grids(self, files=None):
+    def _grids(self, fileids=None):
         # n.b.: we could cache the object returned here (keyed on
-        # files), which would let us reuse the same corpus view for
+        # fileids), which would let us reuse the same corpus view for
         # different things (eg srl and parse trees).
-        return concat([StreamBackedCorpusView(filename, self._read_grid_block,
+        return concat([StreamBackedCorpusView(fileid, self._read_grid_block,
                                               encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
     def _read_grid_block(self, stream):
         grids = []
@@ -508,8 +511,8 @@ class ConllChunkCorpusReader(ConllCorpusReader):
     A ConllCorpusReader whose data file contains three columns: words,
     pos, and chunk.
     """
-    def __init__(self, root, files, chunk_types, encoding=None):
+    def __init__(self, root, fileids, chunk_types, encoding=None):
         ConllCorpusReader.__init__(
-            self, root, files, ('words', 'pos', 'chunk'),
+            self, root, fileids, ('words', 'pos', 'chunk'),
             chunk_types=chunk_types, encoding=encoding)
 

@@ -5,17 +5,21 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import re
+import textwrap
+
 from nltk.compat import *
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.xmldocs import *
-import re, textwrap
+from nltk.internals import deprecated
+
+from util import *
+from api import *
+from xmldocs import *
 
 class VerbnetCorpusReader(XMLCorpusReader):
 
     # No unicode encoding param, since the data files are all XML.
-    def __init__(self, root, files, wrap_etree=False):
-        XMLCorpusReader.__init__(self, root, files, wrap_etree)
+    def __init__(self, root, fileids, wrap_etree=False):
+        XMLCorpusReader.__init__(self, root, fileids, wrap_etree)
         
         self._lemma_to_class = defaultdict(list)
         """A dictionary mapping from verb lemma strings to lists of
@@ -116,7 +120,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         C{'9.1'}).
         """
         # File identifier: just return the xml.
-        if fileid_or_classid in self._files:
+        if fileid_or_classid in self._fileids:
             return self.xml(fileid_or_classid)
 
         # Class identifier: get the xml, and find the right elt.
@@ -138,12 +142,12 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def fileids(self, vnclass_ids=None):
         """
-        Return a list of files that make up this corpus.  If
-        C{vnclass_ids} is specified, then return the files that make
+        Return a list of fileids that make up this corpus.  If
+        C{vnclass_ids} is specified, then return the fileids that make
         up the specified verbnet class(es).
         """
         if vnclass_ids is None:
-            return self._files
+            return self._fileids
         elif isinstance(vnclass_ids, basestring):
             return [self._class_to_fileid[self.longid(vnclass_ids)]]
         else:
@@ -151,7 +155,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
                     for vnclass_id in vnclass_ids]
 
     #{ Deprecated since 0.9.7
-    @deprecated("Use corpus.files() instead")
+    @deprecated("Use corpus.fileids() instead")
     def files(self, vnclass_ids=None):
         return self.fileids(vnclass_ids)
     #}
@@ -164,11 +168,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         Initialize the indexes L{_lemma_to_class},
         L{_wordnet_to_class}, and L{_class_to_fileid} by scanning
-        through the corpus files.  This is fast with cElementTree
+        through the corpus fileids.  This is fast with cElementTree
         (<0.1 secs), but quite slow (>10 secs) with the python
         implementation of ElementTree.
         """
-        for fileid in self._files:
+        for fileid in self._fileids:
             self._index_helper(self.xml(fileid), fileid)
 
     def _index_helper(self, xmltree, fileid):
@@ -187,7 +191,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         Initialize the indexes L{_lemma_to_class},
         L{_wordnet_to_class}, and L{_class_to_fileid} by scanning
-        through the corpus files.  This doesn't do proper xml parsing,
+        through the corpus fileids.  This doesn't do proper xml parsing,
         but is good enough to find everything in the standard verbnet
         corpus -- and it runs about 30 times faster than xml parsing
         (with the python ElementTree; only 2-3 times faster with
@@ -195,7 +199,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         # nb: if we got rid of wordnet_to_class, this would run 2-3
         # times faster.
-        for fileid in self._files:
+        for fileid in self._fileids:
             vnclass = fileid[:-4] # strip the '.xml'
             self._class_to_fileid[vnclass] = fileid
             self._shortid_to_longid[self.shortid(vnclass)] = vnclass

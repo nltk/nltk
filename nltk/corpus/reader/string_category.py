@@ -19,37 +19,38 @@ NUM:date When did Hawaii become a state ?
 
 # based on PPAttachmentCorpusReader
 
+import os
+
 from util import *
 from api import *
-import os
 
 # [xx] Should the order of the tuple be reversed -- in most other places
 # in nltk, we use the form (data, tag) -- e.g., tagged words and
 # labeled texts for classifiers.
 class StringCategoryCorpusReader(CorpusReader):
-    def __init__(self, root, files, delimiter=' ', encoding=None):
+    def __init__(self, root, fileids, delimiter=' ', encoding=None):
         """
         @param root: The root directory for this corpus.
-        @param files: A list or regexp specifying the files in this corpus.
+        @param fileids: A list or regexp specifying the fileids in this corpus.
         @param delimiter: Field delimiter
         """
-        CorpusReader.__init__(self, root, files, encoding)
+        CorpusReader.__init__(self, root, fileids, encoding)
         self._delimiter = delimiter
 
-    def tuples(self, files=None):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([StreamBackedCorpusView(filename, self._read_tuple_block,
+    def tuples(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([StreamBackedCorpusView(fileid, self._read_tuple_block,
                                               encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, files=None):
+    def raw(self, fileids=None):
         """
-        @return: the text contents of the given files, as a single string.
+        @return: the text contents of the given fileids, as a single string.
         """
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
     def _read_tuple_block(self, stream):
         line = stream.readline().strip()

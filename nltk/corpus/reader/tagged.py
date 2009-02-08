@@ -10,12 +10,14 @@
 A reader for corpora whose documents contain part-of-speech-tagged words.
 """       
 
-from api import *
-from util import *
+import os
+
 from nltk.tag import str2tuple
 from nltk.tokenize import *
-import os
 from nltk.internals import deprecated
+
+from api import *
+from util import *
 
 class TaggedCorpusReader(CorpusReader):
     """
@@ -32,7 +34,7 @@ class TaggedCorpusReader(CorpusReader):
     constructor.  Part of speech tags are case-normalized to upper
     case.
     """
-    def __init__(self, root, files, 
+    def __init__(self, root, fileids, 
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block,
@@ -46,71 +48,71 @@ class TaggedCorpusReader(CorpusReader):
             >>> reader = TaggedCorpusReader(root, '.*', '.txt')
         
         @param root: The root directory for this corpus.
-        @param files: A list or regexp specifying the files in this corpus.
+        @param fileids: A list or regexp specifying the fileids in this corpus.
         """
-        CorpusReader.__init__(self, root, files, encoding)
+        CorpusReader.__init__(self, root, fileids, encoding)
         self._sep = sep
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
         self._tag_mapping_function = tag_mapping_function
 
-    def raw(self, files=None):
+    def raw(self, fileids=None):
         """
-        @return: the given file or files as a single string.
+        @return: the given file(s) as a single string.
         @rtype: C{str}
         """
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
-    def words(self, files=None):
+    def words(self, fileids=None):
         """
-        @return: the given file or files as a list of words
+        @return: the given file(s) as a list of words
             and punctuation symbols.
         @rtype: C{list} of C{str}
         """
-        return concat([TaggedCorpusView(filename, enc,
+        return concat([TaggedCorpusView(fileid, enc,
                                         False, False, False,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader,
                                         None)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def sents(self, files=None):
+    def sents(self, fileids=None):
         """
-        @return: the given file or files as a list of
+        @return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
         @rtype: C{list} of (C{list} of C{str})
         """
-        return concat([TaggedCorpusView(filename, enc,
+        return concat([TaggedCorpusView(fileid, enc,
                                         False, True, False,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader,
                                         None)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def paras(self, files=None):
+    def paras(self, fileids=None):
         """
-        @return: the given file or files as a list of
+        @return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
         @rtype: C{list} of (C{list} of (C{list} of C{str}))
         """
-        return concat([TaggedCorpusView(filename, enc,
+        return concat([TaggedCorpusView(fileid, enc,
                                         False, True, True,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader,
                                         None)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def tagged_words(self, files=None, simplify_tags=False):
+    def tagged_words(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file or files as a list of tagged
+        @return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             C{(word,tag)}.
         @rtype: C{list} of C{(str,str)}
@@ -119,17 +121,17 @@ class TaggedCorpusReader(CorpusReader):
             tag_mapping_function = self._tag_mapping_function
         else:
             tag_mapping_function = None
-        return concat([TaggedCorpusView(filename, enc,
+        return concat([TaggedCorpusView(fileid, enc,
                                         True, False, False,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader,
                                         tag_mapping_function)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def tagged_sents(self, files=None, simplify_tags=False):
+    def tagged_sents(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file or files as a list of
+        @return: the given file(s) as a list of
             sentences, each encoded as a list of C{(word,tag)} tuples.
             
         @rtype: C{list} of (C{list} of C{(str,str)})
@@ -138,17 +140,17 @@ class TaggedCorpusReader(CorpusReader):
             tag_mapping_function = self._tag_mapping_function
         else:
             tag_mapping_function = None
-        return concat([TaggedCorpusView(filename, enc,
+        return concat([TaggedCorpusView(fileid, enc,
                                         True, True, False,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader,
                                         tag_mapping_function)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def tagged_paras(self, files=None, simplify_tags=False):
+    def tagged_paras(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file or files as a list of
+        @return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of C{(word,tag)} tuples.
         @rtype: C{list} of (C{list} of (C{list} of C{(str,str)}))
@@ -157,13 +159,13 @@ class TaggedCorpusReader(CorpusReader):
             tag_mapping_function = self._tag_mapping_function
         else:
             tag_mapping_function = None
-        return concat([TaggedCorpusView(filename, enc,
+        return concat([TaggedCorpusView(fileid, enc,
                                         True, True, True,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader,
                                         tag_mapping_function)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
 class CategorizedTaggedCorpusReader(CategorizedCorpusReader,
                                     TaggedCorpusReader):
@@ -183,34 +185,34 @@ class CategorizedTaggedCorpusReader(CategorizedCorpusReader,
         CategorizedCorpusReader.__init__(self, kwargs)
         TaggedCorpusReader.__init__(self, *args, **kwargs)
 
-    def _resolve(self, files, categories):
-        if files is not None and categories is not None:
-            raise ValueError('Specify files or categories, not both')
+    def _resolve(self, fileids, categories):
+        if fileids is not None and categories is not None:
+            raise ValueError('Specify fileids or categories, not both')
         if categories is not None:
             return self.fileids(categories)
         else:
-            return files
-    def raw(self, files=None, categories=None):
+            return fileids
+    def raw(self, fileids=None, categories=None):
         return TaggedCorpusReader.raw(
-            self, self._resolve(files, categories))
-    def words(self, files=None, categories=None):
+            self, self._resolve(fileids, categories))
+    def words(self, fileids=None, categories=None):
         return TaggedCorpusReader.words(
-            self, self._resolve(files, categories))
-    def sents(self, files=None, categories=None):
+            self, self._resolve(fileids, categories))
+    def sents(self, fileids=None, categories=None):
         return TaggedCorpusReader.sents(
-            self, self._resolve(files, categories))
-    def paras(self, files=None, categories=None):
+            self, self._resolve(fileids, categories))
+    def paras(self, fileids=None, categories=None):
         return TaggedCorpusReader.paras(
-            self, self._resolve(files, categories))
-    def tagged_words(self, files=None, categories=None, simplify_tags=False):
+            self, self._resolve(fileids, categories))
+    def tagged_words(self, fileids=None, categories=None, simplify_tags=False):
         return TaggedCorpusReader.tagged_words(
-            self, self._resolve(files, categories), simplify_tags)
-    def tagged_sents(self, files=None, categories=None, simplify_tags=False):
+            self, self._resolve(fileids, categories), simplify_tags)
+    def tagged_sents(self, fileids=None, categories=None, simplify_tags=False):
         return TaggedCorpusReader.tagged_sents(
-            self, self._resolve(files, categories), simplify_tags)
-    def tagged_paras(self, files=None, categories=None, simplify_tags=False):
+            self, self._resolve(fileids, categories), simplify_tags)
+    def tagged_paras(self, fileids=None, categories=None, simplify_tags=False):
         return TaggedCorpusReader.tagged_paras(
-            self, self._resolve(files, categories), simplify_tags)
+            self, self._resolve(fileids, categories), simplify_tags)
 
 class TaggedCorpusView(StreamBackedCorpusView):
     """
@@ -265,9 +267,9 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
     L{self.paras()} and L{self.tagged_paras()} contains a single
     sentence.
     """
-    def __init__(self, root, files, encoding=None, tag_mapping_function=None):
+    def __init__(self, root, fileids, encoding=None, tag_mapping_function=None):
         TaggedCorpusReader.__init__(
-            self, root, files, sep='_',
+            self, root, fileids, sep='_',
             word_tokenizer=LineTokenizer(),
             sent_tokenizer=RegexpTokenizer('.*\n'),
             para_block_reader=self._read_block,
