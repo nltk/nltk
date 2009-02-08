@@ -26,11 +26,11 @@ __version__ = "0.9.8b1"
 __copyright__ = """\
 Copyright (C) 2001-2009 NLTK Project.
 
-Distributed and Licensed under provisions of the GNU Public
-License, which is included by reference.
+Distributed and Licensed under provisions of the GNU General
+Public License, which is included by reference.
 """
 
-__license__ = "GNU Public License"
+__license__ = "GPL"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
 The Natural Langauge Toolkit (NLTK) is a Python package for
@@ -46,6 +46,29 @@ __maintainer__ = "Steven Bird, Edward Loper, Ewan Klein"
 __maintainer_email__ = "sb@csse.unimelb.edu.au"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
+
+# "Trove" classifiers for Python Package Index.
+__classifiers__ = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: Information Technology',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: GNU General Public License (GPL)',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 2.4',
+    'Programming Language :: Python :: 2.5',
+    'Programming Language :: Python :: 2.6',
+    'Topic :: Scientific/Engineering',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'Topic :: Scientific/Engineering :: Human Machine Interfaces',
+    'Topic :: Scientific/Engineering :: Information Analysis',
+    'Topic :: Text Processing',
+    'Topic :: Text Processing :: Filters',
+    'Topic :: Text Processing :: General',
+    'Topic :: Text Processing :: Indexing',
+    'Topic :: Text Processing :: Linguistic',
+    ]
 
 # Import top-level functionality into top-level namespace
 
