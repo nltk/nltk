@@ -308,17 +308,17 @@ class CategorizedCorpusReader(object):
         self._f2c[file_id].append(category)
         self._c2f[category].append(file_id)
 
-    def categories(self, files=None):
+    def categories(self, fileids=None):
         """
         Return a list of the categories that are defined for this corpus,
         or for the file(s) if it is given.
         """
         if self._f2c is None: self._init()
-        if files is None:
+        if fileids is None:
             return sorted(self._c2f)
-        if isinstance(files, basestring):
-            files = [files]
-        return sorted(sum((self._f2c[d] for d in files), []))
+        if isinstance(fileids, basestring):
+            fileids = [fileids]
+        return sorted(sum((self._f2c[d] for d in fileids), []))
 
     def fileids(self, categories=None):
         """
@@ -333,4 +333,3 @@ class CategorizedCorpusReader(object):
         else:
             if self._f2c is None: self._init()
             return sorted(sum((self._c2f[c] for c in categories), []))
-

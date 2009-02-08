@@ -113,7 +113,7 @@ class MalletCRF(FeaturesetTaggerI):
     #: The name of the java script used to run MalletCRFs.
     _RUN_CRF = "org.nltk.mallet.RunCRF"
 
-    def tag_sents(self, sentences):
+    def batch_tag(self, sentences):
         # Write the test corpus to a temporary file
         (fd, test_file) = mkstemp('.txt', 'test')
         self.write_test_corpus(sentences, os.fdopen(fd, 'w'))

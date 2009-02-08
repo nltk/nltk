@@ -63,9 +63,9 @@ def untag(tagged_sentence):
     """
     return [w for (w, t) in tagged_sentence]
 
-@deprecated("use tagger.evaluate_sents(gold)")
+@deprecated("use tagger.evaluate(gold)")
 def accuracy(tagger, gold):
-    return tagger.evaluate_sents(gold)
+    return tagger.evaluate(gold)
 
 
 ######################################################################
