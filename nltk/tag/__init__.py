@@ -25,7 +25,7 @@ __all__ = [
     'TaggerI',
 
     # Standard POS tagger
-    'pos_tag', 'pos_tag_sents',
+    'pos_tag', 'batch_pos_tag',
     
     # Should these be included:?
     #'SequentialBackoffTagger', 'ContextTagger',
@@ -62,10 +62,10 @@ def pos_tag(tokens):
     tagger = nltk.data.load(_POS_TAGGER)
     return tagger.tag(tokens)
 
-def pos_tag_sents(sentences):
+def batch_pos_tag(sentences):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
     """
     tagger = nltk.data.load(_POS_TAGGER)
-    return tagger.tag_sents(sentences)
+    return tagger.batch_tag(sentences)
