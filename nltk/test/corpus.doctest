@@ -291,10 +291,7 @@ Reading the CoNLL 2007 Dependency Treebanks:
 
     >>> from nltk.corpus import conll2007
     >>> conll2007.sents('cat.train')
-    [['El', 'aumento', 'del', '\xc3\xadndice', 'de', 'desempleo', 'estadounidense', 'fortaleci\xc3\xb3', 'hoy', 'considerablemente', 'al', 'euro', 
-',', 'que', 'a', 'las', '15.35', 'GMT', 'se', 'cotizaba', 'en', 'el', 'mercado', 'de', 'divisas', 'de', 'Fr\xc3\xa1ncfort', 'a', '0,9452_d\xc3\xb3l
-ares', ',', 'frente_a', 'los', '0,9349_d\xc3\xb3lares', 'de', 'esta', 'ma\xc3\xb1ana', '.'], ['El', 'Banco_Central_Europeo', '-', 'BCE', '-', 'fij\
-xc3\xb3', 'el', 'cambio', 'oficial', 'del', 'euro', 'en', 'los', '0,9355_d\xc3\xb3lares', '.'], ...]
+    [['El', 'aumento', 'del', '\xc3\xadndice', 'de', 'desempleo', 'estadounidense', 'fortaleci\xc3\xb3', 'hoy', 'considerablemente', 'al', 'euro', ',', 'que', 'a', 'las', '15.35', 'GMT', 'se', 'cotizaba', 'en', 'el', 'mercado', 'de', 'divisas', 'de', 'Fr\xc3\xa1ncfort', 'a', '0,9452_d\xc3\xb3lares', ',', 'frente_a', 'los', '0,9349_d\xc3\xb3lares', 'de', 'esta', 'ma\xc3\xb1ana', '.'], ['El', 'Banco_Central_Europeo', '-', 'BCE', '-', 'fij\xc3\xb3', 'el', 'cambio', 'oficial', 'del', 'euro', 'en', 'los', '0,9355_d\xc3\xb3lares', '.'], ...]
     >>> conll2007.parsed_sents('cat.train')[0]
     <DependencyGraph with 38 nodes>
     >>> conll2007.parsed_sents('cat.train')[0].tree() # doctest: +NORMALIZE_WHITESPACE

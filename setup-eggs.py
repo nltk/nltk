@@ -93,5 +93,6 @@ setup(
     zip_safe=False, # since normal files will be present too?
     install_requires=['setuptools',
                       'PyYAML==3.08',
-                      ]
+                      ],
+    test_suite = 'nltk.test.all',
     )
