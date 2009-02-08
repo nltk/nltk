@@ -10,10 +10,11 @@
 API for corpus readers.
 """
 
-import os, re
+import os
+import re
+
 from nltk import defaultdict
 from nltk.internals import deprecated
-import nltk.corpus.reader.util
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
 class CorpusReader(object):
@@ -31,16 +32,16 @@ class CorpusReader(object):
     C{parsed_sents()} (for a list of parsed sentences).  Called with
     no arguments, these methods will return the contents of the entire
     corpus.  For most corpora, these methods define one or more
-    selection arguments, such as C{files} or C{categories}, which can
+    selection arguments, such as C{fileids} or C{categories}, which can
     be used to select which portion of the corpus should be returned.
     """
-    def __init__(self, root, files, encoding=None, tag_mapping_function=None):
+    def __init__(self, root, fileids, encoding=None, tag_mapping_function=None):
         """
         @type root: L{PathPointer} or C{str}
         @param root: A path pointer identifying the root directory for
             this corpus.  If a string is specified, then it will be
             converted to a L{PathPointer} automatically.
-        @param files: A list of the files that make up this corpus.
+        @param fileids: A list of the files that make up this corpus.
             This list can either be specified explicitly, as a list of
             strings; or implicitly, as a regular expression over file
             paths.  The absolute path for each file will be constructed
@@ -80,12 +81,12 @@ class CorpusReader(object):
         elif not isinstance(root, PathPointer):
             raise TypeError('CorpusReader: expected a string or a PathPointer')
 
-        # If `files` is a regexp, then expand it.
-        if isinstance(files, basestring):
-            files = nltk.corpus.reader.find_corpus_files(root, files)
+        # If `fileids` is a regexp, then expand it.
+        if isinstance(fileids, basestring):
+            fileids = nltk.corpus.reader.find_corpus_fileids(root, fileids)
             
-        self._files = tuple(files)
-        """A list of the relative paths for the files that make up
+        self._fileids = tuple(fileids)
+        """A list of the relative paths for the fileids that make up
         this corpus."""
         
         self._root = root
@@ -95,7 +96,7 @@ class CorpusReader(object):
         # it to a dictionary.
         if isinstance(encoding, list):
             encoding_dict = {}
-            for fileid in self._files:
+            for fileid in self._fileids:
                 for x in encoding:
                     (regexp, enc) = x
                     if re.match(regexp, fileid):
@@ -104,7 +105,7 @@ class CorpusReader(object):
             encoding = encoding_dict
 
         self._encoding = encoding
-        """The default unicode encoding for the files that make up
+        """The default unicode encoding for the fileids that make up
            this corpus.  If C{encoding} is C{None}, then the file
            contents are processed using byte strings (C{str})."""
         self._tag_mapping_function = tag_mapping_function
@@ -118,10 +119,10 @@ class CorpusReader(object):
 
     def fileids(self):
         """
-        Return a list of file identifiers for the files that make up
+        Return a list of file identifiers for the fileids that make up
         this corpus.
         """
-        return self._files
+        return self._fileids
 
     def abspath(self, file):
         """
@@ -135,17 +136,17 @@ class CorpusReader(object):
         """
         return self._root.join(file)
 
-    def abspaths(self, files=None, include_encoding=False):
+    def abspaths(self, fileids=None, include_encoding=False):
         """
-        Return a list of the absolute paths for all files in this corpus;
-        or for the given list of files, if specified.
+        Return a list of the absolute paths for all fileids in this corpus;
+        or for the given list of fileids, if specified.
 
-        @type files: C{None} or C{str} or C{list}
-        @param files: Specifies the set of files for which paths should
-            be returned.  Can be C{None}, for all files; a list of
-            file identifiers, for a specified set of files; or a single
+        @type fileids: C{None} or C{str} or C{list}
+        @param fileids: Specifies the set of fileids for which paths should
+            be returned.  Can be C{None}, for all fileids; a list of
+            file identifiers, for a specified set of fileids; or a single
             file identifier, for a single file.  Note that the return
-            value is always a list of paths, even if C{files} is a
+            value is always a list of paths, even if C{fileids} is a
             single file identifier.
             
         @param include_encoding: If true, then return a list of
@@ -153,15 +154,15 @@ class CorpusReader(object):
 
         @rtype: C{list} of L{PathPointer}
         """
-        if files is None:
-            files = self._files
-        elif isinstance(files, basestring):
-            files = [files]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, basestring):
+            fileids = [fileids]
 
-        paths = [self._root.join(f) for f in files]
+        paths = [self._root.join(f) for f in fileids]
 
         if include_encoding:            
-            return zip(paths, [self.encoding(f) for f in files])
+            return zip(paths, [self.encoding(f) for f in fileids])
         else:
             return paths
 
@@ -199,12 +200,9 @@ class CorpusReader(object):
     #}
 
     #{ Deprecated since 0.9.1
-    @deprecated("Use corpus.files() instead")
+    @deprecated("Use corpus.fileids() instead")
     def _get_items(self): return self.fileids()
     items = property(_get_items)
-
-    @deprecated("Use corpus.abspaths() instead")
-    def filenames(self, items=None): return self.abspaths(items)
     #}
 
 ######################################################################
@@ -216,8 +214,8 @@ class CategorizedCorpusReader(object):
     A mixin class used to aid in the implementation of corpus readers
     for categorized corpora.  This class defines the method
     L{categories()}, which returns a list of the categories for the
-    corpus or for a specified set of files; and overrides L{files()}
-    to take a C{categories} argument, restricting the set of files to
+    corpus or for a specified set of fileids; and overrides L{fileids()}
+    to take a C{categories} argument, restricting the set of fileids to
     be returned.
 
     Subclasses are expected to:
@@ -225,8 +223,8 @@ class CategorizedCorpusReader(object):
       - Call L{__init__()} to set up the mapping.
         
       - Override all view methods to accept a C{categories} parameter,
-        which can be used *instead* of the C{files} parameter, to
-        select which files should be included in the returned view.
+        which can be used *instead* of the C{fileids} parameter, to
+        select which fileids should be included in the returned view.
     """
 
     def __init__(self, kwargs):
@@ -255,7 +253,7 @@ class CategorizedCorpusReader(object):
         
         self._pattern = None #: regexp specifying the mapping
         self._map = None #: dict specifying the mapping
-        self._file = None #: filename of file containing the mapping
+        self._file = None #: fileid of file containing the mapping
         self._delimiter = None #: delimiter for L{self._file}
 
         if 'cat_pattern' in kwargs:
@@ -285,7 +283,7 @@ class CategorizedCorpusReader(object):
         self._c2f = defaultdict(list)
         
         if self._pattern is not None:
-            for file_id in self._files:
+            for file_id in self._fileids:
                 category = re.match(self._pattern, file_id).group(1)
                 self._add(file_id, category)
                 

@@ -38,11 +38,14 @@ Chen Keh-Jiann and Yu-Ming Hsieh (2004) Chinese Treebanks and Grammar
 Extraction, Proceedings of IJCNLP-04, pp560-565.
 """
 
+import os
+import re
+
+from nltk import tokenize, tree
+from nltk.internals import deprecated
+
 from util import *
 from api import *
-from nltk import tokenize, tree
-import os, re
-from nltk.internals import deprecated
 
 IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')

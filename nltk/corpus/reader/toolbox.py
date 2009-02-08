@@ -11,10 +11,13 @@
 
 """
 Module for reading, writing and manipulating 
-Toolbox databases and settings files.
+Toolbox databases and settings fileids.
 """
 
-import os, re, codecs
+import os
+import re
+import codecs
+
 from nltk.toolbox import ToolboxData
 from nltk.internals import deprecated
 from nltk import data
@@ -23,26 +26,26 @@ from util import *
 from api import *
 
 class ToolboxCorpusReader(CorpusReader):
-    def xml(self, files, key=None):
+    def xml(self, fileids, key=None):
         return concat([ToolboxData(path, enc).parse(key)
-                       for (path, enc) in self.abspaths(files, True)])
+                       for (path, enc) in self.abspaths(fileids, True)])
 
-    def fields(self, files, strip=True, unwrap=True, encoding=None,
+    def fields(self, fileids, strip=True, unwrap=True, encoding=None,
                errors='strict', unicode_fields=None):
-        return concat([list(ToolboxData(filename,enc).fields(
+        return concat([list(ToolboxData(fileid,enc).fields(
                              strip, unwrap, encoding, errors, unicode_fields))
-                       for (filename, enc)
-                       in self.abspaths(files, include_encoding=True)])
+                       for (fileid, enc)
+                       in self.abspaths(fileids, include_encoding=True)])
 
     # should probably be done lazily:
-    def entries(self, files, **kwargs):
+    def entries(self, fileids, **kwargs):
         if 'key' in kwargs:
             key = kwargs['key']
             del kwargs['key']
         else:
             key = 'lx'  # the default key in MDF
         entries = []
-        for marker, contents in self.fields(files, **kwargs):
+        for marker, contents in self.fields(fileids, **kwargs):
             if marker == key:
                 entries.append((contents, []))
             else:
@@ -52,20 +55,20 @@ class ToolboxCorpusReader(CorpusReader):
                     pass
         return entries
 
-    def words(self, files, key='lx'):
-        return [contents for marker, contents in self.fields(files) if marker == key]
+    def words(self, fileids, key='lx'):
+        return [contents for marker, contents in self.fields(fileids) if marker == key]
 
-    def raw(self, files):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+    def raw(self, fileids):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
     #{ Deprecated since 0.8
     @deprecated("Use .xml() instead.")
-    def dictionary(self, files=None):
+    def dictionary(self, fileids=None):
         raise ValueError("no longer supported -- use .xml() instead")
     @deprecated("Use .xml() instead.")
-    def parse_corpus(self, files=None, key=None):
+    def parse_corpus(self, fileids=None, key=None):
         return self.xml(items, key)
     #}
     

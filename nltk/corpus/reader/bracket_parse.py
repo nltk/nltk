@@ -6,10 +6,12 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
-from nltk.tree import bracket_parse, Tree
 import sys
+
+from nltk.tree import bracket_parse, Tree
+
+from util import *
+from api import *
 
 """
 Corpus reader for corpora that consist of parenthesis-delineated parse trees.
@@ -25,12 +27,12 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     Reader for corpora that consist of parenthesis-delineated parse
     trees.
     """
-    def __init__(self, root, files, comment_char=None,
+    def __init__(self, root, fileids, comment_char=None,
                  detect_blocks='unindented_paren', encoding=None,
                  tag_mapping_function=None):
         """
         @param root: The root directory for this corpus.
-        @param files: A list or regexp specifying the files in this corpus.
+        @param fileids: A list or regexp specifying the fileids in this corpus.
         @param comment_char: The character which can appear at the start of
             a line to indicate that the rest of the line is a comment.
         @param detect_blocks: The method that is used to find blocks
@@ -38,7 +40,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
           parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).
         """
-        CorpusReader.__init__(self, root, files, encoding)
+        CorpusReader.__init__(self, root, fileids, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
         self._tag_mapping_function = tag_mapping_function

@@ -15,42 +15,42 @@ from api import *
 
 class DependencyCorpusReader(SyntaxCorpusReader):
         
-    def __init__(self, root, files, encoding=None,
+    def __init__(self, root, fileids, encoding=None,
                  word_tokenizer=TabTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block):
         
-        CorpusReader.__init__(self, root, files, encoding)
+        CorpusReader.__init__(self, root, fileids, encoding)
             
     #########################################################
 
-    def raw(self, files=None):
+    def raw(self, fileids=None):
         """
-        @return: the given file or files as a single string.
+        @return: the given file(s) as a single string.
         @rtype: C{str}
         """
-        return concat([open(filename).read()
-                      for filename in self.abspaths(files)])
+        return concat([open(fileid).read()
+                      for fileid in self.abspaths(fileids)])
     
-    def words(self, files=None):
-        return concat([DependencyCorpusView(filename, False, False, False)
-                       for filename in self.abspaths(files)])
+    def words(self, fileids=None):
+        return concat([DependencyCorpusView(fileid, False, False, False)
+                       for fileid in self.abspaths(fileids)])
     
-    def tagged_words(self, files=None):
-        return concat([DependencyCorpusView(filename, True, False, False)
-                       for filename in self.abspaths(files)])
+    def tagged_words(self, fileids=None):
+        return concat([DependencyCorpusView(fileid, True, False, False)
+                       for fileid in self.abspaths(fileids)])
 
-    def sents(self, files=None):
-        return concat([DependencyCorpusView(filename, False, True, False)
-                       for filename in self.abspaths(files)])
+    def sents(self, fileids=None):
+        return concat([DependencyCorpusView(fileid, False, True, False)
+                       for fileid in self.abspaths(fileids)])
 
-    def tagged_sents(self, files=None):
-            return concat([DependencyCorpusView(filename, True, True, False)
-                                  for filename in self.abspaths(files)])
+    def tagged_sents(self, fileids=None):
+            return concat([DependencyCorpusView(fileid, True, True, False)
+                                  for fileid in self.abspaths(fileids)])
 
-    def parsed_sents(self, files=None):
-        sents=concat([DependencyCorpusView(filename, False, True, True)
-                                  for filename in self.abspaths(files)])
+    def parsed_sents(self, fileids=None):
+        sents=concat([DependencyCorpusView(fileid, False, True, True)
+                                  for fileid in self.abspaths(fileids)])
         return [DependencyGraph(sent) for sent in sents]
 
 

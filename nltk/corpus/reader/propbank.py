@@ -5,11 +5,14 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+import re
+import codecs
+
 from nltk.tree import Tree
 from nltk.etree import ElementTree
-import re, codecs
+
+from util import *
+from api import *
 
 class PropbankCorpusReader(CorpusReader):
     """
@@ -25,44 +28,44 @@ class PropbankCorpusReader(CorpusReader):
     argument roles, along with examples.
     """
     def __init__(self, root, propfile, framefiles='',
-                 verbsfile=None, parse_filename_xform=None,
+                 verbsfile=None, parse_fileid_xform=None,
                  parse_corpus=None, encoding=None):
         """
         @param root: The root directory for this corpus.
         @param propfile: The name of the file containing the predicate-
             argument annotations (relative to C{root}).
         @param framefiles: A list or regexp specifying the frameset
-            files for this corpus.
-        @param parse_filename_xform: A transform that should be applied
-            to the filenames in this corpus.  This should be a function
-            of one argument (a filename) that returns a string (the new
-            filename).
+            fileids for this corpus.
+        @param parse_fileid_xform: A transform that should be applied
+            to the fileids in this corpus.  This should be a function
+            of one argument (a fileid) that returns a string (the new
+            fileid).
         @param parse_corpus: The corpus containing the parse trees
             corresponding to this corpus.  These parse trees are
             necessary to resolve the tree pointers used by propbank.
         """
         # If framefiles is specified as a regexp, expand it.
         if isinstance(framefiles, basestring):
-            framefiles = nltk.corpus.reader.find_corpus_files(root, framefiles)
+            framefiles = nltk.corpus.reader.find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
         CorpusReader.__init__(self, root, [propfile, verbsfile] + framefiles,
                               encoding)
 
-        # Record our frame files & prop file.
+        # Record our frame fileids & prop file.
         self._propfile = propfile
         self._framefiles = framefiles
         self._verbsfile = verbsfile
-        self._parse_filename_xform = parse_filename_xform
+        self._parse_fileid_xform = parse_fileid_xform
         self._parse_corpus = parse_corpus
 
-    def raw(self, files=None):
+    def raw(self, fileids=None):
         """
-        @return: the text contents of the given files, as a single string.
+        @return: the text contents of the given fileids, as a single string.
         """
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
     def instances(self):
         """
@@ -92,7 +95,7 @@ class PropbankCorpusReader(CorpusReader):
             raise ValueError('Frameset file for %s not found' %
                              roleset_id)
 
-        # n.b.: The encoding for XML files is specified by the file
+        # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
         etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
         for roleset in etree.findall('predicate/roleset'):
@@ -119,7 +122,7 @@ class PropbankCorpusReader(CorpusReader):
             line = stream.readline().strip()
             if line:
                 block.append(PropbankInstance.parse(
-                    line, self._parse_filename_xform,
+                    line, self._parse_fileid_xform,
                     self._parse_corpus))
                 
         return block
@@ -130,15 +133,15 @@ class PropbankCorpusReader(CorpusReader):
 
 class PropbankInstance(object):
     
-    def __init__(self, filename, sentnum, wordnum, tagger, roleset,
+    def __init__(self, fileid, sentnum, wordnum, tagger, roleset,
                  inflection, predicate, arguments, parse_corpus=None):
         
-        self.filename = filename
+        self.fileid = fileid
         """The name of the file containing the parse tree for this
         instance's sentence."""
 
         self.sentnum = sentnum
-        """The sentence number of this sentence within L{filename}.
+        """The sentence number of this sentence within L{fileid}.
         Indexing starts from zero."""
         
         self.wordnum = wordnum
@@ -176,10 +179,10 @@ class PropbankInstance(object):
 
     def __repr__(self):
         return ('<PropbankInstance: %s, sent %s, word %s>' %
-                (self.filename, self.sentnum, self.wordnum))
+                (self.fileid, self.sentnum, self.wordnum))
 
     def __str__(self):
-        s = '%s %s %s %s %s %s' % (self.filename, self.sentnum, self.wordnum,
+        s = '%s %s %s %s %s %s' % (self.fileid, self.sentnum, self.wordnum,
                                    self.tagger, self.roleset, self.inflection)
         items = self.arguments + ((self.predicate, 'rel'),)
         for (argloc, argid) in sorted(items):
@@ -188,29 +191,29 @@ class PropbankInstance(object):
 
     def _get_tree(self):
         if self.parse_corpus is None: return None
-        if self.filename not in self.parse_corpus.files(): return None
-        return self.parse_corpus.parsed_sents(self.filename)[self.sentnum]
+        if self.fileid not in self.parse_corpus.fileids(): return None
+        return self.parse_corpus.parsed_sents(self.fileid)[self.sentnum]
     tree = property(_get_tree, doc="""
         The parse tree corresponding to this instance, or C{None} if
         the corresponding tree is not available.""")
 
     @staticmethod
-    def parse(s, parse_filename_xform=None, parse_corpus=None):
+    def parse(s, parse_fileid_xform=None, parse_corpus=None):
         pieces = s.split()
         if len(pieces) < 7: 
             raise ValueError('Badly formatted propbank line: %r' % s)
 
         # Divide the line into its basic pieces.
-        (filename, sentnum, wordnum,
+        (fileid, sentnum, wordnum,
          tagger, roleset, inflection) = pieces[:6]
         rel = [p for p in pieces[6:] if p.endswith('-rel')]
         args = [p for p in pieces[6:] if not p.endswith('-rel')]
         if len(rel) != 1:
             raise ValueError('Badly formatted propbank line: %r' % s)
 
-        # Apply the filename selector, if any.
-        if parse_filename_xform is not None:
-            filename = parse_filename_xform(filename)
+        # Apply the fileid selector, if any.
+        if parse_fileid_xform is not None:
+            fileid = parse_fileid_xform(fileid)
 
         # Convert sentence & word numbers to ints.
         sentnum = int(sentnum)
@@ -229,7 +232,7 @@ class PropbankInstance(object):
             arguments.append( (PropbankTreePointer.parse(argloc), argid) )
 
         # Put it all together.
-        return PropbankInstance(filename, sentnum, wordnum, tagger,
+        return PropbankInstance(fileid, sentnum, wordnum, tagger,
                                 roleset, inflection, predicate,
                                 arguments, parse_corpus)
 

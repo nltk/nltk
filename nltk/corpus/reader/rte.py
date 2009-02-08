@@ -8,7 +8,7 @@
 """
 Corpus reader for the Recognizing Textual Entailment (RTE) Challenge Corpora.
 
-The files were taken from the RTE1, RTE2 and RTE3 datasets and the filenames
+The files were taken from the RTE1, RTE2 and RTE3 datasets and the files
 were regularized. 
 
 Filenames are of the form rte*_dev.xml and rte*_test.xml. The latter are the
@@ -33,9 +33,9 @@ file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.xmldocs import *
+from util import *
+from api import *
+from xmldocs import *
 
 
 def norm(value_string):
@@ -127,16 +127,16 @@ class RTECorpusReader(XMLCorpusReader):
                 for pair in doc.getiterator("pair")]
 
 
-    def pairs(self, files):
+    def pairs(self, fileids):
         """
         Build a list of RTEPairs from a RTE corpus.
         
-        @param files: a list of RTE corpus filenames
+        @param fileids: a list of RTE corpus fileids
         @type: C{list}
         @rtype: C{list} of L{RTEPair}s
         """
-        if isinstance(files, basestring): files = [files]
-        return concat([self._read_etree(self.xml(filename)) for filename in files])
+        if isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])
     
 
 

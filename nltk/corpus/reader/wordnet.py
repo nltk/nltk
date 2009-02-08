@@ -105,7 +105,7 @@ class WordNetCorpusReader(CorpusReader):
     _pos_names = dict(tup[::-1] for tup in _pos_numbers.items())
     #}
 
-    #: A list of file identifiers for all the files used by this
+    #: A list of file identifiers for all the fileids used by this
     #: corpus reader.
     _FILES = ('cntlist.rev', 'lexnames', 'index.sense',
               'index.adj', 'index.adv', 'index.noun', 'index.verb',
@@ -299,8 +299,8 @@ class WordNetCorpusReader(CorpusReader):
         """
         if pos == ADJ_SAT: pos = ADJ
         if self._data_file_map.get(pos) is None:
-            filename = 'data.%s' % self._FILEMAP[pos]
-            self._data_file_map[pos] = self.open(filename)
+            fileid = 'data.%s' % self._FILEMAP[pos]
+            self._data_file_map[pos] = self.open(fileid)
         return self._data_file_map[pos]
 
     def _synset_from_pos_and_offset(self, pos, offset):
@@ -483,8 +483,8 @@ class WordNetCorpusReader(CorpusReader):
             # we're defining an iterator, and those file pointers might
             # be moved while we're not looking.
             if pos_tag == ADJ_SAT: pos_tag = ADJ
-            filename = 'data.%s' % self._FILEMAP[pos_tag]
-            data_file = self.open(filename)
+            fileid = 'data.%s' % self._FILEMAP[pos_tag]
+            data_file = self.open(fileid)
 
             try:
                 # generate synsets for each line in the POS file
@@ -695,8 +695,8 @@ class WordNetICCorpusReader(CorpusReader):
     A corpus reader for the WordNet information content corpus.
     """
 
-    def __init__(self, root, files):
-        CorpusReader.__init__(self, root, files)
+    def __init__(self, root, fileids):
+        CorpusReader.__init__(self, root, fileids)
 
     # this load function would be more efficient if the data was pickled
     # Note that we can't use NLTK's frequency distributions because

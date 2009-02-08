@@ -118,11 +118,17 @@ The 4 functions are as follows.
  
 """       
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+import sys
+import os
+import re
+import tempfile
+import time
+
 from nltk.tree import Tree
-import sys, os, re, tempfile, time
 from nltk.internals import deprecated, import_from_stdlib
+
+from util import *
+from api import *
 
 class TimitCorpusReader(CorpusReader):
     """
@@ -144,7 +150,7 @@ class TimitCorpusReader(CorpusReader):
     
     _FILE_RE = (r'(\w+-\w+/\w+\.(phn|txt|wav|wrd))|' +
                 r'timitdic\.txt|spkrinfo\.txt')
-    """A regexp matchin files that are used by this corpus reader."""
+    """A regexp matching fileids that are used by this corpus reader."""
     _UTTERANCE_RE = r'\w+-\w+/\w+\.txt'
     
     def __init__(self, root, encoding=None):
@@ -157,11 +163,11 @@ class TimitCorpusReader(CorpusReader):
             encoding = [('.*\.wav', None), ('.*', encoding)]
         
         CorpusReader.__init__(self, root,
-                              find_corpus_files(root, self._FILE_RE),
+                              find_corpus_fileids(root, self._FILE_RE),
                               encoding=encoding)
 
         self._utterances = [name[:-4] for name in
-                            find_corpus_files(root, self._UTTERANCE_RE)]
+                            find_corpus_fileids(root, self._UTTERANCE_RE)]
         """A list of the utterance identifiers for all utterances in
         this corpus."""
 
@@ -265,7 +271,7 @@ class TimitCorpusReader(CorpusReader):
 
     def phones(self, utterances=None):
         return [line.split()[-1]
-                for fileid in self._utterance_files(utterances, '.phn')
+                for fileid in self._utterance_fileids(utterances, '.phn')
                 for line in self.open(fileid) if line.strip()]
 
     def phone_times(self, utterances=None):
@@ -273,28 +279,28 @@ class TimitCorpusReader(CorpusReader):
         offset is represented as a number of 16kHz samples!
         """
         return [(line.split()[2], int(line.split()[0]), int(line.split()[1]))
-                for fileid in self._utterance_files(utterances, '.phn')
+                for fileid in self._utterance_fileids(utterances, '.phn')
                 for line in self.open(fileid) if line.strip()]
 
     def words(self, utterances=None):
         return [line.split()[-1]
-                for fileid in self._utterance_files(utterances, '.wrd')
+                for fileid in self._utterance_fileids(utterances, '.wrd')
                 for line in self.open(fileid) if line.strip()]
 
     def word_times(self, utterances=None):
         return [(line.split()[2], int(line.split()[0]), int(line.split()[1]))
-                for fileid in self._utterance_files(utterances, '.wrd')
+                for fileid in self._utterance_fileids(utterances, '.wrd')
                 for line in self.open(fileid) if line.strip()]
 
     def sents(self, utterances=None):
         return [[line.split()[-1]
                  for line in self.open(fileid) if line.strip()]
-                for fileid in self._utterance_files(utterances, '.wrd')]
+                for fileid in self._utterance_fileids(utterances, '.wrd')]
 
     def sent_times(self, utterances=None):
         return [(line.split(None,2)[-1].strip(),
                  int(line.split()[0]), int(line.split()[1]))
-                for fileid in self._utterance_files(utterances, '.txt')
+                for fileid in self._utterance_fileids(utterances, '.txt')
                 for line in self.open(fileid) if line.strip()]
 
     def phone_trees(self, utterances=None):
@@ -323,8 +329,8 @@ class TimitCorpusReader(CorpusReader):
         return trees
 
     # [xx] NOTE: This is currently broken -- we're assuming that the
-    # files are WAV files (aka RIFF), but they're actually NIST SPHERE
-    # files.
+    # fileids are WAV fileids (aka RIFF), but they're actually NIST SPHERE
+    # fileids.
     def wav(self, utterance, start=0, end=None):
         # nltk.chunk conflicts with the stdlib module 'chunk'
         wave = import_from_stdlib('wave')
@@ -363,7 +369,7 @@ class TimitCorpusReader(CorpusReader):
             data = self.open(utterance+'.wav').read(headersize+end*2)
         return data[headersize+start*2:]
 
-    def _utterance_files(self, utterances, extension):
+    def _utterance_fileids(self, utterances, extension):
         if utterances is None: utterances = self._utterances
         if isinstance(utterances, basestring): utterances = [utterances]
         return ['%s%s' % (u, extension) for u in utterances]
@@ -409,7 +415,7 @@ class TimitCorpusReader(CorpusReader):
                              "for audio playback.")
 
     #{ Deprecated since 0.9.7
-    @deprecated("Use corpus.files() instead")
+    @deprecated("Use corpus.fileids() instead")
     def files(self, filetype=None): return self.fileids(filetype)
     @deprecated("Use corpus.utteranceids() instead")
     def utterances(self, dialect=None, sex=None, spkrid=None,

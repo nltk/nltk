@@ -6,22 +6,23 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
 from nltk.internals import deprecated
 from nltk.tokenize import line_tokenize
+
+from util import *
+from api import *
 
 class WordListCorpusReader(CorpusReader):
     """
     List of words, one per line.  Blank lines are ignored.
     """
-    def words(self, files=None):
-        return line_tokenize(self.raw(files))
+    def words(self, fileids=None):
+        return line_tokenize(self.raw(fileids))
 
-    def raw(self, files=None):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() instead.")
@@ -35,12 +36,12 @@ class WordListCorpusReader(CorpusReader):
     #}
             
 class SwadeshCorpusReader(WordListCorpusReader):
-    def entries(self, files=None):
+    def entries(self, fileids=None):
         """
-        @return: a tuple of words for the specified files.
+        @return: a tuple of words for the specified fileids.
         """
-        if not files:
-            files = self.fileids()
+        if not fileids:
+            fileids = self.fileids()
 
-        wordlists = [self.words(f) for f in files]
+        wordlists = [self.words(f) for f in fileids]
         return zip(*wordlists)

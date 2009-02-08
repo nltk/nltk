@@ -8,9 +8,9 @@
 
 """
 NLTK corpus readers.  The modules in this package provide functions
-that can be used to read corpus files in a variety of formats.  These
-functions can be used to read both the corpus files that are
-distributed in the NLTK corpus package, and corpus files that are part
+that can be used to read corpus fileids in a variety of formats.  These
+functions can be used to read both the corpus fileids that are
+distributed in the NLTK corpus package, and corpus fileids that are part
 of external corpora.
 
 Corpus Reader Functions
@@ -24,7 +24,7 @@ should be read from the corpus:
     module's C{items} variable, then the corresponding document will
     be loaded from the NLTK corpus package.
 
-  - If C{item} is a filename, then that file will be read.
+  - If C{item} is a fileid, then that file will be read.
 
 Additionally, corpus reader functions can be given lists of item
 names; in which case, they will return a concatenation of the
@@ -95,7 +95,7 @@ import bracket_parse
 
 __all__ = [
     'CorpusReader', 'CategorizedCorpusReader',
-    'PlaintextCorpusReader', 'find_corpus_files',
+    'PlaintextCorpusReader', 'find_corpus_fileids',
     'TaggedCorpusReader', 'CMUDictCorpusReader',
     'ConllChunkCorpusReader', 'WordListCorpusReader',
     'PPAttachmentCorpusReader', 'SensevalCorpusReader',

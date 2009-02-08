@@ -6,16 +6,22 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import os, sys, bisect, re, tempfile
+import os
+import sys
+import bisect
+import re
+import tempfile
 try: import cPickle as pickle
 except ImportError: import pickle
 from itertools import islice
-from nltk.corpus.reader.api import CorpusReader
+
 from nltk import tokenize
 from nltk.etree import ElementTree
 from nltk.internals import deprecated, slice_bounds
-from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
+from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation
+
+from api import CorpusReader
 
 ######################################################################
 #{ Corpus View
@@ -29,7 +35,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
     never stored in memory at once.
 
     The constructor to C{StreamBackedCorpusView} takes two arguments:
-    a corpus filename (specified as a string or as a L{PathPointer});
+    a corpus fileid (specified as a string or as a L{PathPointer});
     and a block reader.  A X{block reader} is a function that reads
     zero or more tokens from a stream, and returns them as a list.  A
     very simple example of a block reader is:
@@ -113,15 +119,15 @@ class StreamBackedCorpusView(AbstractLazySequence):
        end_toknum is the token index of the first token not in the
        block; and tokens is a list of the tokens in the block.
     """
-    def __init__(self, filename, block_reader=None, startpos=0,
+    def __init__(self, fileid, block_reader=None, startpos=0,
                  encoding=None):
         """
-        Create a new corpus view, based on the file C{filename}, and
+        Create a new corpus view, based on the file C{fileid}, and
         read with C{block_reader}.  See the class documentation
         for more information.
 
-        @param filename: The path to the file that is read by this
-            corpus view.  C{filename} can either be a string or a
+        @param fileid: The path to the file that is read by this
+            corpus view.  C{fileid} can either be a string or a
             L{PathPointer}.
 
         @param startpos: The file position at which the view will
@@ -142,7 +148,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
         # We don't know our length (number of tokens) yet.
         self._len = None
 
-        self._filename = filename
+        self._fileid = fileid
         self._stream = None
 
         self._current_toknum = None
@@ -161,20 +167,20 @@ class StreamBackedCorpusView(AbstractLazySequence):
         
         # Find the length of the file.
         try:
-            if isinstance(self._filename, PathPointer):
-                self._eofpos = self._filename.file_size()
+            if isinstance(self._fileid, PathPointer):
+                self._eofpos = self._fileid.file_size()
             else:
-                self._eofpos = os.stat(self._filename).st_size
+                self._eofpos = os.stat(self._fileid).st_size
         except Exception, exc:
             raise ValueError('Unable to open or access %r -- %s' %
-                             (filename, exc))
+                             (fileid, exc))
         
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
 
-    filename = property(lambda self: self._filename, doc="""
-        The filename of the file that is accessed by this view.
+    fileid = property(lambda self: self._fileid, doc="""
+        The fileid of the file that is accessed by this view.
 
         @type: C{str} or L{PathPointer}""")
 
@@ -195,13 +201,13 @@ class StreamBackedCorpusView(AbstractLazySequence):
         will be called performed if any value is read from the view
         while its file stream is closed.
         """
-        if isinstance(self._filename, PathPointer):
-            self._stream = self._filename.open(self._encoding)
+        if isinstance(self._fileid, PathPointer):
+            self._stream = self._fileid.open(self._encoding)
         elif self._encoding:
             self._stream = SeekableUnicodeStreamReader(
-                open(self._filename, 'rb'), self._encoding)
+                open(self._fileid, 'rb'), self._encoding)
         else:
-            self._stream = open(self._filename, 'rb')
+            self._stream = open(self._fileid, 'rb')
 
     def close(self):
         """
@@ -458,22 +464,22 @@ class PickleCorpusView(StreamBackedCorpusView):
     memory.  The following example illustrates this technique:
 
         >>> feature_corpus = LazyMap(detect_features, corpus)
-        >>> PickleCorpusView.write(feature_corpus, some_filename)
-        >>> pcv = PickledCorpusView(some_filename)
+        >>> PickleCorpusView.write(feature_corpus, some_fileid)
+        >>> pcv = PickledCorpusView(some_fileid)
     """
     BLOCK_SIZE = 100
     PROTOCOL = -1
 
-    def __init__(self, filename, delete_on_gc=False):
+    def __init__(self, fileid, delete_on_gc=False):
         """
         Create a new corpus view that reads the pickle corpus
-        C{filename}.
+        C{fileid}.
 
-        @param delete_on_gc: If true, then C{filename} will be deleted
+        @param delete_on_gc: If true, then C{fileid} will be deleted
             whenever this object gets garbage-collected.
         """
         self._delete_on_gc = delete_on_gc
-        StreamBackedCorpusView.__init__(self, filename)
+        StreamBackedCorpusView.__init__(self, fileid)
     
     def read_block(self, stream):
         result = []
@@ -486,12 +492,12 @@ class PickleCorpusView(StreamBackedCorpusView):
         """
         If C{delete_on_gc} was set to true when this
         C{PickleCorpusView} was created, then delete the corpus view's
-        filename.  (This method is called whenever a
+        fileid.  (This method is called whenever a
         C{PickledCorpusView} is garbage-collected.
         """
         if getattr(self, '_delete_on_gc'):
-            if os.path.exists(self._filename):
-                try: os.remove(self._filename)
+            if os.path.exists(self._fileid):
+                try: os.remove(self._fileid)
                 except (OSError, IOError): pass
         self.__dict__.clear() # make the garbage collector's job easier
 
@@ -729,38 +735,38 @@ class SyntaxCorpusReader(CorpusReader):
     def _read_block(self, stream):
         raise AssertionError('Abstract method')
 
-    def raw(self, files=None):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
-    def parsed_sents(self, files=None):
+    def parsed_sents(self, fileids=None):
         reader = self._read_parsed_sent_block
-        return concat([StreamBackedCorpusView(filename, reader, encoding=enc)
-                       for filename, enc in self.abspaths(files, True)])
+        return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
 
-    def tagged_sents(self, files=None, simplify_tags=False):
+    def tagged_sents(self, fileids=None, simplify_tags=False):
         def reader(stream):
             return self._read_tagged_sent_block(stream, simplify_tags)
-        return concat([StreamBackedCorpusView(filename, reader, encoding=enc)
-                       for filename, enc in self.abspaths(files, True)])
+        return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
 
-    def sents(self, files=None):
+    def sents(self, fileids=None):
         reader = self._read_sent_block
-        return concat([StreamBackedCorpusView(filename, reader, encoding=enc)
-                       for filename, enc in self.abspaths(files, True)])
+        return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
 
-    def tagged_words(self, files=None, simplify_tags=False):
+    def tagged_words(self, fileids=None, simplify_tags=False):
         def reader(stream):
             return self._read_tagged_word_block(stream, simplify_tags)
-        return concat([StreamBackedCorpusView(filename, reader, encoding=enc)
-                       for filename, enc in self.abspaths(files, True)])
+        return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
 
-    def words(self, files=None):
-        return concat([StreamBackedCorpusView(filename,
+    def words(self, fileids=None):
+        return concat([StreamBackedCorpusView(fileid,
                                               self._read_word_block,
                                               encoding=enc)
-                       for filename, enc in self.abspaths(files, True)])
+                       for fileid, enc in self.abspaths(fileids, True)])
 
     #------------------------------------------------------------
     #{ Block Readers
@@ -809,27 +815,27 @@ class SyntaxCorpusReader(CorpusReader):
 #{ Finding Corpus Items
 ######################################################################
 
-def find_corpus_files(root, regexp):
+def find_corpus_fileids(root, regexp):
     if not isinstance(root, PathPointer):
-        raise TypeError('find_corpus_files: expected a PathPointer')
+        raise TypeError('find_corpus_fileids: expected a PathPointer')
     regexp += '$'
 
-    # Find files in a zipfile: scan the zipfile's namelist.  Filter
+    # Find fileids in a zipfile: scan the zipfile's namelist.  Filter
     # out entries that end in '/' -- they're directories.
     if isinstance(root, ZipFilePathPointer):
-        files = [name[len(root.entry):] for name in root.zipfile.namelist()
+        fileids = [name[len(root.entry):] for name in root.zipfile.namelist()
                  if not name.endswith('/')]
-        items = [name for name in files if re.match(regexp, name)]
+        items = [name for name in fileids if re.match(regexp, name)]
         return tuple(sorted(items))
 
-    # Find files in a directory: use os.walk to search all
+    # Find fileids in a directory: use os.walk to search all
     # subdirectories, and match paths against the regexp.
     elif isinstance(root, FileSystemPathPointer):
         items = []
-        for dirname, subdirs, filenames in os.walk(root.path):
+        for dirname, subdirs, fileids in os.walk(root.path):
             prefix = ''.join('%s/' % p for p in _path_from(root.path, dirname))
-            items += [prefix+filename for filename in filenames
-                      if re.match(regexp, prefix+filename)]
+            items += [prefix+fileid for fileid in fileids
+                      if re.match(regexp, prefix+fileid)]
             # Don't visit svn directories:
             if '.svn' in subdirs: subdirs.remove('.svn')
         return tuple(sorted(items))

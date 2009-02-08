@@ -18,49 +18,51 @@ Contents:
   - Telugu: IIIT Hyderabad
 """       
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
-from nltk import tokenize
 import codecs
+
+from nltk import tokenize
 from nltk.internals import deprecated
 from nltk.tag.util import str2tuple
+
+from util import *
+from api import *
 
 class IndianCorpusReader(CorpusReader):
     """
     List of words, one per line.  Blank lines are ignored.
     """
-    def words(self, files=None):
-        return concat([IndianCorpusView(filename, enc,
+    def words(self, fileids=None):
+        return concat([IndianCorpusView(fileid, enc,
                                         False, False)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def tagged_words(self, files=None, simplify_tags=False):
+    def tagged_words(self, fileids=None, simplify_tags=False):
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
         else:
             tag_mapping_function = None
-        return concat([IndianCorpusView(filename, enc,
+        return concat([IndianCorpusView(fileid, enc,
                                         True, False, tag_mapping_function)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def sents(self, files=None):
-        return concat([IndianCorpusView(filename, enc,
+    def sents(self, fileids=None):
+        return concat([IndianCorpusView(fileid, enc,
                                         False, True)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def tagged_sents(self, files=None, simplify_tags=False):
+    def tagged_sents(self, fileids=None, simplify_tags=False):
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
         else:
             tag_mapping_function = None
-        return concat([IndianCorpusView(filename, enc,
+        return concat([IndianCorpusView(fileid, enc,
                                         True, True, tag_mapping_function)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, files=None):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() instead.")

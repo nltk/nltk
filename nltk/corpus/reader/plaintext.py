@@ -11,11 +11,13 @@ A reader for corpora that consist of plaintext documents.
 """
 
 import codecs
+
 import nltk.data
 from nltk.tokenize import *
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
 from nltk.internals import deprecated
+
+from util import *
+from api import *
 
 class PlaintextCorpusReader(CorpusReader):
     """
@@ -34,7 +36,7 @@ class PlaintextCorpusReader(CorpusReader):
        L{PlaintextCorpusReader} may specify alternative corpus view
        classes (e.g., to skip the preface sections of documents.)"""
     
-    def __init__(self, root, files, 
+    def __init__(self, root, fileids, 
                  word_tokenizer=WordPunctTokenizer(),
                  sent_tokenizer=nltk.data.LazyLoader(
                      'tokenizers/punkt/english.pickle'),
@@ -48,7 +50,7 @@ class PlaintextCorpusReader(CorpusReader):
             >>> reader = PlaintextCorpusReader(root, '.*\.txt')
         
         @param root: The root directory for this corpus.
-        @param files: A list or regexp specifying the files in this corpus.
+        @param fileids: A list or regexp specifying the fileids in this corpus.
         @param word_tokenizer: Tokenizer for breaking sentences or
             paragraphs into words.
         @param sent_tokenizer: Tokenizer for breaking paragraphs
@@ -56,55 +58,55 @@ class PlaintextCorpusReader(CorpusReader):
         @param para_block_reader: The block reader used to divide the
             corpus into paragraph blocks.
         """
-        CorpusReader.__init__(self, root, files, encoding)
+        CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
 
-    def raw(self, files=None):
+    def raw(self, fileids=None):
         """
-        @return: the given file or files as a single string.
+        @return: the given file(s) as a single string.
         @rtype: C{str}
         """
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
     
-    def words(self, files=None):
+    def words(self, fileids=None):
         """
-        @return: the given file or files as a list of words
+        @return: the given file(s) as a list of words
             and punctuation symbols.
         @rtype: C{list} of C{str}
         """
-        return concat([self.CorpusView(filename, self._read_word_block,
+        return concat([self.CorpusView(fileid, self._read_word_block,
                                        encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
     
-    def sents(self, files=None):
+    def sents(self, fileids=None):
         """
-        @return: the given file or files as a list of
+        @return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
         @rtype: C{list} of (C{list} of C{str})
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
-        return concat([self.CorpusView(filename, self._read_sent_block,
+        return concat([self.CorpusView(fileid, self._read_sent_block,
                                        encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def paras(self, files=None):
+    def paras(self, fileids=None):
         """
-        @return: the given file or files as a list of
+        @return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
         @rtype: C{list} of (C{list} of (C{list} of C{str}))
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
-        return concat([self.CorpusView(filename, self._read_para_block,
+        return concat([self.CorpusView(fileid, self._read_para_block,
                                        encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
     def _read_word_block(self, stream):
         words = []
@@ -155,22 +157,22 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
         CategorizedCorpusReader.__init__(self, kwargs)
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
 
-    def _resolve(self, files, categories):
-        if files is not None and categories is not None:
-            raise ValueError('Specify files or categories, not both')
+    def _resolve(self, fileids, categories):
+        if fileids is not None and categories is not None:
+            raise ValueError('Specify fileids or categories, not both')
         if categories is not None:
             return self.fileids(categories)
         else:
-            return files
-    def raw(self, files=None, categories=None):
+            return fileids
+    def raw(self, fileids=None, categories=None):
         return PlaintextCorpusReader.raw(
-            self, self._resolve(files, categories))
-    def words(self, files=None, categories=None):
+            self, self._resolve(fileids, categories))
+    def words(self, fileids=None, categories=None):
         return PlaintextCorpusReader.words(
-            self, self._resolve(files, categories))
-    def sents(self, files=None, categories=None):
+            self, self._resolve(fileids, categories))
+    def sents(self, fileids=None, categories=None):
         return PlaintextCorpusReader.sents(
-            self, self._resolve(files, categories))
-    def paras(self, files=None, categories=None):
+            self, self._resolve(fileids, categories))
+    def paras(self, fileids=None, categories=None):
         return PlaintextCorpusReader.paras(
-            self, self._resolve(files, categories))
+            self, self._resolve(fileids, categories))

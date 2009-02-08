@@ -38,11 +38,13 @@ The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.
 """       
 
+import codecs
+
+from nltk import tokenize
+from nltk.internals import deprecated
+
 from util import *
 from api import *
-from nltk import tokenize
-import codecs
-from nltk.internals import deprecated
 
 class PPAttachment:
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):
@@ -63,20 +65,20 @@ class PPAttachmentCorpusReader(CorpusReader):
     """
     sentence_id verb noun1 preposition noun2 attachment
     """
-    def attachments(self, files):
-        return concat([StreamBackedCorpusView(filename, self._read_obj_block,
+    def attachments(self, fileids):
+        return concat([StreamBackedCorpusView(fileid, self._read_obj_block,
                                               encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def tuples(self, files):
-        return concat([StreamBackedCorpusView(filename, self._read_tuple_block,
+    def tuples(self, fileids):
+        return concat([StreamBackedCorpusView(fileid, self._read_tuple_block,
                                               encoding=enc)
-                       for (filename, enc) in self.abspaths(files, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, files=None):
-        if files is None: files = self._files
-        elif isinstance(files, basestring): files = [files]
-        return concat([self.open(f).read() for f in files])
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
     def _read_tuple_block(self, stream):
         line = stream.readline()
