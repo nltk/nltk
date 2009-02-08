@@ -9,8 +9,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-#from distutils.core import setup
-from setuptools import setup
+from distutils.core import setup
 import nltk
 
 setup(
