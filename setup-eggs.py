@@ -28,6 +28,7 @@ setup(
     maintainer_email = nltk.__maintainer_email__,
     author = nltk.__author__,
     author_email = nltk.__author__,
+    classifiers = nltk.__classifiers__,
     # platforms = <platforms>,
     
     #############################################
@@ -88,6 +89,9 @@ setup(
                 'nltk_contrib.tiger.utils',
                 'nltk_contrib.toolbox',
                 'nltk_contrib.wordnet',
-                'yaml'
                 ],
+    zip_safe=False, # since normal files will be present too?
+    install_requires=['setuptools',
+                      'PyYAML==3.08',
+                      ]
     )
