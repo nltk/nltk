@@ -1,11 +1,6 @@
-.. -*- mode: rst -*-
-.. include:: ../definitions.rst
-
-.. _app-nlp-python:
-
-======================================================
-Appendix: NLP in Python vs other Programming Languages
-======================================================
+============================================
+NLP in Python vs other Programming Languages
+============================================
 
 Many programming languages have been used for NLP.  As explained in
 the Preface, we have chosen Python because we believe it is
@@ -204,6 +199,4 @@ its own line, and the second step finds all lines ending in `ing`:lx:\ ::
 (We are grateful to the following people for furnishing us with these
 program samples: Tim Baldwin, Trevor Cohn, David Duke, Rod Farmer,
 Andrew Hardie, Aaron Harnly, Edward Ivanovic, and Lars Yencken.)
-
-.. include:: footer.rst
 
