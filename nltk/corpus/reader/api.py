@@ -17,6 +17,8 @@ from nltk import defaultdict
 from nltk.internals import deprecated
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
+from util import find_corpus_fileids
+
 class CorpusReader(object):
     """
     A base class for X{corpus reader} classes, each of which can be
@@ -83,7 +85,7 @@ class CorpusReader(object):
 
         # If `fileids` is a regexp, then expand it.
         if isinstance(fileids, basestring):
-            fileids = nltk.corpus.reader.find_corpus_fileids(root, fileids)
+            fileids = find_corpus_fileids(root, fileids)
             
         self._fileids = tuple(fileids)
         """A list of the relative paths for the fileids that make up
@@ -331,3 +333,106 @@ class CategorizedCorpusReader(object):
         else:
             if self._f2c is None: self._init()
             return sorted(sum((self._c2f[c] for c in categories), []))
+
+######################################################################
+#{ Treebank readers
+######################################################################
+
+#[xx] is it worth it to factor this out?
+class SyntaxCorpusReader(CorpusReader):
+    """
+    An abstract base class for reading corpora consisting of
+    syntactically parsed text.  Subclasses should define:
+
+      - L{__init__}, which specifies the location of the corpus
+        and a method for detecting the sentence blocks in corpus files.
+      - L{_read_block}, which reads a block from the input stream.
+      - L{_word}, which takes a block and returns a list of list of words.
+      - L{_tag}, which takes a block and returns a list of list of tagged
+        words.
+      - L{_parse}, which takes a block and returns a list of parsed
+        sentences.
+    """
+    def _parse(self, s):
+        raise AssertionError('Abstract method')
+    def _word(self, s):
+        raise AssertionError('Abstract method')
+    def _tag(self, s):
+        raise AssertionError('Abstract method')
+    def _read_block(self, stream):
+        raise AssertionError('Abstract method')
+
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, basestring): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
+
+    def parsed_sents(self, fileids=None):
+        reader = self._read_parsed_sent_block
+        return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
+
+    def tagged_sents(self, fileids=None, simplify_tags=False):
+        def reader(stream):
+            return self._read_tagged_sent_block(stream, simplify_tags)
+        return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
+
+    def sents(self, fileids=None):
+        reader = self._read_sent_block
+        return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
+
+    def tagged_words(self, fileids=None, simplify_tags=False):
+        def reader(stream):
+            return self._read_tagged_word_block(stream, simplify_tags)
+        return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
+
+    def words(self, fileids=None):
+        return concat([StreamBackedCorpusView(fileid,
+                                              self._read_word_block,
+                                              encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, True)])
+
+    #------------------------------------------------------------
+    #{ Block Readers
+    
+    def _read_word_block(self, stream):
+        return sum(self._read_sent_block(stream), [])
+
+    def _read_tagged_word_block(self, stream, simplify_tags=False):
+        return sum(self._read_tagged_sent_block(stream, simplify_tags), [])
+
+    def _read_sent_block(self, stream):
+        return filter(None, [self._word(t) for t in self._read_block(stream)])
+    
+    def _read_tagged_sent_block(self, stream, simplify_tags=False):
+        return filter(None, [self._tag(t, simplify_tags)
+                             for t in self._read_block(stream)])
+
+    def _read_parsed_sent_block(self, stream):
+        return filter(None, [self._parse(t) for t in self._read_block(stream)])
+
+    #} End of Block Readers
+    #------------------------------------------------------------
+
+    #{ Deprecated since 0.8
+    @deprecated("Use .raw() or .sents() or .tagged_sents() or "
+                ".parsed_sents() instead.")
+    def read(self, items=None, format='parsed'):
+        if format == 'parsed': return self.parsed_sents(items)
+        if format == 'raw': return self.raw(items)
+        if format == 'tokenized': return self.sents(items)
+        if format == 'tagged': return self.tagged_sents(items)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .parsed_sents() instead.")
+    def parsed(self, items=None):
+        return self.parsed_sents(items)
+    @deprecated("Use .sents() instead.")
+    def tokenized(self, items=None):
+        return self.sents(items)
+    @deprecated("Use .tagged_sents() instead.")
+    def tagged(self, items=None):
+        return self.tagged_sents(items)
+    #}
