@@ -184,10 +184,13 @@ Here are two Ruby programs for finding words ending in `ing`:lx:\ ::
   end
 
 Haskell is another functional programming language which permits
-a much more compact (but incomprehensible) solution of our simple task::
+a much more compact solution of our simple task::
 
   import Data.List
-  main = putStr . unlines . filter ("ing" `isSuffixOf`) . words =<< getContent
+  main = do
+     input <- getContents
+     let ings = filter ("ing" `isSuffixOf`) (words input)
+     putStr (unlines ings)
 
 The unix shell can also be used for simple linguistic processing.  Here is
 a simple pipeline for finding the `ing`:lx: words.  The first step transliterates
@@ -198,5 +201,4 @@ its own line, and the second step finds all lines ending in `ing`:lx:\ ::
 
 (We are grateful to the following people for furnishing us with these
 program samples: Tim Baldwin, Trevor Cohn, David Duke, Rod Farmer,
-Andrew Hardie, Aaron Harnly, Edward Ivanovic, and Lars Yencken.)
-
+Andrew Hardie, Aaron Harnly, Edward Ivanovic, Bernie Pope, and Lars Yencken.)
