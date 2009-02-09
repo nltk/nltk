@@ -409,7 +409,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     should be performed; and C{history} is list of the tags for all
     tokens before C{index}.
     """
-    def __init__(self, feature_detector, train=None,
+    def __init__(self, feature_detector=None, train=None,
                  classifier_builder=NaiveBayesClassifier.train,
                  classifier=None, backoff=None,
                  cutoff_prob=None, verbose=False):
@@ -447,10 +447,15 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         SequentialBackoffTagger.__init__(self, backoff)
         
-        self._feature_detector = feature_detector
-        """The feature detector function, used to generate a featureset
-           for each token::
-               feature_detector(tokens, index, history) -> featureset"""
+        if (train and classifier) or (not train and not classifier):
+            raise ValueError('Must specify either training data or '
+                             'trained classifier.')
+
+        if feature_detector is not None:
+            self._feature_detector = feature_detector
+            """The feature detector function, used to generate a featureset
+            for each token::
+                feature_detector(tokens, index, history) -> featureset"""
 
         self._cutoff_prob = cutoff_prob
         """Cutoff probability for tagging -- if the probability of the
@@ -464,7 +469,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
     def choose_tag(self, tokens, index, history):
         # Use our feature detector to get the featureset.
-        featureset = self._feature_detector(tokens, index, history)
+        featureset = self.feature_detector(tokens, index, history)
         
         # Use the classifier to pick a tag.  If a cutoff probability
         # was specified, then check that the tag's probability is
@@ -493,7 +498,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
             history = []
             untagged_sentence, tags = zip(*sentence)
             for index in range(len(sentence)):
-                featureset = self._feature_detector(untagged_sentence,
+                featureset = self.feature_detector(untagged_sentence,
                                                     index, history)
                 classifier_corpus.append( (featureset, tags[index]) )
                 history.append(tags[index])
@@ -505,7 +510,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     def __repr__(self):
         return '<ClassifierBasedTagger: %r>' % self._classifier
 
-    def feature_detector(self):
+    def feature_detector(self, tokens, index, history):
         """
         Return the feature detector that this tagger uses to generate
         featuresets for its classifier.  The feature detector is a
@@ -515,7 +520,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         @see: L{classifier()}
         """
-        return self._feature_detector
+        return self._feature_detector(tokens, index, history)
 
     def classifier(self):
         """
@@ -526,3 +531,55 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         @see: L{feature_detector()}
         """
         return self._classifier
+
+class ClassifierBasedPOSTagger(ClassifierBasedTagger):
+    """
+    A classifier based part of speech tagger.
+    """
+    def feature_detector(self, tokens, index, history):
+        word = tokens[index]
+        if index == 0:
+            prevword = prevprevword = None
+            prevtag = prevprevtag = None
+        elif index == 1:
+            prevword = tokens[index-1].lower()
+            prevprevword = None
+            prevtag = history[index-1]
+            prevprevtag = None
+        else:
+            prevword = tokens[index-1].lower()
+            prevprevword = tokens[index-2].lower()
+            prevtag = history[index-1]
+            prevprevtag = history[index-2]
+
+        if re.match('[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$', word):
+            shape = 'number'
+        elif re.match('\W+$', word):
+            shape = 'punct'
+        elif re.match('[A-Z][a-z]+$', word):
+            shape = 'upcase'
+        elif re.match('[a-z]+$', word):
+            shape = 'downcase'
+        elif re.match('\w+$', word):
+            shape = 'mixedcase'
+        else:
+            shape = 'other'
+            
+        features = {
+            'prevtag': prevtag,
+            'prevprevtag': prevprevtag,
+            'word': word,
+            'word.lower': word.lower(),
+            'suffix3': word.lower()[-3:],
+            'suffix2': word.lower()[-2:],
+            'suffix1': word.lower()[-1:],
+            'prevprevword': prevprevword,
+            'prevword': prevword,
+            'prevtag+word': '%s+%s' % (prevtag, word.lower()),
+            'prevprevtag+word': '%s+%s' % (prevprevtag, word.lower()),
+            'prevword+word': '%s+%s' % (prevword, word.lower()),
+            'shape': shape,
+            }
+        return features
+
+    
