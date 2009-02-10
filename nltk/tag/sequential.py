@@ -443,7 +443,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
             back on its backoff tagger if the probability of the most
             likely tag is less than C{cutoff_prob}.
         """
-        self._check_params(train, model)
+        self._check_params(train, classifier)
 
         SequentialBackoffTagger.__init__(self, backoff)
         
