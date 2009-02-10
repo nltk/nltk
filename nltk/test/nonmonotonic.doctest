@@ -101,7 +101,7 @@ Unique Names Assumption
 No two entities in the domain represent the same entity unless it can be 
 explicitly proven that they do.  Therefore, if the domain contains "A" and "B", 
 then add the assumption "-(A = B)" if it is not the case that 
-"<assumptions> |- (A = B)".
+"<assumptions> \|- (A = B)".
 
     >>> p1 = lp.parse(r'man(Socrates)')
     >>> p2 = lp.parse(r'man(Bill)')
