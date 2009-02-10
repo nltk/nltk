@@ -1,16 +1,18 @@
-Version 0.9.8 2009-02-04
+Version 0.9.8b1 2009-02-11
 
 NLTK:
+* New off-the-shelf tokenizer and tagger
 * New metrics package with inter-annotator agreement scores,
   distance metrics, rank correlation
 * New collocations package (Joel Nothman)
 * Many clean-ups to WordNet package (Steven Bethard, Jordan Boyd-Graber)
 * Moved old pywordnet-based WordNet package to nltk_contrib
-* More work on WordNet browser (Paul Bone)
+* WordNet browser (Paul Bone)
 * New interface to dependency treebank corpora
 * Moved MinimalSet class into nltk.misc package
 * Put NLTK applications in new nltk.app package
 * Many other improvements incl semantics package, toolbox, MaltParser
+* Misc changes to many API names in preparation for 1.0, old names deprecated
 * Fixes for Python 2.4 compatibility
 
 Data:
