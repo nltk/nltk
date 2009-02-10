@@ -1278,7 +1278,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
 
     # Run megam on the training file.
     options = []
-    options += ['-nobias']
+    options += ['-nobias', '-repeat', '10']
     if explicit:
         options += ['-explicit']
     if gaussian_prior_sigma:
