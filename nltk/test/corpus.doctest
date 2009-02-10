@@ -52,11 +52,11 @@ means of a "corpus reader" object from ``nltk.corpus``:
 
 Most corpora consist of a set of files, each containing a document (or
 other pieces of text).  A list of identifiers for these files is
-accessed via the ``files()`` method of the corpus reader:
+accessed via the ``fileids()`` method of the corpus reader:
 
-    >>> nltk.corpus.treebank.files() # doctest: +ELLIPSIS
+    >>> nltk.corpus.treebank.fileids() # doctest: +ELLIPSIS
     ('wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...)
-    >>> nltk.corpus.inaugural.files() # doctest: +ELLIPSIS
+    >>> nltk.corpus.inaugural.fileids() # doctest: +ELLIPSIS
     ('1789-Washington.txt', '1793-Washington.txt', '1797-Adams.txt', ...)
 
 Each corpus reader provides a variety of methods to read data from the
@@ -102,7 +102,7 @@ Here are the first few words from each of NLTK's plaintext corpora:
     ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', ...]
     >>> nltk.corpus.genesis.words()
     ['In', 'the', 'beginning', 'God', 'created', 'the', ...]
-    >>> nltk.corpus.gutenberg.words(files='austen-emma.txt')
+    >>> nltk.corpus.gutenberg.words(fileids='austen-emma.txt')
     ['[', 'Emma', 'by', 'Jane', 'Austen', '1816', ']', ...]
     >>> nltk.corpus.inaugural.words()
     ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', ...]
@@ -216,7 +216,7 @@ corpus defines the `parsed_docs` method, which returns the documents
 in a given item as `IEERDocument` objects:
 
     >>> from nltk.corpus import ieer
-    >>> ieer.files() # doctest: +NORMALIZE_WHITESPACE
+    >>> ieer.fileids() # doctest: +NORMALIZE_WHITESPACE
     ('APW_19980314', 'APW_19980424', 'APW_19980429',
      'NYT_19980315', 'NYT_19980403', 'NYT_19980407')
     >>> docs = ieer.parsed_docs('APW_19980314')
@@ -257,7 +257,7 @@ NLTK data package includes a 10% sample of the Penn Treebank (in
 Reading the Penn Treebank:
 
     >>> from nltk.corpus import treebank
-    >>> print treebank.files() # doctest: +ELLIPSIS
+    >>> print treebank.fileids() # doctest: +ELLIPSIS
     ('wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...)
     >>> print treebank.words('wsj_0003.mrg')
     ['A', 'form', 'of', 'asbestos', 'once', 'used', '*', ...]
@@ -357,17 +357,17 @@ lists.  These are accessed just like text corpora.  The following
 examples illustrate the use of the wordlist corpora:
 
     >>> from nltk.corpus import names, stopwords, words
-    >>> words.files()
+    >>> words.fileids()
     ('en', 'en-basic')
     >>> words.words('en') # doctest: +ELLIPSIS
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
     
-    >>> stopwords.files() # doctest: +ELLIPSIS
+    >>> stopwords.fileids() # doctest: +ELLIPSIS
     ('danish', 'dutch', 'english', 'french', ...)
     >>> stopwords.words('english') # doctest: +ELLIPSIS
     ['a', "a's", 'able', 'about', 'above', 'according', ...]
     
-    >>> names.files()
+    >>> names.fileids()
     ('female.txt', 'male.txt')
     >>> names.words('male.txt') # doctest: +ELLIPSIS
     ['Aamir', 'Aaron', 'Abbey', 'Abbie', 'Abbot', 'Abbott', ...]
@@ -428,17 +428,17 @@ of documents, allowing us to map from (one or more) documents to (one or more) c
     >>> reuters.categories(['training/9865', 'training/9880'])
     ['barley', 'corn', 'grain', 'money-fx', 'wheat']
 
-We can go back the other way using the optional argument of the ``files()`` method:
+We can go back the other way using the optional argument of the ``fileids()`` method:
 
-    >>> reuters.files('barley') # doctest: +ELLIPSIS
+    >>> reuters.fileids('barley') # doctest: +ELLIPSIS
     ['test/15618', 'test/15649', 'test/15676', 'test/15728', 'test/15871', ...]
     
-Both the ``categories()`` and ``files()`` methods return a sorted list containing
+Both the ``categories()`` and ``fileids()`` methods return a sorted list containing
 no duplicates.
 
 In addition to mapping between categories and documents, these corpora permit
 direct access to their contents via the categories.  Instead of accessing a subset
-of a corpus by specifying one or more files, we can identify one or more categories, e.g.:
+of a corpus by specifying one or more fileids, we can identify one or more categories, e.g.:
 
     >>> brown.tagged_words(categories='news')
     [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
@@ -473,7 +473,7 @@ location of the verb, and the location and identity of its arguments:
 
 Each propbank instance defines the following member variables:
 
-  - Location information: `filename`, `sentnum`, `wordnum`
+  - Location information: `fileid`, `sentnum`, `wordnum`
   - Annotator information: `tagger`
   - Inflection information: `inflection`
   - Roleset identifier: `roleset`
@@ -483,7 +483,7 @@ Each propbank instance defines the following member variables:
 The following examples show the types of these arguments:
 
     >>> inst = pb_instances[103]
-    >>> (inst.filename, inst.sentnum, inst.wordnum)
+    >>> (inst.fileid, inst.sentnum, inst.wordnum)
     ('wsj_0004.mrg', 8, 16)
     >>> inst.tagger
     'gold'
@@ -521,7 +521,7 @@ trees for 10% of the standard propbank corpus are contained in the
     >>> tree = inst.tree
 
     >>> from nltk.corpus import treebank
-    >>> assert tree == treebank.parsed_sents(inst.filename)[inst.sentnum]
+    >>> assert tree == treebank.parsed_sents(inst.fileid)[inst.sentnum]
 
     >>> inst.predicate.select(tree)
     Tree('VBD', ['rose'])
@@ -601,7 +601,7 @@ treebank, so the parse trees are not availalbe for instances starting
 at 9353:
 
     >>> inst = pb_instances[9352]
-    >>> inst.filename
+    >>> inst.fileid
     'wsj_0199.mrg'
     >>> print inst.tree # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     (S (NP-SBJ (NNP Trinity)) (VP (VBD said) (SBAR (-NONE- 0) ...))
@@ -609,7 +609,7 @@ at 9353:
     (VB begin)
 
     >>> inst = pb_instances[9353]
-    >>> inst.filename
+    >>> inst.fileid
     'wsj_0200.mrg'
     >>> print inst.tree
     None
@@ -641,7 +641,7 @@ of word senses that apply to the word occurrence; and the word's
 context.
 
     >>> from nltk.corpus import senseval
-    >>> senseval.files()
+    >>> senseval.fileids()
     ('hard.pos', 'interest.pos', 'line.pos', 'serve.pos')
     >>> senseval.instances('hard.pos')
     ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
@@ -701,7 +701,7 @@ as XML files.  These corpora are returned as ElementTree objects:
 
     >>> from nltk.corpus import shakespeare
     >>> from nltk.etree import ElementTree
-    >>> shakespeare.files() # doctest: +ELLIPSIS
+    >>> shakespeare.fileids() # doctest: +ELLIPSIS
     ('a_and_c.xml', 'dream.xml', 'hamlet.xml', 'j_caesar.xml', ...)
     >>> play = shakespeare.xml('dream.xml')
     >>> print play # doctest: +ELLIPSIS
@@ -861,7 +861,7 @@ RTE1, RTE2 and RTE3 datasets (dev and test data), and consists of a
 list of XML-formatted 'text'/'hypothesis' pairs.
 
     >>> from nltk.corpus import rte
-    >>> print rte.files() # doctest: +ELLIPSIS
+    >>> print rte.fileids() # doctest: +ELLIPSIS
     ('rte1_dev.xml', 'rte1_test.xml', 'rte2_dev.xml', ..., 'rte3_test.xml')
     >>> rtepairs = rte.pairs(['rte2_test.xml', 'rte3_test.xml'])
     >>> print rtepairs  # doctest: +ELLIPSIS
@@ -1145,30 +1145,30 @@ identifier, which is basically a path string that uses ``/`` as the
 path seperator.  I.e., this identifier can be converted to a relative
 path as follows:
 
-    >>> some_corpus_file_id = nltk.corpus.reuters.files()[0]
+    >>> some_corpus_file_id = nltk.corpus.reuters.fileids()[0]
     >>> import os.path
     >>> os.path.join(*some_corpus_file_id.split('/'))
     'test/14826'
 
 To get a list of all data files that make up a corpus, use the
-``files()`` method.  In some corpora, these files will not all contain
+``fileids()`` method.  In some corpora, these files will not all contain
 the same type of data; for example, for the ``nltk.corpus.timit``
-corpus, ``files()`` will return a list including text files, word
+corpus, ``fileids()`` will return a list including text files, word
 segmentation files, phonetic transcription files, sound files, and
-metadata files.  For corpora with diverse file types, the ``files()``
+metadata files.  For corpora with diverse file types, the ``fileids()``
 method will often take one or more optional arguments, which can be
 used to get a list of the files with a specific file type:
 
-    >>> nltk.corpus.timit.files() # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.fileids() # doctest: +ELLIPSIS
     ('dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...)
-    >>> nltk.corpus.timit.files('phn') # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.fileids('phn') # doctest: +ELLIPSIS
     ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa2.phn', 'dr1-fvmh0/si1466.phn', ...]
 
 In some corpora, the files are divided into distinct categories.  For
-these corpora, the ``files()`` method takes an optional argument,
+these corpora, the ``fileids()`` method takes an optional argument,
 which can be used to get a list of the files within a specific category:
 
-    >>> nltk.corpus.brown.files('hobbies') # doctest: +ELLIPSIS
+    >>> nltk.corpus.brown.fileids('hobbies') # doctest: +ELLIPSIS
     ['ce01', 'ce02', 'ce03', 'ce04', 'ce05', 'ce06', 'ce07', ...]
 
 The ``abspath()`` method can be used to find the absolute path to a
@@ -1204,9 +1204,9 @@ file-access methods with one or more *data access methods*, which provide
 easy access to the data contained in the corpus.  The signatures for
 data access methods often have the basic form::
 
-    corpus_reader.some_data access(files=None, ...options...)
+    corpus_reader.some_data access(fileids=None, ...options...)
 
-Where ``files`` can be a single file identifier string (to get a view
+Where ``fileids`` can be a single file identifier string (to get a view
 for a specific file); a list of file identifier strings (to get a view
 for a specific list of files); or None (to get a view for the entire
 corpus).  Some of the common data access methods, and their return
@@ -1263,7 +1263,7 @@ identifiers* to select which corpus items should be returned:
 Attempting to call ``timit``\ 's data access methods with a file
 identifier will result in an exception:
 
-    >>> nltk.corpus.timit.files() # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.fileids() # doctest: +ELLIPSIS
     ('dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...)
     >>> nltk.corpus.timit.words('dr1-fvmh0/sa1.txt') # doctest: +ELLIPSIS
     Traceback (most recent call last):
@@ -1397,11 +1397,11 @@ three value types (string, list, and None):
 An example of this type of method is the `words()` method, defined by
 the `PlaintextCorpusReader` as follows:
 
-    >>> def words(self, files=None):
-    ...     return concat([self.CorpusView(filename, self._read_word_block)
-    ...                    for filename in self.abspaths(files)])
+    >>> def words(self, fileids=None):
+    ...     return concat([self.CorpusView(fileid, self._read_word_block)
+    ...                    for fileid in self.abspaths(fileids)])
 
-This method first uses `abspaths()` to convert ``files`` to a list of
+This method first uses `abspaths()` to convert ``fileids`` to a list of
 absolute paths.  It then creates a corpus view for each file, using
 the `PlaintextCorpusReader._read_word_block()` method to read elements
 from the data file (see the discussion of corpus views below).
@@ -1413,9 +1413,9 @@ very large, it can sometimes be appropriate to read the files
 directly, rather than using a corpus view.  For example, the
 `WordListCorpusView` class defines its `words()` method as follows:
 
-    >>> def words(self, files=None):
-    ...     return concat([[w for w in open(filename).read().split('\n') if w]
-    ...                    for filename in self.abspaths(files)])
+    >>> def words(self, fileids=None):
+    ...     return concat([[w for w in open(fileid).read().split('\n') if w]
+    ...                    for fileid in self.abspaths(fileids)])
 
 (This is usually more appropriate for lexicons than for token corpora.)
 
@@ -1496,17 +1496,17 @@ testing corpora that are stored in temporary directories.  These
 testing corpora are used to make sure the readers work correctly.
 
     >>> import tempfile, os.path, textwrap
-    >>> def make_testcorpus(ext='', **files):
+    >>> def make_testcorpus(ext='', **fileids):
     ...     root = tempfile.mkdtemp()
-    ...     for filename, contents in files.items():
-    ...         filename += ext
-    ...         f = open(os.path.join(root, filename), 'w')
+    ...     for fileid, contents in fileids.items():
+    ...         fileid += ext
+    ...         f = open(os.path.join(root, fileid), 'w')
     ...         f.write(textwrap.dedent(contents))
     ...         f.close()
     ...     return root
     >>> def del_testcorpus(root):
-    ...     for filename in os.listdir(root):
-    ...         os.remove(os.path.join(root, filename))
+    ...     for fileid in os.listdir(root):
+    ...         os.remove(os.path.join(root, fileid))
     ...     os.rmdir(root)
 
 Plaintext Corpus Reader
@@ -1530,14 +1530,14 @@ parameters to the constructor.
     >>> from nltk.corpus.reader.plaintext import PlaintextCorpusReader
 
 The list of documents can be specified explicitly, or implicitly (using a
-regexp).  The extension argument will be added to filenames, but not
+regexp).  The extension argument will be added to fileids, but not
 included in item names.
 
     >>> corpus = PlaintextCorpusReader(root, ['a.txt', 'b.txt'])
-    >>> corpus.files()
+    >>> corpus.fileids()
     ('a.txt', 'b.txt')
     >>> corpus = PlaintextCorpusReader(root, '.*\.txt')
-    >>> corpus.files()
+    >>> corpus.fileids()
     ('a.txt', 'b.txt')
 
 The directory containing the corpus is corpus.root:
@@ -1555,7 +1555,7 @@ We can get a list of words, or the raw string:
 Check that reading individual documents works, and reading all documents at
 once works:
 
-    >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.files()]
+    >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.fileids()]
     (46, [40, 6])
     >>> corpus.words('a.txt')
     ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
@@ -1575,7 +1575,7 @@ Test the plaintext corpora that come with nltk:
     >>> for corpus in (abc, genesis, inaugural, state_union,
     ...                webtext, udhr):
     ...     print corpus
-    ...     print '  ', `corpus.files()`[:60]
+    ...     print '  ', `corpus.fileids()`[:60]
     ...     print '  ', `corpus.words()[:10]`[:60]
     ...     # doctest: +ELLIPSIS
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc'>
@@ -1621,7 +1621,7 @@ By default, they apply to all documents in the corpus.
 
     >>> from nltk.corpus.reader.tagged import TaggedCorpusReader
     >>> corpus = TaggedCorpusReader(root, list('ab'))
-    >>> corpus.files()
+    >>> corpus.fileids()
     ('a', 'b')
     >>> corpus.root == root
     True
@@ -1639,11 +1639,11 @@ By default, they apply to all documents in the corpus.
     [[[('This', 'DET'), ...], ...], [[('This', 'DET'), ...], ...], ...]
     >>> corpus.raw()[:40]
     'This/det is/verb the/det first/adj sente'
-    >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.files()]
+    >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.fileids()]
     (38, [32, 6])
-    >>> len(corpus.sents()), [len(corpus.sents(d)) for d in corpus.files()]
+    >>> len(corpus.sents()), [len(corpus.sents(d)) for d in corpus.fileids()]
     (6, [5, 1])
-    >>> len(corpus.paras()), [len(corpus.paras(d)) for d in corpus.files()]
+    >>> len(corpus.paras()), [len(corpus.paras(d)) for d in corpus.fileids()]
     (3, [2, 1])
     >>> corpus.words('a')
     ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
@@ -1654,7 +1654,7 @@ By default, they apply to all documents in the corpus.
 The Brown Corpus uses the tagged corpus reader:
 
     >>> from nltk.corpus import brown
-    >>> brown.files() # doctest: +ELLIPSIS
+    >>> brown.fileids() # doctest: +ELLIPSIS
     ('ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', ...)
     >>> brown.categories() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
@@ -1707,13 +1707,13 @@ vnclass() accepts filenames, long ids, and short ids:
     >>> a == b == c
     True
 
-files() can be used to get files based on verbnet class ids:
+fileids() can be used to get files based on verbnet class ids:
 
-    >>> verbnet.files('admire-31.2')
+    >>> verbnet.fileids('admire-31.2')
     ['admire-31.2.xml']
-    >>> verbnet.files(['admire-31.2', 'obtain-13.5.2'])
+    >>> verbnet.fileids(['admire-31.2', 'obtain-13.5.2'])
     ['admire-31.2.xml', 'obtain-13.5.2.xml']
-    >>> verbnet.files('badidentifier')
+    >>> verbnet.fileids('badidentifier')
     Traceback (most recent call last):
       . . .
     ValueError: vnclass identifier 'badidentifier' not found
@@ -1749,13 +1749,13 @@ Select some corpus files to play with:
     >>> f2 = nltk.data.find('corpora/inaugural/1793-Washington.txt')
     >>> # A longer file (32k chars):
     >>> f3 = nltk.data.find('corpora/inaugural/1909-Taft.txt')
-    >>> filenames = [f1, f2, f3]
+    >>> fileids = [f1, f2, f3]
 
 Check that corpus views produce the correct sequence of values.
 
     >>> from nltk.corpus.reader.util import *
     >>> linetok = nltk.LineTokenizer(blanklines='discard-eof')
-    >>> for f in filenames:
+    >>> for f in fileids:
     ...     v = StreamBackedCorpusView(f, read_whitespace_block)
     ...     assert list(v) == open(f).read().split()
     ...     v = StreamBackedCorpusView(f, read_line_block)
@@ -1763,7 +1763,7 @@ Check that corpus views produce the correct sequence of values.
 
 Check that the corpus views report the correct lengths:
 
-    >>> for f in filenames:
+    >>> for f in fileids:
     ...     v = StreamBackedCorpusView(f, read_whitespace_block)
     ...     assert len(v) == len(open(f).read().split())
     ...     v = StreamBackedCorpusView(f, read_line_block)
