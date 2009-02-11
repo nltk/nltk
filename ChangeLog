@@ -1,7 +1,7 @@
 Version 0.9.8b1 2009-02-11
 
 NLTK:
-* New off-the-shelf tokenizer, pos-tagger, and named-entity tagger
+* New off-the-shelf tokenizer, POS tagger, and named-entity tagger
 * New metrics package with inter-annotator agreement scores,
   distance metrics, rank correlation
 * New collocations package (Joel Nothman)
@@ -21,7 +21,7 @@ Data:
 * Corrected identifiers in Dependency Treebank corpus
 * Basque and Catalan Dependency Treebanks (CoNLL 2007)
 * PE08 Parser Evalution data
-* New model for POS tagger
+* New model for POS tagger and named-entity tagger
 
 Book:
 * Ongoing editorial corrections
