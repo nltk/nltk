@@ -57,6 +57,7 @@ import wx
 import wx.html as  html
 import wx.lib.wxpTag
 
+# page_word not defined in wordnet_app!
 from wordnet_app import page_word, new_word_and_body, show_page_and_word,\
      html_header, html_trailer, get_static_page_by_path,\
      explanation, pg  
@@ -116,7 +117,7 @@ class MyHtmlWindow(html.HtmlWindow):
                 self.parent.add_html_page(activate=True)
         self.parent.SetPageText(self.parent.current_page, word)
         self.parent.parent.search_word.SetValue(word)
-        page,word = util.page_word(word, href)
+        page,word = page_word(word, href)
         if page:
             if word:
                 self.parent.SetPageText(self.parent.current_page, word)
