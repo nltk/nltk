@@ -453,9 +453,8 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         if feature_detector is not None:
             self._feature_detector = feature_detector
-            """The feature detector function, used to generate a featureset
-            for each token::
-                feature_detector(tokens, index, history) -> featureset"""
+            # The feature detector function, used to generate a featureset
+            # or each token: feature_detector(tokens, index, history) -> featureset
 
         self._cutoff_prob = cutoff_prob
         """Cutoff probability for tagging -- if the probability of the
