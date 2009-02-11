@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -242,17 +241,7 @@ def load_ace_data(root, fmt='binary'):
             raise ValueError('bad fmt value')
             
             
-        
-                
-    
-    
-    
-    
-    
-    
-    
 
-    
 
 def train(root):
     print 'Loading data...'

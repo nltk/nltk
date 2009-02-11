@@ -57,7 +57,7 @@ import wx
 import wx.html as  html
 import wx.lib.wxpTag
 
-from wordnet import page_word, new_word_and_body, show_page_and_word,\
+from wordnet_app import page_word, new_word_and_body, show_page_and_word,\
      html_header, html_trailer, get_static_page_by_path,\
      explanation, pg  
 
