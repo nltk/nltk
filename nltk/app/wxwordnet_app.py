@@ -57,8 +57,7 @@ import wx
 import wx.html as  html
 import wx.lib.wxpTag
 
-# page_word not defined in wordnet_app!
-from wordnet_app import page_word, new_word_and_body, show_page_and_word,\
+from wordnet_app import page_from_word, new_word_and_body, show_page_and_word,\
      html_header, html_trailer, get_static_page_by_path,\
      explanation, pg  
 
@@ -117,7 +116,7 @@ class MyHtmlWindow(html.HtmlWindow):
                 self.parent.add_html_page(activate=True)
         self.parent.SetPageText(self.parent.current_page, word)
         self.parent.parent.search_word.SetValue(word)
-        page,word = page_word(word, href)
+        page,word = page_from_word(word, href)
         if page:
             if word:
                 self.parent.SetPageText(self.parent.current_page, word)
@@ -356,9 +355,9 @@ class HtmlPanel(wx.Panel):
         word = self.search_word.GetValue()
         word = word.strip()
         if word == '': return
-        word,body = util.new_word_and_body(word)
+        word,body = new_word_and_body(word)
         if word:
-            self.show_page_and_word(util.pg(word, body), word)
+            self.show_page_and_word(pg(word, body), word)
             self.nb.h_w.current_word = word
             self.nb.SetPageText(self.nb.current_page, word)
         else:
@@ -539,9 +538,9 @@ class MyHtmlFrame(wx.Frame):
         word = self.panel.search_word.GetValue()
         if word == '': return
         current_page = self.panel.nb.add_html_page()
-        word,body = util.new_word_and_body(word)
+        word,body = new_word_and_body(word)
         if word:
-            self.panel.show_page_and_word(util.pg(word, body), word)
+            self.panel.show_page_and_word(pg(word, body), word)
             self.panel.nb.h_w.current_word = word
             self.panel.nb.SetPageText(current_page, word)
         else:
@@ -584,10 +583,10 @@ class MyHtmlFrame(wx.Frame):
             file.close()
         except IOError:
             # TODO: Should give instructions for using dbinfo_html.py
-            html = (util.html_header % word) + '<p>The database info file:'\
+            html = (html_header % word) + '<p>The database info file:'\
                    '<p><b>%s</b>' % WORDNET_DB_INFO_FILEPATH + \
                    '<p>was not found. Run the <b>dbinfo_html.py</b> ' + \
-                   'script to produce it.' + util.html_trailer
+                   'script to produce it.' + html_trailer
         self.panel.show_page_and_word(html, word)
         return
 
@@ -596,7 +595,7 @@ class MyHtmlFrame(wx.Frame):
         try:
             if not path.endswith('.htm') and not path.endswith('.html'):
                 path += '.html'
-            page = util.get_static_page_by_path(path)
+            page = get_static_page_by_path(path)
             if path == 'NLTK Wordnet Browser Help.html':
                 word = '* Help *'
             else:
@@ -923,12 +922,12 @@ def app():
     if platform.system() == 'Windows':
         ico = wx.Icon('favicon.ico', wx.BITMAP_TYPE_ICO)
         frm.SetIcon(ico)
-    word,body = util.new_word_and_body('green')
+    word,body = new_word_and_body('green')
     frm.panel.nb.SetPageText(0,word)
     frm.panel.nb.h_w.current_word  = word
     frm.panel.search_word.SetValue(word)
-    body = util.explanation + body
-    frm.panel.nb.h_w.show_page(util.pg('green', body))
+    body = explanation + body
+    frm.panel.nb.h_w.show_page(pg('green', body))
     page = frm.panel.nb.h_w.GetParser().GetSource()
     page = frm.panel.nb.GetPage(0).GetParser().GetSource()
     frm.Show()
