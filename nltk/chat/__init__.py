@@ -23,20 +23,25 @@ from rude import rude_chat
 from suntsu import suntsu_chat
 from zen import zen_chat
 
-def demo():
+bots = [
+    (eliza_chat,  'Eliza (psycho-babble)'),
+    (iesha_chat,  'Iesha (teen anime junky)'),
+    (rude_chat,   'Rude (abusive bot)'),
+    (suntsu_chat, 'Suntsu (Chinese sayings)'),
+    (zen_chat,    'Zen (gems of wisdom)')]
+
+def chatbots():
     import sys
     print 'Which chatbot would you like to talk to?'
-    print '  1: Eliza (psycho-babble)'
-    print '  2: Iesha (teen anime junky)'
-    print '  3: Rude'
-    print '  4: Suntsu (Chinese sayings)'
-    print '  5: Zen (gems of wisdom)'
-    print '\nPlease enter 1-5 ',
+    botcount = len(bots)
+    for i in range(botcount):
+        print '  %d: %s' % (i+1, bots[i][1])
+    print '\nPEnter a number in the range 1-%d: ' % botcount,
     choice = sys.stdin.readline().strip()
     print
-    if choice not in '12345':
+    if not (choice.isdigit() and int(choice) in range(botcount)):
         print 'Bad chatbot number'
         return
 
-    chatbot = [eliza_chat, iesha_chat, rude_chat, suntsu_chat, zen_chat][int(choice)-1]
+    chatbot = bots[int(choice)-1][0]
     chatbot()
