@@ -91,7 +91,7 @@ If the reader methods are called without any arguments, they will
 typically load all documents in the corpus.
 
     >>> len(inaugural.words())
-    143066
+    145735
 
 Plaintext Corpora
 =================
@@ -391,10 +391,10 @@ strings.
     >>> # Load the entire cmudict corpus into a Python dictionary:
     >>> transcr = cmudict.dict()
     >>> print [transcr[w][0] for w in 'Natural Language Tool Kit'.lower().split()] # doctest: +NORMALIZE_WHITESPACE
-    [('N', 'AE1', 'CH', 'ER0', 'AH0', 'L'),
-     ('L', 'AE1', 'NG', 'G', 'W', 'AH0', 'JH'),
-     ('T', 'UW1', 'L'),
-     ('K', 'IH1', 'T')]
+    [['N', 'AE1', 'CH', 'ER0', 'AH0', 'L'],
+     ['L', 'AE1', 'NG', 'G', 'W', 'AH0', 'JH'],
+     ['T', 'UW1', 'L'],
+     ['K', 'IH1', 'T']]
 
 Categorized Corpora
 ===================

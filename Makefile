@@ -216,7 +216,7 @@ clean:	clean_up
 	$(MAKE) -C doc clean
 	$(MAKE) -C doc_contrib clean
 	$(MAKE) -C javasrc clean
-	rm -f nltk/nltk.jar
+#	rm -f nltk/nltk.jar
 
 clean_up: clean_code
 	$(MAKE) -C doc clean_up

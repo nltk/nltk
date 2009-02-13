@@ -17,7 +17,7 @@ from nltk import defaultdict
 from nltk.internals import deprecated
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
-from util import find_corpus_fileids
+from util import *
 
 class CorpusReader(object):
     """

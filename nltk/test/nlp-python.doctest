@@ -164,7 +164,7 @@ earliest NLP systems were implemented in LISP::
 Ruby is a more recently developed language than Python,
 best known for its convenient web application framework, *Ruby on Rails*.
 It currently lacks the extensive set of libraries that Python enjoys.
-Here are two Ruby programs for finding words ending in `ing`:em:\ ::
+Here are two Ruby programs for finding words ending in *ing*::
 
   ARGF.each { |line|
     line.split.find_all { |word|
@@ -193,9 +193,9 @@ a much more compact solution of our simple task::
      putStr (unlines ings)
 
 The unix shell can also be used for simple linguistic processing.  Here is
-a simple pipeline for finding the `ing`:em: words.  The first step transliterates
+a simple pipeline for finding the *ing* words.  The first step transliterates
 any whitespace character to a newline, so that each word of the text occurs on
-its own line, and the second step finds all lines ending in `ing`:em:\ ::
+its own line, and the second step finds all lines ending in *ing*::
 
   tr [:space:] '\n' | grep ing$
 

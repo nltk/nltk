@@ -46,7 +46,7 @@ class PropbankCorpusReader(CorpusReader):
         """
         # If framefiles is specified as a regexp, expand it.
         if isinstance(framefiles, basestring):
-            framefiles = nltk.corpus.reader.find_corpus_fileids(root, framefiles)
+            framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
         CorpusReader.__init__(self, root, [propfile, verbsfile] + framefiles,
