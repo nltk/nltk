@@ -170,7 +170,7 @@ iso:
 	cp dist/nltk-doc-$(VERSION).zip        iso
 	cp dist/nltk-contribdoc-$(VERSION).zip iso
 	cp dist/nltk-examples-$(VERSION).zip   iso
-	cp doc/en/book.pdf                     iso
+	cp doc/book/book.pdf                     iso
 	cp *.txt *.html                        iso
 	cp cd.pdf                              iso
 	cp python/mac/*                        iso/mac/
