@@ -28,7 +28,7 @@ def get_prover(goal=None, assumptions=None, prover_name=None):
         prover_name = 'Prover9'
     
     if prover_name.lower() == 'tableau':
-        return api.BaseProverCommand(tableau.Tableau(), goal, assumptions)
+        return api.BaseProverCommand(tableau.TableauProver(), goal, assumptions)
     elif prover_name.lower() == 'prover9':
         return prover9.Prover9Command(goal, assumptions)
     elif prover_name.lower() == 'resolution':

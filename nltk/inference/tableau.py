@@ -16,10 +16,10 @@ _counter = Counter()
 
 class ProverParseError(Exception): pass
 
-class Tableau(Prover):
+class TableauProver(Prover):
     _assume_false=False
     
-    def prove(self, goal=None, assumptions=None, verbose=False):
+    def _prove(self, goal=None, assumptions=None, verbose=False):
         if not assumptions:
             assumptions = []
             
@@ -130,7 +130,7 @@ class Tableau(Prover):
     def _attempt_proof_app(self, current, context, agenda, accessible_vars, atoms, debug):
         f, args = current.uncurry()
         for i, arg in enumerate(args):
-            if not Tableau.is_atom(arg):
+            if not TableauProver.is_atom(arg):
                 ctx = f
                 nv = Variable('X%s' % _counter.get())
                 for j,a in enumerate(args):
@@ -148,7 +148,7 @@ class Tableau(Prover):
     def _attempt_proof_n_app(self, current, context, agenda, accessible_vars, atoms, debug):
         f, args = current.term.uncurry()
         for i, arg in enumerate(args):
-            if not Tableau.is_atom(arg):
+            if not TableauProver.is_atom(arg):
                 ctx = f
                 nv = Variable('X%s' % _counter.get())
                 for j,a in enumerate(args):
@@ -301,7 +301,7 @@ class Tableau(Prover):
         
         if isinstance(e, ApplicationExpression):
             for arg in e.args:
-                if not Tableau.is_atom(arg):
+                if not TableauProver.is_atom(arg):
                     return False
             return True
         elif isinstance(e, AbstractVariableExpression) or \
@@ -397,7 +397,7 @@ class Agenda(object):
             return self._categorize_NegatedExpression(current)
         elif isinstance(current, FunctionVariableExpression):
             return Categories.PROP
-        elif Tableau.is_atom(current):
+        elif TableauProver.is_atom(current):
             return Categories.ATOM
         elif isinstance(current, AllExpression):
             return Categories.ALL
@@ -426,7 +426,7 @@ class Agenda(object):
             return Categories.D_NEG
         elif isinstance(negated, FunctionVariableExpression):
             return Categories.N_PROP
-        elif Tableau.is_atom(negated):
+        elif TableauProver.is_atom(negated):
             return Categories.N_ATOM
         elif isinstance(negated, AllExpression):
             return Categories.N_ALL
@@ -505,7 +505,7 @@ class Categories(object):
     ALL      = 20
 
 
-def testTableau():
+def testTableauProver():
     tableau_test('P | -P')
     tableau_test('P & -P')
     tableau_test('Q', ['P', '(P -> Q)'])
@@ -558,7 +558,7 @@ def testTableau():
 #    tableau_test(c, [p])
 
 
-def testHigherOrderTableau():
+def testHigherOrderTableauProver():
     tableau_test('believe(j, -lie(b))', ['believe(j, -lie(b) & -cheat(b))'])
     tableau_test('believe(j, lie(b) & cheat(b))', ['believe(j, lie(b))'])
     tableau_test('believe(j, lie(b))', ['lie(b)']) #how do we capture that John believes all things that are true
@@ -577,9 +577,9 @@ def tableau_test(c, ps=None, verbose=False):
     else:
         ps = []
         pps = []
-    print '%s |- %s: %s' % (', '.join(ps), pc, Tableau().prove(pc, pps, verbose=verbose)[0])
+    print '%s |- %s: %s' % (', '.join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose))
 
 if __name__ == '__main__':
-    testTableau()
-    testHigherOrderTableau()
+    testTableauProver()
+    testHigherOrderTableauProver()
     
