@@ -33,7 +33,7 @@ Public License, which is included by reference.
 __license__ = "GPL"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
-The Natural Langauge Toolkit (NLTK) is a Python package for
+The Natural Language Toolkit (NLTK) is a Python package for
 processing natural language text.  NLTK requires Python 2.4 or higher."""
 __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
