@@ -162,7 +162,7 @@ def train(num_train_sents, num_test_sents, model_file=None, **kwargs):
     return model
                         
 def demo(verbose=False):
-    from nltk_contrib.coref.chunk2 import train
+    from nltk_contrib.coref.chunk import train
     model = train(10, 10, verbose=verbose)
     
 if __name__ == '__main__':
