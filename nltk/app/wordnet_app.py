@@ -64,7 +64,7 @@ from sys import path
 import os
 from sys import argv
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from urllib import unquote_plus
+from urllib import quote_plus, unquote_plus
 import webbrowser
 import datetime
 import re
@@ -72,6 +72,14 @@ import threading
 import time
 import getopt
 import base64
+import cPickle
+import copy
+
+from nltk.compat import defaultdict
+from nltk.corpus import wordnet as wn
+from nltk.corpus.reader.wordnet import Synset, Lemma
+
+
 
 # now included in local file
 # from util import html_header, html_trailer, \
@@ -321,25 +329,6 @@ def startBrowser(url, server_ready):
 # Utilities
 #####################################################################
 
-# Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-#
-# Copyright (C) 2001-2009 NLTK Project
-# Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-#         Paul Bone <pbone@students.csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
-# For license information, see LICENSE.TXT
-
-
-from urllib import quote_plus, unquote_plus
-import itertools as it
-import cPickle
-import base64
-import copy
-
-from collections import defaultdict
-from nltk.corpus import wordnet
-from nltk.corpus.reader.wordnet import Synset, Lemma
-
 
 """
 WordNet Browser Utilities.
@@ -355,10 +344,10 @@ This provides a backend to both wxbrowse and browserver.py.
 
 
 _pos_tuples = [
-    (wordnet.NOUN,'N','noun'), 
-    (wordnet.VERB,'V','verb'),
-    (wordnet.ADJ,'J','adj'), 
-    (wordnet.ADV,'R','adv')]
+    (wn.NOUN,'N','noun'), 
+    (wn.VERB,'V','verb'),
+    (wn.ADJ,'J','adj'), 
+    (wn.ADV,'R','adv')]
 
 def _pos_match(pos_tuple):
     """
@@ -430,7 +419,7 @@ def get_relations_data(word, synset):
     Get synset relations data for a synset.  Note that this doesn't
     yet support things such as full hyponym vs direct hyponym.
     """
-    if synset.pos == wordnet.NOUN:
+    if synset.pos == wn.NOUN:
         return ((HYPONYM, 'Hyponyms', 
                    synset.hyponyms()),
                 (INSTANCE_HYPONYM , 'Instance hyponyms', 
@@ -461,7 +450,7 @@ def get_relations_data(word, synset):
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form", 
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
-    elif synset.pos == wordnet.VERB:
+    elif synset.pos == wn.VERB:
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (HYPONYM, 'Hyponym',
@@ -480,7 +469,7 @@ def get_relations_data(word, synset):
                    synset.verb_groups()),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form", 
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))                
-    elif synset.pos == wordnet.ADJ or synset.pos == wordnet.ADJ_SAT:
+    elif synset.pos == wn.ADJ or synset.pos == wn.ADJ_SAT:
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (SIMILAR, 'Similar to',
@@ -492,7 +481,7 @@ def get_relations_data(word, synset):
                    synset.attributes()),
                 (ALSO_SEE, 'Also see',
                    synset.also_sees()))
-    elif synset.pos == wordnet.ADV:
+    elif synset.pos == wn.ADV:
         # This is weird. adverbs such as 'quick' and 'fast' don't seem
         # to have antonyms returned by the corpus.a
         return ((ANTONYM, 'Antonym',
@@ -583,7 +572,7 @@ def _get_synset(synset_key):
     The synset key is the unique name of the synset, this can be
     retrived via synset.name
     """
-    return wordnet.synset(synset_key)
+    return wn.synset(synset_key)
 
 def _collect_one_synset(word, synset, synset_relations):
     '''
@@ -635,7 +624,7 @@ def _collect_all_synsets(word, pos, synset_relations=dict()):
     return '<ul>%s\n</ul>\n' % \
         ''.join((_collect_one_synset(word, synset, synset_relations) 
                  for synset 
-                 in wordnet.synsets(word, pos)))
+                 in wn.synsets(word, pos)))
 
 def _synset_relations(word, synset, synset_relations):
     '''
@@ -807,8 +796,8 @@ def page_from_reference(href):
     
     # This looks up multiple words at once.  This is probably not
     # necessary and may lead to problems.
-    for pos in [wordnet.NOUN, wordnet.VERB, wordnet.ADJ, wordnet.ADV]:
-        form = wordnet.morphy(w, pos)
+    for pos in [wn.NOUN, wn.VERB, wn.ADJ, wn.ADV]:
+        form = wn.morphy(w, pos)
         if form and form not in pos_forms[pos]:
             pos_forms[pos].append(form)
     body = ''
