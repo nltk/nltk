@@ -120,6 +120,7 @@ import corpus
 import metrics
 import sem
 import inference
+from inference import *
 
 # Import Tkinter-based modules if Tkinter is installed
 from downloader import download, download_shell
