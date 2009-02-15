@@ -52,6 +52,7 @@ from viterbi import *
 from dependencygraph import *
 from projectivedependencyparser import *
 from nonprojectivedependencyparser import *
+from malt import *
 
 __all__ = [
     # Parser interface
@@ -67,7 +68,7 @@ __all__ = [
     'DependencyGraph', 'nx_graph', 'ProjectiveDependencyParser',
     'ProbabilisticProjectiveDependencyParser',
     'NaiveBayesDependencyScorer', 'ProbabilisticNonprojectiveParser',
-    'NonprojectiveDependencyParser'
+    'NonprojectiveDependencyParser', 'MaltParser'
     ]
 
 ######################################################################
