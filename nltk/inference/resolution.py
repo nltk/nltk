@@ -38,17 +38,19 @@ class ResolutionProver(Prover):
                 clauses.extend(clausify(-goal))
             for a in assumptions:
                 clauses.extend(clausify(a))
-            result, proof = self._attempt_proof(clauses)
+            result, clauses = self._attempt_proof(clauses)
+            if verbose: 
+                print ResolutionCommand._decorate_clauses(clauses)
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 result = False
-                proof = ''
+                clauses = []
             else:
                 if verbose:
                     print e
                 else:
                     raise e
-        return (result, proof)
+        return (result, clauses)
 
     def _attempt_proof(self, clauses):
         #map indices to lists of indices, to store attempted unifications
@@ -109,7 +111,7 @@ class ResolutionCommand(BaseProverCommand):
                                                         self.assumptions(),
                                                         verbose)
             self._clauses = clauses
-            self._proof = self._decorate_clauses(clauses)
+            self._proof = ResolutionCommand._decorate_clauses(clauses)
         return self._result
 
     def find_answers(self, verbose=False):
@@ -125,7 +127,8 @@ class ResolutionCommand(BaseProverCommand):
                     answers.add(term.argument)
         return answers
     
-    def _decorate_clauses(self, clauses):
+    @staticmethod
+    def _decorate_clauses(clauses):
         """
         Decorate the proof output.
         """
