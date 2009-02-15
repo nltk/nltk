@@ -17,11 +17,11 @@ Module for a resolution-based First Order theorem prover.
 
 class ProverParseError(Exception): pass
 
-class Resolution(Prover):
+class ResolutionProver(Prover):
     ANSWER_KEY = 'ANSWER'
     _assume_false=True
     
-    def prove(self, goal=None, assumptions=None, verbose=False):
+    def _prove(self, goal=None, assumptions=None, verbose=False):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -92,9 +92,9 @@ class ResolutionCommand(BaseProverCommand):
         @type assumptions: C{list} of L{logic.Expression}
         """
         if prover is not None:
-            assert isinstance(prover, Resolution)
+            assert isinstance(prover, ResolutionProver)
         else:
-            prover = Resolution()
+            prover = ResolutionProver()
 
         BaseProverCommand.__init__(self, prover, goal, assumptions)
         self._clauses = None
@@ -105,9 +105,9 @@ class ResolutionCommand(BaseProverCommand):
         re-proving.
         """
         if self._result is None:
-            self._result, clauses = self._prover.prove(self.goal(), 
-                                                       self.assumptions(),
-                                                       verbose)
+            self._result, clauses = self._prover._prove(self.goal(), 
+                                                        self.assumptions(),
+                                                        verbose)
             self._clauses = clauses
             self._proof = self._decorate_clauses(clauses)
         return self._result
@@ -116,7 +116,7 @@ class ResolutionCommand(BaseProverCommand):
         self.prove(verbose)
         
         answers = set()
-        answer_ex = VariableExpression(Variable(Resolution.ANSWER_KEY))
+        answer_ex = VariableExpression(Variable(ResolutionProver.ANSWER_KEY))
         for clause in self._clauses:
             for term in clause:
                 if isinstance(term, ApplicationExpression) and\
@@ -600,7 +600,7 @@ class DebugObject(object):
             print '    '*self.indent + line
 
 
-def testResolution():
+def testResolutionProver():
     resolution_test(r'man(x)')
     resolution_test(r'(man(x) -> man(x))')
     resolution_test(r'(man(x) -> --man(x))')
@@ -619,21 +619,21 @@ def testResolution():
     p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
     p2 = LogicParser().parse(r'man(Socrates)')
     c = LogicParser().parse(r'mortal(Socrates)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, Resolution().prove(c, [p1,p2])[0])
+    print '%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2]))
     
     p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
     p2 = LogicParser().parse(r'man(John)')
     c = LogicParser().parse(r'some y.walks(y)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, Resolution().prove(c, [p1,p2])[0])
+    print '%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2]))
     
     p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
-    print '%s |- %s: %s' % (p, c, Resolution().prove(c, [p])[0])
+    print '%s |- %s: %s' % (p, c, ResolutionProver().prove(c, [p]))
     
 def resolution_test(e):
     f = LogicParser().parse(e)
-    t = Resolution().prove(f)
-    print '|- %s: %s' % (f, t[0])
+    t = ResolutionProver().prove(f)
+    print '|- %s: %s' % (f, t)
 
 def test_clausify():
     lp = LogicParser()
@@ -663,4 +663,9 @@ def test_clausify():
 if __name__ == '__main__':
     test_clausify()
     print
-    testResolution()
+    testResolutionProver()
+    print
+    
+    p = LogicParser().parse('man(x)')
+    print ResolutionCommand(p, [p]).prove()
+    

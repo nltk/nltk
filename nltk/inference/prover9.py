@@ -224,7 +224,7 @@ class Prover9(Prover9Parent, Prover):
     _prover9_bin = None
     _prooftrans_bin = None
     
-    def prove(self, goal=None, assumptions=None, verbose=False):
+    def _prove(self, goal=None, assumptions=None, verbose=False):
         """
         Use Prover9 to prove a theorem.
         @return: A pair whose first element is a boolean indicating if the 

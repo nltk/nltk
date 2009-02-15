@@ -31,8 +31,14 @@ class Prover(object):
         @return: Whether the proof was successful or not.
         @rtype: C{bool} 
         """
-        raise NotImplementedError()
+        return self._prove(goal, assumptions, verbose)[0]
 
+    def _prove(self, goal=None, assumptions=None, verbose=False):
+        """
+        @return: Whether the proof was successful or not, along with the proof
+        @rtype: C{tuple}: (C{bool}, C{str}) 
+        """
+        raise NotImplementedError()
     
 class ModelBuilder(object):
     """
@@ -258,9 +264,9 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
         re-proving.
         """
         if self._result is None:
-            self._result, self._proof = self._prover.prove(self.goal(), 
-                                                           self.assumptions(),
-                                                           verbose)
+            self._result, self._proof = self._prover._prove(self.goal(), 
+                                                            self.assumptions(),
+                                                            verbose)
         return self._result
 
     def proof(self, simplify=True):
@@ -394,9 +400,9 @@ class ProverCommandDecorator(TheoremToolCommandDecorator, ProverCommand):
     def prove(self, verbose=False):
         if self._result is None:
             prover = self.get_prover()
-            self._result, self._proof = prover.prove(self.goal(), 
-                                                     self.assumptions(), 
-                                                     verbose)
+            self._result, self._proof = prover._prove(self.goal(), 
+                                                      self.assumptions(), 
+                                                      verbose)
         return self._result
     
     def proof(self, simplify=True):
@@ -503,7 +509,7 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
     def _run(self, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
         tp_result = [None]
-        tp_thread = TheoremToolThread(lambda: BaseProverCommand.prove(self, verbose), tp_result, verbose, 'TP')
+        tp_thread = TheoremToolThread(lambda: BaseProverCommand._prove(self, verbose), tp_result, verbose, 'TP')
         mb_result = [None]
         mb_thread = TheoremToolThread(lambda: BaseModelBuilderCommand.build_model(self, verbose), mb_result, verbose, 'MB')
         
