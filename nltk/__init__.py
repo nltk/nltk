@@ -100,7 +100,7 @@ from misc import *
 
 from internals import config_java
 
-import chat, chunk, corpus, parse, metrics, sem, stem, tag, tokenize
+import chat, chunk, corpus, parse, metrics, sem, inference, stem, tag, tokenize
 
 # Import Tkinter-based modules if Tkinter is installed
 from downloader import download, download_shell
