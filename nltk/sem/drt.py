@@ -7,15 +7,19 @@
 
 import operator
 
-from nltk.internals import Counter
 from logic import *
 import drt_resolve_anaphora as RA
 
-from Tkinter import Canvas
-from Tkinter import Tk
-from tkFont import Font
-from nltk.draw import in_idle
+# Import Tkinter-based modules if they are available
+try:
+    from Tkinter import Canvas
+    from Tkinter import Tk
+    from tkFont import Font
+    from nltk.draw import in_idle
 
+except ImportError:
+    # No need to print a warning here, nltk.draw has already printed one.
+    pass
 
 class DrtTokens(Tokens):
     DRS = 'DRS'
