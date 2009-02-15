@@ -119,6 +119,13 @@ class CorpusReader(object):
             path = '%s' % self._root.path
         return '<%s in %r>' % (self.__class__.__name__, path)
 
+    def readme(self):
+        """
+        Return the contents of the corpus README file, if it exists.
+        """
+        
+        return open(self.abspath("README")).read()
+
     def fileids(self):
         """
         Return a list of file identifiers for the fileids that make up
