@@ -74,6 +74,7 @@ __classifiers__ = [
 
 from compat import *
 from containers import *
+from collocations import *
 from decorators import decorator, memoize
 from featstruct import *
 from grammar import *
@@ -88,19 +89,37 @@ from yamltags import *
 import data
 
 # Processing packages -- these all define __all__ carefully.
+import tokenize
 from tokenize import *
+
+import tag
 from tag import *
+
+import parse
 from parse import *
+
+import chunk
 from chunk import *
+
+import stem
 from stem import *
+
+import classify
 from classify import *
+
+import model
 from model import *
-from collocations import *
+
+import misc
 from misc import *
 
 from internals import config_java
 
-import chat, chunk, corpus, parse, metrics, sem, inference, stem, tag, tokenize
+import chat
+import corpus
+import metrics
+import sem
+import inference
 
 # Import Tkinter-based modules if Tkinter is installed
 from downloader import download, download_shell
