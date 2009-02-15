@@ -23,7 +23,6 @@ from nltk.tag import ClassifierBasedTagger
 from nltk.classify import ClassifierI
 from nltk.classify.maxent import MaxentClassifier
 
-from nltk_contrib.coref.features import *
 from nltk_contrib.coref.train import train_model
 
 TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
@@ -31,7 +30,7 @@ TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
 
 class ChunkFeatureDetector(dict):
     def __init__(self, tokens, index=0, history=None):
-        dict.__init__(self, features(tokens, index, history))
+        dict.__init__(self, features(tokens, index, history, depth=2))
         
 
 class ChunkTagger(ClassifierBasedTagger, ClassifierI):    
@@ -102,7 +101,7 @@ def maxent_classifier_builder(labeled_featuresets):
         algorithm='megam',
         gaussian_prior_sigma=0.1,
         count_cutoff=1,
-        min_lldelta=1e-5)
+        min_lldelta=1e-7)
 
 def features(tokens, index, history=None, **kwargs):
     spelling, pos = tokens[index][:2]
@@ -111,54 +110,30 @@ def features(tokens, index, history=None, **kwargs):
     feats['spelling'] = spelling
     feats['word'] = spelling.lower()
     feats['pos'] = pos
-    feats['is_upper_case'] = is_upper_case(spelling)
-    feats['is_lower_case'] = is_lower_case(spelling)
-    feats['is_title_case'] = is_title_case(spelling)
-    feats['is_alnum_case'] = is_alpha_numeric(spelling)  
+    feats['isupper'] = spelling.isupper()
+    feats['islower'] = spelling.islower()
+    feats['istitle'] = spelling.istitle()
+    feats['isalnum'] = spelling.isalnum() 
+    feats['isnumeric'] = \
+        bool(re.match(r'^(\d{1,3}(\,\d{3})*|\d+)(\.\d+)?$', spelling))
     
     for i in range(1, 4):
         feats['prefix_%d' % i] = spelling[:i]
         feats['suffix_%d' % i] = spelling[-i:]
         
-    feats['is_closed_cat'] = pos in TREEBANK_CLOSED_CATS    
-
-    # You can do ok without this block of features, but they *do* help.
-    feats['is_digit'] = is_digit(spelling)
-    feats['is_numeric'] = is_numeric(spelling)
-    feats['is_punct'] = is_punct(spelling)
-    feats['isroman'] = is_roman_numeral(spelling)
-    feats['is_initial'] = is_initial(spelling)
-    feats['is_tla'] = is_tla(spelling)
-    feats['is_name'] = is_name(spelling)
-    feats['is_city'] = is_city(spelling)
-    feats['is_state'] = is_state(spelling)
-    feats['is_country'] = is_country(spelling)
-    feats['is_location'] = is_location(spelling)
-    feats['contains_city'] = contains_city(spelling)
-    feats['contains_state'] = contains_state(spelling)
-    feats['contains_country'] = contains_country(spelling)
-    feats['contains_location'] = contains_location(spelling)        
-    feats['is_person_prefix'] = is_person_prefix(spelling)
-    feats['is_person_suffix'] = is_person_suffix(spelling)
-    feats['is_org_suffix'] = is_org_suffix(spelling)
-    feats['is_day'] = is_day(spelling)
-    feats['is_month'] = is_month(spelling)
-    feats['is_date'] = is_date(spelling)
-    feats['is_time'] = is_time(spelling)    
-    feats['is_ordinal'] = is_ordinal(spelling)
-    feats['is_year'] = is_year(spelling)
-    feats['is_pronoun'] = is_pronoun(spelling)
+    feats['isclosedcat'] = pos in TREEBANK_CLOSED_CATS
     
     if kwargs.get('depth', 1) > 0 and index > 0:
-        prev_feats = features(tokens, index - 1, 
+        prev_feats = features(tokens, index - 1, history, 
                               depth=kwargs.get('depth', 1) - 1)
         for key, val in prev_feats.items():
-            feats['prev_%s_%d' % (key, 1)] = val
+            feats['prev_%s' % key] = val
+    
     if history and index > 0:
-        feats['prev_tag_%d' % 1] = history[index - 1]
-    feats['prev_pos_%d/pos' % 1] = '%s/%s' % (feats.get('prev_pos_%d' % 1), 
-                                         feats.get('pos'))
-                                         
+        feats['prev_tag'] = history[index - 1]
+        
+    feats['prev_pos/pos'] = '%s/%s' % (feats.get('prev_pos'), feats.get('pos'))
+
     return feats
     
 def wordtag(sent):
