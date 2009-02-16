@@ -342,12 +342,14 @@ This provides a backend to both wxbrowse and browserver.py.
 # Main logic for wordnet browser.
 #
 
-
-_pos_tuples = [
-    (wn.NOUN,'N','noun'), 
-    (wn.VERB,'V','verb'),
-    (wn.ADJ,'J','adj'), 
-    (wn.ADV,'R','adv')]
+# This is wrapped inside a function since wn is only available if the
+# WordNet corpus is installed.
+def _pos_tuples():
+    return [
+        (wn.NOUN,'N','noun'),
+        (wn.VERB,'V','verb'),
+        (wn.ADJ,'J','adj'),
+        (wn.ADV,'R','adv')]
 
 def _pos_match(pos_tuple):
     """
@@ -360,7 +362,7 @@ def _pos_match(pos_tuple):
     for n,x in enumerate(pos_tuple):
         if x is not None:
             break
-    for pt in _pos_tuples:
+    for pt in _pos_tuples():
         if pt[n] == pos_tuple[n]: return pt
     return None
 
@@ -801,7 +803,7 @@ def page_from_reference(href):
         if form and form not in pos_forms[pos]:
             pos_forms[pos].append(form)
     body = ''
-    for pos,pos_str,name in _pos_tuples:
+    for pos,pos_str,name in _pos_tuples():
         if pos in pos_forms:
             body += _hlev(3, name) + '\n'
             for w in pos_forms[pos]:
