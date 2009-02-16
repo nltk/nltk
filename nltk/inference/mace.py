@@ -182,7 +182,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 class Mace(Prover9Parent, ModelBuilder):
     _mace4_bin = None
     
-    def build_model(self, goal=None, assumptions=None, verbose=False):
+    def _build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Use Mace4 to build a first order model.
         

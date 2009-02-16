@@ -16,5 +16,16 @@ from mace import *
 from prover9 import *
 from resolution import *
 from tableau import *
-from util import *
 from discourse import *
+
+__all__ = [
+    # inference tools
+    'Prover9', 'Prover9Command',
+    'TableauProver', 'TableauProverCommand', 
+    'ResolutionProver', 'ResolutionProverCommand',
+    'Mace', 'MaceCommand',
+    'ParallelProverBuilderCommand',
+    
+    # discourse
+    'ReadingCommand', 'CfgReadingCommand', 'DrtGlueReadingCommand', 'DiscourseTester'
+    ]

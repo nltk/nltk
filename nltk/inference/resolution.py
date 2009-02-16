@@ -40,7 +40,7 @@ class ResolutionProver(Prover):
                 clauses.extend(clausify(a))
             result, clauses = self._attempt_proof(clauses)
             if verbose: 
-                print ResolutionCommand._decorate_clauses(clauses)
+                print ResolutionProverCommand._decorate_clauses(clauses)
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 result = False
@@ -84,7 +84,7 @@ class ResolutionProver(Prover):
             i += 1
         return (False, clauses)
         
-class ResolutionCommand(BaseProverCommand):
+class ResolutionProverCommand(BaseProverCommand):
     def __init__(self, goal=None, assumptions=None, prover=None):
         """
         @param goal: Input expression to prove
@@ -111,7 +111,7 @@ class ResolutionCommand(BaseProverCommand):
                                                         self.assumptions(),
                                                         verbose)
             self._clauses = clauses
-            self._proof = ResolutionCommand._decorate_clauses(clauses)
+            self._proof = ResolutionProverCommand._decorate_clauses(clauses)
         return self._result
 
     def find_answers(self, verbose=False):
@@ -670,5 +670,5 @@ if __name__ == '__main__':
     print
     
     p = LogicParser().parse('man(x)')
-    print ResolutionCommand(p, [p]).prove()
+    print ResolutionProverCommand(p, [p]).prove()
     

@@ -2,6 +2,7 @@
 Discourse Checking
 ==================
 
+    >>> from nltk import *
     >>> from nltk.sem import logic
     >>> logic._counter._value = 0
 
@@ -15,7 +16,6 @@ model-building from `nltk.inference`.
 The ``DiscourseTester`` constructor takes a list of sentences as a
 parameter.
 
-    >>> from nltk.inference.discourse import *
     >>> dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
 
 The ``DiscourseTester`` parses each sentence into a list of logical
@@ -484,9 +484,10 @@ you might want to start off with a local copy of ``background1.fol``:
     >>> nltk.data.retrieve('grammars/sample_grammars/background1.fol')
     Retrieving 'grammars/sample_grammars/background1.fol', saving to 'background1.fol'
 
-After you have modified the file, the ``parse_fol()`` function will parse the strings in the file into
-expressions of ``nltk.logic``.
+After you have modified the file, the ``parse_logic()`` function will parse 
+the strings in the file into expressions of ``nltk.logic``.
 
+    >>> from nltk.inference.discourse import parse_fol
     >>> mybg = parse_fol(open('background1.fol').read())
 
 The result can be loaded as an argument of ``add_background()`` in the
@@ -505,9 +506,7 @@ Regression Testing from book
 
     >>> logic._counter._value = 0
 
-    >>> from nltk.inference.discourse import DiscourseTester, DrtGlueReadingCommand
     >>> from nltk.tag import RegexpTagger
-    >>> from nltk.parse.malt import MaltParser
     >>> tagger = RegexpTagger(
     ...     [('^(chases|runs)$', 'VB'),
     ...      ('^(a)$', 'ex_quant'),

@@ -118,7 +118,10 @@ from internals import config_java
 import chat
 import corpus
 import metrics
+
 import sem
+from sem import *
+
 import inference
 from inference import *
 

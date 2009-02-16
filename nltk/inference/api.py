@@ -50,8 +50,16 @@ class ModelBuilder(object):
     def build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Perform the actual model building.
-        @return: A model if one is generated; None otherwise.
-        @rtype: C{nltk.sem.evaluate.Valuation} 
+        @return: Whether a model was generated
+        @rtype: C{bool} 
+        """
+        return self._build_model(goal, assumptions, verbose)[0]
+
+    def _build_model(self, goal=None, assumptions=None, verbose=False):
+        """
+        Perform the actual model building.
+        @return: Whether a model was generated, and the model itself
+        @rtype: C{tuple} of (C{bool}, C{nltk.sem.evaluate.Valuation}) 
         """
         raise NotImplementedError()
 
@@ -319,9 +327,9 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         """
         if self._result is None:
             self._result, self._model = \
-                    self._modelbuilder.build_model(self.goal(), 
-                                                   self.assumptions(),
-                                                   verbose)
+                    self._modelbuilder._build_model(self.goal(), 
+                                                    self.assumptions(),
+                                                    verbose)
         return self._result
     
     def model(self, format=None):
@@ -452,9 +460,9 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         if self._result is None:
             modelbuilder = self.get_model_builder()
             self._result, self._model = \
-                            modelbuilder.build_model(self.goal(), 
-                                                     self.assumptions(),
-                                                     verbose)
+                            modelbuilder._build_model(self.goal(), 
+                                                      self.assumptions(),
+                                                      verbose)
         return self._result
     
     def model(self, format=None):
