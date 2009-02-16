@@ -32,10 +32,3 @@ __author_email__ = __maintainer_email__
 
 # Processing packages -- these all define __all__ carefully.
 from api import *
-from ace2 import *
-from muc6 import *
-from muc7 import *
-from freiburg import *
-from util import *
-from chunk import *
-from features import *

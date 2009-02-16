@@ -80,6 +80,21 @@ class CorpusReaderDecoratorI(CorpusReader):
         raise AssertionError()
 
 
+class CorpusReaderDecorator(CorpusReaderDecoratorI):
+    def __init__(self, reader, **kwargs):
+        self._reader = reader
+
+    def __getattr__(self, name):
+        if name != '_reader':
+            return getattr(self._reader, name)
+
+    def reader(self):
+        wrapped_reader = self._reader
+        while isinstance(wrapped_reader, CorpusReaderDecoratorI):
+            wrapped_reader = wrapped_reader.reader()
+        return wrapped_reader
+
+
 class NamedEntityI(str):
     IN = 'I'
     OUT = 'O'
