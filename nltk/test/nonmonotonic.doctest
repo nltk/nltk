@@ -4,7 +4,7 @@ Nonmonotonic Reasoning
 
     >>> from nltk import *
     >>> from nltk.inference.nonmonotonic import *
-    >>> from nltk import logic
+    >>> from nltk.sem import logic
     >>> logic._counter._value = 0
     >>> lp = logic.LogicParser()
     
