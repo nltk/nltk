@@ -55,7 +55,7 @@ class RTEInferenceTagger(object):
         #5. satisfy BK & T
         #6. satisfy BK & T & H
             
-        result = inference.get_prover(hyp_ex, [text_ex]).prove()
+        result = inference.Prover9().prove(hyp_ex, [text_ex])
         if verbose: print 'prove: T -> H: %s' % result
         
         if not result:
@@ -67,7 +67,7 @@ class RTEInferenceTagger(object):
                 for bk_ex in bk_exs:
                     print bk_ex
                 
-            result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
+            result = inference.Prover9().prove(hyp_ex, [text_ex]+bk_exs)
             if verbose: print 'prove: (T & BK) -> H: %s' % result
             
             if not result:
@@ -81,7 +81,7 @@ class RTEInferenceTagger(object):
         return result
     
     def check_consistency(self, assumptions, verbose=False):
-        return inference.get_parallel_prover_builder(assumptions=assumptions).build_model()
+        return inference.ParallelProverBuilderCommand(assumptions=assumptions).build_model()
         
     def _tag(self, text, hyp, verbose=False):
         self._generate_BK(text, hyp, verbose)
@@ -256,7 +256,7 @@ def demo_inference_tagger(verbose=False):
     #5. satisfy BK & T
     #6. satisfy BK & T & H
         
-    result = inference.get_prover(hyp_ex, [text_ex]).prove()
+    result = inference.Prover9().prove(hyp_ex, [text_ex])
     print 'prove: T -> H: %s' % result
     if result:
         print 'Logical entailment\n'
@@ -271,7 +271,7 @@ def demo_inference_tagger(verbose=False):
         print bk_ex
     print ''
         
-    result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
+    result = inference.Prover9().prove(hyp_ex, [text_ex]+bk_exs)
     print 'prove: (T & BK) -> H: %s' % result
     if result:
         print 'Logical entailment\n'
@@ -279,28 +279,28 @@ def demo_inference_tagger(verbose=False):
         print 'No logical entailment\n'
 
     # Check if the background knowledge axioms are inconsistent
-    result = inference.get_prover(assumptions=bk_exs+[text_ex]).prove()
+    result = inference.Prover9().prove(assumptions=bk_exs+[text_ex]).prove()
     print 'prove: (BK & T): %s' % result
     if result:
         print 'Inconsistency -> Entailment unknown\n'
     else:
         print 'No inconsistency\n'
 
-    result = inference.get_prover(assumptions=bk_exs+[text_ex, hyp_ex]).prove()
+    result = inference.Prover9().prove(assumptions=bk_exs+[text_ex, hyp_ex])
     print 'prove: (BK & T & H): %s' % result
     if result:
         print 'Inconsistency -> Entailment unknown\n'
     else:
         print 'No inconsistency\n'
 
-    result = inference.get_model_builder(assumptions=bk_exs+[text_ex]).build_model()
+    result = inference.Mace().build_model(assumptions=bk_exs+[text_ex])
     print 'satisfy: (BK & T): %s' % result
     if result:
         print 'No inconsistency\n'
     else:
         print 'Inconsistency -> Entailment unknown\n'
 
-    result = inference.get_model_builder(assumptions=bk_exs+[text_ex, hyp_ex]).build_model()
+    result = inference.Mace().build_model(assumptions=bk_exs+[text_ex, hyp_ex]).build_model()
     print 'satisfy: (BK & T & H): %s' % result
     if result:
         print 'No inconsistency\n'

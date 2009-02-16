@@ -400,15 +400,16 @@ class Expression(SubstituteBindingsI):
     def __neq__(self, other):
         return not (self == other)
     
-    def tp_equals(self, other, prover_name='tableau'):
+    def tp_equals(self, other, prover=None):
         """Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal."""
         assert isinstance(other, Expression), "%s is not an Expression" % other
         
-        from nltk.inference import get_prover
+        if prover is None:
+            from nltk.inference import Prover9
+            prover = Prover9()
         bicond = IffExpression(self.simplify(), other.simplify())
-        prover = get_prover(bicond, prover_name=prover_name)
-        return prover.prove()
+        return prover.prove(bicond)
 
     def __hash__(self):
         return hash(repr(self))

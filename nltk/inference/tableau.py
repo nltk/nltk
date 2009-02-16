@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.sem.logic import *
-from api import Prover
+from api import Prover, BaseProverCommand
 
 """
 Module for a tableau-based First Order theorem prover.
@@ -309,6 +309,23 @@ class TableauProver(Prover):
             return True
         else:
             return False
+
+
+class TableauProverCommand(BaseProverCommand):
+    def __init__(self, goal=None, assumptions=None, prover=None):
+        """
+        @param goal: Input expression to prove
+        @type goal: L{logic.Expression}
+        @param assumptions: Input expressions to use as assumptions in
+            the proof.
+        @type assumptions: C{list} of L{logic.Expression}
+        """
+        if prover is not None:
+            assert isinstance(prover, TableauProver)
+        else:
+            prover = TableauProver()
+
+        BaseProverCommand.__init__(self, prover, goal, assumptions)
 
 
 class Agenda(object):

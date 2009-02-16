@@ -61,14 +61,14 @@ class AbstractDrs(object):
         assert isinstance(other, AbstractDrs)
         return DrtIffExpression(self, other)
     
-    def tp_equals(self, other, prover_name='tableau'):
+    def tp_equals(self, other, prover=None):
         """Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal."""
         assert isinstance(other, AbstractDrs)
         
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
-        return f1.tp_equals(f2, prover_name)
+        return f1.tp_equals(f2, prover)
     
     def _get_type(self):
         raise AttributeError("'%s' object has no attribute 'type'" % 

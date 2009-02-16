@@ -12,8 +12,8 @@ from operator import and_, add
 from nltk import parse
 from nltk.data import show_cfg
 from nltk.sem import root_semrep, Expression
-from util import get_prover
 from mace import MaceCommand
+from prover9 import Prover9Command
 from nltk.tag import RegexpTagger
 from nltk.parse.malt import MaltParser
 from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
@@ -27,7 +27,7 @@ Many of the ideas are based on the CURT family of programs of Blackburn and Bos
 (see U{http://homepages.inf.ed.ac.uk/jbos/comsem/book1.html}).
 
 Consistency checking is carried out  by using the L{mace} module to call the Mace4 model builder.
-Informativeness checking is carried out with a call to C{get_prover()} from
+Informativeness checking is carried out with a call to C{Prover.prove()} from
 the L{inference}  module.
 
 C{DiscourseTester} is a constructor for discourses. 
@@ -200,7 +200,7 @@ class DiscourseTester(object):
                 assumptions = [reading for (rid, reading) in self.expand_threads(tid)]
                 assumptions += self._background
                 for sent_reading in self._get_readings(sentence):
-                    tp = get_prover(goal=sent_reading, assumptions=assumptions, prover_name='Prover9')
+                    tp = Prover9Command(goal=sent_reading, assumptions=assumptions)
                     if tp.prove():
                         print "Sentence '%s' under reading '%s':" % (sentence, str(sent_reading))
                         print "Not informative relative to thread '%s'" % tid

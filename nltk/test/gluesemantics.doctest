@@ -417,5 +417,5 @@ to determine this equivalence, and then delete one of them.  A particular
 theorem prover may be specified, or the argument may be left off to use the
 default.
 
-    >>> readings[0].tp_equals(readings[1], 'Prover9')
+    >>> readings[0].tp_equals(readings[1])
     True
