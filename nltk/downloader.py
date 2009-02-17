@@ -622,13 +622,8 @@ class Downloader(object):
                 yield StartUnzipMessage(info)
                 # Is this try/except clause still necessary, now that
                 # _unzip_iter converts errors to messages?
-                try:
-                    for msg in _unzip_iter(filepath, zipdir, verbose=False):
-                        yield msg
-                except IOError, e:
-                    yield ErrorMessage(info, 'Error unzipping %s:\n  %s' %
-                                       (info.filename, e))
-                    return
+                for msg in _unzip_iter(filepath, zipdir, verbose=False):
+                    yield msg
                 yield FinishUnzipMessage(info)
 
         yield FinishPackageMessage(info)
@@ -1798,7 +1793,7 @@ class DownloaderGUI(object):
                 self._show_progress(msg.progress)
             elif isinstance(msg, ErrorMessage):
                 show(msg.message)
-                if msg.package is not None:
+                if msg.package is not None and type(msg.package) is not str:
                     self._select(msg.package.id)
                 self._show_progress(None)
                 self._downloading = False
@@ -1882,7 +1877,7 @@ def _unzip_iter(filename, root, verbose=True):
     
     try: zf = zipfile.ZipFile(filename) 
     except Exception, e:
-        yield ErrorMessage(filename, e)
+        yield ErrorMessage(filename, str(e))
         return
     
     # Get lists of directories & files
