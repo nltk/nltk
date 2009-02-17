@@ -162,7 +162,27 @@ __all__ = [
 
     # Parsers
     'RegexpChunkParser', 'RegexpParser',
+
+    'ne_chunk', 'batch_ne_chunk',
     ]
+
+# Standard treebank POS tagger
+_NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace.pickle'
+def ne_chunk(tokens):
+    """
+    Use NLTK's currently recommended part of speech tagger to
+    tag the given list of tokens.
+    """
+    tagger = nltk.data.load(_NE_CHUNKER)
+    return tagger.tag(tokens)
+
+def batch_ne_chunk(sentences):
+    """
+    Use NLTK's currently recommended part of speech tagger to tag the
+    given list of sentences, each consisting of a list of tokens.
+    """
+    tagger = nltk.data.load(_NE_CHUNKER)
+    return tagger.batch_tag(sentences)
 
 ######################################################################
 #{ Deprecated

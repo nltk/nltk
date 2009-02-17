@@ -258,6 +258,9 @@ def train(root):
     return cp
 
 if __name__ == '__main__':
+    # Make sure that the pickled object has the right class name:
+    from nltk.chunk.named_entity import train
+    
     cp = train('/tmp/ace.old/data/ace.dev/text/')
     out = open('/tmp/ne_chunker.pickle', 'wb')
     pickle.dump(cp, out, -1)
