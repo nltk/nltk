@@ -69,7 +69,8 @@ class ConllCorpusReader(CorpusReader):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad colum type %r' % columntyp)
-        if chunk_types is not None: chunk_types = tuple(chunk_types)
+        if isinstance(chunk_types, basestring):
+            chunk_types = [chunk_types]
         self._chunk_types = chunk_types
         self._colmap = dict((c,i) for (i,c) in enumerate(columntypes))
         self._pos_in_tree = pos_in_tree

@@ -721,7 +721,7 @@ def find_corpus_fileids(root, regexp):
         fileids = [name[len(root.entry):] for name in root.zipfile.namelist()
                  if not name.endswith('/')]
         items = [name for name in fileids if re.match(regexp, name)]
-        return tuple(sorted(items))
+        return sorted(items)
 
     # Find fileids in a directory: use os.walk to search all
     # subdirectories, and match paths against the regexp.
@@ -733,7 +733,7 @@ def find_corpus_fileids(root, regexp):
                       if re.match(regexp, prefix+fileid)]
             # Don't visit svn directories:
             if '.svn' in subdirs: subdirs.remove('.svn')
-        return tuple(sorted(items))
+        return sorted(items)
             
     else:
         raise AssertionError("Don't know how to handle %r" % root)

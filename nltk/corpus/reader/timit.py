@@ -173,8 +173,7 @@ class TimitCorpusReader(CorpusReader):
 
         self._speakerinfo = None
         self._root = root
-        self.speakers = tuple(sorted(set(u.split('/')[0]
-                                         for u in self._utterances)))
+        self.speakers = sorted(set(u.split('/')[0] for u in self._utterances))
 
     def fileids(self, filetype=None):
         """
@@ -209,7 +208,7 @@ class TimitCorpusReader(CorpusReader):
         if isinstance(sent_type, basestring): sent_type = [sent_type]
         if isinstance(sentid, basestring): sentid = [sentid]
             
-        utterances = list(self._utterances)
+        utterances = self._utterances[:]
         if dialect is not None:
             utterances = [u for u in utterances if u[2] in dialect]
         if sex is not None:
@@ -220,7 +219,7 @@ class TimitCorpusReader(CorpusReader):
             utterances = [u for u in utterances if u[11] in sent_type]
         if sentid is not None:
             utterances = [u for u in utterances if u[10:] in spkrid]
-        return tuple(utterances)
+        return utterances
 
     def transcription_dict(self):
         """
