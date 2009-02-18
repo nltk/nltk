@@ -26,3 +26,15 @@ except ImportError:
 else:    
     from relextract import *
     from chat80 import *
+
+__all__ = [
+    # Logic parsers
+    'LogicParser', 'DrtParser',
+    
+    # Evaluation classes and methods
+    'Valuation', 'Assignment', 'Model', 'Undefined', 'is_rel', 'set2rel', 'arity',
+    
+    # utility methods
+    'text_parse', 'root_semrep', 'text_interpret', 'text_evaluate', 
+    'parse_valuation_line', 'parse_valuation', 'parse_logic', 'skolemize'
+    ]
