@@ -1073,7 +1073,7 @@ def sdg_demo():
     A demonstration of how to read a string representation of 
     a CoNLL format dependency tree.
     """
-    dg = DepGraph().read("""
+    dg = DependencyGraph("""
     1   Ze                ze                Pron  Pron  per|3|evofmv|nom                 2   su      _  _
     2   had               heb               V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
     3   met               met               Prep  Prep  voor                             8   mod     _  _
@@ -1088,7 +1088,7 @@ def sdg_demo():
     12  terrassen         terras            N     N     soort|mv|neut                    11  cnj     _  _
     13  .                 .                 Punc  Punc  punt                             12  punct   _  _
     """)
-    tree = dg.deptree()
+    tree = dg.tree()
     print tree.pprint()
 
 def demo():

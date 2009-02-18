@@ -53,7 +53,7 @@ def approxrand(a, b, **kwargs):
 class ConfusionMatrix(metrics.ConfusionMatrix):
     @deprecated('Use nltk.metrics.ConfusionMatrix instead.')
     def __init__(self, reference, test, sort_by_count=False):
-        metrics.ConfusionMatrix(self, reference, test, sort_by_count)
+        metrics.ConfusionMatrix.__init__(self, reference, test, sort_by_count)
 
 @deprecated('Use nltk.metrics.windowdiff instead.')
 def windowdiff(seg1, seg2, k, boundary="1"):
