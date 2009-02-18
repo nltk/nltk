@@ -2000,5 +2000,5 @@ __all__ = ['ConditionalFreqDist', 'ConditionalProbDist',
            'FreqDist', 'GoodTuringProbDist', 'HeldoutProbDist',
            'ImmutableProbabilisticMixIn', 'LaplaceProbDist', 'LidstoneProbDist',
            'MLEProbDist', 'MutableProbDist', 'ProbDistI', 'ProbabilisticMixIn',
-           'UniformProbDist', 'WittenBellProbDist', 'add_logs', 'demo',
+           'UniformProbDist', 'WittenBellProbDist', 'add_logs',
            'log_likelihood', 'sum_logs', 'entropy']

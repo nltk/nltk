@@ -86,6 +86,6 @@ def demo():
 if __name__ == '__main__':
     demo()
 
-__all__ = ['ConfusionMatrix', 'accuracy', 'demo',
+__all__ = ['ConfusionMatrix', 'accuracy',
            'f_measure', 'log_likelihood', 'precision', 'recall',
            'approxrand', 'edit_dist', 'windowdiff']

@@ -304,3 +304,5 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+
+__all__ = ["chomsky_normal_form", "un_chomsky_normal_form", "collapse_unary"]
