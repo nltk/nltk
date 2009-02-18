@@ -87,7 +87,7 @@ class CorpusReader(object):
         if isinstance(fileids, basestring):
             fileids = find_corpus_fileids(root, fileids)
             
-        self._fileids = tuple(fileids)
+        self._fileids = fileids
         """A list of the relative paths for the fileids that make up
         this corpus."""
         

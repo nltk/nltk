@@ -54,7 +54,7 @@ class YCOECorpusReader(CorpusReader):
         fileids = sorted(['%s.psd' % doc for doc in documents] +
                        ['%s.pos' % doc for doc in documents])
         CorpusReader.__init__(self, root, fileids, encoding)
-        self._documents = tuple(sorted(documents))
+        self._documents = sorted(documents)
 
     def documents(self, fileids=None):
         """
