@@ -7,7 +7,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk import DependencyGraph
+from nltk.parse import DependencyGraph
 from nltk.tokenize import *
 
 from util import *

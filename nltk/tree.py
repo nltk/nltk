@@ -1427,6 +1427,6 @@ if __name__ == '__main__':
     demo()
 
 __all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
-           'ProbabilisticTree', 'Tree', 'bracket_parse', 'demo',
+           'ProbabilisticTree', 'Tree', 'bracket_parse',
            'sinica_parse', 'ParentedTree', 'MultiParentedTree',
            'ImmutableParentedTree', 'ImmutableMultiParentedTree']

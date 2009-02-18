@@ -70,6 +70,8 @@ __classifiers__ = [
     'Topic :: Text Processing :: Linguistic',
     ]
 
+from internals import config_java
+
 # Import top-level functionality into top-level namespace
 
 from compat import *
@@ -88,42 +90,23 @@ from yamltags import *
 
 import data
 
-# Processing packages -- these all define __all__ carefully.
-import tokenize
-from tokenize import *
+# Processing packages -- these define __all__ carefully.
+import chunk;     from chunk import *
+import classify;  from classify import *
+import inference; from inference import *
+import metrics;   from metrics import *
+import model;     from model import *
+import parse;     from parse import *
+import tag;       from tag import *
+import tokenize;  from tokenize import *
+import sem;       from sem import *
+import stem;      from stem import *
 
-import tag
-from tag import *
-
-import parse
-from parse import *
-
-import chunk
-from chunk import *
-
-import stem
-from stem import *
-
-import classify
-from classify import *
-
-import model
-from model import *
-
-import misc
-from misc import *
-
-from internals import config_java
+# Packages whose contents are not imported into the top-level namespace 
 
 import chat
 import corpus
-import metrics
-
-import sem
-from sem import *
-
-import inference
-from inference import *
+import misc
 
 # Import Tkinter-based modules if Tkinter is installed
 from downloader import download, download_shell
@@ -136,3 +119,7 @@ except ImportError:
 else:
     import app, draw
     from downloader import download_gui
+
+# override any accidentally imported demo
+def demo():
+    print "To run the demo code for a module, type nltk.module.demo()"

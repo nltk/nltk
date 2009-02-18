@@ -580,4 +580,8 @@ def demo():
 if __name__ == '__main__':
     demo()
 
-
+__all__ = ["ContextIndex",
+           "ConcordanceIndex",
+           "TokenSearcher",
+           "Text",
+           "TextCollection"]
