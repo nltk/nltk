@@ -1,4 +1,4 @@
-Version 0.9.8b1 2009-02-11
+Version 0.9.8 2009-02-18
 
 NLTK:
 * New off-the-shelf tokenizer, POS tagger, and named-entity tagger
@@ -13,6 +13,7 @@ NLTK:
 * Put NLTK applications in new nltk.app package
 * Many other improvements incl semantics package, toolbox, MaltParser
 * Misc changes to many API names in preparation for 1.0, old names deprecated
+* Most classes now available in the top-level namespace
 * Work on Python egg distribution (Brandon Rhodes)
 * Removed deprecated code remaining from 0.8.* versions
 * Fixes for Python 2.4 compatibility
@@ -21,10 +22,10 @@ Data:
 * Corrected identifiers in Dependency Treebank corpus
 * Basque and Catalan Dependency Treebanks (CoNLL 2007)
 * PE08 Parser Evalution data
-* New model for POS tagger and named-entity tagger
+* New models for POS tagger and named-entity tagger
 
 Book:
-* Ongoing editorial corrections
+* Substantial editorial corrections
 
 Version 0.9.7 2008-12-19
 
