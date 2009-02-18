@@ -261,7 +261,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def synset(self, name):
         # split name into lemma, part of speech and synset number
-        lemma, pos, synset_index_str = name.lower().split('.')
+        lemma, pos, synset_index_str = name.lower().rsplit('.', 2)
         synset_index = int(synset_index_str) - 1
 
         # get the offset for this synset
