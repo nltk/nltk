@@ -68,7 +68,7 @@ Keyboard Shortcuts::
 
 import string
 
-from nltk import parse, tokenize, Tree
+from nltk import parse, tokenize, Tree, in_idle
 
 from nltk.draw.util import *
 from nltk.draw.tree import *

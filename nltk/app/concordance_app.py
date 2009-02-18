@@ -11,7 +11,7 @@ import re
 from string import join
 import threading
 
-from nltk import corpus
+from nltk import corpus, in_idle
 from nltk.draw.util import *
 
 WORD_OR_TAG = '[^/ ]+'

@@ -47,6 +47,25 @@ def usage(obj, selfname='self'):
                             subsequent_indent=' '*(len(name)+5))
 
 ##########################################################################
+# IDLE
+##########################################################################
+
+def in_idle():
+    """
+    @rtype: C{boolean}
+    @return: true if this function is run within idle.  Tkinter
+    programs that are run in idle should never call C{Tk.mainloop}; so
+    this function should be used to gate all calls to C{Tk.mainloop}.
+
+    @warning: This function works by checking C{sys.stdin}.  If the
+    user has modified C{sys.stdin}, then it may return incorrect
+    results.
+    """
+    import sys, types
+    return (type(sys.stdin) == types.InstanceType and \
+            sys.stdin.__class__.__name__ == 'PyShell')
+
+##########################################################################
 # PRETTY PRINTING
 ##########################################################################
 
