@@ -240,8 +240,6 @@ def load_ace_data(root, fmt='binary'):
         else:
             raise ValueError('bad fmt value')
             
-            
-
 
 def train(root):
     print 'Loading data...'
@@ -257,7 +255,7 @@ def train(root):
     print chunkscore
     return cp
 
-if __name__ == '__main__':
+def build_model():
     # Make sure that the pickled object has the right class name:
     from nltk.chunk.named_entity import train
     
@@ -265,3 +263,4 @@ if __name__ == '__main__':
     out = open('/tmp/ne_chunker.pickle', 'wb')
     pickle.dump(cp, out, -1)
     out.close()
+
