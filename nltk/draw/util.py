@@ -38,6 +38,8 @@ homepage<http://www.ags.uni-sb.de/~konrad/clig.html>}.
 
 from Tkinter import *
 import tkFont, tkMessageBox, tkFileDialog
+
+from nltk import in_idle
     
 ##//////////////////////////////////////////////////////
 ##  CanvasWidget
@@ -2307,25 +2309,6 @@ class MutableOptionMenu(Menubutton):
         """Destroy this widget and the associated menu."""
         Menubutton.destroy(self)
         self._menu = None
-
-##//////////////////////////////////////////////////////
-##  Helpers
-##//////////////////////////////////////////////////////
-
-def in_idle():
-    """
-    @rtype: C{boolean}
-    @return: true if this function is run within idle.  Tkinter
-    programs that are run in idle should never call C{Tk.mainloop}; so
-    this function should be used to gate all calls to C{Tk.mainloop}.
-
-    @warning: This function works by checking C{sys.stdin}.  If the
-    user has modified C{sys.stdin}, then it may return incorrect
-    results.
-    """
-    import sys, types
-    return (type(sys.stdin) == types.InstanceType and \
-            sys.stdin.__class__.__name__ == 'PyShell')
 
 ##//////////////////////////////////////////////////////
 ##  Test code.

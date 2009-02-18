@@ -77,7 +77,7 @@ Possible future improvements:
 
 import string
 
-from nltk import parse, tokenize
+from nltk import parse, tokenize, in_idle
 
 from nltk.draw.util import *
 from nltk.draw.tree import *

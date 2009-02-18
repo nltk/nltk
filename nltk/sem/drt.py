@@ -15,7 +15,7 @@ try:
     from Tkinter import Canvas
     from Tkinter import Tk
     from tkFont import Font
-    from nltk.draw import in_idle
+    from nltk import in_idle
 
 except ImportError:
     # No need to print a warning here, nltk.draw has already printed one.

@@ -67,6 +67,8 @@ from types import *
 from math import log, log10, ceil, floor
 import sys, time
 
+from nltk import in_idle
+
 from util import *
 
 class PlotFrameI(object):

@@ -8,7 +8,7 @@
 
 import threading
 
-from nltk import corpus, FreqDist
+from nltk import corpus, FreqDist, in_idle
 from nltk.text import Text as TextDomain
 from nltk.draw.util import *
 

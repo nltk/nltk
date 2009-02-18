@@ -22,7 +22,7 @@ import textwrap
 import re
 import random
 
-from nltk import corpus, Tree, chunk
+from nltk import corpus, Tree, chunk, in_idle
 from nltk.draw.util import *
 
 class RegexpChunkApp(object):
