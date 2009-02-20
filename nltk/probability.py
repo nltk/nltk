@@ -1667,7 +1667,7 @@ class ConditionalProbDist(ConditionalProbDistI):
         0.0813
     """
     def __init__(self, cfdist, probdist_factory,
-                 supply_condition=False, *factory_args):
+                 *factory_args, **factory_kw_args):
         """
         Construct a new conditional probability distribution, based on
         the given conditional frequency distribution and C{ProbDist}
@@ -1680,9 +1680,9 @@ class ConditionalProbDist(ConditionalProbDistI):
         @param probdist_factory: The function or class that maps
             a condition's frequency distribution to its probability
             distribution.  The function is called with the frequency
-            distribution as its first argument, the condition as its
-            second argument (only if C{supply_condition=True}), and
-            C{factory_args} as its remaining arguments.
+            distribution as its first argument,
+            C{factory_args} as its remaining arguments, and
+            C{factory_kw_args} as keyword arguments.
         @type supply_condition: C{bool}
         @param supply_condition: If true, then pass the condition as
             the second argument to C{probdist_factory}.
@@ -1694,15 +1694,13 @@ class ConditionalProbDist(ConditionalProbDistI):
         """
         self._probdist_factory = probdist_factory
         self._cfdist = cfdist
-        self._supply_condition = supply_condition
         self._factory_args = factory_args
+        self._factory_kw_args = factory_kw_args
 
         self._pdists = {}
         for c in cfdist.conditions():
-            if supply_condition:
-                pdist = probdist_factory(cfdist[c], c, *factory_args)
-            else:
-                pdist = probdist_factory(cfdist[c], *factory_args)
+            pdist = probdist_factory(cfdist[c], *factory_args,
+                                     **factory_kw_args)
             self._pdists[c] = pdist
 
     def __contains__(self, condition):
@@ -1713,7 +1711,8 @@ class ConditionalProbDist(ConditionalProbDistI):
             # If it's a condition we haven't seen, create a new prob
             # dist from the empty freq dist.  Typically, this will
             # give a uniform prob dist.
-            pdist = self._probdist_factory(FreqDist(), *self._factory_args)
+            pdist = self._probdist_factory(FreqDist(), *self._factory_args,
+                                           **self._factory_kw_args)
             self._pdists[condition] = pdist
 
         return self._pdists[condition]
