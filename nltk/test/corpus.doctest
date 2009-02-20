@@ -1530,8 +1530,7 @@ parameters to the constructor.
     >>> from nltk.corpus.reader.plaintext import PlaintextCorpusReader
 
 The list of documents can be specified explicitly, or implicitly (using a
-regexp).  The extension argument will be added to fileids, but not
-included in item names.
+regexp).  The ``ext`` argument specifies a file extension.
 
     >>> corpus = PlaintextCorpusReader(root, ['a.txt', 'b.txt'])
     >>> corpus.fileids()
