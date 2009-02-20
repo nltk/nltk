@@ -89,6 +89,7 @@ from naivebayes import *
 from decisiontree import *
 from weka import *
 from megam import *
+from rte_classify import *
 
 __all__ = [
     # Classifier Interfaces
@@ -101,7 +102,10 @@ __all__ = [
     # omitted -- it should be accessed as nltk.classify.accuracy();
     # similarly for log_likelihood() and attested_labels().
     'config_weka', 'config_megam',
-    
+
+    # RTE
+    'rte_classifier', 'rte_features', 'RTEFeatureExtractor',
+
     # Demos -- not included.
     ]
     
