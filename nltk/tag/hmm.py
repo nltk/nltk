@@ -764,20 +764,22 @@ class HiddenMarkovModelTagger(TaggerI):
             test_sequence = list(test_sequence)
             predicted_sequence = list(predicted_sequence)
 
-            for sent in predicted_sequence:
+            for test_sent, predicted_sent in zip(test_sequence,
+                                                 predicted_sequence):
                 print 'Test:', \
                     ' '.join(['%s/%s' % (str(token), str(tag)) 
-                              for (token, tag) in sent])
+                              for (token, tag) in test_sent])
                 print
                 print 'Untagged:', \
-                    ' '.join([str(token) for (token, tag) in sent])
+                    ' '.join([str(token) for (token, tag) in test_sent])
                 print
                 print 'HMM-tagged:', \
                     ' '.join(['%s/%s' % (str(token), str(tag)) 
-                              for (token, tag) in sent])
+                              for (token, tag) in predicted_sent])
                 print
                 print 'Entropy:', \
-                    self.entropy([(token, None) for (token, tag) in sent])
+                    self.entropy([(token, None) for
+                                  (token, tag) in predicted_sent])
                 print
                 print '-' * 60
         
