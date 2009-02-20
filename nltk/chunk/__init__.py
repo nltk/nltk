@@ -170,19 +170,19 @@ __all__ = [
 _NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace.pickle'
 def ne_chunk(tokens):
     """
-    Use NLTK's currently recommended part of speech tagger to
-    tag the given list of tokens.
+    Use NLTK's currently recommended named entity chunker to
+    chunk the given list of tokens.
     """
-    tagger = nltk.data.load(_NE_CHUNKER)
-    return tagger.tag(tokens)
+    chunker = nltk.data.load(_NE_CHUNKER)
+    return chunker.parse(tokens)
 
 def batch_ne_chunk(sentences):
     """
-    Use NLTK's currently recommended part of speech tagger to tag the
+    Use NLTK's currently recommended named entity chunker to chunk the
     given list of sentences, each consisting of a list of tokens.
     """
-    tagger = nltk.data.load(_NE_CHUNKER)
-    return tagger.batch_tag(sentences)
+    chunker = nltk.data.load(_NE_CHUNKER)
+    return chunker.batch_parse(sentences)
 
 ######################################################################
 #{ Deprecated
