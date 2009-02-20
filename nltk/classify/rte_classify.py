@@ -19,7 +19,6 @@ TO DO: add lemmatization
 
 import nltk
 from util import accuracy
-from nltk.corpus import wordnet
 
 def ne(token):
     """
@@ -37,7 +36,7 @@ def lemmatize(word):
     """
     Use morphy from WordNet to find the base form of verbs.
     """
-    lemma = wordnet.morphy(word, pos='verb')
+    lemma = nltk.corpus.wordnet.morphy(word, pos='verb')
     if lemma is not None:
         return lemma
     return word
