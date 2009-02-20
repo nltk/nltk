@@ -8,6 +8,18 @@
 # For license information, see LICENSE.TXT
 #
 
+"""
+Distance Metrics.
+
+Compute the distance between two items (usually strings).
+As metrics, they must satisfy the following three requirements:
+
+1. d(a, a) = 0
+2. d(a, b) >= 0
+3. d(a, c) <= d(a, b) + d(b, c)
+ 
+"""
+
 from nltk.internals import deprecated
 
 def _edit_dist_init(len1, len2):
@@ -129,10 +141,6 @@ def custom_distance(file):
         data[frozenset([labelA,labelB])] = float(dist)
     return lambda x,y:data[frozenset([x,y])]
 
-
-# if __name__ == "__main__":
-#     import doctest
-#     doctest.testmod()
 
 def demo():
     s1 = "rain"
