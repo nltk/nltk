@@ -72,6 +72,10 @@ __classifiers__ = [
 
 from internals import config_java
 
+###########################################################
+# TOP-LEVEL MODULES
+###########################################################
+
 # Import top-level functionality into top-level namespace
 
 from compat import *
@@ -88,9 +92,17 @@ from tree import *
 from util import *
 from yamltags import *
 
+# don't import contents into top-level namespace:
+
 import data
+import help
+
+###########################################################
+# PACKAGES
+###########################################################
 
 # Processing packages -- these define __all__ carefully.
+
 import chunk;     from chunk import *
 import classify;  from classify import *
 import inference; from inference import *
