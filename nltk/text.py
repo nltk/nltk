@@ -11,7 +11,7 @@ import re
 from nltk.probability import FreqDist, LidstoneProbDist
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.compat import defaultdict
-from nltk.util import ngrams, tokenwrap, LazyConcatenation
+from nltk.util import tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
 from nltk.metrics import f_measure
 from nltk.collocations import BigramCollocationFinder, bigram_measures
@@ -19,7 +19,7 @@ from nltk.collocations import BigramCollocationFinder, bigram_measures
 
 class ContextIndex(object):
     """
-    A bidrectional index between words and their 'contexts' in a text.
+    A bidirectional index between words and their 'contexts' in a text.
     The context of a word is usually defined to be the words that occur
     in a fixed window around the word; but other definitions may also
     be used by providing a custom context function.
