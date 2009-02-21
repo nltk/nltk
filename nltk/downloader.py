@@ -177,7 +177,6 @@ try:
 except:
     TKINTER = False
     TclError = ValueError
-    pass
 
 from nltk.etree import ElementTree
 import nltk
@@ -339,7 +338,11 @@ class ErrorMessage(DownloaderMessage):
     """Data server encountered an error"""
     def __init__(self, package, message):
         self.package = package
-        self.message = message
+        if isinstance(message, Exception):
+            self.message = str(message)
+        else:
+            self.message = message
+
 class ProgressMessage(DownloaderMessage):
     """Indicates how much progress the data server has made"""
     def __init__(self, progress): self.progress = progress
@@ -417,6 +420,9 @@ class Downloader(object):
            string (L{INSTALLED}, L{NOT_INSTALLED}, L{STALE}, or
            L{PARTIAL}).  Cache is used for packages only, not
            collections."""
+
+        self._errors = None
+        """Flag for telling if all packages got successfully downloaded or not."""
         
         # decide where we're going to save things to.
         if self._download_dir is None:
@@ -620,12 +626,12 @@ class Downloader(object):
             # been unzipped (presumably a previous version).
             if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
                 yield StartUnzipMessage(info)
-                # Is this try/except clause still necessary, now that
-                # _unzip_iter converts errors to messages?
                 for msg in _unzip_iter(filepath, zipdir, verbose=False):
+                    # Somewhat of a hack, but we need a proper package reference
+                    msg.package = info
                     yield msg
                 yield FinishUnzipMessage(info)
-
+                
         yield FinishPackageMessage(info)
 
     def download(self, info_or_id=None, download_dir=None, quiet=False,
@@ -654,6 +660,13 @@ class Downloader(object):
                         raise ValueError(msg.message)
                     if halt_on_error:
                         return False
+                    self._errors = True
+                    if not quiet:
+                        print "Error installing package. Retry? [y/N]"
+                        if raw_input() in ['y', 'Y']:
+                            self.download(msg.package.id, download_dir,
+                                          quiet, force, prefix,
+                                          halt_on_error, raise_on_error)
 
                 # All other messages
                 if not quiet:
@@ -665,8 +678,12 @@ class Downloader(object):
                     elif isinstance(msg, FinishCollectionMessage):
                         print prefix
                         prefix = prefix[:-4]
-                        show('Done downloading collection %r' %
-                             msg.collection.id)
+                        if self._errors:
+                            show('Downloaded collection %r with errors' %
+                                 msg.collection.id)
+                        else:
+                            show('Done downloading collection %r' %
+                                 msg.collection.id)
 
                     # Package downloading messages:
                     elif isinstance(msg, StartPackageMessage):
@@ -1451,7 +1468,7 @@ class DownloaderGUI(object):
         
     def _download(self, *e):
         # If we're using threads, then delegate to the threaded
-        # downloader isntead.
+        # downloader instead.
         if self._use_threads:
             return self._download_threaded(*e)
             
@@ -1793,7 +1810,7 @@ class DownloaderGUI(object):
                 self._show_progress(msg.progress)
             elif isinstance(msg, ErrorMessage):
                 show(msg.message)
-                if msg.package is not None and type(msg.package) is not str:
+                if msg.package is not None:
                     self._select(msg.package.id)
                 self._show_progress(None)
                 self._downloading = False
@@ -1868,16 +1885,19 @@ def unzip(filename, root, verbose=True):
     """
     for message in _unzip_iter(filename, root, verbose):
         if isinstance(message, ErrorMessage):
-            raise e
+            raise Exception, message
     
 def _unzip_iter(filename, root, verbose=True):
     if verbose:
         sys.stdout.write('Unzipping %s' % os.path.split(filename)[1])
         sys.stdout.flush()
     
-    try: zf = zipfile.ZipFile(filename) 
+    try: zf = zipfile.ZipFile(filename)
+    except zipfile.error, e:
+        yield ErrorMessage(filename, 'Error with downloaded zip file')
     except Exception, e:
-        yield ErrorMessage(filename, str(e))
+        yield ErrorMessage(filename, e)
+    finally:
         return
     
     # Get lists of directories & files
@@ -2112,8 +2132,8 @@ if __name__ == '__main__':
                       default=False, help="work quietly")
     parser.add_option("-f", "--force", dest="force", action="store_true",
                       default=False, help="download even if already installed")
-    parser.add_option("-k", "--keep-going", dest="halt_on_error", action="store_false",
-                      default=True, help="keep going after errors, attempting to download each item")
+    parser.add_option("-e", "--exit-on-error", dest="halt_on_error", action="store_true",
+                      default=False, help="exit if an error occurs")
 
     (options, args) = parser.parse_args()
     
