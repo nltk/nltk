@@ -662,11 +662,15 @@ class Downloader(object):
                         return False
                     self._errors = True
                     if not quiet:
-                        print "Error installing package. Retry? [y/N]"
-                        if raw_input() in ['y', 'Y']:
-                            self.download(msg.package.id, download_dir,
-                                          quiet, force, prefix,
-                                          halt_on_error, raise_on_error)
+                        print "Error installing package. Retry? [n/y/e]"
+                        choice = raw_input().strip()
+                        if choice in ['y', 'Y']:
+                            if not self.download(msg.package.id, download_dir,
+                                                 quiet, force, prefix,
+                                                 halt_on_error, raise_on_error):
+                                return False
+                        elif choice in ['e', 'E']:
+                            return False
 
                 # All other messages
                 if not quiet:
