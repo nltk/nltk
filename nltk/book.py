@@ -4,6 +4,7 @@ from nltk.corpus import gutenberg, genesis, inaugural,\
        nps_chat, webtext, treebank, wordnet
 from nltk.text import Text
 from nltk import FreqDist, bigrams
+from nltk.misc import babelize_shell
 
 print "*** Introductory Examples for the NLTK Book ***"
 print "Loading text1, ..., text9 and sent1, ..., sent9"
