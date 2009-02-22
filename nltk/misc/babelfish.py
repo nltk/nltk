@@ -21,8 +21,7 @@ Summary:
                           callback = babel_callback )
 
 @group Helper Functions: clean
-@sort: BabelizerError, LanguageNotAvailableError, 
-       BabelfishChangedError, BabelizerIOError
+@sort: BabelizerError, BabelfishChangedError, BabelizerIOError
 @var available_languages:
     A list of languages available for use with babelfish.
 @version: $Id: babelfish.py 1361 2003-10-24 14:41:44Z edloper $
@@ -69,15 +68,11 @@ class BabelizerError(Exception):
     """
     Calling translate() or babelize() can raise a BabelizerError
     """
-class LanguageNotAvailableError(BabelizerError):
-    """
-    Thrown on an attempt to use an unknown language.
-    """
 class BabelfishChangedError(BabelizerError):
     """
-    Thrown when babelfish.altavista.com changes some detail of their
-    layout, and babelizer can no longer parse the results or submit
-    the correct form (a not infrequent occurance).
+    Thrown when babelfish.yahoo.com changes some detail of their HTML layout,
+    and babelizer no longer submits data in the correct form, or can no
+    longer parse the results.
     """
 class BabelizerIOError(BabelizerError):
     """
@@ -85,7 +80,7 @@ class BabelizerIOError(BabelizerError):
     """
 
 def clean(text):
-    return ' '.join(string.replace(text.strip(), "\n", ' ').split())
+    return re.sub(r'\s+', ' ', text.strip())
 
 def translate(phrase, source, target):
     """
@@ -100,20 +95,18 @@ def translate(phrase, source, target):
         source_code = __languages[source]
         target_code = __languages[target]
     except KeyError, lang:
-        raise LanguageNotAvailableError(lang)
+        raise ValueError, "Language %s not available" % lang
     
 
-    params = urllib.urlencode( { 'doit' : 'done',
-                                 'tt' : 'urltext',
-                                 'urltext' : phrase,
-                                 'lp' : source_code + '_' + target_code } )
+    params = urllib.urlencode({'doit': 'done',
+                               'tt': 'urltext',
+                               'urltext': phrase,
+                               'lp': source_code + '_' + target_code})
     try:
         response = urllib.urlopen('http://babelfish.yahoo.com/translate_txt', params)
 
     except IOError, what:
         raise BabelizerIOError("Couldn't talk to server: %s" % what)
-    except:
-        print "Unexpected error:", sys.exc_info()[0]
 
     html = response.read()
     for regex in __where:
@@ -122,7 +115,7 @@ def translate(phrase, source, target):
     if not match: raise BabelfishChangedError("Can't recognize translated string.")
     return clean(match.group(1))
 
-def _babelize(phrase, source, target, limit = 12):
+def babelize(phrase, source, target, limit = 12):
     """
     Uses babelfish to translate back and forth between source and
     target until either no more changes occur in translation or
@@ -152,9 +145,10 @@ help: this help message
 languages: print the list of languages
 language: the name of a language to use"""
 
-def babelize():
+def babelize_shell():
     """
-    Uses babelfish to translate back and forth between source and
+    An interactive shell that uses babelfish to
+    translate back and forth between source and
     target until either no more changes occur in translation or
     limit iterations have been reached, whichever comes first.
     It's only guaranteed to work if 'english' is one of the two
@@ -167,30 +161,37 @@ def babelize():
     
     language = ''
     phrase = ''
-    while True: 
-        command = raw_input('Babel> ').lower().strip()
-        if ' ' not in command:
-            if command == 'help':
-               print HELP
-            elif command == 'languages':
-                print ' '.join(sorted(__languages))
-            elif command in __languages:
-                language = command
-            elif command in ['quit', 'bye', 'end']:
-                break
-            elif command == 'run':
-                if not language:
-                    print "Please specify a language first (type 'languages' for a list)."
-                elif not phrase:
-                    print "Please enter a phrase first (just type it in at the prompt)."
+    try:
+        while True: 
+            command = raw_input('Babel> ')
+            command = clean(command)
+            if ' ' not in command:
+                command = command.lower()
+                if command == 'help':
+                   print HELP
+                elif command == 'languages':
+                    print ' '.join(sorted(__languages))
+                elif command in __languages:
+                    language = command
+                elif command in ['quit', 'bye', 'end']:
+                    break
+                elif command == 'run':
+                    if not language:
+                        print "Please specify a language first (type 'languages' for a list)."
+                    elif not phrase:
+                        print "Please enter a phrase first (just type it in at the prompt)."
+                    else:
+                        for count, new_phrase in enumerate(babelize(phrase, 'english', language)):
+                            print "%s>" % count, new_phrase
+                            sys.stdout.flush()
                 else:
-                    for phrase in _babelize(phrase, 'english', language):
-                        print phrase
-                        sys.stdout.flush()
+                    print "Command not recognized (type 'help' for help)."
+            # if the command contains a space, it must have multiple words, and be a new phrase
             else:
-                print "Command not recognized (type 'help' for help)."
-        else:
-            phrase = command
+                phrase = command
+    except EOFError:
+        print
+        pass
 
 # I won't take that from you, or from your doggie (Korean)
 # the pig I found looked happy (chinese)
@@ -198,5 +199,5 @@ def babelize():
 # more idioms: http://www.idiomsite.com/
 
 if __name__ == '__main__':
-    babelize()
+    babelize_shell()
 
