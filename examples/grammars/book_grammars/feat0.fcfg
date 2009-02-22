@@ -11,30 +11,30 @@
 ## $Id: feat0.cfg 4674 2007-06-14 08:55:32Z ehk $
 
 % start S
-# ############################
-# Grammar Rules
-# ############################
+# ###################
+# Grammar Productions
+# ###################
 
-# S expansion rules
+# S expansion productions
 S -> NP[NUM=?n] VP[NUM=?n]
 
-# NP expansion rules
+# NP expansion productions
 NP[NUM=?n] -> N[NUM=?n] 
 NP[NUM=?n] -> PropN[NUM=?n] 
 NP[NUM=?n] -> Det[NUM=?n] N[NUM=?n]
 NP[NUM=pl] -> N[NUM=pl] 
 
-# VP expansion rules
+# VP expansion productions
 VP[TENSE=?t, NUM=?n] -> IV[TENSE=?t, NUM=?n]
 VP[TENSE=?t, NUM=?n] -> TV[TENSE=?t, NUM=?n] NP
 
-# ############################
-# Lexical Rules
-# ############################
+# ###################
+# Lexical Productions
+# ###################
 
 Det[NUM=sg] -> 'this' | 'every'
 Det[NUM=pl] -> 'these' | 'all'
-Det -> 'the' | 'some'
+Det -> 'the' | 'some' | 'several'
 
 PropN[NUM=sg]-> 'Kim' | 'Jody'
 
@@ -47,5 +47,5 @@ TV[TENSE=pres, NUM=sg] -> 'sees' | 'likes'
 IV[TENSE=pres,  NUM=pl] -> 'disappear' | 'walk'
 TV[TENSE=pres, NUM=pl] -> 'see' | 'like'
 
-IV[TENSE=past, NUM=?n] -> 'disappeared' | 'walked'
-TV[TENSE=past, NUM=?n] -> 'saw' | 'liked'
+IV[TENSE=past] -> 'disappeared' | 'walked'
+TV[TENSE=past] -> 'saw' | 'liked'

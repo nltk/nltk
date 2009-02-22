@@ -7,14 +7,14 @@
 ## Author: Michaela Atterer <atterer@ims.uni-stuttgart.de> 
 ##         Ewan Klein <ewan@inf.ed.ac.uk> 
 ##
-## Plural transitive verbs rules by Jordan Boyd-Graber (ezubaric at users.sourceforge.net)
+## Plural transitive verbs productions by Jordan Boyd-Graber (ezubaric at users.sourceforge.net)
 ##
 ## $Id: german.cfg 4916 2007-07-17 16:27:40Z ehk $
 
 % start S
-################
-# Grammar Rules
-################
+#####################
+# Grammar Productions
+#####################
 S -> NP[CASE=nom, AGR=?a] VP[AGR=?a]
 
 NP[CASE=?c, AGR=?a] -> PRO[CASE=?c, AGR=?a]
@@ -23,9 +23,9 @@ NP[CASE=?c, AGR=?a] -> Det[CASE=?c, AGR=?a] N[CASE=?c, AGR=?a]
 VP[AGR=?a] -> IV[AGR=?a]
 VP[AGR=?a] -> TV[OBJCASE=?c, AGR=?a] NP[CASE=?c]
 
-###############
-# Lexical Rules
-###############
+#####################
+# Lexical Productions
+#####################
 # Singular determiners
 
 # masc
@@ -78,9 +78,9 @@ TV[OBJCASE=acc, AGR=[NUM=sg,PER=3]] -> 'sieht' | 'mag'
 TV[OBJCASE=dat, AGR=[NUM=sg,PER=1]] -> 'folge' | 'helfe'
 TV[OBJCASE=dat, AGR=[NUM=sg,PER=2]] -> 'folgst' | 'hilfst'
 TV[OBJCASE=dat, AGR=[NUM=sg,PER=3]] -> 'folgt' | 'hilft'
-TV[OBJCASE=acc, AGR=[NUM=pl,PER=1]] -> 'sehen' | 'mögen' | 'moegen'
-TV[OBJCASE=acc, AGR=[NUM=pl,PER=2]] -> 'sieht' | 'mögt' | 'moegt'
-TV[OBJCASE=acc, AGR=[NUM=pl,PER=3]] -> 'sehen' | 'mögen' | 'moegen'
+TV[OBJCASE=acc, AGR=[NUM=pl,PER=1]] -> 'sehen' | 'moegen'
+TV[OBJCASE=acc, AGR=[NUM=pl,PER=2]] -> 'sieht' | 'moegt'
+TV[OBJCASE=acc, AGR=[NUM=pl,PER=3]] -> 'sehen' | 'moegen'
 TV[OBJCASE=dat, AGR=[NUM=pl,PER=1]] -> 'folgen' | 'helfen'
 TV[OBJCASE=dat, AGR=[NUM=pl,PER=2]] -> 'folgt' | 'helft'
 TV[OBJCASE=dat, AGR=[NUM=pl,PER=3]] -> 'folgen' | 'helfen'
