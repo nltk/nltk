@@ -1,7 +1,7 @@
 ## Natural Language Toolkit: feat1.fcfg
 ##
 ## Second example of a feature-based grammar, illustrating
-## SUBCAT and slash features. Also introduces S-BAR and embedded
+## SUBCAT and slash features. Also introduces SBar and embedded
 ## clauses.
 ## Used in Feature-Based Grammars chapter.
 ## 
@@ -12,23 +12,23 @@
 ## $Id: feat1.cfg 4674 2007-06-14 08:55:32Z ehk $
 
 % start S
-# ############################
-# Grammar Rules
-# ############################
+# ###################
+# Grammar Productions
+# ###################
 S[-INV] -> NP  S/NP
 S[-INV]/?x -> NP VP/?x
 S[+INV]/?x -> V[+AUX] NP VP/?x
-S-BAR/?x -> Comp S[-INV]/?x
+SBar/?x -> Comp S[-INV]/?x
 
 NP/NP ->
 
 VP/?x -> V[SUBCAT=1, -AUX] NP/?x
-VP/?x -> V[SUBCAT=2, -AUX] S-BAR/?x
+VP/?x -> V[SUBCAT=2, -AUX] SBar/?x
 VP/?x -> V[SUBCAT=3, +AUX] VP/?x
 
-# ############################
-# Lexical Rules
-# ############################
+# ###################
+# Lexical Productions
+# ###################
 V[SUBCAT=1, -AUX] -> 'see' | 'like'
 V[SUBCAT=2, -AUX] -> 'say' | 'claim'
 V[SUBCAT=3, +AUX] -> 'do' | 'can'
