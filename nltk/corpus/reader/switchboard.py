@@ -12,7 +12,7 @@ from nltk.tag import str2tuple
 from util import *
 from api import *
 
-class SwitchboardUtterance(list):
+class SwitchboardTurn(list):
     """
     A specialized list object used to encode switchboard utterances.
     The elements of the list are the words in the utterance; and two
@@ -49,13 +49,13 @@ class SwitchboardCorpusReader(CorpusReader):
         return StreamBackedCorpusView(self.abspath('tagged'),
                                       self._tagged_words_block_reader)
 
-    def utterances(self):
+    def turns(self):
         return StreamBackedCorpusView(self.abspath('tagged'),
-                                      self._utterances_block_reader)
+                                      self._turns_block_reader)
 
-    def tagged_utterances(self):
+    def tagged_turns(self):
         return StreamBackedCorpusView(self.abspath('tagged'),
-                                      self._tagged_utterances_block_reader)
+                                      self._tagged_turns_block_reader)
 
     def discourses(self):
         return StreamBackedCorpusView(self.abspath('tagged'),
@@ -77,10 +77,10 @@ class SwitchboardCorpusReader(CorpusReader):
                  for b in read_blankline_block(stream)
                  for u in b.split('\n') if u.strip()]]
 
-    def _utterances_block_reader(self, stream):
+    def _turns_block_reader(self, stream):
         return self._discourses_block_reader(stream)[0]
 
-    def _tagged_utterances_block_reader(self, stream):
+    def _tagged_turns_block_reader(self, stream):
         return self._tagged_discourses_block_reader(stream)[0]
 
     def _words_block_reader(self, stream):
@@ -99,6 +99,6 @@ class SwitchboardCorpusReader(CorpusReader):
         words = [str2tuple(s, self._SEP) for s in text.split()]
         if not include_tag:
             words = [w for (w,t) in words]
-        return SwitchboardUtterance(words, speaker, id)
+        return SwitchboardTurn(words, speaker, id)
         
         
