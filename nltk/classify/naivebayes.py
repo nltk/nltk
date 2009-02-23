@@ -124,7 +124,7 @@ class NaiveBayesClassifier(ClassifierI):
     def show_most_informative_features(self, n=10):
         # Determine the most relevant features, and display them.
         cpdist = self._feature_probdist
-        print '\nMost Informative Features'
+        print 'Most Informative Features'
 
         for (fname, fval) in self.most_informative_features(n):
             def labelprob(l):
