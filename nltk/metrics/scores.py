@@ -23,8 +23,8 @@ from nltk.probability import FreqDist
 def accuracy(reference, test):
     """
     Given a list of reference values and a corresponding list of test
-    values, return the percentage of corresponding values that are
-    equal.  In particular, return the percentage of indices
+    values, return the fraction of corresponding values that are
+    equal.  In particular, return the fraction of indices
     C{0<i<=len(test)} such that C{test[i] == reference[i]}.
 
     @type reference: C{list}
@@ -46,7 +46,7 @@ def accuracy(reference, test):
 def precision(reference, test):
     """
     Given a set of reference values and a set of test values, return
-    the percentage of test values that appear in the reference set.
+    the fraction of test values that appear in the reference set.
     In particular, return |C{reference}S{cap}C{test}|/|C{test}|.
     If C{test} is empty, then return C{None}.
     
@@ -68,7 +68,7 @@ def precision(reference, test):
 def recall(reference, test):
     """
     Given a set of reference values and a set of test values, return
-    the percentage of reference values that appear in the test set.
+    the fraction of reference values that appear in the test set.
     In particular, return |C{reference}S{cap}C{test}|/|C{reference}|.
     If C{reference} is empty, then return C{None}.
     
