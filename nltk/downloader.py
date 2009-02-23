@@ -1901,8 +1901,10 @@ def _unzip_iter(filename, root, verbose=True):
         yield ErrorMessage(filename, 'Error with downloaded zip file')
     except Exception, e:
         yield ErrorMessage(filename, e)
-    finally:
-        return
+        
+    # Commented out, as per google code issue 306:
+    #finally:
+    #    return
     
     # Get lists of directories & files
     namelist = zf.namelist()
