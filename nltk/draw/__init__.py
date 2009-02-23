@@ -11,8 +11,12 @@
 # Import Tkinter-based modules if Tkinter is installed
 try:
     import Tkinter
+except ImportError:
+    import warnings
+    warnings.warn("nltk.draw package not loaded "
+                  "(please install Tkinter library)."
+else:
     from cfg import *
-    from plot import *
     from tree import *
     from dispersion import dispersion_plot
 
@@ -20,5 +24,3 @@ try:
     # modules (and not to nltk.cfg & nltk.tree)
     import cfg, tree
 
-except ImportError:
-    print "Warning: nltk.draw package not loaded (please install Tkinter library)."
