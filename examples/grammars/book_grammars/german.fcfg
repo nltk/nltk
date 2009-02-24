@@ -44,13 +44,13 @@ Det[CASE=dat, AGR=[PER=3,NUM=pl]] -> 'den'
 Det[CASE=acc, AGR=[PER=3,NUM=pl]] -> 'die' 
 
 # Nouns
-N[AGR=[GND=masc,PER=3,NUM=sg]] -> 'hund'
-N[CASE=nom, AGR=[GND=masc,PER=3,NUM=pl]] -> 'hunde'
-N[CASE=dat, AGR=[GND=masc,PER=3,NUM=pl]] -> 'hunden'
-N[CASE=acc, AGR=[GND=masc,PER=3,NUM=pl]] -> 'hunde'
+N[AGR=[GND=masc,PER=3,NUM=sg]] -> 'Hund'
+N[CASE=nom, AGR=[GND=masc,PER=3,NUM=pl]] -> 'Hunde'
+N[CASE=dat, AGR=[GND=masc,PER=3,NUM=pl]] -> 'Hunden'
+N[CASE=acc, AGR=[GND=masc,PER=3,NUM=pl]] -> 'Hunde'
 
-N[AGR=[GND=fem,PER=3,NUM=sg]] -> 'katze'
-N[AGR=[GND=fem,PER=3,NUM=pl]] -> 'katzen'
+N[AGR=[GND=fem,PER=3,NUM=sg]] -> 'Katze'
+N[AGR=[GND=fem,PER=3,NUM=pl]] -> 'Katzen'
 
 # Pronouns
 PRO[CASE=nom, AGR=[PER=1,NUM=sg]] -> 'ich'

@@ -18,7 +18,7 @@ all: publish
 ci:
 	svn ci -m "updated grammar files" 
 
-zip: $(PACKAGES)
+zip: clean $(PACKAGES)
 
 clean:	
 	rm *.zip
