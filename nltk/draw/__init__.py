@@ -14,7 +14,7 @@ try:
 except ImportError:
     import warnings
     warnings.warn("nltk.draw package not loaded "
-                  "(please install Tkinter library)."
+                  "(please install Tkinter library).")
 else:
     from cfg import *
     from tree import *
