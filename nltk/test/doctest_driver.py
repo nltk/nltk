@@ -681,6 +681,19 @@ def split_pysrc_into_statements(s):
     return statements
 
 ###########################################################################
+# Custom Checker, to ignore [# _foo] callouts in output.
+###########################################################################
+
+class MyOutputChecker(OutputChecker):
+    CALLOUT_RE = re.compile(r' *#[ ]+\[_([\w-]+)\][ ]*$', re.MULTILINE)
+    def check_output(self, want, got, optionflags):
+        if OutputChecker.check_output(self, want, got, optionflags):
+            return True
+        else:
+            want = self.CALLOUT_RE.sub('', want)
+            return OutputChecker.check_output(self, want, got, optionflags)
+
+###########################################################################
 # Basic Actions
 ###########################################################################
 
@@ -711,13 +724,15 @@ class MyDocTestRunner(DocTestRunner):
         sys.__stdout__.flush()
         self._current_test = (test, example)
 
-        # Total hack warning:
+        # Total hack warning: This munges the original source to
+        # catch any keyboard interrupts, and turn them into special
+        # ValueError interrupts.
         example.original_source = example.source
         if self._kbinterrupt_continue:
-            example.source = 'try:\n%sexcept KeyboardInterrupt:\n    raise ValueError("KEYBOARD-INTERRUPT")\n' % doctest._indent(example.source)
-            #out(example.source)
-        
-        
+            example.source = ('try:\n%sexcept KeyboardInterrupt:\n'
+                              'raise ValueError("KEYBOARD-INTERRUPT")\n' %
+                              doctest._indent(example.source))
+
     def report_failure(self, out, test, example, got):
         example.source = example.original_source
         if self._verbosity == 1:
@@ -766,7 +781,9 @@ class MyDocTestRunner(DocTestRunner):
                    self._term.NORMAL)
 
 def run(names, optionflags, verbosity, kbinterrupt_continue):
-    runner = MyDocTestRunner(verbosity=verbosity, optionflags=optionflags,
+    checker = MyOutputChecker()
+    runner = MyDocTestRunner(checker=checker, verbosity=verbosity,
+                             optionflags=optionflags,
                              kbinterrupt_continue=kbinterrupt_continue)
     for name in names:
         try: tests = find(name)
