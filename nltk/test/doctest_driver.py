@@ -36,7 +36,12 @@ import coverage
 root_dir = os.path.abspath(os.path.join(sys.path[0], '..', '..'))
 sys.path.insert(0, root_dir)
 
+
 __version__ = '0.1'
+
+# Compiler flags: define '/' to do float division, even for ints.
+import __future__
+COMPILER_FLAGS = __future__.division.compiler_flag
 
 ###########################################################################
 # Monkey-Patch to fix Doctest
@@ -679,12 +684,91 @@ def split_pysrc_into_statements(s):
 # Basic Actions
 ###########################################################################
 
+# Finer control over output verbosity:
+from epydoc.util import TerminalController
+class MyDocTestRunner(DocTestRunner):
+    def __init__(self, checker=None, verbosity=1, optionflags=0):
+        DocTestRunner.__init__(self, checker, (verbosity>2), optionflags)
+        self._verbosity = verbosity
+        self._current_test = None
+        self._term = TerminalController()
+    def report_start(self, out, test, example):
+        if 1 <= self._verbosity <= 2:
+            src = example.source.split('\n')[0]
+            if len(src) > 60: src = src[:57]+'...'
+            lineno = test.lineno + example.lineno + 1
+            if self._verbosity == 1:
+                out(self._term.CLEAR_LINE)
+            out('%s[Line %s] %s%s' % (self._term.BOLD, lineno,
+                                      self._term.NORMAL, src))
+            if self._verbosity == 2:
+                out('\n')
+            
+        else:
+            DocTestRunner.report_start(self, out, test, example)
+        sys.__stdout__.flush()
+        self._current_test = (test, example)
+    def report_failure(self, out, test, example, got):
+        if self._verbosity == 1:
+            out('\n')
+        out(self._failure_header(test, example) + self._term.RED+
+            self._checker.output_difference(example, got, self.optionflags)+
+            self._term.NORMAL)
+    def report_unexpected_exception(self, out, test, example, exc_info):
+        if self._verbosity == 1:
+            out('\n')
+        out(self._failure_header(test, example) + self._term.RED+
+            'Exception raised:\n' +
+            self._term.NORMAL+_indent(_exception_traceback(exc_info)))
+    def _failure_header(self, test, example):
+        out = (self._term.CYAN+self._term.BOLD+'*'*75+self._term.NORMAL+'\n')
+        out += (self._term.GREEN)
+        if test.filename:
+            if test.lineno is not None and example.lineno is not None:
+                lineno = test.lineno + example.lineno + 1
+            else:
+                lineno = '?'
+            out += ('File "%s", line %s, in %s\n' %
+                       (test.filename, lineno, test.name))
+        else:
+            out += ('Line %s, in %s\n' % (example.lineno+1, test.name))
+        out += (self._term.RED)
+        out += ('Failed example:\n')
+        source = example.source
+        out += (_indent(source))
+        return out
+    
+    def run(self, test, compileflags=None, out=None, clear_globs=True):
+        try:
+            DocTestRunner.run(self, test, compileflags, out, clear_globs)
+        except KeyboardInterrupt:
+            if self._current_test is None: raise
+
+            print self._failure_header(*self._current_test)
+            print (self._term.RED+self._term.BOLD+'Keyboard Interrupt!'+
+                   self._term.NORMAL)
+            return
+
 def run(names, optionflags, verbosity):
+    runner = MyDocTestRunner(verbosity=verbosity, optionflags=optionflags)
+    for name in names:
+        try: tests = find(name)
+        except ValueError, e:
+            print >>sys.stderr, ('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e))
+            continue
+        for test in tests:
+            runner.run(test, COMPILER_FLAGS)
+            if verbosity == 1:
+                sys.stdout.write('.')
+            sys.stdout.flush(); sys.stderr.flush()
+    return
+    
     # temporary hack:
-#    for name in names:
-#        testfile(name, optionflags=optionflags, verbose=True,
-#                 module_relative=False)
-#    return
+#     for name in names:
+#         testfile(name, optionflags=optionflags, verbose=True,
+#                  module_relative=False)
+#     return
 
     suite = unittest.TestSuite()
     for name in names:
