@@ -730,7 +730,7 @@ class MyDocTestRunner(DocTestRunner):
         # ValueError interrupts.
         example.original_source = example.source
         if self._kbinterrupt_continue:
-            example.source = ('try:\n%sexcept KeyboardInterrupt:\n'
+            example.source = ('try:\n%sexcept KeyboardInterrupt:\n    '
                               'raise ValueError("KEYBOARD-INTERRUPT")\n' %
                               doctest._indent(example.source))
 
