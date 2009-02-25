@@ -687,11 +687,13 @@ def split_pysrc_into_statements(s):
 # Finer control over output verbosity:
 from epydoc.util import TerminalController
 class MyDocTestRunner(DocTestRunner):
-    def __init__(self, checker=None, verbosity=1, optionflags=0):
+    def __init__(self, checker=None, verbosity=1, optionflags=0,
+                 kbinterrupt_continue=False):
         DocTestRunner.__init__(self, checker, (verbosity>2), optionflags)
         self._verbosity = verbosity
         self._current_test = None
         self._term = TerminalController()
+        self._kbinterrupt_continue = kbinterrupt_continue
     def report_start(self, out, test, example):
         if 1 <= self._verbosity <= 2:
             src = example.source.split('\n')[0]
@@ -708,18 +710,33 @@ class MyDocTestRunner(DocTestRunner):
             DocTestRunner.report_start(self, out, test, example)
         sys.__stdout__.flush()
         self._current_test = (test, example)
+
+        # Total hack warning:
+        example.original_source = example.source
+        if self._kbinterrupt_continue:
+            example.source = 'try:\n%sexcept KeyboardInterrupt:\n    raise ValueError("KEYBOARD-INTERRUPT")\n' % doctest._indent(example.source)
+            #out(example.source)
+        
+        
     def report_failure(self, out, test, example, got):
+        example.source = example.original_source
         if self._verbosity == 1:
             out('\n')
         out(self._failure_header(test, example) + self._term.RED+
             self._checker.output_difference(example, got, self.optionflags)+
             self._term.NORMAL)
     def report_unexpected_exception(self, out, test, example, exc_info):
+        example.source = example.original_source
         if self._verbosity == 1:
             out('\n')
-        out(self._failure_header(test, example) + self._term.RED+
-            'Exception raised:\n' +
-            self._term.NORMAL+_indent(_exception_traceback(exc_info)))
+        out(self._failure_header(test, example) + self._term.RED)
+        if (isinstance(exc_info[1], ValueError) and
+            exc_info[1].args[0] == 'KEYBOARD-INTERRUPT'):
+            out(self._term.RED+self._term.BOLD)
+            out('Keyboard interrupt; Continuing!\n\n' + self._term.NORMAL)
+        else:
+            out('Exception raised:\n' + self._term.NORMAL +
+                _indent(_exception_traceback(exc_info)))
     def _failure_header(self, test, example):
         out = (self._term.CYAN+self._term.BOLD+'*'*75+self._term.NORMAL+'\n')
         out += (self._term.GREEN)
@@ -747,10 +764,10 @@ class MyDocTestRunner(DocTestRunner):
             print self._failure_header(*self._current_test)
             print (self._term.RED+self._term.BOLD+'Keyboard Interrupt!'+
                    self._term.NORMAL)
-            return
 
-def run(names, optionflags, verbosity):
-    runner = MyDocTestRunner(verbosity=verbosity, optionflags=optionflags)
+def run(names, optionflags, verbosity, kbinterrupt_continue):
+    runner = MyDocTestRunner(verbosity=verbosity, optionflags=optionflags,
+                             kbinterrupt_continue=kbinterrupt_continue)
     for name in names:
         try: tests = find(name)
         except ValueError, e:
@@ -885,6 +902,11 @@ COVERAGE_OPT = Option("--coverage",
                help="Generate coverage information, and write it to the "
                      "given file.")
 
+CONTINUE_OPT = Option("--continue", dest='kbinterrupt_continue',
+                      action='store_const', const=1, default=0,
+                      help="If a test is interrupted by a keyboard "
+                      "interrupt, then report the interrupt and continue")
+
 # Output Comparison options
 ELLIPSIS_OPT = Option("--ellipsis",
                action="store_const", dest="ellipsis", const=1, default=0,
@@ -908,7 +930,7 @@ def main():
     reporting_group = OptionGroup(optparser, 'Reporting')
     reporting_group.add_options([VERBOSE_OPT, QUIET_OPT,
                                  UDIFF_OPT, CDIFF_OPT, NDIFF_OPT,
-                                 COVERAGE_OPT])
+                                 COVERAGE_OPT, CONTINUE_OPT])
     optparser.add_option_group(reporting_group)
 
     compare_group = OptionGroup(optparser, 'Output Comparison')
@@ -931,7 +953,8 @@ def main():
 
     # Perform the requested action.
     if optionvals.action == 'check':
-        run(names, optionflags, optionvals.verbosity)
+        run(names, optionflags, optionvals.verbosity,
+            optionvals.kbinterrupt_continue)
     elif optionvals.action == 'update':
         update(names, optionflags, optionvals.verbosity)
     elif optionvals.action == 'debug':
