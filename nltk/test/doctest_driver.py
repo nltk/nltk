@@ -107,11 +107,12 @@ class _SpoofOut(StringIO):
 
 class MyDocTestParser(DocTestParser):
     PYLISTING_RE = re.compile(r'''
-       (^\.\.[ ]*pylisting::[ ]?\S*\n    # directive
+       (^\.\.[ ]*pylisting::.*\n         # directive
             (?:[ ]*\n|                   # blank line or
                [ ]+.*\n)*)               #   indented line
         ''', re.VERBOSE+re.MULTILINE)
 
+    # [xx] not used: split-pysrc_into_statements is used instead!
     PYLISTING_EX = re.compile(r'''
         (?:^[^ ].*\n                       # non-blank line
             (?:[ ]*\n |                    # blank line or
@@ -120,7 +121,7 @@ class MyDocTestParser(DocTestParser):
 
     DOCTEST_OPTION_RE = re.compile(r'''
         ^[ ]*:\w+:.*\n                     # :option:
-        (.*\S.*)*                          # non-blank lines
+        (.*\S.*\n)*                          # non-blank lines
         ''', re.VERBOSE+re.MULTILINE)
 
     def parse(self, string, name='<string>'):
@@ -779,6 +780,9 @@ class MyDocTestRunner(DocTestRunner):
             print self._failure_header(*self._current_test)
             print (self._term.RED+self._term.BOLD+'Keyboard Interrupt!'+
                    self._term.NORMAL)
+        if self._verbosity == 1:
+            print self._term.CLEAR_LINE
+        print
 
 def run(names, optionflags, verbosity, kbinterrupt_continue):
     checker = MyOutputChecker()
