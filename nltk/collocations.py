@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
-#         Steven Bird <sb@csse.unimelb.edu.au> (incorporate into NLTK)
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
