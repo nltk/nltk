@@ -50,7 +50,7 @@ class NgramModel(ModelI):
             token = ngram[-1]
             cfd[context].inc(token)
 
-        self._model = ConditionalProbDist(cfd, estimator, False, len(cfd))
+        self._model = ConditionalProbDist(cfd, estimator, len(cfd))
 
         # recursively construct the lower-order models
         if n > 1:
