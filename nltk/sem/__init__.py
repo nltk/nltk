@@ -36,5 +36,8 @@ __all__ = [
     
     # utility methods
     'text_parse', 'root_semrep', 'text_interpret', 'text_evaluate', 
-    'parse_valuation_line', 'parse_valuation', 'parse_logic', 'skolemize'
+    'parse_valuation_line', 'parse_valuation', 'parse_logic', 'skolemize',
+
+    # documentation
+    'boolean_ops', 'equality_preds', 'binding_ops' 
     ]
