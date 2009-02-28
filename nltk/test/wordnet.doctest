@@ -73,9 +73,9 @@ The relations that are currently defined in this way are `antonyms`,
 `derivationally_related_forms` and `pertainyms`.
 
 
------------
-Word Senses
------------
+------
+Lemmas
+------
 
     >>> eat = wn.lemma('eat.v.03.eat')
     >>> eat
