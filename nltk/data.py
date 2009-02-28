@@ -261,8 +261,10 @@ class ZipFilePathPointer(PathPointer):
 # Access Functions
 ######################################################################
 
-_resource_cache = weakref.WeakValueDictionary()
-"""A weakref dictionary used to cache resources so that they won't
+# Don't use a weak dictionary, because in the common case this
+# causes a lot more reloading that necessary.
+_resource_cache = {}
+"""A dictionary used to cache resources so that they won't
    need to be loaded more than once."""
 
 def find(resource_name):
