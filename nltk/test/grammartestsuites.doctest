@@ -40,7 +40,7 @@ according to the grammar, then the value of ``trees`` will be ``None``.
     ... 'er siehst mich',
     ... 'wir komme',
     ... 'wir kommst',
-    ... 'die katzen kommst',
+    ... 'die Katzen kommst',
     ... 'sie komme',
     ... 'sie kommst',
     ... 'du mag mich',
@@ -51,47 +51,56 @@ according to the grammar, then the value of ``trees`` will be ``None``.
     >>> germantest2 = {}
     >>> germantest2['doc'] = "Tests for number agreement"
     >>> germantest2['accept'] = [
-    ... 'der hund kommt',
-    ... 'die hunde kommen',
+    ... 'der Hund kommt',
+    ... 'die Hunde kommen',
     ... 'ich komme',
     ... 'wir kommen',
-    ... 'ich sehe die katzen',
-    ... 'ich folge den katzen'
+    ... 'ich sehe die Katzen',
+    ... 'ich folge den Katzen',
+    ... 'ich sehe die Katzen',
+    ... 'ich folge den Katzen',
+    ... 'wir sehen die Katzen',
+    ... 'wir folgen den Katzen'
     ... ]
     >>> germantest2['reject'] = [
     ... 'ich kommen',
     ... 'wir komme',
-    ... 'der hunde kommt',
-    ... 'der hunde kommen',
-    ... 'die katzen kommt',
-    ... 'ich sehe der hunde', 
-    ... 'ich folge den hund', 
+    ... 'der Hunde kommt',
+    ... 'der Hunde kommen',
+    ... 'die Katzen kommt',
+    ... 'ich sehe der Hunde', 
+    ... 'ich folge den Hund',
+    ... 'ich sehen der Hunde', 
+    ... 'ich folgen den Hund',
+    ... 'wir sehe die Katzen',
+    ... 'wir folge den Katzen'
     ... ]
     >>> germantest3 = {}
     >>> germantest3['doc'] = "Tests for case government and subcategorization"
     >>> germantest3['accept'] = [
-    ... 'der hund sieht mich', 
-    ... 'der hund kommt',
-    ... 'ich sehe den hund',
-    ... 'ich helfe dem hund',
+    ... 'der Hund sieht mich', 
+    ... 'der Hund kommt',
+    ... 'ich sehe den Hund',
+    ... 'ich helfe dem Hund',
     ... ]
     >>> germantest3['reject'] = [
     ... 'ich sehe',
     ... 'ich helfe',
-    ... 'ich komme den hund',
-    ... 'ich sehe den hund die katzen',
+    ... 'ich komme den Hund',
+    ... 'ich sehe den Hund die Katzen',
     ... 'du hilfst mich',
     ... 'du siehst mir',
     ... 'du siehst ich',
-    ... 'der hunde kommt mich',
-    ... 'die hunde sehe die hunde', 
-    ... 'der hund sehe die hunde', 
-    ... 'ich hilft den hund',
-    ... 'ich hilft der hund',
-    ... 'ich sehe dem hund',
+    ... 'der Hunde kommt mich',
+    ... 'die Hunde sehe die Hunde', 
+    ... 'der Hund sehe die Hunde', 
+    ... 'ich hilft den Hund',
+    ... 'ich hilft der Hund',
+    ... 'ich sehe dem Hund',
     ... ]
     >>> germantestsuites = [germantest1, germantest2, germantest3]
-    >>> tester = TestGrammar('grammars/book_grammars/german.fcfg', germantestsuites)
+    >>> #tester = TestGrammar('grammars/book_grammars/german.fcfg', germantestsuites)
+    >>> tester = TestGrammar('file:german.fcfg', germantestsuites)
     >>> tester.run()
     Tests for person agreement: All tests passed!
     Tests for number agreement: All tests passed!
