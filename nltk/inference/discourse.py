@@ -1,6 +1,7 @@
 # Natural Language Toolkit: Discourse Processing
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
+#         Dan Garrett 
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -41,7 +42,7 @@ Each sentence can be ambiguous between a number of readings, each of which recei
 I{reading ID} (C{rid}) of the form C{s}I{i} -C{r}I{j}. For example::
 
     s0 readings:
-    ------------------------------
+    
     s0-r1: some x.(boxer(x) & walk(x))
     s0-r0: some x.(boxerdog(x) & walk(x))
 
@@ -94,7 +95,7 @@ class CfgReadingCommand(ReadingCommand):
         @type gramfile: C{str}
         """
         if gramfile is None:
-            self._gramfile = 'grammars/sample_grammars/sem4.fcfg'
+            self._gramfile = 'grammars/book_grammars/discourse.fcfg'
         else:
             self._gramfile = gramfile
         self._parser = parse.load_earley(self._gramfile) 
@@ -293,7 +294,7 @@ class DiscourseTester(object):
             for sid in sorted(self._readings.keys()):
                 print
                 print '%s readings:' % sid
-                print '-' * 30
+                print #'-' * 30
                 for rid in sorted(self._readings[sid]):
                     lf = self._readings[sid][rid]
                     #TODO lf = lf.normalize('[xyz]\d*', 'z%d')

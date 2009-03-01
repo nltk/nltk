@@ -29,7 +29,7 @@ to double-check what sentences are currently stored as the discourse.
 
 As you will see, each sentence receives an identifier `s`\ :subscript:`i`.
 We might also want to check what grammar the ``DiscourseTester`` is
-using (by default, ``grammars/sem4.fcfg``):
+using (by default, ``book_grammars/discourse.fcfg``):
 
     >>> dt.grammar() # doctest: +ELLIPSIS
     % start S
@@ -55,12 +55,12 @@ that sentence is given an identifier `s`\ :sub:`i`-`r`\ :sub:`j`.
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
-    ------------------------------
+    <BLANKLINE>
     s0-r0: exists x.(boxerdog(x) & walk(x))
     s0-r1: exists x.(boxer(x) & walk(x))
     <BLANKLINE>
     s1 readings:
-    ------------------------------
+    <BLANKLINE>
     s1-r0: all x.(boxerdog(x) -> exists z1.(girl(z1) & chase(x,z1)))
     s1-r1: all x.(boxer(x) -> exists z2.(girl(z2) & chase(x,z2)))
 
@@ -176,17 +176,17 @@ couple of them.
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
-    ------------------------------
+    <BLANKLINE>
     s0-r0: exists x.(boxerdog(x) & walk(x))
     s0-r1: exists x.(boxer(x) & walk(x))
     <BLANKLINE>
     s1 readings:
-    ------------------------------
+    <BLANKLINE>
     s1-r0: all x.(boxerdog(x) -> exists z9.(girl(z9) & chase(x,z9)))
     s1-r1: all x.(boxer(x) -> exists z10.(girl(z10) & chase(x,z10)))
     <BLANKLINE>
     s2 readings:
-    ------------------------------
+    <BLANKLINE>
     s2-r0: boxerdog(John)
     s2-r1: boxer(John)
     >>> dt.readings(threaded=True) # doctest: +NORMALIZE_WHITESPACE
@@ -226,21 +226,21 @@ us to check:
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
-    ------------------------------
+    <BLANKLINE>
     s0-r0: exists x.(student(x) & dance(x))
     <BLANKLINE>
     s1 readings:
-    ------------------------------
+    <BLANKLINE>
     s1-r0: all x.(student(x) -> person(x))
     <BLANKLINE>
     s2 readings:
-    ------------------------------
+    <BLANKLINE>
     s2-r0: -exists x.(person(x) & dance(x))
 
 So let's retract the inconsistent sentence:
 
-    >>> dt.retract_sentence('No person dances', verbose=True)
-    Current sentences are
+    >>> dt.retract_sentence('No person dances', verbose=True) # doctest: +NORMALIZE_WHITESPACE
+    Current sentences are 
     s0: A student dances
     s1: Every student is a person
 
@@ -325,21 +325,21 @@ Let's build a new discourse, and look at the readings of the component sentences
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
-    ------------------------------
+    <BLANKLINE>
     s0-r0: boxerdog(Vincent)
     s0-r1: boxer(Vincent)
     <BLANKLINE>
     s1 readings:
-    ------------------------------
+    <BLANKLINE>
     s1-r0: boxerdog(Fido)
     s1-r1: boxer(Fido)
     <BLANKLINE>
     s2 readings:
-    ------------------------------
+    <BLANKLINE>
     s2-r0: married(Vincent)
     <BLANKLINE>
     s3 readings:
-    ------------------------------
+    <BLANKLINE>
     s3-r0: bark(Fido)
 
 This gives us a lot of threads:
@@ -355,7 +355,7 @@ We can eliminate some of the readings, and hence some of the threads,
 by adding background information.
 
     >>> import nltk.data
-    >>> bg = nltk.data.load('grammars/sample_grammars/background1.fol')
+    >>> bg = nltk.data.load('grammars/book_grammars/background.fol')
     >>> dt.add_background(bg)
     >>> dt.background()
     all x.(boxerdog(x) -> dog(x))
@@ -479,16 +479,16 @@ The ``models()`` method gives us more information about the surviving thread.
     >>> os.chdir(tempdir)
 
 In order to play around with your own version of background knowledge,
-you might want to start off with a local copy of ``background1.fol``:
+you might want to start off with a local copy of ``background.fol``:
 
-    >>> nltk.data.retrieve('grammars/sample_grammars/background1.fol')
-    Retrieving 'grammars/sample_grammars/background1.fol', saving to 'background1.fol'
+    >>> nltk.data.retrieve('grammars/book_grammars/background.fol')
+    Retrieving 'grammars/book_grammars/background.fol', saving to 'background.fol'
 
 After you have modified the file, the ``parse_logic()`` function will parse 
 the strings in the file into expressions of ``nltk.logic``.
 
     >>> from nltk.inference.discourse import parse_fol
-    >>> mybg = parse_fol(open('background1.fol').read())
+    >>> mybg = parse_fol(open('background.fol').read())
 
 The result can be loaded as an argument of ``add_background()`` in the
 manner shown earlier.
@@ -519,12 +519,12 @@ Regression Testing from book
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
-    ------------------------------
+    <BLANKLINE>
     s0-r0: ([],[(([x],[dog(x)]) -> ([z1],[boy(z1), chases(x,z1)]))])
     s0-r1: ([z2],[boy(z2), (([x],[dog(x)]) -> ([],[chases(x,z2)]))])
     <BLANKLINE>
     s1 readings:
-    ------------------------------
+    <BLANKLINE>
     s1-r0: ([x],[PRO(x), runs(x)])
     >>> dt.readings(show_thread_readings=True)
     d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
