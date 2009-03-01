@@ -133,7 +133,7 @@ class CorpusReader(object):
         """
         return self._fileids
 
-    def abspath(self, file):
+    def abspath(self, fileid):
         """
         Return the absolute path for the given file.
 
@@ -143,7 +143,7 @@ class CorpusReader(object):
             
         @rtype: L{PathPointer}
         """
-        return self._root.join(file)
+        return self._root.join(fileid)
 
     def abspaths(self, fileids=None, include_encoding=False):
         """
