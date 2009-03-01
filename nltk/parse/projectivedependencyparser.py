@@ -477,7 +477,7 @@ class ProbabilisticProjectiveDependencyParser(object):
 
 def demo():
     projective_rule_parse_demo()
-#   arity_parse_demo()
+#    arity_parse_demo()
     projective_prob_parse_demo()
 
 
@@ -508,7 +508,7 @@ def arity_parse_demo():
     print
     print 'A grammar with no arity constraints. Each DependencyProduction'
     print 'specifies a relationship between one head word and only one'
-    print 'modifier word.:'
+    print 'modifier word.'
     grammar = parse_dependency_grammar("""
     'fell' -> 'price' | 'stock'
     'price' -> 'of' | 'the'
@@ -526,9 +526,9 @@ def arity_parse_demo():
         print tree
 
     print
-    print 'Comparatively, the following grammar contains a '
-    print 'C{DependencyProduction} that specifies a relationship'
-    print 'between the one head word, \'price\', and two modifier'
+    print 'By contrast, the following grammar contains a '
+    print 'DependencyProduction that specifies a relationship'
+    print 'between a single head word, \'price\', and two modifier'
     print 'words, \'of\' and \'the\'.'
     grammar = parse_dependency_grammar("""
     'fell' -> 'price' | 'stock'
