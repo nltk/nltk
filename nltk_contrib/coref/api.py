@@ -7,7 +7,11 @@
 
 from nltk.corpus import CorpusReader
 from nltk.tokenize.punkt import PunktWordTokenizer
-from nltk.tag import TaggerI, HiddenMarkovModelTaggerTransformI
+from nltk.tag import TaggerI, HiddenMarkovModelTaggerTransformI, \
+                     ClassifierBasedTagger
+from nltk.classify import ClassifierI
+from nltk.util import LazyMap
+
 
 class TrainableI(object):
     """
@@ -74,7 +78,7 @@ class CorpusReaderDecoratorI(CorpusReader):
         """
         Return the underlying C{CorpusReader} instance.
         
-        @return: the underlying C{CorpusReader} instance.
+        @return: the underlying C{CorpusReader} instance
         @rtype: C{CorpusReader}
         """
         raise AssertionError()
@@ -262,5 +266,70 @@ class CorefResolverI(object):
         """
         raise AssertionError()
         
+
+class AbstractClassifierBasedTagger(ClassifierBasedTagger, ClassifierI, 
+                                    TrainableI):
+    """
+    An abstract classifier-based tagger that simplifies implementing
+    task-specific taggers. Subclasses of C{AbstractClassifierBasedTagger}
+    can be trained on arbitrary sequences of tokens. L{test()} must be
+    provided by the subclass.
+    """
+    def __init__(self, feature_detector, labeled_sequence, classifier_builder):
+        """
+        @param feature_detector: the function or dictionary used to featurize
+            the training data.
+        @type feature_dector: C{dict} or C{function}
+        @param labeled_sequence: the list of training tokens
+        @type labeled_sequence: C{list} of C{list} of C{tuple}
+        @param classifier_builder: the function used to initialize the
+            classifier
+        @type classifier_builder: C{function}
+        """
+        if self.__class__ == AbstractClassifierBasedTagger:
+            raise AssertionError, "Interfaces can't be instantiated"
+        ClassifierBasedTagger.__init__(self, feature_detector, 
+                                       labeled_sequence, classifier_builder)
+    
+    def __getattr__(self, name):
+        if name != '_classifier':
+            return getattr(self._classifier, name)
+
+    @classmethod
+    def _flatten(cls, tokens):
+        return [token[0] + (token[1],) for token in tokens]
+
+    @classmethod
+    def _unflatten(cls, tokens):
+        return [(token[:-1], token[-1]) for token in tokens]
+
+    def batch_classify(self, featuresets):
+        return self._classifier.batch_classify(featuresets)
+
+    def batch_prob_classify(self, featuresets):
+        return self._classifier.batch_prob_classify(featuresets)    
+
+    def labels(self):
+        return self._classifier.labels()
+
+    def test(self, test_sequence, **kwargs):
+        """
+        Test the classifier object against a list of test tokens.
+        
+        @param test_sequence: a list of test tokens.
+        @type test_sequence: C{list} of C{tuple}
+        """
+        raise AssertionError()
+
+    @classmethod
+    def train(cls, labeled_sequence, test_sequence=None,
+                   unlabeled_sequence=None, **kwargs):
+        classifier = \
+            cls(kwargs.get('feature_detector'), 
+                LazyMap(cls._unflatten, labeled_sequence), 
+                kwargs.get('classifier_builder'))
+        if test_sequence:
+            classifier.test(test_sequence)
+        return classifier    
         
             

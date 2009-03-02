@@ -18,8 +18,26 @@ try:
 except:
     from StringIO import StringIO
 
+
 def train_model(train_class, labeled_sequence, test_sequence, pickle_file,
                 num_train_sents, num_test_sents, **kwargs):
+    """
+    Train a C{TrainableI} object.
+    
+    @param train_class: the C{TrainableI} type to be trained.
+    @type train_class: C{type}
+    @labeled_sequence: a sequence of labeled training instances.
+    @type labeled_sequence: C{list} of C{list}
+    @param pickle_file: the path to save the pickled model to.
+    @type pickle_file: C{str}
+    @param num_train_sents: the number of sentences to train on. 
+    @type num_train_sents: C{int}
+    @param num_test_sents: the number of sentences to test on.
+    @type num_test_sents: C{int}
+    @kwparam verbose: boolean flag indicating whether training should be
+        verbose or include printed output.
+    @type verbose: C{bool}
+    """
     print 'Training ', train_class
     print 'Loading training data (supervised)...'
 

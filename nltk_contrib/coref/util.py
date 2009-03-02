@@ -5,6 +5,18 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import time
+
+try:
+    import cPickle as pickle
+except:
+    import pickle
+    
+try:
+    from cStringIO import StringIO
+except:
+    from StringIO import StringIO
+
 from nltk.data import load, find
 from nltk.corpus import CorpusReader, BracketParseCorpusReader
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
@@ -27,25 +39,10 @@ TREEBANK_TAGGER = 'nltk:taggers/treebank.tagger.pickle.gz'
 TREEBANK_CHUNKER = 'nltk:chunkers/treebank.chunker.pickle.gz'
 
 MUC6_CHUNK_TAGGER = 'nltk:chunkers/muc6.chunk.tagger.pickle.gz'
-
+        
 class LidstoneProbDistFactory(LidstoneProbDist):
     def __init__(self, fd, bins, *factory_args):
         LidstoneProbDist.__init__(self, fd, 0.1, bins)
-
-
-class CorpusReaderDecorator(CorpusReaderDecoratorI):
-    def __init__(self, reader, **kwargs):
-        self._reader = reader
-
-    def __getattr__(self, name):
-        if name != '_reader':
-            return getattr(self._reader, name)
-
-    def reader(self):
-        wrapped_reader = self._reader
-        while isinstance(wrapped_reader, CorpusReaderDecoratorI):
-            wrapped_reader = wrapped_reader.reader()
-        return wrapped_reader
 
 
 class TaggerCorpusReader(CorpusReaderDecorator):
@@ -114,9 +111,8 @@ class MUC6NamedEntityChunkTaggerCorpusReader(ChunkTaggerCorpusReader):
         tagger = load(TREEBANK_TAGGER)
         ChunkTaggerCorpusReader.__init__(self, reader, 
                                                chunker=chunker, tagger=tagger)
-        
-        
 
+	
 def zipzip(*lists):
     return LazyMap(lambda lst: zip(*lst), LazyZip(*lists))
 
