@@ -35,7 +35,9 @@ __all__ = [
     'Valuation', 'Assignment', 'Model', 'Undefined', 'is_rel', 'set2rel', 'arity',
     
     # utility methods
-    'text_parse', 'root_semrep', 'text_interpret', 'text_evaluate', 
+    'text_parse', 'text_interpret', 'text_evaluate',
+    'batch_parse', 'batch_interpret', 'batch_evaluate',
+    'root_semrep',  
     'parse_valuation_line', 'parse_valuation', 'parse_logic', 'skolemize',
 
     # documentation
