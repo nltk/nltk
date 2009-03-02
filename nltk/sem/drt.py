@@ -66,8 +66,8 @@ class AbstractDrs(object):
         If the prover says it is valid, then the self and other are equal."""
         assert isinstance(other, AbstractDrs)
         
-        f1 = self.simplify().toFol();
-        f2 = other.simplify().toFol();
+        f1 = self.simplify().fol();
+        f2 = other.simplify().fol();
         return f1.tp_equals(f2, prover)
     
     def _get_type(self):
@@ -175,10 +175,10 @@ class DRS(AbstractDrs, Expression, RA.DRS):
     def simplify(self):
         return DRS(self.refs, [cond.simplify() for cond in self.conds])
     
-    def toFol(self):
+    def fol(self):
         if not self.conds:
             raise Exception("Cannot convert DRS with no conditions to FOL.")
-        accum = reduce(AndExpression, [c.toFol() for c in self.conds])
+        accum = reduce(AndExpression, [c.fol() for c in self.conds])
         for ref in self.refs[::-1]:
             accum = ExistsExpression(ref, accum)
         return accum
@@ -197,7 +197,7 @@ class DRS(AbstractDrs, Expression, RA.DRS):
     
     def str(self, syntax=DrtTokens.NLTK):
         if syntax == DrtTokens.PROVER9:
-            return self.toFol().str(syntax)
+            return self.fol().str(syntax)
         else:
             return '([%s],[%s])' % (','.join([str(r) for r in self.refs]),
                                     ', '.join([c.str(syntax) for c in self.conds]))
@@ -220,7 +220,7 @@ def DrtVariableExpression(variable):
 class DrtAbstractVariableExpression(AbstractDrs, 
                                     AbstractVariableExpression, 
                                     RA.AbstractVariableExpression):
-    def toFol(self):
+    def fol(self):
         return self
     
     def get_refs(self, recursive=False):
@@ -249,8 +249,8 @@ class DrtConstantExpression(DrtAbstractVariableExpression,
 
 class DrtNegatedExpression(AbstractDrs, NegatedExpression, 
                            RA.NegatedExpression):
-    def toFol(self):
-        return NegatedExpression(self.term.toFol())
+    def fol(self):
+        return NegatedExpression(self.term.fol())
 
 class DrtLambdaExpression(AbstractDrs, LambdaExpression, 
                           RA.LambdaExpression):
@@ -262,8 +262,8 @@ class DrtLambdaExpression(AbstractDrs, LambdaExpression,
         return self.__class__(newvar, self.term.replace(self.variable, 
                           DrtVariableExpression(newvar), True))
 
-    def toFol(self):
-        return LambdaExpression(self.variable, self.term.toFol())
+    def fol(self):
+        return LambdaExpression(self.variable, self.term.fol())
 
 class DrtBooleanExpression(AbstractDrs, BooleanExpression):
     def get_refs(self, recursive=False):
@@ -274,23 +274,23 @@ class DrtBooleanExpression(AbstractDrs, BooleanExpression):
             return []
 
 class DrtOrExpression(DrtBooleanExpression, OrExpression, RA.OrExpression):
-    def toFol(self):
-        return OrExpression(self.first.toFol(), self.second.toFol())
+    def fol(self):
+        return OrExpression(self.first.fol(), self.second.fol())
 
 class DrtImpExpression(DrtBooleanExpression, ImpExpression, RA.ImpExpression):
-    def toFol(self):
+    def fol(self):
         first_drs = self.first
         second_drs = self.second
 
         accum = None
         if first_drs.conds:
             accum = reduce(AndExpression, 
-                           [c.toFol() for c in first_drs.conds])
+                           [c.fol() for c in first_drs.conds])
    
         if accum:
-            accum = ImpExpression(accum, second_drs.toFol())
+            accum = ImpExpression(accum, second_drs.fol())
         else:
-            accum = second_drs.toFol()
+            accum = second_drs.fol()
     
         for ref in first_drs.refs[::-1]:
             accum = AllExpression(ref, accum)
@@ -299,13 +299,13 @@ class DrtImpExpression(DrtBooleanExpression, ImpExpression, RA.ImpExpression):
 
 class DrtIffExpression(DrtBooleanExpression, IffExpression, 
                        RA.IffExpression):
-    def toFol(self):
-        return IffExpression(self.first.toFol(), self.second.toFol())
+    def fol(self):
+        return IffExpression(self.first.fol(), self.second.fol())
 
 class DrtEqualityExpression(AbstractDrs, EqualityExpression, 
                             RA.EqualityExpression):
-    def toFol(self):
-        return EqualityExpression(self.first.toFol(), self.second.toFol())
+    def fol(self):
+        return EqualityExpression(self.first.fol(), self.second.fol())
 
     def get_refs(self, recursive=False):
         """@see: AbstractExpression.get_refs()"""
@@ -389,14 +389,14 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
                         self.second == converted_other.second
         return False
         
-    def toFol(self):
-        return AndExpression(self.first.toFol(), self.second.toFol())
+    def fol(self):
+        return AndExpression(self.first.fol(), self.second.fol())
 
 class DrtApplicationExpression(AbstractDrs, ApplicationExpression, 
                                RA.ApplicationExpression):
-    def toFol(self):
-        return ApplicationExpression(self.function.toFol(), 
-                                           self.argument.toFol())
+    def fol(self):
+        return ApplicationExpression(self.function.fol(), 
+                                           self.argument.fol())
 
     def get_refs(self, recursive=False):
         """@see: AbstractExpression.get_refs()"""
@@ -777,8 +777,8 @@ def demo():
     print parser.parse(r'([x],[man(x), -([],[walks(x)])])')
     print parser.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])')
 
-    print '='*20 + 'Test toFol()' + '='*20
-    print parser.parse(r'([x,y],[sees(x,y)])').toFol()
+    print '='*20 + 'Test fol()' + '='*20
+    print parser.parse(r'([x,y],[sees(x,y)])').fol()
 
     print '='*20 + 'Test alpha conversion and lambda expression equality' + '='*20
     e1 = parser.parse(r'\x.([],[P(x)])')
