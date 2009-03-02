@@ -58,15 +58,10 @@ import numpy
 import time
 import tempfile
 import os
-
-try:
-    from cStringIO import StringIO
-except:
-    from StringIO import StringIO
+import gzip
 
 from nltk import defaultdict
 from nltk.util import OrderedDict
-from nltk.data import BufferedGzipFile
 from nltk.probability import *
 
 import nltk.classify.util # for accuracy & log_likelihood
@@ -1275,9 +1270,9 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     # Write a training file for megam.
     try:
         fd, trainfile_name = tempfile.mkstemp(prefix='nltk-', suffix='.gz')
-        stream = BufferedGzipFile(trainfile_name, 'wb')        
-        write_megam_file(train_toks, encoding, stream, explicit=explicit)
-        stream.close()
+        trainfile = gzip.open(trainfile_name, 'wb')
+        write_megam_file(train_toks, encoding, trainfile, explicit=explicit)
+        trainfile.close()
     except (OSError, IOError, ValueError), e:
         raise ValueError('Error while creating megam training file: %s' % e)
 
@@ -1319,7 +1314,6 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
 
     # Build the classifier
     return MaxentClassifier(encoding, weights)
-              
 
 ######################################################################
 #{ Classifier Trainer: tadm
@@ -1348,7 +1342,7 @@ class TadmMaxentClassifier(MaxentClassifier):
         weightfile_fd, weightfile_name = \
             tempfile.mkstemp(prefix='nltk-tadm-weights-')
                     
-        trainfile = BufferedGzipFile(trainfile_name, 'wb')                    
+        trainfile = gzip.open(trainfile_name, 'wb')                    
         write_tadm_file(train_toks, encoding, trainfile)
         trainfile.close()
         
