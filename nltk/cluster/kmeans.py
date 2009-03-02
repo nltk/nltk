@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# Porting: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -12,7 +11,7 @@ import random
 from api import *
 from util import *
 
-class KMeans(VectorSpace):
+class KMeansClusterer(VectorSpaceClusterer):
     """
     The K-means clusterer starts with k arbitrary chosen means then allocates
     each vector to the cluster with the closest mean. It then recalculates the
@@ -47,7 +46,7 @@ class KMeans(VectorSpace):
         @param  rng:        random number generator (or None)
         @type   rng:        Random
         """
-        VectorSpace.__init__(self, normalise, svd_dimensions)
+        VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._num_means = num_means
         self._distance = distance
         self._max_difference = conv_test
@@ -154,7 +153,7 @@ class KMeans(VectorSpace):
         return centroid / float(len(cluster))
 
     def __repr__(self):
-        return '<KMeans Clusterer means=%s repeats=%d>' % \
+        return '<KMeansClusterer means=%s repeats=%d>' % \
                     (self._means, self._repeats)
 
 def _vector_compare(x, y):
@@ -173,7 +172,7 @@ def demo():
     vectors = [numpy.array(f) for f in [[2, 1], [1, 3], [4, 7], [6, 7]]]
     means = [[4, 3], [5, 5]]
 
-    clusterer = cluster.KMeans(2, euclidean_distance, initial_means=means)
+    clusterer = cluster.KMeansClusterer(2, euclidean_distance, initial_means=means)
     clusters = clusterer.cluster(vectors, True, trace=True)
 
     print 'Clustered:', vectors
@@ -186,7 +185,7 @@ def demo():
     # test k-means using the euclidean distance metric, 2 means and repeat
     # clustering 10 times with random seeds
 
-    clusterer = cluster.KMeans(2, euclidean_distance, repeats=10)
+    clusterer = cluster.KMeansClusterer(2, euclidean_distance, repeats=10)
     clusters = clusterer.cluster(vectors, True)
     print 'Clustered:', vectors
     print 'As:', clusters

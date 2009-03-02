@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# Porting: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -76,8 +75,10 @@ objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for
 efficiency when required.
 """
 
-from api import *
 from util import *
 from kmeans import *
 from gaac import *
 from em import *
+
+__all__ = ['KMeansClusterer', 'GAAClusterer', 'EMClusterer',
+           'VectorSpaceClusterer', 'Dendogram']

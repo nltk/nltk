@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# Porting: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -11,9 +10,9 @@ import numpy
 from api import *
 from util import *
 
-class GroupAverageAgglomerative(VectorSpace):
+class GAAClusterer(VectorSpaceClusterer):
     """
-    The GAAC clusterer starts with each of the N vectors as singleton
+    The Group Average Agglomerative starts with each of the N vectors as singleton
     clusters. It then iteratively merges pairs of clusters which have the
     closest centroids.  This continues until there is only one cluster. The
     order of merges gives rise to a dendogram: a tree with the earlier merges
@@ -25,7 +24,7 @@ class GroupAverageAgglomerative(VectorSpace):
     """
 
     def __init__(self, num_clusters=1, normalise=True, svd_dimensions=None):
-        VectorSpace.__init__(self, normalise, svd_dimensions)
+        VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._num_clusters = num_clusters
         self._dendogram = None
         self._groups_values = None
@@ -34,7 +33,7 @@ class GroupAverageAgglomerative(VectorSpace):
         # stores the merge order
         self._dendogram = Dendogram(
             [numpy.array(vector, numpy.float64) for vector in vectors])
-        return VectorSpace.cluster(self, vectors, assign_clusters, trace)
+        return VectorSpaceClusterer.cluster(self, vectors, assign_clusters, trace)
 
     def cluster_vectorspace(self, vectors, trace=False):
         # create a cluster for each vector
@@ -125,7 +124,7 @@ def demo():
     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
     
     # test the GAAC clusterer with 4 clusters
-    clusterer = cluster.GroupAverageAgglomerative(4)
+    clusterer = cluster.GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
 
     print 'Clusterer:', clusterer

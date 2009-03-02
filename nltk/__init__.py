@@ -105,6 +105,7 @@ import help
 
 import chunk;     from chunk import *
 import classify;  from classify import *
+import cluster;   from cluster import *
 import inference; from inference import *
 import metrics;   from metrics import *
 import model;     from model import *

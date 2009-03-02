@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# Porting: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -11,7 +10,7 @@ import numpy
 from api import *
 from util import *
 
-class EM(VectorSpace):
+class EMClusterer(VectorSpaceClusterer):
     """
     The Gaussian EM clusterer models the vectors as being produced by
     a mixture of k Gaussian sources. The parameters of these sources
@@ -51,7 +50,7 @@ class EM(VectorSpace):
                                dimensionsionality with SVD
         @type   svd_dimensions: int 
         """
-        VectorSpace.__init__(self, normalise, svd_dimensions)
+        VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._means = numpy.array(initial_means, numpy.float64)
         self._num_clusters = len(initial_means)
         self._conv_threshold = conv_threshold
@@ -164,7 +163,7 @@ class EM(VectorSpace):
         return llh
 
     def __repr__(self):
-        return '<EM Clusterer means=%s>' % list(self._means)
+        return '<EMClusterer means=%s>' % list(self._means)
 
 def demo():
     """
@@ -178,7 +177,7 @@ def demo():
     vectors = [numpy.array(f) for f in [[0.5, 0.5], [1.5, 0.5], [1, 3]]]
     means = [[4, 2], [4, 2.01]]
 
-    clusterer = cluster.EM(means, bias=0.1)
+    clusterer = cluster.EMClusterer(means, bias=0.1)
     clusters = clusterer.cluster(vectors, True, trace=True)
 
     print 'Clustered:', vectors
@@ -220,7 +219,7 @@ def demo():
 #     print 'Means:', clusterer.means()
 #     print
 
-#     clusterer = cluster.EM(means, svd_dimensions=1)
+#     clusterer = cluster.EMClusterer(means, svd_dimensions=1)
 #     clusters = clusterer.cluster(vectors, True)
 #     print 'Clusterer:', clusterer
 #     print 'Clustered:', str(vectors)[:60], '...'
