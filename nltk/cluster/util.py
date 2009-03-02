@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# Porting: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -13,7 +12,7 @@ import numpy
 
 from api import *
 
-class VectorSpace(ClusterI):
+class VectorSpaceClusterer(ClusterI):
     """
     Abstract clusterer which takes tokens and maps them into a vector space.
     Optionally performs singular value decomposition to reduce the
