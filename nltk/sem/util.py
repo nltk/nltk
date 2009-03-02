@@ -14,13 +14,15 @@ a first-order model.
 import evaluate
 import re
 import nltk
+
+from nltk.internals import deprecated
 from logic import *
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
 ##############################################################
 
-def text_parse(inputs, grammar, trace=0):
+def batch_parse(inputs, grammar, trace=0):
     """
     Convert input sentences into syntactic trees.
     
@@ -30,13 +32,17 @@ def text_parse(inputs, grammar, trace=0):
     @rtype: C{dict}
     @return: a mapping from input sentences to a list of L{Tree}s
     """
-    parses = {}
+    parses = []
     cp = nltk.parse.load_earley(grammar, trace=trace)
     for sent in inputs:
-        tokens = sent.split()
+        tokens = sent.split() # use a tokenizer?
         syntrees = cp.nbest_parse(tokens)
-        parses[sent] = syntrees
+        parses.append(syntrees)
     return parses
+
+@deprecated('Use batch_parse() instead.')
+def text_parse(*args, **kwargs):
+    batch_parse(*args, **kwargs)
 
 def _semrep(node):
     """
@@ -64,7 +70,7 @@ def root_semrep(syntree, start='S'):
     """
     return _semrep(syntree.node)
 
-def text_interpret(inputs, grammar, start='S', trace=0):
+def batch_interpret(inputs, grammar, start='S', trace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
@@ -74,17 +80,14 @@ def text_interpret(inputs, grammar, start='S', trace=0):
     @return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
     @rtype: C{dict}
     """
-    parses = text_parse(inputs, grammar, trace=trace)
-    semreps = {}
-    for sent in inputs:
-        syntrees = parses[sent]
-        syn_sem = \
-           [(syn, root_semrep(syn, start=start))
-            for syn in syntrees]
-        semreps[sent] = syn_sem
-    return semreps
+    return [[(syn, root_semrep(syn, start=start)) for syn in syntrees]
+            for syntrees in batch_parse(inputs, grammar, trace=trace)]
 
-def text_evaluate(inputs, grammar, model, assignment, trace=0):
+@deprecated('Use batch_interpret() instead.')
+def text_interpret(*args, **kwargs):
+    batch_interpret(*args, **kwargs)
+
+def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
@@ -94,15 +97,13 @@ def text_evaluate(inputs, grammar, model, assignment, trace=0):
     @return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
     @rtype: C{dict}
     """
-    g = assignment
-    m = model
-    semreps = text_interpret(inputs, grammar)
-    evaluations = {}
-    for sent in inputs:
-        syn_sem_val = \
-          [(syn, sem, m.evaluate(str(sem), g, trace=trace)) for (syn, sem) in semreps[sent]]
-        evaluations[sent] = syn_sem_val
-    return evaluations
+    return [[(syn, sem, model.evaluate(str(sem), assignment, trace=trace))
+            for (syn, sem) in interpretations]
+            for interpretations in batch_interpret(inputs, grammar)]
+
+@deprecated('Use batch_evaluate() instead.')
+def text_evaluate(*args, **kwargs):
+    batch_evaluate(*args, **kwargs)
 
 ##########################################
 # REs used by the parse_valuation function
@@ -380,10 +381,10 @@ def demo():
 
     if options.evaluate: 
         evaluations = \
-            text_evaluate(sents, gram, model, g, semtrace=options.semtrace)
+            batch_evaluate(sents, gram, model, g, semtrace=options.semtrace)
     else:
         semreps = \
-            text_interpret(sents, gram, beta_reduce=options.beta, syntrace=options.syntrace)
+            batch_interpret(sents, gram, beta_reduce=options.beta, syntrace=options.syntrace)
         
     for sent in sents:
         n = 1

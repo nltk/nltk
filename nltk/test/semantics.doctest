@@ -588,12 +588,13 @@ Load a valuation from a file.
     >>> g = Assignment(dom)
     >>> gramfile = 'grammars/book_grammars/sem3.fcfg'
     >>> inputs = ['John sees a girl', 'every dog barks']
-    >>> for s in inputs:
+    >>> parses = batch_parse(inputs, gramfile)
+    >>> for sent, trees in zip(inputs, parses):
     ...     print
-    ...     print "Sentence: %s" % s
-    ...     for tree in text_parse(inputs, gramfile)[s]:
+    ...     print "Sentence: %s" % sent
+    ...     for tree in trees: 
     ...         print "Parse:\n %s" %tree
-    ...     print "Semantics: %s" %  root_semrep(tree)
+    ...         print "Semantics: %s" %  root_semrep(tree)
     <BLANKLINE>
     Sentence: John sees a girl
     Parse:
@@ -618,8 +619,8 @@ Load a valuation from a file.
     Semantics: all x.(dog(x) -> bark(x))
 
     >>> sent = "every dog barks"
-    >>> result = nltk.sem.text_interpret([sent], gramfile)
-    >>> for (syntree, semrep) in result[sent]:
+    >>> result = nltk.sem.batch_interpret([sent], gramfile)[0]
+    >>> for (syntree, semrep) in result:
     ...     print syntree
     ...     print
     ...     print semrep
@@ -632,8 +633,8 @@ Load a valuation from a file.
     <BLANKLINE>
     all x.(dog(x) -> bark(x))
 
-    >>> result = nltk.sem.text_evaluate([sent], gramfile, m, g)
-    >>> for (syntree, semrel, value) in result[sent]:
+    >>> result = nltk.sem.batch_evaluate([sent], gramfile, m, g)[0]
+    >>> for (syntree, semrel, value) in result:
     ...     print syntree
     ...     print
     ...     print semrep
@@ -651,9 +652,9 @@ Load a valuation from a file.
     True
 
     >>> sents = ['Irene walks', 'Cyril bites an ankle']
-    >>> results  = nltk.sem.text_interpret(sents, 'grammars/book_grammars/sem2.fcfg')
-    >>> for sent in sents:
-    ...     for (synrep, semrep) in results[sent]:
+    >>> results = nltk.sem.batch_interpret(sents, 'grammars/book_grammars/sem2.fcfg')
+    >>> for result in results:
+    ...     for (synrep, semrep) in result:
     ...         print synrep
     (S[sem=<walk(irene)>]
       (NP[-loc, num='sg', sem=<\P.P(irene)>]
