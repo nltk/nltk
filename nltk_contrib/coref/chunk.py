@@ -218,11 +218,11 @@ def train_conll2k_chunker(num_train_sents, num_test_sents, **kwargs):
                                        
 _NUM_DEMO_SENTS = 10
 def demo(verbose=False):
-    from nltk_contrib.coref.chunk import train
+    from nltk_contrib.coref.chunk import train_conll2k_chunker
     from nltk_contrib.coref import CorpusReaderDecorator
     from nltk.corpus.util import LazyCorpusLoader    
     from nltk.corpus.reader import BracketParseCorpusReader
-    model = train(_NUM_DEMO_SENTS, _NUM_DEMO_SENTS, verbose=verbose)
+    model = train_conll2k_chunker(_NUM_DEMO_SENTS, _NUM_DEMO_SENTS, verbose=verbose)
     treebank = LazyCorpusLoader(
         'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg')
     treebank = ChunkTaggerCorpusReader(treebank, chunker=model)
