@@ -41,11 +41,11 @@ We can embed DRSs as components of an ``implies`` condition.
     >>> print dp.parse(s)
     ([],[(([x],[man(x), walk(x)]) -> ([y],[woman(y), stop(y)]))])
 
-The ``toFol()`` method converts DRSs into FOL formulae.
+The ``fol()`` method converts DRSs into FOL formulae.
 
-    >>> print dp.parse(r'([x],[man(x), walks(x)])').toFol()
+    >>> print dp.parse(r'([x],[man(x), walks(x)])').fol()
     exists x.(man(x) & walks(x))
-    >>> print dp.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])').toFol()
+    >>> print dp.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])').fol()
     all x.(man(x) -> walks(x))
 
 In order to visualize a DRS, the ``draw()`` method can be use.
@@ -162,41 +162,41 @@ Parser
     >>> print dp.parse('([],[(([x],[dog(x)]) -> ([y,e],[boy(y), chase(e), subj(e,x), obj(e,y)]))])+([x,e],[PRO(x), run(e), subj(e,x)])').simplify()
     ([z1,e02],[(([x],[dog(x)]) -> ([y,e],[boy(y), chase(e), subj(e,x), obj(e,y)])), PRO(z1), run(e02), subj(e02,z1)])
     
-``toFol()``
+``fol()``
 -----------
 
-    >>> print dp.parse(r'([x,y],[sees(x,y)])').toFol()
+    >>> print dp.parse(r'([x,y],[sees(x,y)])').fol()
     exists x y.sees(x,y)
-    >>> print dp.parse(r'([x],[man(x), walks(x)])').toFol()
+    >>> print dp.parse(r'([x],[man(x), walks(x)])').fol()
     exists x.(man(x) & walks(x))
-    >>> print dp.parse(r'\x.([],[man(x), walks(x)])').toFol()
+    >>> print dp.parse(r'\x.([],[man(x), walks(x)])').fol()
     \x.(man(x) & walks(x))
-    >>> print dp.parse(r'\x y.([],[sees(x,y)])').toFol()
+    >>> print dp.parse(r'\x y.([],[sees(x,y)])').fol()
     \x y.sees(x,y)
 
-    >>> print dp.parse(r'\x.([],[walks(x)])(john)').toFol()
+    >>> print dp.parse(r'\x.([],[walks(x)])(john)').fol()
     \x.walks(x)(john)
-    >>> print dp.parse(r'\R x.([],[big(x,R)])(\y.([],[mouse(y)]))').toFol()
+    >>> print dp.parse(r'\R x.([],[big(x,R)])(\y.([],[mouse(y)]))').fol()
     (\R x.big(x,R))(\y.mouse(y))
 
-    >>> print dp.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))').toFol()
+    >>> print dp.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))').fol()
     (exists x.walks(x) & exists y.runs(y))
 
-    >>> print dp.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))').toFol()
+    >>> print dp.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))').fol()
     (walks(x) -> runs(x))
 
-    >>> print dp.parse(r'([x],[PRO(x), sees(John,x)])').toFol()
+    >>> print dp.parse(r'([x],[PRO(x), sees(John,x)])').fol()
     exists x.(PRO(x) & sees(John,x))
-    >>> print dp.parse(r'([x],[man(x), -([],[walks(x)])])').toFol()
+    >>> print dp.parse(r'([x],[man(x), -([],[walks(x)])])').fol()
     exists x.(man(x) & -walks(x))
-    >>> print dp.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])').toFol()
+    >>> print dp.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])').fol()
     all x.(man(x) -> walks(x))
 
-    >>> print dp.parse(r'([x],[man(x) | walks(x)])').toFol()
+    >>> print dp.parse(r'([x],[man(x) | walks(x)])').fol()
     exists x.(man(x) | walks(x))
-    >>> print dp.parse(r'([x],[man(x) <-> walks(x)])').toFol()
+    >>> print dp.parse(r'([x],[man(x) <-> walks(x)])').fol()
     exists x.(man(x) <-> walks(x))
-    >>> print dp.parse(r'P(x) + ([x],[walks(x)])').toFol()
+    >>> print dp.parse(r'P(x) + ([x],[walks(x)])').fol()
     (P(x) & exists x.walks(x))
 
 ``resolve_anaphora()``
