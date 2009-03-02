@@ -8,7 +8,7 @@
 
 from nltk import DictionaryProbDist
 
-class ClusterI:
+class ClusterI(object):
     """
     Interface covering basic clustering functionality.
     """

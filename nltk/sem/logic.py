@@ -149,7 +149,7 @@ def skolem_function(univ_scope=None):
     return skolem
 
 
-class Type:
+class Type(object):
     def __repr__(self):
         return str(self)
     
