@@ -1,6 +1,6 @@
 
-STOPLIST = 'nltk_term_index.stoplist'
-FILENAMES = ['../doc/book/ch%02d.xml' % n for n in range(12)]
+STOPLIST = '../tools/nltk_term_index.stoplist'
+FILENAMES = ['ch%02d.xml' % n for n in range(12)]
 #FILENAMES = ['../doc/book/ll.xml']
 
 import re, sys
