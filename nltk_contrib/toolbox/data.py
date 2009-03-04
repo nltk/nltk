@@ -145,6 +145,42 @@ class ToolboxData(toolbox.ToolboxData):
             builder.end(state)
         return builder.close()
 
+def parse_mdf_corpus(mdf_files,  directory=None,  grammar=None,  **kwargs):
+    """
+    Returns an element tree structure corresponding to a toolbox data file
+    parsed according to the grammar.
+    
+    @type mdf_files: C{sequence}
+    @param mdf_files: sequence of names of files to be parsed
+    @type directory: C{string}
+    @param directory: Name of directory where the mdf_files are found 
+    @type grammar: C{string} or C{None}
+    @param grammar: grammar describing the structure of the toolbox files.
+    @rtype:   C{ElementTree._ElementInterface}
+    @return:  Contents of toolbox data parsed according to rules in grammar
+    return parses of all the dictionary files"""
+    db =  toolbox.ToolboxData()
+    full_lexicon = lexicon_header = None
+    for fname in mdf_files:
+        db.open(os.path.join(directory, fname))
+        logging.info('about to parse %s' % fname)
+        try:
+            cur_lexicon = db.parse(grammar, **kwargs)
+        except ValueError, msg:
+            logging.error('%s: %s' % (fname, msg))
+            db.close()
+            continue
+        db.close()
+        if full_lexicon is not None:
+            header = lexicon.find('header')
+            if header != lexicon_header:
+                raise ValueError,  "cannot combine lexicons with different types"
+            for elem in lexicon.findall('entry'):
+                full_lexicon.append(elem)
+        else:
+            full_lexicon = lexicon
+    return full_lexicon
+
 def indent(elem, level=0):
     """
     Recursive function to indent an ElementTree._ElementInterface
@@ -264,6 +300,115 @@ def from_date(d, four_digit_year=True):
     @rtype: string
     """
     return '%04d/%s/%02d' % (date.day, _month_abbr[date.month-1], date.year)
+
+def elem_append_string(elem,  s):
+    """Append s to C{elem}.
+    
+    @param elem: This is modified by the function.  It may have subelements.
+    @type elem: C{ElementTree._ElementInterface}
+    @param s: text to be appended to C{elem}
+    @type s: C{String}
+    """
+    if len(elem):
+        elem[-1].tail = (elem[-1].tail or "") + s
+    else:
+        elem.text = (elem.text or "") + s
+    
+char_code_attribs = {
+    'fv':   {'lang':  'v'}, 
+    'fe':   {'lang':  'e'}, 
+    'fn':   {'lang':  'n'}, 
+    'fr':   {'lang':  'r'}, 
+    'fs':   {'class':  'fs'}, 
+    'fl':   {'class':  'fl'}, 
+    'fb':   {'class':  'fb'},       # bold
+    'fi':   {'class':  'fi'},       # italic
+    'u'  :   {'class':  'u'},         # general underlined
+    'uc':   {'class':  'uc'},       # specific underlined
+    'ub':   {'class':  'ub'},       # specific underlined bold
+    'ui':   {'class':  'ui'},       # specific underlined italic
+    'hm':   {'class':  'hm'},       # homonym
+}
+
+char_codes = '|'.join(sorted(char_code_attribs.keys(),  key=lambda s: (-len(s),  s)))
+word_pat = re.compile(r'(%s):([^\s:;,.?!(){}\[\]]+)' % char_codes)
+bar_pat = re.compile(r'\|(%s)\{([^}]*)(?:\}|$)'  % char_codes)
+    
+def _append_char_coded_text(elem,  s,  char_code_pat):
+    """Append s to C{elem} with text in coded with character style codes  converted to span elements.
+    
+    @param elem: element corresponding to an MDF field. This is modified by the function. 
+        It may already have 'span' subelements corresponding to character styled text earlier in the MDF field.
+    @type elem: C{ElementTree._ElementInterface}
+    @param s: field contents possibly including parts coded with MDF character style codes
+    @type s: C{String}
+    @param char_code_pat:  compiled regular expression describing the character styled text with the style 
+        code. It must have two sets of capturing parentheses. The first set captures the style code and the 
+        second the styled text.
+    @type char_code_pat: compiled regular expression pattern
+    """
+    mobj = char_code_pat.search(s)
+    pos = 0
+    while mobj is not None:
+        elem_append_string(elem,  s[pos:mobj.start()])
+        attribs = char_code_attribs[mobj.group(1)]
+        span_elem = SubElement(elem, 'span',  attribs)
+        span_elem.text = mobj.group(2)
+        pos = mobj.end()
+        mobj = char_code_pat.search(s,  pos)
+    elem_append_string(elem,  s[pos:])
+    
+def _inline_char_coded_text(elem,  char_code_pat):
+    """replace char coded text in C{elem} with span elements with appropriate attributes
+        
+    @param elem: element corresponding to an MDF field. This is modified by the function. 
+        It may already have 'span' subelements corresponding to character styled text earlier in the MDF field.
+    @type elem: C{ElementTree._ElementInterface}
+    @param char_code_pat:  compiled regular expression describing the character styled text with the style 
+        code. It must have two sets of capturing parentheses. The first set captures the style code and the 
+        second the styled text.
+    @type char_code_pat: compiled regular expression pattern
+    """
+    text = elem.text
+    elem.text = None
+    sub_elems = elem[:]
+    elem[:] = []
+    _append_char_coded_text(elem,  text,  char_code_pat)
+    for sub_elem in sub_elems:
+        elem.append(sub_elem)
+        tail = sub_elem.tail
+        if tail:
+            sub_elem.tail = None
+            _append_char_coded_text(elem,  tail,  char_code_pat)
+            
+def inline_char_coded_elem(elem):
+    """replace char coded text in C{elem} with span elements with appropriate attributes
+        
+    @param elem: element corresponding to an MDF field. This is modified by the function. 
+        It may already have 'span' subelements corresponding to character styled text earlier in the MDF field.
+    @type elem: C{ElementTree._ElementInterface}
+    """
+    _inline_char_coded_text(elem,  word_pat)
+    # text coded with the word_pat uses underscores to seperate words
+    for e in elem.getiterator('span'):
+        e.text = e.text.replace('_',  ' ')
+    _inline_char_coded_text(elem,  bar_pat)
+
+def inline_char_coded_text(tag,  s):
+    """return an element with the char coded text converted to span elements with appropriate attributes
+        
+    @param tag: tag for returned element
+    @type tag: C{String}
+    @param s: element corresponding to an MDF field. This is modified by the function. 
+        It may already have 'span' subelements corresponding to character styled text earlier in the MDF field.
+    @type s: C{String}
+    @return: an element with the character code styles converted to spans elements.
+    @rtype: C{ElementTree._ElementInterface}
+    """
+    elem = Element(tag)
+    elem.text= s
+    inline_char_coded_elem(elem)
+    return elem
 
 def demo_flat():
     from nltk.etree.ElementTree import ElementTree    
