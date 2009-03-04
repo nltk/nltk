@@ -9,6 +9,7 @@ import re
 import time
 import optparse
 
+from nltk.data import load
 from nltk.util import LazyMap
 
 from nltk.corpus import ConllChunkCorpusReader
@@ -32,6 +33,8 @@ from nltk_contrib.coref.train import train_model
 TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
                             'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
 
+CONLL2K_CHUNK_TAGGER = \
+    'nltk:taggers/maxent_conll2k_chunk_tagger/conll2k.chunker.pickle.gz'
 
 class ChunkTaggerFeatureDetector(dict):
     """
@@ -102,7 +105,7 @@ class ChunkTagger(AbstractClassifierBasedTagger, ChunkParserI):
         return '\n'.join([' '.join(token) for token in tokens])
 
     def parse(self, tokens):
-        tokens = ChunkTagger._flatten(self.tag(tokens))
+        tokens = self.__class__._flatten(self.tag(tokens))
         return conllstr2tree(self._tokens2conllstr(tokens))
 
     def test(self, test_sequence, **kwargs):
@@ -118,7 +121,7 @@ class ChunkTagger(AbstractClassifierBasedTagger, ChunkParserI):
         count = sum([len(sent) for sent in test_sequence])
         chunkscore = ChunkScore()
         for test_sent in test_sequence:
-            correct = conllstr2tree(ChunkTagger._tokens2conllstr(test_sent))
+            correct = conllstr2tree(self.__class__._tokens2conllstr(test_sent))
             guess = self.parse(correct.leaves())
             chunkscore.score(correct, guess)
             if kwargs.get('verbose'):
@@ -182,6 +185,18 @@ class ChunkTaggerCorpusReader(CorpusReaderDecorator):
         @type: C{ChunkTagger}
         """
         return self._chunker
+        
+
+class Conll2kChunkTaggerCorpusReader(ChunkTaggerCorpusReader):
+    """
+    A C{CorpusReaderDecorator} that adds chunking functionality to an
+    arbitrary C{CorpusReader}.
+    """
+    def __init__(self, reader, **kwargs):     
+        if kwargs.get('tagger'):
+            reader = TaggerCorpusReader(reader, tagger=kwargs.get('tagger'))
+        self._chunker = load(CONLL2K_CHUNK_TAGGER)
+        CorpusReaderDecorator.__init__(self, reader, **kwargs)
            
  
 def maxent_classifier_builder(labeled_featuresets):
@@ -203,6 +218,10 @@ def train_conll2k_chunker(num_train_sents, num_test_sents, **kwargs):
         'conll2000', ConllChunkCorpusReader,
         ['test.txt'], phrase_types)
     conll2k_test_sequence = conll2k_test.iob_sents()
+    # Import ChunkTagger and ChunkTaggerFeatureDetector because we want 
+    # train_model() and the pickled object to use the full class names.
+    from nltk_contrib.coref.chunk import ChunkTagger, \
+        ChunkTaggerFeatureDetector    
     chunker = train_model(ChunkTagger, 
                           conll2k_train_sequence, 
                           conll2k_test_sequence,
@@ -213,22 +232,20 @@ def train_conll2k_chunker(num_train_sents, num_test_sents, **kwargs):
                           classifier_builder=maxent_classifier_builder,
                           verbose=kwargs.get('verbose'))
     if kwargs.get('verbose'):
-        model.show_most_informative_features(25)
+        chunker.show_most_informative_features(25)
     return chunker
                                        
-_NUM_DEMO_SENTS = 10
 def demo(verbose=False):
-    from nltk_contrib.coref.chunk import train_conll2k_chunker
-    from nltk_contrib.coref import CorpusReaderDecorator
     from nltk.corpus.util import LazyCorpusLoader    
-    from nltk.corpus.reader import BracketParseCorpusReader
-    model = train_conll2k_chunker(_NUM_DEMO_SENTS, _NUM_DEMO_SENTS, verbose=verbose)
+    from nltk.corpus.reader import BracketParseCorpusReader    
+    from nltk_contrib.coref import CorpusReaderDecorator
+    from nltk_contrib.coref.chunk import Conll2kChunkTaggerCorpusReader
     treebank = LazyCorpusLoader(
         'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg')
-    treebank = ChunkTaggerCorpusReader(treebank, chunker=model)
+    treebank = Conll2kChunkTaggerCorpusReader(treebank)
     for sent in treebank.chunked_sents()[:10]:
         for chunk in sent:
-            print chunk
+           print chunk
         print
     
 if __name__ == '__main__':
@@ -265,7 +282,7 @@ if __name__ == '__main__':
         chunker = train_conll2k_chunker(options.num_train_sents, 
                                         options.num_test_sents,
                                         model_file=options.model_file, 
-                                        verbose=options.verbose)                             
+                                        verbose=options.verbose)                         
     elif options.demo:
         demo(options.verbose)
     else:
