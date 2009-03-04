@@ -1,6 +1,7 @@
 
-STOPLIST = '../tools/nltk_term_index.stoplist'
+STOPLIST = '../../tools/nltk_term_index.stoplist'
 FILENAMES = ['ch%02d.xml' % n for n in range(12)]
+TARGET_DIR = 'nlp/'
 #FILENAMES = ['../doc/book/ll.xml']
 
 import re, sys
@@ -73,7 +74,8 @@ def scan_xml(filenames, names):
         log.info('  %s' % filename)
         src = open(filename, 'rb').read()
         src = SCAN_RE.sub(scansub, src)
-        out = open(filename[:-4]+'.li.xml', 'wb')
+#        out = open(filename[:-4]+'.li.xml', 'wb')
+        out = open(TARGET_DIR + filename, 'wb')
         out.write(src)
         out.close()
 
