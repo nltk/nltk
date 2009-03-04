@@ -1270,14 +1270,14 @@ def demo(num_sents=100, max_rules=200, min_score=3,
     unigram_tagger = tag.UnigramTagger(training_data,
                                        backoff=nn_cd_tagger)
     if gold_data:
-        print "    [accuracy: %f]" % tag.accuracy(unigram_tagger, gold_data)
+        print "    [accuracy: %f]" % unigram_tagger.evaluate(gold_data)
 
     # Bigram tagger
     print "Training bigram tagger:"
     bigram_tagger = tag.BigramTagger(training_data,
                                      backoff=unigram_tagger)
     if gold_data:
-        print "    [accuracy: %f]" % tag.accuracy(bigram_tagger, gold_data)
+        print "    [accuracy: %f]" % bigram_tagger.evaluate(gold_data)
 
     # Brill tagger
     templates = [
@@ -1297,7 +1297,7 @@ def demo(num_sents=100, max_rules=200, min_score=3,
     brill_tagger = trainer.train(training_data, max_rules, min_score)
 
     if gold_data:
-        print("\nBrill accuracy: %f" % tag.accuracy(brill_tagger, gold_data))
+        print("\nBrill accuracy: %f" % brill_tagger.evaluate(gold_data))
 
     if trace <= 1:
         print("\nRules: ")
