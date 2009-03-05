@@ -153,7 +153,7 @@ signature <ORG, LOC>.
     >>> IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
     >>> for fileid in ieer.fileids():
     ...     for doc in ieer.parsed_docs(fileid):
-    ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, pattern = IN):
+    ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern = IN):
     ...             print relextract.show_raw_rtuple(rel)  # doctest: +ELLIPSIS
     [ORG: 'Christian Democrats'] ', the leading political forces in' [LOC: 'Italy']
     [ORG: 'AP'] ') _ Lebanese guerrillas attacked Israeli forces in southern' [LOC: 'Lebanon']
@@ -205,7 +205,7 @@ of roles that a PERSON can occupy in an ORGANIZATION.
     >>> ROLES = re.compile(roles, re.VERBOSE)
     >>> for fileid in ieer.fileids():
     ...     for doc in ieer.parsed_docs(fileid):
-    ...         for rel in relextract.extract_rels('PER', 'ORG', doc, pattern=ROLES):
+    ...         for rel in relextract.extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
     ...             print relextract.show_raw_rtuple(rel) # doctest: +ELLIPSIS
     [PER: 'Kivutha Kibwana'] ', of the' [ORG: 'National Convention Assembly']
     [PER: 'Boban Boskovic'] ', chief executive of the' [ORG: 'Plastika']
@@ -218,7 +218,7 @@ of roles that a PERSON can occupy in an ORGANIZATION.
 In the case of the CoNLL2002 data, we can include POS tags in the
 query pattern. This example also illustrates how the output can be
 presented as something that looks more like a clause in a logical language.
-
+    
     >>> de = """
     ... .*
     ... (
@@ -241,3 +241,21 @@ presented as something that looks more like a clause in a logical language.
     DE('psoe', 'villanueva_de_la_serena')
     DE('ej\xc3\xa9rcito', 'l\xc3\xadbano')
     DE('juzgado_de_lo_penal_n\xc3\xbamero_2', 'ceuta')
+    
+    >>> vnv = """
+    ... (
+    ... is/V|
+    ... was/V|
+    ... werd/V|
+    ... wordt/V
+    ... )
+    ... .*
+    ... van/Prep
+    ... """
+    >>> VAN = re.compile(vnv, re.VERBOSE)
+    >>> for doc in conll2002.chunked_sents('ned.train'):
+    ...     for r in relextract.extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN): 
+    ...         print  relextract.show_clause(r, relsym="VAN")
+    VAN("cornet_d'elzius", 'buitenlandse_handel')
+    VAN('johan_rottiers', 'kardinaal_van_roey_instituut')
+    VAN('annie_lennox', 'eurythmics')
