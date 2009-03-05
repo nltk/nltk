@@ -33,7 +33,9 @@ from itertools import ifilter
 NE_CLASSES = {
     'ieer': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION', 
             'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'],
-    'conll2002': ['LOC', 'PER', 'ORG']
+    'conll2002': ['LOC', 'PER', 'ORG'],
+    'ace': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION', 
+            'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE', 'FACILITY', 'GPE'],
     }
 
 # Allow abbreviated class labels                   
@@ -172,7 +174,7 @@ def mk_reldicts(pairs, window=5, trace=0):
         pairs = pairs[1:]
     return result
 
-def extract_rels(subjclass, objclass, doc, corpus='ieer', pattern=None, window=10):
+def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10):
     """
     Filter the output of L{mk_reldicts} according to specified NE classes and a filler pattern.
     
@@ -208,12 +210,11 @@ def extract_rels(subjclass, objclass, doc, corpus='ieer', pattern=None, window=1
             objclass = _expand(objclass)
         else:
             raise ValueError, "your value for the object type has not been recognized: %s" % objclass
-    
-    if corpus == 'ieer':
-        pairs = mk_pairs(doc.text) + mk_pairs(doc.headline)
-    elif corpus == 'conll2002':
+    if corpus == 'ace' or corpus == 'conll2002':
         pairs = mk_pairs(doc)
-    else:
+    elif corpus == 'ieer':
+        pairs = mk_pairs(doc.text) + mk_pairs(doc.headline)
+    else:            
         raise ValueError, "corpus type not recognized"
             
     reldicts = mk_reldicts(pairs)
@@ -273,18 +274,18 @@ def in_demo(trace=0, sql=True):
         cur.execute("""create table Locations
         (OrgName text, LocationName text, DocID text)""")
         
-    IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
+    IN = re.compile(r'.*\bin\b(?!\b.+ing)')
     
     print
     print "IEER: in(ORG, LOC) -- just the clauses:"
     print "=" * 45
 
-    for file in ieer.files():
+    for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             if trace:
                 print doc.docno
                 print "=" * 15
-            for rel in extract_rels('ORG', 'LOC', doc, pattern=IN):
+            for rel in extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern=IN):
                 print show_clause(rel, relsym='IN')
                 if sql:
                     rtuple = (rel['subjtext'], rel['objtext'], doc.docno)
@@ -347,7 +348,7 @@ def roles_demo(trace=0):
                 print doc.docno
                 print "=" * 15
                 lcon = rcon = True
-            for rel in extract_rels('PER', 'ORG', doc, pattern=ROLES):
+            for rel in extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
                 print show_raw_rtuple(rel, lcon=lcon, rcon=rcon)
 
     
@@ -385,25 +386,27 @@ def conllned(trace=1):
         
     vnv = """
     (
-    is/V|
-    was/V|
-    werd/V|
-    wordt/V
+    is/V|    # 3rd sing present and 
+    was/V|   # past forms of the verb zijn ('be')
+    werd/V|  # and also present 
+    wordt/V  # past of worden ('become)
     )
-    .*
-    van/Prep
+    .*       # followed by anything
+    van/Prep # followed by van ('of')
     """
     VAN = re.compile(vnv, re.VERBOSE)
     
     print
     print "Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:"
     print "=" * 45
+    
+    
     for doc in conll2002.chunked_sents('ned.train'):
         lcon = rcon = False
         if trace:
                 lcon = rcon = True
-        for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN):
-            print show_raw_rtuple(rel, lcon=lcon, rcon=rcon)
+        for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN, window=10):
+            print show_raw_rtuple(rel, lcon=True, rcon=True)
     
 #############################################
 ## Spanish CONLL2002: (PER, ORG)
@@ -430,13 +433,23 @@ def conllesp():
     print
 
 
+def ne_chunked():
+    IN = re.compile(r'.*\bin\b(?!\b.+ing)')
+    rels = []
+    for sent in nltk.corpus.treebank.tagged_sents()[:100]:
+        sent = nltk.ne_chunk(sent)
+        print extract_rels('ORG', 'LOC', sent, corpus='ace', pattern = IN)
+        
 
 if __name__ == '__main__':
+    import nltk
+    from nltk.sem import relextract
     in_demo(trace=0)
     roles_demo(trace=0)
     conllned()
     conllesp()
     ieer_headlines()
+    
 
 
 
