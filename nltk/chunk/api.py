@@ -11,6 +11,7 @@
 ##//////////////////////////////////////////////////////
 
 from nltk.parse import ParserI
+import nltk
 
 class ChunkParserI(ParserI):
     """
@@ -30,3 +31,20 @@ class ChunkParserI(ParserI):
         @rtype: L{Tree}
         """
         assert 0, "ChunkParserI is an abstract interface"
+
+    def evaluate(self, gold):
+        """
+        Score the accuracy of the chunker against the gold standard.
+        Remove the chunking the gold standard text, rechunk it using
+        the chunker, and return a L{ChunkScore<nltk.chunk.util.ChunkScore>}
+        object reflecting the performance of this chunk peraser.
+
+        @type gold: C{list} of L{Tree}
+        @param gold: The list of chunked sentences to score the chunker on.
+        @rtype:  L{ChunkScore<nltk.chunk.util.ChunkScore>}
+        """
+        chunkscore = nltk.chunk.util.ChunkScore()
+        for correct in gold:
+            chunkscore.score(correct, self.parse(correct.leaves()))
+        return chunkscore
+        
