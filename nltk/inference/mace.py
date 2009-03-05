@@ -21,7 +21,7 @@ A model builder that makes use of the external 'Mace4' package.
 class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     """
     A L{MaceCommand} specific to the L{Mace} model builder.  It contains
-    the a print_assumptions() method that is used to print the list
+    a print_assumptions() method that is used to print the list
     of assumptions in multiple formats.
     """
     _interpformat_bin = None
@@ -104,7 +104,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     @staticmethod
     def _make_relation_tuple(position, values, num_entities):
         if len(values) == 1:
-           return []
+            return []
         else: 
             sublist_size = len(values) / num_entities
             sublist_start = position / sublist_size
