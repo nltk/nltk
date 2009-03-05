@@ -396,6 +396,37 @@ def tree2conlltags(t):
             tags.append((child[0], child[1], "O"))
     return tags
 
+def conlltags2tree(sentence, chunk_types=('NP','PP','VP'),
+                   top_node='S', strict=False):
+    """
+    Convert the CoNLL IOB format to a tree.
+    """
+    tree = nltk.Tree(top_node, [])
+    for (word, tag) in sentence:
+        if tag is None:
+            if strict:
+                raise ValueError("Bad conll tag sequence")
+            else:
+                # Treat as O
+                tree.append(word)
+        elif tag.startswith('B-'):
+            tree.append(nltk.Tree(tag[2:], [word]))
+        elif tag.startswith('I-'):
+            if (len(tree)==0 or not isinstance(tree[-1], nltk.Tree) or
+                tree[-1].node != tag[2:]):
+                if strict:
+                    raise ValueError("Bad conll tag sequence")
+                else:
+                    # Treat as B-*
+                    tree.append(nltk.Tree(tag[2:], [word]))
+            else:
+                tree[-1].append(word)
+        elif tag == 'O':
+            tree.append(word)
+        else:
+            raise ValueError("Bad conll tag %r" % tag)
+    return tree
+
 def tree2conllstr(t):
     """
     Convert a tree to the CoNLL IOB string format
