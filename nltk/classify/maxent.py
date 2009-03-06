@@ -1298,7 +1298,6 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
         # likelihood delta
         options += ['-dpp', '%s' % abs(kwargs['ll_delta'])]
     options += ['multiclass', trainfile_name]
-    print options
     stdout = call_megam(options)
 
     # Delete the training file
