@@ -8,6 +8,7 @@ analysis
 args
 book
 bubble
+categories
 close
 concatenate
 contains
@@ -98,6 +99,8 @@ update
 verbs
 view
 vocab
+walk
 wav
+width
 words
 write
