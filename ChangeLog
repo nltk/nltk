@@ -1,3 +1,30 @@
+Version 0.9.9 2009-03-11
+
+NLTK:
+* Finalized API for NLTK 2.0 and the book
+* Names of the form nltk.foo.Bar now available as nltk.Bar
+  for significant functionality; in some cases the name was modified
+  (using old names will produce a deprecation warning)
+* Bugfixes in downloader, WordNet
+* Expanded functionality in DecisionTree
+* Translation toy nltk.misc.babelfish
+* New module nltk.help giving access to tagset documentation
+* Fix imports so that NLTK builds without Tkinter (Bjorn Maeland)
+
+Data:
+* new maxent NE chunker model
+* updated grammar packages for the book
+* data for new tagsets collection, documenting several tagsets
+* added lolcat translation to the Genesis collection
+
+Contrib (work in progress):
+* Updates to coreference package (Joseph Frazee)
+* New ISRI Arabic stemmer (Hosam Algasaier)
+* Updates to Toolbox package (Greg Aumann)
+
+Book:
+* Substantial editorial corrections ahead of final submission
+
 Version 0.9.8 2009-02-18
 
 NLTK:
