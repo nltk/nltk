@@ -9,6 +9,11 @@ import gzip
 import time
 
 try:
+    from nltk.data import BufferedGzipFile
+except:
+    from nltk_contrib.coref.data import BufferedGzipFile
+
+try:
     import cPickle as pickle
 except:
     import pickle
@@ -71,9 +76,9 @@ def train_model(train_class, labeled_sequence, test_sequence, pickle_file,
         print 'Saving model...'        
         if isinstance(pickle_file, str):
             if pickle_file.endswith('.gz'):
-                _open = gzip.open
+                 _open = BufferedGzipFile
             else:
-                _open = open
+                 _open = open
             stream = _open(pickle_file, 'wb')
             pickle.dump(model, stream)
             stream.close()

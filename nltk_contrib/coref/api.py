@@ -5,6 +5,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import os
+
 from nltk.corpus import CorpusReader
 from nltk.tokenize.punkt import PunktWordTokenizer
 from nltk.tag import TaggerI, HiddenMarkovModelTaggerTransformI, \
@@ -12,6 +14,8 @@ from nltk.tag import TaggerI, HiddenMarkovModelTaggerTransformI, \
 from nltk.classify import ClassifierI
 from nltk.util import LazyMap
 
+# Location of coref data outside of NLTK_DATA
+NLTK_COREF_DATA = os.path.dirname(__file__) + '/data'
 
 class TrainableI(object):
     """

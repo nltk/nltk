@@ -5,9 +5,12 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import os
 import re
 import time
 import optparse
+
+import nltk
 
 from nltk.data import load
 from nltk.util import LazyMap
@@ -26,7 +29,7 @@ from nltk.classify import ClassifierI
 from nltk.classify.maxent import MaxentClassifier
 
 from nltk_contrib.coref import TrainableI, AbstractClassifierBasedTagger, \
-    CorpusReaderDecorator
+    CorpusReaderDecorator, NLTK_COREF_DATA
 from nltk_contrib.coref.tag import TaggerCorpusReader
 from nltk_contrib.coref.train import train_model
 
@@ -34,7 +37,7 @@ TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
                             'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
 
 CONLL2K_CHUNK_TAGGER = \
-    'nltk:taggers/maxent_conll2k_chunk_tagger/conll2k.chunker.pickle.gz'
+    'nltk:taggers/maxent_conll2k_chunk_tagger/conll2k.chunker.pickle'
 
 class ChunkTaggerFeatureDetector(dict):
     """
@@ -195,8 +198,8 @@ class Conll2kChunkTaggerCorpusReader(ChunkTaggerCorpusReader):
     def __init__(self, reader, **kwargs):     
         if kwargs.get('tagger'):
             reader = TaggerCorpusReader(reader, tagger=kwargs.get('tagger'))
-        self._chunker = load(CONLL2K_CHUNK_TAGGER)
-        CorpusReaderDecorator.__init__(self, reader, **kwargs)
+        kwargs['chunker'] = load(CONLL2K_CHUNK_TAGGER)
+        ChunkTaggerCorpusReader.__init__(self, reader, **kwargs)
            
  
 def maxent_classifier_builder(labeled_featuresets):
@@ -236,10 +239,13 @@ def train_conll2k_chunker(num_train_sents, num_test_sents, **kwargs):
     return chunker
                                        
 def demo(verbose=False):
+    import nltk
     from nltk.corpus.util import LazyCorpusLoader    
-    from nltk.corpus.reader import BracketParseCorpusReader    
-    from nltk_contrib.coref import CorpusReaderDecorator
+    from nltk.corpus.reader import BracketParseCorpusReader
+    from nltk_contrib.coref import NLTK_COREF_DATA
     from nltk_contrib.coref.chunk import Conll2kChunkTaggerCorpusReader
+    if nltk.data.path[0] != NLTK_COREF_DATA:
+        nltk.data.path.insert(0, NLTK_COREF_DATA)
     treebank = LazyCorpusLoader(
         'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg')
     treebank = Conll2kChunkTaggerCorpusReader(treebank)
@@ -263,6 +269,9 @@ if __name__ == '__main__':
     parser.add_option('-r', '--num-train-sents', metavar='NUM_TRAIN',
                       dest='num_train_sents', type=int, 
                       help='number of training sentences')
+    parser.add_option('-l', '--local-models', action='store_true',
+                      dest='local_models', default=False,
+                      help='use models from nltk_contrib.coref')
     parser.add_option('-p', '--psyco', action='store_true',
                       default=False, dest='psyco',
                       help='use Psyco JIT, if available')
@@ -270,6 +279,10 @@ if __name__ == '__main__':
                       default=False, dest='verbose',
                       help='verbose')
     (options, args) = parser.parse_args()
+    
+    if options.local_models:
+        if nltk.data.path[0] != NLTK_COREF_DATA:
+            nltk.data.path.insert(0, NLTK_COREF_DATA)
         
     if options.psyco:
         try:
@@ -282,8 +295,10 @@ if __name__ == '__main__':
         chunker = train_conll2k_chunker(options.num_train_sents, 
                                         options.num_test_sents,
                                         model_file=options.model_file, 
-                                        verbose=options.verbose)                         
+                                        verbose=options.verbose)  
+                       
     elif options.demo:
         demo(options.verbose)
+
     else:
         demo(options.verbose)
