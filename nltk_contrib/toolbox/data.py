@@ -410,6 +410,28 @@ def inline_char_coded_text(tag,  s):
     inline_char_coded_elem(elem)
     return elem
 
+def text_lang_iterator(elem,  lang=None):
+    """return a list of text in document order tagged with the contents of the 'lang' attribute
+        
+    @param elem: element corresponding to a char coded MDF field
+    @type elem: C{String}
+    @param lang: default value of the lang attribute for top level text.
+    @type lang: C{String}
+    @return: list of text in the element and its children in document order 
+        tagged with the value of the 'lang' attribute.
+    @rtype: list of tuples
+    """
+    text_segs = []
+    text = elem.text
+    if text:
+        text_segs.append((text,  lang))
+    for child in elem:
+        text_segs.extend(text_lang_iterator(child,  child.get('lang')))
+        tail = child.tail
+        if tail:
+            text_segs.append((tail,  lang))
+    return text_segs
+
 def demo_flat():
     from nltk.etree.ElementTree import ElementTree    
     import sys
