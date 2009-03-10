@@ -168,21 +168,21 @@ __all__ = [
 
 # Standard treebank POS tagger
 _NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace.pickle'
-def ne_chunk(tokens):
+def ne_chunk(tagged_tokens):
     """
     Use NLTK's currently recommended named entity chunker to
-    chunk the given list of tokens.
+    chunk the given list of tagged tokens.
     """
     chunker = nltk.data.load(_NE_CHUNKER)
-    return chunker.parse(tokens)
+    return chunker.parse(tagged_tokens)
 
-def batch_ne_chunk(sentences):
+def batch_ne_chunk(tagged_sentences):
     """
     Use NLTK's currently recommended named entity chunker to chunk the
-    given list of sentences, each consisting of a list of tokens.
+    given list of tagged sentences, each consisting of a list of tagged tokens.
     """
     chunker = nltk.data.load(_NE_CHUNKER)
-    return chunker.batch_parse(sentences)
+    return chunker.batch_parse(tagged_sentences)
 
 ######################################################################
 #{ Deprecated
