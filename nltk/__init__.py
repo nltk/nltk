@@ -104,7 +104,6 @@ import help
 
 import chunk;     from chunk import *
 import classify;  from classify import *
-import cluster;   from cluster import *
 import inference; from inference import *
 import metrics;   from metrics import *
 import model;     from model import *
@@ -120,6 +119,13 @@ import chat
 import corpus
 import misc
 import toolbox
+
+try:
+    import numpy
+except ImportError:
+    pass
+else:
+    import cluster; from cluster import *
 
 # Import Tkinter-based modules if Tkinter is installed
 from downloader import download, download_shell
