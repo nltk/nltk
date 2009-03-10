@@ -87,7 +87,6 @@ from grammar import *
 from olac import *
 from probability import *
 from text import *
-from toolbox import *
 from tree import *
 from util import *
 from yamltags import *
@@ -120,6 +119,7 @@ import stem;      from stem import *
 import chat
 import corpus
 import misc
+import toolbox
 
 # Import Tkinter-based modules if Tkinter is installed
 from downloader import download, download_shell
