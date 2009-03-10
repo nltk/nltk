@@ -55,9 +55,9 @@ other pieces of text).  A list of identifiers for these files is
 accessed via the ``fileids()`` method of the corpus reader:
 
     >>> nltk.corpus.treebank.fileids() # doctest: +ELLIPSIS
-    ('wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...)
+    ['wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...]
     >>> nltk.corpus.inaugural.fileids() # doctest: +ELLIPSIS
-    ('1789-Washington.txt', '1793-Washington.txt', '1797-Adams.txt', ...)
+    ['1789-Washington.txt', '1793-Washington.txt', '1797-Adams.txt', ...]
 
 Each corpus reader provides a variety of methods to read data from the
 corpus, depending on the format of the corpus.  For example, plaintext
@@ -217,8 +217,8 @@ in a given item as `IEERDocument` objects:
 
     >>> from nltk.corpus import ieer
     >>> ieer.fileids() # doctest: +NORMALIZE_WHITESPACE
-    ('APW_19980314', 'APW_19980424', 'APW_19980429',
-     'NYT_19980315', 'NYT_19980403', 'NYT_19980407')
+    ['APW_19980314', 'APW_19980424', 'APW_19980429',
+     'NYT_19980315', 'NYT_19980403', 'NYT_19980407']
     >>> docs = ieer.parsed_docs('APW_19980314')
     >>> print docs[0]
     <IEERDocument APW19980314.0391: 'Kenyans protest tax hikes'>
@@ -258,7 +258,7 @@ Reading the Penn Treebank:
 
     >>> from nltk.corpus import treebank
     >>> print treebank.fileids() # doctest: +ELLIPSIS
-    ('wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...)
+    ['wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...]
     >>> print treebank.words('wsj_0003.mrg')
     ['A', 'form', 'of', 'asbestos', 'once', 'used', '*', ...]
     >>> print treebank.tagged_words('wsj_0003.mrg')
@@ -358,17 +358,17 @@ examples illustrate the use of the wordlist corpora:
 
     >>> from nltk.corpus import names, stopwords, words
     >>> words.fileids()
-    ('en', 'en-basic')
+    ['en', 'en-basic']
     >>> words.words('en') # doctest: +ELLIPSIS
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
     
     >>> stopwords.fileids() # doctest: +ELLIPSIS
-    ('danish', 'dutch', 'english', 'french', ...)
+    ['danish', 'dutch', 'english', 'french', ...]
     >>> stopwords.words('english') # doctest: +ELLIPSIS
     ['a', "a's", 'able', 'about', 'above', 'according', ...]
     
     >>> names.fileids()
-    ('female.txt', 'male.txt')
+    ['female.txt', 'male.txt']
     >>> names.words('male.txt') # doctest: +ELLIPSIS
     ['Aamir', 'Aaron', 'Abbey', 'Abbie', 'Abbot', 'Abbott', ...]
     >>> names.words('female.txt') # doctest: +ELLIPSIS
@@ -642,7 +642,7 @@ context.
 
     >>> from nltk.corpus import senseval
     >>> senseval.fileids()
-    ('hard.pos', 'interest.pos', 'line.pos', 'serve.pos')
+    ['hard.pos', 'interest.pos', 'line.pos', 'serve.pos']
     >>> senseval.instances('hard.pos')
     ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [SensevalInstance(word='hard-a',
@@ -702,7 +702,7 @@ as XML files.  These corpora are returned as ElementTree objects:
     >>> from nltk.corpus import shakespeare
     >>> from nltk.etree import ElementTree
     >>> shakespeare.fileids() # doctest: +ELLIPSIS
-    ('a_and_c.xml', 'dream.xml', 'hamlet.xml', 'j_caesar.xml', ...)
+    ['a_and_c.xml', 'dream.xml', 'hamlet.xml', 'j_caesar.xml', ...]
     >>> play = shakespeare.xml('dream.xml')
     >>> print play # doctest: +ELLIPSIS
     <Element 'PLAY' at ...>
@@ -862,7 +862,7 @@ list of XML-formatted 'text'/'hypothesis' pairs.
 
     >>> from nltk.corpus import rte
     >>> print rte.fileids() # doctest: +ELLIPSIS
-    ('rte1_dev.xml', 'rte1_test.xml', 'rte2_dev.xml', ..., 'rte3_test.xml')
+    ['rte1_dev.xml', 'rte1_test.xml', 'rte2_dev.xml', ..., 'rte3_test.xml']
     >>> rtepairs = rte.pairs(['rte2_test.xml', 'rte3_test.xml'])
     >>> print rtepairs  # doctest: +ELLIPSIS
     [<RTEPair: gid=2-8>, <RTEPair: gid=2-9>, <RTEPair: gid=2-15>, ...]
@@ -918,12 +918,12 @@ as an ElementTree xml object.  The class record for a given class
 identifier is returned by the `vnclass()` method:
 
     >>> verbnet.vnclass('remove-10.1') # doctest: +ELLIPSIS
-    <Element 'VNCLASS' at ...>
+    <Element VNCLASS at ...>
 
 The `vnclass()` method also accepts "short" identifiers, such as '10.1':
 
     >>> verbnet.vnclass('10.1') # doctest: +ELLIPSIS
-    <Element 'VNCLASS' at ...>
+    <Element VNCLASS at ...>
 
 See the Verbnet documentation, or the Verbnet files, for information
 about the structure of this xml.  As an example, we can retrieve a
@@ -1160,7 +1160,7 @@ method will often take one or more optional arguments, which can be
 used to get a list of the files with a specific file type:
 
     >>> nltk.corpus.timit.fileids() # doctest: +ELLIPSIS
-    ('dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...)
+    ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...]
     >>> nltk.corpus.timit.fileids('phn') # doctest: +ELLIPSIS
     ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa2.phn', 'dr1-fvmh0/si1466.phn', ...]
 
@@ -1264,7 +1264,7 @@ Attempting to call ``timit``\ 's data access methods with a file
 identifier will result in an exception:
 
     >>> nltk.corpus.timit.fileids() # doctest: +ELLIPSIS
-    ('dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...)
+    ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...]
     >>> nltk.corpus.timit.words('dr1-fvmh0/sa1.txt') # doctest: +ELLIPSIS
     Traceback (most recent call last):
       ...
@@ -1534,10 +1534,10 @@ regexp).  The ``ext`` argument specifies a file extension.
 
     >>> corpus = PlaintextCorpusReader(root, ['a.txt', 'b.txt'])
     >>> corpus.fileids()
-    ('a.txt', 'b.txt')
+    ['a.txt', 'b.txt']
     >>> corpus = PlaintextCorpusReader(root, '.*\.txt')
     >>> corpus.fileids()
-    ('a.txt', 'b.txt')
+    ['a.txt', 'b.txt']
 
 The directory containing the corpus is corpus.root:
 
@@ -1621,7 +1621,7 @@ By default, they apply to all documents in the corpus.
     >>> from nltk.corpus.reader.tagged import TaggedCorpusReader
     >>> corpus = TaggedCorpusReader(root, list('ab'))
     >>> corpus.fileids()
-    ('a', 'b')
+    ['a', 'b']
     >>> corpus.root == root
     True
     >>> corpus.words()
@@ -1654,7 +1654,7 @@ The Brown Corpus uses the tagged corpus reader:
 
     >>> from nltk.corpus import brown
     >>> brown.fileids() # doctest: +ELLIPSIS
-    ('ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', ...)
+    ['ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', ...]
     >>> brown.categories() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
     'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
