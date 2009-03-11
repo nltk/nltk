@@ -10,7 +10,7 @@ import os
 from nltk import data
 from nltk.internals import Counter
 from nltk.parse import *
-from nltk.parse.malt import MaltParser
+from nltk.parse import MaltParser
 from nltk.corpus import brown
 from nltk.tag import *
 import logic
@@ -407,11 +407,14 @@ class Glue(object):
         self.remove_duplicates = remove_duplicates
         self.depparser = depparser
         
+        from nltk import Prover9
+        self.prover = Prover9()
+        
         if semtype_file:
             self.semtype_file = semtype_file
         else:
             self.semtype_file = 'glue.semtype'
-        
+            
     def train_depparser(self, depgraphs=None):
         if depgraphs:
             self.depparser.train(depgraphs)
@@ -489,13 +492,14 @@ class Glue(object):
         if self.remove_duplicates:
             for reading in reading_list:
                 try:
-                    if reading.tp_equals(glueformula.meaning, 'Prover9'):
+                    if reading.tp_equals(glueformula.meaning, self.prover):
                         add_reading = False
                         break;
-                except:
+                except Exception, e:
                     #if there is an exception, the syntax of the formula  
                     #may not be understandable by the prover, so don't
                     #throw out the reading.
+                    print 'Error when checking logical equality of statements', e
                     pass
         if add_reading:
             reading_list.append(glueformula.meaning)

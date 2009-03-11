@@ -37,9 +37,10 @@ class DrtTokens(Tokens):
 
 class AbstractDrs(object):
     """
-    This is the base abstract abstract DRT Expression from which every DRT 
+    This is the base abstract DRT Expression from which every DRT 
     Expression extends.
     """
+
     def applyto(self, other):
         return DrtApplicationExpression(self, other)
     
@@ -62,8 +63,13 @@ class AbstractDrs(object):
         return DrtIffExpression(self, other)
     
     def tp_equals(self, other, prover=None):
-        """Pass the expression (self <-> other) to the theorem prover.   
-        If the prover says it is valid, then the self and other are equal."""
+        """
+        Pass the expression (self <-> other) to the theorem prover.   
+        If the prover says it is valid, then the self and other are equal.
+        
+        @param other: an C{AbstractDrs} to check equality against
+        @param prover: a C{nltk.inference.api.Prover}
+        """
         assert isinstance(other, AbstractDrs)
         
         f1 = self.simplify().fol();
