@@ -60,7 +60,7 @@ class DrtGlueDemo(object):
     def _init_glue(self):
         tagger = RegexpTagger(
             [('^(David|Mary|John)$', 'NNP'),
-             ('^(sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$', 'VB'),
+             ('^(walks|sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$', 'VB'),
              ('^(go|order|vanish|find|approach)$', 'VB'),
              ('^(a)$', 'ex_quant'),
              ('^(every)$', 'univ_quant'),
@@ -454,22 +454,23 @@ def demo():
                 'David sees Mary',
                 'David eats a sandwich',
                 'every man chases a dog',
-                'every man believes a dog yawns',
+#                'every man believes a dog yawns',
 #                'John gives David a sandwich',
                 'John chases himself',
-                'John persuades David to order a pizza',
-                'John tries to go',
+#                'John persuades David to order a pizza',
+#                'John tries to go',
 #                'John tries to find a unicorn',
-                'John seems to vanish',
-                'a unicorn seems to approach',
+#                'John seems to vanish',
+#                'a unicorn seems to approach',
 #                'every big cat leaves',
 #                'every gray cat leaves',
-                'every big gray cat leaves',
-                'a former senator leaves',
-                'John likes a cat',
-                'John likes every cat',
-                'he walks',
-                'John walks and he leaves']
+#                'every big gray cat leaves',
+#                'a former senator leaves',
+#                'John likes a cat',
+#                'John likes every cat',
+#                'he walks',
+#                'John walks and he leaves'
+                ]
     DrtGlueDemo(examples).mainloop()
 
 if __name__ == '__main__': demo()

@@ -360,6 +360,7 @@ class SubstituteBindingsI(object):
 
 class Expression(SubstituteBindingsI):
     """This is the base abstract object for all logical expressions"""
+
     def __call__(self, other, *additional):
         accum = self.applyto(other)
         for a in additional:
@@ -401,8 +402,13 @@ class Expression(SubstituteBindingsI):
         return not (self == other)
     
     def tp_equals(self, other, prover=None):
-        """Pass the expression (self <-> other) to the theorem prover.   
-        If the prover says it is valid, then the self and other are equal."""
+        """
+        Pass the expression (self <-> other) to the theorem prover.   
+        If the prover says it is valid, then the self and other are equal.
+        
+        @param other: an C{Expression} to check equality against
+        @param prover: a C{nltk.inference.api.Prover}
+        """
         assert isinstance(other, Expression), "%s is not an Expression" % other
         
         if prover is None:
@@ -506,7 +512,8 @@ class Expression(SubstituteBindingsI):
                 newVar = 'e0%s' % (i+1)
             else:
                 newVar = 'z%s' % (i+1)
-            result = result.replace(v, VariableExpression(Variable(newVar)), True)
+            result = result.replace(v, 
+                        self.make_VariableExpression(Variable(newVar)), True)
         return result
     
     def visit(self, function, combinator, default):
@@ -558,6 +565,9 @@ class Expression(SubstituteBindingsI):
         
         return self.visit(lambda e: isinstance(e,Variable) 
                           and e or e.simplify(), combinator, set())
+
+    def make_VariableExpression(self, variable):
+        return VariableExpression(variable)
 
 
 class ApplicationExpression(Expression):
