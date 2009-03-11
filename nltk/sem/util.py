@@ -282,7 +282,6 @@ def to_cnf(first, second):
 
 def demo_model0():
     global m0, g0
-    val = evaluate.Valuation()
     #Initialize a valuation of non-logical constants."""
     v = [('john', 'b1'),
         ('mary', 'g1'),
@@ -301,7 +300,7 @@ def demo_model0():
         ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')]))
      ]
     #Read in the data from C{v}
-    val.read(v)
+    val = evaluate.Valuation(v)
     #Bind C{dom} to the C{domain} property of C{val}
     dom = val.domain
     #Initialize a model with parameters C{dom} and C{val}.
@@ -373,35 +372,32 @@ def demo():
     if sents is None:
         sents = read_sents(sentsfile)
 
-    gram = nltk.data.load(gramfile)
-    
     # Set model and assignment
     model = m0
     g = g0
 
     if options.evaluate: 
         evaluations = \
-            batch_evaluate(sents, gram, model, g, semtrace=options.semtrace)
+            batch_evaluate(sents, gramfile, model, g, trace=options.semtrace)
     else:
         semreps = \
-            batch_interpret(sents, gram, beta_reduce=options.beta, syntrace=options.syntrace)
+            batch_interpret(sents, gramfile, trace=options.syntrace)
         
-    for sent in sents:
+    for i, sent in enumerate(sents):
         n = 1
         print '\nSentence: %s' % sent
         print SPACER
         if options.evaluate: 
             
-            for (syntree, semrep, value) in evaluations[sent]:
+            for (syntree, semrep, value) in evaluations[i]:
                 if isinstance(value, dict):
                     value = set(value.keys())
-                print '%d:  %s' % (n, semrep.infixify())
+                print '%d:  %s' % (n, semrep)
                 print value
                 n += 1
         else:
            
-            for (syntree, semrep) in semreps[sent]:
-#                print '%d:  %s' % (n, semrep.infixify())
+            for (syntree, semrep) in semreps[i]:
                 print '%d:  %s' % (n, semrep)
                 n += 1
                 
