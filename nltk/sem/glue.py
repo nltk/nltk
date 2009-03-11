@@ -606,16 +606,16 @@ def demo(show_example=-1):
                 'every man chases a dog',
                 'every man believes a dog sleeps',
                 'John gives David a sandwich',
-                'John chases himself',
+                'John chases himself']
 #                'John persuades David to order a pizza',
 #                'John tries to go',
 #                'John tries to find a unicorn',
 #                'John seems to vanish',
 #                'a unicorn seems to approach',
-                'every big cat leaves',
-                'every gray cat leaves',
-                'every big gray cat leaves',
-                'a former senator leaves']
+#                'every big cat leaves',
+#                'every gray cat leaves',
+#                'every big gray cat leaves',
+#                'a former senator leaves',
 
     print '============== DEMO =============='
     
