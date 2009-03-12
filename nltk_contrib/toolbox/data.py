@@ -14,6 +14,9 @@
 from nltk.etree.ElementTree import Element, SubElement, TreeBuilder
 from nltk import toolbox
 import re
+import os
+import types
+import logging
 from datetime import date
 
 class ToolboxData(toolbox.ToolboxData):
@@ -145,41 +148,43 @@ class ToolboxData(toolbox.ToolboxData):
             builder.end(state)
         return builder.close()
 
-def parse_mdf_corpus(mdf_files,  directory=None,  grammar=None,  **kwargs):
+def parse_corpus(file_names,  directory='',  grammar=None,  **kwargs):
     """
-    Returns an element tree structure corresponding to a toolbox data file
+    Returns an element tree structure corresponding to the toolbox data files
     parsed according to the grammar.
     
-    @type mdf_files: C{sequence}
-    @param mdf_files: sequence of names of files to be parsed
+    @type file_names: C{string} or C{sequence} of C{string}s
+    @param file_names: name or sequence of names of files to be parsed
     @type directory: C{string}
-    @param directory: Name of directory where the mdf_files are found 
+    @param directory: Name of directory to which the file_names are appended 
     @type grammar: C{string} or C{None}
     @param grammar: grammar describing the structure of the toolbox files.
     @rtype:   C{ElementTree._ElementInterface}
     @return:  Contents of toolbox data parsed according to rules in grammar
     return parses of all the dictionary files"""
+    if isinstance(file_names, types.StringTypes):
+        file_names = (file_names, )
     db =  toolbox.ToolboxData()
-    full_lexicon = lexicon_header = None
-    for fname in mdf_files:
+    all_data = data_header = None
+    for fname in file_names:
         db.open(os.path.join(directory, fname))
         logging.info('about to parse %s' % fname)
         try:
-            cur_lexicon = db.parse(grammar, **kwargs)
+            cur_data = db.parse(grammar, **kwargs)
         except ValueError, msg:
             logging.error('%s: %s' % (fname, msg))
             db.close()
             continue
         db.close()
-        if full_lexicon is not None:
-            header = lexicon.find('header')
-            if header != lexicon_header:
-                raise ValueError,  "cannot combine lexicons with different types"
-            for elem in lexicon.findall('entry'):
-                full_lexicon.append(elem)
+        if all_data is not None:
+            header = cur_data.find('header')
+            if header != data_header:
+                raise ValueError,  "cannot combine databases with different types"
+            for elem in cur_data.findall('record'):
+                all_data.append(elem)
         else:
-            full_lexicon = lexicon
-    return full_lexicon
+            all_data = cur_data
+    return all_data
 
 def indent(elem, level=0):
     """
