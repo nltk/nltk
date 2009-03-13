@@ -9,7 +9,7 @@
 from nltk.parse import load_earley
 from nltk.draw.tree import draw_trees
 from util import skolemize
-import logic
+from nltk.sem import logic
 
 """
 An implementation of the Hole Semantics model, following Blackburn and Bos,
