@@ -16,7 +16,7 @@ import re
 import nltk
 
 from nltk.internals import deprecated
-from logic import *
+from nltk.sem.logic import *
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
