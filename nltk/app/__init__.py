@@ -18,7 +18,7 @@ concordance:  Part-of-speech concordancer
 nemo:         Finding (and Replacing) Nemo regular expression tool
 rdparser:     Recursive Descent Parser
 srparser:     Shift-Reduce Parser
-wordnet:      WordNet Browser 
+wordnet:      WordNet Browser
 """
 
 
@@ -33,7 +33,7 @@ try:
     from nemo_app import app as nemo
     from rdparser_app import app as rdparser
     from srparser_app import app as srparser
-    # from wordfreq_app import app as wordfreq  buggy
+    from wordfreq_app import app as wordfreq
     from wordnet_app import app as wordnet
 
 except ImportError:
