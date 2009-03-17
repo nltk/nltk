@@ -70,7 +70,7 @@ the target word:
     ...     featureset = {}
     ...     for i in range(max(0, index-3), index):
     ...         featureset['left-context(%s)' % sentence[i]] = True
-    ...     for i in range(index, max(index+3, len(sentence))
+    ...     for i in range(index, max(index+3, len(sentence))):
     ...         featureset['right-context(%s)' % sentence[i]] = True
     ...     return featureset
 
