@@ -102,14 +102,41 @@ class ChunkTagger(AbstractClassifierBasedTagger, ChunkParserI):
     A classifier-based chunk tagger object that can be trained on arbitrary
     sequences of tokens, e.g. (word, pos, iob). L{parse()} and L{test()}
     methods are provided.
-    """   
-    @classmethod
-    def _tokens2conllstr(cls, tokens):
-        return '\n'.join([' '.join(token) for token in tokens])
+    """
+    # _tokens2tree() is almost entirely based on nltk.chunk.util.conllstr2tree().
+    @classmethod    
+    def _tokens2tree(cls, tokens, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
+        stack = [Tree(top_node, [])]
+
+        for token in tokens:
+            word, tag = token[:2]
+            state, chunk_type = re.match(r'([IOB])-?(\S+)?', token[-1]).groups()
+
+            # If it's a chunk type we don't care about, treat it as O.
+            if (chunk_types is not None and
+                chunk_type not in chunk_types):
+                state = 'O'
+
+            # For "Begin"/"Outside", finish any completed chunks -
+            # also do so for "Inside" which don't match the previous token.
+            mismatch_I = state == 'I' and chunk_type != stack[-1].node
+            if state in 'BO' or mismatch_I:
+                if len(stack) == 2: stack.pop()
+
+            # For "Begin", start a new chunk.
+            if state == 'B' or mismatch_I:
+                chunk = Tree(chunk_type, [])
+                stack[-1].append(chunk)
+                stack.append(chunk)
+
+            # Add the new word token.
+            stack[-1].append((word, tag))
+
+        return stack[0]        
 
     def parse(self, tokens):
-        tokens = self.__class__._flatten(self.tag(tokens))
-        return conllstr2tree(self._tokens2conllstr(tokens))
+        tagged_tokens = self.__class__._flatten(self.tag(tokens))
+        return self.__class__._tokens2tree(tagged_tokens, None)
 
     def test(self, test_sequence, **kwargs):
         """
@@ -124,21 +151,22 @@ class ChunkTagger(AbstractClassifierBasedTagger, ChunkParserI):
         count = sum([len(sent) for sent in test_sequence])
         chunkscore = ChunkScore()
         for test_sent in test_sequence:
-            correct = conllstr2tree(self.__class__._tokens2conllstr(test_sent))
-            guess = self.parse(correct.leaves())
+            untagged_sent = [token[:-1] for token in test_sent]
+            correct = self.__class__._tokens2tree(test_sent, None)
+            guess = self.parse(untagged_sent)
             chunkscore.score(correct, guess)
             if kwargs.get('verbose'):
-                correct_tags = \
-                    [iob for word, pos, iob in tree2conlltags(correct)]
-                guessed_tags = tree2conlltags(guess)
-                for (word, pos, guess), correct \
-                in zip(guessed_tags, correct_tags):
-                    if guess == correct:
+                correct_tags = [token[-1] for token in test_sent]
+                guessed_tags = [token[-1] for token in self.tag(untagged_sent)]
+                for (token, guessed_tag, correct_tag) \
+                in zip(untagged_sent, guessed_tags, correct_tags):
+                    if guessed_tag == correct_tag:
                         result = ''
                     else:
                         result = '*' 
-                    print '%-25s %-6s %-6s %-6s %s' % \
-                        (word, pos, guess, correct, result)
+                    template = '%-25s' + ' %-6s'*(len(token) + 1) + ' %s'
+                    args = token + (guessed_tag,) + (correct_tag,) + (result,)
+                    print template % args
                 
         print 'f-score over %d tokens:   %.2f' % (count, chunkscore.f_measure())
         print 'precision over %d tokens: %.2f' % (count, chunkscore.precision())
@@ -176,7 +204,13 @@ class ChunkTaggerCorpusReader(CorpusReaderDecorator):
             else:
                 raise
         return chunks
+        
+    def _tag(self, sent):
+        return self._chunker.__class__._flatten(self._chunker.tag(sent))
 
+    def iob_sents(self):
+        return LazyMap(self._tag, self._reader.tagged_sents())
+        
     def chunked_sents(self):
         return LazyMap(self._chunk, self._reader.tagged_sents())
 
