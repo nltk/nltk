@@ -471,6 +471,8 @@ Typed Logic
 
     >>> print tlp.parse(r'man(x)').type
     ?
+    >>> print tlp.parse(r'walk(angus)').type
+    ?
     >>> print tlp.parse(r'-man(x)').type
     t
     >>> print tlp.parse(r'(man(x) <-> tall(x))').type
