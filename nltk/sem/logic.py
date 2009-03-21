@@ -244,7 +244,7 @@ class AnyType(BasicType, ComplexType):
     second = property(lambda self: self)
     
     def __eq__(self, other):
-        return isinstance(other, AnyType) or other == self
+        return isinstance(other, AnyType) or other.__eq__(self)
     
     def matches(self, other):
         return True
