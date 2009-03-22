@@ -311,16 +311,21 @@ class Text(object):
             
         self._concordance_index.print_concordance(word, width, lines)
     
-    def collocations(self, num=20):
+    def collocations(self, num=20, window_size=2):
         """
-        Print collocations derived from the text.
-        @seealso: L{find_collocaitons}
+        Print collocations derived from the text, ignoring stopwords.
+
+        @seealso: L{find_collocations}
+        @param num: The maximum number of collocations to print.
+        @type num: C{int}
+        @param window_size: The number of tokens spanned by a collocation (default=2)
+        @type window_size: C{int}
         """
         if '_collocations' not in self.__dict__:
             print "Building collocations list"
             from nltk.corpus import stopwords
             ignored_words = stopwords.words('english')
-            finder = BigramCollocationFinder.from_words(self.tokens) 
+            finder = BigramCollocationFinder.from_words(self.tokens, window_size) 
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
             self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)

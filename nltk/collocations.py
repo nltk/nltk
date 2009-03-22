@@ -129,17 +129,22 @@ class BigramCollocationFinder(AbstractCollocationFinder):
     """
 
     @classmethod
-    def from_words(cls, words):
+    def from_words(cls, words, window_size=2):
         """Construct a BigramCollocationFinder for all bigrams in the given
-        sequence.
+        sequence.  By default, bigrams must be contiguous.
         """
         wfd = FreqDist()
         bfd = FreqDist()
 
-        for w1, w2 in ingrams(words, 2, pad_right=True):
+        if window_size < 2:
+            raise ValueError, "Specify window_size at least 2"
+
+        for window in ingrams(words, window_size, pad_right=True):
+            w1 = window[0]
             wfd.inc(w1)
-            if w2 is not None:
-                bfd.inc((w1, w2))
+            for w2 in window[1:]:
+                if w2 is not None:
+                    bfd.inc((w1, w2))
         return cls(wfd, bfd)
 
     def score_ngram(self, score_fn, w1, w2):
