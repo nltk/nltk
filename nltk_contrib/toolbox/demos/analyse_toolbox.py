@@ -11,7 +11,7 @@
 """A tool for developing a chunking grammar to parse toolbox lexical databases
 
 to run it:
-    python analyse_toolbox.py path_to_MDFSamp.db
+    python analyse_toolbox.py -g mdfsamp_grammar -x lexicon.xml path_to_MDFSamp.db
 you need to give the full path to MDFSamp.db that comes with NLTK in
 nltk_data/corpora/toolbox/MDF/MDFSampl.db
 
@@ -35,10 +35,6 @@ from nltk import toolbox
 from nltk.probability import FreqDist
 from nltk_contrib.toolbox import parse_corpus,  indent
 import nltk.etree.ElementTree as ET
-
-dict_encoding = 'utf8'
-lexicon_xml_name = 'lexicon.xml'
-gram_filename = 'mdfsamp_grammar'
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -87,21 +83,23 @@ def count_mkrs(lexicon):
                     nonblank_mkr_count.inc(tag)
     return (mkr_count,  nonblank_mkr_count)
 
-def process(dict_names):
+def process(dict_names,  gram_fname,  xml,  encoding):
     """"""
-    gram_file = open(gram_filename,  'r')
+    gram_file = open(gram_fname,  'r')
     gram = gram_file.read()
     gram_file.close()
-    lexicon = parse_corpus(dict_names,  grammar=gram,  encoding=dict_encoding, errors='replace')
+    lexicon = parse_corpus(dict_names,  grammar=gram,  encoding=encoding, errors='replace')
     mkr_counts,  nonblank_mkr_counts = count_mkrs(lexicon)
     analysis = analyse_dict(lexicon)
-    indent(lexicon)
-    out_file = open(lexicon_xml_name,  "w")
-    out_file.write(ET.tostring(lexicon,  encoding='utf8'))
-    out_file.close()
+    if xml:
+        indent(lexicon)
+        out_file = open(xml,  "w")
+        out_file.write(ET.tostring(lexicon,  encoding='UTF-8'))
+        out_file.close()
     
     print 'analysing files\n%s\n' % '\n'.join(dict_names)
-    print 'XML lexicon output in file "%s"\n' % lexicon_xml_name
+    if xml:
+        print 'XML lexicon output in file "%s"\n' % xml
     print '====chunk grammar===='
     print gram
     print '\n'
@@ -121,27 +119,17 @@ def process(dict_names):
         print '%s\t%5d\t%5d' % (mkr,  mkr_counts.get(mkr,  0),  nonblank_mkr_counts.get(mkr,  0))
     
     
-msg = """Usage:
-analyse_toolbox toolbox_file"""
-
-class Usage(Exception):
-    def __init__(self, msg):
-        self.msg = msg
-
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-    try:
-        try:
-            opts, args = getopt.getopt(argv[1:], "h", ["help"])
-        except getopt.error, msg:
-             raise Usage(msg)
-        # more code, unchanged
-        process(argv[1:])
-    except Usage, err:
-        print >>sys.stderr, err.msg
-        print >>sys.stderr, "for help use --help"
-        return 2
-
 if __name__ == "__main__":
-    sys.exit(main())
+    from optparse import OptionParser
+    usage = "usage: %prog [options] toolbox_db1 [toolbox_db2] ..."
+    parser = OptionParser(usage=usage)
+    parser.add_option("-e", "--enc", dest="encoding", default="cp1252", 
+                      help="encoding of toolbox database(s)")
+    parser.add_option("-g", "--gram", dest="grammar", default="grammar", 
+                      help="file containing chunk grammar describing the structure of the toolbox database(s)")
+    parser.add_option("-x", "--xml", dest="xml", default=None, 
+                      help="name of file for output of parsed contents of toolbox database(s) in indented xml")
+    (options, args) = parser.parse_args()
+    if len(args) == 0:
+        parser.error("you must specify at least one toolbox_db file")
+    process(args,  gram_fname=options.grammar,  xml=options.xml,  encoding=options.encoding)
