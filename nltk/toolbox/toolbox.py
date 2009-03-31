@@ -4,8 +4,6 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
-#         Stuart Robinson <Stuart.Robinson@mpi.nl>
-#         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -400,7 +398,7 @@ def add_default_fields(elem, default_fields):
     """
     for field in default_fields.get(elem.tag,  []):
         if elem.find(field) is None:
-            ET.SubElement(elem, field)
+            SubElement(elem, field)
     for child in elem:
         add_default_fields(child, default_fields)
 
