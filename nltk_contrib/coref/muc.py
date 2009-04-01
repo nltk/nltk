@@ -1,35 +1,101 @@
-# Natural Language Toolkit (NLTK) MUC-6 Corpus Reader
+# Natural Language Toolkit (NLTK) MUC Corpus Reader
 #
 # Copyright (C) 2001-2009 NLTK Project 
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
-# URL: http://nltk.org
+#         Steven Bird <sb@csse.unimelb.edu.au> (original IEER Corpus Reader)
+#         Edward Loper <edloper@gradient.cis.upenn.edu> (original IEER Corpus 
+#         Reader)
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""
-Corpus reader for the MUC-6 Corpus.
-"""
+# Adapted from nltk.corpus.reader.ieer.IEERCorpusReader
+
+import re
+import codecs
 
 from itertools import chain
-from sgmllib import SGMLParser
 
-from nltk.internals import Deprecated
+from nltk import Tree
 
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
+from nltk.util import LazyMap, LazyConcatenation
 
-from nltk.tokenize.punkt import *
-from nltk.tokenize.regexp import *
-from nltk.tokenize.simple import *
+from nltk.tokenize.treebank import TreebankWordTokenizer
 
-class MUC6CorpusReader(CorpusReader):
+from nltk.corpus.util import LazyCorpusLoader
+
+from nltk.corpus.reader.api import CorpusReader
+from nltk.corpus.reader.util import concat, StreamBackedCorpusView
+
+titles = {
+    '891102-0189.ne.v1.3.sgm':'',
+    '891102-0189.co.v2.0.sgm':'',
+    '891101-0050.ne.v1.3.sgm':'',
+}
+documents = sorted(titles)
+
+_MUC_CHUNK_TYPES = [
+    'DATE',
+    'IDENT',
+    'LOCATION',
+    'MONEY',
+    'ORGANIZATION',
+    'PERCENT',
+    'PERSON',
+    'TIME'
+]
+
+_MUC_DOC_RE = re.compile(
+    r'\s*<DOC>\s*'
+    r"""
+     (\s*(<DOCNO>\s*(?P<docno>.+?)\s*</DOCNO>|
+          <CODER>\s*.+?\s*</CODER>|
+          <DD>\s*.+?\s*</DD>|
+          <AN>\s*.+?\s*</AN>|
+          <HL>\s*(?P<headline>.+?)\s*</HL>|
+          <SO>\s*.+?\s*</SO>|
+          <CO>\s*.+?\s*</CO>|
+          <IN>\s*.+?\s*</IN>|
+          <GV>\s*.+?\s*</GV>|
+          <DATELINE>\s*(?P<dateline>.+?)\s*</DATELINE>)\s*)*
+     """
+    r'<TXT>\s*(?P<text>(<p>\s*(<s>\s*.+?\s*</s>)+\s*</p>)+)\s*</TXT>\s*'
+    r'</DOC>\s*', re.DOTALL | re.I | re.VERBOSE)
+_MUC_PARA_RE = re.compile('(<p>\s*.+?\s*</p>)+', re.DOTALL | re.I)
+_MUC_SENT_RE = re.compile('(<s>\s*(?P<sent>.+?)\s*</s>)+', re.DOTALL | re.I)
+_MUC_NE_B_RE = re.compile('<(ENAMEX|NUMEX|TIMEX)\s+[^>]*?TYPE="(?P<type>\w+)"', re.DOTALL | re.I)
+_MUC_NE_E_RE = re.compile('</(ENAMEX|NUMEX|TIMEX)>', re.DOTALL | re.I)
+_MUC_CO_B_RE = re.compile('<COREF\s+[^>]*?ID="(?P<id>\w+)"(\s+TYPE="(?P<type>\w+)")?(\s+REF="(?P<ref>\w+)")?', re.DOTALL | re.I)
+_MUC_CO_E_RE = re.compile('</COREF>', re.DOTALL | re.I)
+
+_TOKENIZER = TreebankWordTokenizer()
+
+class MUCDocument:
+    def __init__(self, text, docno=None, dateline=None, headline=''):
+        self.text = text
+        self.docno = docno
+        self.dateline = dateline
+        self.headline = headline
+        
+    def __repr__(self):
+        if self.headline:
+            headline = ' '.join(self.headline.leaves())
+        else:
+            headline = ' '.join([w for w in self.text.leaves()
+                                 if w[:1] != '<'][:11])+'...'
+        if self.docno is not None:            
+            return '<MUCDocument %s: %r>' % (self.docno, headline)
+        else:
+            return '<MUCDocument: %r>' % headline
+
+class MUCCorpusReader(CorpusReader):
     """
-    A corpus reader for MUC6 SGML files.  Each file begins with a preamble
-    of SGML-tagged metadata.  The document text follows.  The text of the 
-    document is contained in <TXT> tags.  Paragraphs are contained in <p> tags.  
+    A corpus reader for MUC SGML files.  Each file begins with a preamble
+    of SGML-tagged metadata. The document text follows. The text of the 
+    document is contained in <TXT> tags. Paragraphs are contained in <p> tags.  
     Sentences are contained in <s> tags.
     
     Additionally named entities and coreference mentions may be marked within 
-    the document text and document metadata.  The MUC6 corpus provides
+    the document text and document metadata. The MUC6 corpus provides
     named entity and coreference annotations in two separate sets of files.
     Only one kind of metadata will be returned depending on which kind of
     file is being read.
@@ -39,639 +105,389 @@ class MUC6CorpusReader(CorpusReader):
     TYPE attributes.  
     
     Coreference mentions are tagged as COREF and include ID, TYPE, REF, and 
-    MIN attributes.  ID is used to give each coreference mention a unique 
-    numeric idenitifier.  REF indicates the ID of the intended referent of the 
-    coreference mention and is not required for first mentions.  MIN contains 
+    MIN attributes. ID is used to give each coreference mention a unique 
+    numeric idenitifier. REF indicates the ID of the intended referent of the 
+    coreference mention and is not required for first mentions. MIN contains 
     the minimum coreferential string of the coreference mention.
-    
-    This class is a facade and all methods call similarly named methods in
-    C{MUC6Document}. Each returns some possibly complete subset of the tuple
-    (word, iob tag, NE type, coref id, coref type, coref ref, coref min).
     """
-    def __init__(self, root, files):
-        CorpusReader.__init__(self, root, files)
-        
-    def paras(self, files=None):
-        return concat([MUC6Document(filename).paras()
-                       for filename in self.abspaths(files)])
-    
-    def words(self, files=None):
-        return concat([MUC6Document(filename).words()
-                       for filename in self.abspaths(files)])
-    
-    def sents(self, files=None):
-        return concat([MUC6Document(filename).sents()
-                       for filename in self.abspaths(files)])
-    
-    def chunks(self, files=None):
-        return concat([MUC6Document(filename).chunks()
-                       for filename in self.abspaths(files)])
-    
-    def ne_words(self, files=None):
-        return concat([MUC6Document(filename).ne_words()
-                       for filename in self.abspaths(files)])
-    
-    def ne_sents(self, files=None):
-        return concat([MUC6Document(filename).ne_sents()
-                       for filename in self.abspaths(files)])
-    
-    def ne_chunks(self, files=None):
-        return concat([MUC6Document(filename).ne_chunks()
-                       for filename in self.abspaths(files)])
-    
-    def iob_words(self, files=None):
-        return concat([MUC6Document(filename).iob_words()
-                       for filename in self.abspaths(files)])
-    
-    def iob_sents(self, files=None):
-        return concat([MUC6Document(filename).iob_sents()
-                       for filename in self.abspaths(files)])
-    
-    def iob_chunks(self, files=None):
-        return concat([MUC6Document(filename).iob_chunks()
-                       for filename in self.abspaths(files)])
-                       
-    def coref_chunks(self, files=None):
-        return concat([MUC6Document(filename).coref_chunks()
-                       for filename in self.abspaths(files)])
-                       
-    def coref_sents(self, files=None):
-        return concat([MUC6Document(filename).coref_sents()
-                       for filename in self.abspaths(files)])                       
-                       
-    def coref_words(self, files=None):
-        return concat([MUC6Document(filename).coref_words()
-                       for filename in self.abspaths(files)])
-
-    def coref_mentions(self, files=None):
-        return concat([MUC6Document(filename).coref_mentions()
-                       for filename in self.abspaths(files)])                    
-                       
-
-# TODO: At some point it'd be nice to replace this with a class that doesn't 
-# use SGMLParser.  It's slow and the StreamBackedCorpusReader does some nice
-# things.
-class MUC6Document(str):
-    """A helper class for reading individual MUC6 documents."""
-    def __init__(self, path):
-        str.__init__(self, path)
-        self._sgmldoc_ = None
-
-    # Lazy-loade the SGML doc.  I.e. if the document is loaded and never read
-    # from, don't bother parsing it because parsing is rather slow.
-    def _sgmldoc(self):
-        if self._sgmldoc_:
-            return self._sgmldoc_
-        self._sgmldoc_ = MUC6SGMLParser().parse(self)
-        return self._sgmldoc_
-
-    def paras(self):
-        result = []
-        for para in self._sgmldoc().text():
-            sents = []
-            for sent in para:
-                sents.append([word for chunk in sent for word in chunk.split()])
-            result.append(sents)
-        assert None not in result
-        return result
-        
-    def words(self):
-        result = list(chain(*self.sents()))
-        assert None not in result
-        return result
-
-    def sents(self):
-        result = list(chain(*self.paras()))
-        assert None not in result
-        return result
-
-    def chunks(self):
-        result = list(chain(*chain(*self._sgmldoc().text())))
-        assert None not in result
-        return result
-    
-    def ne_chunks(self):
-        result = []
-        for chunk in self.coref_chunks():
-            if isinstance(chunk, tuple):
-                result.append(chunk[:3])
-            elif isinstance(chunk, list):
-                result.append([token[:3] for token in chunk])
-            else:
-                raise
-        assert None not in result
-        return result
-    
-    def ne_sents(self):
-        result = []
-        for sent in self.coref_sents():
-            result.append([token[:3] for token in sent])
-        assert None not in result
-        return result
-    
-    def ne_words(self):
-        result = list(chain(*self.ne_sents()))
-        assert None not in result
-        return result
-    
-    def iob_chunks(self):
-        result = []
-        for chunk in self.coref_chunks():
-            if isinstance(chunk, tuple):
-                result.append(chunk[:2])
-            elif isinstance(chunk, list):
-                result.append([token[:2] for token in chunk])
-            else:
-                raise
-        assert None not in result
-        return result
-    
-    def iob_sents(self):
-        result = []
-        for sent in self.coref_sents():
-            result.append([token[:2] for token in sent])
-        assert None not in result
-        return result
-    
-    def iob_words(self):
-        result = list(chain(*self.iob_sents()))
-        assert None not in result
-        return result
-
-    def coref_chunks(self):
-        result = []
-        for chunk in self.chunks():
-            if chunk.iob_tag() == MUC6Mention.OUT:
-                result.append((str(chunk), chunk.iob_tag(), chunk.ne_type(),
-                               chunk.id(), chunk.coref_type(), chunk.ref(), 
-                               chunk.min()))
-            else:
-                result.append([(str(word), word.iob_tag(), word.ne_type(),
-                                word.id(), word.coref_type(), word.ref(), 
-                                word.min()) 
-                               for word in chunk.split()])
-        assert None not in result
-        return result
-        
-    def coref_sents(self):
-        result = []
-        for sent in self.sents():
-            result.append([(word, word.iob_tag(), word.ne_type(), word.id(), 
-                            word.coref_type(), word.ref(), word.min()) 
-                           for word in sent])
-        assert None not in result
-        return result
-        
-    def coref_words(self):
-        result = list(chain(*self.coref_sents()))
-        assert None not in result
-        return result        
-    
-    def coref_mentions(self):
-        result = []
-        for chunk in self.chunks():
-            if chunk.is_coref():
-                result.append((str(chunk), chunk.iob_tag(), chunk.ne_type(),
-                               chunk.id(), chunk.coref_type(), chunk.ref(), 
-                               chunk.min()))                 
-        assert None not in result
-        return result
-                
-    def docno(self):
-        result = self._sgmldoc().docno()
-        assert result
-        return result
-
-
-class MUC6Mention(str):
-    """
-    A helper class for keeping track of and operating on named entities, 
-    mentions, and their attributes during parsing and reading.  Tuples are 
-    a bit clumsy for the number of attributes and there are various tasks
-    in parsing and reading the require concatenating and splitting named
-    entities and mentions.
-    
-    C{MUC6Mention} subclasses C{str} so C{MUC6SGMLParser} can be used as if it
-    returns nothing more than C{str} objects.
-    """
-    IN = 'I'
-    OUT = 'O'
-    BEGINS = 'B'    
-
-    # This is a hack to allow a str subclass that takes **kwargs in its
-    # __init__() signature.
-    def __new__(self, s, **kwargs):
-        return str.__new__(self, s)
-
-    def __init__(self, s, **kwargs):
+    def raw(self, fileids=None):
         """
-        Creates a MUC6Mention instance.
-        
-        @param s: the underlying string
-        @type s: C{str}
-        @kwparam iob: the IOB symbol, 'I', 'O', or 'B'
-        @type iob: C{str}
-        @kwparam ne_type: the named entity type
-        @type ne_type: C{str}
-        @kwparam id: the coreference unique identifier
-        @type id: C{str}
-        @kwparam type: the coreference type
-        @type type: C{str}
-        @kwparam ref: the mention's intended referent identifier
-        @type ref: C{str}
-        @kwparam min: the minimum coreferential string
-        @type min: C{str}
+        @return: A list of corpus file contents.
+        @rtype: C{list} of C{str}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression
         """
-        self._iob = kwargs.get('iob')
-        self._ne_type = kwargs.get('ne_type')
-        self._id = kwargs.get('id')
-        self._type = kwargs.get('type')
-        self._ref = kwargs.get('ref')
-        self._min = kwargs.get('min')
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, basestring): 
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
-    def __add__(self, y):
-        return MUC6Mention(str.__add__(self, y), iob=self._iob, 
-                ne_type=self._ne_typ, id=self._id, type=self._type, 
-                ref=self._ref, min=self._min)
+    def docs(self, fileids=None):
+        """
+        @return: A list of corpus document strings.
+        @rtype: C{list} of C{StreamBackedCorpusView}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression
+        """
+        return concat([StreamBackedCorpusView(fileid, 
+                                              self._read_block,
+                                              encoding=enc)
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def iob_tag(self):
+    def parsed_docs(self, fileids=None):
         """
-        The mention IOB symbol, 'I', 'O', or 'B'.
-        
-        @return: an IOB symbol
-        @rtype: C{str}
-        """
-        return self._iob
-
-    def ne_type(self):
-        """
-        The mention named entity type.
-        
-        @return: a named entity type
-        @rtype: C{str}        
-        """
-        return self._ne_type
-        
-    def id(self):
-        """
-        The mention coreference unique identifier.
-        
-        @return: a coreference id
-        @rtype: C{str}        
-        """
-        return self._id
-    
-    def coref_type(self):
-        """
-        The mention coreference type.
-        
-        @return: a coreference type
-        @rtype: C{str}        
+        @return: A list of parsed corpus documents.
+        @rtype: C{list} of C{StreamBackedCorpusView}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression
         """        
-        return self._type
+        return concat([StreamBackedCorpusView(fileid,
+                                              self._read_parsed_block,
+                                              encoding=enc)
+                       for (fileid, enc) in self.abspaths(fileids, True)])
+        
+    def sents(self, fileids=None, **kwargs):
+        """
+        @return: A list of sentences.
+        @rtype: C{list} of C{list} of C{str}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression        
+        """
+        def __sent(sent):
+            return sent.leaves()
+        return LazyMap(__sent, self._sents(fileids))
+        
+    def chunked_sents(self, fileids=None, **kwargs):
+        """
+        @return: A list of sentence chunks as tuples of string/tag pairs.
+        @rtype: C{list} of C{list} of C{tuple}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression 
+        @kwparam depth: Depth of chunk parsing for nested chunks.
+        @type depth: C{int}       
+        """
+        def __chunked_sent(sent):
+            chunks = []
+            # Map each sentence subtree into a tuple.
+            for token in map(tree2tuple, sent):
+                # If the token's contents is a list of chunk pieces, append it
+                # as a list of word/tag pairs.
+                if isinstance(token[0], list):
+                    chunks.append([(word, None) for word in token[0]])
+                # If the token's contents is a string, append it as a 
+                # word/tag tuple.
+                elif isinstance(token[0], basestring):
+                    chunks.append((token[0], None))
+                # Something bad happened.
+                else:
+                    raise
+            return chunks
+        depth = kwargs.get('depth', 0)        
+        sents = self._chunked_sents(self._sents(fileids, **kwargs), depth)
+        return LazyMap(__chunked_sent, sents)
+        
+    def iob_sents(self, fileids=None, **kwargs):
+        """
+        @return: A list of sentences as iob word/iob/other tag pairs.
+        @rtype: C{list} of C{list} of C{tuple}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression 
+        @kwparam depth: Depth of chunk parsing for nested chunks.
+        @type depth: C{int}      
+        """
+        def __iob_sent(sent):
+            chunks = []
+            # Map each sentence subtree into a tuple.
+            for token in map(tree2tuple, sent):
+                # If the token has a chunk type, parse the token contents.
+                if token[1] is not None:
+                    for index, word in enumerate(token[0]):
+                        # The first word in a chunk B-egins the chunk.
+                        if index == 0:
+                            chunks.append((word, 'B-%s' % token[1:2]) + token[2:])
+                        # All other words in a chunk are I-n the chunk.
+                        else:
+                            chunks.append((word, 'I-%s' % token[1:2]) + token[2:])
+                # If the token doesn't have a chunk type, it's O-ut.
+                else:
+                    chunks.append((token[0], 'O'))
+            return chunks
+        depth = kwargs.get('depth', 0)        
+        sents = self._chunked_sents(self._sents(fileids), depth)            
+        return LazyMap(__iob_sent, sents)
+        
+    def words(self, fileids=None):
+        """
+        @return: A list of words.
+        @rtype: C{list} of C{str}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression 
+        @kwparam depth: Depth of chunk parsing for nested chunks.
+        @type depth: C{int}        
+        """
+        # Concatenate the list of lists given by sents().
+        return LazyConcatenation(self.sents(fileids))
     
-    def ref(self):
+    def iob_words(self, fileids=None, **kwargs):
         """
-        The mention intended reference identifier.
-        
-        @return: a referent id
-        @rtype: C{str}        
-        """        
-        return self._ref
-    
-    def min(self):
+        @return: A list of word/iob/other tag tuples.
+        @rtype: C{list} of C{tuple}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression 
+        @kwparam depth: Depth of chunk parsing for nested chunks.
+        @type depth: C{int}        
         """
-        The mention minimum coreferential string.
+        # Concatenate the list of lists given by iob_sents().
+        return LazyConcatenation(self.iob_sents(fileids, **kwargs))
         
-        @return: a minimum coreferential string
-        @rtype: C{str}        
-        """        
-        return self._min
-        
-    def is_coref(self):
+    def chunks(self, fileids=None, **kwargs):
         """
-        Whether the mention is coreferential.  All strings in the reader are
-        handled as mention objects so some are not coreferential.
-        
-        @return: mention coreferential flag
-        @rtype: C{bool}        
-        """        
-        return bool(self._id)
-
-    def split(self, sep=None, maxsplit=-1):
-        if not sep:
-            tokens = PunktWordTokenizer().tokenize(self)
+        @return: A list of chunked sents where chunks are multi-word strings.
+        @rtype: C{list} of C{list} of C{str}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression 
+        @kwparam depth: Depth of chunk parsing for nested chunks.
+        @type depth: C{int}        
+        @kwparam concat: Concatenate sentence lists into one list; works like
+            itertools.chain()
+        @type concat: C{bool}
+        """
+        def __chunks(sent):
+            chunks = []
+            for token in sent:
+                # If the token is a list of chunk pieces, append the piece's
+                # contents as a string.                
+                if isinstance(token, list):
+                    # TODO: Better if able to reverse Treebank-style
+                    # tokenization. The join leaves some weird whitespace.                    
+                    chunks.append(' '.join([word[0] for word in token]))
+                # If the token is a tuple, append the token's contents.
+                elif isinstance(token, tuple):
+                    chunks.append(token[0])
+                # Something bad happened.
+                else:
+                    raise
+            return chunks
+        sents = self.chunked_sents(fileids, **kwargs) 
+        # Concatenate the lists.          
+        if kwargs.get('concat'):
+            return LazyConcatenation(LazyMap(__chunks, sents))
+        # Or not.
         else:
-            tokens = self.split(sep, maxsplit)
-        result = []
-        for (index, token) in enumerate(tokens):
-            if self.iob_tag() == self.OUT:
-                iob_tag = self.OUT
-            elif self.iob_tag() == self.BEGINS and index == 0:
-                iob_tag = self.BEGINS
-            else:
-                iob_tag = self.IN
-            result.append(MUC6Mention(token, iob=iob_tag, 
-                ne_type=self._ne_type, id=self._id, type=self._type, 
-                ref=self._ref, min=self._min))
-        return result
+            return LazyMap(__chunk, sents)
         
+    def mentions(self, fileids=None, **kwargs):
+        """
+        @return: A list of mentions as the tuple of 
+            ([words...], id, referent, type)
+        @rtype: C{list} of C{list} of C{tuple}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression 
+        @kwparam depth: Depth of chunk parsing for nested chunks.
+        @type depth: C{int}  
+        @kwparam concat: Concatenate sentence lists into one list; works like
+            itertools.chain(). Defaults to False.
+        @type concat: C{bool}
+        @kwparam nonmentions: Return nonmentions as well as mentions. Defaults
+            to False.
+        @type nonmentions: C{bool}              
+        """
+        def __mentions(sent):
+            mentions = []            
+            # Map each sentence subtree into a tuple.            
+            for token in map(tree2tuple, sent):
+                # If the token type is COREF then append the token contents
+                # and everything but the token type.
+                if token[1] == 'COREF':
+                    mentions.append(token[:1] + token[2:])
+                # If including nonmentions, append the token contents only.
+                elif kwargs.get('nonmentions'):
+                    mentions.append(token[:1])
+            return mentions
+        # TODO: Is depth doing what it's expected to?                
+        depth = kwargs.get('depth', 0)        
+        sents = self._chunked_sents(self._sents(fileids, **kwargs), depth)                
+        # Concatenate the lists.
+        if kwargs.get('concat'):
+            return LazyConcatenation(LazyMap(__mentions, sents))
+        # Or not.
+        else:
+            return LazyMap(__mentions, sents)
+
+    def _sents(self, fileids=None, **kwargs):
+        """
+        @return: A list of sentence trees.
+        @rtype: C{list} of C{list} of C{Tree}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression      
+        """
+        def __sents(doc):
+            return [sent for para in doc.text for sent in para]
+        # Flatten this because it's a list of list of trees for each doc. It
+        # doesn't matter which doc the list is from so chain them together.
+        return LazyConcatenation(LazyMap(__sents, self.parsed_docs(fileids)))
         
-class MUC6NamedEntity(MUC6Mention, Deprecated):
-    """Use C{MUC6Mention} instead."""
-    def __new__(self, s, iob, ne_type):
-        return str.__new__(self, s)
+    def _chunked_sents(self, sents, depth=0):
+        """
+        @return: A list of sentence chunk trees which are flatter than the
+            original trees.
+        @rtype: C{list} of C{list} of C{Tree}
+        @param sents: A list of sentence trees.
+        @type sents: C{list} of C{list} of C{Tree}
+        @param depth: How deep to read nested chunks off of the trees. If
+            depth is None, all possible chunk substrees are returned, 
+            otherwise, chunks are returned starting at the highest level 0,
+            then the next highest 1, etc.
+        @type depth: C{int}
+        """        
+        def __chunked_sent(sent):
+            for chunk in sent:
+                # If the chunk is a Tree, append it's immediate subtrees.
+                if isinstance(chunk, Tree):
+                    return list(chunk)
+                # If the chunk is not a tree, append it.
+                else:
+                    return chunk
+        # If depth is None, return all possible subtrees 
+        if depth is None:
+            return LazyMap(lambda sent: sent.subtrees(), sents)
+        # If depth is too small, no need to recurse and read further.
+        if not depth - 1 >= 0:
+            return sents
+        # Otherwise, apply __chunked_sent() and recurse.
+        return self._chunked_sents(LazyConcatenation(LazyMap(__chunked_sent, sents)), depth - 1)
 
-    def __init__(self, s, iob, ne_type):
-        MUC6Mention(s, iob=iob, ne_type=ne_type)
+    def _read_parsed_block(self, stream):
+        # TODO: LazyMap but StreamBackedCorpusView doesn't support
+        # AbstractLazySequence currently.
+        return map(self._parse, self._read_block(stream))
+  
+    def _parse(self, doc):
+        """
+        @return: A parsed MUC document.
+        @rtype: C{MUCDocument}
+        @param doc: The string contents of a MUC document.
+        @type doc: C{str}
+        """
+        tree = mucstr2tree(doc, top_node='DOC')
+        if isinstance(tree, dict):
+            return MUCDocument(**tree)
+        else:
+            return MUCDocument(tree)
 
-class MUC6SGMLParser(SGMLParser):
+    def _read_block(self, stream):
+        return ['\n'.join(stream.readlines())]
+
+
+def mucstr2tree(s, chunk_types=_MUC_CHUNK_TYPES, top_node='S'):
     """
-    An C{SGMLParser} for MUC6 corpus files.
-    """
-    def __init__(self):
-        """Create a C{MUC6SGMLParser} instance."""
-        SGMLParser.__init__(self)
+    Convert MUC document contents into a tree.
     
-    def reset(self):
-        SGMLParser.reset(self)
-        self._parsed = False
-        self._docno = None
-        self._headline = None
-        self._source = None
-        self._p = None
-        self._s = None
-        self._chunks = None
-        self._current = None
-        self._ne_type = None
-        self._coref_id = None
-        self._coref_type = None
-        self._coref_ref = None
-        self._coref_min = None                
-        self._in = []
-
-    def start_doc(self, attrs):
-        self._in.insert(0, 'doc')
-
-    def end_doc(self):
-        self._in.remove('doc')
-
-    def start_hl(self, attrs):
-        self._in.insert(0, 'hl')
-        self._headline = ''
-
-    def end_hl(self):
-        self._headline = self._headline.strip()
-        self._in.remove('hl')
-
-    def start_so(self, attrs):
-        self._in.insert(0, 'so')
-        self._source = ''
-
-    def end_so(self):
-        self._source = self._source.strip()
-        self._in.remove('so')
-
-    def start_txt(self, attrs):
-        self._in.insert(0, 'txt')
-
-    def end_txt(self):
-        self._in.remove('txt')
-
-    def start_docno(self, attrs):
-        self._in.insert(0, 'docno')
-        self._docno = ''
-
-    def end_docno(self):
-        self._docno = self._docno.strip()
-        self._in.remove('docno')
-
-    def start_p(self, attrs):
-        self._in.insert(0, 'p')
-        if self._p == None:
-            self._p = []
-
-    def end_p(self):
-        self._p.append(self._s)
-        self._s = None
-        self._in.remove('p')
-
-    def start_s(self, attrs):
-        self._in.insert(0, 's')
-        if self._s == None:
-            self._s = []
-        self._chunks = []
-        self._current = ''
-
-    def end_s(self):
-        if self._current.strip():
-            self._chunks.extend(MUC6Mention(self._current.strip(), 
-                iob=MUC6Mention.OUT, ne_type=self._ne_type).split())
-        if self._chunks:
-            self._s.append(self._chunks)
-        self._chunks = None
-        self._current = None
-        self._in.remove('s')
-
-    def start_enamex(self, attrs):
-        if self._in and 's' in self._in[0]:
-            if self._current.strip():
-                self._chunks.extend(MUC6Mention(self._current.strip(), 
-                    iob=MUC6Mention.OUT, ne_type=self._ne_type).split())
-            self._in.insert(0, 'enamex')
-            self._current = ''
-            for attr in attrs:
-                if attr[0] == 'type':
-                    self._ne_type = attr[1]
-                    break
-
-    def end_enamex(self):
-        if self._in and self._in[0] == 'enamex':
-            if self._current.strip():
-                self._chunks.append(MUC6Mention(self._current.strip(), 
-                    iob=MUC6Mention.BEGINS, ne_type=self._ne_type))
-            self._ne_type = None
-            self._current = ''
-            self._in.remove('enamex')
-
-    def start_numex(self, attrs):
-        if self._in and 's' in self._in[0]:
-            if self._current.strip():
-                self._chunks.extend(MUC6Mention(self._current.strip(), 
-                    iob=MUC6Mention.OUT, ne_type=self._ne_type).split())
-            self._in.insert(0, 'numex')
-            self._current = ''
-            for attr in attrs:
-                if attr[0] == 'type':
-                    self._ne_type = attr[1]
-                    break
-
-    def end_numex(self):
-        if self._in and self._in[0] == 'numex':
-            if self._current.strip():
-                self._chunks.append(MUC6Mention(self._current.strip(), 
-                    iob=MUC6Mention.BEGINS, ne_type=self._ne_type))
-            self._ne_type = None
-            self._current = ''
-            self._in.remove('numex')
-
-    def start_timex(self, attrs):
-        if self._in and 's' in self._in[0]:
-            if self._current.strip():
-                self._chunks.extend(MUC6Mention(self._current.strip(), 
-                    iob=MUC6Mention.OUT, ne_type=self._ne_type).split())
-            self._in.insert(0, 'timex')
-            self._current = ''
-            for attr in attrs:
-                if attr[0] == 'type':
-                    self._ne_type = attr[1]
-                    break
-
-    def end_timex(self):
-        if self._in and self._in[0] == 'timex':
-            if self._current.strip():
-                self._chunks.append(MUC6Mention(self._current.strip(), 
-                    iob=MUC6Mention.BEGINS, ne_type=self._ne_type))
-            self._ne_type = None
-            self._current = ''
-            self._in.remove('timex')
-
-    def start_coref(self, attrs):
-        if self._in and 's' in self._in[0]:
-            if self._current.strip():
-                self._chunks.extend(MUC6Mention(self._current.strip(),
-                    iob=MUC6Mention.OUT, id=self._coref_id, 
-                    type=self._coref_type, ref=self._coref_ref,
-                    min=self._coref_min).split())
-            self._in.insert(0, 'coref')
-            self._current = ''
-            for attr in attrs:
-                if attr[0] == 'type':
-                    self._coref_type = attr[1]
-                elif attr[0] == 'id':
-                    self._coref_id = attr[1]
-                elif attr[0] == 'ref':
-                    self._coref_ref = attr[1]                    
-                elif attr[0] == 'min':
-                    self._coref_min = attr[1]                    
-
-    def end_coref(self):
-        if self._in and self._in[0] == 'coref':
-            if self._current.strip():
-                self._chunks.append(MUC6Mention(self._current.strip(),
-                    iob=MUC6Mention.BEGINS, id=self._coref_id,
-                    type=self._coref_type, ref=self._coref_ref,
-                    min=self._coref_min))
-            self._coref_id = None
-            self._coref_type = None
-            self._coref_ref = None
-            self._coref_min = None                        
-            self._current = ''
-            self._in.remove('coref')
-
-    def handle_data(self, data):
-        if self._in and self._in[0] == 'hl':
-            self._headline += data
-        if self._in and self._in[0] == 'so':
-            self._source += data
-        if self._in and self._in[0] == 'docno':
-            self._docno += data
-        if self._in and self._in[0] in ['s', 'enamex', 'numex', 'timex', 'coref']:
-            self._current += data.replace('\n', '')
-
-    def parse(self, filename):
-        file = open(filename)
-        for line in file:
-            self.feed(line)
-        file.close()
-        self._parsed = True
-        return self
-
-    def text(self):
-        """
-        The text of the parsed MUC6 corpus document.
+    @return: A MUC document as a tree.
+    @rtype: C{Tree}
+    @param s: Contents of a MUC document.
+    @type s: C{str}
+    @param chunk_types: Chunk types to extract from the MUC document.
+    @type chunk_types: C{list} of C{str}
+    @param top_node: Label to assign to the root of the tree.
+    @type top_node: C{str}
+    """
+    match = _MUC_DOC_RE.match(s)
+    # If the MUC document is valid, read the document element groups off its
+    # contents and return a dictionary of each part.
+    if match:
+        return {
+            'text': _muc_read_text(match.group('text'), top_node),
+            'docno': match.group('docno'),
+            # Capture named entities/mentions in the front-matter too.            
+            'dateline': _muc_read_text(match.group('dateline'), top_node),           
+            'headline': _muc_read_text(match.group('headline'), top_node),
+        }
+    # Otherwise, make a best-effort attempt to just read the text off the
+    # document contents.
+    else:
+        return _muc_read_text(s, top_node)
         
-        @return: the file text
-        @rtype: C{list} of C{list} of C{MUC6Mention}
-        """
-        assert self._parsed and self._p
-        return self._p
+def tree2tuple(tree):
+    """
+    Convert a tree or string into a flat tuple of leaves and a label.
+    
+    @return: A tuple of tree leaves and their parent's label.
+    @rtype: C{tuple}
+    @param tree: A tree.
+    @type tree: C{Tree}
+    """
+    result = ()
+    # If the tree is a tree then create a tuple out of the leaves and label.
+    if isinstance(tree, Tree):
+        # Get the leaves.
+        s = (tree.leaves(),)
+        # Get the label
+        if isinstance(tree.node, basestring):
+            node = (tree.node,)
+        elif isinstance(tree.node, tuple):
+            node = tree.node
+        else:
+            raise
+        # Merge the leaves and the label.
+        return s + node
+    # If the tree is a string just convert it to a tuple.
+    elif isinstance(tree, basestring):
+        return (tree, None)
+    # Something bad happened.
+    else:
+        raise
 
-    def docno(self):
-        """
-        The MUC6 corpus document document number.
-        
-        @return: document number
-        @rtype: C{str}
-        """
-        assert self._parsed and self._docno
-        return self._docno
+def _muc_read_text(s, top_node):
+    if s:
+        tree = Tree(top_node, [])
+        for para in _MUC_PARA_RE.findall(s):
+            tree.append(Tree('P', []))
+            for sent in _MUC_SENT_RE.findall(para):
+                words = _MUC_SENT_RE.match(sent[0]).group('sent')
+                tree[-1].append(_muc_read_words(words, 'S'))
+        return tree
 
-    def headline(self):
-        """
-        The MUC6 corpus document headline.
-        
-        @return: document headline
-        @rtype: C{str}
-        """
-        assert self._parsed and self._headline
-        return self._headline
+def _muc_read_words(s, top_node):
+    if not s: return []
+    stack = [Tree(top_node, [])]
+    for word in re.findall('<[^>]+>|[^\s<]+', s):
+        ne_match = _MUC_NE_B_RE.match(word)
+        co_match = _MUC_CO_B_RE.match(word)
+        if ne_match:
+            chunk = Tree(ne_match.group('type'), [])
+            stack[-1].append(chunk)
+            stack.append(chunk)
+        elif co_match:
+            chunk = Tree(('COREF', co_match.group('id'), 
+                          co_match.group('ref'), co_match.group('type')), [])
+            stack[-1].append(chunk)
+            stack.append(chunk)
+        elif _MUC_NE_E_RE.match(word) or _MUC_CO_E_RE.match(word):
+            stack.pop()
+        else:
+            stack[-1].extend(_TOKENIZER.tokenize(word))
+    assert len(stack) == 1
+    return stack[0]
 
-    def source(self):
-        """
-        The MUC6 corpus document source.
-        
-        @return: document source
-        @rtype: C{str}
-        """
-        assert self._parsed and self._source
-        return self._source
-
-def _demo(root, file):
-    import os.path
-    from nltk_contrib.coref.muc6 import MUC6CorpusReader
-    from nltk_contrib.coref.muc6 import MUC6NamedEntity
-
-    reader = MUC6CorpusReader(root, file)
-    print 'Paragraphs for %s:' % (file)
-    for (index, para) in enumerate(reader.paras()):
-        if index <= 3:
-            print '    %s' % (para)
-            print
-    print 'Sentences for %s:' % (file)
-    for (index, sent) in enumerate(reader.coref_sents()):
-        if index <= 5:
-            print '    %s' % (sent)
+def demo(**kwargs):
+    import nltk
+    from nltk_contrib.coref import NLTK_COREF_DATA    
+    from nltk_contrib.coref.muc import documents    
+    from nltk_contrib.coref.muc import MUCCorpusReader
+    nltk.data.path.insert(0, NLTK_COREF_DATA)   
+    muc = LazyCorpusLoader('muc6/', MUCCorpusReader, documents)
+    for sent in muc.iob_sents():
+        for word in sent:
+            print word
+        if sent: print
     print
-    print 'Chunks for %s:' % (file)
-    for (index, chunk) in enumerate(reader.coref_chunks()):
-        if index <= 50:
-            print chunk
+    for sent in muc.mentions(depth=None):
+        for mention in sent:
+            print mention
+        if sent: print
     print
-    print 'Mentions for %s:' % (file)
-    for (index, mention) in enumerate(reader.coref_mentions()):
-        if index <= 50:
-            print '    ', mention
-    print    
-    print 'Words for %s:' % (file)
-    for (index, word) in enumerate(reader.coref_words()):
-        if index <= 50:
-            print '    ', word
-    print
-
-def demo():
-    import os
-    import os.path
-
-    try:
-        muc6_ne_dir = os.environ['MUC6_NE_DIR']
-        muc6_co_dir = os.environ['MUC6_CO_DIR']
-    except KeyError:
-        raise 'Demo requires MUC-6 Corpus, set MUC6_NE_DIR and ', \
-              'MUC6_CO_DIR environment variables!' 
-
-    _demo(muc6_ne_dir, ['891101-0080.ne.v1.3.sgm'])
-    _demo(muc6_co_dir, ['891101-0090.co.v2.0.sgm'])
-
+    
 if __name__ == '__main__':
     demo()
