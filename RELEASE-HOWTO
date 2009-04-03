@@ -67,7 +67,7 @@ A. UPLOAD DISTRIBUTIONS
 B. WEBSITE
 
   1. install download page, by moving Download-N.N to Download
-  2. post a news item at http://www.nltk.org/news, summary at http://www.nltk.org/
+  2. post a news item at http://www.nltk.org/news-archive, summary at http://www.nltk.org/
   3. register with Python Cheeseshop: "python setup.py register"
   4. upload new portfiles to macports (needs a diff; haven't sorted this out)
   5. post announcement to NLTK the mailing lists:
