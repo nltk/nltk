@@ -1,0 +1,13 @@
+#Chunking Grammar for sample MDF database found in nltk_data/corpora/toolbox/MDF/MDF_AltH.db
+
+paradigm:     {<pd>?(<pdl><pdv>)?}
+notes:        {<ng|np|nt>+}
+crossref:     {<cf><ce><cn>?}
+lexfunc:      {<lf><lv><le>}
+example:      {<rf><xv><xe><xn>}
+variant:      {<va><ve>?<vn>?}
+pos:          {<ps|pn>+}
+subentry_sense: {<sn>?<pos>?<ge><de|gn|gr|re|rn|lt|an|sy|ee|pc|bw|example|crossref|paradigm|tb|notes|lexfunc>*}
+subentry:     {<se><hm>?<lc>?<subentry_sense>*<variant|notes|mn>*}
+sense:        {<sn>?<pos>?<ge><de|gn|gr|re|rn|lt|an|sy|ee|pc|bw|example|crossref|paradigm|tb|notes|lexfunc|subentry>*}
+entry:        {<lx><hm>?<lc>?<sense>*<variant|notes|mn>*<dt>}
