@@ -20,18 +20,26 @@ from nltk import Tree
 from nltk.util import LazyMap, LazyConcatenation
 
 from nltk.tokenize.treebank import TreebankWordTokenizer
+from nltk.tokenize.punkt import PunktSentenceTokenizer
 
 from nltk.corpus.util import LazyCorpusLoader
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import concat, StreamBackedCorpusView
 
-titles = {
+muc6_titles = {
     '891102-0189.ne.v1.3.sgm':'',
     '891102-0189.co.v2.0.sgm':'',
     '891101-0050.ne.v1.3.sgm':'',
 }
-documents = sorted(titles)
+muc6_documents = sorted(muc6_titles)
+
+muc7_titles = {
+    'dryrun01.muc7':'',
+    'dryrun02.muc7':'',    
+    'dryrun03.muc7':'',    
+}
+muc7_documents = sorted(muc7_titles)
 
 _MUC_CHUNK_TYPES = [
     'DATE',
@@ -44,7 +52,7 @@ _MUC_CHUNK_TYPES = [
     'TIME'
 ]
 
-_MUC_DOC_RE = re.compile(
+_MUC6_DOC_RE = re.compile(
     r'\s*<DOC>\s*'
     r"""
      (\s*(<DOCNO>\s*(?P<docno>.+?)\s*</DOCNO>|
@@ -60,21 +68,45 @@ _MUC_DOC_RE = re.compile(
      """
     r'<TXT>\s*(?P<text>(<p>\s*(<s>\s*.+?\s*</s>)+\s*</p>)+)\s*</TXT>\s*'
     r'</DOC>\s*', re.DOTALL | re.I | re.VERBOSE)
-_MUC_PARA_RE = re.compile('(<p>\s*.+?\s*</p>)+', re.DOTALL | re.I)
-_MUC_SENT_RE = re.compile('(<s>\s*(?P<sent>.+?)\s*</s>)+', re.DOTALL | re.I)
+_MUC6_PARA_RE = re.compile('(<p>\s*(?P<para>.+?)\s*</p>?)+', re.DOTALL | re.I)
+_MUC6_SENT_RE = re.compile('(<s>\s*(?P<sent>.+?)\s*</s>)+', re.DOTALL | re.I)    
+
+_MUC7_DOC_RE = re.compile(
+    r'\s*<DOC>\s*'
+    r"""
+     (\s*(<DOCID>\s*(?P<docid>.+?)\s*</DOCID>|
+           <STORYID\s+[^>]*?>\s*.+?\s*</STORYID>|      
+           <SLUG\s+[^>]*?>\s*.+?\s*</SLUG>|          
+           <DATE>\s*(?P<date>.+?)\s*</DATE>|         
+           <NWORDS>\s*.+?\s*</NWORDS>|                    
+           <PREAMBLE>\s*.+?\s*</PREAMBLE>)\s*)*
+     """
+    r'<TEXT>\s*(?P<text>.+?)\s*</TEXT>\s*'
+    r'(<TRAILER>\s*(?P<trailer>.+?)\s*</TRAILER>\s*)?'
+    r'</DOC>\s*', re.DOTALL | re.I | re.VERBOSE)
+_MUC7_PARA_RE = re.compile(r'\s*<p>\s*.+?\s*(<p>\s*.+?\s*?)*\s*', re.DOTALL | re.I)
+_MUC7_PARA_SPLIT_RE = re.compile(r'\s*<p>\s*', re.DOTALL | re.I)
+
 _MUC_NE_B_RE = re.compile('<(ENAMEX|NUMEX|TIMEX)\s+[^>]*?TYPE="(?P<type>\w+)"', re.DOTALL | re.I)
 _MUC_NE_E_RE = re.compile('</(ENAMEX|NUMEX|TIMEX)>', re.DOTALL | re.I)
 _MUC_CO_B_RE = re.compile('<COREF\s+[^>]*?ID="(?P<id>\w+)"(\s+TYPE="(?P<type>\w+)")?(\s+REF="(?P<ref>\w+)")?', re.DOTALL | re.I)
 _MUC_CO_E_RE = re.compile('</COREF>', re.DOTALL | re.I)
 
-_TOKENIZER = TreebankWordTokenizer()
+_WORD_TOKENIZER = TreebankWordTokenizer()
+_SENT_TOKENIZER = PunktSentenceTokenizer()
 
 class MUCDocument:
-    def __init__(self, text, docno=None, dateline=None, headline=''):
-        self.text = text
-        self.docno = docno
-        self.dateline = dateline
-        self.headline = headline
+    # def __init__(self, text, docno=None, dateline=None, headline=''):
+    def __init__(self, **text):
+        self.text = None
+        if isinstance(text, basestring):
+            self.text = text
+        elif isinstance(text, dict):
+            for key, val in text.items():
+                setattr(self, key, val)
+        else:
+            raise
+        assert self.text
         
     def __repr__(self):
         if self.headline:
@@ -91,14 +123,17 @@ class MUCCorpusReader(CorpusReader):
     """
     A corpus reader for MUC SGML files.  Each file begins with a preamble
     of SGML-tagged metadata. The document text follows. The text of the 
-    document is contained in <TXT> tags. Paragraphs are contained in <p> tags.  
-    Sentences are contained in <s> tags.
+    document is contained in <TXT> tags for MUC6 and <TEXT> tags for MUC7.
+    Paragraphs are contained in <p> tags in both corpus formats. Sentences are
+    contained in <s> tags in MUC6 only. For MUC7 corpus files L{sents()},
+    L{chunked_sents()}, and L{iob_sents()} return sentences via tokenizing
+    with C{PunktSentenceTokenizer}.
     
     Additionally named entities and coreference mentions may be marked within 
     the document text and document metadata. The MUC6 corpus provides
     named entity and coreference annotations in two separate sets of files.
-    Only one kind of metadata will be returned depending on which kind of
-    file is being read.
+    The MUC7 corpus contains coreference annotations only. Only one kind of 
+    metadata will be returned depending on which kind of file is being read.
     
     Named entities are tagged as ENAMEX (name expressions), NUMEX 
     (number expressions), or TIMEX (time expressions), all of which include 
@@ -147,16 +182,25 @@ class MUCCorpusReader(CorpusReader):
                                               encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
         
-    def sents(self, fileids=None, **kwargs):
+    def paras(self, fileids=None, **kwargs):
+        """
+        @return: A list of paragraphs.
+        @rtype: C{list} of C{list} of C{list} of C{str}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression.
+        """
+        def __para(para):
+            return [sent.leaves() for sent in list(para)]
+        return LazyMap(__para, self._paras(fileids))
+    
+    def sents(self, fileids=None):
         """
         @return: A list of sentences.
         @rtype: C{list} of C{list} of C{str}
         @param fileids: A list of corpus files.
         @type fileids: C{list} of C{str} or regular expression        
         """
-        def __sent(sent):
-            return sent.leaves()
-        return LazyMap(__sent, self._sents(fileids))
+        return LazyConcatenation(self.paras(fileids))
         
     def chunked_sents(self, fileids=None, **kwargs):
         """
@@ -214,7 +258,7 @@ class MUCCorpusReader(CorpusReader):
                     chunks.append((token[0], 'O'))
             return chunks
         depth = kwargs.get('depth', 0)        
-        sents = self._chunked_sents(self._sents(fileids), depth)            
+        sents = self._chunked_sents(self._sents(fileids), depth)          
         return LazyMap(__iob_sent, sents)
         
     def words(self, fileids=None):
@@ -275,7 +319,7 @@ class MUCCorpusReader(CorpusReader):
             return LazyConcatenation(LazyMap(__chunks, sents))
         # Or not.
         else:
-            return LazyMap(__chunk, sents)
+            return LazyMap(__chunks, sents)
         
     def mentions(self, fileids=None, **kwargs):
         """
@@ -307,26 +351,37 @@ class MUCCorpusReader(CorpusReader):
             return mentions
         # TODO: Is depth doing what it's expected to?                
         depth = kwargs.get('depth', 0)        
-        sents = self._chunked_sents(self._sents(fileids, **kwargs), depth)                
+        sents = self._chunked_sents(self._sents(fileids), depth)                
         # Concatenate the lists.
         if kwargs.get('concat'):
             return LazyConcatenation(LazyMap(__mentions, sents))
         # Or not.
         else:
             return LazyMap(__mentions, sents)
+            
+    def _paras(self, fileids=None):
+        """
+        @return: A list of paragraphs.
+        @rtype: C{list} of C{Tree}
+        @param fileids: A list of corpus files.
+        @type fileids: C{list} of C{str} or regular expression.
+        """
+        def __para(doc):
+            return list(doc.text)
+        return LazyConcatenation(LazyMap(__para, self.parsed_docs(fileids)))
 
-    def _sents(self, fileids=None, **kwargs):
+    def _sents(self, fileids=None):
         """
         @return: A list of sentence trees.
         @rtype: C{list} of C{list} of C{Tree}
         @param fileids: A list of corpus files.
         @type fileids: C{list} of C{str} or regular expression      
         """
-        def __sents(doc):
-            return [sent for para in doc.text for sent in para]
+        def __sents(para):
+            return list(para)
         # Flatten this because it's a list of list of trees for each doc. It
         # doesn't matter which doc the list is from so chain them together.
-        return LazyConcatenation(LazyMap(__sents, self.parsed_docs(fileids)))
+        return LazyConcatenation(LazyMap(__sents, self._paras(fileids)))
         
     def _chunked_sents(self, sents, depth=0):
         """
@@ -393,21 +448,30 @@ def mucstr2tree(s, chunk_types=_MUC_CHUNK_TYPES, top_node='S'):
     @param top_node: Label to assign to the root of the tree.
     @type top_node: C{str}
     """
-    match = _MUC_DOC_RE.match(s)
-    # If the MUC document is valid, read the document element groups off its
-    # contents and return a dictionary of each part.
+    tree = None
+    match = _MUC6_DOC_RE.match(s)
     if match:
-        return {
-            'text': _muc_read_text(match.group('text'), top_node),
-            'docno': match.group('docno'),
-            # Capture named entities/mentions in the front-matter too.            
-            'dateline': _muc_read_text(match.group('dateline'), top_node),           
-            'headline': _muc_read_text(match.group('headline'), top_node),
-        }
-    # Otherwise, make a best-effort attempt to just read the text off the
-    # document contents.
+        # If the MUC document is valid, read the document element groups off its
+        # contents and return a dictionary of each part.
+        if match:
+            tree = {
+                'text': _muc_read_text(match.group('text'), top_node),
+                'docno': match.group('docno'),
+                # Capture named entities/mentions in the front-matter too.            
+                'dateline': _muc_read_text(match.group('dateline'), top_node),           
+                'headline': _muc_read_text(match.group('headline'), top_node),
+            }
     else:
-        return _muc_read_text(s, top_node)
+        match = _MUC7_DOC_RE.match(s)
+        if match:
+            tree = {
+                'text': _muc_read_text(match.group('text'), top_node),
+                'docid': match.group('docid'),
+                # Capture named entities/mentions in the front-matter too.            
+                'date': _muc_read_text(match.group('date'), top_node),
+            }
+    assert tree
+    return tree
         
 def tree2tuple(tree):
     """
@@ -440,13 +504,32 @@ def tree2tuple(tree):
         raise
 
 def _muc_read_text(s, top_node):
+    # The tokenizer sometimes splits within coref tags.
+    def __fix_tokenization(sents):
+        for index in range(len(sents)):
+            next = 1
+            while sents[index].count('<COREF') != sents[index].count('</COREF>'):
+                sents[index] += ' '
+                sents[index] += sents[index + next]
+                sents[index + next] = ''
+                next += 1
+        sents = filter(None, sents)
+        return sents
     if s:
-        tree = Tree(top_node, [])
-        for para in _MUC_PARA_RE.findall(s):
-            tree.append(Tree('P', []))
-            for sent in _MUC_SENT_RE.findall(para):
-                words = _MUC_SENT_RE.match(sent[0]).group('sent')
-                tree[-1].append(_muc_read_words(words, 'S'))
+        tree = Tree(top_node, [])        
+        if _MUC6_PARA_RE.match(s):
+            for para in _MUC6_PARA_RE.findall(s):
+                if para and para[0] and para[0].strip():
+                    tree.append(Tree('P', []))
+                    for sent in _MUC6_SENT_RE.findall(para[0]):
+                        words = _MUC6_SENT_RE.match(sent[0]).group('sent')
+                        tree[-1].append(_muc_read_words(words, 'S'))                
+        elif _MUC7_PARA_RE.match(s):
+            for para in _MUC7_PARA_SPLIT_RE.split(s):
+                if para and para.strip():
+                    tree.append(Tree('P', []))
+                    for sent in __fix_tokenization(_SENT_TOKENIZER.tokenize(para)):
+                        tree[-1].append(_muc_read_words(sent, 'S'))
         return tree
 
 def _muc_read_words(s, top_node):
@@ -467,23 +550,36 @@ def _muc_read_words(s, top_node):
         elif _MUC_NE_E_RE.match(word) or _MUC_CO_E_RE.match(word):
             stack.pop()
         else:
-            stack[-1].extend(_TOKENIZER.tokenize(word))
+            stack[-1].extend(_WORD_TOKENIZER.tokenize(word))
+    if len(stack) != 1:
+        print stack
     assert len(stack) == 1
     return stack[0]
 
 def demo(**kwargs):
     import nltk
     from nltk_contrib.coref import NLTK_COREF_DATA    
-    from nltk_contrib.coref.muc import documents    
+    from nltk_contrib.coref.muc import muc6_documents, muc7_documents
     from nltk_contrib.coref.muc import MUCCorpusReader
     nltk.data.path.insert(0, NLTK_COREF_DATA)   
-    muc = LazyCorpusLoader('muc6/', MUCCorpusReader, documents)
-    for sent in muc.iob_sents():
+    muc6 = LazyCorpusLoader('muc6/', MUCCorpusReader, muc6_documents)
+    for sent in muc6.iob_sents()[:]:
         for word in sent:
             print word
+        print
+    print
+    for sent in muc6.mentions(depth=None):
+        for mention in sent:
+            print mention
         if sent: print
     print
-    for sent in muc.mentions(depth=None):
+    muc7 = LazyCorpusLoader('muc7/', MUCCorpusReader, muc7_documents)
+    for sent in muc7.iob_sents()[:]:
+        for word in sent:
+            print word
+        print
+    print
+    for sent in muc7.mentions(depth=None):
         for mention in sent:
             print mention
         if sent: print
