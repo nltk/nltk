@@ -89,21 +89,39 @@ class ConfusionMatrix(object):
     def __str__(self):
         return self.pp()
     
-    def pp(self, show_percents=False, values_in_chart=True):
+    def pp(self, show_percents=False, values_in_chart=True,
+           truncate=None, sort_by_count=False):
         """
         @return: A multi-line string representation of this confusion
         matrix.
+        @type truncate: int
+        @param truncate: If specified, then only show the specified
+            number of values.  Any sorting (e.g., sort_by_count)
+            will be performed before truncation.
+        @param sort_by_count: If true, then sort by the count of each
+            label in the reference data.  I.e., labels that occur more
+            frequently in the reference label will be towards the left
+            edge of the matrix, and labels that occur less frequently
+            will be towards the right edge.
         @todo: add marginals?
         """
         confusion = self._confusion
 
-        if values_in_chart:
-            values = self._values
-        else:
-            values = range(len(self._values))
+        values = self._values
+        if sort_by_count:
+            values = sorted(values, key=lambda v:
+                            -sum(self._confusion[self._indices[v]]))
 
+        if truncate:
+            values = values[:truncate]
+
+        if values_in_chart:
+            value_strings = [str(val) for val in values]
+        else:
+            value_strings = [str(n+1) for n in range(len(values))]
+            
         # Construct a format string for row values
-        valuelen = max(len(str(val)) for val in values)
+        valuelen = max(len(val) for val in value_strings)
         value_format = '%' + `valuelen` + 's | '
         # Construct a format string for matrix entries
         if show_percents:
@@ -116,7 +134,6 @@ class ConfusionMatrix(object):
             zerostr = ' '*(entrylen-1) + '.'
 
         # Write the column values.
-        value_strings = [str(val) for val in values]
         s = ''
         for i in range(valuelen):
             s += (' '*valuelen)+' |'
@@ -131,9 +148,11 @@ class ConfusionMatrix(object):
         s += '%s-+-%s+\n' % ('-'*valuelen, '-'*((entrylen+1)*len(values)))
 
         # Write the entries.
-        for i in range(len(values)):
-            s += value_format % values[i]
-            for j in range(len(values)):
+        for val, li in zip(value_strings, values):
+            i = self._indices[li]
+            s += value_format % val
+            for lj in values:
+                j = self._indices[lj]
                 if confusion[i][j] == 0:
                     s += zerostr
                 elif show_percents:
@@ -153,8 +172,8 @@ class ConfusionMatrix(object):
         s += '(row = reference; col = test)\n'
         if not values_in_chart:
             s += 'Value key:\n'
-            for i, value in enumerate(self._values):
-                s += '%6d: %s\n' % (i, value)
+            for i, value in enumerate(values):
+                s += '%6d: %s\n' % (i+1, value)
 
         return s
         
@@ -175,6 +194,7 @@ def demo():
     print 'Test    =', test
     print 'Confusion matrix:'
     print ConfusionMatrix(reference, test)
+    print ConfusionMatrix(reference, test).pp(sort_by_count=True)
 
 if __name__ == '__main__':
     demo()
