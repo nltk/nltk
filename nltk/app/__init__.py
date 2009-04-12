@@ -26,6 +26,12 @@ wordnet:      WordNet Browser
 
 try:
     import Tkinter
+except ImportError:
+    import warnings
+    warnings.warn("nltk.app package not loaded "
+                  "(please install Tkinter library).")
+    
+else:
     from chartparser_app import app as chartparser
     from chunkparser_app import app as chunkparser
     from collocations_app import app as collocations
@@ -33,11 +39,16 @@ try:
     from nemo_app import app as nemo
     from rdparser_app import app as rdparser
     from srparser_app import app as srparser
-    from wordfreq_app import app as wordfreq
     from wordnet_app import app as wordnet
 
-except ImportError:
-    print "Warning: nltk.app package not loaded (please install Tkinter library)."
+    try:
+        import pylab
+    except ImportError:
+        import warnings
+        warnings.warn("nltk.app.wordfreq not loaded "
+                      "(requires the pylab library).")
+    else:
+        from wordfreq_app import app as wordfreq
 
 try:
     import wx
