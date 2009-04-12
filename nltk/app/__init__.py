@@ -23,14 +23,12 @@ wordnet:      WordNet Browser
 
 
 # Import Tkinter-based modules if Tkinter is installed
-
 try:
     import Tkinter
 except ImportError:
     import warnings
     warnings.warn("nltk.app package not loaded "
                   "(please install Tkinter library).")
-    
 else:
     from chartparser_app import app as chartparser
     from chunkparser_app import app as chunkparser
@@ -50,9 +48,11 @@ else:
     else:
         from wordfreq_app import app as wordfreq
 
+# Import wx-based modules if wx is installed
 try:
     import wx
-    from wxwordnet_app import app as wxwordnet
-
 except ImportError:
     pass  # fail silently
+else:
+    from wxwordnet_app import app as wxwordnet
+
