@@ -696,9 +696,9 @@ class Downloader(object):
                     elif isinstance(msg, UpToDateMessage):
                         show('Package %s is already up-to-date!' %
                              msg.package.id, '  ')
-                    elif isinstance(msg, StaleMessage):
-                        show('Package %s is out-of-date or corrupt' %
-                             msg.package.id, '  ')
+                    #elif isinstance(msg, StaleMessage):
+                    #    show('Package %s is out-of-date or corrupt' %
+                    #         msg.package.id, '  ')
                     elif isinstance(msg, StartUnzipMessage):
                         show('Unzipping %s.' % msg.package.filename, '  ')
                         
@@ -785,6 +785,15 @@ class Downloader(object):
 
         # Otherwise, everything looks good.
         return self.INSTALLED
+
+    def update(self, quiet=False, prefix='[nltk_data] '):
+        """
+        Re-download any packages whose status is STALE.
+        """
+        self.clear_status_cache()
+        for pkg in self.packages():
+            if self.status(pkg) == self.STALE:
+                self.download(pkg, quiet=quiet, prefix=prefix)
         
     #/////////////////////////////////////////////////////////////////
     # Index
@@ -1515,8 +1524,8 @@ class DownloaderGUI(object):
             show('Downloading package %r' % msg.package.id)
         elif isinstance(msg, UpToDateMessage):
             show('Package %s is up-to-date!' % msg.package.id)
-        elif isinstance(msg, StaleMessage):
-            show('Package %s is out-of-date or corrupt' % msg.package.id)
+        #elif isinstance(msg, StaleMessage):
+        #    show('Package %s is out-of-date or corrupt' % msg.package.id)
         elif isinstance(msg, FinishDownloadMessage):
             show('Finished downloading %r.' % msg.package.id)
         elif isinstance(msg, StartUnzipMessage):
@@ -2126,6 +2135,7 @@ _downloader = Downloader()
 download = _downloader.download
 def download_shell(): DownloaderShell(_downloader).run()
 def download_gui(): DownloaderGUI(_downloader).mainloop()
+def update(): _downloader.update()
 
 if __name__ == '__main__':
     from optparse import OptionParser
