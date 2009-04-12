@@ -13,7 +13,7 @@ import math
 
 #from nltk.util import Deprecated
 import nltk.classify.util # for accuracy & log_likelihood
-from nltk.util import LazyMappedList
+from nltk.util import LazyMap
 
 ######################################################################
 #{ Helper Functions
@@ -22,10 +22,10 @@ from nltk.util import LazyMappedList
 # alternative name possibility: 'map_featurefunc()'?
 # alternative name possibility: 'detect_features()'?
 # alternative name possibility: 'map_featuredetect()'?
-# or.. just have users use LazyMappedList directly?
+# or.. just have users use LazyMap directly?
 def apply_features(feature_func, toks, labeled=None):
     """
-    Use the L{LazyMappedList} class to construct a lazy list-like
+    Use the L{LazyMap} class to construct a lazy list-like
     object that is analogous to C{map(feature_func, toks)}.  In
     particular, if C{labeled=False}, then the returned list-like
     object's values are equal to::
@@ -61,9 +61,9 @@ def apply_features(feature_func, toks, labeled=None):
     if labeled:
         def lazy_func(labeled_token):
             return (feature_func(labeled_token[0]), labeled_token[1])
-        return LazyMappedList(toks, lazy_func)
+        return LazyMap(lazy_func, toks)
     else:
-        return LazyMappedList(toks, feature_func)
+        return LazyMap(feature_func, toks)
 
 def attested_labels(tokens):
     """
