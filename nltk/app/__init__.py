@@ -54,5 +54,8 @@ try:
 except ImportError:
     pass  # fail silently
 else:
-    from wxwordnet_app import app as wxwordnet
+    try:
+        from wxwordnet_app import app as wxwordnet
+    except ImportError:
+        pass # fail silently -- but this is BROKEN!
 
