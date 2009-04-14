@@ -5,274 +5,272 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import re
+import os
+import optparse
+
+import nltk
+
 from nltk.data import load
 from nltk.util import LazyMap, LazyZip, LazyConcatenation, LazyEnumerate
 
+from nltk.chunk.util import ChunkScore
+
+from nltk.corpus import names, gazetteers
+from nltk.corpus.util import LazyCorpusLoader
+from nltk.corpus.reader.conll import ConllCorpusReader
+
 from nltk.tag import TaggerI, ClassifierBasedTagger
-from nltk.classify import MaxentClassifier, ClassifierI
+from nltk.classify.maxent import MaxentClassifier, ClassifierI
 
 from nltk_contrib.coref import *
-from nltk_contrib.coref.features import *
-from nltk_contrib.coref.chunk import ClosedCategoryChunkTransform
+from nltk_contrib.coref.tag import TreebankTaggerCorpusReader
+from nltk_contrib.coref.train import train_model
+from nltk_contrib.coref.chunk import ChunkTagger, \
+    ChunkTaggerFeatureDetector
+from nltk_contrib.coref.muc import MUCCorpusReader
 
-class Person(NamedEntityI):
-    pass
-    
-    
-class Organization(NamedEntityI):
-    pass
-    
-    
-class Location(NamedEntityI):
-    pass
-    
-    
-class Money(NamedEntityI):
-    pass
-    
-    
-class Percent(NamedEntityI):
-    pass
-    
-
-class Out(NamedEntityI):
-    def __init__(self, s):
-        NamedEntityI.__init__(self, s, iob_tag=NamedEntityI.OUT)
+MUC6_NER = \
+    'nltk:taggers/maxent_muc6_ner/muc6.ner.pickle'
 
 
-class BaselineNamedEntityChunkTagger(ChunkTaggerI):
-    IN = 'I'
-    OUT = 'O'
-    BEGINS = 'B'
-    
-    def chunk(self, sent):
-        chunked_sent = []
-        chunk = []
-        for (index, word) in LazyEnumerate(sent):
-            if isinstance(word, tuple):
-                word = word[0]
-            elif not isinstance(word, str):
-                raise
-            word_type_ = word_type(word)
-            if word_type_ and word_type_[0] != 'PUNCT' and \
-            not (index == 0 and word_type_[0] == 'TITLE_CASE'):
-                if not chunk:
-                    chunk = []
-                chunk.append(word)
-            else:
-                if chunk:
-                    chunked_sent.append(chunk)
-                    chunk = []
-                chunked_sent.append(word)
-        if chunk:
-            chunked_sent.append(chunk)
-        return chunked_sent
+TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
+                            'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
 
-    def tag(self, sent):
-        iob_sent = []        
-        chunked_sent = self.chunk(sent)
-        for elt in chunked_sent:
-            if isinstance(elt, str) or isinstance(elt, tuple):
-                iob_sent.append((elt, self.OUT))
-            elif isinstance(elt, list):
-                for (index, word) in LazyEnumerate(elt):
-                    if index == 0:
-                        iob_sent.append((word, self.BEGINS))
-                    else:
-                        iob_sent.append((word, self.IN))
-        return iob_sent
+NUMBERS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven',
+           'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen',
+           'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
+           'nineteen', 'twenty', 'thirty', 'fourty', 'fifty',
+           'sixty', 'seventy', 'eighty', 'ninety', 'hundred',
+           'thousand', 'million', 'billion', 'trillion']
 
+ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 
+            'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth']
 
-class NamedEntityChunkTransform(ClosedCategoryChunkTransform):
-    """
-    """
-    def is_closed_cat(self, symbol):
-        word = symbol[0]
-        if isinstance(word, tuple):
-            return True
-        elif isinstance(word, str):
-            return word_type(word) or \
-                   ClosedCategoryChunkTransform.is_closed_cat(self, symbol)
-        else:
-            raise
-                
-    def transform(self, labeled_symbols):
-        typed_symbols = []
-        for symbol in labeled_symbols:
-            symbol_len = len(symbol or []) 
-            if symbol_len == 3:
-                word, tag, iob_tag = symbol
-                typed_symbol = (word_type(word)[:2] or word, tag, iob_tag)
-            elif symbol_len == 2:
-                word, tag = symbol
-                typed_symbol = (word_type(word)[:2] or word, tag)
-            else:
-                raise
-            typed_symbols.append(typed_symbol)
-        return ClosedCategoryChunkTransform.transform(self, typed_symbols)
+DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 
+        'friday', 'saturday', 'sunday']
 
+MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july',
+          'august', 'september', 'october', 'november', 'december',
+          'jan', 'feb', 'mar', 'apr', 'jun', 'jul', 'aug', 'sep', 'sept',
+          'oct', 'nov', 'dec']
 
-class NamedEntityFeatureDetector(dict):
-    def __init__(self, tokens, index=0, history=None):
+                     
+NAMES = set([name.lower() for filename in ('male.txt', 'female.txt') for name
+             in names.words(filename)])
+
+US_CITIES = set([city.lower() for city in gazetteers.words('uscities.txt')])
+
+# [XX] contains some non-ascii chars
+COUNTRIES = set([country.lower() for filename in ('isocountries.txt','countries.txt')
+                 for country in gazetteers.words(filename)])
+
+# States in North America
+NA_STATES = set([state.lower() for filename in
+                 ('usstates.txt','mexstates.txt','caprovinces.txt') for state in
+                 gazetteers.words(filename)])
+                     
+US_STATE_ABBREVIATIONS = set([state.lower() for state in gazetteers.words('usstateabbrev.txt')])
+
+NATIONALITIES = set([nat.lower() for nat in gazetteers.words('nationalities.txt')])
+                     
+PERSON_PREFIXES = ['mr', 'mrs', 'ms', 'miss', 'dr', 'rev', 'judge',
+                   'justice', 'honorable', 'hon', 'rep', 'sen', 'sec',
+                   'minister', 'chairman', 'succeeding', 'says', 'president']
+
+PERSON_SUFFIXES = ['sr', 'jr', 'phd', 'md']
+
+ORG_SUFFIXES = ['ltd', 'inc', 'co', 'corp', 'plc', 'llc', 'llp', 'gmbh',
+                'corporation', 'associates', 'partners', 'committee',
+                'institute', 'commission', 'university', 'college',
+                'airlines', 'magazine']
+
+CURRENCY_UNITS = ['dollar', 'cent', 'pound', 'euro']
+
+ENGLISH_PRONOUNS = ['i', 'you', 'he', 'she', 'it', 'we', 'you', 'they']
+
+NUMERIC = r'(\d{1,3}(\,\d{3})*|\d+)(\.\d+)?'
+RE_PUNCT = re.compile(r'[-!"#$%&\'\(\)\*\+,\./:;<=>^\?@\[\]\\\_`{\|}~]')
+RE_NUMERIC = re.compile(NUMERIC)
+RE_NUMBER = re.compile(r'(%s)(\s+(%s))*' % ('|'.join(NUMBERS), '|'.join(NUMBERS)), re.I)
+RE_QUOTE = re.compile(r'[\'"`]', re.I)
+RE_ROMAN = re.compile(r'M?M?M?(CM|CD|D?C?C?C?)(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)', re.I)
+RE_INITIAL = re.compile(r'[A-Z]\.', re.I)
+RE_TLA = re.compile(r'([A-Z0-9][\.\-]?){2,}', re.I)
+RE_ALPHA = re.compile(r'[A-Za-z]+', re.I)
+RE_DATE = re.compile(r'\d+\/\d+(\/\d+)?')
+RE_CURRENCY = re.compile(r'\$\s*(%s)?' % NUMERIC)
+RE_PERCENT = re.compile(r'%s\s*' % NUMERIC + '%')
+RE_YEAR = re.compile(r'(\d{4}s?|\d{2}s)')
+RE_TIME = re.compile(r'\d{1,2}(\:\d{2})?(\s*[aApP]\.?[mM]\.?)?', re.I)
+RE_ORDINAL = re.compile(r'%s' % ('|'.join(ORDINALS)))
+RE_DAY = re.compile(r'%s' % ('|'.join(DAYS)))
+RE_MONTH = re.compile(r'%s' % ('|'.join(MONTHS)))
+RE_PERSON_PREFIX = re.compile(r'%s' % ('|'.join(PERSON_PREFIXES)))
+RE_PERSON_SUFFIX = re.compile(r'%s' % ('|'.join(PERSON_SUFFIXES)))
+RE_ORG_SUFFIX = re.compile(r'%s' % ('|'.join(ORG_SUFFIXES)))
+
+class NERChunkTaggerFeatureDetector(dict):
+    def __init__(self, tokens, index=0, history=None, **kwargs):
         dict.__init__(self)
-        
-        chunk = tokens[index]
-        
-        self['word_type'] = word_type(chunk)[:2]
+        window = kwargs.get('window', 2)        
+        spelling, pos = tokens[index][:2]
 
-        features = ['contains_person_prefix', 'contains_person_suffix', 
-            'contains_org_suffix', 'contains_period', 'contains_punct', 
-            'contains_hyphen', 'contains_numeric', 'contains_currency', 
-            'contains_number', 'contains_percent', 'contains_city', 
-            'part_of_city', 'contains_country', 'contains_nationality',
-            'contains_state', 'is_upper_case', 'is_lower_case', 
-            'is_title_case', 'is_mixed_case', 'is_alpha_numeric', 
-            'contains_month', 'contains_roman_numeral', 'contains_initial',
-            'contains_tla', 'contains_day', 'contains_month', 'contains_date', 
-            'contains_ordinal', 'len', 'log_length', 'contains_name',
-            'startswith_person_prefix', 'endswith_person_suffix',
-            'endswith_org_suffix', 'is_city', 'is_country', 'is_state',
-            'contains_of_location', 'is_location', 'contains_location',
-            'contains_name_sequence', 'contains_title_case_sequence',
-            'is_year', 'contains_year', 'is_time', 'contains_time']
-
-        for fname in features:
-            self[fname] = eval(fname)(chunk)
+        self['spelling'] = spelling
+        self['word'] = spelling.lower()
+        self['pos'] = pos
+        self['isupper'] = spelling.isupper()
+        self['islower'] = spelling.islower()
+        self['istitle'] = spelling.istitle()
+        self['isalnum'] = spelling.isalnum() 
+        for i in range(1, 4):
+            self['prefix_%d' % i] = spelling[:i]
+            self['suffix_%d' % i] = spelling[-i:]
+        self['isclosedcat'] = pos in TREEBANK_CLOSED_CATS        
         
-        W = 1
-        for i in range(index - W, index + W + 1):
-            if i != index and i >= 0 and i < len(history or []):
-                featureset, tag = history[i]
-                if tag and i < 0:
-                    self[('tag', i)] = tag
-                for key, val in featureset.items():
-                    if not isinstance(key, tuple):
-                        self[(key, i - index)] = val
+        self['ispunct'] = bool(RE_PUNCT.match(spelling))
+        self['ispercent'] = bool(RE_PERCENT.match(spelling))
+        self['isnumber'] = bool(RE_PERCENT.match(spelling))
+        self['isnumeric'] = bool(RE_NUMERIC.match(spelling))
+        self['isquote'] = bool(RE_QUOTE.match(spelling))   
+        self['isroman'] = bool(RE_ROMAN.match(spelling))
+        self['isinitial'] = bool(RE_INITIAL.match(spelling))
+        self['istla'] = bool(RE_TLA.match(spelling))
+        self['isdate'] = bool(RE_DATE.match(spelling))
+        self['iscurrency'] = bool(RE_CURRENCY.match(spelling))
+        self['isyear'] = bool(RE_YEAR.match(spelling))
+        self['istime'] = bool(RE_TIME.match(spelling))
+        self['isordinal'] = bool(RE_ORDINAL.match(spelling))
+        self['isday'] = bool(RE_DAY.match(spelling)) 
+        self['ismonth'] = bool(RE_MONTH.match(spelling))        
+        self['isname'] = spelling.lower() in NAMES
+        self['iscity'] = spelling.lower() in US_CITIES
+        self['isstateabbrev'] = spelling.lower() in US_STATE_ABBREVIATIONS
+        self['isnastate'] = spelling.lower() in NA_STATES     
+        self['isnationality'] = spelling.lower() in NATIONALITIES       
+        self['personprefix'] = bool(RE_PERSON_PREFIX.match(spelling))
+        self['personsuffix'] = bool(RE_PERSON_PREFIX.match(spelling))                                                                       
+        self['orgsuffix'] = bool(RE_ORG_SUFFIX.match(spelling))
 
+        if window > 0 and index > 0:
+            prev_feats = \
+                self.__class__(tokens, index - 1, history, window=window - 1)
+            for key, val in prev_feats.items():
+                if not key.startswith('next_'):
+                    self['prev_%s' % key] = val
 
-class NamedEntityFeatureDetector2(dict):
-    def __init__(self, tokens, index=0, history=None):
-        dict.__init__(self)
-        
-        word = tokens[index]
-        
-        self['word'] = word
-        self['word_type'] = word_type(word)[:1]
-        self['start_of_sent'] = index == 0
-        self['end_of_sent'] = index == len(tokens) - 1
-        self['is_bridge_word'] = word.lower() in ['of', 'and', '&']
-        
-        for i in range(2, 4):
-            self['prefix_%d' % i] = word[:i]
-            self['suffix_%d' % i] = word[-i:]
+        if window > 0 and index < len(tokens) - 1:
+            next_feats = self.__class__(tokens, index + 1, window=window - 1)        
+            for key, val in next_feats.items():
+                if not key.startswith('prev_'):
+                    self['next_%s' % key] = val        
 
-        features = ['is_person_prefix', 'is_person_suffix', 
-            'is_org_suffix', 'contains_period', 'contains_punct', 
-            'contains_hyphen', 'is_numeric', 'is_currency', 
-            'is_number', 'is_percent', 'is_city', 
-            'part_of_city', 'is_country', 'is_nationality',
-            'is_state', 'is_upper_case', 'is_lower_case', 
-            'is_title_case', 'is_mixed_case', 'is_alpha_numeric', 
-            'is_month', 'is_roman_numeral', 'is_initial',
-            'is_tla', 'is_day', 'is_month', 'is_date', 
-            'is_ordinal', 'len', 'log_length', 'is_name',
-            'startswith_person_prefix', 'endswith_person_suffix',
-            'endswith_org_suffix', 'is_location', 'is_year', 'is_time']
+        if 'prev_pos' in self:
+            self['prev_pos_pair'] = '%s/%s' % \
+                (self.get('prev_pos'), self.get('pos'))
 
-        for fname in features:
-            self[fname] = eval(fname)(word)
-        
-        W = 1
-        for i in range(index - W, index + W + 1):
-            if i != index and i >= 0 and i < len(history or []):
-                featureset, tag = history[i]
-                if tag and i < index:
-                    self[('tag', i - index)] = tag
-                for key, val in featureset.items():
-                    if not isinstance(key, tuple):
-                        self[(key, i - index)] = val
+        if history and index > 0:
+            self['prev_tag'] = history[index - 1]     
 
-        prev_word = self.get(('word', -1), '')
-        next_word = self.get(('word', 1), '')
-        word_sequence = '%s %s %s' % (prev_word, word, next_word)
-        self['in_name_sequence'] = contains_name_sequence(word_sequence)
-        self['in_title_case_sequence'] = \
-            contains_title_case_sequence(word_sequence)
-        self['in_country_sequence'] = contains_country(word_sequence)
-        self['in_of_location'] = contains_of_location(word_sequence)
-        self['in_bridge_sequence'] = \
-            self.get(('is_title_case', -1)) and \
-            self.get('is_bridge_word') and \
-            self.get(('is_title_case', 1))
-        #self['prev_word_in_chunk'] = self.get(('tag', -1)) != 'O'
-        
+def maxent_classifier_builder(labeled_featuresets):
+    return MaxentClassifier.train(
+        labeled_featuresets,
+        algorithm='megam',
+        gaussian_prior_sigma=10,
+        count_cutoff=1,
+        min_lldelta=1e-7)
 
-class NamedEntityClassifier(ClassifierBasedTagger, 
-                            ClassifierI, TrainableI):    
-    def __getattr__(self, name):
-        if name != '_classifier':
-            return getattr(self._classifier, name)
-    
-    def labels(self):
-        return self._classifier.labels()
-    
-    def batch_classify(self, featuresets):
-        return self._classifier.batch_classify(featuresets)
-    
-    def batch_prob_classify(self, featuresets):
-        return self._classifier.batch_prob_classify(featuresets)
-    
-    @classmethod
-    def train(cls, labeled_sequence, test_sequence=None,
-                   unlabeled_sequence=None, **kwargs):
-        algorithm = kwargs.get('algorithm', 'tadm')
-        encoding = kwargs.get('encoding', None)
-        gaussian_prior_sigma = kwargs.get('gaussian_prior_sigma', 1000)
-        count_cutoff = kwargs.get('count_cutoff', 5)
-        min_lldelta = kwargs.get('min_lldelta', 1e-5)
-        feature_detector = kwargs.get('feature_detector')        
-        out_tag = kwargs.get('out_tag')
-        
-        def maxent_classifier_builder(labeled_featuresets):
-            return MaxentClassifier.train(
-                labeled_featuresets,
-                algorithm=algorithm,
-                encoding=encoding,
-                gaussian_prior_sigma=gaussian_prior_sigma,
-                count_cutoff=count_cutoff,
-                min_lldelta=min_lldelta)
+def train_muc6_ner(num_train_sents, num_test_sents, **kwargs):
+    def __zipzip(a, b):
+        return LazyMap(lambda (x, y): zip(x, y), LazyZip(a, b))
+    def __word_pos_iob(iob_sents, tagged_sents):
+        return LazyMap(lambda sent: [y + x[-1:] for x, y in sent], __zipzip(iob_sents, tagged_sents))
+    model_file = kwargs.get('model_file')
+    muc6 = LazyCorpusLoader('muc6/', MUCCorpusReader, r'.*\.ne\..*\.sgm')
+    muc6 = TreebankTaggerCorpusReader(muc6)
+    muc6_iob_sents = muc6.iob_sents()
+    muc6_tagged_sents = muc6.tagged_sents()
+    muc6_sents = __word_pos_iob(muc6_iob_sents, muc6_tagged_sents)
+    max_train_sents = int(len(muc6_sents)*0.9)
+    max_test_sents = len(muc6_sents) - max_train_sents
+    num_train_sents = min((num_train_sents or max_train_sents, max_train_sents))
+    num_test_sents = min((num_test_sents or max_test_sents, max_test_sents))                
+    muc6_train_sequence = \
+        muc6_sents[:num_train_sents]
+    muc6_test_sequence = \
+        muc6_sents[num_train_sents:num_train_sents + num_test_sents]
+    # Import ChunkTagger and ChunkTaggerFeatureDetector because we want 
+    # train_model() and the pickled object to use the full class names.
+    from nltk_contrib.coref.chunk import ChunkTagger   
+    from nltk_contrib.coref.ne import NERChunkTaggerFeatureDetector
+    ner = train_model(ChunkTagger, 
+                      muc6_train_sequence, 
+                      muc6_test_sequence,
+                      model_file,
+                      num_train_sents,
+                      num_test_sents,
+                      feature_detector=NERChunkTaggerFeatureDetector,
+                      classifier_builder=maxent_classifier_builder,
+                      verbose=kwargs.get('verbose'))
+    if kwargs.get('verbose'):
+        ner.show_most_informative_features(25)
+    return ner
 
-        classifier_builder = \
-            kwargs.get('classifier_builder', maxent_classifier_builder)
-            
-        classifier = \
-            cls(feature_detector, labeled_sequence, classifier_builder)
-        
-        if test_sequence:
-            classifier.test(test_sequence, out_tag=out_tag)
-        
-        return classifier
-    
-    
-class NamedEntityRecognizer(TaggerI):
-    def __init__(self, tagger, chunker, classifier):
-        self._tagger = tagger
-        self._chunker = chunker
-        self._classifier = classifier
-    
-    def tag(self, tokens):
-        tagged_tokens = self._tagger.tag(tokens)
-        chunked_tokens = self._chunker.chunk(tagged_tokens)
-
-
-def demo():
-    from nltk_contrib.coref.util import baseline_chunk_tagger_demo
-    baseline_chunk_tagger_demo()
+def demo(verbose=False):
+    import nltk
+    from nltk.corpus import treebank    
+    from nltk_contrib.coref import NLTK_COREF_DATA
+    nltk.data.path.insert(0, NLTK_COREF_DATA)
+    from nltk_contrib.coref.ne import MUC6_NER
+    ner = nltk.data.load(MUC6_NER)
+    for sent in treebank.tagged_sents()[:5]:
+        print ner.parse(sent)
+        print
     
 if __name__ == '__main__':
-    try:
-        import psyco
-        psyco.full(memory=100)
-    except:
-        pass
-    demo()
+    parser = optparse.OptionParser()
+    parser.add_option('-d', '--demo', action='store_true', dest='demo',
+                      default=True, help='run demo')
+    parser.add_option('-t', '--train-chunker', action='store_true',
+                      default=False, dest='train', 
+                      help='train MUC6 named entity recognizer')
+    parser.add_option('-f', '--model-file', metavar='FILE',
+                      dest='model_file', help='save model to FILE')
+    parser.add_option('-e', '--num-test-sents', metavar='NUM_TEST',
+                      dest='num_test_sents', type=int, 
+                      help='number of test sentences')
+    parser.add_option('-r', '--num-train-sents', metavar='NUM_TRAIN',
+                      dest='num_train_sents', type=int, 
+                      help='number of training sentences')
+    parser.add_option('-l', '--local-models', action='store_true',
+                      dest='local_models', default=False,
+                      help='use models from nltk_contrib.coref')
+    parser.add_option('-p', '--psyco', action='store_true',
+                      default=False, dest='psyco',
+                      help='use Psyco JIT, if available')
+    parser.add_option('-v', '--verbose', action='store_true',
+                      default=False, dest='verbose',
+                      help='verbose')
+    (options, args) = parser.parse_args()
+    
+    if options.local_models:
+        nltk.data.path.insert(0, NLTK_COREF_DATA)
+        
+    if options.psyco:
+        try:
+            import psyco
+            psyco.profile(memory=256)
+        except:
+            pass
+    
+    if options.train:
+        chunker = train_muc6_ner(options.num_train_sents, 
+                                 options.num_test_sents,
+                                 model_file=options.model_file, 
+                                 verbose=options.verbose)  
+                       
+    elif options.demo:
+        demo(options.verbose)
+
+    else:
+        demo(options.verbose)
