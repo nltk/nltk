@@ -522,8 +522,10 @@ def _muc_read_text(s, top_node):
                 if para and para[0] and para[0].strip():
                     tree.append(Tree('P', []))
                     for sent in _MUC6_SENT_RE.findall(para[0]):
-                        words = _MUC6_SENT_RE.match(sent[0]).group('sent')
-                        tree[-1].append(_muc_read_words(words, 'S'))                
+                        words = _MUC6_SENT_RE.match(sent[0]).group('sent').strip()
+                        # There are empty sentences <s></s> in the MUC6 corpus.
+                        if words:
+                            tree[-1].append(_muc_read_words(words, 'S'))                
         elif _MUC7_PARA_RE.match(s):
             for para in _MUC7_PARA_SPLIT_RE.split(s):
                 if para and para.strip():
