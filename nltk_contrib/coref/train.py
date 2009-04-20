@@ -8,6 +8,10 @@
 import gzip
 import time
 
+from nltk.util import LazyMap
+from nltk.classify import MaxentClassifier
+from nltk.metrics.scores import accuracy
+
 try:
     from nltk.data import BufferedGzipFile
 except:
@@ -22,6 +26,62 @@ try:
     from cStringIO import StringIO
 except:
     from StringIO import StringIO
+    
+    
+class MegamMaxentClassifier(MaxentClassifier):
+    @classmethod
+    def train(cls, training_sequence, **kwargs):
+        feature_detector = kwargs.get('feature_detector')
+        gaussian_prior_sigma = kwargs.get('gaussian_prior_sigma', 10)
+        count_cutoff = kwargs.get('count_cutoff', 1)
+        stopping_condition = kwargs.get('stopping_condition', 1e-7)
+        def __featurize(tagged_token):
+            tag = tagged_token[-1]
+            feats = feature_detector(tagged_token)
+            return (feats, tag)
+        labeled_featuresets = LazyMap(__featurize, training_sequence)
+        classifier = MaxentClassifier.train(labeled_featuresets,
+                                algorithm='megam',
+                                gaussian_prior_sigma=gaussian_prior_sigma,
+                                count_cutoff=count_cutoff,
+                                min_lldelta=stopping_condition)
+        return cls(classifier._encoding, classifier.weights())
+
+    def test(self, test_sequence, **kwargs):
+        feature_detector = kwargs.get('feature_detector')        
+        def __tags(token):
+            return token[-1]
+        def __untag(token):
+            return token[0]
+        def __featurize(tagged_token):
+            tag = tagged_token[-1]
+            feats = feature_detector(tagged_token)
+            return (feats, tag)
+        count = sum([len(sent) for sent in test_sequence])
+        correct_tags = LazyMap(__tags, test_sequence)        
+        untagged_sequence = LazyMap(__untag, LazyMap(__featurize, test_sequence))
+        predicted_tags = LazyMap(self.classify, untagged_sequence)
+        acc = accuracy(correct_tags, predicted_tags)
+        print 'accuracy over %d tokens: %.2f' % (count, acc)
+        
+        
+class MaxentClassifierFactory(object):
+    def __init__(self, **kwargs):
+        self._maxent_classifier_class = \
+            kwargs.get('maxent_classifier_class', MegamMaxentClassifier)    
+        self._feature_detector = kwargs.get('feature_detector')
+        self._gaussian_prior_sigma = kwargs.get('gaussian_prior_sigma', 10)
+        self._count_cutoff = kwargs.get('count_cutoff', 1)
+        self._stopping_condition = kwargs.get('stopping_condition', 1e-7)        
+        
+    def train(self, training_sequence, **kwargs):
+        kwargs = {
+            'feature_detector':self._feature_detector,
+            'gaussian_prior_sigma':self._gaussian_prior_sigma,
+            'count_cutoff':self._count_cutoff,
+            'min_lldelta':self._stopping_condition,
+        }
+        return self._maxent_classifier_class.train(training_sequence, **kwargs)
 
 
 def train_model(train_class, labeled_sequence, test_sequence, pickle_file,

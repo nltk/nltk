@@ -8,8 +8,6 @@
 
 import re
 import math
-import nltk
-
 
 from nltk.corpus import names, gazetteers
 
@@ -427,9 +425,6 @@ def word_type(word):
         word_type.append('PUNCT')
 
     return tuple(word_type[:3])
-
-
-
 
 def demo():
     from nltk.corpus import treebank
