@@ -9,6 +9,8 @@ import os
 import re
 import optparse
 
+import numpy
+
 import nltk
 
 from nltk.util import LazyMap, LazyConcatenation
@@ -16,14 +18,13 @@ from nltk.corpus.util import LazyCorpusLoader
 from nltk.corpus.reader import BracketParseCorpusReader
 
 from nltk.data import load, find, ZipFilePathPointer
-from nltk.probability import WittenBellProbDist
 from nltk.tag import HiddenMarkovModelTagger
 
 from nltk_contrib.coref import CorpusReaderDecorator, NLTK_COREF_DATA
-from nltk_contrib.coref.train import train_model
+from nltk_contrib.coref.train import train_model, LidstoneProbDistFactory
 
 TREEBANK_TAGGER = \
-    'nltk:taggers/hmm_treebank_pos_tagger/treebank.tagger.pickle'
+    'nltk:taggers/hmm_treebank_pos_tagger/treebank.tagger.pickle'           
 
 
 class TaggerCorpusReader(CorpusReaderDecorator):
@@ -56,10 +57,14 @@ class TaggerCorpusReader(CorpusReaderDecorator):
 
 class TreebankTaggerCorpusReader(TaggerCorpusReader):
     def __init__(self, reader, **kwargs):
-        kwargs['tagger'] = load(TREEBANK_TAGGER)
+        kwargs['tagger'] = load_treebank_tagger()
         TaggerCorpusReader.__init__(self, reader, **kwargs)
 
-    
+
+def load_treebank_tagger():
+    nltk.data.path.insert(0, NLTK_COREF_DATA)
+    return load(TREEBANK_TAGGER)
+
 def train_treebank_tagger(num_train_sents, num_test_sents, **kwargs):
     model_file = kwargs.get('model_file')
     treebank = LazyCorpusLoader(
@@ -76,14 +81,14 @@ def train_treebank_tagger(num_train_sents, num_test_sents, **kwargs):
     # Import HiddenMarkovModelTagger and WittenBellProbDist because we want 
     # train_model() and the pickled object to use the full class names.
     from nltk.tag import HiddenMarkovModelTagger
-    from nltk.probability import WittenBellProbDist
+    from nltk_contrib.coref.train import LidstoneProbDistFactory
     tagger = train_model(HiddenMarkovModelTagger, 
                          treebank_train_sequence, 
                          treebank_test_sequence,
                          model_file,
                          num_train_sents,
                          num_test_sents,
-                         estimator=WittenBellProbDist,
+                         estimator=LidstoneProbDistFactory,
                          verbose=kwargs.get('verbose'))
     if kwargs.get('verbose'):
         tagger.show_most_informative_features(25)

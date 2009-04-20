@@ -11,6 +11,7 @@ import time
 from nltk.util import LazyMap
 from nltk.classify import MaxentClassifier
 from nltk.metrics.scores import accuracy
+from nltk.probability import LidstoneProbDist
 
 try:
     from nltk.data import BufferedGzipFile
@@ -28,6 +29,27 @@ except:
     from StringIO import StringIO
     
     
+class LidstoneProbDistFactory(LidstoneProbDist):
+    def __init__(self, fd, *args, **kwargs):
+        LidstoneProbDist.__init__(self, fd, 0.01, args[-1])
+        samples = fd.samples()
+        self._probs = dict(zip([0]*len(samples), samples))
+        self._logprobs = dict(zip([0]*len(samples), samples))        
+        for sample in samples:
+            self._logprobs[sample] = LidstoneProbDist.logprob(self, sample)
+            self._probs[sample] = LidstoneProbDist.prob(self, sample)
+
+    def logprob(self, sample):
+        if sample not in self._logprobs:
+            self._logprobs[sample] = LidstoneProbDist.logprob(self, sample)
+        return self._logprobs.get(sample)
+
+    def prob(self, sample):
+        if sample not in self._probs:
+            self._probs[sample] = LidstoneProbDist.prob(self, sample)
+        return self._probs.get(sample)
+    
+
 class MegamMaxentClassifier(MaxentClassifier):
     @classmethod
     def train(cls, training_sequence, **kwargs):
