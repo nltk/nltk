@@ -4,7 +4,8 @@ T0 = time.time()
 
 import sys
 import re
-from nltk import cfg, Tree
+from nltk import parse_cfg
+from nltk import Tree
 from nltk import parse
 
 __all__ = ["translate", "translate2", "get_profile", "get_grammar", "get_base_grammar", "tokenize"]
@@ -967,7 +968,7 @@ def translate2(q,tname='T'):
     for typ, t in l:
         if typ == 's':
             GR += "Qname -> '" + t + "'\n"
-    grammar = cfg.parse_cfg(GR)
+    grammar = parse_cfg(GR)
     parser = parse.ChartParser(grammar, parse.TD_STRATEGY)
     T4 = time.time()
 
