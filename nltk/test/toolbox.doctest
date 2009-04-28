@@ -153,23 +153,23 @@ file ending with a multiline record should be parsed ok:
 file beginning with a BOM should be parsed ok:
 
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string(u'\ufeff\\lx a value\n\\lx another value\n')
+    >>> f.open_string(u'\ufeff\\lx a value\n\\lx another value\n'.encode('utf8'))
     >>> list(f.raw_fields())
-    [(u'lx', u'a value'), (u'lx', u'another value')]
+    [('lx', 'a value'), ('lx', 'another value')]
 
 file beginning with two BOMs should ignore only the first one:
 
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string(u'\ufeff\ufeff\\lx a value\n\\lx another value\n')
+    >>> f.open_string(u'\ufeff\ufeff\\lx a value\n\\lx another value\n'.encode('utf8'))
     >>> list(f.raw_fields())
-    [(None, u'\ufeff\\lx a value'), (u'lx', u'another value')]
+    [(None, '\xef\xbb\xbf\\lx a value'), ('lx', 'another value')]
 
 should not ignore a BOM not at the beginning of the file:
 
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string(u'\\lx a value\n\ufeff\\lx another value\n')
+    >>> f.open_string(u'\\lx a value\n\ufeff\\lx another value\n'.encode('utf8'))
     >>> list(f.raw_fields())
-    [(u'lx', u'a value\n\ufeff\\lx another value')]
+    [('lx', 'a value\n\xef\xbb\xbf\\lx another value')]
 
 ``toolbox.StandardFormat.fields()``
 -----------------------------------
