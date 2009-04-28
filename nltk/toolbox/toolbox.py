@@ -59,7 +59,8 @@ class StandardFormat(object):
         """
         join_string = '\n'
         line_regexp = r'^%s(?:\\(\S+)\s*)?(.*)$'
-        first_line_pat = re.compile(line_regexp % u'\ufeff?')
+        # discard a BOM in the first line
+        first_line_pat = re.compile(line_regexp % u'(?:\ufeff)?'.encode('utf8'))
         line_pat = re.compile(line_regexp % '')
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
