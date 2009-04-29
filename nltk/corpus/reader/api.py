@@ -13,6 +13,7 @@ API for corpus readers.
 import os
 import re
 
+import nltk
 from nltk import defaultdict
 from nltk.internals import deprecated
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
