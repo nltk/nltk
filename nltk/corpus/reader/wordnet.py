@@ -1544,7 +1544,11 @@ def information_content(synset, ic):
         msg = 'Information content file has no entries for part-of-speech: %s'
         raise WordNetError(msg % synset.pos)
 
-    return -math.log(icpos[synset.offset] / icpos[0])
+    counts = icpos[synset.offset]
+    if counts == 0:
+        return _INF
+    else:
+        return -math.log(counts / icpos[0])
 
 
 # get the part of speech (NOUN or VERB) from the information content record
