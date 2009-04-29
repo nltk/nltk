@@ -13,7 +13,6 @@ API for corpus readers.
 import os
 import re
 
-import nltk
 from nltk import defaultdict
 from nltk.internals import deprecated
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
@@ -52,7 +51,7 @@ class CorpusReader(object):
         @param encoding: The default unicode encoding for the files
             that make up the corpus.  C{encoding}'s value can be any
             of the following:
-            
+
               - B{A string}: C{encoding} is the encoding name for all
                 files.
               - B{A dictionary}: C{encoding[file_id]} is the encoding
@@ -87,11 +86,11 @@ class CorpusReader(object):
         # If `fileids` is a regexp, then expand it.
         if isinstance(fileids, basestring):
             fileids = find_corpus_fileids(root, fileids)
-            
+
         self._fileids = fileids
         """A list of the relative paths for the fileids that make up
         this corpus."""
-        
+
         self._root = root
         """The root directory for this corpus."""
 
@@ -112,7 +111,7 @@ class CorpusReader(object):
            this corpus.  If C{encoding} is C{None}, then the file
            contents are processed using byte strings (C{str})."""
         self._tag_mapping_function = tag_mapping_function
-        
+
     def __repr__(self):
         if isinstance(self._root, ZipFilePathPointer):
             path = '%s/%s' % (self._root.zipfile.filename, self._root.entry)
@@ -124,7 +123,7 @@ class CorpusReader(object):
         """
         Return the contents of the corpus README file, if it exists.
         """
-        
+
         return open(self.abspath("README")).read()
 
     def fileids(self):
@@ -141,7 +140,7 @@ class CorpusReader(object):
         @type file: C{str}
         @param file: The file identifier for the file whose path
             should be returned.
-            
+
         @rtype: L{PathPointer}
         """
         return self._root.join(fileid)
@@ -158,7 +157,7 @@ class CorpusReader(object):
             file identifier, for a single file.  Note that the return
             value is always a list of paths, even if C{fileids} is a
             single file identifier.
-            
+
         @param include_encoding: If true, then return a list of
             C{(path_pointer, encoding)} tuples.
 
@@ -171,7 +170,7 @@ class CorpusReader(object):
 
         paths = [self._root.join(f) for f in fileids]
 
-        if include_encoding:            
+        if include_encoding:
             return zip(paths, [self.encoding(f) for f in fileids])
         else:
             return paths
@@ -197,7 +196,7 @@ class CorpusReader(object):
             return self._encoding.get(file)
         else:
             return self._encoding
-        
+
     def _get_root(self): return self._root
     root = property(_get_root, doc="""
         The directory where this corpus is stored.
@@ -231,7 +230,7 @@ class CategorizedCorpusReader(object):
     Subclasses are expected to:
 
       - Call L{__init__()} to set up the mapping.
-        
+
       - Override all view methods to accept a C{categories} parameter,
         which can be used *instead* of the C{fileids} parameter, to
         select which fileids should be included in the returned view.
@@ -246,10 +245,10 @@ class CategorizedCorpusReader(object):
             category for each file identifier.  The pattern will be
             applied to each file identifier, and the first matching
             group will be used as the category label for that file.
-            
+
           - cat_map: A dictionary, mapping from file identifiers to
             category labels.
-            
+
           - cat_file: The name of a file that contains the mapping
             from file identifiers to categories.  The argument
             C{cat_delimiter} can be used to specify a delimiter.
@@ -260,7 +259,7 @@ class CategorizedCorpusReader(object):
         """
         self._f2c = None #: file-to-category mapping
         self._c2f = None #: category-to-file mapping
-        
+
         self._pattern = None #: regexp specifying the mapping
         self._map = None #: dict specifying the mapping
         self._file = None #: fileid of file containing the mapping
@@ -291,12 +290,12 @@ class CategorizedCorpusReader(object):
     def _init(self):
         self._f2c = defaultdict(list)
         self._c2f = defaultdict(list)
-        
+
         if self._pattern is not None:
             for file_id in self._fileids:
                 category = re.match(self._pattern, file_id).group(1)
                 self._add(file_id, category)
-                
+
         elif self._map is not None:
             for (file_id, categories) in self._map.items():
                 for category in categories:
@@ -405,7 +404,7 @@ class SyntaxCorpusReader(CorpusReader):
 
     #------------------------------------------------------------
     #{ Block Readers
-    
+
     def _read_word_block(self, stream):
         return sum(self._read_sent_block(stream), [])
 
@@ -414,7 +413,7 @@ class SyntaxCorpusReader(CorpusReader):
 
     def _read_sent_block(self, stream):
         return filter(None, [self._word(t) for t in self._read_block(stream)])
-    
+
     def _read_tagged_sent_block(self, stream, simplify_tags=False):
         return filter(None, [self._tag(t, simplify_tags)
                              for t in self._read_block(stream)])
