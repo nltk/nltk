@@ -54,6 +54,7 @@ setup(
                 'nltk.tag',
                 'nltk.test',
                 'nltk.tokenize',
+                'nltk.toolbox',
                 'nltk.etree',
                 'nltk_contrib',
                 'nltk_contrib.bioreader',
