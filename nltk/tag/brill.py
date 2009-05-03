@@ -1218,7 +1218,7 @@ def error_list (train_sents, test_sents, radius=2):
 # Demonstration
 ######################################################################
 
-def demo(num_sents=100, max_rules=200, min_score=3,
+def demo(num_sents=2000, max_rules=200, min_score=3,
          error_output="errors.out", rule_output="rules.yaml",
          randomize=False, train=.8, trace=3):
     """
