@@ -128,6 +128,8 @@ class BNCCorpusReader(XMLCorpusReader):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):
                 word = xmlword.text
+                if not word:
+                    word = "" # fixes issue 337?
                 if strip_space or stem: word = word.strip()
                 if stem: word = xmlword.get('hw', word)
                 if tag == 'c5':
@@ -219,6 +221,8 @@ class BNCWordView(XMLCorpusView):
         
     def handle_word(self, elt):
         word = elt.text
+        if not word:
+            word = "" # fixes issue 337?
         if self._strip_space or self._stem:
             word = word.strip()
         if self._stem:
