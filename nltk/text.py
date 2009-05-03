@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
+#         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -544,16 +545,30 @@ class TextCollection(Text):
 
         self._texts = source
         Text.__init__(self, LazyConcatenation(source))
+        self._idf_cache = {}
     
     def tf(self, term, text, method=None):
+        """ The frequency of the term in text. """
         return float(text.count(term)) / len(text)
 
-    def df(self, term, method=None):
-        return (len(True for text in self._texts if term in text) /
-                float(len(self._texts)))
+    def idf(self, term, method=None):
+        """ The number of texts in the corpus divided by the
+        number of texts that the term appears in. 
+        If a term does not appear in the corpus, 0.0 is returned. """
+        # idf values are cached for performance.
+        idf = self._idf_cache.get(term)
+        if idf is None: 
+            matches = len(list(True for text in self._texts if term in text))
+            if not matches:
+                # FIXME Should this raise some kind of error instead?
+                idf = 0.0
+            else:
+                idf = log(float(len(self._texts)) / matches)
+            self._idf_cache[term] = idf
+        return idf
 
     def tf_idf(self, term, text):
-        return self.tf(term, text) / log(self.df(term))
+        return self.tf(term, text) * self.idf(term)
     
 def demo():
     from nltk.corpus import brown
