@@ -6,7 +6,7 @@ The `nltk.logic` package allows expressions of First-Order Logic (FOL) to be
 parsed into ``Expression`` objects. In addition to FOL, the parser
 handles lambda-abstraction with variables of higher order.
 
-Section `Regression Tests`_
+`Regression Tests`_
 ("Regression Tests") contains regression tests for the parser
 and associated functions and classes.
 

@@ -57,9 +57,9 @@ Or spanning intervening words:
     >>> ignored_words = nltk.corpus.stopwords.words('english')
     >>> finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
     >>> finder.nbest(bigram_measures.likelihood_ratio, 10)
-    [('chief', 'chief'), ('hundred', 'years'), ('father', 'father'), ('lived', 'years'), ('years', 'father'), ('live
-d', 'father'), ('land', 'Egypt'), ('land', 'Canaan'), ('lived', 'hundred'), ('land', 'land')]
-
+    [('chief', 'chief'), ('hundred', 'years'), ('father', 'father'), ('lived', 'years'),
+    ('years', 'father'), ('lived', 'father'), ('land', 'Egypt'), ('land', 'Canaan'),
+    ('lived', 'hundred'), ('land', 'land')]
 
 Finders
 ~~~~~~~
