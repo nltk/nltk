@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
+#         Jonathan Epstein <gieguy98@gmail.com> -- additions
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -868,7 +869,70 @@ class FST(object):
     
         return fst
 
-    def dotgraph(self):
+    @staticmethod
+    def mergeRuns(sortedArcs,minRun):
+        run = []
+        result = []
+        rightIncreasing = False
+    
+        for temp_in_str,temp_out_str in sortedArcs:
+            in_str = ' '.join(temp_in_str) # reformat strings
+            out_str = ' '.join(temp_out_str)
+            contRun = False # Are we able to continue an existing run?  Usually not.
+            if len(in_str) == 1:
+                if len(run) > 0:
+                    (last_in,last_out) = run[-1]
+                    if len(last_in) == 1 and ord(in_str) == ord(last_in)+1:
+                        if len(out_str) == 1 and len(last_out) == 1 and ord(out_str) == ord(last_out)+1:
+                            if len(run) == 1:
+                                rightIncreasing = True
+                                contRun = True
+                            else:
+                                if rightIncreasing:
+                                    contRun = True
+                        if out_str == last_out and not rightIncreasing:
+                            contRun = True
+            if len(run) > 0 and not contRun:
+                if len(run) >= minRun:
+                    (firstleft,firstright) = run[0]
+                    (lastleft,lastright) = run[-1]
+                    left = firstleft + "-" + lastleft
+                    right = firstright
+                    if rightIncreasing:
+                        right = firstright + "-" + lastright
+                    result += [(left,right)]
+                    run = []
+                    rightIncreasing = False
+                else:
+                    result.extend(run)
+                    run = []
+    
+            if len(run) == 0 and len(in_str) == 1:
+                contRun = True
+            if contRun:
+                run += [(in_str,out_str)]
+            else:
+                result += [(in_str,out_str)]
+    
+        if len(run) > 0:
+            if len(run) >= minRun:
+                (firstleft,firstright) = run[0]
+                (lastleft,lastright) = run[-1]
+                left = firstleft + "-" + lastleft
+                right = firstright
+                if rightIncreasing:
+                    right = firstright + "-" + lastright
+                result += [(left,right)]
+                run = []
+                rightIncreasing = False
+            else:
+                result.extend(run)
+                run = []
+    
+        return result
+
+    def dotgraph(self, mergeEdges=True, multiEdgesToNodesColoringThreshold=2.5,
+            maxEdgeLineLen=15, minRun=3):
         """
         Return an AT&T graphviz dot graph.
         """
@@ -879,7 +943,9 @@ class FST(object):
         if self.initial_state is not None:
             lines.append('init [shape="plaintext" label=""]')
             lines.append('init -> %s' % state_id[self.initial_state])
+        stateCount = 0
         for state in self.states():
+            stateCount += 1
             if self.is_final(state):
                 final_str = self.finalizing_string(state)
                 if len(final_str)>0:
@@ -890,11 +956,49 @@ class FST(object):
                                  (state_id[state], state))
             else:
                 lines.append('%s [label="%s"]' % (state_id[state], state))
-        for arc in self.arcs():
-            src, dst, in_str, out_str = self.arc_info(arc)
-            lines.append('%s -> %s [label="%s:%s"]' %
-                         (state_id[src], state_id[dst],
-                          ' '.join(in_str), ' '.join(out_str)))
+        if mergeEdges:
+            uniqueArcs = dict()
+            colors = ('black','red','blue','green','purple','orange')
+            for arc in self.arcs():
+                src, dst, in_str, out_str = self.arc_info(arc)
+                if (src,dst) in uniqueArcs:
+                    uniqueArcs[(src,dst)] += [(in_str,out_str)]
+                else:
+                    uniqueArcs[(src,dst)] = [(in_str,out_str)]
+            ratio = float(len(uniqueArcs.keys())) / float(stateCount)
+            for src,dst in uniqueArcs.keys():
+                uniqueArcs[(src,dst)].sort()
+                sortedArcs = FST.mergeRuns(uniqueArcs[(src,dst)],minRun)
+                label = ""
+                sinceLastNewLine = 0
+                for in_str,out_str in sortedArcs:
+                    locallabel = ""
+                    if label != "":
+                        label += ","
+                        sinceLastNewLine += 1
+                    if sinceLastNewLine > maxEdgeLineLen:
+                        sinceLastNewLine = 0
+                        label += r'\n'
+                    if in_str == out_str and len(in_str) > 0:
+#                        locallabel += ' '.join(in_str)
+                        locallabel += in_str
+                    else:
+#                        locallabel += ' '.join(in_str) + ":" + ' '.join(out_str)
+                        locallabel += in_str + ":" + out_str
+                    label += locallabel
+                    sinceLastNewLine += len(locallabel)
+                if ratio > multiEdgesToNodesColoringThreshold:
+                    color = colors[random.randrange(0,len(colors))]
+                else: # no reason to light up like a Christmas tree
+                    color = colors[0]
+                lines.append('%s -> %s [label="%s" color=%s fontcolor=%s]' %
+                             (state_id[src], state_id[dst], label, color, color))
+        else:
+            for arc in self.arcs():
+                src, dst, in_str, out_str = self.arc_info(arc)
+                lines.append('%s -> %s [label="%s:%s"]' %
+                             (state_id[src], state_id[dst],
+                              ' '.join(in_str), ' '.join(out_str)))
         lines.append('}')
         return '\n'.join(lines)
     
