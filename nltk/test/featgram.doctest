@@ -125,22 +125,21 @@ side of a production. However, when the Scanner matches an input word
 against a lexical production that has been predicted, the new edge will
 typically contain fully specified features; e.g., the edge
 [PropN[`num`:feat: = `sg`:fval:] |rarr| 'Kim', (0, 1)]. Recall from
-Chapter chap-parse_ that the Fundamental (or Completer) Rule in
+Chapter 8 that the Fundamental (or Completer) Rule in
 standard CFGs is used to combine an incomplete edge that's expecting a
 nonterminal *B* with a following, complete edge whose left hand side
 matches *B*. In our current setting, rather than checking for a
 complete match, we test whether the expected category *B* will
 `unify`:dt: with the left hand side *B'* of a following complete
-edge. We will explain in more detail in Section sec-feat-comp_ how
+edge. We will explain in more detail in Section 9.2 how
 unification works; for the moment, it is enough to know that as a
 result of unification, any variable values of features in *B* will be
 instantiated by constant values in the corresponding feature structure
 in *B'*, and these instantiated values will be used in the new edge
 added by the Completer. This instantiation can be seen, for example,
 in the edge 
-[`np`:gc:\ [`num`:feat:\ =\ `sg`:fval:] |rarr| PropN[`num`:feat:\ =\ `sg`:fval:] |dot|, (0, 1)]
-in code-featurecharttrace_,
-where the feature `num`:feat: has been assigned the value `sg`:fval:.
+[NP [`num`:feat:\ =\ `sg`:fval:] |rarr| PropN[`num`:feat:\ =\ `sg`:fval:] |dot|, (0, 1)]
+in Example 9.2, where the feature `num`:feat: has been assigned the value `sg`:fval:.
 
 Feature structures in NLTK are ... Atomic feature values can be strings or
 integers.
