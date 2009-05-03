@@ -35,6 +35,7 @@ class ContextIndex(object):
         
     def __init__(self, tokens, context_func=None, filter=None, key=lambda x:x):
         self._key = key
+        self._tokens = tokens
         if not context_func:
             self._context_func = self._default_context
         if filter:
