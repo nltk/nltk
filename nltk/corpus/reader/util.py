@@ -283,7 +283,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
             self._current_toknum = toknum
             self._current_blocknum = block_index
             tokens = self.read_block(self._stream)
-            assert isinstance(tokens, (tuple, list)), (
+            assert isinstance(tokens, (tuple, list, AbstractLazySequence)), (
                 'block reader %s() should return list or tuple.' %
                 self.read_block.__name__)
             num_toks = len(tokens)
