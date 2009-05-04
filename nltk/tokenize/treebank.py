@@ -28,9 +28,10 @@ class TreebankWordTokenizer(TokenizerI):
       - he'll S{->} he 'll
       - weren't S{-} were n't
 
-    This tokenizer assumes that sentences have already been tokenized.
-    Therefore, periods are only split off as separate tokens when they
-    occur at the end of the string.
+    This tokenizer assumes that the text has already been segmented into
+    sentences.  Any periods -- apart from those at the end of a string --
+    are assumed to be part of the word they are attached to (e.g. for
+    abbreviations, etc), and are not separately tokenized. 
     """
     # List of contractions adapted from Robert MacIntyre's tokenizer.
     CONTRACTIONS2 = [re.compile(r"(?i)(.)('ll|'re|'ve|n't|'s|'m|'d)\b"),
