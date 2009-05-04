@@ -1,35 +1,35 @@
-============
- Tokenizers
-============
+==========
+Tokenizers
+==========
+
+(See Chapter 3 of the NLTK book for more detailed information about tokenization.)
 
 Overview
 ~~~~~~~~
 
 Tokenizers divide strings into lists of substrings.  For example,
 tokenizers can be used to find the list of sentences or words in a
-string.  Tokenizers are implemented in NLTK as subclasses of the
-`nltk.tokenize.TokenizerI` interface, which defines the ``tokenize()``
-method.  Here's an example of their use:
+string.
 
-    >>> from nltk.tokenize import *
-    >>> tokenizer = WordPunctTokenizer()
-    >>> tokenizer.tokenize("She said 'hello'.")
-    ['She', 'said', "'", 'hello', "'."]
+    >>> from nltk import word_tokenize, wordpunct_tokenize
+    >>> s = ("Good muffins cost $3.88\nin New York.  Please buy me\n"
+    ...      "two of them.\n\nThanks.")
+    >>> word_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
-Many of the tokenization methods are also available as simple
-functions, which save you the trouble of creating a tokenizer object
-every time you want to tokenize a string.  For example:
-
-    >>> wordpunct_tokenize("She said 'hello'.")
-    ['She', 'said', "'", 'hello', "'."]
+There are numerous ways to tokenize text.  If you need more control over
+tokenization, see the methods described below.
 
 Simple Tokenizers
 ~~~~~~~~~~~~~~~~~
 The following tokenizers, defined in `nltk.tokenize.simple`, just
 divide the string using the string ``split()`` method.
 
-    >>> s = ("Good muffins cost $3.88\nin New York.  Please buy me\n"
-    ...      "two of them.\n\nThanks.")
+    >>> from nltk.tokenize import *
 
     >>> # same as s.split():
     >>> WhitespaceTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
@@ -103,11 +103,6 @@ separators between tokens, using ``gaps=True``:
 The `nltk.tokenize.regexp` module contains several subclasses of
 ``RegexpTokenizer`` that use pre-defined regular expressions:
 
-    >>> # Uses '\w+':
-    >>> WordTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
-    ['Good', 'muffins', 'cost', '3', '88', 'in', 'New', 'York', 'Please',
-     'buy', 'me', 'two', 'of', 'them', 'Thanks']
-
     >>> # Uses '\w+|[^\w\s]+':
     >>> WordPunctTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
@@ -124,9 +119,6 @@ functions:
     >>> regexp_tokenize(s, pattern='\w+|\$[\d\.]+|\S+') # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
-    >>> word_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
-    ['Good', 'muffins', 'cost', '3', '88', 'in', 'New', 'York', 'Please',
-     'buy', 'me', 'two', 'of', 'them', 'Thanks']
     >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
      '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
@@ -141,6 +133,17 @@ functions:
     But ``regexp_tokenize()`` is primarily a tokenization function, so
     we chose to follow the convention among other tokenization
     functions that the text should always be the first argument.
+
+Treebank Tokenizer
+~~~~~~~~~~~~~~~~~~
+
+The Treebank tokenizer uses regular expressions to tokenize text as in Penn Treebank.
+This is the method that is invoked by nltk.word_tokenize().  It assumes that the
+text has already been segmented into sentences.
+
+    >>> TreebankWordTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
 S-Expression Tokenizers
 ~~~~~~~~~~~~~~~~~~~~~~~
