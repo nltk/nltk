@@ -31,6 +31,8 @@ Mailing Lists: There are several mailing lists associated with NLTK:
       http://groups.google.com/group/nltk-users
   - nltk-dev: Discussions amongst NLTK developers
       http://groups.google.com/group/nltk-dev
+  - nltk-translation: Discussions about translating the NLTK book
+      http://groups.google.com/group/nltk-translation
   - nltk-commits: Subversion commit logs for NLTK
       http://groups.google.com/group/nltk-commits
 
@@ -47,6 +49,10 @@ Redistributing: NLTK source code is distributed under the Gnu Public License.
     for each corpus; all are redistributable, and available for non-commercial use.
     NLTK may be freely redistributed, subject to the provisions of these licenses.
 
-Citing: If you publish work that uses NLTK, please cite NLTK as follows:
-    Bird, Steven, Edward Loper and Ewan Klein (2008).
+Citing: If you publish work that uses NLTK, please cite NLTK or the book as follows:
+
+    Bird, Steven, Edward Loper and Ewan Klein (2009).
     Natural Language Toolkit.  http://www.nltk.org/
+    
+    Bird, Steven, Edward Loper and Ewan Klein (2009).
+    Natural Language Processing with Python.  O'Reilly Media Inc.
