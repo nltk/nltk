@@ -1,12 +1,13 @@
-Version 0.9.9 2009-03-15
+Version 0.9.9 2009-05-06
 
 NLTK:
-* Finalized API for NLTK 2.0 and the book
+* Finalized API for NLTK 2.0 and the book, incl dozens of small fixes
 * Names of the form nltk.foo.Bar now available as nltk.Bar
   for significant functionality; in some cases the name was modified
   (using old names will produce a deprecation warning)
 * Bugfixes in downloader, WordNet
 * Expanded functionality in DecisionTree
+* Bigram collocations extended for discontiguous bigrams
 * Translation toy nltk.misc.babelfish
 * New module nltk.help giving access to tagset documentation
 * Fix imports so that NLTK builds without Tkinter (Bjorn Maeland)
