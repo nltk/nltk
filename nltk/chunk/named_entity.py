@@ -31,7 +31,8 @@ class NEChunkParserTagger(nltk.tag.ClassifierBasedTagger):
 
     def _classifier_builder(self, train):
         return nltk.MaxentClassifier.train(train, algorithm='megam',
-                                           gaussian_prior_sigma=1)
+                                           gaussian_prior_sigma=1,
+                                           trace=2)
     
     def _feature_detector(self, tokens, index, history):
         word = tokens[index][0]
@@ -130,13 +131,17 @@ class NEChunkParser(ChunkParserI):
                     sent.append(nltk.Tree(tag[2:], [tok]))
         return sent
 
-    def _parse_to_tagged(self, sent):
+    @staticmethod
+    def _parse_to_tagged(sent):
         """
         Convert a chunk-parse tree to a list of tagged tokens.
         """
         toks = []
         for child in sent:
             if isinstance(child, nltk.Tree):
+                if len(child) == 0:
+                    print "Warning -- empty chunk in sentence"
+                    continue
                 toks.append((child[0], 'B-%s' % child.node))
                 for tok in child[1:]:
                     toks.append((tok, 'I-%s' % child.node))
@@ -176,91 +181,131 @@ def postag_tree(tree):
             newtree.append( (child, tag_iter.next()) )
     return newtree
 
-def load_ace_data(root, fmt='binary'):
-    for f in os.listdir(root):
-        if not f.endswith('.sgm'): continue
-        print f
-        f = os.path.join(root, f)
-        g = f+'.tmx.rdc.xml'
+def load_ace_data(roots, fmt='binary', skip_bnews=True):
+    for root in roots:
+        for root, dirs, files in os.walk(root):
+            if root.endswith('bnews') and skip_bnews:
+                continue
+            for f in files:
+                if f.endswith('.sgm'): 
+                    for sent in load_ace_file(os.path.join(root, f), fmt):
+                        yield sent
+                    
+def load_ace_file(textfile, fmt):
+    print '  - %s' % os.path.split(textfile)[1]
+    annfile = textfile+'.tmx.rdc.xml'
+
+    # Read the xml file, and get a list of entities
+    entities = []
+    xml = ET.parse(open(annfile)).getroot()
+    for entity in xml.findall('document/entity'):
+        typ = entity.find('entity_type').text
+        for mention in entity.findall('entity_mention'):
+            if mention.get('TYPE') != 'NAME': continue # only NEs
+            s = int(mention.find('head/charseq/start').text)
+            e = int(mention.find('head/charseq/end').text)+1
+            entities.append( (s, e, typ) )
+
+    # Read the text file, and mark the entities.
+    text = open(textfile).read()
     
-        # Read the xml file, and get a list of entities
-        entities = []
-        xml = ET.parse(open(g)).getroot()
-        for entity in xml.findall('document/entity'):
-            typ = entity.find('entity_type').text
-            for mention in entity.findall('entity_mention'):
-                if mention.get('TYPE') != 'NAME': continue # only NEs
-                s = int(mention.find('head/charseq/start').text)
-                e = int(mention.find('head/charseq/end').text)+1
-                entities.append( (s, e, typ) )
-    
-        # Read the text file, and mark the entities.
-        text = open(f).read()
+    # Strip XML tags, since they don't count towards the indices
+    text = re.sub('<(?!/?TEXT)[^>]+>', '', text)
+
+    # Blank out anything before/after <TEXT>
+    def subfunc(m): return ' '*(m.end()-m.start()-6)
+    text = re.sub('[\s\S]*<TEXT>', subfunc, text)
+    text = re.sub('</TEXT>[\s\S]*', '', text)
+
+    # Simplify quotes
+    text = re.sub("``", ' "', text)
+    text = re.sub("''", '" ', text)
+
+    entity_types = set(typ for (s,e,typ) in entities)
+
+    # Binary distinction (NE or not NE)
+    if fmt == 'binary':
+        i = 0
+        toks = nltk.Tree('S', [])
+        for (s,e,typ) in sorted(entities):
+            if s < i: s = i # Overlapping!  Deal with this better?
+            if e <= s: continue
+            toks.extend(nltk.word_tokenize(text[i:s]))
+            toks.append(nltk.Tree('NE', text[s:e].split()))
+            i = e
+        toks.extend(nltk.word_tokenize(text[i:]))
+        yield toks
+
+    # Multiclass distinction (NE type)
+    elif fmt == 'multiclass':
+        i = 0
+        toks = nltk.Tree('S', [])
+        for (s,e,typ) in sorted(entities):
+            if s < i: s = i # Overlapping!  Deal with this better?
+            if e <= s: continue
+            toks.extend(nltk.word_tokenize(text[i:s]))
+            toks.append(nltk.Tree(typ, text[s:e].split()))
+            i = e
+        toks.extend(nltk.word_tokenize(text[i:]))
+        yield toks
+
+    else:
+        raise ValueError('bad fmt value')
         
-        # Strip XML tags, since they don't count towards the indices
-        text = re.sub('<(?!/?TEXT)[^>]+>', '', text)
-    
-        # Blank out anything before/after <TEXT>
-        def subfunc(m): return ' '*(m.end()-m.start()-6)
-        text = re.sub('[\s\S]*<TEXT>', subfunc, text)
-        text = re.sub('</TEXT>[\s\S]*', '', text)
-    
-        # Simplify quotes
-        text = re.sub("``", ' "', text)
-        text = re.sub("''", '" ', text)
-    
-        entity_types = set(typ for (s,e,typ) in entities)
-    
-        # Binary distinction (NE or not NE)
-        if fmt == 'binary':
-            i = 0
-            toks = nltk.Tree('S', [])
-            for (s,e,typ) in sorted(entities):
-                if s < i: s = i # Overlapping!  Deal with this better?
-                if e <= s: continue
-                toks.extend(nltk.word_tokenize(text[i:s]))
-                toks.append(nltk.Tree('NE', text[s:e].split()))
-                i = e
-            toks.extend(nltk.word_tokenize(text[i:]))
-            yield toks
-
-        # Multiclass distinction (NE type)
-        elif fmt == 'multiclass':
-            i = 0
-            toks = nltk.Tree('S', [])
-            for (s,e,typ) in sorted(entities):
-                if s < i: s = i # Overlapping!  Deal with this better?
-                if e <= s: continue
-                toks.extend(nltk.word_tokenize(text[i:s]))
-                toks.append(nltk.Tree(typ, text[s:e].split()))
-                i = e
-            toks.extend(nltk.word_tokenize(text[i:]))
-            yield toks
-
+# This probably belongs in a more general-purpose location (as does
+# the parse_to_tagged function).
+def cmp_chunks(correct, guessed):
+    correct = NEChunkParser._parse_to_tagged(correct)
+    guessed = NEChunkParser._parse_to_tagged(guessed)
+    ellipsis = False
+    for (w, ct), (w, gt) in zip(correct, guessed):
+        if ct == gt == 'O':
+            if not ellipsis:
+                print "  %-15s %-15s %s" % (ct, gt, w)
+                print '  %-15s %-15s %s' % ('...', '...', '...')
+                ellipsis = True
         else:
-            raise ValueError('bad fmt value')
-            
+            ellipsis = False
+            print "  %-15s %-15s %s" % (ct, gt, w)
 
-def train(root):
-    print 'Loading data...'
-    trees = load_ace_data(root)
-    train = [postag_tree(t) for t in trees]
-    print 'Training chunk parser...'
-    cp = NEChunkParser(train[10:])
+def build_model(fmt='binary'):
+    print 'Loading training data...'
+    train_paths = [nltk.data.find('corpora/ace_data/ace.dev'),
+                   nltk.data.find('corpora/ace_data/ace.heldout'),
+                   nltk.data.find('corpora/ace_data/bbn.dev'),
+                   nltk.data.find('corpora/ace_data/muc.dev')]
+    train_trees = load_ace_data(train_paths, fmt)
+    train_data = [postag_tree(t) for t in train_trees]
+    print 'Training...'
+    cp = NEChunkParser(train_data)
+    del train_data
+
+    print 'Loading eval data...'
+    eval_paths = [nltk.data.find('corpora/ace_data/ace.eval')]
+    eval_trees = load_ace_data(eval_paths, fmt)
+    eval_data = [postag_tree(t) for t in trees]
+    
     print 'Evaluating...'
     chunkscore = ChunkScore()
-    for correct in train[:10]:
+    for i, correct in enumerate(eval_data):
         guess = cp.parse(correct.leaves())
         chunkscore.score(correct, guess)
+        if i < 3: cmp_chunks(correct, guess)
     print chunkscore
-    return cp
 
-def build_model():
-    # Make sure that the pickled object has the right class name:
-    from nltk.chunk.named_entity import train
-    
-    cp = train('/tmp/ace.old/data/ace.dev/text/')
-    out = open('/tmp/ne_chunker.pickle', 'wb')
+    outfilename = '/tmp/ne_chunker_%s.pickle' % fmt
+    print 'Saving chunker to %s...' % outfilename
+    out = open(outfilename, 'wb')
     pickle.dump(cp, out, -1)
     out.close()
+    
+    return cp
+
+
+if __name__ == '__main__':
+    # Make sure that the pickled object has the right class name:
+    from nltk.chunk.named_entity import build_model
+
+    build_model('binary')
+    build_model('multiclass')
 
