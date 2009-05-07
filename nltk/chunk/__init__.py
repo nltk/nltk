@@ -167,21 +167,30 @@ __all__ = [
     ]
 
 # Standard treebank POS tagger
-_NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace.pickle'
-def ne_chunk(tagged_tokens):
+_BINARY_NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace_binary.pickle'
+_MULTICLASS_NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace_multiclass.pickle'
+def ne_chunk(tagged_tokens, binary=False):
     """
     Use NLTK's currently recommended named entity chunker to
     chunk the given list of tagged tokens.
     """
-    chunker = nltk.data.load(_NE_CHUNKER)
+    if binary:
+        chuker_pickle = _BINARY_NE_CHUNKER
+    else:
+        chunker_pickle = _MULTICLASS_NE_CHUNKER
+    chunker = nltk.data.load(chunker_pickle)
     return chunker.parse(tagged_tokens)
 
-def batch_ne_chunk(tagged_sentences):
+def batch_ne_chunk(tagged_sentences, binary=False):
     """
     Use NLTK's currently recommended named entity chunker to chunk the
     given list of tagged sentences, each consisting of a list of tagged tokens.
     """
-    chunker = nltk.data.load(_NE_CHUNKER)
+    if binary:
+        chuker_pickle = _BINARY_NE_CHUNKER
+    else:
+        chunker_pickle = _MULTICLASS_NE_CHUNKER
+    chunker = nltk.data.load(chunker_pickle)
     return chunker.batch_parse(tagged_sentences)
 
 ######################################################################
