@@ -125,6 +125,8 @@ class ChunkScore(object):
         self._fp_num = 0
         self._fn_num = 0
         self._count = 0
+        self._tags_correct = 0.0
+        self._tags_total = 0.0
 
         self._measuresNeedUpdate = False
 
@@ -153,6 +155,22 @@ class ChunkScore(object):
         self._guessed |= _chunksets(guessed, self._count, self._chunk_node)
         self._count += 1
         self._measuresNeedUpdate = True
+        # Keep track of per-tag accuracy.
+        correct_tags = tree2conlltags(correct)
+        guessed_tags = tree2conlltags(guessed)
+        self._tags_total += len(correct_tags)
+        self._tags_correct += sum(1 for (t,g) in zip(guessed_tags,
+                                                     correct_tags)
+                                  if t==g)
+
+    def accuracy(self):
+        """
+        @return: The overall tag-based accuracy for all text that have
+            been scored by this C{ChunkScore}, using the IOB (conll2000)
+            tag encoding.
+        """
+        if self._tags_total == 0: return 1
+        return self._tags_correct/self._tags_total
 
     def precision(self):
         """
@@ -256,9 +274,10 @@ class ChunkScore(object):
             C{incorrect()}). 
         """
         return ("ChunkParse score:\n" +
-                ("    Precision: %5.1f%%\n" % (self.precision()*100)) +
-                ("    Recall:    %5.1f%%\n" % (self.recall()*100))+
-                ("    F-Measure: %5.1f%%" % (self.f_measure()*100)))
+                ("    IOB Accuracy: %5.1f%%\n" % (self.accuracy()*100)) +
+                ("    Precision:    %5.1f%%\n" % (self.precision()*100)) +
+                ("    Recall:       %5.1f%%\n" % (self.recall()*100))+
+                ("    F-Measure:    %5.1f%%" % (self.f_measure()*100)))
         
 # extract chunks, and assign unique id, the absolute position of
 # the first word of the chunk
@@ -268,7 +287,7 @@ def _chunksets(t, count, chunk_node):
     for child in t:
         if isinstance(child, Tree):
             if re.match(chunk_node, child.node):
-                chunks.append(((count, pos), tuple(child.freeze())))
+                chunks.append(((count, pos), child.freeze()))
             pos += len(child.leaves())
         else:
             pos += 1
@@ -402,29 +421,29 @@ def conlltags2tree(sentence, chunk_types=('NP','PP','VP'),
     Convert the CoNLL IOB format to a tree.
     """
     tree = nltk.Tree(top_node, [])
-    for (word, tag) in sentence:
-        if tag is None:
+    for (word, postag, chunktag) in sentence:
+        if chunktag is None:
             if strict:
                 raise ValueError("Bad conll tag sequence")
             else:
                 # Treat as O
-                tree.append(word)
-        elif tag.startswith('B-'):
-            tree.append(nltk.Tree(tag[2:], [word]))
-        elif tag.startswith('I-'):
+                tree.append((word,postag))
+        elif chunktag.startswith('B-'):
+            tree.append(nltk.Tree(chunktag[2:], [(word,postag)]))
+        elif chunktag.startswith('I-'):
             if (len(tree)==0 or not isinstance(tree[-1], nltk.Tree) or
-                tree[-1].node != tag[2:]):
+                tree[-1].node != chunktag[2:]):
                 if strict:
                     raise ValueError("Bad conll tag sequence")
                 else:
                     # Treat as B-*
-                    tree.append(nltk.Tree(tag[2:], [word]))
+                    tree.append(nltk.Tree(chunktag[2:], [(word,postag)]))
             else:
-                tree[-1].append(word)
-        elif tag == 'O':
-            tree.append(word)
+                tree[-1].append((word,postag))
+        elif chunktag == 'O':
+            tree.append((word,postag))
         else:
-            raise ValueError("Bad conll tag %r" % tag)
+            raise ValueError("Bad conll tag %r" % chunktag)
     return tree
 
 def tree2conllstr(t):
