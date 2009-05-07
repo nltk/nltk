@@ -283,7 +283,7 @@ def build_model(fmt='binary'):
     print 'Loading eval data...'
     eval_paths = [nltk.data.find('corpora/ace_data/ace.eval')]
     eval_trees = load_ace_data(eval_paths, fmt)
-    eval_data = [postag_tree(t) for t in trees]
+    eval_data = [postag_tree(t) for t in eval_trees]
     
     print 'Evaluating...'
     chunkscore = ChunkScore()
