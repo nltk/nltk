@@ -175,7 +175,7 @@ def ne_chunk(tagged_tokens, binary=False):
     chunk the given list of tagged tokens.
     """
     if binary:
-        chuker_pickle = _BINARY_NE_CHUNKER
+        chunker_pickle = _BINARY_NE_CHUNKER
     else:
         chunker_pickle = _MULTICLASS_NE_CHUNKER
     chunker = nltk.data.load(chunker_pickle)
@@ -187,7 +187,7 @@ def batch_ne_chunk(tagged_sentences, binary=False):
     given list of tagged sentences, each consisting of a list of tagged tokens.
     """
     if binary:
-        chuker_pickle = _BINARY_NE_CHUNKER
+        chunker_pickle = _BINARY_NE_CHUNKER
     else:
         chunker_pickle = _MULTICLASS_NE_CHUNKER
     chunker = nltk.data.load(chunker_pickle)
