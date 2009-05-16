@@ -210,8 +210,8 @@ which allows the user to enter Python expressions and statements for
 evaluation. In the example below and subsequently, \verb!>>>! is the
 Python interpreter's prompt. 
 \begin{Verbatim}[numbers=left]
->>> from nltk.sem import logic
->>> lp = logic.LogicParser()
+>>> from nltk.sem import LogicParser
+>>> lp = LogicParser()
 >>> e = lp.parse('all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))')
 >>> e
 <AllExpression all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))>
@@ -271,7 +271,7 @@ $\exists x.(\mathit{girl}(y) \wedge
 >>> val = parse_valuation(v)   #create a Valuation
 >>> m = Model(val.domain, val) #initialize a Model
 >>> g = Assignment(val.domain) #initialize an Assignment
->>> e4 = lp.parser('exists y. (girl(y) & chase(x, y))')
+>>> e4 = lp.parse('exists y. (girl(y) & chase(x, y))')
 >>> m.satisfiers(e4, 'x', g)   #check satisfiers of e4 wrt to x
 set(['r', 'f'])
 \end{Verbatim}
@@ -282,23 +282,28 @@ representations. Although we use $\lambda$-abstracts as glue too,
 abstracts over individual variables are semantically interpreted in \NLTK, namely as
 characteristic functions.
 
-\texttt{Expression}s in \NLTK\ can be optionally typed (using
-Montague-style types) by passing the parameter \texttt{type\_check=True} to
-\texttt{LogicParser}.  Apart from allowing the user to display the
-\texttt{Expression}'s type with \texttt{type}, type checking will
-raise an exception for non-well typed expressions:
+\texttt{Expression}s in \NLTK\ are typed (using Montague-style 
+types).  The type can be accessed with the \texttt{type} 
+property.  A type checking procedure can be invoked with the 
+\texttt{typecheck()} method.  \texttt{typecheck()} will return 
+a dictionary of all variables and their types if the expression 
+is well typed; for non-well typed expressions, an exception will 
+be raised.  Additionally, type checking will be automatically 
+invoked by the \texttt{LogicParser} if the parameter 
+\texttt{type\_check=True} is set.
 \begin{Verbatim}
->>> tlp = logic.LogicParser(type_check=True)
->>> a = tlp.parse(r'\x y.see(x,y)')
->>> b = tlp.parse(r'\x.man(x)')
->>> a.type, b.type
-(<e,<e,t>>, <e,t>)
->>> tlp.parse(r'\x y.see(x,y)(\x.man(x))')
+>>> a = lp.parse(r'\x.(man(x) & tall(x))')
+>>> a.type
+<e,t>
+>>> a.typecheck()
+{'x': e, 'man': <e,t>, 'tall': <e,t>}
+>>> tlp = LogicParser(type_check=True)
+>>> tlp.parse(r'\x y.-see(x,y)(\x.(man(x) & tall(x)))')
 Traceback (most recent call last):
   . . .
-TypeException: The function '\x y.see(x,y)' is of type '<e,<e,t>>' 
-and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument 
-must match type 'e'.
+TypeException: The function '\x y.-see(x,y)' is of type '<e,<e,t>>' 
+and cannot be applied to '\x.(man(x) & tall(x))' of type '<e,t>'.  
+Its argument must match type 'e'.
 \end{Verbatim}
 % Fix for code colorization: >>>>
 
@@ -306,10 +311,11 @@ must match type 'e'.
 As mentioned earlier, \NLTK\ contains an extension to the
 \texttt{logic} module for working with Discourse Representation Theory
 (\DRT) \citep{KampReyle}.  The \texttt{nltk.sem.drt} module introduces
-a \texttt{DRS()} constructor which takes lists of discourse referents
-and conditions as initialization parameters:
-\vspace{-2ex}
-\enumsentence{\label{drt3} \texttt{DRS([j,d],[John(j), dog(d),
+a classes for working with Discourse Representation Structures (\DRS s).
+In \NLTK , a \DRS\ is represented as a pair consisting of a list of 
+discourse of referents and a list of \DRS\ conditions:
+
+\enumsentence{\label{drt3} \texttt{([j,d],[John(j), dog(d),
     sees(j,d)])}} 
 
 On top of the functionality available for \FOL\
@@ -319,11 +325,11 @@ is a single \DRS\ containing the merged discourse referents and the
 conditions from both arguments.  \DRS-concatenation automatically
 $\alpha$-converts bound variables to avoid name-clashes.  The
 \texttt{+} symbol is overloaded so that \DRT\ expressions can be added
-together easily.  The \texttt{nltk.sem.drt} parser allows \DRS s to be
+together easily.  The \texttt{DrtParser} allows \DRS s to be
 specified succinctly as strings.
 \begin{Verbatim}
->>> from nltk.sem import drt
->>> dp = drt.DrtParser()
+>>> from nltk.sem.drt import DrtParser
+>>> dp = DrtParser()
 >>> d1 = dp.parse('([x],[walk(x)]) + ([y],[run(y)])')
 >>> print d1
 (([x],[walk(x)]) + ([y],[run(y)]))
@@ -430,9 +436,9 @@ N[sem=<\x h l.(PRED(l,dog,x) & LEQ(l,h) & HOLE(h) & LABEL(l))>] -> 'dog'
 The Hole Semantics module uses a standard plugging algorithm to derive the
 sentence's readings from the underspecified \LF.
 \begin{Verbatim}
->>> from nltk.sem import hole
->>> readings = hole.hole_readings('every girl chases a dog')
->>> for r in reading: print r
+>>> from nltk.sem.hole import hole_readings
+>>> readings = hole_readings('every girl chases a dog')
+>>> for r in readings: print r
 exists z1.(dog(z1) & all z2.(girl(z2) -> chase(z1,z2)))
 all z2.(girl(z2) -> exists z1.(dog(z1) & chase(z1,z2)))
 \end{Verbatim}
@@ -463,7 +469,6 @@ Additionally, every premise must be used for the proof to be valid;
 cf.\ (\ref{glue3}).
 This resource-sensitivity dictates that each word contributes its
 meaning exactly once to the meaning of the whole.
-\newpage
 \enumsentence{\label{glue1} $A, (A \multimap B) \vdash B$}
 \enumsentence{\label{glue2} $A, (A \multimap B) \nvdash A, B$}
 \enumsentence{\label{glue3} $A, A, (A \multimap B) \nvdash B$}
@@ -549,12 +554,12 @@ parameters a proof goal \texttt{G} and a list \texttt{A} of assumptions.
 Here, we verify that if every dog barks, and Rover is a dog,
 then it is true that Rover barks:
 \begin{Verbatim}
->>> from nltk import inference
+>>> from nltk.inference import Prover9
 >>> a = lp.parse('all x.(dog(x) -> bark(x))')
 >>> b = lp.parse('dog(rover)')
 >>> c = lp.parse('bark(rover)')
->>> prover = inference.get_prover(c, [a,b])
->>> prover.prove()
+>>> prover = Prover9()
+>>> prover.prove(c, [a,b])
 True
 \end{Verbatim}
 
@@ -570,7 +575,6 @@ of two expressions. Consequently, both the \texttt{logic} and
 \texttt{drt} modules in \NLTK\ 
 have a separate method, \texttt{tp\_equals}, for checking `equality'
 up to logical equivalence.
-\newpage
 \begin{Verbatim}
 >>> a = lp.parse('all x.walk(x)')
 >>> b = lp.parse('all y.walk(y)')
@@ -598,11 +602,11 @@ simplicity, the following example ignores scope ambiguity.
 >>> dt.readings()
 
 s0 readings:
-------------------------------
+
 s0-r0: exists x.(student(x) & dance(x))
 
 s1 readings:
-------------------------------
+
 s1-r0: all x.(student(x) -> person(x))
 \end{Verbatim}
 When a new sentence is added to the current discourse, setting the
@@ -610,12 +614,13 @@ parameter \texttt{consistchk=True} causes consistency to be checked
 by invoking the model checker for each `thread', i.e., discourse sequence of
 admissible readings. In this case, the user has the option
 of retracting the sentence in question.
+\newpage
 \begin{Verbatim}
 >>> dt.add_sentence('No person dances', consistchk=True)
 Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
-s0-r0: exists x.(student(x) & dance(x))
-s1-r0: all x.(student(x) -> person(x))
-s2-r0: -exists x.(person(x) & dance(x))
+    s0-r0: exists x.(student(x) & dance(x))
+    s1-r0: all x.(student(x) -> person(x))
+    s2-r0: -exists x.(person(x) & dance(x))
 >>> dt.retract_sentence('No person dances', quiet=False)
 Current sentences are 
 s0: A student dances
@@ -645,12 +650,12 @@ the second sentence contains an anaphoric pronoun, indicated as \texttt{PRO(x)}.
 >>> dt.readings()
 
 s0 readings:
-------------------------------
+
 s0-r0: ([],[(([x],[dog(x)]) -> ([z15],[boy(z15), chase(x,z15)]))])
 s0-r1: ([z16],[boy(z16), (([x],[dog(x)]) -> ([],[chase(x,z16)]))])
 
 s1 readings:
-------------------------------
+
 s1-r0: ([x],[PRO(x), run(x)])
 \end{Verbatim}
 When we examine the two threads \texttt{d0} and \texttt{d1}, we see
