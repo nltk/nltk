@@ -64,7 +64,23 @@ A. UPLOAD DISTRIBUTIONS
   3. change previous release to remove its "Featured" label
      (just click anywhere in the whitespace in its row to change its properties)
 
-B. WEBSITE
+B. PORTFILE
+
+  1. Find the location of the Portfile using "port dir py25-nltk"
+  2. Copy the Portfile to Portfile.orig
+  3. Update the contents of Portfile (use make checksums to get the three checksums)
+  4. Test the Portfile using "port install py25-nltk"
+  5. Cd to py-nltk directory and create copy of Portfile in Portfile.orig
+  6. Make the same edits to py-nltk (copy py25-nltk version s/py25/py/ ; s/python25/python24/)
+  7. Create unified diffs using, e.g. "diff -u Portfile.orig Portfile > Portfile-py25-nltk.diff"
+     (http://guide.macports.org/#development.patches)
+  8. Create a new ticket: https://trac.macports.org/newticket
+       > NLTK Ports upgrade to 0.9.9
+       > Updated port for NLTK (http://www.nltk.org/) 
+       > Type: update
+       Then attach the two diff files
+
+C. WEBSITE
 
   1. install download page, by moving Download-N.N to Download
   2. post a news item at http://www.nltk.org/news-archive, summary at http://www.nltk.org/
@@ -78,13 +94,13 @@ B. WEBSITE
        PythonSIL@lists.sil.org, edu-sig@python.org
        mailing lists for any local courses using NLTK
 
-C. INSTALLATION
+D. INSTALLATION
 
   1. download and install new version on all machines
   2. contact relevant sysads to install new version
   3. copy dist directory to memory stick
 
-D. NEW VERSION NUMBER (optional)
+E. NEW VERSION NUMBER (optional)
 
   1. update the version numbers in the repository so that builds
      off the repository don't have the same version as the release,
