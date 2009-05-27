@@ -699,7 +699,8 @@ class MyOutputChecker(OutputChecker):
 ###########################################################################
 
 # Finer control over output verbosity:
-from epydoc.util import TerminalController
+from epydoc.cli import TerminalController
+
 class MyDocTestRunner(DocTestRunner):
     def __init__(self, checker=None, verbosity=1, optionflags=0,
                  kbinterrupt_continue=False):
