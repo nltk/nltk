@@ -179,6 +179,8 @@ class ConcordanceIndex(object):
             lines = min(lines, len(offsets))
             print "Displaying %s of %s matches:" % (lines, len(offsets))
             for i in offsets:
+                if lines <= 0:
+                    break
                 left = (' ' * half_width +
                         ' '.join(self._tokens[i-context:i]))
                 right = ' '.join(self._tokens[i+1:i+context])
@@ -186,8 +188,6 @@ class ConcordanceIndex(object):
                 right = right[:half_width]
                 print left, word, right
                 lines -= 1
-                if lines < 0:
-                    break
         else:
             print "No matches"
 
