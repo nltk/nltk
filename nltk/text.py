@@ -323,7 +323,10 @@ class Text(object):
         @param window_size: The number of tokens spanned by a collocation (default=2)
         @type window_size: C{int}
         """
-        if '_collocations' not in self.__dict__:
+        if not ('_collocations' in self.__dict__ and self._num == num and self._window_size == window_size):
+            self._num = num
+            self._window_size = window_size
+
             print "Building collocations list"
             from nltk.corpus import stopwords
             ignored_words = stopwords.words('english')
