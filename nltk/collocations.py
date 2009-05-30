@@ -252,9 +252,9 @@ def demo(scorer=None, compare_scorer=None):
                     ranks_from_scores(cf.score_ngrams(scorer)),
                     ranks_from_scores(cf.score_ngrams(compare_scorer))))
 
-
-bigram_measures = BigramAssocMeasures()
-trigram_measures = TrigramAssocMeasures()
+# Slows down loading too much
+# bigram_measures = BigramAssocMeasures()
+# trigram_measures = TrigramAssocMeasures()
 
 if __name__ == '__main__':
     import sys
@@ -271,5 +271,4 @@ if __name__ == '__main__':
     demo(scorer, compare_scorer)
 
 
-__all__ = ['BigramCollocationFinder', 'TrigramCollocationFinder',
-           'bigram_measures', 'trigram_measures']
+__all__ = ['BigramCollocationFinder', 'TrigramCollocationFinder']

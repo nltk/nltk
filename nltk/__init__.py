@@ -117,7 +117,6 @@ import stem;      from stem import *
 
 import chat
 import corpus
-import misc
 import toolbox
 
 try:
@@ -127,8 +126,9 @@ except ImportError:
 else:
     import cluster; from cluster import *
 
-# Import Tkinter-based modules if Tkinter is installed
 from downloader import download, download_shell
+
+# Import Tkinter-based modules if Tkinter is installed
 try:
     import Tkinter
 except ImportError:
@@ -136,8 +136,10 @@ except ImportError:
     warnings.warn("draw module, app module, and gui downloader not loaded "
                   "(please install Tkinter library).")
 else:
-    import app, draw
+    import app
+    import draw
     from downloader import download_gui
+
 
 # override any accidentally imported demo
 def demo():

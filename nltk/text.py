@@ -14,8 +14,8 @@ from nltk.probability import ConditionalFreqDist as CFD
 from nltk.compat import defaultdict
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
-from nltk.metrics import f_measure
-from nltk.collocations import BigramCollocationFinder, bigram_measures
+from nltk.metrics import f_measure, BigramAssocMeasures
+from nltk.collocations import BigramCollocationFinder
 
 
 class ContextIndex(object):
@@ -333,6 +333,7 @@ class Text(object):
             finder = BigramCollocationFinder.from_words(self.tokens, window_size) 
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
+            bigram_measures = BigramAssocMeasures()
             self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
         colloc_strings = [w1+' '+w2 for w1, w2 in self._collocations]
         print tokenwrap(colloc_strings, separator="; ")

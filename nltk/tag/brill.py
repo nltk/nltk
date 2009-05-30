@@ -28,7 +28,7 @@ from api import *
 class BrillTagger(TaggerI, yaml.YAMLObject):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
-    X{initial tagger} (such as L{tag.DefaultTagger}) to assign an intial
+    X{initial tagger} (such as L{tag.DefaultTagger}) to assign an initial
     tag sequence to a text; and then apply an ordered list of
     transformational rules to correct the tags of individual tokens.
     These transformation rules are specified by the L{BrillRule}
@@ -147,9 +147,9 @@ class BrillRule(yaml.YAMLObject):
         @rtype: Boolean
 
         @param tokens: A tagged sentence
-        @type tokens: list of Token
+        @type tokens: C{list} of C{str}
         @param index: The index to check
-        @type index: int
+        @type index: C{int}
         """
         assert False, "Brill rules must define applies()"
         
@@ -790,8 +790,9 @@ class FastBrillTaggerTrainer(object):
     A faster trainer for brill taggers.
     """
     def __init__(self, initial_tagger, templates, trace=0,
-                 deterministic=None):
-        if deterministic is None: deterministic = (trace > 0)
+                 deterministic=False):
+        if not deterministic:
+            deterministic = (trace > 0)
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
