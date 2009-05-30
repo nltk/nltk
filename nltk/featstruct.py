@@ -2459,3 +2459,8 @@ def demo(trace=False):
 
 if __name__ == '__main__':
     demo()
+
+__all__ = ['FeatStruct', 'FeatDict', 'FeatList', 'unify', 'subsumes', 'conflicts',
+           'Feature', 'SlashFeature', 'RangeFeature', 'SLASH', 'TYPE',
+           'FeatStructParser']
+
