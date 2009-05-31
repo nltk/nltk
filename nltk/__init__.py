@@ -136,7 +136,7 @@ except ImportError:
     warnings.warn("draw module, app module, and gui downloader not loaded "
                   "(please install Tkinter library).")
 else:
-    import app
+#    import app  # omit; too slow to load
     import draw
     from downloader import download_gui
 
