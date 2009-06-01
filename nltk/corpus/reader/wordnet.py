@@ -1415,7 +1415,12 @@ def jcn_similarity(synset1, synset2, ic, verbose=False):
     if ic1 == 0 or ic2 == 0:
         return 0
 
-    return 1 / (ic1 + ic2 - 2 * lcs_ic)
+    ic_difference = ic1 + ic2 - 2 * lcs_ic
+
+    if ic_difference == 0:
+        return _INF
+
+    return 1 / ic_difference
 
 
 def lin_similarity(synset1, synset2, ic, verbose=False):
