@@ -66,23 +66,19 @@ Test the Naive Bayes classifier:
     0.3685 0.6315
     0.6365 0.3635
     >>> classifier.show_most_informative_features()
-    <BLANKLINE>
     Most Informative Features
-                           c = 0                    x : y     =      2.0 : 1.0
-                           c = 1                    y : x     =      1.5 : 1.0
-                           a = 1                    y : x     =      1.4 : 1.0
-                           a = 0                    x : y     =      1.2 : 1.0
-                           b = 0                    x : y     =      1.2 : 1.0
-                           b = 1                    y : x     =      1.1 : 1.0
+                           c = 0                   x : y      =      2.0 : 1.0
+                           c = 1                   y : x      =      1.5 : 1.0
+                           a = 1                   y : x      =      1.4 : 1.0
+                           a = 0                   x : y      =      1.2 : 1.0
+                           b = 0                   x : y      =      1.2 : 1.0
+                           b = 1                   y : x      =      1.1 : 1.0
 
 Test the Decision Tree classifier:
 
     >>> classifier = nltk.DecisionTreeClassifier.train(
     ...     train, entropy_cutoff=0,
     ...                                                support_cutoff=0)
-    best stump for    9 toks uses                    c err=0.3333
-    best stump for    3 toks uses                    a err=0.0000
-    best stump for    6 toks uses                 None err=0.3333
     >>> sorted(classifier.labels())
     ['x', 'y']
     >>> print classifier
@@ -108,14 +104,19 @@ generate the same results.
     ...         if algorithm.lower() == 'megam':
     ...             try: nltk.classify.megam.config_megam()
     ...             except: raise #continue
-    ...         classifiers[algorithm] = nltk.MaxentClassifier.train(
-    ...             train, algorithm, trace=0, max_iter=1000)
+    ...         try:
+    ...             classifiers[algorithm] = nltk.MaxentClassifier.train(
+    ...                 train, algorithm, trace=0, max_iter=1000)
+    ...         except Exception, e:
+    ...             classifiers[algorithm] = e
     ...     print ' '*11+''.join(['      test[%s]  ' % i
     ...                           for i in range(len(test))])
     ...     print ' '*11+'     p(x)  p(y)'*len(test)
     ...     print '-'*(11+15*len(test))
     ...     for algorithm, classifier in classifiers.items():
     ...         print '%11s' % algorithm,
+    ...         if isinstance(classifier, Exception):
+    ...             print 'Error: %r' % classifier; continue
     ...         for featureset in test:
     ...             pdist = classifier.prob_classify(featureset)
     ...             print '%8.2f%6.2f' % (pdist.prob('x'), pdist.prob('y')),
