@@ -36,12 +36,13 @@ def chatbots():
     botcount = len(bots)
     for i in range(botcount):
         print '  %d: %s' % (i+1, bots[i][1])
-    print '\nPEnter a number in the range 1-%d: ' % botcount,
-    choice = sys.stdin.readline().strip()
-    print
-    if not (choice.isdigit() and int(choice) in range(botcount)):
-        print 'Bad chatbot number'
-        return
+    while True:
+        print '\nEnter a number in the range 1-%d: ' % botcount,
+        choice = sys.stdin.readline().strip()
+        if choice.isdigit() and (int(choice) - 1) in range(botcount):
+            break
+        else:
+            print '   Error: bad chatbot number'
 
     chatbot = bots[int(choice)-1][0]
     chatbot()
