@@ -155,9 +155,15 @@ class ChunkScore(object):
         self._guessed |= _chunksets(guessed, self._count, self._chunk_node)
         self._count += 1
         self._measuresNeedUpdate = True
-        # Keep track of per-tag accuracy.
-        correct_tags = tree2conlltags(correct)
-        guessed_tags = tree2conlltags(guessed)
+        # Keep track of per-tag accuracy (if possible)
+        try:
+            correct_tags = tree2conlltags(correct)
+            guessed_tags = tree2conlltags(guessed)
+        except ValueError:
+            # This exception case is for nested chunk structures,
+            # where tree2conlltags will fail with a ValueError: "Tree
+            # is too deeply nested to be printed in CoNLL format."
+            correct_tags = guessed_tags = ()
         self._tags_total += len(correct_tags)
         self._tags_correct += sum(1 for (t,g) in zip(guessed_tags,
                                                      correct_tags)
