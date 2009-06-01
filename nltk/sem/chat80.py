@@ -420,7 +420,7 @@ def _str2records(filename, rel):
     """ 
     recs = []
     path = nltk.data.find("corpora/chat80/%s" % filename)
-    for line in open(path):
+    for line in path.open():
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
             line = re.sub(r'\)\.$', '', line)
