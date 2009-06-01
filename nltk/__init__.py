@@ -127,19 +127,19 @@ else:
     import cluster; from cluster import *
 
 from downloader import download, download_shell
-
-# Import Tkinter-based modules if Tkinter is installed
 try:
     import Tkinter
 except ImportError:
-    import warnings
-    warnings.warn("draw module, app module, and gui downloader not loaded "
-                  "(please install Tkinter library).")
+    pass
 else:
-#    import app  # omit; too slow to load
-    import draw
     from downloader import download_gui
 
+# packages which are slow to import, or have run-time dependencies that
+# might not be met, but which can be safely fail at run-time
+
+import lazyimport
+app = lazyimport.LazyModule('app', locals(), globals())
+draw = lazyimport.LazyModule('draw', locals(), globals())
 
 # override any accidentally imported demo
 def demo():
