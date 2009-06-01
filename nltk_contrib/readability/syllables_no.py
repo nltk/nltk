@@ -5,7 +5,48 @@ import string
 import re
 import os
 
-syllable_path = "files", "specialSyllables_no"
+specialSyllables_no = """distribuert 4
+lÊreinstitusjoner 7
+spesielt 3
+offisielle 5
+arbeidssprÂk 3
+utarbeidet 4
+verdenserklÊringen 6
+h¯yeste 3
+tvinges 2
+utvei 2
+arbeide 3
+samarbeid 3
+verdenserklÊring 5
+overh¯yhet 4
+frie 2
+noen 2
+eiendom 3
+uavhengig 4
+straffeanklage 5
+garantier 4
+familie 4
+anseelse 4
+reelt 2
+inngÂelse 4
+familien 4
+ideer 3
+reelle 3
+uunnvÊrlige 5
+arbeid 2
+arbeidsforhold 4
+arbeidsl¯shet 4
+arbeider 3
+arbeidstiden 4
+ferier 3
+families 4
+arbeidsuf¯rhet 5
+spesiell 3
+h¯yere 2
+religi¯se 5
+materielle 5
+noe 2
+"""
 
 syllablesInFile = {}
 
@@ -32,17 +73,14 @@ def _stripWord(word):
     return word.strip().lower()
 
 # Read our syllable override file and add to the syllablesInFile list
-in_syll = open(syllable_path)
-for line in in_syll.xreadlines():
+for line in specialSyllables_no:
     line = line.strip()
     if line:
         toks = line.split()
         assert len(toks) == 2
         syllablesInFile[_stripWord(unicode(toks[0],"latin-1").encode("utf-8"))] = int(toks[1])
-in_syll.close()
 
 def count(word):
-
     word = unicode(word,"utf-8").encode("utf-8")
     word = _stripWord(word)
 

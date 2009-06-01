@@ -5,6 +5,12 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+Combinatory Categorial Grammar.
+
+For more information see nltk/doc/contrib/ccg/ccg.pdf
+"""
+
 from combinator import *
 from chart import *
 from lexicon import *

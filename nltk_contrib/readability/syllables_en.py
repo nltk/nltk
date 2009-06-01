@@ -1,6 +1,5 @@
 import string, re, os
 
-
 ###
 ### Fallback syllable counter
 ###
@@ -8,7 +7,68 @@ import string, re, os
 ### Lingua::EN::Syllable.
 ###
 
-syllable_path = "specialSyllables_en"
+specialSyllables_en = """tottered 2
+chummed 1
+peeped 1
+moustaches 2
+shamefully 3
+messieurs 2
+satiated 4
+sailmaker 4
+sheered 1
+disinterred 3
+propitiatory 6
+bepatched 2
+particularized 5
+caressed 2
+trespassed 2
+sepulchre 3
+flapped 1
+hemispheres 3
+pencilled 2
+motioned 2
+poleman 2
+slandered 2
+sombre 2
+etc 4
+sidespring 2
+mimes 1
+effaces 2
+mr 2
+mrs 2
+ms 1
+dr 2
+st 1
+sr 2
+jr 2
+truckle 2
+foamed 1
+fringed 2
+clattered 2
+capered 2
+mangroves 2
+suavely 2
+reclined 2
+brutes 1
+effaced 2
+quivered 2
+h'm 1
+veriest 3
+sententiously 4
+deafened 2
+manoeuvred 3
+unstained 2
+gaped 1
+stammered 2
+shivered 2
+discoloured 3
+gravesend 2
+60 2
+lb 1
+unexpressed 3
+greyish 2
+unostentatious 5
+"""
 
 fallback_cache = {}
 
@@ -36,17 +96,14 @@ def _normalize_word(word):
     return word.strip().lower()
 
 # Read our syllable override file and stash that info in the cache
-in_syll = open(syllable_path)
-for line in in_syll.xreadlines():
+for line in specialSyllables_en:
     line = line.strip()
     if line:
         toks = line.split()
         assert len(toks) == 2
         fallback_cache[_normalize_word(toks[0])] = int(toks[1])
-in_syll.close()
 
 def count(word):
-
     word = _normalize_word(word)
 
     if not word:
@@ -82,7 +139,6 @@ def count(word):
     fallback_cache[word] = count
 
     return count
-
 
 ###
 ### Phoneme-driven syllable counting

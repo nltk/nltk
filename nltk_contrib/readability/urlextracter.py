@@ -123,4 +123,4 @@ def demo():
     URLextracter.demo()
 
 if __name__ == "__main__":
-    URLextracter.demo()
+    demo()

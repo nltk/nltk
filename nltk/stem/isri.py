@@ -8,7 +8,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""   ISRI Arabic stemmer.
+"""ISRI Arabic Stemmer
 
 The algorithm for this stemmer is described in:
 
@@ -29,8 +29,9 @@ increases the word ambiguities and changes the original root.
 
 """
 import re
+from api import *
 
-class isri:
+class ISRIStemmer(StemmerI):
     '''
     ISRI Arabic stemmer based on algorithm: Arabic Stemming without a root dictionary.
     Information Science Research Institute. University of Nevada, Las Vegas, USA.

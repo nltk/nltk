@@ -48,14 +48,16 @@ class CCGVar(AbstractCCGCategory):
     '''
     Class representing a variable CCG category.
     Used for conjunctions (and possibly type-raising, if implemented as a
-    unary rule.
+    unary rule).
     '''
     _maxID = 0
 
-    # Initialization of a variable.
-    # Selects a new identifier.
-    # prim_only determines whether the variable is restricted to primitives
-    def __init__(self,prim_only=False):
+    def __init__(self, prim_only=False):
+        """Initialize a variable (selects a new identifier)
+
+        @param prim_only: a boolean that determines whether the variable is restricted to primitives 
+        @type prim_only: C{boolean}
+        """
         self._id = self.new_id()
         self._prim_only = prim_only
     
@@ -74,17 +76,19 @@ class CCGVar(AbstractCCGCategory):
     def is_var(self):
         return True
     
-    # If there is a substitution corresponding to this variable,
-    # return the substituted category
-    def substitute(self,substitutions):
+    def substitute(self, substitutions):
+        """If there is a substitution corresponding to this variable,
+        return the substituted category.
+        """
         for (var,cat) in substitutions:
             if var == self:
                  return cat
         return self
 
-    # If the variable can be replaced with the argument category,
-    # a substitution is returned.
-    def can_unify(self,other):
+    def can_unify(self, other):
+        """ If the variable can be replaced with other
+        a substitution is returned.
+        """
         if other.is_primitive() or not self._prim_only:
             return [(self,other)]
         return None
@@ -121,13 +125,15 @@ class Direction:
     def dir(self):
         return self._dir
     
-    # A list of restrictions on the combinators.
-    # '.' denotes that permuting operations are disallowed
-    # ',' denotes that function composition is disallowed
-    # '_' denotes that the direction has variable restrictions.
-    # (This is redundant in the current implementation of type-raising)
     def restrs(self):
+        """A list of restrictions on the combinators.
+        '.' denotes that permuting operations are disallowed
+        ',' denotes that function composition is disallowed
+        '_' denotes that the direction has variable restrictions.
+        (This is redundant in the current implementation of type-raising)
+        """
         return self._restrs
+
     def is_variable(self):
         return self._restrs == '_'
     
@@ -156,12 +162,14 @@ class Direction:
     # Testing permitted combinators
     def can_compose(self):
         return not ',' in self._restrs 
+    
     def can_cross(self):
         return not '.' in self._restrs
 
     def __cmp__(self,other):
         return cmp((self._dir,self._restrs), (other.dir(),other.restrs()))
         return res
+
     def __hash__(self):
       return hash((self._dir,tuple(self._restrs)))
 
@@ -188,10 +196,13 @@ class PrimitiveCategory(AbstractCCGCategory):
     def __init__(self,categ,restrictions=[]):
         self._categ = categ
         self._restrs = restrictions
+
     def is_primitive(self):
         return True
+
     def is_function(self):
         return False
+
     def is_var(self):
         return False
 
@@ -225,8 +236,10 @@ class PrimitiveCategory(AbstractCCGCategory):
             return -1
         return cmp((self._categ,self.restrs()),
                     (other.categ(),other.restrs()))
+
     def __hash__(self):
         return hash((self._categ,tuple(self._restrs)))
+
     def __str__(self):
         if self._restrs == []:
             return str(self._categ)
@@ -245,8 +258,10 @@ class FunctionalCategory(AbstractCCGCategory):
 
     def is_primitive(self):
         return False
+
     def is_function(self):
         return True
+
     def is_var(self):
         return False
     
@@ -275,8 +290,10 @@ class FunctionalCategory(AbstractCCGCategory):
     # Constituent accessors       
     def arg(self):
         return self._arg
+
     def res(self):
         return self._res
+
     def dir(self):
         return self._dir
 
@@ -287,5 +304,6 @@ class FunctionalCategory(AbstractCCGCategory):
                     (other.arg(),other.dir(),other.res()))
     def __hash__(self):
         return hash((self._arg,self._dir,self._res))
+
     def __str__(self):
         return "(" + str(self._res) + str(self._dir) + str(self._arg) + ")"

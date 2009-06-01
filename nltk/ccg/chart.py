@@ -290,7 +290,6 @@ def printCCGDerivation(tree):
     
     # Display the derivation steps
     printCCGTree(0,tree)
-    print '\n'
 
 # Prints the sequence of derivation steps.
 def printCCGTree(lwidth,tree):
