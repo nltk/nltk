@@ -46,8 +46,9 @@ import string
 import os.path
 
 from nltk.parse.chart import *
-from nltk import tokenize, Tree, Nonterminal, parse_cfg
-from nltk import in_idle
+from nltk.tree import Tree
+from nltk.grammar import Nonterminal, parse_cfg
+from nltk.util import in_idle
 from nltk.draw.util import *
 from nltk.draw.cfg import CFGEditor
 from nltk.draw.tree import tree_to_treesegment, TreeSegmentWidget

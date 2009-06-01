@@ -9,7 +9,7 @@
 import re
 import types
 
-from nltk import Tree
+from nltk.tree import Tree
 
 from nltk.chunk.api import *
 from nltk.chunk.util import *
@@ -967,7 +967,6 @@ class RegexpChunkParser(ChunkParserI):
             rule.apply(chunkstr)
         
     def parse(self, chunk_struct, trace=None):
-        from nltk import Tree
         """
         @type chunk_struct: C{Tree}
         @param chunk_struct: the chunk structure to be (further) chunked
@@ -1224,8 +1223,8 @@ def demo_eval(chunkparser, text):
         evaluation.
     @type text: C{string}
     """
-    
-    from nltk import chunk, Tree
+    from nltk import chunk
+    from nltk.tree import Tree
 
     # Evaluate our chunk parser.
     chunkscore = chunk.ChunkScore()

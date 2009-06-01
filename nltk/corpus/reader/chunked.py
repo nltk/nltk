@@ -13,11 +13,10 @@ documents.
 
 import os.path, codecs
 
+import nltk
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.tree import Tree
 from nltk.tokenize import *
-from nltk import chunk
-
 from util import *
 from api import *
 
@@ -30,10 +29,10 @@ class ChunkedCorpusReader(CorpusReader):
     function.  Each of these steps can be performed using a default
     function or a custom function.  By default, paragraphs are split
     on blank lines; sentences are listed one per line; and sentences
-    are parsed into chunk trees using L{chunk.tagstr2tree}.
+    are parsed into chunk trees using L{nltk.chunk.tagstr2tree}.
     """
     def __init__(self, root, fileids, extension='', 
-                 str2chunktree=chunk.tagstr2tree,
+                 str2chunktree=nltk.chunk.tagstr2tree,
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block,
                  encoding=None):
@@ -152,7 +151,7 @@ class ChunkedCorpusReader(CorpusReader):
                        for (f, enc) in self.abspaths(fileids, True)])
 
     def _read_block(self, stream):
-        return [chunk.tagstr2tree(t) for t in
+        return [nltk.chunk.tagstr2tree(t) for t in
                 read_blankline_block(stream)]
 
 class ChunkedCorpusView(StreamBackedCorpusView):

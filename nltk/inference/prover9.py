@@ -11,8 +11,8 @@ import tempfile
 import subprocess
 from string import join
 
+import nltk
 from nltk.sem.logic import LogicParser, Tokens as LogicTokens
-from nltk import internals
 from api import BaseProverCommand, Prover
 
 """
@@ -115,7 +115,7 @@ class Prover9Parent(object):
             self._prover9_bin = None
         else:
             name = 'prover9'
-            self._prover9_bin = internals.find_binary(
+            self._prover9_bin = nltk.internals.find_binary(
                                   name, 
                                   path_to_bin=binary_location, 
                                   env_vars=['PROVER9HOME'],
@@ -164,7 +164,7 @@ class Prover9Parent(object):
         binary_locations = self.binary_locations()
         if self._binary_location is not None:
             binary_locations += [self._binary_location]
-        return internals.find_binary(name, 
+        return nltk.internals.find_binary(name, 
             searchpath=binary_locations, 
             env_vars=['PROVER9HOME'],
             url='http://www.cs.unm.edu/~mccune/prover9/',

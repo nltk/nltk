@@ -127,7 +127,7 @@ def mk_pairs(tree):
     @rtype: C{list} of C{tuple}
     """
 
-    from nltk import Tree
+    from nltk.tree import Tree
     
     pairs = []
     pair = [[], None]
@@ -360,7 +360,7 @@ def roles_demo(trace=0):
 def ieer_headlines():
     
     from nltk.corpus import ieer
-    from nltk import Tree
+    from nltk.tree import Tree
     
     print "IEER: First 20 Headlines"
     print "=" * 45

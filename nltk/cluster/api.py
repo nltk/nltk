@@ -6,7 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk import DictionaryProbDist
+from nltk.probability import DictionaryProbDist
 
 class ClusterI(object):
     """

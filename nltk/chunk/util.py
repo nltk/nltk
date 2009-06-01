@@ -9,7 +9,7 @@
 import re
 import string
 
-from nltk import Tree
+from nltk.tree import Tree
 import nltk.tag.util
 
 from api import *
@@ -539,8 +539,8 @@ def ieerstr2tree(s, chunk_types = ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATI
 def demo():
 
     s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
-    from nltk import chunk
-    t = chunk.tagstr2tree(s, chunk_node='NP')
+    import nltk
+    t = nltk.chunk.tagstr2tree(s, chunk_node='NP')
     print t.pprint()
     print
 

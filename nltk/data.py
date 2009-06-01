@@ -54,7 +54,7 @@ try:
 except:
     from StringIO import StringIO
 
-from nltk import grammar as cfg, sem
+import nltk
 
 ######################################################################
 # Search Path
@@ -588,21 +588,21 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     elif format == 'yaml':
         resource_val = yaml.load(_open(resource_url))
     elif format == 'cfg':
-        resource_val = cfg.parse_cfg(_open(resource_url).read())
+        resource_val = nltk.grammar.parse_cfg(_open(resource_url).read())
     elif format == 'pcfg':
-        resource_val = cfg.parse_pcfg(_open(resource_url).read())
+        resource_val = nltk.grammar.parse_pcfg(_open(resource_url).read())
     elif format == 'fcfg':
-        resource_val = cfg.parse_fcfg(_open(resource_url).read(), 
+        resource_val = nltk.grammar.parse_fcfg(_open(resource_url).read(), 
                                       logic_parser=logic_parser, 
                                       fstruct_parser=fstruct_parser)
     elif format == 'fol':
-        resource_val = sem.parse_logic(_open(resource_url).read(), 
-                                       logic_parser=sem.logic.LogicParser())
+        resource_val = nltk.sem.parse_logic(_open(resource_url).read(), 
+                                       logic_parser=nltk.sem.logic.LogicParser())
     elif format == 'logic':
-        resource_val = sem.parse_logic(_open(resource_url).read(),
+        resource_val = nltk.sem.parse_logic(_open(resource_url).read(),
                                        logic_parser=logic_parser)
     elif format == 'val':
-        resource_val = sem.parse_valuation(_open(resource_url).read())
+        resource_val = nltk.sem.parse_valuation(_open(resource_url).read())
     elif format == 'raw':
         resource_val = _open(resource_url).read()
     else:

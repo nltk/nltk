@@ -68,8 +68,9 @@ Keyboard Shortcuts::
 
 import string
 
-from nltk import parse, tokenize, Tree, in_idle
-
+import nltk
+from nltk.tree import Tree
+from nltk.util import in_idle
 from nltk.draw.util import *
 from nltk.draw.tree import *
 from nltk.draw.cfg import *
@@ -86,7 +87,7 @@ class RecursiveDescentApp(object):
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = parse.SteppingRecursiveDescentParser(grammar, trace)
+        self._parser = nltk.parse.SteppingRecursiveDescentParser(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()
@@ -866,7 +867,7 @@ def app():
     Create a recursive descent parser demo, using a simple grammar and
     text.
     """    
-    from nltk import parse_cfg
+    from nltk.grammar import parse_cfg
     grammar = parse_cfg("""
     # Grammatical productions.
         S -> NP VP

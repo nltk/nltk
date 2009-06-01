@@ -25,7 +25,7 @@ described in Kiss & Strunk (2006)::
 import re
 import math
 
-from nltk import defaultdict
+from nltk.compat import defaultdict
 from nltk.probability import FreqDist
 
 from api import TokenizerI

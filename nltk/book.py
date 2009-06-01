@@ -3,7 +3,8 @@
 from nltk.corpus import gutenberg, genesis, inaugural,\
        nps_chat, webtext, treebank, wordnet
 from nltk.text import Text
-from nltk import FreqDist, bigrams
+from nltk.probability import FreqDist
+from nltk.util import bigrams
 from nltk.misc import babelize_shell
 
 print "*** Introductory Examples for the NLTK Book ***"

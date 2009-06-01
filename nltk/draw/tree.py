@@ -13,7 +13,7 @@ Graphically display a C{Tree}.
 
 import sys
 
-from nltk import Tree, bracket_parse
+from nltk.tree import Tree, bracket_parse
 
 from util import *
 

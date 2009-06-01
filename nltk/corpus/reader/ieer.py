@@ -23,7 +23,7 @@ APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 
 import codecs
 
-from nltk import chunk
+import nltk
 from nltk.internals import deprecated
 
 from api import *
@@ -87,7 +87,7 @@ class IEERCorpusReader(CorpusReader):
                 if self._parse(doc).docno is not None]
   
     def _parse(self, doc):
-        val = chunk.ieerstr2tree(doc, top_node="DOCUMENT")
+        val = nltk.chunk.ieerstr2tree(doc, top_node="DOCUMENT")
         if isinstance(val, dict):
             return IEERDocument(**val)
         else:

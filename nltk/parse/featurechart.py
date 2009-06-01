@@ -18,7 +18,8 @@ import yaml, sys
 
 from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE
 from nltk.sem import logic
-from nltk import Nonterminal, Production, ContextFreeGrammar, defaultdict
+from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
+from nltk.compat import defaultdict
 from nltk.grammar import FeatStructNonterminal
 import nltk.data
 

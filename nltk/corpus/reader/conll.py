@@ -14,9 +14,9 @@ import os
 import codecs
 import textwrap
 
-from nltk import chunk, tree, Tree
 from nltk.internals import deprecated
-from nltk import Tree, LazyMap, LazyConcatenation
+from nltk.tree import Tree
+from nltk.util import LazyMap, LazyConcatenation
 
 from util import *
 from api import *

@@ -21,7 +21,7 @@ backoff tagger for any other C{SequentialBackoffTagger}.
 
 import re, yaml
 
-from nltk import FreqDist, ConditionalFreqDist
+from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.classify.naivebayes import NaiveBayesClassifier
 
 from api import *

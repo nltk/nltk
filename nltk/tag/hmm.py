@@ -71,10 +71,9 @@ import re
 import types
 
 from numpy import *
-
-from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
-     DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, \
-     MutableProbDist, MLEProbDist
+from nltk.probability import FreqDist, ConditionalFreqDist, \
+     ConditionalProbDist, DictionaryProbDist, DictionaryConditionalProbDist, \
+     LidstoneProbDist, MutableProbDist, MLEProbDist
 from nltk.internals import deprecated
 from nltk.metrics import accuracy as _accuracy
 from nltk.util import LazyMap, LazyConcatenation, LazyZip

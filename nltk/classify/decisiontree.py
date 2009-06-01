@@ -14,7 +14,7 @@ on feature values, and leaves correspond to label assignments.
 """
 
 from nltk.probability import *
-from nltk import defaultdict
+from nltk.compat import defaultdict
 
 from api import *
 
