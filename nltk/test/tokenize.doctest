@@ -21,6 +21,14 @@ string.
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
+When tokenizing text containing Unicode characters, be sure to tokenize
+the Unicode string, and not (say), the UTF8-encoded version:
+
+    >>> wordpunct_tokenize("das ist ein täller satz".decode('utf8'))
+    [u'das', u'ist', u'ein', u't\xe4ller', u'satz']
+    >>> wordpunct_tokenize("das ist ein täller satz")
+    ['das', 'ist', 'ein', 't\xc3', '\xa4', 'ller', 'satz']
+
 There are numerous ways to tokenize text.  If you need more control over
 tokenization, see the methods described below.
 

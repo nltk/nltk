@@ -3,6 +3,7 @@ Version 2.0b1 2009-06-01
 NLTK:
 * misc bugfixes (ChunkScore, chart rules, chatbots)
 * improved efficiency of "import nltk" using lazy module imports
+* moved CCG package and ISRI Arabic stemmer from NLTK-Contrib into core NLTK
 
 Version 0.9.9 2009-05-06
 

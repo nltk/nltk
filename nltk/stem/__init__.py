@@ -23,6 +23,7 @@ from api import *
 from regexp import *
 from porter import *
 from lancaster import *
+from isri import *
 from wordnet import *
 from rslp import *
 
@@ -32,7 +33,8 @@ __all__ = [
 
     # Stemmers
     'RegexpStemmer', 'PorterStemmer', 'LancasterStemmer',
-    'RSLPStemmer', 'WordNetLemmatizer', 'WordnetStemmer'
+    'RSLPStemmer', 'WordNetLemmatizer', 'WordnetStemmer',
+    'ISRIStemmer'
     ]
 
 ######################################################################

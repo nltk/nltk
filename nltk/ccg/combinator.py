@@ -7,7 +7,7 @@
 
 from api import *
 
-class UndirectedBinaryCombinator:
+class UndirectedBinaryCombinator(object):
     """
     Abstract class for representing a binary combinator.
     Merely defines functions for checking if the function and argument
@@ -24,7 +24,7 @@ class UndirectedBinaryCombinator:
     def combine (self,function,argument):
         raise AssertionError, 'UndirectedBinaryCombinator is an abstract interface'
 
-class DirectedBinaryCombinator:
+class DirectedBinaryCombinator(object):
     """
     Wrapper for the undirected binary combinator.
     It takes left and right categories, and decides which is to be
@@ -93,7 +93,6 @@ class UndirectedFunctionApplication(UndirectedBinaryCombinator):
 
         return not function.arg().can_unify(argument) is None
 
-
     def combine(self,function,argument):
         if not function.is_function():
             return
@@ -156,6 +155,7 @@ class UndirectedComposition(UndirectedBinaryCombinator):
 # Predicates for restricting application of straight composition.
 def bothForward(left,right):
     return left.dir().is_forward() and right.dir().is_forward()
+
 def bothBackward(left,right):
     return left.dir().is_backward() and right.dir().is_backward()
 
