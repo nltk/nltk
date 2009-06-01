@@ -8,7 +8,9 @@
 
 import threading
 
-from nltk import corpus, FreqDist, in_idle
+import nltk
+from nltk.util import in_idle
+from nltk.probability import FreqDist
 from nltk.text import Text as TextDomain
 from nltk.draw.util import *
 
@@ -18,37 +20,37 @@ ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
 _DEFAULT = 'English: Brown Corpus (Humor)'
 _CORPORA = {
             'Catalan: CESS-CAT Corpus':
-                lambda: corpus.cess_cat.words(),
+                lambda: nltk.corpus.cess_cat.words(),
             'English: Brown Corpus':
-                lambda: corpus.brown.words(),
+                lambda: nltk.corpus.brown.words(),
             'English: Brown Corpus (Press)':
-                lambda: corpus.brown.words(categories=['news', 'editorial', 'reviews']),
+                lambda: nltk.corpus.brown.words(categories=['news', 'editorial', 'reviews']),
             'English: Brown Corpus (Religion)':
-                lambda: corpus.brown.words(categories='religion'),
+                lambda: nltk.corpus.brown.words(categories='religion'),
             'English: Brown Corpus (Learned)':
-                lambda: corpus.brown.words(categories='learned'),
+                lambda: nltk.corpus.brown.words(categories='learned'),
             'English: Brown Corpus (Science Fiction)':
-                lambda: corpus.brown.words(categories='science_fiction'),
+                lambda: nltk.corpus.brown.words(categories='science_fiction'),
             'English: Brown Corpus (Romance)':
-                lambda: corpus.brown.words(categories='romance'),
+                lambda: nltk.corpus.brown.words(categories='romance'),
             'English: Brown Corpus (Humor)':
-                lambda: corpus.brown.words(categories='humor'),
+                lambda: nltk.corpus.brown.words(categories='humor'),
             'English: NPS Chat Corpus':
-                lambda: corpus.nps_chat.words(),
+                lambda: nltk.corpus.nps_chat.words(),
             'English: Wall Street Journal Corpus':
-                lambda: corpus.treebank.words(),
+                lambda: nltk.corpus.treebank.words(),
             'Chinese: Sinica Corpus':
-                lambda: corpus.sinica_treebank.words(),
+                lambda: nltk.corpus.sinica_treebank.words(),
             'Dutch: Alpino Corpus':
-                lambda: corpus.alpino.words(),
+                lambda: nltk.corpus.alpino.words(),
             'Hindi: Indian Languages Corpus':
-                lambda: corpus.indian.words(files='hindi.pos'),
+                lambda: nltk.corpus.indian.words(files='hindi.pos'),
             'Portuguese: Floresta Corpus (Portugal)':
-                lambda: corpus.floresta.words(),
+                lambda: nltk.corpus.floresta.words(),
             'Portuguese: MAC-MORPHO Corpus (Brazil)':
-                lambda: corpus.mac_morpho.words(),
+                lambda: nltk.corpus.mac_morpho.words(),
             'Spanish: CESS-ESP Corpus':
-                lambda: corpus.cess_esp.words(),
+                lambda: nltk.corpus.cess_esp.words(),
            }
 
 class CollocationsView:

@@ -11,7 +11,7 @@ import math
 import re
 from itertools import islice, chain
 
-from nltk import defaultdict
+from nltk.compat import defaultdict
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist

@@ -16,7 +16,7 @@ import os, re, codecs
 from StringIO import StringIO
 from nltk.etree.ElementTree import TreeBuilder, Element, SubElement
 from nltk.data import PathPointer, ZipFilePathPointer
-from nltk import data
+import nltk
 
 class StandardFormat(object):
     """
@@ -466,9 +466,9 @@ def add_blank_lines(tree, blanks_before, blanks_between):
 def demo():
     from itertools import islice
 
-#    zip_path = data.find('corpora/toolbox.zip')
+#    zip_path = nltk.data.find('corpora/toolbox.zip')
 #    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
-    file_path = data.find('corpora/toolbox/rotokas.dic')
+    file_path = nltk.data.find('corpora/toolbox/rotokas.dic')
     lexicon = ToolboxData(file_path).parse()
     print 'first field in fourth record:'
     print lexicon[3][0].tag
@@ -485,7 +485,7 @@ def demo():
     from nltk.etree.ElementTree import ElementTree
     
     settings = ToolboxSettings()
-    file_path = data.find('corpora/toolbox/MDF/MDF_AltH.typ')
+    file_path = nltk.data.find('corpora/toolbox/MDF/MDF_AltH.typ')
     settings.open(file_path)
 #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
     tree = settings.parse(unwrap=False, encoding='cp1252')

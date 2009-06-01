@@ -39,7 +39,7 @@ homepage<http://www.ags.uni-sb.de/~konrad/clig.html>}.
 from Tkinter import *
 import tkFont, tkMessageBox, tkFileDialog
 
-from nltk import in_idle
+from nltk.util import in_idle
     
 ##//////////////////////////////////////////////////////
 ##  CanvasWidget

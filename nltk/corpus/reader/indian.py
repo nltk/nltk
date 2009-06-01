@@ -20,7 +20,6 @@ Contents:
 
 import codecs
 
-from nltk import tokenize
 from nltk.internals import deprecated
 from nltk.tag.util import str2tuple
 

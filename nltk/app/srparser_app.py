@@ -77,8 +77,8 @@ Possible future improvements:
 
 import string
 
-from nltk import parse, tokenize, in_idle
-
+import nltk
+from nltk.util import in_idle
 from nltk.draw.util import *
 from nltk.draw.tree import *
 from nltk.draw.cfg import CFGEditor
@@ -92,11 +92,11 @@ class ShiftReduceApp(object):
     can shift tokens onto the stack, and can perform reductions on the
     top elements of the stack.  A "step" button simply steps through
     the parsing process, performing the operations that
-    C{parse.ShiftReduceParser} would use.
+    C{nltk.parse.ShiftReduceParser} would use.
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = parse.SteppingShiftReduceParser(grammar, trace)
+        self._parser = nltk.parse.SteppingShiftReduceParser(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()
@@ -382,7 +382,7 @@ class ShiftReduceApp(object):
         # Draw the stack.
         stackx = 5
         for tok in self._parser.stack():
-            if isinstance(tok, parse.Tree):
+            if isinstance(tok, Tree):
                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
                            'node_font': self._boldfont,
                            'node_color': '#006060',
@@ -685,7 +685,7 @@ class ShiftReduceApp(object):
             for widget in widgets:
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
-            if not isinstance(tok, parse.Tree): raise ValueError()
+            if not isinstance(tok, Tree): raise ValueError()
             label = TextWidget(self._canvas, str(tok.node), color='#006060',
                                font=self._boldfont)
             widget = TreeSegmentWidget(self._canvas, label, widgets,
@@ -708,7 +708,7 @@ class ShiftReduceApp(object):
 #
 #             # Make a new one.
 #             tok = self._parser.stack()[-1]
-#             if isinstance(tok, parse.Tree):
+#             if isinstance(tok, Tree):
 #                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
 #                            'node_font': bold, 'node_color': '#006060',
 #                            'leaf_color': '#006060', 'leaf_font':self._font}
@@ -772,7 +772,7 @@ def app():
     text. 
     """
     
-    from nltk import Nonterminal, Production, ContextFreeGrammar
+    from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]

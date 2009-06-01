@@ -20,7 +20,6 @@ import codecs
 
 from nltk.toolbox import ToolboxData
 from nltk.internals import deprecated
-from nltk import data
 
 from util import *
 from api import *

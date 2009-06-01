@@ -14,7 +14,7 @@ by Thorsten Brants
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 '''
 
-from nltk import probability
+import nltk
 from api import *
 
 class TnT(TaggerI):
@@ -100,11 +100,11 @@ class TnT(TaggerI):
         of the tagger
         '''
 
-        self._uni  = probability.FreqDist()
-        self._bi   = probability.ConditionalFreqDist()
-        self._tri  = probability.ConditionalFreqDist() 
-        self._wd   = probability.ConditionalFreqDist()
-        self._eos  = probability.ConditionalFreqDist()
+        self._uni  = nltk.probability.FreqDist()
+        self._bi   = nltk.probability.ConditionalFreqDist()
+        self._tri  = nltk.probability.ConditionalFreqDist() 
+        self._wd   = nltk.probability.ConditionalFreqDist()
+        self._eos  = nltk.probability.ConditionalFreqDist()
         self._l1   = 0.0
         self._l2   = 0.0
         self._l3   = 0.0

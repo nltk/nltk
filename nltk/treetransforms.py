@@ -107,7 +107,7 @@ The following is a short tutorial on the available transformations.
 
 """
 
-from nltk import Tree
+from nltk.tree import Tree
 
 def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
     # assume all subtrees have homogeneous children

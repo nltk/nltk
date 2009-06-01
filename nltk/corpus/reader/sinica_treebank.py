@@ -41,7 +41,7 @@ Extraction, Proceedings of IJCNLP-04, pp560-565.
 import os
 import re
 
-from nltk import tokenize, tree
+import nltk
 from nltk.internals import deprecated
 
 from util import *
@@ -63,7 +63,7 @@ class SinicaTreebankCorpusReader(SyntaxCorpusReader):
         return [sent]
 
     def _parse(self, sent):
-        return tree.sinica_parse(sent)
+        return nltk.tree.sinica_parse(sent)
 
     def _tag(self, sent, simplify_tags=None):
         tagged_sent = [(w,t) for (t,w) in TAGWORD.findall(sent)]

@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 #
 
-from nltk import Nonterminal, parse_cfg 
+from nltk.grammar import Nonterminal, parse_cfg 
 
 def generate(grammar, start=None):
     if not start:

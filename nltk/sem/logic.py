@@ -13,7 +13,7 @@ top of the typed lambda calculus.
 import re
 import operator
 
-from nltk import defaultdict
+from nltk.compat import defaultdict
 from nltk.internals import Counter
 
 _counter = Counter()

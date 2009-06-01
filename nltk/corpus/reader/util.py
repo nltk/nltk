@@ -15,7 +15,7 @@ try: import cPickle as pickle
 except ImportError: import pickle
 from itertools import islice
 
-from nltk import tokenize
+from nltk.tokenize import wordpunct_tokenize
 from nltk.etree import ElementTree
 from nltk.internals import deprecated, slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer

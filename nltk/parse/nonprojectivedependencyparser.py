@@ -9,7 +9,7 @@
 
 import math
 
-from nltk import parse_dependency_grammar
+from nltk.grammar import parse_dependency_grammar
 
 from dependencygraph import *
 

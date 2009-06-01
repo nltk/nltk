@@ -11,7 +11,9 @@
 #
 # $Id$
 
-from nltk import Tree, Nonterminal, defaultdict
+from nltk.tree import Tree
+from nltk.grammar import Nonterminal
+from nltk.compat import defaultdict
 
 from api import *
 

@@ -11,9 +11,7 @@ import subprocess
 import glob
 from operator import add
 
-from nltk import data
-from nltk import tokenize
-from nltk import tag
+import nltk
 from api import ParserI
 from dependencygraph import DependencyGraph
 from nltk.internals import find_binary
@@ -28,7 +26,7 @@ class MaltParser(ParserI):
         if tagger is not None:
             self.tagger = tagger
         else:
-            self.tagger = tag.RegexpTagger(
+            self.tagger = nltk.tag.RegexpTagger(
             [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
              (r'(The|the|A|a|An|an)$', 'AT'),   # articles
              (r'.*able$', 'JJ'),                # adjectives

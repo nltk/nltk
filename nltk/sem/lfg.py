@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.internals import Counter
-from nltk import defaultdict
+from nltk.compat import defaultdict
 from nltk.parse.dependencygraph import DependencyGraph
 
 

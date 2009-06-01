@@ -40,7 +40,6 @@ of the author.
 
 import codecs
 
-from nltk import tokenize
 from nltk.internals import deprecated
 
 from util import *

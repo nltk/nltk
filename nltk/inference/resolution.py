@@ -6,7 +6,7 @@
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
-from nltk import defaultdict
+from nltk.compat import defaultdict
 from nltk.sem.logic import *
 from nltk.sem.util import skolemize
 from api import Prover, BaseProverCommand

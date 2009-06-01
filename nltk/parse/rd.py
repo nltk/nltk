@@ -8,7 +8,7 @@
 
 import string
 
-from nltk import tokenize, Nonterminal, parse_cfg
+from nltk.grammar import Nonterminal, parse_cfg
 from nltk.tree import Tree, ImmutableTree
 
 from api import *

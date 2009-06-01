@@ -15,7 +15,7 @@ The input is assumed to be in U{Malt-TAB<http://w3.msi.vxu.se/~nivre/research/Ma
 Currently only reads the first tree in a file.
 """
 
-from nltk import Tree
+from nltk.tree import Tree
 from pprint import pformat
 import re
 

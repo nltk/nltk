@@ -48,7 +48,7 @@ ZH      seizure S IY ZH ER
 import codecs
 
 from nltk.internals import deprecated
-from nltk import Index
+from nltk.util import Index
 
 from util import *
 from api import *

@@ -16,7 +16,7 @@ import random        # for shuffling WSJ files
 import yaml          # to save and load taggers in files
 import textwrap
 
-from nltk import defaultdict
+from nltk.compat import defaultdict
 
 from util import untag
 from api import *

@@ -60,7 +60,7 @@ import tempfile
 import os
 import gzip
 
-from nltk import defaultdict
+from nltk.compat import defaultdict
 from nltk.util import OrderedDict
 from nltk.probability import *
 
@@ -1162,11 +1162,16 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
     @require: The C{scipy} package must be installed.
     """
     try:
-        import scipy.sparse, scipy.maxentropy
+        import scipy
     except ImportError, e:
         raise ValueError('The maxent training algorithm %r requires '
                          'that the scipy package be installed.  See '
                          'http://www.scipy.org/' % algorithm)
+    try:
+        # E.g., if libgfortran.2.dylib is not found.
+        import scipy.sparse, scipy.maxentropy
+    except ImportError, e:
+        raise ValueError('Import of scipy package failed: %s' % e)
     
     # Construct an encoding from the training data.
     if encoding is None:

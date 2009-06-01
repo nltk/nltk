@@ -7,7 +7,7 @@
 
 import os
 
-from nltk import data
+import nltk
 from nltk.internals import Counter
 from nltk.parse import *
 from nltk.parse import MaltParser
@@ -117,7 +117,8 @@ class GlueDict(dict):
             self.clear()
 
         try:
-            f = open(data.find(os.path.join('grammars', 'sample_grammars', self.filename)))
+            f = open(nltk.data.find(
+                os.path.join('grammars', 'sample_grammars', self.filename)))
         except LookupError, e:
             try:
                 f = open(self.filename)
@@ -419,7 +420,9 @@ class Glue(object):
         if depgraphs:
             self.depparser.train(depgraphs)
         else:
-            self.depparser.train_from_file(data.find(os.path.join('grammars', 'sample_grammars', 'glue_train.conll')))
+            self.depparser.train_from_file(nltk.data.find(
+                os.path.join('grammars', 'sample_grammars',
+                             'glue_train.conll')))
     
     def parse_to_meaning(self, sentence):
         readings = []
