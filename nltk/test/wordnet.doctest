@@ -5,7 +5,7 @@ WordNet Interface
 WordNet is accessed just another NLTK corpus reader, and can be imported like this:
 
     >>> from nltk.corpus import wordnet
-    
+
 For more compact code, we recommend:
 
     >>> from nltk.corpus import wordnet as wn
@@ -297,7 +297,7 @@ Look up forms not in WordNet, with the help of Morphy:
     'deny'
     >>> wn.synsets('denied', wn.NOUN)
     []
-    >>> wn.synsets('denied', wn.VERB) # doctest: +NORMALIZE_WHITESPACE 
+    >>> wn.synsets('denied', wn.VERB) # doctest: +NORMALIZE_WHITESPACE
     [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'), Synset('deny.v.04'),
     Synset('deny.v.05'), Synset('traverse.v.03'), Synset('deny.v.07')]
 
@@ -357,5 +357,14 @@ Bug 99: WordNet root_hypernyms gives incorrect results
     >>> for s in wn.all_synsets(wn.NOUN):
     ...     if s.root_hypernyms()[0] != wn.synset('entity.n.01'):
     ...             print s, s.root_hypernyms()
-    ... 
-    >>> 
+    ...
+    >>>
+
+Bug 382: JCN Division by zero error
+
+    >>> tow = wn.synset('tow.v.01')
+    >>> shlep = wn.synset('shlep.v.02')
+    >>> from nltk.corpus import wordnet_ic
+    >>> brown_ic =  wordnet_ic.ic('ic-brown.dat')
+    >>> wn.jcn_similarity(tow,shlep, brown_ic)
+    1.0000000000000001e+300
