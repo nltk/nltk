@@ -93,6 +93,7 @@ from yamltags import *
 
 # don't import contents into top-level namespace:
 
+import ccg
 import data
 import help
 
