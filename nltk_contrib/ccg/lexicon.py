@@ -32,7 +32,7 @@ reComm = re.compile('''([^#]*)(?:#.*)?''')
 #----------
 # Lexicons
 #----------
-class CCGLexicon:
+class CCGLexicon(object):
     '''
     Class representing a lexicon for CCG grammars.
     primitives - The list of primitive categories for the lexicon
@@ -197,44 +197,44 @@ def parseLexicon(lex_str):
 
 
 openccg_tinytiny = parseLexicon('''
-   # Rather minimal lexicon based on the openccg `tinytiny' grammar.
-   # Only incorporates a subset of the morphological subcategories, however.
-   :- S,NP,N                    # Primitive categories
-   Det :: NP/N                  # Determiners
-   Pro :: NP
-   IntransVsg :: S\\NP[sg]    # Tensed intransitive verbs (singular)
-   IntransVpl :: S\\NP[pl]    # Plural
-   TransVsg :: S\\NP[sg]/NP   # Tensed transitive verbs (singular)
-   TransVpl :: S\\NP[pl]/NP   # Plural
+    # Rather minimal lexicon based on the openccg `tinytiny' grammar.
+    # Only incorporates a subset of the morphological subcategories, however.
+    :- S,NP,N                    # Primitive categories
+    Det :: NP/N                  # Determiners
+    Pro :: NP
+    IntransVsg :: S\\NP[sg]    # Tensed intransitive verbs (singular)
+    IntransVpl :: S\\NP[pl]    # Plural
+    TransVsg :: S\\NP[sg]/NP   # Tensed transitive verbs (singular)
+    TransVpl :: S\\NP[pl]/NP   # Plural
 
-   the => NP[sg]/N[sg]
-   the => NP[pl]/N[pl]
+    the => NP[sg]/N[sg]
+    the => NP[pl]/N[pl]
 
-   I => Pro
-   me => Pro
-   we => Pro
-   us => Pro
+    I => Pro
+    me => Pro
+    we => Pro
+    us => Pro
 
-   book => N[sg]
-   books => N[pl]
+    book => N[sg]
+    books => N[pl]
    
-   peach => N[sg]
-   peaches => N[pl]
+    peach => N[sg]
+    peaches => N[pl]
 
-   policeman => N[sg]
-   policemen => N[pl]
+    policeman => N[sg]
+    policemen => N[pl]
 
-   boy => N[sg]
-   boys => N[pl]
+    boy => N[sg]
+    boys => N[pl]
    
-   sleep => IntransVsg
-   sleep => IntransVpl
+    sleep => IntransVsg
+    sleep => IntransVpl
    
-   eat => IntransVpl
-   eat => TransVpl
-   eats => IntransVsg
-   eats => TransVsg
+    eat => IntransVpl
+    eat => TransVpl
+    eats => IntransVsg
+    eats => TransVsg
 
-   see => TransVpl
-   sees => TransVsg
-   ''')
+    see => TransVpl
+    sees => TransVsg
+    ''')
