@@ -20,8 +20,8 @@ except ImportError: from nltk.etree import ElementTree
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.internals import deprecated, ElementWrapper
 
-from api import CorpusReader
-from util import *
+from nltk.corpus.reader.api import CorpusReader
+from nltk.corpus.reader.util import *
 
 class XMLCorpusReader(CorpusReader):
     """
