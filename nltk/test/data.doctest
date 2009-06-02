@@ -35,8 +35,8 @@ and ``file:`` URLs, e.g. ``cfg = nltk.data.load('http://example.com/path/to/toy.
 
     >>> # Load a grammar using an absolute path.
     >>> url = 'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg')
-    >>> url
-    'file:/usr/share/nltk_data/grammars/sample_grammars/toy.cfg'
+    >>> url # doctest: +ELLIPSIS
+    'file:/.../nltk_data/grammars/sample_grammars/toy.cfg'
     >>> print nltk.data.load(url) # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
         S -> NP VP
@@ -205,17 +205,16 @@ you are actively editing that file:
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',cache=False,verbose=True)
     <<Loading grammars/book_grammars/feat0.fcfg>>
 
-The cache uses weak references, so a resource wil automatically be
-expunged from the cache when no more objects are using it.  In the
-following example, when we clear the variable ``feat0``, the reference
-count for the feature grammar object drops to zero.  This causes it to
-be garbage collected and removed from the cache.  Thus, when we load
-it again, it is no longer in the cache, so `nltk.data.load()` must load
-it from the source file.
+The cache *no longer* uses weak references.  A resource will not be
+automatically expunged from the cache when no more objects are using
+it.  In the following example, when we clear the variable ``feat0``,
+the reference count for the feature grammar object drops to zero.
+However, the object remains cached:
 
     >>> del feat0
-    >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
-    <<Loading grammars/book_grammars/feat0.fcfg>>
+    >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',
+    ...                        verbose=True)
+    <<Using cached copy of grammars/book_grammars/feat0.fcfg>>
 
 You can clear the entire contents of the cache, using
 `nltk.data.clear_cache()`:
@@ -224,7 +223,7 @@ You can clear the entire contents of the cache, using
 
 Retrieving other Data Sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    >>> formulas = nltk.data.load('grammars/background1.fol')
+    >>> formulas = nltk.data.load('grammars/book_grammars/background.fol')
     >>> for f in formulas: print str(f)
     all x.(boxerdog(x) -> dog(x))
     all x.(boxer(x) -> person(x))
@@ -254,10 +253,9 @@ The `retrieve()` function accepts all url types:
     >>> for i, url in enumerate(urls):
     ...     nltk.data.retrieve(url, 'toy-%d.cfg' % i) # doctest: +ELLIPSIS
     Retrieving 'http://nltk.org/examples/parse/toy.cfg', saving to 'toy-0.cfg'
-    Retrieving 'file:/.../data/grammars/sample_grammars/toy.cfg', saving to 'toy-1.cfg'
+    Retrieving 'file:/.../nltk_data/grammars/sample_grammars/toy.cfg', saving to 'toy-1.cfg'
     Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-2.cfg'
     Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'toy-3.cfg'
-
 
 Clean up the temp dir:
 
@@ -297,5 +295,5 @@ internal use by NLTK's corpus readers.
     >>> ll.start()
     S
     >>> object.__repr__(ll) # doctest: +ELLIPSIS
-    '<nltk.cfg.Grammar object at ...>'
+    '<nltk.grammar.ContextFreeGrammar object at ...>'
 
