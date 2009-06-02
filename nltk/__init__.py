@@ -114,11 +114,17 @@ import tokenize;  from tokenize import *
 import sem;       from sem import *
 import stem;      from stem import *
 
-# Packages whose contents are not imported into the top-level namespace 
+# Packages which can be lazily imported
+# (a) we don't import *
+# (b) they're slow to import or have run-time dependencies
+#     that can safely fail at run time
 
-import chat
-import corpus
-import toolbox
+import lazyimport
+app = lazyimport.LazyModule('app', locals(), globals())
+chat = lazyimport.LazyModule('chat', locals(), globals())
+corpus = lazyimport.LazyModule('corpus', locals(), globals())
+draw = lazyimport.LazyModule('draw', locals(), globals())
+toolbox = lazyimport.LazyModule('toolbox', locals(), globals())
 
 try:
     import numpy
@@ -135,12 +141,6 @@ except ImportError:
 else:
     from downloader import download_gui
 
-# packages which are slow to import, or have run-time dependencies that
-# might not be met, but which can be safely fail at run-time
-
-import lazyimport
-app = lazyimport.LazyModule('app', locals(), globals())
-draw = lazyimport.LazyModule('draw', locals(), globals())
 
 # override any accidentally imported demo
 def demo():
