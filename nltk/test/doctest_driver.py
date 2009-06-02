@@ -708,18 +708,24 @@ class MyDocTestRunner(DocTestRunner):
         self._verbosity = verbosity
         self._current_test = None
         self._term = TerminalController()
+        self._stderr_term = TerminalController(sys.__stderr__)
         self._kbinterrupt_continue = kbinterrupt_continue
     def report_start(self, out, test, example):
+        
         if 1 <= self._verbosity <= 2:
             src = example.source.split('\n')[0]
             if len(src) > 60: src = src[:57]+'...'
             lineno = test.lineno + example.lineno + 1
             if self._verbosity == 1:
-                out(self._term.CLEAR_LINE)
-            out('%s[Line %s] %s%s' % (self._term.BOLD, lineno,
-                                      self._term.NORMAL, src))
+                if self._stderr_term.CLEAR_LINE:
+                    sys.__stderr__.write(self._stderr_term.CLEAR_LINE)
+                else:
+                    sys.__stderr__.write('\n')
+            sys.__stderr__.write('%s  [Line %s] %s%s' %
+                                 (self._stderr_term.BOLD, lineno,
+                                  self._stderr_term.NORMAL, src))
             if self._verbosity == 2:
-                out('\n')
+                sys.__stderr__.write('\n')
             
         else:
             DocTestRunner.report_start(self, out, test, example)
@@ -773,17 +779,36 @@ class MyDocTestRunner(DocTestRunner):
         return out
     
     def run(self, test, compileflags=None, out=None, clear_globs=True):
+        save_stderr = sys.stderr
+        sys.stderr = _SpoofOut()
+        
+        if self._verbosity > 0:
+            print >>save_stderr, (
+                self._stderr_term.CYAN+self._stderr_term.BOLD+
+                'Testing %s...'%test.name+self._stderr_term.NORMAL)
         try:
-            DocTestRunner.run(self, test, compileflags, out, clear_globs)
+            fails, tries = DocTestRunner.run(self, test, compileflags,
+                                             out, clear_globs)
         except KeyboardInterrupt:
             if self._current_test is None: raise
 
-            print self._failure_header(*self._current_test)
-            print (self._term.RED+self._term.BOLD+'Keyboard Interrupt!'+
-                   self._term.NORMAL)
+            print >>save_stderr, self._failure_header(*self._current_test)
+            print >>save_stderr, (
+                self._stderr_term.RED+self._stderr_term.BOLD+
+                'Keyboard Interrupt!'+self._stderr_term.NORMAL)
         if self._verbosity == 1:
-            print self._term.CLEAR_LINE
-        print
+            save_stderr.write(self._stderr_term.CLEAR_LINE)
+        if self._verbosity > 0:
+            if fails:
+                print >>save_stderr, (
+                    self._stderr_term.RED+self._stderr_term.BOLD+
+                    '  %d example(s) failed!'%fails+self._stderr_term.NORMAL)
+            else:
+                print >>save_stderr, (
+                    self._stderr_term.GREEN+self._stderr_term.BOLD+
+                    '  All examples passed'+self._stderr_term.NORMAL)
+        print >>save_stderr
+        sys.stderr = save_stderr
 
 def run(names, optionflags, verbosity, kbinterrupt_continue):
     checker = MyOutputChecker()
