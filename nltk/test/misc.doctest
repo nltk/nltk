@@ -49,62 +49,64 @@ Unit tests for Wordfinder class
     >>> random.seed(12345)
 
     >>> from nltk.misc import wordfinder
-    >>> wordfinder.demo()
+    >>> wordfinder.word_finder()
     Word Finder
     <BLANKLINE>
-    B I M H P Z S E I T I L A R T U E N Q B
-    S G S S Y S D U D E Z I L A R T U E N I
-    R N D E J L H C O N T R A P T I O N P I
-    E I S X T L B S E C N E I N E V N O C N
-    K T P E T A N I M O N E D Q W S R A O T
-    N E A J S G R E S C O U T P O R F W S R
-    O R R C N S Y E K S G Y L H D E O X O I
-    Y P T G O R E A M G I A U N W L X D U C
-    M R I R I E K N Y O Y M E W A I F E D A
-    E E C A T T C Z T T L P R C M A L T E T
-    L T U N C A I J I I P G I E I M E A P E
-    O N L D E U H M U A O T G R P K A U O L
-    D I A S P N E S N Q E R M A L C V L S Y
-    R S T T S I W W I H G O D T X A E A I P
-    A T O A O S C T T M N P O A N L N V T L
-    M H R N R N M I N T K N D W K B W E O U
-    A G S D P I T N O O G E R O M E O N R N
-    S I S F R N P I C T O R I A L T R U Y G
-    S L O B A S C A R B O R O U G H T F F E
-    K F S S R E K A T R E D N U I M H M B R
+    J V L A I R O T A T I S I V O D E R E T
+    H U U B E A R O E P O C S O R E T N E P
+    A D A U Z E E S R A P P A L L M E N T R
+    C X A D Q S Z T P E O R S N G P J A D E
+    I G Y K K T I A A R G F I D T E L C N S
+    R E C N B H T R L T N N B W N T A O A I
+    A Y I L O E I A M E I A A Y U R P L L D
+    G L T V S T S F E A D I P H D O O H N I
+    R L S E C I N I L R N N M E C G R U E A
+    A A Y G I C E N L L E O I G Q R T A E L
+    M R C E T I S T A E T L L E U A E N R L
+    O U O T A S E E C S O O N H Y P A T G Y
+    E M H O M M D R E S F P U L T H C F N V
+    L A C A I M A M A N L B R U T E D O M I
+    O R I L N E E E E E U A R S C R Y L I P
+    H T R K E S N N M S I L A S R E V I N U
+    T X T A A O U T K S E T A R R E S I B J
+    A E D L E L J I F O O R P E L K N I R W
+    K H A I D E Q O P R I C K T I M B E R P
+    Z K D O O H G N I H T U R V E Y D R O P
     <BLANKLINE>
-    1: AGGLOMERATES
-    2: BLACKMAILERS
-    3: PROSPECTIONS
-    4: NEUTRALITIES
-    5: INTERPRETING
-    6: ARTICULATORS
-    7: CONVENIENCES
-    8: ANTITHETICAL
-    9: LEAVENWORTH
-    10: INTRICATELY
-    11: SCARBOROUGH
-    12: CONTRAPTION
-    13: UNEVALUATED
-    14: PERMISSIBLY
-    15: UNDERTAKERS
-    16: NEUTRALIZED
-    17: ADROITNESS
-    18: GRANDSTAND
-    19: MELODRAMAS
-    20: DEPOSITORY
-    21: CONTINUITY
-    22: DENOMINATE
-    23: INSINUATE
-    24: PICTORIAL
-    25: PLAYTIME
-    26: FAIRMONT
-    27: YONKERS
-    28: FLIGHTS
-    29: PLUNGER
-    30: GEROME
-    31: APPEND
-    32: HICKEY
-    33: SCOUT
-    34: OARS
-    35: BRIM
+    1: INTERCHANGER
+    2: TEARLESSNESS
+    3: UNIVERSALISM
+    4: DESENSITIZER
+    5: INTERMENTION
+    6: TRICHOCYSTIC
+    7: EXTRAMURALLY
+    8: VEGETOALKALI
+    9: PALMELLACEAE
+    10: AESTHETICISM
+    11: PETROGRAPHER
+    12: VISITATORIAL
+    13: OLEOMARGARIC
+    14: WRINKLEPROOF
+    15: PRICKTIMBER
+    16: PRESIDIALLY
+    17: SCITAMINEAE
+    18: ENTEROSCOPE
+    19: APPALLMENT
+    20: TURVEYDROP
+    21: THINGHOOD
+    22: BISERRATE
+    23: GREENLAND
+    24: BRUTEDOM
+    25: POLONIAN
+    26: ACOLHUAN
+    27: LAPORTEA
+    28: TENDING
+    29: TEREDO
+    30: MESOLE
+    31: UNLIMP
+    32: OSTARA
+    33: PILY
+    34: DUNT
+    35: ONYX
+    36: KATH
+    37: JUNE

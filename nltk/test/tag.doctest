@@ -17,7 +17,7 @@ the word ``'fly'`` with a noun part of speech tag (``'NN'``):
 An off-the-shelf tagger is available.  It uses the Penn Treebank tagset:
 
     >>> from nltk import pos_tag, word_tokenize
-    >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+    >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +NORMALIZE_WHITESPACE
     [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
     'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
     ('.', '.')]
@@ -269,7 +269,6 @@ corpus, based on one or more "rule templates."
       59  62   3   2  | CS -> QL if the text of words i+1...i+3 is 'as'
       56  56   0   1  | NN -> VB if the tag of the preceding word is 'MD'
       55  59   4   0  | VBD -> VBN if the tag of words i-2...i-1 is 'BEDZ'
-    ----------------------------------------------------------------------
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * brill_tagger.evaluate(brown_test))
     Accuracy: 89.3%
