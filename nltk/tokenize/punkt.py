@@ -1109,7 +1109,8 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         """
         if type(train_text) not in (type(''), type(u'')):
             return train_text
-        return PunktTrainer(train_text).get_params()        
+        return PunktTrainer(train_text, lang_vars=self._lang_vars,
+                token_cls=self._Token).get_params()
     
     #////////////////////////////////////////////////////////////
     #{ Tokenization
@@ -1431,3 +1432,18 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         # Otherwise, we're not sure.
         return 'unknown'
 
+
+def main(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
+    """Builds a punkt model and applies it to the same text"""
+    cleanup = lambda s: re.compile(r'(?:\r|^\s+)', re.MULTILINE).sub('', s).replace('\n', ' ')
+    trainer = train_cls()
+    trainer.INCLUDE_ALL_COLLOCS = True
+    trainer.train(text)
+    sbd = tok_cls(trainer.get_params())
+    for l in sbd.sentences_from_text(text, realign_boundaries=True):
+        print cleanup(l)
+
+
+if __name__ == '__main__':
+    import sys
+    main(sys.stdin.read())
