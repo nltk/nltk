@@ -53,10 +53,10 @@ def _semrep(node):
     """
     assert isinstance(node, nltk.grammar.FeatStructNonterminal)
     try:
-        semrep = node['sem']
+        semrep = node['SEM']
         return semrep
     except KeyError:
-        print "Node has no 'sem' feature specification"
+        print "Node has no 'SEM' feature specification"
     raise
 
 def root_semrep(syntree, start='S'):
