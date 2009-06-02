@@ -12,24 +12,24 @@
 
 % start S
 
-S[sem=(?np + WHERE + ?vp)] -> NP[sem=?np] VP[sem=?vp]
+S[SEM=(?np + WHERE + ?vp)] -> NP[SEM=?np] VP[SEM=?vp]
 
-VP[sem=(?v + ?pp)] -> IV[sem=?v] PP[sem=?pp]
-VP[sem=(?v + ?ap)] -> IV[sem=?v] AP[sem=?ap]
-NP[sem=(?det + ?n)] -> Det[sem=?det] N[sem=?n]
-PP[sem=(?p + ?np)] -> P[sem=?p] NP[sem=?np]
-AP[sem=?pp] -> A[sem=?a] PP[sem=?pp]
+VP[SEM=(?v + ?pp)] -> IV[SEM=?v] PP[SEM=?pp]
+VP[SEM=(?v + ?ap)] -> IV[SEM=?v] AP[SEM=?ap]
+NP[SEM=(?det + ?n)] -> Det[SEM=?det] N[SEM=?n]
+PP[SEM=(?p + ?np)] -> P[SEM=?p] NP[SEM=?np]
+AP[SEM=?pp] -> A[SEM=?a] PP[SEM=?pp]
 
-NP[sem='Country="greece"'] -> 'Greece'
-NP[sem='Country="china"'] -> 'China'
+NP[SEM='Country="greece"'] -> 'Greece'
+NP[SEM='Country="china"'] -> 'China'
 
-Det[sem='SELECT'] -> 'Which' | 'What'
+Det[SEM='SELECT'] -> 'Which' | 'What'
 
-N[sem='City FROM city_table'] -> 'cities'
+N[SEM='City FROM city_table'] -> 'cities'
 
-IV[sem=''] -> 'are'
+IV[SEM=''] -> 'are'
 A -> 'located'
-P[sem=''] -> 'in'
+P[SEM=''] -> 'in'
 
 
 
