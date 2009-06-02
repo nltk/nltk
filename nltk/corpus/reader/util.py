@@ -15,8 +15,11 @@ try: import cPickle as pickle
 except ImportError: import pickle
 from itertools import islice
 
+# Use the c version of ElementTree, which is faster, if possible:
+try: from xml.etree import cElementTree as ElementTree
+except ImportError: from nltk.etree import ElementTree
+
 from nltk.tokenize import wordpunct_tokenize
-from nltk.etree import ElementTree
 from nltk.internals import deprecated, slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation
