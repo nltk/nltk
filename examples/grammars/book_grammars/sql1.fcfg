@@ -12,35 +12,36 @@
 
 % start S
 
-S[sem=(?np + WHERE + ?vp)] -> NP[sem=?np] VP[sem=?vp]
+S[SEM=(?np + WHERE + ?vp)] -> NP[SEM=?np] VP[SEM=?vp]
 
-VP[sem=(?v + ?pp)] -> IV[sem=?v] PP[sem=?pp]
-VP[sem=(?v + ?ap)] -> IV[sem=?v] AP[sem=?ap]
-VP[sem=(?v + ?np)] -> TV[sem=?v] NP[sem=?np]
-VP[sem=(?vp1 + ?c + ?vp2)] -> VP[sem=?vp1] Conj[sem=?c] VP[sem=?vp2]
+VP[SEM=(?v + ?pp)] -> IV[SEM=?v] PP[SEM=?pp]
+VP[SEM=(?v + ?ap)] -> IV[SEM=?v] AP[SEM=?ap]
+VP[SEM=(?v + ?np)] -> TV[SEM=?v] NP[SEM=?np]
+VP[SEM=(?vp1 + ?c + ?vp2)] -> VP[SEM=?vp1] Conj[SEM=?c] VP[SEM=?vp2]
 
-NP[sem=(?det + ?n)] -> Det[sem=?det] N[sem=?n]
-NP[sem=(?n + ?pp)]  -> N[sem=?n] PP[sem=?pp]
-NP[sem=?n]  -> N[sem=?n]  | CardN[sem=?n] 
+NP[SEM=(?det + ?n)] -> Det[SEM=?det] N[SEM=?n]
+NP[SEM=(?n + ?pp)]  -> N[SEM=?n] PP[SEM=?pp]
+NP[SEM=?n]  -> N[SEM=?n]  | CardN[SEM=?n] 
 
-CardN[sem='1000'] -> '1,000,000' 
+## NB Numbers in the Chat-80 database represent thousands.
+CardN[SEM='1000'] -> '1,000,000' 
 
-PP[sem=(?p + ?np)] -> P[sem=?p] NP[sem=?np]
-AP[sem=?pp] -> A[sem=?a] PP[sem=?pp]
+PP[SEM=(?p + ?np)] -> P[SEM=?p] NP[SEM=?np]
+AP[SEM=?pp] -> A[SEM=?a] PP[SEM=?pp]
 
-NP[sem='Country="greece"'] -> 'Greece'
-NP[sem='Country="china"'] -> 'China'
+NP[SEM='Country="greece"'] -> 'Greece'
+NP[SEM='Country="china"'] -> 'China'
 
-Det[sem='SELECT'] -> 'Which' | 'What'
-Conj[sem='AND'] -> 'and'
+Det[SEM='SELECT'] -> 'Which' | 'What'
+Conj[SEM='AND'] -> 'and'
 
-N[sem='City FROM city_table'] -> 'cities'
-N[sem='Population'] -> 'populations'
+N[SEM='City FROM city_table'] -> 'cities'
+N[SEM='Population'] -> 'populations'
 
-IV[sem=''] -> 'are'
-TV[sem=''] -> 'have'
+IV[SEM=''] -> 'are'
+TV[SEM=''] -> 'have'
 A -> 'located'
-P[sem=''] -> 'in'
-P[sem='>'] -> 'above'
+P[SEM=''] -> 'in'
+P[SEM='>'] -> 'above'
 
 

@@ -17,109 +17,109 @@
 # Grammar Rules
 #############################
 
-S[sem = <app(?subj,?vp)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
+S[SEM = <app(?subj,?vp)>] -> NP[NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
 
-NP[num=?n,sem=<app(?det,?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
-NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
+NP[NUM=?n,SEM=<app(?det,?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
+NP[LOC=?l,NUM=?n,SEM=?np] -> PropN[LOC=?l,NUM=?n,SEM=?np]
 
-NP[-loc,num=sg,sem=<\Q. (- exists x. (person(x) & Q(x)))>] -> 'nobody' | 'Nobody'
-NP[-loc,num=sg,sem=<\Q. exists x. (person(x) & Q(x))>] -> 'somebody' | 'Somebody'
+NP[-LOC,NUM=sg,SEM=<\Q. (- exists x. (person(x) & Q(x)))>] -> 'nobody' | 'Nobody'
+NP[-LOC,NUM=sg,SEM=<\Q. exists x. (person(x) & Q(x))>] -> 'somebody' | 'Somebody'
 
 ## Copular predicates
-Pred[sem=?prd] -> PredN[sem=?prd] | PP[+loc,+pred,sem=?prd] | Adj[sem=?prd]
+Pred[SEM=?prd] -> PredN[SEM=?prd] | PP[+LOC,+PRED,SEM=?prd] | Adj[SEM=?prd]
 
 ## Predicative NPs
-## Doesn't block 'is every dog', but determiner semantics is ignored
-PredN[num=?n, sem=?nom] -> Det[num=?n] Nom[num=?n, sem=?nom]
+## Doesn't bLOCk 'is every dog', but determiner SEMantics is ignored
+PredN[NUM=?n, SEM=?nom] -> Det[NUM=?n] Nom[NUM=?n, SEM=?nom]
 
-Nom[num=?n,sem=?nom] -> N[num=?n,sem=?nom]
-Nom[num=?n,sem=<app(?pp,?nom)>] -> N[num=?n,sem=?nom] PP[sem=?pp]
+Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
+Nom[NUM=?n,SEM=<app(?pp,?nom)>] -> N[NUM=?n,SEM=?nom] PP[SEM=?pp]
 
 ## Transitive verbs
-VP[num=?n,sem=<app(?v,?obj)>] -> TV[num=?n,sem=?v] NP[sem=?obj]
+VP[NUM=?n,SEM=<app(?v,?obj)>] -> TV[NUM=?n,SEM=?v] NP[SEM=?obj]
 
 ## Copular VPs
-VP[num=?n,sem=<app(?v,?prd)>] -> AuxP[+cop,num=?n,sem=?v] Pred[sem=?prd]
+VP[NUM=?n,SEM=<app(?v,?prd)>] -> AuxP[+COP,NUM=?n,SEM=?v] Pred[SEM=?prd]
 
 ## Do auxiliaries
-VP[+neg,num=?n,sem=<app(?v,?vp)>] -> AuxP[-cop,num=?n,sem=?v] VP[num=pl,sem=?vp]
+VP[+neg,NUM=?n,SEM=<app(?v,?vp)>] -> AuxP[-COP,NUM=?n,SEM=?v] VP[NUM=pl,SEM=?vp]
 
-AuxP[cop=?c,num=?n,sem=<app(?neg,?aux)>] -> Aux[cop=?c,num=?n,sem=?aux] Neg[sem=?neg]
-AuxP[cop=?c,num=?n,sem=?aux] -> Aux[cop=?c,num=?n,sem=?aux]
+AuxP[COP=?c,NUM=?n,SEM=<app(?neg,?aux)>] -> Aux[COP=?c,NUM=?n,SEM=?aux] Neg[SEM=?neg]
+AuxP[COP=?c,NUM=?n,SEM=?aux] -> Aux[COP=?c,NUM=?n,SEM=?aux]
 
 ## Intransitive verbs
-VP[num=?n,sem=?v] -> IV[num=?n,sem=?v]
+VP[NUM=?n,SEM=?v] -> IV[NUM=?n,SEM=?v]
 
 ## VP-level PPs
-VP[num=?n,sem=<app(?pp,?vp)>] -> VP[num=?n,sem=?vp] PP[-pred,sem=?pp]
+VP[NUM=?n,SEM=<app(?pp,?vp)>] -> VP[NUM=?n,SEM=?vp] PP[-PRED,SEM=?pp]
 
-PP[loc=?l,pred=?prd,sem=<app(?p,?np)>] -> P[loc=?l,pred=?prd,sem=?p] NP[loc=?l,sem=?np]
+PP[LOC=?l,PRED=?prd,SEM=<app(?p,?np)>] -> P[LOC=?l,PRED=?prd,SEM=?p] NP[LOC=?l,SEM=?np]
 
 #############################
 # Lexical Rules
 #############################
 
-PropN[-loc,num=sg,sem=<\P.P(John)>] -> 'John'
-PropN[-loc,num=sg,sem=<\P.P(Mary)>] -> 'Mary'
-PropN[-loc,num=sg,sem=<\P.P(Suzie)>] -> 'Suzie'
-PropN[-loc,num=sg,sem=<\P.P(Vincent)>] -> 'Vincent'
-PropN[-loc,num=sg,sem=<\P.P(Mia)>] -> 'Mia'
-PropN[-loc,num=sg,sem=<\P.P(Marsellus)>] -> 'Marsellus'
-PropN[-loc,num=sg,sem=<\P.P(Fido)>] -> 'Fido'
-PropN[+loc, num=sg,sem=<\P.P(Noosa)>] -> 'Noosa'
+PropN[-LOC,NUM=sg,SEM=<\P.P(John)>] -> 'John'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Mary)>] -> 'Mary'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Suzie)>] -> 'Suzie'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Vincent)>] -> 'Vincent'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Mia)>] -> 'Mia'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Marsellus)>] -> 'Marsellus'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Fido)>] -> 'Fido'
+PropN[+LOC, NUM=sg,SEM=<\P.P(Noosa)>] -> 'Noosa'
 
-NP[-loc, num=sg, sem=<\P.\x.P(x)>] -> 'who' | 'Who'
+NP[-LOC, NUM=sg, SEM=<\P.\x.P(x)>] -> 'who' | 'Who'
 
-Det[num=sg,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'every' | 'Every' 
-Det[num=pl,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'all' | 'All'
-Det[sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'some' | 'Some'
-Det[num=sg,sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'a' | 'A'
-Det[num=sg,sem=<\P Q. (- exists x. (P(x) & Q(x)))>] -> 'no' | 'No'
-Det[num=sg,sem=<\P Q. exists x. ((P(x) & Q(x)) & all y. (P(y) -> (x = y)))>] -> 'the' | 'The' 
+Det[NUM=sg,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'every' | 'Every' 
+Det[NUM=pl,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'all' | 'All'
+Det[SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'some' | 'Some'
+Det[NUM=sg,SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'a' | 'A'
+Det[NUM=sg,SEM=<\P Q.(- exists x.(P(x) & Q(x)))>] -> 'no' | 'No'
+Det[NUM=sg,SEM=<\P Q.exists x.((P(x) & Q(x)) & all y.(P(y) -> (x = y)))>] -> 'the' | 'The' 
 
-N[num=sg,sem=<boy>] -> 'boy'
-N[num=pl,sem=<boy>] -> 'boys' 
-N[num=sg,sem=<girl>] -> 'girl'
-N[num=pl,sem=<girl>] -> 'girls'
-N[num=sg,sem=<dog>] -> 'dog'
-N[num=pl,sem=<dog>] -> 'dogs'
-N[num=sg,sem=<student>] -> 'student'
-N[num=pl,sem=<student>] -> 'students'
-N[num=sg,sem=<person>] -> 'person'
-N[num=pl,sem=<person>] -> 'persons'
-N[num=sg,sem=<boxerdog>] -> 'boxer'
-N[num=pl,sem=<boxerdog>] -> 'boxers'
-N[num=sg,sem=<boxer>] -> 'boxer'
-N[num=pl,sem=<boxer>] -> 'boxers'
-N[num=sg,sem=<garden>] -> 'garden'
-N[num=sg,sem=<kitchen>] -> 'kitchen'
+N[NUM=sg,SEM=<\x.boy(x)>] -> 'boy'
+N[NUM=pl,SEM=<\x.boy(x)>] -> 'boys' 
+N[NUM=sg,SEM=<\x.girl(x)>] -> 'girl'
+N[NUM=pl,SEM=<\x.girl(x)>] -> 'girls'
+N[NUM=sg,SEM=<\x.dog(x)>] -> 'dog'
+N[NUM=pl,SEM=<\x.dog(x)>] -> 'dogs'
+N[NUM=sg,SEM=<\x.student(x)>] -> 'student'
+N[NUM=pl,SEM=<\x.student(x)>] -> 'students'
+N[NUM=sg,SEM=<\x.person(x)>] -> 'person'
+N[NUM=pl,SEM=<\x.person(x)>] -> 'persons'
+N[NUM=sg,SEM=<\x.boxerdog(x)>] -> 'boxer'
+N[NUM=pl,SEM=<\x.boxerdog(x)>] -> 'boxers'
+N[NUM=sg,SEM=<\x.boxer(x)>] -> 'boxer'
+N[NUM=pl,SEM=<\x.boxer(x)>] -> 'boxers'
+N[NUM=sg,SEM=<\x.garden(x)>] -> 'garden'
+N[NUM=sg,SEM=<\x.kitchen(x)>] -> 'kitchen'
 
-Adj[sem=<happy>] -> 'happy'
-Adj[sem=<drunk>] -> 'drunk'
-Adj[sem=<married>] -> 'married'
+Adj[SEM=<\x.happy(x)>] -> 'happy'
+Adj[SEM=<\x.drunk(x)>] -> 'drunk'
+Adj[SEM=<\x.married(x)>] -> 'married'
 
-TV[num=sg,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chases'
-TV[num=pl,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chase'
-TV[num=sg,sem=<\X y. X(\x. marry(y,x))>,tns=pres] -> 'marries'
-TV[num=pl,sem=<\X y. X(\x. marry(y,x))>,tns=pres] -> 'marry'
-TV[num=sg,sem=<\X y. X(\x. know(y,x))>,tns=pres] -> 'knows'
-TV[num=pl,sem=<\X y. X(\x. know(y,x))>,tns=pres] -> 'know'
-TV[num=sg,sem=<\X y. X(\x. see(y,x))>,tns=pres] -> 'sees'
-TV[num=pl,sem=<\X y. X(\x. see(y,x))>,tns=pres] -> 'see'
-IV[num=sg,sem=<\x. bark(x)>,tns=pres] -> 'barks'
-IV[num=pl,sem=<\x. bark(x)>,tns=pres] -> 'bark'
-IV[num=sg,sem=<\x. walk(x)>,tns=pres] -> 'walks'
-IV[num=pl,sem=<\x. walk(x)>,tns=pres] -> 'walk'
-IV[num=pl,sem=<\x. dance(x)>,tns=pres] -> 'dance'
-IV[num=sg,sem=<\x. dance(x)>,tns=pres] -> 'dances'
+TV[NUM=sg,SEM=<\X y.X(\x.chase(y,x))>,tns=pres] -> 'chases'
+TV[NUM=pl,SEM=<\X y.X(\x.chase(y,x))>,tns=pres] -> 'chase'
+TV[NUM=sg,SEM=<\X y.X(\x.marry(y,x))>,tns=pres] -> 'marries'
+TV[NUM=pl,SEM=<\X y.X(\x.marry(y,x))>,tns=pres] -> 'marry'
+TV[NUM=sg,SEM=<\X y.X(\x.know(y,x))>,tns=pres] -> 'knows'
+TV[NUM=pl,SEM=<\X y.X(\x.know(y,x))>,tns=pres] -> 'know'
+TV[NUM=sg,SEM=<\X y.X(\x.see(y,x))>,tns=pres] -> 'sees'
+TV[NUM=pl,SEM=<\X y.X(\x.see(y,x))>,tns=pres] -> 'see'
+IV[NUM=sg,SEM=<\x.bark(x)>,tns=pres] -> 'barks'
+IV[NUM=pl,SEM=<\x.bark(x)>,tns=pres] -> 'bark'
+IV[NUM=sg,SEM=<\x.walk(x)>,tns=pres] -> 'walks'
+IV[NUM=pl,SEM=<\x.walk(x)>,tns=pres] -> 'walk'
+IV[NUM=pl,SEM=<\x.dance(x)>,tns=pres] -> 'dance'
+IV[NUM=sg,SEM=<\x.dance(x)>,tns=pres] -> 'dances'
 
-Aux[+cop,num=sg,sem=<\P x. P(x)>,tns=pres] -> 'is'
-Aux[+cop,num=pl,sem=<\P x. P(x)>,tns=pres] -> 'are'
-Aux[-cop,num=sg,sem=<\P x. P(x)>,tns=pres] -> 'does'
-Aux[-cop,num=pl,sem=<\P x. P(x)>,tns=pres] -> 'do'
+Aux[+COP,NUM=sg,SEM=<\P x.P(x)>,tns=pres] -> 'is'
+Aux[+COP,NUM=pl,SEM=<\P x.P(x)>,tns=pres] -> 'are'
+Aux[-COP,NUM=sg,SEM=<\P x.P(x)>,tns=pres] -> 'does'
+Aux[-COP,NUM=pl,SEM=<\P x.P(x)>,tns=pres] -> 'do'
 
-P[+loc,-pred,sem=<\X P x. X(\y. (P(x) & in(x,y)))>] -> 'in'
-P[+loc,+pred,sem=<\X x. X(\y. in(x,y))>] -> 'in'
-P[-loc,sem=<\X P x. X(\y. (P(x) & with(x,y)))>] -> 'with'
+P[+LOC,-PRED,SEM=<\X P x.X(\y.(P(x) & in(x,y)))>] -> 'in'
+P[+LOC,+PRED,SEM=<\X x.X(\y.in(x,y))>] -> 'in'
+P[-LOC,SEM=<\X P x.X(\y.(P(x) & with(x,y)))>] -> 'with'
 
-Neg[sem=<\T P. T(\x.(- P(x)))>] -> 'not'
+Neg[SEM=<\T P.T(\x.(- P(x)))>] -> 'not'
