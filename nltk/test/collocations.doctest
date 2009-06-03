@@ -11,6 +11,8 @@ measured using Pointwise Mutual Information.
 
     >>> import nltk
     >>> from nltk.collocations import *
+    >>> bigram_measures = nltk.collocations.BigramAssocMeasures()
+    >>> trigram_measures = nltk.collocations.TrigramAssocMeasures()
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.genesis.words('english-web.txt'))
     >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
@@ -56,7 +58,7 @@ Or spanning intervening words:
     >>> finder.apply_freq_filter(2)
     >>> ignored_words = nltk.corpus.stopwords.words('english')
     >>> finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
-    >>> finder.nbest(bigram_measures.likelihood_ratio, 10)
+    >>> finder.nbest(bigram_measures.likelihood_ratio, 10) # doctest: +NORMALIZE_WHITESPACE
     [('chief', 'chief'), ('hundred', 'years'), ('father', 'father'), ('lived', 'years'),
     ('years', 'father'), ('lived', 'father'), ('land', 'Egypt'), ('land', 'Canaan'),
     ('lived', 'hundred'), ('land', 'land')]
