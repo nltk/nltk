@@ -797,5 +797,5 @@ Type error during parsing
     {...}
     >>> try: typecheck([a,b], signature)
     ... except InconsistentTypeHierarchyException, e: print e
-    The variable 'P' was found in multiple places with different types. 
+    The variable 'P' was found in multiple places with different types.
     
