@@ -99,8 +99,7 @@ according to the grammar, then the value of ``trees`` will be ``None``.
     ... 'ich sehe dem Hund',
     ... ]
     >>> germantestsuites = [germantest1, germantest2, germantest3]
-    >>> #tester = TestGrammar('grammars/book_grammars/german.fcfg', germantestsuites)
-    >>> tester = TestGrammar('file:german.fcfg', germantestsuites)
+    >>> tester = TestGrammar('grammars/book_grammars/german.fcfg', germantestsuites)
     >>> tester.run()
     Tests for person agreement: All tests passed!
     Tests for number agreement: All tests passed!
