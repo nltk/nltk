@@ -311,6 +311,7 @@ statements as new assumptions.
     % Maximum clause weight is 0.
     % Given clauses 0.
     <BLANKLINE>
+    <BLANKLINE>
     1 (all x (boxerdog(x) -> dog(x))).  [assumption].
     2 (all x (boxer(x) -> person(x))).  [assumption].
     3 (all x -(dog(x) & person(x))).  [assumption].
@@ -513,4 +514,4 @@ Mace can also be used with propositional logic.
     >>> mb.build_model()
     True
     >>> mb.valuation
-	{'Q': False, 'P': True}
+    {'Q': False, 'P': True}
