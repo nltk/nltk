@@ -1,9 +1,0 @@
-yes,no.
-id: continuous.
-age: continuous.
-occupation: salaried,self-employed,unemployed.
-maritalstatus: single,married,divorced.
-dependents: continuous.
-existingloans: continuous.
-annualincome: continuous.
-creditrating: continuous.

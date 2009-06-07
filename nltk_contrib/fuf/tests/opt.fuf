@@ -1,8 +1,0 @@
-(opt ((punctuation ((after "."))) ) )
-(opt binder ((alt (:index (binder lex)) (((binder ((lex "that")))) ((binder ((lex "whether")))) ((binder ((lex "if"))))))))
-(opt ((prep ((lex "with")))))
-(opt ((prep ((lex "to")))))
-(opt ((prep ((lex "from")))))
-(opt be-attributive ((verb ((lex "be") (subject-clause infinitive) (object-clause none) (voice-class non-middle) (transitive-class neutral)))))
-(opt INF-SUB ((subject given) (subject ((cat np) (case objective))))) 
-(opt ((to-loc ((prep given))) (to-loc-comp ((prep ((lex {^ ^ ^ to-loc prep})))))))

@@ -1,1 +1,0 @@
-((cat s) (focus {goal}) (prot ((number plural) (nnp ((n === thief))))) (goal ((number plural) (nnp ((n === mouse))))) (verb ((v === eat))))

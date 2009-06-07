@@ -1,5 +1,0 @@
-(define-feature-type noun (pronoun proper common)) 
-(define-feature-type pronoun (personal-pronoun question-pronoun demonstrative-pronoun quantified-pronoun)) 
-(define-feature-type common (count-noun mass-noun)) 
-
-((cat noun) (alt (((cat pronoun) (cat ((alt (question-pronoun personal-pronoun demonstrative-pronoun quantified-pronoun))))) ((cat proper)) ((cat common) (cat ((alt (count-noun mass-noun)))))))) 

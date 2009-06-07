@@ -1,4 +1,0 @@
-((cat clause) (prot ((lex "John") (np-type proper))) (verb ((lex "eat") (transitive-class transitive))) (goal ((lex "meal") (definite no)))) 
-((cat clause) (prot ((lex "John") (np-type proper))) (goal ((lex "book") (np-type common) (definite no) (describer === "blue"))) (benef ((lex "Mary") (np-type proper))) (verb ((transitive-class bitransitive) (dative-prep "to") (lex "give")))) 
-((cat clause) (voice passive) (prot ((lex "John") (np-type proper))) (goal ((lex "book") (np-type common) (definite no))) (benef ((lex "Mary") (np-type proper))) (verb ((dative-prep "to") (transitive-class bitransitive) (lex "give")))) 
-((cat clause) (prot ((lex "John") (np-type proper))) (goal ((lex "ball") (np-type common) (definite no) (describer === heavy))) (benef ((lex "Mary") (np-type proper))) (subject {benef}) (verb ((transitive-class bitransitive) (dative-prep "to") (lex "throw"))))

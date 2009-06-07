@@ -1,3 +1,0 @@
-hadooplib direcotry provide the service of this library. It contains the base class for map and reduce class, the default input formatter and ouput collector
-
-other directory contains different demo programs to illustrate how to use this library

@@ -1,2 +1,0 @@
-austen-persuasion.txt
-austen-sense.txt
