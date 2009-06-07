@@ -17,14 +17,13 @@ UPLOAD = $(PYTHON) tools/googlecode_upload.py --project=nltk --config-dir=none -
 usage:
 	@echo "make dist -- Build distributions (output to dist/)"
 	@echo "make python -- Fetch Python distributions"
-	@echo "make rsync -- Upload files to NLTK website"
+	@echo "make upload -- Upload files to NLTK website"
 	@echo "make clean -- Remove all built files and temporary files"
 	@echo "make clean_up -- Remove temporary files"
 
 all: dist
 
 upload:
-#	rsync -avP -e ssh dist/* $(USER)@frs.sourceforge.net:uploads/
 	$(UPLOAD) --summary="NLTK $(VERSION) for Windows" dist/nltk-$(VERSION)*.win32.exe
 	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION)*.dmg
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
@@ -33,9 +32,6 @@ upload:
 
 doc:
 	$(MAKE) -C doc all
-
-contribdoc:
-	$(MAKE) -C doc_contrib all
 
 ########################################################################
 # TESTING
@@ -122,7 +118,7 @@ dmgdist:
 ########################################################################
 
 .PHONY: iso python numpy pylab
-.PHONY: .python.done .rsync.done .numpy.done .pylab.done
+.PHONY: .python.done .numpy.done .pylab.done
 
 SFNET = http://superb-west.dl.sourceforge.net/sourceforge
 PYFTP = http://www.python.org/ftp/python/2.5.2
@@ -168,7 +164,6 @@ iso:
 	cp dist/nltk-$(VERSION)-1.noarch.rpm   iso/unix/
 	cp dist/nltk-data-$(VERSION).zip       iso
 	cp dist/nltk-doc-$(VERSION).zip        iso
-	cp dist/nltk-contribdoc-$(VERSION).zip iso
 	cp dist/nltk-examples-$(VERSION).zip   iso
 	cp doc/book/book.pdf                     iso
 	cp *.txt *.html                        iso
@@ -179,20 +174,6 @@ iso:
 	ln -f -s ../iso dist/nltk-$(VERSION)
 	mkisofs -f -r -o dist/nltk-$(VERSION).iso dist/nltk-$(VERSION)
 	rm -f dist/nltk-$(VERSION)
-
-########################################################################
-# RSYNC
-########################################################################
-
-.PHONY: rsync
-
-WEB = $(USER)@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
-RSYNC_OPTS = -lrtvz -e ssh --relative --cvs-exclude
-
-rsync:	clean_up
-	$(MAKE) -C doc rsync
-	rsync $(RSYNC_OPTS) nltk nltk_contrib examples $(WEB)
-	touch .rsync.done
 
 ########################################################################
 # DATA
@@ -214,7 +195,6 @@ pkg_index:
 clean:	clean_up
 	rm -rf build iso dist MANIFEST $(MACROOT) nltk-$(VERSION)
 	$(MAKE) -C doc clean
-	$(MAKE) -C doc_contrib clean
 	$(MAKE) -C javasrc clean
 #	rm -f nltk/nltk.jar
 
