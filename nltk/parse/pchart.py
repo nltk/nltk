@@ -188,7 +188,8 @@ class BottomUpProbabilisticChartParser(ParserI):
         @rtype: C{None}
         """
         self._trace = trace
-        
+    
+    # TODO: change this to conform more with the standard ChartParser
     def nbest_parse(self, tokens, n=None):
         self._grammar.check_coverage(tokens)
         chart = Chart(list(tokens))
@@ -203,9 +204,11 @@ class BottomUpProbabilisticChartParser(ParserI):
         queue = []
         
         # Initialize the chart.
-        for e in bu_init.apply_iter(chart, grammar):
-            if self._trace>1: chart.pp_edge(e,width=2)
-            queue.append(e)
+        for edge in bu_init.apply_iter(chart, grammar):
+            if self._trace > 1: 
+                print '  %-50s [%s]' % (chart.pp_edge(edge,width=2),
+                                        edge.prob())
+            queue.append(edge)
 
         while len(queue) > 0:
             # Re-sort the queue.
@@ -217,7 +220,7 @@ class BottomUpProbabilisticChartParser(ParserI):
 
             # Get the best edge.
             edge = queue.pop()
-            if self._trace>0:
+            if self._trace > 0:
                 print '  %-50s [%s]' % (chart.pp_edge(edge,width=2),
                                         edge.prob())
 
@@ -381,7 +384,7 @@ class LongestChartParser(BottomUpProbabilisticChartParser):
 ##  Test Code
 ##//////////////////////////////////////////////////////
 
-def demo():
+def demo(choice=None, draw_parses=None, print_parses=None):
     """
     A demonstration of the probabilistic parsers.  The user is
     prompted to select which demo to run, and how many parses should
@@ -397,16 +400,17 @@ def demo():
              ('the boy saw Jack with Bob under the table with a telescope',
               toy_pcfg2)]
 
-    # Ask the user which demo they want to use.
-    print
-    for i in range(len(demos)):
-        print '%3s: %s' % (i+1, demos[i][0])
-        print '     %r' % demos[i][1]
+    if choice is None:
+        # Ask the user which demo they want to use.
         print
-    print 'Which demo (%d-%d)? ' % (1, len(demos)),
+        for i in range(len(demos)):
+            print '%3s: %s' % (i+1, demos[i][0])
+            print '     %r' % demos[i][1]
+            print
+        print 'Which demo (%d-%d)? ' % (1, len(demos)),
+        choice = int(sys.stdin.readline().strip())-1
     try:
-        snum = int(sys.stdin.readline().strip())-1
-        sent, grammar = demos[snum]
+        sent, grammar = demos[choice]
     except:
         print 'Bad sentence number'
         return
@@ -454,18 +458,22 @@ def demo():
     print '------------------------+------------------------------------------'
     print '%18s      |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p)
 
-    # Ask the user if we should draw the parses.
-    print
-    print 'Draw parses (y/n)? ',
-    if sys.stdin.readline().strip().lower().startswith('y'):
+    if draw_parses is None:
+        # Ask the user if we should draw the parses.
+        print
+        print 'Draw parses (y/n)? ',
+        draw_parses = sys.stdin.readline().strip().lower().startswith('y')
+    if draw_parses:
         from nltk.draw.tree import draw_trees
         print '  please wait...'
         draw_trees(*parses)
 
-    # Ask the user if we should print the parses.
-    print
-    print 'Print parses (y/n)? ',
-    if sys.stdin.readline().strip().lower().startswith('y'):
+    if print_parses is None:
+        # Ask the user if we should print the parses.
+        print
+        print 'Print parses (y/n)? ',
+        print_parses = sys.stdin.readline().strip().lower().startswith('y')
+    if print_parses:
         for parse in parses:
             print parse
 
