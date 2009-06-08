@@ -404,12 +404,12 @@ class Chart(object):
         self._tokens = tuple(tokens)
         self._num_leaves = len(self._tokens)
         
-        # Initialise the chart with the leaves.
+        # Initialise the chart.
         self.initialize()
 
     def initialize(self):
         """
-        Initialize the chart with one leaf edge for each terminal leaf.
+        Clear the chart.
         """
         # A list of edges contained in this chart.
         self._edges = []
@@ -420,10 +420,6 @@ class Chart(object):
         # Indexes mapping attribute values to lists of edges 
         # (used by select()).
         self._indexes = {}
-        
-        # Add one leaf edge for each terminal leaf.
-        for index, leaf in enumerate(self.leaves()):
-            self.insert(LeafEdge(leaf, index), ())
     
     #////////////////////////////////////////////////////////////
     # Sentence Access
@@ -1050,6 +1046,18 @@ class SingleEdgeFundamentalRule(FundamentalRule):
                 yield new_edge
 
 #////////////////////////////////////////////////////////////
+# Inserting Terminal Leafs
+#////////////////////////////////////////////////////////////
+
+class LeafInitRule(AbstractChartRule):
+    NUM_EDGES=0
+    def apply_iter(self, chart, grammar):
+        for index in range(chart.num_leaves()):
+            new_edge = LeafEdge(chart.leaf(index), index)
+            if chart.insert(new_edge, ()):
+                yield new_edge
+
+#////////////////////////////////////////////////////////////
 # Top-Down Prediction
 #////////////////////////////////////////////////////////////
 
@@ -1191,13 +1199,16 @@ class EmptyPredictRule(AbstractChartRule):
 ##  Generic Chart Parser
 ########################################################################
 
-TD_STRATEGY = [TopDownInitRule(), 
+TD_STRATEGY = [LeafInitRule(),
+               TopDownInitRule(), 
                CachedTopDownPredictRule(), 
                SingleEdgeFundamentalRule()]
-BU_STRATEGY = [#EmptyPredictRule(),
+BU_STRATEGY = [LeafInitRule(),
+               EmptyPredictRule(),
                BottomUpPredictRule(), 
                SingleEdgeFundamentalRule()]
-BU_LC_STRATEGY = [#EmptyPredictRule(),
+BU_LC_STRATEGY = [LeafInitRule(),
+                  EmptyPredictRule(),
                   BottomUpPredictCombineRule(),
                   SingleEdgeFundamentalRule()]
 
@@ -1557,6 +1568,9 @@ def demo(choice=None,
 
     # The grammar for ChartParser and SteppingChartParser:
     grammar = demo_grammar()
+    if should_print_grammar:
+        print "* Grammar"
+        print grammar
 
     # Tokenize the sample sentence.
     print "* Sentence:" 
