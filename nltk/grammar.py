@@ -200,6 +200,15 @@ def nonterminals(symbols):
     else: symbol_list = symbols.split()
     return [Nonterminal(s.strip()) for s in symbol_list]
 
+class FeatStructNonterminal(FeatDict, Nonterminal):
+    """A feature structure that's also a nonterminal.  It acts as its
+    own symbol, and automatically freezes itself when hashed."""
+    def __hash__(self):
+        self.freeze()
+        return FeatStruct.__hash__(self)
+    def symbol(self):
+        return self
+
 #################################################################
 # Productions
 #################################################################
@@ -246,13 +255,34 @@ class Production(object):
         @rtype: L{Nonterminal}
         """
         return self._lhs
-
+    
     def rhs(self):
         """
         @return: the right-hand side of this C{Production}.
         @rtype: sequence of (C{Nonterminal} and (terminal))
         """
         return self._rhs
+    
+    def __len__(self):
+        """
+        @return: the length of the right-hand side.
+        @rtype: C{integer}
+        """
+        return len(self._rhs)
+    
+    def is_nonlexical(self):
+        """
+        @return: True if the right-hand side only contains C{Nonterminal}s
+        @rtype: C{bool}
+        """
+        return all(isinstance(n, Nonterminal) for n in self._rhs)
+
+    def is_lexical(self):
+        """
+        @return: True if the right-hand contain at least one terminal token
+        @rtype: C{bool}
+        """
+        return not self.is_nonlexical()
 
     def __str__(self):
         """
@@ -260,12 +290,12 @@ class Production(object):
             C{Production}.
         @rtype: C{string}
         """
-        str = '%s ->' % (self._lhs,)
+        str = '%r ->' % (self._lhs,)
         for elt in self._rhs:
-            if isinstance(elt, Nonterminal):
-                str += ' %s' % (elt,)
-            else:
-                str += ' %r' % (elt,)
+            #if isinstance(elt, Nonterminal):
+            #    str += ' %s' % (elt,)
+            #else:
+            str += ' %r' % (elt,)
         return str
 
     def __repr__(self):
@@ -317,7 +347,6 @@ class DependencyProduction(Production):
         return str
 
 
-
 class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
@@ -358,6 +387,8 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
 
+# TODO: Add FeatureProduction, with a better def. of __str__:
+# repr(self._lhs) + " -> " + " ".join(map(repr, self._rhs))
 
 #################################################################
 # Grammars
@@ -365,8 +396,8 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
 
 class ContextFreeGrammar(object):
     """
-    A context-free grammar.  A Grammar consists of a start state and a set
-    of productions.  The set of terminals and nonterminals is
+    A context-free grammar.  A grammar consists of a start state and 
+    a set of productions.  The set of terminals and nonterminals is
     implicitly specified by the productions.
 
     If you need efficient key-based access to productions, you
@@ -384,30 +415,74 @@ class ContextFreeGrammar(object):
         """
         self._start = start
         self._productions = productions
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+    
+    def _calculate_indexes(self):
         self._lhs_index = {}
         self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
         for prod in self._productions:
-            if prod._lhs not in self._lhs_index:
-                self._lhs_index[prod._lhs] = []
-            if prod._rhs and prod._rhs[0] not in self._rhs_index:
-                self._rhs_index[prod._rhs[0]] = []
-            self._lhs_index[prod._lhs].append(prod)
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index[lhs] = []
+            self._lhs_index[lhs].append(prod)
             if prod._rhs:
-                self._rhs_index[prod._rhs[0]].append(prod)
-        
+                # First item in right hand side.
+                rhs0 = prod._rhs[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index[rhs0] = []
+                self._rhs_index[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if isinstance(token, str):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+    
     def start(self):
+        """
+        @return: The start symbol of the grammar
+        @rtype: L{Nonterminal}
+        """
         return self._start
 
     # tricky to balance readability and efficiency here!
     # can't use set operations as they don't preserve ordering
-    def productions(self, lhs=None, rhs=None):
+    def productions(self, lhs=None, rhs=None, empty=False):
+        """
+        Return the grammar productions, filtered by the left-hand side
+        or the first item in the right-hand side.
+        
+        @param lhs: Only return productions with the given left-hand side.
+        @param rhs: Only return productions with the given first item 
+        in the right-hand side.
+        @param empty: Only return productions with an empty right-hand side.
+        @return: A list of productions matching the given constraints.
+        @rtype: C{list} of C{Production}
+        """
+        if rhs and empty:
+            raise ValueError("You cannot select empty and non-empty "
+                             "productions at the same time.")
+        
         # no constraints so return everything
         if not lhs and not rhs:
-            return self._productions
+            if not empty:
+                return self._productions
+            else:
+                return self._empty_index.values()
 
         # only lhs specified so look up its index
         elif lhs and not rhs:
-            return self._lhs_index.get(lhs, [])
+            if not empty:
+                return self._lhs_index.get(lhs, [])
+            elif lhs in self._empty_index:
+                return [self._empty_index[lhs]]
+            else:
+                return []
 
         # only rhs specified so look up its index
         elif rhs and not lhs:
@@ -415,16 +490,16 @@ class ContextFreeGrammar(object):
 
         # intersect
         else:
-            return [prod for prod in self._lhs_index.get(lhs,[])
-                    if prod in self._rhs_index.get(rhs,[])]
+            return [prod for prod in self._lhs_index.get(lhs, [])
+                    if prod in self._rhs_index.get(rhs, [])]
 
     def check_coverage(self, tokens):
         """
         Check whether the grammar rules cover the given list of tokens.
         If not, then raise an exception.
         """
-        missing = [tok for tok in tokens
-                   if len(self.productions(rhs=tok))==0]
+        missing = [tok for tok in tokens 
+                   if not self._lexical_index.get(tok)]
         if missing:
             missing = ', '.join('%r' % (w,) for w in missing)
             raise ValueError("Grammar does not cover some of the "
@@ -432,6 +507,7 @@ class ContextFreeGrammar(object):
 
     # [xx] does this still get used anywhere, or does check_coverage
     # replace it?
+    @deprecated("Use ContextFreeGrammar.check_coverage instead.")
     def covers(self, tokens):
         """
         Check whether the grammar rules cover the given list of tokens.
@@ -441,9 +517,81 @@ class ContextFreeGrammar(object):
         @return: True/False
         """
         for token in tokens:
-            if len(self.productions(rhs=token)) == 0:
+            if self._lexical_index.get(token):
                 return False
         return True
+    
+    def _calculate_grammar_forms(self):
+        """
+        Pre-calculate of which form(s) the grammar is.
+        """
+        prods = self._productions
+        self._is_lexical = all(p.is_lexical() for p in prods)
+        self._is_nonlexical = all(p.is_nonlexical() for p in prods 
+                                  if len(p) != 1)
+        self._min_len = min(len(p) for p in prods)
+        self._max_len = max(len(p) for p in prods)
+        self._all_unary_are_lexical = all(p.is_lexical() for p in prods 
+                                          if len(p) == 1)
+    
+    def is_lexical(self):
+        """
+        True if all productions are lexicalised.
+        """
+        return self._is_lexical
+    
+    def is_nonlexical(self):
+        """
+        True if all lexical rules are "preterminals", that is,
+        unary rules which can be separated in a preprocessing step.
+        
+        This means that all productions are of the forms
+        A -> B1 ... Bn (n>=0), or A -> "s".
+        
+        Note: is_lexical() and is_nonlexical() are not opposites.
+        There are grammars which are neither, and grammars which are both.
+        """
+        return self._is_nonlexical
+    
+    def min_len(self):
+        """
+        The right-hand side length of the shortest grammar production.
+        """
+        return self._min_len
+    
+    def max_len(self):
+        """
+        The right-hand side length of the longest grammar production.
+        """
+        return self._max_len
+    
+    def is_nonempty(self):
+        """
+        True if there are no empty productions.
+        """
+        return self._min_len > 0
+    
+    def is_binarised(self):
+        """
+        True if all productions are at most binary.
+        Note that there can still be empty and unary productions.
+        """
+        return self._max_len <= 2
+    
+    def is_flexible_chomsky_normal_form(self):
+        """
+        True if all productions are of the forms
+        A -> B C, A -> B, or A -> "s".
+        """
+        return self.is_nonempty() and self.is_nonlexical() and self.is_binarised()
+    
+    def is_chomsky_normal_form(self):
+        """
+        A grammar is of Chomsky normal form if all productions
+        are of the forms A -> B C, or A -> "s".
+        """
+        return (self.is_flexible_chomsky_normal_form() and 
+                self._all_unary_are_lexical)
 
     def __repr__(self):
         return '<Grammar with %d productions>' % len(self._productions)
@@ -455,11 +603,128 @@ class ContextFreeGrammar(object):
             str += '\n    %s' % production
         return str
 
-class Grammar(ContextFreeGrammar):
-    @deprecated("Use nltk.ContextFreeGrammar instead.")
-    def __init__(self, *args, **kwargs):
-        ContextFreeGrammar.__init__(self, *args, **kwargs)
+from nltk.internals import Deprecated
+class Grammar(ContextFreeGrammar, Deprecated):
+    """Use nltk.ContextFreeGrammar instead."""
         
+
+class FeatureGrammar(ContextFreeGrammar):
+    """
+    A feature-based grammar.  This is equivalent to a 
+    L{ContextFreeGrammar} whose nonterminals are
+    L{FeatStructNonterminal}s.
+
+    A grammar consists of a start state and a set of 
+    productions.  The set of terminals and nonterminals 
+    is implicitly specified by the productions.
+    """
+    def __init__(self, start, productions):
+        """
+        Create a new feature-based grammar, from the given start 
+        state and set of C{Production}s.
+        
+        @param start: The start symbol
+        @type start: L{FeatStructNonterminal}
+        @param productions: The list of productions that defines the grammar
+        @type productions: C{list} of L{Production}
+        """
+        ContextFreeGrammar.__init__(self, start, productions)
+    
+    # The difference with CFG is that the productions are
+    # indexed on the TYPE feature of the nonterminals.
+    # This is calculated by the method _get_type_if_possible().
+    
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = self._get_type_if_possible(prod._lhs)
+            if lhs not in self._lhs_index:
+                self._lhs_index[lhs] = []
+            self._lhs_index[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = self._get_type_if_possible(prod._rhs[0])
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index[rhs0] = []
+                self._rhs_index[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index[self._get_type_if_possible(prod._lhs)] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if isinstance(token, str):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def productions(self, lhs=None, rhs=None, empty=False):
+        """
+        Return the grammar productions, filtered by the left-hand side
+        or the first item in the right-hand side.
+        
+        @param lhs: Only return productions with the given left-hand side.
+        @param rhs: Only return productions with the given first item 
+        in the right-hand side.
+        @param empty: Only return productions with an empty right-hand side.
+        @return: A list of productions matching the given constraints.
+        @rtype: C{list} of C{Production}
+        """
+        if rhs and empty:
+            raise ValueError("You cannot select empty and non-empty "
+                             "productions at the same time.")
+        
+        # no constraints so return everything
+        if not lhs and not rhs:
+            if not empty:
+                return self._productions
+            else:
+                return self._empty_index.values()
+
+        # only lhs specified so look up its index
+        elif lhs and not rhs:
+            if not empty:
+                return self._lhs_index.get(self._get_type_if_possible(lhs), [])
+            elif lhs in self._empty_index:
+                return [self._empty_index[self._get_type_if_possible(lhs)]]
+            else:
+                return []
+
+        # only rhs specified so look up its index
+        elif rhs and not lhs:
+            return self._rhs_index.get(self._get_type_if_possible(rhs), [])
+
+        # intersect
+        else:
+            return [prod for prod in self._lhs_index.get(self._get_type_if_possible(lhs), [])
+                    if prod in self._rhs_index.get(self._get_type_if_possible(rhs), [])]
+    
+    def _get_type_if_possible(self, item):
+        """
+        Helper function which returns the C{TYPE} feature of the C{item}, 
+        if it exists, otherwise it returns the C{item} itself
+        """
+        if isinstance(item, dict) and TYPE in item:
+            return FeatureValueType(item[TYPE])
+        else:
+            return item
+
+class FeatureValueType(object):
+    """
+    A helper class for L{FeatureGrammar}s, designed to be different
+    from ordinary strings.  This is to stop the C{FeatStruct}
+    C{FOO[]} from being compare equal to the terminal "FOO".
+    """
+    def __init__(self, value):
+        self._value = value
+        self._hash = hash(value)
+    def __repr__(self):
+        return '<%s>' % self.value
+    def __cmp__(self, other):
+        return cmp(FeatureValueType, type(other)) or cmp(self._value, other._value)
+    def __hash__(self):
+        return self._hash
 
 class DependencyGrammar(object):
     """
@@ -640,6 +905,11 @@ class WeightedGrammar(ContextFreeGrammar):
                     (1+WeightedGrammar.EPSILON)):
                 raise ValueError("Productions for %r do not sum to 1" % lhs)
 
+
+#################################################################
+# Inducing Grammars
+#################################################################
+
 # Contributed by Nathan Bodenstab <bodenstab@cslu.ogi.edu>
 
 def induce_pcfg(start, productions):
@@ -674,55 +944,112 @@ def induce_pcfg(start, productions):
     return WeightedGrammar(start, prods)
 
 
-
-
 #################################################################
 # Parsing Grammars
 #################################################################
 
-def parse_cfg_production(s):
-    """
-    Returns a list of productions
-    """
-    return parse_production(s, standard_nonterm_parser)
+# Parsing CFGs
 
-def parse_cfg(s):
-    start, productions = parse_grammar(s, standard_nonterm_parser)
+def parse_cfg_production(input):
+    """
+    @return: a C{list} of context-free L{Production}s.
+    """
+    return parse_production(input, standard_nonterm_parser)
+
+def parse_cfg(input):
+    """
+    @return: a L{ContextFreeGrammar}.
+    
+    @param input: a grammar, either in the form of a string or else 
+    as a list of strings.
+    """
+    start, productions = parse_grammar(input, standard_nonterm_parser)
     return ContextFreeGrammar(start, productions)
 
-# Parsing PCFGs
+# Parsing Probabilistic CFGs
 
-def parse_pcfg_production(s):
+def parse_pcfg_production(input):
     """
-    Returns a list of PCFG productions
+    @return: a C{list} of PCFG L{WeightedProduction}s.
     """
-    return parse_production(s, standard_nonterm_parser, probabilistic=True)
+    return parse_production(input, standard_nonterm_parser, probabilistic=True)
 
-def parse_pcfg(s):
-    start, productions = parse_grammar(s, standard_nonterm_parser, 
+def parse_pcfg(input):
+    """
+    @return: a probabilistic L{WeightedGrammar}.
+    
+    @param input: a grammar, either in the form of a string or else 
+    as a list of strings.
+    """
+    start, productions = parse_grammar(input, standard_nonterm_parser, 
                                        probabilistic=True)
     return WeightedGrammar(start, productions)
 
+# Parsing Feature-based CFGs
+
+def parse_fcfg_production(input, fstruct_parser):
+    """
+    @return: a C{list} of feature-based L{Production}s.
+    """
+    return parse_production(input, fstruct_parser)
+
+def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
+    """
+    @return: a feature structure based L{FeatureGrammar}.
+    
+    @param input: a grammar, either in the form of a string or else 
+    as a list of strings.
+    @param features: a tuple of features (default: SLASH, TYPE)
+    @param logic_parser: a parser for lambda-expressions 
+                         (default: LogicParser())
+    @param fstruct_parser: a feature structure parser 
+                           (only if features and logic_parser is None)
+    """
+    if features is None:
+        features = (SLASH, TYPE)
+    
+    if fstruct_parser is None:
+        fstruct_parser = FeatStructParser(features, FeatStructNonterminal, 
+                                          logic_parser=logic_parser)
+    elif logic_parser is not None:
+        raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
+                        'not both be set')
+
+    start, productions = parse_grammar(input, fstruct_parser.partial_parse)
+    return FeatureGrammar(start, productions)
+
+@deprecated("Use nltk.parse_fcfg() instead.")
+def parse_featcfg(input): 
+    return parse_fcfg(input)
+
 # Parsing generic grammars
 
+_ARROW_RE = re.compile(r'\s* -> \s*', re.VERBOSE)
+_PROBABILITY_RE = re.compile(r'( \[ [\d\.]+ \] ) \s*', re.VERBOSE)
+_TERMINAL_RE = re.compile(r'( "[^"]+" | \'[^\']+\' ) \s*', re.VERBOSE)
+_DISJUNCTION_RE = re.compile(r'\| \s*', re.VERBOSE)
+
 def parse_production(line, nonterm_parser, probabilistic=False):
+    """
+    Parse a grammar rule, given as a string, and return
+    a list of productions.
+    """
     pos = 0
     
     # Parse the left-hand side.
     lhs, pos = nonterm_parser(line, pos)
 
     # Skip over the arrow.
-    m = re.compile('\s*->\s*').match(line, pos)
+    m = _ARROW_RE.match(line, pos)
     if not m: raise ValueError('Expected an arrow')
     pos = m.end()
 
     # Parse the right hand side.
     probabilities = [0.0]
-    found_terminal = found_non_terminal = False
     rhsides = [[]]
     while pos < len(line):
         # Probability.
-        m = re.compile('(\[[\d\.]+\])\s*').match(line, pos) 
+        m = _PROBABILITY_RE.match(line, pos) 
         if probabilistic and m:
             pos = m.end()
             probabilities[-1] = float(m.group(1)[1:-1])
@@ -733,31 +1060,22 @@ def parse_production(line, nonterm_parser, probabilistic=False):
 
         # String -- add terminal.
         elif line[pos] in "\'\"":
-            m = re.compile('("[^"]+"|'+"'[^']+')\s*").match(line, pos)
+            m = _TERMINAL_RE.match(line, pos)
             if not m: raise ValueError('Unterminated string')
-            if found_terminal:
-                raise ValueError('Bad right-hand-side: do not use '
-                                 'a sequence of terminals')
-            found_terminal = True
             rhsides[-1].append(m.group(1)[1:-1])
             pos = m.end()
 
         # Vertical bar -- start new rhside.
         elif line[pos] == '|':
+            m = _DISJUNCTION_RE.match(line, pos)
             probabilities.append(0.0)
-            found_terminal = found_non_terminal = False
             rhsides.append([])
-            pos = re.compile('\\|\s*').match(line,pos).end()
+            pos = m.end()
 
         # Anything else -- nonterminal.
         else:
             nonterm, pos = nonterm_parser(line, pos)
             rhsides[-1].append(nonterm)
-            found_non_terminal = True
-            
-        if found_terminal and found_non_terminal:
-            raise ValueError('Bad right-hand-side: do not mix '
-                             'terminals and non-terminals')
 
     if probabilistic:
         return [WeightedProduction(lhs, rhs, prob=probability) 
@@ -768,13 +1086,16 @@ def parse_production(line, nonterm_parser, probabilistic=False):
 
 def parse_grammar(input, nonterm_parser, probabilistic=False):
     """
-    Return a starting category and a list of C{Production}s.
+    @return: a pair of 
+      - a starting category 
+      - a list of C{Production}s
     
     @param input: a grammar, either in the form of a string or else 
-    as a list of strings.
+        as a list of strings.
     @param nonterm_parser: a function for parsing nonterminals.
-    It should take a C{(string,position)} as argument and return
-    a C{(nonterminal,position)} as result. 
+        It should take a C{(string,position)} as argument and 
+        return a C{(nonterminal,position)} as result. 
+    @param probabilistic: are the grammar rules probabilistic?
     """
     if isinstance(input, str):
         lines = input.split('\n')
@@ -813,55 +1134,13 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
         start = productions[0].lhs()
     return (start, productions)
 
+_STANDARD_NONTERM_RE = re.compile('( [\w/]+ ) \s*', re.VERBOSE)
+
 def standard_nonterm_parser(string, pos):
-    m = re.compile('([\w/]+)\s*').match(string, pos)
+    m = _STANDARD_NONTERM_RE.match(string, pos)
     if not m: raise ValueError('Expected a nonterminal, found: ' 
                                + string[pos:])
     return (Nonterminal(m.group(1)), m.end())
-
-@deprecated("Use nltk.parse_fcfg() instead.")
-def parse_featcfg(input): 
-    return parse_fcfg(input)
-
-
-# Parsing Feature-based CFGs
-
-class FeatStructNonterminal(FeatDict, Nonterminal):
-    """A feature structure that's also a nonterminal.  It acts as its
-    own symbol, and automatically freezes itself when hashed."""
-    def __hash__(self):
-        self.freeze()
-        return FeatStruct.__hash__(self)
-    def symbol(self):
-        return self
-
-def parse_fcfg_production(input, fstruct_parser):
-    return parse_production(input, fstruct_parser)
-
-def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
-    """
-    Return a feature structure grammar.
-    
-    @param input: a grammar, either in the form of a string or else 
-    as a list of strings.
-    @param features: a tuple of features (default: SLASH, TYPE)
-    @param logic_parser: a parser for lambda-expressions 
-                         (default: LogicParser())
-    @param fstruct_parser: a feature structure parser 
-                           (only if features and logic_parser is None)
-    """
-    if features is None:
-        features = (SLASH, TYPE)
-    
-    if fstruct_parser is None:
-        fstruct_parser = FeatStructParser(features, FeatStructNonterminal, 
-                                          logic_parser=logic_parser)
-    elif logic_parser is not None:
-        raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
-                        'not both be set')
-
-    start, productions = parse_grammar(input, fstruct_parser.partial_parse)
-    return ContextFreeGrammar(start, productions)
 
 
 #################################################################
@@ -906,6 +1185,7 @@ def parse_dependency_production(s):
         else:
             rhsides[-1].append(piece.strip('\'\"'))
     return [DependencyProduction(lhside, rhside) for rhside in rhsides]
+
 
 #################################################################
 # Demonstration

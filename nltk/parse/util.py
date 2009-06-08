@@ -10,12 +10,62 @@
 Utility functions for parsers.
 """
 
+from nltk.grammar import ContextFreeGrammar, FeatureGrammar, WeightedGrammar
+from chart import Chart, ChartParser
+from pchart import InsideChartParser
+from featurechart import FeatureChart, FeatureChartParser
+import nltk.data
+
+def load_parser(grammar_url, trace=0, chart_class=None, 
+                beam_size=0, **load_args):
+    """
+    Load a grammar from a file, and build a parser based on that grammar. 
+    The parser depends on the grammar format, and might also depend
+    on properties of the grammar itself.
+    
+    The following grammar formats are currently supported:
+      - C{'cfg'}  (CFGs: L{ContextFreeGrammar})
+      - C{'pcfg'} (probabilistic CFGs: L{WeightedGrammar})
+      - C{'fcfg'} (feature-based CFGs: L{ContextFreeGrammar})
+
+    @type grammar_url: C{str}
+    @param grammar_url: A URL specifying where the grammar is located.
+        The default protocol is C{"nltk:"}, which searches for the file 
+        in the the NLTK data package.
+    @type trace: C{int}
+    @param trace: The level of tracing that should be used when
+        parsing a text.  C{0} will generate no tracing output;
+        and higher numbers will produce more verbose tracing output.
+    @param chart_class: The class used for storing the chart;
+        should be L{Chart} or a subclass. 
+        Only used for CFGs and feature CFGs.
+    @type beam_size: C{int}
+    @param beam_size: The maximum length for the parser's edge queue.
+        Only used for probabilistic CFGs.
+    @param load_args: Keyword parameters used when loading the grammar.
+        See L{data.load} for more information.
+    """
+    grammar = nltk.data.load(grammar_url, **load_args)
+    if not isinstance(grammar, ContextFreeGrammar):
+        raise ValueError("The grammar must be a ContextFreeGrammar, "
+                         "or a subclass thereof.")
+    if isinstance(grammar, WeightedGrammar):
+        return InsideChartParser(grammar, trace=trace, beam_size=beam_size)
+    else:
+        fcfg = isinstance(grammar, FeatureGrammar)
+        nonempty = grammar.is_nonempty()
+        if fcfg:
+            parser = FeatureChartParser
+            if chart_class is None: chart_class = FeatureChart
+        else:
+            parser = ChartParser
+            if chart_class is None: chart_class = Chart
+        return parser(grammar, trace=trace, chart_class=chart_class)
+
+
 ######################################################################
 #{ Test Suites
 ######################################################################
-
-
-from featurechart import load_earley
 
 class TestGrammar(object):
     """
@@ -24,7 +74,7 @@ class TestGrammar(object):
     def __init__(self, grammar, suite, accept=None, reject=None):
         self.test_grammar = grammar
         
-        self.cp = load_earley(grammar, trace=0)
+        self.cp = load_parser(grammar, trace=0)
         self.suite = suite
         self._accept = accept
         self._reject = reject

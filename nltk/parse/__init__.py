@@ -44,6 +44,7 @@ three sub-modules for specialized kinds of parsing:
 from api import *
 from chart import *
 from featurechart import *
+from earleychart import *
 from pchart import *
 from rd import *
 from sr import *
@@ -57,18 +58,32 @@ from malt import *
 __all__ = [
     # Parser interface
     'ParserI',
+    
+    # Generic parser loading function
+    'load_parser',
 
     # Parsers
+    # from rd.py:
     'RecursiveDescentParser', 'SteppingRecursiveDescentParser',
+    # from sr.py:
     'ShiftReduceParser', 'SteppingShiftReduceParser',
-    'EarleyChartParser', 'ChartParser', 'SteppingChartParser',
-    'BottomUpChartParser', 'InsideChartParser', 'RandomChartParser',
+    # from chart.py:
+    'ChartParser', 'SteppingChartParser',
+    'TopDownChartParser', 'BottomUpChartParser', 'BottomUpLeftCornerChartParser',
+    # from pchart.py:
+    'BottomUpProbabilisticChartParser', 'InsideChartParser', 'RandomChartParser',
     'UnsortedChartParser', 'LongestChartParser', 'ViterbiParser',
-    'FeatureEarleyChartParser',
+    # from featurechart.py:
+    'FeatureChartParser', 'FeatureTopDownChartParser', 
+    'FeatureBottomUpChartParser', 'FeatureBottomUpLeftCornerChartParser',
+    # from earleychart.py:
+    'EarleyChartParser', 'FeatureEarleyChartParser',
+    # from dependencygraph.py, projectivedependencyparser.py,
+    # projectivedependencyparser.py, malt.py:
     'DependencyGraph', 'nx_graph', 'ProjectiveDependencyParser',
     'ProbabilisticProjectiveDependencyParser',
     'NaiveBayesDependencyScorer', 'ProbabilisticNonprojectiveParser',
-    'NonprojectiveDependencyParser', 'MaltParser'
+    'NonprojectiveDependencyParser', 'MaltParser',
     ]
 
 ######################################################################
@@ -95,8 +110,8 @@ class ChartParse(ChartParser, Deprecated):
     """Use nltk.ChartParser instead."""
 class SteppingChartParse(SteppingChartParser, Deprecated):
     """Use nltk.SteppingChartParser instead."""
-class BottomUpChartParse(BottomUpChartParser, Deprecated):
-    """Use nltk.BottomUpChartParser instead."""
+class BottomUpChartParse(BottomUpProbabilisticChartParser, Deprecated):
+    """Use nltk.BottomUpProbabilisticChartParser instead."""
 class InsideParse(InsideChartParser, Deprecated):
     """Use nltk.InsideChartParser instead."""
 class RandomParse(RandomChartParser, Deprecated):

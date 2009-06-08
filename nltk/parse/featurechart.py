@@ -26,31 +26,9 @@ import nltk.data
 from api import *
 from chart import *
 
-def load_earley(filename, trace=0, cache=False, verbose=False,
-                chart_class=Chart, logic_parser=None, fstruct_parser=None):
-    """
-    Load a grammar from a file, and build an Earley feature parser based on
-    that grammar.
-
-    You can optionally specify a tracing level, for how much output you
-    want to see:
-
-    0: No output.
-    1: Show edges from scanner and completer rules (not predictor).
-    2 (default): Show all edges as they are added to the chart.
-    3: Show all edges, plus the results of successful unifications.
-    4: Show all edges, plus the results of all attempted unifications.
-    5: Show all edges, plus the results of all attempted unifications,
-    including those with cached results.
-
-    If C{verbose} is set to C{True}, then more diagnostic information about
-    grammar-loading is displayed.
-    """
-    grammar = nltk.data.load(filename, cache=cache, verbose=verbose, 
-                             logic_parser=logic_parser, 
-                             fstruct_parser=fstruct_parser)
-    return FeatureEarleyChartParser(grammar, trace=trace,
-                                    chart_class=chart_class)
+#////////////////////////////////////////////////////////////
+# Tree Edge
+#////////////////////////////////////////////////////////////
 
 class FeatureTreeEdge(TreeEdge):
     """
@@ -110,7 +88,7 @@ class FeatureTreeEdge(TreeEdge):
                                            sorted(self._bindings.items()))
             return '%s %s' % (TreeEdge.__str__(self), bindings)
 
-    # two edges w/ different bindings are not equal.
+    # two edges with different bindings are not equal.
     def __cmp__(self, other):
         if self.__class__ != other.__class__: return -1
         return cmp((self._span, self._lhs, self._rhs,
@@ -122,7 +100,93 @@ class FeatureTreeEdge(TreeEdge):
         # cache this:?
         return hash((self._lhs, self._rhs, self._span, self._dot,
                      tuple(sorted(self._bindings))))
+
+#////////////////////////////////////////////////////////////
+# A specialized Chart for feature grammars
+#////////////////////////////////////////////////////////////
+
+class FeatureChart(Chart):
+    """
+    A Chart for feature grammars.
+    @see: L{Chart} for more information.
+    """
+
+    def select(self, **restrictions):
+        """
+        Returns an iterator over the edges in this chart. 
+        See L{Chart.select} for more information about the
+        C{restrictions} on the edges.
+        """
+        # If there are no restrictions, then return all edges.
+        if restrictions=={}: return iter(self._edges)
+            
+        # Find the index corresponding to the given restrictions.
+        restr_keys = restrictions.keys()
+        restr_keys.sort()
+        restr_keys = tuple(restr_keys)
+
+        # If it doesn't exist, then create it.
+        if restr_keys not in self._indexes:
+            self._add_index(restr_keys)
+                
+        vals = tuple(self._get_type_if_possible(restrictions[key]) 
+                     for key in restr_keys)
+        return iter(self._indexes[restr_keys].get(vals, []))
     
+    def _add_index(self, restr_keys):
+        """
+        A helper function for L{select}, which creates a new index for
+        a given set of attributes (aka restriction keys).
+        """
+        # Make sure it's a valid index.
+        for key in restr_keys:
+            if not hasattr(EdgeI, key):
+                raise ValueError, 'Bad restriction: %s' % key
+
+        # Create the index.
+        index = self._indexes[restr_keys] = {}
+
+        # Add all existing edges to the index.
+        for edge in self._edges:
+            vals = tuple(self._get_type_if_possible(getattr(edge, key)()) 
+                         for key in restr_keys)
+            index.setdefault(vals, []).append(edge)
+    
+    def _register_with_indexes(self, edge):
+        """
+        A helper function for L{insert}, which registers the new
+        edge with all existing indexes.
+        """
+        for (restr_keys, index) in self._indexes.items():
+            vals = tuple(self._get_type_if_possible(getattr(edge, key)())
+                         for key in restr_keys)
+            index.setdefault(vals, []).append(edge)
+
+    def _get_type_if_possible(self, item):
+        """
+        Helper function which returns the C{TYPE} feature of the C{item}, 
+        if it exists, otherwise it returns the C{item} itself
+        """
+        if isinstance(item, dict) and TYPE in item:
+            return item[TYPE]
+        else:
+            return item
+
+    def parses(self, start, tree_class=Tree):
+        trees = []
+        for edge in self.select(start=0, end=self._num_leaves):
+            if ( (isinstance(edge, FeatureTreeEdge)) and
+                 (edge.lhs()[TYPE] == start[TYPE]) and
+                 (unify(edge.lhs(), start, rename_vars=True)) ):
+                trees += self.trees(edge, complete=True, tree_class=tree_class)
+        return trees
+
+
+#////////////////////////////////////////////////////////////
+# Fundamental Rule
+#////////////////////////////////////////////////////////////
+
+# TODO: Clean this mess up
 class FeatureFundamentalRule(FundamentalRule):
     """
     A specialized version of the fundamental rule that operates on
@@ -134,10 +198,10 @@ class FeatureFundamentalRule(FundamentalRule):
     nonterminals in the edge.
 
     The fundamental rule states that:
-        - [AS{->}S{alpha}*B1S{beta}][i:j]
-        - [B2S{->}S{gamma}*][j:k]
+        - [A S{->} S{alpha} * B1 S{beta}][i:j]
+        - [B2 S{->} S{gamma} *][j:k]
     licenses the edge:
-        - [AS{->}S{alpha}B3*S{beta}][i:j]
+        - [A S{->} S{alpha} B3 * S{beta}][i:j]
     assuming that B1 and B2 can be unified to generate B3.
     """
     def apply_iter(self, chart, grammar, left_edge, right_edge):
@@ -145,17 +209,22 @@ class FeatureFundamentalRule(FundamentalRule):
         if not (left_edge.end() == right_edge.start() and
                 left_edge.is_incomplete() and
                 right_edge.is_complete() and
-                isinstance(left_edge, TreeEdge) and
-                isinstance(right_edge, TreeEdge) and
-                left_edge.next()[TYPE] == right_edge.lhs()[TYPE]):
+                isinstance(left_edge, FeatureTreeEdge)):
             return
-
-        # Unify B1 (left_edge.next) with B2 (right_edge.lhs) to
-        # generate B3 (result).
-        bindings = left_edge.bindings() # creates a copy.
-        result = unify(left_edge.next(), right_edge.lhs(),
-                       bindings, rename_vars=False)
-        if result is None: return
+        if isinstance(right_edge, FeatureTreeEdge):
+            if not (isinstance(left_edge.next(), FeatStructNonterminal) and
+                    left_edge.next()[TYPE] == right_edge.lhs()[TYPE]):
+                return
+            # Unify B1 (left_edge.next) with B2 (right_edge.lhs) to
+            # generate B3 (result).
+            bindings = left_edge.bindings() # creates a copy.
+            result = unify(left_edge.next(), right_edge.lhs(),
+                           bindings, rename_vars=False)
+            if result is None: return
+        else:
+            if not (left_edge.next() == right_edge.lhs()):
+                return
+            bindings = left_edge.bindings() # creates a copy.
 
         # Construct the new edge.
         new_edge = FeatureTreeEdge(span=(left_edge.start(), right_edge.end()),
@@ -171,30 +240,62 @@ class FeatureFundamentalRule(FundamentalRule):
         # If we changed the chart, then generate the edge.
         if changed_chart: yield new_edge
 
-class FeatureTopDownExpandRule(TopDownExpandRule):
+class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     """
-    A specialized version of the top down expand rule that operates on
+    A specialized version of the completer / single edge fundamental rule 
+    that operates on nonterminals whose symbols are C{FeatStructNonterminal}s.  
+    Rather than simply comparing the nonterminals for equality, they are
+    unified. 
+    """
+    _fundamental_rule = FeatureFundamentalRule()
+    def apply_iter(self, chart, grammar, edge):
+        fr = self._fundamental_rule
+        if edge.is_complete():
+            for left_edge in chart.select(end=edge.start(), 
+                                          is_complete=False,
+                                          next=edge.lhs()):
+                for new_edge in fr.apply_iter(chart, grammar, left_edge, edge):
+                    yield new_edge
+        else:
+            for right_edge in chart.select(start=edge.end(), 
+                                           is_complete=True,
+                                           lhs=edge.next()):
+                for new_edge in fr.apply_iter(chart, grammar, edge, right_edge):
+                    yield new_edge
+
+#////////////////////////////////////////////////////////////
+# Top-Down Prediction
+#////////////////////////////////////////////////////////////
+
+class FeatureTopDownInitRule(TopDownInitRule):
+    def apply_iter(self, chart, grammar):
+        root = FeatStructNonterminal('[*type*="[INIT]"]')
+        edge = FeatureTreeEdge((0,0), root, (grammar.start(),), 0)
+        if chart.insert(edge, ()):
+            yield edge
+
+# TODO: Add a cached version of this rule:
+class FeatureTopDownPredictRule(TopDownPredictRule):
+    """
+    A specialized version of the top down predict rule that operates on
     nonterminals whose symbols are C{FeatStructNonterminal}s.  Rather
     tha simply comparing the nonterminals for equality, they are
     unified.
 
     The top down expand rule states that:
-        - [AS{->}S{alpha}*B1S{beta}][i:j]
+        - [A S{->} S{alpha} * B1 S{beta}][i:j]
     licenses the edge:
-        - [B2S{->}*S{gamma}][j:j]
-    for each grammar production C{B2S{->}S{gamma}}, assuming that B1
+        - [B2 S{->} * S{gamma}][j:j]
+    for each grammar production C{B2 S{->} S{gamma}}, assuming that B1
     and B2 can be unified.
     """
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        for prod in grammar.productions():
-            # Be sure not to predict lexical edges. 
-            # (The ScannerRule takes care of those.)
-            if len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str): continue
+        #if not isinstance(edge.next(), FeatStructNonterminal): return
+        for prod in grammar.productions(lhs=edge.next()):
             # Note: we rename vars here, because we don't want variables
             # from the two different productions to match.
-            if ((prod.lhs()[TYPE] == edge.next()[TYPE]) and 
-                unify(prod.lhs(), edge.next_with_bindings(), rename_vars=True)):
+            if (unify(prod.lhs(), edge.next_with_bindings(), rename_vars=True)):
                 new_edge = FeatureTreeEdge(span=(edge.end(), edge.end()),
                                            lhs=prod.lhs(),
                                            rhs=prod.rhs(), dot=0)
@@ -202,193 +303,98 @@ class FeatureTopDownExpandRule(TopDownExpandRule):
                     yield new_edge
 
 #////////////////////////////////////////////////////////////
-# Earley Parsing Rules
+# Bottom-Up Prediction
 #////////////////////////////////////////////////////////////
 
-class FeatureCompleterRule(CompleterRule):
-    """
-    A specialized version of the completer rule that operates on
-    nonterminals whose symbols are C{FeatStructNonterminal}s.  Rather
-    tha simply comparing the nonterminals for equality, they are
-    unified.  See L{CompleterRule} for more information.
-    """
-    _fundamental_rule = FeatureFundamentalRule()
-    
-    def apply_iter(self, chart, grammar, edge1):
-        fr = self._fundamental_rule
-        for edge2 in chart.select(end=edge1.start(), is_complete=False):
-            for new_edge in fr.apply_iter(chart, grammar, edge2, edge1):
-                yield new_edge
+class FeatureBottomUpPredictRule(BottomUpPredictRule):
+    def apply_iter(self, chart, grammar, edge):
+        if edge.is_incomplete(): return
+        new_span = (edge.start(), edge.start())
+        if isinstance(edge, FeatureTreeEdge): 
+            for prod in grammar.productions(rhs=edge.lhs()):
+                next = prod.rhs()[0]
+                if not isinstance(next, FeatStructNonterminal): continue
+                new_edge = FeatureTreeEdge(new_span, prod.lhs(), prod.rhs())
+                if chart.insert(new_edge, ()):
+                    yield new_edge
+        else: # The edge is a LeafEdge:
+            for prod in grammar.productions(rhs=edge.lhs()):
+                new_edge = FeatureTreeEdge(new_span, prod.lhs(), prod.rhs())
+                if chart.insert(new_edge, ()):
+                    yield new_edge
 
-class FeatureScannerRule(ScannerRule):
-    def apply_iter(self, chart, gramar, edge):
-        if edge.is_complete() or edge.end()>=chart.num_leaves(): return
-        index = edge.end()
-        leaf = chart.leaf(index)
-        for pos in [prod.lhs() for prod in gramar.productions(rhs=leaf)]:
-            if (pos[TYPE] == edge.next()[TYPE] and 
-                unify(pos, edge.next_with_bindings(), rename_vars=True)):
-                new_leaf_edge = LeafEdge(leaf, index)
-                if chart.insert(new_leaf_edge, ()):
-                    yield new_leaf_edge
-                new_pos_edge = FeatureTreeEdge((index, index+1), pos,
-                                               [leaf], 1)
-                if chart.insert(new_pos_edge, (new_leaf_edge,)):
-                    yield new_pos_edge
+class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
+    def apply_iter(self, chart, grammar, edge):
+        if edge.is_incomplete(): return
+        if isinstance(edge, FeatureTreeEdge): 
+            for prod in grammar.productions(rhs=edge.lhs()):
+                next = prod.rhs()[0]
+                if not isinstance(next, FeatStructNonterminal): continue
+                bindings = {}
+                if unify(next, edge.lhs(), bindings):
+                    new_edge = FeatureTreeEdge(edge.span(), prod.lhs(), prod.rhs(), 1, bindings)
+                    if chart.insert(new_edge, (edge,)):
+                        yield new_edge
+        else: # The edge is a LeafEdge:
+            for prod in grammar.productions(rhs=edge.lhs()):
+                new_edge = FeatureTreeEdge(edge.span(), prod.lhs(), prod.rhs(), 1)
+                if chart.insert(new_edge, (edge,)):
+                    yield new_edge
 
-# This is just another name for TopDownExpandRule:
-class FeaturePredictorRule(FeatureTopDownExpandRule): pass
-    
+class FeatureEmptyPredictRule(EmptyPredictRule):
+    def apply_iter(self, chart, grammar):
+        for prod in grammar.productions(empty=True):
+            for index in xrange(chart.num_leaves() + 1):
+                new_edge = FeatureTreeEdge(span=(index, index), lhs=prod.lhs(), 
+                                           rhs=prod.rhs())
+                if chart.insert(new_edge, ()):
+                    yield new_edge
+
+
 #////////////////////////////////////////////////////////////
-# Earley Parser
+# Feature Chart Parser
 #////////////////////////////////////////////////////////////
 
-## Simple Earley Chart Parser, without features
-## (defined here because the feature version needs to build on it, but
-## chart.py has a simpler way to use the Earley algorithm)
+TD_FEATURE_STRATEGY = [FeatureTopDownInitRule(), 
+                       FeatureTopDownPredictRule(), 
+                       FeatureSingleEdgeFundamentalRule()]
+BU_FEATURE_STRATEGY = [FeatureEmptyPredictRule(),
+                       FeatureBottomUpPredictRule(),
+                       FeatureSingleEdgeFundamentalRule()]
+BU_LC_FEATURE_STRATEGY = [FeatureEmptyPredictRule(),
+                          FeatureBottomUpPredictCombineRule(),
+                          FeatureSingleEdgeFundamentalRule()]
 
-class EarleyChartParser(ParserI):
-    """
-    A chart parser implementing the Earley parsing algorithm:
+class FeatureChartParser(ChartParser):
+    def __init__(self, grammar, 
+                 strategy=BU_LC_FEATURE_STRATEGY, 
+                 trace_chart_width=20, 
+                 chart_class=FeatureChart, 
+                 **parser_args):
+        ChartParser.__init__(self, grammar, 
+                             strategy=strategy, 
+                             trace_chart_width=trace_chart_width, 
+                             chart_class=chart_class, 
+                             **parser_args)
 
-        - For each index I{end} in [0, 1, ..., N]:
-          - For each I{edge} s.t. I{edge}.end = I{end}:
-            - If I{edge} is incomplete, and I{edge}.next is not a part
-              of speech:
-                - Apply PredictorRule to I{edge}
-            - If I{edge} is incomplete, and I{edge}.next is a part of
-              speech:
-                - Apply ScannerRule to I{edge}
-            - If I{edge} is complete:
-                - Apply CompleterRule to I{edge}
-        - Return any complete parses in the chart
+class FeatureTopDownChartParser(FeatureChartParser):
+    def __init__(self, grammar, **parser_args):
+        FeatureChartParser.__init__(self, grammar, TD_FEATURE_STRATEGY, **parser_args)
 
-    @ivar _predictor_class, _completer_class, _scanner_class: The
-    classes that are used to implement the three rules used by the
-    Earley algorithm,  Replacement rules can be specified by
-    subclasses (such as L{FeatureEarleyChartParser
-    <nltk.parse.featurechar.FeatureEarleyChartParser>}).
-    """
-    _predictor_class = PredictorRule
-    _completer_class = CompleterRule
-    _scanner_class = ScannerRule
+class FeatureBottomUpChartParser(FeatureChartParser):
+    def __init__(self, grammar, **parser_args):
+        FeatureChartParser.__init__(self, grammar, BU_FEATURE_STRATEGY, **parser_args)
 
-    def __init__(self, grammar, trace=0, chart_class=Chart):
-        """
-        Create a new Earley chart parser, that uses C{grammar} to
-        parse texts.
-        
-        @type grammar: C{ContextFreeGrammar}
-        @param grammar: The grammar used to parse texts.
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            and higher numbers will produce more verbose tracing
-            output.
-        @param chart_class: The class that should be used to create
-            the charts used by this parser.
-        """
-        if isinstance(trace, dict):
-            raise ValueError("Earley parser no longer takes a lexicon "
-                             "as a separate parameter; the lexicon "
-                             "is calculated from the grammar instead.")
-        self._grammar = grammar
-        self._trace = trace
-        self._chart_class = chart_class
+class FeatureBottomUpLeftCornerChartParser(FeatureChartParser):
+    def __init__(self, grammar, **parser_args):
+        FeatureChartParser.__init__(self, grammar, BU_LC_FEATURE_STRATEGY, **parser_args)
 
-    def grammar(self):
-        return self._grammar
-
-    #: The default total width reserved for the chart in trace output.
-    #: The remainder of each line will be used to display edges.
-    _trace_chart_width = 40
-
-    def nbest_parse(self, tokens, n=None, tree_class=Tree, trace=None):
-        if trace is not None: self._trace = trace
-        tokens = list(tokens)
-        self._grammar.check_coverage(tokens)
-        
-        chart = self._chart_class(tokens)
-        grammar = self._grammar
-
-        # Width, for printing trace edges.
-        w = max(2, self._trace_chart_width/(chart.num_leaves()+1))
-        if self._trace > 1: print ' '*9, chart.pp_leaves(w)
-
-        # Initialize the chart with a special "starter" edge.
-        chart.insert(self._starter_edge(grammar.start()), ())
-
-        # Create the 3 rules:
-        predictor = self._predictor_class()
-        completer = self._completer_class()
-        scanner = self._scanner_class()
-
-        for end in range(chart.num_leaves()+1):
-            if self._trace > 2: print 'Processing queue %d' % end
-            if self._trace == 1:
-                sys.stdout.write('.'); sys.stdout.flush()
-            for edge in chart.select(end=end):
-                if edge.is_complete():
-                    for e in completer.apply_iter(chart, grammar, edge):
-                        if self._trace > 1:
-                            print 'Completer', chart.pp_edge(e,w)
-                if edge.is_incomplete():
-                    for e in predictor.apply_iter(chart, grammar, edge):
-                        if self._trace > 2:
-                            print 'Predictor', chart.pp_edge(e,w)
-                if edge.is_incomplete():
-                    for e in scanner.apply_iter(chart, grammar, edge):
-                        if self._trace > 1:
-                            print 'Scanner  ', chart.pp_edge(e,w)
-
-        # Output a list of complete parses.
-        if self._trace == 1: print
-        return self._parses(chart, grammar.start(), tree_class)[:n]
-
-    # This is a separate method because FeatureEarleyChartParser needs
-    # to replace it:
-    def _starter_edge(self, start_sym):
-        """Return a 'starter edge' that expands to the start symbol."""
-        root = Nonterminal('[INIT]')
-        return TreeEdge((0,0), root, (start_sym,))
-
-    # This is a separate method because FeatureEarleyChartParser needs
-    # to replace it:
-    def _parses(self, chart, start_sym, tree_class):
-        """Return a list of parses in the given chart."""
-        return chart.parses(start_sym, tree_class=tree_class)
-
-class FeatureEarleyChartParser(EarleyChartParser):
-    """
-    A chart parser implementing the Earley parsing algorithm, allowing
-    nonterminals that have features (known as L{FeatStructNonterminal}s).
-    See L{EarleyChartParser} for more details.
-    """
-    _predictor_class = FeaturePredictorRule
-    _completer_class = FeatureCompleterRule
-    _scanner_class = FeatureScannerRule
-    _trace_chart_width = 10 # Edges are big, so compress the chart.
-
-    def _starter_edge(self, start):
-        root = FeatStructNonterminal('[*type*="[INIT]"]')
-        return FeatureTreeEdge((0,0), root, (start,), 0)
-        
-    def _parses(self, chart, start, tree_class):
-        # Output a list of complete parses.
-        trees = []
-        for edge in chart.select(span=(0, chart.num_leaves())):
-            if ( (not isinstance(edge, LeafEdge)) and
-                 (edge.lhs()[TYPE] == start[TYPE]) and
-                 (unify(edge.lhs(), start, rename_vars=True)) ):
-                trees += chart.trees(edge, complete=True,
-                                     tree_class=tree_class)
-        return trees
 
 #////////////////////////////////////////////////////////////
 # Instantiate Variable Chart
 #////////////////////////////////////////////////////////////
 
-class InstantiateVarsChart(Chart):
+class InstantiateVarsChart(FeatureChart):
     """
     A specialized chart that 'instantiates' variables whose names
     start with '@', by replacing them with unique new variables.
@@ -397,13 +403,16 @@ class InstantiateVarsChart(Chart):
     replaced by unique new L{Variable}s.
     """
     def __init__(self, tokens):
-        Chart.__init__(self, tokens)
-        self._instantiated = set()
+        FeatureChart.__init__(self, tokens)
         
+    def initialize(self):
+        self._instantiated = set()
+        FeatureChart.initialize(self)
+
     def insert(self, edge, child_pointer_list):
         if edge in self._instantiated: return False
         edge = self.instantiate_edge(edge)
-        return Chart.insert(self, edge, child_pointer_list)
+        return FeatureChart.insert(self, edge, child_pointer_list)
     
     def instantiate_edge(self, edge):
         # If the edge is a leaf, or is not complete, or is
@@ -429,59 +438,88 @@ class InstantiateVarsChart(Chart):
                     if var.name.startswith('@'))
 
 #////////////////////////////////////////////////////////////
+# Deprecated parser loading
+#////////////////////////////////////////////////////////////
+
+@deprecated("Use nltk.load_parser() instead.")
+def load_earley(filename, trace=0, cache=False, verbose=False,
+                chart_class=FeatureChart, logic_parser=None, fstruct_parser=None):
+    """
+    Load a grammar from a file, and build an Earley feature parser based on
+    that grammar.
+
+    You can optionally specify a tracing level, for how much output you
+    want to see:
+
+    0: No output.
+    1: Show edges from scanner and completer rules (not predictor).
+    2 (default): Show all edges as they are added to the chart.
+    3: Show all edges, plus the results of successful unifications.
+    4: Show all edges, plus the results of all attempted unifications.
+    5: Show all edges, plus the results of all attempted unifications,
+    including those with cached results.
+
+    If C{verbose} is set to C{True}, then more diagnostic information about
+    grammar-loading is displayed.
+    """
+    grammar = nltk.data.load(filename, cache=cache, verbose=verbose, 
+                             logic_parser=logic_parser, 
+                             fstruct_parser=fstruct_parser)
+    return FeatureChartParser(grammar, trace=trace, chart_class=chart_class)
+
+#////////////////////////////////////////////////////////////
 # Demo
 #////////////////////////////////////////////////////////////
 
-# TODO: update to use grammar parser
-def demo(should_print_times=True, trace=1):
+def demo_grammar():
+    return nltk.grammar.parse_fcfg("""
+S  -> NP VP
+PP -> Prep NP
+# Mixed RHSs only work with FeatureBottomupChartParser:
+# PP -> "with" NP
+NP -> NP PP
+VP -> VP PP
+VP -> Verb NP
+VP -> Verb
+NP -> Det[pl=?x] Noun[pl=?x]
+NP -> "John"
+NP -> "I"
+Det -> "the"
+Det -> "my"
+Det[-pl] -> "a"
+Noun[-pl] -> "dog"
+Noun[-pl] -> "cookie"
+Verb -> "ate"
+Verb -> "saw"
+Prep -> "with"
+Prep -> "under"
+""")
+
+def demo(should_print_times=True, should_print_grammar=True,
+         should_print_trees=True, should_print_sentence=True,
+         trace=1,
+         parser=FeatureChartParser,
+         sent='I saw John with a dog with my cookie'):
     import sys, time
-
-    S = FeatStructNonterminal('S')
-    VP = FeatStructNonterminal('VP')
-    NP = FeatStructNonterminal('NP')
-    PP = FeatStructNonterminal('PP')
-    V = FeatStructNonterminal('V')
-    N = FeatStructNonterminal('N')
-    P = FeatStructNonterminal('P')
-    Name = FeatStructNonterminal('Name')
-    Det = FeatStructNonterminal('Det')
-    DetSg = FeatStructNonterminal('Det[-pl]')
-    DetPl = FeatStructNonterminal('Det[+pl]')
-    NSg = FeatStructNonterminal('N[-pl]')
-    NPl = FeatStructNonterminal('N[+pl]')
-
-    productions = [
-        # Define some grammatical productions.
-        Production(S, (NP, VP)),  Production(PP, (P, NP)),
-        Production(NP, (NP, PP)),
-        Production(VP, (VP, PP)), Production(VP, (V, NP)),
-        Production(VP, (V,)),     Production(NP, (DetPl, NPl)),
-        Production(NP, (DetSg, NSg)),
-        # Define some lexical productions.
-        Production(NP, ('John',)), Production(NP, ('I',)),
-        Production(Det, ('the',)), Production(Det, ('my',)),
-        Production(Det, ('a',)),
-        Production(NSg, ('dog',)), Production(NSg, ('cookie',)),
-        Production(V, ('ate',)),   Production(V, ('saw',)),
-        Production(P, ('with',)),  Production(P, ('under',)),
-    ]
-
-    earley_grammar = ContextFreeGrammar(S, productions)
-    print earley_grammar
     print
-
-    sent = 'I saw John with a dog with my cookie'
-    print "Sentence:", 
-    print sent
-    print
+    grammar = demo_grammar()
+    if should_print_grammar:
+        print grammar
+        print
+    print "*", parser
+    if should_print_sentence:
+        print "Sentence:", sent
     tokens = sent.split()
-    t = time.time()
-    cp = FeatureEarleyChartParser(earley_grammar, trace=trace)
-    trees = cp.nbest_parse(tokens)
-    print
+    t = time.clock()
+    cp = parser(grammar, trace=trace)
+    chart = cp.chart_parse(tokens)
+    trees = chart.parses(grammar.start())
     if should_print_times:
-        print "Time: %s" % (time.time() - t)
-    for tree in trees: print tree
+        print "Time: %s" % (time.clock() - t)
+    if should_print_trees:
+        for tree in trees: print tree
+    else:
+        print "Nr trees:", len(trees)
 
 def run_profile():
     import profile
@@ -494,7 +532,8 @@ def run_profile():
 if __name__ == '__main__':
     demo()
     print
-    cp = load_earley('grammars/book_grammars/feat0.fcfg', trace=2)
+    grammar = nltk.data.load('grammars/book_grammars/feat0.fcfg')
+    cp = FeatureChartParser(grammar, trace=2)
     sent = 'Kim likes children'
     tokens = sent.split()
     trees = cp.nbest_parse(tokens)
