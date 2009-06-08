@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
-from nltk.parse import load_earley
+from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 
 class CooperStore(object):
@@ -78,7 +78,7 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
     """
     if not grammar:
         grammar = 'grammars/book_grammars/storage.fcfg'
-    parser = load_earley(grammar, trace=trace, chart_class=InstantiateVarsChart)
+    parser = load_parser(grammar, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()
     return parser.nbest_parse(tokens)

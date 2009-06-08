@@ -98,7 +98,7 @@ class CfgReadingCommand(ReadingCommand):
             self._gramfile = 'grammars/book_grammars/discourse.fcfg'
         else:
             self._gramfile = gramfile
-        self._parser = nltk.parse.load_earley(self._gramfile) 
+        self._parser = nltk.parse.load_parser(self._gramfile) 
     
     def parse_to_readings(self, sentence):
         """@see: ReadingCommand.parse_to_readings()"""
