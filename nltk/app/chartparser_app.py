@@ -1674,9 +1674,15 @@ class ChartParserApp(object):
     def _init_parser(self, grammar, tokens):
         self._grammar = grammar
         self._tokens = tokens
+        self._reset_parser()
+    
+    def _reset_parser(self):
         self._cp = SteppingChartParser(self._grammar)
         self._cp.initialize(self._tokens)
         self._chart = self._cp.chart()
+        
+        # Insert LeafEdges before the parsing starts.
+        LeafInitRule().apply(self._chart, self._grammar)
 
         # The step iterator -- use this to generate new edges
         self._cpstep = self._cp.step()
@@ -2046,14 +2052,11 @@ class ChartParserApp(object):
             
     def reset(self, *args):
         self._animating = 0
-        self._cp = SteppingChartParser(self._grammar)
-        self._cp.initialize(self._tokens)
-        self._chart = self._cp.chart()
+        self._reset_parser()
         self._cv.update(self._chart)
         if self._matrix: self._matrix.set_chart(self._chart)
         if self._matrix: self._matrix.deselect_cell()
         if self._results: self._results.set_chart(self._chart)
-        self._cpstep = self._cp.step()
 
     #////////////////////////////////////////////////////////////
     # Edit
@@ -2182,7 +2185,7 @@ class ChartParserApp(object):
     #////////////////////////////////////////////////////////////
     # Parsing Strategies
     #////////////////////////////////////////////////////////////
-
+    
     # Basic rules:
     _TD_INIT     = [TopDownInitRule()]
     _TD_PREDICT  = [TopDownPredictRule()]
