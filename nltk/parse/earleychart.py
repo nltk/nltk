@@ -49,10 +49,6 @@ class IncrementalChart(Chart):
         # Indexes mapping attribute values to lists of edges 
         # (used by select()).
         self._indexes = {}
-        
-        # Add one leaf edge for each terminal leaf.
-        for index, leaf in enumerate(self.leaves()):
-            self.insert(LeafEdge(leaf, index), ())
     
     def edges(self):
         return list(self.iteredges())
@@ -208,12 +204,14 @@ class FeaturePredictorRule(FeatureTopDownPredictRule):
 # Incremental Earley Parser
 #////////////////////////////////////////////////////////////
 
-EARLEY_STRATEGY = [TopDownInitRule(), 
+EARLEY_STRATEGY = [LeafInitRule(),
+                   TopDownInitRule(), 
                    CompleterRule(), 
                    ScannerRule(),
                    PredictorRule()] 
 
-FEATURE_EARLEY_STRATEGY = [FeatureTopDownInitRule(), 
+FEATURE_EARLEY_STRATEGY = [LeafInitRule(),
+                           FeatureTopDownInitRule(), 
                            FeatureCompleterRule(), 
                            FeatureScannerRule(),
                            FeaturePredictorRule()] 
@@ -326,18 +324,19 @@ class FeatureEarleyChartParser(FeatureIncrementalChartParser):
     pass
 
 
-def demo(choice=None,
-         should_print_times=True, should_print_grammar=False,
+def demo(should_print_times=True, should_print_grammar=False,
          should_print_trees=True, trace=2,
          sent='I saw John with a dog with my cookie', numparses=5):
     """
     A demonstration of the Earley parsers.
     """
     import sys, time
-    from nltk import nonterminals, Production, ContextFreeGrammar
 
     # The grammar for ChartParser and SteppingChartParser:
     grammar = nltk.parse.chart.demo_grammar()
+    if should_print_grammar:
+        print "* Grammar"
+        print grammar
 
     # Tokenize the sample sentence.
     print "* Sentence:" 
@@ -346,17 +345,21 @@ def demo(choice=None,
     print tokens
     print
 
+    # Do the parsing.
     earley = EarleyChartParser(grammar, trace=trace)
     t = time.clock()
     chart = earley.chart_parse(tokens)
     parses = chart.parses(grammar.start())
     t = time.clock()-t
+    
+    # Print results.
     if numparses:
         assert len(parses)==numparses, 'Not all parses found'
     if should_print_trees:
         for tree in parses: print tree
     else:
         print "Nr trees:", len(parses)
-    print "Time:", t
-            
+    if should_print_times:
+        print "Time:", t
+
 if __name__ == '__main__': demo()

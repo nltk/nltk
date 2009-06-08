@@ -355,13 +355,16 @@ class FeatureEmptyPredictRule(EmptyPredictRule):
 # Feature Chart Parser
 #////////////////////////////////////////////////////////////
 
-TD_FEATURE_STRATEGY = [FeatureTopDownInitRule(), 
+TD_FEATURE_STRATEGY = [LeafInitRule(),
+                       FeatureTopDownInitRule(), 
                        FeatureTopDownPredictRule(), 
                        FeatureSingleEdgeFundamentalRule()]
-BU_FEATURE_STRATEGY = [FeatureEmptyPredictRule(),
+BU_FEATURE_STRATEGY = [LeafInitRule(),
+                       FeatureEmptyPredictRule(),
                        FeatureBottomUpPredictRule(),
                        FeatureSingleEdgeFundamentalRule()]
-BU_LC_FEATURE_STRATEGY = [FeatureEmptyPredictRule(),
+BU_LC_FEATURE_STRATEGY = [LeafInitRule(),
+                          FeatureEmptyPredictRule(),
                           FeatureBottomUpPredictCombineRule(),
                           FeatureSingleEdgeFundamentalRule()]
 
@@ -411,26 +414,33 @@ class InstantiateVarsChart(FeatureChart):
 
     def insert(self, edge, child_pointer_list):
         if edge in self._instantiated: return False
-        edge = self.instantiate_edge(edge)
+        self.instantiate_edge(edge)
         return FeatureChart.insert(self, edge, child_pointer_list)
     
     def instantiate_edge(self, edge):
+        """
+        If the edge is a L{FeatureTreeEdge}, and it is complete, 
+        then instantiate all variables whose names start with '@',
+        by replacing them with unique new variables.
+        
+        Note that instantiation is done in-place, since the
+        parsing algorithms might already hold a reference to 
+        the edge for future use.
+        """
         # If the edge is a leaf, or is not complete, or is
         # already in the chart, then just return it as-is.
-        if not isinstance(edge, FeatureTreeEdge): return edge
-        if not edge.is_complete(): return edge
-        if edge in self._edge_to_cpls: return edge
+        if not isinstance(edge, FeatureTreeEdge): return 
+        if not edge.is_complete(): return 
+        if edge in self._edge_to_cpls: return 
         
         # Get a list of variables that need to be instantiated.
-        # If there are none, then return the edge as-is.
+        # If there are none, then return as-is.
         inst_vars = self.inst_vars(edge)
-        if not inst_vars: return edge
+        if not inst_vars: return 
         
         # Instantiate the edge!
         self._instantiated.add(edge)
-        lhs = edge.lhs().substitute_bindings(inst_vars)
-        return FeatureTreeEdge(edge.span(), lhs, edge.rhs(),
-                               edge.dot(), edge.bindings())
+        edge._lhs = edge.lhs().substitute_bindings(inst_vars)
     
     def inst_vars(self, edge):
         return dict((var, logic.unique_variable())
@@ -475,8 +485,6 @@ def demo_grammar():
     return nltk.grammar.parse_fcfg("""
 S  -> NP VP
 PP -> Prep NP
-# Mixed RHSs only work with FeatureBottomupChartParser:
-# PP -> "with" NP
 NP -> NP PP
 VP -> VP PP
 VP -> Verb NP
@@ -506,7 +514,7 @@ def demo(should_print_times=True, should_print_grammar=True,
     if should_print_grammar:
         print grammar
         print
-    print "*", parser
+    print "*", parser.__name__
     if should_print_sentence:
         print "Sentence:", sent
     tokens = sent.split()
