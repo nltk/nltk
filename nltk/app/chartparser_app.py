@@ -1136,6 +1136,9 @@ class ChartView(object):
             - Find an available level
             - Call _draw_edge
         """
+        # Do NOT show leaf edges in the chart.
+        if isinstance(edge, LeafEdge): return
+        
         if self._edgetags.has_key(edge): return
         self._analyze_edge(edge)
         self._grow()
@@ -1323,7 +1326,7 @@ class ChartView(object):
             self._analyze_edge(edge)
 
         # Size of chart levels
-        self._chart_level_size = self._text_height * 2.5
+        self._chart_level_size = self._text_height * 2
         
         # Default tree size..
         self._tree_height = (3 * (ChartView._TREE_LEVEL_SIZE +
@@ -1575,41 +1578,6 @@ class ChartView(object):
         for cb_func in self._callbacks[event].keys(): cb_func(*args)
 
 #######################################################################
-# Pseudo Earley Rule
-#######################################################################
-
-class PseudoEarleyRule(AbstractChartRule):
-    NUM_EDGES = 1
-    _completer = CompleterRule()
-    _scanner = ScannerRule()
-    _predictor = PredictorRule()
-    def __init__(self):
-        self._most_recent_rule = None
-    def apply_iter(self, chart, grammar, edge):
-        for e in self._predictor.apply_iter(chart, grammar, edge):
-            self._most_recent_rule = self._predictor
-            yield e
-        for e in self._scanner.apply_iter(chart, grammar, edge):
-            self._most_recent_rule = self._scanner
-            yield e
-        for e in self._completer.apply_iter(chart, grammar, edge):
-            self._most_recent_rule = self._completer
-            yield e
-    def __str__(self):
-        if self._most_recent_rule is self._completer:
-            return 'Completer Rule (aka Fundamental Rule)'
-        elif self._most_recent_rule is self._scanner:
-            return 'Scanner Rule (aka Top Down Match Rule)'
-        elif self._most_recent_rule is self._predictor:
-            return 'Predictor Rule (aka Top Down Expand Rule)'
-        else:
-            return 'Pseudo Earley Rule'
-
-class PseudoEarleyInitRule(TopDownInitRule):
-    def __str__(self):
-        return 'Predictor Rule (aka Top Down Expand Rule)'
-
-#######################################################################
 # Edge Rules
 #######################################################################
 # These version of the chart rules only apply to a specific edge.
@@ -1633,12 +1601,14 @@ class EdgeRule(object):
         super = self.__class__.__bases__[1]
         return super.__str__(self)
 
-class TopDownExpandEdgeRule(EdgeRule, TopDownExpandRule): pass
-class TopDownMatchEdgeRule(EdgeRule, TopDownMatchRule): pass
-class BottomUpEdgeRule(EdgeRule, BottomUpPredictRule): pass
-class BottomUpInitEdgeRule(EdgeRule, BottomUpInitRule): pass
-class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule): pass
-class PseudoEarleyEdgeRule(EdgeRule, PseudoEarleyRule): pass
+class TopDownPredictEdgeRule(EdgeRule, TopDownPredictRule): 
+    pass
+class BottomUpEdgeRule(EdgeRule, BottomUpPredictRule): 
+    pass
+class BottomUpLeftCornerEdgeRule(EdgeRule, BottomUpPredictCombineRule): 
+    pass
+class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule): 
+    pass
 
 #######################################################################
 # Chart Parser Application
@@ -1778,27 +1748,26 @@ class ChartParserApp(object):
         Tkinter.Button(frame1, text='Bottom Up\nStrategy',
                        background='#90c0d0', foreground='black',
                        command=self.bottom_up_strategy).pack(side='left')
-        Tkinter.Button(frame1, text='Earley\nAlgorithm',
+        Tkinter.Button(frame1, text='Bottom Up\nLeft-Corner Strategy',
                        background='#90c0d0', foreground='black',
-                       command=self.earley_algorithm).pack(side='left')
+                       command=self.bottom_up_leftcorner_strategy).pack(side='left')
 
         Tkinter.Button(frame2, text='Top Down Init\nRule',
                        background='#90f090', foreground='black',
                        command=self.top_down_init).pack(side='left')
-        Tkinter.Button(frame2, text='Top Down Expand\nRule',
+        Tkinter.Button(frame2, text='Top Down Predict\nRule',
                        background='#90f090', foreground='black',
-                       command=self.top_down_expand).pack(side='left')
-        Tkinter.Button(frame2, text='Top Down Match\nRule',
-                       background='#90f090', foreground='black',
-                       command=self.top_down_match).pack(side='left')
+                       command=self.top_down_predict).pack(side='left')
         Tkinter.Frame(frame2, width=20).pack(side='left')
         
-        Tkinter.Button(frame2, text='Bottom Up Init\nRule',
-                       background='#90f090', foreground='black',
-                       command=self.bottom_up_init).pack(side='left')
         Tkinter.Button(frame2, text='Bottom Up Predict\nRule',
                        background='#90f090', foreground='black',
                        command=self.bottom_up).pack(side='left')
+        Tkinter.Frame(frame2, width=20).pack(side='left')
+
+        Tkinter.Button(frame2, text='Bottom Up Left-Corner\nPredict Rule',
+                       background='#90f090', foreground='black',
+                       command=self.bottom_up_leftcorner).pack(side='left')
         Tkinter.Frame(frame2, width=20).pack(side='left')
         
         Tkinter.Button(frame2, text='Fundamental\nRule',
@@ -1820,7 +1789,7 @@ class ChartParserApp(object):
         
         self._root.bind('t', self.top_down_strategy)
         self._root.bind('b', self.bottom_up_strategy)
-        self._root.bind('e', self.earley_algorithm)
+        self._root.bind('c', self.bottom_up_leftcorner_strategy)
         self._root.bind('<space>', self._stop_animation)
         
         self._root.bind('<Control-g>', self.edit_grammar)
@@ -1877,20 +1846,18 @@ class ChartParserApp(object):
         rulemenu.add_command(label='Bottom Up Strategy', underline=0,
                              command=self.bottom_up_strategy,
                              accelerator='b')
-        rulemenu.add_command(label='Earley Algorithm', underline=0,
-                             command=self.bottom_up_strategy,
-                             accelerator='e')
+        rulemenu.add_command(label='Bottom Up Left-Corner Strategy', underline=0,
+                             command=self.bottom_up_leftcorner_strategy,
+                             accelerator='c')
         rulemenu.add_separator()
-        rulemenu.add_command(label='Bottom Up Init Rule',
-                             command=self.bottom_up_init)
         rulemenu.add_command(label='Bottom Up Rule',
                              command=self.bottom_up)
+        rulemenu.add_command(label='Bottom Up Left-Corner Rule',
+                             command=self.bottom_up_leftcorner)
         rulemenu.add_command(label='Top Down Init Rule',
                              command=self.top_down_init)
-        rulemenu.add_command(label='Top Down Expand Rule',
-                             command=self.top_down_expand)
-        rulemenu.add_command(label='Top Down Match Rule',
-                             command=self.top_down_match)
+        rulemenu.add_command(label='Top Down Predict Rule',
+                             command=self.top_down_predict)
         rulemenu.add_command(label='Fundamental Rule', 
                              command=self.fundamental)
         menubar.add_cascade(label='Apply', underline=0, menu=rulemenu)
@@ -2218,38 +2185,33 @@ class ChartParserApp(object):
 
     # Basic rules:
     _TD_INIT     = [TopDownInitRule()]
-    _TD_EXPAND   = [TopDownExpandRule()]
-    _TD_MATCH    = [TopDownMatchRule()]
-    _BU_INIT     = [BottomUpInitRule()]
+    _TD_PREDICT  = [TopDownPredictRule()]
     _BU_RULE     = [BottomUpPredictRule()]
+    _BU_LC_RULE  = [BottomUpPredictCombineRule()]
     _FUNDAMENTAL = [SingleEdgeFundamentalRule()]
-    _EARLEY      = [PseudoEarleyRule()]
-    _EARLEY_INIT = [PseudoEarleyInitRule()]
 
     # Complete strategies:
-    _TD_STRATEGY = _TD_INIT + _TD_EXPAND + _TD_MATCH + _FUNDAMENTAL
-    _BU_STRATEGY = _BU_INIT + _BU_RULE + _FUNDAMENTAL
-    _EARLEY      = _EARLEY_INIT + _EARLEY
+    _TD_STRATEGY =  _TD_INIT + _TD_PREDICT + _FUNDAMENTAL
+    _BU_STRATEGY = _BU_RULE + _FUNDAMENTAL
+    _BU_LC_STRATEGY = _BU_LC_RULE + _FUNDAMENTAL
 
     # Button callback functions:
     def top_down_init(self, *e):
         self.apply_strategy(self._TD_INIT, None)
-    def top_down_expand(self, *e):
-        self.apply_strategy(self._TD_EXPAND, TopDownExpandEdgeRule)
-    def top_down_match(self, *e):
-        self.apply_strategy(self._TD_MATCH, TopDownMatchEdgeRule)
-    def bottom_up_init(self, *e):
-        self.apply_strategy(self._BU_INIT, BottomUpInitEdgeRule)
+    def top_down_predict(self, *e):
+        self.apply_strategy(self._TD_PREDICT, TopDownPredictEdgeRule)
     def bottom_up(self, *e):
         self.apply_strategy(self._BU_RULE, BottomUpEdgeRule)
+    def bottom_up_leftcorner(self, *e):
+        self.apply_strategy(self._BU_LC_RULE, BottomUpLeftCornerEdgeRule)
     def fundamental(self, *e):
         self.apply_strategy(self._FUNDAMENTAL, FundamentalEdgeRule)
     def bottom_up_strategy(self, *e):
         self.apply_strategy(self._BU_STRATEGY, BottomUpEdgeRule)
+    def bottom_up_leftcorner_strategy(self, *e):
+        self.apply_strategy(self._BU_LC_STRATEGY, BottomUpLeftCornerEdgeRule)
     def top_down_strategy(self, *e):
-        self.apply_strategy(self._TD_STRATEGY, TopDownExpandEdgeRule)
-    def earley_algorithm(self, *e):
-        self.apply_strategy(self._EARLEY, PseudoEarleyEdgeRule)
+        self.apply_strategy(self._TD_STRATEGY, TopDownPredictEdgeRule)
         
 def app():
     grammar = parse_cfg("""

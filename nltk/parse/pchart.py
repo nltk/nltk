@@ -9,10 +9,10 @@
 """
 Classes and interfaces for associating probabilities with tree
 structures that represent the internal organization of a text.  The
-probabilistic parser module defines C{BottomUpChartParser}.
+probabilistic parser module defines C{BottomUpProbabilisticChartParser}.
 
-C{BottomUpChartParser} is an abstract class that implements a
-bottom-up chart parser for C{PCFG}s.  It maintains a queue of edges,
+C{BottomUpProbabilisticChartParser} is an abstract class that implements 
+a bottom-up chart parser for C{PCFG}s.  It maintains a queue of edges,
 and adds them to the chart one at a time.  The ordering of this queue
 is based on the probabilities associated with the edges, allowing the
 parser to expand more likely edges before less likely ones.  Each
@@ -25,9 +25,9 @@ search strategies.  Currently the following subclasses are defined:
   - C{LongestChartParser} searches edges in decreasing order of their
     location's length.
 
-The C{BottomUpChartParser} constructor has an optional argument beam_size.
-If non-zero, this controls the size of the beam (aka the edge queue).
-This option is most useful with InsideChartParser.
+The C{BottomUpProbabilisticChartParser} constructor has an optional 
+argument beam_size.  If non-zero, this controls the size of the beam 
+(aka the edge queue).  This option is most useful with InsideChartParser.
 """
 
 ##//////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ This option is most useful with InsideChartParser.
 # to associate probabilities with child pointer lists.
 
 from nltk.tree import Tree, ProbabilisticTree
-from nltk.grammar import Nonterminal
+from nltk.grammar import Nonterminal, WeightedGrammar
 
 from api import *
 from chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
@@ -61,7 +61,7 @@ class ProbabilisticTreeEdge(TreeEdge):
     from_production = staticmethod(from_production)
 
 # Rules using probabilistic edges
-class BottomUpInitRule(AbstractChartRule):
+class ProbabilisticBottomUpInitRule(AbstractChartRule):
     NUM_EDGES=0
     def apply_iter(self, chart, grammar):
         for index in range(chart.num_leaves()):
@@ -69,7 +69,7 @@ class BottomUpInitRule(AbstractChartRule):
             if chart.insert(new_edge, ()):
                 yield new_edge
 
-class BottomUpPredictRule(AbstractChartRule):
+class ProbabilisticBottomUpPredictRule(AbstractChartRule):
     NUM_EDGES=1
     def apply_iter(self, chart, grammar, edge):
         if edge.is_incomplete(): return
@@ -126,14 +126,14 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
 
     def __str__(self): return 'Fundamental Rule'
     
-class BottomUpChartParser(ParserI):
+class BottomUpProbabilisticChartParser(ParserI):
     """
     An abstract bottom-up parser for C{PCFG}s that uses a C{Chart} to
-    record partial results.  C{BottomUpChartParser} maintains a
-    queue of edges that can be added to the chart.  This queue is
+    record partial results.  C{BottomUpProbabilisticChartParser} maintains 
+    a queue of edges that can be added to the chart.  This queue is
     initialized with edges for each token in the text that is being
-    parsed.  C{BottomUpChartParser} inserts these edges into the
-    chart one at a time, starting with the most likely edges, and
+    parsed.  C{BottomUpProbabilisticChartParser} inserts these edges into 
+    the chart one at a time, starting with the most likely edges, and
     proceeding to less likely edges.  For each edge that is added to
     the chart, it may become possible to insert additional edges into
     the chart; these are added to the queue.  This process continues
@@ -141,9 +141,9 @@ class BottomUpChartParser(ParserI):
     queue is empty.
 
     The sorting order for the queue is not specified by
-    C{BottomUpChartParser}.  Different sorting orders will result
-    in different search strategies.  The sorting order for the queue
-    is defined by the method C{sort_queue}; subclasses are required
+    C{BottomUpProbabilisticChartParser}.  Different sorting orders will 
+    result in different search strategies.  The sorting order for the 
+    queue is defined by the method C{sort_queue}; subclasses are required
     to provide a definition for this method.
 
     @type _grammar: C{PCFG}
@@ -154,8 +154,8 @@ class BottomUpChartParser(ParserI):
     """
     def __init__(self, grammar, beam_size=0, trace=0):
         """
-        Create a new C{BottomUpChartParser}, that uses C{grammar}
-        to parse texts.
+        Create a new C{BottomUpProbabilisticChartParser}, that uses 
+        C{grammar} to parse texts.
 
         @type grammar: C{PCFG}
         @param grammar: The grammar used to parse texts.
@@ -167,6 +167,8 @@ class BottomUpChartParser(ParserI):
             and higher numbers will produce more verbose tracing
             output.
         """
+        if not isinstance(grammar, WeightedGrammar):
+            raise ValueError("The grammar must be probabilistic WeightedGrammar")
         self._grammar = grammar
         self.beam_size = beam_size
         self._trace = trace
@@ -193,8 +195,8 @@ class BottomUpChartParser(ParserI):
         grammar = self._grammar
 
         # Chart parser rules.
-        bu_init = BottomUpInitRule()
-        bu = BottomUpPredictRule()
+        bu_init = ProbabilisticBottomUpInitRule()
+        bu = ProbabilisticBottomUpPredictRule()
         fr = SingleEdgeProbabilisticFundamentalRule()
 
         # Our queue!
@@ -275,7 +277,7 @@ class BottomUpChartParser(ParserI):
         @type chart: C{Chart}
         @rtype: C{None}
         """
-        raise AssertionError, "BottomUpChartParser is an abstract class"
+        raise AssertionError, "BottomUpProbabilisticChartParser is an abstract class"
 
     def _prune(self, queue, chart):
         """ Discard items in the queue if the queue is longer than the beam."""
@@ -286,7 +288,7 @@ class BottomUpChartParser(ParserI):
                     print '  %-50s [DISCARDED]' % chart.pp_edge(edge,2)
             del queue[:split]
 
-class InsideChartParser(BottomUpChartParser):
+class InsideChartParser(BottomUpProbabilisticChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries edges in descending
     order of the inside probabilities of their trees.  The X{inside
@@ -320,10 +322,10 @@ class InsideChartParser(BottomUpChartParser):
         queue.sort(lambda e1,e2:cmp(e1.prob(), e2.prob()))
 
 # Eventually, this will become some sort of inside-outside parser:
-# class InsideOutsideParser(BottomUpChartParser):
+# class InsideOutsideParser(BottomUpProbabilisticChartParser):
 #     def __init__(self, grammar, trace=0):
 #         # Inherit docs.
-#         BottomUpChartParser.__init__(self, grammar, trace)
+#         BottomUpProbabilisticChartParser.__init__(self, grammar, trace)
 #
 #         # Find the best path from S to each nonterminal
 #         bestp = {}
@@ -348,7 +350,7 @@ class InsideChartParser(BottomUpChartParser):
 #         queue.sort(self._cmp)
 
 import random
-class RandomChartParser(BottomUpChartParser):
+class RandomChartParser(BottomUpProbabilisticChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries edges in random order.
     This sorting order results in a random search strategy.
@@ -358,14 +360,14 @@ class RandomChartParser(BottomUpChartParser):
         i = random.randint(0, len(queue)-1)
         (queue[-1], queue[i]) = (queue[i], queue[-1])
 
-class UnsortedChartParser(BottomUpChartParser):
+class UnsortedChartParser(BottomUpProbabilisticChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries edges in whatever order.
     """
     # Inherit constructor
     def sort_queue(self, queue, chart): return
 
-class LongestChartParser(BottomUpChartParser):
+class LongestChartParser(BottomUpProbabilisticChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries longer edges before
     shorter ones.  This sorting order results in a type of best-first
