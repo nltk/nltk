@@ -33,7 +33,7 @@ def batch_parse(inputs, grammar, trace=0):
     @return: a mapping from input sentences to a list of L{Tree}s
     """
     parses = []
-    cp = nltk.parse.load_earley(grammar, trace=trace)
+    cp = nltk.parse.load_parser(grammar, trace=trace)
     for sent in inputs:
         tokens = sent.split() # use a tokenizer?
         syntrees = cp.nbest_parse(tokens)

@@ -6,7 +6,7 @@
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
-from nltk.parse import load_earley
+from nltk.parse import load_parser
 from nltk.draw.tree import draw_trees
 from util import skolemize
 from nltk.sem import logic
@@ -303,7 +303,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
     if verbose: print 'Reading grammar file', grammar_filename
     
-    parser = load_earley(grammar_filename)
+    parser = load_parser(grammar_filename)
 
     # Parse the sentence.
     tokens = sentence.split()
