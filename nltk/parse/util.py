@@ -13,10 +13,11 @@ Utility functions for parsers.
 from nltk.grammar import ContextFreeGrammar, FeatureGrammar, WeightedGrammar
 from chart import Chart, ChartParser
 from pchart import InsideChartParser
-from featurechart import FeatureChart, FeatureChartParser
+from featurechart import FeatureChart, FeatureChartParser 
 import nltk.data
 
-def load_parser(grammar_url, trace=0, chart_class=None, 
+def load_parser(grammar_url, trace=0, 
+                parser=None, chart_class=None, 
                 beam_size=0, **load_args):
     """
     Load a grammar from a file, and build a parser based on that grammar. 
@@ -36,9 +37,13 @@ def load_parser(grammar_url, trace=0, chart_class=None,
     @param trace: The level of tracing that should be used when
         parsing a text.  C{0} will generate no tracing output;
         and higher numbers will produce more verbose tracing output.
+    @param parser: The class used for parsing; should be L{ChartParser}
+        or a subclass.
+        If C{None}, the class depends on the grammar format.
     @param chart_class: The class used for storing the chart;
         should be L{Chart} or a subclass. 
         Only used for CFGs and feature CFGs.
+        If C{None}, the chart class depends on the grammar format.
     @type beam_size: C{int}
     @param beam_size: The maximum length for the parser's edge queue.
         Only used for probabilistic CFGs.
@@ -50,16 +55,22 @@ def load_parser(grammar_url, trace=0, chart_class=None,
         raise ValueError("The grammar must be a ContextFreeGrammar, "
                          "or a subclass thereof.")
     if isinstance(grammar, WeightedGrammar):
-        return InsideChartParser(grammar, trace=trace, beam_size=beam_size)
-    else:
-        fcfg = isinstance(grammar, FeatureGrammar)
-        nonempty = grammar.is_nonempty()
-        if fcfg:
+        if parser is None: 
+            parser = InsideChartParser
+        return parser(grammar, trace=trace, beam_size=beam_size)
+    
+    elif isinstance(grammar, FeatureGrammar):
+        if parser is None: 
             parser = FeatureChartParser
-            if chart_class is None: chart_class = FeatureChart
-        else:
+        if chart_class is None: 
+            chart_class = FeatureChart
+        return parser(grammar, trace=trace, chart_class=chart_class)
+    
+    else: # Plain ContextFreeGrammar.
+        if parser is None: 
             parser = ChartParser
-            if chart_class is None: chart_class = Chart
+        if chart_class is None: 
+            chart_class = Chart
         return parser(grammar, trace=trace, chart_class=chart_class)
 
 
