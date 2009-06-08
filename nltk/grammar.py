@@ -292,9 +292,6 @@ class Production(object):
         """
         str = '%r ->' % (self._lhs,)
         for elt in self._rhs:
-            #if isinstance(elt, Nonterminal):
-            #    str += ' %s' % (elt,)
-            #else:
             str += ' %r' % (elt,)
         return str
 
@@ -386,9 +383,6 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
 
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
-
-# TODO: Add FeatureProduction, with a better def. of __str__:
-# repr(self._lhs) + " -> " + " ".join(map(repr, self._rhs))
 
 #################################################################
 # Grammars
@@ -598,7 +592,7 @@ class ContextFreeGrammar(object):
 
     def __str__(self):
         str = 'Grammar with %d productions' % len(self._productions)
-        str += ' (start state = %s)' % self._start
+        str += ' (start state = %r)' % self._start
         for production in self._productions:
             str += '\n    %s' % production
         return str
