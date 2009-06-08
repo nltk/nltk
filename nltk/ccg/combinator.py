@@ -287,14 +287,14 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
 # the primary functor.
 # The restriction that the variable must be primitive is not
 # common to all versions of CCGs; some authors have other restrictions.
-def ForwardTConstraint(left,right):
+def forwardTConstraint(left,right):
     arg = innermostFunction(right)
     return arg.dir().is_backward() and arg.res().is_primitive()
 
-def BackwardTConstraint(left,right):
+def backwardTConstraint(left,right):
     arg = innermostFunction(left)
     return arg.dir().is_forward() and arg.res().is_primitive()
 
 # Instances of type-raising combinators
-ForwardT = ForwardCombinator(UndirectedTypeRaise(),ForwardTConstraint)
-BackwardT = BackwardCombinator(UndirectedTypeRaise(),BackwardTConstraint)
+ForwardT = ForwardCombinator(UndirectedTypeRaise(), forwardTConstraint)
+BackwardT = BackwardCombinator(UndirectedTypeRaise(), backwardTConstraint)

@@ -16,16 +16,16 @@ from chart import *
 from lexicon import *
 
 __all__ = [
-    # Parser interface
-    'ParserI',
-
-    # Parsers
-    'RecursiveDescentParser', 'SteppingRecursiveDescentParser',
-    'ShiftReduceParser', 'SteppingShiftReduceParser',
-    'EarleyChartParser', 'ChartParser', 'SteppingChartParser',
-    'BottomUpChartParser', 'InsideChartParser', 'RandomChartParser',
-    'UnsortedChartParser', 'LongestChartParser', 'ViterbiParser',
-    'FeatureEarleyChartParser',
-
+    'UndirectedBinaryCombinator', 'DirectedBinaryCombinator',
+    'ForwardCombinator', 'BackwardCombinator',
+    'UndirectedFunctionApplication',
+    'ForwardApplication', 'BackwardApplication',
+    'UndirectedComposition',
+    'ForwardComposition', 'BackwardComposition',
+    'BackwardBx',
+    'UndirectedSubstitution', 'ForwardSubstitution',
+    'BackwardSx',
+    'UndirectedTypeRaise', 'ForwardT', 'BackwardT',
+    'CCGLexicon',
+    'CCGEdge', 'CCGLeafEdge', 'CCGChartParser', 'CCGChart'
     ]
-
