@@ -1,9 +1,18 @@
-Version 2.0b1 2009-06-01
+Version 2.0b1 2009-06-09
 
 NLTK:
-* misc bugfixes (ChunkScore, chart rules, chatbots)
+* major refactor of chart parser code and improved API (Peter Ljunglšf)
+* added new bottom-up left-corner chart parser strategy
+* misc bugfixes (ChunkScore, chart rules, chatbots, jcn-similarity)
 * improved efficiency of "import nltk" using lazy module imports
 * moved CCG package and ISRI Arabic stemmer from NLTK-Contrib into core NLTK
+* misc code cleanups
+
+Contrib:
+* moved out of the main NLTK distribution into a separate distribution
+
+Book:
+* Ongoing polishing ahead of print publication
 
 Version 0.9.9 2009-05-06
 
