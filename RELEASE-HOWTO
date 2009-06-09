@@ -31,7 +31,7 @@ C. ERROR CHECKING
   2. make doctest (run the tests in nltk.test)
   3. make demotest (run the demonstration code included in many modules)
   4. API docs (cd doc; make api)  (check latest version of epydoc is installed)
-  5. Tutorial examples (cd doc/en; make errs)
+  5. Book examples (cd doc/book; make errs)
   6. Check issue tracker: http://code.google.com/p/nltk/issues/list
   7. Make dist, install .exe version on Windows, and test demos
 
@@ -46,12 +46,12 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
   1. Check out a clean copy of the subversion repository (or make clean)
      and install locally with sudo python setup.py install; make clean
   2. make doc (slow; see doc/ for the results) and commit
-  3. make contribdoc and commit [optional; not currently distributed]
-  4. make dist (fast; see dist/ for the results; may need "sudo make dist")
+  3. make dist (fast; see dist/ for the results; may need "sudo make dist")
      - remove source rpm since we don't distribute this
      - may need to build rpm on a different machine
      - S.Bethard can build .msi files
   (test the distributions?)
+  4. (cd ../nltk_contrib; make dist)
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@ RELEASE
@@ -60,11 +60,15 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
 A. UPLOAD DISTRIBUTIONS
 
   1. make upload (copies stuff up to Googlecode)
+     (do same in ../nltk_contrib)
   2. check result at http://code.google.com/p/nltk/downloads/list
-  3. change previous release to remove its "Featured" label
+  3. if this is a non-beta release,
+     change previous release to remove its "Featured" label
      (just click anywhere in the whitespace in its row to change its properties)
 
 B. PORTFILE
+
+  - skip this for beta releases
 
   1. Find the location of the Portfile using "port dir py25-nltk"
   2. Copy the Portfile to Portfile.orig
@@ -82,14 +86,17 @@ B. PORTFILE
 
 C. WEBSITE
 
+  - for beta releases, skip this section, and post to nltk-dev only
+
   1. install download page, by moving Download-N.N to Download
   2. post a news item at http://www.nltk.org/news-archive, summary at http://www.nltk.org/
   3. register with Python Cheeseshop: "python setup.py register"
   4. upload new portfiles to macports (needs a diff; haven't sorted this out)
-  5. post announcement to NLTK the mailing lists:
+  5. sync the book to the website (cd doc; make publish)
+  6. post announcement to NLTK the mailing lists:
        nltk-dev (for beta releases)
        nltk (for final releases)
-  6. post announcement to external mailing lists, for major N.N releases only
+  7. post announcement to external mailing lists, for major N.N releases only
        CORPORA@uib.no, linguist@linguistlist.org,
        PythonSIL@lists.sil.org, edu-sig@python.org
        mailing lists for any local courses using NLTK
@@ -105,4 +112,3 @@ E. NEW VERSION NUMBER (optional)
   1. update the version numbers in the repository so that builds
      off the repository don't have the same version as the release,
      e.g. after release 0.9.6, update repository version to 0.9.7a (alpha)
-
