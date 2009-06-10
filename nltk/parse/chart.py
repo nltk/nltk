@@ -1128,6 +1128,11 @@ class CachedTopDownPredictRule(TopDownPredictRule):
 
         # Add all the edges indicated by the top down expand rule.
         for prod in grammar.productions(lhs=next):
+            first = prod.rhs() and prod.rhs()[0]
+            # If the left corner in the predicted production is 
+            # leaf, it must match with the input.
+            if isinstance(first, basestring):
+                if index >= chart.num_leaves() or first != chart.leaf(index): continue
             new_edge = TreeEdge.from_production(prod, index)
             if chart.insert(new_edge, ()):
                 yield new_edge
@@ -1358,8 +1363,6 @@ class BottomUpChartParser(ChartParser):
             warnings.warn("BottomUpChartParser only works for ContextFreeGrammar, "
                           "use BottomUpProbabilisticChartParser instead", 
                           category=DeprecationWarning)
-        if not grammar.is_nonempty(): 
-            raise ValueError("The grammar must not contain empty productions")
         ChartParser.__init__(self, grammar, BU_STRATEGY, **parser_args)
 
 class BottomUpLeftCornerChartParser(ChartParser):
@@ -1369,8 +1372,6 @@ class BottomUpLeftCornerChartParser(ChartParser):
     See L{ChartParser} for more information.
     """
     def __init__(self, grammar, **parser_args): 
-        if not grammar.is_nonempty(): 
-            raise ValueError("The grammar must not contain empty productions")
         ChartParser.__init__(self, grammar, BU_LC_STRATEGY, **parser_args)
 
 ########################################################################

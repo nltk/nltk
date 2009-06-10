@@ -238,7 +238,8 @@ class FeatureFundamentalRule(FundamentalRule):
                 changed_chart = True
 
         # If we changed the chart, then generate the edge.
-        if changed_chart: yield new_edge
+        if changed_chart: 
+            yield new_edge
 
 class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     """
