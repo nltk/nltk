@@ -409,6 +409,7 @@ class ContextFreeGrammar(object):
         """
         self._start = start
         self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
         self._calculate_indexes()
         self._calculate_grammar_forms()
     
@@ -436,7 +437,38 @@ class ContextFreeGrammar(object):
             for token in prod._rhs:
                 if isinstance(token, str):
                     self._lexical_index.setdefault(token, set()).add(prod)
+        # Left corner words.
+        self._leftcorners = {}
+        for cat in self._categories:
+            self._leftcorners_for_cat(cat)
+        # Left corner parents.
+        self._leftcorner_parents = {}
+        for cat in self._categories:
+            self._leftcorner_parents_for_cat(cat)
     
+    def _leftcorners_for_cat(self, cat):
+        leftws = self._leftcorners.get(cat)
+        if leftws is None: 
+            leftws = self._leftcorners[cat] = set()
+            # We use the fact that _lhs_index has already been calculated.
+            for prod in self._lhs_index.get(cat, ()):
+                if len(prod) > 0:
+                    next = prod.rhs()[0]
+                    if isinstance(next, basestring):
+                        leftws.add(next)
+                    else:
+                        leftws.update(self._leftcorners_for_cat(next))
+        return leftws
+    
+    def _leftcorner_parents_for_cat(self, cat):
+        leftps = self._leftcorner_parents.get(cat)
+        if leftps is None:
+            leftps = self._leftcorner_parents[cat] = set([cat])
+            # We use the fact that _rhs_index has already been calculated.
+            for prod in self._rhs_index.get(cat, ()):
+                leftps.update(self._leftcorner_parents_for_cat(prod.lhs()))
+        return leftps
+   
     def start(self):
         """
         @return: The start symbol of the grammar
@@ -486,7 +518,21 @@ class ContextFreeGrammar(object):
         else:
             return [prod for prod in self._lhs_index.get(lhs, [])
                     if prod in self._rhs_index.get(rhs, [])]
-
+    
+    def leftcorners(self, cat):
+        """
+        Return the set of all words that the given category can start with.
+        Also called the I{first set} in compiler construction.
+        """
+        return self._leftcorners.get(cat, set())
+    
+    def leftcorner_parents(self, cat):
+        """
+        Return the set of all categories for which the given category
+        is a left corner.
+        """
+        return self._leftcorner_parents.get(cat, set())
+    
     def check_coverage(self, tokens):
         """
         Check whether the grammar rules cover the given list of tokens.
@@ -693,6 +739,20 @@ class FeatureGrammar(ContextFreeGrammar):
         else:
             return [prod for prod in self._lhs_index.get(self._get_type_if_possible(lhs), [])
                     if prod in self._rhs_index.get(self._get_type_if_possible(rhs), [])]
+    
+    def leftcorners(self, cat):
+        """
+        Return the set of all words that the given category can start with.
+        Also called the I{first set} in compiler construction.
+        """
+        raise NotImplementedError("Not implemented yet")
+    
+    def leftcorner_parents(self, cat):
+        """
+        Return the set of all categories for which the given category
+        is a left corner.
+        """
+        raise NotImplementedError("Not implemented yet")
     
     def _get_type_if_possible(self, item):
         """
