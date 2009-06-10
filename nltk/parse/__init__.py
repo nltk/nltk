@@ -77,7 +77,13 @@ __all__ = [
     'FeatureChartParser', 'FeatureTopDownChartParser', 
     'FeatureBottomUpChartParser', 'FeatureBottomUpLeftCornerChartParser',
     # from earleychart.py:
-    'EarleyChartParser', 'FeatureEarleyChartParser',
+    'IncrementalChartParser', 'EarleyChartParser', 
+    'IncrementalTopDownChartParser', 'IncrementalBottomUpChartParser',
+    'IncrementalBottomUpLeftCornerChartParser',
+    'FeatureIncrementalChartParser', 'FeatureEarleyChartParser',
+    'FeatureIncrementalTopDownChartParser',
+    'FeatureIncrementalBottomUpChartParser',
+    'FeatureIncrementalBottomUpLeftCornerChartParser',
     # from dependencygraph.py, projectivedependencyparser.py,
     # projectivedependencyparser.py, malt.py:
     'DependencyGraph', 'nx_graph', 'ProjectiveDependencyParser',
