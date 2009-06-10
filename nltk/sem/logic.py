@@ -105,13 +105,7 @@ class Variable(object):
         return not (self == other)
 
     def __cmp__(self, other):
-        assert isinstance(other, Variable), "%s is not a Variable" % other
-        if self.name == other.name:
-            return 0
-        elif self.name < other.name:
-            return -1
-        else:
-            return 1
+        return cmp(type(self), type(other)) or cmp(self.name, other.name)
 
     def substitute_bindings(self, bindings):
         return bindings.get(self, self)
