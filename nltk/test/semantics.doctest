@@ -586,7 +586,7 @@ Load a valuation from a file.
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
-    >>> gramfile = 'grammars/book_grammars/sem3.fcfg'
+    >>> gramfile = 'grammars/sample_grammars/sem3.fcfg'
     >>> inputs = ['John sees a girl', 'every dog barks']
     >>> parses = batch_parse(inputs, gramfile)
     >>> for sent, trees in zip(inputs, parses):
@@ -651,24 +651,24 @@ Load a valuation from a file.
     <BLANKLINE>
     True
 
-    >>> sents = ['Irene walks', 'Cyril bites an ankle']
-    >>> results = nltk.sem.batch_interpret(sents, 'grammars/book_grammars/sem2.fcfg')
+    >>> sents = ['Mary walks', 'John sees a dog']
+    >>> results = nltk.sem.batch_interpret(sents, 'grammars/sample_grammars/sem3.fcfg')
     >>> for result in results:
     ...     for (synrep, semrep) in result:
     ...         print synrep
-    (S[sem=<walk(irene)>]
-      (NP[-loc, num='sg', sem=<\P.P(irene)>]
-        (PropN[-loc, num='sg', sem=<\P.P(irene)>] Irene))
-      (VP[num='sg', sem=<\x.walk(x)>]
-        (IV[num='sg', sem=<\x.walk(x)>, tns='pres'] walks)))
-    (S[sem=<exists z1.(ankle(z1) & bite(cyril,z1))>]
-      (NP[-loc, num='sg', sem=<\P.P(cyril)>]
-        (PropN[-loc, num='sg', sem=<\P.P(cyril)>] Cyril))
-      (VP[num='sg', sem=<\x.exists z1.(ankle(z1) & bite(x,z1))>]
-        (TV[num='sg', sem=<\X x.X(\y.bite(x,y))>, tns='pres'] bites)
-        (NP[num='sg', sem=<\Q.exists x.(ankle(x) & Q(x))>]
-          (Det[num='sg', sem=<\P Q.exists x.(P(x) & Q(x))>] an)
-          (Nom[num='sg', sem=<ankle>] (N[num='sg', sem=<ankle>] ankle)))))
+    (S[SEM=<walk(mary)>]
+      (NP[-loc, NUM='sg', SEM=<\P.P(mary)>]
+        (PropN[-loc, NUM='sg', SEM=<\P.P(mary)>] Mary))
+      (VP[NUM='sg', SEM=<\x.walk(x)>]
+        (IV[NUM='sg', SEM=<\x.walk(x)>, tns='pres'] walks)))
+    (S[SEM=<exists z1.(dog(z1) & see(cyril,z1))>]
+      (NP[-loc, NUM='sg', SEM=<\P.P(cyril)>]
+        (PropN[-loc, NUM='sg', SEM=<\P.P(cyril)>] Cyril))
+      (VP[NUM='sg', SEM=<\x.exists z1.(dog(z1) & see(x,z1))>]
+        (TV[NUM='sg', SEM=<\X x.X(\y.see(x,y))>, tns='pres'] sees)
+        (NP[NUM='sg', SEM=<\Q.exists x.(dog(x) & Q(x))>]
+          (Det[NUM='sg', SEM=<\P Q.exists x.(P(x) & Q(x))>] an)
+          (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))))
 
 Cooper Storage
 --------------
@@ -676,7 +676,7 @@ Cooper Storage
     >>> from nltk.sem import cooper_storage as cs
     >>> sentence = 'every girl chases a dog'
     >>> trees = cs.parse_with_bindops(sentence, grammar='grammars/book_grammars/storage.fcfg')
-    >>> semrep = trees[0].node['sem']
+    >>> semrep = trees[0].node['SEM']
     >>> cs_semrep = cs.CooperStore(semrep)
     >>> print cs_semrep.core
     chase(z2,z3)
