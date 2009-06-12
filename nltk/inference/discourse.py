@@ -413,7 +413,7 @@ class DiscourseTester(object):
             idlist = [rid for rid in threads[tid]]
             
             if not modelfound:
-                print "Inconsistent discourse %s %s:" % (tid, idlist)
+                print "Inconsistent discourse: %s %s:" % (tid, idlist)
                 for  rid, reading in [(rid, str(reading))  for (rid, reading) in self.expand_threads(tid)]:
                     print "    %s: %s" % (rid, reading)
                 print 

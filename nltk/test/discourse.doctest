@@ -34,9 +34,9 @@ using (by default, ``book_grammars/discourse.fcfg``):
     >>> dt.grammar() # doctest: +ELLIPSIS
     % start S
     # Grammar Rules
-    S[sem = <app(?subj,?vp)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
-    NP[num=?n,sem=<app(?det,?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
-    NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
+    S[SEM = <app(?subj,?vp)>] -> NP[NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
+    NP[NUM=?n,SEM=<app(?det,?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
+    NP[LOC=?l,NUM=?n,SEM=?np] -> PropN[LOC=?l,NUM=?n,SEM=?np]
     ...
 
 A different grammar can be invoked by using the optional ``gramfile``
@@ -56,13 +56,13 @@ that sentence is given an identifier `s`\ :sub:`i`-`r`\ :sub:`j`.
     <BLANKLINE>
     s0 readings:
     <BLANKLINE>
-    s0-r0: exists x.(boxerdog(x) & walk(x))
-    s0-r1: exists x.(boxer(x) & walk(x))
+    s0-r0: exists x.(boxer(x) & walk(x))
+    s0-r1: exists x.(boxerdog(x) & walk(x))
     <BLANKLINE>
     s1 readings:
     <BLANKLINE>
-    s1-r0: all x.(boxerdog(x) -> exists z1.(girl(z1) & chase(x,z1)))
-    s1-r1: all x.(boxer(x) -> exists z2.(girl(z2) & chase(x,z2)))
+    s1-r0: all x.(boxer(x) -> exists z1.(girl(z1) & chase(x,z1)))
+    s1-r1: all x.(boxerdog(x) -> exists z2.(girl(z2) & chase(x,z2)))
 
 
 In this case, the only source of ambiguity lies in the word *boxer*,
@@ -77,8 +77,8 @@ We can also investigate the readings of a specific sentence:
 
     >>> dt.readings('a boxer walks')
     The sentence 'a boxer walks' has these readings:
-        exists x.(boxerdog(x) & walk(x))
         exists x.(boxer(x) & walk(x))
+        exists x.(boxerdog(x) & walk(x))
 
 Given that each sentence is two-ways ambiguous, we potentially have
 four different discourse 'threads', taking all combinations of
@@ -120,10 +120,10 @@ current discourse. However, we can also specify just one thread, say ``d1``.
     f1(0) = 0.
     f1(1) = 0.
     <BLANKLINE>
-    - boxer(0).
+      boxer(0).
     - boxer(1).
     <BLANKLINE>
-      boxerdog(0).
+    - boxerdog(0).
     - boxerdog(1).
     <BLANKLINE>
     - girl(0).
@@ -138,8 +138,8 @@ current discourse. However, we can also specify just one thread, say ``d1``.
     - chase(1,1).
     <BLANKLINE>
     Consistent discourse: d1 ['s0-r0', 's1-r1']:
-        s0-r0: exists x.(boxerdog(x) & walk(x))
-        s1-r1: all x.(boxer(x) -> exists z8.(girl(z8) & chase(x,z8)))
+        s0-r0: exists x.(boxer(x) & walk(x))
+        s1-r1: all x.(boxerdog(x) -> exists z8.(girl(z8) & chase(x,z8)))
     <BLANKLINE>
 
 There are various formats for rendering **Mace4** models --- here,
@@ -177,18 +177,18 @@ couple of them.
     <BLANKLINE>
     s0 readings:
     <BLANKLINE>
-    s0-r0: exists x.(boxerdog(x) & walk(x))
-    s0-r1: exists x.(boxer(x) & walk(x))
+    s0-r0: exists x.(boxer(x) & walk(x))
+    s0-r1: exists x.(boxerdog(x) & walk(x))
     <BLANKLINE>
     s1 readings:
     <BLANKLINE>
-    s1-r0: all x.(boxerdog(x) -> exists z9.(girl(z9) & chase(x,z9)))
-    s1-r1: all x.(boxer(x) -> exists z10.(girl(z10) & chase(x,z10)))
+    s1-r0: all x.(boxer(x) -> exists z9.(girl(z9) & chase(x,z9)))
+    s1-r1: all x.(boxerdog(x) -> exists z10.(girl(z10) & chase(x,z10)))
     <BLANKLINE>
     s2 readings:
     <BLANKLINE>
-    s2-r0: boxerdog(John)
-    s2-r1: boxer(John)
+    s2-r0: boxer(John)
+    s2-r1: boxerdog(John)
     >>> dt.readings(threaded=True) # doctest: +NORMALIZE_WHITESPACE
     d0: ['s0-r0', 's1-r0', 's2-r0']
     d1: ['s0-r0', 's1-r0', 's2-r1']
@@ -202,12 +202,12 @@ couple of them.
 If you are interested in a particular thread, the ``expand_threads()``
 method will remind you of what readings it consists of:
 
-    >>> thread = dt.expand_threads('d6')
+    >>> thread = dt.expand_threads('d1')
     >>> for rid, reading in thread:
     ...     print rid, str(reading)
-    s0-r1 exists x.(boxer(x) & walk(x))
-    s1-r1 all x.(boxer(x) -> exists z12.(girl(z12) & chase(x,z12)))
-    s2-r0 boxerdog(John)
+    s0-r0 exists x.(boxer(x) & walk(x))
+    s1-r0 all x.(boxer(x) -> exists z11.(girl(z11) & chase(x,z11)))
+    s2-r1 boxerdog(John)
 
 Suppose we have already defined a discourse, as follows:
 
@@ -218,7 +218,7 @@ have? The `` consistchk=True`` parameter of ``add_sentence()`` allows
 us to check:
 
     >>> dt.add_sentence('No person dances', consistchk=True)
-    Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
+    Inconsistent discourse: d0 ['s0-r0', 's1-r0', 's2-r0']:
         s0-r0: exists x.(student(x) & dance(x))
         s1-r0: all x.(student(x) -> person(x))
         s2-r0: -exists x.(person(x) & dance(x))
@@ -326,13 +326,13 @@ Let's build a new discourse, and look at the readings of the component sentences
     <BLANKLINE>
     s0 readings:
     <BLANKLINE>
-    s0-r0: boxerdog(Vincent)
-    s0-r1: boxer(Vincent)
+    s0-r0: boxer(Vincent)
+    s0-r1: boxerdog(Vincent)
     <BLANKLINE>
     s1 readings:
     <BLANKLINE>
-    s1-r0: boxerdog(Fido)
-    s1-r1: boxer(Fido)
+    s1-r0: boxer(Fido)
+    s1-r1: boxerdog(Fido)
     <BLANKLINE>
     s2 readings:
     <BLANKLINE>
@@ -373,7 +373,7 @@ inconsistent. To see what remains, use the ``filter=True`` parameter
 on ``readings()``.
 
     >>> dt.readings(filter=True) # doctest: +NORMALIZE_WHITESPACE
-    d2: ['s0-r1', 's1-r0', 's2-r0', 's3-r0']
+    d1: ['s0-r0', 's1-r1', 's2-r0', 's3-r0']
 
 The ``models()`` method gives us more information about the surviving thread.
 
@@ -385,11 +385,6 @@ The ``models()`` method gives us more information about the surviving thread.
     <BLANKLINE>
     --------------------------------------------------------------------------------
     Model for Discourse Thread d1
-    --------------------------------------------------------------------------------
-    No model found!
-    <BLANKLINE>
-    --------------------------------------------------------------------------------
-    Model for Discourse Thread d2
     --------------------------------------------------------------------------------
     % number = 1
     % seconds = 0
@@ -441,31 +436,36 @@ The ``models()`` method gives us more information about the surviving thread.
       marry(2,2).
     <BLANKLINE>
     --------------------------------------------------------------------------------
+    Model for Discourse Thread d2
+    --------------------------------------------------------------------------------
+    No model found!
+    <BLANKLINE>
+    --------------------------------------------------------------------------------
     Model for Discourse Thread d3
     --------------------------------------------------------------------------------
     No model found!
     <BLANKLINE>
-    Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0', 's3-r0']:
-        s0-r0: boxerdog(Vincent)
-        s1-r0: boxerdog(Fido)
+    Inconsistent discourse: d0 ['s0-r0', 's1-r0', 's2-r0', 's3-r0']:
+        s0-r0: boxer(Vincent)
+        s1-r0: boxer(Fido)
         s2-r0: married(Vincent)
         s3-r0: bark(Fido)
     <BLANKLINE>
-    Inconsistent discourse d1 ['s0-r0', 's1-r1', 's2-r0', 's3-r0']:
-        s0-r0: boxerdog(Vincent)
-        s1-r1: boxer(Fido)
+    Consistent discourse: d1 ['s0-r0', 's1-r1', 's2-r0', 's3-r0']:
+        s0-r0: boxer(Vincent)
+        s1-r1: boxerdog(Fido)
         s2-r0: married(Vincent)
         s3-r0: bark(Fido)
     <BLANKLINE>
-    Consistent discourse: d2 ['s0-r1', 's1-r0', 's2-r0', 's3-r0']:
-        s0-r1: boxer(Vincent)
-        s1-r0: boxerdog(Fido)
+    Inconsistent discourse: d2 ['s0-r1', 's1-r0', 's2-r0', 's3-r0']:
+        s0-r1: boxerdog(Vincent)
+        s1-r0: boxer(Fido)
         s2-r0: married(Vincent)
         s3-r0: bark(Fido)
     <BLANKLINE>
-    Inconsistent discourse d3 ['s0-r1', 's1-r1', 's2-r0', 's3-r0']:
-        s0-r1: boxer(Vincent)
-        s1-r1: boxer(Fido)
+    Inconsistent discourse: d3 ['s0-r1', 's1-r1', 's2-r0', 's3-r0']:
+        s0-r1: boxerdog(Vincent)
+        s1-r1: boxerdog(Fido)
         s2-r0: married(Vincent)
         s3-r0: bark(Fido)
     <BLANKLINE>
@@ -536,5 +536,5 @@ Regression Testing from book
     >>> from nltk.sem.drt import DrtParser
     >>> parser = load_earley('grammars/book_grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
     >>> trees = parser.nbest_parse('Angus owns a dog'.split())
-    >>> print trees[0].node['sem'].simplify()
+    >>> print trees[0].node['SEM'].simplify()
     ([x,z17],[Angus(x), dog(z17), own(x,z17)])
