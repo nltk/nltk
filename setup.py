@@ -53,7 +53,6 @@ setup(
                 'nltk.sem',
                 'nltk.stem',
                 'nltk.tag',
-                'nltk.test',
                 'nltk.tokenize',
                 'nltk.toolbox',
                 'nltk.etree',
