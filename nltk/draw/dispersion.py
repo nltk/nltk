@@ -30,7 +30,10 @@ def dispersion_plot(text, words):
     points = [(x,y) for x in range(len(text))
                     for y in range(len(words))
                     if text[x] == words[y]]
-    x, y = zip(*points)
+    if points:
+        x, y = zip(*points)
+    else:
+        x = y = ()
     pylab.plot(x, y, "b|", scalex=.1)
     pylab.yticks(range(len(words)), words, color="b")
     pylab.ylim(-1, len(words))
