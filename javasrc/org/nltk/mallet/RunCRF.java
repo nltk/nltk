@@ -8,6 +8,11 @@
  *                          sequences seperated by newlines.
  *
  * Results are written to stdout.
+ *
+ * Copyright (C) 2001-2009 NLTK Project
+ * Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+ * URL: <http://www.nltk.org/>
+ * For license information, see LICENSE.TXT
  */
 
 package org.nltk.mallet;

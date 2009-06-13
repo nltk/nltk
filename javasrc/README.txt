@@ -1,5 +1,8 @@
 NLTK-Java Interface Code
 
+Copyright (C) 2001-2009 NLTK Project
+For license information, see LICENSE.TXT
+
 The Java code in this directory is used by NLTK to communicate with
 external Java packages, such as Mallet.  In particular, this directory
 defines several command-line interfaces that are used by NLTK to
