@@ -2,6 +2,7 @@ Version 2.0b2 2009-06-14
 
 NLTK:
 * minor bugfixes and optimizations for parsers, updated some doctests
+* fixed dispersion plot bug which prevented empty plots
 
 Version 2.0b1 2009-06-09
 

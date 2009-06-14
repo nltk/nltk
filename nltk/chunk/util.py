@@ -579,7 +579,7 @@ better JJR I-ADJP
 
     # Demonstrate CoNLL output
     print "CoNLL output:"
-    print chunk.tree2conllstr(conll_tree)
+    print nltk.chunk.tree2conllstr(conll_tree)
     print
 
 
