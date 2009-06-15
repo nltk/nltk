@@ -174,6 +174,12 @@ class ScannerRule(CompleteFundamentalRule):
 class PredictorRule(CachedTopDownPredictRule):
     pass
 
+class FilteredCompleteFundamentalRule(FilteredSingleEdgeFundamentalRule):
+    def apply_iter(self, chart, grammar, edge):
+        if edge.is_complete():
+            for new_edge in self._apply_complete(chart, grammar.leftcorners, edge):
+                yield new_edge
+
 #////////////////////////////////////////////////////////////
 # Incremental FCFG Rules
 #////////////////////////////////////////////////////////////
@@ -227,6 +233,11 @@ BU_LC_INCREMENTAL_STRATEGY = [LeafInitRule(),
                               EmptyPredictRule(),
                               BottomUpPredictCombineRule(),
                               CompleteFundamentalRule()]
+
+LC_INCREMENTAL_STRATEGY = [LeafInitRule(),
+                           EmptyPredictRule(),
+                           FilteredBottomUpPredictCombineRule(),
+                           FilteredCompleteFundamentalRule()]
 
 class IncrementalChartParser(ChartParser):
     """
@@ -318,7 +329,7 @@ class IncrementalChartParser(ChartParser):
 
 class EarleyChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
-        IncrementalChartParser.__init__(self, grammar, EARLEY_FEATURE_STRATEGY, **parser_args)
+        IncrementalChartParser.__init__(self, grammar, EARLEY_STRATEGY, **parser_args)
     pass
 
 class IncrementalTopDownChartParser(IncrementalChartParser):
@@ -332,6 +343,13 @@ class IncrementalBottomUpChartParser(IncrementalChartParser):
 class IncrementalBottomUpLeftCornerChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         IncrementalChartParser.__init__(self, grammar, BU_LC_INCREMENTAL_STRATEGY, **parser_args)
+
+class IncrementalLeftCornerChartParser(IncrementalChartParser):
+    def __init__(self, grammar, **parser_args):
+        if not grammar.is_nonempty():
+            raise ValueError("IncrementalLeftCornerParser only works for grammars "
+                             "without empty productions.")
+        IncrementalChartParser.__init__(self, grammar, LC_INCREMENTAL_STRATEGY, **parser_args)
 
 #////////////////////////////////////////////////////////////
 # Incremental FCFG Chart Parsers
