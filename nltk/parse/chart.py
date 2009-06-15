@@ -1201,6 +1201,63 @@ class EmptyPredictRule(AbstractChartRule):
 
 
 ########################################################################
+##  Filtered Bottom Up
+########################################################################
+
+class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
+    def apply_iter(self, chart, grammar, edge):
+        if edge.is_incomplete():
+            for new_edge in self._apply_incomplete(chart, grammar.leftcorners, edge):
+                yield new_edge
+        else:
+            for new_edge in self._apply_complete(chart, grammar.leftcorners, edge):
+                yield new_edge
+
+    def _apply_complete(self, chart, leftcorners, right_edge):
+        end = right_edge.end()
+        nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+        for left_edge in chart.select(end=right_edge.start(), 
+                                      is_complete=False,
+                                      next=right_edge.lhs()):
+            if _bottomup_filter(leftcorners, nexttoken, left_edge.rhs(), left_edge.dot()): 
+                new_edge = left_edge.move_dot_forward(right_edge.end())
+                if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
+                    yield new_edge
+
+    def _apply_incomplete(self, chart, leftcorners, left_edge):
+        for right_edge in chart.select(start=left_edge.end(), 
+                                       is_complete=True,
+                                       lhs=left_edge.next()):
+            end = right_edge.end()
+            nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+            if _bottomup_filter(leftcorners, nexttoken, left_edge.rhs(), left_edge.dot()): 
+                new_edge = left_edge.move_dot_forward(right_edge.end())
+                if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
+                    yield new_edge
+
+class FilteredBottomUpPredictCombineRule(BottomUpPredictCombineRule):
+    def apply_iter(self, chart, grammar, edge):
+        if edge.is_incomplete(): return
+        leftcorners = grammar.leftcorners
+        end = edge.end()
+        nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+        for prod in grammar.productions(rhs=edge.lhs()):
+            if _bottomup_filter(leftcorners, nexttoken, prod.rhs()):
+                new_edge = TreeEdge(edge.span(), prod.lhs(), prod.rhs(), 1)
+                if chart.insert(new_edge, (edge,)):
+                    yield new_edge
+
+def _bottomup_filter(leftcorners, nexttoken, rhs, dot=0):
+    if len(rhs) <= dot + 1:
+        return True
+    next = rhs[dot + 1]
+    if isinstance(next, basestring):
+        return nexttoken == next
+    else:
+        return nexttoken in leftcorners(next)
+
+
+########################################################################
 ##  Generic Chart Parser
 ########################################################################
 
@@ -1216,6 +1273,10 @@ BU_LC_STRATEGY = [LeafInitRule(),
                   EmptyPredictRule(),
                   BottomUpPredictCombineRule(),
                   SingleEdgeFundamentalRule()]
+
+LC_STRATEGY = [LeafInitRule(),
+               FilteredBottomUpPredictCombineRule(),
+               FilteredSingleEdgeFundamentalRule()]
 
 class ChartParser(ParserI):
     """
@@ -1373,6 +1434,13 @@ class BottomUpLeftCornerChartParser(ChartParser):
     """
     def __init__(self, grammar, **parser_args): 
         ChartParser.__init__(self, grammar, BU_LC_STRATEGY, **parser_args)
+
+class LeftCornerChartParser(ChartParser):
+    def __init__(self, grammar, **parser_args): 
+        if not grammar.is_nonempty():
+            raise ValueError("LeftCornerParser only works for grammars "
+                             "without empty productions.")
+        ChartParser.__init__(self, grammar, LC_STRATEGY, **parser_args)
 
 ########################################################################
 ##  Stepping Chart Parser

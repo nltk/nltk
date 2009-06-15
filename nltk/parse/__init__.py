@@ -69,7 +69,8 @@ __all__ = [
     'ShiftReduceParser', 'SteppingShiftReduceParser',
     # from chart.py:
     'ChartParser', 'SteppingChartParser',
-    'TopDownChartParser', 'BottomUpChartParser', 'BottomUpLeftCornerChartParser',
+    'TopDownChartParser', 'BottomUpChartParser', 
+    'BottomUpLeftCornerChartParser', 'LeftCornerChartParser',
     # from pchart.py:
     'BottomUpProbabilisticChartParser', 'InsideChartParser', 'RandomChartParser',
     'UnsortedChartParser', 'LongestChartParser', 'ViterbiParser',
@@ -80,6 +81,7 @@ __all__ = [
     'IncrementalChartParser', 'EarleyChartParser', 
     'IncrementalTopDownChartParser', 'IncrementalBottomUpChartParser',
     'IncrementalBottomUpLeftCornerChartParser',
+    'IncrementalLeftCornerChartParser',
     'FeatureIncrementalChartParser', 'FeatureEarleyChartParser',
     'FeatureIncrementalTopDownChartParser',
     'FeatureIncrementalBottomUpChartParser',
