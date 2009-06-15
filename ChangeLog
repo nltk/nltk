@@ -1,7 +1,9 @@
-Version 2.0b2 2009-06-14
+Version 2.0b2 2009-06-15
 
 NLTK:
 * minor bugfixes and optimizations for parsers, updated some doctests
+* added bottom-up filtered left corner parsers,
+  LeftCornerChartParser and IncrementalLeftCornerChartParser.
 * fixed dispersion plot bug which prevented empty plots
 
 Version 2.0b1 2009-06-09
