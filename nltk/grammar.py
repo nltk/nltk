@@ -437,38 +437,32 @@ class ContextFreeGrammar(object):
             for token in prod._rhs:
                 if isinstance(token, str):
                     self._lexical_index.setdefault(token, set()).add(prod)
-        # Left corner words.
-        self._leftcorners = {}
-        for cat in self._categories:
-            self._leftcorners_for_cat(cat)
-        # Left corner parents.
-        self._leftcorner_parents = {}
-        for cat in self._categories:
-            self._leftcorner_parents_for_cat(cat)
+        
+        # Left corners.
+        immediate_leftcorners = {}
+        for prod in self._productions:
+            if len(prod) > 0:
+                child = prod.rhs()[0]
+                immediate_leftcorners.setdefault(prod.lhs(), set()).add(child)
+        leftwords = self._leftcorners = dict((cat, set()) for cat in self._categories)
+        leftparents = self._leftcorner_parents = dict((cat, set([cat])) for cat in self._categories)
+        once_again = True
+        while once_again:
+            once_again = False
+            for parent in immediate_leftcorners:
+                for child in immediate_leftcorners[parent]:
+                    if isinstance(child, basestring):
+                        if child not in leftwords[parent]:
+                            leftwords[parent].add(child)
+                            once_again = True
+                    elif child in leftwords:
+                        if not leftwords[child].issubset(leftwords[parent]):
+                            leftwords[parent].update(leftwords[child])
+                            once_again = True
+                        if not leftparents[parent].issubset(leftparents[child]):
+                            leftparents[child].update(leftparents[parent])
+                            once_again = True
     
-    def _leftcorners_for_cat(self, cat):
-        leftws = self._leftcorners.get(cat)
-        if leftws is None: 
-            leftws = self._leftcorners[cat] = set()
-            # We use the fact that _lhs_index has already been calculated.
-            for prod in self._lhs_index.get(cat, ()):
-                if len(prod) > 0:
-                    next = prod.rhs()[0]
-                    if isinstance(next, basestring):
-                        leftws.add(next)
-                    else:
-                        leftws.update(self._leftcorners_for_cat(next))
-        return leftws
-    
-    def _leftcorner_parents_for_cat(self, cat):
-        leftps = self._leftcorner_parents.get(cat)
-        if leftps is None:
-            leftps = self._leftcorner_parents[cat] = set([cat])
-            # We use the fact that _rhs_index has already been calculated.
-            for prod in self._rhs_index.get(cat, ()):
-                leftps.update(self._leftcorner_parents_for_cat(prod.lhs()))
-        return leftps
-   
     def start(self):
         """
         @return: The start symbol of the grammar
