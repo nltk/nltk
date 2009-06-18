@@ -264,15 +264,27 @@ def show_clause(reldict, relsym):
 # Example of in(ORG, LOC)
 ############################################
 def in_demo(trace=0, sql=True):
- 
+    """
+    Select pairs of organizations and locations whose mentions occur with an
+    intervening occurrence of the preposition "in".
+
+    If the sql parameter is set to True, then the entity pairs are loaded into
+    an in-memory database, and subsequently pulled out using an SQL "SELECT"
+    query.
+    """
     from nltk.corpus import ieer
     if sql:
-        import sqlite3
-        connection =  sqlite3.connect(":memory:")
-        connection.text_factory = sqlite3.OptimizedUnicode
-        cur = connection.cursor()
-        cur.execute("""create table Locations
-        (OrgName text, LocationName text, DocID text)""")
+        try:
+            import sqlite3
+            connection =  sqlite3.connect(":memory:")
+            connection.text_factory = sqlite3.OptimizedUnicode
+            cur = connection.cursor()
+            cur.execute("""create table Locations
+            (OrgName text, LocationName text, DocID text)""")
+        except ImportError:
+            import warnings
+            warnings.warn("Cannot import sqlite; sql flag will be ignored.")
+            
         
     IN = re.compile(r'.*\bin\b(?!\b.+ing)')
     
@@ -288,19 +300,25 @@ def in_demo(trace=0, sql=True):
             for rel in extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern=IN):
                 print show_clause(rel, relsym='IN')
                 if sql:
-                    rtuple = (rel['subjtext'], rel['objtext'], doc.docno)
-                    cur.execute("""insert into Locations 
-                                values (?, ?, ?)""", rtuple)
-                    connection.commit()
+                    try:
+                        rtuple = (rel['subjtext'], rel['objtext'], doc.docno)
+                        cur.execute("""insert into Locations 
+                                    values (?, ?, ?)""", rtuple)
+                        connection.commit()
+                    except NameError:
+                        pass
                     
-    if sql:           
-        cur.execute("""select OrgName from Locations
-                    where LocationName = 'Atlanta'""")
-        print
-        print "Extract data from SQL table: ORGs in Atlanta"
-        print "-" * 15
-        for row in cur:
-            print row    
+    if sql:
+        try:           
+            cur.execute("""select OrgName from Locations
+                        where LocationName = 'Atlanta'""")
+            print
+            print "Extract data from SQL table: ORGs in Atlanta"
+            print "-" * 15
+            for row in cur:
+                print row
+        except NameError:
+            pass
 
 
 ############################################
@@ -341,7 +359,7 @@ def roles_demo(trace=0):
     print "IEER: has_role(PER, ORG) -- raw rtuples:"
     print "=" * 45
     
-    for file in ieer.files():
+    for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             lcon = rcon = False
             if trace:
@@ -365,7 +383,7 @@ def ieer_headlines():
     print "IEER: First 20 Headlines"
     print "=" * 45
     
-    trees = [doc.headline for file in ieer.files() for doc in ieer.parsed_docs(file)]
+    trees = [doc.headline for file in ieer.fileids() for doc in ieer.parsed_docs(file)]
     for tree in trees[:20]:
         print
         print "%s:\n%s" % (doc.docno, tree)
