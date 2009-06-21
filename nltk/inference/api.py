@@ -491,6 +491,40 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         return self._command.get_prover()
     
 
+class ParallelProverBuilder(Prover, ModelBuilder):
+    """
+    This class stores both a prover and a model builder and when either 
+    prove() or build_model() is called, then both theorem tools are run in
+    parallel.  Whichever finishes first, the prover or the model builder, is the
+    result that will be used.
+    """
+    def __init__(self, prover, modelbuilder):
+        self._prover = prover
+        self._modelbuilder = modelbuilder
+
+    def _prove(self, goal=None, assumptions=None, verbose=False):
+        return self._run(goal, assumptions, verbose), ''
+
+    def _build_model(self, goal=None, assumptions=None, verbose=False):
+        return not self._run(goal, assumptions, verbose), ''
+    
+    def _run(self, goal, assumptions, verbose):
+        # Set up two thread, Prover and ModelBuilder to run in parallel
+        tp_thread = TheoremToolThread(lambda: self._prover.prove(goal, assumptions, verbose), verbose, 'TP')
+        mb_thread = TheoremToolThread(lambda: self._modelbuilder.build_model(goal, assumptions, verbose), verbose, 'MB')
+        
+        tp_thread.start()
+        mb_thread.start()
+        
+        while not tp_thread.done and not mb_thread.done:
+            # wait until either the prover or the model builder is done
+            pass
+    
+        if tp_thread.done:
+            return tp_thread.result
+        else:
+            return not mb_thread.result
+
 class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
     """
     This command stores both a prover and a model builder and when either 
@@ -506,9 +540,6 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
         BaseModelBuilderCommand.__init__(self, modelbuilder, goal, assumptions)
     
     def prove(self, verbose=False):
-        """
-        Perform the actual proof.  
-        """
         return self._run(verbose)
 
     def build_model(self, verbose=False):
