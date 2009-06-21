@@ -119,7 +119,7 @@ class ConcordanceIndex(object):
             to access the context of a given word occurance.
         @param key: A function that maps each token to a normalized
             version that will be used as a key in the index.  E.g., if
-            you use C{key=str.lower}, then the index will be
+            you use C{key=lambda s:s.lower()}, then the index will be
             case-insensitive.
         """
         self._tokens = tokens
@@ -309,7 +309,7 @@ class Text(object):
         if '_concordance_index' not in self.__dict__:
             print "Building index..."
             self._concordance_index = ConcordanceIndex(self.tokens,
-                                                       key=str.lower)
+                                                       key=lambda s:s.lower())
             
         self._concordance_index.print_concordance(word, width, lines)
     
@@ -394,7 +394,9 @@ class Text(object):
         """
         if '_word_context_index' not in self.__dict__:
             print 'Building word-context index...'
-            self._word_context_index = ContextIndex(self.tokens, filter=lambda x:x.isalpha(), key=str.lower)
+            self._word_context_index = ContextIndex(self.tokens,
+                                                    filter=lambda x:x.isalpha(),
+                                                    key=lambda s:s.lower())
 
 #        words = self._word_context_index.similar_words(word, num)
 
@@ -423,7 +425,8 @@ class Text(object):
         """
         if '_word_context_index' not in self.__dict__:
             print 'Building word-context index...'
-            self._word_context_index = ContextIndex(self.tokens, key=str.lower)
+            self._word_context_index = ContextIndex(self.tokens,
+                                                    key=lambda s:s.lower())
 
         try:
             fd = self._word_context_index.common_contexts(words, True)
