@@ -25,12 +25,15 @@ def update(file, pattern, replacement, verbose=False):
 
     # write the file
     s = open(file, 'rb').read()
+    t = s.replace(pattern, replacement)
     out = open(file, 'wb')
-    out.write(s.replace(pattern, replacement))
+    out.write(t)
     out.close()
    
     # restore permissions
     os.chmod(file, old_perm)
+
+    return s != t
 
 if __name__ == '__main__':
 
@@ -39,10 +42,16 @@ if __name__ == '__main__':
 
     pattern = sys.argv[1]
     replacement = sys.argv[2]
+    updated = []
 
     for root, dirs, files in os.walk('.'):
         if '/.svn' not in root:
             for file in files:
                 path = os.path.join(root, file)
-                update(path, pattern, replacement)
+                if update(path, pattern, replacement):
+                    updated.append(file)
+
+    print "Updated %d files:" % len(updated)
+    if updated:
+        print ", ".join(updated)
 
