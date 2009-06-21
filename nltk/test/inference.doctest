@@ -519,7 +519,7 @@ Mace can also be used with propositional logic.
 --------------------------------------------------------
 Running a Theorem Prover and a Model Builder in Parallel
 --------------------------------------------------------
-The ParallelProverBuilderCommand gives the ability to run a Theorem Prover 
+The ParallelProverBuilder gives the ability to run a Theorem Prover 
 and a Model Builder in parallel, using the result of whichever finishes
 first.  This is beneficial because if the Theorem Prover finds a proof, 
 then we can be certain that the Model Builder will not find a model.  
@@ -528,6 +528,21 @@ proof.
 
     >>> p = lp.parse('P')
     >>> q = lp.parse('Q')
+
+    >>> ppb = ParallelProverBuilder(Prover9(), Mace())
+    >>> ppb.prove(q, [p, p>q])
+    True
+    >>> ppb.build_model(q, [p, p>q])
+    False
+    >>> ppb = ParallelProverBuilder(Prover9(), Mace())
+    >>> ppb.prove(-q, [p, p>q])
+    False
+    >>> ppb.build_model(-q, [p, p>q])
+    True
+
+The ParallelProverBuilderCommand offers the same functionality in a 
+stateful command format.
+
     >>> ppbc = ParallelProverBuilderCommand(Prover9(), Mace(), q, [p, p>q])
     >>> ppbc.prove()
     True
