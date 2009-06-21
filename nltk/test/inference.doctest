@@ -515,3 +515,26 @@ Mace can also be used with propositional logic.
     True
     >>> mb.valuation
     {'Q': False, 'P': True}
+
+--------------------------------------------------------
+Running a Theorem Prover and a Model Builder in Parallel
+--------------------------------------------------------
+The ParallelProverBuilderCommand gives the ability to run a Theorem Prover 
+and a Model Builder in parallel, using the result of whichever finishes
+first.  This is beneficial because if the Theorem Prover finds a proof, 
+then we can be certain that the Model Builder will not find a model.  
+Conversely, if the Model Build finds a model, we know that there is no
+proof.
+
+    >>> p = lp.parse('P')
+    >>> q = lp.parse('Q')
+    >>> ppbc = ParallelProverBuilderCommand(Prover9(), Mace(), q, [p, p>q])
+    >>> ppbc.prove()
+    True
+    >>> ppbc.build_model()
+    False
+    >>> ppbc = ParallelProverBuilderCommand(Prover9(), Mace(), -q, [p, p>q])
+    >>> ppbc.prove()
+    False
+    >>> ppbc.build_model()
+    True
