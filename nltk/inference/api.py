@@ -516,36 +516,36 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
     
     def _run(self, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
-        tp_result = [None]
-        tp_thread = TheoremToolThread(lambda: BaseProverCommand._prove(self, verbose), tp_result, verbose, 'TP')
-        mb_result = [None]
-        mb_thread = TheoremToolThread(lambda: BaseModelBuilderCommand.build_model(self, verbose), mb_result, verbose, 'MB')
+        tp_thread = TheoremToolThread(lambda: BaseProverCommand.prove(self, verbose), verbose, 'TP')
+        mb_thread = TheoremToolThread(lambda: BaseModelBuilderCommand.build_model(self, verbose), verbose, 'MB')
         
         tp_thread.start()
         mb_thread.start()
         
-        while tp_result[0] is None and mb_result[0] is None:
+        while not tp_thread.done and not mb_thread.done:
             # wait until either the prover or the model builder is done
             pass
     
-        if tp_result[0] is not None:
-            self._result = tp_result[0]
+        if tp_thread.done:
+            self._result = tp_thread.result
         else:
-            self._result = not mb_result[0]
+            self._result = not mb_thread.result
         return self._result
 
     
 class TheoremToolThread(threading.Thread):
-    def __init__(self, command, result, verbose, name=None):
+    def __init__(self, command, verbose, name=None):
         self.command = command
-        self.result = result
+        self.result = None
         self.verbose = verbose
         self.name = name
         threading.Thread.__init__(self)
         
     def run(self):
-        self.result[0] = self.command()
+        self.result = self.command()
         
         if self.verbose: 
             print 'Thread %s finished with result %s at %s' % \
-                  (self.name, self.result[0], time.localtime(time.time()))
+                  (self.name, self.result, time.localtime(time.time()))
+
+    done = property(lambda self: self.result is not None, doc='Is the thread done?')
