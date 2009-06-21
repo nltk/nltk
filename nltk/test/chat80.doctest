@@ -180,19 +180,19 @@ to SQL:
 
     >>> nltk.data.show_cfg('grammars/book_grammars/sql0.fcfg')
     % start S
-    S[sem=(?np + WHERE + ?vp)] -> NP[sem=?np] VP[sem=?vp]
-    VP[sem=(?v + ?pp)] -> IV[sem=?v] PP[sem=?pp]
-    VP[sem=(?v + ?ap)] -> IV[sem=?v] AP[sem=?ap]
-    NP[sem=(?det + ?n)] -> Det[sem=?det] N[sem=?n]
-    PP[sem=(?p + ?np)] -> P[sem=?p] NP[sem=?np]
-    AP[sem=?pp] -> A[sem=?a] PP[sem=?pp]
-    NP[sem='Country="greece"'] -> 'Greece'
-    NP[sem='Country="china"'] -> 'China'
-    Det[sem='SELECT'] -> 'Which' | 'What'
-    N[sem='City FROM city_table'] -> 'cities'
-    IV[sem=''] -> 'are'
+    S[SEM=(?np + WHERE + ?vp)] -> NP[SEM=?np] VP[SEM=?vp]
+    VP[SEM=(?v + ?pp)] -> IV[SEM=?v] PP[SEM=?pp]
+    VP[SEM=(?v + ?ap)] -> IV[SEM=?v] AP[SEM=?ap]
+    NP[SEM=(?det + ?n)] -> Det[SEM=?det] N[SEM=?n]
+    PP[SEM=(?p + ?np)] -> P[SEM=?p] NP[SEM=?np]
+    AP[SEM=?pp] -> A[SEM=?a] PP[SEM=?pp]
+    NP[SEM='Country="greece"'] -> 'Greece'
+    NP[SEM='Country="china"'] -> 'China'
+    Det[SEM='SELECT'] -> 'Which' | 'What'
+    N[SEM='City FROM city_table'] -> 'cities'
+    IV[SEM=''] -> 'are'
     A -> 'located'
-    P[sem=''] -> 'in'
+    P[SEM=''] -> 'in'
 
 Given this grammar, we can express, and then execute, queries in English.
 
@@ -201,7 +201,7 @@ Given this grammar, we can express, and then execute, queries in English.
     >>> cp = load_earley('grammars/book_grammars/sql0.fcfg')
     >>> query = 'What cities are in China'
     >>> trees = cp.nbest_parse(query.split())
-    >>> answer = trees[0].node['sem']
+    >>> answer = trees[0].node['SEM']
     >>> q = join(answer)
     >>> print q
     SELECT City FROM city_table WHERE   Country="china"
