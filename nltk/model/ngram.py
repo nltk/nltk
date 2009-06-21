@@ -64,12 +64,12 @@ class NgramModel(ModelI):
         if context + (word,) in self._ngrams:
             return self[context].prob(word)
         elif self._n > 1:
-            return self._alpha(context) * self._backoff.prob(word, context[:-1])
+            return self._alpha(context) * self._backoff.prob(word, context[1:])
         else:
             raise RuntimeError("No probability mass assigned to word %s in context %s" % (word, ' '.join(context))) 
 
     def _alpha(self, tokens):
-        return self._beta(tokens) / self._backoff._beta(tokens[:-1])
+        return self._beta(tokens) / self._backoff._beta(tokens[1:])
 
     def _beta(self, tokens):
         if tokens in self:
