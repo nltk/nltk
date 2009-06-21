@@ -577,7 +577,7 @@ descriptions of the argument roles, along with examples.
     >>> expose_01 = propbank.roleset('expose.01')
     >>> turn_01 = propbank.roleset('turn.01')
     >>> print turn_01 # doctest: +ELLIPSIS
-    <Element roleset at ...>
+    <Element 'roleset' at ...>
     >>> for role in turn_01.findall("roles/role"):
     ...     print role.attrib['n'], role.attrib['descr']
     0 turner
@@ -787,9 +787,9 @@ file, a phonetic transcription, and a tokenized word list.
 
     >>> from nltk.corpus import timit
     >>> print timit.utterances() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    ('dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466',
-     'dr1-fvmh0/si2096', 'dr1-fvmh0/si836', 'dr1-fvmh0/sx116',
-     'dr1-fvmh0/sx206', 'dr1-fvmh0/sx26', 'dr1-fvmh0/sx296', ...)
+    ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466',
+    'dr1-fvmh0/si2096', 'dr1-fvmh0/si836', 'dr1-fvmh0/sx116',
+    'dr1-fvmh0/sx206', 'dr1-fvmh0/sx26', 'dr1-fvmh0/sx296', ...]
 
     >>> item = timit.utterances()[5]
     >>> print timit.phones(item) # doctest: +NORMALIZE_WHITESPACE
@@ -852,7 +852,7 @@ speaker and sentence identifier for a given speech sample:
 
     >>> # List the speech samples from the same speaker:
     >>> timit.utterances(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
-    ('dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...)
+    ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
 
 rte
 ---
@@ -918,12 +918,12 @@ as an ElementTree xml object.  The class record for a given class
 identifier is returned by the `vnclass()` method:
 
     >>> verbnet.vnclass('remove-10.1') # doctest: +ELLIPSIS
-    <Element VNCLASS at ...>
+    <Element 'VNCLASS' at ...>
 
 The `vnclass()` method also accepts "short" identifiers, such as '10.1':
 
     >>> verbnet.vnclass('10.1') # doctest: +ELLIPSIS
-    <Element VNCLASS at ...>
+    <Element 'VNCLASS' at ...>
 
 See the Verbnet documentation, or the Verbnet files, for information
 about the structure of this xml.  As an example, we can retrieve a
@@ -1256,7 +1256,7 @@ the data access methods for the ``timit`` corpus uses *utterance
 identifiers* to select which corpus items should be returned:
 
     >>> nltk.corpus.timit.utterances() # doctest: +ELLIPSIS
-    ('dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...)
+    ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
     >>> nltk.corpus.timit.words('dr1-fvmh0/sa2')
     ["don't", 'ask', 'me', 'to', 'carry', 'an', 'oily', 'rag', 'like', 'that']
 
@@ -1578,22 +1578,22 @@ Test the plaintext corpora that come with nltk:
     ...     print '  ', `corpus.words()[:10]`[:60]
     ...     # doctest: +ELLIPSIS
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc'>
-       ('rural.txt', 'science.txt')
+       ['rural.txt', 'science.txt']
        ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis'>
-       ('english-kjv.txt', 'english-web.txt', 'finnish.txt', 'frenc
+       ['english-kjv.txt', 'english-web.txt', 'finnish.txt', 'frenc
        ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven'
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/inaugural'>
-       ('1789-Washington.txt', '1793-Washington.txt', '1797-Adams.t
+       ['1789-Washington.txt', '1793-Washington.txt', '1797-Adams.t
        ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', 'and', 'o
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/state_union'>
-       ('1945-Truman.txt', '1946-Truman.txt', '1947-Truman.txt', '1
+       ['1945-Truman.txt', '1946-Truman.txt', '1947-Truman.txt', '1
        ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', 'ADDRES
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/webtext'>
-       ('firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
+       ['firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
        ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', 'allow', 's
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/udhr'>
-       ('Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
+       ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
        ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
 
 Tagged Corpus Reader
