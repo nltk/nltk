@@ -69,6 +69,13 @@ dist: zipdist gztardist rpmdist windist dmgdist
 
 gztardist: clean_code
 	$(PYTHON) setup.py -q sdist --format=gztar
+	mkdir -p .gztardist/nltk-$(VERSION)
+	cp -R javasrc .gztardist/nltk-$(VERSION)
+	(cd .gztardist; tar cf ../javasrc.tar --exclude .svn nltk-$(VERSION))
+	gunzip dist/nltk-$(VERSION).tar.gz
+	tar Af dist/nltk-2.0b2.tar javasrc.tar
+	gzip dist/nltk-$(VERSION).tar
+	rm -rf .gztardist javasrc.tar
 zipdist: clean_code
 	$(PYTHON) setup.py -q sdist --format=zip
 rpmdist: clean_code
