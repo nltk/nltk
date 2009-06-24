@@ -73,7 +73,7 @@ gztardist: clean_code
 	cp -R javasrc .gztardist/nltk-$(VERSION)
 	(cd .gztardist; tar cf ../javasrc.tar --exclude .svn nltk-$(VERSION))
 	gunzip dist/nltk-$(VERSION).tar.gz
-	tar Af dist/nltk-2.0b2.tar javasrc.tar
+	tar Af dist/nltk-$(VERSION).tar javasrc.tar
 	gzip dist/nltk-$(VERSION).tar
 	rm -rf .gztardist javasrc.tar
 zipdist: clean_code
