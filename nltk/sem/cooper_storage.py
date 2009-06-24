@@ -93,7 +93,7 @@ def demo():
     print "=" * 50    
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
-        semrep = cs.CooperStore(tree.node['sem'])
+        semrep = cs.CooperStore(tree.node['SEM'])
         print
         print "Binding operators:"
         print "-" * 15  
