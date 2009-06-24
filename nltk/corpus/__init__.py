@@ -200,8 +200,8 @@ propbank = LazyCorpusLoader(
     'prop.txt', 'frames/.*\.xml', 'verbs.txt',
     lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
     treebank) # Must be defined *after* treebank corpus.
-nombank = nltk.corpus.LazyCorpusLoader(
-    'nombank.1.0', NombankCorpusReader,p
+nombank = LazyCorpusLoader(
+    'nombank.1.0', NombankCorpusReader,
     'nombank.1.0', 'frames/.*\.xml', 'nombank.1.0.words',
     lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
     treebank) # Must be defined *after* treebank corpus.
