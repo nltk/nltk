@@ -30,7 +30,7 @@ Distributed and Licensed under provisions of the GNU General
 Public License, which is included by reference.
 """
 
-__license__ = "GPL"
+__license__ = "Apache License, Version 2.0"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
 The Natural Language Toolkit (NLTK) is a Python package for
