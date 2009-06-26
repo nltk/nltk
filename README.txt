@@ -49,10 +49,7 @@ Redistributing: NLTK source code is distributed under the Gnu Public License.
     for each corpus; all are redistributable, and available for non-commercial use.
     NLTK may be freely redistributed, subject to the provisions of these licenses.
 
-Citing: If you publish work that uses NLTK, please cite NLTK or the book as follows:
+Citing: If you publish work that uses NLTK, please cite the NLTK book, as follows:
 
-    Bird, Steven, Edward Loper and Ewan Klein (2009).
-    Natural Language Toolkit.  http://www.nltk.org/
-    
     Bird, Steven, Edward Loper and Ewan Klein (2009).
     Natural Language Processing with Python.  O'Reilly Media Inc.
