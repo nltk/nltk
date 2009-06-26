@@ -537,21 +537,21 @@ chart.  To do this, we use a special subclass of `Chart`, called
     ...                        chart_class=InstantiateVarsChart)
     >>> print cp.grammar()
     Grammar with 15 productions (start state = S[])
-        S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] VP[sem=[bo=?b2, core=?vp]]
-        VP[sem=[bo={?b1+?b2}, core=<?v(?obj)>]] -> TV[sem=[bo=?b1, core=?v]] NP[sem=[bo=?b2, core=?obj]]
-        VP[sem=?s] -> IV[sem=?s]
-        NP[sem=[bo={?b1+?b2+{bo(?det(?n),@x)}}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] N[sem=[bo=?b2, core=?n]]
-        Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] -> 'a'
-        N[sem=[bo={/}, core=<dog>]] -> 'dog'
-        N[sem=[bo={/}, core=<dog>]] -> 'cat'
-        N[sem=[bo={/}, core=<dog>]] -> 'mouse'
-        IV[sem=[bo={/}, core=<\x.bark(x)>]] -> 'barks'
-        IV[sem=[bo={/}, core=<\x.bark(x)>]] -> 'eats'
-        IV[sem=[bo={/}, core=<\x.bark(x)>]] -> 'walks'
-        TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] -> 'feeds'
-        TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] -> 'walks'
-        NP[sem=[bo={bo(\P.P(John),@x)}, core=<@x>]] -> 'john'
-        NP[sem=[bo={bo(\P.P(John),@x)}, core=<@x>]] -> 'alex'
+        S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] VP[SEM=[BO=?b2, CORE=?vp]]
+        VP[SEM=[BO={?b1+?b2}, CORE=<?v(?obj)>]] -> TV[SEM=[BO=?b1, CORE=?v]] NP[SEM=[BO=?b2, CORE=?obj]]
+        VP[SEM=?s] -> IV[SEM=?s]
+        NP[SEM=[BO={?b1+?b2+{bo(?det(?n),@x)}}, CORE=<@x>]] -> Det[SEM=[BO=?b1, CORE=?det]] N[SEM=[BO=?b2, CORE=?n]]
+        Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] -> 'a'
+        N[SEM=[BO={/}, CORE=<dog>]] -> 'dog'
+        N[SEM=[BO={/}, CORE=<dog>]] -> 'cat'
+        N[SEM=[BO={/}, CORE=<dog>]] -> 'mouse'
+        IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> 'barks'
+        IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> 'eats'
+        IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> 'walks'
+        TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] -> 'feeds'
+        TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] -> 'walks'
+        NP[SEM=[BO={bo(\P.P(John),@x)}, CORE=<@x>]] -> 'john'
+        NP[SEM=[BO={bo(\P.P(John),@x)}, CORE=<@x>]] -> 'alex'
 
 A simple intransitive sentence:
 
@@ -562,17 +562,16 @@ A simple intransitive sentence:
     |. john.barks.|
     |[-----]     .| [0:1] 'john'
     |.     [-----]| [1:2] 'barks'
-    |[-----]     .| [0:1] NP[sem=[bo={bo(\P.P(John),z101)}, core=<z101>]] -> 'john' *
-    |[----->     .| [0:1] S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {bo(\P.P(John),z101)}, ?subj: <IndividualVariableExpression z101>}
-    |.     [-----]| [1:2] IV[sem=[bo={/}, core=<\x.bark(x)>]] -> 'barks' *
-    |.     [-----]| [1:2] VP[sem=[bo={/}, core=<\x.bark(x)>]] -> IV[sem=[bo={/}, core=<\x.bark(x)>]] *
-    |[===========]| [0:2] S[sem=[bo={bo(\P.P(John),z101)}, core=<bark(z101)>]] -> NP[sem=[bo={bo(\P.P(John),z101)}, core=<z101>]] VP[sem=[bo={/}, core=<\x.bark(x)>]] *
-
+    |[-----]     .| [0:1] NP[SEM=[BO={bo(\P.P(John),z101)}, CORE=<z101>]] -> 'john' *
+    |[----->     .| [0:1] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.P(John),z101)}, ?subj: <IndividualVariableExpression z101>}
+    |.     [-----]| [1:2] IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> 'barks' *
+    |.     [-----]| [1:2] VP[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] *
+    |[===========]| [0:2] S[SEM=[BO={bo(\P.P(John),z101)}, CORE=<bark(z101)>]] -> NP[SEM=[BO={bo(\P.P(John),z101)}, CORE=<z101>]] VP[SEM=[BO={/}, CORE=<\x.bark(x)>]] *
     >>> for tree in trees: print tree
-    (S[sem=[bo={bo(\P.P(John),z101)}, core=<bark(z101)>]]
-      (NP[sem=[bo={bo(\P.P(John),z101)}, core=<z101>]] john)
-      (VP[sem=[bo={/}, core=<\x.bark(x)>]]
-        (IV[sem=[bo={/}, core=<\x.bark(x)>]] barks)))
+    (S[SEM=[BO={bo(\P.P(John),z101)}, CORE=<bark(z101)>]]
+      (NP[SEM=[BO={bo(\P.P(John),z101)}, CORE=<z101>]] john)
+      (VP[SEM=[BO={/}, CORE=<\x.bark(x)>]]
+        (IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] barks)))
 
 A transitive sentence:
 
@@ -582,26 +581,26 @@ A transitive sentence:
     |.   [---]   .   .| [1:2] 'feeds'
     |.   .   [---]   .| [2:3] 'a'
     |.   .   .   [---]| [3:4] 'dog'
-    |[---]   .   .   .| [0:1] NP[sem=[bo={bo(\P.P(John),z102)}, core=<z102>]] -> 'john' *
-    |[--->   .   .   .| [0:1] S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {bo(\P.P(John),z102)}, ?subj: <IndividualVariableExpression z102>}
-    |.   [---]   .   .| [1:2] TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] -> 'feeds' *
-    |.   [--->   .   .| [1:2] VP[sem=[bo={?b1+?b2}, core=<?v(?obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: <LambdaExpression \x y.feed(y,x)>}
-    |.   .   [---]   .| [2:3] Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] -> 'a' *
-    |.   .   [--->   .| [2:3] NP[sem=[bo={?b1+?b2+{bo(?det(?n),@x)}}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] * N[sem=[bo=?b2, core=?n]] {?b1: {/}, ?det: <LambdaExpression \Q P.exists x.(Q(x) & P(x))>}
-    |.   .   .   [---]| [3:4] N[sem=[bo={/}, core=<dog>]] -> 'dog' *
-    |.   .   [-------]| [2:4] NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<z103>]] -> Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] N[sem=[bo={/}, core=<dog>]] *
-    |.   .   [------->| [2:4] S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {bo(\P.exists x.(dog(x) & P(x)),z103)}, ?subj: <IndividualVariableExpression z103>}
-    |.   [-----------]| [1:4] VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<\y.feed(y,z103)>]] -> TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<z103>]] *
-    |[===============]| [0:4] S[sem=[bo={bo(\P.P(John),z102), bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<feed(z102,z103)>]] -> NP[sem=[bo={bo(\P.P(John),z102)}, core=<z102>]] VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<\y.feed(y,z103)>]] *
+    |[---]   .   .   .| [0:1] NP[SEM=[BO={bo(\P.P(John),z102)}, CORE=<z102>]] -> 'john' *
+    |[--->   .   .   .| [0:1] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.P(John),z102)}, ?subj: <IndividualVariableExpression z102>}
+    |.   [---]   .   .| [1:2] TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] -> 'feeds' *
+    |.   [--->   .   .| [1:2] VP[SEM=[BO={?b1+?b2}, CORE=<?v(?obj)>]] -> TV[SEM=[BO=?b1, CORE=?v]] * NP[SEM=[BO=?b2, CORE=?obj]] {?b1: {/}, ?v: <LambdaExpression \x y.feed(y,x)>}
+    |.   .   [---]   .| [2:3] Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] -> 'a' *
+    |.   .   [--->   .| [2:3] NP[SEM=[BO={?b1+?b2+{bo(?det(?n),@x)}}, CORE=<@x>]] -> Det[SEM=[BO=?b1, CORE=?det]] * N[SEM=[BO=?b2, CORE=?n]] {?b1: {/}, ?det: <LambdaExpression \Q P.exists x.(Q(x) & P(x))>}
+    |.   .   .   [---]| [3:4] N[SEM=[BO={/}, CORE=<dog>]] -> 'dog' *
+    |.   .   [-------]| [2:4] NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<z103>]] -> Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] N[SEM=[BO={/}, CORE=<dog>]] *
+    |.   .   [------->| [2:4] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.exists x.(dog(x) & P(x)),z103)}, ?subj: <IndividualVariableExpression z103>}
+    |.   [-----------]| [1:4] VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<\y.feed(y,z103)>]] -> TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<z103>]] *
+    |[===============]| [0:4] S[SEM=[BO={bo(\P.P(John),z102), bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<feed(z102,z103)>]] -> NP[SEM=[BO={bo(\P.P(John),z102)}, CORE=<z102>]] VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<\y.feed(y,z103)>]] *
 
     >>> for tree in trees: print tree
-    (S[sem=[bo={bo(\P.P(John),z102), bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<feed(z102,z103)>]]
-      (NP[sem=[bo={bo(\P.P(John),z102)}, core=<z102>]] john)
-      (VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<\y.feed(y,z103)>]]
-        (TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] feeds)
-        (NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<z103>]]
-          (Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] a)
-          (N[sem=[bo={/}, core=<dog>]] dog))))
+    (S[SEM=[BO={bo(\P.P(John),z102), bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<feed(z102,z103)>]]
+      (NP[SEM=[BO={bo(\P.P(John),z102)}, CORE=<z102>]] john)
+      (VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<\y.feed(y,z103)>]]
+        (TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] feeds)
+        (NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<z103>]]
+          (Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] a)
+          (N[SEM=[BO={/}, CORE=<dog>]] dog))))
 
 Turn down the verbosity:
 
@@ -612,20 +611,20 @@ Reuse the same lexical item twice:
 
     >>> trees = cp.nbest_parse('john feeds john'.split())
     >>> for tree in trees: print tree
-    (S[sem=[bo={bo(\P.P(John),z104), bo(\P.P(John),z105)}, core=<feed(z104,z105)>]]
-      (NP[sem=[bo={bo(\P.P(John),z104)}, core=<z104>]] john)
-      (VP[sem=[bo={bo(\P.P(John),z105)}, core=<\y.feed(y,z105)>]]
-        (TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] feeds)
-        (NP[sem=[bo={bo(\P.P(John),z105)}, core=<z105>]] john)))
+    (S[SEM=[BO={bo(\P.P(John),z104), bo(\P.P(John),z105)}, CORE=<feed(z104,z105)>]]
+      (NP[SEM=[BO={bo(\P.P(John),z104)}, CORE=<z104>]] john)
+      (VP[SEM=[BO={bo(\P.P(John),z105)}, CORE=<\y.feed(y,z105)>]]
+        (TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] feeds)
+        (NP[SEM=[BO={bo(\P.P(John),z105)}, CORE=<z105>]] john)))
 
     >>> trees = cp.nbest_parse('a dog feeds a dog'.split())
     >>> for tree in trees: print tree
-    (S[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z106), bo(\P.exists x.(dog(x) & P(x)),z107)}, core=<feed(z106,z107)>]]
-      (NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z106)}, core=<z106>]]
-        (Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] a)
-        (N[sem=[bo={/}, core=<dog>]] dog))
-      (VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z107)}, core=<\y.feed(y,z107)>]]
-        (TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] feeds)
-        (NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z107)}, core=<z107>]]
-          (Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] a)
-          (N[sem=[bo={/}, core=<dog>]] dog))))
+    (S[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z106), bo(\P.exists x.(dog(x) & P(x)),z107)}, CORE=<feed(z106,z107)>]]
+      (NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z106)}, CORE=<z106>]]
+        (Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] a)
+        (N[SEM=[BO={/}, CORE=<dog>]] dog))
+      (VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z107)}, CORE=<\y.feed(y,z107)>]]
+        (TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] feeds)
+        (NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z107)}, CORE=<z107>]]
+          (Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] a)
+          (N[SEM=[BO={/}, CORE=<dog>]] dog))))
