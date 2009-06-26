@@ -232,16 +232,15 @@ presented as something that looks more like a clause in a logical language.
     >>> for r in rels[:10]:
     ...     print relextract.show_clause(r, relsym='DE')    # doctest: +NORMALIZE_WHITESPACE
     DE('tribunal_supremo', 'victoria')
-    DE('museo_de_arte', 'alcorc\xc3\xb3n')
-    DE('museo_de_bellas_artes', 'a_coru\xc3\xb1a')
-    DE('siria', 'l\xc3\xadbano')
-    DE('uni\xc3\xb3n_europea', 'pek\xc3\xadn')
-    DE('ej\xc3\xa9rcito', 'rogberi')
-    DE('juzgado_de_instrucci\xc3\xb3n_n\xc3\xbamero_1', 'san_sebasti\xc3\xa1n')
+    DE('museo_de_arte', 'alcorc\xe3\xb3n')
+    DE('museo_de_bellas_artes', 'a_coru\xe3\xb1a')
+    DE('siria', 'l\xe3\xadbano')
+    DE('uni\xe3\xb3n_europea', 'pek\xe3\xadn')
+    DE('ej\xe3\xa9rcito', 'rogberi')
+    DE('juzgado_de_instrucci\xe3\xb3n_n\xe3\xbamero_1', 'san_sebasti\xe3\xa1n')
     DE('psoe', 'villanueva_de_la_serena')
-    DE('ej\xc3\xa9rcito', 'l\xc3\xadbano')
-    DE('juzgado_de_lo_penal_n\xc3\xbamero_2', 'ceuta')
-    
+    DE('ej\xe3\xa9rcito', 'l\xe3\xadbano')
+    DE('juzgado_de_lo_penal_n\xe3\xbamero_2', 'ceuta')
     >>> vnv = """
     ... (
     ... is/V|

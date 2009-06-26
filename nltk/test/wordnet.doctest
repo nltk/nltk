@@ -221,7 +221,7 @@ information content was created.
     >>> dog.res_similarity(cat, brown_ic)
     7.9116665090365768
     >>> dog.res_similarity(cat, genesis_ic)
-    8.3222633693905816
+    7.1388833044805002
 
 ``synset1.jcn_similarity(synset2, ic):``
 Jiang-Conrath Similarity
@@ -233,7 +233,7 @@ given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
     >>> dog.jcn_similarity(cat, brown_ic)
     0.44977552855167391
     >>> dog.jcn_similarity(cat, genesis_ic)
-    0.40657997045227057
+    0.28539390848096979
 
 ``synset1.lin_similarity(synset2, ic):``
 Lin Similarity:

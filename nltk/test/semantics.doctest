@@ -598,24 +598,24 @@ Load a valuation from a file.
     <BLANKLINE>
     Sentence: John sees a girl
     Parse:
-     (S[sem=<exists x.(girl(x) & see(john,x))>]
-      (NP[-loc, num='sg', sem=<\P.P(john)>]
-        (PropN[-loc, num='sg', sem=<\P.P(john)>] John))
-      (VP[num='sg', sem=<\y.exists x.(girl(x) & see(y,x))>]
-        (TV[num='sg', sem=<\X y.X(\x.see(y,x))>, tns='pres'] sees)
-        (NP[num='sg', sem=<\Q.exists x.(girl(x) & Q(x))>]
-          (Det[num='sg', sem=<\P Q.exists x.(P(x) & Q(x))>] a)
-          (Nom[num='sg', sem=<girl>] (N[num='sg', sem=<girl>] girl)))))
+     (S[SEM=<exists x.(girl(x) & see(john,x))>]
+      (NP[-LOC, NUM='sg', SEM=<\P.P(john)>]
+        (PropN[-LOC, NUM='sg', SEM=<\P.P(john)>] John))
+      (VP[NUM='sg', SEM=<\y.exists x.(girl(x) & see(y,x))>]
+        (TV[NUM='sg', SEM=<\X y.X(\x.see(y,x))>, TNS='pres'] sees)
+        (NP[NUM='sg', SEM=<\Q.exists x.(girl(x) & Q(x))>]
+          (Det[NUM='sg', SEM=<\P Q.exists x.(P(x) & Q(x))>] a)
+          (Nom[NUM='sg', SEM=<girl>] (N[NUM='sg', SEM=<girl>] girl)))))
     Semantics: exists x.(girl(x) & see(john,x))
     <BLANKLINE>
     Sentence: every dog barks
     Parse:
-     (S[sem=<all x.(dog(x) -> bark(x))>]
-      (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
-        (Det[num='sg', sem=<\P Q.all x.(P(x) -> Q(x))>] every)
-        (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
-      (VP[num='sg', sem=<\x.bark(x)>]
-        (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
+     (S[SEM=<all x.(dog(x) -> bark(x))>]
+      (NP[NUM='sg', SEM=<\Q.all x.(dog(x) -> Q(x))>]
+        (Det[NUM='sg', SEM=<\P Q.all x.(P(x) -> Q(x))>] every)
+        (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))
+      (VP[NUM='sg', SEM=<\x.bark(x)>]
+        (IV[NUM='sg', SEM=<\x.bark(x)>, TNS='pres'] barks)))
     Semantics: all x.(dog(x) -> bark(x))
 
     >>> sent = "every dog barks"
@@ -624,12 +624,12 @@ Load a valuation from a file.
     ...     print syntree
     ...     print
     ...     print semrep
-    (S[sem=<all x.(dog(x) -> bark(x))>]
-      (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
-        (Det[num='sg', sem=<\P Q.all x.(P(x) -> Q(x))>] every)
-        (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
-      (VP[num='sg', sem=<\x.bark(x)>]
-        (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
+    (S[SEM=<all x.(dog(x) -> bark(x))>]
+      (NP[NUM='sg', SEM=<\Q.all x.(dog(x) -> Q(x))>]
+        (Det[NUM='sg', SEM=<\P Q.all x.(P(x) -> Q(x))>] every)
+        (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))
+      (VP[NUM='sg', SEM=<\x.bark(x)>]
+        (IV[NUM='sg', SEM=<\x.bark(x)>, TNS='pres'] barks)))
     <BLANKLINE>
     all x.(dog(x) -> bark(x))
 
@@ -640,12 +640,12 @@ Load a valuation from a file.
     ...     print semrep
     ...     print
     ...     print value
-    (S[sem=<all x.(dog(x) -> bark(x))>]
-      (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
-        (Det[num='sg', sem=<\P Q.all x.(P(x) -> Q(x))>] every)
-        (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
-      (VP[num='sg', sem=<\x.bark(x)>]
-        (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
+    (S[SEM=<all x.(dog(x) -> bark(x))>]
+      (NP[NUM='sg', SEM=<\Q.all x.(dog(x) -> Q(x))>]
+        (Det[NUM='sg', SEM=<\P Q.all x.(P(x) -> Q(x))>] every)
+        (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))
+      (VP[NUM='sg', SEM=<\x.bark(x)>]
+        (IV[NUM='sg', SEM=<\x.bark(x)>, TNS='pres'] barks)))
     <BLANKLINE>
     all x.(dog(x) -> bark(x))
     <BLANKLINE>
@@ -657,17 +657,17 @@ Load a valuation from a file.
     ...     for (synrep, semrep) in result:
     ...         print synrep
     (S[SEM=<walk(mary)>]
-      (NP[-loc, NUM='sg', SEM=<\P.P(mary)>]
-        (PropN[-loc, NUM='sg', SEM=<\P.P(mary)>] Mary))
+      (NP[-LOC, NUM='sg', SEM=<\P.P(mary)>]
+        (PropN[-LOC, NUM='sg', SEM=<\P.P(mary)>] Mary))
       (VP[NUM='sg', SEM=<\x.walk(x)>]
-        (IV[NUM='sg', SEM=<\x.walk(x)>, tns='pres'] walks)))
-    (S[SEM=<exists z1.(dog(z1) & see(cyril,z1))>]
-      (NP[-loc, NUM='sg', SEM=<\P.P(cyril)>]
-        (PropN[-loc, NUM='sg', SEM=<\P.P(cyril)>] Cyril))
-      (VP[NUM='sg', SEM=<\x.exists z1.(dog(z1) & see(x,z1))>]
-        (TV[NUM='sg', SEM=<\X x.X(\y.see(x,y))>, tns='pres'] sees)
+        (IV[NUM='sg', SEM=<\x.walk(x)>, TNS='pres'] walks)))
+    (S[SEM=<exists x.(dog(x) & see(john,x))>]
+      (NP[-LOC, NUM='sg', SEM=<\P.P(john)>]
+        (PropN[-LOC, NUM='sg', SEM=<\P.P(john)>] John))
+      (VP[NUM='sg', SEM=<\y.exists x.(dog(x) & see(y,x))>]
+        (TV[NUM='sg', SEM=<\X y.X(\x.see(y,x))>, TNS='pres'] sees)
         (NP[NUM='sg', SEM=<\Q.exists x.(dog(x) & Q(x))>]
-          (Det[NUM='sg', SEM=<\P Q.exists x.(P(x) & Q(x))>] an)
+          (Det[NUM='sg', SEM=<\P Q.exists x.(P(x) & Q(x))>] a)
           (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))))
 
 Cooper Storage
