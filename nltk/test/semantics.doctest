@@ -1,5 +1,6 @@
-=========
-Semantics
+=========    bo(\P.all x.(girl(x) -> P(x)),z1)
+    bo(\P.exists x.(dog(x) & P(x)),z2)
+antics
 =========
 
     >>> from nltk.sem import logic
@@ -679,20 +680,21 @@ Cooper Storage
     >>> semrep = trees[0].node['SEM']
     >>> cs_semrep = cs.CooperStore(semrep)
     >>> print cs_semrep.core
-    chase(z2,z3)
+    chase(z1,z2)
     >>> for bo in cs_semrep.store:
     ...     print bo
-    bo(\P.all x.(girl(x) -> P(x)),z2)
-    bo(\P.exists x.(dog(x) & P(x)),z3)
+    bo(\P.all x.(girl(x) -> P(x)),z1)
+    bo(\P.exists x.(dog(x) & P(x)),z2)
     >>> cs_semrep.s_retrieve(trace=True)
     Permutation 1
-       (\P.all x.(girl(x) -> P(x)))(\z2.chase(z2,z3))
-       (\P.exists x.(dog(x) & P(x)))(\z3.all x.(girl(x) -> chase(x,z3)))
+       (\P.all x.(girl(x) -> P(x)))(\z1.chase(z1,z2))
+       (\P.exists x.(dog(x) & P(x)))(\z2.all x.(girl(x) -> chase(x,z2)))
     Permutation 2
-       (\P.exists x.(dog(x) & P(x)))(\z3.chase(z2,z3))
-       (\P.all x.(girl(x) -> P(x)))(\z2.exists x.(dog(x) & chase(z2,x)))
+       (\P.exists x.(dog(x) & P(x)))(\z2.chase(z1,z2))
+       (\P.all x.(girl(x) -> P(x)))(\z1.exists x.(dog(x) & chase(z1,x)))
 
     >>> for reading in cs_semrep.readings:
     ...     print reading
-    exists x.(dog(x) & all z4.(girl(z4) -> chase(z4,x)))
-    all x.(girl(x) -> exists z5.(dog(z5) & chase(x,z5)))
+    exists x.(dog(x) & all z3.(girl(z3) -> chase(z3,x)))
+    all x.(girl(x) -> exists z4.(dog(z4) & chase(x,z4)))
+    
