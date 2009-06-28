@@ -548,7 +548,7 @@ def discourse_demo(reading_command=None):
                           reading_command)
     dt.readings(filter=True)
     import nltk.data
-    background = nltk.data.load('/grammars/sample_grammars/background1.fol')
+    background = nltk.data.load('/grammars/book_grammars/background.fol')
     print
     dt.add_background(background, verbose=False)
     dt.background()
