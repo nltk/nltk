@@ -1,6 +1,5 @@
-=========    bo(\P.all x.(girl(x) -> P(x)),z1)
-    bo(\P.exists x.(dog(x) & P(x)),z2)
-antics
+=========
+Semantics
 =========
 
     >>> from nltk.sem import logic
@@ -587,7 +586,7 @@ Load a valuation from a file.
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
-    >>> gramfile = 'grammars/sample_grammars/sem3.fcfg'
+    >>> gramfile = 'grammars/sample_grammars/sem2.fcfg'
     >>> inputs = ['John sees a girl', 'every dog barks']
     >>> parses = batch_parse(inputs, gramfile)
     >>> for sent, trees in zip(inputs, parses):
@@ -606,7 +605,8 @@ Load a valuation from a file.
         (TV[NUM='sg', SEM=<\X y.X(\x.see(y,x))>, TNS='pres'] sees)
         (NP[NUM='sg', SEM=<\Q.exists x.(girl(x) & Q(x))>]
           (Det[NUM='sg', SEM=<\P Q.exists x.(P(x) & Q(x))>] a)
-          (Nom[NUM='sg', SEM=<girl>] (N[NUM='sg', SEM=<girl>] girl)))))
+          (Nom[NUM='sg', SEM=<\x.girl(x)>]
+            (N[NUM='sg', SEM=<\x.girl(x)>] girl)))))
     Semantics: exists x.(girl(x) & see(john,x))
     <BLANKLINE>
     Sentence: every dog barks
@@ -614,7 +614,8 @@ Load a valuation from a file.
      (S[SEM=<all x.(dog(x) -> bark(x))>]
       (NP[NUM='sg', SEM=<\Q.all x.(dog(x) -> Q(x))>]
         (Det[NUM='sg', SEM=<\P Q.all x.(P(x) -> Q(x))>] every)
-        (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))
+        (Nom[NUM='sg', SEM=<\x.dog(x)>]
+          (N[NUM='sg', SEM=<\x.dog(x)>] dog)))
       (VP[NUM='sg', SEM=<\x.bark(x)>]
         (IV[NUM='sg', SEM=<\x.bark(x)>, TNS='pres'] barks)))
     Semantics: all x.(dog(x) -> bark(x))
@@ -628,7 +629,8 @@ Load a valuation from a file.
     (S[SEM=<all x.(dog(x) -> bark(x))>]
       (NP[NUM='sg', SEM=<\Q.all x.(dog(x) -> Q(x))>]
         (Det[NUM='sg', SEM=<\P Q.all x.(P(x) -> Q(x))>] every)
-        (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))
+        (Nom[NUM='sg', SEM=<\x.dog(x)>]
+          (N[NUM='sg', SEM=<\x.dog(x)>] dog)))
       (VP[NUM='sg', SEM=<\x.bark(x)>]
         (IV[NUM='sg', SEM=<\x.bark(x)>, TNS='pres'] barks)))
     <BLANKLINE>
@@ -644,7 +646,8 @@ Load a valuation from a file.
     (S[SEM=<all x.(dog(x) -> bark(x))>]
       (NP[NUM='sg', SEM=<\Q.all x.(dog(x) -> Q(x))>]
         (Det[NUM='sg', SEM=<\P Q.all x.(P(x) -> Q(x))>] every)
-        (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))
+        (Nom[NUM='sg', SEM=<\x.dog(x)>]
+          (N[NUM='sg', SEM=<\x.dog(x)>] dog)))
       (VP[NUM='sg', SEM=<\x.bark(x)>]
         (IV[NUM='sg', SEM=<\x.bark(x)>, TNS='pres'] barks)))
     <BLANKLINE>
@@ -653,7 +656,7 @@ Load a valuation from a file.
     True
 
     >>> sents = ['Mary walks', 'John sees a dog']
-    >>> results = nltk.sem.batch_interpret(sents, 'grammars/sample_grammars/sem3.fcfg')
+    >>> results = nltk.sem.batch_interpret(sents, 'grammars/sample_grammars/sem2.fcfg')
     >>> for result in results:
     ...     for (synrep, semrep) in result:
     ...         print synrep
@@ -669,7 +672,8 @@ Load a valuation from a file.
         (TV[NUM='sg', SEM=<\X y.X(\x.see(y,x))>, TNS='pres'] sees)
         (NP[NUM='sg', SEM=<\Q.exists x.(dog(x) & Q(x))>]
           (Det[NUM='sg', SEM=<\P Q.exists x.(P(x) & Q(x))>] a)
-          (Nom[NUM='sg', SEM=<dog>] (N[NUM='sg', SEM=<dog>] dog)))))
+          (Nom[NUM='sg', SEM=<\x.dog(x)>]
+            (N[NUM='sg', SEM=<\x.dog(x)>] dog)))))
 
 Cooper Storage
 --------------
