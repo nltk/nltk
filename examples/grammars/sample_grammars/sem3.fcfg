@@ -16,55 +16,55 @@
 # Grammar Rules
 #############################
 
-S[sem = <?subj(?vp)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
+S[SEM = <?subj(?vp)>] -> NP[NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
 
-NP[num=?n,sem=<?det(?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
-NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
+NP[NUM=?n,SEM=<?det(?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
+NP[LOC=?l,NUM=?n,SEM=?np] -> PropN[LOC=?l,NUM=?n,SEM=?np]
 
-Nom[num=?n,sem=?nom] -> N[num=?n,sem=?nom]
-Nom[num=?n,sem=<?pp(?nom)>] -> N[num=?n,sem=?nom] PP[sem=?pp]
+Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
+Nom[NUM=?n,SEM=<?pp(?nom)>] -> N[NUM=?n,SEM=?nom] PP[SEM=?pp]
 
-VP[num=?n,sem=<?v(?obj)>] -> TV[num=?n,sem=?v] NP[sem=?obj]
-VP[num=?n,sem=?v] -> IV[num=?n,sem=?v]
+VP[NUM=?n,SEM=<?v(?obj)>] -> TV[NUM=?n,SEM=?v] NP[SEM=?obj]
+VP[NUM=?n,SEM=?v] -> IV[NUM=?n,SEM=?v]
 
-VP[num=?n,sem=<?pp(?vp)>] -> VP[num=?n,sem=?vp] PP[sem=?pp]
+VP[NUM=?n,SEM=<?pp(?vp)>] -> VP[NUM=?n,SEM=?vp] PP[SEM=?pp]
 
-PP[sem=<?p(?np)>] -> P[loc=?l,sem=?p] NP[loc=?l,sem=?np]
+PP[SEM=<?p(?np)>] -> P[LOC=?l,SEM=?p] NP[LOC=?l,SEM=?np]
 
 #############################
 # Lexical Rules
 #############################
 
-PropN[-loc,num=sg,sem=<\P.P(john)>] -> 'John'
-PropN[-loc,num=sg,sem=<\P.P(mary)>] -> 'Mary'
-PropN[-loc,num=sg,sem=<\P.P(suzie)>] -> 'Suzie'
-PropN[-loc,num=sg,sem=<\P.P(fido)>] -> 'Fido'
-PropN[+loc, num=sg,sem=<\P.P(noosa)>] -> 'Noosa'
+PropN[-LOC,NUM=sg,SEM=<\P.P(john)>] -> 'John'
+PropN[-LOC,NUM=sg,SEM=<\P.P(mary)>] -> 'Mary'
+PropN[-LOC,NUM=sg,SEM=<\P.P(suzie)>] -> 'Suzie'
+PropN[-LOC,NUM=sg,SEM=<\P.P(fido)>] -> 'Fido'
+PropN[+LOC, NUM=sg,SEM=<\P.P(noosa)>] -> 'Noosa'
 
-NP[-loc, num=sg, sem=<\P.\x.P(x)>] -> 'who'  
+NP[-LOC, NUM=sg, SEM=<\P.\x.P(x)>] -> 'who'  
 
-Det[num=sg,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'every'
-Det[num=pl,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'all'
-Det[sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'some'
-Det[num=sg,sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'a'
+Det[NUM=sg,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'every'
+Det[NUM=pl,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'all'
+Det[SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'some'
+Det[NUM=sg,SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'a'
 
-N[num=sg,sem=<boy>] -> 'boy'
-N[num=pl,sem=<boy>] -> 'boys'
-N[num=sg,sem=<girl>] -> 'girl'
-N[num=pl,sem=<girl>] -> 'girls'
-N[num=sg,sem=<dog>] -> 'dog'
-N[num=pl,sem=<dog>] -> 'dogs'
+N[NUM=sg,SEM=<\x.boy(x)>] -> 'boy'
+N[NUM=pl,SEM=<\x.boy(x)>] -> 'boys'
+N[NUM=sg,SEM=<\x.girl(x)>] -> 'girl'
+N[NUM=pl,SEM=<\x.girl(x)>] -> 'girls'
+N[NUM=sg,SEM=<\x.dog(x)>] -> 'dog'
+N[NUM=pl,SEM=<\x.dog(x)>] -> 'dogs'
 
-TV[num=sg,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chases'
-TV[num=pl,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chase'
-TV[num=sg,sem=<\X y. X(\x. see(y,x))>,tns=pres] -> 'sees'
-TV[num=pl,sem=<\X y. X(\x. see(y,x))>,tns=pres] -> 'see'
-TV[num=sg,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chases'
-TV[num=pl,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chase'
-IV[num=sg,sem=<\x. bark(x)>,tns=pres] -> 'barks'
-IV[num=pl,sem=<\x. bark(x)>,tns=pres] -> 'bark'
-IV[num=sg,sem=<\x. walk(x)>,tns=pres] -> 'walks'
-IV[num=pl,sem=<\x. walk(x)>,tns=pres] -> 'walk'
+TV[NUM=sg,SEM=<\X y.X(\x.chase(y,x))>,TNS=pres] -> 'chases'
+TV[NUM=pl,SEM=<\X y.X(\x.chase(y,x))>,TNS=pres] -> 'chase'
+TV[NUM=sg,SEM=<\X y.X(\x.see(y,x))>,TNS=pres] -> 'sees'
+TV[NUM=pl,SEM=<\X y.X(\x.see(y,x))>,TNS=pres] -> 'see'
+TV[NUM=sg,SEM=<\X y.X(\x.chase(y,x))>,TNS=pres] -> 'chases'
+TV[NUM=pl,SEM=<\X y.X(\x.chase(y,x))>,TNS=pres] -> 'chase'
+IV[NUM=sg,SEM=<\x.bark(x)>,TNS=pres] -> 'barks'
+IV[NUM=pl,SEM=<\x.bark(x)>,TNS=pres] -> 'bark'
+IV[NUM=sg,SEM=<\x.walk(x)>,TNS=pres] -> 'walks'
+IV[NUM=pl,SEM=<\x.walk(x)>,TNS=pres] -> 'walk'
 
-P[+loc,sem=<\X P x. X(\y. (P(x) & in(x,y)))>] -> 'in'
-P[-loc,sem=<\X P x. X(\y. (P(x) & with(x,y)))>] -> 'with'
+P[+LOC,SEM=<\X P x.X(\y.(P(x) & in(x,y)))>] -> 'in'
+P[-LOC,SEM=<\X P x.X(\y.(P(x) & with(x,y)))>] -> 'with'
