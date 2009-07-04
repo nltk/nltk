@@ -41,6 +41,7 @@ setup(
                 'nltk.app',
                 'nltk.chat',
                 'nltk.chunk',
+                'nltk.ccg',
                 'nltk.classify',
                 'nltk.corpus',
                 'nltk.corpus.reader',
@@ -63,5 +64,5 @@ setup(
     install_requires=['setuptools',
                       'PyYAML==3.08',
                       ],
-    test_suite = 'nltk.test.all',
+    test_suite = 'nltk.test.simple',
     )
