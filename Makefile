@@ -69,19 +69,20 @@ dist: zipdist gztardist rpmdist windist dmgdist
 
 gztardist: clean_code
 	$(PYTHON) setup.py -q sdist --format=gztar
-	mkdir -p .gztardist/nltk-$(VERSION)
-	cp -R javasrc .gztardist/nltk-$(VERSION)
-	(cd .gztardist; tar cf ../javasrc.tar --exclude .svn nltk-$(VERSION))
-	gunzip dist/nltk-$(VERSION).tar.gz
-	tar Af dist/nltk-$(VERSION).tar javasrc.tar
-	gzip dist/nltk-$(VERSION).tar
-	rm -rf .gztardist javasrc.tar
 zipdist: clean_code
 	$(PYTHON) setup.py -q sdist --format=zip
 rpmdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=rpm
 windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
+debdist: clean_code gztardist
+	tar xpfz dist/nltk-$(NLTK_VERSION).tar.gz
+	cd nltk-$(NLTK_VERSION)
+	mkdir -p usr/share/java/nltk
+	mv javasrc/* usr/share/java/nltk/
+	echo "usr" > add.txt
+	checkinstall --include add.txt --pkggroup python --maintainer nltk-dev@googlegroups.com -- python setup.py install
+
 docdist:
 	find doc -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-doc-$(VERSION).zip -@
 

@@ -1,0 +1,5 @@
+To install NLTK, run setup.py from an administrator account, e.g.:
+
+    sudo python setup.py install
+
+For full installation instructions, please see http://www.nltk.org/download
