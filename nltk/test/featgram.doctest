@@ -10,26 +10,26 @@ Grammars can be parsed from strings.
     >>> from nltk import grammar, parse
     >>> g = """
     ... % start DP
-    ... DP[agr=?a] -> D[agr=?a] N[agr=?a]
-    ... D[agr=[num='sg', pers=3]] -> 'this' | 'that'
-    ... D[agr=[num='pl', pers=3]] -> 'these' | 'those'
-    ... D[agr=[num='pl', pers=1]] -> 'we'
-    ... D[agr=[pers=2]] -> 'you'
-    ... N[agr=[num='sg', gend='m']] -> 'boy'
-    ... N[agr=[num='pl', gend='m']] -> 'boys'
-    ... N[agr=[num='sg', gend='f']] -> 'girl'
-    ... N[agr=[num='pl', gend='f']] -> 'girls'
-    ... N[agr=[num='sg']] -> 'student'
-    ... N[agr=[num='pl']] -> 'students'
+    ... DP[AGR=?a] -> D[AGR=?a] N[AGR=?a]
+    ... D[AGR=[NUM='sg', PERS=3]] -> 'this' | 'that'
+    ... D[AGR=[NUM='pl', PERS=3]] -> 'these' | 'those'
+    ... D[AGR=[NUM='pl', PERS=1]] -> 'we'
+    ... D[AGR=[PERS=2]] -> 'you'
+    ... N[AGR=[NUM='sg', GND='m']] -> 'boy'
+    ... N[AGR=[NUM='pl', GND='m']] -> 'boys'
+    ... N[AGR=[NUM='sg', GND='f']] -> 'girl'
+    ... N[AGR=[NUM='pl', GND='f']] -> 'girls'
+    ... N[AGR=[NUM='sg']] -> 'student'
+    ... N[AGR=[NUM='pl']] -> 'students'
     ... """
     >>> grammar = grammar.parse_fcfg(g)
     >>> tokens = 'these girls'.split()
     >>> parser = parse.FeatureEarleyChartParser(grammar)
     >>> trees = parser.nbest_parse(tokens)
     >>> for tree in trees: print tree
-    (DP[agr=[gend='f', num='pl', pers=3]]
-      (D[agr=[num='pl', pers=3]] these)
-      (N[agr=[gend='f', num='pl']] girls))
+    (DP[AGR=[GND='f', NUM='pl', PERS=3]]
+      (D[AGR=[NUM='pl', PERS=3]] these)
+      (N[AGR=[GND='f', NUM='pl']] girls))
 
 In general, when we are trying to develop even a very small grammar,
 it is convenient to put the rules in a file where they can be edited,

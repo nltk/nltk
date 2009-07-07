@@ -1025,11 +1025,11 @@ corpus reader instances:
     >>> nltk.corpus.brown # doctest: +ELLIPSIS
     <CategorizedTaggedCorpusReader in '.../corpora/brown'>
     >>> nltk.corpus.treebank # doctest: +ELLIPSIS
-    <BracketParseCorpusReader in '.../corpora/treebank/combined'>
+    <BracketParseCorpusReader in '/usr/share/nltk_data/corpora/treebank.zip/treebank/combined/'>
     >>> nltk.corpus.names # doctest: +ELLIPSIS
-    <WordListCorpusReader in '.../corpora/names'>
+    <WordListCorpusReader in '/usr/share/nltk_data/corpora/names.zip/names/'>
     >>> nltk.corpus.genesis # doctest: +ELLIPSIS
-    <PlaintextCorpusReader in '.../corpora/genesis'>
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis.zip/genesis/'>
     >>> nltk.corpus.inaugural # doctest: +ELLIPSIS
     <PlaintextCorpusReader in '.../corpora/inaugural'>
 
@@ -1138,7 +1138,7 @@ directory (or in subdirectories of that root directory).  The absolute
 path to the root directory is stored in the ``root`` property:
 
     >>> print nltk.corpus.genesis.root # doctest: +ELLIPSIS
-    /.../corpora/genesis
+    ZipFilePathPointer('/usr/share/nltk_data/corpora/genesis.zip', 'genesis/')
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the
@@ -1577,22 +1577,22 @@ Test the plaintext corpora that come with nltk:
     ...     print '  ', `corpus.fileids()`[:60]
     ...     print '  ', `corpus.words()[:10]`[:60]
     ...     # doctest: +ELLIPSIS
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc'>
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc.zip/abc/'>
        ['rural.txt', 'science.txt']
        ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis'>
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis.zip/genesis/'>
        ['english-kjv.txt', 'english-web.txt', 'finnish.txt', 'frenc
        ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven'
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/inaugural'>
        ['1789-Washington.txt', '1793-Washington.txt', '1797-Adams.t
        ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', 'and', 'o
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/state_union'>
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/state_union.zip/state_union/'>
        ['1945-Truman.txt', '1946-Truman.txt', '1947-Truman.txt', '1
        ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', 'ADDRES
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/webtext'>
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/webtext.zip/webtext/'>
        ['firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
        ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', 'allow', 's
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/udhr'>
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/udhr.zip/udhr/'>
        ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
        ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
 
@@ -2070,7 +2070,7 @@ tells, and checks that the results are consistent:
     ...             else: pos = None
     ...             if random.random() < .2: size = None
     ...             elif random.random() < .8:
-    ...                 size = random.randint(0, strlen/6)
+    ...                 size = random.randint(0, int(strlen/6))
     ...             else: size = random.randint(0, strlen+20)
     ...             if random.random() < .8:
     ...                 s = reader.read(size)
