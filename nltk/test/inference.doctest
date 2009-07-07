@@ -346,7 +346,7 @@ The same method can be used on Discourse Representation Structures (DRSs).
 In this case, each DRS is converted to a first order logic form, and then
 passed to the theorem prover.
 
-	>>> dp = DrtParser()
+    >>> dp = DrtParser()
     >>> a = dp.parse(r'([x],[man(x), walks(x)])')
     >>> b = dp.parse(r'([x],[walks(x), man(x)])')
     >>> print a.tp_equals(b)
