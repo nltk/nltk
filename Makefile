@@ -28,7 +28,9 @@ upload:
 	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION)*.dmg
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
-	$(UPLOAD) --summary="NLTK $(VERSION) for Unix" dist/nltk-$(VERSION)*.rpm
+	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.rpm
+	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk-$(VERSION)*.deb
+	$(UPLOAD) --summary="NLTK $(VERSION) Egg" dist/nltk-$(VERSION)*.egg
 	$(UPLOAD) --summary="NLTK-Contrib $(VERSION)" ../nltk_contrib/dist/nltk_contrib-$(VERSION)*.zip
 
 doc:
@@ -66,7 +68,7 @@ nltk/nltk.jar: $(JAVA_SRC)
 # DISTRIBUTIONS
 ########################################################################
 
-dist: zipdist gztardist rpmdist windist dmgdist
+dist: zipdist gztardist rpmdist windist debdist eggdist dmgdist
 
 gztardist: clean_code
 	$(PYTHON) setup.py -q sdist --format=gztar
@@ -83,6 +85,8 @@ debdist: clean_code gztardist
 	mv javasrc/* usr/share/java/nltk/
 	echo "usr" > add.txt
 	checkinstall --include add.txt --pkggroup python --maintainer nltk-dev@googlegroups.com -- python setup.py install
+eggdist: clean_code
+	$(PYTHON) setup-eggs.py bdist --formats=egg
 
 docdist:
 	find doc -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-doc-$(VERSION).zip -@
