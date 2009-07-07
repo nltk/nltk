@@ -27,6 +27,7 @@ setup(
     maintainer_email = nltk.__maintainer_email__,
     author = nltk.__author__,
     author_email = nltk.__author__,
+    classifiers = nltk.__classifiers__,
     # platforms = <platforms>,
     
     #############################################
