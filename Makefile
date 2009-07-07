@@ -29,6 +29,7 @@ upload:
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
 	$(UPLOAD) --summary="NLTK $(VERSION) for Unix" dist/nltk-$(VERSION)*.rpm
+	$(UPLOAD) --summary="NLTK-Contrib $(VERSION)" ../nltk_contrib/dist/nltk_contrib-$(VERSION)*.zip
 
 doc:
 	$(MAKE) -C doc all
