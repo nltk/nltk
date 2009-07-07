@@ -40,24 +40,24 @@ Using the dependency-parsed version of the Penn Treebank corpus sample.
     >>> from nltk.corpus import dependency_treebank
     >>> t = dependency_treebank.parsed_sents()[0]
     >>> print t.to_conll(3)  # doctest: +NORMALIZE_WHITESPACE
-    Pierre  NNP 3
-    Vinken  NNP 9
-    ,   ,   3
-    61  CD  6
-    years   NNS 7
-    old JJ  3
-    ,   ,   3
-    will    MD  0
-    join    VB  9
-    the DT  12
-    board   NN  10
-    as  IN  10
-    a   DT  16
-    nonexecutive    JJ  16
-    director    NN  13
-    Nov.    NNP 10
-    29  CD  17
-    .   .   9
+    Pierre      NNP     2
+    Vinken      NNP     8
+    ,   ,       2
+    61  CD      5
+    years       NNS     6
+    old JJ      2
+    ,   ,       2
+    will        MD      0
+    join        VB      8
+    the DT      11
+    board       NN      9
+    as  IN      9
+    a   DT      15
+    nonexecutive        JJ      15
+    director    NN      12
+    Nov.        NNP     9
+    29  CD      16
+    .   .       8
 
 Projective Dependency Parsing
 -----------------------------
