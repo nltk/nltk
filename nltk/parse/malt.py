@@ -133,6 +133,16 @@ class MaltParser(ParserI):
         if not self._malt_bin:
             raise Exception("MaltParser location is not configured.  Call config_malt() first.")
 
+        # If conll_file is a ZipFilePathPointer, then we need to do some extra massaging
+        f = None
+        if hasattr(conll_file, 'zipfile'):
+            zip_conll_file = conll_file
+            conll_file = os.path.join(tempfile.gettempdir(),'malt_train.conll')
+            conll_str = zip_conll_file.open().read()
+            f = open(conll_file,'w')
+            f.write(conll_str)
+            f.close()        
+
         cmd = ['java', '-jar %s' % self._malt_bin, '-w %s' % tempfile.gettempdir(), 
                '-c %s' % self.mco, '-i %s' % conll_file, '-m learn']
         
