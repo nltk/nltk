@@ -24,7 +24,7 @@ __all__ = [
     'TableauProver', 'TableauProverCommand', 
     'ResolutionProver', 'ResolutionProverCommand',
     'Mace', 'MaceCommand',
-    'ParallelProverBuilderCommand',
+    'ParallelProverBuilder', 'ParallelProverBuilderCommand',
     
     # discourse
     'ReadingCommand', 'CfgReadingCommand', 'DrtGlueReadingCommand', 'DiscourseTester'
