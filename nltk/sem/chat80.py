@@ -584,21 +584,21 @@ def val_load(db):
         return val
 
 
-def alpha(str):
-    """
-    Utility to filter out non-alphabetic constants.
+#def alpha(str):
+    #"""
+    #Utility to filter out non-alphabetic constants.
 
-    @param str: candidate constant
-    @type str: string
-    @rtype: bool
-    """
-    try:
-        int(str)
-        return False
-    except ValueError:
-        # some unknown values in records are labeled '?'
-        if not str == '?':
-            return True
+    #@param str: candidate constant
+    #@type str: string
+    #@rtype: bool
+    #"""
+    #try:
+        #int(str)
+        #return False
+    #except ValueError:
+        ## some unknown values in records are labeled '?'
+        #if not str == '?':
+            #return True
 
 
 def label_indivs(valuation, lexicon=False):
@@ -614,11 +614,10 @@ def label_indivs(valuation, lexicon=False):
     # collect all the individuals into a domain
     domain = valuation.domain
     # convert the domain into a sorted list of alphabetic terms
-    entities = sorted(e for e in domain if alpha(e))
     # use the same string as a label
-    pairs = [(e, e) for e in entities]
+    pairs = [(e, e) for e in domain]
     if lexicon:
-        lex = make_lex(entities)
+        lex = make_lex(domain)
         open("chat_pnames.cfg", mode='w').writelines(lex)
     # read the pairs into the valuation
     valuation.update(pairs)
