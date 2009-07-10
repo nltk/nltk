@@ -79,12 +79,8 @@ rpmdist: clean_code
 windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
 debdist: clean_code gztardist
-	tar xpfz dist/nltk-$(NLTK_VERSION).tar.gz
-	cd nltk-$(NLTK_VERSION)
-	mkdir -p usr/share/java/nltk
-	mv javasrc/* usr/share/java/nltk/
-	echo "usr" > add.txt
-	checkinstall --include add.txt --pkggroup python --maintainer nltk-dev@googlegroups.com -- python setup.py install
+	alien --to-deb --bump=0 dist/nltk-$(VERSION)*noarch.rpm
+	mv *.deb dist/
 eggdist: clean_code
 	$(PYTHON) setup-eggs.py bdist --formats=egg
 
