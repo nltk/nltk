@@ -29,7 +29,7 @@ upload:
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
 	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.rpm
-	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk-$(VERSION)*.deb
+	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk_$(VERSION)-1_all.deb
 	$(UPLOAD) --summary="NLTK $(VERSION) Egg" dist/nltk-$(VERSION)*.egg
 	$(UPLOAD) --summary="NLTK-Contrib $(VERSION)" ../nltk_contrib/dist/nltk_contrib-$(VERSION)*.zip
 
@@ -78,7 +78,7 @@ rpmdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=rpm
 windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
-debdist: clean_code gztardist
+debdist: clean_code
 	alien --to-deb --bump=0 dist/nltk-$(VERSION)*noarch.rpm
 	mv *.deb dist/
 eggdist: clean_code
