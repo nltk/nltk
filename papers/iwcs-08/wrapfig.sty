@@ -1,0 +1,598 @@
+%  W R A P F I G . S T Y    ver 3.6  (Jan 31, 2003)
+%
+%  Copyright (C) 1991-2003   by Donald Arseneau   <asnd@triumf.ca>
+%  This software is released under the terms of the LaTeX Project 
+%  public license.
+%
+%  Environments "wrapfigure" and "wraptable" place a figure or table
+%  at the side of the page and wrap text around it.
+%
+%  \begin{wrapfigure}[12]{r}[34pt]{5cm} <figure> \end{wrapfigure}
+%                     --  -  ----  ---
+%  [number of narrow lines] {placement} [overhang] {width of figure}
+%
+%  Placement is one of   r, l, i, o, R, L, I, O,  for right, left,
+%  inside, outside, (here / FLOAT).
+%  The figure sticks into the margin by `overhang', if given, or by the
+%  length \wrapoverhang, which is normally zero.
+%  The number of wrapped text lines is normally calculated from the height
+%  of the figure, but may be specified manually ("12" above).
+% 
+%  Environments similar to "wrapfigure" and "wraptable" may be easily added,
+%  or invoked by "\begin{wrapfloat}{float_name}"
+%
+%  More detailed instructions are given below, following the definitions.
+%  Please direct any problem reports to asnd@triumf.ca
+
+%%%%%  ----- Begin definitions ----- %%%%%
+
+\@ifundefined{c@WF@wrappedlines}{}{\endinput}
+
+\newdimen\wrapoverhang \wrapoverhang\z@
+\newdimen\WF@size
+\newcount\c@WF@wrappedlines % used globally
+\newbox\WF@box
+\newtoks\WF@everypar
+\newif\ifWF@float
+\let\@@parshape\parshape
+\let\WF@@everypar\everypar
+
+\def\wrapfloat#1{\def\@captype{#1}\@ifnextchar[\WF@wr{\WF@wr[]}}
+
+\def\wrapfigure{\wrapfloat{figure}}
+\def\wraptable{\wrapfloat{table}}
+
+\def\WF@wr[#1]#2{% first two args: #1=num lines, #2=placement
+  \xdef\WF@wfname{wrap\@captype\space}%
+  \ifvoid\WF@box\else \WFclear \WF@collision \fi
+  \xdef\WF@place{\string`\@car#2r\@nil}%
+  \ifnum\lccode\WF@place=\WF@place \global\WF@floatfalse
+    \else \global\WF@floattrue \fi
+  \ifx\parshape\WF@fudgeparshape \ifWF@float\else\WF@collision\fi \else
+   \ifx\par\@@par \ifnum\@@parshape>\z@\WF@conflict\fi \else \WF@conflict\fi
+  \fi \gdef\WF@wli{#1}%
+  \@ifnextchar[\WF@rapt{\WF@rapt[\wrapoverhang]}}
+
+\def\WF@rapt[#1]#2{% final two args: #1 = overhang,  #2 = width,
+  \gdef\WF@ovh{#1}% hold overhang for later, when \width is known
+  \global\setbox\WF@box\vtop\bgroup \setlength\hsize{#2}%
+  \ifdim\hsize>\z@ \@parboxrestore \else 
+  \setbox\z@\hbox\bgroup \let\wf@@caption\caption \let\caption\wf@caption 
+  \ignorespaces \fi}
+
+\def\wf@caption{\relax
+  \ifdim\hsize>\z@ \let\caption\wf@@caption \else
+  \unskip \egroup \hsize\wd\z@ \@parboxrestore \box\z@ \fi \caption}
+
+\def\endwrapfloat{%
+  \ifdim\hsize>\z@ \par\hrule\@width\hsize\@height\z@ % force width
+  \else \unskip \egroup \box\z@ \fi % or end hbox
+  \egroup % end the \vtop; width is known so now is "later"
+  \WF@floatstyhook % support float.sty
+  \def\width{\wd\WF@box}\setlength\wrapoverhang{\WF@ovh}%
+  \xdef\WF@ovh{\the\wrapoverhang}% save until wrapping
+  \ifdim\ht\WF@box>\topskip \ht\WF@box\z@ \fi % too much height, set flag.
+  \ifdim\ht\WF@box<.5\p@ % too tall (starts with \vbox) or too short
+   \global\setbox\WF@box\vtop{\vskip-1.4ex\unvbox\WF@box}\fi
+  \global\WF@size\dp\WF@box % box is guaranteed to have little height.
+  \global\advance\WF@size1.5\baselineskip \global\advance\WF@size\tw@\intextsep
+  \aftergroup\WF@startfloating % even when not really floating!
+  \ifWF@float\else \ifhmode
+     {\unskip \parfillskip\z@skip \par \vskip-\parskip}\aftergroup\noindent
+  \fi\fi \global\@ignoretrue}
+
+\let\endwrapfigure\endwrapfloat
+\let\endwraptable\endwrapfloat
+
+% Subvert \everypar to float fig and do wrapping.  Also for non-float.
+\def\WF@startfloating{%
+ \WF@everypar\expandafter{\the\everypar}\let\everypar\WF@everypar
+ \WF@@everypar{\ifvoid\WF@box\else\WF@floathand\fi \the\everypar
+ \WF@wraphand
+}}
+
+\def\WF@floathand{%
+\ifx\parshape\WF@fudgeparshape \WF@fltmes\else
+  \ifx\par\@@par\ifnum\@@parshape=\z@\ifdim\hangindent=\z@
+    \setbox\z@\lastbox \begingroup
+    \@@par \WF@@everypar{}\WF@putfigmaybe
+    \endgroup % start wrapping
+    \ifvoid\z@\else\box\z@\fi % replace indentation
+  \else\WF@fltmes\fi\else\WF@fltmes\fi\else\WF@fltmes\fi\fi}
+
+% Put fig here if it fits or if it can't float
+\def\WF@putfigmaybe{%
+\ifinner
+  \vskip-\parskip \global\WF@floatfalse
+  \let\pagetotal\maxdimen % kludge flag for "not top of page"
+\else % outer page
+  \@tempdima\pagedepth % save page depth
+   {\advance\parskip\@tempdima\vskip-\parskip}% back up to baseline
+   \penalty\interlinepenalty % update pg. parameters
+   \@tempdimb\pagegoal \advance\@tempdimb-\pagetotal % room left on page
+   \ifdim\@tempdimb<\z@ % \WF@info{Page overfull already;}%
+      \global\WF@floatfalse
+      \ifdim-\@tempdimb>\pageshrink \else \pagebreak \fi
+   \else
+      \ifdim\WF@size>\@tempdimb
+%        \WF@info{Size \the\WF@size\space does not fit in \the\@tempdimb}%
+         \ifWF@float \dimen@.5\baselineskip \else \dimen@ 2\baselineskip\fi
+         \ifdim\pagestretch>\dimen@ \dimen@\pagestretch \fi
+         \ifdim\pagefilstretch>\z@ \dimen@\@tempdimb \fi
+         \ifdim\pagefillstretch>\z@ \dimen@\@tempdimb \fi
+         \advance\dimen@.5\baselineskip
+         \ifdim\dimen@>\@tempdimb % \WF@info{Page nearly full; can stretch}%
+            \global\WF@floatfalse \pagebreak
+         \fi
+      \else % \WF@info{Fits in \the\@tempdimb;}%
+         \global\WF@floatfalse
+   \fi\fi
+   \vskip\@tempdima\relax % (return erased page depth)
+\fi
+\noindent
+\ifWF@float
+  \WF@fltmes
+\else % putting here;
+  \WF@info{Put \WF@wfname here:}%
+  {\ifodd\if@twoside\c@page\else\@ne\fi % assign l/r to i/o placement
+    \lccode`i`l\lccode`o`r\else \lccode`i`r\lccode`o`l\fi
+    \xdef\WF@place{\the\lccode\lccode\WF@place}}% twice to get only l or r
+  \hbox to\z@{% llap or rlap depending on {l} or {r}; calc effective width
+   \@tempdima\wd\WF@box \@tempdimb\WF@ovh
+   \advance\@tempdima-\@tempdimb \advance\@tempdima\columnsep
+   \@tempdimb\hsize \advance\@tempdimb-\@tempdima
+   \xdef\WF@adjlw{\the\@tempdima}%
+   \ifnum `l=\WF@place % fig on left
+    \hss % figure overlaps space to the left
+    \def\@tempa{\kern\columnsep}% position to left of the gap
+   \else  %  fig on right
+    \@tempdima\z@ % no left indentation
+    \kern\@tempdimb \kern\columnsep
+    \def\@tempa{\hss}% figure overlaps space to the right
+   \fi
+   \ifdim\@tempdimb<\hsize
+    \xdef\WF@wrapil{\the\@tempdima \the\@tempdimb}% indentation and length
+    \xdef\WF@adjtlm{\the\@tempdima}%
+   \else
+    \xdef\WF@wrapil{\z@ \the\hsize}%
+    \xdef\WF@adjlw{\z@}\xdef\WF@adjtlm{\z@}%
+   \fi
+   \ifdim\pagetotal=\z@ % \WF@info{Put \WF@wfname at top of p.\thepage}%
+    \global\advance\WF@size-\intextsep
+   \else % \WF@info{Putting \WF@wfname in middle of page}%
+    \setbox\WF@box\hbox{\lower\intextsep\box\WF@box}%
+   \fi \dp\WF@box\z@ \box\WF@box \@tempa
+  }% end \hbox to 0pt
+  \aftergroup\WF@startwrapping % after the \endgroup which immediately follows
+\fi}
+
+\def\WF@startwrapping{%
+ \ifx\WF@wli\@empty
+  {\advance\WF@size1.1\baselineskip
+  \divide\WF@size\baselineskip \global\c@WF@wrappedlines\WF@size}%
+ \else
+  \setcounter{WF@wrappedlines}{\WF@wli}\global\advance\c@WF@wrappedlines\@ne
+ \fi
+ \ifnum\c@WF@wrappedlines>\@ne
+  \let\parshape\WF@fudgeparshape \let\WF@pspars\@empty \let\WF@@par\par
+  \def\@setpar##1{\def\WF@@par{##1}}\def\par{\@par}\let\@par\WF@mypar
+  \xdef\WF@restoretol{\tolerance\the\tolerance}\tolerance9999
+  \advance\linewidth-\WF@adjlw \advance\@totalleftmargin\WF@adjtlm
+ \fi}
+
+\def\WF@wraphand{%
+\ifnum\c@WF@wrappedlines<\tw@ \WF@finale
+\else \begingroup % Create \parshape command:
+ \@tempcnta\@ne \let\WF@wrapil\relax \gdef\WF@ps{}%
+ \@whilenum \@tempcnta<\c@WF@wrappedlines\do{% repeated indentation, length
+  \xdef\WF@ps{\WF@ps\WF@wrapil}\advance\@tempcnta\@ne
+ }\endgroup
+ \ifx\WF@pspars\@empty
+  \@@parshape\c@WF@wrappedlines \WF@ps \WF@noil
+ \else % use external `parshape' values to modify my parshape
+  \WF@modps
+\fi\fi}
+
+\def\WF@mypar{\relax
+ \WF@@par % what the rest of LaTeX expects \par to be (usually \@@par)
+ \ifnum\@@parshape=\z@ \let\WF@pspars\@empty \fi % reset `parshape'
+ \global\advance\c@WF@wrappedlines-\prevgraf \prevgraf\z@
+ \ifnum\c@WF@wrappedlines<\tw@ \WF@finale \fi}
+
+\def\WF@modps{\begingroup
+  \afterassignment\@tempdimb \@tempdima\WF@pspars % a=ind, b=wid
+  \advance\@tempdima-\WF@adjtlm \advance\@tempdimb\WF@adjlw
+%  \afterassignment\dimen@\advance\@tempdima\WF@wrapil
+%  \advance\@tempdimb\dimen@ \advance\@tempdimb-\hsize
+  \let\WF@wrapil\WF@pspars%{\the\@tempdima \the\@tempdimb}%
+  \edef\@tempb{\@@parshape\c@WF@wrappedlines \WF@ps \the\@tempdima \the\@tempdimb}%
+  \expandafter\endgroup\@tempb}
+
+\let\@@setpar\@setpar
+\def\WF@noil{\z@ \hsize}
+\let\WF@pspars\@empty
+
+\def\WF@fudgeparshape{\relax \ifnum\c@WF@wrappedlines<\tw@ \WF@finale
+  \else \afterassignment\WF@fudgeparshapee \fam \fi}
+\def\WF@fudgeparshapee{\ifnum\fam=\@ne \expandafter \WF@parshapeee \else
+  \WF@conflict \@@parshape\fam \fi}
+\def\WF@parshapeee#1#2{\begingroup\delimitershortfall#1%
+   \nulldelimiterspace#2%\advance\nulldelimiterspace\WF@adjlw
+   \edef\@tempa{\def\noexpand\WF@pspars{%
+      \the\delimitershortfall \the\nulldelimiterspace}}%
+  \expandafter\endgroup\@tempa \WF@wraphand}
+
+\def\WF@finale{\ifx\parshape\WF@fudgeparshape
+ \WF@restoretol \let\@setpar\@@setpar \let\par\WF@@par
+ \advance\linewidth\WF@adjlw \advance\@totalleftmargin-\WF@adjtlm
+ \WF@info{Finish wrapping text}%
+ \ifx\par\@@par \def\@par{\let\par\@@par\par}\else \let\@par\WF@@par \fi
+ \let\parshape\@@parshape
+ \parshape\ifx\WF@pspars\@empty \z@ \else \@ne \WF@pspars\fi \fi
+ \ifvoid\WF@box \ifx\everypar\WF@everypar
+  \let\everypar\WF@@everypar \everypar\expandafter{\the\WF@everypar}%
+ \fi\fi}
+
+\newcommand{\WFclear}{\par 
+ \ifvoid\WF@box\else \vskip\bigskipamount \box\WF@box
+ \let\everypar\WF@@everypar \everypar\expandafter{\the\WF@everypar}%
+ \fi \global\c@WF@wrappedlines\z@ \WF@finale}
+
+\begingroup
+ \toks0={\let\everypar\WF@@everypar \everypar\expandafter{\the\WF@everypar}%
+   \let\parshape\@@parshape \let\@setpar\@@setpar }
+ \toks1=\expandafter{\@arrayparboxrestore}
+ \toks2=\expandafter{\clearpage}
+ \edef\@tempa{\def\noexpand\@arrayparboxrestore{\the\toks0 \the\toks1}%
+      \def\noexpand\clearpage{\noexpand\protect\noexpand\WFclear \the\toks2}}
+ \expandafter
+\endgroup\@tempa
+
+\@ifundefined{@capwidth}{\let\@capwidth\hsize}{}% Pamper RevTeX's Stupidity
+
+\def\WF@conflict{\WF@warning
+ {\WF@wfname used inside a conflicting environment}}
+\def\WF@collision{\WF@warning{Collision between wrapping environments}}
+\def\WF@fltmes{\ifWF@float \WF@info{\WF@wfname floats}%
+ \else \WF@warning{Stationary \WF@wfname forced to float}\fi}
+
+\let\WF@warning\@warning
+\let\WF@info\@gobble
+
+% Support float.sty: float styles and \newfloat.  Make \newfloat{foo}
+% define the `wrapfoo' environment.  Support \newfloat from memoir.cls
+% and \newfloatlist from ccaption.sty.
+% 
+\let\WF@floatstyhook\relax
+
+\@ifundefined{newfloat}{}{% There is a \newfloat command
+%
+ \@ifundefined{restylefloat}{
+ % \newfloat comes from somewhere besides float.sty 
+   \@ifclassloaded{memoir}{
+    \toks@=\expandafter\expandafter\expandafter
+     {\csname\string\newfloat\endcsname [{#1}]{#2}{#3}{#4}%
+     \newenvironment{wrap#2}{\wrapfloat{#2}}{\endwrapfloat}%
+    }
+    \edef\@tempa{\def\expandafter\noexpand\csname\string\newfloat\endcsname
+      [##1]##2##3##4{\the\toks@}}
+    \@tempa
+   }% end memoir support
+   {}% Other origins of \newfloat here??
+ }{
+ %  float.sty handler.  Ooops:  Two versions for different versions
+ %  Changing \float@restyle (or \restylefloat) changes \newfloat too.
+ \@ifundefined{float@restyle}{% older float.sty
+  \toks@=\expandafter{\restylefloat{#1}% (env may or may not be defined)
+   \@namedef{wrap#1}{\def\@captype{#1}\@nameuse{fst@#1}%
+    \def\WF@floatstyhook{\let\@currbox\WF@box \columnwidth\wd\WF@box 
+       \global\setbox\WF@box\float@makebox}%
+    \@ifnextchar[\WF@wr{\WF@wr[]}}%
+   \expandafter\let\csname endwrap#1\endcsname \endwrapfigure
+  }\edef\@tempa{\def\noexpand\restylefloat##1{\the\toks@}}
+ }{% newer float.sty: use \float@restyle, and \float@makebox takes width arg
+  \toks@=\expandafter{\float@restyle{#1}% (env may or may not be defined)
+   \@namedef{wrap#1}{\def\@captype{#1}\@nameuse{fst@#1}%
+    \def\WF@floatstyhook{\let\@currbox\WF@box 
+       \global\setbox\WF@box\float@makebox{\wd\WF@box}}%
+    \@ifnextchar[\WF@wr{\WF@wr[]}}%
+   \expandafter\let\csname endwrap#1\endcsname \endwrapfigure
+  }\edef\@tempa{\def\noexpand\float@restyle##1{\the\toks@}}
+ }
+ \@tempa % perform redefinitions
+ %
+ }% End float.sty handler
+}% End redefinitions of \newfloat
+
+% Support ccaption.sty 
+\@ifundefined{\string\newfloatlist}{}{
+ \toks@=\expandafter\expandafter\expandafter
+   {\csname\string\newfloatlist\endcsname [{#1}]{#2}{#3}{#4}{#5}%
+  \@namedef{wrap#2}{\wrapfloat{#2}}%
+  \expandafter\let\csname endwrap#2\endcsname \endwrapfloat
+ }
+ \edef\@tempa{\def\expandafter\noexpand\csname\string\newfloatlist\endcsname
+   [##1]##2##3##4##5{\the\toks@}}
+ \@tempa
+}
+
+% Process package options.
+
+\@ifundefined{DeclareOption}{\endinput}{}
+
+\def\WF@warning{\PackageWarning{wrapfig}}
+\ProvidesPackage{wrapfig}[2003/01/31 \space  v 3.6]
+\DeclareOption{verbose}{\def\WF@info{\PackageInfo{wrapfig}}}
+\ProcessOptions
+\AtEndDocument{\WFclear}
+
+\endinput
+
+%%%%%  ----- End definitions ----- %%%%%
+
+%%%%%  ----- Begin Instructions ----- %%%%%
+
+
+W R A P F I G . S T Y  \ \  ver 3.6 \ \ (Jan 31, 2003)
+
+Copyright (C) 1991-2003 by Donald Arseneau  (asnd@triumf.ca)
+
+Wrapfig.sty provides the environments "wrapfigure" and "wraptable" for
+typesetting a narrow float at the edge of the text, and making the text
+wrap around it.  The "wrapfigure" and "wraptable" environments interact
+properly with the "\caption" command to produce proper numbering, but
+they are not regular floats like "figure" and "table", so (beware!) they
+may be printed out of sequence with the regular floats.  There are four
+parameters for "\begin{wrapfigure}", two optional and two required, plus
+the text of the figure, with a caption perhaps:
+
+   \begin{wrapfigure}[12]{r}[34pt]{5cm} <figure> \end{wrapfigure}
+                      ==  =  ====  ===
+   [number of narrow lines] {placement} [overhang] {width}
+
+Some idiosyncrasies:
+
+  - You must not specify a wrapfigure in any type of list environment or
+    or immediately before or immediately after one.  It is OK to follow
+    a list if there is a blank line ("\par") in between.
+
+  - If you put a wrapfigure in a parbox or a minipage, or any other type
+    of grouping, the text wrapping should end before the group does.
+
+  - It does work in two-column format, but are your figures that small?
+
+  - It may be out of sequence with regular floats.
+
+  - The hlines that may be printed above and below floats are ignored;
+    you must insert them manually if desired.
+
+  - "\linewidth" is now adjusted within the wrapped text, but since it
+    can only be set for whole paragraphs at a time, it will persist with
+    the wrong value after the wrapping, until the paragraph is finished.
+
+New wrapping environments may be added when new float types are defined
+(using memoir.cls, float.sty, or ccaption.sty).  Any wrapping environment,
+"wrapfigure", "wraptable", or something else may be invoked using the
+"wrapfloat" environment, as in "\begin{wrapfloat}{figure}{O}{5cm}".
+
+To use float.sty properly, load package "float" before "wrapfig", 
+and declare any new float types after loading both.  Likewise for
+ccaption.sty and "\newfloatlist" and memoir.cls and its "\newfloat".
+
+\section{Placement and Floating}
+
+Parameter "#2" (required) is the figure placement code, but the valid
+codes are different from regular figures.  They come in pairs: an
+uppercase version which allows the figure to float, and a lowercase
+version that puts the figure ``exactly here''.
+
+  r  R  -  the right side of the text
+  l  L  -  the left side of the text
+  i  I  -  the inside edge--near the binding (if "[twoside]" document)
+  o  O  -  the outside edge--far from the binding
+
+You should specify one code only, not a list.  The figure or table must
+be on one side or the other; it cannot be in the middle with text on
+both sides.  The "i" and "o" options refer to the inside and outside of
+the whole page, not individual columns.
+
+The ability to float is somewhat restricted, and you will get best results
+by giving exact manual placement, but floating is more convenient while
+revising the document.  Any changes to the formatting can ruin your manual
+positioning so you should adjust the placement just before printing a
+final copy.  Here are some tips for good placement:
+
+  - The environment should be placed so as to not run over a page break.
+
+  - The environment must not be placed in special places like lists.
+
+  - For esthetic reasons, only plain text should wrap around the figure.
+    Section titles and big equations look bad; lists are bad if the figure 
+    is on the left.  (All these function properly, they just don't look 
+    very good.)  Small equations look fine.
+
+  - It is convenient to begin the environment between paragraphs, but if
+    you want placement in the middle of a paragraph, you must put the
+    environment between two words where there is a natural line break.
+
+When floating, \LaTeX\ tries to apply these rules.  More specifically,
+a floated wrapping environment will only begin...
+
+  - at the beginning of a paragraph,
+
+  - when there is enough room on the page, or it is possible to go on
+    the next page,
+
+  - if the `paragraph' is not in a section title or a list,
+
+  - if the paragraph is not wrapping around another figure,
+
+  - in the main text (not in a minipage etc.)
+
+It is possible that a non-floating wrapfigure will be forced to float
+when an earlier one is still being processed.  A warning will be written
+in that case.  You can have more information about the floating process
+written to the log file by specifying "\usepackage[verbose]{wrapfig}".
+
+If there is a lot of flexibility on a page, a floating wrapfigure may
+be placed badly; you must turn to manual placement.  A rare problem is
+that floats and footnotes specified within the wrapping text can also
+cause poor placement and bad formatting.
+
+
+\section {Sizing and optional overhang}
+
+Parameter "#4" (the second required parameter) is the width of the figure
+or table.  Given the way that \LaTeX\ puts just about everything into boxes 
+with the current line-width, the width parameter will take precedence over 
+whatever natural width the figure has.  In particular, the caption is always 
+typeset with the specified width.  If the figure is wider than the space 
+allotted, you will get an ``overfull box'' warning.
+
+However, if you specify a width of *zero* ("0pt"), the actual width of
+the figure will determine the wrapping width.  A following "\caption"
+should have the same width as the figure, but it might fail badly; it
+is safer to specify a width when you use a caption.
+
+\LaTeX\ will wrap surrounding text around the figure, leaving a gap of
+"\intextsep" at the top and bottom, and "\columsep" at the side, by
+producing a series of shortened text lines beside the figure.  The
+indentation (shortening) of the text is the figure width plus "\columnsep"
+minus overhang (if any; see below).
+
+\LaTeX\ calculates the number of short lines needed based on the height
+of the figure and the length "\intextsep".  You can override this guess
+by giving the first optional argument (parameter "#1") specifying the
+number of shortened lines (counting each displayed equation as 3 lines).
+This is particularly useful when the surrounding text contains extra
+vertical spacing that is not accounted for automatically.
+
+The second optional parameter ("#3") tells how much the figure should
+hang out into the margin. The default overhang is given by the length
+"\wrapoverhang", which is "0pt" normally but can be changed using
+"\setlength".  For example, to have all wrapfigures use the space
+reserved for marginal notes,
+
+    \setlength{\wrapoverhang}{\marginparwidth}
+    \addtolength{\wrapoverhang}{\marginparsep}
+
+When you do specify the overhang explicitly for a particular figure, you
+can use a special unit called "\width" meaning the width of the figure.
+For example, "[0.5\width]" makes the center of the figure sit on the
+edge of the text, and "[\width]" puts the figure entirely in the margin
+(and the adjacent text is indented by just "\columnsep").  This "\width"
+is the actual width of the wrapfigure, which may be greater than the 
+declared width.
+
+
+\section{Some Random Implementation Notes}
+
+Unfortunately, \LaTeX's system of setting "\everypar" and "\par" is
+unable to coexist peacefully with a wrapping environment, so I was
+forced to subvert the "\@setpar" mechanism and "\everypar".  ("\everypar"
+is already subverted once by NFSS.)
+
+When checking the room left on the page, remember that if there is less
+than "\baselineskip" the new paragraph will begin on the next page, even
+if there is no page stretch. If non-floating, I force a bad page break
+rather than have the figure hang into the bottom margin.
+
+Here are notes on various variables and some macros; what info they
+store and how they are used.
+
+  \WF@wli - number-of-wrapped-lines parameter, saved for start of wrapping.
+     Set globally by "\WF@wr" (set empty if no optional parameter given).
+     The floating mechanism ignores this and uses the real size.
+
+  \WF@ovh - margin overhang set globally by "\WF@rapt", saved until placing
+     figure (but not reset).  Actually, the setting is very tricky so that
+     the expected values are used when a figure floats. First, the expression
+     is saved without evaluation by "\WF@rapt" ("\begin{wrapfigure}") because
+     "\width" is still unknown.  Soon after that, "\endwrapfigure" executes
+     "\WF@ovh" to evaluate the overhang and save the result (so that changes
+     to "\wrapoverhang" while this figure is floating won't affect this
+     figure). Finally, it is used by "\WF@putfigmaybe" when printing the fig.
+
+  \WF@place - a macro that is used as a number, giving the placement code.
+     It might start out as "`I" and later be converted to "114" (r).
+
+  \WF@box - tested for void at "\begin{wrapfigure}", to avoid collisions,
+     by "\everypar" to do floating, and by "\WF@finale" before resetting
+     "\everypar".  Voided globally when used by "\WF@putfigmaybe" (or by
+     "\WF@wr" if an old figure must be dumped prematurely).
+
+  \par - test if it is "\@@par" by "\begin{wrapfigure}" and "\WF@floathand"
+     to float past special environments.  It is set to "\@par" ("\WF@mypar")
+     by "\WF@startwrapping", and restored by an end-group (bad!) or by
+     "\WF@finale" (good).  It is protected from change by redefining
+     "\@setpar".
+
+  \parshape - let to "\WF@fudgeparshape" by "\WF@startwrapping", so lists
+     will continue wrapping; "\@@parshape" preserves the real "\parshape"
+     command, and it is restored by "\WF@finale" or "\@parboxrestore".
+     "\WF@floathand" and "\WF@wr" test if old wrapping is still in progress
+     with "\ifx\parshape\WF@fudgeparshape". The value of "\@@parshape" is
+     also tested to float past lists and other wrapping environments.
+
+  \hangindent - tested to float past section titles etc.
+
+  \c@WF@wrappedlines - the number of shortened lines + 1; set globally by
+     "\WF@startwrapping" and decremented by "\par" ("\WF@mypar").  It is > 1
+     only when wrapping is incomplete.  "\WF@wraphand", "\WF@fudgeparshape",
+     and "\WF@mypar" test the number for calling "\WF@finale".  It may get
+     stuck at some high value if "\par" is restored by an end-group, (and
+     wrapping is terminated prematurely) so it is unwise to use this as a
+     test for wrapping-complete.
+
+  \pagetotal - one of many parameters used to compute floating.  When
+     putting a wrapfigure in a parbox, I assign "\let\pagetotal\maxdimen"
+     (locally!) to signal not-top-of-page and no floating.
+
+  \WF@pspars - the "\parshape" parameters as LaTeX sets them for lists
+     ("\WF@fudgeparshape"); when wrapping I test it and use it to modify my
+     own real params for the paragraph.  They are also used when "\parshape"
+     is restored after wrapping.
+
+  \WF@finale - is performed by "\par" when wrapping should end.  However,
+     that might happen inside a group (a list especially), so the subverted
+     versions of "\par", "\parshape" etc. will be reinstated when the group
+     ends.  Thus, they must themselves test "\c@WF@wrappedlines" < 2 to see
+     when wrapping is over, and if so, they should just do "\WF@finale" again.
+
+These are the tests to see if a floating wrapfigure will fit at a particular
+spot.  These tests are performed at the beginning of every paragraph after
+the figure, except in lists etc.  ("\pagegoal" - "\pagetotal" is the room
+left on the page.)
+
+  >
+  room_left := \pagegoal - \pagetotal
+  if  room_left < 0  then page overfull already: put figure (on next page)
+  else
+     if  figure_size > room_left  then does not fit
+        if  max(min_stretch, \pagestretch) + extra > room_left
+           then page can stretch until full: put figure (at top of next page)
+        fi
+     else figure fits: put figure
+  fi fi
+  <
+
+Even if a wrapfigure is not floating, it will go through the same logic
+to generate a "\pagebreak", and maybe an underfull page, when the current
+page can stretch until full.  The "min_stretch" depends on whether it is
+floating or not: ".5\baselineskip" (floating) "2\baselineskip" (not). The
+"extra" is ".5\baselineskip" in either case.  These values can be adjusted.
+
+There are some other `magic numbers' for floating that aren't really so
+special, but you must change them together if you change them at all.
+To make floating wrapfigures float less and fit on pages more frequently,
+but not change the number of wrapped lines, decrease the "1.5" in
+"\global\advance\WF@size1.5\baselineskip" and increase the "1.1" in
+"\advance\WF@size1.1\baselineskip" by the same amount (and vice versa).
+To make more (or fewer) wrapped lines for the same size figure, without
+changing the floating, change "1.1" in "\advance\WF@size1.1\baselineskip"
+unilaterally.
+
+%%%%%  ----- End Instructions ----- %%%%%
+
+Test file integrity:  ASCII 32-57, 58-126:  !"#$%&'()*+,-./0123456789
+:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
