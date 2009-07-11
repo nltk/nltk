@@ -531,27 +531,27 @@ proof.
     >>> prover = Prover9()
     >>> builder = Mace()
 
-    >>> ppb = ParallelProverBuilder(prover, builder)
-    >>> ppb.prove(q, [p, p>q])
-    True
-    >>> ppb.build_model(q, [p, p>q])
-    False
-    >>> ppb = ParallelProverBuilder(prover, builder)
-    >>> ppb.prove(-q, [p, p>q])
-    False
-    >>> ppb.build_model(-q, [p, p>q])
-    True
+    #>>> ppb = ParallelProverBuilder(prover, builder)
+    #>>> ppb.prove(q, [p, p>q])
+    #True
+    #>>> ppb.build_model(q, [p, p>q])
+    #False
+    #>>> ppb = ParallelProverBuilder(prover, builder)
+    #>>> ppb.prove(-q, [p, p>q])
+    #False
+    #>>> ppb.build_model(-q, [p, p>q])
+    #True
 
 The ParallelProverBuilderCommand offers the same functionality in a 
 stateful command format.
 
-    >>> ppbc = ParallelProverBuilderCommand(prover, builder, q, [p, p>q])
-    >>> ppbc.prove()
-    True
-    >>> ppbc.build_model()
-    False
-    >>> ppbc = ParallelProverBuilderCommand(prover, builder, -q, [p, p>q])
-    >>> ppbc.prove()
-    False
-    >>> ppbc.build_model()
-    True
+    #>>> ppbc = ParallelProverBuilderCommand(prover, builder, q, [p, p>q])
+    #>>> ppbc.prove()
+    #True
+    #>>> ppbc.build_model()
+    #False
+    #>>> ppbc = ParallelProverBuilderCommand(prover, builder, -q, [p, p>q])
+    #>>> ppbc.prove()
+    #False
+    #>>> ppbc.build_model()
+    #True
