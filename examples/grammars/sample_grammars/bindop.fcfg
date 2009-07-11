@@ -1,9 +1,9 @@
 ## Natural Language Toolkit: sem0.fcfg
 ##
 ## Feature-based grammar that divides the semantics for each element
-## into two pieces: the core semantics ('sem','core') and a set of
-## binding operators ('sem','bo').  Each binding operator is encoded
-## as a lambda-calculus expression <(bo @var predicate)>, specifying
+## into two pieces: the core semantics, with path ('SEM','CORE'), and a set of
+## binding operators, with path ('SEM','BO').  Each binding operator is encoded
+## as a lambda-calculus expression <(BO @var predicate)>, specifying
 ## that <@var> is an individual variable that should be instantiated,
 ## and <predicate> is a predicate describing that variable.
 ##
@@ -28,17 +28,17 @@
 ##   IV -> intransitive verbs...
 ##   Det -> determiners...
 
-S[sem=[core=<?vp(?subj)>, bo={?b1+?b2}]] -> NP[sem=[core=?subj, bo=?b1]] VP[sem=[core=?vp, bo=?b2]]
+S[SEM=[CORE=<?vp(?subj)>, BO={?b1+?b2}]] -> NP[SEM=[CORE=?subj, BO=?b1]] VP[SEM=[CORE=?vp, BO=?b2]]
 
-VP[sem=[core=<?v(?obj)>, bo={?b1+?b2}]] -> TV[sem=[core=?v, bo=?b1]] NP[sem=[core=?obj, bo=?b2]]
+VP[SEM=[CORE=<?v(?obj)>, BO={?b1+?b2}]] -> TV[SEM=[CORE=?v, BO=?b1]] NP[SEM=[CORE=?obj, BO=?b2]]
 
-VP[sem=?s] -> IV[sem=?s]
+VP[SEM=?s] -> IV[SEM=?s]
 
-NP[sem=[core=<@x>, bo={{<bo(?det(?n),@x)>}+?b1+?b2}]] -> Det[sem=[core=?det, bo=?b1]] N[sem=[core=?n, bo=?b2]]
+NP[SEM=[CORE=<@x>, BO={{<BO(?det(?n),@x)>}+?b1+?b2}]] -> Det[SEM=[CORE=?det, BO=?b1]] N[SEM=[CORE=?n, BO=?b2]]
 
 # Lexical items:
-Det[sem=[core=<\Q P.exists x.(Q(x) & P(x))>, bo={/}]] -> 'a'
-N[sem=[core=<dog>, bo={/}]] -> 'dog' | 'cat' | 'mouse' 
-IV[sem=[core=<\x.bark(x)>, bo={/}]] -> 'barks' | 'eats' | 'walks'
-TV[sem=[core=<\x y.feed(y,x)>, bo={/}]] -> 'feeds' | 'walks'
-NP[sem=[core=<@x>, bo={<bo(\P. P(John),@x)>}]] -> 'john' | 'alex'
+Det[SEM=[CORE=<\Q P.exists x.(Q(x) & P(x))>, BO={/}]] -> 'a'
+N[SEM=[CORE=<dog>, BO={/}]] -> 'dog' | 'cat' | 'mouse' 
+IV[SEM=[CORE=<\x.bark(x)>, BO={/}]] -> 'barks' | 'eats' | 'walks'
+TV[SEM=[CORE=<\x y.feed(y,x)>, BO={/}]] -> 'feeds' | 'walks'
+NP[SEM=[CORE=<@x>, BO={<BO(\P. P(John),@x)>}]] -> 'john' | 'alex'

@@ -14,29 +14,29 @@
 # Grammar Rules
 # ############################
 
-S[sem=<app(?subj,?vp)>] -> NP[-pred,num=?n,sem=?subj] VP[num=?n,sem=?vp]
+S[SEM=<app(?subj,?vp)>] -> NP[-PRED,NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
 
-Rel[num=?n,sem=<app(?comp,?vp)>] -> Comp[sem=?comp] VP[num=?n,sem=?vp]
+Rel[NUM=?n,SEM=<app(?comp,?vp)>] -> Comp[SEM=?comp] VP[NUM=?n,SEM=?vp]
 
-NP[-pred, num=pl,sem=<(\P Q. some x. (Q(x) and P(x)) ?nom)>] -> Nom[num=pl,sem=?nom]
-NP[wh=?wh,-pred,num=?n,sem=<app(?det,?nom)>] -> Det[wh=?wh, num=?n,sem=?det] Nom[num=?n,sem=?nom]
+NP[-PRED, NUM=pl,SEM=<(\P Q. exists x. (Q(x) and P(x)) ?nom)>] -> Nom[NUM=pl,SEM=?nom]
+NP[WH=?wh,-PRED,NUM=?n,SEM=<app(?det,?nom)>] -> Det[WH=?wh, NUM=?n,SEM=?det] Nom[NUM=?n,SEM=?nom]
 
 
-NP[+pred,num=sg,sem=?nom] -> Det[num=sg,sem=?det]  Nom[num=sg,sem=?nom]
-NP[+pred,num=pl,sem=?nom] -> Nom[num=pl,sem=?nom]
+NP[+PRED,NUM=sg,SEM=?nom] -> Det[NUM=sg,SEM=?det]  Nom[NUM=sg,SEM=?nom]
+NP[+PRED,NUM=pl,SEM=?nom] -> Nom[NUM=pl,SEM=?nom]
 
-NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
+NP[LOC=?l,NUM=?n,SEM=?np] -> PropN[LOC=?l,NUM=?n,SEM=?np]
 
-Nom[num=?n,sem=?nom] -> N[num=?n,sem=?nom]
-Nom[num=sg,sem=<app(?pp,?nom)>] -> N[subcat=11,num=sg,sem=?nom] PP[pform=of,sem=?pp]
-Nom[num=?n,sem=<app(?mod,?nom)>] -> Nom[num=?n,sem=?nom] Rel[num=?n,sem=?mod]
-Nom[num=?n,sem=<app(?adj,?nom)>] -> A[sem=?adj] Nom[num=?n,sem=?nom]
+Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
+Nom[NUM=sg,SEM=<app(?pp,?nom)>] -> N[subcat=11,NUM=sg,SEM=?nom] PP[pform=of,SEM=?pp]
+Nom[NUM=?n,SEM=<app(?mod,?nom)>] -> Nom[NUM=?n,SEM=?nom] Rel[NUM=?n,SEM=?mod]
+Nom[NUM=?n,SEM=<app(?adj,?nom)>] -> A[SEM=?adj] Nom[NUM=?n,SEM=?nom]
 
-##VP[num=?n,sem=?v] -> V[subcat=1,num=?n,sem=?v]
-VP[num=?n,sem=<app(?v,?obj)>] -> V[subcat=2, num=?n,sem=?v] NP[-pred,sem=?obj]
-VP[num=?n,sem=<app(?v,?pred)>] -> V[subcat=3, num=?n,sem=?v] NP[+pred,sem=?pred]
+##VP[NUM=?n,SEM=?v] -> V[SUBCAT=1,NUM=?n,SEM=?v]
+VP[NUM=?n,SEM=<app(?v,?obj)>] -> V[SUBCAT=2, NUM=?n,SEM=?v] NP[-PRED,SEM=?obj]
+VP[NUM=?n,SEM=<app(?v,?PRED)>] -> V[SUBCAT=3, NUM=?n,SEM=?v] NP[+PRED,SEM=?PRED]
 
-PP[pform=?pf,sem=<app(?p,?np)>] -> P[pform=?pf, loc=?l,sem=?p] NP[loc=?l,sem=?np]
+PP[PFORM=?pf,SEM=<app(?p,?np)>] -> P[PFORM=?pf, LOC=?l,SEM=?p] NP[LOC=?l,SEM=?np]
 
 
 # ############################
@@ -45,54 +45,53 @@ PP[pform=?pf,sem=<app(?p,?np)>] -> P[pform=?pf, loc=?l,sem=?p] NP[loc=?l,sem=?np
 
 % include chat_pnames.cfg
 
-Comp[sem=<\P Q x. (P(x) and Q(x))>] -> 'that'
+Comp[SEM=<\P Q x.(P(x) and Q(x))>] -> 'that'
 
-NP[+wh, num=sg, sem=<\P.\x.P(x)>] -> 'what'  
+NP[+WH, NUM=sg, SEM=<\P.\x.P(x)>] -> 'what'  
 
-Det[-wh,num=sg,sem=<\P Q. all x. (P(x) implies Q(x))>] -> 'every'
-Det[-wh,num=pl,sem=<\P Q. all x. (P(x) implies Q(x))>] -> 'all'
-Det[-wh,sem=<\P Q. some x. (P(x) and Q(x))>] -> 'some'
-Det[-wh,num=sg,sem=<\P Q. some x. (P(x) and Q(x))>] -> 'a'
-Det[-wh,num=sg,sem=<\P Q. some x. (P(x) and Q(x))>] -> 'the'
-Det[+wh,sem=<\P Q x. (Q(x) and P(x))>] -> 'which'
+Det[-WH,NUM=sg,SEM=<\P Q. all x. (P(x) -> Q(x))>] -> 'every'
+Det[-WH,NUM=pl,SEM=<\P Q. all x. (P(x) -> Q(x))>] -> 'all'
+Det[-WH,SEM=<\P Q. exists x. (P(x) & Q(x))>] -> 'some'
+Det[-WH,NUM=sg,SEM=<\P Q. exists x. (P(x) & Q(x))>] -> 'a'
+Det[-WH,NUM=sg,SEM=<\P Q. exists x. (P(x) & Q(x))>] -> 'the'
+Det[+WH,SEM=<\P Q x. (Q(x) & P(x))>] -> 'which'
 
-N[subcat=10,num=sg,sem=<city>] -> 'city'
-N[subcat=10,num=pl,sem=<city>] -> 'cities'
-N[subcat=10,num=sg,sem=<continent>] -> 'continent'
-N[subcat=10,num=pl,sem=<continent>] -> 'continents'
-N[subcat=10,num=sg,sem=<country>] -> 'country'
-N[subcat=10,num=pl,sem=<country>] -> 'countries'
-N[subcat=10,num=sg,sem=<sea>] -> 'sea'
-N[subcat=10,num=pl,sem=<sea>] -> 'seas'
-N[subcat=10,num=sg,sem=<ocean>] -> 'ocean'
-N[subcat=10,num=pl,sem=<ocean>] -> 'oceans'
+N[SUBCAT=10,NUM=sg,SEM=<\x.city(x)>] -> 'city'
+N[SUBCAT=10,NUM=pl,SEM=<\x.city(x)>] -> 'cities'
+N[SUBCAT=10,NUM=sg,SEM=<\x.continent(x)>] -> 'continent'
+N[SUBCAT=10,NUM=pl,SEM=<\x.continent(x)>] -> 'continents'
+N[SUBCAT=10,NUM=sg,SEM=<\x.country(x)>] -> 'country'
+N[SUBCAT=10,NUM=pl,SEM=<\x.country(x)>] -> 'countries'
+N[SUBCAT=10,NUM=sg,SEM=<\x.sea(x)>] -> 'sea'
+N[SUBCAT=10,NUM=pl,SEM=<\x.sea(x)>] -> 'seas'
+N[SUBCAT=10,NUM=sg,SEM=<\x.ocean(x)>] -> 'ocean'
+N[SUBCAT=10,NUM=pl,SEM=<\x.ocean(x)>] -> 'oceans'
 
-PL[sem=<\P Q. some x. (P(x) and Q(x))>] -> ' '
+PL[SEM=<\P Q. exists x. (P(x) & Q(x))>] -> ' '
 
-N[subcat=11,num=sg,sem=<\x y. area_of(x,y))>] -> 'area'
-N[subcat=11,num=sg,sem=<\x y. capital_of(x,y))>] -> 'capital'
-N[subcat=11,num=sg,sem=<\x y. currency_of(x,y))>] -> 'currency'
-N[subcat=11,num=sg,sem=<\x y. region_of(x,y))>] -> 'region'
-N[subcat=11,num=sg,sem=<\x y. longitude_of(x,y))>] -> 'longitude'
-N[subcat=11,num=sg,sem=<\x y. latitude_of(x,y))>] -> 'latitude'
-N[subcat=11,num=sg,sem=<\x y. population_of(x,y))>] -> 'population'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.area_of(x,y))>] -> 'area'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.capital_of(x,y))>] -> 'capital'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.currency_of(x,y))>] -> 'currency'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.region_of(x,y))>] -> 'region'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.longitude_of(x,y))>] -> 'longitude'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.latitude_of(x,y))>] -> 'latitude'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.population_of(x,y))>] -> 'population'
 
 
+## V[SUBCAT=3,NUM=sg,SEM=<\X y.(X \x.(x = y))>,tns=pres] -> 'is'
+## V[SUBCAT=3,NUM=pl,SEM=<\P.P))>,tns=pres] -> 'are'
+V[SUBCAT=3,NUM=sg,SEM=<\P.P>,tns=pres] -> 'is'
+V[SUBCAT=3,NUM=pl,SEM=<\P.P>,tns=pres] -> 'are'
+V[SUBCAT=2,NUM=sg,SEM=<\X y.(X \x.border(y,x))>,tns=pres] -> 'borders'
+V[SUBCAT=2,NUM=pl,SEM=<\X y.(X \x.border(y,x))>,tns=pres] -> 'border'
+V[SUBCAT=2,NUM=sg,SEM=<\X y.(X \x.contain(y,x))>,tns=pres] -> 'contains'
+V[SUBCAT=2,NUM=pl,SEM=<\X y.(X \x.contain(y,x))>,tns=pres] -> 'contain'
 
-## V[subcat=3,num=sg,sem=<\X y. (X \x. (x = y))>,tns=pres] -> 'is'
-## V[subcat=3,num=pl,sem=<\P. P))>,tns=pres] -> 'are'
-V[subcat=3,num=sg,sem=<\P. P>,tns=pres] -> 'is'
-V[subcat=3,num=pl,sem=<\P. P>,tns=pres] -> 'are'
-V[subcat=2,num=sg,sem=<\X y. (X \x. border(y,x))>,tns=pres] -> 'borders'
-V[subcat=2,num=pl,sem=<\X y. (X \x. border(y,x))>,tns=pres] -> 'border'
-V[subcat=2,num=sg,sem=<\X y. (X \x. contain(y,x))>,tns=pres] -> 'contains'
-V[subcat=2,num=pl,sem=<\X y. (X \x. contain(y,x))>,tns=pres] -> 'contain'
+A[SEM=<\P x.(contain(asia,x) & P(x))>] -> 'Asian'
 
-A[sem=<\P x. (contain(asia,x) and P(x))>] -> 'Asian'
-
-P[pform=of,sem=<\X.X>] -> 'of'
-P[+loc,sem=<\X P x. (X \y. (P(x) and in(x,y)))>] -> 'in'
-P[-loc,sem=<\X P x. (X \y. (P(x) and with(x,y)))>] -> 'with'
+P[PFORM=of,SEM=<\X.X>] -> 'of'
+P[+LOC,SEM=<\X P x.(X \y.(P(x) & in(x,y)))>] -> 'in'
+P[-LOC,SEM=<\X P x.(X \y.(P(x) & with(x,y)))>] -> 'with'
 
 
 

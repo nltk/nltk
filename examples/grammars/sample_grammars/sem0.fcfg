@@ -10,7 +10,7 @@
 
 % start S
 
-S[sem = <?vp(?subj)>] -> NP[sem=?subj] VP[sem=?vp]
-VP[sem=?v] -> V[sem=?v]
-NP[sem=<cyril>] -> 'Cyril'
-V[sem=<\x.bark(x)>] -> 'barks'
+S[SEM=<?vp(?subj)>] -> NP[SEM=?subj] VP[SEM=?vp]
+VP[SEM=?v] -> V[SEM=?v]
+NP[SEM=<cyril>] -> 'Cyril'
+V[SEM=<\x.bark(x)>] -> 'barks'
