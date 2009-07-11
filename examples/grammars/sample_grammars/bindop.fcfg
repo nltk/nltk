@@ -3,9 +3,9 @@
 ## Feature-based grammar that divides the semantics for each element
 ## into two pieces: the core semantics, with path ('SEM','CORE'), and a set of
 ## binding operators, with path ('SEM','BO').  Each binding operator is encoded
-## as a lambda-calculus expression <(BO @var predicate)>, specifying
+## as a lambda-calculus expression <bo(expr, @var)>, specifying
 ## that <@var> is an individual variable that should be instantiated,
-## and <predicate> is a predicate describing that variable.
+## and <expr> is an expression that can bind that variable.
 ##
 ## In order for this grammar to generate the correct results, all
 ## variables of the form <@var> must be instantiated (i.e., replaced
@@ -41,4 +41,4 @@ Det[SEM=[CORE=<\Q P.exists x.(Q(x) & P(x))>, BO={/}]] -> 'a'
 N[SEM=[CORE=<dog>, BO={/}]] -> 'dog' | 'cat' | 'mouse' 
 IV[SEM=[CORE=<\x.bark(x)>, BO={/}]] -> 'barks' | 'eats' | 'walks'
 TV[SEM=[CORE=<\x y.feed(y,x)>, BO={/}]] -> 'feeds' | 'walks'
-NP[SEM=[CORE=<@x>, BO={<BO(\P. P(John),@x)>}]] -> 'john' | 'alex'
+NP[SEM=[CORE=<@x>, BO={<bo(\P. P(John), @x)>}]] -> 'john' | 'alex'
