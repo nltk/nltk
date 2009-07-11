@@ -225,6 +225,6 @@ a new ``Valuation`` object which contains the results.
    >>> dom = val.domain
    >>> g = nltk.sem.Assignment(dom)
    >>> m = nltk.sem.Model(dom, val)
-   >>> m.evaluate(r'\x .population_of(jakarta, x)', g)
-   {'533': True}
+   >>> m.evaluate(r'population_of(jakarta, 533)', g)
+   True
 
