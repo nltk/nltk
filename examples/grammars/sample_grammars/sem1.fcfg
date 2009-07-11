@@ -11,11 +11,11 @@
 
 % start S
 
-S[sem = <?subj(?vp)>] -> NP[sem=?subj] VP[sem=?vp]
-VP[sem=?v] -> IV[sem=?v]
-NP[sem=<?det(?n)>] -> Det[sem=?det] N[sem=?n]
+S[SEM = <?subj(?vp)>] -> NP[SEM=?subj] VP[SEM=?vp]
+VP[SEM=?v] -> IV[SEM=?v]
+NP[SEM=<?det(?n)>] -> Det[SEM=?det] N[SEM=?n]
 
-Det[sem=<\Q P. exists x. (Q(x) & P(x))>] -> 'a'
-Det[sem=<\Q P. all x. (Q(x) -> P(x))>] -> 'every'
-N[sem=<dog>] -> 'dog'
-IV[sem=<\x.bark(x)>] -> 'barks'
+Det[SEM=<\Q P.exists x.(Q(x) & P(x))>] -> 'a'
+Det[SEM=<\Q P.all x.(Q(x) -> P(x))>] -> 'every'
+N[SEM=<\x.dog(x)>] -> 'dog'
+IV[SEM=<\x.bark(x)>] -> 'barks'
