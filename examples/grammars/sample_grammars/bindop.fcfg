@@ -34,7 +34,7 @@ VP[SEM=[CORE=<?v(?obj)>, BO={?b1+?b2}]] -> TV[SEM=[CORE=?v, BO=?b1]] NP[SEM=[COR
 
 VP[SEM=?s] -> IV[SEM=?s]
 
-NP[SEM=[CORE=<@x>, BO={{<BO(?det(?n),@x)>}+?b1+?b2}]] -> Det[SEM=[CORE=?det, BO=?b1]] N[SEM=[CORE=?n, BO=?b2]]
+NP[SEM=[CORE=<@x>, BO={{<bo(?det(?n), @x)>}+?b1+?b2}]] -> Det[SEM=[CORE=?det, BO=?b1]] N[SEM=[CORE=?n, BO=?b2]]
 
 # Lexical items:
 Det[SEM=[CORE=<\Q P.exists x.(Q(x) & P(x))>, BO={/}]] -> 'a'
