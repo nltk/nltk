@@ -1,0 +1,139 @@
+%%
+%% This is file `refcount.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% refcount.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright (C) 1998, 2000, 2006, 2008 by
+%%    Heiko Oberdiek <oberdiek@uni-freiburg.de>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3 of this license or (at your option) any later
+%% version. The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file refcount.dtx
+%% and the derived files
+%%    refcount.sty, refcount.pdf, refcount.ins, refcount.drv.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{refcount}
+  [2008/08/11 v3.1 Data extraction from references (HO)]%
+
+\def\setrefcountdefault#1{%
+  \def\rc@default{#1}%
+}
+\setrefcountdefault{0}
+
+\def\rc@cartwo#1#2#3\@nil{#2}
+
+\long\def\rc@refused#1{%
+  \expandafter\ifx\csname r@#1\endcsname\relax
+    \protect\G@refundefinedtrue
+    \@latex@warning{%
+      Reference `#1' on page \thepage\space undefined%
+    }%
+  \fi
+}
+
+\newcommand*{\refused}[1]{%
+  \begingroup
+    \csname @safe@activestrue\endcsname
+    \rc@refused{#1}{}%
+  \endgroup
+}
+
+\def\rc@set#1#2#3#4{%
+  \begingroup
+    \csname @safe@activestrue\endcsname
+    \rc@refused{#4}%
+    \expandafter\rc@@set\csname r@#4\endcsname{#1}{#2}{#3}%
+  \endgroup
+}
+\def\rc@@set#1#2#3#4{%
+  \ifx#1\relax
+    #2{#4}{\rc@default}%
+  \else
+    #2{#4}{%
+      \expandafter#3#1\rc@default\rc@default\@nil
+    }%
+  \fi
+}
+
+
+\newcommand*{\setcounterref}{\rc@set\setcounter\@car}
+\newcommand*{\addtocounterref}{\rc@set\addtocounter\@car}
+\newcommand*{\setcounterpageref}{\rc@set\setcounter\rc@cartwo}
+\newcommand*{\addtocounterpageref}{\rc@set\addtocounter\rc@cartwo}
+
+\newcommand*{\getrefnumber}[1]{%
+  \expandafter\ifx\csname r@#1\endcsname\relax
+    \rc@default
+  \else
+    \expandafter\expandafter\expandafter\@car
+    \csname r@#1\endcsname\@nil
+  \fi
+}
+\newcommand*{\getpagerefnumber}[1]{%
+  \expandafter\ifx\csname r@#1\endcsname\relax
+    \rc@default
+  \else
+    \expandafter\expandafter\expandafter\rc@cartwo
+    \csname r@#1\endcsname\rc@default\rc@default\@nil
+  \fi
+}
+\newcommand*{\getrefbykeydefault}[2]{%
+  \expandafter\rc@getrefbykeydefault
+    \csname r@#1\expandafter\endcsname
+    \csname rc@extract@#2\endcsname
+}
+\def\rc@getrefbykeydefault#1#2#3{%
+  \ifx#1\relax
+    % reference is undefined
+    #3%
+  \else
+    \ifx#2\relax
+      % extract method is missing
+      #3%
+    \else
+      \expandafter\rc@generic#1{#3}{#3}{#3}{#3}{#3}\@nil#2{#3}%
+    \fi
+  \fi
+}
+\def\rc@generic#1#2\@nil#3#4{%
+  #3{#1\TR@TitleReference\@empty{#4}\@nil}{#1}#2\@nil
+}
+\def\rc@extract@{%
+  \expandafter\@car\@gobble
+}
+\def\rc@extract@page{%
+  \expandafter\@car\@gobbletwo
+}
+\def\rc@extract@name{%
+  \expandafter\@car\@gobblefour\@empty
+}
+\def\rc@extract@anchor{%
+  \expandafter\@car\@gobblefour
+}
+\def\rc@extract@url{%
+  \expandafter\expandafter\expandafter\@car\expandafter
+      \@gobble\@gobblefour
+}
+\def\rc@extract@title#1#2\@nil{%
+  \rc@@extract@title#1%
+}
+\def\rc@@extract@title#1\TR@TitleReference#2#3#4\@nil{#3}
+\endinput
+%%
+%% End of file `refcount.sty'.
