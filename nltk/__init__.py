@@ -54,7 +54,7 @@ __classifiers__ = [
     'Intended Audience :: Education',
     'Intended Audience :: Information Technology',
     'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: Apache License, Version 2.0',
+    'License :: OSI Approved :: Apache Software License',
     'Operating System :: OS Independent',
     'Programming Language :: Python :: 2.4',
     'Programming Language :: Python :: 2.5',
