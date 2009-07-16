@@ -106,7 +106,7 @@ __all__ = [
     'TimitCorpusReader', 'YCOECorpusReader',
     'MacMorphoCorpusReader', 'SyntaxCorpusReader',
     'AlpinoCorpusReader', 'RTECorpusReader',
-    'StringCategoryCorpusReader','EuroparlCorpusReader'
+    'StringCategoryCorpusReader','EuroparlCorpusReader',
     'CategorizedTaggedCorpusReader',
     'CategorizedPlaintextCorpusReader',
     'tagged_treebank_para_block_reader',
