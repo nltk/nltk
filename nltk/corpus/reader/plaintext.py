@@ -228,6 +228,5 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
                        for (fileid, enc) in self.abspaths(fileids, True)])
                        
     def paras(self, fileids=None):
-         print 'The Europarl corpus reader does not support paragraphs. Please use chapters() instead.'
-         return []
+        raise NotImplementedError('The Europarl corpus reader does not support paragraphs. Please use chapters() instead.')
 
