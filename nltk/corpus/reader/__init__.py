@@ -1,4 +1,4 @@
- Natural Language Toolkit: Corpus Readers
+# Natural Language Toolkit: Corpus Readers
 #
 # Copyright (C) 2001-2009 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
