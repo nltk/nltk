@@ -130,14 +130,10 @@ class PathPointer(object):
         raise NotImplementedError('abstract base class')
 
 
-class FileSystemPathPointer(PathPointer, str):
+class FileSystemPathPointer(PathPointer):
     """
     A path pointer that identifies a file which can be accessed
-    directly via a given absolute path.  C{FileSystemPathPointer} is a
-    subclass of C{str} for backwards compatibility purposes --
-    this allows old code that expected C{nltk.data.find()} to expect a
-    string to usually work (assuming the resource is not found in a
-    zipfile).
+    directly via a given absolute path.
     """
     def __init__(self, path):
         """
@@ -149,7 +145,6 @@ class FileSystemPathPointer(PathPointer, str):
         if not os.path.exists(path):
             raise IOError('No such file or directory: %r' % path)
         self._path = path
-        str.__init__(self, path)
 
     path = property(lambda self: self._path, doc="""
         The absolute path identified by this path pointer.""")
