@@ -81,14 +81,13 @@ examples, known as the X{training set}.  Training sets are represented
 as lists of C{(featuredict, label)} tuples.
 """
 
-from nltk.internals import deprecated, Deprecated
+from weka import *
+from megam import *
 
 from api import *
 from util import *
 from naivebayes import *
 from decisiontree import *
-from weka import *
-from megam import *
 from rte_classify import *
 
 __all__ = [
@@ -117,18 +116,3 @@ try:
                 'ConditionalExponentialClassifier', 'train_maxent_classifier']
 except ImportError:
     pass
-
-######################################################################
-#{ Deprecated
-######################################################################
-from nltk.internals import Deprecated
-class ClassifyI(ClassifierI, Deprecated):
-    """Use nltk.ClassifierI instead."""
-
-@deprecated("Use nltk.classify.accuracy() instead.")
-def classifier_accuracy(classifier, gold):
-    return accuracy(classifier, gold)
-@deprecated("Use nltk.classify.log_likelihood() instead.")
-def classifier_log_likelihood(classifier, gold):
-    return log_likelihood(classifier, gold)
-

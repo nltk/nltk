@@ -663,7 +663,8 @@ def test_clausify():
     print clausify(lp.parse('all z.all y.some x.P(x,y,z)'))
     print clausify(lp.parse('all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))'))
 
-if __name__ == '__main__':
+
+def demo():
     test_clausify()
     print
     testResolutionProver()
@@ -672,3 +673,5 @@ if __name__ == '__main__':
     p = LogicParser().parse('man(x)')
     print ResolutionProverCommand(p, [p]).prove()
     
+if __name__ == '__main__':
+    demo()
