@@ -491,9 +491,12 @@ def print_proof(goal, premises):
     command = UniqueNamesProver(ClosedWorldProver(prover))
     print goal, prover.prove(), command.prove()
 
-if __name__ == '__main__':
+def demo():
     closed_domain_demo()
     unique_names_demo()
     closed_world_demo()
     combination_prover_demo()
     default_reasoning_demo()
+
+if __name__ == '__main__':
+    demo()

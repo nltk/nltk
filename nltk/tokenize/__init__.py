@@ -16,7 +16,6 @@ from regexp import *
 from punkt import *
 from sexpr import *
 from treebank import *
-from nltk.internals import deprecated
 import nltk
 
 __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
@@ -48,39 +47,3 @@ def word_tokenize(text):
     sentence at a time.
     """
     return _word_tokenize(text)
-
-######################################################################
-#{ Deprecated since 0.8
-######################################################################
-
-@deprecated("Use nltk.blankline_tokenize() or "
-            "nltk.BlanklineTokenizer instead.")
-def blankline(text):
-    return BlanklineTokenizer().tokenize(text)
-
-@deprecated("Use nltk.wordpunct_tokenize() or "
-            "nltk.WordPunctTokenizer instead.")
-def wordpunct(text):
-    return WordPunctTokenizer().tokenize(text)
-
-@deprecated("Use str.split() or nltk.WhitespaceTokenizer instead.")
-def whitespace(text):
-    return WhitespaceTokenizer().tokenize(text)
-
-@deprecated("Use nltk.word_tokenize() or "
-            "nltk.WordTokenizer instead.")
-def word(text):
-    return WordTokenizer().tokenize(text)
-
-@deprecated("Use nltk.line_tokenize() or "
-            "nltk.LineTokenizer instead.")
-def line(text):
-    return LineTokenizer().tokenize(text)
-
-@deprecated("Use method of nltk.tokenize.PunktWordTokenizer "
-            "instead.")
-def punkt_word_tokenize(text):
-    return PunktWordTokenizer().tokenize(text)
-
-#}
-

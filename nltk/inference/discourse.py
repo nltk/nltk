@@ -578,7 +578,7 @@ def drt_discourse_demo(reading_command=None):
 def spacer(num=30):
     print '-' * num
 
-if __name__ == '__main__':
+def demo():
     discourse_demo()
 
     tagger = RegexpTagger(
@@ -591,3 +591,6 @@ if __name__ == '__main__':
     depparser = MaltParser(tagger=tagger)
     drt_discourse_demo(DrtGlueReadingCommand(remove_duplicates=False, 
                                              depparser=depparser))
+
+if __name__ == '__main__':
+    demo()

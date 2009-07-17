@@ -596,7 +596,10 @@ def tableau_test(c, ps=None, verbose=False):
         pps = []
     print '%s |- %s: %s' % (', '.join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose))
 
-if __name__ == '__main__':
+def demo():
     testTableauProver()
     testHigherOrderTableauProver()
-    
+
+if __name__ == '__main__':
+    demo()
+

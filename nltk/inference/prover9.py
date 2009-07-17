@@ -346,7 +346,7 @@ expressions = [r'some x y.sees(x,y)',
 def spacer(num=45):
     print '-' * num
 
-if __name__ == '__main__':
+def demo():
     print "Testing configuration"
     spacer()
     test_config()
@@ -358,3 +358,6 @@ if __name__ == '__main__':
     print "Testing proofs"
     spacer()
     test_prove(arguments)
+
+if __name__ == '__main__':
+    demo()
