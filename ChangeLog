@@ -2,7 +2,12 @@ Version 2.0b5 2009-07-19
 
 NLTK:
 * minor bugfixes (incl FreqDist, Python eggs)
-* added reader for IPI PAN Polish corpus (contributed by Konrad Goluchowski)
+* added reader for Europarl Corpora (contributed by Nitin Madnani)
+* added reader for IPI PAN Polish Corpus (contributed by Konrad Goluchowski)
+* fixed data.py so that it doesn't generate a warning for Windows Python 2.6
+
+NLTK-Contrib:
+* updated Praat reader (contributed by Margaret Mitchell) 
 
 Version 2.0b4 2009-07-10
 
