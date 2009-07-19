@@ -114,9 +114,22 @@ class FreqDist(dict):
                supported sample type.
         """
         if count == 0: return
+        self[sample] = self.get(sample,0) + count
 
-        self._N += count
-        dict.__setitem__(self, sample, self.get(sample,0) + count)
+    def __setitem__(self, sample, value):
+        """
+        Set this C{FreqDist}'s count for the given sample.
+
+        @param sample: The sample whose count should be incremented.
+        @type sample: any hashable object
+        @param count: The new value for the sample's count
+        @type count: C{int}
+        @rtype: None
+        @raise TypeError: If C{sample} is not a supported sample type.
+        """
+
+        self._N += (value - self.get(sample, 0))
+        dict.__setitem__(self, sample, value)
 
         # Invalidate the Nr cache and max cache.
         self._Nr_cache = None
@@ -431,9 +444,6 @@ class FreqDist(dict):
 #        sort the supplied samples
 #        if samples:
 #            items = [(sample, self[sample]) for sample in set(samples)]
-
-    def __setitem__(self, key, value):
-        raise NotImplementedError, "Use FreqDist() or FreqDist.inc() to set the values of a frequency distribution."
 
     def __eq__(self, other):
         if not isinstance(other, FreqDist): return False
