@@ -70,19 +70,24 @@ B. PORTFILE
 
   - skip this for beta releases
 
-  1. Find the location of the Portfile using "port dir py25-nltk"
-  2. Copy the Portfile to Portfile.orig
+  0. Initial setup:
+     a) Edit /opt/local/etc/macports/sources.conf, adding a pathname
+        e.g. file:///Users/sb/ports before the default path
+     b) mkdir -p ~/ports/python
+  1. locate the existing portfiles ("port dir py25-nltk")
+     and copy them over: cp .../py*-nltk ~/ports/python
+  2. Copy each Portfile to Portfile.orig
   3. Update the contents of Portfile (use make checksums to get the three checksums)
-  4. Test the Portfile using "port install py25-nltk"
-  5. Cd to py-nltk directory and create copy of Portfile in Portfile.orig
-  6. Make the same edits to py-nltk (copy py25-nltk version s/py25/py/ ; s/python25/python24/)
-  7. Create unified diffs using, e.g. "diff -u Portfile.orig Portfile > Portfile-py25-nltk.diff"
+     and run portindex
+  4. Test the Portfile using, e.g. "port install py25-nltk"
+  5. Create unified diffs using, e.g. "diff -u Portfile.orig Portfile > Portfile-py25-nltk.diff"
      (http://guide.macports.org/#development.patches)
-  8. Create a new ticket: https://trac.macports.org/newticket
-       > NLTK Ports upgrade to 0.9.9
+  6. Create a new ticket: https://trac.macports.org/newticket
+       Log in using same username that is used for accessing the svn repository
+       > NLTK Ports upgrade to 2.0b5
        > Updated port for NLTK (http://www.nltk.org/) 
        > Type: update
-       Then attach the two diff files
+       Then attach the diff files
 
 C. WEBSITE
 
