@@ -121,6 +121,8 @@ inaugural = LazyCorpusLoader(
 indian = LazyCorpusLoader(
     'indian', IndianCorpusReader, r'(?!\.).*\.pos',
     tag_mapping_function=simplify_indian_tag)
+ipipan = LazyCorpusLoader(
+    'ipipan', IPIPANCorpusReader, r'(?!\.).*morph\.xml')
 mac_morpho = LazyCorpusLoader(
     'mac_morpho', MacMorphoCorpusReader, r'(?!\.).*\.txt',
     tag_mapping_function=simplify_tag)
