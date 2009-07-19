@@ -1541,7 +1541,7 @@ regexp).  The ``ext`` argument specifies a file extension.
 
 The directory containing the corpus is corpus.root:
 
-    >>> corpus.root == root
+    >>> str(corpus.root) == str(root)
     True
 
 We can get a list of words, or the raw string:
@@ -1622,7 +1622,7 @@ By default, they apply to all documents in the corpus.
     >>> corpus = TaggedCorpusReader(root, list('ab'))
     >>> corpus.fileids()
     ['a', 'b']
-    >>> corpus.root == root
+    >>> str(corpus.root) == str(root)
     True
     >>> corpus.words()
     ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
@@ -1756,17 +1756,17 @@ Check that corpus views produce the correct sequence of values.
     >>> linetok = nltk.LineTokenizer(blanklines='discard-eof')
     >>> for f in fileids:
     ...     v = StreamBackedCorpusView(f, read_whitespace_block)
-    ...     assert list(v) == open(f).read().split()
+    ...     assert list(v) == open(str(f)).read().split()
     ...     v = StreamBackedCorpusView(f, read_line_block)
-    ...     assert list(v) == linetok.tokenize(open(f).read())
+    ...     assert list(v) == linetok.tokenize(open(str(f)).read())
 
 Check that the corpus views report the correct lengths:
 
     >>> for f in fileids:
     ...     v = StreamBackedCorpusView(f, read_whitespace_block)
-    ...     assert len(v) == len(open(f).read().split())
+    ...     assert len(v) == len(open(str(f)).read().split())
     ...     v = StreamBackedCorpusView(f, read_line_block)
-    ...     assert len(v) == len(linetok.tokenize(open(f).read()))
+    ...     assert len(v) == len(linetok.tokenize(open(str(f)).read()))
 
 Concatenation
 -------------
@@ -1779,9 +1779,9 @@ Check that concatenation works as intended.
     >>> print c123
     ['C-Span', 'Inaugural', 'Address', 'Corpus', 'US', ...]
 
-    >>> l1 = open(f1).read().split()
-    >>> l2 = open(f2).read().split()
-    >>> l3 = open(f3).read().split()
+    >>> l1 = open(str(f1)).read().split()
+    >>> l2 = open(str(f2)).read().split()
+    >>> l3 = open(str(f3)).read().split()
     >>> l123 = l1+l2+l3
 
     >>> list(c123) == l123
@@ -1797,7 +1797,7 @@ generate tuple values.
 
     >>> from nltk.util import LazySubsequence
     >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block)
-    >>> l1 = open(f1).read().split()
+    >>> l1 = open(str(f1)).read().split()
     >>> print len(c1)
     21
     >>> len(c1) < LazySubsequence.MIN_SIZE
@@ -1834,7 +1834,7 @@ Next, we'll do some tests with much longer slices.  These will
 generate LazySubsequence objects.
 
     >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block)
-    >>> l3 = open(f3).read().split()
+    >>> l3 = open(str(f3)).read().split()
     >>> print len(c3)
     5430
     >>> len(c3) > LazySubsequence.MIN_SIZE*2
