@@ -71,22 +71,23 @@ nltk/nltk.jar: $(JAVA_SRC)
 dist: zipdist gztardist rpmdist windist debdist eggdist dmgdist
 
 gztardist: clean_code
-	ln -sf setup-distutils.py setup.py
+	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q sdist --format=gztar
 zipdist: clean_code
-	ln -sf setup-distutils.py setup.py
+	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q sdist --format=zip
 rpmdist: clean_code
-	ln -sf setup-distutils.py setup.py
+	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q bdist --format=rpm
 windist: clean_code
-	ln -sf setup-distutils.py setup.py
+	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q bdist --format=wininst
+	mv dist/nltk-$(VERSION).macosx-10.5-i386.exe dist/nltk-$(VERSION).win32.exe
 debdist: clean_code
 	alien --to-deb --bump=0 dist/nltk-$(VERSION)*noarch.rpm
 	mv *.deb dist/
 eggdist: clean_code
-	ln -sf setup-eggs.py setup.py
+	cp -f setup-eggs.py setup.py
 	$(PYTHON) setup.py bdist --formats=egg
 
 docdist:
@@ -104,7 +105,7 @@ checksums:
 	openssl rmd160 dist/nltk-$(VERSION).tar.gz
 
 pypi:
-	ln -sf setup-eggs.py setup.py
+	cp -f setup-eggs.py setup.py
 	python setup-eggs.py register
 	python setup-eggs.py sdist upload
 	python setup-eggs.py bdist upload
