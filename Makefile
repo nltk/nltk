@@ -71,18 +71,23 @@ nltk/nltk.jar: $(JAVA_SRC)
 dist: zipdist gztardist rpmdist windist debdist eggdist dmgdist
 
 gztardist: clean_code
+	ln -sf setup-distutils.py setup.py
 	$(PYTHON) setup.py -q sdist --format=gztar
 zipdist: clean_code
+	ln -sf setup-distutils.py setup.py
 	$(PYTHON) setup.py -q sdist --format=zip
 rpmdist: clean_code
+	ln -sf setup-distutils.py setup.py
 	$(PYTHON) setup.py -q bdist --format=rpm
 windist: clean_code
+	ln -sf setup-distutils.py setup.py
 	$(PYTHON) setup.py -q bdist --format=wininst
 debdist: clean_code
 	alien --to-deb --bump=0 dist/nltk-$(VERSION)*noarch.rpm
 	mv *.deb dist/
 eggdist: clean_code
-	$(PYTHON) setup-eggs.py bdist --formats=egg
+	ln -sf setup-eggs.py setup.py
+	$(PYTHON) setup.py bdist --formats=egg
 
 docdist:
 	find doc -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-doc-$(VERSION).zip -@
@@ -97,6 +102,12 @@ checksums:
 	md5 dist/nltk-$(VERSION).tar.gz
 	openssl sha1 dist/nltk-$(VERSION).tar.gz 
 	openssl rmd160 dist/nltk-$(VERSION).tar.gz
+
+pypi:
+	ln -sf setup-eggs.py setup.py
+	python setup-eggs.py register
+	python setup-eggs.py sdist upload
+	python setup-eggs.py bdist upload
 
 ########################################################################
 # OS X
@@ -121,68 +132,6 @@ dmgdist:
 	$(PM) -d ./nltk.pmdoc -o nltk-$(VERSION)/$(NLTK_PKG)
 	rm -f dist/$(NLTK_DMG)
 	hdiutil create dist/$(NLTK_DMG) -srcfolder nltk-$(VERSION)
-
-########################################################################
-# ISO Image
-########################################################################
-
-.PHONY: iso python numpy pylab
-.PHONY: .python.done .numpy.done .pylab.done
-
-SFNET = http://superb-west.dl.sourceforge.net/sourceforge
-PYFTP = http://www.python.org/ftp/python/2.5.2
-PYMAC = http://pythonmac.org/packages/py25-fat/dmg
-NUMPY = $(SFNET)/numpy
-PYLAB = $(SFNET)/matplotlib
-
-python:
-	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac $(PYFTP)/python-2.5.2-macosx.dmg
-	wget -N -P python/win $(PYFTP)/python-2.5.2.msi
-	wget -N -P python/unix$(PYFTP)/Python-2.5.2.tgz
-	touch .python.done
-
-numpy:
-	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac $(NUMPY)/numpy-1.1.1-py2.5-macosx10.5.dmg
-	wget -N -P python/win $(NUMPY)/numpy-1.1.1-win32-superpack-python2.5.exe
-	wget -N -P python/unix $(NUMPY)/numpy-1.1.1.tar.gz
-	touch .numpy.done
-
-pylab:
-	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac $(PYMAC)/matplotlib-0.91.1-py2.5-macosx10.4-2007-12-04.dmg
-	wget -N -P python/win $(PYLAB)/matplotlib-0.98.0.win32-py2.5.exe
-	wget -N -P python/unix $(PYLAB)/matplotlib-0.98.0.tar.gz
-	wget -N -P python/win http://www.dll-files.com/dllindex/msvcp71.zip?0VDlUDdLfW
-	mv python/win/msvcp71.zip?0VDlUDdLfW python/win/msvcp71.zip
-	touch .pylab.done
-
-prover:	
-	wget -N -P python/mac http://www.cs.unm.edu/%7Emccune/prover9/gui/Prover9-Mace4-v05.zip
-	wget -N -P python/win http://www.cs.unm.edu/%7Emccune/prover9/gui/Prover9-Mace4-v05-setup.exe
-	wget -N -P python/unix http://www.cs.unm.edu/%7Emccune/prover9/gui/p9m4-v05.tar.gz
-	mv python/unix/p9m4-v05.tar.gz python/unix/Prover9-Mace4-v05-i386.tar.gz
-
-iso:
-	rm -rf iso nltk-$(VERSION)
-	mkdir -p iso/{mac,win,unix}
-	cp dist/nltk-$(VERSION).dmg            iso/mac/
-	cp dist/nltk-$(VERSION).win32.exe      iso/win/
-	cp dist/nltk-$(VERSION).tar.gz         iso/unix/
-	cp dist/nltk-$(VERSION)-1.noarch.rpm   iso/unix/
-	cp dist/nltk-data-$(VERSION).zip       iso
-	cp dist/nltk-doc-$(VERSION).zip        iso
-	cp dist/nltk-examples-$(VERSION).zip   iso
-	cp doc/book/book.pdf                     iso
-	cp *.txt *.html                        iso
-	cp cd.pdf                              iso
-	cp python/mac/*                        iso/mac/
-	cp python/win/*                        iso/win/
-	cp python/unix/*                       iso/unix/
-	ln -f -s ../iso dist/nltk-$(VERSION)
-	mkisofs -f -r -o dist/nltk-$(VERSION).iso dist/nltk-$(VERSION)
-	rm -f dist/nltk-$(VERSION)
 
 ########################################################################
 # DATA

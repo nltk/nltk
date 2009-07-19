@@ -68,7 +68,6 @@ path = []
    (e.g., in their home directory under ~/nltk/data)."""
 
 # User-specified locations:
-path += [d for d in os.environ.get('NLTK_CORPORA', '').split(os.pathsep) if d]
 path += [d for d in os.environ.get('NLTK_DATA', '').split(os.pathsep) if d]
 if os.path.expanduser('~/') != '~/': path += [
     os.path.expanduser('~/nltk_data')]

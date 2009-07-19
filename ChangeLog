@@ -1,3 +1,9 @@
+Version 2.0b5 2009-07-19
+
+NLTK:
+* minor bugfixes (incl FreqDist, Python eggs)
+* added reader for IPI PAN Polish corpus (contributed by Konrad Goluchowski)
+
 Version 2.0b4 2009-07-10
 
 NLTK:
