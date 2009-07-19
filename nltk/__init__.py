@@ -11,7 +11,7 @@ NLTK -- the Natural Language Toolkit -- is a suite of open source
 Python modules, data sets and tutorials supporting research and
 development in natural language processing.
 
-@version: 2.0b4
+@version: 2.0b5
 """
 
 ##//////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ development in natural language processing.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "2.0b4"
+__version__ = "2.0b5"
 
 # Copyright notice
 __copyright__ = """\
