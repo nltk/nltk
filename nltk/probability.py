@@ -48,6 +48,8 @@ from itertools import islice
 ##  Frequency Distributions
 ##//////////////////////////////////////////////////////
 
+# [SB] inherit from defaultdict?
+
 class FreqDist(dict):
     """
     A frequency distribution for the outcomes of an experiment.  A
@@ -114,7 +116,7 @@ class FreqDist(dict):
         if count == 0: return
 
         self._N += count
-        self[sample] = self.get(sample,0) + count
+        dict.__setitem__(self, sample, self.get(sample,0) + count)
 
         # Invalidate the Nr cache and max cache.
         self._Nr_cache = None
@@ -429,6 +431,9 @@ class FreqDist(dict):
 #        sort the supplied samples
 #        if samples:
 #            items = [(sample, self[sample]) for sample in set(samples)]
+
+    def __setitem__(self, key, value):
+        raise NotImplementedError, "Use FreqDist() or FreqDist.inc() to set the values of a frequency distribution."
 
     def __eq__(self, other):
         if not isinstance(other, FreqDist): return False
