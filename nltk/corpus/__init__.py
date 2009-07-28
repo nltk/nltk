@@ -134,6 +134,9 @@ names = LazyCorpusLoader(
 nps_chat = LazyCorpusLoader(
     'nps_chat', NPSChatCorpusReader, r'(?!README|\.).*\.xml',
     tag_mapping_function=simplify_wsj_tag)
+pl196x = LazyCorpusLoader(
+    'pl196x', Pl196xCorpusReader, r'[a-z]-.*\.xml',
+    cat_file='cats.txt', textid_file='textids.txt')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
 qc = LazyCorpusLoader(
