@@ -368,3 +368,11 @@ Bug 382: JCN Division by zero error
     >>> brown_ic =  wordnet_ic.ic('ic-brown.dat')
     >>> wn.jcn_similarity(tow,shlep, brown_ic)
     1.0000000000000001e+300
+
+Bug 428: Depth is zero for instance nouns
+
+    >>> import nltk
+    >>> from nltk.corpus import wordnet
+    >>> s = wordnet.synset("lincoln.n.01")
+    >>> s.max_depth() > 0
+    True
