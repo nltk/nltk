@@ -998,7 +998,7 @@ class Synset(_WordNetObject):
         """
 
         if "_max_depth" not in self.__dict__:
-            hypernyms = self.hypernyms()
+            hypernyms = self.hypernyms() + self.instance_hypernyms()
             if not hypernyms:
                 self._max_depth = 0
             else:
@@ -1012,7 +1012,7 @@ class Synset(_WordNetObject):
         """
 
         if "_min_depth" not in self.__dict__:
-            hypernyms = self.hypernyms()
+            hypernyms = self.hypernyms() + self.instance_hypernyms()
             if not hypernyms:
                 self._min_depth = 0
             else:
