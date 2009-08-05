@@ -660,7 +660,7 @@ class WordNetCorpusReader(CorpusReader):
 
         # Initialize the counts with the smoothing value
         if smoothing > 0.0:
-            for ss in all_synsets():
+            for ss in self.all_synsets():
                 pos = ss.pos
                 if pos == ADJ_SAT: pos = ADJ
                 ic[pos][ss.offset] = smoothing
