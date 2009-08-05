@@ -371,8 +371,15 @@ Bug 382: JCN Division by zero error
 
 Bug 428: Depth is zero for instance nouns
 
-    >>> import nltk
-    >>> from nltk.corpus import wordnet
-    >>> s = wordnet.synset("lincoln.n.01")
+    >>> s = wn.synset("lincoln.n.01")
     >>> s.max_depth() > 0
     True
+
+Bug 429: Information content smoothing used old reference to all_synsets
+
+    >>> genesis_ic = wn.ic(genesis, True, 1.0)
+
+Bug 430: all_synsets used wrong pos lookup when synsets were cached
+
+    >>> for ii in wn.all_synsets(): pass
+    >>> for ii in wn.all_synsets(): pass
