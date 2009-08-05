@@ -494,7 +494,7 @@ class WordNetCorpusReader(CorpusReader):
                     if not line[0].isspace():
                         if offset in cache[pos_tag]:
                             # See if the synset is cached
-                            synset = cache[pos][offset]
+                            synset = cache[pos_tag][offset]
                         else:
                             # Otherwise, parse the line
                             synset = from_pos_and_line(pos_tag, line)
