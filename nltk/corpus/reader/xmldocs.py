@@ -18,6 +18,7 @@ try: from xml.etree import cElementTree as ElementTree
 except ImportError: from nltk.etree import ElementTree
 
 from nltk.data import SeekableUnicodeStreamReader
+from nltk.tokenize import WordPunctTokenizer
 from nltk.internals import deprecated, ElementWrapper
 
 from nltk.corpus.reader.api import CorpusReader
@@ -48,6 +49,28 @@ class XMLCorpusReader(CorpusReader):
             elt = ElementWrapper(elt)
         # Return the ElementTree element.
         return elt
+
+    def words(self, fileid=None):
+        """
+        Returns all of the words and punctuation symbols in the specified file
+        that were in text nodes -- ie, tags are ignored. Like the xml() method,
+        fileid can only specify one file.
+
+        @return: the given file's text nodes as a list of words and punctuation symbols
+        @rtype: C{list} of C{str}
+        """
+
+        elt = self.xml(fileid)
+        word_tokenizer=WordPunctTokenizer()
+        iterator = elt.getiterator()
+        out = []
+
+        for node in iterator:
+            text = node.text
+            if text is not None:
+                toks = word_tokenizer.tokenize(text)
+                out.extend(toks)
+        return out
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
