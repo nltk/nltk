@@ -382,11 +382,12 @@ transcriptions.  Transcriptions are encoded as tuples of phoneme
 strings.
 
     >>> from nltk.corpus import cmudict
-    >>> print cmudict.entries()[600:605] # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print cmudict.entries()[653:659] # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [('acetate', ['AE1', 'S', 'AH0', 'T', 'EY2', 'T']),
     ('acetic', ['AH0', 'S', 'EH1', 'T', 'IH0', 'K']),
     ('acetic', ['AH0', 'S', 'IY1', 'T', 'IH0', 'K']),
     ('aceto', ['AA0', 'S', 'EH1', 'T', 'OW0']),
+    ('acetochlor', ['AA0', 'S', 'EH1', 'T', 'OW0', 'K', 'L', 'AO2', 'R']),
     ('acetone', ['AE1', 'S', 'AH0', 'T', 'OW2', 'N'])]
     >>> # Load the entire cmudict corpus into a Python dictionary:
     >>> transcr = cmudict.dict()
