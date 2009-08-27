@@ -75,4 +75,16 @@ except ImportError:
     import collections
     collections.defaultdict = defaultdict
 
-__all__ = ['ElementTree', 'defaultdict']
+# all
+
+try:
+    all([True])
+except NameError:
+    def all(iterable):
+        for i in iterable:
+            if not i:
+                return False
+        else:
+            return True
+
+__all__ = ['ElementTree', 'defaultdict', 'all']

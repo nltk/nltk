@@ -44,6 +44,8 @@ import warnings
 from operator import itemgetter
 from itertools import islice
 
+from nltk.compat import all
+
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
 ##//////////////////////////////////////////////////////

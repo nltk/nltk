@@ -72,6 +72,7 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 import re
 
 from nltk.internals import deprecated
+from nltk.compat import all
 
 from probability import ImmutableProbabilisticMixIn
 from featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
@@ -275,7 +276,7 @@ class Production(object):
         @return: True if the right-hand side only contains C{Nonterminal}s
         @rtype: C{bool}
         """
-        return all(isinstance(n, Nonterminal) for n in self._rhs)
+        return all([isinstance(n, Nonterminal) for n in self._rhs])
 
     def is_lexical(self):
         """
@@ -560,13 +561,13 @@ class ContextFreeGrammar(object):
         Pre-calculate of which form(s) the grammar is.
         """
         prods = self._productions
-        self._is_lexical = all(p.is_lexical() for p in prods)
-        self._is_nonlexical = all(p.is_nonlexical() for p in prods 
-                                  if len(p) != 1)
+        self._is_lexical = all([p.is_lexical() for p in prods])
+        self._is_nonlexical = all([p.is_nonlexical() for p in prods 
+                                  if len(p) != 1])
         self._min_len = min(len(p) for p in prods)
         self._max_len = max(len(p) for p in prods)
-        self._all_unary_are_lexical = all(p.is_lexical() for p in prods 
-                                          if len(p) == 1)
+        self._all_unary_are_lexical = all([p.is_lexical() for p in prods 
+                                          if len(p) == 1])
     
     def is_lexical(self):
         """
