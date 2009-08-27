@@ -1215,7 +1215,12 @@ class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
 
     def _apply_complete(self, chart, leftcorners, right_edge):
         end = right_edge.end()
-        nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+#        [SB: not supported in Python 2.4]
+#        nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+        if end < chart.num_leaves():
+            nexttoken = chart.leaf(end)
+        else:
+            nexttoken = None
         for left_edge in chart.select(end=right_edge.start(), 
                                       is_complete=False,
                                       next=right_edge.lhs()):
@@ -1229,7 +1234,11 @@ class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
                                        is_complete=True,
                                        lhs=left_edge.next()):
             end = right_edge.end()
-            nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+#            nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+            if end < chart.num_leaves():
+                nexttoken = chart.leaf(end)
+            else:
+                nexttoken = None
             if _bottomup_filter(leftcorners, nexttoken, left_edge.rhs(), left_edge.dot()): 
                 new_edge = left_edge.move_dot_forward(right_edge.end())
                 if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
@@ -1240,7 +1249,11 @@ class FilteredBottomUpPredictCombineRule(BottomUpPredictCombineRule):
         if edge.is_incomplete(): return
         leftcorners = grammar.leftcorners
         end = edge.end()
-        nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+#        nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
+        if end < chart.num_leaves():
+            nexttoken = chart.leaf(end)
+        else:
+            nexttoken = None
         for prod in grammar.productions(rhs=edge.lhs()):
             if _bottomup_filter(leftcorners, nexttoken, prod.rhs()):
                 new_edge = TreeEdge(edge.span(), prod.lhs(), prod.rhs(), 1)
