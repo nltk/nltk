@@ -5,20 +5,32 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import functools
+# import functools
 from nltk.compat import *
 
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 from nltk.corpus.reader.api import CorpusReader
 
 def _parse_args(fun):
-    @functools.wraps(fun)
     def decorator(self, fileids=None, **kwargs):
         kwargs.pop('tags', None)
         if not fileids:
             fileids = self.fileids()
         return fun(self, fileids, **kwargs)
+    decorator.__name__ = fun.__name__
+    decorator.__doc__ = fun.__doc__
+    decorator.__module__ = fun.__module__
     return decorator
+
+# Assumes Python >=2.5
+# def _parse_args(fun):
+#     @functools.wraps(fun)
+#     def decorator(self, fileids=None, **kwargs):
+#         kwargs.pop('tags', None)
+#         if not fileids:
+#             fileids = self.fileids()
+#         return fun(self, fileids, **kwargs)
+#     return decorator
 
 class IPIPANCorpusReader(CorpusReader):
     """Corpus reader designed to work with corpus created by IPI PAN.
