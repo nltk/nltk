@@ -29,7 +29,7 @@ class NgramModel(ModelI):
         @param n: the order of the language model (ngram size)
         @type n: C{int}
         @param train: the training text
-        @type train: C{list} of C{list} of C{string}
+        @type train: C{list} of C{string}
         @param estimator: a function for generating a probability distribution
         @type estimator: a function that takes a C{ConditionalFreqDist} and returns
               a C{ConditionalProbDist}
