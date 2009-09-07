@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python
 #
 # A Test Driver for Doctest
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
