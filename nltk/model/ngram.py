@@ -37,7 +37,7 @@ class NgramModel(ModelI):
 
         self._n = n
         
-        if estimator == None:
+        if estimator is None:
             estimator = lambda fdist, bins: MLEProbDist(fdist)
 
         cfd = ConditionalFreqDist()
