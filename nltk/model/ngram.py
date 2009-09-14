@@ -9,7 +9,8 @@ import random
 from itertools import chain
 from math import log
 
-from nltk.probability import ConditionalProbDist, ConditionalFreqDist, MLEProbDist
+from nltk.probability import (ConditionalProbDist, ConditionalFreqDist,
+                              MLEProbDist)
 from nltk.util import ingrams
 
 from api import *
@@ -24,26 +25,27 @@ class NgramModel(ModelI):
         """
         Creates an ngram language model to capture patterns in n consecutive
         words of training text.  An estimator smooths the probabilities derived
-        from the text and may allow generation of ngrams not seen during training.
+        from the text and may allow generation of ngrams not seen during
+        training.
 
         @param n: the order of the language model (ngram size)
         @type n: C{int}
         @param train: the training text
         @type train: C{list} of C{string}
         @param estimator: a function for generating a probability distribution
-        @type estimator: a function that takes a C{ConditionalFreqDist} and returns
-              a C{ConditionalProbDist}
+        @type estimator: a function that takes a C{ConditionalFreqDist} and
+              returns a C{ConditionalProbDist}
         """
 
         self._n = n
-        
+
         if estimator is None:
             estimator = lambda fdist, bins: MLEProbDist(fdist)
 
         cfd = ConditionalFreqDist()
         self._ngrams = set()
         self._prefix = ('',) * (n - 1)
-        
+
         for ngram in ingrams(chain(self._prefix, train), n):
             self._ngrams.add(ngram)
             context = tuple(ngram[:-1])
@@ -58,7 +60,9 @@ class NgramModel(ModelI):
 
     # Katz Backoff probability
     def prob(self, word, context):
-        '''Evaluate the probability of this word in this context.'''
+        """
+        Evaluate the probability of this word in this context.
+        """
 
         context = tuple(context)
         if context + (word,) in self._ngrams:
@@ -66,7 +70,8 @@ class NgramModel(ModelI):
         elif self._n > 1:
             return self._alpha(context) * self._backoff.prob(word, context[1:])
         else:
-            raise RuntimeError("No probability mass assigned to word %s in context %s" % (word, ' '.join(context))) 
+            raise RuntimeError("No probability mass assigned to word %s in " +
+                               "context %s" % (word, ' '.join(context)))
 
     def _alpha(self, tokens):
         return self._beta(tokens) / self._backoff._beta(tokens[1:])
@@ -78,10 +83,12 @@ class NgramModel(ModelI):
             return 1
 
     def logprob(self, word, context):
-        '''Evaluate the (negative) log probability of this word in this context.'''
-        
-        return -log(self.prob(word, context), 2) 
-        
+        """
+        Evaluate the (negative) log probability of this word in this context.
+        """
+
+        return -log(self.prob(word, context), 2)
+
     # NB, this will always start with same word since model
     # is trained on a single text
     def generate(self, num_words, context=()):
@@ -93,17 +100,19 @@ class NgramModel(ModelI):
 
     def _generate_one(self, context):
         context = (self._prefix + tuple(context))[-self._n+1:]
-#       print "Context (%d): <%s>" % (self._n, ','.join(context))
+        # print "Context (%d): <%s>" % (self._n, ','.join(context))
         if context in self:
             return self[context].generate()
         elif self._n > 1:
             return self._backoff._generate_one(context[1:])
         else:
             return '.'
-    
+
     def entropy(self, text):
-        '''Evaluate the total entropy of a text with respect to the model.
-        This is the sum of the log probability of each word in the message.'''
+        """
+        Evaluate the total entropy of a text with respect to the model.
+        This is the sum of the log probability of each word in the message.
+        """
 
         e = 0.0
         for i in range(self._n - 1, len(text)):
