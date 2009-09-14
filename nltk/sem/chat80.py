@@ -127,7 +127,7 @@ import shelve
 import os
 import sys
 import nltk
-import sqlite3
+
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -382,22 +382,27 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     @param dbname: filename of persistent store
     @type schema: C{str}
     """
-    records = _str2records(filename, rel_name)
-    connection =  sqlite3.connect(dbname)
-    cur = connection.cursor()
-    if setup:
-        cur.execute('''CREATE TABLE city_table
-        (City text, Country text, Population int)''')
-        
-    table_name = "city_table"
-    for t in records:
-        cur.execute('insert into %s values (?,?,?)' % table_name, t)
+    try:
+        import sqlite3
+        records = _str2records(filename, rel_name)
+        connection =  sqlite3.connect(dbname)
+        cur = connection.cursor()
+        if setup:
+            cur.execute('''CREATE TABLE city_table
+            (City text, Country text, Population int)''')
+
+        table_name = "city_table"
+        for t in records:
+            cur.execute('insert into %s values (?,?,?)' % table_name, t)
+            if verbose:
+                print "inserting values into %s: " % table_name, t
+        connection.commit()
         if verbose:
-            print "inserting values into %s: " % table_name, t
-    connection.commit()
-    if verbose:
-        print "Commiting update to %s" % dbname
-    cur.close()
+            print "Commiting update to %s" % dbname
+        cur.close()
+    except ImportError:
+        import warnings
+        warnings.warn("To run this function, first install pysqlite.")
 
 def sql_query(dbname, query):
     """
@@ -407,12 +412,18 @@ def sql_query(dbname, query):
     @param query: SQL query 
     @type rel_name: C{str}
     """
-    path = nltk.data.find(dbname)
-    connection =  sqlite3.connect(path)
-    # return ASCII strings if possible
-    connection.text_factory = sqlite3.OptimizedUnicode
-    cur = connection.cursor()
-    return cur.execute(query)
+    try:
+        import sqlite3
+        path = nltk.data.find(dbname)
+        connection =  sqlite3.connect(path)
+        # return ASCII strings if possible
+        connection.text_factory = sqlite3.OptimizedUnicode
+        cur = connection.cursor()
+        return cur.execute(query)
+    except ImportError:
+        import warnings
+        warnings.warn("To run this function, first install pysqlite.")
+        raise
 
 def _str2records(filename, rel):
     """
@@ -760,12 +771,17 @@ def sql_demo():
     """
     Print out every row from the 'city.db' database.
     """
-    print 
-    print "Using SQL to extract rows from 'city.db' RDB."
-    for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
-        print row
-        
+    try:
+        import sqlite3
+        print 
+        print "Using SQL to extract rows from 'city.db' RDB."
+        for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
+            print row
+    except ImportError:
+        import warnings
+        warnings.warn("To run the SQL demo, first install pysqlite.")
 
+    
 if __name__ == '__main__':
     main()
     sql_demo()
