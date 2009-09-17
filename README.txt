@@ -42,7 +42,7 @@ Contributing: If you would like to contribute to NLTK,
 Donating: Have you found the toolkit helpful?  Please support NLTK development
     by donating to the project via PayPal, using the link on the NLTK homepage.
 
-Redistributing: NLTK source code is distributed under the Gnu Public License.
+Redistributing: NLTK source code is distributed under the Apache 2.0 License.
     NLTK documentation is distributed under the Creative Commons
     Attribution-Noncommercial-No Derivative Works 3.0 United States license.
     NLTK corpora are provided under the terms given in the README file
