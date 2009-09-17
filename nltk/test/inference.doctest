@@ -404,6 +404,17 @@ woman; but Adam does not love Eve.
     >>> print mace.build_model(g, [a4, a5, a6])
     True
 
+The Model Builder will fail to find a model if the assumptions do entail
+the goal.  Mace will continue to look for models of ever-increasing sizes
+until the max_models number is reached.  By default, max_models is 500, 
+but it can be set manually for quicker response time.
+
+    >>> a7 = lp.parse('all x.(man(x) -> mortal(x))')
+    >>> a8 = lp.parse('man(socrates)')
+    >>> g2 = lp.parse('mortal(socrates)')
+    >>> print Mace(max_models=50).build_model(g2, [a7, a8])
+    False
+
 There is also a ``ModelBuilderCommand`` class that, like ``ProverCommand``, 
 stores a ``ModelBuilder``, a goal, assumptions, a result, and a model.  The
 only implementation in NLTK is ``MaceCommand``.
@@ -529,29 +540,30 @@ proof.
     >>> p = lp.parse('P')
     >>> q = lp.parse('Q')
     >>> prover = Prover9()
-    >>> builder = Mace()
+    >>> builder = Mace(max_models=50)
 
-    #>>> ppb = ParallelProverBuilder(prover, builder)
-    #>>> ppb.prove(q, [p, p>q])
-    #True
-    #>>> ppb.build_model(q, [p, p>q])
-    #False
-    #>>> ppb = ParallelProverBuilder(prover, builder)
-    #>>> ppb.prove(-q, [p, p>q])
-    #False
-    #>>> ppb.build_model(-q, [p, p>q])
-    #True
+    >>> ppb = ParallelProverBuilder(prover, builder)
+    >>> ppb.prove(q, [p, p>q])
+    True
+    >>> ppb.build_model(q, [p, p>q])
+    False
+    >>> ppb = ParallelProverBuilder(prover, builder)
+    >>> ppb.prove(-q, [p, p>q])
+    False
+    >>> ppb.build_model(-q, [p, p>q])
+    True
 
 The ParallelProverBuilderCommand offers the same functionality in a 
 stateful command format.
 
-    #>>> ppbc = ParallelProverBuilderCommand(prover, builder, q, [p, p>q])
-    #>>> ppbc.prove()
-    #True
-    #>>> ppbc.build_model()
-    #False
-    #>>> ppbc = ParallelProverBuilderCommand(prover, builder, -q, [p, p>q])
-    #>>> ppbc.prove()
-    #False
-    #>>> ppbc.build_model()
-    #True
+    >>> ppbc = ParallelProverBuilderCommand(prover, builder, q, [p, p>q])
+    >>> ppbc.prove()
+    True
+    >>> ppbc.build_model()
+    False
+    >>> ppbc = ParallelProverBuilderCommand(prover, builder, -q, [p, p>q])
+    >>> ppbc.prove()
+    False
+    >>> ppbc.build_model()
+    True
+
