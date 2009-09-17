@@ -156,7 +156,7 @@ sinica_treebank = LazyCorpusLoader(
 state_union = LazyCorpusLoader(
     'state_union', PlaintextCorpusReader, r'(?!\.).*\.txt')
 stopwords = LazyCorpusLoader(
-    'stopwords', WordListCorpusReader, r'(?!README|\.).*')
+    'stopwords', WordListCorpusReader, r'(?!README|\.).*', encoding='utf-8')
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*')
 switchboard = LazyCorpusLoader(
