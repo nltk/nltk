@@ -566,11 +566,11 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
     
 class TheoremToolThread(threading.Thread):
     def __init__(self, command, verbose, name=None):
+        threading.Thread.__init__(self)
         self.command = command
         self.result = None
         self.verbose = verbose
         self.name = name
-        threading.Thread.__init__(self)
         
     def run(self):
         self.result = self.command()
