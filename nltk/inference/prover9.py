@@ -96,19 +96,14 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
 
 
 class Prover9Parent(object):
-    _binary_location = None
-    
     """
-    A common class extended by both L{Prover9} and L{Mace <mace.Mace>}.  
-    It contains the functionality required to convert NLTK-style 
+    A common class extended by both L{Prover9} and L{Mace <mace.Mace>}.
+    It contains the functionality required to convert NLTK-style
     expressions into Prover9-style expressions.
     """
-    def __init__(self, timeout=60):
-        self._timeout = timeout
-        """The timeout value for prover9.  If a proof can not be found
-           in this amount of time, then prover9 will return false.
-           (Use 0 for no timeout.)"""
-           
+
+    _binary_location = None
+    
     def config_prover9(self, binary_location, verbose=False):
         if binary_location is None:
             self._binary_location = None
@@ -131,8 +126,6 @@ class Prover9Parent(object):
         assumptions, and timeout value of this object.
         """
         s = ''
-        if self._timeout > 0:
-            s += 'assign(max_seconds, %d).\n\n' % self._timeout
         
         if assumptions:
             s += 'formulas(assumptions).\n'
@@ -224,6 +217,12 @@ class Prover9(Prover9Parent, Prover):
     _prover9_bin = None
     _prooftrans_bin = None
     
+    def __init__(self, timeout=60):
+        self._timeout = timeout
+        """The timeout value for prover9.  If a proof can not be found
+           in this amount of time, then prover9 will return false.
+           (Use 0 for no timeout.)"""
+
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
         Use Prover9 to prove a theorem.
@@ -256,8 +255,13 @@ class Prover9(Prover9Parent, Prover):
         """
         if self._prover9_bin is None:
             self._prover9_bin = self._find_binary('prover9', verbose)
+      
+        updated_input_str = ''
+        if self._timeout > 0: 
+            updated_input_str += 'assign(max_seconds, %d).\n\n' % self._timeout
+        updated_input_str += input_str
         
-        return self._call(input_str, self._prover9_bin, args, verbose)
+        return self._call(updated_input_str, self._prover9_bin, args, verbose)
     
     def _call_prooftrans(self, input_str, args=[], verbose=False):
         """

@@ -26,21 +26,21 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     """
     _interpformat_bin = None
     
-    def __init__(self, goal=None, assumptions=None, timeout=60, model_builder=None):
+    def __init__(self, goal=None, assumptions=None, max_models=500, model_builder=None):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
         @param assumptions: Input expressions to use as assumptions in
             the proof.
         @type assumptions: C{list} of L{logic.Expression}
-        @param timeout: number of seconds before timeout; set to 0 for
-            no timeout.
-        @type timeout: C{int}
+        @param max_models: The maximum number of models that Mace will try before
+            simply returning false. (Use 0 for no maximum.)
+        @type max_models: C{int}
         """
         if model_builder is not None:
             assert isinstance(model_builder, Mace)
         else:
-            model_builder = Mace(timeout)
+            model_builder = Mace(max_models)
         
         BaseModelBuilderCommand.__init__(self, model_builder, goal, assumptions)
         
@@ -182,6 +182,11 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 class Mace(Prover9Parent, ModelBuilder):
     _mace4_bin = None
     
+    def __init__(self, max_models=500):
+        self._max_models = max_models
+        """The maximum number of models that Mace will try before 
+           simply returning false. (Use 0 for no maximum.)"""
+
     def _build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Use Mace4 to build a first order model.
@@ -208,7 +213,12 @@ class Mace(Prover9Parent, ModelBuilder):
         if self._mace4_bin is None:
             self._mace4_bin = self._find_binary('mace4', verbose)
 
-        return self._call(input_str, self._mace4_bin, args, verbose)
+        updated_input_str = ''
+        if self._max_models > 0:
+            updated_input_str += 'assign(end_size, %d).\n\n' % self._max_models
+        updated_input_str += input_str
+
+        return self._call(updated_input_str, self._mace4_bin, args, verbose)
     
 
 def spacer(num=30):
@@ -231,7 +241,7 @@ def test_model_found(arguments):
     for (goal, assumptions) in arguments:
         g = lp.parse(goal)
         alist = [lp.parse(a) for a in assumptions]
-        m = MaceCommand(g, assumptions=alist, timeout=5)
+        m = MaceCommand(g, assumptions=alist, max_models=50)
         found = m.build_model()
         for a in alist:
             print '   %s' % a
