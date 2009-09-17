@@ -375,7 +375,7 @@ class DiscourseTester(object):
             if assumptions:
                 assumptions += self._background
                 # if Mace4 finds a model, it always seems to find it quickly
-                mb = MaceCommand(None, assumptions, timeout=2)
+                mb = MaceCommand(None, assumptions, max_models=20)
                 modelfound = mb.build_model()
             else:
                 modelfound = False
