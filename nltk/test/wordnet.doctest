@@ -333,7 +333,7 @@ Bug 21: "instance of" not included in LCS (very similar to bug 160)
     >>> a = wn.synsets("writings")[0]
     >>> b = wn.synsets("scripture")[0]
     >>> brown_ic = wordnet_ic.ic('ic-brown.dat')
-    >>> wn.jcn_similarity(a, b, brown_ic)
+    >>> a.jcn_similarity(b, brown_ic)
     0.17546021191621833
 
 Bug 221: Verb root IC is zero
@@ -366,7 +366,7 @@ Bug 382: JCN Division by zero error
     >>> shlep = wn.synset('shlep.v.02')
     >>> from nltk.corpus import wordnet_ic
     >>> brown_ic =  wordnet_ic.ic('ic-brown.dat')
-    >>> wn.jcn_similarity(tow,shlep, brown_ic)
+    >>> tow.jcn_similarity(shlep, brown_ic)
     1.0000000000000001e+300
 
 Bug 428: Depth is zero for instance nouns
