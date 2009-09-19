@@ -49,7 +49,7 @@ def config_megam(bin=None):
     global _megam_bin
     _megam_bin = find_binary(
         'megam', bin,
-        env_vars=['MEGAM',  'MEGAM_HOME'],
+        env_vars=['MEGAM',  'MEGAMHOME'],
         binary_names=['megam.opt', 'megam', 'megam_686o', 'megam_i686.opto'],
         url='http://www.cs.utah.edu/~hal/megam/')
 

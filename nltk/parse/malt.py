@@ -54,6 +54,7 @@ class MaltParser(ParserI):
         #: for the malt executables.
         _malt_path = ['.',
                      '/usr/lib/malt-1*',
+                     '/usr/share/malt-1*',
                      '/usr/local/bin',
                      '/usr/local/malt-1*',
                      '/usr/local/bin/malt-1*',
