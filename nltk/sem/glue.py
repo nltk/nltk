@@ -119,10 +119,10 @@ class GlueDict(dict):
         try:
             f = nltk.data.find(
                 os.path.join('grammars', 'sample_grammars', self.filename))
-            # if f is a ZipFilePathPointer, then we need a little extra massaging
-            if hasattr(f, 'zipfile'):
-                zipped_grammar = f
-                f = zipped_grammar.open()
+            # if f is a ZipFilePathPointer or a FileSystemPathPointer
+            # then we need a little extra massaging
+            if hasattr(f, 'open'):
+                f = f.open()
         except LookupError, e:
             try:
                 f = open(self.filename)
