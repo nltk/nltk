@@ -924,13 +924,19 @@ class Downloader(object):
             if (os.path.exists(nltkdir) and 
                 nltk.internals.is_writable(nltkdir)):
                 return nltkdir
-        
+
+        # On Windows, use %APPDATA%
+        if sys.platform == 'win32' and 'APPDATA' in os.environ:
+            homedir = os.environ['APPDATA']
+
         # Otherwise, install in the user's home directory.
-        homedir = os.path.expanduser('~/')
-        if homedir == '~/':
-            raise ValueError("Could not find a default download directory")
         else:
-            return os.path.join(homedir, 'nltk_data')
+            homedir = os.path.expanduser('~/')
+            if homedir == '~/':
+                raise ValueError("Could not find a default download directory")
+
+        # append "nltk_data" to the home directory
+        return os.path.join(homedir, 'nltk_data')
 
     def _set_download_dir(self, download_dir):
         self._download_dir = download_dir

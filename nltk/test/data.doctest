@@ -174,7 +174,7 @@ contents of the file.
 
     >>> path = nltk.data.find('corpora/abc/rural.txt')
     >>> path # doctest: +ELLIPSIS
-    ZipFilePathPointer('/usr/share/nltk_data/corpora/abc.zip', 'abc/rural.txt')
+    FileSystemPathPointer('/usr/share/nltk_data/corpora/abc/rural.txt')
     >>> path.open().read(60)
     'PM denies knowledge of AWB kickbacks\nThe Prime Minister has '
 
