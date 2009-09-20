@@ -29,7 +29,7 @@ upload:
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
 	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.rpm
-	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk_$(VERSION)-1_all.deb
+#	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk_$(VERSION)-1_all.deb
 	$(UPLOAD) --summary="NLTK $(VERSION) Egg" dist/nltk-$(VERSION)*.egg
 	$(UPLOAD) --summary="NLTK-Contrib $(VERSION)" ../nltk_contrib/dist/nltk_contrib-$(VERSION)*.zip
 
@@ -68,7 +68,7 @@ nltk/nltk.jar: $(JAVA_SRC)
 # DISTRIBUTIONS
 ########################################################################
 
-dist: zipdist gztardist rpmdist windist debdist eggdist dmgdist
+dist: zipdist gztardist rpmdist windist eggdist dmgdist
 
 gztardist: clean_code
 	cp -f setup-distutils.py setup.py
@@ -83,9 +83,9 @@ windist: clean_code
 	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q bdist --format=wininst
 	mv dist/nltk-$(VERSION).macosx-10.5-i386.exe dist/nltk-$(VERSION).win32.exe
-debdist: clean_code
-	alien --to-deb --bump=0 dist/nltk-$(VERSION)*noarch.rpm
-	mv *.deb dist/
+#debdist: clean_code
+#	alien --to-deb --bump=0 dist/nltk-$(VERSION)*noarch.rpm
+#	mv *.deb dist/
 eggdist: clean_code
 	cp -f setup-eggs.py setup.py
 	$(PYTHON) setup.py bdist --formats=egg
@@ -130,7 +130,7 @@ dmgdist:
 	rmdir $(LIB_PATH)/nltk-$(VERSION)
 	chmod -R a+r $(MACROOT)
 	mkdir -p nltk-$(VERSION)
-	$(PM) -d ./nltk.pmdoc -o nltk-$(VERSION)/$(NLTK_PKG)
+	$(PM) -d ./NLTK.pmdoc -o nltk-$(VERSION)/$(NLTK_PKG)
 	rm -f dist/$(NLTK_DMG)
 	hdiutil create dist/$(NLTK_DMG) -srcfolder nltk-$(VERSION)
 
