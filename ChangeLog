@@ -1,12 +1,14 @@
-Version 2.0b5 2009-09-17
+Version 2.0b5 2009-09-20
 
 NLTK:
 * minor fixes for Python 2.4 compatibility
 * added words() method to XML corpus reader
 * minor bugfixes and code clean-ups
+* fixed downloader to put data in %APPDATA% on Windows
 	
 Data:
 * Updated Punkt models
+* Fixed utf8 encoding issues with UDHR and Stopwords Corpora
 * Renamed CoNLL "cat" files to "esp" (different language)
 * Added Alvey NLT feature-based grammar
 * Added Polish PL196x corpus
