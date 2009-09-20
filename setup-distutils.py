@@ -9,15 +9,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from setuptools import setup
+from distutils.core import setup
 import nltk
-
-#
-# Prevent setuptools from trying to add extra files to the source code
-# manifest by scanning the version control system for its contents.
-#
-from setuptools.command import sdist
-del sdist.finders[:]
 
 setup(
     #############################################
@@ -61,14 +54,10 @@ setup(
                 'nltk.sem',
                 'nltk.stem',
                 'nltk.tag',
-                'nltk.test',
                 'nltk.tokenize',
                 'nltk.toolbox',
-                'nltk.etree'
+                'nltk.etree',
+                'yaml'
                 ],
-    zip_safe=False, # since normal files will be present too?
-    install_requires=['setuptools',
-                      'PyYAML==3.08',
-                      ],
-    test_suite = 'nltk.test.simple',
     )
+
