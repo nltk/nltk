@@ -308,7 +308,7 @@ class PunktToken(object):
 
     def _get_type(self, tok):
         """Returns a case-normalized representation of the token."""
-        return self._RE_NUMERIC.sub('##number##', tok)
+        return self._RE_NUMERIC.sub('##number##', tok.lower())
 
     @property
     def type_no_period(self):
