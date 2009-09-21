@@ -96,9 +96,10 @@ conll2000 = LazyCorpusLoader(
     ['train.txt', 'test.txt'], ('NP','VP','PP'))
 conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', 
-    ('LOC', 'PER', 'ORG', 'MISC'))
+    ('LOC', 'PER', 'ORG', 'MISC'), encoding='utf-8')
 conll2007 = LazyCorpusLoader(
-    'conll2007', DependencyCorpusReader, '.*\.(test|train).*') 
+    'conll2007', DependencyCorpusReader, '.*\.(test|train).*',
+    encoding='utf-8') 
 dependency_treebank = LazyCorpusLoader(
     'dependency_treebank', DependencyCorpusReader, '.*\.dp') 
 floresta = LazyCorpusLoader(
