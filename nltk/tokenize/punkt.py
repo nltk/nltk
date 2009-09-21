@@ -161,14 +161,15 @@ class PunktLanguageVars(object):
 
     _period_context_fmt = r"""
         \S*                          # some word material
-        (%(SentEndChars)s)           # a potential sentence ending
-        (?:
-            (%(NonWord)s)            # either other punctuation
+        %(SentEndChars)s             # a potential sentence ending
+        (?=(?P<after_tok>
+            %(NonWord)s              # either other punctuation
             |
-            \s+(\S+)                 # or whitespace and some other token
-        )"""
-    """Format of a regulare expression to find contexts including possible
-    sentence boundaries."""
+            \s+(?P<next_tok>\S+)     # or whitespace and some other token
+        ))"""
+    """Format of a regular expression to find contexts including possible
+    sentence boundaries. Matches token which the possible sentence boundary
+    ends, and matches the following token within a lookahead expression."""
 
     def period_context_re(self):
         """Compiles and returns a regular expression to find contexts
@@ -1137,14 +1138,15 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
     def _sentences_from_text(self, text):
         last_break = 0
         for match in self._lang_vars.period_context_re().finditer(text):
-            if self.text_contains_sentbreak(match.group(0)):
-                yield text[last_break:match.end(1)]
-                if match.group(3):
+            context = match.group() + match.group('after_tok')
+            if self.text_contains_sentbreak(context):
+                yield text[last_break:match.end()]
+                if match.group('next_tok'):
                     # next sentence starts after whitespace
-                    last_break = match.start(3)
+                    last_break = match.start('next_tok')
                 else:
                     # next sentence starts at following punctuation
-                    last_break = match.start(2)
+                    last_break = match.end()
         yield text[last_break:]
 
     def _realign_boundaries(self, sents):
