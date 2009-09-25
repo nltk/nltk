@@ -12,6 +12,15 @@ NLTK_URL = $(shell $(PYTHON) -c 'import nltk; print nltk.__url__' | sed '/^Warni
 GOOGLE_ACCT = StevenBird1
 UPLOAD = $(PYTHON) tools/googlecode_upload.py --project=nltk --config-dir=none --user=$(GOOGLE_ACCT) --labels=Featured
 
+MACPORTS = http://trac.macports.org/browser/trunk/dports/python
+PORT24 = $(MACPORTS)/py-nltk/Portfile?format=txt
+PORT25 = $(MACPORTS)/py25-nltk/Portfile?format=txt
+PORT26 = $(MACPORTS)/py26-nltk/Portfile?format=txt
+LMACPORTS = ~/ports/python
+LPORT24 = $(LMACPORTS)/py-nltk/Portfile
+LPORT25 = $(LMACPORTS)/py25-nltk/Portfile
+LPORT26 = $(LMACPORTS)/py26-nltk/Portfile
+
 .PHONY: usage all doc clean clean_code clean_up
 
 usage:
@@ -28,7 +37,7 @@ upload:
 	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION)*.dmg
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
-	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.rpm
+	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.noarch.rpm
 #	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk_$(VERSION)-1_all.deb
 	$(UPLOAD) --summary="NLTK $(VERSION) Egg" dist/nltk-$(VERSION)*.egg
 	$(UPLOAD) --summary="NLTK-Contrib $(VERSION)" ../nltk_contrib/dist/nltk_contrib-$(VERSION)*.zip
@@ -99,16 +108,38 @@ datadist:
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
 
-checksums:
-	md5 dist/nltk-$(VERSION).tar.gz
-	openssl sha1 dist/nltk-$(VERSION).tar.gz 
-	openssl rmd160 dist/nltk-$(VERSION).tar.gz
+checksums.txt: dist/nltk-$(VERSION).tar.gz
+	echo Assuming dist/nltk-$(VERSION).tar.gz is identical to latest
+	echo release at: http://code.google.com/p/nltk/downloads/list
+	md5 dist/nltk-$(VERSION).tar.gz |\
+	sed 's/MD5.*=/checksums           md5/' | sed 's/$$/ \\/' > checksums.txt
+	openssl sha1 dist/nltk-$(VERSION).tar.gz |\
+	sed 's/SHA1.*=/                    sha1/' | sed 's/$$/ \\/' >> checksums.txt
+	openssl rmd160 dist/nltk-$(VERSION).tar.gz |\
+	sed 's/RIPEMD160.*=/                    rmd160/' >> checksums.txt
 
 pypi:
 	cp -f setup-eggs.py setup.py
-	python setup-eggs.py register
-	python setup-eggs.py sdist upload
-	python setup-eggs.py bdist upload
+	$(PYTHON) setup-eggs.py register
+	$(PYTHON) setup-eggs.py sdist upload
+	$(PYTHON) setup-eggs.py bdist upload
+
+macports: checksums.txt
+	rm -rf ~/ports/python/py*-nltk
+	mkdir -p ~/ports/python/py-nltk ~/ports/python/py25-nltk ~/ports/python/py26-nltk
+	wget $(PORT24) -O $(LPORT24)
+	wget $(PORT25) -O $(LPORT25)
+	wget $(PORT26) -O $(LPORT26)
+	cp $(LPORT24) $(LPORT24).orig
+	cp $(LPORT25) $(LPORT25).orig
+	cp $(LPORT26) $(LPORT26).orig
+	$(PYTHON) tools/update_checksums.py $(LPORT24) checksums.txt $(VERSION)
+	$(PYTHON) tools/update_checksums.py $(LPORT25) checksums.txt $(VERSION)
+	$(PYTHON) tools/update_checksums.py $(LPORT26) checksums.txt $(VERSION)
+	diff -u $(LPORT24).orig $(LPORT24) > dist/Portfile-py-nltk.diff
+	diff -u $(LPORT25).orig $(LPORT25) > dist/Portfile-py25-nltk.diff
+	diff -u $(LPORT26).orig $(LPORT26) > dist/Portfile-py26-nltk.diff
+	echo now run "portindex", test install the ports, and submit
 
 ########################################################################
 # OS X
