@@ -51,7 +51,8 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
      - may need to build rpm on a different machine
      - S.Bethard can build .msi files
   (test the distributions?)
-  4. (cd ../nltk_contrib; make dist)
+  4. check file sizes are about the same as previously released files
+  5. (cd ../nltk_contrib; make dist)
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@ RELEASE
@@ -71,23 +72,18 @@ B. PORTFILE
   - skip this for beta releases
 
   0. Initial setup:
-     a) Edit /opt/local/etc/macports/sources.conf, adding a pathname
-        e.g. file:///Users/sb/ports before the default path
-     b) mkdir -p ~/ports/python
-  1. locate the existing portfiles ("port dir py25-nltk")
-     and copy them over: cp .../py*-nltk ~/ports/python
-  2. Copy each Portfile to Portfile.orig
-  3. Update the contents of Portfile (use make checksums to get the three checksums)
-     and run portindex
-  4. Test the Portfile using, e.g. "port install py25-nltk"
-  5. Create unified diffs using, e.g. "diff -u Portfile.orig Portfile > Portfile-py25-nltk.diff"
-     (http://guide.macports.org/#development.patches)
-  6. Create a new ticket: https://trac.macports.org/newticket
+     Edit /opt/local/etc/macports/sources.conf, adding a pathname
+     e.g. file:///Users/sb/ports before the default path
+     It should be the same location used by the Makefile $LMACPORTS without /python
+  1. make macports
+  2. cd ~/ports; portindex
+  3. Test the Portfiles using, e.g. "port install py25-nltk" etc
+  4. Create a new ticket: https://trac.macports.org/newticket
        Log in using same username that is used for accessing the svn repository
-       > NLTK Ports upgrade to 2.0b5
-       > Updated port for NLTK (http://www.nltk.org/) 
+       > Summary: NLTK Ports upgrade to $VERSION
+       > Description: Updated port for NLTK (http://www.nltk.org/) 
        > Type: update
-       Then attach the diff files
+       Then attach the diff files, nltk/dist/Portfile*.diff
 
 C. WEBSITE
 
