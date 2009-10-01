@@ -173,8 +173,8 @@ types define the `open()` method, which can be used to read the string
 contents of the file.
 
     >>> path = nltk.data.find('corpora/abc/rural.txt')
-    >>> path # doctest: +ELLIPSIS
-    FileSystemPathPointer('/usr/share/nltk_data/corpora/abc/rural.txt')
+    >>> str(path).endswith('/nltk_data/corpora/abc/rural.txt') # doctest: +ELLIPSIS
+    True
     >>> path.open().read(60)
     'PM denies knowledge of AWB kickbacks\nThe Prime Minister has '
 
