@@ -82,7 +82,6 @@ def pr(data, start=0, end=None):
     """
     pprint(list(islice(data, start, end)))
 
-# shouldn't this use textwrap.wrap()?
 def print_string(s, width=70):
     """
     Pretty print a string, breaking lines on whitespace
@@ -92,15 +91,7 @@ def print_string(s, width=70):
     @param width: the display width
     @type width: C{int}
     """
-    while s:
-        s = s.strip()
-        try:
-            i = s[:width].rindex(' ')
-        except ValueError:
-            print s
-            return
-        print s[:i]
-        s = s[i:]
+    print '\n'.join(textwrap.wrap(s, width=width))
 
 def tokenwrap(tokens, separator=" ", width=70):
     """
@@ -113,7 +104,6 @@ def tokenwrap(tokens, separator=" ", width=70):
     @param width: the display width (default=70)
     @type width: C{int}
     """
-    
     return '\n'.join(textwrap.wrap(separator.join(tokens), width=width))
 
 
@@ -260,8 +250,11 @@ def invert_dict(d):
     from nltk.compat import defaultdict
     inverted_dict = defaultdict(list)
     for key in d:
-        for term in d[key]:
-            inverted_dict[term].append(key)
+        if hasattr(d[key], '__iter__'):
+            for term in d[key]:
+                inverted_dict[term].append(key)
+        else:
+            inverted_dict[d[key]] = key
     return inverted_dict
 
 
