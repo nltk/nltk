@@ -7,6 +7,8 @@
 
 import numpy
 
+from nltk.internals import deprecated
+
 from api import *
 from util import *
 
@@ -15,9 +17,9 @@ class GAAClusterer(VectorSpaceClusterer):
     The Group Average Agglomerative starts with each of the N vectors as singleton
     clusters. It then iteratively merges pairs of clusters which have the
     closest centroids.  This continues until there is only one cluster. The
-    order of merges gives rise to a dendogram: a tree with the earlier merges
+    order of merges gives rise to a dendrogram: a tree with the earlier merges
     lower than later merges. The membership of a given number of clusters c, 1
-    <= c <= N, can be found by cutting the dendogram at depth c.
+    <= c <= N, can be found by cutting the dendrogram at depth c.
 
     This clusterer uses the cosine similarity metric only, which allows for
     efficient speed-up in the clustering process. 
@@ -26,12 +28,12 @@ class GAAClusterer(VectorSpaceClusterer):
     def __init__(self, num_clusters=1, normalise=True, svd_dimensions=None):
         VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._num_clusters = num_clusters
-        self._dendogram = None
+        self._dendrogram = None
         self._groups_values = None
 
     def cluster(self, vectors, assign_clusters=False, trace=False):
         # stores the merge order
-        self._dendogram = Dendogram(
+        self._dendrogram = Dendrogram(
             [numpy.array(vector, numpy.float64) for vector in vectors])
         return VectorSpaceClusterer.cluster(self, vectors, assign_clusters, trace)
 
@@ -64,12 +66,12 @@ class GAAClusterer(VectorSpaceClusterer):
             vector_sum[i] = vector_sum[i] + vector_sum[j]
             del vector_sum[j]
 
-            self._dendogram.merge(i, j)
+            self._dendrogram.merge(i, j)
 
         self.update_clusters(self._num_clusters)
 
     def update_clusters(self, num_clusters):
-        clusters = self._dendogram.groups(num_clusters)
+        clusters = self._dendrogram.groups(num_clusters)
         self._centroids = []
         for cluster in clusters:
             assert len(cluster) > 0
@@ -95,12 +97,16 @@ class GAAClusterer(VectorSpaceClusterer):
                 best = (sim, i)
         return best[1]
 
+    @deprecated("Use GAAClusterer.dendrogram instead.")
     def dendogram(self):
+        return dendrogram(self)
+
+    def dendrogram(self):
         """
-        @return: The dendogram representing the current clustering
-        @rtype:  Dendogram
+        @return: The dendrogram representing the current clustering
+        @rtype:  Dendrogram
         """
-        return self._dendogram
+        return self._dendrogram
 
     def num_clusters(self):
         return self._num_clusters
@@ -132,8 +138,8 @@ def demo():
     print 'As:', clusters
     print
     
-    # show the dendogram
-    clusterer.dendogram().show()
+    # show the dendrogram
+    clusterer.dendrogram().show()
 
     # classify a new vector
     vector = numpy.array([3, 3])

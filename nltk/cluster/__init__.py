@@ -31,9 +31,9 @@ output means are chosen.
 The GAAC clusterer starts with each of the M{N} vectors as singleton clusters.
 It then iteratively merges pairs of clusters which have the closest centroids.
 This continues until there is only one cluster. The order of merges gives rise
-to a dendogram - a tree with the earlier merges lower than later merges. The
+to a dendrogram - a tree with the earlier merges lower than later merges. The
 membership of a given number of clusters M{c}, M{1 <= c <= N}, can be found by
-cutting the dendogram at depth M{c}.
+cutting the dendrogram at depth M{c}.
 
 The Gaussian EM clusterer models the vectors as being produced by a mixture
 of k Gaussian sources. The parameters of these sources (prior probability,
@@ -81,4 +81,4 @@ from gaac import *
 from em import *
 
 __all__ = ['KMeansClusterer', 'GAAClusterer', 'EMClusterer',
-           'VectorSpaceClusterer', 'Dendogram']
+           'VectorSpaceClusterer', 'Dendrogram']
