@@ -710,8 +710,8 @@ class MyDocTestRunner(DocTestRunner):
         self._term = TerminalController()
         self._stderr_term = TerminalController(sys.__stderr__)
         self._kbinterrupt_continue = kbinterrupt_continue
+
     def report_start(self, out, test, example):
-        
         if 1 <= self._verbosity <= 2:
             src = example.source.split('\n')[0]
             if len(src) > 60: src = src[:57]+'...'
@@ -748,6 +748,7 @@ class MyDocTestRunner(DocTestRunner):
         out(self._failure_header(test, example) + self._term.RED+
             self._checker.output_difference(example, got, self.optionflags)+
             self._term.NORMAL)
+
     def report_unexpected_exception(self, out, test, example, exc_info):
         example.source = example.original_source
         if self._verbosity == 1:
@@ -760,6 +761,7 @@ class MyDocTestRunner(DocTestRunner):
         else:
             out('Exception raised:\n' + self._term.NORMAL +
                 _indent(_exception_traceback(exc_info)))
+
     def _failure_header(self, test, example):
         out = (self._term.CYAN+self._term.BOLD+'*'*75+self._term.NORMAL+'\n')
         out += (self._term.GREEN)
@@ -777,7 +779,7 @@ class MyDocTestRunner(DocTestRunner):
         source = example.source
         out += (_indent(source))
         return out
-    
+
     def run(self, test, compileflags=None, out=None, clear_globs=True):
         save_stderr = sys.stderr
         sys.stderr = _SpoofOut()
@@ -826,7 +828,7 @@ def run(names, optionflags, verbosity, kbinterrupt_continue):
             if verbosity == 1:
                 sys.stdout.write('.')
             sys.stdout.flush(); sys.stderr.flush()
-    return
+    return runner
     
     # temporary hack:
 #     for name in names:
