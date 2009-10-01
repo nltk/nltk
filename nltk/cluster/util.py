@@ -121,8 +121,8 @@ def cosine_distance(u, v):
     """
     return numpy.dot(u, v) / (math.sqrt(numpy.dot(u, u)) * math.sqrt(numpy.dot(v, v)))
 
-class _DendogramNode(object):
-    """ Tree node of a dendogram. """
+class _DendrogramNode(object):
+    """ Tree node of a dendrogram. """
 
     def __init__(self, value, *children):
         self._value = value
@@ -160,9 +160,9 @@ class _DendogramNode(object):
             groups.append(node.leaves())
         return groups
 
-class Dendogram(object):
+class Dendrogram(object):
     """
-    Represents a dendogram, a tree with a specified branching order.  This
+    Represents a dendrogram, a tree with a specified branching order.  This
     must be initialised with the leaf items, then iteratively call merge for
     each branch. This class constructs a tree representing the order of calls
     to the merge function.
@@ -170,16 +170,16 @@ class Dendogram(object):
 
     def __init__(self, items=[]):
         """
-        @param  items: the items at the leaves of the dendogram
+        @param  items: the items at the leaves of the dendrogram
         @type   items: sequence of (any)
         """
-        self._items = [_DendogramNode(item) for item in items]
+        self._items = [_DendrogramNode(item) for item in items]
         self._original_items = copy.copy(self._items)
         self._merge = 1
 
     def merge(self, *indices):
         """
-        Merges nodes at given indices in the dendogram. The nodes will be
+        Merges nodes at given indices in the dendrogram. The nodes will be
         combined which then replaces the first node specified. All other nodes
         involved in the merge will be removed.
 
@@ -187,7 +187,7 @@ class Dendogram(object):
         @type   indices: seq of int
         """
         assert len(indices) >= 2
-        node = _DendogramNode(self._merge, *[self._items[i] for i in indices])
+        node = _DendrogramNode(self._merge, *[self._items[i] for i in indices])
         self._merge += 1
         self._items[indices[0]] = node
         for i in indices[1:]:
@@ -200,14 +200,14 @@ class Dendogram(object):
         @type   n: int
         """
         if len(self._items) > 1:
-            root = _DendogramNode(self._merge, *self._items)
+            root = _DendrogramNode(self._merge, *self._items)
         else:
             root = self._items[0]
         return root.groups(n)
 
     def show(self):
         """
-        Print the dendogram in ASCII art to standard out.
+        Print the dendrogram in ASCII art to standard out.
         """
 
         # ASCII rendering characters
@@ -215,7 +215,7 @@ class Dendogram(object):
 
         # find the root (or create one)
         if len(self._items) > 1:
-            root = _DendogramNode(self._merge, *self._items)
+            root = _DendrogramNode(self._merge, *self._items)
         else:
             root = self._items[0]
         leaves = self._original_items
@@ -268,10 +268,10 @@ class Dendogram(object):
         
     def __repr__(self):
         if len(self._items) > 1:
-            root = _DendogramNode(self._merge, *self._items)
+            root = _DendrogramNode(self._merge, *self._items)
         else:
             root = self._items[0]
         leaves = root.leaves(False)
-        return '<Dendogram with %d leaves>' % len(leaves)
+        return '<Dendrogram with %d leaves>' % len(leaves)
 
 
