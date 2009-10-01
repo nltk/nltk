@@ -1,0 +1,36 @@
+=================
+Utility functions
+=================
+
+    >>> from nltk.util import *
+    >>> from nltk.tree import Tree
+
+    >>> print_string("This is a long string, therefore it should break", 25)
+    This is a long string,
+    therefore it should break
+
+    >>> re_show("[a-z]+", "sdf123")
+    {sdf}123
+
+    >>> tree = Tree(5,
+    ...             [Tree(4, [Tree(2, [1, 3])]),
+    ...              Tree(8, [Tree(6, [7]), 9])])
+    >>> lst = [x for x in breadth_first(tree)]
+    >>> for l in lst:
+    ...     if type(l) == int: print l
+    ...     else: print l.node
+    5
+    4
+    8
+    2
+    6
+    9
+    1
+    3
+    7
+
+    >>> invert_dict({1: 2})
+    defaultdict(<type 'list'>, {2: 1})
+
+    >>> invert_dict({1: [3, 4, 5]})
+    defaultdict(<type 'list'>, {3: [1], 4: [1], 5: [1]})
