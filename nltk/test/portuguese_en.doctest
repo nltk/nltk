@@ -5,7 +5,7 @@ Examples for Portuguese Processing
     >>> import nltk
 
 (NB. This material presumes familiarity with the NLTK book,
-``http://nltk.org/index.php/Book``).
+``http://nltk.org/book``).
 
 Accessing the MacMorpho Tagged Corpus
 -------------------------------------
@@ -246,7 +246,7 @@ Now we train the sentence segmenter (or sentence tokenizer) and use it on our te
     est\xe1 cada vez mais enfraquecida.',
     'Alguns at\xe9 j\xe1 desapareceram, como o de Castro Verde, e outros t\xeam vindo a perder quadros.']
 
-Versions of NLTK more recent than 0.9b1 include a trained model for Portuguese sentence
+NLTK's data collection includes a trained model for Portuguese sentence
 segmentation, which can be loaded as follows.  It is faster to load a trained model than
 to retrain it.
 
