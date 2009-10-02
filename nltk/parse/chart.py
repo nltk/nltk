@@ -39,7 +39,7 @@ defines three chart parsers:
 """
 
 from nltk.tree import Tree
-from nltk.grammar import Nonterminal, WeightedGrammar
+from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
 from nltk.compat import defaultdict
 
 from api import *
@@ -1118,7 +1118,7 @@ class CachedTopDownPredictRule(TopDownPredictRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
         next, index = edge.next(), edge.end()
-        if not isinstance(edge.next(), Nonterminal): return
+        if not is_nonterminal(edge.next()): return
 
         # If we've already applied this rule to an edge with the same
         # next & end, and the chart & grammar have not changed, then
@@ -1131,7 +1131,7 @@ class CachedTopDownPredictRule(TopDownPredictRule):
             first = prod.rhs() and prod.rhs()[0]
             # If the left corner in the predicted production is 
             # leaf, it must match with the input.
-            if isinstance(first, basestring):
+            if is_terminal(first):
                 if index >= chart.num_leaves() or first != chart.leaf(index): continue
             new_edge = TreeEdge.from_production(prod, index)
             if chart.insert(new_edge, ()):
@@ -1264,7 +1264,7 @@ def _bottomup_filter(leftcorners, nexttoken, rhs, dot=0):
     if len(rhs) <= dot + 1:
         return True
     next = rhs[dot + 1]
-    if isinstance(next, basestring):
+    if is_terminal(next):
         return nexttoken == next
     else:
         return nexttoken in leftcorners(next)
