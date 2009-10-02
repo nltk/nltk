@@ -210,6 +210,27 @@ class FeatStructNonterminal(FeatDict, Nonterminal):
     def symbol(self):
         return self
 
+def is_nonterminal(item):
+    """
+    @return: True if the item is a C{Nonterminal}.
+    @rtype: C{bool}
+    """
+    return isinstance(item, Nonterminal)
+
+
+#################################################################
+# Terminals
+#################################################################
+
+def is_terminal(item):
+    """
+    @return: True if the item is a terminal, which currently is 
+    if it is hashable and not a C{Nonterminal}.
+    @rtype: C{bool}
+    """
+    return hasattr(item, '__hash__') and not isinstance(item, Nonterminal)
+
+
 #################################################################
 # Productions
 #################################################################
@@ -276,7 +297,7 @@ class Production(object):
         @return: True if the right-hand side only contains C{Nonterminal}s
         @rtype: C{bool}
         """
-        return all([isinstance(n, Nonterminal) for n in self._rhs])
+        return all([is_nonterminal(n) for n in self._rhs])
 
     def is_lexical(self):
         """
@@ -436,7 +457,7 @@ class ContextFreeGrammar(object):
                 self._empty_index[prod.lhs()] = prod
             # Lexical tokens in the right hand side.
             for token in prod._rhs:
-                if isinstance(token, str):
+                if is_terminal(token):
                     self._lexical_index.setdefault(token, set()).add(prod)
         
         # Left corners.
@@ -452,7 +473,7 @@ class ContextFreeGrammar(object):
             once_again = False
             for parent in immediate_leftcorners:
                 for child in immediate_leftcorners[parent]:
-                    if isinstance(child, basestring):
+                    if is_terminal(child):
                         if child not in leftwords[parent]:
                             leftwords[parent].add(child)
                             once_again = True
@@ -691,7 +712,7 @@ class FeatureGrammar(ContextFreeGrammar):
                 self._empty_index[self._get_type_if_possible(prod._lhs)] = prod
             # Lexical tokens in the right hand side.
             for token in prod._rhs:
-                if isinstance(token, str):
+                if is_terminal(token):
                     self._lexical_index.setdefault(token, set()).add(prod)
 
     def productions(self, lhs=None, rhs=None, empty=False):
