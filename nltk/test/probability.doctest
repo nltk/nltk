@@ -5,8 +5,34 @@ Probability
     >>> import nltk
     >>> from nltk.probability import *
 
+
+Testing FreqDist extensions
+---------------------------
+
+    >>> text1 = ['no', 'good', 'fish', 'goes', 'anywhere', 'without', 'a', 'porpoise', '!']
+    >>> text2 = ['no', 'good', 'porpoise', 'likes', 'to', 'fish', 'fish', 'anywhere', '.']
+
+    >>> fd1 = nltk.FreqDist(text1)
+    >>> fd2 = nltk.FreqDist(text2)
+    >>> fd1.update(fd2)
+    >>> fd1.samples()
+    [('fish', 3), ('good', 2), ('no', 2), ('anywhere', 2), ('porpoise', 2), ('a', 1),
+    ('!', 1), ('.', 1), ('to', 1), ('without', 1), ('likes', 1), ('goes', 1)]
+
+    >>> fd1 = nltk.FreqDist(text1)
+    >>> fd1.update(text2)
+    >>> fd1.samples()
+    [('fish', 3), ('good', 2), ('no', 2), ('anywhere', 2), ('porpoise', 2), ('a', 1),
+    ('!', 1), ('.', 1), ('to', 1), ('without', 1), ('likes', 1), ('goes', 1)]
+
+    >>> fd1 = nltk.FreqDist(text1)
+    >>> fd1 += nltk.FreqDist(text2)
+    >>> fd1.samples()
+    [('fish', 3), ('good', 2), ('no', 2), ('anywhere', 2), ('porpoise', 2), ('a', 1),
+    ('!', 1), ('.', 1), ('to', 1), ('without', 1), ('likes', 1), ('goes', 1)]
+
 Testing some HMM estimators
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 We extract a small part (500 sentences) of the Brown corpus
 
