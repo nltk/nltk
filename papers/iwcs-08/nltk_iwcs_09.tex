@@ -346,7 +346,7 @@ specified succinctly as strings.
 
 \noindent
 \DRT\ expressions can be converted to their first order predicate
-logic equivalents using the \texttt{toFol()} method and can be
+logic equivalents using the \texttt{fol()} method and can be
 graphically rendered on screen with the \texttt{draw()} method.
 
 \begin{wrapfigure}{r}{0.2\textheight}
@@ -360,7 +360,7 @@ graphically rendered on screen with the \texttt{draw()} method.
 \end{wrapfigure}
 
 \begin{Verbatim}[frame=none]
->>> print d1.toFol()
+>>> print d1.fol()
 (exists x.walk(x) & exists y.run(y))
 >>> d4.simplify().draw()
 \end{Verbatim}
@@ -472,7 +472,7 @@ meaning exactly once to the meaning of the whole.
 \enumsentence{\label{glue1} $A, (A \multimap B) \vdash B$}
 \enumsentence{\label{glue2} $A, (A \multimap B) \nvdash A, B$}
 \enumsentence{\label{glue3} $A, A, (A \multimap B) \nvdash B$}
-\NLTK's \texttt{nltk.gluesemantics.linearlogic} module
+\NLTK's \texttt{nltk.sem.linearlogic} module
 contains an implementation of linear logic. 
 
 The primary rule for composing Glue formulas is (\ref{glue4}).
@@ -488,10 +488,8 @@ meaning expressions.
 \enumsentence{\label{glue4} $\alpha : A,\;
   \gamma : (A \multimap B) \vdash \gamma(\alpha) : B$} 
 
-The \NLTK\ modules \texttt{gluesemantics.glue} and
-\texttt{gluesemantics.drt\_glue} implement Glue for \FOL\ and \DRT\
-meaning expressions,
-respectively.%
+The \NLTK\ module \texttt{sem.glue} implements Glue for 
+\FOL\ and \DRT\ meaning expressions.%
 \footnote{See
   \url{http://nltk.googlecode.com/svn/trunk/doc/contrib/sem/index.html}
 for more details.}
@@ -499,7 +497,7 @@ The following example shows how Glue formulas are
 created and combined to derive a logical form for \textit{John walks}:
 
 \begin{Verbatim}
->>> from nltk.gluesemantics.glue import GlueFormula
+>>> from nltk.sem.glue import GlueFormula
 >>> john = GlueFormula('john', 'g')
 >>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
 >>> john_walks = walks.applyto(john)
@@ -526,7 +524,7 @@ $G$ is a linear logic variable):
 Then the Glue derivation shown below correctly
 generates two readings for the sentence \textit{Every girl chases a dog}:
 \begin{Verbatim}
->>> from nltk.gluesemantics.glue import GlueFormula, Glue
+>>> from nltk.sem.glue import GlueFormula, Glue
 >>> a = GlueFormula(r'\Q.all x.(girl(x) -> Q(x))', '((g -o G) -o G)')
 >>> b = GlueFormula(r'\x y.chase(x,y)', '(g -o (h -o f))')
 >>> c = GlueFormula(r'\Q.exists x.(dog(x)&Q(x))', '((h -o H) -o H)')
@@ -549,8 +547,9 @@ interfaces to two off-the-shelf tools, namely the theorem prover Prover9,
 and the model builder Mace4  \citep{McCune}.  % Both of these are
 % powerful enough for research.
 
-The \verb!get_prover(G, A)! method by default calls Prover9, and takes as
-parameters a proof goal \texttt{G} and a list \texttt{A} of assumptions.
+The \verb!Prover9! class represents the interface to Prover9.  It has a 
+method \verb!prove(G, A)! and takes as parameters a proof goal 
+\texttt{G} and a list \texttt{A} of assumptions.
 Here, we verify that if every dog barks, and Rover is a dog,
 then it is true that Rover barks:
 \begin{Verbatim}
@@ -621,7 +620,7 @@ Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
     s0-r0: exists x.(student(x) & dance(x))
     s1-r0: all x.(student(x) -> person(x))
     s2-r0: -exists x.(person(x) & dance(x))
->>> dt.retract_sentence('No person dances', quiet=False)
+>>> dt.retract_sentence('No person dances')
 Current sentences are 
 s0: A student dances
 s1: Every student is a person
@@ -703,7 +702,7 @@ checking more robust.
 
 
 {\small
-\bibliography{sem}
+\bibliography{nltk_iwcs_09}
 }
 
 \end{document}
