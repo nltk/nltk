@@ -262,26 +262,6 @@ def invert_dict(d):
 # HTML Cleaning
 ##########################################################################
 
-from HTMLParser import HTMLParser
-skip = ['script', 'style']   # non-nesting tags to skip
-
-class HTMLCleaner(HTMLParser):
-    def __init__(self):
-        self.reset()
-        self.fed = []
-        self._flag = True
-    def handle_data(self, d):
-        if self._flag:
-            self.fed.append(d)
-    def handle_starttag(self, tag, attrs):
-        if tag in skip:
-            self._flag = False
-    def handle_endtag(self, tag):
-        if tag in skip:
-            self._flag = True
-    def clean_text(self):
-        return ''.join(self.fed)
-
 def clean_html(html):
     """
     Remove HTML markup from the given string.
@@ -290,10 +270,15 @@ def clean_html(html):
     @type html: C{string}
     @rtype: C{string}
     """
-    
-    cleaner = HTMLCleaner()
-    cleaner.feed(html)
-    return cleaner.clean_text()
+
+    # First we remove inline JavaScript/CSS:
+    cleaned = re.sub(r"(?is)<(script|style).*?>.*?(</\1>)", "", html.strip())
+    # Then we remove html comments. This has to be done before removing regular
+    # tags since comments can contain '>' characters.
+    cleaned = re.sub(r"(?s)<!--.*?-->", "", cleaned)
+    # Finally we can remove the remaining tags:
+    cleaned = re.sub(r"(?s)<.*?>", "", cleaned)
+    return cleaned
 
 def clean_url(url):
    from urllib import urlopen
