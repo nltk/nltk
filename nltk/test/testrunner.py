@@ -23,7 +23,6 @@ FAILING_TESTS = [
     "portuguese_en.doctest",
     "probability.doctest",
     "relextract.doctest",
-    "tokenize.doctest",
     ]
 
 # These tests require extra dependencies and should not run by default
@@ -39,6 +38,7 @@ DEPENDENT_TESTS = [
 
 TESTS = [x for x in os.listdir(os.getcwd()) if x.endswith('.doctest') and
          not x in FAILING_TESTS + DEPENDENT_TESTS]
+TESTS.sort()
 
 def main():
     optionflags, verbosity, kbinterrupt_continue = 0, 1, 0
