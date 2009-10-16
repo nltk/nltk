@@ -79,7 +79,7 @@ words, a list of sentences, or a list of paragraphs.
 Each of these reader methods may be given a single document's item
 name or a list of document item names.  When given a list of document
 item names, the reader methods will concatenate together the contents
-of the individual documents.  
+of the individual documents.
 
     >>> l1 = len(inaugural.words('1789-Washington.txt'))
     >>> l2 = len(inaugural.words('1793-Washington.txt'))
@@ -154,7 +154,7 @@ Indian text annotated with part-of-speech tags:
     >>> print indian.tagged_words() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [('\xe0\xa6\xae\xe0\xa6\xb9\xe0\xa6\xbf...', 'NN'),
      ('\xe0\xa6\xb8\xe0\xa6\xa8\xe0\xa7\x8d\xe0...', 'NN'), ...]
-     
+
 Tagged corpora support access to simplified tags, e.g. where all nouns
 tags are collapsed to a single category ``N``:
 
@@ -169,7 +169,7 @@ Chunked Corpora
 
 The CoNLL corpora also provide chunk structures, which are encoded as
 flat trees.  The CoNLL 2000 Corpus includes phrasal chunks; and the
-CoNLL 2002 Corpus includes named entity chunks.  
+CoNLL 2002 Corpus includes named entity chunks.
 
     >>> from nltk.corpus import conll2000, conll2002
     >>> print conll2000.sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
@@ -191,7 +191,7 @@ CoNLL 2002 Corpus includes named entity chunks.
       (NP the/DT Exchequer/NNP)
       ...)
     >>> print conll2002.sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [['Sao', 'Paulo', '(', 'Brasil', ')', ',', ...], ['-'], ...]
+    [[u'Sao', u'Paulo', u'(', u'Brasil', u')', u',', ...], [u'-'], ...]
     >>> for tree in conll2002.chunked_sents()[:2]:
     ...     print tree # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     (S
@@ -348,7 +348,7 @@ when you try to access it:
       Searched in:
         - ...
     **********************************************************************
-      
+
 Word Lists and Lexicons
 =======================
 
@@ -361,12 +361,12 @@ examples illustrate the use of the wordlist corpora:
     ['en', 'en-basic']
     >>> words.words('en') # doctest: +ELLIPSIS
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
-    
+
     >>> stopwords.fileids() # doctest: +ELLIPSIS
-    ['danish', 'dutch', 'english', 'french', ...]
+    ['danish', 'dutch', 'english', 'finnish', 'french', ...]
     >>> stopwords.words('english') # doctest: +ELLIPSIS
-    ['a', "a's", 'able', 'about', 'above', 'according', ...]
-    
+    [u'i', u'me', u'my', u'myself', u'we', u'our', ...]
+
     >>> names.fileids()
     ['female.txt', 'male.txt']
     >>> names.words('male.txt') # doctest: +ELLIPSIS
@@ -433,7 +433,7 @@ We can go back the other way using the optional argument of the ``fileids()`` me
 
     >>> reuters.fileids('barley') # doctest: +ELLIPSIS
     ['test/15618', 'test/15649', 'test/15676', 'test/15728', 'test/15871', ...]
-    
+
 Both the ``categories()`` and ``fileids()`` methods return a sorted list containing
 no duplicates.
 
@@ -649,7 +649,7 @@ context.
     [SensevalInstance(word='hard-a',
         position=20,
         context=[('``', '``'), ('he', 'PRP'), ...('hard', 'JJ'), ...],
-        senses=('HARD1',)), 
+        senses=('HARD1',)),
      SensevalInstance(word='hard-a',
         position=10,
         context=[('clever', 'NNP'), ...('hard', 'JJ'), ('time', 'NN'), ...],
@@ -839,7 +839,7 @@ speaker and sentence identifier for a given speech sample:
     dr1-fvmh0
     >>> print timit.sentid(item)
     sx116
-    >>> print timit.spkrinfo(timit.spkrid(item)) # doctest: +NORMALIZE_WHITESPACE 
+    >>> print timit.spkrinfo(timit.spkrid(item)) # doctest: +NORMALIZE_WHITESPACE
     SpeakerInfo(id='VMH0',
                 sex='F',
                 dr='1',
@@ -1000,7 +1000,7 @@ the XML structure directly, as follows:
     >>> tokens = posts[0].findall('terminals/t')
     >>> [t.attrib['pos'] + "/" + t.attrib['word'] for t in tokens]
     ['RB/now', 'PRP/im', 'VBD/left', 'IN/with', 'DT/this', 'JJ/gay', 'NN/name']
-       
+
 
 ---------------------
 Corpus Reader Classes
@@ -1026,7 +1026,7 @@ corpus reader instances:
     >>> nltk.corpus.brown # doctest: +ELLIPSIS
     <CategorizedTaggedCorpusReader in '.../corpora/brown'>
     >>> nltk.corpus.treebank # doctest: +ELLIPSIS
-    <BracketParseCorpusReader in '/usr/share/nltk_data/corpora/treebank.zip/treebank/combined/'>
+    <BracketParseCorpusReader in '/usr/sharep/nltk_data/corpora/treebank.zip/treebank/combined/'>
     >>> nltk.corpus.names # doctest: +ELLIPSIS
     <WordListCorpusReader in '/usr/share/nltk_data/corpora/names.zip/names/'>
     >>> nltk.corpus.genesis # doctest: +ELLIPSIS
@@ -1069,7 +1069,7 @@ and ``options`` are additional reader-specific options.  For example,
 we can create a customized corpus reader for the genesis corpus that
 uses a different sentence tokenizer as follows:
 
-    >>> # Find the directory where the corpus lives.  
+    >>> # Find the directory where the corpus lives.
     >>> genesis_dir = nltk.data.find('corpora/genesis.zip').join('genesis/')
     >>> # Create our custom sentence tokenizer.
     >>> my_sent_tokenizer = nltk.RegexpTokenizer('[^.!?]+')
@@ -1233,7 +1233,7 @@ corpora, and returns a flat list of word strings:
     >>> nltk.corpus.treebank.words()
     ['Pierre', 'Vinken', ',', '61', 'years', 'old', ',', ...]
     >>> nltk.corpus.conll2002.words()
-    ['Sao', 'Paulo', '(', 'Brasil', ')', ',', '23', 'may', ...]
+    [u'Sao', u'Paulo', u'(', u'Brasil', u')', u',', u'23', ...]
     >>> nltk.corpus.genesis.words()
     ['In', 'the', 'beginning', 'God', 'created', 'the', ...]
 
@@ -1245,7 +1245,7 @@ corpora that include part-of-speech annotations:
     >>> nltk.corpus.treebank.tagged_words()
     [('Pierre', 'NNP'), ('Vinken', 'NNP'), (',', ','), ...]
     >>> nltk.corpus.conll2002.tagged_words()
-    [('Sao', 'NC'), ('Paulo', 'VMI'), ('(', 'Fpa'), ...]
+    [(u'Sao', u'NC'), (u'Paulo', u'VMI'), (u'(', u'Fpa'), ...]
     >>> nltk.corpus.genesis.tagged_words()
     Traceback (most recent call last):
       ...
@@ -1456,7 +1456,7 @@ requirements of the corpus view's internal data structures (by 2
 integers per block).  On the other hand, larger block sizes may
 decrease performance for random access to the corpus.  (But note that
 larger block sizes will *not* decrease performance for iteration.)
-    
+
 Internally, the `StreamBackedCorpusView` class maintains a partial
 mapping from token index to file position, with one entry per block.
 When a token with a given index *i* is requested, the corpus view
@@ -1464,7 +1464,7 @@ constructs it as follows:
 
 1. First, it searches the toknum/filepos mapping for the token index
    closest to (but less than or equal to) *i*.
-         
+
 2. Then, starting at the file position corresponding to that index, it
    reads one block at a time using the block reader until it reaches
    the requested token.
@@ -1522,7 +1522,7 @@ parameters to the constructor.
     ...     a="""\
     ...     This is the first sentence.  Here is another
     ...     sentence!  And here's a third sentence.
-    ...     
+    ...
     ...     This is the second paragraph.  Tokenization is currently
     ...     fairly simple, so the period in Mr. gets tokenized.
     ...     """,
@@ -1594,7 +1594,7 @@ Test the plaintext corpora that come with nltk:
        ['firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
        ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', 'allow', 's
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/udhr.zip/udhr/'>
-       ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
+       ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1',
        ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
 
 Tagged Corpus Reader
@@ -1611,7 +1611,7 @@ By default, they apply to all documents in the corpus.
     ...     Here/det  is/verb  another/adj    sentence/noun ./punc
     ...     Note/verb that/comp you/pron can/verb use/verb \
     ...           any/noun tag/noun set/noun
-    ... 
+    ...
     ...     This/det is/verb the/det second/adj paragraph/noun ./punc
     ...     word/n without/adj a/det tag/noun :/: hello ./punc
     ...     """,
@@ -1673,7 +1673,7 @@ The Brown Corpus uses the tagged corpus reader:
     [[('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ...], ...]
     >>> brown.tagged_paras() # doctest: +ELLIPSIS
     [[[('The', 'AT'), ...]], [[('The', 'AT'), ...]], ...]
-    
+
 Verbnet Corpus Reader
 =====================
 
@@ -1759,7 +1759,7 @@ Check that corpus views produce the correct sequence of values.
     ...     v = StreamBackedCorpusView(f, read_whitespace_block)
     ...     assert list(v) == open(f).read().split()
     ...     v = StreamBackedCorpusView(f, read_line_block)
-    ...     assert list(v) == linetok.tokenize(str(f).read())
+    ...     assert list(v) == linetok.tokenize(open(f).read())
 
 Check that the corpus views report the correct lengths:
 
@@ -2100,7 +2100,7 @@ input strings and encodings.
     ...     u"""\
     ... This is a test file.
     ... Here's a blank line:
-    ... 
+    ...
     ... And here's some unicode: \xee \u0123 \uffe3
     ... """,
     ...     u"""\
@@ -2111,7 +2111,7 @@ input strings and encodings.
     ... This is a larger file.  It has some lines that are longer \
     ... than 72 characters.  It's got lots of repetition.  Here's \
     ... some unicode chars: \xee \u0123 \uffe3 \ueeee \u2345
-    ... 
+    ...
     ... How fun!  Let's repeat it twenty times.
     ... """*20]
 
