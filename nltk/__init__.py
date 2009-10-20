@@ -26,8 +26,8 @@ __version__ = "2.0b6"
 __copyright__ = """\
 Copyright (C) 2001-2009 NLTK Project.
 
-Distributed and Licensed under provisions of the GNU General
-Public License, which is included by reference.
+Distributed and Licensed under the Apache License, Version 2.0,
+which is included by reference.
 """
 
 __license__ = "Apache License, Version 2.0"
