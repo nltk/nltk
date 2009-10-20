@@ -21,10 +21,25 @@
 #     http://www.omniscia.org/~vivake/python/PorterStemmer.py
 #
 # Additional modifications were made to incorporate this module into
-# nltk.  All such modifications are marked with "--NLTK--".  The nltk
-# version of this module is maintained by the NLTK development staff,
-# and is available from the NLTK webpage:
-#     <http://nltk.sourceforge.net>
+# NLTK.  All such modifications are marked with "--NLTK--".  The NLTK
+# version of this module is maintained by NLTK developers,
+# and is available via http://www.nltk.org/
+#
+# GNU Linking Exception:
+# Using this module statically or dynamically with other modules is
+# making a combined work based on this module. Thus, the terms and
+# conditions of the GNU General Public License cover the whole combination.
+# As a special exception, the copyright holders of this module give
+# you permission to combine this module with independent modules to
+# produce an executable program, regardless of the license terms of these
+# independent modules, and to copy and distribute the resulting
+# program under terms of your choice, provided that you also meet,
+# for each linked independent module, the terms and conditions of
+# the license of that module. An independent module is a module which
+# is not derived from or based on this module. If you modify this module,
+# you may extend this exception to your version of the module, but you
+# are not obliged to do so. If you do not wish to do so, delete this
+# exception statement from your version.
 
 """Porter Stemming Algorithm
 
