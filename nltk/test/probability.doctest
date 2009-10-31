@@ -5,32 +5,43 @@ Probability
     >>> import nltk
     >>> from nltk.probability import *
 
+FreqDist
+--------
+
+    >>> text1 = ['no', 'good', 'fish', 'goes', 'anywhere', 'without', 'a', 'porpoise', '!']
+    >>> text2 = ['no', 'good', 'porpoise', 'likes', 'to', 'fish', 'fish', 'anywhere', '.']
+    
+    >>> fd1 = nltk.FreqDist(text1)
+    >>> fd1.items()
+    [('!', 1), ('a', 1), ('anywhere', 1), ('fish', 1), ('goes', 1), ('good', 1), ('no', 1), ('porpoise', 1), ('without', 1)]
+
+    >>> fd1 == nltk.FreqDist(text1)
+    True
+
+Note that items are sorted in order of decreasing frequency; two items of the same frequency are sorted alphabetically by their key.
+
+    >>> both = nltk.FreqDist(text1 + text2)
+    >>> both.items()
+    [('fish', 3), ('anywhere', 2), ('good', 2), ('no', 2), ('porpoise', 2), ('!', 1), ('.', 1), ('a', 1), ('goes', 1), ('likes', 1), ('to', 1), ('without', 1)]
 
 Testing FreqDist extensions
 ---------------------------
 
-    >>> text1 = ['no', 'good', 'fish', 'goes', 'anywhere', 'without', 'a', 'porpoise', '!']
-    >>> text2 = ['no', 'good', 'porpoise', 'likes', 'to', 'fish', 'fish', 'anywhere', '.']
+    >>> both = nltk.FreqDist(text1 + text2)
+    >>> both == fd1 + nltk.FreqDist(text2)
+    True
 
     >>> fd1 = nltk.FreqDist(text1)
     >>> fd2 = nltk.FreqDist(text2)
     >>> fd1.update(fd2)
-    >>> fd1.samples()
-    [('fish', 3), ('good', 2), ('no', 2), ('anywhere', 2), ('porpoise', 2), ('a', 1),
-    ('!', 1), ('.', 1), ('to', 1), ('without', 1), ('likes', 1), ('goes', 1)]
+    >>> fd1 == both
+    True
 
     >>> fd1 = nltk.FreqDist(text1)
     >>> fd1.update(text2)
-    >>> fd1.samples()
-    [('fish', 3), ('good', 2), ('no', 2), ('anywhere', 2), ('porpoise', 2), ('a', 1),
-    ('!', 1), ('.', 1), ('to', 1), ('without', 1), ('likes', 1), ('goes', 1)]
-
-    >>> fd1 = nltk.FreqDist(text1)
-    >>> fd1 += nltk.FreqDist(text2)
-    >>> fd1.samples()
-    [('fish', 3), ('good', 2), ('no', 2), ('anywhere', 2), ('porpoise', 2), ('a', 1),
-    ('!', 1), ('.', 1), ('to', 1), ('without', 1), ('likes', 1), ('goes', 1)]
-
+    >>> fd1 == both
+    True
+    
 Testing some HMM estimators
 ---------------------------
 
