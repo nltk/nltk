@@ -51,6 +51,7 @@ from nltk.compat import all
 ##//////////////////////////////////////////////////////
 
 # [SB] inherit from defaultdict?
+# [SB] for NLTK 3.0, inherit from collections.Counter?
 
 class FreqDist(dict):
     """
@@ -373,8 +374,7 @@ class FreqDist(dict):
     
     def _sort_keys_by_value(self):
         if not self._item_cache:
-            self._item_cache = sorted(dict.items(self), key=itemgetter(1),
-                                      reverse=True)
+            self._item_cache = sorted(dict.items(self), key=lambda x:(-x[1], x[0]))
 
     def keys(self):
         """
