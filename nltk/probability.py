@@ -42,7 +42,7 @@ import math
 import random
 import warnings
 from operator import itemgetter
-from itertools import islice
+from itertools import imap, islice
 
 from nltk.compat import all
 
@@ -87,8 +87,8 @@ class FreqDist(dict):
 
         In particular, C{FreqDist()} returns an empty frequency
         distribution; and C{FreqDist(samples)} first creates an empty
-        frequency distribution, and then calls C{inc} for each element
-        in the list C{samples}.
+        frequency distribution, and then calls C{update} with the 
+        list C{samples}.
 
         @param samples: The samples to initialize the frequency
         distribution with.
@@ -100,8 +100,7 @@ class FreqDist(dict):
         self._max_cache = None
         self._item_cache = None
         if samples:
-            for sample in samples:
-                self.inc(sample)
+            self.update(samples)
 
     def inc(self, sample, count=1):
         """
@@ -447,6 +446,34 @@ class FreqDist(dict):
 #        if samples:
 #            items = [(sample, self[sample]) for sample in set(samples)]
 
+    def copy(self):
+        """
+        Create a copy of this frequency distribution.
+        
+        @return: A copy of this frequency distribution object.
+        @rtype: C{FreqDist}
+        """
+        return self.__class__(self)
+    
+    def update(self, samples):
+        """
+        Update the frequency distribution with the provided list of samples.
+        This is a faster way to add multiple samples to the distribution.
+        
+        @param samples: The samples to add.
+        @type samples: C{list}
+        """
+        try:
+            sample_iter = samples.iteritems()
+        except:
+            sample_iter = imap(lambda x: (x,1), samples)
+        for sample, count in sample_iter:
+            self.inc(sample, count=count)    
+    
+    def __add__(self, other):
+        clone = self.copy()
+        clone.update(other)
+        return clone
     def __eq__(self, other):
         if not isinstance(other, FreqDist): return False
         return self.items() == other.items() # items are already sorted

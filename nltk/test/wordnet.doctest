@@ -301,6 +301,29 @@ Look up forms not in WordNet, with the help of Morphy:
     [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'), Synset('deny.v.04'),
     Synset('deny.v.05'), Synset('traverse.v.03'), Synset('deny.v.07')]
 
+
+---------------
+Synset Closures
+---------------
+
+Compute transitive closures of synsets
+
+    >>> dog = wn.synset('dog.n.01')
+    >>> hypo = lambda s: s.hyponyms()
+    >>> hyper = lambda s: s.hypernyms()
+    >>> list(dog.closure(hypo, depth=1)) == dog.hyponyms()
+    True
+    >>> list(dog.closure(hyper, depth=1)) == dog.hypernyms()
+    True
+    >>> list(dog.closure(hypo)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), Synset('newfoundland.n.01'), Synset('lapdog.n.01'), 
+    Synset('poodle.n.01'), Synset('leonberg.n.01'), Synset('toy_dog.n.01'), Synset('spitz.n.01'), ...]
+    >>> list(dog.closure(hyper)) # doctest: +NORMALIZE_WHITESPACE
+    [Synset('domestic_animal.n.01'), Synset('canine.n.02'), Synset('animal.n.01'), Synset('carnivore.n.01'), Synset('organism.n.01'), 
+    Synset('placental.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('whole.n.02'), Synset('vertebrate.n.01'), 
+    Synset('object.n.01'), Synset('chordate.n.01'), Synset('physical_entity.n.01'), Synset('entity.n.01')]    
+    
+    
 ----------------
 Regression Tests
 ----------------
