@@ -376,16 +376,23 @@ class Synset(_WordNetObject):
 
         >>> dog = Synset('dog.n.01')
         >>> hyp = lambda: s:s.hypernyms()
-        >>> dog.closure(hyp)
-        [{noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid}, {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian mammal}, {noun: mammal, mammalian}, {noun: vertebrate, craniate}, {noun: chordate}, {noun: animal, animate being, beast, brute, creature, fauna}, {noun: organism, being}, {noun: living thing, animate thing}, {noun: object, physical object}, {noun: physical entity}, {noun: entity}]
+        >>> list(dog.closure(hyp))
+        [Synset('domestic_animal.n.01'), Synset('canine.n.02'),
+        Synset('animal.n.01'), Synset('carnivore.n.01'),
+        Synset('organism.n.01'), Synset('placental.n.01'),
+        Synset('living_thing.n.01'), Synset('mammal.n.01'),
+        Synset('whole.n.02'), Synset('vertebrate.n.01'),
+        Synset('object.n.01'), Synset('chordate.n.01'),
+        Synset('physical_entity.n.01'), Synset('entity.n.01')]
         """
         from nltk.util import breadth_first
         synset_offsets = []
-        for synset in breadth_first(self, lambda s:s[rel], depth):
+        for synset in breadth_first(self, rel, depth):
             if synset.offset != self.offset:
                 if synset.offset not in synset_offsets:
                     synset_offsets.append(synset.offset)
                     yield synset
+
 
     def hypernym_paths(self):
         """
@@ -1465,9 +1472,10 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     # set of subsumers.
 
     eliminated = set()
+    hypernym_relation = lambda s: s.hypernyms()
     for s1 in subsumers:
         for s2 in subsumers:
-            if s2 in s1.closure(HYPERNYM):
+            if s2 in s1.closure(hypernym_relation):
                 eliminated.add(s2)
     if verbose:
         print "> Eliminated:", eliminated

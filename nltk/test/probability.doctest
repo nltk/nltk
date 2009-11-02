@@ -24,14 +24,11 @@ Note that items are sorted in order of decreasing frequency; two items of the sa
     >>> both.items()
     [('fish', 3), ('anywhere', 2), ('good', 2), ('no', 2), ('porpoise', 2), ('!', 1), ('.', 1), ('a', 1), ('goes', 1), ('likes', 1), ('to', 1), ('without', 1)]
 
-Testing FreqDist extensions
----------------------------
-
-    >>> both = nltk.FreqDist(text1 + text2)
     >>> both == fd1 + nltk.FreqDist(text2)
     True
-
-    >>> fd1 = nltk.FreqDist(text1)
+    >>> fd1 == nltk.FreqDist(text1) # But fd1 is unchanged
+    True
+    
     >>> fd2 = nltk.FreqDist(text2)
     >>> fd1.update(fd2)
     >>> fd1 == both
@@ -40,6 +37,11 @@ Testing FreqDist extensions
     >>> fd1 = nltk.FreqDist(text1)
     >>> fd1.update(text2)
     >>> fd1 == both
+    True
+        
+    >>> fd1 = nltk.FreqDist(text1)
+    >>> fd2 = nltk.FreqDist(fd1)
+    >>> fd2 == fd1
     True
     
 Testing some HMM estimators
