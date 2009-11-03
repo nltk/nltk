@@ -1139,6 +1139,19 @@ class WordNetCorpusReader(CorpusReader):
     def words(self, pos=None):
         return [lemma.name for lemma in self.lemmas(pos)]
 
+        
+    def all_lemma_names(self, pos=None):
+        """Return all lemma names for all synsets for the given
+        part of speech tag. If not pos is specified, all synsets
+        for all parts of speech will be used.
+        """
+        if pos is None:
+            return iter(self._lemma_pos_offset_map)
+        else:
+            return (lemma
+                for lemma in self._lemma_pos_offset_map
+                if pos in self._lemma_pos_offset_map[lemma])
+
     def all_synsets(self, pos=None):
         """Iterate over all synsets with a given part of speech tag.
         If no pos is specified, all synsets for all parts of speech
