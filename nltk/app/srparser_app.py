@@ -573,7 +573,7 @@ class ShiftReduceApp(object):
         instr = 'Enter a new sentence to parse.'
         EntryDialog(self._top, sentence, instr, self.set_sentence, title)
 
-    def set_sentence(self, sentence):
+    def set_sentence(self, sent):
         self._sent = sent.split() #[XX] use tagged?
         self.reset()
 
