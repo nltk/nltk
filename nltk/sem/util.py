@@ -201,7 +201,7 @@ def skolemize(expression, univ_scope=None):
 
     if isinstance(expression, AllExpression):
         term = skolemize(expression.term, univ_scope|set([expression.variable]))
-        return term.replace(expression.variable, VariableExpression(unique_variable()))
+        return term.replace(expression.variable, VariableExpression(unique_variable(term=term)))
     elif isinstance(expression, AndExpression):
         return skolemize(expression.first, univ_scope) &\
                skolemize(expression.second, univ_scope)
@@ -225,7 +225,7 @@ def skolemize(expression, univ_scope=None):
             if univ_scope:
                 return term.replace(negated.variable, skolem_function(univ_scope))
             else:
-                skolem_constant = VariableExpression(unique_variable())
+                skolem_constant = VariableExpression(unique_variable(term=term))
                 return term.replace(negated.variable, skolem_constant)
         elif isinstance(negated, AndExpression):
             return to_cnf(skolemize(-negated.first, univ_scope), 
@@ -247,7 +247,7 @@ def skolemize(expression, univ_scope=None):
             return skolemize(negated.term, univ_scope)
         elif isinstance(negated, ExistsExpression):
             term = skolemize(-negated.term, univ_scope|set([negated.variable]))
-            return term.replace(negated.variable, VariableExpression(unique_variable()))
+            return term.replace(negated.variable, VariableExpression(unique_variable(term=term)))
         elif isinstance(negated, ApplicationExpression):
             return expression
         else:
@@ -257,7 +257,7 @@ def skolemize(expression, univ_scope=None):
         if univ_scope:
             return term.replace(expression.variable, skolem_function(univ_scope))
         else:
-            skolem_constant = VariableExpression(unique_variable())
+            skolem_constant = VariableExpression(unique_variable(term=term))
             return term.replace(expression.variable, skolem_constant)
     elif isinstance(expression, ApplicationExpression):
         return expression
