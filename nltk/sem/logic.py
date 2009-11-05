@@ -120,16 +120,24 @@ class Variable(object):
         return 'Variable(\'' + self.name + '\')'
 
 
-def unique_variable(pattern=None):
+def unique_variable(pattern=None, term=None):
     """
+    Return a new, unique variable.
     param pattern: C{Variable} that is being replaced.  The new variable must
     be the same type.
+    param term: an C{Expression} to check to ensure that the new variable does
+    not match any variables in the term.
+    return: C{Variable}
     """
     if pattern is not None and is_eventvar(pattern.name):
         prefix = 'e0'
     else:
         prefix = 'z'
-    return Variable(prefix + str(_counter.get()))
+        
+    v = Variable(prefix + str(_counter.get()))
+    while term is not None and v in term.variables():
+        v = Variable(prefix + str(_counter.get()))
+    return v
 
 def skolem_function(univ_scope=None):
     """
