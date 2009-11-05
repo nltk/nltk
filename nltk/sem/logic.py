@@ -120,22 +120,29 @@ class Variable(object):
         return 'Variable(\'' + self.name + '\')'
 
 
-def unique_variable(pattern=None, term=None):
+def unique_variable(pattern=None, ignore=None):
     """
     Return a new, unique variable.
     param pattern: C{Variable} that is being replaced.  The new variable must
     be the same type.
-    param term: an C{Expression} to check to ensure that the new variable does
-    not match any variables in the term.
+    param term: a C{set} of C{Variable}s that should not be returned from 
+    this function.
     return: C{Variable}
     """
-    if pattern is not None and is_eventvar(pattern.name):
-        prefix = 'e0'
+    if pattern is not None:
+        if is_indvar(pattern.name):
+            prefix = 'z'
+        elif is_funcvar(pattern.name):
+            prefix = 'F'
+        elif is_eventvar(pattern.name):
+            prefix = 'e0'
+        else:
+            assert False, "Cannot generate a unique constant"
     else:
         prefix = 'z'
         
     v = Variable(prefix + str(_counter.get()))
-    while term is not None and v in term.variables():
+    while ignore is not None and v in ignore:
         v = Variable(prefix + str(_counter.get()))
     return v
 
@@ -907,7 +914,7 @@ class VariableBinderExpression(Expression):
             # if the bound variable appears in the expression, then it must
             # be alpha converted to avoid a conflict
             if self.variable in expression.free():
-                self = self.alpha_convert(unique_variable(self.variable))
+                self = self.alpha_convert(unique_variable(pattern=self.variable))
                 
             #replace in the term
             return self.__class__(self.variable,
