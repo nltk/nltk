@@ -61,6 +61,16 @@ class TabTokenizer(TokenizerI):
     def tokenize(self, s):
         return s.split('\t')
 
+class CharTokenizer(TokenizerI):
+    r"""
+    A tokenizer that produces individual characters.  If you are performing
+    the tokenization yourself (rather than building a tokenizer to pass to
+    some other piece of code), consider iterating over the characters of
+    the string directly instead: for char in string
+    """
+    def tokenize(self, s):
+        return list(s)
+
 class LineTokenizer(TokenizerI):
     r"""
     A tokenizer that divides a string into substrings by treating any
