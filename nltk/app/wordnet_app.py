@@ -14,24 +14,7 @@ specified port and begins serving browser requests.  The default
 port is 8000.  (For command-line help, run "python wordnet -h")
 This application requires that the user's web browser supports
 Javascript.
-"""
 
-# TODO: throughout this package variable names and docstrings need
-# modifying to be compliant with NLTK's coding standards.  Tests also
-# need to be develop to ensure this continues to work in the face of
-# changes to other NLTK packages.
-
-#!/usr/bin/env python
-#
-# Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-#
-# Copyright (C) 2001-2009 NLTK Project
-# Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-#         Paul Bone <pbone@students.csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
-# For license information, see LICENSE.TXT
-
-"""
 BrowServer is a server for browsing the NLTK Wordnet database It first
 launches a browser client to be used for browsing and then starts
 serving the requests of that and maybe other clients
@@ -57,6 +40,11 @@ Options::
         Do not start a web browser, and do not allow a user to
         shotdown the server through the web interface.
 """
+
+# TODO: throughout this package variable names and docstrings need
+# modifying to be compliant with NLTK's coding standards.  Tests also
+# need to be develop to ensure this continues to work in the face of
+# changes to other NLTK packages.
 
 # Allow this program to run inside the NLTK source tree.
 from sys import path

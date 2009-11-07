@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Natural Language Toolkit: Toolbox Reader
 #
 # Copyright (C) 2001-2009 NLTK Project
