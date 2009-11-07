@@ -127,6 +127,9 @@ ipipan = LazyCorpusLoader(
 mac_morpho = LazyCorpusLoader(
     'mac_morpho', MacMorphoCorpusReader, r'(?!\.).*\.txt',
     tag_mapping_function=simplify_tag)
+machado = LazyCorpusLoader(
+    'machado', CategorizedPlaintextCorpusReader,
+    r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*')
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*')
