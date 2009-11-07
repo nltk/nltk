@@ -124,7 +124,7 @@ class CorpusReader(object):
         Return the contents of the corpus README file, if it exists.
         """
 
-        return open(self.abspath("README")).read()
+        return self.open("README").read()
 
     def fileids(self):
         """

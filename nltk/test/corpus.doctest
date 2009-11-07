@@ -93,6 +93,11 @@ typically load all documents in the corpus.
     >>> len(inaugural.words())
     145735
 
+If a corpus contains a README file, it can be accessed with a ``readme()`` method:
+
+    >>> inaugural.readme()[:32]
+    'C-Span Inaugural Address Corpus\n'
+
 Plaintext Corpora
 =================
 
