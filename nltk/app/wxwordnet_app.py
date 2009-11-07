@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Wordnet Interface: Graphical Wordnet Browser
 # 
 # Copyright (C) 2001-2009 NLTK Project

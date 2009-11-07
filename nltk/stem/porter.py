@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# 
 # Copyright (c) 2002 Vivake Gupta (vivakeATomniscia.org).  All rights reserved.
 # 
 # This program is free software; you can redistribute it and/or
