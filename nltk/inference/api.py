@@ -576,11 +576,12 @@ class TheoremToolThread(threading.Thread):
         
     def run(self):
         try:
-            self._result = self.command()
+            self._result = self._command()
             if self._verbose: 
                 print 'Thread %s finished with result %s at %s' % \
                       (self._name, self._result, time.localtime(time.time()))
-        except:
+        except Exception, e:
+            print e
             print 'Thread %s completed abnormally' % (self._name)
 
     result = property(lambda self: self._result)
