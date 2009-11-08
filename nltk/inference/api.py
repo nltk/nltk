@@ -520,10 +520,12 @@ class ParallelProverBuilder(Prover, ModelBuilder):
             # wait until either the prover or the model builder is done
             pass
     
-        if tp_thread.done:
+        if tp_thread.result is not None:
             return tp_thread.result
-        else:
+        elif mb_thread.result is not None:
             return not mb_thread.result
+        else:
+            return None
 
 class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
     """
@@ -557,9 +559,9 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
             # wait until either the prover or the model builder is done
             pass
     
-        if tp_thread.done:
+        if tp_thread.result is not None:
             self._result = tp_thread.result
-        else:
+        elif mb_thread.result is not None:
             self._result = not mb_thread.result
         return self._result
 
@@ -571,12 +573,16 @@ class TheoremToolThread(threading.Thread):
         self.result = None
         self.verbose = verbose
         self.name = name
+        self.done = False
         
     def run(self):
-        self.result = self.command()
-        
-        if self.verbose: 
-            print 'Thread %s finished with result %s at %s' % \
-                  (self.name, self.result, time.localtime(time.time()))
-
-    done = property(lambda self: self.result is not None, doc='Is the thread done?')
+        try:
+            self.result = self.command()
+            if self.verbose: 
+                print 'Thread %s finished with result %s at %s' % \
+                      (self.name, self.result, time.localtime(time.time()))
+        except:
+            if self.verbose: 
+                print 'Thread %s completed abnormally' % (self.name)
+        finally:
+            self.done = True
