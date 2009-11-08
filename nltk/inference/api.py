@@ -516,7 +516,7 @@ class ParallelProverBuilder(Prover, ModelBuilder):
         tp_thread.start()
         mb_thread.start()
         
-        while not tp_thread.done and not mb_thread.done:
+        while tp_thread.isAlive() and mb_thread.isAlive():
             # wait until either the prover or the model builder is done
             pass
     
@@ -555,7 +555,7 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
         tp_thread.start()
         mb_thread.start()
         
-        while not tp_thread.done and not mb_thread.done:
+        while tp_thread.isAlive() and mb_thread.isAlive():
             # wait until either the prover or the model builder is done
             pass
     
@@ -569,20 +569,19 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
 class TheoremToolThread(threading.Thread):
     def __init__(self, command, verbose, name=None):
         threading.Thread.__init__(self)
-        self.command = command
-        self.result = None
-        self.verbose = verbose
-        self.name = name
-        self.done = False
+        self._command = command
+        self._result = None
+        self._verbose = verbose
+        self._name = name
         
     def run(self):
         try:
-            self.result = self.command()
-            if self.verbose: 
+            self._result = self.command()
+            if self._verbose: 
                 print 'Thread %s finished with result %s at %s' % \
-                      (self.name, self.result, time.localtime(time.time()))
+                      (self._name, self._result, time.localtime(time.time()))
         except:
-            if self.verbose: 
-                print 'Thread %s completed abnormally' % (self.name)
-        finally:
-            self.done = True
+            if self._verbose: 
+                print 'Thread %s completed abnormally' % (self._name)
+
+    result = property(lambda self: self._result)
