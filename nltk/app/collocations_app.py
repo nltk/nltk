@@ -49,6 +49,8 @@ _CORPORA = {
                 lambda: nltk.corpus.floresta.words(),
             'Portuguese: MAC-MORPHO Corpus (Brazil)':
                 lambda: nltk.corpus.mac_morpho.words(),
+            'Portuguese: Machado Corpus (Brazil)':
+                lambda: nltk.corpus.machado.words(),
             'Spanish: CESS-ESP Corpus':
                 lambda: nltk.corpus.cess_esp.words(),
            }
