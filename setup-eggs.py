@@ -53,6 +53,7 @@ setup(
                 'nltk.corpus.reader',
                 'nltk.cluster',
                 'nltk.draw',
+                'nltk.examples',
                 'nltk.inference',
                 'nltk.metrics',
                 'nltk.misc',
