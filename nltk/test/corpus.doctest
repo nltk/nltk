@@ -368,10 +368,9 @@ examples illustrate the use of the wordlist corpora:
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
 
     >>> stopwords.fileids() # doctest: +ELLIPSIS
-    ['danish', 'dutch', 'english', 'finnish', 'french', ...]
-    >>> stopwords.words('english') # doctest: +ELLIPSIS
-    [u'i', u'me', u'my', u'myself', u'we', u'our', ...]
-
+    ['danish', 'dutch', 'english', 'french', 'german', 'italian', 'norwegian', ...]
+    >>> stopwords.words('portuguese') # doctest: +ELLIPSIS
+    ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', ...]
     >>> names.fileids()
     ['female.txt', 'male.txt']
     >>> names.words('male.txt') # doctest: +ELLIPSIS

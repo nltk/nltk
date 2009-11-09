@@ -1,3 +1,20 @@
+Version 2.0b7 2009-11-09
+
+NLTK:
+* minor bugfixes and enhancements: data loader, inference package, FreqDist, Punkt
+* added Portuguese example module, similar to nltk.book for English (examples/pt.py)
+* added all_lemma_names() method to WordNet corpus reader
+* added update() and __add__() extensions to FreqDist (enhances alignment with Python 3.0 counters)
+* reimplemented clean_html
+* added test-suite runner for automatic/manual regression testing
+
+NLTK-Data:
+* updated Punkt models for sentence segmentation
+* added corpus of the works of Machado de Assis (Brazilian Portuguese)
+
+Book:
+* Added translation of preface into Portuguese, contributed by Tiago Tresoldi.
+
 Version 2.0b6 2009-09-20
 
 NLTK:
