@@ -128,7 +128,7 @@ mac_morpho = LazyCorpusLoader(
     'mac_morpho', MacMorphoCorpusReader, r'(?!\.).*\.txt',
     tag_mapping_function=simplify_tag)
 machado = LazyCorpusLoader(
-    'machado', CategorizedPlaintextCorpusReader,
+    'machado', PortugueseCategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*')
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
@@ -160,7 +160,7 @@ sinica_treebank = LazyCorpusLoader(
 state_union = LazyCorpusLoader(
     'state_union', PlaintextCorpusReader, r'(?!\.).*\.txt')
 stopwords = LazyCorpusLoader(
-    'stopwords', WordListCorpusReader, r'(?!README|\.).*', encoding='utf-8')
+    'stopwords', WordListCorpusReader, r'(?!README|\.).*')
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*')
 switchboard = LazyCorpusLoader(

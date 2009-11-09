@@ -111,6 +111,7 @@ __all__ = [
     'StringCategoryCorpusReader','EuroparlCorpusReader',
     'CategorizedTaggedCorpusReader',
     'CategorizedPlaintextCorpusReader',
+    'PortugueseCategorizedPlaintextCorpusReader',
     'tagged_treebank_para_block_reader',
     'PropbankCorpusReader', 'VerbnetCorpusReader',
     'BNCCorpusReader', 'ConllCorpusReader',
