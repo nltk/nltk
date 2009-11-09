@@ -2,10 +2,45 @@
 Examples for Portuguese Processing
 ==================================
 
+This HOWTO contains a variety of examples relating to the Portuguese language.
+It is intended to be read in conjunction with the NLTK book
+(``http://www.nltk.org/book``).  For instructions on running the Python
+interpreter, please see Chapter 1.  To get started with using NLTK, we need
+to type:
+
     >>> import nltk
 
-(NB. This material presumes familiarity with the NLTK book,
-``http://nltk.org/book``).
+However, if you're just doing some exercises based on Chapter 1 of the book, you
+can access corresponding Portuguese materials using:
+
+    >>> from nltk.examples.pt import *
+
+---------------
+Reading Corpora
+---------------
+
+
+Accessing the Machado Text Corpus
+---------------------------------
+
+NLTK includes the complete works of Machado de Assis.
+
+    >>> from nltk.corpus import machado
+    >>> machado.fileids()
+    ['contos/macn001.txt', 'contos/macn002.txt', 'contos/macn003.txt', ...]
+
+Each file corresponds to one of the works of Machado de Assis.  To see a complete
+list of works, you can look at the corpus README file: ``print machado.readme()``.
+
+Let's access the text of the *Posthumous Memories of Br‡s Cubas*, and 
+
+    >>> text1 = machado.words('romance/marm05.txt')
+    >>> text1
+    ['Romance', ',', 'Mem\xf3rias', 'P\xf3stumas', 'de', ...]
+    >>> len(text1)
+    77098
+    >>> len(set(text1))
+    10848
 
 Accessing the MacMorpho Tagged Corpus
 -------------------------------------
@@ -130,6 +165,28 @@ To view a parse tree, use the ``draw()`` method, e.g.:
     >>> psents = floresta.parsed_sents()
     >>> psents[5].draw() # doctest: +SKIP
 
+Character Encodings
+-------------------
+
+Python understands the common character encoding used for Portuguese, ISO 8859-1 (ISO Latin 1).
+
+    >>> import os, nltk.test
+    >>> testdir = os.path.split(nltk.test.__file__)[0]
+    >>> text = open(os.path.join(testdir, 'floresta.txt')).read()
+    >>> text[:60]
+    'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
+    >>> print text[:60]
+    O 7 e Meio é um ex-libris da noite algarvia.
+    É uma das mais 
+    >>> text[:60].decode('latin-1')
+    u'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
+    >>> text[:60].decode('latin-1').encode('utf-16')
+    '\xff\xfeO\x00 \x007\x00 \x00e\x00 \x00M\x00e\x00i\x00o\x00 \x00\xe9\x00 \x00u\x00m\x00 \x00e\x00x\x00-\x00l\x00i\x00b\x00r\x00i\x00s\x00 \x00d\x00a\x00 \x00n\x00o\x00i\x00t\x00e\x00 \x00a\x00l\x00g\x00a\x00r\x00v\x00i\x00a\x00.\x00\n\x00\xc9\x00 \x00u\x00m\x00a\x00 \x00d\x00a\x00s\x00 \x00m\x00a\x00i\x00s\x00 \x00'
+
+----------------
+Processing Tasks
+----------------
+
 
 Simple Concordancing
 --------------------
@@ -184,11 +241,11 @@ default tagger that tags every word as a noun, and see how well it does:
     0.17697228144989338
 
 Evidently, about one in every six words is a noun.  Let's improve on this by
-training up a unigram tagger:
+training a unigram tagger:
 
     >>> tagger1 = nltk.UnigramTagger(train, backoff=tagger0)
     >>> nltk.tag.accuracy(tagger1, test)
-    0.87064676616915426
+    0.87029140014214645
 
 Next a bigram tagger:
 
@@ -300,23 +357,3 @@ and print them in descending order of frequency:
     ter 249
     dois 231
     
-
-Character Encodings
--------------------
-
-Python understands the common character encoding used for Portuguese, ISO 8859-1 (ISO Latin 1).
-
-    >>> import os, nltk.test
-    >>> testdir = os.path.split(nltk.test.__file__)[0]
-    >>> text = open(os.path.join(testdir, 'floresta.txt')).read()
-    >>> text[:60]
-    'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
-    >>> print text[:60]
-    O 7 e Meio é um ex-libris da noite algarvia.
-    É uma das mais 
-    >>> text[:60].decode('latin-1')
-    u'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
-    >>> text[:60].decode('latin-1').encode('utf-16')
-    '\xff\xfeO\x00 \x007\x00 \x00e\x00 \x00M\x00e\x00i\x00o\x00 \x00\xe9\x00 \x00u\x00m\x00 \x00e\x00x\x00-\x00l\x00i\x00b\x00r\x00i\x00s\x00 \x00d\x00a\x00 \x00n\x00o\x00i\x00t\x00e\x00 \x00a\x00l\x00g\x00a\x00r\x00v\x00i\x00a\x00.\x00\n\x00\xc9\x00 \x00u\x00m\x00a\x00 \x00d\x00a\x00s\x00 \x00m\x00a\x00i\x00s\x00 \x00'
-
-
