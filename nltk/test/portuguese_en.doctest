@@ -70,16 +70,9 @@ We can automatically generate random text based on a given text, e.g.:
 Following the English examples in chapter 1, try to produce a lexical
 dispersion plot.
 
-Counting Vocabulary
--------------------
-
-
-
-
 ---------------
 Reading Corpora
 ---------------
-
 
 Accessing the Machado Text Corpus
 ---------------------------------
@@ -162,8 +155,8 @@ the plus sign:
     ...         return t[t.index("+")+1:]
     ...     else:
     ...         return t
-    >>> twords = nltk.corpus.floresta.tagged_words()
-    >>> twords = [(w.lower(),simplify_tag(t)) for (w,t) in twords]
+    >>> twords = floresta.tagged_words()
+    >>> twords = [(w.lower(), simplify_tag(t)) for (w,t) in twords]
     >>> twords[:10] # doctest: +NORMALIZE_WHITESPACE
     [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 'art'), ('7_e_meio', 'prop'),
     ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), ('a', 'art')]
