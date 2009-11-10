@@ -150,12 +150,9 @@ class FileSystemPathPointer(PathPointer, str):
         if not os.path.exists(path):
             raise IOError('No such file or directory: %r' % path)
         self._path = path
-
-        # suppress deprecation warning -- not sure how to deal with str.__init__() in 2.6
-        from warnings import simplefilter, resetwarnings
-        simplefilter("ignore")
-        str.__init__(self, path)
-        resetwarnings()
+        
+        # There's no need to call str.__init__(), since it's a no-op;
+        # str does all of its setup work in __new__.
 
     path = property(lambda self: self._path, doc="""
         The absolute path identified by this path pointer.""")
