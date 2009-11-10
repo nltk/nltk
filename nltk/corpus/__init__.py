@@ -108,7 +108,7 @@ floresta = LazyCorpusLoader(
 gazetteers = LazyCorpusLoader(
     'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt')  
 genesis = LazyCorpusLoader(
-    'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt')
+    'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding='utf-8')
 gutenberg = LazyCorpusLoader(
     'gutenberg', PlaintextCorpusReader, r'(?!\.).*\.txt')
 # corpus not available with NLTK; these lines caused help(nltk.corpus) to break
@@ -126,10 +126,10 @@ ipipan = LazyCorpusLoader(
     'ipipan', IPIPANCorpusReader, r'(?!\.).*morph\.xml')
 mac_morpho = LazyCorpusLoader(
     'mac_morpho', MacMorphoCorpusReader, r'(?!\.).*\.txt',
-    tag_mapping_function=simplify_tag)
+    tag_mapping_function=simplify_tag, encoding='latin-1')
 machado = LazyCorpusLoader(
     'machado', PortugueseCategorizedPlaintextCorpusReader,
-    r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*')
+    r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*', encoding='latin-1')
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*')

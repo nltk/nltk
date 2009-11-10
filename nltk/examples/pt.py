@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: iso-8859-1 -*-
 
 # Some texts for exploration with Portuguese, cf chapter 1 of the book
 
@@ -13,32 +13,31 @@ print "Loading ptext1, ... and psent1, ..."
 print "Type the name of the text or sentence to view it."
 print "Type: 'texts()' or 'sents()' to list the materials."
 
-ptext1 = Text(machado.words('romance/marm05.txt'), name="Memï¿½rias Pï¿½stumas de Brï¿½s Cubas (1881)")
-print "ptext1:", ptext1.name
+ptext1 = Text(machado.words('romance/marm05.txt'), name="Memórias Póstumas de Brás Cubas (1881)")
+print "ptext1:", ptext1.name.decode('latin-1')
 
 ptext2 = Text(machado.words('romance/marm08.txt'), name="Dom Casmurro (1899)")
-print "ptext2:", ptext2.name
+print "ptext2:", ptext2.name.decode('latin-1')
 
-ptext3 = Text(genesis.words('portuguese.txt'), name="Gï¿½nesis")
-print "ptext3:", ptext3.name
+ptext3 = Text(genesis.words('portuguese.txt'), name="Gênesis")
+print "ptext3:", ptext3.name.decode('latin-1')
 
 ptext4 = Text(mac_morpho.words('mu94se01.txt'), name="Folha de Sau Paulo (1994)")
-print "ptext4:", ptext4.name
+print "ptext4:", ptext4.name.decode('latin-1')
 
 def texts():
-    print "ptext1:", ptext1.name
-    print "ptext2:", ptext2.name
-    print "ptext3:", ptext3.name
-    print "ptext4:", ptext4.name
+    print "ptext1:", ptext1.name.decode('latin-1')
+    print "ptext2:", ptext2.name.decode('latin-1')
+    print "ptext3:", ptext3.name.decode('latin-1')
+    print "ptext4:", ptext4.name.decode('latin-1')
 
-psent1 = "o amor da glï¿½ria era a coisa mais verdadeiramente humana que hï¿½ no homem , e,  conseqï¿½entemente , a sua mais genuï¿½na feiï¿½ï¿½o".split()
-psent2 = "Nï¿½o consultes dicionï¿½rios .".split()
-psent3 = "No princï¿½pio , criou Deus os cï¿½us e a terra .".split()
-psent4 = "A Cï¿½ritas acredita que outros cubanos devem chegar ao Brasil ."
-
+psent1 = "o amor da glória era a coisa mais verdadeiramente humana que há no homem , e , conseqüentemente , a sua mais genuína feição .".split()
+psent2 = "Não consultes dicionários .".split()
+psent3 = "No princípio, criou Deus os céus e a terra.".split()
+psent4 = "A Cáritas acredita que outros cubanos devem chegar ao Brasil .".split()
 
 def sents():
-    print "psent1:", " ".join(psent1)
-    print "psent2:", " ".join(psent2)
-    print "psent3:", " ".join(psent3)
-    print "psent4:", " ".join(psent4)
+    print "psent1:", " ".join(psent1).decode('latin-1')
+    print "psent2:", " ".join(psent2).decode('latin-1')
+    print "psent3:", " ".join(psent3).decode('latin-1')
+    print "psent4:", " ".join(psent4).decode('latin-1')
