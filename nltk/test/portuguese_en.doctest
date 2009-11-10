@@ -5,15 +5,76 @@ Examples for Portuguese Processing
 This HOWTO contains a variety of examples relating to the Portuguese language.
 It is intended to be read in conjunction with the NLTK book
 (``http://www.nltk.org/book``).  For instructions on running the Python
-interpreter, please see Chapter 1.  To get started with using NLTK, we need
-to type:
+interpreter, please see the section *Getting Started with Python*, in Chapter 1.
 
-    >>> import nltk
+--------------------------------------------
+Python Programming, with Portuguese Examples
+--------------------------------------------
 
-However, if you're just doing some exercises based on Chapter 1 of the book, you
-can access corresponding Portuguese materials using:
+Chapter 1 of the NLTK book contains many elementary programming examples, all
+with English texts.  In this section, we'll see some corresponding examples
+using Portuguese.  Please refer to the chapter for full discussion.  *Vamos!*
 
     >>> from nltk.examples.pt import *
+    *** Introductory Examples for the NLTK Book ***
+    Loading ptext1, ... and psent1, ...
+    Type the name of the text or sentence to view it.
+    Type: 'texts()' or 'sents()' to list the materials.
+    ptext1: Mem—rias P—stumas de Br‡s Cubas (1881)
+    ptext2: Dom Casmurro (1899)
+    ptext3: Gnesis
+    ptext4: Folha de Sau Paulo (1994)
+    >>>
+
+Any time we want to find out about these texts, we just have
+to enter their names at the Python prompt:
+
+    >>> ptext2
+    <Text: Dom Casmurro (1899)>
+
+Searching Text
+--------------
+
+A concordance permits us to see words in context.
+
+    >>> ptext1.concordance('olhos')
+    Building index...
+    Displaying 25 of 138 matches:
+    De pŽ , ˆ cabeceira da cama , com os olhos estœpidos , a boca entreaberta , a t
+    orelhas . Pela minha parte fechei os olhos e deixei - me ir ˆ ventura . J‡ agor
+    x›es de cŽrebro enfermo . Como ia de olhos fechados , n‹o via o caminho ; lembr
+    gelos eternos . Com efeito , abri os olhos e vi que o meu animal galopava numa 
+    me apareceu ent‹o , fitando - me uns olhos rutilantes como o sol . Tudo nessa f
+    -mim mesmo . Ent‹o , encarei - a com olhos sœplices , e pedi mais alguns anos .
+
+For a given word, we can find words with a similar text distribution:
+
+    >>> ptext1.similar('chegar')
+    acabada acudir aludir avistar bramanismo casamento cheguei com contar
+    contr‡rio corpo dali deixei desferirem dizer fazer filhos j‡ leitor lhe
+    >>> ptext3.similar('chegar')
+    achar alumiar arrombar destruir governar guardar ir lavrar passar que
+    toda tomar ver vir
+
+We can automatically generate random text based on a given text, e.g.:
+
+    >>> ptext3.generate()
+    No princ’pio , criou Deus os abenoou , dizendo : Onde { est‹o } e atŽ
+    ˆ ave dos cŽus , { que } ser‡ . Disse mais Abr‹o : D‡ - me a mulher
+    que tomaste ; porque daquele poo Eseque , { tinha .} E disse : N‹o
+    poderemos descer ; mas , do campo ainda n‹o estava na casa do teu
+    pescoo . E viveu Serugue , depois Sime‹o e Levi { s‹o } estes ? E o
+    var‹o , porque habitava na terra de Node , da m‹o de Esaœ : Jeœs ,
+    Jal‹o e Cor‡
+
+Following the English examples in chapter 1, try to produce a lexical
+dispersion plot.
+
+Counting Vocabulary
+-------------------
+
+
+
 
 ---------------
 Reading Corpora
@@ -182,6 +243,8 @@ Python understands the common character encoding used for Portuguese, ISO 8859-1
     u'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
     >>> text[:60].decode('latin-1').encode('utf-16')
     '\xff\xfeO\x00 \x007\x00 \x00e\x00 \x00M\x00e\x00i\x00o\x00 \x00\xe9\x00 \x00u\x00m\x00 \x00e\x00x\x00-\x00l\x00i\x00b\x00r\x00i\x00s\x00 \x00d\x00a\x00 \x00n\x00o\x00i\x00t\x00e\x00 \x00a\x00l\x00g\x00a\x00r\x00v\x00i\x00a\x00.\x00\n\x00\xc9\x00 \x00u\x00m\x00a\x00 \x00d\x00a\x00s\x00 \x00m\x00a\x00i\x00s\x00 \x00'
+
+For more information about character encodings and Python, please see section 3.3 of the book.
 
 ----------------
 Processing Tasks

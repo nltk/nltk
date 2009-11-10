@@ -246,7 +246,7 @@ class TokenSearcher(object):
 class Text(object):
     """
     A wrapper around a sequence of simple (string) tokens, which is
-    intened to support initial exploration of texts (via the
+    intended to support initial exploration of texts (via the
     interactive console).  Its methods perform a variety of analyses
     on the text's contexts (e.g., counting, concordancing, collocation
     discovery), and display the results.  If you wish to write a
