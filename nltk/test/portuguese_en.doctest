@@ -67,9 +67,88 @@ We can automatically generate random text based on a given text, e.g.:
     var‹o , porque habitava na terra de Node , da m‹o de Esaœ : Jeœs ,
     Jal‹o e Cor‡
 
-Following the English examples in chapter 1, try to produce a lexical
-dispersion plot.
+We can search for words in context, with the help of *regular expressions*, e.g.:
 
+    >>> ptext1.findall("<olhos> (<.*>)")
+    estœpidos; e; fechados; rutilantes; sœplices; a; do; babavam;
+    na; moles; se; da; umas; espraiavam; chamejantes; espetados;
+
+Texts as List of Words
+----------------------
+
+A few sentences have been defined for you.
+
+    >>> psent1
+    ['o', 'amor', 'da', 'gl\xf3ria', 'era', 'a', 'coisa', 'mais',
+    'verdadeiramente', 'humana', 'que', 'h\xe1', 'no', 'homem', ',',
+    'e', ',', 'conseq\xfcentemente', ',', 'a', 'sua', 'mais',
+    'genu\xedna', 'fei\xe7\xe3o', '.']
+    >>>
+
+Notice that the sentence has been *tokenized*.  Each token is
+represented as a string, represented using quotes, e.g. ``'coisa'``.
+Some strings contain special characters, e.g. ``\xf3``,
+the internal representation for —.
+The tokens are combined in the form of a *list*.  How long is this list?
+
+    >>> len(psent1)
+    25
+    >>>
+
+What is the vocabulary of this sentence?
+
+    >>> sorted(set(psent1))
+    [',', '.', 'a', 'amor', 'coisa', 'conseq\xfcentemente', 'da', 'e'
+    'era', 'fei\xe7\xe3o', 'genu\xedna', 'gl\xf3ria', 'homem', 'humana',
+    'h\xe1', 'mais', 'no', 'o', 'que', 'sua', 'verdadeiramente']
+    >>>
+
+Let's iterate over each item in ``psent2``, and print information for each:
+
+    >>> for w in psent1:
+    ...     print w.decode('latin-1'), len(w), w[-1]:
+    ... 
+    N‹o 3 o
+    consultes 9 s
+    dicion‡rios 11 s
+    . 1 .
+
+Observe how we make a human-readable version of a string, using ``decode()``.
+Also notice that we accessed the last character of a string ``w`` using ``w[-1]``.
+
+We just saw a ``for`` loop above.  Another useful control structure is a
+*list comprehension*.
+
+    >>> [w.upper() for w in psent2]
+    ['N\xc3O', 'CONSULTES', 'DICION\xc1RIOS', '.']
+    >>> [w for w in psent1 if w.endswith('a')]
+    ['da', 'gl\xf3ria', 'era', 'a', 'coisa', 'humana', 'a', 'sua', 'genu\xedna']
+    >>> [w for w in ptext4 if len(w) > 15]
+    [u'norte-irlandeses', u'pan-nacionalismo', u'predominatemente', u'primeiro-ministro',
+    u'primeiro-ministro', u'irlandesa-americana', u'responsabilidades', u'significativamente']
+
+We can examine the relative frequency of words in a text, using ``FreqDist``:
+
+    >>> fd1 = FreqDist(ptext1)
+    >>> fd1
+    <FreqDist with 77098 outcomes>
+    >>> fd1['olhos']
+    137
+    >>> fd1.max()
+    u','
+    >>> fd1.samples()[:100]
+    [u',', u'.', u'a', u'que', u'de', u'e', u'-', u'o', u';', u'me', u'um', u'n\xe3o',
+    u'\x97', u'se', u'do', u'da', u'uma', u'com', u'os', u'\xe9', u'era', u'as', u'eu',
+    u'lhe', u'ao', u'em', u'para', u'mas', u'...', u'!', u'\xe0', u'na', u'mais', u'?',
+    u'no', u'como', u'por', u'N\xe3o', u'dos', u'ou', u'ele', u':', u'Virg\xedlia',
+    u'meu', u'disse', u'minha', u'das', u'O', u'/', u'A', u'CAP\xcdTULO', u'muito',
+    u'depois', u'coisa', u'foi', u'sem', u'olhos', u'ela', u'nos', u'tinha', u'nem',
+    u'E', u'outro', u'vida', u'nada', u'tempo', u'menos', u'outra', u'casa', u'homem',
+    u'porque', u'quando', u'mim', u'mesmo', u'ser', u'pouco', u'estava', u'dia',
+    u't\xe3o', u'tudo', u'Mas', u'at\xe9', u'D', u'ainda', u's\xf3', u'alguma',
+    u'la', u'vez', u'anos', u'h\xe1', u'Era', u'pai', u'esse', u'lo', u'dizer', u'assim',
+    u'ent\xe3o', u'dizia', u'aos', u'Borba']    
+    
 ---------------
 Reading Corpora
 ---------------
@@ -85,8 +164,19 @@ NLTK includes the complete works of Machado de Assis.
 
 Each file corresponds to one of the works of Machado de Assis.  To see a complete
 list of works, you can look at the corpus README file: ``print machado.readme()``.
+Let's access the text of the *Posthumous Memories of Br‡s Cubas*.
 
-Let's access the text of the *Posthumous Memories of Br‡s Cubas*, and 
+We can access the text as a list of characters, and access 200 characters starting
+from position 10,000.
+
+    >>> raw_text = machado.raw('romance/marm05.txt')
+    >>> raw_text[10000:10200]
+    u', primou no\nEstado, e foi um dos amigos particulares do vice-rei Conde
+    da Cunha.\n\nComo este apelido de Cubas lhe\ncheirasse excessivamente a
+    tanoaria, alegava meu pai, bisneto de Dami\xe3o, que o\ndito ape'
+
+However, this is not a very useful way to work with a text.  We generally think
+of a text as a sequence of words and punctuation, not characters:
 
     >>> text1 = machado.words('romance/marm05.txt')
     >>> text1
@@ -313,8 +403,32 @@ Next a bigram tagger:
 Sentence Segmentation
 ---------------------
 
-Punkt is a language-neutral sentence segmentation tool.  It needs to be trained
-on plain text.
+Punkt is a language-neutral sentence segmentation tool.  We
+
+    >>> sent_tokenizer=nltk.data.load('tokenizers/punkt/portuguese.pickle')
+    >>> raw_text = machado.raw('romance/marm05.txt')
+    >>> sentences = sent_tokenizer.tokenize(raw_text)
+    >>> for sent in sentences[1000:1005]:
+    ...     print sent:
+    >>> for sent in sentences[1000:1005]:
+    ...     print "<<", sent, ">>"
+    ... 
+    << Em verdade, parecia ainda mais mulher do que era;
+    seria criana nos seus folgares de moa; mas assim quieta, impass’vel, tinha a
+    compostura da mulher casada. >>
+    << Talvez essa circunst‰ncia lhe diminu’a um pouco da
+    graa virginal. >>
+    << Depressa nos familiarizamos; a m‹e fazia-lhe grandes elogios, eu
+    escutava-os de boa sombra, e ela sorria com os olhos fœlgidos, como se l‡ dentro
+    do cŽrebro lhe estivesse a voar uma borboletinha de asas de ouro e olhos de
+    diamante... >>
+    << Digo l‡ dentro, porque c‡ fora o
+    que esvoaou foi uma borboleta preta, que subitamente penetrou na varanda, e
+    comeou a bater as asas em derredor de D. EusŽbia. >>
+    << D. EusŽbia deu um grito,
+    levantou-se, praguejou umas palavras soltas: - T'esconjuro!... >>
+
+The sentence tokenizer can be trained and evaluated on other text.
 The source text (from the Floresta Portuguese Treebank) contains one sentence per line.
 We read the text, split it into its lines, and then join these lines together using
 spaces.  Now the information about sentence breaks has been discarded.  We split this
