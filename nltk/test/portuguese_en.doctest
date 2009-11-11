@@ -56,6 +56,21 @@ For a given word, we can find words with a similar text distribution:
     achar alumiar arrombar destruir governar guardar ir lavrar passar que
     toda tomar ver vir
 
+We can search for the statistically significant collocations in a text:
+
+    >>> ptext1.collocations()
+    Building collocations list
+    Quincas Borba; Lobo Neves; alguma coisa; Br‡s Cubas; meu pai; dia
+    seguinte; n‹o sei; Meu pai; alguns instantes; outra vez; outra coisa;
+    por exemplo; mim mesmo; coisa nenhuma; mesma coisa; n‹o era; dias
+    depois; Passeio Pœblico; olhar para; das coisas
+
+We can search for words in context, with the help of *regular expressions*, e.g.:
+
+    >>> ptext1.findall("<olhos> (<.*>)")
+    estœpidos; e; fechados; rutilantes; sœplices; a; do; babavam;
+    na; moles; se; da; umas; espraiavam; chamejantes; espetados;
+
 We can automatically generate random text based on a given text, e.g.:
 
     >>> ptext3.generate()
@@ -66,12 +81,6 @@ We can automatically generate random text based on a given text, e.g.:
     pescoo . E viveu Serugue , depois Sime‹o e Levi { s‹o } estes ? E o
     var‹o , porque habitava na terra de Node , da m‹o de Esaœ : Jeœs ,
     Jal‹o e Cor‡
-
-We can search for words in context, with the help of *regular expressions*, e.g.:
-
-    >>> ptext1.findall("<olhos> (<.*>)")
-    estœpidos; e; fechados; rutilantes; sœplices; a; do; babavam;
-    na; moles; se; da; umas; espraiavam; chamejantes; espetados;
 
 Texts as List of Words
 ----------------------
@@ -185,6 +194,32 @@ of a text as a sequence of words and punctuation, not characters:
     77098
     >>> len(set(text1))
     10848
+
+Here's a program that finds the most common ngrams that contain a
+particular target word.
+
+    >>> from nltk import ingrams, FreqDist
+    >>> target_word = 'olhos'
+    >>> fd = FreqDist(ng
+    ...               for ng in ingrams(text1, 5)
+    ...               if target_word in ng)
+    >>> for hit in fd.samples():
+    ...     print ' '.join(hit)
+    ...
+    , com os olhos no
+    com os olhos no ar
+    com os olhos no ch‹o
+    e todos com os olhos
+    me estar com os olhos
+    os olhos estœpidos , a
+    os olhos na costura ,
+    os olhos no ar ,
+    , com os olhos espetados
+    , com os olhos estœpidos
+    , com os olhos fitos
+    , com os olhos naquele
+    , com os olhos para
+
 
 Accessing the MacMorpho Tagged Corpus
 -------------------------------------
