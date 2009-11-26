@@ -98,7 +98,41 @@ by ``i`` raises an ``Undefined`` exception; this is caught by
     'walk(adam)' is undefined under M, g
     'Undefined'
 
+Batch Processing
+----------------
 
+The utility functions ``batch_interpret()`` and ``batch_evaluate()`` are intended to
+help with processing multiple sentences. Here's an example of the first of these:
+
+    >>> sents = ['Mary walks']
+    >>> results = nltk.sem.batch_interpret(sents, 'grammars/sample_grammars/sem2.fcfg')
+    >>> for result in results:
+    ...     for (synrep, semrep) in result:
+    ...         print synrep
+    (S[SEM=<walk(mary)>]
+      (NP[-LOC, NUM='sg', SEM=<\P.P(mary)>]
+        (PropN[-LOC, NUM='sg', SEM=<\P.P(mary)>] Mary))
+      (VP[NUM='sg', SEM=<\x.walk(x)>]
+        (IV[NUM='sg', SEM=<\x.walk(x)>, TNS='pres'] walks)))
+
+In order to provide backwards compatibility with 'legacy' grammars where the semantics value
+is specified with a lowercase
+``sem`` feature, the relevant feature name can be passed to the function using the
+``semkey`` parameter, as shown here:
+
+    >>> sents = ['raining']
+    >>> g = nltk.parse_fcfg("""
+    ... % start S
+    ... S[sem=<raining>] -> 'raining'
+    ... """)
+    >>> results = nltk.sem.batch_interpret(sents, g, semkey='sem')
+    >>> for result in results:
+    ...     for (synrep, semrep) in result:
+    ...         print semrep
+    raining
+
+The function ``batch_evaluate()`` works in a similar manner, but also needs to be
+passed a ``Model`` against which the semantic representations are evaluated.
 
 Unit Tests
 ==========
