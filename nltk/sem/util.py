@@ -28,12 +28,15 @@ def batch_parse(inputs, grammar, trace=0):
     
     @parameter inputs: sentences to be parsed
     @type inputs: C{list} of C{str}
-    @parameter grammar: name of feature-based grammar to use in parsing
+    @parameter grammar: L{FeatureGrammar} or name of feature-based grammar
     @rtype: C{dict}
     @return: a mapping from input sentences to a list of L{Tree}s
     """
+    if isinstance(grammar, nltk.grammar.FeatureGrammar):
+        cp = nltk.parse.FeatureChartParser(grammar)
+    else:
+        cp = nltk.parse.load_parser(grammar, trace=trace)
     parses = []
-    cp = nltk.parse.load_parser(grammar, trace=trace)
     for sent in inputs:
         tokens = sent.split() # use a tokenizer?
         syntrees = cp.nbest_parse(tokens)
@@ -44,43 +47,35 @@ def batch_parse(inputs, grammar, trace=0):
 def text_parse(*args, **kwargs):
     batch_parse(*args, **kwargs)
 
-def _semrep(node):
-    """
-    Find the semantic representation at a given tree node.
-    
-    @parameter node: node of a parse L{Tree}
-    @rtype: L{logic.Expression}
-    """
-    assert isinstance(node, nltk.grammar.FeatStructNonterminal)
-    try:
-        semrep = node['SEM']
-        return semrep
-    except KeyError:
-        print "Node has no 'SEM' feature specification"
-    raise
-
-def root_semrep(syntree, start='S'):
+def root_semrep(syntree, semkey='SEM'):
     """
     Find the semantic representation at the root of a tree.
     
     @parameter syntree: a parse L{Tree}
-    @parameter beta_reduce: if C{True}, carry out beta reduction on the logical forms that are returned
+    @parameter semkey: the feature label to use for the root semantics in the tree
     @return: the semantic representation at the root of a L{Tree}
     @rtype: L{logic.Expression}
     """
-    return _semrep(syntree.node)
+    node = syntree.node
+    assert isinstance(node, nltk.grammar.FeatStructNonterminal)
+    try:
+        return node[semkey]
+    except KeyError:
+        print node,
+        print "has no specification for the feature %s" % semkey
+    raise
 
-def batch_interpret(inputs, grammar, start='S', trace=0):
+def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
     
     @parameter inputs: a list of sentences
-    @parameter grammar: name of a feature-based grammar
+    @parameter grammar: L{FeatureGrammar} or name of feature-based grammar
     @return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
     @rtype: C{dict}
     """
-    return [[(syn, root_semrep(syn, start=start)) for syn in syntrees]
+    return [[(syn, root_semrep(syn, semkey)) for syn in syntrees]
             for syntrees in batch_parse(inputs, grammar, trace=trace)]
 
 @deprecated('Use batch_interpret() instead.')
@@ -93,7 +88,7 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     for each syntactic parse of each input sentences.
     
     @parameter inputs: a list of sentences
-    @parameter grammar: name of a feature-based grammar    
+    @parameter grammar: L{FeatureGrammar} or name of feature-based grammar    
     @return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
     @rtype: C{dict}
     """
@@ -318,6 +313,25 @@ def read_sents(file):
     sents = [l for l in sents if not l[0] == '#']
     return sents
 
+def demo_legacy_grammar():
+    """
+    Check that batch_interpret() is compatible with legacy grammars that use
+    a lowercase 'sem' feature.
+    
+    Define 'test.fcfg' to be the following
+    
+    """
+    g = nltk.parse_fcfg("""
+    % start S
+    S[sem=<hello>] -> 'hello'
+    """)
+    print "Reading grammar: %s" % g
+    print "*" * 20
+    for reading in batch_interpret(['hello'], g, semkey='sem'):
+        syn, sem = reading[0]
+        print 
+        print "output: ", sem     
+
 def demo():
     import sys
     from optparse import OptionParser
@@ -404,4 +418,5 @@ def demo():
                 n += 1
                 
 if __name__ == "__main__":
-    demo()
+    #demo()
+    demo_legacy_grammar()
