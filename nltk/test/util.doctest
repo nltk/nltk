@@ -70,5 +70,7 @@ Testing HTML cleaning
     ... </li>
     ... </body></html>
     ... """
-    >>> re.split("\n+", clean_html(html).strip())
-    ['Skip Links', 'AOL ', 'My AOL', 'Mail', 'Get The All-Amer... Ringtones']
+    >>> [link.strip() for link in re.split("\n+", clean_html(html))]
+    ['Skip Links', 'AOL', 'My AOL', 'Mail', '', '', 'Get The All-Amer... Ringtones']
+    >>> clean_html("<h1>Heading</h1><p>Test</p>")
+    'Heading Test'
