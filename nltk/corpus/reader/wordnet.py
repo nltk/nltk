@@ -88,6 +88,7 @@ VERB_FRAME_STRINGS = (
 class WordNetError(Exception):
     """An exception class for wordnet-related errors."""
 
+
 class _WordNetObject(object):
     """A common base class for lemmas and synsets."""
 
@@ -147,6 +148,7 @@ class _WordNetObject(object):
 
     def __ne__(self, other):
         return self.name != other.name
+
 
 class Lemma(_WordNetObject):
     """
@@ -236,6 +238,7 @@ class Lemma(_WordNetObject):
 
     def pertainyms(self):
         return self._related('\\')
+
 
 class Synset(_WordNetObject):
     """Create a Synset from a "<lemma>.<pos>.<number>" string where:
@@ -341,7 +344,6 @@ class Synset(_WordNetObject):
 #        else:
 #            return list(set(root for h in self.hypernyms()
 #                            for root in h.root_hypernyms()))
-
     def max_depth(self):
         """
         @return: The length of the longest hypernym path from this
@@ -392,7 +394,6 @@ class Synset(_WordNetObject):
                 if synset.offset not in synset_offsets:
                     synset_offsets.append(synset.offset)
                     yield synset
-
 
     def hypernym_paths(self):
         """
@@ -479,7 +480,8 @@ class Synset(_WordNetObject):
             nodes, or -1 if no path exists.
         """
 
-        if self == other: return 0
+        if self == other:
+            return 0
 
         path_distance = -1
 
@@ -551,26 +553,25 @@ class Synset(_WordNetObject):
         return tree
 
     # interface to similarity methods
-
     def path_similarity(self, other, verbose=False):
         """
         Path Distance Similarity:
         Return a score denoting how similar two word senses are, based on the
         shortest path that connects the senses in the is-a (hypernym/hypnoym)
-        taxonomy. The score is in the range 0 to 1, except in those cases
-        where a path cannot be found (will only be true for verbs as there are
-        many distinct verb taxonomies), in which case -1 is returned. A score of
+        taxonomy. The score is in the range 0 to 1, except in those cases where
+        a path cannot be found (will only be true for verbs as there are many
+        distinct verb taxonomies), in which case -1 is returned. A score of
         1 represents identity i.e. comparing a sense with itself will return 1.
-    
+
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
-    
+
         @return: A score denoting the similarity of the two L{Synset}s,
             normally between 0 and 1. -1 is returned if no connecting path
             could be found. 1 is returned if a L{Synset} is compared with
             itself.
         """
-    
+
         distance = self.shortest_path_distance(other)
         if distance >= 0:
             return 1.0 / (distance + 1)
@@ -583,28 +584,29 @@ class Synset(_WordNetObject):
         Return a score denoting how similar two word senses are, based on the
         shortest path that connects the senses (as above) and the maximum depth
         of the taxonomy in which the senses occur. The relationship is given as
-        -log(p/2d) where p is the shortest path length and d is the taxonomy depth.
-    
+        -log(p/2d) where p is the shortest path length and d is the taxonomy
+        depth.
+
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
-    
+
         @return: A score denoting the similarity of the two L{Synset}s,
             normally greater than 0. -1 is returned if no connecting path
             could be found. If a L{Synset} is compared with itself, the
             maximum score is returned, which varies depending on the taxonomy
             depth.
         """
-    
+
         if self.pos != other.pos:
             raise WordNetError('Computing the lch similarity requires ' + \
                                '%s and %s to have the same part of speech.' % \
                                    (self, other))
-    
+
         if self.pos not in self._wordnet_corpus_reader._max_depth:
             self._wordnet_corpus_reader._compute_max_depth(self.pos)
-    
+
         depth = self._wordnet_corpus_reader._max_depth[self.pos]
-    
+
         distance = self.shortest_path_distance(other)
         if distance >= 0:
             return -math.log((distance + 1) / (2.0 * depth))
@@ -619,38 +621,39 @@ class Synset(_WordNetObject):
         Subsumer (most specific ancestor node). Note that at this time the
         scores given do _not_ always agree with those given by Pedersen's Perl
         implementation of WordNet Similarity.
-    
-        The LCS does not necessarily feature in the shortest path connecting the
-        two senses, as it is by definition the common ancestor deepest in the
-        taxonomy, not closest to the two senses. Typically, however, it will so
-        feature. Where multiple candidates for the LCS exist, that whose
-        shortest path to the root node is the longest will be selected. Where
-        the LCS has multiple paths to the root, the longer path is used for
-        the purposes of the calculation.
-    
+
+        The LCS does not necessarily feature in the shortest path connecting
+        the two senses, as it is by definition the common ancestor deepest in
+        the taxonomy, not closest to the two senses. Typically, however, it
+        will so feature. Where multiple candidates for the LCS exist, that
+        whose shortest path to the root node is the longest will be selected.
+        Where the LCS has multiple paths to the root, the longer path is used
+        for the purposes of the calculation.
+
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
         @return: A float score denoting the similarity of the two L{Synset}s,
             normally greater than zero. If no connecting path between the two
             senses can be found, -1 is returned.
         """
-    
+
         subsumers = self.lowest_common_hypernyms(other)
-    
+
         # If no LCS was found return -1
         if len(subsumers) == 0:
             return -1
-    
+
         subsumer = subsumers[0]
-    
+
         # Get the longest path from the LCS to the root,
         # including two corrections:
-        # - add one because the calculations include both the start and end nodes
+        # - add one because the calculations include both the start and end
+        #   nodes
         # - add one to non-nouns since they have an imaginary root node
         depth = subsumer.max_depth() + 1
         if subsumer.pos != NOUN:
             depth += 1
-    
+
         # Get the shortest path from the LCS to each of the synsets it is
         # subsuming.  Add this to the LCS path length to get the path
         # length from each synset to the root.
@@ -664,7 +667,7 @@ class Synset(_WordNetObject):
         Return a score denoting how similar two word senses are, based on the
         Information Content (IC) of the Least Common Subsumer (most specific
         ancestor node).
-    
+
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
         @type  ic: C{dict}
@@ -674,7 +677,7 @@ class Synset(_WordNetObject):
             score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
             between the two synsets a score of -1 is returned.
         """
-    
+
         ic1, ic2, lcs_ic = _lcs_ic(self, other, ic)
         return lcs_ic
 
@@ -685,30 +688,30 @@ class Synset(_WordNetObject):
         Information Content (IC) of the Least Common Subsumer (most specific
         ancestor node) and that of the two input Synsets. The relationship is
         given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
-    
+
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
         @type  ic: C{dict}
         @param ic: an information content object (as returned by L{load_ic()}).
         @return: A float score denoting the similarity of the two L{Synset}s.
-            If no path exists between the two synsets a score of -1 is returned.
+           If no path exists between the two synsets a score of -1 is returned.
         """
-    
+
         if self == other:
             return _INF
-    
+
         ic1, ic2, lcs_ic = _lcs_ic(self, other, ic)
-    
+
         # If either of the input synsets are the root synset, or have a
         # frequency of 0 (sparse data problem), return 0.
         if ic1 == 0 or ic2 == 0:
             return 0
-    
+
         ic_difference = ic1 + ic2 - 2 * lcs_ic
-    
+
         if ic_difference == 0:
             return _INF
-    
+
         return 1 / ic_difference
 
     def lin_similarity(self, other, ic, verbose=False):
@@ -718,7 +721,7 @@ class Synset(_WordNetObject):
         Information Content (IC) of the Least Common Subsumer (most specific
         ancestor node) and that of the two input Synsets. The relationship is
         given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
-    
+
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
         @type  ic: C{dict}
@@ -727,7 +730,7 @@ class Synset(_WordNetObject):
             in the range 0 to 1. If no path exists between the two synsets a
             score of -1 is returned.
         """
-    
+
         ic1, ic2, lcs_ic = _lcs_ic(self, other, ic)
         return (2.0 * lcs_ic) / (ic1 + ic2)
 
@@ -777,7 +780,7 @@ class WordNetCorpusReader(CorpusReader):
     #}
 
     #{ Part of speech constants
-    _pos_numbers = {NOUN:1, VERB:2, ADJ:3, ADV:4, ADJ_SAT:5}
+    _pos_numbers = {NOUN: 1, VERB: 2, ADJ: 3, ADV: 4, ADJ_SAT: 5}
     _pos_names = dict(tup[::-1] for tup in _pos_numbers.items())
     #}
 
@@ -897,7 +900,6 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     # Loading Lemmas
     #////////////////////////////////////////////////////////////
-
     def lemma(self, name):
         synset_name, lemma_name = name.rsplit('.', 1)
         synset = self.synset(synset_name)
@@ -934,7 +936,6 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     # Loading Synsets
     #////////////////////////////////////////////////////////////
-
     def synset(self, name):
         # split name into lemma, part of speech and synset number
         lemma, pos, synset_index_str = name.lower().rsplit('.', 2)
@@ -973,7 +974,8 @@ class WordNetCorpusReader(CorpusReader):
         Return an open file pointer for the data file for the given
         part of speech.
         """
-        if pos == ADJ_SAT: pos = ADJ
+        if pos == ADJ_SAT:
+            pos = ADJ
         if self._data_file_map.get(pos) is None:
             fileid = 'data.%s' % self._FILEMAP[pos]
             self._data_file_map[pos] = self.open(fileid)
@@ -1113,7 +1115,6 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     # Retrieve synsets and lemmas.
     #////////////////////////////////////////////////////////////
-
     def synsets(self, lemma, pos=None):
         """Load all synsets with a given lemma and part of speech tag.
         If no pos is specified, all synsets for all parts of speech
@@ -1128,7 +1129,7 @@ class WordNetCorpusReader(CorpusReader):
 
         return [get_synset(p, offset)
                 for p in pos
-                for offset in index[self.morphy(lemma,p)].get(p, [])]
+                for offset in index[self.morphy(lemma, p)].get(p, [])]
 
     def lemmas(self, lemma, pos=None):
         return [lemma_obj
@@ -1139,7 +1140,6 @@ class WordNetCorpusReader(CorpusReader):
     def words(self, pos=None):
         return [lemma.name for lemma in self.lemmas(pos)]
 
-        
     def all_lemma_names(self, pos=None):
         """Return all lemma names for all synsets for the given
         part of speech tag. If not pos is specified, all synsets
@@ -1171,7 +1171,8 @@ class WordNetCorpusReader(CorpusReader):
             # the file poitners from self._data_file_map here, because
             # we're defining an iterator, and those file pointers might
             # be moved while we're not looking.
-            if pos_tag == ADJ_SAT: pos_tag = ADJ
+            if pos_tag == ADJ_SAT:
+                pos_tag = ADJ
             fileid = 'data.%s' % self._FILEMAP[pos_tag]
             data_file = self.open(fileid)
 
@@ -1213,7 +1214,6 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     # Misc
     #////////////////////////////////////////////////////////////
-
     def lemma_count(self, lemma):
         """Return the frequency count for this Lemma"""
         # open the count file if we haven't already
@@ -1254,7 +1254,6 @@ class WordNetCorpusReader(CorpusReader):
     # Morphy
     #////////////////////////////////////////////////////////////
     # Morphy, adapted from Oliver Steele's pywordnet
-
     def morphy(self, form, pos=None):
         """
         Find a possible base form for the given form, with the given
@@ -1295,8 +1294,8 @@ class WordNetCorpusReader(CorpusReader):
                ('men', 'man'), ('ies', 'y')],
         VERB: [('s', ''), ('ies', 'y'), ('es', 'e'), ('es', ''),
                ('ed', 'e'), ('ed', ''), ('ing', 'e'), ('ing', '')],
-        ADJ:  [('er', ''), ('est', ''), ('er', 'e'), ('est', 'e')],
-        ADV:  []}
+        ADJ: [('er', ''), ('est', ''), ('er', 'e'), ('est', 'e')],
+        ADV: []}
 
     def _morphy(self, form, pos):
         exceptions = self._exception_map[pos]
@@ -1357,7 +1356,8 @@ class WordNetCorpusReader(CorpusReader):
         if smoothing > 0.0:
             for ss in self.all_synsets():
                 pos = ss.pos
-                if pos == ADJ_SAT: pos = ADJ
+                if pos == ADJ_SAT:
+                    pos = ADJ
                 ic[pos][ss.offset] = smoothing
 
         for ww in counts:
@@ -1372,7 +1372,8 @@ class WordNetCorpusReader(CorpusReader):
 
             for ss in possible_synsets:
                 pos = ss.pos
-                if pos == ADJ_SAT: pos = ADJ
+                if pos == ADJ_SAT:
+                    pos = ADJ
                 for level in ss._iter_hypernym_lists():
                     for hh in level:
                         ic[pos][hh.offset] += weight
@@ -1440,25 +1441,31 @@ def path_similarity(synset1, synset2, verbose=False):
     return synset1.path_similarity(synset2, verbose)
 path_similarity.__doc__ = Synset.path_similarity.__doc__
 
+
 def lch_similarity(synset1, synset2, verbose=False):
     return synset1.lch_similarity(synset2, verbose)
 lch_similarity.__doc__ = Synset.lch_similarity.__doc__
+
 
 def wup_similarity(synset1, synset2, verbose=False):
     return synset1.wup_similarity(synset2, verbose)
 wup_similarity.__doc__ = Synset.wup_similarity.__doc__
 
+
 def res_similarity(synset1, synset2, ic, verbose=False):
     return synset1.res_similarity(synset2, verbose)
 res_similarity.__doc__ = Synset.res_similarity.__doc__
+
 
 def jcn_similarity(synset1, synset2, ic, verbose=False):
     return synset1.jcn_similarity(synset2, verbose)
 jcn_similarity.__doc__ = Synset.jcn_similarity.__doc__
 
+
 def lin_similarity(synset1, synset2, ic, verbose=False):
     return synset1.lin_similarity(synset2, verbose)
 lin_similarity.__doc__ = Synset.lin_similarity.__doc__
+
 
 def _lcs_by_depth(synset1, synset2, verbose=False):
     """
@@ -1573,6 +1580,7 @@ def information_content(synset, ic):
 
 # get the part of speech (NOUN or VERB) from the information content record
 # (each identifier has a 'n' or 'v' suffix)
+
 def _get_pos(field):
     if field[-1] == 'n':
         return NOUN
