@@ -461,7 +461,7 @@ class Synset(_WordNetObject):
            a hypernym of the first L{Synset}.
         """
         distances = set([(self, distance)])
-        for hypernym in self.hypernyms():
+        for hypernym in self.hypernyms() + self.instance_hypernyms():
             distances |= hypernym.hypernym_distances(distance+1)
         return distances
 
