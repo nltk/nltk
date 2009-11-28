@@ -10,10 +10,12 @@ from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet as _wordnet
 from nltk.internals import Deprecated
 
+
 class WordNetLemmatizer(object):
     """
     A lemmatizer that uses WordNet's built-in morphy function.
     """
+
     def __init__(self):
         """
         Create a new WordNet stemmer.
@@ -21,8 +23,7 @@ class WordNetLemmatizer(object):
         pass
 
     def lemmatize(self, word, pos=NOUN):
-        
-        lemma = _wordnet.morphy(word, pos) 
+        lemma = _wordnet.morphy(word, pos)
         if not lemma:
             lemma = word
         return lemma
@@ -39,14 +40,16 @@ if __name__ == '__main__':
     print 'abaci ->', wnl.lemmatize('abaci')
     print 'hardrock ->', wnl.lemmatize('hardrock')
 
+
 class WordnetStemmer(Deprecated, WordNetLemmatizer):
     """Use WordNetLemmatizer instead."""
+
     def __init__(self):
         WordNetLemmatizer.__init__(self)
+
 
 class WordNetStemmer(Deprecated, WordNetLemmatizer):
     """Use WordNetLemmatizer instead."""
+
     def __init__(self):
         WordNetLemmatizer.__init__(self)
-
-
