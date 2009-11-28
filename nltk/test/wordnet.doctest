@@ -341,10 +341,10 @@ as a base form for a POS for which that word is not defined:
 
 Bug 160: wup_similarity breaks when the two synsets have no common hypernym
 
-    >>> t = wn.synsets('titan')[1]
+    >>> t = wn.synsets('picasso')[0]
     >>> m = wn.synsets('male')[1]
     >>> t.wup_similarity(m)
-    0.40000000000000002
+    0.63157894736842102
 
     >>> t = wn.synsets('titan')[1]
     >>> s = wn.synsets('say', wn.VERB)[0]
@@ -406,3 +406,10 @@ Bug 430: all_synsets used wrong pos lookup when synsets were cached
 
     >>> for ii in wn.all_synsets(): pass
     >>> for ii in wn.all_synsets(): pass
+
+Bug 470: shortest_path_distance ignored instance hypernyms
+
+    >>> google = wordnet.synsets("google")[0]
+    >>> earth = wordnet.synsets("earth")[0]
+    >>> google.wup_similarity(earth)
+    0.10000000000000001
