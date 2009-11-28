@@ -8,7 +8,6 @@
 import operator
 
 from logic import *
-import drt_resolve_anaphora as RA
 
 # Import Tkinter-based modules if they are available
 try:
@@ -107,12 +106,15 @@ class AbstractDrs(object):
 
     def make_VariableExpression(self, variable):
         return DrtVariableExpression(variable)
+    
+    def resolve_anaphora(self):
+        return resolve_anaphora(self)
 
     def draw(self):
         DrsDrawer(self).draw()
         
 
-class DRS(AbstractDrs, Expression, RA.DRS):
+class DRS(AbstractDrs, Expression):
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds):
         """
@@ -223,9 +225,7 @@ def DrtVariableExpression(variable):
         return DrtConstantExpression(variable)
     
 
-class DrtAbstractVariableExpression(AbstractDrs, 
-                                    AbstractVariableExpression, 
-                                    RA.AbstractVariableExpression):
+class DrtAbstractVariableExpression(AbstractDrs, AbstractVariableExpression):
     def fol(self):
         return self
     
@@ -233,33 +233,23 @@ class DrtAbstractVariableExpression(AbstractDrs,
         """@see: AbstractExpression.get_refs()"""
         return []
     
-class DrtIndividualVariableExpression(DrtAbstractVariableExpression, 
-                                      IndividualVariableExpression, 
-                                      RA.AbstractVariableExpression):
+class DrtIndividualVariableExpression(DrtAbstractVariableExpression, IndividualVariableExpression):
     pass
 
-class DrtFunctionVariableExpression(DrtAbstractVariableExpression, 
-                                    FunctionVariableExpression, 
-                                    RA.AbstractVariableExpression):
+class DrtFunctionVariableExpression(DrtAbstractVariableExpression, FunctionVariableExpression):
     pass
 
-class DrtEventVariableExpression(DrtIndividualVariableExpression, 
-                                 EventVariableExpression, 
-                                 RA.AbstractVariableExpression):
+class DrtEventVariableExpression(DrtIndividualVariableExpression, EventVariableExpression):
     pass
 
-class DrtConstantExpression(DrtAbstractVariableExpression, 
-                            ConstantExpression, 
-                            RA.AbstractVariableExpression):
+class DrtConstantExpression(DrtAbstractVariableExpression, ConstantExpression):
     pass
 
-class DrtNegatedExpression(AbstractDrs, NegatedExpression, 
-                           RA.NegatedExpression):
+class DrtNegatedExpression(AbstractDrs, NegatedExpression):
     def fol(self):
         return NegatedExpression(self.term.fol())
 
-class DrtLambdaExpression(AbstractDrs, LambdaExpression, 
-                          RA.LambdaExpression):
+class DrtLambdaExpression(AbstractDrs, LambdaExpression):
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
         binder in the expression to @C{newvar}.
@@ -279,11 +269,11 @@ class DrtBooleanExpression(AbstractDrs, BooleanExpression):
         else:
             return []
 
-class DrtOrExpression(DrtBooleanExpression, OrExpression, RA.OrExpression):
+class DrtOrExpression(DrtBooleanExpression, OrExpression):
     def fol(self):
         return OrExpression(self.first.fol(), self.second.fol())
 
-class DrtImpExpression(DrtBooleanExpression, ImpExpression, RA.ImpExpression):
+class DrtImpExpression(DrtBooleanExpression, ImpExpression):
     def fol(self):
         first_drs = self.first
         second_drs = self.second
@@ -303,13 +293,11 @@ class DrtImpExpression(DrtBooleanExpression, ImpExpression, RA.ImpExpression):
             
         return accum
 
-class DrtIffExpression(DrtBooleanExpression, IffExpression, 
-                       RA.IffExpression):
+class DrtIffExpression(DrtBooleanExpression, IffExpression):
     def fol(self):
         return IffExpression(self.first.fol(), self.second.fol())
 
-class DrtEqualityExpression(AbstractDrs, EqualityExpression, 
-                            RA.EqualityExpression):
+class DrtEqualityExpression(AbstractDrs, EqualityExpression):
     def fol(self):
         return EqualityExpression(self.first.fol(), self.second.fol())
 
@@ -320,7 +308,7 @@ class DrtEqualityExpression(AbstractDrs, EqualityExpression,
         else:
             return []
 
-class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
+class ConcatenationDRS(DrtBooleanExpression):
     """DRS of the form '(DRS + DRS)'"""
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
@@ -398,8 +386,7 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
     def fol(self):
         return AndExpression(self.first.fol(), self.second.fol())
 
-class DrtApplicationExpression(AbstractDrs, ApplicationExpression, 
-                               RA.ApplicationExpression):
+class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
     def fol(self):
         return ApplicationExpression(self.function.fol(), 
                                            self.argument.fol())
@@ -410,6 +397,93 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression,
             return self.function.get_refs(True) + self.argument.get_refs(True)
         else:
             return []
+
+class PossibleAntecedents(list, AbstractDrs, Expression):
+    def free(self, indvar_only=True):
+        """Set of free variables."""
+        return set(self)
+
+    def replace(self, variable, expression, replace_bound=False):
+        """Replace all instances of variable v with expression E in self,
+        where v is free in self."""
+        result = PossibleAntecedents()
+        for item in self:
+            if item == variable:
+                self.append(expression)
+            else:
+                self.append(item)
+        return result
+    
+    def str(self, syntax=DrtTokens.NLTK):
+        return '[' + ','.join(map(str, self)) + ']'
+
+
+class AnaphoraResolutionException(Exception):
+    pass
+
+
+def resolve_anaphora(expression, trail=[]):
+    if isinstance(expression, ApplicationExpression):
+        if expression.is_pronoun_function():
+            possible_antecedents = PossibleAntecedents()
+            for ancestor in trail:
+                for ref in ancestor.get_refs():
+                    refex = expression.make_VariableExpression(ref)
+                    
+                    #==========================================================
+                    # Don't allow resolution to itself or other types
+                    #==========================================================
+                    if refex.__class__ == expression.argument.__class__ and \
+                       not (refex == expression.argument):
+                        possible_antecedents.append(refex)
+                
+            if len(possible_antecedents) == 1:
+                resolution = possible_antecedents[0]
+            else:
+                resolution = possible_antecedents 
+            return expression.make_EqualityExpression(expression.argument, resolution)
+        else:
+            r_function = resolve_anaphora(expression.function, trail + [expression])
+            r_argument = resolve_anaphora(expression.argument, trail + [expression])
+            return expression.__class__(r_function, r_argument)
+
+    elif isinstance(expression, DRS):
+        r_conds = []
+        for cond in expression.conds:
+            r_cond = resolve_anaphora(cond, trail + [expression])
+            
+            # if the condition is of the form '(x = [])' then raise exception
+            if isinstance(r_cond, EqualityExpression):
+                if isinstance(r_cond.first, PossibleAntecedents):
+                    #Reverse the order so that the variable is on the left
+                    temp = r_cond.first
+                    r_cond.first = r_cond.second
+                    r_cond.second = temp
+                if isinstance(r_cond.second, PossibleAntecedents):
+                    if not r_cond.second:
+                        raise AnaphoraResolutionException("Variable '%s' does not "
+                                "resolve to anything." % r_cond.first)
+            
+            r_conds.append(r_cond)
+        return expression.__class__(expression.refs, r_conds)
+    
+    elif isinstance(expression, AbstractVariableExpression):
+        return expression
+    
+    elif isinstance(expression, NegatedExpression):
+        return expression.__class__(resolve_anaphora(expression.term, trail + [expression]))
+
+    elif isinstance(expression, ImpExpression):
+        return expression.__class__(resolve_anaphora(expression.first, trail + [expression]),
+                              resolve_anaphora(expression.second, trail + [expression, expression.first]))
+
+    elif isinstance(expression, BinaryExpression):
+        return expression.__class__(resolve_anaphora(expression.first, trail + [expression]), 
+                              resolve_anaphora(expression.second, trail + [expression]))
+
+    elif isinstance(expression, LambdaExpression):
+        return expression.__class__(expression.variable, resolve_anaphora(expression.term, trail + [expression]))
+
 
 class DrsDrawer(object):
     BUFFER = 3     #Space between elements
@@ -794,9 +868,9 @@ def demo():
     print e1 == e2
 
     print '='*20 + 'Test resolve_anaphora()' + '='*20
-    print parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
-    print parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])').resolve_anaphora()
-    print parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))').resolve_anaphora()
+    print resolve_anaphora(parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])'))
+    print resolve_anaphora(parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])'))
+    print resolve_anaphora(parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))'))
 
         
 def test_draw():

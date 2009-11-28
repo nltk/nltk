@@ -17,7 +17,7 @@ from mace import MaceCommand
 from prover9 import Prover9Command
 from nltk.tag import RegexpTagger
 from nltk.parse.malt import MaltParser
-from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
+from nltk.sem.drt import resolve_anaphora, AnaphoraResolutionException
 from nltk.sem.glue import DrtGlue
 
 """
@@ -139,7 +139,7 @@ class DrtGlueReadingCommand(ReadingCommand):
     def combine_readings(self, readings):
         """@see: ReadingCommand.combine_readings()"""
         thread_reading = reduce(add, readings)
-        return thread_reading.simplify().resolve_anaphora()
+        return resolve_anaphora(thread_reading.simplify())
 
 
 class DiscourseTester(object):

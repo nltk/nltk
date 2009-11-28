@@ -202,18 +202,18 @@ Parser
 ``resolve_anaphora()``
 ----------------------
 
-    >>> from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
+    >>> from nltk.sem.drt import AnaphoraResolutionException
 
-    >>> print dp.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
+    >>> print resolve_anaphora(dp.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])'))
     ([x,y,z],[dog(x), cat(y), walks(z), (z = [x,y])])
-    >>> print dp.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])').resolve_anaphora()
+    >>> print resolve_anaphora(dp.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])'))
     ([],[(([x],[dog(x)]) -> ([y],[walks(y), (y = x)]))])
-    >>> print dp.parse(r'(([x,y],[]) + ([],[PRO(x)]))').resolve_anaphora().simplify()
+    >>> print resolve_anaphora(dp.parse(r'(([x,y],[]) + ([],[PRO(x)]))')).simplify()
     ([x,y],[(x = y)])
-    >>> try: print dp.parse(r'([x],[walks(x), PRO(x)])').resolve_anaphora()
+    >>> try: print resolve_anaphora(dp.parse(r'([x],[walks(x), PRO(x)])'))
     ... except AnaphoraResolutionException, e: print e
     Variable 'x' does not resolve to anything.
-    >>> print dp.parse('([z6,z7,e1],[boy(z6), PRO(z7), run(e1), subj(e1,z7)])').resolve_anaphora()
+    >>> print resolve_anaphora(dp.parse('([z6,z7,e1],[boy(z6), PRO(z7), run(e1), subj(e1,z7)])'))
     ([z6,z7,e1],[boy(z6), (z7 = z6), run(e1), subj(e1,z7)])
 
 ``tp_equals()``:
