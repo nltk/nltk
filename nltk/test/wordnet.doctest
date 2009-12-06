@@ -159,8 +159,9 @@ Return a score denoting how similar two word senses are, based on the
 shortest path that connects the senses in the is-a (hypernym/hypnoym)
 taxonomy. The score is in the range 0 to 1, except in those cases
 where a path cannot be found (will only be true for verbs as there are
-many distinct verb taxonomies), in which case -1 is returned. A score of
-1 represents identity i.e. comparing a sense with itself will return 1.
+many distinct verb taxonomies), in which case None is returned. A score
+of 1 represents identity i.e. comparing a sense with itself will return
+1.
 
     >>> dog.path_similarity(cat)
     0.20000000000000001
@@ -348,8 +349,8 @@ Bug 160: wup_similarity breaks when the two synsets have no common hypernym
 
     >>> t = wn.synsets('titan')[1]
     >>> s = wn.synsets('say', wn.VERB)[0]
-    >>> t.wup_similarity(s)
-    -1
+    >>> print t.wup_similarity(s)
+    None
 
 Bug 21: "instance of" not included in LCS (very similar to bug 160)
 
@@ -413,3 +414,16 @@ Bug 470: shortest_path_distance ignored instance hypernyms
     >>> earth = wordnet.synsets("earth")[0]
     >>> google.wup_similarity(earth)
     0.10000000000000001
+
+Bug 484: similarity metrics returned -1 instead of None for no LCS
+
+    >>> t = wn.synsets('fly', wn.VERB)[0]
+    >>> s = wn.synsets('say', wn.VERB)[0]
+    >>> print s.shortest_path_distance(t)
+    None
+    >>> print s.path_similarity(t)
+    None
+    >>> print s.lch_similarity(t)
+    None
+    >>> print s.wup_similarity(t)
+    None
