@@ -471,19 +471,19 @@ class Synset(_WordNetObject):
         one exists). For each synset, all the ancestor nodes and their
         distances are recorded and compared. The ancestor node common to both
         synsets that can be reached with the minimum number of traversals is
-        used. If no ancestor nodes are common, -1 is returned. If a node is
+        used. If no ancestor nodes are common, None is returned. If a node is
         compared with itself 0 is returned.
 
         @type  other: L{Synset}
         @param other: The Synset to which the shortest path will be found.
         @return: The number of edges in the shortest path connecting the two
-            nodes, or -1 if no path exists.
+            nodes, or None if no path exists.
         """
 
         if self == other:
             return 0
 
-        path_distance = -1
+        path_distance = None
 
         dist_list1 = self.hypernym_distances()
         dist_dict1 = {}
@@ -560,14 +560,14 @@ class Synset(_WordNetObject):
         shortest path that connects the senses in the is-a (hypernym/hypnoym)
         taxonomy. The score is in the range 0 to 1, except in those cases where
         a path cannot be found (will only be true for verbs as there are many
-        distinct verb taxonomies), in which case -1 is returned. A score of
+        distinct verb taxonomies), in which case None is returned. A score of
         1 represents identity i.e. comparing a sense with itself will return 1.
 
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
 
         @return: A score denoting the similarity of the two L{Synset}s,
-            normally between 0 and 1. -1 is returned if no connecting path
+            normally between 0 and 1. None is returned if no connecting path
             could be found. 1 is returned if a L{Synset} is compared with
             itself.
         """
@@ -576,7 +576,7 @@ class Synset(_WordNetObject):
         if distance >= 0:
             return 1.0 / (distance + 1)
         else:
-            return -1
+            return None
 
     def lch_similarity(self, other, verbose=False):
         """
@@ -591,7 +591,7 @@ class Synset(_WordNetObject):
         @param other: The L{Synset} that this L{Synset} is being compared to.
 
         @return: A score denoting the similarity of the two L{Synset}s,
-            normally greater than 0. -1 is returned if no connecting path
+            normally greater than 0. None is returned if no connecting path
             could be found. If a L{Synset} is compared with itself, the
             maximum score is returned, which varies depending on the taxonomy
             depth.
@@ -611,7 +611,7 @@ class Synset(_WordNetObject):
         if distance >= 0:
             return -math.log((distance + 1) / (2.0 * depth))
         else:
-            return -1
+            return None
 
     def wup_similarity(self, other, verbose=False):
         """
@@ -634,14 +634,14 @@ class Synset(_WordNetObject):
         @param other: The L{Synset} that this L{Synset} is being compared to.
         @return: A float score denoting the similarity of the two L{Synset}s,
             normally greater than zero. If no connecting path between the two
-            senses can be found, -1 is returned.
+            senses can be found, None is returned.
         """
 
         subsumers = self.lowest_common_hypernyms(other)
 
-        # If no LCS was found return -1
+        # If no LCS was found return None
         if len(subsumers) == 0:
-            return -1
+            return None
 
         subsumer = subsumers[0]
 
@@ -657,8 +657,12 @@ class Synset(_WordNetObject):
         # Get the shortest path from the LCS to each of the synsets it is
         # subsuming.  Add this to the LCS path length to get the path
         # length from each synset to the root.
-        len1 = self.shortest_path_distance(subsumer) + depth
-        len2 = other.shortest_path_distance(subsumer) + depth
+        len1 = self.shortest_path_distance(subsumer)
+        len2 = other.shortest_path_distance(subsumer)
+        if len1 is None or len2 is None:
+            return None
+        len1 += depth
+        len2 += depth
         return (2.0 * depth) / (len1 + len2)
 
     def res_similarity(self, other, ic, verbose=False):
@@ -674,8 +678,7 @@ class Synset(_WordNetObject):
         @param ic: an information content object (as returned by L{load_ic()}).
         @return: A float score denoting the similarity of the two L{Synset}s.
             Synsets whose LCS is the root node of the taxonomy will have a
-            score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
-            between the two synsets a score of -1 is returned.
+            score of 0 (e.g. N['dog'][0] and N['table'][0]).
         """
 
         ic1, ic2, lcs_ic = _lcs_ic(self, other, ic)
@@ -694,7 +697,6 @@ class Synset(_WordNetObject):
         @type  ic: C{dict}
         @param ic: an information content object (as returned by L{load_ic()}).
         @return: A float score denoting the similarity of the two L{Synset}s.
-           If no path exists between the two synsets a score of -1 is returned.
         """
 
         if self == other:
@@ -727,8 +729,7 @@ class Synset(_WordNetObject):
         @type  ic: C{dict}
         @param ic: an information content object (as returned by L{load_ic()}).
         @return: A float score denoting the similarity of the two L{Synset}s,
-            in the range 0 to 1. If no path exists between the two synsets a
-            score of -1 is returned.
+            in the range 0 to 1.
         """
 
         ic1, ic2, lcs_ic = _lcs_ic(self, other, ic)
