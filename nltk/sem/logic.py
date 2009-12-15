@@ -1169,6 +1169,17 @@ class LogicParser(object):
         self._buffer = []
         self.type_check = type_check
 
+        """A list of tuples of quote characters.  The 4-tuple is comprised 
+        of the start character, the end character, the escape character, and
+        a boolean indicating whether the quotes should be included in the 
+        result. Quotes are used to signify that a token should be treated as 
+        atomic, ignoring any special characters within the token.  The escape 
+        character allows the quote end character to be used within the quote.  
+        If True, the boolean indicates that the final token should contain the 
+        quote and escape characters.
+        This method exists to be overridden"""
+        self.quote_chars = []
+
     def parse(self, data, signature=None):
         """
         Parse the expression.
@@ -1179,7 +1190,7 @@ class LogicParser(object):
         @returns: a parsed Expression
         """
         self._currentIndex = 0
-        self._buffer = self.process(data).split()
+        self._buffer = self.process(data)
 
         result = self.parse_Expression()
         if self.inRange(0):
@@ -1191,28 +1202,77 @@ class LogicParser(object):
         return result
 
     def process(self, data):
-        """Put whitespace between symbols to make parsing easier"""
-        out = ''
+        """Split the data into tokens"""
+        out = []
         tokenTrie = StringTrie(self.get_all_symbols())
+        token = ''
         while data:
+            quoted_token, data = self.process_quoted_token(data)
+            if quoted_token:
+                token += quoted_token
+                continue
+                
             st = tokenTrie
             c = data[0]
-            token = ''
+            symbol = ''
             while c in st:
-                token += c
+                symbol += c
                 st = st[c]
-                if len(data) > len(token):
-                    c = data[len(token)]
+                if len(data) > len(symbol):
+                    c = data[len(symbol)]
                 else:
                     break
             if StringTrie.LEAF in st: 
                 #token is a complete symbol
-                out += ' '+token+' '
-                data = data[len(token):]
+                if token:
+                    out.append(token)
+                    token = ''
+                out.append(symbol)
+                data = data[len(symbol):]
             else:
-                out += data[0]
+                if data[0] == ' ':
+                    if token:
+                        out.append(token)
+                        token = ''
+                else:
+                    token += data[0]
                 data = data[1:]
+        if token:
+            out.append(token)
         return out
+    
+    def process_quoted_token(self, data):
+        token = ''
+        c = data[0]
+        i = 0
+        for start, end, escape, incl_quotes in self.quote_chars:
+            if c == start:
+                if incl_quotes:
+                    token += c
+                i = 1
+                while data[i] != end:
+                    if data[i] == escape:
+                        if incl_quotes:
+                            token += data[i]
+                        i += 1
+                        if len(data) == i: #if there are no more chars
+                            raise ParseException("End of input reached.  "
+                                    "Escape character [%s] found at end." 
+                                    % escape)
+                        token += data[i]
+                    else:
+                        token += data[i]
+                    i += 1
+                    if len(data) == i:
+                        raise ParseException("End of input reached.  "
+                                             "Expected: [%s]" % end)
+                if incl_quotes:
+                    token += data[i]
+                i += 1
+                if not token:
+                    raise ParseException('Empty quoted token found')
+                break
+        return token, data[i:]
 
     def get_all_symbols(self):
         """This method exists to be overridden"""
