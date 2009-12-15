@@ -312,6 +312,19 @@ Test Parser
     ... except ParseException,e: print e
     'x' is an illegal predicate name.  Individual variables may not be used as predicates.
     
+    >>> lp.quote_chars = [("'", "'", "\\", False)]
+    >>> print lp.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )")
+    (man(x) & (tall's,(x) & walks(x)))
+    >>> lp.quote_chars = [("'", "'", "\\", True)]
+    >>> print lp.parse(r"'tall\'s,'")
+    'tall\'s,'
+    >>> print lp.parse(r"'spaced name(x)'")
+    'spaced name(x)'
+    >>> print lp.parse(r"-'tall\'s,'(x)")
+    -'tall\'s,'(x)
+    >>> print lp.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )")
+    (man(x) & ('tall\'s,'(x) & walks(x)))
+    
 
 Simplify
 ========            
