@@ -249,6 +249,10 @@ class DrtNegatedExpression(AbstractDrs, NegatedExpression):
     def fol(self):
         return NegatedExpression(self.term.fol())
 
+    def get_refs(self, recursive=False):
+        """@see: AbstractExpression.get_refs()"""
+        return self.term.get_refs(recursive)
+
 class DrtLambdaExpression(AbstractDrs, LambdaExpression):
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
