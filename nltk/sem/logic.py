@@ -1230,7 +1230,7 @@ class LogicParser(object):
                 out.append(symbol)
                 data = data[len(symbol):]
             else:
-                if data[0] == ' ':
+                if data[0] in ' \t\n': #any whitespace
                     if token:
                         out.append(token)
                         token = ''
