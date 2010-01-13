@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2009 NLTK Project
+# Copyright (C) 2001-2010 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT

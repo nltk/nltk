@@ -1,6 +1,6 @@
 # Natural Language Toolkit: source Makefile
 #
-# Copyright (C) 2001-2009 NLTK Project
+# Copyright (C) 2001-2010 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #	 Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -52,9 +52,13 @@ doc:
 DOCTEST_DRIVER = nltk/test/doctest_driver.py
 DOCTEST_FLAGS = --ellipsis --normalize_whitespace
 DOCTEST_FILES = nltk/test/*.doctest
+DOCTEST_CODE_FILES = nltk/*.py nltk/*/*.py
 
 doctest:
 	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_FILES)
+
+doctest_code:
+	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_CODE_FILES)
 
 demotest:
 	find nltk -name "*.py"\

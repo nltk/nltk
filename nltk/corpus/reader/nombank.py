@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NomBank Corpus Reader
 #
-# Copyright (C) 2001-2009 NLTK Project
+# Copyright (C) 2001-2010 NLTK Project
 # Authors: Paul Bedaride <paul.bedaride@gmail.com> 
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>

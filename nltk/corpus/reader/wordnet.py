@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet
 #
-# Copyright (C) 2001-2009 NLTK Project
+# Copyright (C) 2001-2010 NLTK Project
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
@@ -376,8 +376,9 @@ class Synset(_WordNetObject):
         """Return the transitive closure of source under the rel
         relationship, breadth-first
 
-        >>> dog = Synset('dog.n.01')
-        >>> hyp = lambda: s:s.hypernyms()
+        >>> from nltk.corpus import wordnet as wn
+        >>> dog = wn.synset('dog.n.01')
+        >>> hyp = lambda s:s.hypernyms()
         >>> list(dog.closure(hyp))
         [Synset('domestic_animal.n.01'), Synset('canine.n.02'),
         Synset('animal.n.01'), Synset('carnivore.n.01'),
@@ -518,7 +519,8 @@ class Synset(_WordNetObject):
 
     def tree(self, rel, depth=-1, cut_mark=None):
         """
-        >>> dog = Synset('dog.n.01')
+        >>> from nltk.corpus import wordnet as wn
+        >>> dog = wn.synset('dog.n.01')
         >>> hyp = lambda s:s.hypernyms()
         >>> from pprint import pprint
         >>> pprint(dog.tree(hyp))
@@ -1262,18 +1264,19 @@ class WordNetCorpusReader(CorpusReader):
         forms, and by recursively stripping affixes for this part of
         speech until a form in WordNet is found.
 
-        >>> morphy('dogs')
+        >>> from nltk.corpus import wordnet as wn
+        >>> wn.morphy('dogs')
         'dog'
-        >>> morphy('churches')
+        >>> wn.morphy('churches')
         'church'
-        >>> morphy('aardwolves')
+        >>> wn.morphy('aardwolves')
         'aardwolf'
-        >>> morphy('abaci')
+        >>> wn.morphy('abaci')
         'abacus'
-        >>> morphy('hardrock', ADV)
-        >>> morphy('book', wn.NOUN)
+        >>> wn.morphy('hardrock', ADV)
+        >>> wn.morphy('book', wn.NOUN)
         'book'
-        >>> morphy('book', wn.ADJ)
+        >>> wn.morphy('book', wn.ADJ)
         """
 
         if pos is None:

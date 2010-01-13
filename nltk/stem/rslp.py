@@ -2,7 +2,7 @@
 
 # Natural Language Toolkit: RSLP Stemmer
 #
-# Copyright (C) 2001-2009 NLTK Project
+# Copyright (C) 2001-2010 NLTK Project
 # Author: Tiago Tresoldi <tresoldi@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT

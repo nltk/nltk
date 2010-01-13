@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2009 NLTK Project
+# Copyright (C) 2001-2010 NLTK Project
 # Authors: Steven Bird <sb@csse.unimelb.edu.au>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -24,7 +24,7 @@ __version__ = "2.0b8a"
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2009 NLTK Project.
+Copyright (C) 2001-2010 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
