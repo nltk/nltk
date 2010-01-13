@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Feature Structures
 #
-# Copyright (C) 2001-2009 NLTK Project
+# Copyright (C) 2001-2010 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>,
 #         Rob Speer,
 #         Steven Bird <sb@csse.unimelb.edu.au>
@@ -128,7 +128,7 @@ class FeatStruct(SubstituteBindingsI):
     if there is any feature path from the feature structure to itself.
 
     Two feature structures are considered equal if they assign the
-    same values to all features, and have the same reentrances.
+    same values to all features, and have the same reentrancies.
 
     By default, feature structures are mutable.  They may be made
     immutable with the L{freeze()} function.  Once they have been
@@ -1150,10 +1150,13 @@ def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
     structures, simply apply rename_variables to each one, using
     the same dictionary:
 
+        >>> fstruct1 = FeatStruct('[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]')
+        >>> fstruct2 = FeatStruct('[subj=[agr=[number=?z,gender=?y]], obj=[agr=[number=?z,gender=?y]]]')
         >>> new_vars = {}  # Maps old vars to alpha-renamed vars
-        >>> new_fstruct1 = fstruct1.rename_variables(new_vars=new_vars)
-        >>> new_fstruct2 = fstruct2.rename_variables(new_vars=new_vars)
-        >>> new_fstruct3 = fstruct3.rename_variables(new_vars=new_vars)
+        >>> fstruct1.rename_variables(new_vars=new_vars)
+        [obj=[agr=[gender=?y2]], subj=[agr=[gender=?y2]]]
+        >>> fstruct2.rename_variables(new_vars=new_vars)
+        [obj=[agr=[gender=?y2, number=?z2]], subj=[agr=[gender=?y2, number=?z2]]]
 
     If new_vars is not specified, then an empty dictionary is used.
     """
@@ -2325,7 +2328,7 @@ def display_unification(fs1, fs2, indent='  '):
             print repr(bindings).center(linelen)
     return result
 
-def interactivedemo(trace=False):
+def interactive_demo(trace=False):
     import random, sys
 
     HELP = '''
@@ -2351,18 +2354,18 @@ def interactivedemo(trace=False):
     
     fstruct_strings = [
         '[agr=[number=sing, gender=masc]]',
-        '[agr=[gender=masc, person=3rd]]',
-        '[agr=[gender=fem, person=3rd]]',
+        '[agr=[gender=masc, person=3]]',
+        '[agr=[gender=fem, person=3]]',
         '[subj=[agr=(1)[]], agr->(1)]',
         '[obj=?x]', '[subj=?x]',
         '[/=None]', '[/=NP]',
         '[cat=NP]', '[cat=VP]', '[cat=PP]',
         '[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]',
         '[gender=masc, agr=?C]',
-        '[gender=?S, agr=[gender=?S,person=3rd]]'
+        '[gender=?S, agr=[gender=?S,person=3]]'
         ]
     
-    all_fstructs = [(i, FeatStruct.parse(fstruct_strings[i]))
+    all_fstructs = [(i, FeatStruct(fstruct_strings[i]))
                     for i in range(len(fstruct_strings))]
 
     def list_fstructs(fstructs):

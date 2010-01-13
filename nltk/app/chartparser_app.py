@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chart Parser Application
 #
-# Copyright (C) 2001-2009 NLTK Project
+# Copyright (C) 2001-2010 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
