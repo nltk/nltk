@@ -77,7 +77,7 @@ if sys.platform.startswith('win'): path += [
     r'C:\nltk_data', r'D:\nltk_data', r'E:\nltk_data',
     os.path.join(sys.prefix, 'nltk_data'),
     os.path.join(sys.prefix, 'lib', 'nltk_data'),
-    os.path.join(os.environ['APPDATA'], 'nltk_data')]
+    os.path.join(os.environ.get('APPDATA', 'C:\\'), 'nltk_data')]
 
 # Common locations on UNIX & OS X:
 else: path += [
