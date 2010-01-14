@@ -1535,7 +1535,7 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
             if fvar1 is not None:
                 bindings[fvar1] = result
                 result = fvar1
-            if fvar2 is not None:
+            if fvar2 is not None and fvar2 != fvar1:
                 bindings[fvar2] = result
                 result = fvar2
 
