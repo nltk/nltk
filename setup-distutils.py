@@ -58,7 +58,6 @@ setup(
                 'nltk.tokenize',
                 'nltk.toolbox',
                 'nltk.etree',
-                'yaml'
                 ],
     )
 
