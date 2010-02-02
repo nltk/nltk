@@ -1,6 +1,11 @@
 # -*- coding: iso-8859-1 -*-
 
-# Some texts for exploration with Portuguese, cf chapter 1 of the book
+# Natural Language Toolkit: Some Portuguese texts for exploration in chapter 1 of the book
+#
+# Copyright (C) 2001-2010 NLTK Project
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# URL: <http://www.nltk.org/>
+# For license information, see LICENSE.TXT
 
 from nltk.corpus import machado, mac_morpho, floresta, genesis
 from nltk.text import Text
