@@ -1,4 +1,9 @@
-# Some texts for exploration in chapter 1 of the book
+# Natural Language Toolkit: Some texts for exploration in chapter 1 of the book
+#
+# Copyright (C) 2001-2010 NLTK Project
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# URL: <http://www.nltk.org/>
+# For license information, see LICENSE.TXT
 
 from nltk.corpus import gutenberg, genesis, inaugural,\
        nps_chat, webtext, treebank, wordnet
