@@ -27,12 +27,11 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'TreebankWordTokenizer', 'sent_tokenize', 'word_tokenize',
            ]
 
-try:
-    import numpy
+try: import numpy
+except ImportError: pass
+else:
     from texttiling import *
     __all__ += ['TextTilingTokenizer']
-except ImportError:
-    pass
 
 # Standard sentence tokenizer.
 def sent_tokenize(text):
