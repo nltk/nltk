@@ -16,6 +16,7 @@ from regexp import *
 from punkt import *
 from sexpr import *
 from treebank import *
+from texttiling import *
 import nltk
 
 __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
@@ -24,7 +25,8 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'wordpunct_tokenize', 'regexp_tokenize', 'word_tokenize',
            'SExprTokenizer', 'sexpr_tokenize', 'line_tokenize',
            'PunktWordTokenizer', 'PunktSentenceTokenizer',
-           'TreebankWordTokenizer', 'sent_tokenize', 'word_tokenize'
+           'TreebankWordTokenizer', 'sent_tokenize', 'word_tokenize',
+           'TextTilingTokenizer'
            ]
 
 # Standard sentence tokenizer.
