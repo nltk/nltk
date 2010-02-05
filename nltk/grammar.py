@@ -1204,7 +1204,7 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
         start = productions[0].lhs()
     return (start, productions)
 
-_STANDARD_NONTERM_RE = re.compile('( [\w/]+ ) \s*', re.VERBOSE)
+_STANDARD_NONTERM_RE = re.compile('( [\w/][\w/^<>-]* ) \s*', re.VERBOSE)
 
 def standard_nonterm_parser(string, pos):
     m = _STANDARD_NONTERM_RE.match(string, pos)
