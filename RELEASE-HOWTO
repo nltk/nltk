@@ -22,13 +22,14 @@ B. NLTK VERSION
      then change the Install (source) directory
      then set the package version, and finally Menu:Edit:Save)
   4. Commit these changes
-  5. *Clone* wiki download page for new version N.N, and call it Download-N.N
-     (change the version numbers in the hyperlinks and anchors)
+  5. Update version numbers, hyperlinks and anchors on the wiki download page
+     (optionally create a cloned page download-M.N for the new version,
+     and move it over the top of the standard one when its ready)
 
 C. ERROR CHECKING
 
   1. install the new version, since its the installed code that is checked
-  2. make doctest (run the tests in nltk.test)
+  2. cd nltk/test; make (run the tests in nltk.test)
   3. make demotest (run the demonstration code included in many modules)
   4. API docs (cd doc; make api)  (check latest version of epydoc is installed)
   5. Book examples (cd doc/book; make errs)
