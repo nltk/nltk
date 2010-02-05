@@ -1,7 +1,7 @@
 Version 2.0b8 2009-02-05
 
 NLTK:
-* fixed some copyright and license statements
+* fixed copyright and license statements
 * removed PyYAML, and added dependency to installers and download instructions
 * updated to LogicParser, DRT (Dan Garrette)
 * WordNet similarity metrics return None instead of -1 when
@@ -10,11 +10,11 @@ NLTK:
 * clean_html improved (Bjorn Maeland)
 * batch_parse, batch_interpret and batch_evaluate functions allow
     grammar or grammar filename as argument
-* more Portuguese examps (portuguese_en.doctest, examples/pt.py)
+* more Portuguese examples (portuguese_en.doctest, examples/pt.py)
 
 NLTK-Contrib:
 * Aligner implementations (Christopher Crowner, Torsten Marek)
-* ScriptTranscriber package (Richard Sproat and 
+* ScriptTranscriber package (Richard Sproat and Kristy Hollingshead)
 
 Book:
 * updates for second printing, correcting errata
