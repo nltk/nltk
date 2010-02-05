@@ -8,28 +8,20 @@
 TMP=/tmp/nltk-installer/
 cd $TMP
 
-# test for python version
-#first see if python from the default install is there
-if [ -e /System/Library/Frameworks/Python.framework/Versions/2.5/bin/python ]
+MINPYVERMAJOR=2
+MINPYVERMINOR=4
+PYVER=`python -V 2>&1 | sed 's/Python \([0-9]\.[0-9]\).*/\1/'`
+PYMAJOR=`echo $PYVER | sed 's/\([0-9]\)\.\([0-9]\)/\1/'`
+PYMINOR=`echo $PYVER | sed 's/\([0-9]\)\.\([0-9]\)/\2/'`
+
+#   if [[ ( "$PYMAJOR" -ge  "$MINPYVERMAJOR"  ) \  permits Python 3
+
+if [[ ( "$PYMAJOR" -eq  "$MINPYVERMAJOR" && "$PYMINOR" -ge  "$MINPYVERMINOR" ) ]]
 then 
-   /usr/bin/sudo /System/Library/Frameworks/Python.framework/Versions/2.5/bin/python ./setup.py install
+  /usr/bin/sudo python ./setup.py install
 else
-   MINPYVERMAJOR=2
-   MINPYVERMINOR=4
-   PYVER=`python -V 2>&1 | sed 's/Python \([0-9]\.[0-9]\).*/\1/'`
-   PYMAJOR=`echo $PYVER | sed 's/\([0-9]\)\.\([0-9]\)/\1/'`
-   PYMINOR=`echo $PYVER | sed 's/\([0-9]\)\.\([0-9]\)/\2/'`
-   if [[ ( "$PYMAJOR" -ge  "$MINPYVERMAJOR"  ) \
-      || ( "$PYMAJOR" -eq  "$MINPYVERMAJOR" && "$PYMINOR" -ge  "$MINPYVERMINOR" ) ]]
-
-   then 
-      /usr/bin/sudo python ./setup.py install
-   else
-     exit -1
-   fi
+  exit -1
 fi
-
-/usr/bin/sudo python ./setup.py install
 
 # Clean up after ourselves by deleting /tmp/nltk-installer?
 # rm -rf $TMP
