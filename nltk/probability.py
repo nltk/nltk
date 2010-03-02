@@ -96,9 +96,7 @@ class FreqDist(dict):
         """
         dict.__init__(self)
         self._N = 0
-        self._Nr_cache = None
-        self._max_cache = None
-        self._item_cache = None
+        self._reset_caches()
         if samples:
             self.update(samples)
 
@@ -133,10 +131,8 @@ class FreqDist(dict):
         self._N += (value - self.get(sample, 0))
         dict.__setitem__(self, sample, value)
 
-        # Invalidate the Nr cache and max cache.
-        self._Nr_cache = None
-        self._max_cache = None
-        self._item_cache = None
+        # Invalidate the caches
+        self._reset_caches()
 
     def N(self):
         """
@@ -469,6 +465,19 @@ class FreqDist(dict):
             sample_iter = imap(lambda x: (x,1), samples)
         for sample, count in sample_iter:
             self.inc(sample, count=count)    
+    
+    def pop(self, other):
+        self._reset_caches()
+        return dict.pop(self, other)
+        
+    def popitem(self, other):
+        self._reset_caches()
+        return dict.popitem(self, other)
+        
+    def _reset_caches(self):
+        self._Nr_cache = None
+        self._max_cache = None
+        self._item_cache = None
     
     def __add__(self, other):
         clone = self.copy()

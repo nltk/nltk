@@ -132,4 +132,17 @@ Good Turing Estimation
 Remains to be added: 
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
 
+Squashed bugs
+-------------
+
+Issue 511: override pop and popitem to invalidate the cache
+
+    >>> fd = nltk.FreqDist('a')
+    >>> fd.keys()
+    ['a']
+    >>> fd.pop('a')
+    1
+    >>> fd.keys()
+    []
+
 
