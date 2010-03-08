@@ -73,6 +73,7 @@ import re
 
 from nltk.internals import deprecated
 from nltk.compat import all
+from nltk.util import transitive_closure, invert_graph
 
 from probability import ImmutableProbabilisticMixIn
 from featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
@@ -419,7 +420,7 @@ class ContextFreeGrammar(object):
     If you need efficient key-based access to productions, you
     can use a subclass to implement it.
     """
-    def __init__(self, start, productions):
+    def __init__(self, start, productions, calculate_leftcorners=True):
         """
         Create a new context-free grammar, from the given start state
         and set of C{Production}s.
@@ -428,12 +429,17 @@ class ContextFreeGrammar(object):
         @type start: L{Nonterminal}
         @param productions: The list of productions that defines the grammar
         @type productions: C{list} of L{Production}
+        @param calculate_leftcorners: False if we don't want to calculate the 
+        leftcorner relation. In that case, some optimized chart parsers won't work.
+        @type calculate_leftcorners: C{bool}
         """
         self._start = start
         self._productions = productions
         self._categories = set(prod.lhs() for prod in productions)
         self._calculate_indexes()
         self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
     
     def _calculate_indexes(self):
         self._lhs_index = {}
@@ -459,31 +465,37 @@ class ContextFreeGrammar(object):
             for token in prod._rhs:
                 if is_terminal(token):
                     self._lexical_index.setdefault(token, set()).add(prod)
-        
-        # Left corners.
-        immediate_leftcorners = {}
-        for prod in self._productions:
+    
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict((cat, set([cat])) for cat in self._categories)
+        self._immediate_leftcorner_words = dict((cat, set()) for cat in self._categories)
+        for prod in self.productions():
             if len(prod) > 0:
-                child = prod.rhs()[0]
-                immediate_leftcorners.setdefault(prod.lhs(), set()).add(child)
-        leftwords = self._leftcorners = dict((cat, set()) for cat in self._categories)
-        leftparents = self._leftcorner_parents = dict((cat, set([cat])) for cat in self._categories)
-        once_again = True
-        while once_again:
-            once_again = False
-            for parent in immediate_leftcorners:
-                for child in immediate_leftcorners[parent]:
-                    if is_terminal(child):
-                        if child not in leftwords[parent]:
-                            leftwords[parent].add(child)
-                            once_again = True
-                    elif child in leftwords:
-                        if not leftwords[child].issubset(leftwords[parent]):
-                            leftwords[parent].update(leftwords[child])
-                            once_again = True
-                        if not leftparents[parent].issubset(leftparents[child]):
-                            leftparents[child].update(leftparents[parent])
-                            once_again = True
+                cat, left = prod.lhs(), prod.rhs()[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words[cat].add(left)
+        
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+        
+        nr_leftcorner_categories = sum(map(len, self._immediate_leftcorner_categories.values()))
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+        
+        self._leftcorner_words = {}
+        for cat, lefts in self._leftcorners.iteritems():
+            lc = self._leftcorner_words[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+        
     
     def start(self):
         """
@@ -537,22 +549,56 @@ class ContextFreeGrammar(object):
     
     def leftcorners(self, cat):
         """
-        Return the set of all words that the given category can start with.
-        Also called the I{first set} in compiler construction.
+        Return the set of all nonterminals that the given nonterminal 
+        can start with, including itself.
+        
+        This is the reflexive, transitive closure of the immediate
+        leftcorner relation:  (A > B)  iff  (A -> B beta)
+        
+        @param cat: the parent of the leftcorners
+        @type cat: C{Nonterminal}
+        @return: the set of all leftcorners
+        @rtype: C{set} of C{Nonterminal}
         """
-        return self._leftcorners.get(cat, set())
+        return self._leftcorners.get(cat, set([cat]))
+    
+    def is_leftcorner(self, cat, left):
+        """
+        True if left is a leftcorner of cat, where left can be a
+        terminal or a nonterminal. 
+        
+        @param cat: the parent of the leftcorner
+        @type cat: C{Nonterminal}
+        @param left: the suggested leftcorner
+        @type left: C{Terminal} or C{Nonterminal}
+        @rtype: C{bool}
+        """
+        if is_nonterminal(left):
+            return left in self.leftcorners(cat)            
+        elif self._leftcorner_words:
+            return left in self._leftcorner_words.get(cat, set())
+        else:
+            return any([left in _immediate_leftcorner_words.get(parent, set())
+                        for parent in self.leftcorners(cat)])
     
     def leftcorner_parents(self, cat):
         """
-        Return the set of all categories for which the given category
-        is a left corner.
+        Return the set of all nonterminals for which the given category
+        is a left corner. This is the inverse of the leftcorner relation.
+
+        @param cat: the suggested leftcorner
+        @type cat: C{Nonterminal}
+        @return: the set of all parents to the leftcorner
+        @rtype: C{set} of C{Nonterminal}
         """
-        return self._leftcorner_parents.get(cat, set())
+        return self._leftcorner_parents.get(cat, set([cat]))
     
     def check_coverage(self, tokens):
         """
         Check whether the grammar rules cover the given list of tokens.
         If not, then raise an exception.
+        
+        @type tokens: C{list} of C{str}
         """
         missing = [tok for tok in tokens 
                    if not self._lexical_index.get(tok)]
@@ -950,7 +996,7 @@ class WeightedGrammar(ContextFreeGrammar):
     """
     EPSILON = 0.01
 
-    def __init__(self, start, productions):
+    def __init__(self, start, productions, calculate_leftcorners=True):
         """
         Create a new context-free grammar, from the given start state
         and set of C{WeightedProduction}s.
@@ -962,8 +1008,11 @@ class WeightedGrammar(ContextFreeGrammar):
         @raise ValueError: if the set of productions with any left-hand-side
             do not have probabilities that sum to a value within
             EPSILON of 1.
+        @param calculate_leftcorners: False if we don't want to calculate the 
+        leftcorner relation. In that case, some optimized chart parsers won't work.
+        @type calculate_leftcorners: C{bool}
         """
-        ContextFreeGrammar.__init__(self, start, productions)
+        ContextFreeGrammar.__init__(self, start, productions, calculate_leftcorners)
 
         # Make sure that the probabilities sum to one.
         probs = {}

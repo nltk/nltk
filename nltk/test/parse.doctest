@@ -122,9 +122,60 @@ We must turn off showing of times.
 
     >>> import nltk
 
+First we test tracing with a short sentence
+
+    >>> nltk.parse.chart.demo(2, should_print_times=False, trace=1,
+    ...                       sent='I saw a dog', numparses=1)
+    * Sentence:
+    I saw a dog
+    ['I', 'saw', 'a', 'dog']
+    <BLANKLINE>
+    * Strategy: Bottom-up
+    <BLANKLINE>
+    |.    I    .   saw   .    a    .   dog   .|
+    |[---------]         .         .         .| [0:1] 'I'
+    |.         [---------]         .         .| [1:2] 'saw'
+    |.         .         [---------]         .| [2:3] 'a'
+    |.         .         .         [---------]| [3:4] 'dog'
+    |>         .         .         .         .| [0:0] NP -> * 'I'
+    |[---------]         .         .         .| [0:1] NP -> 'I' *
+    |>         .         .         .         .| [0:0] S  -> * NP VP
+    |>         .         .         .         .| [0:0] NP -> * NP PP
+    |[--------->         .         .         .| [0:1] S  -> NP * VP
+    |[--------->         .         .         .| [0:1] NP -> NP * PP
+    |.         >         .         .         .| [1:1] Verb -> * 'saw'
+    |.         [---------]         .         .| [1:2] Verb -> 'saw' *
+    |.         >         .         .         .| [1:1] VP -> * Verb NP
+    |.         >         .         .         .| [1:1] VP -> * Verb
+    |.         [--------->         .         .| [1:2] VP -> Verb * NP
+    |.         [---------]         .         .| [1:2] VP -> Verb *
+    |.         >         .         .         .| [1:1] VP -> * VP PP
+    |[-------------------]         .         .| [0:2] S  -> NP VP *
+    |.         [--------->         .         .| [1:2] VP -> VP * PP
+    |.         .         >         .         .| [2:2] Det -> * 'a'
+    |.         .         [---------]         .| [2:3] Det -> 'a' *
+    |.         .         >         .         .| [2:2] NP -> * Det Noun
+    |.         .         [--------->         .| [2:3] NP -> Det * Noun
+    |.         .         .         >         .| [3:3] Noun -> * 'dog'
+    |.         .         .         [---------]| [3:4] Noun -> 'dog' *
+    |.         .         [-------------------]| [2:4] NP -> Det Noun *
+    |.         .         >         .         .| [2:2] S  -> * NP VP
+    |.         .         >         .         .| [2:2] NP -> * NP PP
+    |.         [-----------------------------]| [1:4] VP -> Verb NP *
+    |.         .         [------------------->| [2:4] S  -> NP * VP
+    |.         .         [------------------->| [2:4] NP -> NP * PP
+    |[=======================================]| [0:4] S  -> NP VP *
+    |.         [----------------------------->| [1:4] VP -> VP * PP
+    Nr edges in chart: 33
+    (S (NP I) (VP (Verb saw) (NP (Det a) (Noun dog))))
+    <BLANKLINE>
+
+Then we test the different parsing Strategies. 
+Note that the number of edges differ between the strategies.
+
 Top-down
 
-    >>> nltk.parse.chart.demo(1, should_print_times=False, trace=1,
+    >>> nltk.parse.chart.demo(1, should_print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -132,57 +183,7 @@ Top-down
     <BLANKLINE>
     * Strategy: Top-down
     <BLANKLINE>
-    |.  I   . saw  . John . with .  a   . dog  .|
-    |[------]      .      .      .      .      .| [0:1] 'I'
-    |.      [------]      .      .      .      .| [1:2] 'saw'
-    |.      .      [------]      .      .      .| [2:3] 'John'
-    |.      .      .      [------]      .      .| [3:4] 'with'
-    |.      .      .      .      [------]      .| [4:5] 'a'
-    |.      .      .      .      .      [------]| [5:6] 'dog'
-    |>      .      .      .      .      .      .| [0:0] S  -> * NP VP
-    |>      .      .      .      .      .      .| [0:0] NP -> * NP PP
-    |>      .      .      .      .      .      .| [0:0] NP -> * Det Noun
-    |>      .      .      .      .      .      .| [0:0] NP -> * 'I'
-    |[------]      .      .      .      .      .| [0:1] NP -> 'I' *
-    |[------>      .      .      .      .      .| [0:1] S  -> NP * VP
-    |[------>      .      .      .      .      .| [0:1] NP -> NP * PP
-    |.      >      .      .      .      .      .| [1:1] VP -> * VP PP
-    |.      >      .      .      .      .      .| [1:1] VP -> * Verb NP
-    |.      >      .      .      .      .      .| [1:1] VP -> * Verb
-    |.      >      .      .      .      .      .| [1:1] Verb -> * 'saw'
-    |.      [------]      .      .      .      .| [1:2] Verb -> 'saw' *
-    |.      [------>      .      .      .      .| [1:2] VP -> Verb * NP
-    |.      [------]      .      .      .      .| [1:2] VP -> Verb *
-    |[-------------]      .      .      .      .| [0:2] S  -> NP VP *
-    |.      [------>      .      .      .      .| [1:2] VP -> VP * PP
-    |.      .      >      .      .      .      .| [2:2] NP -> * NP PP
-    |.      .      >      .      .      .      .| [2:2] NP -> * Det Noun
-    |.      .      >      .      .      .      .| [2:2] NP -> * 'John'
-    |.      .      [------]      .      .      .| [2:3] NP -> 'John' *
-    |.      [-------------]      .      .      .| [1:3] VP -> Verb NP *
-    |.      .      [------>      .      .      .| [2:3] NP -> NP * PP
-    |.      .      .      >      .      .      .| [3:3] PP -> * 'with' NP
-    |.      .      .      [------>      .      .| [3:4] PP -> 'with' * NP
-    |.      .      .      .      >      .      .| [4:4] NP -> * NP PP
-    |.      .      .      .      >      .      .| [4:4] NP -> * Det Noun
-    |.      .      .      .      >      .      .| [4:4] Det -> * 'a'
-    |.      .      .      .      [------]      .| [4:5] Det -> 'a' *
-    |.      .      .      .      [------>      .| [4:5] NP -> Det * Noun
-    |.      .      .      .      .      >      .| [5:5] Noun -> * 'dog'
-    |.      .      .      .      .      [------]| [5:6] Noun -> 'dog' *
-    |.      .      .      .      [-------------]| [4:6] NP -> Det Noun *
-    |.      .      .      [--------------------]| [3:6] PP -> 'with' NP *
-    |.      .      .      .      [------------->| [4:6] NP -> NP * PP
-    |.      .      [---------------------------]| [2:6] NP -> NP PP *
-    |.      [----------------------------------]| [1:6] VP -> Verb NP *
-    |.      .      [--------------------------->| [2:6] NP -> NP * PP
-    |[=========================================]| [0:6] S  -> NP VP *
-    |.      [---------------------------------->| [1:6] VP -> VP * PP
-    |[--------------------]      .      .      .| [0:3] S  -> NP VP *
-    |.      [------------->      .      .      .| [1:3] VP -> VP * PP
-    |.      [----------------------------------]| [1:6] VP -> VP PP *
-    |[=========================================]| [0:6] S  -> NP VP *
-    |.      [---------------------------------->| [1:6] VP -> VP * PP
+    Nr edges in chart: 48
     (S
       (NP I)
       (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
@@ -193,7 +194,7 @@ Top-down
 
 Bottom-up
 
-    >>> nltk.parse.chart.demo(2, should_print_times=False, trace=1,
+    >>> nltk.parse.chart.demo(2, should_print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -201,62 +202,7 @@ Bottom-up
     <BLANKLINE>
     * Strategy: Bottom-up
     <BLANKLINE>
-    |.  I   . saw  . John . with .  a   . dog  .|
-    |[------]      .      .      .      .      .| [0:1] 'I'
-    |.      [------]      .      .      .      .| [1:2] 'saw'
-    |.      .      [------]      .      .      .| [2:3] 'John'
-    |.      .      .      [------]      .      .| [3:4] 'with'
-    |.      .      .      .      [------]      .| [4:5] 'a'
-    |.      .      .      .      .      [------]| [5:6] 'dog'
-    |>      .      .      .      .      .      .| [0:0] NP -> * 'I'
-    |[------]      .      .      .      .      .| [0:1] NP -> 'I' *
-    |>      .      .      .      .      .      .| [0:0] S  -> * NP VP
-    |>      .      .      .      .      .      .| [0:0] NP -> * NP PP
-    |[------>      .      .      .      .      .| [0:1] S  -> NP * VP
-    |[------>      .      .      .      .      .| [0:1] NP -> NP * PP
-    |.      >      .      .      .      .      .| [1:1] Verb -> * 'saw'
-    |.      [------]      .      .      .      .| [1:2] Verb -> 'saw' *
-    |.      >      .      .      .      .      .| [1:1] VP -> * Verb NP
-    |.      >      .      .      .      .      .| [1:1] VP -> * Verb
-    |.      [------>      .      .      .      .| [1:2] VP -> Verb * NP
-    |.      [------]      .      .      .      .| [1:2] VP -> Verb *
-    |.      >      .      .      .      .      .| [1:1] VP -> * VP PP
-    |[-------------]      .      .      .      .| [0:2] S  -> NP VP *
-    |.      [------>      .      .      .      .| [1:2] VP -> VP * PP
-    |.      .      >      .      .      .      .| [2:2] NP -> * 'John'
-    |.      .      [------]      .      .      .| [2:3] NP -> 'John' *
-    |.      .      >      .      .      .      .| [2:2] S  -> * NP VP
-    |.      .      >      .      .      .      .| [2:2] NP -> * NP PP
-    |.      [-------------]      .      .      .| [1:3] VP -> Verb NP *
-    |.      .      [------>      .      .      .| [2:3] S  -> NP * VP
-    |.      .      [------>      .      .      .| [2:3] NP -> NP * PP
-    |[--------------------]      .      .      .| [0:3] S  -> NP VP *
-    |.      [------------->      .      .      .| [1:3] VP -> VP * PP
-    |.      .      .      >      .      .      .| [3:3] PP -> * 'with' NP
-    |.      .      .      >      .      .      .| [3:3] Prep -> * 'with'
-    |.      .      .      [------>      .      .| [3:4] PP -> 'with' * NP
-    |.      .      .      [------]      .      .| [3:4] Prep -> 'with' *
-    |.      .      .      .      >      .      .| [4:4] Det -> * 'a'
-    |.      .      .      .      [------]      .| [4:5] Det -> 'a' *
-    |.      .      .      .      >      .      .| [4:4] NP -> * Det Noun
-    |.      .      .      .      [------>      .| [4:5] NP -> Det * Noun
-    |.      .      .      .      .      >      .| [5:5] Noun -> * 'dog'
-    |.      .      .      .      .      [------]| [5:6] Noun -> 'dog' *
-    |.      .      .      .      [-------------]| [4:6] NP -> Det Noun *
-    |.      .      .      .      >      .      .| [4:4] S  -> * NP VP
-    |.      .      .      .      >      .      .| [4:4] NP -> * NP PP
-    |.      .      .      [--------------------]| [3:6] PP -> 'with' NP *
-    |.      .      .      .      [------------->| [4:6] S  -> NP * VP
-    |.      .      .      .      [------------->| [4:6] NP -> NP * PP
-    |.      .      [---------------------------]| [2:6] NP -> NP PP *
-    |.      [----------------------------------]| [1:6] VP -> VP PP *
-    |[=========================================]| [0:6] S  -> NP VP *
-    |.      [---------------------------------->| [1:6] VP -> VP * PP
-    |.      [----------------------------------]| [1:6] VP -> Verb NP *
-    |.      .      [--------------------------->| [2:6] S  -> NP * VP
-    |.      .      [--------------------------->| [2:6] NP -> NP * PP
-    |[=========================================]| [0:6] S  -> NP VP *
-    |.      [---------------------------------->| [1:6] VP -> VP * PP
+    Nr edges in chart: 53
     (S
       (NP I)
       (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
@@ -267,7 +213,7 @@ Bottom-up
 
 Bottom-up Left-Corner
 
-    >>> nltk.parse.chart.demo(3, should_print_times=False, trace=1,
+    >>> nltk.parse.chart.demo(3, should_print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -275,45 +221,26 @@ Bottom-up Left-Corner
     <BLANKLINE>
     * Strategy: Bottom-up left-corner
     <BLANKLINE>
-    |.  I   . saw  . John . with .  a   . dog  .|
-    |[------]      .      .      .      .      .| [0:1] 'I'
-    |.      [------]      .      .      .      .| [1:2] 'saw'
-    |.      .      [------]      .      .      .| [2:3] 'John'
-    |.      .      .      [------]      .      .| [3:4] 'with'
-    |.      .      .      .      [------]      .| [4:5] 'a'
-    |.      .      .      .      .      [------]| [5:6] 'dog'
-    |[------]      .      .      .      .      .| [0:1] NP -> 'I' *
-    |[------>      .      .      .      .      .| [0:1] S  -> NP * VP
-    |[------>      .      .      .      .      .| [0:1] NP -> NP * PP
-    |.      [------]      .      .      .      .| [1:2] Verb -> 'saw' *
-    |.      [------>      .      .      .      .| [1:2] VP -> Verb * NP
-    |.      [------]      .      .      .      .| [1:2] VP -> Verb *
-    |.      [------>      .      .      .      .| [1:2] VP -> VP * PP
-    |[-------------]      .      .      .      .| [0:2] S  -> NP VP *
-    |.      .      [------]      .      .      .| [2:3] NP -> 'John' *
-    |.      .      [------>      .      .      .| [2:3] S  -> NP * VP
-    |.      .      [------>      .      .      .| [2:3] NP -> NP * PP
-    |.      [-------------]      .      .      .| [1:3] VP -> Verb NP *
-    |.      [------------->      .      .      .| [1:3] VP -> VP * PP
-    |[--------------------]      .      .      .| [0:3] S  -> NP VP *
-    |.      .      .      [------>      .      .| [3:4] PP -> 'with' * NP
-    |.      .      .      [------]      .      .| [3:4] Prep -> 'with' *
-    |.      .      .      .      [------]      .| [4:5] Det -> 'a' *
-    |.      .      .      .      [------>      .| [4:5] NP -> Det * Noun
-    |.      .      .      .      .      [------]| [5:6] Noun -> 'dog' *
-    |.      .      .      .      [-------------]| [4:6] NP -> Det Noun *
-    |.      .      .      .      [------------->| [4:6] S  -> NP * VP
-    |.      .      .      .      [------------->| [4:6] NP -> NP * PP
-    |.      .      .      [--------------------]| [3:6] PP -> 'with' NP *
-    |.      .      [---------------------------]| [2:6] NP -> NP PP *
-    |.      [----------------------------------]| [1:6] VP -> VP PP *
-    |.      [---------------------------------->| [1:6] VP -> VP * PP
-    |[=========================================]| [0:6] S  -> NP VP *
-    |.      .      [--------------------------->| [2:6] S  -> NP * VP
-    |.      .      [--------------------------->| [2:6] NP -> NP * PP
-    |.      [----------------------------------]| [1:6] VP -> Verb NP *
-    |.      [---------------------------------->| [1:6] VP -> VP * PP
-    |[=========================================]| [0:6] S  -> NP VP *
+    Nr edges in chart: 36
+    (S
+      (NP I)
+      (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
+    (S
+      (NP I)
+      (VP (Verb saw) (NP (NP John) (PP with (NP (Det a) (Noun dog))))))
+    <BLANKLINE>
+
+Left-Corner with Bottom-Up Filter
+
+    >>> nltk.parse.chart.demo(4, should_print_times=False, trace=0,
+    ...                       sent='I saw John with a dog', numparses=2)
+    * Sentence:
+    I saw John with a dog
+    ['I', 'saw', 'John', 'with', 'a', 'dog']
+    <BLANKLINE>
+    * Strategy: Filtered left-corner
+    <BLANKLINE>
+    Nr edges in chart: 28
     (S
       (NP I)
       (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
@@ -324,7 +251,7 @@ Bottom-up Left-Corner
 
 The stepping chart parser
 
-    >>> nltk.parse.chart.demo(4, should_print_times=False, trace=1,
+    >>> nltk.parse.chart.demo(5, should_print_times=False, trace=1,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -405,6 +332,7 @@ The stepping chart parser
     *** SWITCH TO BOTTOM UP
     *** SWITCH TO TOP DOWN
     *** SWITCH TO BOTTOM UP
+    Nr edges in chart: 61
     (S
       (NP I)
       (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
@@ -511,6 +439,9 @@ Reading the test sentences.
     17
     >>> sentence = testsentence[0]
 
+Now we test all different parsing strategies. 
+Note that the number of edges differ between the strategies.
+
 Bottom-up parsing.
 
     >>> parser = nltk.parse.BottomUpChartParser(grammar)
@@ -529,6 +460,15 @@ Bottom-up Left-corner parsing.
     >>> print len(chart.parses(grammar.start()))
     17
 
+Left-corner parsing with bottom-up filter.
+
+    >>> parser = nltk.parse.LeftCornerChartParser(grammar)
+    >>> chart = parser.chart_parse(sentence)
+    >>> print chart.num_edges()
+    1342
+    >>> print len(chart.parses(grammar.start()))
+    17
+
 Top-down parsing.
 
     >>> parser = nltk.parse.TopDownChartParser(grammar)
@@ -538,7 +478,43 @@ Top-down parsing.
     >>> print len(chart.parses(grammar.start()))
     17
 
-Earley parsing.
+Incremental Bottom-up parsing.
+
+    >>> parser = nltk.parse.IncrementalBottomUpChartParser(grammar)
+    >>> chart = parser.chart_parse(sentence)
+    >>> print chart.num_edges()
+    7661
+    >>> print len(chart.parses(grammar.start()))
+    17
+
+Incremental Bottom-up Left-corner parsing.
+
+    >>> parser = nltk.parse.IncrementalBottomUpLeftCornerChartParser(grammar)
+    >>> chart = parser.chart_parse(sentence)
+    >>> print chart.num_edges()
+    4986
+    >>> print len(chart.parses(grammar.start()))
+    17
+
+Incremental Left-corner parsing with bottom-up filter.
+
+    >>> parser = nltk.parse.IncrementalLeftCornerChartParser(grammar)
+    >>> chart = parser.chart_parse(sentence)
+    >>> print chart.num_edges()
+    1342
+    >>> print len(chart.parses(grammar.start()))
+    17
+
+Incremental Top-down parsing.
+
+    >>> parser = nltk.parse.IncrementalTopDownChartParser(grammar)
+    >>> chart = parser.chart_parse(sentence)
+    >>> print chart.num_edges()
+    28352
+    >>> print len(chart.parses(grammar.start()))
+    17
+
+Earley parsing. This is similar to the incremental top-down algorithm.
 
     >>> parser = nltk.parse.EarleyChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)

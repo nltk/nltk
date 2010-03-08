@@ -177,7 +177,7 @@ class PredictorRule(CachedTopDownPredictRule):
 class FilteredCompleteFundamentalRule(FilteredSingleEdgeFundamentalRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete():
-            for new_edge in self._apply_complete(chart, grammar.leftcorners, edge):
+            for new_edge in self._apply_complete(chart, grammar, edge):
                 yield new_edge
 
 #////////////////////////////////////////////////////////////
@@ -388,7 +388,6 @@ class FeatureIncrementalChartParser(IncrementalChartParser, FeatureChartParser):
 class FeatureEarleyChartParser(FeatureIncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         FeatureIncrementalChartParser.__init__(self, grammar, EARLEY_FEATURE_STRATEGY, **parser_args)
-    pass
 
 class FeatureIncrementalTopDownChartParser(FeatureIncrementalChartParser):
     def __init__(self, grammar, **parser_args):
