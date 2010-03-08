@@ -1207,39 +1207,30 @@ class EmptyPredictRule(AbstractChartRule):
 class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_incomplete():
-            for new_edge in self._apply_incomplete(chart, grammar.leftcorners, edge):
+            for new_edge in self._apply_incomplete(chart, grammar, edge):
                 yield new_edge
         else:
-            for new_edge in self._apply_complete(chart, grammar.leftcorners, edge):
+            for new_edge in self._apply_complete(chart, grammar, edge):
                 yield new_edge
 
-    def _apply_complete(self, chart, leftcorners, right_edge):
+    def _apply_complete(self, chart, grammar, right_edge):
         end = right_edge.end()
-#        [SB: not supported in Python 2.4]
-#        nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
-        if end < chart.num_leaves():
-            nexttoken = chart.leaf(end)
-        else:
-            nexttoken = None
+        nexttoken = end < chart.num_leaves() and chart.leaf(end)
         for left_edge in chart.select(end=right_edge.start(), 
                                       is_complete=False,
                                       next=right_edge.lhs()):
-            if _bottomup_filter(leftcorners, nexttoken, left_edge.rhs(), left_edge.dot()): 
+            if _bottomup_filter(grammar, nexttoken, left_edge.rhs(), left_edge.dot()): 
                 new_edge = left_edge.move_dot_forward(right_edge.end())
                 if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                     yield new_edge
 
-    def _apply_incomplete(self, chart, leftcorners, left_edge):
+    def _apply_incomplete(self, chart, grammar, left_edge):
         for right_edge in chart.select(start=left_edge.end(), 
                                        is_complete=True,
                                        lhs=left_edge.next()):
             end = right_edge.end()
-#            nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
-            if end < chart.num_leaves():
-                nexttoken = chart.leaf(end)
-            else:
-                nexttoken = None
-            if _bottomup_filter(leftcorners, nexttoken, left_edge.rhs(), left_edge.dot()): 
+            nexttoken = end < chart.num_leaves() and chart.leaf(end) 
+            if _bottomup_filter(grammar, nexttoken, left_edge.rhs(), left_edge.dot()): 
                 new_edge = left_edge.move_dot_forward(right_edge.end())
                 if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                     yield new_edge
@@ -1249,25 +1240,21 @@ class FilteredBottomUpPredictCombineRule(BottomUpPredictCombineRule):
         if edge.is_incomplete(): return
         leftcorners = grammar.leftcorners
         end = edge.end()
-#        nexttoken = chart.leaf(end) if end < chart.num_leaves() else None
-        if end < chart.num_leaves():
-            nexttoken = chart.leaf(end)
-        else:
-            nexttoken = None
+        nexttoken = end < chart.num_leaves() and chart.leaf(end) 
         for prod in grammar.productions(rhs=edge.lhs()):
-            if _bottomup_filter(leftcorners, nexttoken, prod.rhs()):
+            if _bottomup_filter(grammar, nexttoken, prod.rhs()):
                 new_edge = TreeEdge(edge.span(), prod.lhs(), prod.rhs(), 1)
                 if chart.insert(new_edge, (edge,)):
                     yield new_edge
 
-def _bottomup_filter(leftcorners, nexttoken, rhs, dot=0):
+def _bottomup_filter(grammar, nexttoken, rhs, dot=0):
     if len(rhs) <= dot + 1:
         return True
     next = rhs[dot + 1]
     if is_terminal(next):
         return nexttoken == next
     else:
-        return nexttoken in leftcorners(next)
+        return grammar.is_leftcorner(next, nexttoken)
 
 
 ########################################################################
@@ -1667,14 +1654,15 @@ def demo(choice=None,
         print '  1: Top-down chart parser'
         print '  2: Bottom-up chart parser'
         print '  3: Bottom-up left-corner chart parser'
-        print '  4: Stepping chart parser (alternating top-down & bottom-up)'
-        print '  5: All parsers'
-        print '\nWhich parser (1-5)? ',
+        print '  4: Left-corner chart parser with bottom-up filter'
+        print '  5: Stepping chart parser (alternating top-down & bottom-up)'
+        print '  6: All parsers'
+        print '\nWhich parser (1-6)? ',
         choice = sys.stdin.readline().strip()
         print
 
     choice = str(choice)
-    if choice not in ['1','2','3','4','5']:
+    if choice not in "123456":
         print 'Bad parser number'
         return
 
@@ -1683,10 +1671,11 @@ def demo(choice=None,
 
     strategies = {'1': ('Top-down', TD_STRATEGY),
                   '2': ('Bottom-up', BU_STRATEGY),
-                  '3': ('Bottom-up left-corner', BU_LC_STRATEGY)}
+                  '3': ('Bottom-up left-corner', BU_LC_STRATEGY),
+                  '4': ('Filtered left-corner', LC_STRATEGY)}
     choices = []
     if strategies.has_key(choice): choices = [choice]
-    if choice=='5': choices = ['1','2','3']
+    if choice=='6': choices = "1234"
 
     # Run the requested chart parser(s), except the stepping parser.
     for strategy in choices:
@@ -1694,8 +1683,10 @@ def demo(choice=None,
         print
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
-        parses = cp.nbest_parse(tokens)
+        chart = cp.chart_parse(tokens)
+        parses = chart.parses(grammar.start())
         times[strategies[strategy][0]] = time.time()-t
+        print "Nr edges in chart:", len(chart.edges())
         if numparses:
             assert len(parses)==numparses, 'Not all parses found'
         if should_print_trees:
@@ -1705,7 +1696,7 @@ def demo(choice=None,
         print
 
     # Run the stepping parser, if requested.
-    if choice in ('4', '5'):
+    if choice in "56":
         print "* Strategy: Stepping (top-down vs bottom-up)"
         print
         t = time.time()
@@ -1721,6 +1712,7 @@ def demo(choice=None,
             for j, e in enumerate(cp.step()):
                 if j>20 or e is None: break
         times['Stepping'] = time.time()-t
+        print "Nr edges in chart:", len(cp.chart().edges())
         if numparses:
             assert len(cp.parses())==numparses, 'Not all parses found'
         if should_print_trees:
