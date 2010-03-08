@@ -259,6 +259,63 @@ def invert_dict(d):
 
 
 ##########################################################################
+# Utilities for directed graphs: transitive closure, and inversion
+# The graph is represented as a dictionary of sets
+##########################################################################
+
+def transitive_closure(graph, reflexive=False):
+    """
+    Calculate the transitive closure of a directed graph,
+    optionally the reflexive transitive closure.
+    
+    The algorithm is a slight modification of the "Marking Algorithm" of
+    Ioannidis & Ramakrishnan (1998) "Efficient Transitive Closure Algorithms".
+    
+    @param graph: the initial graph, represented as a dictionary of sets
+    @type graph: C{dict} of C{set}s
+    @param reflexive: if set, also make the closure reflexive
+    @type reflexive: C{bool}
+    @return: the (reflexive) transitive closure of the graph
+    @rtype: C{dict} of C{set}s
+    """
+    if reflexive:
+        base_set = lambda k: set([k])
+    else:
+        base_set = lambda k: set()
+    # The graph U_i in the article:
+    agenda_graph = dict((k, v.copy()) for (k,v) in graph.iteritems())
+    # The graph M_i in the article:
+    closure_graph = dict((k, base_set(k)) for k in graph)
+    for i in graph:
+        agenda = agenda_graph[i]
+        closure = closure_graph[i]
+        while agenda:
+            j = agenda.pop()
+            closure.add(j)
+            closure |= closure_graph.setdefault(j, base_set(j))
+            agenda |= agenda_graph.get(j, base_set(j))
+            agenda -= closure
+    return closure_graph
+
+
+def invert_graph(graph):
+    """
+    Inverts a directed graph.
+    
+    @param graph: the graph, represented as a dictionary of sets
+    @type graph: C{dict} of C{set}s
+    @return: the inverted graph
+    @rtype: C{dict} of C{set}s
+    """
+    inverted = {}
+    for key, values in graph.iteritems():
+        for value in values:
+            inverted.setdefault(value, set()).add(key)
+    return inverted
+
+
+
+##########################################################################
 # HTML Cleaning
 ##########################################################################
 
