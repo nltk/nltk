@@ -41,8 +41,12 @@ import urllib2
 import zipfile
 import codecs
 
-from zlib import Z_SYNC_FLUSH
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
+
+try:
+    from zlib import Z_SYNC_FLUSH as FLUSH
+except:
+    from zlib import Z_FINISH as FLUSH
 
 try:
     import cPickle as pickle
@@ -243,7 +247,7 @@ class BufferedGzipFile(GzipFile):
             self._reset_buffer()
         return GzipFile.close(self)
 
-    def flush(self, lib_mode=Z_SYNC_FLUSH):
+    def flush(self, lib_mode=FLUSH):
         self._buffer.flush()
         GzipFile.flush(self, lib_mode)
 
