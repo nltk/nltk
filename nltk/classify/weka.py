@@ -211,10 +211,14 @@ class ARFF_Formatter:
     """
     Converts featuresets and labeled featuresets to ARFF-formatted
     strings, appropriate for input into Weka.
+
+    Features and classes can be specified manually in the constructor, or may
+    be determined from data using C{from_train}.
     """
+
     def __init__(self, labels, features):
         """
-        @param labels: A list of all labels that can be generated.
+        @param labels: A list of all class labels that can be generated.
         @param features: A list of feature specifications, where
             each feature specification is a tuple (fname, ftype);
             and ftype is an ARFF type string such as NUMERIC or
@@ -224,18 +228,27 @@ class ARFF_Formatter:
         self._features = features
 
     def format(self, tokens):
+        """Returns a string representation of ARFF output for the given data."""
         return self.header_section() + self.data_section(tokens)
 
     def labels(self):
+        """Returns the list of classes."""
         return list(self._labels)
 
-    def write(self, filename, tokens):
-        f = open(filename, 'w')
-        f.write(self.format(tokens))
-        f.close()
+    def write(self, outfile, tokens):
+        """Writes ARFF data to a file for the given data."""
+        if not hasattr(outfile, 'write'):
+            outfile = open(outfile, 'w')
+        outfile.write(self.format(tokens))
+        outfile.close()
 
     @staticmethod
     def from_train(tokens):
+        """
+        Constructs an ARFF_Formatter instance with class labels and feature
+        types determined from the given data. Handles boolean, numeric and
+        string (note: not nominal) types.
+        """
         # Find the set of all attested labels.
         labels = set(label for (tok,label) in tokens)
     
@@ -262,6 +275,7 @@ class ARFF_Formatter:
         return ARFF_Formatter(labels, features)
 
     def header_section(self):
+        """Returns an ARFF header as a string."""
         # Header comment.
         s = ('% Weka ARFF file\n' +
              '% Generated automatically by NLTK\n' +
@@ -281,6 +295,9 @@ class ARFF_Formatter:
 
     def data_section(self, tokens, labeled=None):
         """
+        Returns the ARFF data section for the given data.
+        @param tokens: a list of featuresets (dicts) or labelled featuresets
+            which are tuples (featureset, label).
         @param labeled: Indicates whether the given tokens are labeled
             or not.  If C{None}, then the tokens will be assumed to be
             labeled if the first token's value is a tuple or list.
@@ -311,9 +328,10 @@ class ARFF_Formatter:
         else:
             return '%r' % fval
 
+
 if __name__ == '__main__':
-    from nltk.classify.util import names_demo,binary_names_demo_features
+    from nltk.classify.util import names_demo, binary_names_demo_features
     def make_classifier(featuresets):
         return WekaClassifier.train('/tmp/name.model', featuresets,
                                     'C4.5')
-    classifier = names_demo(make_classifier,binary_names_demo_features)
+    classifier = names_demo(make_classifier, binary_names_demo_features)
