@@ -12,6 +12,8 @@ Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
 
+# TODO: add LabelledTree (can be used for dependency trees)
+
 import re
 import string
 
@@ -583,7 +585,7 @@ class Tree(list):
 
     def __str__(self):
         return self.pprint()
-
+    
     def pprint(self, margin=70, indent=0, nodesep='', parens='()', quotes=False):
         """
         @return: A pretty-printed string representation of this tree.
@@ -615,7 +617,7 @@ class Tree(list):
                                                   nodesep, parens, quotes)
             elif isinstance(child, tuple):
                 s += '\n'+' '*(indent+2)+ "/".join(child)
-            elif isinstance(child, str) and not quotes:
+            elif isinstance(child, basestring) and not quotes:
                 s += '\n'+' '*(indent+2)+ '%s' % child
             else:
                 s += '\n'+' '*(indent+2)+ '%r' % child
@@ -648,7 +650,7 @@ class Tree(list):
                 childstrs.append(child._pprint_flat(nodesep, parens, quotes))
             elif isinstance(child, tuple):
                 childstrs.append("/".join(child))
-            elif isinstance(child, str) and not quotes:
+            elif isinstance(child, basestring) and not quotes:
                 childstrs.append('%s' % child)
             else:
                 childstrs.append('%r' % child)
