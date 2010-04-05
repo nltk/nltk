@@ -104,9 +104,9 @@ Lemmas
     Lemma('eat.v.01.eat') 61
     Lemma('eat.v.02.eat') 13
     Lemma('feed.v.06.eat') 4
-    Lemma('eat.v.04.eat') None
-    Lemma('consume.v.05.eat') None
-    Lemma('corrode.v.01.eat') None
+    Lemma('eat.v.04.eat') 0
+    Lemma('consume.v.05.eat') 0
+    Lemma('corrode.v.01.eat') 0
 
 Lemmas can also have relations between them:
 
