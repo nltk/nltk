@@ -1227,7 +1227,7 @@ class WordNetCorpusReader(CorpusReader):
         if line:
             return int(line.rsplit(' ', 1)[-1])
         else:
-            return None
+            return 0
 
     def path_similarity(self, synset1, synset2, verbose=False):
         return synset1.path_similarity(synset2, verbose)
