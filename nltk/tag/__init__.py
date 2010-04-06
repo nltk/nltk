@@ -18,6 +18,7 @@ from simplify import *
 from sequential import *
 from brill import *
 from tnt import *
+from hunpos import *
 import nltk
 
 __all__ = [
