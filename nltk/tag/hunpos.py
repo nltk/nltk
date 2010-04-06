@@ -15,10 +15,11 @@ A module for interfacing with the HunPos open-source POS-tagger.
 import os
 from subprocess import Popen, PIPE
 import nltk
+from api import *
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
 
-class HunposTagger(nltk.TaggerI):
+class HunposTagger(TaggerI):
     """
     A class for pos tagging with HunPos. The input is the paths to:
      - a model trained on training data
