@@ -38,10 +38,12 @@ class HunposTagger(TaggerI):
                         '/Applications/bin', '~/bin', '~/Applications/bin']
         hunpos_paths = map(os.path.expanduser, hunpos_paths)
 
-        self._hunpos_bin = nltk.internals.find_binary('hunpos-tag', path_to_bin,
-                                                      searchpath=hunpos_paths,
-                                                      url=_hunpos_url,
-                                                      verbose=verbose)
+        self._hunpos_bin = nltk.internals.find_binary(
+                'hunpos-tag', path_to_bin, 
+                env_vars=('HUNPOS', 'HUNPOS_HOME'),
+                searchpath=hunpos_paths, 
+                url=_hunpos_url, 
+                verbose=verbose)
 
         assert os.path.isfile(path_to_model), \
                "Hunpos model file not found: %s" % (model_file)
