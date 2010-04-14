@@ -236,6 +236,8 @@ class FreqDist(dict):
         @type sample: any.
         """
         cf = 0.0
+        if not samples:
+            samples = self.keys()
         for sample in samples:
             cf += self[sample]
             yield cf
