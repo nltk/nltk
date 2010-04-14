@@ -32,7 +32,7 @@ def simplify_brown_tag(tag):
         return brown_mapping1[tag[:2]]
     try:
         if '-' in tag:
-            tag = '-'.split(tag)[0]
+            tag = tag.split('-')[0]
         return brown_mapping2[tag]
     except KeyError:
         return tag.upper()
@@ -83,7 +83,7 @@ indian_mapping = {
 
 def simplify_indian_tag(tag):
     if ':' in tag:
-        tag = ':'.split(tag)[0]
+        tag = tag.split(':')[0]
     try:
         tag = indian_mapping[tag.lower()]
     except KeyError:
