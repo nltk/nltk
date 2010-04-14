@@ -14,7 +14,7 @@ from nltk.metrics import accuracy as _accuracy
 def str2tuple(s, sep='/'):
     """
     Given the string representation of a tagged token, return the
-    corresponding tuple representation.  The rightmost occurence of
+    corresponding tuple representation.  The rightmost occurrence of
     C{sep} in C{s} will be used to divide C{s} into a word string and
     a tag string.  If C{sep} does not occur in C{s}, return
     C{(s, None)}.
@@ -27,7 +27,7 @@ def str2tuple(s, sep='/'):
     """
     loc = s.rfind(sep)
     if loc >= 0:
-        return (s[:loc], s[loc+1:].upper())
+        return (s[:loc], s[loc+len(sep):].upper())
     else:
         return (s, None)
 
