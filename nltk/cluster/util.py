@@ -205,9 +205,11 @@ class Dendrogram(object):
             root = self._items[0]
         return root.groups(n)
 
-    def show(self):
+    def show(self, leaf_labels=[]):
         """
         Print the dendrogram in ASCII art to standard out.
+        @param leaf_labels: an optional list of strings to use for labeling the leaves
+        @type leaf_labels: list
         """
 
         # ASCII rendering characters
@@ -220,8 +222,12 @@ class Dendrogram(object):
             root = self._items[0]
         leaves = self._original_items
         
+        if leaf_labels:
+            last_row = leaf_labels
+        else:
+            last_row = [str(leaf._value) for leaf in leaves]
+        
         # find the bottom row and the best cell width
-        last_row = [str(leaf._value) for leaf in leaves]
         width = max(map(len, last_row)) + 1
         lhalf = width / 2
         rhalf = width - lhalf - 1
