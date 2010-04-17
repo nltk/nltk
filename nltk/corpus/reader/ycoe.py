@@ -43,7 +43,7 @@ class YCOECorpusReader(CorpusReader):
         self._psd_reader = YCOEParseCorpusReader(
             self.root.join('psd'), '.*', '.psd', encoding=encoding)
         self._pos_reader = YCOETaggedCorpusReader(
-            self.root.join('pos'), '.*', '.pos', encoding=encoding)
+            self.root.join('pos'), '.*', '.pos')
 
         # Make sure we have a consistent set of items:
         documents = set(f[:-4] for f in self._psd_reader.fileids())
@@ -156,11 +156,10 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
     def __init__(self, root, items, encoding=None):
-        gaps_re = r'(?u)\(?<=/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*'
+        gaps_re = r'(?u)(?<=/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*'
         sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
         TaggedCorpusReader.__init__(self, root, items, sep='_',
-                                    sent_tokenizer=sent_tokenizer,
-                                    encoding=encoding)
+                                    sent_tokenizer=sent_tokenizer)
         
 #: A list of all documents and their titles in ycoe.
 documents = {
