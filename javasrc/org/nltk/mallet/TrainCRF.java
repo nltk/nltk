@@ -189,20 +189,30 @@ public class TrainCRF
         ZipFile zipFile = new ZipFile(modelFileOption.value);
         ZipEntry zipEntry = zipFile.getEntry("crf-info.xml");
         CRFInfo crfInfo = new CRFInfo(zipFile.getInputStream(zipEntry));
-        byte[] crfInfoBytes = new byte[(int)zipEntry.getSize()];
-        zipFile.getInputStream(zipEntry).read(crfInfoBytes);
+        
+        StringBuffer crfInfoBuffer = new StringBuffer();
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(zipFile.getInputStream(zipEntry))); 
+        String line;
+        while ((line = reader.readLine()) != null) {
+            crfInfoBuffer.append(line).append('\n');
+        }
+        reader.close();                   
 
         // Create the CRF, and train it.
         CRF4 crf = createCRF(trainFileOption.value, crfInfo);
-
+        
         // Create a new zip file for our output.  This will overwrite
         // the file we used for input.
         ZipOutputStream zos = 
             new ZipOutputStream(new FileOutputStream(modelFileOption.value));
-        
+                    
         // Copy the CRF info xml to the output zip file.
         zos.putNextEntry(new ZipEntry("crf-info.xml"));
-        zos.write(crfInfoBytes);
+        BufferedWriter writer = new BufferedWriter(
+            new OutputStreamWriter(zos));
+        writer.write(crfInfoBuffer.toString());
+        writer.flush();
         zos.closeEntry();
 
         // Save the CRF classifier model to the output zip file.

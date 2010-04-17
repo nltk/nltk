@@ -14,7 +14,7 @@ JAVA_CLS = $(JAVA_SRC:.java=.class)
 
 # Set up java.
 JAVAC=javac
-CLASSPATH = .:$(MALLET_HOME)/class/:$(MALLET_HOME)/lib/mallet-deps.jar
+CLASSPATH = .:$(MALLET_HOME)/class/:$(MALLET_HOME)/lib/mallet-deps.jar:$(MALLET_HOME)/lib/mallet.jar
 
 ########################################################################
 # Targets
