@@ -110,8 +110,11 @@ class CutoffChecker(object):
         if 'max_iter' in cutoffs and self.iter >= cutoffs['max_iter']:
             return True # iteration cutoff.
         
+        new_ll = nltk.classify.util.log_likelihood(classifier, train_toks)
+        if math.isnan(new_ll):
+            return True
+        
         if 'min_ll' in cutoffs or 'min_lldelta' in cutoffs:
-            new_ll = nltk.classify.util.log_likelihood(classifier, train_toks)
             if 'min_ll' in cutoffs and new_ll >= cutoffs['min_ll']:
                 return True # log likelihood cutoff
             if ('min_lldelta' in cutoffs and self.ll and
