@@ -108,7 +108,10 @@ floresta = LazyCorpusLoader(
 gazetteers = LazyCorpusLoader(
     'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt')  
 genesis = LazyCorpusLoader(
-    'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding='utf-8')
+    'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[
+        ('finnish|french|german', 'latin_1'),
+        ('swedish', 'cp865'),
+        ('.*', 'utf_8')])
 gutenberg = LazyCorpusLoader(
     'gutenberg', PlaintextCorpusReader, r'(?!\.).*\.txt')
 # corpus not available with NLTK; these lines caused help(nltk.corpus) to break
