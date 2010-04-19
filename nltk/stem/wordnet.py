@@ -23,10 +23,11 @@ class WordNetLemmatizer(object):
         pass
 
     def lemmatize(self, word, pos=NOUN):
-        lemma = _wordnet.morphy(word, pos)
-        if not lemma:
-            lemma = word
-        return lemma
+        lemmas = _wordnet._morphy(word, pos)
+        if not lemmas:
+            return word
+        lemmas.sort(key=len)
+        return lemmas[0]
 
     def __repr__(self):
         return '<WordNetLemmatizer>'
