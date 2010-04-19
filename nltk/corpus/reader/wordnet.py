@@ -1132,7 +1132,8 @@ class WordNetCorpusReader(CorpusReader):
 
         return [get_synset(p, offset)
                 for p in pos
-                for offset in index[self.morphy(lemma, p)].get(p, [])]
+                for form in self._morphy(lemma, p)
+                for offset in index[form].get(p, [])]
 
     def lemmas(self, lemma, pos=None):
         return [lemma_obj
@@ -1273,7 +1274,7 @@ class WordNetCorpusReader(CorpusReader):
         'aardwolf'
         >>> wn.morphy('abaci')
         'abacus'
-        >>> wn.morphy('hardrock', ADV)
+        >>> wn.morphy('hardrock', wn.ADV)
         >>> wn.morphy('book', wn.NOUN)
         'book'
         >>> wn.morphy('book', wn.ADJ)
@@ -1302,31 +1303,54 @@ class WordNetCorpusReader(CorpusReader):
         ADV: []}
 
     def _morphy(self, form, pos):
+        # from jordanbg:
+        # Given an original string x
+        # 1. Apply rules once to the input to get y1, y2, y3, etc.
+        # 2. Return all that are in the database
+        # 3. If there are no matches, keep applying rules until you either
+        #    find a match or you can't go any further
+
         exceptions = self._exception_map[pos]
         substitutions = self.MORPHOLOGICAL_SUBSTITUTIONS[pos]
 
-        def try_substitutions(form):
-            if form in self._lemma_pos_offset_map and \
-                    pos in self._lemma_pos_offset_map[form]:
-                yield form
-            for old, new in substitutions:
-                if form.endswith(old): # recurse
-                    for f in try_substitutions(form[:-len(old)] + new):
-                        yield f
+        def apply_rules(forms):
+            return [form[:-len(old)] + new
+                    for form in forms
+                    for old, new in substitutions
+                    if form.endswith(old)]
 
-        # check if the form is exceptional
+        def filter_forms(forms):
+            result = []
+            seen = set()
+            for form in forms:
+                if form in self._lemma_pos_offset_map:
+                    if pos in self._lemma_pos_offset_map[form]:
+                        if form not in seen:
+                            result.append(form)
+                            seen.add(form)
+            return result
+
+        # 0. Check the exception lists
         if form in exceptions:
-            for f in exceptions[form]:
-                yield f
-        if pos == NOUN and form.endswith('ful'):
-            suffix = 'ful'
-            form = form[:-3]
-        else:
-            suffix = ''
+            return filter_forms([form] + exceptions[form])
 
-        # look for substitutions
-        for f in try_substitutions(form):
-            yield f + suffix
+        # 1. Apply rules once to the input to get y1, y2, y3, etc.
+        forms = apply_rules([form])
+
+        # 2. Return all that are in the database (and check the original too)
+        results = filter_forms([form] + forms)
+        if results:
+            return results
+
+        # 3. If there are no matches, keep applying rules until we find a match
+        while forms:
+            forms = apply_rules(forms)
+            results = filter_forms(forms)
+            if results:
+                return results
+
+        # Return an empty list if we can't find anything
+        return []
 
     #////////////////////////////////////////////////////////////
     # Create information content from corpus

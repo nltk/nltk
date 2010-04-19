@@ -225,7 +225,7 @@ information content was created.
     >>> dog.res_similarity(cat, brown_ic)
     7.9116665090365768
     >>> dog.res_similarity(cat, genesis_ic)
-    7.2004727597204381
+    7.2040239913748305
 
 ``synset1.jcn_similarity(synset2, ic):``
 Jiang-Conrath Similarity
@@ -237,7 +237,7 @@ given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
     >>> dog.jcn_similarity(cat, brown_ic)
     0.44977552855167391
     >>> dog.jcn_similarity(cat, genesis_ic)
-    0.28539390848096946
+    0.28539390848096963
 
 ``synset1.lin_similarity(synset2, ic):``
 Lin Similarity:
@@ -305,6 +305,23 @@ Look up forms not in WordNet, with the help of Morphy:
     [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'), Synset('deny.v.04'),
     Synset('deny.v.05'), Synset('traverse.v.03'), Synset('deny.v.07')]
 
+Morphy uses a combination of inflectional ending rules and exception
+lists to handle a variety of different possibilities:
+
+    >>> wn.morphy('dogs')
+    'dog'
+    >>> wn.morphy('churches')
+    'church'
+    >>> wn.morphy('aardwolves')
+    'aardwolf'
+    >>> wn.morphy('abaci')
+    'abacus'
+    >>> wn.morphy('book', wn.NOUN)
+    'book'
+    >>> wn.morphy('hardrock', wn.ADV)
+    >>> wn.morphy('book', wn.ADJ)
+    >>> wn.morphy('his', wn.NOUN)
+	>>>
 
 ---------------
 Synset Closures
@@ -430,3 +447,17 @@ Bug 484: similarity metrics returned -1 instead of None for no LCS
     None
     >>> print s.wup_similarity(t)
     None
+
+Bug 427: "pants" does not return all the senses it should
+
+    >>> from nltk.corpus import wordnet
+    >>> wordnet.synsets("pants",'n')
+    [Synset('bloomers.n.01'), Synset('pant.n.01'), Synset('trouser.n.01'), Synset('gasp.n.01')]
+
+Bug 482: Some nouns not being lemmatised by WordNetLemmatizer().lemmatize
+
+    >>> from nltk.stem.wordnet import WordNetLemmatizer
+    >>> WordNetLemmatizer().lemmatize("eggs", pos="n")
+    'egg'
+    >>> WordNetLemmatizer().lemmatize("legs", pos="n")
+    'leg'
