@@ -251,7 +251,7 @@ class Tree(list):
         @rtype: list of C{Production}s
         """
 
-        if not isinstance(self.node, str):
+        if not isinstance(self.node, basestring):
             raise TypeError, 'Productions can only be generated from trees having node labels that are strings'
 
         prods = [Production(Nonterminal(self.node), _child_names(self))]
