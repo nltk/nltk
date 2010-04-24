@@ -1738,14 +1738,13 @@ class ConditionalProbDist(ConditionalProbDistI):
             distribution as its first argument,
             C{factory_args} as its remaining arguments, and
             C{factory_kw_args} as keyword arguments.
-        @type supply_condition: C{bool}
-        @param supply_condition: If true, then pass the condition as
-            the second argument to C{probdist_factory}.
         @type factory_args: (any)
         @param factory_args: Extra arguments for C{probdist_factory}.
             These arguments are usually used to specify extra
             properties for the probability distributions of individual
             conditions, such as the number of bins they contain.
+        @type factory_kw_args: (any)
+        @param factory_kw_args: Extra keyword arguments for C{probdist_factory}.
         """
         self._probdist_factory = probdist_factory
         self._cfdist = cfdist
