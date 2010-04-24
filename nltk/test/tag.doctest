@@ -166,7 +166,7 @@ tagger or the regexp tagger:
 
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * unigram_tagger.evaluate(brown_test))
-    Accuracy: 85.6%
+    Accuracy: 85.4%
 
 As was mentioned above, the unigram tagger will assign a tag of
 ``None`` to any words that it never saw in the training data.  We can
@@ -177,7 +177,7 @@ choose a tag:
     >>> unigram_tagger_2 = nltk.UnigramTagger(brown_train, backoff=regexp_tagger)
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * unigram_tagger_2.evaluate(brown_test))
-    Accuracy: 88.2%
+    Accuracy: 88.0%
 
 Using a backoff tagger has another advantage, as well -- it allows us
 to build a more compact unigram tagger, because the unigram tagger
@@ -203,10 +203,10 @@ tag that it just generated for the preceding word.
 
     >>> bigram_tagger = nltk.BigramTagger(brown_train, backoff=unigram_tagger_2)
     >>> print bigram_tagger.size()
-    3379
+    3394
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * bigram_tagger.evaluate(brown_test))
-    Accuracy: 89.6%
+    Accuracy: 89.4%
 
 Trigram Tagger & N-Gram Tagger
 ------------------------------
@@ -220,10 +220,10 @@ statistics.
 
     >>> trigram_tagger = nltk.TrigramTagger(brown_train, backoff=bigram_tagger)
     >>> print trigram_tagger.size()
-    1495
+    1493
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * trigram_tagger.evaluate(brown_test))
-    Accuracy: 89.0%
+    Accuracy: 88.8%
 
 Brill Tagger
 ------------
@@ -261,20 +261,19 @@ corpus, based on one or more "rule templates."
        e   d   n   r  |  e
     ------------------+-------------------------------------------------------
      354 354   0   3  | TO -> IN if the tag of the following word is 'AT'
+     111 173  62   3  | NN -> VB if the tag of the preceding word is 'TO'
      110 110   0   4  | TO -> IN if the tag of the following word is 'NP'
-      91 127  36   6  | VB -> NN if the tag of words i-2...i-1 is 'AT'
-      89 158  69   7  | NP -> NP-TL if the tag of the following word is
+      83 157  74   4  | NP -> NP-TL if the tag of the following word is
                       |   'NN-TL'
-      82 143  61   3  | NN -> VB if the tag of the preceding word is 'TO'
-      71 116  45   2  | TO -> IN if the tag of words i+1...i+2 is 'NNS'
-      67  70   3   0  | VBN -> VBD if the tag of the preceding word is
-                      |   'NP'
+      73  77   4   0  | VBD -> VBN if the tag of words i-2...i-1 is 'BEDZ'
+      71 116  45   3  | TO -> IN if the tag of words i+1...i+2 is 'NNS'
+      65  65   0   3  | NN -> VB if the tag of the preceding word is 'MD'
+      63  63   0   0  | VBD -> VBN if the tag of words i-3...i-1 is 'HVZ'
       59  62   3   2  | CS -> QL if the text of words i+1...i+3 is 'as'
-      56  56   0   1  | NN -> VB if the tag of the preceding word is 'MD'
-      55  59   4   0  | VBD -> VBN if the tag of words i-2...i-1 is 'BEDZ'
+      55  57   2   0  | VBD -> VBN if the tag of words i-3...i-1 is 'HVD'
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * brill_tagger.evaluate(brown_test))
-    Accuracy: 89.3%
+    Accuracy: 89.1%
 
 HMM Tagger
 ----------
