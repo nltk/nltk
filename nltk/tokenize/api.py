@@ -29,6 +29,17 @@ class TokenizerI(object):
         else:
             raise NotImplementedError()
 
+    # experimental
+    def span_tokenize(self, s, relative=False):
+        """
+        Identify the tokens using integer offsets (start_i, end_i),
+        where s[start_i:end_i] is the corresponding token.
+        If relative=True, make each integer relative to the previous one.
+        
+        @return: C{iter} of C{tuple} of C{int}
+        """
+        raise NotImplementedError()
+
     def batch_tokenize(self, strings):
         """
         Apply L{self.tokenize()} to each element of C{strings}.  I.e.:
@@ -38,3 +49,19 @@ class TokenizerI(object):
         @rtype: C{list} of C{list} of C{str}
         """
         return [self.tokenize(s) for s in strings]
+
+    # experimental
+    def batch_span_tokenize(self, strings, relative=False):
+        """
+        Apply L{self.span_tokenize()} to each element of C{strings}.  I.e.:
+
+            >>> return [self.span_tokenize(s) for s in strings]
+
+        @rtype: C{iter} of C{tuple} of C{int}
+        """
+        for s in strings:
+            for span in self.span_tokenize(s):
+                yield span
+
+
+ 
