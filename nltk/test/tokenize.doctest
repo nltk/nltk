@@ -158,17 +158,17 @@ text has already been segmented into sentences.
 
 S-Expression Tokenizers
 ~~~~~~~~~~~~~~~~~~~~~~~
-`SExprTokenizer` is used to find parenthasized expressions in a
+`SExprTokenizer` is used to find parenthesized expressions in a
 string.  In particular, it divides a string into a sequence of
-substrings that are either parenthasized expressions (including any
-nested parenthasized expressions), or other whitespace-separated
+substrings that are either parenthesized expressions (including any
+nested parenthesized expressions), or other whitespace-separated
 tokens.
 
     >>> SExprTokenizer().tokenize('(a b (c d)) e f (g)')
     ['(a b (c d))', 'e', 'f', '(g)']
 
 By default, `SExprTokenizer` will raise a ``ValueError`` exception if
-used to tokenize an expression with non-matching parenthases:
+used to tokenize an expression with non-matching parentheses:
 
     >>> SExprTokenizer().tokenize('c) d) e (f (g')
     Traceback (most recent call last):
@@ -176,14 +176,14 @@ used to tokenize an expression with non-matching parenthases:
     ValueError: Un-matched close paren at char 1
 
 But the ``strict`` argument can be set to False to allow for
-non-matching parenthases.  Any unmatched close parenthases will be
+non-matching parentheses.  Any unmatched close parentheses will be
 listed as their own s-expression; and the last partial sexpr with
-unmatched open parenthases will be listed as its own sexpr:
+unmatched open parentheses will be listed as its own sexpr:
 
     >>> SExprTokenizer(strict=False).tokenize('c) d) e (f (g')
     ['c', ')', 'd', ')', 'e', '(f (g']
 
-The characters used for open and close parenthases may be customized
+The characters used for open and close parentheses may be customized
 using the ``parens`` argument to the `SExprTokenizer` constructor:
 
     >>> SExprTokenizer(parens='{}').tokenize('{a b {c d}} e f {g}')
@@ -252,6 +252,42 @@ periods attached to words, but separating off other punctuation:
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
      'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
 
+Span Tokenizers
+~~~~~~~~~~~~~~~
+
+NLTK tokenizers can produce token-spans, i.e. pairs of integers representing
+the offsets of tokens in the original input stream.  This supports efficient
+comparison of tokenizers, since it saves having to allocate and compare strings.
+Note that these methods are implemented as generators. 
+
+    >>> input = "Wome...  is your fwiend!\tTo pwove our fwiendship, ... "
+    >>> list(SpaceTokenizer().span_tokenize(input))
+    [(0, 7), (8, 8), (9, 11), (12, 16), (17, 27), (28, 33), (34, 37), (38, 49), (50, 53)]
+    >>> list(TabTokenizer().span_tokenize(input))
+    [(0, 24), (25, 54)]
+    >>> list(WhitespaceTokenizer().span_tokenize(input))
+    [(0, 7), (9, 11), (12, 16), (17, 24), (25, 27), (28, 33), (34, 37), (38, 49), (50, 53)]
+    >>> list(RegexpTokenizer(r"\.+ +", gaps=True).span_tokenize(input))
+    [(0, 4), (9, 50)]
+
+Note that empty token spans are not returned when the delimiter appears at
+the start or end of the string.
+
+The offsets are interpreted in the same way as slices, i.e. the end offset is
+one more than the index of the last character of the token.  This means we use
+can slice notation to extract the corresponding tokens from the input:
+
+    >>> tokens = ["{" + input[left:right] + "}"
+    ...           for left, right in SpaceTokenizer().span_tokenize(input)]
+    >>> "".join(tokens)
+    '{Wome...}{}{is}{your}{fwiend!\tTo}{pwove}{our}{fwiendship,}{...}'
+
+A utility function supports access to relative offsets:
+
+    >>> from nltk.tokenize.util import spans_to_relative
+    >>> list(spans_to_relative(SpaceTokenizer().span_tokenize(input)))
+    [(0, 7), (1, 0), (1, 2), (1, 4), (1, 10), (1, 5), (1, 3), (1, 11), (1, 3)]
+    
 Regression Tests: Regexp Tokenizer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -271,7 +307,7 @@ Some additional test strings.
     ['Alas', 'it has not rained today', 'When', 'do you think',
      'will it rain again']
 
-Make sure that grouping parenthases don't confuse the tokenizer:
+Make sure that grouping parentheses don't confuse the tokenizer:
 
     >>> print regexp_tokenize(s3, r'</?(b|p)>', gaps=False)
     ['<p>', '<b>', '</b>', '</p>']

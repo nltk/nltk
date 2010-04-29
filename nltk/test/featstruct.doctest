@@ -233,7 +233,7 @@ Both of these types are considered base values -- i.e., unification
 does *not* apply to them.  However, variable binding *does* apply to
 any values that they contain.
 
-Feature value tuples are written with parenthases:
+Feature value tuples are written with parentheses:
 
     >>> fs1 = FeatStruct('[x=(?x, ?y)]')
     >>> fs1
