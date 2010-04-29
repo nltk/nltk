@@ -18,6 +18,7 @@ import sre_constants
 from nltk.internals import convert_regexp_to_nongrouping, Deprecated
 
 from api import *
+from util import *
 
 class RegexpTokenizer(TokenizerI):
     """
@@ -100,6 +101,15 @@ class RegexpTokenizer(TokenizerI):
         else:
             return self._regexp.findall(text)
 
+    def span_tokenize(self, text):
+        if self._gaps:
+            for left, right in regexp_span_tokenize(text, self._regexp):
+                if not (self._discard_empty and left == right):
+                    yield left, right
+        else:
+            for m in finditer(self._regexp, s):
+                yield m.span()
+    
     def __repr__(self):
         return ('%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)' %
                 (self.__class__.__name__, self._pattern, self._gaps,

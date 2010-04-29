@@ -13,7 +13,7 @@ from util import string_span_tokenize
 
 class TokenizerI(object):
     """
-    A procesing interface for I{tokenizing} a string, or dividing it
+    A processing interface for I{tokenizing} a string, or dividing it
     into a list of substrings.
     
     Subclasses must define:
