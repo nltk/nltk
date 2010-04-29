@@ -9,7 +9,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
-# $Id: probability.py 4865 2007-07-11 22:16:07Z edloper $
+# $Id: probability.py 4865 2007-07-11 22:6:07Z edloper $
 
 """
 The Punkt sentence tokenizer.  The algorithm for this tokenizer is
@@ -21,6 +21,7 @@ described in Kiss & Strunk (2006)::
 
 # TODO: Make orthographic heuristic less susceptible to overtraining
 # TODO: Frequent sentence starters optionally exclude always-capitalised words
+# FIXME: Problem with ending string with e.g. '!!!' -> '!! !'
 
 import re
 import math
@@ -1123,6 +1124,13 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         """
         return list(self.sentences_from_text(text, realign_boundaries))
 
+    def span_tokenize(self, text):
+        """
+        Given a text, returns a list of the (start, end) spans of sentences
+        in the text.
+        """
+        return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
+
     def sentences_from_text(self, text, realign_boundaries=False):
         """
         Given a text, generates the sentences in that text by only
@@ -1130,24 +1138,24 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         True, includes in the sentence closing punctuation that
         follows the period.
         """
-        sents = self._sentences_from_text(text)
+        sents = [text[sl] for sl in self._slices_from_text(text)]
         if realign_boundaries:
             sents = self._realign_boundaries(sents)
         return sents
 
-    def _sentences_from_text(self, text):
+    def _slices_from_text(self, text):
         last_break = 0
         for match in self._lang_vars.period_context_re().finditer(text):
             context = match.group() + match.group('after_tok')
             if self.text_contains_sentbreak(context):
-                yield text[last_break:match.end()]
+                yield slice(last_break, match.end())
                 if match.group('next_tok'):
                     # next sentence starts after whitespace
                     last_break = match.start('next_tok')
                 else:
                     # next sentence starts at following punctuation
                     last_break = match.end()
-        yield text[last_break:]
+        yield slice(last_break, len(text))
 
     def _realign_boundaries(self, sents):
         """
