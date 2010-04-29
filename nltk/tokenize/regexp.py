@@ -77,8 +77,8 @@ class RegexpTokenizer(TokenizerI):
         self._regexp = None
         """The compiled regular expression used to tokenize texts."""
         
-        # Remove grouping parenthases -- if the regexp contains any
-        # grouping parenthases, then the behavior of re.findall and
+        # Remove grouping parentheses -- if the regexp contains any
+        # grouping parentheses, then the behavior of re.findall and
         # re.split will change.
         nongrouping_pattern = convert_regexp_to_nongrouping(pattern)
 
@@ -104,6 +104,21 @@ class RegexpTokenizer(TokenizerI):
         return ('%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)' %
                 (self.__class__.__name__, self._pattern, self._gaps,
                  self._discard_empty, self._flags))
+
+class WhitespaceTokenizer(RegexpTokenizer):
+    r"""
+    A tokenizer that divides a string into substrings by treating any
+    sequence of whitespace characters as a separator.  Whitespace
+    characters are space (C{' '}), tab (C{'\t'}), and newline
+    (C{'\n'}).  If you are performing the tokenization yourself
+    (rather than building a tokenizer to pass to some other piece of
+    code), consider using the string C{split()} method instead:
+
+        >>> words = s.split()
+    """
+
+    def __init__(self):
+        RegexpTokenizer.__init__(self, r'\s+', gaps=True)
 
 class BlanklineTokenizer(RegexpTokenizer):
     """

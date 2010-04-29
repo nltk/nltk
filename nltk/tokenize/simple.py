@@ -20,22 +20,9 @@ C{split()} method directly instead.
 """
 
 from api import *
-
-class WhitespaceTokenizer(TokenizerI):
-    r"""
-    A tokenizer that divides a string into substrings by treating any
-    sequence of whitespace characters as a separator.  Whitespace
-    characters are space (C{' '}), tab (C{'\t'}), and newline
-    (C{'\n'}).  If you are performing the tokenization yourself
-    (rather than building a tokenizer to pass to some other piece of
-    code), consider using the string C{split()} method instead:
-
-        >>> words = s.split()
-    """
-    def tokenize(self, s):
-        return s.split()
-
-class SpaceTokenizer(TokenizerI):
+from util import *
+    
+class SpaceTokenizer(StringTokenizer):
     r"""
     A tokenizer that divides a string into substrings by treating any
     single space character as a separator.  If you are performing the
@@ -45,10 +32,10 @@ class SpaceTokenizer(TokenizerI):
 
         >>> words = s.split(' ')
     """
-    def tokenize(self, s):
-        return s.split(' ')
 
-class TabTokenizer(TokenizerI):
+    _string = ' '
+    
+class TabTokenizer(StringTokenizer):
     r"""
     A tokenizer that divides a string into substrings by treating any
     single tab character as a separator.  If you are performing the
@@ -58,19 +45,24 @@ class TabTokenizer(TokenizerI):
 
         >>> words = s.split('\t')
     """
-    def tokenize(self, s):
-        return s.split('\t')
-
-class CharTokenizer(TokenizerI):
+    
+    _string = '\t'
+    
+class CharTokenizer(StringTokenizer):
     r"""
     A tokenizer that produces individual characters.  If you are performing
     the tokenization yourself (rather than building a tokenizer to pass to
     some other piece of code), consider iterating over the characters of
     the string directly instead: for char in string
     """
+
     def tokenize(self, s):
         return list(s)
 
+    def span_tokenize(self, s):
+        for i, j in enumerate(range(1, len(s+1))):
+            yield i, j
+                              
 class LineTokenizer(TokenizerI):
     r"""
     A tokenizer that divides a string into substrings by treating any
@@ -105,6 +97,15 @@ class LineTokenizer(TokenizerI):
         elif self._blanklines == 'discard-eof':
             if lines and not lines[-1].strip(): lines.pop()
         return lines
+
+    # discard-eof not implemented
+    def span_tokenize(self, s):
+        if self._blanklines == 'keep':
+            for span in string_span_tokenize(s, r'\n'):
+                yield span
+        else:
+            for span in regexp_span_tokenize(s, r'\n(\s+\n)*'):
+                yield span
 
 ######################################################################
 #{ Tokenization Functions
