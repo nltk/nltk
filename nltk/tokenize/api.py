@@ -9,6 +9,7 @@
 Tokenizer Interface
 """
 from nltk.internals import overridden
+from util import string_span_tokenize
 
 class TokenizerI(object):
     """
@@ -29,12 +30,10 @@ class TokenizerI(object):
         else:
             raise NotImplementedError()
 
-    # experimental
-    def span_tokenize(self, s, relative=False):
+    def span_tokenize(self, s):
         """
         Identify the tokens using integer offsets (start_i, end_i),
         where s[start_i:end_i] is the corresponding token.
-        If relative=True, make each integer relative to the previous one.
         
         @return: C{iter} of C{tuple} of C{int}
         """
@@ -50,18 +49,28 @@ class TokenizerI(object):
         """
         return [self.tokenize(s) for s in strings]
 
-    # experimental
-    def batch_span_tokenize(self, strings, relative=False):
+    def batch_span_tokenize(self, strings):
         """
         Apply L{self.span_tokenize()} to each element of C{strings}.  I.e.:
 
             >>> return [self.span_tokenize(s) for s in strings]
 
-        @rtype: C{iter} of C{tuple} of C{int}
+        @rtype: C{iter} of C{list} of C{tuple} of C{int}
         """
         for s in strings:
-            for span in self.span_tokenize(s):
-                yield span
+            yield list(self.span_tokenize(s))
 
 
- 
+class StringTokenizer(TokenizerI):
+    r"""
+    A tokenizer that divides a string into substrings by splitting
+    on the specified string (defined in subclasses).
+    """
+
+    def tokenize(self, s):
+        return s.split(self._string)
+    
+    def span_tokenize(self, s):
+        for span in string_span_tokenize(s, self._string):
+            yield span
+
