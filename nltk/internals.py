@@ -682,7 +682,7 @@ class ElementWrapper(object):
 # Helper for Handling Slicing 
 ######################################################################
 
-def slice_bounds(sequence, slice_obj):
+def slice_bounds(sequence, slice_obj, allow_step=False):
     """
     Given a slice, return the corresponding (start, stop) bounds,
     taking into account None indices and negative indices.  The
@@ -693,13 +693,31 @@ def slice_bounds(sequence, slice_obj):
       - start <= stop
 
     @raise ValueError: If C{slice_obj.step} is not C{None}.
+    @param allow_step: If true, then the slice object may have a
+        non-None step.  If it does, then return a tuple
+        (start, stop, step).
     """
-    if slice_obj.step is not None:
+    start, stop = (slice_obj.start, slice_obj.stop)
+
+    # If allow_step is true, then include the step in our return
+    # value tuple.  
+    if allow_step:
+        if slice_obj.step is None: slice_obj.step = 1
+        # Use a recursive call without allow_step to find the slice
+        # bounds.  If step is negative, then the roles of start and
+        # stop (in terms of default values, etc), are swapped.
+        if slice_obj.step < 0:
+            start, stop = slice_bounds(sequence, slice(stop, start))
+        else:
+            start, stop = slice_bounds(sequence, slice(start, stop))
+        return start, stop, slice_obj.step
+
+    # Otherwise, make sure that no non-default step value is used.
+    elif slice_obj.step not in (None, 1):
         raise ValueError('slices with steps are not supported by %s' %
                          sequence.__class__.__name__)
-    start, stop = slice_obj.start, slice_obj.stop
 
-    # Handle None indices.
+    # Supply default offsets.
     if start is None: start = 0
     if stop is None: stop = len(sequence)
     
