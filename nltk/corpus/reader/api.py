@@ -16,6 +16,7 @@ import re
 from nltk.compat import defaultdict
 from nltk.internals import deprecated
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
+from nltk.sourcedstring import SourcedStringStream
 
 from util import *
 
@@ -145,7 +146,8 @@ class CorpusReader(object):
         """
         return self._root.join(fileid)
 
-    def abspaths(self, fileids=None, include_encoding=False):
+    def abspaths(self, fileids=None, include_encoding=False,
+                 include_fileid=False):
         """
         Return a list of the absolute paths for all fileids in this corpus;
         or for the given list of fileids, if specified.
@@ -170,12 +172,16 @@ class CorpusReader(object):
 
         paths = [self._root.join(f) for f in fileids]
 
-        if include_encoding:
+        if include_encoding and include_fileid:
+            return zip(paths, [self.encoding(f) for f in fileids], fileids)
+        elif include_fileid:
+            return zip(paths, fileid)
+        elif include_encoding:
             return zip(paths, [self.encoding(f) for f in fileids])
         else:
             return paths
 
-    def open(self, file):
+    def open(self, file, sourced=False):
         """
         Return an open stream that can be used to read the given file.
         If the file's encoding is not C{None}, then the stream will
@@ -184,7 +190,10 @@ class CorpusReader(object):
         @param file: The file identifier of the file to read.
         """
         encoding = self.encoding(file)
-        return self._root.join(file).open(encoding)
+        stream = self._root.join(file).open(encoding)
+        if sourced:
+            stream = SourcedStringStream(stream, file)
+        return stream
 
     def encoding(self, file):
         """
@@ -443,3 +452,4 @@ class SyntaxCorpusReader(CorpusReader):
     def tagged(self, items=None):
         return self.tagged_sents(items)
     #}
+

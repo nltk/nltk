@@ -22,6 +22,8 @@ except ImportError: from nltk.etree import ElementTree
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import deprecated, slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
+from nltk.data import SeekableUnicodeStreamReader
+from nltk.sourcedstring import SourcedStringStream
 from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation
 
 ######################################################################
@@ -121,7 +123,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
        block; and tokens is a list of the tokens in the block.
     """
     def __init__(self, fileid, block_reader=None, startpos=0,
-                 encoding=None):
+                 encoding=None, source=None):
         """
         Create a new corpus view, based on the file C{fileid}, and
         read with C{block_reader}.  See the class documentation
@@ -138,7 +140,12 @@ class StreamBackedCorpusView(AbstractLazySequence):
         @param encoding: The unicode encoding that should be used to
             read the file's contents.  If no encoding is specified,
             then the file's contents will be read as a non-unicode
-            string (i.e., a C{str}).            
+            string (i.e., a C{str}).
+
+        @param source: If specified, then use an L{SourcedStringStream}
+            to annotate all strings read from the file with
+            information about their start offset, end ofset,
+            and docid.  The value of ``source`` will be used as the docid.
         """
         if block_reader:
             self.read_block = block_reader
@@ -146,6 +153,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
         self._toknum = [0]
         self._filepos = [startpos]
         self._encoding = encoding
+        self._source = source
         # We don't know our length (number of tokens) yet.
         self._len = None
 
@@ -209,6 +217,8 @@ class StreamBackedCorpusView(AbstractLazySequence):
                 open(self._fileid, 'rb'), self._encoding)
         else:
             self._stream = open(self._fileid, 'rb')
+        if self._source is not None:
+            self._stream = SourcedStringStream(self._stream, self._source)
 
     def close(self):
         """
@@ -331,7 +341,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
         # If we reach this point, then we should know our length.
         assert self._len is not None
-
         
     # Use concat for these, so we can use a ConcatenatedCorpusView
     # when possible.
@@ -551,7 +560,7 @@ def read_line_block(stream):
     for i in range(20):
         line = stream.readline()
         if not line: return toks
-        toks.append(line.replace('\n', ''))
+        toks.append(line.rstrip('\n'))
     return toks
 
 def read_blankline_block(stream):
