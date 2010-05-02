@@ -6,6 +6,9 @@
 #         Steven Bird <sb@csse.unimelb.edu.au> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se> (additions)
+#         Liang Dong <ldong@clemson.edu> (additions)
+#         Geoffrey Sampson <sampson@cantab.net> (additions)
+#
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
@@ -603,11 +606,11 @@ class ProbDistI(object):
         """
         return 0.0
 
-    # Subclasses shuld define more efficient implementations of this,
+    # Subclasses should define more efficient implementations of this,
     # where possible.
     def generate(self):
         """
-        @return: A randomly selected sample from this probabilitiy
+        @return: A randomly selected sample from this probability
             distribution.  The probability of returning each sample
             C{samp} is equal to C{self.prob(samp)}.
         """
@@ -1233,6 +1236,40 @@ class WittenBellProbDist(ProbDistI):
         """
         return '<WittenBellProbDist based on %d samples>' % self._freqdist.N()
 
+
+##////////////////////////////////////////////////////// 
+##  Good-Turing Probablity Distributions 
+##////////////////////////////////////////////////////// 
+
+# Good-Turing frequency estimation was contributed by Alan Turing and his
+# statistical assistant I.J. Good, during their collaboration in the WWII.
+# It is a statistical technique for predicting the probability of occurrence
+# of objects belonging to an unknown number of species, given past observations
+# of such objects and their species. (In drawing balls from an urn, the
+# 'objects' would be balls and the 'species' would be the distinct colors of
+# the balls (finite but unknown in number).
+# 
+# The situation frequency zero is quite common in the original Good-Turing estimation.
+# Bill Gale and Geoffrey Sampson present a simple and effective approach,
+# Simple Good-Turing.  As a smoothing curve they simply use a power curve:
+# 
+#     Nr = a*r^b (with b < -1 to give the appropriate hyperbolic relationsihp)
+#         
+# They estimate a and b by simple linear regression technique on the logarithmic
+# form of the equation:
+# 
+#     log Nr = a + b*log(r)
+#     
+# However, they suggest that such a simple curve is probably only appropriate for
+# high values of r. For low values of r, they use the measured Nr directly.
+# (see M&S, p.213)
+# 
+# In practice, Slava M. Katz (1987) propose a cutoff threshold to only discount
+# large counts (where c > k for some threshold k). Katz suggests setting k at 5
+# in his paper "Estimation of probabilities from sparse data for the language
+# model component of a speech recogniser". (see J&M 2e p.103)
+
+
 class GoodTuringProbDist(ProbDistI):
     """
     The Good-Turing estimate of a probability distribution. This method
@@ -1240,58 +1277,39 @@ class GoodTuringProbDist(ProbDistI):
     counts based on the number of events with higher counts. It does so by
     using the smoothed count M{c*}:
 
-        - M{c* = (c + 1) N(c + 1) / N(c)}
-
+        - M{c* = (c + 1) N(c + 1) / N(c)}   for c >= 1
+        - M{things with frequency zero in training} = N(1)  for c == 0
+    
     where M{c} is the original count, M{N(i)} is the number of event types
-    observed with count M{i}. These smoothed counts are then normalised to
-    yield a probability distribution.
+    observed with count M{i}. We can think the count of unseen as the count
+    of frequency one.
+    (see Jurafsky & Martin 2nd Edition, p101)
+        
     """
-    # TODO - add a cut-off parameter, above which the counts are unmodified
-    # (see J&M p216)
-
-    def __init__(self, freqdist, bins=None):
+    def __init__(self, freqdist):
         """
-        Creates a Good-Turing probability distribution estimate.  This method
-        calculates the probability mass to assign to events with zero or low
-        counts based on the number of events with higher counts. It does so by
-        using the smoothed count M{c*}:
-
-            - M{c* = (c + 1) N(c + 1) / N(c)}
-
-        where M{c} is the original count, M{N(i)} is the number of event types
-        observed with count M{i}. These smoothed counts are then normalised to
-        yield a probability distribution.
-
-        The C{bins} parameter allows C{N(0)} to be estimated.
-
         @param freqdist:    The frequency counts upon which to base the
-                            estimation.
+                                estimation.
         @type  freqdist:    C{FreqDist}
-        @param bins:        The number of possible event types. This must be
-                            at least as large as the number of bins in the
-                            C{freqdist}. If C{None}, then it's taken to be
-                            equal to C{freqdist.B()}.
-        @type  bins:        C{Int}
         """
-        assert bins == None or bins >= freqdist.B(),\
-               'Bins parameter must not be less than freqdist.B()'
-        if bins == None:
-            bins = freqdist.B()
         self._freqdist = freqdist
-        self._bins = bins
-
+    
     def prob(self, sample):
-        # inherit docs from FreqDist
-        c = self._freqdist[sample]
-        nc = self._freqdist.Nr(c, self._bins)
-        ncn = self._freqdist.Nr(c + 1, self._bins)
-
+        count = self._freqdist[sample]
+        
+        # unseen sample's frequency (count zero) uses frequency one's
+        if count == 0 and self._freqdist.N() != 0:
+            return 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
+        
+        nc = self._freqdist.Nr(count)
+        ncn = self._freqdist.Nr(count + 1)
+        
         # avoid divide-by-zero errors for sparse datasets
         if nc == 0 or self._freqdist.N() == 0:
-            return 0.0
-
-        return float(c + 1) * ncn / (nc * self._freqdist.N())
-
+            return 0
+        
+        return 1.0 * (count + 1) * ncn / (nc * self._freqdist.N())
+            
     def max(self):
         return self._freqdist.max()
 
@@ -1299,17 +1317,196 @@ class GoodTuringProbDist(ProbDistI):
         return self._freqdist.keys()
 
     def discount(self):
-        raise NotImplementedError()
+        """
+        @return: The probability mass transferred from the
+            seen samples to the unseen samples.
+        @rtype: C{float}
+        """
+        return 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
 
     def freqdist(self):
         return self._freqdist
-
+            
     def __repr__(self):
         """
         @rtype: C{string}
         @return: A string representation of this C{ProbDist}.
         """
-        return '<GoodTuringProbDist based on %d samples>' % self._freqdist.N()
+        return '<GoodTuringProbDist based on %d samples>' % self._freqdist.N() 
+            
+
+
+##////////////////////////////////////////////////////// 
+##  Simple Good-Turing Probablity Distributions 
+##//////////////////////////////////////////////////////
+
+class SimpleGoodTuringProbDist(ProbDistI):
+    """
+    SimpleGoodTuring ProbDist approximates from frequency to freqency of
+    frequency into a linear line under log space by linear regression.
+    Details of Simple Good-Turing algorithm can be found in:
+        (1) Bill Gale and Geoffrey Sampson's joint paper
+                "Good Turing Smoothing Without Tear", published in 
+                Journal of Quantitative Linguistics, vol. 2 pp. 217-237, 1995
+        (2) Jurafsky & Martin's Book "Speech and Language Processing"
+                2e Chap 4.5 p103 (log(Nc) =  a + b*log(c))
+        (3) Website maintained by Geoffrey Sampson:
+                http://www.grsampson.net/RGoodTur.html
+            
+    Given a set of pair (xi, yi),  where the xi denotes the freqency and
+    yi denotes the freqency of freqency, we want to minimize their
+    square variation. E(x) and E(y) represent the mean of xi and yi.
+    
+        -Slope: b = sigma ((xi-E(x)*(yi-E(y))) / sigma ((xi-E(x))*(xi-E(x)))
+        -Intercept: a = E(y)- b * E(x)
+        
+    In practice, Slava M. Katz suggested only discount large counts
+    (where c > k for some threshold k). Katz suggests setting k at 5 in his
+    paper "Estimation of probabilities from sparse data for the language model
+    component of a speech recogniser" (1987).
+    
+    """
+    def __init__(self, freqdist, cutoff = None):
+        """
+        @param freqdist:    The frequency counts upon which to base the
+                                estimation.
+        @type  freqdist:    C{FreqDist}
+        @param cutoff:      Katz cutoff threshold, only smooth large count
+        @type  cutoff:      C{int}
+        """
+        self._freqdist = freqdist
+        self.find_best_fit()
+        self._cutoff = None
+        if cutoff is not None and cutoff > 0:
+            self._cutoff = cutoff
+            self._set_cutoff_ratio()
+        self._renormalize()
+    
+    def find_best_fit(self):
+        """
+        Use simple linear regression to tune parameters self._slope and
+        self._intercept in the log-log space based on count and Nr(count)
+        (Work in log space to avoid floating point underflow.)
+        """
+        Nr = [0] 
+        for sample in self._freqdist: 
+            c = self._freqdist.get(sample, 0) 
+            if c >= len(Nr): 
+                Nr += [0] * (c + 1 - len(Nr)) 
+            Nr[c] += 1 
+        self._Nr = Nr
+        
+        Xsum = Ysum = XYs = Xsquare = 0.0
+        points = []
+        for i in range(1, len( self._Nr )):
+            if Nr[i] != 0:
+                logx = math.log(i)
+                logy = math.log(Nr[i])
+                Xsum += logx
+                Ysum += logy
+                points.append((logx, logy))
+        Ex = 1.0 * Xsum / len(points)
+        Ey = 1.0 * Ysum / len(points)
+        for (x, y) in points:
+            XYs += ( x - Ex ) * ( y - Ey)
+            Xsquare += ( x - Ex ) * ( x - Ex )
+        self._slope = 1.0 * XYs / Xsquare
+        self._intercept = Ey - self._slope * Ex
+    
+    def _set_cutoff_ratio(self):
+        """
+        Helper function pre-calculates (k + 1) * N(k + 1) / N(1) to
+        speed up probability calculation used in _prob_measure function
+        """
+        self._cutoff_ratio = 1.0 * (self._cutoff + 1) * \
+                    self.smoothedNr(self._cutoff + 1) / self.smoothedNr(1)
+        
+    def _renormalize(self):
+        """
+        Renormalize the probability estimates to ensure we have a probability
+        distribution.
+        """
+
+        # keep the estimate of the probability mass for unseen items as
+        # N(1)/N and renormalizing all the estimates for previously seen items
+        # (as Gale and Sampson (1995) propose). (See M&S P.213, 1999)
+
+        prob_sum = 0.0
+        for i in range(0, len(self._Nr)):
+            prob_sum += self._Nr[i] * self._prob_measure(i)
+        self._renormal = prob_sum
+        
+    def smoothedNr(self, count):
+        """
+        @return: The number of samples with count r.
+        @rtype: C{float}
+        @param count: The amount of freqency.
+        @type count: C{int}
+        """
+
+        # Nr = a*r^b (with b < -1 to give the appropriate hyperbolic relationsihp)
+        # Estimate a and b by simple linear regression technique
+        # on the logarithmic form of the equation:
+        # log Nr = a + b*log(r)
+
+        return math.exp(self._intercept + self._slope * math.log(count))
+
+    def prob(self, sample):
+        """
+        @param sample: sample of the event
+        @type sample: C{string}
+        @return: The sample's probability.
+        @rtype: C{float}
+        """
+        count = self._freqdist[sample]
+        return self._prob_measure(count) / self._renormal
+            
+    def _prob_measure(self, count):
+        if count == 0 and self._freqdist.N() != 0 :
+            return 1.0 * self.smoothedNr(1) / self._freqdist.N()
+            
+        nc = self.smoothedNr(count)
+        ncn = self.smoothedNr(count + 1)
+        
+        if nc == 0 or self._freqdist.N() == 0:
+            return 0.0
+        elif self._cutoff == None or self._cutoff > count:
+            return 1.0 * (count + 1) * ncn / (nc * self._freqdist.N())
+        else:
+            return (1.0 * (count + 1) * ncn / nc - self._cutoff_ratio * count)/\
+                    ((1 - self._cutoff_ratio) * self._freqdist.N())
+        
+    def check(self):
+        prob_sum = 0.0
+        for i in  range(0, len(self._Nr)):
+            prob_sum += self._Nr[i] * self._prob_measure(i) / self._renormal
+        print "Probability Sum:", prob_sum
+        #assert prob_sum != 1.0, "probability sum should be one!"
+        
+    def discount(self):
+        """
+        This function returns the total mass of probability transfers from the
+        seen samples to the unseen samples.
+        """
+        return  1.0 * self.smoothedNr(1) / self._freqdist.N()
+        
+    def max(self):
+        return self._freqdist.max()
+
+    def samples(self):
+        return self._freqdist.keys()
+    
+    def freqdist(self):
+        return self._freqdist
+                
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this C{ProbDist}.
+        """
+        return '<SimpleGoodTuringProbDist based on %d samples>'\
+                % self._freqdist.N()
+                
 
 class MutableProbDist(ProbDistI):
     """
@@ -1467,7 +1664,8 @@ class ConditionalFreqDist(object):
         particular, the count for every sample, under every condition,
         is zero.
 
-        @param cond_samples: The samples to initialize the conditional frequency distribution with
+        @param cond_samples: The samples to initialize the conditional
+            frequency distribution with
         @type cond_samples: Sequence of (condition, sample) tuples
         """
         self._fdists = {}
@@ -1477,19 +1675,13 @@ class ConditionalFreqDist(object):
 
     def __getitem__(self, condition):
         """
-        Return the frequency distribution that encodes the frequency
-        of each sample outcome, given that the experiment was run
-        under the given condition.  If the frequency distribution for
-        the given condition has not been accessed before, then this
-        will create a new empty C{FreqDist} for that condition.
-
         @return: The frequency distribution that encodes the frequency
             of each sample outcome, given that the experiment was run
-            under the given condition.
+            under the given condition.  If the frequency distribution for
+            the given condition has not been accessed before, then this
+            will create a new empty C{FreqDist} for that condition.
         @rtype: C{FreqDist}
-
-        @param condition: The condition under which the experiment was
-            run.
+        @param condition: The condition under which the experiment was run.
         @type condition: any
         """
         # Create the conditioned freq dist, if it doesn't exist
@@ -2001,6 +2193,9 @@ def demo(numsamples=6, numoutcomes=500):
         HeldoutProbDist(fdist1, fdist2, numsamples),
         HeldoutProbDist(fdist2, fdist1, numsamples),
         CrossValidationProbDist([fdist1, fdist2, fdist3], numsamples),
+        GoodTuringProbDist(fdist1),
+        SimpleGoodTuringProbDist(fdist1),
+        SimpleGoodTuringProbDist(fdist1, 7),
         _create_sum_pdist(numsamples),
     ]
 
@@ -2043,14 +2238,28 @@ def demo(numsamples=6, numoutcomes=500):
         print '%20s %s' % (pdist.__class__.__name__[:20], str(fdist)[:55])
     print
 
+def gt_demo():
+    from nltk import corpus
+    emma_words = corpus.gutenberg.words('austen-emma.txt')
+    fd = FreqDist(emma_words)
+    gt = GoodTuringProbDist(fd)
+    sgt = SimpleGoodTuringProbDist(fd)
+    katz = SimpleGoodTuringProbDist(fd, 7)
+    print '%18s %8s  %12s %14s  %12s' \
+        % ("word", "freqency", "GoodTuring", "SimpleGoodTuring", "Katz-cutoff" )
+    for key in fd.keys():
+        print '%18s %8d  %12e   %14e   %12e' \
+            % (key, fd[key], gt.prob(key), sgt.prob(key), katz.prob(key))
+
 if __name__ == '__main__':
     demo(6, 10)
     demo(5, 5000)
+    gt_demo()
 
 __all__ = ['ConditionalFreqDist', 'ConditionalProbDist',
            'ConditionalProbDistI', 'CrossValidationProbDist',
            'DictionaryConditionalProbDist', 'DictionaryProbDist', 'ELEProbDist',
-           'FreqDist', 'GoodTuringProbDist', 'HeldoutProbDist',
+           'FreqDist', 'GoodTuringProbDist', 'SimpleGoodTuringProbDist', 'HeldoutProbDist',
            'ImmutableProbabilisticMixIn', 'LaplaceProbDist', 'LidstoneProbDist',
            'MLEProbDist', 'MutableProbDist', 'ProbDistI', 'ProbabilisticMixIn',
            'UniformProbDist', 'WittenBellProbDist', 'add_logs',
