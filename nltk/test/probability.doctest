@@ -124,10 +124,16 @@ Witten Bell Estimation
 
 Good Turing Estimation
 - The accuracy is only 17%, see issues #26 and #133
+- After revision r8541, accuracy has dropped to 0%
 - The estimator should be fixed, and then this test
 
-    >>> train_and_test(GoodTuringProbDist)
+    >>> gt = lambda fd, bins: GoodTuringProbDist(fd)
+    >>> train_and_test(gt)
     THE GOOD TURING ESTIMATOR IS FLAWED
+
+    >>> gt = lambda fd, bins: SimpleGoodTuringProbDist(fd)
+    >>> train_and_test(gt)
+    THE SIMPLE GOOD TURING ESTIMATOR IS FLAWED
 
 Remains to be added: 
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
