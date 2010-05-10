@@ -15,6 +15,14 @@ from nltk.util import ingrams
 
 from api import *
 
+def _estimator(fdist, bins):
+    """
+    Default estimator function using an MLEProbDist.
+    """
+    # can't be an instance method of NgramModel as they 
+    # can't be pickled either.
+    return MLEProbDist(fdist)
+
 class NgramModel(ModelI):
     """
     A processing interface for assigning a probability to the next word.
@@ -40,8 +48,8 @@ class NgramModel(ModelI):
         self._n = n
 
         if estimator is None:
-            estimator = lambda fdist, bins: MLEProbDist(fdist)
-
+            estimator = _estimator
+        
         cfd = ConditionalFreqDist()
         self._ngrams = set()
         self._prefix = ('',) * (n - 1)
