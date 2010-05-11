@@ -145,7 +145,7 @@ def custom_distance(file):
 def demo():
     s1 = "rain"
     s2 = "shine"
-    print "Edit distance between '%s' and '%s':", edit_distance(s1, s2)
+    print "Edit distance between '%s' and '%s':" % (s1,s2), edit_distance(s1, s2)
     
     s1 = set([1,2,3,4])
     s2 = set([3,4,5])
