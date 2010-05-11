@@ -215,7 +215,7 @@ class Mace(Prover9Parent, ModelBuilder):
 
         updated_input_str = ''
         if self._max_models > 0:
-            updated_input_str += 'assign(end_size, %d).\n\n' % self._max_models
+            updated_input_str += 'assign(max_models, %d).\n\n' % self._max_models
         updated_input_str += input_str
 
         return self._call(updated_input_str, self._mace4_bin, args, verbose)
