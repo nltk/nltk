@@ -69,7 +69,7 @@ path = []
    These directories will be checked in order when looking for a
    resource in the data package.  Note that this allows users to
    substitute in their own versions of resources, if they have them
-   (e.g., in their home directory under ~/nltk/data)."""
+   (e.g., in their home directory under ~/nltk_data)."""
 
 # User-specified locations:
 path += [d for d in os.environ.get('NLTK_DATA', '').split(os.pathsep) if d]
