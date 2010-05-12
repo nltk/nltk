@@ -93,8 +93,7 @@ class PunktLanguageVars(object):
     __slots__ = ('_re_period_context', '_re_word_tokenizer', '_re_sent_end_chars')
 
     def __init__(self):
-        self._re_sent_end_chars = '[%s]' % ''.join(
-                [('\\' + c if c in ']^-' else c) for c in self.sent_end_chars])
+        self._re_sent_end_chars = '[%s]' % re.escape(''.join(self.sent_end_chars))
 
     def __getstate__(self):
         # All modifications to the class are performed by inheritance.
