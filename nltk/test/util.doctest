@@ -77,3 +77,5 @@ Testing HTML cleaning
     ['Skip Links', 'AOL', 'My AOL', 'Mail', '', '', 'Get The All-Amer... Ringtones']
     >>> clean_html("<h1>Heading</h1><p>Test</p>")
     'Heading Test'
+    >>> clean_html("<html> <body> aaa<p>bbb </body> </html>")
+    'aaa bbb'
