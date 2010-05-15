@@ -2,10 +2,9 @@
 #
 # Copyright (C) 2001-2010 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Dmitry Chichkov <dchichkov@gmail.com> (TypedMaxentFeatureEncoding)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: naivebayes.py 2063 2004-07-17 21:02:24Z edloper $
 
 """
 A classifier model based on maximum entropy modeling framework.  This
@@ -183,6 +182,7 @@ class MaxentClassifier(ClassifierI):
                 else: score = self._weights[fid] ** f_val
                 descr = self._encoding.describe(f_id)
                 descr = descr.split(' and label is ')[0] # hack
+                descr += ' (%s)' % f_val                 # hack
                 if len(descr) > 47: descr = descr[:44]+'...'
                 print TEMPLATE % (descr, i*8*' ', score)
                 sums[label] += score
@@ -305,9 +305,9 @@ class MaxentClassifier(ClassifierI):
             except ImportError:
                 algorithm = 'iis'
         for key in cutoffs:
-            if key not in ('max_iter', 'min_ll', 'min_lldelta',
-                           'tolerance', 'max_acc', 'min_accdelta',
-                           'count_cutoff', 'norm'):
+            if key not in ('max_iter', 'min_ll', 'min_lldelta', 'tolerance', 
+                           'max_acc', 'min_accdelta', 'count_cutoff', 
+                           'norm', 'explicit', 'bernoulli'):
                 raise TypeError('Unexpected keyword arg %r' % key)
         algorithm = algorithm.lower()
         if algorithm == 'iis':
@@ -775,6 +775,229 @@ class TadmEventMaxentFeatureEncoding(BinaryMaxentFeatureEncoding):
                         mapping[(feature, label)] = len(mapping)
                         
         return cls(labels, mapping, **options)
+
+
+class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
+    """
+    A feature encoding that generates vectors containing integer, 
+    float and binary joint-features of the form::
+
+    Binary (for string and boolean features):
+      joint_feat(fs, l) = { 1 if (fs[fname] == fval) and (l == label)
+                          {
+                          { 0 otherwise
+    Value (for integer and float features):
+      joint_feat(fs, l) = { fval if     (fs[fname] == type(fval)) 
+                          {         and (l == label)
+                          {
+                          { not encoded otherwise
+
+    Where C{fname} is the name of an input-feature, C{fval} is a value
+    for that input-feature, and C{label} is a label.
+
+    Typically, these features are constructed based on a training
+    corpus, using the L{train()} method.  
+
+    For string and boolean features [type(fval) not in (int, float)] 
+    this method will create one feature for each combination of 
+    C{fname}, C{fval}, and C{label} that occurs at least once in the
+    training corpus. 
+
+    For integer and float features [type(fval) in (int, float)] this 
+    method will create one feature for each combination of C{fname} 
+    and C{label} that occurs at least once in the training corpus.
+
+    For binary features the C{unseen_features} parameter can be used 
+    to add X{unseen-value features}, which are used whenever an input 
+    feature has a value that was not encountered in the training 
+    corpus.  These features have the form::
+
+      joint_feat(fs, l) = { 1 if is_unseen(fname, fs[fname])
+                          {      and l == label
+                          {
+                          { 0 otherwise
+
+    Where C{is_unseen(fname, fval)} is true if the encoding does not
+    contain any joint features that are true when C{fs[fname]==fval}.
+
+    The C{alwayson_features} parameter can be used to add X{always-on
+    features}, which have the form::
+
+      joint_feat(fs, l) = { 1 if (l == label)
+                          {
+                          { 0 otherwise
+
+    These always-on features allow the maxent model to directly model
+    the prior probabilities of each label.
+    """
+    def __init__(self, labels, mapping, unseen_features=False,
+                 alwayson_features=False):
+        """
+        @param labels: A list of the \"known labels\" for this encoding.
+
+        @param mapping: A dictionary mapping from C{(fname,fval,label)}
+            tuples to corresponding joint-feature indexes.  These
+            indexes must be the set of integers from 0...len(mapping).
+            If C{mapping[fname,fval,label]=id}, then
+            C{self.encode({..., fname:fval, ...}, label)[id]} is 1;
+            otherwise, it is 0.
+
+        @param unseen_features: If true, then include unseen value
+           features in the generated joint-feature vectors.
+
+        @param alwayson_features: If true, then include always-on
+           features in the generated joint-feature vectors.
+        """
+        if set(mapping.values()) != set(range(len(mapping))):
+            raise ValueError('Mapping values must be exactly the '
+                             'set of integers from 0...len(mapping)')
+
+        self._labels = list(labels)
+        """A list of attested labels."""
+
+        self._mapping = mapping
+        """dict mapping from (fname,fval,label) -> fid"""
+
+        self._length = len(mapping)
+        """The length of generated joint feature vectors."""
+
+        self._alwayson = None
+        """dict mapping from label -> fid"""
+
+        self._unseen = None
+        """dict mapping from fname -> fid"""
+
+        if alwayson_features:
+            self._alwayson = dict([(label,i+self._length)
+                                   for (i,label) in enumerate(labels)])
+            self._length += len(self._alwayson)
+
+        if unseen_features:
+            fnames = set(fname for (fname, fval, label) in mapping)
+            self._unseen = dict([(fname, i+self._length)
+                                 for (i, fname) in enumerate(fnames)])
+            self._length += len(fnames)
+
+    def encode(self, featureset, label):
+        # Inherit docs.
+        encoding = []
+
+        # Convert input-features to joint-features:
+        for fname, fval in featureset.items():
+            if(type(fval) in (int, float)):
+                # Known feature name & value:
+                if (fname, type(fval), label) in self._mapping:
+                    encoding.append((self._mapping[fname, type(fval), label], fval))
+            else:
+                # Known feature name & value:
+                if (fname, fval, label) in self._mapping:
+                    encoding.append((self._mapping[fname, fval, label], 1))
+
+                # Otherwise, we might want to fire an "unseen-value feature".
+                elif self._unseen:
+                    # Have we seen this fname/fval combination with any label?
+                    for label2 in self._labels:
+                        if (fname, fval, label2) in self._mapping:
+                            break # we've seen this fname/fval combo
+                    # We haven't -- fire the unseen-value feature
+                    else:
+                        if fname in self._unseen:
+                            encoding.append((self._unseen[fname], 1))
+
+
+        # Add always-on features:
+        if self._alwayson and label in self._alwayson:
+            encoding.append((self._alwayson[label], 1))
+
+        return encoding
+
+    def describe(self, f_id):
+        # Inherit docs.
+        if not isinstance(f_id, (int, long)):
+            raise TypeError('describe() expected an int')
+        try:
+            self._inv_mapping
+        except AttributeError:
+            self._inv_mapping = [-1]*len(self._mapping)
+            for (info, i) in self._mapping.items():
+                self._inv_mapping[i] = info
+
+        if f_id < len(self._mapping):
+            (fname, fval, label) = self._inv_mapping[f_id]
+            return '%s==%r and label is %r' % (fname, fval, label)
+        elif self._alwayson and f_id in self._alwayson.values():
+            for (label, f_id2) in self._alwayson.items():
+                if f_id==f_id2: return 'label is %r' % label
+        elif self._unseen and f_id in self._unseen.values():
+            for (fname, f_id2) in self._unseen.items():
+                if f_id==f_id2: return '%s is unseen' % fname
+        else:
+            raise ValueError('Bad feature id')
+
+    def labels(self):
+        # Inherit docs.
+        return self._labels
+
+    def length(self):
+        # Inherit docs.
+        return self._length
+
+    @classmethod
+    def train(cls, train_toks, count_cutoff=0, labels=None, **options):
+        """
+        Construct and return new feature encoding, based on a given
+        training corpus C{train_toks}.  See the L{class description
+        <TypedMaxentFeatureEncoding>} for a description of the
+        joint-features that will be included in this encoding.
+
+        Note: recognized feature values types are (int, float), over
+        types are interpreted as regular binary features.
+
+        @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
+        @param train_toks: Training data, represented as a list of
+            pairs, the first member of which is a feature dictionary,
+            and the second of which is a classification label.
+
+        @type count_cutoff: C{int}
+        @param count_cutoff: A cutoff value that is used to discard
+            rare joint-features.  If a joint-feature's value is 1
+            fewer than C{count_cutoff} times in the training corpus,
+            then that joint-feature is not included in the generated
+            encoding.
+
+        @type labels: C{list}
+        @param labels: A list of labels that should be used by the
+            classifier.  If not specified, then the set of labels
+            attested in C{train_toks} will be used.
+
+        @param options: Extra parameters for the constructor, such as
+            C{unseen_features} and C{alwayson_features}.
+        """
+        mapping = {}              # maps (fname, fval, label) -> fid
+        seen_labels = set()       # The set of labels we've encountered
+        count = defaultdict(int)  # maps (fname, fval) -> count
+
+        for (tok, label) in train_toks:
+            if labels and label not in labels:
+                raise ValueError('Unexpected label %s' % label)
+            seen_labels.add(label)
+
+            # Record each of the features.
+            for (fname, fval) in tok.items():
+                if(type(fval) in (int, float)): fval = type(fval)
+                # If a count cutoff is given, then only add a joint
+                # feature once the corresponding (fname, fval, label)
+                # tuple exceeds that cutoff.
+                count[fname,fval] += 1
+                if count[fname,fval] >= count_cutoff:
+                    if (fname, fval, label) not in mapping:
+                        mapping[fname, fval, label] = len(mapping)
+
+        if labels is None: labels = seen_labels
+        return cls(labels, mapping, **options)
+
+
+
 
 ######################################################################
 #{ Classifier Trainer: Generalized Iterative Scaling
@@ -1259,7 +1482,11 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     @see: L{train_maxent_classifier()} for parameter descriptions.
     @see: L{nltk.classify.megam}
     """
+    
     explicit = True
+    bernoulli = True
+    if 'explicit' in kwargs: explicit = kwargs['explicit']
+    if 'bernoulli' in kwargs: bernoulli = kwargs['bernoulli']
     
     # Construct an encoding from the training data.
     if encoding is None:
@@ -1276,7 +1503,8 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     try:
         fd, trainfile_name = tempfile.mkstemp(prefix='nltk-', suffix='.gz')
         trainfile = gzip.open(trainfile_name, 'wb')
-        write_megam_file(train_toks, encoding, trainfile, explicit=explicit)
+        write_megam_file(train_toks, encoding, trainfile, \
+                            explicit=explicit, bernoulli=bernoulli)
         trainfile.close()
     except (OSError, IOError, ValueError), e:
         raise ValueError('Error while creating megam training file: %s' % e)
@@ -1286,6 +1514,8 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     options += ['-nobias', '-repeat', '10']
     if explicit:
         options += ['-explicit']
+    if not bernoulli:
+        options += ['-fvals']
     if gaussian_prior_sigma:
         # Lambda is just the precision of the Gaussian prior, i.e. it's the
         # inverse variance, so the parameter conversion is 1.0/sigma**2.
@@ -1304,14 +1534,14 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
         options += ['-dpp', '%s' % abs(kwargs['ll_delta'])]
     options += ['multiclass', trainfile_name]
     stdout = call_megam(options)
-
+    # print './megam_i686.opt ', ' '.join(options)
     # Delete the training file
     try: os.remove(trainfile_name)
     except (OSError, IOError), e:
         print 'Warning: unable to delete %s: %s' % (trainfile_name, e)
 
     # Parse the generated weight vector.
-    weights = parse_megam_weights(stdout, explicit)
+    weights = parse_megam_weights(stdout, encoding.length(), explicit)
 
     # Convert from base-e to base-2 weights.
     weights *= numpy.log2(numpy.e)
