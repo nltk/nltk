@@ -118,12 +118,15 @@ class TextTilingTokenizer(TokenizerI):
         # End of Boundary Identification
         segmented_text = []
         prevb = 0
-        
+
         for b in normalized_boundaries:
             if b == 0:
                 continue
             segmented_text.append(text[prevb:b])
             prevb = b  
+
+        if not segmented_text:
+            segmented_text = [text]
 
         if self.demo_mode:
             return gap_scores, smooth_scores, depth_scores, segment_boundaries
@@ -292,6 +295,8 @@ class TextTilingTokenizer(TokenizerI):
         
         clip = min(max(len(scores)/10, 2), 5)
         index = clip
+
+        # SB: next three lines are redundant as depth_scores is already full of zeros
         for i in range(clip):
             depth_scores[i] = 0
             depth_scores[-i-1] = 0
@@ -317,6 +322,7 @@ class TextTilingTokenizer(TokenizerI):
     def _normalize_boundaries(self, text, boundaries, paragraph_breaks):
         """Normalize the boundaries identified to the original text's
         paragraph breaks"""
+    
         norm_boundaries = []
         char_count, word_count, gaps_seen = 0, 0, 0
         seen_word = False
