@@ -19,11 +19,12 @@ implement the `ClassifyI` interface:
       - self.labels()
       - self.prob_classify(featureset)
 
-Currently, NLTK defines four classifier classes:
+NLTK defines several classifier classes:
 
-- `NaiveBayesClassifier`
-- `DecisionTreeClassifier`
 - `ConditionalExponentialClassifier`
+- `DecisionTreeClassifier`
+- `MaxentClassifier`
+- `NaiveBayesClassifier`
 - `WekaClassifier`
 
 Classifiers are typically created by training them on a training
@@ -32,6 +33,7 @@ corpus.
 
 Regression Tests
 ~~~~~~~~~~~~~~~~
+
 We define a very simple training corpus with 3 binary features: ['a',
 'b', 'c'], and are two labels: ['x', 'y'].  We use a simple feature set so
 that the correct answers can be calculated analytically (although we
@@ -138,3 +140,32 @@ generate the same results.
            BFGS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
           MEGAM     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
          Powell     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+
+
+Regression tests for TypedMaxentFeatureEncoding
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.classify import maxent
+    >>> train = [
+    ...     ({'a': 1, 'b': 1, 'c': 1}, 'y'),
+    ...     ({'a': 5, 'b': 5, 'c': 5}, 'x'),
+    ...     ({'a': 0.9, 'b': 0.9, 'c': 0.9}, 'y'),
+    ...     ({'a': 5.5, 'b': 5.4, 'c': 5.3}, 'x'),
+    ...     ({'a': 0.8, 'b': 1.2, 'c': 1}, 'y'),
+    ...     ({'a': 5.1, 'b': 4.9, 'c': 5.2}, 'x')
+    ... ]
+
+    >>> test = [
+    ...     {'a': 1, 'b': 0.8, 'c': 1.2},
+    ...     {'a': 5.2, 'b': 5.1, 'c': 5}
+    ... ]
+
+    >>> encoding = maxent.TypedMaxentFeatureEncoding.train(
+    ...     train, count_cutoff=3, alwayson_features=True)
+
+    >>> classifier = maxent.MaxentClassifier.train(
+    ...     train, bernoulli=False, encoding=encoding, trace=0)
+
+    >>> classifier.batch_classify(test)
+    ['y', 'x']
+
