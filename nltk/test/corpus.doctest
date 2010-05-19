@@ -109,7 +109,7 @@ Here are the first few words from each of NLTK's plaintext corpora:
     >>> nltk.corpus.abc.words()
     ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', ...]
     >>> nltk.corpus.genesis.words()
-    ['In', 'the', 'beginning', 'God', 'created', 'the', ...]
+    [u'In', u'the', u'beginning', u'God', u'created', ...]
     >>> nltk.corpus.gutenberg.words(fileids='austen-emma.txt')
     ['[', 'Emma', 'by', 'Jane', 'Austen', '1816', ']', ...]
     >>> nltk.corpus.inaugural.words()
@@ -121,6 +121,12 @@ Here are the first few words from each of NLTK's plaintext corpora:
      '\xe8\xe7\xe8\xed6\xfa\xe0', ...]
     >>> nltk.corpus.webtext.words()
     ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', ...]
+
+We can obtain character offsets for tokens in plaintext corpora
+using the ``sourced`` flag:
+
+    >>> nltk.corpus.inaugural.words(sourced=True)
+    ['Fellow'@[0:6], '-'@[6], 'Citizens'@[7:15], ...]
 
 Tagged Corpora
 ==============
@@ -371,9 +377,9 @@ examples illustrate the use of the wordlist corpora:
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
 
     >>> stopwords.fileids() # doctest: +ELLIPSIS
-    ['danish', 'dutch', 'english', 'french', 'german', 'italian', 'norwegian', ...]
+    ['danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian', ...]
     >>> stopwords.words('portuguese') # doctest: +ELLIPSIS
-    ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', ...]
+    ['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', ...] 
     >>> names.fileids()
     ['female.txt', 'male.txt']
     >>> names.words('male.txt') # doctest: +ELLIPSIS
