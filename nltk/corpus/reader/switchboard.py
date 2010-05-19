@@ -89,7 +89,7 @@ class SwitchboardCorpusReader(CorpusReader):
     def _tagged_words_block_reader(self, stream):
         return sum(self._tagged_discourses_block_reader(stream)[0], [])
 
-    _UTTERANCE_RE = re.compile('(\w+)\.(\d+)\:\s+(.*)')
+    _UTTERANCE_RE = re.compile('(\w+)\.(\d+)\:\s*(.*)')
     _SEP = '/'
     def _parse_utterance(self, utterance, include_tag):
         m = self._UTTERANCE_RE.match(utterance)
