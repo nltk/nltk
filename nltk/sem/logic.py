@@ -1429,12 +1429,12 @@ class LogicParser(object):
         if self.inRange(0) and self.token(0) in Tokens.EQ:
             self.token() #swallow the "="
             return self.make_EqualityExpression(expression, 
-                                                self.parse_Expression())
+                                                self.parse_Expression(False))
         elif self.inRange(0) and self.token(0) in Tokens.NEQ:
             self.token() #swallow the "!="
             return self.make_NegatedExpression(
                         self.make_EqualityExpression(expression, 
-                                                     self.parse_Expression()))
+                                                     self.parse_Expression(False)))
         return expression
     
     def make_EqualityExpression(self, first, second):
@@ -1600,6 +1600,7 @@ def demo():
     print p(r'\x y.sees(x,y)(a,b)')
     print p(r'(\x.exists y.walks(x,y))(x)')
     print p(r'exists x.(x = y)')
+    print p('P(x) & x=y & P(y)')
     print p(r'\P Q.exists x.(P(x) & Q(x))')
     
     print '='*20 + 'Test simplify' + '='*20
