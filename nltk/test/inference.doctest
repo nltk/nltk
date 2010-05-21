@@ -409,13 +409,13 @@ woman; but Adam does not love Eve.
 
 The Model Builder will fail to find a model if the assumptions do entail
 the goal.  Mace will continue to look for models of ever-increasing sizes
-until the max_models number is reached.  By default, max_models is 500, 
+until the end_size number is reached.  By default, end_size is 500, 
 but it can be set manually for quicker response time.
 
     >>> a7 = lp.parse('all x.(man(x) -> mortal(x))')
     >>> a8 = lp.parse('man(socrates)')
     >>> g2 = lp.parse('mortal(socrates)')
-    >>> print Mace(max_models=50).build_model(g2, [a7, a8])
+    >>> print Mace(end_size=50).build_model(g2, [a7, a8])
     False
 
 There is also a ``ModelBuilderCommand`` class that, like ``ProverCommand``, 
@@ -543,7 +543,7 @@ proof.
     >>> p = lp.parse('P')
     >>> q = lp.parse('Q')
     >>> prover = Prover9()
-    >>> builder = Mace(max_models=50)
+    >>> builder = Mace(end_size=50)
 
     >>> ppb = ParallelProverBuilder(prover, builder)
     >>> ppb.prove(q, [p, p>q])
