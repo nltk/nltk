@@ -305,6 +305,8 @@ Test Parser
     True
     >>> print lp.parse(r'A != B')
     -(A = B)
+    >>> print lp.parse('P(x) & x=y & P(y)')
+    (P(x) & ((x = y) & P(y)))
     >>> try: print lp.parse(r'\walk.walk(x)')
     ... except ParseException,e: print e
     'walk' is an illegal variable name.  Constants may not be abstracted.
