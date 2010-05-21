@@ -314,7 +314,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
     all_readings = []
     for tree in trees:
         # Get the semantic feature from the top of the parse tree.
-        sem = tree.node['sem'].simplify()
+        sem = tree.node['SEM'].simplify()
 
         # Print the raw semantic representation.
         if verbose: print 'Raw:       ', sem
