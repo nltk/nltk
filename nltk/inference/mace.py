@@ -182,10 +182,10 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 class Mace(Prover9Parent, ModelBuilder):
     _mace4_bin = None
     
-    def __init__(self, max_models=500):
-        self._max_models = max_models
-        """The maximum number of models that Mace will try before 
-           simply returning false. (Use 0 for no maximum.)"""
+    def __init__(self, end_size=500):
+        self._end_size = end_size
+        """The maximum model size that Mace will try before 
+           simply returning false. (Use -1 for no maximum.)"""
 
     def _build_model(self, goal=None, assumptions=None, verbose=False):
         """
@@ -214,8 +214,8 @@ class Mace(Prover9Parent, ModelBuilder):
             self._mace4_bin = self._find_binary('mace4', verbose)
 
         updated_input_str = ''
-        if self._max_models > 0:
-            updated_input_str += 'assign(max_models, %d).\n\n' % self._max_models
+        if self._end_size > 0:
+            updated_input_str += 'assign(end_size, %d).\n\n' % self._end_size
         updated_input_str += input_str
 
         return self._call(updated_input_str, self._mace4_bin, args, verbose)
@@ -241,7 +241,7 @@ def test_model_found(arguments):
     for (goal, assumptions) in arguments:
         g = lp.parse(goal)
         alist = [lp.parse(a) for a in assumptions]
-        m = MaceCommand(g, assumptions=alist, max_models=50)
+        m = MaceCommand(g, assumptions=alist, end_size=50)
         found = m.build_model()
         for a in alist:
             print '   %s' % a
