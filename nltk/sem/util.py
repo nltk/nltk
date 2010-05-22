@@ -220,7 +220,7 @@ def skolemize(expression, univ_scope=None, used_variables=None):
     elif isinstance(expression, NegatedExpression):
         negated = expression.term
         if isinstance(negated, AllExpression):
-            term = skolemize(-negated.term, univ_scope, used_variables|set([expression.variable]))
+            term = skolemize(-negated.term, univ_scope, used_variables|set([negated.variable]))
             if univ_scope:
                 return term.replace(negated.variable, skolem_function(univ_scope))
             else:
@@ -245,7 +245,7 @@ def skolemize(expression, univ_scope=None, used_variables=None):
         elif isinstance(negated, NegatedExpression):
             return skolemize(negated.term, univ_scope, used_variables)
         elif isinstance(negated, ExistsExpression):
-            term = skolemize(-negated.term, univ_scope|set([negated.variable]), used_variables|set([expression.variable]))
+            term = skolemize(-negated.term, univ_scope|set([negated.variable]), used_variables|set([negated.variable]))
             return term.replace(negated.variable, VariableExpression(unique_variable(ignore=used_variables)))
         elif isinstance(negated, ApplicationExpression):
             return expression
