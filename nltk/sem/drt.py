@@ -756,6 +756,17 @@ class DrtParser(LogicParser):
     """A lambda calculus expression parser."""
     def __init__(self):
         LogicParser.__init__(self)
+        
+        self.order_of_operations = dict(
+                               [(x,1) for x in DrtTokens.LAMBDA]        + \
+                               [(x,2) for x in DrtTokens.NOT]           + \
+                               [('APP',3)]                              + \
+                               [(x,4) for x in DrtTokens.EQ+Tokens.NEQ] + \
+                               [(DrtTokens.DRS_CONC,5)]                 + \
+                               [(x,6) for x in DrtTokens.OR]            + \
+                               [(x,7) for x in DrtTokens.IMP]           + \
+                               [(x,8) for x in DrtTokens.IFF]           + \
+                               [(None,9)])
     
     def get_all_symbols(self):
         """This method exists to be overridden"""
@@ -764,34 +775,34 @@ class DrtParser(LogicParser):
     def isvariable(self, tok):
         return tok not in DrtTokens.TOKENS
 
-    def handle(self, tok):
+    def handle(self, tok, context):
         """This method is intended to be overridden for logics that 
         use different operators or expressions"""
         if tok in DrtTokens.NOT:
-            return self.handle_negation()
+            return self.handle_negation(tok, context)
         
         elif tok in DrtTokens.LAMBDA:
-            return self.handle_lambda(tok)
+            return self.handle_lambda(tok, context)
             
         elif tok == DrtTokens.OPEN:
             if self.token(0) == DrtTokens.OPEN_BRACKET:
-                return self.handle_DRS()
+                return self.handle_DRS(tok, context)
             else:
-                return self.handle_open(tok)
+                return self.handle_open(tok, context)
         
         elif tok.upper() == DrtTokens.DRS:
-            self.assertToken(self.token(), DrtTokens.OPEN)
-            return self.handle_DRS()
+            self.assertNextToken(DrtTokens.OPEN)
+            return self.handle_DRS(tok, context)
 
         elif self.isvariable(tok):
-            return self.handle_variable(tok)
+            return self.handle_variable(tok, context)
 
     def make_NegatedExpression(self, expression):
         return DrtNegatedExpression(expression)
         
-    def handle_DRS(self):
+    def handle_DRS(self, tok, context):
         # a DRS
-        self.assertToken(self.token(), DrtTokens.OPEN_BRACKET)
+        self.assertNextToken(DrtTokens.OPEN_BRACKET)
         refs = []
         while self.token(0) != DrtTokens.CLOSE_BRACKET:
             # Support expressions like: DRS([x y],C) == DRS([x,y],C)
@@ -804,16 +815,16 @@ class DrtParser(LogicParser):
         if self.token(0) == DrtTokens.COMMA: #if there is a comma (it's optional)
             self.token() # swallow the comma
             
-        self.assertToken(self.token(), DrtTokens.OPEN_BRACKET)
+        self.assertNextToken(DrtTokens.OPEN_BRACKET)
         conds = []
         while self.token(0) != DrtTokens.CLOSE_BRACKET:
             # Support expressions like: DRS([x y],C) == DRS([x, y],C)
             if self.token(0) == DrtTokens.COMMA:
                 self.token() # swallow the comma
             else:
-                conds.append(self.parse_Expression())
+                conds.append(self.parse_Expression(context))
         self.token() # swallow the CLOSE_BRACKET token
-        self.assertToken(self.token(), DrtTokens.CLOSE)
+        self.assertNextToken(DrtTokens.CLOSE)
          
         return DRS(refs, conds)
 

@@ -338,6 +338,7 @@ class UnificationException(Exception):
 
 class LinearLogicApplicationException(Exception): pass
 
+
 class Tokens(object):
     #Punctuation
     OPEN = '('
@@ -349,19 +350,23 @@ class Tokens(object):
     PUNCT = [OPEN, CLOSE]
     TOKENS = PUNCT + [IMP] 
 
+
 class LinearLogicParser(LogicParser):
     """A linear logic expression parser."""
     def __init__(self):
         LogicParser.__init__(self)
+        
+        self.order_of_operations = {'APP': 1, Tokens.IMP: 2, None: 3}
+        self.right_associated_operations += [Tokens.IMP]
     
     def get_all_symbols(self):
         return Tokens.TOKENS
     
-    def handle(self, tok):
+    def handle(self, tok, context):
         if tok not in Tokens.TOKENS:
-            return self.handle_variable(tok)
+            return self.handle_variable(tok, context)
         elif tok == Tokens.OPEN:
-            return self.handle_open(tok)
+            return self.handle_open(tok, context)
      
     def get_BooleanExpression_factory(self, tok):
         if tok == Tokens.IMP:
@@ -372,19 +377,19 @@ class LinearLogicParser(LogicParser):
     def make_BooleanExpression(self, factory, first, second):
         return factory(first, second)
     
-    def attempt_ApplicationExpression(self, expression):
+    def attempt_ApplicationExpression(self, expression, context):
         """Attempt to make an application expression.  If the next tokens 
         are an argument in parens, then the argument expression is a
         function being applied to the arguments.  Otherwise, return the
         argument expression."""
-        if self.inRange(0) and self.token(0) == Tokens.OPEN:
-            self.token() #swallow then open paren
-            argument = self.parse_Expression()
-            self.assertToken(self.token(), Tokens.CLOSE)
-            return ApplicationExpression(expression, argument, None) 
-        else:
-            return expression
-    
+        if self.has_priority('APP', context):
+            if self.inRange(0) and self.token(0) == Tokens.OPEN:
+                self.token() #swallow then open paren
+                argument = self.parse_Expression('APP')
+                self.assertNextToken(Tokens.CLOSE)
+                expression = ApplicationExpression(expression, argument, None)
+        return expression
+
     def make_VariableExpression(self, name):
         if name[0].isupper():
             return VariableExpression(name)
@@ -397,6 +402,7 @@ def demo():
     print llp.parse(r'f')
     print llp.parse(r'(g -o f)')
     print llp.parse(r'((g -o G) -o G)')
+    print llp.parse(r'g -o h -o f')
     print llp.parse(r'(g -o f)(g)').simplify()
     print llp.parse(r'(H -o f)(g)').simplify()
     print llp.parse(r'((g -o G) -o G)((g -o f))').simplify()

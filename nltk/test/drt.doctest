@@ -6,6 +6,7 @@
 ================================
 
     >>> from nltk.sem import logic
+    >>> from nltk.inference import TableauProver
 
 Overview
 ========
@@ -224,7 +225,7 @@ Parser
 
     >>> a = dp.parse(r'([x],[man(x), walks(x)])')
     >>> b = dp.parse(r'([x],[walks(x), man(x)])')
-    >>> print a.tp_equals(b)
+    >>> print a.tp_equals(b, TableauProver())
     True
 
 
