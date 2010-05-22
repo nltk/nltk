@@ -187,7 +187,7 @@ class ComplexType(Type):
                
     def resolve(self, other):
         if other == ANY_TYPE:
-           return self
+            return self
         elif isinstance(other, ComplexType):
             f = self.first.resolve(other.first)
             s = self.second.resolve(other.second)
@@ -652,7 +652,7 @@ class ApplicationExpression(Expression):
         self.argument._set_type(ANY_TYPE, signature)
         try:
             self.function._set_type(ComplexType(self.argument.type, other_type), signature)
-        except TypeResolutionException, e:
+        except TypeResolutionException:
             raise TypeException(
                     "The function '%s' is of type '%s' and cannot be applied " 
                     "to '%s' of type '%s'.  Its argument must match type '%s'."
@@ -1180,6 +1180,19 @@ class LogicParser(object):
         quote and escape characters.
         This method exists to be overridden"""
         self.quote_chars = []
+        
+        self.order_of_operations = dict(
+                               [(x,1) for x in Tokens.LAMBDA]        + \
+                               [(x,2) for x in Tokens.NOT]           + \
+                               [('APP',3)]                           + \
+                               [(x,4) for x in Tokens.EQ+Tokens.NEQ] + \
+                               [(x,5) for x in Tokens.QUANTS]        + \
+                               [(x,6) for x in Tokens.AND]           + \
+                               [(x,7) for x in Tokens.OR]            + \
+                               [(x,8) for x in Tokens.IMP]           + \
+                               [(x,9) for x in Tokens.IFF]           + \
+                               [(None,10)])
+        self.right_associated_operations = []
 
     def parse(self, data, signature=None):
         """
@@ -1193,7 +1206,7 @@ class LogicParser(object):
         self._currentIndex = 0
         self._buffer = self.process(data)
 
-        result = self.parse_Expression()
+        result = self.parse_Expression(None)
         if self.inRange(0):
             raise UnexpectedTokenException(self.token(0))
 
@@ -1223,7 +1236,7 @@ class LogicParser(object):
                     c = data[len(symbol)]
                 else:
                     break
-            if StringTrie.LEAF in st: 
+            if StringTrie.LEAF in st:
                 #token is a complete symbol
                 if token:
                     out.append(token)
@@ -1295,51 +1308,57 @@ class LogicParser(object):
                 tok = self._buffer[self._currentIndex+location]
             return tok
         except IndexError:
-            raise ParseException, 'More tokens expected.'
+            raise ExpectedMoreTokensException()
 
     def isvariable(self, tok):
         return tok not in Tokens.TOKENS
     
-    def parse_Expression(self, allow_adjuncts=True):
+    def parse_Expression(self, context):
         """Parse the next complete expression from the stream and return it."""
-        tok = self.token()
-        
-        accum = self.handle(tok)
+        try:
+            tok = self.token()
+        except ExpectedMoreTokensException:
+            raise ExpectedMoreTokensException(context=context)
+
+        accum = self.handle(tok, context)
         
         if not accum:
             raise UnexpectedTokenException(tok)
-        
-        if allow_adjuncts:
-            accum = self.attempt_ApplicationExpression(accum)
-            accum = self.attempt_BooleanExpression(accum)
+
+        cur_idx = None
+        while cur_idx != self._currentIndex:
+            cur_idx = self._currentIndex
+            accum = self.attempt_EqualityExpression(accum, context)
+            accum = self.attempt_ApplicationExpression(accum, context)
+            accum = self.attempt_BooleanExpression(accum, context)
         
         return accum
     
-    def handle(self, tok):
+    def handle(self, tok, context):
         """This method is intended to be overridden for logics that 
         use different operators or expressions"""
         if self.isvariable(tok):
-            return self.handle_variable(tok)
+            return self.handle_variable(tok, context)
         
         elif tok in Tokens.NOT:
-            return self.handle_negation()
+            return self.handle_negation(tok, context)
         
         elif tok in Tokens.LAMBDA:
-            return self.handle_lambda(tok)
+            return self.handle_lambda(tok, context)
             
         elif tok in Tokens.QUANTS:
-            return self.handle_quant(tok)
+            return self.handle_quant(tok, context)
             
         elif tok == Tokens.OPEN:
-            return self.handle_open(tok)
+            return self.handle_open(tok, context)
             
-    def handle_negation(self):
-        return self.make_NegatedExpression(self.parse_Expression(False))
+    def handle_negation(self, tok, context):
+        return self.make_NegatedExpression(self.parse_Expression(Tokens.NOT[Tokens.NLTK]))
         
     def make_NegatedExpression(self, expression):
         return NegatedExpression(expression)
         
-    def handle_variable(self, tok):
+    def handle_variable(self, tok, context):
         #It's either: 1) a predicate expression: sees(x,y)
         #             2) an application expression: P(x)
         #             3) a solo variable: john OR x
@@ -1354,45 +1373,59 @@ class LogicParser(object):
             
             #curry the arguments
             accum = self.make_ApplicationExpression(accum, 
-                                                    self.parse_Expression())
+                                                    self.parse_Expression('APP'))
             while self.token(0) == Tokens.COMMA:
                 self.token() #swallow the comma
                 accum = self.make_ApplicationExpression(accum, 
-                                                        self.parse_Expression())
-            self.assertToken(self.token(), Tokens.CLOSE)
-        return self.attempt_EqualityExpression(accum)
+                                                        self.parse_Expression('APP'))
+            self.assertNextToken(Tokens.CLOSE)
+        return accum
         
     def ensure_abstractable(self, tok):
         if isinstance(VariableExpression(Variable(tok)), ConstantExpression):
             raise ParseException('\'%s\' is an illegal variable name.  '
                                  'Constants may not be abstracted.' % tok)
     
-    def handle_lambda(self, tok):
+    def handle_lambda(self, tok, context):
         # Expression is a lambda expression
+        if not self.inRange(0):
+            raise ExpectedMoreTokensException(message="Variable expected following lambda operator")
         self.ensure_abstractable(self.token(0))
         vars = [Variable(self.token())]
-        while self.isvariable(self.token(0)):
+        while True:
+            if not self.inRange(0) or (self.token(0) in Tokens.DOT and not self.inRange(1)):
+                raise ExpectedMoreTokensException(message="Expression expected following lambda operator")
+            if not self.isvariable(self.token(0)):
+                break
             # Support expressions like: \x y.M == \x.\y.M
             self.ensure_abstractable(self.token(0))
             vars.append(Variable(self.token()))
-        self.assertToken(self.token(), Tokens.DOT)
+        if self.token(0) in Tokens.DOT:
+            self.token() #swallow the dot
         
-        accum = self.parse_Expression(False)
+        accum = self.parse_Expression(tok)
         while vars:
             accum = self.make_LambdaExpression(vars.pop(), accum)
         return accum
         
-    def handle_quant(self, tok):
+    def handle_quant(self, tok, context):
         # Expression is a quantified expression: some x.M
         factory = self.get_QuantifiedExpression_factory(tok)
 
+        if not self.inRange(0):
+            raise ExpectedMoreTokensException(message="Variable expected following quantifier '%s'" % tok)
         vars = [self.token()]
-        while self.isvariable(self.token(0)):
+        while True:
+            if not self.inRange(0) or (self.token(0) in Tokens.DOT and not self.inRange(1)):
+                raise ExpectedMoreTokensException(message="Expression expected following quantifier '%s'" % tok)
+            if not self.isvariable(self.token(0)):
+                break
             # Support expressions like: some x y.M == some x.some y.M
             vars.append(self.token())
-        self.assertToken(self.token(), Tokens.DOT)
+        if self.token(0) in Tokens.DOT:
+            self.token() #swallow the dot
 
-        accum = self.parse_Expression(False)
+        accum = self.parse_Expression(tok)
         while vars:
             var = vars.pop()
             varex = self.make_VariableExpression(var)
@@ -1416,25 +1449,23 @@ class LogicParser(object):
     def make_QuanifiedExpression(self, factory, variable, term):
         return factory(variable, term)
         
-    def handle_open(self, tok):
+    def handle_open(self, tok, context):
         #Expression is in parens
-        accum = self.parse_Expression()
-        self.assertToken(self.token(), Tokens.CLOSE)
+        accum = self.parse_Expression(None)
+        self.assertNextToken(Tokens.CLOSE)
         return accum
         
-    def attempt_EqualityExpression(self, expression):
+    def attempt_EqualityExpression(self, expression, context):
         """Attempt to make an equality expression.  If the next token is an 
         equality operator, then an EqualityExpression will be returned.  
         Otherwise, the parameter will be returned."""
-        if self.inRange(0) and self.token(0) in Tokens.EQ:
-            self.token() #swallow the "="
-            return self.make_EqualityExpression(expression, 
-                                                self.parse_Expression(False))
-        elif self.inRange(0) and self.token(0) in Tokens.NEQ:
-            self.token() #swallow the "!="
-            return self.make_NegatedExpression(
-                        self.make_EqualityExpression(expression, 
-                                                     self.parse_Expression(False)))
+        if self.inRange(0):
+            tok = self.token(0)
+            if tok in Tokens.EQ + Tokens.NEQ and self.has_priority(tok, context):
+                self.token() #swallow the "=" or "!="
+                expression = self.make_EqualityExpression(expression, self.parse_Expression(tok))
+                if tok in Tokens.NEQ:
+                    expression = self.make_NegatedExpression(expression)
         return expression
     
     def make_EqualityExpression(self, first, second):
@@ -1442,16 +1473,19 @@ class LogicParser(object):
         have different equality expression classes"""
         return EqualityExpression(first, second)
 
-    def attempt_BooleanExpression(self, expression):
+    def attempt_BooleanExpression(self, expression, context):
         """Attempt to make a boolean expression.  If the next token is a boolean 
         operator, then a BooleanExpression will be returned.  Otherwise, the 
         parameter will be returned."""
-        if self.inRange(0):
-            factory = self.get_BooleanExpression_factory(self.token(0))
-            if factory: #if a factory was returned
+        while self.inRange(0):
+            tok = self.token(0)
+            factory = self.get_BooleanExpression_factory(tok)
+            if factory and self.has_priority(tok, context):
                 self.token() #swallow the operator
-                return self.make_BooleanExpression(factory, expression, self.parse_Expression())
-        #otherwise, no boolean expression can be created
+                expression = self.make_BooleanExpression(factory, expression, 
+                                                         self.parse_Expression(tok))
+            else:
+                break
         return expression
     
     def get_BooleanExpression_factory(self, tok):
@@ -1471,30 +1505,30 @@ class LogicParser(object):
     def make_BooleanExpression(self, factory, first, second):
         return factory(first, second)
     
-    def attempt_ApplicationExpression(self, expression):
+    def attempt_ApplicationExpression(self, expression, context):
         """Attempt to make an application expression.  The next tokens are
         a list of arguments in parens, then the argument expression is a
         function being applied to the arguments.  Otherwise, return the
         argument expression."""
-        if self.inRange(0) and self.token(0) == Tokens.OPEN:
-            if not isinstance(expression, LambdaExpression) and \
-               not isinstance(expression, ApplicationExpression):
-                raise ParseException("The function '" + str(expression) + 
-                                     ' is not a Lambda Expression or an '
-                                     'Application Expression, so it may '
-                                     'not take arguments')
-            self.token() #swallow then open paren
-            #curry the arguments
-            accum = self.make_ApplicationExpression(expression, 
-                                                    self.parse_Expression())
-            while self.token(0) == Tokens.COMMA:
-                self.token() #swallow the comma
-                accum = self.make_ApplicationExpression(accum, 
-                                                        self.parse_Expression())
-            self.assertToken(self.token(), Tokens.CLOSE)
-            return self.attempt_ApplicationExpression(accum)
-        else:
-            return expression
+        if self.has_priority('APP', context):
+            if self.inRange(0) and self.token(0) == Tokens.OPEN:
+                if not isinstance(expression, LambdaExpression) and \
+                   not isinstance(expression, ApplicationExpression):
+                    raise ParseException("The function '" + str(expression) + 
+                                         ' is not a Lambda Expression or an '
+                                         'Application Expression, so it may '
+                                         'not take arguments')
+                self.token() #swallow then open paren
+                #curry the arguments
+                accum = self.make_ApplicationExpression(expression, 
+                                                        self.parse_Expression('APP'))
+                while self.token(0) == Tokens.COMMA:
+                    self.token() #swallow the comma
+                    accum = self.make_ApplicationExpression(accum, 
+                                                            self.parse_Expression('APP'))
+                self.assertNextToken(Tokens.CLOSE)
+                return accum
+        return expression
 
     def make_ApplicationExpression(self, function, argument):
         return ApplicationExpression(function, argument)
@@ -1505,6 +1539,24 @@ class LogicParser(object):
     def make_LambdaExpression(self, variable, term):
         return LambdaExpression(variable, term)
     
+    def has_priority(self, operation, context):
+        return self.order_of_operations[operation] < self.order_of_operations[context] or \
+               (operation in self.right_associated_operations and \
+                self.order_of_operations[operation] == self.order_of_operations[context])
+
+    def assertNextToken(self, expected):
+        try:
+            tok = self.token()
+        except ExpectedMoreTokensException:
+            raise UnexpectedTokenException(expected=expected)
+        
+        if isinstance(expected, list):
+            if tok not in expected:
+                raise UnexpectedTokenException(tok, expected)
+        else:
+            if tok != expected:
+                raise UnexpectedTokenException(tok, expected)
+
     def assertToken(self, tok, expected):
         if isinstance(expected, list):
             if tok not in expected:
@@ -1543,13 +1595,35 @@ class ParseException(Exception):
         Exception.__init__(self, message)
 
 class UnexpectedTokenException(ParseException):
-    def __init__(self, tok, expected=None):
-        if expected:
+    def __init__(self, tok=None, expected=None):
+        if tok and expected:
             ParseException.__init__(self, "parse error, unexpected token: '%s'. "
                                     "Expected token: %s" % (tok, expected))
-        else:
+        elif tok:
             ParseException.__init__(self, "parse error, unexpected token: '%s'" 
                                             % tok)
+        else:
+            ParseException.__init__(self, "parse error, expected token: '%s'" 
+                                            % expected)
+            
+class ExpectedMoreTokensException(ParseException):
+    def __init__(self, context=None, message=None):
+        if not message:
+            if context == 'APP':
+                message = 'Expression expected as argument'
+            elif context == Tokens.NOT[Tokens.NLTK]:
+                message = 'Expression expected following negation operator'
+            elif context in [Tokens.EQ[Tokens.NLTK], Tokens.NEQ[Tokens.NLTK]]:
+                message = 'Expression expected following equality operator'
+            elif context in [Tokens.EXISTS[Tokens.NLTK], Tokens.ALL[Tokens.NLTK]]:
+                message = "Variable and Expression expected following quantifier '%s'" % context
+            elif context == Tokens.LAMBDA[Tokens.NLTK]:
+                message = 'Variable and Expression expected following lambda operator'
+            elif context in [Tokens.AND[Tokens.NLTK], Tokens.OR[Tokens.NLTK], Tokens.IMP[Tokens.NLTK], Tokens.IFF[Tokens.NLTK]]:
+                message = "Expression expected following boolean operator '%s'" % context
+            else:
+                message = 'More tokens expected'
+        ParseException.__init__(self, message)
         
         
 def is_indvar(expr):
@@ -1593,12 +1667,13 @@ def demo():
     print p(r'man(x)')
     print p(r'-man(x)')
     print p(r'(man(x) & tall(x) & walks(x))')
-    print p(r'exists x.(man(x) & tall(x))')
+    print p(r'exists x.(man(x) & tall(x) & walks(x))')
     print p(r'\x.man(x)')
     print p(r'\x.man(x)(john)')
     print p(r'\x y.sees(x,y)')
     print p(r'\x y.sees(x,y)(a,b)')
     print p(r'(\x.exists y.walks(x,y))(x)')
+    print p(r'exists x.x = y')
     print p(r'exists x.(x = y)')
     print p('P(x) & x=y & P(y)')
     print p(r'\P Q.exists x.(P(x) & Q(x))')
@@ -1616,8 +1691,38 @@ def demo():
     print e2
     print e1 == e2
     
+def demo_errors():
+    print '='*20 + 'Test parser errors' + '='*20
+    assertException('(P(x) & Q(x)', UnexpectedTokenException, "parse error, expected token: ')'")
+    assertException('(P(x) & ', ExpectedMoreTokensException, "Expression expected following boolean operator '&'")
+    assertException('P(x) -> ', ExpectedMoreTokensException, "Expression expected following boolean operator '->'")
+    assertException('P(x', ExpectedMoreTokensException, "More tokens expected")
+    assertException('P(x,', ExpectedMoreTokensException, "Expression expected as argument")
+    assertException('P(x,)', UnexpectedTokenException, "parse error, unexpected token: ')'")
+    assertException('exists', ExpectedMoreTokensException, "Variable expected following quantifier 'exists'")
+    assertException('exists x', ExpectedMoreTokensException, "Expression expected following quantifier 'exists'")
+    assertException('exists x.', ExpectedMoreTokensException, "Expression expected following quantifier 'exists'")
+    assertException('\\', ExpectedMoreTokensException, "Variable expected following lambda operator")
+    assertException('\\ x', ExpectedMoreTokensException, "Expression expected following lambda operator")
+    assertException('\\ x y', ExpectedMoreTokensException, "Expression expected following lambda operator")
+    assertException('\\ x.', ExpectedMoreTokensException, "Expression expected following lambda operator")
+    assertException('P(x)Q(x)', UnexpectedTokenException, "parse error, unexpected token: 'Q'")
+    assertException('(P(x)Q(x)', UnexpectedTokenException, "parse error, unexpected token: 'Q'. Expected token: )")
+    assertException('exists x y', ExpectedMoreTokensException, "Expression expected following quantifier 'exists'")
+    assertException('exists x -> y', UnexpectedTokenException, "parse error, unexpected token: '->'")
+    
+def assertException(s, ex, msg):
+    try:
+        LogicParser().parse(s)
+        assert False
+    except ex, e:
+        if e.__class__ != ex or str(e) != msg:
+            raise
+        print "'%s': %s: %s" % (s, e.__class__.__name__, e)
+    
 def printtype(ex):
     print ex.str() + ' : ' + str(ex.type)
 
 if __name__ == '__main__':
     demo()
+    demo_errors()

@@ -246,15 +246,23 @@ Test Parser
     >>> print lp.parse(r'(man(x) <-> tall(x))')
     (man(x) <-> tall(x))
     >>> print lp.parse(r'(man(x) & tall(x) & walks(x))')
-    (man(x) & (tall(x) & walks(x)))
+    ((man(x) & tall(x)) & walks(x))
     >>> print lp.parse(r'((man(x) & tall(x)) & walks(x))')
     ((man(x) & tall(x)) & walks(x))
+    >>> print lp.parse(r'man(x) & (tall(x) & walks(x))')
+    (man(x) & (tall(x) & walks(x)))
     >>> print lp.parse(r'(man(x) & (tall(x) & walks(x)))')
     (man(x) & (tall(x) & walks(x)))
+    >>> print lp.parse(r'P(x) -> Q(x) <-> R(x) | S(x) & T(x)')
+    ((P(x) -> Q(x)) <-> (R(x) | (S(x) & T(x))))
     >>> print lp.parse(r'exists x.man(x)')
     exists x.man(x)
     >>> print lp.parse(r'exists x.(man(x) & tall(x))')
     exists x.(man(x) & tall(x))
+    >>> print lp.parse(r'exists x.(man(x) & tall(x) & walks(x))')
+    exists x.((man(x) & tall(x)) & walks(x))
+    >>> print lp.parse(r'-P(x) & Q(x)')
+    (-P(x) & Q(x))
     >>> lp.parse(r'-P(x) & Q(x)') == lp.parse(r'(-P(x)) & Q(x)')
     True
     >>> print lp.parse(r'\x.man(x)')
@@ -301,12 +309,12 @@ Test Parser
     >>> b = lp.parse(r'exists c.((exists b.A(b,c)) & A(b,c))')
     >>> print a == b
     True
-    >>> lp.parse(r'exists x.x = y') == lp.parse(r'exists x.(x = y)')
-    True
+    >>> print lp.parse(r'exists x.x = y')
+    exists x.(x = y)
     >>> print lp.parse(r'A != B')
     -(A = B)
     >>> print lp.parse('P(x) & x=y & P(y)')
-    (P(x) & ((x = y) & P(y)))
+    ((P(x) & (x = y)) & P(y))
     >>> try: print lp.parse(r'\walk.walk(x)')
     ... except ParseException,e: print e
     'walk' is an illegal variable name.  Constants may not be abstracted.
@@ -319,7 +327,7 @@ Test Parser
     
     >>> lp.quote_chars = [("'", "'", "\\", False)]
     >>> print lp.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )")
-    (man(x) & (tall's,(x) & walks(x)))
+    ((man(x) & tall's,(x)) & walks(x))
     >>> lp.quote_chars = [("'", "'", "\\", True)]
     >>> print lp.parse(r"'tall\'s,'")
     'tall\'s,'
@@ -328,7 +336,7 @@ Test Parser
     >>> print lp.parse(r"-'tall\'s,'(x)")
     -'tall\'s,'(x)
     >>> print lp.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )")
-    (man(x) & ('tall\'s,'(x) & walks(x)))
+    ((man(x) & 'tall\'s,'(x)) & walks(x))
     
 
 Simplify
