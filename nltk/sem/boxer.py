@@ -53,7 +53,7 @@ class Boxer(object):
             occurrence-indexed predicate.
         @return: C{drt.AbstractDrs}
         """
-        return self.batch_interpret([input])[0]
+        return self.batch_interpret([input], occur_index, sentence_id, verbose)[0]
         
     def batch_interpret(self, inputs, occur_index=False, sentence_id=None, verbose=False):
         """
