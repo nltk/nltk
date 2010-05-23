@@ -43,7 +43,19 @@ class Boxer(object):
         self._candc_bin = None
         self._candc_models_path = None
     
-    def interpret(self, inputs, occur_index=False, sentence_id=None, verbose=False):
+    def interpret(self, input, occur_index=False, sentence_id=None, verbose=False):
+        """
+        Use Boxer to give a first order representation.
+        
+        @param input: C{str} Input sentences to parse
+        @param occur_index: C{boolean} Should predicates be occurrence indexed?
+        @param sentence_id: C{str} An identifer to be inserted to each
+            occurrence-indexed predicate.
+        @return: C{drt.AbstractDrs}
+        """
+        return self.batch_interpret([input])[0]
+        
+    def batch_interpret(self, inputs, occur_index=False, sentence_id=None, verbose=False):
         """
         Use Boxer to give a first order representation.
         
@@ -51,7 +63,7 @@ class Boxer(object):
         @param occur_index: C{boolean} Should predicates be occurrence indexed?
         @param sentence_id: C{str} An identifer to be inserted to each
             occurrence-indexed predicate.
-        @return: C{drt.AbstractDrs}
+        @return: C{list} of C{drt.AbstractDrs}
         """
         _, temp_filename = tempfile.mkstemp(prefix='boxer-', suffix='.in', text=True)
 
@@ -571,12 +583,10 @@ if __name__ == '__main__':
     if len(args) != 1:
         opts.error("incorrect number of arguments")
 
-    result = Boxer().interpret(args[0].split(r'\n'), verbose=options.verbose)
-    for i, drs in enumerate(result):
-        print '%d:' % (i+1),
-        if drs is None:
-            print None
-        else:
-            if options.fol:
-                drs = drs.fol()
-            print drs.normalize()
+    drs = Boxer().interpret(args[0], verbose=options.verbose)
+    if drs is None:
+        print None
+    else:
+        if options.fol:
+            drs = drs.fol()
+        print drs.normalize()
