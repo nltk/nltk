@@ -13,6 +13,7 @@ set-theoretic models.
 """
 
 from util import *
+from boxer import *
 from evaluate import *
 from logic import *
 from drt import *
@@ -21,7 +22,7 @@ from chat80 import *
 
 __all__ = [
     # Logic parsers
-    'LogicParser', 'DrtParser',
+    'LogicParser', 'DrtParser', 'Boxer',
     
     # Evaluation classes and methods
     'Valuation', 'Assignment', 'Model', 'Undefined', 'is_rel', 'set2rel', 'arity',
