@@ -318,24 +318,31 @@ Test Parser
     >>> try: print lp.parse(r'\walk.walk(x)')
     ... except ParseException,e: print e
     'walk' is an illegal variable name.  Constants may not be abstracted.
+    \walk.walk(x)
+     ^
     >>> try: print lp.parse(r'all walk.walk(john)')
     ... except ParseException,e: print e
-    'walk' is an illegal variable name.  Constant expressions may not be quantified.
+    'walk' is an illegal variable name.  Constants may not be quantified.
+    all walk.walk(john)
+        ^
     >>> try: print lp.parse(r'x(john)')
     ... except ParseException,e: print e
     'x' is an illegal predicate name.  Individual variables may not be used as predicates.
+    x(john)
+    ^
     
-    >>> lp.quote_chars = [("'", "'", "\\", False)]
-    >>> print lp.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )")
+    >>> lpq = LogicParser()
+    >>> lpq.quote_chars = [("'", "'", "\\", False)]
+    >>> print lpq.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )")
     ((man(x) & tall's,(x)) & walks(x))
-    >>> lp.quote_chars = [("'", "'", "\\", True)]
-    >>> print lp.parse(r"'tall\'s,'")
+    >>> lpq.quote_chars = [("'", "'", "\\", True)]
+    >>> print lpq.parse(r"'tall\'s,'")
     'tall\'s,'
-    >>> print lp.parse(r"'spaced name(x)'")
+    >>> print lpq.parse(r"'spaced name(x)'")
     'spaced name(x)'
-    >>> print lp.parse(r"-'tall\'s,'(x)")
+    >>> print lpq.parse(r"-'tall\'s,'(x)")
     -'tall\'s,'(x)
-    >>> print lp.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )")
+    >>> print lpq.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )")
     ((man(x) & 'tall\'s,'(x)) & walks(x))
     
 
@@ -824,4 +831,219 @@ Type error during parsing
     >>> try: typecheck([a,b], signature)
     ... except InconsistentTypeHierarchyException, e: print e
     The variable 'P' was found in multiple places with different types.
-    
+
+Parse errors
+============
+
+    >>> try: lp.parse(r'')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    <BLANKLINE>
+    ^
+    >>> try: lp.parse(r'(')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    (
+     ^
+    >>> try: lp.parse(r')')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    )
+    ^
+    >>> try: lp.parse(r'()')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    ()
+     ^
+    >>> try: lp.parse(r'(P(x) & Q(x)')
+    ... except ParseException, e: print e
+    End of input found.  Expected token ')'.
+    (P(x) & Q(x)
+                ^
+    >>> try: lp.parse(r'(P(x) &')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    (P(x) &
+           ^
+    >>> try: lp.parse(r'(P(x) | )')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    (P(x) | )
+            ^
+    >>> try: lp.parse(r'P(x) ->')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    P(x) ->
+           ^
+    >>> try: lp.parse(r'P(x')
+    ... except ParseException, e: print e
+    End of input found.  Expected token ')'.
+    P(x
+       ^
+    >>> try: lp.parse(r'P(x,')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    P(x,
+        ^
+    >>> try: lp.parse(r'P(x,)')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    P(x,)
+        ^
+    >>> try: lp.parse(r'exists')
+    ... except ParseException, e: print e
+    End of input found.  Variable and Expression expected following quantifier 'exists'.
+    exists
+           ^
+    >>> try: lp.parse(r'exists x')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    exists x
+             ^
+    >>> try: lp.parse(r'exists x.')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    exists x.
+             ^
+    >>> try: lp.parse(r'\  ')
+    ... except ParseException, e: print e
+    End of input found.  Variable and Expression expected following lambda operator.
+    \
+      ^
+    >>> try: lp.parse(r'\ x')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    \ x
+        ^
+    >>> try: lp.parse(r'\ x y')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    \ x y
+          ^
+    >>> try: lp.parse(r'\ x.')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    \ x.
+        ^
+    >>> try: lp.parse(r'P(x)Q(x)')
+    ... except ParseException, e: print e
+    Unexpected token: 'Q'.
+    P(x)Q(x)
+        ^
+    >>> try: lp.parse(r'(P(x)Q(x)')
+    ... except ParseException, e: print e
+    Unexpected token: 'Q'.  Expected token ')'.
+    (P(x)Q(x)
+         ^
+    >>> try: lp.parse(r'exists x y')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    exists x y
+               ^
+    >>> try: lp.parse(r'exists x y.')
+    ... except ParseException, e: print e
+    End of input found.  Expression expected.
+    exists x y.
+               ^
+    >>> try: lp.parse(r'exists x -> y')
+    ... except ParseException, e: print e
+    Unexpected token: '->'.  Expression expected.
+    exists x -> y
+             ^
+
+             
+    >>> try: lp.parse(r'A -> ((P(x) & Q(x)) -> Z')
+    ... except ParseException, e: print e
+    End of input found.  Expected token ')'.
+    A -> ((P(x) & Q(x)) -> Z
+                            ^
+    >>> try: lp.parse(r'A -> ((P(x) &) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> ((P(x) &) -> Z
+                 ^
+    >>> try: lp.parse(r'A -> ((P(x) | )) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> ((P(x) | )) -> Z
+                  ^
+    >>> try: lp.parse(r'A -> (P(x) ->) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (P(x) ->) -> Z
+                 ^
+    >>> try: lp.parse(r'A -> (P(x) -> Z')
+    ... except ParseException, e: print e
+    End of input found.  Expected token ')'.
+    A -> (P(x) -> Z
+                   ^
+    >>> try: lp.parse(r'A -> (P(x,) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (P(x,) -> Z
+              ^
+    >>> try: lp.parse(r'A -> (P(x,)) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (P(x,)) -> Z
+              ^
+    >>> try: lp.parse(r'A -> (exists) -> Z')
+    ... except ParseException, e: print e
+    ')' is an illegal variable name.  Constants may not be quantified.
+    A -> (exists) -> Z
+                ^
+    >>> try: lp.parse(r'A -> (exists x) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (exists x) -> Z
+                  ^
+    >>> try: lp.parse(r'A -> (exists x.) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (exists x.) -> Z
+                   ^
+    >>> try: lp.parse(r'A -> (\  ) -> Z')
+    ... except ParseException, e: print e
+    ')' is an illegal variable name.  Constants may not be abstracted.
+    A -> (\  ) -> Z
+             ^
+    >>> try: lp.parse(r'A -> (\ x) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (\ x) -> Z
+             ^
+    >>> try: lp.parse(r'A -> (\ x y) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (\ x y) -> Z
+               ^
+    >>> try: lp.parse(r'A -> (\ x.) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (\ x.) -> Z
+              ^
+    >>> try: lp.parse(r'A -> (P(x)Q(x)) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: 'Q'.  Expected token ')'.
+    A -> (P(x)Q(x)) -> Z
+              ^
+    >>> try: lp.parse(r'A -> ((P(x)Q(x)) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: 'Q'.  Expected token ')'.
+    A -> ((P(x)Q(x)) -> Z
+               ^
+    >>> try: lp.parse(r'A -> (all x y) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (all x y) -> Z
+                 ^
+    >>> try: lp.parse(r'A -> (exists x y.) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: ')'.  Expression expected.
+    A -> (exists x y.) -> Z
+                     ^
+    >>> try: lp.parse(r'A -> (exists x -> y) -> Z')
+    ... except ParseException, e: print e
+    Unexpected token: '->'.  Expression expected.
+    A -> (exists x -> y) -> Z
+                   ^

@@ -785,7 +785,7 @@ class DrtParser(LogicParser):
             return self.handle_lambda(tok, context)
             
         elif tok == DrtTokens.OPEN:
-            if self.token(0) == DrtTokens.OPEN_BRACKET:
+            if self.inRange(0) and self.token(0) == DrtTokens.OPEN_BRACKET:
                 return self.handle_DRS(tok, context)
             else:
                 return self.handle_open(tok, context)
@@ -804,26 +804,24 @@ class DrtParser(LogicParser):
         # a DRS
         self.assertNextToken(DrtTokens.OPEN_BRACKET)
         refs = []
-        while self.token(0) != DrtTokens.CLOSE_BRACKET:
+        while self.inRange(0) and self.token(0) != DrtTokens.CLOSE_BRACKET:
             # Support expressions like: DRS([x y],C) == DRS([x,y],C)
-            if self.token(0) == DrtTokens.COMMA:
+            if refs and self.token(0) == DrtTokens.COMMA:
                 self.token() # swallow the comma
-            else:
-                refs.append(Variable(self.token()))
-        self.token() # swallow the CLOSE_BRACKET token
+            refs.append(self.get_next_token_variable('quantified'))
+        self.assertNextToken(DrtTokens.CLOSE_BRACKET)
         
-        if self.token(0) == DrtTokens.COMMA: #if there is a comma (it's optional)
+        if self.inRange(0) and self.token(0) == DrtTokens.COMMA: #if there is a comma (it's optional)
             self.token() # swallow the comma
             
         self.assertNextToken(DrtTokens.OPEN_BRACKET)
         conds = []
-        while self.token(0) != DrtTokens.CLOSE_BRACKET:
+        while self.inRange(0) and self.token(0) != DrtTokens.CLOSE_BRACKET:
             # Support expressions like: DRS([x y],C) == DRS([x, y],C)
-            if self.token(0) == DrtTokens.COMMA:
+            if conds and self.token(0) == DrtTokens.COMMA:
                 self.token() # swallow the comma
-            else:
-                conds.append(self.parse_Expression(context))
-        self.token() # swallow the CLOSE_BRACKET token
+            conds.append(self.parse_Expression(context))
+        self.assertNextToken(DrtTokens.CLOSE_BRACKET)
         self.assertNextToken(DrtTokens.CLOSE)
          
         return DRS(refs, conds)
