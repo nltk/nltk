@@ -1346,15 +1346,8 @@ class LogicParser(object):
         if not accum:
             raise UnexpectedTokenException(self._currentIndex, tok, message='Expression expected.')
 
-        cur_idx = None
-        while cur_idx != self._currentIndex:
-            cur_idx = self._currentIndex
-            accum = self.attempt_EqualityExpression(accum, context)
-            accum = self.attempt_ApplicationExpression(accum, context)
-            accum = self.attempt_BooleanExpression(accum, context)
-        
-        return accum
-    
+        return self.attempt_adjuncts(accum, context)
+
     def handle(self, tok, context):
         """This method is intended to be overridden for logics that 
         use different operators or expressions"""
@@ -1373,6 +1366,15 @@ class LogicParser(object):
         elif tok == Tokens.OPEN:
             return self.handle_open(tok, context)
             
+    def attempt_adjuncts(self, expression, context):
+        cur_idx = None
+        while cur_idx != self._currentIndex: #while adjuncts are added
+            cur_idx = self._currentIndex
+            expression = self.attempt_EqualityExpression(expression, context)
+            expression = self.attempt_ApplicationExpression(expression, context)
+            expression = self.attempt_BooleanExpression(expression, context)
+        return expression
+    
     def handle_negation(self, tok, context):
         return self.make_NegatedExpression(self.parse_Expression(Tokens.NOT[Tokens.NLTK]))
         

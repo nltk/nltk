@@ -222,12 +222,11 @@ class BoxerDrsParser(DrtParser):
     def get_all_symbols(self):
         return ['(', ')', ',', '[', ']',':']
 
-    def parse_Expression(self):
-        tok = self.token()
-        accum = self.handle_drs(tok)
-        if accum is None:
-            raise UnexpectedTokenException(tok)
-        return accum
+    def handle(self, tok, context):
+        return self.handle_drs(tok)
+    
+    def attempt_adjuncts(self, expression, context):
+        return expression
 
     def parse_condition(self, indices):
         """
@@ -585,4 +584,3 @@ if __name__ == '__main__':
             if options.fol:
                 drs = drs.fol()
             print drs.normalize()
-
