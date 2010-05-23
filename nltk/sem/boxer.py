@@ -157,12 +157,9 @@ class Boxer(object):
                 line = lines[i+8]
                 assert line.endswith(').')
                 drs_input = line[:-2].strip()
-                try:
-                    drs = BoxerDrsParser(occur_index, sentence_id).parse(drs_input).simplify()
-                    drs = self._clean_drs(drs)
-                    drs_dict[id] = drs
-                except Exception, e:
-                    raise UnparseableInputException('Could not parse with boxer: "%s"' % drs_input)
+                drs = BoxerDrsParser(occur_index, sentence_id).parse(drs_input).simplify()
+                drs = self._clean_drs(drs)
+                drs_dict[id] = drs
                 i += 8
             i += 1
         return drs_dict
@@ -257,7 +254,7 @@ class BoxerDrsParser(DrtParser):
         """
         if tok == 'not':
             self.assertToken(self.token(), '(')
-            e = self.parse_Expression()
+            e = self.parse_Expression(None)
             self.assertToken(self.token(), ')')
             return [DrtNegatedExpression(e)]
 
@@ -413,7 +410,6 @@ class BoxerDrsParser(DrtParser):
 
         return conds
 
-
     def _handle_card(self, indices):
         #card(_G18535, 28, ge)
         self.assertToken(self.token(), '(')
@@ -430,7 +426,7 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), '(')
         arg = self.token()
         self.assertToken(self.token(), ',')
-        drs = self.parse_Expression()
+        drs = self.parse_Expression(None)
         self.assertToken(self.token(), ')')
         return drs
 
@@ -507,9 +503,9 @@ class BoxerDrsParser(DrtParser):
 
     def _make_binary_expression(self, constructor):
         self.assertToken(self.token(), '(')
-        e1 = self.parse_Expression()
+        e1 = self.parse_Expression(None)
         self.assertToken(self.token(), ',')
-        e2 = self.parse_Expression()
+        e2 = self.parse_Expression(None)
         self.assertToken(self.token(), ')')
         return constructor(e1, e2)
 
@@ -547,11 +543,11 @@ class BoxerDrsParser(DrtParser):
 #            self.token() #swallow the token
         self.token() #swallow the ']'
         self.assertToken(self.token(), ',')
-        d1 = self.parse_Expression()
+        d1 = self.parse_Expression(None)
         self.assertToken(self.token(), ',')
         ref = DrtVariableExpression(self._make_Variable(self.token()))
         self.assertToken(self.token(), ',')
-        d2 = self.parse_Expression()
+        d2 = self.parse_Expression(None)
         self.assertToken(self.token(), ')')
         d3 = DRS([],[self._make_atom(self._make_pred('n', f_name, [], 1), ref) for f_name in ans_types])
         return ConcatenationDRS(d3,ConcatenationDRS(d1,d2))
