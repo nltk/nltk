@@ -55,7 +55,7 @@ class DecisionTreeClassifier(ClassifierI):
             return self._label
 
         # Decision tree:
-        fval = featureset[self._fname]
+        fval = featureset.get(self._fname)
         if fval in self._decisions:
             return self._decisions[fval].classify(featureset)
         elif self._default is not None:
@@ -192,7 +192,7 @@ class DecisionTreeClassifier(ClassifierI):
         for fval in self._decisions:
             fval_featuresets = [(featureset,label) for (featureset,label) 
                                 in labeled_featuresets
-                                if featureset[self._fname] == fval]
+                                if featureset.get(self._fname) == fval]
 
             label_freqs = FreqDist([label for (featureset,label)
                                     in fval_featuresets])
@@ -203,7 +203,7 @@ class DecisionTreeClassifier(ClassifierI):
         if self._default is not None:
             default_featuresets = [(featureset, label) for (featureset, label)
                                    in labeled_featuresets
-                                   if featureset[self._fname] not in
+                                   if featureset.get(self._fname) not in
                                    self._decisions.keys()]
             label_freqs = FreqDist([label for (featureset,label)
                                     in default_featuresets])
@@ -236,7 +236,7 @@ class DecisionTreeClassifier(ClassifierI):
         pos_fdist = FreqDist()
         neg_fdist = FreqDist()
         for featureset, label in labeled_featuresets:
-            if featureset[feature_name] == feature_value:
+            if featureset.get(feature_name) == feature_value:
                 pos_fdist.inc(label)
             else:
                 neg_fdist.inc(label)
