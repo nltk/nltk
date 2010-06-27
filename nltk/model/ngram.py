@@ -97,6 +97,10 @@ class NgramModel(ModelI):
 
         return -log(self.prob(word, context), 2)
 
+    def choose_random_word(self, context):
+        '''Randomly select a word that is likely to appear in this context.'''
+        return self.generate(1, context)[-1]
+
     # NB, this will always start with same word since model
     # is trained on a single text
     def generate(self, num_words, context=()):
