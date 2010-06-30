@@ -90,10 +90,7 @@ class PunktLanguageVars(object):
     constructors.
     """
 
-    __slots__ = ('_re_period_context', '_re_word_tokenizer', '_re_sent_end_chars')
-
-    def __init__(self):
-        self._re_sent_end_chars = '[%s]' % re.escape(''.join(self.sent_end_chars))
+    __slots__ = ('_re_period_context', '_re_word_tokenizer')
 
     def __getstate__(self):
         # All modifications to the class are performed by inheritance.
@@ -106,6 +103,10 @@ class PunktLanguageVars(object):
 
     sent_end_chars = ('.', '?', '!')
     """Characters which are candidates for sentence boundaries"""
+
+    @property
+    def _re_sent_end_chars(self):
+        return '[%s]' % re.escape(''.join(self.sent_end_chars))
 
     internal_punctuation = ',:;' # might want to extend this..
     """sentence internal punctuation, which indicates an abbreviation if
