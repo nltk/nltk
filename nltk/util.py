@@ -760,7 +760,7 @@ class LazySubsequence(AbstractLazySequence):
         if stop-start < cls.MIN_SIZE:
             return list(islice(source.iterate_from(start), stop-start))
         else:
-            return object.__new__(cls, source, start, stop)
+            return object.__new__(cls)
         
     def __init__(self, source, start, stop):
         self._source = source
@@ -949,8 +949,8 @@ class LazyMappedList(Deprecated, LazyMap):
     """Use LazyMap instead."""
     def __init__(self, lst, func):
         LazyMap.__init__(self, func, lst)
-        
-        
+
+
 class LazyZip(LazyMap):
     """
     A lazy sequence whose elements are tuples, each containing the i-th 
@@ -1025,12 +1025,6 @@ class LazyEnumerate(LazyZip):
         """                
         LazyZip.__init__(self, xrange(len(lst)), lst)
         
-
-class LazyMappedList(Deprecated, LazyMap):
-    """Use LazyMap instead."""
-    def __init__(self, lst, func):
-        LazyMap.__init__(self, func, lst)
-
 
 class LazyMappedChain(Deprecated, LazyConcatenation):
     """Use LazyConcatenation(LazyMap(func, lists)) instead."""
