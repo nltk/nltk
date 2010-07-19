@@ -61,10 +61,14 @@ first d dimensions. Normalisation ensures that vectors fall in the unit
 hypersphere.
 
 Usage example (see also demo())::
+    from nltk import cluster
+    from nltk.cluster import euclidean_distance
+    from numpy import array
+
     vectors = [array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0]]]
     
     # initialise the clusterer (will also assign the vectors to clusters)
-    clusterer = cluster.KMeans(2, euclidean_distance)
+    clusterer = cluster.KMeansClusterer(2, euclidean_distance)
     clusterer.cluster(vectors, True)
 
     # classify a new vector
