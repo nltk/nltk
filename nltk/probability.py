@@ -1241,34 +1241,42 @@ class WittenBellProbDist(ProbDistI):
 ##  Good-Turing Probablity Distributions 
 ##////////////////////////////////////////////////////// 
 
-# Good-Turing frequency estimation was contributed by Alan Turing and his
-# statistical assistant I.J. Good, during their collaboration in the WWII.
-# It is a statistical technique for predicting the probability of occurrence
-# of objects belonging to an unknown number of species, given past observations
-# of such objects and their species. (In drawing balls from an urn, the
-# 'objects' would be balls and the 'species' would be the distinct colors of
-# the balls (finite but unknown in number).
-# 
-# The situation frequency zero is quite common in the original Good-Turing estimation.
-# Bill Gale and Geoffrey Sampson present a simple and effective approach,
-# Simple Good-Turing.  As a smoothing curve they simply use a power curve:
-# 
-#     Nr = a*r^b (with b < -1 to give the appropriate hyperbolic relationsihp)
-#         
-# They estimate a and b by simple linear regression technique on the logarithmic
-# form of the equation:
-# 
+# Good-Turing frequency estimation was contributed by Alan Turing and
+# his statistical assistant I.J. Good, during their collaboration in
+# the WWII.  It is a statistical technique for predicting the
+# probability of occurrence of objects belonging to an unknown number
+# of species, given past observations of such objects and their
+# species. (In drawing balls from an urn, the 'objects' would be balls
+# and the 'species' would be the distinct colors of the balls (finite
+# but unknown in number).
+#
+# The situation frequency zero is quite common in the original
+# Good-Turing estimation.  Bill Gale and Geoffrey Sampson present a
+# simple and effective approach, Simple Good-Turing.  As a smoothing
+# curve they simply use a power curve:
+#
+#     Nr = a*r^b (with b < -1 to give the appropriate hyperbolic
+#     relationsihp)
+#
+# They estimate a and b by simple linear regression technique on the
+# logarithmic form of the equation:
+#
 #     log Nr = a + b*log(r)
-#     
-# However, they suggest that such a simple curve is probably only appropriate for
-# high values of r. For low values of r, they use the measured Nr directly.
-# (see M&S, p.213)
-# 
-# In practice, Slava M. Katz (1987) propose a cutoff threshold to only discount
-# large counts (where c > k for some threshold k). Katz suggests setting k at 5
-# in his paper "Estimation of probabilities from sparse data for the language
-# model component of a speech recogniser". (see J&M 2e p.103)
-
+#
+# However, they suggest that such a simple curve is probably only
+# appropriate for high values of r. For low values of r, they use the
+# measured Nr directly.  (see M&S, p.213)
+#
+# Gale and Sampson propose to use r while the difference between r and
+# r* is 1.96 greather than the standar deviation, and switch to r* if
+# it is less or equal:
+#
+#     |r - r*| > 1.96 * sqrt((r + 1)^2 (Nr+1 / Nr^2) (1 + Nr+1 / Nr))
+#
+# The 1.96 coefficient correspond to a 0.05 significance criterion,
+# some implementations can use a coefficient of 1.65 for a 0.1
+# significance criterion.
+#
 
 class GoodTuringProbDist(ProbDistI):
     """
@@ -1286,20 +1294,34 @@ class GoodTuringProbDist(ProbDistI):
     (see Jurafsky & Martin 2nd Edition, p101)
         
     """
-    def __init__(self, freqdist):
+    def __init__(self, freqdist, bins=None):
         """
         @param freqdist:    The frequency counts upon which to base the
                                 estimation.
         @type  freqdist:    C{FreqDist}
+        @param bins:        The number of possible event types. This must be
+                            at least as large as the number of bins in the
+                            C{freqdist}. If C{None}, then it's assumed to be
+                            equal to that of the C{freqdist}
+        @type  bins:        C{Int}
         """
+        assert bins == None or bins >= freqdist.B(),\
+               'Bins parameter must not be less than freqdist.B()'
+        if bins == None:
+            bins = freqdist.B()
         self._freqdist = freqdist
+        self._bins = bins
     
     def prob(self, sample):
         count = self._freqdist[sample]
         
         # unseen sample's frequency (count zero) uses frequency one's
         if count == 0 and self._freqdist.N() != 0:
-            return 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
+            p0 = 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
+            if self._bins == self._freqdist.B():
+                p0 = 0.0
+            else:
+                p0 = p0 / (1.0 * self._bins - self._freqdist.B())
         
         nc = self._freqdist.Nr(count)
         ncn = self._freqdist.Nr(count + 1)
@@ -1359,97 +1381,133 @@ class SimpleGoodTuringProbDist(ProbDistI):
     
         -Slope: b = sigma ((xi-E(x)*(yi-E(y))) / sigma ((xi-E(x))*(xi-E(x)))
         -Intercept: a = E(y)- b * E(x)
-        
-    In practice, Slava M. Katz suggested only discount large counts
-    (where c > k for some threshold k). Katz suggests setting k at 5 in his
-    paper "Estimation of probabilities from sparse data for the language model
-    component of a speech recogniser" (1987).
     
     """
-    def __init__(self, freqdist, cutoff = None):
+    def __init__(self, freqdist, bins=None):
         """
         @param freqdist:    The frequency counts upon which to base the
                                 estimation.
         @type  freqdist:    C{FreqDist}
-        @param cutoff:      Katz cutoff threshold, only smooth large count
-        @type  cutoff:      C{int}
+        @param bins:        The number of possible event types. This must be
+                            at least as large as the number of bins in the
+                            C{freqdist}. If C{None}, then it's assumed to be
+                            equal to that of the C{freqdist}
+        @type  bins:        C{Int}
         """
+        assert bins == None or bins >= freqdist.B(),\
+               'Bins parameter must not be less than freqdist.B()'
+        if bins == None:
+            bins = freqdist.B()
         self._freqdist = freqdist
-        self.find_best_fit()
-        self._cutoff = None
-        if cutoff is not None and cutoff > 0:
-            self._cutoff = cutoff
-            self._set_cutoff_ratio()
-        self._renormalize()
-    
-    def find_best_fit(self):
+        self._bins = bins
+        r, nr = self._r_Nr()
+        self.find_best_fit(r, nr)
+        self._switch(r, nr)
+        self._renormalize(r, nr)
+
+    def _r_Nr(self):
+        """
+        Split the frequency distribution in two list (r, Nr), where Nr(r) > 0
+        """
+        r, nr = [], []
+        b, i = 0, 0
+        while b != self._freqdist.B():
+            nr_i = self._freqdist.Nr(i)
+            if nr_i > 0:
+                b += nr_i
+                r.append(i)
+                nr.append(nr_i)
+            i += 1
+        return (r, nr)
+
+    def find_best_fit(self, r, nr):
         """
         Use simple linear regression to tune parameters self._slope and
         self._intercept in the log-log space based on count and Nr(count)
         (Work in log space to avoid floating point underflow.)
         """
-        Nr = [0] 
-        for sample in self._freqdist: 
-            c = self._freqdist.get(sample, 0) 
-            if c >= len(Nr): 
-                Nr += [0] * (c + 1 - len(Nr)) 
-            Nr[c] += 1 
-        self._Nr = Nr
-        
-        Xsum = Ysum = XYs = Xsquare = 0.0
-        points = []
-        for i in range(1, len( self._Nr )):
-            if Nr[i] != 0:
-                logx = math.log(i)
-                logy = math.log(Nr[i])
-                Xsum += logx
-                Ysum += logy
-                points.append((logx, logy))
-        Ex = 1.0 * Xsum / len(points)
-        Ey = 1.0 * Ysum / len(points)
-        for (x, y) in points:
-            XYs += ( x - Ex ) * ( y - Ey)
-            Xsquare += ( x - Ex ) * ( x - Ex )
-        self._slope = 1.0 * XYs / Xsquare
-        self._intercept = Ey - self._slope * Ex
-    
-    def _set_cutoff_ratio(self):
-        """
-        Helper function pre-calculates (k + 1) * N(k + 1) / N(1) to
-        speed up probability calculation used in _prob_measure function
-        """
-        self._cutoff_ratio = 1.0 * (self._cutoff + 1) * \
-                    self.smoothedNr(self._cutoff + 1) / self.smoothedNr(1)
-        
-    def _renormalize(self):
-        """
-        Renormalize the probability estimates to ensure we have a probability
-        distribution.
-        """
+        # For higher sample frequencies the data points becomes horizontal
+        # along line Nr=1. To create a more evident linear model in log-log
+        # space, we average positive Nr values with the surrounding zero
+        # values. (Church and Gale, 1991)
 
-        # keep the estimate of the probability mass for unseen items as
-        # N(1)/N and renormalizing all the estimates for previously seen items
-        # (as Gale and Sampson (1995) propose). (See M&S P.213, 1999)
+        if not r or not nr:
+            # Empty r or nr?
+            return
+            
+        zr = []
+        for j in range(len(r)):
+            i = r[j-1] if j > 0 else 0
+            k = r[j+1] if j != len(r) - 1 else 2 * r[j] - i
+            zr_ = 2.0 * nr[j] / (k - i)
+            zr.append(zr_)
 
-        prob_sum = 0.0
-        for i in range(0, len(self._Nr)):
-            prob_sum += self._Nr[i] * self._prob_measure(i)
-        self._renormal = prob_sum
-        
-    def smoothedNr(self, count):
+        log_r = [math.log(i) for i in r]
+        log_zr = [math.log(i) for i in zr]
+
+        xy_cov = x_var = 0.0
+        x_mean = 1.0 * sum(log_r) / len(log_r)
+        y_mean = 1.0 * sum(log_zr) / len(log_zr)
+        for (x, y) in zip(log_r, log_zr):
+            xy_cov += (x - x_mean) * (y - y_mean)
+            x_var += (x - x_mean)**2
+        self._slope = xy_cov / x_var if x_var != 0 else 0.0
+        self._intercept = y_mean - self._slope * x_mean
+
+    def _switch(self, r, nr):
+        """
+        Calculate the r frontier where we must switch from Nr to Sr
+        when estimating E[Nr].
+        """
+        for i, r_ in enumerate(r):
+            if len(r) == i + 1 or r[i+1] != r_ + 1:
+                # We are at the end of r, or there is a gap in r
+                self._switch_at = r_
+                break
+
+            Sr = self.smoothedNr
+            smooth_r_star = (r_ + 1) * Sr(r_+1) / Sr(r_)
+            unsmooth_r_star = 1.0 * (r_ + 1) * nr[i+1] / nr[i]
+
+            std = math.sqrt(self._variance(r_, nr[i], nr[i+1]))
+            if abs(unsmooth_r_star-smooth_r_star) <= 1.96 * std:
+                self._switch_at = r_
+                break
+
+    def _variance(self, r, nr, nr_1):
+        r = float(r)
+        nr = float(nr)
+        nr_1 = float(nr_1)
+        return (r + 1.0)**2 * (nr_1 / nr**2) * (1.0 + nr_1 / nr)
+
+    def _renormalize(self, r, nr):
+        """
+        It is necessary to renormalize all the probability estimates to
+        ensure a proper probability distribution results. This can be done
+        by keeping the estimate of the probability mass for unseen items as
+        N(1)/N and renormalizing all the estimates for previously seen items
+        (as Gale and Sampson (1995) propose). (See M&S P.213, 1999)
+        """
+        prob_cov = 0.0
+        for r_, nr_ in zip(r, nr):
+            prob_cov  += nr_ * self._prob_measure(r_)
+        if prob_cov:
+            self._renormal = (1 - self._prob_measure(0)) / prob_cov
+
+    def smoothedNr(self, r):
         """
         @return: The number of samples with count r.
         @rtype: C{float}
-        @param count: The amount of freqency.
-        @type count: C{int}
+        @param r: The amount of freqency.
+        @type r: C{int}
         """
 
-        # Nr = a*r^b (with b < -1 to give the appropriate hyperbolic relationsihp)
-        # Estimate a and b by simple linear regression technique
-        # on the logarithmic form of the equation:
-        # log Nr = a + b*log(r)
+        # Nr = a*r^b (with b < -1 to give the appropriate hyperbolic
+        # relationship)
+        # Estimate a and b by simple linear regression technique on
+        # the logarithmic form of the equation: log Nr = a + b*log(r)
 
-        return math.exp(self._intercept + self._slope * math.log(count))
+        return math.exp(self._intercept + self._slope * math.log(r))
 
     def prob(self, sample):
         """
@@ -1459,23 +1517,32 @@ class SimpleGoodTuringProbDist(ProbDistI):
         @rtype: C{float}
         """
         count = self._freqdist[sample]
-        return self._prob_measure(count) / self._renormal
-            
-    def _prob_measure(self, count):
-        if count == 0 and self._freqdist.N() != 0 :
-            return 1.0 * self.smoothedNr(1) / self._freqdist.N()
-            
-        nc = self.smoothedNr(count)
-        ncn = self.smoothedNr(count + 1)
-        
-        if nc == 0 or self._freqdist.N() == 0:
-            return 0.0
-        elif self._cutoff == None or self._cutoff > count:
-            return 1.0 * (count + 1) * ncn / (nc * self._freqdist.N())
+        p = self._prob_measure(count)
+        if count == 0:
+            if self._bins == self._freqdist.B():
+                p = 0.0
+            else:
+                p = p / (1.0 * self._bins - self._freqdist.B())
         else:
-            return (1.0 * (count + 1) * ncn / nc - self._cutoff_ratio * count)/\
-                    ((1 - self._cutoff_ratio) * self._freqdist.N())
-        
+            p = p * self._renormal
+        return p
+
+    def _prob_measure(self, count):
+        if count == 0 and self._freqdist.N() == 0 :
+            return 1.0
+        elif count == 0 and self._freqdist.N() != 0:
+            return 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
+
+        if self._switch_at > count:
+            Er_1 = 1.0 * self._freqdist.Nr(count+1)
+            Er = 1.0 * self._freqdist.Nr(count)
+        else:
+            Er_1 = self.smoothedNr(count+1)
+            Er = self.smoothedNr(count)
+
+        r_star = (count + 1) * Er_1 / Er
+        return r_star / self._freqdist.N()
+
     def check(self):
         prob_sum = 0.0
         for i in  range(0, len(self._Nr)):
@@ -2089,7 +2156,7 @@ class ProbabilisticMixIn(object):
         @param logprob: The new log probability
         @type logprob: C{float}
         """
-        self.__logprob = prob
+        self.__logprob = logprob
         self.__prob = None
 
     def prob(self):
@@ -2141,7 +2208,6 @@ def _create_rand_fdist(numsamples, numoutcomes):
     summing two numbers, each of which has a uniform distribution.
     """
     import random
-    from math import sqrt
     fdist = FreqDist()
     for x in range(numoutcomes):
         y = (random.randint(1, (1+numsamples)/2) +
