@@ -1,3 +1,46 @@
+Version 2.0b9 2009-07-25
+
+NLTK:
+* many code and documentation cleanups
+* Added port of Snowball stemmers
+* Fixed loading of pickled tokenizers (issue 556)
+* DecisionTreeClassifier now handles unknown features (issue 570)
+* Added error messages to LogicParser
+* Replaced max_models with end_size to prevent Mace from hanging
+* Added interface to Boxer
+* Added nltk.corpus.semcor to give access to SemCor 3.0 corpus (issue 530)
+* Added support for integer- and float-valued features in maxent classifiers
+* Permit NgramModels to be pickled
+* Added Sourced Strings (see test/sourcedstring.doctest for details)
+* Fixed bugs in with Good-Turing and Simple Good-Turing Estimation (issue 26)
+* Add support for span tokenization, aka standoff annotation of segmentation (incl Punkt)
+* allow unicode nodes in Tree.productions()
+* Fixed WordNet's morphy to be consistent with the original implementation,
+  taking the shortest returned form instead of an arbitrary one (issues 427, 487)
+* Fixed bug in MaxentClassifier
+* Accepted bugfixes for YCOE corpus reader (issue 435)
+* Added test to _cumulative_frequencies() to correctly handle the case when no arguments are supplied
+* Added a TaggerI interface to the HunPos open-source tagger
+* Return 0, not None, when no count is present for a lemma in WordNet
+* fixed pretty-printing of unicode leaves
+* More efficient calculation of the leftcorner relation for left corner parsers
+* Added two functions for graph calculations: transitive closure and inversion.
+* FreqDist.pop() and FreqDist.popitems() now invalidate the caches (issue 511)
+
+Data:
+* Added SemCor 3.0 corpus (Brown Corpus tagged with WordNet synsets)
+* Added LanguageID corpus (trigram counts for 451 languages)
+* Added grammar for a^n b^n c^n
+
+NLTK-Contrib:
+* minor updates
+
+Thanks to the following	contributors to	2.0b9:
+Steven Bethard,	Dmitry Chichkov, Liang Dong, Dan Garrette, Simon Greenhill,
+Bjorn Maeland, Rob Malouf, Joel Nothman, Jacob Perkins, Alberto Planas,
+Alex Rudnick, Geoffrey Sampson, Kevin Scannell, Richard Sproat
+
+
 Version 2.0b8 2009-02-05
 
 NLTK:
