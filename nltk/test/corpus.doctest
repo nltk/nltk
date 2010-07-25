@@ -708,6 +708,32 @@ corpus is encoded as a ``PPAttachment`` object:
     >>> inst.attachment
     'V'
 
+semcor
+------
+The Brown Corpus, annotated with WordNet senses.
+
+    >>> from nltk.corpus import semcor
+    >>> semcor.words('brown2/tagfiles/br-n12.xml')  # doctest: +ELLIPSIS
+    ['When', 'several', 'minutes', 'had', 'passed', ...]
+    >>> sent = semcor.xml('brown2/tagfiles/br-n12.xml').findall('context/p/s')[0]
+    >>> for wordform in sent.getchildren():
+    ...     print wordform.text,
+    ...     for key in wordform.keys():
+    ...         print key + '=' + wordform.get(key),
+    ...     print
+    ...
+    Brenner pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    re-entered lemma=re-enter cmd=done wnsn=1 pos=VB lexsn=2:38:00::
+    the cmd=ignore pos=DT
+    hotel lemma=hotel cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    and cmd=ignore pos=CC
+    faced lemma=face cmd=done wnsn=4 pos=VB lexsn=2:42:02::
+    Summers pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    across cmd=ignore pos=IN
+    the cmd=ignore pos=DT
+    counter lemma=counter cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+
+
 shakespeare
 -----------
 The Shakespeare corpus contains a set of Shakespeare plays, formatted
