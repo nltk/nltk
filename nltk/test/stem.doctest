@@ -164,3 +164,40 @@ Unit tests for Regexp stemmer
 
     >>> stemmer.stem("impossible")
     'impossible'
+
+Unit tests for Snowball stemmer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.stem.snowball import SnowballStemmer
+
+See which languages are supported.
+
+    >>> SnowballStemmer.languages # doctest: +NORMALIZE_WHITESPACE
+    ('danish', 'dutch', 'finnish', 'french', 'german',
+    'hungarian', 'italian', 'norwegian', 'portuguese',
+    'romanian', 'russian', 'spanish', 'swedish')
+
+Create a new instance of a language specific subclass.
+
+    >>> stemmer_german = SnowballStemmer("german")
+
+Stem a word.
+
+    >>> stemmer_german.stem(u"Schränke")
+    u'schrank'
+ 
+Decide not to stem stopwords.
+
+    >>> stemmer_german2 = SnowballStemmer("german", ignore_stopwords=True)
+    >>> stemmer_german.stem(u"keinen")
+    u'kein'
+    >>> stemmer_german2.stem(u"keinen")
+    u'keinen'
+
+Russian words both consisting of Cyrillic and Roman letters can be stemmed.
+
+    >>> stemmer_russian = SnowballStemmer("russian")
+    >>> print stemmer_russian.stem(u"авенантненькая")
+    авенантненьк
+    >>> print stemmer_russian.stem(u"avenantnen'kai^a")
+    avenantnen'k
