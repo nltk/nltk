@@ -356,7 +356,7 @@ class LinearLogicParser(LogicParser):
     def __init__(self):
         LogicParser.__init__(self)
         
-        self.order_of_operations = {'APP': 1, Tokens.IMP: 2, None: 3}
+        self.operator_precedence = {'APP': 1, Tokens.IMP: 2, None: 3}
         self.right_associated_operations += [Tokens.IMP]
     
     def get_all_symbols(self):
