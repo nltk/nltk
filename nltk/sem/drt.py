@@ -749,7 +749,7 @@ class DrtParser(LogicParser):
     def __init__(self):
         LogicParser.__init__(self)
         
-        self.order_of_operations = dict(
+        self.operator_precedence = dict(
                                [(x,1) for x in DrtTokens.LAMBDA_LIST]             + \
                                [(x,2) for x in DrtTokens.NOT_LIST]                + \
                                [('APP',3)]                                        + \
