@@ -1177,7 +1177,7 @@ class LogicParser(object):
         This method exists to be overridden"""
         self.quote_chars = []
         
-        self.order_of_operations = dict(
+        self.operator_precedence = dict(
                            [(x,1) for x in Tokens.LAMBDA_LIST]             + \
                            [(x,2) for x in Tokens.NOT_LIST]                + \
                            [('APP',3)]                                     + \
@@ -1562,9 +1562,9 @@ class LogicParser(object):
         return LambdaExpression(variable, term)
     
     def has_priority(self, operation, context):
-        return self.order_of_operations[operation] < self.order_of_operations[context] or \
+        return self.operator_precedence[operation] < self.operator_precedence[context] or \
                (operation in self.right_associated_operations and \
-                self.order_of_operations[operation] == self.order_of_operations[context])
+                self.operator_precedence[operation] == self.operator_precedence[context])
 
     def assertNextToken(self, expected):
         try:
