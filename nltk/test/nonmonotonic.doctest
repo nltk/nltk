@@ -93,7 +93,7 @@ with "P(A) & P(B)".
     ((dog(rover) -> -girl(rover)) & (dog(mary) -> -girl(mary)))
     chase(mary,rover)
     >>> print cdp.goal()
-    ((dog(rover) & ((girl(rover) -> chase(rover,rover)) & (girl(mary) -> chase(mary,rover)))) | (dog(mary) & ((girl(rover) -> chase(rover,mary)) & (girl(mary) -> chase(mary,mary)))))
+    ((dog(rover) & (girl(rover) -> chase(rover,rover)) & (girl(mary) -> chase(mary,rover))) | (dog(mary) & (girl(rover) -> chase(rover,mary)) & (girl(mary) -> chase(mary,mary))))
     >>> print cdp.prove()
     True
 

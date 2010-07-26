@@ -6,8 +6,6 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import operator
-
 from logic import *
 
 # Import Tkinter-based modules if they are available
@@ -204,12 +202,9 @@ class DRS(AbstractDrs, Expression):
                 return self.conds == converted_other.conds
         return False
     
-    def str(self, syntax=DrtTokens.NLTK):
-        if syntax == DrtTokens.PROVER9:
-            return self.fol().str(syntax)
-        else:
-            return '([%s],[%s])' % (','.join([str(r) for r in self.refs]),
-                                    ', '.join([c.str(syntax) for c in self.conds]))
+    def __str__(self):
+        return '([%s],[%s])' % (','.join(map(str, self.refs)),
+                                ', '.join(map(str, self.conds)))
 
 def DrtVariableExpression(variable):
     """
@@ -285,8 +280,7 @@ class DrtImpExpression(DrtBooleanExpression, ImpExpression):
 
         accum = None
         if first_drs.conds:
-            accum = reduce(AndExpression, 
-                           [c.fol() for c in first_drs.conds])
+            accum = reduce(AndExpression, [c.fol() for c in first_drs.conds])
    
         if accum:
             accum = ImpExpression(accum, second_drs.fol())
@@ -370,7 +364,7 @@ class ConcatenationDRS(DrtBooleanExpression):
         """@see: AbstractExpression.get_refs()"""
         return self.first.get_refs(recursive) + self.second.get_refs(recursive)
 
-    def getOp(self, syntax=DrtTokens.NLTK):
+    def getOp(self):
         return DrtTokens.DRS_CONC
     
     def __eq__(self, other):
@@ -419,7 +413,7 @@ class PossibleAntecedents(list, AbstractDrs, Expression):
                 self.append(item)
         return result
     
-    def str(self, syntax=DrtTokens.NLTK):
+    def __str__(self):
         return '[' + ','.join(map(str, self)) + ']'
 
 
@@ -501,8 +495,6 @@ class DrsDrawer(object):
         @param size_canvas: C{boolean}, True if the canvas size should be the exact size of the DRS
         @param canvas: C{Canvas} The canvas on which to draw the DRS.  If none is given, create a new canvas. 
         """
-        self.syntax = DrtTokens.NLTK
-
         master = None
         if not canvas:
             master = Tk()
@@ -618,7 +610,7 @@ class DrsDrawer(object):
             factory = self._handle_BinaryExpression
         elif isinstance(expression, DrtApplicationExpression):
             factory = self._handle_ApplicationExpression
-        elif isinstance(expression, RA.PossibleAntecedents):
+        elif isinstance(expression, PossibleAntecedents):
             factory = self._handle_VariableExpression
         else:
             raise Exception, expression.__class__.__name__
@@ -632,17 +624,17 @@ class DrsDrawer(object):
         return (right, bottom)
 
     def _handle_VariableExpression(self, expression, command, x, y):
-        return command(expression.str(self.syntax), x, y)
+        return command(str(expression), x, y)
        
     def _handle_NegatedExpression(self, expression, command, x, y):
         # Find the width of the negation symbol
-        right = self._visit_command(DrtTokens.NOT[self.syntax], x, y)[0]
+        right = self._visit_command(DrtTokens.NOT, x, y)[0]
 
         # Handle term
         (right, bottom) = self._handle(expression.term, command, right, y)
 
         # Handle variables now that we know the y-coordinate
-        command(DrtTokens.NOT[self.syntax], x, self._get_centered_top(y, bottom - y, self._get_text_height()))
+        command(DrtTokens.NOT, x, self._get_centered_top(y, bottom - y, self._get_text_height()))
 
         return (right, bottom)
        
@@ -652,7 +644,7 @@ class DrsDrawer(object):
         
         # Handle Discourse Referents
         if expression.refs:
-            refs = ' '.join([str(ref) for ref in expression.refs])
+            refs = ' '.join(map(str, expression.refs))
         else:
             refs = '     '
         (max_right, bottom) = command(refs, left, bottom)
@@ -708,7 +700,7 @@ class DrsDrawer(object):
 
     def _handle_LambdaExpression(self, expression, command, x, y):
         # Find the width of the lambda symbol and abstracted variables
-        variables = DrtTokens.LAMBDA[self.syntax] + str(expression.variable) + DrtTokens.DOT[self.syntax]
+        variables = DrtTokens.LAMBDA + str(expression.variable) + DrtTokens.DOT
         right = self._visit_command(variables, x, y)[0]
 
         # Handle term
@@ -734,7 +726,7 @@ class DrsDrawer(object):
         (right, first_bottom) = self._handle(expression.first, command, right, self._get_centered_top(y, line_height, first_height))
 
         # Handle the operator
-        right = command(' %s ' % expression.getOp(self.syntax), right, centred_string_top)[0]
+        right = command(' %s ' % expression.getOp(), right, centred_string_top)[0]
         
         # Handle the second operand
         second_height = expression.second._drawing_height
@@ -758,14 +750,14 @@ class DrtParser(LogicParser):
         LogicParser.__init__(self)
         
         self.order_of_operations = dict(
-                               [(x,1) for x in DrtTokens.LAMBDA]        + \
-                               [(x,2) for x in DrtTokens.NOT]           + \
-                               [('APP',3)]                              + \
-                               [(x,4) for x in DrtTokens.EQ+Tokens.NEQ] + \
-                               [(DrtTokens.DRS_CONC,5)]                 + \
-                               [(x,6) for x in DrtTokens.OR]            + \
-                               [(x,7) for x in DrtTokens.IMP]           + \
-                               [(x,8) for x in DrtTokens.IFF]           + \
+                               [(x,1) for x in DrtTokens.LAMBDA_LIST]             + \
+                               [(x,2) for x in DrtTokens.NOT_LIST]                + \
+                               [('APP',3)]                                        + \
+                               [(x,4) for x in DrtTokens.EQ_LIST+Tokens.NEQ_LIST] + \
+                               [(DrtTokens.DRS_CONC,5)]                           + \
+                               [(x,6) for x in DrtTokens.OR_LIST]                 + \
+                               [(x,7) for x in DrtTokens.IMP_LIST]                + \
+                               [(x,8) for x in DrtTokens.IFF_LIST]                + \
                                [(None,9)])
     
     def get_all_symbols(self):
@@ -778,10 +770,10 @@ class DrtParser(LogicParser):
     def handle(self, tok, context):
         """This method is intended to be overridden for logics that 
         use different operators or expressions"""
-        if tok in DrtTokens.NOT:
+        if tok in DrtTokens.NOT_LIST:
             return self.handle_negation(tok, context)
         
-        elif tok in DrtTokens.LAMBDA:
+        elif tok in DrtTokens.LAMBDA_LIST:
             return self.handle_lambda(tok, context)
             
         elif tok == DrtTokens.OPEN:
@@ -836,11 +828,11 @@ class DrtParser(LogicParser):
         have different boolean operators"""
         if tok == DrtTokens.DRS_CONC:
             return ConcatenationDRS
-        elif tok in DrtTokens.OR:
+        elif tok in DrtTokens.OR_LIST:
             return DrtOrExpression
-        elif tok in DrtTokens.IMP:
+        elif tok in DrtTokens.IMP_LIST:
             return DrtImpExpression
-        elif tok in DrtTokens.IFF:
+        elif tok in DrtTokens.IFF_LIST:
             return DrtIffExpression
         else:
             return None
