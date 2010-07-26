@@ -8,13 +8,14 @@
 # For license information, see LICENSE.TXT
 
 import os
-import tempfile
 import subprocess
-from string import join
 
 import nltk
-from nltk.sem.logic import LogicParser, Tokens as LogicTokens
+from nltk.sem.logic import LogicParser, Tokens as LogicTokens, \
+    ExistsExpression, AllExpression, NegatedExpression, BinaryExpression, \
+    AndExpression, IffExpression, OrExpression, EqualityExpression
 from api import BaseProverCommand, Prover
+from nltk.sem.linearlogic import ImpExpression, ApplicationExpression
 
 """
 A theorem prover that makes use of the external 'Prover9' package.
@@ -203,15 +204,43 @@ def convert_to_prover9(input):
         result = []
         for s in input:
             try:
-                result.append(s.simplify().str(LogicTokens.PROVER9))
+                result.append(_convert_to_prover9(s.simplify()))
             except AssertionError:
                 print 'input %s cannot be converted to Prover9 input syntax' % input
         return result
     else:
         try:
-            return input.simplify().str(LogicTokens.PROVER9)
+            return _convert_to_prover9(input.simplify())
         except AssertionError:
             print 'input %s cannot be converted to Prover9 input syntax' % input
+
+def _convert_to_prover9(expression):
+    """
+    Convert C{logic.Expression} to Prover9 formatted string.
+    """
+    if isinstance(expression, ExistsExpression):
+        return 'exists ' + str(expression.variable) + ' ' + _convert_to_prover9(expression.term)
+    elif isinstance(expression, AllExpression):
+        return 'all ' + str(expression.variable) + ' ' + _convert_to_prover9(expression.term)
+    elif isinstance(expression, NegatedExpression):
+        return '-(' + _convert_to_prover9(expression.term) + ')'
+    elif isinstance(expression, AndExpression):
+        return '(' + _convert_to_prover9(expression.first) + ' & ' + \
+                     _convert_to_prover9(expression.second) + ')'
+    elif isinstance(expression, OrExpression):
+        return '(' + _convert_to_prover9(expression.first) + ' | ' + \
+                     _convert_to_prover9(expression.second) + ')'
+    elif isinstance(expression, ImpExpression):
+        return '(' + _convert_to_prover9(expression.first) + ' -> ' + \
+                     _convert_to_prover9(expression.second) + ')'
+    elif isinstance(expression, IffExpression):
+        return '(' + _convert_to_prover9(expression.first) + ' <-> ' + \
+                     _convert_to_prover9(expression.second) + ')'
+    elif isinstance(expression, EqualityExpression):
+        return '(' + _convert_to_prover9(expression.first) + ' = ' + \
+                     _convert_to_prover9(expression.second) + ')'
+    else:
+        return str(expression)
 
 
 class Prover9(Prover9Parent, Prover):

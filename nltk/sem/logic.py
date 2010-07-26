@@ -20,39 +20,33 @@ from nltk.internals import Counter
 _counter = Counter()
 
 class Tokens(object):
-    # Syntaxes
-    OLD_NLTK = 0
-    NLTK = 1
-    PROVER9  = 2
-    
-    
-    LAMBDA = ['\\', '\\', '\\']
+    LAMBDA = '\\';     LAMBDA_LIST = ['\\']
     
     #Quantifiers
-    EXISTS = ['some', 'exists', 'exists', 'exist']
-    ALL = ['all', 'all', 'all', 'forall']
+    EXISTS = 'exists'; EXISTS_LIST = ['some', 'exists', 'exist']
+    ALL = 'all';       ALL_LIST = ['all', 'forall']
     
     #Punctuation
-    DOT = ['.', '.', ' ']
+    DOT = '.'
     OPEN = '('
     CLOSE = ')'
     COMMA = ','
     
     #Operations
-    NOT = ['not', '-', '-', '!']
-    AND = ['and', '&', '&', '^']
-    OR = ['or', '|', '|']
-    IMP = ['implies', '->', '->', '=>']
-    IFF = ['iff', '<->', '<->', '<=>']
-    EQ = ['=', '=', '=', '==']
-    NEQ = ['!=', '!=', '!=']
+    NOT = '-';         NOT_LIST = ['not', '-', '!']
+    AND = '&';         AND_LIST = ['and', '&', '^']
+    OR = '|';          OR_LIST = ['or', '|']
+    IMP = '->';        IMP_LIST = ['implies', '->', '=>']
+    IFF = '<->';       IFF_LIST = ['iff', '<->', '<=>']
+    EQ = '=';          EQ_LIST = ['=', '==']
+    NEQ = '!=';        NEQ_LIST = ['!=']
     
-    #Collection of tokens
-    BINOPS = AND + OR + IMP + IFF
-    QUANTS = EXISTS + ALL
-    PUNCT = [DOT[NLTK], OPEN, CLOSE, COMMA]
+    #Collections of tokens
+    BINOPS = AND_LIST + OR_LIST + IMP_LIST + IFF_LIST
+    QUANTS = EXISTS_LIST + ALL_LIST
+    PUNCT = [DOT, OPEN, CLOSE, COMMA]
     
-    TOKENS = BINOPS + EQ + NEQ + QUANTS + LAMBDA + PUNCT + NOT
+    TOKENS = BINOPS + EQ_LIST + NEQ_LIST + QUANTS + LAMBDA_LIST + PUNCT + NOT_LIST
     
     #Special
     SYMBOLS = [x for x in TOKENS if all(c in '\\.(),-!&^|>=<' for c in x)]
@@ -63,11 +57,7 @@ def boolean_ops():
     Boolean operators
     """
     names =  ["negation", "conjunction", "disjunction", "implication", "equivalence"]
-    for pair in zip(names, [Tokens.NOT[Tokens.NLTK], 
-                            Tokens.AND[Tokens.NLTK], 
-                            Tokens.OR[Tokens.NLTK], 
-                            Tokens.IMP[Tokens.NLTK], 
-                            Tokens.IFF[Tokens.NLTK]]):
+    for pair in zip(names, [Tokens.NOT, Tokens.AND, Tokens.OR, Tokens.IMP, Tokens.IFF]):
         print "%-15s\t%s" %  pair
         
 def equality_preds():
@@ -75,8 +65,7 @@ def equality_preds():
     Equality predicates
     """
     names =  ["equality", "inequality"]
-    for pair in zip(names, [Tokens.EQ[Tokens.NLTK], 
-                            Tokens.NEQ[Tokens.NLTK]]):
+    for pair in zip(names, [Tokens.EQ, Tokens.NEQ]):
         print "%-15s\t%s" %  pair        
                     
 def binding_ops():
@@ -84,9 +73,7 @@ def binding_ops():
     Binding operators
     """
     names =  ["existential", "universal", "lambda"]
-    for pair in zip(names, [Tokens.EXISTS[Tokens.NLTK], 
-                            Tokens.ALL[Tokens.NLTK],
-                            Tokens.LAMBDA[Tokens.NLTK]]):
+    for pair in zip(names, [Tokens.EXISTS, Tokens.ALL, Tokens.LAMBDA]):
         print "%-15s\t%s" %  pair
 
 
@@ -693,18 +680,18 @@ class ApplicationExpression(Expression):
                 self.function == other.function and \
                 self.argument == other.argument 
 
-    def str(self, syntax=Tokens.NLTK):
+    def __str__(self):
         # uncurry the arguments and find the base function
         function, args = self.uncurry()
         if isinstance(function, AbstractVariableExpression):
             #It's a predicate expression ("P(x,y)"), so uncurry arguments
-            arg_str = ','.join([arg.str(syntax) for arg in args])
+            arg_str = ','.join(map(str, args))
         else:
             #Leave arguments curried
             function = self.function
-            arg_str = self.argument.str(syntax)
+            arg_str = str(self.argument)
         
-        function_str = function.str(syntax)
+        function_str = str(function)
         parenthesize_function = False
         if isinstance(function, LambdaExpression):
             if isinstance(function.term, ApplicationExpression):
@@ -793,7 +780,7 @@ class AbstractVariableExpression(Expression):
         return isinstance(other, AbstractVariableExpression) and \
                self.variable == other.variable
         
-    def str(self, syntax=Tokens.NLTK):
+    def __str__(self):
         return str(self.variable)
     
     
@@ -982,15 +969,14 @@ class LambdaExpression(VariableBinderExpression):
         if not self.type.resolve(other_type):
             raise TypeResolutionException(self, other_type)
 
-    def str(self, syntax=Tokens.NLTK):
+    def __str__(self):
         variables = [self.variable]
         term = self.term
-        if syntax != Tokens.PROVER9:
-            while term.__class__ == self.__class__:
-                variables.append(term.variable)
-                term = term.term
-        return Tokens.LAMBDA[syntax] + ' '.join(str(v) for v in variables) + \
-               Tokens.DOT[syntax] + term.str(syntax)
+        while term.__class__ == self.__class__:
+            variables.append(term.variable)
+            term = term.term
+        return Tokens.LAMBDA + ' '.join(map(str, variables)) + \
+               Tokens.DOT + str(term)
 
 
 class QuantifiedExpression(VariableBinderExpression):
@@ -1007,24 +993,22 @@ class QuantifiedExpression(VariableBinderExpression):
             raise IllegalTypeException(self, other_type, TRUTH_TYPE)
         self.term._set_type(TRUTH_TYPE, signature)
 
-    def str(self, syntax=Tokens.NLTK):
+    def __str__(self):
         variables = [self.variable]
         term = self.term
-        if syntax != Tokens.PROVER9:
-            while term.__class__ == self.__class__:
-                variables.append(term.variable)
-                term = term.term
-        return self.getQuantifier(syntax) + ' ' + \
-               ' '.join(str(v) for v in variables) + \
-               Tokens.DOT[syntax] + term.str(syntax)
+        while term.__class__ == self.__class__:
+            variables.append(term.variable)
+            term = term.term
+        return self.getQuantifier() + ' ' + ' '.join(map(str, variables)) + \
+               Tokens.DOT + str(term)
         
 class ExistsExpression(QuantifiedExpression):
-    def getQuantifier(self, syntax=Tokens.NLTK):
-        return Tokens.EXISTS[syntax]
+    def getQuantifier(self):
+        return Tokens.EXISTS
 
 class AllExpression(QuantifiedExpression):
-    def getQuantifier(self, syntax=Tokens.NLTK):
-        return Tokens.ALL[syntax]
+    def getQuantifier(self):
+        return Tokens.ALL
 
 
 class NegatedExpression(Expression):
@@ -1060,12 +1044,8 @@ class NegatedExpression(Expression):
     def __eq__(self, other):
         return isinstance(other, NegatedExpression) and self.term == other.term
 
-    def str(self, syntax=Tokens.NLTK):
-        if syntax == Tokens.PROVER9:
-            return Tokens.NOT[syntax] + Tokens.OPEN + self.term.str(syntax) +\
-                   Tokens.CLOSE
-        else:
-            return Tokens.NOT[syntax] + self.term.str(syntax)
+    def __str__(self):
+        return Tokens.NOT + str(self.term)
         
         
 class BinaryExpression(Expression):
@@ -1098,10 +1078,15 @@ class BinaryExpression(Expression):
                 isinstance(other, self.__class__)) and \
                self.first == other.first and self.second == other.second
 
-    def str(self, syntax=Tokens.NLTK):
-        return Tokens.OPEN + self.first.str(syntax) + ' ' + self.getOp(syntax) \
-                + ' ' + self.second.str(syntax) + Tokens.CLOSE
-        
+    def __str__(self):
+        first = self._str_subex(self.first)
+        second = self._str_subex(self.second)
+        return Tokens.OPEN + first + ' ' + self.getOp() \
+                + ' ' + second + Tokens.CLOSE
+                
+    def _str_subex(self, subex):
+        return str(subex)
+
         
 class BooleanExpression(BinaryExpression):
     def _set_type(self, other_type=ANY_TYPE, signature=None):
@@ -1118,23 +1103,35 @@ class BooleanExpression(BinaryExpression):
 
 class AndExpression(BooleanExpression):
     """This class represents conjunctions"""
-    def getOp(self, syntax=Tokens.NLTK):
-        return Tokens.AND[syntax]
+    def getOp(self):
+        return Tokens.AND
+
+    def _str_subex(self, subex):
+        s = str(subex)
+        if isinstance(subex, AndExpression):
+            return s[1:-1]
+        return s
 
 class OrExpression(BooleanExpression):
     """This class represents disjunctions"""
-    def getOp(self, syntax=Tokens.NLTK):
-        return Tokens.OR[syntax]
+    def getOp(self):
+        return Tokens.OR
+
+    def _str_subex(self, subex):
+        s = str(subex)
+        if isinstance(subex, OrExpression):
+            return s[1:-1]
+        return s
 
 class ImpExpression(BooleanExpression):
     """This class represents implications"""
-    def getOp(self, syntax=Tokens.NLTK):
-        return Tokens.IMP[syntax]
+    def getOp(self):
+        return Tokens.IMP
 
 class IffExpression(BooleanExpression):
     """This class represents biconditionals"""
-    def getOp(self, syntax=Tokens.NLTK):
-        return Tokens.IFF[syntax]
+    def getOp(self):
+        return Tokens.IFF
 
 
 class EqualityExpression(BinaryExpression):
@@ -1151,8 +1148,8 @@ class EqualityExpression(BinaryExpression):
         self.first._set_type(ENTITY_TYPE, signature)
         self.second._set_type(ENTITY_TYPE, signature)
 
-    def getOp(self, syntax=Tokens.NLTK):
-        return Tokens.EQ[syntax]
+    def getOp(self):
+        return Tokens.EQ
 
 
 class LogicParser(object):
@@ -1181,16 +1178,16 @@ class LogicParser(object):
         self.quote_chars = []
         
         self.order_of_operations = dict(
-                               [(x,1) for x in Tokens.LAMBDA]        + \
-                               [(x,2) for x in Tokens.NOT]           + \
-                               [('APP',3)]                           + \
-                               [(x,4) for x in Tokens.EQ+Tokens.NEQ] + \
-                               [(x,5) for x in Tokens.QUANTS]        + \
-                               [(x,6) for x in Tokens.AND]           + \
-                               [(x,7) for x in Tokens.OR]            + \
-                               [(x,8) for x in Tokens.IMP]           + \
-                               [(x,9) for x in Tokens.IFF]           + \
-                               [(None,10)])
+                           [(x,1) for x in Tokens.LAMBDA_LIST]             + \
+                           [(x,2) for x in Tokens.NOT_LIST]                + \
+                           [('APP',3)]                                     + \
+                           [(x,4) for x in Tokens.EQ_LIST+Tokens.NEQ_LIST] + \
+                           [(x,5) for x in Tokens.QUANTS]                  + \
+                           [(x,6) for x in Tokens.AND_LIST]                + \
+                           [(x,7) for x in Tokens.OR_LIST]                 + \
+                           [(x,8) for x in Tokens.IMP_LIST]                + \
+                           [(x,9) for x in Tokens.IFF_LIST]                + \
+                           [(None,10)])
         self.right_associated_operations = []
 
     def parse(self, data, signature=None):
@@ -1354,10 +1351,10 @@ class LogicParser(object):
         if self.isvariable(tok):
             return self.handle_variable(tok, context)
         
-        elif tok in Tokens.NOT:
+        elif tok in Tokens.NOT_LIST:
             return self.handle_negation(tok, context)
         
-        elif tok in Tokens.LAMBDA:
+        elif tok in Tokens.LAMBDA_LIST:
             return self.handle_lambda(tok, context)
             
         elif tok in Tokens.QUANTS:
@@ -1376,7 +1373,7 @@ class LogicParser(object):
         return expression
     
     def handle_negation(self, tok, context):
-        return self.make_NegatedExpression(self.parse_Expression(Tokens.NOT[Tokens.NLTK]))
+        return self.make_NegatedExpression(self.parse_Expression(Tokens.NOT))
         
     def make_NegatedExpression(self, expression):
         return NegatedExpression(expression)
@@ -1423,13 +1420,13 @@ class LogicParser(object):
                                               message="Variable and Expression expected following lambda operator.")
         vars = [self.get_next_token_variable('abstracted')]
         while True:
-            if not self.inRange(0) or (self.token(0) in Tokens.DOT and not self.inRange(1)):
+            if not self.inRange(0) or (self.token(0) == Tokens.DOT and not self.inRange(1)):
                 raise ExpectedMoreTokensException(self._currentIndex+2, message="Expression expected.")
             if not self.isvariable(self.token(0)):
                 break
             # Support expressions like: \x y.M == \x.\y.M
             vars.append(self.get_next_token_variable('abstracted'))
-        if self.inRange(0) and self.token(0) in Tokens.DOT:
+        if self.inRange(0) and self.token(0) == Tokens.DOT:
             self.token() #swallow the dot
         
         accum = self.parse_Expression(tok)
@@ -1446,13 +1443,13 @@ class LogicParser(object):
                                               message="Variable and Expression expected following quantifier '%s'." % tok)
         vars = [self.get_next_token_variable('quantified')]
         while True:
-            if not self.inRange(0) or (self.token(0) in Tokens.DOT and not self.inRange(1)):
+            if not self.inRange(0) or (self.token(0) == Tokens.DOT and not self.inRange(1)):
                 raise ExpectedMoreTokensException(self._currentIndex+2, message="Expression expected.")
             if not self.isvariable(self.token(0)):
                 break
             # Support expressions like: some x y.M == some x.some y.M
             vars.append(self.get_next_token_variable('quantified'))
-        if self.inRange(0) and self.token(0) in Tokens.DOT:
+        if self.inRange(0) and self.token(0) == Tokens.DOT:
             self.token() #swallow the dot
 
         accum = self.parse_Expression(tok)
@@ -1463,9 +1460,9 @@ class LogicParser(object):
     def get_QuantifiedExpression_factory(self, tok):
         """This method serves as a hook for other logic parsers that
         have different quantifiers"""
-        if tok in Tokens.EXISTS:
+        if tok in Tokens.EXISTS_LIST:
             return ExistsExpression
-        elif tok in Tokens.ALL:
+        elif tok in Tokens.ALL_LIST:
             return AllExpression
         else:
             self.assertToken(tok, Tokens.QUANTS)
@@ -1485,10 +1482,10 @@ class LogicParser(object):
         Otherwise, the parameter will be returned."""
         if self.inRange(0):
             tok = self.token(0)
-            if tok in Tokens.EQ + Tokens.NEQ and self.has_priority(tok, context):
+            if tok in Tokens.EQ_LIST + Tokens.NEQ_LIST and self.has_priority(tok, context):
                 self.token() #swallow the "=" or "!="
                 expression = self.make_EqualityExpression(expression, self.parse_Expression(tok))
-                if tok in Tokens.NEQ:
+                if tok in Tokens.NEQ_LIST:
                     expression = self.make_NegatedExpression(expression)
         return expression
     
@@ -1515,13 +1512,13 @@ class LogicParser(object):
     def get_BooleanExpression_factory(self, tok):
         """This method serves as a hook for other logic parsers that
         have different boolean operators"""
-        if tok in Tokens.AND:
+        if tok in Tokens.AND_LIST:
             return AndExpression
-        elif tok in Tokens.OR:
+        elif tok in Tokens.OR_LIST:
             return OrExpression
-        elif tok in Tokens.IMP:
+        elif tok in Tokens.IMP_LIST:
             return ImpExpression
-        elif tok in Tokens.IFF:
+        elif tok in Tokens.IFF_LIST:
             return IffExpression
         else:
             return None
@@ -1734,3 +1731,4 @@ def printtype(ex):
 if __name__ == '__main__':
     demo()
     demo_errors()
+
