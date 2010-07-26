@@ -84,8 +84,11 @@ B. PORTFILE
        > Summary: NLTK Ports upgrade to $VERSION
        > Description: Updated port for NLTK (http://www.nltk.org/) 
        > Type: update
+       > Keywords: haspatch maintainer
+       > version: [CLEAR THIS]
+       > Port: py-nltk py25-nltk py26-nltk
        Then attach the diff files, nltk/dist/Portfile*.diff
-
+       
 C. WEBSITE
 
   - for beta releases, skip this section, and post to nltk-dev only
