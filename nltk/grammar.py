@@ -740,6 +740,7 @@ class FeatureGrammar(ContextFreeGrammar):
         self._lhs_index = {}
         self._rhs_index = {}
         self._empty_index = {}
+        self._empty_productions = []
         self._lexical_index = {}
         for prod in self._productions:
             # Left hand side.
@@ -755,7 +756,10 @@ class FeatureGrammar(ContextFreeGrammar):
                 self._rhs_index[rhs0].append(prod)
             else:
                 # The right hand side is empty.
-                self._empty_index[self._get_type_if_possible(prod._lhs)] = prod
+                if lhs not in self._empty_index:
+                    self._empty_index[lhs] = []
+                self._empty_index[lhs].append(prod)
+                self._empty_productions.append(prod)
             # Lexical tokens in the right hand side.
             for token in prod._rhs:
                 if is_terminal(token):
@@ -779,19 +783,17 @@ class FeatureGrammar(ContextFreeGrammar):
         
         # no constraints so return everything
         if not lhs and not rhs:
-            if not empty:
-                return self._productions
+            if empty:
+                return self._empty_productions
             else:
-                return self._empty_index.values()
+                return self._productions
 
         # only lhs specified so look up its index
         elif lhs and not rhs:
-            if not empty:
-                return self._lhs_index.get(self._get_type_if_possible(lhs), [])
-            elif lhs in self._empty_index:
-                return [self._empty_index[self._get_type_if_possible(lhs)]]
+            if empty:
+                return self._empty_index.get(self._get_type_if_possible(lhs), [])
             else:
-                return []
+                return self._lhs_index.get(self._get_type_if_possible(lhs), [])
 
         # only rhs specified so look up its index
         elif rhs and not lhs:
