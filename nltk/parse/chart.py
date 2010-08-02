@@ -1118,7 +1118,7 @@ class CachedTopDownPredictRule(TopDownPredictRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
         next, index = edge.next(), edge.end()
-        if not is_nonterminal(edge.next()): return
+        if not is_nonterminal(next): return
 
         # If we've already applied this rule to an edge with the same
         # next & end, and the chart & grammar have not changed, then
@@ -1128,11 +1128,13 @@ class CachedTopDownPredictRule(TopDownPredictRule):
 
         # Add all the edges indicated by the top down expand rule.
         for prod in grammar.productions(lhs=next):
-            first = prod.rhs() and prod.rhs()[0]
             # If the left corner in the predicted production is 
             # leaf, it must match with the input.
-            if is_terminal(first):
-                if index >= chart.num_leaves() or first != chart.leaf(index): continue
+            if prod.rhs():
+                first = prod.rhs()[0]
+                if is_terminal(first):
+                    if index >= chart.num_leaves() or first != chart.leaf(index): continue
+            
             new_edge = TreeEdge.from_production(prod, index)
             if chart.insert(new_edge, ()):
                 yield new_edge
