@@ -710,122 +710,37 @@ Unit tests for the FeatStructNonterminal class
     VP[+fin]/NP[+pl]
 
 
-Unit tests for the Feature Chart Parser classes
------------------------------------------------
+Tracing the Feature Chart Parser
+--------------------------------
 
-Let's use the demo() function as a unit test.
-
-Top-down.
+We use the featurechart.demo() function for tracing the Feature Chart Parser.
 
     >>> nltk.parse.featurechart.demo(should_print_times=False, 
-    ...                              should_print_grammar=False, trace=1,
-    ...                              parser=nltk.FeatureTopDownChartParser,
+    ...                              should_print_grammar=True, 
+    ...                              parser=nltk.FeatureChartParser,
     ...                              sent='I saw John with a dog')
     <BLANKLINE>
-    * FeatureTopDownChartParser
-    Sentence: I saw John with a dog
-    |.I.s.J.w.a.d.|
-    |[-] . . . . .| [0:1] 'I'
-    |. [-] . . . .| [1:2] 'saw'
-    |. . [-] . . .| [2:3] 'John'
-    |. . . [-] . .| [3:4] 'with'
-    |. . . . [-] .| [4:5] 'a'
-    |. . . . . [-]| [5:6] 'dog'
-    |> . . . . . .| [0:0] [INIT][] -> * S[] {}
-    |> . . . . . .| [0:0] S[] -> * NP[] VP[] {}
-    |> . . . . . .| [0:0] NP[] -> * NP[] PP[] {}
-    |> . . . . . .| [0:0] NP[] -> * Det[pl=?x] Noun[pl=?x] {}
-    |> . . . . . .| [0:0] NP[] -> * 'John' {}
-    |> . . . . . .| [0:0] NP[] -> * 'I' {}
-    |[-] . . . . .| [0:1] NP[] -> 'I' *
-    |[-> . . . . .| [0:1] S[] -> NP[] * VP[] {}
-    |[-> . . . . .| [0:1] NP[] -> NP[] * PP[] {}
-    |. > . . . . .| [1:1] PP[] -> * Prep[] NP[] {}
-    |. > . . . . .| [1:1] Prep[] -> * 'with' {}
-    |. > . . . . .| [1:1] Prep[] -> * 'under' {}
-    |. > . . . . .| [1:1] VP[] -> * VP[] PP[] {}
-    |. > . . . . .| [1:1] VP[] -> * Verb[] NP[] {}
-    |. > . . . . .| [1:1] VP[] -> * Verb[] {}
-    |. > . . . . .| [1:1] Verb[] -> * 'ate' {}
-    |. > . . . . .| [1:1] Verb[] -> * 'saw' {}
-    |. [-] . . . .| [1:2] Verb[] -> 'saw' *
-    |. [-> . . . .| [1:2] VP[] -> Verb[] * NP[] {}
-    |. [-] . . . .| [1:2] VP[] -> Verb[] *
-    |[---] . . . .| [0:2] S[] -> NP[] VP[] *
-    |. [-> . . . .| [1:2] VP[] -> VP[] * PP[] {}
-    |. . > . . . .| [2:2] PP[] -> * Prep[] NP[] {}
-    |. . > . . . .| [2:2] Prep[] -> * 'with' {}
-    |. . > . . . .| [2:2] Prep[] -> * 'under' {}
-    |[---] . . . .| [0:2] [INIT][] -> S[] *
-    |. . > . . . .| [2:2] NP[] -> * NP[] PP[] {}
-    |. . > . . . .| [2:2] NP[] -> * Det[pl=?x] Noun[pl=?x] {}
-    |. . > . . . .| [2:2] NP[] -> * 'John' {}
-    |. . > . . . .| [2:2] NP[] -> * 'I' {}
-    |. . [-] . . .| [2:3] NP[] -> 'John' *
-    |. [---] . . .| [1:3] VP[] -> Verb[] NP[] *
-    |. . [-> . . .| [2:3] NP[] -> NP[] * PP[] {}
-    |. . . > . . .| [3:3] PP[] -> * Prep[] NP[] {}
-    |. . . > . . .| [3:3] Prep[] -> * 'with' {}
-    |. . . > . . .| [3:3] Prep[] -> * 'under' {}
-    |. . . [-] . .| [3:4] Prep[] -> 'with' *
-    |. . . [-> . .| [3:4] PP[] -> Prep[] * NP[] {}
-    |. . . . > . .| [4:4] NP[] -> * NP[] PP[] {}
-    |. . . . > . .| [4:4] NP[] -> * Det[pl=?x] Noun[pl=?x] {}
-    |. . . . > . .| [4:4] NP[] -> * 'John' {}
-    |. . . . > . .| [4:4] NP[] -> * 'I' {}
-    |. . . . > . .| [4:4] Det[] -> * 'the' {}
-    |. . . . > . .| [4:4] Det[] -> * 'my' {}
-    |. . . . > . .| [4:4] Det[-pl] -> * 'a' {}
-    |. . . . [-] .| [4:5] Det[-pl] -> 'a' *
-    |. . . . [-> .| [4:5] NP[] -> Det[pl=?x] * Noun[pl=?x] {?x: False}
-    |. . . . . > .| [5:5] Noun[-pl] -> * 'dog' {}
-    |. . . . . > .| [5:5] Noun[-pl] -> * 'cookie' {}
-    |. . . . . [-]| [5:6] Noun[-pl] -> 'dog' *
-    |. . . . [---]| [4:6] NP[] -> Det[-pl] Noun[-pl] *
-    |. . . [-----]| [3:6] PP[] -> Prep[] NP[] *
-    |. . . . [--->| [4:6] NP[] -> NP[] * PP[] {}
-    |. . . . . . >| [6:6] PP[] -> * Prep[] NP[] {}
-    |. . . . . . >| [6:6] Prep[] -> * 'with' {}
-    |. . . . . . >| [6:6] Prep[] -> * 'under' {}
-    |. . [-------]| [2:6] NP[] -> NP[] PP[] *
-    |. [---------]| [1:6] VP[] -> Verb[] NP[] *
-    |. . [------->| [2:6] NP[] -> NP[] * PP[] {}
-    |[===========]| [0:6] S[] -> NP[] VP[] *
-    |. [--------->| [1:6] VP[] -> VP[] * PP[] {}
-    |[===========]| [0:6] [INIT][] -> S[] *
-    |[-----] . . .| [0:3] S[] -> NP[] VP[] *
-    |. [---> . . .| [1:3] VP[] -> VP[] * PP[] {}
-    |. [---------]| [1:6] VP[] -> VP[] PP[] *
-    |[===========]| [0:6] S[] -> NP[] VP[] *
-    |. [--------->| [1:6] VP[] -> VP[] * PP[] {}
-    |[-----] . . .| [0:3] [INIT][] -> S[] *
-    |. . > . . . .| [2:2] Det[] -> * 'the' {}
-    |. . > . . . .| [2:2] Det[] -> * 'my' {}
-    |. . > . . . .| [2:2] Det[-pl] -> * 'a' {}
-    |> . . . . . .| [0:0] Det[] -> * 'the' {}
-    |> . . . . . .| [0:0] Det[] -> * 'my' {}
-    |> . . . . . .| [0:0] Det[-pl] -> * 'a' {}
-    (S[]
-      (NP[] I)
-      (VP[]
-        (Verb[] saw)
-        (NP[]
-          (NP[] John)
-          (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog))))))
-    (S[]
-      (NP[] I)
-      (VP[]
-        (VP[] (Verb[] saw) (NP[] John))
-        (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog)))))
-
-Bottom-Up Left-Corner.
-
-    >>> nltk.parse.featurechart.demo(should_print_times=False, 
-    ...                              should_print_grammar=False, trace=1,
-    ...                              parser=nltk.FeatureBottomUpLeftCornerChartParser,
-    ...                              sent='I saw John with a dog')
+    Grammar with 18 productions (start state = S[])
+        S[] -> NP[] VP[]
+        PP[] -> Prep[] NP[]
+        NP[] -> NP[] PP[]
+        VP[] -> VP[] PP[]
+        VP[] -> Verb[] NP[]
+        VP[] -> Verb[]
+        NP[] -> Det[pl=?x] Noun[pl=?x]
+        NP[] -> 'John'
+        NP[] -> 'I'
+        Det[] -> 'the'
+        Det[] -> 'my'
+        Det[-pl] -> 'a'
+        Noun[-pl] -> 'dog'
+        Noun[-pl] -> 'cookie'
+        Verb[] -> 'ate'
+        Verb[] -> 'saw'
+        Prep[] -> 'with'
+        Prep[] -> 'under'
     <BLANKLINE>
-    * FeatureBottomUpLeftCornerChartParser
+    * FeatureChartParser
     Sentence: I saw John with a dog
     |.I.s.J.w.a.d.|
     |[-] . . . . .| [0:1] 'I'
@@ -879,113 +794,77 @@ Bottom-Up Left-Corner.
         (VP[] (Verb[] saw) (NP[] John))
         (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog)))))
 
-Earley.
 
-    >>> nltk.parse.featurechart.demo(should_print_times=False, 
-    ...                              should_print_grammar=False, trace=1,
-    ...                              parser=nltk.FeatureEarleyChartParser,
-    ...                              sent='I saw John with a dog')
-    <BLANKLINE>
-    * FeatureEarleyChartParser
-    Sentence: I saw John with a dog
-    |.I.s.J.w.a.d.|
-    |[-] . . . . .| [0:1] 'I'
-    |. [-] . . . .| [1:2] 'saw'
-    |. . [-] . . .| [2:3] 'John'
-    |. . . [-] . .| [3:4] 'with'
-    |. . . . [-] .| [4:5] 'a'
-    |. . . . . [-]| [5:6] 'dog'
-    |> . . . . . .| [0:0] [INIT][] -> * S[] {}
-    |> . . . . . .| [0:0] S[] -> * NP[] VP[] {}
-    |> . . . . . .| [0:0] NP[] -> * NP[] PP[] {}
-    |> . . . . . .| [0:0] NP[] -> * Det[pl=?x] Noun[pl=?x] {}
-    |> . . . . . .| [0:0] NP[] -> * 'John' {}
-    |> . . . . . .| [0:0] NP[] -> * 'I' {}
-    |> . . . . . .| [0:0] Det[] -> * 'the' {}
-    |> . . . . . .| [0:0] Det[] -> * 'my' {}
-    |> . . . . . .| [0:0] Det[-pl] -> * 'a' {}
-    |[-] . . . . .| [0:1] NP[] -> 'I' *
-    |[-> . . . . .| [0:1] S[] -> NP[] * VP[] {}
-    |[-> . . . . .| [0:1] NP[] -> NP[] * PP[] {}
-    |. > . . . . .| [1:1] PP[] -> * Prep[] NP[] {}
-    |. > . . . . .| [1:1] Prep[] -> * 'with' {}
-    |. > . . . . .| [1:1] Prep[] -> * 'under' {}
-    |. > . . . . .| [1:1] VP[] -> * VP[] PP[] {}
-    |. > . . . . .| [1:1] VP[] -> * Verb[] NP[] {}
-    |. > . . . . .| [1:1] VP[] -> * Verb[] {}
-    |. > . . . . .| [1:1] Verb[] -> * 'ate' {}
-    |. > . . . . .| [1:1] Verb[] -> * 'saw' {}
-    |. [-] . . . .| [1:2] Verb[] -> 'saw' *
-    |. [-> . . . .| [1:2] VP[] -> Verb[] * NP[] {}
-    |. [-] . . . .| [1:2] VP[] -> Verb[] *
-    |[---] . . . .| [0:2] S[] -> NP[] VP[] *
-    |. [-> . . . .| [1:2] VP[] -> VP[] * PP[] {}
-    |. . > . . . .| [2:2] PP[] -> * Prep[] NP[] {}
-    |. . > . . . .| [2:2] Prep[] -> * 'with' {}
-    |. . > . . . .| [2:2] Prep[] -> * 'under' {}
-    |[---] . . . .| [0:2] [INIT][] -> S[] *
-    |. . > . . . .| [2:2] NP[] -> * NP[] PP[] {}
-    |. . > . . . .| [2:2] NP[] -> * Det[pl=?x] Noun[pl=?x] {}
-    |. . > . . . .| [2:2] NP[] -> * 'John' {}
-    |. . > . . . .| [2:2] NP[] -> * 'I' {}
-    |. . > . . . .| [2:2] Det[] -> * 'the' {}
-    |. . > . . . .| [2:2] Det[] -> * 'my' {}
-    |. . > . . . .| [2:2] Det[-pl] -> * 'a' {}
-    |. . [-] . . .| [2:3] NP[] -> 'John' *
-    |. [---] . . .| [1:3] VP[] -> Verb[] NP[] *
-    |. . [-> . . .| [2:3] NP[] -> NP[] * PP[] {}
-    |. . . > . . .| [3:3] PP[] -> * Prep[] NP[] {}
-    |. . . > . . .| [3:3] Prep[] -> * 'with' {}
-    |. . . > . . .| [3:3] Prep[] -> * 'under' {}
-    |[-----] . . .| [0:3] S[] -> NP[] VP[] *
-    |. [---> . . .| [1:3] VP[] -> VP[] * PP[] {}
-    |[-----] . . .| [0:3] [INIT][] -> S[] *
-    |. . . [-] . .| [3:4] Prep[] -> 'with' *
-    |. . . [-> . .| [3:4] PP[] -> Prep[] * NP[] {}
-    |. . . . > . .| [4:4] NP[] -> * NP[] PP[] {}
-    |. . . . > . .| [4:4] NP[] -> * Det[pl=?x] Noun[pl=?x] {}
-    |. . . . > . .| [4:4] NP[] -> * 'John' {}
-    |. . . . > . .| [4:4] NP[] -> * 'I' {}
-    |. . . . > . .| [4:4] Det[] -> * 'the' {}
-    |. . . . > . .| [4:4] Det[] -> * 'my' {}
-    |. . . . > . .| [4:4] Det[-pl] -> * 'a' {}
-    |. . . . [-] .| [4:5] Det[-pl] -> 'a' *
-    |. . . . [-> .| [4:5] NP[] -> Det[pl=?x] * Noun[pl=?x] {?x: False}
-    |. . . . . > .| [5:5] Noun[-pl] -> * 'dog' {}
-    |. . . . . > .| [5:5] Noun[-pl] -> * 'cookie' {}
-    |. . . . . [-]| [5:6] Noun[-pl] -> 'dog' *
-    |. . . . [---]| [4:6] NP[] -> Det[-pl] Noun[-pl] *
-    |. . . [-----]| [3:6] PP[] -> Prep[] NP[] *
-    |. . . . [--->| [4:6] NP[] -> NP[] * PP[] {}
-    |. . . . . . >| [6:6] PP[] -> * Prep[] NP[] {}
-    |. . . . . . >| [6:6] Prep[] -> * 'with' {}
-    |. . . . . . >| [6:6] Prep[] -> * 'under' {}
-    |. . [-------]| [2:6] NP[] -> NP[] PP[] *
-    |. [---------]| [1:6] VP[] -> VP[] PP[] *
-    |[===========]| [0:6] S[] -> NP[] VP[] *
-    |. [--------->| [1:6] VP[] -> VP[] * PP[] {}
-    |[===========]| [0:6] [INIT][] -> S[] *
-    |. [---------]| [1:6] VP[] -> Verb[] NP[] *
-    |. . [------->| [2:6] NP[] -> NP[] * PP[] {}
-    |[===========]| [0:6] S[] -> NP[] VP[] *
-    |. [--------->| [1:6] VP[] -> VP[] * PP[] {}
-    (S[]
-      (NP[] I)
-      (VP[]
-        (Verb[] saw)
-        (NP[]
-          (NP[] John)
-          (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog))))))
-    (S[]
-      (NP[] I)
-      (VP[]
-        (VP[] (Verb[] saw) (NP[] John))
-        (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog)))))
+Unit tests for the Feature Chart Parser classes
+-----------------------------------------------
 
-Tests for loading grammar files
--------------------------------
+The list of parsers we want to test.
 
-    >>> from nltk.parse import FeatureEarleyChartParser
-    >>> from nltk import data
-    >>> feat_cfg = data.load('grammars/book_grammars/feat0.fcfg')
-    >>> fcp = FeatureEarleyChartParser(feat_cfg)
+    >>> parsers = [nltk.FeatureChartParser,
+    ...            nltk.FeatureTopDownChartParser,
+    ...            nltk.FeatureBottomUpChartParser,
+    ...            nltk.FeatureBottomUpLeftCornerChartParser,
+    ...            nltk.FeatureIncrementalChartParser,
+    ...            nltk.FeatureEarleyChartParser,
+    ...            nltk.FeatureIncrementalTopDownChartParser,
+    ...            nltk.FeatureIncrementalBottomUpChartParser,
+    ...            nltk.FeatureIncrementalBottomUpLeftCornerChartParser,
+    ...            ]
+
+A helper function that tests each parser on the given grammar and sentence.
+We check that the number of trees are correct, and that all parsers 
+return the same trees. Otherwise an error is printed.
+
+    >>> def unittest(grammar, sentence, nr_trees):
+    ...     sentence = sentence.split()
+    ...     trees = None
+    ...     for P in parsers:
+    ...         result = P(grammar).nbest_parse(sentence)
+    ...         if len(result) != nr_trees:
+    ...             print "Wrong nr of trees:", len(result)
+    ...         elif trees is None:
+    ...             trees = result
+    ...         elif result != trees:
+    ...             print "Trees differ for parser:", P.__name__
+
+This grammar tests that variables in different grammar rules are renamed 
+before unification. (The problematic variable is in this case ?X).
+
+    >>> whatwasthat = nltk.parse_fcfg('''
+    ... S[] -> NP[num=?N] VP[num=?N, slash=?X]
+    ... NP[num=?X] -> "what"
+    ... NP[num=?X] -> "that"
+    ... VP[num=?P, slash=none] -> V[num=?P] NP[]
+    ... V[num=sg] -> "was"
+    ... ''')
+    >>> unittest(whatwasthat, "what was that", 1)
+
+This grammar tests that the same rule can be used in different places
+in another rule, and that the variables are properly renamed.
+
+    >>> thislovesthat = nltk.parse_fcfg('''
+    ... S[] -> NP[case=nom] V[] NP[case=acc]
+    ... NP[case=?X] -> Pron[case=?X]
+    ... Pron[] -> "this"
+    ... Pron[] -> "that"
+    ... V[] -> "loves"
+    ... ''')
+    >>> unittest(thislovesthat, "this loves that", 1)
+
+
+Tests for loading feature grammar files
+---------------------------------------
+
+Alternative 1: first load the grammar, then create the parser.
+
+    >>> fcfg = nltk.data.load('grammars/book_grammars/feat0.fcfg')
+    >>> fcp1 = nltk.FeatureChartParser(fcfg)
+    >>> print type(fcp1)
+    <class 'nltk.parse.featurechart.FeatureChartParser'>
+
+Alternative 2: directly load the parser.
+
+    >>> fcp2 = nltk.load_parser('grammars/book_grammars/feat0.fcfg')
+    >>> print type(fcp2)
+    <class 'nltk.parse.featurechart.FeatureChartParser'>
+
