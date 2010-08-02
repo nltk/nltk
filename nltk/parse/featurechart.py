@@ -16,7 +16,7 @@ feature structures as nodes.
 
 import yaml, sys
 
-from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE
+from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
 from nltk.sem import logic
 from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
 from nltk.compat import defaultdict
@@ -67,6 +67,34 @@ class FeatureTreeEdge(TreeEdge):
         TreeEdge.__init__(self, span, lhs, rhs, dot)
         self._bindings = bindings
 
+    # [staticmethod]
+    def from_production(production, index):
+        """
+        @return: A new C{TreeEdge} formed from the given production.
+            The new edge's left-hand side and right-hand side will
+            be taken from C{production}; its span will be 
+            C{(index,index)}; and its dot position will be C{0}.
+        @rtype: L{TreeEdge}
+        """
+        return FeatureTreeEdge(span=(index, index), lhs=production.lhs(),
+                               rhs=production.rhs(), dot=0)
+    from_production = staticmethod(from_production)
+
+    def move_dot_forward(self, new_end, bindings=None):
+        """
+        @return: A new C{FeatureTreeEdge} formed from this edge.
+            The new edge's dot position is increased by C{1}, 
+            and its end index will be replaced by C{new_end}.
+        @rtype: L{FeatureTreeEdge}
+        @param new_end: The new end index.
+        @type new_end: C{int}
+        @param bindings: Bindings for the new edge.
+        @type bindings: C{dict}
+        """
+        return FeatureTreeEdge(span=(self._span[0], new_end),
+                               lhs=self._lhs, rhs=self._rhs,
+                               dot=self._dot+1, bindings=bindings)
+
     def _bind(self, nt, bindings):
         if not isinstance(nt, FeatStructNonterminal): return nt
         return nt.substitute_bindings(bindings)
@@ -79,6 +107,15 @@ class FeatureTreeEdge(TreeEdge):
         Return a copy of this edge's bindings dictionary.
         """
         return self._bindings.copy()
+
+    def variables(self):
+        """
+        @return: The set of variables used by this edge.
+        @rtype: C{set} of L{Variable}
+        """
+        return find_variables([self._lhs] + list(self._rhs) +
+                              self._bindings.keys() + self._bindings.values(),
+                              fs_class=FeatStruct)
 
     def __str__(self):
         if self.is_complete():
@@ -101,9 +138,12 @@ class FeatureTreeEdge(TreeEdge):
         return hash((self._lhs, self._rhs, self._span, self._dot,
                      tuple(sorted(self._bindings))))
 
+
 #////////////////////////////////////////////////////////////
 # A specialized Chart for feature grammars
 #////////////////////////////////////////////////////////////
+
+# TODO: subsumes check when adding new edges
 
 class FeatureChart(Chart):
     """
@@ -186,7 +226,6 @@ class FeatureChart(Chart):
 # Fundamental Rule
 #////////////////////////////////////////////////////////////
 
-# TODO: Clean this mess up
 class FeatureFundamentalRule(FundamentalRule):
     """
     A specialized version of the fundamental rule that operates on
@@ -211,34 +250,30 @@ class FeatureFundamentalRule(FundamentalRule):
                 right_edge.is_complete() and
                 isinstance(left_edge, FeatureTreeEdge)):
             return
+        found = right_edge.lhs()
+        next = left_edge.next()
         if isinstance(right_edge, FeatureTreeEdge):
-            if not (isinstance(left_edge.next(), FeatStructNonterminal) and
-                    left_edge.next()[TYPE] == right_edge.lhs()[TYPE]):
-                return
+            if not is_nonterminal(next): return
+            if left_edge.next()[TYPE] != right_edge.lhs()[TYPE]: return
+            # Create a copy of the bindings.
+            bindings = left_edge.bindings()
+            # We rename vars here, because we don't want variables
+            # from the two different productions to match.
+            found = found.rename_variables(used_vars=left_edge.variables())
             # Unify B1 (left_edge.next) with B2 (right_edge.lhs) to
             # generate B3 (result).
-            bindings = left_edge.bindings() # creates a copy.
-            result = unify(left_edge.next(), right_edge.lhs(),
-                           bindings, rename_vars=False)
+            result = unify(next, found, bindings, rename_vars=False)
             if result is None: return
         else:
-            if not (left_edge.next() == right_edge.lhs()):
-                return
-            bindings = left_edge.bindings() # creates a copy.
+            if next != found: return
+            # Create a copy of the bindings.
+            bindings = left_edge.bindings()
 
         # Construct the new edge.
-        new_edge = FeatureTreeEdge(span=(left_edge.start(), right_edge.end()),
-                                   lhs=left_edge.lhs(), rhs=left_edge.rhs(),
-                                   dot=left_edge.dot()+1, bindings=bindings)
+        new_edge = left_edge.move_dot_forward(right_edge.end(), bindings)
         
         # Add it to the chart, with appropriate child pointers.
-        changed_chart = False
-        for cpl1 in chart.child_pointer_lists(left_edge):
-            if chart.insert(new_edge, cpl1+(right_edge,)):
-                changed_chart = True
-
-        # If we changed the chart, then generate the edge.
-        if changed_chart: 
+        if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
             yield new_edge
 
 class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
@@ -270,17 +305,16 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
 
 class FeatureTopDownInitRule(TopDownInitRule):
     def apply_iter(self, chart, grammar):
-        root = FeatStructNonterminal('[*type*="[INIT]"]')
-        edge = FeatureTreeEdge((0,0), root, (grammar.start(),), 0)
-        if chart.insert(edge, ()):
-            yield edge
+        for prod in grammar.productions(lhs=grammar.start()):
+            new_edge = FeatureTreeEdge.from_production(prod, 0)
+            if chart.insert(new_edge, ()):
+                yield new_edge
 
-# TODO: Add a cached version of this rule:
-class FeatureTopDownPredictRule(TopDownPredictRule):
+class FeatureTopDownPredictRule(CachedTopDownPredictRule):
     """
-    A specialized version of the top down predict rule that operates on
-    nonterminals whose symbols are C{FeatStructNonterminal}s.  Rather
-    tha simply comparing the nonterminals for equality, they are
+    A specialized version of the (cached) top down predict rule that operates
+    on nonterminals whose symbols are C{FeatStructNonterminal}s.  Rather
+    than simply comparing the nonterminals for equality, they are
     unified.
 
     The top down expand rule states that:
@@ -292,16 +326,33 @@ class FeatureTopDownPredictRule(TopDownPredictRule):
     """
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        #if not isinstance(edge.next(), FeatStructNonterminal): return
+        next, index = edge.next(), edge.end()
+        if not is_nonterminal(next): return
+
+        # If we've already applied this rule to an edge with the same
+        # next & end, and the chart & grammar have not changed, then
+        # just return (no new edges to add).
+        done = self._done.get((next, index), (None,None))
+        if done[0] is chart and done[1] is grammar: return
+        
         for prod in grammar.productions(lhs=edge.next()):
-            # Note: we rename vars here, because we don't want variables
+            # If the left corner in the predicted production is 
+            # leaf, it must match with the input.
+            if prod.rhs():
+                first = prod.rhs()[0]
+                if is_terminal(first):
+                    if index >= chart.num_leaves() or first != chart.leaf(index): continue
+            
+            # We rename vars here, because we don't want variables
             # from the two different productions to match.
-            if (unify(prod.lhs(), edge.next_with_bindings(), rename_vars=True)):
-                new_edge = FeatureTreeEdge(span=(edge.end(), edge.end()),
-                                           lhs=prod.lhs(),
-                                           rhs=prod.rhs(), dot=0)
+            if unify(prod.lhs(), edge.next_with_bindings(), rename_vars=True):
+                new_edge = FeatureTreeEdge.from_production(prod, edge.end())
                 if chart.insert(new_edge, ()):
                     yield new_edge
+        
+        # Record the fact that we've applied this rule.
+        self._done[next, index] = (chart, grammar)
+
 
 #////////////////////////////////////////////////////////////
 # Bottom-Up Prediction
@@ -310,44 +361,44 @@ class FeatureTopDownPredictRule(TopDownPredictRule):
 class FeatureBottomUpPredictRule(BottomUpPredictRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_incomplete(): return
-        new_span = (edge.start(), edge.start())
-        if isinstance(edge, FeatureTreeEdge): 
-            for prod in grammar.productions(rhs=edge.lhs()):
+        for prod in grammar.productions(rhs=edge.lhs()):
+            if isinstance(edge, FeatureTreeEdge): 
                 next = prod.rhs()[0]
-                if not isinstance(next, FeatStructNonterminal): continue
-                new_edge = FeatureTreeEdge(new_span, prod.lhs(), prod.rhs())
-                if chart.insert(new_edge, ()):
-                    yield new_edge
-        else: # The edge is a LeafEdge:
-            for prod in grammar.productions(rhs=edge.lhs()):
-                new_edge = FeatureTreeEdge(new_span, prod.lhs(), prod.rhs())
-                if chart.insert(new_edge, ()):
-                    yield new_edge
+                if not is_nonterminal(next): continue
+            
+            new_edge = FeatureTreeEdge.from_production(prod, edge.start())
+            if chart.insert(new_edge, ()):
+                yield new_edge
 
 class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_incomplete(): return
-        if isinstance(edge, FeatureTreeEdge): 
-            for prod in grammar.productions(rhs=edge.lhs()):
+        found = edge.lhs()
+        for prod in grammar.productions(rhs=found):
+            bindings = {}
+            if isinstance(edge, FeatureTreeEdge): 
                 next = prod.rhs()[0]
-                if not isinstance(next, FeatStructNonterminal): continue
-                bindings = {}
-                if unify(next, edge.lhs(), bindings):
-                    new_edge = FeatureTreeEdge(edge.span(), prod.lhs(), prod.rhs(), 1, bindings)
-                    if chart.insert(new_edge, (edge,)):
-                        yield new_edge
-        else: # The edge is a LeafEdge:
-            for prod in grammar.productions(rhs=edge.lhs()):
-                new_edge = FeatureTreeEdge(edge.span(), prod.lhs(), prod.rhs(), 1)
-                if chart.insert(new_edge, (edge,)):
-                    yield new_edge
+                if not is_nonterminal(next): continue
+                
+                # We rename vars here, because we don't want variables
+                # from the two different productions to match.
+                used_vars = find_variables((prod.lhs(),) + prod.rhs(),
+                                           fs_class=FeatStruct)
+                found = found.rename_variables(used_vars=used_vars)
+                
+                result = unify(next, found, bindings, rename_vars=False)
+                if result is None: continue
+            
+            new_edge = (FeatureTreeEdge.from_production(prod, edge.start())
+                        .move_dot_forward(edge.end(), bindings))
+            if chart.insert(new_edge, (edge,)):
+                yield new_edge
 
 class FeatureEmptyPredictRule(EmptyPredictRule):
     def apply_iter(self, chart, grammar):
         for prod in grammar.productions(empty=True):
             for index in xrange(chart.num_leaves() + 1):
-                new_edge = FeatureTreeEdge(span=(index, index), lhs=prod.lhs(), 
-                                           rhs=prod.rhs())
+                new_edge = FeatureTreeEdge.from_production(prod, index)
                 if chart.insert(new_edge, ()):
                     yield new_edge
 
