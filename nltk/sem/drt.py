@@ -109,6 +109,19 @@ class AbstractDrs(object):
     def resolve_anaphora(self):
         return resolve_anaphora(self)
 
+    def pprint(self):
+        """
+        Draw the DRS
+        """
+        print self.pretty()
+
+    def pretty(self):
+        """
+        Draw the DRS
+        @return: the pretty print string
+        """
+        return '\n'.join(self._pretty())
+
     def draw(self):
         DrsDrawer(self).draw()
         
@@ -189,7 +202,17 @@ class DRS(AbstractDrs, Expression):
         for ref in self.refs[::-1]:
             accum = ExistsExpression(ref, accum)
         return accum
-    
+
+    def _pretty(self):
+        refs_line = ' '.join(map(str, self.refs))
+        cond_lines = sum([filter(str.strip, cond._pretty()) for cond in self.conds], [])
+        length = max([len(refs_line)] + map(len, cond_lines))
+        return [' _' + '_'*length + '_ ',
+                '| ' + refs_line + ' '*(length-len(refs_line))  + ' |',
+                '|-' + '-'*length + '-|'] + \
+               ['| ' + line + ' '*(length-len(line)) + ' |' for line in cond_lines] + \
+               ['|_' + '_'*length + '_|']
+
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
         If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
@@ -229,6 +252,11 @@ class DrtAbstractVariableExpression(AbstractDrs, AbstractVariableExpression):
         """@see: AbstractExpression.get_refs()"""
         return []
     
+    def _pretty(self):
+        s = str(self)
+        blank = ' '*len(s)
+        return [blank, blank, s, blank]
+    
 class DrtIndividualVariableExpression(DrtAbstractVariableExpression, IndividualVariableExpression):
     pass
 
@@ -249,6 +277,13 @@ class DrtNegatedExpression(AbstractDrs, NegatedExpression):
         """@see: AbstractExpression.get_refs()"""
         return self.term.get_refs(recursive)
 
+    def _pretty(self):
+        term_lines = self.term._pretty()
+        return ['    ' + line for line in term_lines[:2]] + \
+               ['__  ' + term_lines[2]] + \
+               ['  | ' + term_lines[3]] + \
+               ['    ' + line for line in term_lines[4:]]
+
 class DrtLambdaExpression(AbstractDrs, LambdaExpression):
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
@@ -261,7 +296,20 @@ class DrtLambdaExpression(AbstractDrs, LambdaExpression):
     def fol(self):
         return LambdaExpression(self.variable, self.term.fol())
 
-class DrtBooleanExpression(AbstractDrs, BooleanExpression):
+    def _pretty(self):
+        variables = [self.variable]
+        term = self.term
+        while term.__class__ == self.__class__:
+            variables.append(term.variable)
+            term = term.term
+        var_string = ' '.join(map(str, variables)) + DrtTokens.DOT
+        term_lines = term._pretty()
+        return ['    ' + ' '*len(var_string) + line for line in term_lines[:1]] + \
+               [' \  ' + ' '*len(var_string) + term_lines[1]] + \
+               [' /\ ' + var_string          + term_lines[2]] + \
+               ['    ' + ' '*len(var_string) + line for line in term_lines[3:]]
+
+class DrtBinaryExpression(AbstractDrs, BinaryExpression):
     def get_refs(self, recursive=False):
         """@see: AbstractExpression.get_refs()"""
         if recursive:
@@ -269,9 +317,31 @@ class DrtBooleanExpression(AbstractDrs, BooleanExpression):
         else:
             return []
 
+    def _pretty(self):
+        first_lines = self._pretty_subex(self.first)
+        second_lines = self._pretty_subex(self.second)
+        max_lines = max(len(first_lines), len(second_lines))
+        first_lines = first_lines + [' '*len(first_lines[0])]*(max_lines-len(first_lines))
+        second_lines = second_lines + [' '*len(second_lines[0])]*(max_lines-len(second_lines))
+        op = self.getOp()
+        return [' ' + first_line + ' ' + ' '*len(op) + ' ' + second_line     + ' ' for first_line, second_line in zip(first_lines, second_lines)[:2]] + \
+               ['(' + first_lines[2]   + ' ' + op    + ' ' + second_lines[2] + ')'] + \
+               [' ' + first_line + ' ' + ' '*len(op) + ' ' + second_line     + ' ' for first_line, second_line in zip(first_lines, second_lines)[3:]]
+    
+    def _pretty_subex(self, subex):
+        return subex._pretty()
+
+class DrtBooleanExpression(DrtBinaryExpression, BooleanExpression):
+    pass
+
 class DrtOrExpression(DrtBooleanExpression, OrExpression):
     def fol(self):
         return OrExpression(self.first.fol(), self.second.fol())
+
+    def _pretty_subex(self, subex):
+        if isinstance(subex, DrtOrExpression):
+            return [line[1:-1] for line in subex._pretty()]
+        return DrtBooleanExpression._pretty_subex(self, subex)
 
 class DrtImpExpression(DrtBooleanExpression, ImpExpression):
     def fol(self):
@@ -296,16 +366,14 @@ class DrtIffExpression(DrtBooleanExpression, IffExpression):
     def fol(self):
         return IffExpression(self.first.fol(), self.second.fol())
 
-class DrtEqualityExpression(AbstractDrs, EqualityExpression):
+    def _pretty_subex(self, subex):
+        if isinstance(subex, DrtIffExpression):
+            return [line[1:-1] for line in subex._pretty()]
+        return DrtBooleanExpression._pretty_subex(self, subex)
+
+class DrtEqualityExpression(DrtBinaryExpression, EqualityExpression):
     def fol(self):
         return EqualityExpression(self.first.fol(), self.second.fol())
-
-    def get_refs(self, recursive=False):
-        """@see: AbstractExpression.get_refs()"""
-        if recursive:
-            return self.first.get_refs(True) + self.second.get_refs(True)
-        else:
-            return []
 
 class ConcatenationDRS(DrtBooleanExpression):
     """DRS of the form '(DRS + DRS)'"""
@@ -385,10 +453,14 @@ class ConcatenationDRS(DrtBooleanExpression):
     def fol(self):
         return AndExpression(self.first.fol(), self.second.fol())
 
+    def _pretty_subex(self, subex):
+        if isinstance(subex, ConcatenationDRS):
+            return [line[1:-1] for line in subex._pretty()]
+        return DrtBooleanExpression._pretty_subex(self, subex)
+
 class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
     def fol(self):
-        return ApplicationExpression(self.function.fol(), 
-                                           self.argument.fol())
+        return ApplicationExpression(self.function.fol(), self.argument.fol())
 
     def get_refs(self, recursive=False):
         """@see: AbstractExpression.get_refs()"""
@@ -396,6 +468,17 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
             return self.function.get_refs(True) + self.argument.get_refs(True)
         else:
             return []
+        
+    def _pretty(self):
+        function, args = self.uncurry()
+        function_lines = function._pretty()
+        args_lines = [arg._pretty() for arg in args]
+        max_lines = max(map(len, [function_lines] + args_lines))
+        function_lines = function_lines + [' '*len(function_lines[0])]*(max_lines-len(function_lines))
+        args_lines = [arg_lines + [' '*len(arg_lines[0])]*(max_lines-len(arg_lines)) for arg_lines in args_lines]
+        return [func_line         + ' ' + ' '.join(args_line) + ' ' for func_line, args_line in zip(function_lines, zip(*args_lines))[:2]] + \
+               [function_lines[2] + '(' + ','.join(zip(*args_lines)[2]) + ')'] + \
+               [func_line         + ' ' + ' '.join(args_line) + ' ' for func_line, args_line in zip(function_lines, zip(*args_lines))[3:]]
 
 class PossibleAntecedents(list, AbstractDrs, Expression):
     def free(self, indvar_only=True):
@@ -412,6 +495,9 @@ class PossibleAntecedents(list, AbstractDrs, Expression):
             else:
                 self.append(item)
         return result
+    
+    def _pretty(self):
+        return [str(self)]
     
     def __str__(self):
         return '[' + ','.join(map(str, self)) + ']'
@@ -877,6 +963,13 @@ def demo():
     print resolve_anaphora(parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])'))
     print resolve_anaphora(parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])'))
     print resolve_anaphora(parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))'))
+    
+    print '='*20 + 'Test pprint()' + '='*20
+    parser.parse(r"([],[])").pprint()
+    parser.parse(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pprint()
+    parser.parse(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pprint()
+    parser.parse(r"([],[([x],[]) <-> ([y],[]) <-> ([z],[dog(z), walk(z)])])").pprint()
+    parser.parse(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pprint()
 
         
 def test_draw():
@@ -900,5 +993,11 @@ def test_draw():
         d = DrtParser().parse(e)
         d.draw()
 
+
 if __name__ == '__main__':
-    demo()
+#    demo()
+
+    from nltk.parse import load_parser
+    parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
+    trees = parser.nbest_parse(['a','dog','barks'])
+    print trees[0].node['SEM']
