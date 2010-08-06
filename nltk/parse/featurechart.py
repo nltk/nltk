@@ -284,20 +284,23 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     unified. 
     """
     _fundamental_rule = FeatureFundamentalRule()
-    def apply_iter(self, chart, grammar, edge):
+
+    def _apply_complete(self, chart, grammar, right_edge):
         fr = self._fundamental_rule
-        if edge.is_complete():
-            for left_edge in chart.select(end=edge.start(), 
-                                          is_complete=False,
-                                          next=edge.lhs()):
-                for new_edge in fr.apply_iter(chart, grammar, left_edge, edge):
-                    yield new_edge
-        else:
-            for right_edge in chart.select(start=edge.end(), 
-                                           is_complete=True,
-                                           lhs=edge.next()):
-                for new_edge in fr.apply_iter(chart, grammar, edge, right_edge):
-                    yield new_edge
+        for left_edge in chart.select(end=right_edge.start(), 
+                                      is_complete=False,
+                                      next=right_edge.lhs()):
+            for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
+                yield new_edge
+
+    def _apply_incomplete(self, chart, grammar, left_edge):
+        fr = self._fundamental_rule
+        for right_edge in chart.select(start=left_edge.end(), 
+                                       is_complete=True,
+                                       lhs=left_edge.next()):
+            for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
+                yield new_edge
+
 
 #////////////////////////////////////////////////////////////
 # Top-Down Prediction
@@ -341,7 +344,8 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
             if prod.rhs():
                 first = prod.rhs()[0]
                 if is_terminal(first):
-                    if index >= chart.num_leaves() or first != chart.leaf(index): continue
+                    if index >= chart.num_leaves(): continue
+                    if first != chart.leaf(index): continue
             
             # We rename vars here, because we don't want variables
             # from the two different productions to match.
