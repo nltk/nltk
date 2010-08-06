@@ -152,30 +152,38 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
 #////////////////////////////////////////////////////////////
 
 class CompleteFundamentalRule(SingleEdgeFundamentalRule):
-    def apply_iter(self, chart, grammar, edge):
-        if edge.is_complete(): 
-            for new_edge in self._apply_complete(chart, edge):
+    def _apply_incomplete(self, chart, grammar, left_edge):
+        end = left_edge.end()
+        # When the chart is incremental, we only have to look for 
+        # empty complete edges here.
+        for right_edge in chart.select(start=end, end=end,
+                                       is_complete=True,
+                                       lhs=left_edge.next()):
+            new_edge = left_edge.move_dot_forward(right_edge.end())
+            if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                 yield new_edge
 
 class CompleterRule(CompleteFundamentalRule):
+    _fundamental_rule = CompleteFundamentalRule()
     def apply_iter(self, chart, grammar, edge):
         if not isinstance(edge, LeafEdge): 
-            if edge.is_complete(): 
-                for new_edge in self._apply_complete(chart, edge):
-                    yield new_edge
+            for new_edge in self._fundamental_rule.apply_iter(chart, grammar, edge):
+                yield new_edge
 
 class ScannerRule(CompleteFundamentalRule):
+    _fundamental_rule = CompleteFundamentalRule()
     def apply_iter(self, chart, grammar, edge):
         if isinstance(edge, LeafEdge): 
-            if edge.is_complete(): 
-                for new_edge in self._apply_complete(chart, edge):
-                    yield new_edge
+            for new_edge in self._fundamental_rule.apply_iter(chart, grammar, edge):
+                yield new_edge
 
 class PredictorRule(CachedTopDownPredictRule):
     pass
 
 class FilteredCompleteFundamentalRule(FilteredSingleEdgeFundamentalRule):
     def apply_iter(self, chart, grammar, edge):
+        # Since the Filtered rule only works for grammars without empty productions,
+        # we only have to bother with complete edges here.
         if edge.is_complete():
             for new_edge in self._apply_complete(chart, grammar, edge):
                 yield new_edge
@@ -185,29 +193,22 @@ class FilteredCompleteFundamentalRule(FilteredSingleEdgeFundamentalRule):
 #////////////////////////////////////////////////////////////
 
 class FeatureCompleteFundamentalRule(FeatureSingleEdgeFundamentalRule):
-    _fundamental_rule = FeatureFundamentalRule()
-    def apply_iter(self, chart, grammar, edge):
-        if edge.is_complete(): 
-            fr = self._fundamental_rule
-            for left_edge in chart.select(end=edge.start(), 
-                                          is_complete=False,
-                                          next=edge.lhs()):
-                for new_edge in fr.apply_iter(chart, grammar, left_edge, edge):
-                    yield new_edge
-
-class FeatureCompleterRule(FeatureCompleteFundamentalRule):
-    _fundamental_rule = FeatureCompleteFundamentalRule()
-    def apply_iter(self, chart, grammar, edge):
-        if not isinstance(edge, LeafEdge): 
-            for new_edge in self._fundamental_rule.apply_iter(chart, grammar, edge):
+    def _apply_incomplete(self, chart, grammar, left_edge):
+        fr = self._fundamental_rule
+        end = left_edge.end()
+        # When the chart is incremental, we only have to look for 
+        # empty complete edges here.
+        for right_edge in chart.select(start=end, end=end, 
+                                       is_complete=True,
+                                       lhs=left_edge.next()):
+            for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
-class FeatureScannerRule(FeatureCompleteFundamentalRule):
+class FeatureCompleterRule(CompleterRule):
     _fundamental_rule = FeatureCompleteFundamentalRule()
-    def apply_iter(self, chart, grammar, edge):
-        if isinstance(edge, LeafEdge): 
-            for new_edge in self._fundamental_rule.apply_iter(chart, grammar, edge):
-                yield new_edge
+
+class FeatureScannerRule(ScannerRule):
+    _fundamental_rule = FeatureCompleteFundamentalRule()
 
 class FeaturePredictorRule(FeatureTopDownPredictRule): 
     pass
@@ -235,7 +236,6 @@ BU_LC_INCREMENTAL_STRATEGY = [LeafInitRule(),
                               CompleteFundamentalRule()]
 
 LC_INCREMENTAL_STRATEGY = [LeafInitRule(),
-                           EmptyPredictRule(),
                            FilteredBottomUpPredictCombineRule(),
                            FilteredCompleteFundamentalRule()]
 

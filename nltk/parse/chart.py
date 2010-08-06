@@ -1023,13 +1023,13 @@ class SingleEdgeFundamentalRule(FundamentalRule):
 
     def apply_iter(self, chart, grammar, edge):
         if edge.is_incomplete():
-            for new_edge in self._apply_incomplete(chart, edge):
+            for new_edge in self._apply_incomplete(chart, grammar, edge):
                 yield new_edge
         else:
-            for new_edge in self._apply_complete(chart, edge):
+            for new_edge in self._apply_complete(chart, grammar, edge):
                 yield new_edge
 
-    def _apply_complete(self, chart, right_edge):
+    def _apply_complete(self, chart, grammar, right_edge):
         for left_edge in chart.select(end=right_edge.start(), 
                                       is_complete=False,
                                       next=right_edge.lhs()):
@@ -1037,7 +1037,7 @@ class SingleEdgeFundamentalRule(FundamentalRule):
             if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                 yield new_edge
 
-    def _apply_incomplete(self, chart, left_edge):
+    def _apply_incomplete(self, chart, grammar, left_edge):
         for right_edge in chart.select(start=left_edge.end(), 
                                        is_complete=True,
                                        lhs=left_edge.next()):
@@ -1207,14 +1207,6 @@ class EmptyPredictRule(AbstractChartRule):
 ########################################################################
 
 class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
-    def apply_iter(self, chart, grammar, edge):
-        if edge.is_incomplete():
-            for new_edge in self._apply_incomplete(chart, grammar, edge):
-                yield new_edge
-        else:
-            for new_edge in self._apply_complete(chart, grammar, edge):
-                yield new_edge
-
     def _apply_complete(self, chart, grammar, right_edge):
         end = right_edge.end()
         nexttoken = end < chart.num_leaves() and chart.leaf(end)
