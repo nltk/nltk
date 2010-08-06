@@ -827,6 +827,11 @@ return the same trees. Otherwise an error is printed.
     ...         elif result != trees:
     ...             print "Trees differ for parser:", P.__name__
 
+The demo grammar from before, with an ambiguous sentence.
+
+    >>> isawjohn = nltk.parse.featurechart.demo_grammar()
+    >>> unittest(isawjohn, "I saw John with a dog with my cookie", 5)
+
 This grammar tests that variables in different grammar rules are renamed 
 before unification. (The problematic variable is in this case ?X).
 
