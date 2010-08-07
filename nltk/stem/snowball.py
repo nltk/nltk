@@ -4,6 +4,7 @@
 #
 # Copyright (C) 2001-2010 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
+#         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -25,6 +26,7 @@ For more information take a look into the class C{SnowballStemmer}.
 
 from api import *
 from nltk.corpus import stopwords
+from nltk.stem import porter
 
 
 class SnowballStemmer(StemmerI):
@@ -36,6 +38,11 @@ class SnowballStemmer(StemmerI):
     languages: Danish, Dutch, Finnish, French, German,
     Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian,
     Spanish and Swedish.
+    
+    Furthermore, there is also the original English Porter algorithm:
+
+        Porter, M. \"An algorithm for suffix stripping.\"
+        Program 14.3 (1980): 130-137.
 
     The algorithms have been developed by
     U{Dr Martin Porter<http://tartarus.org/~martin/>}.
@@ -46,11 +53,11 @@ class SnowballStemmer(StemmerI):
 
     The stemmer is invoked as shown below:
 
-    >>> from snowball import SnowballStemmer
+    >>> from nltk import SnowballStemmer
     >>> SnowballStemmer.languages # See which languages are supported
     ('danish', 'dutch', 'finnish', 'french', 'german', 'hungarian',
-     'italian', 'norwegian', 'portuguese", 'romanian', 'russian',
-     'spanish', 'swedish')
+     'italian', 'norwegian', 'porter', 'portuguese", 'romanian', 
+     'russian', 'spanish', 'swedish')
     >>> stemmer = SnowballStemmer("german") # Choose a language
     >>> stemmer.stem(u"Autobahnen") # Stem a word
     u'autobahn'
@@ -67,89 +74,82 @@ class SnowballStemmer(StemmerI):
     """
     
     languages = ("danish", "dutch", "finnish", "french", "german", "hungarian",
-                 "italian", "norwegian", "portuguese", "romanian", "russian",
-                 "spanish", "swedish")
-    
-    def __new__(cls, language, **kwargs):
+                 "italian", "norwegian", "porter", "portuguese", "romanian", 
+                 "russian", "spanish", "swedish")
+
+    def __init__(self, language, ignore_stopwords=False):
         u"""
-        Override the constructor of class L{SnowballStemmer} in order to create
-        an instance of the language's respective subclass.
-        
+        Create a language specific instance of the Snowball stemmer.
+
         @param language: The language whose subclass is instantiated.
         @type language: C{str, unicode}
-        @param kwargs: An arbitrary argument list for keyword arguments.
-        @type kwargs: C{dict}
-        @return: An instance of the language's respective subclass.
-        @rtype: C{class}
+        @param ignore_stopwords: If set to C{True}, stopwords are
+                                 not stemmed and returned unchanged.
+                                 Set to C{False} by default.
+        @type ignore_stopwords: C{bool}
         @raise ValueError: If there is no stemmer for the specified
                            language, a C{ValueError} is raised.
         
         """
-        if language == "danish":
-            return StemmerI.__new__(DanishStemmer)
-        elif language == "dutch":
-            return StemmerI.__new__(DutchStemmer)
-        elif language == "finnish":
-            return StemmerI.__new__(FinnishStemmer)
-        elif language == "french":
-            return StemmerI.__new__(FrenchStemmer)
-        elif language == "german":
-            return StemmerI.__new__(GermanStemmer)
-        elif language == "hungarian":
-            return StemmerI.__new__(HungarianStemmer)
-        elif language == "italian":
-            return StemmerI.__new__(ItalianStemmer)
-        elif language == "norwegian":
-            return StemmerI.__new__(NorwegianStemmer)
-        elif language == "portuguese":
-            return StemmerI.__new__(PortugueseStemmer)
-        elif language == "romanian":
-            return StemmerI.__new__(RomanianStemmer)
-        elif language == "russian":
-            return StemmerI.__new__(RussianStemmer)
-        elif language == "spanish":
-            return StemmerI.__new__(SpanishStemmer)
-        elif language == "swedish":
-            return StemmerI.__new__(SwedishStemmer)
-        else:
-            raise ValueError(u"The language '%s' is not supported."
-                             % language)
+        if language not in self.languages:
+            raise ValueError(u"The language '%s' is not supported." % language)
+        stemmerclass = globals()[language.capitalize() + "Stemmer"]
+        self.stemmer = stemmerclass(ignore_stopwords)
+        self.stem = self.stemmer.stem
+        self.stopwords = self.stemmer.stopwords
 
-    
-    def __init__(self, language, ignore_stopwords=False):
+
+class _LanguageSpecificStemmer(StemmerI):
+    def __init__(self, ignore_stopwords=False):
         u"""
         Create an instance of the Snowball stemmer.
 
-        @param language: The language that is applied for stemming.
-        @type language: C{str, unicode}
         @param ignore_stopwords: If set to C{True}, stopwords are
                                  not stemmed and returned unchanged.
                                  Set to C{False} by default.
         @type ignore_stopwords: C{bool}
 
         """
+        # The language is the name of the class, minus the final "Stemmer".
+        language = type(self).__name__.lower()
+        if language.endswith("stemmer"):
+            language = language[:-7]
+        
+        self.stopwords = set()
         if ignore_stopwords:
-            if language == "romanian":
-                raise ValueError(u"The Romanian stemmer has not yet" +
-                                 u" a list of stopwords. Please set" +
-                                 u" u'ignore_stopwords' to u'False'.")
-            else:
-                self.stopwords = [word.decode("utf-8") for word in
-                                  stopwords.words(language)]
-        else:
-            self.stopwords = set()
-            
-            
+            try:
+                for word in stopwords.words(language):
+                    self.stopwords.add(word.decode("utf-8"))
+            except IOError:
+                raise ValueError("%r has no list of stopwords. Please set"
+                                 " 'ignore_stopwords' to 'False'." % self)
+    
     def __repr__(self):
         u"""
         Print out the string representation of the respective class.
         
         """
         return "<%s>" % type(self).__name__
-            
-            
 
-class _ScandinavianStemmer(SnowballStemmer):
+
+class PorterStemmer(_LanguageSpecificStemmer, porter.PorterStemmer):
+    """
+    A word stemmer based on the original Porter stemming algorithm.
+    
+        Porter, M. \"An algorithm for suffix stripping.\"
+        Program 14.3 (1980): 130-137.
+
+    A few minor modifications have been made to Porter's basic
+    algorithm.  See the source code of the module 
+    L{nltk.stem.porter} for more information.
+
+    """
+    def __init__(self, ignore_stopwords=False):
+        _LanguageSpecificStemmer.__init__(self, ignore_stopwords)
+        porter.PorterStemmer.__init__(self)
+
+
+class _ScandinavianStemmer(_LanguageSpecificStemmer):
     
     u"""
     This subclass encapsulates a method for defining the string region R1.
@@ -193,7 +193,7 @@ class _ScandinavianStemmer(SnowballStemmer):
     
     
     
-class _StandardStemmer(SnowballStemmer):
+class _StandardStemmer(_LanguageSpecificStemmer):
     
     u"""
     This subclass encapsulates two methods for defining the standard versions
@@ -1356,7 +1356,7 @@ class GermanStemmer(_StandardStemmer):
     
     
     
-class HungarianStemmer(SnowballStemmer):
+class HungarianStemmer(_LanguageSpecificStemmer):
     
     u"""
     The Hungarian Snowball stemmer.
@@ -2414,7 +2414,7 @@ class RomanianStemmer(_StandardStemmer):
     
     
     
-class RussianStemmer(SnowballStemmer):
+class RussianStemmer(_LanguageSpecificStemmer):
     
     u"""
     The Russian Snowball stemmer.
@@ -3190,8 +3190,8 @@ class SwedishStemmer(_ScandinavianStemmer):
 
 
         return word
-    
-    
+
+
     
 def demo():
     u"""
@@ -3206,6 +3206,22 @@ def demo():
 
     import re
     from nltk.corpus import udhr
+
+    udhr_corpus = {"danish":     "Danish_Dansk-Latin1",
+                   "dutch":      "Dutch_Nederlands-Latin1",
+                   "finnish":    "Finnish_Suomi-Latin1",
+                   "french":     "French_Francais-Latin1",
+                   "german":     "German_Deutsch-Latin1",
+                   "hungarian":  "Hungarian_Magyar-UTF8",
+                   "italian":    "Italian_Italiano-Latin1",
+                   "norwegian":  "Norwegian-Latin1",
+                   "porter":     "English-Latin1",
+                   "portuguese": "Portuguese_Portugues-Latin1",
+                   "romanian":   "Romanian_Romana-Latin2",
+                   "russian":    "Russian-UTF8",
+                   "spanish":    "Spanish-Latin1",
+                   "swedish":    "Swedish_Svenska-Latin1",
+                   }
 
     print u"\n"
     print u"******************************"
@@ -3222,50 +3238,14 @@ def demo():
 
         if language == u"exit":
             break
-
-        elif language == u"danish":
-            stemmer = SnowballStemmer(u"danish")
-            excerpt = udhr.words(u"Danish_Dansk-Latin1")[:300]
-        elif language == u"dutch":
-            stemmer = SnowballStemmer(u"dutch")
-            excerpt = udhr.words(u"Dutch_Nederlands-Latin1")[:300]
-        elif language == u"finnish":
-            stemmer = SnowballStemmer(u"finnish")
-            excerpt = udhr.words(u"Finnish_Suomi-Latin1")[:300]
-        elif language == u"french":
-            stemmer = SnowballStemmer(u"french")
-            excerpt = udhr.words(u"French_Francais-Latin1")[:300]
-        elif language == u"german":
-            stemmer = SnowballStemmer(u"german")
-            excerpt = udhr.words(u"German_Deutsch-Latin1")[:300]
-        elif language == u"hungarian":
-            stemmer = SnowballStemmer(u"hungarian")
-            excerpt = udhr.words(u"Hungarian_Magyar-UTF8")[:300]
-        elif language == u"italian":
-            stemmer = SnowballStemmer(u"italian")
-            excerpt = udhr.words(u"Italian_Italiano-Latin1")[:300]
-        elif language == u"norwegian":
-            stemmer = SnowballStemmer(u"norwegian")
-            excerpt = udhr.words(u"Norwegian-Latin1")[:300]
-        elif language == u"portuguese":
-            stemmer = SnowballStemmer(u"portuguese")
-            excerpt = udhr.words(u"Portuguese_Portugues-Latin1")[:300]
-        elif language == u"romanian":
-            stemmer = SnowballStemmer(u"romanian")
-            excerpt = udhr.words(u"Romanian_Romana-Latin2")[:300]
-        elif language == u"russian":
-            stemmer = SnowballStemmer(u"russian")
-            excerpt = udhr.words(u"Russian-UTF8")[:300]
-        elif language == u"spanish":
-            stemmer = SnowballStemmer(u"spanish")
-            excerpt = udhr.words(u"Spanish-Latin1")[:300]
-        elif language == u"swedish":
-            stemmer = SnowballStemmer(u"swedish")
-            excerpt = udhr.words(u"Swedish_Svenska-Latin1")[:300]
-        else:
+        
+        if language not in SnowballStemmer.languages:
             print (u"\nOops, there is no stemmer for this language. " +
                    u"Please try again.\n")
             continue
+
+        stemmer = SnowballStemmer(language)
+        excerpt = udhr.words(udhr_corpus[language]) [:300]
 
         stemmed = u" ".join([stemmer.stem(word) for word in excerpt])
         stemmed = re.sub(r"(.{,70})\s", r'\1\n', stemmed+u' ').rstrip()

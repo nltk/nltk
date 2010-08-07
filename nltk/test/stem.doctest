@@ -174,7 +174,7 @@ See which languages are supported.
 
     >>> SnowballStemmer.languages # doctest: +NORMALIZE_WHITESPACE
     ('danish', 'dutch', 'finnish', 'french', 'german',
-    'hungarian', 'italian', 'norwegian', 'portuguese',
+    'hungarian', 'italian', 'norwegian', 'porter', 'portuguese',
     'romanian', 'russian', 'spanish', 'swedish')
 
 Create a new instance of a language specific subclass.
