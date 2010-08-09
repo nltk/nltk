@@ -47,23 +47,43 @@ class Boxer(object):
         """
         Use Boxer to give a first order representation.
         
-        @param input: C{str} Input sentences to parse
+        @param input: C{str} Input sentence to parse
         @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param sentence_id: C{str} An identifer to be inserted to each
-            occurrence-indexed predicate.
+        @param sentence_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
         @return: C{drt.AbstractDrs}
         """
-        return self.batch_interpret([input], occur_index, sentence_id, verbose)[0]
+        return self.batch_interpret_multisentence([[input]], occur_index, sentence_id, verbose)[0]
+    
+    def interpret_multisentence(self, input, occur_index=False, sentence_id=None, verbose=False):
+        """
+        Use Boxer to give a first order representation.
+        
+        @param input: C{list} of C{str} Input sentences to parse as a single discourse
+        @param occur_index: C{boolean} Should predicates be occurrence indexed?
+        @param sentence_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
+        @return: C{drt.AbstractDrs}
+        """
+        return self.batch_interpret_multisentence([input], occur_index, sentence_id, verbose)[0]
         
     def batch_interpret(self, inputs, occur_index=False, sentence_id=None, verbose=False):
         """
         Use Boxer to give a first order representation.
         
-        @param inputs: C{list} of C{str} Input sentences to parse
+        @param inputs: C{list} of C{str} Input sentences to parse as individual discourses
         @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param sentence_id: C{str} An identifer to be inserted to each
-            occurrence-indexed predicate.
+        @param sentence_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
         @return: C{list} of C{drt.AbstractDrs}
+        """
+        return self.batch_interpret_multisentence([[input] for input in inputs], occur_index, sentence_id, verbose)[0]
+
+    def batch_interpret_multisentence(self, inputs, occur_index=False, sentence_id=None, verbose=False):
+        """
+        Use Boxer to give a first order representation.
+        
+        @param inputs: C{list} of C{list} of C{str} Input discourses to parse
+        @param occur_index: C{boolean} Should predicates be occurrence indexed?
+        @param sentence_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
+        @return: C{drt.AbstractDrs}
         """
         _, temp_filename = tempfile.mkstemp(prefix='boxer-', suffix='.in', text=True)
 
@@ -76,13 +96,13 @@ class Boxer(object):
 #            raise UnparseableInputException('Could not parse with candc: "%s"' % input_str)
 
         drs_dict = self._parse_to_drs_dict(boxer_out, occur_index, sentence_id)
-        return [drs_dict.get(i+1, None) for i in range(len(inputs))]
-
+        return [drs_dict.get(i, None) for i in range(len(inputs))]
+        
     def _call_candc(self, inputs, filename, verbose=False):
         """
         Call the C{candc} binary with the given input.
 
-        @param inputs: C{list} of C{str} Input sentences to parse
+        @param inputs: C{list} of C{list} of C{str} Input discourses to parse
         @param filename: C{str} A filename for the output file
         @return: stdout
         """
@@ -93,7 +113,7 @@ class Boxer(object):
         args = ['--models', os.path.join(self._candc_models_path, 'boxer'), 
                 '--output', filename]
 
-        return self._call('\n'.join(inputs), self._candc_bin, args, verbose)
+        return self._call('\n'.join(sum((['<META>%d' % i] + d for i,d in enumerate(inputs)), [])), self._candc_bin, args, verbose)
 
     def _call_boxer(self, filename, verbose=False):
         """
@@ -588,5 +608,6 @@ if __name__ == '__main__':
         print None
     else:
         if options.fol:
-            drs = drs.fol()
-        print drs.normalize()
+            print drs.fol().normalize()
+        else:
+            drs.normalize().pprint()
