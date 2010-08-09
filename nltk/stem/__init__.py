@@ -21,7 +21,6 @@ C{StemmerI} defines a standard interface for stemmers.
 
 from api import *
 from regexp import *
-from porter import *
 from lancaster import *
 from isri import *
 from snowball import *
