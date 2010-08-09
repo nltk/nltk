@@ -173,7 +173,7 @@ Unit tests for Snowball stemmer
 See which languages are supported.
 
     >>> SnowballStemmer.languages # doctest: +NORMALIZE_WHITESPACE
-    ('danish', 'dutch', 'finnish', 'french', 'german',
+    ('danish', 'dutch', 'english', 'finnish', 'french', 'german',
     'hungarian', 'italian', 'norwegian', 'porter', 'portuguese',
     'romanian', 'russian', 'spanish', 'swedish')
 
@@ -193,6 +193,13 @@ Decide not to stem stopwords.
     u'kein'
     >>> stemmer_german2.stem(u"keinen")
     u'keinen'
+
+The 'english' stemmer is better than the original 'porter' stemmer.
+
+    >>> SnowballStemmer("english").stem(u"generously")
+    u'generous'
+    >>> SnowballStemmer("porter").stem(u"generously")
+    u'gener'
 
 Russian words both consisting of Cyrillic and Roman letters can be stemmed.
 
