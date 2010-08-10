@@ -43,51 +43,59 @@ class Boxer(object):
         self._candc_bin = None
         self._candc_models_path = None
     
-    def interpret(self, input, occur_index=False, sentence_id=None, verbose=False):
+    def interpret(self, input, occur_index=False, discourse_id=None, verbose=False):
         """
         Use Boxer to give a first order representation.
         
         @param input: C{str} Input sentence to parse
         @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param sentence_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
+        @param discourse_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
         @return: C{drt.AbstractDrs}
         """
-        return self.batch_interpret_multisentence([[input]], occur_index, sentence_id, verbose)[0]
+        discourse_ids = [discourse_id] if discourse_id is not None else None 
+        return self.batch_interpret_multisentence([[input]], occur_index, discourse_ids, verbose)[0]
     
-    def interpret_multisentence(self, input, occur_index=False, sentence_id=None, verbose=False):
+    def interpret_multisentence(self, input, occur_index=False, discourse_id=None, verbose=False):
         """
         Use Boxer to give a first order representation.
         
         @param input: C{list} of C{str} Input sentences to parse as a single discourse
         @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param sentence_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
+        @param discourse_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
         @return: C{drt.AbstractDrs}
         """
-        return self.batch_interpret_multisentence([input], occur_index, sentence_id, verbose)[0]
+        discourse_ids = [discourse_id] if discourse_id is not None else None
+        return self.batch_interpret_multisentence([input], occur_index, discourse_ids, verbose)[0]
         
-    def batch_interpret(self, inputs, occur_index=False, sentence_id=None, verbose=False):
+    def batch_interpret(self, inputs, occur_index=False, discourse_ids=None, verbose=False):
         """
         Use Boxer to give a first order representation.
         
         @param inputs: C{list} of C{str} Input sentences to parse as individual discourses
         @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param sentence_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
+        @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
         @return: C{list} of C{drt.AbstractDrs}
         """
-        return self.batch_interpret_multisentence([[input] for input in inputs], occur_index, sentence_id, verbose)[0]
+        return self.batch_interpret_multisentence([[input] for input in inputs], occur_index, discourse_ids, verbose)[0]
 
-    def batch_interpret_multisentence(self, inputs, occur_index=False, sentence_id=None, verbose=False):
+    def batch_interpret_multisentence(self, inputs, occur_index=False, discourse_ids=None, verbose=False):
         """
         Use Boxer to give a first order representation.
         
         @param inputs: C{list} of C{list} of C{str} Input discourses to parse
         @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param sentence_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
+        @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
         @return: C{drt.AbstractDrs}
         """
         _, temp_filename = tempfile.mkstemp(prefix='boxer-', suffix='.in', text=True)
 
-        candc_out = self._call_candc(inputs, temp_filename, verbose=verbose)
+        if discourse_ids is not None:
+            assert len(inputs) == len(discourse_ids)
+            assert all(id is not None for id in discourse_ids)
+        else:
+            discourse_ids = map(str, xrange(len(inputs)))
+            
+        candc_out = self._call_candc(inputs, discourse_ids, temp_filename, verbose=verbose)
         boxer_out = self._call_boxer(temp_filename, verbose=verbose)
 
         os.remove(temp_filename)
@@ -95,14 +103,15 @@ class Boxer(object):
 #        if 'ERROR: input file contains no ccg/2 terms.' in boxer_out:
 #            raise UnparseableInputException('Could not parse with candc: "%s"' % input_str)
 
-        drs_dict = self._parse_to_drs_dict(boxer_out, occur_index, sentence_id)
-        return [drs_dict.get(i, None) for i in range(len(inputs))]
+        drs_dict = self._parse_to_drs_dict(boxer_out, occur_index)
+        return [drs_dict.get(id, None) for id in discourse_ids]
         
-    def _call_candc(self, inputs, filename, verbose=False):
+    def _call_candc(self, inputs, discourse_ids, filename, verbose=False):
         """
         Call the C{candc} binary with the given input.
 
         @param inputs: C{list} of C{list} of C{str} Input discourses to parse
+        @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
         @param filename: C{str} A filename for the output file
         @return: stdout
         """
@@ -113,7 +122,7 @@ class Boxer(object):
         args = ['--models', os.path.join(self._candc_models_path, 'boxer'), 
                 '--output', filename]
 
-        return self._call('\n'.join(sum((['<META>%d' % i] + d for i,d in enumerate(inputs)), [])), self._candc_bin, args, verbose)
+        return self._call('\n'.join(sum((["<META>'%s'" % id] + d for d,id in zip(inputs,discourse_ids)), [])), self._candc_bin, args, verbose)
 
     def _call_boxer(self, filename, verbose=False):
         """
@@ -174,7 +183,7 @@ class Boxer(object):
             
         return stdout
 
-    def _parse_to_drs_dict(self, boxer_out, occur_index, sentence_id):
+    def _parse_to_drs_dict(self, boxer_out, occur_index):
         lines = boxer_out.split('\n')
         drs_dict = {}
         i = 0
@@ -182,16 +191,18 @@ class Boxer(object):
             line = lines[i]
             if line.startswith('id('):
                 comma_idx = line.index(',')
-                id = int(line[3:comma_idx])
+                discourse_id = line[3:comma_idx]
+                if discourse_id[0] == "'" and discourse_id[-1] == "'":
+                    discourse_id = discourse_id[1:-1]
                 drs_id = line[comma_idx+1:line.index(')')]
                 line = lines[i+4]
                 assert line.startswith('sem(%s,' % drs_id)
                 line = lines[i+8]
                 assert line.endswith(').')
                 drs_input = line[:-2].strip()
-                drs = BoxerDrsParser(occur_index, sentence_id).parse(drs_input).simplify()
+                drs = BoxerDrsParser(occur_index, discourse_id).parse(drs_input).simplify()
                 drs = self._clean_drs(drs)
-                drs_dict[id] = drs
+                drs_dict[discourse_id] = drs
                 i += 8
             i += 1
         return drs_dict
@@ -224,28 +235,29 @@ class Boxer(object):
 
 
 class BoxerDrsParser(DrtParser):
-    def __init__(self, occur_index=False, sentence_id=None):
+    def __init__(self, occur_index=False, discourse_id=None):
         """
         This class is used to parse the Prolog DRS output from Boxer into an
         NLTK DRS object.  Predicates are parsed into the form:
 
-        <pos>_<word>[[_<sentence id>]_<occur index>]_arity
+        <pos>_<word>[[_<sentence id>]_s<sentence index>_w<word index>]_arity
 
         So, the binary predicate representing the word 'see', which is a verb,
-        appearing as the fourth word in sentence with id 't' would be:
+        appearing as the fourth word of the third sentence of discourse 't' 
+        would be:
 
-        v_see_t_3_2
+        v_see_t_s3_w4_2
 
         Note that sentence id and occurrence indexing are optional and controlled
         by parameters.
 
         @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param sentence_id: C{str} An identifer to be inserted to each 
+        @param discourse_id: C{str} An identifier to be inserted to each 
             occurrence-indexed predicate.
         """
         DrtParser.__init__(self)
         self.occur_index = occur_index
-        self.sentence_id = sentence_id
+        self.discourse_id = discourse_id
         self.quote_chars = [("'", "'", "\\", False)]
     
     def get_all_symbols(self):
@@ -482,26 +494,26 @@ class BoxerDrsParser(DrtParser):
         return accum
 
     def _make_pred(self, pos, name, indices, arity):
-        sent_id_str = ''
-        if self.sentence_id:
-            sent_id_str = '%s_' % self.sentence_id
+        disc_id_str = '%s_' % self.discourse_id if self.discourse_id else ''
+
         #TODO: removed since multiple indices mean it's not an occurrence word
         #assert len(indices) < 2, 'indices for %s: %s' % (f_name, indices)
-        index_str = ''
-        if self.occur_index and indices:
-            index_str = '%s_' % indices[0]
+        index_str = 's%s_w%s_' % indices[0] if self.occur_index and indices else ''
 
         if not indices:
             pos = 'r'
 
-        return '%s_%s_%s%s%s' % (pos, name, sent_id_str, index_str, arity)
+        return '%s_%s_%s%s%s' % (pos, name, disc_id_str, index_str, arity)
 
     def _parse_index_list(self):
         #[1001,1002]:
         indices = []
         self.assertToken(self.token(), '[')
         while self.token(0) != ']':
-            indices.append(int(self.token())-1001)
+            base_index = int(self.token())
+            sent_index = base_index / 1000
+            word_index = (base_index % 1000) - 1
+            indices.append((sent_index, word_index))
             if self.token(0) == ',':
                 self.token() #swallow ','
         self.token() #swallow ']'
