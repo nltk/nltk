@@ -92,8 +92,10 @@ class Boxer(object):
         if discourse_ids is not None:
             assert len(inputs) == len(discourse_ids)
             assert all(id is not None for id in discourse_ids)
+            use_disc_id = True
         else:
             discourse_ids = map(str, xrange(len(inputs)))
+            use_disc_id = False
             
         candc_out = self._call_candc(inputs, discourse_ids, temp_filename, verbose=verbose)
         boxer_out = self._call_boxer(temp_filename, verbose=verbose)
@@ -103,7 +105,7 @@ class Boxer(object):
 #        if 'ERROR: input file contains no ccg/2 terms.' in boxer_out:
 #            raise UnparseableInputException('Could not parse with candc: "%s"' % input_str)
 
-        drs_dict = self._parse_to_drs_dict(boxer_out, occur_index)
+        drs_dict = self._parse_to_drs_dict(boxer_out, occur_index, use_disc_id)
         return [drs_dict.get(id, None) for id in discourse_ids]
         
     def _call_candc(self, inputs, discourse_ids, filename, verbose=False):
@@ -183,7 +185,7 @@ class Boxer(object):
             
         return stdout
 
-    def _parse_to_drs_dict(self, boxer_out, occur_index):
+    def _parse_to_drs_dict(self, boxer_out, occur_index, use_disc_id):
         lines = boxer_out.split('\n')
         drs_dict = {}
         i = 0
@@ -200,7 +202,7 @@ class Boxer(object):
                 line = lines[i+8]
                 assert line.endswith(').')
                 drs_input = line[:-2].strip()
-                drs = BoxerDrsParser(occur_index, discourse_id).parse(drs_input).simplify()
+                drs = BoxerDrsParser(occur_index, discourse_id if use_disc_id else None).parse(drs_input).simplify()
                 drs = self._clean_drs(drs)
                 drs_dict[discourse_id] = drs
                 i += 8
@@ -240,7 +242,7 @@ class BoxerDrsParser(DrtParser):
         This class is used to parse the Prolog DRS output from Boxer into an
         NLTK DRS object.  Predicates are parsed into the form:
 
-        <pos>_<word>[[_<sentence id>]_s<sentence index>_w<word index>]_arity
+        <pos>_<word>[_<discourse id>][_s<sentence index>_w<word index>]_arity
 
         So, the binary predicate representing the word 'see', which is a verb,
         appearing as the fourth word of the third sentence of discourse 't' 
@@ -494,7 +496,7 @@ class BoxerDrsParser(DrtParser):
         return accum
 
     def _make_pred(self, pos, name, indices, arity):
-        disc_id_str = '%s_' % self.discourse_id if self.discourse_id else ''
+        disc_id_str = '%s_' % self.discourse_id if self.discourse_id and indices else ''
 
         #TODO: removed since multiple indices mean it's not an occurrence word
         #assert len(indices) < 2, 'indices for %s: %s' % (f_name, indices)
@@ -511,7 +513,7 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), '[')
         while self.token(0) != ']':
             base_index = int(self.token())
-            sent_index = base_index / 1000
+            sent_index = (base_index / 1000) - 1
             word_index = (base_index % 1000) - 1
             indices.append((sent_index, word_index))
             if self.token(0) == ',':
