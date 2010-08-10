@@ -199,12 +199,12 @@ class DRS(AbstractDrs, Expression):
         if not self.conds:
             raise Exception("Cannot convert DRS with no conditions to FOL.")
         accum = reduce(AndExpression, [c.fol() for c in self.conds])
-        for ref in self.refs[::-1]:
+        for ref in self._order_ref_strings(self.refs)[::-1]:
             accum = ExistsExpression(ref, accum)
         return accum
 
     def _pretty(self):
-        refs_line = ' '.join(map(str, self.refs))
+        refs_line = ' '.join(self._order_ref_strings(self.refs))
         cond_lines = sum([filter(str.strip, cond._pretty()) for cond in self.conds], [])
         length = max([len(refs_line)] + map(len, cond_lines))
         return [' _' + '_'*length + '_ ',
@@ -212,6 +212,26 @@ class DRS(AbstractDrs, Expression):
                 '|-' + '-'*length + '-|'] + \
                ['| ' + line + ' '*(length-len(line)) + ' |' for line in cond_lines] + \
                ['|_' + '_'*length + '_|']
+               
+    def _order_ref_strings(self, refs):
+        strings = map(str, refs)
+        ind_vars = []
+        func_vars = []
+        event_vars = []
+        other_vars = []
+        for s in strings:
+            if is_indvar(s):
+                ind_vars.append(s)
+            elif is_funcvar(s):
+                func_vars.append(s)
+            elif is_eventvar(s):
+                event_vars.append(s)
+            else:
+                other_vars.append(s)
+        return sorted(other_vars) + \
+               sorted(event_vars, key=lambda v: int(v[2:]) if len(v[2:]) else -1) + \
+               sorted(func_vars, key=lambda v: (v[0], int(v[1:]) if len(v[1:]) else -1)) + \
+               sorted(ind_vars, key=lambda v: (v[0], int(v[1:])) if len(v[1:]) else -1)
 
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
@@ -226,7 +246,7 @@ class DRS(AbstractDrs, Expression):
         return False
     
     def __str__(self):
-        return '([%s],[%s])' % (','.join(map(str, self.refs)),
+        return '([%s],[%s])' % (','.join(self._order_ref_strings(self.refs)),
                                 ', '.join(map(str, self.conds)))
 
 def DrtVariableExpression(variable):
