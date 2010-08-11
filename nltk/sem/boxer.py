@@ -260,6 +260,7 @@ class BoxerDrsParser(DrtParser):
         DrtParser.__init__(self)
         self.occur_index = occur_index
         self.discourse_id = discourse_id
+        self.sentence_id_offset = None
         self.quote_chars = [("'", "'", "\\", False)]
     
     def get_all_symbols(self):
@@ -513,7 +514,9 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), '[')
         while self.token(0) != ']':
             base_index = int(self.token())
-            sent_index = (base_index / 1000) - 1
+            if self.sentence_id_offset is None:
+                self.sentence_id_offset = base_index / 1000
+            sent_index = (base_index / 1000) - self.sentence_id_offset
             word_index = (base_index % 1000) - 1
             indices.append((sent_index, word_index))
             if self.token(0) == ',':
