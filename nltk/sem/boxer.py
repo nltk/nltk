@@ -76,7 +76,7 @@ class Boxer(object):
         @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
         @return: C{list} of C{drt.AbstractDrs}
         """
-        return self.batch_interpret_multisentence([[input] for input in inputs], occur_index, discourse_ids, verbose)[0]
+        return self.batch_interpret_multisentence([[input] for input in inputs], occur_index, discourse_ids, verbose)
 
     def batch_interpret_multisentence(self, inputs, occur_index=False, discourse_ids=None, verbose=False):
         """
