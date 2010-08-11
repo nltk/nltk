@@ -199,7 +199,7 @@ class DRS(AbstractDrs, Expression):
         if not self.conds:
             raise Exception("Cannot convert DRS with no conditions to FOL.")
         accum = reduce(AndExpression, [c.fol() for c in self.conds])
-        for ref in self._order_ref_strings(self.refs)[::-1]:
+        for ref in map(Variable, self._order_ref_strings(self.refs)[::-1]):
             accum = ExistsExpression(ref, accum)
         return accum
 
