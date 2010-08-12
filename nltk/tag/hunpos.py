@@ -45,8 +45,8 @@ class HunposTagger(TaggerI):
                 url=_hunpos_url, 
                 verbose=verbose)
 
-        assert os.path.isfile(path_to_model), \
-               "Hunpos model file not found: %s" % (model_file)
+        if not os.path.isfile(path_to_model):
+            raise IOError("Hunpos model file not found: %s" % path_to_model)
         self._hunpos_model = path_to_model
         self._encoding = encoding
 
