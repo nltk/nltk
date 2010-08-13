@@ -112,11 +112,11 @@ Parser
     >>> print dp.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))')
     (([x],[walks(x)]) + ([y],[runs(y)]))
     >>> print dp.parse(r'(([x,y],[walks(x), jumps(y)]) + (([z],[twos(z)]) + ([w],[runs(w)])))')
-    (([x,y],[walks(x), jumps(y)]) + (([z],[twos(z)]) + ([w],[runs(w)])))
+    (([x,y],[walks(x), jumps(y)]) + ([z],[twos(z)]) + ([w],[runs(w)]))
     >>> print dp.parse(r'((([],[walks(x)]) + ([],[twos(x)])) + ([],[runs(x)]))')
-    ((([],[walks(x)]) + ([],[twos(x)])) + ([],[runs(x)]))
+    (([],[walks(x)]) + ([],[twos(x)]) + ([],[runs(x)]))
     >>> print dp.parse(r'((([],[walks(x)]) + ([],[runs(x)])) + (([],[threes(x)]) + ([],[fours(x)])))')
-    ((([],[walks(x)]) + ([],[runs(x)])) + (([],[threes(x)]) + ([],[fours(x)])))
+    (([],[walks(x)]) + ([],[runs(x)]) + ([],[threes(x)]) + ([],[fours(x)]))
 
     >>> print dp.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))')
     (([],[walks(x)]) -> ([],[runs(x)]))
@@ -163,8 +163,8 @@ Parser
     True
     
     >>> logic._counter._value = 0
-    >>> print dp.parse('([],[(([x],[dog(x)]) -> ([y,e],[boy(y), chase(e), subj(e,x), obj(e,y)]))])+([x,e],[PRO(x), run(e), subj(e,x)])').simplify()
-    ([z1,e02],[(([x],[dog(x)]) -> ([y,e],[boy(y), chase(e), subj(e,x), obj(e,y)])), PRO(z1), run(e02), subj(e02,z1)])
+    >>> print dp.parse('([],[(([x],[dog(x)]) -> ([e,y],[boy(y), chase(e), subj(e,x), obj(e,y)]))])+([e,x],[PRO(x), run(e), subj(e,x)])').simplify()
+    ([e02,z1],[(([x],[dog(x)]) -> ([e,y],[boy(y), chase(e), subj(e,x), obj(e,y)])), PRO(z1), run(e02), subj(e02,z1)])
     
 ``fol()``
 -----------
@@ -198,8 +198,6 @@ Parser
 
     >>> print dp.parse(r'([x],[man(x) | walks(x)])').fol()
     exists x.(man(x) | walks(x))
-    >>> print dp.parse(r'([x],[man(x) <-> walks(x)])').fol()
-    exists x.(man(x) <-> walks(x))
     >>> print dp.parse(r'P(x) + ([x],[walks(x)])').fol()
     (P(x) & exists x.walks(x))
 
@@ -217,8 +215,8 @@ Parser
     >>> try: print resolve_anaphora(dp.parse(r'([x],[walks(x), PRO(x)])'))
     ... except AnaphoraResolutionException, e: print e
     Variable 'x' does not resolve to anything.
-    >>> print resolve_anaphora(dp.parse('([z6,z7,e1],[boy(z6), PRO(z7), run(e1), subj(e1,z7)])'))
-    ([z6,z7,e1],[boy(z6), (z7 = z6), run(e1), subj(e1,z7)])
+    >>> print resolve_anaphora(dp.parse('([e01,z6,z7],[boy(z6), PRO(z7), run(e01), subj(e01,z7)])'))
+    ([e01,z6,z7],[boy(z6), (z7 = z6), run(e01), subj(e01,z7)])
 
 ``tp_equals()``:
 ----------------
@@ -329,6 +327,75 @@ replace unbound with double bound
     True
 
 
+regression tests
+----------------
+
+    >>> d = dp.parse('([x],[A(c), ([y],[B(x,y,z,a)])->([z],[C(x,y,z,a)])])')
+    >>> d.pprint()
+     ____________________________________ 
+    | x                                  |
+    |------------------------------------|
+    | A(c)                               |
+    |   ____________      ____________   |
+    |  | y          |    | z          |  |
+    | (|------------| -> |------------|) |
+    |  | B(x,y,z,a) |    | C(x,y,z,a) |  |
+    |  |____________|    |____________|  |
+    |____________________________________|
+    >>> print str(d)
+    ([x],[A(c), (([y],[B(x,y,z,a)]) -> ([z],[C(x,y,z,a)]))])
+    >>> print d.fol()
+    exists x.(A(c) & all y.(B(x,y,z,a) -> exists z.C(x,y,z,a)))
+    >>> print d.replace(Variable('a'), DrtVariableExpression(Variable('r')))
+    ([x],[A(c), (([y],[B(x,y,z,r)]) -> ([z],[C(x,y,z,r)]))])
+    >>> print d.replace(Variable('x'), DrtVariableExpression(Variable('r')))
+    ([x],[A(c), (([y],[B(x,y,z,a)]) -> ([z],[C(x,y,z,a)]))])
+    >>> print d.replace(Variable('y'), DrtVariableExpression(Variable('r')))
+    ([x],[A(c), (([y],[B(x,y,z,a)]) -> ([z],[C(x,y,z,a)]))])
+    >>> print d.replace(Variable('z'), DrtVariableExpression(Variable('r')))    
+    ([x],[A(c), (([y],[B(x,y,r,a)]) -> ([z],[C(x,y,z,a)]))])
+    >>> print d.replace(Variable('x'), DrtVariableExpression(Variable('r')), True)
+    ([r],[A(c), (([y],[B(r,y,z,a)]) -> ([z],[C(r,y,z,a)]))])
+    >>> print d.replace(Variable('y'), DrtVariableExpression(Variable('r')), True)
+    ([x],[A(c), (([r],[B(x,r,z,a)]) -> ([z],[C(x,r,z,a)]))])
+    >>> print d.replace(Variable('z'), DrtVariableExpression(Variable('r')), True)
+    ([x],[A(c), (([y],[B(x,y,r,a)]) -> ([r],[C(x,y,r,a)]))])
+    >>> print d == dp.parse('([l],[A(c), ([m],[B(l,m,z,a)])->([n],[C(l,m,n,a)])])')
+    True
+    >>> d = dp.parse('([],[([x,y],[B(x,y,h), ([a,b],[dee(x,a,g)])])->([z,w],[cee(x,y,f), ([c,d],[E(x,c,d,e)])])])')
+    >>> print d.free()
+    set([Variable('h'), Variable('e'), Variable('g'), Variable('f')])
+    >>> print d.variables()
+    set([Variable('cee'), Variable('B'), Variable('E'), Variable('g'), Variable('f'), Variable('h'), Variable('e'), Variable('dee')])
+    >>> print d.get_refs(True)
+    [Variable('x'), Variable('y'), Variable('a'), Variable('b'), Variable('z'), Variable('w'), Variable('c'), Variable('d')]
+    >>> print d.conds[0].get_refs(False)
+    [Variable('x'), Variable('y')]
+    >>> print dp.parse('([x,y],[A(x,y), (x=y), ([],[B(x,y)])->([],[C(x,y)]), ([x,y],[D(x,y)])->([],[E(x,y)]), ([],[F(x,y)])->([x,y],[G(x,y)])])').eliminate_equality()
+    ([x],[A(x,x), (([],[B(x,x)]) -> ([],[C(x,x)])), (([x,y],[D(x,y)]) -> ([],[E(x,y)])), (([],[F(x,x)]) -> ([x,y],[G(x,y)]))])
+    >>> print dp.parse('([x,y],[A(x,y), (x=y)]) -> ([],[B(x,y)])').eliminate_equality()
+    (([x],[A(x,x)]) -> ([],[B(x,x)]))
+    >>> print dp.parse('([x,y],[A(x,y)]) -> ([],[B(x,y), (x=y)])').eliminate_equality()
+    (([x,y],[A(x,y)]) -> ([],[B(x,x)]))
+    >>> print dp.parse('([x,y],[A(x,y), (x=y), ([],[B(x,y)])])').eliminate_equality()
+    ([x],[A(x,x), ([],[B(x,x)])])
+    >>> print dp.parse('([x,y],[A(x,y), ([],[B(x,y), (x=y)])])').eliminate_equality()
+    ([x,y],[A(x,y), ([],[B(x,x)])])
+
+    >>> print dp.parse('([x,y],[A(x,y), (x=y), ([],[B(x,y)]), ([x,y],[C(x,y)])])').eliminate_equality()
+    ([x],[A(x,x), ([],[B(x,x)]), ([x,y],[C(x,y)])])
+    >>> print dp.parse('([x,y],[A(x,y)]) + ([],[B(x,y), (x=y)]) + ([],[C(x,y)])').eliminate_equality()
+    ([x],[A(x,x), B(x,x), C(x,x)])
+    >>> print dp.parse('([x,y],[B(x,y)])+([x,y],[C(x,y)])').replace(Variable('y'), DrtVariableExpression(Variable('x')))
+    (([x,y],[B(x,y)]) + ([x,y],[C(x,y)]))
+    >>> print dp.parse('(([x,y],[B(x,y)])+([],[C(x,y)]))+([],[D(x,y)])').replace(Variable('y'), DrtVariableExpression(Variable('x')))
+    (([x,y],[B(x,y)]) + ([],[C(x,y)]) + ([],[D(x,y)]))
+    >>> print dp.parse('(([],[B(x,y)])+([],[C(x,y)]))+([],[D(x,y)])').replace(Variable('y'), DrtVariableExpression(Variable('x')))
+    (([],[B(x,x)]) + ([],[C(x,x)]) + ([],[D(x,x)]))
+    >>> print dp.parse('(([],[B(x,y), ([x,y],[A(x,y)])])+([],[C(x,y)]))+([],[D(x,y)])').replace(Variable('y'), DrtVariableExpression(Variable('x')))
+    (([],[B(z15,x), ([y,z15],[A(z15,y)])]) + ([],[C(z15,x)]) + ([],[D(z15,x)]))
+
+
 Parse errors
 ============
 
@@ -419,17 +486,17 @@ Pretty Printing
      | (x = y) |   | dog(z)  | 
      |_________|   | walk(z) | 
                    |_________| 
-    >>> dp.parse(r"([],[([x],[]) <-> ([y],[]) <-> ([z],[dog(z), walk(z)])])").pprint()
-     ___________________________________ 
-    |                                   |
-    |-----------------------------------|
-    |   ___       ___       _________   |
-    |  | x |     | y |     | z       |  |
-    | (|---| <-> |---| <-> |---------|) |
-    |  |___|     |___|     | dog(z)  |  |
-    |                      | walk(z) |  |
-    |                      |_________|  |
-    |___________________________________|
+    >>> dp.parse(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pprint()
+     _______________________________ 
+    |                               |
+    |-------------------------------|
+    |   ___     ___     _________   |
+    |  | x |   | y |   | z       |  |
+    | (|---| | |---| | |---------|) |
+    |  |___|   |___|   | dog(z)  |  |
+    |                  | walk(z) |  |
+    |                  |_________|  |
+    |_______________________________|
     >>> dp.parse(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pprint()
               ___                        ________  
      \       | x |                 \    |        | 

@@ -471,7 +471,7 @@ class Expression(SubstituteBindingsI):
         """
         raise NotImplementedError()
     
-    def replace(self, variable, expression, replace_bound=False):
+    def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         """
         Replace every instance of 'variable' with 'expression'
         @param variable: C{Variable} The variable to replace
@@ -487,7 +487,7 @@ class Expression(SubstituteBindingsI):
             elif len(additional) == 1:
                 return self.__class__(a, additional[0])
         
-        return self.visit(lambda e: e.replace(variable, expression, replace_bound), 
+        return self.visit(lambda e: e.replace(variable, expression, replace_bound, alpha_convert), 
                           combinator, set())
     
     def normalize(self):
@@ -736,7 +736,7 @@ class AbstractVariableExpression(Expression):
     def simplify(self):
         return self
 
-    def replace(self, variable, expression, replace_bound=False):
+    def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         """@see: Expression.replace()"""
         assert isinstance(variable, Variable), "%s is not an Variable" % variable
         assert isinstance(expression, Expression), "%s is not an Expression" % expression
@@ -884,7 +884,7 @@ class VariableBinderExpression(Expression):
         self.variable = variable
         self.term = term
 
-    def replace(self, variable, expression, replace_bound=False):
+    def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         """@see: Expression.replace()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         assert isinstance(expression, Expression), "%s is not an Expression" % expression
@@ -894,18 +894,18 @@ class VariableBinderExpression(Expression):
                 assert isinstance(expression, AbstractVariableExpression),\
                        "%s is not a AbstractVariableExpression" % expression
                 return self.__class__(expression.variable, 
-                                      self.term.replace(variable, expression, True))
+                                      self.term.replace(variable, expression, True, alpha_convert))
             else: 
                 return self
         else:
             # if the bound variable appears in the expression, then it must
             # be alpha converted to avoid a conflict
-            if self.variable in expression.free():
+            if alpha_convert and self.variable in expression.free():
                 self = self.alpha_convert(unique_variable(pattern=self.variable))
                 
             #replace in the term
             return self.__class__(self.variable,
-                                  self.term.replace(variable, expression, replace_bound))
+                                  self.term.replace(variable, expression, replace_bound, alpha_convert))
 
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
