@@ -137,10 +137,10 @@ class Boxer(object):
             self._boxer_bin = self._find_binary('boxer', verbose)
         args = ['--box', 'false', 
                 '--semantics', 'drs',
-                '--format', 'prolog', 
                 '--flat', 'false',
                 '--resolve', 'true',
                 '--elimeq', 'true',
+                '--format', 'prolog',
                 '--input', filename]
 
         return self._call(None, self._boxer_bin, args, verbose)
@@ -531,10 +531,10 @@ class BoxerDrsParser(DrtParser):
         #   )
         self.assertToken(self.token(), '(')
         self.assertToken(self.token(), '[')
-        refs = []
+        refs = set()
         while self.token(0) != ']':
             indices = self._parse_index_list()
-            refs.append(self._make_Variable(self.token()))
+            refs.add(self._make_Variable(self.token()))
             if self.token(0) == ',':
                 self.token() #swallow ','
         self.token() #swallow ']'
@@ -548,7 +548,7 @@ class BoxerDrsParser(DrtParser):
                 self.token() #swallow ','
         self.token() #swallow ']'
         self.assertToken(self.token(), ')')
-        return DRS(refs, conds)
+        return DRS(list(refs), conds)
 
     def _make_binary_expression(self, constructor):
         self.assertToken(self.token(), '(')
