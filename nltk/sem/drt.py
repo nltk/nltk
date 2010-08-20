@@ -208,7 +208,7 @@ class DRS(AbstractDrs, Expression):
     def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
         return reduce(combinator, [function(e) for e in self.refs + self.conds + \
-                                   (self.consequent if self.consequent else [])], 
+                                   ([self.consequent] if self.consequent else [])], 
                       default)
         
     def eliminate_equality(self):
@@ -223,7 +223,12 @@ class DRS(AbstractDrs, Expression):
                 if cond.second.variable in refs:
                     refs.remove(cond.second.variable)
             else:
-                conds.append(cond.eliminate_equality())
+                new_cond = cond.eliminate_equality()
+                new_cond_simp = new_cond.simplify()
+                if not isinstance(new_cond_simp, DRS) or \
+                   new_cond_simp.refs or new_cond_simp.conds or \
+                   new_cond_simp.consequent:
+                    conds.append(new_cond)
         result = DRS(refs, conds, self.consequent.eliminate_equality() if self.consequent else None)
         for variable, expression in replacements:
             result = result.replace(variable, expression, False, False)

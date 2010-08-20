@@ -216,7 +216,7 @@ class Boxer(object):
 
     def _nn(self, drs):
         if isinstance(drs, DRS):
-            return DRS(drs.refs, map(self._nn, drs.conds))
+            return DRS(drs.refs, map(self._nn, drs.conds), self._nn(drs.consequent))
         elif isinstance(drs, DrtNegatedExpression):
             return DrtNegatedExpression(self._nn(drs.term))
         elif isinstance(drs, DrtLambdaExpression):
@@ -308,7 +308,7 @@ class BoxerDrsParser(DrtParser):
         elif tok == 'or':
             return [self._make_binary_expression(DrtOrExpression)]
         elif tok == 'imp':
-            return [self._make_binary_expression(DrtImpExpression)]
+            return [self._make_imp_expression()]
         elif tok == 'eq':
             return [self._handle_eq(indices)]
         elif tok == 'prop':
@@ -558,6 +558,15 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), ')')
         return constructor(e1, e2)
 
+    def _make_imp_expression(self):
+        def make_imp_expression(first, second):
+            if isinstance(first, DRS):
+                return DRS(first.refs, first.conds, second)
+            if isinstance(first, ConcatenationDRS):
+                return ConcatenationDRS(first.first, first.second, second)
+            raise Exception('Antecedent of implication must be a DRS')
+        return self._make_binary_expression(make_imp_expression)
+
     def _handle_eq(self, indices):
         self.assertToken(self.token(), '(')
         e1 = DrtVariableExpression(self._make_Variable(self.token()))
@@ -624,6 +633,7 @@ if __name__ == '__main__':
     if drs is None:
         print None
     else:
+        drs = drs.simplify().eliminate_equality()
         if options.fol:
             print drs.fol().normalize()
         else:
