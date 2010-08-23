@@ -381,6 +381,8 @@ regression tests
     ([x],[A(x,x), ([],[B(x,x)])])
     >>> print dp.parse('([x,y],[A(x,y), ([],[B(x,y), (x=y)])])').eliminate_equality()
     ([x,y],[A(x,y), ([],[B(x,x)])])
+    >>> print dp.parse('([z8 z9 z10],[A(z8), z8=z10, z9=z10, B(z9), C(z10), D(z10)])').eliminate_equality()
+    ([z9],[A(z9), B(z9), C(z9), D(z9)])
 
     >>> print dp.parse('([x,y],[A(x,y), (x=y), ([],[B(x,y)]), ([x,y],[C(x,y)])])').eliminate_equality()
     ([x],[A(x,x), ([],[B(x,x)]), ([x,y],[C(x,y)])])
