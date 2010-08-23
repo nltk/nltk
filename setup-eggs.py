@@ -6,7 +6,7 @@
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from setuptools import setup
@@ -69,7 +69,7 @@ setup(
                 ],
     zip_safe=False, # since normal files will be present too?
     install_requires=['setuptools',
-                      'PyYAML==3.08',
+                      'PyYAML==3.09',
                       ],
     test_suite = 'nltk.test.simple',
     )
