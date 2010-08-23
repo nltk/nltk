@@ -6,7 +6,7 @@
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from distutils.core import setup

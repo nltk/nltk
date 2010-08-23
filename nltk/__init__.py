@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2010 NLTK Project
 # Authors: Steven Bird <sb@csse.unimelb.edu.au>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -38,8 +38,8 @@ processing natural language text.  NLTK requires Python 2.4 or higher."""
 __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',
-                'natural language']
-__url__ = "http://www.nltk.org/"
+                'natural language', 'text analytics']
+__url__ = "http://nltk.org/"
 
 # Maintainer, contributors, etc.
 __maintainer__ = "Steven Bird, Edward Loper, Ewan Klein"

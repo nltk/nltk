@@ -97,6 +97,8 @@ C. WEBSITE
   2. post a news item at http://www.nltk.org/news-archive, summary at http://www.nltk.org/
   3. register with Python Cheeseshop: make pypi
      (make sure that just the source .tar.gz file was uploaded (no macosx file)
+     (make sure that the .tar.gz file contains the version of setup.py with
+     a pyyaml dependency)
   4. upload new portfiles to macports (needs a diff; haven't sorted this out)
   5. sync the book to the website (cd doc; make publish)
   6. post announcement to NLTK the mailing lists:
