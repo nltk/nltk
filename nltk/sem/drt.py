@@ -212,27 +212,31 @@ class DRS(AbstractDrs, Expression):
                       default)
         
     def eliminate_equality(self):
-        refs = list(self.refs)
-        conds = []
-        replacements = set()
-        for cond in self.conds:
+        drs = self
+        i = 0
+        while i < len(drs.conds):
+            cond = drs.conds[i]
             if isinstance(cond, EqualityExpression) and \
                isinstance(cond.first, AbstractVariableExpression) and \
                isinstance(cond.second, AbstractVariableExpression):
-                replacements.add((cond.second.variable, cond.first))
-                if cond.second.variable in refs:
-                    refs.remove(cond.second.variable)
-            else:
-                new_cond = cond.eliminate_equality()
-                new_cond_simp = new_cond.simplify()
-                if not isinstance(new_cond_simp, DRS) or \
-                   new_cond_simp.refs or new_cond_simp.conds or \
-                   new_cond_simp.consequent:
-                    conds.append(new_cond)
-        result = DRS(refs, conds, self.consequent.eliminate_equality() if self.consequent else None)
-        for variable, expression in replacements:
-            result = result.replace(variable, expression, False, False)
-        return result
+                drs = DRS(list(set(drs.refs)-set([cond.second.variable])), 
+                          drs.conds[:i]+drs.conds[i+1:], 
+                          drs.consequent)
+                if cond.second.variable != cond.first.variable:
+                    drs = drs.replace(cond.second.variable, cond.first, False, False)
+                    i = 0
+                i -= 1
+            i += 1
+        
+        conds = []
+        for cond in drs.conds:
+            new_cond = cond.eliminate_equality()
+            new_cond_simp = new_cond.simplify()
+            if not isinstance(new_cond_simp, DRS) or \
+               new_cond_simp.refs or new_cond_simp.conds or \
+               new_cond_simp.consequent:
+                conds.append(new_cond)
+        return DRS(drs.refs, conds, drs.consequent.eliminate_equality() if drs.consequent else None)
     
     def simplify(self):
         return DRS(self.refs, 
