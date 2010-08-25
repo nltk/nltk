@@ -4,12 +4,14 @@
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Nitin Madnani <nmadnani@ets.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import math
 import re
 from itertools import islice, chain
+from operator import itemgetter
 
 from nltk.compat import defaultdict
 from nltk.corpus.reader import CorpusReader
@@ -148,7 +150,6 @@ class _WordNetObject(object):
 
     def __ne__(self, other):
         return self.name != other.name
-
 
 class Lemma(_WordNetObject):
     """
@@ -316,8 +317,17 @@ class Synset(_WordNetObject):
         self.lexname = None # lexicographer name
 
         self._pointers = defaultdict(set)
-        self._lemma_pointers = defaultdict(set)
+        self._lemma_pointers = defaultdict(set)        
 
+    def _needs_root(self):
+        if self.pos == NOUN:
+            if self._wordnet_corpus_reader.get_version() == '1.6':
+                return True
+            else:
+                return False
+        elif self.pos == VERB:
+            return True
+        
     def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
 
@@ -433,11 +443,20 @@ class Synset(_WordNetObject):
                            for other_synset in other_synsets)
         return list(self_synsets.intersection(other_synsets))
 
-    def lowest_common_hypernyms(self, other):
+    def lowest_common_hypernyms(self, other, simulate_root=False):
         """Get the lowest synset that both synsets have as a hypernym."""
 
-        self_hypernyms = self._iter_hypernym_lists()
-        other_hypernyms = other._iter_hypernym_lists()
+        fake_synset = Synset(None)
+        fake_synset.name = '*ROOT*'
+        fake_synset.hypernyms = lambda: []
+        fake_synset.instance_hypernyms = lambda: []
+
+        if simulate_root:
+            self_hypernyms = chain(self._iter_hypernym_lists(), [[fake_synset]])
+            other_hypernyms = chain(other._iter_hypernym_lists(), [[fake_synset]])
+        else:
+            self_hypernyms = self._iter_hypernym_lists()
+            other_hypernyms = other._iter_hypernym_lists()
 
         synsets = set(s for synsets in self_hypernyms for s in synsets)
         others = set(s for synsets in other_hypernyms for s in synsets)
@@ -449,7 +468,7 @@ class Synset(_WordNetObject):
         except ValueError:
             return []
 
-    def hypernym_distances(self, distance=0):
+    def hypernym_distances(self, distance=0, simulate_root=False):
         """
         Get the path(s) from this synset to the root, counting the distance
         of each node from the initial node on the way. A set of
@@ -463,10 +482,15 @@ class Synset(_WordNetObject):
         """
         distances = set([(self, distance)])
         for hypernym in self.hypernyms() + self.instance_hypernyms():
-            distances |= hypernym.hypernym_distances(distance+1)
+            distances |= hypernym.hypernym_distances(distance+1, simulate_root=False)
+        if simulate_root:
+            fake_synset = Synset(None)
+            fake_synset.name = '*ROOT*'
+            fake_synset_distance = max(distances, key=itemgetter(1))[1]
+            distances.add((fake_synset, fake_synset_distance+1))
         return distances
 
-    def shortest_path_distance(self, other):
+    def shortest_path_distance(self, other, simulate_root=False):
         """
         Returns the distance of the shortest path linking the two synsets (if
         one exists). For each synset, all the ancestor nodes and their
@@ -486,10 +510,10 @@ class Synset(_WordNetObject):
 
         path_distance = None
 
-        dist_list1 = self.hypernym_distances()
+        dist_list1 = self.hypernym_distances(simulate_root=simulate_root)
         dist_dict1 = {}
 
-        dist_list2 = other.hypernym_distances()
+        dist_list2 = other.hypernym_distances(simulate_root=simulate_root)
         dist_dict2 = {}
 
         # Transform each distance list into a dictionary. In cases where
@@ -555,7 +579,7 @@ class Synset(_WordNetObject):
         return tree
 
     # interface to similarity methods
-    def path_similarity(self, other, verbose=False):
+    def path_similarity(self, other, verbose=False, simulate_root=True):
         """
         Path Distance Similarity:
         Return a score denoting how similar two word senses are, based on the
@@ -565,22 +589,30 @@ class Synset(_WordNetObject):
         distinct verb taxonomies), in which case None is returned. A score of
         1 represents identity i.e. comparing a sense with itself will return 1.
 
-        @type  other: L{Synset}
+        @type other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
-
+        @type simulate_root: L{bool}
+        @param simulate_root: The various verb taxonomies do not
+            share a single root which disallows this metric from working for
+            synsets that are not connected. This flag (True by default)
+            creates a fake root that connects all the taxonomies. Set it
+            to false to disable this behavior. For the noun taxonomy, 
+            there is usually a default root except for WordNet version 1.6.
+            If you are using wordnet 1.6, a fake root will be added for nouns
+            as well. 
         @return: A score denoting the similarity of the two L{Synset}s,
             normally between 0 and 1. None is returned if no connecting path
             could be found. 1 is returned if a L{Synset} is compared with
             itself.
         """
 
-        distance = self.shortest_path_distance(other)
+        distance = self.shortest_path_distance(other, simulate_root=simulate_root and self._needs_root())
         if distance >= 0:
             return 1.0 / (distance + 1)
         else:
             return None
 
-    def lch_similarity(self, other, verbose=False):
+    def lch_similarity(self, other, verbose=False, simulate_root=True):
         """
         Leacock Chodorow Similarity:
         Return a score denoting how similar two word senses are, based on the
@@ -591,7 +623,15 @@ class Synset(_WordNetObject):
 
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
-
+        @type simulate_root: L{bool}
+        @param simulate_root: The various verb taxonomies do not
+            share a single root which disallows this metric from working for
+            synsets that are not connected. This flag (True by default)
+            creates a fake root that connects all the taxonomies. Set it
+            to false to disable this behavior. For the noun taxonomy, 
+            there is usually a default root except for WordNet version 1.6.
+            If you are using wordnet 1.6, a fake root will be added for nouns
+            as well. 
         @return: A score denoting the similarity of the two L{Synset}s,
             normally greater than 0. None is returned if no connecting path
             could be found. If a L{Synset} is compared with itself, the
@@ -604,25 +644,30 @@ class Synset(_WordNetObject):
                                '%s and %s to have the same part of speech.' % \
                                    (self, other))
 
+        need_root = self._needs_root()
+
         if self.pos not in self._wordnet_corpus_reader._max_depth:
-            self._wordnet_corpus_reader._compute_max_depth(self.pos)
+            self._wordnet_corpus_reader._compute_max_depth(self.pos, need_root)
 
         depth = self._wordnet_corpus_reader._max_depth[self.pos]
 
-        distance = self.shortest_path_distance(other)
+        distance = self.shortest_path_distance(other, simulate_root=simulate_root and need_root)
+    
         if distance >= 0:
             return -math.log((distance + 1) / (2.0 * depth))
         else:
             return None
 
-    def wup_similarity(self, other, verbose=False):
+    def wup_similarity(self, other, verbose=False, simulate_root=True):
         """
         Wu-Palmer Similarity:
         Return a score denoting how similar two word senses are, based on the
         depth of the two senses in the taxonomy and that of their Least Common
-        Subsumer (most specific ancestor node). Note that at this time the
-        scores given do _not_ always agree with those given by Pedersen's Perl
-        implementation of WordNet Similarity.
+        Subsumer (most specific ancestor node). Previously, the scores computed
+        by this implementation did _not_ always agree with those given by 
+        Pedersen's Perl implementation of WordNet Similarity. However, with
+        the addition of the simulate_root flag (see below), the score for 
+        verbs now almost always agree but not always for nouns. 
 
         The LCS does not necessarily feature in the shortest path connecting
         the two senses, as it is by definition the common ancestor deepest in
@@ -634,33 +679,47 @@ class Synset(_WordNetObject):
 
         @type  other: L{Synset}
         @param other: The L{Synset} that this L{Synset} is being compared to.
+        @type simulate_root: L{bool}
+        @param simulate_root: The various verb taxonomies do not
+            share a single root which disallows this metric from working for
+            synsets that are not connected. This flag (True by default)
+            creates a fake root that connects all the taxonomies. Set it
+            to false to disable this behavior. For the noun taxonomy, 
+            there is usually a default root except for WordNet version 1.6.
+            If you are using wordnet 1.6, a fake root will be added for nouns
+            as well. 
         @return: A float score denoting the similarity of the two L{Synset}s,
             normally greater than zero. If no connecting path between the two
             senses can be found, None is returned.
+
         """
 
-        subsumers = self.lowest_common_hypernyms(other)
+        need_root = self._needs_root()
+        subsumers = self.lowest_common_hypernyms(other, simulate_root=simulate_root and need_root)
 
         # If no LCS was found return None
         if len(subsumers) == 0:
             return None
 
         subsumer = subsumers[0]
-
+        
         # Get the longest path from the LCS to the root,
-        # including two corrections:
+        # including a correction:
         # - add one because the calculations include both the start and end
         #   nodes
-        # - add one to non-nouns since they have an imaginary root node
         depth = subsumer.max_depth() + 1
-        if subsumer.pos != NOUN:
-            depth += 1
 
+        # Note: No need for an additional add-one correction for non-nouns 
+        # to account for an imaginary root node because that is now automatically 
+        # handled by simulate_root        
+        # if subsumer.pos != NOUN:
+        #     depth += 1
+        
         # Get the shortest path from the LCS to each of the synsets it is
         # subsuming.  Add this to the LCS path length to get the path
         # length from each synset to the root.
-        len1 = self.shortest_path_distance(subsumer)
-        len2 = other.shortest_path_distance(subsumer)
+        len1 = self.shortest_path_distance(subsumer, simulate_root=simulate_root and need_root)
+        len2 = other.shortest_path_distance(subsumer, simulate_root=simulate_root and need_root)
         if len1 is None or len2 is None:
             return None
         len1 += depth
@@ -834,6 +893,7 @@ class WordNetCorpusReader(CorpusReader):
 
         # load the exception file data into memory
         self._load_exception_map()
+        
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
@@ -887,7 +947,7 @@ class WordNetCorpusReader(CorpusReader):
                 self._exception_map[pos][terms[0]] = terms[1:]
         self._exception_map[ADJ_SAT] = self._exception_map[ADJ]
 
-    def _compute_max_depth(self, pos):
+    def _compute_max_depth(self, pos, simulate_root):
         """
         Compute the max depth for the given part of speech.  This is
         used by the lch similarity metric.
@@ -898,8 +958,19 @@ class WordNetCorpusReader(CorpusReader):
                 depth = max(depth, ii.max_depth())
             except RuntimeError:
                 print ii
+        if simulate_root:
+            depth += 1 
         self._max_depth[pos] = depth
 
+    def get_version(self):
+        fh = self._data_file(ADJ)
+        for line in fh:
+            match = re.search(r'WordNet (\d+\.\d+) Copyright', line)
+            if match is not None:
+                version = match.group(1)
+                fh.seek(0)
+                return version        
+            
     #////////////////////////////////////////////////////////////
     # Loading Lemmas
     #////////////////////////////////////////////////////////////
@@ -1230,16 +1301,16 @@ class WordNetCorpusReader(CorpusReader):
         else:
             return 0
 
-    def path_similarity(self, synset1, synset2, verbose=False):
-        return synset1.path_similarity(synset2, verbose)
+    def path_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
+        return synset1.path_similarity(synset2, verbose, simulate_root)
     path_similarity.__doc__ = Synset.path_similarity.__doc__
 
-    def lch_similarity(self, synset1, synset2, verbose=False):
-        return synset1.lch_similarity(synset2, verbose)
+    def lch_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
+        return synset1.lch_similarity(synset2, verbose, simulate_root)
     lch_similarity.__doc__ = Synset.lch_similarity.__doc__
 
-    def wup_similarity(self, synset1, synset2, verbose=False):
-        return synset1.wup_similarity(synset2, verbose)
+    def wup_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
+        return synset1.wup_similarity(synset2, verbose, simulate_root)
     wup_similarity.__doc__ = Synset.wup_similarity.__doc__
 
     def res_similarity(self, synset1, synset2, ic, verbose=False):
@@ -1465,18 +1536,18 @@ class WordNetICCorpusReader(CorpusReader):
 # More information about the metrics is available at
 # http://marimba.d.umn.edu/similarity/measures.html
 
-def path_similarity(synset1, synset2, verbose=False):
-    return synset1.path_similarity(synset2, verbose)
+def path_similarity(synset1, synset2, verbose=False, simulate_root=True):
+    return synset1.path_similarity(synset2, verbose, simulate_root)
 path_similarity.__doc__ = Synset.path_similarity.__doc__
 
 
-def lch_similarity(synset1, synset2, verbose=False):
-    return synset1.lch_similarity(synset2, verbose)
+def lch_similarity(synset1, synset2, verbose=False, simulate_root=True):
+    return synset1.lch_similarity(synset2, verbose, simulate_root)
 lch_similarity.__doc__ = Synset.lch_similarity.__doc__
 
 
-def wup_similarity(synset1, synset2, verbose=False):
-    return synset1.wup_similarity(synset2, verbose)
+def wup_similarity(synset1, synset2, verbose=False, simulate_root=True):
+    return synset1.wup_similarity(synset2, verbose, simulate_root)
 wup_similarity.__doc__ = Synset.wup_similarity.__doc__
 
 

@@ -157,17 +157,34 @@ Similarity
     >>> dog = wn.synset('dog.n.01')
     >>> cat = wn.synset('cat.n.01')
 
+    >>> hit = wn.synset('hit.v.01')
+    >>> slap = wn.synset('slap.v.01')
+
+
 ``synset1.path_similarity(synset2):``
 Return a score denoting how similar two word senses are, based on the
 shortest path that connects the senses in the is-a (hypernym/hypnoym)
-taxonomy. The score is in the range 0 to 1, except in those cases
-where a path cannot be found (will only be true for verbs as there are
-many distinct verb taxonomies), in which case None is returned. A score
-of 1 represents identity i.e. comparing a sense with itself will return
-1.
+taxonomy. The score is in the range 0 to 1. By default, there is now
+a fake root node added to verbs so for cases where previously a path
+could not be found---and None was returned---it should return a value. 
+The old behavior can be achieved by setting simulate_root to be False.
+A score of 1 represents identity i.e. comparing a sense with itself 
+will return 1.
 
     >>> dog.path_similarity(cat)
     0.20000000000000001
+
+    >>> hit.path_similarity(slap)
+    0.14285714285714285
+
+    >>> wn.path_similarity(hit, slap)
+    0.14285714285714285
+
+    >>> print hit.path_similarity(slap, simulate_root=False)
+    None
+
+    >>> print wn.path_similarity(hit, slap, simulate_root=False)
+    None
 
 ``synset1.lch_similarity(synset2):``
 Leacock-Chodorow Similarity:
@@ -180,6 +197,18 @@ depth.
     >>> dog.lch_similarity(cat)
     2.0281482472922856
 
+    >>> hit.lch_similarity(slap)
+    1.3121863889661687
+
+    >>> wn.lch_similarity(hit, slap)
+    1.3121863889661687
+
+    >>> print hit.lch_similarity(slap, simulate_root=False)
+    None
+    
+    >>> print wn.lch_similarity(hit, slap, simulate_root=False)
+    None
+    
 ``synset1.wup_similarity(synset2):``
 Wu-Palmer Similarity:
 Return a score denoting how similar two word senses are, based on the
@@ -198,6 +227,18 @@ the purposes of the calculation.
 
     >>> dog.wup_similarity(cat)
     0.8571428571428571
+
+    >>> hit.wup_similarity(slap)
+    0.25
+
+    >>> wn.wup_similarity(hit, slap)
+    0.25
+    
+    >>> print hit.wup_similarity(slap, simulate_root=False)
+    None
+    
+    >>> print wn.wup_similarity(hit, slap, simulate_root=False)
+    None
 
 ``wordnet_ic``
 Information Content:
@@ -441,11 +482,11 @@ Bug 484: similarity metrics returned -1 instead of None for no LCS
     >>> s = wn.synsets('say', wn.VERB)[0]
     >>> print s.shortest_path_distance(t)
     None
-    >>> print s.path_similarity(t)
+    >>> print s.path_similarity(t, simulate_root=False)
     None
-    >>> print s.lch_similarity(t)
+    >>> print s.lch_similarity(t, simulate_root=False)
     None
-    >>> print s.wup_similarity(t)
+    >>> print s.wup_similarity(t, simulate_root=False)
     None
 
 Bug 427: "pants" does not return all the senses it should
