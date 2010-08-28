@@ -202,12 +202,15 @@ class Boxer(object):
                 line = lines[i+8]
                 assert line.endswith(').')
                 drs_input = line[:-2].strip()
-                drs = BoxerDrsParser(occur_index, discourse_id if use_disc_id else None).parse(drs_input).simplify()
+                drs = self._parse_drs(drs_input, occur_index, discourse_id, use_disc_id)
                 drs = self._clean_drs(drs)
                 drs_dict[discourse_id] = drs
                 i += 8
             i += 1
         return drs_dict
+    
+    def _parse_drs(self, drs_string, occur_index, discourse_id, use_disc_id):
+        return BoxerDrsParser(occur_index, discourse_id if use_disc_id else None).parse(drs_string).simplify()
 
     def _clean_drs(self, drs):
         #Remove compound nouns
@@ -288,10 +291,10 @@ class BoxerDrsParser(DrtParser):
         if tok == 'drs':
             return self.parse_drs()
         elif tok == 'merge':
-            return self._make_binary_expression(ConcatenationDRS)
+            return self._make_binary_expression(self._make_merge_expression)
         elif tok == 'smerge':
-            return self._make_binary_expression(ConcatenationDRS)
-
+            return self._make_binary_expression(self._make_smerge_expression)
+        
     def handle_condition(self, tok, indices):
         """
         Handle a DRS condition
@@ -303,12 +306,12 @@ class BoxerDrsParser(DrtParser):
             self.assertToken(self.token(), '(')
             e = self.parse_Expression(None)
             self.assertToken(self.token(), ')')
-            return [DrtNegatedExpression(e)]
+            return [self._make_not_expression(indices, e)]
 
         elif tok == 'or':
             return [self._make_binary_expression(DrtOrExpression)]
         elif tok == 'imp':
-            return [self._make_imp_expression()]
+            return [self._make_imp_binary_expression()]
         elif tok == 'eq':
             return [self._handle_eq(indices)]
         elif tok == 'prop':
@@ -327,11 +330,11 @@ class BoxerDrsParser(DrtParser):
 
         elif tok == 'whq':
             return [self._handle_whq(indices)]
-
+    
     def _handle_pred(self, indices):
         #pred(_G3943, dog, n, 0)
         self.assertToken(self.token(), '(')
-        arg = self.token()
+        arg = self.parse_variable()
         self.assertToken(self.token(), ',')
         f_name = self._format_pred_name(self.token())
         self.assertToken(self.token(), ',')
@@ -339,8 +342,7 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         f_sense = self.token()
         self.assertToken(self.token(), ')')
-        f_pred = self._make_pred(f_pos, f_name, indices, 1)
-        return self._make_atom(f_pred, arg)
+        return self._make_pred_expression(indices, arg, f_name, f_pos, f_sense)
 
     def _format_pred_name(self, name):
         out = ''
@@ -356,35 +358,33 @@ class BoxerDrsParser(DrtParser):
     def _handle_named(self, indices):
         #named(x0, john, per, 0)
         self.assertToken(self.token(), '(')
-        arg = self.token()
+        arg = self.parse_variable()
         self.assertToken(self.token(), ',')
         f_name = self._format_pred_name(self.token())
         self.assertToken(self.token(), ',')
-        f_pos = self.token()
+        f_type = self.token()
         self.assertToken(self.token(), ',')
         f_sense = self.token()
         self.assertToken(self.token(), ')')
-        f_pred = 'n_%s_%s' % (f_name, 1)
-        return self._make_atom(f_pred, arg)
+        return self._make_named_expression(indices, arg, f_name, f_type, f_sense)
 
     def _handle_rel(self, indices):
         #rel(_G3993, _G3943, agent, 0)
         self.assertToken(self.token(), '(')
-        arg1 = self.token()
+        arg1 = self.parse_variable()
         self.assertToken(self.token(), ',')
-        arg2 = self.token()
+        arg2 = self.parse_variable()
         self.assertToken(self.token(), ',')
         f_name = self._format_pred_name(self.token())
         self.assertToken(self.token(), ',')
         f_sense = self.token()
         self.assertToken(self.token(), ')')
-        f_pred = 'r_%s_%s' % (f_name, 2)
-        return self._make_atom(f_pred, arg1, arg2)
+        return self._make_rel_expression(indices, arg1, arg2, f_name, f_sense)
 
     def _handle_timex(self, indices):
         #timex(_G18322, date([]: +, []:'XXXX', [1004]:'04', []:'XX'))
         self.assertToken(self.token(), '(')
-        arg = self.token()
+        arg = self.parse_variable()
         self.assertToken(self.token(), ',')
         new_conds = self._handle_time_expression(arg)
         self.assertToken(self.token(), ')')
@@ -460,22 +460,22 @@ class BoxerDrsParser(DrtParser):
     def _handle_card(self, indices):
         #card(_G18535, 28, ge)
         self.assertToken(self.token(), '(')
-        arg = self.token()
+        arg = self.parse_variable()
         self.assertToken(self.token(), ',')
         value = self.token()
         self.assertToken(self.token(), ',')
         rel = self.token()
         self.assertToken(self.token(), ')')
-        return self._make_atom('r_card_3', arg, value, rel)
+        return self._make_card_expression(indices, arg, value, rel)
 
     def _handle_prop(self, indices):
         #prop(_G15949, drs(...))
         self.assertToken(self.token(), '(')
-        arg = self.token()
+        arg = self.parse_variable()
         self.assertToken(self.token(), ',')
         drs = self.parse_Expression(None)
         self.assertToken(self.token(), ')')
-        return drs
+        return self._make_prop_expression(indices, arg, drs)
 
     def _make_atom(self, pred, *args):
         if isinstance(pred, str):
@@ -513,17 +513,20 @@ class BoxerDrsParser(DrtParser):
         indices = []
         self.assertToken(self.token(), '[')
         while self.token(0) != ']':
-            base_index = int(self.token())
-            if self.sentence_id_offset is None:
-                self.sentence_id_offset = base_index / 1000
-            sent_index = (base_index / 1000) - self.sentence_id_offset
-            word_index = (base_index % 1000) - 1
-            indices.append((sent_index, word_index))
+            indices.append(self.parse_index())
             if self.token(0) == ',':
                 self.token() #swallow ','
         self.token() #swallow ']'
         self.assertToken(self.token(), ':')
         return indices
+    
+    def parse_index(self):
+        base_index = int(self.token())
+        if self.sentence_id_offset is None:
+            self.sentence_id_offset = base_index / 1000
+        sent_index = (base_index / 1000) - self.sentence_id_offset
+        word_index = (base_index % 1000) - 1
+        return (sent_index, word_index)
     
     def parse_drs(self):
         #drs([[1001]:_G3943], 
@@ -534,7 +537,7 @@ class BoxerDrsParser(DrtParser):
         refs = set()
         while self.token(0) != ']':
             indices = self._parse_index_list()
-            refs.add(self._make_Variable(self.token()))
+            refs.add(self.parse_variable())
             if self.token(0) == ',':
                 self.token() #swallow ','
         self.token() #swallow ']'
@@ -548,7 +551,7 @@ class BoxerDrsParser(DrtParser):
                 self.token() #swallow ','
         self.token() #swallow ']'
         self.assertToken(self.token(), ')')
-        return DRS(list(refs), conds)
+        return self._make_drs_expression(list(refs), conds)
 
     def _make_binary_expression(self, constructor):
         self.assertToken(self.token(), '(')
@@ -558,22 +561,22 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), ')')
         return constructor(e1, e2)
 
-    def _make_imp_expression(self):
-        def make_imp_expression(first, second):
+    def _make_imp_binary_expression(self):
+        def make_imp_binary_expression(first, second):
             if isinstance(first, DRS):
                 return DRS(first.refs, first.conds, second)
             if isinstance(first, ConcatenationDRS):
                 return ConcatenationDRS(first.first, first.second, second)
             raise Exception('Antecedent of implication must be a DRS')
-        return self._make_binary_expression(make_imp_expression)
+        return self._make_binary_expression(make_imp_binary_expression)
 
     def _handle_eq(self, indices):
         self.assertToken(self.token(), '(')
-        e1 = DrtVariableExpression(self._make_Variable(self.token()))
+        e1 = DrtVariableExpression(self.parse_variable())
         self.assertToken(self.token(), ',')
-        e2 = DrtVariableExpression(self._make_Variable(self.token()))
+        e2 = DrtVariableExpression(self.parse_variable())
         self.assertToken(self.token(), ')')
-        return DrtEqualityExpression(e1, e2)
+        return self._make_eq_expression(e1, e2)
 
     def _handle_whq(self, indices):
         self.assertToken(self.token(), '(')
@@ -603,19 +606,55 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         d1 = self.parse_Expression(None)
         self.assertToken(self.token(), ',')
-        ref = DrtVariableExpression(self._make_Variable(self.token()))
+        ref = DrtVariableExpression(self.parse_variable())
         self.assertToken(self.token(), ',')
         d2 = self.parse_Expression(None)
         self.assertToken(self.token(), ')')
         d3 = DRS([],[self._make_atom(self._make_pred('n', f_name, [], 1), ref) for f_name in ans_types])
         return ConcatenationDRS(d3,ConcatenationDRS(d1,d2))
 
+    def parse_variable(self):
+        var = self.token()
+        assert re.match('^\_G\d+$', var)
+        return Variable('z' + var[2:])
+
     def _make_Variable(self, name):
-        if name.startswith('_G'):
-            name = 'z' + name[2:]
         return Variable(name)
 
+    def _make_not_expression(self, indices, drs):
+        return DrtNegatedExpression(drs)
 
+    def _make_merge_expression(self, e1, e2):
+        return ConcatenationDRS(e1, e2)
+
+    def _make_smerge_expression(self, e1, e2):
+        return self._make_merge_expression(e1, e2)
+
+    def _make_pred_expression(self, indices, variable, name, pos, sense):
+        pred = self._make_pred(pos, name, indices, 1)
+        return self._make_atom(pred, variable)
+        
+    def _make_named_expression(self, indices, variable, name, type, sense):
+        pred = 'n_%s_%s' % (name, 1)
+        return self._make_atom(pred, variable)
+
+    def _make_rel_expression(self, indices, var1, var2, rel, sense):
+        pred = 'r_%s_%s' % (rel, 2)
+        return self._make_atom(pred, var1, var2)
+
+    def _make_card_expression(self, indices, variable, value, rel):
+        return self._make_atom('r_card_3', variable, value, rel)
+
+    def _make_prop_expression(self, indices, variable, drs):
+        return drs
+
+    def _make_drs_expression(self, refs, conds):
+        return DRS(refs, conds)
+
+    def _make_eq_expression(self, e1, e2):
+        return DrtEqualityExpression(e1, e2)
+
+                            
 class UnparseableInputException(Exception):
     pass
 
@@ -624,12 +663,13 @@ if __name__ == '__main__':
     opts = OptionParser("usage: %prog TEXT [options]")
     opts.add_option("--verbose", "-v", help="display verbose logs", action="store_true", default=False, dest="verbose")
     opts.add_option("--fol", "-f", help="output FOL", action="store_true", default=False, dest="fol")
+    opts.add_option("--occur", "-o", help="occurrence index", action="store_true", default=False, dest="occur_index")
     (options, args) = opts.parse_args()
 
     if len(args) != 1:
         opts.error("incorrect number of arguments")
 
-    drs = Boxer().interpret(args[0], verbose=options.verbose)
+    drs = Boxer().interpret_multisentence(args[0].split('\n'), occur_index=options.occur_index, verbose=options.verbose)
     if drs is None:
         print None
     else:
