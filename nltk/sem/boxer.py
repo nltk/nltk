@@ -518,7 +518,7 @@ class BoxerDrsParser(DrtParser):
         d2 = self.parse_Expression(None)
         self.assertToken(self.token(), ')')
         d3 = DRS([],[self._make_atom(self._make_pred('n', f_name, [], 1), ref) for f_name in ans_types])
-        return ConcatenationDRS(d3,ConcatenationDRS(d1,d2))
+        return DrtConcatenation(d3,DrtConcatenation(d1,d2))
 
     def _make_merge_expression(self, sent_index, word_indices, drs1, drs2):
         return BoxerDrs(drs1.label, drs1.refs + drs2.refs, drs1.conds + drs2.conds)
@@ -765,6 +765,8 @@ class NltkDrtBoxerDrsInterpreter(object):
     def _interpret(self, ex):
         if isinstance(ex, BoxerDrs):
             drs = DRS([Variable('x%d' % r) for r in ex.refs], map(self._interpret, ex.conds))
+            if ex.label is not None:
+                drs.label = Variable('x%d' % ex.label)
             if ex.consequent is not None:
                 drs.consequent = self._interpret(ex.consequent)
             return drs
@@ -782,7 +784,7 @@ class NltkDrtBoxerDrsInterpreter(object):
             pred = self._add_occur_indexing('%s' % (ex.rel), ex)
             return self._make_atom(pred, 'x%d' % ex.var1, 'x%d' % ex.var2)
         elif isinstance(ex, BoxerProp):
-            return self._interpret(ex.drs)
+            return DrtProposition(Variable('x%d' % ex.var), self._interpret(ex.drs))
         elif isinstance(ex, BoxerEq):
             return DrtEqualityExpression(DrtVariableExpression(Variable('x%d' % ex.var1)), 
                                          DrtVariableExpression(Variable('x%d' % ex.var2)))
@@ -802,7 +804,7 @@ class NltkDrtBoxerDrsInterpreter(object):
         return accum
 
     def _add_occur_indexing(self, base, ex):
-        if self._occur_index and sent_index is not None:
+        if self._occur_index and ex.sent_index is not None:
             if ex.discourse_id:
                 base += '_%s'  % ex.discourse_id
             base += '_s%s' % ex.sent_index

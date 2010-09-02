@@ -56,8 +56,8 @@ class AbstractDrs(object):
         assert isinstance(other, AbstractDrs)
         if isinstance(self, DRS):
             return DRS(self.refs, self.conds, other)
-        if isinstance(self, ConcatenationDRS):
-            return ConcatenationDRS(self.first, self.second, other)
+        if isinstance(self, DrtConcatenation):
+            return DrtConcatenation(self.first, self.second, other)
         raise Exception('Antecedent of implication must be a DRS')
     
     def tp_equals(self, other, prover=None):
@@ -83,7 +83,7 @@ class AbstractDrs(object):
         raise NotImplementedError()
     
     def __add__(self, other):
-        return ConcatenationDRS(self, other, None)
+        return DrtConcatenation(self, other, None)
     
     def get_refs(self, recursive=False):
         """
@@ -326,6 +326,7 @@ class DRS(AbstractDrs, Expression):
                    str(self.consequent) + DrtTokens.CLOSE
         return drs
 
+
 def DrtVariableExpression(variable):
     """
     This is a factory method that instantiates and returns a subtype of 
@@ -365,6 +366,53 @@ class DrtEventVariableExpression(DrtIndividualVariableExpression, EventVariableE
 
 class DrtConstantExpression(DrtAbstractVariableExpression, ConstantExpression):
     pass
+
+
+class DrtProposition(AbstractDrs):
+    def __init__(self, variable, drs):
+        self.variable = variable
+        self.drs = drs
+        
+    def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
+        if self.variable == variable:
+            assert isinstance(expression, DrtAbstractVariableExpression), "Can only replace a proposition label with a variable"
+            return DrtProposition(expression.variable, self.drs.replace(variable, expression, replace_bound, alpha_convert))
+        else:
+            return DrtProposition(self.variable, self.drs.replace(variable, expression, replace_bound, alpha_convert))
+        
+    def eliminate_equality(self):
+        return DrtProposition(self.variable, self.drs.eliminate_equality())
+        
+    def simplify(self):
+        return DrtProposition(self.variable, self.drs.simplify())
+        
+    def get_refs(self, recursive=False):
+        if recursive:
+            return self.drs.get_refs(True)
+        else:
+            return []
+        
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and \
+               self.variable == other.variable and \
+               self.drs == other.drs
+        
+    def fol(self):
+        return self.drs.fol()
+        
+    def _pretty(self):
+        drs_s = self.drs._pretty()
+        blank = ' '*(len(str(self.variable))+1)
+        return [blank + drs_s[0],
+                str(self.variable) + ':' + drs_s[1]] + \
+                map(lambda l: blank+l, drs_s[2:])
+        
+    def visit(self, function, combinator, default):
+        return combinator(function(self.variable), function(self.drs))
+        
+    def __str__(self):
+        return 'prop(%s, %s)' % (self.variable, self.drs)
+    
 
 class DrtNegatedExpression(AbstractDrs, NegatedExpression):
     def fol(self):
@@ -445,12 +493,12 @@ class DrtEqualityExpression(DrtBinaryExpression, EqualityExpression):
     def fol(self):
         return EqualityExpression(self.first.fol(), self.second.fol())
 
-class ConcatenationDRS(DrtBooleanExpression):
+class DrtConcatenation(DrtBooleanExpression):
+    """DRS of the form '(DRS + DRS)'"""
     def __init__(self, first, second, consequent=None):
         DrtBooleanExpression.__init__(self, first, second)
         self.consequent = consequent
     
-    """DRS of the form '(DRS + DRS)'"""
     def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
@@ -482,7 +530,7 @@ class ConcatenationDRS(DrtBooleanExpression):
     def eliminate_equality(self):
         #TODO: at some point.  for now, simplify.
         drs = self.simplify()
-        assert not isinstance(drs, ConcatenationDRS)
+        assert not isinstance(drs, DrtConcatenation)
         return drs.eliminate_equality() 
     
     def simplify(self):
@@ -515,7 +563,7 @@ class ConcatenationDRS(DrtBooleanExpression):
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
         If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
-        if isinstance(other, ConcatenationDRS):
+        if isinstance(other, DrtConcatenation):
             self_refs = self.get_refs()
             other_refs = other.get_refs()
             if len(self_refs) == len(other_refs):
@@ -544,7 +592,7 @@ class ConcatenationDRS(DrtBooleanExpression):
         return drs
 
     def _pretty_subex(self, subex):
-        if isinstance(subex, ConcatenationDRS):
+        if isinstance(subex, DrtConcatenation):
             return [line[1:-1] for line in subex._pretty()]
         return DrtBooleanExpression._pretty_subex(self, subex)
 
@@ -565,7 +613,7 @@ class ConcatenationDRS(DrtBooleanExpression):
 
     def _str_subex(self, subex):
         s = str(subex)
-        if isinstance(subex, ConcatenationDRS) and subex.consequent is None:
+        if isinstance(subex, DrtConcatenation) and subex.consequent is None:
             return s[1:-1]
         return s
 
@@ -674,7 +722,7 @@ def resolve_anaphora(expression, trail=[]):
     elif isinstance(expression, NegatedExpression):
         return expression.__class__(resolve_anaphora(expression.term, trail + [expression]))
 
-    elif isinstance(expression, ConcatenationDRS):
+    elif isinstance(expression, DrtConcatenation):
         return expression.__class__(resolve_anaphora(expression.first, trail + [expression]), 
                                     resolve_anaphora(expression.second, trail + [expression]),
                                     resolve_anaphora(expression.consequent, trail + [expression]) 
@@ -1030,15 +1078,15 @@ class DrtParser(LogicParser):
         """This method serves as a hook for other logic parsers that
         have different boolean operators"""
         if tok == DrtTokens.DRS_CONC:
-            return lambda first, second: ConcatenationDRS(first, second, None)
+            return lambda first, second: DrtConcatenation(first, second, None)
         elif tok in DrtTokens.OR_LIST:
             return DrtOrExpression
         elif tok in DrtTokens.IMP_LIST:
             def make_imp_expression(first, second):
                 if isinstance(first, DRS):
                     return DRS(first.refs, first.conds, second)
-                if isinstance(first, ConcatenationDRS):
-                    return ConcatenationDRS(first.first, first.second, second)
+                if isinstance(first, DrtConcatenation):
+                    return DrtConcatenation(first.first, first.second, second)
                 raise Exception('Antecedent of implication must be a DRS')
             return make_imp_expression
         else:
