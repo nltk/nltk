@@ -701,6 +701,9 @@ class BoxerEq(BoxerIndexed):
         self.var1 = var1
         self.var2 = var2
         
+    def atoms(self):
+        return set()
+
     def __iter__(self):
         return iter((self.var1, self.var2))
         
@@ -726,6 +729,9 @@ class BoxerOr(BoxerIndexed):
         self.drs1 = drs1
         self.drs2 = drs2
         
+    def atoms(self):
+        return self.drs1.atoms() | self.drs2.atoms()
+
     def __iter__(self):
         return iter((self.drs1, self.drs2))
         
