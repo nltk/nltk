@@ -293,7 +293,10 @@ class Prover9(Prover9Parent, Prover):
             updated_input_str += 'assign(max_seconds, %d).\n\n' % self._timeout
         updated_input_str += input_str
         
-        return self._call(updated_input_str, self._prover9_bin, args, verbose)
+        stdout, returncode = self._call(updated_input_str, self._prover9_bin, args, verbose)
+        if returncode not in [0,2]:
+            raise Exception('Prover9 failed with return code: '% returncode)
+        return stdout, returncode
     
     def _call_prooftrans(self, input_str, args=[], verbose=False):
         """
