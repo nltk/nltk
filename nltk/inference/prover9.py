@@ -295,7 +295,7 @@ class Prover9(Prover9Parent, Prover):
         
         stdout, returncode = self._call(updated_input_str, self._prover9_bin, args, verbose)
         if returncode not in [0,2]:
-            raise Exception('Prover9 failed with return code: '% returncode)
+            raise Exception('Prover9 failed with return code %d %s' % (returncode, p9_return_codes[returncode]))
         return stdout, returncode
     
     def _call_prooftrans(self, input_str, args=[], verbose=False):
