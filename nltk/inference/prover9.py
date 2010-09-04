@@ -294,8 +294,19 @@ class Prover9(Prover9Parent, Prover):
         updated_input_str += input_str
         
         stdout, returncode = self._call(updated_input_str, self._prover9_bin, args, verbose)
+        
         if returncode not in [0,2]:
-            raise Exception('Prover9 failed with return code %d %s' % (returncode, p9_return_codes[returncode]))
+            errormsgprefix = '%%ERROR:'
+            if errormsgprefix in stdout:
+                msgstart = stdout.index(errormsgprefix)
+                errormsg = stdout[msgstart+len(errormsgprefix):].split('\n')[0].strip()
+            else:
+                errormsg = None
+            if returncode in [3,4,5,6]:
+                raise Prover9LimitExceededException(returncode, errormsg)
+            else:
+                raise Prover9FatalException(returncode, errormsg)
+        
         return stdout, returncode
     
     def _call_prooftrans(self, input_str, args=[], verbose=False):
@@ -311,8 +322,23 @@ class Prover9(Prover9Parent, Prover):
             self._prooftrans_bin = self._find_binary('prooftrans', verbose)
 
         return self._call(input_str, self._prooftrans_bin, args, verbose)
-    
-    
+
+
+class Prover9Exception(Exception):
+    def __init__(self, returncode, message):
+        msg = p9_return_codes[returncode]
+        if message:
+            msg += ' %s' % message
+        Exception.__init__(self, msg)
+
+class Prover9FatalException(Prover9Exception):
+    pass
+
+class Prover9LimitExceededException(Prover9Exception):
+    pass
+
+
+
 ######################################################################
 #{ Tests and Demos
 ######################################################################
