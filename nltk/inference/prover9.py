@@ -11,11 +11,10 @@ import os
 import subprocess
 
 import nltk
-from nltk.sem.logic import LogicParser, Tokens as LogicTokens, \
-    ExistsExpression, AllExpression, NegatedExpression, BinaryExpression, \
-    AndExpression, IffExpression, OrExpression, EqualityExpression
+from nltk.sem.logic import LogicParser, ExistsExpression, AllExpression, \
+    NegatedExpression, AndExpression, IffExpression, OrExpression, \
+    EqualityExpression, ImpExpression
 from api import BaseProverCommand, Prover
-from nltk.sem.linearlogic import ImpExpression, ApplicationExpression
 
 """
 A theorem prover that makes use of the external 'Prover9' package.
@@ -299,7 +298,7 @@ class Prover9(Prover9Parent, Prover):
             errormsgprefix = '%%ERROR:'
             if errormsgprefix in stdout:
                 msgstart = stdout.index(errormsgprefix)
-                errormsg = stdout[msgstart+len(errormsgprefix):].split('\n')[0].strip()
+                errormsg = stdout[msgstart:].strip()
             else:
                 errormsg = None
             if returncode in [3,4,5,6]:
@@ -328,7 +327,7 @@ class Prover9Exception(Exception):
     def __init__(self, returncode, message):
         msg = p9_return_codes[returncode]
         if message:
-            msg += ' %s' % message
+            msg += '\n%s' % message
         Exception.__init__(self, msg)
 
 class Prover9FatalException(Prover9Exception):
