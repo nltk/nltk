@@ -232,7 +232,7 @@ class BoxerDrsParser(DrtParser):
         self._label_counter = None
         
     def parse(self, data, signature=None):
-        self._label_counter = Counter()
+        self._label_counter = Counter(-1)
         return DrtParser.parse(self, data, signature)
     
     def get_all_symbols(self):
@@ -766,18 +766,15 @@ class NltkDrtBoxerDrsInterpreter(object):
         @param ex: C{AbstractBoxerDrs}
         @return: C{AbstractDrs}
         """
-        return self._interpret(ex)
-
-    def _interpret(self, ex):
         if isinstance(ex, BoxerDrs):
-            drs = DRS([Variable('x%d' % r) for r in ex.refs], map(self._interpret, ex.conds))
+            drs = DRS([Variable('x%d' % r) for r in ex.refs], map(self.interpret, ex.conds))
             if ex.label is not None:
                 drs.label = Variable('x%d' % ex.label)
             if ex.consequent is not None:
-                drs.consequent = self._interpret(ex.consequent)
+                drs.consequent = self.interpret(ex.consequent)
             return drs
         elif isinstance(ex, BoxerNot):
-            return DrtNegatedExpression(self._interpret(ex.drs))
+            return DrtNegatedExpression(self.interpret(ex.drs))
         elif isinstance(ex, BoxerEvent):
             return self._make_atom('event', 'x%d' % ex.var)
         elif isinstance(ex, BoxerPred):
@@ -790,7 +787,7 @@ class NltkDrtBoxerDrsInterpreter(object):
             pred = self._add_occur_indexing('%s' % (ex.rel), ex)
             return self._make_atom(pred, 'x%d' % ex.var1, 'x%d' % ex.var2)
         elif isinstance(ex, BoxerProp):
-            return DrtProposition(Variable('x%d' % ex.var), self._interpret(ex.drs))
+            return DrtProposition(Variable('x%d' % ex.var), self.interpret(ex.drs))
         elif isinstance(ex, BoxerEq):
             return DrtEqualityExpression(DrtVariableExpression(Variable('x%d' % ex.var1)), 
                                          DrtVariableExpression(Variable('x%d' % ex.var2)))
@@ -798,7 +795,7 @@ class NltkDrtBoxerDrsInterpreter(object):
             pred = self._add_occur_indexing('card_%s_%s' % (ex.type, ex.value), ex)
             return self._make_atom(pred, 'x%d' % ex.var)
         elif isinstance(ex, BoxerOr):
-            return DrtOrExpression(self._interpret(ex.drs1), self._interpret(ex.drs2))
+            return DrtOrExpression(self.interpret(ex.drs1), self.interpret(ex.drs2))
         elif isinstance(ex, BoxerGeneric):
             return self._make_atom(ex.pred, *ex.args)
         assert False, '%s: %s' % (ex.__class__.__name__, ex)
