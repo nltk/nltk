@@ -491,7 +491,8 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), ')')
         return BoxerEq(self.discourse_id, sent_index, word_indices, var1, var2)
 
-    def _handle_whq(self, indices):
+
+    def _handle_whq(self, sent_index, word_indices):
         self.assertToken(self.token(), '(')
         self.assertToken(self.token(), '[')
         ans_types = []
@@ -510,15 +511,15 @@ class BoxerDrsParser(DrtParser):
             else:
                 ans_types.append(self.token())
         self.token() #swallow the ']'
+        
         self.assertToken(self.token(), ',')
         d1 = self.parse_Expression(None)
         self.assertToken(self.token(), ',')
-        ref = DrtVariableExpression(self.parse_variable())
+        ref = self.parse_variable()
         self.assertToken(self.token(), ',')
         d2 = self.parse_Expression(None)
         self.assertToken(self.token(), ')')
-        d3 = DRS([],[self._make_atom(self._make_pred('n', f_name, [], 1), ref) for f_name in ans_types])
-        return DrtConcatenation(d3,DrtConcatenation(d1,d2))
+        return BoxerWhq(self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2)
 
     def _make_merge_expression(self, sent_index, word_indices, drs1, drs2):
         return BoxerDrs(drs1.label, drs1.refs + drs2.refs, drs1.conds + drs2.conds)
@@ -750,6 +751,23 @@ class BoxerGeneric(BoxerIndexed):
     def _pred(self):
         return self.pred
     
+class BoxerWhq(BoxerIndexed):
+    def __init__(self, discourse_id, sent_index, word_indices, ans_types, drs1, variable, drs2):
+        BoxerIndexed.__init__(self, discourse_id, sent_index, word_indices)
+        self.ans_types = ans_types
+        self.drs1 = drs1
+        self.variable = variable
+        self.drs2 = drs2
+        
+    def atoms(self):
+        return self.drs1.atoms() | self.drs2.atoms()
+
+    def __iter__(self):
+        return iter((self.ans_types, self.drs1, self.variable, self.drs2))
+        
+    def _pred(self):
+        return 'whq'
+    
 
 
 class PassthroughBoxerDrsInterpreter(object):
@@ -798,6 +816,10 @@ class NltkDrtBoxerDrsInterpreter(object):
             return DrtOrExpression(self.interpret(ex.drs1), self.interpret(ex.drs2))
         elif isinstance(ex, BoxerGeneric):
             return self._make_atom(ex.pred, *ex.args)
+        elif isinstance(ex, BoxerWhq):
+            drs1 = self.interpret(ex.drs1)
+            drs2 = self.interpret(ex.drs2)
+            return DRS(drs1.refs + drs2.refs, drs1.conds + drs2.conds)
         assert False, '%s: %s' % (ex.__class__.__name__, ex)
 
     def _make_atom(self, pred, *args):
