@@ -479,6 +479,11 @@ class FreqDist(dict):
         self._reset_caches()
         return dict.popitem(self, other)
         
+    def clear(self):
+        self._N = 0
+        self._reset_caches()
+        dict.clear(self)        
+    
     def _reset_caches(self):
         self._Nr_cache = None
         self._max_cache = None
