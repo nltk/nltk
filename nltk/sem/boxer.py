@@ -452,6 +452,7 @@ class BoxerOutputDrsParser(DrtParser):
         #drs([[1001]:_G3943], 
         #    [[1002]:pred(_G3943, dog, n, 0)]
         #   )
+        label = self._label_counter.get()
         self.assertToken(self.token(), '(')
         self.assertToken(self.token(), '[')
         refs = set()
@@ -471,7 +472,7 @@ class BoxerOutputDrsParser(DrtParser):
                 self.token() #swallow ','
         self.token() #swallow ']'
         self.assertToken(self.token(), ')')
-        return BoxerDrs(self._label_counter.get(), list(refs), conds)
+        return BoxerDrs(label, list(refs), conds)
 
     def _handle_binary_expression(self, sent_index, word_indices, make_callback):
         self.assertToken(self.token(), '(')
