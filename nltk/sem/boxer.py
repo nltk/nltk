@@ -306,17 +306,20 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), '(')
         variable = self.parse_variable()
         self.assertToken(self.token(), ',')
-        name = self.token()
+        name = self._clean_pred(self.token())
         self.assertToken(self.token(), ',')
         pos = self.token()
         self.assertToken(self.token(), ',')
         sense = int(self.token())
         self.assertToken(self.token(), ')')
         
-        if name=='event' and sent_index is None and ((pos=='n' and sense=='1') or (pos=='v' and sense=='0')):
+        if name=='event' and sent_index is None and ((pos=='n' and sense==1) or (pos=='v' and sense==0)):
             return BoxerEvent(variable)
         else:
             return BoxerPred(self.discourse_id, sent_index, word_indices, variable, name, pos, sense)
+        
+    def _clean_pred(self, pred):
+        return pred.replace('-','_')
 
     def _handle_named(self, sent_index, word_indices):
         #named(x0, john, per, 0)
