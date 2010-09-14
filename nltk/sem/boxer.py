@@ -689,6 +689,23 @@ class BoxerDrsParser(DrtParser):
                 type = self.token()
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerCard(disc_id, sent_id, word_ids, var, value, type)
+            elif tok == 'whq':
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = self.nullableIntToken()
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                ans_types = self.handle_refs()
+                self.assertNextToken(DrtTokens.COMMA)
+                drs1 = self.parse_Expression(None)
+                self.assertNextToken(DrtTokens.COMMA)
+                var = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                drs2 = self.parse_Expression(None)
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
             else:
                 self.assertNextToken(DrtTokens.OPEN)
                 disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
