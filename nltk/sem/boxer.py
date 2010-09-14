@@ -10,14 +10,12 @@
 from __future__ import with_statement
 import os
 import subprocess
-import operator
 from optparse import OptionParser
 import tempfile
 
 import nltk
 from nltk.sem.logic import *
 from nltk.sem.drt import *
-from nltk.internals import Counter
 
 """
 An interface to Boxer.
@@ -37,7 +35,7 @@ Usage:
 class Boxer(object):
     """
     This class is used to parse a sentence using Boxer into an NLTK DRS 
-    object.  The BoxerDrsParser class is used for the actual conversion.
+    object.  The BoxerOutputDrsParser class is used for the actual conversion.
     """
 
     def __init__(self, boxer_drs_interpreter=None):
@@ -216,10 +214,10 @@ class Boxer(object):
         return drs_dict
     
     def _parse_drs(self, drs_string, discourse_id, use_disc_id):
-        return BoxerDrsParser(discourse_id if use_disc_id else None).parse(drs_string)
+        return BoxerOutputDrsParser(discourse_id if use_disc_id else None).parse(drs_string)
 
 
-class BoxerDrsParser(DrtParser):
+class BoxerOutputDrsParser(DrtParser):
     def __init__(self, discourse_id=None):
         """
         This class is used to parse the Prolog DRS output from Boxer into a
@@ -312,11 +310,11 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         pos = self.token()
         self.assertToken(self.token(), ',')
-        sense = self.token()
+        sense = int(self.token())
         self.assertToken(self.token(), ')')
         
         if name=='event' and sent_index is None and ((pos=='n' and sense=='1') or (pos=='v' and sense=='0')):
-            return BoxerEvent(variable, name)
+            return BoxerEvent(variable)
         else:
             return BoxerPred(self.discourse_id, sent_index, word_indices, variable, name, pos, sense)
 
@@ -329,7 +327,7 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         type = self.token()
         self.assertToken(self.token(), ',')
-        sense = self.token()
+        sense = int(self.token())
         self.assertToken(self.token(), ')')
         return BoxerNamed(self.discourse_id, sent_index, word_indices, variable, name, type, sense)
 
@@ -342,7 +340,7 @@ class BoxerDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         rel = self.token()
         self.assertToken(self.token(), ',')
-        sense = self.token()
+        sense = int(self.token())
         self.assertToken(self.token(), ')')
         return BoxerRel(self.discourse_id, sent_index, word_indices, var1, var2, rel, sense)
 
@@ -542,6 +540,178 @@ class BoxerDrsParser(DrtParser):
         sent_index, = set((i / 1000)-1 for i in indices if i>=0) if indices else (None,)
         word_indices = [(i % 1000)-1 for i in indices]
         return sent_index, word_indices
+
+
+class BoxerDrsParser(DrtParser):
+    """
+    Reparse the str form of subclasses of C{AbstractBoxerDrs}
+    """
+    def get_all_symbols(self):
+        return [DrtTokens.OPEN, DrtTokens.CLOSE, DrtTokens.COMMA, DrtTokens.OPEN_BRACKET, DrtTokens.CLOSE_BRACKET]
+
+    def attempt_adjuncts(self, expression, context):
+        return expression
+
+    def handle(self, tok, context):
+        try:
+            if tok == 'drs':
+                self.assertNextToken(DrtTokens.OPEN)
+                label = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                refs = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                conds = self.handle_conds(None)
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerDrs(label, refs, conds)
+            elif tok == 'pred':
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = self.nullableIntToken()
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                variable = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                name = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                pos = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sense = int(self.token())
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerPred(disc_id, sent_id, word_ids, variable, name, pos, sense)
+            elif tok == 'named':
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                variable = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                name = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                type = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sense = int(self.token())
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerNamed(disc_id, sent_id, word_ids, variable, name, type, sense)
+            elif tok == 'rel':
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = self.nullableIntToken()
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                var1 = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                var2 = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                rel = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sense = int(self.token())
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerRel(disc_id, sent_id, word_ids, var1, var2, rel, sense)
+            elif tok == 'event':
+                self.assertNextToken(DrtTokens.OPEN)
+                var = int(self.token())
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerEvent(var)
+            elif tok == 'prop':
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                variable = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                drs = self.parse_Expression(None)
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerProp(disc_id, sent_id, word_ids, variable, drs)
+            elif tok == 'not':
+                self.assertNextToken(DrtTokens.OPEN)
+                drs = self.parse_Expression(None)
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerNot(drs)
+            elif tok == 'imp':
+                self.assertNextToken(DrtTokens.OPEN)
+                drs1 = self.parse_Expression(None)
+                self.assertNextToken(DrtTokens.COMMA)
+                drs2 = self.parse_Expression(None)
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerDrs(drs1.label, drs1.refs, drs1.conds, drs2)
+            elif tok == 'or':
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = self.nullableIntToken()
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                drs1 = self.parse_Expression(None)
+                self.assertNextToken(DrtTokens.COMMA)
+                drs2 = self.parse_Expression(None)
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerOr(disc_id, sent_id, word_ids, drs1, drs2)
+            elif tok == 'eq':
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = self.nullableIntToken()
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                var1 = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                var2 = int(self.token())
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerEq(disc_id, sent_id, word_ids, var1, var2)
+            elif tok == 'card':
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = self.nullableIntToken()
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                self.assertNextToken(DrtTokens.COMMA)
+                var = int(self.token())
+                self.assertNextToken(DrtTokens.COMMA)
+                value = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                type = self.token()
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerCard(disc_id, sent_id, word_ids, var, value, type)
+            else:
+                self.assertNextToken(DrtTokens.OPEN)
+                disc_id = self.token()
+                self.assertNextToken(DrtTokens.COMMA)
+                sent_id = self.nullableIntToken()
+                self.assertNextToken(DrtTokens.COMMA)
+                word_ids = map(int, self.handle_refs())
+                args = []
+                while self.inRange(0) and self.token(0) != DrtTokens.CLOSE:
+                    self.assertNextToken(DrtTokens.COMMA)
+                    args.append(self.token())
+                self.assertNextToken(DrtTokens.CLOSE)
+                return BoxerGeneric(disc_id, sent_id, word_ids, tok, *args)
+        except Exception, e:
+            raise ParseException(self._currentIndex, str(e))
+        assert False
+        
+    def nullableIntToken(self):
+        t = self.token()
+        return int(t) if t != 'None' else None
+    
+    def get_next_token_variable(self, description):
+        try:
+            return self.token()
+        except ExpectedMoreTokensException, e:
+            raise ExpectedMoreTokensException(e.index, 'Variable expected.')
+
         
 
 class AbstractBoxerDrs(object):
@@ -581,6 +751,15 @@ class BoxerDrs(AbstractBoxerDrs):
         if self.consequent is not None:
             s = 'imp(%s, %s)' % (s, self.consequent)
         return s
+    
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and \
+               self.label == other.label and \
+               len(self.refs) == len(other.refs) and \
+               all(r1==r2 for r1,r2 in zip(self.refs, other.refs)) and \
+               len(self.conds) == len(other.conds) and \
+               all(c1==c2 for c1,c2 in zip(self.conds, other.conds)) and \
+               self.consequent == other.consequent
         
 class BoxerNot(AbstractBoxerDrs):
     def __init__(self, drs):
@@ -595,18 +774,23 @@ class BoxerNot(AbstractBoxerDrs):
 
     def __repr__(self):
         return 'not(%s)' % (self.drs)
+    
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.drs == other.drs
         
 class BoxerEvent(AbstractBoxerDrs):
-    def __init__(self, var, name):
+    def __init__(self, var):
         AbstractBoxerDrs.__init__(self)
         self.var = var
-        self.name = name
 
     def all_events(self):
         return set([self.var])
 
     def __repr__(self):
         return 'event(%s)' % (self.var)
+    
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.var == other.var
 
 class BoxerIndexed(AbstractBoxerDrs):
     def __init__(self, discourse_id, sent_index, word_indices):
@@ -615,11 +799,11 @@ class BoxerIndexed(AbstractBoxerDrs):
         self.sent_index = sent_index
         self.word_indices = word_indices
 
-    def __eq__(self, other):
-        return self.__class__ == other.__class__ and all(s==o for s,o in zip(self, other))
-    
     def atoms(self):
         return set([self])
+    
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and all(s==o for s,o in zip(self, other))
     
     def __repr__(self):
         s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id, self.sent_index, ', '.join(map(str, self.word_indices)))
@@ -750,6 +934,9 @@ class BoxerGeneric(BoxerIndexed):
         
     def _pred(self):
         return self.pred
+    
+    def __eq__(self, other):
+        return self.pred == other.pred and BoxerIndexed.__eq__(self, other)
     
 class BoxerWhq(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, ans_types, drs1, variable, drs2):
