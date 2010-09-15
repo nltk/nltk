@@ -500,7 +500,7 @@ class Glue(object):
         if self.remove_duplicates:
             for reading in reading_list:
                 try:
-                    if reading.tp_equals(glueformula.meaning, self.prover):
+                    if reading.equiv(glueformula.meaning, self.prover):
                         add_reading = False
                         break;
                 except Exception, e:
