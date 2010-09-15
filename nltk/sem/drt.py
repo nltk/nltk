@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from logic import *
+from nltk.internals import deprecated
 
 # Import Tkinter-based modules if they are available
 try:
@@ -60,8 +61,13 @@ class AbstractDrs(object):
             return DrtConcatenation(self.first, self.second, other)
         raise Exception('Antecedent of implication must be a DRS')
     
+    @deprecated("Use 'equiv' instead")
     def tp_equals(self, other, prover=None):
+        return self.equiv(other, prover)
+        
+    def equiv(self, other, prover=None):
         """
+        Check for logical equivalence.
         Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal.
         
@@ -72,7 +78,7 @@ class AbstractDrs(object):
         
         f1 = self.simplify().fol();
         f2 = other.simplify().fol();
-        return f1.tp_equals(f2, prover)
+        return f1.equiv(f2, prover)
     
     def _get_type(self):
         raise AttributeError("'%s' object has no attribute 'type'" % 

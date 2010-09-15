@@ -15,7 +15,7 @@ import re
 import operator
 
 from nltk.compat import defaultdict
-from nltk.internals import Counter
+from nltk.internals import Counter, deprecated
 
 _counter = Counter()
 
@@ -397,8 +397,13 @@ class Expression(SubstituteBindingsI):
     def __neq__(self, other):
         return not (self == other)
     
+    @deprecated("Use 'equiv' instead")
     def tp_equals(self, other, prover=None):
+        return self.equiv(other, prover)
+        
+    def equiv(self, other, prover=None):
         """
+        Check for logical equivalence.
         Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal.
         
