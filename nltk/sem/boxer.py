@@ -34,14 +34,25 @@ Usage:
 
 class Boxer(object):
     """
-    This class is used to parse a sentence using Boxer into an NLTK DRS 
-    object.  The BoxerOutputDrsParser class is used for the actual conversion.
+    This class is an interface to Johan Bos's program Boxer, a wide-coverage
+    semantic parser that produces Discourse Representation Structures (DRSs).
     """
 
-    def __init__(self, boxer_drs_interpreter=None):
+    def __init__(self, boxer_drs_interpreter=None, elimeq=False):
+        """
+        @param boxer_drs_interpreter: A class that converts from the 
+        C{AbstractBoxerDrs} object hierarchy to a different object.  The 
+        default is C{NltkDrtBoxerDrsInterpreter}, which converts to the NLTK 
+        DRT hierarchy.
+        @param elimeq: When set to true, Boxer removes all equalities from the 
+        DRSs and discourse referents standing in the equality relation are 
+        unified, but only if this can be done in a meaning-preserving manner. 
+        """
         if boxer_drs_interpreter is None:
             boxer_drs_interpreter = NltkDrtBoxerDrsInterpreter()
         self._boxer_drs_interpreter = boxer_drs_interpreter
+        
+        self._elimeq = elimeq
     
         self._boxer_bin = None
         self._candc_bin = None
@@ -143,7 +154,7 @@ class Boxer(object):
                 '--semantics', 'drs',
                 '--flat', 'false',
                 '--resolve', 'true',
-                '--elimeq', 'true',
+                '--elimeq', 'true' if self._elimeq else 'false',
                 '--format', 'prolog',
                 '--instantiate', 'true',
                 '--input', filename]
@@ -306,7 +317,7 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), '(')
         variable = self.parse_variable()
         self.assertToken(self.token(), ',')
-        name = self._clean_pred(self.token())
+        name = self.token()
         self.assertToken(self.token(), ',')
         pos = self.token()
         self.assertToken(self.token(), ',')
@@ -318,9 +329,6 @@ class BoxerOutputDrsParser(DrtParser):
         else:
             return BoxerPred(self.discourse_id, sent_index, word_indices, variable, name, pos, sense)
         
-    def _clean_pred(self, pred):
-        return pred.replace('-','_')
-
     def _handle_named(self, sent_index, word_indices):
         #named(x0, john, per, 0)
         self.assertToken(self.token(), '(')
@@ -746,6 +754,12 @@ class AbstractBoxerDrs(object):
     def atoms(self):
         return set()
 
+    def clean(self):
+        return self
+    
+    def _clean_name(self, name):
+        return name.replace('-','_')
+
     def __hash__(self):
         return hash(str(self))
                
@@ -768,6 +782,9 @@ class BoxerDrs(AbstractBoxerDrs):
         if self.consequent is not None:
             atoms.update(self.consequent.atoms())
         return atoms
+    
+    def clean(self):
+        return BoxerDrs(self.label, self.refs, [c.clean() for c in self.conds], self.consequent.clean() if self.consequent else None)
 
     def __repr__(self):
         s = 'drs(%s, [%s], [%s])' % (self.label, 
@@ -795,6 +812,9 @@ class BoxerNot(AbstractBoxerDrs):
     
     def atoms(self):
         return self.drs.atoms()
+
+    def clean(self):
+        return BoxerNot(self.drs.clean())
 
     def __repr__(self):
         return 'not(%s)' % (self.drs)
@@ -850,6 +870,9 @@ class BoxerPred(BoxerIndexed):
     def change_var(self, var):
         return BoxerPred(self.discourse_id, self.sent_index, self.word_indices, var, self.name, self.pos, self.sense)
         
+    def clean(self):
+        return BoxerPred(self.discourse_id, self.sent_index, self.word_indices, self.var, self._clean_name(self.name), self.pos, self.sense)
+
     def __iter__(self):
         return iter((self.var, self.name, self.pos, self.sense))
     
@@ -867,6 +890,9 @@ class BoxerNamed(BoxerIndexed):
     def change_var(self, var):
         return BoxerNamed(self.discourse_id, self.sent_index, self.word_indices, var, self.name, self.type, self.sense)
         
+    def clean(self):
+        return BoxerNamed(self.discourse_id, self.sent_index, self.word_indices, self.var, self._clean_name(self.name), self.type, self.sense)
+        
     def __iter__(self):
         return iter((self.var, self.name, self.type, self.sense))
 
@@ -880,6 +906,9 @@ class BoxerRel(BoxerIndexed):
         self.var2 = var2
         self.rel = rel
         self.sense = sense
+
+    def clean(self):
+        return BoxerRel(self.discourse_id, self.sent_index, self.word_indices, self.var1, self.var2, self._clean_name(self.rel), self.sense)
 
     def __iter__(self):
         return iter((self.var1, self.var2, self.rel, self.sense))
@@ -901,6 +930,9 @@ class BoxerProp(BoxerIndexed):
 
     def atoms(self):
         return self.drs.atoms()
+    
+    def clean(self):
+        return BoxerProp(self.discourse_id, self.sent_index, self.word_indices, self.var, self.drs.clean())
 
     def __iter__(self):
         return iter((self.var, self.drs))
@@ -945,6 +977,9 @@ class BoxerOr(BoxerIndexed):
     def atoms(self):
         return self.drs1.atoms() | self.drs2.atoms()
 
+    def clean(self):
+        return BoxerOr(self.discourse_id, self.sent_index, self.word_indices, self.drs1.clean(), self.drs2.clean())
+
     def __iter__(self):
         return iter((self.drs1, self.drs2))
         
@@ -976,6 +1011,9 @@ class BoxerWhq(BoxerIndexed):
         
     def atoms(self):
         return self.drs1.atoms() | self.drs2.atoms()
+
+    def clean(self):
+        return BoxerWhq(self.ans_types, self.drs1.clean(), self.variable, self.drs2.clean())
 
     def __iter__(self):
         return iter((self.ans_types, self.drs1, self.variable, self.drs2))
