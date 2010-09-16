@@ -127,6 +127,10 @@ indian = LazyCorpusLoader(
     tag_mapping_function=simplify_indian_tag)
 ipipan = LazyCorpusLoader(
     'ipipan', IPIPANCorpusReader, r'(?!\.).*morph\.xml')
+jeita = LazyCorpusLoader(
+    'jeita', ChasenCorpusReader, r'.*\.chasen', encoding='utf-8')
+knbc = LazyCorpusLoader(
+    'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
 mac_morpho = LazyCorpusLoader(
     'mac_morpho', MacMorphoCorpusReader, r'(?!\.).*\.txt',
     tag_mapping_function=simplify_tag, encoding='latin-1')
