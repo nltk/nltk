@@ -839,7 +839,7 @@ class BoxerNot(AbstractBoxerDrs):
         return BoxerNot(self.drs.clean())
 
     def renumber_sentences(self, f):
-        return BoxerNot(self.drs.renumber_sentences())
+        return BoxerNot(self.drs.renumber_sentences(f))
 
     def __repr__(self):
         return 'not(%s)' % (self.drs)
