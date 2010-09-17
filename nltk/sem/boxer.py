@@ -774,7 +774,7 @@ class AbstractBoxerDrs(object):
         return self
     
     def _clean_name(self, name):
-        return name.replace('-','_')
+        return name.replace('-','_').replace("'", "_")
     
     def renumber_sentences(self, f):
         return self
@@ -1025,7 +1025,7 @@ class BoxerOr(BoxerIndexed):
         return BoxerOr(self.discourse_id, self.sent_index, self.word_indices, self.drs1.clean(), self.drs2.clean())
 
     def renumber_sentences(self, f):
-        return BoxerCard(self.discourse_id, f(self.sent_index), self.word_indices, self.drs1, self.drs2)
+        return BoxerOr(self.discourse_id, f(self.sent_index), self.word_indices, self.drs1, self.drs2)
         
     def __iter__(self):
         return iter((self.drs1, self.drs2))
@@ -1043,7 +1043,7 @@ class BoxerGeneric(BoxerIndexed):
         return iter((self.args))
 
     def renumber_sentences(self, f):
-        return BoxerCard(self.discourse_id, f(self.sent_index), self.word_indices, self.pred, self.args)
+        return BoxerGeneric(self.discourse_id, f(self.sent_index), self.word_indices, self.pred, *self.args)
         
     def _pred(self):
         return self.pred
@@ -1063,7 +1063,7 @@ class BoxerWhq(BoxerIndexed):
         return self.drs1.atoms() | self.drs2.atoms()
 
     def clean(self):
-        return BoxerWhq(self.ans_types, self.drs1.clean(), self.variable, self.drs2.clean())
+        return BoxerWhq(self.discourse_id, self.sent_index, self.word_indices, self.ans_types, self.drs1.clean(), self.variable, self.drs2.clean())
 
     def renumber_sentences(self, f):
         return BoxerCard(self.discourse_id, f(self.sent_index), self.word_indices, self.ans_types, self.drs1, self.variable, self.drs2)
