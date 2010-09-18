@@ -309,7 +309,7 @@ class FreqDist(dict):
         try:
             import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package.'
+            raise ValueError('The plot function requires the matplotlib package (aka pylab).'
                          'See http://matplotlib.sourceforge.net/')
         
         if len(args) == 0:
@@ -1804,7 +1804,7 @@ class ConditionalFreqDist(object):
         try:
             import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package.'
+            raise ValueError('The plot function requires the matplotlib package (aka pylab).'
                          'See http://matplotlib.sourceforge.net/')
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
