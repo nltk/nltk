@@ -22,7 +22,7 @@ def dispersion_plot(text, words):
     try:
         import pylab
     except ImportError:
-        raise ValueError('The plot function requires the matplotlib package.'
+        raise ValueError('The plot function requires the matplotlib package (aka pylab).'
                      'See http://matplotlib.sourceforge.net/')
 
     text = list(text)
