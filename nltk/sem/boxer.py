@@ -380,7 +380,7 @@ class BoxerOutputDrsParser(DrtParser):
         else:
             return None
         self.assertToken(self.token(), ')')
-        return [lambda sent_index, word_indices: BoxerGeneric(self.discourse_id, sent_index, word_indices, tok, str(arg))] + \
+        return [lambda sent_index, word_indices: BoxerPred(self.discourse_id, sent_index, word_indices, arg, tok, 'n', 0)] + \
                [lambda sent_index, word_indices: cond for cond in conds]
 
     def _handle_date(self, arg):
@@ -388,26 +388,26 @@ class BoxerOutputDrsParser(DrtParser):
         conds = []
         (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
         pol = self.token()
-        conds.append(BoxerGeneric(self.discourse_id, sent_index, word_indices, 'pol', str(arg), pol))
+        conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_pol_%s' % (pol), 'a', 0))
         self.assertToken(self.token(), ',')
 
         (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
         year = self.token()
         if year != 'XXXX':
             year = year.replace(':', '_')
-            conds.append(BoxerGeneric(self.discourse_id, sent_index, word_indices, 'year', str(arg), year))
+            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_year_%s' % (year), 'a', 0))
         self.assertToken(self.token(), ',')
         
         (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
         month = self.token()
         if month != 'XX':
-            conds.append(BoxerGeneric(self.discourse_id, sent_index, word_indices, 'month', str(arg), month))
+            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_month_%s' % (month), 'a', 0))
         self.assertToken(self.token(), ',')
 
         (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
         day = self.token()
         if day != 'XX':
-            conds.append(BoxerGeneric(self.discourse_id, sent_index, word_indices, 'day', str(arg), day))
+            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_day_%s' % (day), 'a', 0))
 
         return conds
 
@@ -734,19 +734,6 @@ class BoxerDrsParser(DrtParser):
                 drs2 = self.parse_Expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
-            else:
-                self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
-                self.assertNextToken(DrtTokens.COMMA)
-                sent_id = self.nullableIntToken()
-                self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
-                args = []
-                while self.inRange(0) and self.token(0) != DrtTokens.CLOSE:
-                    self.assertNextToken(DrtTokens.COMMA)
-                    args.append(self.token())
-                self.assertNextToken(DrtTokens.CLOSE)
-                return BoxerGeneric(disc_id, sent_id, word_ids, tok, *args)
         except Exception, e:
             raise ParseException(self._currentIndex, str(e))
         assert False
@@ -764,9 +751,27 @@ class BoxerDrsParser(DrtParser):
         
 
 class AbstractBoxerDrs(object):
-    def all_events(self):
-        return set()
+    def variables(self):
+        """
+        @return: (set<variables>, set<events>, set<propositions>)
+        """
+        variables, events, propositions = self._variables()
+        assert not (events & propositions), 'The variables [%s] appear as both events and propositions in %s' % (','.join(map(str, events & propositions)), self)
+        return (variables - (events | propositions), events, propositions)
     
+    def variable_types(self):
+        vartypes = {}
+        for t,vars in zip(('z','e','p'), self.variables()):
+            for v in vars:
+                vartypes[v] = t
+        return vartypes
+    
+    def _variables(self):
+        """
+        @return: (set<variables>, set<events>, set<propositions>)
+        """
+        return (set(), set(), set())
+
     def atoms(self):
         return set()
 
@@ -781,7 +786,7 @@ class AbstractBoxerDrs(object):
 
     def __hash__(self):
         return hash(str(self))
-               
+    
 class BoxerDrs(AbstractBoxerDrs):
     def __init__(self, label, refs, conds, consequent=None):
         AbstractBoxerDrs.__init__(self)
@@ -790,11 +795,15 @@ class BoxerDrs(AbstractBoxerDrs):
         self.conds = conds
         self.consequent = consequent
 
-    def all_events(self):
-        events = reduce(operator.or_, (cond.all_events() for cond in self.conds), set())
+    def _variables(self):
+        variables = (set(), set(), set())
+        for cond in self.conds:
+            for s,v in zip(variables, cond._variables()):
+                s.update(v)
         if self.consequent is not None:
-            events.update(self.consequent.all_events())
-        return events
+            for s,v in zip(variables, self.consequent._variables()):
+                s.update(v)
+        return variables
     
     def atoms(self):
         atoms = reduce(operator.or_, (cond.atoms() for cond in self.conds), set())
@@ -829,8 +838,8 @@ class BoxerNot(AbstractBoxerDrs):
         AbstractBoxerDrs.__init__(self)
         self.drs = drs
 
-    def all_events(self):
-        return self.drs.all_events()
+    def _variables(self):
+        return self.drs._variables()
     
     def atoms(self):
         return self.drs.atoms()
@@ -852,8 +861,8 @@ class BoxerEvent(AbstractBoxerDrs):
         AbstractBoxerDrs.__init__(self)
         self.var = var
 
-    def all_events(self):
-        return set([self.var])
+    def _variables(self):
+        return (set(), set([self.var]), set())
 
     def __repr__(self):
         return 'event(%s)' % (self.var)
@@ -892,6 +901,9 @@ class BoxerPred(BoxerIndexed):
         self.pos = pos
         self.sense = sense
         
+    def _variables(self):
+        return (set([self.var]), set(), set())
+        
     def change_var(self, var):
         return BoxerPred(self.discourse_id, self.sent_index, self.word_indices, var, self.name, self.pos, self.sense)
         
@@ -916,6 +928,9 @@ class BoxerNamed(BoxerIndexed):
         self.type = type
         self.sense = sense
 
+    def _variables(self):
+        return (set([self.var]), set(), set())
+        
     def change_var(self, var):
         return BoxerNamed(self.discourse_id, self.sent_index, self.word_indices, var, self.name, self.type, self.sense)
         
@@ -939,6 +954,9 @@ class BoxerRel(BoxerIndexed):
         self.rel = rel
         self.sense = sense
 
+    def _variables(self):
+        return (set([self.var1, self.var2]), set(), set())
+        
     def clean(self):
         return BoxerRel(self.discourse_id, self.sent_index, self.word_indices, self.var1, self.var2, self._clean_name(self.rel), self.sense)
 
@@ -957,9 +975,9 @@ class BoxerProp(BoxerIndexed):
         self.var = var
         self.drs = drs
         
-    def all_events(self):
-        return self.drs.all_events()
-
+    def _variables(self):
+        return tuple(map(operator.or_, (set(), set(), set([self.var])), self.drs._variables()))
+        
     def referenced_labels(self):
         return set([self.drs])
 
@@ -984,6 +1002,9 @@ class BoxerEq(BoxerIndexed):
         self.var1 = var1
         self.var2 = var2
         
+    def _variables(self):
+        return (set([self.var1, self.var2]), set(), set())
+        
     def atoms(self):
         return set()
 
@@ -1003,6 +1024,9 @@ class BoxerCard(BoxerIndexed):
         self.value = value
         self.type = type
         
+    def _variables(self):
+        return (set([self.var]), set(), set())
+        
     def renumber_sentences(self, f):
         return BoxerCard(self.discourse_id, f(self.sent_index), self.word_indices, self.var, self.value, self.type)
         
@@ -1018,6 +1042,9 @@ class BoxerOr(BoxerIndexed):
         self.drs1 = drs1
         self.drs2 = drs2
         
+    def _variables(self):
+        return tuple(map(operator.or_, self.drs1._variables(), self.drs2._variables()))
+
     def atoms(self):
         return self.drs1.atoms() | self.drs2.atoms()
 
@@ -1033,24 +1060,6 @@ class BoxerOr(BoxerIndexed):
     def _pred(self):
         return 'or'
     
-class BoxerGeneric(BoxerIndexed):
-    def __init__(self, discourse_id, sent_index, word_indices, pred, *args):
-        BoxerIndexed.__init__(self, discourse_id, sent_index, word_indices)
-        self.pred = pred
-        self.args = args
-        
-    def __iter__(self):
-        return iter((self.args))
-
-    def renumber_sentences(self, f):
-        return BoxerGeneric(self.discourse_id, f(self.sent_index), self.word_indices, self.pred, *self.args)
-        
-    def _pred(self):
-        return self.pred
-    
-    def __eq__(self, other):
-        return self.pred == other.pred and BoxerIndexed.__eq__(self, other)
-    
 class BoxerWhq(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, ans_types, drs1, variable, drs2):
         BoxerIndexed.__init__(self, discourse_id, sent_index, word_indices)
@@ -1059,6 +1068,9 @@ class BoxerWhq(BoxerIndexed):
         self.variable = variable
         self.drs2 = drs2
         
+    def _variables(self):
+        return tuple(map(operator.or_, (set([self.variable]), set(), set()), self.drs1._variables(), self.drs2._variables()))
+
     def atoms(self):
         return self.drs1.atoms() | self.drs2.atoms()
 
@@ -1120,8 +1132,6 @@ class NltkDrtBoxerDrsInterpreter(object):
             return self._make_atom(pred, 'x%d' % ex.var)
         elif isinstance(ex, BoxerOr):
             return DrtOrExpression(self.interpret(ex.drs1), self.interpret(ex.drs2))
-        elif isinstance(ex, BoxerGeneric):
-            return self._make_atom(ex.pred, *ex.args)
         elif isinstance(ex, BoxerWhq):
             drs1 = self.interpret(ex.drs1)
             drs2 = self.interpret(ex.drs2)
