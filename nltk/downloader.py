@@ -986,20 +986,25 @@ class DownloaderShell(object):
             if not user_input: print; continue
             command = user_input.lower().split()[0]
             args = user_input.split()[1:]
-            if command == 'l':
-                print
-                self._ds.list(self._ds.download_dir, header=False,
-                              more_prompt=True)
-            elif command == 'h':
-                self._simple_interactive_help()
-            elif command == 'c':
-                self._simple_interactive_config()
-            elif command in ('q', 'x'):
-                return
-            elif command == 'd':
-                self._simple_interactive_download(args)
-            else:
-                print 'Command %r unrecogmized' % user_input
+            try:
+                if command == 'l':
+                    print
+                    self._ds.list(self._ds.download_dir, header=False,
+                                  more_prompt=True)
+                elif command == 'h':
+                    self._simple_interactive_help()
+                elif command == 'c':
+                    self._simple_interactive_config()
+                elif command in ('q', 'x'):
+                    return
+                elif command == 'd':
+                    self._simple_interactive_download(args)
+                else:
+                    print 'Command %r unrecogmized' % user_input
+            except urllib2.HTTPError, e:
+                print 'Error reading from server: %s'%e
+            except urllib2.URLError, e:
+                print 'Error connecting to server: %s'%e.reason
             # try checking if user_input is a package name, &
             # downloading it?
             print
@@ -1181,7 +1186,13 @@ class DownloaderGUI(object):
         # Initialize the GUI.
         self._init_widgets()
         self._init_menu()
-        self._fill_table()
+        try:
+            self._fill_table()
+        except urllib2.HTTPError, e:
+            showerror('Error reading from server', e)
+        except urllib2.URLError, e:
+            showerror('Error connecting to server', e.reason)
+
         self._show_info()
         self._select_columns()
         self._table.select(0)
@@ -1357,7 +1368,12 @@ class DownloaderGUI(object):
 
     def _refresh(self):
         self._ds.clear_status_cache()
-        self._fill_table()
+        try:
+            self._fill_table()
+        except urllib2.HTTPError, e:
+            showerror('Error reading from server', e)
+        except urllib2.URLError, e:
+            showerror('Error connecting to server', e.reason)
         self._table.select(0)
 
     def _info_edit(self, info_key):
@@ -1405,8 +1421,12 @@ class DownloaderGUI(object):
 
         # Clear our status cache, & re-check what's installed
         self._ds.download_dir = download_dir
-        self._fill_table()
-        
+        try:
+            self._fill_table()
+        except urllib2.HTTPError, e:
+            showerror('Error reading from server', e)
+        except urllib2.URLError, e:
+            showerror('Error connecting to server', e.reason)
         self._show_info()
 
     def _show_info(self):
@@ -1423,17 +1443,32 @@ class DownloaderGUI(object):
         for i, tab in enumerate(self._tab_names):
             if tab.lower() == self._tab and i > 0:
                 self._tab = self._tab_names[i-1].lower()
-                return self._fill_table()
+                try:
+                    return self._fill_table()
+                except urllib2.HTTPError, e:
+                    showerror('Error reading from server', e)
+                except urllib2.URLError, e:
+                    showerror('Error connecting to server', e.reason)
 
     def _next_tab(self, *e):
         for i, tab in enumerate(self._tab_names):
             if tab.lower() == self._tab and i < (len(self._tabs)-1):
                 self._tab = self._tab_names[i+1].lower()
-                return self._fill_table()
-        
+                try:
+                    return self._fill_table()
+                except urllib2.HTTPError, e:
+                    showerror('Error reading from server', e)
+                except urllib2.URLError, e:
+                    showerror('Error connecting to server', e.reason)
+
     def _select_tab(self, event):
         self._tab = event.widget['text'].lower()
-        self._fill_table()
+        try:
+            self._fill_table()
+        except urllib2.HTTPError, e:
+            showerror('Error reading from server', e)
+        except urllib2.URLError, e:
+            showerror('Error connecting to server', e.reason)
 
     _tab = 'collections'
     #_tab = 'corpora'
