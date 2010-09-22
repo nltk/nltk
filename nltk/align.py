@@ -1,23 +1,94 @@
-# Natural Language Toolkit: Alignment Interface
+# Natural Language Toolkit: Aligned Sentences
 #
 # Copyright (C) 2001-2010 NLTK Project
 # URL: <http://www.nltk.org/>
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
 # For license information, see LICENSE.TXT
 
-"""
-Storage and processing classes for alignment between two sequences.
+class AlignedSent(object):
+    """
+    Aligned sentence object.  Encapsulates two sentences along with
+    an C{Alignment} between them.
+    """
+    
+    def __init__(self, words = [], mots = [], alignment = '', \
+                 encoding = 'latin-1'):
+        """
+        Initialize a new C{AlignedSent}.
+        
+        @param words: source language words
+        @type words: C{list} of C{str}
+        @param mots: target language words
+        @type mots: C{list} of C{str}
+        @param alignment: the word-level alignments between the source
+            and target language
+        @type alignment: C{Alignment}
+        """
+        if not isinstance(alignment, Alignment):
+            alignment = Alignment(alignment)
+        self._words = words
+        self._mots = mots
+        self._alignment = alignment
 
-The alignment between two sequences is a (partial) mapping between their tokens.
-"""
+    @property
+    def words(self):
+        return self._words
 
-class AlignedSent(frozenset):
+    @property
+    def mots(self):
+        return self._mots
+
+    @property
+    def alignment(self):
+        return self._alignment
+
+    @alignment.setter
+    def alignment(self, alignment):
+        if not isinstance(alignment, Alignment):
+            alignment = Alignment(alignment)
+        self._alignment = alignment
+
+    def _check_align(self, a):
+        """
+        @param a: alignment to be checked
+        @raise: IndexError if alignment is out of sentence boundary
+        @return: True if passed alignment check
+        @rtype: boolean
+        """
+
+        raise NotImplementedError
+
+    def __repr__(self):
+        """
+        @return: A string representation for this C{AlignedSent}.
+        @rtype: C{string}
+        """
+        return "AlignedSent(%r, %r, %r)" % (self._words, self._mots, self._alignment)
+
+    def __str__(self):
+        """
+        @return: A string representation for this C{AlignedSent}.
+        @rtype: C{string}
+        """
+        source = " ".join(self._words)[:20] + "..."
+        target = " ".join(self._mots)[:20] + "..."
+        return "<AlignedSent: '%s' -> '%s'>" % (source, target)
+
+    def invert(self):
+        """ 
+        @return: the invert object
+        @rtype: AlignedSent
+        """
+        return AlignedSent(self._mots, self._words,
+                               self._alignment.invert())
+
+
+class Alignment(frozenset):
     """
     A storage class for representing alignment between two sequences, s1, s2.
     In general, an alignment is a set of tuples of the form (i, j, ...)
     representing an alignment between the i-th element of s1 and the
-    j-th element of s2.  Tuples optionally contain additional data, such
-    as a boolean to indicate sure vs possible alignments.
+    j-th element of s2.  Tuples are extensible (they might contain
+    additional data, such as a boolean to indicate sure vs possible alignments).
     """
 
     def __new__(cls, string_or_pairs):
