@@ -11,11 +11,36 @@ Corpus Reader
     >>> from nltk.corpus import comtrans
     >>> comtrans.words()
     ['Resumption', 'of', 'the', 'session', 'I', 'declare', ...]
-    >>> comtrans.aligned_sents()
-    [BROKEN]
+    >>> als = comtrans.aligned_sents()[0]
+    >>> als  # doctest: +NORMALIZE_WHITESPACE
+    AlignedSent(['Resumption', 'of', 'the', 'session'],
+    ['Reprise', 'de', 'la', 'session'],
+    Alignment([(0, 0), (1, 1), (2, 2), (3, 3)]))
+
+
+Alignment Objects
+-----------------
+
+    >>> als.words
+    ['Resumption', 'of', 'the', 'session']
+    >>> als.mots
+    ['Reprise', 'de', 'la', 'session']
+    >>> als.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
+    >>> als.invert() # doctest: +NORMALIZE_WHITESPACE
+    AlignedSent(['Reprise', 'de', 'la', 'session'],
+    ['Resumption', 'of', 'the', 'session'],
+    Alignment([(0, 0), (1, 1), (2, 2), (3, 3)]))
+
 
 Alignment Algorithms
 --------------------
 
 IBM model one code, decoder, ...
+
+
+Evaluation
+----------
+
+Alignment error rate...
 
