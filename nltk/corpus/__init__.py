@@ -92,7 +92,7 @@ cess_esp = LazyCorpusLoader(
 cmudict = LazyCorpusLoader(
     'cmudict', CMUDictCorpusReader, ['cmudict'])
 comtrans = LazyCorpusLoader(
-    'comtrans', AlignedCorpusReader, r'(?!\.).*\.txt')
+    'comtrans', AlignedCorpusReader, r'(?!README|\.).*')
 conll2000 = LazyCorpusLoader(
     'conll2000', ConllChunkCorpusReader,
     ['train.txt', 'test.txt'], ('NP','VP','PP'))
