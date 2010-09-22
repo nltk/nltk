@@ -9,4 +9,13 @@ Corpus Reader
 -------------
 
     >>> from nltk.corpus import comtrans
-    >>>
+    >>> comtrans.words()
+    ['Resumption', 'of', 'the', 'session', 'I', 'declare', ...]
+    >>> comtrans.aligned_sents()
+    [BROKEN]
+
+Alignment Algorithms
+--------------------
+
+IBM model one code, decoder, ...
+
