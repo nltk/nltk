@@ -91,6 +91,8 @@ cess_esp = LazyCorpusLoader(
     tag_mapping_function=simplify_tag)
 cmudict = LazyCorpusLoader(
     'cmudict', CMUDictCorpusReader, ['cmudict'])
+comtrans = LazyCorpusLoader(
+    'comtrans', AlignedCorpusReader, r'(?!\.).*\.txt')
 conll2000 = LazyCorpusLoader(
     'conll2000', ConllChunkCorpusReader,
     ['train.txt', 'test.txt'], ('NP','VP','PP'))
@@ -150,6 +152,9 @@ pl196x = LazyCorpusLoader(
     cat_file='cats.txt', textid_file='textids.txt')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
+# ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
+#    'ptb3', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
+#    cat_file='allcats.txt', tag_mapping_function=simplify_wsj_tag)
 qc = LazyCorpusLoader(
     'qc', StringCategoryCorpusReader, ['train.txt', 'test.txt'])
 reuters = LazyCorpusLoader(

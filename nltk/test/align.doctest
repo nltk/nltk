@@ -1,0 +1,12 @@
+.. Copyright (C) 2001-2010 NLTK Project
+.. For license information, see LICENSE.TXT
+
+=========
+Alignment
+=========
+
+Corpus Reader
+-------------
+
+    >>> from nltk.corpus import comtrans
+    >>>

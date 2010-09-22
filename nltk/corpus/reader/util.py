@@ -578,6 +578,22 @@ def read_blankline_block(stream):
         else:
             s += line
 
+def read_alignedsent_block(stream):
+    s = ''
+    while True:
+        line = stream.readline()
+        if line[0] == '=' or line[0] == '\n' or line[:2] == '\r\n':
+            continue
+        # End of file:
+        if not line:
+            if s: return [s]
+            else: return []
+        # Other line:
+        else:
+            s += line
+            if re.match('^[0-9]-[0-9]', line) != None:
+                return [s]
+
 def read_regexp_block(stream, start_re, end_re=None):
     """
     Read a sequence of tokens from a stream, where tokens begin with
