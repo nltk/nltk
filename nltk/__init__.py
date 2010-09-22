@@ -78,6 +78,7 @@ from internals import config_java
 
 # Import top-level functionality into top-level namespace
 
+from align import *
 from compat import *
 from containers import *
 from collocations import *
