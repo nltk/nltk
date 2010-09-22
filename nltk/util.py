@@ -1126,3 +1126,45 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
             return None
 
     return None
+
+######################################################################
+# Proxy configuration
+######################################################################
+
+def set_proxy(proxy, (user, password)=(None, '')):
+    """
+    Set the HTTP proxy for Python to download through.
+
+    If C{proxy} is None then tries to set proxy from enviroment or system 
+    settings.
+
+    @param proxy: The HTTP proxy server to use. For example:
+        'http://proxy.example.com:3128/'
+    @param user: The username to authenticate with. Use C{None} to disable 
+    authentication.
+    @param password: The password to authenticate with.
+    """
+    import urllib
+    import urllib2
+
+    if proxy is None:
+        # Try and find the system proxy settings
+        try:
+            proxy = urllib.getproxies()['http']
+        except KeyError:
+            raise ValueError('Could not detect default proxy settings')
+
+    # Set up the proxy handler
+    proxy_handler = urllib2.ProxyHandler({'http': proxy})
+    opener = urllib2.build_opener(proxy_handler)
+
+    if user is not None:
+        # Set up basic proxy authentication if provided
+        password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        password_manager.add_password(realm=None, uri=proxy, user=user,
+                passwd=password)
+        opener.add_handler(urllib2.ProxyBasicAuthHandler(password_manager))
+        opener.add_handler(urllib2.ProxyDigestAuthHandler(password_manager))
+
+    # Overide the existing url opener
+    urllib2.install_opener(opener)
