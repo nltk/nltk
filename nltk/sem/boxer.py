@@ -736,7 +736,7 @@ class BoxerDrsParser(DrtParser):
                 return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
         except Exception, e:
             raise ParseException(self._currentIndex, str(e))
-        assert False
+        assert False, repr(tok)
         
     def nullableIntToken(self):
         t = self.token()
@@ -1078,7 +1078,7 @@ class BoxerWhq(BoxerIndexed):
         return BoxerWhq(self.discourse_id, self.sent_index, self.word_indices, self.ans_types, self.drs1.clean(), self.variable, self.drs2.clean())
 
     def renumber_sentences(self, f):
-        return BoxerCard(self.discourse_id, f(self.sent_index), self.word_indices, self.ans_types, self.drs1, self.variable, self.drs2)
+        return BoxerWhq(self.discourse_id, f(self.sent_index), self.word_indices, self.ans_types, self.drs1, self.variable, self.drs2)
         
     def __iter__(self):
         return iter((self.ans_types, self.drs1, self.variable, self.drs2))
