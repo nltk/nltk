@@ -173,12 +173,15 @@ possible alignments [MIHALCEA2003]_ [KOEHN2010]_.
 
 Here are some examples::
 
-    >>> als.alignment_error_rate(set())
+    >>> print als.alignment_error_rate(set())
     1.0
-    >>> als.alignment_error_rate([(0,0), (1,1), (2,2), (3,3)])
+    >>> print als.alignment_error_rate([(0,0), (1,1), (2,2), (3,3)])
     0.0
-    >>> my_als.alignment_error_rate(als)
-    0.33333333333333337
+    >>> print my_als.alignment_error_rate(als)
+    0.333333333333
+    >>> print my_als.alignment_error_rate(als,
+    ...     als.alignment | set([(1,2), (2,1)]))
+    0.222222222222
 
 
 .. [OCH2000] Och, F. and Ney, H. (2000)
