@@ -4,6 +4,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import nltk.metrics
+
 class AlignedSent(object):
     """
     Aligned sentence object.  Encapsulates two sentences along with
@@ -86,6 +88,77 @@ class AlignedSent(object):
         return AlignedSent(self._mots, self._words,
                                self._alignment.invert())
 
+    def precision(self, reference):
+        """Calculates the precision of an aligned sentence with respect to a 
+        "gold standard" reference C{AlignedSent}.
+
+        The "possible" precision is used since it doesn't penalise for finding
+        an alignment that was marked as "possible".
+
+        @type reference: C{AlignedSent} or C{set}
+        @param reference: A "gold standard" reference aligned sentence.
+        @rtype: C{float} or C{None}
+        """
+        # Get alignments in set of 2-tuples form
+        align = self.alignment
+        if isinstance(reference, AlignedSent):
+            possible = reference.alignment
+        else:
+            possible = Alignment(reference)
+
+        # Call NLTKs existing functions for precision
+        return nltk.metrics.scores.precision(possible, align)
+
+
+    def recall(self, reference):
+        """Calculates the recall of an aligned sentence with respect to a 
+        "gold standard" reference C{AlignedSent}.
+
+        The "sure" recall is used so we don't penalise for missing an 
+        alignment that was only marked as "possible".
+
+        @type reference: C{AlignedSent} or C{set}
+        @param reference: A "gold standard" reference aligned sentence.
+        @rtype: C{float} or C{None}
+        """
+        # Get alignments in set of 2-tuples form
+        align = self.alignment
+        if isinstance(reference, AlignedSent):
+            sure = reference.alignment
+        else:
+            sure  = Alignment(reference)
+
+        # Call NLTKs existing functions for recall
+        return nltk.metrics.scores.recall(sure, align)
+
+
+    def alignment_error_rate(self, reference):
+        """Calculates the Alignment Error Rate (AER) of an aligned sentence 
+        with respect to a "gold standard" reference C{AlignedSent}.
+
+        Return an error rate between 0.0 (perfect alignment) and 1.0 (no 
+        alignment).
+
+        @type reference: C{AlignedSent} or C{set} or
+        @param reference: A "gold standard" reference aligned sentence.
+        @rtype: C{float} or C{None}
+        """
+        # Get alignments in set of 2-tuples form
+        align = self.alignment
+        if isinstance(reference, AlignedSent):
+            sure = reference.alignment
+            possible = reference.alignment
+        else:
+            sure = Alignment(reference)
+            possible = Alignment(reference)
+
+        # Sanity check
+        assert(sure.issubset(possible))
+
+        # Return the Alignment Error Rate
+        return (1.0 - float(len(align & sure) + len(align & possible)) /
+                float(len(align) + len(sure)))
+
 
 class Alignment(frozenset):
     """
@@ -164,4 +237,4 @@ def _giza2pair(pair_string):
 def _naacl2pair(pair_string):
     i, j, p = pair_string.split("-")
     return int(i), int(j)
- 
+
