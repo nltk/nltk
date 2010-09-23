@@ -96,6 +96,9 @@ class Variable(object):
 
     def substitute_bindings(self, bindings):
         return bindings.get(self, self)
+    
+    def visit(self, function, combinator, default):
+        return default
 
     def __hash__(self):
         return hash(self.name)
