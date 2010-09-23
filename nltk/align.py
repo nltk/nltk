@@ -54,7 +54,7 @@ class AlignedSent(object):
     def _check_align(self, a):
         """
         @param a: alignment to be checked
-        @raise: IndexError if alignment is out of sentence boundary
+        @raise IndexError: if alignment is out of sentence boundary
         @return: True if passed alignment check
         @rtype: boolean
         """
@@ -95,7 +95,7 @@ class AlignedSent(object):
         The "possible" precision is used since it doesn't penalise for finding
         an alignment that was marked as "possible".
 
-        @type reference: C{AlignedSent} or C{set}
+        @type reference: C{AlignedSent} or C{Alignment}
         @param reference: A "gold standard" reference aligned sentence.
         @rtype: C{float} or C{None}
         """
@@ -117,7 +117,7 @@ class AlignedSent(object):
         The "sure" recall is used so we don't penalise for missing an 
         alignment that was only marked as "possible".
 
-        @type reference: C{AlignedSent} or C{set}
+        @type reference: C{AlignedSent} or C{Alignment}
         @param reference: A "gold standard" reference aligned sentence.
         @rtype: C{float} or C{None}
         """
@@ -132,25 +132,36 @@ class AlignedSent(object):
         return nltk.metrics.scores.recall(sure, align)
 
 
-    def alignment_error_rate(self, reference):
+    def alignment_error_rate(self, reference, possible=None):
         """Calculates the Alignment Error Rate (AER) of an aligned sentence 
         with respect to a "gold standard" reference C{AlignedSent}.
 
         Return an error rate between 0.0 (perfect alignment) and 1.0 (no 
         alignment).
 
-        @type reference: C{AlignedSent} or C{set} or
+        @type reference: C{AlignedSent} or C{Alignment}
         @param reference: A "gold standard" reference aligned sentence.
+        @type possible: C{AlignedSent} or C{Alignment} or C{None}
+        @param possible: A "gold standard" reference of possible alignments
+            (defaults to I{reference} if C{None})
         @rtype: C{float} or C{None}
         """
         # Get alignments in set of 2-tuples form
         align = self.alignment
         if isinstance(reference, AlignedSent):
             sure = reference.alignment
-            possible = reference.alignment
         else:
             sure = Alignment(reference)
-            possible = Alignment(reference)
+
+        if possible is not None:
+            # Set possible alignment
+            if isinstance(possible, AlignedSent):
+                possible = possible.alignment
+            else:
+                possible = Alignment(possible)
+        else:
+            # Possible alignment is just sure alignment
+            possible = sure
 
         # Sanity check
         assert(sure.issubset(possible))
