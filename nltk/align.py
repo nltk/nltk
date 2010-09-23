@@ -27,6 +27,7 @@ class AlignedSent(object):
             alignment = Alignment(alignment)
         self._words = words
         self._mots = mots
+        self._check_align(alignment)
         self._alignment = alignment
 
     @property
@@ -45,6 +46,7 @@ class AlignedSent(object):
     def alignment(self, alignment):
         if not isinstance(alignment, Alignment):
             alignment = Alignment(alignment)
+        self._check_align(alignment)
         self._alignment = alignment
 
     def _check_align(self, a):
@@ -54,8 +56,11 @@ class AlignedSent(object):
         @return: True if passed alignment check
         @rtype: boolean
         """
-
-        raise NotImplementedError
+        if not all([0 <= p[0] < len(self._words) for p in a]):
+            raise IndexError("Alignment is outside boundary of words")
+        if not all([0 <= p[1] < len(self._mots) for p in a]):
+            raise IndexError("Alignment is outside boundary of mots")
+        return True
 
     def __repr__(self):
         """

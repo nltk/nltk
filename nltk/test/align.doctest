@@ -21,16 +21,53 @@ Corpus Reader
 Alignment Objects
 -----------------
 
+Aligned sentences are simply a mapping between words in a sentence:
+
     >>> als.words
     ['Resumption', 'of', 'the', 'session']
     >>> als.mots
     ['Reprise', 'de', 'la', 'session']
     >>> als.alignment
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
+
+
+Usually we look at them from the perpective of a source to a target languge, 
+but they are easilly inverted:
+
     >>> als.invert() # doctest: +NORMALIZE_WHITESPACE
     AlignedSent(['Reprise', 'de', 'la', 'session'],
     ['Resumption', 'of', 'the', 'session'],
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)]))
+
+
+We can also set new alignments, but these need to be in the correct range of 
+the corresponding sentences:
+
+    >>> from nltk import align
+    >>> als.alignment = align.Alignment([(0, 0), (1, 4), (2, 1), (3, 3)])
+    Traceback (most recent call last):
+        ...
+    IndexError: Alignment is outside boundary of mots
+    >>> als.alignment = align.Alignment([(-1, 0), (1, 2), (2, 1), (3, 3)])
+    Traceback (most recent call last):
+        ...
+    IndexError: Alignment is outside boundary of words
+    >>> als.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
+    >>> als.alignment = align.Alignment([(1, 3), (3, 2), (0, 1), (2, 0)])
+    >>> als.alignment
+    Alignment([(0, 1), (1, 3), (2, 0), (3, 2)])
+
+
+You can set alignments with any sequence of tuples, so long as the first two 
+indexes of the tuple are the alignment indices:
+
+    >>> als.alignment = [(0, 0), (1, 1), (2, 2, "boat"), (3, 3, False, (1,2))]
+    >>> als.alignment
+    Alignment([(0, 0), (1, 1), (2, 2, 'boat'), (3, 3, False, (1, 2))])
+    >>> als.alignment = ((0, 0), (1, 1), (2, 2), (3, 3))
+    >>> als.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
 
 
 Alignment Algorithms
