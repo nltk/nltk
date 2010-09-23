@@ -58,7 +58,7 @@ class Boxer(object):
         self._candc_bin = None
         self._candc_models_path = None
 
-    def interpret(self, input, discourse_id=None, verbose=False):
+    def interpret(self, input, discourse_id=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
         
@@ -68,9 +68,9 @@ class Boxer(object):
         @return: C{drt.AbstractDrs}
         """
         discourse_ids = [discourse_id] if discourse_id is not None else None 
-        return self.batch_interpret_multisentence([[input]], discourse_ids, verbose)[0]
+        return self.batch_interpret_multisentence([[input]], discourse_ids, question, verbose)[0]
     
-    def interpret_multisentence(self, input, discourse_id=None, verbose=False):
+    def interpret_multisentence(self, input, discourse_id=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
         
@@ -80,9 +80,9 @@ class Boxer(object):
         @return: C{drt.AbstractDrs}
         """
         discourse_ids = [discourse_id] if discourse_id is not None else None
-        return self.batch_interpret_multisentence([input], discourse_ids, verbose)[0]
+        return self.batch_interpret_multisentence([input], discourse_ids, question, verbose)[0]
         
-    def batch_interpret(self, inputs, discourse_ids=None, verbose=False):
+    def batch_interpret(self, inputs, discourse_ids=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
         
@@ -91,9 +91,9 @@ class Boxer(object):
         @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
         @return: C{list} of C{drt.AbstractDrs}
         """
-        return self.batch_interpret_multisentence([[input] for input in inputs], discourse_ids, verbose)
+        return self.batch_interpret_multisentence([[input] for input in inputs], discourse_ids, question, verbose)
 
-    def batch_interpret_multisentence(self, inputs, discourse_ids=None, verbose=False):
+    def batch_interpret_multisentence(self, inputs, discourse_ids=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
         
@@ -112,7 +112,7 @@ class Boxer(object):
             discourse_ids = map(str, xrange(len(inputs)))
             use_disc_id = False
             
-        candc_out = self._call_candc(inputs, discourse_ids, temp_filename, verbose=verbose)
+        candc_out = self._call_candc(inputs, discourse_ids, question, temp_filename, verbose=verbose)
         boxer_out = self._call_boxer(temp_filename, verbose=verbose)
 
         os.remove(temp_filename)
@@ -123,7 +123,7 @@ class Boxer(object):
         drs_dict = self._parse_to_drs_dict(boxer_out, use_disc_id)
         return [drs_dict.get(id, None) for id in discourse_ids]
         
-    def _call_candc(self, inputs, discourse_ids, filename, verbose=False):
+    def _call_candc(self, inputs, discourse_ids, question, filename, verbose=False):
         """
         Call the C{candc} binary with the given input.
 
@@ -136,7 +136,7 @@ class Boxer(object):
             self._candc_bin = self._find_binary('candc', verbose)
         if self._candc_models_path is None:
             self._candc_models_path = os.path.normpath(os.path.join(self._candc_bin[:-5], '../models'))
-        args = ['--models', os.path.join(self._candc_models_path, 'boxer'), 
+        args = ['--models', os.path.join(self._candc_models_path, 'questions' if question else 'boxer'), 
                 '--output', filename]
 
         return self._call('\n'.join(sum((["<META>'%s'" % id] + d for d,id in zip(inputs,discourse_ids)), [])), self._candc_bin, args, verbose)
@@ -1161,6 +1161,7 @@ if __name__ == '__main__':
     opts = OptionParser("usage: %prog TEXT [options]")
     opts.add_option("--verbose", "-v", help="display verbose logs", action="store_true", default=False, dest="verbose")
     opts.add_option("--fol", "-f", help="output FOL", action="store_true", default=False, dest="fol")
+    opts.add_option("--question", "-q", help="input is a question", action="store_true", default=False, dest="question")
     opts.add_option("--occur", "-o", help="occurrence index", action="store_true", default=False, dest="occur_index")
     (options, args) = opts.parse_args()
 
@@ -1168,7 +1169,7 @@ if __name__ == '__main__':
         opts.error("incorrect number of arguments")
 
     interpreter = NltkDrtBoxerDrsInterpreter(occur_index=options.occur_index)
-    drs = Boxer(interpreter).interpret_multisentence(args[0].split(r'\n'), verbose=options.verbose)
+    drs = Boxer(interpreter).interpret_multisentence(args[0].split(r'\n'), question=options.question, verbose=options.verbose)
     if drs is None:
         print None
     else:
