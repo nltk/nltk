@@ -14,21 +14,22 @@
 
 brown_mapping1 = {
     'j': 'ADJ', 'p': 'PRO', 'm': 'MOD', 'q': 'DET',
-    'd': 'DET', 'w': 'WH', 'r': 'ADV', 'i': 'P',
+    'w': 'WH', 'r': 'ADV', 'i': 'P',
     'u': 'UH', 'e': 'EX', 'o': 'NUM', 'b': 'V',
-    'h': 'V', 'd': 'V', 'f': 'FW', 'a': 'DET', 't': 'TO',
+    'h': 'V', 'f': 'FW', 'a': 'DET', 't': 'TO',
     'cc': 'CNJ', 'cs': 'CNJ', 'cd': 'NUM',
-    'nn': 'N', 'nr': 'N', 'np': 'NP', 'nc': 'N',
+    'do': 'V', 'dt': 'DET',
+    'nn': 'N', 'nr': 'N', 'np': 'NP', 'nc': 'N'
     }
 brown_mapping2 = {
-    'vb': 'V', 'vbd': 'VD', 'vbg': 'VG', 'vbn': 'VN' 
+    'vb': 'V', 'vbd': 'VD', 'vbg': 'VG', 'vbn': 'VN'
     }
 
 def simplify_brown_tag(tag):
     tag = tag.lower()
     if tag[0] in brown_mapping1:
         return brown_mapping1[tag[0]]
-    elif tag[:2] in brown_mapping1:
+    elif tag[:2] in brown_mapping1:   # still doesn't handle DOD tag correctly
         return brown_mapping1[tag[:2]]
     try:
         if '-' in tag:
