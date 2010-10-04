@@ -756,8 +756,7 @@ class AbstractBoxerDrs(object):
         @return: (set<variables>, set<events>, set<propositions>)
         """
         variables, events, propositions = self._variables()
-        assert not (events & propositions), 'The variables [%s] appear as both events and propositions in %s' % (','.join(map(str, events & propositions)), self)
-        return (variables - (events | propositions), events, propositions)
+        return (variables - (events | propositions), events, propositions - events)
     
     def variable_types(self):
         vartypes = {}
