@@ -304,6 +304,7 @@ class Text(object):
     def concordance(self, word, width=79, lines=25):
         """
         Print a concordance for C{word} with the specified context window.
+        Word matching is not case-sensitive.
         @seealso: L{ConcordanceIndex}
         """
         if '_concordance_index' not in self.__dict__:
