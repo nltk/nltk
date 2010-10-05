@@ -78,7 +78,6 @@ from internals import config_java
 
 # Import top-level functionality into top-level namespace
 
-from align import *
 from compat import *
 from containers import *
 from collocations import *
@@ -91,6 +90,11 @@ from text import *
 from tree import *
 from util import *
 from yamltags import *
+
+# Modules that require Python 2.6
+from sys import version_info as vi
+if vi[0] == 2 and vi[1] >= 6:
+    from align import *
 
 # don't import contents into top-level namespace:
 
