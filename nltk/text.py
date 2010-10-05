@@ -186,7 +186,7 @@ class ConcordanceIndex(object):
                 right = ' '.join(self._tokens[i+1:i+context])
                 left = left[-half_width:]
                 right = right[:half_width]
-                print left, word, right
+                print left, self._tokens[i], right
                 lines -= 1
         else:
             print "No matches"
