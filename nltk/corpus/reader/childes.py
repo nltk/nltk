@@ -131,7 +131,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         age = _convert_age(age)
                     return age
             # some files don't have age data
-            except (TypeError, AttributeError) as e:
+            except (TypeError, AttributeError), e:
                 return None
                 
     def MLU(self, fileids=None):
@@ -199,7 +199,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         try:
                             xmlstem = xmlword.find('.//{%s}stem' % NS)
                             word = xmlstem.text
-                        except AttributeError as e:
+                        except AttributeError, e:
                             pass
                         # if there is an inflection
                         try:
@@ -220,7 +220,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             word += "/" + xmlpos[0].text
                             if len(xmlpos) != 1 and suffixStem:
                                 suffixStem += "/" + xmlpos[1].text 
-                        except (AttributeError,IndexError) as e:
+                        except (AttributeError,IndexError), e:
                             word += "/None"
                             if suffixStem:
                                 suffixStem += "/None" 
@@ -257,7 +257,7 @@ def _convert_age(age_year):
         if int(m.group(3)) > 15:
             age_month += 1
     # some corpora don't have age information?
-    except ValueError as e:
+    except ValueError, e:
         pass
     return age_month
 
