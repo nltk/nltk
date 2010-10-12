@@ -24,7 +24,7 @@ print "text1:", text1.name
 text2 = Text(gutenberg.words('austen-sense.txt'))
 print "text2:", text2.name
 
-text3 = Text(genesis.words('english-kjv.txt'), name="The Book of Genesis")
+text3 = Text([str(w) for w in genesis.words('english-kjv.txt')], name="The Book of Genesis")
 print "text3:", text3.name
 
 text4 = Text(inaugural.words(), name="Inaugural Address Corpus")
