@@ -146,11 +146,11 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     relation=False, pos=True, strip_space=True, replace=True)
         results = []
         lastSent = []
-        # the skip part-of-speech could be refined
-        skip_pos = ['co','on','unk','vvv','None']
+        numFillers = 0
         for sent in sents:
-            # if the sentence is single-word assent, dissent, hesitation
-            if len(sent) == 1 and sent[0].split("/")[1] in skip_pos:
+            posList = [pos for (word,pos) in sent]
+            # if any part of the sentence is intelligible
+            if any(pos == 'unk' for pos in posList):
                 next
             # if the sentence is null
             elif sent == []:
@@ -159,10 +159,15 @@ class CHILDESCorpusReader(XMLCorpusReader):
             elif sent == lastSent:
                 next
             else:
-                results.append(sent)
+                results.append([word for (word,pos) in sent])
+                # count number of fillers
+                numFillers += posList.count('co')
+                numFillers += posList.count('None')
             lastSent = sent
         try:
-            numWords = float(len(flatten(results)))
+            thisWordList = flatten(results)
+            # count number of morphemes (e.g., 'read' = 1 morpheme but 'read-PAST' is 2 morphemes)
+            numWords = float(len(flatten([word.split('-') for word in thisWordList]))) - numFillers
             numSents = float(len(results))
             mlu = numWords/numSents
         except ZeroDivisionError:
@@ -214,30 +219,30 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         except AttributeError:
                             suffixStem = ""
                     # pos
-                    if pos:
+                    if relation or pos:
                         try:
                             xmlpos = xmlword.findall(".//{%s}c" % NS)
-                            word += "/" + xmlpos[0].text
+                            word = (word,xmlpos[0].text)
                             if len(xmlpos) != 1 and suffixStem:
-                                suffixStem += "/" + xmlpos[1].text 
+                                suffixStem = (suffixStem,xmlpos[1].text) 
                         except (AttributeError,IndexError), e:
-                            word += "/None"
+                            word = (word,None)
                             if suffixStem:
-                                suffixStem += "/None" 
+                                suffixStem = (suffixStem,None)
                     # relational
                     # the gold standard is stored in <mor></mor><mor type="trn">
                     if relation == True:
                         for xmlstem_rel in xmlword.findall('.//{%s}mor/{%s}gra' % (NS,NS)):
                             if not xmlstem_rel.get('type') == 'trn':
-                                word = (word,xmlstem_rel.get('index')+"|"+xmlstem_rel.get('head')+
-                                    "|"+xmlstem_rel.get('relation'))
+                                word = (word[0],word[1],xmlstem_rel.get('index')+"|"+xmlstem_rel.get('head')+
+                                        "|"+xmlstem_rel.get('relation'))
                             else:
                                 word = (word,xmlstem_rel.get('index')+"|"+xmlstem_rel.get('head')+
                                     "|"+xmlstem_rel.get('relation'))
                         try:
                             xmlpost_rel = xmlword.find('.//{%s}mor/{%s}mor-post/{%s}gra' % (NS,NS,NS))
-                            suffixStem = (suffixStem,xmlpost_rel.get('index')+"|"+
-                                xmlpost_rel.get('head')+"|"+xmlpost_rel.get('relation'))
+                            suffixStem = (suffixStem[0],suffixStem[1],xmlpost_rel.get('index')+"|"+xmlpost_rel.get('head')+
+                                "|"+xmlpost_rel.get('relation'))
                         except:
                             pass
                     sents.append(word)
@@ -268,29 +273,29 @@ def demo():
     childes = CHILDESCorpusReader(corpus_root, u'.*.xml')
 
     # describe all corpus
-    for file in childes.fileids()[:3]:
+    for file in childes.fileids()[:5]:
         corpus = ''
         corpus_id = ''
         for (key,value) in childes.corpus(file)[0].items():
             if key == "Corpus": corpus = value
             if key == "Id": corpus_id = value
         print 'Reading', corpus,corpus_id,' .....'
-        print "\twords:", childes.words(file)[:7],"..."
-        print "\twords with replaced words:", childes.words(file, replace=True)[:7]," ..."
-        print "\twords with pos tags:", childes.words(file, pos=True)[:7]," ..."
-        print "\twords (only MOT):", childes.words(file, speaker='MOT')[:7], "..."
-        print "\twords (only CHI):", childes.words(file, speaker='CHI')[:7], "..."
-        print "\tstemmed words:", childes.words(file, stem=True)[:7]," ..."
-        print "\twords with relations:", childes.words(file, relation=True)[:5]," ..."
-        print "\tsentence:", childes.sents(file)[:2]," ..."
+        print "words:", childes.words(file)[:7],"..."
+        print "words with replaced words:", childes.words(file, replace=True)[:7]," ..."
+        print "words with pos tags:", childes.words(file, pos=True)[:7]," ..."
+        print "words (only MOT):", childes.words(file, speaker='MOT')[:7], "..."
+        print "words (only CHI):", childes.words(file, speaker='CHI')[:7], "..."
+        print "stemmed words:", childes.words(file, stem=True)[:7]," ..."
+        print "words with relations and pos-tag:", childes.words(file, relation=True)[:5]," ..."
+        print "sentence:", childes.sents(file)[:2]," ..."
         for (participant, values) in childes.participants(file)[0].items():
                 for (key, value) in values.items():
                     print "\tparticipant", participant, key, ":", value
-        print "\tnum of sent:", len(childes.sents(file))
-        print "\tnum of morphemes:", len(childes.words(file, stem=True))
-        print "\tage:", childes.age(file)    
-        print "\tage in month:", childes.age(file, month=True)    
-        print "\tMLU:", childes.MLU(file)
+        print "num of sent:", len(childes.sents(file))
+        print "num of morphemes:", len(childes.words(file, stem=True))
+        print "age:", childes.age(file)    
+        print "age in month:", childes.age(file, month=True)    
+        print "MLU:", childes.MLU(file)
         print '\r'
 
 if __name__ == "__main__":
