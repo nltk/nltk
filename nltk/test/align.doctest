@@ -75,7 +75,46 @@ indexes of the tuple are the alignment indices:
 Alignment Algorithms
 --------------------
 
-IBM model one code, decoder, ...
+EM for IBM Model 1
+~~~~~~~~~~~~~~~~~~
+
+Here is an example from Kohn, 2010::
+    >>> corpus = [align.AlignedSent(['the', 'house'], ['das', 'Haus']),
+    ...         align.AlignedSent(['the', 'book'], ['das', 'Buch']),
+    ...         align.AlignedSent(['a', 'book'], ['ein', 'Buch'])]
+    >>> em_ibm1 = align.EMIBMModel1(corpus, 1e-3)
+    >>> iterations = em_ibm1.train()
+    >>> print round(em_ibm1.probabilities['the', 'das'], 1)
+    1.0
+    >>> print round(em_ibm1.probabilities['book', 'das'], 1)
+    0.0
+    >>> print round(em_ibm1.probabilities['house', 'das'], 1)
+    0.0
+    >>> print round(em_ibm1.probabilities['the', 'Buch'], 1)
+    0.0
+    >>> print round(em_ibm1.probabilities['book', 'Buch'], 1)
+    1.0
+    >>> print round(em_ibm1.probabilities['a', 'Buch'], 1)
+    0.0
+    >>> print round(em_ibm1.probabilities['book', 'ein'], 1)
+    0.0
+    >>> print round(em_ibm1.probabilities['a', 'ein'], 1)
+    1.0
+    >>> print round(em_ibm1.probabilities['the', 'Haus'], 1)
+    0.0
+    >>> print round(em_ibm1.probabilities['house', 'Haus'], 1)
+    1.0
+
+
+Get the alignments::
+
+    >>> em_ibm1.aligned() # doctest: +NORMALIZE_WHITESPACE
+    [AlignedSent(['the', 'house'], ['das', 'Haus'],
+            Alignment([(0, 0), (1, 1)])),
+     AlignedSent(['the', 'book'], ['das', 'Buch'],
+            Alignment([(0, 0), (1, 1)])),
+     AlignedSent(['a', 'book'], ['ein', 'Buch'],
+            Alignment([(0, 0), (1, 1)]))]
 
 
 Evaluation
