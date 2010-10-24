@@ -58,7 +58,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
                 cells = line.strip().split(" ")
                 res.append(cells[0])
         
-        return [res]
+        return res
 
     def _tag(self, t, simplify_tags=False):
         res = []
@@ -69,7 +69,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
                 # convert cells to morph tuples
                 res.append((cells[0], tuple(cells[1:])))
         
-        return [res]
+        return res
 
     def _parse(self, t):
         dg = DependencyGraph()
@@ -130,18 +130,29 @@ def demo():
         cells = x.split('-')
         return (cells[0], int(cells[1]), int(cells[2]), int(cells[3]))
 
-    knbc = LazyCorpusLoader('knbc/corpus1', KNBCorpusReader, sorted(fileids, key=_knbc_fileids_sort), encoding='euc-jp')
+    knbc = LazyCorpusLoader('knbc/corpus1', KNBCorpusReader,
+                            sorted(fileids, key=_knbc_fileids_sort), encoding='euc-jp')
 
     print knbc.fileids()
-    print '\n'.join( ''.join(sent) for sent in knbc.words() )
+    print ''.join( knbc.words()[:100] )
 
-    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents() )
+    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:10] )
 
     knbc.morphs2str = lambda morphs: '/'.join("%s(%s)"%(m[0],m[1][2]) for m in morphs if m[0] != 'EOS').encode('utf-8')
 
-    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents() )
+    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:10] )
+
+def test():
+    
+    from nltk.corpus.util import LazyCorpusLoader
+
+    knbc = LazyCorpusLoader(
+        'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
+    assert isinstance(knbc.words()[0], basestring)
+    assert isinstance(knbc.sents()[0][0], basestring)
+    assert type(knbc.tagged_words()[0]) == tuple
+    assert type(knbc.tagged_sents()[0][0]) == tuple
 
 if __name__ == '__main__':
-    demo()
-
-
+    # demo()
+    test()
