@@ -103,7 +103,7 @@ class ViterbiParser(ParserI):
         """
         self._trace = trace
 
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         # Inherit docs from ParserI
         
         tokens = list(tokens)
@@ -111,11 +111,10 @@ class ViterbiParser(ParserI):
 
         # The most likely constituent table.  This table specifies the
         # most likely constituent for a given span and type.
-        # Constituents can be either Trees or tokens.  For
-        # Trees, the "type" is the Nonterminal for the tree's
-        # root node value.  For Tokens, the "type" is the token's
-        # type.  The table is stored as a dictionary, since it is
-        # sparse.
+        # Constituents can be either Trees or tokens.  For Trees,
+        # the "type" is the Nonterminal for the tree's root node
+        # value.  For Tokens, the "type" is the token's type.
+        # The table is stored as a dictionary, since it is sparse.
         constituents = {}
         
         # Initialize the constituents dictionary with the words from
@@ -134,19 +133,13 @@ class ViterbiParser(ParserI):
             if self._trace:
                 print ('Finding the most likely constituents'+
                        ' spanning %d text elements...' % length)
-            #print constituents
             for start in range(len(tokens)-length+1):
                 span = (start, start+length)
                 self._add_constituents_spanning(span, constituents,
                                                 tokens)
 
-        # Find all trees that span the entire text & have the right cat
-        trees = [constituents.get((0, len(tokens),
-                                   self._grammar.start()), [])]
-
-        # Sort the trees, and return the requested number of them.
-        trees.sort(lambda t1,t2: cmp(t2.prob(), t1.prob()))
-        return trees[:n]
+        # Return the tree that spans the entire text & have the right cat
+        return constituents.get((0, len(tokens), self._grammar.start()))
 
     def _add_constituents_spanning(self, span, constituents, tokens):
         """
@@ -186,9 +179,9 @@ class ViterbiParser(ParserI):
         # Since some of the grammar productions may be unary, we need to
         # repeatedly try all of the productions until none of them add any
         # new constituents.
-        changed = 1
+        changed = True
         while changed:
-            changed = 0
+            changed = False
             
             # Find all ways instantiations of the grammar productions that
             # cover the span.
@@ -207,8 +200,7 @@ class ViterbiParser(ParserI):
 
                 # If it's new a constituent, then add it to the
                 # constituents dictionary.
-                c = constituents.get((span[0], span[1], production.lhs()),
-                                     None)
+                c = constituents.get((span[0], span[1], production.lhs()))
                 if self._trace > 1:
                     if c is None or c != tree:
                         if c is None or c.prob() < tree.prob():
@@ -218,7 +210,7 @@ class ViterbiParser(ParserI):
                         self._trace_production(production, p, span, len(tokens))
                 if c is None or c.prob() < tree.prob():
                     constituents[span[0], span[1], production.lhs()] = tree
-                    changed = 1
+                    changed = True
 
     def _find_instantiations(self, span, constituents):
         """
