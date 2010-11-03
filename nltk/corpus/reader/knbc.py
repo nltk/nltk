@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 # KNB Corpus reader
-#
 # Copyright (C) 2001-2010 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://www.nltk.org/>
@@ -67,7 +66,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
             if not re.match(r"EOS|\*|\#|\+", line):
                 cells = line.strip().split(" ")
                 # convert cells to morph tuples
-                res.append((cells[0], tuple(cells[1:])))
+                res.append( (cells[0], ' '.join(cells[1:])) )
         
         return res
 
@@ -104,7 +103,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
                 # normal morph
                 cells = line.strip().split(" ")
                 # convert cells to morph tuples
-                morph = (cells[0], tuple(cells[1:]))
+                morph = ( cells[0], ' '.join(cells[1:]) )
                 dg.nodelist[i-1]['word'].append(morph)
 
         if self.morphs2str:
@@ -133,14 +132,19 @@ def demo():
     knbc = LazyCorpusLoader('knbc/corpus1', KNBCorpusReader,
                             sorted(fileids, key=_knbc_fileids_sort), encoding='euc-jp')
 
-    print knbc.fileids()
+    print knbc.fileids()[:10]
     print ''.join( knbc.words()[:100] )
 
-    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:10] )
+    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:2] )
 
-    knbc.morphs2str = lambda morphs: '/'.join("%s(%s)"%(m[0],m[1][2]) for m in morphs if m[0] != 'EOS').encode('utf-8')
+    knbc.morphs2str = lambda morphs: '/'.join(
+        "%s(%s)"%(m[0], m[1].split(' ')[2]) for m in morphs if m[0] != 'EOS'
+        ).encode('utf-8')
 
-    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:10] )
+    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:2] )
+
+    print '\n'.join( ' '.join("%s/%s"%(w[0], w[1].split(' ')[2]) for w in sent)
+                     for sent in knbc.tagged_sents()[0:2] )
 
 def test():
     
@@ -154,5 +158,5 @@ def test():
     assert type(knbc.tagged_sents()[0][0]) == tuple
 
 if __name__ == '__main__':
-    # demo()
-    test()
+    demo()
+    # test()
