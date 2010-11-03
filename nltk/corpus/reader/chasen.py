@@ -82,7 +82,7 @@ class ChasenCorpusView(StreamBackedCorpusView):
 
                 _eos = line.strip() == 'EOS'
                 _cells = line.split('\t')
-                w = (_cells[0], tuple(_cells[1:]))
+                w = (_cells[0], '\t'.join(_cells[1:]))
                 if not _eos: sent.append(w)
 
                 if _eos or (self._sent_splitter and self._sent_splitter(w)):
@@ -109,3 +109,29 @@ class ChasenCorpusView(StreamBackedCorpusView):
                 block.extend(para)
         
         return block
+
+def demo():
+    
+    import nltk
+    from nltk.corpus.util import LazyCorpusLoader
+
+    jeita = LazyCorpusLoader(
+        'jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
+    print '/'.join( jeita.words()[22100:22140] ) 
+
+
+    print '\nEOS\n'.join(['\n'.join("%s/%s" % (w[0],w[1].split('\t')[2]) for w in sent)
+                          for sent in jeita.tagged_sents()[2170:2173]])
+
+def test():
+
+    from nltk.corpus.util import LazyCorpusLoader
+
+    jeita = LazyCorpusLoader(
+        'jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
+
+    assert isinstance(jeita.tagged_words()[0][1], basestring)
+    
+if __name__ == '__main__':
+    demo()
+    test()
