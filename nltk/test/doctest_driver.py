@@ -576,7 +576,7 @@ def find(name):
             if testname is not None:
                 raise ValueError("test names can't be specified "
                                  "for text files")
-            s = open(filename).read()
+            s = open(filename).read().decode('utf8')
             test = MyDocTestParser().get_doctest(s, {}, name, filename, 0)
             return [test]
         else:
@@ -714,6 +714,7 @@ class MyDocTestRunner(DocTestRunner):
         if 1 <= self._verbosity <= 2:
             src = example.source.split('\n')[0]
             if len(src) > 60: src = src[:57]+'...'
+            if isinstance(src, unicode): src = src.encode('utf8')
             lineno = test.lineno + example.lineno + 1
             if self._verbosity == 1:
                 if self._stderr_term.CLEAR_LINE:
@@ -777,6 +778,7 @@ class MyDocTestRunner(DocTestRunner):
         out += ('Failed example:\n')
         source = example.source
         out += (_indent(source))
+        if isinstance(out, unicode): out = out.encode('utf8')
         return out
 
     def run(self, test, compileflags=None, out=None, clear_globs=True):
