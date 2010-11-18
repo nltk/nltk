@@ -14,7 +14,14 @@ __docformat__ = 'restructuredtext en'
 
 __all__ = ["decorator", "new_wrapper", "getinfo"]
 
-import inspect, sys
+import sys
+
+# Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
+# the Python standard library.
+old_sys_path = sys.path[:]
+sys.path = [p for p in sys.path if "nltk" not in p]
+import inspect
+sys.path = old_sys_path
 
 try:
     set
