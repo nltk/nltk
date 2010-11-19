@@ -15,6 +15,7 @@ from operator import itemgetter
 
 from nltk.compat import defaultdict
 from nltk.corpus.reader import CorpusReader
+from nltk.internals import deprecated
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
 
@@ -1207,17 +1208,26 @@ class WordNetCorpusReader(CorpusReader):
                 for offset in index[form].get(p, [])]
 
     def lemmas(self, lemma, pos=None):
+        """Return all Lemma objects with a name matching the specified lemma
+        name and part of speech tag. Matches any part of speech tag if none is
+        specified."""
         return [lemma_obj
                 for synset in self.synsets(lemma, pos)
                 for lemma_obj in synset.lemmas
                 if lemma_obj.name == lemma]
 
+    #{ Deprecated since 2.0rc1
+    @deprecated("Use .all_lemma_names() instead.")
     def words(self, pos=None):
-        return [lemma.name for lemma in self.lemmas(pos)]
+        """Return all lemma names for the specified part of speech tag, or all
+        lemma names, if none is specified."""
+
+        return self.all_lemma_names(pos)
+    #}
 
     def all_lemma_names(self, pos=None):
         """Return all lemma names for all synsets for the given
-        part of speech tag. If not pos is specified, all synsets
+        part of speech tag. If pos is not specified, all synsets
         for all parts of speech will be used.
         """
         if pos is None:
