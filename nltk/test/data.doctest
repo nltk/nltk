@@ -38,8 +38,8 @@ and ``file:`` URLs, e.g. ``cfg = nltk.data.load('http://example.com/path/to/toy.
 
     >>> # Load a grammar using an absolute path.
     >>> url = 'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg')
-    >>> url # doctest: +ELLIPSIS
-    'file:/.../nltk_data/grammars/sample_grammars/toy.cfg'
+    >>> url.replace('\\', '/') # doctest: +ELLIPSIS
+    'file:...toy.cfg'
     >>> print nltk.data.load(url) # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
         S -> NP VP
@@ -157,7 +157,7 @@ ValueError exception.  It will *not* overwrite the file:
     >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg') # doctest: +ELLIPSIS
     Traceback (most recent call last):
       . . .
-    ValueError: File '.../toy.cfg' already exists!
+    ValueError: File '...toy.cfg' already exists!
 
 ..  This will not be visible in the html output: clean up the tempdir.
     >>> os.chdir(old_dir)
@@ -176,8 +176,8 @@ types define the `open()` method, which can be used to read the string
 contents of the file.
 
     >>> path = nltk.data.find('corpora/abc/rural.txt')
-    >>> str(path).endswith('/nltk_data/corpora/abc/rural.txt') # doctest: +ELLIPSIS
-    True
+    >>> str(path) # doctest: +ELLIPSIS
+    '...rural.txt'
     >>> path.open().read(60)
     'PM denies knowledge of AWB kickbacks\nThe Prime Minister has '
 
@@ -256,7 +256,7 @@ The `retrieve()` function accepts all url types:
     >>> for i, url in enumerate(urls):
     ...     nltk.data.retrieve(url, 'toy-%d.cfg' % i) # doctest: +ELLIPSIS
     Retrieving 'http://nltk.googlecode.com/svn/trunk/nltk/nltk/test/toy.cfg', saving to 'toy-0.cfg'
-    Retrieving 'file:/.../nltk_data/grammars/sample_grammars/toy.cfg', saving to 'toy-1.cfg'
+    Retrieving 'file:...toy.cfg', saving to 'toy-1.cfg'
     Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-2.cfg'
     Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'toy-3.cfg'
 
