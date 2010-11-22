@@ -164,4 +164,13 @@ Issue 579: override clear to reset some variables
     >>> fd.N()
     0
 
+Issue 351: fix fileids method of CategorizedCorpusReader to inadvertently add errant categories
+
+    >>> from nltk.corpus import brown
+    >>> brown.fileids('blah')
+    Traceback (most recent call last):
+      ...
+    ValueError: Category blah not found
+    >>> brown.categories()
+    ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor', 'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
 
