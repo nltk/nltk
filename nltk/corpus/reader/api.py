@@ -347,7 +347,10 @@ class CategorizedCorpusReader(object):
         elif isinstance(categories, basestring):
             if self._f2c is None:
                 self._init()
-            return sorted(self._c2f[categories])
+            if categories in self._c2f:
+                return sorted(self._c2f[categories])
+            else:
+                raise ValueError('Category %s not found' % categories)
         else:
             if self._f2c is None:
                 self._init()
