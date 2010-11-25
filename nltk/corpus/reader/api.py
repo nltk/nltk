@@ -316,7 +316,7 @@ class CategorizedCorpusReader(object):
                 file_id, categories = line.split(self._delimiter, 1)
                 if file_id not in self.fileids():
                     raise ValueError('In category mapping file %s: %s '
-                                     'not found' % (catfile, file_id))
+                                     'not found' % (self._file, file_id))
                 for category in categories.split(self._delimiter):
                     self._add(file_id, category)
 
