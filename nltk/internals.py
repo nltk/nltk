@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2010 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Nitin Madnani <nmadnani@ets.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -42,7 +43,7 @@ def convert_regexp_to_nongrouping(pattern):
         if s[1] in '0123456789' or s == '(?P=':
             raise ValueError('Regular expressions with back-references '
                              'are not supported: %r' % pattern)
-    
+
     # This regexp substitution function replaces the string '('
     # with the string '(?:', but otherwise makes no changes.
     def subfunc(m):
@@ -67,7 +68,7 @@ def convert_regexp_to_nongrouping(pattern):
 _java_bin = None
 _java_options = []
 # [xx] add classpath option to config_java?
-def config_java(bin=None, options=None):
+def config_java(bin=None, options=None, verbose=True):
     """
     Configure nltk's java interface, by letting nltk know where it can
     find the C{java} binary, and what extra options (if any) should be
@@ -85,8 +86,8 @@ def config_java(bin=None, options=None):
     @type options: C{list} of C{string}
     """
     global _java_bin, _java_options
-    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'])
-        
+    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose)
+
     if options is not None:
         if isinstance(options, basestring):
             options = options.split()
@@ -256,7 +257,7 @@ def parse_number(s, start_position):
         raise ParseError('number', start_position)
     if m.group(2): return float(m.group()), m.end()
     else: return int(m.group()), m.end()
-    
+
 
 
 ######################################################################
@@ -346,7 +347,7 @@ def deprecated(message):
         def newFunc(*args, **kwargs):
             warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
             return func(*args, **kwargs)
-            
+
         # Copy the old function's name, docstring, & dict
         newFunc.__dict__.update(func.__dict__)
         newFunc.__name__ = func.__name__
@@ -413,7 +414,7 @@ class Counter:
 # Search for binaries
 ##########################################################################
 
-def find_binary(name, path_to_bin=None, env_vars=(), 
+def find_binary(name, path_to_bin=None, env_vars=(),
                 searchpath=(), binary_names=None, url=None,
                 verbose=True):
     """
@@ -431,7 +432,7 @@ def find_binary(name, path_to_bin=None, env_vars=(),
     assert not isinstance(searchpath, basestring)
     if isinstance(env_vars, basestring):
         env_vars = env_vars.split()
-    
+
     # If an explicit bin was given, then check it, and return it if
     # it's present; otherwise, complain.
     if path_to_bin is not None:
@@ -444,7 +445,7 @@ def find_binary(name, path_to_bin=None, env_vars=(),
                 return os.path.join(path_to_bin, 'bin', bin)
         raise ValueError('Could not find %s binary at %s' %
                          (name, path_to_bin))
-    
+
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
@@ -470,7 +471,7 @@ def find_binary(name, path_to_bin=None, env_vars=(),
             path_to_bin = os.path.join(directory, bin)
             if os.path.isfile(path_to_bin):
                 return path_to_bin
-        
+
 
     # If we're on a POSIX system, then try using the 'which' command
     # to find the binary.
@@ -494,6 +495,75 @@ def find_binary(name, path_to_bin=None, env_vars=(),
     msg = textwrap.fill(msg+'.', initial_indent='  ',
                         subsequent_indent='  ')
     msg += "\n\n    >>> config_%s('/path/to/%s')" % (name, name)
+    if searchpath:
+        msg += '\n\n  Searched in:'
+        msg += ''.join('\n    - %s' % d for d in searchpath)
+    if url: msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
+                    (name, url))
+    div = '='*75
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+
+##########################################################################
+# Find Java JAR files
+# TODO: Add support for jar names specified as regular expressions
+##########################################################################
+
+def find_jar(name, path_to_jar=None, env_vars=(),
+        searchpath=(), url=None, verbose=True):
+    """
+    Search for a jar that is used by nltk.
+
+    @param name: The name of the jar file
+    @param path_to_jar: The user-supplied jar location, or None.
+    @param env_vars: A list of environment variable names to check
+                     in addition to the CLASSPATH variable which is
+                     checked by default.
+    @param searchpath: List of directories to search.
+    """
+
+    assert isinstance(name, basestring)
+    assert not isinstance(searchpath, basestring)
+    if isinstance(env_vars, basestring):
+        env_vars = env_vars.split()
+
+    # Make sure we check the CLASSPATH first
+    env_vars = ['CLASSPATH'] + list(env_vars)
+
+    # If an explicit location was given, then check it, and return it if
+    # it's present; otherwise, complain.
+    if path_to_jar is not None:
+        if os.path.isfile(path_to_jar):
+            return path_to_jar
+        raise ValueError('Could not find %s jar file at %s' %
+                         (name, path_to_jar))
+
+    # Check environment variables
+    for env_var in env_vars:
+        if env_var in os.environ:
+            if env_var == 'CLASSPATH':
+                classpath = os.environ['CLASSPATH']
+                for cp in classpath.split(':'):
+                    if os.path.isfile(cp) and os.path.basename(cp) == name:
+                        if verbose: print '[Found %s: %s]' % (name, cp)
+                        return cp
+            else:
+                path_to_jar = os.environ[env_var]
+                if os.path.isfile(path_to_jar) and os.path.basename(path_to_jar) == name:
+                    if verbose: print '[Found %s: %s]' % (name, path_to_jar)
+                    return path_to_jar
+
+    # Check the path list.
+    for directory in searchpath:
+        path_to_jar = os.path.join(directory, name)
+        if os.path.isfile(path_to_jar):
+            if verbose: print '[Found %s: %s]' % (name, path_to_jar)
+            return path_to_jar
+
+    # If nothing was found, raise an error
+    msg = ("NLTK was unable to find %s!" % name)
+    if env_vars: msg += ' Set the %s environment variable' % env_vars[0]
+    msg = textwrap.fill(msg+'.', initial_indent='  ',
+                        subsequent_indent='  ')
     if searchpath:
         msg += '\n\n  Searched in:'
         msg += ''.join('\n    - %s' % d for d in searchpath)
@@ -549,7 +619,7 @@ def abstract(func):
     # Substitute in the defaults after-the-fact, since eval(repr(val))
     # may not work for some default values.
     newfunc.func_defaults = func.func_defaults
-    
+
     # Copy the name and docstring
     newfunc.__name__ = func.__name__
     newfunc.__doc__ = func.__doc__
@@ -574,7 +644,7 @@ class ElementWrapper(object):
     interactive sessions and doctests, at the expense of some
     efficiency.
     """
-    
+
     # Prevent double-wrapping:
     def __new__(cls, etree):
         """
@@ -606,7 +676,7 @@ class ElementWrapper(object):
     ##////////////////////////////////////////////////////////////
     #{ String Representation
     ##////////////////////////////////////////////////////////////
-    
+
     def __repr__(self):
         s = ElementTree.tostring(self._etree)
         if len(s) > 60:
@@ -625,13 +695,13 @@ class ElementWrapper(object):
     ##////////////////////////////////////////////////////////////
     #{ Element interface Delegation (pass-through)
     ##////////////////////////////////////////////////////////////
-    
+
     def __getattr__(self, attrib):
         return getattr(self._etree, attrib)
-    
+
     def __setattr__(self, attr, value):
         return setattr(self._etree, attr, value)
-    
+
     def __delattr__(self, attr):
         return delattr(self._etree, attr)
 
@@ -653,7 +723,7 @@ class ElementWrapper(object):
     ##////////////////////////////////////////////////////////////
     #{ Element interface Delegation (wrap result)
     ##////////////////////////////////////////////////////////////
-    
+
     def __getitem__(self, index):
         return ElementWrapper(self._etree[index])
 
@@ -679,7 +749,7 @@ class ElementWrapper(object):
         return [ElementWrapper(elt) for elt in self._etree.findall(path)]
 
 ######################################################################
-# Helper for Handling Slicing 
+# Helper for Handling Slicing
 ######################################################################
 
 def slice_bounds(sequence, slice_obj, allow_step=False):
@@ -700,7 +770,7 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
     start, stop = (slice_obj.start, slice_obj.stop)
 
     # If allow_step is true, then include the step in our return
-    # value tuple.  
+    # value tuple.
     if allow_step:
         if slice_obj.step is None: slice_obj.step = 1
         # Use a recursive call without allow_step to find the slice
@@ -720,7 +790,7 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
     # Supply default offsets.
     if start is None: start = 0
     if stop is None: stop = len(sequence)
-    
+
     # Handle negative indices.
     if start < 0: start = max(0, len(sequence)+start)
     if stop < 0: stop = max(0, len(sequence)+stop)
@@ -731,12 +801,12 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
     if stop > 0:
         try: sequence[stop-1]
         except IndexError: stop = len(sequence)
-    
+
     # Make sure start isn't past stop.
     start = min(start, stop)
 
     # That's all folks!
-    return start, stop    
+    return start, stop
 
 ######################################################################
 # Permission Checking
