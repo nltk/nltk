@@ -142,8 +142,12 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
         for window in ingrams(words, window_size, pad_right=True):
             w1 = window[0]
+            try:
+                window = window[:list(window).index(w1, 1)]
+            except ValueError:
+                pass
             wfd.inc(w1)
-            for w2 in window[1:]:
+            for w2 in set(window[1:]):
                 if w2 is not None:
                     bfd.inc((w1, w2))
         return cls(wfd, bfd)
