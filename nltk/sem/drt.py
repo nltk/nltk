@@ -374,7 +374,7 @@ class DrtConstantExpression(DrtAbstractVariableExpression, ConstantExpression):
     pass
 
 
-class DrtProposition(AbstractDrs):
+class DrtProposition(AbstractDrs, Expression):
     def __init__(self, variable, drs):
         self.variable = variable
         self.drs = drs
@@ -870,6 +870,8 @@ class DrsDrawer(object):
             factory = self._handle_ApplicationExpression
         elif isinstance(expression, PossibleAntecedents):
             factory = self._handle_VariableExpression
+        elif isinstance(expression, DrtProposition):
+            factory = self._handle_DrtProposition
         else:
             raise Exception, expression.__class__.__name__
             
@@ -994,6 +996,15 @@ class DrsDrawer(object):
         right = command(DrtTokens.CLOSE, right, centred_string_top)[0]
         
         return (right, max(first_bottom, second_bottom))
+    
+    def _handle_DrtProposition(self, expression, command, x, y):
+        # Find the width of the negation symbol
+        right = command(expression.variable, x, y)[0]
+
+        # Handle term
+        (right, bottom) = self._handle(expression.term, command, right, y)
+
+        return (right, bottom)
 
     def _get_centered_top(self, top, full_height, item_height):
         """Get the y-coordinate of the point that a figure should start at if
