@@ -128,6 +128,12 @@ class WekaClassifier(ClassifierI):
         return DictionaryProbDist(probs)
 
     def parse_weka_output(self, lines):
+        # Strip unwanted text from stdout
+        for i,line in enumerate(lines):
+            if line.strip().startswith("inst#"):
+                lines = lines[i:]
+                break
+
         if lines[0].split() == ['inst#', 'actual', 'predicted',
                                 'error', 'prediction']:
             return [line.split()[2].split(':')[1]
