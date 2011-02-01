@@ -1218,7 +1218,7 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
         return a C{(nonterminal,position)} as result. 
     @param probabilistic: are the grammar rules probabilistic?
     """
-    if isinstance(input, str):
+    if isinstance(input, basestring):
         lines = input.split('\n')
     else:
         lines = input
