@@ -4,6 +4,7 @@
 # Copyright (C) 2001-2010 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         David Nemeskey <nemeskeyd@gmail.com> (modifications)
+#         Attila Zseder <zseder@gmail.com> (modifications)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
