@@ -107,7 +107,7 @@ class RegexpTokenizer(TokenizerI):
                 if not (self._discard_empty and left == right):
                     yield left, right
         else:
-            for m in finditer(self._regexp, s):
+            for m in finditer(self._regexp, text):
                 yield m.span()
     
     def __repr__(self):
