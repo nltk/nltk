@@ -84,7 +84,10 @@ def log_likelihood(classifier, gold):
 def accuracy(classifier, gold):
     results = classifier.batch_classify([fs for (fs,l) in gold])
     correct = [l==r for ((fs,l), r) in zip(gold, results)]
-    return float(sum(correct))/len(correct)
+    if correct:
+        return float(sum(correct))/len(correct)
+    else:
+        return 0
 
 class CutoffChecker(object):
     """
