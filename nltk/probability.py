@@ -280,13 +280,7 @@ class FreqDist(dict):
         @rtype: any or C{None}
         """
         if self._max_cache is None:
-            best_sample = None
-            best_count = -1
-            for sample in self:
-                if self[sample] > best_count:
-                    best_sample = sample
-                    best_count = self[sample]
-            self._max_cache = best_sample
+            self._max_cache = max([(a,b) for (b,a) in self.items()])[1] 
         return self._max_cache
 
     def plot(self, *args, **kwargs):
