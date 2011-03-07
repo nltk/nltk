@@ -113,7 +113,7 @@ class RegexpChunkApp(object):
          "chunks your system generated.  Typically, you should try to "
          "design a grammar that scores high on both metrics.  The "
          "exact precision and recall of the current grammar, as well "
-         "as their geometric average (the 'f-score'), are displayed in "
+         "as their harmonic mean (the 'f-score'), are displayed in "
          "the status bar at the bottom of the window."
          ),
         ('Rules', '10',
