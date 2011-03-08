@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterer Interfaces
 #
-# Copyright (C) 2001-2010 NLTK Project
+# Copyright (C) 2001-2011 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Porting: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
