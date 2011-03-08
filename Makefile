@@ -37,7 +37,7 @@ upload:
 	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION)*.dmg
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
 	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
-	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.noarch.rpm
+# 	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.noarch.rpm
 #	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk_$(VERSION)-1_all.deb
 	$(UPLOAD) --summary="NLTK $(VERSION) Egg" dist/nltk-$(VERSION)*.egg
 	$(UPLOAD) --summary="NLTK-Contrib $(VERSION)" ../nltk_contrib/dist/nltk_contrib-$(VERSION)*.zip
