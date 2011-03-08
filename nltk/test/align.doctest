@@ -11,9 +11,9 @@ Corpus Reader
 -------------
 
     >>> from nltk.corpus import comtrans
-    >>> comtrans.words()
+    >>> comtrans.words('alignment-en-fr.txt')
     ['Resumption', 'of', 'the', 'session', 'I', 'declare', ...]
-    >>> als = comtrans.aligned_sents()[0]
+    >>> als = comtrans.aligned_sents('alignment-en-fr.txt')[0]
     >>> als  # doctest: +NORMALIZE_WHITESPACE
     AlignedSent(['Resumption', 'of', 'the', 'session'],
     ['Reprise', 'de', 'la', 'session'],
