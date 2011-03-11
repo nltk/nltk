@@ -5,7 +5,7 @@ Register YAML tags in the NLTK namespace with the YAML loader, by telling it
 what module and class to look for.
 
 NLTK uses simple '!' tags to mark the types of objects, but the fully-qualified
-"tag:nltk.sourceforge.net,2007:" prefix is also accepted in case anyone ends up
+"tag:nltk.org,2011:" prefix is also accepted in case anyone ends up
 using it.
 """
 
@@ -25,7 +25,7 @@ def metaloader(classpath):
 
 def register_tag(tag, classpath):
     yaml.add_constructor(u'!'+tag, metaloader(classpath))
-    yaml.add_constructor(u'tag:nltk.sourceforge.net,2007:'+tag,
+    yaml.add_constructor(u'tag:nltk.org,2011:'+tag,
                          metaloader(classpath))
 
 register_tag(u'tag.Unigram', 'nltk.tag.unigram.Unigram')
