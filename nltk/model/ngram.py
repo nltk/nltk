@@ -128,7 +128,7 @@ class NgramModel(ModelI):
 
         e = 0.0
         for i in range(self._n - 1, len(text)):
-            context = tuple(text[i - self._n + 1 : i - 1])
+            context = tuple(text[i-self._n+1:i])
             token = text[i]
             e += self.logprob(token, context)
         return e
