@@ -297,8 +297,6 @@ class FreqDist(dict):
         @type title: C{str}
         @param cumulative: A flag to specify whether the plot is cumulative (default = False)
         @type title: C{bool}
-        @param num: The maximum number of samples to plot (default=50).  Specify num=0 to get all samples (slow).
-        @type num: C{int} 
         """
         try:
             import pylab
@@ -334,15 +332,14 @@ class FreqDist(dict):
     def tabulate(self, *args, **kwargs):
         """
         Tabulate the given samples from the frequency distribution (cumulative),
-        displaying the most frequent sample first.
+        displaying the most frequent sample first.  If an integer
+        parameter is supplied, stop after this many samples have been
+        plotted.  If two integer parameters m, n are supplied, plot a
+        subset of the samples, beginning with m and stopping at n-1.
         (Requires Matplotlib to be installed.)
         
         @param samples: The samples to plot (default is all samples)
         @type samples: C{list}
-        @param title: The title for the graph
-        @type title: C{str}
-        @param num: The maximum number of samples to plot (default=50).  Specify num=0 to get all samples (slow).
-        @type num: C{int} 
         """
         if len(args) == 0:
             args = [len(self)]
