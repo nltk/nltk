@@ -322,9 +322,11 @@ class FreqDist(dict):
         pylab.grid(True, color="silver")
         if not "linewidth" in kwargs:
             kwargs["linewidth"] = 2
+        if "title" in kwargs:
+            pylab.title(kwargs["title"])
+            del kwargs["title"]
         pylab.plot(freqs, **kwargs)
         pylab.xticks(range(len(samples)), [str(s) for s in samples], rotation=90)
-        if "title" in kwargs: pylab.title(kwargs["title"])
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
