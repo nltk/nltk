@@ -1,4 +1,55 @@
-Version 2.0b9 2009-07-25
+Version 2.0b10 2011-03-??
+
+NLTK:
+* added interface to the Stanford POS Tagger
+* updates to sem.Boxer, sem.drt.DRS
+* allow unicode strings in grammars
+* allow non-string features in classifiers
+* modifications to HunposTagger
+* issues with DRS printing
+* fixed bigram collocation finder for window_size > 2
+* doctest paths no longer presume unix-style pathname separators
+* fixed issue with NLTK's tokenize module colliding with the Python tokenize module
+* fixed issue with stemming Unicode strings
+* changed ViterbiParser.nbest_parse to parse
+* KNBC Japanese corpus reader
+* preserve case in concordance display
+* fixed bug in simplification of Brown tags
+* a version of IBM Model 1 as described in Koehn 2010
+* new class AlignedSent for aligned sentence data and evaluation metrics
+* new nltk.util.set_proxy to allow easy configuration of HTTP proxy
+* improvements to downloader user interface to catch URL and HTTP errors
+* added CHILDES corpus reader
+* created special exception hierarchy for Prover9 errors
+* significant changes to the underlying code of the boxer interface
+* path-based wordnet similarity metrics use a fake root node for verbs, following the Perl version
+* added ability to handle multi-sentence discourses in Boxer
+* added the 'english' Snowball stemmer
+* simplifications and corrections of Earley Chart Parser rules
+* several changes to the feature chart parsers for correct unification
+* bugfixes: FreqDist.plot, FreqDist.max, NgramModel.entropy, CategorizedCorpusReader, DecisionTreeClassifier
+
+Data:
+* Japanese corpora...
+* Fixed some minor bugs in alvey.fcfg, and added number of parse trees in alvey_sentences.txt
+* added more comtrans data
+
+Documentation:
+* minor fixes to documentation
+* NLTK Japanese book (chapter 12) by Masato Hagiwara
+
+NLTK-Contrib:
+* Contribute a version of the Viethen and Dale referring expression algorithms
+
+Thanks to the following	contributors to	2.0b10:
+Yonatan Becker, Steven Bethard, David Coles, Dan Garrette,
+Masato Hagiwara, Michael Hansen, Rebecca Ingram,
+Sudharshan Kaushik, Peter Ljunglof, Nitin Madnani, Rob Malouf,
+Tomonori Nagano, David Nemeskey, Joel Nothman, Jacob Perkins,
+Alex Rudnick, Nathan Schneider, Peter Stahl, Jason Yoder
+
+
+Version 2.0b9 2010-07-25
 
 NLTK:
 * many code and documentation cleanups
@@ -41,7 +92,7 @@ Bjorn Maeland, Rob Malouf, Joel Nothman, Jacob Perkins, Alberto Planas,
 Alex Rudnick, Geoffrey Sampson, Kevin Scannell, Richard Sproat
 
 
-Version 2.0b8 2009-02-05
+Version 2.0b8 2010-02-05
 
 NLTK:
 * fixed copyright and license statements
