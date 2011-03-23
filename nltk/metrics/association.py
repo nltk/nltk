@@ -120,7 +120,7 @@ class NgramAssocMeasures(object):
         """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
         """
         cont = cls._contingency(*marginals)
-        return cls._n * 2 *
+        return (cls._n * 2 *
                 sum(obs * _ln(float(obs) / (exp + _SMALL) + _SMALL)
                     for obs, exp in zip(cont, cls._expected_values(cont))))
 
