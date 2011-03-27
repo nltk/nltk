@@ -70,15 +70,44 @@ class MaltParser(ParserI):
             searchpath=malt_path, env_vars=['MALTPARSERHOME'],
             url='http://w3.msi.vxu.se/~jha/maltparser/index.html',
             verbose=verbose)
-      
+
     def parse(self, sentence, verbose=False):
         """
-        Use MaltParser to parse a sentence
+        Use MaltParser to parse a sentence. Takes a sentence as a list of
+        words; it will be automatically tagged with this MaltParser instance's
+        tagger.
         
         @param sentence: Input sentence to parse
-        @type sentence: L{str}
+        @type sentence: L{list} of L{string}
         @return: C{DependencyGraph} the dependency graph representation of the sentence
         """
+        taggedwords = self.tagger.tag(sentence)
+        return self.tagged_parse(taggedwords, verbose)
+
+    def raw_parse(self, sentence, verbose=False):
+        """
+        Use MaltParser to parse a sentence. Takes a sentence as a string;
+        before parsing, it will be automatically tokenized and tagged with this
+        MaltParser instance's tagger.
+        
+        @param sentence: Input sentence to parse
+        @type sentence: L{string}
+        @return: C{DependencyGraph} the dependency graph representation of the sentence
+        """
+        words = nltk.word_tokenize(sentence)
+        return self.parse(words, verbose)
+      
+    def tagged_parse(self, sentence, verbose=False):
+        """
+        Use MaltParser to parse a sentence. Takes a sentence as a list of
+        (word, tag) tuples; the sentence must have already been tokenized and
+        tagged.
+        
+        @param sentence: Input sentence to parse
+        @type sentence: L{list} of (word, tag) L{tuple}s.
+        @return: C{DependencyGraph} the dependency graph representation of the sentence
+        """
+
         if not self._malt_bin:
             raise Exception("MaltParser location is not configured.  Call config_malt() first.")
         if not self._trained:
@@ -94,7 +123,8 @@ class MaltParser(ParserI):
         f = None
         try:
             f = open(input_file, 'w')
-            for (i, (word,tag)) in enumerate(self.tagger.tag(sentence.split())):
+
+            for (i, (word,tag)) in enumerate(sentence):
                 f.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % 
                         (i+1, word, '_', tag, tag, '_', '0', 'a', '_', '_'))
             f.write('\n')
@@ -179,8 +209,8 @@ def demo():
     maltParser = MaltParser()
     maltParser.train([dg1,dg2], verbose=verbose)
 
-    print maltParser.parse('John sees Mary', verbose=verbose).tree().pprint()
-    print maltParser.parse('a man runs', verbose=verbose).tree().pprint()
+    print maltParser.raw_parse('John sees Mary', verbose=verbose).tree().pprint()
+    print maltParser.raw_parse('a man runs', verbose=verbose).tree().pprint()
     
 if __name__ == '__main__':
     demo()
