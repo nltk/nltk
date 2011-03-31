@@ -62,8 +62,7 @@ def in_idle():
     results.
     """
     import sys, types
-    return (type(sys.stdin) == types.InstanceType and \
-            sys.stdin.__class__.__name__ == 'PyShell')
+    return (sys.stdin.__class__.__name__ == 'PyShell')
 
 ##########################################################################
 # PRETTY PRINTING

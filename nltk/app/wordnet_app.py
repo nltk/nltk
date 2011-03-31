@@ -51,8 +51,8 @@ from sys import path
 
 import os
 from sys import argv
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from urllib import quote_plus, unquote_plus
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.parse import quote_plus, unquote_plus
 import webbrowser
 import datetime
 import re
@@ -60,7 +60,7 @@ import threading
 import time
 import getopt
 import base64
-import cPickle
+import pickle
 import copy
 
 from nltk.compat import defaultdict
@@ -97,7 +97,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
             else:
-                print 'Server shutting down!'
+                print('Server shutting down!')
                 os._exit(0)
 
         elif sp == 'favicon.ico':
@@ -185,7 +185,7 @@ def encode_icon():
         else:
             return [s[0:72]] + split(s[72:])
 
-    print split(base64.urlsafe_b64encode(s))
+    print((split(base64.urlsafe_b64encode(s))))
 
 
 FAVICON_BASE64_DATA = \
@@ -273,7 +273,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     if logfilename:
         try:
             logfile = open(logfilename, "a", 1) # 1 means 'line buffering'
-        except IOError, e:
+        except IOError as e:
             sys.stderr.write("Couldn't open %s for writing: %s", 
                              logfilename, e)
             sys.exit(1)
@@ -587,7 +587,7 @@ def _collect_one_synset(word, synset, synset_relations):
     ref = copy.deepcopy(Reference(word, synset_relations))
     ref.toggle_synset(synset)
     synset_label = typ + ";"
-    if synset.name in synset_relations.keys():
+    if synset.name in list(synset_relations.keys()):
         synset_label = _bold(synset_label)
     s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr) 
     def format_lemma(w):
@@ -629,7 +629,7 @@ def _synset_relations(word, synset, synset_relations):
     @rtype: str
     '''
 
-    if not synset.name in synset_relations.keys():
+    if not synset.name in list(synset_relations.keys()):
         return ""
     ref = Reference(word, synset_relations)
 
@@ -647,7 +647,8 @@ def _synset_relations(word, synset, synset_relations):
         else:
             raise TypeError("r must be a synset, lemma or list, it was: type(r) = %s, r = %s" % (type(r), r))
 
-    def make_synset_html((db_name, disp_name, rels)):
+    def make_synset_html(xxx_todo_changeme):
+        (db_name, disp_name, rels) = xxx_todo_changeme
         synset_html = '<i>%s</i>\n' % \
             make_lookup_link(
                 copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
@@ -694,7 +695,7 @@ class Reference(object):
         # This uses a tuple rather than an object since the python
         # pickle representation is much smaller and there is no need
         # to represent the complete object.
-        string = cPickle.dumps((self.word, self.synset_relations), -1)
+        string = pickle.dumps((self.word, self.synset_relations), -1)
         return base64.urlsafe_b64encode(string)
 
     def toggle_synset_relation(self, synset, relation):
@@ -716,7 +717,7 @@ class Reference(object):
         """
         Toggle displaying of the relation types for the given synset
         """
-        if synset.name in self.synset_relations.keys():
+        if synset.name in list(self.synset_relations.keys()):
             del self.synset_relations[synset.name]
         else:
             self.synset_relations[synset.name] = set()
@@ -729,7 +730,7 @@ def decode_reference(string):
     Decode a reference encoded with Reference.encode
     """
     string = base64.urlsafe_b64decode(string)
-    word, synset_relations = cPickle.loads(string)
+    word, synset_relations = pickle.loads(string)
     return Reference(word, synset_relations)
 
 def make_lookup_link(ref, label):
@@ -984,7 +985,7 @@ def usage():
     """
     Display the command line help message.
     """
-    print __doc__
+    print(__doc__)
 
 def app():
     # Parse and interpret options.
