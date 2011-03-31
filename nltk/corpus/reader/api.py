@@ -125,7 +125,7 @@ class CorpusReader(object):
         Return the contents of the corpus README file, if it exists.
         """
 
-        return self.open("README").read()
+        return self.open("README").read().decode()
 
     def fileids(self):
         """
@@ -387,7 +387,7 @@ class SyntaxCorpusReader(CorpusReader):
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, str): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        return concat([self.open(f).read().decode() for f in fileids])
 
     def parsed_sents(self, fileids=None):
         reader = self._read_parsed_sent_block
