@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 PYTHON = python
-VERSION = $(shell $(PYTHON) -c 'import nltk; print(nltk.__version_)_' | sed '/^Warning: */d')
+VERSION = $(shell $(PYTHON) -c 'import nltk; print(nltk.__version__)' | sed '/^Warning: */d')
 NLTK_URL = $(shell $(PYTHON) -c 'import nltk; print(nltk.__url__)' | sed '/^Warning: */d')
 GOOGLE_ACCT = StevenBird1
 UPLOAD = $(PYTHON) tools/googlecode_upload.py --project=nltk --config-dir=none --user=$(GOOGLE_ACCT) --labels=Featured
