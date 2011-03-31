@@ -23,11 +23,7 @@ Currently, NLTK requires Python 2.4 or later.
 ######################################################################
 
 # ElementTree
-
-try:
-    from xml.etree import ElementTree
-except ImportError:
-    from nltk.etree import ElementTree
+from xml.etree import ElementTree
 
 # collections.defaultdict
 # originally contributed by Yoav Goldberg <yoav.goldberg@gmail.com>

@@ -57,7 +57,6 @@ setup(
                 'nltk.tag',
                 'nltk.tokenize',
                 'nltk.toolbox',
-                'nltk.etree',
                 ],
     )
 

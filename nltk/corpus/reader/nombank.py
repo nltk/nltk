@@ -10,7 +10,7 @@ import re
 import codecs
 
 from nltk.tree import Tree
-from nltk.etree import ElementTree
+from xml.etree import ElementTree
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *

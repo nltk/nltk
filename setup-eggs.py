@@ -65,7 +65,6 @@ setup(
                 'nltk.test',
                 'nltk.tokenize',
                 'nltk.toolbox',
-                'nltk.etree'
                 ],
     zip_safe=False, # since normal files will be present too?
     install_requires=['setuptools',

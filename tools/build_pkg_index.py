@@ -12,7 +12,7 @@ xml_header = """<?xml version="1.0"?>
 
 import sys
 from nltk.downloader import build_index
-from nltk.etree import ElementTree
+from xml.etree import ElementTree
 
 if len(sys.argv) != 4:
     print("Usage: ")

@@ -176,7 +176,7 @@ except:
     TKINTER = False
     TclError = ValueError
 
-from nltk.etree import ElementTree
+from xml.etree import ElementTree
 import nltk
 urllib2 = nltk.internals.import_from_stdlib('urllib')
 

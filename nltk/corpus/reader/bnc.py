@@ -12,7 +12,7 @@ __docformat__ = 'epytext en'
 
 import re
 
-import nltk.etree.ElementTree as ET
+import xml.etree.ElementTree as ET
 
 from .api import *
 from .util import *

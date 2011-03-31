@@ -10,7 +10,7 @@ Named entity chunker
 """
 
 import os, re, pickle
-from nltk.etree import ElementTree as ET
+from xml.etree import ElementTree as ET
 from nltk.chunk.api import *
 from nltk.chunk.util import *
 import nltk

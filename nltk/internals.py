@@ -21,7 +21,7 @@ from nltk import __file__
 
 # Use the c version of ElementTree, which is faster, if possible:
 try: from xml.etree import cElementTree as ElementTree
-except ImportError: from nltk.etree import ElementTree
+except ImportError: from xml.etree import ElementTree
 
 ######################################################################
 # Regular Expression Processing
