@@ -1,0 +1,487 @@
+\documentclass{beamer}             % for slides
+%\documentclass[notes,handout]{beamer} % presenter notes
+% \documentclass[handout]{beamer}    % for handout
+\usepackage{alltt}
+\input{beamer}
+
+\title{Introduction to Natural Language Processing}
+
+\author{Steven Bird \and Ewan Klein \and Edward Loper}
+\institute{
+  University of Melbourne, AUSTRALIA
+  \and
+  University of Edinburgh, UK
+  \and
+   University of Pennsylvania, USA
+}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{What is NLTK?}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\subsection{Introduction}
+
+\begin{frame}
+  \frametitle{Natural Language Processing}
+  \begin{itemize}
+    \item text and information
+      \note[item]{world is awash with text; information locked up in text}
+      \note[item]{sources: news, blogs, transcribed speech, other languages}
+    \item Natural Language Processing (NLP)
+      \note[item]{automatically process text, extracting structure and content, to give people access to the information}
+    \item Engineering goals
+      \note[item]{build a system to provide a service (translation, summarization)}
+    \item Scientific goals
+      \note[item]{analyze the structure of language, computational linguistics}
+    \item Data
+  \end{itemize}
+\end{frame}
+
+\subsection{Data Formats}
+
+\begin{frame}[fragile]
+  \frametitle{Chunked Tagged WSJ Text}
+{\scriptsize\begin{verbatim}
+[ Pierre/NNP Vinken/NNP ]
+,/,
+[ 61/CD years/NNS ]
+old/JJ ,/, will/MD join/VB
+[ the/DT board/NN ]
+as/IN
+[ a/DT nonexecutive/JJ director/NN Nov./NNP 29/CD ]
+./.
+
+[ Mr./NNP Vinken/NNP ]
+is/VBZ
+[ chairman/NN ]
+of/IN
+[ Elsevier/NNP N.V./NNP ]
+,/,
+[ the/DT Dutch/NNP publishing/VBG group/NN ]
+./.
+\end{verbatim}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Parsed WSJ Text}
+{\scriptsize\begin{verbatim}
+( (S
+    (NP-SBJ
+      (NP (NNP Pierre) (NNP Vinken) )
+      (, ,)
+      (ADJP
+        (NP (CD 61) (NNS years) )
+        (JJ old) )
+      (, ,) )
+    (VP (MD will)
+      (VP (VB join)
+        (NP (DT the) (NN board) )
+        (PP-CLR (IN as)
+          (NP (DT a) (JJ nonexecutive) (NN director) ))
+        (NP-TMP (NNP Nov.) (CD 29) )))
+    (. .) ))
+\end{verbatim}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{IOB-Tagged Text}
+{\scriptsize\begin{verbatim}
+Characteristically RB B-ADVP
+, , O
+he PRP B-NP
+did VBD B-VP
+n't RB I-VP
+waste VB I-VP
+much JJ B-NP
+time NN I-NP
+getting VBG B-VP
+started VBN I-VP
+. . O
+\end{verbatim}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Named-Entity Classification}
+{\tiny\begin{verbatim}
+<b_enamex type="LOCATION">NAIROBI<e_enamex>, <b_enamex type="LOCATION">Kenya<e_enamex>
+(<b_enamex type="ORGANIZATION">AP<e_enamex>) _ <b_numex type="CARDINAL">Thousands<e_numex>
+of laborers, students and opposition politicians on <b_timex type="DATE">Saturday<e_timex>
+protested tax hikes imposed by their cash-strapped government, which they accused of
+failing to provide basic services.  Beneath a scorching sun, they sang anti-government
+songs and chanted "<b_enamex type="PERSON">Moi<e_enamex> must go," showing their derision
+for President <b_enamex type="PERSON">Daniel arap Moi<e_enamex>,
+<b_enamex type="LOCATION">Kenya<e_enamex>'s ruler for <b_timex type="DURATION">20 years<e_timex>.
+By voice vote, the <b_numex type="CARDINAL">5,000<e_numex> protesters approved a resolution
+calling for the government to scrap new taxes, convene a convention to write a new
+Constitution, stop harassing students and street vendors, and halt ethnic violence.
+\end{verbatim}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Tagged Biomedical Text in XML}
+{\tiny\begin{verbatim}
+<sentence id="@@0001"> <interactor pos="NN">Coexpression</interactor>
+<token pos="IN">of</token> <token pos="NN">mouse</token> <gene>PKR ( 1-515 ) WT</gene>
+<token pos="IN">as</token> <token pos="DT">a</token> <gene>Gal4</gene>
+<token pos="VBG">DNA-binding</token> <token pos="NN">domain</token>
+<token pos="NN">fusion</token> <token pos="IN">with</token>
+<token pos="RB">either</token> <token pos="DT">the</token>
+<token pos="JJ">catalytic-deficient</token> <token pos="JJ">human</token>
+<gene>PKR ( 1-551 )</gene> <token pos="IN">K296R</token>
+<token pos="JJ">mutant</token> <token pos=",">,</token> <token pos="DT">the</token>
+<token pos="NNP">RNA-binding-deficient</token> <token pos="JJ">human</token>
+<gene>PKR ( 1-551 ) K64E / K296R</gene> <token pos="RB">double</token>
+<token pos="JJ">mutant</token> <token pos=",">,</token> <token pos="CC">or</token>
+<token pos="JJ">wild-type</token> <token pos="NN">mouse</token>
+<gene>PKR ( 1-515 ) WT</gene> <token pos="IN">as</token>
+<token pos="JJ">full-length</token> <gene>PKR-Gal4</gene>
+<interactor pos="NN">activation</interactor> <token pos="NN">domain</token>
+<token pos="NNS">fusions</token> <token pos="VBD">resulted</token>
+<token pos="IN">in</token> <interactor pos="NN">activation</interactor>
+<token pos="IN">of</token> <token pos="DT">the</token> <gene>HIS3</gene>
+<token pos="CC">and</token> <gene>lacZ</gene> <token pos="NNS">reporters</token>
+<token pos=".">.</token></sentence>
+\end{verbatim}}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{CMU Pronunciation Lexicon}
+{\scriptsize\begin{verbatim}
+APPROVE 1 AH0 P R UW1 V
+APPROVED 1 AH0 P R UW1 V D
+APPROVES 1 AH0 P R UW1 V Z
+APPROVING 1 AH0 P R UW1 V IH0 NG
+APPROVINGLY 1 AH0 P R UW1 V IH0 NG L IY0
+APPROXIMATE 1 AH0 P R AA1 K S AH0 M AH0 T
+APPROXIMATE 2 AH0 P R AA1 K S AH0 M EY2 T
+APPROXIMATED 1 AH0 P R AA1 K S AH0 M EY2 T AH0 D
+APPROXIMATELY 1 AH0 P R AA1 K S AH0 M AH0 T L IY0
+APPROXIMATES 1 AH0 P R AA1 K S AH0 M AH0 T S
+APPROXIMATES 2 AH0 P R AA1 K S AH0 M EY2 T S
+APPROXIMATING 1 AH0 P R AA1 K S AH0 M EY2 T IH0 NG
+APPROXIMATION 1 AH0 P R AA2 K S AH0 M EY1 SH AH0 N
+APPROXIMATIONS 1 AH0 P R AA2 K S AH0 M EY1 SH AH0 N Z
+\end{verbatim}}
+\end{frame}
+
+\subsection{NLTK}
+
+\begin{frame}
+  \frametitle{Natural Language Toolkit}
+  \begin{enumerate}
+    \item facilitate access to data
+      \note[item]{only write a format reader once, then share}
+      \note[item]{reading a format correctly is harder than you think, cf csv}
+    \item standard algorithms
+      \note[item]{getting into NLP requires knowledge of linguistics, CS, AI which is hard to get}
+      \note[item]{clarity of Python: people can read the reference implementation, try it, reimplement it...}
+    \item tutorials
+      \note[item]{major textbooks are formidable, encyclopedic}
+      \note[item]{we've selected useful core, and provided practical learning materials (book, demos, source)}
+      \note[item]{practical: learning-by-doing; theoretically sound: stepping stone to research literature}
+    \item contents
+      \note[item]{50k lines of code, 300Mb datasets, 380pp book}
+    \item evolution: beginnings, redesign
+      \note[item]{teaching NLP, got too heavy using nested dictionaries, people ended up "programming in NLTK", rather than programming in Python using NLTK where needed}
+      \note[item]{NLTK-Lite: completely reimplemented, simpler structure, uses new language features like set, generator expressions, defaultdict, elementtree}
+      \note[item]{Design philosophy: interface definitions, lightweight reference implementations, utilities for common tasks}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Find 20 Most Frequent Words in a Text}
+
+{\scriptsize\begin{verbatim}
+>>> counts = defaultdict(int)
+>>> for word in text.split():
+...     counts[word] += 1
+>>> ranked_words = sorted(counts.items, key=itemgetter(1))
+>>> print [word for (word,count) in reversed(ranked_words)][:20]
+\end{verbatim}}
+
+\note{defaultdict; sorting tuples, list comprehensions}
+
+{\scriptsize\begin{verbatim}
+>>> print FreqDist(tokenize.wordpunct(text)).sorted()[:20]
+\end{verbatim}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{What is NLP?}
+
+\begin{frame}
+  \frametitle{NLP}
+
+\begin{block}{Major sub-domains of NLP}
+  \begin{itemize}
+    \item Understanding
+    \item Translation
+    \item Generation
+  \end{itemize}
+\end{block}
+
+\begin{block}{Modalities}
+  \begin{itemize}
+    \item Text
+    \item Speech
+    \item Images
+  \end{itemize}
+\end{block}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Textual Inference}
+
+
+\begin{exampleblock}{Example 1}
+  \begin{description}
+    \item [Text] Never before had ski racing, a sport dominated by
+      monosyllabic mountain men, seen the likes of Alberto Tomba, the
+      flamboyant Bolognese flatlander who at 21 captured two gold
+      medals at the Calgary Olympics.
+    \item [Hypothesis] Alberto Tomba won a race.
+  \end{description}
+\end{exampleblock}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Textual Inference}
+
+
+\begin{exampleblock}{Example 2}
+  \begin{description}
+    \item [Text] Researchers at the Harvard School of Public Health
+      say that people who drink coffee may be doing a lot more than
+      keeping themselves awake---this kind of consumption apparently
+      also can help reduce the risk of diseases.
+    \item [Hypothesis] Coffee drinking has health benefits.
+  \end{description}
+\end{exampleblock}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Why is it useful?}
+
+  \begin{itemize}
+    \item Information Extraction
+    \item Spoken Dialogue
+    \item Question Answering
+    \item Text Summarization
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some Component Technologies}
+
+  \begin{itemize}
+    \item Word overlap
+    \item \ldots
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Textual Inference}
+
+
+\begin{exampleblock}{Example 3}
+  \begin{description}
+  \item [Text] Never before had ski racing, a sport dominated by
+    monosyllabic mountain men, seen the likes of Alberto Tomba, the
+    flamboyant Bolognese flatlander who at 21 \textbf{almost} captured
+    two gold medals at the Calgary Olympics.
+    \item [Hypothesis] Alberto Tomba won a race.
+  \end{description}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some Component Technologies}
+
+  \begin{itemize}
+    \item Word overlap
+    \item Structural correspondence (sentence level parsing)
+    \item Semantic / pragmatic inference 
+    \item Paraphrase at word and phrase level
+    \item Background knowledge
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Prospects}
+
+Still lots of challenges, but
+
+  \begin{itemize}
+    \item wide-coverage syntactic parsers edging into commodity status;
+    \item NLP is moving out of the lab.
+
+  \end{itemize}
+
+\end{frame}
+
+
+% \subsection{Notes}
+
+% \begin{frame}
+%   \frametitle{Notes}
+%   \begin{itemize}
+%     \item QA, Summarization, Dialog (NL understanding; holy grail of NLP)
+%     \item RTE
+%     \item Low-level components
+%     \item ambiguity, why NLP is hard, PP attachment, combinatorial explosion
+%     \item limitations of NLP, avoiding AI-completeness
+%     \item statistical vs rule-based
+%     \item limitations of just throwing more data at a problem
+%   \end{itemize}
+% \end{frame}
+
+% \pgfdeclareimage[width=8cm]{tag-context}{../images/tag-context}
+% \begin{frame}
+%   \frametitle{Example of an Image}
+%   \pgfuseimage{tag-context}
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Case Studies}
+
+% \begin{frame}
+%   \frametitle{Notes}
+%   \begin{itemize}
+%     \item Text classification
+%     \item Word similarity
+%     \item Parsing
+%   \end{itemize}
+% \end{frame}
+
+\subsection{Text Classificaiton}
+
+\begin{frame}
+  \frametitle{Text Classification}
+  \begin{itemize}
+    \item Choose the most appropriate label for each piece of text.
+    \begin{itemize}
+      \item Topic classification
+      \item Spam Filtering
+      \item Word Sense Disambiguation
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Features}
+  \begin{itemize}
+    \item To decide which label is appropriate for a text, 
+      classifiers look at \emph{features} of that text.
+    \item Features indicate what aspects of the text are
+      relevant for the classification task.
+    \item Features are typically hand-crafted for a given task.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Classifying in NLTK}
+  \begin{itemize}
+    \item Classifiers are applied to \emph{featuresets}:
+{\small\begin{alltt}
+>>> animal = dict(fur=True, legs=4, 
+                  size='large', spots=True)
+>>> my_classifier.classify(animal)
+'leopard'
+\end{alltt}}
+    \item Features are found with a \emph{feature extractor}:
+{\small\begin{alltt}
+>>> def document_features(document):
+...     return dict([('contains-word(%s)'%w,True) 
+...                  for w in document])
+\end{alltt}}
+    \item Training:
+{\small\begin{alltt}
+>>> train = [(document_features(doc), label)
+..           for (doc, label) in labeled_docs]
+>>> classifier = NaiveBayesClassifier.train(train)
+\end{alltt}}
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demo -- Predict Genders of Names}
+  \begin{itemize}
+  \item Given a new name, that we've never seen before, predict
+    whether it is male of female.
+  \item Use the \texttt{names} corpus.
+  \end{itemize}
+\end{frame}
+
+\subsection{Distributional Similarity}
+
+\begin{frame}
+  \frametitle{Word Similarity}
+  \begin{itemize}
+  \item It's useful to know whether two words are similar
+    \begin{itemize}
+    \item Search: don't just find the exact terms you specify.
+    \item Question Answering: handle synonyms.
+    \item Parsing: what words act similarly to one another?
+    \end{itemize}
+  \item Different notions of \emph{similarity}:
+  \item What words tend to co-occur?
+  \item What words occur in similar contexts?
+  \end{itemize}
+\end{frame}
+
+\subsection{Parsing}
+
+\begin{frame}
+  \frametitle{Parsing}
+  \begin{itemize}
+  \item Chart Parsing Demo
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Getting Involved}
+
+\begin{frame}
+  \frametitle{Getting Involved}
+  \begin{itemize}
+  \item http://nltk.org/
+    \begin{itemize}
+    \item http://nltk.org/index.php/Development
+    \item http://nltk.org/index.php/Chatroom
+    \end{itemize}
+  \item Mailing lists:
+    \begin{itemize}
+    \item nltk-devel@lists.sourceforge.net
+    \item nltk-announce@lists.sourceforge.net
+    \item nltk-users@lists.sourceforge.net
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}

@@ -1,0 +1,27 @@
+digraph x {
+   rankdir=LR;
+   ranksep=0.25;
+   
+   /* The nodes */
+   {
+       node [style=filled,height=0.1,width=0.1,fillcolor=cadetblue4];
+       0 [label=""];
+       1 [label=""];
+       2 [label=""];
+       3 [label=""];
+   }
+
+   /* The sentence */
+   {
+       edge [style=invis, weight=100];
+       node [shape=plaintext,fontname="Times-BoldItalic"];
+       0->John->1->likes->2->Mary->3;
+   }
+   
+   /* Edges */
+   {       
+       edge [fontname=LucidaGrande];
+       1->1 [label="VP &rarr; &bull; V NP"];
+   }
+
+}

@@ -1,0 +1,200 @@
+/*
+:Author: Edward Loper, James Curran
+:Copyright: This stylesheet has been placed in the public domain.
+
+Stylesheet for use with Docutils.
+
+This stylesheet defines new css classes used by NLTK.
+
+It uses a Python syntax highlighting scheme that matches
+the colour scheme used by IDLE, which makes it easier for
+beginners to check they are typing things in correctly.
+*/
+
+/* Include the standard docutils stylesheet. */
+@import url(default.css);
+
+/* Custom inline roles */
+span.placeholder    { font-style: italic; font-family: monospace; }
+span.example        { font-style: italic; }
+span.emphasis       { font-style: italic; }
+span.termdef        { font-weight: bold; }
+/*span.term           { font-style: italic; }*/
+span.category       { font-variant: small-caps; }
+span.feature        { font-variant: small-caps; }
+span.fval           { font-style: italic; }
+span.math           { font-style: italic; }
+span.mathit         { font-style: italic; }
+span.lex            { font-variant: small-caps; }
+span.guide-linecount{ text-align: right; display: block;}
+
+/* Python souce code listings */
+span.pysrc-prompt   { color: #9b0000; }
+span.pysrc-more     { color: #9b00ff; }
+span.pysrc-keyword  { color: #e06000; }
+span.pysrc-builtin  { color: #940094; }
+span.pysrc-string   { color: #00aa00; }
+span.pysrc-comment  { color: #ff0000; }
+span.pysrc-output   { color: #0000ff; }
+span.pysrc-except   { color: #ff0000; }
+span.pysrc-defname  { color: #008080; }
+
+
+/* Doctest blocks */
+pre.doctest         { margin: 0; padding: 0; font-weight: bold; }
+div.doctest         { margin: 0 1em 1em 1em; padding: 0; }
+table.doctest       { margin: 0; padding: 0;
+                      border-top: 1px solid gray;
+                      border-bottom: 1px solid gray; }
+pre.copy-notify     { margin: 0; padding: 0.2em; font-weight: bold;
+                      background-color: #ffffff; }
+
+/* Python source listings */
+div.pylisting       { margin: 0 1em 1em 1em; padding: 0; }
+table.pylisting     { margin: 0; padding: 0;
+                      border-top: 1px solid gray; }
+td.caption { border-top: 1px solid black; margin: 0; padding: 0; }
+.caption-label { font-weight: bold;  }
+td.caption p { margin: 0; padding: 0; font-style: normal;}
+
+table tr td.codeblock { 
+  padding: 0.2em ! important; margin: 0;
+  border-left: 1px solid gray;
+  border-right: 2px solid gray;
+  border-top: 0px solid gray;
+  border-bottom: 1px solid gray;
+  font-weight: bold; background-color: #eeffee;
+}
+
+table tr td.doctest  { 
+  padding: 0.2em; margin: 0;
+  border-left: 1px solid gray;
+  border-right: 2px solid gray;
+  border-top: 0px solid gray;
+  border-bottom: 1px solid gray;
+  font-weight: bold; background-color: #eeeeff;
+}
+
+td.codeblock table tr td.copybar {
+    background: #40a060; border: 1px solid gray;
+    font-family: monospace; padding: 0; margin: 0; }
+td.doctest table tr td.copybar {
+    background: #4060a0; border: 1px solid gray;
+    font-family: monospace; padding: 0; margin: 0; }
+
+td.pysrc { padding-left: 0.5em; }
+
+img.callout { border-width: 0px; }
+
+table.docutils {
+    border-style: solid;
+    border-width: 1px;
+    margin-top: 6px;
+    border-color: grey;
+    border-collapse: collapse; }
+
+table.docutils th {
+    border-style: none;
+    border-width: 1px;
+    border-color: grey;
+    padding: 0 .5em 0 .5em; }
+
+table.docutils td {
+    border-style: none;
+    border-width: 1px;
+    border-color: grey; 
+    padding: 0 .5em 0 .5em; }
+
+table.footnote td { padding: 0; }
+table.footnote { border-width: 0; }
+table.footnote td { border-width: 0; }
+table.footnote th { border-width: 0; }
+
+table.noborder { border-width: 0; }
+
+table.example pre { margin-top: 4px; margin-bottom: 0; }
+
+/* For figures & tables */
+p.caption { margin-bottom: 0; }
+div.figure { text-align: center; }
+
+/* The index */
+div.index { border: 1px solid black;
+            background-color: #eeeeee; }
+div.index h1 { padding-left: 0.5em; margin-top: 0.5ex;
+               border-bottom: 1px solid black; }
+ul.index { margin-left: 0.5em; padding-left: 0; }
+li.index { list-style-type: none; }
+p.index-heading { font-size: 120%; font-style: italic; margin: 0; }
+li.index ul { margin-left: 2em; padding-left: 0; }
+
+/* 'Note' callouts */
+div.note
+{
+  border-right:   #87ceeb 1px solid;
+  padding-right: 4px;
+  border-top: #87ceeb 1px solid;
+  padding-left: 4px;
+  padding-bottom: 4px;
+  margin: 2px 5% 10px;
+  border-left: #87ceeb 1px solid;
+  padding-top: 4px;
+  border-bottom: #87ceeb 1px solid;
+  font-style: normal;
+  font-family: verdana, arial;
+  background-color: #b0c4de;
+}
+
+table.avm { border: 0px solid black; width: 0; }
+table.avm tbody tr {border: 0px solid black; }
+table.avm tbody tr td { padding: 2px; }
+table.avm tbody tr td.avm-key { padding: 5px; font-variant: small-caps; }
+table.avm tbody tr td.avm-eq { padding: 5px; }
+table.avm tbody tr td.avm-val { padding: 5px; font-style: italic; }
+p.avm-empty { font-style: normal; }
+table.avm colgroup col { border: 0px solid black; }
+table.avm tbody tr td.avm-topleft 
+    { border-left: 2px solid #000080; border-top: 2px solid #000080; }
+table.avm tbody tr td.avm-botleft 
+    { border-left: 2px solid #000080; border-bottom: 2px solid #000080; }
+table.avm tbody tr td.avm-topright
+    { border-right: 2px solid #000080; border-top: 2px solid #000080; }
+table.avm tbody tr td.avm-botright
+    { border-right: 2px solid #000080; border-bottom: 2px solid #000080; }
+table.avm tbody tr td.avm-left
+    { border-left: 2px solid #000080; }
+table.avm tbody tr td.avm-right
+    { border-right: 2px solid #000080; }
+table.avm tbody tr td.avm-topbotleft
+    { border: 2px solid #000080; border-right: 0px solid black; }
+table.avm tbody tr td.avm-topbotright
+    { border: 2px solid #000080; border-left: 0px solid black; }
+table.avm tbody tr td.avm-ident
+    { font-size: 80%; padding: 0; padding-left: 2px; vertical-align: top; }
+.avm-pointer
+{ border: 1px solid #008000; padding: 1px; color: #008000; 
+  background: #c0ffc0; font-style: normal; }
+
+table.gloss { border: 0px solid black; width: 0; }
+table.gloss tbody tr { border: 0px solid black; }
+table.gloss tbody tr td { border: 0px solid black; }
+table.gloss colgroup col { border: 0px solid black; }
+table.gloss p { margin: 0; padding: 0; }
+
+table.rst-example { border: 1px solid black; }
+table.rst-example tbody tr td { background: #eeeeee; }
+table.rst-example thead tr th { background: #c0ffff; }
+td.rst-raw { width: 0; }
+
+/* Used by nltk.org/doc/test: */
+div.doctest-list { text-align: center; }
+table.doctest-list { border: 1px solid black;
+  margin-left: auto; margin-right: auto;
+}
+table.doctest-list tbody tr td { background: #eeeeee;
+  border: 1px solid #cccccc; text-align: left; }
+table.doctest-list thead tr th { background: #304050; color: #ffffff;
+  border: 1px solid #000000;}
+table.doctest-list thead tr a { color: #ffffff; }
+span.doctest-passed { color: #008000; }
+span.doctest-failed { color: #800000; }

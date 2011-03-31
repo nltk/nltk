@@ -1,0 +1,48 @@
+%&program=xelatex
+%&encoding=UTF-8 Unicode
+
+\newcommand{\as}[1]{{\fontspec{Apple Symbols}#1}}
+\newcommand{\asb}[1]{{\fontspec[Scale=1.1]{Apple Symbols}#1}}
+\newcommand{\ls}[1]{{\fontspec[Scale=0.9]{Lucida Grande}#1}}
+\def\reflect#1{{\setbox0=\hbox{#1}\rlap{\kern0.5\wd0
+  \special{x:gsave}\special{x:scale -1 1}}\box0 \special{x:grestore}}}
+\def\XeLaTeX{\leavevmode
+  \setbox0=\hbox{X\lower.5ex\hbox{\kern-.15em\reflect{E}}\kern-.0833em \LaTeX}%
+  \dp0=0pt\ht0=0pt\box0 }
+
+\documentclass[11pt]{article}
+\title{Math Symbols in \XeLaTeX}
+\author{Ewan Klein}
+\date{\today}
+\usepackage{fontspec}
+\setromanfont{Palatino}
+
+\begin{document}
+\maketitle
+\section{Introduction}
+
+This file tests direct insertion of unicode characters using cut and paste
+from the Mac OS X font book application. As far as I can tell, some of
+the characters are only available in the Apple Symbols font, and some
+which you might have expected to be in Apple Symbols aren't, but can
+be found instead in Lucida Grande, for example.
+
+I still haven't found a way of producing angle brackets.
+
+
+\begin{itemize}
+\item $P$ \as{≐} $R$ \as{∧} $Q$
+\item Z ≠ X \as{⊆} Y and X \as{↦} Y
+\item X \as{⊑} Y
+\item a ≥ b ≤ c < d > e
+\item p \ls{→} \as{⊥}
+\item 3 \as{╳} 0.2 = (0.3)\as{⋅}2
+\item 3 — \as{〈}4, 5 \as{〉}
+\item A \as{⊓} B = A if \as{≡} \ls{¬}
+\item \asb{∃}x\asb{∀}y.R(x) \as{→} R(y)
+\item $x$ \as{∈} $Y$
+\end{itemize}
+
+
+
+\end{document}

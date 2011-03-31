@@ -1,0 +1,306 @@
+\documentclass{beamer}             % for slides
+% \documentclass[handout]{beamer}    % for handout
+\input{beamer}
+
+\title{Introduction to Natural Language Processing}
+
+\author{Steven Bird \and Ewan Klein \and Edward Loper}
+\institute{
+  University of Melbourne, AUSTRALIA
+  \and
+  University of Edinburgh, UK
+  \and
+   University of Pennsylvania, USA
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\section{Introduction}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Questions}
+  \begin{itemize}
+    \item How do we write programs to manipulate natural language?
+    \item What questions about language could we answer?
+    \item How would the programs work?
+    \item What data would they need?
+    \item First: what do they look like?
+  \end{itemize}
+\end{frame}
+
+\subsection{Searching Pronunciation Dictionary}
+
+\begin{frame}[fragile]
+  \frametitle{Searching Pronunciation Dictionary}
+  \scriptsize
+
+\begin{verbatim}
+ACCUMULATIVELY / AH0 K Y UW1 M Y AH0 L AH0 T IH0 V L IY0
+AGONIZINGLY / AE1 G AH0 N AY0 Z IH0 NG L IY0
+CARICATURIST / K EH1 R AH0 K AH0 CH ER0 AH0 S T
+CIARAMITARO / CH ER1 AA0 M IY0 T AA0 R OW0
+CUMULATIVELY / K Y UW1 M Y AH0 L AH0 T IH0 V L IY0
+DEBENEDICTIS / D EH1 B EH0 N AH0 D IH0 K T AH0 S
+DELEONARDIS / D EH1 L IY0 AH0 N AA0 R D AH0 S
+FORMALIZATION / F AO1 R M AH0 L AH0 Z EY0 SH AH0 N
+GIANNATTASIO / JH AA1 N AA0 T AA0 S IY0 OW0
+HYPERSENSITIVITY / HH AY2 P ER0 S EH1 N S AH0 T IH0 V AH0 T IY0
+IMAGINATIVELY / IH2 M AE1 JH AH0 N AH0 T IH0 V L IY0
+INSTITUTIONALIZES / IH2 N S T AH0 T UW1 SH AH0 N AH0 L AY0 Z AH0 Z
+INSTITUTIONALIZING / IH2 N S T AH0 T UW1 SH AH0 N AH0 L AY0 Z IH0 NG
+MANGIARACINA / M AA1 N JH ER0 AA0 CH IY0 N AH0
+SPIRITUALIST / S P IH1 R IH0 CH AH0 W AH0 L AH0 S T
+SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S T S
+SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S S
+SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S
+SPIRITUALLY / S P IH1 R IH0 CH AH0 W AH0 L IY0
+UNALIENABLE / AH0 N EY1 L IY0 EH0 N AH0 B AH0 L
+UNDERKOFFLER / AH1 N D ER0 K AH0 F AH0 L ER0
+\end{verbatim}
+\end{frame}
+
+\subsection{Minimal Sets from Lexicon}
+\begin{frame}[fragile]
+  \frametitle{Minimal Sets from Lexicon}
+  \small
+\begin{verbatim}
+kasi -    kesi kusi kosi
+kava -    -    kuva kova
+karu kiru keru kuru koru
+kapu kipu -    -    kopu
+karo kiro -    -    koro
+kari kiri keri kuri kori
+kapa -    kepa -    kopa
+kara kira kera -    kora
+kaku -    -    kuku koku
+kaki kiki -    -    koki
+\end{verbatim}
+\end{frame}
+
+
+\subsection{Modelling Text Genres}
+\begin{frame}[fragile]
+  \frametitle{Modelling Text Genres}
+  \small
+\begin{verbatim}
+lo, it came to the land of his father and he said, i will not be a
+wife unto him, saying, if thou shalt take our money in their kind,
+cattle, in thy seed after these are my son from off any more than all
+that is this day with him into egypt, he, hath taken away unawares to
+pass, when she bare jacob said one night, because they were born two
+hundred years old, as for an altar there, he had made me out at her
+pitcher upon every living creature after thee shall come near her:
+yea,
+\end{verbatim}
+\end{frame}
+
+\subsection{Exploring Syntax}
+\begin{frame}[fragile]
+  \frametitle{Exploring Syntax}
+  \scriptsize
+\begin{verbatim}
+VBP ADVP-TMP PP-PRD PP *BUT* VBP VP
+VBZ VP *BUT* VBZ NP PP-CLR
+PP-TMP VBZ VP *BUT* VBD ADVP-TMP S
+VBZ SBAR *BUT* VBZ SBAR
+VBD SBAR *BUT* VBD RB VP
+VBD SBAR *BUT* VBD S
+VBP NP-PRD *BUT* VBP RB ADVP-TMP VP
+VBN PP PP-TMP *BUT* ADVP-TMP VBN NP
+MD VP *BUT* VBZ NP SBAR-ADV
+VBD ADVP-CLR *BUT* VBD NP
+VBN NP PP *BUT* VBN NP PP SBAR-PRP
+VBD NP *BUT* MD RB VP
+VBD NP PP-CLR *BUT* VBD PRT NP
+VBZ S *BUT* MD VP
+\end{verbatim}
+\end{frame}
+
+\section{The Language Challenge}
+
+\subsection{The Richness of Language}
+
+\begin{frame}
+\frametitle{The Richness of Language}
+\begin{itemize}
+\item basic needs and lofty aspirations; technical know-how and
+  flights of fantasy
+\item ideas are shared over great separations of distance and time
+\end{itemize}
+
+\scriptsize
+
+\begin{enumerate}
+\item Overhead the day drives level and grey, hiding the sun by a flight
+   of grey spears.  (William Faulkner, \textit{As I Lay Dying}, 1935)
+\item When using the toaster please ensure that the exhaust fan is turned
+   on. (sign in dormitory kitchen)
+\item Amiodarone weakly inhibited CYP2C9, CYP2D6, and CYP3A4-mediated
+   activities with Ki values of 45.1-271.6 $\mu$M (Medline)
+\item Iraqi Head Seeks Arms (spoof headline, \url{http://www.snopes.com/humor/nonsense/head97.htm}
+\item The earnest prayer of a righteous man has great power and wonderful
+   results. (James 5:16b)
+\item Twas brillig, and the slithy toves did gyre and gimble in the wabe
+   (Lewis Carroll, \textit{Jabberwocky}, 1872)
+\item There are two ways to do this, AFAIK :smile:  (internet discussion archive)
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Disciplines Studying Language}
+\begin{enumerate}
+\item linguistics
+\item translation
+\item literary criticism
+\item philosophy
+\item anthropology
+\item psychology
+\item law
+\item hermeneutics
+\item forensics
+\item telephony
+\item pedagogy
+\item archaeology
+\item cryptanalysis
+\item speech pathology
+\end{enumerate}
+\end{frame}
+
+\subsection{Language and the Internet}
+\begin{frame}
+\frametitle{Language and the Internet}
+\small
+\begin{itemize}
+\item unprecedented volume of information:\\
+  \emph{mostly unstructured text}
+\item 8 Tb books in 2003
+\item 24 hours of scientific literature would take 5 years to read
+\item fraction of work/leisure time spent navigating this information
+\item a great challenge for natural language processing
+\item despite success of web search engines, we need skill, knowledge, and luck to answer the following questions:
+  \begin{enumerate}
+  \item \textit{What tourist sites can I visit between Philadelphia and Pittsburgh on a
+    limited budget?}
+  \item \textit{What do expert critics say about Canon digital cameras?}
+  \item \textit{What predictions about the steel market were made by
+      credible commentators in the past week?}
+  \end{enumerate}
+\item requires a combination of language processing tasks, e.g.
+  information extraction, inference, and summarisation
+\end{itemize}
+\end{frame}
+
+\subsection{The Promise of NLP}
+\begin{frame}
+\frametitle{The Promise of NLP}
+\begin{itemize}
+\item importance in scientific, economic, social and cultural arenas
+\item growing rapidly as its theories and methods are deployed in new technologies
+\item therefore a wide range of people should have a working knowledge of NLP
+  \begin{itemize}
+  \item academia: humanities computing, corpus linguistics, computer science, artificial intelligence
+  \item industry: HCI, business information analysis, web software development
+  \end{itemize}
+\item the goal of the book is to open the field of NLP to a broad audience.
+\end{itemize}
+\end{frame}
+
+\section{Language and Computation}
+
+\subsection{NLP and Intelligence}
+
+\begin{frame}
+\frametitle{NLP and Intelligence}
+\begin{itemize}
+\item long-standing challenge to build intelligent machines
+\item chief measure of machine intelligence has been linguistic: Turing test
+\item research on spoken dialogue systems, also MT\\
+  \emph{--- integrated NLP systems which future users would regard as highly intelligent}
+\item Example human-machine dialogue illustrates a typical application:
+\small
+\begin{tabular}{ll}
+S: & How may I help you?\\
+U: & When is Saving Private Ryan playing?\\
+S: & For what theater?\\
+U: & The Paramount theater.\\
+S: & Saving Private Ryan is not playing at the Paramount theater,\\
+   & but it's playing at the Madison theater at 3:00, 5:30, 8:00, and 10:30. 
+\end{tabular}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NLP and Intelligence (cont)}
+\begin{itemize}
+\item today's systems limited to narrowly defined domains
+\item couldn't ask above system for other information, e.g.:
+  \begin{itemize}
+  \item driving instructions
+  \item details of nearby restaurants
+  \end{itemize}
+\item to add such support we would have to:
+  \begin{itemize}
+  \item store the required information
+  \item incorporate suitable questions and answers into the system
+  \end{itemize}
+\item common-sense reasoning vs business logic
+\item need to make progress on natural linguistic interaction without
+  recourse to this unrestricted knowledge and reasoning capability
+\end{itemize}
+\end{frame}
+
+\subsection{Language and Symbol Processing}
+
+\begin{frame}
+\frametitle{Language and Symbol Processing}
+\begin{itemize}
+\item origin of the idea that natural language could be treated computationally: philosophy of language work in early 1900s, to reconstruct mathematical reasoning using logic
+\item language as a formal system
+\item three further developments:
+  \begin{enumerate}
+  \item formal language theory
+  \item symbolic logic
+  \item principle of compositionality
+  \end{enumerate}
+\item more recent developments:
+  \begin{enumerate}
+  \item data-intensive NLP
+  \item machine learning in NLP
+  \item evaluation-led methodologies
+  \end{enumerate}
+\item many interesting philosophical issues (see book)
+\item key: balancing act between symbolic and statistical approaches
+\end{itemize}
+\end{frame}
+
+\subsection{The Balancing Act}
+
+\begin{frame}
+\frametitle{Web as Corpus: Absolutely vs Definitely}
+{\small
+\begin{tabular}{l|llll}
+\textbf{Google hits}
+& \textbf{adore}
+& \textbf{love}
+& \textbf{like}
+& \textbf{prefer} \\ \hline
+absolutely  & 289,000 & 905,000 & 16,200  & 644 \\
+definitely  & 1,460   & 51,000  & 158,000 & 62,600 \\
+ratio       & 198/1   & 18/1    & 1/10    & 1/97
+\end{tabular}}
+\begin{itemize}
+\item useful information for statistical language models
+\item statistical evidence for binary-valued features in lexical items
+\end{itemize}
+\end{frame}
+
+\end{document}

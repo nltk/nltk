@@ -1,0 +1,424 @@
+.. Copyright (C) 2001-2011 NLTK Project
+.. For license information, see LICENSE.TXT
+
+=======
+Taggers
+=======
+
+Overview
+~~~~~~~~
+
+The ``nltk.tag`` module defines functions and classes for manipulating
+*tagged tokens*, which combine a basic token value with a tag.  *Tags*
+are case-sensitive strings that identify some property of a token,
+such as its part of speech.  Tagged tokens are encoded as tuples
+``(tag, token)``.  For example, the following tagged token combines
+the word ``'fly'`` with a noun part of speech tag (``'NN'``):
+
+    >>> tagged_tok = ('fly', 'NN')
+
+An off-the-shelf tagger is available.  It uses the Penn Treebank tagset:
+
+    >>> from nltk import pos_tag, word_tokenize
+    >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +NORMALIZE_WHITESPACE
+    [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
+    'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
+    ('.', '.')]
+
+String Representation for Tagged Tokens
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tagged tokens are often written using the form ``'fly/NN'``.  The
+`nltk.tag` module provides utility functions to convert between this
+string representation and the tuple representation:
+
+    >>> import nltk.tag
+    >>> print nltk.tag.tuple2str(tagged_tok)
+    fly/NN
+    >>> print nltk.tag.str2tuple('the/DT')
+    ('the', 'DT')
+
+To convert an entire sentence from the string format to the tuple
+format, we simply tokenize the sentence and then apply ``str2tuple``
+to each word:
+
+    >>> sent = 'The/DT cat/NN sat/VBD on/IN the/DT mat/NN ./.'
+    >>> [nltk.tag.str2tuple(w) for w in sent.split()] # doctest: +NORMALIZE_WHITESPACE
+    [('The', 'DT'), ('cat', 'NN'), ('sat', 'VBD'), ('on', 'IN'),
+     ('the', 'DT'), ('mat', 'NN'), ('.', '.')]
+
+Similarly, we can convert from a list of tagged tuples to a single
+string by combining ``tuple2str`` with the string ``join`` method:
+
+    >>> sent = [('The', 'DT'), ('cat', 'NN'), ('yawned', 'VBD')]
+    >>> ' '.join([nltk.tag.tuple2str(w) for w in sent])
+    'The/DT cat/NN yawned/VBD'
+
+Taggers
+~~~~~~~
+The ``nltk.tag`` module defines several *taggers*, which take a token
+list (typically a sentence), assign a tag to each token, and return
+the resulting list tagged of tagged tokens.  Most of the taggers
+defined in the ``nltk.tag`` module are built automatically based on a
+training corpus.  For example, the unigram tagger tags each word *w*
+by checking what the most frequent tag for *w* was in a training
+corpus:
+
+    >>> # Load the brown corpus.
+    >>> from nltk.corpus import brown
+    >>> brown_news_tagged = brown.tagged_sents(categories='news')
+    >>> brown_news_text = brown.sents(categories='news')
+    >>> tagger = nltk.UnigramTagger(brown_news_tagged[:500])
+    >>> tagger.tag(brown_news_text[501]) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [('Mitchell', 'NP'), ('decried', None), ('the', 'AT'), ('high', 'JJ'),
+    ('rate', 'NN'), ('of', 'IN'), ('unemployment', None), ...]
+
+Note that words that the tagger has not seen before, such as
+*decried*, receive a tag of ``None``.
+
+In the examples below, we'll look at developing automatic
+part-of-speech taggers based on the Brown Corpus.  Here are the
+training & test sets we'll use:
+
+    >>> brown_train = brown_news_tagged[100:]
+    >>> brown_test = brown_news_tagged[:100]
+    >>> test_sent = nltk.tag.untag(brown_test[0])
+
+(Note that these are on the small side, to make the tests run faster
+-- for real-world use, you would probably want to train on more data.)
+
+Default Tagger
+--------------
+The simplest tagger is the ``DefaultTagger``, which just applies the
+same tag to all tokens:
+
+    >>> default_tagger = nltk.DefaultTagger('XYZ')
+    >>> default_tagger.tag('This is a test'.split())
+    [('This', 'XYZ'), ('is', 'XYZ'), ('a', 'XYZ'), ('test', 'XYZ')]
+
+Since ``'NN'`` is the most frequent tag in the Brown corpus, we can
+use a tagger that assigns 'NN' to all words as a baseline.
+
+    >>> default_tagger = nltk.DefaultTagger('NN')
+    >>> default_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
+    [('The', 'NN'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'),
+    ('said', 'NN'), ('Friday', 'NN'), ('an', 'NN'), ('investigation', 'NN'), ('of', 'NN'),
+    ("Atlanta's", 'NN'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'),
+    ('produced', 'NN'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'),
+    ('that', 'NN'), ('any', 'NN'), ('irregularities', 'NN'), ('took', 'NN'),
+    ('place', 'NN'), ('.', 'NN')]
+
+Using this baseline, we achieve about a fairly low accuracy:
+
+    >>> print 'Accuracy: %4.1f%%' % (
+    ...     100.0 * default_tagger.evaluate(brown_test))
+    Accuracy: 14.6%
+    
+Regexp Tagger
+-------------
+The `RegexpTagger` class assigns tags to tokens by comparing their
+word strings to a series of regular expressions.  The following tagger
+uses word suffixes to make guesses about the correct Brown Corpus part
+of speech tag:
+
+    >>> regexp_tagger = nltk.RegexpTagger(
+    ...     [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+    ...      (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+    ...      (r'.*able$', 'JJ'),                # adjectives
+    ...      (r'.*ness$', 'NN'),                # nouns formed from adjectives
+    ...      (r'.*ly$', 'RB'),                  # adverbs
+    ...      (r'.*s$', 'NNS'),                  # plural nouns
+    ...      (r'.*ing$', 'VBG'),                # gerunds
+    ...      (r'.*ed$', 'VBD'),                 # past tense verbs
+    ...      (r'.*', 'NN')                      # nouns (default)
+    ... ])
+    >>> regexp_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
+    [('The', 'AT'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'),
+    ('said', 'NN'), ('Friday', 'NN'), ('an', 'AT'), ('investigation', 'NN'), ('of', 'NN'),
+    ("Atlanta's", 'NNS'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'),
+    ('produced', 'VBD'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'),
+    ('that', 'NN'), ('any', 'NN'), ('irregularities', 'NNS'), ('took', 'NN'),
+    ('place', 'NN'), ('.', 'NN')]
+
+This gives us a higher score than the default tagger, but accuracy is
+still fairly low:
+
+    >>> print 'Accuracy: %4.1f%%' % (
+    ...     100.0 * regexp_tagger.evaluate(brown_test))
+    Accuracy: 33.1%
+
+Unigram Tagger
+--------------
+As mentioned above, the `UnigramTagger` class finds the most likely
+tag for each word in a training corpus, and then uses that information
+to assign tags to new tokens.
+
+    >>> unigram_tagger = nltk.UnigramTagger(brown_train)
+    >>> unigram_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
+    [('The', 'AT'), ('Fulton', None), ('County', 'NN-TL'), ('Grand', 'JJ-TL'),
+    ('Jury', 'NN-TL'), ('said', 'VBD'), ('Friday', 'NR'), ('an', 'AT'),
+    ('investigation', 'NN'), ('of', 'IN'), ("Atlanta's", 'NP$'), ('recent', 'JJ'),
+    ('primary', 'NN'), ('election', 'NN'), ('produced', 'VBD'), ('``', '``'),
+    ('no', 'AT'), ('evidence', 'NN'), ("''", "''"), ('that', 'CS'), ('any', 'DTI'),
+    ('irregularities', None), ('took', 'VBD'), ('place', 'NN'), ('.', '.')]
+
+This gives us a significantly higher accuracy score than the default
+tagger or the regexp tagger:
+
+    >>> print 'Accuracy: %4.1f%%' % (
+    ...     100.0 * unigram_tagger.evaluate(brown_test))
+    Accuracy: 85.4%
+
+As was mentioned above, the unigram tagger will assign a tag of
+``None`` to any words that it never saw in the training data.  We can
+avoid this problem by providing the unigram tagger with a *backoff
+tagger*, which will be used whenever the unigram tagger is unable to
+choose a tag:
+
+    >>> unigram_tagger_2 = nltk.UnigramTagger(brown_train, backoff=regexp_tagger)
+    >>> print 'Accuracy: %4.1f%%' % (
+    ...     100.0 * unigram_tagger_2.evaluate(brown_test))
+    Accuracy: 88.0%
+
+Using a backoff tagger has another advantage, as well -- it allows us
+to build a more compact unigram tagger, because the unigram tagger
+doesn't need to explicitly store the tags for words that the backoff
+tagger would get right anyway.  We can see this by using the `size()`
+method, which reports the number of words that a unigram tagger has
+stored the most likely tag for.
+
+    >>> print unigram_tagger.size()
+    14262
+    >>> print unigram_tagger_2.size()
+    8722
+
+Bigram Tagger
+-------------
+The bigram tagger is similar to the unigram tagger, except that it
+finds the most likely tag for each word, *given the preceding tag*.
+(It is called a "bigram" tagger because it uses two pieces of
+information -- the current word, and the previous tag.)  When
+training, it can look up the preceding tag directly.  When run on new
+data, it works through the sentence from left to right, and uses the
+tag that it just generated for the preceding word.
+
+    >>> bigram_tagger = nltk.BigramTagger(brown_train, backoff=unigram_tagger_2)
+    >>> print bigram_tagger.size()
+    3394
+    >>> print 'Accuracy: %4.1f%%' % (
+    ...     100.0 * bigram_tagger.evaluate(brown_test))
+    Accuracy: 89.4%
+
+Trigram Tagger & N-Gram Tagger
+------------------------------
+Similarly, the trigram tagger finds the most likely tag for a word,
+*given the preceding two tags*; and the n-gram tagger finds the most
+likely tag for a word, *given the preceding n-1 tags*.  However, these
+higher-order taggers are only likely to improve performance if there
+is a large amount of training data available; otherwise, the sequences
+that they consider do not occur often enough to gather reliable
+statistics.
+
+    >>> trigram_tagger = nltk.TrigramTagger(brown_train, backoff=bigram_tagger)
+    >>> print trigram_tagger.size()
+    1493
+    >>> print 'Accuracy: %4.1f%%' % (
+    ...     100.0 * trigram_tagger.evaluate(brown_test))
+    Accuracy: 88.8%
+
+Brill Tagger
+------------
+The Brill Tagger starts by running an initial tagger, and then
+improves the tagging by applying a list of transformation rules.
+These transformation rules are automatically learned from the training
+corpus, based on one or more "rule templates."
+
+    >>> from nltk.tag.brill import *
+    >>> templates = [
+    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,1)),
+    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (2,2)),
+    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,2)),
+    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,3)),
+    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,1)),
+    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (2,2)),
+    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,2)),
+    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,3)),
+    ...     ProximateTokensTemplate(ProximateTagsRule, (-1, -1), (1,1)),
+    ...     ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
+    ...     ]
+    >>> trainer = FastBrillTaggerTrainer(initial_tagger=unigram_tagger_2,
+    ...                                  templates=templates, trace=3,
+    ...                                  deterministic=True)
+    >>> brill_tagger = trainer.train(brown_train, max_rules=10)  # doctest: +NORMALIZE_WHITESPACE
+    Training Brill tagger on 4523 sentences...
+    Finding initial useful rules...
+        Found 75359 useful rules.
+    <BLANKLINE>
+               B      |     
+       S   F   r   O  |        Score = Fixed - Broken
+       c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
+       o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
+       r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
+       e   d   n   r  |  e
+    ------------------+-------------------------------------------------------
+     354 354   0   3  | TO -> IN if the tag of the following word is 'AT'
+     111 173  62   3  | NN -> VB if the tag of the preceding word is 'TO'
+     110 110   0   4  | TO -> IN if the tag of the following word is 'NP'
+      83 157  74   4  | NP -> NP-TL if the tag of the following word is
+                      |   'NN-TL'
+      73  77   4   0  | VBD -> VBN if the tag of words i-2...i-1 is 'BEDZ'
+      71 116  45   3  | TO -> IN if the tag of words i+1...i+2 is 'NNS'
+      65  65   0   3  | NN -> VB if the tag of the preceding word is 'MD'
+      63  63   0   0  | VBD -> VBN if the tag of words i-3...i-1 is 'HVZ'
+      59  62   3   2  | CS -> QL if the text of words i+1...i+3 is 'as'
+      55  57   2   0  | VBD -> VBN if the tag of words i-3...i-1 is 'HVD'
+    >>> print 'Accuracy: %4.1f%%' % (
+    ...     100.0 * brill_tagger.evaluate(brown_test))
+    Accuracy: 89.1%
+
+HMM Tagger
+----------
+The HMM tagger uses a hidden markov model to find the most likely tag
+sequence for each sentence.  (Note: this requires numpy.)
+
+    >>> from nltk.tag.hmm import *
+
+Demo code lifted more or less directly from the HMM class.
+
+    >>> symbols = ['up', 'down', 'unchanged']
+    >>> states = ['bull', 'bear', 'static']
+
+    >>> def probdist(values, samples):
+    ...     d = {}
+    ...     for value, item in zip(values, samples):
+    ...         d[item] = value
+    ...     return DictionaryProbDist(d)
+
+    >>> def conditionalprobdist(array, conditions, samples):
+    ...     d = {}
+    ...     for values, condition in zip(array, conditions):
+    ...         d[condition] = probdist(values, samples)
+    ...     return DictionaryConditionalProbDist(d)
+
+    >>> A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], float64)
+    >>> A = conditionalprobdist(A, states, states)
+
+    >>> B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], float64)
+    >>> B = conditionalprobdist(B, states, symbols)
+
+    >>> pi = array([0.5, 0.2, 0.3], float64)
+    >>> pi = probdist(pi, states)
+
+    >>> model = HiddenMarkovModelTagger(symbols=symbols, states=states,
+    ...                                 transitions=A, outputs=B, priors=pi)
+
+    >>> test = ['up', 'down', 'up']
+    >>> sequence = [(t, None) for t in test]
+
+    >>> print '%.3f' % (model.probability(sequence))
+    0.051
+
+
+Check the test sequence by hand -- calculate the joint probability for
+each possible state sequence, and verify that they're equal to what
+the model gives; then verify that their total is equal to what the
+model gives for the probability of the sequence w/ no states specified.
+
+    >>> seqs = [zip(test, [a,b,c]) for a in states
+    ...         for b in states for c in states]
+    >>> total = 0
+    >>> for seq in seqs:
+    ...     # Calculate the probability by hand:
+    ...     expect = pi.prob(seq[0][1])
+    ...     for (o,s) in seq:
+    ...         expect *= B[s].prob(o)
+    ...     for i in range(1, len(seq)):
+    ...         expect *= A[seq[i-1][1]].prob(seq[i][1])
+    ...     # Check that it matches the model:
+    ...     assert abs(expect-model.probability(seq)) < 1e-10
+    ...     total += model.probability(seq)
+    >>> assert abs(total-model.probability(sequence)) < 1e-10
+
+Find the most likely set of tags for the test sequence.
+
+    >>> model.tag(test)
+    [('up', 'bull'), ('down', 'bear'), ('up', 'bull')]
+
+Find some entropy values.  These are all in base 2 (i.e., bits).
+
+    >>> print '%.3f' % (model.entropy(sequence))
+    3.401
+
+    >>> print '%.3f' % (model._exhaustive_entropy(sequence))
+    3.401
+
+    >>> model.point_entropy(sequence)
+    array([ 0.99392864,  1.54508687,  0.97119001])
+
+    >>> model._exhaustive_point_entropy(sequence)
+    array([ 0.99392864,  1.54508687,  0.97119001])
+
+
+Regression Tests
+~~~~~~~~~~~~~~~~
+
+TaggerI Interface
+-----------------
+The `TaggerI` interface defines two methods: `tag` and `batch_tag`:
+
+    >>> nltk.usage(nltk.TaggerI)
+    TaggerI supports the following operations:
+      - self.batch_tag(sentences)
+      - self.evaluate(gold)
+      - self.tag(tokens)
+
+The `TaggerI` interface should not be directly instantiated:
+
+    >>> nltk.TaggerI().tag(test_sent)
+    Traceback (most recent call last):
+      . . .
+    NotImplementedError
+
+Sequential Taggers
+------------------
+
+Add tests for:
+  - make sure backoff is being done correctly.
+  - make sure ngram taggers don't use previous sentences for context.
+  - make sure ngram taggers see 'beginning of the sentence' as a
+    unique context
+  - make sure regexp tagger's regexps are tried in order
+  - train on some simple examples, & make sure that the size & the
+    generated models are correct.
+  - make sure cutoff works as intended
+  - make sure that ngram models only exclude contexts covered by the
+    backoff tagger if the backoff tagger gets that context correct at
+    *all* locations.
+
+Brill Tagger
+------------
+  - test that fast & normal trainers get identical results when
+    deterministic=True is used.
+  - check on some simple examples to make sure they're doing the
+    right thing.
+
+Make sure that get_neighborhoods is implemented correctly -- in
+particular, given *index*, it should return the indices *i* such that
+applicable_rules(token, i, ...) depends on the value of the
+*index*\ th token.  There used to be a bug where this was swapped --
+i.e., it calculated the values of *i* such that
+applicable_rules(token, index, ...) depended on *i*.
+
+    >>> t = ProximateTokensTemplate(ProximateWordsRule, (2,3))
+    >>> for i in range(10):
+    ...     print sorted(t.get_neighborhood('abcdefghijkl', i))
+    [0]
+    [1]
+    [0, 2]
+    [0, 1, 3]
+    [1, 2, 4]
+    [2, 3, 5]
+    [3, 4, 6]
+    [4, 5, 7]
+    [5, 6, 8]
+    [6, 7, 9]
+

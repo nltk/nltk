@@ -1,0 +1,195 @@
+.. Copyright (C) 2001-2011 NLTK Project
+.. For license information, see LICENSE.TXT
+
+=======
+Metrics
+=======
+
+The `nltk.metrics` package provides a variety of *evaluation measures*
+which can be used for a wide variety of NLP tasks.
+
+   >>> from nltk.metrics import *
+
+------------------
+Standard IR Scores
+------------------
+
+We can use standard scores from information retrieval to test the
+performance of taggers, chunkers, etc.
+
+    >>> reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
+    >>> test    = 'DET VB VB DET NN NN NN IN DET NN'.split()
+    >>> accuracy(reference, test)
+    0.80000000000000004
+    
+
+The following measures apply to sets:
+
+    >>> reference_set = set(reference)
+    >>> test_set = set(test)
+    >>> precision(reference_set, test_set)
+    1.0
+    >>> recall(reference_set, test_set)
+    0.80000000000000004
+    >>> f_measure(reference_set, test_set)
+    0.88888888888888884
+
+Measuring the likelihood of the data, given probability distributions:
+
+    >>> from nltk import FreqDist, MLEProbDist
+    >>> pdist1 = MLEProbDist(FreqDist("aldjfalskfjaldsf"))
+    >>> pdist2 = MLEProbDist(FreqDist("aldjfalssjjlldss"))
+    >>> log_likelihood(['a', 'd'], [pdist1, pdist2])
+    -2.707518749639422
+
+
+----------------
+Distance Metrics
+----------------
+
+String edit distance (Levenshtein):
+
+    >>> edit_distance("rain", "shine")
+    3
+
+Other distance measures:
+
+    >>> s1 = set([1,2,3,4])
+    >>> s2 = set([3,4,5])
+    >>> binary_distance(s1, s2)
+    1.0
+    >>> jaccard_distance(s1, s2)
+    0.59999999999999998
+    >>> masi_distance(s1, s2)
+    0.5
+
+----------------------
+Miscellaneous Measures
+----------------------
+
+Rank Correlation works with two dictionaries mapping keys to ranks.  The dictionaries should have the same set of keys.
+
+    >>> spearman_correlation({'e':1, 't':2, 'a':3}, {'e':1, 'a':2, 't':3})
+    0.5
+
+Windowdiff uses a sliding window in comparing two segmentations of the same input (e.g. tokenizations, chunkings).
+Segmentations are represented using strings of zeros and ones.
+
+    >>> s1 = "00000010000000001000000"
+    >>> s2 = "00000001000000010000000"
+    >>> s3 = "00010000000000000001000"
+    >>> windowdiff(s1, s1, 3)
+    0
+    >>> windowdiff(s1, s2, 3)
+    4
+    >>> windowdiff(s2, s3, 3)
+    16
+
+----------------
+Confusion Matrix
+----------------
+
+    >>> reference = 'This is the reference data.  Testing 123.  aoaeoeoe'
+    >>> test =      'Thos iz_the rifirenci data.  Testeng 123.  aoaeoeoe'
+    >>> print ConfusionMatrix(reference, test)
+      |   . 1 2 3 T _ a c d e f g h i n o r s t z |
+    --+-------------------------------------------+
+      |<8>. . . . . 1 . . . . . . . . . . . . . . |
+    . | .<2>. . . . . . . . . . . . . . . . . . . |
+    1 | . .<1>. . . . . . . . . . . . . . . . . . |
+    2 | . . .<1>. . . . . . . . . . . . . . . . . |
+    3 | . . . .<1>. . . . . . . . . . . . . . . . |
+    T | . . . . .<2>. . . . . . . . . . . . . . . |
+    _ | . . . . . .<.>. . . . . . . . . . . . . . |
+    a | . . . . . . .<4>. . . . . . . . . . . . . |
+    c | . . . . . . . .<1>. . . . . . . . . . . . |
+    d | . . . . . . . . .<1>. . . . . . . . . . . |
+    e | . . . . . . . . . .<6>. . . 3 . . . . . . |
+    f | . . . . . . . . . . .<1>. . . . . . . . . |
+    g | . . . . . . . . . . . .<1>. . . . . . . . |
+    h | . . . . . . . . . . . . .<2>. . . . . . . |
+    i | . . . . . . . . . . 1 . . .<1>. 1 . . . . |
+    n | . . . . . . . . . . . . . . .<2>. . . . . |
+    o | . . . . . . . . . . . . . . . .<3>. . . . |
+    r | . . . . . . . . . . . . . . . . .<2>. . . |
+    s | . . . . . . . . . . . . . . . . . .<2>. 1 |
+    t | . . . . . . . . . . . . . . . . . . .<3>. |
+    z | . . . . . . . . . . . . . . . . . . . .<.>|
+    --+-------------------------------------------+
+    (row = reference; col = test)
+    <BLANKLINE>
+    
+    >>> cm = ConfusionMatrix(reference, test)
+    >>> print cm.pp(sort_by_count=True)
+      |   e a i o s t . T h n r 1 2 3 c d f g _ z |
+    --+-------------------------------------------+
+      |<8>. . . . . . . . . . . . . . . . . . 1 . |
+    e | .<6>. 3 . . . . . . . . . . . . . . . . . |
+    a | . .<4>. . . . . . . . . . . . . . . . . . |
+    i | . 1 .<1>1 . . . . . . . . . . . . . . . . |
+    o | . . . .<3>. . . . . . . . . . . . . . . . |
+    s | . . . . .<2>. . . . . . . . . . . . . . 1 |
+    t | . . . . . .<3>. . . . . . . . . . . . . . |
+    . | . . . . . . .<2>. . . . . . . . . . . . . |
+    T | . . . . . . . .<2>. . . . . . . . . . . . |
+    h | . . . . . . . . .<2>. . . . . . . . . . . |
+    n | . . . . . . . . . .<2>. . . . . . . . . . |
+    r | . . . . . . . . . . .<2>. . . . . . . . . |
+    1 | . . . . . . . . . . . .<1>. . . . . . . . |
+    2 | . . . . . . . . . . . . .<1>. . . . . . . |
+    3 | . . . . . . . . . . . . . .<1>. . . . . . |
+    c | . . . . . . . . . . . . . . .<1>. . . . . |
+    d | . . . . . . . . . . . . . . . .<1>. . . . |
+    f | . . . . . . . . . . . . . . . . .<1>. . . |
+    g | . . . . . . . . . . . . . . . . . .<1>. . |
+    _ | . . . . . . . . . . . . . . . . . . .<.>. |
+    z | . . . . . . . . . . . . . . . . . . . .<.>|
+    --+-------------------------------------------+
+    (row = reference; col = test)
+    <BLANKLINE>
+
+    >>> print cm.pp(sort_by_count=True, truncate=10)
+      |   e a i o s t . T h |
+    --+---------------------+
+      |<8>. . . . . . . . . |
+    e | .<6>. 3 . . . . . . |
+    a | . .<4>. . . . . . . |
+    i | . 1 .<1>1 . . . . . |
+    o | . . . .<3>. . . . . |
+    s | . . . . .<2>. . . . |
+    t | . . . . . .<3>. . . |
+    . | . . . . . . .<2>. . |
+    T | . . . . . . . .<2>. |
+    h | . . . . . . . . .<2>|
+    --+---------------------+
+    (row = reference; col = test)
+    <BLANKLINE>
+
+    >>> print cm.pp(sort_by_count=True, truncate=10, values_in_chart=False)
+       |                   1 |
+       | 1 2 3 4 5 6 7 8 9 0 |
+    ---+---------------------+
+     1 |<8>. . . . . . . . . |
+     2 | .<6>. 3 . . . . . . |
+     3 | . .<4>. . . . . . . |
+     4 | . 1 .<1>1 . . . . . |
+     5 | . . . .<3>. . . . . |
+     6 | . . . . .<2>. . . . |
+     7 | . . . . . .<3>. . . |
+     8 | . . . . . . .<2>. . |
+     9 | . . . . . . . .<2>. |
+    10 | . . . . . . . . .<2>|
+    ---+---------------------+
+    (row = reference; col = test)
+    Value key:
+         1:  
+         2: e
+         3: a
+         4: i
+         5: o
+         6: s
+         7: t
+         8: .
+         9: T
+        10: h
+    <BLANKLINE>

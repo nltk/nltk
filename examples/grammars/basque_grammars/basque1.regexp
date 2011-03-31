@@ -1,0 +1,1 @@
+NP: {<IZE.*>+<ADJ.*>*<DET.*>*} """ # adjetibo edo determinatzaileei loturiko izenak nahiz izen segidak topatzen ditu

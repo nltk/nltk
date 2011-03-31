@@ -1,0 +1,1222 @@
+Regarding an Example in bird05-NLTK-intro.pdf
+By: shashank (shank05) - 2008-07-01 01:06
+Hi all, 
+ 
+I am shashank, I am a beginner trying to learn about nltk. I have read bird's paper on NLTK tutorials and intro. The paper was bird05-NLTK-intro.pdf. I have come across an example in the paper that was 
+Input: 
+ 
+The incident occurred <time>around 5.30pm</time> when a man walked into 
+<company>William Hill bookkeepers</company> on <location>Ware Road</location>, 
+and threatened a member of staff with a small black handgun. 
+ 
+Output: 
+Crime event 
+Time: around 5.30pm 
+Location: William Hill bookkeepers on Ware Road 
+Suspect: man 
+Weapon: small black handgun. 
+Can anyone please let me know which tools are used to get this out from the input.  
+I am interested in finding out whether we can input a raw text and get an out something similar to the above example. 
+I appreciate any replies :).
+
+
+      RE: Regarding an Example in bird05-NLTK-intro
+      By: shashank (shank05) - 2008-07-01 01:17
+      Me again, 
+      Some more info, I am going through the guides of nltk. I have through tagging, tokenizer and stemming. 
+       
+      I am eager to learn more about nltk. 
+      I am interested in finding out whether we can input a raw text and get an output something similar to the above example.  
+      I appreciate any replies :). 
+      Typo in previous message. 
+
+
+V-> VP.NP or VP->V.NP
+By: Ashwin Ittoo (ashwin_ittoo) - 2008-05-02 19:31
+Hi 
+I was reading the nltk book, section 9.3 (pg 232) 
+I am confused about the notations for incomplete constituents in Chart 9.4 
+should it be: 
+1) V -> VP . NP or  
+2) VP-> V . NP 
+ 
+In my opinion, it should be 2) since VP starts with V ("likes"), but an NP has yet to be found (in order to complete the VP). 
+ 
+Please advise. 
+Also, is there an errata for the book 
+ 
+thanks 
+ashwin 
+
+
+
+      RE: V-> VP.NP or VP->V.NP
+      By: Ashwin Ittoo (ashwin_ittoo) - 2008-05-02 19:46
+      (i'm replying to myself!) 
+      but i THINK i understood why V-> VP.NP is correct (as it is in the book) 
+       
+      so, the edge 1-2 is a V, and we know (from prev knowledge that V indicates the beginning of a VP),  
+      Now we are processing VP -> V NP. So, the consituent begins with VP (VP to the left of the dot), but we still need to find NP (placed at the rough of the dot) 
+       
+      Still, I'm unsure whether i'm right/wrong. But it's a bit clearer now. Comments are appreciated
+
+            RE: V-> VP.NP or VP->V.NP
+            By: Edward Loper (edloperProject Admin) - 2008-05-06 01:40
+            This is an error in the figure -- thanks for pointing it out. The figure should say "VP -> V * NP"; it should *not* say "V -> VP * NP". I'll get this fixed as soon as I get a chance. 
+             
+            There's a similar error in table 9.4a and 9.4b. The text gets it right, though. 
+             
+            Sorry for the confusion! 
+             
+            As for errata -- we currently fix errors as we find them. The closest thing to errata would therefore be the subversion commit log. For the advanced parsing chapter, that would be: 
+             
+            http://nltk.svn.sourceforge.net/viewvc/nltk/trunk/nltk/doc/en/advanced-parsing.txt?view=log 
+             
+            -Edward 
+
+
+                  RE: V-> VP.NP or VP->V.NP
+                  By: Ashwin Ittoo (ashwin_ittoo) - 2008-05-06 01:42
+                  Thanks for the clarification..it makes more sense now! 
+                   
+                  -ashwin
+
+Accuracy with Penn Tree bank
+By: Ashwin Ittoo (ashwin_ittoo) - 2008-05-01 20:14
+Hi, 
+I was doing some testing on tagging using to compare the Penn Treebank and the Brown corpora 
+It seems that the when I used Penn Tree bank, I'm unable to tag simple nouns like "cat". It is tagged as "none". 
+ 
+--> Output: [('Mary', 'NNP'), ('saw', 'VBD'), ('the', 'DT'), ('cat', None), ('sit', None), ( 
+'on', 'IN'), ('the', 'DT'), ('mat', None), ('of', 'IN'), ('John', 'NNP')] 
+ 
+Maybe I'm doing something wrong below? Can someone please help on this? 
+#all tagged sentences in treebank tagged 
+sentTest = nltk.corpus.treebank_chunk.tagged_sents() 
+ 
+#print len(sentTest) 
+unigram_tagger_2 = nltk.UnigramTagger(sentTest) 
+ 
+#create bigram tagger 
+bigram_tagger = nltk.BigramTagger(sentTest, backoff=unigram_tagger_2) 
+ 
+unTaggedStr = "Mary saw the cat sit on the mat of John" 
+toks = unTaggedStr.split() 
+ 
+taggedToks = bigram_tagger.tag(toks) 
+print taggedToks
+
+
+      RE: Accuracy with Penn Tree bank
+      By: Steven Bird (stevenbirdProject Admin & Donor) - 2008-05-01 20:24
+      I guess the word "cat" did not occur in the training data. You should make the unigram tagger back off to a default tagger that tags everything as a noun. Please see the NLTK book chapter on tagging (section 4.4). 
+       
+
+
+      RE: Accuracy with Penn Tree bank
+      By: Ashwin Ittoo (ashwin_ittoo) - 2008-05-01 20:31
+      thanks Steven, yes that's i was also thinking about defaulting all"unknown" types to "nouns", unless NLTK has some other smarter ways?
+
+How to handle html tags and semantics?
+By: Sebastian Wain (swain) - 2007-12-20 07:40
+We are analyzing a set of web sites using NLTK. The problem we have is that after stripping html, each page doesn't make any sense for being analyzed and tagged with an n-gram, chunker, hmm, etc. The only method we found that can automatically extract some information from web sites is using the bag of words technique. 
+ 
+How can we handle the html tags together with semantic? It obviously not the same as parsing a book. 
+ 
+For example if we have this part of a web page: 
+ 
+<h2>some title</h2> 
+<ul> 
+<li>Point one</li> 
+<li>Point two</li> 
+<li>Point three</li> 
+</ul> 
+ 
+It requires to be handled like: 
+"some title: 
+ 
+Point one; 
+Point two; 
+Point three; 
+ 
+We know this is a hard and endless task but we want to know what is the state of art. 
+ 
+ 
+Thanks, 
+Sebastian 
+ 
+
+
+
+Parsing example broken? Probable bug
+By: Darren G. (sesshomurai) - 2007-03-27 05:51
+Hi, 
+I am trying to get the RecursiveDescent parser to work and cannot. I run the example from figure 7.1 page 178 in the book but it produces empty results. Then I try to load the same grammar from a file using GrammarFile and it gives error when I try to get the parse results. 
+ 
+Any tips on how to get decent PoS tagging to work much appreciated (e.g. the kimmo/english.cfg?) 
+ 
+Darren 
+ 
+>>> for p in rd_parser.get_parse_list(sent): 
+... print p 
+... 
+Traceback (most recent call last): 
+File "<stdin>", line 1, in <module> 
+File "/usr/local/lib/python2.5/site-packages/nltk_lite/parse/rd.py", line 74, in get_parse_list 
+start = self._grammar.start().symbol() 
+TypeError: 'GrammarCategory' object is not callable 
+ 
+ 
+---- Entire trace 
+ 
+>>> from nltk_lite import parse 
+>>> from nltk_lite import tokenize 
+>>> from nltk_lite.parse import * 
+>>> g = GrammarFile.read_file('/home/darren/nltk/simple.cfg') 
+>>> sent = list(tokenize.whitespace("Mary saw the dog")) 
+>>> rd_parser=parse.RecursiveDescent(g) 
+>>> rd_parser 
+<nltk_lite.parse.rd.RecursiveDescent object at 0xb799284c> 
+>>> for p in rd_parser.get_parse_list(sent): 
+... print p 
+... 
+Traceback (most recent call last): 
+File "<stdin>", line 1, in <module> 
+File "/usr/local/lib/python2.5/site-packages/nltk_lite/parse/rd.py", line 74, in get_parse_list 
+start = self._grammar.start().symbol() 
+TypeError: 'GrammarCategory' object is not callable 
+>>> 
+
+
+
+      RE: Parsing example broken? Probable bug
+      By: Steven Bird (stevenbirdProject Admin & Donor) - 2007-05-24 14:43
+      You should change: 
+       
+      g = GrammarFile.read_file('/home/darren/nltk/simple.cfg') 
+       
+      to: 
+       
+      g = GrammarFile.read_file('/home/darren/nltk/simple.cfg').grammar() 
+
+
+More bugs?
+By: Darren G. (sesshomurai) - 2007-03-29 23:53
+Hi, 
+Numerous examples from the book do not work or contain serious typos preventing them from working. One notable one is the example from figure 8.38 and produces this: 
+ 
+>>> from nltk_lite.parse import * 
+>>> from nltk_lite.parse import pcfg 
+>>> grammar = pcfg.parse_grammar(''' 
+... S -> NP VP [1.0] 
+... ''') 
+Traceback (most recent call last): 
+File "<stdin>", line 3, in <module> 
+File "/usr/local/lib/python2.5/site-packages/nltk_lite/parse/cfg.py", line 410, in parse_grammar 
+raise ValueError, 'Unable to parse line %s' % linenum 
+ValueError: Unable to parse line 1 
+ 
+Oddly, I am explicitly using the pcfg module, but the PY file throwing the error is the cfg.py file. Clearly the wrong file is being accessed somewhere. 
+ 
+I hope the next release can support the examples in the book because the technology is very interesting.
+
+
+      RE: More bugs?
+      By: Steven Bird (stevenbirdProject Admin & Donor) - 2007-05-24 14:34
+      This bug was resolved in version 0.7.5. 
+       
+      pcfg.parse_grammar() has been renamed pcfg.parse_pcfg() 
+      cfg.parse_grammar() has been renamed cfg.parse_cfg() 
+       
+      Programs that import everything from the parse package 
+      won't have a problem with the collision on the name parse_grammar. 
+
+
+Problems utilizing NLTK corpora
+By: acoleman616 (acoleman616) - 2007-03-14 06:50
+Hello. 
+ 
+When I try to run the code below from Chapter 3, I get the error below. Any ideas are greatly appreciated. It looks like it's just referencing the wrong directory, but I don't know how to change that. Thanks. 
+ 
+>>> from nltk_lite.corpora import gutenberg 
+>>> gutenberg.items 
+['austen-emma', 'austen-persuasion', 'austen-sense', 'bible-kjv', 'blake-poems', 'blake-songs', 'chesterton-ball', 'chesterton-brown', 'chesterton-thursday', 'milton-paradise', 'shakespeare-caesar', 'shakespeare-hamlet', 'shakespeare-macbeth', 'whitman-leaves'] 
+>>> count = 0 
+>>> for word in gutenberg.raw('whitman-leaves'): 
+count += 1 
+ 
+ 
+ 
+Traceback (most recent call last): 
+File "<pyshell#5>", line 1, in <module> 
+for word in gutenberg.raw('whitman-leaves'): 
+File "E:\Python25\Lib\site-packages\nltk_lite\corpora\gutenberg.py", line 69, in raw 
+f = open(path) 
+IOError: [Errno 2] No such file or directory: 'E:\\Python25\\nltk_lite\\gutenberg\\whitman-leaves.txt' 
+
+
+
+      RE: Problems utilizing NLTK corpora
+      By: Leonel (lfdea) - 2007-03-14 15:36
+      Hi! 
+      I had the same problem a few weeks ago, but I fixed it, by just putting the Gutenberg corpora files in the directory required by the script gutenberg.py, that is (in my installation of NTLK_Lite on Windows XP): 
+       
+      C:\Python25\nltk_lite\gutenberg 
+       
+      In your installation, I think you must change C to E. 
+       
+      I just tried again the code you had problems with and it worked fine, with the following output: 
+       
+      >>> count 
+      154873 
+       
+       
+      Best, 
+      Leonel
+
+NLTK vector space and standard boolean model?
+By: Joshua Wojnas (josh_eeg) - 2007-02-05 09:00
+NLTK vector space and standard boolean model? Hi, I am a student and have a reserch class I was wondering if I leave uncompleted servays blank and completed survays as rows in a database or spread sheet is NLTK my best choice for searching based on some of the tests to rate replys like a search engine rates sites? 
+ 
+josh
+
+
+WordNet Installation on Mac OS X
+By: Jon Boiser (jboiser) - 2006-12-04 14:37
+Hi, 
+ 
+I'm having trouble getting WordNet on my machine. Here's what I've done so far. 
+ 
+1. I compiled WordNet using "make SrcWorld" (using the default, solaris, as my platform in Makefile). I had to change the install directory to /users/jon because I don't have the privileges to go to /usr/local (how do I gain these privileges anyway?) 
+ 
+2. I tried using WordNet in the python shell, but that didn't work. So I looked at wordnet.py and changed the WNHOME variable to /users/jon/WordNet-2.0. Still didn't work. 
+ 
+What do I need to do? And could somebody please put more detailed instructions on the webpage? 
+ 
+Thanks, 
+Jon
+
+
+Trigram tagger performance
+By: morhook (morhook) - 2006-11-15 10:20
+I am combining taggers. If I put a Trigram tagger with a backoff of a Bigram tagger, I don't get a better performance.  
+ 
+According to http://nltk.sourceforge.net/lite/doc/en/tag.html 4.5.3 shouldn't I get a better performance with the Trigram tagger ? 
+ 
+<code> 
+from nltk_lite import tag 
+from nltk_lite.corpora import brown 
+from itertools import islice 
+ 
+t0=tag.Default('nn') 
+t1=tag.Unigram(backoff=t0) 
+t2=tag.Bigram(backoff=t1) 
+t3=tag.Ngram(3, backoff=t2) 
+ 
+train_sents=list(brown.tagged('a')) 
+unseen_sents=list(brown.tagged('b')) 
+ 
+t1.train(train_sents) 
+t2.train(train_sents) 
+t3.train(train_sents) 
+ 
+accuracy0 = tag.accuracy(t0, unseen_sents) # section b: press-editorial 
+accuracy1 = tag.accuracy(t1, unseen_sents) 
+accuracy2 = tag.accuracy(t2, unseen_sents) 
+accuracy3 = tag.accuracy(t3, unseen_sents) 
+ 
+print 'Default Accuracy = %4.1f%%' % (100 * accuracy0) 
+#Default Accuracy = 12.5% 
+print 'Unigram Accuracy = %4.1f%%' % (100 * accuracy1) 
+#Unigram Accuracy = 81.0% 
+print 'Bigram Accuracy = %4.1f%%' % (100 * accuracy2) 
+#Bigram Accuracy = 81.9% 
+print 'Trigram Accuracy = %4.1f%%' % (100 * accuracy3) 
+#Trigram Accuracy = 81.2% 
+</code> 
+ 
+
+
+
+Chunk Parser Question
+By: Lezan (lezan) - 2006-11-14 10:03
+Hello, 
+I've sent a few emails out regarding this question so apologies if anyone is receiving this again. 
+ 
+I have a question regarding the use of features in NLTK. 
+I am wondering whether it is possible to extract tags from a Tree after 
+is it parsed. 
+ 
+To explain my point I will use a simple natural language example: 
+ 
+For example you could have a rule for creating a NounPhrase and it takes 
+a sequence of determiners, adjectives and nouns 
+ 
+rule =ChunkRule('<at> <jjt|jj>* <nn|nns>+', '') 
+ 
+ 
+So using that how would you go about creating another rule to find links 
+between 2 noun phrases based on a certain feature. For example you want 
+this new rule to return a match if it has 2 nounphrases that have a 
+plural noun <nns> or have the same word (i.e the TEXT of the nns tag) 
+ 
+so how would you go about doing that? 
+I've tried things like: 
+ 
+rule = ChunkRule('<NP[nns]><NP[nns]>*', '') 
+ 
+But they don't return a result, the question practically is how do you 
+return a node or Tag from a tree in regular expressions. 
+ 
+Hope it makes sense, I've been trying to find an answer to this question 
+for about a few days now and I would be really grateful for your help. 
+ 
+ 
+Regards
+
+
+fst package missing?
+By: jevergrl (jevergrl) - 2006-11-07 10:49
+I can't seem to find the fst package in 0.6.6 or 0.7a1. Are they really not there? I've looked in the source distribution and on my own windows machine and the package doesn't seem to be present. It looks like it is present in the SVN repository. Any ideas?
+
+
+tutorial error
+By: otrack (otrack50) - 2006-10-13 07:13
+Hi, I am new to NLTK. When I tried out the example in chapter 3, I got the following errors. It looks like the last path is wrong. But I can't figure out where to correct the path. Please help. Thanks. 
+ 
+IDLE 1.2  
+>>> from nltk_lite.stem import porter 
+>>> porter.demo() 
+ 
+Traceback (most recent call last): 
+File "<pyshell#1>", line 1, in <module> 
+porter.demo() 
+File "C:\Python25\Lib\site-packages\nltk_lite\stem\porter.py", line 584, in demo 
+for sent in treebank.raw(): 
+File "C:\Python25\Lib\site-packages\nltk_lite\corpora\treebank.py", line 130, in raw 
+f = open(path).read() 
+IOError: [Errno 2] No such file or directory: 'C:\\Python25\\nltk_lite\\treebank\\raw' 
+>>>
+
+
+      RE: tutorial error
+      By: otrack (otrack50) - 2006-10-14 00:43
+      Never mind. I forgot to install the corpora.zip. Thanks.
+
+HMM problems
+By: Orestis Markou (orestis82) - 2006-10-01 03:25
+Hello, I have subscribed in the nltk-devel mailing list, but it seems I can't post there, my mail doesn't show up. 
+ 
+Anyway, here is the problem: 
+ 
+I seem to have some trouble getting the HMM module to produce correct results. 
+ 
+My problem domain is back-transliteration, I want to map a sequence of english characters to a sequence of greek characters. So my data are: 
+ 
+observations: English Alphabet 
+states: Greek Alphabet 
+ 
+I provide the HMM with my own probabilities (A,B,pi) that I get from a corpus I have collected. 
+ 
+To test the HMM, I have a simple method: I create transliterated words using a simple lookup table, so the probability of an english letter (say p) mapping back to a greek letter (say π, (pi)) is always 1. 
+ 
+The problem I have is that I get completely wrong results. For example, when passing in the string 'oresths' 
+I should get back 'ορεστης' but instead I get 'εαααααα' . The strangest of all is that the greek letter 'ε' (epsilon) that appears first in that sequence doesn't even appear in the pi ProbDist I give to the model. 
+ 
+Also, I tested some more and it seems that the model does the tagging correctly: if I use random_sample, the results reflect the probabilities given and the mapping/tagging is done correctly. It seems that only the viterbi algorithm has troubles... Also, the probability I get is for the aforementioned sequence is 
+ 
+33701369039.7 
+ 
+which seems definately wrong... 
+ 
+Any pointers ? I can post source code to illustrate the problem, too. 
+ 
+Thank you 
+ 
+
+
+
+      RE: HMM problems
+      By: Orestis Markou (orestis82) - 2006-10-01 22:52
+      I have narrowed down the problem to this: 
+       
+      in best_path(sequence) 
+       
+      V[0, i] = self._priors.logprob(state) + \ 
+      self._output_logprob(state, symbol) 
+       
+      this line of code will give V[0, i] a probability of 1 even if the start probability of the state is 0. I don't know how to fix that yet, I'll have to read up on log probabilities. 
+       
+      If using normal proabibilites is should be prob(state) * prob(state, symbol) which would correctly give 0 for the overall probability (-inf for log probability). 
+       
+
+
+            RE: HMM problems RESOLVED
+            By: Orestis Markou (orestis82) - 2006-10-01 23:28
+            see bug 1568715: 
+             
+            http://sourceforge.net/support/tracker.php?aid=1568715
+
+Parsing lexicon
+By: Benny Guldfot (charlie_w) - 2006-02-20 02:25
+Hi everybody, 
+ 
+Are there any already made dictionaries to use for parsing, because I'm finding it strange that there are no already made lists of words and tags, or do I use the built-in taggers to tag the text and then pars it from there?
+
+
+Parsing question
+By: accord40 (accord40) - 2006-01-07 07:22
+Hi there, 
+ 
+We are using NLTK to recognize dates in a text. We have tested to build a grammar that recognize if a phrase seems to be a date. 
+Our problem: 
+We want to recognize date patterns into a large texts. How can we define a grammar that does this? 
+ 
+Thanks.
+
+
+Parsing KeyError: 'LEAF' error
+By: gabgas (gabgas) - 2005-08-05 08:42
+Hi, I can not run the following script 
+ 
+from nltk.cfg import * 
+from nltk.parser.probabilistic import * 
+from nltk.tokenizer import * 
+ 
+r10 = PCFGProduction(DET , ['the'], prob = 0.5) 
+r11 = PCFGProduction(DET , ['a'], prob = 0.5) 
+grammar = PCFG(DET,[r11,r10]) 
+ 
+pcfg_parser = ViterbiPCFGParser(grammar) 
+sent_token = Token(TEXT='a') 
+WhitespaceTokenizer().tokenize(sent_token) 
+tree = pcfg_parser.get_parse(sent_token) 
+ 
+it says 
+ 
+File "/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages/nltk/parser/__init__.py", line 174, in get_parse 
+trees = self.get_parse_list(token) 
+File "/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages/nltk/parser/probabilistic.py", line 183, in get_parse_list 
+constituents[index,index+1,tok[LEAF]] = probtok 
+KeyError: 'LEAF' 
+ 
+I also tried copying the examples from the web without success. I am using NLTK 1.4.4 onder MAC OS. python 2.3.5 
+ 
+Thanks for your help 
+
+
+
+      RE: Parsing KeyError: 'LEAF' error
+      By: gabgas (gabgas) - 2005-08-07 14:16
+      I found the answer,  
+      parser = ChartParser(grammar,BU_STRATEGY, LEAF='TEXT') 
+       
+
+
+Probabilistic parser init?
+By: Scot Wilcoxon (sewilco) - 2005-08-04 07:26
+How does one initialize the grammar for the probabilistic parser? Are there existing grammars? 
+ 
+http://nltk.sourceforge.net/tutorial/pcfg/section-probparse.html#probparse.interface
+
+
+Brill Tagger
+By: Svein Ola (stnes) - 2004-10-20 01:45
+Hi! 
+I'm trying to train and to get a Brill tagger to work. But I can't get it to work. Could anyone please post some samplecode? I'm a newbie to NLTK :-( 
+ 
+-= S O =-
+
+
+      RE: Brill Tagger
+      By: mark (markb_1984) - 2004-12-22 22:43
+      Any chance of someone replying with some sample code for utilising the brill tagger supplied with the nltk toolkit.  
+       
+      Could really do with seeing a working example for creating the transformation rules from the BrillTaggerTrainer class and then training and tagging using the BrillTagger. 
+       
+      Thanks in advance, 
+       
+      Mark
+
+      RE: Brill Tagger
+      By: Scot Wilcoxon (sewilco) - 2005-07-29 05:09
+      Well, the attached at least runs. I had to guess at a number of parameters and some are probably not needed. 
+       
+      from nltk.tokenizer import * 
+      from nltk.tagger import * 
+      from nltk.tagger.brill import * 
+      from nltk.corpus import brown 
+      # Train tagger 
+      train_tokens = [] 
+      for item in brown.items()[:10]: 
+      train_tokens.append(brown.read(item)) 
+      unitagger = UnigramTagger(SUBTOKENS='WORDS') 
+      brilltemplates = () 
+      britaggerrules = BrillTaggerTrainer(initial_tagger=unitagger, templates=brilltemplates,trace=True, SUBTOKENS='WORDS', max_rules=200, min_score=2) 
+      for tok in train_tokens: unitagger.train(tok) 
+      for tok in train_tokens: britaggerrules.train(tok, max_rules=200, min_score=2) 
+      # brittaggerrul = britaggerrules.train(train_tokens, max_rules=200, min_score=2) 
+      britaggerrul = () 
+      britagger = BrillTagger(initial_tagger=unitagger, rules=britaggerrul, SUBTOKENS='WORDS' ) 
+      # Training completed 
+      # Examine text 
+      text_token = Token(TEXT='the quick brown fox jumped over the lazy dog's back') 
+      WhitespaceTokenizer(SUBTOKENS='WORDS').tokenize(text_token) 
+      #unitagger.tag(text_token) 
+      britagger.tag(text_token) 
+
+
+      RE: Brill Tagger
+      By: Scot Wilcoxon (sewilco) - 2005-07-30 00:20
+      Here is a better try. I tried to print the UniTagger result and the BrillTagger results, but they are the same. Perhaps a test sentence is needed which invokes Brill, or more likely I couldn't extract the proper initialization for Brill from the doc. 
+       
+      from nltk.tokenizer import * 
+      from nltk.stemmer.porter import * 
+      from nltk.tagger import * 
+      from nltk.tagger.brill import * 
+      from nltk.corpus import brown 
+       
+      test_text = "Sally, on the telephone, saw the open book on the blue table in the hallway." 
+      stemmer = PorterStemmer() 
+      tokenregexp = r'\w+|[^\w\s]+' # Separate punctuation as tokens 
+      tokenizer = RegexpTokenizer( tokenregexp, SUBTOKENS='WORDS' ) 
+       
+      # Train tagger 
+      train_tokens = [] 
+      for item in brown.items()[:10]: train_tokens.append(brown.read(item)) 
+      unitagger = UnigramTagger(SUBTOKENS='WORDS') 
+      brilltemplates = () 
+      britaggerrules = BrillTaggerTrainer(initial_tagger=unitagger, templates=brilltemplates,trace=True,SUBTOKENS='WORDS', max_rules=200, min_score=2) 
+      for tok in train_tokens: unitagger.train(tok) 
+      for tok in train_tokens: britaggerrules.train(tok, max_rules=200, min_score=2) 
+      # brittaggerrul = britaggerrules.train(train_tokens, max_rules=200, min_score=2) 
+      britaggerrul = () 
+      britagger = BrillTagger(initial_tagger=unitagger, rules=britaggerrul, SUBTOKENS='WORDS' ) 
+      # Training completed 
+      # Examine text 
+      # Show UniTagger result 
+      text_token = Token(TEXT=test_text) 
+      tokenizer.tokenize(text_token) 
+      #for word_token in text_token['WORDS']: stemmer.stem(word_token) 
+      unitagger.tag(text_token) 
+      print "UniTagger:" 
+      print text_token 
+      # Show UniTagger result altered by Brill Tagger 
+      text_token = Token(TEXT=test_text) 
+      tokenizer.tokenize(text_token) 
+      #for word_token in text_token['WORDS']: stemmer.stem(word_token) 
+      britagger.tag(text_token) 
+      print "Brill Tagger:" 
+      print text_token 
+
+
+NthOrderTagger
+By: David J. Snyder (davidjsnyder) - 2005-02-15 03:39
+I'm trying to follow the tutorial on tagging and I've gotten as far as the NthOrdertagger and run into problems. First, there seems to be a SUBTOKENS='WORDS' missing from the tokenize line in the example, but even after I add that, everything comes back tagged as None. As far as I can tell, I have the brown corpus saved to the right location. Has any one else seen this or have any ideas what I'm doing wrong? Here's my code- 
+ 
+from nltk.tokenizer import * 
+from nltk.tagger import * 
+from nltk.corpus import brown 
+ 
+text_token = Token(TEXT="I saw the book on the table") 
+tagger = NthOrderTagger(3, SUBTOKENS='WORDS') 
+for item in brown.items()[0:10]: 
+tok = brown.read(item) 
+print item 
+tagger.train(tok) 
+ 
+WhitespaceTokenizer(SUBTOKENS='WORDS').tokenize(text_token) 
+tagger.tag(text_token) 
+print text_token
+
+
+      RE: NthOrderTagger
+      By: David J. Snyder (davidjsnyder) - 2005-02-15 07:03
+      Well, I've spent more time reading the source, and it seems from the demo there that the tutorial example is just misleading. You need to combine the NthOrder tagger with another tagger to get it to mark anything but None. (Which I should have realized given its nature, but I was assuming there was some truth in the example.)
+
+      RE: NthOrderTagger
+      By: labtjd (labtjd) - 2005-05-14 07:39
+      Well, I too, can get an Nth order tagger to tag everything 'none', or I can get the error message 
+       
+      Traceback (most recent call last): 
+      File "<pyshell#42>", line 1, in -toplevel- 
+      tagger.tag(text_token) 
+      File "C:\Python24\Lib\site-packages\nltk\tagger\__init__.py", line 221, in tag 
+      subtokens = token[SUBTOKENS] 
+      KeyError: 'WORDS' 
+       
+      If I put the nth order tagger in as part of a backup tagger, it just also gives none to everything. Then the other components will tag. 
+       
+      How is it to combine it with another? 
+       
+      It seems to me that there is a mistake in the tutorial, but where?
+
+      RE: NthOrderTagger
+      By: labtjd (labtjd) - 2005-06-24 06:39
+      It seems that David is right, but now here is a question: why does the nth order tagger work when it is within a backoff tagger, but not when it is used alone? 
+      That is: when you give it some untagged text, why can it come up with tags other than 'none' when it is first in line for backoff tagger, but not when it is used all by itself? Where does the context of tags come from in a back off tagger?
+
+      RE: NthOrderTagger
+      By: labtjd (labtjd) - 2005-06-30 04:01
+      Okay, the key is 'sequential' taggers. The contexts are built up by applying each tagger to each word in sequence.
+
+      RE: NthOrderTagger
+      By: Sarajin (sarajin) - 2005-07-08 13:42
+      I discovered that you do indeed have to have the SUBTOKENS keyword in the Tokenizer as well. As for the NthOrderTagger, I'm getting the same issue. Setting the order to 0 in the tagger works just like a Unigram Tagger but increasing it past that causes all tokens to be tagged as none. 
+       
+      The reason you can use it in a BackoffTagger is because that is what a BackoffTagger is meant to do. If a token comes back as None, it uses the next tagger in the sequence to try tagging the token. 
+       
+      Can anyone help out with NthOrderTaggers past order 0.
+
+      RE: NthOrderTagger
+      By: labtjd (labtjd) - 2005-07-09 06:39
+      Here is the point: the nth order tagger works as part of a backoff tagger because it needs a context in which to generate its tags. The back off tagger looks at the first word and tries to apply the 3rd order tagger, but it can't, because there is no 3rd order context, so it passes to the next tagger in the list. When it gets to the unigram tagger, this might work, if it saw that word in its training, otherwise, you must pass to the default tagger, which will put whatever tag it is set up to put. Move to the next word: 3rd order tagger won't work because there still is not enough context. 2nd order might, if its training was sufficient, if not unigram might, if its training was sufficient, otherwise default tagger will put something. You can actually watch it work by putting some appropriate "print" in the source code. (put a print tag and print tagger, so it will show you what tagger is working and what tags it is generating)
+
+Can't get going
+By: mzappavi (mzappavi) - 2005-04-06 12:09
+Having problems importing modules. I keep getting these errors 
+ 
+ImportError: No module named tokenizer 
+>>> from nltk.probability import * 
+Traceback (most recent call last): 
+File "<stdin>", line 1, in ? 
+ImportError: No module named probability 
+>>> from nltk.token import * 
+Traceback (most recent call last): 
+File "<stdin>", line 1, in ? 
+ImportError: No module named token
+
+
+      RE: Can't get going
+      By: mzappavi (mzappavi) - 2005-04-06 22:50
+      So I fixed part of my problem. I updated my Python to 2.4. That fixed importing modules for the most part. Here is the error I am getting when I try to run the rdparser demo. 
+       
+      >>> import nltk.draw.rdparser 
+      Traceback (most recent call last): 
+      File "<stdin>", line 1, in ? 
+      File "C:\Python24\Lib\site-packages\nltk\draw\rdparser.py", line 69, in ? 
+      from nltk.draw.tree import * 
+      File "C:\Python24\Lib\site-packages\nltk\draw\tree.py", line 14, in ? 
+      from nltk.tree import Tree 
+      File "C:\Python24\Lib\site-packages\nltk\tree.py", line 33, in ? 
+      from nltk.probability import ProbabilisticMixIn, ImmutableProbabilisticMixIn 
+       
+      File "C:\Python24\Lib\site-packages\nltk\probability.py", line 56, in ? 
+      import types, math, numarray 
+      ImportError: No module named numarray 
+       
+      Hope someone has had this problem and can lend a hand. Thanks 
+
+
+      RE: Can't get going
+      By: labtjd (labtjd) - 2005-05-19 00:44
+      you need to go get the module numarray, yo can find it on sourceforge.
+
+Penn Treebank
+By: David Reitter (davidsweltAccepting Donations) - 2005-05-14 06:43
+Hi, 
+how would I go about accessing Penn Treebank syntax files directly?  
+I have managed to get everything to work with the nltk-data stuff installed in /usr/share, but now i have my treebank files, which are organized differently (folders 2,3,4 with .prd files). 
+So far, I have just put them all into one directory and also created an empty README file there. It also seems to look for folders with a specific name.  
+ 
+I set the basedir: 
+set_basedir('../swbd') 
+ 
+and then I have a folder 'treebank' in there with all the .prd files - correct? Should it be something else? 
+ 
+I am trying to load the 'combined' resource: 
+ 
+ 
+def swbd_treebank_generator(): 
+ 
+for f in treebank.items('combined') : 
+corpus = treebank.read(f)  
+for sentenceToken in corpus['SENTS'] : 
+for tt in sentenceToken['TREE'] :  
+yield get_rules(tt)  
+yield() # mark dialogue turns 
+yield () 
+ 
+ 
+But this fails miserably while loading the treebank: 
+ 
+>>> treebank.items('combined') 
+() 
+ 
+I guess if someone could point me to the right documentation, that would help me a lot. 
+ 
+Thanks 
+- Dave
+
+
+Import Error: No module named numarray
+By: mzappavi (mzappavi) - 2005-04-07 02:57
+Is anyone getting this error when they tried to run any of the demos or importing a corpus? I am running Python 2.4 and all current nltk packages. Do I need to install additional stuff since I am running winXP? 
+ 
+Thanks for any help
+
+
+      RE: Import Error: No module named numarray
+      By: mzappavi (mzappavi) - 2005-04-07 03:04
+      Figured it out right after. I needed to download that module. Nothing like answering your own question. Didn't give anybody anytime.  
+       
+      Seriously...thanks to the developers for developing such a cool tool. I plan to use for learning as well for future exploration of NLP.
+
+Saving a training corpus
+By: RobWhittle (robwhittle81) - 2004-07-24 18:54
+Hi, 
+I'm relatively new to NLTK and i've just written a bit of code to train a unigram tagger on the brown corpus..I'm using NLTK 1.3..It takes quite a while to train a tagger on the whole brown corpus so it would be useful if i could somehow save the trained tagger. After reading another thread i'm guessing this can be done using 'pickle'. I've tried this however and have had a few problems..Here is my code: 
+ 
+from nltk.tagger import * 
+from nltk.corpus import brown 
+# Tokenize ten texts from the Brown Corpus 
+train_tokens = [] 
+for item in brown.items()[:10]: 
+train_tokens.append(brown.tokenize(item)) 
+# Initialise and train a unigram tagger 
+mytagger = UnigramTagger() 
+for tok in train_tokens: mytagger.train(tok) 
+mytagger.tag(text_token) 
+ 
+import pickle 
+pickle.dump(text_token,open(r"C:\Documents and Settings\Administrator\Desktop\t.pickle","w"),protocol=2) 
+ 
+Now after closing Python i thought i'd be able to restore the tagger by using the following code: 
+ 
+import pickle 
+token=pickle.load(open(r"C:\Documents and Settings\Administrator\Desktop\t.pickle","r")) 
+ 
+but i get the following error message: 
+ 
+Traceback (most recent call last): 
+File "<pyshell#5>", line 1, in -toplevel- 
+token=pickle.load(open(r"C:\Documents and Settings\Administrator\Desktop\t.pickle","r")) 
+File "C:\Program Files\Python\lib\pickle.py", line 1390, in load 
+return Unpickler(file).load() 
+File "C:\Program Files\Python\lib\pickle.py", line 872, in load 
+dispatch[key](self) 
+File "C:\Program Files\Python\lib\pickle.py", line 1189, in load_binput 
+i = ord(self.read(1)) 
+TypeError: ord() expected a character, but string of length 0 found 
+ 
+If anyone could help me this that'd be great.. 
+ 
+Cheers 
+ 
+Rob Whittle
+
+
+      RE: Saving a training corpus
+      By: Chao Din (cdin) - 2005-01-09 15:16
+      Hi, Rob, 
+       
+      I am using NLTK 1.4. I replaced "brown.tokenize(item))" with "brown.read(item))" and "UnigramTagger()" with "UnigramTagger(SUBTOKEN='WORDS')". 
+       
+      pickle also failed on me, but cPickle worked. 
+       
+      Chao
+
+      RE: Saving a training corpus
+      By: Svein Ola (stnes) - 2005-03-04 23:24
+      This mighy help: 
+      http://www.inf.ed.ac.uk/teaching/courses/icl/cwk1.html 
+       
+      I've tested it on a Brill-tagger and it works fine!
+
+Corpus to be used by Chunk Parser
+By: Chao Din (cdin) - 2004-12-30 06:42
+Hi, I am new to this forum. It seems to me that everyone knows the answer except me! 
+ 
+I am trying to use the chunk parsers provided by NLTK. All the code snippets I saw assume "the" is tagged with "DT". But the brown corpus tags "the" with "at". My question is which corpus or corpura generate a "DT" tag for "the". 
+ 
+Thanks in advance for the help. 
+ 
+Regards, 
+Chao Din
+
+
+      RE: Corpus to be used by Chunk Parser
+      By: Chao Din (cdin) - 2005-01-04 16:03
+      I guess treebank is the best choice for chunk parser. -- Chao
+
+nltk.corpus
+By: tajin (tajin) - 2004-07-31 07:28
+I am trying to run nltk with python 2.2.2 following the examples of the tutorial, when I get into nltk.corpus gutemberg example, I got the following message,  
+ 
+>>>from nltk.corpus import gutenberg 
+ 
+Traceback (most recent call last): 
+File "<stdin>", line 1, in ? 
+ImportError: No module named nltk.corpus 
+ 
+can anyone tell me what's wrong in my nltk?, how do I setup the nltk.corpus module in my computer, the nltk setup in the computer is the latest one at source forge 
+ 
+Thanks 
+
+
+
+      RE: nltk.corpus
+      By: RobWhittle (robwhittle81) - 2004-08-03 19:09
+      Hi tajin, 
+       
+      I'm new to NLTK as well but you should be able to import a corpus if you have done the following: 
+       
+      -download the nltk data package 
+      -save nltk data into the Python\Libs directory 
+      -unzip all the files  
+      -click the right mouse button on MyComputer and go to properties..then choose the advanced tag..then click on Environmental variables..Then in the user variables sections add the variable name as NLTK CORPORA and for variable value put the location of your nltk-data folder..For me this is as follows: C:\Program Files\Python\libs\nltk-data-0.3 
+       
+      This seems to work for me 
+       
+      Cheers 
+       
+      Rob Whittle
+
+      RE: nltk.corpus
+      By: tajin (tajin) - 2004-08-04 08:10
+       
+      nltk needs python version 2.3, I had 2.2.2, I updated. I am running linux, so as root I type (for temporary) 
+      [root@myhost]# export NLTK_CORPORA=/usr/lib/nltk 
+       
+      Thanks 
+
+
+      RE: nltk.corpus
+      By: Debbie Elliott (debe) - 2004-10-15 20:55
+      I am getting exactly the same problem as Tajin - with the same error message. I have added NLTK_CORPORA (in upper case with an underscore in the middle) and its location to the user variables and experimented with putting the data folder in different places. Does anyone have any suggestions? Thanks in advance. 
+      Debbie.
+
+nltk tutorial
+By: tajin (tajin) - 2004-08-03 11:29
+I am trying to follow the tutorial, I am using read instead of tokenize at gutemberg.read, but I don't know how to jump from words[word] = words.get(word, 0) + 1, to next line: 
+print words['scotland'] 
+ 
+... words[word] = words.get(word, 0) + 1 
+>>>print words['scotland'] 
+ 
+This what I have done: 
+>>> from nltk.corpus import gutenberg 
+>>> words = {} 
+>>> book = gutenberg.read('shakespeare-macbeth.txt') 
+>>> for token in book['SUBTOKENS']: 
+... word = token['TEXT'].lower() 
+... words[word] = words.get(word, 0) + 1 
+... 
+Any idea? 
+ 
+Thanks 
+ 
+tajin
+
+
+howto use UnigramTagger
+By: jmoore (joseph_moore_) - 2004-08-01 09:54
+Hello list, 
+I'm having some problems using the UnigramTagger. I saw in another post that CorpusReaderI.tokenize() has changed to CorpusReaderI.read(). Maybe I'm misunderstanding but shouldn't the following code work?: 
+ 
+################## 
+from nltk.tagger import * 
+from nltk.corpus import brown 
+ 
+train_tokens = [] 
+for item in brown.items()[:10]: 
+train_tokens.append(brown.read(item)) 
+ 
+mytagger = UnigramTagger() 
+ 
+for tok in train_tokens: 
+mytagger.train(tok) 
+ 
+################## 
+ 
+The previous throws a KeyError: 'SUBTOKENS' 
+ 
+Any help would be much appreciated. 
+Best, 
+Joe
+
+
+Numeric
+By: tajin (tajin) - 2004-08-01 07:36
+I am trying to run nltk.corpus as previous thread states, now I am with the following message with Numeric, after I installed python 2.3, when I try to setup numeric, this is what I get: 
+ 
+[root@myhost Numeric-23.3]# python2.3 setup.py install 
+ 
+gcc -pthread -shared build/temp.linux-i686-2.3/Src/lapack_litemodule.o -L/usr/li b/atlas -llapack -lcblas -lf77blas -latlas -lg2c -o build/lib.linux-i686-2.3/lap ack_lite.so 
+/usr/bin/ld: cannot find -lcblas 
+collect2: ld returned 1 exit status 
+error: command 'gcc' failed with exit status 1 
+ 
+Thanks Tajin 
+
+
+
+      RE: Numeric
+      By: jmoore (joseph_moore_) - 2004-08-01 09:29
+      I had the same problem. Apparently there is a bug in the installer script for the latest version of numeric that affects OSX and (it looks like) Linux. I installed the next to newest version of Numeric and everything seems to work ok now. 
+      Best, 
+      Joe
+
+Problem with nltk 1.4
+By: RobWhittle (robwhittle81) - 2004-07-24 18:59
+One other problem.. 
+ 
+I've also tried updating to nltk 1.4, but when i run my code i get an error that does not occur with 1.3.. 
+ 
+This occurs when i run the line of code: 
+ 
+train_tokens.append(brown.tokenize(item)) 
+ 
+Here the error message says that SimpleCorpusReader does not have the property Tokenize 
+ 
+Cheers 
+ 
+Rob Whittle 
+
+
+
+      RE: Problem with nltk 1.4
+      By: Edward Loper (edloperProject Admin) - 2004-07-24 19:11
+      Hi, Rob. 
+       
+      I'm at a conference in Barcelona right now, so I won't get a chance to look at your pickling problem until I get back (around the 28th). But this question I can answer now. :) 
+       
+      In nltk 1.4, the method CorpusReaderI.tokenize() was replaced by CorpusReaderI.read(). This happened as part of the creation of the TokenReaderI interface. For more info, see the "Token Readers vs. Tokenizers" section of the following email: 
+       
+      http://sourceforge.net/mailarchive/forum.php?thread_id=5054137&forum_id=959 
+       
+      We'll note this change in the release notes for 1.4 when we officially release it. (We put the release together just before the conference, and haven't had time yet to write up announcements, release notes, etc.; we'll finish those up and do the official release sometime before the end of the month.) 
+
+
+      RE: Problem with nltk 1.4
+      By: RobWhittle (robwhittle81) - 2004-07-30 05:53
+      Hi Ed, 
+       
+      Thanks very much for your help with this..I still seem to be having a few probs however..What i'm trying to do is return a list of tagged tokens from the brown corpus which havethe property "TAG". Here i am doing the following: 
+       
+      taggedData = [] 
+      items = brown.items() 
+       
+      for item in items[:10]: 
+      item = brown.read(item) 
+      taggedData += item["WORDS"] 
+       
+      If there anyway i can create a "TAG" property this would be of great help.. 
+       
+      Cheers 
+       
+      Rob Whittle 
+       
+
+
+unexpected keyword error
+By: jmoore (joseph_moore_) - 2004-07-22 04:39
+Hello, 
+New to nltk and python hope someone could answer a question. I'm going through the documentation and I'm having trouble getting some of the tokenization features to work. Here's an example: 
+ 
+############################## 
+>>>import nltk 
+>>>from nltk.tokenizer import * 
+>>> 
+>>>text_token = Token(TEXT='hello world. this is a test.') 
+>>>nltk.tokenizer.WSTokenizer(SUBTOKENS='WORDS').tokenize(text_token,add_locs=True) 
+ 
+Traceback (most recent call last): 
+File "<input>", line 1, in ? 
+TypeError: tokenize() got an unexpected keyword argument 'add_locs' 
+########################### 
+the following tokenization on text_token works though: 
+ 
+########################### 
+nltk.tokenizer.WSTokenizer(SUBTOKENS='WORDS').tokenize(text_token) 
+ 
+########################## 
+ 
+ 
+Is my syntax wrong for the add_locs attribure or is something else the problem? I also can't seem to access the re_show util. When I use dir(nltk.util) the following shows up: 
+DemoInterpreter 
+FrozenDict 
+LazyList 
+__builtins__ 
+__doc__ 
+__file__ 
+__name__ 
+itertools 
+sys 
+ 
+I'm on OSX 10.3 Python 2.3  
+If anyone could help it would be much appreciated. 
+Thanks, 
+Joe 
+ 
+
+
+
+      RE: unexpected keyword error
+      By: Edward Loper (edloperProject Admin) - 2004-07-22 22:02
+      It sounds like the version of nltk and the version of docs you're 
+      looking at are not in sync. The documentation on the web reflects the 
+      recently released (and not yet announced) version 1.4 of nltk. Under 
+      nltk 1.4, your code should work (except that WSTokenizer was renamed 
+      to WhitespaceTokenizer).  
+       
+      If you're using version 1.3, I think the keyword argument was 
+      "addlocs" instead of "add_locs"; and I don't think that re_show got 
+      added until nltk 1.4. 
+       
+      -Edward
+
+Text Classification questions
+By: Carlos Rodriguez (crodri) - 2004-01-24 04:50
+Hi All: 
+ 
+I am a linguist with some competence in Python and NLTK, and I am trying to run certain classification experiments, which are giving me some trouble. 
+In a nutshell, I am checking structures of my training corpus such as this one [', CC VBZ', 'called', 'IN NNP QUOT']/'YES'@[?], where the text() is a 3 part feature list, with POS tags before and after a lexical unit. The idea is to see if those POS tags are good enough indicator for classification as metalinguistic instances, or not, dependant of the metalinguistic verb they sorround.  
+My feature detector and FV detector accordingly interrogate the first or last elements of each list, e.g. for the tags previous to the verb: 
+ 
+def beforetags(LabeledText): 
+return (LabeledText.text()[0]) and (LabeledText.label() == 'YES') 
+.... 
+def first_tags(x): 
+return x.text()[0] 
+.... 
+I am using LabeledTextFunctionFDLists 
+ 
+I have trained a NBClassifier that is returning me useful data (a 150 vs. 50 ratio in a 200 item sample that's actually 155 "Yes" vs. 45 "Nos").  
+ 
+I have two problems:  
+ 
+2.- First: 
+ 
+When I try to train maximum entropy classifiers using the same dataset and detector lists, I get: 
+ 
+File "E:\MOP\tools\EMOClassification.py", line 62, in ? 
+classifierAlfaME = trainerAlfaME.train(SampleData) 
+File "C:\PYTHON\lib\site-packages\nltk\classifier\maxent.py", line 987, in train 
+texts, labels) 
+File "C:\Python\lib\site-packages\nltk\classifier\feature.py", line 1053, in __init__ 
+self._cache[ltext] = base_fd_list.detect(ltext) 
+File "C:\Python\lib\site-packages\nltk\classifier\__init__.py", line 169, in __hash__ 
+return hash( (self._text, self._label) ) 
+TypeError: list objects are unhashable 
+ 
+This is the rellevant code I am using to create them: 
+LTFfdetectorB = LabeledTextFunctionFDList(first_tags,JustFirst) 
+LTFdetectorBN = LabeledTextFunctionFDList(last_tags,JustLast) 
+fd_listNew = LTFfdetectorB+LTFdetectorBN 
+ 
+trainerAlfa = NBClassifierTrainer(fd_listNew) 
+classifierAlfaNB = trainerAlfa.train(SampleData)  
+trainerAlfaME = IISMaxentClassifierTrainer(fd_listNew) 
+classifierAlfaME = trainerAlfaME.train(SampleData)  
+trainerAlfaGIS = GISMaxentClassifierTrainer(fd_listNew) 
+classifierAlfaGIS = trainerAlfaGIS.train(SampleData)  
+ 
+The SampleData is a training list with of such as [', CC VBZ', 'called', 'IN NNP QUOT']/'YES'@[?]. 
+ 
+2.- The second problem is: how do I make I classifier that will use the adequate distribution, conditional to the metaliguistic verb. Do I have to train separate classifiers for each dataset of each verb, and then selected it with a dictionary and load it? It doesn't seem efficient. 
+Do I have to define a new FD list class? 
+ 
+If anyone can help, even if these seem like newbie questions, I would be very grateful. If you want to look at my test code, or need data samples, please let me know. 
+ 
+Thanks, 
+ 
+ 
+************* 
+Carlos Rodr�guez
+
+
+      RE: Text Classification questions
+      By: Carlos Rodriguez (crodri) - 2004-01-27 14:01
+      Problem solved. I didn't realized that my text needed to be an immutable object, such as strings or tuples. I just changed my feature set to a 3 item tuple, and that did it. 
+      Thanks 
+       
+      Carlos
+
+summarisation
+By: Mark (froggyd) - 2004-01-12 19:35
+hi: 
+ 
+i am interested in doing some summarisation: but am kinda new to nlp and nltk. so a couple of questions, if someone would be kind enough to answer them.  
+ 
+1. does nltk capable have the widgets for doing summarisation.  
+ 
+2. are there any tutorials/primers on the web that will give me a dummies guide to summarisation. 
+ 
+best regards 
+mark brand
+
+
+Add/Remove Nodes & Edges to GraphWidget?
+By: Andrew n marshall (amarshalSourceForge.net Subscriber) - 2003-06-17 02:52
+Is it possible to add and remove node dynamically from your graph widget? If not, which methods probably need updating for such support? 
+ 
+ 
+Thanks. 
+ 
+ 
+Anm
+
+
+      RE: Add/Remove Nodes & Edges to GraphWidget?
+      By: Edward Loper (edloperProject Admin) - 2003-08-07 05:00
+      I just added this to the cvs version of nltk/draw/fsa.py. Note that the Graph widget is incomplete, and is still missing some important pieces of functionality. 
+       
+      The add_node() and add_edge() methods add new edges/nodes. The remove_node() and remove_edge() methods remove them (but don't delete them from the canvas). The delete_node() and delete_edge() methods remove them and delete them. Note that deleting a node will also delete any edges that connect to it (ingoing & outgoing). 
+
+
+about nltk installation
+By: Abdi (a_abdi406) - 2003-04-07 02:09
+hi, 
+ 
+I have question about the modules, I downloaded NLTK module for win32 and I followed the instruction for installation from the web, having dowloaded I the wizardinstallation guided me to complete the installation and it installed the same directory as Python22, I opened the python interactive window to check whether the installation was successfull I called the module as follows: 
+ 
+>>> from nltk.token import * 
+Traceback (most recent call last): 
+File "<interactive input>", line 1, in ? 
+ImportError: No module named nltk.token 
+>>>  
+ 
+I consulted the FAQ before posting the question, so what is going on ? 
+ 
+folder structure is as follows: 
+ 
+C:\\Python22\\nltk1.0 
+ 
+thanks in advance  
+ 
+ 
+ 
+ 
+
+
+
+Locating Scientific Python
+By: Patrick Hall (edsapir) - 2002-01-04 09:39
+Hi there, 
+ 
+NLTK is neat :) 
+ 
+I've had some trouble figuring out which version of ScientificPython I need to get the plotting working.  
+ 
+I managed to find NumericPython (the same as NumPy, right?) on Sourceforge, but ScientificPython eludes me! 
+ 
+cheers,  
+Pat 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+http://fieldmethods.net 
+All the news that's fit to parse - For and by the NLP communitry
+
+
+      RE: Locating Scientific Python
+      By: Edward Loper (edloperProject Admin) - 2002-04-19 01:32
+      We're really not using scientific python for much right now, so you don't really need it. But you can get it from: 
+       
+      http://starship.python.net/crew/hinsen/scientific.html 
+       
+      As you said, numeric python is the same thing as NumPy, and is available at: 
+       
+      http://www.pfdubois.com/numpy/ 
+       
+      -Edward 
+

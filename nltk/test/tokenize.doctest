@@ -1,0 +1,357 @@
+.. Copyright (C) 2001-2011 NLTK Project
+.. For license information, see LICENSE.TXT
+
+==========
+Tokenizers
+==========
+
+(See Chapter 3 of the NLTK book for more detailed information about tokenization.)
+
+Overview
+~~~~~~~~
+
+Tokenizers divide strings into lists of substrings.  For example,
+tokenizers can be used to find the list of sentences or words in a
+string.
+
+    >>> from nltk import word_tokenize, wordpunct_tokenize
+    >>> s = ("Good muffins cost $3.88\nin New York.  Please buy me\n"
+    ...      "two of them.\n\nThanks.")
+    >>> word_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+When tokenizing text containing Unicode characters, be sure to tokenize
+the Unicode string, and not (say), the UTF8-encoded version:
+
+    >>> wordpunct_tokenize("das ist ein t\xc3\xa4ller satz".decode('utf8'))
+    [u'das', u'ist', u'ein', u't\xe4ller', u'satz']
+    >>> wordpunct_tokenize("das ist ein t\xc3\xa4ller satz")
+    ['das', 'ist', 'ein', 't\xc3', '\xa4', 'ller', 'satz']
+
+There are numerous ways to tokenize text.  If you need more control over
+tokenization, see the methods described below.
+
+Simple Tokenizers
+~~~~~~~~~~~~~~~~~
+The following tokenizers, defined in `nltk.tokenize.simple`, just
+divide the string using the string ``split()`` method.
+
+    >>> from nltk.tokenize import *
+
+    >>> # same as s.split():
+    >>> WhitespaceTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
+     'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+
+    >>> # same as s.split(' '):
+    >>> SpaceTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$3.88\nin', 'New', 'York.', '',
+     'Please', 'buy', 'me\ntwo', 'of', 'them.\n\nThanks.']
+
+    >>> # same as s.split('\n'):
+    >>> LineTokenizer(blanklines='keep').tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good muffins cost $3.88', 'in New York.  Please buy me',
+     'two of them.', '', 'Thanks.']
+
+    >>> # same as [l for l in s.split('\n') if l.strip()]:
+    >>> LineTokenizer(blanklines='discard').tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good muffins cost $3.88', 'in New York.  Please buy me',
+     'two of them.', 'Thanks.']
+
+    >>> # same as s.split('\t'):
+    >>> TabTokenizer().tokenize('a\tb c\n\t d') # doctest: +NORMALIZE_WHITESPACE
+    ['a', 'b c\n', ' d']
+
+The simple tokenizers are *not* available as separate functions;
+instead, you should just use the string ``split()`` method directly:
+
+    >>> s.split() # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
+     'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+    >>> s.split(' ') # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$3.88\nin', 'New', 'York.', '',
+     'Please', 'buy', 'me\ntwo', 'of', 'them.\n\nThanks.']
+    >>> s.split('\n') # doctest: +NORMALIZE_WHITESPACE
+    ['Good muffins cost $3.88', 'in New York.  Please buy me',
+     'two of them.', '', 'Thanks.']
+
+The simple tokenizers are mainly useful because they follow the
+standard ``TokenizerI`` interface, and so can be used with any code
+that expects a tokenizer.  For example, these tokenizers can be used
+to specify the tokenization conventions when building a `CorpusReader`.
+
+Regular Expression Tokenizers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`RegexpTokenizer` splits a string into substrings using a regular
+expression.  By default, any substrings matched by this regexp will be
+returned as tokens.  For example, the following tokenizer selects out
+only capitalized words, and throws everything else away:
+
+    >>> capword_tokenizer = RegexpTokenizer('[A-Z]\w+')
+    >>> capword_tokenizer.tokenize(s)
+    ['Good', 'New', 'York', 'Please', 'Thanks']
+
+The following tokenizer forms tokens out of alphabetic sequences,
+money expressions, and any other non-whitespace sequences:
+
+    >>> tokenizer = RegexpTokenizer('\w+|\$[\d\.]+|\S+')
+    >>> tokenizer.tokenize(s)  # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
+     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+``RegexpTokenizers`` can be told to use their regexp pattern to match
+separators between tokens, using ``gaps=True``:
+
+    >>> tokenizer = RegexpTokenizer('\s+', gaps=True)
+    >>> tokenizer.tokenize(s)  # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
+     'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+
+The `nltk.tokenize.regexp` module contains several subclasses of
+``RegexpTokenizer`` that use pre-defined regular expressions:
+
+    >>> # Uses '\w+|[^\w\s]+':
+    >>> WordPunctTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
+     '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+    >>> # Uses '\s*\n\s*\n\s*':
+    >>> BlanklineTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.',
+     'Thanks.']
+
+All of the regular expression tokenizers are also available as simple
+functions:
+
+    >>> regexp_tokenize(s, pattern='\w+|\$[\d\.]+|\S+') # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
+     '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    >>> blankline_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.',
+     'Thanks.']
+
+.. warning:: The function ``regexp_tokenize()`` takes the text as its
+    first argument, and the regular expression pattern as its second
+    argument.  This differs from the conventions used by Python's
+    ``re`` functions, where the pattern is always the first argument.
+    But ``regexp_tokenize()`` is primarily a tokenization function, so
+    we chose to follow the convention among other tokenization
+    functions that the text should always be the first argument.
+
+Treebank Tokenizer
+~~~~~~~~~~~~~~~~~~
+
+The Treebank tokenizer uses regular expressions to tokenize text as in Penn Treebank.
+This is the method that is invoked by nltk.word_tokenize().  It assumes that the
+text has already been segmented into sentences.
+
+    >>> TreebankWordTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+S-Expression Tokenizers
+~~~~~~~~~~~~~~~~~~~~~~~
+`SExprTokenizer` is used to find parenthesized expressions in a
+string.  In particular, it divides a string into a sequence of
+substrings that are either parenthesized expressions (including any
+nested parenthesized expressions), or other whitespace-separated
+tokens.
+
+    >>> SExprTokenizer().tokenize('(a b (c d)) e f (g)')
+    ['(a b (c d))', 'e', 'f', '(g)']
+
+By default, `SExprTokenizer` will raise a ``ValueError`` exception if
+used to tokenize an expression with non-matching parentheses:
+
+    >>> SExprTokenizer().tokenize('c) d) e (f (g')
+    Traceback (most recent call last):
+      ...
+    ValueError: Un-matched close paren at char 1
+
+But the ``strict`` argument can be set to False to allow for
+non-matching parentheses.  Any unmatched close parentheses will be
+listed as their own s-expression; and the last partial sexpr with
+unmatched open parentheses will be listed as its own sexpr:
+
+    >>> SExprTokenizer(strict=False).tokenize('c) d) e (f (g')
+    ['c', ')', 'd', ')', 'e', '(f (g']
+
+The characters used for open and close parentheses may be customized
+using the ``parens`` argument to the `SExprTokenizer` constructor:
+
+    >>> SExprTokenizer(parens='{}').tokenize('{a b {c d}} e f {g}')
+    ['{a b {c d}}', 'e', 'f', '{g}']
+
+The s-expression tokenizer is also available as a function:
+
+    >>> sexpr_tokenize('(a b (c d)) e f (g)')
+    ['(a b (c d))', 'e', 'f', '(g)']
+
+Punkt Tokenizer
+~~~~~~~~~~~~~~~
+The `PunktSentenceTokenizer` divides a text into a list of sentences,
+by using an unsupervised algorithm to build a model for abbreviation
+words, collocations, and words that start sentences.  It must be
+trained on a large collection of plaintext in the taret language
+before it can be used.  The algorithm for this tokenizer is described
+in Kiss & Strunk (2006)::
+
+  Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence
+    Boundary Detection.  Computational Linguistics 32: 485-525.
+
+The NLTK data package includes a pre-trained Punkt tokenizer for
+English.
+
+    >>> import nltk.data
+    >>> text = """
+    ... Punkt knows that the periods in Mr. Smith and Johann S. Bach
+    ... do not mark sentence boundaries.  And sometimes sentences 
+    ... can start with non-capitalized words.  i is a good variable
+    ... name.
+    ... """
+    >>> sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> print '\n-----\n'.join(sent_detector.tokenize(text.strip()))
+    Punkt knows that the periods in Mr. Smith and Johann S. Bach
+    do not mark sentence boundaries.
+    -----
+    And sometimes sentences 
+    can start with non-capitalized words.
+    -----
+    i is a good variable
+    name.
+
+(Note that whitespace from the original text, including newlines, is
+retained in the output.)
+
+Punctuation following sentences can be included with the realign_boundaries
+flag:
+   
+    >>> text = """
+    ... (How does it deal with this parenthesis?)  "It should be part of the
+    ... previous sentence."
+    ... """
+    >>> print '\n-----\n'.join(
+    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True))
+    (How does it deal with this parenthesis?)
+    -----
+    "It should be part of the
+    previous sentence."
+
+The `nltk.tokenize.punkt` module also defines `PunktWordTokenizer`,
+which uses a regular expression to divide a text into tokens, leaving all
+periods attached to words, but separating off other punctuation:
+
+    >>> PunktWordTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
+     'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+
+Span Tokenizers
+~~~~~~~~~~~~~~~
+
+NLTK tokenizers can produce token-spans, i.e. pairs of integers representing
+the offsets of tokens in the original input stream.  This supports efficient
+comparison of tokenizers, since it saves having to allocate and compare strings.
+Note that these methods are implemented as generators. 
+
+    >>> input = "Wome...  is your fwiend!\tTo pwove our fwiendship, ... "
+    >>> list(SpaceTokenizer().span_tokenize(input))
+    [(0, 7), (8, 8), (9, 11), (12, 16), (17, 27), (28, 33), (34, 37), (38, 49), (50, 53)]
+    >>> list(TabTokenizer().span_tokenize(input))
+    [(0, 24), (25, 54)]
+    >>> list(WhitespaceTokenizer().span_tokenize(input))
+    [(0, 7), (9, 11), (12, 16), (17, 24), (25, 27), (28, 33), (34, 37), (38, 49), (50, 53)]
+    >>> list(RegexpTokenizer(r"\.+ +", gaps=True).span_tokenize(input))
+    [(0, 4), (9, 50)]
+
+Note that empty token spans are not returned when the delimiter appears at
+the start or end of the string.
+
+The offsets are interpreted in the same way as slices, i.e. the end offset is
+one more than the index of the last character of the token.  This means we use
+can slice notation to extract the corresponding tokens from the input:
+
+    >>> tokens = ["{" + input[left:right] + "}"
+    ...           for left, right in SpaceTokenizer().span_tokenize(input)]
+    >>> "".join(tokens)
+    '{Wome...}{}{is}{your}{fwiend!\tTo}{pwove}{our}{fwiendship,}{...}'
+
+A utility function supports access to relative offsets:
+
+    >>> from nltk.tokenize.util import spans_to_relative
+    >>> list(spans_to_relative(SpaceTokenizer().span_tokenize(input)))
+    [(0, 7), (1, 0), (1, 2), (1, 4), (1, 10), (1, 5), (1, 3), (1, 11), (1, 3)]
+    
+Regression Tests: Regexp Tokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some additional test strings.
+
+    >>> s = ("Good muffins cost $3.88\nin New York.  Please buy me\n"
+    ...      "two of them.\n\nThanks.")
+    >>> s2 = ("Alas, it has not rained today. When, do you think, "
+    ...       "will it rain again?")
+    >>> s3 = ("<p>Although this is <b>not</b> the case here, we must "
+    ...       "not relax our vigilance!</p>")
+
+    >>> print regexp_tokenize(s2, r'[,\.\?!"]\s*', gaps=False)
+    [', ', '. ', ', ', ', ', '?']
+    >>> print regexp_tokenize(s2, r'[,\.\?!"]\s*', gaps=True)
+    ...     # doctest: +NORMALIZE_WHITESPACE
+    ['Alas', 'it has not rained today', 'When', 'do you think',
+     'will it rain again']
+
+Make sure that grouping parentheses don't confuse the tokenizer:
+
+    >>> print regexp_tokenize(s3, r'</?(b|p)>', gaps=False)
+    ['<p>', '<b>', '</b>', '</p>']
+    >>> print regexp_tokenize(s3, r'</?(b|p)>', gaps=True)
+    ...     # doctest: +NORMALIZE_WHITESPACE
+    ['Although this is ', 'not',
+     ' the case here, we must not relax our vigilance!']
+
+Make sure that named groups don't confuse the tokenizer:
+
+    >>> print regexp_tokenize(s3, r'</?(?P<named>b|p)>', gaps=False)
+    ['<p>', '<b>', '</b>', '</p>']
+    >>> print regexp_tokenize(s3, r'</?(?P<named>b|p)>', gaps=True)
+    ...     # doctest: +NORMALIZE_WHITESPACE
+    ['Although this is ', 'not',
+     ' the case here, we must not relax our vigilance!']
+
+Make sure that nested groups don't confuse the tokenizer:
+
+    >>> print regexp_tokenize(s2, r'(h|r|l)a(s|(i|n0))', gaps=False)
+    ['las', 'has', 'rai', 'rai']
+    >>> print regexp_tokenize(s2, r'(h|r|l)a(s|(i|n0))', gaps=True)
+    ...     # doctest: +NORMALIZE_WHITESPACE
+    ['A', ', it ', ' not ', 'ned today. When, do you think, will it ',
+     'n again?']
+
+The tokenizer should reject any patterns with backreferences:
+
+    >>> print regexp_tokenize(s2, r'(.)\1')
+    ...     # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+       ...
+    ValueError: Regular expressions with back-references are
+    not supported: '(.)\\1'
+    >>> print regexp_tokenize(s2, r'(?P<foo>)(?P=foo)')
+    ...     # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+       ...
+    ValueError: Regular expressions with back-references are
+    not supported: '(?P<foo>)(?P=foo)'
+
+A simple sentence tokenizer '\.(\s+|$)'
+
+    >>> print regexp_tokenize(s, pattern=r'\.(\s+|$)', gaps=True)
+    ...     # doctest: +NORMALIZE_WHITESPACE
+    ['Good muffins cost $3.88\nin New York',
+     'Please buy me\ntwo of them', 'Thanks']

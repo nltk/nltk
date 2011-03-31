@@ -1,0 +1,340 @@
+% File acl2002.sty
+% October 1, 2002
+% Contact: lindek@cs.ualberta.ca
+
+% This is the LaTeX style file for ACL 2002.  It is nearly identical to the
+% style files for ACL 2001, ACL 2000, EACL 95 and EACL 99. Minor changes concern 
+% changes in the dimentions for margins.
+%
+% -- Roberto Zamparelli, March 26, 2001
+% -- Dekang Lin, October 1, 2001
+
+% This is the LaTeX style file for ACL 2000.  It is nearly identical to the
+% style files for EACL 95 and EACL 99.  Minor changes include editing the
+% instructions to reflect use of \documentclass rather than \documentstyle
+% and removing the white space before the title on the first page
+% -- John Chen, June 29, 2000
+
+% To convert from submissions prepared using the style file aclsub.sty
+% prepared for the ACL 2000 conference, proceed as follows:
+% 1) Remove submission-specific information:  \whichsession, \id,
+%    \wordcount, \otherconferences, \area, \keywords
+% 2) \summary should be removed.  The summary material should come
+%     after \maketitle and should be in the ``abstract'' environment
+% 3) Check all citations.  This style should handle citations correctly
+%    and also allows multiple citations separated by semicolons.
+% 4) Check figures and examples.  Because the final format is double-
+%    column, some adjustments may have to be made to fit text in the column
+%    or to choose full-width (\figure*} figures.
+% 5) Change the style reference from aclsub to acl2000, and be sure
+%    this style file is in your TeX search path
+
+
+% This is the LaTeX style file for EACL-95.  It is identical to the
+% style file for ANLP '94 except that the margins are adjusted for A4
+% paper.  -- abney 13 Dec 94
+
+% The ANLP '94 style file is a slightly modified
+% version of the style used for AAAI and IJCAI, using some changes
+% prepared by Fernando Pereira and others and some minor changes 
+% by Paul Jacobs.
+
+% Papers prepared using the aclsub.sty file and acl.bst bibtex style
+% should be easily converted to final format using this style.  
+% (1) Submission information (\wordcount, \subject, and \makeidpage)
+% should be removed.
+% (2) \summary should be removed.  The summary material should come
+% after \maketitle and should be in the ``abstract'' environment
+% (between \begin{abstract} and \end{abstract}).
+% (3) Check all citations.  This style should handle citations correctly
+% and also allows multiple citations separated by semicolons.
+% (4) Check figures and examples.  Because the final format is double-
+% column, some adjustments may have to be made to fit text in the column
+% or to choose full-width (\figure*} figures.
+
+% Place this in a file called aclap.sty in the TeX search path.  
+% (Placing it in the same directory as the paper should also work.)
+
+% Prepared by Peter F. Patel-Schneider, liberally using the ideas of
+% other style hackers, including Barbara Beeton.
+% This style is NOT guaranteed to work.  It is provided in the hope
+% that it will make the preparation of papers easier.
+%
+% There are undoubtably bugs in this style.  If you make bug fixes,
+% improvements, etc.  please let me know.  My e-mail address is:
+%       pfps@research.att.com
+
+% Papers are to be prepared using the ``acl'' bibliography style,
+% as follows:
+%       \documentclass[11pt]{article}
+%       \usepackage{acl2000}
+%       \title{Title}
+%       \author{Author 1 \and Author 2 \\ Address line \\ Address line \And
+%               Author 3 \\ Address line \\ Address line}
+%       \begin{document}
+%       ...
+%       \bibliography{bibliography-file}
+%       \bibliographystyle{acl}
+%       \end{document}
+
+% Author information can be set in various styles:
+% For several authors from the same institution:
+% \author{Author 1 \and ... \and Author n \\
+%         Address line \\ ... \\ Address line}
+% if the names do not fit well on one line use
+%         Author 1 \\ {\bf Author 2} \\ ... \\ {\bf Author n} \\
+% For authors from different institutions:
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \And  ... \And
+%         Author n \\ Address line \\ ... \\ Address line}
+% To start a seperate ``row'' of authors use \AND, as in
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \AND
+%         Author 2 \\ Address line \\ ... \\ Address line \And
+%         Author 3 \\ Address line \\ ... \\ Address line}
+
+% If the title and author information does not fit in the area allocated,
+% place \setlength\titlebox{<new height>} right after
+% \usepackage{acl2000}
+% where <new height> can be something larger than 2.25in
+
+% \typeout{Conference Style for ACL 2000 -- released June 20, 2000}
+\typeout{Conference Style for ACL 2002 -- released April 8, 2002}
+
+% NOTE:  Some laser printers have a serious problem printing TeX output.
+% These printing devices, commonly known as ``write-white'' laser
+% printers, tend to make characters too light.  To get around this
+% problem, a darker set of fonts must be created for these devices.
+%
+
+% Physical page layout - slightly modified from IJCAI by pj
+\setlength\topmargin{0.0in} \setlength\oddsidemargin{-0.0in}
+\setlength\textheight{9.0in} \setlength\textwidth{6.5in}
+\setlength\columnsep{0.2in}
+\newlength\titlebox
+\setlength\titlebox{2.25in}
+\setlength\headheight{0pt}   \setlength\headsep{0pt}
+%\setlength\footheight{0pt}
+\setlength\footskip{0pt}
+\thispagestyle{empty}      \pagestyle{empty}
+\flushbottom \twocolumn \sloppy
+
+%% A4 version of page layout
+%\setlength\topmargin{-0.45cm}    % changed by Rz  -1.4
+%\setlength\oddsidemargin{.8mm}   % was -0cm, changed by Rz
+%\setlength\textheight{23.5cm} 
+%\setlength\textwidth{15.8cm}
+%\setlength\columnsep{0.6cm}  
+%\newlength\titlebox 
+%\setlength\titlebox{2.00in}
+%\setlength\headheight{5pt}   
+%\setlength\headsep{0pt}
+%%\setlength\footheight{0pt}
+%\setlength\footskip{0pt}
+%\thispagestyle{empty}        
+%\pagestyle{empty}
+
+\flushbottom \twocolumn \sloppy
+
+% We're never going to need a table of contents, so just flush it to
+% save space --- suggested by drstrip@sandia-2
+\def\addcontentsline#1#2#3{}
+
+% Title stuff, taken from deproc.
+\def\maketitle{\par
+ \begingroup
+   \def\thefootnote{\fnsymbol{footnote}}
+   \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}}
+   \twocolumn[\@maketitle] \@thanks
+ \endgroup
+ \setcounter{footnote}{0}
+ \let\maketitle\relax \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+\def\@maketitle{\vbox to \titlebox{\hsize\textwidth
+ \linewidth\hsize \vskip 0.125in minus 0.125in \centering
+ {\Large\bf \@title \par} \vskip 0.2in plus 1fil minus 0.1in
+ {\def\and{\unskip\enspace{\rm and}\enspace}%
+  \def\And{\end{tabular}\hss \egroup \hskip 1in plus 2fil 
+           \hbox to 0pt\bgroup\hss \begin{tabular}[t]{c}\bf}%
+  \def\AND{\end{tabular}\hss\egroup \hfil\hfil\egroup
+          \vskip 0.25in plus 1fil minus 0.125in
+           \hbox to \linewidth\bgroup\large \hfil\hfil
+             \hbox to 0pt\bgroup\hss \begin{tabular}[t]{c}\bf}
+  \hbox to \linewidth\bgroup\large \hfil\hfil
+    \hbox to 0pt\bgroup\hss \begin{tabular}[t]{c}\bf\@author 
+                            \end{tabular}\hss\egroup
+    \hfil\hfil\egroup}
+  \vskip 0.3in plus 2fil minus 0.1in
+}}
+\renewenvironment{abstract}{\centerline{\large\bf  
+ Abstract}\vspace{0.5ex}\begin{quote}}{\par\end{quote}\vskip 1ex}
+
+
+% bibliography
+
+\def\thebibliography#1{\section*{References}
+  \global\def\@listi{\leftmargin\leftmargini
+               \labelwidth\leftmargini \advance\labelwidth-\labelsep
+               \topsep 1pt plus 2pt minus 1pt
+               \parsep 0.25ex plus 1pt \itemsep 0.25ex plus 1pt}
+  \list {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+    \advance\leftmargin\labelsep\usecounter{enumi}}
+    \def\newblock{\hskip .11em plus .33em minus -.07em}
+    \sloppy
+    \sfcode`\.=1000\relax}
+
+\def\@up#1{\raise.2ex\hbox{#1}}
+
+% most of cite format is from aclsub.sty by SMS
+
+% don't box citations, separate with ; and a space
+% also, make the penalty between citations negative: a good place to break
+% changed comma back to semicolon pj 2/1/90
+% \def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+% \def\@citea{}\@cite{\@for\@citeb:=#2\do
+%   {\@citea\def\@citea{;\penalty\@citeseppen\ }\@ifundefined
+%      {b@\@citeb}{{\bf ?}\@warning
+%      {Citation `\@citeb' on page \thepage \space undefined}}%
+% {\csname b@\@citeb\endcsname}}}{#1}}
+
+% don't box citations, separate with ; and a space
+% Replaced for multiple citations (pj) 
+% don't box citations and also add space, semicolon between multiple citations
+\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@cite{\@for\@citeb:=#2\do
+     {\@citea\def\@citea{; }\@ifundefined
+       {b@\@citeb}{{\bf ?}\@warning
+        {Citation `\@citeb' on page \thepage \space undefined}}%
+ {\csname b@\@citeb\endcsname}}}{#1}}
+
+% Allow short (name-less) citations, when used in
+% conjunction with a bibliography style that creates labels like
+%       \citename{<names>, }<year>
+% 
+\let\@internalcite\cite
+\def\cite{\def\citename##1{##1, }\@internalcite}
+\def\shortcite{\def\citename##1{}\@internalcite}
+\def\newcite{\leavevmode\def\citename##1{{##1} (}\@internalciteb}
+
+% Macros for \newcite, which leaves name in running text, and is
+% otherwise like \shortcite.
+\def\@citexb[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@newcite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{;\penalty\@m\ }\@ifundefined
+       {b@\@citeb}{{\bf ?}\@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+\hbox{\csname b@\@citeb\endcsname}}}{#1}}
+\def\@internalciteb{\@ifnextchar [{\@tempswatrue\@citexb}{\@tempswafalse\@citexb[]}}
+
+\def\@newcite#1#2{{#1\if@tempswa, #2\fi)}}
+
+\def\@biblabel#1{\def\citename##1{##1}[#1]\hfill}
+
+%%% More changes made by SMS (originals in latex.tex)
+% Use parentheses instead of square brackets in the text.
+\def\@cite#1#2{({#1\if@tempswa , #2\fi})}
+
+% Don't put a label in the bibliography at all.  Just use the unlabeled format
+% instead.
+\def\thebibliography#1{\vskip\parskip%
+\vskip\baselineskip%
+\def\baselinestretch{1}%
+\ifx\@currsize\normalsize\@normalsize\else\@currsize\fi%
+\vskip-\parskip%
+\vskip-\baselineskip%
+\section*{References\@mkboth
+ {References}{References}}\list
+ {}{\setlength{\labelwidth}{0pt}\setlength{\leftmargin}{\parindent}
+ \setlength{\itemindent}{-\parindent}}
+ \def\newblock{\hskip .11em plus .33em minus -.07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+
+% Allow for a bibliography of sources of attested examples
+\def\thesourcebibliography#1{\vskip\parskip%
+\vskip\baselineskip%
+\def\baselinestretch{1}%
+\ifx\@currsize\normalsize\@normalsize\else\@currsize\fi%
+\vskip-\parskip%
+\vskip-\baselineskip%
+\section*{Sources of Attested Examples\@mkboth
+ {Sources of Attested Examples}{Sources of Attested Examples}}\list
+ {}{\setlength{\labelwidth}{0pt}\setlength{\leftmargin}{\parindent}
+ \setlength{\itemindent}{-\parindent}}
+ \def\newblock{\hskip .11em plus .33em minus -.07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthesourcebibliography=\endlist
+
+\def\@lbibitem[#1]#2{\item[]\if@filesw 
+      { \def\protect##1{\string ##1\space}\immediate
+        \write\@auxout{\string\bibcite{#2}{#1}}\fi\ignorespaces}}
+
+\def\@bibitem#1{\item\if@filesw \immediate\write\@auxout
+       {\string\bibcite{#1}{\the\c@enumi}}\fi\ignorespaces}
+
+% sections with less space
+\def\section{\@startsection {section}{1}{\z@}{-2.0ex plus
+    -0.5ex minus -.2ex}{1.5ex plus 0.3ex minus .2ex}{\large\bf\raggedright}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-1.8ex plus
+    -0.5ex minus -.2ex}{0.8ex plus .2ex}{\normalsize\bf\raggedright}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{1.5ex plus
+   0.5ex minus .2ex}{0.5ex plus .2ex}{\normalsize\bf\raggedright}}
+\def\paragraph{\@startsection{paragraph}{4}{\z@}{1.5ex plus
+   0.5ex minus .2ex}{-1em}{\normalsize\bf}}
+\def\subparagraph{\@startsection{subparagraph}{5}{\parindent}{1.5ex plus
+   0.5ex minus .2ex}{-1em}{\normalsize\bf}}
+
+% Footnotes
+\footnotesep 6.65pt %
+\skip\footins 9pt plus 4pt minus 2pt
+\def\footnoterule{\kern-3pt \hrule width 5pc \kern 2.6pt }
+\setcounter{footnote}{0}
+
+% Lists and paragraphs
+\parindent 1em
+\topsep 4pt plus 1pt minus 2pt
+\partopsep 1pt plus 0.5pt minus 0.5pt
+\itemsep 2pt plus 1pt minus 0.5pt
+\parsep 2pt plus 1pt minus 0.5pt
+
+\leftmargin 2em \leftmargini\leftmargin \leftmarginii 2em
+\leftmarginiii 1.5em \leftmarginiv 1.0em \leftmarginv .5em \leftmarginvi .5em
+\labelwidth\leftmargini\advance\labelwidth-\labelsep \labelsep 5pt
+
+\def\@listi{\leftmargin\leftmargini}
+\def\@listii{\leftmargin\leftmarginii
+   \labelwidth\leftmarginii\advance\labelwidth-\labelsep
+   \topsep 2pt plus 1pt minus 0.5pt
+   \parsep 1pt plus 0.5pt minus 0.5pt
+   \itemsep \parsep}
+\def\@listiii{\leftmargin\leftmarginiii
+    \labelwidth\leftmarginiii\advance\labelwidth-\labelsep
+    \topsep 1pt plus 0.5pt minus 0.5pt 
+    \parsep \z@ \partopsep 0.5pt plus 0pt minus 0.5pt
+    \itemsep \topsep}
+\def\@listiv{\leftmargin\leftmarginiv
+     \labelwidth\leftmarginiv\advance\labelwidth-\labelsep}
+\def\@listv{\leftmargin\leftmarginv
+     \labelwidth\leftmarginv\advance\labelwidth-\labelsep}
+\def\@listvi{\leftmargin\leftmarginvi
+     \labelwidth\leftmarginvi\advance\labelwidth-\labelsep}
+
+\abovedisplayskip 7pt plus2pt minus5pt%
+\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip  0pt plus3pt%   
+\belowdisplayshortskip  4pt plus3pt minus3pt%
+
+% Less leading in most fonts (due to the narrow columns)
+% The choices were between 1-pt and 1.5-pt leading
+\def\@normalsize{\@setsize\normalsize{11pt}\xpt\@xpt}
+\def\small{\@setsize\small{10pt}\ixpt\@ixpt}
+\def\footnotesize{\@setsize\footnotesize{10pt}\ixpt\@ixpt}
+\def\scriptsize{\@setsize\scriptsize{8pt}\viipt\@viipt}
+\def\tiny{\@setsize\tiny{7pt}\vipt\@vipt}
+\def\large{\@setsize\large{14pt}\xiipt\@xiipt}
+\def\Large{\@setsize\Large{16pt}\xivpt\@xivpt}
+\def\LARGE{\@setsize\LARGE{20pt}\xviipt\@xviipt}
+\def\huge{\@setsize\huge{23pt}\xxpt\@xxpt}
+\def\Huge{\@setsize\Huge{28pt}\xxvpt\@xxvpt}

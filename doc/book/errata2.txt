@@ -1,0 +1,12 @@
+Errata still present in the second printing:
+
+* sec 3.12 exercise 16: should be "from test import monty; print monty"
+* sec 4.2: output missing from len(t) -- issue 500
+
+* sec 4.4: append['noun'] should be append('noun')
+
+* sec 4.2: Thus, zip() takes the items of two or more sequences and "zips" them together into a single list of pairs.
+   s/b "list of tuples".  We only get pairs when two sequences are zipped.
+
+* ch8: the `a`:em: "are" of column `A`:em:
+   s/b the `a`:em: "are" of column `I`:em:

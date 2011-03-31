@@ -1,0 +1,16 @@
+Write a short review (2 to 3 pages) on some aspect of the NLTK book
+draft (http://nltk.org/index.php/Book). What we would appreciate is a
+thoughtful analysis of some specific portion of the book, rather than,
+say, a list of typos and errors over a large portion of the book. You
+can focus on anything you like: for example, the presentation of key
+ideas, the explanation of a piece of code, orthe way in which some
+exercises are formulated. You could even critique a piece of code. You
+could reflect on any key concepts you have struggled with, or the most
+important thing you learned, or new ways to illustrate the ideas using
+examples from your favorite area of linguistics, and make concrete
+suggestions for improving the presentation.
+
+All suggestions that we use will be acknowledged in the book's
+preface.  Please submit your work in a plain text file, named
+yoursurname_review.txt, via the file upload option.
+

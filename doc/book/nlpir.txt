@@ -1,0 +1,148 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.rst
+
+========================================================
+?. Natural Language Processing and Information Retrieval
+========================================================
+
+-------------------------
+?. Information Extraction
+-------------------------
+
+For many NLP applications, the priority is to extract meaning from
+written text. This must be done *robustly*; processing should not fail
+when unexpected or ill-formed input is received.  Today, robust
+semantic interpretation is easiest when shallow processing methods are
+used.  As we saw in the previous section, these methods severely limit
+(or even omit) syntactic analysis and restrict the complexity of the
+target semantic representations.
+
+One well-known instance of shallow semantics is Information Extraction
+(IE). In contrast to full text understanding, IE systems only try to
+recognize a limited number of pre-specified semantic topics and use a
+constrained semantic representation.  The initial phase of information
+extraction involves the detection of named entities, expressions that
+denote locations, people, companies, times, and monetary amounts.  (In
+fact, these named entities are nothing other than the low-level
+categories of the semantic grammars we saw in the previous section,
+but under a new guise.)  To illustrate, the following text contains
+several expressions which have been tagged as entities of types
+``time``, ``company`` and ``location``:
+
+  | The incident occurred <time>around 5.30pm</time> when a man walked into
+  | <company>William Hill bookkeepers</company> on <location>Ware Road</location>,
+  | and threatened a member of staff with a small black handgun. 
+
+The final output of an information extraction system, usually referred
+to as a template, consists of fixed number of slots that must be
+filled. More semantically, we can think of the template as denoting an
+event in which the participating entities play specific roles.  Here
+is an example corresponding to the above text:
+
+  | Crime event
+  |   Time: around 5.30pm
+  |   Location: William Hill bookkeepers on Ware Road
+  |   Suspect: man
+  |   Weapon: small black handgun
+
+Early work in IE demonstrated that hand-built rules could achieve good
+accuracy in the tasks defined by the DARPA Message Understanding
+Conferences (MUC).  In general, highest accuracy has been achieved in
+identifying so-called named entities, such as ``William Hill bookkeepers``.
+However, it is harder to identify which slots the entities should
+fill; and harder still to accurately identify which event the entities
+are participating in.  In recent years attention has shifted to making
+IE systems more portable to new domains by using some form of machine
+learning.  These systems work moderately well on marked-up text
+(e.g. HTML-formatted text), but their performance on free text still
+needs improvement before they can be adopted more widely.
+
+IE systems commonly use external knowledge sources in addition to the
+input text.  For example, named entity recognizers often use name or
+location gazetteers.  In the bioinformatics domain
+it is common to draw on external knowledge bases for standard names of
+genes and proteins.  A general purpose lexical ontology called WordNet
+is often used in IE systems.  Sometimes formal domain ontologies are
+used as a knowledge source for IE, permitting systems to perform
+simple taxonomic inferences and resolve ambiguities in the
+classification of slot-fillers.
+
+For example, an IE system for extracting basketball statistics from
+news reports on the web might have to interpret the sentence *Quincy
+played three games last weekend*, where the ambiguous subject *Quincy*
+might be either a player or a team.  An ontology in which *Quincy* is
+identified as the name of a college basketball team would permit the
+ambiguity to be resolved.  In other cases the template disambiguates
+the slot filler.  Thus, in the basketball domain, *Washington* might
+refer to one of many possible players, teams or locations.  If we know
+that the verb *won* requires an entity whose role in the taxonomy is a
+team, then we can resolve the ambiguity in the sentence *Washington won*.
+
+
+Message Understanding
+---------------------
+
+A message understanding system
+will extract salient chunks of text from a news story and populate a
+database.
+
+.. figure:: ../images/chunk-muc.png
+   :scale: 60
+
+   The Message Understanding Process (from Abney 1996)
+
+Consider the units that have been selected in this process:
+a name (``Garcia Alvarado``), a verb cluster (``was killed``),
+a locative prepositional phrase (``on his vehicle``).  These
+are examples of ``NP``, ``VP`` and ``PP`` chunks.
+
+
+MUC-7 Data?
+
+
+Named Entity Recognition
+------------------------
+
+
+Toponym Resolution
+------------------
+
+
+Recognizing Temporal Expressions
+--------------------------------
+
+
+Semantic Role Labeling
+----------------------
+
+
+
+---------------------------------
+Biomedical Information Extraction
+---------------------------------
+
+
+
+----------------------
+Document Summarization
+----------------------
+
+
+------------
+Other Topics
+------------
+
+text retrieval
+
+text classification
+
+text segmentation
+
+topic detection
+
+web crawling
+
+saving extracted material into a database
+
+
+.. include:: footer.txt

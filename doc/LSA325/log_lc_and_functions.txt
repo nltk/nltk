@@ -1,0 +1,58 @@
+List Comprehensions & Functions
+===============================
+
+Find the first letter of each word:
+
+    >>> words = 'this is a short sentence'.split()
+    >>> [word[0] for word in words]
+    ['t', 'i', 'a', 's', 's']
+
+Convert each word in a list to lower case:
+
+    >>> words = 'This sentence has some Capitalized words'.split()
+    >>> [word.lower() for word in words]
+    ['this', 'sentence', 'has', 'some', 'capitalized', 'words']
+
+Define a function that counts the number of vowels in a word:
+
+    >>> def vowels(word):
+    ...     v = 0
+    ...     for char in word:
+    ...         if char in 'aeiouAEIOU':
+    ...             v = v + 1
+    ...     return v
+
+Use the new 'vowels' function to find the number of vowels in each
+word from a word list:
+
+    >>> [vowels(word) for word in words]
+    [1, 3, 1, 2, 5, 1]
+
+Define a function that finds the average of a list of numbers.  
+
+    >>> def avg(numbers):
+    ...     return sum(numbers) / float(len(numbers)) # [1]
+
+[1] Note that we used 'float()' to convert the denominator from an
+    integer to a real number, since dividing by integers rounds to
+    the nearest value:
+
+        >>> print 10/3
+        3
+
+Find the average number of vowels in the world list.
+
+    >>> print avg([vowels(word) for word in words])
+    2.16666666667
+
+Find the average length of words that begin with a vowel:
+
+    >>> from nltk.corpus import brown
+    >>> words = brown.tokenized('a', group_by_sent=False)
+    >>> # Select only those words that start with a vowel:
+    >>> words = [w for w in words if w[0].lower() in 'aeiouy']
+    >>> # Find the length of each word:
+    >>> lengths = [len(w) for w in words]
+    >>> # Get the average:
+    >>> print avg(lengths)
+    4.00069249257

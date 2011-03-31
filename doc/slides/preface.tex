@@ -1,0 +1,291 @@
+\documentclass{beamer}             % for slides
+% \documentclass[handout]{beamer}    % for handout
+\input{beamer}
+
+\title{Introduction to Natural Language Processing}
+
+\author{Steven Bird \and Ewan Klein \and Edward Loper}
+\institute{
+  University of Melbourne, AUSTRALIA
+  \and
+  University of Edinburgh, UK
+  \and
+   University of Pennsylvania, USA
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\section{Preface}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Overview}
+
+\begin{frame}
+  \frametitle{Knowledge and Communication in Language}
+  \begin{itemize}
+    \item human knowledge, human communication, expressed in language
+    \item language technologies: process human language automatically
+    \item handheld devices: predictive text, handwriting recognition
+    \item web search engines: access to information locked up in text
+    \item two facets of the multilingual information society:
+    \begin{itemize}
+      \item natural human-machine interfaces
+      \item access to stored information
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problem}
+  \begin{itemize}
+    \item awash with language data
+    \item inadequate tools (will this ever change?)
+    \item overheads: Perl, Prolog, Java
+    \item Natural Language Toolkit (NLTK) as a solution
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{NLTK: What you get...}
+  \begin{itemize}
+    \item Book
+    \item Documentation
+    \item FAQ
+    \item Installation instructions for Python, NLTK, data
+    \item Distributions:
+      \textit{Windows, Mac OSX, Unix, data, documentation}
+    \item CD-ROM:
+      \textit{Python, NLTK, documentation, third-party libraries for numerical
+        processing and visualization, instructions}
+    \item Mailing lists:\\
+      \texttt{nltk-announce}, 
+      \texttt{nltk-devel}, 
+      \texttt{nltk-users}, 
+      \texttt{nltk-portuguese}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{NLTK: Who it is for...}
+  \begin{itemize}
+    \item people who want to learn how to:
+    \begin{itemize}
+      \item write programs
+      \item to analyze written language
+    \end{itemize}
+    \item does not presume programming abilities:
+    \begin{itemize}
+      \item working examples
+      \item graded exercises
+    \end{itemize}
+    \item experienced programmers:
+    \begin{itemize}
+      \item quickly learn Python (if necessary)
+      \item Python features for NLP
+      \item NLP algorithms and data structures
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{NLTK: What you will learn...}
+  \begin{enumerate}
+    \item how to analyze language data
+    \item key concepts from linguistic description and analysis
+    \item how linguistic knowledge is used in NLP components
+    \item data structures and algorithms used in NLP and linguistic data management
+    \item standard corpora and their use in formal evaluation
+    \item organization of the field of NLP
+    \item skills in Python programming for NLP
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{NLTK: Your likely goals...}
+\small
+\begin{tabular}{p{0.18\textwidth}|p{0.38\textwidth}|p{0.38\textwidth}}
+\textbf{Goals} & \multicolumn{2}{c}{\textbf{Background}} \\
+& \textit{Arts and Humanities} & \textit{Science and Engineering} \\ \hline
+\textbf{Language Analysis}
+& Programming to manage language data, explore linguistic models, and test empirical claims
+& Language as a source of interesting problems in data modeling, data mining, and knowledge discovery\\ \hline
+\textbf{Language Technology}
+& Learning to program, with applications to familiar problems, to work in language technology or other technical field
+& Knowledge of linguistic algorithms and data structures for high quality, maintainable language processing software\\
+\end{tabular}
+
+\end{frame}
+
+\section{NLTK Book}
+
+\begin{frame}
+  \frametitle{Philosophy}
+  \begin{itemize}
+    \item practical
+    \item programming
+    \item principled
+    \item pragmatic
+    \item pleasurable
+    \item portal    
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Structure}
+  \begin{itemize}
+    \item Three parts:
+    \begin{enumerate}
+      \item \textbf{Basics:} text processing, tokenization, tagging,
+        lexicons, language engineering, text classification
+      \item \textbf{Parsing:} phrase structure, trees, grammars, chunking, parsing
+      \item \textbf{Advanced Topics:} selected topics in greater depth:
+        feature-based grammar, unification, semantics, linguistic data management
+    \end{enumerate}
+    \item each part: chapter on programming; three chapters on NLP
+    \item each chapter: motivation, sections, graded exercises, summary, further reading
+  \end{itemize}
+\end{frame}
+
+\section{The Python Programming Language}
+
+\subsection{Key Features}
+
+\begin{frame}
+  \frametitle{Python: Key Features}
+  \begin{itemize}
+    \item simple yet powerful, shallow learning curve
+    \item object-oriented: encapsulation, re-use
+    \item scripting language, facilitates interactive exploration
+    \item excellent functionality for processing linguistic data
+    \item extensive standard library, incl graphics, web, numerical processing
+    \item downloaded for free from \url{http://www.python.org/}
+  \end{itemize}
+\end{frame}
+
+\subsection{Python Example}
+
+\begin{frame}[fragile]
+  \frametitle{Python Example}
+
+\begin{verbatim}
+ import sys
+ for line in sys.stdin.readlines():
+     for word in line.split():
+         if word.endswith('ing'):
+             print word
+\end{verbatim}
+
+\begin{enumerate}
+\item whitespace: nesting lines of code; scope
+\item object-oriented: attributes, methods (e.g. \texttt{line})
+\item readable
+\end{enumerate}
+\end{frame}
+
+\subsection{Comparison with Perl}
+\begin{frame}[fragile]
+\frametitle{Comparison with Perl}
+
+\begin{verbatim}
+  while (<>) {
+      foreach my $word (split) {
+          if ($word =~ /ing$/) {
+              print "$word\n";
+          }
+      }
+  }
+\end{verbatim}
+
+\begin{enumerate}
+\item syntax is obscure: \textit{what are:} \verb|<> $ my split| ?
+\item ``it is quite easy in Perl to write programs that simply
+  look like raving gibberish, even to experienced Perl programmers''
+  (Hammond \textit{Perl Programming for Linguists} 2003:47)
+\item large programs difficult to maintain, reuse
+\end{enumerate}
+\end{frame}
+
+\subsection{What NLTK adds to Python}
+\begin{frame}
+\frametitle{What NLTK adds to Python}
+
+NLTK defines a basic infrastructure that can be used to build NLP
+programs in Python.  It provides:
+
+\begin{itemize}
+\item Basic classes for representing data relevant to natural language
+  processing
+\item Standard interfaces for performing tasks, such
+  as tokenization, tagging, and parsing
+\item Standard implementations for each task, which
+  can be combined to solve complex problems
+\item Demonstrations (parsers, chunkers, chatbots)
+\item Extensive documentation, including tutorials
+  and reference documentation
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{NLTK Design: Requirements}
+  \begin{enumerate}
+    \item \textbf{simplicity:} intuitive framework with substantial building blocks
+    \item \textbf{consistency:} uniform data structures, interfaces --- predictability
+    \item \textbf{extensibility:} accommodates new components
+      (replicate vs extend exiting functionality)
+    \item \textbf{modularity:} interaction between components
+    \item \textbf{well-documented:} substantial documentation
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{NLTK Design: Non-requirements}
+  \begin{enumerate}
+    \item \textbf{encyclopedic:} has many gaps; opportunity for students to extend it
+    \item \textbf{efficiency:} not highly optimised for runtime performance
+    \item \textbf{programming tricks:} avoid in preference for clear implementations
+      (replicate vs extend exiting functionality)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Corpora Distributed with NLTK}
+  \tiny
+  \begin{itemize}
+    \item Australian ABC News, 2 genres, 660k words, sentence-segmented
+    \item Brown Corpus, 15 genres, 1.15M words, tagged
+    \item CMU Pronouncing Dictionary, 127k entries
+    \item CoNLL 2000 Chunking Data, 270k words, tagged and chunked
+    \item CoNLL 2002 Named Entity, 700k words, pos- and named-entity-tagged (Dutch, Spanish)
+    \item Floresta Treebank, 9k sentences (Portuguese)
+    \item Genesis Corpus, 6 texts, 200k words, 6 languages
+    \item Gutenberg (sel), 14 texts, 1.7M words
+    \item Indian POS-Tagged Corpus, 60k words pos-tagged (Bangla, Hindi, Marathi, Telugu)
+    \item NIST 1999 Info Extr (sel), 63k words, newswire and named-entity SGML markup
+    \item Names Corpus, 8k male and female names
+    \item PP Attachment Corpus, 28k prepositional phrases, tagged as noun or verb modifiers
+    \item Presidential Addresses, 485k words, formatted text
+    \item Roget's Thesaurus, 200k words, formatted text
+    \item SEMCOR, 880k words, part-of-speech and sense tagged
+    \item SENSEVAL 2, 600k words, part-of-speech and sense tagged
+    \item Shakespeare XML Corpus (sel), 8 books
+    \item Stopwords Corpus, 2,400 stopwords for 11 languages
+    \item Switchboard Corpus (sel), 36 phonecalls, transcribed, parsed
+    \item Univ Decl Human Rights, 480k words, 300+ languages
+    \item US Pres Addr Corpus, 480k words
+    \item Penn Treebank (sel), 40k words, tagged and parsed
+    \item TIMIT Corpus (sel), audio files and transcripts for 16 speakers
+    \item Wordlist Corpus, 960k words and 20k affixes for 8 languages
+    \item WordNet, 145k synonym sets
+  \end{itemize}
+\end{frame}
+
+\end{document}
+

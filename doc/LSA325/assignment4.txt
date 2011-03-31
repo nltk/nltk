@@ -1,0 +1,56 @@
+Grammar development
+
+For this assignment, you will be editing a file named
+'assignment4.py', which you can download from:
+
+    http://nltk.org/temp/assignment4.py
+
+Please rename this file to
+'assignment4-<your last name>.py' before submitting it.
+
+
+1. Chose a linguistic phenomenon of interest that you would like to
+   model using a grammar.  Here are some ideas, or use your own:
+
+     - Noun modifiers
+       ("slow cat", "very slow cat")
+     - Comparative expressions
+       ("bigger than a breadbox", "less heavy than ...")
+     - Sentential complements
+       ("I think that you know that ...")
+     - Quantifiers
+       ("For every boy, some girl ...")
+
+2. Choose 4-5 example sentences, and add them to the 'sent_corpus'
+   variable.  This variable contains a list of sentences, one per
+   line.
+
+3. Add grammar and lexical rules to the 'grammar' variable to cover
+   your example sentences.  
+
+4. Run the program, and check the parse trees you get.  Were there any
+   extra parse trees you weren't expecting?  Were there any sentences
+   that failed to parse?
+
+5. Refine your grammar until it covers your example sentences.  If
+   possible, your grammar should not produce extra unintended parse
+   trees.  (But for some linguistic phenomena, this might not be
+   possible!)
+
+6. Once you're happy with the output parse trees, copy them to the
+   'tree_corpus' variable.  Do NOT copy the sentence strings -- just
+   the tree expressions.  (If your grammar generates extra unintended
+   parse trees, don't include them.)  You can then delete these
+   sentences from 'sent_corpus'.  Run the program again, and it will
+   automatically check to make sure that the intended parse trees are
+   getting generated.  This way you won't have to keep checking them
+   by hand if you choose to do the optional step (7).
+
+7. Optional: return to step 2 (as many times as you like).
+
+8. Use the 'comments' variable to write a short comment about grammar
+   development -- was it easier or harder than you thought?  How hard
+   do you think it would be to merge the grammar that you developed
+   with some of your classmates' grammars, that were designed to
+   handle other linguistic phenomena?  What problems might come up
+   when merging grammars?

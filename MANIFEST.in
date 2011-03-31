@@ -1,0 +1,7 @@
+include LICENSE.txt
+include INSTALL.txt
+include README.txt
+include nltk/nltk.jar
+include nltk/test/*.doctest
+recursive-include javasrc *.java *.txt Makefile
+

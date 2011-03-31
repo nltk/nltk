@@ -1,0 +1,158 @@
+Recognizing special tokens
+By: Scot Wilcoxon (sewilco) - 2006-02-06 16:12
+While trying to process text with some formatting markup in it, I was looking at the source code for various tokenizers. I realized that token_split() uses a regular expression. 
+ 
+Although the examples for other tokenizers show regular expressions which detect word (or non-word) characters in any order, I eventually realized that token_split() can recognize specific tokens. 
+ 
+I did not find examples of token_split() usage. Because it includes token separators, it can be used to retain interesting strings for further processing. 
+ 
+For example, having token_split() look for r'<html>|</html>|<head>|</head>|<body>|</body>' will help separate some HTML markup from other material. More general patterns for use with HTML might be r'<|>' or r'</|<|>'. 
+ 
+I thought this little note might give other regular expression users a little inspiration.
+
+
+Corpus = Token?
+By: Tony (tony_nltk) - 2005-08-11 20:17
+Hi, 
+ 
+This may be a rather silly question, but can anybody point me to a discussion of why the simple corpus reader returns a Token object? (at least, it does for genesis..) I'd like to talk to my students about the meaning of these classes, but this seems counterintuitive to me and I would be interested in hearing about this decision. I should mention that my students are completely new to NLP and also to Python, so they are easy to confuse... Also, when I look up the documentation on the Token class, I haven't managed to find any mention of this use of the class.  
+ 
+Thanks very much for any comments, 
+ 
+Tony
+
+
+      RE: Corpus = Token?
+      By: Steven Bird (stevenbirdProject Admin & Donor) - 2005-08-11 22:16
+      Hi Tony, 
+       
+      I think there was some discussion of this on NLTK-Devel in mid 2004 when we changed from NLTK 1.3 to 1.4 and adopted this fancy new token architecture, in which everything (words, tagged words, sentences, trees, sometimes whole corpora) were represented as hierarchically structured tokens. You'll get a sense of some of that discussion here: 
+       
+      http://sourceforge.net/mailarchive/forum.php?thread_id=4999636&forum_id=959 
+       
+      This turned out to be too cumbersome for many users, and so in NLTK-Lite, we've switched back to a much simpler model, in which there is no token class at all. 
+       
+      If you are teaching using NLTK you might like to join the NLTK-Teach mailing list. We should also list your course on our website at http://nltk.sf.net/teach.html 
+       
+      -Steven Bird 
+
+
+Version 1.3
+By: brian (byuva) - 2004-02-27 03:20
+Just wondering if anyone knows what the development timeline is for the version 1.3. I am looking to do some Maximum Entropy with more contextual features. From the documentation it looks like it may be in the next realease. I note in the developer forum someone mentioned a 1.3 Beta. Despite my best Googling I was unable to find this.
+
+
+      RE: Version 1.3
+      By: Edward Loper (edloperProject Admin) - 2004-02-27 03:35
+      We're going to try to get 1.3 released by late march. I'm not sure whether the maxent features you're looking for will be implemented by then, though. (We've got a fairly large number of improvements we want to make, and fewer active developers than we'd like.) But we'll try. :) 
+       
+      "1.3 beta" was probably used to refer to the current contents of the cvs repository. 
+       
+      -Edward
+
+      RE: Version 1.3
+      By: brian (byuva) - 2004-02-27 10:37
+      Thanks for the quick reply Edward. It looks like you have done a lot with limited resources. The quality documentation is particularly appreciated by someone like myself who is new to Natural Language processing (and as a programmer who knows how documentation can often be neglected) 
+       
+      I just checked CVS and note the addition of the featurestruct module. Looks interesting but still trying to get a handle on how it fits into the rest of the framework. Will it replace the feature detectors currently used by the classifiers? 
+       
+      It looks like the classifier module hasn't been touched for a while. I recently read Ratnaparkhi's dissertation on Maxent and NLP (seems to be commonly cited) and was hoping to try implementing his parser. I imagine I could use a sliding window of text with some custom feature detectors to obtain much of the context but it still seems difficult to pass "big picture" contextual information (ie like what sentence are we on) Any change in this for 1.3? 
+       
+      Thanks again for all your work and any help you can offer. 
+       
+      Brian
+
+            RE: Version 1.3
+            By: Edward Loper (edloperProject Admin) - 2004-02-27 11:09
+            Thanks. 
+             
+            The featurestruct module isn't really related to classification -- it's more oriented towards unification-based systems. E.g., defining a grammar that uses features to ensure proper agreement, etc. 
+             
+            The classifier system is due for an overhaul; and the problem you mention (that it's hard to get at context outside the thing you're classifying) is one of the reasons why. But that work will probably need to wait until we finish reworking the basic Token class. That basic work should help make it easier to make the classifier system do what we want. For more info on reworking the Token class, see the nltk-devel mailing list. The original thread on that topic is at: 
+             
+            http://sourceforge.net/mailarchive/forum.php?thread_id=3348643&forum_id=959 
+             
+            And there are several other relevant threads, too (mutability of tokens, etc). 
+             
+            If we can get around to overhauling the classification package before the next release, then it'll do what you want. Otherwise, it won't. :) 
+             
+            -Edward 
+
+
+Issues with type checking
+By: Trevor Cohn (trevorcohn1) - 2003-07-17 15:01
+I've been having a few issues with the dynamic type checking that is performed in most functions in nltk.  
+eg. in tagger.py: 
+def train(self, tagged_tokens): 
+assert _chktype(1, tagged_tokens, [Token], (Token,)) 
+... 
+I've been using this class with a generator which loads the tokens on demand from a file (to save on memory, which is an issue with large corpora), which of course doesn't meet the type constraints imposed, despite offering the methods required (__iter__). Hence I have to lower the type checking level to get this to work. 
+ 
+The python programming style discourages this form of type constraints, instead recommending look before you leap by running simple tests (where neccessary) that will raise exceptions if the object doesn't support the required operations.  
+ 
+Is it feasible to adapt the type checking to ensure that the object supports all required operations, rather than simply enforcing that the object is a descendant of an interface or such? 
+ 
+Cheers, 
+Trevor
+
+
+      RE: Issues with type checking
+      By: Edward Loper (edloperProject Admin) - 2003-08-07 03:56
+      The motivation behind these type checks is that many of the users of nltk are likely to not have much programming experience; so we were hoping that these checks would help catch some common errors. However, as you mentioned, they're not very "Pythonic," in as far as they artificially limit the applicability of functions/methods.  
+       
+      The current system assumes that you're not doing anything too tricky, but allows you to lower the type checking level if you want to (or if you want increased speed). 
+       
+      Another option might be to decrease the default type safety level. You could then increase it if you encounter a difficult-to-track-down bug. 
+       
+      Another option would be to try to implement a more lenient type-checking scheme (eg one that just checks the operators needed). But I think it would be very difficult to come up with a scheme that is lenient, easy to use, and easy to understand. In particular, we don't want to add an explicit check for every method we require, because that would be inconvenient, inefficient, and prone to error/omission. 
+       
+      A final option would be to get rid of the type checking altogether. Have people who have used nltk in introductory classes found the type checking useful? Would it be missed if it were gone? 
+
+
+            RE: Issues with type checking
+            By: Trevor Cohn (trevorcohn1) - 2003-08-07 17:32
+            I agree that it may be quite difficult to come up with a scheme to make the type checking more pythonic without introducing some nasty code. Simply testing that methods required on an object exist is ok, but trying to accept for eg. generators in the place of lists could be quite hard (and cryptic). 
+             
+            While the type checker annoys me, I have found it useful on a number of occasions, mostly when picking up type errors when calling object constructors rather than later method calls.  
+             
+            I haven't tried this with nltk source, but pychecker might help pick up some of the type errors that _chktype does now, rendering it redundant... 
+             
+            A solution exists already (dynamic alteration of the type checking leve), so I wouldn't label this a big issue, unless other people feel strongly about the subject.
+
+                  RE: Issues with type checking
+                  By: Steven Bird (stevenbirdProject Admin & Donor) - 2003-08-07 20:02
+                  I'm likewise annoyed by the extra clutter in the code due to the type checking, but agree that new users (even not-so-new users) benefit from this checking. 
+                   
+                  Can pychecker do the necessary type checks? Its not clear to me from the summary documentation. Of course its only going to do static checking, so it presumably won't be able to check types for objects built at runtime (e.g. using eval). If pychecker can handle the majority of cases I'd be happy to switch to it instead. 
+
+
+                        RE: Issues with type checking
+                        By: Trevor Cohn (trevorcohn1) - 2003-08-08 12:56
+                        I've had a bit more of a play with pychecker, and it's a pretty blunt instrument compared to the checking done in nltk. It's good at picking up useless code, dud function calls, typos, etc, but not so good at checking that for eg. a list parameter to a function contains the right type, or a parameter supports addition with integers.  
+                         
+                        I ran it against this: 
+                         
+                        t = Token('hello', []) 
+                        print t 
+                        l = Location('foo') 
+                        print l 
+                        for a in t: 
+                        print a 
+                         
+                        with the nltk type checking level 0 with every option on, and it failed to pick up the errors pre-runtime. However, it did complain a lot about the NLTK source, which should be looked at.
+
+next version ?
+By: Franz Faerber (ffa) - 2002-03-27 23:29
+Is there a plan, when the next version of nltk will be available and what the new features are ?
+
+
+      RE: next version ?
+      By: Edward Loper (edloperProject Admin) - 2002-04-19 01:29
+      Version 0.6 will be released early to mid May. It will include probablistic parsing (inside-out algorithm), FSAs (interface, implementation, & visualization), and possibly some preliminary HMM code. 
+       
+      -Edward 
+
+
+Welcome to Open Discussion
+By: Nobody/Anonymous (nobody) - 2001-07-10 06:10
+Welcome to Open Discussion

@@ -1,0 +1,79 @@
+
+    >>> from nltk.corpora import cmudict
+    >>> from string import join
+    >>> for word, num, pron in cmudict.raw():
+    ...     stress_pattern = join(c for c in join(pron) if c in "012")
+    ...     if stress_pattern.endswith("1 0 0 0 0"):
+    ...         print word, "/", join(pron)
+
+
+
+
+    >>> from nltk.corpora import shoebox
+    >>> from nltk.utilities import MinimalSet
+    >>> length, position, min = 4, 1, 3
+    >>> lexemes = [field[1].lower() for entry in shoebox.raw('rotokas.dic')
+    ...		   for field in entry if field[0] == 'lx']
+    >>> ms = MinimalSet()
+    >>> for lex in lexemes:
+    ...     if len(lex) == length:
+    ...         context = lex[:position] + '_' + lex[position+1:]
+    ...         target = lex[position]
+    ...         ms.add(context, target, lex)
+    >>> for context in ms.contexts(3):
+    ...     for target in ms.targets():
+    ...         print "%-4s" % ms.display(context, target, "-"),
+    ...     print
+
+
+
+    >>> from nltk.corpora import genesis
+    >>> from nltk.probability import ConditionalFreqDist
+    >>> from nltk.utilities import print_string
+    >>> cfdist = ConditionalFreqDist()
+    >>> prev = None
+    >>> for word in genesis.raw():
+    ...     word = word.lower()
+    ...     cfdist[prev].inc(word)
+    ...     prev = word
+    >>> words = []
+    >>> prev = 'lo,'
+    >>> for i in range(99):
+    ...     words.append(prev)
+    ...     for word in cfdist[prev].sorted():
+    ...         if word not in words:
+    ...             break
+    ...     prev = word
+    >>> print_string(join(words))
+
+
+
+
+
+    >>> from nltk.corpora import treebank
+    >>> from string import join
+    >>> def vp_conj(tree):
+    ...     if tree.node == 'VP' and len(tree) == 3 and tree[1].leaves() == ['but']:
+    ...         return True
+    ...     else:
+    ...         return False
+    >>> for tree in treebank.parsed_sents():
+    ...     for vp1,conj,vp2 in tree.subtrees(vp_conj):
+    ...         print join(child.node for child in vp1), "*BUT*", join(child.node for child in vp2)
+
+
+
+from nltk.corpora import treebank
+from string import join
+def vp_conj(tree):
+    if tree.node == 'VP' and len(tree) == 3 and tree[1].leaves() == ['but']:
+        return True
+    else:
+        return False
+
+def pr(subtree):
+    return "(%s %s)" % (subtree.node, join(subtree.leaves()))
+
+for tree in treebank.parsed_sents():
+    for vp1,conj,vp2 in tree.subtrees(vp_conj):
+        print join(pr(child) for child in vp1), "*BUT*", join(pr(child) for child in vp2)

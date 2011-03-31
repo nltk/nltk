@@ -1,0 +1,20 @@
+.. -*- mode: rst -*-
+
+=============================
+NLTK Regression Test Coverage
+=============================
+
+The following table lists each NLTK module, and indicates what
+percentage of the module's statements are currently covered by the
+regression test set.  To see which functions are methods are covered
+in a given module, click on that module.  You can then click on those
+functions and methods to see their source code, and to check what
+portion of them is covered by tests.
+
+.. include:: coverage-list.txt
+
+----
+
+`Return to the NLTK Regression Tests <../index.html>`__
+
+`Return to the NLTK Homepage <http://www.nltk.org/>`__

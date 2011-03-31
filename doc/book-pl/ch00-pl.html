@@ -1,0 +1,1037 @@
+<?xml version="1.0" encoding="ascii" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<script language="javascript" type="text/javascript">
+
+function astext(node)
+{
+    return node.innerHTML.replace(/(<([^>]+)>)/ig,"")
+                         .replace(/&gt;/ig, ">")
+                         .replace(/&lt;/ig, "<")
+                         .replace(/&quot;/ig, '"')
+                         .replace(/&amp;/ig, "&");
+}
+
+function copy_notify(node, bar_color, data)
+{
+    // The outer box: relative + inline positioning.
+    var box1 = document.createElement("div");
+    box1.style.position = "relative";
+    box1.style.display = "inline";
+    box1.style.top = "2em";
+    box1.style.left = "1em";
+  
+    // A shadow for fun
+    var shadow = document.createElement("div");
+    shadow.style.position = "absolute";
+    shadow.style.left = "-1.3em";
+    shadow.style.top = "-1.3em";
+    shadow.style.background = "#404040";
+    
+    // The inner box: absolute positioning.
+    var box2 = document.createElement("div");
+    box2.style.position = "relative";
+    box2.style.border = "1px solid #a0a0a0";
+    box2.style.left = "-.2em";
+    box2.style.top = "-.2em";
+    box2.style.background = "white";
+    box2.style.padding = ".3em .4em .3em .4em";
+    box2.style.fontStyle = "normal";
+    box2.style.background = "#f0e0e0";
+
+    node.insertBefore(box1, node.childNodes.item(0));
+    box1.appendChild(shadow);
+    shadow.appendChild(box2);
+    box2.innerHTML="Copied&nbsp;to&nbsp;the&nbsp;clipboard: " +
+                   "<pre class='copy-notify'>"+
+                   data+"</pre>";
+    setTimeout(function() { node.removeChild(box1); }, 1000);
+
+    var elt = node.parentNode.firstChild;
+    elt.style.background = "#ffc0c0";
+    setTimeout(function() { elt.style.background = bar_color; }, 200);
+}
+
+function copy_codeblock_to_clipboard(node)
+{
+    var data = astext(node)+"\n";
+    if (copy_text_to_clipboard(data)) {
+        copy_notify(node, "#40a060", data);
+    }
+}
+
+function copy_doctest_to_clipboard(node)
+{
+    var s = astext(node)+"\n   ";
+    var data = "";
+
+    var start = 0;
+    var end = s.indexOf("\n");
+    while (end >= 0) {
+        if (s.substring(start, start+4) == ">>> ") {
+            data += s.substring(start+4, end+1);
+        }
+        else if (s.substring(start, start+4) == "... ") {
+            data += s.substring(start+4, end+1);
+        }
+        /*
+        else if (end-start > 1) {
+            data += "# " + s.substring(start, end+1);
+        }*/
+        // Grab the next line.
+        start = end+1;
+        end = s.indexOf("\n", start);
+    }
+    
+    if (copy_text_to_clipboard(data)) {
+        copy_notify(node, "#4060a0", data);
+    }
+}
+    
+function copy_text_to_clipboard(data)
+{
+    if (window.clipboardData) {
+        window.clipboardData.setData("Text", data);
+        return true;
+     }
+    else if (window.netscape) {
+        // w/ default firefox settings, permission will be denied for this:
+        netscape.security.PrivilegeManager
+                      .enablePrivilege("UniversalXPConnect");
+    
+        var clip = Components.classes["@mozilla.org/widget/clipboard;1"]
+                      .createInstance(Components.interfaces.nsIClipboard);
+        if (!clip) return;
+    
+        var trans = Components.classes["@mozilla.org/widget/transferable;1"]
+                       .createInstance(Components.interfaces.nsITransferable);
+        if (!trans) return;
+    
+        trans.addDataFlavor("text/unicode");
+    
+        var str = new Object();
+        var len = new Object();
+    
+        var str = Components.classes["@mozilla.org/supports-string;1"]
+                     .createInstance(Components.interfaces.nsISupportsString);
+        var datacopy=data;
+        str.data=datacopy;
+        trans.setTransferData("text/unicode",str,datacopy.length*2);
+        var clipid=Components.interfaces.nsIClipboard;
+    
+        if (!clip) return false;
+    
+        clip.setData(trans,null,clipid.kGlobalClipboard);
+        return true;
+    }
+    return false;
+}
+//-->
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=ascii" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title></title>
+<style type="text/css">
+
+/*
+:Author: Edward Loper, James Curran
+:Copyright: This stylesheet has been placed in the public domain.
+
+Stylesheet for use with Docutils.
+
+This stylesheet defines new css classes used by NLTK.
+
+It uses a Python syntax highlighting scheme that matches
+the colour scheme used by IDLE, which makes it easier for
+beginners to check they are typing things in correctly.
+*/
+
+/* Include the standard docutils stylesheet. */
+@import url(default.css);
+
+/* Custom inline roles */
+span.placeholder    { font-style: italic; font-family: monospace; }
+span.example        { font-style: italic; }
+span.emphasis       { font-style: italic; }
+span.termdef        { font-weight: bold; }
+/*span.term           { font-style: italic; }*/
+span.category       { font-variant: small-caps; }
+span.feature        { font-variant: small-caps; }
+span.fval           { font-style: italic; }
+span.math           { font-style: italic; }
+span.mathit         { font-style: italic; }
+span.lex            { font-variant: small-caps; }
+span.guide-linecount{ text-align: right; display: block;}
+
+/* Python souce code listings */
+span.pysrc-prompt   { color: #9b0000; }
+span.pysrc-more     { color: #9b00ff; }
+span.pysrc-keyword  { color: #e06000; }
+span.pysrc-builtin  { color: #940094; }
+span.pysrc-string   { color: #00aa00; }
+span.pysrc-comment  { color: #ff0000; }
+span.pysrc-output   { color: #0000ff; }
+span.pysrc-except   { color: #ff0000; }
+span.pysrc-defname  { color: #008080; }
+
+
+/* Doctest blocks */
+pre.doctest         { margin: 0; padding: 0; font-weight: bold; }
+div.doctest         { margin: 0 1em 1em 1em; padding: 0; }
+table.doctest       { margin: 0; padding: 0;
+                      border-top: 1px solid gray;
+                      border-bottom: 1px solid gray; }
+pre.copy-notify     { margin: 0; padding: 0.2em; font-weight: bold;
+                      background-color: #ffffff; }
+
+/* Python source listings */
+div.pylisting       { margin: 0 1em 1em 1em; padding: 0; }
+table.pylisting     { margin: 0; padding: 0;
+                      border-top: 1px solid gray; }
+td.caption { border-top: 1px solid black; margin: 0; padding: 0; }
+.caption-label { font-weight: bold;  }
+td.caption p { margin: 0; padding: 0; font-style: normal;}
+
+table tr td.codeblock { 
+  padding: 0.2em ! important; margin: 0;
+  border-left: 1px solid gray;
+  border-right: 2px solid gray;
+  border-top: 0px solid gray;
+  border-bottom: 1px solid gray;
+  font-weight: bold; background-color: #eeffee;
+}
+
+table tr td.doctest  { 
+  padding: 0.2em; margin: 0;
+  border-left: 1px solid gray;
+  border-right: 2px solid gray;
+  border-top: 0px solid gray;
+  border-bottom: 1px solid gray;
+  font-weight: bold; background-color: #eeeeff;
+}
+
+td.codeblock table tr td.copybar {
+    background: #40a060; border: 1px solid gray;
+    font-family: monospace; padding: 0; margin: 0; }
+td.doctest table tr td.copybar {
+    background: #4060a0; border: 1px solid gray;
+    font-family: monospace; padding: 0; margin: 0; }
+
+td.pysrc { padding-left: 0.5em; }
+
+img.callout { border-width: 0px; }
+
+table.docutils {
+    border-style: solid;
+    border-width: 1px;
+    margin-top: 6px;
+    border-color: grey;
+    border-collapse: collapse; }
+
+table.docutils th {
+    border-style: none;
+    border-width: 1px;
+    border-color: grey;
+    padding: 0 .5em 0 .5em; }
+
+table.docutils td {
+    border-style: none;
+    border-width: 1px;
+    border-color: grey; 
+    padding: 0 .5em 0 .5em; }
+
+table.footnote td { padding: 0; }
+table.footnote { border-width: 0; }
+table.footnote td { border-width: 0; }
+table.footnote th { border-width: 0; }
+
+table.noborder { border-width: 0; }
+
+table.example pre { margin-top: 4px; margin-bottom: 0; }
+
+/* For figures & tables */
+p.caption { margin-bottom: 0; }
+div.figure { text-align: center; }
+
+/* The index */
+div.index { border: 1px solid black;
+            background-color: #eeeeee; }
+div.index h1 { padding-left: 0.5em; margin-top: 0.5ex;
+               border-bottom: 1px solid black; }
+ul.index { margin-left: 0.5em; padding-left: 0; }
+li.index { list-style-type: none; }
+p.index-heading { font-size: 120%; font-style: italic; margin: 0; }
+li.index ul { margin-left: 2em; padding-left: 0; }
+
+/* 'Note' callouts */
+div.note
+{
+  border-right:   #87ceeb 1px solid;
+  padding-right: 4px;
+  border-top: #87ceeb 1px solid;
+  padding-left: 4px;
+  padding-bottom: 4px;
+  margin: 2px 5% 10px;
+  border-left: #87ceeb 1px solid;
+  padding-top: 4px;
+  border-bottom: #87ceeb 1px solid;
+  font-style: normal;
+  font-family: verdana, arial;
+  background-color: #b0c4de;
+}
+
+table.avm { border: 0px solid black; width: 0; }
+table.avm tbody tr {border: 0px solid black; }
+table.avm tbody tr td { padding: 2px; }
+table.avm tbody tr td.avm-key { padding: 5px; font-variant: small-caps; }
+table.avm tbody tr td.avm-eq { padding: 5px; }
+table.avm tbody tr td.avm-val { padding: 5px; font-style: italic; }
+p.avm-empty { font-style: normal; }
+table.avm colgroup col { border: 0px solid black; }
+table.avm tbody tr td.avm-topleft 
+    { border-left: 2px solid #000080; border-top: 2px solid #000080; }
+table.avm tbody tr td.avm-botleft 
+    { border-left: 2px solid #000080; border-bottom: 2px solid #000080; }
+table.avm tbody tr td.avm-topright
+    { border-right: 2px solid #000080; border-top: 2px solid #000080; }
+table.avm tbody tr td.avm-botright
+    { border-right: 2px solid #000080; border-bottom: 2px solid #000080; }
+table.avm tbody tr td.avm-left
+    { border-left: 2px solid #000080; }
+table.avm tbody tr td.avm-right
+    { border-right: 2px solid #000080; }
+table.avm tbody tr td.avm-topbotleft
+    { border: 2px solid #000080; border-right: 0px solid black; }
+table.avm tbody tr td.avm-topbotright
+    { border: 2px solid #000080; border-left: 0px solid black; }
+table.avm tbody tr td.avm-ident
+    { font-size: 80%; padding: 0; padding-left: 2px; vertical-align: top; }
+.avm-pointer
+{ border: 1px solid #008000; padding: 1px; color: #008000; 
+  background: #c0ffc0; font-style: normal; }
+
+table.gloss { border: 0px solid black; width: 0; }
+table.gloss tbody tr { border: 0px solid black; }
+table.gloss tbody tr td { border: 0px solid black; }
+table.gloss colgroup col { border: 0px solid black; }
+table.gloss p { margin: 0; padding: 0; }
+
+table.rst-example { border: 1px solid black; }
+table.rst-example tbody tr td { background: #eeeeee; }
+table.rst-example thead tr th { background: #c0ffff; }
+td.rst-raw { width: 0; }
+
+/* Used by nltk.org/doc/test: */
+div.doctest-list { text-align: center; }
+table.doctest-list { border: 1px solid black;
+  margin-left: auto; margin-right: auto;
+}
+table.doctest-list tbody tr td { background: #eeeeee;
+  border: 1px solid #cccccc; text-align: left; }
+table.doctest-list thead tr th { background: #304050; color: #ffffff;
+  border: 1px solid #000000;}
+table.doctest-list thead tr a { color: #ffffff; }
+span.doctest-passed { color: #008000; }
+span.doctest-failed { color: #800000; }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- -*- mode: rst -*- -->
+<!-- -*- mode: rst -*- -->
+<div class="compound">
+<!-- CAP abbreviations (map to small caps in LaTeX) -->
+<!-- Other candidates for global consistency -->
+<!-- PTB removed since it must be indexed -->
+<!-- WN removed since it must be indexed -->
+<!-- misc & punctuation -->
+<!-- cdots was unicode U+22EF but not working -->
+<!-- exercise meta-tags -->
+<!-- Unicode tests -->
+<!-- phonetic -->
+<!-- misc -->
+<!-- used in Unicode section -->
+<!-- arrows -->
+<!-- unification stuff -->
+<!-- Math & Logic -->
+<!-- sets -->
+<!-- Greek -->
+<!-- Chinese -->
+<!-- URLs -->
+<!-- Python example - a snippet of code in running text -->
+<!-- PlaceHolder example -  something that should be replaced by actual code -->
+<!-- Linguistic eXample - cited form in running text -->
+<!-- Emphasized (more declarative than just using *) -->
+<!-- Grammatical Category - e.g. NP and verb as technical terms
+.. role:: gc
+   :class: category -->
+<!-- Math expression - e.g. especially for variables -->
+<!-- Textual Math expression - for words 'inside' a math environment -->
+<!-- Feature (or attribute) -->
+<!-- Raw LaTeX -->
+<!-- Raw HTML -->
+<!-- Feature-value -->
+<!-- Lexemes -->
+<!-- Replacements that rely on previous definitions :-) -->
+</div>
+<div class="section" id="przedmowa">
+<h1>Przedmowa</h1>
+<p>
+Tematem niniejszego podr&#281;cznika jest analiza j&#281;zyka naturalnego (ang. <em>Natural Language Processing</em> &#8212; <em>NLP</em>).
+Okre&#347;lenie &#8222;j&#281;zyk naturalny&#8221; odnosi si&#281; do dowolnego j&#281;zyka, np. angielskiego, hindi czy portugalskiego,
+s&#322;u&#380;&#261;cego ludziom w procesie komunikacji. W przeciwie&#324;stwie do j&#281;zyk&#243;w sztucznych,
+takich jak cho&#263;by j&#281;zyki programowania czy zapisy matematyczne, j&#281;zyki naturalne ewoluuj&#261;
+z ka&#380;dym, kolejnym pokoleniem w&#322;adaj&#261;cych nimi os&#243;b, przez co trudno jest m.in. w spos&#243;b jednoznaczny uchwyci&#263; rz&#261;dz&#261;ce nimi zasady.
+Analiz&#281; j&#281;zyka naturalnego (oznaczan&#261; skr&#243;tem NLP) b&#281;dziemy w tym podr&#281;czniku rozumie&#263; jako og&#243;&#322; technik komputerowych
+maj&#261;cych na celu manipulacj&#281; i operowanie danymi opartymi na j&#281;zyku naturalnym (m&#243;wionym lub pisanym).
+NLP mo&#380;e s&#322;u&#380;y&#263; realizacji prostych zada&#324;, jak cho&#263;by zliczanie cz&#281;stotliwo&#347;ci s&#322;&#243;w,
+maj&#261;ce na celu por&#243;wnanie r&#243;&#380;norodnych styl&#243;w. Z drugiej strony NLP, jako dziedzina, podejmuje r&#243;wnie&#380; z&#322;o&#380;one wyzwania,
+np. &#8222;rozumienie&#8221; kompletnych, autentycznych wypowiedzi celem udzielenia u&#380;ytecznych odpowiedzi na zadane przez u&#380;ytkownika pytanie.</p>
+<p>Technologie oparte na analizie j&#281;zyka naturalnego
+staj&#261; si&#281; coraz bardziej obecne. Przyk&#322;adowo telefony kom&#243;rkowe oraz przeno&#347;ne komputery (smartfony, urz&#261;dzenia typu PDA tudzie&#380; palmtopy)
+wyposa&#380;a si&#281; w funkcje przewidywania wprowadzanego tekstu (np. tzw. s&#322;owniki T9 &#8212; przyp. t&#322;um.) oraz rozpoznawania pisma odr&#281;cznego;
+wyszukiwarki internetowe umo&#380;liwiaj&#261; dost&#281;p do informacji zagnie&#380;dzonych w te&#347;cie nieustrukturyzowanym;
+t&#322;umaczenie maszynowe pozwala na wyszukiwanie tekst&#243;w napisanych w j&#281;zyku chi&#324;skim, a nast&#281;pnie odczytanie ich po hiszpa&#324;sku.
+Dzi&#281;ki zastosowaniu bardziej naturalnych interfejs&#243;w cz&#322;owiek-maszyna (ang. <em>human-machine interface</em> &#8212; <em>HMI</em>) oraz zaawansowanych
+metod dost&#281;pu do zapisanych informacji, przetwarzanie danych j&#281;zykowych zacz&#281;&#322;o pe&#322;ni&#263; kluczow&#261; rol&#281; w wielokulturowym spo&#322;ecze&#324;stwie informacyjnym.</p>
+<p>Ta ksi&#261;&#380;ka stanowi wprowadzenie do &#347;wiata analizy j&#281;zyka naturalnego.
+Mo&#380;e by&#263; z powodzeniem stosowana do samodzielnej nauki, jako podr&#281;cznik stosowany podczas kursu/zaj&#281;&#263;
+zwi&#261;zanych z tematyk&#261; NLP lub lingwistyk&#261; informatyczn&#261;, ewentualnie jako &#378;r&#243;d&#322;o uzupe&#322;niaj&#261;ce
+do zaj&#281;&#263; ze sztucznej inteligencji, analizy zawarto&#347;ci dokument&#243;w tekstowych (ang. <em>text mining</em>) czy j&#281;zykoznawstwa korpusowego.
+Ksi&#261;&#380;ka skupia si&#281; na praktycznym wykorzystaniu dost&#281;pnej wiedzy, oferuj&#261;c setki w pe&#322;ni funkcjonalnych przyk&#322;ad&#243;w oraz &#263;wicze&#324; o r&#243;&#380;nym stopniu trudno&#347;ci.</p>
+<p>Podr&#281;cznik opiera si&#281; na j&#281;zyku programowania Python oraz rozprowadzanej na licencji open-source pakiecie <em>Natural Language Toolkit</em> (NLTK).
+Na NLTK sk&#322;ada si&#281; obszerny wyb&#243;r bibliotek programistycznych oraz bogate towarzysz&#261;ce zasoby danych &#8212; wszystko opatrzone stosown&#261; dokumentacj&#261;
+i dost&#281;pne bezp&#322;atnie pod adresem internetowym <tt class="doctest"><span class="pre">http://www.nltk.org/</span></tt>.
+Dost&#281;pne s&#261; dystrybucje dla system&#243;w Windows, Macintosh i platform Unixowych.
+Gor&#261;co zach&#281;camy do pobrania j&#281;zyka programowania Python oraz pakietu NLTK oraz wypr&#243;bowania przyk&#322;ad&#243;w i &#263;wicze&#324; towarzysz&#261;cych poszczeg&#243;lnym partiom materia&#322;u.</p>
+<div class="section" id="dla-kogo-przeznaczona-jest-ta-ksi-ka">
+<h2>Dla kogo przeznaczona jest ta ksi&#261;&#380;ka?</h2>
+<p>Analiza j&#281;zyka naturalnego jest dziedzin&#261; istotn&#261; ze wzgl&#281;d&#243;w naukowych, ekonomicznych, spo&#322;ecznych oraz kulturowych.
+NLP prze&#380;ywa aktualnie gwa&#322;towny rozw&#243;j &#8212; powi&#261;zane teorie i metody znajduj&#261; zastosowanie w ramach r&#243;&#380;norodnych technologii j&#281;zykowych.
+Z tego wzgl&#281;du praktyczna znajomo&#347;&#263; podstaw NLP ma zasadnicze znaczenie dla szerokiego spektrum odbiorc&#243;w.
+W sektorze komercyjnym wiedza ta przyda si&#281; osobom zaanga&#380;owanym w projektowanie system&#243;w interakcji cz&#322;owiek-maszyna, analiz&#281; informacji biznesowych,
+oraz rozw&#243;j oprogramowania i technologii internetowych.
+Natomiast w &#347;rodowisku akademickim, kr&#261;g odbiorc&#243;w b&#281;dzie obejmowa&#322; osoby zajmuj&#261;ce si&#281; naukami humanistycznymi w kontek&#347;cie informatycznym (ang. <em>humanities computing</em>) i j&#281;zykoznawstwem korpusowym, jak r&#243;wnie&#380; informatyk&#243;w i badaczy sztucznej inteligencji.
+Dla wielu os&#243;b z kr&#281;g&#243;w akademickich, NLP funkcjonuje jako lingwistyka informatyczna (ang. &#8222;computational linguistics&#8221;).</p>
+<p>Podr&#281;cznik skierowany jest do szerokiego grona os&#243;b, kt&#243;re chc&#261;
+nauczy&#263; si&#281; pisa&#263; programy analizuj&#261;ce j&#281;zyk pisany,
+bez wgl&#281;du na wcze&#347;niejsze do&#347;wiadczenie zwi&#261;zane z programowaniem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name" colspan="2">Brak do&#347;wiadczenia w programowaniu?:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Wczesne rozdzia&#322;y ksi&#261;&#380;ki s&#261; przeznaczone
+dla czytelnik&#243;w nieposiadaj&#261;cych wiedzy programistycznej, otwarych na poznawanie
+nowych koncepcji i pragn&#261;cych rozwin&#261;&#263; umiej&#281;tno&#347;ci programistyczne.
+Podr&#281;cznik zawiera du&#380;o przyk&#322;ad&#243;w, kt&#243;re mo&#380;na powieli&#263; i wypr&#243;bowa&#263; samemu,
+a poszczeg&#243;lnym partiom materia&#322;u towarzysz&#261; &#263;wiczenia o zr&#243;&#380;nicowanym poziomie zaawansowania.
+Je&#380;eli potrzebuj&#261; Pa&#324;stwo bardziej og&#243;lnego wprowadzenia do programowania w Pythonie,
+warto zapozna&#263; si&#281; z materia&#322;ami dost&#281;pnymi na stronie <tt class="doctest"><span class="pre">http://docs.python.org/</span></tt>.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Pierwszy kontakt z Pythonem?:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Do&#347;wiadczeni programi&#347;ci mog&#261; dzi&#281;ki tej ksi&#261;&#380;ce szybko pozna&#263;
+podstawy Pythona, aby rozpocz&#261;&#263; prace zwi&#261;zane z analiz&#261; j&#281;zyka naturalnego.
+Podr&#281;cznik t&#322;umaczy wszystkie istotne elementy j&#281;zyka programowania, bogato ilustruj&#261;c je przyk&#322;adami.
+W ten spos&#243;b mo&#380;na doceni&#263; przyst&#281;pno&#347;&#263; Pythona w zastosowaniach NLP.
+Indeks rzeczowy pomo&#380;e odnale&#378;&#263; fragmenty zawieraj&#261;ce om&#243;wienia poszukiwanych poj&#281;&#263;.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Programujesz w Pythonie?:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Pomi&#324; przyk&#322;ady wprowadzaj&#261;ce do Pythona
+i rozpocznij czytanie od materia&#322;u otwieraj&#261;cego tematyk&#281; analizy j&#281;zykowej
+kt&#243;ry znajduje si&#281; w rozdziale <a class="reference external" href="ch01.html#chap-introduction">Chapter 1</a>.
+Wkr&#243;tce b&#281;dziesz m&#243;g&#322; wykorzysta&#263; swoje umiej&#281;tno&#347;ci w tej nowej, fascynuj&#261;cej dziedzinie.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="cel-ksi-ki">
+<h2>Cel ksi&#261;&#380;ki</h2>
+<p>Niniejszy podr&#281;cznik stanowi przede wszystkim <em>praktyczne</em> wprowadzenie do tematyki NLP.
+Nauka nast&#281;puje poprzez rozliczne przyk&#322;ady i pisanie autentycznych program&#243;w, dzi&#281;ki czemu u&#380;ytkownik uczy si&#281;, jak
+przetestowa&#263; pomys&#322; poprzez jego implementacj&#281;. Je&#380;eli wcze&#347;niej dostatecznie tego nie podkre&#347;lono,
+zadaniem ksi&#261;&#380;ki jest nauka <em>programowania</em>.  W przeciwie&#324;stwie do innych podr&#281;cznik&#243;w programowania
+przedstawione przyk&#322;ady ilustruj&#261;ce oraz &#263;wiczenia skupiaj&#261; si&#281; na zadaniach zwi&#261;zanych z NLP.
+Ksi&#261;&#380;ka przedstawia <em>teorie</em> zasadnicze dla omawianego materia&#322;u, nie unikaj&#261;c
+szczeg&#243;&#322;owych analiz lingwistycznych czy informatycznych poszczeg&#243;lnych kwestii.
+Autorzy starali si&#281; zachowa&#263; <em>praktyczny</em> charakter podr&#281;cznika,
+zachowuj&#261;c r&#243;wnowag&#281; pomi&#281;dzy wiedz&#261; teoretyczn&#261; a jej zastosowaniem, przedstawiaj&#261;c istniej&#261;ce
+zbie&#380;no&#347;ci i problemy. Co jednak najwa&#380;niejsze, trudno by&#322;oby przebrn&#261;&#263; przez ca&#322;y materia&#322;,
+gdyby nie by&#322; on dostatecznie <em>atrakcyjny</em>, dlatego te&#380;
+w tre&#347;ci przedstawiono wiele zastosowa&#324; i przyk&#322;ad&#243;w, kt&#243;re s&#261; interesuj&#261;ce, zabawne, czasem wr&#281;cz dziwaczne.</p>
+<p>Warto podkre&#347;li&#263;, i&#380; opracowanie nie ma charakteru encyklopedycznego. Om&#243;wienie zar&#243;wno programowania w Pythonie, jak i tematyki zwi&#261;zanej z NLP
+jest wybi&#243;rcze i przedstawione w formie podr&#281;cznika do samodzielnej nauki. Szczeg&#243;&#322;ow&#261; dokumentacj&#281; mo&#380;na odnale&#378;&#263; przeszukuj&#261;c materia&#322;y dost&#281;pne odpowiednio na <tt class="doctest"><span class="pre">http://python.org/</span></tt> oraz <tt class="doctest"><span class="pre">http://www.nltk.org/</span></tt>.</p>
+<p>Ksi&#261;&#380;ka nie stanowi zaawansowanego podr&#281;cznika z zakresu informatyki.
+Poziom prezentowanego materia&#322;u waha si&#281; pomi&#281;dzy poziomem pocz&#261;tkuj&#261;cym a &#347;redniozaawansowanym, z racji i&#380;
+jest on skierowany do czytelnik&#243;w pragn&#261;cych nauczy&#263; si&#281;, jak analizowa&#263;
+tekst przy u&#380;yciu j&#281;zyka programowania Python oraz pakietu Natural Language Toolkit.
+Zainteresowanym bardziej zaawansowanym poznaniem algorytm&#243;w wykorzystanych w NLTK,
+proponujemy przestudiowanie sekcji dotycz&#261;cej kodu na stronie <tt class="doctest"><span class="pre">http://www.nltk.org/</span></tt>.
+Warto r&#243;wnie&#380; zapozna&#263; si&#281; z pozosta&#322;ym materia&#322;ami i &#378;r&#243;d&#322;ami cytowanymi w podr&#281;czniku.</p>
+</div>
+<div class="section" id="czego-mo-na-si-nauczy">
+<h2>Czego mo&#380;na si&#281; nauczy&#263;</h2>
+<p>Studiuj&#261;c zawarty materia&#322;, czytelnik dowiaduje si&#281;:</p>
+<ul class="simple">
+<li>w jaki spos&#243;b proste programy mog&#261; pom&#243;c przy manipulacji i analizie
+danych j&#281;zykowych oraz, co najwa&#380;niejsze, jak pisa&#263; takie aplikacje;</li>
+<li>jak koncepcje lingwistyczne oraz zwi&#261;zane z dziedzin&#261; NLP mog&#261; pos&#322;u&#380;y&#263; w opisie
+i badaniu j&#281;zyka;</li>
+<li>jak korzysta&#263; z algorytm&#243;w i struktur danych w zadaniach zwi&#261;zanych z NLP;</li>
+<li>w jaki spos&#243;b zapisywa&#263; informacje j&#281;zykowe w standardowych formatach oraz jak wykorzysta&#263; dane
+do oszacowania skuteczno&#347;ci technik NLP.</li>
+</ul>
+<p>W zale&#380;no&#347;ci od wcze&#347;niejszych do&#347;wiadcze&#324;, nabytego wykszta&#322;cenia oraz rodzaju motywacji zwi&#261;zanej z poznaniem dziedziny, jak&#261; jest NLP,
+czytelnik mo&#380;e z pomoc&#261; tej ksi&#261;&#380;ki naby&#263; r&#243;&#380;ne umiej&#281;tno&#347;ci oraz wiedz&#281; teoretyczn&#261;, co przedstawiono w <a class="reference external" href="ch00-pt.html#tab-goals">Table I.1</a>.</p>
+<span class="target" id="tab-goals"></span><table border="1" class="docutils" id="tab-goals">
+<colgroup>
+<col width="15%" />
+<col width="26%" />
+<col width="59%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Cel nauki</th>
+<th class="head">Wykszta&#322;cenie humanistyczne</th>
+<th class="head">Wykszta&#322;cenie &#347;cis&#322;e/techniczne</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Analiza j&#281;zykowa</td>
+<td>Operacje na du&#380;ych korpusach,
+badanie modeli lingwistycznych,
+testowanie za&#322;o&#380;e&#324; empirycznych.</td>
+<td>Wykorzystanie technik z zakresu modelowania danych,
+eksploracji danych (ang. <em>data mining</em>) czy
+odkrywania wiedzy (ang. <em>knowledge discovery</em>) w analizie j&#281;zyka naturalnego.</td>
+</tr>
+<tr><td>Technologie j&#281;zykowe</td>
+<td>Budowanie efektywnych system&#243;w
+wykonuj&#261;cych zadania lingwistyczne
+za pomoc&#261; aplikacji komputerowych.</td>
+<td>Wykorzystanie algorytm&#243;w lingwistycznych
+oraz struktur danych w projektowaniu efektywnego
+oprogramowania s&#322;u&#380;&#261;cego do przetwarzania j&#281;zyka naturalnego.</td>
+</tr>
+</tbody>
+<p class="caption"><span class="caption-label">Table I.1</span>: <p>Umiej&#281;tno&#347;ci i wiedza, kt&#243;re czytelnik nabywa wraz lektur&#261; ksi&#261;&#380;ki zale&#380;&#261; od wyznaczonych cel&#243;w i kierunku kszta&#322;cenia.</p>
+</p>
+</table>
+</div>
+<div class="section" id="struktura-ksi-ki">
+<h2>Struktura ksi&#261;&#380;ki</h2>
+<p>Wczesne rozdzia&#322;y uporz&#261;dkowano wed&#322;ug skali trudno&#347;ci wprowadzanych poj&#281;&#263;,
+zaczynaj&#261;c od praktycznego wprowadzenia do NLP, w ramach kt&#243;rego
+przedstawiono, jak za pomoc&#261; niewielkich program&#243;w w napisanych Pythonie &#322;atwo
+wykona&#263; proste zadania analityczne oparte na ciekawych materia&#322;ach tekstowych (rozdzia&#322;y 1-3).
+Rozdzia&#322; czwarty omawia podstawy programowania strukturalnego,
+co ma na celu zebranie temat&#243;w i poj&#281;&#263; zwi&#261;zanych z programowaniem
+rozproszonych w trzech poprzedzaj&#261;cych rozdzia&#322;ach.
+W dalszej cz&#281;&#347;ci podr&#281;cznika ilo&#347;&#263; wprowadzanego materia&#322;u wzrasta, a kolejne rozdzia&#322;y
+po&#347;wi&#281;cone s&#261; om&#243;wieniu zasadniczych temat&#243;w zwi&#261;zanych z przetwarzaniem danych j&#281;zykowych:
+oznaczaniu cz&#281;&#347;ci mowy (tagowaniu), klasyfikacji tekstu oraz ekstrakcji informacji (rozdzia&#322;y 5-7).
+Kolejne trzy rozdzia&#322;y przedstawiaj&#261; techniki parsowania (rozbioru gramatycznego) zda&#324;,
+rozpoznawania ich budowy sk&#322;adniowej oraz konstruowania reprezentacji semantycznych (znaczeniowych)(rozdzia&#322;y 8-10).
+Ostatni rozdzia&#322; skupia si&#281; na efektywnym zarz&#261;dzaniu danymi j&#281;zykowymi (rozdzia&#322; 11).
+Podr&#281;cznik zawiera r&#243;wnie&#380; pos&#322;owie rozwa&#380;aj&#261;ce rozw&#243;j historyczny oraz przysz&#322;o&#347;&#263; NLP.</p>
+<p>W tre&#347;ci poszczeg&#243;lnych rozdzia&#322;&#243;w na przemian wyst&#281;puj&#261; dwa style prezentacji.
+W pierwszym z nich centrum stanowi j&#281;zyk naturalny. Jest on poddawany analizie,
+badane s&#261; r&#243;&#380;ne koncepcje lingwistyczne, a przyk&#322;adowe programy funkcjonuj&#261; jako narz&#281;dzia pomocne w dyskusji.
+Pojawiaj&#261; si&#281; elementy Pythona, kt&#243;re nie zosta&#322;y uprzednio wprowadzone w spos&#243;b systematyczny, aby czytelnik
+m&#243;g&#322; zrozumie&#263; cel ich zastosowania, zanim zag&#322;&#281;bi si&#281; w szczeg&#243;&#322;y techniczne.
+Przypomina to nauk&#281; formu&#322;ek w j&#281;zyku obcym &#8212; mo&#380;na np. skutecznie spyta&#263; o drog&#281;, nie znaj&#261;c teoretycznych zasad rz&#261;dz&#261;cych tworzeniem zda&#324; pytaj&#261;cych.
+Drugi styl prezentacji skupia si&#281; na zadach rz&#261;dz&#261;cych j&#281;zykiem programowania.
+Analizujemy programy, badamy algorytmy, natomiast przyk&#322;ady j&#281;zykowe odgrywaj&#261; rol&#281; pomocnicz&#261;.</p>
+<p>Ka&#380;dy rozdzia&#322; zawiera zestaw &#263;wicze&#324; o zr&#243;&#380;nicowanym poziomie zaawansowania,
+kt&#243;re s&#322;u&#380;&#261; jako podsumowanie materia&#322;u.
+Zastosowano nast&#281;puj&#261;cy podzia&#322; zada&#324; ze wzgl&#281;du na ich trudno&#347;&#263;:
+&#9788; &#322;atwe &#263;wiczenia wymagaj&#261;ce drobnych modyfikacji przedstawionych przyk&#322;ad&#243;w lub inne proste zadania;
+&#9681; &#263;wiczenia o &#347;rednim stopniu trudno&#347;ci, w kt&#243;rych materia&#322; jest badany dok&#322;adniej &#8212; wymagaj&#261; one uwa&#380;nej analizy i przemy&#347;lanych rozwi&#261;za&#324;;
+&#9733; &#263;wiczenia zaawansowane o charakterze otwartym, stanowi&#261;ce wyzwanie dla czytelnika, weryfikuj&#261;ce pe&#322;ne zrozumienie przedstawianej tre&#347;ci oraz wymagaj&#261;ce nieszablonowego my&#347;lenia.
+(niezalecane dla rozpoczynaj&#261;cych przygod&#281; z programowaniem).</p>
+<p>Ponadto ka&#380;dy z rozdzia&#322;&#243;w zawiera list&#281; polecanych publikacji oraz internetow&#261; sekcj&#281; &#8222;materia&#322;y uzupe&#322;niaj&#261;ce&#8221;,
+dost&#281;pn&#261; na stronie <tt class="doctest"><span class="pre">http://www.nltk.org/</span></tt>, przedstawiaj&#261;c&#261; bardziej zaawansowane &#378;r&#243;d&#322;a wiedzy oraz powi&#261;zane witryny internetowe. Na stronie mo&#380;na r&#243;wnie&#380; znale&#378;&#263; wszystkie fragmenty kodu przedstawione w danym rozdziale.</p>
+</div>
+<div class="section" id="dlaczego-python">
+<h2>Dlaczego Python?</h2>
+<p>Python jest prostym w nauce, pot&#281;&#380;nym j&#281;zykiem programowania, oferuj&#261;cym du&#380;e mo&#380;liwo&#347;ci
+w zakresie przetwarzania danych j&#281;zykowych.
+Jest on dost&#281;pny bezp&#322;atnie na stronie internetowej <tt class="doctest"><span class="pre">http://www.python.org/</span></tt>.
+Wersje instalacyjne s&#261; dost&#281;pne dla wszystkich popularnych system&#243;w operacyjnych.</p>
+<p>Poni&#380;ej przedstawiamy pi&#281;ciolinijkowy program w Pythonie, kt&#243;ry przetwarza plik <tt class="doctest"><span class="pre">file.txt</span></tt>,
+a nast&#281;pnie wypisuje wszystkie s&#322;owa zako&#324;czone ko&#324;c&#243;wk&#261; <tt class="doctest"><span class="pre">ing</span></tt>:</p>
+<div class="doctest">
+<table border="0" cellpadding="0" cellspacing="0" class="doctest" width="95%">
+<tr><td class="doctest">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr><td width="1" class="copybar"
+        onclick="javascript:copy_doctest_to_clipboard(this.nextSibling);"
+        >&nbsp;</td>
+<td class="pysrc"><pre class="doctest">
+<span class="pysrc-prompt">&gt;&gt;&gt; </span><span class="pysrc-keyword">for</span> line <span class="pysrc-keyword">in</span> open(<span class="pysrc-string">&quot;file.txt&quot;</span>):
+<span class="pysrc-more">... </span>    <span class="pysrc-keyword">for</span> word <span class="pysrc-keyword">in</span> line.split():
+<span class="pysrc-more">... </span>        <span class="pysrc-keyword">if</span> word.endswith(<span class="pysrc-string">'ing'</span>):
+<span class="pysrc-more">... </span>            <span class="pysrc-keyword">print</span> word</pre>
+</td>
+</tr></table></td></tr>
+</table></div>
+<p>Powy&#380;szy przyk&#322;ad ilustruje kilka podstawowych element&#243;w programowania w Pythonie.
+Odst&#281;py s&#322;u&#380;&#261; <em>zagnie&#380;d&#380;aniu</em> fragment&#243;w kodu, dlatego wiersz rozpoczynaj&#261;cy si&#281; od <tt class="doctest"><span class="pre"><span class="pysrc-keyword">if</span></span></tt>
+znajduje si&#281; w obszarze dzia&#322;ania instrukcji wyra&#380;onej w poprzedniej linii zaczynaj&#261;cej si&#281; od <tt class="doctest"><span class="pre"><span class="pysrc-keyword">for</span></span></tt>.
+W tym wypadku gwarantuje to, i&#380; test na obecno&#347;&#263; ko&#324;c&#243;wki <tt class="doctest"><span class="pre">ing</span></tt> zostanie wykonany dla ka&#380;dego s&#322;owa.
+Po drugie Python jest j&#281;zykiem <em>zorientowanym obiektowo</em> &#8212; ka&#380;da zmienna stanowi obiekt
+posiadaj&#261;cy okre&#347;lone atrybuty (w&#322;a&#347;no&#347;ci) i metody. Przyk&#322;adowo warto&#347;&#263; zmiennej <tt class="doctest"><span class="pre">line</span></tt>
+jest czym&#347; wi&#281;cej ni&#380; tylko sekwencj&#261; znak&#243;w. W istocie reprezentuje ona obiekt typu string (&#322;a&#324;cuch),
+kt&#243;ry posiada m.in. metod&#281; (operacj&#281;) <tt class="doctest"><span class="pre">split()</span></tt>, kt&#243;ra wyodr&#281;bnia s&#322;owa z linii tekstu.
+Chc&#261;c zastosowa&#263; metod&#281; dla danego obiektu, nale&#380;y wpisa&#263; nazw&#281; obiektu, a nast&#281;pnie nazw&#281; metody poprzedzon&#261; kropk&#261;, np. <tt class="doctest"><span class="pre">line.split()</span></tt>.
+Po trzecie metody mog&#261; posiada&#263; <em>argumenty</em> wyra&#380;ane w nawiasach. Na przyk&#322;ad w przedstawionych programie metoda  <tt class="doctest"><span class="pre">endswith</span></tt> zawiera argument <tt class="doctest"><span class="pre"><span class="pysrc-string">'ing'</span></span></tt>
+wskazuj&#261;cy, &#380;e poszukiwane s&#261; tylko s&#322;owa zako&#324;czone na <span class="example">ing</span>.
+Co jednak najwa&#380;niejsze, Python jest j&#281;zykiem o czytelnym zapisie,
+w zwi&#261;zku z czym nietrudno domy&#347;li&#263; si&#281;, jakie zadanie pe&#322;ni dany ci&#261;g instrukcji,
+nawet bez do&#347;wiadczenia w programowaniu.</p>
+<p>Wybrali&#347;my j&#281;zyk programowania Python ze wzgl&#281;du na &#322;atwo&#347;&#263; przyswajania obowi&#261;zuj&#261;cy w nim zasad,
+nieskomplikowan&#261; sk&#322;adni&#281; i semantyk&#281;, jak r&#243;wnie&#380; szerokie mo&#380;liwo&#347;ci przetwarzania &#322;a&#324;cuch&#243;w tekstowych.
+Jako j&#281;zyk interpretowany, Python u&#322;atwia interaktywne eksperymentowanie.
+B&#281;d&#261;c j&#281;zykiem zorientowanym obiektowo, pozwala on na prost&#261; hermetyzacj&#281;
+i wielokrotne wykorzystanie danych i metod. Python jest r&#243;wnie&#380; dynamiczny &#8212;
+umo&#380;liwia dodawanie w&#322;asciwo&#347;ci do obiekt&#243;w na bie&#380;&#261;co, natomiast typy zmiennych s&#261;
+przydzielane w dynamicznie, u&#322;atwiaj&#261;c szybki rozw&#243;j aplikacji.
+Warto tak&#380;e wspomnie&#263;, &#380;e j&#281;zyk ten zawiera obszerny zestaw bibliotek standardowych,
+w tym komponenty umo&#380;liwiaj&#261;ce programowanie element&#243;w graficznych, przetwarzanie danych numerycznych
+oraz &#322;&#261;czno&#347;&#263; z sieci&#261; internet.</p>
+<p>Python jest szeroko wykorzystywany w sektorze komercyjnym i badaniach naukowych, a w edukacji jego popularno&#347;&#263; ma skal&#281; mi&#281;dzynarodow&#261;.
+Programi&#347;ci cz&#281;sto chwal&#261; go jako &#347;rodek do osi&#261;gni&#281;cia zwi&#281;kszonej produktywno&#347;ci, jako&#347;ci oraz obs&#322;ugiwalno&#347;ci projektowanego oprogramowania.
+O historiach udanych projekt&#243;w opartych na Pythonie mo&#380;na poczyta&#263; na stronie internetowej <tt class="doctest"><span class="pre">http://www.python.org/about/success/</span></tt>.</p>
+<p>Pakiet NLTK stanowi infrastruktur&#281;, kt&#243;ra mo&#380;e s&#322;u&#380;y&#263; konstruowaniu program&#243;w zwi&#261;zanych z NLP
+w Pythonie. Zawiera on podstawowe klasy dla reprezentacji danych zwi&#261;zanych z przetwarzaniem j&#281;zyka naturalnego;
+standardowe interfejsy umo&#380;liwiaj&#261;ce wykonywanie zada&#324;, takich jak: oznaczanie cz&#281;&#347;ci mowy (ang. <em>part-of-speech tagging</em>),
+parsowanie (rozbi&#243;r) sk&#322;adniowe, czy klasyfikacj&#281; tekstu; a tak&#380;e standardowe implementacje dla ka&#380;dego typu zada&#324;.
+&#321;&#261;cz&#261;c wymienione elementy, mo&#380;na w spos&#243;b efektywny rozwi&#261;za&#263; nawet bardzo z&#322;o&#380;one problemy.</p>
+<p>NLTK zawiera obszern&#261; dokumentacj&#281;. Poza niniejszym podr&#281;cznikiem
+mo&#380;na skorzysta&#263; ze strony internetowej <tt class="doctest"><span class="pre">http://www.nltk.org/</span></tt>, na kt&#243;rej dost&#281;pna jest dokumentacja API
+szczeg&#243;&#322;owo opisuj&#261;ca ka&#380;dy modu&#322;, klas&#281; oraz funkj&#281; stanowi&#261;ce elementy pakietu, wyszczeg&#243;lniaj&#261;c
+odpowiednie parametry oraz przedstawiaj&#261;c przyk&#322;ady u&#380;ycia.
+Na stronie mo&#380;na r&#243;wnie&#380; odnale&#378;&#263; wiele samouczk&#243;w popartych licznymi przyk&#322;adami i zadaniami przeznaczonymi dla
+u&#380;ytkownik&#243;w, programist&#243;w i instruktor&#243;w.</p>
+</div>
+<div class="section" id="wymagane-oprogramowanie">
+<h2>Wymagane oprogramowanie</h2>
+<p>Chc&#261;c w pe&#322;ni korzysta&#263; z mo&#380;liwo&#347;ci opisanych w podr&#281;czniku, nale&#380;y zainstalowa&#263; kilka bezp&#322;atnych pakiet&#243;w oprogramowania.
+Aktualne odno&#347;niki do plik&#243;w instalacyjnych oraz odpowiednie instrukcje znajduj&#261; si&#281; na stronie <tt class="doctest"><span class="pre">http://www.nltk.org/</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Python:</th><td class="field-body">Materia&#322; prezentowany w ksi&#261;&#380;ce zak&#322;ada, &#380;e czytelnik posiada zainstalowany j&#281;zyk programowania Python w wersji 2.4 lub 2.5.
+Postaramy si&#281; dostosowa&#263; NLTK do Pythona w wersji 3.0, jak tylko powi&#261;zane biblioteki zostan&#261; stosownie zmodyfikowane.</td>
+</tr>
+<tr class="field"><th class="field-name">NLTK:</th><td class="field-body">Przyk&#322;ady zawarte w podr&#281;czniku opieraj&#261; si&#281; na pakiecie NLTK w wersji 2.0.  P&#243;&#378;niejsze edycje NLTK s&#261; zgodne z poprzednimi wersjami.</td>
+</tr>
+<tr class="field"><th class="field-name">NLTK-Data:</th><td class="field-body">Korpusy j&#281;zykowe analizowane i przetwarzane w podr&#281;czniku.</td>
+</tr>
+<tr class="field"><th class="field-name">NumPy:</th><td class="field-body">(zalecane)
+Biblioteka wykorzystywana do wykonywania oblicze&#324; naukowych, wspieraj&#261;ca tablice wielowymiarowe i algebr&#281; liniow&#261;,
+wymagana przy niekt&#243;rych zadaniach zwi&#261;zanych z obliczaniem prawdopodobie&#324;stwa, oznaczaniem cz&#281;&#347;ci mowy, grupowaniem, clustering czy klasyfikacj&#261; tekstu.</td>
+</tr>
+<tr class="field"><th class="field-name">Matplotlib:</th><td class="field-body">(zalecane)
+Biblioteka wspomagaj&#261;ca tworzenie dwuwymiarowych obraz&#243;w s&#322;u&#380;&#261;cych do wizualizacji danych,
+wykorzystywana w niekt&#243;rych fragmentach kodu wy&#347;wietlaj&#261;cych wykresy liniowe lub s&#322;upkowe.</td>
+</tr>
+<tr class="field"><th class="field-name">NetworkX:</th><td class="field-body">(opcjonalne)
+Biblioteka s&#322;u&#380;&#261;ca do przechowywania i wykonywania operacji na grafach, sk&#322;adaj&#261;cych si&#281; z
+w&#281;z&#322;&#243;w i kraw&#281;dzi. Dla wizualizacji sieci semantycznych, warto r&#243;wnie&#380; zainstalowa&#263; bibliotek&#281; <em>Graphviz</em>.</td>
+</tr>
+<tr class="field"><th class="field-name">Prover9:</th><td class="field-body">(opcjonalne)
+Biblioteka zajmuj&#261;ca si&#281; automatycznym dowodzeniem twierdze&#324; dla logiki pierwszego rz&#281;du oraz logiki r&#243;wno&#347;ciowej, wykorzystywana
+do wnioskowania w analizie j&#281;zykowej.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="natural-language-toolkit-nltk">
+<h2>Natural Language Toolkit (NLTK)</h2>
+<p>NLTK powsta&#322; w 2001 roku jako element zaj&#281;&#263; z lingwistyki informatycznej
+na wydziale informatyki Uniwersytetu Pensylwanii.
+Od tego czasu jest on stale rozwijany i wzbogacany przy wsp&#243;&#322;pracy kilkudziesi&#281;ciu os&#243;b.
+Pakiet zosta&#322; wdro&#380;ony w programach &#263;wicze&#324; na wielu uczelniach wy&#380;szych i stanowi podstaw&#281;
+wielu projekt&#243;w badawczych. W <a class="reference external" href="ch00-pt.html#tab-modules">Table I.2</a> zawarto list&#281; najwa&#380;niejszych modu&#322;&#243;w wchodz&#261;cych w sk&#322;ad pakietu NLTK.</p>
+<span class="target" id="tab-modules"></span><table border="1" class="docutils" id="tab-modules">
+<colgroup>
+<col width="21%" />
+<col width="17%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Rodzaj zadania</th>
+<th class="head">Modu&#322; NLTK</th>
+<th class="head">Funkcje</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>dost&#281;p do korpus&#243;w</td>
+<td>nltk.corpus</td>
+<td>ujednolicone interfejsy dla korpus&#243;w i zasob&#243;w leksykalnych</td>
+</tr>
+<tr><td>przetwarzanie &#322;a&#324;cuch&#243;w</td>
+<td>nltk.tokenize, nltk.stem</td>
+<td>tokenizery, tokenizery zdaniowe, stemmery</td>
+</tr>
+<tr><td>znajdowanie kolokacji</td>
+<td>nltk.collocations</td>
+<td>test t Welcha, test zgodno&#347;ci chi-kwadrat, punktowa informacja wzajemna</td>
+</tr>
+<tr><td>oznaczanie cz&#281;&#347;ci mowy</td>
+<td>nltk.tag</td>
+<td>tagery: n-gram, backoff, Brill, ukryte modele Markowa (HMM), TnT</td>
+</tr>
+<tr><td>klasyfikacja tekstu</td>
+<td>nltk.classify, nltk.cluster</td>
+<td>drzewa decyzyjne, maksymalna entropia, naiwny klasyfikator Bayesa, algorytm EM, metoda k-&#347;rednich</td>
+</tr>
+<tr><td>chunking</td>
+<td>nltk.chunk</td>
+<td>wyra&#380;enia regularne, n-gramy, jednostki nazewnicze</td>
+</tr>
+<tr><td>parsowanie</td>
+<td>nltk.parse</td>
+<td>tablicowe, oparte na atrybutach, unifikacyjne, probabilistyczne, zale&#380;no&#347;ciowe</td>
+</tr>
+<tr><td>interpretacja semantyczna</td>
+<td>nltk.sem, nltk.inference</td>
+<td>rachunek lambda, logika pierwszego rz&#281;du, wyryfikacja modelu</td>
+</tr>
+<tr><td>ocena efektywno&#347;ci przetwarzania</td>
+<td>nltk.metrics</td>
+<td>dok&#322;adno&#347;&#263;, pe&#322;no&#347;&#263;, wsp&#243;&#322;czynniki zgodno&#347;ci</td>
+</tr>
+<tr><td>prawdopodobie&#324;stwo i szacowanie</td>
+<td>nltk.probability</td>
+<td>rozk&#322;ad cz&#281;sto&#347;ci, wyg&#322;adzony rozk&#322;ad probabilistyczny</td>
+</tr>
+<tr><td>aplikacje</td>
+<td>nltk.app, nltk.chat</td>
+<td>graficzny interfejs konkordacyjny, parsery, przegl&#261;darka bazy WordNet, chatboty</td>
+</tr>
+<tr><td>badania lingwistyczne</td>
+<td>nltk.toolbox</td>
+<td>manipulacja danymi zapisanymi w formacie SIL Toolbox</td>
+</tr>
+</tbody>
+<p class="caption"><span class="caption-label">Table I.2</span>: <p>Zadania zwi&#261;zane z przetwarzaniem j&#281;zyka, odpowiadaj&#261;ce im modu&#322;y pakietu NLTK oraz przyk&#322;adowe funkcje</p>
+</p>
+</table>
+<p>Pakiet NLTK zaprojektowano pod k&#261;tem realizacji czterech podstawowych cel&#243;w:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Prostota:</th><td class="field-body">Intuicyjna struktura wraz z licznymi
+elementami konstrukcyjnymi, zapewniaj&#261;ca u&#380;ytkownikom nabycie praktycznej
+wiedzy w zakresie NLP bez niepotrzebnego anga&#380;owania si&#281; w monotonne rutyny
+typowe dla przetwarzania oznaczonych danych j&#281;zykowych.</td>
+</tr>
+<tr class="field"><th class="field-name">Konsekwencja:</th><td class="field-body">Ujednolicona platforma z konsekwetnie zaprojektowanymi
+interfejsami i strukturami danych oraz &#322;atwymi do odgadni&#281;cia nazwami metod.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Mo&#380;liwo&#347;ci rozbudowy:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Struktura, do kt&#243;rej &#322;atwo do&#322;&#261;czy&#263; nowe modu&#322;y programowe, &#322;&#261;cznie z
+alternatywnymi implementacjami i konkurencyjnymi rozwi&#261;zaniami tych samych problem&#243;w.</td>
+</tr>
+<tr class="field"><th class="field-name">Modu&#322;owo&#347;&#263;:</th><td class="field-body">Komponenty umo&#380;liwiaj&#261;ce ich niezale&#380;ne wykorzystanie bez potrzeby zrozumienia
+pozosta&#322;ych element&#243;w pakietu</td>
+</tr>
+</tbody>
+</table>
+<p>Powy&#380;sze cele s&#261; w opozycji do trzech potencjalnie u&#380;ytecznych cech, kt&#243;rych
+celowo starano si&#281; unika&#263; podczas projektowania i rozwoju element&#243;w NLTK.
+Po pierwsze, pomimo, i&#380; pakiet oferuje szeroki zakres funkcji, nie ma on
+natury encyklopedycznej &#8212; NLTK jest pakietem narz&#281;dzi, a nie systemem;
+jego dalszy rozw&#243;j b&#281;dzie zale&#380;a&#322; od ewolucji dziedziny, jak&#261; jest NLP.
+Po drugie, pakiet jest wystarczaj&#261;co wydajny, aby radzi&#263; sobie z autentycznymi zadaniami,
+jednak&#380;e nie zosta&#322; on zoptymalizowany pod k&#261;tem szybko&#347;ci dzia&#322;ania,
+co wymaga&#322;oby zastosowania du&#380;o bardziej z&#322;o&#380;onych algorytm&#243;w lub
+implementacji w j&#281;zykach programowania niskiego poziomu, np. C czy C++.
+W efekcie kod sta&#322;by si&#281; mniej czytelny, a oprogramowanie trudniejsze w instalacji.
+Po trzecie, autorzy starali si&#281; unika&#263; wyszukanych sztuczek programistycznych,
+kieruj&#261;c si&#281; przekonaniem, &#380;e jasne implementacje maj&#261; przewag&#281; nad
+tymi bardziej efektywnymi lecz trudnymi do odszyfrowania.</p>
+</div>
+<div class="section" id="dla-nauczycieli">
+<h2>Dla nauczycieli</h2>
+<p>Analiza j&#281;zyka naturalnego stanowi najcz&#281;&#347;ciej przedmiot zaj&#281;&#263; prowadzonych
+w ramach jednego semestru studi&#243;w licencjackich, in&#380;ynierskich lub uzupe&#322;niaj&#261;cych magisterskich.
+Wielu wyk&#322;adowc&#243;w zauwa&#380;a, i&#380; trudno jest om&#243;wi&#263; zar&#243;wno teoretyczne, jak i praktyczne elementy
+zwi&#261;zane z tematem w tak kr&#243;tkim czasie. Niekt&#243;re zaj&#281;cia skupiaj&#261; si&#281; na teorii, wykluczaj&#261;c tym samym
+elementy praktyczne i pozbawiaj&#261;c student&#243;w wyzwa&#324; i pasji p&#322;yn&#261;cych z samodzielnego pisania program&#243;w
+s&#322;u&#380;&#261;cych do przetwarzania j&#281;zyka. W innych przypadkach, program nauczania ma na celu jedynie przedstawienie
+element&#243;w programowania dla lingwist&#243;w, bez przyk&#322;adania uwagi do tre&#347;ci zwi&#261;zanych z NLP.
+Pakiet NLTK powsta&#322;, aby zaradzi&#263; tego typu problemom i umo&#380;liwi&#263; om&#243;wienie znacznej ilo&#347;ci teorii oraz
+materia&#322;u praktycznego w ramach jednosemestralnego kursu, nawet je&#347;li studenci nie posiadaj&#261; do&#347;wiadczenia w programowaniu.</p>
+<p>Znaczna cz&#281;&#347;&#263; dowolnego programu nauczania zwi&#261;zanego z NLP przedstawia
+r&#243;&#380;ne algorytmy i struktury danych. Same w sobie stanowi&#261; nieatrakcyjn&#261; teori&#281;,
+natomiast z pomoc&#261; pakietu NLTK nabieraj&#261; &#380;ycia dzi&#281;ki
+interaktywnym interfejsom u&#380;ytkownika, umo&#380;liwiaj&#261;cym podgl&#261;d dzia&#322;ania algorytm&#243;w krok po kroku.
+Wi&#281;kszo&#347;&#263; komponent&#243;w NLTK zawiera demonstracje przedstawiaj&#261;ce wykonanie interesuj&#261;cego zadania
+bez potrzeby wprowadzania danych przez u&#380;ytkownika.
+Interaktywna prezentacja oparta na przyk&#322;adach z podr&#281;cznika stanowi efektowny spos&#243;b prezentacji materia&#322;u.
+Demonstracje mo&#380;na uruchomi&#263; w &#347;rodowisku Pythona, zaobserwowa&#263; czym si&#281; one zajmuj&#261;, a nast&#281;pnie zmodyfikowa&#263; je, aby
+dog&#322;&#281;bniej zbada&#263; dany temat praktyczny lub teoretyczny.</p>
+<p>Podr&#281;cznik zawiera setki &#263;wicze&#324;, kt&#243;re mog&#261; pos&#322;u&#380;y&#263;
+jako podstawa oceny pracy student&#243;w. Najprostsze z nich wymagaj&#261; jedynie
+zmodyfikowania przedstawionego w cz&#281;&#347;ci teoretycznej programu, aby m&#243;c
+odpowiedzie&#263; na zadane pytanie. Z drugiej strony pakiet NLTK
+mo&#380;e pos&#322;u&#380;y&#263; jako elastyczna platforma programistyczna dla wielu projekt&#243;w dyplomowych,
+dzi&#281;ki przygotowanym standardowym implementacjom wszystkich podstawowych struktur danych
+i algorytm&#243;w, interfejsom dla kilkudziesi&#281;ciu popularnych zbior&#243;w danych (korpus&#243;w), a tak&#380;e
+elastycznej architekturze umo&#380;liwiaj&#261;cej wprowadzanie dalszych rozszerze&#324;. Dodatkowe informacje
+dla nauczycieli pos&#322;uguj&#261;cych si&#281; NLTK jest dost&#281;pne na stronie pakietu.</p>
+<p>
+Autorzy wyra&#380;aj&#261; przekonanie, i&#380; ta ksi&#261;&#380;ka w wyj&#261;tkowy spos&#243;b pozwoli studentom
+pozyskanie sp&#243;jnej architektury do nauki przetwarzania j&#281;zyka naturalnego w kontek&#347;cie programistycznym.
+To co wyr&#243;&#380;nia przedstawiony materia&#322;, to silne zespolenie tre&#347;ci i &#263;wicze&#324; z elementami pakietu NLTK,
+zapewnienie studentom &#8212; nawet tym bez do&#347;wiadczenia w programowaniu &#8212;
+praktycznego wst&#281;pu do dziedziny, jak&#261; jest NLP.
+Po przerobieniu ca&#322;ego kursu studenci b&#281;d&#261; w stanie przej&#347;&#263;
+do bardziej zaawansowanych podr&#281;cznik&#243;w, np. <em>Speech and
+Language Processing</em> autorstwa Jurafsky'ego i Martina (wydawn. Prentice Hall, 2008).</p>
+<p>Niniejsza ksi&#261;&#380;ka przedstawia koncepcje zwi&#261;zane z programowaniem w do&#347;&#263; nietypowej kolejno&#347;ci, zaczynaj&#261;c
+od nietrywialnego typu danych, jakim s&#261; listy &#322;a&#324;cuch&#243;w, a nast&#281;pnie wprowadzaj&#261;c
+nietrywialne struktury steruj&#261;ce wykonaniem programu, takie jak wyra&#380;enia listowe oraz instrukcje warunkowe.
+Dzi&#281;ki znajomo&#347;ci tych wyra&#380;e&#324; mo&#380;na od razu zaj&#261;&#263; si&#281; praktycznym przetwarzaniem j&#281;zyka.
+Dopiero kiedy jest to konieczne, powracamy do systematycznej prezentacji
+podstawowych poj&#281;&#263;, jak &#322;a&#324;cuchy, p&#281;tle, pliki itd.
+W ten spos&#243;b omawiamy tak&#261; sam&#261; porcj&#281; materia&#322;u jak w bardziej konwencjonalnych podr&#281;cznikach,
+nie stawiaj&#261;c jednak wymogu, aby czytelnicy byli przede wszystkim zainteresowani nauk&#261; j&#281;zyka programowania.</p>
+<p>Poni&#380;sza tabela przedstawia dwa przyk&#322;adowe, mo&#380;liwe rozk&#322;ady zaj&#281;&#263; dydaktycznych.
+Pierwszy z nich skonstruowano pod k&#261;tem student&#243;w kierunk&#243;w humanistycznych, natomiast drugi
+pasuje bardziej do kierunk&#243;w &#347;cis&#322;ych i technicznych. Mo&#380;na przygotowa&#263; w&#322;asny plan, przedstawiaj&#261;c pierwszych pi&#281;&#263;
+temat&#243;w, a nast&#281;pnie po&#347;wi&#281;caj&#261;c pozosta&#322;y, dost&#281;pny czas na om&#243;wienie wybranej tematyki, np.
+klasyfikacji tekstu (rozdzia&#322;y 6-7), sk&#322;adni (rozdzia&#322;u 8-9),
+semantyki (rozdzia&#322; 10) czy zarz&#261;dzania danymi j&#281;zykowymi (rozdzia&#322; 11).</p>
+<span class="target" id="tab-course-plans"></span><table border="1" class="docutils" id="tab-course-plans">
+<colgroup>
+<col width="51%" />
+<col width="22%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Rozdzia&#322;</th>
+<th class="head">Profil humanistyczny</th>
+<th class="head">Nauki &#347;cis&#322;e i techniczne</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>1  Przetwarzanie j&#281;zyka w Pythonie</td>
+<td>2-4</td>
+<td>2</td>
+</tr>
+<tr><td>2  Dost&#281;p do korpus&#243;w i zasob&#243;w leksykalnych</td>
+<td>2-4</td>
+<td>2</td>
+</tr>
+<tr><td>3  Przetwarzanie tekstu niesformatowanego</td>
+<td>2-4</td>
+<td>2</td>
+</tr>
+<tr><td>4  Programowanie strukturalne</td>
+<td>2-4</td>
+<td>1-2</td>
+</tr>
+<tr><td>5  Kategoryzacja i oznaczanie s&#322;&#243;w</td>
+<td>2-4</td>
+<td>2-4</td>
+</tr>
+<tr><td>6  Nauka klasyfikacji tekstu</td>
+<td>0-2</td>
+<td>2-4</td>
+</tr>
+<tr><td>7  Ekstrakcja informacji z tekstu</td>
+<td>2</td>
+<td>2-4</td>
+</tr>
+<tr><td>8  Analiza sk&#322;adniowa zda&#324;</td>
+<td>2-4</td>
+<td>2-4</td>
+</tr>
+<tr><td>9  Budowanie gramatyk atrybutywnych</td>
+<td>2-4</td>
+<td>1-4</td>
+</tr>
+<tr><td>10 Analiza znaczeniowa zda&#324;</td>
+<td>1-2</td>
+<td>1-4</td>
+</tr>
+<tr><td>11 Zarz&#261;dzanie danymi j&#281;zykowymi</td>
+<td>1-2</td>
+<td>1-4</td>
+</tr>
+<tr><td>Razem</td>
+<td>18-36</td>
+<td>18-36</td>
+</tr>
+</tbody>
+<p class="caption"><span class="caption-label">Table I.3</span>: <p>Sugerowany rozk&#322;ad zaj&#281;&#263; dydaktycznych; szacunkowa liczba godzin przypadaj&#261;ca na rozdzia&#322;</p>
+</p>
+</table>
+</div>
+<div class="section" id="konwencje-u-yte-w-podr-czniku">
+<h2>Konwencje u&#380;yte w podr&#281;czniku</h2>
+<p>W podr&#281;czniku obowi&#261;zuj&#261; nast&#281;puj&#261;ce konwencje zwi&#261;zane z prezentacj&#261; materia&#322;u:</p>
+<p><a name="pogrubienie_index_term" /><span class="termdef">Pogrubienie</span> -- oznacza nowy termin.</p>
+<p><em>Kursywa</em> -- w tre&#347;ci odnosi si&#281; do przyk&#322;ad&#243;w j&#281;zykowych,
+tytu&#322;&#243;w tekst&#243;w i adres&#243;w internetowych; stosowana tak&#380;e przy podawaniu nazw i rozszerze&#324; plik&#243;w.</p>
+<p><tt class="doctest"><span class="pre">Test o sta\u0142ej szeroko\u015bci</span></tt> -- w listingach program&#243;w,
+a tak&#380;e w tre&#347;ci, odnosz&#261;c si&#281; do element&#243;w programistycznych,
+jak np. nazwy funkcji lub zmiennych, deklaracji lub s&#322;&#243;w kluczowych Pythona;
+stosowany tak&#380;e w odniesieniu do nazw program&#243;w.</p>
+<p><tt class="doctest"><span class="pre">Tekst pogrubiony o sta\u0142ej szeroko\u015bci</span></tt> -- polecenia lub inny tekst, kt&#243;ry wymaga r&#281;cznego
+wprowadzenia przez u&#380;ytkownika.</p>
+<p><tt class="doctest"><span class="pre">Kursywa o sta\u0142ej szeroko\u015bci</span></tt> -- tekst, kt&#243;ry powinien zosta&#263; zast&#261;piony warto&#347;ciami
+wprowadzonymi przez u&#380;ytkownika lub okre&#347;lonymi z kontekstu; u&#380;ywana tak&#380;e dla metazmiennych w przyk&#322;adowych programach.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Ta ikona oznacza porad&#281;, sugesti&#281; lub og&#243;ln&#261; uwag&#281;.</p>
+</div>
+<div class="caution">
+<p class="first admonition-title">Caution!</p>
+<p class="last">Ta ikona oznacza ostrze&#380;enie lub sugeruje zachowanie ostro&#380;no&#347;ci.</p>
+</div>
+</div>
+<div class="section" id="wykorzystanie-za-czonego-kodu">
+<h2>Wykorzystanie za&#322;&#261;czonego kodu</h2>
+<p>Podr&#281;cznik ma s&#322;u&#380;y&#263; jako narz&#281;dzie w realizacji za&#322;o&#380;onych cel&#243;w. Dlatego te&#380;, mo&#380;na generalnie
+wykorzysta&#263; fragmenty kodu zawartego w ksi&#261;&#380;ce we w&#322;asnych programach i dokumentach. Nie jest wymagana
+specjalna zgoda, z wyj&#261;tkiem sytuacji, kiedy wykorzystane s&#261; znaczne ilo&#347;ci kodu. Na przyk&#322;ad,
+pisz&#261;c program, kt&#243;ry wykorzystuje kilka fragment&#243;w kodu z tego podr&#281;cznika, pozwolenie nie jest konieczne.
+Natomiast sprzeda&#380; lub rozprowadzanie p&#322;yt CD-ROM z przyk&#322;adami z tej ksi&#261;&#380;ki lub innych publikacji wydawnictwa
+O'Reilly wymaga stosownej zgody. Odpowied&#378; na pytanie wyra&#380;ona cytatem z podr&#281;cznika i fragmentem kodu
+nie wymaga pozwolenia, podczas gdy za&#322;&#261;czanie znacznej liczby przyk&#322;ad&#243;w z ksi&#261;&#380;ki we w&#322;asnych produktach
+lub dokumentacji wymaga otrzymania zgody.</p>
+<p>Jeste&#347;my wdzi&#281;czni za podawanie &#378;r&#243;de&#322;, cho&#263; nie jest to wymagane. Odno&#347;nik zwykle zawiera tytu&#322; &#378;r&#243;d&#322;a,
+autor&#243;w, wydawc&#281; oraz numer ISBN. Na przyk&#322;ad: &#327;Przetwarzanie j&#281;zyka naturalnego w Pythonie,
+Steven Bird, Ewan Klein i Edward Loper.  Wydawn. O'Reilly Media, 978-0-596-51649-9.&#211;
+Je&#380;eli uwa&#380;asz, &#380;e spos&#243;b wykorzystania przyk&#322;ad&#243;w wykracza poza udzielone pozwolenie,
+skontaktuj si&#281; z wydawc&#261; pod adresem e-mail <em>permissions&#64;oreilly.com</em>.</p>
+</div>
+<div class="section" id="wyrazy-uznania">
+<h2>Wyrazy uznania</h2>
+<p>Autorzy sk&#322;adaj&#261; podzi&#281;kowania za okazane wsparcie i wyra&#380;one opinie dotycz&#261;ce wcze&#347;niejszych wersji dokumentu:
+Doug Arnold,
+Michaela Atterer,
+Greg Aumann,
+Kenneth Beesley,
+Steven Bethard,
+Ondrej Bojar,
+Chris Cieri,
+Robin Cooper,
+Grev Corbett,
+James Curran,
+Dan Garrette,
+Jean Mark Gawron,
+Doug Hellmann,
+Nitin Indurkhya,
+Mark Liberman,
+Peter Ljungl&#246;f,
+Stefan M&#252;ller,
+Robin Munn,
+Joel Nothman,
+Adam Przepi&#243;rkowski,
+Brandon Rhodes,
+Stuart Robinson,
+Jussi Salmela,
+Kyle Schlansker,
+Rob Speer, and
+Richard Sproat.
+Dzi&#281;kujemy r&#243;wnie&#380; za komentarze studentom i wsp&#243;&#322;pracownikom,
+a szczeg&#243;lnie uczestnikom letnich kurs&#243;w NLP i lingwistyki w Brazylii, Indiach i w Stanach zjednoczonych,
+dzi&#281;ki kt&#243;rym materia&#322;y dydaktyczne mog&#322;y rozwin&#261;&#263; si&#281; do postaci pe&#322;nych rozdzia&#322;&#243;w.
+Ta ksi&#261;&#380;ka nie mog&#322;aby powsta&#263; bez udzia&#322;u cz&#322;onk&#243;w spo&#322;eczno&#347;ci <tt class="doctest"><span class="pre">nltk-dev</span></tt>,
+wymienionej na stronie internetowej pakietu NLTK;
+kt&#243;rzy po&#347;wi&#281;cili swoj&#261; wiedz&#281; i czas dla budowy i rozwoju modu&#322;&#243;w NLTK.</p>
+<p>Przekazujemy wyrazy wdzi&#281;czno&#347;ci dla U.S. Narodowej Fundacji na rzecz Nauki, Konsorcjum Danych Lingwistycznych i
+Edward Clarence Dyason Fellowship, jak r&#243;wnie&#380; dla Uniwersytet&#243;w Pensylwanii, Edynburga i Melbourne za wspieranie prac nad rozwojem podr&#281;cznika.
+Edward Clarence Dyason Fellowship, jak r&#243;wnie&#380; dla Uniwersytet&#243;w Pensylwanii, Edynburga i Melbourne za wspieranie prac nad rozwojem podr&#281;cznika.</p>
+<p>We thank Julie Steele, Abby Fox, Loranah Dimant, and the rest of the O'Reilly team, for
+organizing comprehensive reviews of our drafts from people across the NLP
+and Python communities, for cheerfully customizing O'Reilly's production tools,
+and for meticulous copy-editing work.</p>
+<p>Finally, we owe a huge debt of gratitude to our partners, Kay, Mimo, and Jee,
+for their love, patience, and support over the many years that we worked on this book.
+We hope that our children &#8212; Andrew, Alison, Kirsten, Leonie, and Maaike &#8212;
+catch our enthusiasm for language and computation from these pages.</p>
+<!-- LSA 325: Anna Asbury, Dustin Bowers -->
+</div>
+<div class="section" id="o-autorach">
+<h2>O autorach</h2>
+<p><strong>Steven Bird</strong> jest profesorem nadzwyczajnym
+na wydziale informatyki i in&#380;ynierii programowania
+Uniwersytetu Melbourne oraz adiunktem w
+Konsorcjum Danych Lingwistycznych przy Uniwesytecia Pensylwanii.
+Obroni&#322; tytu&#322; doktora z fonologii informatycznej na Uniwersytecie w Edynburgu
+w roku 1990, jego promotorem by&#322; Ewan Klein (wsp&#243;&#322;autor podr&#281;cznika &#8212; przyp. t&#322;um.).
+W p&#243;&#378;niejszym czasie przeni&#243;s&#322; si&#281; do Kamerunu, aby prowadzi&#263; terenowe badania lingwistyczne zwi&#261;zane z
+j&#281;zykami plemion Bantu pod patronatem Summer Institute
+of Linguistics. Sp&#281;dzi&#322; kilka lat
+jako wicedyrektor Konsorcjum Danych Lingwistycznych,
+gdzie prowadzi&#322; zesp&#243;&#322; badawczo-rozwojowy tworz&#261;cy modele i narz&#281;dzia
+dla rozbudowanych baz danych zawieraj&#261;cych oznaczone dane tekstowe.
+Utworzy&#322; grup&#281; badawcz&#261; zajmuj&#261;c&#261; si&#281; technologi&#261; bada&#324; j&#281;zykowych na Uniwesytecie Melbourne,
+gdzie prowadzi r&#243;wnie&#380; zaj&#281;cia na wszystkich poziomach studi&#243;w informatycznych pierwszego stopnia.
+W roku 2009 Steven pe&#322;ni&#322; rol&#281; prezesa Stowarzyszenia lingwistyki informatycznej (Association for Computational Linguistics, ACL &#8212; przyp. t&#322;um|).</p>
+<p><strong>Ewan Klein</strong> jest profesorem technologii j&#281;zykowych w Instytucie Informatyki
+na Uniwesytecie w Edynburgu. Obroni&#322; rozpraw&#281; doktorsk&#261;
+z semantyki formalnej na Uniwersytecie Cambridge w roku 1978. Po kilku latach
+pracy na Uniwersytetch Sussex i Newcastle upon Tyne, Ewan obj&#261;&#322; pozycj&#281; wyk&#322;adowcy
+w Edynburgu. W 19993 wsp&#243;&#322;uczestniczy&#322; w tworzeniu grupy badawczej Language Technology Group w Edynburgu, z kt&#243;r&#261;
+pozosta&#322; zwi&#261;zany do dzi&#347;. W latach 2000&#8211;2002
+pracowa&#322; poza uniwersytetem jako kierownik bada&#324;  dla Edify Corporation z siedzib&#261; w Santa Clara w Kaliforni
+w ramach dzia&#322;aj&#261;cej w Edynburgu Natural Language Research Group, gdzie by&#322; odpowiedzialny za przetwarzania dialog&#243;w ustnych.
+Ewan jest by&#322;ym prezesem Europejskiej Sekcji Stowarzyszenia Lingwistyki Informatycznej (European Chapter of the Association for
+Computational Linguistics) oraz wsp&#243;&#322;za&#322;o&#380;ycielem i koordynatorem European Network of Excellence in Human Language Technologies
+(ELSNET).</p>
+<p><strong>Edward Loper</strong> niedawno obroni&#322; rozpraw&#281; doktorsk&#261; na Uniwesytecie Pensylwanii zwi&#261;zan&#261; z
+tematyk&#261; uczenia maszynowego (ang. machine learning) w kontek&#347;cie
+przetwarzania j&#281;zyka naturalnego.
+Wcze&#347;niej, w trakcie studi&#243;w magisterskich Edward by&#322; studentem w grupie Stevena Birda
+na zaj&#281;ciach z lingwistyki informatycznej w semestrze zimowym 2000;
+pozosta&#322; na uczelni jako asystent i wzi&#261;&#322; czynny udzia&#322; w rozwoju pakietu NLTK.  Ponadto pom&#243;g&#322; w tworzeniu
+dw&#243;ch pakiet&#243;w s&#322;u&#380;acych do dokumentacji i testowania
+program&#243;w w Pythonie: <tt class="doctest"><span class="pre">epydoc</span></tt> oraz <tt class="doctest"><span class="pre">doctest</span></tt>.</p>
+</div>
+<div class="section" id="tantiemy">
+<h2>Tantiemy</h2>
+<p>Zysk ze sprzeda&#380;y ksi&#261;&#380;ki zostanie wykorzystany do dalszego rozwoju
+pakietu Natural Language Toolkit.</p>
+<div class="figure">
+<img alt="../images/authors.png" src="../images/authors.png" style="width: 515.0px; height: 240.0px;" />
+<p class="caption"><span class="caption-label">Figure I.1</span>: Edward Loper, Ewan Klein i Steven Bird, Stanford, lipiec 2007</p>
+</div>
+<hr class="docutils" />
+<!-- Footer to be used in all chapters -->
+<div class="admonition-uwagi-do-dokumentu admonition">
+<p class="first admonition-title">Uwagi do dokumentu...</p>
+<p>To jest rozdzia&#322; ksi&#261;&#380;ki <em>Przetwarzanie j&#281;zyka w Pythonie</em>,
+kt&#243;rej autorami s&#261; <a class="reference external" href="http://www.csse.unimelb.edu.au/~sb/">Steven Bird</a>, <a class="reference external" href="http://www.ltg.ed.ac.uk/~ewan/">Ewan Klein</a> oraz <a class="reference external" href="http://www.cis.upenn.edu/~edloper/">Edward Loper</a>,
+Wszelkie prawa zastrze&#380;one przez autor&#243;w dokumentu.
+Dokument on rozprowadzany wraz z pakietem <em>Natural Language Toolkit</em> [<tt class="doctest"><span class="pre">http://www.nltk.org/</span></tt>],
+wersja 2.0b8, na zasadach licencji
+<em>Creative Commons Attribution-Noncommercial-No Derivative Works 3.0 United States License</em>
+[<a class="reference external" href="http://creativecommons.org/licenses/by-nc-nd/3.0/us/">http://creativecommons.org/licenses/by-nc-nd/3.0/us/</a>].</p>
+<p class="last">This document is
+Revision: 8509
+Sun Mar 21 19:06:00 CET 2010</p>
+</div>
+<div class="admonition-informacje-dotycz-ce-polskiego-t-umaczenia admonition">
+<p class="first admonition-title">Informacje dotycz&#261;ce polskiego t&#322;umaczenia</p>
+<p class="last">Zapraszamy do udzia&#322;u w grupie dyskusyjnej na stronie internetowej <tt class="doctest"><span class="pre">http://groups.google.com/group/nltk-polska</span></tt>.
+T&#322;umacz: Maciej Pastuszka</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

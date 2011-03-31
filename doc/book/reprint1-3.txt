@@ -1,0 +1,57 @@
+p177 ex 33 -- move to chapter 5 (new exercise 43).  Change reference "described in chapter 5"
+     to "described in this chapter"
+
+p306 17up "The advantages of shift-reduce" s/b "The advantage of shift-reduce"
+
+p309 9up "through entire list" s/b "through the entire list" 
+
+p309 13-14up "Det at wfst[0][1] and N at wfst[1][2], we can add NP to wfst[0][2]" s/b
+"Det at wfst[2][3] and N at wfst[3][4], we can add NP to wfst[2][4]"  
+
+p334 10d Delete this whole line, viz "NP[NUM=?n] -> N[NUM=?n]", and close up space.
+
+p336 Fig 9-1 is too big in the latest pdf. Also, the feature labels shouldn't be bold.
+     
+p340 ex 24 -- s/b smaller for consistency with the other DAGs (cf p339)
+
+p342 DAG (27a) is incorrect. It should look just like (27c) but *without* the middle arc
+labeled 'CITY'. (The online version of this chapter is correct, and uses dag04-1.png
+for this subfigure.)
+     
+p363 21d -- node['sem']  s/b  node['SEM']
+NB This is http://www.oreillynet.com/cs/nl/edit/errata/40392
+
+p389 17up  "nltk.Variable('z')" s/b "nltk.sem.Variable('z')"
+
+p373 19d "such as <e, e> or <e, <e, t>." s/b 
+         "such as <e, e> or <e, <e, t>>."
+NB This is http://www.oreillynet.com/cs/nl/edit/errata/39295
+
+p392 6d "nltk.ApplicationExpression(tvp, np)" s/b
+        "nltk.sem.ApplicationExpression(tvp, np)"
+
+p396 20up "trees[0].node['sem']" s/b "trees[0].node['SEM']"
+
+p399 4d Det[NUM=sg,SEM=<\P Q.([x],[]) + P(x) + Q(x)>] -> 'a' 
+        s/b 
+        Det[NUM=sg,SEM=<\P Q.(([x],[]) + P(x) + Q(x))>] -> 'a'
+
+
+p400 20d "trees[0].node['sem'].simplify()" s/b 
+         "trees[0].node['SEM'].simplify()"
+
+p405-406 exs (5)-(7). Please replace all seven occurrences of 
+         "nltk.ApplicationExpression" with 
+         "nltk.sem.ApplicationExpression".
+
+p426 The error report at http://www.oreillynet.com/cs/nl/edit/errata/39424
+looks correct to me (EK).
+
+p429 11-12d sentence beginning with "Ignoring...", please replace with
+    the following (and set "OTH" in cw):
+
+    Ignoring the entries for exchanges between people
+    other than the top 5 (labeled OTH), the largest value suggests
+    that Portia and Bassanio have the most significant interactions.
+
+p444 7d can never been known  s/b  can never be known

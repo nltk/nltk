@@ -1,0 +1,66 @@
+HIGH PRIORITY
+
+(without these its painful to continue with docutils)
+
+book
+- inclusions of individual chapters
+- single pagination across all chapters
+- evidence in repository of earlier effort on this, but currently broken
+
+xrefs
+- assign a symbolic label to any section
+- refer to this label anywhere in the chapter (or book)
+- should be able to do this for figures etc
+
+MEDIUM PRIORITY
+
+(without these we are forced to do some major rehabilitation on the
+latex output, or ugly scripts to hack it)
+
+bibliography
+- storage of bib data (bibtex?)
+- inline citation of key expands to human-readable citation
+- generation of chapter or book-level bibliography section
+
+index
+- construct an index of all "dt" (defined terms)
+- permit other terms to be indexed (e.g. text role "idx")
+- index topical terms embedded in text but not displayed (e.g. text role "topic")
+- index refers to pages on which these appeared
+
+feature structures
+- map the existing ReST syntax into Manning's avm.sty syntax
+
+text substitutions
+- we need to allow these to be interpreted inside non-literal roles
+  such as :math: and :dt:
+
+example numbering
+- tweak the ex environment so that it will allow include-ed program
+  fragments to be numbered and indented in the same way as trees
+
+logical paragraphs
+- when a paragraph contains an example, the text following the
+  example is a continuation of the paragraph, not a new paragraph
+  (cf HTML output for notes that contain doctest examples, as in
+  example in section on conditional expressions here:
+  http://nltk.sourceforge.net/lite/doc/en/programming.html )
+
+LOW PRIORITY
+
+(without these we have to do a bit more work in the rst
+source, or do minor last-minute hacking before submitting CRC)
+
+table-of-contents
+- collate section and subsection headings
+- tabulate, with page numbers
+- some control over depth of subsections to include
+
+aligned glossed examples
+- design syntax which will map into an appropriate LaTeX macro
+  (which one? Covington?)
+  (and ideally into a specialized class of HTML table)
+
+low-level formatting issues
+- doctest-ignore directive causes following code block to be unindented
+

@@ -1,0 +1,55 @@
+.. -*- mode: rst -*-
+
+======================
+ Copy-Edit Categories
+======================
+
+----------------------------
+1. To be entered by O'Reilly
+----------------------------
+
+- punctuation, including use of em dashes
+- 'like' -> 'such as'
+- 'which' -> 'that'
+- 'while' -> 'whereas'
+- alternatives to 'below', 'above'
+- capitalization of titles and figure legends
+- hyphenation conventions in body of text (e.g, 'multi-line' -> 'multiline')
+- spelling
+- numerals (e.g., '5' -> 'five')
+
+
+
+----------------------------
+2. To be entered by Authors
+----------------------------
+
+??
+
+
+------------
+3. No Change
+------------
+
+- boldface text retained for new and important terms
+- constant width retained for program names, menu names, filenames, etc
+
+------------------
+4. To be discussed
+------------------
+
+- Retain long captions
+- Don't double-quote emphasized text inside captions, but set them in roman. (Why
+  would emphasis show up as italic inside plain text, and double-quoted inside a
+  caption?)
+
+
+--------
+5. Other
+--------
+
+Steven mentioned:
+
+* splitting a sentence-final example off into a new verb-less sentence.
+
+Not sure what the issue is here.

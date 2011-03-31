@@ -1,0 +1,49 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.txt
+
+======================
+Tutoriais do NLTK-Lite
+======================
+
+:Autores: Steven Bird, Ewan Klein, Edward Loper
+:Contato: sb@csse.unimelb.edu.au
+:Version: |version|
+:Copyright: |copy| |copyrightinfo|
+:Licença: |license|
+
+.. _Prefácio: preface.html
+.. _Introdução: introduction.html
+.. _Programação: programming.html
+.. _Toquenização: tokenize.html
+.. _Tag: tag.html
+.. _Parsing: parse.html
+.. _Chunk: chunk.html
+.. _Chart: chart.html
+.. _PCFG: pcfg.html
+.. _Field: field.html
+.. _Regexps: regexps.html
+.. _Projetos: projects.html
+
+------
+Índice
+------
+
+0. Prefácio_
+#. Introdução_
+#. Programação_
+#. Toquenização_
+#. Tag_
+#. Parsing_
+#. Chunk_
+#. Chart_
+#. PCFG_
+#. Field_
+#. Regexps_
+#. Projetos_
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+

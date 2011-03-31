@@ -1,0 +1,213 @@
+.. Copyright (C) 2001-2011 NLTK Project
+.. For license information, see LICENSE.TXT
+
+==========
+ Stemmers
+==========
+
+Overview
+~~~~~~~~
+
+Stemmers remove morphological affixes from words, leaving only the
+word stem.
+
+    >>> from nltk.stem import *
+
+Unit tests for the Porter stemmer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.stem.porter import * 
+
+Create a new Porter stemmer.
+
+    >>> stemmer = PorterStemmer()
+
+Test the cons() (consonant) method.
+
+    >>> stemmer.b = "ready"
+    >>> stemmer.k = len("ready") - 1
+
+    >>> bool(stemmer.cons(0))
+    True
+
+    >>> bool(stemmer.cons(1))
+    False
+
+    >>> bool(stemmer.cons(4))
+    False
+
+    >>> stemmer.b = "yield"
+    >>> stemmer.k = len("yield") - 1
+
+    >>> bool(stemmer.cons(0))
+    True
+
+    >>> stemmer.b = "abeyance"
+    >>> stemmer.k = len("abeyance") - 1
+
+    >>> bool(stemmer.cons(3))
+    True
+
+Test the m() (number of vowel/consonant sequences from the start of a word to
+some offset) method.
+
+    >>> stemmer.m()		# 0 offset into the string
+    0
+
+    >>> stemmer.j = stemmer.k	# Set the offset to be the final string char
+    >>> stemmer.m()
+    3
+
+Test the vowelinstem() method (checks for a vowel within the first j chars).
+
+    >>> stemmer.b = "ready"
+    >>> stemmer.k = len("ready") - 1
+    >>> stemmer.j = 0
+
+    >>> stemmer.vowelinstem()
+    0
+
+    >>> stemmer.j = stemmer.k
+    >>> stemmer.vowelinstem()
+    1
+
+Test the doublec() (identical double consonant) method.
+
+    >>> stemmer.b = "riddle"
+    >>> stemmer.k = len("riddle") - 1
+
+    >>> stemmer.doublec(0)	# Can't use at the first char
+    0
+
+    >>> stemmer.doublec(4)	# Chars at j and j-1 not identical
+    0
+
+    >>> stemmer.doublec(3)
+    1
+
+Test the cvc() method.
+
+    >>> stemmer.cvc(0)		# Can't use at the first char
+    0
+
+    >>> stemmer.cvc(1)		# Sequence not vowel, consonant
+    0
+
+    >>> stemmer.b = "away"
+
+
+    >>> stemmer.cvc(1)
+    1
+
+    >>> stemmer.cvc(2)		# Sequence not consonant, vowel, consonant
+    0
+
+    >>> stemmer.cvc(3)		# Final consonant is a member of {'w', 'x', 'y'}
+    0
+
+    >>> stemmer.b = "trace"
+    >>> stemmer.k = len("trace") - 1
+
+    >>> stemmer.cvc(3)
+    1
+
+Test the ends() (end substring matching) method.
+
+    >>> stemmer.ends("verylongstring")	# Supplied string longer than buffer
+    0
+
+    >>> stemmer.ends("ice")		# String doesn't match
+    0
+
+    >>> stemmer.ends("ace")
+    1
+
+Test the setto() method (replaces the suffix of the buffered string).
+
+    >>> stemmer.j = 3
+    >>> stemmer.setto("ing")
+    >>> stemmer.b
+    'tracing'
+
+Test the stemmer on various pluralised words.
+
+    >>> plurals = ['caresses', 'flies', 'dies', 'mules', 'denied',
+    ...            'died', 'agreed', 'owned', 'humbled', 'sized',
+    ...            'meeting', 'stating', 'siezing', 'itemization',
+    ...            'sensational', 'traditional', 'reference', 'colonizer',
+    ...            'plotted']
+    >>> singles = []
+
+    >>> for plural in plurals:
+    ...     singles.append(stemmer.stem(plural))
+
+    >>> singles # doctest: +NORMALIZE_WHITESPACE
+    ['caress', 'fli', 'die', 'mule', 'deni', 'die', 'agre', 'own',
+     'humbl', 'size', 'meet', 'state', 'siez', 'item', 'sensat',
+     'tradit', 'refer', 'colon', 'plot']
+
+Unit tests for Regexp stemmer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> patterns = "ed$|ing$|able$|s$"
+
+    >>> stemmer = RegexpStemmer(patterns, 4)
+
+    >>> stemmer.stem("red")
+    'red'
+
+    >>> stemmer.stem("hurried")
+    'hurri'
+
+    >>> stemmer.stem("advisable")
+    'advis'
+
+    >>> stemmer.stem("impossible")
+    'impossible'
+
+Unit tests for Snowball stemmer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.stem.snowball import SnowballStemmer
+
+See which languages are supported.
+
+    >>> SnowballStemmer.languages # doctest: +NORMALIZE_WHITESPACE
+    ('danish', 'dutch', 'english', 'finnish', 'french', 'german',
+    'hungarian', 'italian', 'norwegian', 'porter', 'portuguese',
+    'romanian', 'russian', 'spanish', 'swedish')
+
+Create a new instance of a language specific subclass.
+
+    >>> stemmer_german = SnowballStemmer("german")
+
+Stem a word.
+
+    >>> stemmer_german.stem(u"Schr\xe4nke")
+    u'schrank'
+ 
+Decide not to stem stopwords.
+
+    >>> stemmer_german2 = SnowballStemmer("german", ignore_stopwords=True)
+    >>> stemmer_german.stem(u"keinen")
+    u'kein'
+    >>> stemmer_german2.stem(u"keinen")
+    u'keinen'
+
+The 'english' stemmer is better than the original 'porter' stemmer.
+
+    >>> SnowballStemmer("english").stem(u"generously")
+    u'generous'
+    >>> SnowballStemmer("porter").stem(u"generously")
+    u'gener'
+
+Russian words both consisting of Cyrillic and Roman letters can be stemmed.
+
+    >>> stemmer_russian = SnowballStemmer("russian")
+    >>> stemmer_russian.stem(u'\u0430\u0432\u0435\u043d\u0430\u043d\u0442\u043d'
+    ...                      u'\u0435\u043d\u044c\u043a\u0430\u044f')
+    u'\u0430\u0432\u0435\u043d\u0430\u043d\u0442\u043d\u0435\u043d\u044c\u043a'
+    >>> print stemmer_russian.stem(u"авенантненькая")
+    авенантненьк
+    >>> stemmer_russian.stem(u"avenantnen'kai^a")
+    u"avenantnen'k"

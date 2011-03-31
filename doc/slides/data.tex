@@ -1,0 +1,647 @@
+\documentclass{beamer}             % for slides
+% \documentclass[handout]{beamer}    % for handout
+\input{beamer}
+
+\title{Linguistic Data Management}
+
+\author{Steven Bird}
+\institute{
+  University of Melbourne, AUSTRALIA
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Introduction}
+  \begin{itemize}
+  \item language resources, types, proliferation
+  \item role in NLP, CL
+  \item enablers: storage/XML/Unicode; digital publication; resource catalogues
+  \item obstacles: discovery, access, format, tool
+  \item data types: texts and lexicons
+  \item useful ways to access data using Python: csv, html, xml
+  \item adding a corpus to NLTK
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Linguistic Databases}
+\begin{itemize}
+\item Field linguistics
+\item Corpora
+\item Reference Corpus
+\end{itemize}
+\end{frame}
+
+\pgfdeclareimage[width=8cm]{datatypes}{../images/datatypes}
+\begin{frame}
+\frametitle{Fundamental Data Types}
+  \pgfuseimage{datatypes}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: TIMIT}
+\begin{itemize}
+\item TI (Texas Instruments) + MIT
+\item balance
+\item sentence selection
+\item layers of annotation
+\item speaker demographics, lexicon
+\item combination of time-series and record-structured data
+\item programs for speech corpus
+\end{itemize}
+\end{frame}
+
+\pgfdeclareimage[width=0.7\textwidth]{timit}{../images/timit}
+\begin{frame}
+\frametitle{Example: TIMIT}
+  \pgfuseimage{timit}
+\end{frame}
+
+\pgfdeclareimage[width=\textwidth]{timit-structure}{../images/timit-structure}
+\begin{frame}
+\frametitle{Example: TIMIT}
+  \pgfuseimage{timit-structure}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: TIMIT}
+\scriptsize
+\begin{verbatim}
+    >>> phonetic = nltk.corpus.timit.phones(dr1-fvmh0/sa1')
+    >>> phonetic
+    ['h#', 'sh', 'iy', 'hv', 'ae', 'dcl', 'y', 'ix', 'dcl', 'd', 'aa', 'kcl',
+    's', 'ux', 'tcl', 'en', 'gcl', 'g', 'r', 'iy', 's', 'iy', 'w', 'aa',
+    'sh', 'epi', 'w', 'aa', 'dx', 'ax', 'q', 'ao', 'l', 'y', 'ih', 'ax', 'h#']
+    >>> nltk.corpus.timit.word_times('dr1-fvmh0/sa1')
+    [('she', 7812, 10610), ('had', 10610, 14496), ('your', 14496, 15791),
+    ('dark', 15791, 20720), ('suit', 20720, 25647), ('in', 25647, 26906),
+    ('greasy', 26906, 32668), ('wash', 32668, 37890), ('water', 38531, 42417),
+    ('all', 43091, 46052), ('year', 46052, 50522)]
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: TIMIT}
+\scriptsize
+\begin{verbatim}
+    >>> timitdict = nltk.corpus.timit.transcription_dict()
+    >>> timitdict['greasy'] + timitdict['wash'] + timitdict['water']
+    ['g', 'r', 'iy1', 's', 'iy', 'w', 'ao1', 'sh', 'w', 'ao1', 't', 'axr']
+    >>> phonetic[17:30]
+    ['g', 'r', 'iy', 's', 'iy', 'w', 'aa', 'sh', 'epi', 'w', 'aa', 'dx', 'ax']
+
+    >>> nltk.corpus.timit.spkrinfo('dr1-fvmh0')
+    SpeakerInfo(id='VMH0', sex='F', dr='1', use='TRN', recdate='03/11/86',
+    birthdate='01/08/60', ht='5\'05"', race='WHT', edu='BS',
+    comments='BEST NEW ENGLAND ACCENT SO FAR')
+\end{verbatim}
+\end{frame}
+
+\section{Creating Data}
+
+\begin{frame}
+\frametitle{Lifecycle}
+
+\begin{itemize}
+\item create
+\item annotate texts
+\item refine lexicon
+\item organize structure
+\item publish
+\end{itemize}
+\end{frame}
+
+\pgfdeclareimage[width=\textwidth]{evolution}{../images/evolution}
+\begin{frame}
+\frametitle{Evolution}
+  \pgfuseimage{evolution}
+\end{frame}
+
+\subsection{Primary Data}
+
+\begin{frame}
+\frametitle{Creating Data: Primary Data}
+
+\begin{itemize}
+\item spiders
+\item recording
+\item texts
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Data Cleansing: Accessing Spreadsheets}
+\scriptsize
+\begin{verbatim}
+dict.csv:
+"sleep","sli:p","v.i","a condition of body and mind ..."
+"walk","wo:k","v.intr","progress by lifting and setting down each foot ..."
+"wake","weik","intrans","cease to sleep"
+
+    >>> import csv
+    >>> file = open("dict.csv", "rb")
+    >>> for row in csv.reader(file):
+    ...     print row
+    ['sleep', 'sli:p', 'v.i', 'a condition of body and mind ...']
+    ['walk', 'wo:k', 'v.intr', 'progress by lifting and setting down each foot ...']
+    ['wake', 'weik', 'intrans', 'cease to sleep']
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Data Cleansing: Validation}
+\small
+\begin{verbatim}
+    def undefined_words(csv_file):
+        import csv
+        lexemes = set()
+        defn_words = set()
+        for row in csv.reader(open(csv_file)):
+            lexeme, pron, pos, defn = row
+            lexemes.add(lexeme)
+            defn_words.union(defn.split())
+        return sorted(defn_words.difference(lexemes))
+        
+    >>> print undefined_words("dict.csv")
+    ['...', 'a', 'and', 'body', 'by', 'cease',
+     'condition', 'down', 'each', 'foot',
+     'lifting', 'mind', 'of', 'progress',
+     'setting', 'to']
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Data Cleansing: Accessing Web Text}
+
+\scriptsize
+\begin{verbatim}
+>>> import urllib, nltk
+>>> html = urllib.urlopen('http://en.wikipedia.org/').read()
+>>> text = nltk.clean_html(html)
+>>> text.split()
+['Wikimedia', 'Error', 'WIKIMEDIA', 'FOUNDATION', 'Fout', 'Fel',
+'Fallo', '\xe9\x94\x99\xe8\xaf\xaf', '\xe9\x8c\xaf\xe8\xaa\xa4',
+'Erreur', 'Error', 'Fehler', '\xe3\x82\xa8\xe3\x83\xa9\xe3\x83\xbc',
+'B\xc5\x82\xc4\x85d', 'Errore', 'Erro', 'Chyba', 'EnglishThe',
+'Wikimedia', 'Foundation', 'servers', 'are', 'currently',
+'experiencing', 'technical', 'difficulties.The', 'problem', 'is',
+'most', 'likely', 'temporary', 'and', 'will', 'hopefully', 'be',
+'fixed', 'soon.', 'Please', 'check', 'back', 'in', 'a', 'few',
+'minutes.For', 'further', 'information,', 'you', 'can', 'visit',
+'the', 'wikipedia', 'channel', 'on', 'the', 'Freenode', 'IRC', ...
+\end{verbatim}
+\end{frame}
+
+\subsection{Annotation}
+
+\begin{frame}[fragile]
+\frametitle{Creating Data: Annotation}
+
+\begin{itemize}
+\item linguistic annotation
+\item Tools: \verb|http://www.exmaralda.org/annotation/|
+\end{itemize}
+\end{frame}
+
+\pgfdeclareimage[width=\textwidth]{windowdiff}{../images/windowdiff}
+\begin{frame}[fragile]
+\frametitle{Creating Data: Inter-Annotator Agreement}
+  \begin{itemize}
+  \item Kappa statistic
+  \item Windowdiff
+  \end{itemize}
+  \pgfuseimage{windowdiff}
+\end{frame}
+
+\subsection{Lexicons}
+
+\begin{frame}
+\frametitle{Processing Toolbox Data}
+
+\begin{itemize}
+\item single most popular tool for managing linguistic field data
+\item many kinds of validation and formatting not supported by Toolbox software
+\item each file is a collection of \textit{entries} (aka
+  \textit{records})
+\item each entry is made up of one or more \textit{fields}
+\item we can apply our programming methods, including chunking and parsing
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Toolbox Example}
+\small
+
+\begin{verbatim}
+\lx kaa
+\ps N.M
+\cl isi
+\ge cooking banana
+\gp banana bilong kukim
+\sf FLORA
+\dt 12/Feb/2005
+\ex Taeavi iria kaa isi kovopaueva kaparapasia.
+\xp Taeavi i bin planim gaden banana bilong kukim tasol long paia.
+\xe Taeavi planted banana in order to cook it.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Accessing Toolbox Data}
+
+\begin{itemize}
+\item scan the file, convert into tree object
+\item preserves order of fields, gives array and XPath-style access
+\end{itemize}
+
+\scriptsize
+\begin{verbatim}
+>>> from nltk.corpus import toolbox
+>>> lexicon = toolbox.xml('rotokas.dic')
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Accessing with Indexes}
+
+\begin{verbatim}
+>>> lexicon[3][0] 
+<Element lx at 77bd28>
+>>> lexicon[3][0].tag
+'lx'
+>>> lexicon[3][0].text
+'kaa'
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Accessing with Indexes (cont)}
+
+\scriptsize
+\begin{verbatim}
+>>> print nltk.corpus.reader.toolbox.to_sfm_string(lexicon[3])
+\lx kaa
+\ps N.M
+\cl isi
+\ge cooking banana
+\gp banana bilong kukim
+\sf FLORA
+\dt 12/Feb/2005
+\ex Taeavi iria kaa isi kovopaueva kaparapasia.
+\xp Taeavi i bin planim gaden banana bilong kukim tasol long paia.
+\xe Taeavi planted banana in order to cook it.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Accessing with Paths}
+
+\scriptsize
+\begin{verbatim}
+>>> [lexeme.text.lower() for lexeme in lexicon.findall('record/lx')]
+['kaa', 'kaa', 'kaa', 'kaakaaro', 'kaakaaviko', 'kaakaavo', 'kaakaoko',
+'kaakasi', 'kaakau', 'kaakauko', 'kaakito', 'kaakuupato', ..., 'kuvuto']
+\end{verbatim}
+
+\small
+\begin{itemize}
+\item lexicon is a series of \texttt{record} objects
+\item each contains field objects, such as \texttt{lx} and \texttt{ps}
+\item address all the lexemes: \texttt{record/lx}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Data Cleansing: Toolbox}
+
+\begin{itemize}
+\item parsing (Listing 4)
+\item chunking (Listing 5)
+\item adding missing fields (next)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Adding New Fields}
+\small
+
+\begin{itemize}
+\item Example: add CV field
+\item Aside: utility function to do CV template
+\end{itemize}
+
+\begin{verbatim}
+>>> import re
+>>> def cv(s):
+...     s = s.lower()
+...     s = re.sub(r'[^a-z]',     r'_', s)
+...     s = re.sub(r'[aeiou]',    r'V', s)
+...     s = re.sub(r'[^V_]',      r'C', s)
+...     return (s)
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Adding New Fields (cont)}
+\small
+
+\begin{verbatim}
+>>> from nltk.etree.ElementTree import SubElement
+>>> for entry in lexicon:
+...     for field in entry:
+...	    if field.tag == 'lx':
+...         cv_field = SubElement(entry, 'cv')
+...         cv_field.text = cv(field.text)
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Adding New Fields (cont)}
+\scriptsize
+\begin{verbatim}
+>>> toolbox.to_sfm_string(lexicon[50])
+\lx kaeviro
+\cv CVVCVCV
+\ps V.A
+\ge lift off
+\ge take off
+\gp go antap
+\nt used to describe action of plane
+\dt 12/Feb/2005
+\ex Pita kaeviroroe kepa kekesia oa vuripierevo kiuvu.
+\xp Pita i go antap na lukim haus win i bagarapim.
+\xe Peter went to look at the house that the wind destroyed.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Generating HTML Tables from Toolbox Data}
+
+\scriptsize
+\begin{verbatim}
+>>> html = "<table>\n"
+>>> for entry in lexicon[70:80]:
+...     lx = entry.findtext('lx')
+...     ps = entry.findtext('ps')
+...     ge = entry.findtext('ge')
+...     html += "  <tr><td>%s</td><td>%s</td><td>%s</td></tr>\n" %
+...       (lx, ps, ge)
+>>> html += "</table>"
+>>> print html
+\end{verbatim}
+
+\tiny
+
+\begin{verbatim}
+<table>
+  <tr><td>kakapikoto</td><td>N.N2</td><td>newborn baby</td></tr>
+  <tr><td>kakapu</td><td>V.B</td><td>place in sling for purpose of carrying</td></tr>
+  <tr><td>kakapua</td><td>N.N</td><td>sling for lifting</td></tr>
+  <tr><td>kakara</td><td>N.N</td><td>bracelet</td></tr>
+  <tr><td>Kakarapaia</td><td>N.PN</td><td>village name</td></tr>
+  <tr><td>kakarau</td><td>N.F</td><td>stingray</td></tr>
+  <tr><td>Kakarera</td><td>N.PN</td><td>name</td></tr>
+  <tr><td>Kakareraia</td><td>N.???</td><td>name</td></tr>
+  <tr><td>kakata</td><td>N.F</td><td>cockatoo</td></tr>
+  <tr><td>kakate</td><td>N.F</td><td>bamboo tube for water</td></tr>
+</table>
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Generating XML}
+
+\small
+\begin{verbatim}
+>>> import sys
+>>> from nltk.etree.ElementTree import ElementTree
+>>> tree = ElementTree(lexicon[3])
+>>> tree.write(sys.stdout)
+\end{verbatim}
+
+\scriptsize
+\begin{verbatim}
+<record>
+  <lx>kaakaaro</lx>
+  <ps>N.N</ps>
+  <ge>mixtures</ge>
+  <gp>???</gp>
+  <eng>mixtures</eng>
+  <eng>charm used to keep married men and women youthful and attractive</eng>
+  <cmt>Check vowel length. Is it kaakaaro or kaakaro?</cmt>
+  <dt>14/May/2005</dt>
+  <ex>Kaakaroto ira purapaiveira aue iava opita, voeao-pa airepa oraouirara, ra va aiopaive.</ex>
+  <xp>Kokonas ol i save wokim long ol kain samting bilong ol nupela marit, bai ol i ken kaikai.</xp>
+  <xe>Mixtures are made from coconut, ???.</xe>
+</record>
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Analysis: Reduplication}
+\scriptsize
+\begin{itemize}
+\item create a table of lexemes and their glosses
+
+\begin{verbatim}
+>>> lexgloss = {}
+>>> for entry in lexicon:
+...     lx = entry.findtext('lx')
+...     if lx and entry.findtext('ps')[0] == 'V':
+...         lexgloss[lx] = entry.findtext('ge')
+\end{verbatim}
+
+\item For each lexeme, check if the lexicon contains the reduplicated form:
+
+\begin{verbatim}
+>>> for lex in lexgloss:
+...     if lex+lex in lexgloss:
+...         print "%s (%s); %s (%s)" % (lex, lexgloss[lex], lex+lex, lexgloss[lex+lex])
+\end{verbatim}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Reduplication (cont)}
+\scriptsize
+\begin{verbatim}
+kuvu (fill.up); kuvukuvu (stamp the ground)
+kitu (save); kitukitu (scrub clothes)
+kopa (ingest); kopakopa (gulp.down)
+kasi (burn); kasikasi (angry)
+koi (high pitched sound); koikoi (groan with pain)
+kee (chip); keekee (shattered)
+kauo (jump); kauokauo (jump up and down)
+kea (deceived); keakea (lie)
+kove (drop); kovekove (drip repeatedly)
+kape (unable to meet); kapekape (grip with arms not meeting)
+kapo (fasten.cover.strip); kapokapo (fasten.cover.strips)
+koa (skin); koakoa (remove the skin)
+kipu (paint); kipukipu (rub.on)
+koe (spoon out a solid); koekoe (spoon out)
+kovo (work); kovokovo (surround)
+kiru (have sore near mouth); kirukiru (crisp)
+kotu (bite); kotukotu (grind teeth together)
+kavo (collect); kavokavo (work black magic)
+...
+\end{verbatim}
+\end{frame}
+
+\subsection{Analysis: Complex Search Criteria}
+
+\begin{frame}[fragile]
+\frametitle{Complex Search Criteria}
+\scriptsize
+\begin{verbatim}
+>>> from nltk import tokenize, FreqDist
+>>> fd = FreqDist()
+>>> lexemes = [lexeme.text.lower() for lexeme in lexicon.findall('record/lx')]
+>>> for lex in lexemes:
+...     for syl in tokenize.regexp(lex, pattern=r'[^aeiou][aeiou]'):
+...         fd.inc(syl)
+\end{verbatim}
+
+\normalsize
+\begin{itemize}
+\item for phonological description, identify segments, alternations,
+  syllable canon...
+\item what syllable types occur in lexemes (MSC, conspiracies)?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Analysis: Complex Search Criteria (cont)}
+
+\begin{itemize}
+\item Tabulate the results:
+
+\scriptsize
+\begin{verbatim}
+>>> for vowel in 'aeiou':
+...     for cons in 'ptkvsr':
+...          print '%s%s:%4d ' %
+...            (cons, vowel, fd.count(cons+vowel)),
+...     print
+pa:  84  ta:  43  ka: 414  va:  87  sa:   0  ra: 185 
+pe:  32  te:   8  ke: 139  ve:  25  se:   1  re:  62 
+pi:  97  ti:   0  ki:  88  vi:  96  si:  95  ri:  83 
+po:  31  to: 140  ko: 403  vo:  42  so:   3  ro:  86 
+pu:  49  tu:  35  ku: 169  vu:  44  su:   1  ru:  72 
+\end{verbatim}
+
+\small
+\item NB \texttt{t} and \texttt{s} columns
+\item \texttt{ti} not attested, while \texttt{si} is frequent: palatalization?
+\item which lexeme contains \texttt{su}?  \textit{kasuari}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Analysis: Finding Minimal Sets}
+\begin{itemize}
+\item E.g. mace vs maze, face vs faze
+\item minimal set parameters: context, target, display
+\vfil
+\small
+
+\begin{tabular}{l|lll}
+\textbf{Minimal Set} &     \textbf{Context} &  \textbf{Target} & \textbf{Display} \\ \hline
+\textit{bib, bid, big} &   first two letters&  third letter    & word\\
+\textit{deal (N), deal (V)} & whole word    &  pos             & word (pos)
+\end{tabular}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Finding Minimal Sets: Example 1}
+\scriptsize
+
+\begin{verbatim}
+>>> from nltk import MinimalSet
+>>> pos = 1
+>>> ms = MinimalSet((lex[:pos] + '_' + lex[pos+1:], lex[pos], lex)
+...                 for lex in lexemes if len(lex) == 4)
+>>> for context in ms.contexts(3):
+...     print context + ':',
+...     for target in ms.targets():
+...         print "%-4s" % ms.display(context, target, "-"),
+...     print
+k_si: kasi -    kesi -    kosi
+k_ru: karu kiru keru kuru koru
+k_pu: kapu kipu -    -    kopu
+k_ro: karo kiro -    -    koro
+k_ri: kari kiri keri kuri kori
+k_pa: kapa -    kepa -    kopa
+k_ra: kara kira kera -    kora
+k_ku: kaku -    -    kuku koku
+k_ki: kaki kiki -    -    koki
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Finding Minimal Sets: Example 2}
+\scriptsize
+
+\begin{verbatim}
+>>> entries = [(e.findtext('lx'), e.findtext('ps'), e.findtext('ge'))
+...               for e in lexicon
+...               if e.findtext('lx') and e.findtext('ps') and e.findtext('ge')]
+>>> ms = MinimalSet((lx, ps[0], "%s (%s)" % (ps[0], ge))
+...          for (lx, ps, ge) in entries)
+>>> for context in ms.contexts()[:10]:
+...     print "%10s:" % context, "; ".join(ms.display_all(context))
+  kokovara: N (unripe coconut); V (unripe)
+     kapua: N (sore); V (have sores)
+      koie: N (pig); V (get pig to eat)
+      kovo: C (garden); N (garden); V (work)
+    kavori: N (crayfish); V (collect crayfish or lobster)
+    korita: N (cutlet?); V (dissect meat)
+      keru: N (bone); V (harden like bone)
+  kirokiro: N (bush used for sorcery); V (write)
+    kaapie: N (hook); V (snag)
+       kou: C (heap); V (lay egg)
+\end{verbatim}
+\end{frame}
+
+
+\section{Adding a Corpus to NLTK}
+
+\begin{frame}
+\frametitle{Adding a Corpus to NLTK}
+
+\begin{itemize}
+\item corpus path
+\item corpus readers
+\end{itemize}
+\end{frame}
+
+
+\section{Publishing}
+
+\begin{frame}
+\frametitle{Publishing}
+
+\begin{itemize}
+\item metadata: DC, OLAC
+\item repositories
+\item search
+\item demo
+\end{itemize}
+
+\end{frame}
+
+\end{document}

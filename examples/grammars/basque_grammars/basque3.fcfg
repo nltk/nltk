@@ -1,0 +1,36 @@
+% start S
+# ############################
+# Grammar Rules
+# ############################
+
+## NORK-NOR Kasuak
+
+S -> IS[kas=erg] AS/IS
+# IS erregelak
+IS[kas=?k, num=?n] -> ize[azp=arr] knmdek[kas=?k, num=?n]
+IS[kas=?k, num=?n] -> ize[azp=ber] knmdek[kas=?k, num=?n]
+
+IS[kas=?k, num=?n]/IS ->
+
+# AS erregelak
+AS[ergnum=?n1, absnum=?n2]/?x -> IS[kas=abs, num=?n1]/?x AS[ergnum=?n1, absnum=?n2]
+AS[ergnum=?n1, absnum=?n2] -> adi adl[ergnum=?n1, absnum=?n2]
+# ############################
+# Lexicon
+# ############################
+
+knmdek[kas=erg, num=hu] -> 'ak'
+knmdek[kas=erg, num=hk] -> 'ek'
+
+knmdek[kas=abs, num=hk] -> 'ak'
+knmdek[kas=abs, num=hu] -> 'a'
+
+ize[azp=arr] -> 'bizilagun' | 'aita' | 'gizon' | 'emakume'
+ize[azp=ber] -> 'Kepa' | 'Ainara'
+
+adi -> 'ekarri' | 'eraman' | 'puskatu' | 'lapurtu'
+
+adl[ergnum=hu, absnum=hu]  -> 'du'      | 'zuen'
+adl[ergnum=hk, absnum=hu]  -> 'dute'    | 'zuten'
+adl[ergnum=hu, absnum=hk]  -> 'ditu'    | 'zituen'
+adl[ergnum=hk, absnum=hk]  -> 'dituzte' | 'zituzten'

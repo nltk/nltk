@@ -1,0 +1,93 @@
+\documentclass[a4paper]{article}
+
+\begin{document}
+
+\begin{center}
+  {\Large LSA 325, Class 3, Thu 12th July}
+\end{center}
+\section*{Topics}
+
+\begin{itemize}
+\item Partial Parsing and Interpretation
+\item Chunking
+  \begin{itemize}
+  \item What is a chunk?
+  \item \texttt{chunk.Regexp}
+  \item Data-driven approaches
+  \item Chunking as Tagging
+  \end{itemize}
+\end{itemize}
+
+\subsection*{Class Materials}
+\begin{itemize}
+\item The second installment of the NLTK book will be available in the
+  Stanford Bookstore soon, either tomorrow or Monday 16 July.
+\item We will also distribute two further chapters in class next Monday:
+  \begin{enumerate}
+  \item \textit{Linguistic Data Management}
+  \item Updated version of the \textit{Chunking} chapter. We hope it
+    will be slightly easier for you to read, but there is no signicant
+    difference in the code; so it is mainly relevant for the
+    \textit{NLTK Book Review Assignment}.
+  \end{enumerate}
+
+\end{itemize}
+
+\section*{Practical Stuff}
+
+\noindent
+Data Exploration:
+\begin{verbatim}
+>>> for tree in corpus.conll2000.read('train', chunk_types=('NP',))[:5]: 
+...     print tree
+\end{verbatim}
+
+\noindent
+Write some rules (in a file):
+\begin{verbatim}
+grammar = r"""
+   NP: {<DT|PP\$>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
+       {<NNP>+}                 # chunk sequences of proper nouns
+"""
+cp = chunk.Regexp(grammar)
+\end{verbatim}
+
+\noindent
+Examine results:
+\begin{verbatim}
+for tree in corpus.conll2000.read('train', chunk_types=('NP',))[:2]:
+  print cp.parse(tree.flatten(), trace=1)
+\end{verbatim}
+
+\noindent
+Evaluate your grammar:
+\begin{verbatim}
+print chunk.accuracy(cp, corpus.conll2000.chunked('test', chunk_types=('NP',)))
+\end{verbatim}
+
+\noindent
+Iterate until accuracy = 100\%.
+
+\subsection*{Chunking Assignment}
+
+\begin{enumerate}
+\item Explore what kind of sequences are annotated as VP in the
+  CONLL2000 \texttt{train} data.
+\item Develop a \texttt{chunk.Regexp} grammar to capture the regularities.
+\item Use trace to examine the success of your rules.
+\item Once you are reasonably happy, try evaluating your rules against
+  the CONLL2000 \texttt{test} data.
+\item Briefly comment on how easy or difficult it was to develop an
+  adequate rule set.
+
+\end{enumerate}
+
+
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

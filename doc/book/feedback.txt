@@ -1,0 +1,1110 @@
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=150
+
+We should try to take the following into account
+
+On 15 Dec 2008, at 11:52, peter ljunglšf wrote:
+
+I have added two larger example grammars to NLTK-data, CommandTalk and  
+ATIS. They are taken from John Carroll's and Bob Moore's site for  
+parser comparisons:
+
+	http://www.informatics.sussex.ac.uk/research/groups/nlp/carroll/cfg-resources/index.html
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=156
+
+Suggestions from Peter Ljunglof: Mention the new BUC strategy in the Chart appendix.
+Mention the different strategies somewhere in chapter 8 (exercise 17 could be extended for this.) 
+Also the ATIS and/or CommandTalk grammars could be used in this comparison exercise.
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=166
+
+While the idea behind the skills/knowledge table immediately before the 
+"Organization" heading is a neat concept, it is confusing to look at. At 
+first it looks as if "Language as a source of interesting" is posited as a 
+kind of knowledge. You need less space between those rows of the table 
+which ostensibly form one sentence.
+
+I am not sure what is meant by "explore linguistic models, models, and 
+test..." and assume it is an error.
+
+You should try using clear grammatical phrases as well:
+"Learning to program, with applications to familiar problems to work in 
+language technology or other technical field" does not read well. Try 
+"Learning to program, by application to familiar problems, to work in 
+language technology or other technical fields". Preferably stick a full-
+stop on the end too. And if this is too wide in the final presentation, 
+use "related fields".
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=167
+
+I am not sure about the choice of symbols for easy, intermediate and 
+difficult exercises. I think it would be clearer if a star was used for 
+all, but the star be white, grey and black in respective levels. Using 
+completely different symbols is not intuitive (even if they are all found 
+in the sky on a clear night).
+
+(Also, the intermediate symbol shows up small in O'Reilly format.)
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=181
+
+"The C version is particularly nasty, especially the 1024 buffer limit (which could overflow in the code!).
+It could also use isalpha() and isdigit(), or better yet do the right thing and just skip whitespace, like the
+other programs."
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=189
+
+0)
+>Extracting Information from Text
+
+There is NER and chunking in the chapter. IE is touched, but maybe not
+enough to have the whole chapter titled like this? Perhaps the title of the
+chapter could be extended or changed? 
+
+1)
+>we could use the Alexandria Gazetteer or the Getty Gazetteer. 
+
+say a bit more about these or give references/links?
+(there is a link in Further Readings, but it would also be good up here
+already.)
+
+2)
+>we saw being deployed in the CoNLL chunk data.
+
+Say more about what CoNLL and CoNLL shared tasks are (or give a reference) ?
+
+
+3)
+>The special character expression (?!\b.+ing\b) is a negative lookahead
+condition
+
+The example code seems to output just the same without the lookahead.
+
+
+4)
+>there is unlikely to be simple string-based method of excluding filler
+strings such as this.
+
+I'm not sure if this sentence is correct.
+
+5)
+> >>> vnv = """
+> ... (
+> ... is/V|
+> ... was/V|
+> ... werd/V|
+> ... wordt/V
+> ... )
+> ... .*
+> ... van/Prep
+> ... """
+> >>> VAN = re.compile(vnv, re.VERBOSE)
+> >>> for r in nltk.sem.extract_rels('PER', 'ORG', corpus='conll2002-ned',
+pattern=VAN):
+> ...     print show_tuple(r)
+
+
+There seems to be some text missing, explaining what this does. It doesn't
+seem to work like this either (something wrong with the arguments of
+extract_rels?).
+
+
+6)
+>This is illustrated in (6b) below, which shows an np chunk structure and a
+completely parsed counterpart:
+
+(6b) -> (6) ?
+
+
+7)
+> >>> cp = nltk.RegexpChunker('CHUNK: {<V.*> <TO> <V.*>}')
+
+This doesn't seem to work. Do you mean RegexpParser instead of RegexpChunker ?
+
+
+8)
+> then look some more flexible ways to manipulate chunks
+
+look -> look at ?
+
+9)
+> in this example we have followed Abney in labeling noun chunks as NX.
+
+reference for Abney?
+
+
+10)
+> Using the corpora module we can load
+
+The corpora module changed its name to corpus module.
+
+11)
+> For more examples of chunking with NLTK, please see the Chunking HOWTO at
+http://www.nltk.org/howto.
+
+A reference to the HOWTO might also be useful earlier in the book, e.g.
+with the classifiers (once/if they work) or even as early as Chapter 0 ??
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=193
+
+1)
+> >>> groucho_grammar = nltk.parse_cfg("""
+> ... S -> NP VP
+
+I'm not sure if it has been mentioned before, what triple quotation marks mean.
+In Chapter 6, Section "Python Coding Style" you talk about various ways of
+breaking lines. It might make sense to mention the triple quotes there, too?
+
+
+2)
+> Visiting relatives can be tiresome.. 
+
+double fullstop
+
+
+3)
+> You might be asking what's new about phrasal constituents, since the are
+very similar to the chunks presented in Chapter 7
+
+the are -> they are
+
+4)
+> In Figure 8.3 we define a grammar and show how parse a simple sentence
+admitted by the grammar.
+
+This sentence cannot be parsed by the simple grammar of English in my head.
+ parse -> to parse ?
+
+5)
+> >>> sent = "Mary saw Bob".split()
+> >>> rd_parser = nltk.RecursiveDescentParser(grammar)
+> >>> for tree in rd_parser.nbest_parse(sent):
+> ...      print tree
+> (S (NP Mary) (VP (V saw) (NP Bob)))
+
+grammar needs to be changed to grammar1 if the example is to work with the
+preceeding code example.
+
+6)
+> nltk.draw.rdparser.demo()
+
+marvelous!
+
+Maybe say here that you will explain more about this in Section "Recursive
+Descent Parsing"?
+
+
+7)
+>If you are interested in experiment with writing CFGs
+
+experiment -> experimenting ?
+
+8)
+
+> Example recnominals involves nested nominal phrases, while recsentences
+contains nested sentences.
+
+The referrencing needs to be fixed: 
+recnominals ->12a
+recsentences ->12b
+
+
+9)
+> A dependency graph is projective if, when all the words are written in
+linear order, the edges can be drawn above the words without crossing.
+
+The sentence is probably easier to understand if the when-clause is moved
+to the end. (Well, at least if you're German.)
+
+10)
+> That is, was can occur with a following Adj, gave can occur with a
+following np and pp; saw can occur with a following np and thought can
+occur with a following s.
+
+This sentence refers to Table 8.2. However, the table doesn't contain the
+word "gave", but the word "put".
+
+
+11)
+>By contrast with (14d), the strings in (15d) are ill-formed:
+
+14d->14
+15d->15 ?
+
+
+12)
+>and tries other n productions in order, under it gets to n -> dog,
+
+under -> until ?
+
+13)
+>The advantages of shift-reduce parsers over recursive descent parsers is
+that...
+
+"The advantages is ..." ?
+
+14)
+>Recall that the grammar in grammar2 has the following productions for
+expanding np:
+>
+>(18)		
+>
+>a.		np -> dt nom
+>
+>b.		np -> dt nom pp
+>
+>c.		np -> propn
+>
+>Suppose we ask you to first look at tree (17), and then decide which of
+the np productions you'd want a recursive descent parser to apply first Ñ
+obviously, (18c) is the right choice! How do you know that it would be
+pointless to apply (18a) or (18b) instead? Because neither of these
+productions will derive a string whose first word is John.
+
+
+Strictly speaking, the third production won't either, if you don't extend
+grammar2 slightly. This might be confusing, since it hasn't been explained
+yet, that propn stands for proper name (even though it's quite obvious).
+Maybe redraw tree 17 with proper names that are already in the grammar?
+
+15)
+>Figure 8.9: Acceptor Using Well-Formed Substring Table (based on CYK
+algorithm)
+
+CYK is mentioned for the first (and only) time here. Explain the
+abbreviation? Reference somewhere?
+
+16)
+>instead of having to check through entire list of productions each 
+
+entire list -> the entire list ?
+
+17)
+>have other readings we would not have anticipated (as Abney explains)
+
+reference where Abney explains that?
+
+18)
+> Further Reading
+
+For dependency parsing, maybe refer to the Minipar parser, which is
+downloadable and also has a demo page:
+http://ai.stanford.edu/~rion/parsing/minipar_viz.html 
+
+----
+
+These issues have now been dealt with in online version and printed version, except
+for the following points (some of which could be kept on hold for a more thorough
+revision):
+
+<ma>
+I'm not sure if it has been mentioned before, what triple quotation marks mean.
+In Chapter 6, Section "Python Coding Style" you talk about various ways of
+breaking lines. It might make sense to mention the triple quotes there, too?
+</ma>
+
+<ma>
+Maybe say here that you will explain more about this in Section "Recursive
+Descent Parsing"?
+</ma>
+
+<ma>
+14)
+>Recall that the grammar in grammar2 has the following productions for
+expanding np:
+>
+...
+</ma>
+This has not yet been addressed in online version.
+
+<ma>
+reference where Abney explains that?
+</ma>
+This is only a problem in online version, where xrefs for chapters in edited books
+come out wrong. [i.e. text shows "As (Klavans & Resnik, 1996)" rather than "As (Abney
+1996)]
+
+<ma>
+For dependency parsing, maybe refer to the Minipar parser, which is
+downloadable and also has a demo page:
+http://ai.stanford.edu/~rion/parsing/minipar_viz.html 
+</ma>
+
+
+
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=197
+
+From Bob Carpenter:
+
+Appendix C: Probabilistic Parsing
+---------------------------------
+
+p. 417
+"grammaticality could be gradient" -- unusual use of technical term "gradient" here
+
+"Considering the verb give." -- sentence fragment
+
+"Figure 1.1" -> "Figure C-1."
+
+p. 418
+Where'd the "give NP: them / NP:" come from?  There appears to be only one
+object -- is that some kind of empty category thing?
+
+You say "associates a probability with each of its productions", but I
+think it'd help to mention they're normalized per mother category,
+that is, p(Daughters|Mother).  You clarify in transition to p. 419.
+
+The "probability of a parse" is really the probability of a parse
+given the root category of the tree.  This is related to the previous
+point and was always a source of confusion when I taught this stuff.
+
+p. 420
+
+I had a hard time following the A* discussion, which confused me
+in many different ways.   I'm not even sure if we're talking about
+Klein and Manning's approach, though you cite their paper.
+
+In general, A* search will only find optimal parses if you can prove
+the A* estimates are admissible (estimatedCompletionCost <
+completeionCost).  But I don't see any discussion of A* heuristics
+here at all, which is why I'm so confused.
+
+Another reason it'll be confusing is that it's not the A* you learn in
+AI class, which is about simple graph search, not hypergraph-based
+parsing.
+
+Is a "node value" the category assigned or the probability?  I think
+of tree nodes as being labeled with categories -- they can't be
+identified with categories because of the pigeonhole principle.
+
+You might want to mention that the probability of a category rewriting
+to a set of words requires marginalization -- summing over all analyses
+leading to the same yield.  That is p(towel rack designer|nn) requires
+summing over the different analyses.  Specifically, you need to do
+this to use a parser as a language model: p(w1...wN|S)
+
+Is ViterbiParse your implementation of Klein and Manning's algorithm?
+The description (at least through p. 421) makes ViterbiParse look like
+a standard parser with the Viterbi heuristic. Where does the A* bound
+come in?
+
+p. 421
+
+I think the example is backward.  If you want to use V->VP, then you
+do VP first.
+
+You might want to mention that you need to calculate the limits of
+cyclic rules to actually assign marginal probabilities, as required,
+say, for the inside/outside algorithm, or marginalizing into a language
+model.
+
+Is there no way in Python to turn off nbest_parse() if it's not
+implemented?  Or throw an exception?  I'd suspect having it return one
+result is going to be confusing from a user's point of view.
+
+The degenerate case will be "A -> A [1.0]", but then you'd
+never generate an A bottom-up -- but it can kill top-down parsers.
+
+
+p. 423
+
+"NP child" -- wrong font on NP
+
+"this time the tree is weighted" -> "this time the edge is weighted"
+(there's no tree yet, just a partial one)
+
+It seems like introducing a chart parser is overkill here.  Couldn't
+you just run the parser in the previous section without pruning any
+non-optimal chunks and then layer other pruning on top?
+
+If you're introducing a chart, why constrain yourself to bottom-up?
+Top-down's only messy with unary productions.
+
+But what about empty categories, which are a pain for bottom-up
+parsers?
+
+If I understand what you're suggesting (and I'm not clear I do), then
+the lowest-cost-first algorithm's not correct.  Consider this simple
+case:
+
+A -> B [.9]
+A -> C [.1]
+
+B -> x [.5]
+    y [.5]
+
+C -> x [1.0]
+
+If the input is "x", you'd get [C x]:1.0 first
+on the queue and then [B x]:.0.5 after it.  So you'd
+expand [C x] first, getting [A [C x]]:.1.
+
+The problem with best-edge-first is that you have to keep going unless
+you can get a sound A*-type bound that lets you throw low probability
+edges off the chart.
+
+I'm not convinced that most (in the sense of > 50%) of all legal edges
+would be processed before parsing a root.  There's a huge dynamic
+range of log probabilities when you train on the Treebank, so lots of
+short stuff will be worse than the best parse for the whole sentence.
+
+p. 424
+
+I'm confused -- the probability you're trying to approximate here,
+that an edge will participate in the best parse, is what Klein and
+Manning call A*.
+
+I think "best-first search" should be called "largest span search".
+In general, best-first can have lots of different notions of "best".
+
+The term "beam search" is confusing in that sometimes the beam width
+is number of entries on a heap and sometimes it's the difference
+(usually a ratio) between the best entry and another entry.  Manning
+and Schuetze give both definitions, and many parsers will use both
+constraints at once.  (The Min-max heap is a great data structure
+if you need to pop off best or worst items efficiently.)
+
+Why is beam size best used with InsideChartParser() and what is
+InsideChartParser()?  I don't see any other refs to it.
+
+It looks like your code sets up two parsers but only uses inside_parser.
+
+"each edges' tree" -> "each edge's tree" [I'll reiterate that I'd
+avoid calling these things trees altogether because they're partial]
+
+
+p. 425
+
+I think of grammar induction as inducing the rules, whereas what
+you're talking about is parameter estimation for a fixed grammar.
+
+You're mixing lower-case and upper-case p in probability settings.
+I like "p" for densities and distributions and "Pr" for unambiguous
+event probabilities.
+
+Presumably you'll get some math notation in here and not a sequence
+of dashes!
+
+I have no ideas what "parent annotation" or "Markov order-N smoothing"
+are.  Is that something like Mark Johnson's playing with non-locality
+and Michael Collins' parser?
+
+Collapsing (full CNF or just unary collapsing) can be done in many
+different ways leading to equivalent languages but radically different
+grammars.
+
+-------------------------
+
+Appendix E: Text Proc with Unicode
+
+p. 431
+
+Use a font that can do Latin chars!
+
+If you're on Windows, it's even worse -- you'll be using Win1252
+without realizing it.
+
+"encodings (such as UTF-8) use multiple bytes"  -- I'd say "one or more bytes",
+because UTF-8 uses one byte for ASCII, but requires more for anything else.
+
+Rather than saying "into/out of unicode", I'd use "from sequences of bytes
+to Unicode code points" and "from Unicode code points to sequences of bytes".
+Verbose, but I've found this really confuses people.
+
+p. 432
+
+What about network in addition to file/terminal?
+The web makes things confusing, but modern browsers can render most
+chars with the right specification, so it may help your readers to play
+around a bit.
+
+
+I'd put URLs in their own font (http://docs.python.org...
+
+I take it l = l[:-1] makes a copy?  can you use something other
+than "l" for lines -- it's so confusing with a "1" in many fonts,
+including the one you're using for the book.
+
+p. 433
+
+What do you mean that "unicode_escape" is a dummy encoding?  What's
+not clear to me is what the bytes are, but presumably it'd be the
+ASCII bytes.  Either way, it's not a one-one encoding, as I just
+tried it out (hey, I'm running Python now!):
+
+>>> print "foo\u1234".encode('unicode_escape')
+foo\\u1234
+>>> print "foo\\u1234".encode('unicode_escape')
+foo\\u1234
+
+So it looks like two different input strings can get the
+same encoding.  This means it isn't great for debugging, which
+is where I usually find myself using this kind of thing.
+
+I'd have at least made it bidirectional by escaping other backslashes.
+Even worse:
+
+>>> print "foo\xFA".encode('unicode_escape')
+Traceback (most recent call last):
+ File "<stdin>", line 1, in <module>
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xfa in position 3: ordinal not in range(128)
+
+And then dropping things it can't print is a terrible default.  Isn't
+that confusing everyone?
+
+What's the necessary font?  You might want to suggest something,
+like Lucida Sans Unicode.
+
+p. 434
+
+I doubt many folks are running Latin2!
+
+
+p. 436
+
+You have to cite IBM's ICU w.r.t. Unicode -- it's awesome, and written
+by the guy who "invented" unicode before he moved to Google.
+
+And I'd cite unicode.org, because that's where you'll get the spec
+and all the font charts
+
+p. 439
+
+
+I'd just lose the "trash the other languages" section.  It'll only
+annoy people like me.  But, if you're going to keep the propaganda:
+
+Although funny, I think this is wrong: "Java has replaced COBOL
+as the standard  language for business enterprise software".
+I think that's VB unless you're talking web services, and then
+it's mostly PHP until you get to the big servers.  As to Java
+being designed to be portable and work on set top boxes,
+you might as well describe Python as being designed to interface
+to the Amoeba operating system.  It's not really relevant any
+more.
+
+I don't know what you mean by "native support for the internet".
+There are socket libraries published by Sun, and standards
+published on top of Java like servlets, and then separate applications
+embedding Java into client-side pages like applets, but it's
+no more "built in" to the language spec than it is into the
+spec for C.
+
+You can also get rid of more parens if you want a more
+Pythony style.  You should start new lines with equals
+(it's Sun's standard code format).  And the Exception should
+only be an IOException; overthrowing is amateurish.  So
+the minimal change for style and clarity would be:
+
+import java.io.*;
+public class IngWords {
+ public static void main(String[] args) throws IOException {
+   BufferedReader in
+     = new BufferedReader(new InputStreamReader(System.in));
+  String line = in.readLine();
+  while (line != null)
+    for (String word : line.split(" ")) {
+      if (word.endsWith("ing"))
+        System.out.println(word);
+      line = in.readLine();
+    }
+}
+
+The idiomatic way to write this kind of loop (in C or Java)
+would be:
+
+ String line;
+ while ((line = in.readLine()) != null)
+   if (word.endsWith("ing"))
+     System.out.println(word);
+
+Also, the split(" ") will only split on single whitespaces.
+You probably want split("\\s+") to split on arbitrary amounts
+and kinds of whitespace (The first slash escapes the second.)
+
+As M said, a real Perl programmer would do that on one
+line.  I'm guessing Perl would let you drop all those braces, too.
+It's ironic that Perl was written by a linguist.
+
+Languages like ML win most of the speed races for numerical/matrix/loop
+computations like parsers or CRF decoders these days.  C and Java are
+pretty close for this kind of thing.  C's way faster to startup and
+typically has smaller executables.  But Java's online unfolding is
+way cool.
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=214
+
+Appendix on chart parsing:
+=========================
+
+>The rule is defined and illustrated in (4)
+
+Something went wront with the (typesetting of the) definition of the rule?
+Shouldn't it be something like "If there's an edge yyy and an edge zzz
+insert an edge vvv".
+It seems like this is true for the other rules as well. The pictures also
+cover some of the text...
+
+
+Appendix on probabilistic parsing:
+==================================
+
+For an additional motivation for probabilistic grammars you could show a
+case where a parser comes up with a completely unintuitive analysis for a
+sentence.
+Even though correct according to the grammar, such an analysis should be
+attributed a low probability then (well, ideally;-).
+I used the following example for some other purpose in a talk once (I
+believe it's from wsj and parsed with the Bikel parser.)
+
+The president ...
+
+ MD would) (VP deny) (NP (DT these)
+(NNS women)) (NP (PRP$ their) (NN
+right) (S (VP (TO to) (VP (VB free)
+(NP (NN choice)...
+
+gold standard:
+
+    MD would) (VP (VP deny) (NP (DT
+these) (NNS women)) (NP (PRP$ their
+(NN right) (PP (TO to) (NP (JJ free)
+(NN choice)))))) (. .))
+
+(BTW: Is this wsj-example "good English"? Some people (proficient L2
+English speakers) expressed doubts about this.)
+
+>>is is the structure with the interpretatio
+
+double is
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=244
+
+From Peter Ljunglof:
+
+* The notion "parse edge" isn't standard - I've never heard it before.
+You're only using it in 3 places, so perhaps you can rephrase in more
+standard terms, e.g., "complete edge for the whole sentence" or something
+similar.
+
+* The list in the "The Chart Parser" section is a bit unclear: what is
+meant by "licensing"? Is it an abstract notion?
+
+E.g., (2) says that [A -> . alpha, (i,i)] is licensed by the grammar. But
+this is not a rule that is used, but instead it is replaced by the
+bottom-up resp. top-down rules.
+
+In fact, (1)-(3) can be seen as a very simplistic chart parsing strategy
+(if (3) is the fundamental rule), which is neither BU nor TD.
+Sikkel&Nijholt (1997) calls it "Bottom-up Earley".
+
+At least you should refer to the items in the list when defining the
+parsing strategies.
+
+* The example edges (images) overlap with the definitions of the inference
+rules.
+
+* Some further reading:
+
+Shieber, S. M., Schabes, Y., and Pereira, F. C. N. (1995). Principles and
+implementation of deductive parsing. Journal of Logic Programming,
+24(1Ð2):3Ð36.
+Sikkel, K. and Nijholt, A. (1997). Parsing of context-free languages. In
+Rozenberg, G. and Salomaa, A., editors, The Handbook of Formal Languages,
+volume II, pages 61Ð100. Springer-Verlag, Berlin.
+
+(And of course the forthcoming Handbook of Natural Language Processing 2nd
+ed - with a parsing chapter by me and Mats WirŽn... but I don't know when
+that book is due:)
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=280
+
+This chapter is quite different from the previous ones -- it contains
+very long fragments of pure theory.  It seems to me that the
+organisation of the material of chapters 4 and 5 is not optimal...
+I'd prefer these heavy-going fragments to be shorter and more interspersed
+with python code and examples (esp. sections 5.5-5.7).
+
+5.1, the "Choosing The Right Features" section: "can especially
+problematic" -- insert "be".
+
+2 lines below: "these all these features".
+
+"Making use of Context": "used define" -- insert "to"
+
+Same subsection, "Clearly, ... improves the performance..." -- it's
+not that clear, as there is no result of the
+nltk.classify.accuracy(...) command above.
+
+I am confused by Figure 5.3: the class "ConsecutivePosTagger" is
+defined, but then "SimplePosTagger" is used; also, I haven't found a
+reference to that figure in text.
+
+5.2, the "Precision and Recall" subsection: the definition of "True
+negatives" (2nd bullet) has "relevant items" instead of "irrelevant
+items".
+
+Figure 5.9 is not referred to in text, I think.
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=283
+
+2nd sentence: "tokenizations segments" --> "tokenization segments".
+
+"IOB tags that we saw being deployed in the CoNLL..." -- at this stage
+we haven't (seen them) yet, I think.
+
+In the "Relation Extraction" section: the regexp with the negative
+lookahead looks suspicious: isn't space missing before "(?!\b.+ing\b)"
+or, alternatively, shouldn't the first "\b" (for word boundary,
+right?) be removed here?  (Oh, I see, it's probably right despite this
+spurious "\b".)
+
+"keyword works \emph{in} reasonably" --> "keyword \emph{in} works
+reasonably" 
+
+Code just before section 7.2 orphaned.
+
+"Chunking vs Parsing" and "Representing Chunkgs: Tags vs Trees" --
+"vs." more usual with the full stop?
+
+The presentation of IOB in "Representing Chunks..." and in "Further
+Reading": note that the version of IOB presented here is not the
+original IOB representation of Ramshaw and Marcus -- they used "B"
+only to separate two adjacent chunks.  Tjong Kim Sang and Veenstra
+1999 call this original representation IOB1, and the one used in the
+NLTK book (after Ratnaparkhi 1998) -- IOB2.
+
+General remarks: many paragraphs start with a spurious space (at least
+in the PDF version), e.g., paragraphs beginning with "In this
+representation, there is one token per line", "NLTK uses trees", "We
+create a chunker", etc.
+
+"Your Turn" just before "Splitting and Merging (incomplete)": add
+closing single quote, full stop, and appropriate font (colour).
+
+The "Evaluating Chunk Parsers" section: the previous section talked
+about token-level evaluation in terms of accuracy, this one is
+concerned with chunk-level evaluation in terms of P and R, but this
+suddent change of perspective is not sufficiently emphasised, I think.
+Maybe an example showing the crucial difference between the two
+evaluations would be useful?  For example, if a single very long
+correct NP is recognised as two shorter NPs, accuracy will still be pretty
+high (only one tag will be wrong), while P and F will be 0, if there are no
+other NPs (if I understand correctly).
+
+"(cf precision" -?-> "(cf. precision"
+
+Shouldn't some "Church, Young and Bloothooft" references be instead
+explicit references to Abney (esp. regarding "spectroroute")?
+
+BTW, it's the most complete-looking chapter so far...
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=285
+
+8.2: "What we \emph{can't} do is conjoin an NP and an AP" -- how about
+the much discussed (let me know if you need references) case of unlike
+constituent coordination, e.g., "Fred became wealthy and a Republican"
+(involving exactly an NP and an AP)?
+
+"An \emph{immediate constituent} are" -- agreement
+
+"\textbf{noun phrase} (\emph{np}:gc)" -- what's "gc"?
+
+8.3: "(e.g.  words)" -- this looks like a sentential space, and I've
+seen similar in other chapters.  A general comment: IIRC, the Chicago
+Manual of Style recommends to put commas after every "e.g." and "i.e."
+-- something that's done only occasionally in the NLTK book.  This
+would probably also solve the sentential space problem (if I guess
+correctly that it originates in some kind of a pipeline involving
+LaTeX --> PDF).
+
+"A Simple Grammar" section: "show how parse" -- add "to"
+
+"Recursion in Syntactic Structure": the definition/explanation of a
+recursive grammar in the first sentence here is too sloppy -- any
+reasonable grammar is recursive in this sense (because all
+non-terminals, perhaps apart from the start symbol, occur both on the
+LHS of *a* production and on the RHS of *a* production).  Maybe you
+should bite the bullet and introduce the notion of derivation
+explicitly?
+
+Just above the trees in (12): "recnominals" and "recsentences".
+
+Figure 8.5 is unreadable in PDF.
+
+"(noun modifier of \emph{elephant}." -- close paren.
+
+"etc)" -?-> "etc.)"
+
+"Valency and the Lexicon" section, a few lines below (15): "examples
+in (15d)" --> "... (15)".
+
+The left-corner triangle in (19): "a" --> "\alpha".
+
+Table 8.4: shouldn't the Left-Corner *pre-terminals* for S be "Det"
+and "PropN" instead of "NP"?
+
+"For example, this says that since we found...": "wfst[0][1]" -->
+"wfst[2][3]" and "wfst[1][2]" --> "wfst[3][4]", I think (or I am
+confused here).
+
+"Amongst the output lines of this program we find
+\texttt{offer-from-group}..." -- the explanation of the code finding
+information about valency is way too brief, I think.
+
+Just above 8.7: "We return to this topic in" and then reference to
+Chapter (1) instead of Appendix.
+
+8.7: full stop missing at the end of the 1st bullet; spurious space
+before ellipsis at the end of the last bullet.
+
+8.8: isn't Gazdar and Mellish ("NLP in {Prolog/Lisp}") still a
+reasonable further reading for this chapter?
+
+(Fixed typos and low-level issues. The more substantive issues still need to be addressed.)
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=289
+
+APPENDICES
+
+Why is Chart Parsing and Probabilistic Parsing in the Appendix?  This
+is very interesting and relevant material that should be part of
+chapters 8 and 9, or a new chapter following them...
+
+
+Comments to CHART PARSING:
+
+1.2: there is span "(i,k)" in "An edge [VP --> V NP PP *, (i,k)]", but
+"(i,j)" further on in the same sentence.  Also, shouldn't the rules
+discussed in the paragraph be the same as those in (3) (for greater
+homogeneity?).
+
+(3b) unreadable in PDF.
+
+1.8 mentions the possibility of creating one's own strategy -- I'd
+love to see how this can be done.
+
+
+Comments to PROBABILIISTIC PARSING:
+
+1.2: the spans given below the Table 1.1 are incompatible with those
+in that table (e.g., [0:6] vs. [0:7] as the span for the whole
+sentence).
+
+Just above Figure 1.3: "Note that... parse, that..." -- get rid of the
+2nd "that".
+
+1.3: second para: is it "the cookie" or "my cookie"?
+
+Just above (3): "These trees are shown in (3c)." --> "...in (3)."
+
+
+Comments to the appendix on Unicode:
+
+Near the end of 1.2, code involving "u'\015b\w*' -- does the meaning
+of "\w" change depending on the locale, or is it always the pure ASCII
+"a-zA-Z"?
+
+BTW, you've chosen a great language for this appendix ;-), but not so
+great a Wikipedia article -- I'd find an article on Tarski or
+Ajdukiewicz more appropriate here...
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=292
+
+The discussion of classification should include a short section on
+smoothing, and NLTK's smoothed probdists.
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=309
+
+** p 30 middle, 
+it took me a couple of minutes to understand about the shorter import thing. It would have 
+helped if you said somethig like "now we just write 
+>>> emma = gutenberg.words('austen-emma.txt')
+
+** p33 the second interaction on this page 
+relies on certain imports having been carried out.
+It works if you start by :
+   import nltk
+but if you start (as recommended on p30) with
+  from nltk import corpora
+this will not work:
+  fdist=nltk.FreqDist(w.lower() for w in news_text) 
+This will not be a problem for the reader who work through the chapter exactly
+   as written, but if they try to start a new session with the `import from ...'
+it will give them problems which they cannot understand at this stage.
+Better to do an explicit:
+ from nltk import FreqDist
+during this interaction
+
+** p35 typo: fig:inaugual (should be a latex cross ref, not in text)
+** p35 fig1 
+it would be clearer if the caption explained what the axes are (they are essentially unreadable on 
+the graph itself).
+** p36-7 
+I don't understand the graph -- for me, it needs a caption that explains what it means. From the 
+code that generates it I can see it indicates a relation between language and word length, but I 
+don't get anything else. There is obviously something interesting about Eskimo, which might be 
+worth pointing out.
+** p36 Now your turn. 
+This is till only chpt 2, so it might be worth saying that the reader has to put the language they 
+have chosen in place of 'Language' in the code. (Incidentally, I understand what /this/ plot 
+means).
+** p37 'or are endangered' what has endangerment got to do with availability of corpora?
+   (obvioulsy, a dead language has a finite corpus, but that's not germane to the point you
+   are making here).
+** p38 top REF needs filling in
+** p38 the track thing
+the last sentence is 'well show you how to work with these in Chpt 3', but the
+next section seems to immediately start telling us how to work with them. Maybe say
+something like 'for now..'
+
+** p39 top fig. 2-4
+the graphics aer a bit small to read, some explanation of the counting |||| with
+a cross might help. I'm not sure this figure is mentioned in the text.
+
+** p39 bottom TUPLES -- 
+some text on tuples intended here, I suppose.
+** p45
+"Our plural function has an error, and we'll need to fix it. This time, we won't produce 
+another version, but instead we'll fix the existing one. Thus, at every stage, there is only 
+one version of our plural function, and no confusion about which one we should
+use. "
+Eh? a) we don't fix it; b) why does this mean there is only one version?
+** p45 bottom 'work in somewhere" -- work it in
+This would be a good place to say that importing a module only works once -- if
+you fix code and want to get the new code loaded, you need to reload:
+
+ >>> reload(mycode)
+
+** p41 'Other conditions'
+This is a bit odd, it refers back quite a long way. Wouldn't it be better to
+have this explanation earlier, when the figures are introduced? Or move the
+discussion with those figures to this point. (Incidentally, even after this
+discussion, I still don't understand figure 2.2)
+
+** p46ff 
+perhaps worth saying here that these paths, and the files mentioned are only on
+unix (and maybe mac). Similarly wrt the earlier mention of /usr/share/dict/.
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=315
+
+From Bob Carpenter (pulled out of issue 197)
+
+Appendix E: Text Proc with Unicode
+
+p. 431
+
+Use a font that can do Latin chars!
+
+If you're on Windows, it's even worse -- you'll be using Win1252
+without realizing it.
+
+"encodings (such as UTF-8) use multiple bytes"  -- I'd say "one or more bytes",
+because UTF-8 uses one byte for ASCII, but requires more for anything else.
+
+Rather than saying "into/out of unicode", I'd use "from sequences of bytes
+to Unicode code points" and "from Unicode code points to sequences of bytes".
+Verbose, but I've found this really confuses people.
+
+p. 432
+
+What about network in addition to file/terminal?
+The web makes things confusing, but modern browsers can render most
+chars with the right specification, so it may help your readers to play
+around a bit.
+
+
+I'd put URLs in their own font (http://docs.python.org..
+
+I take it l = l[:-1] makes a copy?  can you use something other
+than "l" for lines -- it's so confusing with a "1" in many fonts,
+including the one you're using for the book.
+
+p. 433
+
+What do you mean that "unicode_escape" is a dummy encoding?  What's
+not clear to me is what the bytes are, but presumably it'd be the
+ASCII bytes.  Either way, it's not a one-one encoding, as I just
+tried it out (hey, I'm running Python now!):
+
+>>> print "foo\u1234".encode('unicode_escape')
+foo\\u1234
+>>> print "foo\\u1234".encode('unicode_escape')
+foo\\u1234
+
+So it looks like two different input strings can get the
+same encoding.  This means it isn't great for debugging, which
+is where I usually find myself using this kind of thing.
+
+I'd have at least made it bidirectional by escaping other backslashes.
+Even worse:
+
+>>> print "foo\xFA".encode('unicode_escape')
+Traceback (most recent call last):
+ File "<stdin>", line 1, in <module>
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xfa in position 3:
+ordinal not in range(128)
+
+And then dropping things it can't print is a terrible default.  Isn't
+that confusing everyone?
+
+What's the necessary font?  You might want to suggest something,
+like Lucida Sans Unicode.
+
+p. 434
+
+I doubt many folks are running Latin2!
+
+
+p. 436
+
+You have to cite IBM's ICU w.r.t. Unicode -- it's awesome, and written
+by the guy who "invented" unicode before he moved to Google.
+
+And I'd cite unicode.org, because that's where you'll get the spec
+and all the font charts
+
+********************************************************************
+http://code.google.com/p/nltk/issues/detail?id=395
+
+Getting Started with NLTK
+
+You define a function called lexical_diversity and it is defined such that
+the higher the number it return the less lexically divers was the text it
+evaluated.
+It is not wrong but slightly suboptimal for people who are not familiar
+with writing code.
+I suggest you swap nominator and denominator.
+
+In the code snippets there are numberings of the form '[1]' right next to
+the actual python code. For someone new to programming it might be
+confusing to have things written in the code that aren't code. It makes the
+code examples less clear than they could be.
+I suggest that you 
+- align the '[n]' 
+- and move them e.g. to a save distance to the right, away from the code
+
+(Thanks for this feedback.  Yes, the name lexical_diversity() is misleading when a
+higher number means less diversity.  We originally did it this way when we were using
+integer division, since reversing numerator and denominator evaluated to zero.  A
+typographically simpler change would be to pick a different name for this measure. 
+It is the average number of times a given word (type) appears as a token in the text.
+
+I agree about the program line annotations, and will see if these can be changed.)

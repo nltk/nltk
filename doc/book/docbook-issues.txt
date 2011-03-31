@@ -1,0 +1,4 @@
+
+* Linguistic examples in chapter 10 having literal linebreaks are not
+correctly formatted.  They should be in a larger font size, vertically aligned with
+the example number, and indented further.

@@ -1,0 +1,91 @@
+Python 2.5 (r25:51918, Sep 19 2006, 08:49:13) 
+[GCC 4.0.1 (Apple Computer, Inc. build 5341)] on darwin
+Type "copyright", "credits" or "license()" for more information.
+
+    ****************************************************************
+    Personal firewall software may warn about the connection IDLE
+    makes to its subprocess using this computer's internal loopback
+    interface.  This connection is not visible on any external
+    interface and no data is sent to or received from the Internet.
+    ****************************************************************
+    
+IDLE 1.2      
+>>> 
+>>> 
+>>> from nltk.book import *
+>>> text = '''Hello.  Isn't this fun?'''
+>>> list(tokenize.regexp(text, r'[a-z]'))
+['e', 'l', 'l', 'o', 's', 'n', 't', 't', 'h', 'i', 's', 'f', 'u', 'n']
+>>> list(tokenize.regexp(text, r'[a-z]+'))
+['ello', 'sn', 't', 'this', 'fun']
+>>> list(tokenize.regexp(text, r'[A-Za-z]+'))
+['Hello', 'Isn', 't', 'this', 'fun']
+>>> list(tokenize.regexp(text, r'[A-Za-z]+|[.?!;]'))
+['Hello', '.', 'Isn', 't', 'this', 'fun', '?']
+>>> list(tokenize.regexp(text, r'[A-Za-z]+|[.?!;']'))
+SyntaxError: invalid syntax
+>>> 
+>>> list(tokenize.regexp(text, r"[A-Za-z]+|[.?!;']"))
+['Hello', '.', 'Isn', "'", 't', 'this', 'fun', '?']
+>>> list(tokenize.regexp(text, r"\w+[.?!;']\w+|[.?!;']"))
+['.', "Isn't", '?']
+>>> list(tokenize.regexp(text, r"\w+([.?!;']\w+)?|[.?!;']"))
+['Hello', '.', "Isn't", 'this', 'fun', '?']
+>>> list(tokenize.whitespace(text))
+['Hello.', "Isn't", 'this', 'fun?']
+>>> list(tokenize.wordpunct(text))
+['Hello', '.', 'Isn', "'", 't', 'this', 'fun', '?']
+>>> nltk.FreqDist
+<class 'nltk.probability.FreqDist'>
+>>> sentence = "the cat sat on the mat"
+>>> words = sentence.split()
+>>> words
+['the', 'cat', 'sat', 'on', 'the', 'mat']
+>>> fd = nltk.FreqDist(words)
+>>> 
+>>> fd['the']
+2
+>>> fd['sat']
+1
+>>> fd2 = nltk.FreqDist(sentence)
+>>> fd2.keys()
+['a', ' ', 'c', 'e', 'h', 'm', 'o', 'n', 's', 't']
+>>> fd2['c']
+1
+>>> corpus.inaugural.items
+['1789-Washington', '1793-Washington', '1797-Adams', '1801-Jefferson', '1805-Jefferson', '1809-Madison', '1813-Madison', '1817-Monroe', '1821-Monroe', '1825-Adams', '1829-Jackson', '1833-Jackson', '1837-VanBuren', '1841-Harrison', '1845-Polk', '1849-Taylor', '1853-Pierce', '1857-Buchanan', '1861-Lincoln', '1865-Lincoln', '1869-Grant', '1873-Grant', '1877-Hayes', '1881-Garfield', '1885-Cleveland', '1889-Harrison', '1893-Cleveland', '1897-McKinley', '1901-McKinley', '1905-Roosevelt', '1909-Taft', '1913-Wilson', '1917-Wilson', '1921-Harding', '1925-Coolidge', '1929-Hoover', '1933-Roosevelt', '1937-Roosevelt', '1941-Roosevelt', '1945-Roosevelt', '1949-Truman', '1953-Eisenhower', '1957-Eisenhower', '1961-Kennedy', '1965-Johnson', '1969-Nixon', '1973-Nixon', '1977-Carter', '1981-Reagan', '1985-Reagan', '1989-Bush', '1993-Clinton', '1997-Clinton', '2001-Bush', '2005-Bush']
+>>> for word in corpus.inaugural.tokenized('2005-Bush'):
+	if word in ['he', 'him', 'she', 'her', 'man', 'woman']:
+	    print word,
+man woman her
+>>> fd = nltk.FreqDist()
+>>> fd
+<FreqDist with 0 samples>
+>>> fd.inc('male')
+>>> fd
+<FreqDist with 1 samples>
+>>> 
+>>> fd.inc('female')
+>>> fd.inc('female')
+>>> fd.inc('female')
+>>> fd.inc('female')
+>>> fd
+<FreqDist with 5 samples>
+>>> 
+>>> fd['male']
+1
+>>> fd['female']
+4
+>>> if word in ['..', '..', '..']:
+	fd.inc('???')
+
+>>> for word in corpus.inaugural.tokenized('2005-Bush'):
+	fd.inc(word)
+>>> fd
+<FreqDist with 2438 samples>
+>>> fd['President']
+4
+>>> fd['man']
+1
+>>> 
+

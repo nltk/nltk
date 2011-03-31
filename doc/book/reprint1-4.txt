@@ -1,0 +1,32 @@
+p115 first line after example 3-3: maximizes  s/b  minimizes
+   (from OReilly errata)
+
+p234 example 6-6:
+   6up: for i, word in words:  s/b  for i, word in enumerate(words):
+   5up: classifier.classify(words, i)  s/b  classifier.classify(punct_features(words, i))
+   0up: add final line of code, indented at same level as "if" statement: return sents
+
+p243 10up formula (1) please insert minus sign between equals and uppercase sigma
+
+p309 9up "through entire list" s/b "through the entire list" 
+   (from previous list)
+
+p336 Fig 9-1 should still be a bit smaller please.
+
+p426 1d: add opening <sense> tag on new line, after closing </sense> tag:
+   (from OReilly errata)
+
+     <entry>
+       <headword>whale</headword>
+       <pos>noun</pos>
+       <sense>
+         <gloss>any of the larger cetacean mammals having a streamlined
+           body and breathing through a blowhole on the head</gloss>
+         <synset>whale.n.02</synset>
+       </sense>
+       <sense>     <------------------------ NEW TAG HERE
+         <gloss>a very large person; impressive in size or qualities</gloss>
+         <synset>giant.n.04</synset>
+       </sense>
+     </entry>
+     

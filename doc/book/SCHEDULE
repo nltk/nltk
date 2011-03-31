@@ -1,0 +1,110 @@
+$Id$
+----------------
+WRITING SCHEDULE
+----------------
+
+
+0. Preface
+
+0. Python and NLTK
+
+1. Introduction
+
+------------------------------------------
+
+PART I: Basics 
+
+Part Intro
+
+2. Programming
+   + more exercises
+   + checking for coverage
+   + summary
+
+3. Words
+   + lexical resources
+   + sentence tokenization?
+   + morphological analysis
+   + Multiword expressions
+   + summary
+
+4. Tagging
+   + non-Latin tagging example
+   + n-gram language modeling, smoothing
+   + move Brill stuff elsewhere
+   + summary
+
+5. Chunk Parsing
+   + [P] rule format
+   + summary
+
+------------------------------------------
+
+PART II: Parsing
+
+Part Intro 
+
+6. Structured Programming
+   + XML
+   + collocations?
+   + simple extractive summarization?
+
+7. Grammars and Parsing
+   + complete discussion of problems with parsing algorithms
+   + material on dependencies, dependency grammar (+simple parser?)
+   + discussion of generation
+
+8. Advanced Parsing
+   + Categorial grammar?
+
+9. Feature Based Grammar
+   + Describe feature structure module (done; but what about featurelite?)
+
+------------------------------------------
+
+PART III: Advanced Topics 
+
+Part Intro
+
+10. Advanced Programming
+    + Unicode, character encoding, XML, web (urlopen), crawling?
+
+11. Semantic Interpretation
+    + feature-based semantics (requires update of parser)
+    + theta roles, propbank
+    + Cooper storage (requires list-valued features)
+
+12. Language Engineering / Data-intensive NLP
+    + language id problem?
+    + language modelling (already some major components here, esp for estimation)
+    + HMMs
+    + other machine learning techniques (e.g., Transformation-based learning)
+    + Naive Bayes classification, clustering
+       [NER, text classification (& question classification), ontology extraction]
+    + NLP on the Web 
+       [stuff on RDF?]
+
+13. Managing linguistic data
+    + corpus construction
+    + OLAC, annotation
+
+14. Lexicon and Morphology
+     + representing lexical information, redundancy
+     + lexical resources
+       + comlex
+       + framenet
+     + lexical semantics, use of ontologies
+     + morphology/lexicon interaction
+     + grammar/lexicon interaction (Levin classes)
+     + lexical rules, hierarchical lexicon
+     + multiword expressions, collocations, idioms
+     --> AT&T WFST toolkit; Python bindings?
+
+15. Conclusion 
+    brief pointers on 'hot topics': MT, Spoken Dialogue, QA
+-------------------------------------------
+
+APPENDIXES:
+
+* Regular Expressions
+* Cheat Sheet

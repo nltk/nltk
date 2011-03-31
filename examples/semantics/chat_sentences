@@ -1,0 +1,17 @@
+# Natural Language Toolkit: Demo Sentences
+#
+# Author: Ewan Klein <ewan@inf.ed.ac.uk>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+############################################
+# Some example sentences for the Chat-80 demo
+
+what is the capital of France
+which sea borders France
+what contains Berlin
+which Asian countries border the_Mediterranean 
+
+
+
+
+

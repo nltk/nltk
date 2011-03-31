@@ -1,0 +1,26 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id: Portfile 40109 2008-09-20 21:25:53Z ryandesign  macports.org $
+
+PortSystem 1.0
+PortGroup python25 1.0
+
+Name: py25-nltk
+Version: 0.9.6
+Category: python textproc
+Platform: darwin
+Maintainers: sb@csse.unimelb.edu.au
+Description: Natural Language Toolkit
+Long Description: NLTK is Python modules for research and development in natural language processing
+Homepage: http://www.nltk.org/
+master_sites http://code.google.com/p/nltk/
+distname nltk-${version}
+
+checksums md5 8982d1f8fe7d8f3c81e545363df46588 sha1 886680fd8b5dc5139b28dec31fd1282460049afd rmd160 e704cfc77c37214019030574583d6df804948452
+
+depends_lib port:py25-numpy port:py25-matplotlib
+
+post-destroot {
+set docdir ${destroot}${prefix}/share/doc/${name}-${version}
+xinstall -d ${docdir}
+xinstall -m 644 -W ${worksrcpath} LICENSE.TXT README.TXT ${docdir}
+}

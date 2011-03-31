@@ -1,0 +1,150 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.rst
+
+.. TODO: reconsider location of section on generative grammar
+
+.. _chap-introduction:
+
+==============================================
+1. Introduction to Natural Language Processing
+==============================================
+
+
+
+------------------------------------------------
+The Architecture of Linguistic and |NLP| Systems
+------------------------------------------------
+
+.. add this to a chapter on grammar or semantics?
+
+Generative Grammar and Modularity
+---------------------------------
+
+One of the intellectual descendants of formal language theory was the
+linguistic framework known as `generative grammar`:dt:. Such a grammar
+contains a set of rules that recursively specify (or `generate`) the
+set of well-formed strings in a language. While there is a wide
+spectrum of models that owe some allegiance to this core, Chomsky's
+transformational grammar, in its various incarnations, is probably the
+best known. In the Chomskyan tradition, it is claimed that humans have
+distinct kinds of linguistic knowledge, organized into different
+modules: for example, knowledge of a language's sound structure
+(`phonology`:dt:), knowledge of word structure (`morphology`:dt:),
+knowledge of phrase structure (`syntax`:dt:), and knowledge of meaning
+(`semantics`:dt:). In a formal linguistic theory, each kind of
+linguistic knowledge is made explicit as different `module`:dt: of the
+theory, consisting of a collection of basic elements together with a
+way of combining them into complex structures. For example, a
+phonological module might provide a set of phonemes together with an
+operation for concatenating phonemes into phonological
+strings. Similarly, a syntactic module might provide labeled nodes as
+primitives together with a mechanism for assembling them into trees. A
+set of linguistic primitives, together with some operators for
+defining complex elements, is often called a `level of
+representation`:dt:.
+
+As well as defining modules, a generative grammar will prescribe how
+the modules interact. For example, well-formed phonological strings
+will provide the phonological content of words, and words will provide
+the terminal elements of syntax trees. Well-formed syntactic trees
+will be mapped to semantic representations, and contextual or
+pragmatic information will ground these semantic representations in
+some real-world situation.
+
+As we indicated above, an important aspect of theories of generative
+grammar is that they are intended to model the linguistic knowledge of
+speakers and hearers; they are not intended to explain how humans
+actually process linguistic information. This is, in part, reflected
+in the claim that a generative grammar encodes the `competence`:dt: of an
+idealized native speaker, rather than the speaker's `performance`:dt:. A
+closely related distinction is to say that a generative grammar
+encodes `declarative`:dt: rather than `procedural`:dt:
+knowledge. Declarative knowledge can be glossed as "knowing what",
+whereas procedural knowledge is "knowing how".  As you
+might expect, computational linguistics has the crucial role of
+proposing procedural models of language. A central example is parsing,
+where we have to develop computational mechanisms that convert
+strings of words into structural representations such as syntax
+trees. Nevertheless, it is widely accepted that well-engineered
+computational models of language contain both declarative and
+procedural aspects. Thus, a full account of parsing will say how
+declarative knowledge in the form of a grammar and lexicon combines
+with procedural knowledge that determines how a syntactic analysis
+should be assigned to a given string of words. This procedural
+knowledge will be expressed as an `algorithm`:dt:\ : that is, an explicit
+recipe for mapping some input into an appropriate output in a finite
+number of steps.
+
+A simple parsing algorithm for context-free grammars, for instance,
+looks first for a rule of the form ``S`` |rarr| ``X``:subscript:`1` ...
+``X``:subscript:`n`, and builds a partial tree structure. It then steps
+through the grammar rules one-by-one, looking for a rule of the form
+``X``:subscript:`1` |rarr| ``Y``:subscript:`1` ...  ``Y``:subscript:`j` that
+will expand the leftmost daughter introduced by the ``S`` rule, and
+further extends the partial tree. This process continues, for example
+by looking for a rule of the form ``Y``:subscript:`1` |rarr|
+``Z``:subscript:`1` ...  ``Z``:subscript:`k` and expanding the partial tree
+appropriately, until the leftmost node label in the partial tree is a
+lexical category; the parser then checks to see if the first word of
+the input can belong to the category. To illustrate, let's suppose
+that the first grammar rule chosen by the parser is ``S`` |rarr| ``NP VP``
+and the second rule chosen is ``NP`` |rarr| ``Det N``; then the partial
+tree will be as follows:
+
+.. ex::
+
+   .. tree:: (S (NP (Det \ ) (N)) (VP))
+
+If we assume that the input string we are trying to parse is `the cat
+slept`:lx:, we will succeed in identifying `the`:lx: as a word that can
+belong to the category ``Det``. In this case, the parser goes on to
+the next node of the tree, ``N``, and next input word, `cat`:lx:. However,
+if we had built the same partial tree with an input string `did the
+cat sleep`:lx:, the parse would fail at this point, since `did`:lx: is not of
+category ``Det``.  The parser would throw away the structure built so
+far and look for an alternative way of going from the ``S`` node down
+to a leftmost lexical category (e.g., using a rule ``S`` |rarr| `V NP
+VP`:gc:).
+The important point for now is not the details of this or other
+parsing algorithms; we discuss this topic much more fully in the
+chapter on parsing. Rather, we just want to illustrate the idea that
+an algorithm can be broken down into a fixed number of steps that
+produce a definite result at the end.
+
+
+The diagram illustrates that linguistically-motivated ways of
+modularizing linguistic knowledge are often reflected in computational
+systems. That is, the various components are organized so that the
+data which they exchange corresponds roughly to different levels of
+representation. For example, the output of the speech analysis
+component will contain sequences of phonological representations of
+words, and the output of the parser will be a semantic representation.
+Of course the parallel is not precise, in part because it is often a
+matter of practical expedience where to place the boundaries between
+different processing components. For example, we can assume that
+within the parsing component there is a level of syntactic
+representation, although we have chosen not to expose this at the
+level of the system diagram.  Despite such idiosyncrasies, most |NLP|
+systems break down their work into a series of discrete steps.  In the
+process of natural language understanding, these steps go from more
+concrete levels to more abstract ones, while in natural language
+production, the direction is reversed.
+
+----------------------------
+Before Proceeding Further...
+----------------------------
+
+An important aspect of learning |NLP| using these materials is to
+experience both the challenge and |mdash| we hope |mdash| the
+satisfaction of creating software to process natural language.  The
+accompanying software, NLTK, is available for free and runs on most
+operating systems including Linux/Unix, Mac OSX and Microsoft Windows.
+You can download NLTK from |NLTK-URL|, along
+with extensive documentation.  We encourage you to install Python and
+NLTK on your machine before reading beyond the end of this chapter.
+
+
+The example dialogue was taken from
+Carpenter and Chu-Carroll's ACL-99 Tutorial on Spoken Dialogue Systems.
+
+.. include:: footer.txt

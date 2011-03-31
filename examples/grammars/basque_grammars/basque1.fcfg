@@ -1,0 +1,22 @@
+% start AS
+# ############################
+# Grammar Rules
+# ############################
+# AS expansion rules
+AS[ergnum=?n1, absnum=?n2] -> IS[kas=erg, num=?n1] AS[ergnum=?n1, absnum=?n2]
+AS[ergnum=?n1, absnum=?n2] -> AS[ergnum=?n1, absnum=?n2] IS[kas=erg, num=?n1] 
+AS[ergnum=?n1, absnum=?n2] -> IS[kas=abs, num=?n2] AS[ergnum=?n1, absnum=?n2]
+AS[ergnum=?n1, absnum=?n2] -> AS[ergnum=?n1, absnum=?n2] IS[kas=abs, num=?n2] 
+IS[kas=?k, num=?n] -> ize[azp=arr] knmdek[kas=?k, num=?n]
+AS[ergnum=?n1, absnum=?n2] -> adt[ergnum=?n1, absnum=?n2]
+# ############################
+# Lexicon
+# ############################
+adt[ergnum=hu, absnum=hu] -> 'dakar' | 'darama'
+adt[ergnum=hk, absnum=hu] -> 'dakarte' | 'daramate'
+knmdek[kas=erg, num=hu] -> 'ak'
+knmdek[kas=erg, num=hk] -> 'ek'
+knmdek[kas=abs, num=hk] -> 'ak'
+knmdek[kas=abs, num=hu] -> 'a'
+ize[azp=arr] -> 'zakur' | 'gizon'
+

@@ -1,0 +1,27 @@
+digraph x {
+   rankdir=LR;
+   ranksep=0.25;
+   
+   /* The nodes */
+   {
+       node [style=filled,height=0.1,width=0.1,fillcolor=cadetblue];
+       1 [label="i"];
+       2 [label="j"];
+   }
+
+   /* The sentence */
+   {
+       edge [style=invis, weight=100];
+       node [shape=plaintext];
+       dots1->1->dots2->2->dots3;
+       dots1 [label="&hellip;"];
+       dots2 [label="&hellip;"];
+       dots3 [label="&hellip;"];
+   }
+   
+   /* Edges */
+   {
+       edge [fontname=LucidaGrande];
+       2->2 [label="B &rarr; &bull; &gamma;"];
+   }
+}

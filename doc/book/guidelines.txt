@@ -1,0 +1,73 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.rst
+
+
+=========================
+NLTK Developer Guidelines
+=========================
+
+-----------------
+Design Philosophy
+-----------------
+
+http://en.wikipedia.org/wiki/Worse_is_better
+
+
+------------------
+Naming Conventions
+------------------
+
+#. Packages: These are typically verbs, all lowercase letters.  When
+   whole packages are imported, NLP processing tasks have very readable
+   names, e.g.  ``tokenize.whitespace()``, ``tag.ngram()``.
+
+#. Modules: These are lowercase words; multi-word names are joined
+   without punctuation, e.g. ``parse.featurestructure``.
+
+#. Classes: These are uppercase-initial words, e.g. ``Chart``.
+   Multiple words are joined together, with an uppercase letter to
+   begin each new word, e.g. ``PorterStemmer``.
+
+#. Functions and Variables: These are all lowercase, with underscore
+   to separate multiple words
+
+#. Constants: These are all-caps
+
+------------------
+Python Conventions
+------------------
+
+New-style Python classes (all ultimately inherit from ``object``).
+
+Each module contains demo code, and which can be run from the command line.
+This demo code should also be self contained (i.e. contain its own
+import statements, so that someone can cut and paste it into a new
+file and run it without modification.
+
+Each package's __init__.py file should import all the package's
+modules, so that everything in a package can be accessed by importing
+that package.
+
+Indentation: tab = 4 spaces
+
+----------
+Commenting
+----------
+
+Detailed module-level docstring; epydoc docstrings; ...
+
+-----------------
+Repository Access
+-----------------
+
+NLTK developers (people with write access to the repository) are
+welcome to contribute and maintain their own code in
+``nltk.contrib``, but should not touch any other files.
+This is because the core developers need to be responsible for
+ensuring that everything works.
+
+NLTK core developers can modify any files.
+
+
+
+.. include:: footer.txt

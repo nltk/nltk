@@ -1,0 +1,598 @@
+There are many |NLP| applications where it would be useful to have some
+representation of the `meaning`:em: of a natural language
+sentence. For instance, current search engine technology
+can only take us so far in giving concise and correct answers to many
+questions that we might be interested in. Admittedly, Google does a
+good job in answering google1a_, since its first hit is google1b_.
+
+.. _google1:
+.. ex::
+
+      .. _google1a:
+      .. ex:: What is the population of Saudi Arabia?
+
+      .. _google1b:
+      .. ex:: Saudi Arabia - Population: 26,417,599
+
+|nopar|
+By contrast, the result of sending google2_ to Google is less helpful:
+
+.. _google2:
+.. ex:: Which countries border the Mediterranean?
+
+|nopar|
+This time, the topmost hit (and the only relevant one in the top ten)
+presents the relevant information as a map of the Mediterranean
+basin. Since the map is an image file, it is not easy to
+extract the required list of countries from the returned page.
+
+Even if Google succeeds in finding documents which contain information
+relevant to our question, there is no guarantee that it will be in a
+form which can be easily converted into an appropriate answer. One
+reason for this is that the information may have to be inferred from more
+than one source. This is likely to be the case when we seek an answer
+to more complex questions like google3_:
+
+.. _google3:
+.. ex:: Which Asian countries border the Mediterranean?
+
+|nopar|
+Here, we would probably need to combine the results of two subqueries,
+namely google2_ and `Which countries are in Asia?`:lx:.  
+
+The example queries we have just given are based on a paper dating
+back to 1982 [Warren1982EEA]_;
+this describes a system, *Chat-80*, which converts natural
+language questions into a semantic representation, and uses the latter
+to retrieve answers from a knowledge base. A knowledge base is usually
+taken to be a set of sentences in some formal language; in the case of
+Chat-80, it is a set of Prolog clauses. However, we can encode
+knowledge in a variety of formats, including relational databases,
+various kinds of graph, and first-order models. In |NLTK|, we have
+used the third of these options to re-implement a limited version of
+Chat-80::
+
+   Sentence: which Asian countries border the_Mediterranean
+   ------------------------------
+   \x.((contain(asia, x) & country (x)) & border (x, mediterranean)
+   set(['turkey', 'syria', 'israel', 'lebanon'])
+
+|nopar| As we will explain later in this chapter, a semantic
+representation of the form ``\x.P(x)`` denotes a set of entities
+*u* that meet some condition ``P(x)``. We then ask our
+knowledge base to enumerate all the entities in this set.
+
+Let's assume more generally that knowledge is available in some
+structured fashion, and that it can be interrogated by a suitable
+query language. Then the challenge for |NLP| is to find a method for
+converting natural language questions into the target query
+language. An alternative paradigm for question answering is to take
+something like the pages returned by a Google query as our 'knowledge
+base' and then to carry out further analysis and processing of the
+textual information contained in the returned pages to see whether it does
+in fact provide an answer to the question. In either case, it is very
+useful to be able to build a semantic representation of questions.
+This |NLP| challenge intersects in interesting ways with one of the
+key goals of linguistic theory, namely to provide a systematic
+correspondence between form and meaning.
+
+
+
+While there are numerous subtle and difficult issues about how to
+translate natural language constructions into |FOL|, we will largely ignore
+these. The main focus of our discussion will be on a
+different issue, namely building semantic representations which
+conform to some version of the `Principle of Compositionality`:dt:.
+(See [Partee1995LSC]_ for this formulation.)
+
+Principle of Compositionality:
+   The meaning of a whole is a function of the meanings of the parts
+   and of the way they are syntactically combined.
+
+
+..
+    |nopar| There is an assumption here that the semantically relevant
+    parts of a complex expression will be determined by a theory of
+    syntax. Within this chapter, we will take it for granted that
+    expressions are parsed against a context-free grammar. However, this
+    is not entailed by the Principle of Compositionality.  To summarize,
+    we will be concerned with the task of systematically constructing a
+    semantic representation in a manner that can be smoothly integrated
+    with the process of parsing.
+
+    The overall framework we are assuming is illustrated in Figure . Given
+    a syntactic analysis of a sentence, we can build one or more semantic
+    representations for the sentence. Once we have a semantic
+    representation, we can also check whether it is true in a model. 
+
+..
+
+    The order of sections in this chapter is not what you might expect
+    from looking at the diagram. We will start off in the middle of by
+    presenting a logical language that will provide us with
+    semantic representations in |NLTK|. Next, we will show how formulas in
+    the language can be systematically evaluated in a model. At the end,
+    we will bring everything together and describe a simple method for
+    constructing semantic representations as part of the parse process in
+    |NLTK|.
+
+    This chapter will only scratch the surface of how to carry out
+    semantic analysis of natural language, and will be heavily slanted
+    towards the approach currently implemented within
+    |NLTK|. Consequently, it needs to be read in conjunction with a good
+    overall introduction to formal semantics. [Eg., B&B, Gamut, Heim?]
+
+
+Every instance of ``Model`` defines appropriate truth functions for the
+boolean connectives; these can be invoked to show how input values are
+mapped to output values. Here are the truth conditions for ``&`` and ``->``
+(encoded via the functions ``AND()`` and ``IMPLIES()`` respectively):
+
+    >>> ops = [m.AND, m.IMPLIES]
+    >>> for o in ops:
+    ...     print "==========="
+    ...     print o.func_name
+    ...     for first in [True, False]:
+    ...         for second in [True, False]:
+    ...             print "%-5s %-5s => %s" % (first, second, o(first, second))
+    ===========
+    AND
+    True  True  => True
+    True  False => False
+    False True  => False
+    False False => False
+    ===========
+    IMPLIES
+    True  True  => True
+    True  False => False
+    False True  => True
+    False False => True
+
+
+
+
+    >>> Q = lp.parse('Q')
+    >>> inference.get_prover(Q, [P, R]).prove()
+    False
+    >>> inference.get_prover(P, [Q, NotQ]).prove()
+    True
+
+.. _ex-proplog1:
+.. ex::
+   .. _ex-proplog11:
+   .. ex::
+      [Shanghai is to the north of Guangzhou] and 
+      [the urban population of Shanghai is 15.5 million].
+      
+   .. _ex-proplog12:
+   .. ex::
+      [Klaus chased Evi] and [Evi ran away].
+
+Thus, the set in ex-proplog9_ contains a pair of sentences whose
+logical forms
+are `P`:math: and |neg|\ `P`:math:. But a fundamental assumption of
+classical logic is that a sentence cannot be both true and false in a
+situation. Any set of sentences which contains both `P`:math: and
+|neg|\ `P`:math: is inconsistent. In this way, we can see how reducing
+sentences to their logical forms allows us to determine inconsistency.
+
+
+The language of propositional logic represents certain aspects of
+natural language, but at a high level of abstraction. The only
+structure that is made explicit involves `logical connectives`:dt:\;
+these correspond to 'logically interesting' expressions such as
+`and`:lx: and `not`:lx:. 
+
+Here's one
+choice: a unary operator |neg| (`not`:lx:), and four binary operators
+|wedge| (`and`:lx:), |vee| (`or`:lx:), |rarr| (`if..., then...`:lx:)
+and |iff| (`if and only if`:lx:).  Then the set of `formulas`:dt: of
+propositional logic can be defined as follows:
+
+
+
+The basic expressions of the language are
+`propositional variables`:dt:, usually written `p`:math:, `q`:math:,
+`r`:math:, etc. Let `A`:math: be a finite set of such variables. There
+is a disjoint set of logical connectives which contains the unary
+operator |neg| (`not`:lx:), and binary operators |wedge| (`and`:lx:),
+|vee| (`or`:lx:), |rarr| (`implies`:lx:) and |iff| (`iff`:lx:).
+
+The set of formulas of `L`:subscript:`prop` is described inductively:
+
+   1. Every element of `A`:math: is a formula of `L`:subscript:`prop`.
+
+   2. If |phi| is a formula of `L`:subscript:`prop` , then so is |neg| |phi|.
+
+   3. If |phi| and |psi| are formulas, then so are
+      (|phi| |wedge| |psi|),
+      (|phi| |vee| |psi|),
+      (|phi| |rarr| |psi|) and
+      (|phi| |iff| |psi|).
+
+   4. Nothing else is a formula of `L`:subscript:`prop`.
+
+|nopar| Within `L`:subscript:`prop`, we can construct formulas such as
+
+
+.. _prop01:
+.. ex:: `p`:math: |rarr| `q`:math: |vee| `r`:math:
+
+There are many sentences of English which could be taken to have the 
+logical structure shown in prop01_. Here's an example:
+
+.. _prop02:
+.. ex:: If it is raining, then Kim will take an umbrella or Lee will
+        get wet. 
+
+In order to explain the relation between prop01_ and prop02_, we need
+to give a `key`:em: which maps between propositional variables and
+English sentences:
+
+.. _prop03:
+.. ex::  `p`:math: stands for  `it is raining`:lx:,
+          `q`:math: for `Kim will take an umbrella`:lx: and 
+          `q`:math: for `Lee will get wet`:lx:.
+
+The Boolean connectives of propositional logic are supported by the
+``sem`` package, and are parsed into various kinds of
+``Expression``. We use ``-``, ``&``, ``|``, ``->``, ``<->`` to stand,
+respectively, for `not`:lx:, `and`:lx:, `or`:lx:, `implies`:lx: and
+`iff`:lx:. 
+
+As the name suggests, propositional logic only studies the logical
+structure of formulas made up of atomic propositions. We saw, for
+example, that propositional variables stood for whole clauses in
+English. In order to look at how predicates combine with arguments, we
+need to look at a more complex language for semantic representation,
+namely |fol|. In order to show how this new language interacts with
+the |lambda|-calculus, it will be useful to introduce the notion of
+types into our syntactic definition, in departure from the rather
+simple approach to defining the clauses of `L`:subscript:`prop`.
+
+
+The keys of the dictionary (sorted alphabetically) can also be
+accessed via the property ``symbols``:
+
+    >>> val1.symbols
+    ['p', 'q', 'r']
+
+There is an alternative
+approach in which predication is treated as function application.  In
+this functional style of representation, `Adam sees Betty`:lx: can be
+formalized as `see(a)(b)`:mathit:. That is, rather than being modeled as a
+relation, `see`:mathit: denotes a function which applies to one argument to
+yield a new function that is then applied to the second argument. In
+NLTK, we will in fact treat predications syntactically as function
+applications, but we use a concrete syntax that allows them to
+represented as `n`:math:-ary relations.
+
+At the syntactic level, quantifiers are used to bind
+individual variables like ``'x'`` and ``'y'``. The following two sets
+of examples show a simple English example, a logical representation,
+and the encoding which is accepted by the |NLTK| ``logic`` module.
+
+.. _forall1:
+.. ex::
+
+   .. _forall1a:
+   .. ex:: Every dog barks.
+
+   .. _forall1b:
+   .. ex:: |forall|\ `x.(dog(x)`:mathit: |rarr| `bark(x))`:mathit:
+
+   .. _forall1c:
+   .. ex:: ``all x.(dog(x) -> bark(x))``
+
+.. _exists1:
+.. ex::
+
+   .. ex:: Some girl walks.
+
+   .. ex:: |exists|\ `x.(girl(x)`:mathit: |wedge| `walk(x))`:mathit:
+
+   .. _existsc:
+   .. ex:: ``some x.(girl(x) & walk(x))``
+
+In the existsc_, the quantifier ``some`` binds both occurences of the
+variable ``'x'``. As a result, existsc_ is said to be a `closed
+formula`:dt:. By contrast, if we look at the body of existsc_,
+the variables are unbound:
+
+.. _exists2:
+.. ex:: girl(x) & walk(x)
+
+exists2_ is said to be an `open formula`:dt:. As we saw earlier, the
+interpretation of open formulas depends on the particular variable
+assignment that we are using. 
+
+The inclusion of first-order quantifiers motivates the final clause of
+the definition of our version of |fol|.
+
+7. If `x`:mathit: |element|  **Var**\ (**Ind**) and |phi| 
+  |element|  **Term**\ (**Bool**), then |forall|\ `x.`:mathit:\
+  |phi|, |exists|\ `x.`:mathit:\ |phi|  |element|  **Term**\ (**Bool**).  
+
+
+.. table:: nltk_logic
+
+    +---------------+-------------------------------------+
+    | Example       |Description                          |
+    +===============+=====================================+
+    |     ``-``     |negation                             |
+    +---------------+-------------------------------------+
+    |    ``&``      |conjunction                          |
+    +---------------+-------------------------------------+
+    |    ``|``      |disjunction                          |
+    +---------------+-------------------------------------+
+    |    ``->``     |implication                          |
+    +---------------+-------------------------------------+
+    |    ``<->``    |equivalence                          |
+    +---------------+-------------------------------------+
+    |    ``=``      |equality                             |
+    +---------------+-------------------------------------+
+    |    ``!=``     |inequality                           |
+    +---------------+-------------------------------------+
+    |    ``exists`` |existential quantifier               |
+    +---------------+-------------------------------------+
+    |    ``all``    |universal quantifier                 |
+    +---------------+-------------------------------------+
+    |     ``\``     |lambda operator                      |
+    +---------------+-------------------------------------+
+    | ``e.free()``  |show free variables of ``e``         |
+    +---------------+-------------------------------------+
+    | ``e.simplify``|carry out |beta|-conversion on ``e`` |
+    +---------------+-------------------------------------+
+                        
+
+Semantically, `see`:mathit: is usually modeled as a
+relation, i.e., a set of pairs, and the proposition is true in a
+situation just in case the ordered pair pair |langle|\ `a, b`:math:\
+|rangle| belongs to this set.
+
+This grammar can be parsed using the chart
+parser in ``parse.featurechart``, and the trace in sem4_
+shows how semantic values are derived by feature unification in the
+process of building a parse tree.
+
+.. _sem4:
+.. ex::
+   ::
+
+     Predictor |> . .| S[sem='?vp(?subj)'] -> * NP[sem=?subj] VP[sem=?vp] 
+     Scanner   |[-] .| [0:1] 'Cyril' 
+     Completer |[-> .| S[sem='?vp(john)'] -> NP[sem='john'] * VP[sem=?vp] 
+     Predictor |. > .| VP[sem=?v] -> * IV[sem=?v] 
+     Scanner   |. [-]| [1:2] 'walks' 
+     Completer |. [-]| VP[sem='walk'] -> IV[sem='walk'] * 
+     Completer |[===]| S[sem='walk(john)'] -> NP[sem='john'] VP[sem='walk'] * 
+     Completer |[===]| [INIT] -> S * 
+
+
+
+This rule can be read as follows: if we apply a |lambda|\ -abstract
+|lambda|\ `x.`:math:\ |alpha| to a term |beta|, the result is the same
+as removing the |lambda|\ `x.`:math: operator and replacing all free
+occurrences of `x`:math: in |alpha| by |beta|.  So, for
+example, if we apply the rule of |beta|-conversion to
+ex-walk-chewgum3_, we remove the initial '|lambda|\ `x.`:math:' from 
+|lambda|\ `x.(walk(x)`:mathit: |wedge| `chew_gum(x)`:mathit:) and
+then replace all free occurrences of `x`:math: in `((walk(x)`:mathit:
+|wedge| `chew_gum(x)`:mathit:) by the term
+`gerald`:mathit:.
+
+Extracting Valuations from Chat-80
+----------------------------------
+
+Building ``Valuation`` objects by hand becomes rather tedious once we
+consider larger examples. This raises the question of whether the
+relation data in a ``Valuation`` could be extracted from some
+pre-existing source. The ``corpora.chat80`` module
+provides an example of extracting data from the Chat-80 Prolog
+knowledge base (which included as part of the |NLTK| ``corpora``
+distribution).
+
+Chat-80 data is organized into collections of clauses, where each
+collection functions as a table in a relational database. The
+predicate of the clause provides the name of the table; the first
+element of the tuple acts as the
+'key'; and subsequent elements are further columns in the
+table. 
+
+In general, the name of the table provides a label for a unary
+relation whose extension is all the keys. For example,
+the table in ``cities.pl`` contains triples such as city_.
+
+.. _city:
+.. ex:: ``'city(athens,greece,1368).'``
+
+Here, ``'athens'`` is the key, and will be mapped to a member of the
+unary relation `city`:mathit:.
+
+The other two columns in the table are mapped to binary relations, where the first
+argument of the relation is filled by the table key, and the
+second argument is filled by the data in the relevant column. Thus, in
+the ``city`` table illustrated by the tuple in 
+city_, the data from the third column is extracted  into a binary predicate
+`population_of`:mathit:, whose extension is a set of pairs such as
+``'(athens, 1368)'``.
+
+In order to encapsulate the results of the extraction, a class of
+``Concept``\ s is introduced.  A ``Concept`` object has a number of
+attributes, in particular a ``prefLabel`` and ``extension``, which
+make it easier to inspect the output of the extraction. The
+``extension`` of a ``Concept`` object is incorporated into a
+``Valuation`` object.
+
+As well as deriving unary and binary relations from the Chat-80 data,
+we also create a set of individual constants, one for each entity in
+the domain. The individual constants are string-identical to the
+entities. For example, given a data item such as ``'zloty'``, we add
+to the valuation a pair ``('zloty', 'zloty')``. In order to parse
+English sentences that refer to these entities, we also create a
+lexical item such as the following for each individual constant:
+
+.. ex::
+   ::
+
+     PropN[num=sg, sem=<\P.P(zloty)>] -> 'Zloty'
+
+The ``chat80`` module can be found in the ``examples`` package. The
+attribute ``chat80.items`` gives us a list of Chat-80 relations:
+
+   >>> from nltk.examples.semantics import chat80
+   >>> chat80.items # doctest: +ELLIPSIS
+    ('borders', 'circle_of_lat', 'circle_of_long', 'city', ...)
+
+The ``concepts()`` method shows the list of ``Concept``\ s that can be
+extracted from a ``chat80`` relation, and we can then inspect their extensions.
+
+   >>> concepts = chat80.concepts('city')
+   >>> concepts
+   [Concept('city'), Concept('country_of'), Concept('population_of')]
+   >>> rel = concepts[1].extension
+   >>> list(rel)[:5]
+   [('chungking', 'china'), ('karachi', 'pakistan'), 
+   ('singapore_city', 'singapore'), ('athens', 'greece'), 
+   ('birmingham', 'united_kingdom')]
+
+In order to convert such an extension into a valuation, we use the
+``make_valuation()`` method; setting ``read=True`` creates and returns
+a new ``Valuation`` object which contains the results.
+
+   >>> val = nltk.corpus.chat80.make_valuation(concepts, read=True)
+   >>> val['city']['calcutta']
+   True
+   >>> val['country_of']['india']
+   {'hyderabad': True, 'delhi': True, 'bombay': True, 
+   'madras': True, 'calcutta': True}
+   >>> dom = val.domain
+   >>> g = nltk.sem.Assignment(dom)
+   >>> m = nltk.sem.Model(dom, val)
+   >>> m.evaluate(r'\x .population_of(jakarta, x)', g)
+   {'533': True}
+
+
+
+
+    >>> drs2 = dp.parse('([x,y],[Bill(x), Fred(y)])')
+    >>> drs3 = dp.parse("""([],[([u],[Porsche(u), own(x,u)])
+    ...  ->  ([v],[Ferrari(v), own(y,u)])])""")
+    >>> drs4 = drs2 + drs3
+    >>> print d4.simplify()
+    ([x,y],[Bill(x), Fred(y), (([u],[Porsche(u), own(x,u)]) -> ([v],[Ferrari(v), own(y,u)]))])
+
+
+Hole Semantics
+--------------
+
+This limitation can be overcome, for example using the hole semantics
+described in [Blackburn2005RIN]_, but discussing the details would take
+us outside the scope of the current chapter.
+
+Hole Semantics in |NLTK| is handled by the
+``nltk.sem.hole`` module, which uses a context free grammar to
+generate an underspecified logical form.  Since the latter is itself a
+formula of first order logic, we can continue to use the ``sem`` feature
+in the context free grammar:
+
+.. ex::
+    N[sem=<\x h l.(PRED(l,dog,x) & LEQ(l,h) & HOLE(h) & LABEL(l))>] -> 'dog'
+
+The Hole Semantics module uses a standard plugging algorithm to derive the
+sentence's readings from the underspecified LF.
+
+    >>> from nltk.sem import hole
+    >>> readings = hole.main('every girl chases a dog')
+    >>> for r in reading: print r
+    exists z1.(dog(z1) & all z2.(girl(z2) -> chase(z1,z2)))
+    all z2.(girl(z2) -> exists z1.(dog(z1) & chase(z1,z2)))
+
+
+.. TO-DO: rejig to accommodate scope ambiguity
+
+Now that we have looked at some slightly more complex constructions, we can
+evaluate them in a model. In the following example, we derive two
+parses for the sentence `every boy chases a girl in Noosa`:lx:, and
+evaluate each of the corresponding semantic representations in the
+model ``model0.py`` which we have imported.
+
+    >>> grammar = nltk.data.load('grammars/sem2.fcfg')
+    >>> val4 = nltk.data.load('grammars/valuation1.val')
+    >>> dom4 = val4.domain
+    >>> m4 = nltk.sem.Model(dom4, val4)
+    >>> g = nltk.sem.Assignment(dom4)
+    >>> sent = 'every boy chases a girl in Noosa'
+    >>> result = nltk.sem.text_evaluate([sent], grammar, m4, g)
+    >>> for (syntree, semrep, value) in result[sent]:
+    ... 	print "'%s' is %s in Model m\n" % (semrep, value)
+    'all x.(boy(x) -> (exists z2.(girl(z2) & chase(x,z2)) & in(x,noosa)))' is True in Model m
+     
+    'all x.(boy(x) -> (exists z2.(girl(z2) & chase(x,z2)) & in(x,noosa)))' is True in Model m
+     
+    'all x.(boy(x) -> exists z3.((girl(z3) & in(z3,noosa)) & chase(x,z3)))' is False in Model m
+     
+    'all x.(boy(x) -> exists z3.((girl(z3) & in(z3,noosa)) & chase(x,z3)))' is False in Model m
+     
+
+
+In this chapter, we presented a standard approach to natural language
+meaning by translating sentences of natural language into |fol|. From
+a computational point of view, a strong argument in favor of |FOL| is
+that it strikes a reasonable balance between expressiveness and
+logical tractability. On the one hand, it is flexible enough to
+represent many aspects of the logical structure of natural
+language. On the other hand, automated theorem proving for |FOL| has
+been well studied, and although inference in |FOL| is not decidable,
+in practice many reasoning problems are efficiently solvable using
+modern theorem provers (cf. [Blackburn2005RIN]_ for discussion).
+
+
+---------------
+Inference Tools
+---------------
+
+In order to perform inference over semantic representations, |NLTK|
+can call both theorem provers and model builders.
+The library includes a pure Python tableau-based first order theorem prover;
+this is intended to allow students to study 
+tableau methods for theorem proving, and provides an
+opportunity for experimentation.  In addition, |NLTK| provides
+interfaces to a couple of third-party tools, namely the theorem prover Prover9, 
+and the model builder Mace4  [McCune]_.  
+
+The ``get_prover(G, A)`` method by default calls Prover9, and takes as
+parameters a proof goal ``G`` and a list ``A`` of assumptions.
+Here, we verify that if every dog barks, and Rover is a dog,
+then it is true that Rover barks:
+
+    >>> from nltk.inference import inference
+    >>> a = lp.parse('all x.(dog(x) -> bark(x))')
+    >>> b = lp.parse('dog(rover)')
+    >>> c = lp.parse('bark(rover)')
+    >>> prover = inference.get_prover(c, [a,b])
+    >>> prover.prove()
+    True
+
+A theorem prover can also be used to check the logical equivalence of
+expressions.  For two expressions *A* and *B*, we can pass (*A* |iff|
+*B*) into a theorem prover and know that the theorem will be proved if
+and only if the expressions are logically equivalent.  |NLTK|\ 's
+standard equality operator for ``Expression``\ s (``==``) is able to
+handle situations where two expressions are identical up to
+|alpha|\ -conversion.  However, it would be impractical for |NLTK| to
+invoke a wider range of logic rules every time we checked for equality
+of two expressions. Consequently, both the ``logic`` and ``drt``
+modules in |NLTK| have a separate method, ``tp_equals``, for checking
+'equality' up to logical equivalence.
+
+    >>> a = lp.parse('all x.walk(x)')
+    >>> b = lp.parse('all y.walk(y)')
+    >>> a == b
+    True
+    >>> c = lp.parse('-(P(x) & Q(x))')
+    >>> d = lp.parse('-P(x) | -Q(x)')
+    >>> c == d
+    False
+    >>> c.tp_equals(d)
+    True

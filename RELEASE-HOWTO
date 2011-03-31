@@ -1,0 +1,122 @@
+Building an NLTK distribution
+----------------------------------
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@ PREPARE
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+A. MISC PREPARATION
+
+  1. Check for new versions of Python, Numpy, Matplotlib, and update wiki download instructions
+  2. Update the data index (make data_index) and commit
+  3. Update the ChangeLog ("svn log; then summarize the key changes")
+
+B. NLTK VERSION
+
+  1. Modify nltk/__init__.py with the version number (2 places)
+  2. Edit doc/definitions.rst with new version number
+  3. Edit NLTK.pmdoc with the new version number
+     (cd trunk/nltk; open NLTK.pmdoc (starts PackageMaker)
+     then click on the little triangle beside MacRoot to open it
+     then select MacRoot / to highlight this
+     then change the Install (source) directory
+     then set the package version, and finally Menu:Edit:Save)
+  4. Commit these changes
+  5. Update version numbers, hyperlinks and anchors on the wiki download page
+     (optionally create a cloned page download-M.N for the new version,
+     and move it over the top of the standard one when its ready)
+
+C. ERROR CHECKING
+
+  1. install the new version, since its the installed code that is checked
+  2. cd nltk/test; make (run the tests in nltk.test)
+  3. make demotest (run the demonstration code included in many modules)
+  4. API docs (cd doc; make api)  (check latest version of epydoc is installed)
+  5. Book examples (cd doc/book; make errs)
+  6. Check issue tracker: http://code.google.com/p/nltk/issues/list
+  7. Make dist, install .exe version on Windows, and test demos
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@ BUILD
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+The build requires docutils, pdflatex, python imaging library, epydoc,
+  cdrtools, ImageMagick
+
+  1. Check out a clean copy of the subversion repository (or make clean)
+     and install locally with sudo python setup.py install; make clean
+  2. make doc (slow; see doc/ for the results) and commit
+  3. make dist (fast; see dist/ for the results; may need "sudo make dist")
+     - remove source rpm since we don't distribute this
+     - may need to build rpm on a different machine
+     - S.Bethard can build .msi files
+  (test the distributions?)
+  4. check file sizes are about the same as previously released files
+  5. (cd ../nltk_contrib; make dist)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@ RELEASE
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+A. UPLOAD DISTRIBUTIONS
+
+  1. make upload (copies stuff up to Googlecode)
+     (do same in ../nltk_contrib)
+  2. check result at http://code.google.com/p/nltk/downloads/list
+  3. if this is a non-beta release,
+     change previous release to remove its "Featured" label
+     (just click anywhere in the whitespace in its row to change its properties)
+
+B. PORTFILE
+
+  - skip this for beta releases
+
+  0. Initial setup:
+     Edit /opt/local/etc/macports/sources.conf, adding a pathname
+     e.g. file:///Users/sb/ports before the default path
+     It should be the same location used by the Makefile $LMACPORTS without /python
+  1. make macports
+  2. cd ~/ports; portindex
+  3. Test the Portfiles using, e.g. "port install py25-nltk" etc
+  4. Create a new ticket: https://trac.macports.org/newticket
+       Log in using same username that is used for accessing the svn repository
+       > Summary: NLTK Ports upgrade to $VERSION
+       > Description: Updated port for NLTK (http://www.nltk.org/) 
+       > Type: update
+       > Keywords: haspatch maintainer
+       > version: [CLEAR THIS]
+       > Port: py-nltk py25-nltk py26-nltk
+       Then attach the diff files, nltk/dist/Portfile*.diff
+       
+C. WEBSITE
+
+  - for beta releases, skip this section, and post to nltk-dev only
+
+  1. install download page, by moving Download-N.N to Download
+  2. post a news item at http://www.nltk.org/news-archive, summary at http://www.nltk.org/
+  3. register with Python Cheeseshop: make pypi
+     (make sure that just the source .tar.gz file was uploaded (no macosx file)
+     (make sure that the .tar.gz file contains the version of setup.py with
+     a pyyaml dependency)
+  4. upload new portfiles to macports (needs a diff; haven't sorted this out)
+  5. sync the book to the website (cd doc; make publish)
+  6. post announcement to NLTK the mailing lists:
+       nltk-dev (for beta releases)
+       nltk (for final releases)
+  7. post announcement to external mailing lists, for major N.N releases only
+       CORPORA@uib.no, linguist@linguistlist.org,
+       PythonSIL@lists.sil.org, edu-sig@python.org
+       mailing lists for any local courses using NLTK
+
+D. INSTALLATION
+
+  1. download and install new version on all machines
+  2. contact relevant sysads to install new version
+  3. copy dist directory to memory stick
+
+E. NEW VERSION NUMBER (optional)
+
+  1. update the version numbers in the repository so that builds
+     off the repository don't have the same version as the release,
+     e.g. after release 0.9.6, update repository version to 0.9.7a (alpha)

@@ -1,0 +1,548 @@
+.. |date| date::
+.. |rarr| unicode:: U+2192 .. right arrow
+
+===================
+Semantics Exercises
+===================
+
+:Author: Ewan Klein
+:Date: |date|
+:Title: Semantics Exercises
+
+The first lot of exercises concentrate on translating simple English expressions 
+into logical form and checking that they are parsable by the
+``LogicParser`` in NLTK. If you have experience of this kind of
+translation exercise, you may still find it useful to check that you
+understand the syntax expected by the parser.
+
+
+First, start off Python. Usually, you can just type ``python`` at the
+prompt in a terminal window. However, you can also type ``idle``,
+which will give you the Python editor, and offers a bit more
+flexibility. Alternatively, your favourite editor (e.g., emacs or vi)
+has almost certainly got a Python mode which will allow you to use
+familiar editing commands.
+
+Once you have the Python interpreter running, give it the following instruction:
+
+    >>> from nltk.sem import *
+    >>> lp = LogicParser()
+
+Logical Form: Propositions
+--------------------------
+
+Translate the following English sentences into propositional logic and
+verify that they parse with ``LogicParser``. Provide a key which
+shows how the propositional variables in your translation correspond
+to expressions of English.
+
+Here's an example to get you started.
+
+(1.1) If Kim sings, it is not the case that Lee sings.
+
+Key: k = 'Kim sings', l = 'Lee sings'
+
+    >>> lp.parse('(k -> -l)')
+    <ImpExpression (k -> -l)>
+
+This output provides some information about the kind of expression
+that the parser has recognized, namely an
+``ImpExpression``. In order to suppress this, use ``print``:
+    
+    >>> print lp.parse('(k -> -l)')
+    (k -> -l)
+
+.. Note::
+
+    If the parser gives an error or an unexpected result, the most likely
+    reason is that you have omitted some brackets or added in some
+    superfluous ones (or, in later examples, omitted a period immediately
+    after a variable-binding expression).
+
+An alternative English rendering of the meaning in (1.1) might be:
+
+(1.2) Lee doesn't sing if Kim does.
+
+This could receive the same translation, namely
+``'(k -> -l)'``. There is another possible interpretation
+however: ``'-(k -> l)'``. In other words, the scope of the
+negation could either 
+be restricted to Lee's singing, or else be the whole implication. So
+in the case of ambiguity, you can give one or more of several possible
+answers. 
+
+Now try the following:
+
+(1.3)  Fido runs and barks.
+
+..
+    >>> print lp.parse('(fidorun & fidobark)')
+    (fidorun & fidobark)
+
+(1.4)  It will snow if it doesn't rain.
+
+..
+    >>> print lp.parse('(-rain -> snow)')
+    (-rain -> snow)
+
+(1.5)  It's not the case that Suzie will be happy if Peter or Rob comes.
+
+..
+    >>> print lp.parse('-((petecome | robcome) -> suziehappy)')
+    -((petecome | robcome) -> suziehappy)
+
+(1.6) Kim didn't cough or sneeze.
+
+..
+    >>> print lp.parse('-(kimcough | kimsneeze)')
+    -(kimcough | kimsneeze)
+
+(1.7) If you don't come if I call, I won't come if you call.
+
+..
+    >>> print lp.parse('(-(icall -> youcome) -> -(youcall -> icome))')
+    (-(icall -> youcome) -> -(youcall -> icome))
+
+
+Logical Form: Relations
+-----------------------
+
+In the next example, we have decomposed the clauses into predicates
+and arguments:
+
+(2.1) Lee likes Fido and Kim hates Rover.
+
+    >>> print lp.parse('(like(lee,fido) & hate(kim,rover))')
+    (like(lee,fido) & hate(kim,rover))
+
+Here are some more examples for you to translate in a similar
+fashion. Don't try to be too faithful to the English; getting a
+'correct' analysis in terms of compositional semantics can be quite
+subtle.
+
+(2.2) Lee is taller than Kim.
+
+..
+    >>> print lp.parse('taller(lee,kim)')
+    taller(lee,kim)
+
+(2.3) Fluffy washes herself.
+
+..
+    >>> print lp.parse('wash(fluffy,fluffy)')
+    wash(fluffy,fluffy)
+        
+(2.4) Dana saw Seth, but Kim didn't.
+
+..
+    >>> print lp.parse('(saw(dana,seth) & -saw(kim,seth))')
+    (saw(dana,seth) & -saw(kim,seth))
+
+(2.5) Fido is a fourlegged friend.
+
+..
+    >>> print lp.parse('(fourlegged(fido) & friend(fido))')
+    (fourlegged(fido) & friend(fido))
+
+(2.6) Lee and Claude are near each other.
+
+..
+    >>> print lp.parse('(near(claude,lee) & near(lee,claude))')
+    (near(claude,lee) & near(lee,claude))
+
+
+Logical Form: Quantifiers
+-------------------------
+
+Here's the standard example of a quantified sentence with two readings:
+
+(3.1) Everybody loves somebody.
+
+    >>> print lp.parse('all x. exists y. love(x,y)')    
+    all x.exists y.love(x,y)
+    >>> print lp.parse('exists y. all x. love(x,y)')
+    exists y.all x.love(x,y)
+
+Give translations of the following English examples. For some of them,
+you may want to use the connective ``'<->'``, which stands for the
+biconditional.
+
+
+(3.2) Kim loves someone and someone loves Kim.
+
+..
+    >>> print lp.parse('(exists x. love(kim,x) & exists y. love(y,kim))')
+    (exists x.love(kim,x) & exists y.love(y,kim))
+
+(3.3) Kim loves someone who loves Kim.
+
+..
+    >>> print lp.parse('(exists x. love(kim,x) & love(x,kim))')
+    (exists x.love(kim,x) & love(x,kim))
+
+(3.4) Nobody loves Kim.
+
+..
+    >>> print lp.parse('-exists x. love(x,kim)')
+    -exists x.love(x,kim)
+
+(3.5) Somebody coughs and sneezes.
+
+..
+   >>> print lp.parse('exists x. (cough(x) & sneeze(x))')
+   exists x.(cough(x) & sneeze(x))
+
+(3.6) Nobody coughed or sneezed.
+
+..
+   >>> print lp.parse('-exists x. (cough(x) | sneeze(x))')
+   -exists x.(cough(x) | sneeze(x))
+
+(3.7) Kim loves somebody other than Kim.
+
+..
+   >>> print lp.parse('(exists x. love(kim,x) & -(x = kim))')
+   (exists x.love(kim,x) & -(x = kim))
+
+(3.8) Nobody other than Kim loves Lee.
+
+..
+    >>> print lp.parse('all x. (-(x = kim) <-> -love(x,lee))')
+    all x.(-(x = kim) <-> -love(x,lee))
+
+(3.9) Kim loves everyone except for Lee.
+
+..
+    >>> print lp.parse('(all x. love(kim,x) <-> -(x = kim))')
+    (all x.love(kim,x) <-> -(x = kim))
+
+
+(3.10) Exactly one person walks.
+
+..
+    >>> print lp.parse('exists x. (walk(x) & all y. (walk(y) -> (y = x)))')
+    exists x.(walk(x) & all y.(walk(y) -> (y = x)))
+
+
+
+Logical Form: Lambda Abstracts
+------------------------------
+
+Lambda abstraction gives us a method of constructing a function from
+any open formula. For example, if we replace ``'fluffy'`` by ``'x'`` in
+``'wash(fluffy,fluffy)'`` we get three different open formulas:
+
+(4.1)
+  (a) wash(fluffy,x) --> 'be an x such that Fluffy washes x'
+  (b) wash(x,fluffy) --> 'be an x such that x washes Fluffy'
+  (c) wash(x,x) --> 'be an x such that x washes x'
+
+These cannot be given a truth value unless we first specify a semantic
+value for ``'x'``. However, the variable can be bound by lambda, and
+the result is a function expression whose type is IND |rarr| BOOL.
+
+(4.2)
+  (a) \\x. wash(fluffy,x) --> 'be an x such that Fluffy washes x'
+  (b) \\x. wash(x,fluffy) --> 'be an x such that x washes Fluffy'
+  (c) \\x. wash(x,x) --> 'be an x such that x washes x'
+
+Can you think of more idiomatic translations of these?
+
+We also parse expressions like these:
+
+    >>> print lp.parse('\\x. wash(x,x)')
+    \x.wash(x,x)
+
+Because ``'\'`` is interpreted as a special character in Python, we
+either have to escape it with another ``'\'`` as just shown, or else
+use so-called raw strings of the form ``r'...'``, as here:
+ 
+    >>> print lp.parse(r'\x. wash(x,x)')
+    \x.wash(x,x)
+
+Give translations for the following using lambda abstraction.
+
+(4.3) feed Fido and give Rover water
+
+..
+    >>> print lp.parse('\\x. (feed(x,fido) & give(x,water,rover))')
+    \x.(feed(x,fido) & give(x,water,rover))
+    
+(4.4) be given 'War and Peace' by Kim
+
+..
+    >>> print lp.parse('\\x. give(kim,wp,x)')
+    \x.give(kim,wp,x)
+
+(4.5) be loved by everyone
+
+..
+    >>> print lp.parse('\\x. all y. love(y,x)')
+    \x.all y.love(y,x)
+
+(4.6) be loved or hated by everyone
+
+..
+    >>> print lp.parse('\\x. all y. (love(y,x) | hate(y,x))')
+    \x.all y.(love(y,x) | hate(y,x))
+
+
+(4.7)  be loved by everyone and hated by no-one
+
+..
+    >>> print lp.parse('\\x. (all y. love(y,x) & -exists z. hate(z,x))')
+    \x.(all y.love(y,x) & -exists z.hate(z,x))
+    
+
+Logical Form: Lambdas and Function Application
+----------------------------------------------
+
+Since lambda abstracts are functors, they can be applied to arguments,
+yielding an ``ApplicationExpression``:
+
+    >>> lp.parse('\\x. love(kim,x)(fido)')
+    <ApplicationExpression (\x.love(kim,x))(fido)>
+
+To carry out beta-conversion, we call the ``simplify()`` method on the
+expression, as shown here.
+
+    >>> print lp.parse('\\x. love(kim,x)(fido)').simplify()
+    love(kim,fido)
+
+When working with lambda abstracts, it is often convenient to build up
+the expressions in stepwise fashion. Here's a couple of methods for
+doing this. First, we can build the parse expressions one by one, and
+then use the ``ApplicationExpression`` constructor to do the application:
+
+    >>> e1 = lp.parse('\\x. all y. love(y,x)')
+    >>> e2 = lp.parse('kim')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    all y.love(y,kim)
+
+A second technique works on the string level, and uses string interpolation.
+Recall that we can use ``'%s'`` as a placeholder in a string, and then
+apply the ``%`` operator to this string and a tuple of fillers to get
+a complete string.
+
+    >>> b = 'beans'
+    >>> t = 'toast'
+    >>> 'I love %s on %s' % (b, t)
+    'I love beans on toast'
+
+Here's how we do the same thing with lambda abstracts:
+       
+    >>> s1 = '\\x. all y. love(y,x)'
+    >>> s2 = 'kim'
+    >>> s3 = '%s(%s)' % (s1, s2)
+    >>> s3
+    '\\x. all y. love(y,x)(kim)'
+    >>> print lp.parse(s3).simplify()
+    all y.love(y,kim)
+
+You can use whichever approach you like, but in the following
+exercises, we'll stick to the first method. What you have to do is
+find a value for ``e1`` such that a given reduction holds. Here's an example:
+
+..
+    >>> e1 = lp.parse('\\x. exists y. love(x,y)')
+
+(5.1)
+    
+    >>> e2 = lp.parse('kim')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    exists y.love(kim,y)
+
+So one possible answer in this case is
+
+    >>> e1 = lp.parse('\\x. exists y. love(x,y)')
+
+Now try the following. As well as finding ``e1``, provide an English
+version of the final output.
+
+..
+    >>> e1 = lp.parse('\\x. exists y. (love(x,y) | love(y,x))')
+
+(5.2)
+    
+    >>> e2 = lp.parse('kim')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    exists y.(love(kim,y) | love(y,kim))
+
+..
+    >>> e1 = lp.parse('\\x. (exists y. love(x,y) | all z. love(z,x))')
+
+(5.3)
+    
+    >>> e2 = lp.parse('kim')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    (exists y.love(kim,y) | all z.love(z,kim))
+
+..
+    >>> e1 = lp.parse('\\x. (-exists y. love(x,y) | love(x,x))')
+
+(5.3)
+    
+    >>> e2 = lp.parse('kim')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    (-exists y.love(kim,y) | love(kim,kim))
+
+
+..
+    >>> e1 = lp.parse('\\x. walk(fido)')
+
+(5.4)
+    
+    >>> e2 = lp.parse('kim')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    walk(fido)
+
+
+Logical Form: Higher-order Abstraction
+--------------------------------------
+
+So far, we have only looked at individual variables being bound by
+lambda. However, much of the power of the lambda calculus depends on
+being able to bind variables over function expressions. We follow
+standard practice in using upper-case letters for variables over
+functors. In particular, ``'P'``, ``'Q'``, ``'R'`` are variables over
+expressions of type IND |rarr| (IND |rarr| ... (IND |rarr| BOOL)...)). Here's a
+simple example:
+
+    >>> print lp.parse('\\P. P(fido,kim)(love)').simplify()
+    love(fido,kim)
+
+We can loosely paraphrase ``'\P. P(fido,kim)'`` as 'be a property *P*
+such that *P* holds between Fido and Kim'. Here's a slightly more
+complex example:
+
+    
+    >>> print lp.parse('\\P. all x. P(kim,x)(love)').simplify()
+    all x.love(kim,x)
+
+In the cases we looked at so far, the result of function application
+has been an expression of type BOOL. However, it doesn't have to be
+this way. Consider the following example:
+
+    >>> e1 = lp.parse('\\P. \\x. P(x,kim)')
+    >>> e2 = lp.parse('chase')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    \x.chase(x,kim)
+
+Here, the result after beta-reduction is itself a lambda abstract,
+corresponding to the VP *chases Kim*.
+
+Incidentally, there is a more succinct notation for multiple lambda
+abstraction, as shown here:
+
+    >>> e1 = lp.parse('\\P x. P(x,kim)')
+
+..
+    >>> e2 = lp.parse('chase')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    \x.chase(x,kim)
+
+Using lambda abstracts with variables over functions takes us outside first-order
+logic. However, we are going to assume that such lambda abstracts
+never enter into interpreted sentences of the semantic
+representation. Instead, they are always removed by beta-reduction,
+and serve as a kind of 'glue language' for assembling semantic
+representations in a compositional manner.
+
+Now, find an ``e1`` that gives the following results:
+
+..
+    >>> e1 = lp.parse('\\P. \\x. all y. (dog(y) -> P(x,kim))')
+
+(6.1)
+
+    >>> e2 = lp.parse('chase')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    \x.all y.(dog(y) -> chase(x,kim))
+
+
+..
+    >>> e1 = lp.parse('\\P. \\x. exists y. (dog(y) & P(kim,x))')
+
+(6.2)
+
+    >>> e2 = lp.parse('chase')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    \x.exists y.(dog(y) & chase(kim,x))
+
+
+..
+    >>> e1 = lp.parse('\\P. \\x0. \\x1. exists y. (present(y) & give(x1,y,x0))')
+
+(6.3)
+
+    >>> e2 = lp.parse('give')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    \x0 x1.exists y.(present(y) & give(x1,y,x0))
+
+
+Let's suppose that we translate the verb *barks* as the
+non-logical constant ``'bark'``, or equivalently as ``'\x. bark(x)'``.
+How are we going to translate  *every dog* in such a way
+that the correct translation for *every dog barks* results from a
+function application involving the translations of *every dog* and
+*walks*?  In the tradition of Montague grammar, we do it like
+this:
+
+    >>> e1 = lp.parse('\\P. all x. (dog(x) -> P(x))')
+    >>> e2 = lp.parse('bark')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    all x.(dog(x) -> bark(x))
+
+
+Now, find ``e1`` such that the following hold:
+
+..
+    >>> e1 = lp.parse('\\P. exists y. (dog(x) & P(x))')
+
+(6.4)
+
+    >>> e2 = lp.parse('bark')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    exists y.(dog(x) & bark(x))
+
+..
+    >>> e1 = lp.parse('\\P. P(fido)')
+
+(6.5)
+
+    >>> e2 = lp.parse('bark')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    bark(fido)
+
+
+In the preceding examples, we have treated the subject as the functor
+and the verb as the argument. Devise a translation for *barks* that
+makes it the functor and the subject the argument. In other words,
+find an appropriate value of *e1* for the following result to be
+obtained:
+
+..
+    >>> e1 = lp.parse('\\X.X(bark)')
+
+(6.6)
+    
+    >>> e2 = lp.parse('\\P. all x. (dog(x) -> P(x))')
+    >>> e3 = ApplicationExpression(e1, e2)
+    >>> print e3.simplify()
+    all x.(dog(x) -> bark(x))
+
+

@@ -1,0 +1,122 @@
+
+\usepackage{times}
+\usepackage{boxedminipage}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex}
+
+%%%%%%%% UNICODE SUPPORT %%%%%%%%
+
+\usepackage{ucs}
+\usepackage{pdffonts}
+\usepackage{color}
+\providecommand{\textalpha}{{\usefont{OML}{hlcm}{m}{n} \ensuremath{\alpha}}}
+\providecommand{\textbeta}{{\usefont{OML}{hlcm}{m}{n} \ensuremath{\beta}}}
+\providecommand{\textgamma}{{\usefont{OML}{hlcm}{m}{n} \ensuremath{\gamma}}}
+\providecommand{\textmu}{{\usefont{OML}{hlcm}{m}{n} \ensuremath{\mu}}}
+
+\renewcommand{\labelitemi}{$\blacksquare$}
+
+%%%%%%%% ATTRIBUTE VALUE MATRICES %%%%%%%%
+
+\usepackage{avm}
+\avmfont{\sc}
+\avmvalfont{\it}
+
+%%%%%%%% HEADERS AND FOOTERS %%%%%%%%
+
+\usepackage{fancyheadings}
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0.5pt}
+\setlength{\footrulewidth}{0.5pt}
+
+\newcommand{\authors}{\small \emph{Bird, Klein \& Loper}}
+\newcommand{\booktitle}{\small \emph{Natural Language Processing (DRAFT)}}
+\newcommand{\thedate}{\small \emph{\today}}
+\renewcommand{\chaptermark}[1]{\markboth{\emph{\thechapter.\ #1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\emph{\thesection.\ {#1}}}}
+
+\lhead []           {\leftmark}
+\chead []           {}
+\rhead [\rightmark] {\booktitle}
+\rfoot [\authors]   {\thedate}
+\lfoot [\thedate]   {\authors}
+\cfoot [\thepage]   {\thepage}
+
+
+%%%%%%%% CUSTOM INLINE ROLES %%%%%%%%
+
+% Placeholder -- to be replaced by some actual value in a program
+\newcommand{\docutilsroleplaceholder}[1]{\texttt{\textit{#1}}}
+% Linguistic example - cited form in running text
+\newcommand{\docutilsroleexample}[1]{\textit{#1}}
+% Emphasized text
+\newcommand{\docutilsroleemphasis}[1]{\emph{#1}}
+% Defined term - first of canonical use of technical term
+\newcommand{\docutilsroleterm}[1]{\textbf{#1}}
+% Gramatical category - e.g. NP and verb as technical terms
+\newcommand{\docutilsrolecategory}[1]{\textsc{#1}}
+% Math symbols
+\newcommand{\docutilsrolemath}[1]{${#1}$}
+% Text in math env
+% Currently implemented as \textit since we can't do embedded text
+% roles in RST
+\newcommand{\docutilsrolemathit}[1]{\textsf{#1}}
+% Features and values
+\newcommand{\docutilsrolefeature}[1]{\textsc{#1}}
+\newcommand{\docutilsrolefval}[1]{\textit{#1}}
+% Lexemes
+\newcommand{\docutilsrolelex}[1]{\textsc{#1}}
+
+\newcommand{\docutilsroleNone}[1]{#1}
+
+%%%%%%%% PYTHON SOURCE CODE MARKUP %%%%%%%%
+
+% Note -- there is no bold tt font, so currently most of these commands
+% don't really do anything. :-/
+
+\definecolor{py@keywordcolour}{rgb}{1,0.45882,0}
+\definecolor{py@stringcolour}{rgb}{0,0.666666,0}
+\definecolor{py@commentcolour}{rgb}{1,0,0}
+\definecolor{py@ps1colour}{rgb}{0.60784,0,0}
+\definecolor{py@ps2colour}{rgb}{0.60784,0,1}
+\definecolor{py@inputcolour}{rgb}{0,0,0}
+\definecolor{py@outputcolour}{rgb}{0,0,1}
+\definecolor{py@exceptcolour}{rgb}{1,0,0}
+\definecolor{py@builtincolour}{rgb}{0.58039,0,0.58039}
+\definecolor{py@identifiercolour}{rgb}{0,0,0}
+\definecolor{py@linenumcolour}{rgb}{0.4,0.4,0.4}
+\definecolor{py@inputcolour}{rgb}{0,0,0}
+\definecolor{py@defnamecolour}{rgb}{0,0.5,0.5}
+
+% Prompt
+\renewcommand{\pysrcprompt}[1]{\textcolor{py@ps1colour}{#1}}
+\renewcommand{\pysrcmore}[1]{\textcolor{py@ps2colour}{#1}}
+% Source code
+\renewcommand{\pysrckeyword}[1]{\textcolor{py@keywordcolour}{#1}}
+\renewcommand{\pysrcbuiltin}[1]{\textcolor{py@builtincolour}{#1}}
+\renewcommand{\pysrcstring}[1]{\textcolor{py@stringcolour}{#1}}
+\renewcommand{\pysrcdefname}[1]{\textcolor{py@defnamecolour}{#1}}
+\renewcommand{\pysrcother}[1]{#1}
+% Comments
+\renewcommand{\pysrccomment}[1]{\textcolor{py@commentcolour}{#1}}
+% Output
+\renewcommand{\pysrcoutput}[1]{\textcolor{py@outputcolour}{#1}}
+% Exceptions
+\renewcommand{\pysrcexcept}[1]{\textcolor{py@exceptcolour}{#1}}
+
+%%%%%%%% HYPHENATION CONTROL %%%%%%%%
+
+\pretolerance 250
+\tolerance 500
+% \hyphenpenalty 250
+\hyphenpenalty 200
+\exhyphenpenalty 100
+\doublehyphendemerits 7500
+\finalhyphendemerits 7500
+\brokenpenalty 10000
+\lefthyphenmin 3
+\righthyphenmin 3
+\widowpenalty 10000
+\clubpenalty 10000
+\displaywidowpenalty 10000
+\looseness 1

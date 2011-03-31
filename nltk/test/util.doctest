@@ -1,0 +1,81 @@
+.. Copyright (C) 2001-2011 NLTK Project
+.. For license information, see LICENSE.TXT
+
+=================
+Utility functions
+=================
+
+    >>> from nltk.util import *
+    >>> from nltk.tree import Tree
+
+    >>> print_string("This is a long string, therefore it should break", 25)
+    This is a long string,
+    therefore it should break
+
+    >>> re_show("[a-z]+", "sdf123")
+    {sdf}123
+
+    >>> tree = Tree(5,
+    ...             [Tree(4, [Tree(2, [1, 3])]),
+    ...              Tree(8, [Tree(6, [7]), 9])])
+    >>> lst = [x for x in breadth_first(tree)]
+    >>> for l in lst:
+    ...     if type(l) == int: print l
+    ...     else: print l.node
+    5
+    4
+    8
+    2
+    6
+    9
+    1
+    3
+    7
+
+    >>> invert_dict({1: 2})
+    defaultdict(<type 'list'>, {2: 1})
+
+    >>> invert_dict({1: [3, 4, 5]})
+    defaultdict(<type 'list'>, {3: [1], 4: [1], 5: [1]})
+
+Testing HTML cleaning
+---------------------
+
+    >>> html = """
+    ... <html><head></head><body><div style="display:none;">
+    ... <script language="JavaScript">
+    ... <!--
+    ... var s_account="aolmus,aolsvc";
+    ... (function(){
+    ... var d = document, s = d.createElement('script');
+    ... s.type = 'text/javascript';
+    ... s.src = 'http://o.aolcdn.com/omniunih.js';
+    ... d.getElementsByTagName('head')[0].appendChild(s);
+    ... })();
+    ... //-->
+    ... </script></div>
+    ... <!--
+    ... PROFILE DOB/PARENTAL CONTROL RULES
+    ... If(account has DOB) use DOB else use Parental Control code ().
+    ... If DOB < 13, or PC = Kids Only, no profile creation allowed.
+    ... If DOB >= 13 AND < 16, or PC = Young Teen, profile creation allowed, but not allowed to toggle off private for profile or playlists.
+    ... If DOB >= 16 AND < 18, or PC = Mature Teen, profile creation allowed, but profile is Private by default.  User is allowed to toggle privacy.
+    ... If DOB > 18, or PC = Adult, profile creation allowed, profile is Public by default, and user is allowed to toggle privacy.
+    ... -->
+    ... <ul class="miniHat">
+    ... <li style="display:none;"><a href="#pageBody">Skip Links</a></li>
+    ... <li ><a href="http://www.aol.com/" title="Visit AOL " >AOL </a></li>
+    ... <li ><a href="http://my.aol.com/" title="Visit My AOL" >My AOL</a></li>
+    ... <li ><a href="http://webmail.aol.com/?_AOLLOCAL=mail" title="Visit Mail" >Mail</a></li>
+    ... </ul>
+    ... <li class="thumbplay icon-link">
+    ... <a target="_blank" href="http://pr.atwola.com/promoclk/100005695x1144860307x1079136245/aol?redir=http://mobile.aol.com/ringtones?thpartist=the-all-american-rejects"">Get The All-Amer... Ringtones</a>
+    ... </li>
+    ... </body></html>
+    ... """
+    >>> [link.strip() for link in re.split("\n+", clean_html(html))]
+    ['Skip Links', 'AOL', 'My AOL', 'Mail', '', '', 'Get The All-Amer... Ringtones']
+    >>> clean_html("<h1>Heading</h1><p>Test</p>")
+    'Heading Test'
+    >>> clean_html("<html> <body> aaa<p>bbb </body> </html>")
+    'aaa bbb'

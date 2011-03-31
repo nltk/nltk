@@ -1,0 +1,2139 @@
+Deleted stuff with no home at present
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<!--
+  <section><title>Linguistics and Natural Language Processing (draft)</title>
+
+  <para>
+    [What is the relationship between linguistics and NLP?
+    Goal of (generative) linguistics to account for the grammaticality
+    judgements of the ideal monolingual speaker/hearer, vs goal of
+    NLP to build systems to map between the (linguistic) systems of
+    humans and machines.  Challenge of linguistics is to balance
+    descriptive and explanatory adequacy; challenge of NLP to balance
+    expressiveness and tractability.]
+  </para>
+
+    <para>
+    [Grammar as a definition of well-formed
+    sentences along with a semantic translation, versus
+    an implementation which (say) maps from sentences to
+    meanings (parser) or vice versa (generator).
+    declarative vs procedural;
+    system of rewriting rules vs automaton;
+    perspective on NLP: relating the declarative to the procedural;
+    distinguish this constrast from competence vs performance.]
+    </para>
+
+    <para>
+    In the late 1980s and early 1990s there was a promising
+    convergence between the fields of linguistics and NLP.  (This had
+    been a feature of the 1960s, e.g. with the application of the SPE
+    model in speech synthesis systems.)  Computational linguists often
+    looked to linguistics as a source of knowledge about language.
+    Over the last decade we have seen a new divergence, as
+    computational linguists have discovered that linguistic analyses
+    often failed to account for the linguistic patterns attested in
+    the large corpora used to develop their systems.  However, once
+    linguists learn to work with these large datasets, their own
+    analytical work will benefit, leading to broader coverage of their
+    theories, and earlier refutation of false hypotheses.  The result,
+    we expect, will be new opportunities for cross-fertilization
+    between linguistics and NLP.
+    </para>
+
+    <para>
+    [Opportunities for linguists to contribute their insights to the
+    future development of NLP and, in the reverse direction, to apply
+    the results of NLP research back in linguistics.]
+    </para>
+
+  </section>
+-->
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<!--
+ <para>
+    In the following sections, we will give a more detailed account of
+    the linguistic and practical issues that arise in the course of
+    part-of-speech tagging, and then survey how tagging is carried out
+    in NLTK. Before launching into this, however, we will give the
+    reader a flavour of the uses of tagging. That is,
+    we consider three kinds of language analysis where tags play
+    an important role: parsing, morphological analysis, and
+    stylistics.
+  </para>
+
+  <para>
+    Most natural language parsers depend on <glossterm>part-of-speech
+    tags</glossterm>.  Instead of writing rules like ``NP &rarr;
+    the dog`` and ``NP &rarr; three red cars``,
+    we can write ``NP &rarr; DT JJ* NN``.  In this way,
+    the terminal symbols of the grammar can be word categories, instead
+    of words, greatly reducing the size of the grammar.
+
+  </para>
+
+
+
+  <para>
+    <glossterm>Morphological analysis</glossterm> is also assisted by part-of-speech tags.
+    For instance, if we encounter the word ``deals``
+    in running text, should this be analysed as the plural form of a
+    noun, e.g., ``deal<subscript>N</subscript>+PL``
+    or the third-person singular form of a verb, e.g.,
+    ``deal<subscript>V</subscript>+3PS``?
+    A tagger will consider the context in which this word appears,
+    and will reliably determine whether it is a noun or a verb.
+    Then the morphological analyser can be given either
+    ``deals/NN`` or ``deals/VB``
+    to process.
+  </para>
+-->
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Simple approach: "delete one".  First define a function that returns
+a list of strings, each one having a different character deleted from
+the supplied form:
+
+  >>> def delete_one(word):
+  ...     for i in range(len(word)):
+  ...         yield word[:i]+word[i+1:]
+
+Next construct an index over all these forms:
+
+  >>> idx = {}
+  >>> for lex in lexemes:
+  ...     for s in delete_one(lex):
+  ...         if s not in idx:
+  ...             idx[s] = set()
+  ...         idx[s].add(lex)
+
+Now we can define a lookup function:
+
+  >>> def lookup(word):
+  ...     candidates = set()
+  ...     for s in delete_one(word):
+  ...         if s in idx:
+  ...             candidates.update(idx[s])
+  ...     return candidates
+
+Now we can test it out:
+
+  >>> lookup('kokopouto')
+  set(['kokopeoto', 'kokopuoto'])
+  >>> lookup('kokou')
+  set(['kokoa', 'kokeu', 'kokio', 'kooru', 'kokoi', 'kooku', 'kokoo'])
+
+Note that this simple method only returns forms of the same length.
+
+#. Write a spelling correction function which, given a word of length
+   ``i``, can return candidate corrections of length ``i-1``, ``i``,
+   or ``i+1``.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+---------------
+NLTK Interfaces
+---------------
+
+An *interface* gives a partial specification of the behavior of a
+class, including specifications for methods that the class should
+implement.  For example, a "comparable" interface might specify that a
+class must implement a comparison method.  Interfaces do not give a
+complete specification of a class; they only specify a minimum set of
+methods and behaviors which should be implemented by the class.  For
+example, the ``TaggerI`` interface specifies that a tagger class must
+implement a ``tag`` method, which takes a ``string``, and returns a
+tuple, consisting of that string and its part-of-speech tag; but it
+does not specify what other methods the class should implement (if
+any).
+
+.. note:: The notion of "interfaces" can be very useful in ensuring that
+   different classes work together correctly.  Although the concept of
+   "interfaces" is supported in many languages, such as Java, there is no
+   native support for interfaces in Python.
+
+NLTK therefore implements interfaces using classes, all of whose
+methods raise the ``NotImplementedError`` exception.  To distinguish
+interfaces from other classes, they are always named with a trailing
+``I``.  If a class implements an interface, then it should be a
+subclass of the interface.  For example, the ``Ngram`` tagger class
+implements the ``TaggerI`` interface, and so it is a subclass of
+``TaggerI``.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+.. 
+  A piece to be relocated
+  -----------------------
+
+  Many natural language expressions are ambiguous, and we need to draw
+  on other sources of information to aid interpretation.  For instance,
+  our preferred interpretation of `fruit flies like a
+  banana`:lx: depends on the presence of contextual cues that cause
+  us to expect `flies`:lx: to be a noun or a verb.  Before
+  we can even address such issues, we need to be able to represent the
+  required linguistic information.  Here is a possible representation:
+
+
+  =========  =========  ========  =====  ==========
+  ``Fruit``  `flies``  `like``  `a``  `banana``
+  noun       verb       prep      det    noun
+  =========  =========  ========  =====  ==========
+
+  =========  =========  ========  =====  ==========
+  ``Fruit``  `flies``  `like``  `a``  `banana``
+  noun       noun       verb      det    noun
+  =========  =========  ========  =====  ==========
+
+  Most language processing systems must recognize and interpret the
+  linguistic structures that exist in a sequence of words.  This task is
+  virtually impossible if all we know about each word is its text
+  representation.  To determine whether a given string of words has the
+  structure of, say, a noun phrase, it is infeasible to check through a
+  (possibly infinite) list of all strings which can be classed as noun
+  phrases.  Instead we want to be able to generalize over *classes`:dt: of
+  words. These word classes are commonly given labels such as
+  'determiner', 'adjective' and 'noun'.  Conversely, to interpret words
+  we need to be able to discriminate between different usages, such as
+  ``deal`` as a noun or a verb.  
+
+  We earlier presented two interpretations of `Fruit flies like a
+  banana`:lx: as examples of how a string of word tokens can be augmented
+  with information about the word classes that the words belong to. In
+  effect, we carried out tagging for the string `fruit flies like a
+  banana`:lx:. However, tags are more usually attached inline to the text
+  they are associated with. 
+	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+.. ===================== UNUSED =====================
+
+   Some of the following material might belong in other chapters
+
+   Programming?
+   ------------
+   The ``nltk_lite.corpora`` package provides ready access to several
+   corpora included with NLTK, along with built-in tokenizers.  For
+   example, ``brown.raw()`` is an iterator over sentences from
+   the Brown Corpus.  We use ``extract()`` to extract a sentence of
+   interest:
+   
+     >>> from nltk_lite.corpora import brown, extract
+     >>> print extract(0, brown.raw('a'))
+     ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']
+   
+   Old intro material
+   ------------------
+   How do we know that piece of text is a *word*, and how do we represent
+   words and associated information in a machine?  It might seem
+   needlessly picky to ask what a word is. Can't we just say that a word
+   is a string of characters which has white space before and after it?
+   However, it turns out that things are quite a bit more complex. To get
+   a flavour of the problems, consider the following text from the Wall
+   Street Journal::
+   
+     Let's start with the string `aren't`:lx:. According to our naive
+     definition, it counts as only one word. But consider a situation where
+     we wanted to check whether all the words in our text occurred in a
+     dictionary, and our dictionary had entries for `are`:lx: and `not`:lx:,
+     but not for `aren't`:lx:.  In this case, we would probably be happy to
+     say that `aren't`:lx: is a contraction of two distinct words.
+   
+   
+   .. We can make a similar point about `1992's`:lx:. We might want to run
+      a small program over our text to extract all words which express
+      dates. In this case, we would get achieve more generality by first
+      stripping except in this case, we would not expect to find
+      `1992`:lx: in a dictionary.
+   
+   If we take our naive definition of word literally (as we should, if we
+   are thinking of implementing it in code), then there are some other
+   minor but real problems. For example, assuming our file consists of a
+   number of separate lines, as in the WSJ text, then all the
+   words which come at the beginning of a line will fail to be preceded
+   by whitespace (unless we treat the newline character as a
+   whitespace). Second, according to our criterion, punctuation symbols
+   will form part of words; that is, a string like `investors,`:lx: will
+   also count as a word, since there is no whitespace between
+   `investors`:lx: and the following comma. Consequently, we run the risk
+   of failing to recognise that `investors,`:lx: (with appended comma) is a
+   token of the same type as `investors`:lx: (without appended comma). More
+   importantly, we would like punctuation to be a "first-class citizen"
+   for tokenization and subsequent processing. For example, we might want
+   to implement a rule which says that a word followed by a period is
+   likely to be an abbreviation if the immediately following word has a
+   lowercase initial. However, to formulate such a rule, we must be able
+   to identify a period as a token in its own right.
+   
+   A slightly different challenge is raised by examples such as the
+   following (drawn from the MedLine corpus):
+   
+   #. This is a alpha-galactosyl-1,4-beta-galactosyl-specific adhesin.
+   
+   #. The corresponding free cortisol fractions in these sera were 4.53
+      +/- 0.15% and 8.16 +/- 0.23%, respectively.
+   
+   In these cases, we encounter terms which are unlikely to be found in
+   any general purpose English lexicon. Moreover, we will have no success
+   in trying to syntactically analyse these strings using a standard
+   grammar of English. Now for some applications, we would like to
+   "bundle up" expressions such as
+   `alpha-galactosyl-1,4-beta-galactosyl-specific adhesin`:lx: and `4.53
+   +/- 0.15%`:lx: so that they are presented as unanalysable atoms to the
+   parser. That is, we want to treat them as single "words" for the
+   purposes of subsequent processing.  The upshot is that, even if we
+   confine our attention to English text, the question of what we treat
+   as word may depend a great deal on what our purposes are.
+   
+   Representing tokens
+   -------------------
+   When written language is stored in a computer file it is normally
+   represented as a sequence or *string* of characters.  That is, in a
+   standard text file, individual words are strings, sentences are
+   strings, and indeed the whole text is one long string. The characters
+   in a string don't have to be just the ordinary alphanumerics; strings
+   can also include special characters which represent space, tab and
+   newline.
+   
+   Most computational processing is performed above the level of
+   characters.  In compiling a programming language, for example, the
+   compiler expects its input to be a sequence of tokens that it knows
+   how to deal with; for example, the classes of identifiers, string
+   constants and numerals.  Analogously, a parser will expect its input
+   to be a sequence of word tokens rather than a sequence of individual
+   characters.  At its simplest, then, tokenization of a text involves
+   searching for locations in the string of characters containing
+   whitespace (space, tab, or newline) or certain punctuation symbols,
+   and breaking the string into word tokens at these points.  For
+   example, suppose we have a file containing the following two lines::
+   
+     The cat climbed
+     the tree.
+   
+   From the parser's point of view, this file is just a string of
+   characters:
+   
+     'The_cat_climbed\\n_the_tree.'
+   
+   Note that we use single quotes to delimit strings, "_" to represent
+   space and "\n" to represent newline.
+   
+   As we just pointed out, to tokenize this text for consumption by the
+   parser, we need to explicitly indicate which substrings are words. One
+   convenient way to do this in Python is to split the string into a
+   *list* of words, where each word is a string, such as
+   `'dog'`:lx:. [#]_ 
+   In Python, lists are printed as a series of objects
+   (in this case, strings), surrounded by square brackets and separated
+   by commas:
+   
+     >>> words = ['the', 'cat', 'climbed', 'the', 'tree']
+     >>> words
+     ['the', 'cat', 'climbed', 'the', 'tree']
+   
+   .. [#] We say "convenient" because Python makes it easy to iterate
+          through a list, processing the items one by one.
+   
+   Notice that we have introduced a new variable `words`:lx: which is bound
+   to the list, and that we entered the variable on a new line to check
+   its value.
+   
+   To summarize, we have just illustrated how, at its simplest,
+   tokenization of a text can be carried out by converting the single
+   string representing the text into a list of strings, each of which
+   corresponds to a word.
+   
+   Some of this could maybe be discussed in the programming chapter?
+   ----------------------------------------------------------------
+   Many natural language processing tasks involve analyzing texts of
+   varying sizes, ranging from single sentences to very large corpora.
+   There are a number of ways to represent texts using NLTK.  The
+   simplest is as a single string.  These strings can be loaded directly
+   from files:
+   
+     >>> text_str = open('corpus.txt').read() 
+     >>> text_str
+     'Hello world.  This is a test file.\n'
+   
+   However, as noted above, it is usually preferable to represent a text
+   as a list of tokens.  These lists are typically created using a
+   *tokenizer*, such as `tokenize.whitespace`:lx: which splits strings into
+   words at whitespaces:
+   
+     >>> from nltk_lite import tokenize
+     >>> text = 'Hello world.  This is a test string.'
+     >>> list(tokenize.whitespace(text))
+     ['Hello', 'world.', 'This', 'is', 'a', 'test', 'string.']
+   
+   .. Note:: By "whitespace", we mean not only interword space, but
+      also tab and line-end.
+   
+   Note that tokenization may normalize the text, mapping all words to lowercase,
+   expanding contractions, and possibly even stemming the words.  An
+   example for stemming is shown below:
+   
+        >>> text = 'stemming can be fun and exciting'
+        >>> tokens = tokenize.whitespace(text)
+        >>> porter = tokenize.PorterStemmer()
+        >>> for token in tokens:
+        ...     print porter.stem(token),
+        stem can be fun and excit
+   
+   Tokenization based on whitespace is too simplistic for most
+   applications; for instance, it fails to separate the last word of a
+   phrase or sentence from punctuation characters, such as comma, period,
+   exclamation mark and question mark.  As its name suggests,
+   `tokenize.regexp`:lx: employs a regular expression to determine how text
+   should be split up.  This regular expression specifies the characters
+   that can be included in a valid word.  To define a tokenizer that
+   includes punctuation as separate tokens, we could use:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+------------
+More Grammar
+------------
+
+In this final section, we return to the grammar of English.  We
+consider more syntactic phenomena that will require us to refine
+the productions of our phrase structure grammar.
+
+Lexical heads other than ``V`` can be subcategorized for particular
+complements:
+
+**Nouns**
+   #. The rumour *that Kim was bald* circulated widely.
+   #. \*The picture *that Kim was bald* circulated widely.
+**Adjectives**
+   #. Lee was afraid *to leave*.
+   #. \*Lee was tall *to leave*.
+
+It has also been suggested that 'ordinary' prepositions are
+transitive, and that many so-called adverb are in fact intransitive
+prepositions. For example, `towards`:lx: requires an ``NP`` complement,
+while `home`:lx: and `forwards`:lx: forbid them.
+
+
+.. example:: Lee ran towards the house.
+.. example:: \*Lee ran towards.
+
+.. example:: Sammy walked home.
+.. example:: \*Sammy walked home the house.
+
+.. example:: Brent stepped one pace forwards.
+.. example:: \*Brent stepped one pace forwards the house.
+
+
+Adopting this approach, we can also analyse certain prepositions as
+allowing ``PP`` complements:
+
+.. example:: Kim ran away *from the house*.
+.. example:: Lee jumped down *into the boat*.
+
+In general, the lexical categories ``V``, ``N``, `A`:gc: and `P`:gc: are
+taken to be the heads of the respective phrases `VP`, `NP`,
+`AP`:gc: and ``PP``. Abstracting over the identity of these phrases, we
+can say that a lexical category `X`:gc: is the head of its immediate
+`XP`:gc: phrase, and moreover that the complements `C`:subscript:`1`
+... `C`:subscript:`n` of
+`X`:gc: will occur as sisters of `X`:gc: within that `XP`:gc:. This is
+illustrated in the following schema:
+
+.. ex::
+  .. tree:: (XP (X) (*C_1*) ... (*C_n*))
+
+We have argued that lexical categories need to be subdivided into
+subcategories to account for the fact that different lexical items
+select different sequences of following complements. That is, it is a
+distinguishing property of complements that they co-occur with some
+lexical items but not others. By contrast, :dt:`modifiers` can
+occur with pretty much any instance of the relevant lexical class. For
+example, consider the temporal adverbial *last Thursday*:
+
+.. example:: The woman gave the telescope to the dog last Thursday.
+.. example:: The woman saw a man last Thursday.
+.. example:: The dog barked last Thursday.
+
+Moreover, modifiers are always optional, whereas complements are at
+least sometimes obligatory. We can use the phrase structure
+geometry to draw a structural distinction between complements, which
+occur as sisters of the lexical head, versus modifiers, which occur as
+sisters of the phrase which encloses the head:
+
+.. ex::
+  .. tree:: (XP (XP (X) (*C_1*) ... (*C_n*)) (*Mod*))
+
+Exercises
+---------
+
+#. Pick some of the syntactic constructions described in any
+   introductory syntax text (e.g. Jurafsky and Martin, Chapter 9) and
+   create a set of 15 sentences.  Five sentences should be unambiguous
+   (have a unique parse), five should be ambiguous, and a further five
+   should be ungrammatical.
+
+  a) Develop a small grammar, consisting of about ten syntactic
+     productions, to account for this data.  Refine your set of sentences
+     as needed to test and demonstrate the grammar.  Write a function
+     to demonstrate your grammar on three sentences: (i) a
+     sentence having exactly one parse; (ii) a sentence having more than
+     one parse; (iii) a sentence having no parses.  Discuss your
+     observations using inline comments.
+
+  b) Create a list ``words`` of all the words in your lexicon, and use
+     ``random.choice(words)`` to generate sequences of 5-10 randomly
+     selected words.  Does this generate any grammatical sentences which
+     your grammar rejects, or any ungrammatical sentences which your
+     grammar accepts?  Now use this information to help you improve your
+     grammar.  Discuss your findings.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+NLTK consists of a set of Python *modules*, each of which defines
+classes and functions related to a single data structure or task.
+Before you can use a module, you must ``import`` its contents.  The
+simplest way to import the contents of a module is to use the ``from
+module import *`` command.  For example, to import the contents of the
+``nltk_lite.util`` module, which is discussed in this chapter, type:
+
+  >>> from nltk_lite.utilities import *
+  >>>
+
+A disadvantage of this style of import statement is that it does not
+specify what objects are imported; and it is possible that some of the
+import objects will unintentionally cause conflicts.  To avoid this
+disadvantage, you can explicitly list the objects you wish to import.
+For example, as we saw earlier, we can import the ``re_show`` function
+from the ``nltk_lite.util`` module as follows:
+
+  >>> from nltk_lite.utilities import re_show
+  >>>
+
+Another option is to import the module itself, rather than
+its contents.  Now its contents can then be accessed
+using *fully qualified* dotted names:
+
+  >>> from nltk_lite import utilities
+  >>> utilities.re_show('green', sent)
+  colorless {green} ideas sleep furiously
+  >>>
+
+For more information about importing, see any Python textbook.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+We can also access the tagged text using the ``brown.tagged()`` method:
+
+  >>> print extract(0, brown.tagged())
+  [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'),
+   ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'),
+   ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'),
+   ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'),
+   ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'),
+   ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'),
+   ('.', '.')]
+  >>>
+
+NLTK includes a 10% fragment of the Wall Street Journal section
+of the Penn Treebank.  This can be accessed using ``treebank.raw()``
+for the raw text, and ``treebank.tagged()`` for the tagged text.
+
+  >>> from nltk_lite.corpora import treebank
+  >>> print extract(0, treebank.parsed())
+  (S:
+    (NP-SBJ:
+      (NP: (NNP: 'Pierre') (NNP: 'Vinken'))
+      (,: ',')
+      (ADJP: (NP: (CD: '61') (NNS: 'years')) (JJ: 'old'))
+      (,: ','))
+    (VP:
+      (MD: 'will')
+      (VP:
+        (VB: 'join')
+        (NP: (DT: 'the') (NN: 'board'))
+        (PP-CLR:
+          (IN: 'as')
+          (NP: (DT: 'a') (JJ: 'nonexecutive') (NN: 'director')))
+        (NP-TMP: (NNP: 'Nov.') (CD: '29'))))
+    (.: '.'))
+  >>>
+
+NLTK contains some simple chatbots, which will try to talk
+intelligently with you.  You can access the famous Eliza
+chatbot using ``from nltk_lite.chat import eliza``, then
+run ``eliza.demo()``.  The other chatbots are called
+``iesha`` (teen anime talk),
+``rude`` (insulting talk), and
+``zen`` (gems of Zen wisdom),
+and were contributed by other students who have used NLTK.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Predicting the Next Word (Revisited)
+------------------------------------
+
+
+    >>> from nltk_lite.corpora import genesis
+    >>> from nltk_lite.probability import ConditionalFreqDist
+    >>> cfdist = ConditionalFreqDist()
+
+We then examine each token in the corpus, and increment the
+appropriate sample's count.  We use the variable ``prev`` to record
+the previous word.
+
+    >>> prev = None
+    >>> for word in genesis.raw():
+    ...     cfdist[prev].inc(word)
+    ...     prev = word
+
+.. Note:: Sometimes the context for an experiment is unavailable, or
+   does not exist.  For example, the first token in a text does not
+   follow any word.  In these cases, we must decide what context to
+   use.  For this example, we use ``None`` as the context for the
+   first token.  Another option would be to discard the first token.
+
+Once we have constructed a conditional frequency distribution for the
+training corpus, we can use it to find the most likely word for any
+given context. For example, taking the word `living`:lx: as our context,
+we can inspect all the words that occurred in that context.
+
+    >>> word = 'living'
+    >>> cfdist[word].samples()
+    ['creature,', 'substance', 'soul.', 'thing', 'thing,', 'creature']
+
+We can set up a simple loop to generate text: we set an initial
+context, picking the most likely token in that context as our next
+word, and then using that word as our new context:
+
+    >>> word = 'living'
+    >>> for i in range(20):
+    ...     print word,
+    ...     word = cfdist[word].max()
+    living creature that he said, I will not be a wife of the land
+    of the land of the land
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Pronunciation Dictionary
+------------------------
+
+Here we access the pronunciation of words...
+
+.. doctest-ignore::
+    >>> from nltk_lite.corpora import cmudict
+    >>> from string import join
+    >>> for word, num, pron in cmudict.raw():
+    ...     if pron[-4:] == ('N', 'IH0', 'K', 'S'):
+    ...         print word.lower(),
+    atlantic's audiotronics avionics beatniks calisthenics centronics
+    chetniks clinic's clinics conics cynics diasonics dominic's
+    ebonics electronics electronics' endotronics endotronics' enix
+    environics ethnics eugenics fibronics flextronics harmonics
+    hispanics histrionics identics ionics kibbutzniks lasersonics
+    lumonics mannix mechanics mechanics' microelectronics minix minnix
+    mnemonics mnemonics molonicks mullenix mullenix mullinix mulnix
+    munich's nucleonics onyx panic's panics penix pennix personics
+    phenix philharmonic's phoenix phonics photronics pinnix
+    plantronics pyrotechnics refuseniks resnick's respironics sconnix
+    siliconix skolniks sonics sputniks technics tectonics tektronix
+    telectronics telephonics tonics unix vinick's vinnick's vitronics
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Looking at Timestamps
+~~~~~~~~~~~~~~~~~~~~~
+
+    >>> fd = nltk.FreqDist()
+    >>> for entry in lexicon:
+    ...     date = entry.findtext('dt')
+    ...     if date:
+    ...         (day, month, year) = string.split(date, '/')
+    ...         fd.inc((month, year))
+    >>> for time in fd.sorted():
+    ...     print time[0], time[1], ':', fd[time]
+    Oct 2005 : 220
+    Nov 2005 : 133
+    Feb 2005 : 107
+    Jun 2005 : 97
+    Dec 2004 : 74
+    Aug 2005 : 33
+    Jan 2005 : 32
+    Sep 2005 : 27
+    Dec 2005 : 21
+    Feb 2007 : 16
+    Nov 2006 : 15
+    Sep 2006 : 13
+    Feb 2004 : 12
+    Apr 2006 : 11
+    Jul 2005 : 11
+    May 2005 : 10
+    Sep 2004 : 9
+    Mar 2005 : 8
+    Jan 2007 : 7
+    Dec 2006 : 6
+    Jul 2004 : 6
+    Jan 2006 : 4
+    Mar 2006 : 4
+    Oct 2006 : 3
+    Jul 2006 : 3
+    Apr 2007 : 2
+    Feb 2006 : 2
+    May 2004 : 1
+    Oct 2004 : 1
+    Nov 2004 : 1
+
+To put these in time order, we need to set up a special comparison function.
+Otherwise, if we just sort the months, we'll get them in alphabetical order.
+
+    >>> month_index = {
+    ...     "Jan" : 1, "Feb" : 2,  "Mar" : 3,  "Apr" : 4,
+    ...     "May" : 5, "Jun" : 6,  "Jul" : 7,  "Aug" : 8,
+    ...     "Sep" : 9, "Oct" : 10, "Nov" : 11, "Dec" : 12
+    ... }
+    >>> def time_cmp(a, b):
+    ...     a2 = a[1], month_index[a[0]]
+    ...     b2 = b[1], month_index[b[0]]
+    ...     return cmp(a2, b2)
+
+The comparison function says that we compare two times of the
+form ``('Mar', '2004')`` by reversing the order of the month and
+year, and converting the month into a number to get ``('2004', '3')``,
+then using Python's built-in ``cmp`` function to compare them.
+
+Now we can get the times found in the Toolbox entries, sort them
+according to our ``time_cmp`` comparison function, and then print them
+in order.  This time we print bars to indicate frequency:
+
+    >>> times = fd.samples()
+    >>> times.sort(cmp=time_cmp)
+    >>> for time in times:
+    ...     print time[0], time[1], ':', '#' * (1 + fd[time]/10)
+    Feb 2004 : ##
+    May 2004 : #
+    Jul 2004 : #
+    Sep 2004 : #
+    Oct 2004 : #
+    Nov 2004 : #
+    Dec 2004 : ########
+    Jan 2005 : ####
+    Feb 2005 : ###########
+    Mar 2005 : #
+    May 2005 : ##
+    Jun 2005 : ##########
+    Jul 2005 : ##
+    Aug 2005 : ####
+    Sep 2005 : ###
+    Oct 2005 : #######################
+    Nov 2005 : ##############
+    Dec 2005 : ###
+    Jan 2006 : #
+    Feb 2006 : #
+    Mar 2006 : #
+    Apr 2006 : ##
+    Jul 2006 : #
+    Sep 2006 : ##
+    Oct 2006 : #
+    Nov 2006 : ##
+    Dec 2006 : #
+    Jan 2007 : #
+    Feb 2007 : ##
+    Apr 2007 : #
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Next, let's consider some methods for discovering patterns in the lexical
+entries.  Which fields are the most frequent?
+
+    >>> fd = nltk.FreqDist(field.tag for entry in lexicon for field in entry)
+    >>> fd.sorted()[:10]
+    ['xp', 'ex', 'xe', 'ge', 'tkp', 'lx', 'dt', 'ps', 'pt', 'rt']
+
+Which sequences of fields are the most frequent?
+
+    >>> fd = nltk.FreqDist(':'.join(field.tag for field in entry) for entry in lexicon)
+    >>> top_ten = fd.sorted()[:10]
+    >>> print '\n'.join(top_ten)
+    lx:ps:pt:ge:tkp:dt:ex:xp:xe
+    lx:rt:ps:pt:ge:tkp:dt:ex:xp:xe
+    lx:rt:ps:pt:ge:tkp:dt:ex:xp:xe:ex:xp:xe
+    lx:ps:pt:ge:tkp:nt:dt:ex:xp:xe
+    lx:ps:pt:ge:tkp:nt:dt:ex:xp:xe:ex:xp:xe
+    lx:ps:pt:ge:tkp:dt:ex:xp:xe:ex:xp:xe
+    lx:rt:ps:pt:ge:ge:tkp:dt:ex:xp:xe:ex:xp:xe
+    lx:rt:ps:pt:ge:tkp:dt:ex:xp:xe:ex:xp:xe:ex:xp:xe
+    lx:ps:pt:ge:tkp:nt:sf:dt:ex:xp:xe
+    lx:ps:pt:ge:ge:tkp:dt:ex:xp:xe
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-------------------------------
+NLTK in the Academic Literature
+-------------------------------
+
+|NLTK| has been presented at several international
+conferences with published proceedings, from 2002 to the
+present, as listed below:
+
+Edward Loper and Steven Bird (2002).
+NLTK: The Natural Language Toolkit,
+*Proceedings of the ACL Workshop on Effective Tools and
+Methodologies for Teaching Natural Language Processing and Computational
+Linguistics*,
+Somerset, NJ: Association for Computational Linguistics,
+pp. 62-69, http://arXiv.org/abs/cs/0205028
+
+Steven Bird and Edward Loper (2004).
+NLTK: The Natural Language Toolkit,
+*Proceedings of the ACL demonstration session*, pp 214-217.
+http://eprints.unimelb.edu.au/archive/00001448/
+
+Edward Loper (2004).
+NLTK: Building a Pedagogical Toolkit in Python,
+*PyCon DC 2004*
+Python Software Foundation,
+http://www.python.org/pycon/dc2004/papers/
+
+Steven Bird (2005).
+NLTK-Lite: Efficient Scripting for Natural Language Processing,
+*4th International Conference on Natural Language Processing*, pp 1-8.
+http://eprints.unimelb.edu.au/archive/00001453/
+
+Steven Bird (2006).
+NLTK: The Natural Language Toolkit,
+*Proceedings of the ACL demonstration session*
+http://www.ldc.upenn.edu/sb/home/papers/nltk-demo-06.pdf
+
+Ewan Klein (2006).
+Computational Semantics in the Natural Language Toolkit,
+*Australian Language Technology Workshop*.
+http://www.alta.asn.au/events/altw2006/proceedings/Klein.pdf
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+|nopar|
+**Further Reading:**
+
+The Association for Computational Linguistics (ACL) 
+   The ACL is the foremost professional body in |NLP|.
+   Its journal and conference proceedings,
+   approximately 10,000 articles, are available online with a full-text
+   search interface, via `<http://www.aclweb.org/anthology/>`_.
+
+Linguistic Terminology
+   A comprehensive glossary of linguistic terminology is available at:
+   
+   `<http://www.sil.org/linguistics/GlossaryOfLinguisticTerms/>`_.
+
+*Language Files*
+   *Materials for an Introduction to Language and
+   Linguistics (Ninth Edition)*, The Ohio State University Department of
+   Linguistics. For more information, see
+   `<http://www.ling.ohio-state.edu/publications/files/>`_.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Phonological mirrors:
+
+    >>> d1 = dict((tuple(pron), word) for (word, _, pron) in entries)
+    >>> d2 = dict((tuple(pron[::-1]), word) for (word, _, pron) in entries)
+    >>> overlap = set(d1).intersection(d2)
+    >>> [(d1[pron], d2[pron]) for pron in overlap]
+    [('ploetz', 'stolpe'), ('mallard', 'dirlam'), ('flax', 'scalf'), ('spooks', 'scoops'), ('stimac', 'commits'),
+    ('dulak', 'collude'), ('level', 'leavelle'), ('finesse', 'seneff'), ('across', 'sorcha'), ('levine', 'knievel'),
+    ("lebow's", 'zobel'), ('ababa', 'ababa'), ("states'", "states'"), ('sparred', 'drops'), ('serda', 'address'),
+    ('roxanne', 'nascar'), ('scharfe', 'frocks'), ('styx', 'skits'), ('scotts', "stocks'"), ('nascar', 'roxanne'),
+    ('address', 'serda'), ('deville', 'livid'), ('skits', 'styx'), ('negus', 'seguin'), ...]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+A more typical case of inverting a dictionary involves handling list values in the source dictionary,
+and eliminating duplicates...  Notice that in some cases, the stress pattern changes...
+
+    >>> prondict = nltk.corpus.cmudict.transcriptions()
+    >>> prondict['kilometer']
+    [('K', 'AH0', 'L', 'AA1', 'M', 'AH0', 'T', 'ER0'), ('K', 'IH1', 'L', 'AH0', 'M', 'IY2', 'T', 'ER0')]
+    >>> prondict['pronunciation']
+    [('P', 'R', 'OW0', 'N', 'AH2', 'N', 'S', 'IY0', 'EY1', 'SH', 'AH0', 'N'),
+    ('P', 'R', 'AH0', 'N', 'AH2', 'N', 'S', 'IY0', 'EY1', 'SH', 'AH0', 'N')]
+    
+Need to iterate over each value, convert to a stress pattern, and use this as an index.  Values will
+be sets:
+
+inverted = {}
+for key in prondict:
+    for pron in prondict[key]:
+        pattern = tuple(stress(pron))
+        if pattern not in inverted:
+            inverted[pattern] = []
+        if key not in inverted[pattern]:
+            inverted[pattern].append(key)
+
+
+..
+    >>> nouns = dict((w, [N[w][i].gloss for i in range(len(N[w]))]) for w in N)
+    >>> nouns['dog']
+    ['a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds; "the dog barked all night"', 'a dull unattractive unpleasant girl or woman; "she got a reputation as a frump"; "she\'s a real dog"', 'informal term for a man; "you lucky dog"', 'someone who is morally reprehensible; "you dirty dog"', 'a smooth-textured sausage of minced beef or pork usually smoked; often served on a bread roll', 'a hinged catch that fits into a notch of a ratchet to move a wheel forward or prevent it from moving backward', 'metal supports for logs in a fireplace; "the andirons were too hot to touch"']
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+-------------------------------
+Lemmatization and Normalization
+-------------------------------
+
+Earlier we talked about counting word tokens, and completely ignored
+the rest of the sentence in which these tokens appeared.  Thus, for an
+example like `I saw the saw`:lx:, we would have treated both `saw`:lx:
+tokens as instances of the same type.  However, one is a form of the
+verb `see`:lx:, and the other is the name of a cutting instrument.
+How do we know that these two forms of `saw`:lx: are unrelated?  One
+answer is that as speakers of English, we know that these would appear
+as different entries in a dictionary. Another, more empiricist, answer
+is that if we looked at a large enough number of texts, it would
+become clear that the two forms have very different distributions. For
+example, only the noun `saw`:lx: will occur immediately after
+determiners such as `the`:lx:.  Distinct words that have the same
+written form are called `homographs`:dt:. We can distinguish
+homographs with the help of context; often the previous word suffices.
+[WSD]
+
+
+You will also see that this list includes different grammatical forms
+of the same verb. We can form separate groups consisting of
+`appear`:lx: |tilde| `appears`:lx: |tilde| `appeared`:lx:; `call`:lx:
+|tilde| `called`:lx:; `do`:lx: |tilde| `did`:lx:; and `been`:lx:
+|tilde| `were`:lx: |tilde| `are`:lx: |tilde| `is`:lx:.  It is common
+in linguistics to say that two forms such as `appear`:lx: and
+`appeared`:lx: belong to a more abstract notion of a word called a
+`lexeme`:dt:; by contrast, `appeared`:lx: and `called`:lx: belong to
+different lexemes. You can think of a lexeme as corresponding to an
+entry in a dictionary, and a `lemma`:dt: as the headword for that entry.
+By convention, small capitals are used when referring to a lexeme or lemma: `appear`:lex:.
+
+Although `appeared`:lx: and `called`:lx: belong to different lexemes,
+they do have something in common: they are both past tense forms. This
+is signaled by the segment `-ed`:lx:, which we call a morphological
+`suffix`:dt:. We also say that such morphologically complex forms are
+`inflected`:dt:.  If we strip off the suffix, we get something called
+the `stem`:dt:, namely `appear`:lx: and `call`:lx: respectively. While
+`appeared`:lx:, `appears`:lx: and `appearing`:lx: are all
+morphologically inflected, `appear`:lx: lacks any morphological
+inflection and is therefore termed the `base`:dt: form. In English,
+the base form is conventionally used as the `lemma`:dt: for a word.
+
+Our notion of context would be more compact if we could group
+different forms of the various verbs into their lemmas; then we could
+study which verb lexemes are typically modified by a particular
+adverb. `Lemmatization`:dt: |mdash| the process of mapping words
+to their lemmas |mdash| would yield the
+following picture of the distribution of `often`:lx:.
+Here, the counts for `often appear`:lx: (3),
+`often appeared`:lx: (2) and `often appears`:lx: (1)
+are combined into a single line.
+
+::
+
+    often ,     16
+    often a     10
+    often be        13
+    often in        8
+    often than      7
+    often the       7
+    often do        7
+    often appear    6
+    often call      5
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Nouns can be classified as `common nouns`:dt: and `proper nouns`:dt:.
+Proper nouns identify particular individuals or entities,
+e.g. `Moses`:lx: and `Scotland`:lx:.  Common nouns are all the rest.
+Another distinction exists between `count nouns`:dt: and `mass
+nouns`:dt:. Count nouns are thought of as distinct entities that can
+be counted, such as `pig`:lx: (e.g. `one pig, two pigs, many
+pigs`:lx:).  They cannot occur with the word `much`:lx: (i.e. \*\
+`much pigs`:lx:).  Mass nouns, on the other hand, are not thought of
+as distinct entities (e.g. `sand`:lx:).  They cannot be pluralized,
+and do not occur with numbers (e.g. \*\ `two sands`:lx:, \*\ `many
+sands`:lx:).  However, they can occur with `much`:lx: (i.e. `much
+sand`:lx:).
+
+---
+
+Verbs can be classified according to the number of arguments (usually
+noun phrases) that they require.  The word `fall`:lx: is
+`intransitive`:dt:, requiring exactly one argument (the entity that
+falls).  The word `eat`:lx: is `transitive`:dt:, requiring two
+arguments (the eater and the eaten).  Other verbs are more complex;
+for instance `put`:lx: requires three arguments, the agent doing the
+putting, the entity being put somewhere, and a location.  We will return
+to this topic when we come to look at grammars and parsing (see Chapter chap-parse_).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+**Introduction to Part I**
+
+Part I covers the linguistic and computational analysis of words.
+You will learn how to extract the words out of documents and
+text collections in multiple languages, automatically
+categorize them as nouns, verbs, etc, and access their meanings.
+Part I also introduces the required programming skills along
+with basic statistical methods.
+
+    <para>
+        Part I of this book introduces the approach to the study of language
+        known as <emphasis>Natural Language Processing</emphasis> (NLP), with a focus on the 
+        linguistic and computational analysis of words.
+        You will learn how to extract the words out of documents and
+        text collections in multiple languages, automatically
+        categorize them as nouns, verbs, etc, and access their meanings.
+        Part I also introduces the required programming skills along
+        with basic statistical methods.
+    </para>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The program in Figure indent-tree_ prints a tree object using whitespace formatting.
+
+.. pylisting:: indent-tree
+
+   def indent_tree(t, level=0, first=False, width=8):
+       if not first:
+           print ' '*(width+1)*level,
+       try:
+           print "%-*s" % (width, t.node),
+           indent_tree(t[0], level+1, first=True)
+           for child in t[1:]:
+               indent_tree(child, level+1, first=False)
+       except AttributeError:
+           print t
+
+   >>> t = nltk.corpus.treebank.parsed_sents('wsj_0001.mrg')[0]
+   >>> indent_tree(t)
+    S        NP-SBJ   NP       NNP      Pierre
+                               NNP      Vinken
+                      ,        ,
+                      ADJP     NP       CD       61
+                                        NNS      years
+                               JJ       old
+                      ,        ,
+             VP       MD       will
+                      VP       VB       join
+                               NP       DT       the
+                                        NN       board
+                               PP-CLR   IN       as
+                                        NP       DT       a
+                                                 JJ       nonexecutive
+                                                 NN       director
+                               NP-TMP   NNP      Nov.
+                                        CD       29
+             .        .
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Formalizing Context Free Grammars
+---------------------------------
+
+We have seen that a CFG contains terminal and nonterminal symbols, and
+productions that dictate how constituents are expanded into other
+constituents and words. In this section, we provide some formal definitions.
+
+A CFG is a 4-tuple |langle|\ `N`:math:, |Sigma|, `P`:math:, `S`:math:\
+|rangle|\ , where:
+
+*  |Sigma| is a set of *terminal* symbols (e.g., lexical items);
+
+*  `N`:math: is a set of *non-terminal* symbols (the category labels); 
+
+*  `P`:math: is a set of *productions* of the form `A`:math: |rarr| |alpha|, where
+
+   * `A`:math: is a non-terminal, and 
+
+   * |alpha| is a string of symbols from (`N`:math: |cup| |Sigma|)*
+     (i.e., strings of either terminals or non-terminals);
+
+*  `S`:math: is the *start symbol*.
+
+A `derivation`:dt: of a string from a non-terminal `A`:math:
+in grammar `G`:math: is the result of successively applying
+productions from  `G`:math: to `A`:math:.  For example, deriv1_ is a
+derivation of `the dog with a telescope`:lx: for the grammar in grammar1_.
+
+.. _deriv1:
+.. ex::
+  ::
+
+     NP
+     Det N PP
+     the N PP
+     the dog PP
+     the dog P NP
+     the dog with NP
+     the dog with Det N
+     the dog with a N
+     the dog with a telescope
+
+Although we have chosen here to expand the leftmost non-terminal
+symbol at each stage, this is not obligatory; productions can be
+applied in any order. Thus,  derivation deriv1_
+could equally have started off in the following manner:
+
+.. _deriv2:
+.. ex::
+  ::
+
+     NP
+     Det N PP
+     Det N P NP
+     Det N with NP
+     ...
+
+We can also write derivation deriv1_ as:
+
+.. _deriv3:
+.. ex::
+   ``NP`` |DoubleRightArrow| `det n pp`:gc:
+   |DoubleRightArrow| `the`:lx: `n pp`:gc:
+   |DoubleRightArrow| `the dog`:lx: ``PP``
+   |DoubleRightArrow| `the dog`:lx: `p np`:gc:
+   |DoubleRightArrow| `the dog with`:lx: ``NP``
+   |DoubleRightArrow| `the dog with a`:lx: ``N``
+   |DoubleRightArrow| `the dog with a telescope`:lx:
+
+where |DoubleRightArrow| means "derives in one step". 
+We use |DoubleRightArrow|\ * to mean "derives in zero or more steps":
+
+* |alpha| |DoubleRightArrow|\ * |alpha| for any string |alpha|, and
+
+* if |alpha| |DoubleRightArrow|\ * |beta| and |beta|
+  |DoubleRightArrow| |gamma|, then |alpha| |DoubleRightArrow|\ *
+  |gamma|.
+
+We write `A`:math: |DoubleRightArrow|\ * |alpha| to indicate that
+|alpha| can be derived from  `A`:math:.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This didn't fit once we switched the discussion to a simplified tagset:
+
+Part-of-speech tags are closely related to the notion of word class
+used in syntax.  The assumption in linguistics is that every distinct
+word type will be listed in a lexicon (or dictionary), with
+information about its pronunciation, syntactic properties and
+meaning. A key component of the word's properties will be its
+class. When we carry out a syntactic analysis of an example like
+`fruit flies like a banana`:lx:, we will look up each word in the
+lexicon, determine its word class, and then group it into a hierarchy
+of phrases, as illustrated in fruit-flies_.
+
+.. _fruit-flies:
+.. ex::
+   .. tree:: (S (NP (Adj Fruit) (N flies)) (VP (V like) (NP (Det a) (N banana))))
+
+Syntactic analysis will be dealt with in more detail in later chapters.
+For now, we simply want to make the connection between the labels used in
+syntactic parse trees and part-of-speech tags.  Table word-classes_
+shows the correspondence:
+
+.. table:: word-classes
+
+   ================  =========   ============================
+   Word Class Label  Brown Tag   Word Class 
+   ================  =========   ============================
+   Det               `AT`:gc:    article 
+   N                 `NN`:gc:    noun 
+   V                 `VB`:gc:    verb 
+   Adj               `JJ`:gc:    adjective 
+   P                 `IN`:gc:    preposition 
+   Card              `CD`:gc:    cardinal number 
+   --                `.`:gc:     sentence-ending punctuation 
+   ================  =========   ============================
+
+   Word Class Labels and Brown Corpus Tags
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+One important aspect of the tabular approach to parsing can be seen more
+clearly if we look at the graph representation: given our grammar, there are two
+different ways to derive a top-level ``VP`` for the input, as shown in
+Table chartnp_\ (a,b).
+In our graph representation, we simply combine the
+two sets of edges to yield Table chartnp_\ (c).
+
+.. table:: chartnp
+
+   +---------------------------------------------------------+
+   | a. ``VP`` |rarr| ``V`` ``NP``                     |
+   |                                                         |
+   | |chartnp0|                                              |
+   +---------------------------------------------------------+
+   | b. ``VP`` |rarr| ``VP`` ``PP``                    |
+   |                                                         |
+   | |chartnp1|                                              |
+   +---------------------------------------------------------+
+   | c. Merged Chart                                         |
+   |                                                         |
+   | |chartnp2|                                              |
+   +---------------------------------------------------------+
+
+   Combining Multiple Parses in a Single Chart
+
+.. |chartnp0| image:: ../images/chart_np0.png
+   :scale: 25
+
+.. |chartnp1| image:: ../images/chart_np1.png
+   :scale: 25
+
+.. |chartnp2| image:: ../images/chart_np2.png
+   :scale: 25
+
+|nopar| However, given a |WFST| we cannot necessarily read off
+the justification for adding a particular edge.
+For example, in chartnp_\ (b), ``[Edge: VP, 2:8]``
+might owe its existence to a production ``VP`` |rarr| `v np pp`:gc:.
+Unlike phrase structure trees, a |WFST| does not encode a relation of
+immediate dominance. In order to make such information available, we
+can label edges not just with a non-terminal category, but with the
+whole production that justified the addition of the edge. This is
+illustrated in Figure chartprods_.
+
+.. _chartprods:
+.. figure:: ../images/chart_prods.png
+   :scale: 25
+
+   Chart Annotated with Productions
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Formally
+a dotted edge [`A` |rarr| `c`:sub:`1` |dots| `c`:sub:`d` |dot| `c`:sub:`d+1` |dots| `c`:sub:`n`, (*i*, *j*)] 
+records the hypothesis that a constituent of type `A` with span (`i, j`)
+starts with children `c`:sub:`1` |dots| `c`:sub:`d`, but still
+needs children `c`:sub:`d+1` |dots| `c`:sub:`n` to be complete
+(`c`:sub:`1` |dots| `c`:sub:`d` and `c`:sub:`d+1` |dots| `c`:sub:`n` may be empty).
+If `d = n`:math:, then `c`:sub:`d+1` |dots| `c`:sub:`n` is
+empty and the edge represents a complete constituent and is called
+a `complete edge`:dt:.  Otherwise, the edge represents an incomplete
+constituent, and is called an `incomplete edge`:dt:.  In Figure
+chart_terms_\ (a), [``VP`` |rarr| ``V`` ``NP`` |dot|, (1, 3)] is a
+complete edge, and [``VP`` |rarr| ``V`` |dot| ``NP``, (1, 2)] is
+an incomplete edge.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+..
+   The fourth <b_enamex type="ORGANIZATION">Wells<e_enamex> account
+   moving to another agency is the packaged paper-products division of
+   <b_enamex type="ORGANIZATION">Georgia-Pacific Corp.<e_enamex>, which
+   arrived at <b_enamex type="ORGANIZATION">Wells<e_enamex> only last
+   <b_timex type="DATE">fall<e_timex>. Like <b_enamex
+   type="ORGANIZATION">Hertz<e_enamex> and the <b_enamex
+   type="ORGANIZATION">History Channel<e_enamex>, it is also leaving for
+   an <b_enamex type="ORGANIZATION">Omnicom<e_enamex>-owned agency, the
+   <b_enamex type="ORGANIZATION">BBDO South<e_enamex> unit of <b_enamex
+   type="ORGANIZATION">BBDO Worldwide<e_enamex>.  <b_enamex
+   type="ORGANIZATION">BBDO South<e_enamex> in <b_enamex
+   type="LOCATION">Atlanta<e_enamex>, which handles corporate advertising
+   for <b_enamex type="ORGANIZATION">Georgia-Pacific<e_enamex>, will
+   assume additional duties for brands like Angel Soft toilet tissue and
+   Sparkle paper towels, said <b_enamex type="PERSON">Ken
+   Haldin<e_enamex>, a spokesman for <b_enamex
+   type="ORGANIZATION">Georgia-Pacific<e_enamex> in <b_enamex
+   type="LOCATION">Atlanta<e_enamex>.
+
+
+   This refers to the task of converting
+   `unstructured data`:dt: (e.g., unrestricted text) or `semi-structured
+   data`:dt: (e.g., web pages marked up with |HTML|) into `structured
+   data`:dt: (e.g., tables in a relational database). For example, let's
+   suppose we are given a text containing the fragment ex-ie5_, and let's
+   also suppose we are trying to find pairs of entities *X* and *Y* that
+   stand in the relation 'organization *X* is located in location *Y*'.
+
+   .. _ex-ie5:
+   .. ex:: ... said William Gale, an economist at the Brookings Institution,
+       the research group in Washington. 
+
+   |nopar| As a result of processing this text, we should be able to add
+   the pair |langle|\ *Brookings Institution*, *Washington*\ |rangle| to
+   this relation. As we will see shortly, Information Extraction proceeds
+   on the assumption that we are only looking for specific sorts of
+   information, and these have been decided in advance. This limitation
+   has been a necessary concession to allow the robust processing of
+   unrestricted text.
+   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+.. 
+    Chunking is an efficient and robust method for identifying short
+    phrases in text, or "chunks".  Chunks are `non-overlapping spans of
+    text`:em:, usually consisting of a head word (such as a noun) and the
+    adjacent modifiers and function words (such as adjectives and
+    determiners).  
+
+    There are other motivations for chunking: to locate information, and
+    to ignore information.  In the former case, we may want to extract
+    all noun phrases so they can be indexed.  A text retrieval system
+    could use such an index to support efficient retrieval for queries
+    involving terminological expressions.
+
+    The reverse side of the coin is to *ignore* information.  Suppose that
+    we want to study syntactic patterns, finding particular verbs in a
+    corpus and displaying their arguments.  For instance, here are some
+    uses of the verb `gave`:lx: in the Wall Street Journal (in the Penn
+    Treebank corpus sample).  After ``NP``\ -chunking, the internal
+    details of each noun phrase have been suppressed, allowing us to see
+    some higher-level patterns::
+
+      gave NP
+      gave up NP in NP
+      gave NP up
+      gave NP NP
+      gave NP to NP
+
+    |nopar|
+    In this way we can acquire information about the complementation
+    patterns of a verb like `gave`:lx:, for use in the development of a
+    grammar (see Chapter chap-parse_).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+.. _sec-exploratory-data-analysis:
+
+-------------------------
+Exploratory Data Analysis
+-------------------------
+
+As language speakers, we all have intuitions about how language works,
+and what patterns it contains.  Unfortunately, those intuitions are
+notoriously unreliable.  We tend to notice unusual words and constructions,
+and to be oblivious to high-frequency cases.  Many public commentators go
+further to make pronouncements about statistics and usage which turn out to
+be false.  Many examples are documented on *LanguageLog*, such as:
+
+* Strunk and White's injunction against using adjectives and adverbs
+  http://itre.cis.upenn.edu/~myl/languagelog/archives/001905.html
+* Brizenden's claim that women use 20,000 words a day while men use 7,000
+  http://itre.cis.upenn.edu/~myl/languagelog/archives/003420.html
+* Payack's claim that vocabulary size of English stood at 986,120 on 2006-01-26
+  http://itre.cis.upenn.edu/~myl/languagelog/archives/002809.html
+  
+In order to get an accurate idea of how language works, and what
+patterns it contains, we must study langauge |mdash| in a wide
+variety of forms and contexts |mdash| as impartial observers.
+To facilitate this endevour, researchers and
+organizations have created many large collections of real-world
+language, or `corpora`:dt:.  These corpora are collected from a wide
+variety of sources, including literature, journalism, telephone
+conversations, instant messaging, and web pages.
+
+
+
+
+`Exploratory data analysis`:dt: is a technique
+for learning about a specific linguistic pattern, or
+`construction`:dt:.  It involves a cycle consisting of four steps,
+illustrated in Figure fig-exploration_.
+
+.. XX add more examples of "constructions"
+.. SB: is the term "construction" appropriate?  It has syntactic overtones
+   which aren't suitable given the content of the rest of the chapter;
+   later the term "phenomena" is used; how about just "patterns"?
+.. SB: pull in an example from later in the chapter, so we
+   increase the overall coherence of the chapter by referring
+   to the same examples in multiple places.
+
+.. _fig-exploration:
+.. figure:: ../images/exploration.png
+   :scale: 20:25:25
+
+   Exploratory Corpus Analysis
+   
+First, we must find the occurrences of the construction that we're
+interested in, by searching the corpus.  Ideally, we would like to
+find all occurrences of the construction, but sometimes that may not
+be possible, and we have to be careful not to over-generalize our
+findings.  In particular, we should be careful not to conclude that
+something doesn't happen simply because we were unable to find any
+examples; it's also possible that our corpus is deficient.
+
+Once we've found the constructions of interest, we can then categorize
+them, using two sources of information: content and context.  In some cases,
+like identifying date and time expressions in text, we can simply write
+a set of rules to cover the various cases.  But often, we can't just
+enumerate the cases, and we have to manually annotate a corpus of text
+and then train systems to do the task automatically.
+
+Having collected and categorized the constructions of interest, we can
+proceed to look for patterns.  Typically, this involves describing
+patterns as combinations of categories, and counting how often
+different patterns occur.  We can check for both graded distinctions
+and categorical distinctions...
+
+* center-embedding suddenly gets bad after two levels
+* examples from probabilistic syntax / gradient grammaticality
+
+Finally, the information that we discovered about patterns in the
+corpus can be used to refine our understanding of how constructions
+work.  We can then continue to perform exploratory data analysis, both
+by adjusting our characterizations of the constructions to better fit
+the data, and by building on our better understanding of simple
+constructions to investigate more complex constructions.
+
+Although we have described exploratory data analysis as a cycle of
+four steps, it should be noted that any of these steps may be skipped
+or re-arranged, depending on the nature of the corpus and the
+constructions that we're interested in understanding.  For example, we
+can skip the search step if we already have a corpus of the relevant
+constructions; and we can skip categorization if the constructions are
+already labeled.
+
+Selecting a Corpus
+------------------
+
+In exploratory data analysis, we learn about a specific linguistic
+pattern by objectively examining how it is used.  We therefore must
+begin by selecting a corpus containing the pattern we want to study.
+Often, we can use one of the many existing corpora.  However,
+we may choose to assemble a `derived corpus`:dt: by processing one
+or more existing corpora, selecting specific subsets of a corpus (e.g., only news
+stories containing interviews), and adding extra labels of our own.
+Occasionally, we may decide to build a new corpus from scratch
+(e.g., if we wish to learn about a previously undocumented language).
+
+The results of our analysis will be highly dependent on the corpus
+that we select.  This should hardly be surprising, since many
+linguistic phenomena pattern differently in different contexts -- for
+example, <<add a good example -- child vs adult? written vs spoken?
+some specific phenomenon?>>.  But when selecting the corpus for
+analysis, it is important to understand how the characteristics of the
+corpus will affect results of the the data analysis.
+
+Source of Language Data
+-----------------------
+
+Language is used for many different purposes, in many different
+contexts.  For example, language can be used in a novel to tell a
+complex fictional story, or it can be used in an internet chat room to
+exchange rumors about celebrities.  It can be used in a newspaper to
+report a story about a sports team, or in a workplace to form a
+collaborative plan for building a new product.  Although some
+linguistic phenomena will act uniformly across these different
+contexts, other phenomena may vary depending......
+
+Therefore, one of the most important characteristics defining a corpus
+is the source (or sources) from which its language data is drawn,
+which will determine the types of language data it includes.
+Attributes that characterize the type of language data contained in a
+corpus include:
+the subject of the material (domain);
+the combination of spoken and written language (modality);
+the (in)formality of the content (register);
+the variety of language (dialect, language); and
+salient attributes of the individuals whose language is captured (participants).
+
+When reporting any findings that arise from exploratory data analysis, it
+is important to consider the extent to which those conclusions could
+be an artifact of the particular corpus that was chosen.  For
+example, if we discover a pattern in a corpus of newspaper articles,
+we should not necessarily assume that the same pattern will hold in
+spoken dialogue.  
+
+.. The sentence "For example..." would be stronger if "a pattern" were
+   replaced with a specific example.
+
+In order to allow more general conclusions to be drawn about
+linguistic patterns, several `balanced corpora`:dt: have been created,
+which include language data from a wide variety of different language
+sources.  For example, the Brown Corpus contains documents ranging
+from science fiction to howto guidebooks to legislative council
+transcripts.  But it's worth noting that since language use is so
+diverse, it would be almost impossible to create a single corpus that
+includes *all* of the contexts in which language gets used.  Thus,
+even balanced corpora should be considered to cover only a subset of
+the possible linguistic sources (even if that subset is larger than
+the subset covered by many other corpora).
+
+.. Talk about the actual "balancing", i.e., picking how much of each
+   type of language data to include.  And say something about
+   sampling?
+
+
+Corpus Size
+-----------
+
+The size of corpora can vary widely, from tiny corpora containing just
+a few hundred sentences up to enormous corpora containing a billion
+words or more.  In general, we perform exploratory data analysis using
+the largest appropriate corpus that's available.  This ensures that
+the results of our analysis don't just reflect a quirk of the
+particular language data contained in the corpus.  
+
+However, in some circumstances, we may be forced to perform our
+analysis using small corpora.  For example, if we are examining
+linguistic patterns in a language that is not well studied, or if our
+analysis requires specific annotations, then no large corpora may be
+available.  In these cases, we should be careful when interpreting the
+results of an exploratory data analysis.  In particular, we should
+avoid concluding that a linguistic pattern or phenomenon never occurs,
+just because we did not find it in our small sample of language data.
+    
+Searching annotated corpora
+---------------------------
+
+Large unannotated corpora are widely available; and it is fairly easy
+to search these corpora for simple string patterns as we will see
+in Chapter chap-words_.  However, many of
+the linguistic phenomena that we may be interested can not be captured
+with simple string patterns.  For example, it would be very difficult
+to write a search pattern that finds all verbs that take sentential
+complements.  [EXAMPLES]
+
+Partially to help address these concerns, a large number of manually
+annotated corpora have been created.  These corpora are augmented with
+a wide variety of extra information about the language data they
+contain.  The exact types and extents of this additional information
+will vary from corpus to corpus, but common annotation types include
+tokeniation and segmentation information; information about words'
+parts of speech or word sense; and information about sentences'
+syntactic structure.  We can make use of this extra information to
+perform more advanced searches over the corpus.  Often, this extra
+information will make it possible to find all of (or most of) the
+occurences of a given linguistic phenomenon, especially if the
+phenomenon is closely related to the type of information contained in
+the corpus's annotations.
+
+However, building annotated corpora is a very labor-intensive process,
+and these corpora therefore tend to be significantly smaller than
+corresponding unannotated corpora.  As we mentioned when discussing
+corpus size, we should therefore be careful about concluding that a
+linguistic pattern or phenomenon never occurs, just because we did not
+find it in a small annotated corpus.
+    
+Because the format and information content of annotations can vary
+widely from one corpus to the next, there is no single tool for
+searching annotated corpora.  One solution is to use one of the many
+specialized tools have been built for searching popular corporus
+formats.  For example, the ``tgrep`` tool can be used to search for
+specific syntactic patterns in a corpus that is annotated with the
+syntactic structure of each sentence.  This can be a very efficient
+solution if your corpus is in the required format, and if the tool
+supports the search pattern you wish to construct.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Searching Automatically Annotated Data
+--------------------------------------
+
+In some cases, we may find that the hand-annotated corpora that are
+available are too small to perform the analysis we desire; but that
+unannotated corpora do not contain the information we need to perform
+a search.  One solution in these cases is to build an automatically
+annotated corpus, and then to search that corpus.  
+
+For example, if we wish to search for occurrences of the "way
+construction," such as "pushed his way across the crowded room," we
+could use pattern such as *VERBed PRONOUN way PREP*.  However, we may
+not have a part-of-speech tagged corpus that is sufficiently large to
+find enough instances of this construction.  We could therefore build
+an automatic part-of-speech tagger using an existing corpus, and then
+apply it to a much larger body of text.  Although the automatic
+part-of-speech tagger would make occasional errors, we would still be
+able to find most of the occurrences of the desired pattern.
+
+When using this technique, it is important to consider possible biases
+that might be introduced by the automatic annotation process.  In
+particular, the automatic annotator may systematically make an error
+that would prevent us from finding an important set of instances for
+our pattern.  In order to avoid this problem, you should evaluate the
+automatic system's accuracy, and consider what effect that accuracy
+might have on your search.  It is also advisable to avoid using an
+automatic classifier whose output is closely tied to the type of
+construction we are looking for, because doing so increases the
+likelihood that a deficiency in the automatic annotator will
+systematically block the search process.
+
+Categorizing
+------------
+
+Once we've found examples the constructions of interest, we can then
+categorize them.  
+
+using two sources of information: content and
+context.
+
+Once we've found occurrences of the we're interested in, the next step is
+to categorize them.  In general, we're interested in two things:
+
+  - features of the construction itself
+  - features of the context that we think are relevant to the phenomenon.
+
+
+  
+Counting
+--------
+
+Now that we've got our occurrences coded up, we want to look at how
+often different combinations occur.
+
+- we can look for both graded and categorical distictions
+
+  - for categorical distinctions, we don't necessarily require that
+    the counts be zero; every rule has its exception.
+
+Example: what makes a name sound male or female?  Walk through it,
+explain some features, do some counts using python.  
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Categorized Corpora
+-------------------
+
+Several published corpora contain documents that have been categorized for
+topic, genre, polarity, etc.  NLTK provides an interface to some of these
+corpora, augmenting the standard interface for text corpora.
+We can access the categories using the ``categories()`` method, e.g.:
+
+    >>> from nltk.corpus import brown, movie_reviews, reuters
+    >>> brown.categories()
+    ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
+    'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
+    >>> movie_reviews.categories()
+    ['neg', 'pos']
+    >>> reuters.categories()
+    ['acq', 'alum', 'barley', 'bop', 'carcass', 'castor-oil', 'cocoa',
+    'coconut', 'coconut-oil', 'coffee', 'copper', 'copra-cake', 'corn',
+    'cotton', 'cotton-oil', 'cpi', 'cpu', 'crude', 'dfl', 'dlr', ...]
+
+The ``categories()`` method has an optional parameter that specifies
+a document or a list of documents, allowing us to map from (one or more)
+documents to (one or more) categories:
+
+    >>> brown.categories('ca01')
+    ['news']
+    >>> brown.categories(['ca01','cb01'])
+    ['editorial', 'news']
+    >>> reuters.categories('training/9865')
+    ['barley', 'corn', 'grain', 'wheat']
+    >>> reuters.categories(['training/9865', 'training/9880'])
+    ['barley', 'corn', 'grain', 'money-fx', 'wheat']
+
+On the other hand, given a category, we can see a list of the corresponding files.
+As in the previous examples, the result is a sorted list containing no duplicates. 
+
+    >>> reuters.files('barley')
+    ['test/15618', 'test/15649', 'test/15676', 'test/15728', 'test/15871', ...]
+    >>> reuters.files(['barley', 'corn'])
+    ['test/14832', 'test/14858', 'test/15033', 'test/15043', 'test/15106', ...]
+    
+In addition to mapping between categories and documents, these corpora permit
+direct access to their contents via the categories.  Instead of accessing a subset
+of a corpus by specifying one or more files, we can identify one or more categories,
+as shown below (note that it is an error to specify both documents and categories).
+
+    >>> brown.tagged_words(categories='news')
+    [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
+    >>> brown.sents(categories=['editorial','reviews'])
+    [['Assembly', 'session', 'brought', 'much', 'good'], ['The', 'General',
+    'Assembly', ',', 'which', 'adjourns', 'today', ',', 'has', 'performed',
+    'in', 'an', 'atmosphere', 'of', 'crisis', 'and', 'struggle', 'from',
+    'the', 'day', 'it', 'convened', '.'], ...]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Other Corpora Containing Categorized Data
+-----------------------------------------
+
+Corpora that lack document-level categories can still be used for
+categorization tasks.  Any part-of-speech tagged corpus, and any
+sentence-segmented corpus, can be used for tagging and segmentation
+tasks.  There is also a special kind of corpus that has been designed
+specifically for training and testing text classifiers.
+
+The Question Classification corpus contains approximately 6,000 questions,
+where each question has been tagged as one of 50 different categories.
+The categories are organized in a two-level hierarchy, so we can
+study broad or fine-grained classification.  The corpus is used for
+training question classifiers, a component of question answering
+systems and dialogue systems.
+Here's the first 10 lines of the corpus::
+
+    DESC:manner How did serfdom develop in and then leave Russia ?
+    ENTY:cremat What films featured the character Popeye Doyle ?
+    DESC:manner How can I find a list of celebrities ' real names ?
+    ENTY:animal What fowl grabs the spotlight after the Chinese Year of the Monkey ?
+    ABBR:exp What is the full form of .com ?
+    HUM:ind What contemptible scoundrel stole the cork from my lunch ?
+    HUM:gr What team did baseball 's St. Louis Browns become ?
+    HUM:title What is the oldest profession ?
+    DESC:def What are liver enzymes ?
+    HUM:ind Name the scar-faced bounty hunter of The Old West .
+
+We can access this corpus as shown below.  It is straightforward to
+access the category and process the question to extract word features.
+
+    >>> from nltk.corpus import qc
+    >>> qc.tuples('train.txt')
+    [('DESC:manner', 'How did serfdom develop in and then leave Russia ?'),
+    ('ENTY:cremat', 'What films featured the character Popeye Doyle ?'), ...]
+
+[Description of the other corpora: movie_reviews, names, ppattach]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+.. (el) I'm intentionally leaving this section out for now:
+   ----------------
+   Bias vs Variance
+   ----------------
+   
+     The term bias is used in two ways:
+   
+     - ML bias & Statistical bias
+   
+     - ML bias: an assumption implicit in a ML technique that either rules out a class of models (absolute bias) or gives preference to a class of models (relative bias)
+   
+     - (when) do we need ML bias?
+   
+     Statistical bias:
+   
+       - Build a model from every possible training set (of a given size)
+       - Average those models.
+       - Statistical bias = error of this averaged model
+   
+     Variance:
+   
+       - Average (squared) difference between an individual model and the averaged model
+       - Average model error = bias^2 + variance
+   
+
+.. ------------------------------------------------------------
+   I don't think we have room for IR in this chapter; and we don't
+   have much in the toolkit for it anyway.
+   ---------------------
+   Information Retrieval
+   ---------------------
+   ------------------------------------------------------------
+
+
+..
+  ---------------------
+  Unsupervised Learning
+  ---------------------
+  [[el: some of this got covered in the previous chapter]]
+
+  - Even when there's no labeled training data, we can still use
+    automatic methods to learn about the data.
+  - What patterns tend to occur?
+  - How do those patterns relate to one another?
+
+
+  Example: Punkt sentence tokenizer.
+
+  - Dividing a paragraph into sentences is hard. (western languages)
+  - Mainly because we can't tell if "." is used as part of an
+    abbreviation or not.
+  - Punkt uses unsupervised methods to find common abbreviations.
+  - If "xyz" is almost always followed by "." then it's probably an
+    abbreviation.
+  
+  .. SB: evaluating segmentations, and windowdiff (if deleted from this chapter should go back in data chapter)
+
+  It can be useful to know whether two words are "similar."
+
+  - Search: don't just find the exact terms you specify.
+  - Question Answering: handle synonyms.
+  - Parsing: what words act similarly to one another?
+
+  Different notions of "similarity":
+
+  - What words tend to co-occur?
+  - What words occur in similar contexts?
+
+  Document clustering:
+
+  - vocabulary (ignore words other than the n most frequent and m least frequent; or use tf.idf)
+  - document vectors
+  - WordNet
+  - news collection?  unsupervised topic detection?
+
+.. SB: brief overview of machine learning methods that help cope with existence
+       of small amounts of labeled data and larger amounts of unlabeled data.
+.. EL: (aka semi-supervised learning)       
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Example: Predicting Sentiment
+-----------------------------
+
+Movie review domain; ACL 2004 paper by Lillian Lee and Bo Pang.
+Movie review corpus included with NLTK.
+
+.. pylisting:: movie-reviews
+
+   import nltk, random
+
+   TEST_SIZE = 500
+
+   def word_features(doc):
+       words = nltk.corpus.movie_reviews.words(doc)
+       return nltk.FreqDist(words), doc[0]
+
+   def get_data():
+       featuresets = apply(word_features, nltk.corpus.movie_reviews.files())
+       random.shuffle(featuresets)
+       return featuresets[TEST_SIZE:], featuresets[:TEST_SIZE]
+
+   >>> train_featuresets, test_featuresets = get_data()
+   >>> c1 = nltk.NaiveBayesClassifier.train(train_featuresets)
+   >>> print nltk.classify.accuracy(c1, test_featuresets)
+   0.774
+   >>> c2 = nltk.DecisionTreeClassifier.train(train_featuresets)
+   >>> print nltk.classify.accuracy(c2, test_featuresets)
+   0.576
+    
+Example: Documents By Genre
+---------------------------
+
+Initial work on a classifier to use frequency of modal verbs to classify
+documents by genre:
+
+.. pylisting:: modals
+
+   import nltk, math
+   modals = ['can', 'could', 'may', 'might', 'must', 'will']
+
+   def modal_counts(tokens):
+       return nltk.FreqDist(word for word in tokens if word in modals)
+
+   # just the most frequent modal verb
+   def modal_features1(tokens):
+       return dict(most_frequent_modal = model_counts(tokens).max())
+
+   # one feature per verb, set to True if the verb occurs more than once
+   def modal_features2(tokens):
+       fd = modal_counts(tokens)
+       return dict( (word,(fd[word]>1)) for word in modals)
+
+   # one feature per verb, with a small number of scalar values
+   def modal_features3(tokens):
+       fd = modal_counts(tokens)
+       features = {}
+       for word in modals:
+           try:
+               features[word] = int(-math.log10(float(fd[word])/len(tokens)))
+           except OverflowError:
+               features[word] = 1000
+       return features
+
+   # 4 bins per verb based on frequency
+   def modal_features4(tokens):
+       fd = modal_counts(tokens)
+       features = {}
+       for word in modals:
+           freq = float(fd[word])/len(tokens)
+           for logfreq in range(3,7):
+               features["%s(%d)" % (word, logfreq)] = (freq < 10**(-logfreq))
+       return features
+
+   >>> genres = ['hobbies', 'humor', 'science_fiction', 'news', 'romance', 'religion'] 
+   >>> train = [(modal_features4(nltk.corpus.brown.words(g)[:2000]), g) for g in genres]
+   >>> test = [(modal_features4(nltk.corpus.brown.words(g)[2000:4000]), g) for g in genres]
+   >>> classifier = nltk.NaiveBayesClassifier.train(train)
+   >>> print 'Accuracy: %6.4f' % nltk.classify.accuracy(classifier, test)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let's look more closely at this issue of efficiency.
+The top-down recursive-descent parser presented
+in Chapter chap-parse_ can be very inefficient, since it often builds
+and discards the same sub-structure many times over.  We see this
+in Figure parser-problem_, where a phrase `the block`:lx: is identified
+as a noun phrase several times, and where this information is discarded
+each time we backtrack.
+
+.. Note::
+   You should try the recursive-descent parser demo if you haven't
+   already: ``nltk.draw.srparser.demo()``
+
+.. table:: parser-problem
+
+   +-----------------------------------+-----------------------------------+
+   | a. Initial stage                  | b. Backtracking                   |
+   |                                   |                                   |
+   | |findtheblock1|                   | |findtheblock2|                   |
+   +-----------------------------------+-----------------------------------+
+   | c. Failing to match `on`:lx:      | d. Completed parse                |
+   |                                   |                                   |
+   | |findtheblock3|                   | |findtheblock4|                   |
+   +-----------------------------------+-----------------------------------+
+
+   Backtracking and Repeated Parsing of Subtrees
+
+.. |findtheblock1| image:: ../images/findtheblock1.png
+   :scale: 85
+.. |findtheblock2| image:: ../images/findtheblock2.png
+   :scale: 85
+.. |findtheblock3| image:: ../images/findtheblock3.png
+   :scale: 85
+.. |findtheblock4| image:: ../images/findtheblock4.png
+   :scale: 85
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Consider one further example, that sorts three-letter words by their
+final letters.  The words come from the widely-used Unix word-list,
+made available as an NLTK corpus called ``words``.  Two words ending
+with the same letter will be sorted according to their second-last
+letters.  The result of this sort method is that many rhyming words will be
+contiguous.  Two programs are given; Which one is more declarative,
+and which is more procedural?
+
+As an aside, for readability we define a function for reversing
+strings that will be used by both programs:
+
+    >>> def reverse(word):
+    ...     return word[::-1]
+
+Here's the first program.  We define a helper function ``reverse_cmp``
+that calls the built-in ``cmp`` comparison function on reversed
+strings.  The ``cmp`` function returns ``-1``, ``0``, or ``1``,
+depending on whether its first argument is less than, equal to, or
+greater than its second argument.  We tell the list sort function to
+use ``reverse_cmp`` instead of ``cmp`` (the default).
+
+    >>> def reverse_cmp(x,y):
+    ...     return cmp(reverse(x), reverse(y))
+    >>> word_list = [w for w in nltk.corpus.words.words('en') if len(w) == 3]
+    >>> word_list.sort(reverse_cmp)
+    >>> print word_list[-12:]
+    ['toy', 'spy', 'cry', 'dry', 'fry', 'pry', 'try', 'buy', 'guy', 'ivy',
+    'Paz', 'Liz']
+
+Here's the second program.  In the first loop it collects up all the
+three-letter words in reversed form.  Next, it sorts the list of
+reversed words.  Then, in the second loop, it iterates over each
+position in the list using the variable ``i``, and replaces each item
+with its reverse.  We have now re-reversed the words, and can print
+them out.
+
+    >>> word_list = []
+    >>> for word in words:
+    ...     if len(word) == 3:
+    ...         word_list.append(reverse(word))
+    >>> word_list.sort()
+    >>> for i in range(len(word_list)):
+    ...     word_list[i] = reverse(word_list[i])
+    >>> print word_list[-12:]
+    ['toy', 'spy', 'cry', 'dry', 'fry', 'pry', 'try', 'buy', 'guy', 'ivy',
+    'Paz', 'Liz']
+
+Choosing between procedural and declarative styles is just that, a
+question of style.  There are no hard boundaries, and it is possible
+to mix the two.  Readers new to programming are encouraged to
+experiment with both styles, and to make the extra effort required to
+master higher-level constructs, such as list comprehensions, and
+built-in functions like ``map`` and ``filter``.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Iteration
+---------
+
+If you've come to Python from another programming language, you may be
+inclined to make heavy use of loop counters, and no use of list comprehensions.
+In this section we'll see how avoiding counters can lead to more readable
+code.  We'll also look at the relationship between loops with nested blocks
+vs list comprehensions, and discuss when to use either construct.
+
+Let's look at a familiar technique for iterating over the members
+of a list by initializing an index ``i`` and then incrementing the
+index each time we pass through the loop:
+
+    >>> sent = ['I', 'am', 'the', 'Walrus']
+    >>> i = 0
+    >>> while i < len(sent):
+    ...     print sent[i].lower(),
+    ...     i += 1
+    ...
+    i am the walrus
+
+Although this does the job, it is not idiomatic Python.  It is almost never a
+good idea to use loop variables in this way.  Observe that
+Python's ``for`` statement allows us to achieve the same
+effect, and that the code is not just more succinct, but more readable:
+
+    >>> for w in sent:
+    ...     print w.lower(),
+    ...
+    i am the walrus
+
+This is much more readable, and ``for`` loops with nested code blocks will be our preferred
+way of producing printed output.  However, the above two programs have the same subtle
+problem: both print a trailing space character.  If we
+meant to include this output with surrounding markup, we would see something like
+``<sent>i am the walrus </sent>``.  Similarly, both programs need an extra ``print``
+statement in order to produce a newline character at the end.
+A third solution using a list comprehension is more compact again
+
+    >>> print ' '.join(w.lower() for w in sent)
+    i am the walrus
+
+This doesn't produce an extra space character, and does produce the required newline.
+However, it is less readable thanks to the use of ``' '.join()``, and we will usually
+prefer to use the second solution above for code that prints output.
+
+
+
+List comprehensions have a surprising range of uses.  Here's an example of
+how they can be used to generate all combinations of some collections of words.
+Here we generate all combinations of two determiners, two adjectives, and two nouns.
+The list comprehension is split across three lines for readability.
+
+    >>> [(det,adj,noun) for det in ('two', 'three')
+    ...                 for adj in ('old', 'blind')
+    ...                 for noun in ('men', 'mice')]
+    [('two', 'old', 'men'), ('two', 'old', 'mice'), ('two', 'blind', 'men'),
+     ('two', 'blind', 'mice'), ('three', 'old', 'men'), ('three', 'old', 'mice'),
+     ('three', 'blind', 'men'), ('three', 'blind', 'mice')]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+.. XXX hard to parse next sentence, also unclear what distinction is
+   intended between constructions and constituents.  Do we really need
+   the distinction this early in the chapter?
+   We've had a lot of new terminology in this section.
+   (How about:
+   Units consisting of more than one word are sometimes called `constructions`:dt:.
+   Constructions and words can be combined to form larger constructions.
+   We talk about the parts of constructions as `constituents`:dt:)
+
+.. There's a number agreement problem in the sentence re immediate
+   constituents.
+
+Units consisting of more than one word are sometimes called
+`constructions`:dt:, and a construction or word which forms
+part of a larger construction is a `constituent`:dt:. All the words in
+the sentence ex-bb0_ are constituents, as are sequences such as
+`little bear`:lx: and `in the brook`:lx:. An `immediate
+constituent`:lx: are the constituents into which a construction can be
+directly decomposed. For example, the immediate constituents of the
+whole sentence are the sequences `The little bear`:lx: and  `saw the
+fine fat trout in the brook`:lx:. 
+
+.. Some of the decisions about how to group words into constituents
+.. are open to debate. Discuss?
+
+.. XXX not sure what kind of thing he/him is; they don't share the
+   same contexts in the sense that he will normally precede verbs
+   while him will normally follow verbs.
+
+.. XXX note that distributional similarity was discussed in sec-using-a-tagger_
+   in the context of word distribution
+
+Two constructions belong to the same grammatical category if they are
+distributionally similar; that is, they can occur in broadly the same
+range of contexts. If we looked at a large enough corpus, we would
+expect `he`:lx:\ /`him`:lx: to share most of its contexts with `the
+bear`:lx:, but not with, say, `in`:lx:. Consequently, we assign
+`he`:lx:\ /`him`:lx: to the same grammatical category as `the
+bear`:lx:. Since members of this category often have more than one
+immediate constituent, we call it a `phrase`:dt:, in this case `noun
+phrase`:dt: (``NP``). By contrast, the categories to which individual
+words belong are `lexical`:dt: categories.
+
+.. XXX some readers will be overwhelmed with terminology by now.
+   There's three partially overlapping terms: constituent, construction, phrase
+   There's also some rather abstract ideas, e.g.
+   constructions belonging to a category.
+   The next note already points to an exception.
+
+.. note::
+   Words such as personal pronouns are an exception to this
+   generalization. Although they are not phrasal, it is convenient to
+   assign them to the category ``NP``, and we adopt a similar
+   convention for proper nouns.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+.. XXX we didn't see a PSG in the previous section but the one before
+
+.. XXX the following provides a different definition of phrase:
+   "words combine into phrases combine into constructions";
+   in the last section, a phrase was a construction containing
+   two or more constituents.  If we weren't making such frequent
+   use of the word "formal" this would be less of an issue.
+
+.. XXX how does the following sentence square with the sentence
+   from the last section about constructions belonging to grammatical
+   categories?  We're blurring the distinction between the structure
+   and its terminal yield.  Would it be better to postpone the
+   introduction of "construction" until later?  Its a more loaded
+   term than "phrase" and "constituent".
+
+We have presented grammatical categories as classes of word sequences
+that share distributional properties, and then given labels to those
+categories, such as ``NP``, ``VP`` and so on. From now on, we will
+be more casual, and fail to draw the distinction unless the context
+demands it.
+
+
+
+.. XXX middle of next paragraph: idea that a context free grammar
+   formalizes a phrase structure grammar is rather abstruse;
+   how bad would it be to collapse this distinction, in the
+   interest of having fewer subtle distinctions floating around?
+   More generally, readers have access to many such descriptions
+   of formal language theory and I think we're trying to present
+   something more accessible.
+
+In formal language theory, a `language`:dt: *L* is defined to be a set
+of sentences, where each sentence is made up from a set *V* of atomic symbols
+(the vocabulary). Consider the set of all possible word sequences
+that can be made up from sequences drawn from *V*. This set is
+infinite, since there is no upper bound on the length of the sequences,
+and it is a superset of *L*. The task of a `formal grammar`:dt: is to
+specify which sequences of symbols belong to *L*.  A :dt:`context-free
+grammar` (CFG) is one particular kind of formal grammar, and is
+intended to formalize a phrase structure grammar. In addition to
+specifying whether a word sequence is part of the language, a CFG associates
+a phrase structure tree with each well-formed sentence. The notion of
+immediate constituent is captured by `productions`:dt: of the
+grammar. An example of a production is ``S`` |rarr| ``NP VP``.
+This says that a constituent ``S`` has immediate constituents
+``NP`` and ``VP``. The lefthand side of a production can also be a
+lexical category. Similarly, the production ``V`` |rarr| `saw`:lx: |
+`walked`:lx: means that the constituent ``V`` can consist of
+`saw`:lx: or `walked`:lx:.  For a given phrase structure tree to be
+well-formed relative to a grammar, each non-terminal node and its
+children must correspond to a production in the grammar.

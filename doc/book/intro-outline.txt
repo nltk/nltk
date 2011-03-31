@@ -1,0 +1,109 @@
+<meta>
+NB. M-x outline-mode
+NB. [N] = new stuff, [?] = needs discussion, maybe omit or merge
+NB.  Section titles may have been changed, or inserted to make
+structure clearer.
+</meta>
+------------------------------------------------------
+
+* Some things you can do with NLP 
+
+** Examples
+NLP for linguistic research
+NLP for applications
+
+** What do we mean by NLP?
+terminology: CL/HLT etc 
+
+** Audience and Goals [N]
+
+
+* The Language Challenge
+
+** NL is rich and complex and difficult
+
+*** Language is integral to culture
+
+***  Language is intertwined in modern technology [?]
+[not quite clear what the message is here]
+
+** How NLP can make a difference
+
+*** Information overload for ordinary people
+
+Text and multimedia on WWW
+
+QA example
+
+*** Information overload for professionals [N]
+biomedical example
+
+*** But NLP is still limited in what it can do
+
+* Overview of NLP
+
+** One ideal: Intelligence and Turing Test
+example of spoken dialogue
+
+** More realistic: not so intelligent NLP
+
+Other examples of NLP applications
+
+** Brief history of NLP
+[this seems  a bit tricky -- what needs to be included here? so far,
+ it seems a bit arbitrary]
+
+*** Formal language theory
+--> computational syntax
+
+*** Formal logic
+--> automated inference
+
+*** Formal semantics and compositionality [?]
+[not really at the same level; maybe merge in with preceding chunk]
+
+*** Domain dependence
+e.g. semantic grammars 
+
+*** Machine learning [N]
+
+
+** Philosophical Perspective
+[maybe push this up a level?]
+
+*** Rationalism vs Empiricism
+schools of linguistics
+
+*** Realism vs Idealism [?]
+God's truth vs. hocus pocus
+[maybe drop this?\
+
+* Architecture of Linguistic and NLP Systems
+
+** Modularity
+Generative grammars [link back to formal language theory]
+
+** Competence and Performance
+
+*** NLP aspects
+simple parsing example
+
+*** Cognitive aspects [N]
+human sentence processing -- say that it's out of scope
+
+*** Spoken Dialogue system
+
+language resources / static
+processing tools / dynamic
+
+* Outline of book [N]
+
+
+
+
+
+
+
+
+
+

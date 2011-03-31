@@ -1,0 +1,38 @@
+\mode<presentation>
+{
+  \usetheme{Pittsburgh}
+  \setbeamercovered{transparent}
+  \beamerdefaultoverlayspecification{<+->}
+}
+
+\mode<handout>
+{
+  \usetheme{default}
+  \usecolortheme{default}
+  \useoutertheme{default}
+  \usepackage{pgf}
+  \usepackage{pgfpages}
+%  \pgfpagesuselayout{4 on 1}[a4paper,landscape,scale=0.9]
+  \setjobnamebeamerversion{handout.beamer}
+}
+
+\mode<article>
+{
+  \usepackage{fullpage}
+  \usepackage{pgf}
+  \usepackage{hyperref}
+  \setjobnamebeamerversion{notes.beamer}
+}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\date{\today}
+
+\subject{Natural Language Toolkit}
+
+% hack since pgfex is not defined
+\def\pgfex{ex}
+

@@ -1,0 +1,16 @@
+## Natural Language Toolkit: sem0.fcfg
+##
+## Minimal feature-based grammar with lambda semantics.
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+##
+## $Id: sem0.cfg 4674 2007-06-14 08:55:32Z ehk $
+
+% start S
+
+S[SEM=<?vp(?subj)>] -> NP[SEM=?subj] VP[SEM=?vp]
+VP[SEM=?v] -> V[SEM=?v]
+NP[SEM=<cyril>] -> 'Cyril'
+V[SEM=<\x.bark(x)>] -> 'barks'

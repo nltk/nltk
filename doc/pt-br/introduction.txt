@@ -1,0 +1,772 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.txt
+
+.. _chap-introduction:
+
+===================================================
+1. Introdução ao Processamento de Linguagem Natural
+===================================================
+
+-----------------------------------------
+Porque o processamento lingüístico é útil
+-----------------------------------------
+
+ENGLISH REVISION 5059 ON SVN
+
+Como podemos escrever programas que manipulem linguagens naturais?
+Quais questões sobre uma língua eles poderiam nos responder? Como
+estes programas funcionariam e de que dados precisariam? Estes são
+apenas alguns dos tópicos que iremos abordar neste livro. Antes de
+abordarmos o assunto sistematicamente, daremos uma breve olhada em
+algumas tarefas simples nas quais ferramentas computacionais manipulam
+dados lingüísticos em uma variedade de formas interessantes e não
+triviais.
+
+Nosso primeiro exemplo se refere à `acentuação`:idx: de palavras. O
+`CMU Prounciation Dictionary <http://www.speech.cs.cmu.edu/cgi-bin/cmudict>`_
+é um dicionário para computadores que fornece a pronúncia de mais de
+125.000 palavras em inglês norte-americano. Cada entrada consiste de uma
+palavra na ortografia padrão seguida por uma transcrição fonológica.
+Por exemplo, a entrada para `language`:lx: (linguagem) é a seguinte:
+
+.. ex::
+
+    language / L AE1 NG G W AH0 JH .
+
+Cada caracter ou grupo de caracteres após a barra representa um
+`fonema`:idx: da língua inglesa e os números finais indicam a
+acentuação da palavra. Assim, ``AE1`` é o núcleo de uma `sílaba`:idx:
+acentuada, ao passo que ``AH0`` é o núcleo de uma sílaba não
+acentuada. Vamos imaginar que desejemos encontrar todas as palavras
+do dicionário que apresentam um particular padrão de acentuação;
+por exemplo, palavras cuja acentuação primária se dá em sua quinta
+silába contando do final (conhecida por acentuação
+`pre-preantipenúltima`:dt:). Procurar no dicionário manualmente seria
+tedioso e provavelmente nos escapariam algumas das palavras em
+questão. Podemos escrever um programa simples que irá extrair os
+numerais 0, 1 e 2 das transcrições e criar um novo campo 
+``stress_pattern`` (padrão de acentuação) para cada palavra, que seja
+uma seqüência destes números de acentuação. Após termos feito isso,
+é fácil procurar dentre os padrões de acentuação por qualquer
+seqüência que termine em ``10000``. Eis algumas das palavras que
+podemos encontrar utilizando este método:
+
+.. ex::
+   .. parsed-literal::
+
+    ACCUMULATIVELY / AH0 K Y UW1 M Y AH0 L AH0 T IH0 V L IY0
+    AGONIZINGLY / AE1 G AH0 N AY0 Z IH0 NG L IY0
+    CARICATURIST / K EH1 R AH0 K AH0 CH ER0 AH0 S T
+    CUMULATIVELY / K Y UW1 M Y AH0 L AH0 T IH0 V L IY0
+    IMAGINATIVELY / IH2 M AE1 JH AH0 N AH0 T IH0 V L IY0
+    INSTITUTIONALIZES / IH2 N S T AH0 T UW1 SH AH0 N AH0 L AY0 Z AH0 Z
+    SPIRITUALIST / S P IH1 R IH0 CH AH0 W AH0 L AH0 S T
+    UNALIENABLE / AH0 N EY1 L IY0 EH0 N AH0 B AH0 L
+
+----
+
+Nosso segundo exemplo também envolve a ``fonologia``:idx:. Quando construimos
+um inventário dos sons para uma língua, estamos geralmente interessados
+apenas naqueles sons que podem estabelecer uma diferença no significado
+das palavras. Para isto, procuramos por `pares mínimos`:dt:, ou seja, palavras
+distintas que diferem por um único som. Por exemplo, podemos sustentar que os
+sons [p] e [b] em inglês são distintivos porque ao substituirmos um pelo outro,
+freqüentemente obtemos uma palavra diferente:
+
+.. ex::
+   .. parsed-literal::
+
+     **p**\ at vs. **b**\ at
+     ni\ **p** vs. ni\ **b**
+
+Suponha que desejemos realizar isto de maneira mais sistematica para uma
+língua para a qual possuímos uma lista de palavras, mas da qual ainda
+estamos tentando determinar o inventário sonoro. Como demonstração para
+este caso, o NLTK inclui um léxico para o `rotokas`:idx:, uma língua da
+Papua Oriental falada na Ilha Bougainville, próximo a Papua Nova Guiné.
+Vamos imaginar que estamos interessados em quantas vogais há no rotokas.
+Podemos escrever um programa para encontrar todas as palavras de quatro
+letras que diferem apenas por sua vogal inicial e, em seguida, tabular os
+resultados para ilustrar os contrastes vocálicos:
+
+.. ex::
+   .. parsed-literal::
+
+    kasi -    kesi kusi kosi
+    kava -    -    kuva kova
+    karu kiru keru kuru koru
+    kapu kipu -    -    kopu
+    karo kiro -    -    koro
+    kari kiri keri kuri kori
+    kapa -    kepa -    kopa
+    kara kira kera -    kora
+    kaku -    -    kuku koku
+    kaki kiki -    -    koki
+
+----
+
+Os dois exemplos anteriores utilizaram recursos lexicais. Podemos também
+escrever programas que analisem textos de diferentes formas. Neste exemplos,
+iremos tentar construir um modelo de padrões de palavras adjacentes no livro
+do `Gênese`:idx:. Cada par de palavras adjacentes é conhecido por
+`bigrama`:dt: e é-nos possível construir um modelo muito simples de linguagem
+bíblica apenas pela contagem de bigramas. Há várias experiências úteis que
+podemos efetuar com este tipo de informação, como identificar gêneros
+literários ou até mesmo identificar o autor de determinado trecho de texto.
+Aqui, iremos utilizá-la com um objetivo mais caprichoso: gerar um texto
+aleatório no estilo do livro do Gênese. Como podes ver, fomos capazes de
+capturar algo do fluxo do texto de uma palavra para a seguinte, mas além
+disto o texto é não passa de um amontoado sem sentido:
+
+.. ex::
+   .. parsed-literal::
+
+    lo, it came to the land of his father and he said, i will not be a
+    wife unto him, saying, if thou shalt take our money in their kind,
+    cattle, in thy seed after these are my son from off any more than all
+    that is this day with him into egypt, he, hath taken away unawares to
+    pass, when she bare jacob said one night, because they were born two
+    hundred years old, as for an altar there, he had made me out at her
+    pitcher upon every living creature after thee shall come near her:
+    yea,
+
+----
+
+Para nosso último exemplo, vamos supor que estejamos envolvidos em uma
+pesquisa para estudar o contraste semântico de verbos em inglês. Entre
+nossas hipóteses está a de que uma lista de frases verbais ligadas pela
+palavra `but`:lx: (mas) constitui-se em uma fonte apropriada de dados
+para explorar estes contrastes. Assim, é necessário que efetuemos uma
+certa análise gramatical para encontrar frases verbais coligadas e
+também é necessário que sejamos capazes de especificar a palavra `but`:lx:
+como conjunção aceita. Ao invés de tentar efetuar a análise gramatical
+por nossa conta, podemos utilizar-nos de recursos nos quais árvores
+sintáticas já foram adicionadas a milhares de enunciados. O mais conhecido
+dentre estes recursos é o `Treebank corpus da University of Pennsylvania
+<http://www.cis.upenn.edu/~treebank/>` (ou, por brevidada, `Penn Treebank`:dt:)
+e podemos escrever um programa que leia árvores sintáticas a partir
+deste corpus, identificando ocorrências de conjunções de frases verbais
+envolvendo a palavra *but* e exibindo o texto analisado gramaticalmente
+que corresponde às duas frases verbais:
+
+.. ex::
+   .. parsed-literal::
+
+    (VBZ has) (VP opened its market to foreign cigarettes)
+      *BUT* (VBZ restricts) (NP advertising) (PP-CLR to designated places)
+    (VBZ admits) (SBAR 0 she made a big mistake)
+      *BUT* (VBD did) (RB n't) (VP elaborate)
+    (VBD confirmed) (SBAR 0 he had consented to the sanctions)
+      *BUT* (VBD declined) (S \*-1 to comment further)
+    (VBP are) (NP-PRD a guide to general levels)
+      *BUT* (VBP do) (RB n't) (ADVP-TMP always) (VP represent actual transactions)
+    (VBN flirted) (PP with a conversion to tabloid format) (PP-TMP for years)
+      *BUT* (ADVP-TMP never) (VBN executed) (NP the plan)
+    (VBD ended) (ADVP-CLR slightly higher)
+      *BUT* (VBD trailed) (NP gains in the Treasury market)
+    (VBD confirmed) (NP the filing)
+      *BUT* (MD would) (RB n't) (VP elaborate)
+
+----
+
+Ao apresentar estes exemplos, tentamos dar uma amostra do espectro
+de tarefasque podem ser executadas com linguagem natural utilizando-se
+ferramentas computacionais. Todos os exemplos acima foram gerados
+utilizando-se tarefas de programação simples e algumas poucas linhas
+de código em Python. Após familiarizar-se com os primeiros capítulos
+deste livro, serás capaz de escrever este tipo de programa por tua
+própria conta. Durante este processo, irás aprender os princípios
+do `processamento de linguagem natural`:dt:, de aqui em diante
+abreviado por |PNL|. Ao longo do restante deste capítulo, apresentaremos
+mais razões que permitirão entender porque o |PLN| é tanto importante
+quanto divertido.
+
+----------------------
+O desafio lingüísitico
+----------------------
+
+A linguagem é rica e complexa
+-----------------------------
+
+A linguagem é a principal manifestação da inteligência humana. Por meio
+da linguagem expressamos nossas necessidades básicas e aspirações mais
+altas, conhecimento tecnológico e vôos da fantasia. Idéias são
+compartilhadas vencendo-se enormes distâncias físicas e temporais. Os
+seguintes exemplos em inglês ilustram a riqueza a da linguagem:
+
+.. ex::
+
+  .. ex:: Overhead the day drives level and grey, hiding the sun by a flight
+          of grey spears.  (William Faulkner, *As I Lay Dying*, 1935)
+  .. ex:: When using the toaster please ensure that the exhaust fan is turned
+          on. (sign in dormitory kitchen)
+  .. ex:: Amiodarone weakly inhibited CYP2C9, CYP2D6, and CYP3A4-mediated
+          activities with Ki values of 45.1-271.6 |mu|\M (Medline, PMID: 10718780)
+  .. ex:: Iraqi Head Seeks Arms (spoof news headline)
+  .. ex:: The earnest prayer of a righteous man has great power and wonderful
+          results. (James 5:16b)
+  .. ex:: Twas brillig, and the slithy toves did gyre and gimble in the wabe
+         (Lewis Carroll, *Jabberwocky*, 1872)
+  .. ex:: There are two ways to do this, AFAIK :smile:  (internet discussion archive)
+
+Graças a esta riqueza, o estudo da linguagem é parte de várias
+disciplinas além da lingüística, incluindo a tradução, a crítica literária,
+a filosofia, a antropologia e a psicologia. Várias outras
+disciplinas menos evidentes também investigam a utilização da linguagem,
+como o direito, a hermenêutica, a ciência forense, a pedagogia, a
+arqueologia, a criptoanálise e as patologias da fala. Cada uma aplica
+metodologias distintas para coletar observações, desenvolver teorias e
+testar hipóteses. Ainda assim, todas servem para aprofundar nosso
+entendimento da linguagem e do intelecto que é manifestado por meio
+desta.
+
+A importância da linguagem para a ciência e para as artes é igualada
+em significância pelo tesouro cultural encorporado na linguagem. Cada
+uma das aproximadamente 7.000 línguas humanas é rica em características
+únicas, de suas histórias orais e seus mitos de criação até suas
+construções gramaticais e suas próprias palavras com seus nuances de
+significado. Culturas sobreviventes ameaçadas possuem palavras que
+distinguem sub-espécies de plantas de acordo com seus usos terapêuticos
+que são desconhecidos à ciência. As línguas evoluem ao longo do tempo
+ao entrarem em contato umas com as outras e oferecem, assim, uma
+janela única para a pré-história humana. Mudanças tecnológicas
+dão origem a novas palavras como `blog`:lx: e a novos morfemas como
+`e-`:lx: ou `cyber-`:lx:. Em muitas partes do globo, pequenas
+variações lingüísticas de uma cidade para a outra somam-se em
+línguas completamente diferentes em espaço de uma viagem de meia-hora
+de carro. Por sua complexidade de tirar o fôlego e sua diversidade,
+a linguagem humana é uma tapeçaria colorida esticada sobre o tempo e
+o espaço.
+
+A linguagem e a internet
+------------------------
+
+Hoje em dia, pessoas de todo tipo |mdash| incluindo estudiosos, estudantes e
+a população em geral |mdash| são confrontadas por volumes sem precedentes
+de informação, uma enorme parte da qual é armazenada como texto não
+estruturado. Em 2003, estimava-se que a produção anual de livros estava
+na volta dos 8 terabytes (um terabyte é composto por 1.000 gigabytes, ou
+seja, o equivalente a 1.000 camionetes cheias de livros). Uma pessoa
+levaria aproximadamente cinco anos para ler todo o material científico
+novo que é produzido a cada 24 horas. Apesar destas estimativas basearem-se
+em materiais impressos, a informação está cada dia mais disponível também
+por meio eletrônico. De fato, houve uma explosão de conteúdo textual e
+multimídia na Web. Para muitas pessoas, uma grande e cada vez maior parte
+do tempo de trabalho e de lezar é fasta navegando e acessando este
+universo de informação.
+
+.. 
+   http://www2.sims.berkeley.edu/courses/is202/f00/lectures/Lecture2.ppt
+   William Hayes
+
+A existência de tanto texto em formato eletrônico é um grande desafio
+para o |PLN|. Indiscutivelmente, a única forma para conseguirmos
+lidar com esta explosão de informações é utilizar técnicas computacionais
+que possam vasculhar por entre estes enormes corpos de texto.
+
+Apesar dos mecanismos de pesquisa existentes terem sido cruciais para o
+crescimento e para a popularidade da Web, é necessária habilidade,
+conhecimento e uma certa dose de sorte para obter respostas para
+questões como `Quais pontos turísticos posso visitar entre Philadelphia
+e Pittsburgh com um orçamento limitado?`:lx:, `O que críticos profissionais
+dizem a respeito das câmeras digitais SRL?`:lx:, `Quais previsões sobre
+o mercado do aço foram feitas por comentaristas reconhecidos durante a
+última semana?`:lx: Conseguir que um computador responda a estas
+perguntas automaticamente é um objetivo realístico a longo prazo, mas
+envolveria um espectro de tarefas de processamento lingüístico,
+entre elas extração de informações, inferência e resumo, além de
+necessariamente poder ser executado em uma escala e com um nível
+de *robustness* ainda além de nossas capacidades atuais.
+
+A promessa do |PLN|
+-------------------
+
+Como vimos, o |PLN| é importante por motivos científicos, econômicos,
+sociais e culturais. O |PLN| tem sido sujeito a um rápido crscimento e
+suas teorias e métodos têm sido utilizados em uma variedade de novas
+tecnologias de linguagem. Por esta razão é importante para uma grande
+quantidade de pessoas ter conhecimentos no campo do |PLN|. No meio
+acadêmico, entre estas incluem-se pessoas em áreas que vão da
+`computação nas ciências humanas`:idx: e `lingüística sobre
+corpora`:idx: até os campos das `ciências da computação`:idx: e
+da `inteligência artificial`:ifx:. Na indústria, incluem-se pessoas
+relacionadas à `interação pessoas-computadores`:idx:, 
+`análise de informações de negócios`:idx: e `desenvolvimento de
+software para a Web`:idx:. Esperamos que você, um membro desta
+audiência tão diversa que está lendo este material, venha a 
+apreciar os processos deste campo em rápida expasão que é o
+|PLN| e venha a aplicar suas técnicas na solução de problemas
+reais.
+
+Os próximos capítulos apresentam uma seleção cuidadosamente equilibrada
+de fundamentos teóricos e aplicações práticas, disponibilizando aos
+leitores grandes bancos de dados, que permitam a criação de modelos robustos
+de fenômenos lingüísticos e a utilização destes em tecnologias de
+linguagem funcionais. Integrando tudo isto no Natural Language Toolkit
+(|NLTK|), esperamos que este livro expanda o excitante campo de um
+processamento prático de linguagem natural e uma audiência ainda maior
+do que antes.
+
+----------------------
+Linguagem e Computação
+----------------------
+
+PLN e Inteligência
+------------------
+
+Um duradouro desafio no campo das ciências da computação tem sido
+construir máquinas inteligentes. O principal critério de avaliação
+para julgar a `inteligência das máquinas`:idx: tem sido um de ordem
+lingüística, o chamado `Teste de Turing`:idx:\ : é possível que um
+sistema de diálogo, ao responder às entradas digitadas por um usuário
+por meio de sua resposta textual, seja capaz de se comportar de
+maneira tão natural que os usuários não seriam capazes de
+distinguir entre este computador e um interlocutor humano que utilizasse
+a mesma interface? Hoje em dia, há uma substancial quantidade de
+pesquisa e desenvolvimento em execução em áreas como a
+tradução mecânica e o diálogo falado, além de sistemas comerciais de
+valor de ampla utilização. O seguinte `diálogo`:idx: ilustra uma
+aplicação típica:
+
+..ex::
+
+  | S: Como posso ajudá-lo?
+  | U: A que horas 'O resgate do Soldado Ryan' está em cartaz?
+  | S: Para qual sala?
+  | U: Para o Cinema Paramount.
+  | S: 'O resgato do Soldado Ryan' não está em cartaz no Cinema
+  |   Paramount, mas está em exibição no Cinema Madison às 15h,
+  |   17h30, 20h e 22h30.
+
+Os atuais sistemas comerciais de diálogo estão fortemente limitados
+a domínios precisamente definidos. Não poderiamos pedir ao sistema
+acima que nos indicasse os melhores caminhos para chegar a cada
+cinema ou restaurantes nas redondezas a menos que a informação
+em questão já tivesse sido armazenada e enunciados de pergunta
+e resposta apropriados já tivessem sido incorporados a seu
+sistema de processamento lingüístico. Observe como o sistema acima
+parece entender os objetivos do usuário: este último pergunta sobre
+os horários nos quais determinado filme está em cartaz e o sistema
+corretamente determina a partir disto que o usuário deseja ver o
+filme. Esta inferência parece tão óbvia para nós que geralmente
+não nos damos conta de que foi estebelecida, contudo um sistema de
+linguagem natural precisa ser dotado desta capacidade para
+conseguir interagir naturalmente. Sem esta, quando perguntado 
+`Sabes quando o 'Resgate do Soldado Ryan' está em cartaz`:lx:, um
+sistema poderia responder simplesmente |mdash| e inutilmente |mdash|
+com um frio `Sim`:lx:. Apesar de parecer que este sistema de
+diálogo é capaz de executar simples inferências, este tipo de
+`inferência`:topic: sofisticada é encontrar apenas em protótipos
+de pesquisa mais avançados. Ao invés disso, os desenvolvedores
+de sistemas comerciais de diálogo utilizam derivações contextuais
+e uma simples lógica de mercado para assegurar-se de que as
+diferentes maneiras nas quais um usuário pode expressar pedidos
+ou fornecer informações sejam processadas de forma tal que
+faça sentido para uma aplicação em particular. Assim, não
+importando se o usuário diga `Quando é que ...`:lx:,
+`Eu gostaria de saber quando ...`:lx: ou `Podes me dizer
+quando ...`lx:, regras simples resultarão sempre na apresentação
+dos horários nos quais o fime está em cartaz. Isto é suficiente
+para que este sistema se constitua em um serviço útil.
+
+Apesar de alguns avanços recentes, no geral é verdade que estes
+sistemas de linguagem natural que estão sendo utilizados ainda não
+são capazes de exibir um raciocínio de sentido-comum ou valer-se
+de conhecimento de mundo. Podemos esperar que estes difíceis problemas
+de inteligência artificial sejam resolvidos, mas enquanto isso é
+necessário conviver com severas limitações nas capacidades de
+raciocínio e conhecimento em sistemas de linguagem natural. Em
+conseqüência, deste seus primeiros passos, um objetivo importante na
+pesquisa em |PLN| tem sido avançar em direção ao cálice sagrado da
+interação lingüística natural `sem`:em: valer-se deste conhecimento
+irrestrito e desta capacidade de raciocínio. Trata-se de um desafio
+já antigo e por isto é válido revisar a história deste campo.
+
+Processamento de linguagem e de símbolos
+----------------------------------------
+
+A própria noção de que a linguagem natural poderia ser tratada
+de maneira computacional nasceu de um programa de pesquisa, iniciado
+no início do 1900, de reconstrução matemática do raciocínio por
+maio da lógica, manifestado de maneira mais evidente nos trabalhos de
+Frege, Russell, Wittgenstein, Tarski, Lambek e Carnap. Este trabalho
+levou à noção de linguagem como sendo um sistema formal sujeitavel a
+um processamento automático. Três desenvolvimentos posteriores lançaram
+as fundações ao processamento de linguagem natural. O primeiro
+foi a `teoria formal da linguagem`:dt:. Esta definiu a linguagem
+como sendo um conjunto de cadeias que eram aceitas uma classe
+de autômatas, como linguagens context-free e autômatas pushdown,
+fornecendo as bases para a sintaxe computacional.
+
+O segundo desenvolvimento foi a `lógica simbólica`:dt:. Esta forneceu
+um método formal para capturar aspectos selecionados da linguagem
+natural que eram relevantes para a expressão de provas lógicas.
+Um cálculo formal em lógica simbólica fornece a sintaxe de uma
+língua, juntamente às regras de inferência e, possivelmente,
+regras para a interpretação em um model set-theoretic; exemplos
+disto são a lógica proposicional e a First Order Logic. Dado este
+cálculo, com uma sintaxe e uma semântica precisamente definidas,
+tornou-se possível associas significados a expressões em linguagem
+natural traduzindo-se estas em expressões de cálculo formal. Por
+exemplo, se traduzirmos `João viu Maria`:lx: na fórmula
+``ver-passado(j,m)``, podemos (implícita ou explicitamente) interpretar
+o verbo ``ver-passado`` como uma relação binária, e `João`:lx: e
+`Maria`:lx: como denotações de indivíduos. Enunciados mais gerais
+qual `Todos os pássaros voam`:lx: requerem quantificadores, no
+caso |forall|, significando `para todos`:lx:: |forall|\
+`x (pássaro(x)`:math: |rarr| `voar(x))`:math:. Esta utilização
+da lógica disponibilizou um maquinário técnico para a execução
+de inferências, as quais são uma parte importante da compreensão
+lingüística.
+
+Um desenvolvimento fortemente relacionado foi o `princípio da
+composicionalidade`:dt:, ou seja a noção de que o significado de uma
+expressão complexa é composto pelos significados de suas partes e
+suas formas de combinação. Este princípio forneceu uma correspondência
+útil entre sintaxe e semântica, ou seja a idéia de que o
+significado de uma expressão complexa poderia ser computado
+recursivamente. Considere o enunciado `Não é verdade que`:lx:
+`p`:math:, onde `p`:math é uma proposição. Podemos representar
+o significado deste enunciado como `não(p)`:math:. De maneira
+similar, podemos representar o significado de `João viu Maria`:lx:
+como `ver-passado(j,m)`:math:. Agora, é possível computar
+recursivamente a interpretação para `Não é verdade que João viu Maria`:lx:,
+utilizando as informações acima, para obter `não(ver-passado(j,m))`:math:.
+
+As abordagens que acabamos de resumir condividem a premissa de que
+a computação de linguagem natural se sustenta de modo crucial sobre
+as regras para a manipulação simbólica de representações. Durante
+um certo período do desenvolvimento do |PLN|, particularmente
+durante os anos 80, esta premissa representou um ponto de partida
+comum tanto para lingüistas quando para pesquisadores na área do
+|PLN|, levando a uma família de formalismos gramaticais conhecidos
+por gramáticas unification-based (ou feature-based) e a programas
+de |PLN| desenvolvidos na linguagem de programação Prolog. Apesar
+do |PLN| baseado em gramáticas ainda ser uma significante área de
+pesquisa, este foi eclipsado durante os últimos 15\ |ndash|\ 20 anos
+por uma variedade de fatores. Uma influência significativa veio
+do reconhecimento automático de linguagem falada. Apesar dos trabalhos
+iniciais em processamento de fala terem adotado um modelo que
+imitava o tipo de `fonologia`:topic: baseada no processamento de
+regras fonológicas que havia sido tipificado pelo livro
+*Sound Pattern of English* [ChomskyHalle68]_, este acabou se
+demonstrando inadequado e sem perspectivas futuras para o
+tratamento do complexo problema do reconhecimento de falas autênticas
+em tempo real. Em contraste, sistemas que envolviam a aprendizagem
+de padrões a partir de amplos corpos de dados de fala eram
+significativamente mais precisos, eficientes e robustos. Além disso,
+a comunidade do reconhecimento de fala descobriu que o progresso
+na construção de melhores sistemas era enormemente ajudado pela
+construção de recursos comuns para medir quantitativamente o
+desempenho de cada sistema com relação a dados de teste comuns.
+Com o tempo, grande parte da comunidade do |PLN| abraçou a
+orientação `data intensive`:dt: do processamento lingüístico,
+aflancado por um uso crescente de técnicas de aprendizagem mecânica
+e metodologia guaida pela valutação dos resultados.
+
+Divisões filosóficas
+--------------------
+
+As abordagens constrastantes ao |PLN| descritas na seção anterior
+datam dos primeiros debates metafísicos sobre `racionalismo`:dt:
+contra `empirismo`:dt: e `realismo`:dt: contra `idealismo`:dt:, que
+ocorreram durante o período do Iluminismo na filosofia ocidental. Estes
+debates ocorreram sobre um fundo de pensamento ortodoxo no qual a
+acreditava-se que a fonte de todo conhecimento fosse a revelação
+divina. Durante este período dos séculos XVII e XVIII, os filósofos
+argumentaram que a se fosse a razão humana ou as experiências sensoriais
+a ter prioridade sobre a revelação. Descartes e Leibniz, entre outros,
+assumiram a posição racionalista, assegurando que toda a verdade
+tinha suas origens no pensamento humano e na existência de "idéias
+inatas" implantadas em nossas mentes desde o nascimento. Por exemplo,
+argumentava-se que os princípios da geometria euclideana haviam sido
+desenvolvidos utilizando-se a razão humana, sem constituirem o
+resultado de uma revelação sobrenatural ou de experiências sensoriais.
+Em oposição, Locke e outros adotaram uma visão empirista, segundo a
+qual nossa fonte primária de conhecimento é a experiência de nossas
+faculdades, na qual a razão humana assume um papel secundário ao
+refletir sobre esta experiência. Uma evidência prototípica para
+esta posição fora a descoberta de Galileu |mdash| baseada em
+observações atentas do movimento dos planetas |mdash| de que o
+sistema solar era heliocêntrico e não geocêntrico. No contexto
+da lingüística, este debate leva à seguinte questão: até que
+ponto a experiência lingüística humana, oposta à nossa "faculdade
+lingüística" inata, fornece as bases para nosso conhecimento da
+linguagem? No |PLN| esta questão se revela em diferenças na
+prioridade de dados de corpus contrapostos à introspecção
+lingüística na construção de modelos computacionais. Retornaremos
+a este debate ao longo deste livro.
+
+Uma preocupação adicional, posta no meio do debate entre realismo
+e idealismo, era o status metafísico da construçao de uma teoria.
+Kant argumentou sobre a distinção entre fenômenos, as manifestações
+que podemos experimentar, e as "coisas em si" que nunca podem
+ser conhecidas diretamente. Um realista lingüístico assumiria uma
+construção teórica como `sintagma nominal`:dt: como uma entidade
+do mundo real que existe independentemente da percepção humana e
+da razão e que em verdade *causa* o fênomeno lingüístico observado.
+Um idealista lingüístico, por outro lado, argumentaria que sintagmas
+nominais, juntamente a outras construções abstratas como representações
+semânticas, são intrinsicamente não observáveis e simplesmente
+desempenham o papel de ficções úteis. A forma como os lingüistas
+descrevem teorias geralmente revela uma posição realista, ao passo que
+pesquisadores da área do |PLN| ocupam um território neutro ou tendem
+em direção a uma posição idealista. Assim, no |PLN|, freqüentemente
+é suficiente que uma dada abstração teórica leve a resultados
+úteis; pouco importa se este resultado joga alguma luz no
+processamento lingüístico humano.
+
+Estes temas ainda estão presentes nas discussões e são demonstrados
+pelas diferenças entre métodos simbólicos e estatísticos, entre
+processamento deep e shallow, entre classificações binárias e
+graduais e entre objetivos científicos e de engenharia. Porém,
+estes contrastes são agora altamente de grau e o debate não
+é mais polarizado como antigamente. De fato, a maior parte das
+discussões |mdash| e inclusive a maior parte dos avanços |mdash|
+envolve um "ato de eqüilíbrio". Por exemplo, uma posição intermediária
+é assumir que as pessoas são dotadas de maneira inata de métodos
+de aprendizagem analógicos e baseados em memória (fraco racionalismo),
+ao mesmo tempo em que se utilizam estes métodos para identificar
+padrões significativos em suas experiências lingüísticas
+sensoriais (empirismo). Para uma exposição mais concreta, considere
+a forma como estatísticas sobre amplos corpora podem servir
+de evidência para escolhas binárias em uma gramática simbólica.
+Em especial, os dicionários da língua inglesa descrevem as
+palavras `absolutely`:lx: (absolutamente) e `definitely`:lx:
+(definitivamente) como quase sinônimos; apesar disto,
+seus padrões de utilização são bastante distintos quando
+combinados a um verbo pós-posto, como demonstrado
+na tabela absolutely_.
+
+.. table:: absolutely
+
+   +-----------------+------------+-------------+-------------+--------------+
+   | hits no Google  |`adore`:lx: | `love`:lx:  |`like`:lx:   |`prefer`:lx:  |
+   +-----------------+------------+-------------+-------------+--------------+
+   | `absolutely`:lx:|     289.000|       905.00|       16.200|           644|
+   +-----------------+------------+-------------+-------------+--------------+
+   | `definitely`:lx:|       1.460|       51.000|      158.000|        62.600|
+   +-----------------+------------+-------------+-------------+--------------+
+   | razão           |       198:1|         18:1|         1:10|          1:97|
+   +-----------------+------------+-------------+-------------+--------------+
+
+   `Absolutely`:lx: vs `Definitely`:lx: (Liberman 2005, LanguageLog.org)
+
+.. http://itre.cis.upenn.edu/~myl/languagelog/archives/002022.html
+
+Como podes ver, `absolutely adore`:lx: é aproximadamente 200 vezes mais
+comum do que `definitely adore`:lx:, enquanto `absolutely prefer`:lx:
+é cerca de 100 vezes mais raro que `definitely prefer`:lx:. Este
+tipo de informação é utilizada por modelos lingüísticos estatísticos,
+mas também serve de evidência para a proposta simbólica de
+combinação entre palavras na qual `absolutely`:lx: pode modificar
+apenas ações extremas ou atributos, uma característica que poderia
+ser representada como um dado de valor binário para certos itens
+lexicais. Assim, estamos na presença de dados estatísticos
+contribuindo para modelos simbólicos. Uma vez que esta informação
+tenha sido codificada simbolicamente, é possível utilizá-la como
+uma característica contextual para modelos estatísticos de
+linguagem, juntamente a várias outras fontes ricas de informação
+simbólica, como árvores de análise gramatical e representações
+semânticas construídas manualmente. Neste caso, o círculo se
+fecha, ao vermos informações simbólicas fornecendo bases a
+modelos estatísticos.
+
+Esta nova abordagem está permitindo vários novos desenvolvimentos
+excitantes. Iremos abordar alguns destes nas páginas seguintes e
+nós também iremos executar este ato de eqüilíbrio, utilizando
+abordagems para o |PLN| que integra estas filosofias e
+metodologias historicamente opostas.
+
+-------------------------------------------------
+A arquitetura de sistemas lingüísticos e de |PLN|
+-------------------------------------------------
+
+Gramática generativa e modularidade
+-----------------------------------
+
+Um dos descendentes intelectuais da teoria formal da lingaugem
+foi o framework lingüístico conhecido por `gramática generativa`:dt:.
+Esta gramática contém um conjunto de regras que especificam
+recursivamente (ou `geram`) um grupo de cadeias bem formadas em
+uma dada língua. Apesar de haver um amplo espectro de modelos
+devedores desta idéia central, a gramática transformacional de
+Chomsky, em suas diferentes encarnações, é provavelmente o
+mais conhecido. Na tradição chomskyiana, sustenta-se que os
+seres humanos possuem tipos distintos de conhecimento lingüístico,
+organizados segundo módulos: por exemplo, o conhecimento da
+estrutura sonora de uma língua (`fonologia`:dt:), o conhecimento
+da estrutura das palavras (`morfologia`:dt:), o conhecimento
+da estrutura das frases (`sintaxe`:dt:) e o conhecimento dos
+significados (`semântica`:dt:). Em teoria lingüística formal, cada
+tipo de conhecimento lingüístico é explicitado como um `módulo`:dt:
+diferente desta teoria, consistindo de uma coleção de elementos
+básicos juntamente a formas de combiná-los em estruturas
+complexas. Por exemplo, um módulo fonológico pode fornecer um
+conjunto de fonemas juntamente a uma operação para combinar estes
+em cadeias fonológicas. De maneira similar, um módulo sintático pode
+fornecer nós nomeados como primitivos juntamente a um mecanismo
+para reuni-los em árvores. Um conjunto de primitivos lingüísticos,
+juntamente a alguns operadores para definir elementos complexos,
+é normalmente chamado de `nível de representação`:dt:.
+
+Além de definir módulos, uma gramática genarativa determinará a
+forma como os módulos interagem. Por exemplo, cadeias fonológicas
+bem formadas forncerão o conteúdo fonológico de palavras, e estas
+proverão os elementos terminais de árvores sintáticas. Árvores
+sintáticas bem formadas serão mapeadas em representações semânticas
+e informação de ordem contextual ou pragmática irá se assentar
+sobre estas representações semânticas em certas situações do mundo
+real.
+
+Como indicamos acima, um aspecto importante das teorias de gramática
+generativa é que estas foram pensadas como formas de modelar o
+conhecimento lingüístico de falantes e ouvintes; eles não foram
+desenvolvidas para explicar como as pessoas realmente processam
+informações lingüísticas. Isto se reflete, em parte, na sustentação
+de que uma gramática generativa codifica a `competência`:dt:
+de um falante nativo idealizado, ao invés da `performance`:dt:
+de um falante. Uma distinção muito próxima é dizer que uma gramática
+generativa codifica conhecimento de tipo `declarativo`:dt: ao
+invés de `procedural`:dt:. Conhecimento declarativo pode ser
+explicado como um "saber o quê", ao passo que conhecimento procedural
+qual um "saber como". Como podes imaginar, a lingüística
+computacional desempenha um papel crucial para a hipotização
+de modelos procedurais das línguas. Um exemplo central é o
+parsing, no qual deve-se desenvolver mecanismos computacionais
+que convertam cadeias de palavras em representações estruturais
+como árvores sintáticas. Apesar disto, é amplamente aceito que
+modelos computacionais de linguagem bem projetados apresentam
+tanto aspectos declarativos quanto procedurais. Assim, um
+abordagem extensiva ao parsing dirá como o conhecimento declarativo
+na forma de uma gramática e de um léxico é combinado a
+conhecimento procedural que determina de que manteira a análise
+sintática deve ser realizada para uma dada cadeia de palavras.
+Este conhecimento procedural será expresso por um
+`algoritmo`:dt:\ : ou seja, uma receita explícita para mapear
+um certo input em um outpur apropriado dentro de um número
+finito de passos.
+
+Um simples algoritmo de parsing para gramáticas context-free, por
+exemplo, procura inicialmente por uma regra na forma
+``S`` |rarr| ``X``:subscript:`1` ... ``X``:subscript:`n`, e contrói
+uma estrutura em árvore parcial. Em seguida, este analisa as
+regras gramaticais uma a uma, procurando por uma regra na forma
+``X``:subscript:`1` |rarr| ``Y``:subscript:`1` ...  ``Y``:subscript:`j` que
+expanda seu galho mais à esquerda introduzido pela regra ``S`` e
+que, por sua vez, expanda a árvore parcial. Este processo continua,
+por exemplo buscando-se uma regra na forma ``Y``:subscript:`1` |rarr|
+``Z``:subscript:`1` ...  ``Z``:subscript:`k` e expandindo a árvore
+parcial de maneira apropriada, até que o nó mais à esquerda na árvore
+parcial seja uma categoria lexical; o parser então verifica se a
+primeira palavra do input pertence a tal categoria. Para ilustrar,
+vamos imaginas que a primeira regra gramatical escolhida pelo parser
+seja ``S`` |rarr| ``NP VP`` e que a segunda regra escolhida seja
+``NP`` |rarr| ``Det N``; desta forma, a árvore parcial será a
+seguinte:
+
+.. ex::
+
+   .. tree:: (S (NP (Det \ ) (N)) (VP))
+
+Se assumirmos que a cadeia de entrada à qual estamos aplicando o 
+parsing seja `the cat slept`:lx:, teremos sucesso ao identificar
+`the`:lx: como uma palavra que pertence à categoria `Det`:gc:. Neste
+caso, o parser segue para o próximo nó da árvore, `N`:gc:, e para
+a próxima palavra no input, `cat`:lx:. Porém, se tivéssemos construído
+a mesma árvore parcial com a string `did the cat sleep`:lx: como
+input, o parsing falharia neste ponto, visto que `did`:lx: não
+pertence à categoria `Det`:gc:; O parser descartaria então a estrutura
+construída até este ponto e buscar um caminho alternativo para descer de
+`S`:gc: até a categoria lexical mais à esquerda (por exemplo, utilizando
+uma regra `S`:gc: |rarr| `V NP VP`:gc:).
+O ponto importante por enquanto não são os detalhes deste ou daquele
+algoritmo de parsing; estes serão discutidos com muito maior
+detalhe no capítulo sobre o parsing. Ao invés disso, queremos apenas
+ilustrar a idéia de que um algoritmo pode ser dividido em um número
+fixo de passos que producem um resultado definido ao final.
+
+Na figura sds_ we ilustramos ainda mais em detalhe alguns deste pontos
+no contexto de um sistema de diálogo falado, como no caso de nosso
+exemplo anterior de uma aplicação que oferece aos usuários informações
+sobre filmes atualmente em cartaz.
+
+.. _sds:
+.. figure:: ../images/dialogue.png
+   :scale: 32
+
+   Simple Pipeline Architecture for a Spoken Dialogue System
+
+Junto ao topo do diagrama, movendo-se da esquerda para a direita, está
+a "pipeline" de alguns dos mais importantes `componentes`:dt: de um
+sistema para compreensão da fala. Estes mapeiam um input de fala
+por meio de um parsing sintático em alguma forma de representação
+significativa. Ao meio, movendo-se da direita para a esquerda, há uma
+pipeline inversa de componentes para a geração de fala a partir de
+conceitos. Estes componentes constituem o aspecto dinâmico ou
+procedural do processamento de linguagem natural do sistema. Ao fundo
+do diagrama estão alguns dos mais importantes dados de informações
+estáticas: os componentes de armazenamento de dados relacionados à
+língua que são utilizados pelos componentes de processamento.
+
+
+O diagrama ilustra como formas linguisticamente motivadas de
+modularizar-se o conhecimento lingüístico são freqüentemente
+refletidas em sistemas computacionais. Em outras palavras, os vários
+componentes são organizados de maneira tal que os dados que eles
+se trocam correspondem grosso modo a diferentes níveis de
+representação. Por exemplo, o output de um componente de análise da
+fala irá conter cadeias de representações fonológicas de palavras e
+o output de um parser irá conter uma representação semântica. É
+evidente como o paralelo não é preciso, em parte porque muitas
+vezes é uma questão meramente de facilidade prática a escolha de
+onde colocar os limites entre os diferentes componentes de
+processamento. Por exemplo, podemos admitir que dentro do
+componente de parsing há um nível de representação sintática, apesar
+de termos escolhido não expô-lo no nível do diagrama de sistema.
+Apesar destas idiosincrasias, a maior parte dos sistemas de |PLN|
+divide seu funcionamento em uma série de passos discretos. No
+processo de compreensão da linguagem natural, estes passos vão
+de níveis mais concretos para mais abstratos, enquanto na produção
+de linguagem natural o caminho é invertido.
+
+---------------------
+Antes de continuar...
+---------------------
+
+Um aspecto importante na aprendizagem de |PLN| utilizando este material
+é experimentar tanto o desafio quanto |mdash| esperamos |mdash| a
+satisfação de criar programas para processar linguagens naturais. O
+software que acompanha, o NLTK, é disponibilizado gratuitamente e
+pode ser executado na maior parte dos sistemas operacionais, incluíndo
+Linux/Unix, Mac OSX e Microsoft Windows. Você pode obter o NLTK
+no endereço |NLTK-URL|, juntamente com uma longa e completa documentação.
+Queremos te encorajar a instalar o Python e o NLTK em teu computador
+antes de continuar a leitura para além deste capítulo.
+
+--------------------
+Leituras adicionais
+--------------------
+
+Vários websites possuem informações úteis sobre |NLP|, incluíndo
+conferências, recursos e grupos de interesse, como por exemplo
+o ``www.lt-world.org``, o ``www.aclweb.org`` e o ``www.elsnet.org``.
+O site da *Association for Computational Linguistics* (Associação para
+a Lingüística Computacional), em ``www.aclweb.org``, contém uma
+visão geral sobre lingüística computacional, incluíndo cópias de
+capítulos de introdução de vários livros de publicação recente.
+A Wikipédia possui artigos para o |PLN| e para seus sub-campos
+(mas, para o inglês, não confunda o natural language processing (NLP)
+com o neuro-linguistic programming). Três livros oferecem uma
+abordagem compreensiva para o campo:
+[Cole97]_, [Dale00handbook]_, [Mitkov02handbook]_.
+Além disto, vários sistemas de |PLN| possuem interface online com as
+quais podes querer experimentar, como:
+
+* WordNet: ``http://wordnet.princeton.edu/``
+* Translation: ``http://world.altavista.com/``
+* ChatterBots: ``http://www.loebner.net/Prizef/loebner-prize.html``
+* Question Answering: ``http://www.answerbus.com/``
+* Summarization: ``http://newsblaster.cs.columbia.edu/``
+
+.. include:: footer.txt

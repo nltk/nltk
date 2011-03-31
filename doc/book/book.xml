@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book PUBLIC '-//OASIS//DTD DocBook XML V4.4//EN' 'http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd'>
+<book>
+  <title>Natural Language Processing with Python</title>
+  <bookinfo>
+    <edition>1</edition>
+    <isbn>9780596516499</isbn>
+    <authorgroup>
+      <author><firstname>Steven</firstname><surname>Bird</surname></author>
+      <author><firstname>Ewan</firstname><surname>Klein</surname></author>
+      <author><firstname>Edward</firstname><surname>Loper</surname></author>
+    </authorgroup>
+  </bookinfo>
+
+  <xi:include href="ch00.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch01.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch02.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch03.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch04.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch05.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch06.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch07.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch08.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch09.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch10.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch11.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="ch12.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="bibliography.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  
+  <index type="nltk">
+    <title>NLTK Index</title>
+  </index>
+  <index/>
+</book>
+

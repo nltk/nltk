@@ -1,0 +1,158 @@
+% avm.sty  --  for attribute-value matrices -- mar 29, 1992; rev. dec 6, 1993
+% (c) 1992 christopher manning (manning@csli.stanford.edu) -- see avm.doc.tex
+
+\newif\ifavmactive\newif\ifavmsorted\newif\ifavmlabeled
+\newif\ifavmcenter\newif\ifavmbottom
+\newif\ifavmbottomright\newif\ifavmtopleft\newif\ifavmtopright
+
+\newdimen\avmdimen
+\newbox\avmboxone\newbox\avmboxthree
+
+\def\avmoptions#1{\avmactivefalse\avmsortedfalse\avmlabeledfalse
+	\avmcenterfalse\avmbottomfalse
+	\avmbottomrightfalse\avmtopleftfalse\avmtoprightfalse
+	\def\more{#1}\ifx\more\empty\else\avmjoptions#1,\@nil\fi}
+\def\avmjoptions#1,#2\@nil{\def\more{#2}\csname avm#1true\endcsname
+	\ifx\more\empty\else\avmjoptions#2\@nil\fi}
+
+
+\def\avmfont#1{\def\avmjfont{#1}}
+\def\avmjfont{}
+
+\def\avmvalfont#1{\def\avmjvalfont{#1}}
+\def\avmjvalfont{}
+
+\def\avmsortfont#1{\def\avmjsortfont{#1}}
+\def\avmjsortfont{}
+
+\def\avmhskip#1{\def\avmjhskip{#1}}
+\def\avmjhskip{1em}
+
+\def\avmbskip#1{\def\avmjbskip{#1}}
+\def\avmjbskip{0em}
+
+\def\avmvskip#1{\def\avmjvskip{#1}}
+\def\avmjvskip{0.385ex}%was .3875
+
+
+\def\avmjprolog#1{$\mskip-\thinmuskip
+	\left#1\hskip\avmjbskip\vcenter\bgroup\vskip\avmjvskip
+	\ialign\bgroup\avmjfont
+	\strut ##\unskip\hfil
+	&&\hskip\avmjhskip\avmjvalfont ##\unskip\hfil\cr}
+\def\avmjpostlog#1{\crcr\egroup\vskip\avmjvskip\egroup
+	\hskip\avmjbskip\right#1\mskip-\thinmuskip$\ignorespaces}
+
+
+\def\avmjcatcode{\let\lparen=(\let\rparen=)\catcode`\[=13\catcode`\]=13
+	\catcode`\<=13\catcode`\@=13\catcode`\(=13\catcode`\)=13
+	\catcode`\>=13\catcode`\|=13}
+
+{\avmjcatcode	% new group: redefine above catcodes as active
+
+\gdef\specialavm{\avmjcatcode
+\def({\avmjprolog\lparen}% 
+\def){\avmjpostlog\rparen}%
+\def<{\avmjprolog\langle}%
+\def>{\avmjpostlog\rangle}%
+\ifavmsorted
+\def[##1{\setbox\avmboxthree=\hbox{\avmjsortfont##1\/}\setbox2=\hbox
+	\bgroup\avmjprolog\lbrack}%
+\def]{\avmjpostlog\rbrack\egroup\avmjsort}%
+\else\ifavmlabeled
+\def[##1{\def\more{##1}\setbox2=\hbox\bgroup\avmjprolog[}%
+\def]{\avmjpostlog]\egroup\node{\more}{\box2}}%
+\else
+\def[{\avmjprolog\lbrack}%
+\def]{\avmjpostlog\rbrack}%
+\fi\fi
+%
+\def\<{$\langle$}\def\>{$\rangle$}%
+\def\({\lparen}\def\){\rparen}%
+\def\[{\lbrack}\def\]{\rbrack}%
+\def|{$\,\vert\,$}%
+\def@##1{\avmbox{##1}}%
+}	% end defn of \specialavm
+}	% restore active catcodes
+
+
+\long\def\avm{\begingroup
+\ifavmactive\specialavm
+\else
+\def\({\avmjprolog(}% 
+\def\){\avmjpostlog)}%
+\def\<{\avmjprolog\langle}%
+\def\>{\avmjpostlog\rangle}%
+%
+\ifavmsorted
+\def\[##1{\setbox\avmboxthree=\hbox{\avmjsortfont##1\/}\setbox
+	2=\hbox\bgroup\avmjprolog[}%
+\def\]{\avmjpostlog]\egroup\avmjsort}%
+\else\ifavmlabeled
+\def\[##1{\def\more{##1}\setbox2=\hbox\bgroup\avmjprolog[}%
+\def\]{\avmjpostlog]\egroup\node{\more}{\box2}}%
+\else
+\def\[{\avmjprolog[}%
+\def\]{\avmjpostlog]}%
+\fi\fi
+%
+\def\|{$\,\vert\,$}%
+\def\@##1{\avmbox{##1}}%
+\fi	% end not active
+%
+\ifx\LaTeX\undefined\def\\{\cr}% running under TeX
+\else \def\\{\@tabularcr}% Leverage off LaTeX's \\*[dimen] options
+\fi
+\def\!{\node}%
+\long\def\avmjsort{\dimen2=\ht2\advance\dimen2 by -.25\baselineskip
+	\global\dimen\avmdimen=\wd\avmboxthree
+	\ifavmtopleft \raise\dimen2\llap{\box\avmboxthree}\box2%
+	\else\ifavmtopright \box2\raise\dimen2\box\avmboxthree%
+	\else\ifavmbottomright \box2\lower\dimen2\box\avmboxthree%
+	\else \lower\dimen2\llap{\box\avmboxthree}\box2%
+	\fi\fi\fi}%
+\long\def\sort##1##2{\setbox2=\hbox{##2}\setbox
+	\avmboxthree=\hbox{\avmjsortfont##1\/}\dimen2=\ht2
+	\advance\dimen2 by -.25\baselineskip
+	\ifavmtopleft \raise\dimen2\box\avmboxthree\box2%
+	\else\ifavmtopright \box2\raise\dimen2\box\avmboxthree%
+	\else\ifavmbottomright \box2\lower\dimen2\box\avmboxthree%
+	\else \lower\dimen2\box\avmboxthree\box2%
+	\fi\fi\fi}%
+\long\def\osort##1##2{\setbox2=\hbox{##2}\setbox
+	\avmboxthree=\hbox{\avmjsortfont ##1\/}\avmjsort}%
+\def\avml{\avmjprolog.}%
+\def\avmr{\avmjpostlog.}%
+\def\avmb##1{\node{##1}{\lbrack\;\rbrack}}%
+\def\avmd##1{\node{##1}{---}}%
+\def\q##1{\ifx ##1\{$\lbrace$\else
+	\ifx ##1\}$\rbrace$\else
+	\ifx ##1<$\langle$\else
+	\ifx ##1>$\rangle$\fi \fi \fi \fi}%
+\def\{{\avmjprolog\lbrace}%
+\def\}{\avmjpostlog\rbrace}%
+\def\;{\hskip\avmjhskip}%
+\def\avmspan##1{\multispan2\strut ##1\expandafter\hfil}%
+\avmjfont
+\openup\avmjvskip
+\setbox\avmboxone=\hbox\bgroup\ignorespaces
+}	% end defn of \avm
+
+
+\def\endavm{\egroup\ifvmode\leavevmode\fi % this if is useful!
+	\ifavmsorted\null\hskip\dimen\avmdimen\fi
+	\ifavmcenter
+		\box\avmboxone
+	\else \ifavmbottom
+		\lower.575\baselineskip\hbox{\vbox{\box\avmboxone\null}}%
+	\else
+% the next bit is ripped off from Emma's \evnup in lingmacros.sty
+		\dimen2=\ht\avmboxone\advance\dimen2 by -.725\baselineskip
+		\lower\dimen2\box\avmboxone
+\fi \fi \endgroup}
+
+
+% based on TeXbook exercise 21.3
+\def\avmbox#1{\setbox2=\hbox{$\scriptstyle #1$}\lower.2ex\vbox{\hrule
+	\hbox{\vrule\kern1.25pt 
+	\vbox{\kern1.25pt\box2\kern1.25pt}\kern1.25pt\vrule}\hrule}}

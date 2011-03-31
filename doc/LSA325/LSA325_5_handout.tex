@@ -1,0 +1,108 @@
+\documentclass[12pt]{article}
+\usepackage{url,a4wide}
+
+\begin{document}
+
+\begin{center}
+  {\Large LSA 325, Class 6, Mon 23rd July}
+\end{center}
+
+
+
+\section*{Exercises for class}
+
+\subsection*{Unification}
+
+Try the following, and some variations that you make up yourself:
+\begin{verbatim}
+>>> from nltk import FeatStruct, unify
+>>> fs1 = FeatStruct.parse('[AGR=[GND=masc]]')
+>>> fs2 = FeatStruct.parse('[AGR=[PER=3]]')
+>>> print unify(fs1, fs2)
+[ AGR = [ GND = 'masc' ] ]
+[       [ PER = 3      ] ]
+\end{verbatim}
+
+\noindent
+Now have a go at a few of the unification examples from exercise (2)
+in section 9.3.4 of Chapter 9. It's up to you whether you want to try
+them with paper and pencil, or dive straight in the Python interpreter
+
+\subsection*{Feature-based Grammar}
+\noindent
+Toy grammar of English NPs:
+\begin{verbatim}
+% start NP
+NP[AGR=?a] -> Det[AGR=?a] N[AGR=?a]
+Det[AGR=[NUM='sg', PER=3]] -> 'this' | 'that'
+Det[AGR=[NUM='pl', PER=3]] -> 'these' | 'those'
+Det[AGR=[NUM='pl', PER=1]] -> 'we'
+Det[AGR=[PER=2]] -> 'you'
+N[AGR=[NUM='sg', GND='m']] -> 'boy'
+N[AGR=[NUM='pl', GND='m']] -> 'boys'
+N[AGR=[NUM='sg', GND='f']] -> 'girl'
+N[AGR=[NUM='pl', GND='f']] -> 'girls'
+N[AGR=[NUM='sg']] -> 'student'
+N[AGR=[NUM='pl']] -> 'students'
+\end{verbatim}
+
+\noindent
+This can be downloaded from the
+\url{http://nltk.org/temp/np.cfg}. Save it your current working
+directory. At
+the same time, download and save the following file to the same directory:
+\url{http://nltk.org/temp/fix_featureparser.py}. Start up IDLE in this
+directory. Then you can run the
+grammar as follows:
+\begin{verbatim}
+>>> from nltk.book import *
+>>> import fix_featureparser
+>>> tokens = 'these girls'.split()
+>>> cp = parse.load_earley('np.cfg', trace=2)
+>>> trees = cp.get_parse(tokens)
+>>> for tree in trees: print tree
+\end{verbatim}
+Alternatively, download these instructions as
+\url{http://nltk.org/temp/quickstart.py} and give the command
+\begin{verbatim}
+import quickstart
+\end{verbatim}
+
+\noindent
+Play with the grammar a bit. Now try to write a similar grammar of
+your own. You might like to try working with the Spanish data in 
+Chapter 9; i.e., Exercise 3 in section 9.2.4.
+
+\subsection*{Semantics}
+
+Download and save the following file to the same directory:
+\url{http://nltk.org/temp/model.py}. 
+
+You can now inspect this first-order model, and play around with the
+valuations that it gives. Here are some starting suggestions:
+\begin{verbatim}
+>>> from model import *
+>>> print m
+>>> val['walk']
+>>> val['walk'][val['john']]
+>>> m.evaluate('(walk john)', g)
+>>> m.evaluate('((walk john) and (walk fido))', g)
+>>> m.evaluate('(chase mary fido)', g)
+>>> m.evaluate('(chase fido mary)', g)
+>>> g.add('b1', 'x')
+>>> print g
+g[b1/x]
+>>> m.evaluate('(chase fido x)', g)
+>>> m.evaluate('(walk x)', g)
+\end{verbatim}
+Have a look at Chapter 11, and see if you can evaluate some formulas
+involving the quantifiers \texttt{some} and \texttt{all}.
+
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

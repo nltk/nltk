@@ -1,0 +1,1 @@
+Welcome to the Mac OS X Installation Program.  You will be guided through the steps necessary to install the Natural Language Toolkit (NLTK).

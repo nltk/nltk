@@ -1,0 +1,164 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.rst
+
+--------
+RST Bugs
+--------
+
+Incorrect line breaking involving quotes
+----------------------------------------
+
+This problem occurs in the PDF version only, when an inline literal containing quotes
+is broken across a linebreak, at the quote mark.
+
+``"foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" 
+"foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" 
+"foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo" "foo"``
+
+``'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 
+'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 
+'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo' 'foo'``
+
+Javascript copy-to-clipboard
+----------------------------
+
+From sf.net bugtracker:
+Problem with second javascript box that does copy-to-clipboard. The first
+one works, but the second one doesn't. (Reported by Jussi Salmela.)
+
+[EL] I *believe* this should be fixed now.
+
+Docutils Skip directive
+-----------------------
+
+This has two problems:
+
+* it should never be included in HTML or PDF output
+* it should work for pylistings
+
+.. pylisting:: blarg
+
+  foo # doctest: +SKIP
+  
+  >>> foo # doctest: +SKIP
+
+Subexamples
+-----------
+
+.. _thisdog:
+.. ex::
+   .. _thisdoga:
+   .. ex::
+      this dog
+   .. _thisdogb:
+   .. ex::
+      \*these dog
+
+|nopar| It would be better if this could be rendered along the following
+lines::
+
+  (1) a.  this dog
+      b. *these dog
+
+
+|nopar| However, the following cross-references are fine as they stand:
+examples thisdog_ contains thisdoga_ and thisdogb_.
+
+
+Incorrect colorization
+----------------------
+
+An apostrophe inside literal text is incorrectly interpreted as a Python
+string delimiter, in both PDF and HTML output, e.g.:
+
+``E' italiano , come progetto e realizzazione , il
+primo (PRIMO ADJ ORDIN M SING) porto turistico dell' Albania .``
+
+
+Gloss formatting
+----------------
+
+The following produces output with a wrapped item; how can we widen the cells?
+
+   .. gloss::
+      the | dog       |run-s
+          | dog.3.SG  |run-3.SG
+
+In the PDF output, the
+example number should be lined up with the top of the table, rather
+than the center. (Also, seems to be incorrectly coming out as '(2a)'
+rather than just '(2)'.)
+
+.. gloss::
+      un                         | cuadro  | hermos-o
+      INDEF.SG.MASC              | picture | beautiful-SG.MASC
+      'a beautiful picture'         
+
+
+|nopar| In the HTML output, there is too much inter-line space when the
+gloss is embedded inside an exercise:
+
+#. |soso| Augment agcfg1_ so that it will correctly describe the following
+   Spanish noun phrases:
+
+   .. gloss::
+	  un                         | cuadro  | hermos-o
+	  INDEF.SG.MASC              | picture | beautiful-SG.MASC
+	  'a beautiful picture'               
+
+Pylisting
+---------
+
+#. Clicking on a tag hyperlink in running text takes you to the first page of the PDF file
+#. Tag result_ now appears in doctest block, but test/doctest_driver.py will need to be tweaked
+
+.. pylisting:: foo
+   :caption: Pylisting
+   
+    >>> a = 1       # [_assignment]
+    >>> a
+    1               # [_result]
+
+
+Building PDF and HTML files
+---------------------------
+
+The makefile runs ``rst.py --ref`` more often than needed.
+Each time an individual ``.txt`` source file is touched,
+a make extracts references from all other source files.
+
+Over-strict parsing of Bib file
+-------------------------------
+
+The following entry in book.bib::
+
+ @Book{Nerbonne1994GHD,
+   editor = 	 {John Nerbonne and Klaus Netter and Carl Pollard},
+   title = 	 {German in {Head-Driven Phrase Structure Grammar}},
+   publisher = 	 {CSLI},
+   year = 	 1994,
+   address = 	 {Stanford, CA}}
+
+triggers a fatal error::
+
+   ...
+   File "../rst.py", line 514, in apply
+     bibliography = self.read_bibinfo(BIBTEX_FILE)
+   File "../rst.py", line 553, in read_bibinfo
+     if bibliography[key][0] is None: warning('no author found:', key)
+
+However, it should be fine to have an edited collection as a book entry.
+
+The following use of an umlaut is not handled properly in HTML::
+
+    @book{Mueller2002CP,
+      author      =	{Stefan M{\"u}ller},
+      title	      =	{Complex Predicates: Verbal Complexes, Resultative Constructions, and Particle Verbs in {German}},
+      series      =	{Studies in Constraint Based Lexicalism},
+      number      = 13,
+      publisher   =	{Center for the Study of Language and Information},
+      address     =	{Stanford},
+      note	      =	{\url{http://www.dfki.de/~stefan/Pub/complex.html}},
+      year	      =	2002}
+    
+

@@ -1,0 +1,320 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.rst
+
+.. standard global imports
+
+    >>> import nltk, re, pprint
+
+.. _chap-lexicon:
+
+===========
+The Lexicon
+===========
+
+------------
+Introduction
+------------
+
+In earlier chapters, we have seen examples of grammars and of
+lexicons. So far, we have taken an extremely simplistic view of the
+lexicon: our lexical entries have just be |CFG| productions with
+orthographic words on the right-hand side of the production.
+But this approach hardly does justice to the lexicon. It ignores that
+fact that words have pronunciations, syntactic properties, and
+meanings. It also ignores the fact that some lexical information is
+predictable, and thus need not be listed on a case by case basis.
+
+..
+    One early approach to grammar took the view that all regular patterns
+    in language could be captured by systematic rules for different kinds
+    of representation: sound patterns in phonology, morphological
+    alternations in morphology, distributional patterns in syntax, and so
+    on. Everything which failed to obey regular patterns had simply to be
+    listed. And the lexicon was just such a list. That is, the lexicon was
+    viewed as a place where idiosyncratic information about words was
+    stored, information which could not be predicted by some other
+    component of grammar. This approach is pretty much the one that we
+    have enshrined in the context free grammars of Chapters chap-parse_
+    and chap-featgram_, where lexical items are treated as the terminal
+    symbols of |CFG| productions.
+
+    Nevertheless, it is clear that there are regularities `within`:em: the
+    lexicon, even though these regularities are typically open to
+    exceptions.  
+
+In this chapter, we will look in more detail at what
+lexical patterns exist and how they can be captured.
+Before exploring lexical patterning, however, we need to consider what
+kind of information should be expressed in a lexical entry |mdash| what
+are the properties of words that we need to represent?
+
+--------------------------------------
+Lexical Information and Representation
+--------------------------------------
+
+Conventional written dictionaries usually focus on describing the
+senses of a word. By contrast, apart from listing the part-of-speech,
+syntax-related information is usually sparse. The lexical entry might
+have different labels, say, for intransitive and
+transitive verbs, but probably will not contain detailed information
+about all the complements that a verb can take. Moreover, this
+information is typically not in a form that can readily be used by
+parsers or other linguistic processors.
+
+In response to this situation, the
+`COMLEX Syntax <http://nlp.cs.nyu.edu/comlex/index.html>`_ 
+monolingual English lexicon (distributed by LDC) was 
+designed to interoperate with syntactic parsers. Subcategorization
+information is presented in a standardized format that can be easily
+re-used. To illustrate, here is the entry for the verb `believe`:lx::
+
+
+    (VERB      :ORTH "believe"      :SUBC ((NP-TOBE)
+					   (P-POSSING :PVAL ("in"))
+					   (PP :PVAL ("on" "in"))
+					   (NP-PP-PRED)
+					   (NP-ADVP-PRED)
+					   (NP-ADJP-PRED)
+					   (NP-NP-PRED)
+					   (S)
+					   (NP))
+
+The `:ORTH` field contains the orthographic string for the verb, while
+`:SUBC` is a list of complement frames that the verb is subcategorized
+for. For example, `(NP-TOBE)` labels cases like `We believed her to be
+a savior`:lx:, while `(NP-ADJP-PRED)` would cover cases such as `I
+believed him foolish to do that`:lx:. (For more explanation of these
+verb complement frames, see 
+
+Macleod, Catherine, Ralph Grishman and Adam Meyers (1998). COMLEX
+Syntax Reference Manual, Proteus Project,
+NYU. http://nlp.cs.nyu.edu/comlex/refman.ps
+
+..
+   example above seems to be out of sync with the ref manual; is the
+   latter for a later version of the dictionary?
+
+.. `(P-POSSING :PVAL ("in"))` covers cases such as
+.. `I don't believe in his `:lx:.
+
+
+.. 
+    "...(he) brought them out, and said, Sirs, what must I do to be saved?
+    And they said, Believe on the Lord Jesus Christ, and thou shalt be
+    saved..." Acts 16:30-31
+
+    http://www.christianebooks.com/whatdoesitmeantobelieveonjesus.htm
+
+    Do you believe on the superstition in using the egg to cure your
+    headaches and bad luck? 
+
+
+Linguistic Approaches
+---------------------
+
+* representing lexical information, redundancy
+* lexical rules, hierarchical lexicon
+* lexical semantics
+* morphology/lexicon interaction
+* grammar/lexicon interaction (Levin classes)
+
+Thematic Roles
+--------------
+
+Events have different participants. When you give a biscuit
+to your dog, you, the dog and and the biscuit are all participants in
+a giving-event. The term `thematic role`:dt: (also called `semantic
+role`:dt:) refers to the different kinds of participation. Thus, in
+the giving example, you will have the thematic role of **agent**, the
+biscuit has the role of **theme**, and your dog has the role of
+**recipient**. Thematic roles are independent of grammatical functions
+like subjects and object. To see this, consider the following examples:
+
+.. _give_pass:
+.. ex::
+   ..give_pass1
+   .. ex:: Bill gave this biscuit to Rover.
+   ..give_pass2
+   .. ex:: Rover was given this biscuit by Bill.
+   ..give_pass3
+   .. ex:: This biscuit was given by Bill to Rover.
+
+`Bill`:lx: is subject in give_pass1_ and prepositional object in
+give_pass2_, but occupies the agent role in both cases.
+
+One longstanding area of controversy is how to give a precise notion
+of thematic role. For example, how many are there? And can we give
+necessary and sufficient conditions for each role? For example, it is
+difficult to decide what the essential properties are of being an
+agent. We might agree that agents must be capable of volition, but not
+be able to specify the list of all and only such properties. In
+response to such problems, it has sometimes been argued that thematic
+roles are specific to individual verbs (or to the eventualities that
+they express). So, for example, in the case of giving, **agent**, **theme**
+and **recipient** would be replaced by **giver**, **given** and **givee**. 
+
+
+Concepts and Ontologies
+-----------------------
+
+When we translate a word from one language into another, we often
+assume that the two words 'have the same meaning'; for example, `(the)
+weather`:lx: translates as `(het) weer`:lx: in Dutch. Finding exact
+translation equivalents is sometimes problematic, yet nevertheless it
+is commonplace to find 'good enough' translations. So let's assume
+that `weather`:lx: and `weer`:lx: have the same meaning. Whatever this
+meaning is, it seems to be something that is not itself just a word,
+since it is not exclusively in one language or the other. This
+motivates us to say that there is a non-linguistic entity, namely a
+`concept`:dt:, which stands as the shared meaning for the two words
+`weather`:lx: and `weer`:lx:. If we wish to build some kind of formal
+representation of conceptual meaning, we need to provide labels for
+them. If we are speakers of English, it would be tempting to use
+something like `Weather`:lex: as the concept label, whereas if we are
+speakers of Dutch, the label `Weer`:lex: would be the obvious
+choice. There are obvious pitfalls here. First, a naive bystander
+might after all think that the concept was no different from the
+word, contrary to what we have just argued. Second, if concepts are
+non-linguistic, who's to say that one language should have privilege
+in choosing the labels for these abstract entities? Despite these
+misgivings, it is common to see labels such as  `Weather`:lex:, since
+an alternative like `C_2455`:math: is not exactly
+memorable. Nevertheless, the more opaque identifier has one important
+advantage, namely to emphasize that in and of itself, `there is no
+inherent meaning to a concept such as`:em: 
+`C_2455`:math:. That's to say, just by positing some abstract entity
+which acts as semantic go-between  for `weather`:lx: and
+`weer`:lx: has not given an explication of the meaning of
+either word.
+
+So we have postulated an abstract set of entities, i.e., concepts,
+which could act as meaning representations for words, but so far, they
+themselves are just meaningless symbols. Can we do any better than
+this? One approach, which we shall not try to explore here, is to say
+that concepts are, or correspond to, psychological entities, and can
+be given a more robust characterization within a model of cognitive
+information processing. Another approach is to look for the
+`connections`:em: between concepts. We already pointed out in Chapter
+chap-words_ that Wordnet established such connections between concepts
+(represented as synsets). In particular, concepts are related in terms
+of subsumption. For example, that concept `Bird`:lex: subsumes, or is
+more general than, the concept `Robin`:lex:. There is a close relation
+between concepts and sets. For every concept *&C* we can identify its
+extension, that is, the set of individuals that fit the concept. These
+individuals are also called `instances`:dt: of the
+concept. Subsumption then corresponds to the superset-subset relation:
+if *C*\ :sub:`1` is subsumed by *C*\ :sub:`2`, then the extension of
+*C*\ :sub:`1` is a subset of *C*\ :sub:`2`. Phrased differently, every
+instance *x* of concept *C*\ :sub:`1` is also an instance of concept *C*\
+:sub:`2`. Moreover, all instances of *C*\ :sub:`1` inherit attributes
+of *C*\ :sub:`2`. Concepts arranged in this way are said to form an
+`inheritance hierarchy`:dt:. 
+
+Some aspects of inheritance hierarchies can be straightforwardly
+modeled just using Python's class mechanism, as shown in
+class-inheritance_.
+
+.. pylisting:: class-inheritance
+   :caption: Modeling Concepts with Python Classes
+
+    class Bird(object):
+        def __init__(self):
+            self.flies = True     # [_default-flies]
+            self.laysEggs = True
+            self.hasWings = 2
+
+    class Robin(Bird):
+        def __init__(self, name = None):
+            Bird.__init__(self)
+            self.colourOfBreast = 'yellow'
+
+    class Penguin(Bird):
+        def __init__(self):
+            Bird.__init__(self)
+            self.colourOfWings= 'black'
+            self.flies = False     # [_defeating-flies]
+
+    >>> rob = Robin()
+    >>> rob.colourOfBreast
+    'yellow'
+    >>> rob.hasWings
+    2
+    >>> rob.flies
+    True
+    >>> penny = Penguin()
+    >>> penny.hasWings
+    2
+    >>> penny.flies
+    False
+
+As you can see, Python classes implement `default inheritance`:dt:
+|mdash| whereas instances of the ``Robin`` class straightforwardly
+inherit the attribute ``flies`` from ``Bird`` (line default-flies_)
+with the `default value`:dt: ``True``, the class ``Penguin`` overrides
+this default value in line defeating-flies_, and assigns the value
+``False`` instead.
+
+Python classes also support `multiple inheritance`:dt:, as shown in
+listing multiple-inheritance_, which extends class-inheritance_.
+
+.. pylisting:: multiple-inheritance
+   :caption: Multiple Inheritance with Python Classes
+
+    class Pet(object):
+        def __init__(self):
+            self.funToCareFor = True
+
+    class Budgie(Bird, Pet):
+        def __init__(self, name = None):
+            Bird.__init__(self)
+            Pet.__init__(self)
+            self.colourOfPlumage = 'yellow'
+
+    >>> bill = Budgie()
+    >>> bill.funToCareFor
+    True
+    >>> bill.laysEggs
+    True
+
+Thus, ``bill`` inherits attributes from both ``Bird`` and ``Pet``.
+
+Computational Approaches
+------------------------
+
+* MDRs
+* extraction of lexical entries from corpora
+* datr?
+* inheritance
+* kimmo?
+
+
+Lexical Resources
+-----------------
+
+* comlex
+* wordnet
+* framenet
+* celex
+* verbnet
+
+
+Multiword Expressions
+---------------------
+
+multiword expressions, collocations, idioms
+
+----------
+Conclusion
+----------
+
+-------
+Summary
+-------
+
+---------------
+Further Reading
+---------------
+
+
+
+.. include:: footer.txt

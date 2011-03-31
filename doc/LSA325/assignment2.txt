@@ -1,0 +1,3 @@
+1. Define a function find_tags(item, word) which takes a section of the Brown Corpus and a word as its arguments and returns a list of the tags that occur for that word, sorted in decreasing frequency (using the FreqDist.sorted() method).  E.g. find_tags('a', 'present') should return ['jj', 'rb', 'vb', 'nn']].
+
+2. Define a function test_tagger(item, sent) which trains a bigram tagger on the specified section of the Brown Corpus, and uses it to tag sent.  Write comment lines to explain why the tagger performs badly and to suggest a way performance could be improved.

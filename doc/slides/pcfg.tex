@@ -1,0 +1,569 @@
+\documentclass{beamer}             % for slides
+% \documentclass[handout]{beamer}    % for handout
+\input{beamer}
+
+\title{Probabilistic Parsing}
+
+\author{Steven Bird, Steve Renals}
+\institute{
+  University of Melbourne, AUSTRALIA
+}
+
+\usepackage{amsmath}
+\usepackage{synttree} \branchheight{10mm}
+\usepackage{color}
+\usepackage{colortbl}
+\definecolor{paleviolet}{rgb}{0.90,0.6,0.90}
+\definecolor{darkviolet}{rgb}{0.6,0.0,0.6}
+\definecolor{paleyellow}{cmyk}{0.0,0.0,0.65,0}
+\definecolor{palemagenta}{cmyk}{0.0,0.65,0.0,0}
+\definecolor{cerise}{rgb}{1,.31,.29} % cerise
+\definecolor{brickred}{rgb}{0.5,0.0,0.0}
+\definecolor{faintblue}{rgb}{0.88,0.95,1.00}
+\definecolor{faintred}{rgb}{1.0,0.9,0.9}
+
+\mode<presentation>{\newcommand{\myquote}[1]{\textcolor{blue}{#1}}}
+\mode<article>{\newcommand{\myquote}[1]{\textsf{#1}}}
+
+\mode<presentation>{\newcommand{\mybfquote}[1]{\textcolor{blue}{\textbf{#1}}}}
+\mode<article>{\newcommand{\mybfquote}[1]{\textsf{\bfseries#1}}}
+
+\mode<presentation>{\newcommand{\myemphquote}[1]{\textcolor{red}{#1}}}
+\mode<article>{\newcommand{\myemphquote}[1]{\textsf{\slshape#1}}}
+
+\mode<presentation>{\newcommand{\activeNT}[1]{\textcolor{brickred}{\textbf{#1}}}}
+\mode<article>{\newcommand{\activeNT}[1]{\textbf{#1}}}
+
+\mode<presentation>{\newcommand{\activeNTa}[1]{\cellcolor{cerise}\textbf{#1}}}
+\mode<article>{\newcommand{\activeNTa}[1]{\textbf{#1}}}
+
+\mode<presentation>{\newcommand{\activeNTb}[1]{\cellcolor{palemagenta}\textbf{#1}}}
+\mode<article>{\newcommand{\activeNTb}[1]{\textbf{#1}}}
+
+\mode<presentation>{\newcommand{\activeNTc}[1]{\cellcolor{paleviolet}\textbf{#1}}}
+\mode<article>{\newcommand{\activeNTc}[1]{\textbf{#1}}}
+
+\mode<presentation>{\newcommand{\activeNTd}[1]{\cellcolor{faintblue}\textbf{#1}}}
+\mode<article>{\newcommand{\activeNTd}[1]{\textbf{#1}}}
+
+\mode<presentation>{\newcommand{\activeNTe}[1]{\cellcolor{faintred}\textbf{#1}}}
+\mode<article>{\newcommand{\activeNTe}[1]{\textbf{#1}}}
+
+\mode<presentation>{\newcommand{\activeNTx}[1]{\textcolor{cerise}{\textbf{#1}}}}
+\mode<article>{\newcommand{\activeNTx}[1]{\textbf{#1}}}
+
+\mode<presentation>{\newcommand{\activeNTy}[1]{\textcolor{paleviolet}{\textbf{#1}}}}
+\mode<article>{\newcommand{\activeNTy}[1]{\textbf{#1}}}
+
+\mode<presentation>{\newcommand{\terminal}[1]{\textcolor{blue}{#1}}}
+\mode<article>{\newcommand{\terminal}[1]{\textsf{#1}}}
+
+\mode<presentation>{\newcommand{\activeT}[1]{\cellcolor{paleyellow}\textcolor{blue}{\textbf{#1}}}}
+\mode<article>{\newcommand{\activeT}[1]{\textsf{\bfseries#1}}}
+
+\newcommand{\inactiveT}[1]{\cellcolor[gray]{0.85}\terminal{#1}}
+\newcommand<>{\activateT}[1]{\alt#2{\activeT{#1}}{\terminal{#1}}}
+\newcommand<>{\forbidT}[1]{\alt#2{\inactiveT{#1}}{\terminal{#1}}}
+\newcommand<>{\activateNT}[1]{\temporal#2{}{\activeNT{#1}}{#1}}
+
+\newcommand{\prob}[1]{\ensuremath{\textcolor{brickred}{p_{#1}}}}
+\newcommand{\sprob}[1]{{\footnotesize\ensuremath{\textcolor{brickred}{p_{#1}}}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview}
+
+  \begin{enumerate}
+  \item NLTK Overview
+    \begin{itemize}
+    \item Trees: \texttt{parse.tree}
+    \item Grammars: \texttt{parse.cfg}
+    \item Parsers: \texttt{draw.rdparser, draw.srparser, draw.chart}
+    \end{itemize}
+  \item Probabilistic CFG
+    \begin{itemize}
+    \item Motivation: \texttt{fish.py, give.py}
+    \item PCFG in NLTK: \texttt{parse.pcfg}
+    \end{itemize}
+  \item Probabilistic Parsing in NLTK
+    \begin{itemize}
+    \item CKY review
+    \item Tree transformation: \texttt{parse.treetransforms}
+    \item A$^*$ parsing: \texttt{parse.viterbi}
+    \item Probabilistic bottom-up chart parsing: \texttt{parse.pchart}
+    \item Lexicalised PCFG
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\section{NLTK Overview}
+
+\begin{frame}
+  \frametitle{NLTK Overview}
+    \begin{itemize}
+    \item Trees: \texttt{parse.tree}
+    \item Grammars: \texttt{parse.cfg}
+    \item Parsers: \texttt{draw.rdparser, draw.srparser, draw.chart}
+    \end{itemize}
+\end{frame}
+
+\section{Probabilistic CFG}
+
+\begin{frame}
+  \frametitle{Probabilistic CFG}
+    \begin{itemize}
+    \item Motivation: \texttt{fish.py, give.py}
+    \item PCFG in NLTK: \texttt{parse.pcfg}
+    \end{itemize}
+\end{frame}
+
+\section{Probabilistic Parsing in NLTK}
+
+\begin{frame}
+  \frametitle{Probabilistic Parsing in NLTK}
+    \begin{itemize}
+    \item CKY review
+    \item Tree transformation: \texttt{parse.treetransforms}
+    \item A$^*$ parsing: \texttt{parse.viterbi}
+    \item Probabilistic bottom-up chart parsing: \texttt{parse.pchart}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{CYK Review}
+  \begin{itemize}
+  \item \alert{Top-down} Predict what you expect to see (eg Earley algorithm)
+  \item \alert{Bottom-up} Start with the words, then incrementally build up
+    parse trees
+    \begin{itemize}
+    \item CYK (Cocke-Younger-Kasami) algorithm
+    \item Well-matched to probabilistic grammars
+    \item Dynamic programming approach
+    \item Resolve ambiguities by taking the most probable subtree
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Chomsky Normal Form (CNF)}
+  \begin{itemize}
+  \item If a CFG is in \alert{Chomsky Normal Form}, productions are constrained to be of
+    two forms only:
+    \begin{itemize}
+    \item \textbf{Expand to 2 non-terminals}, eg: A $\rightarrow$ B C \newline
+      with A, B, C all non-terminals
+    \item \textbf{Expand to 1 terminal}, eg: A $\rightarrow$ a \newline
+      where A is a non-terminal and a is a terminal
+    \end{itemize}
+  \item Any CFG can be translated to a (weakly) equivalent CFG in CNF
+  \item The CYK algorithm requires a grammar in CNF
+  \item NLTK: use \texttt{parse.treetransforms}
+  \end{itemize}
+\end{frame}
+
+\section{Bottom-up parsing}
+
+\begin{frame}
+  \frametitle{CYK Example}
+  \textcolor{black}{Alice called Bob from Cardiff}
+
+  \bigskip
+  Context-Free Grammar:
+
+  \bigskip
+  \begin{center}
+  \begin{tabular}{p{10em}p{10em}}
+    $\mbox{S} \rightarrow \mbox{NP VP}$ 
+    & $\mbox{NP} \rightarrow \mbox{\terminal{Alice}}$  \\
+    $\mbox{NP} \rightarrow \mbox{NP PP}$ 
+    & $\mbox{NP} \rightarrow \mbox{\terminal{Bob}}$ \\
+    $\mbox{VP} \rightarrow \mbox{V NP}$ 
+    & $\mbox{NP} \rightarrow \mbox{\terminal{Cardiff}}$ \\
+    $\mbox{VP} \rightarrow \mbox{VP PP}$ 
+    & $\mbox{V} \rightarrow \mbox{\terminal{called}}$ \\
+    $\mbox{PP} \rightarrow \mbox{P NP}$ 
+    & $\mbox{P} \rightarrow \mbox{\terminal{from}}$\\    
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{CYK Parse Chart}
+%  \begin{tabular}{|*{5}{p{4em}|}}
+%    \hline
+%    & & & & \\
+%    \hline
+%    &  & & &  \terminal{Cardiff} \\
+%    \hline
+%    &  &  & \terminal{from} &   \\
+%    \hline
+%    &  & \terminal{Bob} & & \\
+%    \hline
+%    & \terminal{called} & & & \\
+%    \hline
+%    \terminal{Alice} & & & & \\
+%    \hline
+%  \end{tabular}
+%\end{frame}
+
+\begin{frame}
+  \frametitle{CYK Parsing}
+  
+  \begin{tabular}{|*{5}{p{4em}|}}
+    \hline
+    & & & & \activateNT<6>{NP} \\
+    \hline
+    &  & & \activateNT<5>{P} &  \activateT<6>{Cardiff} \\
+    \hline
+    &  &  \activateNT<4>{NP} & \activateT<5>{from} &   \\
+    \hline
+    &  \activateNT<3>{V} & \activateT<4>{Bob} & & \\
+    \hline
+    \activateNT<2>{NP} & \activateT<3>{called} & &  &  \\
+    \hline
+    \activateT<2>{Alice} & & & & \\
+    \hline
+  \end{tabular}
+
+  \medskip
+  \centerline{\alt<1>{CYK Parse Chart}{Base case}}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{CYK Parsing}
+  \begin{tabular}{|*{5}{p{4em}|}}
+    \hline
+    \only<12,13>{\activeNT{S}} &
+    \temporal<9>{}{\activeNT{VP$_1$}}
+                  {\alt<10>{\activeNT{VP$_2$}}
+                           {\alt<11>{\activeNTx{VP$_1$}/\activeNTy{VP$_2$}}
+                                    {\activeNTa{VP}}}} &
+    \temporal<7>{}{\activeNT{NP}}
+                  {\alt<10,11,13>{\activeNTc{NP}}{NP}} & 
+    \temporal<4>{}{\activeNT{PP}}
+                {\alt<7,9,11>{\activeNTa{PP}}
+                       {\alt<12>{\activeNTb{PP}}
+                              {\alt<10,13>{\activeNTd{PP}}{PP}}}} & 
+    \alt<4>{\activeNTa{NP}}
+           {\alt<7,9>{\activeNTb{NP}}
+                     {\alt<10,13>{\activeNTe{NP}}
+                                 {\alt<12>{\activeNTd{NP}}{NP}}}} \\
+    \hline
+    \activateNT<8>{X} &  \activateNT<6>{X}& \activateNT<3>{X} & 
+    \alt<4>{\activeNTa{P}}
+           {\alt<7,9>{\activeNTb{P}}
+                     {\alt<10,13>{\activeNTe{P}}
+                                 {\alt<12>{\activeNTd{P}}{P}}}} &  
+    \activateT<4,7,9-13>{Cardiff} \\
+    \hline
+    \activateNT<5>{S} &  
+    \temporal<2>{}{\activeNT{VP}}
+                {\alt<5,9,11>{\activeNTa{VP}}
+                {\alt<12>{\activeNTb{VP}}{VP}}} &  
+    \alt<2,7>{\activeNTa{NP}}
+             {\alt<5,9>{\activeNTb{NP}}
+                       {\alt<10,13>{\activeNTd{NP}}
+                                   {\alt<12>{\activeNTd{NP}}{NP}}}} & 
+    \alt<3,6,8>{\inactiveT{from}}{\activateT<4,7,9-13>{from}} & \\
+    \hline
+    \activateNT<1>{X} &  
+    \alt<2>{\activeNTa{V}}
+           {\alt<5,9>{\activeNTb{V}}
+                     {\alt<10,11,13>{\activeNTc{V}}
+                                    {\alt<12>{\activeNTd{V}}{V}}}} &
+    \alt<3,6,8>{\inactiveT{Bob}}{\activateT<2,5,7,9-13>{Bob}} &   &   \\
+    \hline
+    \alt<5>{\activeNTa{NP}}{NP} & 
+    \alt<1,6,8>{\inactiveT{called}}{\activateT<2,5,9-13>{called}} & & &  \\
+    \hline
+    \alt<1,8>{\inactiveT{Alice}}{\activateT<5,12,13>{Alice}} & & & & \\
+    \hline
+  \end{tabular}
+
+  \medskip
+  \centerline{\temporal<12>{Recursion}{First Parse}{Second Parse}}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{First tree}
+  \begin{center}
+    \synttree{5}[S [NP [.b \terminal{Alice}]]
+                   [VP [VP [V [.b \terminal{called}]][NP [.b \terminal{Bob}]]]
+                       [PP [P [.b \terminal{from}]][NP [.b \terminal{Cardiff}]]]]]
+   \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Second tree}
+  \begin{center}
+    \synttree{6}[S [NP [.b \terminal{Alice}]]
+                   [VP [V [.b \terminal{called}]]
+                       [NP [NP [.b \terminal{Bob}]]
+                           [PP [P [.b \terminal{from}]]
+                               [NP [.b \terminal{Cardiff}]]]]]]
+   \end{center}
+\end{frame}
+
+
+
+
+\subsection{Probabilistic CYK}
+
+\begin{frame}
+  \frametitle{Probabilistic context-free grammars (PCFGs)}
+  \begin{itemize}
+  \item A probabilistic context-free grammar augments each rule in a
+    CFG with a conditional probability $p$\\
+    $\mbox{A} \rightarrow \alpha \quad (p)$
+  \item This probability is the probability that given non-terminal
+    A it will be expanded to the sequence $\alpha$;  written as $P(\mbox{A}
+    \rightarrow \alpha | \mbox{A})$ or $P(\mbox{A} \rightarrow
+    \alpha)$
+  \item Probability of a parse tree is the product of the rule
+    probabilities used to construct the parse
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Probabilistic parsing}
+  \begin{itemize}
+  \item Consider the rule:
+    \[ \mbox{S} \rightarrow \mbox{NP VP} \]
+    Then the probability of S is the product of the rule probability
+    and the probability of each subtree:
+    \[ P(S) = P(\mbox{S} \rightarrow \mbox{NP VP}) 
+    \cdot \textcolor{brickred}{P(\mbox{NP}) \cdot P(\mbox{VP})} \]
+  \item We are doing bottom-up parsing... so we already know the
+    subtree probabilities $\textcolor{brickred}{P(\mbox{NP})}$ and 
+    $\textcolor{brickred}{P(\mbox{VP})}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Probabilistic CYK Example}
+  \textcolor{black}{Alice called Bob from Cardiff}
+
+  \bigskip
+  Context-Free Grammar:
+
+  \bigskip
+  \begin{center}
+  \begin{tabular}{p{10em}p{10em}}
+    $\mbox{S} \rightarrow \mbox{NP VP} \quad (\prob{1})$ 
+    & $\mbox{NP} \rightarrow \mbox{\terminal{Alice}} \quad (\prob{6})$  \\
+    $\mbox{NP} \rightarrow \mbox{NP PP} \quad (\prob{2})$ 
+    & $\mbox{NP} \rightarrow \mbox{\terminal{Bob}} \quad (\prob{7})$ \\
+    $\mbox{VP} \rightarrow \mbox{V NP} \quad (\prob{3})$ 
+    & $\mbox{NP} \rightarrow \mbox{\terminal{Cardiff}} \quad (\prob{8})$ \\
+    $\mbox{VP} \rightarrow \mbox{VP PP} \quad (\prob{4})$ 
+    & $\mbox{V} \rightarrow \mbox{\terminal{called}} \quad (\prob{9})$ \\
+    $\mbox{PP} \rightarrow \mbox{P NP} \quad (\prob{5})$ 
+    & $\mbox{P} \rightarrow \mbox{\terminal{from}} \quad (\prob{10})$ \\    
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{First tree (T1)}
+  \begin{center}
+    \synttree{5}[\alt<2>{\alert{S}}{S} ($\prob{1}$)[\alt<2>{\alert{NP}}{NP} ($\prob{6}$) [.b \terminal{Alice}]]
+                         [\alt<2,3>{\alert{VP}}{VP} ($\prob{4}$) 
+                             [\alt<3,4>{\alert{VP}}{VP} ($\prob{3}$)
+                                    [\alt<4>{\alert{V}}{V} ($\prob{9}$)[.b \terminal{called}]][\alt<4>{\alert{NP}}{NP} ($\prob{7}$)[.b \terminal{Bob}]]]
+                             [\alt<3,4>{\alert{PP}}{PP} ($\prob{5}$)
+                                    [\alt<4>{\alert{P}}{P} ($\prob{10}$)[.b \terminal{from}]][\alt<4>{\alert{NP}}{NP} ($\prob{8}$)[.b \terminal{Cardiff}]]]]]
+
+  \end{center}
+
+  \[ \uncover<2->{ P(T1, S) = p_1 (p_6)( p_4  } 
+     \uncover<3->{ (p_3 } 
+     \uncover<4->{ (p_9 p_7) }
+     \uncover<3->{ )(p_5 }
+     \uncover<4->{ (p_{10} p_8) }
+     \uncover<3->{ ) } 
+     \uncover<2->{ ) }
+  \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Second tree (T2)}
+  \begin{center}
+    \synttree{6}[\alt<2>{\alert{S}}{S} ($\prob{1}$)[\alt<2>{\alert{NP}}{NP} ($\prob{6}$)[.b \terminal{Alice}]]
+                   [\alt<2,3>{\alert{VP}}{VP} ($\prob{3}$)[\alt<3>{\alert{V}}{V} ($\prob{9}$)[.b \terminal{called}]]
+                       [\alt<3,4>{\alert{NP}}{NP} ($\prob{2}$)[\alt<4>{\alert{NP}}{NP} ($\prob{7}$)[.b \terminal{Bob}]]
+                           [\alt<4,5>{\alert{PP}}{PP} ($\prob{5}$)[\alt<5>{\alert{P}}{P} ($\prob{10}$)[.b \terminal{from}]]
+                               [\alt<5>{\alert{NP}}{NP} ($\prob{8}$)[.b \terminal{Cardiff}]]]]]]
+   \end{center}
+  \[  \uncover<2->{ P(T2, s) = p_1 (p_6) (p_3 }
+      \uncover<3->{ (p_9) (p_2 }
+      \uncover<4->{ (p_7) (p_5 }
+      \uncover<5->{(p_{10} p_8) }
+      \uncover<4->{ ) }
+      \uncover<3->{ ) }     
+      \uncover<2->{ ) }
+  \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Choosing the tree}
+  Choose tree 1 if $P(T1, S)/P(T2, S) > 1$.
+  
+  \[
+    \frac{P(T1, S)}{P(T2, S)} =
+    \frac{p_1 (p_6)( p_4 (p_3 (p_9 p_7)) (p_5 (p_{10} p_9)))}
+    { p_1 (p_6) (p_3 (p_9) (p_2 (p_7) (p_5 (p_{10} p_8))))} 
+    = \frac{p_4}{p_2}
+  \]
+
+\end{frame}
+
+%\begin{frame}
+%  \frametitle{Probabilistic CYK}
+%  \begin{tabular}{|*{5}{p{4em}|}}
+%    \hline
+%    & & & & NP \\
+%    & & & & \prob{8} \\
+%    \hline
+%    &  & & P &  \terminal{Cardiff} \\
+%    & & & \prob{10} & \\
+%    \hline
+%    &  &  NP & \terminal{from} & \\
+%    & & \prob{7} & & \\
+%    \hline
+%    &  V & \terminal{Bob} &   &   \\
+%    & \prob{9} & & & \\
+%    \hline
+%    NP & \terminal{called} & & &  \\
+%    \prob{6} & & & & \\
+%    \hline
+%    \terminal{Alice} & & & & \\
+%    & & & & \\
+%    \hline
+%  \end{tabular}
+%\end{frame}
+
+\begin{frame}
+  \frametitle{Probabilistic CYK}
+
+  \uncover<6->{\alt<6>
+              {If $p_4 p_3 p_7 p_9 p_5 p_8 p_{10} > p_3 p_9 p_2 p_7 p_5 p_8 p_{10}$:}
+              {If $p_4 p_3 p_7 p_9 p_5 p_8 p_{10} < p_3 p_9 p_2 p_7 p_5 p_8 p_{10}$:}}
+
+  \medskip
+  \begin{tabular}{|*{5}{l|}}%{|*{5}{p{5em}|}}
+    \hline
+    \uncover<6->{\alert{S}} & \uncover<4->{\alt<5,7>{\alert{VP$_2$}}{\alert{VP$_1$}}} & 
+    \uncover<3->{\alt<5,7>{\alert{NP}}{NP}} & \uncover<2->{\alt<4,6,7>{\alert{PP}}{PP}} &
+    \alt<6,7>{\alert{NP}}{NP} \\
+    \uncover<6->{\alt<6>
+                 {\sprob{1}\sprob{6}\sprob{4}\sprob{3}\sprob{7}\sprob{9}\sprob{5}\sprob{8}\sprob{10}}
+                 {\sprob{1}\sprob{6}\sprob{3}\sprob{9}\sprob{2}\sprob{7}\sprob{5}\sprob{8}\sprob{10}}}&
+    \uncover<4->{\alt<5,7>{\sprob{3}\sprob{9}\sprob{2}\sprob{7}\sprob{5}\sprob{8}\sprob{10}}
+                           {\sprob{4}\sprob{3}\sprob{7}\sprob{9}\sprob{5}\sprob{8}\sprob{10}}} & 
+    \uncover<3->{\sprob{2}\sprob{7}\sprob{5}\sprob{8}\sprob{10}} & 
+    \uncover<2->{\sprob{5}\sprob{8}\sprob{10}} & \sprob{8} \\
+    \hline
+    \uncover<4->{X} &  \uncover<3->{X} & \uncover<2->{X} & \alt<6,7>{\alert{P}}{P} &  \terminal{Cardiff} \\
+    & & & \sprob{10} & \\
+    \hline
+    \uncover<3->{S} & \uncover<2->{\alt<4,6>{\alert{VP}}{VP}} &  
+    \alt<6,7>{\alert{NP}}{NP} & \terminal{from} & \\
+    \uncover<3->{\sprob{1}\sprob{6}\sprob{3}\sprob{7}\sprob{9}} & 
+    \uncover<2->{\sprob{3}\sprob{7}\sprob{9}} & \sprob{7} & & \\
+    \hline
+    \uncover<2->{X} &  \alt<5,6,7>{\alert{V}}{V} & \terminal{Bob} &   &   \\
+    & \sprob{9} & & & \\
+    \hline
+    \alt<6,7>{\alert{NP}}{NP} & \terminal{called} & & &  \\
+    \sprob{6} & & & & \\
+    \hline
+    \terminal{Alice} & & & & \\
+    \hline
+  \end{tabular}
+\end{frame}
+
+
+\subsection{Training PCFGs}
+
+\begin{frame}
+  \frametitle{Estimating PCFG Probabilities}
+  \begin{itemize}
+  \item Treebank---corpus of parsed sentences 
+  \item Given a treebank compute the probability of each non-terminal
+    expansion ($A \rightarrow \alpha$) based on the counts $c(A \rightarrow \alpha)$:
+    \[ P(A \rightarrow \alpha | A ) = 
+    \frac{c(A \rightarrow \alpha)}{\sum_Y c(A \rightarrow Y)} =
+    \frac{c(A \rightarrow \alpha)}{c(A)} \]
+  \end{itemize}
+\end{frame}
+
+
+
+\subsection{Probabilistic lexicalised CFGs}
+
+\begin{frame}
+  \frametitle{Problems with PCFGs}
+  \begin{description}
+  \item[Structural] Rule probabilities are independent of location in
+    the parse tree.  For example pronouns are much more likely to be
+    subjects than objects
+  \item[Lexical] PCFGs only capture lexical information in the
+    expansion of pre-terminals.  
+
+    But, lexical dependencies can often be used to choose the correct
+    parse, eg:
+
+    \myquote{Carol eats chips with ketchup}
+    
+    \myquote{Carol eats chips with a fork}
+  \end{description}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Lexical dependence}
+  Data from Penn Treebank:
+
+  \medskip
+  \begin{tabular}{lllll}
+    Rule & \emph{come} & \emph{take} & \emph{think} & \emph{want} \\
+    VP $\rightarrow$ V & 0.095 & 0.026 & 0.046 & 0.057\\
+    VP $\rightarrow$ V NP & 0.011 & 0.321 & 0.002 & 0.139 \\
+    VP $\rightarrow$ V PP & 0.345  & 0.031 & 0.071 & 0.003 \\
+    VP $\rightarrow$ V S & 0.022 & 0.013 & 0.048 & 0.708 \\
+  \end{tabular}
+
+  \medskip
+  The rule used to expand VP is strongly dependent on the verb
+\end{frame}
+
+\begin{frame}
+  \frametitle{Lexicalised PCFGs}
+  \begin{itemize}
+  \item Annotated each non-terminal with its \emph{lexical head}
+  \item Each rule has a head child on the left hand side;  the
+    headword for a node is then the headword of its head child
+  \item Easy for simple examples (eg the noun is the head of an NP,
+    the verb is the head of a VP);  harder in
+    practice
+  \item Various heuristics for finding the head robustly (mainly
+    developed on Penn Treebank)
+  \item A ``simple'' lexicalised CFG is a basic CFG with a lot more
+    rules (ie each rule is copied for each headword) --- but this is
+    impractical!
+  \item Make some independence assumptions and condition the
+    probability of each rule on the head (or nearby heads)
+  \end{itemize}
+\end{frame}
+
+\end{document}

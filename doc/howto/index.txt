@@ -1,0 +1,30 @@
+.. -*- mode: rst -*-
+
+====================================================
+NLTK Guides: Demonstration Code and Regression Tests
+====================================================
+
+These files serve two purposes.  First, they demonstrate
+to use NLTK to perform a variety of tasks.  And second, they act as a
+regression test suite, to ensure that new bugs are not accidentally
+introduced into NLTK.  
+
+Each file typically begins with a description of the topic(s) covered
+by that file, followed by several sections containing explanatory
+examples.  These examples should be helpful to anyone who wants to
+learn more about specific pieces of NLTK.
+
+These explanatory sections are followed by "regression test" sections,
+which are meant to verify that NLTK's implementation is functioning
+properly.  These sections tend to explore NLTK's behavior in a variety
+of exceptional cases.  The "regression test" sections may be useful to
+NLTK users, but are mainly intended for testing purposes.  In order to
+help develop complete test sets, we automatically determine `which
+parts of NLTK's source code are covered by tests <coverage/>`__.  Our
+goal is to have 100% coverage for all modules.
+
+.. include:: test-list.txt
+
+----
+
+`Return to the NLTK Homepage <http://www.nltk.org/>`__

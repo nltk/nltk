@@ -1,0 +1,67 @@
+CHAPTER         TASK
+-----------------------------------------------------------------------------
+
+012345...9ABC   Hellmann Review
+0123456..9ABC   Indurkya Review
+0123456789ABC   Munn Review
+012345...9ABC   Rhodes Review
+012345.789ABC   Schlansker Review
+0123456789ABC   Sproat Review
+
+012345..89ABC   Extended captions so figures and pylistings are self-contained
+012345...9A.C   Summary finalized
+012345..8.A.C   Further readings finalized
+01..........C   Exercises checked for coverage of chapter, sequence
+012345...9ABC   Book issues in issue tracker dealt with
+012345...9A.C   Doctests checked
+012345......C   Roughly uniform use of note blocks and |TRY|
+012345....A..   Ensure no XXX annotations are commenting out a code block
+012345...9A..   No writing left to do
+
+-----------------------------------------------------------------------------
+
+012345...9...   Doctest callouts used for referring to locations in code
+012345.......   Overflowing lines fixed
+012345.789ABC   All numbered displays (figure, pylisting, table) referenced from text
+01...........   Typographic changes implemented throughout, e.g. ->, :gc:
+0123456789ABC   Consistent URL formatting
+01...........   Image scaling ok
+012345.....B.   US spell check done
+0............   Check for any more index terms
+
+-----------------------------------------------------------------------------
+
+General issues:
+* NLTK index and stoplist
+* Comments back to O'Reilly in docs/notes.txt
+* Code examples would be easier to read if the user input and the
+  system output were in different fonts -- e.g., bold for user input.
+* We're inconsistant about whether to include a blank trailing prompt
+  (">>>") in our code examples.
+* Ensure the URLs are in the following format:
+  ``http://www.nltk.org`` including those inserted via rst replace  such as |NLTK-URL|
+* n-gram vs *n*-gram markup
+
+Outstanding issues:
+
+ch06 only has only one |TRY| exercise
+ch07 has a conclusion (non-standard) but no summary
+ch07 needs some non-chunking exercises
+ch07 could describe SRL in 7.1 as another shallow processing task
+ch07 should describe NLTK's off-the-shelf NE tagger
+ch07 typography should follow the simplified style of later chapters, e.g. with NP
+ch07 only has two |TRY| exercises
+ch08 language is more formal than necessary, less accessible than it should be
+ch08 typography should no longer use :gc:
+ch08 section 8.6 on grammar development is incomplete (incl PE08 discussion)
+ch08 assumes knowledge of "head" (did some content disappear?) [it got moved to ch09]
+ch09 uses :lex: role, not processed by docbook [`appear`:lex: also in ch03]
+ch09 could mention use of trees as source of features for ML
+ch09 includes contents of grammar files that have changed in data distribution
+ch09 has no |TRY| exercises
+ch11 has no |TRY| exercises
+
+
+ch07 -- reorder, put the stuff that we can't actually do (IE, etc) at the end
+  - move the n-gram and ne classifier earlier, to establish the connection
+    to chapters 5 and 6.

@@ -1,0 +1,27 @@
+nltk 1.3 documentation
+By: Patrick Ye (jingy) - 2004-04-14 17:12
+Would it be possible to package the documentation for version 1.3 so it can be downloaded easily? This would 
+be pretty useful in case we have no internet access. 
+ 
+Thanks a lot. 
+ 
+Patrick
+
+
+      RE: nltk 1.3 documentation
+      By: Edward Loper (edloperProject Admin) - 2004-04-15 09:11
+      I just added it to the files page: http://sourceforge.net/project/showfiles.php?group_id=30982 
+       
+      Sorry for the omission. 
+
+
+nltk_contrib for WordNet
+By: Patrick Ye (jingy) - 2004-04-14 17:04
+Hi, 
+ 
+I created a python package (with a setup.py) for interfacing python/nltk with WordNet using the C code that comes with the WordNet library. I'm not sure how to integrate this new package into nltk_contrib, i.e, should I just use the python package or unpackage it and treat it as just a directory that contains a few python files? 
+ 
+Any help would be appreciated. 
+ 
+Patrick
+

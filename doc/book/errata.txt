@@ -1,0 +1,144 @@
+The following errata were fixed for the second printing of the book, in December 2009.
+
+General:
+* No trees should have boldfaced text (except the one on p167).
+* bad pagebreaks: xiv, 18, 43, 76, 103, 341, 343
+* Some readers report that the program line annotations (numbered bullets)
+  are confusing in their current position.  Can they be placed to the left of the line?
+* ch 9: DAGs all scaled too big
+
+Issues with Figures:
+
+Fig 1.1 -- more contrast (supplied image was color)
+Fig 1.3 -- smaller scale
+Fig 2.1 -- more contrast (supplied image was color)
+Fig 2.7 -- more contrast (supplied image was color)
+Fig 4.3 -- inconsistent arrow style, colliding arrow heads, inconsistent arrow origins
+Fig 6.5 -- higher resolution (we need to supply a better image)
+Fig 9.1 -- smaller scale (closer in size to example (18) same page), fix broken vbars
+Fig 10.3 -- fix horizontal alignment (subtrees rooted at greek letter variables)
+Fig 11.4 -- missing subscript on s_1
+
+p9 16d lexical diversity()  s/b  lexical_diversity()  -- with underscore instead of space
+
+p18 Fig 1-4 or the code that creates it needs to be fixed (currently NLTK does counts, not percentages)
+
+p46 2d: file[:4] -> fileid[:4]
+
+p88 3up: print b -> print line
+
+p92 middle: s.titlecase() -> s.title()
+
+p115 first line after example 3-3: maximizes  s/b  minimizes
+
+p132 9up "makes detection is easier"  s/b  "makes detection easier"
+
+p144 16up "an empty dictionary"  s/b  "an empty list"
+
+p153 3d add quotes around "in-place dictionary"
+  add following sentence: (Dictionaries will be presented in Section 5.3.)
+
+p153 bottom and 154 top -- code block spanning page break:
+  variable "trace" should be renamed to "verbose" x4
+
+p172 3d "dendogram"  s/b  "dendrogram"
+
+p177 ex 33 -- move to chapter 5 (new exercise 43).  Change reference "described in chapter 5"
+     to "described in this chapter"
+
+p234 example 6-6:
+   6up: for i, word in words:  s/b  for i, word in enumerate(words):
+   5up: classifier.classify(words, i)  s/b  classifier.classify(punct_features(words, i))
+   0up: add final line of code, indented at same level as "if" statement: return sents
+
+p243 10up formula (1) please insert minus sign between equals and uppercase sigma
+
+p306 17up "The advantages of shift-reduce" s/b "The advantage of shift-reduce"
+
+p309 9up "through entire list" s/b "through the entire list" 
+
+p309 13-14up "Det at wfst[0][1] and N at wfst[1][2], we can add NP to wfst[0][2]" s/b
+"Det at wfst[2][3] and N at wfst[3][4], we can add NP to wfst[2][4]"  
+
+p309 9up "through entire list" s/b "through the entire list" 
+   (from previous list)
+
+p334 10d Delete this whole line, viz "NP[NUM=?n] -> N[NUM=?n]", and close up space.
+
+p336 Fig 9.1 -- larger scale (closer in size to example (18) same page), fix broken vbars
+  (reported as too big last time, but now it is too small.)
+
+  
+p339 (23) incorrect diagram; it should be: 
+  http://nltk.googlecode.com/svn/trunk/doc/book/ch09.html#ex-dag04
+
+p342 DAG (27a) is incorrect. It should look just like (27c) but *without* the middle arc
+    labeled 'CITY'. (The online version of this chapter is correct, and uses dag04-1.png
+    for this subfigure.)
+     
+p355 -- remove box from code block
+
+p363 21d -- node['sem']  s/b  node['SEM']
+
+p373 19d "such as <e, e> or <e, <e, t>." s/b 
+         "such as <e, e> or <e, <e, t>>."
+
+p382 (28) -- smaller scale
+
+p389 17up  "nltk.Variable('z')" s/b "nltk.sem.Variable('z')"
+
+p391 6d insert space before "yields"
+
+p392 6d "nltk.ApplicationExpression(tvp, np)" s/b
+        "nltk.sem.ApplicationExpression(tvp, np)"
+
+p393 8up -- semrel s/b semrep
+
+p393 5up
+    exists z3.(ankle(z3) & bite(cyril,z3))
+    s/b
+    all z4.(boy(z4) -> see(cyril,z4))
+
+p395 8up "core", "store" s/b uc in the SEM value of VP
+
+p396 20up "trees[0].node['sem']" s/b "trees[0].node['SEM']"
+
+p399 4d Det[NUM=sg,SEM=<\P Q.([x],[]) + P(x) + Q(x)>] -> 'a' 
+        s/b 
+        Det[NUM=sg,SEM=<\P Q.(([x],[]) + P(x) + Q(x))>] -> 'a'
+
+
+p400 20d "trees[0].node['sem'].simplify()" s/b 
+         "trees[0].node['SEM'].simplify()"
+
+p405-406 exs (5)-(7). Please replace all seven occurrences of 
+         "nltk.ApplicationExpression" with 
+         "nltk.sem.ApplicationExpression".
+
+p426 1d: add opening <sense> tag on new line, after closing </sense> tag:
+   (from OReilly errata)
+
+     <entry>
+       <headword>whale</headword>
+       <pos>noun</pos>
+       <sense>
+         <gloss>any of the larger cetacean mammals having a streamlined
+           body and breathing through a blowhole on the head</gloss>
+         <synset>whale.n.02</synset>
+       </sense>
+       <sense>     <------------------------ NEW TAG HERE
+         <gloss>a very large person; impressive in size or qualities</gloss>
+         <synset>giant.n.04</synset>
+       </sense>
+     </entry>
+     
+p429 11-12d sentence beginning with "Ignoring...", please replace with
+    the following (and set "OTH" in cw):
+
+    Ignoring the entries for exchanges between people
+    other than the top 5 (labeled OTH), the largest value suggests
+    that Portia and Bassanio have the most significant interactions.
+
+p444 7d can never been known  s/b  can never be known
+
+p467: "deve-test" -> "dev-test"

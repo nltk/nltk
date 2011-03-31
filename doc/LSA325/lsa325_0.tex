@@ -1,0 +1,186 @@
+%\documentclass{beamer}             % for slides
+\documentclass[handout]{beamer}    % for handout
+\input{beamer}
+
+\title{Introduction to Computational Linguistics\\LSA 325}
+
+\author{Steven Bird \and Ewan Klein \and Edward Loper}
+\institute{
+  University of Melbourne, AUSTRALIA
+  \and
+  University of Edinburgh, UK
+  \and
+  University of Pennsylvania, USA
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Materials and Resources}
+  \begin{itemize}
+  \item Chapters from the NLTK Book
+    (\url{http://nltk.org/index.php/Book})
+    \begin{itemize}
+      \item Initially reusing readings for LSA 110 (Chapters 1--5)
+      \item Second installment (Chapters 6 -- 13) should be available
+        at Stanford Bookstore towards end of next week.
+    \end{itemize}
+
+    \item \textbf{Su07-LSA-325} page on \url{http://coursework.stanford.edu}
+    \item Main NLTK page: \url{http://nltk.org}
+      \begin{itemize}
+        \item Chatroom
+        \item \texttt{nltk-users} Mailing List
+      \end{itemize}
+
+   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Assumptions}
+  \begin{itemize}
+  \item Knowledge of Python corresponding to material covered in
+    Chapter 2
+    \begin{itemize}
+    \item If you haven't finished working through Chapter 2, please do
+      so by Monday 9 July
+    \end{itemize}
+
+  \item A working installation of NLTK, including corpora
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Syllabus}
+  \begin{description}
+  \item[Class 1, Thu 5 July] Intro, Words (Ch.\ 3)
+  \item[Class 2, Mon 9 July] Tagging (Ch.\ 4)
+  \item[Class 3, Thu 12 July] Chunking (Ch.\ 5)
+  \item[Class 4, Mon 16 July] Linguistic Data Management, Grammars \&
+    Parsing (Chs.\ 13, 5)
+  \item[Class 5, Thu 19 July] More Parsing, Feature-based Grammar
+    (Chs.\ 8, 9)
+  \item[Class 6, Mon 23 July] Compositional Semantics (Ch.\ 11)
+  \item[Class 7, Thu 26 July] Language Engineering (Ch.\ 12)
+ 
+   \end{description}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Assessment}
+  \begin{itemize}
+    \item Certain exercises from the book will be designated as required for credit.
+    \item Submit via Dropbox on \texttt{coursework.stanford.edu}
+    \item In addition: 2--3 pages critique of some aspect of the book,
+      with concrete suggestions for fixes or improvement.
+ 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data Sets}
+  \begin{tabular}{ll}
+    `theoretical' grammars & a few hundred words\\
+    Brown corpus           & 1 million words\\
+    British National Corpus & 100 million words \\
+    LDC Gigaword Corpus    & 1,000 million words \\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Textual Inference (or RTE)}
+  \begin{description}
+  \item[Text] Soprano's Square: Milan, Italy, home of the famed La
+    Scala opera house, honored soprano Maria Callas on Wednesday when
+    it renamed a new square after the diva.
+  \item[Hypothesis] La Scala opera house is located in Milan, Italy.
+  \end{description}
+\end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{Python and NLTK}
+%   \begin{itemize}
+%     \item Pre-session for \textit{Introduction to
+%         Computational Linguistics} (LSA 325)
+%     \item First steps in using Python and Natural Language Toolkit (NLTK)
+%     \item Why Python?
+%       \begin{itemize}
+%       \item designed to be easy to learn;
+%       \item good for processing linguistic data;
+%       \item good for interactive experiments.
+%       \end{itemize}
+%     \item Many online tutorials (see \url{www.python.org})
+%   \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Materials and Resources}
+%   \begin{itemize}
+%   \item Chapter 2, \textit{Programming Fundamentals and Python} in the NLTK Book
+%     (\url{http://nltk.org/index.php/Book})
+%     \item \textbf{Su07-LSA-110} page on \url{http://coursework.stanford.edu}
+%     \item Main NLTK page: \url{http://nltk.org}
+%       \begin{itemize}
+%         \item Chatroom
+%         \item \texttt{nltk-users} Mailing List
+%       \end{itemize}
+
+%    \end{itemize}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Audience and Goals}
+%   \begin{itemize}
+%   \item We are assuming you have not done programming before.
+%   \item So, getting you to a point where:
+%     \begin{itemize}
+%     \item you have got some confidence in using basic Python commands;
+%     \item you can use Python for carrying out simple operations on text;
+%     \item you can do all the easy and intermediate exercises in
+%       Chapter 2;
+%     \item you have found out where to get more information (fellow
+%       students, the web, textbooks)
+%     \end{itemize}
+%    \end{itemize}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Syllabus}
+%   \begin{description}
+%   \item[Class 1] Manipulating strings, lists and other sequences.
+%   \item[Class 2] Conditionals, dictionaries, functions and regular
+%     expressions.
+%   \item[Class 3] Preview of NLTK chapters on Words and Tagging
+%    \end{description}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Almost there \ldots}
+%   \begin{itemize}
+%   \item Installation CDs
+%   \item Today: at least Python
+%   \item Tomorrow: full NLTK installation
+%   \item Homework: catch up on exercises and reading
+%    \end{itemize}
+% \end{frame}
+
+
+
+
+\end{document}

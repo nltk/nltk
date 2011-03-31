@@ -1,0 +1,115 @@
+\documentclass[t]{beamer}             % for slides
+%\documentclass[handout]{beamer}    % for handout
+\input{beamer}
+
+\title{Introduction to Computational Linguistics\\LSA 325}
+
+\author{Steven Bird \and Ewan Klein \and Edward Loper}
+\institute{
+  University of Melbourne, AUSTRALIA
+  \and
+  University of Edinburgh, UK
+  \and
+  University of Pennsylvania, USA
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}
+
+  \frametitle{Compositional Semantics}
+
+  \begin{itemize}
+  \item Contrast with lexical semantics
+  \item Meaning of a phrase is a function of the meaning of its parts
+  \item Truth-conditions: minimum hurdle for a theory of meaning
+  \item Entailment ($\phi \Rightarrow \psi$:  every situation that makes
+    $\phi$ true also make $\psi$ true
+ 
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+
+  \begin{exampleblock}{Entailment Examples}
+      \begin{itemize}
+    \item \textit{Kim eats toasted bagels} $\Rightarrow$ \textit{Kim eats
+        bagels}
+    \item \textit{Lee sings and dances} $\Rightarrow$ \textit{Lee sings}
+    \item \textit{Lee sings songs to Kim} $\Rightarrow$ \textit{Lee sings
+        songs to someone}
+    \item \textit{Kim hates all green vegetables and calabrese is a green
+      vegetable} $\Rightarrow$ \textit{Kim hates
+       calabrese}
+    \end{itemize}
+  \end{exampleblock}
+
+\end{frame}
+
+\begin{frame}
+
+  \frametitle{Truth in a model, version 1}
+
+  \begin{itemize}
+  \item A model is a pair $\langle D, V\rangle$
+  \item $V:$ Individual terms $\mapsto$ entities in $D$
+  \item $V:$ 1-place predicates $\mapsto$ sets of entities
+  \item $V:$ 2-place predicates (relations) $\mapsto$ sets of pairs of entities
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\frametitle{Truth in a model, version 1}
+
+\begin{exampleblock}{N-ary Relations}
+\begin{verbatim}
+    ('boy', set(['b1', 'b2'])),
+    ('chase', set([('b1', 'g1'), ('b2', 'g1'), ('g1', 'd1'), ('g2', 'd2')])),
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}
+
+  \frametitle{Truth in a model, version 2}
+
+  \begin{itemize}
+  \item A model is a pair $\langle D, V\rangle$
+  \item Individual terms $\mapsto$ entities
+  \item 1-place predicates $\mapsto$ mappings from entities to truth values
+  \item 2-place predicates (relations) $\mapsto$ mappings from
+    entities to the meanings of 1-place predicates
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+
+\frametitle{Truth in a model, version 2}
+
+\begin{exampleblock}{Characteristic Functions}
+\begin{verbatim}
+ 'boy': {'b1': True, 'b2': True},
+ 'chase': {'d1': {'g1': True},
+           'd2': {'g2': True},
+           'g1': {'b1': True, 'b2': True}},
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+
+
+\end{document}

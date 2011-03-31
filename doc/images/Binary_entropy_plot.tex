@@ -1,0 +1,18 @@
+%Plot of information entropy of bernoulli variable
+%
+%latex binary_entropy_plot; dvips binary_entropy_plot
+%open .ps file in gimp, choose strong antialias in both text and graphics,
+%resulution 500, color mode, crop, scale to 45%, save as .png
+\documentclass[12pt]{article}
+\usepackage{pst-plot}
+\begin{document}
+\psset{unit=4cm}        
+\begin{pspicture}(0,0)(1.01,1)
+\psgrid[gridlabels=0pt,gridcolor=lightgray,subgriddiv=10,subgridcolor=lightgray](0,0)(0,0)(1,1)
+\newrgbcolor{myblue}{0 0 0.7}
+\psaxes[arrows=->,arrowsize=2pt 4,Dx=0.5,Dy=0.5](0,0)(0,0)(1.1,1.1)
+\psplot[plotstyle=curve,plotpoints=100,linewidth=1.8pt,linecolor=myblue]{0.0001}{0.9999}{-1 x x log 2 log div mul 1 x sub 1 x sub log 2 log div mul add mul}
+\rput(0.5,-0.22){$P(male)$}
+\rput{90}(-0.28,0.5){$H$}
+\end{pspicture}
+\end{document}

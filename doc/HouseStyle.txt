@@ -1,0 +1,132 @@
+.. -*- mode: rst -*-
+.. include:: definitions.rst
+
+==========================================
+NLTK Book House Style: Restructured Text
+==========================================
+
+------------------
+ReST Inline Markup
+------------------
+
+
+Double backquotes are used for code:: 
+
+  e.g., the ``tokenize.whitespace`` function
+
+Double quotes used for quoted speech:: 
+
+  e.g., a noun is "the name of a person, place or thing"
+
+Single quotes used for scare quotes:: 
+
+  e.g., there is no one 'right way' to assign tags
+
+----------
+Text Roles
+----------
+
+LX: Linguistic eXample -- cited form in running text::
+
+  e.g.,  the verb `walks`:lx:
+
+DT: Defined Term -- first or canonical use of technical term::
+
+  e.g.,  the process of `parsing`:dt:
+
+GC: Grammatical Category::
+
+  e.g., `NP`:gc:  and `verb`:gc:  as technical terms
+  
+EM: Emphasis::
+
+  e.g., this word is `emphasised`:em: here.
+
+-----------------------------
+Examples and Cross-references
+-----------------------------
+
+Write examples using the custom 'example' directive (or 'ex' for short)::
+
+  .. ex:: John went to the store.
+  .. ex:: John bought some bread.
+
+The example directive may be nested, to define groups of related examples::
+
+  .. ex::
+    .. ex:: John went to the store.
+    .. ex:: \* John went from the store.
+
+(Note that \* must be backslashed when used to indicate grammaticality
+judgements.)
+
+To refer to an example, mark it with a crossreference target, and
+refer to it with a crossreference link::
+
+  .. _johntostore:
+  .. ex:: John went to the store.
+
+  In example johntostore_, `John`:lx: is the subject.
+
+.. Old instructions:
+
+  When the text above an example refers to the example by number, the
+  text ends with a period. When the text does not refer to the example
+  by number, it ends with a colon.
+  In text references, place letters referring to subexample numbers
+  inside parentheses.  (2a), (5a – b), (6a,c), (6a – f),
+  (8a,c,d),
+
+
+------
+Titles
+------
+
+Section titles and captions should have initial capitals on non-function words.
+
+-----
+Trees
+-----
+
+Write trees using the custom 'tree' directive::
+
+  .. tree:: (S (NP John) (VP (V saw) (NP Mary)))
+
+Constituents that should be drawn with a 'roof' (i.e., a triangle
+between the node & its children, rather than individual lines)
+are marked using angle brackets::
+
+  .. tree:: (S (NP John) <VP saw Mary>)
+
+Subscripting is done using underscore (similar to latex).  If
+the subscripted string is more than one character long, it should
+be enclosed in brackets::
+
+  .. tree:: (S (NP Mary_i) (VP was (VP seen t_i)))
+
+Substrings can be italicized by using '*...*'::
+
+  .. tree:: (S (NP *Mary_i*) (VP was (VP seen *t_i*)))
+
+Backslash can be used to escape characters that would otherwise
+be treated as markup (i.e., any of C{'<>()_* '}).  Note that this
+list includes space::
+
+  .. tree:: (S (NP Mary) (VP went (PP to (NP New\ York))))
+
+Typically, trees will be included as the single element of an example::
+
+  .. ex::
+    .. tree:: (S (NP Mary) (VP went (PP to (NP New\ York))))
+  
+------------------
+Dashes and Hyphens
+------------------
+
+Use an em-dash between words::
+
+ e.g.,   you should try yourself |mdash| in fact, we insist!
+
+Use an en-dash between numerals::
+
+ e.g.,  during the persiod 1900\ |ndash|\ 1950

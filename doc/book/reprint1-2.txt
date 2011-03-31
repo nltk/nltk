@@ -1,0 +1,37 @@
+Communicated to O'Reilly on 2009-12-04
+
+p9 16d lexical diversity()  s/b  lexical_diversity()  -- with underscore instead of space
+
+p18 Fig 1-4 or the code that creates it needs to be fixed (currently NLTK does counts, not percentages)
+
+p46 Fig 2.1 -- more contrast (supplied image was color)
+
+p132 9up "makes detection is easier"  s/b  "makes detection easier"
+
+p144 16up "an empty dictionary"  s/b  "an empty list"
+
+p153 3d add quotes around "in-place dictionary"
+  add following sentence: (Dictionaries will be presented in Section 5.3.)
+
+p153 bottom and 154 top -- code block spanning page break:
+  variable "trace" should be renamed to "verbose" x4
+
+p172 3d "dendogram"  s/b  "dendrogram"
+
+p177 ex 33 -- move to chapter 5 (new exercise 43).  Change reference "described in chapter 5"
+     to "described in this chapter"
+
+p336 Fig 9.1 -- larger scale (closer in size to example (18) same page), fix broken vbars
+  (reported as too big last time, but now it is too small.)
+  
+p391 6d insert space before "yields"
+
+p393 8up -- semrel s/b semrep
+
+p393 5up
+    exists z3.(ankle(z3) & bite(cyril,z3))
+    s/b
+    all z4.(boy(z4) -> see(cyril,z4))
+
+General: Some readers report that the program line annotations (numbered bullets)
+  are confusing in their current position.  Can they be placed to the left of the line?
