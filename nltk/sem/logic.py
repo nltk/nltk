@@ -1737,15 +1737,5 @@ def printtype(ex):
     print ex.str() + ' : ' + str(ex.type)
 
 if __name__ == '__main__':
-#    demo()
-#    demo_errors()
-
-#    print LogicParser().parse(r'(\P Q.exists x.(P(x) & Q(x)))(?np)')
-#    print LogicParser().parse(r'?rel(stuff)')
-#    print LogicParser().parse(r'A(B(C))')
-#    print LogicParser().parse(r'     \P Q.(exists x.(P(x) & Q(x)))(?np) ')
-#    print LogicParser().parse(r'?rel(\P Q.(exists x.(P(x) & Q(x)))(?np))')
-#    print LogicParser().parse(r'B(C)')
-#    print LogicParser().parse(r'(B)(C)')
-    print LogicParser().parse(r'A((B)(C))')
-    print LogicParser().parse(r'?rel((\P Q.exists x.(P(x) & Q(x)))(?np))')
+    demo()
+    demo_errors()
