@@ -1198,7 +1198,7 @@ class LogicParser(object):
                            [(x,8) for x in Tokens.IMP_LIST]                + \
                            [(x,9) for x in Tokens.IFF_LIST]                + \
                            [(None,10)])
-        self.right_associated_operations = []
+        self.right_associated_operations = [APP]
 
     def parse(self, data, signature=None):
         """
