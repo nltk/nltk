@@ -502,3 +502,18 @@ Bug 482: Some nouns not being lemmatised by WordNetLemmatizer().lemmatize
     'egg'
     >>> WordNetLemmatizer().lemmatize("legs", pos="n")
     'leg'
+
+Bug 284: instance hypernyms not used in similarity calculations
+
+    >>> wn.synset('john.n.02').lch_similarity(wn.synset('dog.n.01'))
+    1.335...
+    >>> wn.synset('john.n.02').wup_similarity(wn.synset('dog.n.01'))
+    0.571...
+    >>> wn.synset('john.n.02').res_similarity(wn.synset('dog.n.01'), brown_ic)
+    2.224...
+    >>> wn.synset('john.n.02').jcn_similarity(wn.synset('dog.n.01'), brown_ic)
+    0.075...
+    >>> wn.synset('john.n.02').lin_similarity(wn.synset('dog.n.01'), brown_ic)
+    0.252...
+    >>> wn.synset('john.n.02').hypernym_paths()
+    [[Synset('entity.n.01'), ..., Synset('john.n.02')]]

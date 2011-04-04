@@ -417,7 +417,7 @@ class Synset(_WordNetObject):
         """
         paths = []
 
-        hypernyms = self.hypernyms()
+        hypernyms = self.hypernyms() + self.instance_hypernyms()
         if len(hypernyms) == 0:
             paths = [[self]]
 
@@ -1601,7 +1601,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     # set of subsumers.
 
     eliminated = set()
-    hypernym_relation = lambda s: s.hypernyms()
+    hypernym_relation = lambda s: s.hypernyms() + s.instance_hypernyms()
     for s1 in subsumers:
         for s2 in subsumers:
             if s2 in s1.closure(hypernym_relation):
