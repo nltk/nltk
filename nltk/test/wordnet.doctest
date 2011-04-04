@@ -526,3 +526,9 @@ Issue 541: add domains to wordnet
     [Synset('india.n.01')]
     >>> wn.synset('freaky.a.01').usage_domains()
     [Synset('slang.n.02')]
+
+Issue 629: wordnet failures when python run with -O optimizations
+
+    >>> # Run the test suite with python -O to check this
+    >>> wn.synsets("brunch")
+    [Synset('brunch.n.01'), Synset('brunch.v.01')]
