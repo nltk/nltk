@@ -517,3 +517,12 @@ Bug 284: instance hypernyms not used in similarity calculations
     0.252...
     >>> wn.synset('john.n.02').hypernym_paths()
     [[Synset('entity.n.01'), ..., Synset('john.n.02')]]
+
+Issue 541: add domains to wordnet
+
+    >>> wn.synset('code.n.03').topic_domains()
+    [Synset('computer_science.n.01')]
+    >>> wn.synset('pukka.a.01').region_domains()
+    [Synset('india.n.01')]
+    >>> wn.synset('freaky.a.01').usage_domains()
+    [Synset('slang.n.02')]
