@@ -125,6 +125,15 @@ class _WordNetObject(object):
     def part_meronyms(self):
         return self._related('%p')
 
+    def topic_domains(self):
+        return self._related(';c')
+        
+    def region_domains(self):
+        return self._related(';r')
+        
+    def usage_domains(self):
+        return self._related(';u')
+
     def attributes(self):
         return self._related('=')
 
@@ -194,6 +203,9 @@ class Lemma(_WordNetObject):
     member_meronyms
     substance_meronyms
     part_meronyms
+    topic_domains
+    region_domains
+    usage_domains
     attributes
     derivationally_related_forms
     entailments
@@ -1786,6 +1798,10 @@ def demo():
 
     ic = wnic.ic('ic-semcor.dat')
     print S('dog.n.01').lin_similarity(S('cat.n.01'), ic)
+
+    print S('code.n.03').topic_domains()
+    print S('pukka.a.01').region_domains()
+    print S('freaky.a.01').usage_domains()
 
 if __name__ == '__main__':
     demo()
