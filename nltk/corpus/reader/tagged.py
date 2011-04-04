@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2011 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu>
+#         Jacob Perkins <japerk@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -18,6 +19,7 @@ from nltk.internals import deprecated
 
 from api import *
 from util import *
+from timit import read_timit_block
 
 class TaggedCorpusReader(CorpusReader):
     """
@@ -278,3 +280,17 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
 
     def _read_block(self, stream):
         return read_regexp_block(stream, r'.*', r'.*_\.')
+
+class TimitTaggedCorpusReader(TaggedCorpusReader):
+    """
+    A corpus reader for tagged sentences that are included in the TIMIT corpus.
+    """
+    def __init__(self, *args, **kwargs):
+        TaggedCorpusReader.__init__(
+            self, para_block_reader=read_timit_block, *args, **kwargs)
+    
+    def paras(self):
+        raise NotImplementedError('use sents() instead')
+    
+    def tagged_paras(self):
+        raise NotImplementedError('use tagged_sents() instead')
