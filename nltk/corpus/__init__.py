@@ -181,6 +181,9 @@ switchboard = LazyCorpusLoader(
     'switchboard', SwitchboardCorpusReader)
 timit = LazyCorpusLoader(
     'timit', TimitCorpusReader)
+timit_tagged = LazyCorpusLoader(
+    'timit', TimitTaggedCorpusReader, '.+\.tags',
+    tag_mapping_function=simplify_wsj_tag)
 toolbox = LazyCorpusLoader(
     'toolbox', ToolboxCorpusReader, r'(?!.*(README|\.)).*\.(dic|txt)')
 treebank = LazyCorpusLoader(
