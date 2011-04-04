@@ -1154,7 +1154,8 @@ class WordNetCorpusReader(CorpusReader):
             else:
                 for _ in xrange(frame_count):
                     # read the plus sign
-                    assert next() == '+'
+                    plus = next()
+                    assert plus == '+'
                     # read the frame and lemma number
                     frame_number = int(next())
                     frame_string_fmt = VERB_FRAME_STRINGS[frame_number]
