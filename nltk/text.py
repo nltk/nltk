@@ -6,6 +6,14 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+This module brings together a variety of NLTK functionality for
+text analysis, and provides simple, interactive interfaces.
+Functionality includes: concordancing, collocation discovery,
+regular expression search over tokenized strings, and
+distributional similarity.
+"""
+
 from math import log
 import re
 
