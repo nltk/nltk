@@ -95,7 +95,8 @@ comtrans = LazyCorpusLoader(
     'comtrans', AlignedCorpusReader, r'(?!\.).*\.txt')
 conll2000 = LazyCorpusLoader(
     'conll2000', ConllChunkCorpusReader,
-    ['train.txt', 'test.txt'], ('NP','VP','PP'))
+    ['train.txt', 'test.txt'], ('NP','VP','PP'),
+    tag_mapping_function=simplify_wsj_tag)
 conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', 
     ('LOC', 'PER', 'ORG', 'MISC'), encoding='utf-8')
@@ -178,7 +179,8 @@ stopwords = LazyCorpusLoader(
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*')
 switchboard = LazyCorpusLoader(
-    'switchboard', SwitchboardCorpusReader)
+    'switchboard', SwitchboardCorpusReader,
+    tag_mapping_function=simplify_wsj_tag)
 timit = LazyCorpusLoader(
     'timit', TimitCorpusReader)
 timit_tagged = LazyCorpusLoader(

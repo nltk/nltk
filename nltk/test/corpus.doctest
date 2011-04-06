@@ -175,6 +175,11 @@ tags are collapsed to a single category ``N``:
     >>> print brown.tagged_sents(simplify_tags=True) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [[('The', 'DET'), ('Fulton', 'NP'), ('County', 'N'), ('Grand', 'ADJ'), ...],
      [('The', 'DET'), ('jury', 'N'), ('further', 'ADV'), ('said', 'VD'), ...]...]
+    >>> from nltk.corpus import conll2000, switchboard
+    >>> print conll2000.tagged_words(simplify_tags=True) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [('Confidence', 'N'), ('in', 'P'), ('the', 'DET'), ...]
+    >>> print switchboard.tagged_words(simplify_tags=True) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [('Uh', 'UH'), (',', ','), ('do', 'V'), ('you', 'PRO'), ...]
 
 Use ``nltk.draw.pos-concordance()`` to access a GUI for searching tagged corpora.
 
