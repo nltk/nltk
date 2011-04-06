@@ -67,7 +67,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
             the corpus. Default is 'ALL'. Common choices are 'CHI' (all 
             children) and 'MOT' (mothers)
         @param stem: If true, then use word stems instead of word strings.
-        @param relation: If true, then return tuples of C{(str,relation_list)}
+        @param relation: If true, then return tuples of C{(str,pos,relation_list)}.
+            If there is manually-annotated relation info, it will return tuples of
+            tuples of C{(str,pos,test_relation_list,str,pos,gold_relation_list)}
         @param pos: If true, then return tuples of C{(stem, part_of_speech)}
         @param strip_space: If true, then strip trailing spaces from word 
             tokens. Otherwise, leave the spaces on the tokens.
@@ -230,19 +232,23 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             if suffixStem:
                                 suffixStem = (suffixStem,None)
                     # relational
-                    # the gold standard is stored in <mor></mor><mor type="trn">
+                    # the gold standard is stored in <mor></mor><mor type="trn"><gra type="grt">
                     if relation == True:
                         for xmlstem_rel in xmlword.findall('.//{%s}mor/{%s}gra' % (NS,NS)):
-                            if not xmlstem_rel.get('type') == 'trn':
+                            if not xmlstem_rel.get('type') == 'grt':
                                 word = (word[0],word[1],xmlstem_rel.get('index')+"|"+xmlstem_rel.get('head')+
                                         "|"+xmlstem_rel.get('relation'))
                             else:
-                                word = (word,xmlstem_rel.get('index')+"|"+xmlstem_rel.get('head')+
-                                    "|"+xmlstem_rel.get('relation'))
+                                word = (word[0],word[1],word[2],word[0],word[1],xmlstem_rel.get('index')+"|"+
+                                        xmlstem_rel.get('head')+"|"+xmlstem_rel.get('relation'))
                         try:
-                            xmlpost_rel = xmlword.find('.//{%s}mor/{%s}mor-post/{%s}gra' % (NS,NS,NS))
-                            suffixStem = (suffixStem[0],suffixStem[1],xmlpost_rel.get('index')+"|"+xmlpost_rel.get('head')+
-                                "|"+xmlpost_rel.get('relation'))
+                            for xmlpost_rel in xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}gra' % (NS,NS,NS)):
+                                if not xmlpost_rel.get('type') == 'grt':
+                                    suffixStem = (suffixStem[0],suffixStem[1],xmlpost_rel.get('index')+"|"+xmlpost_rel.get('head')+
+                                        "|"+xmlpost_rel.get('relation'))
+                                else:
+                                    suffixStem = (suffixStem[0],suffixStem[1],suffixStem[2],suffixStem[0],suffixStem[1],xmlpost_rel.get('index')+"|"+xmlpost_rel.get('head')+
+                                        "|"+xmlpost_rel.get('relation'))
                         except:
                             pass
                     sents.append(word)
