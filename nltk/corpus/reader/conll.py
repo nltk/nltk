@@ -65,7 +65,7 @@ class ConllCorpusReader(CorpusReader):
     def __init__(self, root, fileids, columntypes,
                  chunk_types=None, top_node='S', pos_in_tree=False,
                  srl_includes_roleset=True, encoding=None,
-                 tree_class=Tree):
+                 tree_class=Tree, tag_mapping_function=None):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad column type %r' % columntype)
@@ -78,6 +78,7 @@ class ConllCorpusReader(CorpusReader):
         self._srl_includes_roleset = srl_includes_roleset
         self._tree_class = tree_class
         CorpusReader.__init__(self, root, fileids, encoding)
+        self._tag_mapping_function = tag_mapping_function
 
     #/////////////////////////////////////////////////////////////////
     # Data Access Methods
@@ -96,35 +97,41 @@ class ConllCorpusReader(CorpusReader):
         self._require(self.WORDS)
         return LazyMap(self._get_words, self._grids(fileids))
 
-    def tagged_words(self, fileids=None):
+    def tagged_words(self, fileids=None, simplify_tags=False):
         self._require(self.WORDS, self.POS)
-        return LazyConcatenation(LazyMap(self._get_tagged_words,
+        def get_tagged_words(grid):
+            return self._get_tagged_words(grid, simplify_tags)
+        return LazyConcatenation(LazyMap(get_tagged_words,
                                          self._grids(fileids)))
 
-    def tagged_sents(self, fileids=None):
+    def tagged_sents(self, fileids=None, simplify_tags=False):
         self._require(self.WORDS, self.POS)
-        return LazyMap(self._get_tagged_words, self._grids(fileids))
+        def get_tagged_words(grid):
+            return self._get_tagged_words(grid, simplify_tags)
+        return LazyMap(get_tagged_words, self._grids(fileids))
 
-    def chunked_words(self, fileids=None, chunk_types=None):
+    def chunked_words(self, fileids=None, chunk_types=None,
+                      simplify_tags=False):
         self._require(self.WORDS, self.POS, self.CHUNK)
         if chunk_types is None: chunk_types = self._chunk_types
         def get_chunked_words(grid): # capture chunk_types as local var
-            return self._get_chunked_words(grid, chunk_types)
+            return self._get_chunked_words(grid, chunk_types, simplify_tags)
         return LazyConcatenation(LazyMap(get_chunked_words,
                                          self._grids(fileids)))
 
-    def chunked_sents(self, fileids=None, chunk_types=None):
+    def chunked_sents(self, fileids=None, chunk_types=None,
+                      simplify_tags=False):
         self._require(self.WORDS, self.POS, self.CHUNK)
         if chunk_types is None: chunk_types = self._chunk_types
         def get_chunked_words(grid): # capture chunk_types as local var
-            return self._get_chunked_words(grid, chunk_types)
+            return self._get_chunked_words(grid, chunk_types, simplify_tags)
         return LazyMap(get_chunked_words, self._grids(fileids))
     
-    def parsed_sents(self, fileids=None, pos_in_tree=None):
+    def parsed_sents(self, fileids=None, pos_in_tree=None, simplify_tags=False):
         self._require(self.WORDS, self.POS, self.TREE)
         if pos_in_tree is None: pos_in_tree = self._pos_in_tree
         def get_parsed_sent(grid): # capture pos_in_tree as local var
-            return self._get_parsed_sent(grid, pos_in_tree)
+            return self._get_parsed_sent(grid, pos_in_tree, simplify_tags)
         return LazyMap(get_parsed_sent, self._grids(fileids))
 
     def srl_spans(self, fileids=None):
@@ -140,7 +147,7 @@ class ConllCorpusReader(CorpusReader):
         if flatten: result = LazyConcatenation(result)
         return result
 
-    def iob_words(self, fileids=None):
+    def iob_words(self, fileids=None, simplify_tags=False):
         """
         @return: a list of word/tag/IOB tuples 
         @rtype: C{list} of C{tuple}
@@ -148,10 +155,11 @@ class ConllCorpusReader(CorpusReader):
         @type fileids: C{None} or C{str} or C{list}
         """
         self._require(self.WORDS, self.POS, self.CHUNK)
-        return LazyConcatenation(LazyMap(self._get_iob_words,
-                                         self._grids(fileids)))
+        def get_iob_words(grid):
+            return self._get_iob_words(grid, simplify_tags)
+        return LazyConcatenation(LazyMap(get_iob_words, self._grids(fileids)))
 
-    def iob_sents(self, fileids=None):
+    def iob_sents(self, fileids=None, simplify_tags=False):
         """
         @return: a list of lists of word/tag/IOB tuples 
         @rtype: C{list} of C{list}
@@ -159,7 +167,9 @@ class ConllCorpusReader(CorpusReader):
         @type fileids: C{None} or C{str} or C{list}
         """
         self._require(self.WORDS, self.POS, self.CHUNK)
-        return LazyMap(self._get_iob_words, self._grids(fileids))
+        def get_iob_words(grid):
+            return self._get_iob_words(grid, simplify_tags)
+        return LazyMap(get_iob_words, self._grids(fileids))
     
     #/////////////////////////////////////////////////////////////////
     # Grid Reading
@@ -203,19 +213,25 @@ class ConllCorpusReader(CorpusReader):
     def _get_words(self, grid):
         return self._get_column(grid, self._colmap['words'])
 
-    def _get_tagged_words(self, grid):
-        return zip(self._get_column(grid, self._colmap['words']),
-                   self._get_column(grid, self._colmap['pos']))
+    def _get_tagged_words(self, grid, simplify_tags=False):
+        pos_tags = self._get_column(grid, self._colmap['pos'])
+        if simplify_tags:
+            pos_tags = [self._tag_mapping_function(t) for t in pos_tags]
+        return zip(self._get_column(grid, self._colmap['words']), pos_tags)
 
-    def _get_iob_words(self, grid):
-        return zip(self._get_column(grid, self._colmap['words']),
-                   self._get_column(grid, self._colmap['pos']),
+    def _get_iob_words(self, grid, simplify_tags=False):
+        pos_tags = self._get_column(grid, self._colmap['pos'])
+        if simplify_tags:
+            pos_tags = [self._tag_mapping_function(t) for t in pos_tags]
+        return zip(self._get_column(grid, self._colmap['words']), pos_tags,
                    self._get_column(grid, self._colmap['chunk']))
 
-    def _get_chunked_words(self, grid, chunk_types):
+    def _get_chunked_words(self, grid, chunk_types, simplify_tags=False):
         # n.b.: this method is very similar to conllstr2tree.
         words = self._get_column(grid, self._colmap['words'])
         pos_tags = self._get_column(grid, self._colmap['pos'])
+        if simplify_tags:
+            pos_tags = [self._tag_mapping_function(t) for t in pos_tags]
         chunk_tags = self._get_column(grid, self._colmap['chunk'])
 
         stack = [Tree(self._top_node, [])]
@@ -244,9 +260,11 @@ class ConllCorpusReader(CorpusReader):
 
         return stack[0]
 
-    def _get_parsed_sent(self, grid, pos_in_tree):
+    def _get_parsed_sent(self, grid, pos_in_tree, simplify_tags=False):
         words = self._get_column(grid, self._colmap['words'])
         pos_tags = self._get_column(grid, self._colmap['pos'])
+        if simplify_tags:
+            pos_tags = [self._tag_mapping_function(t) for t in pos_tags]
         parse_tags = self._get_column(grid, self._colmap['tree'])
         
         treestr = ''
@@ -512,8 +530,10 @@ class ConllChunkCorpusReader(ConllCorpusReader):
     A ConllCorpusReader whose data file contains three columns: words,
     pos, and chunk.
     """
-    def __init__(self, root, fileids, chunk_types, encoding=None):
+    def __init__(self, root, fileids, chunk_types, encoding=None,
+                 tag_mapping_function=None):
         ConllCorpusReader.__init__(
             self, root, fileids, ('words', 'pos', 'chunk'),
-            chunk_types=chunk_types, encoding=encoding)
+            chunk_types=chunk_types, encoding=encoding,
+            tag_mapping_function=tag_mapping_function)
 
