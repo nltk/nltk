@@ -300,3 +300,33 @@ internal use by NLTK's corpus readers.
     >>> object.__repr__(ll) # doctest: +ELLIPSIS
     '<nltk.grammar.ContextFreeGrammar object at ...>'
 
+Buffered Gzip Reading and Writing
+---------------------------------
+Write performance to gzip-compressed is extremely poor when the files become large.
+File creation can become a bottleneck in those cases.
+
+Read performance from large gzipped pickle files was improved in data.py by
+buffering the reads. A similar fix can be applied to writes by buffering
+the writes to a StringIO object first.
+
+This is mainly intended for internal use. The test simply tests that reading
+and writing work as intended and does not test how much improvement buffering
+provides.
+
+    >>> try:
+    ...    from cStringIO import StringIO
+    ... except:
+    ...    from StringIO import StringIO
+    >>> test = nltk.data.BufferedGzipFile('testbuf.gz', 'wb', size=2**10)
+    >>> ans = []
+    >>> for i in xrange(10000):
+    ...     ans.append(str(i))
+    ...     test.write(str(i))
+    >>> test.close()
+    >>> test = nltk.data.BufferedGzipFile('testbuf.gz', 'rb')
+    >>> test.read() == ''.join(ans)
+    True
+    >>> test.close()
+    >>> import os
+    >>> os.unlink('testbuf.gz')
+
