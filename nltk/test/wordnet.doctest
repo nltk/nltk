@@ -172,13 +172,13 @@ A score of 1 represents identity i.e. comparing a sense with itself
 will return 1.
 
     >>> dog.path_similarity(cat)
-    0.20000000000000001
+    0.2...
 
     >>> hit.path_similarity(slap)
-    0.14285714285714285
+    0.142...
 
     >>> wn.path_similarity(hit, slap)
-    0.14285714285714285
+    0.142...
 
     >>> print hit.path_similarity(slap, simulate_root=False)
     None
@@ -195,13 +195,13 @@ as -log(p/2d) where p is the shortest path length and d the taxonomy
 depth.
 
     >>> dog.lch_similarity(cat)
-    2.0281482472922856
+    2.028...
 
     >>> hit.lch_similarity(slap)
-    1.3121863889661687
+    1.312...
 
     >>> wn.lch_similarity(hit, slap)
-    1.3121863889661687
+    1.312...
 
     >>> print hit.lch_similarity(slap, simulate_root=False)
     None
@@ -226,7 +226,7 @@ the LCS has multiple paths to the root, the longer path is used for
 the purposes of the calculation.
 
     >>> dog.wup_similarity(cat)
-    0.8571428571428571
+    0.857...
 
     >>> hit.wup_similarity(slap)
     0.25
@@ -264,9 +264,9 @@ generate the information content and the specifics of how the
 information content was created.
 
     >>> dog.res_similarity(cat, brown_ic)
-    7.9116665090365768
+    7.911...
     >>> dog.res_similarity(cat, genesis_ic)
-    7.2040239913748305
+    7.204...
 
 ``synset1.jcn_similarity(synset2, ic):``
 Jiang-Conrath Similarity
@@ -276,9 +276,9 @@ ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
 
     >>> dog.jcn_similarity(cat, brown_ic)
-    0.44977552855167391
+    0.449...
     >>> dog.jcn_similarity(cat, genesis_ic)
-    0.28539390848096963
+    0.285...
 
 ``synset1.lin_similarity(synset2, ic):``
 Lin Similarity:
@@ -288,7 +288,7 @@ ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
 
     >>> dog.lin_similarity(cat, semcor_ic)
-    0.88632886280862277
+    0.886...
 
 
 ---------------------
@@ -406,7 +406,7 @@ Bug 160: wup_similarity breaks when the two synsets have no common hypernym
     >>> t = wn.synsets('picasso')[0]
     >>> m = wn.synsets('male')[1]
     >>> t.wup_similarity(m)
-    0.63157894736842102
+    0.631...
 
     >>> t = wn.synsets('titan')[1]
     >>> s = wn.synsets('say', wn.VERB)[0]
@@ -419,14 +419,14 @@ Bug 21: "instance of" not included in LCS (very similar to bug 160)
     >>> b = wn.synsets("scripture")[0]
     >>> brown_ic = wordnet_ic.ic('ic-brown.dat')
     >>> a.jcn_similarity(b, brown_ic)
-    0.17546021191621833
+    0.175...
 
 Bug 221: Verb root IC is zero
 
     >>> from nltk.corpus.reader.wordnet import information_content
     >>> s = wn.synsets('say', wn.VERB)[0]
     >>> information_content(s, brown_ic)
-    4.6237121100177792
+    4.623...
 
 Bug 161: Comparison between WN keys/lemmas should not be case sensitive
 
@@ -452,7 +452,7 @@ Bug 382: JCN Division by zero error
     >>> from nltk.corpus import wordnet_ic
     >>> brown_ic =  wordnet_ic.ic('ic-brown.dat')
     >>> tow.jcn_similarity(shlep, brown_ic)
-    1.0000000000000001e+300
+    1...e+300
 
 Bug 428: Depth is zero for instance nouns
 
@@ -474,7 +474,7 @@ Bug 470: shortest_path_distance ignored instance hypernyms
     >>> google = wordnet.synsets("google")[0]
     >>> earth = wordnet.synsets("earth")[0]
     >>> google.wup_similarity(earth)
-    0.10000000000000001
+    0.1...
 
 Bug 484: similarity metrics returned -1 instead of None for no LCS
 
@@ -502,3 +502,33 @@ Bug 482: Some nouns not being lemmatised by WordNetLemmatizer().lemmatize
     'egg'
     >>> WordNetLemmatizer().lemmatize("legs", pos="n")
     'leg'
+
+Bug 284: instance hypernyms not used in similarity calculations
+
+    >>> wn.synset('john.n.02').lch_similarity(wn.synset('dog.n.01'))
+    1.335...
+    >>> wn.synset('john.n.02').wup_similarity(wn.synset('dog.n.01'))
+    0.571...
+    >>> wn.synset('john.n.02').res_similarity(wn.synset('dog.n.01'), brown_ic)
+    2.224...
+    >>> wn.synset('john.n.02').jcn_similarity(wn.synset('dog.n.01'), brown_ic)
+    0.075...
+    >>> wn.synset('john.n.02').lin_similarity(wn.synset('dog.n.01'), brown_ic)
+    0.252...
+    >>> wn.synset('john.n.02').hypernym_paths()
+    [[Synset('entity.n.01'), ..., Synset('john.n.02')]]
+
+Issue 541: add domains to wordnet
+
+    >>> wn.synset('code.n.03').topic_domains()
+    [Synset('computer_science.n.01')]
+    >>> wn.synset('pukka.a.01').region_domains()
+    [Synset('india.n.01')]
+    >>> wn.synset('freaky.a.01').usage_domains()
+    [Synset('slang.n.02')]
+
+Issue 629: wordnet failures when python run with -O optimizations
+
+    >>> # Run the test suite with python -O to check this
+    >>> wn.synsets("brunch")
+    [Synset('brunch.n.01'), Synset('brunch.v.01')]

@@ -10,18 +10,18 @@ from itertools import chain
 from math import log
 
 from nltk.probability import (ConditionalProbDist, ConditionalFreqDist,
-                              MLEProbDist)
+                              MLEProbDist, SimpleGoodTuringProbDist)
 from nltk.util import ingrams
 
 from .api import *
 
 def _estimator(fdist, bins):
     """
-    Default estimator function using an MLEProbDist.
+    Default estimator function using a SimpleGoodTuringProbDist.
     """
     # can't be an instance method of NgramModel as they 
     # can't be pickled either.
-    return MLEProbDist(fdist)
+    return SimpleGoodTuringProbDist(fdist)
 
 class NgramModel(ModelI):
     """

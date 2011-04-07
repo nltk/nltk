@@ -1022,7 +1022,7 @@ class DrtParser(LogicParser):
         self.operator_precedence = dict(
                                [(x,1) for x in DrtTokens.LAMBDA_LIST]             + \
                                [(x,2) for x in DrtTokens.NOT_LIST]                + \
-                               [('APP',3)]                                        + \
+                               [(APP,3)]                                        + \
                                [(x,4) for x in DrtTokens.EQ_LIST+Tokens.NEQ_LIST] + \
                                [(DrtTokens.DRS_CONC,5)]                           + \
                                [(x,6) for x in DrtTokens.OR_LIST]                 + \

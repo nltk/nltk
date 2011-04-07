@@ -18,6 +18,8 @@ from nltk.compat import defaultdict
 from nltk.internals import Counter, deprecated
 from functools import reduce
 
+APP = 'APP'
+
 _counter = Counter()
 
 class Tokens(object):
@@ -1189,7 +1191,7 @@ class LogicParser(object):
         self.operator_precedence = dict(
                            [(x,1) for x in Tokens.LAMBDA_LIST]             + \
                            [(x,2) for x in Tokens.NOT_LIST]                + \
-                           [('APP',3)]                                     + \
+                           [(APP,3)]                                       + \
                            [(x,4) for x in Tokens.EQ_LIST+Tokens.NEQ_LIST] + \
                            [(x,5) for x in Tokens.QUANTS]                  + \
                            [(x,6) for x in Tokens.AND_LIST]                + \
@@ -1197,7 +1199,7 @@ class LogicParser(object):
                            [(x,8) for x in Tokens.IMP_LIST]                + \
                            [(x,9) for x in Tokens.IFF_LIST]                + \
                            [(None,10)])
-        self.right_associated_operations = []
+        self.right_associated_operations = [APP]
 
     def parse(self, data, signature=None):
         """
@@ -1218,9 +1220,7 @@ class LogicParser(object):
             if self.inRange(0):
                 raise UnexpectedTokenException(self._currentIndex+1, self.token(0))
         except ParseException as e:
-            msg = str(e) + '\n' + \
-                  data + '\n' + \
-                  ' '*mapping[e.index-1] + '^'
+            msg = '%s\n%s\n%s^' % (e, data, ' '*mapping[e.index-1])
             raise ParseException(None, msg)
 
         if self.type_check:
@@ -1394,7 +1394,8 @@ class LogicParser(object):
         accum = self.make_VariableExpression(tok)
         if self.inRange(0) and self.token(0) == Tokens.OPEN:
             #The predicate has arguments
-            if isinstance(accum, IndividualVariableExpression):
+            if not isinstance(accum, FunctionVariableExpression) and \
+               not isinstance(accum, ConstantExpression):
                 raise ParseException(self._currentIndex, 
                                      '\'%s\' is an illegal predicate name.  '
                                      'Individual variables may not be used as '
@@ -1402,12 +1403,10 @@ class LogicParser(object):
             self.token() #swallow the Open Paren
             
             #curry the arguments
-            accum = self.make_ApplicationExpression(accum, 
-                                                    self.parse_Expression('APP'))
+            accum = self.make_ApplicationExpression(accum, self.parse_Expression(APP))
             while self.inRange(0) and self.token(0) == Tokens.COMMA:
                 self.token() #swallow the comma
-                accum = self.make_ApplicationExpression(accum, 
-                                                        self.parse_Expression('APP'))
+                accum = self.make_ApplicationExpression(accum, self.parse_Expression(APP))
             self.assertNextToken(Tokens.CLOSE)
         return accum
         
@@ -1540,23 +1539,24 @@ class LogicParser(object):
         a list of arguments in parens, then the argument expression is a
         function being applied to the arguments.  Otherwise, return the
         argument expression."""
-        if self.has_priority('APP', context):
+        if self.has_priority(APP, context):
             if self.inRange(0) and self.token(0) == Tokens.OPEN:
                 if not isinstance(expression, LambdaExpression) and \
-                   not isinstance(expression, ApplicationExpression):
+                   not isinstance(expression, ApplicationExpression) and \
+                   not isinstance(expression, FunctionVariableExpression) and \
+                   not isinstance(expression, ConstantExpression):
                     raise ParseException(self._currentIndex, 
                                          "The function '" + str(expression) + 
-                                         ' is not a Lambda Expression or an '
-                                         'Application Expression, so it may '
-                                         'not take arguments.')
+                                         "' is not a Lambda Expression, an "
+                                         "Application Expression, or a "
+                                         "functional predicate, so it may "
+                                         "not take arguments.")
                 self.token() #swallow then open paren
                 #curry the arguments
-                accum = self.make_ApplicationExpression(expression, 
-                                                        self.parse_Expression('APP'))
+                accum = self.make_ApplicationExpression(expression, self.parse_Expression(APP))
                 while self.inRange(0) and self.token(0) == Tokens.COMMA:
                     self.token() #swallow the comma
-                    accum = self.make_ApplicationExpression(accum, 
-                                                            self.parse_Expression('APP'))
+                    accum = self.make_ApplicationExpression(accum, self.parse_Expression(APP))
                 self.assertNextToken(Tokens.CLOSE)
                 return accum
         return expression
@@ -1740,4 +1740,3 @@ def printtype(ex):
 if __name__ == '__main__':
     demo()
     demo_errors()
-

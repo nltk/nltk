@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2007 NLTK Project
 # Author: Haejoong Lee <haejoong@ldc.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu>
+#         Jacob Perkins <japerk@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -460,3 +461,13 @@ class SpeakerInfo:
         args = ['%s=%r' % (attr, getattr(self, attr))
                 for attr in attribs.split()]
         return 'SpeakerInfo(%s)' % (', '.join(args))
+
+def read_timit_block(stream):
+    """
+    Block reader for timit tagged sentences, which are preceded by a sentence
+    number that will be ignored.
+    """
+    line = stream.readline()
+    if not line: return []
+    n, sent = line.split(' ', 1)
+    return [sent]

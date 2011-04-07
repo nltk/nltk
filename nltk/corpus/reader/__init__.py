@@ -125,5 +125,6 @@ __all__ = [
     'DependencyCorpusReader', 'NombankCorpusReader',
     'IPIPANCorpusReader', 'Pl196xCorpusReader',
     'TEICorpusView', 'KNBCorpusReader', 'ChasenCorpusReader',
-    'CHILDESCorpusReader', 'AlignedCorpusReader'
+    'CHILDESCorpusReader', 'AlignedCorpusReader',
+    'TimitTaggedCorpusReader'
 ]

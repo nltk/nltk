@@ -39,7 +39,7 @@ class Boxer(object):
     semantic parser that produces Discourse Representation Structures (DRSs).
     """
 
-    def __init__(self, boxer_drs_interpreter=None, elimeq=False):
+    def __init__(self, boxer_drs_interpreter=None, elimeq=False, bin_dir=None, verbose=False):
         """
         @param boxer_drs_interpreter: A class that converts from the 
         C{AbstractBoxerDrs} object hierarchy to a different object.  The 
@@ -54,10 +54,13 @@ class Boxer(object):
         self._boxer_drs_interpreter = boxer_drs_interpreter
         
         self._elimeq = elimeq
-    
-        self._boxer_bin = None
-        self._candc_bin = None
-        self._candc_models_path = None
+
+        self.set_bin_dir(bin_dir, verbose)
+        
+    def set_bin_dir(self, bin_dir, verbose=False):
+        self._candc_bin = self._find_binary('candc', bin_dir, verbose)
+        self._candc_models_path = os.path.normpath(os.path.join(self._candc_bin[:-5], '../models'))
+        self._boxer_bin = self._find_binary('boxer', bin_dir, verbose)            
 
     def interpret(self, input, discourse_id=None, question=False, verbose=False):
         """
@@ -69,7 +72,10 @@ class Boxer(object):
         @return: C{drt.AbstractDrs}
         """
         discourse_ids = [discourse_id] if discourse_id is not None else None 
-        return self.batch_interpret_multisentence([[input]], discourse_ids, question, verbose)[0]
+        d, = self.batch_interpret_multisentence([[input]], discourse_ids, question, verbose)
+        if not d:
+            raise Exception('Unable to interpret: "%s"' % input)
+        return d
     
     def interpret_multisentence(self, input, discourse_id=None, question=False, verbose=False):
         """
@@ -81,7 +87,10 @@ class Boxer(object):
         @return: C{drt.AbstractDrs}
         """
         discourse_ids = [discourse_id] if discourse_id is not None else None
-        return self.batch_interpret_multisentence([input], discourse_ids, question, verbose)[0]
+        d, = self.batch_interpret_multisentence([input], discourse_ids, question, verbose)
+        if not d:
+            raise Exception('Unable to interpret: "%s"' % input)
+        return d
         
     def batch_interpret(self, inputs, discourse_ids=None, question=False, verbose=False):
         """
@@ -133,13 +142,9 @@ class Boxer(object):
         @param filename: C{str} A filename for the output file
         @return: stdout
         """
-        if self._candc_bin is None:
-            self._candc_bin = self._find_binary('candc', verbose)
-        if self._candc_models_path is None:
-            self._candc_models_path = os.path.normpath(os.path.join(self._candc_bin[:-5], '../models'))
         args = ['--models', os.path.join(self._candc_models_path, 'questions' if question else 'boxer'), 
-                '--output', filename]
-
+                '--output', filename,
+                '--candc-printer', 'boxer']
         return self._call('\n'.join(sum((["<META>'%s'" % id] + d for d,id in zip(inputs,discourse_ids)), [])), self._candc_bin, args, verbose)
 
     def _call_boxer(self, filename, verbose=False):
@@ -149,8 +154,6 @@ class Boxer(object):
         @param filename: C{str} A filename for the input file
         @return: stdout
         """
-        if self._boxer_bin is None:
-            self._boxer_bin = self._find_binary('boxer', verbose)
         args = ['--box', 'false', 
                 '--semantics', 'drs',
                 '--flat', 'false',
@@ -162,8 +165,9 @@ class Boxer(object):
 
         return self._call(None, self._boxer_bin, args, verbose)
 
-    def _find_binary(self, name, verbose=False):
+    def _find_binary(self, name, bin_dir, verbose=False):
         return nltk.internals.find_binary(name, 
+            path_to_bin=bin_dir,
             env_vars=['CANDCHOME'],
             url='http://svn.ask.it.usyd.edu.au/trac/candc/',
             binary_names=[name, name + '.exe'],
@@ -214,14 +218,16 @@ class Boxer(object):
                 if discourse_id[0] == "'" and discourse_id[-1] == "'":
                     discourse_id = discourse_id[1:-1]
                 drs_id = line[comma_idx+1:line.index(')')]
-                line = lines[i+4]
+                i += 1
+                line = lines[i]
                 assert line.startswith('sem(%s,' % drs_id)
-                line = lines[i+8]
+                
+                i += 4
+                line = lines[i]
                 assert line.endswith(').')
                 drs_input = line[:-2].strip()
                 parsed = self._parse_drs(drs_input, discourse_id, use_disc_id)
                 drs_dict[discourse_id] = self._boxer_drs_interpreter.interpret(parsed)
-                i += 8
             i += 1
         return drs_dict
     
@@ -362,7 +368,7 @@ class BoxerOutputDrsParser(DrtParser):
         return lambda sent_index, word_indices: BoxerRel(self.discourse_id, sent_index, word_indices, var1, var2, rel, sense)
 
     def _handle_timex(self):
-        #timex(_G18322, date([]: +, []:'XXXX', [1004]:'04', []:'XX'))
+        #timex(_G18322, date([]: (+), []:'XXXX', [1004]:'04', []:'XX'))
         self.assertToken(self.token(), '(')
         arg = self.parse_variable()
         self.assertToken(self.token(), ',')
@@ -371,7 +377,7 @@ class BoxerOutputDrsParser(DrtParser):
         return new_conds
 
     def _handle_time_expression(self, arg):
-        #date([]: +, []:'XXXX', [1004]:'04', []:'XX')
+        #date([]: (+), []:'XXXX', [1004]:'04', []:'XX')
         tok = self.token()
         self.assertToken(self.token(), '(')
         if tok == 'date':
@@ -385,10 +391,12 @@ class BoxerOutputDrsParser(DrtParser):
                [lambda sent_index, word_indices: cond for cond in conds]
 
     def _handle_date(self, arg):
-        #[]: +, []:'XXXX', [1004]:'04', []:'XX'
+        #[]: (+), []:'XXXX', [1004]:'04', []:'XX'
         conds = []
         (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
+        self.assertToken(self.token(), '(')
         pol = self.token()
+        self.assertToken(self.token(), ')')
         conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_pol_%s' % (pol), 'a', 0))
         self.assertToken(self.token(), ',')
 
@@ -1081,7 +1089,7 @@ class BoxerWhq(BoxerIndexed):
         return BoxerWhq(self.discourse_id, f(self.sent_index), self.word_indices, self.ans_types, self.drs1, self.variable, self.drs2)
         
     def __iter__(self):
-        return iter((self.ans_types, self.drs1, self.variable, self.drs2))
+        return iter(('['+','.join(self.ans_types)+']', self.drs1, self.variable, self.drs2))
         
     def _pred(self):
         return 'whq'

@@ -1,4 +1,4 @@
-Version 2.0b10 2011-03-??
+Version 2.0.1 2011-04-??
 
 NLTK:
 * added interface to the Stanford POS Tagger
@@ -41,7 +41,7 @@ Documentation:
 NLTK-Contrib:
 * Contribute a version of the Viethen and Dale referring expression algorithms
 
-Thanks to the following	contributors to	2.0b10:
+Thanks to the following	contributors to	2.0.1 (since 2.0b9, July 2010)
 Yonatan Becker, Steven Bethard, David Coles, Dan Garrette,
 Masato Hagiwara, Michael Hansen, Rebecca Ingram,
 Sudharshan Kaushik, Peter Ljunglof, Nitin Madnani, Rob Malouf,
@@ -87,9 +87,10 @@ NLTK-Contrib:
 * minor updates
 
 Thanks to the following	contributors to	2.0b9:
-Steven Bethard,	Dmitry Chichkov, Liang Dong, Dan Garrette, Simon Greenhill,
-Bjorn Maeland, Rob Malouf, Joel Nothman, Jacob Perkins, Alberto Planas,
-Alex Rudnick, Geoffrey Sampson, Kevin Scannell, Richard Sproat
+
+Steven Bethard,	Francis Bond, Dmitry Chichkov, Liang Dong, Dan Garrette,
+Simon Greenhill, Bjorn Maeland, Rob Malouf, Joel Nothman, Jacob Perkins,
+Alberto Planas, Alex Rudnick, Geoffrey Sampson, Kevin Scannell, Richard Sproat
 
 
 Version 2.0b8 2010-02-05

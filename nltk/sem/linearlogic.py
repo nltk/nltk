@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.internals import Counter
-from .logic import LogicParser
+from .logic import LogicParser, APP
 
 _counter = Counter()
 
@@ -356,7 +356,7 @@ class LinearLogicParser(LogicParser):
     def __init__(self):
         LogicParser.__init__(self)
         
-        self.operator_precedence = {'APP': 1, Tokens.IMP: 2, None: 3}
+        self.operator_precedence = {APP: 1, Tokens.IMP: 2, None: 3}
         self.right_associated_operations += [Tokens.IMP]
     
     def get_all_symbols(self):
@@ -382,10 +382,10 @@ class LinearLogicParser(LogicParser):
         are an argument in parens, then the argument expression is a
         function being applied to the arguments.  Otherwise, return the
         argument expression."""
-        if self.has_priority('APP', context):
+        if self.has_priority(APP, context):
             if self.inRange(0) and self.token(0) == Tokens.OPEN:
                 self.token() #swallow then open paren
-                argument = self.parse_Expression('APP')
+                argument = self.parse_Expression(APP)
                 self.assertNextToken(Tokens.CLOSE)
                 expression = ApplicationExpression(expression, argument, None)
         return expression

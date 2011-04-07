@@ -1090,12 +1090,12 @@ class RegexpParser(ChunkParserI):
         Create a new chunk parser, from the given start state
         and set of chunk patterns.
         
-        @param grammar: The list of patterns that defines the grammar
-        @type grammar: C{list} of C{string}
+        @param grammar: The grammar, or a list of RegexpChunkParser objects
+        @type grammar: C{string} or C{list} of C{RegexpChunkParser}
         @param top_node: The top node of the tree being created
-        @type top_node: L{string} or L{Nonterminal}
+        @type top_node: C{string} or C{Nonterminal}
         @param loop: The number of times to run through the patterns
-        @type loop: L{int}
+        @type loop: C{int}
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;

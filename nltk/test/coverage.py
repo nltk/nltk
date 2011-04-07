@@ -399,7 +399,7 @@ class coverage:
             header = header + "   Missing"
             fmt_coverage = fmt_coverage + "   %s"
         print(header)
-        print("-" * len(header))
+        print(("-" * len(header)))
         total_statements = 0
         total_executed = 0
         for morf in morfs:
@@ -415,7 +415,7 @@ class coverage:
                 args = (name, n, m, pc)
                 if show_missing:
                     args = args + (readable,)
-                print(fmt_coverage % args)
+                print((fmt_coverage % args))
                 total_statements = total_statements + n
                 total_executed = total_executed + m
             except KeyboardInterrupt:
@@ -423,9 +423,9 @@ class coverage:
             except:
                 if not ignore_errors:
                     type, msg = sys.exc_info()[0:2]
-                    print(fmt_err % (name, type, msg))
+                    print((fmt_err % (name, type, msg)))
         if len(morfs) > 1:
-            print("-" * len(header))
+            print(("-" * len(header)))
             if total_statements > 0:
                 pc = 100.0 * total_executed / total_statements
             else:
@@ -433,7 +433,7 @@ class coverage:
             args = ("TOTAL", total_statements, total_executed, pc)
             if show_missing:
                 args = args + ("",)
-            print(fmt_coverage % args)
+            print((fmt_coverage % args))
 
     # annotate(morfs, ignore_errors).
 

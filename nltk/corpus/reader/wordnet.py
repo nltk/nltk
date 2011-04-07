@@ -125,6 +125,15 @@ class _WordNetObject(object):
     def part_meronyms(self):
         return self._related('%p')
 
+    def topic_domains(self):
+        return self._related(';c')
+        
+    def region_domains(self):
+        return self._related(';r')
+        
+    def usage_domains(self):
+        return self._related(';u')
+
     def attributes(self):
         return self._related('=')
 
@@ -194,6 +203,9 @@ class Lemma(_WordNetObject):
     member_meronyms
     substance_meronyms
     part_meronyms
+    topic_domains
+    region_domains
+    usage_domains
     attributes
     derivationally_related_forms
     entailments
@@ -417,7 +429,7 @@ class Synset(_WordNetObject):
         """
         paths = []
 
-        hypernyms = self.hypernyms()
+        hypernyms = self.hypernyms() + self.instance_hypernyms()
         if len(hypernyms) == 0:
             paths = [[self]]
 
@@ -1142,7 +1154,8 @@ class WordNetCorpusReader(CorpusReader):
             else:
                 for _ in range(frame_count):
                     # read the plus sign
-                    assert next() == '+'
+                    plus = next()
+                    assert plus == '+'
                     # read the frame and lemma number
                     frame_number = int(next())
                     frame_string_fmt = VERB_FRAME_STRINGS[frame_number]
@@ -1601,7 +1614,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     # set of subsumers.
 
     eliminated = set()
-    hypernym_relation = lambda s: s.hypernyms()
+    hypernym_relation = lambda s: s.hypernyms() + s.instance_hypernyms()
     for s1 in subsumers:
         for s2 in subsumers:
             if s2 in s1.closure(hypernym_relation):
@@ -1786,6 +1799,10 @@ def demo():
 
     ic = wnic.ic('ic-semcor.dat')
     print((S('dog.n.01').lin_similarity(S('cat.n.01'), ic)))
+
+    print(S('code.n.03').topic_domains())
+    print(S('pukka.a.01').region_domains())
+    print(S('freaky.a.01').usage_domains())
 
 if __name__ == '__main__':
     demo()
