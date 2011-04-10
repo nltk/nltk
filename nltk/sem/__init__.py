@@ -17,12 +17,8 @@ from evaluate import *
 from logic import *
 from relextract import *
 from chat80 import *
-
-# Modules that require Python 2.5
-from sys import version_info as vi
-if vi[0] == 2 and vi[1] >= 5:
-    from boxer import *
-    from drt import *
+from boxer import *
+from drt import *
 
 __all__ = [
     # Logic parsers

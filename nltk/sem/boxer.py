@@ -7,11 +7,11 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import with_statement
 import os
 import subprocess
 from optparse import OptionParser
 import tempfile
+import operator
 
 import nltk
 from nltk.sem.logic import *
@@ -70,7 +70,10 @@ class Boxer(object):
         @param discourse_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
         @return: C{drt.AbstractDrs}
         """
-        discourse_ids = [discourse_id] if discourse_id is not None else None 
+        if discourse_id is not None:
+            discourse_ids = [discourse_id]
+        else:
+            discourse_ids = None
         d, = self.batch_interpret_multisentence([[input]], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
@@ -85,7 +88,10 @@ class Boxer(object):
         @param discourse_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
         @return: C{drt.AbstractDrs}
         """
-        discourse_ids = [discourse_id] if discourse_id is not None else None
+        if discourse_id is not None:
+            discourse_ids = [discourse_id]
+        else:
+            discourse_ids = None
         d, = self.batch_interpret_multisentence([input], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
@@ -115,7 +121,7 @@ class Boxer(object):
 
         if discourse_ids is not None:
             assert len(inputs) == len(discourse_ids)
-            assert all(id is not None for id in discourse_ids)
+            assert reduce(operator.and_, (id is not None for id in discourse_ids))
             use_disc_id = True
         else:
             discourse_ids = map(str, xrange(len(inputs)))
@@ -141,7 +147,7 @@ class Boxer(object):
         @param filename: C{str} A filename for the output file
         @return: stdout
         """
-        args = ['--models', os.path.join(self._candc_models_path, 'questions' if question else 'boxer'), 
+        args = ['--models', os.path.join(self._candc_models_path, ['boxer','questions'][question]), 
                 '--output', filename,
                 '--candc-printer', 'boxer']
         return self._call('\n'.join(sum((["<META>'%s'" % id] + d for d,id in zip(inputs,discourse_ids)), [])), self._candc_bin, args, verbose)
@@ -157,7 +163,7 @@ class Boxer(object):
                 '--semantics', 'drs',
                 '--flat', 'false',
                 '--resolve', 'true',
-                '--elimeq', 'true' if self._elimeq else 'false',
+                '--elimeq', ['false','true'][self._elimeq],
                 '--format', 'prolog',
                 '--instantiate', 'true',
                 '--input', filename]
@@ -231,7 +237,7 @@ class Boxer(object):
         return drs_dict
     
     def _parse_drs(self, drs_string, discourse_id, use_disc_id):
-        return BoxerOutputDrsParser(discourse_id if use_disc_id else None).parse(drs_string)
+        return BoxerOutputDrsParser([None,discourse_id][use_disc_id]).parse(drs_string)
 
 
 class BoxerOutputDrsParser(DrtParser):
@@ -748,7 +754,7 @@ class BoxerDrsParser(DrtParser):
         
     def nullableIntToken(self):
         t = self.token()
-        return int(t) if t != 'None' else None
+        return [None,int(t)][t != 'None']
     
     def get_next_token_variable(self, description):
         try:
@@ -819,10 +825,18 @@ class BoxerDrs(AbstractBoxerDrs):
         return atoms
     
     def clean(self):
-        return BoxerDrs(self.label, self.refs, [c.clean() for c in self.conds], self.consequent.clean() if self.consequent else None)
+        if self.consequent:
+            consequent = self.consequent.clean()
+        else:
+            consequent = None
+        return BoxerDrs(self.label, self.refs, [c.clean() for c in self.conds], consequent)
 
     def renumber_sentences(self, f):
-        return BoxerDrs(self.label, self.refs, [c.renumber_sentences(f) for c in self.conds], self.consequent.renumber_sentences(f) if self.consequent else None)
+        if self.consequent:
+            consequent = self.consequent.renumber_sentences(f)
+        else:
+            consequent = None
+        return BoxerDrs(self.label, self.refs, [c.renumber_sentences(f) for c in self.conds], consequent)
 
     def __repr__(self):
         s = 'drs(%s, [%s], [%s])' % (self.label, 
@@ -837,7 +851,7 @@ class BoxerDrs(AbstractBoxerDrs):
                self.label == other.label and \
                self.refs == other.refs and \
                len(self.conds) == len(other.conds) and \
-               all(c1==c2 for c1,c2 in zip(self.conds, other.conds)) and \
+               reduce(operator.and_, (c1==c2 for c1,c2 in zip(self.conds, other.conds))) and \
                self.consequent == other.consequent
         
 class BoxerNot(AbstractBoxerDrs):
@@ -892,7 +906,7 @@ class BoxerIndexed(AbstractBoxerDrs):
                self.discourse_id == other.discourse_id and \
                self.sent_index == other.sent_index and \
                self.word_indices == other.word_indices and \
-               all(s==o for s,o in zip(self, other))
+               reduce(operator.and_, (s==o for s,o in zip(self, other)))
     
     def __repr__(self):
         s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id, self.sent_index, ', '.join(map(str, self.word_indices)))

@@ -428,7 +428,7 @@ class Expression(SubstituteBindingsI):
             if var in bindings:
                 val = bindings[var]
                 if isinstance(val, Variable):
-                    val = VariableExpression(val)
+                    val = self.make_VariableExpression(val)
                 elif not isinstance(val, Expression):
                     raise ValueError('Can not substitute a non-expression '
                                      'value into an expression: %r' % (val,))
@@ -1650,7 +1650,7 @@ def is_indvar(expr):
     @return: C{boolean} True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r'^[a-df-z]\d*$', expr)
+    return re.match(r'^[a-df-z]\d*$', expr) is not None
 
 def is_funcvar(expr):
     """
@@ -1661,7 +1661,7 @@ def is_funcvar(expr):
     @return: C{boolean} True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r'^[A-Z]\d*$', expr)
+    return re.match(r'^[A-Z]\d*$', expr) is not None
 
 def is_eventvar(expr):
     """
@@ -1672,7 +1672,7 @@ def is_eventvar(expr):
     @return: C{boolean} True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r'^e\d*$', expr)
+    return re.match(r'^e\d*$', expr) is not None
 
 
 def demo():
