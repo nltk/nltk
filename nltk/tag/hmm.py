@@ -74,7 +74,6 @@ from numpy import *
 from nltk.probability import FreqDist, ConditionalFreqDist, \
      ConditionalProbDist, DictionaryProbDist, DictionaryConditionalProbDist, \
      LidstoneProbDist, MutableProbDist, MLEProbDist
-from nltk.internals import deprecated
 from nltk.metrics import accuracy as _accuracy
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
 
@@ -1169,10 +1168,6 @@ def load_pos(num_sents):
         cleaned_sentences += [sentence]
 
     return cleaned_sentences, list(tag_set), list(symbols)
-
-@deprecated("Use model.test(sentences, **kwargs) instead.")
-def test_pos(model, sentences, display=False):
-    return model.test(sentences, verbose=display)
 
 def demo_pos():
     # demonstrates POS tagging using supervised training

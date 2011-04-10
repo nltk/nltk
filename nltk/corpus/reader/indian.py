@@ -20,7 +20,6 @@ Contents:
 
 import codecs
 
-from nltk.internals import deprecated
 from nltk.tag.util import str2tuple
 
 from util import *
@@ -63,21 +62,7 @@ class IndianCorpusReader(CorpusReader):
         elif isinstance(fileids, basestring): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
-    #{ Deprecated since 0.8
-    @deprecated("Use .raw() or .words() or .tagged_words() instead.")
-    def read(self, items, format='tagged'):
-        if format == 'raw': return self.raw(items)
-        if format == 'tokenized': return self.words(items)
-        if format == 'tagged': return self.tagged_words(items)
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .words() instead.")
-    def tokenized(self, items):
-        return self.words(items)
-    @deprecated("Use .tagged_words() instead.")
-    def tagged(self, items):
-        return self.tagged_words(items)
-    #}
-    
+
 class IndianCorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, encoding, tagged,
                  group_by_sent, tag_mapping_function=None):

@@ -40,8 +40,6 @@ of the author.
 
 import codecs
 
-from nltk.internals import deprecated
-
 from util import *
 from api import *
 
@@ -93,10 +91,3 @@ class PPAttachmentCorpusReader(CorpusReader):
         else:
             return []
 
-    #{ Deprecated since 0.8
-    @deprecated("Use .tuples() or .raw() or .attachments() instead.")
-    def read(self, items, format='tuple'):
-        if format == 'tuple': return self.tuples(items)
-        if format == 'raw': return self.raw(items)
-        raise ValueError('bad format %r' % format)
-    #}

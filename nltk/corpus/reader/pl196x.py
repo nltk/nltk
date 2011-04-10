@@ -8,15 +8,11 @@
 import os
 import re
 
-
 from nltk import tokenize, tree
-from nltk.internals import deprecated
-
 
 from util import *
 from api import *
 from xmldocs import XMLCorpusReader
-
 
 # (?:something) -- non-grouping parentheses!
 
@@ -30,8 +26,6 @@ TYPE = re.compile(r'type="(.*?)"')
 ANA  = re.compile(r'ana="(.*?)"')
 
 TEXTID = re.compile(r'text id="(.*?)"')
-
-
 
 
 class TEICorpusView(StreamBackedCorpusView):

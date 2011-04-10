@@ -7,7 +7,6 @@
 # For license information, see LICENSE.TXT
 
 from logic import *
-from nltk.internals import deprecated
 
 # Import Tkinter-based modules if they are available
 try:
@@ -61,10 +60,6 @@ class AbstractDrs(object):
             return DrtConcatenation(self.first, self.second, other)
         raise Exception('Antecedent of implication must be a DRS')
     
-    @deprecated("Use 'equiv' instead")
-    def tp_equals(self, other, prover=None):
-        return self.equiv(other, prover)
-        
     def equiv(self, other, prover=None):
         """
         Check for logical equivalence.

@@ -19,7 +19,7 @@ except ImportError: from nltk.etree import ElementTree
 
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.tokenize import WordPunctTokenizer
-from nltk.internals import deprecated, ElementWrapper
+from nltk.internals import ElementWrapper
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
@@ -77,13 +77,6 @@ class XMLCorpusReader(CorpusReader):
         elif isinstance(fileids, basestring): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
-    #{ Deprecated since 0.8
-    @deprecated("Use .raw() or .xml() instead.")
-    def read(self, items=None, format='xml'):
-        if format == 'raw': return self.raw(items)
-        if format == 'xml': return self.xml(items)
-        raise ValueError('bad format %r' % format)
-    #}
 
 class XMLCorpusView(StreamBackedCorpusView):
     """
