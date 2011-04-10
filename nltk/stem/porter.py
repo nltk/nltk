@@ -89,32 +89,12 @@ available from <http://nltk.sourceforge.net>
 ## Declare this module's documentation format.
 __docformat__ = 'plaintext'
 
-import threading
-import functools
 import sys
 import re
 
 ## --NLTK--
 ## Import the nltk.stemmer module, which defines the stemmer interface
 from api import *
-
-class PorterBuffer(object):
-    def __init__(self):
-        self.b = ""  # buffer for word to be stemmed 
-        self.k = 0
-        self.k0 = 0
-        self.j = 0   # j is a general offset into the string
-
-def add_threading_buffer(f):
-    @functools.wraps(f)
-    def inner(self, *args, **kwargs):
-        with self._lock:
-            if not hasattr(self, '_buff'):
-                self._buff = threading.local()
-                self._buff.buff = PorterBuffer()
-        result = f(self, *args, **kwargs)
-        return result
-    return inner
 
 class PorterStemmer(StemmerI):
 
@@ -143,8 +123,11 @@ class PorterStemmer(StemmerI):
         Note that only lower case sequences are stemmed. Forcing to lower case
         should be done before stem(...) is called.
         """
-        self._lock = threading.Lock()
         
+        self.b = ""  # buffer for word to be stemmed 
+        self.k = 0
+        self.k0 = 0
+        self.j = 0   # j is a general offset into the string
 
         ## --NEW--
         ## This is a table of irregular forms. It is quite short, but still
@@ -185,30 +168,6 @@ class PorterStemmer(StemmerI):
         for key in irregular_forms.keys():
             for val in irregular_forms[key]:
                 self.pool[val] = key
-
-    def get_b(self):
-        return self._buff.buff.b
-    def set_b(self, v):
-        self._buff.buff.b = v
-    b = property(get_b, set_b)
-
-    def get_k(self):
-        return self._buff.buff.k
-    def set_k(self, v):
-        self._buff.buff.k = v
-    k = property(get_k, set_k)
-
-    def get_k0(self):
-        return self._buff.buff.k0
-    def set_k0(self, v):
-        self._buff.buff.k0 = v
-    k0 = property(get_k0, set_k0)
-
-    def get_j(self):
-        return self._buff.buff.j
-    def set_j(self, v):
-        self._buff.buff.j = v
-    j = property(get_j, set_j)
 
     def cons(self, i):
         """cons(i) is TRUE <=> b[i] is a consonant."""
@@ -521,7 +480,6 @@ class PorterStemmer(StemmerI):
         if self.b[self.k] == 'l' and self.doublec(self.k) and self.m() > 1:
             self.k = self.k -1
 
-    @add_threading_buffer
     def stem_word(self, p, i=0, j=None):
         """In stem(p,i,j), p is a char pointer, and the string to be stemmed
         is from p[i] to p[j] inclusive. Typically i is zero and j is the
@@ -531,8 +489,6 @@ class PorterStemmer(StemmerI):
         i <= k <= j. To turn the stemmer into a module, declare 'stem' as
         extern, and delete the remainder of this file.
         """
-
-
         ## --NLTK--
         ## Don't print results as we go (commented out the next line)
         #print p[i:j+1]
@@ -576,6 +532,25 @@ class PorterStemmer(StemmerI):
         return ret
 
     ## --NLTK--
+    ## Don't use this procedure; we want to work with individual
+    ## tokens, instead.  (commented out the following procedure)
+    #def stem(self, text):
+    #    parts = re.split("(\W+)", text)
+    #    numWords = (len(parts) + 1)/2
+    #    
+    #    ret = ""
+    #    for i in xrange(numWords):
+    #        word = parts[2 * i]
+    #        separator = ""
+    #        if ((2 * i) + 1) < len(parts):
+    #            separator = parts[(2 * i) + 1]
+    #
+    #        stem = self.stem_word(string.lower(word), 0, len(word) - 1)
+    #        ret = ret + self.adjust_case(word, stem)
+    #        ret = ret + separator
+    #    return ret
+
+    ## --NLTK--
     ## Define a stem() method that implements the StemmerI interface.
     def stem(self, word):
         stem = self.stem_word(word.lower(), 0, len(word) - 1)
@@ -613,7 +588,6 @@ def demo():
     from nltk import stem
 
     stemmer = stem.PorterStemmer()
-    assert not hasattr(stemmer, '_buff')
 
     orig = []
     stemmed = []
@@ -621,8 +595,6 @@ def demo():
         for (word, tag) in treebank.tagged_words(item):
             orig.append(word)
             stemmed.append(stemmer.stem(word))
-
-    assert hasattr(stemmer, '_buff')
 
     # Convert the results to a string, and word-wrap them.
     results = ' '.join(stemmed)
