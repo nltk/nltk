@@ -1435,8 +1435,14 @@ class SimpleGoodTuringProbDist(ProbDistI):
             
         zr = []
         for j in range(len(r)):
-            i = r[j-1] if j > 0 else 0
-            k = r[j+1] if j != len(r) - 1 else 2 * r[j] - i
+            if j > 0:
+                i = r[j-1]
+            else:
+                i = 0
+            if j != len(r) - 1:
+                k = r[j+1] 
+            else:
+                k = 2 * r[j] - i
             zr_ = 2.0 * nr[j] / (k - i)
             zr.append(zr_)
 
@@ -1449,7 +1455,10 @@ class SimpleGoodTuringProbDist(ProbDistI):
         for (x, y) in zip(log_r, log_zr):
             xy_cov += (x - x_mean) * (y - y_mean)
             x_var += (x - x_mean)**2
-        self._slope = xy_cov / x_var if x_var != 0 else 0.0
+        if x_var != 0:
+            self._slope = xy_cov / x_var
+        else:
+            self._slope = 0.0
         self._intercept = y_mean - self._slope * x_mean
 
     def _switch(self, r, nr):
