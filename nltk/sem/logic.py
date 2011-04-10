@@ -51,7 +51,7 @@ class Tokens(object):
     TOKENS = BINOPS + EQ_LIST + NEQ_LIST + QUANTS + LAMBDA_LIST + PUNCT + NOT_LIST
     
     #Special
-    SYMBOLS = [x for x in TOKENS if all(c in '\\.(),-!&^|>=<' for c in x)]
+    SYMBOLS = [x for x in TOKENS if re.match(r'^[-\\.(),!&^|>=<]*$', x)]
                
 
 def boolean_ops():
