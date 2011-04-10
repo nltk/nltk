@@ -52,9 +52,15 @@ The ``fol()`` method converts DRSs into FOL formulae.
     >>> print dp.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])').fol()
     all x.(man(x) -> walks(x))
 
-In order to visualize a DRS, the ``draw()`` method can be use.
+In order to visualize a DRS, the ``pprint()`` method can be use.
 
-    >>> drs3.draw() # doctest: +SKIP
+    >>> drs3.pprint()
+      _________     __________  
+     | x       |   | y        | 
+    (|---------| + |----------|)
+     | man(x)  |   | woman(y) | 
+     | walk(x) |   | stop(y)  | 
+     |_________|   |__________| 
     
 
 Parse to semantics
@@ -148,7 +154,7 @@ Parser
     >>> print dp.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))').simplify()
     ([x,y],[walks(x), runs(y)])
     >>> print dp.parse(r'(([x,y],[walks(x), jumps(y)]) + (([z],[twos(z)]) + ([w],[runs(w)])))').simplify()
-    ([x,y,z,w],[walks(x), jumps(y), twos(z), runs(w)])
+    ([w,x,y,z],[walks(x), jumps(y), twos(z), runs(w)])
     >>> print dp.parse(r'((([],[walks(x)]) + ([],[runs(x)]) + ([],[threes(x)]) + ([],[fours(x)])))').simplify()
     ([],[walks(x), runs(x), threes(x), fours(x)])
     >>> dp.parse(r'([x],[man(x)])+([x],[walks(x)])').simplify() == \
@@ -218,12 +224,12 @@ Parser
     >>> print resolve_anaphora(dp.parse('([e01,z6,z7],[boy(z6), PRO(z7), run(e01), subj(e01,z7)])'))
     ([e01,z6,z7],[boy(z6), (z7 = z6), run(e01), subj(e01,z7)])
 
-``tp_equals()``:
+``equiv()``:
 ----------------
 
     >>> a = dp.parse(r'([x],[man(x), walks(x)])')
     >>> b = dp.parse(r'([x],[walks(x), man(x)])')
-    >>> print a.tp_equals(b, TableauProver())
+    >>> print a.equiv(b, TableauProver())
     True
 
 

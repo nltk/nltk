@@ -158,12 +158,15 @@ class DRS(AbstractDrs, Expression):
             if not replace_bound:
                 return self
             else:
-                i = self.refs.index(variable) 
+                i = self.refs.index(variable)
+                if self.consequent:
+                    consequent = self.consequent.replace(variable, expression, True, alpha_convert)
+                else:
+                    consequent = None
                 return DRS(self.refs[:i]+[expression.variable]+self.refs[i+1:],
                            [cond.replace(variable, expression, True, alpha_convert) 
                             for cond in self.conds],
-                           self.consequent.replace(variable, expression, True, alpha_convert)
-                           if self.consequent else None)
+                           consequent)
         else:
             if alpha_convert:
                 # any bound variable that appears in the expression must
@@ -172,45 +175,57 @@ class DRS(AbstractDrs, Expression):
                     newvar = unique_variable(ref) 
                     newvarex = DrtVariableExpression(newvar)
                     i = self.refs.index(ref)
+                    if self.consequent:
+                        consequent = self.consequent.replace(ref, newvarex, True, alpha_convert)
+                    else:
+                        consequent = None
                     self = DRS(self.refs[:i]+[newvar]+self.refs[i+1:],
                                [cond.replace(ref, newvarex, True, alpha_convert)
                                 for cond in self.conds],
-                               self.consequent.replace(ref, newvarex, True, alpha_convert)
-                               if self.consequent else None)
+                               consequent)
                 
             #replace in the conditions
+            if self.consequent:
+                consequent = self.consequent.replace(variable, expression, replace_bound, alpha_convert)
+            else:
+                consequent = None
             return DRS(self.refs,
                        [cond.replace(variable, expression, replace_bound, alpha_convert)
                         for cond in self.conds],
-                       self.consequent.replace(variable, expression, replace_bound, alpha_convert)
-                       if self.consequent else None)
+                       consequent)
 
     def variables(self):
         """@see: Expression.variables()"""
         conds_vars = reduce(operator.or_, 
                             [c.variables() for c in self.conds], set())
-        return (conds_vars | (self.consequent.variables() if self.consequent else set())) - set(self.refs)
+        if self.consequent:
+            conds_vars.update(self.consequent.variables())
+        return conds_vars - set(self.refs)
     
     def free(self, indvar_only=True):
         """@see: Expression.free()"""
         conds_free = reduce(operator.or_, 
                             [c.free(indvar_only) for c in self.conds], set())
-        return (conds_free | (self.consequent.free() if self.consequent else set())) - set(self.refs)
+        if self.consequent:
+            conds_free.update(self.consequent.free())
+        return conds_free - set(self.refs)
 
     def get_refs(self, recursive=False):
         """@see: AbstractExpression.get_refs()"""
         if recursive:
-            return self.refs + \
-                   sum((c.get_refs(True) for c in self.conds), []) + \
-                   (self.consequent.get_refs(True) if self.consequent else [])
+            conds_refs = self.refs + sum((c.get_refs(True) for c in self.conds), [])
+            if self.consequent:
+                conds_refs.extend(self.consequent.get_refs(True))
+            return conds_refs
         else:
             return self.refs
         
     def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
-        return reduce(combinator, [function(e) for e in self.refs + self.conds + \
-                                   ([self.consequent] if self.consequent else [])], 
-                      default)
+        parts = self.refs + self.conds
+        if self.consequent:
+            parts.append(self.consequent)
+        return reduce(combinator, map(function, parts), default)
         
     def eliminate_equality(self):
         drs = self
@@ -237,12 +252,20 @@ class DRS(AbstractDrs, Expression):
                new_cond_simp.refs or new_cond_simp.conds or \
                new_cond_simp.consequent:
                 conds.append(new_cond)
-        return DRS(drs.refs, conds, drs.consequent.eliminate_equality() if drs.consequent else None)
+        if drs.consequent:
+            consequent = drs.consequent.eliminate_equality()
+        else:
+            consequent = None
+        return DRS(drs.refs, conds, consequent)
     
     def simplify(self):
+        if self.consequent:
+            consequent = self.consequent.simplify()
+        else:
+            consequent = None
         return DRS(self.refs, 
                    [cond.simplify() for cond in self.conds], 
-                   (self.consequent.simplify() if self.consequent else None))
+                   consequent)
     
     def fol(self):
         if self.consequent:
@@ -298,9 +321,9 @@ class DRS(AbstractDrs, Expression):
             else:
                 other_vars.append(s)
         return sorted(other_vars) + \
-               sorted(event_vars, key=lambda v: int(v[2:]) if len(v[2:]) else -1) + \
-               sorted(func_vars, key=lambda v: (v[0], int(v[1:]) if len(v[1:]) else -1)) + \
-               sorted(ind_vars, key=lambda v: (v[0], int(v[1:])) if len(v[1:]) else -1)
+               sorted(event_vars, key=lambda v: int([v[2:],-1][len(v[2:]) == 0])) + \
+               sorted(func_vars, key=lambda v: (v[0], int([v[1:],-1][len(v[1:])==0]))) + \
+               sorted(ind_vars, key=lambda v: (v[0], int([v[1:],-1][len(v[1:])==0])))
 
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
@@ -512,7 +535,8 @@ class DrtConcatenation(DrtBooleanExpression):
             if replace_bound:
                 first  = first.replace(variable, expression, replace_bound, alpha_convert)
                 second = second.replace(variable, expression, replace_bound, alpha_convert)
-                consequent = consequent.replace(variable, expression, replace_bound, alpha_convert) if consequent else None
+                if consequent:
+                    consequent = consequent.replace(variable, expression, replace_bound, alpha_convert)
         else:
             if alpha_convert:
                 # alpha convert every ref that is free in 'expression'
@@ -520,11 +544,13 @@ class DrtConcatenation(DrtBooleanExpression):
                     v = DrtVariableExpression(unique_variable(ref))
                     first  = first.replace(ref, v, True, alpha_convert)
                     second = second.replace(ref, v, True, alpha_convert)
-                    consequent = consequent.replace(ref, v, True, alpha_convert) if consequent else None
+                    if consequent:
+                        consequent = consequent.replace(ref, v, True, alpha_convert)
 
             first  = first.replace(variable, expression, replace_bound, alpha_convert)
             second = second.replace(variable, expression, replace_bound, alpha_convert)
-            consequent = consequent.replace(variable, expression, replace_bound, alpha_convert) if consequent else None
+            if consequent:
+                consequent = consequent.replace(variable, expression, replace_bound, alpha_convert)
             
         return self.__class__(first, second, consequent)
     
@@ -537,6 +563,10 @@ class DrtConcatenation(DrtBooleanExpression):
     def simplify(self):
         first = self.first.simplify()
         second = self.second.simplify()
+        if self.consequent:
+            consequent = self.consequent.simplify()
+        else:
+            consequent = None
 
         if isinstance(first, DRS) and isinstance(second, DRS):
             # For any ref that is in both 'first' and 'second'
@@ -545,17 +575,15 @@ class DrtConcatenation(DrtBooleanExpression):
                 newvar = DrtVariableExpression(unique_variable(ref))
                 second = second.replace(ref, newvar, True)
             
-            return DRS(first.refs + second.refs, first.conds + second.conds, 
-                       self.consequent.simplify() if self.consequent else None)
+            return DRS(first.refs + second.refs, first.conds + second.conds, consequent)
         else:
-            return self.__class__(first, second, self.consequent.simplify() 
-                                                 if self.consequent else None)
+            return self.__class__(first, second, consequent)
         
     def get_refs(self, recursive=False):
         """@see: AbstractExpression.get_refs()"""
         refs = self.first.get_refs(recursive) + self.second.get_refs(recursive)
         if self.consequent and recursive:
-            refs += self.consequent.get_refs(True)
+            refs.extend(self.consequent.get_refs(True))
         return refs
 
     def getOp(self):
@@ -600,7 +628,10 @@ class DrtConcatenation(DrtBooleanExpression):
 
     def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
-        return combinator(function(self.first), function(self.second), function(self.consequent))
+        if self.consequent:
+            return combinator(function(self.first), function(self.second), function(self.consequent))
+        else:
+            return combinator(function(self.first), function(self.second))
         
     def __str__(self):
         first = self._str_subex(self.first)
@@ -713,9 +744,11 @@ def resolve_anaphora(expression, trail=[]):
                                 "resolve to anything." % r_cond.first)
             
             r_conds.append(r_cond)
-        return expression.__class__(expression.refs, r_conds, 
-                    resolve_anaphora(expression.consequent, trail + [expression]) 
-                        if expression.consequent else None)
+        if expression.consequent:
+            consequent = resolve_anaphora(expression.consequent, trail + [expression])
+        else:
+            consequent = None
+        return expression.__class__(expression.refs, r_conds, consequent)
     
     elif isinstance(expression, AbstractVariableExpression):
         return expression
@@ -724,10 +757,13 @@ def resolve_anaphora(expression, trail=[]):
         return expression.__class__(resolve_anaphora(expression.term, trail + [expression]))
 
     elif isinstance(expression, DrtConcatenation):
+        if expression.consequent:
+            consequent = resolve_anaphora(expression.consequent, trail + [expression])
+        else:
+            consequent = None
         return expression.__class__(resolve_anaphora(expression.first, trail + [expression]), 
                                     resolve_anaphora(expression.second, trail + [expression]),
-                                    resolve_anaphora(expression.consequent, trail + [expression]) 
-                                        if expression.consequent else None)
+                                    consequent)
     
     elif isinstance(expression, BinaryExpression):
         return expression.__class__(resolve_anaphora(expression.first, trail + [expression]), 
