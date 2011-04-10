@@ -33,23 +33,7 @@ __all__ = [
 
     # Stemmers
     'RegexpStemmer', 'PorterStemmer', 'LancasterStemmer',
-    'RSLPStemmer', 'WordNetLemmatizer', 'WordnetStemmer',
+    'RSLPStemmer', 'WordNetLemmatizer',
     'ISRIStemmer', 'SnowballStemmer'
     ] 
 
-######################################################################
-#{ Deprecated
-######################################################################
-from nltk.internals import Deprecated
-class StemI(StemmerI, Deprecated):
-    """Use nltk.StemmerI instead."""
-class Regexp(RegexpStemmer, Deprecated):
-    """Use nltk.RegexpStemmer instead."""
-class Porter(PorterStemmer, Deprecated):
-    """Use nltk.PorterStemmer instead."""
-class Lancaster(LancasterStemmer, Deprecated):
-    """Use nltk.LancasterStemmer instead."""
-class Wordnet(WordNetStemmer, Deprecated):
-    """Use nltk.WordNetLemmatizer instead."""
-    
-    

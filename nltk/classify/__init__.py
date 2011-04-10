@@ -113,6 +113,6 @@ try:
     import numpy
     from maxent import *
     __all__ += ['MaxentClassifier', 'BinaryMaxentFeatureEncoding',
-                'ConditionalExponentialClassifier', 'train_maxent_classifier']
+                'ConditionalExponentialClassifier']
 except ImportError:
     pass
