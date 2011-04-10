@@ -26,7 +26,6 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
 from string import split
-from nltk.internals import deprecated
 
 from util import *
 from api import *
@@ -122,29 +121,6 @@ class YCOECorpusReader(CorpusReader):
     def parsed_sents(self, documents=None):
         return self._psd_reader.parsed_sents(self._getfileids(documents, 'psd'))
 
-    #{ Deprecated since 0.8
-    @deprecated("Use .raw() or .words() or .tagged_words() or "
-                ".parsed_sents() instead.")
-    def read(self, items=None, format='parsed'):
-        if format == 'parsed': return self.parsed_sents(items)
-        if format == 'raw': return self.raw(items)
-        if format == 'tokenized': return self.words(items)
-        if format == 'tagged': return self.tagged_words(items)
-        if format == 'chunked': raise ValueError('no longer supported')
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .parsed_sents() instead.")
-    def parsed(self, items=None):
-        return self.parsed_sents(items)
-    @deprecated("Use .words() instead.")
-    def tokenized(self, items=None):
-        return self.words(items)
-    @deprecated("Use .tagged_words() instead.")
-    def tagged(self, items=None):
-        return self.tagged_words(items)
-    @deprecated("Operation no longer supported.")
-    def chunked(self, items=None):
-        raise ValueError('format "chunked" no longer supported')
-    #}
 
 class YCOEParseCorpusReader(BracketParseCorpusReader):
     """Specialized version of the standard bracket parse corpus reader

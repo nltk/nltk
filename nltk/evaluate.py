@@ -24,44 +24,6 @@ import nltk
 
 from util import LazyConcatenation, LazyMap, LazyZip
 from probability import FreqDist
-from internals import deprecated
-
-@deprecated('Use nltk.metrics.accuracy() instead.')
-def accuracy(reference, test):
-    return nltk.metrics.accuracy(reference, test) 
-
-@deprecated('Use nltk.metrics.precision()instead.')
-def precision(reference, test):
-    return nltk.metrics.precision(reference, test)
-
-@deprecated('Use nltk.metrics.recall() instead.')
-def recall(reference, test):
-    return nltk.metrics.recall(reference, test)
-
-@deprecated('Use nltk.metrics.f_measure() instead.')
-def f_measure(reference, test, alpha=0.5):
-    return nltk.metrics.f_measure(reference, test, alpha)
-
-@deprecated('Use nltk.metrics.log_likelihood() instead.')
-def log_likelihood(reference, test):
-    return nltk.metrics.log_likelihood(reference, test)
-
-@deprecated('Use nltk.metrics.approxrand() instead.')
-def approxrand(a, b, **kwargs):
-    return nltk.nltk.metrics.approxrand(a, b, **kwargs)
-
-class ConfusionMatrix(nltk.metrics.ConfusionMatrix):
-    @deprecated('Use nltk.metrics.ConfusionMatrix instead.')
-    def __init__(self, reference, test, sort_by_count=False):
-        nltk.metrics.ConfusionMatrix.__init__(self, reference, test, sort_by_count)
-
-@deprecated('Use nltk.metrics.windowdiff instead.')
-def windowdiff(seg1, seg2, k, boundary="1"):
-    return nltk.metrics.windowdiff(seg1, seg2, k, boundary)
-
-@deprecated('Use nltk.metrics.edit_dist instead.')
-def edit_dist(s1, s2):
-    return nltk.metrics.edit_dist(s1, s2)
 
 def demo():
     print '-'*75

@@ -24,7 +24,6 @@ APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 import codecs
 
 import nltk
-from nltk.internals import deprecated
 
 from api import *
 from util import *
@@ -109,16 +108,4 @@ class IEERCorpusReader(CorpusReader):
             if line.strip() == '</DOC>': break
         # Return the document
         return ['\n'.join(out)]
-
-    #{ Deprecated since 0.8
-    @deprecated("Use .parsed_docs() or .raw() or .docs() instead.")
-    def read(self, items, format='parsed'):
-        if format == 'parsed': return self.parsed_docs(items)
-        if format == 'raw': return self.raw(items)
-        if format == 'docs': return self.docs(items)
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .parsed_docs() instead.")
-    def parsed(self, items):
-        return self.parsed_docs(items)
-    #}
 

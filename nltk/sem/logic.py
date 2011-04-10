@@ -15,7 +15,7 @@ import re
 import operator
 
 from nltk.compat import defaultdict
-from nltk.internals import Counter, deprecated
+from nltk.internals import Counter
 
 APP = 'APP'
 
@@ -402,10 +402,6 @@ class Expression(SubstituteBindingsI):
     def __neq__(self, other):
         return not (self == other)
     
-    @deprecated("Use 'equiv' instead")
-    def tp_equals(self, other, prover=None):
-        return self.equiv(other, prover)
-        
     def equiv(self, other, prover=None):
         """
         Check for logical equivalence.

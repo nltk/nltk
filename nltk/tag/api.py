@@ -11,7 +11,7 @@ Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
 
-from nltk.internals import overridden, deprecated
+from nltk.internals import overridden
 from nltk.metrics import accuracy as _accuracy
 from util import untag
 

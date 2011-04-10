@@ -15,7 +15,6 @@ from operator import itemgetter
 
 from nltk.compat import defaultdict
 from nltk.corpus.reader import CorpusReader
-from nltk.internals import deprecated
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
 
@@ -1228,15 +1227,6 @@ class WordNetCorpusReader(CorpusReader):
                 for synset in self.synsets(lemma, pos)
                 for lemma_obj in synset.lemmas
                 if lemma_obj.name == lemma]
-
-    #{ Deprecated since 2.0rc1
-    @deprecated("Use .all_lemma_names() instead.")
-    def words(self, pos=None):
-        """Return all lemma names for the specified part of speech tag, or all
-        lemma names, if none is specified."""
-
-        return self.all_lemma_names(pos)
-    #}
 
     def all_lemma_names(self, pos=None):
         """Return all lemma names for all synsets for the given

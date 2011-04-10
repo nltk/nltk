@@ -1304,19 +1304,11 @@ def _child_names(tree):
 ## Parsing
 ######################################################################
     
-# We should consider deprecating this function:
-#@deprecated('Use Tree.parse(s, remove_top_empty_bracketing=True) instead.')
 def bracket_parse(s):
     """
-    Parse a treebank string and return a tree.  Trees are represented
-    as nested brackettings, e.g. (S (NP (NNP John)) (VP (V runs))).
-
-    @return: A tree corresponding to the string representation.
-    @rtype: C{tree}
-    @param s: The string to be converted
-    @type s: C{string}
+    Use Tree.parse(s, remove_top_empty_bracketing=True) instead.
     """
-    return Tree.parse(s, remove_empty_top_bracketing=True)
+    raise NameError("Use Tree.parse(s, remove_top_empty_bracketing=True) instead.")
 
 def sinica_parse(s):
     """

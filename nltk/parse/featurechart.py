@@ -503,35 +503,6 @@ class InstantiateVarsChart(FeatureChart):
                     for var in edge.lhs().variables()
                     if var.name.startswith('@'))
 
-#////////////////////////////////////////////////////////////
-# Deprecated parser loading
-#////////////////////////////////////////////////////////////
-
-@deprecated("Use nltk.load_parser() instead.")
-def load_earley(filename, trace=0, cache=False, verbose=False,
-                chart_class=FeatureChart, logic_parser=None, fstruct_parser=None):
-    """
-    Load a grammar from a file, and build an Earley feature parser based on
-    that grammar.
-
-    You can optionally specify a tracing level, for how much output you
-    want to see:
-
-    0: No output.
-    1: Show edges from scanner and completer rules (not predictor).
-    2 (default): Show all edges as they are added to the chart.
-    3: Show all edges, plus the results of successful unifications.
-    4: Show all edges, plus the results of all attempted unifications.
-    5: Show all edges, plus the results of all attempted unifications,
-    including those with cached results.
-
-    If C{verbose} is set to C{True}, then more diagnostic information about
-    grammar-loading is displayed.
-    """
-    grammar = nltk.data.load(filename, cache=cache, verbose=verbose, 
-                             logic_parser=logic_parser, 
-                             fstruct_parser=fstruct_parser)
-    return FeatureChartParser(grammar, trace=trace, chart_class=chart_class)
 
 #////////////////////////////////////////////////////////////
 # Demo

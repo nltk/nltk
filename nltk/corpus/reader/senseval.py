@@ -29,7 +29,6 @@ from xmldocs import XMLCorpusReader
 
 from nltk.tokenize import *
 from nltk.etree import ElementTree
-from nltk.internals import deprecated
 
 from util import *
 from api import *
@@ -68,17 +67,7 @@ class SensevalCorpusReader(CorpusReader):
                 elts.append( (sense, context) )
         return elts
 
-    #{ Deprecated since 0.8
-    @deprecated("Use .instances() or .raw() instead.")
-    def read(self, items, format='listed'):
-        if format == 'listed': return self.instances(items)
-        if format == 'raw': return self.raw(items)
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .instances() instead.")
-    def listed(self, items):
-        return self.instances(items)
-    #}
-    
+
 class SensevalCorpusView(StreamBackedCorpusView):
     def __init__(self, fileid, encoding):
         StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)

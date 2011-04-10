@@ -42,7 +42,6 @@ import os
 import re
 
 import nltk
-from nltk.internals import deprecated
 
 from util import *
 from api import *

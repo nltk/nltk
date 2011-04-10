@@ -9,7 +9,6 @@ import re
 import textwrap
 
 from nltk.compat import *
-from nltk.internals import deprecated
 
 from util import *
 from api import *
@@ -154,12 +153,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return [self._class_to_fileid[self.longid(vnclass_id)]
                     for vnclass_id in vnclass_ids]
 
-    #{ Deprecated since 0.9.7
-    @deprecated("Use corpus.fileids() instead")
-    def files(self, vnclass_ids=None):
-        return self.fileids(vnclass_ids)
-    #}
-    
+
     ######################################################################
     #{ Index Initialization
     ######################################################################

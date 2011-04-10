@@ -15,7 +15,6 @@ import os
 
 from nltk.tag import str2tuple
 from nltk.tokenize import *
-from nltk.internals import deprecated
 
 from api import *
 from util import *
