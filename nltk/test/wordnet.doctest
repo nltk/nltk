@@ -171,13 +171,13 @@ The old behavior can be achieved by setting simulate_root to be False.
 A score of 1 represents identity i.e. comparing a sense with itself 
 will return 1.
 
-    >>> dog.path_similarity(cat)
+    >>> dog.path_similarity(cat)  # doctest: +ELLIPSIS
     0.2...
 
-    >>> hit.path_similarity(slap)
+    >>> hit.path_similarity(slap)  # doctest: +ELLIPSIS
     0.142...
 
-    >>> wn.path_similarity(hit, slap)
+    >>> wn.path_similarity(hit, slap)  # doctest: +ELLIPSIS
     0.142...
 
     >>> print hit.path_similarity(slap, simulate_root=False)
@@ -194,13 +194,13 @@ of the taxonomy in which the senses occur. The relationship is given
 as -log(p/2d) where p is the shortest path length and d the taxonomy
 depth.
 
-    >>> dog.lch_similarity(cat)
+    >>> dog.lch_similarity(cat)  # doctest: +ELLIPSIS
     2.028...
 
-    >>> hit.lch_similarity(slap)
+    >>> hit.lch_similarity(slap)  # doctest: +ELLIPSIS
     1.312...
 
-    >>> wn.lch_similarity(hit, slap)
+    >>> wn.lch_similarity(hit, slap)  # doctest: +ELLIPSIS
     1.312...
 
     >>> print hit.lch_similarity(slap, simulate_root=False)
@@ -225,7 +225,7 @@ shortest path to the root node is the longest will be selected. Where
 the LCS has multiple paths to the root, the longer path is used for
 the purposes of the calculation.
 
-    >>> dog.wup_similarity(cat)
+    >>> dog.wup_similarity(cat)  # doctest: +ELLIPSIS
     0.857...
 
     >>> hit.wup_similarity(slap)
@@ -263,9 +263,9 @@ information content, the result is dependent on the corpus used to
 generate the information content and the specifics of how the
 information content was created.
 
-    >>> dog.res_similarity(cat, brown_ic)
+    >>> dog.res_similarity(cat, brown_ic)  # doctest: +ELLIPSIS
     7.911...
-    >>> dog.res_similarity(cat, genesis_ic)
+    >>> dog.res_similarity(cat, genesis_ic)  # doctest: +ELLIPSIS
     7.204...
 
 ``synset1.jcn_similarity(synset2, ic):``
@@ -275,9 +275,9 @@ Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
 
-    >>> dog.jcn_similarity(cat, brown_ic)
+    >>> dog.jcn_similarity(cat, brown_ic)  # doctest: +ELLIPSIS
     0.449...
-    >>> dog.jcn_similarity(cat, genesis_ic)
+    >>> dog.jcn_similarity(cat, genesis_ic)  # doctest: +ELLIPSIS
     0.285...
 
 ``synset1.lin_similarity(synset2, ic):``
@@ -287,7 +287,7 @@ Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
 
-    >>> dog.lin_similarity(cat, semcor_ic)
+    >>> dog.lin_similarity(cat, semcor_ic)  # doctest: +ELLIPSIS
     0.886...
 
 
@@ -405,7 +405,7 @@ Bug 160: wup_similarity breaks when the two synsets have no common hypernym
 
     >>> t = wn.synsets('picasso')[0]
     >>> m = wn.synsets('male')[1]
-    >>> t.wup_similarity(m)
+    >>> t.wup_similarity(m)  # doctest: +ELLIPSIS
     0.631...
 
     >>> t = wn.synsets('titan')[1]
@@ -418,14 +418,14 @@ Bug 21: "instance of" not included in LCS (very similar to bug 160)
     >>> a = wn.synsets("writings")[0]
     >>> b = wn.synsets("scripture")[0]
     >>> brown_ic = wordnet_ic.ic('ic-brown.dat')
-    >>> a.jcn_similarity(b, brown_ic)
+    >>> a.jcn_similarity(b, brown_ic)  # doctest: +ELLIPSIS
     0.175...
 
 Bug 221: Verb root IC is zero
 
     >>> from nltk.corpus.reader.wordnet import information_content
     >>> s = wn.synsets('say', wn.VERB)[0]
-    >>> information_content(s, brown_ic)
+    >>> information_content(s, brown_ic)  # doctest: +ELLIPSIS
     4.623...
 
 Bug 161: Comparison between WN keys/lemmas should not be case sensitive
@@ -451,7 +451,7 @@ Bug 382: JCN Division by zero error
     >>> shlep = wn.synset('shlep.v.02')
     >>> from nltk.corpus import wordnet_ic
     >>> brown_ic =  wordnet_ic.ic('ic-brown.dat')
-    >>> tow.jcn_similarity(shlep, brown_ic)
+    >>> tow.jcn_similarity(shlep, brown_ic)  # doctest: +ELLIPSIS
     1...e+300
 
 Bug 428: Depth is zero for instance nouns
@@ -473,7 +473,7 @@ Bug 470: shortest_path_distance ignored instance hypernyms
 
     >>> google = wordnet.synsets("google")[0]
     >>> earth = wordnet.synsets("earth")[0]
-    >>> google.wup_similarity(earth)
+    >>> google.wup_similarity(earth)  # doctest: +ELLIPSIS
     0.1...
 
 Bug 484: similarity metrics returned -1 instead of None for no LCS
@@ -505,17 +505,17 @@ Bug 482: Some nouns not being lemmatised by WordNetLemmatizer().lemmatize
 
 Bug 284: instance hypernyms not used in similarity calculations
 
-    >>> wn.synset('john.n.02').lch_similarity(wn.synset('dog.n.01'))
+    >>> wn.synset('john.n.02').lch_similarity(wn.synset('dog.n.01'))  # doctest: +ELLIPSIS
     1.335...
-    >>> wn.synset('john.n.02').wup_similarity(wn.synset('dog.n.01'))
+    >>> wn.synset('john.n.02').wup_similarity(wn.synset('dog.n.01'))  # doctest: +ELLIPSIS
     0.571...
-    >>> wn.synset('john.n.02').res_similarity(wn.synset('dog.n.01'), brown_ic)
+    >>> wn.synset('john.n.02').res_similarity(wn.synset('dog.n.01'), brown_ic)  # doctest: +ELLIPSIS
     2.224...
-    >>> wn.synset('john.n.02').jcn_similarity(wn.synset('dog.n.01'), brown_ic)
+    >>> wn.synset('john.n.02').jcn_similarity(wn.synset('dog.n.01'), brown_ic)  # doctest: +ELLIPSIS
     0.075...
-    >>> wn.synset('john.n.02').lin_similarity(wn.synset('dog.n.01'), brown_ic)
+    >>> wn.synset('john.n.02').lin_similarity(wn.synset('dog.n.01'), brown_ic)  # doctest: +ELLIPSIS
     0.252...
-    >>> wn.synset('john.n.02').hypernym_paths()
+    >>> wn.synset('john.n.02').hypernym_paths()  # doctest: +ELLIPSIS
     [[Synset('entity.n.01'), ..., Synset('john.n.02')]]
 
 Issue 541: add domains to wordnet

@@ -403,7 +403,7 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
         cur.close()
     except ImportError:
         import warnings
-        warnings.warn("To run this function, first install pysqlite.")
+        warnings.warn("To run this function, first install pysqlite, or else use Python 2.5 or later.")
 
 def sql_query(dbname, query):
     """
@@ -423,7 +423,7 @@ def sql_query(dbname, query):
         return cur.execute(query)
     except ImportError:
         import warnings
-        warnings.warn("To run this function, first install pysqlite.")
+        warnings.warn("To run this function, first install pysqlite, or else use Python 2.5 or later.")
         raise
 
 def _str2records(filename, rel):
@@ -780,7 +780,7 @@ def sql_demo():
             print row
     except ImportError:
         import warnings
-        warnings.warn("To run the SQL demo, first install pysqlite.")
+        warnings.warn("To run the SQL demo, first install pysqlite, or else use Python 2.5 or later.")
 
     
 if __name__ == '__main__':

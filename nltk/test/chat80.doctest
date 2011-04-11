@@ -199,9 +199,8 @@ to SQL:
 
 Given this grammar, we can express, and then execute, queries in English.
 
-    >>> from nltk.parse import load_earley
     >>> from string import join
-    >>> cp = load_earley('grammars/book_grammars/sql0.fcfg')
+    >>> cp = nltk.data.load('grammars/book_grammars/sql0.fcfg')
     >>> query = 'What cities are in China'
     >>> trees = cp.nbest_parse(query.split())
     >>> answer = trees[0].node['SEM']
