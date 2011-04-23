@@ -111,16 +111,9 @@ class AbstractDrs(object):
         return resolve_anaphora(self)
     
     def eliminate_equality(self):
-        def combinator(a, *additional):
-            if len(additional) == 0:
-                return self.__class__(a)
-            elif len(additional) == 1:
-                return self.__class__(a, additional[0])
+        return self.visit_structured(lambda e: e.eliminate_equality(), 
+                                     self.__class__)
         
-        return self.visit(lambda e: isinstance(e,Variable) 
-                          and e or e.eliminate_equality(), combinator, set())
-        
-
     def pprint(self):
         """
         Draw the DRS
@@ -194,18 +187,9 @@ class DRS(AbstractDrs, Expression):
                         for cond in self.conds],
                        consequent)
 
-    def variables(self):
-        """@see: Expression.variables()"""
-        conds_vars = reduce(operator.or_, 
-                            [c.variables() for c in self.conds], set())
-        if self.consequent:
-            conds_vars.update(self.consequent.variables())
-        return conds_vars - set(self.refs)
-    
-    def free(self, indvar_only=True):
+    def free(self):
         """@see: Expression.free()"""
-        conds_free = reduce(operator.or_, 
-                            [c.free(indvar_only) for c in self.conds], set())
+        conds_free = reduce(operator.or_, [c.free() for c in self.conds], set())
         if self.consequent:
             conds_free.update(self.consequent.free())
         return conds_free - set(self.refs)
@@ -220,12 +204,20 @@ class DRS(AbstractDrs, Expression):
         else:
             return self.refs
         
-    def visit(self, function, combinator, default):
+    def visit(self, function, combinator):
         """@see: Expression.visit()"""
-        parts = self.refs + self.conds
+        parts = map(function, self.conds)
         if self.consequent:
-            parts.append(self.consequent)
-        return reduce(combinator, map(function, parts), default)
+            parts.append(function(self.consequent))
+        return combinator(parts)
+        
+    def visit_structured(self, function, combinator):
+        """@see: Expression.visit_structured()"""
+        if self.consequent:
+            consequent = function(self.consequent)
+        else:
+            consequent = None
+        return combinator(self.refs, map(function, self.conds), consequent)
         
     def eliminate_equality(self):
         drs = self
@@ -257,15 +249,6 @@ class DRS(AbstractDrs, Expression):
         else:
             consequent = None
         return DRS(drs.refs, conds, consequent)
-    
-    def simplify(self):
-        if self.consequent:
-            consequent = self.consequent.simplify()
-        else:
-            consequent = None
-        return DRS(self.refs, 
-                   [cond.simplify() for cond in self.conds], 
-                   consequent)
     
     def fol(self):
         if self.consequent:
@@ -379,6 +362,9 @@ class DrtAbstractVariableExpression(AbstractDrs, AbstractVariableExpression):
         blank = ' '*len(s)
         return [blank, blank, s, blank]
     
+    def eliminate_equality(self):
+        return self
+    
 class DrtIndividualVariableExpression(DrtAbstractVariableExpression, IndividualVariableExpression):
     pass
 
@@ -407,9 +393,6 @@ class DrtProposition(AbstractDrs, Expression):
     def eliminate_equality(self):
         return DrtProposition(self.variable, self.drs.eliminate_equality())
         
-    def simplify(self):
-        return DrtProposition(self.variable, self.drs.simplify())
-        
     def get_refs(self, recursive=False):
         if recursive:
             return self.drs.get_refs(True)
@@ -431,8 +414,13 @@ class DrtProposition(AbstractDrs, Expression):
                 str(self.variable) + ':' + drs_s[1]] + \
                 map(lambda l: blank+l, drs_s[2:])
         
-    def visit(self, function, combinator, default):
-        return combinator(function(self.variable), function(self.drs))
+    def visit(self, function, combinator):
+        """@see: Expression.visit()"""
+        return combinator([function(self.drs)])
+        
+    def visit_structured(self, function, combinator):
+        """@see: Expression.visit_structured()"""
+        return combinator(self.variable, function(self.drs))
         
     def __str__(self):
         return 'prop(%s, %s)' % (self.variable, self.drs)
@@ -626,12 +614,12 @@ class DrtConcatenation(DrtBooleanExpression):
         return DrtBooleanExpression._pretty_subex(self, subex)
 
 
-    def visit(self, function, combinator, default):
+    def visit(self, function, combinator):
         """@see: Expression.visit()"""
         if self.consequent:
-            return combinator(function(self.first), function(self.second), function(self.consequent))
+            return combinator([function(self.first), function(self.second), function(self.consequent)])
         else:
-            return combinator(function(self.first), function(self.second))
+            return combinator([function(self.first), function(self.second)])
         
     def __str__(self):
         first = self._str_subex(self.first)
@@ -673,7 +661,7 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
                [func_line         + ' ' + ' '.join(args_line) + ' ' for func_line, args_line in zip(function_lines, zip(*args_lines))[3:]]
 
 class PossibleAntecedents(list, AbstractDrs, Expression):
-    def free(self, indvar_only=True):
+    def free(self):
         """Set of free variables."""
         return set(self)
 

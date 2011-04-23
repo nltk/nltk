@@ -24,11 +24,7 @@ def get_domain(goal, assumptions):
         all_expressions = assumptions
     else:
         all_expressions = assumptions + [-goal]
-        
-    domain = set()
-    for a in all_expressions:
-        domain |= (a.free(False) - a.free(True))
-    return domain
+    return reduce(operator.or_, (a.constants() for a in all_expressions), set())
 
 class ClosedDomainProver(ProverCommandDecorator):
     """
@@ -49,7 +45,7 @@ class ClosedDomainProver(ProverCommandDecorator):
     def replace_quants(self, ex, domain):
         """
         Apply the closed domain assumption to the expression
-         - Domain = union([e.free(False) for e in all_expressions])
+         - Domain = union([e.free()|e.constants() for e in all_expressions])
          - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR 
                      "P.replace(x, d1) | P.replace(x, d2) | ..."
          - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
@@ -82,7 +78,7 @@ class UniqueNamesProver(ProverCommandDecorator):
     """
     def assumptions(self):
         """
-         - Domain = union([e.free(False) for e in all_expressions])
+         - Domain = union([e.free()|e.constants() for e in all_expressions])
          - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
         """
         assumptions = self._command.assumptions()
@@ -240,7 +236,7 @@ class ClosedWorldProver(ProverCommandDecorator):
 
     def _map_predicates(self, expression, predDict):
         if isinstance(expression, ApplicationExpression):
-            (func, args) = expression.uncurry()
+            func, args = expression.uncurry()
             if isinstance(func, AbstractVariableExpression):
                 predDict[func].append_sig(tuple(args))
         elif isinstance(expression, AndExpression):

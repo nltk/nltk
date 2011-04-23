@@ -408,67 +408,45 @@ A different parser should give the same parse trees, but perhaps in a different 
     |. . . . [-] . .| [4:5] 'that'
     |. . . . . [-] .| [5:6] 'you'
     |. . . . . . [-]| [6:7] 'like'
-    |> . . . . . . .| [0:0] [INIT][] -> * S[] {}
     |> . . . . . . .| [0:0] S[-INV] -> * NP[] VP[] {}
+    |> . . . . . . .| [0:0] S[-INV]/?x[] -> * NP[] VP[]/?x[] {}
     |> . . . . . . .| [0:0] S[-INV] -> * NP[] S[]/NP[] {}
     |> . . . . . . .| [0:0] S[-INV] -> * Adv[+NEG] S[+INV] {}
     |> . . . . . . .| [0:0] S[+INV] -> * V[+AUX] NP[] VP[] {}
-    |> . . . . . . .| [0:0] V[+AUX] -> * 'do' {}
-    |> . . . . . . .| [0:0] V[+AUX] -> * 'can' {}
-    |> . . . . . . .| [0:0] Adv[+NEG] -> * 'rarely' {}
-    |> . . . . . . .| [0:0] Adv[+NEG] -> * 'never' {}
-    |> . . . . . . .| [0:0] NP[-WH] -> * 'you' {}
-    |> . . . . . . .| [0:0] NP[-WH] -> * 'cats' {}
+    |> . . . . . . .| [0:0] S[+INV]/?x[] -> * V[+AUX] NP[] VP[]/?x[] {}
     |> . . . . . . .| [0:0] NP[+WH] -> * 'who' {}
     |[-] . . . . . .| [0:1] NP[+WH] -> 'who' *
     |[-> . . . . . .| [0:1] S[-INV] -> NP[] * VP[] {}
+    |[-> . . . . . .| [0:1] S[-INV]/?x[] -> NP[] * VP[]/?x[] {}
     |[-> . . . . . .| [0:1] S[-INV] -> NP[] * S[]/NP[] {}
     |. > . . . . . .| [1:1] S[-INV]/?x[] -> * NP[] VP[]/?x[] {}
     |. > . . . . . .| [1:1] S[+INV]/?x[] -> * V[+AUX] NP[] VP[]/?x[] {}
     |. > . . . . . .| [1:1] V[+AUX] -> * 'do' {}
-    |. > . . . . . .| [1:1] V[+AUX] -> * 'can' {}
-    |. > . . . . . .| [1:1] NP[-WH] -> * 'you' {}
-    |. > . . . . . .| [1:1] NP[-WH] -> * 'cats' {}
-    |. > . . . . . .| [1:1] NP[+WH] -> * 'who' {}
+    |. > . . . . . .| [1:1] VP[]/?x[] -> * V[-AUX, SUBCAT='trans'] NP[]/?x[] {}
+    |. > . . . . . .| [1:1] VP[]/?x[] -> * V[-AUX, SUBCAT='clause'] SBar[]/?x[] {}
+    |. > . . . . . .| [1:1] VP[]/?x[] -> * V[+AUX] VP[]/?x[] {}
     |. > . . . . . .| [1:1] VP[] -> * V[-AUX, SUBCAT='intrans'] {}
     |. > . . . . . .| [1:1] VP[] -> * V[-AUX, SUBCAT='trans'] NP[] {}
     |. > . . . . . .| [1:1] VP[] -> * V[-AUX, SUBCAT='clause'] SBar[] {}
     |. > . . . . . .| [1:1] VP[] -> * V[+AUX] VP[] {}
-    |. > . . . . . .| [1:1] V[-AUX, SUBCAT='clause'] -> * 'say' {}
-    |. > . . . . . .| [1:1] V[-AUX, SUBCAT='clause'] -> * 'claim' {}
-    |. > . . . . . .| [1:1] V[-AUX, SUBCAT='trans'] -> * 'see' {}
-    |. > . . . . . .| [1:1] V[-AUX, SUBCAT='trans'] -> * 'like' {}
-    |. > . . . . . .| [1:1] V[-AUX, SUBCAT='intrans'] -> * 'walk' {}
-    |. > . . . . . .| [1:1] V[-AUX, SUBCAT='intrans'] -> * 'sing' {}
     |. [-] . . . . .| [1:2] V[+AUX] -> 'do' *
     |. [-> . . . . .| [1:2] S[+INV]/?x[] -> V[+AUX] * NP[] VP[]/?x[] {}
+    |. [-> . . . . .| [1:2] VP[]/?x[] -> V[+AUX] * VP[]/?x[] {}
     |. [-> . . . . .| [1:2] VP[] -> V[+AUX] * VP[] {}
     |. . > . . . . .| [2:2] VP[] -> * V[-AUX, SUBCAT='intrans'] {}
     |. . > . . . . .| [2:2] VP[] -> * V[-AUX, SUBCAT='trans'] NP[] {}
     |. . > . . . . .| [2:2] VP[] -> * V[-AUX, SUBCAT='clause'] SBar[] {}
     |. . > . . . . .| [2:2] VP[] -> * V[+AUX] VP[] {}
-    |. . > . . . . .| [2:2] V[+AUX] -> * 'do' {}
-    |. . > . . . . .| [2:2] V[+AUX] -> * 'can' {}
-    |. . > . . . . .| [2:2] V[-AUX, SUBCAT='clause'] -> * 'say' {}
-    |. . > . . . . .| [2:2] V[-AUX, SUBCAT='clause'] -> * 'claim' {}
-    |. . > . . . . .| [2:2] V[-AUX, SUBCAT='trans'] -> * 'see' {}
-    |. . > . . . . .| [2:2] V[-AUX, SUBCAT='trans'] -> * 'like' {}
-    |. . > . . . . .| [2:2] V[-AUX, SUBCAT='intrans'] -> * 'walk' {}
-    |. . > . . . . .| [2:2] V[-AUX, SUBCAT='intrans'] -> * 'sing' {}
+    |. . > . . . . .| [2:2] VP[]/?x[] -> * V[-AUX, SUBCAT='trans'] NP[]/?x[] {}
+    |. . > . . . . .| [2:2] VP[]/?x[] -> * V[-AUX, SUBCAT='clause'] SBar[]/?x[] {}
+    |. . > . . . . .| [2:2] VP[]/?x[] -> * V[+AUX] VP[]/?x[] {}
     |. . > . . . . .| [2:2] NP[-WH] -> * 'you' {}
-    |. . > . . . . .| [2:2] NP[-WH] -> * 'cats' {}
-    |. . > . . . . .| [2:2] NP[+WH] -> * 'who' {}
     |. . [-] . . . .| [2:3] NP[-WH] -> 'you' *
     |. [---> . . . .| [1:3] S[+INV]/?x[] -> V[+AUX] NP[] * VP[]/?x[] {}
     |. . . > . . . .| [3:3] VP[]/?x[] -> * V[-AUX, SUBCAT='trans'] NP[]/?x[] {}
     |. . . > . . . .| [3:3] VP[]/?x[] -> * V[-AUX, SUBCAT='clause'] SBar[]/?x[] {}
     |. . . > . . . .| [3:3] VP[]/?x[] -> * V[+AUX] VP[]/?x[] {}
-    |. . . > . . . .| [3:3] V[+AUX] -> * 'do' {}
-    |. . . > . . . .| [3:3] V[+AUX] -> * 'can' {}
-    |. . . > . . . .| [3:3] V[-AUX, SUBCAT='clause'] -> * 'say' {}
     |. . . > . . . .| [3:3] V[-AUX, SUBCAT='clause'] -> * 'claim' {}
-    |. . . > . . . .| [3:3] V[-AUX, SUBCAT='trans'] -> * 'see' {}
-    |. . . > . . . .| [3:3] V[-AUX, SUBCAT='trans'] -> * 'like' {}
     |. . . [-] . . .| [3:4] V[-AUX, SUBCAT='clause'] -> 'claim' *
     |. . . [-> . . .| [3:4] VP[]/?x[] -> V[-AUX, SUBCAT='clause'] * SBar[]/?x[] {}
     |. . . . > . . .| [4:4] SBar[]/?x[] -> * Comp[] S[-INV]/?x[] {}
@@ -477,18 +455,11 @@ A different parser should give the same parse trees, but perhaps in a different 
     |. . . . [-> . .| [4:5] SBar[]/?x[] -> Comp[] * S[-INV]/?x[] {}
     |. . . . . > . .| [5:5] S[-INV]/?x[] -> * NP[] VP[]/?x[] {}
     |. . . . . > . .| [5:5] NP[-WH] -> * 'you' {}
-    |. . . . . > . .| [5:5] NP[-WH] -> * 'cats' {}
-    |. . . . . > . .| [5:5] NP[+WH] -> * 'who' {}
     |. . . . . [-] .| [5:6] NP[-WH] -> 'you' *
     |. . . . . [-> .| [5:6] S[-INV]/?x[] -> NP[] * VP[]/?x[] {}
     |. . . . . . > .| [6:6] VP[]/?x[] -> * V[-AUX, SUBCAT='trans'] NP[]/?x[] {}
     |. . . . . . > .| [6:6] VP[]/?x[] -> * V[-AUX, SUBCAT='clause'] SBar[]/?x[] {}
     |. . . . . . > .| [6:6] VP[]/?x[] -> * V[+AUX] VP[]/?x[] {}
-    |. . . . . . > .| [6:6] V[+AUX] -> * 'do' {}
-    |. . . . . . > .| [6:6] V[+AUX] -> * 'can' {}
-    |. . . . . . > .| [6:6] V[-AUX, SUBCAT='clause'] -> * 'say' {}
-    |. . . . . . > .| [6:6] V[-AUX, SUBCAT='clause'] -> * 'claim' {}
-    |. . . . . . > .| [6:6] V[-AUX, SUBCAT='trans'] -> * 'see' {}
     |. . . . . . > .| [6:6] V[-AUX, SUBCAT='trans'] -> * 'like' {}
     |. . . . . . [-]| [6:7] V[-AUX, SUBCAT='trans'] -> 'like' *
     |. . . . . . [->| [6:7] VP[]/?x[] -> V[-AUX, SUBCAT='trans'] * NP[]/?x[] {}
@@ -499,7 +470,6 @@ A different parser should give the same parse trees, but perhaps in a different 
     |. . . [-------]| [3:7] VP[]/NP[] -> V[-AUX, SUBCAT='clause'] SBar[]/NP[] *
     |. [-----------]| [1:7] S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
     |[=============]| [0:7] S[-INV] -> NP[] S[]/NP[] *
-    |[=============]| [0:7] [INIT][] -> S[] *
     >>> sorted(trees) == sorted(trees2)
     True
 
@@ -566,12 +536,12 @@ A simple intransitive sentence:
     |[-----]     .| [0:1] 'john'
     |.     [-----]| [1:2] 'barks'
     |[-----]     .| [0:1] NP[SEM=[BO={bo(\P.P(John),z101)}, CORE=<z101>]] -> 'john' *
-    |[----->     .| [0:1] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.P(John),z101)}, ?subj: <IndividualVariableExpression z101>}
+    |[----->     .| [0:1] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.P(John),z2)}, ?subj: <IndividualVariableExpression z2>}
     |.     [-----]| [1:2] IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> 'barks' *
     |.     [-----]| [1:2] VP[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] *
-    |[===========]| [0:2] S[SEM=[BO={bo(\P.P(John),z101)}, CORE=<bark(z101)>]] -> NP[SEM=[BO={bo(\P.P(John),z101)}, CORE=<z101>]] VP[SEM=[BO={/}, CORE=<\x.bark(x)>]] *
+    |[===========]| [0:2] S[SEM=[BO={bo(\P.P(John),z2)}, CORE=<bark(z2)>]] -> NP[SEM=[BO={bo(\P.P(John),z2)}, CORE=<z2>]] VP[SEM=[BO={/}, CORE=<\x.bark(x)>]] *
     >>> for tree in trees: print tree
-    (S[SEM=[BO={bo(\P.P(John),z101)}, CORE=<bark(z101)>]]
+    (S[SEM=[BO={bo(\P.P(John),z2)}, CORE=<bark(z2)>]]
       (NP[SEM=[BO={bo(\P.P(John),z101)}, CORE=<z101>]] john)
       (VP[SEM=[BO={/}, CORE=<\x.bark(x)>]]
         (IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] barks)))
@@ -585,21 +555,21 @@ A transitive sentence:
     |.   .   [---]   .| [2:3] 'a'
     |.   .   .   [---]| [3:4] 'dog'
     |[---]   .   .   .| [0:1] NP[SEM=[BO={bo(\P.P(John),z102)}, CORE=<z102>]] -> 'john' *
-    |[--->   .   .   .| [0:1] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.P(John),z102)}, ?subj: <IndividualVariableExpression z102>}
+    |[--->   .   .   .| [0:1] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.P(John),z2)}, ?subj: <IndividualVariableExpression z2>}
     |.   [---]   .   .| [1:2] TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] -> 'feeds' *
     |.   [--->   .   .| [1:2] VP[SEM=[BO={?b1+?b2}, CORE=<?v(?obj)>]] -> TV[SEM=[BO=?b1, CORE=?v]] * NP[SEM=[BO=?b2, CORE=?obj]] {?b1: {/}, ?v: <LambdaExpression \x y.feed(y,x)>}
     |.   .   [---]   .| [2:3] Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] -> 'a' *
     |.   .   [--->   .| [2:3] NP[SEM=[BO={?b1+?b2+{bo(?det(?n),@x)}}, CORE=<@x>]] -> Det[SEM=[BO=?b1, CORE=?det]] * N[SEM=[BO=?b2, CORE=?n]] {?b1: {/}, ?det: <LambdaExpression \Q P.exists x.(Q(x) & P(x))>}
     |.   .   .   [---]| [3:4] N[SEM=[BO={/}, CORE=<dog>]] -> 'dog' *
     |.   .   [-------]| [2:4] NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<z103>]] -> Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] N[SEM=[BO={/}, CORE=<dog>]] *
-    |.   .   [------->| [2:4] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.exists x.(dog(x) & P(x)),z103)}, ?subj: <IndividualVariableExpression z103>}
-    |.   [-----------]| [1:4] VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<\y.feed(y,z103)>]] -> TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<z103>]] *
-    |[===============]| [0:4] S[SEM=[BO={bo(\P.P(John),z102), bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<feed(z102,z103)>]] -> NP[SEM=[BO={bo(\P.P(John),z102)}, CORE=<z102>]] VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<\y.feed(y,z103)>]] *
+    |.   .   [------->| [2:4] S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] * VP[SEM=[BO=?b2, CORE=?vp]] {?b1: {bo(\P.exists x.(dog(x) & P(x)),z2)}, ?subj: <IndividualVariableExpression z2>}
+    |.   [-----------]| [1:4] VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2)}, CORE=<\y.feed(y,z2)>]] -> TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2)}, CORE=<z2>]] *
+    |[===============]| [0:4] S[SEM=[BO={bo(\P.P(John),z2), bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<feed(z2,z3)>]] -> NP[SEM=[BO={bo(\P.P(John),z2)}, CORE=<z2>]] VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<\y.feed(y,z3)>]] *
 
     >>> for tree in trees: print tree
-    (S[SEM=[BO={bo(\P.P(John),z102), bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<feed(z102,z103)>]]
+    (S[SEM=[BO={bo(\P.P(John),z2), bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<feed(z2,z3)>]]
       (NP[SEM=[BO={bo(\P.P(John),z102)}, CORE=<z102>]] john)
-      (VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<\y.feed(y,z103)>]]
+      (VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2)}, CORE=<\y.feed(y,z2)>]]
         (TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] feeds)
         (NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z103)}, CORE=<z103>]]
           (Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] a)
@@ -607,26 +577,26 @@ A transitive sentence:
 
 Turn down the verbosity:
 
-    >>> cp = parse.load_earley('grammars/sample_grammars/bindop.fcfg', trace=0,
-    ...                        chart_class=InstantiateVarsChart)
+    >>> cp = nltk.load_parser('grammars/sample_grammars/bindop.fcfg', trace=0,
+    ...                       chart_class=InstantiateVarsChart)
 
 Reuse the same lexical item twice:
 
     >>> trees = cp.nbest_parse('john feeds john'.split())
     >>> for tree in trees: print tree
-    (S[SEM=[BO={bo(\P.P(John),z104), bo(\P.P(John),z105)}, CORE=<feed(z104,z105)>]]
+    (S[SEM=[BO={bo(\P.P(John),z2), bo(\P.P(John),z3)}, CORE=<feed(z2,z3)>]]
       (NP[SEM=[BO={bo(\P.P(John),z104)}, CORE=<z104>]] john)
-      (VP[SEM=[BO={bo(\P.P(John),z105)}, CORE=<\y.feed(y,z105)>]]
+      (VP[SEM=[BO={bo(\P.P(John),z2)}, CORE=<\y.feed(y,z2)>]]
         (TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] feeds)
         (NP[SEM=[BO={bo(\P.P(John),z105)}, CORE=<z105>]] john)))
 
     >>> trees = cp.nbest_parse('a dog feeds a dog'.split())
     >>> for tree in trees: print tree
-    (S[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z106), bo(\P.exists x.(dog(x) & P(x)),z107)}, CORE=<feed(z106,z107)>]]
+    (S[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2), bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<feed(z2,z3)>]]
       (NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z106)}, CORE=<z106>]]
         (Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] a)
         (N[SEM=[BO={/}, CORE=<dog>]] dog))
-      (VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z107)}, CORE=<\y.feed(y,z107)>]]
+      (VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2)}, CORE=<\y.feed(y,z2)>]]
         (TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] feeds)
         (NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z107)}, CORE=<z107>]]
           (Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] a)
