@@ -721,18 +721,18 @@ Cooper Storage
     >>> semrep = trees[0].node['SEM']
     >>> cs_semrep = cs.CooperStore(semrep)
     >>> print cs_semrep.core
-    chase(z1,z2)
+    chase(z2,z4)
     >>> for bo in cs_semrep.store:
     ...     print bo
-    bo(\P.all x.(girl(x) -> P(x)),z1)
-    bo(\P.exists x.(dog(x) & P(x)),z2)
+    bo(\P.all x.(girl(x) -> P(x)),z2)
+    bo(\P.exists x.(dog(x) & P(x)),z4)
     >>> cs_semrep.s_retrieve(trace=True)
     Permutation 1
-       (\P.all x.(girl(x) -> P(x)))(\z1.chase(z1,z2))
-       (\P.exists x.(dog(x) & P(x)))(\z2.all x.(girl(x) -> chase(x,z2)))
+       (\P.all x.(girl(x) -> P(x)))(\z2.chase(z2,z4))
+       (\P.exists x.(dog(x) & P(x)))(\z4.all x.(girl(x) -> chase(x,z4)))
     Permutation 2
-       (\P.exists x.(dog(x) & P(x)))(\z2.chase(z1,z2))
-       (\P.all x.(girl(x) -> P(x)))(\z1.exists x.(dog(x) & chase(z1,x)))
+       (\P.exists x.(dog(x) & P(x)))(\z4.chase(z2,z4))
+       (\P.all x.(girl(x) -> P(x)))(\z2.exists x.(dog(x) & chase(z2,x)))
 
     >>> for reading in cs_semrep.readings:
     ...     print reading

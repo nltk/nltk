@@ -337,6 +337,8 @@ regression tests
 ----------------
 
     >>> d = dp.parse('([x],[A(c), ([y],[B(x,y,z,a)])->([z],[C(x,y,z,a)])])')
+    >>> print d
+    ([x],[A(c), (([y],[B(x,y,z,a)]) -> ([z],[C(x,y,z,a)]))])
     >>> d.pprint()
      ____________________________________ 
     | x                                  |
@@ -370,9 +372,9 @@ regression tests
     True
     >>> d = dp.parse('([],[([x,y],[B(x,y,h), ([a,b],[dee(x,a,g)])])->([z,w],[cee(x,y,f), ([c,d],[E(x,c,d,e)])])])')
     >>> print d.free()
-    set([Variable('h'), Variable('e'), Variable('g'), Variable('f')])
+    set([Variable('B'), Variable('E'), Variable('g'), Variable('f'), Variable('h'), Variable('e')])
     >>> print d.variables()
-    set([Variable('cee'), Variable('B'), Variable('E'), Variable('g'), Variable('f'), Variable('h'), Variable('e'), Variable('dee')])
+    set([Variable('B'), Variable('E'), Variable('g'), Variable('f'), Variable('h'), Variable('e')])
     >>> print d.get_refs(True)
     [Variable('x'), Variable('y'), Variable('a'), Variable('b'), Variable('z'), Variable('w'), Variable('c'), Variable('d')]
     >>> print d.conds[0].get_refs(False)

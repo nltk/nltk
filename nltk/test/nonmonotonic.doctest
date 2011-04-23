@@ -233,7 +233,7 @@ define the taxonomy
 
 default the properties using abnormalities
     >>> premises.append(lp.parse(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
-    >>> premises.append(lp.parse(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))')) #normal birds fly
+    >>> premises.append(lp.parse(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))'))  #normal birds fly
     >>> premises.append(lp.parse(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
     
 specify abnormal entities
@@ -242,9 +242,9 @@ specify abnormal entities
     >>> premises.append(lp.parse(r'all x.(flying_ostrich(x) -> Ab3(x))')) #flying ostrich
 
 define entities
-    >>> premises.append(lp.parse(r'elephant(E)'))
-    >>> premises.append(lp.parse(r'dove(D)'))
-    >>> premises.append(lp.parse(r'ostrich(O)'))
+    >>> premises.append(lp.parse(r'elephant(el)'))
+    >>> premises.append(lp.parse(r'dove(do)'))
+    >>> premises.append(lp.parse(r'ostrich(os)'))
     
 print the augmented assumptions list
     >>> prover = Prover9Command(None, premises)
@@ -261,25 +261,25 @@ print the augmented assumptions list
     all x.(bird(x) -> Ab1(x))
     all x.(ostrich(x) -> Ab2(x))
     all x.(flying_ostrich(x) -> Ab3(x))
-    elephant(E)
-    dove(D)
-    ostrich(O)
+    elephant(el)
+    dove(do)
+    ostrich(os)
     all z1.(animal(z1) -> (elephant(z1) | bird(z1)))
     all z2.(Ab1(z2) -> bird(z2))
     all z3.(bird(z3) -> (dove(z3) | ostrich(z3)))
-    all z4.(dove(z4) -> (z4 = D))
+    all z4.(dove(z4) -> (z4 = do))
     all z5.(Ab2(z5) -> ostrich(z5))
     all z6.(Ab3(z6) -> flying_ostrich(z6))
-    all z7.(ostrich(z7) -> ((z7 = O) | flying_ostrich(z7)))
+    all z7.(ostrich(z7) -> ((z7 = os) | flying_ostrich(z7)))
     all z8.-flying_ostrich(z8)
-    all z9.(elephant(z9) -> (z9 = E))
-    -(E = D)
-    -(E = O)
-    -(D = O)
+    all z9.(elephant(z9) -> (z9 = el))
+    -(el = os)
+    -(el = do)
+    -(os = do)
 
-    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lp.parse('-fly(E)'), premises))).prove()
+    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lp.parse('-fly(el)'), premises))).prove()
     True
-    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lp.parse('fly(D)'), premises))).prove()
+    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lp.parse('fly(do)'), premises))).prove()
     True
-    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lp.parse('-fly(O)'), premises))).prove()
+    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lp.parse('-fly(os)'), premises))).prove()
     True
