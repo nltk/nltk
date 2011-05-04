@@ -176,7 +176,7 @@ class DecisionTreeClassifier(ClassifierI):
         # Find the best label for each value.
         freqs = defaultdict(FreqDist) # freq(label|value)
         for featureset, label in labeled_featuresets:
-            feature_value = featureset.get(featurename)
+            feature_value = featureset.get(feature_name)
             freqs[feature_value].inc(label)
 
         decisions = dict([(val, DecisionTreeClassifier(freqs[val].max()))
