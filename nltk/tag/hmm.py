@@ -73,7 +73,7 @@ import types
 from numpy import *
 from nltk.probability import FreqDist, ConditionalFreqDist, \
      ConditionalProbDist, DictionaryProbDist, DictionaryConditionalProbDist, \
-     LidstoneProbDist, MutableProbDist, MLEProbDist
+     LidstoneProbDist, MutableProbDist, MLEProbDist, UniformProbDist
 from nltk.metrics import accuracy as _accuracy
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
 
