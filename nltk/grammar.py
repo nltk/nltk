@@ -71,7 +71,6 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 
 import re
 
-from nltk.internals import deprecated
 from nltk.compat import all
 from nltk.util import transitive_closure, invert_graph
 
@@ -607,22 +606,6 @@ class ContextFreeGrammar(object):
             raise ValueError("Grammar does not cover some of the "
                              "input words: %r." % missing)
 
-    # [xx] does this still get used anywhere, or does check_coverage
-    # replace it?
-    @deprecated("Use ContextFreeGrammar.check_coverage instead.")
-    def covers(self, tokens):
-        """
-        Check whether the grammar rules cover the given list of tokens.
-
-        @param tokens: the given list of tokens.
-        @type tokens: a C{list} of C{string} objects.
-        @return: True/False
-        """
-        for token in tokens:
-            if self._lexical_index.get(token):
-                return False
-        return True
-    
     def _calculate_grammar_forms(self):
         """
         Pre-calculate of which form(s) the grammar is.
@@ -705,10 +688,6 @@ class ContextFreeGrammar(object):
             str += '\n    %s' % production
         return str
 
-from nltk.internals import Deprecated
-class Grammar(ContextFreeGrammar, Deprecated):
-    """Use nltk.ContextFreeGrammar instead."""
-        
 
 class FeatureGrammar(ContextFreeGrammar):
     """
@@ -1138,10 +1117,6 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
 
     start, productions = parse_grammar(input, fstruct_parser.partial_parse)
     return FeatureGrammar(start, productions)
-
-@deprecated("Use nltk.parse_fcfg() instead.")
-def parse_featcfg(input): 
-    return parse_fcfg(input)
 
 # Parsing generic grammars
 

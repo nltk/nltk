@@ -48,7 +48,7 @@ class AlignedSent(object):
     def alignment(self):
         return self._alignment
 
-    @alignment.setter
+#    @alignment.setter Requires Python 2.6?
     def alignment(self, alignment):
         if not isinstance(alignment, Alignment):
             alignment = Alignment(alignment)

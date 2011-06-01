@@ -6,7 +6,6 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.internals import deprecated
 from nltk.tokenize import line_tokenize
 
 from .util import *
@@ -24,17 +23,7 @@ class WordListCorpusReader(CorpusReader):
         elif isinstance(fileids, str): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
-    #{ Deprecated since 0.8
-    @deprecated("Use .raw() or .words() instead.")
-    def read(self, items=None, format='listed'):
-        if format == 'raw': return self.raw(items)
-        if format == 'listed': return self.words(items)
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .words() instead.")
-    def listed(self, items=None):
-        return self.words(items)
-    #}
-            
+
 class SwadeshCorpusReader(WordListCorpusReader):
     def entries(self, fileids=None):
         """

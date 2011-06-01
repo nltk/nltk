@@ -193,13 +193,3 @@ def batch_ne_chunk(tagged_sentences, binary=False):
     chunker = nltk.data.load(chunker_pickle)
     return chunker.batch_parse(tagged_sentences)
 
-######################################################################
-#{ Deprecated
-######################################################################
-from nltk.internals import Deprecated
-class ChunkParseI(ChunkParserI, Deprecated):
-    """Use nltk.ChunkParserI instead."""
-class RegexpChunk(RegexpChunkParser, Deprecated):
-    """Use nltk.RegexpChunkParser instead."""
-class Regexp(RegexpParser, Deprecated):
-    """Use nltk.RegexpParser instead."""

@@ -47,7 +47,6 @@ ZH      seizure S IY ZH ER
 
 import codecs
 
-from nltk.internals import deprecated
 from nltk.util import Index
 
 from .util import *
@@ -84,18 +83,6 @@ class CMUDictCorpusReader(CorpusReader):
         """
         return dict(Index(self.entries()))
         
-    #{ Deprecated since 0.8
-    @deprecated("Use .entries() or .transcriptions() instead.")
-    def read(self, items='cmudict', format='listed'):
-        if format == 'listed': return self.entries(items)
-        if format == 'dictionary': return self.dict(items)
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .dict() instead.")
-    def dictionary(self, items='cmudict'): return self.dict(items)
-    @deprecated("Use .entries() instead.")
-    def listed(self, items='cmudict'): return self.entries(items)
-    #}
-
 def read_cmudict_block(stream):
     entries = []
     while len(entries) < 100: # Read 100 at a time.

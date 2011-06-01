@@ -311,7 +311,7 @@ statements as new assumptions.
     % Proof 1 at ... seconds.
     % Length of proof is 13.
     % Level of proof is 4.
-    % Maximum clause weight is 0.
+    % Maximum clause weight is 0.000.
     % Given clauses 0.
     <BLANKLINE>
     <BLANKLINE>
@@ -332,17 +332,17 @@ statements as new assumptions.
     ============================== end of proof ==========================
 
 ----------------------
-The tp_equals() method
+The equiv() method
 ----------------------
 
 One application of the theorem prover functionality is to check if
 two Expressions have the same meaning.
-The ``tp_equals()`` method calls a theorem prover to determine whether two 
+The ``equiv()`` method calls a theorem prover to determine whether two 
 Expressions are logically equivalent.
 
     >>> a = lp.parse(r'exists x.(man(x) & walks(x))')
     >>> b = lp.parse(r'exists x.(walks(x) & man(x))')
-    >>> print a.tp_equals(b)
+    >>> print a.equiv(b)
     True
 
 The same method can be used on Discourse Representation Structures (DRSs).  
@@ -352,7 +352,7 @@ passed to the theorem prover.
     >>> dp = DrtParser()
     >>> a = dp.parse(r'([x],[man(x), walks(x)])')
     >>> b = dp.parse(r'([x],[walks(x), man(x)])')
-    >>> print a.tp_equals(b)
+    >>> print a.equiv(b)
     True
 
 

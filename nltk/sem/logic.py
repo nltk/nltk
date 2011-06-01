@@ -15,7 +15,7 @@ import re
 import operator
 
 from nltk.compat import defaultdict
-from nltk.internals import Counter, deprecated
+from nltk.internals import Counter
 from functools import reduce
 
 APP = 'APP'
@@ -52,7 +52,7 @@ class Tokens(object):
     TOKENS = BINOPS + EQ_LIST + NEQ_LIST + QUANTS + LAMBDA_LIST + PUNCT + NOT_LIST
     
     #Special
-    SYMBOLS = [x for x in TOKENS if all(c in '\\.(),-!&^|>=<' for c in x)]
+    SYMBOLS = [x for x in TOKENS if re.match(r'^[-\\.(),!&^|>=<]*$', x)]
                
 
 def boolean_ops():
@@ -100,9 +100,6 @@ class Variable(object):
     def substitute_bindings(self, bindings):
         return bindings.get(self, self)
     
-    def visit(self, function, combinator, default):
-        return default
-
     def __hash__(self):
         return hash(self.name)
 
@@ -110,7 +107,7 @@ class Variable(object):
         return self.name
 
     def __repr__(self):
-        return 'Variable(\'' + self.name + '\')'
+        return "Variable('%s')" % self.name
 
 
 def unique_variable(pattern=None, ignore=None):
@@ -302,10 +299,10 @@ class TypeException(Exception):
 class InconsistentTypeHierarchyException(TypeException):
     def __init__(self, variable, expression=None):
         if expression:
-            msg = "The variable \'%s\' was found in multiple places with different"\
-                " types in \'%s\'." % (variable, expression)
+            msg = "The variable '%s' was found in multiple places with different"\
+                " types in '%s'." % (variable, expression)
         else:
-            msg = "The variable \'%s\' was found in multiple places with different"\
+            msg = "The variable '%s' was found in multiple places with different"\
                 " types." % (variable)
         Exception.__init__(self, msg)
 
@@ -403,10 +400,6 @@ class Expression(SubstituteBindingsI):
     def __neq__(self, other):
         return not (self == other)
     
-    @deprecated("Use 'equiv' instead")
-    def tp_equals(self, other, prover=None):
-        return self.equiv(other, prover)
-        
     def equiv(self, other, prover=None):
         """
         Check for logical equivalence.
@@ -433,7 +426,7 @@ class Expression(SubstituteBindingsI):
             if var in bindings:
                 val = bindings[var]
                 if isinstance(val, Variable):
-                    val = VariableExpression(val)
+                    val = self.make_VariableExpression(val)
                 elif not isinstance(val, Expression):
                     raise ValueError('Can not substitute a non-expression '
                                      'value into an expression: %r' % (val,))
@@ -488,50 +481,68 @@ class Expression(SubstituteBindingsI):
         @param variable: C{Variable} The variable to replace
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
+        @param alpha_convert: C{boolean} Alpha convert automatically to avoid name clashes?
         """
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         assert isinstance(expression, Expression), "%s is not an Expression" % expression
 
-        def combinator(a, *additional):
-            if len(additional) == 0:
-                return self.__class__(a)
-            elif len(additional) == 1:
-                return self.__class__(a, additional[0])
-        
-        return self.visit(lambda e: e.replace(variable, expression, replace_bound, alpha_convert), 
-                          combinator, set())
+        return self.visit_structured(lambda e: e.replace(variable, expression, 
+                                                         replace_bound, alpha_convert), 
+                                     self.__class__)
     
     def normalize(self):
         """Rename auto-generated unique variables"""
-        def f(e):
-            if isinstance(e,Variable):
-                if re.match(r'^z\d+$', e.name) or re.match(r'^e0\d+$', e.name):
-                    return set([e])
-                else:
-                    return set([])
-            else: 
-                combinator = lambda *parts: reduce(operator.or_, parts)
-                return e.visit(f, combinator, set())
+        def get_indiv_vars(e):
+            if isinstance(e, IndividualVariableExpression):
+                return set([e])
+            elif isinstance(e, AbstractVariableExpression):
+                return set()
+            else:
+                return e.visit(get_indiv_vars, 
+                               lambda parts: reduce(operator.or_, parts, set()))
         
         result = self
-        for i,v in enumerate(sorted(list(f(self)))):
-            if is_eventvar(v.name):
-                newVar = 'e0%s' % (i+1)
+        for i,e in enumerate(sorted(get_indiv_vars(self), key=lambda e: e.variable)):
+            if isinstance(e,EventVariableExpression):
+                newVar = e.__class__(Variable('e0%s' % (i+1)))
+            elif isinstance(e,IndividualVariableExpression):
+                newVar = e.__class__(Variable('z%s' % (i+1)))
             else:
-                newVar = 'z%s' % (i+1)
-            result = result.replace(v, 
-                        self.make_VariableExpression(Variable(newVar)), True)
+                newVar = e
+            result = result.replace(e.variable, newVar, True)
         return result
     
-    def visit(self, function, combinator, default):
+    def visit(self, function, combinator):
         """
-        Recursively visit sub expressions
-        @param function: C{Function} to call on each sub expression
-        @param combinator: C{Function} to combine the results of the 
+        Recursively visit subexpressions.  Apply 'function' to each 
+        subexpression and pass the result of each function application
+        to the 'combinator' for aggregation:
+        
+            return combinator(map(function, self.subexpressions))
+            
+        Bound variables are neither applied upon by the function nor given to 
+        the combinator.
+        @param function: C{Function<Expression,T>} to call on each subexpression
+        @param combinator: C{Function<list<T>,R>} to combine the results of the 
         function calls
-        @return: result of combination
+        @return: result of combination C{R}
         """
         raise NotImplementedError()
+
+    def visit_structured(self, function, combinator):
+        """
+        Recursively visit subexpressions.  Apply 'function' to each 
+        subexpression and pass the result of each function application
+        to the 'combinator' for aggregation.  The combinator must have 
+        the same signature as the constructor.  The function is not 
+        applied to bound variables, but they are passed to the 
+        combinator.
+        @param function: C{Function} to call on each subexpression
+        @param combinator: C{Function} with the same signature as the 
+        constructor, to combine the results of the function calls
+        @return: result of combination
+        """
+        return self.visit(function, lambda parts: combinator(*parts))
 
     def __repr__(self):
         return '<%s %s>' % (self.__class__.__name__, self)
@@ -541,37 +552,44 @@ class Expression(SubstituteBindingsI):
 
     def variables(self):
         """
-        Return a set of all the variables that are available to be replaced.
-        This includes free (non-bound) variables as well as predicates.
+        Return a set of all the variables for binding substitution.
+        The variables returned include all free (non-bound) individual 
+        variables and any variable starting with '?' or '@'.
         @return: C{set} of C{Variable}s
         """
-        return self.visit(lambda e: isinstance(e,Variable) and 
-                          set([e]) or e.variables(), 
-                          lambda *parts: reduce(operator.or_, parts), set())
+        return self.free() | set(p for p in self.predicates()|self.constants() 
+                                 if re.match('^[?@]', p.name)) 
 
-    def free(self, indvar_only=True):
+    def free(self):
         """
-        Return a set of all the free (non-bound) variables in self.  Variables
-        serving as predicates are not included.
-        @param indvar_only: C{boolean} only return individual variables?
+        Return a set of all the free (non-bound) variables.  This includes
+        both individual and predicate variables, but not constants.
         @return: C{set} of C{Variable}s
         """
-        return self.visit(lambda e: isinstance(e,Variable) and 
-                          set([e]) or e.free(indvar_only), 
-                          lambda *parts: reduce(operator.or_, parts), set())
+        return self.visit(lambda e: e.free(),
+                          lambda parts: reduce(operator.or_, parts, set()))
+
+    def constants(self):
+        """
+        Return a set of individual constants (non-predicates).
+        @return: C{set} of C{Variable}s
+        """
+        return self.visit(lambda e: e.constants(), 
+                          lambda parts: reduce(operator.or_, parts, set()))
+
+    def predicates(self):
+        """
+        Return a set of predicates (constants, not variables).
+        @return: C{set} of C{Variable}s
+        """
+        return self.visit(lambda e: e.predicates(), 
+                          lambda parts: reduce(operator.or_, parts, set()))
 
     def simplify(self):
         """
         @return: beta-converted version of this expression
         """
-        def combinator(a, *additional):
-            if len(additional) == 0:
-                return self.__class__(a)
-            elif len(additional) == 1:
-                return self.__class__(a, additional[0])
-        
-        return self.visit(lambda e: isinstance(e,Variable) 
-                          and e or e.simplify(), combinator, set())
+        return self.visit_structured(lambda e: e.simplify(), self.__class__)
 
     def make_VariableExpression(self, variable):
         return VariableExpression(variable)
@@ -623,14 +641,6 @@ class ApplicationExpression(Expression):
         else:
             return self.__class__(function, argument)
         
-    def free(self, indvar_only=True):
-        """@see: Expression.free()"""
-        if isinstance(self.function, AbstractVariableExpression):
-            return self.argument.free(indvar_only)
-        else:
-            return self.function.free(indvar_only) | \
-                   self.argument.free(indvar_only) 
-    
     def _get_type(self):
         if isinstance(self.function.type, ComplexType):
             return self.function.type.second
@@ -659,8 +669,9 @@ class ApplicationExpression(Expression):
     def findtype(self, variable):
         """@see Expression.findtype()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
-        function, args = self.uncurry()
-        if not isinstance(function, AbstractVariableExpression):
+        if self.is_atom():
+            function, args = self.uncurry()
+        else:
             #It's not a predicate expression ("P(x,y)"), so leave args curried
             function = self.function
             args = [self.argument]
@@ -682,9 +693,25 @@ class ApplicationExpression(Expression):
         else:
             return ANY_TYPE
         
-    def visit(self, function, combinator, default):
+    def constants(self):
+        """@see: Expression.constants()"""
+        if isinstance(self.function, AbstractVariableExpression):
+            function_constants = set()
+        else:
+            function_constants = self.function.constants()
+        return function_constants | self.argument.constants()
+
+    def predicates(self):
+        """@see: Expression.predicates()"""
+        if isinstance(self.function, ConstantExpression):
+            function_preds = set([self.function.variable])
+        else:
+            function_preds = self.function.predicates()
+        return function_preds | self.argument.predicates()
+
+    def visit(self, function, combinator):
         """@see: Expression.visit()"""
-        return combinator(function(self.function), function(self.argument))
+        return combinator([function(self.function), function(self.argument)])
         
     def __eq__(self, other):
         return isinstance(other, ApplicationExpression) and \
@@ -693,9 +720,8 @@ class ApplicationExpression(Expression):
 
     def __str__(self):
         # uncurry the arguments and find the base function
-        function, args = self.uncurry()
-        if isinstance(function, AbstractVariableExpression):
-            #It's a predicate expression ("P(x,y)"), so uncurry arguments
+        if self.is_atom():
+            function, args = self.uncurry()
             arg_str = ','.join(map(str, args))
         else:
             #Leave arguments curried
@@ -733,7 +759,29 @@ class ApplicationExpression(Expression):
             function = function.function
         return (function, args)
     
-    args = property(lambda self: self.uncurry()[1], doc="uncurried arg-list")
+    @property
+    def pred(self):
+        """
+        Return uncurried base-function.  
+        If this is an atom, then the result will be a variable expression.  
+        Otherwise, it will be a lambda expression.
+        """
+        return self.uncurry()[0]
+        
+    @property
+    def args(self):
+        """
+        Return uncurried arg-list
+        """
+        return self.uncurry()[1]
+    
+    def is_atom(self):
+        """
+        Is this expression an atom (as opposed to a lambda expression applied
+        to a term)?
+        """
+        return isinstance(self.pred, AbstractVariableExpression)
+        
 
 class AbstractVariableExpression(Expression):
     """This class represents a variable to be used as a predicate or entity"""
@@ -781,9 +829,9 @@ class AbstractVariableExpression(Expression):
         else:
             return ANY_TYPE
 
-    def visit(self, function, combinator, default):
-        """@see: Expression.visit()"""
-        return combinator(function(self.variable))
+    def predicates(self):
+        """@see: Expression.predicates()"""
+        return set()
 
     def __eq__(self, other):
         """Allow equality between instances of C{AbstractVariableExpression} 
@@ -793,7 +841,6 @@ class AbstractVariableExpression(Expression):
         
     def __str__(self):
         return str(self.variable)
-    
     
 class IndividualVariableExpression(AbstractVariableExpression):
     """This class represents variables that take the form of a single lowercase
@@ -812,18 +859,27 @@ class IndividualVariableExpression(AbstractVariableExpression):
                 
     type = property(lambda self: ENTITY_TYPE, _set_type)
 
+    def free(self):
+        """@see: Expression.free()"""
+        return set([self.variable])
+        
+    def constants(self):
+        """@see: Expression.constants()"""
+        return set()
+
 class FunctionVariableExpression(AbstractVariableExpression):
     """This class represents variables that take the form of a single uppercase
     character followed by zero or more digits."""
     type = ANY_TYPE
 
-    def free(self, indvar_only=True):
+    def free(self):
         """@see: Expression.free()"""
-        if not indvar_only: 
-            return set([self.variable])
-        else: 
-            return set()
+        return set([self.variable])
     
+    def constants(self):
+        """@see: Expression.constants()"""
+        return set()
+
 class EventVariableExpression(IndividualVariableExpression):
     """This class represents variables that take the form of a single lowercase
     'e' character followed by zero or more digits."""
@@ -858,12 +914,13 @@ class ConstantExpression(AbstractVariableExpression):
         for varEx in signature[self.variable.name]:
             varEx.type = resolution
 
-    def free(self, indvar_only=True):
+    def free(self):
         """@see: Expression.free()"""
-        if not indvar_only: 
-            return set([self.variable])
-        else: 
-            return set()
+        return set()
+
+    def constants(self):
+        """@see: Expression.constants()"""
+        return set([self.variable])
 
 
 def VariableExpression(variable):
@@ -929,13 +986,9 @@ class VariableBinderExpression(Expression):
                                                 VariableExpression(newvar), 
                                                 True))
 
-    def variables(self):
-        """@see: Expression.variables()"""
-        return self.term.variables() - set([self.variable])
-
-    def free(self, indvar_only=True):
+    def free(self):
         """@see: Expression.free()"""
-        return self.term.free(indvar_only) - set([self.variable])
+        return self.term.free() - set([self.variable])
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
@@ -945,10 +998,14 @@ class VariableBinderExpression(Expression):
         else:
             return self.term.findtype(variable)
 
-    def visit(self, function, combinator, default):
+    def visit(self, function, combinator):
         """@see: Expression.visit()"""
-        return combinator(function(self.variable), function(self.term))
+        return combinator([function(self.term)])
         
+    def visit_structured(self, function, combinator):
+        """@see: Expression.visit_structured()"""
+        return combinator(self.variable, function(self.term))
+
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.  If we are comparing 
         \x.M  and \y.N, then check equality of M and N[x/y]."""
@@ -1044,9 +1101,9 @@ class NegatedExpression(Expression):
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         return self.term.findtype(variable)
         
-    def visit(self, function, combinator, default):
+    def visit(self, function, combinator):
         """@see: Expression.visit()"""
-        return combinator(function(self.term))
+        return combinator([function(self.term)])
         
     def negate(self):
         """@see: Expression.negate()"""
@@ -1080,9 +1137,9 @@ class BinaryExpression(Expression):
         else:
             return ANY_TYPE
 
-    def visit(self, function, combinator, default):
+    def visit(self, function, combinator):
         """@see: Expression.visit()"""
-        return combinator(function(self.first), function(self.second))
+        return combinator([function(self.first), function(self.second)])
         
     def __eq__(self, other):
         return (isinstance(self, other.__class__) or \
@@ -1397,9 +1454,9 @@ class LogicParser(object):
             if not isinstance(accum, FunctionVariableExpression) and \
                not isinstance(accum, ConstantExpression):
                 raise ParseException(self._currentIndex, 
-                                     '\'%s\' is an illegal predicate name.  '
-                                     'Individual variables may not be used as '
-                                     'predicates.' % tok)
+                                     "'%s' is an illegal predicate name.  "
+                                     "Individual variables may not be used as "
+                                     "predicates." % tok)
             self.token() #swallow the Open Paren
             
             #curry the arguments
@@ -1417,8 +1474,8 @@ class LogicParser(object):
             raise ExpectedMoreTokensException(e.index, 'Variable expected.')
         if isinstance(self.make_VariableExpression(tok), ConstantExpression):
             raise ParseException(self._currentIndex,
-                                 '\'%s\' is an illegal variable name.  '
-                                 'Constants may not be %s.' % (tok, description))
+                                 "'%s' is an illegal variable name.  "
+                                 "Constants may not be %s." % (tok, description))
         return Variable(tok)
     
     def handle_lambda(self, tok, context):
@@ -1655,7 +1712,7 @@ def is_indvar(expr):
     @return: C{boolean} True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r'^[a-df-z]\d*$', expr)
+    return re.match(r'^[a-df-z]\d*$', expr) is not None
 
 def is_funcvar(expr):
     """
@@ -1666,7 +1723,7 @@ def is_funcvar(expr):
     @return: C{boolean} True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r'^[A-Z]\d*$', expr)
+    return re.match(r'^[A-Z]\d*$', expr) is not None
 
 def is_eventvar(expr):
     """
@@ -1677,7 +1734,7 @@ def is_eventvar(expr):
     @return: C{boolean} True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r'^e\d*$', expr)
+    return re.match(r'^e\d*$', expr) is not None
 
 
 def demo():

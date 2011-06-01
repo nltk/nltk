@@ -8,7 +8,7 @@
 
 import sys
 
-from nltk.tree import bracket_parse, Tree
+from nltk.tree import Tree
 
 from .util import *
 from .api import *
@@ -75,14 +75,15 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
 
     def _parse(self, t):
         try:
-            return bracket_parse(self._normalize(t))
+            return Tree.parse(self._normalize(t))
+
         except ValueError as e:
             sys.stderr.write("Bad tree detected; trying to recover...\n")
             # Try to recover, if we can:
             if e.args == ('mismatched parens',):
                 for n in range(1, 5):
                     try:
-                        v = bracket_parse(self._normalize(t+')'*n))
+                        v = Tree.parse(self._normalize(t+')'*n))
                         sys.stderr.write("  Recovered by adding %d close "
                                          "paren(s)\n" % n)
                         return v

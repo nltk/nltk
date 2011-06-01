@@ -15,7 +15,7 @@ expressions that can match either tokens or separators between tokens.
 import re
 import sre_constants
 
-from nltk.internals import convert_regexp_to_nongrouping, Deprecated
+from nltk.internals import convert_regexp_to_nongrouping
 
 from .api import *
 from .util import *
@@ -150,20 +150,6 @@ class WordPunctTokenizer(RegexpTokenizer):
     """
     def __init__(self):
         RegexpTokenizer.__init__(self, r'\w+|[^\w\s]+')
-
-class WordTokenizer(RegexpTokenizer, Deprecated):
-    """
-    B{If you want to tokenize words, you should probably use
-    TreebankWordTokenizer or word_tokenize() instead.}
-    
-    A tokenizer that divides a text into sequences of alphabetic
-    characters.  Any non-alphabetic characters are discarded.  E.g.:
-
-        >>> WordTokenizer().tokenize("She said 'hello'.")
-        ['She', 'said', 'hello']
-    """
-    def __init__(self):
-        RegexpTokenizer.__init__(self, r'\w+')
 
 ######################################################################
 #{ Tokenization Functions

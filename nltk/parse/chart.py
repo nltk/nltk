@@ -1076,9 +1076,6 @@ class TopDownInitRule(AbstractChartRule):
             if chart.insert(new_edge, ()):
                 yield new_edge
 
-class CachedTopDownInitRule(TopDownInitRule, Deprecated):
-    """Use L{TopDownInitRule} instead."""
-
 class TopDownPredictRule(AbstractChartRule):
     """
     A rule licensing edges corresponding to the grammar productions
@@ -1098,9 +1095,6 @@ class TopDownPredictRule(AbstractChartRule):
             new_edge = TreeEdge.from_production(prod, edge.end())
             if chart.insert(new_edge, ()):
                 yield new_edge
-
-class TopDownExpandRule(TopDownPredictRule, Deprecated):
-    """Use TopDownPredictRule instead"""
 
 class CachedTopDownPredictRule(TopDownPredictRule):
     """
@@ -1141,9 +1135,6 @@ class CachedTopDownPredictRule(TopDownPredictRule):
             
         # Record the fact that we've applied this rule.
         self._done[next, index] = (chart, grammar)
-
-class CachedTopDownExpandRule(CachedTopDownPredictRule, Deprecated):
-    """Use L{CachedTopDownPredictRule} instead."""
 
 #////////////////////////////////////////////////////////////
 # Bottom-Up Prediction

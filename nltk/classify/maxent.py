@@ -342,9 +342,6 @@ class MaxentClassifier(ClassifierI):
 #: Alias for MaxentClassifier.
 ConditionalExponentialClassifier = MaxentClassifier
 
-@deprecated('Use MaxentClassifier.train() instead')
-def train_maxent_classifier(*args, **kwargs):
-    return MaxentClassifier.train(*args, **kwargs)
 
 ######################################################################
 #{ Feature Encodings

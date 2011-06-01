@@ -8,8 +8,6 @@
 
 from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet as _wordnet
-from nltk.internals import Deprecated
-
 
 class WordNetLemmatizer(object):
     """
@@ -40,17 +38,3 @@ if __name__ == '__main__':
     print(('aardwolves ->', wnl.lemmatize('aardwolves')))
     print(('abaci ->', wnl.lemmatize('abaci')))
     print(('hardrock ->', wnl.lemmatize('hardrock')))
-
-
-class WordnetStemmer(Deprecated, WordNetLemmatizer):
-    """Use WordNetLemmatizer instead."""
-
-    def __init__(self):
-        WordNetLemmatizer.__init__(self)
-
-
-class WordNetStemmer(Deprecated, WordNetLemmatizer):
-    """Use WordNetLemmatizer instead."""
-
-    def __init__(self):
-        WordNetLemmatizer.__init__(self)

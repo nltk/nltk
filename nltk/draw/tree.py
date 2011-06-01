@@ -13,7 +13,7 @@ Graphically display a C{Tree}.
 
 import sys
 
-from nltk.tree import Tree, bracket_parse
+from nltk.tree import Tree
 
 from .util import *
 
@@ -885,7 +885,7 @@ def demo():
     
     cf = CanvasFrame(width=550, height=450, closeenough=2)
 
-    t = bracket_parse('''
+    t = Tree.parse('''
     (S (NP the very big cat)
        (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))''')
                 
@@ -904,7 +904,7 @@ def demo():
         return OvalWidget(canvas, TextWidget(canvas, text),
                           fill='cyan')
 
-    treetok = bracket_parse('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
+    treetok = Tree.parse('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
     
     def color(node):
@@ -922,7 +922,7 @@ def demo():
     paren = ParenWidget(cf.canvas(), tc2)
     cf.add_widget(paren, tc.bbox()[2]+10, 10)
 
-    tree3 = bracket_parse('''
+    tree3 = Tree.parse('''
     (S (NP this tree) (AUX was)
        (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))''')
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
@@ -957,7 +957,7 @@ built from tree_to_treesegment."""
     textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
     cf.add_widget(textbox, tc3.bbox()[2]+10, tc2.bbox()[3]+10)
 
-    tree4 = bracket_parse('(S (NP this tree) (VP (V is) (Adj horizontal)))')
+    tree4 = Tree.parse('(S (NP this tree) (VP (V is) (Adj horizontal)))')
     tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
                      line_color='brown2', roof_color='brown2',
                      node_font=('helvetica', -12, 'bold'),

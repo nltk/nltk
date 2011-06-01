@@ -9,7 +9,7 @@
 
 import itertools
 
-from nltk.internals import deprecated, Deprecated, overridden
+from nltk.internals import overridden
 
 class ParserI(object):
     """
@@ -151,45 +151,3 @@ class ParserI(object):
         """
         return [self.prob_parse(sent) for sent in sents]
 
-
-    #////////////////////////////////////////////////////////////
-    #{ Deprecated
-    @deprecated("Use parse() instead.")
-    def get_parse(self, sent):
-        return self.parse(sent)
-    @deprecated("Use nbest_parse() instead.")
-    def get_parse_list(self, sent):
-        return self.nbest_parse(sent)
-    @deprecated("Use prob_parse() instead.")
-    def get_parse_prob(self, sent):
-        return self.prob_parse(sent)
-    @deprecated("Use prob_parse() instead.")
-    def get_parse_dict(self, sent):
-        return self.prob_parse(sent)
-    @deprecated("No longer supported.")
-    def batch_test(self, filename):
-        f = open(filename)
-        for line in f:
-            line = line.strip()
-            if not line: continue 
-            if line.startswith('#'):
-                print(line)
-                continue
-            print(("Sentence:", line))
-            parses = self.nbest_parse(line)
-            print(("%d parses." % len(parses)))
-            for tree in parses: print(tree)
-    #}
-    #////////////////////////////////////////////////////////////
-
-######################################################################
-#{ Deprecated
-class ParseI(ParserI, Deprecated):
-    "Use ParserI instead."
-class AbstractParser(Deprecated, ParserI):
-    """Use ParserI instead."""
-    @deprecated("Use nltk.ContextFreeGrammar.check_coverage() instead.")
-    def _check_coverage(self, tokens):
-        self._grammar.check_coverage(tokens)
-#}
-######################################################################

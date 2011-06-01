@@ -17,7 +17,6 @@ import re
 import codecs
 
 from nltk.toolbox import ToolboxData
-from nltk.internals import deprecated
 
 from .util import *
 from .api import *
@@ -60,14 +59,6 @@ class ToolboxCorpusReader(CorpusReader):
         elif isinstance(fileids, str): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
-    #{ Deprecated since 0.8
-    @deprecated("Use .xml() instead.")
-    def dictionary(self, fileids=None):
-        raise ValueError("no longer supported -- use .xml() instead")
-    @deprecated("Use .xml() instead.")
-    def parse_corpus(self, fileids=None, key=None):
-        return self.xml(items, key)
-    #}
     
 def demo():
     pass

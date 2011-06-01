@@ -20,7 +20,7 @@ import nltk
 
 __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',
-           'WordPunctTokenizer', 'WordTokenizer', 'blankline_tokenize',
+           'WordPunctTokenizer', 'blankline_tokenize',
            'wordpunct_tokenize', 'regexp_tokenize', 'word_tokenize',
            'SExprTokenizer', 'sexpr_tokenize', 'line_tokenize',
            'PunktWordTokenizer', 'PunktSentenceTokenizer',

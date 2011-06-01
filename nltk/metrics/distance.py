@@ -20,8 +20,6 @@ As metrics, they must satisfy the following three requirements:
  
 """
 
-from nltk.internals import deprecated
-
 def _edit_dist_init(len1, len2):
     lev = []
     for i in range(len1):
@@ -37,10 +35,6 @@ def _edit_dist_step(lev, i, j, c1, c2):
     b = lev[i-1][j-1] + (c1 != c2)   # matching s1[i] with s2[j]
     c = lev[i  ][j-1] + 1            # skipping s2[j]
     lev[i][j] = min(a,b,c)           # pick the cheapest
-
-@deprecated('Use edit_distance() instead.')
-def edit_dist(s1, s2):
-    return edit_distance(s1, s2)
 
 def edit_distance(s1, s2):
     """

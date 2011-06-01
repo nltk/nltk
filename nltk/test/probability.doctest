@@ -65,7 +65,7 @@ from the whole corpus, not just the training corpus
     >>> symbols = list(set([word for sent in corpus for (word,tag) in sent]))
     >>> print len(symbols)
     1464
-    >>> trainer = nltk.HiddenMarkovModelTrainer(tag_set, symbols) 
+    >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols) 
 
 We divide the corpus into 90% training and 10% testing
 

@@ -126,7 +126,7 @@ import tempfile
 import time
 
 from nltk.tree import Tree
-from nltk.internals import deprecated, import_from_stdlib
+from nltk.internals import import_from_stdlib
 
 from .util import *
 from .api import *
@@ -414,33 +414,6 @@ class TimitCorpusReader(CorpusReader):
         print(("you must install pygame or ossaudiodev "
                              "for audio playback."), file=sys.stderr)
 
-    #{ Deprecated since 0.9.7
-    @deprecated("Use corpus.fileids() instead")
-    def files(self, filetype=None): return self.fileids(filetype)
-    @deprecated("Use corpus.utteranceids() instead")
-    def utterances(self, dialect=None, sex=None, spkrid=None,
-                   sent_type=None, sentid=None):
-        return self.utteranceids(dialect, sex, spkrid, sent_type, sentid)
-    @deprecated("Use corpus.spkrutteranceids() instead")
-    def spkrutterances(self, speaker): return self.utteranceids(speaker)
-    #}
-        
-    #{ Deprecated since 0.9.1
-    @deprecated("Use utteranceids(spkrid=...) instead.")
-    def spkritems(self, spkrid):
-        return self.utteranceids(spkrid=spkrid)
-    #}
-
-    #{ Deprecated since 0.8
-    @deprecated("Use .sents() or .sent_times() instead.")
-    def tokenized(self, utterances=None, offset=True):
-        if offset: return self.sent_times(utterances)
-        else: return self.sents(utterances)
-    @deprecated("Use .phones() or .phone_times() instead.")
-    def phonetic(self, utterances=None, offset=True):
-        if offset: return self.phone_times(utterances)
-        else: return self.phones(utterances)
-    #}
 
 class SpeakerInfo:
     def __init__(self, id, sex, dr, use, recdate, birthdate,

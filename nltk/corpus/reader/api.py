@@ -14,7 +14,6 @@ import os
 import re
 
 from nltk.compat import defaultdict
-from nltk.internals import deprecated
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.sourcedstring import SourcedStringStream
 
@@ -212,16 +211,6 @@ class CorpusReader(object):
 
         @type: L{PathPointer}""")
 
-    #{ Deprecated since 0.9.7
-    @deprecated("Use corpus.fileids() instead")
-    def files(self): return self.fileids()
-    #}
-
-    #{ Deprecated since 0.9.1
-    @deprecated("Use corpus.fileids() instead")
-    def _get_items(self): return self.fileids()
-    items = property(_get_items)
-    #}
 
 ######################################################################
 #{ Corpora containing categorized items
@@ -438,24 +427,4 @@ class SyntaxCorpusReader(CorpusReader):
 
     #} End of Block Readers
     #------------------------------------------------------------
-
-    #{ Deprecated since 0.8
-    @deprecated("Use .raw() or .sents() or .tagged_sents() or "
-                ".parsed_sents() instead.")
-    def read(self, items=None, format='parsed'):
-        if format == 'parsed': return self.parsed_sents(items)
-        if format == 'raw': return self.raw(items)
-        if format == 'tokenized': return self.sents(items)
-        if format == 'tagged': return self.tagged_sents(items)
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .parsed_sents() instead.")
-    def parsed(self, items=None):
-        return self.parsed_sents(items)
-    @deprecated("Use .sents() instead.")
-    def tokenized(self, items=None):
-        return self.sents(items)
-    @deprecated("Use .tagged_sents() instead.")
-    def tagged(self, items=None):
-        return self.tagged_sents(items)
-    #}
 

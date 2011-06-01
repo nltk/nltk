@@ -15,7 +15,6 @@ import codecs
 
 import nltk.data
 from nltk.tokenize import *
-from nltk.internals import deprecated
 
 from .util import *
 from .api import *
@@ -153,16 +152,6 @@ class PlaintextCorpusReader(CorpusReader):
                           for sent in self._sent_tokenizer.tokenize(para)])
         return paras
             
-    #{ Deprecated since 0.8
-    @deprecated("Use .raw() or .words() instead.")
-    def read(self, items=None, format='tokenized'):
-        if format == 'raw': return self.raw(items)
-        if format == 'tokenized': return self.words(items)
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .words() instead.")
-    def tokenized(self, items=None):
-        return self.words(items)
-    #}
 
 class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
                                     PlaintextCorpusReader):

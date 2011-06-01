@@ -10,17 +10,16 @@
 #TODO:
     #- fix tracing
     #- fix iterator-based approach to existentials
-    
-    
+
 """
 This module provides data structures for representing first-order
 models. 
 """
+
 from pprint import pformat
 import inspect
 import textwrap
 from nltk.decorators import decorator
-from nltk.internals import deprecated
 
 from .logic import *
 
@@ -88,18 +87,6 @@ def arity(rel):
     if len(rel) == 0:
         return 0
     return len(list(rel)[0])
-
-@deprecated("Simply use 'args in rel'")
-def app(rel, args, trace=False):
-    """
-    Apply a relation (as set of tuples) to an argument.
-    
-    @type rel: C{set} of C{tuple}s
-    @param args: a sequence of appropriate semantic arguments
-    @rtype: C{bool} 
-    """
-    assert is_rel(rel)
-    return args in rel
 
 
 class Valuation(dict):

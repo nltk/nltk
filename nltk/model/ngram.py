@@ -78,7 +78,7 @@ class NgramModel(ModelI):
         elif self._n > 1:
             return self._alpha(context) * self._backoff.prob(word, context[1:])
         else:
-            raise RuntimeError("No probability mass assigned to word %s in " +
+            raise RuntimeError("No probability mass assigned to word %s in "
                                "context %s" % (word, ' '.join(context)))
 
     def _alpha(self, tokens):

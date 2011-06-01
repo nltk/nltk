@@ -8,7 +8,6 @@
 
 import re
 
-from nltk.internals import deprecated
 from nltk.metrics import accuracy as _accuracy
 
 def str2tuple(s, sep='/'):
@@ -62,29 +61,4 @@ def untag(tagged_sentence):
     ['John', 'saw', 'mary']
     """
     return [w for (w, t) in tagged_sentence]
-
-@deprecated("use tagger.evaluate(gold)")
-def accuracy(tagger, gold):
-    return tagger.evaluate(gold)
-
-
-######################################################################
-#{ Deprecated
-######################################################################
-@deprecated("Use nltk.tag.str2tuple(s, sep) instead.")
-def tag2tuple(s, sep='/'):
-    return str2tuple(s, sep)
-
-@deprecated("Use [nltk.tag.str2tuple(t, sep) for t in s.split()] instead.")
-def string2tags(s, sep='/'):
-    return [str2tuple(t, sep) for t in s.split()]
-
-@deprecated("Use ' '.join(nltk.tag.tuple2str(w, sep) for w in t) instead.")
-def tags2string(t, sep='/'):
-    return ' '.join(tuple2str(w, sep) for w in t)
-
-@deprecated("Use [nltk.tag.str2tuple(t, sep)[0] for t in s.split()] instead.")
-def string2words(s, sep='/'):
-    return [str2tuple(t, sep)[0] for t in s.split()]
-
 

@@ -21,7 +21,7 @@ try: from xml.etree import cElementTree as ElementTree
 except ImportError: from xml.etree import ElementTree
 
 from nltk.tokenize import wordpunct_tokenize
-from nltk.internals import deprecated, slice_bounds
+from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.sourcedstring import SourcedStringStream

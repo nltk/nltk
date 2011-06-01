@@ -838,7 +838,7 @@ Markov order-N smoothing, and unary collapsing:
 
     >>> treebank_string = """(S (NP-SBJ (NP (QP (IN at) (JJS least) (CD nine) (NNS tenths)) )
     ...     (PP (IN of) (NP (DT the) (NNS students) ))) (VP (VBD passed)))"""
-    >>> t = nltk.bracket_parse(treebank_string)
+    >>> t = nltk.Tree.parse(treebank_string)
     >>> print t
     (S
       (NP-SBJ

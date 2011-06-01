@@ -61,8 +61,7 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
 
 A. UPLOAD DISTRIBUTIONS
 
-  1. make upload (copies stuff up to Googlecode)
-     (do same in ../nltk_contrib)
+  1. make upload (copies stuff up to Googlecode, including from nltk_contrib)
   2. check result at http://code.google.com/p/nltk/downloads/list
   3. if this is a non-beta release,
      change previous release to remove its "Featured" label
@@ -81,8 +80,8 @@ B. PORTFILE
   3. Test the Portfiles using, e.g. "port install py25-nltk" etc
   4. Create a new ticket: https://trac.macports.org/newticket
        Log in using same username that is used for accessing the svn repository
-       > Summary: NLTK Ports upgrade to $VERSION
-       > Description: Updated port for NLTK (http://www.nltk.org/) 
+       > Summary: py*-nltk: upgrade to $VERSION
+       > Description: Updated port for NLTK (http://nltk.org/) 
        > Type: update
        > Keywords: haspatch maintainer
        > version: [CLEAR THIS]
@@ -94,17 +93,16 @@ C. WEBSITE
   - for beta releases, skip this section, and post to nltk-dev only
 
   1. install download page, by moving Download-N.N to Download
-  2. post a news item at http://www.nltk.org/news-archive, summary at http://www.nltk.org/
+  2. post a news item at http://nltk.org/news-archive, summary at http://nltk.org/
   3. register with Python Cheeseshop: make pypi
      (make sure that just the source .tar.gz file was uploaded (no macosx file)
      (make sure that the .tar.gz file contains the version of setup.py with
      a pyyaml dependency)
-  4. upload new portfiles to macports (needs a diff; haven't sorted this out)
-  5. sync the book to the website (cd doc; make publish)
-  6. post announcement to NLTK the mailing lists:
+  4. sync the book to the website (cd doc; make publish)
+  5. post announcement to NLTK the mailing lists:
        nltk-dev (for beta releases)
        nltk (for final releases)
-  7. post announcement to external mailing lists, for major N.N releases only
+  6. post announcement to external mailing lists, for major N.N releases only
        CORPORA@uib.no, linguist@linguistlist.org,
        PythonSIL@lists.sil.org, edu-sig@python.org
        mailing lists for any local courses using NLTK

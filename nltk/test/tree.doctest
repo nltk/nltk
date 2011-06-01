@@ -158,26 +158,26 @@ then it simply delegates to `Tree.parse()`.
 
 Trees can be compared for equality:
 
-    >>> tree == bracket_parse(str(tree))
+    >>> tree == Tree.parse(str(tree))
     True
-    >>> tree2 == bracket_parse(str(tree2))
+    >>> tree2 == Tree.parse(str(tree2))
     True
     >>> tree == tree2
     False
-    >>> tree == bracket_parse(str(tree2))
+    >>> tree == Tree.parse(str(tree2))
     False
-    >>> tree2 == bracket_parse(str(tree))
+    >>> tree2 == Tree.parse(str(tree))
     False
 
-    >>> tree != bracket_parse(str(tree))
+    >>> tree != Tree.parse(str(tree))
     False
-    >>> tree2 != bracket_parse(str(tree2))
+    >>> tree2 != Tree.parse(str(tree2))
     False
     >>> tree != tree2
     True
-    >>> tree != bracket_parse(str(tree2))
+    >>> tree != Tree.parse(str(tree2))
     True
-    >>> tree2 != bracket_parse(str(tree))
+    >>> tree2 != Tree.parse(str(tree))
     True
     
     >>> tree < tree2 or tree > tree2
@@ -567,7 +567,7 @@ variable:
 Define a helper funciton to create new parented trees:
 
     >>> def make_ptree(s):
-    ...     ptree = ParentedTree.convert(bracket_parse(s))
+    ...     ptree = ParentedTree.convert(Tree.parse(s))
     ...     all_ptrees.extend(t for t in ptree.subtrees()
     ...                       if isinstance(t, Tree))
     ...     return ptree
@@ -838,7 +838,7 @@ variable:
 Define a helper funciton to create new parented trees:
 
     >>> def make_mptree(s):
-    ...     mptree = MultiParentedTree.convert(bracket_parse(s))
+    ...     mptree = MultiParentedTree.convert(Tree.parse(s))
     ...     all_mptrees.extend(t for t in mptree.subtrees()
     ...                       if isinstance(t, Tree))
     ...     return mptree
@@ -1126,6 +1126,6 @@ This used to cause an infinite loop (fixed in svn 6269):
 
 This used to discard the ``(B b)`` subtree (fixed in svn 6270):
 
-    >>> print bracket_parse('((A a) (B b))')
+    >>> print Tree.parse('((A a) (B b))')
     ( (A a) (B b))
 

@@ -17,7 +17,6 @@ from . import evaluate
 import re
 import nltk
 
-from nltk.internals import deprecated
 from nltk.sem.logic import *
 
 ##############################################################
@@ -44,10 +43,6 @@ def batch_parse(inputs, grammar, trace=0):
         syntrees = cp.nbest_parse(tokens)
         parses.append(syntrees)
     return parses
-
-@deprecated('Use batch_parse() instead.')
-def text_parse(*args, **kwargs):
-    batch_parse(*args, **kwargs)
 
 def root_semrep(syntree, semkey='SEM'):
     """
@@ -80,10 +75,6 @@ def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
     return [[(syn, root_semrep(syn, semkey)) for syn in syntrees]
             for syntrees in batch_parse(inputs, grammar, trace=trace)]
 
-@deprecated('Use batch_interpret() instead.')
-def text_interpret(*args, **kwargs):
-    batch_interpret(*args, **kwargs)
-
 def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     """
     Add the truth-in-a-model value to each semantic representation
@@ -98,9 +89,6 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
             for (syn, sem) in interpretations]
             for interpretations in batch_interpret(inputs, grammar)]
 
-@deprecated('Use batch_evaluate() instead.')
-def text_evaluate(*args, **kwargs):
-    batch_evaluate(*args, **kwargs)
 
 ##########################################
 # REs used by the parse_valuation function

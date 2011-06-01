@@ -17,7 +17,7 @@ from itertools import islice, chain
 from pprint import pprint
 from nltk.compat import defaultdict
 
-from nltk.internals import Deprecated, slice_bounds
+from nltk.internals import slice_bounds
 
 ######################################################################
 # Short usage message
@@ -968,12 +968,6 @@ class LazyMap(AbstractLazySequence):
         return max(len(lst) for lst in self._lists)
 
 
-class LazyMappedList(Deprecated, LazyMap):
-    """Use LazyMap instead."""
-    def __init__(self, lst, func):
-        LazyMap.__init__(self, func, lst)
-
-
 class LazyZip(LazyMap):
     """
     A lazy sequence whose elements are tuples, each containing the i-th 
@@ -1048,11 +1042,6 @@ class LazyEnumerate(LazyZip):
         """                
         LazyZip.__init__(self, list(range(len(lst))), lst)
         
-
-class LazyMappedChain(Deprecated, LazyConcatenation):
-    """Use LazyConcatenation(LazyMap(func, lists)) instead."""
-    def __init__(self, lst, func):
-        LazyConcatenation.__init__(self, LazyMap(func, lst))
 
 ######################################################################
 # Binary Search in a File

@@ -24,7 +24,7 @@ classification}, in which:
     - The number of categories is finite.
     - Each text belongs to zero or more categories.
 """
-from nltk.internals import deprecated, overridden
+from nltk.internals import overridden
 
 ##//////////////////////////////////////////////////////
 #{ Classification Interfaces
@@ -92,14 +92,6 @@ class ClassifierI(object):
         """
         return [self.prob_classify(fs) for fs in featuresets]
 
-    #{ Deprecated
-    @deprecated("Use .batch_prob_classify() instead.")
-    def batch_probdist(self, featuresets):
-        return self.batch_prob_classify(featuresets)
-    @deprecated("Use .prob_classify() instead.")
-    def probdist(self, featureset):
-        return self.prob_classify(featureset)
-    #}
     
 class MultiClassifierI(object):
     """
@@ -163,15 +155,7 @@ class MultiClassifierI(object):
         """
         return [self.prob_classify(fs) for fs in featuresets]
 
-    #{ Deprecated
-    @deprecated("Use .batch_prob_classify() instead.")
-    def batch_probdist(self, featuresets):
-        return self.batch_prob_classify(featuresets)
-    @deprecated("Use .prob_classify() instead.")
-    def probdist(self, featureset):
-        return self.prob_classify(featureset)
-    #}
-    
+
 # # [XX] IN PROGRESS:
 # class SequenceClassifierI(object):
 #     """

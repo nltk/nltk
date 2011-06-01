@@ -267,10 +267,7 @@ class Clause(list):
         return False
     
     def free(self):
-        s = set()
-        for atom in self:
-            s |= atom.free(False)
-        return s
+        return reduce(operator.or_, ((atom.free() | atom.constants()) for atom in self))
     
     def replace(self, variable, expression):
         """
@@ -572,7 +569,7 @@ def most_general_unification(a, b, bindings=None):
     raise BindingException((a, b))
 
 def _mgu_var(var, expression, bindings):
-    if var.variable in expression.free(False):
+    if var.variable in expression.free()|expression.constants():
         raise BindingException((var, expression))
     else:
         return BindingDict([(var.variable, expression)]) + bindings

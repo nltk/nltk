@@ -1,4 +1,4 @@
-Version 2.0.1 2011-04-??
+Version 2.0.1 (rc1) 2011-04-11
 
 NLTK:
 * added interface to the Stanford POS Tagger
@@ -12,7 +12,7 @@ NLTK:
 * fixed issue with NLTK's tokenize module colliding with the Python tokenize module
 * fixed issue with stemming Unicode strings
 * changed ViterbiParser.nbest_parse to parse
-* KNBC Japanese corpus reader
+* ChaSen and KNBC Japanese corpus readers
 * preserve case in concordance display
 * fixed bug in simplification of Brown tags
 * a version of IBM Model 1 as described in Koehn 2010
@@ -28,9 +28,15 @@ NLTK:
 * simplifications and corrections of Earley Chart Parser rules
 * several changes to the feature chart parsers for correct unification
 * bugfixes: FreqDist.plot, FreqDist.max, NgramModel.entropy, CategorizedCorpusReader, DecisionTreeClassifier
+* removal of Python >2.4 language features for 2.4 compatibility
+* removal of deprecated functions and associated warnings
+* added semantic domains to wordnet corpus reader
+* changed wordnet similarity functions to include instance hyponyms
+* updated to use latest version of Boxer
 
 Data:
-* Japanese corpora...
+* JEITA Public Morphologically Tagged Corpus (in ChaSen format)
+* KNB Annotated corpus of Japanese blog posts
 * Fixed some minor bugs in alvey.fcfg, and added number of parse trees in alvey_sentences.txt
 * added more comtrans data
 
@@ -39,7 +45,7 @@ Documentation:
 * NLTK Japanese book (chapter 12) by Masato Hagiwara
 
 NLTK-Contrib:
-* Contribute a version of the Viethen and Dale referring expression algorithms
+* Viethen and Dale referring expression algorithms
 
 Thanks to the following	contributors to	2.0.1 (since 2.0b9, July 2010)
 Yonatan Becker, Steven Bethard, David Coles, Dan Garrette,

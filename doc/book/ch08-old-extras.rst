@@ -178,8 +178,8 @@ We can generate these trees in Python as follows:
 
     >>> s1 = '(S (NP the policeman) (VP (V saw) (NP (NP the burglar) (PP with a gun))))'
     >>> s2 = '(S (NP the policeman) (VP (V saw) (NP the burglar) (PP with a telescope)))'
-    >>> tree1 = nltk.bracket_parse(s1)
-    >>> tree2 = nltk.bracket_parse(s2)
+    >>> tree1 = nltk.Tree.parse(s1)
+    >>> tree2 = nltk.Tree.parse(s2)
 
 We can discard the structure to get the list of `leaves`:dt:, and
 we can confirm that both trees have the same leaves (except for the last word).

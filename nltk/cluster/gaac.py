@@ -7,8 +7,6 @@
 
 import numpy
 
-from nltk.internals import deprecated
-
 from .api import *
 from .util import *
 
@@ -96,10 +94,6 @@ class GAAClusterer(VectorSpaceClusterer):
             if not best or sim > best[0]:
                 best = (sim, i)
         return best[1]
-
-    @deprecated("Use GAAClusterer.dendrogram instead.")
-    def dendogram(self):
-        return dendrogram(self)
 
     def dendrogram(self):
         """
