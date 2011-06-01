@@ -135,7 +135,7 @@ class PlaintextCorpusReader(CorpusReader):
     def _read_word_block(self, stream):
         words = []
         for i in range(20): # Read 20 lines at a time.
-            words.extend(self._word_tokenizer.tokenize(stream.readline()))
+            words.extend(self._word_tokenizer.tokenize(stream.readline().decode()))
         return words
     
     def _read_sent_block(self, stream):
