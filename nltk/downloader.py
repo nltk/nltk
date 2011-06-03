@@ -159,6 +159,7 @@ they didn't download that model.
 default: unzip or not?
     
 """
+
 import time, re, os, zipfile, sys, textwrap, threading, itertools
 from io import StringIO
 try:
@@ -178,7 +179,7 @@ except:
 
 from xml.etree import ElementTree
 import nltk
-urllib2 = nltk.internals.import_from_stdlib('urllib')
+urllib = nltk.internals.import_from_stdlib('urllib')
 
 
 ######################################################################
@@ -1722,7 +1723,7 @@ class DownloaderGUI(object):
     def _init_progressbar(self):
         c = self._progressbar
         width, height = int(c['width']), int(c['height'])
-        for i in range(0, (int(c['width'])*2)/self._gradient_width):
+        for i in range(0, (int(c['width'])*2)//self._gradient_width):
             c.create_line(i*self._gradient_width+20, -20,
                           i*self._gradient_width-height-20, height+20,
                           width=self._gradient_width,
