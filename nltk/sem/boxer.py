@@ -11,7 +11,6 @@ import os
 import subprocess
 from optparse import OptionParser
 import tempfile
-import operator
 
 import nltk
 from nltk.sem.logic import *
@@ -117,8 +116,6 @@ class Boxer(object):
         @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
         @return: C{drt.AbstractDrs}
         """
-        _, temp_filename = tempfile.mkstemp(prefix='boxer-', suffix='.in', text=True)
-
         if discourse_ids is not None:
             assert len(inputs) == len(discourse_ids)
             assert reduce(operator.and_, (id is not None for id in discourse_ids))
@@ -127,10 +124,8 @@ class Boxer(object):
             discourse_ids = map(str, xrange(len(inputs)))
             use_disc_id = False
             
-        candc_out = self._call_candc(inputs, discourse_ids, question, temp_filename, verbose=verbose)
-        boxer_out = self._call_boxer(temp_filename, verbose=verbose)
-
-        os.remove(temp_filename)
+        candc_out = self._call_candc(inputs, discourse_ids, question, verbose=verbose)
+        boxer_out = self._call_boxer(candc_out, verbose=verbose)
 
 #        if 'ERROR: input file contains no ccg/2 terms.' in boxer_out:
 #            raise UnparseableInputException('Could not parse with candc: "%s"' % input_str)
@@ -138,7 +133,7 @@ class Boxer(object):
         drs_dict = self._parse_to_drs_dict(boxer_out, use_disc_id)
         return [drs_dict.get(id, None) for id in discourse_ids]
         
-    def _call_candc(self, inputs, discourse_ids, question, filename, verbose=False):
+    def _call_candc(self, inputs, discourse_ids, question, verbose=False):
         """
         Call the C{candc} binary with the given input.
 
@@ -148,17 +143,24 @@ class Boxer(object):
         @return: stdout
         """
         args = ['--models', os.path.join(self._candc_models_path, ['boxer','questions'][question]), 
-                '--output', filename,
                 '--candc-printer', 'boxer']
         return self._call('\n'.join(sum((["<META>'%s'" % id] + d for d,id in zip(inputs,discourse_ids)), [])), self._candc_bin, args, verbose)
 
-    def _call_boxer(self, filename, verbose=False):
+    def _call_boxer(self, candc_out, verbose=False):
         """
         Call the C{boxer} binary with the given input.
     
-        @param filename: C{str} A filename for the input file
+        @param candc_out: C{str} output from C&C parser
         @return: stdout
         """
+        f = None
+        try:
+            fd, temp_filename = tempfile.mkstemp(prefix='boxer-', suffix='.in', text=True)
+            f = os.fdopen(fd, 'w')
+            f.write(candc_out)
+        finally:
+            if f: f.close()
+
         args = ['--box', 'false', 
                 '--semantics', 'drs',
                 '--flat', 'false',
@@ -166,9 +168,10 @@ class Boxer(object):
                 '--elimeq', ['false','true'][self._elimeq],
                 '--format', 'prolog',
                 '--instantiate', 'true',
-                '--input', filename]
-
-        return self._call(None, self._boxer_bin, args, verbose)
+                '--input', temp_filename]
+        stdout = self._call(None, self._boxer_bin, args, verbose)
+        os.remove(temp_filename)
+        return stdout
 
     def _find_binary(self, name, bin_dir, verbose=False):
         return nltk.internals.find_binary(name, 
@@ -340,10 +343,7 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ')')
         
         def _handle_pred_f(sent_index, word_indices):
-            if name=='event' and sent_index is None and ((pos=='n' and sense==1) or (pos=='v' and sense==0)):
-                return BoxerEvent(variable)
-            else:
-                return BoxerPred(self.discourse_id, sent_index, word_indices, variable, name, pos, sense)
+            return BoxerPred(self.discourse_id, sent_index, word_indices, variable, name, pos, sense)
         return _handle_pred_f
         
     def _handle_named(self):
@@ -562,7 +562,7 @@ class BoxerOutputDrsParser(DrtParser):
 
     def parse_variable(self):
         var = self.token()
-        assert re.match('^x\d+$', var)
+        assert re.match('^[ex]\d+$', var), var
         return int(var[1:])
         
     def parse_index(self):
@@ -660,11 +660,6 @@ class BoxerDrsParser(DrtParser):
                 sense = int(self.token())
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerRel(disc_id, sent_id, word_ids, var1, var2, rel, sense)
-            elif tok == 'event':
-                self.assertNextToken(DrtTokens.OPEN)
-                var = int(self.token())
-                self.assertNextToken(DrtTokens.CLOSE)
-                return BoxerEvent(var)
             elif tok == 'prop':
                 self.assertNextToken(DrtTokens.OPEN)
                 disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
@@ -877,20 +872,6 @@ class BoxerNot(AbstractBoxerDrs):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.drs == other.drs
         
-class BoxerEvent(AbstractBoxerDrs):
-    def __init__(self, var):
-        AbstractBoxerDrs.__init__(self)
-        self.var = var
-
-    def _variables(self):
-        return (set(), set([self.var]), set())
-
-    def __repr__(self):
-        return 'event(%s)' % (self.var)
-    
-    def __eq__(self, other):
-        return self.__class__ == other.__class__ and self.var == other.var
-
 class BoxerIndexed(AbstractBoxerDrs):
     def __init__(self, discourse_id, sent_index, word_indices):
         AbstractBoxerDrs.__init__(self)
@@ -1132,8 +1113,6 @@ class NltkDrtBoxerDrsInterpreter(object):
             return drs
         elif isinstance(ex, BoxerNot):
             return DrtNegatedExpression(self.interpret(ex.drs))
-        elif isinstance(ex, BoxerEvent):
-            return self._make_atom('event', 'x%d' % ex.var)
         elif isinstance(ex, BoxerPred):
             pred = self._add_occur_indexing('%s_%s' % (ex.pos, ex.name), ex)
             return self._make_atom(pred, 'x%d' % ex.var)
