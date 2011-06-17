@@ -25,8 +25,9 @@ class DrtTokens(Tokens):
     PRONOUN = 'PRO'
     OPEN_BRACKET = '['
     CLOSE_BRACKET = ']'
+    COLON = ':'
     
-    PUNCT = [DRS_CONC, OPEN_BRACKET, CLOSE_BRACKET]
+    PUNCT = [DRS_CONC, OPEN_BRACKET, CLOSE_BRACKET, COLON]
     
     SYMBOLS = Tokens.SYMBOLS + PUNCT
     
@@ -1040,12 +1041,13 @@ class DrtParser(LogicParser):
         self.operator_precedence = dict(
                                [(x,1) for x in DrtTokens.LAMBDA_LIST]             + \
                                [(x,2) for x in DrtTokens.NOT_LIST]                + \
-                               [(APP,3)]                                        + \
+                               [(APP,3)]                                          + \
                                [(x,4) for x in DrtTokens.EQ_LIST+Tokens.NEQ_LIST] + \
-                               [(DrtTokens.DRS_CONC,5)]                           + \
-                               [(x,6) for x in DrtTokens.OR_LIST]                 + \
-                               [(x,7) for x in DrtTokens.IMP_LIST]                + \
-                               [(None,8)])
+                               [(DrtTokens.COLON,5)]                              + \
+                               [(DrtTokens.DRS_CONC,6)]                           + \
+                               [(x,7) for x in DrtTokens.OR_LIST]                 + \
+                               [(x,8) for x in DrtTokens.IMP_LIST]                + \
+                               [(None,9)])
     
     def get_all_symbols(self):
         """This method exists to be overridden"""
@@ -1074,7 +1076,10 @@ class DrtParser(LogicParser):
             return self.handle_DRS(tok, context)
 
         elif self.isvariable(tok):
-            return self.handle_variable(tok, context)
+            if self.inRange(0) and self.token(0) == DrtTokens.COLON:
+                return self.handle_prop(tok, context)
+            else:
+                return self.handle_variable(tok, context)
 
     def make_NegatedExpression(self, expression):
         return DrtNegatedExpression(expression)
@@ -1109,6 +1114,12 @@ class DrtParser(LogicParser):
             conds.append(self.parse_Expression(context))
         self.assertNextToken(DrtTokens.CLOSE_BRACKET)
         return conds
+    
+    def handle_prop(self, tok, context):
+        variable = self.make_VariableExpression(tok)
+        self.assertNextToken(':')
+        drs = self.parse_Expression(DrtTokens.COLON)
+        return DrtProposition(variable, drs)
 
     def make_EqualityExpression(self, first, second):
         """This method serves as a hook for other logic parsers that
