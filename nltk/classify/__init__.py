@@ -108,11 +108,19 @@ __all__ = [
     # Demos -- not included.
     ]
     
+# Conditional imports
 
 try:
     import numpy
     from maxent import *
     __all__ += ['MaxentClassifier', 'BinaryMaxentFeatureEncoding',
                 'ConditionalExponentialClassifier']
+except ImportError:
+    pass
+
+try:
+    import svmlight
+    from svm import *
+    __all__ += ['SvmClassifier']
 except ImportError:
     pass
