@@ -108,7 +108,7 @@ generate the same results.
     ...     for algorithm in nltk.classify.MaxentClassifier.ALGORITHMS:
     ...         if algorithm.lower() == 'megam':
     ...             try: nltk.classify.megam.config_megam()
-    ...             except: raise #continue
+    ...             except: pass
     ...         try:
     ...             classifiers[algorithm] = nltk.MaxentClassifier.train(
     ...                 train, algorithm, trace=0, max_iter=1000)
