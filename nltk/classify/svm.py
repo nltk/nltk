@@ -25,7 +25,7 @@ from api import *
 try:
     import svmlight
 except:
-    raise Exception('PySVMlight was not successfully imported. You can install it from https://bitbucket.org/wcauchois/pysvmlight or via instructions in the NLTK documentation.')
+    raise LookupError("\n\n===========================================================================\n  NLTK was unable to import SVMlight!\n\n  For more information, see <https://bitbucket.org/wcauchois/pysvmlight>\n===========================================================================")
 
 # create a boolean feature name for the SVM from a feature/value pair,
 # that'll take on a 1.0 value if the original feature:value is asserted.
@@ -242,7 +242,38 @@ class SvmClassifier(ClassifierI):
 
 
 def demo():
-    return
+
+    def gender_features(word):
+        return {'last_letter': word[-1], 'penultimate_letter': word[-2]}
+
+    from nltk.classify import accuracy
+    from nltk.corpus import names
+    
+    
+    import random
+    names = ([(name, 'male') for name in names.words('male.txt')] +
+             [(name, 'female') for name in names.words('female.txt')])
+    import random
+    random.seed(60221023)
+    random.shuffle(names)
+
+    featuresets = [(gender_features(n), g) for (n,g) in names]
+    train_set, test_set = featuresets[500:], featuresets[:500]
+
+    print '--- nltk.classify.svm demo ---'
+    print 'Number of training examples:', len(train_set)
+    classifier = SvmClassifier.train(train_set)
+    print 'Total SVM dimensions:', len(classifier._svmfeatureindex)
+    print 'Label mapping:', classifier._labelmapping
+    print '--- Processing an example instance ---'
+    print 'Reference instance:', names[0]
+    print 'NLTK-format features:\n    ' + str(test_set[0])
+    print 'SVMlight-format features:\n    ' + str(map_instance_to_svm(test_set[0], classifier._labelmapping, classifier._svmfeatureindex))
+    distr = classifier.prob_classify(test_set[0][0])
+    print 'Instance classification and confidence:', distr.max(), distr.prob(distr.max())
+    print '--- Measuring classifier performance ---'
+    print 'Overall accuracy:', accuracy(classifier, test_set)
+
 
 if __name__ == '__main__':
     demo()

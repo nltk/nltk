@@ -100,6 +100,19 @@ Test the Decision Tree classifier:
       . . .
     NotImplementedError
 
+Test the SVM classifier, which requires the PySVMlight implementation of
+SVMlight.
+
+    >>> nltk.classify.svm.demo()
+    Label mapping: {'male': -1, 'female': 1}
+    Reference instance: ('Agnola', 'female')
+    NLTK-format features:
+        ({'penultimate_letter': 'l', 'last_letter': 'a'}, 'female')
+    SVMlight features: (1, [(12, 1.0), (48, 1.0)])
+    Instance classification and confidence: female 1.0
+    Overall accuracy: 0.762
+
+    
 Test the Maximum Entropy classifier training algorithms; they should all
 generate the same results. 
 
