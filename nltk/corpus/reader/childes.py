@@ -1,7 +1,8 @@
 # CHILDES XML Corpus Reader
 
 # Copyright (C) 2001-2011 NLTK Project
-# Author: Tomonori Nagano <tnagano@gc.cuny.edu>
+# Author: Tomonori Nagano <tnagano@gc.cuny.edu> 
+#         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -42,13 +43,36 @@ class CHILDESCorpusReader(XMLCorpusReader):
         @return: the given file(s) as a list of words
         @rtype: C{list} of C{str}
         
-        @param speaker: If specified, select specitic speakers defined in 
-            the corpus. Default is 'ALL'. Common choices are 'CHI' (all 
-            children) and 'MOT' (mothers)
+        @param speaker: If list is specified, select specitic speakers defined
+        	in the corpus. Default is 'All' (all participants). Common choices 
+        	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
+        	researchers)
         @param stem: If true, then use word stems instead of word strings.
         @param relation: If true, then return tuples of (stem, index, 
             dependent_index)
-        @param pos: If true, then return tuples of (stem, part_of_speech)
+        @param strip_space: If true, then strip trailing spaces from word 
+            tokens. Otherwise, leave the spaces on the tokens.
+        @param replace: If true, then use the replaced word instead 
+            of the original word (e.g., 'wat' will be replaced with 'watch')
+        """
+        return concat([self._get_words(fileid, speaker, sent, stem, relation, 
+            pos, strip_space, replace) for fileid in self.abspaths(fileids)])
+
+    def tagged_words(self, fileids=None, speaker='ALL', sent=None, stem=False, 
+            relation=False, pos=True, strip_space=True, replace=False):
+        """
+        @return: the given file(s) as a list of tagged
+            words and punctuation symbols, encoded as tuples
+            C{(word,tag)}.
+        @rtype: C{list} of C{(str,str)}
+        
+        @param speaker: If list is specified, select specitic speakers defined
+        	in the corpus. Default is 'All' (all participants). Common choices 
+        	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
+        	researchers)
+        @param stem: If true, then use word stems instead of word strings.
+        @param relation: If true, then return tuples of (stem, index, 
+            dependent_index)
         @param strip_space: If true, then strip trailing spaces from word 
             tokens. Otherwise, leave the spaces on the tokens.
         @param replace: If true, then use the replaced word instead 
@@ -60,17 +84,42 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def sents(self, fileids=None, speaker='ALL', sent=True, stem=False, 
             relation=None, pos=False, strip_space=True, replace=False):
         """
-        @return: the given file(s) as a list of sentences
+        @return: the given file(s) as a list of
+            sentences or utterances, each encoded as a list of word
+            strings.
         @rtype: C{list} of (C{list} of C{str})
         
-        @param speaker: If specified, select specitic speakers defined in 
-            the corpus. Default is 'ALL'. Common choices are 'CHI' (all 
-            children) and 'MOT' (mothers)
+        @param speaker: If list is specified, select specitic speakers defined
+        	in the corpus. Default is 'All' (all participants). Common choices 
+        	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
+        	researchers)
         @param stem: If true, then use word stems instead of word strings.
         @param relation: If true, then return tuples of C{(str,pos,relation_list)}.
             If there is manually-annotated relation info, it will return tuples of
             tuples of C{(str,pos,test_relation_list,str,pos,gold_relation_list)}
-        @param pos: If true, then return tuples of C{(stem, part_of_speech)}
+        @param strip_space: If true, then strip trailing spaces from word 
+            tokens. Otherwise, leave the spaces on the tokens.
+        @param replace: If true, then use the replaced word instead 
+            of the original word (e.g., 'wat' will be replaced with 'watch')
+        """
+        return concat([self._get_words(fileid, speaker, sent, stem, relation, 
+            pos, strip_space, replace) for fileid in self.abspaths(fileids)])
+
+    def tagged_sents(self, fileids=None, speaker='ALL', sent=True, stem=False, 
+            relation=None, pos=True, strip_space=True, replace=False):
+        """
+        @return: the given file(s) as a list of
+            sentences, each encoded as a list of C{(word,tag)} tuples.            
+        @rtype: C{list} of (C{list} of C{(str,str)})
+        
+        @param speaker: If list is specified, select specitic speakers defined
+        	in the corpus. Default is 'All' (all participants). Common choices 
+        	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
+        	researchers)
+        @param stem: If true, then use word stems instead of word strings.
+        @param relation: If true, then return tuples of C{(str,pos,relation_list)}.
+            If there is manually-annotated relation info, it will return tuples of
+            tuples of C{(str,pos,test_relation_list,str,pos,gold_relation_list)}
         @param strip_space: If true, then strip trailing spaces from word 
             tokens. Otherwise, leave the spaces on the tokens.
         @param replace: If true, then use the replaced word instead 
@@ -130,11 +179,22 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 if pat.get('id') == 'CHI':
                     age = pat.get('age')
                     if month:
-                        age = _convert_age(age)
+                        age = self._convert_age(age)
                     return age
             # some files don't have age data
             except (TypeError, AttributeError), e:
                 return None
+
+    def _convert_age(self, age_year):
+        m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?",age_year)
+        age_month = int(m.group(1))*12 + int(m.group(2))
+        try:
+            if int(m.group(3)) > 15:
+                age_month += 1
+        # some corpora don't have age information?
+        except ValueError, e:
+            pass
+        return age_month
                 
     def MLU(self, fileids=None):
         """
@@ -144,11 +204,12 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return [self._getMLU(fileid) for fileid in self.abspaths(fileids)]
 
     def _getMLU(self, fileid):
-        sents = self._get_words(fileid, speaker='CHI', sent=True, stem=True, 
+        sents = self._get_words(fileid, speaker=['CHI'], sent=True, stem=True, 
                     relation=False, pos=True, strip_space=True, replace=True)
         results = []
         lastSent = []
         numFillers = 0
+        sentDiscount = 0
         for sent in sents:
             posList = [pos for (word,pos) in sent]
             # if any part of the sentence is intelligible
@@ -163,14 +224,16 @@ class CHILDESCorpusReader(XMLCorpusReader):
             else:
                 results.append([word for (word,pos) in sent])
                 # count number of fillers
-                numFillers += posList.count('co')
-                numFillers += posList.count('None')
+                if len(set(['co',None]).intersection(posList)) > 0:
+                    numFillers += posList.count('co')
+                    numFillers += posList.count(None)
+                    sentDiscount += 1
             lastSent = sent
         try:
             thisWordList = flatten(results)
             # count number of morphemes (e.g., 'read' = 1 morpheme but 'read-PAST' is 2 morphemes)
             numWords = float(len(flatten([word.split('-') for word in thisWordList]))) - numFillers
-            numSents = float(len(results))
+            numSents = float(len(results)) - sentDiscount
             mlu = numWords/numSents
         except ZeroDivisionError:
             mlu = 0
@@ -185,7 +248,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         for xmlsent in xmldoc.findall('.//{%s}u' % NS):
             sents = []
             # select speakers
-            if speaker == 'ALL' or xmlsent.get('who') == speaker:
+            if speaker == 'ALL' or xmlsent.get('who') in speaker:
                 for xmlword in xmlsent.findall('.//{%s}w' % NS):
                     infl = None ; suffixStem = None
                     # getting replaced words
@@ -260,49 +323,52 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     results.extend(sents)
         return results
 
-# convert age from CHILDES format
-def _convert_age(age_year):
-    m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?",age_year)
-    age_month = int(m.group(1))*12 + int(m.group(2))
-    try:
-        if int(m.group(3)) > 15:
-            age_month += 1
-    # some corpora don't have age information?
-    except ValueError, e:
-        pass
-    return age_month
-
 
 def demo():
+    """
+    The CHILDES corpus should be manually downloaded and saved
+    to [NLTK_Data_Dir]/corpora/childes/
+    """
     from nltk.data import find
-    corpus_root = find('corpora/childes/data-xml/Eng-USA/')
-    childes = CHILDESCorpusReader(corpus_root, u'.*.xml')
+    #import urllib2, zipfile, cStringIO
+    
+    try:
+        corpus_root = find('corpora/childes/data-xml/Eng-USA/')
+        childes = CHILDESCorpusReader(corpus_root, u'.*.xml')
+        # describe all corpus
+        for file in childes.fileids()[:5]:
+            corpus = ''
+            corpus_id = ''
+            for (key,value) in childes.corpus(file)[0].items():
+                if key == "Corpus": corpus = value
+                if key == "Id": corpus_id = value
+            print 'Reading', corpus,corpus_id,' .....'
+            print "words:", childes.words(file)[:7],"..."
+            print "words with replaced words:", childes.words(file, replace=True)[:7]," ..."
+            print "words with pos tags:", childes.tagged_words(file)[:7]," ..."
+            print "words (only MOT):", childes.words(file, speaker=['MOT'])[:7], "..."
+            print "words (only CHI):", childes.words(file, speaker=['CHI'])[:7], "..."
+            print "stemmed words:", childes.words(file, stem=True)[:7]," ..."
+            print "words with relations and pos-tag:", childes.words(file, relation=True)[:5]," ..."
+            print "sentence:", childes.sents(file)[:2]," ..."
+            for (participant, values) in childes.participants(file)[0].items():
+                    for (key, value) in values.items():
+                        print "\tparticipant", participant, key, ":", value
+            print "num of sent:", len(childes.sents(file))
+            print "num of morphemes:", len(childes.words(file, stem=True))
+            print "age:", childes.age(file)    
+            print "age in month:", childes.age(file, month=True)    
+            print "MLU:", childes.MLU(file)
+            print '\r'
+    except LookupError, e:
+        print """The CHILDES corpus should be manually downloaded from
+        http://childes.psy.cmu.edu/data-xml/Eng-USA/ and save it at 
+        [NLTK_Data_Dir]/corpora/childes/"""
+        #corpus_root_http = urllib2.urlopen('http://childes.psy.cmu.edu/data-xml/Eng-USA/Bates.zip')
+        #corpus_root_http_bates = zipfile.ZipFile(cStringIO.StringIO(corpus_root_http.read()))
+        ##this fails
+        #childes = CHILDESCorpusReader(corpus_root_http_bates,corpus_root_http_bates.namelist())
 
-    # describe all corpus
-    for file in childes.fileids()[:5]:
-        corpus = ''
-        corpus_id = ''
-        for (key,value) in childes.corpus(file)[0].items():
-            if key == "Corpus": corpus = value
-            if key == "Id": corpus_id = value
-        print 'Reading', corpus,corpus_id,' .....'
-        print "words:", childes.words(file)[:7],"..."
-        print "words with replaced words:", childes.words(file, replace=True)[:7]," ..."
-        print "words with pos tags:", childes.words(file, pos=True)[:7]," ..."
-        print "words (only MOT):", childes.words(file, speaker='MOT')[:7], "..."
-        print "words (only CHI):", childes.words(file, speaker='CHI')[:7], "..."
-        print "stemmed words:", childes.words(file, stem=True)[:7]," ..."
-        print "words with relations and pos-tag:", childes.words(file, relation=True)[:5]," ..."
-        print "sentence:", childes.sents(file)[:2]," ..."
-        for (participant, values) in childes.participants(file)[0].items():
-                for (key, value) in values.items():
-                    print "\tparticipant", participant, key, ":", value
-        print "num of sent:", len(childes.sents(file))
-        print "num of morphemes:", len(childes.words(file, stem=True))
-        print "age:", childes.age(file)    
-        print "age in month:", childes.age(file, month=True)    
-        print "MLU:", childes.MLU(file)
-        print '\r'
-
+    
 if __name__ == "__main__":
     demo()
