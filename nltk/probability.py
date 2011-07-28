@@ -727,7 +727,7 @@ class MLEProbDist(ProbDistI):
     each sample as the frequency of that sample in the frequency
     distribution.
     """
-    def __init__(self, freqdist):
+    def __init__(self, freqdist, bins=None):
         """
         Use the maximum likelihood estimate to create a probability
         distribution for the experiment used to generate C{freqdist}.
