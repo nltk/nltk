@@ -27,7 +27,7 @@ print "ptext2:", ptext2.name.decode('latin-1')
 ptext3 = Text(genesis.words('portuguese.txt'), name="Gênesis")
 print "ptext3:", ptext3.name.decode('latin-1')
 
-ptext4 = Text(mac_morpho.words('mu94se01.txt'), name="Folha de Sau Paulo (1994)")
+ptext4 = Text(mac_morpho.words('mu94se01.txt'), name="Folha de Sao Paulo (1994)")
 print "ptext4:", ptext4.name.decode('latin-1')
 
 def texts():
