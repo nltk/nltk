@@ -39,7 +39,7 @@ class VectorSpaceClusterer(ClusterI):
 
         # use SVD to reduce the dimensionality
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
-            [u, d, vt] = numpy.linalg.svd(numpy.transpose(array(vectors)))
+            [u, d, vt] = numpy.linalg.svd(numpy.transpose(numpy.array(vectors)))
             S = d[:self._svd_dimensions] * \
                 numpy.identity(self._svd_dimensions, numpy.Float64)
             T = u[:,:self._svd_dimensions]
