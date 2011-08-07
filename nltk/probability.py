@@ -1827,7 +1827,7 @@ class ConditionalFreqDist(object):
                 ylabel = "Counts"
                 legend_loc = 'upper right'
             # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
-            kwargs['label'] = condition
+            kwargs['label'] = str(condition)
             pylab.plot(freqs, *args, **kwargs) 
 
         pylab.legend(loc=legend_loc)
