@@ -337,28 +337,27 @@ class TimitCorpusReader(CorpusReader):
 
         w = wave.open(self.open(utterance+'.wav'), 'rb')
         
-        # If they want the whole thing, return it as-is.
-        if start==0 and end is None:
-            return w.read()
+        if end is None:
+            end = w.getnframes()
 
-        # Select the piece we want using the 'wave' module.
-        else:
-            # Skip past frames before start.
-            w.readframes(start)
-            # Read the frames we want.
-            frames = w.readframes(end-start)
-            # Open a new temporary file -- the wave module requires
-            # an actual file, and won't work w/ stringio. :(
-            tf = tempfile.TemporaryFile()
-            out = wave.open(tf, 'w')
-            # Write the parameters & data to the new file.
-            out.setparams(w.getparams())
-            out.writeframes(frames)
-            out.close()
-            # Read the data back from the file, and return it.  The
-            # file will automatically be deleted when we return.
-            tf.seek(0)
-            return tf.read()
+        # Skip past frames before start, then read the frames we want
+        w.readframes(start)
+        frames = w.readframes(end-start)
+
+        # Open a new temporary file -- the wave module requires
+        # an actual file, and won't work w/ stringio. :(
+        tf = tempfile.TemporaryFile()
+        out = wave.open(tf, 'w')
+
+        # Write the parameters & data to the new file.
+        out.setparams(w.getparams())
+        out.writeframes(frames)
+        out.close()
+
+        # Read the data back from the file, and return it.  The
+        # file will automatically be deleted when we return.
+        tf.seek(0)
+        return tf.read()
 
     def audiodata(self, utterance, start=0, end=None):
         assert(end is None or end > start)
