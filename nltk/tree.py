@@ -1306,9 +1306,9 @@ def _child_names(tree):
     
 def bracket_parse(s):
     """
-    Use Tree.parse(s, remove_top_empty_bracketing=True) instead.
+    Use Tree.parse(s, remove_empty_top_bracketing=True) instead.
     """
-    raise NameError("Use Tree.parse(s, remove_top_empty_bracketing=True) instead.")
+    raise NameError("Use Tree.parse(s, remove_empty_top_bracketing=True) instead.")
 
 def sinica_parse(s):
     """
@@ -1335,7 +1335,7 @@ def sinica_parse(s):
             tokens[i] = ''
 
     treebank_string = string.join(tokens)
-    return bracket_parse(treebank_string)
+    return Tree.parse(treebank_string, remove_empty_top_bracketing=True)
 
 #    s = re.sub(r'^#[^\s]*\s', '', s)  # remove leading identifier
 #    s = re.sub(r'\w+:', '', s)       # remove role tags
@@ -1375,10 +1375,10 @@ def demo():
 
     # Demonstrate tree modification.
     the_cat = t[0]
-    the_cat.insert(1, tree.bracket_parse('(JJ big)'))
+    the_cat.insert(1, tree.Tree.parse('(JJ big)'))
     print "Tree modification:"
     print t
-    t[1,1,1] = tree.bracket_parse('(NN cake)')
+    t[1,1,1] = tree.Tree.parse('(NN cake)')
     print t
     print
 
@@ -1398,7 +1398,7 @@ def demo():
     print
 
     # Demonstrate parsing of treebank output format.
-    t = tree.bracket_parse(t.pprint())
+    t = tree.Tree.parse(t.pprint())
     print "Convert tree to bracketed string and back again:"
     print t
     print
