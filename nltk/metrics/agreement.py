@@ -52,7 +52,10 @@ Expected results from the Artstein and Poesio survey paper:
 """
 
 import logging
+from itertools import groupby
+from operator import itemgetter
 from distance import *
+from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
 
 class AnnotationTask:
@@ -97,12 +100,13 @@ class AnnotationTask:
             self.I.add(item)
             self.data.append({'coder':coder, 'labels':labels, 'item':item})
 
-    def agr(self, cA, cB, i):
+    def agr(self, cA, cB, i, data=None):
         """Agreement between two coders on a given item
 
         """
-        kA = filter(lambda x:x['coder']==cA and x['item']==i, self.data)[0]
-        kB = filter(lambda x:x['coder']==cB and x['item']==i, self.data)[0]
+        data = data or self.data
+        kA = (x for x in data if x['coder']==cA and x['item']==i).next()
+        kB = (x for x in data if x['coder']==cB and x['item']==i).next()
         ret = 1.0 - float(self.distance(kA['labels'], kB['labels']))
         logging.debug("Observed agreement between %s and %s on %s: %f",
                       cA, cB, i, ret)
@@ -135,11 +139,16 @@ class AnnotationTask:
         logging.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
         return ret
 
+    def _grouped_data(self, field, data=None):
+        data = data or self.data
+        return groupby(sorted(data, key=itemgetter(field)), itemgetter(field))
+
     def Ao(self, cA, cB):
         """Observed agreement between two coders on all items.
 
         """
-        ret = float(sum(map(lambda x:self.agr(cA, cB, x), self.I))) / float(len(self.I))
+        data = self._grouped_data('item', (x for x in self.data if x['coder'] in (cA, cB)))
+        ret = float(sum(self.agr(cA, cB, item, item_data) for item, item_data in data)) / float(len(self.I))
         logging.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
         return ret
 
@@ -159,7 +168,6 @@ class AnnotationTask:
         logging.debug("Average observed agreement: %f", ret)
         return ret
 
-    #TODO: VERY slow, speed this up!
     def Do_alpha(self):
         """The observed disagreement for the alpha coefficient.
 
@@ -167,10 +175,12 @@ class AnnotationTask:
         observed agreement.
         """
         total = 0.0
-        for i in self.I:
-            for j in self.K:
-                for l in self.K:
-                    total += float(self.Nik(i, j) * self.Nik(i, l)) * self.distance(l, j)
+        for i, itemdata in self._grouped_data('item'):
+            label_freqs = FreqDist(x['labels'] for x in itemdata)
+            
+            for j, nj in label_freqs.iteritems():
+                for l, nl in label_freqs.iteritems():
+                    total += float(nj * nl) * self.distance(l, j)
         ret = (1.0 / float((len(self.I) * len(self.C) * (len(self.C) - 1)))) * total
         logging.debug("Observed disagreement: %f", ret)
         return ret
@@ -180,9 +190,12 @@ class AnnotationTask:
 
         """
         total = 0.0
-        for i in self.I:
-            total += self.distance(filter(lambda x:x['coder']==cA and x['item']==i, self.data)[0]['labels'],
-                                   filter(lambda x:x['coder']==cB and x['item']==i, self.data)[0]['labels'])
+        data = (x for x in self.data if x['coder'] in (cA, cB))
+        for i, itemdata in self._grouped_data('item', data):
+            # we should have two items; distance doesn't care which comes first
+            total += self.distance(itemdata.next()['labels'],
+                    itemdata.next()['labels'])
+
         ret = total / (len(self.I) * max_distance)
         logging.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
         return ret
@@ -214,8 +227,9 @@ class AnnotationTask:
 
         """
         total = 0.0
-        for k in self.K:
-            total += self.Nk(k) ** 2
+        label_freqs = FreqDist(x['labels'] for x in self.data)
+        for k, f in label_freqs.iteritems():
+            total += f ** 2
         Ae = (1.0 / (4.0 * float(len(self.I) ** 2))) * total
         ret = (self.avg_Ao() - Ae) / (1 - Ae)
         return ret
@@ -228,8 +242,10 @@ class AnnotationTask:
 
         """
         Ae = 0.0
-        for k in self.K:
-            Ae += (float(self.Nck(cA, k)) / float(len(self.I))) * (float(self.Nck(cB, k)) / float(len(self.I)))
+        nitems = float(len(self.I))
+        label_freqs = ConditionalFreqDist((x['labels'], x['coder']) for x in self.data)
+        for k in label_freqs.conditions():
+            Ae += (label_freqs[k][cA] / nitems) * (label_freqs[k][cB] / nitems)
         ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
         logging.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
         logging.info("Kappa between %s and %s: %f", cA, cB, ret)
@@ -253,9 +269,12 @@ class AnnotationTask:
 
         """
         De = 0.0
+
+        label_freqs = FreqDist(x['labels'] for x in self.data)
         for j in self.K:
+            nj = label_freqs[j]
             for l in self.K:
-                De += float(self.Nk(j) * self.Nk(l)) * self.distance(j, l)
+                De += float(nj * label_freqs[l]) * self.distance(j, l)
         De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
         logging.debug("Expected disagreement: %f", De)
         ret = 1.0 - (self.Do_alpha() / De)
@@ -266,9 +285,12 @@ class AnnotationTask:
 
         """
         total = 0.0
+        label_freqs = ConditionalFreqDist((x['coder'], x['labels'])
+                for x in self.data
+                if x['coder'] in (cA, cB))
         for j in self.K:
             for l in self.K:
-                total += self.Nck(cA, j) * self.Nck(cB, l) * self.distance(j, l)
+                total += label_freqs[cA][j] * label_freqs[cB][j] * self.distance(j, l)
         De = total / (max_distance * pow(len(self.I), 2))
         logging.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
         Do = self.Do_Kw_pairwise(cA, cB)
