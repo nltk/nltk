@@ -58,6 +58,8 @@ from distance import *
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
 
+log = logging.getLogger(__file__)
+
 class AnnotationTask:
     """Represents an annotation task, i.e. people assign labels to items.
     
@@ -108,9 +110,9 @@ class AnnotationTask:
         kA = (x for x in data if x['coder']==cA and x['item']==i).next()
         kB = (x for x in data if x['coder']==cB and x['item']==i).next()
         ret = 1.0 - float(self.distance(kA['labels'], kB['labels']))
-        logging.debug("Observed agreement between %s and %s on %s: %f",
+        log.debug("Observed agreement between %s and %s on %s: %f",
                       cA, cB, i, ret)
-        logging.debug("Distance between \"%r\" and \"%r\": %f",
+        log.debug("Distance between \"%r\" and \"%r\": %f",
                       kA['labels'], kB['labels'], 1.0 - ret)
         return ret
 
@@ -136,7 +138,7 @@ class AnnotationTask:
             ret = self.Nck(c, k)
         else:
             raise ValueError("You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c))
-        logging.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
+        log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
         return ret
 
     def _grouped_data(self, field, data=None):
@@ -149,7 +151,7 @@ class AnnotationTask:
         """
         data = self._grouped_data('item', (x for x in self.data if x['coder'] in (cA, cB)))
         ret = float(sum(self.agr(cA, cB, item, item_data) for item, item_data in data)) / float(len(self.I))
-        logging.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
+        log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
         return ret
 
     def avg_Ao(self):
@@ -165,7 +167,7 @@ class AnnotationTask:
                 total += self.Ao(cA, cB)
                 counter += 1.0
         ret = total / counter
-        logging.debug("Average observed agreement: %f", ret)
+        log.debug("Average observed agreement: %f", ret)
         return ret
 
     def Do_alpha(self):
@@ -182,7 +184,7 @@ class AnnotationTask:
                 for l, nl in label_freqs.iteritems():
                     total += float(nj * nl) * self.distance(l, j)
         ret = (1.0 / float((len(self.I) * len(self.C) * (len(self.C) - 1)))) * total
-        logging.debug("Observed disagreement: %f", ret)
+        log.debug("Observed disagreement: %f", ret)
         return ret
 
     def Do_Kw_pairwise(self,cA,cB,max_distance=1.0):
@@ -197,7 +199,7 @@ class AnnotationTask:
                     itemdata.next()['labels'])
 
         ret = total / (len(self.I) * max_distance)
-        logging.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
+        log.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
         return ret
 
     def Do_Kw(self, max_distance=1.0):
@@ -210,7 +212,7 @@ class AnnotationTask:
                 if (not frozenset([cA,cB]) in vals.keys() and not cA == cB):
                     vals[frozenset([cA, cB])] = self.Do_Kw_pairwise(cA, cB, max_distance)
         ret = sum(vals.values()) / len(vals)
-        logging.debug("Observed disagreement: %f", ret)
+        log.debug("Observed disagreement: %f", ret)
         return ret
 
     # Agreement Coefficients
@@ -247,8 +249,7 @@ class AnnotationTask:
         for k in label_freqs.conditions():
             Ae += (label_freqs[k][cA] / nitems) * (label_freqs[k][cB] / nitems)
         ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
-        logging.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
-        logging.info("Kappa between %s and %s: %f", cA, cB, ret)
+        log.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
         return ret
 
     def kappa(self):
@@ -276,7 +277,7 @@ class AnnotationTask:
             for l in self.K:
                 De += float(nj * label_freqs[l]) * self.distance(j, l)
         De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
-        logging.debug("Expected disagreement: %f", De)
+        log.debug("Expected disagreement: %f", De)
         ret = 1.0 - (self.Do_alpha() / De)
         return ret
 
@@ -290,12 +291,11 @@ class AnnotationTask:
                 if x['coder'] in (cA, cB))
         for j in self.K:
             for l in self.K:
-                total += label_freqs[cA][j] * label_freqs[cB][j] * self.distance(j, l)
+                total += label_freqs[cA][j] * label_freqs[cB][l] * self.distance(j, l)
         De = total / (max_distance * pow(len(self.I), 2))
-        logging.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
+        log.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
         Do = self.Do_Kw_pairwise(cA, cB)
         ret = 1.0 - (Do / De)
-        logging.warning("Weighted kappa between %s and %s: %f", cA, cB, ret)
         return ret
 
     def weighted_kappa(self):
