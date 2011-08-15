@@ -53,6 +53,7 @@ Expected results from the Artstein and Poesio survey paper:
 
 import logging
 from distance import *
+from nltk.internals import deprecated
 
 class AnnotationTask:
     """Represents an annotation task, i.e. people assign labels to items.
@@ -105,24 +106,34 @@ class AnnotationTask:
         ret = 1.0 - float(self.distance(kA['labels'], kB['labels']))
         logging.debug("Observed agreement between %s and %s on %s: %f",
                       cA, cB, i, ret)
-        logging.debug("Distance between \"%s\" and \"%s\": %f",
-                      ",".join(kA['labels']), ",".join(kB['labels']), 1.0 - ret)
+        logging.debug("Distance between \"%r\" and \"%r\": %f",
+                      kA['labels'], kB['labels'], 1.0 - ret)
         return ret
 
+    def Nk(self, k):
+        return float(sum(1 for x in self.data if x['labels'] == k))
+
+    def Nik(self, i, k):
+        return float(sum(1 for x in self.data if x['item'] == i and x['labels'] == k))
+
+    def Nck(self, c, k):
+        return float(sum(1 for x in self.data if x['coder'] == c and x['labels'] == k))
+
+    @deprecated('Use Nk, Nik or Nck instead')
     def N(self, k=None, i=None, c=None):
         """Implements the "n-notation" used in Artstein and Poesio (2007)
 
         """
-        if k != None and i == None and c == None:
-            ret = len(filter(lambda x:k == x['labels'], self.data))
-        elif k != None and i != None and c == None:
-            ret = len(filter(lambda x:k == x['labels'] and i == x['item'], self.data))
-        elif k != None and c != None and i==None:
-            ret = len(filter(lambda x:k == x['labels'] and c == x['coder'], self.data))
+        if k is not None and i is None and c is None:
+            ret = self.Nk(k)
+        elif k is not None and i is not None and c is None:
+            ret = self.Nik(i, k)
+        elif k is not None and c is not None and i is None:
+            ret = self.Nck(c, k)
         else:
-            print "You must pass either i or c, not both!"
+            raise ValueError("You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c))
         logging.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
-        return float(ret)
+        return ret
 
     def Ao(self, cA, cB):
         """Observed agreement between two coders on all items.
@@ -159,7 +170,7 @@ class AnnotationTask:
         for i in self.I:
             for j in self.K:
                 for l in self.K:
-                    total += float(self.N(i = i, k = j) * self.N(i = i, k = l)) * self.distance(l, j)
+                    total += float(self.Nik(i, j) * self.Nik(i, l)) * self.distance(l, j)
         ret = (1.0 / float((len(self.I) * len(self.C) * (len(self.C) - 1)))) * total
         logging.debug("Observed disagreement: %f", ret)
         return ret
@@ -204,7 +215,7 @@ class AnnotationTask:
         """
         total = 0.0
         for k in self.K:
-            total += self.N(k=k) ** 2
+            total += self.Nk(k) ** 2
         Ae = (1.0 / (4.0 * float(len(self.I) ** 2))) * total
         ret = (self.avg_Ao() - Ae) / (1 - Ae)
         return ret
@@ -218,7 +229,7 @@ class AnnotationTask:
         """
         Ae = 0.0
         for k in self.K:
-            Ae += (float(self.N(c=cA, k=k)) / float(len(self.I))) * (float(self.N(c=cB, k=k)) / float(len(self.I)))
+            Ae += (float(self.Nck(cA, k)) / float(len(self.I))) * (float(self.Nck(cB, k)) / float(len(self.I)))
         ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
         logging.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
         logging.info("Kappa between %s and %s: %f", cA, cB, ret)
@@ -244,7 +255,7 @@ class AnnotationTask:
         De = 0.0
         for j in self.K:
             for l in self.K:
-                De += float(self.N(k=j) * self.N(k=l)) * self.distance(j, l)
+                De += float(self.Nk(j) * self.Nk(l)) * self.distance(j, l)
         De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
         logging.debug("Expected disagreement: %f", De)
         ret = 1.0 - (self.Do_alpha() / De)
@@ -257,7 +268,7 @@ class AnnotationTask:
         total = 0.0
         for j in self.K:
             for l in self.K:
-                total += self.N(c=cA, k=j) * self.N(c=cB, k=l) * self.distance(j, l)
+                total += self.Nck(cA, j) * self.Nck(cB, l) * self.distance(j, l)
         De = total / (max_distance * pow(len(self.I), 2))
         logging.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
         Do = self.Do_Kw_pairwise(cA, cB)
