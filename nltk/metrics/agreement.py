@@ -154,19 +154,26 @@ class AnnotationTask:
         log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
         return ret
 
+    def _pairwise_average(self, function):
+        """
+        Calculates the average of function results for each coder pair
+        """
+        total = 0
+        n = 0
+        s = self.C.copy()
+        for cA in self.C:
+            s.remove(cA)
+            for cB in s:
+                total += function(cA, cB)
+                n += 1
+        ret = total / n
+        return ret
+
     def avg_Ao(self):
         """Average observed agreement across all coders and items.
 
         """
-        s = self.C.copy()
-        counter = 0.0
-        total = 0.0
-        for cA in self.C:
-            s.remove(cA)
-            for cB in s:
-                total += self.Ao(cA, cB)
-                counter += 1.0
-        ret = total / counter
+        ret = self._pairwise_average(self.Ao)
         log.debug("Average observed agreement: %f", ret)
         return ret
 
@@ -206,12 +213,7 @@ class AnnotationTask:
         """Averaged over all labelers
         
         """
-        vals = {}
-        for cA in self.C:
-            for cB in self.C:
-                if (not frozenset([cA,cB]) in vals.keys() and not cA == cB):
-                    vals[frozenset([cA, cB])] = self.Do_Kw_pairwise(cA, cB, max_distance)
-        ret = sum(vals.values()) / len(vals)
+        ret = self._pairwise_average(lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance))
         log.debug("Observed disagreement: %f", ret)
         return ret
 
@@ -225,45 +227,48 @@ class AnnotationTask:
         return ret
 
     def pi(self):
-        """Scott 1955
+        """Scott 1955; here, multi-pi.
+        Equivalent to K from Siegel and Castellan (1988).
 
         """
         total = 0.0
         label_freqs = FreqDist(x['labels'] for x in self.data)
         for k, f in label_freqs.iteritems():
             total += f ** 2
-        Ae = (1.0 / (4.0 * float(len(self.I) ** 2))) * total
-        ret = (self.avg_Ao() - Ae) / (1 - Ae)
-        return ret
+        Ae = total / float((len(self.I) * len(self.C)) ** 2)
+        return (self.avg_Ao() - Ae) / (1 - Ae)
 
-    def pi_avg(self):
-        pass
-
-    def kappa_pairwise(self, cA, cB):
-        """
-
-        """
+    def Ae_kappa(self, cA, cB):
         Ae = 0.0
         nitems = float(len(self.I))
         label_freqs = ConditionalFreqDist((x['labels'], x['coder']) for x in self.data)
         for k in label_freqs.conditions():
             Ae += (label_freqs[k][cA] / nitems) * (label_freqs[k][cB] / nitems)
+        return Ae
+
+    def kappa_pairwise(self, cA, cB):
+        """
+
+        """
+        Ae = self.Ae_kappa(cA, cB)
         ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
         log.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
         return ret
 
     def kappa(self):
         """Cohen 1960
+        Averages naively over kappas for each coder pair.
 
         """
-        vals = {}
-        for a in self.C:
-            for b in self.C:
-                if a == b or "%s%s" % (b, a) in vals:
-                    continue
-                vals["%s%s" % (a, b)] = self.kappa_pairwise(a, b)
-        ret = sum(vals.values()) / float(len(vals))
-        return ret
+        return self._pairwise_average(self.kappa_pairwise)
+
+    def multi_kappa(self):
+        """Davies and Fleiss 1982
+        Averages over observed and expected agreements for each coder pair.
+
+        """
+        Ae = self._pairwise_average(self.Ae_kappa)
+        return (self.avg_Ao() - Ae) / (1.0 - Ae)
 
     def alpha(self):
         """Krippendorff 1980
@@ -298,18 +303,11 @@ class AnnotationTask:
         ret = 1.0 - (Do / De)
         return ret
 
-    def weighted_kappa(self):
+    def weighted_kappa(self, max_distance=1.0):
         """Cohen 1968
 
         """
-        vals = {}
-        for a in self.C:
-            for b in self.C:
-                if a == b or frozenset([a, b]) in vals:
-                    continue
-                vals[frozenset([a, b])] = self.weighted_kappa_pairwise(a, b)
-        ret = sum(vals.values()) / float(len(vals))
-        return ret
+        return self._pairwise_average(lambda cA, cB: self.weighted_kappa_pairwise(cA, cB, max_distance))
 
 
 if __name__ == '__main__':
