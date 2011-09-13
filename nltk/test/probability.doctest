@@ -85,7 +85,7 @@ And now we can test the estimators
 
     >>> def train_and_test(est):
     ...     hmm = trainer.train_supervised(train_corpus, estimator=est)
-    ...     print '%.2f%%' % (100 * nltk.tag.accuracy(hmm, test_corpus))
+    ...     print '%.2f%%' % (100 * hmm.evaluate(test_corpus))
 
 Maximum Likelihood Estimation
 - this resulted in an initialization error before r7209
