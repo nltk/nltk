@@ -256,7 +256,7 @@ def demo():
     """  
       
     from nltk.draw.tree import draw_trees
-    from nltk import treetransforms, bracket_parse
+    from nltk import tree, treetransforms
     from copy import deepcopy
     
     # original tree from WSJ bracketed text
@@ -276,10 +276,10 @@ def demo():
     (NP (DT the) (NN yuppie) (NNS dealers))
     (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right))))
     (. .)))"""
-    tree = bracket_parse(sentence)
+    t = tree.Tree.parse(sentence, remove_empty_top_bracketing=True)
     
     # collapse subtrees with only one child
-    collapsedTree = deepcopy(tree)
+    collapsedTree = deepcopy(t)
     treetransforms.collapse_unary(collapsedTree)
     
     # convert the tree to CNF
@@ -300,7 +300,7 @@ def demo():
     print(sentence2)
     print(("Sentences the same? ", sentence == sentence2))
     
-    draw_trees(tree, collapsedTree, cnfTree, parentTree, original)
+    draw_trees(t, collapsedTree, cnfTree, parentTree, original)
 
 if __name__ == '__main__':
     demo()

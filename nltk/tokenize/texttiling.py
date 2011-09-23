@@ -124,6 +124,9 @@ class TextTilingTokenizer(TokenizerI):
             segmented_text.append(text[prevb:b])
             prevb = b  
 
+        if prevb < text_length: # append any text that may be remaining
+            segmented_text.append(text[prevb:])
+
         if not segmented_text:
             segmented_text = [text]
 

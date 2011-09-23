@@ -1426,7 +1426,7 @@ calculation:
     >>> lengths = map(len, nltk.corpus.brown.sents(categories='news'))
     >>> sum(lengths) / len(lengths)
     21.7508111616
-    >>> lengths = [len(w) for w in nltk.corpus.brown.sents(categories='news'))]
+    >>> lengths = [len(w) for w in nltk.corpus.brown.sents(categories='news')]
     >>> sum(lengths) / len(lengths)
     21.7508111616
 
@@ -2012,7 +2012,7 @@ store the intended value (in this case, the word `dog`:lx:).
        else:
            trie['value'] = value
 
-   >>> trie = nltk.defaultdict(dict)
+   >>> trie = {}
    >>> insert(trie, 'chat', 'cat')
    >>> insert(trie, 'chien', 'dog')
    >>> insert(trie, 'chair', 'flesh')
@@ -2111,7 +2111,7 @@ item which has a 50% chance of being in the vocabulary vocab-statement_.
     >>> vocab_size = 100000
     >>> setup_list = "import random; vocab = range(%d)" % vocab_size # [_vocab-list]
     >>> setup_set = "import random; vocab = set(range(%d))" % vocab_size # [_vocab-set]
-    >>> statement = "random.randint(0, %d) in vocab" % vocab_size * 2 # [_vocab-statement]
+    >>> statement = "random.randint(0, %d) in vocab" % (vocab_size * 2) # [_vocab-statement]
     >>> print Timer(statement, setup_list).timeit(1000)
     2.78092288971
     >>> print Timer(statement, setup_set).timeit(1000)
@@ -2688,7 +2688,7 @@ Exercises
 #. |soso| Write a list comprehension that sorts a list of WordNet synsets for
    proximity to a given synset.  For example, given the synsets
    ``minke_whale.n.01``, ``orca.n.01``, ``novel.n.01``, and ``tortoise.n.01``,
-   sort them according to their ``path_distance()`` from ``right_whale.n.01``.
+   sort them according to their ``shortest_path_distance()`` from ``right_whale.n.01``.
 
 #. |soso| Write a function that takes a list of words (containing duplicates) and
    returns a list of words (with no duplicates) sorted by decreasing frequency.

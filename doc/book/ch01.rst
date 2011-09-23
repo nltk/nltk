@@ -1600,8 +1600,8 @@ refers to paintings and not to thieves.  In the second case, the machine should
 be able to translate the text into another language, accurately
 conveying the meaning of the original text.  In translating the example text into French,
 we are forced to choose the gender of the pronoun in the second sentence:
-`ils`:lx: (masculine) if the thieves are sold, and `elles`:lx: (feminine) if
-the paintings are sold.  Correct translation actually depends on correct understanding of
+`ils`:lx: (masculine) if the thieves are found, and `elles`:lx: (feminine) if
+the paintings are found.  Correct translation actually depends on correct understanding of
 the pronoun.
 
 .. _ex-mt-application:

@@ -728,7 +728,7 @@ class MLEProbDist(ProbDistI):
     each sample as the frequency of that sample in the frequency
     distribution.
     """
-    def __init__(self, freqdist):
+    def __init__(self, freqdist, bins=None):
         """
         Use the maximum likelihood estimate to create a probability
         distribution for the experiment used to generate C{freqdist}.
@@ -1828,7 +1828,7 @@ class ConditionalFreqDist(object):
                 ylabel = "Counts"
                 legend_loc = 'upper right'
             # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
-            kwargs['label'] = condition
+            kwargs['label'] = str(condition)
             pylab.plot(freqs, *args, **kwargs) 
 
         pylab.legend(loc=legend_loc)

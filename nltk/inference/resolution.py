@@ -10,6 +10,7 @@ from nltk.compat import defaultdict
 from nltk.sem.logic import *
 from nltk.sem.util import skolemize
 from .api import Prover, BaseProverCommand
+from functools import reduce
 
 """
 Module for a resolution-based First Order theorem prover.

@@ -40,14 +40,14 @@ class NEChunkParserTagger(nltk.tag.ClassifierBasedTagger):
         if index == 0:
             prevword = prevprevword = None
             prevpos = prevprevpos = None
-            prevtag = prevprevtag = None
+            prevshape = prevtag = prevprevtag = None
         elif index == 1:
             prevword = tokens[index-1][0].lower()
             prevprevword = None
             prevpos = simplify_pos(tokens[index-1][1])
             prevprevpos = None
             prevtag = history[index-1][0]
-            prevprevtag = None
+            prevshape = prevprevtag = None
         else:
             prevword = tokens[index-1][0].lower()
             prevprevword = tokens[index-2][0].lower()
@@ -55,6 +55,7 @@ class NEChunkParserTagger(nltk.tag.ClassifierBasedTagger):
             prevprevpos = simplify_pos(tokens[index-2][1])
             prevtag = history[index-1]
             prevprevtag = history[index-2]
+            prevshape = shape(prevword)
         if index == len(tokens)-1:
             nextword = nextnextword = None
             nextpos = nextnextpos = None
@@ -86,7 +87,7 @@ class NEChunkParserTagger(nltk.tag.ClassifierBasedTagger):
             'nextword': nextword,
             'word+nextpos': '%s+%s' % (word.lower(), nextpos),
             'pos+prevtag': '%s+%s' % (pos, prevtag),
-            'shape+prevtag': '%s+%s' % (shape, prevtag),
+            'shape+prevtag': '%s+%s' % (prevshape, prevtag),
             }
         
         return features

@@ -1790,9 +1790,9 @@ def demo():
     ic = wnic.ic('ic-semcor.dat')
     print((S('dog.n.01').lin_similarity(S('cat.n.01'), ic)))
 
-    print(S('code.n.03').topic_domains())
-    print(S('pukka.a.01').region_domains())
-    print(S('freaky.a.01').usage_domains())
+    print((S('code.n.03').topic_domains()))
+    print((S('pukka.a.01').region_domains()))
+    print((S('freaky.a.01').usage_domains()))
 
 if __name__ == '__main__':
     demo()

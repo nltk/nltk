@@ -52,7 +52,13 @@ Expected results from the Artstein and Poesio survey paper:
 """
 
 import logging
+from itertools import groupby
+from operator import itemgetter
 from .distance import *
+from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk.internals import deprecated
+
+log = logging.getLogger(__file__)
 
 class AnnotationTask:
     """Represents an annotation task, i.e. people assign labels to items.
@@ -96,59 +102,81 @@ class AnnotationTask:
             self.I.add(item)
             self.data.append({'coder':coder, 'labels':labels, 'item':item})
 
-    def agr(self, cA, cB, i):
+    def agr(self, cA, cB, i, data=None):
         """Agreement between two coders on a given item
 
         """
-        kA = filter(lambda x:x['coder']==cA and x['item']==i, self.data)[0]
-        kB = filter(lambda x:x['coder']==cB and x['item']==i, self.data)[0]
+        data = data or self.data
+        kA = next((x for x in data if x['coder']==cA and x['item']==i))
+        kB = next((x for x in data if x['coder']==cB and x['item']==i))
         ret = 1.0 - float(self.distance(kA['labels'], kB['labels']))
-        logging.debug("Observed agreement between %s and %s on %s: %f",
+        log.debug("Observed agreement between %s and %s on %s: %f",
                       cA, cB, i, ret)
-        logging.debug("Distance between \"%s\" and \"%s\": %f",
-                      ",".join(kA['labels']), ",".join(kB['labels']), 1.0 - ret)
+        log.debug("Distance between \"%r\" and \"%r\": %f",
+                      kA['labels'], kB['labels'], 1.0 - ret)
         return ret
 
+    def Nk(self, k):
+        return float(sum(1 for x in self.data if x['labels'] == k))
+
+    def Nik(self, i, k):
+        return float(sum(1 for x in self.data if x['item'] == i and x['labels'] == k))
+
+    def Nck(self, c, k):
+        return float(sum(1 for x in self.data if x['coder'] == c and x['labels'] == k))
+
+    @deprecated('Use Nk, Nik or Nck instead')
     def N(self, k=None, i=None, c=None):
         """Implements the "n-notation" used in Artstein and Poesio (2007)
 
         """
-        if k != None and i == None and c == None:
-            ret = len([x for x in self.data if k == x['labels']])
-        elif k != None and i != None and c == None:
-            ret = len([x for x in self.data if k == x['labels'] and i == x['item']])
-        elif k != None and c != None and i==None:
-            ret = len([x for x in self.data if k == x['labels'] and c == x['coder']])
+        if k is not None and i is None and c is None:
+            ret = self.Nk(k)
+        elif k is not None and i is not None and c is None:
+            ret = self.Nik(i, k)
+        elif k is not None and c is not None and i is None:
+            ret = self.Nck(c, k)
         else:
-            print("You must pass either i or c, not both!")
-        logging.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
-        return float(ret)
+            raise ValueError("You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c))
+        log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
+        return ret
+
+    def _grouped_data(self, field, data=None):
+        data = data or self.data
+        return groupby(sorted(data, key=itemgetter(field)), itemgetter(field))
 
     def Ao(self, cA, cB):
         """Observed agreement between two coders on all items.
 
         """
-        ret = float(sum([self.agr(cA, cB, x) for x in self.I])) / float(len(self.I))
-        logging.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
+        data = self._grouped_data('item', (x for x in self.data if x['coder'] in (cA, cB)))
+        ret = float(sum(self.agr(cA, cB, item, item_data) for item, item_data in data)) / float(len(self.I))
+        log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
+        return ret
+
+    def _pairwise_average(self, function):
+        """
+        Calculates the average of function results for each coder pair
+        """
+        total = 0
+        n = 0
+        s = self.C.copy()
+        for cA in self.C:
+            s.remove(cA)
+            for cB in s:
+                total += function(cA, cB)
+                n += 1
+        ret = total / n
         return ret
 
     def avg_Ao(self):
         """Average observed agreement across all coders and items.
 
         """
-        s = self.C.copy()
-        counter = 0.0
-        total = 0.0
-        for cA in self.C:
-            s.remove(cA)
-            for cB in s:
-                total += self.Ao(cA, cB)
-                counter += 1.0
-        ret = total / counter
-        logging.debug("Average observed agreement: %f", ret)
+        ret = self._pairwise_average(self.Ao)
+        log.debug("Average observed agreement: %f", ret)
         return ret
 
-    #TODO: VERY slow, speed this up!
     def Do_alpha(self):
         """The observed disagreement for the alpha coefficient.
 
@@ -156,12 +184,14 @@ class AnnotationTask:
         observed agreement.
         """
         total = 0.0
-        for i in self.I:
-            for j in self.K:
-                for l in self.K:
-                    total += float(self.N(i = i, k = j) * self.N(i = i, k = l)) * self.distance(l, j)
+        for i, itemdata in self._grouped_data('item'):
+            label_freqs = FreqDist(x['labels'] for x in itemdata)
+            
+            for j, nj in label_freqs.items():
+                for l, nl in label_freqs.items():
+                    total += float(nj * nl) * self.distance(l, j)
         ret = (1.0 / float((len(self.I) * len(self.C) * (len(self.C) - 1)))) * total
-        logging.debug("Observed disagreement: %f", ret)
+        log.debug("Observed disagreement: %f", ret)
         return ret
 
     def Do_Kw_pairwise(self,cA,cB,max_distance=1.0):
@@ -169,24 +199,22 @@ class AnnotationTask:
 
         """
         total = 0.0
-        for i in self.I:
-            total += self.distance(filter(lambda x:x['coder']==cA and x['item']==i, self.data)[0]['labels'],
-                                   filter(lambda x:x['coder']==cB and x['item']==i, self.data)[0]['labels'])
+        data = (x for x in self.data if x['coder'] in (cA, cB))
+        for i, itemdata in self._grouped_data('item', data):
+            # we should have two items; distance doesn't care which comes first
+            total += self.distance(itemdata.next()['labels'],
+                    itemdata.next()['labels'])
+
         ret = total / (len(self.I) * max_distance)
-        logging.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
+        log.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
         return ret
 
     def Do_Kw(self, max_distance=1.0):
         """Averaged over all labelers
         
         """
-        vals = {}
-        for cA in self.C:
-            for cB in self.C:
-                if (not frozenset([cA,cB]) in list(vals.keys()) and not cA == cB):
-                    vals[frozenset([cA, cB])] = self.Do_Kw_pairwise(cA, cB, max_distance)
-        ret = sum(vals.values()) / len(vals)
-        logging.debug("Observed disagreement: %f", ret)
+        ret = self._pairwise_average(lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance))
+        log.debug("Observed disagreement: %f", ret)
         return ret
 
     # Agreement Coefficients
@@ -199,54 +227,62 @@ class AnnotationTask:
         return ret
 
     def pi(self):
-        """Scott 1955
+        """Scott 1955; here, multi-pi.
+        Equivalent to K from Siegel and Castellan (1988).
 
         """
         total = 0.0
-        for k in self.K:
-            total += self.N(k=k) ** 2
-        Ae = (1.0 / (4.0 * float(len(self.I) ** 2))) * total
-        ret = (self.avg_Ao() - Ae) / (1 - Ae)
-        return ret
+        label_freqs = FreqDist(x['labels'] for x in self.data)
+        for k, f in label_freqs.items():
+            total += f ** 2
+        Ae = total / float((len(self.I) * len(self.C)) ** 2)
+        return (self.avg_Ao() - Ae) / (1 - Ae)
 
-    def pi_avg(self):
-        pass
+    def Ae_kappa(self, cA, cB):
+        Ae = 0.0
+        nitems = float(len(self.I))
+        label_freqs = ConditionalFreqDist((x['labels'], x['coder']) for x in self.data)
+        for k in label_freqs.conditions():
+            Ae += (label_freqs[k][cA] / nitems) * (label_freqs[k][cB] / nitems)
+        return Ae
 
     def kappa_pairwise(self, cA, cB):
         """
 
         """
-        Ae = 0.0
-        for k in self.K:
-            Ae += (float(self.N(c=cA, k=k)) / float(len(self.I))) * (float(self.N(c=cB, k=k)) / float(len(self.I)))
+        Ae = self.Ae_kappa(cA, cB)
         ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
-        logging.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
-        logging.info("Kappa between %s and %s: %f", cA, cB, ret)
+        log.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
         return ret
 
     def kappa(self):
         """Cohen 1960
+        Averages naively over kappas for each coder pair.
 
         """
-        vals = {}
-        for a in self.C:
-            for b in self.C:
-                if a == b or "%s%s" % (b, a) in vals:
-                    continue
-                vals["%s%s" % (a, b)] = self.kappa_pairwise(a, b)
-        ret = sum(vals.values()) / float(len(vals))
-        return ret
+        return self._pairwise_average(self.kappa_pairwise)
+
+    def multi_kappa(self):
+        """Davies and Fleiss 1982
+        Averages over observed and expected agreements for each coder pair.
+
+        """
+        Ae = self._pairwise_average(self.Ae_kappa)
+        return (self.avg_Ao() - Ae) / (1.0 - Ae)
 
     def alpha(self):
         """Krippendorff 1980
 
         """
         De = 0.0
+
+        label_freqs = FreqDist(x['labels'] for x in self.data)
         for j in self.K:
+            nj = label_freqs[j]
             for l in self.K:
-                De += float(self.N(k=j) * self.N(k=l)) * self.distance(j, l)
+                De += float(nj * label_freqs[l]) * self.distance(j, l)
         De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
-        logging.debug("Expected disagreement: %f", De)
+        log.debug("Expected disagreement: %f", De)
         ret = 1.0 - (self.Do_alpha() / De)
         return ret
 
@@ -255,28 +291,23 @@ class AnnotationTask:
 
         """
         total = 0.0
+        label_freqs = ConditionalFreqDist((x['coder'], x['labels'])
+                for x in self.data
+                if x['coder'] in (cA, cB))
         for j in self.K:
             for l in self.K:
-                total += self.N(c=cA, k=j) * self.N(c=cB, k=l) * self.distance(j, l)
+                total += label_freqs[cA][j] * label_freqs[cB][l] * self.distance(j, l)
         De = total / (max_distance * pow(len(self.I), 2))
-        logging.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
+        log.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
         Do = self.Do_Kw_pairwise(cA, cB)
         ret = 1.0 - (Do / De)
-        logging.warning("Weighted kappa between %s and %s: %f", cA, cB, ret)
         return ret
 
-    def weighted_kappa(self):
+    def weighted_kappa(self, max_distance=1.0):
         """Cohen 1968
 
         """
-        vals = {}
-        for a in self.C:
-            for b in self.C:
-                if a == b or frozenset([a, b]) in vals:
-                    continue
-                vals[frozenset([a, b])] = self.weighted_kappa_pairwise(a, b)
-        ret = sum(vals.values()) / float(len(vals))
-        return ret
+        return self._pairwise_average(lambda cA, cB: self.weighted_kappa_pairwise(cA, cB, max_distance))
 
 
 if __name__ == '__main__':

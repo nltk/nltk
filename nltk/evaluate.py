@@ -22,8 +22,8 @@ except ImportError:
 
 import nltk
 
-from util import LazyConcatenation, LazyMap, LazyZip
-from probability import FreqDist
+from .util import LazyConcatenation, LazyMap, LazyZip
+from .probability import FreqDist
 
 def demo():
     print(('-'*75))

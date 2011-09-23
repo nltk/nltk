@@ -203,6 +203,60 @@ class Trie:
                 return False
         return True
 
+    def _iter_values(self, curr_node=None):
+        if curr_node is None:
+            curr_node = self._root
+
+        if curr_node[0] is not None:
+            yield curr_node[0]
+
+        for key, node in curr_node[1].items():
+            for subchild in self._iter_values(node):
+                yield subchild
+
+    def _iter_items(self, curr_node=None, curr_key=''):
+        if curr_node is None:
+            curr_node = self._root
+
+        if curr_node[0] is not None:
+            yield curr_key, curr_node[0]
+
+        for key, node in curr_node[1].items():
+            for subchild in self._iter_items(node, curr_key + key):
+                yield subchild
+
+    def _iter_keys(self, curr_node=None, curr_key=''):
+        if curr_node is None:
+            curr_node = self._root
+
+        if curr_node[0] is not None:
+            yield curr_key
+
+        for key, node in curr_node[1].items():
+            for subchild in self._iter_keys(node, curr_key + key):
+                yield subchild
+
+    def __iter__(self):
+        return self._iter_keys()
+
+    def keys(self):
+        return list(self._iter_keys())
+
+    def items(self):
+        return list(self._iter_items())
+
+    def values(self):
+        return list(self._iter_values())
+
+    def iterkeys(self):
+        return self._iter_keys()
+
+    def iteritems(self):
+        return self._iter_items()
+
+    def itervalues(self):
+        return self._iter_values()
+
     def __str__(self):
         return str(self._root)
 

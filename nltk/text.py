@@ -558,7 +558,7 @@ class TextCollection(Text):
     """    
     def __init__(self, source, name=None):
         if hasattr(source, 'words'): # bridge to the text corpus reader
-            source = [source.words(f) for f in source.files()]
+            source = [source.words(f) for f in source.fileids()]
 
         self._texts = source
         Text.__init__(self, LazyConcatenation(source))
