@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.cluster &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="index.html" />
+    <link rel="up" title="API Documentation" href="api.html" />
+    <link rel="next" title="nltk.draw" href="draw.html" />
+    <link rel="prev" title="nltk.reader" href="reader.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="draw.html" title="nltk.draw"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="reader.html" title="nltk.reader"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nltk.cluster">
+<span id="nltk-cluster"></span><h1>nltk.cluster<a class="headerlink" href="#module-nltk.cluster" title="Permalink to this headline">¶</a></h1>
+<p>This module contains a number of basic clustering algorithms. Clustering
+describes the task of discovering groups of similar items with a large
+collection. It is also describe as unsupervised machine learning, as the data
+from which it learns is unannotated with class information, as is the case for
+supervised learning.  Annotated data is difficult and expensive to obtain in
+the quantities required for the majority of supervised learning algorithms.
+This problem, the knowledge acquisition bottleneck, is common to most natural
+language processing tasks, thus fueling the need for quality unsupervised
+approaches.</p>
+<p>This module contains a k-means clusterer, E-M clusterer and a group average
+agglomerative clusterer (GAAC). All these clusterers involve finding good
+cluster groupings for a set of vectors in multi-dimensional space.</p>
+<p>The K-means clusterer starts with k arbitrary chosen means then allocates each
+vector to the cluster with the closest mean. It then recalculates the means of
+each cluster as the centroid of the vectors in the cluster. This process
+repeats until the cluster memberships stabilise. This is a hill-climbing
+algorithm which may converge to a local maximum. Hence the clustering is
+often repeated with random initial means and the most commonly occurring
+output means are chosen.</p>
+<p>The GAAC clusterer starts with each of the M{N} vectors as singleton clusters.
+It then iteratively merges pairs of clusters which have the closest centroids.
+This continues until there is only one cluster. The order of merges gives rise
+to a dendrogram - a tree with the earlier merges lower than later merges. The
+membership of a given number of clusters M{c}, M{1 &lt;= c &lt;= N}, can be found by
+cutting the dendrogram at depth M{c}.</p>
+<p>The Gaussian EM clusterer models the vectors as being produced by a mixture
+of k Gaussian sources. The parameters of these sources (prior probability,
+mean and covariance matrix) are then found to maximise the likelihood of the
+given data. This is done with the expectation maximisation algorithm. It
+starts with k arbitrarily chosen means, priors and covariance matrices. It
+then calculates the membership probabilities for each vector in each of the
+clusters - this is the &#8216;E&#8217; step. The cluster parameters are then updated in
+the &#8216;M&#8217; step using the maximum likelihood estimate from the cluster membership
+probabilities. This process continues until the likelihood of the data does
+not significantly increase.</p>
+<p>They all extend the ClusterI interface which defines common operations
+available with each clusterer. These operations include.</p>
+<blockquote>
+<div><ul class="simple">
+<li>cluster: clusters a sequence of vectors</li>
+<li>classify: assign a vector to a cluster</li>
+<li>classification_probdist: give the probability distribution over cluster memberships</li>
+</ul>
+</div></blockquote>
+<p>The current existing classifiers also extend cluster.VectorSpace, an
+abstract class which allows for singular value decomposition (SVD) and vector
+normalisation. SVD is used to reduce the dimensionality of the vector space in
+such a manner as to preserve as much of the variation as possible, by
+reparameterising the axes in order of variability and discarding all bar the
+first d dimensions. Normalisation ensures that vectors fall in the unit
+hypersphere.</p>
+<dl class="docutils">
+<dt>Usage example (see also demo())::</dt>
+<dd><p class="first">from nltk import cluster
+from nltk.cluster import euclidean_distance
+from numpy import array</p>
+<p>vectors = [array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0]]]</p>
+<p># initialise the clusterer (will also assign the vectors to clusters)
+clusterer = cluster.KMeansClusterer(2, euclidean_distance)
+clusterer.cluster(vectors, True)</p>
+<p class="last"># classify a new vector
+print clusterer.classify(array([3, 3]))</p>
+</dd>
+</dl>
+<p>Note that the vectors must use numpy array-like
+objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for
+efficiency when required.</p>
+<dl class="class">
+<dt id="nltk.cluster.KMeansClusterer">
+<em class="property">class </em><tt class="descclassname">nltk.cluster.</tt><tt class="descname">KMeansClusterer</tt><big>(</big><em>num_means</em>, <em>distance</em>, <em>repeats=1</em>, <em>conv_test=1e-06</em>, <em>initial_means=None</em>, <em>normalise=False</em>, <em>svd_dimensions=None</em>, <em>rng=None</em><big>)</big><a class="headerlink" href="#nltk.cluster.KMeansClusterer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The K-means clusterer starts with k arbitrary chosen means then allocates
+each vector to the cluster with the closest mean. It then recalculates the
+means of each cluster as the centroid of the vectors in the cluster. This
+process repeats until the cluster memberships stabilise. This is a
+hill-climbing algorithm which may converge to a local maximum. Hence the
+clustering is often repeated with random initial means and the most
+commonly occuring output means are chosen.</p>
+<dl class="method">
+<dt id="nltk.cluster.KMeansClusterer.means">
+<tt class="descname">means</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.cluster.KMeansClusterer.means" title="Permalink to this definition">¶</a></dt>
+<dd><p>The means used for clustering.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.cluster.GAAClusterer">
+<em class="property">class </em><tt class="descclassname">nltk.cluster.</tt><tt class="descname">GAAClusterer</tt><big>(</big><em>num_clusters=1</em>, <em>normalise=True</em>, <em>svd_dimensions=None</em><big>)</big><a class="headerlink" href="#nltk.cluster.GAAClusterer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Group Average Agglomerative starts with each of the N vectors as singleton
+clusters. It then iteratively merges pairs of clusters which have the
+closest centroids.  This continues until there is only one cluster. The
+order of merges gives rise to a dendrogram: a tree with the earlier merges
+lower than later merges. The membership of a given number of clusters c, 1
+&lt;= c &lt;= N, can be found by cutting the dendrogram at depth c.</p>
+<p>This clusterer uses the cosine similarity metric only, which allows for
+efficient speed-up in the clustering process.</p>
+<dl class="method">
+<dt id="nltk.cluster.GAAClusterer.dendrogram">
+<tt class="descname">dendrogram</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.cluster.GAAClusterer.dendrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The dendrogram representing the current clustering
+&#64;rtype:  Dendrogram</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.cluster.EMClusterer">
+<em class="property">class </em><tt class="descclassname">nltk.cluster.</tt><tt class="descname">EMClusterer</tt><big>(</big><em>initial_means</em>, <em>priors=None</em>, <em>covariance_matrices=None</em>, <em>conv_threshold=1e-06</em>, <em>bias=0.1</em>, <em>normalise=False</em>, <em>svd_dimensions=None</em><big>)</big><a class="headerlink" href="#nltk.cluster.EMClusterer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Gaussian EM clusterer models the vectors as being produced by
+a mixture of k Gaussian sources. The parameters of these sources
+(prior probability, mean and covariance matrix) are then found to
+maximise the likelihood of the given data. This is done with the
+expectation maximisation algorithm. It starts with k arbitrarily
+chosen means, priors and covariance matrices. It then calculates
+the membership probabilities for each vector in each of the
+clusters; this is the &#8216;E&#8217; step. The cluster parameters are then
+updated in the &#8216;M&#8217; step using the maximum likelihood estimate from
+the cluster membership probabilities. This process continues until
+the likelihood of the data does not significantly increase.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.cluster.VectorSpaceClusterer">
+<em class="property">class </em><tt class="descclassname">nltk.cluster.</tt><tt class="descname">VectorSpaceClusterer</tt><big>(</big><em>normalise=False</em>, <em>svd_dimensions=None</em><big>)</big><a class="headerlink" href="#nltk.cluster.VectorSpaceClusterer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract clusterer which takes tokens and maps them into a vector space.
+Optionally performs singular value decomposition to reduce the
+dimensionality.</p>
+<dl class="method">
+<dt id="nltk.cluster.VectorSpaceClusterer.classify_vectorspace">
+<tt class="descname">classify_vectorspace</tt><big>(</big><em>vector</em><big>)</big><a class="headerlink" href="#nltk.cluster.VectorSpaceClusterer.classify_vectorspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the appropriate cluster for the vector.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.cluster.VectorSpaceClusterer.cluster_vectorspace">
+<tt class="descname">cluster_vectorspace</tt><big>(</big><em>vectors</em>, <em>trace</em><big>)</big><a class="headerlink" href="#nltk.cluster.VectorSpaceClusterer.cluster_vectorspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the clusters using the given set of vectors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.cluster.VectorSpaceClusterer.likelihood_vectorspace">
+<tt class="descname">likelihood_vectorspace</tt><big>(</big><em>vector</em>, <em>cluster</em><big>)</big><a class="headerlink" href="#nltk.cluster.VectorSpaceClusterer.likelihood_vectorspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the likelihood of the vector belonging to the cluster.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.cluster.VectorSpaceClusterer.vector">
+<tt class="descname">vector</tt><big>(</big><em>vector</em><big>)</big><a class="headerlink" href="#nltk.cluster.VectorSpaceClusterer.vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the vector after normalisation and dimensionality reduction</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.cluster.Dendrogram">
+<em class="property">class </em><tt class="descclassname">nltk.cluster.</tt><tt class="descname">Dendrogram</tt><big>(</big><em>items=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#nltk.cluster.Dendrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a dendrogram, a tree with a specified branching order.  This
+must be initialised with the leaf items, then iteratively call merge for
+each branch. This class constructs a tree representing the order of calls
+to the merge function.</p>
+<dl class="method">
+<dt id="nltk.cluster.Dendrogram.groups">
+<tt class="descname">groups</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#nltk.cluster.Dendrogram.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the n-groups of items (leaves) reachable from a cut at depth n.
+&#64;param  n: number of groups
+&#64;type   n: int</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.cluster.Dendrogram.merge">
+<tt class="descname">merge</tt><big>(</big><em>*indices</em><big>)</big><a class="headerlink" href="#nltk.cluster.Dendrogram.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges nodes at given indices in the dendrogram. The nodes will be
+combined which then replaces the first node specified. All other nodes
+involved in the merge will be removed.</p>
+<p>&#64;param  indices: indices of the items to merge (at least two)
+&#64;type   indices: seq of int</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.cluster.Dendrogram.show">
+<tt class="descname">show</tt><big>(</big><em>leaf_labels=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#nltk.cluster.Dendrogram.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the dendrogram in ASCII art to standard out.
+&#64;param leaf_labels: an optional list of strings to use for labeling the leaves
+&#64;type leaf_labels: list</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="reader.html"
+                        title="previous chapter">nltk.reader</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="draw.html"
+                        title="next chapter">nltk.draw</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cluster.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="draw.html" title="nltk.draw"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="reader.html" title="nltk.reader"
+             >previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

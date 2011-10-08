@@ -1,0 +1,155 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.model &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="index.html" />
+    <link rel="up" title="API Documentation" href="api.html" />
+    <link rel="next" title="nltk.parse" href="parse.html" />
+    <link rel="prev" title="nltk.misc" href="misc.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parse.html" title="nltk.parse"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="misc.html" title="nltk.misc"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nltk.model">
+<span id="nltk-model"></span><h1>nltk.model<a class="headerlink" href="#module-nltk.model" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="nltk.model.NgramModel">
+<em class="property">class </em><tt class="descclassname">nltk.model.</tt><tt class="descname">NgramModel</tt><big>(</big><em>n</em>, <em>train</em>, <em>estimator=None</em><big>)</big><a class="headerlink" href="#nltk.model.NgramModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>A processing interface for assigning a probability to the next word.</p>
+<dl class="method">
+<dt id="nltk.model.NgramModel.choose_random_word">
+<tt class="descname">choose_random_word</tt><big>(</big><em>context</em><big>)</big><a class="headerlink" href="#nltk.model.NgramModel.choose_random_word" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly select a word that is likely to appear in this context.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.model.NgramModel.entropy">
+<tt class="descname">entropy</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#nltk.model.NgramModel.entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the total entropy of a text with respect to the model.
+This is the sum of the log probability of each word in the message.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.model.NgramModel.generate">
+<tt class="descname">generate</tt><big>(</big><em>num_words</em>, <em>context=()</em><big>)</big><a class="headerlink" href="#nltk.model.NgramModel.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate random text based on the language model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.model.NgramModel.logprob">
+<tt class="descname">logprob</tt><big>(</big><em>word</em>, <em>context</em><big>)</big><a class="headerlink" href="#nltk.model.NgramModel.logprob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the (negative) log probability of this word in this context.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.model.NgramModel.prob">
+<tt class="descname">prob</tt><big>(</big><em>word</em>, <em>context</em><big>)</big><a class="headerlink" href="#nltk.model.NgramModel.prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the probability of this word in this context.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="misc.html"
+                        title="previous chapter">nltk.misc</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="parse.html"
+                        title="next chapter">nltk.parse</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/model.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parse.html" title="nltk.parse"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="misc.html" title="nltk.misc"
+             >previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

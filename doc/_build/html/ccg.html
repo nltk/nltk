@@ -1,0 +1,210 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.ccg &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="index.html" />
+    <link rel="up" title="API Documentation" href="api.html" />
+    <link rel="next" title="nltk.classify" href="classify.html" />
+    <link rel="prev" title="nltk.chunk" href="chunk.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="classify.html" title="nltk.classify"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chunk.html" title="nltk.chunk"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nltk.ccg">
+<span id="nltk-ccg"></span><h1>nltk.ccg<a class="headerlink" href="#module-nltk.ccg" title="Permalink to this headline">¶</a></h1>
+<p>Combinatory Categorial Grammar.</p>
+<p>For more information see nltk/doc/contrib/ccg/ccg.pdf</p>
+<dl class="class">
+<dt id="nltk.ccg.UndirectedBinaryCombinator">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">UndirectedBinaryCombinator</tt><a class="headerlink" href="#nltk.ccg.UndirectedBinaryCombinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract class for representing a binary combinator.
+Merely defines functions for checking if the function and argument
+are able to be combined, and what the resulting category is.</p>
+<p>Note that as no assumptions are made as to direction, the unrestricted
+combinators can perform all backward, forward and crossed variations
+of the combinators; these restrictions must be added in the rule
+class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.DirectedBinaryCombinator">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">DirectedBinaryCombinator</tt><a class="headerlink" href="#nltk.ccg.DirectedBinaryCombinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for the undirected binary combinator.
+It takes left and right categories, and decides which is to be
+the function, and which the argument.
+It then decides whether or not they can be combined.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.ForwardCombinator">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">ForwardCombinator</tt><big>(</big><em>combinator</em>, <em>predicate</em>, <em>suffix=''</em><big>)</big><a class="headerlink" href="#nltk.ccg.ForwardCombinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing combinators where the primary functor is on the left.</p>
+<p>Takes an undirected combinator, and a predicate which adds constraints
+restricting the cases in which it may apply.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.BackwardCombinator">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">BackwardCombinator</tt><big>(</big><em>combinator</em>, <em>predicate</em>, <em>suffix=''</em><big>)</big><a class="headerlink" href="#nltk.ccg.BackwardCombinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The backward equivalent of the ForwardCombinator class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.UndirectedFunctionApplication">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">UndirectedFunctionApplication</tt><a class="headerlink" href="#nltk.ccg.UndirectedFunctionApplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing function application.
+Implements rules of the form:
+X/Y Y -&gt; X (&gt;)
+And the corresponding backwards application rule</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.UndirectedComposition">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">UndirectedComposition</tt><a class="headerlink" href="#nltk.ccg.UndirectedComposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Functional composition (harmonic) combinator.
+Implements rules of the form
+X/Y Y/Z -&gt; X/Z (B&gt;)
+And the corresponding backwards and crossed variations.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.UndirectedSubstitution">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">UndirectedSubstitution</tt><a class="headerlink" href="#nltk.ccg.UndirectedSubstitution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Substitution (permutation) combinator.
+Implements rules of the form
+Y/Z (XY)/Z -&gt; X/Z (&lt;Sx)
+And other variations.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.UndirectedTypeRaise">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">UndirectedTypeRaise</tt><a class="headerlink" href="#nltk.ccg.UndirectedTypeRaise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undirected combinator for type raising.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.CCGLexicon">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">CCGLexicon</tt><big>(</big><em>start</em>, <em>primitives</em>, <em>families</em>, <em>entries</em><big>)</big><a class="headerlink" href="#nltk.ccg.CCGLexicon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing a lexicon for CCG grammars.
+primitives - The list of primitive categories for the lexicon
+families - Families of categories
+entries - A mapping of words to possible categories</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.CCGLeafEdge">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">CCGLeafEdge</tt><big>(</big><em>pos</em>, <em>categ</em>, <em>leaf</em><big>)</big><a class="headerlink" href="#nltk.ccg.CCGLeafEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing leaf edges in a CCG derivation.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.ccg.CCGChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.ccg.</tt><tt class="descname">CCGChartParser</tt><big>(</big><em>lexicon</em>, <em>rules</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.ccg.CCGChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chart parser for CCGs.
+Based largely on the ChartParser class from NLTK.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chunk.html"
+                        title="previous chapter">nltk.chunk</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="classify.html"
+                        title="next chapter">nltk.classify</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/ccg.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="classify.html" title="nltk.classify"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chunk.html" title="nltk.chunk"
+             >previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

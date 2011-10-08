@@ -1,0 +1,549 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.sem &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="index.html" />
+    <link rel="up" title="API Documentation" href="api.html" />
+    <link rel="prev" title="nltk.parse" href="parse.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parse.html" title="nltk.parse"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nltk.sem">
+<span id="nltk-sem"></span><h1>nltk.sem<a class="headerlink" href="#module-nltk.sem" title="Permalink to this headline">¶</a></h1>
+<p>This package contains classes for representing semantic structure in
+formulas of first-order logic and for evaluating such formulas in
+set-theoretic models.</p>
+<dl class="class">
+<dt id="nltk.sem.LogicParser">
+<em class="property">class </em><tt class="descclassname">nltk.sem.</tt><tt class="descname">LogicParser</tt><big>(</big><em>type_check=False</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A lambda calculus expression parser.</p>
+<dl class="method">
+<dt id="nltk.sem.LogicParser.attempt_ApplicationExpression">
+<tt class="descname">attempt_ApplicationExpression</tt><big>(</big><em>expression</em>, <em>context</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.attempt_ApplicationExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to make an application expression.  The next tokens are
+a list of arguments in parens, then the argument expression is a
+function being applied to the arguments.  Otherwise, return the
+argument expression.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.attempt_BooleanExpression">
+<tt class="descname">attempt_BooleanExpression</tt><big>(</big><em>expression</em>, <em>context</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.attempt_BooleanExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to make a boolean expression.  If the next token is a boolean 
+operator, then a BooleanExpression will be returned.  Otherwise, the 
+parameter will be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.attempt_EqualityExpression">
+<tt class="descname">attempt_EqualityExpression</tt><big>(</big><em>expression</em>, <em>context</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.attempt_EqualityExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to make an equality expression.  If the next token is an 
+equality operator, then an EqualityExpression will be returned.  
+Otherwise, the parameter will be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.get_BooleanExpression_factory">
+<tt class="descname">get_BooleanExpression_factory</tt><big>(</big><em>tok</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.get_BooleanExpression_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method serves as a hook for other logic parsers that
+have different boolean operators</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.get_QuantifiedExpression_factory">
+<tt class="descname">get_QuantifiedExpression_factory</tt><big>(</big><em>tok</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.get_QuantifiedExpression_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method serves as a hook for other logic parsers that
+have different quantifiers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.get_all_symbols">
+<tt class="descname">get_all_symbols</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.get_all_symbols" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method exists to be overridden</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.handle">
+<tt class="descname">handle</tt><big>(</big><em>tok</em>, <em>context</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is intended to be overridden for logics that 
+use different operators or expressions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.inRange">
+<tt class="descname">inRange</tt><big>(</big><em>location</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.inRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return TRUE if the given location is within the buffer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.make_EqualityExpression">
+<tt class="descname">make_EqualityExpression</tt><big>(</big><em>first</em>, <em>second</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.make_EqualityExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method serves as a hook for other logic parsers that
+have different equality expression classes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.parse">
+<tt class="descname">parse</tt><big>(</big><em>data</em>, <em>signature=None</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the expression.</p>
+<p>&#64;param data: C{str} for the input to be parsed
+&#64;param signature: C{dict&lt;str, str&gt;} that maps variable names to type 
+strings
+&#64;returns: a parsed Expression</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.parse_Expression">
+<tt class="descname">parse_Expression</tt><big>(</big><em>context</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.parse_Expression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the next complete expression from the stream and return it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.process">
+<tt class="descname">process</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the data into tokens</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.LogicParser.token">
+<tt class="descname">token</tt><big>(</big><em>location=None</em><big>)</big><a class="headerlink" href="#nltk.sem.LogicParser.token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the next waiting token.  If a location is given, then 
+return the token at currentIndex+location without advancing
+currentIndex; setting it gives lookahead/lookback capability.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.sem.DrtParser">
+<em class="property">class </em><tt class="descclassname">nltk.sem.</tt><tt class="descname">DrtParser</tt><a class="headerlink" href="#nltk.sem.DrtParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A lambda calculus expression parser.</p>
+<dl class="method">
+<dt id="nltk.sem.DrtParser.get_BooleanExpression_factory">
+<tt class="descname">get_BooleanExpression_factory</tt><big>(</big><em>tok</em><big>)</big><a class="headerlink" href="#nltk.sem.DrtParser.get_BooleanExpression_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method serves as a hook for other logic parsers that
+have different boolean operators</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.DrtParser.get_all_symbols">
+<tt class="descname">get_all_symbols</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.sem.DrtParser.get_all_symbols" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method exists to be overridden</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.DrtParser.handle">
+<tt class="descname">handle</tt><big>(</big><em>tok</em>, <em>context</em><big>)</big><a class="headerlink" href="#nltk.sem.DrtParser.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is intended to be overridden for logics that 
+use different operators or expressions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.DrtParser.make_EqualityExpression">
+<tt class="descname">make_EqualityExpression</tt><big>(</big><em>first</em>, <em>second</em><big>)</big><a class="headerlink" href="#nltk.sem.DrtParser.make_EqualityExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method serves as a hook for other logic parsers that
+have different equality expression classes</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.sem.Boxer">
+<em class="property">class </em><tt class="descclassname">nltk.sem.</tt><tt class="descname">Boxer</tt><big>(</big><em>boxer_drs_interpreter=None</em>, <em>elimeq=False</em>, <em>bin_dir=None</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.sem.Boxer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is an interface to Johan Bos&#8217;s program Boxer, a wide-coverage
+semantic parser that produces Discourse Representation Structures (DRSs).</p>
+<dl class="method">
+<dt id="nltk.sem.Boxer.batch_interpret">
+<tt class="descname">batch_interpret</tt><big>(</big><em>inputs</em>, <em>discourse_ids=None</em>, <em>question=False</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.sem.Boxer.batch_interpret" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use Boxer to give a first order representation.</p>
+<p>&#64;param inputs: C{list} of C{str} Input sentences to parse as individual discourses
+&#64;param occur_index: C{boolean} Should predicates be occurrence indexed?
+&#64;param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
+&#64;return: C{list} of C{drt.AbstractDrs}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.Boxer.batch_interpret_multisentence">
+<tt class="descname">batch_interpret_multisentence</tt><big>(</big><em>inputs</em>, <em>discourse_ids=None</em>, <em>question=False</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.sem.Boxer.batch_interpret_multisentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use Boxer to give a first order representation.</p>
+<p>&#64;param inputs: C{list} of C{list} of C{str} Input discourses to parse
+&#64;param occur_index: C{boolean} Should predicates be occurrence indexed?
+&#64;param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
+&#64;return: C{drt.AbstractDrs}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.Boxer.interpret">
+<tt class="descname">interpret</tt><big>(</big><em>input</em>, <em>discourse_id=None</em>, <em>question=False</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.sem.Boxer.interpret" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use Boxer to give a first order representation.</p>
+<p>&#64;param input: C{str} Input sentence to parse
+&#64;param occur_index: C{boolean} Should predicates be occurrence indexed?
+&#64;param discourse_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
+&#64;return: C{drt.AbstractDrs}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.Boxer.interpret_multisentence">
+<tt class="descname">interpret_multisentence</tt><big>(</big><em>input</em>, <em>discourse_id=None</em>, <em>question=False</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.sem.Boxer.interpret_multisentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use Boxer to give a first order representation.</p>
+<p>&#64;param input: C{list} of C{str} Input sentences to parse as a single discourse
+&#64;param occur_index: C{boolean} Should predicates be occurrence indexed?
+&#64;param discourse_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
+&#64;return: C{drt.AbstractDrs}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.sem.Valuation">
+<em class="property">class </em><tt class="descclassname">nltk.sem.</tt><tt class="descname">Valuation</tt><big>(</big><em>iter</em><big>)</big><a class="headerlink" href="#nltk.sem.Valuation" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary which represents a model-theoretic Valuation of non-logical constants.
+Keys are strings representing the constants to be interpreted, and values correspond 
+to individuals (represented as strings) and n-ary relations (represented as sets of tuples
+of strings).</p>
+<p>An instance of L{Valuation} will raise a KeyError exception (i.e.,
+just behave like a standard  dictionary) if indexed with an expression that
+is not in its list of symbols.</p>
+<dl class="attribute">
+<dt id="nltk.sem.Valuation.domain">
+<tt class="descname">domain</tt><a class="headerlink" href="#nltk.sem.Valuation.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set-theoretic domain of the value-space of a Valuation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="nltk.sem.Valuation.symbols">
+<tt class="descname">symbols</tt><a class="headerlink" href="#nltk.sem.Valuation.symbols" title="Permalink to this definition">¶</a></dt>
+<dd><p>The non-logical constants which the Valuation recognizes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.sem.Assignment">
+<em class="property">class </em><tt class="descclassname">nltk.sem.</tt><tt class="descname">Assignment</tt><big>(</big><em>domain</em>, <em>assign=None</em><big>)</big><a class="headerlink" href="#nltk.sem.Assignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary which represents an assignment of values to variables.</p>
+<p>An assigment can only assign values from its domain.</p>
+<p>If an unknown expression M{a} is passed to a model M{M}&#8217;s
+interpretation function M{i}, M{i} will first check whether M{M}&#8217;s
+valuation assigns an interpretation to M{a} as a constant, and if
+this fails, M{i} will delegate the interpretation of M{a} to
+M{g}. M{g} only assigns values to individual variables (i.e.,
+members of the class L{IndividualVariableExpression} in the L{logic}
+module. If a variable is not assigned a value by M{g}, it will raise
+an C{Undefined} exception.</p>
+<dl class="method">
+<dt id="nltk.sem.Assignment.add">
+<tt class="descname">add</tt><big>(</big><em>var</em>, <em>val</em><big>)</big><a class="headerlink" href="#nltk.sem.Assignment.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new variable-value pair to the assignment, and update
+C{self.variant}.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.Assignment.purge">
+<tt class="descname">purge</tt><big>(</big><em>var=None</em><big>)</big><a class="headerlink" href="#nltk.sem.Assignment.purge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove one or all keys (i.e. logic variables) from an
+assignment, and update C{self.variant}.</p>
+<p>&#64;param var: a Variable acting as a key for the assignment.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.sem.Model">
+<em class="property">class </em><tt class="descclassname">nltk.sem.</tt><tt class="descname">Model</tt><big>(</big><em>domain</em>, <em>valuation</em><big>)</big><a class="headerlink" href="#nltk.sem.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>A first order model is a domain M{D} of discourse and a valuation M{V}.</p>
+<p>A domain M{D} is a set, and a valuation M{V} is a map that associates
+expressions with values in the model.
+The domain of M{V} should be a subset of M{D}.</p>
+<dl class="method">
+<dt id="nltk.sem.Model.evaluate">
+<tt class="descname">evaluate</tt><big>(</big><em>expr</em>, <em>g</em>, <em>trace=None</em><big>)</big><a class="headerlink" href="#nltk.sem.Model.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call the L{LogicParser} to parse input expressions, and
+provide a handler for L{satisfy}
+that blocks further propagation of the C{Undefined} error.
+&#64;param expr: An C{Expression} of L{logic}.
+&#64;type g: L{Assignment}
+&#64;param g: an assignment to individual variables.
+&#64;rtype: C{bool} or &#8216;Undefined&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.Model.i">
+<tt class="descname">i</tt><big>(</big><em>parsed</em>, <em>g</em>, <em>trace=False</em><big>)</big><a class="headerlink" href="#nltk.sem.Model.i" title="Permalink to this definition">¶</a></dt>
+<dd><p>An interpretation function.</p>
+<p>Assuming that C{parsed} is atomic:</p>
+<blockquote>
+<div><ul class="simple">
+<li>if C{parsed} is a non-logical constant, calls the valuation M{V}</li>
+<li>else if C{parsed} is an individual variable, calls assignment M{g}</li>
+<li>else returns C{Undefined}.</li>
+</ul>
+</div></blockquote>
+<p>&#64;param parsed: an C{Expression} of L{logic}.
+&#64;type g: L{Assignment}
+&#64;param g: an assignment to individual variables.
+&#64;return: a semantic value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.Model.satisfiers">
+<tt class="descname">satisfiers</tt><big>(</big><em>parsed</em>, <em>varex</em>, <em>g</em>, <em>trace=None</em>, <em>nesting=0</em><big>)</big><a class="headerlink" href="#nltk.sem.Model.satisfiers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the entities from the model&#8217;s domain that satisfy an open formula.</p>
+<p>&#64;param parsed: an open formula
+&#64;type parsed: L{Expression}
+&#64;param varex: the relevant free individual variable in C{parsed}.
+&#64;type varex: C{VariableExpression} or C{str}
+&#64;param g: a variable assignment
+&#64;type g:  L{Assignment}
+&#64;return: a C{set} of the entities that satisfy C{parsed}.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.sem.Model.satisfy">
+<tt class="descname">satisfy</tt><big>(</big><em>parsed</em>, <em>g</em>, <em>trace=None</em><big>)</big><a class="headerlink" href="#nltk.sem.Model.satisfy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursive interpretation function for a formula of first-order logic.</p>
+<p>Raises an C{Undefined} error when C{parsed} is an atomic string
+but is not a symbol or an individual variable.</p>
+<p>&#64;return: Returns a truth value or C{Undefined} if C{parsed} is        complex, and calls the interpretation function C{i} if C{parsed}        is atomic.</p>
+<p>&#64;param parsed: An expression of L{logic}.
+&#64;type g: L{Assignment}
+&#64;param g: an assignment to individual variables.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.is_rel">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">is_rel</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#nltk.sem.is_rel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a set represents a relation (of any arity).</p>
+<p>&#64;param s: a set containing C{tuple}s of C{str} elements
+&#64;type s: C{set}
+&#64;rtype: C{bool}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.set2rel">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">set2rel</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#nltk.sem.set2rel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a set containing individuals (strings or numbers) into a set of 
+unary tuples. Any tuples of strings already in the set are passed through 
+unchanged.</p>
+<dl class="docutils">
+<dt>For example:</dt>
+<dd><ul class="first last simple">
+<li>set([&#8216;a&#8217;, &#8216;b&#8217;]) =&gt; set([(&#8216;a&#8217;,), (&#8216;b&#8217;,)])</li>
+<li>set([3, 27]) =&gt; set([(&#8216;3&#8217;,), (&#8216;27&#8217;,)])</li>
+</ul>
+</dd>
+</dl>
+<p>&#64;type s: C{set}
+&#64;rtype: C{set} of C{tuple} of C{str}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.arity">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">arity</tt><big>(</big><em>rel</em><big>)</big><a class="headerlink" href="#nltk.sem.arity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the arity of a relation.
+&#64;type rel: C{set} of C{tuple}s
+&#64;rtype: C{int} of C{tuple} of C{str}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.batch_parse">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">batch_parse</tt><big>(</big><em>inputs</em>, <em>grammar</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.sem.batch_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert input sentences into syntactic trees.</p>
+<p>&#64;parameter inputs: sentences to be parsed
+&#64;type inputs: C{list} of C{str}
+&#64;parameter grammar: L{FeatureGrammar} or name of feature-based grammar
+&#64;rtype: C{dict}
+&#64;return: a mapping from input sentences to a list of L{Tree}s</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.batch_interpret">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">batch_interpret</tt><big>(</big><em>inputs</em>, <em>grammar</em>, <em>semkey='SEM'</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.sem.batch_interpret" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the semantic representation to each syntactic parse tree
+of each input sentence.</p>
+<p>&#64;parameter inputs: a list of sentences
+&#64;parameter grammar: L{FeatureGrammar} or name of feature-based grammar
+&#64;return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
+&#64;rtype: C{dict}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.batch_evaluate">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">batch_evaluate</tt><big>(</big><em>inputs</em>, <em>grammar</em>, <em>model</em>, <em>assignment</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.sem.batch_evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the truth-in-a-model value to each semantic representation
+for each syntactic parse of each input sentences.</p>
+<p>&#64;parameter inputs: a list of sentences
+&#64;parameter grammar: L{FeatureGrammar} or name of feature-based grammar    
+&#64;return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
+&#64;rtype: C{dict}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.root_semrep">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">root_semrep</tt><big>(</big><em>syntree</em>, <em>semkey='SEM'</em><big>)</big><a class="headerlink" href="#nltk.sem.root_semrep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the semantic representation at the root of a tree.</p>
+<p>&#64;parameter syntree: a parse L{Tree}
+&#64;parameter semkey: the feature label to use for the root semantics in the tree
+&#64;return: the semantic representation at the root of a L{Tree}
+&#64;rtype: L{logic.Expression}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.parse_valuation_line">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">parse_valuation_line</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#nltk.sem.parse_valuation_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a line in a valuation file.</p>
+<p>Lines are expected to be of the form:</p>
+<div class="highlight-python"><pre>noosa =&gt; n
+girl =&gt; {g1, g2}
+chase =&gt; {(b1, g1), (b2, g1), (g1, d1), (g2, d2)}</pre>
+</div>
+<p>&#64;parameter s: input line
+&#64;type s: C{str}
+&#64;return: a pair (symbol, value)
+&#64;rtype: C{tuple}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.parse_valuation">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">parse_valuation</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#nltk.sem.parse_valuation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a valuation file into a valuation.</p>
+<p>&#64;parameter s: the contents of a valuation file
+&#64;type s: C{str}
+&#64;return: a L{nltk.sem} valuation
+&#64;rtype: L{Valuation}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.parse_logic">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">parse_logic</tt><big>(</big><em>s</em>, <em>logic_parser=None</em><big>)</big><a class="headerlink" href="#nltk.sem.parse_logic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a file of First Order Formulas into a list of {Expression}s.</p>
+<p>&#64;param s: the contents of the file
+&#64;type s: C{str}
+&#64;param logic_parser: The parser to be used to parse the logical expression
+&#64;type logic_parser: C{LogicParser}
+&#64;return: a list of parsed formulas.
+&#64;rtype: C{list} of L{Expression}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.skolemize">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">skolemize</tt><big>(</big><em>expression</em>, <em>univ_scope=None</em>, <em>used_variables=None</em><big>)</big><a class="headerlink" href="#nltk.sem.skolemize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skolemize the expression and convert to conjunctive normal form (CNF)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.boolean_ops">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">boolean_ops</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.sem.boolean_ops" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean operators</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.equality_preds">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">equality_preds</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.sem.equality_preds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equality predicates</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.sem.binding_ops">
+<tt class="descclassname">nltk.sem.</tt><tt class="descname">binding_ops</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.sem.binding_ops" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binding operators</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="parse.html"
+                        title="previous chapter">nltk.parse</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/sem.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parse.html" title="nltk.parse"
+             >previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

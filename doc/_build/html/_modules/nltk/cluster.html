@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.cluster &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nltk.cluster</h1><div class="highlight"><pre>
+<span class="c"># Copyright (C) 2001-2011 NLTK Project</span>
+<span class="c"># Author: Trevor Cohn &lt;tacohn@cs.mu.oz.au&gt;</span>
+<span class="c"># URL: &lt;http://www.nltk.org/&gt;</span>
+<span class="c"># For license information, see LICENSE.TXT</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains a number of basic clustering algorithms. Clustering</span>
+<span class="sd">describes the task of discovering groups of similar items with a large</span>
+<span class="sd">collection. It is also describe as unsupervised machine learning, as the data</span>
+<span class="sd">from which it learns is unannotated with class information, as is the case for</span>
+<span class="sd">supervised learning.  Annotated data is difficult and expensive to obtain in</span>
+<span class="sd">the quantities required for the majority of supervised learning algorithms.</span>
+<span class="sd">This problem, the knowledge acquisition bottleneck, is common to most natural</span>
+<span class="sd">language processing tasks, thus fueling the need for quality unsupervised</span>
+<span class="sd">approaches.</span>
+
+<span class="sd">This module contains a k-means clusterer, E-M clusterer and a group average</span>
+<span class="sd">agglomerative clusterer (GAAC). All these clusterers involve finding good</span>
+<span class="sd">cluster groupings for a set of vectors in multi-dimensional space.</span>
+
+<span class="sd">The K-means clusterer starts with k arbitrary chosen means then allocates each</span>
+<span class="sd">vector to the cluster with the closest mean. It then recalculates the means of</span>
+<span class="sd">each cluster as the centroid of the vectors in the cluster. This process</span>
+<span class="sd">repeats until the cluster memberships stabilise. This is a hill-climbing</span>
+<span class="sd">algorithm which may converge to a local maximum. Hence the clustering is</span>
+<span class="sd">often repeated with random initial means and the most commonly occurring</span>
+<span class="sd">output means are chosen.</span>
+
+<span class="sd">The GAAC clusterer starts with each of the M{N} vectors as singleton clusters.</span>
+<span class="sd">It then iteratively merges pairs of clusters which have the closest centroids.</span>
+<span class="sd">This continues until there is only one cluster. The order of merges gives rise</span>
+<span class="sd">to a dendrogram - a tree with the earlier merges lower than later merges. The</span>
+<span class="sd">membership of a given number of clusters M{c}, M{1 &lt;= c &lt;= N}, can be found by</span>
+<span class="sd">cutting the dendrogram at depth M{c}.</span>
+
+<span class="sd">The Gaussian EM clusterer models the vectors as being produced by a mixture</span>
+<span class="sd">of k Gaussian sources. The parameters of these sources (prior probability,</span>
+<span class="sd">mean and covariance matrix) are then found to maximise the likelihood of the</span>
+<span class="sd">given data. This is done with the expectation maximisation algorithm. It</span>
+<span class="sd">starts with k arbitrarily chosen means, priors and covariance matrices. It</span>
+<span class="sd">then calculates the membership probabilities for each vector in each of the</span>
+<span class="sd">clusters - this is the &#39;E&#39; step. The cluster parameters are then updated in</span>
+<span class="sd">the &#39;M&#39; step using the maximum likelihood estimate from the cluster membership</span>
+<span class="sd">probabilities. This process continues until the likelihood of the data does</span>
+<span class="sd">not significantly increase.</span>
+
+<span class="sd">They all extend the ClusterI interface which defines common operations</span>
+<span class="sd">available with each clusterer. These operations include.</span>
+<span class="sd">   - cluster: clusters a sequence of vectors</span>
+<span class="sd">   - classify: assign a vector to a cluster</span>
+<span class="sd">   - classification_probdist: give the probability distribution over cluster memberships</span>
+
+<span class="sd">The current existing classifiers also extend cluster.VectorSpace, an</span>
+<span class="sd">abstract class which allows for singular value decomposition (SVD) and vector</span>
+<span class="sd">normalisation. SVD is used to reduce the dimensionality of the vector space in</span>
+<span class="sd">such a manner as to preserve as much of the variation as possible, by</span>
+<span class="sd">reparameterising the axes in order of variability and discarding all bar the</span>
+<span class="sd">first d dimensions. Normalisation ensures that vectors fall in the unit</span>
+<span class="sd">hypersphere.</span>
+
+<span class="sd">Usage example (see also demo())::</span>
+<span class="sd">    from nltk import cluster</span>
+<span class="sd">    from nltk.cluster import euclidean_distance</span>
+<span class="sd">    from numpy import array</span>
+
+<span class="sd">    vectors = [array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0]]]</span>
+<span class="sd">    </span>
+<span class="sd">    # initialise the clusterer (will also assign the vectors to clusters)</span>
+<span class="sd">    clusterer = cluster.KMeansClusterer(2, euclidean_distance)</span>
+<span class="sd">    clusterer.cluster(vectors, True)</span>
+
+<span class="sd">    # classify a new vector</span>
+<span class="sd">    print clusterer.classify(array([3, 3]))</span>
+
+<span class="sd">Note that the vectors must use numpy array-like</span>
+<span class="sd">objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for</span>
+<span class="sd">efficiency when required.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">kmeans</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">gaac</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">em</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;KMeansClusterer&#39;</span><span class="p">,</span> <span class="s">&#39;GAAClusterer&#39;</span><span class="p">,</span> <span class="s">&#39;EMClusterer&#39;</span><span class="p">,</span>
+           <span class="s">&#39;VectorSpaceClusterer&#39;</span><span class="p">,</span> <span class="s">&#39;Dendrogram&#39;</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,550 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.tag &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="index.html" />
+    <link rel="up" title="API Documentation" href="api.html" />
+    <link rel="next" title="nltk.tokenize" href="tokenize.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tokenize.html" title="nltk.tokenize"
+             accesskey="N">next</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nltk.tag">
+<span id="nltk-tag"></span><h1>nltk.tag<a class="headerlink" href="#module-nltk.tag" title="Permalink to this headline">¶</a></h1>
+<p>Classes and interfaces for tagging each token of a sentence with
+supplementary information, such as its part of speech.  This task,
+which is known as X{tagging}, is defined by the L{TaggerI} interface.</p>
+<dl class="class">
+<dt id="nltk.tag.TaggerI">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">TaggerI</tt><a class="headerlink" href="#nltk.tag.TaggerI" title="Permalink to this definition">¶</a></dt>
+<dd><p>A processing interface for assigning a tag to each token in a list.
+Tags are case sensitive strings that identify some property of each
+token, such as its part of speech or its sense.</p>
+<p>Some taggers require specific types for their tokens.  This is
+generally indicated by the use of a sub-interface to C{TaggerI}.
+For example, I{featureset taggers}, which are subclassed from
+L{FeaturesetTaggerI}, require that each token be a I{featureset}.</p>
+<dl class="docutils">
+<dt>Subclasses must define:</dt>
+<dd><ul class="first last simple">
+<li>either L{tag()} or L{batch_tag()} (or both)</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="nltk.tag.TaggerI.batch_tag">
+<tt class="descname">batch_tag</tt><big>(</big><em>sentences</em><big>)</big><a class="headerlink" href="#nltk.tag.TaggerI.batch_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply L{self.tag()} to each element of C{sentences}.  I.e.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.TaggerI.evaluate">
+<tt class="descname">evaluate</tt><big>(</big><em>gold</em><big>)</big><a class="headerlink" href="#nltk.tag.TaggerI.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Score the accuracy of the tagger against the gold standard.
+Strip the tags from the gold standard text, retag it using
+the tagger, then compute the accuracy score.</p>
+<p>&#64;type gold: C{list} of C{list} of C{(token, tag)}
+&#64;param gold: The list of tagged sentences to score the tagger on.
+&#64;rtype: C{float}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.TaggerI.tag">
+<tt class="descname">tag</tt><big>(</big><em>tokens</em><big>)</big><a class="headerlink" href="#nltk.tag.TaggerI.tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the most appropriate tag sequence for the given
+token sequence, and return a corresponding list of tagged
+tokens.  A tagged token is encoded as a tuple C{(token, tag)}.</p>
+<p>&#64;rtype: C{list} of C{(token, tag)}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.tag.pos_tag">
+<tt class="descclassname">nltk.tag.</tt><tt class="descname">pos_tag</tt><big>(</big><em>tokens</em><big>)</big><a class="reference internal" href="_modules/nltk/tag.html#pos_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nltk.tag.pos_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use NLTK&#8217;s currently recommended part of speech tagger to
+tag the given list of tokens.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.tag.batch_pos_tag">
+<tt class="descclassname">nltk.tag.</tt><tt class="descname">batch_pos_tag</tt><big>(</big><em>sentences</em><big>)</big><a class="reference internal" href="_modules/nltk/tag.html#batch_pos_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nltk.tag.batch_pos_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use NLTK&#8217;s currently recommended part of speech tagger to tag the
+given list of sentences, each consisting of a list of tokens.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.DefaultTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">DefaultTagger</tt><big>(</big><em>tag</em><big>)</big><a class="headerlink" href="#nltk.tag.DefaultTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tagger that assigns the same tag to every token.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.UnigramTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">UnigramTagger</tt><big>(</big><em>train=None</em>, <em>model=None</em>, <em>backoff=None</em>, <em>cutoff=0</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.tag.UnigramTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tagger that chooses a token&#8217;s tag based its word string.
+Unigram taggers are typically trained on a tagged corpus.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.BigramTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">BigramTagger</tt><big>(</big><em>train</em>, <em>model=None</em>, <em>backoff=None</em>, <em>cutoff=0</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.tag.BigramTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tagger that chooses a token&#8217;s tag based its word string and on
+the preceeding words&#8217; tag.  In particular, a tuple consisting
+of the previous tag and the word is looked up in a table, and
+the corresponding tag is returned.  Bigram taggers are typically
+trained on a tagged corpus.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.TrigramTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">TrigramTagger</tt><big>(</big><em>train=None</em>, <em>model=None</em>, <em>backoff=None</em>, <em>cutoff=0</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.tag.TrigramTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tagger that chooses a token&#8217;s tag based its word string and on
+the preceeding two words&#8217; tags.  In particular, a tuple consisting
+of the previous two tags and the word is looked up in a table, and
+the corresponding tag is returned.  Trigram taggers are typically
+trained them on a tagged corpus.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.NgramTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">NgramTagger</tt><big>(</big><em>n</em>, <em>train=None</em>, <em>model=None</em>, <em>backoff=None</em>, <em>cutoff=0</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.tag.NgramTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tagger that chooses a token&#8217;s tag based on its word string and
+on the preceeding I{n} word&#8217;s tags.  In particular, a tuple
+C{(tags[i-n:i-1], words[i])} is looked up in a table, and the
+corresponding tag is returned.  N-gram taggers are typically
+trained on a tagged corpus.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.AffixTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">AffixTagger</tt><big>(</big><em>train=None</em>, <em>model=None</em>, <em>affix_length=-3</em>, <em>min_stem_length=2</em>, <em>backoff=None</em>, <em>cutoff=0</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#nltk.tag.AffixTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tagger that chooses a token&#8217;s tag based on a leading or trailing
+substring of its word string.  (It is important to note that these
+substrings are not necessarily &#8220;true&#8221; morphological affixes).  In
+particular, a fixed-length substring of the word is looked up in a
+table, and the corresponding tag is returned.  Affix taggers are
+typically constructed by training them on a tagged corpus; see
+L{the constructor &lt;__init__&gt;}.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.RegexpTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">RegexpTagger</tt><big>(</big><em>regexps</em>, <em>backoff=None</em><big>)</big><a class="headerlink" href="#nltk.tag.RegexpTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tagger that assigns tags to words based on regular expressions
+over word strings.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.BrillTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">BrillTagger</tt><big>(</big><em>initial_tagger</em>, <em>rules</em><big>)</big><a class="headerlink" href="#nltk.tag.BrillTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Brill&#8217;s transformational rule-based tagger.  Brill taggers use an
+X{initial tagger} (such as L{tag.DefaultTagger}) to assign an initial
+tag sequence to a text; and then apply an ordered list of
+transformational rules to correct the tags of individual tokens.
+These transformation rules are specified by the L{BrillRule}
+interface.</p>
+<p>Brill taggers can be created directly, from an initial tagger and
+a list of transformational rules; but more often, Brill taggers
+are created by learning rules from a training corpus, using either
+L{BrillTaggerTrainer} or L{FastBrillTaggerTrainer}.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.BrillTaggerTrainer">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">BrillTaggerTrainer</tt><big>(</big><em>initial_tagger</em>, <em>templates</em>, <em>trace=0</em>, <em>deterministic=None</em><big>)</big><a class="headerlink" href="#nltk.tag.BrillTaggerTrainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trainer for brill taggers.</p>
+<dl class="method">
+<dt id="nltk.tag.BrillTaggerTrainer.train">
+<tt class="descname">train</tt><big>(</big><em>train_sents</em>, <em>max_rules=200</em>, <em>min_score=2</em><big>)</big><a class="headerlink" href="#nltk.tag.BrillTaggerTrainer.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trains the Brill tagger on the corpus C{train_token},
+producing at most C{max_rules} transformations, each of which
+reduces the net number of errors in the corpus by at least
+C{min_score}.</p>
+<p>&#64;type train_sents: C{list} of C{list} of L{tuple}
+&#64;param train_sents: The corpus of tagged tokens
+&#64;type max_rules: C{int}
+&#64;param max_rules: The maximum number of transformations to be created
+&#64;type min_score: C{int}
+&#64;param min_score: The minimum acceptable net error reduction</p>
+<blockquote>
+<div>that each transformation must produce in the corpus.</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.FastBrillTaggerTrainer">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">FastBrillTaggerTrainer</tt><big>(</big><em>initial_tagger</em>, <em>templates</em>, <em>trace=0</em>, <em>deterministic=False</em><big>)</big><a class="headerlink" href="#nltk.tag.FastBrillTaggerTrainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A faster trainer for brill taggers.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.tag.untag">
+<tt class="descclassname">nltk.tag.</tt><tt class="descname">untag</tt><big>(</big><em>tagged_sentence</em><big>)</big><a class="headerlink" href="#nltk.tag.untag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a tagged sentence, return an untagged version of that
+sentence.  I.e., return a list containing the first element
+of each tuple in C{tagged_sentence}.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">untag</span><span class="p">([(</span><span class="s">&#39;John&#39;</span><span class="p">,</span> <span class="s">&#39;NNP&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;saw&#39;</span><span class="p">,</span> <span class="s">&#39;VBD&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;Mary&#39;</span><span class="p">,</span> <span class="s">&#39;NNP&#39;</span><span class="p">)]</span>
+<span class="go">[&#39;John&#39;, &#39;saw&#39;, &#39;mary&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.HiddenMarkovModelTagger">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">HiddenMarkovModelTagger</tt><big>(</big><em>symbols</em>, <em>states</em>, <em>transitions</em>, <em>outputs</em>, <em>priors</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hidden Markov model class, a generative model for labelling sequence data.
+These models define the joint probability of a sequence of symbols and
+their labels (state transitions) as the product of the starting state
+probability, the probability of each state transition, and the probability
+of each observation being generated from each state. This is described in
+more detail in the module documentation.</p>
+<p>This implementation is based on the HMM description in Chapter 8, Huang,
+Acero and Hon, Spoken Language Processing and includes an extension for
+training shallow HMM parsers or specializaed HMMs as in Molina et. 
+al, 2002.  A specialized HMM modifies training data by applying a 
+specialization function to create a new training set that is more
+appropriate for sequential tagging with an HMM.  A typical use case is 
+chunking.</p>
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.best_path">
+<tt class="descname">best_path</tt><big>(</big><em>unlabeled_sequence</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.best_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the state sequence of the optimal (most probable) path through
+the HMM. Uses the Viterbi algorithm to calculate this part by dynamic
+programming.</p>
+<p>&#64;return: the state sequence
+&#64;rtype: sequence of any
+&#64;param unlabeled_sequence: the sequence of unlabeled symbols 
+&#64;type unlabeled_sequence: list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.best_path_simple">
+<tt class="descname">best_path_simple</tt><big>(</big><em>unlabeled_sequence</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.best_path_simple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the state sequence of the optimal (most probable) path through
+the HMM. Uses the Viterbi algorithm to calculate this part by dynamic
+programming.  This uses a simple, direct method, and is included for
+teaching purposes.</p>
+<p>&#64;return: the state sequence
+&#64;rtype: sequence of any
+&#64;param unlabeled_sequence: the sequence of unlabeled symbols 
+&#64;type unlabeled_sequence: list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.entropy">
+<tt class="descname">entropy</tt><big>(</big><em>unlabeled_sequence</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the entropy over labellings of the given sequence. This is
+given by:</p>
+<div class="highlight-python"><pre>H(O) = - sum_S Pr(S | O) log Pr(S | O)</pre>
+</div>
+<p>where the summation ranges over all state sequences, S. Let M{Z =
+Pr(O) = sum_S Pr(S, O)} where the summation ranges over all state
+sequences and O is the observation sequence. As such the entropy can
+be re-expressed as:</p>
+<div class="highlight-python"><pre>H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
+  = log Z - sum_S Pr(S | O) log Pr(S, 0)
+  = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1})
+                                          + sum_t Pr(O_t | S_t) ]</pre>
+</div>
+<p>The order of summation for the log terms can be flipped, allowing
+dynamic programming to be used to calculate the entropy. Specifically,
+we use the forward and backward probabilities (alpha, beta) giving:</p>
+<div class="highlight-python"><pre>H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
+        + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
+                        / Z * log Pr(sj | si)
+        + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)</pre>
+</div>
+<p>This simply uses alpha and beta to find the probabilities of partial
+sequences, constrained to include the given state(s) at some point in
+time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.log_probability">
+<tt class="descname">log_probability</tt><big>(</big><em>sequence</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.log_probability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the log-probability of the given symbol sequence. If the
+sequence is labelled, then returns the joint log-probability of the
+symbol, state sequence. Otherwise, uses the forward algorithm to find
+the log-probability over all label sequences.</p>
+<p>&#64;return: the log-probability of the sequence
+&#64;rtype: float
+&#64;param sequence: the sequence of symbols which must contain the TEXT</p>
+<blockquote>
+<div>property, and optionally the TAG property</div></blockquote>
+<p>&#64;type sequence:  Token</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.point_entropy">
+<tt class="descname">point_entropy</tt><big>(</big><em>unlabeled_sequence</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.point_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pointwise entropy over the possible states at each
+position in the chain, given the observation sequence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.probability">
+<tt class="descname">probability</tt><big>(</big><em>sequence</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.probability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability of the given symbol sequence. If the sequence
+is labelled, then returns the joint probability of the symbol, state
+sequence. Otherwise, uses the forward algorithm to find the
+probability over all label sequences.</p>
+<p>&#64;return: the probability of the sequence
+&#64;rtype: float
+&#64;param sequence: the sequence of symbols which must contain the TEXT</p>
+<blockquote>
+<div>property, and optionally the TAG property</div></blockquote>
+<p>&#64;type sequence:  Token</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.random_sample">
+<tt class="descname">random_sample</tt><big>(</big><em>rng</em>, <em>length</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.random_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly sample the HMM to generate a sentence of a given length. This
+samples the prior distribution then the observation distribution and
+transition distribution for each subsequent observation and state.
+This will mostly generate unintelligible garbage, but can provide some
+amusement.</p>
+<dl class="docutils">
+<dt>&#64;return:        the randomly created state/observation sequence,</dt>
+<dd>generated according to the HMM&#8217;s probability
+distributions. The SUBTOKENS have TEXT and TAG
+properties containing the observation and state
+respectively.</dd>
+</dl>
+<p>&#64;rtype:         list
+&#64;param rng:     random number generator
+&#64;type rng:      Random (or any object with a random() method)
+&#64;param length:  desired output length
+&#64;type length:   int</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.tag">
+<tt class="descname">tag</tt><big>(</big><em>unlabeled_sequence</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tags the sequence with the highest probability state sequence. This
+uses the best_path method to find the Viterbi path.</p>
+<p>&#64;return: a labelled sequence of symbols
+&#64;rtype: list
+&#64;param unlabeled_sequence: the sequence of unlabeled symbols 
+&#64;type unlabeled_sequence: list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTagger.test">
+<tt class="descname">test</tt><big>(</big><em>test_sequence</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the C{HiddenMarkovModelTagger} instance.</p>
+<p>&#64;param test_sequence: a sequence of labeled test instances
+&#64;type test_sequence: C{list} of C{list}
+&#64;kwparam verbose: boolean flag indicating whether training should be</p>
+<blockquote>
+<div>verbose or include printed output</div></blockquote>
+<p>&#64;type verbose: C{bool}</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="nltk.tag.HiddenMarkovModelTagger.train">
+<em class="property">classmethod </em><tt class="descname">train</tt><big>(</big><em>labeled_sequence</em>, <em>test_sequence=None</em>, <em>unlabeled_sequence=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTagger.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train a new C{HiddenMarkovModelTagger} using the given labeled and
+unlabeled training instances. Testing will be performed if test
+instances are provided.</p>
+<p>&#64;return: a hidden markov model tagger
+&#64;rtype: C{HiddenMarkovModelTagger}
+&#64;param labeled_sequence: a sequence of labeled training instances,</p>
+<blockquote>
+<div>i.e. a list of sentences represented as tuples</div></blockquote>
+<p>&#64;type labeled_sequence: C{list} of C{list}
+&#64;param test_sequence: a sequence of labeled test instances
+&#64;type test_sequence: C{list} of C{list}
+&#64;param unlabeled_sequence: a sequence of unlabeled training instances,</p>
+<blockquote>
+<div>i.e. a list of sentences represented as words</div></blockquote>
+<p>&#64;type unlabeled_sequence: C{list} of C{list}
+&#64;kwparam transform: an optional function for transforming training</p>
+<blockquote>
+<div>instances, defaults to the identity function, see L{transform()}</div></blockquote>
+<p>&#64;type transform: C{function}
+&#64;kwparam estimator: an optional function or class that maps a</p>
+<blockquote>
+<div>condition&#8217;s frequency distribution to its probability
+distribution, defaults to a Lidstone distribution with gamma = 0.1</div></blockquote>
+<p>&#64;type estimator: C{class} or C{function}
+&#64;kwparam verbose: boolean flag indicating whether training should be</p>
+<blockquote>
+<div>verbose or include printed output</div></blockquote>
+<p>&#64;type verbose: C{bool}
+&#64;kwparam max_iterations: number of Baum-Welch interations to perform
+&#64;type max_iterations: C{int}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.tag.HiddenMarkovModelTrainer">
+<em class="property">class </em><tt class="descclassname">nltk.tag.</tt><tt class="descname">HiddenMarkovModelTrainer</tt><big>(</big><em>states=None</em>, <em>symbols=None</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTrainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithms for learning HMM parameters from training data. These include
+both supervised learning (MLE) and unsupervised learning (Baum-Welch).</p>
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTrainer.train">
+<tt class="descname">train</tt><big>(</big><em>labelled_sequences=None</em>, <em>unlabeled_sequences=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTrainer.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trains the HMM using both (or either of) supervised and unsupervised
+techniques.</p>
+<p>&#64;return: the trained model
+&#64;rtype: HiddenMarkovModelTagger
+&#64;param labelled_sequences: the supervised training data, a set of</p>
+<blockquote>
+<div>labelled sequences of observations</div></blockquote>
+<p>&#64;type labelled_sequences: list
+&#64;param unlabeled_sequences: the unsupervised training data, a set of</p>
+<blockquote>
+<div>sequences of observations</div></blockquote>
+<p>&#64;type unlabeled_sequences: list
+&#64;param kwargs: additional arguments to pass to the training methods</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTrainer.train_supervised">
+<tt class="descname">train_supervised</tt><big>(</big><em>labelled_sequences</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTrainer.train_supervised" title="Permalink to this definition">¶</a></dt>
+<dd><p>Supervised training maximising the joint probability of the symbol and
+state sequences. This is done via collecting frequencies of
+transitions between states, symbol observations while within each
+state and which states start a sentence. These frequency distributions
+are then normalised into probability estimates, which can be
+smoothed if desired.</p>
+<p>&#64;return: the trained model
+&#64;rtype: HiddenMarkovModelTagger
+&#64;param labelled_sequences: the training data, a set of</p>
+<blockquote>
+<div>labelled sequences of observations</div></blockquote>
+<p>&#64;type labelled_sequences: list
+&#64;param kwargs: may include an &#8216;estimator&#8217; parameter, a function taking</p>
+<blockquote>
+<div>a C{FreqDist} and a number of bins and returning a C{ProbDistI};
+otherwise a MLE estimate is used</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.tag.HiddenMarkovModelTrainer.train_unsupervised">
+<tt class="descname">train_unsupervised</tt><big>(</big><em>unlabeled_sequences</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nltk.tag.HiddenMarkovModelTrainer.train_unsupervised" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trains the HMM using the Baum-Welch algorithm to maximise the
+probability of the data sequence. This is a variant of the EM
+algorithm, and is unsupervised in that it doesn&#8217;t need the state
+sequences for the symbols. The code is based on &#8216;A Tutorial on Hidden
+Markov Models and Selected Applications in Speech Recognition&#8217;,
+Lawrence Rabiner, IEEE, 1989.</p>
+<p>&#64;return: the trained model
+&#64;rtype: HiddenMarkovModelTagger
+&#64;param unlabeled_sequences: the training data, a set of</p>
+<blockquote>
+<div>sequences of observations</div></blockquote>
+<p>&#64;type unlabeled_sequences: list
+&#64;param kwargs: may include the following parameters:</p>
+<div class="highlight-python"><pre>model - a HiddenMarkovModelTagger instance used to begin
+    the Baum-Welch algorithm
+max_iterations - the maximum number of EM iterations
+convergence_logprob - the maximum change in log probability to
+    allow convergence</pre>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tokenize.html"
+                        title="next chapter">nltk.tokenize</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tag.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tokenize.html" title="nltk.tokenize"
+             >next</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>
