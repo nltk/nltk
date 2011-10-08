@@ -32,6 +32,7 @@ def convert_regexp_to_nongrouping(pattern):
     Convert all grouping parenthases in the given regexp pattern to
     non-grouping parenthases, and return the result.  E.g.:
 
+        >>> from nltk.internals import convert_regexp_to_nongrouping
         >>> convert_regexp_to_nongrouping('ab(c(x+)(z*))?d')
         'ab(?:c(?:x+)(?:z*))?d'
 
@@ -335,10 +336,13 @@ def deprecated(message):
     A decorator used to mark functions as deprecated.  This will cause
     a warning to be printed the when the function is used.  Usage:
 
-      >>> @deprecated('Use foo() instead')
-      >>> def bar(x):
-      ...     print x/10
+        >>> from nltk.internals import deprecated
+        >>> @deprecated('Use foo() instead')
+        ... def bar(x):
+        ...     print x/10
+
     """
+
     def decorator(func):
         msg = ("Function %s() has been deprecated.  %s"
                % (func.__name__, message))
@@ -363,6 +367,10 @@ class Deprecated(object):
     A base class used to mark deprecated classes.  A typical usage is to
     alert users that the name of a class has changed:
 
+        >>> from nltk.internals import Deprecated
+        >>> class NewClassName(object):
+        ...     pass # All logic goes here.
+        ... 
         >>> class OldClassName(Deprecated, NewClassName):
         ...     "Use NewClassName instead."
 
