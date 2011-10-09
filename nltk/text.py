@@ -217,10 +217,12 @@ class TokenSearcher(object):
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
         a single token must be surrounded by angle brackets.  E.g.
-        
-        >>> ts.findall("<.*><.*><bro>")
-        ['you rule bro', ['telling you bro; u twizted bro
-        >>> ts.findall("<a>(<.*>)<man>")
+
+        >>> from nltk.text import TokenSearcher
+        >>> from nltk.book import text1, text5, text9
+        >>> text5.findall("<.*><.*><bro>")
+        you rule bro; telling you bro; u twizted bro
+        >>> text1.findall("<a>(<.*>)<man>")
         monied; nervous; dangerous; white; white; white; pious; queer; good;
         mature; white; Cape; great; wise; wise; butterless; white; fiendish;
         pale; furious; better; certain; complete; dismasted; younger; brave;
@@ -229,7 +231,7 @@ class TokenSearcher(object):
         thread through those; the thought that; that the thing; the thing
         that; that that thing; through these than through; them that the;
         through the thick; them that they; thought that the
-        
+
         @param regexp: A regular expression
         @type regexp: C{str}
         """
@@ -264,8 +266,10 @@ class Text(object):
 
     C{Text}s are typically initialized from a given document or
     corpus.  E.g.:
-    
+
+    >>> import nltk.corpus
     >>> moby = Text(nltk.corpus.gutenberg.words('melville-moby_dick.txt'))
+
     """
     # This defeats lazy loading, but makes things faster.  This
     # *shouldnt* be necessary because the corpus view *should* be
@@ -481,7 +485,8 @@ class Text(object):
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
         a single token must be surrounded by angle brackets.  E.g.
-        
+
+        >>> from nltk.book import text1, text5, text9
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -549,6 +554,8 @@ class TextCollection(Text):
     counting, concordancing, collocation discovery, etc.  Initialize a
     TextCollection as follows:
     
+    >>> import nltk.corpus
+    >>> from nltk.book import text1, text2, text3
     >>> gutenberg = TextCollection(nltk.corpus.gutenberg)
     >>> mytexts = TextCollection([text1, text2, text3])
     

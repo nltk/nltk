@@ -55,9 +55,7 @@ class SnowballStemmer(StemmerI):
 
     >>> from nltk import SnowballStemmer
     >>> SnowballStemmer.languages # See which languages are supported
-    ('danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian',
-     'italian', 'norwegian', 'porter', 'portuguese", 'romanian', 
-     'russian', 'spanish', 'swedish')
+    ('danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian', 'italian', 'norwegian', 'porter', 'portuguese', 'romanian', 'russian', 'spanish', 'swedish')
     >>> stemmer = SnowballStemmer("german") # Choose a language
     >>> stemmer.stem(u"Autobahnen") # Stem a word
     u'autobahn'

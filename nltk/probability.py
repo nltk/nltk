@@ -1700,21 +1700,6 @@ class ConditionalFreqDist(object):
     defined as a function that maps from each condition to the
     C{FreqDist} for the experiment under that condition.
 
-    The frequency distribution for each condition is accessed using
-    the indexing operator:
-
-        >>> cfdist[3]
-        <FreqDist with 73 outcomes>
-        >>> cfdist[3].freq('the')
-        0.4
-        >>> cfdist[3]['dog']
-        2
-
-    When the indexing operator is used to access the frequency
-    distribution for a condition that has not been accessed before,
-    C{ConditionalFreqDist} creates a new empty C{FreqDist} for that
-    condition.
-
     Conditional frequency distributions are typically constructed by
     repeatedly running an experiment under a variety of conditions,
     and incrementing the sample outcome counts for the appropriate
@@ -1722,14 +1707,32 @@ class ConditionalFreqDist(object):
     conditional frequency distribution that encodes how often each
     word type occurs, given the length of that word type:
 
+        >>> from nltk.probability import ConditionalFreqDist
+        >>> from nltk.tokenize import word_tokenize
+        >>> sent = "the the the dog dog some other words that we do not care about"
         >>> cfdist = ConditionalFreqDist()
-        >>> for word in tokenize.whitespace(sent):
+        >>> for word in word_tokenize(sent):
         ...     condition = len(word)
         ...     cfdist[condition].inc(word)
 
     An equivalent way to do this is with the initializer:
 
-        >>> cfdist = ConditionalFreqDist((len(word), word) for word in tokenize.whitespace(sent))
+        >>> cfdist = ConditionalFreqDist((len(word), word) for word in word_tokenize(sent))
+
+    The frequency distribution for each condition is accessed using
+    the indexing operator:
+
+        >>> cfdist[3]
+        <FreqDist with 6 outcomes>
+        >>> cfdist[3].freq('the')
+        0.5
+        >>> cfdist[3]['dog']
+        2
+
+    When the indexing operator is used to access the frequency
+    distribution for a condition that has not been accessed before,
+    C{ConditionalFreqDist} creates a new empty C{FreqDist} for that
+    condition.
 
     """
     def __init__(self, cond_samples=None):
