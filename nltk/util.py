@@ -352,14 +352,14 @@ def clean_url(url):
         
 def flatten(*args):
     """Flatten a list.
-    
+
         >>> flatten(1, 2, ['b', 'a' , ['c', 'd']], 3)
-        [1, 2, 'a', 'b', 'c', 'd', 3] 
+        [1, 2, 'b', 'a', 'c', 'd', 3]
 
     @param *args: items and lists to be combined into a single list
     @rtype: C{list}
     """
-    
+
     x = []
     for l in args:
         if not isinstance(l, (list, tuple)): l = [l]
@@ -517,7 +517,7 @@ def itrigrams(sequence, **kwargs):
     
     For example:
     
-    >>> list(itrigrams([1,2,3,4,5])
+    >>> list(itrigrams([1,2,3,4,5]))
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
     
     Use trigrams for a list version of this function.
@@ -857,13 +857,17 @@ class LazyMap(AbstractLazySequence):
     C{map}.  In particular, the following two expressions are
     equivalent:
 
-        >>> map(f, sequences...)
-        >>> list(LazyMap(f, sequences...))
+        >>> function = str
+        >>> sequence = [1,2,3]
+        >>> map(function, sequence)
+        ['1', '2', '3']
+        >>> list(LazyMap(function, sequence))
+        ['1', '2', '3']
 
     Like the Python C{map} primitive, if the source lists do not have
     equal size, then the value C{None} will be supplied for the
     'missing' elements.
-    
+
     Lazy maps can be useful for conserving memory, in cases where
     individual values take up a lot of space.  This is especially true
     if the underlying list's values are constructed lazily, as is the
@@ -977,16 +981,22 @@ class LazyZip(LazyMap):
     tuples are constructed lazily -- i.e., when you read a value from the
     list, C{LazyZip} will calculate that value by forming a C{tuple} from
     the i-th element of each of the argument sequences.
-    
-    C{LazyZip} is essentially a lazy version of the Python primitive function
-    C{zip}.  In particular, the following two expressions are equivalent:
 
-        >>> zip(sequences...)
-        >>> list(LazyZip(sequences...))
-            
+    C{LazyZip} is essentially a lazy version of the Python primitive function
+    C{zip}.  In particular, an evaluated LazyZip is equivalent to a zip:
+
+        >>> sequence1, sequence2 = [1, 2, 3], ['a', 'b', 'c']
+        >>> zip(sequence1, sequence2)
+        [(1, 'a'), (2, 'b'), (3, 'c')]
+        >>> list(LazyZip(sequence1, sequence2))
+        [(1, 'a'), (2, 'b'), (3, 'c')]
+        >>> sequences = [sequence1, sequence2, [6,7,8,9]]
+        >>> zip(*sequences) == list(LazyZip(*sequences))
+        True
+
     Lazy zips can be useful for conserving memory in cases where the argument
     sequences are particularly long.
-    
+
     A typical example of a use case for this class is combining long sequences
     of gold standard and predicted values in a classification or tagging task
     in order to calculate accuracy.  By constructing tuples lazily and 
@@ -1019,14 +1029,17 @@ class LazyEnumerate(LazyZip):
     -- i.e., when you read a value from the list, C{LazyEnumerate} will
     calculate that value by forming a C{tuple} from the count of the i-th
     element and the i-th element of the underlying sequence.
-    
+
     C{LazyEnumerate} is essentially a lazy version of the Python primitive
     function C{enumerate}.  In particular, the following two expressions are
     equivalent:
 
-        >>> enumerate(sequence)
+        >>> sequence = ['first', 'second', 'third']
+        >>> list(enumerate(sequence))
+        [(0, 'first'), (1, 'second'), (2, 'third')]
         >>> list(LazyEnumerate(sequence))
-            
+        [(0, 'first'), (1, 'second'), (2, 'third')]
+
     Lazy enumerations can be useful for conserving memory in cases where the
     argument sequences are particularly long.
     
