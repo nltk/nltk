@@ -1,0 +1,5 @@
+nltk.tag
+==========
+
+.. automodule:: nltk.tag
+   :members:
