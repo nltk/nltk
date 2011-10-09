@@ -32,8 +32,7 @@ class StanfordTagger(TaggerI):
 
         >>> st = StanfordTagger('bidirectional-distsim-wsj-0-18.tagger')
         >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
-        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
-        ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
+        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
     def __init__(self, path_to_model, path_to_jar=None, encoding=None, verbose=False):
 
