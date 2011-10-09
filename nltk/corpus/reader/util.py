@@ -473,9 +473,11 @@ class PickleCorpusView(StreamBackedCorpusView):
     don't want to repeat it); but the corpus is too large to store in
     memory.  The following example illustrates this technique:
 
+        >>> from nltk.corpus.reader.util import PickleCorpusView
+        >>> from nltk.util import LazyMap
         >>> feature_corpus = LazyMap(detect_features, corpus)
         >>> PickleCorpusView.write(feature_corpus, some_fileid)
-        >>> pcv = PickledCorpusView(some_fileid)
+        >>> pcv = PickleCorpusView(some_fileid)
     """
     BLOCK_SIZE = 100
     PROTOCOL = -1

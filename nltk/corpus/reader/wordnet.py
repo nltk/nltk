@@ -398,17 +398,12 @@ class Synset(_WordNetObject):
         """Return the transitive closure of source under the rel
         relationship, breadth-first
 
-        >>> from nltk.corpus import wordnet as wn
-        >>> dog = wn.synset('dog.n.01')
-        >>> hyp = lambda s:s.hypernyms()
-        >>> list(dog.closure(hyp))
-        [Synset('domestic_animal.n.01'), Synset('canine.n.02'),
-        Synset('animal.n.01'), Synset('carnivore.n.01'),
-        Synset('organism.n.01'), Synset('placental.n.01'),
-        Synset('living_thing.n.01'), Synset('mammal.n.01'),
-        Synset('whole.n.02'), Synset('vertebrate.n.01'),
-        Synset('object.n.01'), Synset('chordate.n.01'),
-        Synset('physical_entity.n.01'), Synset('entity.n.01')]
+            >>> from nltk.corpus import wordnet as wn
+            >>> dog = wn.synset('dog.n.01')
+            >>> hyp = lambda s:s.hypernyms()
+            >>> list(dog.closure(hyp))
+            [Synset('domestic_animal.n.01'), Synset('canine.n.02'), Synset('animal.n.01'), Synset('carnivore.n.01'), Synset('organism.n.01'), Synset('placental.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('whole.n.02'), Synset('vertebrate.n.01'), Synset('object.n.01'), Synset('chordate.n.01'), Synset('physical_entity.n.01'), Synset('entity.n.01')]
+
         """
         from nltk.util import breadth_first
         synset_offsets = []

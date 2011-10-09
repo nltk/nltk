@@ -52,12 +52,12 @@ The timit corpus reader provides 4 functions and 4 data items.
  
    Note that if you split an item ID with colon and take the first element of
    the result, you will get a speaker ID.
- 
-       >>> itemid = dr1-fvmh0/sx206
-       >>> spkrid,sentid = itemid.split('/')
+
+       >>> itemid = 'dr1-fvmh0/sx206'
+       >>> spkrid , sentid = itemid.split('/')
        >>> spkrid
        'dr1-fvmh0'
-       
+
    The second element of the result is a sentence ID.
    
  - dictionary()
