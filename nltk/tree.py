@@ -458,7 +458,7 @@ class Tree(list):
             those nodes and leaves.  They should have the following
             signature:
 
-               >>> parse_node(str) -> value
+               parse_node(str) -> value
 
             For example, these functions could be used to parse nodes
             and leaves whose values should be some type other than
