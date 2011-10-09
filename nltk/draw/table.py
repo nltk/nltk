@@ -593,7 +593,7 @@ class Table(object):
             convert each table cell value to a string suitable for
             display.  C{reprfunc} has the following signature:
 
-                >>> reprfunc(row_index, col_index, cell_value) -> str
+                reprfunc(row_index, col_index, cell_value) -> str
 
             (Note that the column is specified by index, not by name.)
 
