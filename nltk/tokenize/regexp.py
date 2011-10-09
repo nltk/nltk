@@ -124,7 +124,7 @@ class WhitespaceTokenizer(RegexpTokenizer):
     (rather than building a tokenizer to pass to some other piece of
     code), consider using the string C{split()} method instead:
 
-        >>> words = s.split()
+        words = s.split()
     """
 
     def __init__(self):

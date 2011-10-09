@@ -30,7 +30,7 @@ class SpaceTokenizer(StringTokenizer):
     some other piece of code), consider using the string C{split()}
     method instead:
 
-        >>> words = s.split(' ')
+        words = s.split(' ')
     """
 
     _string = ' '
@@ -43,7 +43,7 @@ class TabTokenizer(StringTokenizer):
     some other piece of code), consider using the string C{split()}
     method instead:
 
-        >>> words = s.split('\t')
+        words = s.split('\t')
     """
     
     _string = '\t'
