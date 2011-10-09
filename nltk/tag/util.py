@@ -57,8 +57,9 @@ def untag(tagged_sentence):
     sentence.  I.e., return a list containing the first element
     of each tuple in C{tagged_sentence}.
 
-    >>> untag([('John', 'NNP'), ('saw', 'VBD'), ('Mary', 'NNP')]
-    ['John', 'saw', 'mary']
+        >>> untag([('John', 'NNP'), ('saw', 'VBD'), ('Mary', 'NNP')])
+        ['John', 'saw', 'Mary']
+
     """
     return [w for (w, t) in tagged_sentence]
 
