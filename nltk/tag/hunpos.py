@@ -33,10 +33,10 @@ class HunposTagger(TaggerI):
 
     Example:
 
+        >>> from nltk.tag.hunpos import HunposTagger
         >>> ht = HunposTagger('english.model')
         >>> ht.tag('What is the airspeed of an unladen swallow ?'.split())
-        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
-         ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
+        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
         >>> ht.close()
 
     This class communicates with the hunpos-tag binary via pipes. When the
@@ -47,8 +47,7 @@ class HunposTagger(TaggerI):
         >>> with HunposTagger('english.model') as ht:
         ...     ht.tag('What is the airspeed of an unladen swallow ?'.split())
         ...
-        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
-         ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
+        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
     """
 
     def __init__(self, path_to_model, path_to_bin=None,
