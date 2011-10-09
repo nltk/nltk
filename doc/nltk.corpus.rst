@@ -1,0 +1,5 @@
+nltk.corpus
+==========
+
+.. automodule:: nltk.corpus
+   :members:

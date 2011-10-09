@@ -1,0 +1,5 @@
+nltk.inference
+==========
+
+.. automodule:: nltk.inference
+   :members:

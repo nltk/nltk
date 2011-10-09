@@ -1,0 +1,5 @@
+nltk.metrics
+==========
+
+.. automodule:: nltk.metrics
+   :members:
