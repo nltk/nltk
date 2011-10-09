@@ -11,15 +11,17 @@ about the location in a document where they were originally found.
 Sourced strings are subclassed from Python strings.  As a result, they
 can usually be used anywhere a normal Python string can be used.
 
-  >>> newt_contents = '''\
-  ... She turned me into a newt!
-  ... I got better.'''
-  >>> newt_doc = SourcedString(newt_contents, 'newt.txt')
-  >>> print repr(newt_doc)
-  'She turned me into a newt!\nI got better.'@[0:40]
-  >>> newt = newt_doc.split()[5] # Find the sixth word.
-  >>> print repr(newt)
-  'newt!'@[21:26]
+    >>> from nltk.sourcedstring import SourcedString
+    >>> newt_contents = '''
+    ... She turned me into a newt!
+    ... I got better.'''.strip()
+    >>> newt_doc = SourcedString(newt_contents, 'newt.txt')
+    >>> newt_doc
+    'She turned me into a newt!\\nI got better.'@[0:40]
+    >>> newt = newt_doc.split()[5] # Find the sixth word.
+    >>> newt
+    'newt!'@[21:26]
+
 """
 
 import re, sys
