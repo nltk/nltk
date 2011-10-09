@@ -78,7 +78,7 @@ class HunposTagger(TaggerI):
                 verbose=verbose)
 
         if not os.path.isfile(path_to_model):
-            raise IOError("Hunpos model file not found: %s" % model_file)
+            raise IOError("Hunpos model file not found: %s" % path_to_model)
         self._hunpos_model = path_to_model
         self._encoding = encoding
         self._hunpos = Popen([self._hunpos_bin, self._hunpos_model],
