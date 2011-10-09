@@ -72,13 +72,15 @@ class FreqDist(dict):
     following code will produce a frequency distribution that encodes
     how often each word occurs in a text:
 
+        >>> from nltk.tokenize import word_tokenize
+        >>> sent = 'This is an example sentence'
         >>> fdist = FreqDist()
-        >>> for word in tokenize.whitespace(sent):
+        >>> for word in word_tokenize(sent):
         ...    fdist.inc(word.lower())
 
     An equivalent way to do this is with the initializer:
 
-        >>> fdist = FreqDist(word.lower() for word in tokenize.whitespace(sent))
+        >>> fdist = FreqDist(word.lower() for word in word_tokenize(sent))
 
     """
     def __init__(self, samples=None):
