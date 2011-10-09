@@ -76,7 +76,7 @@ class ClassifierI(object):
         """
         Apply L{self.classify()} to each element of C{featuresets}.  I.e.:
 
-            >>> return [self.classify(fs) for fs in featuresets]
+            return [self.classify(fs) for fs in featuresets]
 
         @rtype: C{list} of I{label}
         """
@@ -86,7 +86,7 @@ class ClassifierI(object):
         """
         Apply L{self.prob_classify()} to each element of C{featuresets}.  I.e.:
 
-            >>> return [self.prob_classify(fs) for fs in featuresets]
+            return [self.prob_classify(fs) for fs in featuresets]
 
         @rtype: C{list} of L{ProbDistI <nltk.probability.ProbDistI>}
         """
@@ -139,7 +139,7 @@ class MultiClassifierI(object):
         """
         Apply L{self.classify()} to each element of C{featuresets}.  I.e.:
 
-            >>> return [self.classify(fs) for fs in featuresets]
+            return [self.classify(fs) for fs in featuresets]
             
         @rtype: C{list} of (C{set} of I{label})
         """
@@ -149,7 +149,7 @@ class MultiClassifierI(object):
         """
         Apply L{self.prob_classify()} to each element of C{featuresets}.  I.e.:
 
-            >>> return [self.prob_classify(fs) for fs in featuresets]
+            return [self.prob_classify(fs) for fs in featuresets]
             
         @rtype: C{list} of L{ProbDistI <nltk.probability.ProbDistI>}
         """

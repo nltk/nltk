@@ -46,7 +46,7 @@ class TaggerI(object):
         """
         Apply L{self.tag()} to each element of C{sentences}.  I.e.:
 
-            >>> return [self.tag(sent) for sent in sentences]
+            return [self.tag(sent) for sent in sentences]
         """
         return [self.tag(sent) for sent in sentences]
 

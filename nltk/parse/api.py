@@ -115,7 +115,7 @@ class ParserI(object):
         """
         Apply L{self.parse()} to each element of C{sents}.  I.e.:
 
-            >>> return [self.parse(sent) for sent in sents]
+            return [self.parse(sent) for sent in sents]
 
         @rtype: C{list} of L{Tree}
         """
@@ -125,7 +125,7 @@ class ParserI(object):
         """
         Apply L{self.nbest_parse()} to each element of C{sents}.  I.e.:
 
-            >>> return [self.nbest_parse(sent, n) for sent in sents]
+            return [self.nbest_parse(sent, n) for sent in sents]
 
         @rtype: C{list} of C{list} of L{Tree}
         """
@@ -135,7 +135,7 @@ class ParserI(object):
         """
         Apply L{self.iter_parse()} to each element of C{sents}.  I.e.:
 
-            >>> return [self.iter_parse(sent) for sent in sents]
+            return [self.iter_parse(sent) for sent in sents]
 
         @rtype: C{list} of C{iterator} of L{Tree}
         """
@@ -145,7 +145,7 @@ class ParserI(object):
         """
         Apply L{self.prob_parse()} to each element of C{sents}.  I.e.:
 
-            >>> return [self.prob_parse(sent) for sent in sents]
+            return [self.prob_parse(sent) for sent in sents]
 
         @rtype: C{list} of L{ProbDistI} of L{Tree}
         """

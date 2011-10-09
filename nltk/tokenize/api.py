@@ -43,7 +43,7 @@ class TokenizerI(object):
         """
         Apply L{self.tokenize()} to each element of C{strings}.  I.e.:
 
-            >>> return [self.tokenize(s) for s in strings]
+            return [self.tokenize(s) for s in strings]
 
         @rtype: C{list} of C{list} of C{str}
         """
@@ -53,7 +53,7 @@ class TokenizerI(object):
         """
         Apply L{self.span_tokenize()} to each element of C{strings}.  I.e.:
 
-            >>> return [self.span_tokenize(s) for s in strings]
+            return [self.span_tokenize(s) for s in strings]
 
         @rtype: C{iter} of C{list} of C{tuple} of C{int}
         """
