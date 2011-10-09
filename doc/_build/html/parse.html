@@ -1,0 +1,1496 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.parse &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="index.html" />
+    <link rel="up" title="API Documentation" href="api.html" />
+    <link rel="next" title="nltk.sem" href="sem.html" />
+    <link rel="prev" title="nltk.model" href="model.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sem.html" title="nltk.sem"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="model.html" title="nltk.model"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nltk.parse">
+<span id="nltk-parse"></span><h1>nltk.parse<a class="headerlink" href="#module-nltk.parse" title="Permalink to this headline">¶</a></h1>
+<p>Classes and interfaces for producing tree structures that represent
+the internal organization of a text.  This task is known as X{parsing}
+the text, and the resulting tree structures are called the text&#8217;s
+X{parses}.  Typically, the text is a single sentence, and the tree
+structure represents the syntactic structure of the sentence.
+However, parsers can also be used in other domains.  For example,
+parsers can be used to derive the morphological structure of the
+morphemes that make up a word, or to derive the discourse structure
+for a set of utterances.</p>
+<p>Sometimes, a single piece of text can be represented by more than one
+tree structure.  Texts represented by more than one tree structure are
+called X{ambiguous} texts.  Note that there are actually two ways in
+which a text can be ambiguous:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The text has multiple correct parses.</li>
+<li>There is not enough information to decide which of several
+candidate parses is correct.</li>
+</ul>
+</div></blockquote>
+<p>However, the parser module does I{not} distinguish these two types of
+ambiguity.</p>
+<p>The parser module defines C{ParserI}, a standard interface for parsing
+texts; and two simple implementations of that interface,
+C{ShiftReduceParser} and C{RecursiveDescentParser}.  It also contains
+three sub-modules for specialized kinds of parsing:</p>
+<blockquote>
+<div><ul class="simple">
+<li>C{nltk.parser.chart} defines chart parsing, which uses dynamic
+programming to efficiently parse texts.</li>
+<li>C{nltk.parser.probabilistic} defines probabilistic parsing, which
+associates a probability with each parse.</li>
+</ul>
+</div></blockquote>
+<dl class="class">
+<dt id="nltk.parse.ParserI">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">ParserI</tt><a class="headerlink" href="#nltk.parse.ParserI" title="Permalink to this definition">¶</a></dt>
+<dd><p>A processing class for deriving trees that represent possible
+structures for a sequence of tokens.  These tree structures are
+known as X{parses}.  Typically, parsers are used to derive syntax
+trees for sentences.  But parsers can also be used to derive other
+kinds of tree structure, such as morphological trees and discourse
+structures.</p>
+<dl class="docutils">
+<dt>Subclasses must define:</dt>
+<dd><ul class="first last simple">
+<li>at least one of: L{parse()}, L{nbest_parse()}, L{iter_parse()},
+L{batch_parse()}, L{batch_nbest_parse()}, L{batch_iter_parse()}.</li>
+</ul>
+</dd>
+<dt>Subclasses may define:</dt>
+<dd><ul class="first last simple">
+<li>L{grammar()}</li>
+<li>either L{prob_parse()} or L{batch_prob_parse()} (or both)</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="nltk.parse.ParserI.batch_iter_parse">
+<tt class="descname">batch_iter_parse</tt><big>(</big><em>sents</em><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.batch_iter_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply L{self.iter_parse()} to each element of C{sents}.  I.e.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">iter_parse</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">sents</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>&#64;rtype: C{list} of C{iterator} of L{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ParserI.batch_nbest_parse">
+<tt class="descname">batch_nbest_parse</tt><big>(</big><em>sents</em>, <em>n=None</em><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.batch_nbest_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply L{self.nbest_parse()} to each element of C{sents}.  I.e.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nbest_parse</span><span class="p">(</span><span class="n">sent</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">sents</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>&#64;rtype: C{list} of C{list} of L{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ParserI.batch_parse">
+<tt class="descname">batch_parse</tt><big>(</big><em>sents</em><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.batch_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply L{self.parse()} to each element of C{sents}.  I.e.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">sents</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>&#64;rtype: C{list} of L{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ParserI.batch_prob_parse">
+<tt class="descname">batch_prob_parse</tt><big>(</big><em>sents</em><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.batch_prob_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply L{self.prob_parse()} to each element of C{sents}.  I.e.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prob_parse</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">sents</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>&#64;rtype: C{list} of L{ProbDistI} of L{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ParserI.grammar">
+<tt class="descname">grammar</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.grammar" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The grammar used by this parser.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ParserI.iter_parse">
+<tt class="descname">iter_parse</tt><big>(</big><em>sent</em><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.iter_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: An iterator that generates parse trees that represent
+possible structures for the given sentence.  When possible,
+this list is sorted from most likely to least likely.</p>
+<p>&#64;param sent: The sentence to be parsed
+&#64;type sent: L{list} of L{string}
+&#64;rtype: C{iterator} of L{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ParserI.nbest_parse">
+<tt class="descname">nbest_parse</tt><big>(</big><em>sent</em>, <em>n=None</em><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.nbest_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: A list of parse trees that represent possible
+structures for the given sentence.  When possible, this list is
+sorted from most likely to least likely.  If C{n} is
+specified, then the returned list will contain at most C{n}
+parse trees.</p>
+<p>&#64;param sent: The sentence to be parsed
+&#64;type sent: L{list} of L{string}
+&#64;param n: The maximum number of trees to return.
+&#64;type n: C{int}
+&#64;rtype: C{list} of L{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ParserI.parse">
+<tt class="descname">parse</tt><big>(</big><em>sent</em><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: A parse tree that represents the structure of the
+given sentence, or C{None} if no parse tree is found.  If
+multiple parses are found, then return the best parse.</p>
+<p>&#64;param sent: The sentence to be parsed
+&#64;type sent: L{list} of L{string}
+&#64;rtype: L{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ParserI.prob_parse">
+<tt class="descname">prob_parse</tt><big>(</big><em>sent</em><big>)</big><a class="headerlink" href="#nltk.parse.ParserI.prob_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: A probability distribution over the possible parse
+trees for the given sentence.  If there are no possible parse
+trees for the given sentence, return a probability distribution
+that assigns a probability of 1.0 to C{None}.</p>
+<p>&#64;param sent: The sentence to be parsed
+&#64;type sent: L{list} of L{string}
+&#64;rtype: L{ProbDistI} of L{Tree}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.parse.load_parser">
+<tt class="descclassname">nltk.parse.</tt><tt class="descname">load_parser</tt><big>(</big><em>grammar_url</em>, <em>trace=0</em>, <em>parser=None</em>, <em>chart_class=None</em>, <em>beam_size=0</em>, <em>**load_args</em><big>)</big><a class="headerlink" href="#nltk.parse.load_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a grammar from a file, and build a parser based on that grammar. 
+The parser depends on the grammar format, and might also depend
+on properties of the grammar itself.</p>
+<dl class="docutils">
+<dt>The following grammar formats are currently supported:</dt>
+<dd><ul class="first last simple">
+<li>C{&#8216;cfg&#8217;}  (CFGs: L{ContextFreeGrammar})</li>
+<li>C{&#8216;pcfg&#8217;} (probabilistic CFGs: L{WeightedGrammar})</li>
+<li>C{&#8216;fcfg&#8217;} (feature-based CFGs: L{ContextFreeGrammar})</li>
+</ul>
+</dd>
+</dl>
+<p>&#64;type grammar_url: C{str}
+&#64;param grammar_url: A URL specifying where the grammar is located.</p>
+<blockquote>
+<div>The default protocol is C{&#8220;nltk:&#8221;}, which searches for the file 
+in the the NLTK data package.</div></blockquote>
+<p>&#64;type trace: C{int}
+&#64;param trace: The level of tracing that should be used when</p>
+<blockquote>
+<div>parsing a text.  C{0} will generate no tracing output;
+and higher numbers will produce more verbose tracing output.</div></blockquote>
+<dl class="docutils">
+<dt>&#64;param parser: The class used for parsing; should be L{ChartParser}</dt>
+<dd>or a subclass.
+If C{None}, the class depends on the grammar format.</dd>
+<dt>&#64;param chart_class: The class used for storing the chart;</dt>
+<dd>should be L{Chart} or a subclass. 
+Only used for CFGs and feature CFGs.
+If C{None}, the chart class depends on the grammar format.</dd>
+</dl>
+<p>&#64;type beam_size: C{int}
+&#64;param beam_size: The maximum length for the parser&#8217;s edge queue.</p>
+<blockquote>
+<div>Only used for probabilistic CFGs.</div></blockquote>
+<dl class="docutils">
+<dt>&#64;param load_args: Keyword parameters used when loading the grammar.</dt>
+<dd>See L{data.load} for more information.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.RecursiveDescentParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">RecursiveDescentParser</tt><big>(</big><em>grammar</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.RecursiveDescentParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple top-down CFG parser that parses texts by recursively
+expanding the fringe of a C{Tree}, and matching it against a
+text.</p>
+<p>C{RecursiveDescentParser} uses a list of tree locations called a
+X{frontier} to remember which subtrees have not yet been expanded
+and which leaves have not yet been matched against the text.  Each
+tree location consists of a list of child indices specifying the
+path from the root of the tree to a subtree or a leaf; see the
+reference documentation for C{Tree} for more information
+about tree locations.</p>
+<p>When the parser begins parsing a text, it constructs a tree
+containing only the start symbol, and a frontier containing the
+location of the tree&#8217;s root node.  It then extends the tree to
+cover the text, using the following recursive procedure:</p>
+<blockquote>
+<div><ul class="simple">
+<li>If the frontier is empty, and the text is covered by the tree,
+then return the tree as a possible parse.</li>
+<li>If the frontier is empty, and the text is not covered by the
+tree, then return no parses.</li>
+<li>If the first element of the frontier is a subtree, then
+use CFG productions to X{expand} it.  For each applicable
+production, add the expanded subtree&#8217;s children to the
+frontier, and recursively find all parses that can be
+generated by the new tree and frontier.</li>
+<li>If the first element of the frontier is a token, then X{match}
+it against the next token from the text.  Remove the token
+from the frontier, and recursively find all parses that can be
+generated by the new tree and frontier.</li>
+</ul>
+</div></blockquote>
+<p>&#64;see: C{nltk.grammar}</p>
+<dl class="method">
+<dt id="nltk.parse.RecursiveDescentParser.trace">
+<tt class="descname">trace</tt><big>(</big><em>trace=2</em><big>)</big><a class="headerlink" href="#nltk.parse.RecursiveDescentParser.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the level of tracing output that should be generated when
+parsing a text.</p>
+<p>&#64;type trace: C{int}
+&#64;param trace: The trace level.  A trace level of C{0} will</p>
+<blockquote>
+<div>generate no tracing output; and higher trace levels will
+produce more verbose tracing output.</div></blockquote>
+<p>&#64;rtype: C{None}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.SteppingRecursiveDescentParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">SteppingRecursiveDescentParser</tt><big>(</big><em>grammar</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A C{RecursiveDescentParser} that allows you to step through the
+parsing process, performing a single operation at a time.</p>
+<p>The C{initialize} method is used to start parsing a text.
+C{expand} expands the first element on the frontier using a single
+CFG production, and C{match} matches the first element on the
+frontier against the next text token. C{backtrack} undoes the most
+recent expand or match operation.  C{step} performs a single
+expand, match, or backtrack operation.  C{parses} returns the set
+of parses that have been found by the parser.</p>
+<dl class="docutils">
+<dt>&#64;ivar _history: A list of C{(rtext, tree, frontier)} tripples,</dt>
+<dd>containing the previous states of the parser.  This history is
+used to implement the C{backtrack} operation.</dd>
+<dt>&#64;ivar _tried_e: A record of all productions that have been tried</dt>
+<dd>for a given tree.  This record is used by C{expand} to perform
+the next untried production.</dd>
+<dt>&#64;ivar _tried_m: A record of what tokens have been matched for a</dt>
+<dd>given tree.  This record is used by C{step} to decide whether
+or not to match a token.</dd>
+</dl>
+<p>&#64;see: C{nltk.grammar}</p>
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.backtrack">
+<tt class="descname">backtrack</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.backtrack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the parser to its state before the most recent
+match or expand operation.  Calling C{undo} repeatedly return
+the parser to successively earlier states.  If no match or
+expand operations have been performed, C{undo} will make no
+changes.</p>
+<p>&#64;return: true if an operation was successfully undone.
+&#64;rtype: C{boolean}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.currently_complete">
+<tt class="descname">currently_complete</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.currently_complete" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: Whether the parser&#8217;s current state represents a</dt>
+<dd>complete parse.</dd>
+</dl>
+<p>&#64;rtype: C{boolean}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.expand">
+<tt class="descname">expand</tt><big>(</big><em>production=None</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand the first element of the frontier.  In particular, if
+the first element of the frontier is a subtree whose node type
+is equal to C{production}&#8217;s left hand side, then add a child
+to that subtree for each element of C{production}&#8217;s right hand
+side.  If C{production} is not specified, then use the first
+untried expandable production.  If all expandable productions
+have been tried, do nothing.</p>
+<dl class="docutils">
+<dt>&#64;return: The production used to expand the frontier, if an</dt>
+<dd>expansion was performed.  If no expansion was performed,
+return C{None}.</dd>
+</dl>
+<p>&#64;rtype: C{Production} or C{None}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.expandable_productions">
+<tt class="descname">expandable_productions</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.expandable_productions" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: A list of all the productions for which expansions</dt>
+<dd>are available for the current parser state.</dd>
+</dl>
+<p>&#64;rtype: C{list} of C{Production}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.frontier">
+<tt class="descname">frontier</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.frontier" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: A list of the tree locations of all subtrees that</dt>
+<dd>have not yet been expanded, and all leaves that have not
+yet been matched.</dd>
+</dl>
+<p>&#64;rtype: C{list} of C{tuple} of C{int}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.initialize">
+<tt class="descname">initialize</tt><big>(</big><em>tokens</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start parsing a given text.  This sets the parser&#8217;s tree to
+the start symbol, its frontier to the root node, and its
+remaining text to C{token[&#8216;SUBTOKENS&#8217;]}.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.match">
+<tt class="descname">match</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match the first element of the frontier.  In particular, if
+the first element of the frontier has the same type as the
+next text token, then substitute the text token into the tree.</p>
+<dl class="docutils">
+<dt>&#64;return: The token matched, if a match operation was</dt>
+<dd>performed.  If no match was performed, return C{None}</dd>
+</dl>
+<p>&#64;rtype: C{String} or C{None}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.parses">
+<tt class="descname">parses</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.parses" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: A list of the parses that have been found by this</dt>
+<dd>parser so far.</dd>
+</dl>
+<p>&#64;rtype: C{list} of C{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.remaining_text">
+<tt class="descname">remaining_text</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.remaining_text" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: The portion of the text that is not yet covered by the</dt>
+<dd>tree.</dd>
+</dl>
+<p>&#64;rtype: C{list} of C{String}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.set_grammar">
+<tt class="descname">set_grammar</tt><big>(</big><em>grammar</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.set_grammar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the grammar used to parse texts.</p>
+<p>&#64;param grammar: The new grammar.
+&#64;type grammar: C{CFG}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.step">
+<tt class="descname">step</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a single parsing operation.  If an untried match is
+possible, then perform the match, and return the matched
+token.  If an untried expansion is possible, then perform the
+expansion, and return the production that it is based on.  If
+backtracking is possible, then backtrack, and return 1.
+Otherwise, return 0.</p>
+<dl class="docutils">
+<dt>&#64;return: 0 if no operation was performed; a token if a match</dt>
+<dd>was performed; a production if an expansion was performed;
+and 1 if a backtrack operation was performed.</dd>
+</dl>
+<p>&#64;rtype: C{Production} or C{String} or C{boolean}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.tree">
+<tt class="descname">tree</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.tree" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: A partial structure for the text that is</dt>
+<dd>currently being parsed.  The elements specified by the
+frontier have not yet been expanded or matched.</dd>
+</dl>
+<p>&#64;rtype: C{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.untried_expandable_productions">
+<tt class="descname">untried_expandable_productions</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.untried_expandable_productions" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: A list of all the untried productions for which</dt>
+<dd>expansions are available for the current parser state.</dd>
+</dl>
+<p>&#64;rtype: C{list} of C{Production}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingRecursiveDescentParser.untried_match">
+<tt class="descname">untried_match</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingRecursiveDescentParser.untried_match" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: Whether the first element of the frontier is a token</dt>
+<dd>that has not yet been matched.</dd>
+</dl>
+<p>&#64;rtype: C{boolean}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.ShiftReduceParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">ShiftReduceParser</tt><big>(</big><em>grammar</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.ShiftReduceParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple bottom-up CFG parser that uses two operations, &#8220;shift&#8221;
+and &#8220;reduce&#8221;, to find a single parse for a text.</p>
+<p>C{ShiftReduceParser} maintains a stack, which records the
+structure of a portion of the text.  This stack is a list of
+C{String}s and C{Tree}s that collectively cover a portion of
+the text.  For example, while parsing the sentence &#8220;the dog saw
+the man&#8221; with a typical grammar, C{ShiftReduceParser} will produce
+the following stack, which covers &#8220;the dog saw&#8221;:</p>
+<div class="highlight-python"><pre>[(NP: (Det: 'the') (N: 'dog')), (V: 'saw')]</pre>
+</div>
+<p>C{ShiftReduceParser} attempts to extend the stack to cover the
+entire text, and to combine the stack elements into a single tree,
+producing a complete parse for the sentence.</p>
+<p>Initially, the stack is empty.  It is extended to cover the text,
+from left to right, by repeatedly applying two operations:</p>
+<blockquote>
+<div><ul class="simple">
+<li>X{shift} moves a token from the beginning of the text to the
+end of the stack.</li>
+<li>X{reduce} uses a CFG production to combine the rightmost stack
+elements into a single C{Tree}.</li>
+</ul>
+</div></blockquote>
+<p>Often, more than one operation can be performed on a given stack.
+In this case, C{ShiftReduceParser} uses the following heuristics
+to decide which operation to perform:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Only shift if no reductions are available.</li>
+<li>If multiple reductions are available, then apply the reduction
+whose CFG production is listed earliest in the grammar.</li>
+</ul>
+</div></blockquote>
+<p>Note that these heuristics are not guaranteed to choose an
+operation that leads to a parse of the text.  Also, if multiple
+parses exists, C{ShiftReduceParser} will return at most one of
+them.</p>
+<p>&#64;see: C{nltk.grammar}</p>
+<dl class="method">
+<dt id="nltk.parse.ShiftReduceParser.trace">
+<tt class="descname">trace</tt><big>(</big><em>trace=2</em><big>)</big><a class="headerlink" href="#nltk.parse.ShiftReduceParser.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the level of tracing output that should be generated when
+parsing a text.</p>
+<p>&#64;type trace: C{int}
+&#64;param trace: The trace level.  A trace level of C{0} will</p>
+<blockquote>
+<div>generate no tracing output; and higher trace levels will
+produce more verbose tracing output.</div></blockquote>
+<p>&#64;rtype: C{None}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.SteppingShiftReduceParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">SteppingShiftReduceParser</tt><big>(</big><em>grammar</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A C{ShiftReduceParser} that allows you to setp through the parsing
+process, performing a single operation at a time.  It also allows
+you to change the parser&#8217;s grammar midway through parsing a text.</p>
+<p>The C{initialize} method is used to start parsing a text.
+C{shift} performs a single shift operation, and C{reduce} performs
+a single reduce operation.  C{step} will perform a single reduce
+operation if possible; otherwise, it will perform a single shift
+operation.  C{parses} returns the set of parses that have been
+found by the parser.</p>
+<dl class="docutils">
+<dt>&#64;ivar _history: A list of C{(stack, remaining_text)} pairs,</dt>
+<dd>containing all of the previous states of the parser.  This
+history is used to implement the C{undo} operation.</dd>
+</dl>
+<p>&#64;see: C{nltk.grammar}</p>
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.initialize">
+<tt class="descname">initialize</tt><big>(</big><em>tokens</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start parsing a given text.  This sets the parser&#8217;s stack to
+C{[]} and sets its remaining text to C{tokens}.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.parses">
+<tt class="descname">parses</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.parses" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: A list of the parses that have been found by this</dt>
+<dd>parser so far.</dd>
+</dl>
+<p>&#64;rtype: C{list} of C{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.reduce">
+<tt class="descname">reduce</tt><big>(</big><em>production=None</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use C{production} to combine the rightmost stack elements into
+a single C{Tree}.  If C{production} does not match the
+rightmost stack elements, then do nothing.</p>
+<dl class="docutils">
+<dt>&#64;return: The production used to reduce the stack, if a</dt>
+<dd>reduction was performed.  If no reduction was performed,
+return C{None}.</dd>
+</dl>
+<p>&#64;rtype: C{Production} or C{None}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.reducible_productions">
+<tt class="descname">reducible_productions</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.reducible_productions" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: A list of the productions for which reductions are</dt>
+<dd>available for the current parser state.</dd>
+</dl>
+<p>&#64;rtype: C{list} of C{Production}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.remaining_text">
+<tt class="descname">remaining_text</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.remaining_text" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return: The portion of the text that is not yet covered by the</dt>
+<dd>stack.</dd>
+</dl>
+<p>&#64;rtype: C{list} of C{String}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.set_grammar">
+<tt class="descname">set_grammar</tt><big>(</big><em>grammar</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.set_grammar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the grammar used to parse texts.</p>
+<p>&#64;param grammar: The new grammar.
+&#64;type grammar: C{CFG}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.shift">
+<tt class="descname">shift</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move a token from the beginning of the remaining text to the
+end of the stack.  If there are no more tokens in the
+remaining text, then do nothing.</p>
+<p>&#64;return: True if the shift operation was successful.
+&#64;rtype: C{boolean}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.stack">
+<tt class="descname">stack</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.stack" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The parser&#8217;s stack.
+&#64;rtype: C{list} of C{String} and C{Tree}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.step">
+<tt class="descname">step</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a single parsing operation.  If a reduction is
+possible, then perform that reduction, and return the
+production that it is based on.  Otherwise, if a shift is
+possible, then perform it, and return 1.  Otherwise,
+return 0.</p>
+<dl class="docutils">
+<dt>&#64;return: 0 if no operation was performed; 1 if a shift was</dt>
+<dd>performed; and the CFG production used to reduce if a
+reduction was performed.</dd>
+</dl>
+<p>&#64;rtype: C{Production} or C{boolean}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingShiftReduceParser.undo">
+<tt class="descname">undo</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingShiftReduceParser.undo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the parser to its state before the most recent
+shift or reduce operation.  Calling C{undo} repeatedly return
+the parser to successively earlier states.  If no shift or
+reduce operations have been performed, C{undo} will make no
+changes.</p>
+<p>&#64;return: true if an operation was successfully undone.
+&#64;rtype: C{boolean}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.ChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">ChartParser</tt><big>(</big><em>grammar, strategy=[&lt;nltk.parse.chart.LeafInitRule object at 0x3385c90&gt;, &lt;nltk.parse.chart.EmptyPredictRule object at 0x3385cd0&gt;, &lt;nltk.parse.chart.BottomUpPredictCombineRule object at 0x3385d10&gt;, &lt;nltk.parse.chart.SingleEdgeFundamentalRule object at 0x3385d50&gt;], trace=0, trace_chart_width=50, use_agenda=True, chart_class=&lt;class 'nltk.parse.chart.Chart'&gt;</em><big>)</big><a class="headerlink" href="#nltk.parse.ChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A generic chart parser.  A X{strategy}, or list of
+L{ChartRules&lt;ChartRuleI&gt;}, is used to decide what edges to add to
+the chart.  In particular, C{ChartParser} uses the following
+algorithm to parse texts:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">Until no new edges are added:
+- For each I{rule} in I{strategy}:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Apply I{rule} to any applicable edges in the chart.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Return any complete parses in the chart</p>
+</li>
+</ul>
+</div></blockquote>
+<dl class="method">
+<dt id="nltk.parse.ChartParser.chart_parse">
+<tt class="descname">chart_parse</tt><big>(</big><em>tokens</em>, <em>trace=None</em><big>)</big><a class="headerlink" href="#nltk.parse.ChartParser.chart_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The final parse L{Chart}, 
+from which all possible parse trees can be extracted.</p>
+<p>&#64;param tokens: The sentence to be parsed
+&#64;type tokens: L{list} of L{string}
+&#64;rtype: L{Chart}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.SteppingChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">SteppingChartParser</tt><big>(</big><em>grammar</em>, <em>strategy=</em><span class="optional">[</span><span class="optional">]</span>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A C{ChartParser} that allows you to step through the parsing
+process, adding a single edge at a time.  It also allows you to
+change the parser&#8217;s strategy or grammar midway through parsing a
+text.</p>
+<p>The C{initialize} method is used to start parsing a text.  C{step}
+adds a single edge to the chart.  C{set_strategy} changes the
+strategy used by the chart parser.  C{parses} returns the set of
+parses that has been found by the chart parser.</p>
+<dl class="docutils">
+<dt>&#64;ivar _restart: Records whether the parser&#8217;s strategy, grammar,</dt>
+<dd>or chart has been changed.  If so, then L{step} must restart
+the parsing algorithm.</dd>
+</dl>
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.chart">
+<tt class="descname">chart</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The chart that is used by this parser.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.current_chartrule">
+<tt class="descname">current_chartrule</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.current_chartrule" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The chart rule used to generate the most recent edge.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.grammar">
+<tt class="descname">grammar</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.grammar" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The grammar used by this parser.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.initialize">
+<tt class="descname">initialize</tt><big>(</big><em>tokens</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Begin parsing the given tokens.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.parses">
+<tt class="descname">parses</tt><big>(</big><em>tree_class=&lt;class 'nltk.tree.Tree'&gt;</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.parses" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The parse trees currently contained in the chart.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.set_chart">
+<tt class="descname">set_chart</tt><big>(</big><em>chart</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.set_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a given chart into the chart parser.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.set_grammar">
+<tt class="descname">set_grammar</tt><big>(</big><em>grammar</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.set_grammar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the grammar used by the parser.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.set_strategy">
+<tt class="descname">set_strategy</tt><big>(</big><em>strategy</em><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.set_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the startegy that the parser uses to decide which edges
+to add to the chart.
+&#64;type strategy: C{list} of L{ChartRuleI}
+&#64;param strategy: A list of rules that should be used to decide</p>
+<blockquote>
+<div>what edges to add to the chart.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.step">
+<tt class="descname">step</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: A generator that adds edges to the chart, one at a
+time.  Each time the generator is resumed, it adds a single
+edge and yields that edge.  If no more edges can be added,
+then it yields C{None}.</p>
+<p>If the parser&#8217;s strategy, grammar, or chart is changed, then
+the generator will continue adding edges using the new
+strategy, grammar, or chart.</p>
+<p>Note that this generator never terminates, since the grammar
+or strategy might be changed to values that would add new
+edges.  Instead, it yields C{None} when no more edges can be
+added with the current strategy and grammar.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.SteppingChartParser.strategy">
+<tt class="descname">strategy</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.SteppingChartParser.strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: The strategy used by this parser.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.TopDownChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">TopDownChartParser</tt><big>(</big><em>grammar</em>, <em>**parser_args</em><big>)</big><a class="headerlink" href="#nltk.parse.TopDownChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A L{ChartParser} using a top-down parsing strategy.
+See L{ChartParser} for more information.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.BottomUpChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">BottomUpChartParser</tt><big>(</big><em>grammar</em>, <em>**parser_args</em><big>)</big><a class="headerlink" href="#nltk.parse.BottomUpChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A L{ChartParser} using a bottom-up parsing strategy.
+See L{ChartParser} for more information.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.BottomUpLeftCornerChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">BottomUpLeftCornerChartParser</tt><big>(</big><em>grammar</em>, <em>**parser_args</em><big>)</big><a class="headerlink" href="#nltk.parse.BottomUpLeftCornerChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A L{ChartParser} using a bottom-up left-corner parsing strategy.
+This strategy is often more efficient than standard bottom-up.
+See L{ChartParser} for more information.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.BottomUpProbabilisticChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">BottomUpProbabilisticChartParser</tt><big>(</big><em>grammar</em>, <em>beam_size=0</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.BottomUpProbabilisticChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract bottom-up parser for C{PCFG}s that uses a C{Chart} to
+record partial results.  C{BottomUpProbabilisticChartParser} maintains 
+a queue of edges that can be added to the chart.  This queue is
+initialized with edges for each token in the text that is being
+parsed.  C{BottomUpProbabilisticChartParser} inserts these edges into 
+the chart one at a time, starting with the most likely edges, and
+proceeding to less likely edges.  For each edge that is added to
+the chart, it may become possible to insert additional edges into
+the chart; these are added to the queue.  This process continues
+until enough complete parses have been generated, or until the
+queue is empty.</p>
+<p>The sorting order for the queue is not specified by
+C{BottomUpProbabilisticChartParser}.  Different sorting orders will 
+result in different search strategies.  The sorting order for the 
+queue is defined by the method C{sort_queue}; subclasses are required
+to provide a definition for this method.</p>
+<p>&#64;type _grammar: C{PCFG}
+&#64;ivar _grammar: The grammar used to parse sentences.
+&#64;type _trace: C{int}
+&#64;ivar _trace: The level of tracing output that should be generated</p>
+<blockquote>
+<div>when parsing a text.</div></blockquote>
+<dl class="method">
+<dt id="nltk.parse.BottomUpProbabilisticChartParser.sort_queue">
+<tt class="descname">sort_queue</tt><big>(</big><em>queue</em>, <em>chart</em><big>)</big><a class="headerlink" href="#nltk.parse.BottomUpProbabilisticChartParser.sort_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the given queue of C{Edge}s, placing the edge that should
+be tried first at the beginning of the queue.  This method
+will be called after each C{Edge} is added to the queue.</p>
+<dl class="docutils">
+<dt>&#64;param queue: The queue of C{Edge}s to sort.  Each edge in</dt>
+<dd>this queue is an edge that could be added to the chart by
+the fundamental rule; but that has not yet been added.</dd>
+</dl>
+<p>&#64;type queue: C{list} of C{Edge}
+&#64;param chart: The chart being used to parse the text.  This</p>
+<blockquote>
+<div>chart can be used to provide extra information for sorting
+the queue.</div></blockquote>
+<p>&#64;type chart: C{Chart}
+&#64;rtype: C{None}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.BottomUpProbabilisticChartParser.trace">
+<tt class="descname">trace</tt><big>(</big><em>trace=2</em><big>)</big><a class="headerlink" href="#nltk.parse.BottomUpProbabilisticChartParser.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the level of tracing output that should be generated when
+parsing a text.</p>
+<p>&#64;type trace: C{int}
+&#64;param trace: The trace level.  A trace level of C{0} will</p>
+<blockquote>
+<div>generate no tracing output; and higher trace levels will
+produce more verbose tracing output.</div></blockquote>
+<p>&#64;rtype: C{None}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.InsideChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">InsideChartParser</tt><big>(</big><em>grammar</em>, <em>beam_size=0</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.InsideChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A bottom-up parser for C{PCFG}s that tries edges in descending
+order of the inside probabilities of their trees.  The X{inside
+probability} of a tree is simply the
+probability of the entire tree, ignoring its context.  In
+particular, the inside probability of a tree generated by
+production M{p} with children M{c[1]}, M{c[2]}, ..., M{c[n]} is
+P(M{p})*P(M{c[1]})*P(M{c[2]})*M{...}*P(M{c[n]}); and the inside
+probability of a token is 1 if it is present in the text, and 0 if
+it is absent.</p>
+<p>This sorting order results in a type of lowest-cost-first search
+strategy.</p>
+<dl class="method">
+<dt id="nltk.parse.InsideChartParser.sort_queue">
+<tt class="descname">sort_queue</tt><big>(</big><em>queue</em>, <em>chart</em><big>)</big><a class="headerlink" href="#nltk.parse.InsideChartParser.sort_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the given queue of edges, in descending order of the
+inside probabilities of the edges&#8217; trees.</p>
+<dl class="docutils">
+<dt>&#64;param queue: The queue of C{Edge}s to sort.  Each edge in</dt>
+<dd>this queue is an edge that could be added to the chart by
+the fundamental rule; but that has not yet been added.</dd>
+</dl>
+<p>&#64;type queue: C{list} of C{Edge}
+&#64;param chart: The chart being used to parse the text.  This</p>
+<blockquote>
+<div>chart can be used to provide extra information for sorting
+the queue.</div></blockquote>
+<p>&#64;type chart: C{Chart}
+&#64;rtype: C{None}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.RandomChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">RandomChartParser</tt><big>(</big><em>grammar</em>, <em>beam_size=0</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.RandomChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A bottom-up parser for C{PCFG}s that tries edges in random order.
+This sorting order results in a random search strategy.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.UnsortedChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">UnsortedChartParser</tt><big>(</big><em>grammar</em>, <em>beam_size=0</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.UnsortedChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A bottom-up parser for C{PCFG}s that tries edges in whatever order.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.LongestChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">LongestChartParser</tt><big>(</big><em>grammar</em>, <em>beam_size=0</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.LongestChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A bottom-up parser for C{PCFG}s that tries longer edges before
+shorter ones.  This sorting order results in a type of best-first
+search strategy.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.ViterbiParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">ViterbiParser</tt><big>(</big><em>grammar</em>, <em>trace=0</em><big>)</big><a class="headerlink" href="#nltk.parse.ViterbiParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A bottom-up C{PCFG} parser that uses dynamic programming to find
+the single most likely parse for a text.  The C{ViterbiParser} parser
+parses texts by filling in a X{most likely constituent table}.
+This table records the most probable tree representation for any
+given span and node value.  In particular, it has an entry for
+every start index, end index, and node value, recording the most
+likely subtree that spans from the start index to the end index,
+and has the given node value.</p>
+<p>The C{ViterbiParser} parser fills in this table incrementally.  It starts
+by filling in all entries for constituents that span one element
+of text (i.e., entries where the end index is one greater than the
+start index).  After it has filled in all table entries for
+constituents that span one element of text, it fills in the
+entries for constitutants that span two elements of text.  It
+continues filling in the entries for constituents spanning larger
+and larger portions of the text, until the entire table has been
+filled.  Finally, it returns the table entry for a constituent
+spanning the entire text, whose node value is the grammar&#8217;s start
+symbol.</p>
+<p>In order to find the most likely constituent with a given span and
+node value, the C{ViterbiParser} parser considers all productions that
+could produce that node value.  For each production, it finds all
+children that collectively cover the span and have the node values
+specified by the production&#8217;s right hand side.  If the probability
+of the tree formed by applying the production to the children is
+greater than the probability of the current entry in the table,
+then the table is updated with this new tree.</p>
+<p>A pseudo-code description of the algorithm used by
+C{ViterbiParser} is:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">Create an empty most likely constituent table, M{MLC}.</p>
+</li>
+<li><p class="first">For M{width} in 1...len(M{text}):
+- For M{start} in 1...len(M{text})-M{width}:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">For M{prod} in grammar.productions:
+- For each sequence of subtrees [M{t[1]}, M{t[2]}, ...,</p>
+<blockquote>
+<div><p>M{t[n]}] in M{MLC}, where M{t[i]}.node==M{prod}.rhs[i],
+and the sequence covers [M{start}:M{start}+M{width}]:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">M{old_p} = M{MLC}[M{start}, M{start+width}, M{prod}.lhs]</p>
+</li>
+<li><p class="first">M{new_p} = P(M{t[1]})*P(M{t[1]})*...*P(M{t[n]})*P(M{prod})</p>
+</li>
+<li><p class="first">if M{new_p} &gt; M{old_p}:
+- M{new_tree} = Tree(M{prod}.lhs, M{t[1]}, M{t[2]},</p>
+<blockquote>
+<div><p>..., M{t[n]})</p>
+</div></blockquote>
+<ul class="simple">
+<li>M{MLC}[M{start}, M{start+width}, M{prod}.lhs]
+= M{new_tree}</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Return M{MLC}[0, len(M{text}), M{start_symbol}]</p>
+</li>
+</ul>
+</div></blockquote>
+<p>&#64;type _grammar: C{WeightedGrammar}
+&#64;ivar _grammar: The grammar used to parse sentences.
+&#64;type _trace: C{int}
+&#64;ivar _trace: The level of tracing output that should be generated</p>
+<blockquote>
+<div>when parsing a text.</div></blockquote>
+<dl class="method">
+<dt id="nltk.parse.ViterbiParser.trace">
+<tt class="descname">trace</tt><big>(</big><em>trace=2</em><big>)</big><a class="headerlink" href="#nltk.parse.ViterbiParser.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the level of tracing output that should be generated when
+parsing a text.</p>
+<p>&#64;type trace: C{int}
+&#64;param trace: The trace level.  A trace level of C{0} will</p>
+<blockquote>
+<div>generate no tracing output; and higher trace levels will
+produce more verbose tracing output.</div></blockquote>
+<p>&#64;rtype: C{None}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.IncrementalChartParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">IncrementalChartParser</tt><big>(</big><em>grammar, strategy=[&lt;nltk.parse.chart.LeafInitRule object at 0x31c5290&gt;, &lt;nltk.parse.chart.EmptyPredictRule object at 0x31c52d0&gt;, &lt;nltk.parse.chart.BottomUpPredictCombineRule object at 0x31c5310&gt;, &lt;nltk.parse.earleychart.CompleteFundamentalRule object at 0x31c5350&gt;], trace=0, trace_chart_width=50, chart_class=&lt;class 'nltk.parse.earleychart.IncrementalChart'&gt;</em><big>)</big><a class="headerlink" href="#nltk.parse.IncrementalChartParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>An I{incremental} chart parser implementing Jay Earley&#8217;s 
+parsing algorithm:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">For each index I{end} in [0, 1, ..., N]:
+- For each I{edge} s.t. I{edge}.end = I{end}:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">If I{edge} is incomplete, and I{edge}.next is not a part
+of speech:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Apply PredictorRule to I{edge}</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">If I{edge} is incomplete, and I{edge}.next is a part of
+speech:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Apply ScannerRule to I{edge}</li>
+</ul>
+</div></blockquote>
+</li>
+<li><dl class="first docutils">
+<dt>If I{edge} is complete:</dt>
+<dd><ul class="first last simple">
+<li>Apply CompleterRule to I{edge}</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Return any complete parses in the chart</p>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.DependencyGraph">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">DependencyGraph</tt><big>(</big><em>tree_str=None</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>A container for the nodes and labelled edges of a dependency structure.</p>
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.add_arc">
+<tt class="descname">add_arc</tt><big>(</big><em>head_address</em>, <em>mod_address</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.add_arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an arc from the node specified by head_address to the 
+node specified by the mod address.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.connect_graph">
+<tt class="descname">connect_graph</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.connect_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fully connects all non-root nodes.  All nodes are set to be dependents
+of the root node.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.contains_address">
+<tt class="descname">contains_address</tt><big>(</big><em>node_address</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.contains_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if the graph contains a node with the given node 
+address, false otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.get_by_address">
+<tt class="descname">get_by_address</tt><big>(</big><em>node_address</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.get_by_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the node with the given address.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.left_children">
+<tt class="descname">left_children</tt><big>(</big><em>node_index</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.left_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of left children under the node specified
+by the given address.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="nltk.parse.DependencyGraph.load">
+<em class="property">static </em><tt class="descname">load</tt><big>(</big><em>file</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;param file: a file in Malt-TAB format</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.redirect_arcs">
+<tt class="descname">redirect_arcs</tt><big>(</big><em>originals</em>, <em>redirect</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.redirect_arcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redirects arcs to any of the nodes in the originals list 
+to the redirect node address.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.remove_by_address">
+<tt class="descname">remove_by_address</tt><big>(</big><em>address</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.remove_by_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the node with the given address.  References 
+to this node in others will still exist.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.right_children">
+<tt class="descname">right_children</tt><big>(</big><em>node_index</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.right_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of right children under the node specified
+by the given address.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.to_conll">
+<tt class="descname">to_conll</tt><big>(</big><em>style</em><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.to_conll" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dependency graph in CoNLL format.</p>
+<p>&#64;param style: the style to use for the format (3, 4, 10 columns)
+&#64;type style: C{int}
+&#64;rtype: C{str}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.DependencyGraph.tree">
+<tt class="descname">tree</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.parse.DependencyGraph.tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starting with the C{root} node, build a dependency tree using the NLTK 
+L{Tree} constructor. Dependency labels are omitted.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.parse.nx_graph">
+<tt class="descclassname">nltk.parse.</tt><tt class="descname">nx_graph</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#nltk.parse.nx_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the data in a C{nodelist} into a networkx 
+labeled directed graph.
+&#64;rtype: C{XDigraph}</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.ProjectiveDependencyParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">ProjectiveDependencyParser</tt><big>(</big><em>dependency_grammar</em><big>)</big><a class="headerlink" href="#nltk.parse.ProjectiveDependencyParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A projective, rule-based, dependency parser.  A ProjectiveDependencyParser
+is created with a DependencyGrammar, a set of productions specifying 
+word-to-word dependency relations.  The parse() method will then 
+return the set of all parses, in tree representation, for a given input
+sequence of tokens.  Each parse must meet the requirements of the both
+the grammar and the projectivity constraint which specifies that the 
+branches of the dependency tree are not allowed to cross.  Alternatively, 
+this can be understood as stating that each parent node and its children 
+in the parse tree form a continuous substring of the input sequence.</p>
+<dl class="method">
+<dt id="nltk.parse.ProjectiveDependencyParser.concatenate">
+<tt class="descname">concatenate</tt><big>(</big><em>span1</em>, <em>span2</em><big>)</big><a class="headerlink" href="#nltk.parse.ProjectiveDependencyParser.concatenate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates the two spans in whichever way possible.  This
+includes rightward concatenation (from the leftmost word of the 
+leftmost span to the rightmost word of the rightmost span) and
+leftward concatenation (vice-versa) between adjacent spans.  Unlike 
+Eisner&#8217;s presentation of span concatenation, these spans do not 
+share or pivot on a particular word/word-index.</p>
+<p>return: A list of new spans formed through concatenation.
+rtype: A C{list} of L{DependencySpan}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProjectiveDependencyParser.parse">
+<tt class="descname">parse</tt><big>(</big><em>tokens</em><big>)</big><a class="headerlink" href="#nltk.parse.ProjectiveDependencyParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a projective dependency parse on the list of tokens using
+a chart-based, span-concatenation algorithm similar to Eisner (1996).</p>
+<p>&#64;param tokens: The list of input tokens.
+&#64;type tokens:a C{list} of L{String}
+&#64;return: A list of parse trees.
+&#64;rtype: a C{list} of L{tree}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.ProbabilisticProjectiveDependencyParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">ProbabilisticProjectiveDependencyParser</tt><a class="headerlink" href="#nltk.parse.ProbabilisticProjectiveDependencyParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A probabilistic, projective dependency parser.  This parser returns 
+the most probable projective parse derived from the probabilistic 
+dependency grammar derived from the train() method.  The probabilistic 
+model is an implementation of Eisner&#8217;s (1996) Model C, which conditions 
+on head-word, head-tag, child-word, and child-tag.  The decoding 
+uses a bottom-up chart-based span concatenation algorithm that&#8217;s 
+identical to the one utilized by the rule-based projective parser.</p>
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticProjectiveDependencyParser.compute_prob">
+<tt class="descname">compute_prob</tt><big>(</big><em>dg</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticProjectiveDependencyParser.compute_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the probability of a dependency graph based 
+on the parser&#8217;s probability model (defined by the parser&#8217;s
+statistical dependency grammar).</p>
+<p>param dg: A dependency graph to score.
+type dg: a C{DependencyGraph}
+return: The probability of the dependency graph.
+rtype: A number/double.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticProjectiveDependencyParser.concatenate">
+<tt class="descname">concatenate</tt><big>(</big><em>span1</em>, <em>span2</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticProjectiveDependencyParser.concatenate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates the two spans in whichever way possible.  This
+includes rightward concatenation (from the leftmost word of the 
+leftmost span to the rightmost word of the rightmost span) and
+leftward concatenation (vice-versa) between adjacent spans.  Unlike 
+Eisner&#8217;s presentation of span concatenation, these spans do not 
+share or pivot on a particular word/word-index.</p>
+<p>return: A list of new spans formed through concatenation.
+rtype: A C{list} of L{DependencySpan}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticProjectiveDependencyParser.parse">
+<tt class="descname">parse</tt><big>(</big><em>tokens</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticProjectiveDependencyParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the list of tokens subject to the projectivity constraint
+and the productions in the parser&#8217;s grammar.  This uses a method 
+similar to the span-concatenation algorithm defined in Eisner (1996).
+It returns the most probable parse derived from the parser&#8217;s 
+probabilistic dependency grammar.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticProjectiveDependencyParser.train">
+<tt class="descname">train</tt><big>(</big><em>graphs</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticProjectiveDependencyParser.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trains a StatisticalDependencyGrammar based on the list of input 
+DependencyGraphs.  This model is an implementation of Eisner&#8217;s (1996)
+Model C, which derives its statistics from head-word, head-tag, 
+child-word, and child-tag relationships.</p>
+<p>param graphs: A list of dependency graphs to train from.
+type: A list of C{DependencyGraph}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.NaiveBayesDependencyScorer">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">NaiveBayesDependencyScorer</tt><a class="headerlink" href="#nltk.parse.NaiveBayesDependencyScorer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dependency scorer built around a MaxEnt classifier.  In this
+particular class that classifier is a C{NaiveBayesClassifier}.
+It uses head-word, head-tag, child-word, and child-tag features
+for classification.</p>
+<dl class="method">
+<dt id="nltk.parse.NaiveBayesDependencyScorer.score">
+<tt class="descname">score</tt><big>(</big><em>graph</em><big>)</big><a class="headerlink" href="#nltk.parse.NaiveBayesDependencyScorer.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the graph into a feature-based representation of 
+each edge, and then assigns a score to each based on the 
+confidence of the classifier in assigning it to the 
+positive label.  Scores are returned in a multidimensional list.</p>
+<p>&#64;type graph: C{DependencyGraph}
+&#64;param graph: A dependency graph to score.
+&#64;rtype: 3 dimensional list
+&#64;return: Edge scores for the graph parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.NaiveBayesDependencyScorer.train">
+<tt class="descname">train</tt><big>(</big><em>graphs</em><big>)</big><a class="headerlink" href="#nltk.parse.NaiveBayesDependencyScorer.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trains a C{NaiveBayesClassifier} using the edges present in 
+graphs list as positive examples, the edges not present as
+negative examples.  Uses a feature vector of head-word,
+head-tag, child-word, and child-tag.</p>
+<p>&#64;type graphs: A list of C{DependencyGraph}
+&#64;param graphs: A list of dependency graphs to train the scorer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">ProbabilisticNonprojectiveParser</tt><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A probabilistic non-projective dependency parser.  Nonprojective 
+dependencies allows for &#8220;crossing branches&#8221; in the parse tree 
+which is necessary for representing particular linguistic 
+phenomena, or even typical parses in some languages.  This parser 
+follows the MST parsing algorithm, outlined in McDonald(2005), 
+which likens the search for the best non-projective parse to 
+finding the maximum spanning tree in a weighted directed graph.</p>
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.best_incoming_arc">
+<tt class="descname">best_incoming_arc</tt><big>(</big><em>node_index</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.best_incoming_arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the source of the best incoming arc to the 
+node with address: node_index</p>
+<p>&#64;type node_index: integer.
+&#64;param node_index: The address of the &#8216;destination&#8217; node,
+the node that is arced to.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.collapse_nodes">
+<tt class="descname">collapse_nodes</tt><big>(</big><em>new_node</em>, <em>cycle_path</em>, <em>g_graph</em>, <em>b_graph</em>, <em>c_graph</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.collapse_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of nodes that have been identified to belong to a cycle,
+and collapses them into on larger node.  The arcs of all nodes in 
+the graph must be updated to account for this.</p>
+<p>&#64;type new_node: Node.
+&#64;param new_node: A Node (Dictionary) to collapse the cycle nodes into.
+&#64;type cycle_path: A list of integers.
+&#64;param cycle_path: A list of node addresses, each of which is in the cycle.
+&#64;type g_graph, b_graph, c_graph: C{DependencyGraph}
+&#64;param g_graph, b_graph, c_graph: Graphs which need to be updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.compute_max_subtract_score">
+<tt class="descname">compute_max_subtract_score</tt><big>(</big><em>column_index</em>, <em>cycle_indexes</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.compute_max_subtract_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>When updating scores the score of the highest-weighted incoming
+arc is subtracted upon collapse.  This returns the correct 
+amount to subtract from that edge.</p>
+<p>&#64;type column_index: integer.
+&#64;param column_index: A index representing the column of incoming arcs
+to a particular node being updated
+&#64;type cycle_indexes: A list of integers.
+&#64;param cycle_indexes: Only arcs from cycle nodes are considered.  This 
+is a list of such nodes addresses.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.compute_original_indexes">
+<tt class="descname">compute_original_indexes</tt><big>(</big><em>new_indexes</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.compute_original_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>As nodes are collapsed into others, they are replaced 
+by the new node in the graph, but it&#8217;s still necessary
+to keep track of what these original nodes were.  This
+takes a list of node addresses and replaces any collapsed
+node addresses with their original addresses.</p>
+<p>&#64;type new_address: A list of integers.
+&#64;param new_addresses: A list of node addresses to check for
+subsumed nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.initialize_edge_scores">
+<tt class="descname">initialize_edge_scores</tt><big>(</big><em>graph</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.initialize_edge_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigns a score to every edge in the C{DependencyGraph} graph.
+These scores are generated via the parser&#8217;s scorer which 
+was assigned during the training process.</p>
+<p>&#64;type graph: C{DependencyGraph}
+&#64;param graph: A dependency graph to assign scores to.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.original_best_arc">
+<tt class="descname">original_best_arc</tt><big>(</big><em>node_index</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.original_best_arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>???</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.parse">
+<tt class="descname">parse</tt><big>(</big><em>tokens</em>, <em>tags</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a list of tokens in accordance to the MST parsing algorithm
+for non-projective dependency parses.  Assumes that the tokens to 
+be parsed have already been tagged and those tags are provided.  Various 
+scoring methods can be used by implementing the C{DependencyScorerI}
+interface and passing it to the training algorithm.</p>
+<p>&#64;type tokens: A list of C{String}.
+&#64;param tokens: A list of words or punctuation to be parsed.
+&#64;type tags: A List of C{String}.
+&#64;param tags: A list of tags corresponding by index to the words in the tokens list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.train">
+<tt class="descname">train</tt><big>(</big><em>graphs</em>, <em>dependency_scorer</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trains a C{DependencyScorerI} from a set of C{DependencyGraph} objects,
+and establishes this as the parser&#8217;s scorer.  This is used to 
+initialize the scores on a C{DependencyGraph} during the parsing 
+procedure.</p>
+<p>&#64;type graphs: A list of C{DependencyGraph}
+&#64;param graphs: A list of dependency graphs to train the scorer.
+&#64;type dependency_scorer: C{DependencyScorerI}
+&#64;param dependency_scorer: A scorer which implements the
+C{DependencyScorerI} interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.parse.ProbabilisticNonprojectiveParser.update_edge_scores">
+<tt class="descname">update_edge_scores</tt><big>(</big><em>new_node</em>, <em>cycle_path</em><big>)</big><a class="headerlink" href="#nltk.parse.ProbabilisticNonprojectiveParser.update_edge_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the edge scores to reflect a collapse operation into
+new_node.</p>
+<p>&#64;type new_node: A Node.
+&#64;param new_node: The node which cycle nodes are collapsed into.
+&#64;type cycle_path: A list of integers.
+&#64;param cycle_path: A list of node addresses that belong to the cycle.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.parse.NonprojectiveDependencyParser">
+<em class="property">class </em><tt class="descclassname">nltk.parse.</tt><tt class="descname">NonprojectiveDependencyParser</tt><big>(</big><em>dependency_grammar</em><big>)</big><a class="headerlink" href="#nltk.parse.NonprojectiveDependencyParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A non-projective, rule-based, dependency parser.  This parser 
+will return the set of all possible non-projective parses based on 
+the word-to-word relations defined in the parser&#8217;s dependency 
+grammar, and will allow the branches of the parse tree to cross 
+in order to capture a variety of linguistic phenomena that a 
+projective parser will not.</p>
+<dl class="method">
+<dt id="nltk.parse.NonprojectiveDependencyParser.parse">
+<tt class="descname">parse</tt><big>(</big><em>tokens</em><big>)</big><a class="headerlink" href="#nltk.parse.NonprojectiveDependencyParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the input tokens with respect to the parser&#8217;s grammar.  Parsing 
+is accomplished by representing the search-space of possible parses as 
+a fully-connected directed graph.  Arcs that would lead to ungrammatical 
+parses are removed and a lattice is constructed of length n, where n is 
+the number of input tokens, to represent all possible grammatical 
+traversals.  All possible paths through the lattice are then enumerated
+to produce the set of non-projective parses.</p>
+<p>param tokens: A list of tokens to parse.
+type tokens: A C{list} of L{String}.
+return: A set of non-projective parses.
+rtype: A C{list} of L{DependencyGraph}</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="model.html"
+                        title="previous chapter">nltk.model</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="sem.html"
+                        title="next chapter">nltk.sem</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/parse.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sem.html" title="nltk.sem"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="model.html" title="nltk.model"
+             >previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

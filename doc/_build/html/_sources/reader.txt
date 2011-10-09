@@ -1,0 +1,4 @@
+nltk.reader
+===================
+.. automodule:: nltk.reader
+   :members:

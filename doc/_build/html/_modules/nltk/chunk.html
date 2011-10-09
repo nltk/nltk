@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.chunk &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nltk.chunk</h1><div class="highlight"><pre>
+<span class="c"># Copyright (C) 2001-2011 NLTK Project</span>
+<span class="c"># Author: Steven Bird &lt;sb@csse.unimelb.edu.au&gt;</span>
+<span class="c">#         Edward Loper &lt;edloper@gradient.cis.upenn.edu&gt;</span>
+<span class="c"># URL: &lt;http://www.nltk.org/&gt;</span>
+<span class="c"># For license information, see LICENSE.TXT</span>
+<span class="c">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Classes and interfaces for identifying non-overlapping linguistic</span>
+<span class="sd">groups (such as base noun phrases) in unrestricted text.  This task is</span>
+<span class="sd">called X{chunk parsing} or X{chunking}, and the identified groups are</span>
+<span class="sd">called X{chunks}.  The chunked text is represented using a shallow</span>
+<span class="sd">tree called a &quot;chunk structure.&quot;  A X{chunk structure} is a tree</span>
+<span class="sd">containing tokens and chunks, where each chunk is a subtree containing</span>
+<span class="sd">only tokens.  For example, the chunk structure for base noun phrase</span>
+<span class="sd">chunks in the sentence &quot;I saw the big dog on the hill&quot; is::</span>
+
+<span class="sd">  (SENTENCE:</span>
+<span class="sd">    (NP: &lt;I&gt;)</span>
+<span class="sd">    &lt;saw&gt;</span>
+<span class="sd">    (NP: &lt;the&gt; &lt;big&gt; &lt;dog&gt;)</span>
+<span class="sd">    &lt;on&gt;</span>
+<span class="sd">    (NP: &lt;the&gt; &lt;hill&gt;))</span>
+
+<span class="sd">To convert a chunk structure back to a list of tokens, simply use the</span>
+<span class="sd">chunk structure&#39;s L{leaves&lt;Tree.leaves&gt;} method.</span>
+
+<span class="sd">The C{parser.chunk} module defines L{ChunkParserI}, a standard interface for</span>
+<span class="sd">chunking texts; and L{RegexpChunkParser}, a regular-expression based</span>
+<span class="sd">implementation of that interface. It also defines L{ChunkScore}, a</span>
+<span class="sd">utility class for scoring chunk parsers.</span>
+
+<span class="sd">RegexpChunkParser</span>
+<span class="sd">=================</span>
+
+<span class="sd">C{parse.RegexpChunkParser} is an implementation of the chunk parser interface</span>
+<span class="sd">that uses regular-expressions over tags to chunk a text.  Its</span>
+<span class="sd">C{parse} method first constructs a C{ChunkString}, which encodes a</span>
+<span class="sd">particular chunking of the input text.  Initially, nothing is</span>
+<span class="sd">chunked.  C{parse.RegexpChunkParser} then applies a sequence of</span>
+<span class="sd">C{RegexpChunkRule}s to the C{ChunkString}, each of which modifies</span>
+<span class="sd">the chunking that it encodes.  Finally, the C{ChunkString} is</span>
+<span class="sd">transformed back into a chunk structure, which is returned.</span>
+
+<span class="sd">C{RegexpChunkParser} can only be used to chunk a single kind of phrase.</span>
+<span class="sd">For example, you can use an C{RegexpChunkParser} to chunk the noun</span>
+<span class="sd">phrases in a text, or the verb phrases in a text; but you can not</span>
+<span class="sd">use it to simultaneously chunk both noun phrases and verb phrases in</span>
+<span class="sd">the same text.  (This is a limitation of C{RegexpChunkParser}, not of</span>
+<span class="sd">chunk parsers in general.)</span>
+
+<span class="sd">RegexpChunkRules</span>
+<span class="sd">----------------</span>
+
+<span class="sd">C{RegexpChunkRule}s are transformational rules that update the</span>
+<span class="sd">chunking of a text by modifying its C{ChunkString}.  Each</span>
+<span class="sd">C{RegexpChunkRule} defines the C{apply} method, which modifies</span>
+<span class="sd">the chunking encoded by a C{ChunkString}.  The</span>
+<span class="sd">L{RegexpChunkRule} class itself can be used to implement any</span>
+<span class="sd">transformational rule based on regular expressions.  There are</span>
+<span class="sd">also a number of subclasses, which can be used to implement</span>
+<span class="sd">simpler types of rules:</span>
+
+<span class="sd">    - L{ChunkRule} chunks anything that matches a given regular</span>
+<span class="sd">      expression.</span>
+<span class="sd">    - L{ChinkRule} chinks anything that matches a given regular</span>
+<span class="sd">      expression.</span>
+<span class="sd">    - L{UnChunkRule} will un-chunk any chunk that matches a given</span>
+<span class="sd">      regular expression.</span>
+<span class="sd">    - L{MergeRule} can be used to merge two contiguous chunks.</span>
+<span class="sd">    - L{SplitRule} can be used to split a single chunk into two</span>
+<span class="sd">      smaller chunks.</span>
+<span class="sd">    - L{ExpandLeftRule} will expand a chunk to incorporate new</span>
+<span class="sd">      unchunked material on the left.</span>
+<span class="sd">    - L{ExpandRightRule} will expand a chunk to incorporate new</span>
+<span class="sd">      unchunked material on the right.</span>
+
+<span class="sd">Tag Patterns</span>
+<span class="sd">~~~~~~~~~~~~</span>
+
+<span class="sd">C{RegexpChunkRule}s use a modified version of regular</span>
+<span class="sd">expression patterns, called X{tag patterns}.  Tag patterns are</span>
+<span class="sd">used to match sequences of tags.  Examples of tag patterns are::</span>
+
+<span class="sd">     r&#39;(&lt;DT&gt;|&lt;JJ&gt;|&lt;NN&gt;)+&#39;</span>
+<span class="sd">     r&#39;&lt;NN&gt;+&#39;</span>
+<span class="sd">     r&#39;&lt;NN.*&gt;&#39;</span>
+
+<span class="sd">The differences between regular expression patterns and tag</span>
+<span class="sd">patterns are:</span>
+
+<span class="sd">    - In tag patterns, C{&#39;&lt;&#39;} and C{&#39;&gt;&#39;} act as parentheses; so</span>
+<span class="sd">      C{&#39;&lt;NN&gt;+&#39;} matches one or more repetitions of C{&#39;&lt;NN&gt;&#39;}, not</span>
+<span class="sd">      C{&#39;&lt;NN&#39;} followed by one or more repetitions of C{&#39;&gt;&#39;}.</span>
+<span class="sd">    - Whitespace in tag patterns is ignored.  So</span>
+<span class="sd">      C{&#39;&lt;DT&gt; | &lt;NN&gt;&#39;} is equivalant to C{&#39;&lt;DT&gt;|&lt;NN&gt;&#39;}</span>
+<span class="sd">    - In tag patterns, C{&#39;.&#39;} is equivalant to C{&#39;[^{}&lt;&gt;]&#39;}; so</span>
+<span class="sd">      C{&#39;&lt;NN.*&gt;&#39;} matches any single tag starting with C{&#39;NN&#39;}.</span>
+
+<span class="sd">The function L{tag_pattern2re_pattern} can be used to transform</span>
+<span class="sd">a tag pattern to an equivalent regular expression pattern.</span>
+
+<span class="sd">Efficiency</span>
+<span class="sd">----------</span>
+
+<span class="sd">Preliminary tests indicate that C{RegexpChunkParser} can chunk at a</span>
+<span class="sd">rate of about 300 tokens/second, with a moderately complex rule set.</span>
+
+<span class="sd">There may be problems if C{RegexpChunkParser} is used with more than</span>
+<span class="sd">5,000 tokens at a time.  In particular, evaluation of some regular</span>
+<span class="sd">expressions may cause the Python regular expression engine to</span>
+<span class="sd">exceed its maximum recursion depth.  We have attempted to minimize</span>
+<span class="sd">these problems, but it is impossible to avoid them completely.  We</span>
+<span class="sd">therefore recommend that you apply the chunk parser to a single</span>
+<span class="sd">sentence at a time.</span>
+
+<span class="sd">Emacs Tip</span>
+<span class="sd">---------</span>
+
+<span class="sd">If you evaluate the following elisp expression in emacs, it will</span>
+<span class="sd">colorize C{ChunkString}s when you use an interactive python shell</span>
+<span class="sd">with emacs or xemacs (&quot;C-c !&quot;)::</span>
+
+<span class="sd">    (let ()</span>
+<span class="sd">      (defconst comint-mode-font-lock-keywords </span>
+<span class="sd">        &#39;((&quot;&lt;[^&gt;]+&gt;&quot; 0 &#39;font-lock-reference-face)</span>
+<span class="sd">          (&quot;[{}]&quot; 0 &#39;font-lock-function-name-face)))</span>
+<span class="sd">      (add-hook &#39;comint-mode-hook (lambda () (turn-on-font-lock))))</span>
+
+<span class="sd">You can evaluate this code by copying it to a temporary buffer,</span>
+<span class="sd">placing the cursor after the last close parenthesis, and typing</span>
+<span class="sd">&quot;C{C-x C-e}&quot;.  You should evaluate it before running the interactive</span>
+<span class="sd">session.  The change will last until you close emacs.</span>
+
+<span class="sd">Unresolved Issues</span>
+<span class="sd">-----------------</span>
+
+<span class="sd">If we use the C{re} module for regular expressions, Python&#39;s</span>
+<span class="sd">regular expression engine generates &quot;maximum recursion depth</span>
+<span class="sd">exceeded&quot; errors when processing very large texts, even for</span>
+<span class="sd">regular expressions that should not require any recursion.  We</span>
+<span class="sd">therefore use the C{pre} module instead.  But note that C{pre}</span>
+<span class="sd">does not include Unicode support, so this module will not work</span>
+<span class="sd">with unicode strings.  Note also that C{pre} regular expressions</span>
+<span class="sd">are not quite as advanced as C{re} ones (e.g., no leftward</span>
+<span class="sd">zero-length assertions).</span>
+
+<span class="sd">@type CHUNK_TAG_PATTERN: C{regexp}</span>
+<span class="sd">@var CHUNK_TAG_PATTERN: A regular expression to test whether a tag</span>
+<span class="sd">     pattern is valid.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">api</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">regexp</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c"># ChunkParser interface</span>
+    <span class="s">&#39;ChunkParserI&#39;</span><span class="p">,</span>
+
+    <span class="c"># Parsers</span>
+    <span class="s">&#39;RegexpChunkParser&#39;</span><span class="p">,</span> <span class="s">&#39;RegexpParser&#39;</span><span class="p">,</span>
+
+    <span class="s">&#39;ne_chunk&#39;</span><span class="p">,</span> <span class="s">&#39;batch_ne_chunk&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+<span class="c"># Standard treebank POS tagger</span>
+<span class="n">_BINARY_NE_CHUNKER</span> <span class="o">=</span> <span class="s">&#39;chunkers/maxent_ne_chunker/english_ace_binary.pickle&#39;</span>
+<span class="n">_MULTICLASS_NE_CHUNKER</span> <span class="o">=</span> <span class="s">&#39;chunkers/maxent_ne_chunker/english_ace_multiclass.pickle&#39;</span>
+<span class="k">def</span> <span class="nf">ne_chunk</span><span class="p">(</span><span class="n">tagged_tokens</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ne_chunk"><a class="viewcode-back" href="../../chunk.html#nltk.chunk.ne_chunk">[docs]</a><span class="sd">    Use NLTK&#39;s currently recommended named entity chunker to</span>
+<span class="sd">    chunk the given list of tagged tokens.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
+        <span class="n">chunker_pickle</span> <span class="o">=</span> <span class="n">_BINARY_NE_CHUNKER</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">chunker_pickle</span> <span class="o">=</span> <span class="n">_MULTICLASS_NE_CHUNKER</span>
+    <span class="n">chunker</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">chunker_pickle</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">chunker</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">tagged_tokens</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">batch_ne_chunk</span><span class="p">(</span><span class="n">tagged_sentences</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="batch_ne_chunk"><a class="viewcode-back" href="../../chunk.html#nltk.chunk.batch_ne_chunk">[docs]</a><span class="sd">    Use NLTK&#39;s currently recommended named entity chunker to chunk the</span>
+<span class="sd">    given list of tagged sentences, each consisting of a list of tagged tokens.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
+        <span class="n">chunker_pickle</span> <span class="o">=</span> <span class="n">_BINARY_NE_CHUNKER</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">chunker_pickle</span> <span class="o">=</span> <span class="n">_MULTICLASS_NE_CHUNKER</span>
+    <span class="n">chunker</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">chunker_pickle</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">chunker</span><span class="o">.</span><span class="n">batch_parse</span><span class="p">(</span><span class="n">tagged_sentences</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.tokenize &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nltk.tokenize</h1><div class="highlight"><pre>
+<span class="c"># Copyright (C) 2001-2011 NLTK Project</span>
+<span class="c"># Author: Edward Loper &lt;edloper@gradient.cis.upenn.edu&gt;</span>
+<span class="c">#         Steven Bird &lt;sb@csse.unimelb.edu.au&gt; (minor additions)</span>
+<span class="c"># URL: &lt;http://www.nltk.org/&gt;</span>
+<span class="c"># For license information, see LICENSE.TXT</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions for X{tokenizing}, i.e., dividing text strings into</span>
+<span class="sd">substrings.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">simple</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">regexp</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">punkt</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sexpr</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">treebank</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">nltk</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;WhitespaceTokenizer&#39;</span><span class="p">,</span> <span class="s">&#39;SpaceTokenizer&#39;</span><span class="p">,</span> <span class="s">&#39;TabTokenizer&#39;</span><span class="p">,</span>
+           <span class="s">&#39;LineTokenizer&#39;</span><span class="p">,</span> <span class="s">&#39;RegexpTokenizer&#39;</span><span class="p">,</span> <span class="s">&#39;BlanklineTokenizer&#39;</span><span class="p">,</span>
+           <span class="s">&#39;WordPunctTokenizer&#39;</span><span class="p">,</span> <span class="s">&#39;blankline_tokenize&#39;</span><span class="p">,</span>
+           <span class="s">&#39;wordpunct_tokenize&#39;</span><span class="p">,</span> <span class="s">&#39;regexp_tokenize&#39;</span><span class="p">,</span> <span class="s">&#39;word_tokenize&#39;</span><span class="p">,</span>
+           <span class="s">&#39;SExprTokenizer&#39;</span><span class="p">,</span> <span class="s">&#39;sexpr_tokenize&#39;</span><span class="p">,</span> <span class="s">&#39;line_tokenize&#39;</span><span class="p">,</span>
+           <span class="s">&#39;PunktWordTokenizer&#39;</span><span class="p">,</span> <span class="s">&#39;PunktSentenceTokenizer&#39;</span><span class="p">,</span>
+           <span class="s">&#39;TreebankWordTokenizer&#39;</span><span class="p">,</span> <span class="s">&#39;sent_tokenize&#39;</span><span class="p">,</span> <span class="s">&#39;word_tokenize&#39;</span><span class="p">,</span>
+           <span class="p">]</span>
+
+<span class="k">try</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">texttiling</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;TextTilingTokenizer&#39;</span><span class="p">]</span>
+
+<span class="c"># Standard sentence tokenizer.</span>
+<span class="k">def</span> <span class="nf">sent_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="sent_tokenize"><a class="viewcode-back" href="../../tokenize.html#nltk.tokenize.sent_tokenize">[docs]</a><span class="sd">    Use NLTK&#39;s currently recommended sentence tokenizer to tokenize</span>
+<span class="sd">    sentences in the given text.  Currently, this uses</span>
+<span class="sd">    L{PunktSentenceTokenizer}.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;tokenizers/punkt/english.pickle&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    
+<span class="c"># Standard word tokenizer.</span>
+<span class="n">_word_tokenize</span> <span class="o">=</span> <span class="n">TreebankWordTokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">tokenize</span>
+<span class="k">def</span> <span class="nf">word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">):</span></div>
+    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="word_tokenize"><a class="viewcode-back" href="../../tokenize.html#nltk.tokenize.word_tokenize">[docs]</a><span class="sd">    Use NLTK&#39;s currently recommended word tokenizer to tokenize words</span>
+<span class="sd">    in the given sentence.  Currently, this uses</span>
+<span class="sd">    L{TreebankWordTokenizer}.  This tokenizer should be fed a single</span>
+<span class="sd">    sentence at a time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

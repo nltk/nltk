@@ -1,0 +1,184 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.parse &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nltk.parse</h1><div class="highlight"><pre>
+<span class="c"># Copyright (C) 2001-2011 NLTK Project</span>
+<span class="c"># Author: Steven Bird &lt;sb@csse.unimelb.edu.au&gt;</span>
+<span class="c">#         Edward Loper &lt;edloper@gradient.cis.upenn.edu&gt;</span>
+<span class="c"># URL: &lt;http://www.nltk.org/&gt;</span>
+<span class="c"># For license information, see LICENSE.TXT</span>
+<span class="c">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Classes and interfaces for producing tree structures that represent</span>
+<span class="sd">the internal organization of a text.  This task is known as X{parsing}</span>
+<span class="sd">the text, and the resulting tree structures are called the text&#39;s</span>
+<span class="sd">X{parses}.  Typically, the text is a single sentence, and the tree</span>
+<span class="sd">structure represents the syntactic structure of the sentence.</span>
+<span class="sd">However, parsers can also be used in other domains.  For example,</span>
+<span class="sd">parsers can be used to derive the morphological structure of the</span>
+<span class="sd">morphemes that make up a word, or to derive the discourse structure</span>
+<span class="sd">for a set of utterances.</span>
+
+<span class="sd">Sometimes, a single piece of text can be represented by more than one</span>
+<span class="sd">tree structure.  Texts represented by more than one tree structure are</span>
+<span class="sd">called X{ambiguous} texts.  Note that there are actually two ways in</span>
+<span class="sd">which a text can be ambiguous:</span>
+
+<span class="sd">    - The text has multiple correct parses.</span>
+<span class="sd">    - There is not enough information to decide which of several</span>
+<span class="sd">      candidate parses is correct.</span>
+
+<span class="sd">However, the parser module does I{not} distinguish these two types of</span>
+<span class="sd">ambiguity.</span>
+
+<span class="sd">The parser module defines C{ParserI}, a standard interface for parsing</span>
+<span class="sd">texts; and two simple implementations of that interface,</span>
+<span class="sd">C{ShiftReduceParser} and C{RecursiveDescentParser}.  It also contains</span>
+<span class="sd">three sub-modules for specialized kinds of parsing:</span>
+
+<span class="sd">  - C{nltk.parser.chart} defines chart parsing, which uses dynamic</span>
+<span class="sd">    programming to efficiently parse texts.</span>
+<span class="sd">  - C{nltk.parser.probabilistic} defines probabilistic parsing, which</span>
+<span class="sd">    associates a probability with each parse.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">api</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">chart</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">featurechart</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">earleychart</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pchart</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">rd</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sr</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">viterbi</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">dependencygraph</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">projectivedependencyparser</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">nonprojectivedependencyparser</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">malt</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c"># Parser interface</span>
+    <span class="s">&#39;ParserI&#39;</span><span class="p">,</span>
+    
+    <span class="c"># Generic parser loading function</span>
+    <span class="s">&#39;load_parser&#39;</span><span class="p">,</span>
+
+    <span class="c"># Parsers</span>
+    <span class="c"># from rd.py:</span>
+    <span class="s">&#39;RecursiveDescentParser&#39;</span><span class="p">,</span> <span class="s">&#39;SteppingRecursiveDescentParser&#39;</span><span class="p">,</span>
+    <span class="c"># from sr.py:</span>
+    <span class="s">&#39;ShiftReduceParser&#39;</span><span class="p">,</span> <span class="s">&#39;SteppingShiftReduceParser&#39;</span><span class="p">,</span>
+    <span class="c"># from chart.py:</span>
+    <span class="s">&#39;ChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;SteppingChartParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;TopDownChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;BottomUpChartParser&#39;</span><span class="p">,</span> 
+    <span class="s">&#39;BottomUpLeftCornerChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;LeftCornerChartParser&#39;</span><span class="p">,</span>
+    <span class="c"># from pchart.py:</span>
+    <span class="s">&#39;BottomUpProbabilisticChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;InsideChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;RandomChartParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;UnsortedChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;LongestChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;ViterbiParser&#39;</span><span class="p">,</span>
+    <span class="c"># from featurechart.py:</span>
+    <span class="s">&#39;FeatureChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;FeatureTopDownChartParser&#39;</span><span class="p">,</span> 
+    <span class="s">&#39;FeatureBottomUpChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;FeatureBottomUpLeftCornerChartParser&#39;</span><span class="p">,</span>
+    <span class="c"># from earleychart.py:</span>
+    <span class="s">&#39;IncrementalChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;EarleyChartParser&#39;</span><span class="p">,</span> 
+    <span class="s">&#39;IncrementalTopDownChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;IncrementalBottomUpChartParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;IncrementalBottomUpLeftCornerChartParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;IncrementalLeftCornerChartParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;FeatureIncrementalChartParser&#39;</span><span class="p">,</span> <span class="s">&#39;FeatureEarleyChartParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;FeatureIncrementalTopDownChartParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;FeatureIncrementalBottomUpChartParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;FeatureIncrementalBottomUpLeftCornerChartParser&#39;</span><span class="p">,</span>
+    <span class="c"># from dependencygraph.py, projectivedependencyparser.py,</span>
+    <span class="c"># projectivedependencyparser.py, malt.py:</span>
+    <span class="s">&#39;DependencyGraph&#39;</span><span class="p">,</span> <span class="s">&#39;nx_graph&#39;</span><span class="p">,</span> <span class="s">&#39;ProjectiveDependencyParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ProbabilisticProjectiveDependencyParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;NaiveBayesDependencyScorer&#39;</span><span class="p">,</span> <span class="s">&#39;ProbabilisticNonprojectiveParser&#39;</span><span class="p">,</span>
+    <span class="s">&#39;NonprojectiveDependencyParser&#39;</span><span class="p">,</span> <span class="s">&#39;MaltParser&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.corpus &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="index.html" />
+    <link rel="up" title="API Documentation" href="api.html" />
+    <link rel="next" title="nltk.reader" href="reader.html" />
+    <link rel="prev" title="nltk.classify" href="classify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reader.html" title="nltk.reader"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="classify.html" title="nltk.classify"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nltk.corpus">
+<span id="nltk-corpus"></span><h1>nltk.corpus<a class="headerlink" href="#module-nltk.corpus" title="Permalink to this headline">¶</a></h1>
+<p>NLTK corpus readers.  The modules in this package provide functions
+that can be used to read corpus files in a variety of formats.  These
+functions can be used to read both the corpus files that are
+distributed in the NLTK corpus package, and corpus files that are part
+of external corpora.</p>
+<div class="section" id="available-corpora">
+<h2>Available Corpora<a class="headerlink" href="#available-corpora" title="Permalink to this headline">¶</a></h2>
+<p>Please see <a class="reference external" href="http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml">http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml</a>
+for a complete list.  Install corpora using nltk.download().</p>
+</div>
+<div class="section" id="corpus-reader-functions">
+<h2>Corpus Reader Functions<a class="headerlink" href="#corpus-reader-functions" title="Permalink to this headline">¶</a></h2>
+<p>Each corpus module defines one or more X{corpus reader functions},
+which can be used to read documents from that corpus.  These functions
+take an argument, C{item}, which is used to indicate which document
+should be read from the corpus:</p>
+<blockquote>
+<div><ul class="simple">
+<li>If C{item} is one of the unique identifiers listed in the corpus
+module&#8217;s C{items} variable, then the corresponding document will
+be loaded from the NLTK corpus package.</li>
+<li>If C{item} is a filename, then that file will be read.</li>
+</ul>
+</div></blockquote>
+<p>Additionally, corpus reader functions can be given lists of item
+names; in which case, they will return a concatenation of the
+corresponding documents.</p>
+<p>Corpus reader functions are named based on the type of information
+they return.  Some common examples, and their return types, are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>I{corpus}.words(): list of str</li>
+<li>I{corpus}.sents(): list of (list of str)</li>
+<li>I{corpus}.paras(): list of (list of (list of str))</li>
+<li>I{corpus}.tagged_words(): list of (str,str) tuple</li>
+<li>I{corpus}.tagged_sents(): list of (list of (str,str))</li>
+<li>I{corpus}.tagged_paras(): list of (list of (list of (str,str)))</li>
+<li>I{corpus}.chunked_sents(): list of (Tree w/ (str,str) leaves)</li>
+<li>I{corpus}.parsed_sents(): list of (Tree with str leaves)</li>
+<li>I{corpus}.parsed_paras(): list of (list of (Tree with str leaves))</li>
+<li>I{corpus}.xml(): A single xml ElementTree</li>
+<li>I{corpus}.raw(): unprocessed corpus contents</li>
+</ul>
+</div></blockquote>
+<p>For example, to read a list of the words in the Brown Corpus, use
+C{nltk.corpus.brown.words()}:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">brown</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">brown</span><span class="o">.</span><span class="n">words</span><span class="p">()</span>
+<span class="go">[&#39;The&#39;, &#39;Fulton&#39;, &#39;County&#39;, &#39;Grand&#39;, &#39;Jury&#39;, &#39;said&#39;, ...]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="corpus-metadata">
+<h2>Corpus Metadata<a class="headerlink" href="#corpus-metadata" title="Permalink to this headline">¶</a></h2>
+<p>Metadata about the NLTK corpora, and their individual documents, is
+stored using U{Open Language Archives Community (OLAC)
+&lt;<a class="reference external" href="http://www.language-archives.org/">http://www.language-archives.org/</a>&gt;} metadata records.  These records
+can be accessed using C{nltk.corpus.I{corpus}.olac()}.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nltk.corpus</a><ul>
+<li><a class="reference internal" href="#available-corpora">Available Corpora</a></li>
+<li><a class="reference internal" href="#corpus-reader-functions">Corpus Reader Functions</a></li>
+<li><a class="reference internal" href="#corpus-metadata">Corpus Metadata</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="classify.html"
+                        title="previous chapter">nltk.classify</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="reader.html"
+                        title="next chapter">nltk.reader</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/corpus.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reader.html" title="nltk.reader"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="classify.html" title="nltk.classify"
+             >previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>

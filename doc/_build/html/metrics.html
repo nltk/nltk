@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nltk.metrics &mdash; NLTK vr2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NLTK vr2 documentation" href="index.html" />
+    <link rel="up" title="API Documentation" href="api.html" />
+    <link rel="next" title="nltk.misc" href="misc.html" />
+    <link rel="prev" title="nltk.inference" href="inference.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="misc.html" title="nltk.misc"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="inference.html" title="nltk.inference"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nltk.metrics">
+<span id="nltk-metrics"></span><h1>nltk.metrics<a class="headerlink" href="#module-nltk.metrics" title="Permalink to this headline">¶</a></h1>
+<p>Classes and methods for scoring processing modules.</p>
+<dl class="class">
+<dt id="nltk.metrics.ConfusionMatrix">
+<em class="property">class </em><tt class="descclassname">nltk.metrics.</tt><tt class="descname">ConfusionMatrix</tt><big>(</big><em>reference</em>, <em>test</em>, <em>sort_by_count=False</em><big>)</big><a class="headerlink" href="#nltk.metrics.ConfusionMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>The confusion matrix between a list of reference values and a
+corresponding list of test values.  Entry [M{r},M{t}] of this
+matrix is a count of the number of times that the reference value
+M{r} corresponds to the test value M{t}.  E.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ref</span>  <span class="o">=</span> <span class="s">&#39;DET NN VB DET JJ NN NN IN DET NN&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test</span> <span class="o">=</span> <span class="s">&#39;DET VB VB DET NN NN NN IN DET NN&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cm</span> <span class="o">=</span> <span class="n">ConfusionMatrix</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cm</span><span class="p">[</span><span class="s">&#39;NN&#39;</span><span class="p">,</span> <span class="s">&#39;NN&#39;</span><span class="p">]</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p>Note that the diagonal entries (M{Ri}=M{Tj}) of this matrix
+corresponds to correct values; and the off-diagonal entries
+correspond to incorrect values.</p>
+<dl class="method">
+<dt id="nltk.metrics.ConfusionMatrix.pp">
+<tt class="descname">pp</tt><big>(</big><em>show_percents=False</em>, <em>values_in_chart=True</em>, <em>truncate=None</em>, <em>sort_by_count=False</em><big>)</big><a class="headerlink" href="#nltk.metrics.ConfusionMatrix.pp" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;return: A multi-line string representation of this confusion
+matrix.
+&#64;type truncate: int
+&#64;param truncate: If specified, then only show the specified</p>
+<blockquote>
+<div>number of values.  Any sorting (e.g., sort_by_count)
+will be performed before truncation.</div></blockquote>
+<dl class="docutils">
+<dt>&#64;param sort_by_count: If true, then sort by the count of each</dt>
+<dd>label in the reference data.  I.e., labels that occur more
+frequently in the reference label will be towards the left
+edge of the matrix, and labels that occur less frequently
+will be towards the right edge.</dd>
+</dl>
+<p>&#64;todo: add marginals?</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.accuracy">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">accuracy</tt><big>(</big><em>reference</em>, <em>test</em><big>)</big><a class="headerlink" href="#nltk.metrics.accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of reference values and a corresponding list of test
+values, return the fraction of corresponding values that are
+equal.  In particular, return the fraction of indices
+C{0&lt;i&lt;=len(test)} such that C{test[i] == reference[i]}.</p>
+<p>&#64;type reference: C{list}
+&#64;param reference: An ordered list of reference values.
+&#64;type test: C{list}
+&#64;param test: A list of values to compare against the corresponding</p>
+<blockquote>
+<div>reference values.</div></blockquote>
+<dl class="docutils">
+<dt>&#64;raise ValueError: If C{reference} and C{length} do not have the</dt>
+<dd>same length.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.f_measure">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">f_measure</tt><big>(</big><em>reference</em>, <em>test</em>, <em>alpha=0.5</em><big>)</big><a class="headerlink" href="#nltk.metrics.f_measure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of reference values and a set of test values, return
+the f-measure of the test values, when compared against the
+reference values.  The f-measure is the harmonic mean of the
+L{precision} and L{recall}, weighted by C{alpha}.  In particular,
+given the precision M{p} and recall M{r} defined by:</p>
+<blockquote>
+<div><ul class="simple">
+<li>M{p} = <a href="#id9"><span class="problematic" id="id10">|C{reference}S{cap}C{test}|</span></a>/<a href="#id11"><span class="problematic" id="id12">|C{test}|</span></a></li>
+<li>M{r} = <a href="#id13"><span class="problematic" id="id14">|C{reference}S{cap}C{test}|</span></a>/<a href="#id15"><span class="problematic" id="id16">|C{reference}|</span></a></li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>The f-measure is:</dt>
+<dd><ul class="first last simple">
+<li>1/(C{alpha}/M{p} + (1-C{alpha})/M{r})</li>
+</ul>
+</dd>
+</dl>
+<p>If either C{reference} or C{test} is empty, then C{f_measure}
+returns C{None}.</p>
+<p>&#64;type reference: C{Set}
+&#64;param reference: A set of reference values.
+&#64;type test: C{Set}
+&#64;param test: A set of values to compare against the reference set.
+&#64;rtype: C{float} or C{None}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.log_likelihood">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">log_likelihood</tt><big>(</big><em>reference</em>, <em>test</em><big>)</big><a class="headerlink" href="#nltk.metrics.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of reference values and a corresponding list of test
+probability distributions, return the average log likelihood of
+the reference values, given the probability distributions.</p>
+<p>&#64;param reference: A list of reference values
+&#64;type reference: C{list}
+&#64;param test: A list of probability distributions over values to</p>
+<blockquote>
+<div>compare against the corresponding reference values.</div></blockquote>
+<p>&#64;type test: C{list} of L{ProbDistI}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.precision">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">precision</tt><big>(</big><em>reference</em>, <em>test</em><big>)</big><a class="headerlink" href="#nltk.metrics.precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of reference values and a set of test values, return
+the fraction of test values that appear in the reference set.
+In particular, return <a href="#id17"><span class="problematic" id="id18">|C{reference}S{cap}C{test}|</span></a>/<a href="#id19"><span class="problematic" id="id20">|C{test}|</span></a>.
+If C{test} is empty, then return C{None}.</p>
+<p>&#64;type reference: C{Set}
+&#64;param reference: A set of reference values.
+&#64;type test: C{Set}
+&#64;param test: A set of values to compare against the reference set.
+&#64;rtype: C{float} or C{None}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.recall">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">recall</tt><big>(</big><em>reference</em>, <em>test</em><big>)</big><a class="headerlink" href="#nltk.metrics.recall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of reference values and a set of test values, return
+the fraction of reference values that appear in the test set.
+In particular, return <a href="#id21"><span class="problematic" id="id22">|C{reference}S{cap}C{test}|</span></a>/<a href="#id23"><span class="problematic" id="id24">|C{reference}|</span></a>.
+If C{reference} is empty, then return C{None}.</p>
+<p>&#64;type reference: C{Set}
+&#64;param reference: A set of reference values.
+&#64;type test: C{Set}
+&#64;param test: A set of values to compare against the reference set.
+&#64;rtype: C{float} or C{None}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.approxrand">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">approxrand</tt><big>(</big><em>a</em>, <em>b</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nltk.metrics.approxrand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an approximate significance level between two lists of
+independently generated test values.</p>
+<p>Approximate randomization calculates significance by randomly drawing
+from a sample of the possible permutations. At the limit of the number
+of possible permutations, the significance level is exact. The
+approximate significance level is the sample mean number of times the
+statistic of the permutated lists varies from the actual statistic of
+the unpermuted argument lists.</p>
+<dl class="docutils">
+<dt>&#64;return: a tuple containing an approximate significance level, the count</dt>
+<dd>of the number of times the pseudo-statistic varied from the
+actual statistic, and the number of shuffles</dd>
+</dl>
+<p>&#64;rtype: C{tuple}
+&#64;param a: a list of test values
+&#64;type a: C{list}
+&#64;param b: another list of independently generated test values
+&#64;type b: C{list}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.edit_distance">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">edit_distance</tt><big>(</big><em>s1</em>, <em>s2</em><big>)</big><a class="headerlink" href="#nltk.metrics.edit_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Levenshtein edit-distance between two strings.
+The edit distance is the number of characters that need to be
+substituted, inserted, or deleted, to transform s1 into s2.  For
+example, transforming &#8220;rain&#8221; to &#8220;shine&#8221; requires three steps,
+consisting of two substitutions and one insertion:
+&#8220;rain&#8221; -&gt; &#8220;sain&#8221; -&gt; &#8220;shin&#8221; -&gt; &#8220;shine&#8221;.  These operations could have
+been done in other orders, but at least three steps are needed.</p>
+<p>&#64;param s1, s2: The strings to be analysed
+&#64;type s1: C{string}
+&#64;type s2: C{string}
+&#64;rtype C{int}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.windowdiff">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">windowdiff</tt><big>(</big><em>seg1</em>, <em>seg2</em>, <em>k</em>, <em>boundary='1'</em><big>)</big><a class="headerlink" href="#nltk.metrics.windowdiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the windowdiff score for a pair of segmentations.  A segmentation is any sequence
+over a vocabulary of two items (e.g. &#8220;0&#8221;, &#8220;1&#8221;), where the specified boundary value is used
+to mark the edge of a segmentation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">s1</span> <span class="o">=</span> <span class="s">&quot;00000010000000001000000&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;00000001000000010000000&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s3</span> <span class="o">=</span> <span class="s">&quot;00010000000000000001000&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">windowdiff</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">windowdiff</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">windowdiff</span><span class="p">(</span><span class="n">s2</span><span class="p">,</span> <span class="n">s3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">16</span>
+</pre></div>
+</div>
+<p>&#64;param seg1: a segmentation
+&#64;type seg1: C{string} or C{list}
+&#64;param seg2: a segmentation
+&#64;type seg2: C{string} or C{list}
+&#64;param k: window width
+&#64;type k: C{int}
+&#64;param boundary: boundary value
+&#64;type boundary: C{string} or C{int} or C{bool}
+&#64;rtype: C{int}</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.metrics.AnnotationTask">
+<em class="property">class </em><tt class="descclassname">nltk.metrics.</tt><tt class="descname">AnnotationTask</tt><big>(</big><em>data=None</em>, <em>distance=&lt;function binary_distance at 0x35a18c0&gt;</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an annotation task, i.e. people assign labels to items.</p>
+<p>Notation tries to match notation in Artstein and Poesio (2007).</p>
+<p>In general, coders and items can be represented as any hashable object.
+Integers, for example, are fine, though strings are more readable.
+Labels must support the distance functions applied to them, so e.g.
+a string-edit-distance makes no sense if your labels are integers,
+whereas interval distance needs numeric values.  A notable case of this
+is the MASI metric, which requires Python sets.</p>
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.Ao">
+<tt class="descname">Ao</tt><big>(</big><em>cA</em>, <em>cB</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.Ao" title="Permalink to this definition">¶</a></dt>
+<dd><p>Observed agreement between two coders on all items.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.Do_Kw">
+<tt class="descname">Do_Kw</tt><big>(</big><em>max_distance=1.0</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.Do_Kw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Averaged over all labelers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.Do_Kw_pairwise">
+<tt class="descname">Do_Kw_pairwise</tt><big>(</big><em>cA</em>, <em>cB</em>, <em>max_distance=1.0</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.Do_Kw_pairwise" title="Permalink to this definition">¶</a></dt>
+<dd><p>The observed disagreement for the weighted kappa coefficient.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.Do_alpha">
+<tt class="descname">Do_alpha</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.Do_alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>The observed disagreement for the alpha coefficient.</p>
+<p>The alpha coefficient, unlike the other metrics, uses this rather than
+observed agreement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.N">
+<tt class="descname">N</tt><big>(</big><em>k=None</em>, <em>i=None</em>, <em>c=None</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.N" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the &#8220;n-notation&#8221; used in Artstein and Poesio (2007)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.S">
+<tt class="descname">S</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.S" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bennett, Albert and Goldstein 1954</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.agr">
+<tt class="descname">agr</tt><big>(</big><em>cA</em>, <em>cB</em>, <em>i</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.agr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Agreement between two coders on a given item</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.alpha">
+<tt class="descname">alpha</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Krippendorff 1980</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.avg_Ao">
+<tt class="descname">avg_Ao</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.avg_Ao" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average observed agreement across all coders and items.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.kappa">
+<tt class="descname">kappa</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.kappa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohen 1960</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.kappa_pairwise">
+<tt class="descname">kappa_pairwise</tt><big>(</big><em>cA</em>, <em>cB</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.kappa_pairwise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.load_array">
+<tt class="descname">load_array</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.load_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the results of annotation.</p>
+<dl class="docutils">
+<dt>The argument is a list of 3-tuples, each representing a coder&#8217;s labeling of an item:</dt>
+<dd>(coder,item,label)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.pi">
+<tt class="descname">pi</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.pi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scott 1955</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.weighted_kappa">
+<tt class="descname">weighted_kappa</tt><big>(</big><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.weighted_kappa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohen 1968</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nltk.metrics.AnnotationTask.weighted_kappa_pairwise">
+<tt class="descname">weighted_kappa_pairwise</tt><big>(</big><em>cA</em>, <em>cB</em>, <em>max_distance=1.0</em><big>)</big><a class="headerlink" href="#nltk.metrics.AnnotationTask.weighted_kappa_pairwise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohen 1968</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.spearman_correlation">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">spearman_correlation</tt><big>(</big><em>ranks1</em>, <em>ranks2</em><big>)</big><a class="headerlink" href="#nltk.metrics.spearman_correlation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Spearman correlation coefficient for two rankings, which
+should be dicts or sequences of (key, rank). The coefficient ranges from
+-1.0 (ranks are opposite) to 1.0 (ranks are identical), and is only
+calculated for keys in both rankings (for meaningful results, remove keys
+present in only one list before ranking).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.ranks_from_sequence">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">ranks_from_sequence</tt><big>(</big><em>seq</em><big>)</big><a class="headerlink" href="#nltk.metrics.ranks_from_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a sequence, yields each element with an increasing rank, suitable
+for use as an argument to L{spearman_correlation}.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.ranks_from_scores">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">ranks_from_scores</tt><big>(</big><em>scores</em>, <em>rank_gap=1e-15</em><big>)</big><a class="headerlink" href="#nltk.metrics.ranks_from_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a sequence of (key, score) tuples, yields each key with an
+increasing rank, tying with previous key&#8217;s rank if the difference between
+their scores is less than rank_gap. Suitable for use as an argument to
+L{spearman_correlation}.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.metrics.NgramAssocMeasures">
+<em class="property">class </em><tt class="descclassname">nltk.metrics.</tt><tt class="descname">NgramAssocMeasures</tt><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract class defining a collection of generic association measures.
+Each public method returns a score, taking the following arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>score_fn(count_of_ngram,</dt>
+<dd>(count_of_n-1gram_1, ..., count_of_n-1gram_j),
+(count_of_n-2gram_1, ..., count_of_n-2gram_k),
+...,
+(count_of_1gram_1, ..., count_of_1gram_n),
+count_of_total_words)</dd>
+</dl>
+</div></blockquote>
+<p>See L{BigramAssocMeasures} and L{TrigramAssocMeasures}</p>
+<p>Inheriting classes should define a property _n, and a method _contingency
+which calculates contingency values from marginals in order for all
+association measures defined here to be usable.</p>
+<dl class="classmethod">
+<dt id="nltk.metrics.NgramAssocMeasures.chi_sq">
+<em class="property">classmethod </em><tt class="descname">chi_sq</tt><big>(</big><em>*marginals</em><big>)</big><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures.chi_sq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores ngrams using Pearson&#8217;s chi-square as in Manning and Schutze
+5.3.3.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="nltk.metrics.NgramAssocMeasures.jaccard">
+<em class="property">classmethod </em><tt class="descname">jaccard</tt><big>(</big><em>*marginals</em><big>)</big><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures.jaccard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores ngrams using the Jaccard index.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="nltk.metrics.NgramAssocMeasures.likelihood_ratio">
+<em class="property">classmethod </em><tt class="descname">likelihood_ratio</tt><big>(</big><em>*marginals</em><big>)</big><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures.likelihood_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="nltk.metrics.NgramAssocMeasures.mi_like">
+<em class="property">static </em><tt class="descname">mi_like</tt><big>(</big><em>*marginals</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures.mi_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores ngrams using a variant of mutual information. The keyword
+argument power sets an exponent (default 3) for the numerator. No
+logarithm of the result is calculated.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="nltk.metrics.NgramAssocMeasures.pmi">
+<em class="property">classmethod </em><tt class="descname">pmi</tt><big>(</big><em>*marginals</em><big>)</big><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures.pmi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores ngrams by pointwise mutual information, as in Manning and
+Schutze 5.4.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="nltk.metrics.NgramAssocMeasures.poisson_stirling">
+<em class="property">classmethod </em><tt class="descname">poisson_stirling</tt><big>(</big><em>*marginals</em><big>)</big><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures.poisson_stirling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores ngrams using the Poisson-Stirling measure.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="nltk.metrics.NgramAssocMeasures.raw_freq">
+<em class="property">static </em><tt class="descname">raw_freq</tt><big>(</big><em>*marginals</em><big>)</big><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures.raw_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores ngrams by their frequency</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="nltk.metrics.NgramAssocMeasures.student_t">
+<em class="property">classmethod </em><tt class="descname">student_t</tt><big>(</big><em>*marginals</em><big>)</big><a class="headerlink" href="#nltk.metrics.NgramAssocMeasures.student_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores ngrams using Student&#8217;s t test with independence hypothesis
+for unigrams, as in Manning and Schutze 5.3.2.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.metrics.BigramAssocMeasures">
+<em class="property">class </em><tt class="descclassname">nltk.metrics.</tt><tt class="descname">BigramAssocMeasures</tt><a class="headerlink" href="#nltk.metrics.BigramAssocMeasures" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of trigram association measures. Each association measure
+is provided as a function with three arguments:</p>
+<blockquote>
+<div>bigram_score_fn(n_ii, (n_ix, n_xi), n_xx)</div></blockquote>
+<p>The arguments constitute the marginals of a contingency table, counting
+the occurrences of particular events in a corpus. The letter i in the
+suffix refers to the appearance of the word in question, while x indicates
+the appearance of any word. Thus, for example:
+n_ii counts (w1, w2), i.e. the bigram being scored
+n_ix counts (w1, <em>)
+n_xi counts (</em>, w2)
+n_xx counts (<a href="#id1"><span class="problematic" id="id2">*</span></a>, <a href="#id3"><span class="problematic" id="id4">*</span></a>), i.e. any bigram</p>
+<dl class="docutils">
+<dt>This may be shown with respect to a contingency table:</dt>
+<dd><blockquote class="first">
+<div><blockquote>
+<div><blockquote>
+<div>w1    ~w1</div></blockquote>
+<p>&#8212;&#8212; &#8212;&#8212;</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>w2 | n_ii | n_oi | = n_xi</dt>
+<dd>&#8212;&#8212; &#8212;&#8212;</dd>
+</dl>
+</div></blockquote>
+<dl class="last docutils">
+<dt>~w2 | n_io | n_oo |</dt>
+<dd>&#8212;&#8212; &#8212;&#8212;
+= n_ix        TOTAL = n_xx</dd>
+</dl>
+</dd>
+</dl>
+<dl class="classmethod">
+<dt id="nltk.metrics.BigramAssocMeasures.chi_sq">
+<em class="property">classmethod </em><tt class="descname">chi_sq</tt><big>(</big><em>n_ii</em>, <em>(n_ix</em>, <em>n_xi)</em>, <em>n_xx</em><big>)</big><a class="headerlink" href="#nltk.metrics.BigramAssocMeasures.chi_sq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores bigrams using chi-square, i.e. phi-sq multiplied by the number
+of bigrams, as in Manning and Schutze 5.3.3.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="nltk.metrics.BigramAssocMeasures.dice">
+<em class="property">static </em><tt class="descname">dice</tt><big>(</big><em>n_ii</em>, <em>(n_ix</em>, <em>n_xi)</em>, <em>n_xx</em><big>)</big><a class="headerlink" href="#nltk.metrics.BigramAssocMeasures.dice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores bigrams using Dice&#8217;s coefficient.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="nltk.metrics.BigramAssocMeasures.phi_sq">
+<em class="property">classmethod </em><tt class="descname">phi_sq</tt><big>(</big><em>*marginals</em><big>)</big><a class="headerlink" href="#nltk.metrics.BigramAssocMeasures.phi_sq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores bigrams using phi-square, the square of the Pearson correlation
+coefficient.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.metrics.TrigramAssocMeasures">
+<em class="property">class </em><tt class="descclassname">nltk.metrics.</tt><tt class="descname">TrigramAssocMeasures</tt><a class="headerlink" href="#nltk.metrics.TrigramAssocMeasures" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of trigram association measures. Each association measure
+is provided as a function with four arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>trigram_score_fn(n_iii,</dt>
+<dd>(n_iix, n_ixi, n_xii),
+(n_ixx, n_xix, n_xxi),
+n_xxx)</dd>
+</dl>
+</div></blockquote>
+<p>The arguments constitute the marginals of a contingency table, counting
+the occurrences of particular events in a corpus. The letter i in the
+suffix refers to the appearance of the word in question, while x indicates
+the appearance of any word. Thus, for example:
+n_iii counts (w1, w2, w3), i.e. the trigram being scored
+n_ixx counts (w1, <em>, *)
+n_xxx counts (</em>, <a href="#id5"><span class="problematic" id="id6">*</span></a>, <a href="#id7"><span class="problematic" id="id8">*</span></a>), i.e. any trigram</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nltk.metrics.ContingencyMeasures">
+<em class="property">class </em><tt class="descclassname">nltk.metrics.</tt><tt class="descname">ContingencyMeasures</tt><big>(</big><em>measures</em><big>)</big><a class="headerlink" href="#nltk.metrics.ContingencyMeasures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps NgramAssocMeasures classes such that the arguments of association
+measures are contingency table values rather than marginals.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.binary_distance">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">binary_distance</tt><big>(</big><em>label1</em>, <em>label2</em><big>)</big><a class="headerlink" href="#nltk.metrics.binary_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple equality test.</p>
+<p>0.0 if the labels are identical, 1.0 if they are different.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">binary_distance</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">binary_distance</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.jaccard_distance">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">jaccard_distance</tt><big>(</big><em>label1</em>, <em>label2</em><big>)</big><a class="headerlink" href="#nltk.metrics.jaccard_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distance metric comparing set-similarity.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.masi_distance">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">masi_distance</tt><big>(</big><em>label1</em>, <em>label2</em><big>)</big><a class="headerlink" href="#nltk.metrics.masi_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distance metric that takes into account partial agreement when multiple
+labels are assigned.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">masi_distance</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]),</span><span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]))</span>
+<span class="go">0.5</span>
+</pre></div>
+</div>
+<p>Passonneau 2005, Measuring Agreement on Set-Valued Items (MASI) for Semantic and Pragmatic Annotation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.interval_distance">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">interval_distance</tt><big>(</big><em>label1</em>, <em>label2</em><big>)</big><a class="headerlink" href="#nltk.metrics.interval_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Krippendorff&#8216;1 interval distance metric</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">interval_distance</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">81</span>
+</pre></div>
+</div>
+<p>Krippendorff 1980, Content Analysis: An Introduction to its Methodology</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nltk.metrics.presence">
+<tt class="descclassname">nltk.metrics.</tt><tt class="descname">presence</tt><big>(</big><em>label</em><big>)</big><a class="headerlink" href="#nltk.metrics.presence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Higher-order function to test presence of a given label</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="inference.html"
+                        title="previous chapter">nltk.inference</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="misc.html"
+                        title="next chapter">nltk.misc</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/metrics.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="misc.html" title="nltk.misc"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="inference.html" title="nltk.inference"
+             >previous</a> |</li>
+        <li><a href="index.html">NLTK vr2 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Steven Bird, Ewan Klein, Edward Loper.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  </body>
+</html>
