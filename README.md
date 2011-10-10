@@ -19,7 +19,7 @@ Documentation
 ------------------------
 A substantial amount of documentation about how
 to use NLTK, including a textbook and API documention, is
-available from the NLTK website: http://www.nltk.org/
+available from the [NLTK website](http://www.nltk.org/)
 
   - The book covers a wide range of introductory topics in NLP, and
     shows how to do all the processing tasks using the toolkit.
@@ -32,25 +32,21 @@ Mailing Lists
 --------------------
  There are several mailing lists associated with NLTK:
 
-  - nltk: Public information and announcements about NLTK (very low volume)
-      http://groups.google.com/group/nltk
-  - nltk-users: Discussions amongst NLTK users
-      http://groups.google.com/group/nltk-users
-  - nltk-dev: Discussions amongst NLTK developers
-      http://groups.google.com/group/nltk-dev
-  - nltk-translation: Discussions about translating the NLTK book
-      http://groups.google.com/group/nltk-translation
-  - nltk-commits: Subversion commit logs for NLTK
-      http://groups.google.com/group/nltk-commits
+  - [nltk](http://groups.google.com/group/nltk): Public information and announcements about NLTK (very low volume).
+  - [nltk-users](http://groups.google.com/group/nltk-users): Discussions amongst NLTK users.
+  - [nltk-dev](http://groups.google.com/group/nltk-dev): Discussions amongst NLTK developers.
+  - [nltk-translation](http://groups.google.com/group/nltk-translation): Discussions about translating the NLTK book.
+  - [nltk-commits](http://groups.google.com/group/nltk-commits): Subversion commit logs for NLTK.
+      
 
 Contributing
 ------------------
- If you would like to contribute to NLTK, please see http://www.nltk.org/contribute
+ If you would like to contribute to NLTK, please see [http://www.nltk.org/contribute](http://www.nltk.org/contribute)
 
 Donating
 ---------------
-Have you found the toolkit helpful?  Please support NLTK development
-    by donating to the project via PayPal, using the link on the NLTK homepage.
+Have you found the toolkit helpful?  Please support NLTK development 
+by donating to the project via PayPal, using the link on the NLTK homepage.
 
 Redistributing
 ----------------------
