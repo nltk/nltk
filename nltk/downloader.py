@@ -981,7 +981,7 @@ class DownloaderShell(object):
         print 'NLTK Downloader'
         while True:
             self._simple_interactive_menu(
-                'd) Download', 'l) List', 'c) Config', 'h) Help', 'q) Quit')
+                'd) Download', 'l) List', ' u) Update', 'c) Config', 'h) Help', 'q) Quit')
             user_input = raw_input('Downloader> ').strip()
             if not user_input: print; continue
             command = user_input.lower().split()[0]
@@ -999,8 +999,10 @@ class DownloaderShell(object):
                     return
                 elif command == 'd':
                     self._simple_interactive_download(args)
+                elif command == 'u':
+                    self._simple_interactive_update()
                 else:
-                    print 'Command %r unrecogmized' % user_input
+                    print 'Command %r unrecognized' % user_input
             except urllib2.HTTPError, e:
                 print 'Error reading from server: %s'%e
             except urllib2.URLError, e:
@@ -1030,13 +1032,42 @@ class DownloaderShell(object):
                         try: self._ds.download(id, prefix='    ')
                         except (IOError, ValueError), e: print e
                     break
-    
+
+    def _simple_interactive_update(self):
+        while True:
+            stale_packages = []
+            stale = partial = False
+            for info in sorted(getattr(self._ds, 'packages')()):
+                if self._ds.status(info) == self._ds.STALE:
+                    stale_packages.append((info.id, info.name))
+
+            print
+            if stale_packages:
+                print 'Will update following packages (o=ok; x=cancel)'
+                for pid, pname in stale_packages:
+                    name = textwrap.fill('-'*27 + (pname),
+                                     75, subsequent_indent=27*' ')[27:]
+                    print '  [ ] %s %s' % (pid.ljust(20, '.'), name)
+                print
+
+                user_input = raw_input('  Identifier> ')
+                if user_input.lower()=='o':
+                    for pid, pname in stale_packages:
+                        try: self._ds.download(pid, prefix='    ')
+                        except (IOError, ValueError), e: print e
+                    break
+                elif user_input.lower() in ('x', 'q', ''):
+                    return
+            else:
+                print 'Nothing to update.'
+                return
+
     def _simple_interactive_help(self):
         print
         print 'Commands:'
-        print '  d) Download a package or collection              h) Help'
-        print '  l) List packages & collections                   q) Quit'
-        print '  c) View & Modify Configuration'
+        print '  d) Download a package or collection     u) Update out of date packages'
+        print '  l) List packages & collections          h) Help'
+        print '  c) View & Modify Configuration          q) Quit' 
 
     def _show_config(self):
         print
@@ -1049,7 +1080,7 @@ class DownloaderShell(object):
         print
         print 'Local Machine:'
         print '  - Data directory: %s' % self._ds.download_dir
-        
+
     def _simple_interactive_config(self):
         self._show_config()
         while True:
