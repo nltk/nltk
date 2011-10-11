@@ -200,7 +200,7 @@ class DependencyGraph(object):
         is a leaf) or a L{Tree}.
         """
 
-        node = self.nodelist[i]
+        node = self.get_by_address(i)
         word = node['word']
         deps = node['deps']
 
