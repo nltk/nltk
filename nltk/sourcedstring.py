@@ -281,7 +281,7 @@ class ContiguousCharStringSource(StringSource):
 # Base Class for Sourced Strings.
 #//////////////////////////////////////////////////////////////////////
 
-class SourcedString(basestring):
+class SourcedString(object):
     """
     A string that is annotated with information about the location in
     a document where it was originally found.  Sourced strings are
