@@ -14,8 +14,6 @@ Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
 
-import yaml, sys
-
 from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
 from nltk.sem import logic
 from nltk.grammar import Nonterminal, Production, ContextFreeGrammar

@@ -84,24 +84,18 @@ nltk/nltk.jar: $(JAVA_SRC)
 dist: zipdist gztardist rpmdist windist eggdist dmgdist
 
 gztardist: clean_code
-	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q sdist --format=gztar
 zipdist: clean_code
-	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q sdist --format=zip
 rpmdist: clean_code
-	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q bdist --format=rpm
-
 windist: clean_code
-	cp -f setup-distutils.py setup.py
 	$(PYTHON) setup.py -q bdist --format=wininst
 	mv dist/nltk-$(VERSION).macosx-10.5-i386.exe dist/nltk-$(VERSION).win32.exe
 #debdist: clean_code
 #	alien --to-deb --bump=0 dist/nltk-$(VERSION)*noarch.rpm
 #	mv *.deb dist/
 eggdist: clean_code
-	cp -f setup-eggs.py setup.py
 	$(PYTHON) setup.py bdist --formats=egg
 
 docdist:
@@ -124,10 +118,9 @@ checksums.txt: dist/nltk-$(VERSION).tar.gz
 	sed 's/RIPEMD160.*=/                    rmd160/' >> checksums.txt
 
 pypi:
-	cp -f setup-eggs.py setup.py
-	$(PYTHON) setup-eggs.py register
-	$(PYTHON) setup-eggs.py sdist upload
-	$(PYTHON) setup-eggs.py bdist upload
+	$(PYTHON) setup.py register
+	$(PYTHON) setup.py sdist upload
+	$(PYTHON) setup.py bdist upload
 
 macports: checksums.txt
 	rm -rf ~/ports/python/py*-nltk

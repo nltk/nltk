@@ -13,7 +13,6 @@ import distribute_setup
 distribute_setup.use_setuptools()
 
 from setuptools import setup, find_packages
-import nltk
 
 #
 # Prevent setuptools from trying to add extra files to the source code
@@ -25,19 +24,44 @@ del sdist.finders[:]
 setup(
     name = "nltk",
     description = "Natural Language Toolkit",
-    version = nltk.__version__,
-    url = nltk.__url__,
-    long_description = nltk.__longdescr__,
-    license = nltk.__license__,
-    keywords = nltk.__keywords__,
-    maintainer = nltk.__maintainer__,
-    maintainer_email = nltk.__maintainer_email__,
-    author = nltk.__author__,
-    author_email = nltk.__author__,
-    classifiers = nltk.__classifiers__,
+    version = "2.0.1rc1",
+    url = "http://nltk.org/",
+    long_description = """\
+The Natural Language Toolkit (NLTK) is a Python package for
+natural language processing.  NLTK requires Python 2.5 or higher.""",
+    license = "Apache License, Version 2.0",
+    keywords = ['NLP', 'CL', 'natural language processing',
+                'computational linguistics', 'parsing', 'tagging',
+                'tokenizing', 'syntax', 'linguistics', 'language',
+                'natural language', 'text analytics'],
+    maintainer = "Steven Bird",
+    maintainer_email = "stevenbird1@gmail.com",
+    author = "Steven Bird",
+    author_email = "stevenbird1@gmail.com",
+    classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: Information Technology',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: Apache Software License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 2.5',
+    'Programming Language :: Python :: 2.6',
+    'Programming Language :: Python :: 2.7',
+    'Topic :: Scientific/Engineering',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'Topic :: Scientific/Engineering :: Human Machine Interfaces',
+    'Topic :: Scientific/Engineering :: Information Analysis',
+    'Topic :: Text Processing',
+    'Topic :: Text Processing :: Filters',
+    'Topic :: Text Processing :: General',
+    'Topic :: Text Processing :: Indexing',
+    'Topic :: Text Processing :: Linguistic',
+    ],
     package_data = {'nltk': ['nltk.jar', 'test/*.doctest']},
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
-    install_requires=['PyYAML==3.09'],
+    install_requires=['PyYAML>=3.09'],
     test_suite = 'nltk.test.simple',
     )

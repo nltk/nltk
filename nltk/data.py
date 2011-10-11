@@ -35,7 +35,6 @@ import sys
 import os, os.path
 import textwrap
 import weakref
-import yaml
 import re
 import urllib2
 import zipfile
@@ -593,6 +592,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     if format == 'pickle':
         resource_val = pickle.load(_open(resource_url))
     elif format == 'yaml':
+        import yaml
         resource_val = yaml.load(_open(resource_url))
     elif format == 'cfg':
         resource_val = nltk.grammar.parse_cfg(_open(resource_url).read())
