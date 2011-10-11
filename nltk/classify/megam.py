@@ -70,7 +70,8 @@ def write_megam_file(train_toks, encoding, stream,
 
     @type encoding: L{MaxentFeatureEncodingI}
     @param encoding: A feature encoding, used to convert featuresets
-        into feature vectors.
+        into feature vectors. May optionally implement a cost() method
+        in order to assign different costs to different class predictions.
 
     @type stream: C{stream}
     @param stream: The stream to which the megam input file should be
@@ -93,8 +94,11 @@ def write_megam_file(train_toks, encoding, stream,
 
     # Write the file, which contains one line per instance.
     for featureset, label in train_toks:
-        # First, the instance number.
-        stream.write('%d' % labelnum[label])
+        # First, the instance number (or, in the weighted multiclass case, the cost of each label).
+        if hasattr(encoding,'cost'):
+            stream.write(':'.join(str(encoding.cost(featureset, label, l)) for l in labels))
+        else:
+            stream.write('%d' % labelnum[label])
 
         # For implicit file formats, just list the features that fire
         # for this instance's actual label.
@@ -110,7 +114,7 @@ def write_megam_file(train_toks, encoding, stream,
                 _write_megam_features(encoding.encode(featureset, l),
                                       stream, bernoulli)
 
-        # End of the isntance.
+        # End of the instance.
         stream.write('\n')
 
 def parse_megam_weights(s, features_count, explicit=True):

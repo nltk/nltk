@@ -1529,6 +1529,8 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
         # [xx] this is actually a perplexity delta, not a log
         # likelihood delta
         options += ['-dpp', '%s' % abs(kwargs['ll_delta'])]
+    if hasattr(encoding, 'cost'):
+        options += ['-multilabel']  # each possible la
     options += ['multiclass', trainfile_name]
     stdout = call_megam(options)
     # print './megam_i686.opt ', ' '.join(options)
