@@ -1368,7 +1368,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
     frequency into a linear line under log space by linear regression.
     Details of Simple Good-Turing algorithm can be found in:
         (1) Bill Gale and Geoffrey Sampson's joint paper
-                "Good Turing Smoothing Without Tear", published in 
+                "Good Turing Smoothing Without Tears", published in 
                 Journal of Quantitative Linguistics, vol. 2 pp. 217-237, 1995
         (2) Jurafsky & Martin's Book "Speech and Language Processing"
                 2e Chap 4.5 p103 (log(Nc) =  a + b*log(c))
@@ -1389,15 +1389,15 @@ class SimpleGoodTuringProbDist(ProbDistI):
                                 estimation.
         @type  freqdist:    C{FreqDist}
         @param bins:        The number of possible event types. This must be
-                            at least as large as the number of bins in the
+                            larger than the number of bins in the
                             C{freqdist}. If C{None}, then it's assumed to be
-                            equal to that of the C{freqdist}
+                            equal to C{freqdist}.B() + 1
         @type  bins:        C{Int}
         """
-        assert bins == None or bins >= freqdist.B(),\
-               'Bins parameter must not be less than freqdist.B()'
+        assert bins == None or bins > freqdist.B(),\
+               'Bins parameter must not be less than freqdist.B() + 1'
         if bins == None:
-            bins = freqdist.B()
+            bins = freqdist.B() + 1
         self._freqdist = freqdist
         self._bins = bins
         r, nr = self._r_Nr()
