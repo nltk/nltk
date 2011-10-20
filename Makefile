@@ -91,7 +91,7 @@ rpmdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=rpm
 windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
-	rm dist/nltk-$(VERSION).win32.exe
+	rm dist/nltk-$(VERSION).win32.exe || true
 	mv dist/nltk-$(VERSION)*.exe dist/nltk-$(VERSION).win32.exe
 #debdist: clean_code
 #	alien --to-deb --bump=0 dist/nltk-$(VERSION)*noarch.rpm
