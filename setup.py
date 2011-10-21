@@ -9,6 +9,16 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+# python2.5 compatibility
+from __future__ import with_statement
+
+import os
+
+# Use the VERSION file to get NLTK version
+version_file = os.path.join(os.path.dirname(__file__), 'nltk', 'VERSION')
+with open(version_file) as fh:
+    nltk_version = fh.read().strip()
+
 import distribute_setup
 distribute_setup.use_setuptools()
 
@@ -24,7 +34,7 @@ del sdist.finders[:]
 setup(
     name = "nltk",
     description = "Natural Language Toolkit",
-    version = "2.0.1rc1",
+    version = nltk_version,
     url = "http://nltk.org/",
     long_description = """\
 The Natural Language Toolkit (NLTK) is a Python package for
@@ -59,7 +69,7 @@ natural language processing.  NLTK requires Python 2.5 or higher.""",
     'Topic :: Text Processing :: Indexing',
     'Topic :: Text Processing :: Linguistic',
     ],
-    package_data = {'nltk': ['nltk.jar', 'test/*.doctest']},
+    package_data = {'nltk': ['nltk.jar', 'test/*.doctest', 'VERSION']},
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
     install_requires=['PyYAML>=3.09'],
