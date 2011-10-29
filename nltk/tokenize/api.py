@@ -13,17 +13,14 @@ from util import string_span_tokenize
 
 class TokenizerI(object):
     """
-    A processing interface for I{tokenizing} a string, or dividing it
-    into a list of substrings.
-    
-    Subclasses must define:
-      - either L{tokenize()} or L{batch_tokenize()} (or both)
+    A processing interface for tokenizing a string.
+    Subclasses must define ``tokenize()`` or ``batch_tokenize()`` (or both).
     """
     def tokenize(self, s):
         """
-        Divide the given string into a list of substrings.
+        Return a tokenized copy of *s*.
         
-        @return: C{list} of C{str}
+        :rtype: list of str
         """
         if overridden(self.batch_tokenize):
             return self.batch_tokenize([s])[0]

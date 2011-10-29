@@ -7,8 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Functions for X{tokenizing}, i.e., dividing text strings into
-substrings.
+Functions for *tokenizing*, i.e., dividing text strings into substrings.
 """
 
 from simple import *
@@ -36,9 +35,9 @@ else:
 # Standard sentence tokenizer.
 def sent_tokenize(text):
     """
-    Use NLTK's currently recommended sentence tokenizer to tokenize
-    sentences in the given text.  Currently, this uses
-    L{PunktSentenceTokenizer}.
+    Return a sentence-tokenized copy of *text*,
+    using NLTK's recommended sentence tokenizer
+    (currently ``PunktSentenceTokenizer``).
     """
     tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
     return tokenizer.tokenize(text)
@@ -47,9 +46,8 @@ def sent_tokenize(text):
 _word_tokenize = TreebankWordTokenizer().tokenize
 def word_tokenize(text):
     """
-    Use NLTK's currently recommended word tokenizer to tokenize words
-    in the given sentence.  Currently, this uses
-    L{TreebankWordTokenizer}.  This tokenizer should be fed a single
-    sentence at a time.
+    Return a tokenized copy of *text*,
+    using NLTK's recommended word tokenizer
+    (currently ``TreebankWordTokenizer``).
     """
     return _word_tokenize(text)
