@@ -7,7 +7,18 @@
 # For license information, see LICENSE.TXT
 
 """
-Functions for *tokenizing*, i.e., dividing text strings into substrings.
+This package contains several *tokenizers*, which break continuous text
+into a sequence of units, such as words and punctuation.  Tokenizers operate on a string,
+and return a sequence of strings, one per token.  The decision about which
+tokenizer to use often depends on the particular application.
+
+The most frequently used tokenizer is ``word_tokenize()``, e.g.
+
+    >>> word_tokenize("Good muffins cost $3.88 in New York.)
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.']
+
+For more information about tokenization, please see the tokenizer HOWTO,
+or chapter 3 of the NLTK book.
 """
 
 from simple import *
@@ -15,7 +26,9 @@ from regexp import *
 from punkt import *
 from sexpr import *
 from treebank import *
-import nltk
+
+from nltk.data import load 
+
 
 __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',
@@ -32,6 +45,7 @@ else:
     from texttiling import *
     __all__ += ['TextTilingTokenizer']
 
+
 # Standard sentence tokenizer.
 def sent_tokenize(text):
     """
@@ -39,7 +53,7 @@ def sent_tokenize(text):
     using NLTK's recommended sentence tokenizer
     (currently ``PunktSentenceTokenizer``).
     """
-    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    tokenizer = load('tokenizers/punkt/english.pickle')
     return tokenizer.tokenize(text)
     
 # Standard word tokenizer.
@@ -49,5 +63,6 @@ def word_tokenize(text):
     Return a tokenized copy of *text*,
     using NLTK's recommended word tokenizer
     (currently ``TreebankWordTokenizer``).
+    This tokenizer is designed to work on a sentence at a time.
     """
     return _word_tokenize(text)

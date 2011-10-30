@@ -39,28 +39,28 @@ from api import TokenizerI
 # UNK=unknown, UC=uppercase, LC=lowercase, NC=no case.
 
 _ORTHO_BEG_UC    = 1 << 1
-"""Orthogaphic context: beginning of a sentence with upper case."""
+"""Orthographic context: beginning of a sentence with upper case."""
 
 _ORTHO_MID_UC    = 1 << 2
-"""Orthogaphic context: middle of a sentence with upper case."""
+"""Orthographic context: middle of a sentence with upper case."""
 
 _ORTHO_UNK_UC    = 1 << 3
-"""Orthogaphic context: unknown position in a sentence with upper case."""
+"""Orthographic context: unknown position in a sentence with upper case."""
 
 _ORTHO_BEG_LC    = 1 << 4
-"""Orthogaphic context: beginning of a sentence with lower case."""
+"""Orthographic context: beginning of a sentence with lower case."""
 
 _ORTHO_MID_LC    = 1 << 5
-"""Orthogaphic context: middle of a sentence with lower case."""
+"""Orthographic context: middle of a sentence with lower case."""
 
 _ORTHO_UNK_LC    = 1 << 6
-"""Orthogaphic context: unknown position in a sentence with lower case."""
+"""Orthographic context: unknown position in a sentence with lower case."""
 
 _ORTHO_UC = _ORTHO_BEG_UC + _ORTHO_MID_UC + _ORTHO_UNK_UC
-"""Orthogaphic context: occurs with upper case."""
+"""Orthographic context: occurs with upper case."""
 
 _ORTHO_LC = _ORTHO_BEG_LC + _ORTHO_MID_LC + _ORTHO_UNK_LC
-"""Orthogaphic context: occurs with lower case."""
+"""Orthographic context: occurs with lower case."""
 
 _ORTHO_MAP = {
         ('initial',  'upper'): _ORTHO_BEG_UC,
@@ -80,7 +80,7 @@ appropriate orthographic context flag."""
 #{ Language-dependent variables
 ######################################################################
 
-class PunktLanguageVars(object):
+class _PunktLanguageVars(object):
     """
     Stores variables, mostly regular expressions, which may be
     language-dependent for correct application of the algorithm.
@@ -159,7 +159,7 @@ class PunktLanguageVars(object):
             return self._re_word_tokenizer
 
     def word_tokenize(self, s):
-        """Tokenize a string to split of punctuation other than periods"""
+        """Tokenize a string to split off punctuation other than periods"""
         return self._word_tokenizer_re().findall(s)
 
     _period_context_fmt = r"""
@@ -204,7 +204,7 @@ numeric tokens are changed to ##number## and hence contain alpha.)"""
 
 class PunktWordTokenizer(TokenizerI):
     # Retained for backward compatibility
-    def __init__(self, lang_vars=PunktLanguageVars()):
+    def __init__(self, lang_vars=_PunktLanguageVars()):
         self._lang_vars = lang_vars
 
     def tokenize(self, text):
@@ -236,7 +236,7 @@ def _pair_iter(it):
 ######################################################################
 
 class PunktParameters(object):
-    """Stores data used to perform sentence boundary detection with punkt."""
+    """Stores data used to perform sentence boundary detection with Punkt."""
 
     def __init__(self):
         self.abbrev_types = set()
@@ -422,7 +422,7 @@ class _PunktBaseClass(object):
     Includes common components of PunktTrainer and PunktSentenceTokenizer.
     """
     
-    def __init__(self, lang_vars=PunktLanguageVars(), token_cls=PunktToken,
+    def __init__(self, lang_vars=_PunktLanguageVars(), token_cls=PunktToken,
             params=PunktParameters()):
         self._params = params
         self._lang_vars = lang_vars
@@ -512,7 +512,7 @@ class PunktTrainer(_PunktBaseClass):
     """Learns parameters used in Punkt sentence boundary detection."""
 
     def __init__(self, train_text=None, verbose=False,
-            lang_vars=PunktLanguageVars(), token_cls=PunktToken):
+            lang_vars=_PunktLanguageVars(), token_cls=PunktToken):
 
         _PunktBaseClass.__init__(self, lang_vars=lang_vars,
                 token_cls=token_cls)
@@ -1094,7 +1094,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
     languages.
     """
     def __init__(self, train_text=None, verbose=False,
-            lang_vars=PunktLanguageVars(), token_cls=PunktToken):
+            lang_vars=_PunktLanguageVars(), token_cls=PunktToken):
         """
         train_text can either be the sole training text for this sentence
         boundary detector, or can be a PunktParameters object.

@@ -6,7 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-PYTHON = python2
+PYTHON = python
 VERSION = $(shell $(PYTHON) -c 'import nltk; print nltk.__version__' | sed '/^Warning: */d')
 NLTK_URL = $(shell $(PYTHON) -c 'import nltk; print nltk.__url__' | sed '/^Warning: */d')
 GOOGLE_ACCT = StevenBird1
@@ -167,11 +167,16 @@ ifeq ($(shell uname), Darwin)
 endif
 
 ########################################################################
-# DATA
+# API DOCUMENTATION
 ########################################################################
 
-data_index:
-	echo "use make pkg_index"
+api:
+	sphinx-apidoc -F -H NLTK -o api nltk
+	$(MAKE) -C api html
+
+########################################################################
+# DATA
+########################################################################
 
 pkg_index:
 	$(PYTHON) tools/build_pkg_index.py ../nltk_data http://nltk.googlecode.com/svn/trunk/nltk_data/packages ../nltk_data/index.xml
@@ -184,8 +189,7 @@ pkg_index:
 .PHONY: clean clean_up
 
 clean:	clean_up
-	rm -rf build iso dist MANIFEST $(MACROOT) nltk-$(VERSION)
-	$(MAKE) -C doc clean
+	rm -rf build iso dist api MANIFEST $(MACROOT) nltk-$(VERSION)
 	$(MAKE) -C javasrc clean
 #	rm -f nltk/nltk.jar
 

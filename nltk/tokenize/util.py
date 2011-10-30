@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Simple Tokenizers
+# Natural Language Toolkit: Tokenizer Utilities
 #
 # Copyright (C) 2001-2011 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
@@ -9,14 +9,14 @@ from re import finditer
 
 def string_span_tokenize(s, sep):
     """
-    Identify the tokens in the string, as defined by the token
-    delimiter, and generate (start, end) offsets.
+    Return the offsets of the tokens in *s*, as a sequence of ``(start, end)`` tuples,
+    by splitting the string at each occurrence of *sep*.
     
-    @param s: the string to be tokenized
-    @type s: C{str}
-    @param sep: the token separator
-    @type sep: C{str}
-    @rtype: C{iter} of C{tuple} of C{int}
+    :param s: the string to be tokenized
+    :type s: str
+    :param sep: the token separator
+    :type sep: str
+    :rtype: iter(tuple(int, int))
     """
     if len(sep) == 0:
         raise ValueError, "Token delimiter must not be empty"
@@ -35,14 +35,14 @@ def string_span_tokenize(s, sep):
 
 def regexp_span_tokenize(s, regexp):
     """
-    Identify the tokens in the string, as defined by the token
-    delimiter regexp, and generate (start, end) offsets.
+    Return the offsets of the tokens in *s*, as a sequence of ``(start, end)`` tuples,
+    by splitting the string at each successive match of *regexp*.
     
-    @param s: the string to be tokenized
-    @type s: C{str}
-    @param regexp: the token separator regexp
-    @type regexp: C{str}
-    @rtype: C{iter} of C{tuple} of C{int}
+    :param s: the string to be tokenized
+    :type s: str
+    :param regexp: regular expression that matches token separators
+    :type regexp: str
+    :rtype: iter(tuple(int, int))
     """
     left = 0
     for m in finditer(regexp, s):
@@ -54,11 +54,11 @@ def regexp_span_tokenize(s, regexp):
 
 def spans_to_relative(spans):
     """
-    Convert absolute token spans to relative spans.
+    Return a sequence of relative spans, given a sequence of spans.
     
-    @param spans: the (start, end) offsets of the tokens
-    @type s: C{iter} of C{tuple} of C{int}
-    @rtype: C{iter} of C{tuple} of C{int}
+    :param spans: a sequence of (start, end) offsets of the tokens
+    :type spans: iter(tuple(int, int))
+    :rtype: iter(tuple(int, int))
     """
     prev = 0
     for left, right in spans:

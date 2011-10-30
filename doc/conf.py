@@ -216,3 +216,7 @@ man_pages = [
     ('index', 'nltk', u'NLTK Documentation',
      [u'Steven Bird, Ewan Klein, Edward Loper'], 1)
 ]
+
+# Further options
+
+autoclass_content = 'both'

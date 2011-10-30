@@ -21,20 +21,19 @@ from api import *
 class TreebankWordTokenizer(TokenizerI):
     """
     A word tokenizer that tokenizes sentences using the conventions
-    used by the Penn Treebank.  Contractions, such as "can't", are
-    split in to two tokens.  E.g.:
+    used by the Penn Treebank.  Contractions are split in to two tokens, e.g.:
 
-      - can't S{->} ca n't
-      - he'll S{->} he 'll
-      - weren't S{-} were n't
+      - ``can't -> ca n't``
+      - ``he'll -> he 'll``
+      - ``weren't -> were n't``
 
-    This tokenizer assumes that the text has already been segmented into
-    sentences.  Any periods -- apart from those at the end of a string --
-    are assumed to be part of the word they are attached to (e.g. for
-    abbreviations, etc), and are not separately tokenized. 
+    NB. this tokenizer assumes that the text is presented as one sentence per line,
+    where each line is delimited with a newline character.
+    The only periods to be treated as separate tokens are those appearing
+    at the end of a line.
     """
     # List of contractions adapted from Robert MacIntyre's tokenizer.
-    CONTRACTIONS2 = [re.compile(r"(?i)(.)('ll|'re|'ve|n't|'s|'m|'d)\b"),
+    _CONTRACTIONS2 = [re.compile(r"(?i)(.)('ll|'re|'ve|n't|'s|'m|'d)\b"),
                      re.compile(r"(?i)\b(can)(not)\b"),
                      re.compile(r"(?i)\b(D)('ye)\b"),
                      re.compile(r"(?i)\b(Gim)(me)\b"),
@@ -45,13 +44,13 @@ class TreebankWordTokenizer(TokenizerI):
                      re.compile(r"(?i)\b(T)(is)\b"),
                      re.compile(r"(?i)\b(T)(was)\b"),
                      re.compile(r"(?i)\b(Wan)(na)\b")]
-    CONTRACTIONS3 = [re.compile(r"(?i)\b(Whad)(dd)(ya)\b"),
+    _CONTRACTIONS3 = [re.compile(r"(?i)\b(Whad)(dd)(ya)\b"),
                      re.compile(r"(?i)\b(Wha)(t)(cha)\b")]
     
     def tokenize(self, text):
-        for regexp in self.CONTRACTIONS2:
+        for regexp in self._CONTRACTIONS2:
             text = regexp.sub(r'\1 \2', text)
-        for regexp in self.CONTRACTIONS3:
+        for regexp in self._CONTRACTIONS3:
             text = regexp.sub(r'\1 \2 \3', text)
 
         # Separate most punctuation
