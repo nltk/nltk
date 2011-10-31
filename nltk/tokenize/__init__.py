@@ -51,7 +51,7 @@ def sent_tokenize(text):
     """
     Return a sentence-tokenized copy of *text*,
     using NLTK's recommended sentence tokenizer
-    (currently :class:`~nltk.tokenize.PunktSentenceTokenizer`).
+    (currently :class:`.PunktSentenceTokenizer`).
     """
     tokenizer = load('tokenizers/punkt/english.pickle')
     return tokenizer.tokenize(text)
@@ -62,7 +62,7 @@ def word_tokenize(text):
     """
     Return a tokenized copy of *text*,
     using NLTK's recommended word tokenizer
-    (currently ``TreebankWordTokenizer``).
+    (currently :class:`.TreebankWordTokenizer`).
     This tokenizer is designed to work on a sentence at a time.
     """
     return _word_tokenize(text)
