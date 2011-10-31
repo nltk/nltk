@@ -274,10 +274,10 @@ class PunktParameters(object):
         self.ortho_context[typ] |= flag
 
 ######################################################################
-#{ PunktToken
+#{ _PunktToken
 ######################################################################
 
-class PunktToken(object):
+class _PunktToken(object):
     """Stores a token of text with annotations produced during
     sentence boundary detection."""
 
@@ -422,7 +422,7 @@ class _PunktBaseClass(object):
     Includes common components of PunktTrainer and PunktSentenceTokenizer.
     """
     
-    def __init__(self, lang_vars=_PunktLanguageVars(), token_cls=PunktToken,
+    def __init__(self, lang_vars=_PunktLanguageVars(), token_cls=_PunktToken,
             params=PunktParameters()):
         self._params = params
         self._lang_vars = lang_vars
@@ -512,7 +512,7 @@ class PunktTrainer(_PunktBaseClass):
     """Learns parameters used in Punkt sentence boundary detection."""
 
     def __init__(self, train_text=None, verbose=False,
-            lang_vars=_PunktLanguageVars(), token_cls=PunktToken):
+            lang_vars=_PunktLanguageVars(), token_cls=_PunktToken):
 
         _PunktBaseClass.__init__(self, lang_vars=lang_vars,
                 token_cls=token_cls)
@@ -1094,7 +1094,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
     languages.
     """
     def __init__(self, train_text=None, verbose=False,
-            lang_vars=_PunktLanguageVars(), token_cls=PunktToken):
+            lang_vars=_PunktLanguageVars(), token_cls=_PunktToken):
         """
         train_text can either be the sole training text for this sentence
         boundary detector, or can be a PunktParameters object.

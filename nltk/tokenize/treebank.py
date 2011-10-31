@@ -6,12 +6,15 @@
 # For license information, see LICENSE.TXT
 
 """
-A regular-expression based word tokenizer that tokenizes sentences
-using the conventions used by the Penn Treebank.
+A tokenizer that uses the Penn Treebank conventions:
+  - split standard contractions, e.g. ``don't -> ``do n't``
+  - treat most punctuation characters as separate tokens
+  - split off commas and single quotes, when followed by whitespace
+  - separate periods that appear at the end of line
 """
 
 import re
-from api import *
+from api import TokenizerI
 
 ######################################################################
 #{ Regexp-based treebank tokenizer
@@ -56,12 +59,9 @@ class TreebankWordTokenizer(TokenizerI):
         # Separate most punctuation
         text = re.sub(r"([^\w\.\'\-\/,&])", r' \1 ', text)
 
-        # Separate commas if they're followed by space.
+        # Separate commas or single quotes if they're followed by space.
         # (E.g., don't separate 2,500)
-        text = re.sub(r"(,\s)", r' \1', text)
-
-        # Separate single quotes if they're followed by a space.
-        text = re.sub(r"('\s)", r' \1', text)
+        text = re.sub(r"([,']\s)", r' \1', text)
 
         # Separate periods that come before newline or end of string.
         text = re.sub('\. *(\n|$)', ' . ', text)

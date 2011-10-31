@@ -171,8 +171,10 @@ endif
 ########################################################################
 
 api:
+	echo install NLTK first
 	sphinx-apidoc -F -H NLTK -o api nltk
 	$(MAKE) -C api html
+	mv api/_build/html/* ../nltk.github.com/api
 
 ########################################################################
 # DATA
