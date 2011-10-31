@@ -17,17 +17,16 @@ development in Natural Language Processing.
 
 Documentation
 ------------------------
-A substantial amount of documentation about how
-to use NLTK, including a textbook and API documention, is
-available from the [NLTK website](http://www.nltk.org/)
+A substantial amount of documentation about NLTK is available:
 
-  - The book covers a wide range of introductory topics in NLP, and
+  - The [NLTK website](http://nltk.org/) has information about the NLTK community. 
+
+  - The [NLTK Book](http://nltk.org/book) covers a wide range of introductory topics in NLP, and
     shows how to do all the processing tasks using the toolkit.
 
-  - The toolkit's reference documentation describes every module,
+  - The [API Documentation](http://nltk.github.com/api/) describes every module,
     interface, class, method, function, and variable in the toolkit.
-    This documentation should be useful to both users and developers.  
-
+  
 Mailing Lists
 --------------------
  There are several mailing lists associated with NLTK:
@@ -41,7 +40,7 @@ Mailing Lists
 
 Contributing
 ------------------
- If you would like to contribute to NLTK, please see [http://www.nltk.org/contribute](http://www.nltk.org/contribute)
+If you would like to contribute to NLTK, please see [http://www.nltk.org/contribute](http://www.nltk.org/contribute)
 
 Donating
 ---------------
