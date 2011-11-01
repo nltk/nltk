@@ -21,14 +21,13 @@ For more information about tokenization, please see the tokenizer HOWTO,
 or chapter 3 of the NLTK book.
 """
 
-from simple import *
-from regexp import *
-from punkt import *
-from sexpr import *
-from treebank import *
-
 from nltk.data import load 
 
+from .simple import *
+from .regexp import *
+from .punkt import *
+from .sexpr import *
+from .treebank import *
 
 __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',
@@ -42,7 +41,7 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
 try: import numpy
 except ImportError: pass
 else:
-    from texttiling import *
+    from .texttiling import *
     __all__ += ['TextTilingTokenizer']
 
 

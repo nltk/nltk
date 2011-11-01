@@ -14,7 +14,7 @@ A tokenizer that uses the Penn Treebank conventions:
 """
 
 import re
-from api import TokenizerI
+from .api import TokenizerI
 
 ######################################################################
 #{ Regexp-based treebank tokenizer
@@ -51,6 +51,9 @@ class TreebankWordTokenizer(TokenizerI):
                      re.compile(r"(?i)\b(Wha)(t)(cha)\b")]
     
     def tokenize(self, text):
+        """Return a tokenized copy of *text*, using the tokenization
+        conventions of the Penn Treebank.
+        """ 
         for regexp in self._CONTRACTIONS2:
             text = regexp.sub(r'\1 \2', text)
         for regexp in self._CONTRACTIONS3:

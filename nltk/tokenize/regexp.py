@@ -15,10 +15,9 @@ expressions that can match either tokens or separators between tokens.
 import re
 import sre_constants
 
-from nltk.internals import convert_regexp_to_nongrouping
-
-from api import *
-from util import *
+from ..internals import convert_regexp_to_nongrouping
+from .api import TokenizerI
+from .util import regexp_span_tokenize
 
 class RegexpTokenizer(TokenizerI):
     """
@@ -131,8 +130,7 @@ class WordPunctTokenizer(RegexpTokenizer):
 def regexp_tokenize(text, pattern, gaps=False, discard_empty=True,
                     flags=re.UNICODE | re.MULTILINE | re.DOTALL):
     """
-    Split the given text string, based on the given regular expression
-    pattern.  See the documentation for ``RegexpTokenizer.tokenize()``
+    Return a tokenized copy of *text*.  See :class:`.RegexpTokenizer`
     for descriptions of the arguments.
     """
     tokenizer = RegexpTokenizer(pattern, gaps, discard_empty, flags)

@@ -26,10 +26,9 @@ described in Kiss & Strunk (2006)::
 import re
 import math
 
-from nltk.compat import defaultdict
-from nltk.probability import FreqDist
-
-from api import TokenizerI
+from ..compat import defaultdict
+from ..probability import FreqDist
+from .api import TokenizerI
 
 ######################################################################
 #{ Orthographic Context Constants

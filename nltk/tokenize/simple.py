@@ -18,8 +18,8 @@ When tokenizing using a particular delimiter string, consider using
 the string ``split()`` method directly, as this is more efficient.
 """
 
-from api import *
-from util import *
+from .api import TokenizerI, StringTokenizer 
+from .util import string_span_tokenize, regexp_span_tokenize
     
 class SpaceTokenizer(StringTokenizer):
     """Tokenize a string using the space character as a delimiter.

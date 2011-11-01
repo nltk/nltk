@@ -15,7 +15,7 @@ A tokenizer that divides strings into s-expressions.  E.g.:
 
 import re
 
-from api import *
+from .api import TokenizerI
 
 class SExprTokenizer(TokenizerI):
     """

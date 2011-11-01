@@ -10,7 +10,7 @@ import re
 import math
 import numpy
 
-from api import TokenizerI
+from .api import TokenizerI
 
 BLOCK_COMPARISON, VOCABULARY_INTRODUCTION = range(2)
 LC, HC = range(2)
@@ -18,9 +18,9 @@ DEFAULT_SMOOTHING = range(1)
 
 
 class TextTilingTokenizer(TokenizerI):
-    """A section tokenizer based on the TextTiling algorithm. The
-    algorithm detects subtopic shifts based on the analysis of lexical
-    co-occurence patterns.
+    """Tokenize a document into topical sections using the TextTiling algorithm.
+    This algorithm detects subtopic shifts based on the analysis of lexical
+    co-occurrence patterns.
 
     The process starts by tokenizing the text into pseudosentences of
     a fixed size w. Then, depending on the method used, similarity
@@ -29,24 +29,25 @@ class TextTilingTokenizer(TokenizerI):
     them as boundaries. The boundaries are normalized to the closest
     paragraph break and the segmented text is returned.
 
-    @type w: number
-    @param w: Pseudosentence size
-    @type k: number
-    @param k: Size(in sentences) of the block used in the block comparison
-              method
-    @type similarity_method: constant
-    @param similarity_method: The method used for determining similarity scores
-    @type stopwords: list
-    @param stopwords: A list of stopwords that are filtered out
-    @type smoothing_method: constant
-    @param smoothing_method: The method used for smoothing the score plot
-    @type smoothing_width: number
-    @param smoothing_width: The width of the window used by the smoothing
-           method
-    @type smoothing_rounds: number
-    @param smoothing_rounds: The number of smoothing passes
-    @type cutoff_policy: constant
-    @param cutoff_policy: The policy used to determine the number of boundaries 
+    :param w: Pseudosentence size
+    :type w: int
+    :param k: Size (in sentences) of the block used in the block comparison method
+    :type k: int
+    :param similarity_method: The method used for determining similarity scores:
+       `BLOCK_COMPARISON` (default) or `VOCABULARY_INTRODUCTION`.
+    :type similarity_method: constant
+    :param stopwords: A list of stopwords that are filtered out (defaults to NLTK's stopwords corpus)
+    :type stopwords: list(str)
+    :param smoothing_method: The method used for smoothing the score plot:
+      `DEFAULT_SMOOTHING` (default)
+    :type smoothing_method: constant
+    :param smoothing_width: The width of the window used by the smoothing method
+    :type smoothing_width: int
+    :param smoothing_rounds: The number of smoothing passes
+    :type smoothing_rounds: int
+    :param cutoff_policy: The policy used to determine the number of boundaries:
+      `HC` (default) or `LC` 
+    :type cutoff_policy: constant
     """
         
     def __init__(self,
@@ -68,7 +69,8 @@ class TextTilingTokenizer(TokenizerI):
         del self.__dict__['self']
         
     def tokenize(self, text):
-        "The main function. Follows a pipeline structure."
+        """Return a tokenized copy of *text*, where each "token" represents
+        a separate topic."""
 
         lowercase_text = text.lower()
         paragraph_breaks = self._mark_paragraph_breaks(text)
@@ -76,7 +78,7 @@ class TextTilingTokenizer(TokenizerI):
 
         # Tokenization step starts here
         
-        #remove punctuation
+        # Remove punctuation
         nopunct_text = ''.join([c for c in lowercase_text
                                       if re.match("[a-z\-\' \n\t]", c)])
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
@@ -90,7 +92,7 @@ class TextTilingTokenizer(TokenizerI):
         # stemmers though.
         #words = _stem_words(words)
 
-        #filter stopwords
+        # Filter stopwords
         for ts in tokseqs:
             ts.wrdindex_list = filter(lambda wi: wi[0] not in self.stopwords,
                                       ts.wrdindex_list)
@@ -98,7 +100,7 @@ class TextTilingTokenizer(TokenizerI):
         token_table = self._create_token_table(tokseqs, nopunct_par_breaks)
         # End of the Tokenization step
 
-        # Lexical score Determination
+        # Lexical score determination
         if self.similarity_method == BLOCK_COMPARISON:
             gap_scores = self._block_comparison(tokseqs, token_table)
         elif self.similarity_method == VOCABULARY_INTRODUCTION:
@@ -387,7 +389,7 @@ def smooth(x,window_len=11,window='flat'):
     This method is based on the convolution of a scaled window with the signal.
     The signal is prepared by introducing reflected copies of the signal 
     (with the window size) in both ends so that transient parts are minimized
-    in the begining and end part of the output signal.
+    in the beginning and end part of the output signal.
 
     input:
         x: the input signal 
