@@ -13,8 +13,8 @@ top of the typed lambda calculus.
 
 import re
 import operator
+from collections import defaultdict
 
-from nltk.compat import defaultdict
 from nltk.internals import Counter
 
 APP = 'APP'

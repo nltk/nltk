@@ -12,8 +12,8 @@ API for corpus readers.
 
 import os
 import re
+from collections import defaultdict
 
-from nltk.compat import defaultdict
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.sourcedstring import SourcedStringStream
 

@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2011 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -33,7 +34,7 @@ class TokenizerI(object):
         Identify the tokens using integer offsets (start_i, end_i),
         where s[start_i:end_i] is the corresponding token.
         
-        @return: C{iter} of C{tuple} of C{int}
+        :rtype: iter(tuple(int, int))
         """
         raise NotImplementedError()
 
@@ -43,7 +44,7 @@ class TokenizerI(object):
 
             return [self.tokenize(s) for s in strings]
 
-        @rtype: C{list} of C{list} of C{str}
+        :rtype: list(list(str))
         """
         return [self.tokenize(s) for s in strings]
 
@@ -53,15 +54,14 @@ class TokenizerI(object):
 
             return [self.span_tokenize(s) for s in strings]
 
-        @rtype: C{iter} of C{list} of C{tuple} of C{int}
+        :rtype: iter(list(tuple(int, int)))
         """
         for s in strings:
             yield list(self.span_tokenize(s))
 
 
 class StringTokenizer(TokenizerI):
-    r"""
-    A tokenizer that divides a string into substrings by splitting
+    """A tokenizer that divides a string into substrings by splitting
     on the specified string (defined in subclasses).
     """
 

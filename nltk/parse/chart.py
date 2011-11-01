@@ -38,9 +38,10 @@ defines three chart parsers:
     be used to step through the parsing process.
 """
 
+from collections import defaultdict
+
 from nltk.tree import Tree
 from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
-from nltk.compat import defaultdict
 
 from api import *
 

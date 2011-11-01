@@ -8,7 +8,6 @@
 import re
 import textwrap
 
-from nltk.compat import *
 from nltk.util import LazyConcatenation
 from nltk.internals import ElementWrapper
 

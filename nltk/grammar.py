@@ -71,7 +71,6 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 
 import re
 
-from nltk.compat import all
 from nltk.util import transitive_closure, invert_graph
 
 from probability import ImmutableProbabilisticMixIn

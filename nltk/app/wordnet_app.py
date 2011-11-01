@@ -53,6 +53,7 @@ import os
 from sys import argv
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from urllib import quote_plus, unquote_plus
+from collections import defaultdict
 import webbrowser
 import datetime
 import re
@@ -63,10 +64,8 @@ import base64
 import cPickle
 import copy
 
-from nltk.compat import defaultdict
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Synset, Lemma
-
 
 
 # now included in local file

@@ -14,10 +14,11 @@ Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
 
+from collections import defaultdict
+
 from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
 from nltk.sem import logic
 from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
-from nltk.compat import defaultdict
 from nltk.grammar import FeatStructNonterminal
 import nltk.data
 

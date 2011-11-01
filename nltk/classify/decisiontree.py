@@ -13,8 +13,9 @@ the basis of a tree structure, where branches correspond to conditions
 on feature values, and leaves correspond to label assignments.
 """
 
+from collections import defaultdict
+
 from nltk.probability import *
-from nltk.compat import defaultdict
 
 from api import *
 

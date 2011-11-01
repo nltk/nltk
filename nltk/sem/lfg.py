@@ -6,8 +6,9 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from collections import defaultdict
+
 from nltk.internals import Counter
-from nltk.compat import defaultdict
 from nltk.parse.dependencygraph import DependencyGraph
 
 

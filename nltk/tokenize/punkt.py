@@ -25,8 +25,8 @@ described in Kiss & Strunk (2006)::
 
 import re
 import math
+from collections import defaultdict
 
-from ..compat import defaultdict
 from ..probability import FreqDist
 from .api import TokenizerI
 

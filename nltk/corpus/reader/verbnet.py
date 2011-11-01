@@ -7,8 +7,7 @@
 
 import re
 import textwrap
-
-from nltk.compat import *
+from collections import defaultdict
 
 from util import *
 from api import *

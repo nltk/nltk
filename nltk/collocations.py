@@ -33,7 +33,6 @@ measures are provided in L{bigram_measures} and L{trigram_measures}.
 import itertools as _itertools
 from operator import itemgetter as _itemgetter
 
-from nltk.compat import any
 from nltk.probability import FreqDist
 from nltk.util import ingrams
 from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures

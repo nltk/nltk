@@ -15,11 +15,11 @@ distributional similarity.
 """
 
 from math import log
+from collections import defaultdict
 import re
 
 from nltk.probability import FreqDist, LidstoneProbDist
 from nltk.probability import ConditionalFreqDist as CFD
-from nltk.compat import defaultdict
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
 from nltk.metrics import f_measure, BigramAssocMeasures

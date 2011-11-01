@@ -58,8 +58,8 @@ import time
 import tempfile
 import os
 import gzip
+from collections import defaultdict
 
-from nltk.compat import defaultdict
 from nltk.util import OrderedDict
 from nltk.probability import *
 
