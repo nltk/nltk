@@ -5,10 +5,11 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat
-from nltk.corpus.reader.api import CorpusReader
+import functools
 
-Assumes Python >=2.5
+from .util import StreamBackedCorpusView, concat
+from .api import CorpusReader
+
 def _parse_args(fun):
     @functools.wraps(fun)
     def decorator(self, fileids=None, **kwargs):
