@@ -1,5 +1,0 @@
-nltk.app
-==========
-
-.. automodule:: nltk.app
-   :members:

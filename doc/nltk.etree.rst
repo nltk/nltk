@@ -1,5 +1,0 @@
-nltk.etree
-==========
-
-.. automodule:: nltk.etree
-   :members:

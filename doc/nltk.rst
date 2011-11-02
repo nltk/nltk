@@ -1,5 +1,0 @@
-nltk
-=======
-
-.. automodule:: nltk
-   :members:

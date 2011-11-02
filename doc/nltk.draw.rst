@@ -1,5 +1,0 @@
-nltk.draw
-==========
-
-.. automodule:: nltk.draw
-   :members:

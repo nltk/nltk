@@ -1,5 +1,0 @@
-nltk.chunk
-==========
-
-.. automodule:: nltk.chunk
-   :members:
