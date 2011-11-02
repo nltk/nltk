@@ -28,7 +28,7 @@ import pickle
 
 from nltk.classify.maxent import *
 from nltk.classify.mallet import call_mallet
-from nltk.etree import ElementTree
+from xml.etree import ElementTree
 
 from api import *
 

@@ -9,7 +9,7 @@ import re
 import codecs
 
 from nltk.tree import Tree
-from nltk.etree import ElementTree
+from xml.etree import ElementTree
 
 from util import *
 from api import *

@@ -12,7 +12,8 @@ Toolbox databases and settings files.
 
 import os, re, codecs
 from StringIO import StringIO
-from nltk.etree.ElementTree import TreeBuilder, Element, SubElement
+from xml.etree import ElementTree
+from xml.etree.ElementTree import TreeBuilder, Element, SubElement
 from nltk.data import PathPointer, ZipFilePathPointer
 import nltk
 
@@ -479,8 +480,6 @@ def demo():
     print '\nlx fields:'
     for field in islice(lexicon.findall('record/lx'), 10):
         print field.text
-
-    from nltk.etree.ElementTree import ElementTree
     
     settings = ToolboxSettings()
     file_path = nltk.data.find('corpora/toolbox/MDF/MDF_AltH.typ')

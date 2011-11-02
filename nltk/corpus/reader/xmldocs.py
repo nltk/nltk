@@ -15,7 +15,7 @@ import codecs
 
 # Use the c version of ElementTree, which is faster, if possible:
 try: from xml.etree import cElementTree as ElementTree
-except ImportError: from nltk.etree import ElementTree
+except ImportError: from xml.etree import ElementTree
 
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.tokenize import WordPunctTokenizer

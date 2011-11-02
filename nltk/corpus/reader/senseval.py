@@ -28,7 +28,7 @@ import xml.sax
 from xmldocs import XMLCorpusReader
 
 from nltk.tokenize import *
-from nltk.etree import ElementTree
+from xml.etree import ElementTree
 
 from util import *
 from api import *
