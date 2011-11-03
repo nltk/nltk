@@ -14,7 +14,8 @@ tokenizer to use often depends on the particular application.
 
 The most frequently used tokenizer is ``word_tokenize()``, e.g.
 
-    >>> word_tokenize("Good muffins cost $3.88 in New York.)
+    >>> from nltk.tokenize import word_tokenize
+    >>> word_tokenize("Good muffins cost $3.88 in New York.")
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.']
 
 For more information about tokenization, please see the tokenizer HOWTO,

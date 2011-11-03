@@ -97,7 +97,8 @@ class WhitespaceTokenizer(RegexpTokenizer):
     Tokenize a string on whitespace (space, tab, newline).
     In general, users should use ``str.split()`` instead, e.g.:
 
-        >>> words = s.split()
+        >>> words = "lorem ipsum".split()
+
     """
 
     def __init__(self):
@@ -117,8 +118,10 @@ class WordPunctTokenizer(RegexpTokenizer):
     Tokenize a text into a sequence of alphabetic and
     non-alphabetic characters.  E.g.:
 
+        >>> from nltk.tokenize.regexp import WordPunctTokenizer
         >>> WordPunctTokenizer().tokenize("She said 'hello'.")
         ['She', 'said', "'", 'hello', "'."]
+
     """
     def __init__(self):
         RegexpTokenizer.__init__(self, r'\w+|[^\w\s]+')
