@@ -49,7 +49,7 @@ clean:
 
 api:
 	echo install NLTK first
-	sphinx-apidoc -o web/api nltk
+	sphinx-apidoc -o api ../nltk
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
