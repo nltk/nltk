@@ -12,17 +12,47 @@ NLTK is available for Windows, Mac OS X, and Linux. Best of all, NLTK is a free,
 NLTK has been called "a wonderful tool for teaching, and working in, computational linguistics using Python,"
 and "an amazing library to play with natural language." 
 
-+----------------------------------------------------+-------------------------------+
-| Published in 2009 by the creators of NLTK,         | .. image:: images/book.gif    |
-| *Natural Language Processing with Python*          |                               |
-| provides a practical introduction to               |                               |
-| programming for language processing.               |                               |
-| It guides the reader through the fundamentals      |                               |
-| of writing Python programs, working with corpora,  |                               |
-| categorizing text, analyzing linguistic structure, |                               |
-| and more.  Read it `here <nltk.org/book>`_.        |                               |
-+----------------------------------------------------+-------------------------------+
++-------------------------------+----------------------------------------------------+
+| .. image:: images/book.gif    | Published in 2009 by the creators of NLTK,         |
+|                               | *Natural Language Processing with Python*          |
+|                               | provides a practical introduction to               |
+|                               | programming for language processing.               |
+|                               | It guides the reader through the fundamentals      |
+|                               | of writing Python programs, working with corpora,  |
+|                               | categorizing text, analyzing linguistic structure, |
+|                               | and more.  Read it `here <nltk.org/book>`_.        |
++-------------------------------+----------------------------------------------------+
 
+Some simple things you can do with NLTK
+---------------------------------------
+
+    >>> import nltk
+    >>> sentence = "At eight o'clock on Thursday morning 
+    Arthur didn't feel very good."
+
+    >>> tokens = nltk.word_tokenize(sentence)
+    >>> tokens
+    ['At', 'eight', "o'clock", 'on', 'Thursday', 'morning', 
+    'Arthur', 'did', "n't", 'feel', 'very', 'good', '.']
+
+    >>> tagged = nltk.pos_tag(tokens)
+    >>> tagged[0:6]
+    [('At', 'IN'), ('eight', 'CD'), ("o'clock", 'JJ'), ('on', 'IN'), 
+    ('Thursday', 'NNP'), ('morning', 'NN')]
+
+    >>> entities = nltk.chunk.ne_chunk(tagged)
+    >>> entities
+    Tree('S', [('At', 'IN'), ('eight', 'CD'), ("o'clock", 'JJ'), 
+               ('on', 'IN'), ('Thursday', 'NNP'), ('morning', 'NN'), 
+           Tree('PERSON', [('Arthur', 'NNP')]), 
+               ('did', 'VBD'), ("n't", 'RB'), ('feel', 'VB'), 
+               ('very', 'RB'), ('good', 'JJ'), ('.', '.')])
+
+    >>> from nltk.corpus import treebank
+    >>> t = treebank.parsed_sents('wsj_0001.mrg')[0]
+    >>> t.draw()
+
+.. image:: images/tree.gif
 
 * `API Documentation <api/nltk.html>`_
 
