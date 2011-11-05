@@ -603,7 +603,7 @@ descriptions of the argument roles, along with examples.
     1 thing turning
     m direction, location
 
-    >>> from nltk.etree import ElementTree
+    >>> from xml.etree import ElementTree
     >>> print ElementTree.tostring(turn_01.find('example')).strip()
     <example name="transitive agentive">
       <text>
@@ -745,7 +745,7 @@ The Shakespeare corpus contains a set of Shakespeare plays, formatted
 as XML files.  These corpora are returned as ElementTree objects:
 
     >>> from nltk.corpus import shakespeare
-    >>> from nltk.etree import ElementTree
+    >>> from xml.etree import ElementTree
     >>> shakespeare.fileids() # doctest: +ELLIPSIS
     ['a_and_c.xml', 'dream.xml', 'hamlet.xml', 'j_caesar.xml', ...]
     >>> play = shakespeare.xml('dream.xml')
@@ -775,8 +775,8 @@ following example loads the Rotokas dictionary, and figures out the
 distribution of part-of-speech tags for reduplicated words.
 
     >>> from nltk.corpus import toolbox
-    >>> from nltk.etree import ElementTree
     >>> from nltk.probability import FreqDist
+    >>> from xml.etree import ElementTree
     >>> import re
     >>> rotokas = toolbox.xml('rotokas.dic')
     >>> redup_pos_freqdist = FreqDist()
@@ -1319,7 +1319,7 @@ As another example, the ``propbank`` corpus defines the ``roleset()``
 method, which expects a roleset identifier, not a file identifier:
 
     >>> roleset = nltk.corpus.propbank.roleset('eat.01')
-    >>> from nltk.etree import ElementTree as ET
+    >>> from xml.etree import ElementTree as ET
     >>> print ET.tostring(roleset) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     <roleset id="eat.01" name="consume" vncls="39.1">
       <roles>

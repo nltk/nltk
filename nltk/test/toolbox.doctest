@@ -246,7 +246,7 @@ Consecutive whitespace characters (except newline) are treated the same as one:
 -------------------------------
 check that normal parsing works:
 
-    >>> from nltk.etree import ElementTree
+    >>> from xml.etree import ElementTree
     >>> td = toolbox.ToolboxData()
     >>> s = """\\_sh v3.0  400  Rotokas Dictionary
     ... \\_DateStampHasFourDigitYear
@@ -274,7 +274,7 @@ check that normal parsing works:
 
 check that guessing the key marker works:
 
-    >>> from nltk.etree import ElementTree
+    >>> from xml.etree import ElementTree
     >>> td = toolbox.ToolboxData()
     >>> s = """\\_sh v3.0  400  Rotokas Dictionary
     ... \\_DateStampHasFourDigitYear
