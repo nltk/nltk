@@ -79,7 +79,7 @@ appropriate orthographic context flag."""
 #{ Language-dependent variables
 ######################################################################
 
-class _PunktLanguageVars(object):
+class PunktLanguageVars(object):
     """
     Stores variables, mostly regular expressions, which may be
     language-dependent for correct application of the algorithm.
@@ -203,7 +203,7 @@ numeric tokens are changed to ##number## and hence contain alpha.)"""
 
 class PunktWordTokenizer(TokenizerI):
     # Retained for backward compatibility
-    def __init__(self, lang_vars=_PunktLanguageVars()):
+    def __init__(self, lang_vars=PunktLanguageVars()):
         self._lang_vars = lang_vars
 
     def tokenize(self, text):
@@ -273,10 +273,10 @@ class PunktParameters(object):
         self.ortho_context[typ] |= flag
 
 ######################################################################
-#{ _PunktToken
+#{ PunktToken
 ######################################################################
 
-class _PunktToken(object):
+class PunktToken(object):
     """Stores a token of text with annotations produced during
     sentence boundary detection."""
 
@@ -416,12 +416,12 @@ class _PunktToken(object):
 #{ Punkt base class
 ######################################################################
 
-class _PunktBaseClass(object):
+class PunktBaseClass(object):
     """
     Includes common components of PunktTrainer and PunktSentenceTokenizer.
     """
     
-    def __init__(self, lang_vars=_PunktLanguageVars(), token_cls=_PunktToken,
+    def __init__(self, lang_vars=PunktLanguageVars(), token_cls=PunktToken,
             params=PunktParameters()):
         self._params = params
         self._lang_vars = lang_vars
@@ -507,13 +507,13 @@ class _PunktBaseClass(object):
 ######################################################################
 
 
-class PunktTrainer(_PunktBaseClass):
+class PunktTrainer(PunktBaseClass):
     """Learns parameters used in Punkt sentence boundary detection."""
 
     def __init__(self, train_text=None, verbose=False,
-            lang_vars=_PunktLanguageVars(), token_cls=_PunktToken):
+            lang_vars=PunktLanguageVars(), token_cls=PunktToken):
 
-        _PunktBaseClass.__init__(self, lang_vars=lang_vars,
+        PunktBaseClass.__init__(self, lang_vars=lang_vars,
                 token_cls=token_cls)
 
         self._type_fdist = FreqDist()
@@ -1084,7 +1084,7 @@ class PunktTrainer(_PunktBaseClass):
 ######################################################################
 
 
-class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
+class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
     """
     A sentence tokenizer which uses an unsupervised algorithm to build
     a model for abbreviation words, collocations, and words that start
@@ -1093,12 +1093,12 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
     languages.
     """
     def __init__(self, train_text=None, verbose=False,
-            lang_vars=_PunktLanguageVars(), token_cls=_PunktToken):
+            lang_vars=PunktLanguageVars(), token_cls=PunktToken):
         """
         train_text can either be the sole training text for this sentence
         boundary detector, or can be a PunktParameters object.
         """
-        _PunktBaseClass.__init__(self, lang_vars=lang_vars,
+        PunktBaseClass.__init__(self, lang_vars=lang_vars,
                 token_cls=token_cls)
         
         if train_text:

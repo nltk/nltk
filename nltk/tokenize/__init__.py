@@ -22,29 +22,23 @@ For more information about tokenization, please see the tokenizer HOWTO,
 or chapter 3 of the NLTK book.
 """
 
-from nltk.data import load 
+from ..data    import load 
 
-from .simple import *
-from .regexp import *
-from .punkt import *
-from .sexpr import *
-from .treebank import *
+from .simple   import SpaceTokenizer, TabTokenizer, LineTokenizer,\
+                      line_tokenize
+from .regexp   import RegexpTokenizer, WhitespaceTokenizer, BlanklineTokenizer,\
+                      WordPunctTokenizer, wordpunct_tokenize, regexp_tokenize,\
+                      blankline_tokenize          
+from .punkt    import PunktSentenceTokenizer, PunktWordTokenizer
+from .sexpr    import SExprTokenizer, sexpr_tokenize
+from .treebank import TreebankWordTokenizer
 
-__all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
-           'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',
-           'WordPunctTokenizer', 'blankline_tokenize',
-           'wordpunct_tokenize', 'regexp_tokenize', 'word_tokenize',
-           'SExprTokenizer', 'sexpr_tokenize', 'line_tokenize',
-           'PunktWordTokenizer', 'PunktSentenceTokenizer',
-           'TreebankWordTokenizer', 'sent_tokenize', 'word_tokenize',
-           ]
-
-try: import numpy
-except ImportError: pass
+try:
+    import numpy
+except ImportError:
+    pass
 else:
-    from .texttiling import *
-    __all__ += ['TextTilingTokenizer']
-
+    from .texttiling import TextTilingTokenizer
 
 # Standard sentence tokenizer.
 def sent_tokenize(text):
