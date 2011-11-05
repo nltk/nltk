@@ -43,6 +43,17 @@ import __future__
 COMPILER_FLAGS = __future__.division.compiler_flag
 
 ###########################################################################
+# Fix for unicode docstrings and Python 2*
+###########################################################################
+
+if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("UTF-8")
+    import doctest
+    doctest.testmod()
+
+###########################################################################
 # Monkey-Patch to fix Doctest
 ###########################################################################
 
@@ -963,7 +974,7 @@ ELLIPSIS_OPT = Option("--ellipsis",
                help="Allow \"...\" to be used for ellipsis in the "
                     "expected output.")
 NORMWS_OPT   = Option("--normalize_whitespace",
-               action="store_const", dest="normws", const=1, default=0,
+               action="store_const", dest="normws", const=1, default=1,
                help="Ignore whitespace differences between "
                     "the expected output and the actual output.")
 
