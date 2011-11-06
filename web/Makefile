@@ -17,7 +17,10 @@ I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
 
-web:	api
+web:
+	echo Install NLTK first
+	rm -f api/modules.rst api/nltk.*.rst
+	sphinx-apidoc -o api ../nltk
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(WEB)
 	@echo
 	@echo "Build finished. The HTML pages are in $(WEB)."
@@ -46,10 +49,6 @@ help:
 
 clean:
 	-rm -rf $(BUILDDIR)/* $(WEB)/*
-
-api:
-	echo install NLTK first
-	sphinx-apidoc -o api ../nltk
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
