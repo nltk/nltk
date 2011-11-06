@@ -1,44 +1,5 @@
 
 ***************************************************************************
-File "/Users/sb/git/nltk/nltk/test/tag.doctest", line 167, in tag.doctest
-Failed example:
-    print 'Accuracy: %4.1f%%' % (
-        100.0 * unigram_tagger.evaluate(brown_test))
-Expected:
-    Accuracy: 85.4%
-Got:
-    Accuracy: 85.8%
-
-***************************************************************************
-File "/Users/sb/git/nltk/nltk/test/tag.doctest", line 178, in tag.doctest
-Failed example:
-    print 'Accuracy: %4.1f%%' % (
-        100.0 * unigram_tagger_2.evaluate(brown_test))
-Expected:
-    Accuracy: 88.0%
-Got:
-    Accuracy: 88.4%
-
-***************************************************************************
-File "/Users/sb/git/nltk/nltk/test/tag.doctest", line 205, in tag.doctest
-Failed example:
-    print bigram_tagger.size()
-Expected:
-    3394
-Got:
-    3386
-
-***************************************************************************
-File "/Users/sb/git/nltk/nltk/test/tag.doctest", line 207, in tag.doctest
-Failed example:
-    print 'Accuracy: %4.1f%%' % (
-        100.0 * bigram_tagger.evaluate(brown_test))
-Expected:
-    Accuracy: 89.4%
-Got:
-    Accuracy: 89.6%
-
-***************************************************************************
 File "/Users/sb/git/nltk/nltk/test/tag.doctest", line 222, in tag.doctest
 Failed example:
     print trigram_tagger.size()
@@ -108,14 +69,4 @@ Got:
       59  62   3   2  | CS -> QL if the text of words i+1...i+3 is 'as'
       55  55   0   1  | NN -> VB if the tag of the preceding word is 'MD'
       55  59   4   0  | VBD -> VBN if the tag of words i-2...i-1 is 'BEDZ'
-
-***************************************************************************
-File "/Users/sb/git/nltk/nltk/test/tag.doctest", line 274, in tag.doctest
-Failed example:
-    print 'Accuracy: %4.1f%%' % (
-        100.0 * brill_tagger.evaluate(brown_test))
-Expected:
-    Accuracy: 89.1%
-Got:
-    Accuracy: 89.5%
 .
