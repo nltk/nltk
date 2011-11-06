@@ -8,7 +8,7 @@
 
 import re
 
-from nltk.metrics import accuracy as _accuracy
+from ..metrics import accuracy as _accuracy
 
 def str2tuple(s, sep='/'):
     """
@@ -62,4 +62,3 @@ def untag(tagged_sentence):
 
     """
     return [w for (w, t) in tagged_sentence]
-

@@ -4,9 +4,6 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: hmm.py 5994 2008-06-02 12:07:07Z stevenbird $
-
 
 """
 An interface to U{Mallet <http://mallet.cs.umass.edu/>}'s Linear Chain
@@ -17,7 +14,7 @@ token to a featureset.  Each feature/value pair is then encoded as a
 single binary feature for Mallet.
 """
 
-from tempfile import *
+from tempfile import mkstemp
 import textwrap
 import re
 import time
@@ -25,12 +22,10 @@ import subprocess
 import sys
 import zipfile
 import pickle
-
-from nltk.classify.maxent import *
-from nltk.classify.mallet import call_mallet
 from xml.etree import ElementTree
 
-from api import *
+from nltk.classify import call_mallet
+from .api import FeaturesetTaggerI
 
 class MalletCRF(FeaturesetTaggerI):
     """

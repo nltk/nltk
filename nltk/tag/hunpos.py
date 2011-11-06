@@ -16,8 +16,9 @@ A module for interfacing with the HunPos open-source POS-tagger.
 
 import os
 from subprocess import Popen, PIPE
-import nltk
-from api import *
+
+from ..internals import find_binary
+from .api import TaggerI
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
 
@@ -69,7 +70,7 @@ class HunposTagger(TaggerI):
                         '/Applications/bin', '~/bin', '~/Applications/bin']
         hunpos_paths = map(os.path.expanduser, hunpos_paths)
 
-        self._hunpos_bin = nltk.internals.find_binary(
+        self._hunpos_bin = find_binary(
                 'hunpos-tag', path_to_bin, 
                 env_vars=('HUNPOS', 'HUNPOS_HOME'),
                 searchpath=hunpos_paths, 

@@ -24,8 +24,7 @@ import re, yaml
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.classify.naivebayes import NaiveBayesClassifier
 
-from api import *
-from util import *
+from api import TaggerI, FeaturesetTaggerI
 
 ######################################################################
 #{ Abstract Base Classes

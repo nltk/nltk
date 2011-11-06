@@ -15,7 +15,7 @@ http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 '''
 
 import nltk
-from api import *
+from api import TaggerI
 
 class TnT(TaggerI):
     '''

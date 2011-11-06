@@ -15,11 +15,10 @@ import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
 import yaml          # to save and load taggers in files
 import textwrap
-
 from collections import defaultdict
 
-from util import untag
-from api import *
+from .util import untag
+from .api import TaggerI
 
 ######################################################################
 ## The Brill Tagger
