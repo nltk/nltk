@@ -5,12 +5,25 @@
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
-"""
-A tokenizer that uses the Penn Treebank conventions:
+r"""
+Penn Treebank Tokenizer
+
+The Treebank tokenizer uses regular expressions to tokenize text as in Penn Treebank.
+This is the method that is invoked by ``word_tokenize()``.  It assumes that the
+text has already been segmented into sentences, e.g. using ``sent_tokenize()``.
+
+This tokenizer performs the following steps:
+
   - split standard contractions, e.g. ``don't -> ``do n't``
   - treat most punctuation characters as separate tokens
   - split off commas and single quotes, when followed by whitespace
   - separate periods that appear at the end of line
+
+    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+    >>> TreebankWordTokenizer().tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
 """
 
 import re
@@ -70,4 +83,3 @@ class TreebankWordTokenizer(TokenizerI):
         text = re.sub('\. *(\n|$)', ' . ', text)
 
         return text.split()
-    

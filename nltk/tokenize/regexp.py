@@ -7,9 +7,60 @@
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
-"""
-Tokenizers that divide strings into substrings using regular
-expressions that can match either tokens or separators between tokens.
+r"""
+Regular-Expression Tokenizers
+
+A ``RegexpTokenizer`` splits a string into substrings using a regular expression.
+For example, the following tokenizer forms tokens out of alphabetic sequences,
+money expressions, and any other non-whitespace sequences:
+
+    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+    >>> tokenizer = RegexpTokenizer('\w+|\$[\d\.]+|\S+')
+    >>> tokenizer.tokenize(s)
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+A ``RegexpTokenizer`` can use its regexp to match delimiters instead:
+
+    >>> tokenizer = RegexpTokenizer('\s+', gaps=True)
+    >>> tokenizer.tokenize(s)
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
+    'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+
+Note that empty tokens are not returned when the delimiter appears at
+the start or end of the string.
+
+The material between the tokens is discarded.  For example,
+the following tokenizer selects just the capitalized words:
+
+    >>> capword_tokenizer = RegexpTokenizer('[A-Z]\w+')
+    >>> capword_tokenizer.tokenize(s)
+    ['Good', 'New', 'York', 'Please', 'Thanks']
+
+This module contains several subclasses of ``RegexpTokenizer``
+that use pre-defined regular expressions.
+
+    >>> # Uses '\s*\n\s*\n\s*':
+    >>> BlanklineTokenizer().tokenize(s)
+    ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.',
+    'Thanks.']
+
+All of the regular expression tokenizers are also available as functions:
+
+    >>> regexp_tokenize(s, pattern='\w+|\$[\d\.]+|\S+')
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    >>> wordpunct_tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
+     '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    >>> blankline_tokenize(s)
+    ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.', 'Thanks.']
+
+Caution: The function ``regexp_tokenize()`` takes the text as its
+first argument, and the regular expression pattern as its second
+argument.  This differs from the conventions used by Python's
+``re`` functions, where the pattern is always the first argument.
+(This is for consistency with the other NLTK tokenizers.)
 """
 
 import re
@@ -95,10 +146,12 @@ class RegexpTokenizer(TokenizerI):
 class WhitespaceTokenizer(RegexpTokenizer):
     r"""
     Tokenize a string on whitespace (space, tab, newline).
-    In general, users should use ``str.split()`` instead, e.g.:
+    In general, users should use the string ``split()`` method instead.
 
-        >>> words = "lorem ipsum".split()
-
+        >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+        >>> WhitespaceTokenizer().tokenize(s)
+        ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
+        'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
     """
 
     def __init__(self):
@@ -114,14 +167,14 @@ class BlanklineTokenizer(RegexpTokenizer):
         RegexpTokenizer.__init__(self, r'\s*\n\s*\n\s*', gaps=True)
 
 class WordPunctTokenizer(RegexpTokenizer):
-    r"""
+    """
     Tokenize a text into a sequence of alphabetic and
-    non-alphabetic characters.  E.g.:
+    non-alphabetic characters, using the regexp ``\w+|[^\w\s]+``. 
 
-        >>> from nltk.tokenize.regexp import WordPunctTokenizer
-        >>> WordPunctTokenizer().tokenize("She said 'hello'.")
-        ['She', 'said', "'", 'hello', "'."]
-
+        >>> s = "Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks."
+        >>> WordPunctTokenizer().tokenize(s)
+        ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
+        '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     """
     def __init__(self):
         RegexpTokenizer.__init__(self, r'\w+|[^\w\s]+')

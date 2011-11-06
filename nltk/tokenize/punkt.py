@@ -11,9 +11,62 @@
 #
 # $Id: probability.py 4865 2007-07-11 22:6:07Z edloper $
 
-"""
-The Punkt sentence tokenizer.  The algorithm for this tokenizer is
-described in Kiss & Strunk (2006)::
+r"""
+Punkt Sentence Tokenizer
+
+This tokenizer divides a text into a list of sentences,
+by using an unsupervised algorithm to build a model for abbreviation
+words, collocations, and words that start sentences.  It must be
+trained on a large collection of plaintext in the taret language
+before it can be used.
+
+The NLTK data package includes a pre-trained Punkt tokenizer for
+English.
+
+    >>> import nltk.data
+    >>> text = '''
+    ... Punkt knows that the periods in Mr. Smith and Johann S. Bach
+    ... do not mark sentence boundaries.  And sometimes sentences 
+    ... can start with non-capitalized words.  i is a good variable
+    ... name.
+    ... '''
+    >>> sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> print '\n-----\n'.join(sent_detector.tokenize(text.strip()))
+    Punkt knows that the periods in Mr. Smith and Johann S. Bach
+    do not mark sentence boundaries.
+    -----
+    And sometimes sentences 
+    can start with non-capitalized words.
+    -----
+    i is a good variable
+    name.
+
+(Note that whitespace from the original text, including newlines, is
+retained in the output.)
+
+Punctuation following sentences can be included with the realign_boundaries
+flag:
+   
+    >>> text = '''
+    ... (How does it deal with this parenthesis?)  "It should be part of the
+    ... previous sentence."
+    ... '''
+    >>> print '\n-----\n'.join(
+    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True))
+    (How does it deal with this parenthesis?)
+    -----
+    "It should be part of the
+    previous sentence."
+
+:class:`.PunktWordTokenizer` uses a regular expression to divide a text into tokens,
+leaving all periods attached to words, but separating off other punctuation:
+
+    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+    >>> PunktWordTokenizer().tokenize(s)
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
+    'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+
+The algorithm for this tokenizer is described in::
 
   Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence
     Boundary Detection.  Computational Linguistics 32: 485-525.

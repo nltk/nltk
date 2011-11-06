@@ -380,8 +380,6 @@ class TokenSequence(object):
         self.__dict__.update(locals())
         del self.__dict__['self']
 
-
-
 #Pasted from the SciPy cookbook: http://www.scipy.org/Cookbook/SignalSmooth
 def smooth(x,window_len=11,window='flat'):
     """smooth the data using a window with requested size.
@@ -420,14 +418,11 @@ def smooth(x,window_len=11,window='flat'):
     if x.size < window_len:
         raise ValueError, "Input vector needs to be bigger than window size."
 
-
     if window_len<3:
         return x
 
-
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
         raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
-
 
     s=numpy.r_[2*x[0]-x[window_len:1:-1],x,2*x[-1]-x[-1:-window_len:-1]]
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
 # Copyright (C) 2001-2011 NLTK Project
@@ -7,19 +8,41 @@
 # For license information, see LICENSE.TXT
 
 """
-This package contains several *tokenizers*, which break continuous text
-into a sequence of units, such as words and punctuation.  Tokenizers operate on a string,
-and return a sequence of strings, one per token.  The decision about which
-tokenizer to use often depends on the particular application.
+NLTK Tokenizer Package
 
-The most frequently used tokenizer is ``word_tokenize()``, e.g.
+Tokenizers divide strings into lists of substrings.  For example,
+tokenizers can be used to find the list of sentences or words in a
+string.
 
-    >>> from nltk.tokenize import word_tokenize
-    >>> word_tokenize("Good muffins cost $3.88 in New York.")
-    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.']
+    >>> from nltk import word_tokenize, wordpunct_tokenize
+    >>> s = "Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks."
+    >>> wordpunct_tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    >>> sent_tokenize(s)
+    ['Good muffins cost $3.88\\nin New York.', 'Please buy me\\ntwo of them.', 'Thanks.']
+    >>> [word_tokenize(t) for t in sent_tokenize(s)]
+    [['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.'],
+    ['Please', 'buy', 'me', 'two', 'of', 'them', '.'], ['Thanks', '.']]
 
-For more information about tokenization, please see the tokenizer HOWTO,
-or chapter 3 of the NLTK book.
+Caution: only use ``word_tokenize()`` on individual sentences.
+
+Caution: when tokenizing a Unicode string, make sure you are not
+using an encoded version of the string (it may be necessary to
+decode it first, e.g. with ``s.decode("utf8")``.
+
+NLTK tokenizers can produce token-spans, represented as tuples of integers
+having the same semantics as string slices, to support efficient comparison
+of tokenizers.  (These methods are implemented as generators.)
+
+    >>> list(WhitespaceTokenizer().span_tokenize(s))
+    [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36), (38, 44),
+    (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
+
+There are numerous ways to tokenize text.  If you need more control over
+tokenization, see the other methods provided in this package.
+
+For further information, please see Chapter 3 of the NLTK book.
 """
 
 from ..data    import load 
