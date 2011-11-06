@@ -166,7 +166,7 @@ tagger or the regexp tagger:
 
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * unigram_tagger.evaluate(brown_test))
-    Accuracy: 85.4%
+    Accuracy: 85.8%
 
 As was mentioned above, the unigram tagger will assign a tag of
 ``None`` to any words that it never saw in the training data.  We can
@@ -177,7 +177,7 @@ choose a tag:
     >>> unigram_tagger_2 = nltk.UnigramTagger(brown_train, backoff=regexp_tagger)
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * unigram_tagger_2.evaluate(brown_test))
-    Accuracy: 88.0%
+    Accuracy: 88.4%
 
 Using a backoff tagger has another advantage, as well -- it allows us
 to build a more compact unigram tagger, because the unigram tagger
@@ -203,10 +203,10 @@ tag that it just generated for the preceding word.
 
     >>> bigram_tagger = nltk.BigramTagger(brown_train, backoff=unigram_tagger_2)
     >>> print bigram_tagger.size()
-    3394
+    3386
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * bigram_tagger.evaluate(brown_test))
-    Accuracy: 89.4%
+    Accuracy: 89.6%
 
 Trigram Tagger & N-Gram Tagger
 ------------------------------
@@ -273,7 +273,7 @@ corpus, based on one or more "rule templates."
       55  57   2   0  | VBD -> VBN if the tag of words i-3...i-1 is 'HVD'
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * brill_tagger.evaluate(brown_test))
-    Accuracy: 89.1%
+    Accuracy: 89.5%
 
 HMM Tagger
 ----------

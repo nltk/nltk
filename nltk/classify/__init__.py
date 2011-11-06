@@ -87,6 +87,7 @@ from megam import *
 
 from api import *
 from util import *
+from mallet import *
 from naivebayes import *
 from decisiontree import *
 from rte_classify import *
@@ -102,6 +103,7 @@ __all__ = [
     # omitted -- it should be accessed as nltk.classify.accuracy();
     # similarly for log_likelihood() and attested_labels().
     'config_weka', 'config_megam',
+    'config_mallet', 'call_mallet',
 
     # RTE
     'rte_classifier', 'rte_features', 'RTEFeatureExtractor',
