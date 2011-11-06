@@ -26,19 +26,21 @@ and "an amazing library to play with natural language."
 Some simple things you can do with NLTK
 ---------------------------------------
 
-    >>> import nltk
-    >>> sentence = "At eight o'clock on Thursday morning 
-    Arthur didn't feel very good."
+Tokenize and tag some text:
 
+    >>> import nltk
+    >>> sentence = """At eight o'clock on Thursday morning 
+    Arthur didn't feel very good."""
     >>> tokens = nltk.word_tokenize(sentence)
     >>> tokens
     ['At', 'eight', "o'clock", 'on', 'Thursday', 'morning', 
     'Arthur', 'did', "n't", 'feel', 'very', 'good', '.']
-
     >>> tagged = nltk.pos_tag(tokens)
     >>> tagged[0:6]
     [('At', 'IN'), ('eight', 'CD'), ("o'clock", 'JJ'), ('on', 'IN'), 
     ('Thursday', 'NNP'), ('morning', 'NN')]
+
+Identify named entities:
 
     >>> entities = nltk.chunk.ne_chunk(tagged)
     >>> entities
@@ -47,6 +49,8 @@ Some simple things you can do with NLTK
            Tree('PERSON', [('Arthur', 'NNP')]), 
                ('did', 'VBD'), ("n't", 'RB'), ('feel', 'VB'), 
                ('very', 'RB'), ('good', 'JJ'), ('.', '.')])
+
+Display a parse tree:
 
     >>> from nltk.corpus import treebank
     >>> t = treebank.parsed_sents('wsj_0001.mrg')[0]
