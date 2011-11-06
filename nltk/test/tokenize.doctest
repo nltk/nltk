@@ -1,10 +1,6 @@
 .. Copyright (C) 2001-2011 NLTK Project
 .. For license information, see LICENSE.TXT
 
-
-Span Tokenizers
-~~~~~~~~~~~~~~~
-    
 Regression Tests: Regexp Tokenizer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
