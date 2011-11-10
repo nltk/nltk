@@ -69,15 +69,17 @@ of EM.
 
 import re
 import types
-
 from numpy import *
-from nltk.probability import FreqDist, ConditionalFreqDist, \
-     ConditionalProbDist, DictionaryProbDist, DictionaryConditionalProbDist, \
-     LidstoneProbDist, MutableProbDist, MLEProbDist, UniformProbDist
-from nltk.metrics import accuracy as _accuracy
+
+from nltk.probability import (FreqDist, ConditionalFreqDist,
+                              ConditionalProbDist, DictionaryProbDist,
+                              DictionaryConditionalProbDist,
+                              LidstoneProbDist, MutableProbDist,
+                              MLEProbDist, UniformProbDist)
+from nltk.metrics import accuracy
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
 
-from api import *
+from nltk.tag.api import TaggerI, HiddenMarkovModelTaggerTransformI
 
 # _NINF = float('-inf')  # won't work on Windows
 _NINF = float('-1e300')
@@ -107,23 +109,23 @@ class HiddenMarkovModelTagger(TaggerI):
         Creates a hidden markov model parametised by the the states,
         transition probabilities, output probabilities and priors.
 
-        @param symbols: the set of output symbols (alphabet)
-        @type symbols: seq of any
-        @param states: a set of states representing state space
-        @type states: seq of any
-        @param transitions: transition probabilities; Pr(s_i | s_j) is the
+        :param symbols: the set of output symbols (alphabet)
+        :type symbols: seq of any
+        :param states: a set of states representing state space
+        :type states: seq of any
+        :param transitions: transition probabilities; Pr(s_i | s_j) is the
             probability of transition from state i given the model is in
             state_j
-        @type transitions: C{ConditionalProbDistI}
-        @param outputs: output probabilities; Pr(o_k | s_i) is the probability
+        :type transitions: ConditionalProbDistI
+        :param outputs: output probabilities; Pr(o_k | s_i) is the probability
             of emitting symbol k when entering state i
-        @type outputs: C{ConditionalProbDistI}
-        @param priors: initial state distribution; Pr(s_i) is the probability
+        :type outputs: ConditionalProbDistI
+        :param priors: initial state distribution; Pr(s_i) is the probability
             of starting in state i
-        @type priors: C{ProbDistI}
-        @kwparam transform: an optional function for transforming training
+        :type priors: ProbDistI
+        :param transform: an optional function for transforming training
             instances, defaults to the identity function.         
-        @type transform: C{function} or C{HiddenMarkovModelTaggerTransform}
+        :type transform: function or HiddenMarkovModelTaggerTransform
         """
         self._states = states
         self._transitions = transitions
@@ -179,32 +181,32 @@ class HiddenMarkovModelTagger(TaggerI):
     def train(cls, labeled_sequence, test_sequence=None,
     		       unlabeled_sequence=None, **kwargs):
     	"""
-    	Train a new C{HiddenMarkovModelTagger} using the given labeled and
+    	Train a new HiddenMarkovModelTagger using the given labeled and
     	unlabeled training instances. Testing will be performed if test
     	instances are provided.
     	
-    	@return: a hidden markov model tagger
-    	@rtype: C{HiddenMarkovModelTagger}
-    	@param labeled_sequence: a sequence of labeled training instances,
+    	:return: a hidden markov model tagger
+    	:rtype: HiddenMarkovModelTagger
+    	:param labeled_sequence: a sequence of labeled training instances,
     	    i.e. a list of sentences represented as tuples
-    	@type labeled_sequence: C{list} of C{list}
-    	@param test_sequence: a sequence of labeled test instances
-    	@type test_sequence: C{list} of C{list}
-    	@param unlabeled_sequence: a sequence of unlabeled training instances,
+    	:type labeled_sequence: list(list)
+    	:param test_sequence: a sequence of labeled test instances
+    	:type test_sequence: list(list)
+    	:param unlabeled_sequence: a sequence of unlabeled training instances,
     	    i.e. a list of sentences represented as words
-    	@type unlabeled_sequence: C{list} of C{list}
-        @kwparam transform: an optional function for transforming training
+    	:type unlabeled_sequence: list(list)
+        :param transform: an optional function for transforming training
             instances, defaults to the identity function, see L{transform()}
-        @type transform: C{function}
-        @kwparam estimator: an optional function or class that maps a
+        :type transform: function
+        :param estimator: an optional function or class that maps a
             condition's frequency distribution to its probability
             distribution, defaults to a Lidstone distribution with gamma = 0.1
-        @type estimator: C{class} or C{function}
-        @kwparam verbose: boolean flag indicating whether training should be
+        :type estimator: class or function
+        :param verbose: boolean flag indicating whether training should be
             verbose or include printed output
-        @type verbose: C{bool}
-        @kwparam max_iterations: number of Baum-Welch interations to perform
-        @type max_iterations: C{int}
+        :type verbose: bool
+        :param max_iterations: number of Baum-Welch interations to perform
+        :type max_iterations: int
     	"""
         return cls._train(labeled_sequence, test_sequence,
     		              unlabeled_sequence, **kwargs)
@@ -216,11 +218,11 @@ class HiddenMarkovModelTagger(TaggerI):
         sequence. Otherwise, uses the forward algorithm to find the
         probability over all label sequences.
 
-        @return: the probability of the sequence
-        @rtype: float
-        @param sequence: the sequence of symbols which must contain the TEXT
+        :return: the probability of the sequence
+        :rtype: float
+        :param sequence: the sequence of symbols which must contain the TEXT
             property, and optionally the TAG property
-        @type sequence:  Token
+        :type sequence:  Token
         """
         return 2**(self.log_probability(self._transform.transform(sequence)))
 
@@ -231,11 +233,11 @@ class HiddenMarkovModelTagger(TaggerI):
         symbol, state sequence. Otherwise, uses the forward algorithm to find
         the log-probability over all label sequences.
 
-        @return: the log-probability of the sequence
-        @rtype: float
-        @param sequence: the sequence of symbols which must contain the TEXT
+        :return: the log-probability of the sequence
+        :rtype: float
+        :param sequence: the sequence of symbols which must contain the TEXT
             property, and optionally the TAG property
-        @type sequence:  Token
+        :type sequence:  Token
         """
         sequence = self._transform.transform(sequence)
         
@@ -262,10 +264,10 @@ class HiddenMarkovModelTagger(TaggerI):
         Tags the sequence with the highest probability state sequence. This
         uses the best_path method to find the Viterbi path.
 
-        @return: a labelled sequence of symbols
-        @rtype: list
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
+        :return: a labelled sequence of symbols
+        :rtype: list
+        :param unlabeled_sequence: the sequence of unlabeled symbols 
+        :type unlabeled_sequence: list
         """
         unlabeled_sequence = self._transform.transform(unlabeled_sequence)
         return self._tag(unlabeled_sequence)
@@ -276,9 +278,9 @@ class HiddenMarkovModelTagger(TaggerI):
 
     def _output_logprob(self, state, symbol):
         """
-        @return: the log probability of the symbol being observed in the given
+        :return: the log probability of the symbol being observed in the given
             state
-        @rtype: float
+        :rtype: float
         """
         return self._outputs[state].logprob(symbol)
 
@@ -356,10 +358,10 @@ class HiddenMarkovModelTagger(TaggerI):
         the HMM. Uses the Viterbi algorithm to calculate this part by dynamic
         programming.
 
-        @return: the state sequence
-        @rtype: sequence of any
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
+        :return: the state sequence
+        :rtype: sequence of any
+        :param unlabeled_sequence: the sequence of unlabeled symbols 
+        :type unlabeled_sequence: list
         """
         unlabeled_sequence = self._transform.transform(unlabeled_sequence)
         return self._best_path(unlabeled_sequence)
@@ -399,10 +401,10 @@ class HiddenMarkovModelTagger(TaggerI):
         programming.  This uses a simple, direct method, and is included for
         teaching purposes.
 
-        @return: the state sequence
-        @rtype: sequence of any
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
+        :return: the state sequence
+        :rtype: sequence of any
+        :param unlabeled_sequence: the sequence of unlabeled symbols 
+        :type unlabeled_sequence: list
         """
         unlabeled_sequence = self._transform.transform(unlabeled_sequence)
         return self._best_path_simple(unlabeled_sequence)
@@ -460,16 +462,16 @@ class HiddenMarkovModelTagger(TaggerI):
         This will mostly generate unintelligible garbage, but can provide some
         amusement.
 
-        @return:        the randomly created state/observation sequence,
+        :return:        the randomly created state/observation sequence,
                         generated according to the HMM's probability
                         distributions. The SUBTOKENS have TEXT and TAG
                         properties containing the observation and state
                         respectively.
-        @rtype:         list
-        @param rng:     random number generator
-        @type rng:      Random (or any object with a random() method)
-        @param length:  desired output length
-        @type length:   int
+        :rtype:         list
+        :param rng:     random number generator
+        :type rng:      Random (or any object with a random() method)
+        :param length:  desired output length
+        :type length:   int
         """
 
         # sample the starting state and symbol prob dists
@@ -679,10 +681,10 @@ class HiddenMarkovModelTagger(TaggerI):
         state s at time t after observing the partial symbol sequence up to
         and including t.
 
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
-        @return: the forward log probability matrix
-        @rtype:  array
+        :param unlabeled_sequence: the sequence of unlabeled symbols 
+        :type unlabeled_sequence: list
+        :return: the forward log probability matrix
+        :rtype:  array
         """
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -711,10 +713,10 @@ class HiddenMarkovModelTagger(TaggerI):
         state s at time t after observing the partial symbol sequence from t
         .. T.
 
-        @return: the backward log probability matrix
-        @rtype:  array
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
+        :return: the backward log probability matrix
+        :rtype:  array
+        :param unlabeled_sequence: the sequence of unlabeled symbols 
+        :type unlabeled_sequence: list
         """
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -738,13 +740,13 @@ class HiddenMarkovModelTagger(TaggerI):
 
     def test(self, test_sequence, **kwargs):
         """
-        Tests the C{HiddenMarkovModelTagger} instance.
+        Tests the HiddenMarkovModelTagger instance.
 
-    	@param test_sequence: a sequence of labeled test instances
-        @type test_sequence: C{list} of C{list}
-        @kwparam verbose: boolean flag indicating whether training should be
+    	:param test_sequence: a sequence of labeled test instances
+        :type test_sequence: list(list)
+        :param verbose: boolean flag indicating whether training should be
             verbose or include printed output
-        @type verbose: C{bool}
+        :type verbose: bool
         """
         
         def words(sent):
@@ -784,7 +786,7 @@ class HiddenMarkovModelTagger(TaggerI):
         test_tags = LazyConcatenation(LazyMap(tags, test_sequence))
         predicted_tags = LazyConcatenation(LazyMap(tags, predicted_sequence))
                 
-        acc = _accuracy(test_tags, predicted_tags)
+        acc = accuracy(test_tags, predicted_tags)
 
         count = sum([len(sent) for sent in test_sequence])
 
@@ -807,10 +809,10 @@ class HiddenMarkovModelTrainer(object):
         method may be used. If either of the states or symbols are not given,
         these may be derived from supervised training.
 
-        @param states:  the set of state labels
-        @type states:   sequence of any
-        @param symbols: the set of observation symbols
-        @type symbols:  sequence of any
+        :param states:  the set of state labels
+        :type states:   sequence of any
+        :param symbols: the set of observation symbols
+        :type symbols:  sequence of any
         """
         if states:
             self._states = states
@@ -827,15 +829,15 @@ class HiddenMarkovModelTrainer(object):
         Trains the HMM using both (or either of) supervised and unsupervised
         techniques.
 
-        @return: the trained model
-        @rtype: HiddenMarkovModelTagger
-        @param labelled_sequences: the supervised training data, a set of
+        :return: the trained model
+        :rtype: HiddenMarkovModelTagger
+        :param labelled_sequences: the supervised training data, a set of
             labelled sequences of observations
-        @type labelled_sequences: list
-        @param unlabeled_sequences: the unsupervised training data, a set of
+        :type labelled_sequences: list
+        :param unlabeled_sequences: the unsupervised training data, a set of
             sequences of observations
-        @type unlabeled_sequences: list
-        @param kwargs: additional arguments to pass to the training methods
+        :type unlabeled_sequences: list
+        :param kwargs: additional arguments to pass to the training methods
         """
         assert labelled_sequences or unlabeled_sequences
         model = None
@@ -855,12 +857,12 @@ class HiddenMarkovModelTrainer(object):
         Markov Models and Selected Applications in Speech Recognition',
         Lawrence Rabiner, IEEE, 1989.
 
-        @return: the trained model
-        @rtype: HiddenMarkovModelTagger
-        @param unlabeled_sequences: the training data, a set of
+        :return: the trained model
+        :rtype: HiddenMarkovModelTagger
+        :param unlabeled_sequences: the training data, a set of
             sequences of observations
-        @type unlabeled_sequences: list
-        @param kwargs: may include the following parameters::
+        :type unlabeled_sequences: list
+        :param kwargs: may include the following parameters::
             model - a HiddenMarkovModelTagger instance used to begin
                 the Baum-Welch algorithm
             max_iterations - the maximum number of EM iterations
@@ -1001,13 +1003,13 @@ class HiddenMarkovModelTrainer(object):
         are then normalised into probability estimates, which can be
         smoothed if desired.
 
-        @return: the trained model
-        @rtype: HiddenMarkovModelTagger
-        @param labelled_sequences: the training data, a set of
+        :return: the trained model
+        :rtype: HiddenMarkovModelTagger
+        :param labelled_sequences: the training data, a set of
             labelled sequences of observations
-        @type labelled_sequences: list
-        @param kwargs: may include an 'estimator' parameter, a function taking
-            a C{FreqDist} and a number of bins and returning a C{ProbDistI};
+        :type labelled_sequences: list
+        :param kwargs: may include an 'estimator' parameter, a function taking
+            a FreqDist and a number of bins and returning a CProbDistI;
             otherwise a MLE estimate is used
         """
 
@@ -1050,7 +1052,7 @@ class HiddenMarkovModelTrainer(object):
 
 class HiddenMarkovModelTaggerTransform(HiddenMarkovModelTaggerTransformI):
     """
-    An abstract subclass of C{HiddenMarkovModelTaggerTransformI}.
+    An abstract subclass of HiddenMarkovModelTaggerTransformI.
     """
     def __init__(self):
         if self.__class__ == HiddenMarkovModelTaggerTransform:
@@ -1059,13 +1061,13 @@ class HiddenMarkovModelTaggerTransform(HiddenMarkovModelTaggerTransformI):
 
 class LambdaTransform(HiddenMarkovModelTaggerTransform):
     """
-    A subclass of C{HiddenMarkovModelTaggerTransform} that is backed by an
+    A subclass of HiddenMarkovModelTaggerTransform that is backed by an
     arbitrary user-defined function, instance method, or lambda function.
     """
     def __init__(self, transform):
         """
-        @param func: a user-defined or lambda transform function
-        @type func: C{function}
+        :param func: a user-defined or lambda transform function
+        :type func: function
         """
         self._transform = transform
         
@@ -1075,9 +1077,9 @@ class LambdaTransform(HiddenMarkovModelTaggerTransform):
 
 class IdentityTransform(HiddenMarkovModelTaggerTransform):
     """
-    A subclass of C{HiddenMarkovModelTaggerTransform} that implements 
-    L{transform()} as the identity function, i.e. symbols passed to 
-    C{transform()} are returned unmodified.
+    A subclass of HiddenMarkovModelTaggerTransform that implements 
+    transform() as the identity function, i.e. symbols passed to 
+    transform() are returned unmodified.
     """
     def transform(self, labeled_symbols):
         return labeled_symbols
@@ -1260,12 +1262,10 @@ def demo_bw():
     trainer = HiddenMarkovModelTrainer(states, symbols)
     hmm = trainer.train_unsupervised(training, model=model,
                                      max_iterations=1000)
-    
-if __name__ == '__main__':
-    demo() 
-    demo_pos()
-    demo_pos_bw()
-#    demo_bw()
 
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
  	  	 

@@ -9,14 +9,13 @@
 
 """
 Classes for tagging sentences sequentially, left to right.  The
-abstract base class L{SequentialBackoffTagger} serves as the base
+abstract base class SequentialBackoffTagger serves as the base
 class for all the taggers in this module.  Tagging of individual words
-is performed by the method L{choose_tag()
-<SequentialBackoffTagger.choose_tag>}, which is defined by
-subclasses of L{SequentialBackoffTagger}.  If a tagger is unable to
-determine a tag for the specified token, then its I{backoff tagger} is
-consulted instead.  Any C{SequentialBackoffTagger} may serve as a
-backoff tagger for any other C{SequentialBackoffTagger}.
+is performed by the method ``choose_tag()``, which is defined by
+subclasses of SequentialBackoffTagger.  If a tagger is unable to
+determine a tag for the specified token, then its backoff tagger is
+consulted instead.  Any SequentialBackoffTagger may serve as a
+backoff tagger for any other SequentialBackoffTagger.
 """
 
 import re, yaml
@@ -24,7 +23,7 @@ import re, yaml
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.classify.naivebayes import NaiveBayesClassifier
 
-from api import TaggerI, FeaturesetTaggerI
+from nltk.tag.api import TaggerI, FeaturesetTaggerI
 
 ######################################################################
 #{ Abstract Base Classes
@@ -33,12 +32,12 @@ class SequentialBackoffTagger(TaggerI):
     """
     An abstract base class for taggers that tags words sequentially,
     left to right.  Tagging of individual words is performed by the
-    method L{choose_tag()}, which should be defined by subclasses.  If
+    ``choose_tag()`` method, which should be defined by subclasses.  If
     a tagger is unable to determine a tag for the specified token,
     then its backoff tagger is consulted.
 
-    @ivar _taggers: A list of all the taggers that should be tried to
-        tag a token (i.e., C{self} and its backoff taggers).
+    :ivar _taggers: A list of all the taggers that should be tried to
+        tag a token (i.e., self and its backoff taggers).
     """
     def __init__(self, backoff=None):
         if backoff is None:
@@ -65,15 +64,14 @@ class SequentialBackoffTagger(TaggerI):
         return that tag.  If this tagger is unable to determine a tag
         for the specified token, then its backoff tagger is consulted.
         
-        @rtype: C{str}
-        @type tokens: C{list}
-        @param tokens: The list of words that are being tagged.
-        @type index: C{int}
-        @param index: The index of the word whose tag should be
+        :rtype: str
+        :type tokens: list
+        :param tokens: The list of words that are being tagged.
+        :type index: int
+        :param index: The index of the word whose tag should be
             returned.
-        @type history: C{list} of C{str}
-        @param history: A list of the tags for all words before
-            C{index}.
+        :type history: list(str)
+        :param history: A list of the tags for all words before *index*.
         """
         tag = None
         for tagger in self._taggers:
@@ -85,19 +83,18 @@ class SequentialBackoffTagger(TaggerI):
         """
         Decide which tag should be used for the specified token, and
         return that tag.  If this tagger is unable to determine a tag
-        for the specified token, return C{None} -- do I{not} consult
+        for the specified token, return None -- do not consult
         the backoff tagger.  This method should be overridden by
-        subclasses of C{SequentialBackoffTagger}.
+        subclasses of SequentialBackoffTagger.
 
-        @rtype: C{str}
-        @type tokens: C{list}
-        @param tokens: The list of words that are being tagged.
-        @type index: C{int}
-        @param index: The index of the word whose tag should be
+        :rtype: str
+        :type tokens: list
+        :param tokens: The list of words that are being tagged.
+        :type index: int
+        :param index: The index of the word whose tag should be
             returned.
-        @type history: C{list} of C{str}
-        @param history: A list of the tags for all words before
-            C{index}.
+        :type history: list(str)
+        :param history: A list of the tags for all words before *index*.
         """
         raise AssertionError('SequentialBackoffTagger is an abstract class')
 
@@ -108,18 +105,18 @@ class ContextTagger(SequentialBackoffTagger):
     a tag for a token based on the value of its "context".  Different
     subclasses are used to define different contexts.
 
-    A C{ContextTagger} chooses the tag for a token by calculating the
+    A ContextTagger chooses the tag for a token by calculating the
     token's context, and looking up the corresponding tag in a table.
     This table can be constructed manually; or it can be automatically
-    constructed based on a training corpus, using the L{_train()}
+    constructed based on a training corpus, using the ``_train()``
     factory method.
 
-    @ivar _context_to_tag: Dictionary mapping contexts to tags.
+    :ivar _context_to_tag: Dictionary mapping contexts to tags.
     """
     def __init__(self, context_to_tag, backoff=None):
         """
-        @param context_to_tag: A dictionary mapping contexts to tags.
-        @param backoff: The backoff tagger that should be used for this tagger.
+        :param context_to_tag: A dictionary mapping contexts to tags.
+        :param backoff: The backoff tagger that should be used for this tagger.
         """
         SequentialBackoffTagger.__init__(self, backoff)
         if context_to_tag:
@@ -129,10 +126,10 @@ class ContextTagger(SequentialBackoffTagger):
 
     def context(self, tokens, index, history):
         """
-        @return: the context that should be used to look up the tag
-            for the specified token; or C{None} if the specified token
+        :return: the context that should be used to look up the tag
+            for the specified token; or None if the specified token
             should not be handled by this tagger.
-        @rtype: (hashable)
+        :rtype: (hashable)
         """
         raise AssertionError('Abstract base class')
 
@@ -142,7 +139,7 @@ class ContextTagger(SequentialBackoffTagger):
 
     def size(self):
         """
-        @return: The number of entries in the table used by this
+        :return: The number of entries in the table used by this
         tagger to map from contexts to tags.
         """
         return len(self._context_to_tag)
@@ -152,19 +149,19 @@ class ContextTagger(SequentialBackoffTagger):
 
     def _train(self, tagged_corpus, cutoff=0, verbose=False):
         """
-        Initialize this C{ContextTagger}'s L{_context_to_tag} table
+        Initialize this ContextTagger's ``_context_to_tag`` table
         based on the given training data.  In particular, for each
-        context C{I{c}} in the training data, set
-        C{_context_to_tag[I{c}]} to the most frequent tag for that
+        context ``c`` in the training data, set
+        ``_context_to_tag[c]`` to the most frequent tag for that
         context.  However, exclude any contexts that are already
         tagged perfectly by the backoff tagger(s).
 
-        The old value of C{self._context_to_tag} (if any) is discarded.
+        The old value of ``self._context_to_tag`` (if any) is discarded.
 
-        @param tagged_corpus: A tagged corpus.  Each item should be
-            a C{list} of C{(word, tag)} tuples.
-        @param cutoff: If the most likely tag for a context occurs
-            fewer than C{cutoff} times, then exclude it from the
+        :param tagged_corpus: A tagged corpus.  Each item should be
+            a list of (word, tag tuples.
+        :param cutoff: If the most likely tag for a context occurs
+            fewer than cutoff times, then exclude it from the
             context-to-tag table for the new tagger.
         """
 
@@ -220,7 +217,7 @@ class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
     
     def __init__(self, tag):
         """
-        Construct a new tagger that assigns C{tag} to all tokens.
+        Construct a new tagger that assigns tag to all tokens.
         """
         self._tag = tag
         SequentialBackoffTagger.__init__(self, None)
@@ -235,31 +232,30 @@ class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
 class NgramTagger(ContextTagger, yaml.YAMLObject):
     """
     A tagger that chooses a token's tag based on its word string and
-    on the preceeding I{n} word's tags.  In particular, a tuple
-    C{(tags[i-n:i-1], words[i])} is looked up in a table, and the
+    on the preceeding n word's tags.  In particular, a tuple
+    (tags[i-n:i-1], words[i]) is looked up in a table, and the
     corresponding tag is returned.  N-gram taggers are typically
     trained on a tagged corpus.
+
+    Train a new NgramTagger using the given training data or
+    the supplied model.  In particular, construct a new tagger
+    whose table maps from each context (tag[i-n:i-1], word[i])
+    to the most frequent tag for that context.  But exclude any
+    contexts that are already tagged perfectly by the backoff
+    tagger.
+        
+    :param train: A tagged corpus consisting of a list of tagged
+        sentences, where each sentence is a list of (word, tag) tuples.
+    :param backoff: A backoff tagger, to be used by the new
+        tagger if it encounters an unknown context.
+    :param cutoff: If the most likely tag for a context occurs
+        fewer than *cutoff* times, then exclude it from the
+        context-to-tag table for the new tagger.
     """
     yaml_tag = '!nltk.NgramTagger'
     
     def __init__(self, n, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
-        """
-        Train a new C{NgramTagger} using the given training data or
-        the supplied model.  In particular, construct a new tagger
-        whose table maps from each context C{(tag[i-n:i-1], word[i])}
-        to the most frequent tag for that context.  But exclude any
-        contexts that are already tagged perfectly by the backoff
-        tagger.
-        
-        @param train: A tagged corpus consisting of a C{list} of tagged
-            sentences, where each sentence is a C{list} of C{(word, tag)} tuples.
-        @param backoff: A backoff tagger, to be used by the new
-            tagger if it encounters an unknown context.
-        @param cutoff: If the most likely tag for a context occurs
-            fewer than C{cutoff} times, then exclude it from the
-            context-to-tag table for the new tagger.
-        """
         self._n = n
         self._check_params(train, model)
         
@@ -328,23 +324,23 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
     substrings are not necessarily "true" morphological affixes).  In
     particular, a fixed-length substring of the word is looked up in a
     table, and the corresponding tag is returned.  Affix taggers are
-    typically constructed by training them on a tagged corpus; see
-    L{the constructor <__init__>}.
+    typically constructed by training them on a tagged corpus.
+
+    Construct a new affix tagger.
+        
+    :param affix_length: The length of the affixes that should be
+        considered during training and tagging.  Use negative
+        numbers for suffixes.
+    :param min_stem_length: Any words whose length is less than
+        min_stem_length+abs(affix_length) will be assigned a
+        tag of None by this tagger.
     """
+
     yaml_tag = '!nltk.AffixTagger'
 
     def __init__(self, train=None, model=None, affix_length=-3,
                  min_stem_length=2, backoff=None, cutoff=0, verbose=False):
-        """
-        Construct a new affix tagger.
-        
-        @param affix_length: The length of the affixes that should be
-            considered during training and tagging.  Use negative
-            numbers for suffixes.
-        @param min_stem_length: Any words whose length is less than
-            C{min_stem_length+abs(affix_length)} will be assigned a
-            tag of C{None} by this tagger.
-        """
+
         self._check_params(train, model)
         
         ContextTagger.__init__(self, model, backoff)
@@ -369,19 +365,22 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """
     A tagger that assigns tags to words based on regular expressions
     over word strings.
+
+    Construct a new regexp tagger.
+
+    :type regexps: list(tuple(str, str))
+    :param regexps: A list of ``(regexp, tag)`` pairs, each of
+        which indicates that a word matching ``regexp`` should
+        be tagged with ``tag``.  The pairs will be evalutated in
+        order.  If none of the regexps match a word, then the
+        optional backoff tagger is invoked, else it is
+        assigned the tag None.
     """
+
     yaml_tag = '!nltk.RegexpTagger'
+
     def __init__(self, regexps, backoff=None):
         """
-        Construct a new regexp tagger.
-
-        @type regexps: C{list} of C{(str, str)}
-        @param regexps: A list of C{(regexp, tag)} pairs, each of
-            which indicates that a word matching C{regexp} should
-            be tagged with C{tag}.  The pairs will be evalutated in
-            order.  If none of the regexps match a word, then the
-            optional backoff tagger is invoked, else it is
-            assigned the tag C{None}.
         """
         self._regexps = regexps
         SequentialBackoffTagger.__init__(self, backoff)
@@ -403,45 +402,44 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         feature_detector(tokens, index, history) -> featureset
 
-    Where C{tokens} is the list of unlabeled tokens in the sentence;
-    C{index} is the index of the token for which feature detection
-    should be performed; and C{history} is list of the tags for all
-    tokens before C{index}.
+    Where tokens is the list of unlabeled tokens in the sentence;
+    index is the index of the token for which feature detection
+    should be performed; and history is list of the tags for all
+    tokens before index.
+
+    Construct a new classifier-based sequential tagger.
+
+    :param feature_detector: A function used to generate the
+        featureset input for the classifier::
+        feature_detector(tokens, index, history) -> featureset
+
+    :param train: A tagged corpus consisting of a list of tagged
+        sentences, where each sentence is a list of (word, tag) tuples.
+            
+    :param backoff: A backoff tagger, to be used by the new tagger
+        if it encounters an unknown context.
+            
+    :param classifier_builder: A function used to train a new
+        classifier based on the data in *train*.  It should take
+        one argument, a list of labeled featuresets (i.e.,
+        (featureset, label) tuples).
+            
+    :param classifier: The classifier that should be used by the
+        tagger.  This is only useful if you want to manually
+        construct the classifier; normally, you would use *train*
+        instead.
+            
+    :param backoff: A backoff tagger, used if this tagger is
+        unable to determine a tag for a given token.
+            
+    :param cutoff_prob: If specified, then this tagger will fall
+        back on its backoff tagger if the probability of the most
+        likely tag is less than *cutoff_prob*.
     """
     def __init__(self, feature_detector=None, train=None,
                  classifier_builder=NaiveBayesClassifier.train,
                  classifier=None, backoff=None,
                  cutoff_prob=None, verbose=False):
-        """
-        Construct a new classifier-based sequential tagger.
-
-        @param feature_detector: A function used to generate the
-            featureset input for the classifier::
-                feature_detector(tokens, index, history) -> featureset
-
-        @param train: A tagged corpus consisting of a C{list} of tagged
-            sentences, where each sentence is a C{list} of C{(word, tag)} tuples.
-            
-        @param backoff: A backoff tagger, to be used by the new tagger
-            if it encounters an unknown context.
-            
-        @param classifier_builder: A function used to train a new
-            classifier based on the data in C{train}.  It should take
-            one argument, a list of labeled featuresets (i.e.,
-            C{(featureset, label)} tuples).
-            
-        @param classifier: The classifier that should be used by the
-            tagger.  This is only useful if you want to manually
-            construct the classifier; normally, you would use C{train}
-            instead.
-            
-        @param backoff: A backoff tagger, used if this tagger is
-            unable to determine a tag for a given token.
-            
-        @param cutoff_prob: If specified, then this tagger will fall
-            back on its backoff tagger if the probability of the most
-            likely tag is less than C{cutoff_prob}.
-        """
         self._check_params(train, classifier)
 
         SequentialBackoffTagger.__init__(self, backoff)
@@ -485,7 +483,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     def _train(self, tagged_corpus, classifier_builder, verbose):
         """
         Build a new classifier, based on the given training data
-        (C{tagged_corpus}).
+        *tagged_corpus*.
         """
 
         classifier_corpus = []
@@ -516,7 +514,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
           feature_detector(tokens, index, history) -> featureset
 
-        @see: L{classifier()}
+        See ``classifier()``
         """
         return self._feature_detector(tokens, index, history)
 
@@ -525,8 +523,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         Return the classifier that this tagger uses to choose a tag
         for each word in a sentence.  The input for this classifier is
         generated using this tagger's feature detector.
-
-        @see: L{feature_detector()}
+        See ``feature_detector()``
         """
         return self._classifier
 
@@ -581,3 +578,7 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
         return features
 
     
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

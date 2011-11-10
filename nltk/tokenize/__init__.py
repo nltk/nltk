@@ -7,7 +7,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""
+r"""
 NLTK Tokenizer Package
 
 Tokenizers divide strings into lists of substrings.  For example,
@@ -15,12 +15,13 @@ tokenizers can be used to find the list of sentences or words in a
 string.
 
     >>> from nltk import word_tokenize, wordpunct_tokenize
-    >>> s = "Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks."
+    >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
+    ... two of them.\n\nThanks.'''
     >>> wordpunct_tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> sent_tokenize(s)
-    ['Good muffins cost $3.88\\nin New York.', 'Please buy me\\ntwo of them.', 'Thanks.']
+    ['Good muffins cost $3.88\nin New York.', 'Please buy me\ntwo of them.', 'Thanks.']
     >>> [word_tokenize(t) for t in sent_tokenize(s)]
     [['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.'],
     ['Please', 'buy', 'me', 'two', 'of', 'them', '.'], ['Thanks', '.']]
@@ -45,23 +46,23 @@ tokenization, see the other methods provided in this package.
 For further information, please see Chapter 3 of the NLTK book.
 """
 
-from ..data    import load 
-
-from .simple   import SpaceTokenizer, TabTokenizer, LineTokenizer,\
-                      line_tokenize
-from .regexp   import RegexpTokenizer, WhitespaceTokenizer, BlanklineTokenizer,\
-                      WordPunctTokenizer, wordpunct_tokenize, regexp_tokenize,\
-                      blankline_tokenize          
-from .punkt    import PunktSentenceTokenizer, PunktWordTokenizer
-from .sexpr    import SExprTokenizer, sexpr_tokenize
-from .treebank import TreebankWordTokenizer
+from nltk.data              import load 
+from nltk.tokenize.simple   import (SpaceTokenizer, TabTokenizer, LineTokenizer,
+                                    line_tokenize)
+from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
+                                    BlanklineTokenizer, WordPunctTokenizer,
+                                    wordpunct_tokenize, regexp_tokenize,
+                                    blankline_tokenize)          
+from nltk.tokenize.punkt    import PunktSentenceTokenizer, PunktWordTokenizer
+from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
+from nltk.tokenize.treebank import TreebankWordTokenizer
 
 try:
     import numpy
 except ImportError:
     pass
 else:
-    from .texttiling import TextTilingTokenizer
+    from nltk.tokenize.texttiling import TextTilingTokenizer
 
 # Standard sentence tokenizer.
 def sent_tokenize(text):
@@ -83,3 +84,8 @@ def word_tokenize(text):
     This tokenizer is designed to work on a sentence at a time.
     """
     return _word_tokenize(text)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

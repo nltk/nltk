@@ -17,8 +17,8 @@ A module for interfacing with the HunPos open-source POS-tagger.
 import os
 from subprocess import Popen, PIPE
 
-from ..internals import find_binary
-from .api import TaggerI
+from nltk.internals import find_binary
+from nltk.tag.api import TaggerI
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
 
@@ -56,14 +56,14 @@ class HunposTagger(TaggerI):
         """
         Starts the hunpos-tag executable and establishes a connection with it.
         
-        @param path_to_model: The model file.
-        @param path_to_bin: The hunpos-tag binary.
-        @param encoding: The encoding used by the model. C{unicode} tokens
+        :param path_to_model: The model file.
+        :param path_to_bin: The hunpos-tag binary.
+        :param encoding: The encoding used by the model. Unicode tokens
             passed to the tag() and batch_tag() methods are converted to
             this charset when they are sent to hunpos-tag.
             The default is ISO-8859-1 (Latin-1).
 
-            This parameter is ignored for C{str} tokens, which are sent as-is.
+            This parameter is ignored for str tokens, which are sent as-is.
             The caller must ensure that tokens are encoded in the right charset.
         """
         hunpos_paths = ['.', '/usr/bin', '/usr/local/bin', '/opt/local/bin',
@@ -125,3 +125,7 @@ class HunposTagger(TaggerI):
 
         return tagged_tokens
 
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

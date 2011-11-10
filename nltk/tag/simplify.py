@@ -6,10 +6,7 @@
 # For license information, see LICENSE.TXT
 
 
-######################################################################
-#{ Brown
-######################################################################
-
+# Brown Corpus
 # http://khnt.hit.uib.no/icame/manuals/brown/INDEX.HTM
 
 brown_mapping1 = {
@@ -38,9 +35,7 @@ def simplify_brown_tag(tag):
     except KeyError:
         return tag.upper()
 
-######################################################################
-#{ Wall Street Journal tags (Penn Treebank)
-######################################################################
+# Wall Street Journal tags (Penn Treebank)
 
 wsj_mapping = {
     '-lrb-': '(',   '-rrb-': ')',    '-lsb-': '(',
@@ -92,9 +87,7 @@ def simplify_indian_tag(tag):
     return tag.upper()
 
 
-######################################################################
-#{ Alpino tags
-######################################################################
+# Alpino tags
 
 alpino_mapping = {
     'noun':'N', 'name': 'NP', 'vg': 'VG', 'punct':'.',
@@ -108,9 +101,15 @@ def simplify_alpino_tag(tag):
         pass
     return tag.upper()
 
-######################################################################
-#{ Default tag simplification
-######################################################################
+
+# Default tag simplification
 
 def simplify_tag(tag):
     return tag[0].upper()
+
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+

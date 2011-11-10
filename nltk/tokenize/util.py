@@ -8,9 +8,15 @@
 from re import finditer
 
 def string_span_tokenize(s, sep):
-    """
-    Return the offsets of the tokens in *s*, as a sequence of ``(start, end)`` tuples,
-    by splitting the string at each occurrence of *sep*.
+    r"""
+    Return the offsets of the tokens in *s*, as a sequence of ``(start, end)``
+    tuples, by splitting the string at each occurrence of *sep*.
+    
+        >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
+        ... two of them.\n\nThanks.'''
+        >>> list(string_span_tokenize(s, " "))
+        [(0, 4), (5, 12), (13, 17), (18, 26), (27, 30), (31, 36), (37, 37),
+        (38, 44), (45, 48), (49, 55), (56, 58), (59, 73)]
     
     :param s: the string to be tokenized
     :type s: str
@@ -35,14 +41,15 @@ def string_span_tokenize(s, sep):
 
 def regexp_span_tokenize(s, regexp):
     r"""
-    Return the offsets of the tokens in *s*, as a sequence of ``(start, end)`` tuples,
-    by splitting the string at each successive match of *regexp*.
+    Return the offsets of the tokens in *s*, as a sequence of ``(start, end)``
+    tuples, by splitting the string at each successive match of *regexp*.
     
         >>> from nltk.tokenize import WhitespaceTokenizer
-        >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+        >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
+        ... two of them.\n\nThanks.'''
         >>> list(WhitespaceTokenizer().span_tokenize(s))
-        [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36), (38, 44),
-        (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
+        [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36),
+        (38, 44), (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
     
     :param s: the string to be tokenized
     :type s: str
@@ -63,7 +70,8 @@ def spans_to_relative(spans):
     Return a sequence of relative spans, given a sequence of spans.
     
         >>> from nltk.tokenize import WhitespaceTokenizer
-        >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+        >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
+        ... two of them.\n\nThanks.'''
         >>> list(spans_to_relative(WhitespaceTokenizer().span_tokenize(s)))
         [(0, 4), (1, 7), (1, 4), (1, 5), (1, 2), (1, 3), (1, 5), (2, 6),
         (1, 3), (1, 2), (1, 3), (1, 2), (1, 5), (2, 7)]
@@ -76,3 +84,8 @@ def spans_to_relative(spans):
     for left, right in spans:
         yield left - prev, right - left
         prev = right
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

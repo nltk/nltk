@@ -10,7 +10,7 @@ import re
 import math
 import numpy
 
-from .api import TokenizerI
+from nltk.tokenize.api import TokenizerI
 
 BLOCK_COMPARISON, VOCABULARY_INTRODUCTION = range(2)
 LC, HC = range(2)
@@ -452,5 +452,7 @@ def demo(text=None):
     pylab.legend()
     pylab.show()
 
-if __name__ == '__main__':
-    demo()
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

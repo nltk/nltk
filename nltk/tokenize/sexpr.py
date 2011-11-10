@@ -49,7 +49,7 @@ The s-expression tokenizer is also available as a function:
 
 import re
 
-from .api import TokenizerI
+from nltk.tokenize.api import TokenizerI
 
 class SExprTokenizer(TokenizerI):
     """
@@ -135,17 +135,9 @@ class SExprTokenizer(TokenizerI):
 
 sexpr_tokenize = SExprTokenizer().tokenize
 
-def demo():
-    from nltk import tokenize
 
-    example = "d (d ((e) ((f) ss) a a c) d) r (t i) (iu a"
-    example = "d [d [[e] [[f] ss] a a c] d] r [t i]"
-    print 'Input text:'
-    print example
-    print
-    print 'Tokenize s-expressions:'
-    for x in SExprTokenizer('[]').tokenize(example):
-        print x
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
-if __name__ == '__main__':
-    demo()
+

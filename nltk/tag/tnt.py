@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2011 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
-#         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
 #         
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,8 +13,9 @@ by Thorsten Brants
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 '''
 
-import nltk
-from api import TaggerI
+from nltk.probability import FreqDist, ConditionalFreqDist
+
+from nltk.tag.api import TaggerI
 
 class TnT(TaggerI):
     '''
@@ -75,14 +75,14 @@ class TnT(TaggerI):
         Construct a TnT statistical tagger. Tagger must be trained
         before being used to tag input.
 
-        @param unk: instance of a POS tagger, conforms to TaggerI
-        @type  unk:(TaggerI)
-        @param Trained: Indication that the POS tagger is trained or not
-        @type  Trained: boolean
-        @param N: Beam search degree (see above)
-        @type  N:(int)
-        @param C: Capitalization flag 
-        @type  C: boolean
+        :param unk: instance of a POS tagger, conforms to TaggerI
+        :type  unk:(TaggerI)
+        :param Trained: Indication that the POS tagger is trained or not
+        :type  Trained: boolean
+        :param N: Beam search degree (see above)
+        :type  N:(int)
+        :param C: Capitalization flag 
+        :type  C: boolean
 
         Initializer, creates frequency distributions to be used
         for tagging
@@ -100,11 +100,11 @@ class TnT(TaggerI):
         of the tagger
         '''
 
-        self._uni  = nltk.probability.FreqDist()
-        self._bi   = nltk.probability.ConditionalFreqDist()
-        self._tri  = nltk.probability.ConditionalFreqDist() 
-        self._wd   = nltk.probability.ConditionalFreqDist()
-        self._eos  = nltk.probability.ConditionalFreqDist()
+        self._uni  = FreqDist()
+        self._bi   = ConditionalFreqDist()
+        self._tri  = ConditionalFreqDist() 
+        self._wd   = ConditionalFreqDist()
+        self._eos  = ConditionalFreqDist()
         self._l1   = 0.0
         self._l2   = 0.0
         self._l3   = 0.0
@@ -124,8 +124,8 @@ class TnT(TaggerI):
         If an unknown word tagger is specified,
         it is trained on the same data.   
 
-        @param data: List of lists of (word, tag) tuples
-        @type data: L{tuple} of L{str}
+        :param data: List of lists of (word, tag) tuples
+        :type data: tuple(str)
         '''
 
         # Ensure that local C flag is initialized before use
@@ -262,9 +262,9 @@ class TnT(TaggerI):
         '''
         Tags each sentence in a list of sentences
 
-        @param data:list of list of words
-        @type data: [[string,],]
-        @return: list of list of (word, tag) tuples
+        :param data:list of list of words
+        :type data: [[string,],]
+        :return: list of list of (word, tag) tuples
 
         Invokes tag(sent) function for each sentence
         compiles the results into a list of tagged sentences
@@ -281,10 +281,10 @@ class TnT(TaggerI):
         '''
         Tags a single sentence
 
-        @param data: list of words
-        @type data: [string,]
+        :param data: list of words
+        :type data: [string,]
 
-        @return: [(word, tag),]
+        :return: [(word, tag),]
 
         Calls recursive function '_tagword'
         to produce a list of tags
@@ -312,12 +312,12 @@ class TnT(TaggerI):
 
     def _tagword(self, sent, current_states):
         '''
-        @param sent : List of words remaining in the sentence
-        @type sent  : [word,]
-        @param current_states : List of possible tag combinations for
+        :param sent : List of words remaining in the sentence
+        :type sent  : [word,]
+        :param current_states : List of possible tag combinations for
                                 the sentence so far, and the probability
                                 associated with each tag combination
-        @type current_states  : [([tag, ],prob), ]
+        :type current_states  : [([tag, ],prob), ]
 
         Tags the first word in the sentence and
         recursively tags the reminder of sentence
@@ -416,15 +416,6 @@ class TnT(TaggerI):
       
    
     def _cmp_tup(self, (_hq, p1), (_h2, p2)):
-        '''
-        comparison function
-
-        @params : (_, prob)
-        @types  : (_, int) tuple
-      
-        used to sort a list of these tuples
-        into descending order
-        '''
         if (p2-p1) > 0:
             return 1
         else:
@@ -440,19 +431,14 @@ def basic_sent_chop(data, raw=True):
     Basic method for tokenizing input into sentences
     for this tagger:
 
-    @param data: list of tokens
-                 tokens can be either
-                 words or (word, tag) tuples
-    @type data: [string,]
-                or [(string, string),]
-
-    @param raw: boolean flag marking the input data
+    :param data: list of tokens (words or (word, tag) tuples)
+    :type data: str or tuple(str, str)
+    :param raw: boolean flag marking the input data
                 as a list of words or a list of tagged words
-    @type raw: Boolean
-
-    @ret : list of sentences
-           sentences are a list of tokens
-           tokens are the same as the input
+    :type raw: bool
+    :return: list of sentences
+             sentences are a list of tokens
+             tokens are the same as the input
 
     Function takes a list of tokens and separates the tokens into lists
     where each list represents a sentence fragment
@@ -615,7 +601,8 @@ def demo3():
     print "        : words known:", 10 * sknown
 
 
-if __name__ == "__main__":
-    demo()
 
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

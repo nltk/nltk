@@ -11,29 +11,31 @@ NLTK Taggers
 
 Classes and interfaces for tagging each token of a sentence with
 supplementary information, such as its part of speech.  This task,
-which is known as X{tagging}, is defined by the L{TaggerI} interface.
+which is known as tagging, is defined by the ``TaggerI`` interface.
 """
 
-from .api        import TaggerI
-from .util       import str2tuple, tuple2str, untag
-from .simplify   import simplify_brown_tag, simplify_wsj_tag,\
-                        simplify_indian_tag, simplify_alpino_tag, simplify_tag
-from .sequential import SequentialBackoffTagger, ContextTagger, DefaultTagger,\
-                        NgramTagger, UnigramTagger, BigramTagger, TrigramTagger,\
-                        AffixTagger, RegexpTagger, ClassifierBasedTagger,\
-                        ClassifierBasedPOSTagger 
-from .brill      import BrillTagger, BrillTaggerTrainer, FastBrillTaggerTrainer   
-from .tnt        import TnT
-from .hunpos     import HunposTagger
-from .stanford   import StanfordTagger
-from .crf        import MalletCRF 
+from nltk.tag.api        import TaggerI
+from nltk.tag.util       import str2tuple, tuple2str, untag
+from nltk.tag.simplify   import (simplify_brown_tag, simplify_wsj_tag,
+                                 simplify_indian_tag, simplify_alpino_tag,
+                                 simplify_tag)
+from nltk.tag.sequential import (SequentialBackoffTagger, ContextTagger,
+                                 DefaultTagger, NgramTagger, UnigramTagger,
+                                 BigramTagger, TrigramTagger, AffixTagger,
+                                 RegexpTagger, ClassifierBasedTagger,
+                                 ClassifierBasedPOSTagger) 
+from nltk.tag.brill      import BrillTagger, BrillTaggerTrainer, FastBrillTaggerTrainer   
+from nltk.tag.tnt        import TnT
+from nltk.tag.hunpos     import HunposTagger
+from nltk.tag.stanford   import StanfordTagger
+from nltk.tag.crf        import MalletCRF 
 
-from ..data      import load
+from nltk.data      import load
 
 # Import hmm module if numpy is installed
 try:
     import numpy
-    from .hmm import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
+    from nltk.tag.hmm import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
 except ImportError:
     pass
 
@@ -54,3 +56,8 @@ def batch_pos_tag(sentences):
     """
     tagger = load(_POS_TAGGER)
     return tagger.batch_tag(sentences)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

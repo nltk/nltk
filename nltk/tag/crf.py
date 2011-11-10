@@ -6,10 +6,10 @@
 # For license information, see LICENSE.TXT
 
 """
-An interface to U{Mallet <http://mallet.cs.umass.edu/>}'s Linear Chain
+An interface to Mallet <http://mallet.cs.umass.edu/>'s Linear Chain
 Conditional Random Field (LC-CRF) implementation.
 
-A user-supplied I{feature detector function} is used to convert each
+A user-supplied feature detector function is used to convert each
 token to a featureset.  Each feature/value pair is then encoded as a
 single binary feature for Mallet.
 """
@@ -25,7 +25,8 @@ import pickle
 from xml.etree import ElementTree
 
 from nltk.classify import call_mallet
-from .api import FeaturesetTaggerI
+
+from nltk.tag.api import FeaturesetTaggerI
 
 class MalletCRF(FeaturesetTaggerI):
     """
@@ -39,31 +40,29 @@ class MalletCRF(FeaturesetTaggerI):
     converting each feature (name, value) pair to a unique binary
     feature.
 
-    Ecah C{MalletCRF} object is backed by a X{crf model file}.  This
+    Ecah MalletCRF object is backed by a crf model file.  This
     model file is actually a zip file, and it contains one file for
-    the serialized model (C{crf-model.ser}) and one file for
-    information about the structure of the CRF (C{crf-info.xml}).
+    the serialized model ``crf-model.ser`` and one file for
+    information about the structure of the CRF ``crf-info.xml``.
+
+    Create a new MalletCRF.
+
+    :param filename: The filename of the model file that backs this CRF.
+    :param feature_detector: The feature detector function that is
+        used to convert tokens to featuresets.  This parameter
+        only needs to be given if the model file does not contain
+        a pickled pointer to the feature detector (e.g., if the
+        feature detector was a lambda function).
     """
 
     def __init__(self, filename, feature_detector=None):
-        """
-        Create a new C{MalletCRF}.
-
-        @param filename: The filename of the model file that backs
-            this CRF.
-        @param feature_detector: The feature detector function that is
-            used to convert tokens to featuresets.  This parameter
-            only needs to be given if the model file does not contain
-            a pickled pointer to the feature detector (e.g., if the
-            feature detector was a lambda function).
-        """
         # Read the CRFInfo from the model file.
         zf = zipfile.ZipFile(filename)
         crf_info = CRFInfo.fromstring(zf.read('crf-info.xml'))
         zf.close()
 
         self.crf_info = crf_info
-        """A L{CRFInfo} object describing this CRF."""
+        """A CRFInfo object describing this CRF."""
 
         # Ensure that our crf_info object has a feature detector.
         if crf_info.feature_detector is not None:
@@ -88,10 +87,10 @@ class MalletCRF(FeaturesetTaggerI):
         return self.crf_info.model_filename
     filename = property(_get_filename , doc="""
         The filename of the crf model file that backs this
-        C{MalletCRF}.  The crf model file is actually a zip file, and
+        MalletCRF.  The crf model file is actually a zip file, and
         it contains one file for the serialized model
-        (C{crf-model.ser}) and one file for information about the
-        structure of the CRF (C{crf-info.xml}).""")
+        ``crf-model.ser`` and one file for information about the
+        structure of the CRF ``crf-info.xml``).""")
 
     def _get_feature_detector(self):
         return self.crf_info.model_feature_detector
@@ -151,62 +150,51 @@ class MalletCRF(FeaturesetTaggerI):
               add_start_state=True, add_end_state=True, trace=1):
         """
         Train a new linear chain CRF tagger based on the given corpus
-        of training sequences.  This tagger will be backed by a I{crf
-        model file}, containing both a serialized Mallet model and
+        of training sequences.  This tagger will be backed by a crf
+        model file, containing both a serialized Mallet model and
         information about the CRF's structure.  This crf model file
-        will I{not} be automatically deleted -- if you wish to delete
+        will not be automatically deleted -- if you wish to delete
         it, you must delete it manually.  The filename of the model
-        file for a MalletCRF C{crf} is available as C{crf.filename}.
+        file for a MalletCRF crf is available as ``crf.filename()``.
 
-
-        @type corpus: C{list} of C{tuple}
-        @param corpus: Training data, represented as a list of
-            sentences, where each sentence is a list of (token, tag)
-            tuples.
-
-        @type filename: C{str}
-        @param filename: The filename that should be used for the crf
-            model file that backs the new C{MalletCRF}.  If no
+        :type corpus: list(tuple(str, str))
+        :param corpus: Training data, represented as a list of
+            sentences, where each sentence is a list of (token, tag) tuples.
+        :type filename: str
+        :param filename: The filename that should be used for the crf
+            model file that backs the new MalletCRF.  If no
             filename is given, then a new filename will be chosen
             automatically.
-
-        @type weight_groups: C{list} of L{CRFInfo.WeightGroup}
-        @param weight_groups: Specifies how input-features should
-            be mapped to joint-features.  See L{CRFInfo.WeightGroup}
+        :type weight_groups: list(CRFInfo.WeightGroup)
+        :param weight_groups: Specifies how input-features should
+            be mapped to joint-features.  See CRFInfo.WeightGroup
             for more information.
-
-        @type gaussian_variance: C{float}
-        @param gaussian_variance: The gaussian variance of the prior
+        :type gaussian_variance: float
+        :param gaussian_variance: The gaussian variance of the prior
             that should be used to train the new CRF.
-
-        @type default_label: C{str}
-        @param default_label: The "label for initial context and
+        :type default_label: str
+        :param default_label: The "label for initial context and
             uninteresting tokens" (from Mallet's SimpleTagger.java.)
             It's unclear whether this currently has any effect.
-
-        @type transduction_type: C{str}
-        @param transduction_type: The type of transduction used by
+        :type transduction_type: str
+        :param transduction_type: The type of transduction used by
             the CRF.  Can be VITERBI, VITERBI_FBEAM, VITERBI_BBEAM,
             VITERBI_FBBEAM, or VITERBI_FBEAMKL.
-
-        @type max_iterations: C{int}
-        @param max_iterations: The maximum number of iterations that
+        :type max_iterations: int
+        :param max_iterations: The maximum number of iterations that
             should be used for training the CRF.
-            
-        @type add_start_state: C{bool}
-        @param add_start_state: If true, then NLTK will add a special
-            start state, named C{'__start__'}.  The initial cost for
+        :type add_start_state: bool
+        :param add_start_state: If true, then NLTK will add a special
+            start state, named '__start__'.  The initial cost for
             the start state will be set to 0; and the initial cost for
             all other states will be set to +inf.
-            
-        @type add_end_state: C{bool}
-        @param add_end_state: If true, then NLTK will add a special
-            end state, named C{'__end__'}.  The final cost for the end
+        :type add_end_state: bool
+        :param add_end_state: If true, then NLTK will add a special
+            end state, named '__end__'.  The final cost for the end
             state will be set to 0; and the final cost for all other
             states will be set to +inf.
-
-        @type trace: C{int}
-        @param trace: Controls the verbosity of trace output generated
+        :type trace: int
+        :param trace: Controls the verbosity of trace output generated
             while training the CRF.  Higher numbers generate more verbose
             output.
         """
@@ -279,7 +267,7 @@ class MalletCRF(FeaturesetTaggerI):
                         add_start_state, add_end_state,
                         model_filename, feature_detector):
         """
-        Construct a C{CRFInfo} object describing a CRF with a given
+        Construct a CRFInfo object describing a CRF with a given
         set of configuration parameters, and based on the contents of
         a given corpus.
         """
@@ -344,10 +332,10 @@ class MalletCRF(FeaturesetTaggerI):
     #: A table used to filter the output that mallet generates during
     #: training.  By default, mallet generates very verbose output.
     #: This table is used to select which lines of output are actually
-    #: worth displaying to the user, based on the level of the C{trace}
+    #: worth displaying to the user, based on the level of the *trace*
     #: parameter.  Each entry of this table is a tuple
-    #: C{(min_trace_level, regexp)}.  A line will be displayed only if
-    #: C{trace>=min_trace_level} and the line matches C{regexp} for at
+    #: (min_trace_level, regexp).  A line will be displayed only if
+    #: trace>=min_trace_level and the line matches regexp for at
     #: least one table entry.
     _FILTER_TRAINING_OUTPUT = [
         (1, r'DEBUG:.*'),
@@ -364,8 +352,7 @@ class MalletCRF(FeaturesetTaggerI):
         """
         Filter the (very verbose) output that is generated by mallet,
         and only display the interesting lines.  The lines that are
-        selected for display are determined by
-        L{_FILTER_TRAINING_OUTPUT}.
+        selected for display are determined by _FILTER_TRAINING_OUTPUT.
         """
         out = []
         while p.poll() is None:
@@ -391,7 +378,7 @@ class MalletCRF(FeaturesetTaggerI):
     def write_training_corpus(self, corpus, stream, close_stream=True):
         """
         Write a given training corpus to a given stream, in a format that
-        can be read by the java script C{org.nltk.mallet.TrainCRF}.
+        can be read by the java script org.nltk.mallet.TrainCRF.
         """
         feature_detector = self.crf_info.feature_detector
         for sentence in corpus:
@@ -411,7 +398,7 @@ class MalletCRF(FeaturesetTaggerI):
     def write_test_corpus(self, corpus, stream, close_stream=True):
         """
         Write a given test corpus to a given stream, in a format that
-        can be read by the java script C{org.nltk.mallet.TestCRF}.
+        can be read by the java script org.nltk.mallet.TestCRF.
         """
         feature_detector = self.crf_info.feature_detector
         for sentence in corpus:
@@ -430,7 +417,7 @@ class MalletCRF(FeaturesetTaggerI):
     def parse_mallet_output(self, s):
         """
         Parse the output that is generated by the java script
-        C{org.nltk.mallet.TestCRF}, and convert it to a labeled
+        org.nltk.mallet.TestCRF, and convert it to a labeled
         corpus.
         """
         if re.match(r'\s*<<start>>', s):
@@ -486,12 +473,12 @@ class CRFInfo(object):
     serialized to an XML file, which can then be read by NLTK's custom
     interface to Mallet's CRF.
 
-    CRFInfo objects are typically created by the L{MalletCRF.train()}
+    CRFInfo objects are typically created by the ``MalletCRF.train()``
     method.
 
     Advanced users may wish to directly create custom
-    C{CRFInfo.WeightGroup} objects and pass them to the
-    L{MalletCRF.train()} function.  See L{CRFInfo.WeightGroup} for
+    CRFInfo.WeightGroup objects and pass them to the
+    ``MalletCRF.train()`` function.  See CRFInfo.WeightGroup for
     more information.
     """
     def __init__(self, states, gaussian_variance, default_label,
@@ -623,11 +610,11 @@ class CRFInfo(object):
         """
         def __init__(self, destination, label, weightgroups):
             """
-            @param destination: The name of the state that this transition
+            :param destination: The name of the state that this transition
                 connects to.
-            @param label: The tag that is generated when traversing this
+            :param label: The tag that is generated when traversing this
                 transition.
-            @param weightgroups: A list of L{WeightGroup} names, indicating
+            :param weightgroups: A list of WeightGroup names, indicating
                 which weight groups should be used to calculate the cost
                 of traversing this transition.
             """
@@ -651,7 +638,7 @@ class CRFInfo(object):
 
     class WeightGroup(object):
         """
-        A configuration object used by C{MalletCRF} to specify how
+        A configuration object used by MalletCRF to specify how
         input-features (which are a function of only the input) should be
         mapped to joint-features (which are a function of both the input
         and the output tags).
@@ -662,14 +649,14 @@ class CRFInfo(object):
         """
         def __init__(self, name, src, dst, features='.*'):
             """
-            @param name: A unique name for this weight group.
-            @param src: The set of source tags that should be used for
+            :param name: A unique name for this weight group.
+            :param src: The set of source tags that should be used for
                 this weight group, specified as either a list of state
                 names or a regular expression.
-            @param dst: The set of destination tags that should be used
+            :param dst: The set of destination tags that should be used
                 for this weight group, specified as either a list of state
                 names or a regular expression.
-            @param features: The set of input feature that should be used
+            :param features: The set of input feature that should be used
                 for this weight group, specified as either a list of
                 feature names or a regular expression.  WARNING: currently,
                 this regexp is passed streight to java -- i.e., it must
@@ -763,5 +750,7 @@ def demo(train_size=100, test_size=100,
 
     return crf
 
-if __name__ == '__main__':
-    crf = demo(train_size=100)
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

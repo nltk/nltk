@@ -35,8 +35,8 @@ to specify the tokenization conventions when building a `CorpusReader`.
 
 """
 
-from .api import TokenizerI, StringTokenizer 
-from .util import string_span_tokenize, regexp_span_tokenize
+from nltk.tokenize.api import TokenizerI, StringTokenizer 
+from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
     
 class SpaceTokenizer(StringTokenizer):
     r"""Tokenize a string using the space character as a delimiter,
@@ -126,3 +126,9 @@ class LineTokenizer(TokenizerI):
 
 def line_tokenize(text, blanklines='discard'):
     return LineTokenizer(blanklines).tokenize(text)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+

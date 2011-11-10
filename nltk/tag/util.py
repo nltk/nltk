@@ -6,22 +6,17 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
-
-from ..metrics import accuracy as _accuracy
-
 def str2tuple(s, sep='/'):
     """
     Given the string representation of a tagged token, return the
     corresponding tuple representation.  The rightmost occurrence of
-    C{sep} in C{s} will be used to divide C{s} into a word string and
-    a tag string.  If C{sep} does not occur in C{s}, return
-    C{(s, None)}.
+    *sep* in *s* will be used to divide *s* into a word string and
+    a tag string.  If *sep* does not occur in *s*, return (s, None).
 
-    @type s: C{str}
-    @param s: The string representaiton of a tagged token.
-    @type sep: C{str}
-    @param sep: The separator string used to separate word strings
+    :type s: str
+    :param s: The string representation of a tagged token.
+    :type sep: str
+    :param sep: The separator string used to separate word strings
         from tags.
     """
     loc = s.rfind(sep)
@@ -38,10 +33,10 @@ def tuple2str(tagged_token, sep='/'):
     separator, followed by the token's tag.  (If the tag is None,
     then just return the bare word string.)
     
-    @type tagged_token: C{(str, str)}
-    @param tagged_token: The tuple representation of a tagged token.
-    @type sep: C{str}
-    @param sep: The separator string used to separate word strings
+    :type tagged_token: tuple(str, str)
+    :param tagged_token: The tuple representation of a tagged token.
+    :type sep: str
+    :param sep: The separator string used to separate word strings
         from tags.
     """
     word, tag = tagged_token
@@ -55,10 +50,16 @@ def untag(tagged_sentence):
     """
     Given a tagged sentence, return an untagged version of that
     sentence.  I.e., return a list containing the first element
-    of each tuple in C{tagged_sentence}.
+    of each tuple in *tagged_sentence*.
 
         >>> untag([('John', 'NNP'), ('saw', 'VBD'), ('Mary', 'NNP')])
         ['John', 'saw', 'Mary']
 
     """
     return [w for (w, t) in tagged_sentence]
+
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

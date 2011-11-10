@@ -66,9 +66,9 @@ argument.  This differs from the conventions used by Python's
 import re
 import sre_constants
 
-from ..internals import convert_regexp_to_nongrouping
-from .api import TokenizerI
-from .util import regexp_span_tokenize
+from nltk.internals import convert_regexp_to_nongrouping
+from nltk.tokenize.api import TokenizerI
+from nltk.tokenize.util import regexp_span_tokenize
 
 class RegexpTokenizer(TokenizerI):
     """
@@ -194,3 +194,9 @@ def regexp_tokenize(text, pattern, gaps=False, discard_empty=True,
 
 blankline_tokenize = BlanklineTokenizer().tokenize
 wordpunct_tokenize = WordPunctTokenizer().tokenize
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+

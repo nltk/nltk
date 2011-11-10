@@ -10,8 +10,8 @@
 Tokenizer Interface
 """
 
-from ..internals import overridden
-from .util import string_span_tokenize
+from nltk.internals import overridden
+from nltk.tokenize.util import string_span_tokenize
 
 class TokenizerI(object):
     """
@@ -40,7 +40,7 @@ class TokenizerI(object):
 
     def batch_tokenize(self, strings):
         """
-        Apply L{self.tokenize()} to each element of C{strings}.  I.e.:
+        Apply ``self.tokenize()`` to each element of C{strings}.  I.e.:
 
             return [self.tokenize(s) for s in strings]
 
@@ -50,7 +50,7 @@ class TokenizerI(object):
 
     def batch_span_tokenize(self, strings):
         """
-        Apply L{self.span_tokenize()} to each element of C{strings}.  I.e.:
+        Apply ``self.span_tokenize()`` to each element of C{strings}.  I.e.:
 
             return [self.span_tokenize(s) for s in strings]
 
@@ -72,3 +72,7 @@ class StringTokenizer(TokenizerI):
         for span in string_span_tokenize(s, self._string):
             yield span
 
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -27,7 +27,7 @@ This tokenizer performs the following steps:
 """
 
 import re
-from .api import TokenizerI
+from nltk.tokenize.api import TokenizerI
 
 ######################################################################
 #{ Regexp-based treebank tokenizer
@@ -83,3 +83,9 @@ class TreebankWordTokenizer(TokenizerI):
         text = re.sub('\. *(\n|$)', ' . ', text)
 
         return text.split()
+
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

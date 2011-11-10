@@ -80,8 +80,8 @@ import re
 import math
 from collections import defaultdict
 
-from ..probability import FreqDist
-from .api import TokenizerI
+from nltk.probability import FreqDist
+from nltk.tokenize.api import TokenizerI
 
 ######################################################################
 #{ Orthographic Context Constants
@@ -1497,7 +1497,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         return 'unknown'
 
 
-def main(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
+def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     """Builds a punkt model and applies it to the same text"""
     cleanup = lambda s: re.compile(r'(?:\r|^\s+)', re.MULTILINE).sub('', s).replace('\n', ' ')
     trainer = train_cls()
@@ -1508,6 +1508,6 @@ def main(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
         print cleanup(l)
 
 
-if __name__ == '__main__':
-    import sys
-    main(sys.stdin.read())
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

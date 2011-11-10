@@ -17,8 +17,8 @@ import yaml          # to save and load taggers in files
 import textwrap
 from collections import defaultdict
 
-from .util import untag
-from .api import TaggerI
+from nltk.tag.util import untag
+from nltk.tag.api import TaggerI
 
 ######################################################################
 ## The Brill Tagger
@@ -27,26 +27,26 @@ from .api import TaggerI
 class BrillTagger(TaggerI, yaml.YAMLObject):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
-    X{initial tagger} (such as L{tag.DefaultTagger}) to assign an initial
+    initial tagger (such as ``tag.DefaultTagger``) to assign an initial
     tag sequence to a text; and then apply an ordered list of
     transformational rules to correct the tags of individual tokens.
-    These transformation rules are specified by the L{BrillRule}
+    These transformation rules are specified by the ``BrillRule``
     interface.
 
     Brill taggers can be created directly, from an initial tagger and
     a list of transformational rules; but more often, Brill taggers
     are created by learning rules from a training corpus, using either
-    L{BrillTaggerTrainer} or L{FastBrillTaggerTrainer}.
+    ``BrillTaggerTrainer`` or ``FastBrillTaggerTrainer``.
     """
     
     yaml_tag = '!nltk.BrillTagger'
     def __init__(self, initial_tagger, rules):
         """
-        @param initial_tagger: The initial tagger
-        @type initial_tagger: L{TaggerI}
-        @param rules: An ordered list of transformation rules that
+        :param initial_tagger: The initial tagger
+        :type initial_tagger: TaggerI
+        :param rules: An ordered list of transformation rules that
             should be used to correct the initial tagging.
-        @type rules: C{list} of L{BrillRule}
+        :type rules: list(BrillRule)
         """
         self._initial_tagger = initial_tagger
         self._rules = tuple(rules)
@@ -89,9 +89,9 @@ class BrillRule(yaml.YAMLObject):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by brill taggers.  Each transformation finds all tokens
-    in the corpus that are tagged with a specific X{original tag} and
-    satisfy a specific X{condition}, and replaces their tags with a
-    X{replacement tag}.  For any given transformation, the original
+    in the corpus that are tagged with a specific original tag and
+    satisfy a specific condition, and replaces their tags with a
+    replacement tag.  For any given transformation, the original
     tag, replacement tag, and condition are fixed.  Conditions may
     depend on the token under consideration, as well as any other
     tokens in the corpus.
@@ -103,27 +103,27 @@ class BrillRule(yaml.YAMLObject):
                "BrillRule is an abstract base class"
         
         self.original_tag = original_tag
-        """The tag which this C{BrillRule} may cause to be replaced."""
+        """The tag which this BrillRule may cause to be replaced."""
         
         self.replacement_tag = replacement_tag
-        """The tag with which this C{BrillRule} may replace another tag."""
+        """The tag with which this BrillRule may replace another tag."""
         
     def apply(self, tokens, positions=None):
         """
-        Apply this rule at every position in C{positions} where it
-        applies to the given sentence.  I.e., for each position M{p}
-        in C{positions}, if C{tokens[M{p}]} is tagged with this rule's
+        Apply this rule at every position in positions where it
+        applies to the given sentence.  I.e., for each position p
+        in *positions*, if *tokens[p]* is tagged with this rule's
         original tag, and satisfies this rule's condition, then set
         its tag to be this rule's replacement tag.
 
-        @param tokens: The tagged sentence
-        @type tokens: list of Token
-        @type positions: C{list} of C{int}
-        @param positions: The positions where the transformation is to
+        :param tokens: The tagged sentence
+        :type tokens: list(tuple(str, str))
+        :type positions: list(int)
+        :param positions: The positions where the transformation is to
             be tried.  If not specified, try it at all positions.
-        @return: The indices of tokens whose tags were changed by this
+        :return: The indices of tokens whose tags were changed by this
             rule.
-        @rtype: C{int}
+        :rtype: int
         """
         if positions is None:
             positions = range(len(tokens))
@@ -141,14 +141,13 @@ class BrillRule(yaml.YAMLObject):
 
     def applies(self, tokens, index):
         """
-        @return: True if the rule would change the tag of 
-            C{tokens[index]}, False otherwise
-        @rtype: Boolean
-
-        @param tokens: A tagged sentence
-        @type tokens: C{list} of C{str}
-        @param index: The index to check
-        @type index: C{int}
+        :return: True if the rule would change the tag of 
+            ``tokens[index]``, False otherwise
+        :rtype: bool
+        :param tokens: A tagged sentence
+        :type tokens: list(str)
+        :param index: The index to check
+        :type index: int
         """
         assert False, "Brill rules must define applies()"
         
@@ -168,39 +167,34 @@ class ProximateTokensRule(BrillRule):
     positions, relative to the token.
 
     Each subclass of proximate tokens brill rule defines a method
-    M{extract_property}, which extracts a specific property from the
+    ``extract_property()``, which extracts a specific property from the
     the token, such as its text or tag.  Each instance is
     parameterized by a set of tuples, specifying ranges of positions
-    and property values to check for in those ranges:
-    
-      - (M{start}, M{end}, M{value})
+    and property values to check for in those ranges: ``(start, end, value)``.
 
-    The brill rule is then applicable to the M{n}th token iff:
+    The brill rule is then applicable to the *n*th token iff:
     
-      - The M{n}th token is tagged with the rule's original tag; and
-      - For each (M{start}, M{end}, M{value}) triple:
-        - The property value of at least one token between
-          M{n+start} and M{n+end} (inclusive) is M{value}.
+      - The *n*th token is tagged with the rule's original tag; and
+      - For each (start, end, value) triple, the property value of
+        at least one token between n+start and n+end (inclusive) is value.
 
-    For example, a proximate token brill template with M{start=end=-1}
+    For example, a proximate token brill template with start=end=-1
     generates rules that check just the property of the preceding
     token.  Note that multiple properties may be included in a single
     rule; the rule applies if they all hold.
+
+    Construct a new brill rule that changes a token's tag from
+    *original_tag* to *replacement_tag* if all of the properties
+    specified in *conditions* hold.
+
+    :type conditions: tuple(int, int, *)
+    :param conditions: A list of 3-tuples (start, end, value),
+        each of which specifies that the property of at least one
+        token between n+start and n+end (inclusive) is value.
+    :raise ValueError: If start>end for any condition.
     """
 
     def __init__(self, original_tag, replacement_tag, *conditions):
-        """
-        Construct a new brill rule that changes a token's tag from
-        C{original_tag} to C{replacement_tag} if all of the properties
-        specified in C{conditions} hold.
-
-        @type conditions: C{tuple} of C{(int, int, *)}
-        @param conditions: A list of 3-tuples C{(start, end, value)},
-            each of which specifies that the property of at least one
-            token between M{n}+C{start} and M{n}+C{end} (inclusive) is
-            C{value}.
-        @raise ValueError: If C{start}>C{end} for any condition.
-        """
         assert self.__class__ != ProximateTokensRule, \
                "ProximateTokensRule is an abstract base class"
         BrillRule.__init__(self, original_tag, replacement_tag)
@@ -233,12 +227,12 @@ class ProximateTokensRule(BrillRule):
 
         Each implentation of this method should correspond to an
         implementation of the method with the same name in a subclass
-        of L{ProximateTokensTemplate}.
+        of ``ProximateTokensTemplate``.
 
-        @param token: The token
-        @type token: Token
-        @return: The property
-        @rtype: any
+        :param token: The token
+        :type token: str
+        :return: The property
+        :rtype: any
         """
         assert False, "ProximateTokenRules must define extract_property()"
 
@@ -313,7 +307,7 @@ class ProximateTokensRule(BrillRule):
     def _condition_to_str(self, condition):
         """
         Return a string representation of the given condition.
-        This helper method is used by L{__str__}.
+        This helper method is used by __str__.
         """
         (start, end, value) = condition
         return ('the %s of %s is %r' %
@@ -322,7 +316,7 @@ class ProximateTokensRule(BrillRule):
     def _range_to_str(self, start, end):
         """
         Return a string representation for the given range.  This
-        helper method is used by L{__str__}.
+        helper method is used by __str__.
         """
         if start == end == 0:
             return 'this word'
@@ -342,27 +336,27 @@ class ProximateTokensRule(BrillRule):
 class ProximateTagsRule(ProximateTokensRule):
     """
     A rule which examines the tags of nearby tokens.
-    @see: superclass L{ProximateTokensRule} for details.
-    @see: L{SymmetricProximateTokensTemplate}, which generates these rules.
+    See ``ProximateTokensRule`` for details.
+    Also see ``SymmetricProximateTokensTemplate`` which generates these rules.
     """
     PROPERTY_NAME = 'tag' # for printing.
     yaml_tag = '!ProximateTagsRule'
     @staticmethod
     def extract_property(token):
-        """@return: The given token's tag."""
+        """:return: The given token's tag."""
         return token[1]
 
 class ProximateWordsRule(ProximateTokensRule):
     """
     A rule which examines the base types of nearby tokens.
-    @see: L{ProximateTokensRule} for details.
-    @see: L{SymmetricProximateTokensTemplate}, which generates these rules.
+    See ``ProximateTokensRule`` for details.
+    Also see ``SymmetricProximateTokensTemplate`` which generates these rules.
     """
     PROPERTY_NAME = 'text' # for printing.
     yaml_tag = '!ProximateWordsRule'
     @staticmethod
     def extract_property(token):
-        """@return: The given token's text."""
+        """:return: The given token's text."""
         return token[0]
 
 ######################################################################
@@ -372,8 +366,8 @@ class ProximateWordsRule(ProximateTokensRule):
 class BrillTemplateI(object):
     """
     An interface for generating lists of transformational rules that
-    apply at given sentence positions.  C{BrillTemplateI} is used by
-    C{Brill} training algorithms to generate candidate rules.
+    apply at given sentence positions.  ``BrillTemplateI`` is used by
+    ``Brill`` training algorithms to generate candidate rules.
     """
     def __init__(self):
         raise AssertionError, "BrillTemplateI is an abstract interface"
@@ -381,69 +375,67 @@ class BrillTemplateI(object):
     def applicable_rules(self, tokens, i, correctTag):
         """
         Return a list of the transformational rules that would correct
-        the C{i}th subtoken's tag in the given token.  In particular,
+        the *i*th subtoken's tag in the given token.  In particular,
         return a list of zero or more rules that would change
-        C{tagged_tokens[i][1]} to C{correctTag}, if applied
-        to C{token}.
+        *tokens*[i][1] to *correctTag*, if applied to *token*[i].
 
-        If the C{i}th subtoken already has the correct tag (i.e., if
-        C{tagged_tokens[i][1]} == C{correctTag}), then
-        C{applicable_rules} should return the empty list.
+        If the *i*th token already has the correct tag (i.e., if
+        tagged_tokens[i][1] == correctTag), then
+        ``applicable_rules()`` should return the empty list.
         
-        @param tokens: The tagged tokens being tagged.
-        @type tokens: C{list} of C{tuple}
-        @param i: The index of the token whose tag should be corrected.
-        @type i: C{int}
-        @param correctTag: The correct tag for the C{i}th token.
-        @type correctTag: (any)
-        @rtype: C{list} of L{BrillRule}
+        :param tokens: The tagged tokens being tagged.
+        :type tokens: list(tuple)
+        :param i: The index of the token whose tag should be corrected.
+        :type i: int
+        :param correctTag: The correct tag for the *i*th token.
+        :type correctTag: any
+        :rtype: list(BrillRule)
         """
         raise AssertionError, "BrillTemplateI is an abstract interface"
     
     def get_neighborhood(self, token, index):
         """
-        Returns the set of indices C{i} such that
-        C{applicable_rules(token, i, ...)} depends on the value of
-        the C{index}th subtoken of C{token}.
+        Returns the set of indices *i* such that
+        ``applicable_rules(token, i, ...)`` depends on the value of
+        the *index*th token of *token*.
 
-        This method is used by the \"fast\" Brill tagger trainer.
+        This method is used by the "fast" Brill tagger trainer.
 
-        @param token: The tokens being tagged.
-        @type token: C{list} of C{tuple}
-        @param index: The index whose neighborhood should be returned.
-        @type index: C{int}
-        @rtype: C{Set}
+        :param token: The tokens being tagged.
+        :type token: list(tuple)
+        :param index: The index whose neighborhood should be returned.
+        :type index: int
+        :rtype: set
         """
         raise AssertionError, "BrillTemplateI is an abstract interface"
     
 class ProximateTokensTemplate(BrillTemplateI):
     """
-    An brill templates that generates a list of
-    L{ProximateTokensRule}s that apply at a given sentence
-    position.  In particular, each C{ProximateTokensTemplate} is
+    A brill template that generates a list of
+    ``ProximateTokensRule``s that apply at a given sentence
+    position.  In particular, each ``ProximateTokensTemplate`` is
     parameterized by a proximate token brill rule class and a list of
     boundaries, and generates all rules that:
     
       - use the given brill rule class
-      - use the given list of boundaries as the C{start} and C{end}
+      - use the given list of boundaries as the start and end
         points for their conditions
       - are applicable to the given token.
-    """
-    def __init__(self, rule_class, *boundaries):
-        """
-        Construct a template for generating proximate token brill
-        rules.
 
-        @type rule_class: C{class}
-        @param rule_class: The proximate token brill rule class that
+    Construct a template for generating proximate token brill rules.
+
+    :type rule_class: class
+    :param rule_class: The proximate token brill rule class that
         should be used to generate new rules.  This class must be a
-        subclass of L{ProximateTokensRule}.
-        @type boundaries: C{tuple} of C{(int, int)}
-        @param boundaries: A list of tuples C{(start, end)}, each of
-            which specifies a range for which a condition should be
-            created by each rule.
-        @raise ValueError: If C{start}>C{end} for any boundary.
-        """
+        subclass of ``ProximateTokensRule``.
+    :type boundaries: tuple(int, int)
+    :param boundaries: A list of (start, end) tuples each of
+        which specifies a range for which a condition should be
+        created by each rule.
+    :raise ValueError: If start>end for any boundary.
+    """
+    
+    def __init__(self, rule_class, *boundaries):
         self._rule_class = rule_class
         self._boundaries = boundaries
         for (s,e) in boundaries:
@@ -476,12 +468,11 @@ class ProximateTokensTemplate(BrillTemplateI):
 
     def _applicable_conditions(self, tokens, index, start, end):
         """
-        @return: A set of all conditions for proximate token rules
-        that are applicable to C{tokens[index]}, given boundaries of
-        C{(start, end)}.  I.e., return a list of all tuples C{(start,
-        end, M{value})}, such the property value of at least one token
-        between M{index+start} and M{index+end} (inclusive) is
-        M{value}.
+        :return: A set of all conditions for proximate token rules
+        that are applicable to *tokens[index]*, given boundaries of
+        (start, end).  I.e., return a list of all tuples
+        (start, end, value), such the property value of at least one token
+        between *index+start* and *index+end* (inclusive) is *value*.
         """
         conditions = []
         s = max(0, index+start)
@@ -509,41 +500,41 @@ class ProximateTokensTemplate(BrillTemplateI):
 
 class SymmetricProximateTokensTemplate(BrillTemplateI):
     """
-    Simulates two L{ProximateTokensTemplate}s which are symmetric
-    across the location of the token.  For rules of the form \"If the
-    M{n}th token is tagged C{A}, and any tag preceding B{or} following
-    the M{n}th token by a distance between M{x} and M{y} is C{B}, and
-    ... , then change the tag of the nth token from C{A} to C{C}.\"
+    Simulates two ``ProximateTokensTemplate``s which are symmetric
+    across the location of the token.  For rules of the form "If the
+    *n*th token is tagged ``A``, and any tag preceding or following
+    the *n*th token by a distance between x and y is ``B``, and
+    ... , then change the tag of the *n*th token from ``A`` to ``C``."
 
-    One C{ProximateTokensTemplate} is formed by passing in the
+    One ``ProximateTokensTemplate`` is formed by passing in the
     same arguments given to this class's constructor: tuples
     representing intervals in which a tag may be found.  The other
-    C{ProximateTokensTemplate} is constructed with the negative
+    ``ProximateTokensTemplate`` is constructed with the negative
     of all the arguments in reversed order.  For example, a
-    C{SymmetricProximateTokensTemplate} using the pair (-2,-1) and the
-    constructor C{SymmetricProximateTokensTemplate} generates the same rules as a
-    C{SymmetricProximateTokensTemplate} using (-2,-1) plus a second
-    C{SymmetricProximateTokensTemplate} using (1,2).
+    ``SymmetricProximateTokensTemplate`` using the pair (-2,-1) and the
+    constructor ``SymmetricProximateTokensTemplate`` generates the same rules as a
+    ``SymmetricProximateTokensTemplate`` using (-2,-1) plus a second
+    ``SymmetricProximateTokensTemplate`` using (1,2).
 
     This is useful because we typically don't want templates to
-    specify only \"following\" or only \"preceding\"; we'd like our
+    specify only "following" or only "preceding"; we'd like our
     rules to be able to look in either direction.
-    """
-    def __init__(self, rule_class, *boundaries):
-        """
-        Construct a template for generating proximate token brill
-        rules.
+
+    Construct a template for generating proximate token brill
+    rules.
         
-        @type rule_class: C{class}
-        @param rule_class: The proximate token brill rule class that
+    :type rule_class: class
+    :param rule_class: The proximate token brill rule class that
         should be used to generate new rules.  This class must be a
-        subclass of L{ProximateTokensRule}.
-        @type boundaries: C{tuple} of C{(int, int)}
-        @param boundaries: A list of tuples C{(start, end)}, each of
-            which specifies a range for which a condition should be
-            created by each rule.
-        @raise ValueError: If C{start}>C{end} for any boundary.
-        """
+        subclass of ``ProximateTokensRule``.
+    :type boundaries: tuple(int, int)
+    :param boundaries: A list of tuples (start, end), each of
+        which specifies a range for which a condition should be
+        created by each rule.
+    :raise ValueError: If start>end for any boundary.
+    """
+
+    def __init__(self, rule_class, *boundaries):
         self._ptt1 = ProximateTokensTemplate(rule_class, *boundaries)
         reversed = [(-e,-s) for (s,e) in boundaries]
         self._ptt2 = ProximateTokensTemplate(rule_class, *reversed)
@@ -551,9 +542,9 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
     # Generates lists of a subtype of ProximateTokensRule.
     def applicable_rules(self, tokens, index, correctTag):
         """
-        See L{BrillTemplateI} for full specifications.
+        See ``BrillTemplateI`` for full specifications.
 
-        @rtype: list of ProximateTokensRule
+        :rtype: list of ProximateTokensRule
         """
         return (self._ptt1.applicable_rules(tokens, index, correctTag) +
                 self._ptt2.applicable_rules(tokens, index, correctTag))
@@ -571,18 +562,18 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
 class BrillTaggerTrainer(object):
     """
     A trainer for brill taggers.
+
+    :param deterministic: If true, then choose between rules that
+        have the same score by picking the one whose __repr__
+        is lexicographically smaller.  If false, then just pick the
+        first rule we find with a given score -- this will depend
+        on the order in which keys are returned from dictionaries,
+        and so may not be the same from one run to the next.  If
+        not specified, treat as true iff trace > 0.
     """
+
     def __init__(self, initial_tagger, templates, trace=0,
                  deterministic=None):
-        """
-        @param deterministic: If true, then choose between rules that
-            have the same score by picking the one whose __repr__
-            is lexicographically smaller.  If false, then just pick the
-            first rule we find with a given score -- this will depend
-            on the order in which keys are returned from dictionaries,
-            and so may not be the same from one run to the next.  If
-            not specified, treat as true iff trace > 0.
-        """
         if deterministic is None: deterministic = (trace > 0)
         self._initial_tagger = initial_tagger
         self._templates = templates
@@ -595,17 +586,17 @@ class BrillTaggerTrainer(object):
 
     def train(self, train_sents, max_rules=200, min_score=2):
         """
-        Trains the Brill tagger on the corpus C{train_token},
-        producing at most C{max_rules} transformations, each of which
+        Trains the Brill tagger on the corpus *train_sents*,
+        producing at most *max_rules* transformations, each of which
         reduces the net number of errors in the corpus by at least
-        C{min_score}.
+        *min_score*.
         
-        @type train_sents: C{list} of C{list} of L{tuple}
-        @param train_sents: The corpus of tagged tokens
-        @type max_rules: C{int}
-        @param max_rules: The maximum number of transformations to be created
-        @type min_score: C{int}
-        @param min_score: The minimum acceptable net error reduction
+        :type train_sents: list(list(tuple))
+        :param train_sents: The corpus of tagged sentences
+        :type max_rules: int
+        :param max_rules: The maximum number of transformations to be created
+        :type min_score: int
+        :param min_score: The minimum acceptable net error reduction
             that each transformation must produce in the corpus.
         """
         if self._trace > 0: print ("Training Brill tagger on %d "
@@ -709,13 +700,12 @@ class BrillTaggerTrainer(object):
 
     def _find_rules(self, test_sents, train_sents):
         """
-        Find all rules that correct at least one token's tag in
-        C{test_sents}.
+        Find all rules that correct at least one token's tag in *test_sents*.
 
-        @return: A list of tuples C{(rule, fixscore)}, where C{rule}
-            is a brill rule and C{fixscore} is the number of tokens
-            whose tag the rule corrects.  Note that C{fixscore} does
-            I{not} include the number of tokens whose tags are changed
+        :return: A list of tuples ``(rule, fixscore)``, where rule
+            is a brill rule and ``fixscore`` is the number of tokens
+            whose tag the rule corrects.  Note that ``fixscore`` does
+            *not* include the number of tokens whose tags are changed
             to incorrect values.        
         """
 
@@ -742,9 +732,9 @@ class BrillTaggerTrainer(object):
     
     def _find_rules_at(self, test_sent, train_sent, i):
         """
-        @rtype: C{Set}
-        @return: the set of all rules (based on the templates) that
-        correct token C{i}'s tag in C{test_sent}.
+        :rtype: set
+        :return: the set of all rules (based on the templates) that
+            correct token *i*'s tag in *test_sent*.
         """
         applicable_rules = set()
         if test_sent[i][1] != train_sent[i][1]:
@@ -935,8 +925,8 @@ class FastBrillTaggerTrainer(object):
         
     def _find_rules(self, sent, wordnum, new_tag):
         """
-        Use the templates to find rules that apply at index C{wordnum}
-        in the sentence C{sent} and generate the tag C{new_tag}.
+        Use the templates to find rules that apply at index *wordnum*
+        in the sentence *sent* and generate the tag *new_tag*.
         """
         for template in self._templates:
             for rule in template.applicable_rules(sent, wordnum, new_tag):
@@ -945,7 +935,7 @@ class FastBrillTaggerTrainer(object):
     def _update_rule_applies(self, rule, sentnum, wordnum, train_sents):
         """
         Update the rule data tables to reflect the fact that
-        C{rule} applies at the position C{(sentnum, wordnum)}.
+        *rule* applies at the position *(sentnum, wordnum)*.
         """
         pos = sentnum, wordnum
         
@@ -976,8 +966,8 @@ class FastBrillTaggerTrainer(object):
 
     def _update_rule_not_applies(self, rule, sentnum, wordnum):
         """
-        Update the rule data tables to reflect the fact that C{rule}
-        does not apply at the position C{(sentnum, wordnum)}.
+        Update the rule data tables to reflect the fact that *rule*
+        does not apply at the position *(sentnum, wordnum)*.
         """
         pos = sentnum, wordnum
         
@@ -1003,7 +993,7 @@ class FastBrillTaggerTrainer(object):
         see where it applies.  When it makes an error (decreasing its
         score) it's bumped down, and we try a new rule with the
         highest score.  When we find a rule which has the highest
-        score AND which has been tested against the entire corpus, we
+        score *and* which has been tested against the entire corpus, we
         can conclude that it's the next best rule.
         """
         if self._rules_by_score == {}:
@@ -1045,8 +1035,8 @@ class FastBrillTaggerTrainer(object):
 
     def _apply_rule(self, rule, test_sents):
         """
-        Update C{test_sents} by applying C{rule} everywhere where its
-        conditions are meet.
+        Update *test_sents* by applying *rule* everywhere where its
+        conditions are met.
         """
         update_positions = set(self._positions_by_rule[rule])
         old_tag = rule.original_tag
@@ -1062,7 +1052,7 @@ class FastBrillTaggerTrainer(object):
     def _update_tag_positions(self, rule):
         """
         Update _tag_positions to reflect the changes to tags that are
-        made by C{rule}.
+        made by *rule*.
         """
         # Update the tag index.
         for pos in self._positions_by_rule[rule]:
@@ -1077,7 +1067,7 @@ class FastBrillTaggerTrainer(object):
     def _update_rules(self, rule, train_sents, test_sents):
         """
         Check if we should add or remove any rules from consideration,
-        given the changes made by C{rule}.
+        given the changes made by *rule*.
         """
         # Collect a list of all positions that might be affected.
         neighbors = set()
@@ -1189,15 +1179,15 @@ def error_list (train_sents, test_sents, radius=2):
     Returns a list of human-readable strings indicating the errors in the
     given tagging of the corpus.
 
-    @param train_sents: The correct tagging of the corpus
-    @type train_sents: C{list} of C{tuple}
-    @param test_sents: The tagged corpus
-    @type test_sents: C{list} of C{tuple}
-    @param radius: How many tokens on either side of a wrongly-tagged token
-        to include in the error string.  For example, if C{radius}=2,
+    :param train_sents: The correct tagging of the corpus
+    :type train_sents: list(tuple)
+    :param test_sents: The tagged corpus
+    :type test_sents: list(tuple)
+    :param radius: How many tokens on either side of a wrongly-tagged token
+        to include in the error string.  For example, if radius=2,
         each error string will show the incorrect token plus two
         tokens on either side.
-    @type radius: int
+    :type radius: int
     """
     hdr = (('%25s | %s | %s\n' + '-'*26+'+'+'-'*24+'+'+'-'*26) %
            ('left context', 'word/test->gold'.center(22), 'right context'))
@@ -1224,25 +1214,25 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     """
     Brill Tagger Demonstration
 
-    @param num_sents: how many sentences of training and testing data to use
-    @type num_sents: L{int}
-    @param max_rules: maximum number of rule instances to create
-    @type max_rules: L{int}
-    @param min_score: the minimum score for a rule in order for it to
+    :param num_sents: how many sentences of training and testing data to use
+    :type num_sents: int
+    :param max_rules: maximum number of rule instances to create
+    :type max_rules: int
+    :param min_score: the minimum score for a rule in order for it to
         be considered
-    @type min_score: L{int}
-    @param error_output: the file where errors will be saved
-    @type error_output: C{string}
-    @param rule_output: the file where rules will be saved
-    @type rule_output: C{string}
-    @param randomize: whether the training data should be a random subset
+    :type min_score: int
+    :param error_output: the file where errors will be saved
+    :type error_output: str
+    :param rule_output: the file where rules will be saved
+    :type rule_output: str
+    :param randomize: whether the training data should be a random subset
         of the corpus
-    @type randomize: boolean
-    @param train: the fraction of the the corpus to be used for training
+    :type randomize: bool
+    :param train: the fraction of the the corpus to be used for training
         (1=all)
-    @type train: L{float}
-    @param trace: the level of diagnostic tracing output to produce (0-4)
-    @type trace: L{int}
+    :type train: float
+    :param trace: the level of diagnostic tracing output to produce (0-4)
+    :type trace: int
     """
 
     from nltk.corpus import treebank
@@ -1317,6 +1307,8 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     print ("Done; rules and errors saved to %s and %s." %
            (rule_output, error_output))
 
-if __name__ == '__main__':
-    demo()
-    #demo(num_sents=1000000, train=1.0, max_rules=10000)
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+

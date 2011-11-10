@@ -16,8 +16,8 @@ import os
 import tempfile
 from subprocess import PIPE
 
-from ..internals import find_jar, config_java, java
-from .api import TaggerI
+from nltk.internals import find_jar, config_java, java
+from nltk.tag.api import TaggerI
 
 _stanford_url = 'http://nlp.stanford.edu/software/tagger.shtml'
 
@@ -89,3 +89,8 @@ class StanfordTagger(TaggerI):
             tagged_sentences.append(sentence)
         return tagged_sentences
 
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
