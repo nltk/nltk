@@ -65,6 +65,9 @@ This discussion assumes that the HMM has been trained. This is probably the
 most difficult task with the model, and requires either MLE estimates of the
 parameters or unsupervised learning using the Baum-Welch algorithm, a variant
 of EM.
+
+For more information, please consult the source code for this module,
+which includes extensive demonstration code.
 """
 
 import re

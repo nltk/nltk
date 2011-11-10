@@ -8,7 +8,56 @@
 # For license information, see LICENSE.TXT
 
 """
-Brill's transformational rule-based tagger.
+Brill Tagger
+
+The Brill Tagger is a transformational rule-based tagger.
+It starts by running an initial tagger, and then
+improves the tagging by applying a list of transformation rules.
+These transformation rules are automatically learned from the training
+corpus, based on one or more "rule templates."
+
+    >>> from nltk.tag.brill import *
+    >>> templates = [
+    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,1)),
+    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (2,2)),
+    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,2)),
+    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,3)),
+    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,1)),
+    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (2,2)),
+    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,2)),
+    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,3)),
+    ...     ProximateTokensTemplate(ProximateTagsRule, (-1, -1), (1,1)),
+    ...     ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
+    ...     ]
+    >>> trainer = FastBrillTaggerTrainer(initial_tagger=unigram_tagger_2,
+    ...                                  templates=templates, trace=3,
+    ...                                  deterministic=True)
+    >>> brill_tagger = trainer.train(brown_train, max_rules=10)  # doctest: +NORMALIZE_WHITESPACE
+    Training Brill tagger on 4523 sentences...
+    Finding initial useful rules...
+        Found 75359 useful rules.
+    <BLANKLINE>
+               B      |     
+       S   F   r   O  |        Score = Fixed - Broken
+       c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
+       o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
+       r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
+       e   d   n   r  |  e
+    ------------------+-------------------------------------------------------
+     354 354   0   3  | TO -> IN if the tag of the following word is 'AT'
+     111 173  62   3  | NN -> VB if the tag of the preceding word is 'TO'
+     110 110   0   4  | TO -> IN if the tag of the following word is 'NP'
+      83 157  74   4  | NP -> NP-TL if the tag of the following word is
+                      |   'NN-TL'
+      73  77   4   0  | VBD -> VBN if the tag of words i-2...i-1 is 'BEDZ'
+      71 116  45   3  | TO -> IN if the tag of words i+1...i+2 is 'NNS'
+      65  65   0   3  | NN -> VB if the tag of the preceding word is 'MD'
+      63  63   0   0  | VBD -> VBN if the tag of words i-3...i-1 is 'HVZ'
+      59  62   3   2  | CS -> QL if the text of words i+1...i+3 is 'as'
+      55  57   2   0  | VBD -> VBN if the tag of words i-3...i-1 is 'HVD'
+    >>> print 'Accuracy: %4.1f%%' % (
+    ...     100.0 * brill_tagger.evaluate(brown_test))
+    Accuracy: 89.5%
 """
 
 import bisect        # for binary search through a subset of indices

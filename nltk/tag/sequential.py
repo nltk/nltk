@@ -212,13 +212,21 @@ class ContextTagger(SequentialBackoffTagger):
 class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """
     A tagger that assigns the same tag to every token.
+    
+        >>> default_tagger = DefaultTagger('NN')
+        >>> default_tagger.tag('This is a test'.split())
+        [('This', 'NN'), ('is', 'NN'), ('a', 'NN'), ('test', 'NN')]
+
+    This tagger is recommended as a backoff tagger, in cases where
+    a more powerful tagger is unable to assign a tag to the word
+    (e.g. because the word was not seen during training).
+    
+    :param tag: The tag to assign to each token
+    :type tag: str
     """
     yaml_tag = '!nltk.DefaultTagger'
     
     def __init__(self, tag):
-        """
-        Construct a new tagger that assigns tag to all tokens.
-        """
         self._tag = tag
         SequentialBackoffTagger.__init__(self, None)
         
@@ -271,9 +279,34 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
 
 class UnigramTagger(NgramTagger):
     """
-    A tagger that chooses a token's tag based its word string.
-    Unigram taggers are typically trained on a tagged corpus.
+    Unigram Tagger
+    
+    The UnigramTagger finds the most likely tag for each word in a training
+    corpus, and then uses that information to assign tags to new tokens.
+
+        >>> from nltk.corpus import brown
+        >>> test_sent = brown.sents(categories='news')[0] 
+        >>> unigram_tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
+        >>> unigram_tagger.tag(test_sent)
+        [('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ('Grand', 'JJ-TL'),
+        ('Jury', 'NN-TL'), ('said', 'VBD'), ('Friday', 'NR'), ('an', 'AT'),
+        ('investigation', 'NN'), ('of', 'IN'), ("Atlanta's", 'NP$'), ('recent', 'JJ'),
+        ('primary', 'NN'), ('election', 'NN'), ('produced', 'VBD'), ('``', '``'),
+        ('no', 'AT'), ('evidence', 'NN'), ("''", "''"), ('that', 'CS'), ('any', 'DTI'),
+        ('irregularities', 'NNS'), ('took', 'VBD'), ('place', 'NN'), ('.', '.')]
+        
+    :param train: The corpus of training data, a list of tagged sentences
+    :type train: list(list(tuple(str, str)))
+    :param model: The tagger model
+    :type model: dict
+    :param backoff: Another tagger which this tagger will consult when it is
+        unable to tag a word
+    :type backoff: TaggerI
+    :param cutoff: The number of instances of training data the tagger must see
+        in order not to use the backoff tagger
+    :type cutoff: int
     """
+
     yaml_tag = '!nltk.UnigramTagger'
 
     def __init__(self, train=None, model=None,
@@ -290,8 +323,18 @@ class BigramTagger(NgramTagger):
     A tagger that chooses a token's tag based its word string and on
     the preceeding words' tag.  In particular, a tuple consisting
     of the previous tag and the word is looked up in a table, and
-    the corresponding tag is returned.  Bigram taggers are typically
-    trained on a tagged corpus.
+    the corresponding tag is returned.
+
+    :param train: The corpus of training data, a list of tagged sentences
+    :type train: list(list(tuple(str, str)))
+    :param model: The tagger model
+    :type model: dict
+    :param backoff: Another tagger which this tagger will consult when it is
+        unable to tag a word
+    :type backoff: TaggerI
+    :param cutoff: The number of instances of training data the tagger must see
+        in order not to use the backoff tagger
+    :type cutoff: int
     """
     yaml_tag = '!nltk.BigramTagger'
 
@@ -306,8 +349,18 @@ class TrigramTagger(NgramTagger):
     A tagger that chooses a token's tag based its word string and on
     the preceeding two words' tags.  In particular, a tuple consisting
     of the previous two tags and the word is looked up in a table, and
-    the corresponding tag is returned.  Trigram taggers are typically
-    trained them on a tagged corpus.
+    the corresponding tag is returned.
+    
+    :param train: The corpus of training data, a list of tagged sentences
+    :type train: list(list(tuple(str, str)))
+    :param model: The tagger model
+    :type model: dict
+    :param backoff: Another tagger which this tagger will consult when it is
+        unable to tag a word
+    :type backoff: TaggerI
+    :param cutoff: The number of instances of training data the tagger must see
+        in order not to use the backoff tagger
+    :type cutoff: int
     """
     yaml_tag = '!nltk.TrigramTagger'
 
@@ -363,10 +416,33 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
 
 class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """
-    A tagger that assigns tags to words based on regular expressions
-    over word strings.
-
-    Construct a new regexp tagger.
+    Regular Expression Tagger
+    
+    The RegexpTagger assigns tags to tokens by comparing their
+    word strings to a series of regular expressions.  The following tagger
+    uses word suffixes to make guesses about the correct Brown Corpus part
+    of speech tag:
+    
+        >>> from nltk.corpus import brown
+        >>> test_sent = brown.sents(categories='news')[0] 
+        >>> regexp_tagger = RegexpTagger(
+        ...     [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+        ...      (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+        ...      (r'.*able$', 'JJ'),                # adjectives
+        ...      (r'.*ness$', 'NN'),                # nouns formed from adjectives
+        ...      (r'.*ly$', 'RB'),                  # adverbs
+        ...      (r'.*s$', 'NNS'),                  # plural nouns
+        ...      (r'.*ing$', 'VBG'),                # gerunds
+        ...      (r'.*ed$', 'VBD'),                 # past tense verbs
+        ...      (r'.*', 'NN')                      # nouns (default)
+        ... ])
+        >>> regexp_tagger.tag(test_sent)
+        [('The', 'AT'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'),
+        ('said', 'NN'), ('Friday', 'NN'), ('an', 'AT'), ('investigation', 'NN'), ('of', 'NN'),
+        ("Atlanta's", 'NNS'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'),
+        ('produced', 'VBD'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'),
+        ('that', 'NN'), ('any', 'NN'), ('irregularities', 'NNS'), ('took', 'NN'),
+        ('place', 'NN'), ('.', 'NN')]
 
     :type regexps: list(tuple(str, str))
     :param regexps: A list of ``(regexp, tag)`` pairs, each of
