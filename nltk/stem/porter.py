@@ -39,7 +39,8 @@
 # are not obliged to do so. If you do not wish to do so, delete this
 # exception statement from your version.
 
-"""Porter Stemming Algorithm
+"""
+Porter Stemmer
 
 This is the Porter stemming algorithm, ported to Python from the
 version coded up in ANSI C by the author. It follows the algorithm
@@ -94,7 +95,7 @@ import re
 
 ## --NLTK--
 ## Import the nltk.stemmer module, which defines the stemmer interface
-from api import *
+from api import StemmerI
 
 class PorterStemmer(StemmerI):
 
@@ -113,16 +114,15 @@ class PorterStemmer(StemmerI):
     The Porter Stemmer requires that all tokens have string types.
     """
 
-    def __init__(self):
-        """The main part of the stemming algorithm starts here.
-        b is a buffer holding a word to be stemmed. The letters are in b[k0],
-        b[k0+1] ... ending at b[k]. In fact k0 = 0 in this demo program. k is
-        readjusted downwards as the stemming progresses. Zero termination is
-        not in fact used in the algorithm.
+    # The main part of the stemming algorithm starts here.
+    # b is a buffer holding a word to be stemmed. The letters are in b[k0],
+    # b[k0+1] ... ending at b[k]. In fact k0 = 0 in this demo program. k is
+    # readjusted downwards as the stemming progresses. Zero termination is
+    # not in fact used in the algorithm.
+    # Note that only lower case sequences are stemmed. Forcing to lower case
+    # should be done before stem(...) is called.
 
-        Note that only lower case sequences are stemmed. Forcing to lower case
-        should be done before stem(...) is called.
-        """
+    def __init__(self):
         
         self.b = ""  # buffer for word to be stemmed 
         self.k = 0
@@ -612,5 +612,9 @@ def demo():
     print '*'*70
 
 ##--NLTK--
-## Call demo() if we're invoked directly.
-if __name__ == '__main__': demo()
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+

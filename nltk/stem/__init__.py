@@ -8,32 +8,29 @@
 # For license information, see LICENSE.TXT
 
 """
+NLTK Stemmers
+
 Interfaces used to remove morphological affixes from words, leaving
 only the word stem.  Stemming algorithms aim to remove those affixes
 required for eg. grammatical role, tense, derivational morphology
 leaving only the stem of the word.  This is a difficult problem due to
 irregular words (eg. common verbs in English), complicated
 morphological rules, and part-of-speech and sense ambiguities
-(eg. C{ceil-} is not the stem of C{ceiling}).
+(eg. ``ceil-`` is not the stem of ``ceiling``).
 
-C{StemmerI} defines a standard interface for stemmers.
+StemmerI defines a standard interface for stemmers.
 """
 
-from api import *
-from regexp import *
-from lancaster import *
-from isri import *
-from snowball import *
-from wordnet import *
-from rslp import *
+from nltk.stem.api import StemmerI
+from nltk.stem.regexp import RegexpStemmer
+from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem.isri import ISRIStemmer
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.snowball import SnowballStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.stem.rslp import RSLPStemmer
 
-__all__ = [
-    # Stemmer interface
-    'StemmerI',
 
-    # Stemmers
-    'RegexpStemmer', 'PorterStemmer', 'LancasterStemmer',
-    'RSLPStemmer', 'WordNetLemmatizer',
-    'ISRIStemmer', 'SnowballStemmer'
-    ] 
-
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -11,9 +11,37 @@ Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
 
 import re
-from api import *
+
+from api import StemmerI
 
 class LancasterStemmer(StemmerI):
+    """
+    Lancaster Stemmer
+
+        >>> st = LancasterStemmer()
+        >>> st.stem('maximum')     # Remove "-um" when word is intact
+        'maxim'
+        >>> st.stem('presumably')  # Don't remove "-um" when word is not intact
+        'presum'
+        >>> st.stem('multiply')    # No action taken if word ends with "-ply" 
+        'multiply'
+        >>> st.stem('provision')   # Replace "-sion" with "-j" to trigger "j" set of rules
+        'provid'
+        >>> st.stem('owed')        # Word starting with vowel must contain at least 2 letters
+        'ow'
+        >>> st.stem('ear')         # ditto
+        'ear'
+        >>> st.stem('saying')      # Words starting with consonant must contain at least 3 
+        'say'
+        >>> st.stem('crying')      #     letters and one of those letters must be a vowel
+        'cry'
+        >>> st.stem('string')      # ditto
+        'string'
+        >>> st.stem('meant')       # ditto
+        'meant'
+        >>> st.stem('cement')      # ditto
+        'cem'
+    """
 
     # The rule list is static since it doesn't change between instances
     rule_tuple = (
@@ -276,33 +304,7 @@ class LancasterStemmer(StemmerI):
     def __repr__(self):
         return '<LancasterStemmer>'
                 
-def demo():
-    """A demonstration of the lancaster stemmer on a samples described in
-    Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
-    """
-    from nltk import stem
 
-    stemmer = stem.LancasterStemmer()
-
-    print "%-20s%-20s" % ("Original Word", "Stemmed Word")
-    print "*" * 40
-        
-    for word in (
-        'maximum',    # Remove "-um" when word is intact
-        'presumably', # Don't remove "-um" when word is not intact
-        'multiply',   # No action taken if word ends with "-ply" 
-        'provision',  # Replace "-sion" with "-j" to trigger "j" set of rules
-        'owed',       # Word starting with vowel must contain at least 2 letters
-        'ear',        # ditto.
-        'saying',     # Words starting with consonant must contain at least 3 
-        'crying',     #     letters and one of those letters must be a vowel
-        'string',     # ditto.
-        'meant',      # ditto.
-        'cement'):    # ditto.
-        stemmed_word = stemmer.stem(word)
-        print "%-20s%-20s" % (word, stemmed_word)
-
-
-if __name__ == '__main__':
-    demo()
-
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

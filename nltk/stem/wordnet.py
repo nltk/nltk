@@ -7,21 +7,33 @@
 # For license information, see LICENSE.TXT
 
 from nltk.corpus.reader.wordnet import NOUN
-from nltk.corpus import wordnet as _wordnet
+from nltk.corpus import wordnet
 
 class WordNetLemmatizer(object):
     """
-    A lemmatizer that uses WordNet's built-in morphy function.
+    WordNet Lemmatizer
+
+    Lemmatize using WordNet's built-in morphy function.
+    The lemmatized form is guaranteed to exist in WordNet.
+
+        >>> wnl = WordNetLemmatizer()
+        >>> wnl.lemmatize('dogs')
+        'dog'
+        >>> wnl.lemmatize('churches')
+        'church'
+        >>> wnl.lemmatize('aardwolves')
+        'aardwolf'
+        >>> wnl.lemmatize('abaci')
+        'abacus'
+        >>> wnl.lemmatize('hardrock')
+        'hardrock'
     """
 
     def __init__(self):
-        """
-        Create a new WordNet stemmer.
-        """
         pass
 
     def lemmatize(self, word, pos=NOUN):
-        lemmas = _wordnet._morphy(word, pos)
+        lemmas = wordnet._morphy(word, pos)
         if not lemmas:
             return word
         lemmas.sort(key=len)
@@ -30,11 +42,8 @@ class WordNetLemmatizer(object):
     def __repr__(self):
         return '<WordNetLemmatizer>'
 
-if __name__ == '__main__':
-    from nltk import stem
-    wnl = stem.WordNetLemmatizer()
-    print 'dogs ->', wnl.lemmatize('dogs')
-    print 'churches ->', wnl.lemmatize('churches')
-    print 'aardwolves ->', wnl.lemmatize('aardwolves')
-    print 'abaci ->', wnl.lemmatize('abaci')
-    print 'hardrock ->', wnl.lemmatize('hardrock')
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

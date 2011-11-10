@@ -8,7 +8,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""ISRI Arabic Stemmer
+"""
+ISRI Arabic Stemmer
 
 The algorithm for this stemmer is described in:
 
@@ -29,7 +30,8 @@ increases the word ambiguities and changes the original root.
 
 """
 import re
-from api import *
+
+from api import StemmerI
 
 class ISRIStemmer(StemmerI):
     '''
@@ -49,22 +51,87 @@ class ISRIStemmer(StemmerI):
     def __init__(self):
         self.stm = 'defult none'
 
-        self.p3 = [u'\u0643\u0627\u0644', u'\u0628\u0627\u0644', u'\u0648\u0644\u0644', u'\u0648\u0627\u0644']    # length three prefixes
+        self.p3 = [u'\u0643\u0627\u0644', u'\u0628\u0627\u0644',
+                   u'\u0648\u0644\u0644', u'\u0648\u0627\u0644']    # length three prefixes
         self.p2 = [u'\u0627\u0644', u'\u0644\u0644']    # length two prefixes
-        self.p1 = [u'\u0644', u'\u0628', u'\u0641', u'\u0633', u'\u0648', u'\u064a', u'\u062a', u'\u0646', u'\u0627']   # length one prefixes
+        self.p1 = [u'\u0644', u'\u0628', u'\u0641', u'\u0633', u'\u0648',
+                   u'\u064a', u'\u062a', u'\u0646', u'\u0627']   # length one prefixes
 
-        self.s3 =  [u'\u062a\u0645\u0644', u'\u0647\u0645\u0644', u'\u062a\u0627\u0646', u'\u062a\u064a\u0646', u'\u0643\u0645\u0644']  # length three suffixes
-        self.s2 = [u'\u0648\u0646', u'\u0627\u062a', u'\u0627\u0646', u'\u064a\u0646', u'\u062a\u0646', u'\u0643\u0645', u'\u0647\u0646', u'\u0646\u0627', u'\u064a\u0627', u'\u0647\u0627', u'\u062a\u0645', u'\u0643\u0646', u'\u0646\u064a', u'\u0648\u0627', u'\u0645\u0627', u'\u0647\u0645']   # length two suffixes
-        self.s1 = [u'\u0629', u'\u0647', u'\u064a', u'\u0643', u'\u062a', u'\u0627', u'\u0646']   # length one suffixes
+        self.s3 =  [u'\u062a\u0645\u0644', u'\u0647\u0645\u0644',
+                    u'\u062a\u0627\u0646', u'\u062a\u064a\u0646',
+                    u'\u0643\u0645\u0644']  # length three suffixes
+        self.s2 = [u'\u0648\u0646', u'\u0627\u062a', u'\u0627\u0646',
+                   u'\u064a\u0646', u'\u062a\u0646', u'\u0643\u0645',
+                   u'\u0647\u0646', u'\u0646\u0627', u'\u064a\u0627',
+                   u'\u0647\u0627', u'\u062a\u0645', u'\u0643\u0646',
+                   u'\u0646\u064a', u'\u0648\u0627', u'\u0645\u0627',
+                   u'\u0647\u0645']   # length two suffixes
+        self.s1 = [u'\u0629', u'\u0647', u'\u064a', u'\u0643', u'\u062a',
+                   u'\u0627', u'\u0646']   # length one suffixes
 
-        self.pr4 = {0:[u'\u0645'], 1:[u'\u0627'], 2:[u'\u0627', u'\u0648', u'\u064A'], 3:[u'\u0629']}   # groups of length four patterns
-        self.pr53 = {0:[u'\u0627', u'\u062a'], 1:[u'\u0627', u'\u064a', u'\u0648'], 2:[u'\u0627', u'\u062a', u'\u0645'], 3:[u'\u0645', u'\u064a', u'\u062a'], 4:[u'\u0645', u'\u062a'], 5:[u'\u0627', u'\u0648'], 6:[u'\u0627', u'\u0645']}   # Groups of length five patterns and length three roots
+        self.pr4 = {0: [u'\u0645'], 1:[u'\u0627'],
+                    2: [u'\u0627', u'\u0648', u'\u064A'], 3:[u'\u0629']}   # groups of length four patterns
+        self.pr53 = {0: [u'\u0627', u'\u062a'],
+                     1: [u'\u0627', u'\u064a', u'\u0648'],
+                     2: [u'\u0627', u'\u062a', u'\u0645'],
+                     3: [u'\u0645', u'\u064a', u'\u062a'],
+                     4: [u'\u0645', u'\u062a'],
+                     5: [u'\u0627', u'\u0648'],
+                     6: [u'\u0627', u'\u0645']}   # Groups of length five patterns and length three roots
 
         self.re_short_vowels = re.compile(ur'[\u064B-\u0652]')
         self.re_hamza = re.compile(ur'[\u0621\u0624\u0626]')
         self.re_intial_hamza = re.compile(ur'^[\u0622\u0623\u0625]')
 
-        self.stop_words = [u'\u064a\u0643\u0648\u0646', u'\u0648\u0644\u064a\u0633', u'\u0648\u0643\u0627\u0646', u'\u0643\u0630\u0644\u0643', u'\u0627\u0644\u062a\u064a', u'\u0648\u0628\u064a\u0646', u'\u0639\u0644\u064a\u0647\u0627', u'\u0645\u0633\u0627\u0621', u'\u0627\u0644\u0630\u064a', u'\u0648\u0643\u0627\u0646\u062a', u'\u0648\u0644\u0643\u0646', u'\u0648\u0627\u0644\u062a\u064a', u'\u062a\u0643\u0648\u0646', u'\u0627\u0644\u064a\u0648\u0645', u'\u0627\u0644\u0644\u0630\u064a\u0646', u'\u0639\u0644\u064a\u0647', u'\u0643\u0627\u0646\u062a', u'\u0644\u0630\u0644\u0643', u'\u0623\u0645\u0627\u0645', u'\u0647\u0646\u0627\u0643', u'\u0645\u0646\u0647\u0627', u'\u0645\u0627\u0632\u0627\u0644', u'\u0644\u0627\u0632\u0627\u0644', u'\u0644\u0627\u064a\u0632\u0627\u0644', u'\u0645\u0627\u064a\u0632\u0627\u0644', u'\u0627\u0635\u0628\u062d', u'\u0623\u0635\u0628\u062d', u'\u0623\u0645\u0633\u0649', u'\u0627\u0645\u0633\u0649', u'\u0623\u0636\u062d\u0649', u'\u0627\u0636\u062d\u0649', u'\u0645\u0627\u0628\u0631\u062d', u'\u0645\u0627\u0641\u062a\u0626', u'\u0645\u0627\u0627\u0646\u0641\u0643', u'\u0644\u0627\u0633\u064a\u0645\u0627', u'\u0648\u0644\u0627\u064a\u0632\u0627\u0644', u'\u0627\u0644\u062d\u0627\u0644\u064a', u'\u0627\u0644\u064a\u0647\u0627', u'\u0627\u0644\u0630\u064a\u0646', u'\u0641\u0627\u0646\u0647', u'\u0648\u0627\u0644\u0630\u064a', u'\u0648\u0647\u0630\u0627', u'\u0644\u0647\u0630\u0627', u'\u0641\u0643\u0627\u0646', u'\u0633\u062a\u0643\u0648\u0646', u'\u0627\u0644\u064a\u0647', u'\u064a\u0645\u0643\u0646', u'\u0628\u0647\u0630\u0627', u'\u0627\u0644\u0630\u0649']
+        self.stop_words = [u'\u064a\u0643\u0648\u0646',
+                           u'\u0648\u0644\u064a\u0633',
+                           u'\u0648\u0643\u0627\u0646',
+                           u'\u0643\u0630\u0644\u0643',
+                           u'\u0627\u0644\u062a\u064a',
+                           u'\u0648\u0628\u064a\u0646',
+                           u'\u0639\u0644\u064a\u0647\u0627',
+                           u'\u0645\u0633\u0627\u0621',
+                           u'\u0627\u0644\u0630\u064a',
+                           u'\u0648\u0643\u0627\u0646\u062a',
+                           u'\u0648\u0644\u0643\u0646',
+                           u'\u0648\u0627\u0644\u062a\u064a',
+                           u'\u062a\u0643\u0648\u0646',
+                           u'\u0627\u0644\u064a\u0648\u0645',
+                           u'\u0627\u0644\u0644\u0630\u064a\u0646',
+                           u'\u0639\u0644\u064a\u0647',
+                           u'\u0643\u0627\u0646\u062a',
+                           u'\u0644\u0630\u0644\u0643',
+                           u'\u0623\u0645\u0627\u0645',
+                           u'\u0647\u0646\u0627\u0643',
+                           u'\u0645\u0646\u0647\u0627',
+                           u'\u0645\u0627\u0632\u0627\u0644',
+                           u'\u0644\u0627\u0632\u0627\u0644',
+                           u'\u0644\u0627\u064a\u0632\u0627\u0644',
+                           u'\u0645\u0627\u064a\u0632\u0627\u0644',
+                           u'\u0627\u0635\u0628\u062d',
+                           u'\u0623\u0635\u0628\u062d',
+                           u'\u0623\u0645\u0633\u0649',
+                           u'\u0627\u0645\u0633\u0649',
+                           u'\u0623\u0636\u062d\u0649',
+                           u'\u0627\u0636\u062d\u0649',
+                           u'\u0645\u0627\u0628\u0631\u062d',
+                           u'\u0645\u0627\u0641\u062a\u0626',
+                           u'\u0645\u0627\u0627\u0646\u0641\u0643',
+                           u'\u0644\u0627\u0633\u064a\u0645\u0627',
+                           u'\u0648\u0644\u0627\u064a\u0632\u0627\u0644',
+                           u'\u0627\u0644\u062d\u0627\u0644\u064a',
+                           u'\u0627\u0644\u064a\u0647\u0627',
+                           u'\u0627\u0644\u0630\u064a\u0646',
+                           u'\u0641\u0627\u0646\u0647',
+                           u'\u0648\u0627\u0644\u0630\u064a',
+                           u'\u0648\u0647\u0630\u0627',
+                           u'\u0644\u0647\u0630\u0627',
+                           u'\u0641\u0643\u0627\u0646',
+                           u'\u0633\u062a\u0643\u0648\u0646',
+                           u'\u0627\u0644\u064a\u0647',
+                           u'\u064a\u0645\u0643\u0646',
+                           u'\u0628\u0647\u0630\u0627',
+                           u'\u0627\u0644\u0630\u0649']
 
 
     def stem(self, token):
@@ -308,3 +375,8 @@ class ISRIStemmer(StemmerI):
             if self.stm.startswith(sp1):
                 self.stm = self.stm[1:]
                 return self.stm
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

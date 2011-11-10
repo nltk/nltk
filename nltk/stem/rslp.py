@@ -31,14 +31,26 @@
 # e/ou melhor para o português. Também sugiro utilizar-se a lista de discussão
 # do NLTK para o português para qualquer debate.
 
-import nltk.data
+from nltk.data import load
 
-from api import *
+from api import StemmerI
 
 class RSLPStemmer(StemmerI):
     """
     A stemmer for Portuguese.
+
+        >>> st = RSLPStemmer() 
+        >>> # opening lines of Erico Verissimo's "Música ao Longe"
+        >>> text = u'''
+        ... Clarissa risca com giz no quadro-negro a paisagem que os alunos
+        ... devem copiar . Uma casinha de porta e janela , em cima duma
+        ... coxilha .'''
+        >>> for token in text.split():
+        ...     print st.stem(token),
+        clariss risc com giz no quadro-negr a pais que os alun dev copi .
+        uma cas de port e janel , em cim dum coxilh .
     """
+
     def __init__ (self):
         self._model = []
     
@@ -51,7 +63,7 @@ class RSLPStemmer(StemmerI):
         self._model.append( self.read_rule("step6.pt") )
 
     def read_rule (self, filename):
-        rules = nltk.data.load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
+        rules = load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
         lines = rules.split("\n")
   
         lines = [line for line in lines if line != u""]     # remove blank lines
@@ -125,28 +137,8 @@ class RSLPStemmer(StemmerI):
       
         return word
 
-def demo():
-    from nltk import stem
-    stemmer = stem.RSLPStemmer() 
 
-    # white-space tokenizer friendly text; text taken from the first paragraph
-    # of Erico Verissimo's "Música ao Longe"
-    text = u"""
-Clarissa risca com giz no quadro-negro a paisagem que os alunos devem copiar .
-Uma casinha de porta e janela , em cima duma coxilha . Um coqueiro do lado
-( onde o nosso amor nasceu - pensa ela no momento mesmo em que risca o troco
-longo e fino ) . Depois , uma estradinha que corre , ondulando como uma cobra
-, e se perde longe no horizonte . Nuvens de fiz do céu preto , um sol redondo
-e gordo , chispando raios , árvores , uma lagoa com marrecos nadando ...
-"""
 
-    tokens = text.split()
-  
-    for token in tokens:
-        word = token
-        stem = stemmer.stem(token)
-    
-        print "%16s - %16s" % (word, stem)
-  
 if __name__ == "__main__":
-    demo()
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
