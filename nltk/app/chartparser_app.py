@@ -457,29 +457,29 @@ class ChartResultsView(object):
 class ChartComparer(object):
     """
 
-    @ivar _root: The root window
+    :ivar _root: The root window
 
-    @ivar _charts: A dictionary mapping names to charts.  When 
+    :ivar _charts: A dictionary mapping names to charts.  When 
         charts are loaded, they are added to this dictionary.
     
-    @ivar _left_chart: The left L{Chart}.
-    @ivar _left_name: The name C{_left_chart} (derived from filename)
-    @ivar _left_matrix: The L{ChartMatrixView} for C{_left_chart}
-    @ivar _left_selector: The drop-down C{MutableOptionsMenu} used
+    :ivar _left_chart: The left L{Chart}.
+    :ivar _left_name: The name C{_left_chart} (derived from filename)
+    :ivar _left_matrix: The L{ChartMatrixView} for C{_left_chart}
+    :ivar _left_selector: The drop-down C{MutableOptionsMenu} used
           to select C{_left_chart}.
     
-    @ivar _right_chart: The right L{Chart}.
-    @ivar _right_name: The name C{_right_chart} (derived from filename)
-    @ivar _right_matrix: The L{ChartMatrixView} for C{_right_chart}
-    @ivar _right_selector: The drop-down C{MutableOptionsMenu} used
+    :ivar _right_chart: The right L{Chart}.
+    :ivar _right_name: The name C{_right_chart} (derived from filename)
+    :ivar _right_matrix: The L{ChartMatrixView} for C{_right_chart}
+    :ivar _right_selector: The drop-down C{MutableOptionsMenu} used
           to select C{_right_chart}.
     
-    @ivar _out_chart: The out L{Chart}.
-    @ivar _out_name: The name C{_out_chart} (derived from filename)
-    @ivar _out_matrix: The L{ChartMatrixView} for C{_out_chart}
-    @ivar _out_label: The label for C{_out_chart}.
+    :ivar _out_chart: The out L{Chart}.
+    :ivar _out_name: The name C{_out_chart} (derived from filename)
+    :ivar _out_matrix: The L{ChartMatrixView} for C{_out_chart}
+    :ivar _out_label: The label for C{_out_chart}.
 
-    @ivar _op_label: A Label containing the most recent operation.
+    :ivar _op_label: A Label containing the most recent operation.
     """
 
     _OPSYMBOL = {'-': '-',
@@ -842,44 +842,44 @@ class ChartView(object):
     allow students to interactively experiment with various chart
     parsing techniques.  It is also used by C{Chart.draw()}.
 
-    @ivar _chart: The chart that we are giving a view of.  This chart
+    :ivar _chart: The chart that we are giving a view of.  This chart
        may be modified; after it is modified, you should call
        C{update}.
-    @ivar _sentence: The list of tokens that the chart spans.
+    :ivar _sentence: The list of tokens that the chart spans.
 
-    @ivar _root: The root window.
-    @ivar _chart_canvas: The canvas we're using to display the chart
+    :ivar _root: The root window.
+    :ivar _chart_canvas: The canvas we're using to display the chart
         itself. 
-    @ivar _tree_canvas: The canvas we're using to display the tree
+    :ivar _tree_canvas: The canvas we're using to display the tree
         that each edge spans.  May be None, if we're not displaying
         trees. 
-    @ivar _sentence_canvas: The canvas we're using to display the sentence
+    :ivar _sentence_canvas: The canvas we're using to display the sentence
         text.  May be None, if we're not displaying the sentence text.
-    @ivar _edgetags: A dictionary mapping from edges to the tags of
+    :ivar _edgetags: A dictionary mapping from edges to the tags of
         the canvas elements (lines, etc) used to display that edge.
         The values of this dictionary have the form 
         C{(linetag, rhstag1, dottag, rhstag2, lhstag)}.
-    @ivar _treetags: A list of all the tags that make up the tree;
+    :ivar _treetags: A list of all the tags that make up the tree;
         used to erase the tree (without erasing the loclines).
-    @ivar _chart_height: The height of the chart canvas.
-    @ivar _sentence_height: The height of the sentence canvas.
-    @ivar _tree_height: The height of the tree
+    :ivar _chart_height: The height of the chart canvas.
+    :ivar _sentence_height: The height of the sentence canvas.
+    :ivar _tree_height: The height of the tree
 
-    @ivar _text_height: The height of a text string (in the normal
+    :ivar _text_height: The height of a text string (in the normal
         font). 
 
-    @ivar _edgelevels: A list of edges at each level of the chart (the
+    :ivar _edgelevels: A list of edges at each level of the chart (the
         top level is the 0th element).  This list is used to remember
         where edges should be drawn; and to make sure that no edges
         are overlapping on the chart view.
 
-    @ivar _unitsize: Pixel size of one unit (from the location).  This
+    :ivar _unitsize: Pixel size of one unit (from the location).  This
        is determined by the span of the chart's location, and the
        width of the chart display canvas.
 
-    @ivar _fontsize: The current font size
+    :ivar _fontsize: The current font size
 
-    @ivar _marks: A dictionary from edges to marks.  Marks are
+    :ivar _marks: A dictionary from edges to marks.  Marks are
         strings, specifying colors (e.g. 'green').
     """
     
@@ -1485,8 +1485,8 @@ class ChartView(object):
 
     def _draw_treetok(self, treetok, index, depth=0):
         """
-        @param index: The index of the first leaf in the tree.
-        @return: The index of the first leaf after the tree.
+        :param index: The index of the first leaf in the tree.
+        :return: The index of the first leaf after the tree.
         """
         c = self._tree_canvas
         margin = ChartView._MARGIN

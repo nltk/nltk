@@ -97,8 +97,8 @@ class GAAClusterer(VectorSpaceClusterer):
 
     def dendrogram(self):
         """
-        @return: The dendrogram representing the current clustering
-        @rtype:  Dendrogram
+        :return: The dendrogram representing the current clustering
+        :rtype:  Dendrogram
         """
         return self._dendrogram
 

@@ -27,24 +27,24 @@ class KMeansClusterer(VectorSpaceClusterer):
                        normalise=False, svd_dimensions=None,
                        rng=None):
         """
-        @param  num_means:  the number of means to use (may use fewer)
-        @type   num_means:  int
-        @param  distance:   measure of distance between two vectors
-        @type   distance:   function taking two vectors and returing a float
-        @param  repeats:    number of randomised clustering trials to use
-        @type   repeats:    int
-        @param  conv_test:  maximum variation in mean differences before
+        :param  num_means:  the number of means to use (may use fewer)
+        :type   num_means:  int
+        :param  distance:   measure of distance between two vectors
+        :type   distance:   function taking two vectors and returing a float
+        :param  repeats:    number of randomised clustering trials to use
+        :type   repeats:    int
+        :param  conv_test:  maximum variation in mean differences before
                             deemed convergent
-        @type   conv_test:  number
-        @param  initial_means: set of k initial means
-        @type   initial_means: sequence of vectors
-        @param  normalise:  should vectors be normalised to length 1
-        @type   normalise:  boolean
-        @param svd_dimensions: number of dimensions to use in reducing vector
+        :type   conv_test:  number
+        :param  initial_means: set of k initial means
+        :type   initial_means: sequence of vectors
+        :param  normalise:  should vectors be normalised to length 1
+        :type   normalise:  boolean
+        :param svd_dimensions: number of dimensions to use in reducing vector
                                dimensionsionality with SVD
-        @type svd_dimensions: int 
-        @param  rng:        random number generator (or None)
-        @type   rng:        Random
+        :type svd_dimensions: int 
+        :param  rng:        random number generator (or None)
+        :type   rng:        Random
         """
         VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._num_means = num_means

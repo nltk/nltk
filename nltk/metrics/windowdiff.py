@@ -29,15 +29,15 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     >>> windowdiff(s2, s3, 3)
     16
 
-    @param seg1: a segmentation
-    @type seg1: C{string} or C{list}
-    @param seg2: a segmentation
-    @type seg2: C{string} or C{list}
-    @param k: window width
-    @type k: C{int}
-    @param boundary: boundary value
-    @type boundary: C{string} or C{int} or C{bool}
-    @rtype: C{int}
+    :param seg1: a segmentation
+    :type seg1: str or list
+    :param seg2: a segmentation
+    :type seg2: str or list
+    :param k: window width
+    :type k: int
+    :param boundary: boundary value
+    :type boundary: str or int or bool
+    :rtype: int
     """
 
     if len(seg1) != len(seg2):

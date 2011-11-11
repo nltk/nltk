@@ -21,13 +21,13 @@ class AlignedSent(object):
         """
         Initialize a new C{AlignedSent}.
         
-        @param words: source language words
-        @type words: C{list} of C{str}
-        @param mots: target language words
-        @type mots: C{list} of C{str}
-        @param alignment: the word-level alignments between the source
+        :param words: source language words
+        :type words: list of str
+        :param mots: target language words
+        :type mots: list of str
+        :param alignment: the word-level alignments between the source
             and target language
-        @type alignment: C{Alignment}
+        :type alignment: C{Alignment}
         """
         if not isinstance(alignment, Alignment):
             alignment = Alignment(alignment)
@@ -57,10 +57,10 @@ class AlignedSent(object):
 
     def _check_align(self, a):
         """
-        @param a: alignment to be checked
-        @raise IndexError: if alignment is out of sentence boundary
-        @return: True if passed alignment check
-        @rtype: boolean
+        :param a: alignment to be checked
+        :raise IndexError: if alignment is out of sentence boundary
+        :return: True if passed alignment check
+        :rtype: boolean
         """
         if not all([0 <= p[0] < len(self._words) for p in a]):
             raise IndexError("Alignment is outside boundary of words")
@@ -70,15 +70,15 @@ class AlignedSent(object):
 
     def __repr__(self):
         """
-        @return: A string representation for this C{AlignedSent}.
-        @rtype: C{string}
+        :return: A string representation for this C{AlignedSent}.
+        :rtype: str
         """
         return "AlignedSent(%r, %r, %r)" % (self._words, self._mots, self._alignment)
 
     def __str__(self):
         """
-        @return: A string representation for this C{AlignedSent}.
-        @rtype: C{string}
+        :return: A string representation for this C{AlignedSent}.
+        :rtype: str
         """
         source = " ".join(self._words)[:20] + "..."
         target = " ".join(self._mots)[:20] + "..."
@@ -86,8 +86,8 @@ class AlignedSent(object):
 
     def invert(self):
         """ 
-        @return: the invert object
-        @rtype: AlignedSent
+        :return: the invert object
+        :rtype: AlignedSent
         """
         return AlignedSent(self._mots, self._words,
                                self._alignment.invert())
@@ -99,9 +99,9 @@ class AlignedSent(object):
         The "possible" precision is used since it doesn't penalise for finding
         an alignment that was marked as "possible".
 
-        @type reference: C{AlignedSent} or C{Alignment}
-        @param reference: A "gold standard" reference aligned sentence.
-        @rtype: C{float} or C{None}
+        :type reference: C{AlignedSent} or C{Alignment}
+        :param reference: A "gold standard" reference aligned sentence.
+        :rtype: float or None
         """
         # Get alignments in set of 2-tuples form
         align = self.alignment
@@ -121,9 +121,9 @@ class AlignedSent(object):
         The "sure" recall is used so we don't penalise for missing an 
         alignment that was only marked as "possible".
 
-        @type reference: C{AlignedSent} or C{Alignment}
-        @param reference: A "gold standard" reference aligned sentence.
-        @rtype: C{float} or C{None}
+        :type reference: C{AlignedSent} or C{Alignment}
+        :param reference: A "gold standard" reference aligned sentence.
+        :rtype: float or None
         """
         # Get alignments in set of 2-tuples form
         align = self.alignment
@@ -143,12 +143,12 @@ class AlignedSent(object):
         Return an error rate between 0.0 (perfect alignment) and 1.0 (no 
         alignment).
 
-        @type reference: C{AlignedSent} or C{Alignment}
-        @param reference: A "gold standard" reference aligned sentence.
-        @type possible: C{AlignedSent} or C{Alignment} or C{None}
-        @param possible: A "gold standard" reference of possible alignments
-            (defaults to I{reference} if C{None})
-        @rtype: C{float} or C{None}
+        :type reference: C{AlignedSent} or C{Alignment}
+        :param reference: A "gold standard" reference aligned sentence.
+        :type possible: C{AlignedSent} or C{Alignment} or None
+        :param possible: A "gold standard" reference of possible alignments
+            (defaults to I{reference} if None)
+        :rtype: float or None
         """
         # Get alignments in set of 2-tuples form
         align = self.alignment
@@ -264,14 +264,14 @@ class EMIBMModel1(object):
         '''
         Initialize a new C{EMIBMModel1}.
 
-        @param aligned_sents: The parallel text corpus.Iteratable containing 
+        :param aligned_sents: The parallel text corpus.Iteratable containing 
             AlignedSent instances of aligned sentence pairs from the corpus.
-        @type aligned_sents: C{list} of L{AlignedSent} objects
-        @param convergent_threshold: The threshold value of convergence. An 
+        :type aligned_sents: list of L{AlignedSent} objects
+        :param convergent_threshold: The threshold value of convergence. An 
             entry is considered converged if the delta from old_t to new_t
             is less than this value. The algorithm terminates when all entries
             are converged. This parameter is optional, default is 0.01
-        @type convergent_threshold: C{float}
+        :type convergent_threshold: float
         '''
         self.aligned_sents = aligned_sents
         self.convergent_threshold = convergent_threshold
@@ -283,7 +283,7 @@ class EMIBMModel1(object):
         The train() function implements Expectation Maximization training
         stage that learns word-to-word translation probabilities.
 
-        @return: Number of iterations taken to converge
+        :return: Number of iterations taken to converge
         '''
 
         # Collect up sets of all English and foreign words

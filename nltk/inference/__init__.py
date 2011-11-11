@@ -11,21 +11,10 @@
 Classes and interfaces for theorem proving and model building.
 """
 
-from api import *
-from mace import *
-from prover9 import *
-from resolution import *
-from tableau import *
-from discourse import *
-
-__all__ = [
-    # inference tools
-    'Prover9', 'Prover9Command',
-    'TableauProver', 'TableauProverCommand', 
-    'ResolutionProver', 'ResolutionProverCommand',
-    'Mace', 'MaceCommand',
-    'ParallelProverBuilder', 'ParallelProverBuilderCommand',
-    
-    # discourse
-    'ReadingCommand', 'CfgReadingCommand', 'DrtGlueReadingCommand', 'DiscourseTester'
-    ]
+from api import ParallelProverBuilder, ParallelProverBuilderCommand
+from mace import Mace, MaceCommand
+from prover9 import Prover9, Prover9Command
+from resolution import ResolutionProver, ResolutionProverCommand
+from tableau import TableauProver, TableauProverCommand
+from discourse import (ReadingCommand, CfgReadingCommand,
+                       DrtGlueReadingCommand, DiscourseTester)

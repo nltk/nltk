@@ -56,8 +56,8 @@ class XMLCorpusReader(CorpusReader):
         that were in text nodes -- ie, tags are ignored. Like the xml() method,
         fileid can only specify one file.
 
-        @return: the given file's text nodes as a list of words and punctuation symbols
-        @rtype: C{list} of C{str}
+        :return: the given file's text nodes as a list of words and punctuation symbols
+        :rtype: list of str
         """
 
         elt = self.xml(fileid)
@@ -122,13 +122,13 @@ class XMLCorpusView(StreamBackedCorpusView):
         C{encoding} argument, because the unicode encoding is
         specified by the XML files themselves.
     
-        @type tagspec: C{str}
-        @param tagspec: A tag specification, indicating what XML
+        :type tagspec: str
+        :param tagspec: A tag specification, indicating what XML
             elements should be included in the view.  Each non-nested
             element that matches this specification corresponds to one
             item in the view.
 
-        @param elt_handler: A function used to transform each element
+        :param elt_handler: A function used to transform each element
             to a value for the view.  If no handler is specified, then
             L{self.handle_elt()} is called, which returns the element
             as an ElementTree object.  The signature of elt_handler is::
@@ -178,13 +178,13 @@ class XMLCorpusView(StreamBackedCorpusView):
         C{elt_handler} constructor argument, this method simply
         returns C{elt}.
 
-        @return: The view value corresponding to C{elt}.
+        :return: The view value corresponding to C{elt}.
 
-        @type elt: C{ElementTree}
-        @param elt: The element that should be converted.
+        :type elt: C{ElementTree}
+        :param elt: The element that should be converted.
 
-        @type context: C{str}
-        @param context: A string composed of element tags separated by
+        :type context: str
+        :param context: A string composed of element tags separated by
             forward slashes, indicating the XML context of the given
             element.  For example, the string C{'foo/bar/baz'}
             indicates that the element is a C{baz} element whose

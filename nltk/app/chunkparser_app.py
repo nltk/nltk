@@ -253,13 +253,13 @@ class RegexpChunkApp(object):
     def __init__(self, devset_name='conll2000', devset=None,
                  grammar = '', chunk_node='NP', tagset=None):
         """
-        @param devset_name: The name of the development set; used for
+        :param devset_name: The name of the development set; used for
             display & for save files.  If either the name 'treebank'
             or the name 'conll2000' is used, and devset is None, then
             devset will be set automatically.
-        @param devset: A list of chunked sentences
-        @param grammar: The initial grammar to display.
-        @param tagset: Dictionary from tags to string descriptions, used
+        :param devset: A list of chunked sentences
+        :param grammar: The initial grammar to display.
+        :param tagset: Dictionary from tags to string descriptions, used
             for the help page.  Defaults to C{self.TAGSET}.
         """
         self._chunk_node = chunk_node
@@ -618,7 +618,7 @@ class RegexpChunkApp(object):
         Modify _EVAL_CHUNK to try to keep the amount of time that the
         eval demon takes between _EVAL_DEMON_MIN and _EVAL_DEMON_MAX.
         
-        @param t: The amount of time that the eval demon took.
+        :param t: The amount of time that the eval demon took.
         """
         if t > self._EVAL_DEMON_MAX and self._EVAL_CHUNK > 5:
             self._EVAL_CHUNK = min(self._EVAL_CHUNK-1,

@@ -107,7 +107,7 @@ class PathPointer(object):
         Return a seekable read-only stream that can be used to read
         the contents of the file identified by this path pointer.
 
-        @raise IOError: If the path specified by this pointer does
+        :raise IOError: If the path specified by this pointer does
             not contain a readable file.
         """
         raise NotImplementedError('abstract base class')
@@ -117,7 +117,7 @@ class PathPointer(object):
         Return the size of the file pointed to by this path pointer,
         in bytes.
 
-        @raise IOError: If the path specified by this pointer does
+        :raise IOError: If the path specified by this pointer does
             not contain a readable file.
         """
         raise NotImplementedError('abstract base class')
@@ -137,7 +137,7 @@ class FileSystemPathPointer(PathPointer, str):
     """
     A path pointer that identifies a file which can be accessed
     directly via a given absolute path.  C{FileSystemPathPointer} is a
-    subclass of C{str} for backwards compatibility purposes --
+    subclass of str for backwards compatibility purposes --
     this allows old code that expected C{nltk.data.find()} to expect a
     string to usually work (assuming the resource is not found in a
     zipfile).  It also permits open() to work on a FileSystemPathPointer.
@@ -147,7 +147,7 @@ class FileSystemPathPointer(PathPointer, str):
         """
         Create a new path pointer for the given absolute path.
 
-        @raise IOError: If the given path does not exist.
+        :raise IOError: If the given path does not exist.
         """
         path = os.path.abspath(path)
         if not os.path.exists(path):
@@ -196,23 +196,23 @@ class BufferedGzipFile(GzipFile):
     def __init__(self, filename=None, mode=None, compresslevel=9, 
                  fileobj=None, **kwargs):
         """
-        @return: a buffered gzip file object
-        @rtype: C{BufferedGzipFile}
-        @param filename: a filesystem path
-        @type filename: C{str}
-        @param mode: a file mode which can be any of 'r', 'rb', 'a', 'ab', 
+        :return: a buffered gzip file object
+        :rtype: C{BufferedGzipFile}
+        :param filename: a filesystem path
+        :type filename: str
+        :param mode: a file mode which can be any of 'r', 'rb', 'a', 'ab', 
             'w', or 'wb'
-        @type mode: C{str}
-        @param compresslevel: The compresslevel argument is an integer from 1
+        :type mode: str
+        :param compresslevel: The compresslevel argument is an integer from 1
             to 9 controlling the level of compression; 1 is fastest and 
             produces the least compression, and 9 is slowest and produces the
             most compression. The default is 9.
-        @type compresslevel: C{int}
-        @param fileobj: a StringIO stream to read from instead of a file.
-        @type fileobj: C{StringIO}
-        @kwparam size: number of bytes to buffer during calls to
+        :type compresslevel: int
+        :param fileobj: a StringIO stream to read from instead of a file.
+        :type fileobj: C{StringIO}
+        :param size: number of bytes to buffer during calls to
             L{read()} and L{write()}
-        @type size: C{int}
+        :type size: int
         """   
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
@@ -266,10 +266,10 @@ class BufferedGzipFile(GzipFile):
 
     def write(self, data, size=-1):
         """
-        @param data: C{str} to write to file or buffer
-        @type data: C{str}
-        @param size: buffer at least size bytes before writing to file
-        @type size: C{int}
+        :param data: str to write to file or buffer
+        :type data: str
+        :param size: buffer at least size bytes before writing to file
+        :type size: int
         """
         if not size: 
             size = self._size
@@ -302,7 +302,7 @@ class ZipFilePathPointer(PathPointer):
         Create a new path pointer pointing at the specified entry
         in the given zipfile.
 
-        @raise IOError: If the given zipfile does not exist, or if it
+        :raise IOError: If the given zipfile does not exist, or if it
         does not contain the specified entry.
         """
         if isinstance(zipfile, basestring):
@@ -396,14 +396,14 @@ def find(resource_name):
         character.  Otherwise, C{find()} will not locate the
         directory.
 
-    @type resource_name: C{str}
-    @param resource_name: The name of the resource to search for.
+    :type resource_name: str
+    :param resource_name: The name of the resource to search for.
         Resource names are posix-style relative path names, such as
         C{'corpora/brown'}.  In particular, directory names should
         always be separated by the C{'/'} character, which will be
         automatically converted to a platform-appropriate path
         separator.
-    @rtype: C{str}
+    :rtype: str
     """
     # Check if the resource name includes a zipfile name
     m = re.match('(.*\.zip)/?(.*)$|', resource_name)
@@ -459,8 +459,8 @@ def retrieve(resource_url, filename=None, verbose=True):
     specified, then use the URL's filename.  If there is already a
     file named C{filename}, then raise a C{ValueError}.
     
-    @type resource_url: C{str}
-    @param resource_url: A URL specifying where the resource should be
+    :type resource_url: str
+    :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is C{"nltk:"}, which searches
         for the file in the the NLTK data package.
     """
@@ -540,27 +540,27 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     format based on the resource name's file extension.  If that
     fails, C{load()} will raise a C{ValueError} exception.
 
-    @type resource_url: C{str}
-    @param resource_url: A URL specifying where the resource should be
+    :type resource_url: str
+    :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is C{"nltk:"}, which searches
         for the file in the the NLTK data package.
-    @type cache: C{bool}
-    @param cache: If true, add this resource to a cache.  If C{load}
+    :type cache: bool
+    :param cache: If true, add this resource to a cache.  If C{load}
         finds a resource in its cache, then it will return it from the
         cache rather than loading it.  The cache uses weak references,
         so a resource wil automatically be expunged from the cache
         when no more objects are using it.
         
-    @type verbose: C{bool}
-    @param verbose: If true, print a message when loading a resource.
+    :type verbose: bool
+    :param verbose: If true, print a message when loading a resource.
         Messages are not displayed when a resource is retrieved from
         the cache.
     
-    @type logic_parser: C{LogicParser}
-    @param logic_parser: The parser that will be used to parse logical 
+    :type logic_parser: C{LogicParser}
+    :param logic_parser: The parser that will be used to parse logical 
     expressions.
-    @type fstruct_parser: C{FeatStructParser}
-    @param fstruct_parser: The parser that will be used to parse the
+    :type fstruct_parser: C{FeatStructParser}
+    :param fstruct_parser: The parser that will be used to parse the
     feature structure of an fcfg.
     """
     # If we've cached the resource, then just return it.
@@ -630,12 +630,12 @@ def load(resource_url, format='auto', cache=True, verbose=False,
 def show_cfg(resource_url, escape='##'):
     """
     Write out a grammar file, ignoring escaped and empty lines
-    @type resource_url: C{str}
-    @param resource_url: A URL specifying where the resource should be
+    :type resource_url: str
+    :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is C{"nltk:"}, which searches
         for the file in the the NLTK data package.
-    @type escape: C{str}
-    @param escape: Prepended string that signals lines to be ignored
+    :type escape: str
+    :param escape: Prepended string that signals lines to be ignored
     """
     resource_val = load(resource_url, format='raw', cache=False)
     lines = resource_val.splitlines()
@@ -648,7 +648,7 @@ def show_cfg(resource_url, escape='##'):
 def clear_cache():
     """
     Remove all objects from the resource cache.
-    @see: L{load()}
+    :see: L{load()}
     """
     _resource_cache.clear()
 
@@ -661,8 +661,8 @@ def _open(resource_url):
     uses the 'file' protocol, then open the file with the given mode;
     otherwise, delegate to C{urllib2.urlopen}.
     
-    @type resource_url: C{str}
-    @param resource_url: A URL specifying where the resource should be
+    :type resource_url: str
+    :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is C{"nltk:"}, which searches
         for the file in the the NLTK data package.
     """
@@ -734,11 +734,11 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         return value
 
     def write(self, *args, **kwargs):
-        """@raise NotImplementedError: OpenOnDemandZipfile is read-only"""
+        """:raise NotImplementedError: OpenOnDemandZipfile is read-only"""
         raise NotImplementedError('OpenOnDemandZipfile is read-only')
 
     def writestr(self, *args, **kwargs):
-        """@raise NotImplementedError: OpenOnDemandZipfile is read-only"""
+        """:raise NotImplementedError: OpenOnDemandZipfile is read-only"""
         raise NotImplementedError('OpenOnDemandZipfile is read-only')
 
     def __repr__(self):
@@ -817,7 +817,7 @@ class SeekableUnicodeStreamReader(object):
 
         self._bom = self._check_bom()
         """The length of the byte order marker at the beginning of
-           the stream (or C{None} for no byte order marker)."""
+           the stream (or None for no byte order marker)."""
 
     #/////////////////////////////////////////////////////////////////
     # Read methods
@@ -828,10 +828,10 @@ class SeekableUnicodeStreamReader(object):
         Read up to C{size} bytes, decode them using this reader's
         encoding, and return the resulting unicode string.
 
-        @param size: The maximum number of bytes to read.  If not
+        :param size: The maximum number of bytes to read.  If not
             specified, then read as many bytes as possible.
 
-        @rtype: C{unicode}
+        :rtype: C{unicode}
         """
         chars = self._read(size)
 
@@ -848,7 +848,7 @@ class SeekableUnicodeStreamReader(object):
         Read a line of text, decode it using this reader's encoding,
         and return the resulting unicode string.
 
-        @param size: The maximum number of bytes to read.  If no
+        :param size: The maximum number of bytes to read.  If no
             newline is encountered before C{size} bytes have been
             read, then the returned value may not be a complete line
             of text.
@@ -908,9 +908,9 @@ class SeekableUnicodeStreamReader(object):
         Read this file's contents, decode them using this reader's
         encoding, and return it as a list of unicode lines.
 
-        @rtype: C{list} of C{unicode}
-        @param sizehint: Ignored.
-        @param keepends: If false, then strip newlines.
+        :rtype: list of C{unicode}
+        :param sizehint: Ignored.
+        :param keepends: If false, then strip newlines.
         """
         return self.read().splitlines(keepends)
 
@@ -956,8 +956,8 @@ class SeekableUnicodeStreamReader(object):
         Move the stream to a new file position.  If the reader is
         maintaining any buffers, tehn they will be cleared.
 
-        @param offset: A byte count offset.
-        @param whence: If C{whence} is 0, then the offset is from the
+        :param offset: A byte count offset.
+        :param whence: If C{whence} is 0, then the offset is from the
             start of the file (offset should be positive).  If
             C{whence} is 1, then the offset is from the current
             position (offset may be positive or negative); and if 2,
@@ -990,7 +990,7 @@ class SeekableUnicodeStreamReader(object):
         Move the file position forward by C{offset} characters,
         ignoring all buffers.
 
-        @param est_bytes: A hint, giving an estimate of the number of
+        :param est_bytes: A hint, giving an estimate of the number of
             bytes that will be neded to move foward by C{offset} chars.
             Defaults to C{offset}.
         """
@@ -1115,7 +1115,7 @@ class SeekableUnicodeStreamReader(object):
         the byte string without the bytes that cause the trunctaion
         error.
 
-        @return: A tuple C{(chars, num_consumed)}, where C{chars} is
+        :return: A tuple C{(chars, num_consumed)}, where C{chars} is
             the decoded unicode string, and C{num_consumed} is the
             number of bytes that were consumed.
         """

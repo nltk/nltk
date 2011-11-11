@@ -41,10 +41,10 @@ def config_megam(bin=None):
     Configure NLTK's interface to the C{megam} maxent optimization
     package.
 
-    @param bin: The full path to the C{megam} binary.  If not specified,
+    :param bin: The full path to the C{megam} binary.  If not specified,
         then nltk will search the system for a C{megam} binary; and if
         one is not found, it will raise a C{LookupError} exception.
-    @type bin: C{string}
+    :type bin: str
     """
     global _megam_bin
     _megam_bin = find_binary(
@@ -63,27 +63,27 @@ def write_megam_file(train_toks, encoding, stream,
     Generate an input file for C{megam} based on the given corpus of
     classified tokens.
 
-    @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
-    @param train_toks: Training data, represented as a list of
+    :type train_toks: list of C{tuples} of (dict, str)
+    :param train_toks: Training data, represented as a list of
         pairs, the first member of which is a feature dictionary,
         and the second of which is a classification label.
 
-    @type encoding: L{MaxentFeatureEncodingI}
-    @param encoding: A feature encoding, used to convert featuresets
+    :type encoding: L{MaxentFeatureEncodingI}
+    :param encoding: A feature encoding, used to convert featuresets
         into feature vectors. May optionally implement a cost() method
         in order to assign different costs to different class predictions.
 
-    @type stream: C{stream}
-    @param stream: The stream to which the megam input file should be
+    :type stream: C{stream}
+    :param stream: The stream to which the megam input file should be
         written.
 
-    @param bernoulli: If true, then use the 'bernoulli' format.  I.e.,
+    :param bernoulli: If true, then use the 'bernoulli' format.  I.e.,
         all joint features have binary values, and are listed iff they
         are true.  Otherwise, list feature values explicitly.  If
         C{bernoulli=False}, then you must call C{megam} with the
         C{-fvals} option.
 
-    @param explicit: If true, then use the 'explicit' format.  I.e.,
+    :param explicit: If true, then use the 'explicit' format.  I.e.,
         list the features that would fire for any of the possible
         labels, for each token.  If C{explicit=True}, then you must
         call C{megam} with the C{-explicit} option.

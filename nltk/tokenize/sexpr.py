@@ -69,7 +69,7 @@ class SExprTokenizer(TokenizerI):
     :param parens: A two-element sequence specifying the open and close parentheses
         that should be used to find sexprs.  This will typically be either a
         two-character string, or a list of two strings.
-    :type parens: C{str} or C{list}
+    :type parens: str or list
     :param strict: If true, then raise an exception when tokenizing an ill-formed sexpr.
     """
 

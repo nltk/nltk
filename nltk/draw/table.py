@@ -60,17 +60,17 @@ class MultiListbox(Frame):
         """
         Construct a new multi-column listbox widget.
 
-        @param master: The widget that should contain the new
+        :param master: The widget that should contain the new
             multi-column listbox.
             
-        @param columns: Specifies what columns should be included in
+        :param columns: Specifies what columns should be included in
             the new multi-column listbox.  If C{columns} is an integer,
             the it is the number of columns to include.  If it is
             a list, then its length indicates the number of columns
             to include; and each element of the list will be used as
             a label for the corresponding column.
 
-        @param cnf, kw: Configuration parameters for this widget.
+        :param cnf, kw: Configuration parameters for this widget.
             Use C{label_*} to configure all labels; and C{listbox_*}
             to configure all listboxes.  E.g.:
 
@@ -236,7 +236,7 @@ class MultiListbox(Frame):
         return 'break'
         
     def _pagesize(self):
-        """@return: The number of rows that makes up one page"""
+        """:return: The number of rows that makes up one page"""
         return int(self.index('@0,1000000')) - int(self.index('@0,0'))
 
     #/////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ class MultiListbox(Frame):
         positive numbers for down).  This will not move the selection
         past the top or the bottom of the list.
 
-        @param see: If true, then call C{self.see()} with the newly
+        :param see: If true, then call C{self.see()} with the newly
             selected index, to ensure that it is visible.
         """
         if (index is not None) and (delta is not None):
@@ -391,7 +391,7 @@ class MultiListbox(Frame):
         you must supply its values when calling L{insert()}.  It is
         safe to call this on a column that is already hidden.
 
-        @see: L{show_column()}
+        :see: L{show_column()}
         """
         if self._labels:
             self._labels[col_index].grid_forget()
@@ -419,9 +419,9 @@ class MultiListbox(Frame):
         """
         Add a binding to each C{Tkinter.Label} widget in this
         mult-column listbox that will call C{func} in response to the
-        event C{sequence}.
+        event sequence.
 
-        @return: A list of the identifiers of replaced binding
+        :return: A list of the identifiers of replaced binding
             functions (if any), allowing for their deletion (to
             prevent a memory leak).
         """
@@ -432,9 +432,9 @@ class MultiListbox(Frame):
         """
         Add a binding to each C{Tkinter.Listbox} widget in this
         mult-column listbox that will call C{func} in response to the
-        event C{sequence}.
+        event sequence.
 
-        @return: A list of the identifiers of replaced binding
+        :return: A list of the identifiers of replaced binding
             functions (if any), allowing for their deletion (to
             prevent a memory leak).
         """
@@ -445,9 +445,9 @@ class MultiListbox(Frame):
         """
         Add a binding to each C{Tkinter.Label} and C{Tkinter.Listbox}
         widget in this mult-column listbox that will call C{func} in
-        response to the event C{sequence}.
+        response to the event sequence.
 
-        @return: A list of the identifiers of replaced binding
+        :return: A list of the identifiers of replaced binding
             functions (if any), allowing for their deletion (to
             prevent a memory leak).
         """
@@ -553,8 +553,8 @@ class Table(object):
     a way that's incompatible with the fact that C{Table} behaves as a
     list-of-lists.
 
-    @ivar _mlb: The multi-column listbox used to display this table's data.
-    @ivar _rows: A list-of-lists used to hold the cell values of this
+    :ivar _mlb: The multi-column listbox used to display this table's data.
+    :ivar _rows: A list-of-lists used to hold the cell values of this
         table.  Each element of _rows is a row value, i.e., a list of
         cell values, one for each column in the row.
     """
@@ -565,31 +565,31 @@ class Table(object):
         """
         Construct a new Table widget.
 
-        @type master: C{Tkinter.Widget}
-        @param master: The widget that should contain the new table.
+        :type master: C{Tkinter.Widget}
+        :param master: The widget that should contain the new table.
 
-        @type column_names: C{list} of C{str}
-        @param column_names: A list of names for the columns; these
+        :type column_names: list of str
+        :param column_names: A list of names for the columns; these
             names will be used to create labels for each column;
             and can be used as an index when reading or writing
             cell values from the table.
 
-        @type rows: C{list} of C{list}
-        @param rows: A list of row values used to initialze the table.
+        :type rows: list of list
+        :param rows: A list of row values used to initialze the table.
             Each row value should be a tuple of cell values, one for
             each column in the row.
 
-        @type scrollbar: C{bool}
-        @param scrollbar: If true, then create a scrollbar for the
+        :type scrollbar: bool
+        :param scrollbar: If true, then create a scrollbar for the
             new table widget.
             
-        @type click_to_sort: C{bool}
-        @param click_to_sort: If true, then create bindings that will
+        :type click_to_sort: bool
+        :param click_to_sort: If true, then create bindings that will
             sort the table's rows by a given column's values if the
             user clicks on that colum's label.
 
-        @type reprfunc: C{function}
-        @param reprfunc: If specified, then use this function to
+        :type reprfunc: C{function}
+        :param reprfunc: If specified, then use this function to
             convert each table cell value to a string suitable for
             display.  C{reprfunc} has the following signature:
 
@@ -597,7 +597,7 @@ class Table(object):
 
             (Note that the column is specified by index, not by name.)
 
-        @param cnf, kw: Configuration parameters for this widget's
+        :param cnf, kw: Configuration parameters for this widget's
             contained C{MultiListbox}.  See L{MultiListbox.__init__()}
             for details.
         """
@@ -658,33 +658,33 @@ class Table(object):
         
     def bind(self, sequence=None, func=None, add=None):
         """Add a binding to this table's main frame that will call
-        C{func} in response to the event C{sequence}."""
+        C{func} in response to the event sequence."""
         self._mlb.bind(sequence, func, add)
 
     def rowconfigure(self, row_index, cnf={}, **kw):
-        """@see: L{MultiListbox.rowconfigure()}"""
+        """:see: L{MultiListbox.rowconfigure()}"""
         self._mlb.rowconfigure(row_index, cnf, **kw)
         
     def columnconfigure(self, col_index, cnf={}, **kw):
-        """@see: L{MultiListbox.columnconfigure()}"""
+        """:see: L{MultiListbox.columnconfigure()}"""
         col_index = self.column_index(col_index)
         self._mlb.columnconfigure(col_index, cnf, **kw)
         
     def itemconfigure(self, row_index, col_index, cnf=None, **kw):
-        """@see: L{MultiListbox.itemconfigure()}"""
+        """:see: L{MultiListbox.itemconfigure()}"""
         col_index = self.column_index(col_index)
         return self._mlb.itemconfigure(row_index, col_index, cnf, **kw)
     
     def bind_to_labels(self, sequence=None, func=None, add=None):
-        """@see: L{MultiListbox.bind_to_labels()}"""
+        """:see: L{MultiListbox.bind_to_labels()}"""
         return self._mlb.bind_to_labels(sequence, func, add)
 
     def bind_to_listboxes(self, sequence=None, func=None, add=None):
-        """@see: L{MultiListbox.bind_to_listboxes()}"""
+        """:see: L{MultiListbox.bind_to_listboxes()}"""
         return self._mlb.bind_to_listboxes(sequence, func, add)
 
     def bind_to_columns(self, sequence=None, func=None, add=None):
-        """@see: L{MultiListbox.bind_to_columns()}"""
+        """:see: L{MultiListbox.bind_to_columns()}"""
         return self._mlb.bind_to_columns(sequence, func, add)
 
     rowconfig = rowconfigure
@@ -702,7 +702,7 @@ class Table(object):
         is greater than or equal to C{row_index}, then they will be
         shifted down.
 
-        @param rowvalue: A tuple of cell values, one for each column
+        :param rowvalue: A tuple of cell values, one for each column
             in the new row.
         """
         self._checkrow(rowvalue)
@@ -717,7 +717,7 @@ class Table(object):
         """
         Add new rows at the end of the table.
 
-        @param rowvalues: A list of row values used to initialze the
+        :param rowvalues: A list of row values used to initialze the
             table.  Each row value should be a tuple of cell values,
             one for each column in the row.
         """
@@ -728,7 +728,7 @@ class Table(object):
         """
         Add a new row to the end of the table.
 
-        @param rowvalue: A tuple of cell values, one for each column
+        :param rowvalue: A tuple of cell values, one for each column
             in the new row.
         """
         self.insert(len(self._rows), rowvalue)
@@ -812,7 +812,7 @@ class Table(object):
         
     def __len__(self):
         """
-        @return: the number of rows in this table.
+        :return: the number of rows in this table.
         """
         return len(self._rows)
 
@@ -846,11 +846,11 @@ class Table(object):
             return self._column_name_to_index[i]
 
     def hide_column(self, column_index):
-        """@see: L{MultiListbox.hide_column()}"""
+        """:see: L{MultiListbox.hide_column()}"""
         self._mlb.hide_column(self.column_index(column_index))
 
     def show_column(self, column_index):
-        """@see: L{MultiListbox.show_column()}"""
+        """:see: L{MultiListbox.show_column()}"""
         self._mlb.show_column(self.column_index(column_index))
 
     #/////////////////////////////////////////////////////////////////
@@ -859,7 +859,7 @@ class Table(object):
 
     def selected_row(self):
         """
-        Return the index of the currently selected row, or C{None} if
+        Return the index of the currently selected row, or None if
         no row is selected.  To get the row value itself, use
         C{table[table.selected_row()]}.
         """
@@ -868,7 +868,7 @@ class Table(object):
         else: return None
 
     def select(self, index=None, delta=None, see=True):
-        """@see: L{MultiListbox.select()}"""
+        """:see: L{MultiListbox.select()}"""
         self._mlb.select(index, delta, see)
 
     #/////////////////////////////////////////////////////////////////
@@ -880,11 +880,11 @@ class Table(object):
         Sort the rows in this table, using the specified column's
         values as a sort key.
 
-        @param column_index: Specifies which column to sort, using
-            either a column index (C{int}) or a column's label name
-            (C{str}).
+        :param column_index: Specifies which column to sort, using
+            either a column index (int) or a column's label name
+            (str).
             
-        @param order: Specifies whether to sort the values in
+        :param order: Specifies whether to sort the values in
             ascending or descending order:
 
               - C{'ascending'}: Sort from least to greatest.

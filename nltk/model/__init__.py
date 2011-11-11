@@ -5,8 +5,4 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from ngram import *
-
-__all__ = [
-    'NgramModel',
-    ]
+from ngram import NgramModel

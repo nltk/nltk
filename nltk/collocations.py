@@ -36,7 +36,7 @@ from operator import itemgetter as _itemgetter
 from nltk.probability import FreqDist
 from nltk.util import ingrams
 from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures
-from nltk.metrics.spearman import *
+from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
 class AbstractCollocationFinder(object):
     """

@@ -240,13 +240,13 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     """
     Run NLTK Wordnet Browser Server.
     
-    @param port: The port number for the server to listen on, defaults to
+    :param port: The port number for the server to listen on, defaults to
                  8000
-    @type  port: C{int}
+    :type  port: int
 
-    @param runBrowser: True to start a web browser and point it at the web
+    :param runBrowser: True to start a web browser and point it at the web
                        server.
-    @type  runBrowser: C{boolean}
+    :type  runBrowser: bool
     """
     # The webbrowser module is unpredictable, typically it blocks if it uses
     # a console web browser, and doesn't block if it uses a GUI webbrowser,
@@ -535,12 +535,12 @@ def pg(word, body):
     Return a HTML page of NLTK Browser format constructed from the
     word and body
 
-    @param word: The word that the body corresponds to
-    @type word: str
-    @param body: The HTML body corresponding to the word
-    @type body: str
-    @return: a HTML page for the word-body combination
-    @rtype: str
+    :param word: The word that the body corresponds to
+    :type word: str
+    :param body: The HTML body corresponding to the word
+    :type body: str
+    :return: a HTML page for the word-body combination
+    :rtype: str
     '''
     return (html_header % word) + body + html_trailer
 
@@ -567,15 +567,15 @@ def _collect_one_synset(word, synset, synset_relations):
     '''
     Returns the HTML string for one synset or word
 
-    @param word: the current word
-    @type word: str
-    @param synset: a synset
-    @type synset: synset
-    @param synset_relations: information about which synset relations
+    :param word: the current word
+    :type word: str
+    :param synset: a synset
+    :type synset: synset
+    :param synset_relations: information about which synset relations
     to display.
-    @type synset_relations: dict(synset_key, set(relation_id))
-    @return: The HTML string built for this synset
-    @rtype: str
+    :type synset_relations: dict(synset_key, set(relation_id))
+    :return: The HTML string built for this synset
+    :rtype: str
     '''
     if isinstance(synset, tuple): # It's a word
         raise NotImplementedError("word not supported by _collect_one_synset")
@@ -619,14 +619,14 @@ def _synset_relations(word, synset, synset_relations):
     '''
     Builds the HTML string for the relations of a synset
 
-    @param word: The current word
-    @type word: str
-    @param synset: The synset for which we're building the relations.
-    @type synset: Synset
-    @param synset_relations: synset keys and relation types for which to display relations.
-    @type synset_relations: dict(synset_key, set(relation_type))
-    @return: The HTML for a synset's relations
-    @rtype: str
+    :param word: The current word
+    :type word: str
+    :param synset: The synset for which we're building the relations.
+    :type synset: Synset
+    :param synset_relations: synset keys and relation types for which to display relations.
+    :type synset_relations: dict(synset_key, set(relation_type))
+    :return: The HTML for a synset's relations
+    :rtype: str
     '''
 
     if not synset.name in synset_relations.keys():
@@ -740,12 +740,12 @@ def page_from_word(word):
     """
     Return a HTML page for the given word.
 
-    @param word: The currently active word
-    @type word: str
-    @return: A tuple (page,word), where page is the new current HTML page
+    :param word: The currently active word
+    :type word: str
+    :return: A tuple (page,word), where page is the new current HTML page
              to be sent to the browser and
              word is the new current word
-    @rtype: A tuple (str,str)
+    :rtype: A tuple (str,str)
     """
     return page_from_reference(Reference(word))
 
@@ -753,12 +753,12 @@ def page_from_href(href):
     '''
     Returns a tuple of the HTML page built and the new current word
 
-    @param href: The hypertext reference to be solved
-    @type href: str
-    @return: A tuple (page,word), where page is the new current HTML page
+    :param href: The hypertext reference to be solved
+    :type href: str
+    :return: A tuple (page,word), where page is the new current HTML page
              to be sent to the browser and
              word is the new current word
-    @rtype: A tuple (str,str)
+    :rtype: A tuple (str,str)
     '''
     return page_from_reference(decode_reference(href))
 
@@ -766,12 +766,12 @@ def page_from_reference(href):
     '''
     Returns a tuple of the HTML page built and the new current word
 
-    @param href: The hypertext reference to be solved
-    @type href: str
-    @return: A tuple (page,word), where page is the new current HTML page
+    :param href: The hypertext reference to be solved
+    :type href: str
+    :return: A tuple (page,word), where page is the new current HTML page
              to be sent to the browser and
              word is the new current word
-    @rtype: A tuple (str,str)
+    :rtype: A tuple (str,str)
     '''
     word = href.word
     pos_forms = defaultdict(list)

@@ -18,12 +18,17 @@ from collections import defaultdict
 
 from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
 from nltk.sem import logic
-from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
-from nltk.grammar import FeatStructNonterminal
-import nltk.data
-
-from api import *
-from chart import *
+from nltk.tree import Tree
+from nltk.grammar import (Nonterminal, Production, ContextFreeGrammar,
+                          FeatStructNonterminal, is_nonterminal,
+                          is_terminal)
+from nltk.parse.chart import (TreeEdge, Chart, ChartParser, EdgeI,
+                              FundamentalRule, LeafInitRule, 
+                              EmptyPredictRule, BottomUpPredictRule,
+                              SingleEdgeFundamentalRule,
+                              BottomUpPredictCombineRule,
+                              CachedTopDownPredictRule,
+                              TopDownInitRule)
 
 #////////////////////////////////////////////////////////////
 # Tree Edge
@@ -69,11 +74,11 @@ class FeatureTreeEdge(TreeEdge):
     # [staticmethod]
     def from_production(production, index):
         """
-        @return: A new C{TreeEdge} formed from the given production.
+        :return: A new C{TreeEdge} formed from the given production.
             The new edge's left-hand side and right-hand side will
             be taken from C{production}; its span will be 
             C{(index,index)}; and its dot position will be C{0}.
-        @rtype: L{TreeEdge}
+        :rtype: L{TreeEdge}
         """
         return FeatureTreeEdge(span=(index, index), lhs=production.lhs(),
                                rhs=production.rhs(), dot=0)
@@ -81,14 +86,14 @@ class FeatureTreeEdge(TreeEdge):
 
     def move_dot_forward(self, new_end, bindings=None):
         """
-        @return: A new C{FeatureTreeEdge} formed from this edge.
+        :return: A new C{FeatureTreeEdge} formed from this edge.
             The new edge's dot position is increased by C{1}, 
             and its end index will be replaced by C{new_end}.
-        @rtype: L{FeatureTreeEdge}
-        @param new_end: The new end index.
-        @type new_end: C{int}
-        @param bindings: Bindings for the new edge.
-        @type bindings: C{dict}
+        :rtype: L{FeatureTreeEdge}
+        :param new_end: The new end index.
+        :type new_end: int
+        :param bindings: Bindings for the new edge.
+        :type bindings: dict
         """
         return FeatureTreeEdge(span=(self._span[0], new_end),
                                lhs=self._lhs, rhs=self._rhs,
@@ -109,8 +114,8 @@ class FeatureTreeEdge(TreeEdge):
 
     def variables(self):
         """
-        @return: The set of variables used by this edge.
-        @rtype: C{set} of L{Variable}
+        :return: The set of variables used by this edge.
+        :rtype: set of L{Variable}
         """
         return find_variables([self._lhs] + list(self._rhs) +
                               self._bindings.keys() + self._bindings.values(),
@@ -147,7 +152,7 @@ class FeatureTreeEdge(TreeEdge):
 class FeatureChart(Chart):
     """
     A Chart for feature grammars.
-    @see: L{Chart} for more information.
+    :see: L{Chart} for more information.
     """
 
     def select(self, **restrictions):
@@ -508,7 +513,8 @@ class InstantiateVarsChart(FeatureChart):
 #////////////////////////////////////////////////////////////
 
 def demo_grammar():
-    return nltk.grammar.parse_fcfg("""
+    from nltk.grammar import parse_fcfg
+    return parse_fcfg("""
 S  -> NP VP
 PP -> Prep NP
 NP -> NP PP
@@ -564,9 +570,10 @@ def run_profile():
     p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
 
 if __name__ == '__main__':
+    from nltk.data import load
     demo()
     print
-    grammar = nltk.data.load('grammars/book_grammars/feat0.fcfg')
+    grammar = load('grammars/book_grammars/feat0.fcfg')
     cp = FeatureChartParser(grammar, trace=2)
     sent = 'Kim likes children'
     tokens = sent.split()

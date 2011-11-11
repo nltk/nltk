@@ -116,7 +116,7 @@ class DependencyGraph(object):
     @staticmethod
     def load(file):
         """
-        @param file: a file in Malt-TAB format
+        :param file: a file in Malt-TAB format
         """
         return DependencyGraph(open(file).read())
 
@@ -194,9 +194,9 @@ class DependencyGraph(object):
         """
         Recursive function for turning dependency graphs into
         NLTK trees.
-        @type i: C{int} 
-        @param i: index of a node in C{nodelist}
-        @return: either a word (if the indexed node 
+        :type i: int 
+        :param i: index of a node in C{nodelist}
+        :return: either a word (if the indexed node 
         is a leaf) or a L{Tree}.
         """
 
@@ -271,9 +271,9 @@ class DependencyGraph(object):
         """
         The dependency graph in CoNLL format.
         
-        @param style: the style to use for the format (3, 4, 10 columns)
-        @type style: C{int}
-        @rtype: C{str}
+        :param style: the style to use for the format (3, 4, 10 columns)
+        :type style: int
+        :rtype: str
         """
         
         lines = []
@@ -294,7 +294,7 @@ def nx_graph(self):
     """
     Convert the data in a C{nodelist} into a networkx 
     labeled directed graph.
-    @rtype: C{XDigraph}
+    :rtype: C{XDigraph}
     """
     nx_nodelist = range(1, len(self.nodelist))
     nx_edgelist = [(n, self._hd(n), self._rel(n)) 

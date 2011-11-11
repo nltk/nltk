@@ -17,9 +17,9 @@ import types
 import sys
 import stat
 
-from nltk import __file__
-
 from xml.etree import cElementTree as ElementTree
+
+from nltk import __file__
 
 ######################################################################
 # Regular Expression Processing
@@ -34,8 +34,8 @@ def convert_regexp_to_nongrouping(pattern):
         >>> convert_regexp_to_nongrouping('ab(c(x+)(z*))?d')
         'ab(?:c(?:x+)(?:z*))?d'
 
-    @type pattern: C{str}
-    @rtype: C{str}
+    :type pattern: str
+    :rtype: str
     """
     # Sanity check: back-references are not allowed!
     for s in re.findall(r'\\.|\(\?P=', pattern):
@@ -73,16 +73,16 @@ def config_java(bin=None, options=None, verbose=True):
     find the C{java} binary, and what extra options (if any) should be
     passed to java when it is run.
 
-    @param bin: The full path to the C{java} binary.  If not specified,
+    :param bin: The full path to the C{java} binary.  If not specified,
         then nltk will search the system for a C{java} binary; and if
         one is not found, it will raise a C{LookupError} exception.
-    @type bin: C{string}
-    @param options: A list of options that should be passed to the
+    :type bin: str
+    :param options: A list of options that should be passed to the
         C{java} binary when it is called.  A common value is
         C{['-Xmx512m']}, which tells the C{java} binary to increase
         the maximum heap size to 512 megabytes.  If no options are
         specified, then do not modify the options list.
-    @type options: C{list} of C{string}
+    :type options: list of str
     """
     global _java_bin, _java_options
     _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose)
@@ -99,39 +99,39 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     C{java}.  If java has not yet been configured, it will be configured
     by calling L{config_java()} with no arguments.
 
-    @param cmd: The java command that should be called, formatted as
+    :param cmd: The java command that should be called, formatted as
         a list of strings.  Typically, the first string will be the name
         of the java class; and the remaining strings will be arguments
         for that java class.
-    @type cmd: C{list} of C{string}
+    :type cmd: list of str
 
-    @param classpath: A C{':'} separated list of directories, JAR
+    :param classpath: A C{':'} separated list of directories, JAR
         archives, and ZIP archives to search for class files.
-    @type classpath: C{string}
+    :type classpath: str
 
-    @param stdin, stdout, stderr: Specify the executed programs'
+    :param stdin, stdout, stderr: Specify the executed programs'
         standard input, standard output and standard error file
         handles, respectively.  Valid values are C{subprocess.PIPE},
         an existing file descriptor (a positive integer), an existing
-        file object, and C{None}.  C{subprocess.PIPE} indicates that a
-        new pipe to the child should be created.  With C{None}, no
+        file object, and None.  C{subprocess.PIPE} indicates that a
+        new pipe to the child should be created.  With None, no
         redirection will occur; the child's file handles will be
         inherited from the parent.  Additionally, stderr can be
         C{subprocess.STDOUT}, which indicates that the stderr data
         from the applications should be captured into the same file
         handle as for stdout.
 
-    @param blocking: If C{false}, then return immediately after
+    :param blocking: If C{false}, then return immediately after
         spawning the subprocess.  In this case, the return value is
         the C{Popen} object, and not a C{(stdout, stderr)} tuple.
 
-    @return: If C{blocking=True}, then return a tuple C{(stdout,
+    :return: If C{blocking=True}, then return a tuple C{(stdout,
         stderr)}, containing the stdout and stderr outputs generated
         by the java command if the C{stdout} and C{stderr} parameters
-        were set to C{subprocess.PIPE}; or C{None} otherwise.  If
+        were set to C{subprocess.PIPE}; or None otherwise.  If
         C{blocking=False}, then return a C{subprocess.Popen} object.
 
-    @raise OSError: If the java command returns a nonzero return code.
+    :raise OSError: If the java command returns a nonzero return code.
     """
     if stdin == 'pipe': stdin = subprocess.PIPE
     if stdout == 'pipe': stdout = subprocess.PIPE
@@ -192,8 +192,8 @@ if 0:
 class ParseError(ValueError):
     """
     Exception raised by parse_* functions when they fail.
-    @param position: The index in the input string where an error occured.
-    @param expected: What was expected when an error occured.
+    :param position: The index in the input string where an error occured.
+    :param expected: What was expected when an error occured.
     """
     def __init__(self, expected, position):
         ValueError.__init__(self, expected, position)
@@ -265,7 +265,7 @@ def parse_number(s, start_position):
 
 def overridden(method):
     """
-    @return: True if C{method} overrides some method with the same
+    :return: True if C{method} overrides some method with the same
     name in a base class.  This is typically used when defining
     abstract base classes or interfaces, to allow subclasses to define
     either of two related methods:
@@ -280,7 +280,7 @@ def overridden(method):
         ...     def batch_eat(self, foods):
         ...         return [self.eat(food) for food in foods]
 
-    @type method: instance method
+    :type method: instance method
     """
     # [xx] breaks on classic classes!
     if isinstance(method, types.MethodType) and method.im_class is not None:
@@ -426,11 +426,11 @@ def find_binary(name, path_to_bin=None, env_vars=(),
     """
     Search for the binary for a program that is used by nltk.
 
-    @param name: The name of the program
-    @param path_to_bin: The user-supplied binary location, or None.
-    @param env_vars: A list of environment variable names to check
-    @param binary_names: A list of alternative binary names to check.
-    @param searchpath: List of directories to search.
+    :param name: The name of the program
+    :param path_to_bin: The user-supplied binary location, or None.
+    :param env_vars: A list of environment variable names to check
+    :param binary_names: A list of alternative binary names to check.
+    :param searchpath: List of directories to search.
     """
     if binary_names is None: binary_names = [name]
     assert isinstance(name, basestring)
@@ -519,12 +519,12 @@ def find_jar(name, path_to_jar=None, env_vars=(),
     """
     Search for a jar that is used by nltk.
 
-    @param name: The name of the jar file
-    @param path_to_jar: The user-supplied jar location, or None.
-    @param env_vars: A list of environment variable names to check
+    :param name: The name of the jar file
+    :param path_to_jar: The user-supplied jar location, or None.
+    :param env_vars: A list of environment variable names to check
                      in addition to the CLASSPATH variable which is
                      checked by default.
-    @param searchpath: List of directories to search.
+    :param searchpath: List of directories to search.
     """
 
     assert isinstance(name, basestring)
@@ -693,7 +693,7 @@ class ElementWrapper(object):
 
     def __str__(self):
         """
-        @return: the result of applying C{ElementTree.tostring()} to
+        :return: the result of applying C{ElementTree.tostring()} to
         the wrapped Element object.
         """
         return ElementTree.tostring(self._etree).rstrip()
@@ -768,8 +768,8 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
       - 0 <= stop <= len(sequence)
       - start <= stop
 
-    @raise ValueError: If C{slice_obj.step} is not C{None}.
-    @param allow_step: If true, then the slice object may have a
+    :raise ValueError: If C{slice_obj.step} is not None.
+    :param allow_step: If true, then the slice object may have a
         non-None step.  If it does, then return a tuple
         (start, stop, step).
     """

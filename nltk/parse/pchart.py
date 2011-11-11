@@ -40,8 +40,8 @@ argument beam_size.  If non-zero, this controls the size of the beam
 from nltk.tree import Tree, ProbabilisticTree
 from nltk.grammar import Nonterminal, WeightedGrammar
 
-from api import *
-from chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
+from nltk.parse.api import ParserI
+from nltk.parse.chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
 
 # Probabilistic edges
 class ProbabilisticLeafEdge(LeafEdge):
@@ -146,10 +146,10 @@ class BottomUpProbabilisticChartParser(ParserI):
     queue is defined by the method C{sort_queue}; subclasses are required
     to provide a definition for this method.
 
-    @type _grammar: C{PCFG}
-    @ivar _grammar: The grammar used to parse sentences.
-    @type _trace: C{int}
-    @ivar _trace: The level of tracing output that should be generated
+    :type _grammar: C{PCFG}
+    :ivar _grammar: The grammar used to parse sentences.
+    :type _trace: int
+    :ivar _trace: The level of tracing output that should be generated
         when parsing a text.
     """
     def __init__(self, grammar, beam_size=0, trace=0):
@@ -157,12 +157,12 @@ class BottomUpProbabilisticChartParser(ParserI):
         Create a new C{BottomUpProbabilisticChartParser}, that uses 
         C{grammar} to parse texts.
 
-        @type grammar: C{PCFG}
-        @param grammar: The grammar used to parse texts.
-        @type beam_size: C{int}
-        @param beam_size: The maximum length for the parser's edge queue.
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
+        :type grammar: C{PCFG}
+        :param grammar: The grammar used to parse texts.
+        :type beam_size: int
+        :param beam_size: The maximum length for the parser's edge queue.
+        :type trace: int
+        :param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
@@ -181,11 +181,11 @@ class BottomUpProbabilisticChartParser(ParserI):
         Set the level of tracing output that should be generated when
         parsing a text.
 
-        @type trace: C{int}
-        @param trace: The trace level.  A trace level of C{0} will
+        :type trace: int
+        :param trace: The trace level.  A trace level of C{0} will
             generate no tracing output; and higher trace levels will
             produce more verbose tracing output.
-        @rtype: C{None}
+        :rtype: None
         """
         self._trace = trace
     
@@ -270,15 +270,15 @@ class BottomUpProbabilisticChartParser(ParserI):
         be tried first at the beginning of the queue.  This method
         will be called after each C{Edge} is added to the queue.
 
-        @param queue: The queue of C{Edge}s to sort.  Each edge in
+        :param queue: The queue of C{Edge}s to sort.  Each edge in
             this queue is an edge that could be added to the chart by
             the fundamental rule; but that has not yet been added.
-        @type queue: C{list} of C{Edge}
-        @param chart: The chart being used to parse the text.  This
+        :type queue: list of C{Edge}
+        :param chart: The chart being used to parse the text.  This
             chart can be used to provide extra information for sorting
             the queue.
-        @type chart: C{Chart}
-        @rtype: C{None}
+        :type chart: C{Chart}
+        :rtype: None
         """
         raise AssertionError, "BottomUpProbabilisticChartParser is an abstract class"
 
@@ -312,15 +312,15 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
         Sort the given queue of edges, in descending order of the
         inside probabilities of the edges' trees.
 
-        @param queue: The queue of C{Edge}s to sort.  Each edge in
+        :param queue: The queue of C{Edge}s to sort.  Each edge in
             this queue is an edge that could be added to the chart by
             the fundamental rule; but that has not yet been added.
-        @type queue: C{list} of C{Edge}
-        @param chart: The chart being used to parse the text.  This
+        :type queue: list of C{Edge}
+        :param chart: The chart being used to parse the text.  This
             chart can be used to provide extra information for sorting
             the queue.
-        @type chart: C{Chart}
-        @rtype: C{None}
+        :type chart: C{Chart}
+        :rtype: None
         """
         queue.sort(lambda e1,e2:cmp(e1.prob(), e2.prob()))
 

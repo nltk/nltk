@@ -10,15 +10,15 @@
 import os
 from operator import and_, add
 
-import nltk
 from nltk.data import show_cfg
-from nltk.sem import root_semrep, Expression
-from mace import MaceCommand
-from prover9 import Prover9Command
 from nltk.tag import RegexpTagger
+from nltk.parse import load_parser
 from nltk.parse.malt import MaltParser
 from nltk.sem.drt import resolve_anaphora, AnaphoraResolutionException
 from nltk.sem.glue import DrtGlue
+
+from nltk.inference.mace import MaceCommand
+from nltk.inference.prover9 import Prover9Command
 
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity, 
@@ -61,8 +61,8 @@ those threads which are consistent (taking into account any background assumptio
 class ReadingCommand(object):
     def parse_to_readings(self, sentence):
         """
-        @param sentence: the sentence to read
-        @type sentence: C{str}
+        :param sentence: the sentence to read
+        :type sentence: str
         """
         raise NotImplementedError()
     
@@ -71,19 +71,19 @@ class ReadingCommand(object):
         This method should be used to handle dependencies between readings such
         as resolving anaphora.
         
-        @param sentence_readings: readings to process
-        @type sentence_readings: C{list} of C{Expression}
-        @return: the list of readings after processing
-        @rtype: C{list} of C{Expression}   
+        :param sentence_readings: readings to process
+        :type sentence_readings: list of C{Expression}
+        :return: the list of readings after processing
+        :rtype: list of C{Expression}   
         """
         return sentence_readings
     
     def combine_readings(self, readings):
         """
-        @param readings: readings to combine
-        @type readings: C{list} of C{Expression}
-        @return: one combined reading
-        @rtype: C{Expression}
+        :param readings: readings to combine
+        :type readings: list of C{Expression}
+        :return: one combined reading
+        :rtype: C{Expression}
         """
         raise NotImplementedError()
     
@@ -91,23 +91,24 @@ class ReadingCommand(object):
 class CfgReadingCommand(ReadingCommand):
     def __init__(self, gramfile=None):
         """
-        @parameter gramfile: name of file where grammar can be loaded
-        @type gramfile: C{str}
+        :param gramfile: name of file where grammar can be loaded
+        :type gramfile: str
         """
         if gramfile is None:
             self._gramfile = 'grammars/book_grammars/discourse.fcfg'
         else:
             self._gramfile = gramfile
-        self._parser = nltk.parse.load_parser(self._gramfile) 
+        self._parser = load_parser(self._gramfile) 
     
     def parse_to_readings(self, sentence):
-        """@see: ReadingCommand.parse_to_readings()"""
+        """:see: ReadingCommand.parse_to_readings()"""
+        from nltk.sem import root_semrep
         tokens = sentence.split()
         trees = self._parser.nbest_parse(tokens)
         return [root_semrep(tree) for tree in trees]
 
     def combine_readings(self, readings):
-        """@see: ReadingCommand.combine_readings()"""
+        """:see: ReadingCommand.combine_readings()"""
         return reduce(and_, readings)
 
 
@@ -115,9 +116,9 @@ class DrtGlueReadingCommand(ReadingCommand):
     def __init__(self, semtype_file=None, remove_duplicates=False, 
                  depparser=None):
         """
-        @param semtype_file: name of file where grammar can be loaded
-        @param remove_duplicates: should duplicates be removed?
-        @param depparser: the dependency parser
+        :param semtype_file: name of file where grammar can be loaded
+        :param remove_duplicates: should duplicates be removed?
+        :param depparser: the dependency parser
         """
         if semtype_file is None:
             semtype_file = 'drt_glue.semtype'
@@ -126,18 +127,18 @@ class DrtGlueReadingCommand(ReadingCommand):
                              depparser=depparser)
     
     def parse_to_readings(self, sentence):
-        """@see: ReadingCommand.parse_to_readings()"""
+        """:see: ReadingCommand.parse_to_readings()"""
         return self._glue.parse_to_meaning(sentence)
 
     def process_thread(self, sentence_readings):
-        """@see: ReadingCommand.process_thread()"""
+        """:see: ReadingCommand.process_thread()"""
         try:
             return [self.combine_readings(sentence_readings)]
         except AnaphoraResolutionException:
             return []
 
     def combine_readings(self, readings):
-        """@see: ReadingCommand.combine_readings()"""
+        """:see: ReadingCommand.combine_readings()"""
         thread_reading = reduce(add, readings)
         return resolve_anaphora(thread_reading.simplify())
 
@@ -150,10 +151,10 @@ class DiscourseTester(object):
         """
         Initialize a C{DiscourseTester}.
         
-        @parameter input: the discourse sentences
-        @type input: C{list} of C{str}
-        @parameter background: Formulas which express background assumptions
-        @type background: C{list} of L{logic.Expression}.
+        :param input: the discourse sentences
+        :type input: list of str
+        :param background: Formulas which express background assumptions
+        :type background: list of L{logic.Expression}.
         """
         self._input = input
         self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(input)])
@@ -166,6 +167,7 @@ class DiscourseTester(object):
         self._threads = {}
         self._filtered_threads = {}
         if background is not None:
+            from nltk.sem import Expression
             for e in background:
                 assert isinstance(e, Expression)
             self._background = background
@@ -188,10 +190,10 @@ class DiscourseTester(object):
         Add a sentence to the current discourse.
         
         Updates C{self._input} and C{self._sentences}.
-        @parameter sentence: An input sentence
-        @type sentence: C{str}
-        @parameter informchk: if C{True}, check that the result of adding the sentence is thread-informative. Updates C{self._readings}.
-        @parameter consistchk: if C{True}, check that the result of adding the sentence is thread-consistent. Updates C{self._readings}.
+        :param sentence: An input sentence
+        :type sentence: str
+        :param informchk: if C{True}, check that the result of adding the sentence is thread-informative. Updates C{self._readings}.
+        :param consistchk: if C{True}, check that the result of adding the sentence is thread-consistent. Updates C{self._readings}.
         
         """
         # check whether the new sentence is informative (i.e. not entailed by the previous discourse)       
@@ -219,9 +221,9 @@ class DiscourseTester(object):
         Remove a sentence from the current discourse.
         
         Updates C{self._input}, C{self._sentences} and C{self._readings}.
-        @parameter sentence: An input sentence
-        @type sentence: C{str}
-        @parameter verbose: If C{True},  report on the updated list of sentences.
+        :param sentence: An input sentence
+        :type sentence: str
+        :param verbose: If C{True},  report on the updated list of sentences.
         """
         try:
             self._input.remove(sentence)
@@ -249,7 +251,7 @@ class DiscourseTester(object):
         """
         Build a list of semantic readings for a sentence.
         
-        @rtype: C{list} of  L{logic.Expression}.
+        :rtype: list of  L{logic.Expression}.
         """
         return self._reading_command.parse_to_readings(sentence)
                          
@@ -328,10 +330,10 @@ class DiscourseTester(object):
         """
         Construct and show the readings of the discourse (or of a single sentence).
         
-        @parameter sentence: test just this sentence
-        @type sentence: C{str}
-        @parameter threaded: if C{True}, print out each thread ID and the corresponding thread.
-        @parameter filter: if C{True}, only print out consistent thread IDs and threads.
+        :param sentence: test just this sentence
+        :type sentence: str
+        :param threaded: if C{True}, print out each thread ID and the corresponding thread.
+        :param filter: if C{True}, only print out consistent thread IDs and threads.
         """
         self._construct_readings()
         self._construct_threads()
@@ -351,12 +353,12 @@ class DiscourseTester(object):
         """
         Given a thread ID, find the list of L{logic.Expression}s corresponding to the reading IDs in that thread.
         
-        @parameter thread_id: thread ID
-        @type thread_id: C{str}
-        @parameter threads: a mapping from thread IDs to lists of reading IDs
-        @type threads: C{dict}
-        @return: A list of pairs (C{rid}, I{reading}) where I{reading} is the L{logic.Expression} associated with a reading ID 
-        @rtype: C{list} of C{tuple}
+        :param thread_id: thread ID
+        :type thread_id: str
+        :param threads: a mapping from thread IDs to lists of reading IDs
+        :type threads: dict
+        :return: A list of pairs (C{rid}, I{reading}) where I{reading} is the L{logic.Expression} associated with a reading ID 
+        :rtype: list of tuple
         """
         if threads is None:
             threads = self._threads
@@ -398,9 +400,9 @@ class DiscourseTester(object):
         """
         Call Mace4 to build a model for each current discourse thread.
         
-        @parameter thread_id: thread ID
-        @type thread_id: C{str}
-        @parameter show: If C{True}, display the model that has been found.
+        :param thread_id: thread ID
+        :type thread_id: str
+        :param show: If C{True}, display the model that has been found.
         """
         self._construct_readings()
         self._construct_threads()
@@ -428,9 +430,10 @@ class DiscourseTester(object):
         Add a list of background assumptions for reasoning about the discourse.
         
         When called,  this method also updates the discourse model's set of readings and threads.
-        @parameter background: Formulas which contain background information
-        @type background: C{list} of L{logic.Expression}.
+        :param background: Formulas which contain background information
+        :type background: list of L{logic.Expression}.
         """
+        from nltk.sem import Expression
         for (count, e) in enumerate(background):
             assert isinstance(e, Expression)
             if verbose:
@@ -460,11 +463,11 @@ class DiscourseTester(object):
         Given discourse = [['A'], ['B']], readings = ['a', 'b', 'c'] , returns        
         [['A', 'a'], ['A', 'b'], ['A', 'c'], ['B', 'a'], ['B', 'b'], ['B', 'c']]
         
-        @parameter discourse: the current list of readings
-        @type discourse: C{list} of C{list}s
-        @parameter readings: an additional list of readings
-        @type readings: C{list} of C{logic.Expression}s
-        @rtype: A C{list} of C{list}s
+        :param discourse: the current list of readings
+        :type discourse: list of lists
+        :param readings: an additional list of readings
+        :type readings: list of C{logic.Expression}s
+        :rtype: A list of lists
         """
         result = []
         for sublist in discourse:
@@ -485,10 +488,10 @@ def parse_fol(s):
     Temporarily duplicated from L{nltk.sem.util}.
     Convert a  file of First Order Formulas into a list of C{Expression}s.
     
-    @parameter s: the contents of the file
-    @type s: C{str}
-    @return: a list of parsed formulas.
-    @rtype: C{list} of L{Expression}
+    :param s: the contents of the file
+    :type s: str
+    :return: a list of parsed formulas.
+    :rtype: list of L{Expression}
     """
     from nltk.sem import LogicParser
     statements = []

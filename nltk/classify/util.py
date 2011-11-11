@@ -44,15 +44,15 @@ def apply_features(feature_func, toks, labeled=None):
     significant when the underlying list of tokens is itself lazy (as
     is the case with many corpus readers).
 
-    @param feature_func: The function that will be applied to each
-        token.  It should return a featureset -- i.e., a C{dict}
+    :param feature_func: The function that will be applied to each
+        token.  It should return a featureset -- i.e., a dict
         mapping feature names to feature values.
-    @param toks: The list of tokens to which C{feature_func} should be
+    :param toks: The list of tokens to which C{feature_func} should be
         applied.  If C{labeled=True}, then the list elements will be
         passed directly to C{feature_func()}.  If C{labeled=False},
         then the list elements should be tuples C{(tok,label)}, and
         C{tok} will be passed to C{feature_func()}.
-    @param labeled: If true, then C{toks} contains labeled tokens --
+    :param labeled: If true, then C{toks} contains labeled tokens --
         i.e., tuples of the form C{(tok, label)}.  (Default:
         auto-detect based on types.)
     """
@@ -67,12 +67,12 @@ def apply_features(feature_func, toks, labeled=None):
 
 def attested_labels(tokens):
     """
-    @return: A list of all labels that are attested in the given list
+    :return: A list of all labels that are attested in the given list
         of tokens.
-    @rtype: C{list} of (immutable)
-    @param tokens: The list of classified tokens from which to extract
+    :rtype: list of (immutable)
+    :param tokens: The list of classified tokens from which to extract
         labels.  A classified token has the form C{(token, label)}.
-    @type tokens: C{list}
+    :type tokens: list
     """
     return tuple(set([label for (tok,label) in tokens]))
 

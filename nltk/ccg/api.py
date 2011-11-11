@@ -55,8 +55,8 @@ class CCGVar(AbstractCCGCategory):
     def __init__(self, prim_only=False):
         """Initialize a variable (selects a new identifier)
 
-        @param prim_only: a boolean that determines whether the variable is restricted to primitives 
-        @type prim_only: C{boolean}
+        :param prim_only: a boolean that determines whether the variable is restricted to primitives 
+        :type prim_only: bool
         """
         self._id = self.new_id()
         self._prim_only = prim_only

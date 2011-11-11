@@ -127,7 +127,8 @@ import re
 import shelve
 import os
 import sys
-import nltk
+
+from nltk.data import find
 
 
 ###########################################################################
@@ -217,17 +218,17 @@ class Concept(object):
     """
     def __init__(self, prefLabel, arity, altLabels=[], closures=[], extension=set()):
         """
-        @param prefLabel: the preferred label for the concept
-        @type prefLabel: str
-        @param arity: the arity of the concept
-        @type arity: int
+        :param prefLabel: the preferred label for the concept
+        :type prefLabel: str
+        :param arity: the arity of the concept
+        :type arity: int
         @keyword altLabels: other (related) labels
-        @type altLabels: list
+        :type altLabels: list
         @keyword closures: closure properties of the extension \
             (list items can be C{symmetric}, C{reflexive}, C{transitive})
-        @type closures: list 
+        :type closures: list 
         @keyword extension: the extensional value of the concept
-        @type extension: set
+        :type extension: set
         """
         self.prefLabel = prefLabel
         self.arity = arity
@@ -256,9 +257,9 @@ class Concept(object):
         """
         Add more data to the C{Concept}'s extension set.
 
-        @param data: a new semantic value
-        @type data: string or pair of strings
-        @rtype: set
+        :param data: a new semantic value
+        :type data: string or pair of strings
+        :rtype: set
 
         """
         self._extension.add(data)
@@ -306,7 +307,7 @@ class Concept(object):
         """
         Close a binary relation in the C{Concept}'s extension set.
 
-        @return: a new extension for the C{Concept} in which the
+        :return: a new extension for the C{Concept} in which the
                  relation is closed under a given property
         """
         from nltk.sem import is_rel
@@ -330,16 +331,16 @@ def clause2concepts(filename, rel_name, schema, closures=[]):
     """
     Convert a file of Prolog clauses into a list of L{Concept} objects.
 
-    @param filename: filename containing the relations
-    @type filename: C{str}
-    @param rel_name: name of the relation 
-    @type rel_name: C{str}
-    @param schema: the schema used in a set of relational tuples
-    @type schema: C{list}
-    @param closures: closure properties for the extension of the concept
-    @type closures: C{list}
-    @return: a list of L{Concept}s
-    @rtype: C{list}
+    :param filename: filename containing the relations
+    :type filename: str
+    :param rel_name: name of the relation 
+    :type rel_name: str
+    :param schema: the schema used in a set of relational tuples
+    :type schema: list
+    :param closures: closure properties for the extension of the concept
+    :type closures: list
+    :return: a list of L{Concept}s
+    :rtype: list
     """
     concepts = []
     # position of the subject of a binary relation
@@ -376,12 +377,12 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
         
         cities2table('cities.pl', 'city', 'city.db', verbose=True, setup=True) 
 
-    @param filename: filename containing the relations
-    @type filename: C{str}
-    @param rel_name: name of the relation 
-    @type rel_name: C{str}
-    @param dbname: filename of persistent store
-    @type schema: C{str}
+    :param filename: filename containing the relations
+    :type filename: str
+    :param rel_name: name of the relation 
+    :type rel_name: str
+    :param dbname: filename of persistent store
+    :type schema: str
     """
     try:
         import sqlite3
@@ -408,14 +409,14 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
 def sql_query(dbname, query):
     """
     Execute an SQL query over a database.
-    @param dbname: filename of persistent store
-    @type schema: C{str}
-    @param query: SQL query 
-    @type rel_name: C{str}
+    :param dbname: filename of persistent store
+    :type schema: str
+    :param query: SQL query 
+    :type rel_name: str
     """
     try:
         import sqlite3
-        path = nltk.data.find(dbname)
+        path = find(dbname)
         connection =  sqlite3.connect(path)
         # return ASCII strings if possible
         connection.text_factory = sqlite3.OptimizedUnicode
@@ -431,7 +432,7 @@ def _str2records(filename, rel):
     Read a file into memory and convert each relation clause into a list.
     """ 
     recs = []
-    path = nltk.data.find("corpora/chat80/%s" % filename)
+    path = find("corpora/chat80/%s" % filename)
     for line in path.open():
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
@@ -449,14 +450,14 @@ def unary_concept(label, subj, records):
     C{['france', 'paris']}, where C{'france'} is acting as the primary
     key.
 
-    @param label: the preferred label for the concept
-    @type label: string
-    @param subj: position in the record of the subject of the predicate
-    @type subj: int
-    @param records: a list of records
-    @type records: C{list} of C{list}s
-    @return: L{Concept} of arity 1
-    @rtype: L{Concept}
+    :param label: the preferred label for the concept
+    :type label: string
+    :param subj: position in the record of the subject of the predicate
+    :type subj: int
+    :param records: a list of records
+    :type records: list of lists
+    :return: L{Concept} of arity 1
+    :rtype: L{Concept}
     """
     c = Concept(label, arity=1, extension=set())
     for record in records:
@@ -478,18 +479,18 @@ def binary_concept(label, closures, subj, obj, records):
     be a set of pairs such as C{('a', 'b')}.
     
 
-    @param label: the base part of the preferred label for the concept
-    @type label: C{str}
-    @param closures: closure properties for the extension of the concept
-    @type closures: C{list}
-    @param subj: position in the record of the subject of the predicate
-    @type subj: C{int}
-    @param obj: position in the record of the object of the predicate
-    @type obj: C{int}
-    @param records: a list of records
-    @type records: C{list} of C{list}s
-    @return: L{Concept} of arity 2
-    @rtype: L{Concept}
+    :param label: the base part of the preferred label for the concept
+    :type label: str
+    :param closures: closure properties for the extension of the concept
+    :type closures: list
+    :param subj: position in the record of the subject of the predicate
+    :type subj: int
+    :param obj: position in the record of the object of the predicate
+    :type obj: int
+    :param records: a list of records
+    :type records: list of lists
+    :return: L{Concept} of arity 2
+    :rtype: L{Concept}
     """
     if not label == 'border' and not label == 'contain':
         label = label + '_of'
@@ -506,10 +507,10 @@ def process_bundle(rels):
     Given a list of relation metadata bundles, make a corresponding
     dictionary of concepts, indexed by the relation name.
 
-    @param rels: bundle of metadata needed for constructing a concept
-    @type rels: C{list} of C{dict}
-    @return: a dictionary of concepts, indexed by the relation name.
-    @rtype: C{dict}
+    :param rels: bundle of metadata needed for constructing a concept
+    :type rels: list of dict
+    :return: a dictionary of concepts, indexed by the relation name.
+    :rtype: dict
     """
     concepts = {}
     for rel in rels:
@@ -535,11 +536,11 @@ def make_valuation(concepts, read=False, lexicon=False):
     Convert a list of C{Concept}s into a list of (label, extension) pairs;
     optionally create a C{Valuation} object.
 
-    @param concepts: concepts
-    @type concepts: list of L{Concept}s
-    @param read: if C{True}, C{(symbol, set)} pairs are read into a C{Valuation}
-    @type read: C{bool}
-    @rtype: C{list} or a L{Valuation}
+    :param concepts: concepts
+    :type concepts: list of L{Concept}s
+    :param read: if C{True}, C{(symbol, set)} pairs are read into a C{Valuation}
+    :type read: bool
+    :rtype: list or a L{Valuation}
     """
     vals = []
     
@@ -561,11 +562,11 @@ def val_dump(rels, db):
     Make a L{Valuation} from a list of relation metadata bundles and dump to
     persistent database.
 
-    @param rels: bundle of metadata needed for constructing a concept
-    @type rels: C{list} of C{dict}
-    @param db: name of file to which data is written.
+    :param rels: bundle of metadata needed for constructing a concept
+    :type rels: list of dict
+    :param db: name of file to which data is written.
                The suffix '.db' will be automatically appended.
-    @type db: string
+    :type db: string
     """
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
@@ -580,9 +581,9 @@ def val_load(db):
     """
     Load a L{Valuation} from a persistent database.
 
-    @param db: name of file from which data is read.
+    :param db: name of file from which data is read.
                The suffix '.db' should be omitted from the name.
-    @type db: string
+    :type db: string
     """
     dbname = db+".db"
 
@@ -600,9 +601,9 @@ def val_load(db):
     #"""
     #Utility to filter out non-alphabetic constants.
 
-    #@param str: candidate constant
-    #@type str: string
-    #@rtype: bool
+    #:param str: candidate constant
+    #:type str: string
+    #:rtype: bool
     #"""
     #try:
         #int(str)
@@ -620,8 +621,8 @@ def label_indivs(valuation, lexicon=False):
     Given a valuation with an entry of the form {'rel': {'a': True}},
     add a new entry {'a': 'a'}.
 
-    @type valuation: L{Valuation}
-    @rtype: L{Valuation}
+    :type valuation: L{Valuation}
+    :rtype: L{Valuation}
     """
     # collect all the individuals into a domain
     domain = valuation.domain
@@ -642,9 +643,9 @@ def make_lex(symbols):
     Given a valuation with an entry of the form {'zloty': 'zloty'},
     create a lexical rule for the proper name 'Zloty'. 
 
-    @param symbols: a list of individual constants in the semantic representation
-    @type symbols: sequence
-    @rtype: list
+    :param symbols: a list of individual constants in the semantic representation
+    :type symbols: sequence
+    :rtype: list
     """
     lex = []
     header = """
@@ -673,10 +674,10 @@ def concepts(items = items):
     """
     Build a list of concepts corresponding to the relation names in C{items}.
     
-    @param items: names of the Chat-80 relations to extract
-    @type items: list of strings
-    @return: the L{Concept}s which are extracted from the relations
-    @rtype: list 
+    :param items: names of the Chat-80 relations to extract
+    :type items: list of strings
+    :return: the L{Concept}s which are extracted from the relations
+    :rtype: list 
     """
     if type(items) is str: items = (items,)
     

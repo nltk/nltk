@@ -96,7 +96,6 @@ from internals import config_java
 
 # Import top-level functionality into top-level namespace
 
-from containers import *
 from collocations import *
 from decorators import decorator, memoize
 from featstruct import *

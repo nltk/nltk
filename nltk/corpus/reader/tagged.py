@@ -48,8 +48,8 @@ class TaggedCorpusReader(CorpusReader):
             >>> root = '/...path to corpus.../'
             >>> reader = TaggedCorpusReader(root, '.*', '.txt')
         
-        @param root: The root directory for this corpus.
-        @param fileids: A list or regexp specifying the fileids in this corpus.
+        :param root: The root directory for this corpus.
+        :param fileids: A list or regexp specifying the fileids in this corpus.
         """
         CorpusReader.__init__(self, root, fileids, encoding)
         self._sep = sep
@@ -60,8 +60,8 @@ class TaggedCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the given file(s) as a single string.
-        @rtype: C{str}
+        :return: the given file(s) as a single string.
+        :rtype: str
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -69,9 +69,9 @@ class TaggedCorpusReader(CorpusReader):
 
     def words(self, fileids=None):
         """
-        @return: the given file(s) as a list of words
+        :return: the given file(s) as a list of words
             and punctuation symbols.
-        @rtype: C{list} of C{str}
+        :rtype: list of str
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, False, False,
@@ -83,10 +83,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def sents(self, fileids=None):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        @rtype: C{list} of (C{list} of C{str})
+        :rtype: list of (list of str)
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, True, False,
@@ -98,10 +98,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def paras(self, fileids=None):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        @rtype: C{list} of (C{list} of (C{list} of C{str}))
+        :rtype: list of (list of (list of str))
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, True, True,
@@ -113,10 +113,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def tagged_words(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file(s) as a list of tagged
+        :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             C{(word,tag)}.
-        @rtype: C{list} of C{(str,str)}
+        :rtype: list of C{(str,str)}
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
@@ -132,10 +132,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def tagged_sents(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences, each encoded as a list of C{(word,tag)} tuples.
             
-        @rtype: C{list} of (C{list} of C{(str,str)})
+        :rtype: list of (list of C{(str,str)})
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
@@ -151,10 +151,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def tagged_paras(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of C{(word,tag)} tuples.
-        @rtype: C{list} of (C{list} of (C{list} of C{(str,str)}))
+        :rtype: list of (list of (list of C{(str,str)}))
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function

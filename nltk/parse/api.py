@@ -30,19 +30,19 @@ class ParserI(object):
     """
     def grammar(self):
         """
-        @return: The grammar used by this parser.
+        :return: The grammar used by this parser.
         """
         raise NotImplementedError()
     
     def parse(self, sent):
         """
-        @return: A parse tree that represents the structure of the
-        given sentence, or C{None} if no parse tree is found.  If
+        :return: A parse tree that represents the structure of the
+        given sentence, or None if no parse tree is found.  If
         multiple parses are found, then return the best parse.
         
-        @param sent: The sentence to be parsed
-        @type sent: L{list} of L{string}
-        @rtype: L{Tree}
+        :param sent: The sentence to be parsed
+        :type sent: L{list} of L{string}
+        :rtype: L{Tree}
         """
         if overridden(self.batch_parse):
             return self.batch_parse([sent])[0]
@@ -53,17 +53,17 @@ class ParserI(object):
 
     def nbest_parse(self, sent, n=None):
         """
-        @return: A list of parse trees that represent possible
+        :return: A list of parse trees that represent possible
         structures for the given sentence.  When possible, this list is
         sorted from most likely to least likely.  If C{n} is
         specified, then the returned list will contain at most C{n}
         parse trees.
         
-        @param sent: The sentence to be parsed
-        @type sent: L{list} of L{string}
-        @param n: The maximum number of trees to return.
-        @type n: C{int}
-        @rtype: C{list} of L{Tree}
+        :param sent: The sentence to be parsed
+        :type sent: L{list} of L{string}
+        :param n: The maximum number of trees to return.
+        :type n: int
+        :rtype: list of L{Tree}
         """
         if overridden(self.batch_nbest_parse):
             return self.batch_nbest_parse([sent],n)[0]
@@ -76,13 +76,13 @@ class ParserI(object):
 
     def iter_parse(self, sent):
         """
-        @return: An iterator that generates parse trees that represent
+        :return: An iterator that generates parse trees that represent
         possible structures for the given sentence.  When possible,
         this list is sorted from most likely to least likely.
         
-        @param sent: The sentence to be parsed
-        @type sent: L{list} of L{string}
-        @rtype: C{iterator} of L{Tree}
+        :param sent: The sentence to be parsed
+        :type sent: L{list} of L{string}
+        :rtype: iter of L{Tree}
         """
         if overridden(self.batch_iter_parse):
             return self.batch_iter_parse([sent])[0]
@@ -97,14 +97,14 @@ class ParserI(object):
 
     def prob_parse(self, sent):
         """
-        @return: A probability distribution over the possible parse
+        :return: A probability distribution over the possible parse
         trees for the given sentence.  If there are no possible parse
         trees for the given sentence, return a probability distribution
-        that assigns a probability of 1.0 to C{None}.
+        that assigns a probability of 1.0 to None.
         
-        @param sent: The sentence to be parsed
-        @type sent: L{list} of L{string}
-        @rtype: L{ProbDistI} of L{Tree}
+        :param sent: The sentence to be parsed
+        :type sent: L{list} of L{string}
+        :rtype: L{ProbDistI} of L{Tree}
         """
         if overridden(self.batch_prob_parse):
             return self.batch_prob_parse([sent])[0]
@@ -117,7 +117,7 @@ class ParserI(object):
 
             return [self.parse(sent) for sent in sents]
 
-        @rtype: C{list} of L{Tree}
+        :rtype: list of L{Tree}
         """
         return [self.parse(sent) for sent in sents]
 
@@ -127,7 +127,7 @@ class ParserI(object):
 
             return [self.nbest_parse(sent, n) for sent in sents]
 
-        @rtype: C{list} of C{list} of L{Tree}
+        :rtype: list of list of L{Tree}
         """
         return [self.nbest_parse(sent,n ) for sent in sents]
 
@@ -137,7 +137,7 @@ class ParserI(object):
 
             return [self.iter_parse(sent) for sent in sents]
 
-        @rtype: C{list} of C{iterator} of L{Tree}
+        :rtype: list of iter of L{Tree}
         """
         return [self.iter_parse(sent) for sent in sents]
 
@@ -147,7 +147,7 @@ class ParserI(object):
 
             return [self.prob_parse(sent) for sent in sents]
 
-        @rtype: C{list} of L{ProbDistI} of L{Tree}
+        :rtype: list of L{ProbDistI} of L{Tree}
         """
         return [self.prob_parse(sent) for sent in sents]
 

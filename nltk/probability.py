@@ -93,9 +93,9 @@ class FreqDist(dict):
         frequency distribution, and then calls C{update} with the 
         list C{samples}.
 
-        @param samples: The samples to initialize the frequency
+        :param samples: The samples to initialize the frequency
         distribution with.
-        @type samples: Sequence
+        :type samples: Sequence
         """
         dict.__init__(self)
         self._N = 0
@@ -105,15 +105,15 @@ class FreqDist(dict):
 
     def inc(self, sample, count=1):
         """
-        Increment this C{FreqDist}'s count for the given
+        Increment this FreqDist's count for the given
         sample.
 
-        @param sample: The sample whose count should be incremented.
-        @type sample: any
-        @param count: The amount to increment the sample's count by.
-        @type count: C{int}
-        @rtype: None
-        @raise NotImplementedError: If C{sample} is not a
+        :param sample: The sample whose count should be incremented.
+        :type sample: any
+        :param count: The amount to increment the sample's count by.
+        :type count: int
+        :rtype: None
+        :raise NotImplementedError: If C{sample} is not a
                supported sample type.
         """
         if count == 0: return
@@ -121,14 +121,14 @@ class FreqDist(dict):
 
     def __setitem__(self, sample, value):
         """
-        Set this C{FreqDist}'s count for the given sample.
+        Set this FreqDist's count for the given sample.
 
-        @param sample: The sample whose count should be incremented.
-        @type sample: any hashable object
-        @param count: The new value for the sample's count
-        @type count: C{int}
-        @rtype: None
-        @raise TypeError: If C{sample} is not a supported sample type.
+        :param sample: The sample whose count should be incremented.
+        :type sample: any hashable object
+        :param count: The new value for the sample's count
+        :type count: int
+        :rtype: None
+        :raise TypeError: If C{sample} is not a supported sample type.
         """
 
         self._N += (value - self.get(sample, 0))
@@ -139,49 +139,49 @@ class FreqDist(dict):
 
     def N(self):
         """
-        @return: The total number of sample outcomes that have been
-          recorded by this C{FreqDist}.  For the number of unique 
+        :return: The total number of sample outcomes that have been
+          recorded by this FreqDist.  For the number of unique 
           sample values (or bins) with counts greater than zero, use
           C{FreqDist.B()}.
-        @rtype: C{int}
+        :rtype: int
         """
         return self._N
 
     def B(self):
         """
-        @return: The total number of sample values (or X{bins}) that
+        :return: The total number of sample values (or X{bins}) that
             have counts greater than zero.  For the total
             number of sample outcomes recorded, use C{FreqDist.N()}.
             (FreqDist.B() is the same as len(FreqDist).)
-        @rtype: C{int}
+        :rtype: int
         """
         return len(self)
 
     # deprecate this -- use keys() instead?
     def samples(self):
         """
-        @return: A list of all samples that have been recorded as
+        :return: A list of all samples that have been recorded as
             outcomes by this frequency distribution.  Use C{count()}
             to determine the count for each sample.
-        @rtype: C{list}
+        :rtype: list
         """
         return self.keys()
     
     def hapaxes(self):
         """
-        @return: A list of all samples that occur once (hapax legomena)
-        @rtype: C{list}
+        :return: A list of all samples that occur once (hapax legomena)
+        :rtype: list
         """
         return [item for item in self if self[item] == 1]
 
     def Nr(self, r, bins=None):
         """
-        @return: The number of samples with count r.
-        @rtype: C{int}
-        @type r: C{int}
-        @param r: A sample count.
-        @type bins: C{int}
-        @param bins: The number of possible sample outcomes.  C{bins}
+        :return: The number of samples with count r.
+        :rtype: int
+        :type r: int
+        :param r: A sample count.
+        :type bins: int
+        :param bins: The number of possible sample outcomes.  C{bins}
             is used to calculate Nr(0).  In particular, Nr(0) is
             C{bins-self.B()}.  If C{bins} is not specified, it
             defaults to C{self.B()} (so Nr(0) will be 0).
@@ -215,15 +215,15 @@ class FreqDist(dict):
         """
         Return the count of a given sample.  The count of a sample is
         defined as the number of times that sample outcome was
-        recorded by this C{FreqDist}.  Counts are non-negative
+        recorded by this FreqDist.  Counts are non-negative
         integers.  This method has been replaced by conventional
         dictionary indexing; use fd[item] instead of fd.count(item).
 
-        @return: The count of a given sample.
-        @rtype: C{int}
-        @param sample: the sample whose count
+        :return: The count of a given sample.
+        :rtype: int
+        :param sample: the sample whose count
                should be returned.
-        @type sample: any.
+        :type sample: any.
         """
         raise AttributeError, "Use indexing to look up an entry in a FreqDist, e.g. fd[item]"
 
@@ -233,10 +233,10 @@ class FreqDist(dict):
         If no samples are specified, all counts are returned, starting
         with the largest.
 
-        @return: The cumulative frequencies of the given samples.
-        @rtype: C{list} of C{float}
-        @param samples: the samples whose frequencies should be returned.
-        @type sample: any.
+        :return: The cumulative frequencies of the given samples.
+        :rtype: list of float
+        :param samples: the samples whose frequencies should be returned.
+        :type sample: any.
         """
         cf = 0.0
         if not samples:
@@ -252,16 +252,16 @@ class FreqDist(dict):
         Return the frequency of a given sample.  The frequency of a
         sample is defined as the count of that sample divided by the
         total number of sample outcomes that have been recorded by
-        this C{FreqDist}.  The count of a sample is defined as the
+        this FreqDist.  The count of a sample is defined as the
         number of times that sample outcome was recorded by this
-        C{FreqDist}.  Frequencies are always real numbers in the range
+        FreqDist.  Frequencies are always real numbers in the range
         [0, 1].
 
-        @return: The frequency of a given sample.
-        @rtype: float
-        @param sample: the sample whose frequency
+        :return: The frequency of a given sample.
+        :rtype: float
+        :param sample: the sample whose frequency
                should be returned.
-        @type sample: any
+        :type sample: any
         """
         if self._N is 0:
             return 0
@@ -273,11 +273,11 @@ class FreqDist(dict):
         frequency distribution.  If two or more samples have the same
         number of outcomes, return one of them; which sample is
         returned is undefined.  If no outcomes have occurred in this
-        frequency distribution, return C{None}.
+        frequency distribution, return None.
 
-        @return: The sample with the maximum number of outcomes in this
+        :return: The sample with the maximum number of outcomes in this
                 frequency distribution.
-        @rtype: any or C{None}
+        :rtype: any or None
         """
         if self._max_cache is None:
             self._max_cache = max([(a,b) for (b,a) in self.items()])[1] 
@@ -293,10 +293,10 @@ class FreqDist(dict):
         For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
 
-        @param title: The title for the graph
-        @type title: C{str}
-        @param cumulative: A flag to specify whether the plot is cumulative (default = False)
-        @type title: C{bool}
+        :param title: The title for the graph
+        :type title: str
+        :param cumulative: A flag to specify whether the plot is cumulative (default = False)
+        :type title: bool
         """
         try:
             import pylab
@@ -338,8 +338,8 @@ class FreqDist(dict):
         subset of the samples, beginning with m and stopping at n-1.
         (Requires Matplotlib to be installed.)
         
-        @param samples: The samples to plot (default is all samples)
-        @type samples: C{list}
+        :param samples: The samples to plot (default is all samples)
+        :type samples: list
         """
         if len(args) == 0:
             args = [len(self)]
@@ -373,8 +373,8 @@ class FreqDist(dict):
         """
         Return the samples sorted in decreasing order of frequency.
 
-        @return: A list of samples, in sorted order
-        @rtype: C{list} of any
+        :return: A list of samples, in sorted order
+        :rtype: list of any
         """
         self._sort_keys_by_value()
         return map(itemgetter(0), self._item_cache)
@@ -383,8 +383,8 @@ class FreqDist(dict):
         """
         Return the samples sorted in decreasing order of frequency.
 
-        @return: A list of samples, in sorted order
-        @rtype: C{list} of any
+        :return: A list of samples, in sorted order
+        :rtype: list of any
         """
         self._sort_keys_by_value()
         return map(itemgetter(1), self._item_cache)
@@ -393,8 +393,8 @@ class FreqDist(dict):
         """
         Return the items sorted in decreasing order of frequency.
 
-        @return: A list of items, in sorted order
-        @rtype: C{list} of C{tuple}
+        :return: A list of items, in sorted order
+        :rtype: list of tuple
         """
         self._sort_keys_by_value()
         return self._item_cache[:]
@@ -403,8 +403,8 @@ class FreqDist(dict):
         """
         Return the samples sorted in decreasing order of frequency.
 
-        @return: An iterator over the samples, in sorted order
-        @rtype: C{iter}
+        :return: An iterator over the samples, in sorted order
+        :rtype: iter
         """
         return iter(self.keys())
 
@@ -412,8 +412,8 @@ class FreqDist(dict):
         """
         Return the samples sorted in decreasing order of frequency.
 
-        @return: An iterator over the samples, in sorted order
-        @rtype: C{iter}
+        :return: An iterator over the samples, in sorted order
+        :rtype: iter
         """
         return iter(self.keys())
 
@@ -421,8 +421,8 @@ class FreqDist(dict):
         """
         Return the values sorted in decreasing order.
 
-        @return: An iterator over the values, in sorted order
-        @rtype: C{iter}
+        :return: An iterator over the values, in sorted order
+        :rtype: iter
         """
         return iter(self.values())
 
@@ -430,8 +430,8 @@ class FreqDist(dict):
         """
         Return the items sorted in decreasing order of frequency.
 
-        @return: An iterator over the items, in sorted order
-        @rtype: C{iter} of any
+        :return: An iterator over the items, in sorted order
+        :rtype: iter of any
         """
         self._sort_keys_by_value()
         return iter(self._item_cache)
@@ -444,8 +444,8 @@ class FreqDist(dict):
         """
         Create a copy of this frequency distribution.
         
-        @return: A copy of this frequency distribution object.
-        @rtype: C{FreqDist}
+        :return: A copy of this frequency distribution object.
+        :rtype: FreqDist
         """
         return self.__class__(self)
     
@@ -454,8 +454,8 @@ class FreqDist(dict):
         Update the frequency distribution with the provided list of samples.
         This is a faster way to add multiple samples to the distribution.
         
-        @param samples: The samples to add.
-        @type samples: C{list}
+        :param samples: The samples to add.
+        :type samples: list
         """
         try:
             sample_iter = samples.iteritems()
@@ -506,15 +506,15 @@ class FreqDist(dict):
     
     def __repr__(self):
         """
-        @return: A string representation of this C{FreqDist}.
-        @rtype: string
+        :return: A string representation of this FreqDist.
+        :rtype: string
         """
         return '<FreqDist with %d outcomes>' % self.N()
 
     def __str__(self):
         """
-        @return: A string representation of this C{FreqDist}.
-        @rtype: string
+        :return: A string representation of this FreqDist.
+        :rtype: string
         """
         items = ['%r: %r' % (s, self[s]) for s in self]
         return '<FreqDist: %s>' % ', '.join(items)
@@ -549,24 +549,24 @@ class ProbDistI(object):
 
     def prob(self, sample):
         """
-        @return: the probability for a given sample.  Probabilities
+        :return: the probability for a given sample.  Probabilities
             are always real numbers in the range [0, 1].
-        @rtype: float
-        @param sample: The sample whose probability
+        :rtype: float
+        :param sample: The sample whose probability
                should be returned.
-        @type sample: any
+        :type sample: any
         """
         raise AssertionError()
 
     def logprob(self, sample):
         """
-        @return: the base 2 logarithm of the probability for a given
+        :return: the base 2 logarithm of the probability for a given
             sample.  Log probabilities range from negitive infinity to
             zero.
-        @rtype: float
-        @param sample: The sample whose probability
+        :rtype: float
+        :param sample: The sample whose probability
                should be returned.
-        @type sample: any
+        :type sample: any
         """
         # Default definition, in terms of prob()
         p = self.prob(sample)
@@ -579,28 +579,28 @@ class ProbDistI(object):
 
     def max(self):
         """
-        @return: the sample with the greatest probability.  If two or
+        :return: the sample with the greatest probability.  If two or
             more samples have the same probability, return one of them;
             which sample is returned is undefined.
-        @rtype: any
+        :rtype: any
         """
         raise AssertionError()
 
     # deprecate this (use keys() instead?)
     def samples(self):
         """
-        @return: A list of all samples that have nonzero
+        :return: A list of all samples that have nonzero
             probabilities.  Use C{prob} to find the probability of
             each sample.
-        @rtype: C{list}
+        :rtype: list
         """
         raise AssertionError()
 
     # cf self.SUM_TO_ONE
     def discount(self):
         """
-        @return: The ratio by which counts are discounted on average: c*/c
-        @rtype: C{float}
+        :return: The ratio by which counts are discounted on average: c*/c
+        :rtype: float
         """
         return 0.0
 
@@ -608,7 +608,7 @@ class ProbDistI(object):
     # where possible.
     def generate(self):
         """
-        @return: A randomly selected sample from this probability
+        :return: A randomly selected sample from this probability
             distribution.  The probability of returning each sample
             C{samp} is equal to C{self.prob(samp)}.
         """
@@ -636,10 +636,10 @@ class UniformProbDist(ProbDistI):
         Construct a new uniform probability distribution, that assigns
         equal probability to each sample in C{samples}.
 
-        @param samples: The samples that should be given uniform
+        :param samples: The samples that should be given uniform
             probability.
-        @type samples: C{list}
-        @raise ValueError: If C{samples} is empty.
+        :type samples: list
+        :raise ValueError: If C{samples} is empty.
         """
         if len(samples) == 0:
             raise ValueError('A Uniform probability distribution must '+
@@ -732,17 +732,17 @@ class MLEProbDist(ProbDistI):
         Use the maximum likelihood estimate to create a probability
         distribution for the experiment used to generate C{freqdist}.
 
-        @type freqdist: C{FreqDist}
-        @param freqdist: The frequency distribution that the
+        :type freqdist: FreqDist
+        :param freqdist: The frequency distribution that the
             probability estimates should be based on.
         """
         self._freqdist = freqdist
 
     def freqdist(self):
         """
-        @return: The frequency distribution that this probability
+        :return: The frequency distribution that this probability
             distribution is based on.
-        @rtype: C{FreqDist}
+        :rtype: FreqDist
         """        
         return self._freqdist
 
@@ -757,8 +757,8 @@ class MLEProbDist(ProbDistI):
 
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         return '<MLEProbDist based on %d samples>' % self._freqdist.N()
 
@@ -780,17 +780,17 @@ class LidstoneProbDist(ProbDistI):
         Use the Lidstone estimate to create a probability distribution
         for the experiment used to generate C{freqdist}.
 
-        @type freqdist: C{FreqDist}
-        @param freqdist: The frequency distribution that the
+        :type freqdist: FreqDist
+        :param freqdist: The frequency distribution that the
             probability estimates should be based on.
-        @type gamma: C{float}
-        @param gamma: A real number used to paramaterize the
+        :type gamma: float
+        :param gamma: A real number used to paramaterize the
             estimate.  The Lidstone estimate is equivalant to adding
             M{gamma} to the count for each bin, and taking the
             maximum likelihood estimate of the resulting frequency
             distribution.
-        @type bins: C{int}
-        @param bins: The number of sample values that can be generated
+        :type bins: int
+        :param bins: The number of sample values that can be generated
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
@@ -823,9 +823,9 @@ class LidstoneProbDist(ProbDistI):
 
     def freqdist(self):
         """
-        @return: The frequency distribution that this probability
+        :return: The frequency distribution that this probability
             distribution is based on.
-        @rtype: C{FreqDist}
+        :rtype: FreqDist
         """        
         return self._freqdist
 
@@ -848,8 +848,8 @@ class LidstoneProbDist(ProbDistI):
 
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         return '<LidstoneProbDist based on %d samples>' % self._freqdist.N()
 
@@ -869,11 +869,11 @@ class LaplaceProbDist(LidstoneProbDist):
         Use the Laplace estimate to create a probability distribution
         for the experiment used to generate C{freqdist}.
 
-        @type freqdist: C{FreqDist}
-        @param freqdist: The frequency distribution that the
+        :type freqdist: FreqDist
+        :param freqdist: The frequency distribution that the
             probability estimates should be based on.
-        @type bins: C{int}
-        @param bins: The number of sample values that can be generated
+        :type bins: int
+        :param bins: The number of sample values that can be generated
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
@@ -883,8 +883,8 @@ class LaplaceProbDist(LidstoneProbDist):
 
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         return '<LaplaceProbDist based on %d samples>' % self._freqdist.N()
 
@@ -903,11 +903,11 @@ class ELEProbDist(LidstoneProbDist):
         Use the expected likelihood estimate to create a probability
         distribution for the experiment used to generate C{freqdist}.
 
-        @type freqdist: C{FreqDist}
-        @param freqdist: The frequency distribution that the
+        :type freqdist: FreqDist
+        :param freqdist: The frequency distribution that the
             probability estimates should be based on.
-        @type bins: C{int}
-        @param bins: The number of sample values that can be generated
+        :type bins: int
+        :param bins: The number of sample values that can be generated
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
@@ -917,8 +917,8 @@ class ELEProbDist(LidstoneProbDist):
 
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         return '<ELEProbDist based on %d samples>' % self._freqdist.N()
 
@@ -950,16 +950,16 @@ class HeldoutProbDist(ProbDistI):
     function, M{Tr[r]/(Nr[r]*N)} is precomputed for each value of M{r}
     when the C{HeldoutProbDist} is created.
 
-    @type _estimate: C{list} of C{float}
-    @ivar _estimate: A list mapping from M{r}, the number of
+    :type _estimate: list of float
+    :ivar _estimate: A list mapping from M{r}, the number of
         times that a sample occurs in the base distribution, to the
         probability estimate for that sample.  C{_estimate[M{r}]} is
         calculated by finding the average frequency in the heldout
         distribution of all samples that occur M{r} times in the base
         distribution.  In particular, C{_estimate[M{r}]} =
         M{Tr[r]/(Nr[r]*N)}.
-    @type _max_r: C{int}
-    @ivar _max_r: The maximum number of times that any sample occurs
+    :type _max_r: int
+    :ivar _max_r: The maximum number of times that any sample occurs
        in the base distribution.  C{_max_r} is used to decide how
        large C{_estimate} must be.
     """
@@ -970,12 +970,12 @@ class HeldoutProbDist(ProbDistI):
         for the experiment used to generate C{base_fdist} and
         C{heldout_fdist}.
 
-        @type base_fdist: C{FreqDist}
-        @param base_fdist: The base frequency distribution.
-        @type heldout_fdist: C{FreqDist}
-        @param heldout_fdist: The heldout frequency distribution.
-        @type bins: C{int}
-        @param bins: The number of sample values that can be generated
+        :type base_fdist: FreqDist
+        :param base_fdist: The base frequency distribution.
+        :type heldout_fdist: FreqDist
+        :param heldout_fdist: The heldout frequency distribution.
+        :type bins: int
+        :param bins: The number of sample values that can be generated
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
@@ -999,10 +999,10 @@ class HeldoutProbDist(ProbDistI):
 
     def _calculate_Tr(self):
         """
-        @return: the list M{Tr}, where M{Tr[r]} is the total count in
+        :return: the list M{Tr}, where M{Tr[r]} is the total count in
             C{heldout_fdist} for all samples that occur M{r}
             times in C{base_fdist}.
-        @rtype: C{list} of C{float}
+        :rtype: list of float
         """
         Tr = [0.0] * (self._max_r+1)
         for sample in self._heldout_fdist:
@@ -1012,22 +1012,22 @@ class HeldoutProbDist(ProbDistI):
 
     def _calculate_estimate(self, Tr, Nr, N):
         """
-        @return: the list M{estimate}, where M{estimate[r]} is the
+        :return: the list M{estimate}, where M{estimate[r]} is the
             probability estimate for any sample that occurs M{r} times
             in the base frequency distribution.  In particular,
             M{estimate[r]} is M{Tr[r]/(N[r]*N)}.  In the special case
             that M{N[r]=0}, M{estimate[r]} will never be used; so we
             define M{estimate[r]=None} for those cases.
-        @rtype: C{list} of C{float}
-        @type Tr: C{list} of C{float}
-        @param Tr: the list M{Tr}, where M{Tr[r]} is the total count in
+        :rtype: list of float
+        :type Tr: list of float
+        :param Tr: the list M{Tr}, where M{Tr[r]} is the total count in
             the heldout distribution for all samples that occur M{r}
             times in base distribution.
-        @type Nr: C{list} of C{float}
-        @param Nr: The list M{Nr}, where M{Nr[r]} is the number of
+        :type Nr: list of float
+        :param Nr: The list M{Nr}, where M{Nr[r]} is the number of
             samples that occur M{r} times in the base distribution.
-        @type N: C{int}
-        @param N: The total number of outcomes recorded by the heldout
+        :type N: int
+        :param N: The total number of outcomes recorded by the heldout
             frequency distribution. 
         """
         estimate = []
@@ -1038,17 +1038,17 @@ class HeldoutProbDist(ProbDistI):
 
     def base_fdist(self):
         """
-        @return: The base frequency distribution that this probability
+        :return: The base frequency distribution that this probability
             distribution is based on.
-        @rtype: C{FreqDist}
+        :rtype: FreqDist
         """        
         return self._base_fdist
 
     def heldout_fdist(self):
         """
-        @return: The heldout frequency distribution that this
+        :return: The heldout frequency distribution that this
             probability distribution is based on.
-        @rtype: C{FreqDist}
+        :rtype: FreqDist
         """        
         return self._heldout_fdist
 
@@ -1071,8 +1071,8 @@ class HeldoutProbDist(ProbDistI):
 
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         s = '<HeldoutProbDist: %d base samples; %d heldout samples>'
         return s % (self._base_fdist.N(), self._heldout_fdist.N())
@@ -1092,11 +1092,11 @@ class CrossValidationProbDist(ProbDistI):
         distribution for the experiment used to generate
         C{freqdists}.
 
-        @type freqdists: C{list} of C{FreqDist}
-        @param freqdists: A list of the frequency distributions
+        :type freqdists: list of FreqDist
+        :param freqdists: A list of the frequency distributions
             generated by the experiment.
-        @type bins: C{int}
-        @param bins: The number of sample values that can be generated
+        :type bins: int
+        :param bins: The number of sample values that can be generated
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
@@ -1115,8 +1115,8 @@ class CrossValidationProbDist(ProbDistI):
 
     def freqdists(self):
         """
-        @rtype: C{list} of C{FreqDist}
-        @return: The list of frequency distributions that this
+        :rtype: list of FreqDist
+        :return: The list of frequency distributions that this
             C{ProbDist} is based on.
         """
         return self._freqdists
@@ -1138,8 +1138,8 @@ class CrossValidationProbDist(ProbDistI):
 
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         return '<CrossValidationProbDist: %d-way>' % len(self._freqdists)
 
@@ -1183,14 +1183,14 @@ class WittenBellProbDist(ProbDistI):
         (the C{B()} and C{N()} values). The normalising factor M{Z} is
         calculated using these values along with the C{bins} parameter.
 
-        @param freqdist:    The frequency counts upon which to base the
+        :param freqdist:    The frequency counts upon which to base the
                             estimation.
-        @type  freqdist:    C{FreqDist}
-        @param bins:        The number of possible event types. This must be
+        :type  freqdist:    FreqDist
+        :param bins:        The number of possible event types. This must be
                             at least as large as the number of bins in the
-                            C{freqdist}. If C{None}, then it's assumed to be
+                            C{freqdist}. If None, then it's assumed to be
                             equal to that of the C{freqdist}
-        @type  bins:        C{Int}
+        :type  bins:        int
         """
         assert bins == None or bins >= freqdist.B(),\
                'Bins parameter must not be less than freqdist.B()'
@@ -1229,8 +1229,8 @@ class WittenBellProbDist(ProbDistI):
 
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         return '<WittenBellProbDist based on %d samples>' % self._freqdist.N()
 
@@ -1294,14 +1294,14 @@ class GoodTuringProbDist(ProbDistI):
     """
     def __init__(self, freqdist, bins=None):
         """
-        @param freqdist:    The frequency counts upon which to base the
+        :param freqdist:    The frequency counts upon which to base the
                                 estimation.
-        @type  freqdist:    C{FreqDist}
-        @param bins:        The number of possible event types. This must be
+        :type  freqdist:    FreqDist
+        :param bins:        The number of possible event types. This must be
                             at least as large as the number of bins in the
-                            C{freqdist}. If C{None}, then it's assumed to be
+                            C{freqdist}. If None, then it's assumed to be
                             equal to that of the C{freqdist}
-        @type  bins:        C{Int}
+        :type  bins:        int
         """
         assert bins == None or bins >= freqdist.B(),\
                'Bins parameter must not be less than freqdist.B()'
@@ -1338,9 +1338,9 @@ class GoodTuringProbDist(ProbDistI):
 
     def discount(self):
         """
-        @return: The probability mass transferred from the
+        :return: The probability mass transferred from the
             seen samples to the unseen samples.
-        @rtype: C{float}
+        :rtype: float
         """
         return 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
 
@@ -1349,8 +1349,8 @@ class GoodTuringProbDist(ProbDistI):
             
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         return '<GoodTuringProbDist based on %d samples>' % self._freqdist.N() 
             
@@ -1383,14 +1383,14 @@ class SimpleGoodTuringProbDist(ProbDistI):
     """
     def __init__(self, freqdist, bins=None):
         """
-        @param freqdist:    The frequency counts upon which to base the
+        :param freqdist:    The frequency counts upon which to base the
                                 estimation.
-        @type  freqdist:    C{FreqDist}
-        @param bins:        The number of possible event types. This must be
+        :type  freqdist:    FreqDist
+        :param bins:        The number of possible event types. This must be
                             larger than the number of bins in the
-                            C{freqdist}. If C{None}, then it's assumed to be
+                            C{freqdist}. If None, then it's assumed to be
                             equal to C{freqdist}.B() + 1
-        @type  bins:        C{Int}
+        :type  bins:        int
         """
         assert bins == None or bins > freqdist.B(),\
                'Bins parameter must not be less than freqdist.B() + 1'
@@ -1503,10 +1503,10 @@ class SimpleGoodTuringProbDist(ProbDistI):
 
     def smoothedNr(self, r):
         """
-        @return: The number of samples with count r.
-        @rtype: C{float}
-        @param r: The amount of freqency.
-        @type r: C{int}
+        :return: The number of samples with count r.
+        :rtype: float
+        :param r: The amount of freqency.
+        :type r: int
         """
 
         # Nr = a*r^b (with b < -1 to give the appropriate hyperbolic
@@ -1518,10 +1518,10 @@ class SimpleGoodTuringProbDist(ProbDistI):
 
     def prob(self, sample):
         """
-        @param sample: sample of the event
-        @type sample: C{string}
-        @return: The sample's probability.
-        @rtype: C{float}
+        :param sample: sample of the event
+        :type sample: str
+        :return: The sample's probability.
+        :rtype: float
         """
         count = self._freqdist[sample]
         p = self._prob_measure(count)
@@ -1575,8 +1575,8 @@ class SimpleGoodTuringProbDist(ProbDistI):
                 
     def __repr__(self):
         """
-        @rtype: C{string}
-        @return: A string representation of this C{ProbDist}.
+        :rtype: str
+        :return: A string representation of this C{ProbDist}.
         """
         return '<SimpleGoodTuringProbDist based on %d samples>'\
                 % self._freqdist.N()
@@ -1595,13 +1595,13 @@ class MutableProbDist(ProbDistI):
         the list of samples given. These values are stored as log
         probabilities if the store_logs flag is set.
 
-        @param prob_dist: the distribution from which to garner the
+        :param prob_dist: the distribution from which to garner the
             probabilities
-        @type prob_dist: ProbDist
-        @param samples: the complete set of samples
-        @type samples: sequence of any
-        @param store_logs: whether to store the probabilities as logarithms
-        @type store_logs: bool
+        :type prob_dist: ProbDist
+        :param samples: the complete set of samples
+        :type samples: sequence of any
+        :param store_logs: whether to store the probabilities as logarithms
+        :type store_logs: bool
         """
         try:
             import numpy
@@ -1652,12 +1652,12 @@ class MutableProbDist(ProbDistI):
         have probabilities between 0 and 1 and that all probabilities sum to
         one.
 
-        @param sample: the sample for which to update the probability
-        @type sample: C{any}
-        @param prob: the new probability
-        @type prob: C{float}
-        @param log: is the probability already logged
-        @type log: C{bool}
+        :param sample: the sample for which to update the probability
+        :type sample: C{any}
+        :param prob: the new probability
+        :type prob: float
+        :param log: is the probability already logged
+        :type log: bool
         """
         i = self._sample_dict.get(sample)
         assert i != None
@@ -1698,7 +1698,7 @@ class ConditionalFreqDist(object):
     record the frequency of each word (type) in a document, given its
     length.  Formally, a conditional frequency distribution can be
     defined as a function that maps from each condition to the
-    C{FreqDist} for the experiment under that condition.
+    FreqDist for the experiment under that condition.
 
     Conditional frequency distributions are typically constructed by
     repeatedly running an experiment under a variety of conditions,
@@ -1731,7 +1731,7 @@ class ConditionalFreqDist(object):
 
     When the indexing operator is used to access the frequency
     distribution for a condition that has not been accessed before,
-    C{ConditionalFreqDist} creates a new empty C{FreqDist} for that
+    C{ConditionalFreqDist} creates a new empty FreqDist for that
     condition.
 
     """
@@ -1741,9 +1741,9 @@ class ConditionalFreqDist(object):
         particular, the count for every sample, under every condition,
         is zero.
 
-        @param cond_samples: The samples to initialize the conditional
+        :param cond_samples: The samples to initialize the conditional
             frequency distribution with
-        @type cond_samples: Sequence of (condition, sample) tuples
+        :type cond_samples: Sequence of (condition, sample) tuples
         """
         self._fdists = {}
         if cond_samples:
@@ -1752,14 +1752,14 @@ class ConditionalFreqDist(object):
 
     def __getitem__(self, condition):
         """
-        @return: The frequency distribution that encodes the frequency
+        :return: The frequency distribution that encodes the frequency
             of each sample outcome, given that the experiment was run
             under the given condition.  If the frequency distribution for
             the given condition has not been accessed before, then this
-            will create a new empty C{FreqDist} for that condition.
-        @rtype: C{FreqDist}
-        @param condition: The condition under which the experiment was run.
-        @type condition: any
+            will create a new empty FreqDist for that condition.
+        :rtype: FreqDist
+        :param condition: The condition under which the experiment was run.
+        :type condition: any
         """
         # Create the conditioned freq dist, if it doesn't exist
         if condition not in self._fdists:
@@ -1768,28 +1768,28 @@ class ConditionalFreqDist(object):
 
     def conditions(self):
         """
-        @return: A list of the conditions that have been accessed for
+        :return: A list of the conditions that have been accessed for
             this C{ConditionalFreqDist}.  Use the indexing operator to
             access the frequency distribution for a given condition.
             Note that the frequency distributions for some conditions
             may contain zero sample outcomes.
-        @rtype: C{list}
+        :rtype: list
         """
         return sorted(self._fdists.keys())
 
     def __len__(self):
         """
-        @return: The number of conditions that have been accessed
+        :return: The number of conditions that have been accessed
             for this C{ConditionalFreqDist}.
-        @rtype: C{int}
+        :rtype: int
         """
         return len(self._fdists)
 
     def N(self):
         """
-        @return: The total number of sample outcomes that have been
+        :return: The total number of sample outcomes that have been
           recorded by this C{ConditionalFreqDist}.
-        @rtype: C{int}
+        :rtype: int
         """
         return sum(fdist.N() for fdist in self._fdists.values())
 
@@ -1799,12 +1799,12 @@ class ConditionalFreqDist(object):
         For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
         
-        @param samples: The samples to plot
-        @type samples: C{list}
-        @param title: The title for the graph
-        @type title: C{str}
-        @param conditions: The conditions to plot (default is all)
-        @type conditions: C{list}
+        :param samples: The samples to plot
+        :type samples: list
+        :param title: The title for the graph
+        :type title: str
+        :param conditions: The conditions to plot (default is all)
+        :type conditions: list
         """
         try:
             import pylab
@@ -1846,12 +1846,12 @@ class ConditionalFreqDist(object):
         """
         Tabulate the given samples from the conditional frequency distribution.
         
-        @param samples: The samples to plot
-        @type samples: C{list}
-        @param title: The title for the graph
-        @type title: C{str}
-        @param conditions: The conditions to plot (default is all)
-        @type conditions: C{list}
+        :param samples: The samples to plot
+        :type samples: list
+        :param title: The title for the graph
+        :type title: str
+        :param conditions: The conditions to plot (default is all)
+        :type conditions: list
         """
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
@@ -1897,18 +1897,18 @@ class ConditionalFreqDist(object):
     
     def __repr__(self):
         """
-        @return: A string representation of this
+        :return: A string representation of this
             C{ConditionalProbDist}.
-        @rtype: C{string}
+        :rtype: str
         """
         return '<ConditionalProbDist with %d conditions>' % self.__len__()
 
         
     def __repr__(self):
         """
-        @return: A string representation of this
+        :return: A string representation of this
             C{ConditionalFreqDist}.
-        @rtype: C{string}
+        :rtype: str
         """
         n = len(self._fdists)
         return '<ConditionalFreqDist with %d conditions>' % n
@@ -1931,29 +1931,29 @@ class ConditionalProbDistI(object):
 
     def __getitem__(self, condition):
         """
-        @return: The probability distribution for the experiment run
+        :return: The probability distribution for the experiment run
             under the given condition.
-        @rtype: C{ProbDistI}
-        @param condition: The condition whose probability distribution
+        :rtype: C{ProbDistI}
+        :param condition: The condition whose probability distribution
             should be returned.
-        @type condition: any
+        :type condition: any
         """
         raise AssertionError
 
     def __len__(self):
         """
-        @return: The number of conditions that are represented by
+        :return: The number of conditions that are represented by
             this C{ConditionalProbDist}.
-        @rtype: C{int}
+        :rtype: int
         """
         raise AssertionError
 
     def conditions(self):
         """
-        @return: A list of the conditions that are represented by
+        :return: A list of the conditions that are represented by
             this C{ConditionalProbDist}.  Use the indexing operator to
             access the probability distribution for a given condition.
-        @rtype: C{list}
+        :rtype: list
         """
         raise AssertionError
 
@@ -1966,7 +1966,7 @@ class ConditionalProbDist(ConditionalProbDistI):
     """
     A conditional probability distribution modelling the experiments
     that were used to generate a conditional frequency distribution.
-    A C{ConditoinalProbDist} is constructed from a
+    A ConditoinalProbDist is constructed from a
     C{ConditionalFreqDist} and a X{C{ProbDist} factory}:
 
       - The B{C{ConditionalFreqDist}} specifies the frequency
@@ -1997,23 +1997,23 @@ class ConditionalProbDist(ConditionalProbDistI):
         the given conditional frequency distribution and C{ProbDist}
         factory.
 
-        @type cfdist: L{ConditionalFreqDist}
-        @param cfdist: The C{ConditionalFreqDist} specifying the
+        :type cfdist: L{ConditionalFreqDist}
+        :param cfdist: The C{ConditionalFreqDist} specifying the
             frequency distribution for each condition.
-        @type probdist_factory: C{class} or C{function}
-        @param probdist_factory: The function or class that maps
+        :type probdist_factory: C{class} or C{function}
+        :param probdist_factory: The function or class that maps
             a condition's frequency distribution to its probability
             distribution.  The function is called with the frequency
             distribution as its first argument,
             C{factory_args} as its remaining arguments, and
             C{factory_kw_args} as keyword arguments.
-        @type factory_args: (any)
-        @param factory_args: Extra arguments for C{probdist_factory}.
+        :type factory_args: (any)
+        :param factory_args: Extra arguments for C{probdist_factory}.
             These arguments are usually used to specify extra
             properties for the probability distributions of individual
             conditions, such as the number of bins they contain.
-        @type factory_kw_args: (any)
-        @param factory_kw_args: Extra keyword arguments for C{probdist_factory}.
+        :type factory_kw_args: (any)
+        :param factory_kw_args: Extra keyword arguments for C{probdist_factory}.
         """
         self._probdist_factory = probdist_factory
         self._cfdist = cfdist
@@ -2054,9 +2054,9 @@ class DictionaryConditionalProbDist(ConditionalProbDistI):
 
     def __init__(self, probdist_dict):
         """
-        @param probdist_dict: a dictionary containing the probdists indexed
+        :param probdist_dict: a dictionary containing the probdists indexed
             by the conditions
-        @type probdist_dict: dict any -> probdist
+        :type probdist_dict: dict any -> probdist
         """
         self._dict = probdist_dict
 
@@ -2132,11 +2132,11 @@ class ProbabilisticMixIn(object):
         be called by subclass constructors.  C{prob} should generally be
         the first argument for those constructors.
 
-        @kwparam prob: The probability associated with the object.
-        @type prob: C{float}
-        @kwparam logprob: The log of the probability associated with
+        :param prob: The probability associated with the object.
+        :type prob: float
+        :param logprob: The log of the probability associated with
             the object.
-        @type logprob: C{float}
+        :type logprob: float
         """
         if 'prob' in kwargs:
             if 'logprob' in kwargs:
@@ -2152,8 +2152,8 @@ class ProbabilisticMixIn(object):
     def set_prob(self, prob):
         """
         Set the probability associated with this object to C{prob}.
-        @param prob: The new probability
-        @type prob: C{float}
+        :param prob: The new probability
+        :type prob: float
         """
         self.__prob = prob
         self.__logprob = None
@@ -2163,16 +2163,16 @@ class ProbabilisticMixIn(object):
         Set the log probability associated with this object to
         C{logprob}.  I.e., set the probability associated with this
         object to C{2**(logprob)}.
-        @param logprob: The new log probability
-        @type logprob: C{float}
+        :param logprob: The new log probability
+        :type logprob: float
         """
         self.__logprob = logprob
         self.__prob = None
 
     def prob(self):
         """
-        @return: The probability associated with this object.
-        @rtype: C{float}
+        :return: The probability associated with this object.
+        :rtype: float
         """
         if self.__prob is None:
             if self.__logprob is None: return None
@@ -2181,10 +2181,10 @@ class ProbabilisticMixIn(object):
 
     def logprob(self):
         """
-        @return: C{log(p)}, where C{p} is the probability associated
+        :return: C{log(p)}, where C{p} is the probability associated
         with this object.
 
-        @rtype: C{float}
+        :rtype: float
         """
         if self.__logprob is None:
             if self.__prob is None: return None
@@ -2247,14 +2247,14 @@ def demo(numsamples=6, numoutcomes=500):
     probability estimates of these distributions are compared to the
     actual probability of each sample.
 
-    @type numsamples: C{int}
-    @param numsamples: The number of samples to use in each demo
+    :type numsamples: int
+    :param numsamples: The number of samples to use in each demo
         frequency distributions.
-    @type numoutcomes: C{int}
-    @param numoutcomes: The total number of outcomes for each
+    :type numoutcomes: int
+    :param numoutcomes: The total number of outcomes for each
         demo frequency distribution.  These outcomes are divided into
         C{numsamples} bins.
-    @rtype: C{None}
+    :rtype: None
     """
 
     # Randomly sample a stochastic process three times.

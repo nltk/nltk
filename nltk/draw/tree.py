@@ -8,7 +8,7 @@
 # $Id$
 
 """
-Graphically display a C{Tree}.
+Graphically display a Tree.
 """
 
 import sys
@@ -65,8 +65,8 @@ class TreeSegmentWidget(CanvasWidget):
     """
     def __init__(self, canvas, node, subtrees, **attribs):
         """
-        @type node: 
-        @type subtrees: C{list} of C{CanvasWidgetI}
+        :type node: 
+        :type subtrees: list of C{CanvasWidgetI}
         """
         self._node = node
         self._subtrees = subtrees
@@ -413,24 +413,24 @@ def _tree_to_treeseg(canvas, t, make_node, make_leaf,
 def tree_to_treesegment(canvas, t, make_node=TextWidget,
                         make_leaf=TextWidget, **attribs):
     """
-    Convert a C{Tree} into a C{TreeSegmentWidget}.
+    Convert a Tree into a C{TreeSegmentWidget}.
 
-    @param make_node: A C{CanvasWidget} constructor or a function that
+    :param make_node: A C{CanvasWidget} constructor or a function that
         creates C{CanvasWidgets}.  C{make_node} is used to convert
-        the C{Tree}'s nodes into C{CanvasWidgets}.  If no constructor
+        the Tree's nodes into C{CanvasWidgets}.  If no constructor
         is specified, then C{TextWidget} will be used.
-    @param make_leaf: A C{CanvasWidget} constructor or a function that
+    :param make_leaf: A C{CanvasWidget} constructor or a function that
         creates C{CanvasWidgets}.  C{make_leaf} is used to convert
-        the C{Tree}'s leafs into C{CanvasWidgets}.  If no constructor
+        the Tree's leafs into C{CanvasWidgets}.  If no constructor
         is specified, then C{TextWidget} will be used.
-    @param attribs: Attributes for the canvas widgets that make up the
+    :param attribs: Attributes for the canvas widgets that make up the
         returned C{TreeSegmentWidget}.  Any attribute beginning with
         C{'tree_'} will be passed to all C{TreeSegmentWidget}s (with
         the C{'tree_'} prefix removed.  Any attribute beginning with
         C{'node_'} will be passed to all nodes.  Any attribute
         beginning with C{'leaf_'} will be passed to all leaves.  And
         any attribute beginning with C{'loc_'} will be passed to all
-        text locations (for C{Tree}s).
+        text locations (for Trees).
     """
     # Process attribs.
     tree_attribs = {}
@@ -454,9 +454,9 @@ def tree_to_treesegment(canvas, t, make_node=TextWidget,
 
 class TreeWidget(CanvasWidget):
     """
-    A canvas widget that displays a single C{Tree}.
+    A canvas widget that displays a single Tree.
     C{TreeWidget} manages a group of C{TreeSegmentWidget}s that are
-    used to display a C{Tree}.
+    used to display a Tree.
 
     Attributes:
     
@@ -466,7 +466,7 @@ class TreeWidget(CanvasWidget):
         leaf widgets for this C{TreeWidget}.
       - C{loc_M{attr}}: Sets the attribute C{M{attr}} on all of the
         location widgets for this C{TreeWidget} (if it was built from
-        a C{Tree}).  Note that location widgets are
+        a Tree).  Note that location widgets are
         C{TextWidget}s. 
       
       - C{xspace}: The amount of horizontal space to leave between
@@ -531,7 +531,7 @@ class TreeWidget(CanvasWidget):
         """
         Return the C{TreeSegmentWidget} for the specified subtree.
 
-        @param path_to_tree: A list of indices i1, i2, ..., in, where
+        :param path_to_tree: A list of indices i1, i2, ..., in, where
             the desired widget is the widget corresponding to
             C{tree.children()[i1].children()[i2]....children()[in]}.
             For the root, the path is C{()}.
@@ -542,7 +542,7 @@ class TreeWidget(CanvasWidget):
         """
         Return the C{TreeSegmentWidget} for the specified subtree.
 
-        @param path_to_tree: A list of indices i1, i2, ..., in, where
+        :param path_to_tree: A list of indices i1, i2, ..., in, where
             the desired widget is the widget corresponding to
             C{tree.children()[i1].children()[i2]....children()[in]}.
             For the root, the path is C{()}.
@@ -868,7 +868,7 @@ def draw_trees(*trees):
     Open a new window containing a graphical diagram of the given
     trees.
         
-    @rtype: None
+    :rtype: None
     """
     TreeView(*trees).mainloop()
     return

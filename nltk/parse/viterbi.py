@@ -8,7 +8,7 @@
 
 from nltk.tree import Tree, ProbabilisticTree
 
-from api import *
+from nltk.parse.api import ParserI
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
@@ -65,10 +65,10 @@ class ViterbiParser(ParserI):
                     = M{new_tree}
       - Return M{MLC}[0, len(M{text}), M{start_symbol}]
                 
-    @type _grammar: C{WeightedGrammar}
-    @ivar _grammar: The grammar used to parse sentences.
-    @type _trace: C{int}
-    @ivar _trace: The level of tracing output that should be generated
+    :type _grammar: C{WeightedGrammar}
+    :ivar _grammar: The grammar used to parse sentences.
+    :type _trace: int
+    :ivar _trace: The level of tracing output that should be generated
         when parsing a text.
     """
     def __init__(self, grammar, trace=0):
@@ -76,10 +76,10 @@ class ViterbiParser(ParserI):
         Create a new C{ViterbiParser} parser, that uses {grammar} to
         parse texts.
 
-        @type grammar: C{WeightedGrammar}
-        @param grammar: The grammar used to parse texts.
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
+        :type grammar: C{WeightedGrammar}
+        :param grammar: The grammar used to parse texts.
+        :type trace: int
+        :param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
@@ -95,11 +95,11 @@ class ViterbiParser(ParserI):
         Set the level of tracing output that should be generated when
         parsing a text.
 
-        @type trace: C{int}
-        @param trace: The trace level.  A trace level of C{0} will
+        :type trace: int
+        :param trace: The trace level.  A trace level of C{0} will
             generate no tracing output; and higher trace levels will
             produce more verbose tracing output.
-        @rtype: C{None}
+        :rtype: None
         """
         self._trace = trace
 
@@ -146,9 +146,9 @@ class ViterbiParser(ParserI):
         Find any constituents that might cover C{span}, and add them
         to the most likely constituents table.
 
-        @rtype: C{None}
-        @type span: C{(int, int)}
-        @param span: The section of the text for which we are
+        :rtype: None
+        :type span: C{(int, int)}
+        :param span: The section of the text for which we are
             trying to find possible constituents.  The span is
             specified as a pair of integers, where the first integer
             is the index of the first token that should be included in
@@ -158,10 +158,10 @@ class ViterbiParser(ParserI):
             C{M{text}[span[0]:span[1]]}, where C{M{text}} is the text
             that we are parsing.
 
-        @type constituents: C{dictionary} from
+        :type constituents: C{dictionary} from
             C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
             C{ProbabilisticTree}).
-        @param constituents: The most likely constituents table.  This
+        :param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  In particular,
             C{constituents(M{s},M{e},M{nv})} is the most likely
@@ -172,8 +172,8 @@ class ViterbiParser(ParserI):
             should contain all possible constituents that are shorter
             than C{span}.
             
-        @type tokens: C{list} of tokens
-        @param tokens: The text we are parsing.  This is only used for
+        :type tokens: list of tokens
+        :param tokens: The text we are parsing.  This is only used for
             trace output.  
         """
         # Since some of the grammar productions may be unary, we need to
@@ -214,26 +214,26 @@ class ViterbiParser(ParserI):
 
     def _find_instantiations(self, span, constituents):
         """
-        @return: a list of the production instantiations that cover a
+        :return: a list of the production instantiations that cover a
             given span of the text.  A X{production instantiation} is
             a tuple containing a production and a list of children,
             where the production's right hand side matches the list of
-            children; and the children cover C{span}.  @rtype: C{list}
-            of C{pair} of C{Production}, (C{list} of
+            children; and the children cover C{span}.  :rtype: list
+            of C{pair} of C{Production}, (list of
             (C{ProbabilisticTree} or token.
 
-        @type span: C{(int, int)}
-        @param span: The section of the text for which we are
+        :type span: C{(int, int)}
+        :param span: The section of the text for which we are
             trying to find production instantiations.  The span is
             specified as a pair of integers, where the first integer
             is the index of the first token that should be covered by
             the production instantiation; and the second integer is
             the index of the first token that should not be covered by
             the production instantiation.
-        @type constituents: C{dictionary} from
+        :type constituents: C{dictionary} from
             C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
             C{ProbabilisticTree}).
-        @param constituents: The most likely constituents table.  This
+        :param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  See the module
             documentation for more information.
@@ -248,29 +248,29 @@ class ViterbiParser(ParserI):
 
     def _match_rhs(self, rhs, span, constituents):
         """
-        @return: a set of all the lists of children that cover C{span}
+        :return: a set of all the lists of children that cover C{span}
             and that match C{rhs}.
-        @rtype: C{list} of (C{list} of C{ProbabilisticTree} or
+        :rtype: list of (list of C{ProbabilisticTree} or
             C{Token}) 
 
-        @type rhs: C{list} of C{Nonterminal} or (any)
-        @param rhs: The list specifying what kinds of children need to
+        :type rhs: list of C{Nonterminal} or (any)
+        :param rhs: The list specifying what kinds of children need to
             cover C{span}.  Each nonterminal in C{rhs} specifies
             that the corresponding child should be a tree whose node
             value is that nonterminal's symbol.  Each terminal in C{rhs}
             specifies that the corresponding child should be a token
             whose type is that terminal.
-        @type span: C{(int, int)}
-        @param span: The section of the text for which we are
+        :type span: C{(int, int)}
+        :param span: The section of the text for which we are
             trying to find child lists.  The span is specified as a
             pair of integers, where the first integer is the index of
             the first token that should be covered by the child list;
             and the second integer is the index of the first token
             that should not be covered by the child list.
-        @type constituents: C{dictionary} from
+        :type constituents: C{dictionary} from
             C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
             C{ProbabilisticTree}).
-        @param constituents: The most likely constituents table.  This
+        :param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  See the module
             documentation for more information.
@@ -296,13 +296,13 @@ class ViterbiParser(ParserI):
         Print trace output indicating that a given production has been
         applied at a given location.
 
-        @param production: The production that has been applied
-        @type production: C{Production}
-        @param p: The probability of the tree produced by the production.  
-        @type p: C{float}
-        @param span: The span of the production
-        @type span: C{tuple}
-        @rtype: C{None}
+        :param production: The production that has been applied
+        :type production: C{Production}
+        :param p: The probability of the tree produced by the production.  
+        :type p: float
+        :param span: The span of the production
+        :type span: tuple
+        :rtype: None
         """
         
         str = '|' + '.' * span[0]

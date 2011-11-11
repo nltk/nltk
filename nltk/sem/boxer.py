@@ -39,11 +39,11 @@ class Boxer(object):
 
     def __init__(self, boxer_drs_interpreter=None, elimeq=False, bin_dir=None, verbose=False):
         """
-        @param boxer_drs_interpreter: A class that converts from the 
+        :param boxer_drs_interpreter: A class that converts from the 
         C{AbstractBoxerDrs} object hierarchy to a different object.  The 
         default is C{NltkDrtBoxerDrsInterpreter}, which converts to the NLTK 
         DRT hierarchy.
-        @param elimeq: When set to true, Boxer removes all equalities from the 
+        :param elimeq: When set to true, Boxer removes all equalities from the 
         DRSs and discourse referents standing in the equality relation are 
         unified, but only if this can be done in a meaning-preserving manner. 
         """
@@ -64,10 +64,10 @@ class Boxer(object):
         """
         Use Boxer to give a first order representation.
         
-        @param input: C{str} Input sentence to parse
-        @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param discourse_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
-        @return: C{drt.AbstractDrs}
+        :param input: str Input sentence to parse
+        :param occur_index: bool Should predicates be occurrence indexed?
+        :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
+        :return: C{drt.AbstractDrs}
         """
         if discourse_id is not None:
             discourse_ids = [discourse_id]
@@ -82,10 +82,10 @@ class Boxer(object):
         """
         Use Boxer to give a first order representation.
         
-        @param input: C{list} of C{str} Input sentences to parse as a single discourse
-        @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param discourse_id: C{str} An identifier to be inserted to each occurrence-indexed predicate.
-        @return: C{drt.AbstractDrs}
+        :param input: list of str Input sentences to parse as a single discourse
+        :param occur_index: bool Should predicates be occurrence indexed?
+        :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
+        :return: C{drt.AbstractDrs}
         """
         if discourse_id is not None:
             discourse_ids = [discourse_id]
@@ -100,10 +100,10 @@ class Boxer(object):
         """
         Use Boxer to give a first order representation.
         
-        @param inputs: C{list} of C{str} Input sentences to parse as individual discourses
-        @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
-        @return: C{list} of C{drt.AbstractDrs}
+        :param inputs: list of str Input sentences to parse as individual discourses
+        :param occur_index: bool Should predicates be occurrence indexed?
+        :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
+        :return: list of C{drt.AbstractDrs}
         """
         return self.batch_interpret_multisentence([[input] for input in inputs], discourse_ids, question, verbose)
 
@@ -111,10 +111,10 @@ class Boxer(object):
         """
         Use Boxer to give a first order representation.
         
-        @param inputs: C{list} of C{list} of C{str} Input discourses to parse
-        @param occur_index: C{boolean} Should predicates be occurrence indexed?
-        @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
-        @return: C{drt.AbstractDrs}
+        :param inputs: list of list of str Input discourses to parse
+        :param occur_index: bool Should predicates be occurrence indexed?
+        :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
+        :return: C{drt.AbstractDrs}
         """
         if discourse_ids is not None:
             assert len(inputs) == len(discourse_ids)
@@ -137,10 +137,10 @@ class Boxer(object):
         """
         Call the C{candc} binary with the given input.
 
-        @param inputs: C{list} of C{list} of C{str} Input discourses to parse
-        @param discourse_ids: C{list} of C{str} Identifiers to be inserted to each occurrence-indexed predicate.
-        @param filename: C{str} A filename for the output file
-        @return: stdout
+        :param inputs: list of list of str Input discourses to parse
+        :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
+        :param filename: str A filename for the output file
+        :return: stdout
         """
         args = ['--models', os.path.join(self._candc_models_path, ['boxer','questions'][question]), 
                 '--candc-printer', 'boxer']
@@ -150,8 +150,8 @@ class Boxer(object):
         """
         Call the C{boxer} binary with the given input.
     
-        @param candc_out: C{str} output from C&C parser
-        @return: stdout
+        :param candc_out: str output from C&C parser
+        :return: stdout
         """
         f = None
         try:
@@ -185,10 +185,10 @@ class Boxer(object):
         """
         Call the binary with the given input.
     
-        @param input_str: A string whose contents are used as stdin.
-        @param binary: The location of the binary to call
-        @param args: A list of command-line arguments.
-        @return: stdout
+        :param input_str: A string whose contents are used as stdin.
+        :param binary: The location of the binary to call
+        :param args: A list of command-line arguments.
+        :return: stdout
         """
         if verbose:
             print 'Calling:', binary
@@ -272,7 +272,7 @@ class BoxerOutputDrsParser(DrtParser):
         """
         Parse a DRS condition
 
-        @return: C{list} of C{AbstractDrs}
+        :return: list of C{AbstractDrs}
         """
         tok = self.token()
         accum = self.handle_condition(tok, indices)
@@ -290,8 +290,8 @@ class BoxerOutputDrsParser(DrtParser):
         """
         Handle a DRS condition
 
-        @param indices: C{list} of C{int}
-        @return: C{list} of C{AbstractDrs}
+        :param indices: list of int
+        :return: list of C{AbstractDrs}
         """
         if tok == 'not':
             return [self._handle_not()]
@@ -570,7 +570,7 @@ class BoxerOutputDrsParser(DrtParser):
     
     def _sent_and_word_indices(self, indices):
         """
-        @return: C{list} of (sent_index, word_indices) tuples
+        :return: list of (sent_index, word_indices) tuples
         """
         sent_indices = set((i / 1000)-1 for i in indices if i>=0)
         if sent_indices:
@@ -762,7 +762,7 @@ class BoxerDrsParser(DrtParser):
 class AbstractBoxerDrs(object):
     def variables(self):
         """
-        @return: (set<variables>, set<events>, set<propositions>)
+        :return: (set<variables>, set<events>, set<propositions>)
         """
         variables, events, propositions = self._variables()
         return (variables - (events | propositions), events, propositions - events)
@@ -776,7 +776,7 @@ class AbstractBoxerDrs(object):
     
     def _variables(self):
         """
-        @return: (set<variables>, set<events>, set<propositions>)
+        :return: (set<variables>, set<events>, set<propositions>)
         """
         return (set(), set(), set())
 
@@ -1101,8 +1101,8 @@ class NltkDrtBoxerDrsInterpreter(object):
     
     def interpret(self, ex):
         """
-        @param ex: C{AbstractBoxerDrs}
-        @return: C{AbstractDrs}
+        :param ex: C{AbstractBoxerDrs}
+        :return: C{AbstractDrs}
         """
         if isinstance(ex, BoxerDrs):
             drs = DRS([Variable('x%d' % r) for r in ex.refs], map(self.interpret, ex.conds))

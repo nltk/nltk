@@ -8,6 +8,8 @@
 #
 
 """
+NLTK Parsers
+
 Classes and interfaces for producing tree structures that represent
 the internal organization of a text.  This task is known as X{parsing}
 the text, and the resulting tree structures are called the text's
@@ -41,56 +43,34 @@ three sub-modules for specialized kinds of parsing:
     associates a probability with each parse.
 """
 
-from api import *
-from chart import *
-from featurechart import *
-from earleychart import *
-from pchart import *
-from rd import *
-from sr import *
-from util import *
-from viterbi import *
-from dependencygraph import *
-from projectivedependencyparser import *
-from nonprojectivedependencyparser import *
-from malt import *
-
-__all__ = [
-    # Parser interface
-    'ParserI',
-    
-    # Generic parser loading function
-    'load_parser',
-
-    # Parsers
-    # from rd.py:
-    'RecursiveDescentParser', 'SteppingRecursiveDescentParser',
-    # from sr.py:
-    'ShiftReduceParser', 'SteppingShiftReduceParser',
-    # from chart.py:
-    'ChartParser', 'SteppingChartParser',
-    'TopDownChartParser', 'BottomUpChartParser', 
-    'BottomUpLeftCornerChartParser', 'LeftCornerChartParser',
-    # from pchart.py:
-    'BottomUpProbabilisticChartParser', 'InsideChartParser', 'RandomChartParser',
-    'UnsortedChartParser', 'LongestChartParser', 'ViterbiParser',
-    # from featurechart.py:
-    'FeatureChartParser', 'FeatureTopDownChartParser', 
-    'FeatureBottomUpChartParser', 'FeatureBottomUpLeftCornerChartParser',
-    # from earleychart.py:
-    'IncrementalChartParser', 'EarleyChartParser', 
-    'IncrementalTopDownChartParser', 'IncrementalBottomUpChartParser',
-    'IncrementalBottomUpLeftCornerChartParser',
-    'IncrementalLeftCornerChartParser',
-    'FeatureIncrementalChartParser', 'FeatureEarleyChartParser',
-    'FeatureIncrementalTopDownChartParser',
-    'FeatureIncrementalBottomUpChartParser',
-    'FeatureIncrementalBottomUpLeftCornerChartParser',
-    # from dependencygraph.py, projectivedependencyparser.py,
-    # projectivedependencyparser.py, malt.py:
-    'DependencyGraph', 'nx_graph', 'ProjectiveDependencyParser',
-    'ProbabilisticProjectiveDependencyParser',
-    'NaiveBayesDependencyScorer', 'ProbabilisticNonprojectiveParser',
-    'NonprojectiveDependencyParser', 'MaltParser',
-    ]
-
+from nltk.parse.api import ParserI
+from nltk.parse.chart import (ChartParser, SteppingChartParser, TopDownChartParser,
+                              BottomUpChartParser, BottomUpLeftCornerChartParser,
+                              LeftCornerChartParser)
+from nltk.parse.featurechart import (FeatureChartParser, FeatureTopDownChartParser,
+                                     FeatureBottomUpChartParser,
+                                     FeatureBottomUpLeftCornerChartParser)
+from nltk.parse.earleychart import (IncrementalChartParser, EarleyChartParser,
+                                    IncrementalTopDownChartParser,
+                                    IncrementalBottomUpChartParser,
+                                    IncrementalBottomUpLeftCornerChartParser,
+                                    IncrementalLeftCornerChartParser,
+                                    FeatureIncrementalChartParser,
+                                    FeatureEarleyChartParser,
+                                    FeatureIncrementalTopDownChartParser,
+                                    FeatureIncrementalBottomUpChartParser,
+                                    FeatureIncrementalBottomUpLeftCornerChartParser)
+from nltk.parse.pchart import (BottomUpProbabilisticChartParser, InsideChartParser,
+                               RandomChartParser, UnsortedChartParser,
+                               LongestChartParser)
+from nltk.parse.rd import RecursiveDescentParser, SteppingRecursiveDescentParser
+from nltk.parse.sr import ShiftReduceParser, SteppingShiftReduceParser
+from nltk.parse.util import load_parser, TestGrammar, extract_test_sentences
+from nltk.parse.viterbi import ViterbiParser
+from nltk.parse.dependencygraph import DependencyGraph, nx_graph
+from nltk.parse.projectivedependencyparser import (ProjectiveDependencyParser,
+                                                   ProbabilisticProjectiveDependencyParser)
+from nltk.parse.nonprojectivedependencyparser import (NonprojectiveDependencyParser,
+                                                      NaiveBayesDependencyScorer,
+                                                      ProbabilisticNonprojectiveParser)
+from malt import MaltParser

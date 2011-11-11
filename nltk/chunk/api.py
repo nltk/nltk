@@ -23,12 +23,12 @@ class ChunkParserI(ParserI):
     """
     def parse(self, tokens):
         """
-        @return: the best chunk structure for the given tokens
+        :return: the best chunk structure for the given tokens
         and return a tree.
         
-        @param tokens: The list of (word, tag) tokens to be chunked.
-        @type tokens: C{list} of L{tuple}
-        @rtype: L{Tree}
+        :param tokens: The list of (word, tag) tokens to be chunked.
+        :type tokens: list of L{tuple}
+        :rtype: L{Tree}
         """
         assert 0, "ChunkParserI is an abstract interface"
 
@@ -39,9 +39,9 @@ class ChunkParserI(ParserI):
         the chunker, and return a L{ChunkScore<nltk.chunk.util.ChunkScore>}
         object reflecting the performance of this chunk peraser.
 
-        @type gold: C{list} of L{Tree}
-        @param gold: The list of chunked sentences to score the chunker on.
-        @rtype:  L{ChunkScore<nltk.chunk.util.ChunkScore>}
+        :type gold: list of L{Tree}
+        :param gold: The list of chunked sentences to score the chunker on.
+        :rtype:  L{ChunkScore<nltk.chunk.util.ChunkScore>}
         """
         chunkscore = nltk.chunk.util.ChunkScore()
         for correct in gold:

@@ -27,11 +27,11 @@ def batch_parse(inputs, grammar, trace=0):
     """
     Convert input sentences into syntactic trees.
     
-    @parameter inputs: sentences to be parsed
-    @type inputs: C{list} of C{str}
-    @parameter grammar: L{FeatureGrammar} or name of feature-based grammar
-    @rtype: C{dict}
-    @return: a mapping from input sentences to a list of L{Tree}s
+    :param inputs: sentences to be parsed
+    :type inputs: list of str
+    :param grammar: L{FeatureGrammar} or name of feature-based grammar
+    :rtype: dict
+    :return: a mapping from input sentences to a list of L{Tree}s
     """
     if isinstance(grammar, nltk.grammar.FeatureGrammar):
         cp = nltk.parse.FeatureChartParser(grammar)
@@ -48,10 +48,10 @@ def root_semrep(syntree, semkey='SEM'):
     """
     Find the semantic representation at the root of a tree.
     
-    @parameter syntree: a parse L{Tree}
-    @parameter semkey: the feature label to use for the root semantics in the tree
-    @return: the semantic representation at the root of a L{Tree}
-    @rtype: L{logic.Expression}
+    :param syntree: a parse L{Tree}
+    :param semkey: the feature label to use for the root semantics in the tree
+    :return: the semantic representation at the root of a L{Tree}
+    :rtype: L{logic.Expression}
     """
     node = syntree.node
     assert isinstance(node, nltk.grammar.FeatStructNonterminal)
@@ -67,10 +67,10 @@ def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
     
-    @parameter inputs: a list of sentences
-    @parameter grammar: L{FeatureGrammar} or name of feature-based grammar
-    @return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
-    @rtype: C{dict}
+    :param inputs: a list of sentences
+    :param grammar: L{FeatureGrammar} or name of feature-based grammar
+    :return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
+    :rtype: dict
     """
     return [[(syn, root_semrep(syn, semkey)) for syn in syntrees]
             for syntrees in batch_parse(inputs, grammar, trace=trace)]
@@ -80,10 +80,10 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
     
-    @parameter inputs: a list of sentences
-    @parameter grammar: L{FeatureGrammar} or name of feature-based grammar    
-    @return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
-    @rtype: C{dict}
+    :param inputs: a list of sentences
+    :param grammar: L{FeatureGrammar} or name of feature-based grammar    
+    :return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
+    :rtype: dict
     """
     return [[(syn, sem, model.evaluate(str(sem), assignment, trace=trace))
             for (syn, sem) in interpretations]
@@ -109,10 +109,10 @@ def parse_valuation_line(s):
       girl => {g1, g2}
       chase => {(b1, g1), (b2, g1), (g1, d1), (g2, d2)}
     
-    @parameter s: input line
-    @type s: C{str}
-    @return: a pair (symbol, value)
-    @rtype: C{tuple}
+    :param s: input line
+    :type s: str
+    :return: a pair (symbol, value)
+    :rtype: tuple
     """
     pieces = _VAL_SPLIT_RE.split(s)
     symbol = pieces[0]
@@ -137,10 +137,10 @@ def parse_valuation(s):
     """
     Convert a valuation file into a valuation.
     
-    @parameter s: the contents of a valuation file
-    @type s: C{str}
-    @return: a L{nltk.sem} valuation
-    @rtype: L{Valuation}
+    :param s: the contents of a valuation file
+    :type s: str
+    :return: a L{nltk.sem} valuation
+    :rtype: L{Valuation}
     """
     statements = []
     for linenum, line in enumerate(s.splitlines()):
@@ -156,12 +156,12 @@ def parse_logic(s, logic_parser=None):
     """
     Convert a file of First Order Formulas into a list of {Expression}s.
     
-    @param s: the contents of the file
-    @type s: C{str}
-    @param logic_parser: The parser to be used to parse the logical expression
-    @type logic_parser: C{LogicParser}
-    @return: a list of parsed formulas.
-    @rtype: C{list} of L{Expression}
+    :param s: the contents of the file
+    :type s: str
+    :param logic_parser: The parser to be used to parse the logical expression
+    :type logic_parser: C{LogicParser}
+    :return: a list of parsed formulas.
+    :rtype: list of L{Expression}
     """
     if logic_parser is None:
         logic_parser = LogicParser()

@@ -147,7 +147,7 @@ with unicode strings.  Note also that C{pre} regular expressions
 are not quite as advanced as C{re} ones (e.g., no leftward
 zero-length assertions).
 
-@type CHUNK_TAG_PATTERN: C{regexp}
+:type CHUNK_TAG_PATTERN: C{regexp}
 @var CHUNK_TAG_PATTERN: A regular expression to test whether a tag
      pattern is valid.
 """

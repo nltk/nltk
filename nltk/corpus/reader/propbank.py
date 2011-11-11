@@ -31,16 +31,16 @@ class PropbankCorpusReader(CorpusReader):
                  verbsfile=None, parse_fileid_xform=None,
                  parse_corpus=None, encoding=None):
         """
-        @param root: The root directory for this corpus.
-        @param propfile: The name of the file containing the predicate-
+        :param root: The root directory for this corpus.
+        :param propfile: The name of the file containing the predicate-
             argument annotations (relative to C{root}).
-        @param framefiles: A list or regexp specifying the frameset
+        :param framefiles: A list or regexp specifying the frameset
             fileids for this corpus.
-        @param parse_fileid_xform: A transform that should be applied
+        :param parse_fileid_xform: A transform that should be applied
             to the fileids in this corpus.  This should be a function
             of one argument (a fileid) that returns a string (the new
             fileid).
-        @param parse_corpus: The corpus containing the parse trees
+        :param parse_corpus: The corpus containing the parse trees
             corresponding to this corpus.  These parse trees are
             necessary to resolve the tree pointers used by propbank.
         """
@@ -61,7 +61,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the text contents of the given fileids, as a single string.
+        :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -69,7 +69,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def instances(self):
         """
-        @return: a corpus view that acts as a list of
+        :return: a corpus view that acts as a list of
         L{PropbankInstance} objects, one for each verb in the corpus.
         """
         return StreamBackedCorpusView(self.abspath(self._propfile),
@@ -78,7 +78,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def lines(self):
         """
-        @return: a corpus view that acts as a list of strings, one for
+        :return: a corpus view that acts as a list of strings, one for
         each line in the predicate-argument annotation file.  
         """
         return StreamBackedCorpusView(self.abspath(self._propfile),
@@ -87,7 +87,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def roleset(self, roleset_id):
         """
-        @return: the xml description for the given roleset.
+        :return: the xml description for the given roleset.
         """
         lemma = roleset_id.split('.')[0]
         framefile = 'frames/%s.xml' % lemma
@@ -107,7 +107,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def verbs(self):
         """
-        @return: a corpus view that acts as a list of all verb lemmas
+        :return: a corpus view that acts as a list of all verb lemmas
         in this corpus (from the verbs.txt file).
         """
         return StreamBackedCorpusView(self.abspath(self._verbsfile),
@@ -194,7 +194,7 @@ class PropbankInstance(object):
         if self.fileid not in self.parse_corpus.fileids(): return None
         return self.parse_corpus.parsed_sents(self.fileid)[self.sentnum]
     tree = property(_get_tree, doc="""
-        The parse tree corresponding to this instance, or C{None} if
+        The parse tree corresponding to this instance, or None if
         the corresponding tree is not available.""")
 
     @staticmethod

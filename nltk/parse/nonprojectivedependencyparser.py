@@ -11,7 +11,7 @@ import math
 
 from nltk.grammar import parse_dependency_grammar
 
-from dependencygraph import *
+from dependencygraph import DependencyGraph, conll_data2
 
 #################################################################
 # DependencyScorerI - Interface for Graph-Edge Weight Calculation
@@ -35,8 +35,8 @@ class DependencyScorerI(object):
 
     def train(self, graphs):
         """
-        @type graphs: A list of C{DependencyGraph}
-        @param graphs: A list of dependency graphs to train the scorer.
+        :type graphs: A list of C{DependencyGraph}
+        :param graphs: A list of dependency graphs to train the scorer.
         Typically the edges present in the graphs can be used as
         positive training examples, and the edges not present as negative 
         examples.
@@ -45,11 +45,11 @@ class DependencyScorerI(object):
 
     def score(self, graph):
         """
-        @type graph: A C{DependencyGraph}
-        @param graph: A dependency graph whose set of edges need to be 
+        :type graph: A C{DependencyGraph}
+        :param graph: A dependency graph whose set of edges need to be 
         scored.  
-        @rtype: A three-dimensional list of numbers.
-        @return: The score is returned in a multidimensional(3) list, such
+        :rtype: A three-dimensional list of numbers.
+        :return: The score is returned in a multidimensional(3) list, such
         that the outer-dimension refers to the head, and the
         inner-dimension refers to the dependencies.  For instance,  
         scores[0][1] would reference the list of scores corresponding to 
@@ -101,8 +101,8 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         negative examples.  Uses a feature vector of head-word,
         head-tag, child-word, and child-tag.
         
-        @type graphs: A list of C{DependencyGraph}
-        @param graphs: A list of dependency graphs to train the scorer.     
+        :type graphs: A list of C{DependencyGraph}
+        :param graphs: A list of dependency graphs to train the scorer.     
         """
 
         # Create training labeled training examples
@@ -129,10 +129,10 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         confidence of the classifier in assigning it to the 
         positive label.  Scores are returned in a multidimensional list.
         
-        @type graph: C{DependencyGraph}
-        @param graph: A dependency graph to score.
-        @rtype: 3 dimensional list
-        @return: Edge scores for the graph parameter.
+        :type graph: C{DependencyGraph}
+        :param graph: A dependency graph to score.
+        :rtype: 3 dimensional list
+        :return: Edge scores for the graph parameter.
         """
         # Convert graph to feature representation
         edges = []
@@ -201,10 +201,10 @@ class ProbabilisticNonprojectiveParser(object):
         initialize the scores on a C{DependencyGraph} during the parsing 
         procedure.
         
-        @type graphs: A list of C{DependencyGraph}
-        @param graphs: A list of dependency graphs to train the scorer.
-        @type dependency_scorer: C{DependencyScorerI}
-        @param dependency_scorer: A scorer which implements the
+        :type graphs: A list of C{DependencyGraph}
+        :param graphs: A list of dependency graphs to train the scorer.
+        :type dependency_scorer: C{DependencyScorerI}
+        :param dependency_scorer: A scorer which implements the
         C{DependencyScorerI} interface.
         """
         self._scorer = dependency_scorer
@@ -216,8 +216,8 @@ class ProbabilisticNonprojectiveParser(object):
         These scores are generated via the parser's scorer which 
         was assigned during the training process.
         
-        @type graph: C{DependencyGraph}
-        @param graph: A dependency graph to assign scores to.
+        :type graph: C{DependencyGraph}
+        :param graph: A dependency graph to assign scores to.
         """
         self.scores = self._scorer.score(graph)
 
@@ -227,12 +227,12 @@ class ProbabilisticNonprojectiveParser(object):
         and collapses them into on larger node.  The arcs of all nodes in 
         the graph must be updated to account for this.
         
-        @type new_node: Node.
-        @param new_node: A Node (Dictionary) to collapse the cycle nodes into.
-        @type cycle_path: A list of integers.
-        @param cycle_path: A list of node addresses, each of which is in the cycle.
-        @type g_graph, b_graph, c_graph: C{DependencyGraph}
-        @param g_graph, b_graph, c_graph: Graphs which need to be updated.
+        :type new_node: Node.
+        :param new_node: A Node (Dictionary) to collapse the cycle nodes into.
+        :type cycle_path: A list of integers.
+        :param cycle_path: A list of node addresses, each of which is in the cycle.
+        :type g_graph, b_graph, c_graph: C{DependencyGraph}
+        :param g_graph, b_graph, c_graph: Graphs which need to be updated.
         """
         print 'Collapsing nodes...'
         # Collapse all cycle nodes into v_n+1 in G_Graph
@@ -246,10 +246,10 @@ class ProbabilisticNonprojectiveParser(object):
         Updates the edge scores to reflect a collapse operation into
         new_node.
         
-        @type new_node: A Node.
-        @param new_node: The node which cycle nodes are collapsed into.
-        @type cycle_path: A list of integers.
-        @param cycle_path: A list of node addresses that belong to the cycle.
+        :type new_node: A Node.
+        :param new_node: The node which cycle nodes are collapsed into.
+        :type cycle_path: A list of integers.
+        :param cycle_path: A list of node addresses that belong to the cycle.
         """
         print 'cycle', cycle_path
         cycle_path = self.compute_original_indexes(cycle_path)
@@ -279,8 +279,8 @@ class ProbabilisticNonprojectiveParser(object):
         takes a list of node addresses and replaces any collapsed
         node addresses with their original addresses.
         
-        @type new_address: A list of integers.
-        @param new_addresses: A list of node addresses to check for
+        :type new_address: A list of integers.
+        :param new_addresses: A list of node addresses to check for
         subsumed nodes.
         """
         swapped = True
@@ -304,11 +304,11 @@ class ProbabilisticNonprojectiveParser(object):
         arc is subtracted upon collapse.  This returns the correct 
         amount to subtract from that edge.
         
-        @type column_index: integer.
-        @param column_index: A index representing the column of incoming arcs
+        :type column_index: integer.
+        :param column_index: A index representing the column of incoming arcs
         to a particular node being updated
-        @type cycle_indexes: A list of integers.
-        @param cycle_indexes: Only arcs from cycle nodes are considered.  This 
+        :type cycle_indexes: A list of integers.
+        :param cycle_indexes: Only arcs from cycle nodes are considered.  This 
         is a list of such nodes addresses.
         """
         max_score = -100000
@@ -324,8 +324,8 @@ class ProbabilisticNonprojectiveParser(object):
         Returns the source of the best incoming arc to the 
         node with address: node_index
         
-        @type node_index: integer.
-        @param node_index: The address of the 'destination' node,
+        :type node_index: integer.
+        :param node_index: The address of the 'destination' node,
         the node that is arced to.
         """
         originals = self.compute_original_indexes([node_index])
@@ -371,10 +371,10 @@ class ProbabilisticNonprojectiveParser(object):
         scoring methods can be used by implementing the C{DependencyScorerI}
         interface and passing it to the training algorithm.
         
-        @type tokens: A list of C{String}.
-        @param tokens: A list of words or punctuation to be parsed.
-        @type tags: A List of C{String}.
-        @param tags: A list of tags corresponding by index to the words in the tokens list.
+        :type tokens: A list of C{String}.
+        :param tokens: A list of words or punctuation to be parsed.
+        :type tags: A List of C{String}.
+        :param tags: A list of tags corresponding by index to the words in the tokens list.
         """
         self.inner_nodes = {}
         # Initialize g_graph
@@ -487,8 +487,8 @@ class NonprojectiveDependencyParser(object):
         """
         Creates a new C{NonprojectiveDependencyParser}.
 
-        @param dependency_grammar: a grammar of word-to-word relations.
-        @type depenedncy_grammar: C{DependencyGrammar}
+        :param dependency_grammar: a grammar of word-to-word relations.
+        :type depenedncy_grammar: C{DependencyGrammar}
 	    """
         self._grammar = dependency_grammar
 
@@ -503,9 +503,9 @@ class NonprojectiveDependencyParser(object):
         to produce the set of non-projective parses.
 
         param tokens: A list of tokens to parse.
-        type tokens: A C{list} of L{String}.
+        type tokens: A list of L{String}.
         return: A set of non-projective parses.
-        rtype: A C{list} of L{DependencyGraph} 
+        rtype: A list of L{DependencyGraph} 
         """
         # Create graph representation of tokens
         self._graph = DependencyGraph()

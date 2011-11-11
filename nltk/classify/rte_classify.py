@@ -25,7 +25,7 @@ def ne(token):
     This just assumes that words in all caps or titles are 
     named entities.
     
-    @type token: C{str}
+    :type token: str
     """
     if token.istitle() or \
        token.isupper():
@@ -48,9 +48,9 @@ class RTEFeatureExtractor(object):
     """
     def __init__(self, rtepair, stop=True, lemmatize=False):
         """
-        @param rtepair: a L{RTEPair} from which features should be extracted
-        @param stop: if C{True}, stopwords are thrown away.
-        @type stop: C{bool}
+        :param rtepair: a L{RTEPair} from which features should be extracted
+        :param stop: if C{True}, stopwords are thrown away.
+        :type stop: bool
         """
         self.stop = stop
         self.stopwords = set(['a', 'the', 'it', 'they', 'of', 'in', 'to',
@@ -85,8 +85,8 @@ class RTEFeatureExtractor(object):
         """
         Compute the overlap between text and hypothesis.
         
-        @param toktype: distinguish Named Entities from ordinary words
-        @type toktype: 'ne' or 'word'
+        :param toktype: distinguish Named Entities from ordinary words
+        :type toktype: 'ne' or 'word'
         """
         ne_overlap = set([token for token in self._overlap if ne(token)])
         if toktype == 'ne':
@@ -102,8 +102,8 @@ class RTEFeatureExtractor(object):
         """
         Compute the extraneous material in the hypothesis.
         
-        @param toktype: distinguish Named Entities from ordinary words
-        @type toktype: 'ne' or 'word'
+        :param toktype: distinguish Named Entities from ordinary words
+        :type toktype: 'ne' or 'word'
         """
         ne_extra = set([token for token in self._hyp_extra if ne(token)])
         if toktype == 'ne':

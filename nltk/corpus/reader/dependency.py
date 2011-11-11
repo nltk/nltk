@@ -26,8 +26,8 @@ class DependencyCorpusReader(SyntaxCorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the given file(s) as a single string.
-        @rtype: C{str}
+        :return: the given file(s) as a single string.
+        :rtype: str
         """
         return concat([open(fileid).read()
                       for fileid in self.abspaths(fileids)])

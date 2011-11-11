@@ -29,7 +29,7 @@ stands for a feature whose value is unknown (I{not} a feature without
 a value).  Two feature structures that represent (potentially
 overlapping) information about the same object can be combined by
 X{unification}.  When two inconsistent feature structures are unified,
-the unification fails and returns C{None}.
+the unification fails and returns None.
 
 Features can be specified using X{feature paths}, or tuples of feature
 identifiers that specify path through the nested feature structures to
@@ -94,8 +94,8 @@ recommended that you use full-fledged L{FeatStruct} objects.
 
 import re, copy
 
-from nltk.sem.logic import Variable, Expression, SubstituteBindingsI
-from nltk.sem.logic import LogicParser, ParseException
+from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
+                            LogicParser, ParseException)
 import nltk.internals
 
 ######################################################################
@@ -136,7 +136,7 @@ class FeatStruct(SubstituteBindingsI):
     """
     
     _frozen = False
-    """@ivar: A flag indicating whether this feature structure is
+    """:ivar: A flag indicating whether this feature structure is
        frozen or not.  Once this flag is set, it should never be
        un-set; and no further modification should be made to this
        feature structue."""
@@ -152,13 +152,13 @@ class FeatStruct(SubstituteBindingsI):
         structure will be an instance of either the L{FeatDict} class
         or the L{FeatList} class.
 
-        @param features: The initial feature values for this feature
+        :param features: The initial feature values for this feature
             structure:
               - FeatStruct(string) -> FeatStructParser().parse(string)
               - FeatStruct(mapping) -> FeatDict(mapping)
               - FeatStruct(sequence) -> FeatList(sequence)
               - FeatStruct() -> FeatDict()
-        @param morefeatures: If C{features} is a mapping or C{None},
+        :param morefeatures: If C{features} is a mapping or None,
             then C{morefeatures} provides additional features for the
             C{FeatDict} constructor.
         """
@@ -217,17 +217,17 @@ class FeatStruct(SubstituteBindingsI):
 
     def equal_values(self, other, check_reentrance=False):
         """
-        @return: True if C{self} and C{other} assign the same value to
+        :return: True if C{self} and C{other} assign the same value to
         to every feature.  In particular, return true if
         C{self[M{p}]==other[M{p}]} for every feature path M{p} such
         that C{self[M{p}]} or C{other[M{p}]} is a base value (i.e.,
         not a nested feature structure).
 
-        @param check_reentrance: If true, then also return false if
+        :param check_reentrance: If true, then also return false if
             there is any difference between the reentrances of C{self}
             and C{other}.
             
-        @note: the L{== operator <__eq__>} is equivalent to
+        :note: the L{== operator <__eq__>} is equivalent to
             C{equal_values()} with C{check_reentrance=True}.
         """
         return self._equal(other, check_reentrance, set(), set(), set())
@@ -239,7 +239,7 @@ class FeatStruct(SubstituteBindingsI):
         contain the same reentrances.  I.e., return 
         C{self.equal_values(other, check_reentrance=True)}.
         
-        @see: L{equal_values()}
+        :see: L{equal_values()}
         """
         return self._equal(other, True, set(), set(), set())
     
@@ -268,12 +268,12 @@ class FeatStruct(SubstituteBindingsI):
     def _equal(self, other, check_reentrance, visited_self,
                visited_other, visited_pairs):
         """
-        @return: True iff self and other have equal values.
-        @param visited_self: A set containing the ids of all C{self}
+        :return: True iff self and other have equal values.
+        :param visited_self: A set containing the ids of all C{self}
             feature structures we've already visited.
-        @param visited_other: A set containing the ids of all C{other}
+        :param visited_other: A set containing the ids of all C{other}
             feature structures we've already visited.
-        @param visited_pairs: A set containing C{(selfid, otherid)} pairs
+        :param visited_pairs: A set containing C{(selfid, otherid)} pairs
             for all pairs of feature structures we've already visited.
         """
         # If we're the same object, then we're equal.
@@ -327,9 +327,9 @@ class FeatStruct(SubstituteBindingsI):
     
     def _hash(self, visited):
         """
-        @return: A hash value for this feature structure.
-        @require: C{self} must be frozen.
-        @param visited: A set containing the ids of all feature
+        :return: A hash value for this feature structure.
+        :require: C{self} must be frozen.
+        :param visited: A set containing the ids of all feature
             structures we've already visited while hashing.
         """        
         if id(self) in visited: return 1
@@ -368,7 +368,7 @@ class FeatStruct(SubstituteBindingsI):
 
     def frozen(self):
         """
-        @return: True if this feature structure is immutable.  Feature
+        :return: True if this feature structure is immutable.  Feature
         structures can be made immutable with the L{freeze()} method.
         Immutable feature structures may not be made mutable again,
         but new mutale copies can be produced with the L{copy()} method.
@@ -379,7 +379,7 @@ class FeatStruct(SubstituteBindingsI):
         """
         Make this feature structure, and any feature structure it
         contains, immutable.
-        @param visited: A set containing the ids of all feature
+        :param visited: A set containing the ids of all feature
             structures we've already visited while freezing.
         """
         if id(self) in visited: return
@@ -398,7 +398,7 @@ class FeatStruct(SubstituteBindingsI):
         Return a new copy of C{self}.  The new copy will not be
         frozen.
 
-        @param deep: If true, create a deep copy; if false, create
+        :param deep: If true, create a deep copy; if false, create
             a shallow copy.
         """
         if deep:
@@ -417,15 +417,15 @@ class FeatStruct(SubstituteBindingsI):
 
     def cyclic(self):
         """
-        @return: True if this feature structure contains itself.
+        :return: True if this feature structure contains itself.
         """
         return self._find_reentrances({})[id(self)]
 
     def reentrances(self):
         """
-        @return: A list of all feature structures that can be reached
+        :return: A list of all feature structures that can be reached
             from C{self} by multiple feature paths.
-        @rtype: C{list} of L{FeatStruct}
+        :rtype: list of L{FeatStruct}
         """
         reentrance_dict = self._find_reentrances({})
         return [struct for (struct, reentrant) in reentrance_dict.items()
@@ -443,7 +443,7 @@ class FeatStruct(SubstituteBindingsI):
         """
         Return an iterator that generates this feature structure, and
         each feature structure it contains.
-        @param visited: A set containing the ids of all feature
+        :param visited: A set containing the ids of all feature
             structures we've already visited while freezing.
         """
         raise NotImplementedError() # Implemented by subclasses.
@@ -485,25 +485,25 @@ class FeatStruct(SubstituteBindingsI):
     ##////////////////////////////////////////////////////////////
 
     def substitute_bindings(self, bindings):
-        """@see: L{nltk.featstruct.substitute_bindings()}"""
+        """:see: L{nltk.featstruct.substitute_bindings()}"""
         return substitute_bindings(self, bindings)
     
     def retract_bindings(self, bindings):
-        """@see: L{nltk.featstruct.retract_bindings()}"""
+        """:see: L{nltk.featstruct.retract_bindings()}"""
         return retract_bindings(self, bindings)
     
     def variables(self):
-        """@see: L{nltk.featstruct.find_variables()}"""
+        """:see: L{nltk.featstruct.find_variables()}"""
         return find_variables(self)
     
     def rename_variables(self, vars=None, used_vars=(), new_vars=None):
-        """@see: L{nltk.featstruct.rename_variables()}"""
+        """:see: L{nltk.featstruct.rename_variables()}"""
         return rename_variables(self, vars, used_vars, new_vars)
 
     def remove_variables(self):
         """
-        @rtype: L{FeatStruct}
-        @return: The feature structure that is obtained by deleting
+        :rtype: L{FeatStruct}
+        :return: The feature structure that is obtained by deleting
         all features whose values are L{Variable}s.
         """
         return remove_variables(self)
@@ -518,7 +518,7 @@ class FeatStruct(SubstituteBindingsI):
 
     def subsumes(self, other):
         """
-        @return: True if C{self} subsumes C{other}.  I.e., return true
+        :return: True if C{self} subsumes C{other}.  I.e., return true
         if unifying C{self} with C{other} would result in a feature
         structure equal to C{other}.
         """
@@ -537,11 +537,11 @@ class FeatStruct(SubstituteBindingsI):
 
     def _repr(self, reentrances, reentrance_ids):
         """
-        @return: A string representation of this feature structure.
-        @param reentrances: A dictionary that maps from the C{id} of
+        :return: A string representation of this feature structure.
+        :param reentrances: A dictionary that maps from the C{id} of
             each feature value in self, indicating whether that value
             is reentrant or not.
-        @param reentrance_ids: A dictionary mapping from the C{id}s
+        :param reentrance_ids: A dictionary mapping from the C{id}s
             of feature values to unique identifiers.  This is modified
             by C{repr}: the first time a reentrant feature value is
             displayed, an identifier is added to reentrance_ids for
@@ -583,22 +583,22 @@ class FeatDict(FeatStruct, dict):
     Two feature dicts are considered equal if they assign the same
     values to all features, and have the same reentrances.
     
-    @see: L{FeatStruct} for information about feature paths, reentrance,
+    :see: L{FeatStruct} for information about feature paths, reentrance,
     cyclic feature structures, mutability, freezing, and hashing.
     """
     def __init__(self, features=None, **morefeatures):
         """
         Create a new feature dictionary, with the specified features.
 
-        @param features: The initial value for this feature
+        :param features: The initial value for this feature
         dictionary.  If C{features} is a C{FeatStruct}, then its
         features are copied (shallow copy).  If C{features} is a
-        C{dict}, then a feature is created for each item, mapping its
+        dict, then a feature is created for each item, mapping its
         key to its value.  If C{features} is a string, then it is
         parsed using L{FeatStructParser}.  If C{features} is a list of
         tuples C{name,val}, then a feature is created for each tuple.
         
-        @param morefeatures: Additional features for the new feature
+        :param morefeatures: Additional features for the new feature
         dictionary.  If a feature is listed under both C{features} and
         C{morefeatures}, then the value from C{morefeatures} will be
         used.
@@ -783,12 +783,12 @@ class FeatDict(FeatStruct, dict):
 
     def _str(self, reentrances, reentrance_ids):
         """
-        @return: A list of lines composing a string representation of
+        :return: A list of lines composing a string representation of
             this feature dictionary.  
-        @param reentrances: A dictionary that maps from the C{id} of
+        :param reentrances: A dictionary that maps from the C{id} of
             each feature value in self, indicating whether that value
             is reentrant or not.
-        @param reentrance_ids: A dictionary mapping from the C{id}s
+        :param reentrance_ids: A dictionary mapping from the C{id}s
             of feature values to unique identifiers.  This is modified
             by C{repr}: the first time a reentrant feature value is
             displayed, an identifier is added to reentrance_ids for
@@ -890,14 +890,14 @@ class FeatList(FeatStruct, list):
     Two feature lists are considered equal if they assign the same
     values to all features, and have the same reentrances.
     
-    @see: L{FeatStruct} for information about feature paths, reentrance,
+    :see: L{FeatStruct} for information about feature paths, reentrance,
     cyclic feature structures, mutability, freezing, and hashing.
     """
     def __init__(self, features=()):
         """
         Create a new feature list, with the specified features.
 
-        @param features: The initial list of features for this feature
+        :param features: The initial list of features for this feature
             list.  If C{features} is a string, then it is paresd using
             L{FeatStructParser}.  Otherwise, it should be a sequence
             of basic values and nested feature structures.
@@ -1028,14 +1028,14 @@ class FeatList(FeatStruct, list):
 
 def substitute_bindings(fstruct, bindings, fs_class='default'):
     """
-    @return: The feature structure that is obtained by replacing each
+    :return: The feature structure that is obtained by replacing each
     variable bound by C{bindings} with its binding.  If a variable is
     aliased to a bound variable, then it will be replaced by that
     variable's value.  If a variable is aliased to an unbound
     variable, then it will be replaced by that variable.
     
-    @type bindings: C{dict} with L{Variable} keys
-    @param bindings: A dictionary mapping from variables to values.
+    :type bindings: dict with L{Variable} keys
+    :param bindings: A dictionary mapping from variables to values.
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
     fstruct = copy.deepcopy(fstruct)
@@ -1060,7 +1060,7 @@ def _substitute_bindings(fstruct, bindings, fs_class, visited):
 
 def retract_bindings(fstruct, bindings, fs_class='default'):
     """
-    @return: The feature structure that is obtained by replacing each
+    :return: The feature structure that is obtained by replacing each
     feature structure value that is bound by C{bindings} with the
     variable that binds it.  A feature structure value must be
     identical to a bound value (i.e., have equal id) to be replaced.
@@ -1094,8 +1094,8 @@ def _retract_bindings(fstruct, inv_bindings, fs_class, visited):
                 
 def find_variables(fstruct, fs_class='default'):
     """
-    @return: The set of variables used by this feature structure.
-    @rtype: C{set} of L{Variable}
+    :return: The set of variables used by this feature structure.
+    :rtype: set of L{Variable}
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
     return _variables(fstruct, set(), fs_class, set())
@@ -1119,23 +1119,23 @@ def _variables(fstruct, vars, fs_class, visited):
 def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
                      fs_class='default'):
     """
-    @return: The feature structure that is obtained by replacing
+    :return: The feature structure that is obtained by replacing
     any of this feature structure's variables that are in C{vars}
     with new variables.  The names for these new variables will be
     names that are not used by any variable in C{vars}, or in
     C{used_vars}, or in this feature structure.
 
-    @type vars: C{set}
-    @param vars: The set of variables that should be renamed.
+    :type vars: set
+    :param vars: The set of variables that should be renamed.
     If not specified, C{find_variables(fstruct)} is used; i.e., all
     variables will be given new names.
     
-    @type used_vars: C{set}
-    @param used_vars: A set of variables whose names should not be
+    :type used_vars: set
+    :param used_vars: A set of variables whose names should not be
     used by the new variables.
     
-    @type new_vars: C{dict} from L{Variable} to L{Variable}
-    @param new_vars: A dictionary that is used to hold the mapping
+    :type new_vars: dict from L{Variable} to L{Variable}
+    :param new_vars: A dictionary that is used to hold the mapping
     from old variables to new variables.  For each variable M{v}
     in this feature structure:
 
@@ -1211,8 +1211,8 @@ def _rename_variable(var, used_vars):
 
 def remove_variables(fstruct, fs_class='default'):
     """
-    @rtype: L{FeatStruct}
-    @return: The feature structure that is obtained by deleting
+    :rtype: L{FeatStruct}
+    :return: The feature structure that is obtained by deleting
     all features whose values are L{Variable}s.
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
@@ -1261,10 +1261,10 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
 
     If no such feature structure exists (because C{fstruct1} and
     C{fstruct2} specify incompatible values for some feature), then
-    unification fails, and C{unify} returns C{None}.
+    unification fails, and C{unify} returns None.
 
-    @type bindings: C{dict} with L{Variable} keys
-    @param bindings: A set of variable bindings to be used and
+    :type bindings: dict with L{Variable} keys
+    :param bindings: A set of variable bindings to be used and
         updated during unification.
 
         Bound variables are replaced by their values.  Aliased
@@ -1283,13 +1283,13 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
     
         If C{bindings} is unspecified, then all variables are
         assumed to be unbound.  I.e., C{bindings} defaults to an
-        empty C{dict}.
+        empty dict.
 
-    @type trace: C{bool}
-    @param trace: If true, generate trace output.
+    :type trace: bool
+    :param trace: If true, generate trace output.
 
-    @type rename_vars: C{bool}
-    @param rename_vars: If true, then rename any variables in
+    :type rename_vars: bool
+    :param rename_vars: If true, then rename any variables in
         C{fstruct2} that are also used in C{fstruct1}.  This prevents
         aliasing in cases where C{fstruct1} and C{fstruct2} use the
         same variable name.  E.g.:
@@ -1372,8 +1372,8 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
     fails, then a _UnificationFailureError is raised, and the
     values of C{fstruct1} and C{fstruct2} are undefined.
 
-    @param bindings: A dictionary mapping variables to values.
-    @param forward: A dictionary mapping feature structures ids
+    :param bindings: A dictionary mapping variables to values.
+    :param forward: A dictionary mapping feature structures ids
         to replacement structures.  When two feature structures
         are merged, a mapping from one to the other will be added
         to the forward dictionary; and changes will be made only
@@ -1381,8 +1381,8 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
         C{_destructively_unify} will always 'follow' any links
         in the forward dictionary for fstruct1 and fstruct2 before
         actually unifying them.
-    @param trace: If true, generate trace output
-    @param path: The feature path that led us to this unification
+    :param trace: If true, generate trace output
+    :param path: The feature path that led us to this unification
         step.  Used for trace output.
     """
     # If fstruct1 is already identical to fstruct2, we're done.
@@ -1641,7 +1641,7 @@ def _trace_valrepr(val):
 
 def subsumes(fstruct1, fstruct2):
     """
-    @return: True if C{fstruct1} subsumes C{fstruct2}.  I.e., return
+    :return: True if C{fstruct1} subsumes C{fstruct2}.  I.e., return
     true if unifying C{fstruct1} with C{fstruct2} would result in a
     feature structure equal to C{fstruct2.}
     """
@@ -1649,9 +1649,9 @@ def subsumes(fstruct1, fstruct2):
 
 def conflicts(fstruct1, fstruct2, trace=0):
     """
-    @return: A list of the feature paths of all features which are
+    :return: A list of the feature paths of all features which are
     assigned incompatible values by C{fstruct1} and C{fstruct2}.
-    @rtype: C{list} of C{tuple}
+    :rtype: list of tuple
     """
     conflict_list = []
     def add_conflict(fval1, fval2, path):
@@ -1941,7 +1941,7 @@ class FeatStructParser(object):
             dashes, commas, and square brackets.  Feature names may
             not begin with plus signs or minus signs.
           - Only the following basic feature value are supported:
-            strings, integers, variables, C{None}, and unquoted
+            strings, integers, variables, None, and unquoted
             alphanumeric strings.
           - For reentrant values, the first mention must specify
             a reentrance identifier and a value; and any subsequent
@@ -1971,11 +1971,11 @@ class FeatStructParser(object):
     def partial_parse(self, s, position=0, reentrances=None, fstruct=None):
         """
         Helper function that parses a feature structure.
-        @param s: The string to parse.
-        @param position: The position in the string to start parsing.
-        @param reentrances: A dictionary from reentrance ids to values.
+        :param s: The string to parse.
+        :param position: The position in the string to start parsing.
+        :param reentrances: A dictionary from reentrance ids to values.
             Defaults to an empty dictionary.
-        @return: A tuple (val, pos) of the feature structure created
+        :return: A tuple (val, pos) of the feature structure created
             by parsing and the position where the parsed feature
             structure ends.
         """

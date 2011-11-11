@@ -14,8 +14,8 @@ import os, re, codecs
 from StringIO import StringIO
 from xml.etree import ElementTree
 from xml.etree.ElementTree import TreeBuilder, Element, SubElement
-from nltk.data import PathPointer, ZipFilePathPointer
-import nltk
+
+from nltk.data import PathPointer, ZipFilePathPointer, find
 
 class StandardFormat(object):
     """
@@ -29,8 +29,8 @@ class StandardFormat(object):
     def open(self, sfm_file):
         """Open a standard format marker file for sequential reading. 
         
-        @param sfm_file: name of the standard format marker input file
-        @type sfm_file: C{string}
+        :param sfm_file: name of the standard format marker input file
+        :type sfm_file: str
         """
         if isinstance(sfm_file, PathPointer):
             # [xx] We don't use 'rU' mode here -- do we need to?
@@ -42,8 +42,8 @@ class StandardFormat(object):
     def open_string(self, s):
         """Open a standard format marker string for sequential reading. 
         
-        @param s: string to parse as a standard format marker input file
-        @type s: C{string}
+        :param s: string to parse as a standard format marker input file
+        :type s: str
         """
         self._file = StringIO(s)
 
@@ -51,10 +51,10 @@ class StandardFormat(object):
         """Return an iterator for the fields in the standard format marker
         file.
         
-        @return: an iterator that returns the next field in a (marker, value) 
+        :return: an iterator that returns the next field in a (marker, value) 
             tuple. Linebreaks and trailing white space are preserved except 
             for the final newline in each field.
-        @rtype: iterator over C{(marker, value)} tuples
+        :rtype: iterator over C{(marker, value)} tuples
         """
         join_string = '\n'
         line_regexp = r'^%s(?:\\(\S+)\s*)?(.*)$'
@@ -85,27 +85,27 @@ class StandardFormat(object):
     def fields(self, strip=True, unwrap=True, encoding=None, errors='strict', unicode_fields=None):
         """Return an iterator for the fields in the standard format marker file.
         
-        @param strip: strip trailing whitespace from the last line of each field
-        @type strip: C{boolean}
-        @param unwrap: Convert newlines in a field to spaces.
-        @type unwrap: C{boolean}
-        @param encoding: Name of an encoding to use. If it is specified then 
+        :param strip: strip trailing whitespace from the last line of each field
+        :type strip: bool
+        :param unwrap: Convert newlines in a field to spaces.
+        :type unwrap: bool
+        :param encoding: Name of an encoding to use. If it is specified then 
             the C{fields} method returns unicode strings rather than non 
             unicode strings.
-        @type encoding: C{string} or C{None}
-        @param errors: Error handling scheme for codec. Same as the C{decode} 
+        :type encoding: str or None
+        :param errors: Error handling scheme for codec. Same as the C{decode} 
         inbuilt string method.
-        @type errors: C{string}
-        @param unicode_fields: Set of marker names whose values are UTF-8 encoded.
+        :type errors: str
+        :param unicode_fields: Set of marker names whose values are UTF-8 encoded.
             Ignored if encoding is None. If the whole file is UTF-8 encoded set 
             C{encoding='utf8'} and leave C{unicode_fields} with its default
             value of None.
-        @type unicode_fields: set or dictionary (actually any sequence that 
+        :type unicode_fields: set or dictionary (actually any sequence that 
             supports the 'in' operator).
-        @return: an iterator that returns the next field in a C{(marker, value)} 
+        :return: an iterator that returns the next field in a C{(marker, value)} 
             tuple. C{marker} and C{value} are unicode strings if an C{encoding} was specified in the 
             C{fields} method. Otherwise they are nonunicode strings.
-        @rtype: iterator over C{(marker, value)} tuples
+        :rtype: iterator over C{(marker, value)} tuples
         """
         if encoding is None and unicode_fields is not None:
             raise ValueError, 'unicode_fields is set but not encoding.'
@@ -181,14 +181,14 @@ class ToolboxData(StandardFormat):
                 </record>
             </toolbox_data>
 
-        @param key: Name of key marker at the start of each record. If set to 
+        :param key: Name of key marker at the start of each record. If set to 
         None (the default value) the first marker that doesn't begin with an 
         underscore is assumed to be the key.
-        @type key: C{string}
-        @param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
-        @type kwargs: keyword arguments dictionary
-        @rtype:   C{ElementTree._ElementInterface}
-        @return:  contents of toolbox data divided into header and records
+        :type key: str
+        :param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
+        :type kwargs: keyword arguments dictionary
+        :rtype:   C{ElementTree._ElementInterface}
+        :return:  contents of toolbox data divided into header and records
         """
         builder = TreeBuilder()
         builder.start('toolbox_data', {})
@@ -215,7 +215,7 @@ class ToolboxData(StandardFormat):
         return builder.close()
 
     def _tree2etree(self, parent):
-        from nltk.parse import Tree
+        from nltk.tree import Tree
 
         root = Element(parent.node)
         for child in parent:
@@ -232,21 +232,21 @@ class ToolboxData(StandardFormat):
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the chunk grammar.
         
-        @type grammar: C{string}
-        @param grammar: Contains the chunking rules used to parse the 
+        :type grammar: str
+        :param grammar: Contains the chunking rules used to parse the 
         database.  See L{chunk.RegExp} for documentation.
-        @type top_node: C{string}
-        @param top_node: The node value that should be used for the
+        :type top_node: str
+        :param top_node: The node value that should be used for the
             top node of the chunk structure.
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
+        :type trace: int
+        :param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
             C{1} will generate normal tracing output; and C{2} or
             higher will generate verbose tracing output.
-        @type kwargs: C{dictionary}
-        @param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
-        @rtype:   C{ElementTree._ElementInterface}
-        @return:  Contents of toolbox data parsed according to the rules in grammar
+        :type kwargs: C{dictionary}
+        :param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
+        :rtype:   C{ElementTree._ElementInterface}
+        :return:  Contents of toolbox data parsed according to the rules in grammar
         """
         from nltk import chunk
         from nltk.parse import Tree
@@ -267,17 +267,17 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     """Return a string with a standard format representation of the toolbox
     data in tree (tree can be a toolbox database or a single record).
     
-    @param tree: flat representation of toolbox data (whole database or single record)
-    @type tree: C{ElementTree._ElementInterface}
-    @param encoding: Name of an encoding to use.
-    @type encoding: C{string}
-    @param errors: Error handling scheme for codec. Same as the C{encode} 
+    :param tree: flat representation of toolbox data (whole database or single record)
+    :type tree: C{ElementTree._ElementInterface}
+    :param encoding: Name of an encoding to use.
+    :type encoding: str
+    :param errors: Error handling scheme for codec. Same as the C{encode} 
         inbuilt string method.
-    @type errors: C{string}
-    @param unicode_fields:
-    @type unicode_fields: C{dictionary} or C{set} of field names
-    @rtype:   C{string}
-    @return:  C{string} using standard format markup
+    :type errors: str
+    :param unicode_fields:
+    :type unicode_fields: C{dictionary} or set of field names
+    :rtype:   str
+    :return:  str using standard format markup
     """
     if tree.tag == 'record':
         root = Element('toolbox_data')
@@ -320,14 +320,14 @@ class ToolboxSettings(StandardFormat):
     def parse(self, encoding=None, errors='strict', **kwargs):
         """Parses a settings file using ElementTree.
         
-        @param encoding: encoding used by settings file
-        @type  encoding: C{string}        
-        @param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
-        @type errors: C{string}
-        @param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
-        @type kwargs: keyword arguments dictionary
-        @rtype:   C{ElementTree._ElementInterface}
-        @return:  contents of toolbox settings file with a nested structure
+        :param encoding: encoding used by settings file
+        :type  encoding: str        
+        :param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
+        :type errors: str
+        :param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
+        :type kwargs: keyword arguments dictionary
+        :rtype:   C{ElementTree._ElementInterface}
+        :return:  contents of toolbox settings file with a nested structure
         """
         builder = TreeBuilder()
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
@@ -378,8 +378,8 @@ def _to_settings_string(node, l, **kwargs):
 def remove_blanks(elem):
     """Remove all elements and subelements with no text and no child elements.
     
-    @param elem: toolbox data in an elementtree structure
-    @type elem: ElementTree._ElementInterface
+    :param elem: toolbox data in an elementtree structure
+    :type elem: ElementTree._ElementInterface
     """
     out = list()
     for child in elem:
@@ -391,10 +391,10 @@ def remove_blanks(elem):
 def add_default_fields(elem, default_fields):
     """Add blank elements and subelements specified in default_fields.
     
-    @param elem: toolbox data in an elementtree structure
-    @type elem: ElementTree._ElementInterface
-    @param default_fields: fields to add to each type of element and subelement
-    @type default_fields: dictionary of tuples
+    :param elem: toolbox data in an elementtree structure
+    :type elem: ElementTree._ElementInterface
+    :param default_fields: fields to add to each type of element and subelement
+    :type default_fields: dictionary of tuples
     """
     for field in default_fields.get(elem.tag,  []):
         if elem.find(field) is None:
@@ -405,10 +405,10 @@ def add_default_fields(elem, default_fields):
 def sort_fields(elem, field_orders):
     """Sort the elements and subelements in order specified in field_orders.
     
-    @param elem: toolbox data in an elementtree structure
-    @type elem: ElementTree._ElementInterface
-    @param field_orders: order of fields for each type of element and subelement
-    @type field_orders: dictionary of tuples
+    :param elem: toolbox data in an elementtree structure
+    :type elem: ElementTree._ElementInterface
+    :param field_orders: order of fields for each type of element and subelement
+    :type field_orders: dictionary of tuples
     """
     order_dicts = dict()
     for field, order in field_orders.items():
@@ -434,10 +434,10 @@ def _sort_fields(elem, orders_dicts):
 def add_blank_lines(tree, blanks_before, blanks_between):
     """Add blank lines before all elements and subelements specified in blank_before.
     
-    @param elem: toolbox data in an elementtree structure
-    @type elem: ElementTree._ElementInterface
-    @param blank_before: elements and subelements to add blank lines before
-    @type blank_before: dictionary of tuples
+    :param elem: toolbox data in an elementtree structure
+    :type elem: ElementTree._ElementInterface
+    :param blank_before: elements and subelements to add blank lines before
+    :type blank_before: dictionary of tuples
     """
     try:
         before = blanks_before[tree.tag]
@@ -465,9 +465,9 @@ def add_blank_lines(tree, blanks_before, blanks_between):
 def demo():
     from itertools import islice
 
-#    zip_path = nltk.data.find('corpora/toolbox.zip')
+#    zip_path = find('corpora/toolbox.zip')
 #    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
-    file_path = nltk.data.find('corpora/toolbox/rotokas.dic')
+    file_path = find('corpora/toolbox/rotokas.dic')
     lexicon = ToolboxData(file_path).parse()
     print 'first field in fourth record:'
     print lexicon[3][0].tag
@@ -482,7 +482,7 @@ def demo():
         print field.text
     
     settings = ToolboxSettings()
-    file_path = nltk.data.find('corpora/toolbox/MDF/MDF_AltH.typ')
+    file_path = find('corpora/toolbox/MDF/MDF_AltH.typ')
     settings.open(file_path)
 #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
     tree = settings.parse(unwrap=False, encoding='cp1252')

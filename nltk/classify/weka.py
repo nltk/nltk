@@ -224,8 +224,8 @@ class ARFF_Formatter:
 
     def __init__(self, labels, features):
         """
-        @param labels: A list of all class labels that can be generated.
-        @param features: A list of feature specifications, where
+        :param labels: A list of all class labels that can be generated.
+        :param features: A list of feature specifications, where
             each feature specification is a tuple (fname, ftype);
             and ftype is an ARFF type string such as NUMERIC or
             STRING.
@@ -302,10 +302,10 @@ class ARFF_Formatter:
     def data_section(self, tokens, labeled=None):
         """
         Returns the ARFF data section for the given data.
-        @param tokens: a list of featuresets (dicts) or labelled featuresets
+        :param tokens: a list of featuresets (dicts) or labelled featuresets
             which are tuples (featureset, label).
-        @param labeled: Indicates whether the given tokens are labeled
-            or not.  If C{None}, then the tokens will be assumed to be
+        :param labeled: Indicates whether the given tokens are labeled
+            or not.  If None, then the tokens will be assumed to be
             labeled if the first token's value is a tuple or list.
         """
         # Check if the tokens are labeled or unlabeled.  If unlabeled,

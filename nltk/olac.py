@@ -12,9 +12,9 @@ def read_olac(xml):
     """
     Read an OLAC XML record and return a list of attributes.
 
-    @param xml: XML string for conversion    
-    @type xml: C{string}
-    @rtype: C{list} of C{tuple}
+    :param xml: XML string for conversion    
+    :type xml: str
+    :rtype: list of tuple
     """
     from lxml import etree
 

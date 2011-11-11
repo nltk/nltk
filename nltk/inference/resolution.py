@@ -24,10 +24,10 @@ class ResolutionProver(Prover):
     
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in the proof
-        @type assumptions: L{list} of logic.Expression objects
+        :param goal: Input expression to prove
+        :type goal: L{logic.Expression}
+        :param assumptions: Input expressions to use as assumptions in the proof
+        :type assumptions: L{list} of logic.Expression objects
         """
         if not assumptions:
             assumptions = []
@@ -88,11 +88,11 @@ class ResolutionProver(Prover):
 class ResolutionProverCommand(BaseProverCommand):
     def __init__(self, goal=None, assumptions=None, prover=None):
         """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in
+        :param goal: Input expression to prove
+        :type goal: L{logic.Expression}
+        :param assumptions: Input expressions to use as assumptions in
             the proof.
-        @type assumptions: C{list} of L{logic.Expression}
+        :type assumptions: list of L{logic.Expression}
         """
         if prover is not None:
             assert isinstance(prover, ResolutionProver)
@@ -159,18 +159,18 @@ class Clause(list):
         Attempt to unify this Clause with the other, returning a list of 
         resulting, unified, Clauses.
         
-        @param other: C{Clause} with which to unify
-        @param bindings: C{BindingDict} containing bindings that should be used
+        :param other: C{Clause} with which to unify
+        :param bindings: C{BindingDict} containing bindings that should be used
         during the unification
-        @param used: C{tuple} of two C{list}s of atoms.  The first lists the 
+        :param used: tuple of two lists of atoms.  The first lists the 
         atoms from 'self' that were successfully unified with atoms from 
         'other'.  The second lists the atoms from 'other' that were successfully
         unified with atoms from 'self'.
-        @param skipped: C{tuple} of two C{Clause}s.  The first is a list of all
+        :param skipped: tuple of two C{Clause}s.  The first is a list of all
         the atoms from the 'self' Clause that have not been unified with 
         anything on the path.  The second is same thing for the 'other' Clause.
-        @param debug: C{bool} indicating whether debug statements should print
-        @return: C{list} containing all the resulting C{Clause}s that could be
+        :param debug: bool indicating whether debug statements should print
+        :return: list containing all the resulting C{Clause}s that could be
         obtained by unification
         """
         if bindings is None: bindings = BindingDict()
@@ -199,8 +199,8 @@ class Clause(list):
         """
         Return True iff every term in 'self' is a term in 'other'.
         
-        @param other: C{Clause}
-        @return: C{bool}
+        :param other: C{Clause}
+        :return: bool
         """
         for a in self:
             if a not in other:
@@ -213,8 +213,8 @@ class Clause(list):
         substitution such that every term in 'self' can be unified with a term
         in 'other'.
         
-        @param other: C{Clause}
-        @return: C{bool}
+        :param other: C{Clause}
+        :return: bool
         """
         negatedother = []
         for atom in other:
@@ -275,8 +275,8 @@ class Clause(list):
         Replace every instance of variable with expression across every atom
         in the clause
         
-        @param variable: C{Variable}
-        @param expression: C{Expression}
+        :param variable: C{Variable}
+        :param expression: C{Expression}
         """
         return Clause([atom.replace(variable, expression) for atom in self])
     
@@ -284,9 +284,9 @@ class Clause(list):
         """
         Replace every binding 
         
-        @param bindings: A C{list} of tuples mapping Variable Expressions to the
+        :param bindings: A list of tuples mapping Variable Expressions to the
         Expressions to which they are bound
-        @return: C{Clause}
+        :return: C{Clause}
         """
         return Clause([atom.substitute_bindings(bindings) for atom in self])
     
@@ -356,12 +356,12 @@ def _unify_terms(a, b, bindings=None, used=None):
     This method attempts to unify two terms.  Two expressions are unifiable 
     if there exists a substitution function S such that S(a) == S(-b).
 
-    @param a: C{Expression} 
-    @param b: C{Expression} 
-    @param bindings: C{BindingDict} a starting set of bindings with which 
+    :param a: C{Expression} 
+    :param b: C{Expression} 
+    :param bindings: C{BindingDict} a starting set of bindings with which 
     the unification must be consistent
-    @return: C{BindingDict} A dictionary of the bindings required to unify
-    @raise C{BindingException}: If the terms cannot be unified
+    :return: C{BindingDict} A dictionary of the bindings required to unify
+    :raise C{BindingException}: If the terms cannot be unified
     """
     assert isinstance(a, Expression)
     assert isinstance(b, Expression)
@@ -429,7 +429,7 @@ def clausify(expression):
     
 def _clausify(expression):
     """
-    @param expression: a skolemized expression in CNF
+    :param expression: a skolemized expression in CNF
     """
     if isinstance(expression, AndExpression):
         return _clausify(expression.first) + _clausify(expression.second)
@@ -454,7 +454,7 @@ def _clausify(expression):
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """
-        @param binding_list: C{list} of (C{AbstractVariableExpression}, C{AtomicExpression}) to initialize the dictionary
+        :param binding_list: list of (C{AbstractVariableExpression}, C{AtomicExpression}) to initialize the dictionary
         """
         self.d = {}
 
@@ -467,9 +467,9 @@ class BindingDict(object):
         A binding is consistent with the dict if its variable is not already bound, OR if its 
         variable is already bound to its argument.
         
-        @param variable: C{Variable} The variable to bind
-        @param binding: C{Expression} The atomic to which 'variable' should be bound
-        @raise BindingException: If the variable cannot be bound in this dictionary
+        :param variable: C{Variable} The variable to bind
+        :param binding: C{Expression} The atomic to which 'variable' should be bound
+        :raise BindingException: If the variable cannot be bound in this dictionary
         """
         assert isinstance(variable, Variable)
         assert isinstance(binding, Expression) 
@@ -517,9 +517,9 @@ class BindingDict(object):
 
     def __add__(self, other):
         """
-        @param other: C{BindingDict} The dict with which to combine self
-        @return: C{BindingDict} A new dict containing all the elements of both parameters
-        @raise BindingException: If the parameter dictionaries are not consistent with each other
+        :param other: C{BindingDict} The dict with which to combine self
+        :return: C{BindingDict} A new dict containing all the elements of both parameters
+        :raise BindingException: If the parameter dictionaries are not consistent with each other
         """
         try:
             combined = BindingDict()
@@ -547,12 +547,12 @@ def most_general_unification(a, b, bindings=None):
     """
     Find the most general unification of the two given expressions
     
-    @param a: C{Expression}
-    @param b: C{Expression}
-    @param bindings: C{BindingDict} a starting set of bindings with which the
+    :param a: C{Expression}
+    :param b: C{Expression}
+    :param bindings: C{BindingDict} a starting set of bindings with which the
                      unification must be consistent
-    @return: a list of bindings
-    @raise BindingException: if the Expressions cannot be unified
+    :return: a list of bindings
+    :raise BindingException: if the Expressions cannot be unified
     """
     if bindings is None:
         bindings = BindingDict()

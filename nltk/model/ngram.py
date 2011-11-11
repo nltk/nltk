@@ -13,7 +13,7 @@ from nltk.probability import (ConditionalProbDist, ConditionalFreqDist,
                               MLEProbDist, SimpleGoodTuringProbDist)
 from nltk.util import ingrams
 
-from api import *
+from nltk.model.api import ModelI
 
 def _estimator(fdist, bins):
     """
@@ -26,6 +26,15 @@ def _estimator(fdist, bins):
 class NgramModel(ModelI):
     """
     A processing interface for assigning a probability to the next word.
+    
+        >>> from nltk.corpus import brown
+        >>> from nltk.probability import LidstoneProbDist, WittenBellProbDist
+        >>> import textwrap
+        >>> estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
+        >>> # estimator = lambda fdist, bins: WittenBellProbDist(fdist, 0.2)
+        >>> lm = NgramModel(3, brown.words(categories='news'), estimator)
+        >>> text = lm.generate(100)
+        >>> print '\n'.join(textwrap.wrap(' '.join(text)))
     """
 
     # add cutoff
@@ -36,13 +45,12 @@ class NgramModel(ModelI):
         from the text and may allow generation of ngrams not seen during
         training.
 
-        @param n: the order of the language model (ngram size)
-        @type n: C{int}
-        @param train: the training text
-        @type train: C{list} of C{string}
-        @param estimator: a function for generating a probability distribution
-        @type estimator: a function that takes a C{ConditionalFreqDist} and
-              returns a C{ConditionalProbDist}
+        :param n: the order of the language model (ngram size)
+        :type n: int
+        :param train: the training text
+        :type train: list(str)
+        :param estimator: a function for generating a probability distribution
+        :type estimator: function(ConditionalFreqDist) -> ConditionalProbDist
         """
 
         self._n = n
@@ -142,17 +150,7 @@ class NgramModel(ModelI):
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
 
-def demo():
-    from nltk.corpus import brown
-    from nltk.probability import LidstoneProbDist, WittenBellProbDist
-    estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-#    estimator = lambda fdist, bins: WittenBellProbDist(fdist, 0.2)
-    lm = NgramModel(3, brown.words(categories='news'), estimator)
-    print lm
-#    print lm.entropy(sent)
-    text = lm.generate(100)
-    import textwrap
-    print '\n'.join(textwrap.wrap(' '.join(text)))
 
-if __name__ == '__main__':
-    demo()
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

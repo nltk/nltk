@@ -27,7 +27,7 @@ class WordListCorpusReader(CorpusReader):
 class SwadeshCorpusReader(WordListCorpusReader):
     def entries(self, fileids=None):
         """
-        @return: a tuple of words for the specified fileids.
+        :return: a tuple of words for the specified fileids.
         """
         if not fileids:
             fileids = self.fileids()

@@ -43,9 +43,9 @@ def norm(value_string):
     Normalize the string value in an RTE pair's C{value} or C{entailment} 
     attribute as an integer (1, 0).
     
-    @param value_string: the label used to classify a text/hypothesis pair
-    @type value_string: C{str}
-    @rtype: C{int}
+    :param value_string: the label used to classify a text/hypothesis pair
+    :type value_string: str
+    :rtype: int
     """
 
     valdict = {"TRUE": 1,
@@ -65,13 +65,13 @@ class RTEPair:
     def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
              value=None, task=None, length=None):
         """
-        @param challenge: version of the RTE challenge (i.e., RTE1, RTE2 or RTE3)
-        @param id: identifier for the pair
-        @param text: the text component of the pair
-        @param hyp: the hypothesis component of the pair
-        @param value: classification label for the pair
-        @param task: attribute for the particular NLP task that the data was drawn from
-        @param length: attribute for the length of the text of the pair
+        :param challenge: version of the RTE challenge (i.e., RTE1, RTE2 or RTE3)
+        :param id: identifier for the pair
+        :param text: the text component of the pair
+        :param hyp: the hypothesis component of the pair
+        :param value: classification label for the pair
+        :param task: attribute for the particular NLP task that the data was drawn from
+        :param length: attribute for the length of the text of the pair
         """
         self.challenge =  challenge    
         self.id = pair.attrib["id"]
@@ -116,8 +116,8 @@ class RTECorpusReader(XMLCorpusReader):
         This uses the C{getiterator()} method from the ElementTree package to
         find all the C{<pair>} elements.
         
-        @param doc: a parsed XML document
-        @rtype: C{list} of L{RTEPair}s
+        :param doc: a parsed XML document
+        :rtype: list of L{RTEPair}s
         """
         try:
             challenge = doc.attrib['challenge']
@@ -131,9 +131,9 @@ class RTECorpusReader(XMLCorpusReader):
         """
         Build a list of RTEPairs from a RTE corpus.
         
-        @param fileids: a list of RTE corpus fileids
-        @type: C{list}
-        @rtype: C{list} of L{RTEPair}s
+        :param fileids: a list of RTE corpus fileids
+        :type: list
+        :rtype: list of L{RTEPair}s
         """
         if isinstance(fileids, basestring): fileids = [fileids]
         return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])

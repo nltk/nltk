@@ -31,13 +31,13 @@ class BNCCorpusReader(XMLCorpusReader):
     
     def words(self, fileids=None, strip_space=True, stem=False):
         """
-        @return: the given file(s) as a list of words
+        :return: the given file(s) as a list of words
             and punctuation symbols.
-        @rtype: C{list} of C{str}
+        :rtype: list of str
         
-        @param strip_space: If true, then strip trailing spaces from
+        :param strip_space: If true, then strip trailing spaces from
             word tokens.  Otherwise, leave the spaces on the tokens.
-        @param stem: If true, then use word stems instead of word strings.
+        :param stem: If true, then use word stems instead of word strings.
         """
         if self._lazy:
             return concat([BNCWordView(fileid, False, None,
@@ -50,16 +50,16 @@ class BNCCorpusReader(XMLCorpusReader):
 
     def tagged_words(self, fileids=None, c5=False, strip_space=True, stem=False):
         """
-        @return: the given file(s) as a list of tagged
+        :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             C{(word,tag)}.
-        @rtype: C{list} of C{(str,str)}
+        :rtype: list of C{(str,str)}
         
-        @param c5: If true, then the tags used will be the more detailed
+        :param c5: If true, then the tags used will be the more detailed
             c5 tags.  Otherwise, the simplified tags will be used.
-        @param strip_space: If true, then strip trailing spaces from
+        :param strip_space: If true, then strip trailing spaces from
             word tokens.  Otherwise, leave the spaces on the tokens.
-        @param stem: If true, then use word stems instead of word strings.
+        :param stem: If true, then use word stems instead of word strings.
         """
         if c5: tag = 'c5'
         else: tag = 'pos'
@@ -72,14 +72,14 @@ class BNCCorpusReader(XMLCorpusReader):
 
     def sents(self, fileids=None, strip_space=True, stem=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        @rtype: C{list} of (C{list} of C{str})
+        :rtype: list of (list of str)
         
-        @param strip_space: If true, then strip trailing spaces from
+        :param strip_space: If true, then strip trailing spaces from
             word tokens.  Otherwise, leave the spaces on the tokens.
-        @param stem: If true, then use word stems instead of word strings.
+        :param stem: If true, then use word stems instead of word strings.
         """
         if self._lazy:
             return concat([BNCWordView(fileid, True, None, strip_space, stem)
@@ -91,15 +91,15 @@ class BNCCorpusReader(XMLCorpusReader):
     def tagged_sents(self, fileids=None, c5=False, strip_space=True,
                      stem=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences, each encoded as a list of C{(word,tag)} tuples.
-        @rtype: C{list} of (C{list} of C{(str,str)})
+        :rtype: list of (list of C{(str,str)})
             
-        @param c5: If true, then the tags used will be the more detailed
+        :param c5: If true, then the tags used will be the more detailed
             c5 tags.  Otherwise, the simplified tags will be used.
-        @param strip_space: If true, then strip trailing spaces from
+        :param strip_space: If true, then strip trailing spaces from
             word tokens.  Otherwise, leave the spaces on the tokens.
-        @param stem: If true, then use word stems instead of word strings.
+        :param stem: If true, then use word stems instead of word strings.
         """
         if c5: tag = 'c5'
         else: tag = 'pos'
@@ -115,11 +115,11 @@ class BNCCorpusReader(XMLCorpusReader):
         Helper used to implement the view methods -- returns a list of
         words or a list of sentences, optionally tagged.
         
-        @param fileid: The name of the underlying file.
-        @param bracket_sent: If true, include sentence bracketing.
-        @param tag: The name of the tagset to use, or None for no tags.
-        @param strip_space: If true, strip spaces from word tokens.
-        @param stem: If true, then substitute stems for words.
+        :param fileid: The name of the underlying file.
+        :param bracket_sent: If true, include sentence bracketing.
+        :param tag: The name of the tagset to use, or None for no tags.
+        :param strip_space: If true, strip spaces from word tokens.
+        :param stem: If true, then substitute stems for words.
         """
         result = []
         
@@ -167,11 +167,11 @@ class BNCWordView(XMLCorpusView):
     """
     def __init__(self, fileid, sent, tag, strip_space, stem):
         """
-        @param fileid: The name of the underlying file.
-        @param sent: If true, include sentence bracketing.
-        @param tag: The name of the tagset to use, or None for no tags.
-        @param strip_space: If true, strip spaces from word tokens.
-        @param stem: If true, then substitute stems for words.
+        :param fileid: The name of the underlying file.
+        :param sent: If true, include sentence bracketing.
+        :param tag: The name of the tagset to use, or None for no tags.
+        :param strip_space: If true, strip spaces from word tokens.
+        :param stem: If true, then substitute stems for words.
         """
         if sent: tagspec = '.*/s'
         else: tagspec = '.*/s/(.*/)?(c|w)'

@@ -701,7 +701,7 @@ Parse the tokenized sentence.
 Unit tests for the FeatStructNonterminal class
 ----------------------------------------------
 
-    >>> from nltk.parse import FeatStructNonterminal
+    >>> from nltk.grammar import FeatStructNonterminal
     >>> FeatStructNonterminal(
     ...     pos='n', agr=FeatStructNonterminal(number='pl', gender='f'))
     [agr=[gender='f', number='pl'], pos='n']

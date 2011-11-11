@@ -35,11 +35,11 @@ def config_mallet(mallet_home=None):
     Configure NLTK's interface to the C{mallet} machine learning
     package.
 
-    @param mallet_home: The full path to the C{mallet} directory.  If
+    :param mallet_home: The full path to the C{mallet} directory.  If
         not specified, then nltk will search the system for a
         C{mallet} directory; and if one is not found, it will raise a
         C{LookupError} exception.
-    @type mallet_home: C{string}
+    :type mallet_home: str
     """
     global _mallet_home, _mallet_classpath
     

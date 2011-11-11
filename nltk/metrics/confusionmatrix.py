@@ -29,12 +29,12 @@ class ConfusionMatrix(object):
         Construct a new confusion matrix from a list of reference
         values and a corresponding list of test values.
         
-        @type reference: C{list}
-        @param reference: An ordered list of reference values.
-        @type test: C{list}
-        @param test: A list of values to compare against the
+        :type reference: list
+        :param reference: An ordered list of reference values.
+        :type test: list
+        :param test: A list of values to compare against the
             corresponding reference values.
-        @raise ValueError: If C{reference} and C{length} do not have
+        :raise ValueError: If C{reference} and C{length} do not have
             the same length.
         """
         if len(reference) != len(test):
@@ -74,9 +74,9 @@ class ConfusionMatrix(object):
 
     def __getitem__(self, (li,lj)):
         """
-        @return: The number of times that value C{li} was expected and
+        :return: The number of times that value C{li} was expected and
         value C{lj} was given.
-        @rtype: C{int}
+        :rtype: int
         """
         i = self._indices[li]
         j = self._indices[lj]
@@ -92,13 +92,13 @@ class ConfusionMatrix(object):
     def pp(self, show_percents=False, values_in_chart=True,
            truncate=None, sort_by_count=False):
         """
-        @return: A multi-line string representation of this confusion
+        :return: A multi-line string representation of this confusion
         matrix.
-        @type truncate: int
-        @param truncate: If specified, then only show the specified
+        :type truncate: int
+        :param truncate: If specified, then only show the specified
             number of values.  Any sorting (e.g., sort_by_count)
             will be performed before truncation.
-        @param sort_by_count: If true, then sort by the count of each
+        :param sort_by_count: If true, then sort by the count of each
             label in the reference data.  I.e., labels that occur more
             frequently in the reference label will be towards the left
             edge of the matrix, and labels that occur less frequently

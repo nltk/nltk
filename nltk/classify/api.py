@@ -33,8 +33,8 @@ from nltk.internals import overridden
 class ClassifierI(object):
     """
     A processing interface for labeling tokens with a single category
-    label (or X{class}).  Labels are typically C{string}s or
-    C{integer}s, but can be any immutable type.  The set of labels
+    label (or X{class}).  Labels are typically strs or
+    ints, but can be any immutable type.  The set of labels
     that the classifier chooses from must be fixed and finite.
 
     Subclasses must define:
@@ -46,15 +46,15 @@ class ClassifierI(object):
     """
     def labels(self):
         """
-        @return: the list of category labels used by this classifier.
-        @rtype: C{list} of (immutable)
+        :return: the list of category labels used by this classifier.
+        :rtype: list of (immutable)
         """
         raise NotImplementedError()
 
     def classify(self, featureset):
         """
-        @return: the most appropriate label for the given featureset.
-        @rtype: label
+        :return: the most appropriate label for the given featureset.
+        :rtype: label
         """
         if overridden(self.batch_classify):
             return self.batch_classify([featureset])[0]
@@ -63,9 +63,9 @@ class ClassifierI(object):
 
     def prob_classify(self, featureset):
         """
-        @return: a probability distribution over labels for the given
+        :return: a probability distribution over labels for the given
             featureset.
-        @rtype: L{ProbDistI <nltk.probability.ProbDistI>}
+        :rtype: L{ProbDistI <nltk.probability.ProbDistI>}
         """
         if overridden(self.batch_prob_classify):
             return self.batch_prob_classify([featureset])[0]
@@ -78,7 +78,7 @@ class ClassifierI(object):
 
             return [self.classify(fs) for fs in featuresets]
 
-        @rtype: C{list} of I{label}
+        :rtype: list of I{label}
         """
         return [self.classify(fs) for fs in featuresets]
 
@@ -88,7 +88,7 @@ class ClassifierI(object):
 
             return [self.prob_classify(fs) for fs in featuresets]
 
-        @rtype: C{list} of L{ProbDistI <nltk.probability.ProbDistI>}
+        :rtype: list of L{ProbDistI <nltk.probability.ProbDistI>}
         """
         return [self.prob_classify(fs) for fs in featuresets]
 
@@ -96,8 +96,8 @@ class ClassifierI(object):
 class MultiClassifierI(object):
     """
     A processing interface for labeling tokens with zero or more
-    category labels (or X{labels}).  Labels are typically C{string}s
-    or C{integer}s, but can be any immutable type.  The set of labels
+    category labels (or X{labels}).  Labels are typically strs
+    or ints, but can be any immutable type.  The set of labels
     that the multi-classifier chooses from must be fixed and finite.
 
     Subclasses must define:
@@ -109,15 +109,15 @@ class MultiClassifierI(object):
     """
     def labels(self):
         """
-        @return: the list of category labels used by this classifier.
-        @rtype: C{list} of (immutable)
+        :return: the list of category labels used by this classifier.
+        :rtype: list of (immutable)
         """
         raise NotImplementedError()
     
     def classify(self, featureset):
         """
-        @return: the most appropriate set of labels for the given featureset.
-        @rtype: C{set} of I{label}
+        :return: the most appropriate set of labels for the given featureset.
+        :rtype: set of I{label}
         """
         if overridden(self.batch_classify):
             return self.batch_classify([featureset])[0]
@@ -126,9 +126,9 @@ class MultiClassifierI(object):
 
     def prob_classify(self, featureset):
         """
-        @return: a probability distribution over sets of labels for the
+        :return: a probability distribution over sets of labels for the
             given featureset.
-        @rtype: L{ProbDistI <nltk.probability.ProbDistI>}
+        :rtype: L{ProbDistI <nltk.probability.ProbDistI>}
         """
         if overridden(self.batch_prob_classify):
             return self.batch_prob_classify([featureset])[0]
@@ -141,7 +141,7 @@ class MultiClassifierI(object):
 
             return [self.classify(fs) for fs in featuresets]
             
-        @rtype: C{list} of (C{set} of I{label})
+        :rtype: list of (set of I{label})
         """
         return [self.classify(fs) for fs in featuresets]
 
@@ -151,7 +151,7 @@ class MultiClassifierI(object):
 
             return [self.prob_classify(fs) for fs in featuresets]
             
-        @rtype: C{list} of L{ProbDistI <nltk.probability.ProbDistI>}
+        :rtype: list of L{ProbDistI <nltk.probability.ProbDistI>}
         """
         return [self.prob_classify(fs) for fs in featuresets]
 
@@ -161,14 +161,14 @@ class MultiClassifierI(object):
 #     """
 #     A processing interface for labeling sequences of tokens with a
 #     single category label (or X{class}).  Labels are typically
-#     C{string}s or C{integer}s, but can be any immutable type.  The set
+#     strs or ints, but can be any immutable type.  The set
 #     of labels that the classifier chooses from must be fixed and
 #     finite.
 #     """
 #     def labels(self):
 #         """
-#         @return: the list of category labels used by this classifier.
-#         @rtype: C{list} of (immutable)
+#         :return: the list of category labels used by this classifier.
+#         :rtype: list of (immutable)
 #         """
 #         raise NotImplementedError()
 

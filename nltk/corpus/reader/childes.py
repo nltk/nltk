@@ -40,19 +40,19 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def words(self, fileids=None, speaker='ALL', sent=None, stem=False, 
             relation=False, pos=False, strip_space=True, replace=False):
         """
-        @return: the given file(s) as a list of words
-        @rtype: C{list} of C{str}
+        :return: the given file(s) as a list of words
+        :rtype: list of str
         
-        @param speaker: If list is specified, select specitic speakers defined
+        :param speaker: If list is specified, select specitic speakers defined
         	in the corpus. Default is 'All' (all participants). Common choices 
         	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
         	researchers)
-        @param stem: If true, then use word stems instead of word strings.
-        @param relation: If true, then return tuples of (stem, index, 
+        :param stem: If true, then use word stems instead of word strings.
+        :param relation: If true, then return tuples of (stem, index, 
             dependent_index)
-        @param strip_space: If true, then strip trailing spaces from word 
+        :param strip_space: If true, then strip trailing spaces from word 
             tokens. Otherwise, leave the spaces on the tokens.
-        @param replace: If true, then use the replaced word instead 
+        :param replace: If true, then use the replaced word instead 
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
         return concat([self._get_words(fileid, speaker, sent, stem, relation, 
@@ -61,21 +61,21 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def tagged_words(self, fileids=None, speaker='ALL', sent=None, stem=False, 
             relation=False, pos=True, strip_space=True, replace=False):
         """
-        @return: the given file(s) as a list of tagged
+        :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             C{(word,tag)}.
-        @rtype: C{list} of C{(str,str)}
+        :rtype: list of C{(str,str)}
         
-        @param speaker: If list is specified, select specitic speakers defined
+        :param speaker: If list is specified, select specitic speakers defined
         	in the corpus. Default is 'All' (all participants). Common choices 
         	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
         	researchers)
-        @param stem: If true, then use word stems instead of word strings.
-        @param relation: If true, then return tuples of (stem, index, 
+        :param stem: If true, then use word stems instead of word strings.
+        :param relation: If true, then return tuples of (stem, index, 
             dependent_index)
-        @param strip_space: If true, then strip trailing spaces from word 
+        :param strip_space: If true, then strip trailing spaces from word 
             tokens. Otherwise, leave the spaces on the tokens.
-        @param replace: If true, then use the replaced word instead 
+        :param replace: If true, then use the replaced word instead 
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
         return concat([self._get_words(fileid, speaker, sent, stem, relation, 
@@ -84,22 +84,22 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def sents(self, fileids=None, speaker='ALL', sent=True, stem=False, 
             relation=None, pos=False, strip_space=True, replace=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        @rtype: C{list} of (C{list} of C{str})
+        :rtype: list of (list of str)
         
-        @param speaker: If list is specified, select specitic speakers defined
+        :param speaker: If list is specified, select specitic speakers defined
         	in the corpus. Default is 'All' (all participants). Common choices 
         	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
         	researchers)
-        @param stem: If true, then use word stems instead of word strings.
-        @param relation: If true, then return tuples of C{(str,pos,relation_list)}.
+        :param stem: If true, then use word stems instead of word strings.
+        :param relation: If true, then return tuples of C{(str,pos,relation_list)}.
             If there is manually-annotated relation info, it will return tuples of
             tuples of C{(str,pos,test_relation_list,str,pos,gold_relation_list)}
-        @param strip_space: If true, then strip trailing spaces from word 
+        :param strip_space: If true, then strip trailing spaces from word 
             tokens. Otherwise, leave the spaces on the tokens.
-        @param replace: If true, then use the replaced word instead 
+        :param replace: If true, then use the replaced word instead 
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
         return concat([self._get_words(fileid, speaker, sent, stem, relation, 
@@ -108,21 +108,21 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def tagged_sents(self, fileids=None, speaker='ALL', sent=True, stem=False, 
             relation=None, pos=True, strip_space=True, replace=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences, each encoded as a list of C{(word,tag)} tuples.            
-        @rtype: C{list} of (C{list} of C{(str,str)})
+        :rtype: list of (list of C{(str,str)})
         
-        @param speaker: If list is specified, select specitic speakers defined
+        :param speaker: If list is specified, select specitic speakers defined
         	in the corpus. Default is 'All' (all participants). Common choices 
         	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
         	researchers)
-        @param stem: If true, then use word stems instead of word strings.
-        @param relation: If true, then return tuples of C{(str,pos,relation_list)}.
+        :param stem: If true, then use word stems instead of word strings.
+        :param relation: If true, then return tuples of C{(str,pos,relation_list)}.
             If there is manually-annotated relation info, it will return tuples of
             tuples of C{(str,pos,test_relation_list,str,pos,gold_relation_list)}
-        @param strip_space: If true, then strip trailing spaces from word 
+        :param strip_space: If true, then strip trailing spaces from word 
             tokens. Otherwise, leave the spaces on the tokens.
-        @param replace: If true, then use the replaced word instead 
+        :param replace: If true, then use the replaced word instead 
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
         return concat([self._get_words(fileid, speaker, sent, stem, relation, 
@@ -130,8 +130,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def corpus(self, fileids=None):
         """
-        @return: the given file(s) as a dict of C{(corpus_property_key, value)}
-        @rtype: C{list} of C{dict}
+        :return: the given file(s) as a dict of C{(corpus_property_key, value)}
+        :rtype: list of dict
         """
         return [self._get_corpus(fileid) for fileid in self.abspaths(fileids)]
 
@@ -144,8 +144,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
         
     def participants(self, fileids=None):
         """
-        @return: the given file(s) as a dict of C{(participant_propperty_key, value)}
-        @rtype: C{list} of C{dict}
+        :return: the given file(s) as a dict of C{(participant_propperty_key, value)}
+        :rtype: list of dict
         """
         return [self._get_participants(fileid) 
                             for fileid in self.abspaths(fileids)]
@@ -165,10 +165,10 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def age(self, fileids=None, month=False):
         """
-        @return: the given file(s) as string or int
-        @rtype: C{list} or C{int}
+        :return: the given file(s) as string or int
+        :rtype: list or int
         
-        @param month: If true, return months instead of year-month-date
+        :param month: If true, return months instead of year-month-date
         """
         return [self._get_age(fileid,month) for fileid in self.abspaths(fileids)]
 
@@ -198,8 +198,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 
     def MLU(self, fileids=None):
         """
-        @return: the given file(s) as a floating number
-        @rtype: C{list} of C{float}
+        :return: the given file(s) as a floating number
+        :rtype: list of float
         """
         return [self._getMLU(fileid) for fileid in self.abspaths(fileids)]
 

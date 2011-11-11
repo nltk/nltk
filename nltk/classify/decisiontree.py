@@ -22,16 +22,16 @@ from api import *
 class DecisionTreeClassifier(ClassifierI):
     def __init__(self, label, feature_name=None, decisions=None, default=None):
         """
-        @param label: The most likely label for tokens that reach
+        :param label: The most likely label for tokens that reach
             this node in the decision tree.  If this decision tree
             has no children, then this label will be assigned to
             any token that reaches this decision tree.
-        @param feature_name: The name of the feature that this
+        :param feature_name: The name of the feature that this
             decision tree selects for.
-        @param decisions: A dictionary mapping from feature values
+        :param decisions: A dictionary mapping from feature values
             for the feature identified by C{feature_name} to
             child decision trees.
-        @param default: The child that will be used if the value of
+        :param default: The child that will be used if the value of
             feature C{feature_name} does not match any of the keys in
             C{decisions}.  This is used when constructing binary
             decision trees.
@@ -131,7 +131,7 @@ class DecisionTreeClassifier(ClassifierI):
               support_cutoff=10, binary=False, feature_values=None,
               verbose=False):
         """
-        @param binary: If true, then treat all feature/value pairs a
+        :param binary: If true, then treat all feature/value pairs a
         individual binary features, rather than using a single n-way
         branch for each feature.
         """

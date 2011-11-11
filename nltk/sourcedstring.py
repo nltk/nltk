@@ -63,21 +63,21 @@ class StringSource(object):
         consecutive offsets (in particular, unicode strings with byte
         offsets).
         
-    @ivar docid: An identifier (such as a filename) that specifies
+    :ivar docid: An identifier (such as a filename) that specifies
         which document contains the string.
 
-    @ivar offsets: A list of offsets specifying the location of each
+    :ivar offsets: A list of offsets specifying the location of each
         character in the document.  The C{i}th character of the string
         begins at offset C{offsets[i]} and ends at offset
         C{offsets[i+1]}.  The length of the C{offsets} list is one
         greater than the list of the string described by this
         C{StringSource}.
     
-    @ivar begin: The document offset where the string begins.  (I.e.,
+    :ivar begin: The document offset where the string begins.  (I.e.,
         the offset of the first character in the string.)
         C{source.begin} is always equal to C{source.offsets[0]}.
     
-    @ivar end: The document offset where the string ends.  (For
+    :ivar end: The document offset where the string ends.  (For
         character offsets, one plus the offset of the last character;
         for byte offsets, one plus the offset of the last byte that
         encodes the last character).  C{source.end} is always equal
@@ -123,7 +123,7 @@ class StringSource(object):
         string that this source describes, then return a
         L{StringSource} describing the location of C{s[index]}.
         
-        @raise IndexError: If index is out of range.
+        :raise IndexError: If index is out of range.
         """
         if isinstance(index, slice):
             start, stop = slice_bounds(self, index)
@@ -318,7 +318,7 @@ class SourcedString(object):
       - String formatting (the ``%`` operator).
       - Regular expression substitution.
 
-    @ivar sources: A sorted tuple of C{(index, source)} pairs.  Each
+    :ivar sources: A sorted tuple of C{(index, source)} pairs.  Each
         such pair specifies that the source of
         C{self[index:index+len(source)]} is C{source}.  Any characters
         for which no source is specified are sourceless (e.g., plain
@@ -348,7 +348,7 @@ class SourcedString(object):
     _stringtype = None
     """A class variable, defined by subclasses of L{SourcedString},
        determining what type of string this class contains.  Its
-       value must be either C{str} or C{unicode}."""
+       value must be either str or C{unicode}."""
 
     #//////////////////////////////////////////////////////////////////////
     #{ Splitting & Stripping Methods
@@ -434,7 +434,7 @@ class SourcedString(object):
         possible.
 
         Depending on the types and values of the supplied substrings,
-        the concatenated string's value may be a Python string (C{str}
+        the concatenated string's value may be a Python string (str
         or C{unicode}), a L{SimpleSourcedString}, or a
         L{CompoundSourcedString}.
         """
@@ -736,15 +736,15 @@ class SourcedString(object):
         Return a string containing a pretty-printed display of this
         sourced string.
 
-        @param vertical: If true, then the returned display string will
+        :param vertical: If true, then the returned display string will
             have vertical orientation, rather than the default horizontal
             orientation.
             
-        @param wrap: Controls when the pretty-printed output is wrapped
+        :param wrap: Controls when the pretty-printed output is wrapped
             to the next line.  If C{wrap} is an integer, then lines are
             wrapped when they become longer than C{wrap}.  If C{wrap} is
             a string, then lines are wrapped immediately following that
-            string.  If C{wrap} is C{None}, then lines are never wrapped.
+            string.  If C{wrap} is None, then lines are never wrapped.
         """
         if len(self) == 0: return '[Empty String]'
         if vertical == 1: return self._pprint_vertical() # special-cased
@@ -912,9 +912,9 @@ class SimpleSourcedString(SourcedString):
         """
         Construct a new sourced string.
 
-        @param contents: The string contents of the new sourced string.
-        @type contents: C{str} or C{unicode}
-        @param source: The source for the new string.  If C{source} is
+        :param contents: The string contents of the new sourced string.
+        :type contents: str or C{unicode}
+        :param source: The source for the new string.  If C{source} is
             a string, then it is used to automatically construct a new
             L{ConsecutiveCharStringSource} with a begin offset of
             C{0} and an end offset of C{len(contents)}.  Otherwise,
@@ -1022,7 +1022,7 @@ class CompoundSourcedString(SourcedString):
     those substrings were originally found.  See L{SourcedString} for
     more information.
 
-    @ivar substrings: The tuple of substrings that compose this
+    :ivar substrings: The tuple of substrings that compose this
         compound sourced string.  Every compound sourced string is
         required to have at least two substrings; and the substrings
         themselves may never be CompoundSourcedStrings.
@@ -1057,8 +1057,8 @@ class CompoundSourcedString(SourcedString):
         flattens nested compound sourced strings, and merges adjacent
         substrings when possible.
 
-        @raise ValueError: If C{len(substrings)  < 2}
-        @raise ValueError: If C{substrings} contains any
+        :raise ValueError: If C{len(substrings)  < 2}
+        :raise ValueError: If C{substrings} contains any
             C{CompoundSourcedString}s.
         """
         if len(substrings) < 2:
@@ -1291,9 +1291,9 @@ class SourcedStringStream(object):
         Read this file's contents, decode them using this reader's
         encoding, and return it as a list of unicode lines.
 
-        @rtype: C{list} of C{unicode}
-        @param sizehint: Ignored.
-        @param keepends: If false, then strip newlines.
+        :rtype: list of C{unicode}
+        :param sizehint: Ignored.
+        :param keepends: If false, then strip newlines.
         """
         return self.read().splitlines(keepends)
 

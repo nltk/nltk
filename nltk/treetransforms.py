@@ -214,17 +214,17 @@ def collapse_unary(tree, collapsePOS = False, collapseRoot = False, joinChar = "
     would require loss of useful information.  The Tree is modified 
     directly (since it is passed by reference) and no value is returned.
     
-    @param tree: The Tree to be collapsed
-    @type  tree: C{Tree}
-    @param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie. 
+    :param tree: The Tree to be collapsed
+    :type  tree: Tree
+    :param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie. 
                         Part-of-Speech tags) since they are always unary productions
-    @type  collapsePOS: C{boolean}
-    @param collapseRoot: 'False' (default) will not modify the root production
+    :type  collapsePOS: bool
+    :param collapseRoot: 'False' (default) will not modify the root production
                          if it is unary.  For the Penn WSJ treebank corpus, this corresponds
                          to the TOP -> productions.
-    @type collapseRoot: C{boolean}
-    @param joinChar: A string used to connect collapsed node values (default = "+")
-    @type  joinChar: C{string}
+    :type collapseRoot: bool
+    :param joinChar: A string used to connect collapsed node values (default = "+")
+    :type  joinChar: str
     """
     
     if collapseRoot == False and isinstance(tree, Tree) and len(tree) == 1:

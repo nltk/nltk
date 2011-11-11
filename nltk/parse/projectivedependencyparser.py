@@ -8,11 +8,11 @@
 #
 
 import math
-
-from nltk.grammar import DependencyProduction, DependencyGrammar,\
-                 StatisticalDependencyGrammar, parse_dependency_grammar
-from dependencygraph import *
 from pprint import pformat
+
+from nltk.grammar import (DependencyProduction, DependencyGrammar,
+                          StatisticalDependencyGrammar, parse_dependency_grammar)
+from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 
 #################################################################
 # Dependency Span
@@ -39,22 +39,22 @@ class DependencySpan(object):
 
     def head_index(self):
         """
-        @return: An value indexing the head of the entire C{DependencySpan}.
-        @rtype: C{int}.
+        :return: An value indexing the head of the entire C{DependencySpan}.
+        :rtype: int.
         """
         return self._head_index
     
     def __repr__(self):
         """
-        @return: A concise string representatino of the C{DependencySpan}.
-        @rtype: C{string}.
+        :return: A concise string representatino of the C{DependencySpan}.
+        :rtype: str.
         """
         return 'Span %d-%d; Head Index: %d' % (self._start_index, self._end_index, self._head_index)
     
     def __str__(self):
         """
-        @return: A verbose string representation of the C{DependencySpan}.
-        @rtype: C{string}.
+        :return: A verbose string representation of the C{DependencySpan}.
+        :rtype: str.
         """
         str = 'Span %d-%d; Head Index: %d' % (self._start_index, self._end_index, self._head_index)
         for i in range(len(self._arcs)):
@@ -63,8 +63,8 @@ class DependencySpan(object):
 
     def __eq__(self, other):
         """
-        @return: true if this C{DependencySpan} is equal to C{other}.
-        @rtype: C{boolean}.
+        :return: true if this C{DependencySpan} is equal to C{other}.
+        :rtype: bool.
         """
         return (isinstance(other, self.__class__) and
                 self._start_index == other._start_index and
@@ -74,23 +74,23 @@ class DependencySpan(object):
 
     def __ne__(self, other):
         """
-        @return: false if this C{DependencySpan} is equal to C{other}
-        @rtype: C{boolean}	
+        :return: false if this C{DependencySpan} is equal to C{other}
+        :rtype: bool	
         """
         return not (self == other)
 
     def __cmp__(self, other):
         """
-        @return: -1 if args are of different class.  Otherwise returns the
+        :return: -1 if args are of different class.  Otherwise returns the
         cmp() of the two sets of spans.
-        @rtype: C{int} 
+        :rtype: int 
         """
         if not isinstance(other, self.__class__): return -1
         return cmp((self._start_index, self._start_index, self._head_index), (other._end_index, other._end_index, other._head_index))
 
     def __hash__(self):
         """
-        @return: The hash value of this C{DependencySpan}.
+        :return: The hash value of this C{DependencySpan}.
         """
         return self._hash
 
@@ -106,10 +106,10 @@ class ChartCell(object):
     """
     def __init__(self, x, y):
         """
-        @param x: This cell's x coordinate.
-        @type x: C{int}.
-        @param y: This cell's y coordinate.
-        @type y: C{int}.
+        :param x: This cell's x coordinate.
+        :type x: int.
+        :param y: This cell's y coordinate.
+        :type y: int.
         """
         self._x = x
         self._y = y
@@ -120,22 +120,22 @@ class ChartCell(object):
         Appends the given span to the list of spans
         representing the chart cell's entries.
         
-        @param span: The span to add.
-        @type span: C{DependencySpan}.
+        :param span: The span to add.
+        :type span: C{DependencySpan}.
         """
         self._entries.add(span);
 
     def __str__(self):
         """
-        @return: A verbose string representation of this C{ChartCell}.
-        @rtype: C{string}.
+        :return: A verbose string representation of this C{ChartCell}.
+        :rtype: str.
         """ 
         return 'CC[%d,%d]: %s' % (self._x, self._y, self._entries)
         
     def __repr__(self):
         """
-        @return: A concise string representation of this C{ChartCell}.
-        @rtype: C{string}.
+        :return: A concise string representation of this C{ChartCell}.
+        :rtype: str.
         """
         return '%s' % self
 
@@ -163,8 +163,8 @@ class ProjectiveDependencyParser(object):
         Create a new ProjectiveDependencyParser, from a word-to-word
         dependency grammar C{DependencyGrammar}.
 
-        @param dependency_grammar: A word-to-word relation dependencygrammar.
-        @type dependency_grammar: A C{DependencyGrammar}.
+        :param dependency_grammar: A word-to-word relation dependencygrammar.
+        :type dependency_grammar: A C{DependencyGrammar}.
         """
         self._grammar = dependency_grammar
 
@@ -173,10 +173,10 @@ class ProjectiveDependencyParser(object):
         Performs a projective dependency parse on the list of tokens using
         a chart-based, span-concatenation algorithm similar to Eisner (1996).
         
-        @param tokens: The list of input tokens.
-        @type tokens:a C{list} of L{String}
-        @return: A list of parse trees.
-        @rtype: a C{list} of L{tree}
+        :param tokens: The list of input tokens.
+        :type tokens:a list of L{String}
+        :return: A list of parse trees.
+        :rtype: a list of L{tree}
         """
         self._tokens = list(tokens)
         chart = []
@@ -218,7 +218,7 @@ class ProjectiveDependencyParser(object):
         share or pivot on a particular word/word-index.
 
         return: A list of new spans formed through concatenation.
-        rtype: A C{list} of L{DependencySpan}
+        rtype: A list of L{DependencySpan}
         """
         spans = []
         if span1._start_index == span2._start_index:
@@ -322,7 +322,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         share or pivot on a particular word/word-index.
 
         return: A list of new spans formed through concatenation.
-        rtype: A C{list} of L{DependencySpan}
+        rtype: A list of L{DependencySpan}
         """
         spans = []
         if span1._start_index == span2._start_index:

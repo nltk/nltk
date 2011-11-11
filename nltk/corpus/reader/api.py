@@ -39,16 +39,16 @@ class CorpusReader(object):
     """
     def __init__(self, root, fileids, encoding=None, tag_mapping_function=None):
         """
-        @type root: L{PathPointer} or C{str}
-        @param root: A path pointer identifying the root directory for
+        :type root: L{PathPointer} or str
+        :param root: A path pointer identifying the root directory for
             this corpus.  If a string is specified, then it will be
             converted to a L{PathPointer} automatically.
-        @param fileids: A list of the files that make up this corpus.
+        :param fileids: A list of the files that make up this corpus.
             This list can either be specified explicitly, as a list of
             strings; or implicitly, as a regular expression over file
             paths.  The absolute path for each file will be constructed
             by joining the reader's root to each file name.
-        @param encoding: The default unicode encoding for the files
+        :param encoding: The default unicode encoding for the files
             that make up the corpus.  C{encoding}'s value can be any
             of the following:
 
@@ -66,9 +66,9 @@ class CorpusReader(object):
                 C{file_id}.  If no tuple's C{regexp} matches the
                 C{file_id}, the file contents will be processed using
                 non-unicode byte strings.
-              - C{None}: the file contents of all files will be
+              - None: the file contents of all files will be
                 processed using non-unicode byte strings.
-        @param tag_mapping_function: A function for normalizing or
+        :param tag_mapping_function: A function for normalizing or
                 simplifying the POS tags returned by the tagged_words()
                 or tagged_sents() methods.
         """
@@ -108,8 +108,8 @@ class CorpusReader(object):
 
         self._encoding = encoding
         """The default unicode encoding for the fileids that make up
-           this corpus.  If C{encoding} is C{None}, then the file
-           contents are processed using byte strings (C{str})."""
+           this corpus.  If C{encoding} is None, then the file
+           contents are processed using byte strings (str)."""
         self._tag_mapping_function = tag_mapping_function
 
     def __repr__(self):
@@ -137,11 +137,11 @@ class CorpusReader(object):
         """
         Return the absolute path for the given file.
 
-        @type file: C{str}
-        @param file: The file identifier for the file whose path
+        :type file: str
+        :param file: The file identifier for the file whose path
             should be returned.
 
-        @rtype: L{PathPointer}
+        :rtype: L{PathPointer}
         """
         return self._root.join(fileid)
 
@@ -151,18 +151,18 @@ class CorpusReader(object):
         Return a list of the absolute paths for all fileids in this corpus;
         or for the given list of fileids, if specified.
 
-        @type fileids: C{None} or C{str} or C{list}
-        @param fileids: Specifies the set of fileids for which paths should
-            be returned.  Can be C{None}, for all fileids; a list of
+        :type fileids: None or str or list
+        :param fileids: Specifies the set of fileids for which paths should
+            be returned.  Can be None, for all fileids; a list of
             file identifiers, for a specified set of fileids; or a single
             file identifier, for a single file.  Note that the return
             value is always a list of paths, even if C{fileids} is a
             single file identifier.
 
-        @param include_encoding: If true, then return a list of
+        :param include_encoding: If true, then return a list of
             C{(path_pointer, encoding)} tuples.
 
-        @rtype: C{list} of L{PathPointer}
+        :rtype: list of L{PathPointer}
         """
         if fileids is None:
             fileids = self._fileids
@@ -183,10 +183,10 @@ class CorpusReader(object):
     def open(self, file, sourced=False):
         """
         Return an open stream that can be used to read the given file.
-        If the file's encoding is not C{None}, then the stream will
+        If the file's encoding is not None, then the stream will
         automatically decode the file's contents into unicode.
 
-        @param file: The file identifier of the file to read.
+        :param file: The file identifier of the file to read.
         """
         encoding = self.encoding(file)
         stream = self._root.join(file).open(encoding)
@@ -198,7 +198,7 @@ class CorpusReader(object):
         """
         Return the unicode encoding for the given corpus file, if known.
         If the encoding is unknown, or if the given file should be
-        processed using byte strings (C{str}), then return C{None}.
+        processed using byte strings (str), then return None.
         """
         if isinstance(self._encoding, dict):
             return self._encoding.get(file)
@@ -209,7 +209,7 @@ class CorpusReader(object):
     root = property(_get_root, doc="""
         The directory where this corpus is stored.
 
-        @type: L{PathPointer}""")
+        :type: L{PathPointer}""")
 
 
 ######################################################################

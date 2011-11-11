@@ -39,11 +39,11 @@ class Chat(object):
         which is matched by parenthesized sections of the patterns (e.g. .*) is mapped to
         the numbered positions in the responses, e.g. %1.
 
-        @type pairs: C{list} of C{tuple}
-        @param pairs: The patterns and responses
-        @type reflections: C{dict}
-        @param reflections: A mapping between first and second person expressions
-        @rtype: C{None}
+        :type pairs: list of tuple
+        :param pairs: The patterns and responses
+        :type reflections: dict
+        :param reflections: A mapping between first and second person expressions
+        :rtype: None
         """
 
         self._pairs = [(re.compile(x, re.IGNORECASE),y) for (x,y) in pairs]
@@ -55,9 +55,9 @@ class Chat(object):
         Substitute words in the string, according to the specified reflections,
         e.g. "I'm" -> "you are"
         
-        @type str: C{string}
-        @param str: The string to be mapped
-        @rtype: C{string}
+        :type str: str
+        :param str: The string to be mapped
+        :rtype: str
         """
 
         words = ""
@@ -81,9 +81,9 @@ class Chat(object):
         """
         Generate a response to the user input.
         
-        @type str: C{string}
-        @param str: The string to be mapped
-        @rtype: C{string}
+        :type str: str
+        :param str: The string to be mapped
+        :rtype: str
         """
 
         # check each pattern

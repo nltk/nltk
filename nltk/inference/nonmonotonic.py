@@ -50,9 +50,9 @@ class ClosedDomainProver(ProverCommandDecorator):
          - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR 
                      "P.replace(x, d1) | P.replace(x, d2) | ..."
          - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
-        @param ex: C{Expression}
-        @param domain: C{set} of {Variable}s
-        @return: C{Expression}
+        :param ex: C{Expression}
+        :param domain: set of {Variable}s
+        :return: C{Expression}
         """
         if isinstance(ex, AllExpression):
             conjuncts = [ex.term.replace(ex.variable, VariableExpression(d)) 
@@ -118,8 +118,8 @@ class SetHolder(list):
     """
     def __getitem__(self, item):
         """
-        @param item: C{Variable}
-        @return: the C{set} containing 'item'
+        :param item: C{Variable}
+        :return: the set containing 'item'
         """
         assert isinstance(item, Variable)
         for s in self:
@@ -227,8 +227,8 @@ class ClosedWorldProver(ProverCommandDecorator):
         """
         Create a dictionary of predicates from the assumptions.
         
-        @param assumptions: a C{list} of C{Expression}s
-        @return: C{dict} mapping C{AbstractVariableExpression} to C{PredHolder}
+        :param assumptions: a list of C{Expression}s
+        :return: dict mapping C{AbstractVariableExpression} to C{PredHolder}
         """
         predicates = defaultdict(PredHolder)
         for a in assumptions:

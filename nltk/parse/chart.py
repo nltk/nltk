@@ -39,14 +39,14 @@ defines three chart parsers:
 """
 
 from collections import defaultdict
+import re
+import warnings
 
 from nltk.tree import Tree
 from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
 
-from api import *
+from nltk.parse.api import ParserI
 
-import re
-import warnings
 
 ########################################################################
 ##  Edges
@@ -99,31 +99,31 @@ class EdgeI(object):
 
     def span(self):
         """
-        @return: A tuple C{(s,e)}, where C{subtokens[s:e]} is the
+        :return: A tuple C{(s,e)}, where C{subtokens[s:e]} is the
             portion of the sentence that is consistent with this
             edge's structure.
-        @rtype: C{(int, int)}
+        :rtype: C{(int, int)}
         """
         raise AssertionError('EdgeI is an abstract interface')
 
     def start(self):
         """
-        @return: The start index of this edge's span.
-        @rtype: C{int}
+        :return: The start index of this edge's span.
+        :rtype: int
         """
         raise AssertionError('EdgeI is an abstract interface')
 
     def end(self):
         """
-        @return: The end index of this edge's span.
-        @rtype: C{int}
+        :return: The end index of this edge's span.
+        :rtype: int
         """
         raise AssertionError('EdgeI is an abstract interface')
 
     def length(self):
         """
-        @return: The length of this edge's span.
-        @rtype: C{int}
+        :return: The length of this edge's span.
+        :rtype: int
         """
         raise AssertionError('EdgeI is an abstract interface')
 
@@ -133,9 +133,9 @@ class EdgeI(object):
 
     def lhs(self):
         """
-        @return: This edge's left-hand side, which specifies what kind
+        :return: This edge's left-hand side, which specifies what kind
             of structure is hypothesized by this edge.
-        @see: L{TreeEdge} and L{LeafEdge} for a description of
+        :see: L{TreeEdge} and L{LeafEdge} for a description of
             the left-hand side values for each edge type.
         """
         raise AssertionError('EdgeI is an abstract interface')
@@ -146,45 +146,45 @@ class EdgeI(object):
 
     def rhs(self):
         """
-        @return: This edge's right-hand side, which specifies
+        :return: This edge's right-hand side, which specifies
             the content of the structure hypothesized by this
             edge.
-        @see: L{TreeEdge} and L{LeafEdge} for a description of
+        :see: L{TreeEdge} and L{LeafEdge} for a description of
             the right-hand side values for each edge type.
         """
         raise AssertionError('EdgeI is an abstract interface')
 
     def dot(self):
         """
-        @return: This edge's dot position, which indicates how much of
+        :return: This edge's dot position, which indicates how much of
             the hypothesized structure is consistent with the
             sentence.  In particular, C{self.rhs[:dot]} is consistent
             with C{subtoks[self.start():self.end()]}.
-        @rtype: C{int}
+        :rtype: int
         """
         raise AssertionError('EdgeI is an abstract interface')
 
     def next(self):
         """
-        @return: The element of this edge's right-hand side that
+        :return: The element of this edge's right-hand side that
             immediately follows its dot.
-        @rtype: C{Nonterminal} or X{terminal} or C{None}
+        :rtype: C{Nonterminal} or X{terminal} or None
         """
         raise AssertionError('EdgeI is an abstract interface')
 
     def is_complete(self):
         """
-        @return: True if this edge's structure is fully consistent
+        :return: True if this edge's structure is fully consistent
             with the text.
-        @rtype: C{boolean}
+        :rtype: bool
         """
         raise AssertionError('EdgeI is an abstract interface')
 
     def is_incomplete(self):
         """
-        @return: True if this edge's structure is partially consistent
+        :return: True if this edge's structure is partially consistent
             with the text.
-        @rtype: C{boolean}
+        :rtype: bool
         """
         raise AssertionError('EdgeI is an abstract interface')
 
@@ -227,18 +227,18 @@ class TreeEdge(EdgeI):
         """
         Construct a new C{TreeEdge}.
         
-        @type span: C{(int, int)}
-        @param span: A tuple C{(s,e)}, where C{subtokens[s:e]} is the
+        :type span: C{(int, int)}
+        :param span: A tuple C{(s,e)}, where C{subtokens[s:e]} is the
             portion of the sentence that is consistent with the new
             edge's structure.
-        @type lhs: L{Nonterminal}
-        @param lhs: The new edge's left-hand side, specifying the
+        :type lhs: L{Nonterminal}
+        :param lhs: The new edge's left-hand side, specifying the
             hypothesized tree's node value.
-        @type rhs: C{list} of (L{Nonterminal} and C{string})
-        @param rhs: The new edge's right-hand side, specifying the
+        :type rhs: list of (L{Nonterminal} and str)
+        :param rhs: The new edge's right-hand side, specifying the
             hypothesized tree's children.
-        @type dot: C{int}
-        @param dot: The position of the new edge's dot.  This position
+        :type dot: int
+        :param dot: The position of the new edge's dot.  This position
             specifies what prefix of the production's right hand side
             is consistent with the text.  In particular, if
             C{sentence} is the list of subtokens in the sentence, then
@@ -253,11 +253,11 @@ class TreeEdge(EdgeI):
     # [staticmethod]
     def from_production(production, index):
         """
-        @return: A new C{TreeEdge} formed from the given production.
+        :return: A new C{TreeEdge} formed from the given production.
             The new edge's left-hand side and right-hand side will
             be taken from C{production}; its span will be 
             C{(index,index)}; and its dot position will be C{0}.
-        @rtype: L{TreeEdge}
+        :rtype: L{TreeEdge}
         """
         return TreeEdge(span=(index, index), lhs=production.lhs(),
                         rhs=production.rhs(), dot=0)
@@ -265,12 +265,12 @@ class TreeEdge(EdgeI):
 
     def move_dot_forward(self, new_end):
         """
-        @return: A new C{TreeEdge} formed from this edge.
+        :return: A new C{TreeEdge} formed from this edge.
             The new edge's dot position is increased by C{1}, 
             and its end index will be replaced by C{new_end}.
-        @rtype: L{TreeEdge}
-        @param new_end: The new end index.
-        @type new_end: C{int}
+        :rtype: L{TreeEdge}
+        :param new_end: The new end index.
+        :type new_end: int
         """
         return TreeEdge(span=(self._span[0], new_end),
                         lhs=self._lhs, rhs=self._rhs,
@@ -328,9 +328,9 @@ class LeafEdge(EdgeI):
         """
         Construct a new C{LeafEdge}.
 
-        @param leaf: The new edge's leaf value, specifying the word
+        :param leaf: The new edge's leaf value, specifying the word
             that is recorded by this edge.
-        @param index: The new edge's index, specifying the position of
+        :param index: The new edge's index, specifying the position of
             the word that is recorded by this edge.
         """
         self._leaf = leaf
@@ -384,12 +384,12 @@ class Chart(object):
     A X{child pointer list} is a list of the edges that license an
     edge's right-hand side.
 
-    @ivar _tokens: The sentence that the chart covers.
-    @ivar _num_leaves: The number of tokens.
-    @ivar _edges: A list of the edges in the chart
-    @ivar _edge_to_cpls: A dictionary mapping each edge to a set
+    :ivar _tokens: The sentence that the chart covers.
+    :ivar _num_leaves: The number of tokens.
+    :ivar _edges: A list of the edges in the chart
+    :ivar _edge_to_cpls: A dictionary mapping each edge to a set
         of child pointer lists that are associated with that edge.
-    @ivar _indexes: A dictionary mapping tuples of edge attributes
+    :ivar _indexes: A dictionary mapping tuples of edge attributes
         to indices, where each index maps the corresponding edge
         attribute values to lists of edges.
     """
@@ -398,8 +398,8 @@ class Chart(object):
         Construct a new chart. The chart is initialized with the 
         leaf edges corresponding to the terminal leaves.
 
-        @type tokens: L{list}
-        @param tokens: The sentence that this chart will be used to parse.
+        :type tokens: L{list}
+        :param tokens: The sentence that this chart will be used to parse.
         """
         # Record the sentence token and the sentence length.
         self._tokens = tuple(tokens)
@@ -428,23 +428,23 @@ class Chart(object):
 
     def num_leaves(self):
         """
-        @return: The number of words in this chart's sentence.
-        @rtype: C{int}
+        :return: The number of words in this chart's sentence.
+        :rtype: int
         """
         return self._num_leaves
 
     def leaf(self, index):
         """
-        @return: The leaf value of the word at the given index.
-        @rtype: C{string}
+        :return: The leaf value of the word at the given index.
+        :rtype: str
         """
         return self._tokens[index]
 
     def leaves(self):
         """
-        @return: A list of the leaf values of each word in the
+        :return: A list of the leaf values of each word in the
             chart's sentence.
-        @rtype: C{list} of C{string}
+        :rtype: list of str
         """
         return self._tokens
 
@@ -454,22 +454,22 @@ class Chart(object):
 
     def edges(self):
         """
-        @return: A list of all edges in this chart.  New edges
+        :return: A list of all edges in this chart.  New edges
             that are added to the chart after the call to edges()
             will I{not} be contained in this list.
-        @rtype: C{list} of L{EdgeI}
-        @see: L{iteredges}, L{select}
+        :rtype: list of L{EdgeI}
+        :see: L{iteredges}, L{select}
         """
         return self._edges[:]
 
     def iteredges(self):
         """
-        @return: An iterator over the edges in this chart.  It is 
+        :return: An iterator over the edges in this chart.  It is 
             I{not} guaranteed that new edges which are added to the 
             chart before the iterator is exhausted will also be  
             generated.
-        @rtype: C{iter} of L{EdgeI}
-        @see: L{edges}, L{select}
+        :rtype: iter of L{EdgeI}
+        :see: L{edges}, L{select}
         """
         return iter(self._edges)
 
@@ -478,19 +478,19 @@ class Chart(object):
 
     def num_edges(self):
         """
-        @return: The number of edges contained in this chart.
-        @rtype: C{int}
+        :return: The number of edges contained in this chart.
+        :rtype: int
         """
         return len(self._edge_to_cpls)
 
     def select(self, **restrictions):
         """
-        @return: An iterator over the edges in this chart.  Any
+        :return: An iterator over the edges in this chart.  Any
             new edges that are added to the chart before the iterator
             is exahusted will also be generated.  C{restrictions}
             can be used to restrict the set of edges that will be
             generated.
-        @rtype: C{iter} of L{EdgeI}
+        :rtype: iter of L{EdgeI}
 
         @kwarg span: Only generate edges C{e} where C{e.span()==span}
         @kwarg start: Only generate edges C{e} where C{e.start()==start}
@@ -563,14 +563,14 @@ class Chart(object):
         """
         Add a new edge to the chart.
 
-        @type edge: L{EdgeI}
-        @param edge: The new edge
-        @type child_pointer_lists: C(sequence} of C{tuple} of L{EdgeI} 
-        @param child_pointer_lists: A sequence of lists of the edges that 
+        :type edge: L{EdgeI}
+        :param edge: The new edge
+        :type child_pointer_lists: C(sequence} of tuple of L{EdgeI} 
+        :param child_pointer_lists: A sequence of lists of the edges that 
             were used to form this edge.  This list is used to reconstruct 
             the trees (or partial trees) that are associated with C{edge}.
-        @rtype: C{bool}
-        @return: True if this operation modified the chart.  In
+        :rtype: bool
+        :return: True if this operation modified the chart.  In
             particular, return true iff the chart did not already
             contain C{edge}, or if it did not already associate
             C{child_pointer_lists} with C{edge}.
@@ -602,7 +602,7 @@ class Chart(object):
 
     def parses(self, root, tree_class=Tree):
         """
-        @return: A list of the complete tree structures that span
+        :return: A list of the complete tree structures that span
         the entire chart, and whose root node is C{root}.
         """
         trees = []
@@ -612,16 +612,16 @@ class Chart(object):
 
     def trees(self, edge, tree_class=Tree, complete=False):
         """
-        @return: A list of the tree structures that are associated
+        :return: A list of the tree structures that are associated
         with C{edge}.
 
         If C{edge} is incomplete, then the unexpanded children will be
         encoded as childless subtrees, whose node value is the
         corresponding terminal or nonterminal.
             
-        @rtype: C{list} of L{Tree}
-        @note: If two trees share a common subtree, then the same
-            C{Tree} may be used to encode that subtree in
+        :rtype: list of L{Tree}
+        :note: If two trees share a common subtree, then the same
+            Tree may be used to encode that subtree in
             both trees.  If you need to eliminate this subtree
             sharing, then create a deep copy of each tree.
         """
@@ -630,7 +630,7 @@ class Chart(object):
     def _trees(self, edge, complete, memo, tree_class):
         """
         A helper function for L{trees}.
-        @param memo: A dictionary used to record the trees that we've
+        :param memo: A dictionary used to record the trees that we've
             generated for each edge, so that when we see an edge more
             than once, we can reuse the same trees.
         """
@@ -689,7 +689,7 @@ class Chart(object):
         A helper function for L{_trees} that finds the possible sets
         of subtrees for a new tree.
         
-        @param child_choices: A list that specifies the options for
+        :param child_choices: A list that specifies the options for
         each child.  In particular, C{child_choices[i]} is a list of
         tokens and subtrees that can be used as the C{i}th child.
         """
@@ -711,8 +711,8 @@ class Chart(object):
     
     def child_pointer_lists(self, edge):
         """
-        @rtype: C{list} of C{list} of C{EdgeI}
-        @return: The set of child pointer lists for the given edge.
+        :rtype: list of list of C{EdgeI}
+        :return: The set of child pointer lists for the given edge.
             Each child pointer list is a list of edges that have
             been used to form this edge.
         """
@@ -724,10 +724,10 @@ class Chart(object):
     #////////////////////////////////////////////////////////////
     def pp_edge(self, edge, width=None):
         """
-        @return: A pretty-printed string representation of a given edge
+        :return: A pretty-printed string representation of a given edge
             in this chart.
-        @rtype: C{string}
-        @param width: The number of characters allotted to each
+        :rtype: str
+        :param width: The number of characters allotted to each
             index in the sentence.
         """
         if width is None: width = 50/(self.num_leaves()+1)
@@ -754,7 +754,7 @@ class Chart(object):
 
     def pp_leaves(self, width=None):
         """
-        @return: A pretty-printed string representation of this
+        :return: A pretty-printed string representation of this
             chart's leaves.  This string can be used as a header
             for calls to L{pp_edge}.
         """
@@ -772,9 +772,9 @@ class Chart(object):
 
     def pp(self, width=None):
         """
-        @return: A pretty-printed string representation of this chart.
-        @rtype: C{string}
-        @param width: The number of characters allotted to each
+        :return: A pretty-printed string representation of this chart.
+        :rtype: str
+        :param width: The number of characters allotted to each
             index in the sentence.
         """
         if width is None: width = 50/(self.num_leaves()+1)
@@ -862,7 +862,7 @@ class ChartRuleI(object):
       - A chart rule with C{NUM_EDGES=2} specifies what new edges are
         licensed by a pair of existing edges.
       
-    @type NUM_EDGES: C{int}
+    :type NUM_EDGES: int
     @cvar NUM_EDGES: The number of existing edges that this rule uses
         to license new edges.  Typically, this number ranges from zero
         to two.
@@ -872,25 +872,25 @@ class ChartRuleI(object):
         Add the edges licensed by this rule and the given edges to the
         chart.
 
-        @type edges: C{list} of L{EdgeI}
-        @param edges: A set of existing edges.  The number of edges
+        :type edges: list of L{EdgeI}
+        :param edges: A set of existing edges.  The number of edges
             that should be passed to C{apply} is specified by the
             L{NUM_EDGES} class variable.
-        @rtype: C{list} of L{EdgeI}
-        @return: A list of the edges that were added.
+        :rtype: list of L{EdgeI}
+        :return: A list of the edges that were added.
         """
         raise AssertionError, 'ChartRuleI is an abstract interface'
 
     def apply_iter(self, chart, grammar, *edges):
         """
-        @return: A generator that will add edges licensed by this rule
+        :return: A generator that will add edges licensed by this rule
             and the given edges to the chart, one at a time.  Each
             time the generator is resumed, it will either add a new
             edge and yield that edge; or return.
-        @rtype: C{iter} of L{EdgeI}
+        :rtype: iter of L{EdgeI}
         
-        @type edges: C{list} of L{EdgeI}
-        @param edges: A set of existing edges.  The number of edges
+        :type edges: list of L{EdgeI}
+        :param edges: A set of existing edges.  The number of edges
             that should be passed to C{apply} is specified by the
             L{NUM_EDGES} class variable.
         """
@@ -901,19 +901,19 @@ class ChartRuleI(object):
         Add all the edges licensed by this rule and the edges in the
         chart to the chart.
         
-        @rtype: C{list} of L{EdgeI}
-        @return: A list of the edges that were added.
+        :rtype: list of L{EdgeI}
+        :return: A list of the edges that were added.
         """
         raise AssertionError, 'ChartRuleI is an abstract interface'
 
     def apply_everywhere_iter(self, chart, grammar):
         """
-        @return: A generator that will add all edges licensed by
+        :return: A generator that will add all edges licensed by
             this rule, given the edges that are currently in the
             chart, one at a time.  Each time the generator is resumed,
             it will either add a new edge and yield that edge; or
             return.
-        @rtype: C{iter} of L{EdgeI}
+        :rtype: iter of L{EdgeI}
         """
         raise AssertionError, 'ChartRuleI is an abstract interface'
         
@@ -1017,7 +1017,7 @@ class SingleEdgeFundamentalRule(FundamentalRule):
         - [A S{->} S{alpha} B * S{beta}][i:j]
     if the other edge is already in the chart.
     
-    @note: This is basically L{FundamentalRule}, with one edge left
+    :note: This is basically L{FundamentalRule}, with one edge left
         unspecified.
     """
     NUM_EDGES = 1
@@ -1087,7 +1087,7 @@ class TopDownPredictRule(AbstractChartRule):
         - [B S{->} * S{gamma}][j:j]
     for each grammar production C{B S{->} S{gamma}}.
     
-    @note: This rule corresponds to the Predictor Rule in Earley parsing.
+    :note: This rule corresponds to the Predictor Rule in Earley parsing.
     """
     NUM_EDGES = 1
     def apply_iter(self, chart, grammar, edge):
@@ -1169,7 +1169,7 @@ class BottomUpPredictCombineRule(BottomUpPredictRule):
         - [B S{->} A * S{beta}]
     for each grammar production C{B S{->} A S{beta}}.
     
-    @note: This is like L{BottomUpPredictRule}, but it also applies
+    :note: This is like L{BottomUpPredictRule}, but it also applies
     the L{FundamentalRule} to the resulting edge.
     """
     NUM_EDGES = 1
@@ -1282,24 +1282,24 @@ class ChartParser(ParserI):
         Create a new chart parser, that uses C{grammar} to parse
         texts.
 
-        @type grammar: L{ContextFreeGrammar}
-        @param grammar: The grammar used to parse texts.
-        @type strategy: C{list} of L{ChartRuleI}
-        @param strategy: A list of rules that should be used to decide
+        :type grammar: L{ContextFreeGrammar}
+        :param grammar: The grammar used to parse texts.
+        :type strategy: list of L{ChartRuleI}
+        :param strategy: A list of rules that should be used to decide
             what edges to add to the chart (top-down strategy by default).
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
+        :type trace: int
+        :param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @type trace_chart_width: C{int}
-        @param trace_chart_width: The default total width reserved for 
+        :type trace_chart_width: int
+        :param trace_chart_width: The default total width reserved for 
             the chart in trace output.  The remainder of each line will 
             be used to display edges. 
-        @type use_agenda: C{bool}
-        @param use_agenda: Use an optimized agenda-based algorithm, 
+        :type use_agenda: bool
+        :param use_agenda: Use an optimized agenda-based algorithm, 
             if possible. 
-        @param chart_class: The class that should be used to create
+        :param chart_class: The class that should be used to create
             the parse charts.
         """
         self._grammar = grammar
@@ -1335,12 +1335,12 @@ class ChartParser(ParserI):
 
     def chart_parse(self, tokens, trace=None):
         """
-        @return: The final parse L{Chart}, 
+        :return: The final parse L{Chart}, 
         from which all possible parse trees can be extracted.
         
-        @param tokens: The sentence to be parsed
-        @type tokens: L{list} of L{string}
-        @rtype: L{Chart}
+        :param tokens: The sentence to be parsed
+        :type tokens: L{list} of L{string}
+        :rtype: L{Chart}
         """
         if trace is None: trace = self._trace
         trace_new_edges = self._trace_new_edges
@@ -1444,7 +1444,7 @@ class SteppingChartParser(ChartParser):
     strategy used by the chart parser.  C{parses} returns the set of
     parses that has been found by the chart parser.
 
-    @ivar _restart: Records whether the parser's strategy, grammar,
+    :ivar _restart: Records whether the parser's strategy, grammar,
         or chart has been changed.  If so, then L{step} must restart
         the parsing algorithm.
     """
@@ -1469,10 +1469,10 @@ class SteppingChartParser(ChartParser):
 
     def step(self):
         """
-        @return: A generator that adds edges to the chart, one at a
+        :return: A generator that adds edges to the chart, one at a
         time.  Each time the generator is resumed, it adds a single
         edge and yields that edge.  If no more edges can be added,
-        then it yields C{None}.
+        then it yields None.
 
         If the parser's strategy, grammar, or chart is changed, then
         the generator will continue adding edges using the new
@@ -1480,7 +1480,7 @@ class SteppingChartParser(ChartParser):
 
         Note that this generator never terminates, since the grammar
         or strategy might be changed to values that would add new
-        edges.  Instead, it yields C{None} when no more edges can be
+        edges.  Instead, it yields None when no more edges can be
         added with the current strategy and grammar.
         """
         if self._chart is None:
@@ -1519,23 +1519,23 @@ class SteppingChartParser(ChartParser):
     #////////////////////////////////////////////////////////////
 
     def strategy(self):
-        "@return: The strategy used by this parser."
+        ":return: The strategy used by this parser."
         return self._strategy
 
     def grammar(self):
-        "@return: The grammar used by this parser."
+        ":return: The grammar used by this parser."
         return self._grammar
 
     def chart(self):
-        "@return: The chart that is used by this parser."
+        ":return: The chart that is used by this parser."
         return self._chart
 
     def current_chartrule(self):
-        "@return: The chart rule used to generate the most recent edge."
+        ":return: The chart rule used to generate the most recent edge."
         return self._current_chartrule
 
     def parses(self, tree_class=Tree):
-        "@return: The parse trees currently contained in the chart."
+        ":return: The parse trees currently contained in the chart."
         return self._chart.parses(self._grammar.start(), tree_class)
     
     #////////////////////////////////////////////////////////////
@@ -1546,8 +1546,8 @@ class SteppingChartParser(ChartParser):
         """
         Change the startegy that the parser uses to decide which edges
         to add to the chart.
-        @type strategy: C{list} of L{ChartRuleI}
-        @param strategy: A list of rules that should be used to decide
+        :type strategy: list of L{ChartRuleI}
+        :param strategy: A list of rules that should be used to decide
             what edges to add to the chart.
         """
         if strategy == self._strategy: return

@@ -80,43 +80,43 @@ class StreamBackedCorpusView(AbstractLazySequence):
     have high degrees of locality, the corpus view may cache one or
     more blocks.
 
-    @note: Each C{CorpusView} object internally maintains an open file
+    :note: Each C{CorpusView} object internally maintains an open file
         object for its underlying corpus file.  This file should be
         automatically closed when the C{CorpusView} is garbage collected,
         but if you wish to close it manually, use the L{close()}
         method.  If you access a C{CorpusView}'s items after it has been
         closed, the file object will be automatically re-opened.
         
-    @warning: If the contents of the file are modified during the
+    :warning: If the contents of the file are modified during the
         lifetime of the C{CorpusView}, then the C{CorpusView}'s behavior
         is undefined.
 
-    @warning: If a unicode encoding is specified when constructing a
+    :warning: If a unicode encoding is specified when constructing a
         C{CorpusView}, then the block reader may only call
         C{stream.seek()} with offsets that have been returned by
         C{stream.tell()}; in particular, calling C{stream.seek()} with
         relative offsets, or with offsets based on string lengths, may
         lead to incorrect behavior.
 
-    @ivar _block_reader: The function used to read 
+    :ivar _block_reader: The function used to read 
         a single block from the underlying file stream.
-    @ivar _toknum: A list containing the token index of each block
+    :ivar _toknum: A list containing the token index of each block
         that has been processed.  In particular, C{_toknum[i]} is the
         token index of the first token in block C{i}.  Together
         with L{_filepos}, this forms a partial mapping between token
         indices and file positions.
-    @ivar _filepos: A list containing the file position of each block
+    :ivar _filepos: A list containing the file position of each block
         that has been processed.  In particular, C{_toknum[i]} is the
         file position of the first character in block C{i}.  Together
         with L{_toknum}, this forms a partial mapping between token
         indices and file positions.
-    @ivar _stream: The stream used to access the underlying corpus file.
-    @ivar _len: The total number of tokens in the corpus, if known;
-        or C{None}, if the number of tokens is not yet known.
-    @ivar _eofpos: The character position of the last character in the
+    :ivar _stream: The stream used to access the underlying corpus file.
+    :ivar _len: The total number of tokens in the corpus, if known;
+        or None, if the number of tokens is not yet known.
+    :ivar _eofpos: The character position of the last character in the
         file.  This is calculated when the corpus view is initialized,
         and is used to decide when the end of file has been reached.
-    @ivar _cache: A cache of the most recently read block.  It
+    :ivar _cache: A cache of the most recently read block.  It
        is encoded as a tuple (start_toknum, end_toknum, tokens), where
        start_toknum is the token index of the first token in the block;
        end_toknum is the token index of the first token not in the
@@ -129,20 +129,20 @@ class StreamBackedCorpusView(AbstractLazySequence):
         read with C{block_reader}.  See the class documentation
         for more information.
 
-        @param fileid: The path to the file that is read by this
+        :param fileid: The path to the file that is read by this
             corpus view.  C{fileid} can either be a string or a
             L{PathPointer}.
 
-        @param startpos: The file position at which the view will
+        :param startpos: The file position at which the view will
             start reading.  This can be used to skip over preface
             sections.
 
-        @param encoding: The unicode encoding that should be used to
+        :param encoding: The unicode encoding that should be used to
             read the file's contents.  If no encoding is specified,
             then the file's contents will be read as a non-unicode
-            string (i.e., a C{str}).
+            string (i.e., a str).
 
-        @param source: If specified, then use an L{SourcedStringStream}
+        :param source: If specified, then use an L{SourcedStringStream}
             to annotate all strings read from the file with
             information about their start offset, end ofset,
             and docid.  The value of ``source`` will be used as the docid.
@@ -191,16 +191,16 @@ class StreamBackedCorpusView(AbstractLazySequence):
     fileid = property(lambda self: self._fileid, doc="""
         The fileid of the file that is accessed by this view.
 
-        @type: C{str} or L{PathPointer}""")
+        :type: str or L{PathPointer}""")
 
     def read_block(self, stream):
         """
         Read a block from the input stream. 
 
-        @return: a block of tokens from the input stream
-        @rtype: list of any
-        @param stream: an input stream
-        @type stream: stream
+        :return: a block of tokens from the input stream
+        :rtype: list of any
+        :param stream: an input stream
+        :type stream: stream
         """
         raise NotImplementedError('Abstract Method')
 
@@ -370,7 +370,7 @@ class ConcatenatedCorpusView(AbstractLazySequence):
             offsets[i] = sum([len(p) for p in pieces[:i]])"""
         
         self._open_piece = None
-        """The most recently accessed corpus subview (or C{None}).
+        """The most recently accessed corpus subview (or None).
         Before a new subview is accessed, this subview will be closed."""
 
     def __len__(self):
@@ -487,7 +487,7 @@ class PickleCorpusView(StreamBackedCorpusView):
         Create a new corpus view that reads the pickle corpus
         C{fileid}.
 
-        @param delete_on_gc: If true, then C{fileid} will be deleted
+        :param delete_on_gc: If true, then C{fileid} will be deleted
             whenever this object gets garbage-collected.
         """
         self._delete_on_gc = delete_on_gc
@@ -527,7 +527,7 @@ class PickleCorpusView(StreamBackedCorpusView):
         corpus; and then return a C{PickleCorpusView} view for that
         temporary corpus file.
         
-        @param delete_on_gc: If true, then the temporary file will be
+        :param delete_on_gc: If true, then the temporary file will be
             deleted whenever this object gets garbage-collected.
         """
         try:
@@ -639,10 +639,10 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     incomplete s-expression is returned when the end of the file is
     reached.
     
-    @param block_size: The default block size for reading.  If an
+    :param block_size: The default block size for reading.  If an
         s-expression is longer than one block, then more than one
         block will be read.
-    @param comment_char: A character that marks comments.  Any lines
+    :param comment_char: A character that marks comments.  Any lines
         that begin with this character will be stripped out.
         (If spaces or tabs preceed the comment character, then the
         line will not be stripped.)

@@ -87,7 +87,7 @@ def translate(phrase, source, target):
     Use babelfish to translate phrase from source language to target language.
     It's only guaranteed to work if 'english' is one of the two languages.
     
-    @raise BabelizeError: If an error is encountered.
+    :raise BabelizeError: If an error is encountered.
     """
 
     phrase = clean(phrase)
@@ -123,7 +123,7 @@ def babelize(phrase, source, target, limit = 12):
     It's only guaranteed to work if 'english' is one of the two
     languages.
 
-    @raise BabelizeError: If an error is encountered.
+    :raise BabelizeError: If an error is encountered.
     """
     phrase = clean(phrase)
     seen = set([phrase])
@@ -154,7 +154,7 @@ def babelize_shell():
     It's only guaranteed to work if 'english' is one of the two
     languages.
 
-    @raise BabelizeError: If an error is encountered.
+    :raise BabelizeError: If an error is encountered.
     """
     
     print "NLTK Babelizer: type 'help' for a list of commands."

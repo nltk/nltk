@@ -52,12 +52,12 @@ def usage(obj, selfname='self'):
 
 def in_idle():
     """
-    @rtype: C{boolean}
-    @return: true if this function is run within idle.  Tkinter
+    :rtype: bool
+    :return: true if this function is run within idle.  Tkinter
     programs that are run in idle should never call C{Tk.mainloop}; so
     this function should be used to gate all calls to C{Tk.mainloop}.
 
-    @warning: This function works by checking C{sys.stdin}.  If the
+    :warning: This function works by checking C{sys.stdin}.  If the
     user has modified C{sys.stdin}, then it may return incorrect
     results.
     """
@@ -73,12 +73,12 @@ def pr(data, start=0, end=None):
     """
     Pretty print a sequence of data items
 
-    @param data: the data stream to print
-    @type data: C{sequence} or C{iterator}
-    @param start: the start position
-    @type start: C{int}
-    @param end: the end position
-    @type end: C{int}
+    :param data: the data stream to print
+    :type data: sequence or iter
+    :param start: the start position
+    :type start: int
+    :param end: the end position
+    :type end: int
     """
     pprint(list(islice(data, start, end)))
 
@@ -86,10 +86,10 @@ def print_string(s, width=70):
     """
     Pretty print a string, breaking lines on whitespace
 
-    @param s: the string to print, consisting of words and spaces
-    @type s: C{string}
-    @param width: the display width
-    @type width: C{int}
+    :param s: the string to print, consisting of words and spaces
+    :type s: str
+    :param width: the display width
+    :type width: int
     """
     print '\n'.join(textwrap.wrap(s, width=width))
 
@@ -97,12 +97,12 @@ def tokenwrap(tokens, separator=" ", width=70):
     """
     Pretty print a list of text tokens, breaking lines on whitespace
 
-    @param tokens: the tokens to print
-    @type tokens: C{list}
-    @param separator: the string to use to separate tokens
-    @type separator: C{str}
-    @param width: the display width (default=70)
-    @type width: C{int}
+    :param tokens: the tokens to print
+    :type tokens: list
+    :param separator: the string to use to separate tokens
+    :type separator: str
+    :param width: the display width (default=70)
+    :type width: int
     """
     return '\n'.join(textwrap.wrap(separator.join(tokens), width=width))
 
@@ -125,20 +125,20 @@ class Index(defaultdict):
 
 def re_show(regexp, string, left="{", right="}"):
     """
-    Search C{string} for substrings matching C{regexp} and wrap
+    Search str for substrings matching C{regexp} and wrap
     the matches with braces.  This is convenient for learning about
     regular expressions.
 
-    @param regexp: The regular expression.
-    @type regexp: C{string}
-    @param string: The string being matched.
-    @type string: C{string}
-    @param left: The left delimiter (printed before the matched substring)
-    @type left: C{string}
-    @param right: The right delimiter (printed after the matched substring)
-    @type right: C{string}
-    @rtype: C{string}
-    @return: A string with markers surrounding the matched substrings.
+    :param regexp: The regular expression.
+    :type regexp: str
+    :param string: The string being matched.
+    :type string: str
+    :param left: The left delimiter (printed before the matched substring)
+    :type left: str
+    :param right: The right delimiter (printed after the matched substring)
+    :type right: str
+    :rtype: str
+    :return: A string with markers surrounding the matched substrings.
     """
     print re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
 
@@ -270,12 +270,12 @@ def transitive_closure(graph, reflexive=False):
     The algorithm is a slight modification of the "Marking Algorithm" of
     Ioannidis & Ramakrishnan (1998) "Efficient Transitive Closure Algorithms".
     
-    @param graph: the initial graph, represented as a dictionary of sets
-    @type graph: C{dict} of C{set}s
-    @param reflexive: if set, also make the closure reflexive
-    @type reflexive: C{bool}
-    @return: the (reflexive) transitive closure of the graph
-    @rtype: C{dict} of C{set}s
+    :param graph: the initial graph, represented as a dictionary of sets
+    :type graph: dict of sets
+    :param reflexive: if set, also make the closure reflexive
+    :type reflexive: bool
+    :return: the (reflexive) transitive closure of the graph
+    :rtype: dict of sets
     """
     if reflexive:
         base_set = lambda k: set([k])
@@ -301,10 +301,10 @@ def invert_graph(graph):
     """
     Inverts a directed graph.
     
-    @param graph: the graph, represented as a dictionary of sets
-    @type graph: C{dict} of C{set}s
-    @return: the inverted graph
-    @rtype: C{dict} of C{set}s
+    :param graph: the graph, represented as a dictionary of sets
+    :type graph: dict of sets
+    :return: the inverted graph
+    :rtype: dict of sets
     """
     inverted = {}
     for key, values in graph.iteritems():
@@ -322,9 +322,9 @@ def clean_html(html):
     """
     Remove HTML markup from the given string.
 
-    @param html: the HTML string to be cleaned
-    @type html: C{string}
-    @rtype: C{string}
+    :param html: the HTML string to be cleaned
+    :type html: str
+    :rtype: str
     """
 
     # First we remove inline JavaScript/CSS:
@@ -355,8 +355,8 @@ def flatten(*args):
         >>> flatten(1, 2, ['b', 'a' , ['c', 'd']], 3)
         [1, 2, 'b', 'a', 'c', 'd', 3]
 
-    @param *args: items and lists to be combined into a single list
-    @rtype: C{list}
+    :param *args: items and lists to be combined into a single list
+    :rtype: list
     """
 
     x = []
@@ -389,18 +389,18 @@ def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     >>> ngrams([1,2,3,4,5], 2, pad_right=True)
     [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
-    @param sequence: the source data to be converted into ngrams
-    @type sequence: C{sequence} or C{iterator}
-    @param n: the degree of the ngrams
-    @type n: C{int}
-    @param pad_left: whether the ngrams should be left-padded
-    @type pad_left: C{boolean}
-    @param pad_right: whether the ngrams should be right-padded
-    @type pad_right: C{boolean}
-    @param pad_symbol: the symbol to use for padding (default is None)
-    @type pad_symbol: C{any}
-    @return: The ngrams
-    @rtype: C{list} of C{tuple}s
+    :param sequence: the source data to be converted into ngrams
+    :type sequence: sequence or iter
+    :param n: the degree of the ngrams
+    :type n: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
+    :param pad_symbol: the symbol to use for padding (default is None)
+    :type pad_symbol: C{any}
+    :return: The ngrams
+    :rtype: list of tuples
     """
 
     if pad_left:
@@ -422,10 +422,10 @@ def bigrams(sequence, **kwargs):
     
     Use ibigrams for an iterator version of this function.
 
-    @param sequence: the source data to be converted into bigrams
-    @type sequence: C{sequence} or C{iterator}
-    @return: The bigrams
-    @rtype: C{list} of C{tuple}s
+    :param sequence: the source data to be converted into bigrams
+    :type sequence: sequence or iter
+    :return: The bigrams
+    :rtype: list of tuples
     """
     return ngrams(sequence, 2, **kwargs)
 
@@ -439,10 +439,10 @@ def trigrams(sequence, **kwargs):
     
     Use itrigrams for an iterator version of this function.
 
-    @param sequence: the source data to be converted into trigrams
-    @type sequence: C{sequence} or C{iterator}
-    @return: The trigrams
-    @rtype: C{list} of C{tuple}s
+    :param sequence: the source data to be converted into trigrams
+    :type sequence: sequence or iter
+    :return: The trigrams
+    :rtype: list of tuples
     """
     return ngrams(sequence, 3, **kwargs)
 
@@ -461,18 +461,18 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     >>> list(ingrams([1,2,3,4,5], 2, pad_right=True))
     [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
-    @param sequence: the source data to be converted into ngrams
-    @type sequence: C{sequence} or C{iterator}
-    @param n: the degree of the ngrams
-    @type n: C{int}
-    @param pad_left: whether the ngrams should be left-padded
-    @type pad_left: C{boolean}
-    @param pad_right: whether the ngrams should be right-padded
-    @type pad_right: C{boolean}
-    @param pad_symbol: the symbol to use for padding (default is None)
-    @type pad_symbol: C{any}
-    @return: The ngrams
-    @rtype: C{iterator} of C{tuple}s
+    :param sequence: the source data to be converted into ngrams
+    :type sequence: sequence or iter
+    :param n: the degree of the ngrams
+    :type n: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
+    :param pad_symbol: the symbol to use for padding (default is None)
+    :type pad_symbol: C{any}
+    :return: The ngrams
+    :rtype: iter of tuples
     """
 
     sequence = iter(sequence)
@@ -501,10 +501,10 @@ def ibigrams(sequence, **kwargs):
     
     Use bigrams for a list version of this function.
 
-    @param sequence: the source data to be converted into bigrams
-    @type sequence: C{sequence} or C{iterator}
-    @return: The bigrams
-    @rtype: C{iterator} of C{tuple}s
+    :param sequence: the source data to be converted into bigrams
+    :type sequence: sequence or iter
+    :return: The bigrams
+    :rtype: iter of tuples
     """
 
     for item in ingrams(sequence, 2, **kwargs):
@@ -521,10 +521,10 @@ def itrigrams(sequence, **kwargs):
     
     Use trigrams for a list version of this function.
 
-    @param sequence: the source data to be converted into trigrams
-    @type sequence: C{sequence} or C{iterator}
-    @return: The trigrams
-    @rtype: C{iterator} of C{tuple}s
+    :param sequence: the source data to be converted into trigrams
+    :type sequence: sequence or iter
+    :return: The trigrams
+    :rtype: iter of tuples
     """
 
     for item in ingrams(sequence, 3, **kwargs):
@@ -723,7 +723,7 @@ class AbstractLazySequence(object):
     _MAX_REPR_SIZE = 60
     def __repr__(self):
         """
-        @return: A string representation for this corpus view that is
+        :return: A string representation for this corpus view that is
         similar to a list's representation; but if it would be more
         than 60 characters long, it is truncated.
         """
@@ -741,7 +741,7 @@ class AbstractLazySequence(object):
         """
         Return a number indicating how C{self} relates to other.
 
-          - If C{other} is not a corpus view or a C{list}, return -1.
+          - If C{other} is not a corpus view or a list, return -1.
           - Otherwise, return C{cmp(list(self), list(other))}.
 
         Note: corpus views do not compare equal to tuples containing
@@ -753,7 +753,7 @@ class AbstractLazySequence(object):
 
     def __hash__(self):
         """
-        @raise ValueError: Corpus view objects are unhashable.
+        :raise ValueError: Corpus view objects are unhashable.
         """
         raise ValueError('%s objects are unhashable' %
                          self.__class__.__name__)
@@ -864,7 +864,7 @@ class LazyMap(AbstractLazySequence):
         ['1', '2', '3']
 
     Like the Python C{map} primitive, if the source lists do not have
-    equal size, then the value C{None} will be supplied for the
+    equal size, then the value None will be supplied for the
     'missing' elements.
 
     Lazy maps can be useful for conserving memory, in cases where
@@ -880,11 +880,11 @@ class LazyMap(AbstractLazySequence):
     """
     def __init__(self, function, *lists, **config):
         """
-        @param function: The function that should be applied to
+        :param function: The function that should be applied to
             elements of C{lists}.  It should take as many arguments
             as there are C{lists}.
-        @param lists: The underlying lists.
-        @kwparam cache_size: Determines the size of the cache used
+        :param lists: The underlying lists.
+        :param cache_size: Determines the size of the cache used
             by this lazy map.  (default=5)
         """
         if not lists:
@@ -978,7 +978,7 @@ class LazyZip(LazyMap):
     element from each of the argument sequences.  The returned list is 
     truncated in length to the length of the shortest argument sequence. The
     tuples are constructed lazily -- i.e., when you read a value from the
-    list, C{LazyZip} will calculate that value by forming a C{tuple} from
+    list, C{LazyZip} will calculate that value by forming a tuple from
     the i-th element of each of the argument sequences.
 
     C{LazyZip} is essentially a lazy version of the Python primitive function
@@ -1004,8 +1004,8 @@ class LazyZip(LazyMap):
     """
     def __init__(self, *lists):
         """
-        @param lists: the underlying lists
-        @type lists: C{list} of C{list}
+        :param lists: the underlying lists
+        :type lists: list of list
         """
         LazyMap.__init__(self, lambda *elts: elts, *lists)
 
@@ -1026,7 +1026,7 @@ class LazyEnumerate(LazyZip):
     zero) and a value yielded by underlying sequence.  C{LazyEnumerate} is
     useful for obtaining an indexed list. The tuples are constructed lazily
     -- i.e., when you read a value from the list, C{LazyEnumerate} will
-    calculate that value by forming a C{tuple} from the count of the i-th
+    calculate that value by forming a tuple from the count of the i-th
     element and the i-th element of the underlying sequence.
 
     C{LazyEnumerate} is essentially a lazy version of the Python primitive
@@ -1050,8 +1050,8 @@ class LazyEnumerate(LazyZip):
     
     def __init__(self, lst):
         """
-        @param lst: the underlying list
-        @type lst: C{list}
+        :param lst: the underlying list
+        :type lst: list
         """                
         LazyZip.__init__(self, xrange(len(lst)), lst)
         
@@ -1065,11 +1065,11 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
     """
     Searches through a sorted file using the binary search algorithm.
 
-    @type  file: file
-    @param file: the file to be searched through.
-    @type  key: {string}
-    @param key: the identifier we are searching for.
-    @return: The line from the file with first word key.
+    :type  file: file
+    :param file: the file to be searched through.
+    :type  key: {string}
+    :param key: the identifier we are searching for.
+    :return: The line from the file with first word key.
     """
     
     key = key + ' '
@@ -1139,11 +1139,11 @@ def set_proxy(proxy, (user, password)=(None, '')):
     If C{proxy} is None then tries to set proxy from enviroment or system 
     settings.
 
-    @param proxy: The HTTP proxy server to use. For example:
+    :param proxy: The HTTP proxy server to use. For example:
         'http://proxy.example.com:3128/'
-    @param user: The username to authenticate with. Use C{None} to disable 
+    :param user: The username to authenticate with. Use None to disable 
     authentication.
-    @param password: The password to authenticate with.
+    :param password: The password to authenticate with.
     """
     import urllib
     import urllib2

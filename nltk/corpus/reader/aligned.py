@@ -29,8 +29,8 @@ class AlignedCorpusReader(CorpusReader):
             >>> root = '/...path to corpus.../'
             >>> reader = AlignedCorpusReader(root, '.*', '.txt')
         
-        @param root: The root directory for this corpus.
-        @param fileids: A list or regexp specifying the fileids in this corpus.
+        :param root: The root directory for this corpus.
+        :param fileids: A list or regexp specifying the fileids in this corpus.
         """
         CorpusReader.__init__(self, root, fileids, encoding)
         self._sep = sep
@@ -40,8 +40,8 @@ class AlignedCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the given file(s) as a single string.
-        @rtype: C{str}
+        :return: the given file(s) as a single string.
+        :rtype: str
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -49,9 +49,9 @@ class AlignedCorpusReader(CorpusReader):
 
     def words(self, fileids=None):
         """
-        @return: the given file(s) as a list of words
+        :return: the given file(s) as a list of words
             and punctuation symbols.
-        @rtype: C{list} of C{str}
+        :rtype: list of str
         """
         return concat([AlignedSentCorpusView(fileid, enc, False, False,
                                              self._word_tokenizer,
@@ -61,10 +61,10 @@ class AlignedCorpusReader(CorpusReader):
 
     def sents(self, fileids=None):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        @rtype: C{list} of (C{list} of C{str})
+        :rtype: list of (list of str)
         """
         return concat([AlignedSentCorpusView(fileid, enc, False, True,
                                              self._word_tokenizer,
@@ -74,8 +74,8 @@ class AlignedCorpusReader(CorpusReader):
 
     def aligned_sents(self, fileids=None):
         """
-        @return: the given file(s) as a list of AlignedSent objects.
-        @rtype: C{list} of C{AlignedSent}
+        :return: the given file(s) as a list of AlignedSent objects.
+        :rtype: list of C{AlignedSent}
         """
         return concat([AlignedSentCorpusView(fileid, enc, True, True,
                                              self._word_tokenizer,

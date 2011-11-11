@@ -11,9 +11,8 @@ import os
 import nltk
 from nltk.internals import Counter
 from nltk.parse import *
-from nltk.parse import MaltParser
 from nltk.corpus import brown
-from nltk.tag import *
+from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
 import logic
 import drt
 import linearlogic
@@ -332,9 +331,9 @@ class GlueDict(dict):
 
     def get_meaning_formula(self, generic, word):
         """
-        @param generic: A meaning formula string containing the 
+        :param generic: A meaning formula string containing the 
         parameter "<word>"
-        @param word: The actual word to be replace "<word>"
+        :param word: The actual word to be replace "<word>"
         """
         word = word.replace('.', '')
         return generic.replace('<word>', word)
@@ -376,8 +375,8 @@ class GlueDict(dict):
         """
         Pick an alphabetic character as identifier for an entity in the model.
         
-        @parameter value: where to index into the list of characters
-        @type value: C{int}
+        :param value: where to index into the list of characters
+        :type value: int
         """
         value = node['address']
         
@@ -519,6 +518,7 @@ class Glue(object):
     def dep_parse(self, sentence='every cat leaves'):
         #Lazy-initialize the depparser
         if self.depparser is None:
+            from nltk.parse import MaltParser
             self.depparser = MaltParser(tagger=self.get_pos_tagger())
         if not self.depparser._trained:
             self.train_depparser()
@@ -613,6 +613,7 @@ class DrtGlue(Glue):
 
 
 def demo(show_example=-1):
+    from nltk.parse import MaltParser
     examples = ['David sees Mary',
                 'David eats a sandwich',
                 'every man chases a dog',

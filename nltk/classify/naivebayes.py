@@ -64,12 +64,12 @@ class NaiveBayesClassifier(ClassifierI):
     """
     def __init__(self, label_probdist, feature_probdist):
         """
-        @param label_probdist: P(label), the probability distribution
+        :param label_probdist: P(label), the probability distribution
             over labels.  It is expressed as a L{ProbDistI} whose
             samples are labels.  I.e., P(label) =
             C{label_probdist.prob(label)}.
         
-        @param feature_probdist: P(fname=fval|label), the probability
+        :param feature_probdist: P(fname=fval|label), the probability
             distribution for feature values, given labels.  It is
             expressed as a dictionary whose keys are C{(label,fname)}
             pairs and whose values are L{ProbDistI}s over feature
@@ -180,7 +180,7 @@ class NaiveBayesClassifier(ClassifierI):
     @staticmethod
     def train(labeled_featuresets, estimator=ELEProbDist):
         """
-        @param labeled_featuresets: A list of classified featuresets,
+        :param labeled_featuresets: A list of classified featuresets,
             i.e., a list of tuples C{(featureset, label)}.
         """
         label_freqdist = FreqDist()

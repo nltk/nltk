@@ -157,7 +157,7 @@ class TimitCorpusReader(CorpusReader):
     def __init__(self, root, encoding=None):
         """
         Construct a new TIMIT corpus reader in the given directory.
-        @param root: The root directory for this corpus.
+        :param root: The root directory for this corpus.
         """
         # Ensure that wave files don't get treated as unicode data:
         if isinstance(encoding, basestring):
@@ -181,7 +181,7 @@ class TimitCorpusReader(CorpusReader):
         Return a list of file identifiers for the files that make up
         this corpus.
 
-        @param filetype: If specified, then C{filetype} indicates that
+        :param filetype: If specified, then C{filetype} indicates that
             only the files that have the given type should be
             returned.  Accepted values are: C{txt}, C{wrd}, C{phn},
             C{wav}, or C{metadata},
@@ -198,7 +198,7 @@ class TimitCorpusReader(CorpusReader):
     def utteranceids(self, dialect=None, sex=None, spkrid=None,
                    sent_type=None, sentid=None):
         """
-        @return: A list of the utterance identifiers for all
+        :return: A list of the utterance identifiers for all
         utterances in this corpus, or for the given speaker, dialect
         region, gender, sentence type, or sentence number, if
         specified.
@@ -224,7 +224,7 @@ class TimitCorpusReader(CorpusReader):
 
     def transcription_dict(self):
         """
-        @return: A dictionary giving the 'standard' transcription for
+        :return: A dictionary giving the 'standard' transcription for
         each word.
         """
         _transcriptions = {}
@@ -246,7 +246,7 @@ class TimitCorpusReader(CorpusReader):
 
     def spkrutteranceids(self, speaker):
         """
-        @return: A list of all utterances associated with a given
+        :return: A list of all utterances associated with a given
         speaker.
         """
         return [utterance for utterance in self._utterances
@@ -254,7 +254,7 @@ class TimitCorpusReader(CorpusReader):
 
     def spkrinfo(self, speaker):
         """
-        @return: A dictionary mapping .. something.
+        :return: A dictionary mapping .. something.
         """
         if speaker in self._utterances:
             speaker = self.spkrid(speaker)
@@ -377,7 +377,7 @@ class TimitCorpusReader(CorpusReader):
         """
         Play the given audio sample.
         
-        @param utterance: The utterance id of the sample to play
+        :param utterance: The utterance id of the sample to play
         """
         # Method 1: os audio dev.
         try:

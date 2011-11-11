@@ -28,14 +28,14 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     
     def __init__(self, goal=None, assumptions=None, max_models=500, model_builder=None):
         """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in
+        :param goal: Input expression to prove
+        :type goal: L{logic.Expression}
+        :param assumptions: Input expressions to use as assumptions in
             the proof.
-        @type assumptions: C{list} of L{logic.Expression}
-        @param max_models: The maximum number of models that Mace will try before
+        :type assumptions: list of L{logic.Expression}
+        :param max_models: The maximum number of models that Mace will try before
             simply returning false. (Use 0 for no maximum.)
-        @type max_models: C{int}
+        :type max_models: int
         """
         if model_builder is not None:
             assert isinstance(model_builder, Mace)
@@ -50,8 +50,8 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         Transform the output file into an NLTK-style Valuation. 
         
-        @return: A model if one is generated; None otherwise.
-        @rtype: L{nltk.sem.Valuation} 
+        :return: A model if one is generated; None otherwise.
+        :rtype: L{nltk.sem.Valuation} 
         """
         valuation_standard_format = self._transform_output(valuation_str, 'standard')
         
@@ -91,10 +91,10 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         Convert a Mace4-style relation table into a dictionary.
         
-        @parameter num_entities: the number of entities in the model; determines the row length in the table.
-        @type num_entities: C{int}
-        @parameter values: a list of 1's and 0's that represent whether a relation holds in a Mace4 model.
-        @type values: C{list} of C{int}
+        :param num_entities: the number of entities in the model; determines the row length in the table.
+        :type num_entities: int
+        :param values: a list of 1's and 0's that represent whether a relation holds in a Mace4 model.
+        :type values: list of int
         """
         r = set()
         for position in [pos for (pos,v) in enumerate(values) if v == 1]:
@@ -121,8 +121,8 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         Pick an alphabetic character as identifier for an entity in the model.
         
-        @parameter value: where to index into the list of characters
-        @type value: C{int}
+        :param value: where to index into the list of characters
+        :type value: int
         """
         letter = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
                   'o','p','q','r','s','t','u','v','w','x','y','z'][value]
@@ -137,10 +137,10 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         Print out a Mace4 model using any Mace4 C{interpformat} format. 
         See U{http://www.cs.unm.edu/~mccune/mace4/manual/} for details.
         
-        @param valuation_str: C{str} with the model builder's output 
-        @param format: C{str} indicating the format for displaying
+        :param valuation_str: str with the model builder's output 
+        :param format: str indicating the format for displaying
         models. Defaults to 'standard' format.
-        @return: C{str}
+        :return: str
         """
         if not format:
             return valuation_str
@@ -153,8 +153,8 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         Transform the output file into any Mace4 C{interpformat} format. 
         
-        @parameter format: Output format for displaying models. 
-        @type format: C{str}
+        :param format: Output format for displaying models. 
+        :type format: str
         """
         if format in ['standard', 'standard2', 'portable', 'tabular', 
                       'raw', 'cooked', 'xml', 'tex']:
@@ -166,10 +166,10 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         Call the C{interpformat} binary with the given input.
     
-        @param input_str: A string whose contents are used as stdin.
-        @param args: A list of command-line arguments.
-        @return: A tuple (stdout, returncode)
-        @see: L{config_prover9}
+        :param input_str: A string whose contents are used as stdin.
+        :param args: A list of command-line arguments.
+        :return: A tuple (stdout, returncode)
+        :see: L{config_prover9}
         """
         if self._interpformat_bin is None:
             self._interpformat_bin = self._modelbuilder._find_binary(
@@ -191,7 +191,7 @@ class Mace(Prover9Parent, ModelBuilder):
         """
         Use Mace4 to build a first order model.
         
-        @return: C{True} if a model was found (i.e. Mace returns value of 0),
+        :return: C{True} if a model was found (i.e. Mace returns value of 0),
         else C{False}        
         """
         if not assumptions:
@@ -205,10 +205,10 @@ class Mace(Prover9Parent, ModelBuilder):
         """
         Call the C{mace4} binary with the given input.
     
-        @param input_str: A string whose contents are used as stdin.
-        @param args: A list of command-line arguments.
-        @return: A tuple (stdout, returncode)
-        @see: L{config_prover9}
+        :param input_str: A string whose contents are used as stdin.
+        :param args: A list of command-line arguments.
+        :return: A tuple (stdout, returncode)
+        :see: L{config_prover9}
         """
         if self._mace4_bin is None:
             self._mace4_bin = self._find_binary('mace4', verbose)
@@ -228,8 +228,8 @@ def decode_result(found):
     """
     Decode the result of model_found() 
     
-    @parameter found: The output of model_found() 
-    @type found: C{boolean}
+    :param found: The output of model_found() 
+    :type found: bool
     """
     return {True: 'Countermodel found', False: 'No countermodel found', None: 'None'}[found]
 

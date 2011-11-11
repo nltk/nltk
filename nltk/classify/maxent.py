@@ -96,17 +96,17 @@ class MaxentClassifier(ClassifierI):
         Construct a new maxent classifier model.  Typically, new
         classifier models are created using the L{train()} method.
 
-        @type encoding: L{MaxentFeatureEncodingI}
-        @param encoding: An encoding that is used to convert the
+        :type encoding: L{MaxentFeatureEncodingI}
+        :param encoding: An encoding that is used to convert the
             featuresets that are given to the C{classify} method into
             joint-feature vectors, which are used by the maxent
             classifier model.
 
-        @type weights: C{list} of C{float}
-        @param weights:  The feature weight vector for this classifier.
+        :type weights: list of float
+        :param weights:  The feature weight vector for this classifier.
 
-        @type logarithmic: C{bool}
-        @param logarithmic: If false, then use non-logarithmic weights.
+        :type logarithmic: bool
+        :param logarithmic: If false, then use non-logarithmic weights.
         """
         self._encoding = encoding
         self._weights = weights
@@ -120,16 +120,16 @@ class MaxentClassifier(ClassifierI):
     def set_weights(self, new_weights):
         """
         Set the feature weight vector for this classifier.  
-        @param new_weights: The new feature weight vector.
-        @type new_weights: C{list} of C{float}
+        :param new_weights: The new feature weight vector.
+        :type new_weights: list of float
         """
         self._weights = new_weights
         assert (self._encoding.length() == len(new_weights))
 
     def weights(self):
         """
-        @return: The feature weight vector for this classifier.
-        @rtype: C{list} of C{float}
+        :return: The feature weight vector for this classifier.
+        :rtype: list of float
         """
         return self._weights
 
@@ -194,7 +194,7 @@ class MaxentClassifier(ClassifierI):
 
     def show_most_informative_features(self, n=10, show='all'):
         """
-        @param show: all, neg, or pos (for negative-only or positive-only)
+        :param show: all, neg, or pos (for negative-only or positive-only)
         """
         fids = sorted(range(len(self._weights)),
                       key=lambda fid: abs(self._weights[fid]),
@@ -225,16 +225,16 @@ class MaxentClassifier(ClassifierI):
         chosen to maximize entropy while remaining empirically
         consistent with the training corpus.
 
-        @rtype: L{MaxentClassifier}
-        @return: The new maxent classifier
+        :rtype: L{MaxentClassifier}
+        :return: The new maxent classifier
 
-        @type train_toks: C{list}
-        @param train_toks: Training data, represented as a list of
+        :type train_toks: list
+        :param train_toks: Training data, represented as a list of
             pairs, the first member of which is a featureset,
             and the second of which is a classification label.
 
-        @type algorithm: C{str}
-        @param algorithm: A case-insensitive string, specifying which
+        :type algorithm: str
+        :param algorithm: A case-insensitive string, specifying which
             algorithm should be used to train the classifier.  The
             following algorithms are currently available.
             
@@ -257,32 +257,32 @@ class MaxentClassifier(ClassifierI):
             The default algorithm is C{'CG'} if C{'scipy'} is
             installed; and C{'iis'} otherwise.
 
-        @type trace: C{int}
-        @param trace: The level of diagnostic tracing output to produce.
+        :type trace: int
+        :param trace: The level of diagnostic tracing output to produce.
             Higher values produce more verbose output.
 
-        @type encoding: L{MaxentFeatureEncodingI}
-        @param encoding: A feature encoding, used to convert featuresets
+        :type encoding: L{MaxentFeatureEncodingI}
+        :param encoding: A feature encoding, used to convert featuresets
             into feature vectors.  If none is specified, then a
             L{BinaryMaxentFeatureEncoding} will be built based on the
             features that are attested in the training corpus.
 
-        @type labels: C{list} of C{str}
-        @param labels: The set of possible labels.  If none is given, then
+        :type labels: list of str
+        :param labels: The set of possible labels.  If none is given, then
             the set of all labels attested in the training data will be
             used instead.
 
-        @param sparse: If true, then use sparse matrices instead of
+        :param sparse: If true, then use sparse matrices instead of
             dense matrices.  Currently, this is only supported by
             the scipy (optimization method) algorithms.  For other
             algorithms, its value is ignored.
         
-        @param gaussian_prior_sigma: The sigma value for a gaussian
+        :param gaussian_prior_sigma: The sigma value for a gaussian
             prior on model weights.  Currently, this is supported by
             the scipy (optimization method) algorithms and C{megam}.
             For other algorithms, its value is ignored.
             
-        @param cutoffs: Arguments specifying various conditions under
+        :param cutoffs: Arguments specifying various conditions under
             which the training should be halted.  (Some of the cutoff
             conditions are not supported by some algorithms.)
             
@@ -376,33 +376,33 @@ class MaxentFeatureEncodingI(object):
         a list of C{(index, value)} tuples, specifying the value of
         each non-zero joint-feature.
         
-        @type featureset: C{dict}
-        @rtype: C{list} of C{(int, number)}
+        :type featureset: dict
+        :rtype: list of C{(int, number)}
         """
         raise AssertionError('Not implemented')
 
     def length(self):
         """
-        @return: The size of the fixed-length joint-feature vectors
+        :return: The size of the fixed-length joint-feature vectors
             that are generated by this encoding.
-        @rtype: C{int}
+        :rtype: int
         """
         raise AssertionError('Not implemented')
 
     def labels(self):
         """
-        @return: A list of the \"known labels\" -- i.e., all labels
+        :return: A list of the \"known labels\" -- i.e., all labels
             C{l} such that C{self.encode(fs,l)} can be a nonzero
             joint-feature vector for some value of C{fs}.
-        @rtype: C{list}
+        :rtype: list
         """
         raise AssertionError('Not implemented')
 
     def describe(self, fid):
         """
-        @return: A string describing the value of the joint-feature
+        :return: A string describing the value of the joint-feature
             whose index in the generated feature vectors is C{fid}.
-        @rtype: C{str}
+        :rtype: str
         """
         raise AssertionError('Not implemented')
 
@@ -411,8 +411,8 @@ class MaxentFeatureEncodingI(object):
         Construct and return new feature encoding, based on a given
         training corpus C{train_toks}.
 
-        @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
-        @param train_toks: Training data, represented as a list of
+        :type train_toks: list of C{tuples} of (dict, str)
+        :param train_toks: Training data, represented as a list of
             pairs, the first member of which is a feature dictionary,
             and the second of which is a classification label.
         """
@@ -427,8 +427,8 @@ class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """
         Construct a new feature encoding based on the given function.
 
-        @type func: (callable)
-        @param func: A function that takes two arguments, a featureset
+        :type func: (callable)
+        :param func: A function that takes two arguments, a featureset
              and a label, and returns the sparse joint feature vector
              that encodes them:
 
@@ -437,12 +437,12 @@ class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
              This sparse joint feature vector (C{feature_vector}) is a
              list of C{(index,value)} tuples.
 
-        @type length: C{int}
-        @param length: The size of the fixed-length joint-feature
+        :type length: int
+        :param length: The size of the fixed-length joint-feature
             vectors that are generated by this encoding.
 
-        @type labels: C{list}
-        @param labels: A list of the \"known labels\" for this
+        :type labels: list
+        :param labels: A list of the \"known labels\" for this
             encoding -- i.e., all labels C{l} such that
             C{self.encode(fs,l)} can be a nonzero joint-feature vector
             for some value of C{fs}.
@@ -506,19 +506,19 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
     def __init__(self, labels, mapping, unseen_features=False,
                  alwayson_features=False):
         """
-        @param labels: A list of the \"known labels\" for this encoding.
+        :param labels: A list of the \"known labels\" for this encoding.
         
-        @param mapping: A dictionary mapping from C{(fname,fval,label)}
+        :param mapping: A dictionary mapping from C{(fname,fval,label)}
             tuples to corresponding joint-feature indexes.  These
             indexes must be the set of integers from 0...len(mapping).
             If C{mapping[fname,fval,label]=id}, then
             C{self.encode({..., fname:fval, ...}, label)[id]} is 1;
             otherwise, it is 0.
             
-        @param unseen_features: If true, then include unseen value
+        :param unseen_features: If true, then include unseen value
            features in the generated joint-feature vectors.
            
-        @param alwayson_features: If true, then include always-on
+        :param alwayson_features: If true, then include always-on
            features in the generated joint-feature vectors.
         """
         if set(mapping.values()) != set(range(len(mapping))):
@@ -617,24 +617,24 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         <BinaryMaxentFeatureEncoding>} for a description of the
         joint-features that will be included in this encoding.
 
-        @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
-        @param train_toks: Training data, represented as a list of
+        :type train_toks: list of C{tuples} of (dict, str)
+        :param train_toks: Training data, represented as a list of
             pairs, the first member of which is a feature dictionary,
             and the second of which is a classification label.
 
-        @type count_cutoff: C{int}
-        @param count_cutoff: A cutoff value that is used to discard
+        :type count_cutoff: int
+        :param count_cutoff: A cutoff value that is used to discard
             rare joint-features.  If a joint-feature's value is 1
             fewer than C{count_cutoff} times in the training corpus,
             then that joint-feature is not included in the generated
             encoding.
 
-        @type labels: C{list}
-        @param labels: A list of labels that should be used by the
+        :type labels: list
+        :param labels: A list of labels that should be used by the
             classifier.  If not specified, then the set of labels
             attested in C{train_toks} will be used.
 
-        @param options: Extra parameters for the constructor, such as
+        :param options: Extra parameters for the constructor, such as
             C{unseen_features} and C{alwayson_features}.
         """
         mapping = {}              # maps (fname, fval, label) -> fid
@@ -676,10 +676,10 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
     def __init__(self, labels, mapping, unseen_features=False,
                  alwayson_features=False, C=None):
         """
-        @param C: The correction constant.  The value of the correction
+        :param C: The correction constant.  The value of the correction
             feature is based on this value.  In particular, its value is
             C{C - sum([v for (f,v) in encoding])}.
-        @seealso: L{BinaryMaxentFeatureEncoding.__init__}
+        :seealso: L{BinaryMaxentFeatureEncoding.__init__}
         """
         BinaryMaxentFeatureEncoding.__init__(
             self, labels, mapping, unseen_features, alwayson_features)
@@ -830,19 +830,19 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
     def __init__(self, labels, mapping, unseen_features=False,
                  alwayson_features=False):
         """
-        @param labels: A list of the \"known labels\" for this encoding.
+        :param labels: A list of the \"known labels\" for this encoding.
 
-        @param mapping: A dictionary mapping from C{(fname,fval,label)}
+        :param mapping: A dictionary mapping from C{(fname,fval,label)}
             tuples to corresponding joint-feature indexes.  These
             indexes must be the set of integers from 0...len(mapping).
             If C{mapping[fname,fval,label]=id}, then
             C{self.encode({..., fname:fval, ...}, label)[id]} is 1;
             otherwise, it is 0.
 
-        @param unseen_features: If true, then include unseen value
+        :param unseen_features: If true, then include unseen value
            features in the generated joint-feature vectors.
 
-        @param alwayson_features: If true, then include always-on
+        :param alwayson_features: If true, then include always-on
            features in the generated joint-feature vectors.
         """
         if set(mapping.values()) != set(range(len(mapping))):
@@ -950,24 +950,24 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         Note: recognized feature values types are (int, float), over
         types are interpreted as regular binary features.
 
-        @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
-        @param train_toks: Training data, represented as a list of
+        :type train_toks: list of C{tuples} of (dict, str)
+        :param train_toks: Training data, represented as a list of
             pairs, the first member of which is a feature dictionary,
             and the second of which is a classification label.
 
-        @type count_cutoff: C{int}
-        @param count_cutoff: A cutoff value that is used to discard
+        :type count_cutoff: int
+        :param count_cutoff: A cutoff value that is used to discard
             rare joint-features.  If a joint-feature's value is 1
             fewer than C{count_cutoff} times in the training corpus,
             then that joint-feature is not included in the generated
             encoding.
 
-        @type labels: C{list}
-        @param labels: A list of labels that should be used by the
+        :type labels: list
+        :param labels: A list of labels that should be used by the
             classifier.  If not specified, then the set of labels
             attested in C{train_toks} will be used.
 
-        @param options: Extra parameters for the constructor, such as
+        :param options: Extra parameters for the constructor, such as
             C{unseen_features} and C{alwayson_features}.
         """
         mapping = {}              # maps (fname, fval, label) -> fid
@@ -1009,7 +1009,7 @@ def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
     the model that maximizes entropy from all the models that are
     empirically consistent with C{train_toks}.
 
-    @see: L{train_maxent_classifier()} for parameter descriptions.
+    :see: L{train_maxent_classifier()} for parameter descriptions.
     """
     cutoffs.setdefault('max_iter', 100)
     cutoffchecker = CutoffChecker(cutoffs)
@@ -1132,7 +1132,7 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
     that maximizes entropy from all the models that are empirically
     consistent with C{train_toks}.
 
-    @see: L{train_maxent_classifier()} for parameter descriptions.
+    :see: L{train_maxent_classifier()} for parameter descriptions.
     """
     cutoffs.setdefault('max_iter', 100)
     cutoffchecker = CutoffChecker(cutoffs)
@@ -1230,9 +1230,9 @@ def calculate_nfmap(train_toks, encoding):
     and 7, then C{_nfmap} might return the dictionary {3:0, 5:1,
     7:2}.
 
-    @return: A map that can be used to compress C{nf} to a dense
+    :return: A map that can be used to compress C{nf} to a dense
         vector.
-    @rtype: C{dictionary} from C{int} to C{int}
+    :rtype: C{dictionary} from int to int
     """
     # Map from nf to indices.  This allows us to use smaller arrays.
     nfset = set()
@@ -1284,27 +1284,27 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
     allows C{_deltas} to calculate M{sum1} and M{sum2} using
     matrices, which yields a signifigant performance improvement. 
 
-    @param train_toks: The set of training tokens.
-    @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
-    @param classifier: The current classifier.
-    @type classifier: C{ClassifierI}
-    @param ffreq_empirical: An array containing the empirical
+    :param train_toks: The set of training tokens.
+    :type train_toks: list of C{tuples} of (dict, str)
+    :param classifier: The current classifier.
+    :type classifier: C{ClassifierI}
+    :param ffreq_empirical: An array containing the empirical
         frequency for each feature.  The M{i}th element of this
         array is the empirical frequency for feature M{i}.
-    @type ffreq_empirical: C{sequence} of C{float}
-    @param unattested: An array that is 1 for features that are
+    :type ffreq_empirical: sequence of float
+    :param unattested: An array that is 1 for features that are
         not attested in the training data; and 0 for features that
         are attested.  In other words, C{unattested[i]==0} iff
         C{ffreq_empirical[i]==0}. 
-    @type unattested: C{sequence} of C{int}
-    @param nfmap: A map that can be used to compress C{nf} to a dense
+    :type unattested: sequence of int
+    :param nfmap: A map that can be used to compress C{nf} to a dense
         vector.
-    @type nfmap: C{dictionary} from C{int} to C{int}
-    @param nfarray: An array that can be used to uncompress C{nf}
+    :type nfmap: C{dictionary} from int to int
+    :param nfarray: An array that can be used to uncompress C{nf}
         from a dense vector.
-    @type nfarray: C{array} of C{float}
-    @param nftranspose: C{array} of C{float}
-    @type nftranspose: The transpose of C{nfarray}
+    :type nfarray: C{array} of float
+    :param nftranspose: C{array} of float
+    :type nftranspose: The transpose of C{nfarray}
     """
     # These parameters control when we decide that we've
     # converged.  It probably should be possible to set these
@@ -1378,8 +1378,8 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
     the model that maximizes entropy from all the models that are
     empirically consistent with C{train_toks}.
 
-    @see: L{train_maxent_classifier()} for parameter descriptions.
-    @require: The C{scipy} package must be installed.
+    :see: L{train_maxent_classifier()} for parameter descriptions.
+    :require: The C{scipy} package must be installed.
     """
     try:
         import scipy
@@ -1476,8 +1476,8 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     maximizes entropy from all the models that are empirically
     consistent with C{train_toks}.
 
-    @see: L{train_maxent_classifier()} for parameter descriptions.
-    @see: L{nltk.classify.megam}
+    :see: L{train_maxent_classifier()} for parameter descriptions.
+    :see: L{nltk.classify.megam}
     """
     
     explicit = True

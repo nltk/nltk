@@ -9,7 +9,6 @@
 from collections import defaultdict
 
 from nltk.internals import Counter
-from nltk.parse.dependencygraph import DependencyGraph
 
 
 class FStructure(dict):
@@ -36,6 +35,7 @@ class FStructure(dict):
         return glue_dict.to_glueformula_list(depgraph)
 
     def to_depgraph(self, rel=None):
+        from nltk.parse.dependencygraph import DependencyGraph
         depgraph = DependencyGraph()
         nodelist = depgraph.nodelist
         
@@ -118,8 +118,8 @@ class FStructure(dict):
         """
         Pick an alphabetic character as identifier for an entity in the model.
         
-        @parameter value: where to index into the list of characters
-        @type value: C{int}
+        :param value: where to index into the list of characters
+        :type value: int
         """
         letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
                   't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
@@ -158,6 +158,7 @@ class FStructure(dict):
 
         
 def demo_read_depgraph():
+    from nltk.parse.dependencygraph import DependencyGraph
     dg1 = DependencyGraph("""\
 Esso       NNP     2       SUB
 said       VBD     0       ROOT

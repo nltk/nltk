@@ -148,10 +148,10 @@ class ConllCorpusReader(CorpusReader):
 
     def iob_words(self, fileids=None, simplify_tags=False):
         """
-        @return: a list of word/tag/IOB tuples 
-        @rtype: C{list} of C{tuple}
-        @param fileids: the list of fileids that make up this corpus 
-        @type fileids: C{None} or C{str} or C{list}
+        :return: a list of word/tag/IOB tuples 
+        :rtype: list of tuple
+        :param fileids: the list of fileids that make up this corpus 
+        :type fileids: None or str or list
         """
         self._require(self.WORDS, self.POS, self.CHUNK)
         def get_iob_words(grid):
@@ -160,10 +160,10 @@ class ConllCorpusReader(CorpusReader):
 
     def iob_sents(self, fileids=None, simplify_tags=False):
         """
-        @return: a list of lists of word/tag/IOB tuples 
-        @rtype: C{list} of C{list}
-        @param fileids: the list of fileids that make up this corpus 
-        @type fileids: C{None} or C{str} or C{list}
+        :return: a list of lists of word/tag/IOB tuples 
+        :rtype: list of list
+        :param fileids: the list of fileids that make up this corpus 
+        :type fileids: None or str or list
         """
         self._require(self.WORDS, self.POS, self.CHUNK)
         def get_iob_words(grid):

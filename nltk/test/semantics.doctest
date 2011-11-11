@@ -5,75 +5,15 @@
 Semantics
 =========
 
-    >>> from nltk.sem import logic
-    >>> logic._counter._value = 0
-  
-Overview
-========
-
-The ``nltk.sem`` module has two main components:
-
- - ``logic`` provides a parser for analyzing expressions of First
-   Order Logic (FOL).
- - ``evaluate`` allows users to recursively determine truth in a
-   model for formulas of FOL.
-
-A model consists of a domain of discourse and a valuation function,
-which assigns values to non-logical constants. We assume that entities
-in the domain are represented as strings such as ``'b1'``, ``'g1'``,
-etc. A ``Valuation`` is initialized with a list of (symbol, value)
-pairs, where values are entities, sets of entities or sets of tuples
-of entities.
-
     >>> import nltk
+    >>> from nltk.sem import Valuation, Model
     >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
     ... ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])),
     ... ('dog', set(['d1'])),
     ... ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-    >>> val = nltk.sem.Valuation(v)
-
-The domain of discourse can be inferred from the valuation, and model
-is then created with domain and valuation as parameters.
-
+    >>> val = Valuation(v)
     >>> dom = val.domain
-    >>> m = nltk.sem.Model(dom, val)
-
-
-Assignments
------------
-
-A variable *Assignment* is a mapping from individual variables to
-entities in the domain. Individual variables are usually indicated
-with the letters ``'x'``, ``'y'``, ``'w'`` and ``'z'``, optionally
-followed by an integer (e.g., ``'x0'``, ``'y332'``).  Assignments are
-created using the ``Assignment`` constructor, which also takes the
-domain as a parameter.
-
-   >>> dom = set(['u1', 'u2', 'u3', 'u4'])
-   >>> g3 = nltk.sem.Assignment(dom, [('x', 'u1'), ('y', 'u2')])
-   >>> g3
-   {'y': 'u2', 'x': 'u1'}
-
-There is also a ``print`` format for assignments which uses a notation
-closer to that in logic textbooks:
-   
-   >>> print g3
-   g[u2/y][u1/x]
-
-
-It is also possible to update an assignment using the ``add`` method:
-
-    >>> dom = set(['u1', 'u2', 'u3', 'u4'])
-    >>> g4 = nltk.sem.Assignment(dom)
-    >>> g4.add('x', 'u1')
-    {'x': 'u1'}
-
-With no arguments,  ``purge()`` is equivalent to ``clear()`` on a dictionary:
-
-    >>> g4.purge()
-    >>> g4
-    {}
-
+    >>> m = Model(dom, val)
 
 Evaluation
 ----------
