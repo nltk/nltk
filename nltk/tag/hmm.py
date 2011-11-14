@@ -72,7 +72,7 @@ which includes extensive demonstration code.
 
 import re
 import types
-from numpy import *
+from numpy import zeros, ones, float32, float64, log2, hstack, array, argmax
 
 from nltk.probability import (FreqDist, ConditionalFreqDist,
                               ConditionalProbDist, DictionaryProbDist,

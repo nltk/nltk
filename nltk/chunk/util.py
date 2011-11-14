@@ -10,9 +10,7 @@ import re
 import string
 
 from nltk.tree import Tree
-import nltk.tag.util
-
-from api import *
+from nltk.tag.util import str2tuple
 
 ##//////////////////////////////////////////////////////
 ## EVALUATION
@@ -338,7 +336,7 @@ def tagstr2tree(s, chunk_node="NP", top_node="S", sep='/'):
             if sep is None:
                 stack[-1].append(text)
             else:
-                stack[-1].append(nltk.tag.util.str2tuple(text, sep))
+                stack[-1].append(str2tuple(text, sep))
 
     if len(stack) != 1:
         raise ValueError('Expected ] at char %d' % len(s))

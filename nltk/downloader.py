@@ -168,8 +168,8 @@ except:
     
 try:
     TKINTER = True
-    from Tkinter import *
-    from tkMessageBox import *
+    from Tkinter import Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar
+    from tkMessageBox import showerror
     from nltk.draw.table import Table
     from nltk.draw import ShowText
 except:

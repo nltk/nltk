@@ -11,8 +11,7 @@ import types
 
 from nltk.tree import Tree
 
-from nltk.chunk.api import *
-from nltk.chunk.util import *
+from nltk.chunk.api import ChunkParserI
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString
