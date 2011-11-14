@@ -1,0 +1,10 @@
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/probability.doctest", line 133, in probability.doctest
+Failed example:
+    train_and_test(gt)
+Expected:
+    14.43%
+Got:
+    0.17%
+.

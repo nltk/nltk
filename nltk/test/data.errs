@@ -1,0 +1,51 @@
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/data.doctest", line 41, in data.doctest
+Failed example:
+    url.replace('\\', '/') # doctest: +ELLIPSIS
+Expected:
+    'file:...toy.cfg'
+Got:
+    "file:ZipFilePathPointer('/usr/share/nltk_data/grammars/sample_grammars.zip', 'sample_grammars/toy.cfg')"
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/data.doctest", line 43, in data.doctest
+Failed example:
+    print nltk.data.load(url) # doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest data.doctest[6]>", line 1, in <module>
+        print nltk.data.load(url) # doctest: +ELLIPSIS
+      File "/Users/sb/git/nltk/nltk/data.py", line 589, in load
+        % resource_url)
+    ValueError: Could not determine format for file:ZipFilePathPointer('/usr/share/nltk_data/grammars/sample_grammars.zip', 'sample_grammars/toy.cfg') based on its file
+    extension; use the "format" argument to specify the format explicitly.
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/data.doctest", line 179, in data.doctest
+Failed example:
+    str(path) # doctest: +ELLIPSIS
+Expected:
+    '...rural.txt'
+Got:
+    "ZipFilePathPointer('/usr/share/nltk_data/corpora/abc.zip', 'abc/rural.txt')"
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/data.doctest", line 256, in data.doctest
+Failed example:
+    for i, url in enumerate(urls):
+        nltk.data.retrieve(url, 'toy-%d.cfg' % i) # doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest data.doctest[47]>", line 2, in <module>
+        nltk.data.retrieve(url, 'toy-%d.cfg' % i) # doctest: +ELLIPSIS
+      File "/Users/sb/git/nltk/nltk/data.py", line 480, in retrieve
+        infile = _open(resource_url)
+      File "/Users/sb/git/nltk/nltk/data.py", line 676, in _open
+        return open(path, 'rb')
+    IOError: [Errno 2] No such file or directory: "ZipFilePathPointer('/usr/share/nltk_data/grammars/sample_grammars.zip', 'sample_grammars/toy.cfg')"
+.

@@ -114,7 +114,7 @@ class HoleSemantics(object):
                 self.labels.add(args[0])
             else:
                 label = args[0]
-                assert not self.fragments.has_key(label)
+                assert label not in self.fragments
                 self.fragments[label] = (func, args[1:])
         else:
             raise ValueError(usr.node)
@@ -269,7 +269,7 @@ class HoleSemantics(object):
     def _formula_tree(self, plugging, node):
         if node in plugging:
             return self._formula_tree(plugging, plugging[node])
-        elif self.fragments.has_key(node):
+        elif node in self.fragments:
             pred,args = self.fragments[node]
             children = [self._formula_tree(plugging, arg) for arg in args]
             return reduce(Constants.MAP[pred.variable.name], children)

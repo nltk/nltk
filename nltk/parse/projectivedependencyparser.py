@@ -281,7 +281,7 @@ class ProbabilisticProjectiveDependencyParser(object):
             for j in range(0, len(self._tokens) + 1):
                 chart[i].append(ChartCell(i,j))
                 if i==j+1:
-                    if self._grammar._tags.has_key(tokens[i-1]):
+                    if tokens[i-1] in self._grammar._tags:
                         for tag in self._grammar._tags[tokens[i-1]]:
                             chart[i][j].add(DependencySpan(i-1,i,i-1,[-1], [tag]))
                     else:
@@ -367,7 +367,7 @@ class ProbabilisticProjectiveDependencyParser(object):
                 for child_index in range(0 - (nr_left_children + 1), nr_right_children + 2):
                     head_word = dg.nodelist[node_index]['word']
                     head_tag = dg.nodelist[node_index]['tag']
-                    if tags.has_key(head_word):
+                    if head_word in tags:
                         tags[head_word].add(head_tag)
                     else:
                         tags[head_word] = set([head_tag])
@@ -387,11 +387,11 @@ class ProbabilisticProjectiveDependencyParser(object):
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) left))' % (child, child_tag, prev_tag, head_word, head_tag)
                         mod_event = '(mods (%s, %s, %s) left))' % (prev_tag, head_word, head_tag)
-                        if events.has_key(head_event):
+                        if head_event in events:
                             events[head_event] += 1
                         else:
                             events[head_event] = 1
-                        if events.has_key(mod_event):
+                        if mod_event in events:
                             events[mod_event] += 1
                         else:
                             events[mod_event] = 1
@@ -407,11 +407,11 @@ class ProbabilisticProjectiveDependencyParser(object):
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) right))' % (child, child_tag, prev_tag, head_word, head_tag)
                         mod_event = '(mods (%s, %s, %s) right))' % (prev_tag, head_word, head_tag)
-                        if events.has_key(head_event):
+                        if head_event in events:
                             events[head_event] += 1
                         else:
                             events[head_event] = 1
-                        if events.has_key(mod_event):
+                        if mod_event in events:
                             events[mod_event] += 1
                         else:
                             events[mod_event] = 1

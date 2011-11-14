@@ -1,0 +1,85 @@
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/collocations.doctest", line 21, in collocations.doctest
+Failed example:
+    finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+Expected:
+    [('cutting', 'instrument'), ('sewed', 'fig'), ('sweet', 'savor'),
+     ('Ben', 'Ammi'), ('appoint', 'overseers'), ('olive', 'leaf'),
+     ('months', 'later'), ('remaining', 'silent'), ('seek', 'occasion'),
+     ('leaf', 'plucked')]
+Got:
+    [(u'Allon', u'Bacuth'), (u'Ashteroth', u'Karnaim'), (u'Ben', u'Ammi'), (u'En', u'Mishpat'), (u'Jegar', u'Sahadutha'), (u'Salt', u'Sea'), (u'Whoever', u'sheds'), (u'appoint', u'overseers'), (u'aromatic', u'resin'), (u'cutting', u'instrument')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/collocations.doctest", line 32, in collocations.doctest
+Failed example:
+    finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+Expected:
+    [('Lahai', 'Roi'), ('gray', 'hairs'), ('Beer', 'Lahai'), ('Most', 'High'),
+     ('ewe', 'lambs'), ('many', 'colors'), ('burnt', 'offering'),
+     ('Paddan', 'Aram'), ('east', 'wind'), ('living', 'creature')]
+Got:
+    [(u'Beer', u'Lahai'), (u'Lahai', u'Roi'), (u'gray', u'hairs'), (u'Most', u'High'), (u'ewe', u'lambs'), (u'many', u'colors'), (u'burnt', u'offering'), (u'Paddan', u'Aram'), (u'east', u'wind'), (u'living', u'creature')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/collocations.doctest", line 41, in collocations.doctest
+Failed example:
+    finder.nbest(bigram_measures.pmi, 5)  # doctest: +NORMALIZE_WHITESPACE
+Expected:
+    [(('weekend', 'N'), ('duty', 'N')),
+     (('top', 'ADJ'), ('official', 'N')),
+     (('George', 'NP'), ('P.', 'NP')),
+     (('medical', 'ADJ'), ('intern', 'N')),
+     (('1962', 'NUM'), ("governor's", 'N'))]
+Got:
+    [(('1,119', 'NUM'), ('votes', 'N')), (('1962', 'NUM'), ("governor's", 'N')), (('637', 'NUM'), ('E.', 'NP')), (('Alpharetta', 'NP'), ('prison', 'N')), (('Bar', 'N'), ('Association', 'N'))]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/collocations.doctest", line 52, in collocations.doctest
+Failed example:
+    finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
+Expected:
+    [(':', '('), ('(', 'NUM'), ('NUM', ')'), (':', 'NUM'), (')', 'NUM'),
+     ('-', 'WH'), ('VN', ':'), ('``', 'EX'), ('EX', 'MOD'), ('WH', 'VBZ')]
+Got:
+    [(':', '('), ('(', 'NUM'), ('NUM', ')'), (':', 'NUM'), ('', 'WH'), (')', 'NUM'), ('VN', ':'), ('``', 'EX'), ('EX', 'MOD'), ('WH', 'VBZ')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/collocations.doctest", line 64, in collocations.doctest
+Failed example:
+    finder.nbest(bigram_measures.likelihood_ratio, 10) # doctest: +NORMALIZE_WHITESPACE
+Expected:
+    [('chief', 'chief'), ('hundred', 'years'), ('father', 'father'), ('lived', 'years'),
+    ('years', 'father'), ('lived', 'father'), ('land', 'Egypt'), ('land', 'Canaan'),
+    ('lived', 'hundred'), ('land', 'land')]
+Got:
+    [(u'became', u'father'), (u'hundred', u'years'), (u'lived', u'years'), (u'father', u'became'), (u'years', u'became'), (u'land', u'Egypt'), (u'land', u'Canaan'), (u'lived', u'became'), (u'became', u'years'), (u'years', u'lived')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/collocations.doctest", line 181, in collocations.doctest
+Failed example:
+    print '%0.2f' % bigram_measures.likelihood_ratio(110, (2552, 221), 31777)
+Expected:
+    270.72
+Got:
+    541.44
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/collocations.doctest", line 183, in collocations.doctest
+Failed example:
+    print '%0.2f' % bigram_measures.likelihood_ratio(8, (13, 32), 31777)
+Expected:
+    95.29
+Got:
+    190.57
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/collocations.doctest", line 207, in collocations.doctest
+Failed example:
+    print '%0.2f' % cont_bigram_measures.likelihood_ratio(8, 5, 24, 31740)
+Expected:
+    95.29
+Got:
+    190.57
+.

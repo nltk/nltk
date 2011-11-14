@@ -1,0 +1,82 @@
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/classify.doctest", line 106, in classify.doctest
+Failed example:
+    nltk.classify.svm.demo()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest classify.doctest[14]>", line 1, in <module>
+        nltk.classify.svm.demo()
+    AttributeError: 'module' object has no attribute 'svm'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/classify.doctest", line 148, in classify.doctest
+Failed example:
+    test_maxent(nltk.classify.MaxentClassifier.ALGORITHMS)
+    # doctest: +ELLIPSIS
+Expected:
+    [Found megam: ...]
+                     test[0]        test[1]        test[2]        test[3]  
+                    p(x)  p(y)     p(x)  p(y)     p(x)  p(y)     p(x)  p(y)
+    -----------------------------------------------------------------------
+         LBFGSB     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+            GIS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+            IIS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+    Nelder-Mead     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+             CG     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+           BFGS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+          MEGAM     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+         Powell     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+Got:
+    [Found megam: /usr/local/bin/megam.opt]
+                     test[0]        test[1]        test[2]        test[3]  
+                    p(x)  p(y)     p(x)  p(y)     p(x)  p(y)     p(x)  p(y)
+    -----------------------------------------------------------------------
+         LBFGSB Error: ValueError('operands could not be broadcast together with shapes (18) (12) ',)
+            GIS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+            IIS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+    Nelder-Mead     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+             CG Error: ValueError('operands could not be broadcast together with shapes (18) (12) ',)
+           BFGS Error: ValueError('operands could not be broadcast together with shapes (18) (12) ',)
+          MEGAM     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+           TADM Error: LookupError("\n\n===========================================================================\n  NLTK was unable to find the tadm executable!  Use config_tadm() or\n  set the TADM_DIR environment variable.\n\n    >>> config_tadm('/path/to/tadm')\n\n  For more information, on tadm, see:\n    <http://tadm.sf.net>\n===========================================================================",)
+         Powell     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/classify.doctest", line 185, in classify.doctest
+Failed example:
+    classifier = maxent.MaxentClassifier.train(
+        train, bernoulli=False, encoding=encoding, trace=0)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest classify.doctest[21]>", line 2, in <module>
+        train, bernoulli=False, encoding=encoding, trace=0)
+      File "/Users/sb/git/nltk/nltk/classify/maxent.py", line 323, in train
+        gaussian_prior_sigma, **cutoffs)
+      File "/Users/sb/git/nltk/nltk/classify/maxent.py", line 1453, in train_maxent_classifier_with_scipy
+        model.fit(algorithm=algorithm)
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/scipy/maxentropy/maxentropy.py", line 1026, in fit
+        return model.fit(self, self.K, algorithm)
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/scipy/maxentropy/maxentropy.py", line 226, in fit
+        callback=callback)
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/scipy/optimize/optimize.py", line 636, in fmin_cg
+        gfk = myfprime(x0)
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/scipy/optimize/optimize.py", line 176, in function_wrapper
+        return function(x, *args)
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/scipy/maxentropy/maxentropy.py", line 420, in grad
+        G = self.expectations() - self.K
+    ValueError: operands could not be broadcast together with shapes (12) (8) 
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/classify.doctest", line 188, in classify.doctest
+Failed example:
+    classifier.batch_classify(test)
+Expected:
+    ['y', 'x']
+Got:
+    ['y', 'y']
+.

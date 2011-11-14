@@ -211,7 +211,7 @@ class ChartMatrixView(object):
             except: pass
 
     def _fire_callbacks(self, event, *args):
-        if not self._callbacks.has_key(event): return
+        if event not in self._callbacks: return
         for cb_func in self._callbacks[event].keys(): cb_func(*args)
 
     def select_cell(self, i, j):
@@ -1076,7 +1076,7 @@ class ChartView(object):
             self._resize()
         else:
             for edge in self._chart:
-                if not self._edgetags.has_key(edge):
+                if edge not in self._edgetags:
                     self._add_edge(edge)
             self._resize()
 
@@ -1139,7 +1139,7 @@ class ChartView(object):
         # Do NOT show leaf edges in the chart.
         if isinstance(edge, LeafEdge): return
         
-        if self._edgetags.has_key(edge): return
+        if edge in self._edgetags: return
         self._analyze_edge(edge)
         self._grow()
 
@@ -1246,11 +1246,11 @@ class ChartView(object):
         If no colors are specified, use intelligent defaults
         (dependant on selection, etc.)
         """
-        if not self._edgetags.has_key(edge): return
+        if edge not in self._edgetags: return
         c = self._chart_canvas
 
         if linecolor is not None and textcolor is not None:
-            if self._marks.has_key(edge):
+            if edge in self._marks:
                 linecolor = self._marks[edge]
             tags = self._edgetags[edge]
             c.itemconfig(tags[0], fill=linecolor)
@@ -1262,7 +1262,7 @@ class ChartView(object):
             return
         else:
             N = self._chart.num_leaves()
-            if self._marks.has_key(edge):
+            if edge in self._marks:
                 self._color_edge(self._marks[edge])
             if (edge.is_complete() and edge.span() == (0, N)):
                 self._color_edge(edge, '#084', '#042')
@@ -1574,7 +1574,7 @@ class ChartView(object):
             except: pass
 
     def _fire_callbacks(self, event, *args):
-        if not self._callbacks.has_key(event): return
+        if event not in self._callbacks: return
         for cb_func in self._callbacks[event].keys(): cb_func(*args)
 
 #######################################################################

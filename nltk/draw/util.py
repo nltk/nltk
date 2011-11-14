@@ -600,7 +600,7 @@ class CanvasWidget(object):
         call it.  If no ancestors have a drag callback, do nothing.
         """
         if self.__draggable:
-            if self.__callbacks.has_key('drag'):
+            if 'drag' in self.__callbacks:
                 cb = self.__callbacks['drag']
                 try:
                     cb(self)
@@ -615,7 +615,7 @@ class CanvasWidget(object):
         otherwise, find the closest ancestor with a click callback, and
         call it.  If no ancestors have a click callback, do nothing.
         """
-        if self.__callbacks.has_key(button):
+        if button in self.__callbacks:
             cb = self.__callbacks[button]
             #try:
             cb(self)
@@ -826,7 +826,7 @@ class SymbolWidget(TextWidget):
         :type symbol: str
         :param symbol: The name of the symbol to display.
         """
-        if not SymbolWidget.SYMBOLS.has_key(symbol):
+        if symbol not in SymbolWidget.SYMBOLS:
             raise ValueError('Unknown symbol: %s' % symbol)
         self._symbol = symbol
         self.set_text(SymbolWidget.SYMBOLS[symbol])
@@ -2218,7 +2218,7 @@ class ColorizedList(object):
         self._textwidget.tag_lower('highlight', 'sel')
 
     def _fire_callback(self, event, itemnum):
-        if not self._callbacks.has_key(event): return
+        if event not in self._callbacks: return
         if 0 <= itemnum < len(self._items):
             item = self._items[itemnum]
         else:

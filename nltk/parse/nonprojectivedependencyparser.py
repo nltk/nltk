@@ -288,7 +288,7 @@ class ProbabilisticNonprojectiveParser(object):
             originals = []
             swapped = False
             for new_index in new_indexes:
-                if self.inner_nodes.has_key(new_index):
+                if new_index in self.inner_nodes:
                     for old_val in self.inner_nodes[new_index]:
                         if not old_val in originals:
                             originals.append(old_val)

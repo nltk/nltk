@@ -1,0 +1,87 @@
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/chat80.doctest", line 172, in chat80.doctest
+Failed example:
+    for answer in chat80.sql_query('corpora/city_database/city.db', q):
+        print "%-10s %4s" % answer
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest chat80.doctest[16]>", line 1, in <module>
+        for answer in chat80.sql_query('corpora/city_database/city.db', q):
+      File "/Users/sb/git/nltk/nltk/sem/chat80.py", line 420, in sql_query
+        connection =  sqlite3.connect(path)
+    ValueError: database parameter must be string or APSW Connection object
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/chat80.doctest", line 205, in chat80.doctest
+Failed example:
+    trees = cp.nbest_parse(query.split())
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest chat80.doctest[21]>", line 1, in <module>
+        trees = cp.nbest_parse(query.split())
+    AttributeError: 'FeatureGrammar' object has no attribute 'nbest_parse'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/chat80.doctest", line 206, in chat80.doctest
+Failed example:
+    answer = trees[0].node['SEM']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest chat80.doctest[22]>", line 1, in <module>
+        answer = trees[0].node['SEM']
+    NameError: name 'trees' is not defined
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/chat80.doctest", line 207, in chat80.doctest
+Failed example:
+    q = join(answer)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest chat80.doctest[23]>", line 1, in <module>
+        q = join(answer)
+    NameError: name 'answer' is not defined
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/chat80.doctest", line 208, in chat80.doctest
+Failed example:
+    print q
+Expected:
+    SELECT City FROM city_table WHERE   Country="china"
+Got:
+    SELECT City, Population FROM city_table WHERE Country = 'china' and Population > 1000
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/chat80.doctest", line 210, in chat80.doctest
+Failed example:
+    rows = chat80.sql_query('corpora/city_database/city.db', q)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest chat80.doctest[25]>", line 1, in <module>
+        rows = chat80.sql_query('corpora/city_database/city.db', q)
+      File "/Users/sb/git/nltk/nltk/sem/chat80.py", line 420, in sql_query
+        connection =  sqlite3.connect(path)
+    ValueError: database parameter must be string or APSW Connection object
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/chat80.doctest", line 211, in chat80.doctest
+Failed example:
+    for r in rows: print "%s" % r,
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest chat80.doctest[26]>", line 1, in <module>
+        for r in rows: print "%s" % r,
+    NameError: name 'rows' is not defined
+.

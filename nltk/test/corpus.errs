@@ -1,0 +1,753 @@
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 312, in corpus.doctest
+Failed example:
+    conll2007.sents('cat.train')
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[63]>", line 1, in <module>
+        conll2007.sents('cat.train')
+      File "/Users/sb/git/nltk/nltk/corpus/reader/dependency.py", line 45, in sents
+        for fileid in self.abspaths(fileids)])
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 172, in abspaths
+        paths = [self._root.join(f) for f in fileids]
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/conll2007.zip' does not contain 'conll2007/cat.train'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 314, in corpus.doctest
+Failed example:
+    conll2007.parsed_sents('cat.train')[0]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[64]>", line 1, in <module>
+        conll2007.parsed_sents('cat.train')[0]
+      File "/Users/sb/git/nltk/nltk/corpus/reader/dependency.py", line 53, in parsed_sents
+        for fileid in self.abspaths(fileids)])
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 172, in abspaths
+        paths = [self._root.join(f) for f in fileids]
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/conll2007.zip' does not contain 'conll2007/cat.train'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 316, in corpus.doctest
+Failed example:
+    conll2007.parsed_sents('cat.train')[0].tree() # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[65]>", line 1, in <module>
+        conll2007.parsed_sents('cat.train')[0].tree() # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/sb/git/nltk/nltk/corpus/reader/dependency.py", line 53, in parsed_sents
+        for fileid in self.abspaths(fileids)])
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 172, in abspaths
+        paths = [self._root.join(f) for f in fileids]
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/conll2007.zip' does not contain 'conll2007/cat.train'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 724, in corpus.doctest
+Failed example:
+    for wordform in sent.getchildren():
+        print wordform.text,
+        for key in wordform.keys():
+            print key + '=' + wordform.get(key),
+        print
+Expected:
+    Brenner pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    re-entered lemma=re-enter cmd=done wnsn=1 pos=VB lexsn=2:38:00::
+    the cmd=ignore pos=DT
+    hotel lemma=hotel cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    and cmd=ignore pos=CC
+    faced lemma=face cmd=done wnsn=4 pos=VB lexsn=2:42:02::
+    Summers pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    across cmd=ignore pos=IN
+    the cmd=ignore pos=DT
+    counter lemma=counter cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+Got:
+    When cmd=ignore pos=WRB
+    several lemma=several cmd=done wnsn=1 pos=JJ lexsn=5:00:00:some(a):00
+    minutes lemma=minute cmd=done wnsn=1 pos=NN lexsn=1:28:00::
+    had cmd=done pos=VBD ot=notag
+    passed lemma=pass cmd=done wnsn=4 pos=VB lexsn=2:38:03::
+    and cmd=ignore pos=CC
+    Curt pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    had cmd=done pos=VBD ot=notag
+    n't lemma=n't cmd=done wnsn=0 pos=RB lexsn=4:02:00::
+    emerged lemma=emerge cmd=done wnsn=1 pos=VB lexsn=2:30:00::
+    from cmd=ignore pos=IN
+    the cmd=ignore pos=DT
+    livery_stable lemma=livery_stable cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    ,
+    Brenner pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    re-entered lemma=re-enter cmd=done wnsn=1 pos=VB lexsn=2:38:00::
+    the cmd=ignore pos=DT
+    hotel lemma=hotel cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    and cmd=ignore pos=CC
+    faced lemma=face cmd=done wnsn=4 pos=VB lexsn=2:42:02::
+    Summers pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    across cmd=ignore pos=IN
+    the cmd=ignore pos=DT
+    counter lemma=counter cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    .
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 797, in corpus.doctest
+Failed example:
+    river = toolbox.xml('rotokas/river.txt', key='ref')
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[170]>", line 1, in <module>
+        river = toolbox.xml('rotokas/river.txt', key='ref')
+      File "/Users/sb/git/nltk/nltk/corpus/reader/toolbox.py", line 27, in xml
+        for (path, enc) in self.abspaths(fileids, True)])
+      File "/Users/sb/git/nltk/nltk/toolbox.py", line 137, in parse
+        return self._chunk_parse(grammar=grammar,  **kwargs)
+      File "/Users/sb/git/nltk/nltk/toolbox.py", line 252, in _chunk_parse
+        from nltk.parse import Tree
+    ImportError: cannot import name Tree
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 798, in corpus.doctest
+Failed example:
+    for record in river.findall('record')[:3]:
+        for piece in record:
+            if len(piece.text) > 60:
+                print '%-6s %s...' % (piece.tag, piece.text[:57])
+            else:
+                print '%-6s %s' % (piece.tag, piece.text)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[171]>", line 1, in <module>
+        for record in river.findall('record')[:3]:
+    NameError: name 'river' is not defined
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 834, in corpus.doctest
+Failed example:
+    print timit.utterances() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[173]>", line 1, in <module>
+        print timit.utterances() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+      File "/Users/sb/git/nltk/nltk/corpus/util.py", line 71, in __getattr__
+        return getattr(self, attr)
+    AttributeError: 'TimitCorpusReader' object has no attribute 'utterances'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 839, in corpus.doctest
+Failed example:
+    item = timit.utterances()[5]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[174]>", line 1, in <module>
+        item = timit.utterances()[5]
+    AttributeError: 'TimitCorpusReader' object has no attribute 'utterances'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 840, in corpus.doctest
+Failed example:
+    print timit.phones(item) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[175]>", line 1, in <module>
+        print timit.phones(item) # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 275, in phones
+        for line in self.open(fileid) if line.strip()]
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 192, in open
+        stream = self._root.join(file).open(encoding)
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/timit.zip' does not contain 'timit/???.phn'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 845, in corpus.doctest
+Failed example:
+    print timit.words(item)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[176]>", line 1, in <module>
+        print timit.words(item)
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 288, in words
+        for line in self.open(fileid) if line.strip()]
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 192, in open
+        stream = self._root.join(file).open(encoding)
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/timit.zip' does not contain 'timit/???.wrd'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 852, in corpus.doctest
+Failed example:
+    for tree in timit.phone_trees(item):
+        print tree
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[178]>", line 1, in <module>
+        for tree in timit.phone_trees(item):
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 312, in phone_trees
+        word_times = self.word_times(utterance)
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 293, in word_times
+        for line in self.open(fileid) if line.strip()]
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 192, in open
+        stream = self._root.join(file).open(encoding)
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/timit.zip' does not contain 'timit/???.wrd'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 868, in corpus.doctest
+Failed example:
+    print timit.phone_times(item) # doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[179]>", line 1, in <module>
+        print timit.phone_times(item) # doctest: +ELLIPSIS
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 283, in phone_times
+        for line in self.open(fileid) if line.strip()]
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 192, in open
+        stream = self._root.join(file).open(encoding)
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/timit.zip' does not contain 'timit/???.phn'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 870, in corpus.doctest
+Failed example:
+    print timit.word_times(item) # doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[180]>", line 1, in <module>
+        print timit.word_times(item) # doctest: +ELLIPSIS
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 293, in word_times
+        for line in self.open(fileid) if line.strip()]
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 192, in open
+        stream = self._root.join(file).open(encoding)
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/timit.zip' does not contain 'timit/???.wrd'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 872, in corpus.doctest
+Failed example:
+    print timit.sent_times(item)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[181]>", line 1, in <module>
+        print timit.sent_times(item)
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 304, in sent_times
+        for line in self.open(fileid) if line.strip()]
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 192, in open
+        stream = self._root.join(file).open(encoding)
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/timit.zip' does not contain 'timit/???.txt'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 882, in corpus.doctest
+Failed example:
+    print timit.spkrid(item)
+Expected:
+    dr1-fvmh0
+Got:
+    ???
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 884, in corpus.doctest
+Failed example:
+    print timit.sentid(item)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[184]>", line 1, in <module>
+        print timit.sentid(item)
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 242, in sentid
+        return utterance.split('/')[1]
+    IndexError: list index out of range
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 886, in corpus.doctest
+Failed example:
+    print timit.spkrinfo(timit.spkrid(item)) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[185]>", line 1, in <module>
+        print timit.spkrinfo(timit.spkrid(item)) # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 270, in spkrinfo
+        return self._speakerinfo[speaker]
+    KeyError: '???'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 899, in corpus.doctest
+Failed example:
+    timit.utterances(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[186]>", line 1, in <module>
+        timit.utterances(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
+    AttributeError: 'TimitCorpusReader' object has no attribute 'utterances'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1070, in corpus.doctest
+Failed example:
+    nltk.corpus.brown # doctest: +ELLIPSIS
+Expected:
+    <CategorizedTaggedCorpusReader in '.../corpora/brown'>
+Got:
+    <CategorizedTaggedCorpusReader in '/usr/share/nltk_data/corpora/brown.zip/brown/'>
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1072, in corpus.doctest
+Failed example:
+    nltk.corpus.treebank # doctest: +ELLIPSIS
+Expected:
+    <BracketParseCorpusReader in '/usr/sharep/nltk_data/corpora/treebank.zip/treebank/combined/'>
+Got:
+    <BracketParseCorpusReader in '/usr/share/nltk_data/corpora/treebank.zip/treebank/combined/'>
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1078, in corpus.doctest
+Failed example:
+    nltk.corpus.inaugural # doctest: +ELLIPSIS
+Expected:
+    <PlaintextCorpusReader in '.../corpora/inaugural'>
+Got:
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/inaugural.zip/inaugural/'>
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1222, in corpus.doctest
+Failed example:
+    nltk.corpus.brown.abspath('ce06') # doctest: +ELLIPSIS
+Expected:
+    FileSystemPathPointer('.../corpora/brown/ce06')
+Got:
+    ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce06')
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1229, in corpus.doctest
+Failed example:
+    nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+Expected:
+    [FileSystemPathPointer('.../corpora/brown/ca01'),
+     FileSystemPathPointer('.../corpora/brown/ca02'), ...]
+Got:
+    [ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca37'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca38'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca39'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca40'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca41'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca42'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca43'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca44'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf37'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf38'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf39'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf40'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf41'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf42'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf43'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf44'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf45'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf46'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf47'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf48'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg37'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg38'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg39'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg40'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg41'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg42'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg43'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg44'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg45'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg46'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg47'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg48'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg49'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg50'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg51'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg52'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg53'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg54'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg55'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg56'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg57'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg58'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg59'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg60'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg61'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg62'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg63'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg64'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg65'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg66'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg67'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg68'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg69'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg70'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg71'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg72'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg73'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg74'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg75'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj37'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj38'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj39'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj40'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj41'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj42'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj43'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj44'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj45'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj46'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj47'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj48'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj49'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj50'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj51'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj52'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj53'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj54'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj55'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj56'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj57'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj58'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj59'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj60'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj61'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj62'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj63'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj64'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj65'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj66'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj67'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj68'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj69'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj70'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj71'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj72'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj73'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj74'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj75'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj76'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj77'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj78'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj79'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj80'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr09')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1232, in corpus.doctest
+Failed example:
+    nltk.corpus.brown.abspaths('ce06') # doctest: +ELLIPSIS
+Expected:
+    [FileSystemPathPointer('.../corpora/brown/ce06')]
+Got:
+    [ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce06')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1234, in corpus.doctest
+Failed example:
+    nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+Expected:
+    [FileSystemPathPointer('.../corpora/brown/ce06'),
+     FileSystemPathPointer('.../corpora/brown/ce07')]
+Got:
+    [ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce07')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1281, in corpus.doctest
+Failed example:
+    nltk.corpus.genesis.words()
+Expected:
+    ['In', 'the', 'beginning', 'God', 'created', 'the', ...]
+Got:
+    [u'In', u'the', u'beginning', u'God', u'created', ...]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1303, in corpus.doctest
+Failed example:
+    nltk.corpus.timit.utterances() # doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[246]>", line 1, in <module>
+        nltk.corpus.timit.utterances() # doctest: +ELLIPSIS
+    AttributeError: 'TimitCorpusReader' object has no attribute 'utterances'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1313, in corpus.doctest
+Failed example:
+    nltk.corpus.timit.words('dr1-fvmh0/sa1.txt') # doctest: +ELLIPSIS
+Expected:
+    Traceback (most recent call last):
+      ...
+    IOError:... No such file or directory: '.../dr1-fvmh0/sa1.txt.wrd'
+Got:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[249]>", line 1, in <module>
+        nltk.corpus.timit.words('dr1-fvmh0/sa1.txt') # doctest: +ELLIPSIS
+      File "/Users/sb/git/nltk/nltk/corpus/reader/timit.py", line 288, in words
+        for line in self.open(fileid) if line.strip()]
+      File "/Users/sb/git/nltk/nltk/corpus/reader/api.py", line 192, in open
+        stream = self._root.join(file).open(encoding)
+      File "/Users/sb/git/nltk/nltk/data.py", line 353, in join
+        return ZipFilePathPointer(self._zipfile, entry)
+      File "/Users/sb/git/nltk/nltk/data.py", line 328, in __init__
+        (zipfile.filename, entry))
+    IOError: Zipfile '/usr/share/nltk_data/corpora/timit.zip' does not contain 'timit/dr1-fvmh0/sa1.txt.wrd'
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1433, in corpus.doctest
+Failed example:
+    nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+Expected:
+    [FileSystemPathPointer('.../corpora/brown/ca01'),
+     FileSystemPathPointer('.../corpora/brown/ca02'), ...]
+Got:
+    [ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca37'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca38'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca39'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca40'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca41'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca42'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca43'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ca44'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cb27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cc17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cd17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf37'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf38'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf39'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf40'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf41'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf42'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf43'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf44'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf45'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf46'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf47'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cf48'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg37'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg38'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg39'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg40'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg41'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg42'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg43'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg44'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg45'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg46'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg47'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg48'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg49'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg50'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg51'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg52'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg53'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg54'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg55'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg56'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg57'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg58'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg59'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg60'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg61'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg62'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg63'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg64'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg65'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg66'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg67'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg68'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg69'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg70'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg71'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg72'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg73'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg74'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cg75'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ch30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj30'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj31'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj32'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj33'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj34'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj35'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj36'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj37'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj38'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj39'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj40'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj41'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj42'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj43'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj44'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj45'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj46'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj47'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj48'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj49'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj50'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj51'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj52'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj53'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj54'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj55'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj56'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj57'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj58'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj59'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj60'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj61'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj62'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj63'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj64'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj65'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj66'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj67'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj68'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj69'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj70'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj71'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj72'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj73'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj74'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj75'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj76'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj77'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj78'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj79'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cj80'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ck29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cl24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cm06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cn29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp09'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp10'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp11'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp12'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp13'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp14'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp15'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp16'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp17'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp18'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp19'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp20'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp21'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp22'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp23'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp24'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp25'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp26'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp27'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp28'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cp29'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr01'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr02'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr03'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr04'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr05'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr07'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr08'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/cr09')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1436, in corpus.doctest
+Failed example:
+    nltk.corpus.brown.abspaths('ce06') # doctest: +ELLIPSIS
+Expected:
+    [FileSystemPathPointer('.../corpora/brown/ce06')]
+Got:
+    [ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce06')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1438, in corpus.doctest
+Failed example:
+    nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+Expected:
+    [FileSystemPathPointer('.../corpora/brown/ce06'),
+     FileSystemPathPointer('.../corpora/brown/ce07')]
+Got:
+    [ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce06'), ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/ce07')]
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1619, in corpus.doctest
+Failed example:
+    for corpus in (abc, genesis, inaugural, state_union,
+                   webtext, udhr):
+        print corpus
+        print '  ', `corpus.fileids()`[:60]
+        print '  ', `corpus.words()[:10]`[:60]
+        # doctest: +ELLIPSIS
+Expected:
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc.zip/abc/'>
+       ['rural.txt', 'science.txt']
+       ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis.zip/genesis/'>
+       ['english-kjv.txt', 'english-web.txt', 'finnish.txt', 'frenc
+       ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven'
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/inaugural'>
+       ['1789-Washington.txt', '1793-Washington.txt', '1797-Adams.t
+       ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', 'and', 'o
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/state_union.zip/state_union/'>
+       ['1945-Truman.txt', '1946-Truman.txt', '1947-Truman.txt', '1
+       ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', 'ADDRES
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/webtext.zip/webtext/'>
+       ['firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
+       ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', 'allow', 's
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/udhr.zip/udhr/'>
+       ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1',
+       ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
+Got:
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc.zip/abc/'>
+       ['rural.txt', 'science.txt']
+       ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis.zip/genesis/'>
+       ['english-kjv.txt', 'english-web.txt', 'finnish.txt', 'frenc
+       [u'In', u'the', u'beginning', u'God', u'created', u'the', u'
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/inaugural.zip/inaugural/'>
+       ['1789-Washington.txt', '1793-Washington.txt', '1797-Adams.t
+       ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', 'and', 'o
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/state_union.zip/state_union/'>
+       ['1945-Truman.txt', '1946-Truman.txt', '1947-Truman.txt', '1
+       ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', 'ADDRES
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/webtext.zip/webtext/'>
+       ['firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
+       ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', 'allow', 's
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/udhr.zip/udhr/'>
+       ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
+       ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1706, in corpus.doctest
+Failed example:
+    brown.root # doctest: +ELLIPSIS
+Expected:
+    FileSystemPathPointer('.../corpora/brown')
+Got:
+    ZipFilePathPointer('/usr/share/nltk_data/corpora/brown.zip', 'brown/')
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1802, in corpus.doctest
+Failed example:
+    for f in fileids:
+        v = StreamBackedCorpusView(f, read_whitespace_block)
+        assert list(v) == open(f).read().split()
+        v = StreamBackedCorpusView(f, read_line_block)
+        assert list(v) == linetok.tokenize(open(f).read())
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[336]>", line 3, in <module>
+        assert list(v) == open(f).read().split()
+    TypeError: coercing to Unicode: need string or buffer, ZipFilePathPointer found
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1810, in corpus.doctest
+Failed example:
+    for f in fileids:
+        v = StreamBackedCorpusView(f, read_whitespace_block)
+        assert len(v) == len(open(f).read().split())
+        v = StreamBackedCorpusView(f, read_line_block)
+        assert len(v) == len(linetok.tokenize(open(f).read()))
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[337]>", line 3, in <module>
+        assert len(v) == len(open(f).read().split())
+    TypeError: coercing to Unicode: need string or buffer, ZipFilePathPointer found
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1827, in corpus.doctest
+Failed example:
+    l1 = open(f1).read().split()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[343]>", line 1, in <module>
+        l1 = open(f1).read().split()
+    TypeError: coercing to Unicode: need string or buffer, ZipFilePathPointer found
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1828, in corpus.doctest
+Failed example:
+    l2 = open(f2).read().split()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[344]>", line 1, in <module>
+        l2 = open(f2).read().split()
+    TypeError: coercing to Unicode: need string or buffer, ZipFilePathPointer found
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1829, in corpus.doctest
+Failed example:
+    l3 = open(f3).read().split()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[345]>", line 1, in <module>
+        l3 = open(f3).read().split()
+    TypeError: coercing to Unicode: need string or buffer, ZipFilePathPointer found
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1832, in corpus.doctest
+Failed example:
+    list(c123) == l123
+Expected:
+    True
+Got:
+    False
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1835, in corpus.doctest
+Failed example:
+    (c1+c2+c3)[100] == l123[100]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[348]>", line 1, in <module>
+        (c1+c2+c3)[100] == l123[100]
+    TypeError: 'int' object is unsubscriptable
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1845, in corpus.doctest
+Failed example:
+    l1 = open(f1).read().split()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[351]>", line 1, in <module>
+        l1 = open(f1).read().split()
+    TypeError: coercing to Unicode: need string or buffer, ZipFilePathPointer found
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1859, in corpus.doctest
+Failed example:
+    for s in indices:
+        for e in indices:
+            assert list(c1[s:e]) == l1[s:e]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[355]>", line 3, in <module>
+        assert list(c1[s:e]) == l1[s:e]
+    TypeError: 'int' object is unsubscriptable
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1865, in corpus.doctest
+Failed example:
+    for s in indices:
+        assert list(c1[s:]) == l1[s:]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[356]>", line 2, in <module>
+        assert list(c1[s:]) == l1[s:]
+    TypeError: 'int' object is unsubscriptable
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1870, in corpus.doctest
+Failed example:
+    for e in indices:
+        assert list(c1[:e]) == l1[:e]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[357]>", line 2, in <module>
+        assert list(c1[:e]) == l1[:e]
+    TypeError: 'int' object is unsubscriptable
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1875, in corpus.doctest
+Failed example:
+    list(c1[:]) == list(l1[:])
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[358]>", line 1, in <module>
+        list(c1[:]) == list(l1[:])
+    TypeError: 'int' object is unsubscriptable
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1882, in corpus.doctest
+Failed example:
+    l3 = open(f3).read().split()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[360]>", line 1, in <module>
+        l3 = open(f3).read().split()
+    TypeError: coercing to Unicode: need string or buffer, ZipFilePathPointer found
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1896, in corpus.doctest
+Failed example:
+    for s in indices:
+        for e in indices:
+            assert list(c3[s:e]) == l3[s:e]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[364]>", line 3, in <module>
+        assert list(c3[s:e]) == l3[s:e]
+    TypeError: 'int' object is unsubscriptable
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1902, in corpus.doctest
+Failed example:
+    for s in indices:
+        assert list(c3[s:]) == l3[s:]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[365]>", line 2, in <module>
+        assert list(c3[s:]) == l3[s:]
+    TypeError: 'int' object is unsubscriptable
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1907, in corpus.doctest
+Failed example:
+    for e in indices:
+        assert list(c3[:e]) == l3[:e]
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[366]>", line 2, in <module>
+        assert list(c3[:e]) == l3[:e]
+    TypeError: 'int' object is unsubscriptable
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/corpus.doctest", line 1912, in corpus.doctest
+Failed example:
+    list(c3[:]) == list(l3[:])
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest corpus.doctest[367]>", line 1, in <module>
+        list(c3[:]) == list(l3[:])
+    TypeError: 'int' object is unsubscriptable
+.

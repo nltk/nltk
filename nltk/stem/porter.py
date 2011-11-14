@@ -500,7 +500,7 @@ class PorterStemmer(StemmerI):
         self.k = j
         self.k0 = i
 
-        if self.pool.has_key(self.b[self.k0:self.k+1]):
+        if self.b[self.k0:self.k+1] in self.pool:
             return self.pool[self.b[self.k0:self.k+1]]
         
         if self.k <= self.k0 + 1:

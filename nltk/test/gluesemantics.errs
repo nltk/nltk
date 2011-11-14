@@ -1,0 +1,158 @@
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 348, in gluesemantics.doctest
+Failed example:
+    for r in glue.get_readings(glue.gfl_to_compiled(gfl)): 
+        print r.simplify().normalize()
+Expected:
+    exists x.(dog(x) & exists z1.(John(z1) & sees(z1,x)))
+    exists x.(John(x) & exists z1.(dog(z1) & sees(x,z1)))
+Got:
+    exists z1.(dog(z1) & exists z2.(John(z2) & sees(z2,z1)))
+    exists z1.(John(z1) & exists z2.(dog(z2) & sees(z1,z2)))
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 385, in gluesemantics.doctest
+Failed example:
+    depparser = MaltParser(tagger=tagger)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest gluesemantics.doctest[149]>", line 1, in <module>
+        depparser = MaltParser(tagger=tagger)
+      File "/Users/sb/git/nltk/nltk/parse/malt.py", line 24, in __init__
+        self.config_malt()
+      File "/Users/sb/git/nltk/nltk/parse/malt.py", line 73, in config_malt
+        verbose=verbose)
+      File "/Users/sb/git/nltk/nltk/internals.py", line 510, in find_binary
+        raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+    LookupError: 
+
+    ===========================================================================
+      NLTK was unable to find the malt.jar executable!  Use
+      config_malt.jar() or set the MALTPARSERHOME environment variable.
+
+        >>> config_malt.jar('/path/to/malt.jar')
+
+      Searched in:
+        - .
+        - /usr/local/bin
+
+      For more information, on malt.jar, see:
+        <http://w3.msi.vxu.se/~jha/maltparser/index.html>
+    ===========================================================================
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 390, in gluesemantics.doctest
+Failed example:
+    glue = Glue(depparser=depparser)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest gluesemantics.doctest[150]>", line 1, in <module>
+        glue = Glue(depparser=depparser)
+    NameError: name 'depparser' is not defined
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 391, in gluesemantics.doctest
+Failed example:
+    for reading in glue.parse_to_meaning('every girl chases a dog'): 
+        print reading.simplify().normalize()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest gluesemantics.doctest[151]>", line 1, in <module>
+        for reading in glue.parse_to_meaning('every girl chases a dog'):
+      File "/Users/sb/git/nltk/nltk/sem/glue.py", line 433, in parse_to_meaning
+        for agenda in self.parse_to_compiled(sentence):
+      File "/Users/sb/git/nltk/nltk/sem/glue.py", line 515, in parse_to_compiled
+        gfls = [self.depgraph_to_glue(dg) for dg in self.dep_parse(sentence)]
+      File "/Users/sb/git/nltk/nltk/sem/glue.py", line 522, in dep_parse
+        self.depparser = MaltParser(tagger=self.get_pos_tagger())
+      File "/Users/sb/git/nltk/nltk/parse/malt.py", line 24, in __init__
+        self.config_malt()
+      File "/Users/sb/git/nltk/nltk/parse/malt.py", line 73, in config_malt
+        verbose=verbose)
+      File "/Users/sb/git/nltk/nltk/internals.py", line 510, in find_binary
+        raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+    LookupError: 
+
+    ===========================================================================
+      NLTK was unable to find the malt.jar executable!  Use
+      config_malt.jar() or set the MALTPARSERHOME environment variable.
+
+        >>> config_malt.jar('/path/to/malt.jar')
+
+      Searched in:
+        - .
+        - /usr/local/bin
+
+      For more information, on malt.jar, see:
+        <http://w3.msi.vxu.se/~jha/maltparser/index.html>
+    ===========================================================================
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 396, in gluesemantics.doctest
+Failed example:
+    drtglue = DrtGlue(depparser=depparser)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest gluesemantics.doctest[152]>", line 1, in <module>
+        drtglue = DrtGlue(depparser=depparser)
+    NameError: name 'depparser' is not defined
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 397, in gluesemantics.doctest
+Failed example:
+    for reading in drtglue.parse_to_meaning('every girl chases a dog'): 
+        print reading.simplify().normalize()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest gluesemantics.doctest[153]>", line 1, in <module>
+        for reading in drtglue.parse_to_meaning('every girl chases a dog'):
+    NameError: name 'drtglue' is not defined
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 411, in gluesemantics.doctest
+Failed example:
+    readings = drtglue.parse_to_meaning('John sees Mary')
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest gluesemantics.doctest[155]>", line 1, in <module>
+        readings = drtglue.parse_to_meaning('John sees Mary')
+    NameError: name 'drtglue' is not defined
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 412, in gluesemantics.doctest
+Failed example:
+    for drs in readings: 
+        print drs.simplify().normalize()
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest gluesemantics.doctest[156]>", line 1, in <module>
+        for drs in readings:
+    NameError: name 'readings' is not defined
+
+***************************************************************************
+File "/Users/sb/git/nltk/nltk/test/gluesemantics.doctest", line 423, in gluesemantics.doctest
+Failed example:
+    readings[0].equiv(readings[1])
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/doctest.py", line 1253, in __run
+        compileflags, 1) in test.globs
+      File "<doctest gluesemantics.doctest[157]>", line 1, in <module>
+        readings[0].equiv(readings[1])
+    NameError: name 'readings' is not defined
+.

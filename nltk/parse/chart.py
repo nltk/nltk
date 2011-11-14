@@ -1660,7 +1660,7 @@ def demo(choice=None,
                   '3': ('Bottom-up left-corner', BU_LC_STRATEGY),
                   '4': ('Filtered left-corner', LC_STRATEGY)}
     choices = []
-    if strategies.has_key(choice): choices = [choice]
+    if choice in strategies: choices = [choice]
     if choice=='6': choices = "1234"
 
     # Run the requested chart parser(s), except the stepping parser.
