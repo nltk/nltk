@@ -7,8 +7,7 @@
 
 import numpy
 
-from api import *
-from util import *
+from util import VectorSpaceClusterer
 
 class EMClusterer(VectorSpaceClusterer):
     """

@@ -6,9 +6,9 @@
 
 import sys
 import logging
+from collections import defaultdict
 
 import nltk.metrics
-from nltk.util import defaultdict
 
 class AlignedSent(object):
     """

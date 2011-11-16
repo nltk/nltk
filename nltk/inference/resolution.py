@@ -8,9 +8,13 @@
 
 from collections import defaultdict
 
-from nltk.sem.logic import *
 from nltk.sem.util import skolemize
-from api import Prover, BaseProverCommand
+from nltk.sem.logic import (VariableExpression, EqualityExpression,
+                            ApplicationExpression, LogicParser,
+                            NegatedExpression, Variable, 
+                            AndExpression, unique_variable, operator)
+
+from nltk.inference.api import Prover, BaseProverCommand
 
 """
 Module for a resolution-based First Order theorem prover.

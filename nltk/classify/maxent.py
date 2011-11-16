@@ -61,13 +61,12 @@ import gzip
 from collections import defaultdict
 
 from nltk.util import OrderedDict
-from nltk.probability import *
+from nltk.probability import DictionaryProbDist
 
-import nltk.classify.util # for accuracy & log_likelihood
-from api import *
-from util import attested_labels, CutoffChecker
-from megam import call_megam, write_megam_file, parse_megam_weights
-from tadm import call_tadm, write_tadm_file, parse_tadm_weights
+from nltk.classify.api import ClassifierI
+from nltk.classify.util import attested_labels, CutoffChecker, accuracy, log_likelihood
+from nltk.classify.megam import call_megam, write_megam_file, parse_megam_weights
+from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
 
 ######################################################################
 #{ Classifier Model
@@ -1058,10 +1057,8 @@ def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
     try:
         while True:
             if trace > 2:
-                ll = cutoffchecker.ll or nltk.classify.util.log_likelihood(
-                                                classifier, train_toks)
-                acc = cutoffchecker.acc or nltk.classify.util.accuracy(
-                                                classifier, train_toks)
+                ll = cutoffchecker.ll or log_likelihood(classifier, train_toks)
+                acc = cutoffchecker.acc or accuracy(classifier, train_toks)
                 iternum = cutoffchecker.iter
                 print '     %9d    %14.5f    %9.3f' % (iternum, ll, acc)
             
@@ -1090,8 +1087,8 @@ def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
         raise
 
     if trace > 2:
-        ll = nltk.classify.util.log_likelihood(classifier, train_toks)
-        acc = nltk.classify.util.accuracy(classifier, train_toks)
+        ll = log_likelihood(classifier, train_toks)
+        acc = accuracy(classifier, train_toks)
         print '         Final    %14.5f    %9.3f' % (ll, acc)
 
 # Return the classifier.
@@ -1178,10 +1175,8 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
     try:
         while True:
             if trace > 2:
-                ll = cutoffchecker.ll or nltk.classify.util.log_likelihood(
-                                                classifier, train_toks)
-                acc = cutoffchecker.acc or nltk.classify.util.accuracy(
-                                                classifier, train_toks)
+                ll = cutoffchecker.ll or log_likelihood(classifier, train_toks)
+                acc = cutoffchecker.acc or accuracy(classifier, train_toks)
                 iternum = cutoffchecker.iter
                 print '     %9d    %14.5f    %9.3f' % (iternum, ll, acc)
     
@@ -1206,8 +1201,8 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
             
 
     if trace > 2:
-        ll = nltk.classify.util.log_likelihood(classifier, train_toks)
-        acc = nltk.classify.util.accuracy(classifier, train_toks)
+        ll = log_likelihood(classifier, train_toks)
+        acc = accuracy(classifier, train_toks)
         print '         Final    %14.5f    %9.3f' % (ll, acc)
                
     # Return the classifier.

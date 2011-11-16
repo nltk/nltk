@@ -6,8 +6,16 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.sem.logic import *
-from api import Prover, BaseProverCommand
+from nltk.sem.logic import (VariableExpression, EqualityExpression,
+                            ApplicationExpression, LogicParser,
+                            AbstractVariableExpression, AllExpression,
+                            NegatedExpression,
+                            ExistsExpression, Variable, ImpExpression,
+                            AndExpression, unique_variable,
+                            LambdaExpression, IffExpression,
+                            OrExpression, FunctionVariableExpression)
+
+from nltk.inference.api import Prover, BaseProverCommand
 
 """
 Module for a tableau-based First Order theorem prover.

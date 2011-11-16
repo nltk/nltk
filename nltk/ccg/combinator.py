@@ -5,7 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from api import *
+from nltk.ccg.api import ParserI, FunctionalCategory
 
 class UndirectedBinaryCombinator(object):
     """
@@ -259,6 +259,7 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
 
         arg = innermostFunction(arg)
 
+        # left, arg_categ are undefined!
         subs = left.can_unify(arg_categ.arg())
         if subs is not None:
             return True

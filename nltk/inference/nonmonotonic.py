@@ -15,8 +15,14 @@ Michael R. Genesereth and Nils J. Nilsson.
 from prover9 import Prover9, Prover9Command
 from collections import defaultdict
 
-from nltk.sem.logic import *
-from api import Prover, ProverCommandDecorator
+from nltk.sem.logic import (VariableExpression, EqualityExpression,
+                            ApplicationExpression, LogicParser,
+                            AbstractVariableExpression, AllExpression,
+                            BooleanExpression, NegatedExpression,
+                            ExistsExpression, Variable, ImpExpression,
+                            AndExpression, unique_variable, operator)
+
+from nltk.inference.api import Prover, ProverCommandDecorator
 
 class ProverParseError(Exception): pass
 

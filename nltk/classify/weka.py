@@ -19,10 +19,10 @@ import subprocess
 import re
 import zipfile
 
-from nltk.probability import *
+from nltk.probability import DictionaryProbDist
 from nltk.internals import java, config_java
 
-from api import *
+from nltk.classify.api import ClassifierI
 
 _weka_classpath = None
 _weka_search = ['.',

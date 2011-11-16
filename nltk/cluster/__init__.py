@@ -79,10 +79,7 @@ objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for
 efficiency when required.
 """
 
-from util import *
-from kmeans import *
-from gaac import *
-from em import *
-
-__all__ = ['KMeansClusterer', 'GAAClusterer', 'EMClusterer',
-           'VectorSpaceClusterer', 'Dendrogram']
+from util import VectorSpaceClusterer, Dendrogram
+from kmeans import KMeansClusterer
+from gaac import GAAClusterer
+from em import EMClusterer

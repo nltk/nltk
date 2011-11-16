@@ -10,7 +10,7 @@ import sys
 import math
 import numpy
 
-from api import *
+from nltk.cluster.api import ClusterI
 
 class VectorSpaceClusterer(ClusterI):
     """

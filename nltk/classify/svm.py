@@ -14,9 +14,9 @@ train a linear classification kernel, though through minor modification, full SV
 capabilities should be accessible if needed. Only binary classification is possible at present.
 """
 
-from nltk.probability import *
+from nltk.probability import DictionaryProbDist
 
-from api import *
+from nltk.classify.api import ClassifierI
 
 #
 # Interface to Support Vector Machine

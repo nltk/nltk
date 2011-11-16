@@ -9,10 +9,11 @@
 import os
 import tempfile
 
-from nltk.sem.logic import *
-from nltk.sem import Valuation
-from api import ModelBuilder, BaseModelBuilderCommand
-from prover9 import *
+from nltk.sem.logic import is_indvar
+from nltk.sem import Valuation, LogicParser
+
+from nltk.inference.api import ModelBuilder, BaseModelBuilderCommand
+from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent
 
 """
 A model builder that makes use of the external 'Mace4' package.

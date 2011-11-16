@@ -30,12 +30,17 @@ This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
 
-from nltk.parse.api import *
-from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
-from nltk import Tree, defaultdict
+from collections import defaultdict
 
-import lexicon
-from combinator import *
+from nltk.parse import ParserI
+from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
+from nltk.tree import Tree
+
+from nltk.ccg.lexicon import parseLexicon
+from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
+                                 BackwardApplication, ForwardComposition,
+                                 BackwardComposition, ForwardSubstitution,
+                                 BackwardBx, BackwardSx) 
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't

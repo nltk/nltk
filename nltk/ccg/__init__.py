@@ -11,21 +11,12 @@ Combinatory Categorial Grammar.
 For more information see nltk/doc/contrib/ccg/ccg.pdf
 """
 
-from combinator import *
-from chart import *
-from lexicon import *
-
-__all__ = [
-    'UndirectedBinaryCombinator', 'DirectedBinaryCombinator',
-    'ForwardCombinator', 'BackwardCombinator',
-    'UndirectedFunctionApplication',
-    'ForwardApplication', 'BackwardApplication',
-    'UndirectedComposition',
-    'ForwardComposition', 'BackwardComposition',
-    'BackwardBx',
-    'UndirectedSubstitution', 'ForwardSubstitution',
-    'BackwardSx',
-    'UndirectedTypeRaise', 'ForwardT', 'BackwardT',
-    'CCGLexicon',
-    'CCGEdge', 'CCGLeafEdge', 'CCGChartParser', 'CCGChart'
-    ]
+from nltk.ccg.combinator import (UndirectedBinaryCombinator, DirectedBinaryCombinator,
+                                 ForwardCombinator, BackwardCombinator,
+                                 UndirectedFunctionApplication, ForwardApplication,
+                                 BackwardApplication, UndirectedComposition,
+                                 ForwardComposition, BackwardComposition,
+                                 BackwardBx, UndirectedSubstitution, ForwardSubstitution,
+                                 BackwardSx, UndirectedTypeRaise, ForwardT, BackwardT)
+from nltk.ccg.chart import CCGEdge, CCGLeafEdge, CCGChartParser, CCGChart
+from nltk.ccg.lexicon import CCGLexicon

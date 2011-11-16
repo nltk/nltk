@@ -82,48 +82,22 @@ examples, known as the X{training set}.  Training sets are represented
 as lists of C{(featuredict, label)} tuples.
 """
 
-from weka import *
-from megam import *
+from nltk.classify.api import ClassifierI, MultiClassifierI
+from nltk.classify.mallet import config_mallet, call_mallet
+from nltk.classify.megam import config_megam, call_megam
+from nltk.classify.weka import WekaClassifier, config_weka
+from nltk.classify.naivebayes import NaiveBayesClassifier
+from nltk.classify.decisiontree import DecisionTreeClassifier
+from nltk.classify.rte_classify import rte_classifier, rte_features, RTEFeatureExtractor
+from nltk.classify.util import accuracy, log_likelihood
 
-from api import *
-from util import *
-from mallet import *
-from naivebayes import *
-from decisiontree import *
-from rte_classify import *
-
-__all__ = [
-    # Classifier Interfaces
-    'ClassifierI', 'MultiClassifierI',
-    
-    # Classifiers
-    'NaiveBayesClassifier', 'DecisionTreeClassifier', 'WekaClassifier',
-    
-    # Utility functions.  Note that accuracy() is intentionally
-    # omitted -- it should be accessed as nltk.classify.accuracy();
-    # similarly for log_likelihood() and attested_labels().
-    'config_weka', 'config_megam',
-    'config_mallet', 'call_mallet',
-
-    # RTE
-    'rte_classifier', 'rte_features', 'RTEFeatureExtractor',
-
-    # Demos -- not included.
-    ]
-    
 # Conditional imports
 
 try:
     import numpy
-    from maxent import *
-    __all__ += ['MaxentClassifier', 'BinaryMaxentFeatureEncoding',
-                'ConditionalExponentialClassifier']
-except ImportError:
-    pass
-
-try:
+    from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
+                                      ConditionalExponentialClassifier)
     import svmlight
-    from svm import *
-    __all__ += ['SvmClassifier']
+    from nltk.classify.svm import SvmClassifier
 except ImportError:
     pass

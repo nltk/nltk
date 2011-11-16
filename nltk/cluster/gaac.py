@@ -6,9 +6,9 @@
 # For license information, see LICENSE.TXT
 
 import numpy
+import copy
 
-from api import *
-from util import *
+from nltk.cluster.util import VectorSpaceClusterer, Dendrogram
 
 class GAAClusterer(VectorSpaceClusterer):
     """
@@ -118,13 +118,13 @@ def demo():
     Non-interactive demonstration of the clusterers with simple 2-D data.
     """
 
-    from nltk import cluster
+    from nltk.cluster import GAAClusterer
 
     # use a set of tokens with 2D indices
     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
     
     # test the GAAC clusterer with 4 clusters
-    clusterer = cluster.GAAClusterer(4)
+    clusterer = GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
 
     print 'Clusterer:', clusterer

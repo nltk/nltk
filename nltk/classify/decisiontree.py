@@ -15,9 +15,9 @@ on feature values, and leaves correspond to label assignments.
 
 from collections import defaultdict
 
-from nltk.probability import *
+from nltk.probability import FreqDist, MLEProbDist, entropy
 
-from api import *
+from nltk.classify.api import ClassifierI
 
 class DecisionTreeClassifier(ClassifierI):
     def __init__(self, label, feature_name=None, decisions=None, default=None):
