@@ -6,13 +6,14 @@
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
+import operator
 from collections import defaultdict
 
-from nltk.sem.util import skolemize
+from nltk.sem import skolemize
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             ApplicationExpression, LogicParser,
                             NegatedExpression, Variable, 
-                            AndExpression, unique_variable, operator)
+                            AndExpression, unique_variable)
 
 from nltk.inference.api import Prover, BaseProverCommand
 

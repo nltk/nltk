@@ -13,9 +13,13 @@ Graphically display a Tree.
 
 import sys
 
-from nltk.tree import Tree
+from Tkinter import (BoxWidget, CanvasFrame, IntVar,
+                     Menu, OvalWidget, ParenWidget, TextWidget, Tk,
+                     canvas)
 
-from util import *
+from nltk.util import in_idle
+from nltk.tree import Tree
+from nltk.draw.util import CanvasWidget
 
 ##//////////////////////////////////////////////////////
 ##  Tree Segment

@@ -6,7 +6,16 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from logic import *
+import operator
+
+from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
+                            AndExpression, ApplicationExpression, BinaryExpression,
+                            BooleanExpression, ConstantExpression, EqualityExpression,
+                            EventVariableExpression, ExistsExpression, Expression,
+                            FunctionVariableExpression, ImpExpression,
+                            IndividualVariableExpression, LambdaExpression, Tokens,
+                            LogicParser, NegatedExpression, OrExpression, Variable,
+                            is_eventvar, is_funcvar, is_indvar)
 
 # Import Tkinter-based modules if they are available
 try:

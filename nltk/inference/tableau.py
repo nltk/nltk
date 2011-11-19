@@ -6,6 +6,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from nltk.internals import Counter
+
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             ApplicationExpression, LogicParser,
                             AbstractVariableExpression, AllExpression,

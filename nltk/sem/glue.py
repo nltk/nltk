@@ -10,10 +10,10 @@ import os
 
 import nltk
 from nltk.internals import Counter
-from nltk.parse import *
 from nltk.corpus import brown
 from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
-import logic
+from nltk.sem.logic import (LogicParser, Expression, Variable, VariableExpression,
+                            LambdaExpression, AbstractVariableExpression)
 import drt
 import linearlogic
 
@@ -32,8 +32,8 @@ class GlueFormula(object):
             indices = set()
         
         if isinstance(meaning, str):
-            self.meaning = logic.LogicParser().parse(meaning)
-        elif isinstance(meaning, logic.Expression):
+            self.meaning = LogicParser().parse(meaning)
+        elif isinstance(meaning, Expression):
             self.meaning = meaning
         else:
             raise RuntimeError, 'Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__)
@@ -65,21 +65,21 @@ class GlueFormula(object):
         arg_meaning_abstracted = arg.meaning
         if return_indices:
             for dep in self.glue.simplify().antecedent.dependencies[::-1]: # if self.glue is (A -o B), dep is in A.dependencies
-                arg_meaning_abstracted = self.make_LambdaExpression(logic.Variable('v%s' % dep), 
+                arg_meaning_abstracted = self.make_LambdaExpression(Variable('v%s' % dep), 
                                                                     arg_meaning_abstracted)
         return_meaning = self.meaning.applyto(arg_meaning_abstracted)
 
         return self.__class__(return_meaning, return_glue, return_indices)
         
     def make_VariableExpression(self, name):
-        return logic.VariableExpression(name)
+        return VariableExpression(name)
         
     def make_LambdaExpression(self, variable, term):
-        return logic.LambdaExpression(variable, term)
+        return LambdaExpression(variable, term)
         
     def lambda_abstract(self, other):
         assert isinstance(other, GlueFormula)
-        assert isinstance(other.meaning, logic.AbstractVariableExpression)
+        assert isinstance(other.meaning, AbstractVariableExpression)
         return self.__class__(self.make_LambdaExpression(other.meaning.variable, 
                                                          self.meaning),
                               linearlogic.ImpExpression(other.glue, self.glue))

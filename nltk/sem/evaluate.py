@@ -19,9 +19,16 @@ models.
 from pprint import pformat
 import inspect
 import textwrap
+
 from nltk.decorators import decorator
 
-from logic import *
+from nltk.sem.logic import (AbstractVariableExpression, AllExpression,
+                            AndExpression, ApplicationExpression, EqualityExpression,
+                            ExistsExpression, IffExpression, ImpExpression,
+                            IndividualVariableExpression, LambdaExpression,
+                            LogicParser, NegatedExpression, OrExpression,
+                            Variable, is_indvar)
+
 
 class Error(Exception): pass
 

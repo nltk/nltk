@@ -9,8 +9,10 @@
 
 from nltk.parse import load_parser
 from nltk.draw.tree import draw_trees
-from util import skolemize
-from nltk.sem import logic
+from nltk.sem.skolemize import skolemize
+from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
+                            ExistsExpression, IffExpression, ImpExpression,
+                            LambdaExpression, NegatedExpression, OrExpression)
 
 """
 An implementation of the Hole Semantics model, following Blackburn and Bos,
@@ -46,14 +48,14 @@ class Constants(object):
     HOLE = 'HOLE'
     LABEL = 'LABEL'
 
-    MAP = {ALL: lambda v,e: logic.AllExpression(v.variable, e),
-           EXISTS: lambda v,e: logic.ExistsExpression(v.variable, e),
-           NOT: logic.NegatedExpression,
-           AND: logic.AndExpression,
-           OR: logic.OrExpression,
-           IMP: logic.ImpExpression,
-           IFF: logic.IffExpression,
-           PRED: logic.ApplicationExpression}
+    MAP = {ALL: lambda v,e: AllExpression(v.variable, e),
+           EXISTS: lambda v,e: ExistsExpression(v.variable, e),
+           NOT: NegatedExpression,
+           AND: AndExpression,
+           OR: OrExpression,
+           IMP: ImpExpression,
+           IFF: IffExpression,
+           PRED: ApplicationExpression}
 
 class HoleSemantics(object):
     """
@@ -65,7 +67,7 @@ class HoleSemantics(object):
     """
     def __init__(self, usr):
         """
-        Constructor.  `usr' is a C{logic.sem.Expression} representing an 
+        Constructor.  `usr' is a C{sem.Expression} representing an 
         Underspecified Representation Structure (USR).  A USR has the following
         special predicates:
         ALL(l,v,n),
@@ -101,10 +103,10 @@ class HoleSemantics(object):
         Extract holes, labels, formula fragments and constraints from the hole
         semantics underspecified representation (USR).
         """
-        if isinstance(usr, logic.AndExpression):
+        if isinstance(usr, AndExpression):
             self._break_down(usr.first)
             self._break_down(usr.second)
-        elif isinstance(usr, logic.ApplicationExpression):
+        elif isinstance(usr, ApplicationExpression):
             func, args = usr.uncurry()
             if func.variable.name == Constants.LEQ:
                 self.constraints.add(Constraint(args[0], args[1]))
@@ -320,7 +322,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         if verbose: print 'Raw:       ', sem
 
         # Skolemize away all quantifiers.  All variables become unique.
-        while isinstance(sem, logic.LambdaExpression):
+        while isinstance(sem, LambdaExpression):
             sem = sem.term
         skolemized = skolemize(sem)
         

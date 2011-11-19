@@ -36,7 +36,10 @@ homepage<http://www.ags.uni-sb.de/~konrad/clig.html>}.
 
 """
 
-from Tkinter import *
+from Tkinter import (Button, Canvas, Entry, Frame, Label, Menu, Menubutton,
+                     RAISED, Scrollbar, StringVar, Text, Tk, Toplevel,
+                     Widget, value)
+
 import tkFont, tkMessageBox, tkFileDialog
 
 from nltk.util import in_idle

@@ -42,12 +42,12 @@ is then created with domain and valuation as parameters.
 """
 
 from nltk.sem.util import (batch_parse, batch_interpret, batch_evaluate,
-                           root_semrep, parse_valuation_line,
-                           parse_valuation, parse_logic, skolemize)
+                           root_semrep, parse_valuation)
 from nltk.sem.evaluate import (Valuation, Assignment, Model, Undefined,
                                is_rel, set2rel, arity)
 from nltk.sem.logic import (LogicParser, boolean_ops, binding_ops,
-                            equality_preds)
+                            equality_preds, parse_logic)
+from nltk.sem.skolemize import skolemize
 from nltk.sem.lfg import FStructure
 from nltk.sem.relextract import extract_rels
 from nltk.sem.boxer import Boxer

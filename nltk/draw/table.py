@@ -11,8 +11,10 @@
 Tkinter widgets for displaying multi-column listboxes and tables.
 """
 
-from util import *
 import operator
+
+from Tkinter import (Frame, Label, Listbox, Scrollbar, Tk)
+
 
 ######################################################################
 # Multi-Column Listbox
@@ -84,7 +86,7 @@ class MultiListbox(Frame):
             include_labels = True
         
         if len(columns) == 0:
-            raise ValuError("Expected at least one column")
+            raise ValueError("Expected at least one column")
 
         # Instance variables
         self._column_names = tuple(columns)

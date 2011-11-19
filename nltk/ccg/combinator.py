@@ -5,7 +5,10 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.ccg.api import ParserI, FunctionalCategory
+from nltk.parse import ParserI
+from nltk.internals import Counter
+
+from nltk.ccg.api import FunctionalCategory
 
 class UndirectedBinaryCombinator(object):
     """

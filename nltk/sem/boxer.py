@@ -8,13 +8,20 @@
 # For license information, see LICENSE.TXT
 
 import os
+import re
+import operator
 import subprocess
 from optparse import OptionParser
 import tempfile
 
-import nltk
-from nltk.sem.logic import *
-from nltk.sem.drt import *
+from nltk.internals import Counter, find_binary
+
+from nltk.sem.logic import (ExpectedMoreTokensException, ParseException,
+                            UnexpectedTokenException, Variable)
+
+from nltk.sem.drt import (DRS, DrtApplicationExpression, DrtEqualityExpression,
+                          DrtNegatedExpression, DrtOrExpression, DrtParser,
+                          DrtProposition, DrtTokens, DrtVariableExpression)
 
 """
 An interface to Boxer.
@@ -174,7 +181,7 @@ class Boxer(object):
         return stdout
 
     def _find_binary(self, name, bin_dir, verbose=False):
-        return nltk.internals.find_binary(name, 
+        return find_binary(name, 
             path_to_bin=bin_dir,
             env_vars=['CANDCHOME'],
             url='http://svn.ask.it.usyd.edu.au/trac/candc/',

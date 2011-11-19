@@ -328,7 +328,7 @@ def printCCGTree(lwidth,tree):
 ### Demonstration code
 
 # Construct the lexicon
-lex = lexicon.parseLexicon('''
+lex = parseLexicon('''
     :- S, NP, N, VP    # Primitive categories, S is the target primitive
 
     Det :: NP/N         # Family of words

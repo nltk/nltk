@@ -11,9 +11,6 @@
 Visualization tools for CFGs.
 """
 
-import re
-
-
 """
 Idea for a nice demo:
   - 3 panes: grammar, treelet, working area
@@ -53,12 +50,18 @@ Operations:
     - if connected to top & bottom, then disconnect
 """
 
-from nltk.grammar import ContextFreeGrammar, Nonterminal, parse_cfg_production
+import re
+
+from Tkinter import (Button, Canvas, ColorizedList,
+                     Entry, Frame, IntVar, Label, Scrollbar,
+                     ShowText, SymbolWidget, Text, TextWidget,
+                     Tk, Toplevel)
+
+from nltk.grammar import (ContextFreeGrammar, parse_cfg_production,
+                          Nonterminal, nonterminals)
 from nltk.tree import Tree
-
-from util import *
-from tree import *
-
+from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
+form nltk.draw.util import CanvasFrame
 
 ######################################################################
 # Production List
@@ -585,7 +588,6 @@ class CFGDemo(object):
         # The leaves of the tree.
         leaves = []
         for word in self._text:
-            if isinstance(word, Token): word = word.type()
             leaves.append(TextWidget(c, word, font=leaf_font, draggable=1))
 
         # Put it all together into one tree

@@ -16,11 +16,8 @@ except ImportError:
     warnings.warn("nltk.draw package not loaded "
                   "(please install Tkinter library).")
 else:
-    from cfg import *
-    from tree import *
+    from cfg import ProductionList, CFGEditor, CFGDemo
+    from tree import (TreeSegmentWidget, tree_to_treesegment,
+                      TreeWidget, TreeView, draw_trees)
     from dispersion import dispersion_plot
-
-    # Make sure that nltk.draw.cfg and nltk.draw.tree refer to the correct
-    # modules (and not to nltk.cfg & nltk.tree)
-    import cfg, tree
-
+    from table import Table

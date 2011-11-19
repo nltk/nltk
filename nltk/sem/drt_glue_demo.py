@@ -9,12 +9,16 @@
 
 from tkFont import Font
 
-from nltk.draw import *
+from Tkinter import (Button, Frame, IntVar, Label,
+                     Listbox, Menu, Scrollbar, Tk)
+
+from nltk.draw import CanvasFrame, ShowText
+from nltk.util import in_idle
 from nltk.tag import RegexpTagger
-from nltk.parse.malt import MaltParser
-from logic import Variable
-from drt import DrsDrawer, DrtVariableExpression
-from glue import DrtGlue
+from nltk.parse import MaltParser
+from nltk.sem.logic import Variable
+from nltk.sem.drt import DrsDrawer, DrtVariableExpression
+from nltk.sem.glue import DrtGlue
 
 class DrtGlueDemo(object):
     def __init__(self, examples):

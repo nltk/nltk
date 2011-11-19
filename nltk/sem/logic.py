@@ -1660,6 +1660,31 @@ class LogicParser(object):
         return '<' + self.__class__.__name__ + ': ' + msg + '>'
 
             
+def parse_logic(s, logic_parser=None):
+    """
+    Convert a file of First Order Formulas into a list of {Expression}s.
+    
+    :param s: the contents of the file
+    :type s: str
+    :param logic_parser: The parser to be used to parse the logical expression
+    :type logic_parser: C{LogicParser}
+    :return: a list of parsed formulas.
+    :rtype: list of L{Expression}
+    """
+    if logic_parser is None:
+        logic_parser = LogicParser()
+        
+    statements = []
+    for linenum, line in enumerate(s.splitlines()):
+        line = line.strip()
+        if line.startswith('#') or line=='': continue
+        try:
+            statements.append(logic_parser.parse(line))
+        except ParseException:
+            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+    return statements
+        
+        
 class StringTrie(defaultdict):
     LEAF = "<leaf>" 
 
