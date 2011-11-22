@@ -36,10 +36,13 @@ class NEChunkParserTagger(ClassifierBasedTagger):
                                            trace=2)
 
     def _english_wordlist(self):
-        if not self._en_wordlist:
+        try:
+            wl = self._en_wordlist
+        except AttributeError:
             from nltk.corpus import words
             self._en_wordlist = set(words.words('en-basic'))
-        return self._en_wordlist
+            wl = self._en_wordlist
+        return wl
     
     def _feature_detector(self, tokens, index, history):
         word = tokens[index][0]
