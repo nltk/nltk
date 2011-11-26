@@ -25,7 +25,8 @@ class KMeansClusterer(VectorSpaceClusterer):
     def __init__(self, num_means, distance, repeats=1,
                        conv_test=1e-6, initial_means=None,
                        normalise=False, svd_dimensions=None,
-                       rng=None):
+                       rng=None, avoid_empty_clusters=False):
+
         """
         :param  num_means:  the number of means to use (may use fewer)
         :type   num_means:  int
@@ -45,6 +46,10 @@ class KMeansClusterer(VectorSpaceClusterer):
         :type svd_dimensions: int 
         :param  rng:        random number generator (or None)
         :type   rng:        Random
+        :param avoid_empty_clusters: include current centroid in computation 
+                                     of next one; avoids undefined behavior 
+                                     when clusters become empty
+        :type avoid_empty_clusters: boolean
         """
         VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._num_means = num_means
@@ -57,6 +62,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         self._repeats = repeats
         if rng: self._rng = rng
         else:   self._rng = random.Random()
+        self._avoid_empty_clusters = avoid_empty_clusters
 
     def cluster_vectorspace(self, vectors, trace=False):
         if self._means and self._repeats > 1:
@@ -106,7 +112,7 @@ class KMeansClusterer(VectorSpaceClusterer):
                     #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
                 # recalculate cluster means by computing the centroid of each cluster
-                new_means = map(self._centroid, clusters)
+                new_means = map(self._centroid, clusters, self._means)
 
                 # measure the degree of change from the previous step for convergence
                 difference = self._sum_distances(self._means, new_means)
@@ -145,12 +151,21 @@ class KMeansClusterer(VectorSpaceClusterer):
             difference += self._distance(u, v) 
         return difference
 
-    def _centroid(self, cluster):
-        assert len(cluster) > 0
-        centroid = copy.copy(cluster[0])
-        for vector in cluster[1:]:
-            centroid += vector
-        return centroid / float(len(cluster))
+    def _centroid(self, cluster, mean):
+        if self._avoid_empty_clusters:
+            centroid = copy.copy(mean)
+            for vector in cluster:
+                centroid += vector
+            return centroid / (1+float(len(cluster)))
+        else:
+            if not len(cluster):
+                sys.stderr.write('Error: no centroid defined for empty cluster.\n')
+                sys.stderr.write('Try setting argument \'avoid_empty_clusters\' to True\n')
+                assert(False)
+            centroid = copy.copy(cluster[0])
+            for vector in cluster[1:]:
+                centroid += vector
+            return centroid / float(len(cluster))
 
     def __repr__(self):
         return '<KMeansClusterer means=%s repeats=%d>' % \
