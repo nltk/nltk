@@ -52,16 +52,15 @@ Operations:
 
 import re
 
-from Tkinter import (Button, Canvas, ColorizedList,
-                     Entry, Frame, IntVar, Label, Scrollbar,
-                     ShowText, SymbolWidget, Text, TextWidget,
-                     Tk, Toplevel)
+from Tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
+                     Scrollbar, Text, Tk, Toplevel)
 
 from nltk.grammar import (ContextFreeGrammar, parse_cfg_production,
                           Nonterminal, nonterminals)
 from nltk.tree import Tree
 from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
-form nltk.draw.util import CanvasFrame
+from nltk.draw.util import (CanvasFrame, ColorizedList, ShowText,
+                            SymbolWidget, TextWidget)
 
 ######################################################################
 # Production List

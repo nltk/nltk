@@ -5,7 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from util import *
+from util import Chat, reflections
 
 """
 Tsu bot responds to all queries with a Sun Tsu sayings

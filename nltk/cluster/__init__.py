@@ -79,7 +79,8 @@ objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for
 efficiency when required.
 """
 
-from util import VectorSpaceClusterer, Dendrogram
+from util import (VectorSpaceClusterer, Dendrogram,
+                  euclidean_distance, cosine_distance)
 from kmeans import KMeansClusterer
 from gaac import GAAClusterer
 from em import EMClusterer

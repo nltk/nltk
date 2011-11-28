@@ -16,7 +16,7 @@ These chatbots may not work using the windows command line or the
 windows IDLE GUI.
 """
 
-from util import *
+from util import Chat
 from eliza import eliza_chat
 from iesha import iesha_chat
 from rude import rude_chat

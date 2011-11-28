@@ -36,7 +36,7 @@ respond to a question by asking a different question, in much the same way
 as Eliza.
 """
 
-from util import *
+from util import Chat, reflections
 
 # responses are matched top to bottom, so non-specific matches occur later
 # for each match, a list of possible responses is provided

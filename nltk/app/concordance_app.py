@@ -9,10 +9,15 @@
 
 import re
 import threading
+import tkFont
+from Tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
+                     Label, Menu, OptionMenu, SUNKEN, Scrollbar,
+                     StringVar, Text)
 
-import nltk
+from nltk.corpus import (cess_cat, brown, nps_chat, treebank, sinica_treebank,
+                         alpino, indian, floresta, mac_morpho, cess_esp)
 from nltk.util import in_idle
-from nltk.draw.util import *
+from nltk.draw.util import ShowText
 
 WORD_OR_TAG = '[^/ ]+'
 BOUNDARY = r'\b'
@@ -28,53 +33,53 @@ ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
 _DEFAULT = 'English: Brown Corpus (Humor, simplified)'
 _CORPORA = {
             'Catalan: CESS-CAT Corpus (simplified)':
-                lambda: nltk.corpus.cess_cat.tagged_sents(simplify_tags=True),
+                lambda: cess_cat.tagged_sents(simplify_tags=True),
             'English: Brown Corpus':
-                lambda: nltk.corpus.brown.tagged_sents(),
+                lambda: brown.tagged_sents(),
             'English: Brown Corpus (simplified)':
-                lambda: nltk.corpus.brown.tagged_sents(simplify_tags=True),
+                lambda: brown.tagged_sents(simplify_tags=True),
             'English: Brown Corpus (Press, simplified)':
-                lambda: nltk.corpus.brown.tagged_sents(categories=['news', 'editorial', 'reviews'], simplify_tags=True),
+                lambda: brown.tagged_sents(categories=['news', 'editorial', 'reviews'], simplify_tags=True),
             'English: Brown Corpus (Religion, simplified)':
-                lambda: nltk.corpus.brown.tagged_sents(categories='religion', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='religion', simplify_tags=True),
             'English: Brown Corpus (Learned, simplified)':
-                lambda: nltk.corpus.brown.tagged_sents(categories='learned', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='learned', simplify_tags=True),
             'English: Brown Corpus (Science Fiction, simplified)':
-                lambda: nltk.corpus.brown.tagged_sents(categories='science_fiction', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='science_fiction', simplify_tags=True),
             'English: Brown Corpus (Romance, simplified)':
-                lambda: nltk.corpus.brown.tagged_sents(categories='romance', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='romance', simplify_tags=True),
             'English: Brown Corpus (Humor, simplified)':
-                lambda: nltk.corpus.brown.tagged_sents(categories='humor', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='humor', simplify_tags=True),
             'English: NPS Chat Corpus':
-                lambda: nltk.corpus.nps_chat.tagged_posts(),
+                lambda: nps_chat.tagged_posts(),
             'English: NPS Chat Corpus (simplified)':
-                lambda: nltk.corpus.nps_chat.tagged_posts(simplify_tags=True),
+                lambda: nps_chat.tagged_posts(simplify_tags=True),
             'English: Wall Street Journal Corpus':
-                lambda: nltk.corpus.treebank.tagged_sents(),
+                lambda: treebank.tagged_sents(),
             'English: Wall Street Journal Corpus (simplified)':
-                lambda: nltk.corpus.treebank.tagged_sents(simplify_tags=True),
+                lambda: treebank.tagged_sents(simplify_tags=True),
             'Chinese: Sinica Corpus':
-                lambda: nltk.corpus.sinica_treebank.tagged_sents(),
+                lambda: sinica_treebank.tagged_sents(),
             'Chinese: Sinica Corpus (simplified)':
-                lambda: nltk.corpus.sinica_treebank.tagged_sents(simplify_tags=True),
+                lambda: sinica_treebank.tagged_sents(simplify_tags=True),
             'Dutch: Alpino Corpus':
-                lambda: nltk.corpus.alpino.tagged_sents(),
+                lambda: alpino.tagged_sents(),
             'Dutch: Alpino Corpus (simplified)':
-                lambda: nltk.corpus.alpino.tagged_sents(simplify_tags=True),
+                lambda: alpino.tagged_sents(simplify_tags=True),
             'Hindi: Indian Languages Corpus':
-                lambda: nltk.corpus.indian.tagged_sents(files='hindi.pos'),
+                lambda: indian.tagged_sents(files='hindi.pos'),
             'Hindi: Indian Languages Corpus (simplified)':
-                lambda: nltk.corpus.indian.tagged_sents(files='hindi.pos', simplify_tags=True),
+                lambda: indian.tagged_sents(files='hindi.pos', simplify_tags=True),
             'Portuguese: Floresta Corpus (Portugal)':
-                lambda: nltk.corpus.floresta.tagged_sents(),
+                lambda: floresta.tagged_sents(),
             'Portuguese: Floresta Corpus (Portugal, simplified)':
-                lambda: nltk.corpus.floresta.tagged_sents(simplify_tags=True),
+                lambda: floresta.tagged_sents(simplify_tags=True),
             'Portuguese: MAC-MORPHO Corpus (Brazil)':
-                lambda: nltk.corpus.mac_morpho.tagged_sents(),
+                lambda: mac_morpho.tagged_sents(),
             'Portuguese: MAC-MORPHO Corpus (Brazil, simplified)':
-                lambda: nltk.corpus.mac_morpho.tagged_sents(simplify_tags=True),
+                lambda: mac_morpho.tagged_sents(simplify_tags=True),
             'Spanish: CESS-ESP Corpus (simplified)':
-                lambda: nltk.corpus.cess_esp.tagged_sents(simplify_tags=True),
+                lambda: cess_esp.tagged_sents(simplify_tags=True),
            }
 
 class ConcordanceSearchView(object):

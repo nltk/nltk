@@ -76,14 +76,16 @@ Possible future improvements:
 """
 
 import string
+import tkFont
+from Tkinter import (IntVar, Listbox, Button, Frame, Label, Menu,
+                     Scrollbar, Tk)
 
-import nltk
+from nltk.tree import Tree
+from nltk.parse import SteppingShiftReduceParser
 from nltk.util import in_idle
-from nltk.draw.util import *
-from nltk.draw.tree import *
-from nltk.draw.cfg import CFGEditor
+from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
+from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
 
-        
 class ShiftReduceApp(object):
     """
     A graphical tool for exploring the shift-reduce parser.  The tool
@@ -96,7 +98,7 @@ class ShiftReduceApp(object):
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = nltk.parse.SteppingShiftReduceParser(grammar, trace)
+        self._parser = SteppingShiftReduceParser(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()

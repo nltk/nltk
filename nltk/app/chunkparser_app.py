@@ -21,11 +21,17 @@ import time
 import textwrap
 import re
 import random
+import tkFileDialog, tkFont
+
+from Tkinter import (Button, Canvas, Checkbutton,
+                     Frame, IntVar, Label, Menu,
+                     Scrollbar, Text, Tk)
 
 import nltk
 from nltk.tree import Tree
 from nltk.util import in_idle
-from nltk.draw.util import *
+from nltk.draw.util import ShowText
+
 
 class RegexpChunkApp(object):
     """

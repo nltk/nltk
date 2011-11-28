@@ -67,13 +67,15 @@ Keyboard Shortcuts::
 """
 
 import string
+import tkFont
+from Tkinter import (Listbox, IntVar, Button, 
+                     Frame, Label, Menu, Scrollbar, Tk)
 
-import nltk
 from nltk.tree import Tree
 from nltk.util import in_idle
-from nltk.draw.util import *
-from nltk.draw.tree import *
-from nltk.draw.cfg import *
+from nltk.parse import SteppingRecursiveDescentParser
+from nltk.draw.util import TextWidget, ShowText, CanvasFrame, EntryDialog
+from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
         
 class RecursiveDescentApp(object):
     """
@@ -87,7 +89,7 @@ class RecursiveDescentApp(object):
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = nltk.parse.SteppingRecursiveDescentParser(grammar, trace)
+        self._parser = SteppingRecursiveDescentParser(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()
