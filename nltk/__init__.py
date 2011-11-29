@@ -100,7 +100,6 @@ from collocations import *
 from decorators import decorator, memoize
 from featstruct import *
 from grammar import *
-from olac import *
 from probability import *
 from text import *
 from tree import *

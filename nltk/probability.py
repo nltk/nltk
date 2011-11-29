@@ -280,6 +280,8 @@ class FreqDist(dict):
         :rtype: any or None
         """
         if self._max_cache is None:
+            if len(self) == 0:
+                raise ValueError('A FreqDist must have at least one sample before max is defined.')
             self._max_cache = max([(a,b) for (b,a) in self.items()])[1] 
         return self._max_cache
 

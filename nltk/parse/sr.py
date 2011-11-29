@@ -217,14 +217,14 @@ class ShiftReduceParser(ParserI):
             stack.  This is used with trace level 2 to print 'S'
             before shifted stacks and 'R' before reduced stacks.
         """
-        str = '  '+marker+' [ '
+        s = '  '+marker+' [ '
         for elt in stack:
             if isinstance(elt, Tree):
-                str += `Nonterminal(elt.node)` + ' '
+                s += `Nonterminal(elt.node)` + ' '
             else:
-                str += `elt` + ' '
-        str += '* ' + string.join(remaining_text) + ']'
-        print str
+                s += `elt` + ' '
+        s += '* ' + ' '.join(remaining_text) + ']'
+        print s
 
     def _trace_shift(self, stack, remaining_text):
         """

@@ -236,14 +236,14 @@ def demo(scorer=None, compare_scorer=None):
     if compare_scorer is None:
         compare_scorer = BigramAssocMeasures.raw_freq
 
-    from nltk import corpus
+    from nltk.corpus import stopwords, webtext
         
-    ignored_words = corpus.stopwords.words('english')
+    ignored_words = stopwords.words('english')
     word_filter = lambda w: len(w) < 3 or w.lower() in ignored_words
 
-    for file in corpus.webtext.files():
+    for file in webtext.fileids():
         words = [word.lower()
-                 for word in corpus.webtext.words(file)]
+                 for word in webtext.words(file)]
 
         cf = BigramCollocationFinder.from_words(words)
         cf.apply_freq_filter(3)

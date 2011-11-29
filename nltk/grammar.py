@@ -1323,10 +1323,6 @@ def cfg_demo():
     print `grammar.productions()`.replace(',', ',\n'+' '*25)
     print
     
-    print 'Coverage of input words by a grammar:'
-    print grammar.covers(['a','dog'])
-    print grammar.covers(['a','toy'])
-
 toy_pcfg1 = parse_pcfg("""
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
@@ -1390,10 +1386,6 @@ def pcfg_demo():
     # Use string.replace(...) is to line-wrap the output.
     print `grammar.productions()`.replace(',', ',\n'+' '*26)
     print
-
-    print 'Coverage of input words by a grammar:'
-    print grammar.covers(['a','boy'])
-    print grammar.covers(['a','girl'])
 
     # extract productions from three trees and induce the PCFG
     print "Induce PCFG grammar from treebank data:"
