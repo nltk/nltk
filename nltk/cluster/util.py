@@ -116,10 +116,10 @@ def euclidean_distance(u, v):
 
 def cosine_distance(u, v):
     """
-    Returns the cosine of the angle between vectors v and u. This is equal to
-    u.v / |u||v|.
+    Returns 1 minus the cosine of the angle between vectors v and u. This is equal to
+    1 - (u.v / |u||v|).
     """
-    return numpy.dot(u, v) / (math.sqrt(numpy.dot(u, u)) * math.sqrt(numpy.dot(v, v)))
+    return 1 - (numpy.dot(u, v) / (math.sqrt(numpy.dot(u, u)) * math.sqrt(numpy.dot(v, v))))
 
 class _DendrogramNode(object):
     """ Tree node of a dendrogram. """
