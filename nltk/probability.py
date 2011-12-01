@@ -467,12 +467,14 @@ class FreqDist(dict):
             self.inc(sample, count=count)    
     
     def pop(self, other):
+        self._N -= 1
         self._reset_caches()
         return dict.pop(self, other)
         
-    def popitem(self, other):
+    def popitem(self):
+        self._N -= 1
         self._reset_caches()
-        return dict.popitem(self, other)
+        return dict.popitem(self)
         
     def clear(self):
         self._N = 0
