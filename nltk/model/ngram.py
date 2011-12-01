@@ -37,6 +37,17 @@ class NgramModel(ModelI):
         from the text and may allow generation of ngrams not seen during
         training.
 
+            >>> from nltk.corpus import brown
+            >>> from nltk.probability import LidstoneProbDist
+            >>> estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
+            >>> lm = NgramModel(3, brown.words(categories='news'), estimator)
+            >>> lm.entropy(['The', 'Fulton', 'County', 'Grand', 'Jury', 'said',
+            ... 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent',
+            ... 'primary', 'election', 'produced', '``', 'no', 'evidence',
+            ... "''", 'that', 'any', 'irregularities', 'took', 'place', '.'])
+            ... # doctest: +ELLIPSIS
+            1.682...
+
         :param n: the order of the language model (ngram size)
         :type n: int
         :param train: the training text
@@ -194,16 +205,6 @@ class NgramModel(ModelI):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
 
 
-def demo():
-    from nltk.corpus import brown
-    from nltk.probability import LidstoneProbDist, WittenBellProbDist
-    estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-    lm = NgramModel(3, brown.words(categories='news'), estimator)
-    print lm
-    #print lm.entropy(sent)
-    text = lm.generate(100)
-    import textwrap
-    print '\n'.join(textwrap.wrap(' '.join(text)))
-
-if __name__ == '__main__':
-    demo()
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
