@@ -14,21 +14,19 @@ class AlignedSent(object):
     """
     Aligned sentence object.  Encapsulates two sentences along with
     an C{Alignment} between them.
+
+    :param words: source language words
+    :type words: list(str)
+    :param mots: target language words
+    :type mots: list(str)
+    :param alignment: the word-level alignments between the source
+        and target language
+    :type alignment: Alignment
     """
     
     def __init__(self, words = [], mots = [], alignment = '', \
                  encoding = 'latin-1'):
-        """
-        Initialize a new C{AlignedSent}.
-        
-        :param words: source language words
-        :type words: list of str
-        :param mots: target language words
-        :type mots: list of str
-        :param alignment: the word-level alignments between the source
-            and target language
-        :type alignment: C{Alignment}
-        """
+
         if not isinstance(alignment, Alignment):
             alignment = Alignment(alignment)
         self._words = words
@@ -48,12 +46,12 @@ class AlignedSent(object):
     def alignment(self):
         return self._alignment
 
-#    @alignment.setter Requires Python 2.6?
-    def alignment(self, alignment):
-        if not isinstance(alignment, Alignment):
-            alignment = Alignment(alignment)
-        self._check_align(alignment)
-        self._alignment = alignment
+#    @alignment.setter Requires Python 2.6
+#    def alignment(self, alignment):
+#        if not isinstance(alignment, Alignment):
+#            alignment = Alignment(alignment)
+#        self._check_align(alignment)
+#        self._alignment = alignment
 
     def _check_align(self, a):
         """
@@ -143,6 +141,10 @@ class AlignedSent(object):
         Return an error rate between 0.0 (perfect alignment) and 1.0 (no 
         alignment).
 
+            >>> s = AlignedSent(["the", "cat"], ["le", "chat"], [(0, 0), (1, 1)])
+            >>> s.alignment_error_rate(s)
+            0.0
+
         :type reference: C{AlignedSent} or C{Alignment}
         :param reference: A "gold standard" reference aligned sentence.
         :type possible: C{AlignedSent} or C{Alignment} or None
@@ -182,6 +184,17 @@ class Alignment(frozenset):
     representing an alignment between the i-th element of s1 and the
     j-th element of s2.  Tuples are extensible (they might contain
     additional data, such as a boolean to indicate sure vs possible alignments).
+
+        >>> a = Alignment([(1, 1), (1, 2), (2, 3), (3, 3)])
+        >>> a.invert()
+        Alignment([(1, 1), (2, 1), (3, 2), (3, 3)])
+        >>> a[1]
+        [(1, 2), (1, 1)]
+        >>> a.invert()[3]
+        [(3, 2), (3, 3)]
+        >>> b = Alignment([(1, 1), (1, 2)])
+        >>> b.issubset(a)
+        True
     """
 
     def __new__(cls, string_or_pairs):
@@ -385,3 +398,6 @@ def _naacl2pair(pair_string):
     i, j, p = pair_string.split("-")
     return int(i), int(j)
 
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
