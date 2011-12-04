@@ -4,25 +4,6 @@
 Regression Tests
 ~~~~~~~~~~~~~~~~
 
-TaggerI Interface
------------------
-The `TaggerI` interface defines two methods: `tag` and `batch_tag`:
-
-    >>> from nltk.tag import *
-    >>> from nltk.util import usage
-    >>> usage(TaggerI)
-    TaggerI supports the following operations:
-      - self.batch_tag(sentences)
-      - self.evaluate(gold)
-      - self.tag(tokens)
-
-The `TaggerI` interface should not be directly instantiated:
-
-    >>> TaggerI().tag(["test", "sentence"])
-    Traceback (most recent call last):
-      . . .
-    NotImplementedError
-
 Sequential Taggers
 ------------------
 

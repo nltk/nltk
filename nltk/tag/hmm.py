@@ -106,30 +106,26 @@ class HiddenMarkovModelTagger(TaggerI):
     specialization function to create a new training set that is more
     appropriate for sequential tagging with an HMM.  A typical use case is 
     chunking.
+
+    :param symbols: the set of output symbols (alphabet)
+    :type symbols: seq of any
+    :param states: a set of states representing state space
+    :type states: seq of any
+    :param transitions: transition probabilities; Pr(s_i | s_j) is the
+        probability of transition from state i given the model is in
+        state_j
+    :type transitions: ConditionalProbDistI
+    :param outputs: output probabilities; Pr(o_k | s_i) is the probability
+        of emitting symbol k when entering state i
+    :type outputs: ConditionalProbDistI
+    :param priors: initial state distribution; Pr(s_i) is the probability
+        of starting in state i
+    :type priors: ProbDistI
+    :param transform: an optional function for transforming training
+        instances, defaults to the identity function.         
+    :type transform: function or HiddenMarkovModelTaggerTransform
     """
     def __init__(self, symbols, states, transitions, outputs, priors, **kwargs):
-        """
-        Creates a hidden markov model parametised by the the states,
-        transition probabilities, output probabilities and priors.
-
-        :param symbols: the set of output symbols (alphabet)
-        :type symbols: seq of any
-        :param states: a set of states representing state space
-        :type states: seq of any
-        :param transitions: transition probabilities; Pr(s_i | s_j) is the
-            probability of transition from state i given the model is in
-            state_j
-        :type transitions: ConditionalProbDistI
-        :param outputs: output probabilities; Pr(o_k | s_i) is the probability
-            of emitting symbol k when entering state i
-        :type outputs: ConditionalProbDistI
-        :param priors: initial state distribution; Pr(s_i) is the probability
-            of starting in state i
-        :type priors: ProbDistI
-        :param transform: an optional function for transforming training
-            instances, defaults to the identity function.         
-        :type transform: function or HiddenMarkovModelTaggerTransform
-        """
         self._states = states
         self._transitions = transitions
         self._symbols = symbols
@@ -804,19 +800,18 @@ class HiddenMarkovModelTrainer(object):
     """
     Algorithms for learning HMM parameters from training data. These include
     both supervised learning (MLE) and unsupervised learning (Baum-Welch).
+
+    Creates an HMM trainer to induce an HMM with the given states and
+    output symbol alphabet. A supervised and unsupervised training
+    method may be used. If either of the states or symbols are not given,
+    these may be derived from supervised training.
+
+    :param states:  the set of state labels
+    :type states:   sequence of any
+    :param symbols: the set of observation symbols
+    :type symbols:  sequence of any
     """
     def __init__(self, states=None, symbols=None):
-        """
-        Creates an HMM trainer to induce an HMM with the given states and
-        output symbol alphabet. A supervised and unsupervised training
-        method may be used. If either of the states or symbols are not given,
-        these may be derived from supervised training.
-
-        :param states:  the set of state labels
-        :type states:   sequence of any
-        :param symbols: the set of observation symbols
-        :type symbols:  sequence of any
-        """
         if states:
             self._states = states
         else:

@@ -6,8 +6,8 @@
 # For license information, see LICENSE.TXT
 #
 """
-Tools to identify X{collocation}s --- words that often appear consecutively
---- within corpora. They may also be used to find other X{association}s between
+Tools to identify collocations --- words that often appear consecutively
+--- within corpora. They may also be used to find other associations between
 word occurrences.
 See Manning and Schutze ch. 5 at http://nlp.stanford.edu/fsnlp/promo/colloc.pdf
 and the Text::NSP Perl package at http://ngram.sourceforge.net
@@ -18,10 +18,10 @@ will then requiring filtering to only retain useful content terms. Each ngram
 of words may then be scored according to some X{association measure}, in order
 to determine the relative likelihood of each ngram being a collocation.
 
-The L{BigramCollocationFinder} and L{TrigramCollocationFinder} classes provide
+The BigramCollocationFinder and TrigramCollocationFinder classes provide
 these functionalities, dependent on being provided a function which scores a
 ngram given appropriate frequency counts. A number of standard association
-measures are provided in L{bigram_measures} and L{trigram_measures}.
+measures are provided in bigram_measures and trigram_measures.
 """
 
 # Possible TODOs:
@@ -40,16 +40,16 @@ from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
 class AbstractCollocationFinder(object):
     """
-    An abstract base class for X{collocation finder}s whose purpose is to
+    An abstract base class for collocation finders whose purpose is to
     collect collocation candidate frequencies, filter and rank them.
+
+    As a minimum, collocation finders require the frequencies of each
+    word in a corpus, and the joint frequency of word tuples. This data
+    should be provided through nltk.probability.FreqDist objects or an
+    identical interface.
     """
 
     def __init__(self, word_fd, ngram_fd):
-        """As a minimum, collocation finders require the frequencies of each
-        word in a corpus, and the joint frequency of word tuples. This data
-        should be provided through L{nltk.probability.FreqDist} objects or an
-        identical interface.
-        """
         self.word_fd = word_fd
         self.ngram_fd = ngram_fd
 

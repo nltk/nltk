@@ -27,35 +27,66 @@ from nltk.util import slice_bounds
 
 class Tree(list):
     """
-    A hierarchical structure.
-
-    Each Tree represents a single hierarchical grouping of
-    leaves and subtrees.  For example, each constituent in a syntax
-    tree is represented by a single Tree.
+    A Tree represents a hierarchical grouping of leaves and subtrees.
+    For example, each constituent in a syntax tree is represented by a single Tree.
 
     A tree's children are encoded as a list of leaves and subtrees,
-    where a X{leaf} is a basic (non-tree) value; and a X{subtree} is a
+    where a leaf is a basic (non-tree) value; and a subtree is a
     nested Tree.
 
-    Any other properties that a Tree defines are known as
-    X{node properties}, and are used to add information about
-    individual hierarchical groupings.  For example, syntax trees use a
-    NODE property to label syntactic constituents with phrase tags,
-    such as \"NP\" and\"VP\".
+        >>> print Tree(1, [2, Tree(3, [4]), 5])
+        (1 2 (3 4) 5)
+        >>> vp = Tree('VP', [Tree('V', ['saw']),
+        ...                  Tree('NP', ['him'])])
+        >>> s = Tree('S', [Tree('NP', ['I']), vp])
+        >>> print s
+        (S (NP I) (VP (V saw) (NP him)))
+        >>> print s[1]
+        (VP (V saw) (NP him))
+        >>> print s[1,1]
+        (NP him)
+        >>> t = Tree("(S (NP I) (VP (V saw) (NP him)))")
+        >>> s == t
+        True
+        >>> t[1][1].node = "X"
+        >>> print t
+        (S (NP I) (VP (V saw) (X him)))
+        >>> t[0], t[1,1] = t[1,1], t[0]
+        >>> print t
+        (S (X him) (VP (V saw) (NP I)))
+
+    The length of a tree is the number of children it has.
+
+        >>> len(t)
+        2
+
+    Any other properties that a Tree defines are known as node
+    properties, and are used to add information about individual
+    hierarchical groupings.  For example, syntax trees use a NODE
+    property to label syntactic constituents with phrase tags, such as
+    "NP" and "VP".
 
     Several Tree methods use X{tree positions} to specify
     children or descendants of a tree.  Tree positions are defined as
     follows:
 
-      - The tree position M{i} specifies a Tree's M{i}th child.
-      - The tree position C{()} specifies the Tree itself.
-      - If C{M{p}} is the tree position of descendant M{d}, then
-        C{M{p}+(M{i})} specifies the C{M{i}}th child of M{d}.
+      - The tree position *i* specifies a Tree's *i*\ th child.
+      - The tree position ``()`` specifies the Tree itself.
+      - If *p* is the tree position of descendant *d*, then
+        *p+i* specifies the *i*\ th child of *d*.
     
-    I.e., every tree position is either a single index C{M{i}},
-    specifying C{self[M{i}]}; or a sequence C{(M{i1}, M{i2}, ...,
-    M{iN})}, specifying
-    C{self[M{i1}][M{i2}]...[M{iN}]}.
+    I.e., every tree position is either a single index *i*,
+    specifying self[i]; or a sequence *i1, i2, ..., iN*,
+    specifying self[i1][Mi2]...[MiN].
+
+    Construct a new tree.  This constructor can be called in one
+    of two ways:
+
+    - ``Tree(node, children)`` constructs a new tree with the
+        specified node value and list of children.
+            
+    - ``Tree(s)`` constructs a new tree by parsing the string ``s``.
+        It is equivalent to calling the class method ``Tree.parse(s)``.
     """
     def __new__(cls, node_or_str=None, children=None):
         if node_or_str is None:
@@ -73,17 +104,6 @@ class Tree(list):
             return list.__new__(cls, node_or_str, children)
     
     def __init__(self, node_or_str, children=None):
-        """
-        Construct a new tree.  This constructor can be called in one
-        of two ways:
-
-          - C{Tree(node, children)} constructs a new tree with the
-            specified node value and list of children.
-            
-          - C{Tree(s)} constructs a new tree by parsing the string
-            C{s}.  It is equivalent to calling the class method
-            C{Tree.parse(s)}.
-        """
         # Because __new__ may delegate to Tree.parse(), the __init__
         # method may end up getting called more than once (once when
         # constructing the return value for Tree.parse; and again when
@@ -174,6 +194,12 @@ class Tree(list):
     
     def leaves(self):
         """
+        Return the leaves of the tree.
+
+            >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
+            >>> t.leaves()
+            ['the', 'dog', 'chased', 'the', 'cat']
+
         :return: a list containing this tree's leaves.
             The order reflects the order of the
             leaves in the tree's hierarchical structure.
@@ -189,6 +215,12 @@ class Tree(list):
 
     def flatten(self):
         """
+        Return a flat version of the tree, with all non-root non-terminals removed.
+
+            >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
+            >>> print t.flatten()
+            (S the dog chased the cat)
+
         :return: a tree consisting of this tree's root connected directly to
             its leaves, omitting all intervening non-terminal nodes.
         :rtype: Tree
@@ -197,6 +229,16 @@ class Tree(list):
 
     def height(self):
         """
+        Return the height of the tree.
+
+            >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
+            >>> t.height()
+            5
+            >>> print t[0,0]
+            (D the)
+            >>> t[0,0].height()
+            2
+
         :return: The height of this tree.  The height of a tree
             containing no children is 1; the height of a tree
             containing only leaves is 2; and the height of any other
@@ -214,6 +256,14 @@ class Tree(list):
 
     def treepositions(self, order='preorder'):
         """
+            >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
+            >>> t.treepositions() # doctest: +ELLIPSIS
+            [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), ...]
+            >>> for pos in t.treepositions('leaves'):
+            ...     t[pos] = t[pos][::-1].upper()
+            >>> print t
+            (S (NP (D EHT) (N GOD)) (VP (V DESAHC) (NP (D EHT) (N TAC))))
+
         :param order: One of: C{preorder}, C{postorder}, C{bothorder},
             C{leaves}.
         """
@@ -232,6 +282,16 @@ class Tree(list):
         """
         Generate all the subtrees of this tree, optionally restricted
         to trees matching the filter function.
+
+            >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
+            >>> for s in t.subtrees(lambda t: t.height() == 2):
+            ...     print s
+            (D the)
+            (N dog)
+            (V chased)
+            (D the)
+            (N cat)
+
         :type filter: C{function}
         :param filter: the function to filter all local trees
         """
@@ -248,6 +308,11 @@ class Tree(list):
         For each subtree of the form (P: C1 C2 ... Cn) this produces a production of the
         form P -> C1 C2 ... Cn.
 
+            >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
+            >>> t.productions()
+            [S -> NP VP, NP -> D N, D -> 'the', N -> 'dog', VP -> V NP, V -> 'chased',
+            NP -> D N, D -> 'the', N -> 'cat']
+
         :rtype: list of C{Production}s
         """
 
@@ -262,9 +327,14 @@ class Tree(list):
 
     def pos(self):
         """
+        Return a sequence of pos-tagged words extracted from the tree.
+
+            >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
+            >>> t.pos()
+            [('the', 'D'), ('dog', 'N'), ('chased', 'V'), ('the', 'D'), ('cat', 'N')]
+
         :return: a list of tuples containing leaves and pre-terminals (part-of-speech tags).
-            The order reflects the order of the
-            leaves in the tree's hierarchical structure.
+            The order reflects the order of the leaves in the tree's hierarchical structure.
         :rtype: list of C{tuples}
         """
         pos = []
@@ -1417,10 +1487,12 @@ def demo():
     t.node = ('test', 3)
     print t
 
-if __name__ == '__main__':
-    demo()
-
 __all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
            'ProbabilisticTree', 'Tree', 'bracket_parse',
            'sinica_parse', 'ParentedTree', 'MultiParentedTree',
            'ImmutableParentedTree', 'ImmutableMultiParentedTree']
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+
