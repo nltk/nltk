@@ -181,7 +181,7 @@ tags are collapsed to a single category ``N``:
     >>> print switchboard.tagged_words(simplify_tags=True) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [('Uh', 'UH'), (',', ','), ('do', 'V'), ('you', 'PRO'), ...]
 
-Use ``nltk.draw.pos-concordance()`` to access a GUI for searching tagged corpora.
+Use ``nltk.app.pos_concordance()`` to access a GUI for searching tagged corpora.
 
 Chunked Corpora
 ===============
