@@ -156,6 +156,7 @@ from api import ChunkParserI
 from util import (ChunkScore, accuracy, tagstr2tree, conllstr2tree,
                   tree2conlltags, tree2conllstr, tree2conlltags)
 from regexp import RegexpChunkParser, RegexpParser
+import nltk
 
 # Standard treebank POS tagger
 _BINARY_NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace_binary.pickle'
