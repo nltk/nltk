@@ -11,7 +11,8 @@
 ##//////////////////////////////////////////////////////
 
 from nltk.parse import ParserI
-import nltk
+
+from nltk.chunk.util import ChunkScore
 
 class ChunkParserI(ParserI):
     """
@@ -43,7 +44,7 @@ class ChunkParserI(ParserI):
         :param gold: The list of chunked sentences to score the chunker on.
         :rtype:  L{ChunkScore<nltk.chunk.util.ChunkScore>}
         """
-        chunkscore = nltk.chunk.util.ChunkScore()
+        chunkscore = ChunkScore()
         for correct in gold:
             chunkscore.score(correct, self.parse(correct.leaves()))
         return chunkscore
