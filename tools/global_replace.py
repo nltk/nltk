@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+vn#!/usr/bin/env python
 #
 ## Natural Language Toolkit: substitute a pattern with a replacement in every file
 #
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     count = 0
 
     for root, dirs, files in os.walk('.'):
-        if '/.svn' not in root:
+        if '/.git' not in root:
             for file in files:
                 path = os.path.join(root, file)
                 if update(path, pattern, replacement):
