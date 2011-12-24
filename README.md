@@ -7,7 +7,7 @@ Authors
   - Edward Loper <edloper@gradient.cis.upenn.edu>
   - Ewan Klein <ewan@inf.ed.ac.uk>
 
-Copyright (C) 2001-2011 NLTK Project
+Copyright (C) 2001-2012 NLTK Project
 
 For license information, see LICENSE.txt
 

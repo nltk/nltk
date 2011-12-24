@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Brill Tagger
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 #          Steven Bird <sb@csse.unimelb.edu.au>

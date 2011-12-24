@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Internal utility functions
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Nitin Madnani <nmadnani@ets.org>
