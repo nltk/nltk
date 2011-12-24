@@ -1,4 +1,4 @@
-vn#!/usr/bin/env python
+#!/usr/bin/env python
 #
 ## Natural Language Toolkit: substitute a pattern with a replacement in every file
 #
