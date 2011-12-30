@@ -14,8 +14,9 @@ C{mallet} can be used, you should tell NLTK where it can find the
 C{mallet} package, using the L{config_mallet()} function.  Typical
 usage:
 
-    >>> import nltk
-    >>> nltk.config_mallet('.../path/to/mallet')
+    >>> from nltk.classify import mallet
+    >>> mallet.config_mallet('/path/to/mallet')
+
 """
 __docformat__ = 'epytext en'
 
