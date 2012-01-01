@@ -14,6 +14,7 @@ the mallet package, using the ``config_mallet()`` function. Typical usage:
 
     >>> from nltk.classify import mallet
     >>> mallet.config_mallet() # pass path to mallet as argument if needed
+    [Found mallet: ...]
 
 .. _Mallet: http://mallet.cs.umass.edu/
 """
