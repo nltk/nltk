@@ -9,16 +9,12 @@
 
 Summary:
 
-  >>> import babelizer
-  >>> print ' '.join(babelizer.available_languages)
-  >>> print babelizer.translate( 'How much is that doggie in the window?',
-                                 'English', 'French' )
-  >>> def babel_callback(phrase):
-         print phrase
-         sys.stdout.flush()
-  >>> babelizer.babelize( 'I love a reigning knight.',
-                          'English', 'German',
-                          callback = babel_callback )
+  >>> from nltk.misc import babelfish as babelizer
+  >>> babelizer.available_languages
+  ['Portuguese', 'Chinese', 'German', 'Japanese', 'French', 'Spanish', 'Russian', 'Greek', 'English', 'Korean', 'Italian']
+  >>> babelizer.translate('How much is that doggie in the window?',
+  ...                     'english', 'french')
+  'Combien co\xfbte ce chienchien dans la fen\xeatre ?'
 
 @group Helper Functions: clean
 @sort: BabelizerError, BabelfishChangedError, BabelizerIOError
