@@ -8,18 +8,22 @@
 # $Id: naivebayes.py 2063 2004-07-17 21:02:24Z edloper $
 
 """
-A set of functions used to interface with the external U{megam
-<http://www.cs.utah.edu/~hal/megam/>} maxent optimization package.
-Before C{megam} can be used, you should tell NLTK where it can find
-the C{megam} binary, using the L{config_megam()} function.  Typical
+A set of functions used to interface with the external megam_ maxent
+optimization package. Before megam can be used, you should tell NLTK where it
+can find the megam binary, using the ``config_megam()`` function. Typical
 usage:
 
-    >>> import nltk
-    >>> nltk.config_megam('.../path/to/megam')
-    >>> classifier = nltk.MaxentClassifier.train(corpus, 'megam')
+    >>> from nltk.classify import megam
+    >>> megam.config_megam() # pass path to megam if not found in PATH
+    [Found megam: ...]
 
+Use with MaxentClassifier. Example below, see MaxentClassifier documentation
+for details.
+
+    nltk.classify.MaxentClassifier.train(corpus, 'megam')
+
+.. _megam: http://www.cs.utah.edu/~hal/megam/
 """
-__docformat__ = 'epytext en'
 
 import os
 import os.path
