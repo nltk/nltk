@@ -4,12 +4,10 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: srparser.py 5609 2007-12-31 03:02:41Z stevenbird $
 
 """
 A graphical tool for exploring the regular expression based chunk
-parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
+parser ``nltk.chunk.RegexpChunkParser``.
 
 @todo: Add a way to select the development set from the menubar.  This
     might just need to be a selection box (conll vs treebank etc) plus
@@ -27,16 +25,17 @@ from Tkinter import (Button, Canvas, Checkbutton,
                      Frame, IntVar, Label, Menu,
                      Scrollbar, Text, Tk)
 
-import nltk
 from nltk.tree import Tree
 from nltk.util import in_idle
 from nltk.draw.util import ShowText
-
+from nltk.corpus import conll2000, treebank_chunk
+from nltk.chunk import ChunkScore, RegexpChunkParser
+from nltk.chunk.regexp import RegexpChunkRule
 
 class RegexpChunkApp(object):
     """
     A graphical tool for exploring the regular expression based chunk
-    parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
+    parser ``nltk.chunk.RegexpChunkParser``.
     
     See L{HELP} for instructional text.
     """
@@ -276,9 +275,9 @@ class RegexpChunkApp(object):
         # Named development sets:
         if devset is None:
             if devset_name == 'conll2000':
-                devset = nltk.corpus.conll2000.chunked_sents('train.txt')#[:100]
+                devset = conll2000.chunked_sents('train.txt')#[:100]
             elif devset == 'treebank':
-                devset = nltk.corpus.treebank_chunk.chunked_sents()#[:100]
+                devset = treebank_chunk.chunked_sents()#[:100]
             else:
                 raise ValueError('Unknown development set %s' % devset_name)
 
@@ -326,10 +325,9 @@ class RegexpChunkApp(object):
         """The index of the next sentence in the development set that
            should be looked at by the eval demon."""
         
-        self._eval_score = nltk.chunk.ChunkScore(chunk_node=chunk_node)
-        """The L{ChunkScore <nltk.chunk.ChunkScore>} object that's used
-           to keep track of the score of the current grammar on the
-           development set."""
+        self._eval_score = ChunkScore(chunk_node=chunk_node)
+        """The ``ChunkScore`` object that's used to keep track of the score
+        of the current grammar on the development set."""
 
         # Set up the main window.
         top = self.top = Tk()
@@ -579,8 +577,7 @@ class RegexpChunkApp(object):
                     self._eval_normalized_grammar = None
                     return
             self._eval_index = 0
-            self._eval_score = nltk.chunk.ChunkScore(chunk_node=
-                                                self._chunk_node)
+            self._eval_score = ChunkScore(chunk_node=self._chunk_node)
             self._eval_grammar = self.grammar
             self._eval_normalized_grammar = self.normalized_grammar
 
@@ -832,7 +829,7 @@ class RegexpChunkApp(object):
             self.devsetbox.insert('end', tagseq+'\n')
             self.devsetbox.tag_add('wrapindent','end -2c linestart','end -2c')
             # Run a partial parser, and extract gold & test chunks
-            chunker = nltk.chunk.RegexpChunkParser(rules[:i])
+            chunker = RegexpChunkParser(rules[:i])
             test_tree = self._chunkparse(gold_tree.leaves())
             gold_chunks = self._chunks(gold_tree)
             test_chunks = self._chunks(test_tree)
@@ -904,11 +901,11 @@ class RegexpChunkApp(object):
         self.normalized_grammar = self.normalize_grammar(
             self._history[index][0])
         if self.normalized_grammar:
-            rules = [nltk.chunk.regexp.RegexpChunkRule.parse(line)
+            rules = [RegexpChunkRule.parse(line)
                      for line in self.normalized_grammar.split('\n')]
         else:
             rules = []
-        self.chunker = nltk.chunk.RegexpChunkParser(rules)
+        self.chunker = RegexpChunkParser(rules)
         # Show the score.
         self._eval_plot()
         # Update the devset box
@@ -1036,7 +1033,8 @@ class RegexpChunkApp(object):
             line = re.sub(r'((\\.|[^#])*)(#.*)?', r'\1', line)
             line = line.strip()
             if line:
-                try: nltk.chunk.regexp.RegexpChunkRule.parse(line)
+                try:
+                    RegexpChunkRule.parse(line)
                 except ValueError, e:
                     self.grammarbox.tag_add('error', '%s.0' % (lineno+1),
                                             '%s.0 lineend' % (lineno+1))
@@ -1069,7 +1067,7 @@ class RegexpChunkApp(object):
         try:
             # Note: the normalized grammar has no blank lines.
             if normalized_grammar:
-                rules = [nltk.chunk.regexp.RegexpChunkRule.parse(line)
+                rules = [RegexpChunkRule.parse(line)
                          for line in normalized_grammar.split('\n')]
             else:
                 rules = []
@@ -1079,7 +1077,7 @@ class RegexpChunkApp(object):
             self.chunker = None
             return
 
-        self.chunker = nltk.chunk.RegexpChunkParser(rules)
+        self.chunker = RegexpChunkParser(rules)
         self.grammarbox.tag_remove('error', '1.0', 'end')
         self.grammar_changed = time.time()
         # Display the results

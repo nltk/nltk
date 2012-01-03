@@ -4,7 +4,7 @@
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
+
 import pylab
 import nltk.text
 from nltk.corpus import gutenberg

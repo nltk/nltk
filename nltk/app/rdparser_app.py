@@ -4,8 +4,6 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 A graphical tool for exploring the recursive descent parser.

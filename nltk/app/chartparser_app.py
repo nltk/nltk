@@ -6,8 +6,6 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 A graphical tool for exploring chart parsing.
@@ -17,7 +15,7 @@ structure called a "chart" to record hypotheses about syntactic
 constituents.  Each hypothesis is represented by a single "edge" on
 the chart.  A set of "chart rules" determine when new edges can be
 added to the chart.  This set of rules controls the overall behavior
-of the parser (e.g., whether it parses top-down or bottom-up).
+of the parser (e.g. whether it parses top-down or bottom-up).
 
 The chart parsing tool demonstrates the process of parsing a single
 sentence, with a given grammar and lexicon.  Its display is divided
@@ -30,7 +28,7 @@ algorithm.
 The chart parsing tool allows for flexible control of the parsing
 algorithm.  At each step of the algorithm, you can select which rule
 or strategy you wish to apply.  This allows you to experiment with
-mixing different strategies (e.g., top-down and bottom-up).  You can
+mixing different strategies (e.g. top-down and bottom-up).  You can
 exercise fine-grained control over the algorithm by selecting which
 edge you wish to apply a rule to.
 """
