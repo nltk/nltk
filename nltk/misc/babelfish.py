@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # babelizer.py - API for simple access to babelfish.altavista.com.
 #                Requires python 2.0 or better.
 # From: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/64937
@@ -15,13 +14,12 @@ Summary:
     ['Portuguese', 'Chinese', 'German', 'Japanese', 'French', 'Spanish', 'Russian', 'Greek', 'English', 'Korean', 'Italian']
     >>> babelizer.translate('How much is that doggie in the window?',
     ...                     'english', 'french')
-    'Combien co\xfbte ce chienchien dans la fen\xeatre ?'
+    'Combien coute ce chienchien dans la fenetre ?'
 
 @group Helper Functions: clean
 @sort: BabelizerError, BabelfishChangedError, BabelizerIOError
 @var available_languages:
     A list of languages available for use with babelfish.
-@version: $Id: babelfish.py 1361 2003-10-24 14:41:44Z edloper $
 @author: Jonathan Feinberg <jdf@pobox.com>
 """
 
@@ -114,7 +112,7 @@ def translate(phrase, source, target):
 
 def babelize(phrase, source, target, limit = 12):
     """
-    Uses babelfish to translate back and forth between source and
+    Use babelfish to translate back and forth between source and
     target until either no more changes occur in translation or
     limit iterations have been reached, whichever comes first.
     It's only guaranteed to work if 'english' is one of the two
@@ -197,4 +195,3 @@ def babelize_shell():
 
 if __name__ == '__main__':
     babelize_shell()
-
