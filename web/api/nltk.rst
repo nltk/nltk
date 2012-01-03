@@ -70,14 +70,6 @@ Top Level Modules
     :undoc-members:
     :show-inheritance:
 
-:mod:`evaluate` Module
-----------------------
-
-.. automodule:: nltk.evaluate
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`featstruct` Module
 ------------------------
 
