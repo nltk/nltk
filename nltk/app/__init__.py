@@ -47,15 +47,3 @@ else:
                       "(requires the pylab library).")
     else:
         from wordfreq_app import app as wordfreq
-
-# Import wx-based modules if wx is installed
-try:
-    import wx
-except ImportError:
-    pass  # fail silently
-else:
-    try:
-        from wxwordnet_app import app as wxwordnet
-    except ImportError:
-        pass # fail silently -- but this is BROKEN!
-
