@@ -46,14 +46,6 @@ Top Level Modules
     :undoc-members:
     :show-inheritance:
 
-:mod:`containers` Module
-------------------------
-
-.. automodule:: nltk.containers
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`data` Module
 ------------------
 
@@ -90,14 +82,6 @@ Top Level Modules
 -----------------------
 
 .. automodule:: nltk.internals
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`olac` Module
-------------------
-
-.. automodule:: nltk.olac
     :members:
     :undoc-members:
     :show-inheritance:
