@@ -56,16 +56,16 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
     placed.
 
     :param words: the list of words to be put into the grid
-    :type words: C(list)
+    :type words: list
     :param rows: the number of rows in the grid
-    :type rows: C(int)
+    :type rows: int
     :param cols: the number of columns in the grid
-    :type cols: C(int)
+    :type cols: int
     :param attempts: the number of times to attempt placing a word
-    :type attempts: C(int)
-    :param alph: the alpabet, to be used for filling blank cells
-    :type alph: C(list)
-    :rtype: C(tuple)
+    :type attempts: int
+    :param alph: the alphabet, to be used for filling blank cells
+    :type alph: list
+    :rtype: tuple
     """
 
     # place longer words first

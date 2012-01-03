@@ -21,7 +21,7 @@ class MinimalSet(object):
         Create a new minimal set.
 
         :param parameters: The (context, target, display) tuples for the item
-        :type parameters: list of tuple of str
+        :type parameters: list(tuple(str, str, str))
         """
         self._targets = set()  # the contrastive information
         self._contexts = set() # what we are controlling for
