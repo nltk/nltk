@@ -1,34 +1,15 @@
-.. manually edited to put subpackages at the top, and omit some modules
+.. manually constructed -- removed several low-level packages
 
-NLTK Package
+nltk Package
 ============
 
-Subpackages
-~~~~~~~~~~~
+:mod:`nltk` Package
+-------------------
 
-.. toctree::
-
-    nltk.app
-    nltk.ccg
-    nltk.chat
-    nltk.chunk
-    nltk.classify
-    nltk.cluster
-    nltk.corpus
-    nltk.draw
-    nltk.inference
-    nltk.metrics
-    nltk.misc
-    nltk.model
-    nltk.parse
-    nltk.sem
-    nltk.stem
-    nltk.tag
-    nltk.tokenize
-    nltk.toolbox
-
-Top Level Modules
-~~~~~~~~~~~~~~~~~
+.. automodule:: nltk.__init__
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 :mod:`align` Module
 -------------------
@@ -78,10 +59,10 @@ Top Level Modules
     :undoc-members:
     :show-inheritance:
 
-:mod:`internals` Module
------------------------
+:mod:`help` Module
+------------------
 
-.. automodule:: nltk.internals
+.. automodule:: nltk.help
     :members:
     :undoc-members:
     :show-inheritance:
@@ -110,6 +91,14 @@ Top Level Modules
     :undoc-members:
     :show-inheritance:
 
+:mod:`toolbox` Module
+---------------------
+
+.. automodule:: nltk.toolbox
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`tree` Module
 ------------------
 
@@ -133,4 +122,29 @@ Top Level Modules
     :members:
     :undoc-members:
     :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    nltk.app
+    nltk.ccg
+    nltk.chat
+    nltk.chunk
+    nltk.classify
+    nltk.cluster
+    nltk.corpus
+    nltk.draw
+    nltk.examples
+    nltk.inference
+    nltk.metrics
+    nltk.misc
+    nltk.model
+    nltk.parse
+    nltk.sem
+    nltk.stem
+    nltk.tag
+    nltk.test
+    nltk.tokenize
 
