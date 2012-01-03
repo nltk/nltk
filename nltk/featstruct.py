@@ -6,8 +6,6 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 Basic data classes for representing feature structures, and for
@@ -217,17 +215,15 @@ class FeatStruct(SubstituteBindingsI):
     def equal_values(self, other, check_reentrance=False):
         """
         :return: True if ``self`` and ``other`` assign the same value to
-        to every feature.  In particular, return true if
-        ``self[p]==other[p]`` for every feature path *p* such
-        that ``self[p]`` or ``other[p]`` is a base value (i.e.,
-        not a nested feature structure).
-
+            to every feature.  In particular, return true if
+            ``self[p]==other[p]`` for every feature path *p* such
+            that ``self[p]`` or ``other[p]`` is a base value (i.e.,
+            not a nested feature structure).
         :param check_reentrance: If True, then also return False if
             there is any difference between the reentrances of ``self``
             and ``other``.
-            
         :note: the ``==`` is equivalent to ``equal_values()`` with
-        ``check_reentrance=True``.
+            ``check_reentrance=True``.
         """
         return self._equal(other, check_reentrance, set(), set(), set())
 
@@ -367,7 +363,7 @@ class FeatStruct(SubstituteBindingsI):
 
     def frozen(self):
         """
-        :return: True if this feature structure is immutable.  Feature
+        Return True if this feature structure is immutable.  Feature
         structures can be made immutable with the ``freeze()`` method.
         Immutable feature structures may not be made mutable again,
         but new mutable copies can be produced with the ``copy()`` method.
@@ -378,6 +374,7 @@ class FeatStruct(SubstituteBindingsI):
         """
         Make this feature structure, and any feature structure it
         contains, immutable.
+
         :param visited: A set containing the ids of all feature
             structures we've already visited while freezing.
         """
@@ -415,7 +412,7 @@ class FeatStruct(SubstituteBindingsI):
 
     def cyclic(self):
         """
-        :return: True if this feature structure contains itself.
+        Return True if this feature structure contains itself.
         """
         return self._find_reentrances({})[id(self)]
 
@@ -441,6 +438,7 @@ class FeatStruct(SubstituteBindingsI):
         """
         Return an iterator that generates this feature structure, and
         each feature structure it contains.
+
         :param visited: A set containing the ids of all feature
             structures we've already visited while freezing.
         """
@@ -516,7 +514,7 @@ class FeatStruct(SubstituteBindingsI):
 
     def subsumes(self, other):
         """
-        :return: True if ``self`` subsumes ``other``.  I.e., return true
+        Return True if ``self`` subsumes ``other``.  I.e., return true
         If unifying ``self`` with ``other`` would result in a feature
         structure equal to ``other``.
         """
@@ -542,8 +540,7 @@ class FeatStruct(SubstituteBindingsI):
         :param reentrance_ids: A dictionary mapping from each ``id``
             of a feature value to a unique identifier.  This is modified
             by ``repr``: the first time a reentrant feature value is
-            displayed, an identifier is added to ``reentrance_ids`` for
-            it.
+            displayed, an identifier is added to ``reentrance_ids`` for it.
         """
         raise NotImplementedError()
         
@@ -582,24 +579,23 @@ class FeatDict(FeatStruct, dict):
     values to all features, and have the same reentrances.
     
     :see: ``FeatStruct`` for information about feature paths, reentrance,
-    cyclic feature structures, mutability, freezing, and hashing.
+        cyclic feature structures, mutability, freezing, and hashing.
     """
     def __init__(self, features=None, **morefeatures):
         """
         Create a new feature dictionary, with the specified features.
 
         :param features: The initial value for this feature
-        dictionary.  If ``features`` is a ``FeatStruct``, then its
-        features are copied (shallow copy).  If ``features`` is a
-        dict, then a feature is created for each item, mapping its
-        key to its value.  If ``features`` is a string, then it is
-        parsed using ``FeatStructParser``.  If ``features`` is a list of
-        tuples ``(name, val)``, then a feature is created for each tuple.
-        
+            dictionary.  If ``features`` is a ``FeatStruct``, then its
+            features are copied (shallow copy).  If ``features`` is a
+            dict, then a feature is created for each item, mapping its
+            key to its value.  If ``features`` is a string, then it is
+            parsed using ``FeatStructParser``.  If ``features`` is a list of
+            tuples ``(name, val)``, then a feature is created for each tuple.
         :param morefeatures: Additional features for the new feature
-        dictionary.  If a feature is listed under both ``features`` and
-        ``morefeatures``, then the value from ``morefeatures`` will be
-        used.
+            dictionary.  If a feature is listed under both ``features`` and
+            ``morefeatures``, then the value from ``morefeatures`` will be
+            used.
         """
         if isinstance(features, basestring):
             FeatStructParser().parse(features, self)
@@ -889,7 +885,7 @@ class FeatList(FeatStruct, list):
     values to all features, and have the same reentrances.
     
     :see: ``FeatStruct`` for information about feature paths, reentrance,
-    cyclic feature structures, mutability, freezing, and hashing.
+        cyclic feature structures, mutability, freezing, and hashing.
     """
     def __init__(self, features=()):
         """
@@ -1026,7 +1022,7 @@ class FeatList(FeatStruct, list):
 
 def substitute_bindings(fstruct, bindings, fs_class='default'):
     """
-    :return: The feature structure that is obtained by replacing each
+    Return the feature structure that is obtained by replacing each
     variable bound by ``bindings`` with its binding.  If a variable is
     aliased to a bound variable, then it will be replaced by that
     variable's value.  If a variable is aliased to an unbound
@@ -1058,7 +1054,7 @@ def _substitute_bindings(fstruct, bindings, fs_class, visited):
 
 def retract_bindings(fstruct, bindings, fs_class='default'):
     """
-    :return: The feature structure that is obtained by replacing each
+    Return the feature structure that is obtained by replacing each
     feature structure value that is bound by ``bindings`` with the
     variable that binds it.  A feature structure value must be
     identical to a bound value (i.e., have equal id) to be replaced.
@@ -1093,7 +1089,7 @@ def _retract_bindings(fstruct, inv_bindings, fs_class, visited):
 def find_variables(fstruct, fs_class='default'):
     """
     :return: The set of variables used by this feature structure.
-    :rtype: set of ``Variable``
+    :rtype: set(Variable)
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
     return _variables(fstruct, set(), fs_class, set())
@@ -1117,7 +1113,7 @@ def _variables(fstruct, vars, fs_class, visited):
 def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
                      fs_class='default'):
     """
-    :return: The feature structure that is obtained by replacing
+    Return the feature structure that is obtained by replacing
     any of this feature structure's variables that are in ``vars``
     with new variables.  The names for these new variables will be
     names that are not used by any variable in ``vars``, or in
@@ -1125,24 +1121,22 @@ def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
 
     :type vars: set
     :param vars: The set of variables that should be renamed.
-    If not specified, ``find_variables(fstruct)`` is used; i.e., all
-    variables will be given new names.
-    
+        If not specified, ``find_variables(fstruct)`` is used; i.e., all
+        variables will be given new names.
     :type used_vars: set
     :param used_vars: A set of variables whose names should not be
-    used by the new variables.
-    
+        used by the new variables.
     :type new_vars: dict from ``Variable`` to ``Variable``
     :param new_vars: A dictionary that is used to hold the mapping
-    from old variables to new variables.  For each variable *v*
-    in this feature structure:
+        from old variables to new variables.  For each variable *v*
+        in this feature structure:
 
-      - If ``new_vars`` maps *v* to *v'*, then *v* will be
-        replaced by *v'*.
-      - If ``new_vars`` does not contain *v*, but ``vars``
-        does contain *v*, then a new entry will be added to
-        ``new_vars``, mapping *v* to the new variable that is used
-        to replace it.
+        - If ``new_vars`` maps *v* to *v'*, then *v* will be
+          replaced by *v'*.
+        - If ``new_vars`` does not contain *v*, but ``vars``
+          does contain *v*, then a new entry will be added to
+          ``new_vars``, mapping *v* to the new variable that is used
+          to replace it.
 
     To consistantly rename the variables in a set of feature
     structures, simply apply rename_variables to each one, using
@@ -1209,9 +1203,9 @@ def _rename_variable(var, used_vars):
 
 def remove_variables(fstruct, fs_class='default'):
     """
-    :rtype: ``FeatStruct``
+    :rtype: FeatStruct
     :return: The feature structure that is obtained by deleting
-    all features whose values are ``Variable``s.
+        all features whose values are ``Variables``.
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
     return _remove_variables(copy.deepcopy(fstruct), fs_class, set())

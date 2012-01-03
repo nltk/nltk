@@ -12,7 +12,7 @@ from tkFont import Font
 from Tkinter import (Button, Frame, IntVar, Label,
                      Listbox, Menu, Scrollbar, Tk)
 
-from nltk.draw import CanvasFrame, ShowText
+from nltk.draw.util import CanvasFrame, ShowText
 from nltk.util import in_idle
 from nltk.tag import RegexpTagger
 from nltk.parse import MaltParser

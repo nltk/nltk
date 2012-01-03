@@ -524,6 +524,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
+
       - ``pickle``
       - ``yaml``
       - ``cfg`` (context free grammars)
@@ -548,18 +549,16 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         cache rather than loading it.  The cache uses weak references,
         so a resource wil automatically be expunged from the cache
         when no more objects are using it.
-        
     :type verbose: bool
     :param verbose: If true, print a message when loading a resource.
         Messages are not displayed when a resource is retrieved from
         the cache.
-    
     :type logic_parser: LogicParser
     :param logic_parser: The parser that will be used to parse logical 
-    expressions.
+        expressions.
     :type fstruct_parser: FeatStructParser
     :param fstruct_parser: The parser that will be used to parse the
-    feature structure of an fcfg.
+        feature structure of an fcfg.
     """
     # If we've cached the resource, then just return it.
     if cache:
@@ -627,7 +626,8 @@ def load(resource_url, format='auto', cache=True, verbose=False,
 
 def show_cfg(resource_url, escape='##'):
     """
-    Write out a grammar file, ignoring escaped and empty lines
+    Write out a grammar file, ignoring escaped and empty lines.
+
     :type resource_url: str
     :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is "nltk:", which searches
