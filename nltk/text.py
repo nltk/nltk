@@ -56,7 +56,7 @@ class ContextIndex(object):
 
     def tokens(self):
         """
-        :rtype: list of token
+        :rtype: list(str)
         :return: The document that this context index was
             created from.  
         """
@@ -127,7 +127,7 @@ class ConcordanceIndex(object):
             to access the context of a given word occurance.
         :param key: A function that maps each token to a normalized
             version that will be used as a key in the index.  E.g., if
-            you use C{key=lambda s:s.lower()}, then the index will be
+            you use ``key=lambda s:s.lower()``, then the index will be
             case-insensitive.
         """
         self._tokens = tokens
@@ -148,7 +148,7 @@ class ConcordanceIndex(object):
 
     def tokens(self):
         """
-        :rtype: list of token
+        :rtype: list(str)
         :return: The document that this concordance index was
             created from.  
         """
@@ -156,7 +156,7 @@ class ConcordanceIndex(object):
 
     def offsets(self, word):
         """
-        :rtype: list of int
+        :rtype: list(int)
         :return: A list of the offset positions at which the given
             word occurs.  If a key function was specified for the
             index, then given word's key will be looked up.
@@ -170,7 +170,7 @@ class ConcordanceIndex(object):
 
     def print_concordance(self, word, width=75, lines=25):
         """
-        Print a concordance for C{word} with the specified context window.
+        Print a concordance for ``word`` with the specified context window.
         
         :param word: The target word
         :type word: str
@@ -204,10 +204,10 @@ class TokenSearcher(object):
     A class that makes it easier to use regular expressions to search
     over tokenized strings.  The tokenized string is converted to a
     string where tokens are marked with angle brackets -- e.g.,
-    C{'<the><window><is><still><open>'}.  The regular expression
-    passed to the L{findall()} method is modified to treat angle
+    ``'<the><window><is><still><open>'``.  The regular expression
+    passed to the ``findall()`` method is modified to treat angle
     brackets as nongrouping parentheses, in addition to matching the
-    token boundaries; and to have C{'.'} not match the angle brackets.
+    token boundaries; and to have ``'.'`` not match the angle brackets.
     """
     def __init__(self, tokens):
         self._raw = ''.join('<'+w+'>' for w in tokens) 
@@ -261,10 +261,10 @@ class Text(object):
     on the text's contexts (e.g., counting, concordancing, collocation
     discovery), and display the results.  If you wish to write a
     program which makes use of these analyses, then you should bypass
-    the C{Text} class, and use the appropriate analysis function or
+    the ``Text`` class, and use the appropriate analysis function or
     class directly instead.
 
-    C{Text}s are typically initialized from a given document or
+    A ``Text`` is typically initialized from a given document or
     corpus.  E.g.:
 
     >>> import nltk.corpus
@@ -315,9 +315,9 @@ class Text(object):
     
     def concordance(self, word, width=79, lines=25):
         """
-        Print a concordance for C{word} with the specified context window.
+        Print a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
-        :seealso: L{ConcordanceIndex}
+        :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
             print "Building index..."
@@ -330,7 +330,7 @@ class Text(object):
         """
         Print collocations derived from the text, ignoring stopwords.
 
-        :seealso: L{find_collocations}
+        :seealso: find_collocations
         :param num: The maximum number of collocations to print.
         :type num: int
         :param window_size: The number of tokens spanned by a collocation (default=2)
@@ -373,7 +373,7 @@ class Text(object):
         
         :param length: The length of text to generate (default=100)
         :type length: int
-        :seealso: L{NgramModel}
+        :seealso: NgramModel
         """
         if '_trigram_model' not in self.__dict__:
             print "Building ngram index..."
@@ -386,7 +386,7 @@ class Text(object):
         """
         Search for instances of the regular expression pattern in the text.
         
-        :seealso: L{TokenSearcher}
+        :seealso: TokenSearcher
         """
         if '_token_searcher' not in self.__dict__:
             print "Loading data..."
@@ -403,7 +403,7 @@ class Text(object):
         :type word: str 
         :param num: The number of words to generate (default=20)
         :type num: int
-        :seealso: L{ContextIndex.similar_words()}
+        :seealso: ContextIndex.similar_words()
         """
         if '_word_context_index' not in self.__dict__:
             print 'Building word-context index...'
@@ -434,7 +434,7 @@ class Text(object):
         :type word: str 
         :param num: The number of words to generate (default=20)
         :type num: int
-        :seealso: L{ContextIndex.common_contexts()}
+        :seealso: ContextIndex.common_contexts()
         """
         if '_word_context_index' not in self.__dict__:
             print 'Building word-context index...'
@@ -459,7 +459,7 @@ class Text(object):
         
         :param words: The words to be plotted
         :type word: str
-        :seealso: L{nltk.draw.dispersion_plot()}
+        :seealso: nltk.draw.dispersion_plot()
         """
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
@@ -467,13 +467,13 @@ class Text(object):
     def plot(self, *args):
         """
         See documentation for FreqDist.plot()
-        :seealso: L{nltk.prob.FreqDist.plot()}
+        :seealso: nltk.prob.FreqDist.plot()
         """
         self.vocab().plot(*args)
     
     def vocab(self):
         """
-        :seealso: L{nltk.prob.FreqDist}
+        :seealso: nltk.prob.FreqDist
         """
         if "_vocab" not in self.__dict__:
             print "Building vocabulary index..."
@@ -518,8 +518,8 @@ class Text(object):
     def _context(self, tokens, i):
         """
         One left & one right token, both case-normalied.  Skip over
-        non-sentence-final punctuation.  Used by the L{ContextIndex}
-        that is created for L{similar()} and L{common_contexts()}.
+        non-sentence-final punctuation.  Used by the ``ContextIndex``
+        that is created for ``similar()`` and ``common_contexts()``.
         """
         # Left context
         j = i-1

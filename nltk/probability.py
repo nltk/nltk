@@ -19,11 +19,11 @@ _NINF = float('-1e300')
 """
 Classes for representing and processing probabilistic information.
 
-The L{FreqDist} class is used to encode X{frequency distributions},
+The ``FreqDist`` class is used to encode X{frequency distributions},
 which count the number of times that each outcome of an experiment
 occurs.
 
-The L{ProbDistI} class defines a standard interface for X{probability
+The ``ProbDistI`` class defines a standard interface for X{probability
 distributions}, which encode the probability of each outcome for an
 experiment.  There are two types of probability distribution:
 
@@ -33,11 +33,11 @@ experiment.  There are two types of probability distribution:
   - X{analytic probability distributions} are created directly from
     parameters (such as variance).
 
-The L{ConditionalFreqDist} class and L{ConditionalProbDistI} interface
+The ``ConditionalFreqDist`` class and ``ConditionalProbDistI`` interface
 are used to encode conditional distributions.  Conditional probability
 distributions can be derived or analytic; but currently the only
-implementation of the C{ConditionalProbDistI} interface is
-L{ConditionalProbDist}, a derived distribution.
+implementation of the ``ConditionalProbDistI`` interface is
+``ConditionalProbDist``, a derived distribution.
 
 """
 
@@ -83,15 +83,15 @@ class FreqDist(dict):
     """
     def __init__(self, samples=None):
         """
-        Construct a new frequency distribution.  If C{samples} is
+        Construct a new frequency distribution.  If ``samples`` is
         given, then the frequency distribution will be initialized
-        with the count of each object in C{samples}; otherwise, it
+        with the count of each object in ``samples``; otherwise, it
         will be initialized to be empty.
 
-        In particular, C{FreqDist()} returns an empty frequency
-        distribution; and C{FreqDist(samples)} first creates an empty
-        frequency distribution, and then calls C{update} with the 
-        list C{samples}.
+        In particular, ``FreqDist()`` returns an empty frequency
+        distribution; and ``FreqDist(samples)`` first creates an empty
+        frequency distribution, and then calls ``update`` with the 
+        list ``samples``.
 
         :param samples: The samples to initialize the frequency
         distribution with.
@@ -113,7 +113,7 @@ class FreqDist(dict):
         :param count: The amount to increment the sample's count by.
         :type count: int
         :rtype: None
-        :raise NotImplementedError: If C{sample} is not a
+        :raise NotImplementedError: If ``sample`` is not a
                supported sample type.
         """
         if count == 0: return
@@ -128,7 +128,7 @@ class FreqDist(dict):
         :param count: The new value for the sample's count
         :type count: int
         :rtype: None
-        :raise TypeError: If C{sample} is not a supported sample type.
+        :raise TypeError: If ``sample`` is not a supported sample type.
         """
 
         self._N += (value - self.get(sample, 0))
@@ -142,7 +142,7 @@ class FreqDist(dict):
         :return: The total number of sample outcomes that have been
           recorded by this FreqDist.  For the number of unique 
           sample values (or bins) with counts greater than zero, use
-          C{FreqDist.B()}.
+          ``FreqDist.B()``.
         :rtype: int
         """
         return self._N
@@ -151,7 +151,7 @@ class FreqDist(dict):
         """
         :return: The total number of sample values (or X{bins}) that
             have counts greater than zero.  For the total
-            number of sample outcomes recorded, use C{FreqDist.N()}.
+            number of sample outcomes recorded, use ``FreqDist.N()``.
             (FreqDist.B() is the same as len(FreqDist).)
         :rtype: int
         """
@@ -161,7 +161,7 @@ class FreqDist(dict):
     def samples(self):
         """
         :return: A list of all samples that have been recorded as
-            outcomes by this frequency distribution.  Use C{count()}
+            outcomes by this frequency distribution.  Use ``count()``
             to determine the count for each sample.
         :rtype: list
         """
@@ -181,10 +181,10 @@ class FreqDist(dict):
         :type r: int
         :param r: A sample count.
         :type bins: int
-        :param bins: The number of possible sample outcomes.  C{bins}
+        :param bins: The number of possible sample outcomes.  ``bins``
             is used to calculate Nr(0).  In particular, Nr(0) is
-            C{bins-self.B()}.  If C{bins} is not specified, it
-            defaults to C{self.B()} (so Nr(0) will be 0).
+            ``bins-self.B()``.  If ``bins`` is not specified, it
+            defaults to ``self.B()`` (so Nr(0) will be 0).
         """
         if r < 0: raise IndexError, 'FreqDist.Nr(): r must be non-negative'
 
@@ -234,7 +234,7 @@ class FreqDist(dict):
         with the largest.
 
         :return: The cumulative frequencies of the given samples.
-        :rtype: list of float
+        :rtype: list(float)
         :param samples: the samples whose frequencies should be returned.
         :type sample: any.
         """
@@ -376,7 +376,7 @@ class FreqDist(dict):
         Return the samples sorted in decreasing order of frequency.
 
         :return: A list of samples, in sorted order
-        :rtype: list of any
+        :rtype: list(any)
         """
         self._sort_keys_by_value()
         return map(itemgetter(0), self._item_cache)
@@ -386,7 +386,7 @@ class FreqDist(dict):
         Return the samples sorted in decreasing order of frequency.
 
         :return: A list of samples, in sorted order
-        :rtype: list of any
+        :rtype: list(any)
         """
         self._sort_keys_by_value()
         return map(itemgetter(1), self._item_cache)
@@ -396,7 +396,7 @@ class FreqDist(dict):
         Return the items sorted in decreasing order of frequency.
 
         :return: A list of items, in sorted order
-        :rtype: list of tuple
+        :rtype: list(tuple)
         """
         self._sort_keys_by_value()
         return self._item_cache[:]
@@ -539,7 +539,7 @@ class ProbDistI(object):
     that a token in a document will have a given type.  Formally, a
     probability distribution can be defined as a function mapping from
     samples to nonnegative real numbers, such that the sum of every
-    number in the function's range is 1.0.  C{ProbDist}s are often
+    number in the function's range is 1.0.  ``ProbDist``s are often
     used to model the probability distribution of the experiment used
     to generate a frequency distribution.
     """
@@ -594,7 +594,7 @@ class ProbDistI(object):
     def samples(self):
         """
         :return: A list of all samples that have nonzero
-            probabilities.  Use C{prob} to find the probability of
+            probabilities.  Use ``prob`` to find the probability of
             each sample.
         :rtype: list
         """
@@ -614,7 +614,7 @@ class ProbDistI(object):
         """
         :return: A randomly selected sample from this probability
             distribution.  The probability of returning each sample
-            C{samp} is equal to C{self.prob(samp)}.
+            ``samp`` is equal to ``self.prob(samp)``.
         """
         p = random.random()
         for sample in self.samples():
@@ -638,12 +638,12 @@ class UniformProbDist(ProbDistI):
     def __init__(self, samples):
         """
         Construct a new uniform probability distribution, that assigns
-        equal probability to each sample in C{samples}.
+        equal probability to each sample in ``samples``.
 
         :param samples: The samples that should be given uniform
             probability.
         :type samples: list
-        :raise ValueError: If C{samples} is empty.
+        :raise ValueError: If ``samples`` is empty.
         """
         if len(samples) == 0:
             raise ValueError('A Uniform probability distribution must '+
@@ -670,7 +670,7 @@ class DictionaryProbDist(ProbDistI):
         """
         Construct a new probability distribution from the given
         dictionary, which maps values to probabilities (or to log
-        probabilities, if C{log} is true).  If C{normalize} is
+        probabilities, if ``log`` is true).  If ``normalize`` is
         true, then the probability values are scaled by a constant
         factor such that they sum to 1.
         """
@@ -734,7 +734,7 @@ class MLEProbDist(ProbDistI):
     def __init__(self, freqdist, bins=None):
         """
         Use the maximum likelihood estimate to create a probability
-        distribution for the experiment used to generate C{freqdist}.
+        distribution for the experiment used to generate ``freqdist``.
 
         :type freqdist: FreqDist
         :param freqdist: The frequency distribution that the
@@ -762,7 +762,7 @@ class MLEProbDist(ProbDistI):
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         return '<MLEProbDist based on %d samples>' % self._freqdist.N()
 
@@ -770,19 +770,19 @@ class LidstoneProbDist(ProbDistI):
     """
     The Lidstone estimate for the probability distribution of the
     experiment used to generate a frequency distribution.  The
-    C{Lidstone estimate} is paramaterized by a real number M{gamma},
+    ``Lidstone estimate`` is paramaterized by a real number *gamma*,
     which typically ranges from 0 to 1.  The X{Lidstone estimate}
-    approximates the probability of a sample with count M{c} from an
-    experiment with M{N} outcomes and M{B} bins as
-    M{(c+gamma)/(N+B*gamma)}.  This is equivalant to adding
-    M{gamma} to the count for each bin, and taking the maximum
+    approximates the probability of a sample with count *c* from an
+    experiment with *N* outcomes and *B* bins as
+    ``c+gamma)/(N+B*gamma)``.  This is equivalant to adding
+    *gamma* to the count for each bin, and taking the maximum
     likelihood estimate of the resulting frequency distribution.
     """
     SUM_TO_ONE = False
     def __init__(self, freqdist, gamma, bins=None):
         """
         Use the Lidstone estimate to create a probability distribution
-        for the experiment used to generate C{freqdist}.
+        for the experiment used to generate ``freqdist``.
 
         :type freqdist: FreqDist
         :param freqdist: The frequency distribution that the
@@ -790,7 +790,7 @@ class LidstoneProbDist(ProbDistI):
         :type gamma: float
         :param gamma: A real number used to paramaterize the
             estimate.  The Lidstone estimate is equivalant to adding
-            M{gamma} to the count for each bin, and taking the
+            *gamma* to the count for each bin, and taking the
             maximum likelihood estimate of the resulting frequency
             distribution.
         :type bins: int
@@ -798,7 +798,7 @@ class LidstoneProbDist(ProbDistI):
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
-            C{bins} is not specified, it defaults to C{freqdist.B()}.
+            ``bins`` is not specified, it defaults to ``freqdist.B()``.
         """
         if (bins == 0) or (bins is None and freqdist.N() == 0):
             name = self.__class__.__name__[:-8]
@@ -853,7 +853,7 @@ class LidstoneProbDist(ProbDistI):
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         return '<LidstoneProbDist based on %d samples>' % self._freqdist.N()
 
@@ -863,15 +863,15 @@ class LaplaceProbDist(LidstoneProbDist):
     The Laplace estimate for the probability distribution of the
     experiment used to generate a frequency distribution.  The
     X{Lidstone estimate} approximates the probability of a sample with
-    count M{c} from an experiment with M{N} outcomes and M{B} bins as
-    M{(c+1)/(N+B)}.  This is equivalant to adding one to the count for
+    count *c* from an experiment with *N* outcomes and *B* bins as
+    *(c+1)/(N+B)*.  This is equivalant to adding one to the count for
     each bin, and taking the maximum likelihood estimate of the
     resulting frequency distribution.
     """    
     def __init__(self, freqdist, bins=None):
         """
         Use the Laplace estimate to create a probability distribution
-        for the experiment used to generate C{freqdist}.
+        for the experiment used to generate ``freqdist``.
 
         :type freqdist: FreqDist
         :param freqdist: The frequency distribution that the
@@ -881,14 +881,14 @@ class LaplaceProbDist(LidstoneProbDist):
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
-            C{bins} is not specified, it defaults to C{freqdist.B()}.
+            ``bins`` is not specified, it defaults to ``freqdist.B()``.
         """
         LidstoneProbDist.__init__(self, freqdist, 1, bins)
 
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         return '<LaplaceProbDist based on %d samples>' % self._freqdist.N()
 
@@ -897,15 +897,15 @@ class ELEProbDist(LidstoneProbDist):
     The expected likelihood estimate for the probability distribution
     of the experiment used to generate a frequency distribution.  The
     X{expected likelihood estimate} approximates the probability of a
-    sample with count M{c} from an experiment with M{N} outcomes and
-    M{B} bins as M{(c+0.5)/(N+B/2)}.  This is equivalant to adding 0.5
+    sample with count *c* from an experiment with *N* outcomes and
+    *B* bins as *(c+0.5)/(N+B/2)*.  This is equivalant to adding 0.5
     to the count for each bin, and taking the maximum likelihood
     estimate of the resulting frequency distribution.
     """    
     def __init__(self, freqdist, bins=None):
         """
         Use the expected likelihood estimate to create a probability
-        distribution for the experiment used to generate C{freqdist}.
+        distribution for the experiment used to generate ``freqdist``.
 
         :type freqdist: FreqDist
         :param freqdist: The frequency distribution that the
@@ -915,14 +915,14 @@ class ELEProbDist(LidstoneProbDist):
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
-            C{bins} is not specified, it defaults to C{freqdist.B()}.
+            ``bins`` is not specified, it defaults to ``freqdist.B()``.
         """
         LidstoneProbDist.__init__(self, freqdist, 0.5, bins)
 
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         return '<ELEProbDist based on %d samples>' % self._freqdist.N()
 
@@ -937,42 +937,42 @@ class HeldoutProbDist(ProbDistI):
     frequency in the X{base frequency distribution}.
 
     In particular, the heldout estimate approximates the probability
-    for a sample that occurs M{r} times in the base distribution as
+    for a sample that occurs *r* times in the base distribution as
     the average frequency in the heldout distribution of all samples
-    that occur M{r} times in the base distribution.
+    that occur *r* times in the base distribution.
 
-    This average frequency is M{Tr[r]/(Nr[r]*N)}, where:
-        - M{Tr[r]} is the total count in the heldout distribution for
-          all samples that occur M{r} times in the base
+    This average frequency is *Tr[r]/(Nr[r].N)*, where:
+        - *Tr[r]* is the total count in the heldout distribution for
+          all samples that occur *r* times in the base
           distribution. 
-        - M{Nr[r]} is the number of samples that occur M{r} times in
+        - *Nr[r]* is the number of samples that occur *r* times in
           the base distribution.
-        - M{N} is the number of outcomes recorded by the heldout
+        - *N* is the number of outcomes recorded by the heldout
           frequency distribution. 
 
-    In order to increase the efficiency of the C{prob} member
-    function, M{Tr[r]/(Nr[r]*N)} is precomputed for each value of M{r}
-    when the C{HeldoutProbDist} is created.
+    In order to increase the efficiency of the ``prob`` member
+    function, *Tr[r]/(Nr[r].N)* is precomputed for each value of *r*
+    when the ``HeldoutProbDist`` is created.
 
-    :type _estimate: list of float
-    :ivar _estimate: A list mapping from M{r}, the number of
+    :type _estimate: list(float)
+    :ivar _estimate: A list mapping from *r*, the number of
         times that a sample occurs in the base distribution, to the
-        probability estimate for that sample.  C{_estimate[M{r}]} is
+        probability estimate for that sample.  ``_estimate[r]`` is
         calculated by finding the average frequency in the heldout
-        distribution of all samples that occur M{r} times in the base
-        distribution.  In particular, C{_estimate[M{r}]} =
-        M{Tr[r]/(Nr[r]*N)}.
+        distribution of all samples that occur *r* times in the base
+        distribution.  In particular, ``_estimate[r]`` =
+        *Tr[r]/(Nr[r].N)*.
     :type _max_r: int
     :ivar _max_r: The maximum number of times that any sample occurs
-       in the base distribution.  C{_max_r} is used to decide how
-       large C{_estimate} must be.
+       in the base distribution.  ``_max_r`` is used to decide how
+       large ``_estimate`` must be.
     """
     SUM_TO_ONE = False
     def __init__(self, base_fdist, heldout_fdist, bins=None):
         """
         Use the heldout estimate to create a probability distribution
-        for the experiment used to generate C{base_fdist} and
-        C{heldout_fdist}.
+        for the experiment used to generate ``base_fdist`` and
+        ``heldout_fdist``.
 
         :type base_fdist: FreqDist
         :param base_fdist: The base frequency distribution.
@@ -983,7 +983,7 @@ class HeldoutProbDist(ProbDistI):
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
-            C{bins} is not specified, it defaults to C{freqdist.B()}.
+            ``bins`` is not specified, it defaults to ``freqdist.B()``.
         """
 
         self._base_fdist = base_fdist
@@ -1003,10 +1003,10 @@ class HeldoutProbDist(ProbDistI):
 
     def _calculate_Tr(self):
         """
-        :return: the list M{Tr}, where M{Tr[r]} is the total count in
-            C{heldout_fdist} for all samples that occur M{r}
-            times in C{base_fdist}.
-        :rtype: list of float
+        :return: the list *Tr*, where *Tr[r]* is the total count in
+            ``heldout_fdist`` for all samples that occur *r*
+            times in ``base_fdist``.
+        :rtype: list(float)
         """
         Tr = [0.0] * (self._max_r+1)
         for sample in self._heldout_fdist:
@@ -1016,20 +1016,20 @@ class HeldoutProbDist(ProbDistI):
 
     def _calculate_estimate(self, Tr, Nr, N):
         """
-        :return: the list M{estimate}, where M{estimate[r]} is the
-            probability estimate for any sample that occurs M{r} times
+        :return: the list *estimate*, where *estimate[r]* is the
+            probability estimate for any sample that occurs *r* times
             in the base frequency distribution.  In particular,
-            M{estimate[r]} is M{Tr[r]/(N[r]*N)}.  In the special case
-            that M{N[r]=0}, M{estimate[r]} will never be used; so we
-            define M{estimate[r]=None} for those cases.
-        :rtype: list of float
-        :type Tr: list of float
-        :param Tr: the list M{Tr}, where M{Tr[r]} is the total count in
-            the heldout distribution for all samples that occur M{r}
+            *estimate[r]* is *Tr[r]/(N[r].N)*.  In the special case
+            that *N[r]=0*, *estimate[r]* will never be used; so we
+            define *estimate[r]=None* for those cases.
+        :rtype: list(float)
+        :type Tr: list(float)
+        :param Tr: the list *Tr*, where *Tr[r]* is the total count in
+            the heldout distribution for all samples that occur *r*
             times in base distribution.
-        :type Nr: list of float
-        :param Nr: The list M{Nr}, where M{Nr[r]} is the number of
-            samples that occur M{r} times in the base distribution.
+        :type Nr: list(float)
+        :param Nr: The list *Nr*, where *Nr[r]* is the number of
+            samples that occur *r* times in the base distribution.
         :type N: int
         :param N: The total number of outcomes recorded by the heldout
             frequency distribution. 
@@ -1076,7 +1076,7 @@ class HeldoutProbDist(ProbDistI):
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         s = '<HeldoutProbDist: %d base samples; %d heldout samples>'
         return s % (self._base_fdist.N(), self._heldout_fdist.N())
@@ -1094,9 +1094,9 @@ class CrossValidationProbDist(ProbDistI):
         """
         Use the cross-validation estimate to create a probability
         distribution for the experiment used to generate
-        C{freqdists}.
+        ``freqdists``.
 
-        :type freqdists: list of FreqDist
+        :type freqdists: list(FreqDist)
         :param freqdists: A list of the frequency distributions
             generated by the experiment.
         :type bins: int
@@ -1104,7 +1104,7 @@ class CrossValidationProbDist(ProbDistI):
             by the experiment that is described by the probability
             distribution.  This value must be correctly set for the
             probabilities of the sample values to sum to one.  If
-            C{bins} is not specified, it defaults to C{freqdist.B()}.
+            ``bins`` is not specified, it defaults to ``freqdist.B()``.
         """
         self._freqdists = freqdists
 
@@ -1119,9 +1119,9 @@ class CrossValidationProbDist(ProbDistI):
 
     def freqdists(self):
         """
-        :rtype: list of FreqDist
+        :rtype: list(FreqDist)
         :return: The list of frequency distributions that this
-            C{ProbDist} is based on.
+            ``ProbDist`` is based on.
         """
         return self._freqdists
 
@@ -1143,7 +1143,7 @@ class CrossValidationProbDist(ProbDistI):
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         return '<CrossValidationProbDist: %d-way>' % len(self._freqdists)
 
@@ -1154,15 +1154,15 @@ class WittenBellProbDist(ProbDistI):
     number of events that have only been seen once. The probability mass
     reserved for unseen events is equal to:
 
-        - M{T / (N + T)}
+        - *T / (N + T)*
 
-    where M{T} is the number of observed event types and M{N} is the total
+    where *T* is the number of observed event types and *N* is the total
     number of observed events. This equates to the maximum likelihood estimate
     of a new type event occuring. The remaining probability mass is discounted
     such that all probability estimates sum to one, yielding:
 
-        - M{p = T / Z (N + T)}, if count = 0
-        - M{p = c / (N + T)}, otherwise
+        - *p = T / Z (N + T)*, if count = 0
+        - *p = c / (N + T)*, otherwise
     """
 
     def __init__(self, freqdist, bins=None):
@@ -1172,28 +1172,28 @@ class WittenBellProbDist(ProbDistI):
         events by using the number of events that have only been seen once.
         The probability mass reserved for unseen events is equal to:
 
-            - M{T / (N + T)}
+            - *T / (N + T)*
 
-        where M{T} is the number of observed event types and M{N} is the total
+        where *T* is the number of observed event types and *N* is the total
         number of observed events. This equates to the maximum likelihood
         estimate of a new type event occuring. The remaining probability mass
         is discounted such that all probability estimates sum to one,
         yielding:
 
-            - M{p = T / Z (N + T)}, if count = 0
-            - M{p = c / (N + T)}, otherwise
+            - *p = T / Z (N + T)*, if count = 0
+            - *p = c / (N + T)*, otherwise
 
-        The parameters M{T} and M{N} are taken from the C{freqdist} parameter
-        (the C{B()} and C{N()} values). The normalising factor M{Z} is
-        calculated using these values along with the C{bins} parameter.
+        The parameters *T* and *N* are taken from the ``freqdist`` parameter
+        (the ``B()`` and ``N()`` values). The normalising factor *Z* is
+        calculated using these values along with the ``bins`` parameter.
 
         :param freqdist:    The frequency counts upon which to base the
                             estimation.
         :type  freqdist:    FreqDist
         :param bins:        The number of possible event types. This must be
                             at least as large as the number of bins in the
-                            C{freqdist}. If None, then it's assumed to be
-                            equal to that of the C{freqdist}
+                            ``freqdist``. If None, then it's assumed to be
+                            equal to that of the ``freqdist``
         :type  bins:        int
         """
         assert bins == None or bins >= freqdist.B(),\
@@ -1234,7 +1234,7 @@ class WittenBellProbDist(ProbDistI):
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         return '<WittenBellProbDist based on %d samples>' % self._freqdist.N()
 
@@ -1285,15 +1285,14 @@ class GoodTuringProbDist(ProbDistI):
     The Good-Turing estimate of a probability distribution. This method
     calculates the probability mass to assign to events with zero or low
     counts based on the number of events with higher counts. It does so by
-    using the smoothed count M{c*}:
+    using the smoothed count *c\**:
 
-        - M{c* = (c + 1) N(c + 1) / N(c)}   for c >= 1
-        - M{things with frequency zero in training} = N(1)  for c == 0
+        - *c\* = (c + 1) N(c + 1) / N(c)*   for c >= 1
+        - *things with frequency zero in training* = N(1)  for c == 0
     
-    where M{c} is the original count, M{N(i)} is the number of event types
-    observed with count M{i}. We can think the count of unseen as the count
-    of frequency one.
-    (see Jurafsky & Martin 2nd Edition, p101)
+    where *c* is the original count, *N(i)* is the number of event types
+    observed with count *i*. We can think the count of unseen as the count
+    of frequency one (see Jurafsky & Martin 2nd Edition, p101).
         
     """
     def __init__(self, freqdist, bins=None):
@@ -1303,8 +1302,8 @@ class GoodTuringProbDist(ProbDistI):
         :type  freqdist:    FreqDist
         :param bins:        The number of possible event types. This must be
                             at least as large as the number of bins in the
-                            C{freqdist}. If None, then it's assumed to be
-                            equal to that of the C{freqdist}
+                            ``freqdist``. If None, then it's assumed to be
+                            equal to that of the ``freqdist``
         :type  bins:        int
         """
         assert bins == None or bins >= freqdist.B(),\
@@ -1354,7 +1353,7 @@ class GoodTuringProbDist(ProbDistI):
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         return '<GoodTuringProbDist based on %d samples>' % self._freqdist.N() 
             
@@ -1392,8 +1391,8 @@ class SimpleGoodTuringProbDist(ProbDistI):
         :type  freqdist:    FreqDist
         :param bins:        The number of possible event types. This must be
                             larger than the number of bins in the
-                            C{freqdist}. If None, then it's assumed to be
-                            equal to C{freqdist}.B() + 1
+                            ``freqdist``. If None, then it's assumed to be
+                            equal to ``freqdist``.B() + 1
         :type  bins:        int
         """
         assert bins == None or bins > freqdist.B(),\
@@ -1580,7 +1579,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
     def __repr__(self):
         """
         :rtype: str
-        :return: A string representation of this C{ProbDist}.
+        :return: A string representation of this ``ProbDist``.
         """
         return '<SimpleGoodTuringProbDist based on %d samples>'\
                 % self._freqdist.N()
@@ -1657,7 +1656,7 @@ class MutableProbDist(ProbDistI):
         one.
 
         :param sample: the sample for which to update the probability
-        :type sample: C{any}
+        :type sample: ``any``
         :param prob: the new probability
         :type prob: float
         :param log: is the probability already logged
@@ -1735,7 +1734,7 @@ class ConditionalFreqDist(object):
 
     When the indexing operator is used to access the frequency
     distribution for a condition that has not been accessed before,
-    C{ConditionalFreqDist} creates a new empty FreqDist for that
+    ``ConditionalFreqDist`` creates a new empty FreqDist for that
     condition.
 
     """
@@ -1773,7 +1772,7 @@ class ConditionalFreqDist(object):
     def conditions(self):
         """
         :return: A list of the conditions that have been accessed for
-            this C{ConditionalFreqDist}.  Use the indexing operator to
+            this ``ConditionalFreqDist``.  Use the indexing operator to
             access the frequency distribution for a given condition.
             Note that the frequency distributions for some conditions
             may contain zero sample outcomes.
@@ -1784,7 +1783,7 @@ class ConditionalFreqDist(object):
     def __len__(self):
         """
         :return: The number of conditions that have been accessed
-            for this C{ConditionalFreqDist}.
+            for this ``ConditionalFreqDist``.
         :rtype: int
         """
         return len(self._fdists)
@@ -1792,7 +1791,7 @@ class ConditionalFreqDist(object):
     def N(self):
         """
         :return: The total number of sample outcomes that have been
-          recorded by this C{ConditionalFreqDist}.
+          recorded by this ``ConditionalFreqDist``.
         :rtype: int
         """
         return sum(fdist.N() for fdist in self._fdists.values())
@@ -1902,7 +1901,7 @@ class ConditionalFreqDist(object):
     def __repr__(self):
         """
         :return: A string representation of this
-            C{ConditionalProbDist}.
+            ``ConditionalProbDist``.
         :rtype: str
         """
         return '<ConditionalProbDist with %d conditions>' % self.__len__()
@@ -1911,7 +1910,7 @@ class ConditionalFreqDist(object):
     def __repr__(self):
         """
         :return: A string representation of this
-            C{ConditionalFreqDist}.
+            ``ConditionalFreqDist``.
         :rtype: str
         """
         n = len(self._fdists)
@@ -1927,7 +1926,7 @@ class ConditionalProbDistI(object):
     estimate the probability of each word type in a document, given
     the length of the word type.  Formally, a conditional probability
     distribution can be defined as a function that maps from each
-    condition to the C{ProbDist} for the experiment under that
+    condition to the ``ProbDist`` for the experiment under that
     condition.
     """
     def __init__(self):
@@ -1937,7 +1936,7 @@ class ConditionalProbDistI(object):
         """
         :return: The probability distribution for the experiment run
             under the given condition.
-        :rtype: C{ProbDistI}
+        :rtype: ``ProbDistI``
         :param condition: The condition whose probability distribution
             should be returned.
         :type condition: any
@@ -1947,7 +1946,7 @@ class ConditionalProbDistI(object):
     def __len__(self):
         """
         :return: The number of conditions that are represented by
-            this C{ConditionalProbDist}.
+            this ``ConditionalProbDist``.
         :rtype: int
         """
         raise AssertionError
@@ -1955,7 +1954,7 @@ class ConditionalProbDistI(object):
     def conditions(self):
         """
         :return: A list of the conditions that are represented by
-            this C{ConditionalProbDist}.  Use the indexing operator to
+            this ``ConditionalProbDist``.  Use the indexing operator to
             access the probability distribution for a given condition.
         :rtype: list
         """
@@ -1971,22 +1970,22 @@ class ConditionalProbDist(ConditionalProbDistI):
     A conditional probability distribution modelling the experiments
     that were used to generate a conditional frequency distribution.
     A ConditoinalProbDist is constructed from a
-    C{ConditionalFreqDist} and a X{C{ProbDist} factory}:
+    ``ConditionalFreqDist`` and a X{``ProbDist`` factory}:
 
-      - The B{C{ConditionalFreqDist}} specifies the frequency
+      - The B{``ConditionalFreqDist``} specifies the frequency
         distribution for each condition.
-      - The B{C{ProbDist} factory} is a function that takes a
+      - The B{``ProbDist`` factory} is a function that takes a
         condition's frequency distribution, and returns its
-        probability distribution.  A C{ProbDist} class's name (such as
-        C{MLEProbDist} or C{HeldoutProbDist}) can be used to specify
+        probability distribution.  A ``ProbDist`` class's name (such as
+        ``MLEProbDist`` or ``HeldoutProbDist``) can be used to specify
         that class's constructor.
 
-    The first argument to the C{ProbDist} factory is the frequency
+    The first argument to the ``ProbDist`` factory is the frequency
     distribution that it should model; and the remaining arguments are
-    specified by the C{factory_args} parameter to the
-    C{ConditionalProbDist} constructor.  For example, the following
-    code constructs a C{ConditionalProbDist}, where the probability
-    distribution for each condition is an C{ELEProbDist} with 10 bins:
+    specified by the ``factory_args`` parameter to the
+    ``ConditionalProbDist`` constructor.  For example, the following
+    code constructs a ``ConditionalProbDist``, where the probability
+    distribution for each condition is an ``ELEProbDist`` with 10 bins:
 
         >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
         >>> print cpdist['run'].max()
@@ -1998,26 +1997,26 @@ class ConditionalProbDist(ConditionalProbDistI):
                  *factory_args, **factory_kw_args):
         """
         Construct a new conditional probability distribution, based on
-        the given conditional frequency distribution and C{ProbDist}
+        the given conditional frequency distribution and ``ProbDist``
         factory.
 
-        :type cfdist: L{ConditionalFreqDist}
-        :param cfdist: The C{ConditionalFreqDist} specifying the
+        :type cfdist: ``ConditionalFreqDist``
+        :param cfdist: The ``ConditionalFreqDist`` specifying the
             frequency distribution for each condition.
-        :type probdist_factory: C{class} or C{function}
+        :type probdist_factory: ``class`` or ``function``
         :param probdist_factory: The function or class that maps
             a condition's frequency distribution to its probability
             distribution.  The function is called with the frequency
             distribution as its first argument,
-            C{factory_args} as its remaining arguments, and
-            C{factory_kw_args} as keyword arguments.
+            ``factory_args`` as its remaining arguments, and
+            ``factory_kw_args`` as keyword arguments.
         :type factory_args: (any)
-        :param factory_args: Extra arguments for C{probdist_factory}.
+        :param factory_args: Extra arguments for ``probdist_factory``.
             These arguments are usually used to specify extra
             properties for the probability distributions of individual
             conditions, such as the number of bins they contain.
         :type factory_kw_args: (any)
-        :param factory_kw_args: Extra keyword arguments for C{probdist_factory}.
+        :param factory_kw_args: Extra keyword arguments for ``probdist_factory``.
         """
         self._probdist_factory = probdist_factory
         self._cfdist = cfdist
@@ -2082,9 +2081,9 @@ _ADD_LOGS_MAX_DIFF = math.log(1e-30, 2)
 
 def add_logs(logx, logy):
     """
-    Given two numbers C{logx}=M{log(x)} and C{logy}=M{log(y)}, return
-    M{log(x+y)}.  Conceptually, this is the same as returning
-    M{log(2**(C{logx})+2**(C{logy}))}, but the actual implementation
+    Given two numbers ``logx`` = *log(x)* and ``logy`` = *log(y)*, return
+    *log(x+y)*.  Conceptually, this is the same as returning
+    ``log(2**(logx)+2**(logy))``, but the actual implementation
     avoids overflow errors that could result from direct computation.
     """
     if (logx < logy + _ADD_LOGS_MAX_DIFF):
@@ -2109,7 +2108,7 @@ def sum_logs(logs):
 class ProbabilisticMixIn(object):
     """
     A mix-in class to associate probabilities with other classes
-    (trees, rules, etc.).  To use the C{ProbabilisticMixIn} class,
+    (trees, rules, etc.).  To use the ``ProbabilisticMixIn`` class,
     define a new class that derives from an existing class and from
     ProbabilisticMixIn.  You will need to define a new constructor for
     the new class, which explicitly calls the constructors of both its
@@ -2124,7 +2123,7 @@ class ProbabilisticMixIn(object):
         ...         ProbabilisticMixIn.__init__(self, **prob_kwarg)
 
     See the documentation for the ProbabilisticMixIn
-    L{constructor<__init__>} for information about the arguments it
+    ``constructor<__init__>`` for information about the arguments it
     expects.
 
     You should generally also redefine the string representation
@@ -2133,7 +2132,7 @@ class ProbabilisticMixIn(object):
     def __init__(self, **kwargs):
         """
         Initialize this object's probability.  This initializer should
-        be called by subclass constructors.  C{prob} should generally be
+        be called by subclass constructors.  ``prob`` should generally be
         the first argument for those constructors.
 
         :param prob: The probability associated with the object.
@@ -2155,7 +2154,7 @@ class ProbabilisticMixIn(object):
 
     def set_prob(self, prob):
         """
-        Set the probability associated with this object to C{prob}.
+        Set the probability associated with this object to ``prob``.
         :param prob: The new probability
         :type prob: float
         """
@@ -2165,8 +2164,8 @@ class ProbabilisticMixIn(object):
     def set_logprob(self, logprob):
         """
         Set the log probability associated with this object to
-        C{logprob}.  I.e., set the probability associated with this
-        object to C{2**(logprob)}.
+        ``logprob``.  I.e., set the probability associated with this
+        object to ``2**(logprob)``.
         :param logprob: The new log probability
         :type logprob: float
         """
@@ -2185,7 +2184,7 @@ class ProbabilisticMixIn(object):
 
     def logprob(self):
         """
-        :return: C{log(p)}, where C{p} is the probability associated
+        :return: ``log(p)``, where ``p`` is the probability associated
         with this object.
 
         :rtype: float
@@ -2218,7 +2217,7 @@ def _get_kwarg(kwargs, key, default):
 def _create_rand_fdist(numsamples, numoutcomes):
     """
     Create a new frequency distribution, with random samples.  The
-    samples are numbers from 1 to C{numsamples}, and are generated by
+    samples are numbers from 1 to ``numsamples``, and are generated by
     summing two numbers, each of which has a uniform distribution.
     """
     import random
@@ -2232,7 +2231,7 @@ def _create_rand_fdist(numsamples, numoutcomes):
 def _create_sum_pdist(numsamples):
     """
     Return the true probability distribution for the experiment
-    C{_create_rand_fdist(numsamples, x)}.
+    ``_create_rand_fdist(numsamples, x)``.
     """
     fdist = FreqDist()
     for x in range(1, (1+numsamples)/2+1):
@@ -2245,8 +2244,8 @@ def demo(numsamples=6, numoutcomes=500):
     A demonstration of frequency distributions and probability
     distributions.  This demonstration creates three frequency
     distributions with, and uses them to sample a random process with
-    C{numsamples} samples.  Each frequency distribution is sampled
-    C{numoutcomes} times.  These three frequency distributions are
+    ``numsamples`` samples.  Each frequency distribution is sampled
+    ``numoutcomes`` times.  These three frequency distributions are
     then used to build six probability distributions.  Finally, the
     probability estimates of these distributions are compared to the
     actual probability of each sample.
@@ -2257,7 +2256,7 @@ def demo(numsamples=6, numoutcomes=500):
     :type numoutcomes: int
     :param numoutcomes: The total number of outcomes for each
         demo frequency distribution.  These outcomes are divided into
-        C{numsamples} bins.
+        ``numsamples`` bins.
     :rtype: None
     """
 

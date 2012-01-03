@@ -54,7 +54,7 @@ class StandardFormat(object):
         :return: an iterator that returns the next field in a (marker, value) 
             tuple. Linebreaks and trailing white space are preserved except 
             for the final newline in each field.
-        :rtype: iterator over C{(marker, value)} tuples
+        :rtype: iter(tuple(str, str))
         """
         join_string = '\n'
         line_regexp = r'^%s(?:\\(\S+)\s*)?(.*)$'
@@ -90,22 +90,21 @@ class StandardFormat(object):
         :param unwrap: Convert newlines in a field to spaces.
         :type unwrap: bool
         :param encoding: Name of an encoding to use. If it is specified then 
-            the C{fields} method returns unicode strings rather than non 
+            the ``fields()`` method returns unicode strings rather than non 
             unicode strings.
         :type encoding: str or None
-        :param errors: Error handling scheme for codec. Same as the C{decode} 
-        inbuilt string method.
+        :param errors: Error handling scheme for codec. Same as the ``decode()``
+        builtin string method.
         :type errors: str
         :param unicode_fields: Set of marker names whose values are UTF-8 encoded.
             Ignored if encoding is None. If the whole file is UTF-8 encoded set 
-            C{encoding='utf8'} and leave C{unicode_fields} with its default
+            ``encoding='utf8'`` and leave ``unicode_fields`` with its default
             value of None.
-        :type unicode_fields: set or dictionary (actually any sequence that 
-            supports the 'in' operator).
-        :return: an iterator that returns the next field in a C{(marker, value)} 
-            tuple. C{marker} and C{value} are unicode strings if an C{encoding} was specified in the 
-            C{fields} method. Otherwise they are nonunicode strings.
-        :rtype: iterator over C{(marker, value)} tuples
+        :type unicode_fields: sequence
+        :return: an iterator that returns the next field in a ``(marker, value)``
+            tuple, where ``marker`` and ``value`` are unicode strings if an ``encoding``
+            was specified in the ``fields()`` method. Otherwise they are non-unicode strings.
+        :rtype: iter(tuple(str, str))
         """
         if encoding is None and unicode_fields is not None:
             raise ValueError, 'unicode_fields is set but not encoding.'
@@ -185,10 +184,10 @@ class ToolboxData(StandardFormat):
         None (the default value) the first marker that doesn't begin with an 
         underscore is assumed to be the key.
         :type key: str
-        :param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
-        :type kwargs: keyword arguments dictionary
-        :rtype:   C{ElementTree._ElementInterface}
-        :return:  contents of toolbox data divided into header and records
+        :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``
+        :type kwargs: dict
+        :rtype: ElementTree._ElementInterface
+        :return: contents of toolbox data divided into header and records
         """
         builder = TreeBuilder()
         builder.start('toolbox_data', {})
@@ -234,19 +233,19 @@ class ToolboxData(StandardFormat):
         
         :type grammar: str
         :param grammar: Contains the chunking rules used to parse the 
-        database.  See L{chunk.RegExp} for documentation.
+        database.  See ``chunk.RegExp`` for documentation.
         :type top_node: str
         :param top_node: The node value that should be used for the
             top node of the chunk structure.
         :type trace: int
         :param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            C{1} will generate normal tracing output; and C{2} or
+            parsing a text.  ``0`` will generate no tracing output;
+            ``1`` will generate normal tracing output; and ``2`` or
             higher will generate verbose tracing output.
-        :type kwargs: C{dictionary}
-        :param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
-        :rtype:   C{ElementTree._ElementInterface}
-        :return:  Contents of toolbox data parsed according to the rules in grammar
+        :type kwargs: dict
+        :param kwargs: Keyword arguments passed to ``toolbox.StandardFormat.fields()``
+        :rtype: ElementTree._ElementInterface
+        :return: Contents of toolbox data parsed according to the rules in grammar
         """
         from nltk import chunk
         from nltk.parse import Tree
@@ -268,16 +267,16 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     data in tree (tree can be a toolbox database or a single record).
     
     :param tree: flat representation of toolbox data (whole database or single record)
-    :type tree: C{ElementTree._ElementInterface}
+    :type tree: ElementTree._ElementInterface
     :param encoding: Name of an encoding to use.
     :type encoding: str
-    :param errors: Error handling scheme for codec. Same as the C{encode} 
-        inbuilt string method.
+    :param errors: Error handling scheme for codec. Same as the ``encode()``
+        builtin string method.
     :type errors: str
     :param unicode_fields:
-    :type unicode_fields: C{dictionary} or set of field names
-    :rtype:   str
-    :return:  str using standard format markup
+    :type unicode_fields: dict(str) or set(str)
+    :rtype: str
+    :return: str using standard format markup
     """
     if tree.tag == 'record':
         root = Element('toolbox_data')
@@ -322,12 +321,12 @@ class ToolboxSettings(StandardFormat):
         
         :param encoding: encoding used by settings file
         :type  encoding: str        
-        :param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
+        :param errors: Error handling scheme for codec. Same as ``decode()`` builtin method.
         :type errors: str
-        :param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
-        :type kwargs: keyword arguments dictionary
-        :rtype:   C{ElementTree._ElementInterface}
-        :return:  contents of toolbox settings file with a nested structure
+        :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``
+        :type kwargs: dict
+        :rtype: ElementTree._ElementInterface
+        :return: contents of toolbox settings file with a nested structure
         """
         builder = TreeBuilder()
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
@@ -394,7 +393,7 @@ def add_default_fields(elem, default_fields):
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     :param default_fields: fields to add to each type of element and subelement
-    :type default_fields: dictionary of tuples
+    :type default_fields: dict(tuple)
     """
     for field in default_fields.get(elem.tag,  []):
         if elem.find(field) is None:
@@ -408,7 +407,7 @@ def sort_fields(elem, field_orders):
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     :param field_orders: order of fields for each type of element and subelement
-    :type field_orders: dictionary of tuples
+    :type field_orders: dict(tuple)
     """
     order_dicts = dict()
     for field, order in field_orders.items():
@@ -437,7 +436,7 @@ def add_blank_lines(tree, blanks_before, blanks_between):
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     :param blank_before: elements and subelements to add blank lines before
-    :type blank_before: dictionary of tuples
+    :type blank_before: dict(tuple)
     """
     try:
         before = blanks_before[tree.tag]

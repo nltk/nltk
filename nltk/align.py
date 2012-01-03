@@ -13,7 +13,7 @@ import nltk.metrics
 class AlignedSent(object):
     """
     Aligned sentence object.  Encapsulates two sentences along with
-    an C{Alignment} between them.
+    an ``Alignment`` between them.
 
     :param words: source language words
     :type words: list(str)
@@ -68,14 +68,14 @@ class AlignedSent(object):
 
     def __repr__(self):
         """
-        :return: A string representation for this C{AlignedSent}.
+        :return: A string representation for this ``AlignedSent``.
         :rtype: str
         """
         return "AlignedSent(%r, %r, %r)" % (self._words, self._mots, self._alignment)
 
     def __str__(self):
         """
-        :return: A string representation for this C{AlignedSent}.
+        :return: A string representation for this ``AlignedSent``.
         :rtype: str
         """
         source = " ".join(self._words)[:20] + "..."
@@ -92,12 +92,12 @@ class AlignedSent(object):
 
     def precision(self, reference):
         """Calculates the precision of an aligned sentence with respect to a 
-        "gold standard" reference C{AlignedSent}.
+        "gold standard" reference ``AlignedSent``.
 
         The "possible" precision is used since it doesn't penalise for finding
         an alignment that was marked as "possible".
 
-        :type reference: C{AlignedSent} or C{Alignment}
+        :type reference: ``AlignedSent`` or ``Alignment``
         :param reference: A "gold standard" reference aligned sentence.
         :rtype: float or None
         """
@@ -114,12 +114,12 @@ class AlignedSent(object):
 
     def recall(self, reference):
         """Calculates the recall of an aligned sentence with respect to a 
-        "gold standard" reference C{AlignedSent}.
+        "gold standard" reference ``AlignedSent``.
 
         The "sure" recall is used so we don't penalise for missing an 
         alignment that was only marked as "possible".
 
-        :type reference: C{AlignedSent} or C{Alignment}
+        :type reference: ``AlignedSent`` or ``Alignment``
         :param reference: A "gold standard" reference aligned sentence.
         :rtype: float or None
         """
@@ -136,7 +136,7 @@ class AlignedSent(object):
 
     def alignment_error_rate(self, reference, possible=None):
         """Calculates the Alignment Error Rate (AER) of an aligned sentence 
-        with respect to a "gold standard" reference C{AlignedSent}.
+        with respect to a "gold standard" reference ``AlignedSent``.
 
         Return an error rate between 0.0 (perfect alignment) and 1.0 (no 
         alignment).
@@ -145,11 +145,11 @@ class AlignedSent(object):
             >>> s.alignment_error_rate(s)
             0.0
 
-        :type reference: C{AlignedSent} or C{Alignment}
+        :type reference: ``AlignedSent`` or ``Alignment``
         :param reference: A "gold standard" reference aligned sentence.
-        :type possible: C{AlignedSent} or C{Alignment} or None
+        :type possible: ``AlignedSent`` or ``Alignment`` or None
         :param possible: A "gold standard" reference of possible alignments
-            (defaults to I{reference} if None)
+            (defaults to *reference* if None)
         :rtype: float or None
         """
         # Get alignments in set of 2-tuples form
@@ -275,13 +275,13 @@ class EMIBMModel1(object):
 
     def __init__(self, aligned_sents, convergent_threshold=1e-2, debug=False):
         '''
-        Initialize a new C{EMIBMModel1}.
+        Initialize a new ``EMIBMModel1``.
 
-        :param aligned_sents: The parallel text corpus.Iteratable containing 
+        :param aligned_sents: The parallel text ``corpus.Iterable`` containing 
             AlignedSent instances of aligned sentence pairs from the corpus.
-        :type aligned_sents: list of L{AlignedSent} objects
+        :type aligned_sents: list(AlignedSent)
         :param convergent_threshold: The threshold value of convergence. An 
-            entry is considered converged if the delta from old_t to new_t
+            entry is considered converged if the delta from ``old_t`` to ``new_t``
             is less than this value. The algorithm terminates when all entries
             are converged. This parameter is optional, default is 0.01
         :type convergent_threshold: float

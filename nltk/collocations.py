@@ -15,10 +15,10 @@ and the Text::NSP Perl package at http://ngram.sourceforge.net
 Finding collocations requires first calculating the frequencies of words and
 their appearance in the context of other words. Often the collection of words
 will then requiring filtering to only retain useful content terms. Each ngram
-of words may then be scored according to some X{association measure}, in order
+of words may then be scored according to some association measure, in order
 to determine the relative likelihood of each ngram being a collocation.
 
-The BigramCollocationFinder and TrigramCollocationFinder classes provide
+The ``BigramCollocationFinder`` and ``TrigramCollocationFinder`` classes provide
 these functionalities, dependent on being provided a function which scores a
 ngram given appropriate frequency counts. A number of standard association
 measures are provided in bigram_measures and trigram_measures.

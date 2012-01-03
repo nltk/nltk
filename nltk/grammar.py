@@ -12,61 +12,61 @@
 
 """
 Basic data classes for representing context free grammars.  A
-X{grammar} specifies which trees can represent the structure of a
-given text.  Each of these trees is called a X{parse tree} for the
-text (or simply a X{parse}).  In a X{context free} grammar, the set of
+"grammar" specifies which trees can represent the structure of a
+given text.  Each of these trees is called a "parse tree" for the
+text (or simply a "parse").  In a "context free" grammar, the set of
 parse trees for any piece of a text can depend only on that piece, and
 not on the rest of the text (i.e., the piece's context).  Context free
 grammars are often used to find possible syntactic structures for
 sentences.  In this context, the leaves of a parse tree are word
-tokens; and the node values are phrasal categories, such as C{NP}
-and C{VP}.
+tokens; and the node values are phrasal categories, such as ``NP``
+and ``VP``.
 
-The L{ContextFreeGrammar} class is used to encode context free grammars.  Each
-C{ContextFreeGrammar} consists of a start symbol and a set of productions.
-The X{start symbol} specifies the root node value for parse trees.  For example,
-the start symbol for syntactic parsing is usually C{S}.  Start
-symbols are encoded using the C{Nonterminal} class, which is discussed
+The ``ContextFreeGrammar`` class is used to encode context free grammars.  Each
+``ContextFreeGrammar`` consists of a start symbol and a set of productions.
+The "start symbol" specifies the root node value for parse trees.  For example,
+the start symbol for syntactic parsing is usually ``S``.  Start
+symbols are encoded using the ``Nonterminal`` class, which is discussed
 below.
 
-A Grammar's X{productions} specify what parent-child relationships a parse
+A Grammar's "productions" specify what parent-child relationships a parse
 tree can contain.  Each production specifies that a particular
 node can be the parent of a particular set of children.  For example,
-the production C{<S> -> <NP> <VP>} specifies that an C{S} node can
-be the parent of an C{NP} node and a C{VP} node.
+the production ``<S> -> <NP> <VP>`` specifies that an ``S`` node can
+be the parent of an ``NP`` node and a ``VP`` node.
 
-Grammar productions are implemented by the C{Production} class.
-Each C{Production} consists of a left hand side and a right hand
-side.  The X{left hand side} is a C{Nonterminal} that specifies the
-node type for a potential parent; and the X{right hand side} is a list
+Grammar productions are implemented by the ``Production`` class.
+Each ``Production`` consists of a left hand side and a right hand
+side.  The "left hand side" is a ``Nonterminal`` that specifies the
+node type for a potential parent; and the "right hand side" is a list
 that specifies allowable children for that parent.  This lists
-consists of C{Nonterminals} and text types: each C{Nonterminal}
-indicates that the corresponding child may be a C{TreeToken} with the
+consists of ``Nonterminals`` and text types: each ``Nonterminal``
+indicates that the corresponding child may be a ``TreeToken`` with the
 specified node type; and each text type indicates that the
-corresponding child may be a C{Token} with the with that type.
+corresponding child may be a ``Token`` with the with that type.
 
-The C{Nonterminal} class is used to distinguish node values from leaf
+The ``Nonterminal`` class is used to distinguish node values from leaf
 values.  This prevents the grammar from accidentally using a leaf
 value (such as the English word "A") as the node of a subtree.  Within
-a C{ContextFreeGrammar}, all node values are wrapped in the C{Nonterminal} class.
+a ``ContextFreeGrammar``, all node values are wrapped in the ``Nonterminal`` class.
 Note, however, that the trees that are specified by the grammar do
-B{not} include these C{Nonterminal} wrappers.
+*not* include these ``Nonterminal`` wrappers.
 
 Grammars can also be given a more procedural interpretation.  According to
-this interpretation, a Grammar specifies any tree structure M{tree} that
+this interpretation, a Grammar specifies any tree structure *tree* that
 can be produced by the following procedure:
 
-    - Set M{tree} to the start symbol
-    - Repeat until M{tree} contains no more nonterminal leaves:
-      - Choose a production M{prod} with whose left hand side
-        M{lhs} is a nonterminal leaf of M{tree}.
+    - Set *tree* to the start symbol
+    - Repeat until *tree* contains no more nonterminal leaves:
+      - Choose a production *prod* with whose left hand side
+        *lhs* is a nonterminal leaf of *tree*.
       - Replace the nonterminal leaf with a subtree, whose node
-        value is the value wrapped by the nonterminal M{lhs}, and
-        whose children are the right hand side of M{prod}.
+        value is the value wrapped by the nonterminal *lhs*, and
+        whose children are the right hand side of *prod*.
 
-The operation of replacing the left hand side (M{lhs}) of a production
-with the right hand side (M{rhs}) in a tree (M{tree}) is known as
-X{expanding} M{lhs} to M{rhs} in M{tree}.
+The operation of replacing the left hand side (*lhs*) of a production
+with the right hand side (*rhs*) in a tree (*tree*) is known as
+"expanding" *lhs* to *rhs* in *tree*.
 """
 
 import re
@@ -82,22 +82,22 @@ from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
 
 class Nonterminal(object):
     """
-    A non-terminal symbol for a context free grammar.  C{Nonterminal}
+    A non-terminal symbol for a context free grammar.  ``Nonterminal``
     is a wrapper class for node values; it is used by
-    C{Production}s to distinguish node values from leaf values.
-    The node value that is wrapped by a C{Nonterminal} is known as its
-    X{symbol}.  Symbols are typically strings representing phrasal
-    categories (such as C{"NP"} or C{"VP"}).  However, more complex
+    ``Production``s to distinguish node values from leaf values.
+    The node value that is wrapped by a ``Nonterminal`` is known as its
+    "symbol".  Symbols are typically strings representing phrasal
+    categories (such as ``"NP"`` or ``"VP"``).  However, more complex
     symbol types are sometimes used (e.g., for lexicalized grammars).
     Since symbols are node values, they must be immutable and
-    hashable.  Two C{Nonterminal}s are considered equal if their
+    hashable.  Two ``Nonterminal``s are considered equal if their
     symbols are equal.
 
-    :see: L{ContextFreeGrammar}
-    :see: L{Production}
+    :see: ``ContextFreeGrammar``
+    :see: ``Production``
     :type _symbol: (any)
     :ivar _symbol: The node value corresponding to this
-        C{Nonterminal}.  This value must be immutable and hashable. 
+        ``Nonterminal``.  This value must be immutable and hashable. 
     """
     def __init__(self, symbol):
         """
@@ -105,7 +105,7 @@ class Nonterminal(object):
 
         :type symbol: (any)
         :param symbol: The node value corresponding to this
-            C{Nonterminal}.  This value must be immutable and
+            ``Nonterminal``.  This value must be immutable and
             hashable. 
         """
         self._symbol = symbol
@@ -113,16 +113,16 @@ class Nonterminal(object):
 
     def symbol(self):
         """
-        :return: The node value corresponding to this C{Nonterminal}. 
+        :return: The node value corresponding to this ``Nonterminal``. 
         :rtype: (any)
         """
         return self._symbol
 
     def __eq__(self, other):
         """
-        :return: True if this non-terminal is equal to C{other}.  In
-            particular, return true iff C{other} is a C{Nonterminal}
-            and this non-terminal's symbol is equal to C{other}'s
+        :return: True if this non-terminal is equal to ``other``.  In
+            particular, return True iff ``other`` is a ``Nonterminal``
+            and this non-terminal's symbol is equal to ``other`` 's
             symbol.
         :rtype: bool
         """
@@ -134,9 +134,9 @@ class Nonterminal(object):
 
     def __ne__(self, other):
         """
-        :return: True if this non-terminal is not equal to C{other}.  In
-            particular, return true iff C{other} is not a C{Nonterminal}
-            or this non-terminal's symbol is not equal to C{other}'s
+        :return: True if this non-terminal is not equal to ``other``.  In
+            particular, return true iff ``other`` is not a ``Nonterminal``
+            or this non-terminal's symbol is not equal to ``other`` 's
             symbol.
         :rtype: bool
         """
@@ -153,7 +153,7 @@ class Nonterminal(object):
 
     def __repr__(self):
         """
-        :return: A string representation for this C{Nonterminal}.
+        :return: A string representation for this ``Nonterminal``.
         :rtype: str
         """
         if isinstance(self._symbol, basestring):
@@ -163,7 +163,7 @@ class Nonterminal(object):
 
     def __str__(self):
         """
-        :return: A string representation for this C{Nonterminal}.
+        :return: A string representation for this ``Nonterminal``.
         :rtype: str
         """
         if isinstance(self._symbol, basestring):
@@ -173,28 +173,28 @@ class Nonterminal(object):
 
     def __div__(self, rhs):
         """
-        :return: A new nonterminal whose symbol is C{M{A}/M{B}}, where
-            C{M{A}} is the symbol for this nonterminal, and C{M{B}}
+        :return: A new nonterminal whose symbol is ``A/B``, where
+            ``A`` is the symbol for this nonterminal, and ``B``
             is the symbol for rhs.
-        :rtype: L{Nonterminal}
+        :rtype: Nonterminal
         :param rhs: The nonterminal used to form the right hand side
             of the new nonterminal.
-        :type rhs: L{Nonterminal}
+        :type rhs: Nonterminal
         """
         return Nonterminal('%s/%s' % (self._symbol, rhs._symbol))
 
 def nonterminals(symbols):
     """
     Given a string containing a list of symbol names, return a list of
-    C{Nonterminals} constructed from those symbols.  
+    ``Nonterminals`` constructed from those symbols.  
 
     :param symbols: The symbol name string.  This string can be
         delimited by either spaces or commas.
     :type symbols: str
-    :return: A list of C{Nonterminals} constructed from the symbol
-        names given in C{symbols}.  The C{Nonterminals} are sorted
+    :return: A list of ``Nonterminals`` constructed from the symbol
+        names given in ``symbols``.  The ``Nonterminals`` are sorted
         in the same order as the symbols names.
-    :rtype: list of L{Nonterminal}
+    :rtype: list(Nonterminal)
     """
     if ',' in symbols: symbol_list = symbols.split(',')
     else: symbol_list = symbols.split()
@@ -211,7 +211,7 @@ class FeatStructNonterminal(FeatDict, Nonterminal):
 
 def is_nonterminal(item):
     """
-    :return: True if the item is a C{Nonterminal}.
+    :return: True if the item is a ``Nonterminal``.
     :rtype: bool
     """
     return isinstance(item, Nonterminal)
@@ -224,7 +224,7 @@ def is_nonterminal(item):
 def is_terminal(item):
     """
     :return: True if the item is a terminal, which currently is 
-    if it is hashable and not a C{Nonterminal}.
+    if it is hashable and not a ``Nonterminal``.
     :rtype: bool
     """
     return hasattr(item, '__hash__') and not isinstance(item, Nonterminal)
@@ -237,31 +237,31 @@ def is_terminal(item):
 class Production(object):
     """
     A grammar production.  Each production maps a single symbol
-    on the X{left-hand side} to a sequence of symbols on the
-    X{right-hand side}.  (In the case of context-free productions,
-    the left-hand side must be a C{Nonterminal}, and the right-hand
-    side is a sequence of terminals and C{Nonterminals}.)
-    X{terminals} can be any immutable hashable object that is
-    not a C{Nonterminal}.  Typically, terminals are strings
-    representing words, such as C{"dog"} or C{"under"}.
+    on the "left-hand side" to a sequence of symbols on the
+    "right-hand side".  (In the case of context-free productions,
+    the left-hand side must be a ``Nonterminal``, and the right-hand
+    side is a sequence of terminals and ``Nonterminals``.)
+    "terminals" can be any immutable hashable object that is
+    not a ``Nonterminal``.  Typically, terminals are strings
+    representing words, such as ``"dog"`` or ``"under"``.
 
-    :see: L{ContextFreeGrammar}
-    :see: L{DependencyGrammar}
-    :see: L{Nonterminal}
-    :type _lhs: L{Nonterminal}
+    :see: ``ContextFreeGrammar``
+    :see: ``DependencyGrammar``
+    :see: ``Nonterminal``
+    :type _lhs: ``Nonterminal``
     :ivar _lhs: The left-hand side of the production.
-    :type _rhs: tuple of (C{Nonterminal} and (terminal))
+    :type _rhs: tuple of (``Nonterminal`` and (terminal))
     :ivar _rhs: The right-hand side of the production.
     """
 
     def __init__(self, lhs, rhs):
         """
-        Construct a new C{Production}.
+        Construct a new ``Production``.
 
-        :param lhs: The left-hand side of the new C{Production}.
-        :type lhs: L{Nonterminal}
-        :param rhs: The right-hand side of the new C{Production}.
-        :type rhs: sequence of (C{Nonterminal} and (terminal))
+        :param lhs: The left-hand side of the new ``Production``.
+        :type lhs: ``Nonterminal``
+        :param rhs: The right-hand side of the new ``Production``.
+        :type rhs: sequence of (``Nonterminal`` and (terminal))
         """
         if isinstance(rhs, (str, unicode)):
             raise TypeError('production right hand side should be a list, '
@@ -272,15 +272,15 @@ class Production(object):
 
     def lhs(self):
         """
-        :return: the left-hand side of this C{Production}.
-        :rtype: L{Nonterminal}
+        :return: the left-hand side of this ``Production``.
+        :rtype: ``Nonterminal``
         """
         return self._lhs
     
     def rhs(self):
         """
-        :return: the right-hand side of this C{Production}.
-        :rtype: sequence of (C{Nonterminal} and (terminal))
+        :return: the right-hand side of this ``Production``.
+        :rtype: sequence of (``Nonterminal`` and (terminal))
         """
         return self._rhs
     
@@ -293,7 +293,7 @@ class Production(object):
     
     def is_nonlexical(self):
         """
-        :return: True if the right-hand side only contains C{Nonterminal}s
+        :return: True if the right-hand side only contains ``Nonterminal``s
         :rtype: bool
         """
         return all([is_nonterminal(n) for n in self._rhs])
@@ -308,7 +308,7 @@ class Production(object):
     def __str__(self):
         """
         :return: A verbose string representation of the
-            C{Production}.
+            ``Production``.
         :rtype: str
         """
         str = '%r ->' % (self._lhs,)
@@ -319,14 +319,14 @@ class Production(object):
     def __repr__(self):
         """
         :return: A concise string representation of the
-            C{Production}. 
+            ``Production``. 
         :rtype: str
         """
         return '%s' % self
 
     def __eq__(self, other):
         """
-        :return: true if this C{Production} is equal to C{other}.
+        :return: true if this ``Production`` is equal to ``other``.
         :rtype: bool
         """
         return (isinstance(other, self.__class__) and
@@ -342,7 +342,7 @@ class Production(object):
 
     def __hash__(self):
         """
-        :return: A hash value for the C{Production}.
+        :return: A hash value for the ``Production``.
         :rtype: int
         """
         return self._hash
@@ -356,7 +356,7 @@ class DependencyProduction(Production):
     def __str__(self):
         """
         :return: A verbose string representation of the 
-            C{DependencyProduction}.
+            ``DependencyProduction``.
         :rtype: str
         """
         str = '\'%s\' ->' % (self._lhs,)
@@ -368,24 +368,24 @@ class DependencyProduction(Production):
 class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
-    PCFG C{WeightedProduction}s are essentially just C{Production}s that
+    PCFG ``WeightedProduction``s are essentially just ``Production``s that
     have probabilities associated with them.  These probabilities are
     used to record how likely it is that a given production will
-    be used.  In particular, the probability of a C{WeightedProduction}
+    be used.  In particular, the probability of a ``WeightedProduction``
     records the likelihood that its right-hand side is the correct
     instantiation for any given occurance of its left-hand side.
 
-    :see: L{Production}
+    :see: ``Production``
     """
     def __init__(self, lhs, rhs, **prob):
         """
-        Construct a new C{WeightedProduction}.
+        Construct a new ``WeightedProduction``.
 
-        :param lhs: The left-hand side of the new C{WeightedProduction}.
-        :type lhs: L{Nonterminal}
-        :param rhs: The right-hand side of the new C{WeightedProduction}.
-        :type rhs: sequence of (C{Nonterminal} and (terminal))
-        :param prob: Probability parameters of the new C{WeightedProduction}.
+        :param lhs: The left-hand side of the new ``WeightedProduction``.
+        :type lhs: ``Nonterminal``
+        :param rhs: The right-hand side of the new ``WeightedProduction``.
+        :type rhs: sequence of (``Nonterminal`` and (terminal))
+        :param prob: Probability parameters of the new ``WeightedProduction``.
         """
         ImmutableProbabilisticMixIn.__init__(self, **prob)
         Production.__init__(self, lhs, rhs)
@@ -421,12 +421,12 @@ class ContextFreeGrammar(object):
     def __init__(self, start, productions, calculate_leftcorners=True):
         """
         Create a new context-free grammar, from the given start state
-        and set of C{Production}s.
+        and set of ``Production``s.
         
         :param start: The start symbol
-        :type start: L{Nonterminal}
+        :type start: ``Nonterminal``
         :param productions: The list of productions that defines the grammar
-        :type productions: list of L{Production}
+        :type productions: list(Production)
         :param calculate_leftcorners: False if we don't want to calculate the 
         leftcorner relation. In that case, some optimized chart parsers won't work.
         :type calculate_leftcorners: bool
@@ -498,7 +498,7 @@ class ContextFreeGrammar(object):
     def start(self):
         """
         :return: The start symbol of the grammar
-        :rtype: L{Nonterminal}
+        :rtype: ``Nonterminal``
         """
         return self._start
 
@@ -514,7 +514,7 @@ class ContextFreeGrammar(object):
         in the right-hand side.
         :param empty: Only return productions with an empty right-hand side.
         :return: A list of productions matching the given constraints.
-        :rtype: list of C{Production}
+        :rtype: list(Production)
         """
         if rhs and empty:
             raise ValueError("You cannot select empty and non-empty "
@@ -554,9 +554,9 @@ class ContextFreeGrammar(object):
         leftcorner relation:  (A > B)  iff  (A -> B beta)
         
         :param cat: the parent of the leftcorners
-        :type cat: C{Nonterminal}
+        :type cat: ``Nonterminal``
         :return: the set of all leftcorners
-        :rtype: set of C{Nonterminal}
+        :rtype: set of ``Nonterminal``
         """
         return self._leftcorners.get(cat, set([cat]))
     
@@ -566,9 +566,9 @@ class ContextFreeGrammar(object):
         terminal or a nonterminal. 
         
         :param cat: the parent of the leftcorner
-        :type cat: C{Nonterminal}
+        :type cat: ``Nonterminal``
         :param left: the suggested leftcorner
-        :type left: C{Terminal} or C{Nonterminal}
+        :type left: ``Terminal`` or ``Nonterminal``
         :rtype: bool
         """
         if is_nonterminal(left):
@@ -585,9 +585,9 @@ class ContextFreeGrammar(object):
         is a left corner. This is the inverse of the leftcorner relation.
 
         :param cat: the suggested leftcorner
-        :type cat: C{Nonterminal}
+        :type cat: ``Nonterminal``
         :return: the set of all parents to the leftcorner
-        :rtype: set of C{Nonterminal}
+        :rtype: set of ``Nonterminal``
         """
         return self._leftcorner_parents.get(cat, set([cat]))
     
@@ -596,7 +596,7 @@ class ContextFreeGrammar(object):
         Check whether the grammar rules cover the given list of tokens.
         If not, then raise an exception.
         
-        :type tokens: list of str
+        :type tokens: list(str)
         """
         missing = [tok for tok in tokens 
                    if not self._lexical_index.get(tok)]
@@ -691,8 +691,8 @@ class ContextFreeGrammar(object):
 class FeatureGrammar(ContextFreeGrammar):
     """
     A feature-based grammar.  This is equivalent to a 
-    L{ContextFreeGrammar} whose nonterminals are
-    L{FeatStructNonterminal}s.
+    ``ContextFreeGrammar`` whose nonterminals are all
+    ``FeatStructNonterminal``.
 
     A grammar consists of a start state and a set of 
     productions.  The set of terminals and nonterminals 
@@ -701,12 +701,12 @@ class FeatureGrammar(ContextFreeGrammar):
     def __init__(self, start, productions):
         """
         Create a new feature-based grammar, from the given start 
-        state and set of C{Production}s.
+        state and set of ``Productions``.
         
         :param start: The start symbol
-        :type start: L{FeatStructNonterminal}
+        :type start: ``FeatStructNonterminal``
         :param productions: The list of productions that defines the grammar
-        :type productions: list of L{Production}
+        :type productions: list(Production)
         """
         ContextFreeGrammar.__init__(self, start, productions)
     
@@ -753,7 +753,7 @@ class FeatureGrammar(ContextFreeGrammar):
         in the right-hand side.
         :param empty: Only return productions with an empty right-hand side.
         :return: A list of productions matching the given constraints.
-        :rtype: list of C{Production}
+        :rtype: list(Production)
         """
         if rhs and empty:
             raise ValueError("You cannot select empty and non-empty "
@@ -798,8 +798,8 @@ class FeatureGrammar(ContextFreeGrammar):
     
     def _get_type_if_possible(self, item):
         """
-        Helper function which returns the C{TYPE} feature of the C{item}, 
-        if it exists, otherwise it returns the C{item} itself
+        Helper function which returns the ``TYPE`` feature of the ``item``, 
+        if it exists, otherwise it returns the ``item`` itself
         """
         if isinstance(item, dict) and TYPE in item:
             return FeatureValueType(item[TYPE])
@@ -808,9 +808,9 @@ class FeatureGrammar(ContextFreeGrammar):
 
 class FeatureValueType(object):
     """
-    A helper class for L{FeatureGrammar}s, designed to be different
-    from ordinary strings.  This is to stop the C{FeatStruct}
-    C{FOO[]} from being compare equal to the terminal "FOO".
+    A helper class for ``FeatureGrammars``, designed to be different
+    from ordinary strings.  This is to stop the ``FeatStruct``
+    ``FOO[]`` from being compare equal to the terminal "FOO".
     """
     def __init__(self, value):
         self._value = value
@@ -830,10 +830,10 @@ class DependencyGrammar(object):
     """
     def __init__(self, productions):
         """
-        Create a new dependency grammar, from the set of C{Production}s.
+        Create a new dependency grammar, from the set of ``Productions``.
         
         :param productions: The list of productions that defines the grammar
-        :type productions: list of L{Production}
+        :type productions: list(Production)
         """
         self._productions = productions
 
@@ -844,8 +844,8 @@ class DependencyGrammar(object):
         :param mod: A mod word, to test as a modifier of 'head'.
         :type mod: str.
 
-        :return: true if this C{DependencyGrammar} contains a 
-            C{DependencyProduction} mapping 'head' to 'mod'.
+        :return: true if this ``DependencyGrammar`` contains a 
+            ``DependencyProduction`` mapping 'head' to 'mod'.
         :rtype: bool.
         """
         for production in self._productions:
@@ -861,8 +861,8 @@ class DependencyGrammar(object):
         :param mod: A mod word, to test as a modifier of 'head'.
         :type mod: str.
 
-        :return: true if this C{DependencyGrammar} contains a 
-            C{DependencyProduction} mapping 'head' to 'mod'.
+        :return: true if this ``DependencyGrammar`` contains a 
+            ``DependencyProduction`` mapping 'head' to 'mod'.
         :rtype: bool.
         """
         for production in self._productions:
@@ -886,7 +886,7 @@ class DependencyGrammar(object):
     def __str__(self):
         """
         :return: A verbose string representation of the
-            C{DependencyGrammar}
+            ``DependencyGrammar``
         :rtype: str
         """
         str = 'Dependency grammar with %d productions' % len(self._productions)
@@ -897,7 +897,7 @@ class DependencyGrammar(object):
     def __repr__(self):
         """
         :return: A concise string representation of the
-            C{DependencyGrammar}
+            ``DependencyGrammar``
         """
         return 'Dependency grammar with %d productions' % len(self._productions)
     
@@ -919,8 +919,8 @@ class StatisticalDependencyGrammar(object):
         :param mod: A mod word, to test as a modifier of 'head'.
         :type mod: str.
 
-        :return: true if this C{DependencyGrammar} contains a 
-            C{DependencyProduction} mapping 'head' to 'mod'.
+        :return: true if this ``DependencyGrammar`` contains a 
+            ``DependencyProduction`` mapping 'head' to 'mod'.
         :rtype: bool.
         """
         for production in self._productions:
@@ -932,7 +932,7 @@ class StatisticalDependencyGrammar(object):
     def __str__(self):
         """
         :return: A verbose string representation of the
-            C{StatisticalDependencyGrammar}
+            ``StatisticalDependencyGrammar``
         :rtype: str
         """
         str = 'Statistical dependency grammar with %d productions' % len(self._productions)
@@ -949,7 +949,7 @@ class StatisticalDependencyGrammar(object):
     def __repr__(self):
         """
         :return: A concise string representation of the
-            C{StatisticalDependencyGrammar}
+            ``StatisticalDependencyGrammar``
         """
         return 'Statistical Dependency grammar with %d productions' % len(self._productions)
 
@@ -961,8 +961,8 @@ class WeightedGrammar(ContextFreeGrammar):
     terminals and nonterminals is implicitly specified by the
     productions.
 
-    PCFG productions should be C{WeightedProduction}s.
-    C{WeightedGrammar}s impose the constraint that the set of
+    PCFG productions should be ``WeightedProductions``.
+    ``WeightedGrammars`` impose the constraint that the set of
     productions with any given left-hand-side must have probabilities
     that sum to 1.
 
@@ -979,12 +979,12 @@ class WeightedGrammar(ContextFreeGrammar):
     def __init__(self, start, productions, calculate_leftcorners=True):
         """
         Create a new context-free grammar, from the given start state
-        and set of C{WeightedProduction}s.
+        and set of ``WeightedProductions``.
 
         :param start: The start symbol
-        :type start: L{Nonterminal}
+        :type start: ``Nonterminal``
         :param productions: The list of productions that defines the grammar
-        :type productions: list of C{Production}
+        :type productions: list(Production)
         :raise ValueError: if the set of productions with any left-hand-side
             do not have probabilities that sum to a value within
             EPSILON of 1.
@@ -1022,9 +1022,9 @@ def induce_pcfg(start, productions):
     |                 count(A -> *)
 
     :param start: The start symbol
-    :type start: L{Nonterminal}
+    :type start: ``Nonterminal``
     :param productions: The list of productions that defines the grammar
-    :type productions: list of L{Production}
+    :type productions: list(Production)
     """
 
     # Production count: the number of times a given production occurs
@@ -1051,13 +1051,13 @@ def induce_pcfg(start, productions):
 
 def parse_cfg_production(input):
     """
-    :return: a list of context-free L{Production}s.
+    :return: a list of context-free ``Productions``.
     """
     return parse_production(input, standard_nonterm_parser)
 
 def parse_cfg(input):
     """
-    :return: a L{ContextFreeGrammar}.
+    :return: a ``ContextFreeGrammar``.
     
     :param input: a grammar, either in the form of a string or else 
     as a list of strings.
@@ -1069,13 +1069,13 @@ def parse_cfg(input):
 
 def parse_pcfg_production(input):
     """
-    :return: a list of PCFG L{WeightedProduction}s.
+    :return: a list of PCFG ``WeightedProductions``.
     """
     return parse_production(input, standard_nonterm_parser, probabilistic=True)
 
 def parse_pcfg(input):
     """
-    :return: a probabilistic L{WeightedGrammar}.
+    :return: a probabilistic ``WeightedGrammar``.
     
     :param input: a grammar, either in the form of a string or else 
     as a list of strings.
@@ -1088,13 +1088,13 @@ def parse_pcfg(input):
 
 def parse_fcfg_production(input, fstruct_parser):
     """
-    :return: a list of feature-based L{Production}s.
+    :return: a list of feature-based ``Productions``.
     """
     return parse_production(input, fstruct_parser)
 
 def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
     """
-    :return: a feature structure based L{FeatureGrammar}.
+    :return: a feature structure based ``FeatureGrammar``.
     
     :param input: a grammar, either in the form of a string or else 
     as a list of strings.
@@ -1183,13 +1183,13 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
     """
     :return: a pair of 
       - a starting category 
-      - a list of C{Production}s
+      - a list of ``Productions``
     
     :param input: a grammar, either in the form of a string or else 
         as a list of strings.
     :param nonterm_parser: a function for parsing nonterminals.
-        It should take a C{(string,position)} as argument and 
-        return a C{(nonterminal,position)} as result. 
+        It should take a ``(string,position)`` as argument and 
+        return a ``(nonterminal,position)`` as result. 
     :param probabilistic: are the grammar rules probabilistic?
     """
     if isinstance(input, basestring):
@@ -1288,7 +1288,7 @@ def parse_dependency_production(s):
 
 def cfg_demo():
     """
-    A demonstration showing how C{ContextFreeGrammar}s can be created and used.
+    A demonstration showing how ``ContextFreeGrammars`` can be created and used.
     """
 
     from nltk import nonterminals, Production, parse_cfg
@@ -1362,7 +1362,7 @@ toy_pcfg2 = parse_pcfg("""
 
 def pcfg_demo():
     """
-    A demonstration showing how C{WeightedGrammar}s can be created and used.
+    A demonstration showing how a ``WeightedGrammar`` can be created and used.
     """
 
     from nltk.corpus import treebank
@@ -1426,7 +1426,7 @@ def fcfg_demo():
 def dg_demo():
     """
     A demonstration showing the creation and inspection of a 
-    C{DependencyGrammar}.
+    ``DependencyGrammar``.
     """
     grammar = parse_dependency_grammar("""
     'scratch' -> 'cats' | 'walls'

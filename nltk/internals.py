@@ -27,8 +27,8 @@ from nltk import __file__
 
 def convert_regexp_to_nongrouping(pattern):
     """
-    Convert all grouping parenthases in the given regexp pattern to
-    non-grouping parenthases, and return the result.  E.g.:
+    Convert all grouping parentheses in the given regexp pattern to
+    non-grouping parentheses, and return the result.  E.g.:
 
         >>> from nltk.internals import convert_regexp_to_nongrouping
         >>> convert_regexp_to_nongrouping('ab(c(x+)(z*))?d')
@@ -57,7 +57,7 @@ def convert_regexp_to_nongrouping(pattern):
         \\.           |  # Backslashed character
         \(\?P<[^>]*>  |  # Named group
         \(\?          |  # Extension group
-        \(               # Grouping parenthasis''', subfunc, pattern)
+        \(               # Grouping parenthesis''', subfunc, pattern)
 
 
 ##########################################################################
@@ -70,19 +70,19 @@ _java_options = []
 def config_java(bin=None, options=None, verbose=True):
     """
     Configure nltk's java interface, by letting nltk know where it can
-    find the C{java} binary, and what extra options (if any) should be
-    passed to java when it is run.
+    find the Java binary, and what extra options (if any) should be
+    passed to Java when it is run.
 
-    :param bin: The full path to the C{java} binary.  If not specified,
-        then nltk will search the system for a C{java} binary; and if
-        one is not found, it will raise a C{LookupError} exception.
+    :param bin: The full path to the Java binary.  If not specified,
+        then nltk will search the system for a Java binary; and if
+        one is not found, it will raise a ``LookupError`` exception.
     :type bin: str
     :param options: A list of options that should be passed to the
-        C{java} binary when it is called.  A common value is
-        C{['-Xmx512m']}, which tells the C{java} binary to increase
+        Java binary when it is called.  A common value is
+        ``'-Xmx512m'``, which tells Java binary to increase
         the maximum heap size to 512 megabytes.  If no options are
         specified, then do not modify the options list.
-    :type options: list of str
+    :type options: list(str)
     """
     global _java_bin, _java_options
     _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose)
@@ -96,40 +96,40 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
          blocking=True):
     """
     Execute the given java command, by opening a subprocess that calls
-    C{java}.  If java has not yet been configured, it will be configured
-    by calling L{config_java()} with no arguments.
+    Java.  If java has not yet been configured, it will be configured
+    by calling ``config_java()`` with no arguments.
 
     :param cmd: The java command that should be called, formatted as
         a list of strings.  Typically, the first string will be the name
         of the java class; and the remaining strings will be arguments
         for that java class.
-    :type cmd: list of str
+    :type cmd: list(str)
 
-    :param classpath: A C{':'} separated list of directories, JAR
+    :param classpath: A ``':'`` separated list of directories, JAR
         archives, and ZIP archives to search for class files.
     :type classpath: str
 
     :param stdin, stdout, stderr: Specify the executed programs'
         standard input, standard output and standard error file
-        handles, respectively.  Valid values are C{subprocess.PIPE},
+        handles, respectively.  Valid values are ``subprocess.PIPE``,
         an existing file descriptor (a positive integer), an existing
-        file object, and None.  C{subprocess.PIPE} indicates that a
+        file object, and None.  ``subprocess.PIPE`` indicates that a
         new pipe to the child should be created.  With None, no
         redirection will occur; the child's file handles will be
         inherited from the parent.  Additionally, stderr can be
-        C{subprocess.STDOUT}, which indicates that the stderr data
+        ``subprocess.STDOUT``, which indicates that the stderr data
         from the applications should be captured into the same file
         handle as for stdout.
 
-    :param blocking: If C{false}, then return immediately after
+    :param blocking: If ``false``, then return immediately after
         spawning the subprocess.  In this case, the return value is
-        the C{Popen} object, and not a C{(stdout, stderr)} tuple.
+        the ``Popen`` object, and not a ``(stdout, stderr)`` tuple.
 
-    :return: If C{blocking=True}, then return a tuple C{(stdout,
-        stderr)}, containing the stdout and stderr outputs generated
-        by the java command if the C{stdout} and C{stderr} parameters
-        were set to C{subprocess.PIPE}; or None otherwise.  If
-        C{blocking=False}, then return a C{subprocess.Popen} object.
+    :return: If ``blocking=True``, then return a tuple ``(stdout,
+        stderr)``, containing the stdout and stderr outputs generated
+        by the java command if the ``stdout`` and ``stderr`` parameters
+        were set to ``subprocess.PIPE``; or None otherwise.  If
+        ``blocking=False``, then return a ``subprocess.Popen`` object.
 
     :raise OSError: If the java command returns a nonzero return code.
     """
@@ -206,9 +206,9 @@ _STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
 def parse_str(s, start_position):
     """
     If a Python string literal begins at the specified position in the
-    given string, then return a tuple C{(val, end_position)}
+    given string, then return a tuple ``(val, end_position)``
     containing the value of the string literal and the position where
-    it ends.  Otherwise, raise a L{ParseError}.
+    it ends.  Otherwise, raise a ``ParseError``.
     """
     # Read the open quote, and any modifiers.
     m = _STRING_START_RE.match(s, start_position)
@@ -235,9 +235,9 @@ _PARSE_INT_RE = re.compile(r'-?\d+')
 def parse_int(s, start_position):
     """
     If an integer begins at the specified position in the given
-    string, then return a tuple C{(val, end_position)} containing the
+    string, then return a tuple ``(val, end_position)`` containing the
     value of the integer and the position where it ends.  Otherwise,
-    raise a L{ParseError}.
+    raise a ``ParseError``.
     """
     m = _PARSE_INT_RE.match(s, start_position)
     if not m: raise ParseError('integer', start_position)
@@ -247,9 +247,9 @@ _PARSE_NUMBER_VALUE = re.compile(r'-?(\d*)([.]?\d*)?')
 def parse_number(s, start_position):
     """
     If an integer or float begins at the specified position in the
-    given string, then return a tuple C{(val, end_position)}
+    given string, then return a tuple ``(val, end_position)``
     containing the value of the number and the position where it ends.
-    Otherwise, raise a L{ParseError}.
+    Otherwise, raise a ``ParseError``.
     """
     m = _PARSE_NUMBER_VALUE.match(s, start_position)
     if not m or not (m.group(1) or m.group(2)):
@@ -265,7 +265,7 @@ def parse_number(s, start_position):
 
 def overridden(method):
     """
-    :return: True if C{method} overrides some method with the same
+    :return: True if ``method`` overrides some method with the same
     name in a base class.  This is typically used when defining
     abstract base classes or interfaces, to allow subclasses to define
     either of two related methods:
@@ -294,11 +294,11 @@ def overridden(method):
 
 def _mro(cls):
     """
-    Return the I{method resolution order} for C{cls} -- i.e., a list
-    containing C{cls} and all its base classes, in the order in which
-    they would be checked by C{getattr}.  For new-style classes, this
+    Return the method resolution order for ``cls`` -- i.e., a list
+    containing ``cls`` and all its base classes, in the order in which
+    they would be checked by ``getattr``.  For new-style classes, this
     is just cls.__mro__.  For classic classes, this can be obtained by
-    a depth-first left-to-right traversal of C{__bases__}.
+    a depth-first left-to-right traversal of ``__bases__``.
     """
     if isinstance(cls, type):
         return cls.__mro__
@@ -608,7 +608,7 @@ def abstract(func):
     are marked by this decorator must be overridden by subclasses.  If
     an abstract method is called (either in the base class or in a
     subclass that does not override the base class method), it will
-    raise C{NotImplementedError}.
+    raise ``NotImplementedError``.
     """
     # Avoid problems caused by nltk.tokenize shadowing the stdlib tokenize:
     inspect = import_from_stdlib('inspect')
@@ -655,7 +655,7 @@ class ElementWrapper(object):
     def __new__(cls, etree):
         """
         Create and return a wrapper around a given Element object.
-        If C{etree} is an C{ElementWrapper}, then C{etree} is
+        If ``etree`` is an ``ElementWrapper``, then ``etree`` is
         returned as-is.
         """
         if isinstance(etree, ElementWrapper):
@@ -665,9 +665,9 @@ class ElementWrapper(object):
 
     def __init__(self, etree):
         """
-        Initialize a new Element wrapper for C{etree}.  If
-        C{etree} is a string, then it will be converted to an
-        Element object using C{ElementTree.fromstring()} first.
+        Initialize a new Element wrapper for ``etree``.  If
+        ``etree`` is a string, then it will be converted to an
+        Element object using ``ElementTree.fromstring()`` first.
         """
         if isinstance(etree, basestring):
             etree = ElementTree.fromstring(etree)
@@ -693,7 +693,7 @@ class ElementWrapper(object):
 
     def __str__(self):
         """
-        :return: the result of applying C{ElementTree.tostring()} to
+        :return: the result of applying ``ElementTree.tostring()`` to
         the wrapped Element object.
         """
         return ElementTree.tostring(self._etree).rstrip()
@@ -768,7 +768,7 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
       - 0 <= stop <= len(sequence)
       - start <= stop
 
-    :raise ValueError: If C{slice_obj.step} is not None.
+    :raise ValueError: If ``slice_obj.step`` is not None.
     :param allow_step: If true, then the slice object may have a
         non-None step.  If it does, then return a tuple
         (start, stop, step).

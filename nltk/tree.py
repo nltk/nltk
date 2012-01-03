@@ -264,8 +264,8 @@ class Tree(list):
             >>> print t
             (S (NP (D EHT) (N GOD)) (VP (V DESAHC) (NP (D EHT) (N TAC))))
 
-        :param order: One of: C{preorder}, C{postorder}, C{bothorder},
-            C{leaves}.
+        :param order: One of: ``preorder``, ``postorder``, ``bothorder``,
+            ``leaves``.
         """
         positions = []
         if order in ('preorder', 'bothorder'): positions.append( () )
@@ -292,7 +292,7 @@ class Tree(list):
             (D the)
             (N cat)
 
-        :type filter: C{function}
+        :type filter: function
         :param filter: the function to filter all local trees
         """
         if not filter or filter(self):
@@ -313,7 +313,7 @@ class Tree(list):
             [S -> NP VP, NP -> D N, D -> 'the', N -> 'dog', VP -> V NP, V -> 'chased',
             NP -> D N, D -> 'the', N -> 'cat']
 
-        :rtype: list of C{Production}s
+        :rtype: list(Production)
         """
 
         if not isinstance(self.node, basestring):
@@ -335,7 +335,7 @@ class Tree(list):
 
         :return: a list of tuples containing leaves and pre-terminals (part-of-speech tags).
             The order reflects the order of the leaves in the tree's hierarchical structure.
-        :rtype: list of C{tuples}
+        :rtype: list(tuple)
         """
         pos = []
         for child in self:
@@ -347,12 +347,12 @@ class Tree(list):
 
     def leaf_treeposition(self, index):
         """
-        :return: The tree position of the C{index}-th leaf in this
-            tree.  I.e., if C{tp=self.leaf_treeposition(i)}, then
-            C{self[tp]==self.leaves()[i]}.
+        :return: The tree position of the ``index``-th leaf in this
+            tree.  I.e., if ``tp=self.leaf_treeposition(i)``, then
+            ``self[tp]==self.leaves()[i]``.
         
-        :raise IndexError: If this tree contains fewer than C{index+1}
-            leaves, or if C{index<0}.
+        :raise IndexError: If this tree contains fewer than ``index+1``
+            leaves, or if ``index<0``.
         """
         if index < 0: raise IndexError('index must be non-negative')
 
@@ -371,8 +371,8 @@ class Tree(list):
     def treeposition_spanning_leaves(self, start, end):
         """
         :return: The tree position of the lowest descendant of this
-            tree that dominates C{self.leaves()[start:end]}.
-        :raise ValueError: if C{end <= start}
+            tree that dominates ``self.leaves()[start:end]``.
+        :raise ValueError: if ``end <= start``
         """
         if end <= start:
             raise ValueError('end must be greater than start')
@@ -468,10 +468,10 @@ class Tree(list):
     # [classmethod]
     def convert(cls, val):
         """
-        Convert a tree between different subtypes of Tree.  C{cls} determines
+        Convert a tree between different subtypes of Tree.  ``cls`` determines
         which class will be used to encode the new tree.
 
-        :type val: L{Tree}
+        :type val: Tree
         :param val: The tree that should be converted.
         :return: The new Tree.
         """
@@ -516,14 +516,14 @@ class Tree(list):
         :type s: str
         :param s: The string to parse
         
-        :type brackets: length-2 str
+        :type brackets: str (length=2)
         :param brackets: The bracket characters used to mark the
             beginning and end of trees and subtrees.
             
-        :type parse_node: C{function}
-        :type parse_leaf: C{function}
+        :type parse_node: ``function``
+        :type parse_leaf: ``function``
         :param parse_node, parse_leaf: If specified, these functions
-            are applied to the substrings of C{s} corresponding to
+            are applied to the substrings of ``s`` corresponding to
             nodes and leaves (respectively) to obtain the values for
             those nodes and leaves.  They should have the following
             signature:
@@ -532,16 +532,16 @@ class Tree(list):
 
             For example, these functions could be used to parse nodes
             and leaves whose values should be some type other than
-            string (such as L{FeatStruct <nltk.featstruct.FeatStruct>}).
+            string (such as ``FeatStruct``).
             Note that by default, node strings and leaf strings are
             delimited by whitespace and brackets; to override this
-            default, use the C{node_pattern} and C{leaf_pattern}
+            default, use the ``node_pattern`` and ``leaf_pattern``
             arguments.
 
         :type node_pattern: str
         :type leaf_pattern: str
         :param node_pattern, leaf_pattern: Regular expression patterns
-            used to find node and leaf substrings in C{s}.  By
+            used to find node and leaf substrings in ``s``.  By
             default, both nodes patterns are defined to match any
             sequence of non-whitespace non-bracket characters.
 
@@ -551,7 +551,7 @@ class Tree(list):
             single child instead.  This is useful for treebank trees,
             which sometimes contain an extra level of bracketing.
 
-        :return: A tree corresponding to the string representation C{s}.
+        :return: A tree corresponding to the string representation ``s``.
             If this class method is called using a subclass of Tree,
             then it will return a tree of that type.
         :rtype: Tree
@@ -667,8 +667,8 @@ class Tree(list):
             subsequent lines.
         :type indent: int
         :param nodesep: A string that is used to separate the node
-            from the children.  E.g., the default value C{':'} gives
-            trees like C{(S: (NP: I) (VP: (V: saw) (NP: it)))}.
+            from the children.  E.g., the default value ``':'`` gives
+            trees like ``(S: (NP: I) (VP: (V: saw) (NP: it)))``.
         """
 
         # Try writing it on one line.
@@ -696,11 +696,11 @@ class Tree(list):
     def pprint_latex_qtree(self):
         r"""
         Returns a representation of the tree compatible with the
-        LaTeX qtree package. This consists of the string C{\Tree}
+        LaTeX qtree package. This consists of the string ``\Tree``
         followed by the parse tree represented in bracketed notation.
 
         For example, the following result was generated from a parse tree of
-        the sentence C{The announcement astounded us}::
+        the sentence ``The announcement astounded us``::
 
           \Tree [.I'' [.N'' [.D The ] [.N' [.N announcement ] ] ]
               [.I' [.V'' [.V' [.V astounded ] [.N'' [.N' [.N us ] ] ] ] ] ] ]
@@ -785,27 +785,27 @@ class ImmutableTree(Tree):
 
 class AbstractParentedTree(Tree):
     """
-    An abstract base class for L{Tree}s that automatically maintain
-    pointers to their parents.  These parent pointers are updated
+    An abstract base class for a ``Tree`` that automatically maintains
+    pointers to parent nodes.  These parent pointers are updated
     whenever any change is made to a tree's structure.  Two subclasses
     are currently defined:
 
-      - L{ParentedTree} is used for tree structures where each subtree
+      - ``ParentedTree`` is used for tree structures where each subtree
         has at most one parent.  This class should be used in cases
         where there is no"sharing" of subtrees.
         
-      - L{MultiParentedTree} is used for tree structures where a
+      - ``MultiParentedTree`` is used for tree structures where a
         subtree may have zero or more parents.  This class should be
         used in cases where subtrees may be shared.
 
     Subclassing
     ===========
-    The C{AbstractParentedTree} class redefines all operations that
+    The ``AbstractParentedTree`` class redefines all operations that
     modify a tree's structure to call two methods, which are used by
     subclasses to update parent information:
     
-      - L{_setparent()} is called whenever a new child is added.
-      - L{_delparent()} is called whenever a child is removed.
+      - ``_setparent()`` is called whenever a new child is added.
+      - ``_delparent()`` is called whenever a child is removed.
     """
     def __init__(self, node_or_str, children=None):
         if children is None: return # see note in Tree.__init__()
@@ -825,18 +825,18 @@ class AbstractParentedTree(Tree):
 
     def _setparent(self, child, index, dry_run=False):
         """
-        Update C{child}'s parent pointer to point to self.  This
-        method is only called if C{child}'s type is L{Tree}; i.e., it
-        is not called when adding a leaf to a tree.  This method is
-        always called before the child is actually added to C{self}'s
-        child list.
+        Update the parent pointer of ``child`` to point to ``self``.  This
+        method is only called if the type of ``child`` is ``Tree``;
+        i.e., it is not called when adding a leaf to a tree.  This method
+        is always called before the child is actually added to the
+        child list of ``self``.
 
-        :type child: L{Tree}
+        :type child: Tree
         :type index: int
-        :param index: The index of C{child} in C{self}.
-        :raise TypeError: If C{child} is a tree with an impropriate
-            type.  Typically, if C{child} is a tree, then its type needs
-            to match C{self}'s type.  This prevents mixing of
+        :param index: The index of ``child`` in ``self``.
+        :raise TypeError: If ``child`` is a tree with an impropriate
+            type.  Typically, if ``child`` is a tree, then its type needs
+            to match the type of ``self``.  This prevents mixing of
             different tree types (single-parented, multi-parented, and
             non-parented).
         :param dry_run: If true, the don't actually set the child's
@@ -847,15 +847,15 @@ class AbstractParentedTree(Tree):
     
     def _delparent(self, child, index):
         """
-        Update C{child}'s parent pointer to not point to self.  This
-        method is only called if C{child}'s type is L{Tree}; i.e., it
+        Update the parent pointer of ``child`` to not point to self.  This
+        method is only called if the type of ``child`` is ``Tree``; i.e., it
         is not called when removing a leaf from a tree.  This method
-        is always called before the child is actually removed from
-        C{self}'s child list.
+        is always called before the child is actually removed from the
+        child list of ``self``.
         
-        :type child: L{Tree}
+        :type child: Tree
         :type index: int
-        :param index: The index of C{child} in C{self}.
+        :param index: The index of ``child`` in ``self``.
         """
         raise AssertionError('Abstract base class')
 
@@ -1004,21 +1004,21 @@ class AbstractParentedTree(Tree):
 
 class ParentedTree(AbstractParentedTree):
     """
-    A L{Tree} that automatically maintains parent pointers for
+    A ``Tree`` that automatically maintains parent pointers for
     single-parented trees.  The following read-only property values
     are automatically updated whenever the structure of a parented
-    tree is modified: L{parent}, L{parent_index}, L{left_sibling},
-    L{right_sibling}, L{root}, L{treeposition}.
+    tree is modified: ``parent``, ``parent_index``, ``left_sibling``,
+    ``right_sibling``, ``root``, ``treeposition``.
 
-    Each C{ParentedTree} may have at most one parent.  In
+    Each ``ParentedTree`` may have at most one parent.  In
     particular, subtrees may not be shared.  Any attempt to reuse a
-    single C{ParentedTree} as a child of more than one parent (or
+    single ``ParentedTree`` as a child of more than one parent (or
     as multiple children of the same parent) will cause a
-    C{ValueError} exception to be raised.
+    ``ValueError`` exception to be raised.
     
-    C{ParentedTrees} should never be used in the same tree as C{Trees}
-    or C{MultiParentedTrees}.  Mixing tree implementations may result
-    in incorrect parent pointers and in C{TypeError} exceptions.
+    ``ParentedTrees`` should never be used in the same tree as ``Trees``
+    or ``MultiParentedTrees``.  Mixing tree implementations may result
+    in incorrect parent pointers and in ``TypeError`` exceptions.
     """
     def __init__(self, node_or_str, children=None):
         if children is None: return # see note in Tree.__init__()
@@ -1066,9 +1066,9 @@ class ParentedTree(AbstractParentedTree):
     
     parent_index = property(_get_parent_index, doc="""
         The index of this tree in its parent.  I.e.,
-        C{ptree.parent[ptree.parent_index] is ptree}.  Note that
-        C{ptree.parent_index} is not necessarily equal to
-        C{ptree.parent.index(ptree)}, since the C{index()} method
+        ``ptree.parent[ptree.parent_index] is ptree``.  Note that
+        ``ptree.parent_index`` is not necessarily equal to
+        ``ptree.parent.index(ptree)``, since the ``index()`` method
         returns the first child that is I{equal} to its argument.""")
 
     left_sibling = property(_get_left_sibling, doc="""
@@ -1079,12 +1079,12 @@ class ParentedTree(AbstractParentedTree):
 
     root = property(_get_root, doc="""
         The root of this tree.  I.e., the unique ancestor of this tree
-        whose parent is None.  If C{ptree.parent} is None, then
-        C{ptree} is its own root.""")
+        whose parent is None.  If ``ptree.parent`` is None, then
+        ``ptree`` is its own root.""")
 
     treeposition = property(_get_treeposition, doc="""
         The tree position of this tree, relative to the root of the
-        tree.  I.e., C{ptree.root[ptree.treeposition] is ptree}.""")
+        tree.  I.e., ``ptree.root[ptree.treeposition] is ptree``.""")
     treepos = treeposition # [xx] alias -- which name should we use?
 
     #/////////////////////////////////////////////////////////////////
@@ -1117,21 +1117,21 @@ class ParentedTree(AbstractParentedTree):
 
 class MultiParentedTree(AbstractParentedTree):
     """
-    A L{Tree} that automatically maintains parent pointers for
+    A ``Tree`` that automatically maintains parent pointers for
     multi-parented trees.  The following read-only property values are
     automatically updated whenever the structure of a multi-parented
-    tree is modified: L{parents}, L{parent_indices}, L{left_siblings},
-    L{right_siblings}, L{roots}, L{treepositions}.
+    tree is modified: ``parents``, ``parent_indices``, ``left_siblings``,
+    ``right_siblings``, ``roots``, ``treepositions``.
     
-    Each C{MultiParentedTree} may have zero or more parents.  In
+    Each ``MultiParentedTree`` may have zero or more parents.  In
     particular, subtrees may be shared.  If a single
-    C{MultiParentedTree} is used as multiple children of the same
+    ``MultiParentedTree`` is used as multiple children of the same
     parent, then that parent will appear multiple times in its
-    C{parents} property.
+    ``parents`` property.
 
-    C{MultiParentedTrees} should never be used in the same tree as
-    C{Trees} or C{ParentedTrees}.  Mixing tree implementations may
-    result in incorrect parent pointers and in C{TypeError} exceptions.
+    ``MultiParentedTrees`` should never be used in the same tree as
+    ``Trees`` or ``ParentedTrees``.  Mixing tree implementations may
+    result in incorrect parent pointers and in ``TypeError`` exceptions.
     """
     def __init__(self, node_or_str, children=None):
         if children is None: return # see note in Tree.__init__()
@@ -1178,11 +1178,11 @@ class MultiParentedTree(AbstractParentedTree):
 
     parents = property(lambda self: list(self._parents), doc="""
         The set of parents of this tree.  If this tree has no parents,
-        then C{parents} is the empty set.  To check if a tree is used
+        then ``parents`` is the empty set.  To check if a tree is used
         as multiple children of the same parent, use the
-        L{parent_indices} property.
+        ``parent_indices`` property.
 
-        :type: list of L{MultiParentedTree}""")
+        :type: list(MultiParentedTree)""")
 
     left_siblings = property(_get_left_siblings, doc="""
         A list of all left siblings of this tree, in any of its parent
@@ -1191,7 +1191,7 @@ class MultiParentedTree(AbstractParentedTree):
         appear multiple times in this list if it is the left sibling
         of this tree with respect to multiple parents.
 
-        :type: list of L{MultiParentedTree}""")
+        :type: list(MultiParentedTree)""")
     
     right_siblings = property(_get_right_siblings, doc="""
         A list of all right siblings of this tree, in any of its parent
@@ -1200,20 +1200,20 @@ class MultiParentedTree(AbstractParentedTree):
         appear multiple times in this list if it is the right sibling
         of this tree with respect to multiple parents.
 
-        :type: list of L{MultiParentedTree}""")
+        :type: list(MultiParentedTree)""")
                               
     roots = property(_get_roots, doc="""
         The set of all roots of this tree.  This set is formed by
         tracing all possible parent paths until trees with no parents
         are found.
 
-        :type: list of L{MultiParentedTree}""")
+        :type: list(MultiParentedTree)""")
 
     def parent_indices(self, parent):
         """
         Return a list of the indices where this tree occurs as a child
-        of C{parent}.  If this child does not occur as a child of
-        C{parent}, then the empty list is returned.  The following is
+        of ``parent``.  If this child does not occur as a child of
+        ``parent``, then the empty list is returned.  The following is
         always true::
 
           for parent_index in ptree.parent_indices(parent):
@@ -1226,7 +1226,7 @@ class MultiParentedTree(AbstractParentedTree):
     def treepositions(self, root):
         """
         Return a list of all tree positions that can be used to reach
-        this multi-parented tree starting from C{root}.  I.e., the
+        this multi-parented tree starting from ``root``.  I.e., the
         following is always true::
 
           for treepos in ptree.treepositions(root):
@@ -1387,7 +1387,7 @@ def sinica_parse(s):
     S(goal:NP(Head:Nep:XX)|theme:NP(Head:Nhaa:X)|quantity:Dab:X|Head:VL2:X)#0(PERIODCATEGORY)
 
     :return: A tree corresponding to the string representation.
-    :rtype: C{tree}
+    :rtype: Tree
     :param s: The string to be converted
     :type s: str
     """
@@ -1420,7 +1420,7 @@ def demo():
     """
     A demonstration showing how Trees and Trees can be
     used.  This demonstration creates a Tree, and loads a
-    Tree from the L{treebank<nltk.corpus.treebank>} corpus,
+    Tree from the Treebank corpus,
     and shows the results of calling several of their methods.
     """
     

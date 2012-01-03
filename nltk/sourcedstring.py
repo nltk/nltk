@@ -43,22 +43,22 @@ __all__ = [
 class StringSource(object):
     """
     A description of the location of a string in a document.  Each
-    C{StringSource} consists of a document identifier, along with
+    ``StringSource`` consists of a document identifier, along with
     information about the begin and end offsets of each character in
     the string.  These offsets are typically either byte offsets or
     character offsets.  (Note that for unicode strings, byte offsets
     and character offsets are not the same thing.)
 
-    C{StringSource} is an abstract base class.  Two concrete
+    ``StringSource`` is an abstract base class.  Two concrete
     subclasses are used depending on the properties of the string
     whose source is being described:
 
-      - L{ConsecutiveCharStringSource} describes the source of strings
+      - ``ConsecutiveCharStringSource`` describes the source of strings
         whose characters have consecutive offsets (in particular, byte
         strings w/ byte offsets; and unicode strings with character
         offsets).
         
-      - L{ContiguousCharStringSource} describes the source of strings
+      - ``ContiguousCharStringSource`` describes the source of strings
         whose characters are contiguous, but do not necessarily have
         consecutive offsets (in particular, unicode strings with byte
         offsets).
@@ -67,21 +67,21 @@ class StringSource(object):
         which document contains the string.
 
     :ivar offsets: A list of offsets specifying the location of each
-        character in the document.  The C{i}th character of the string
-        begins at offset C{offsets[i]} and ends at offset
-        C{offsets[i+1]}.  The length of the C{offsets} list is one
+        character in the document.  The *i* th character of the string
+        begins at offset ``offsets[i]`` and ends at offset
+        ``offsets[i+1]``.  The length of the ``offsets`` list is one
         greater than the list of the string described by this
-        C{StringSource}.
+        ``StringSource``.
     
     :ivar begin: The document offset where the string begins.  (I.e.,
         the offset of the first character in the string.)
-        C{source.begin} is always equal to C{source.offsets[0]}.
+        ``source.begin`` is always equal to ``source.offsets[0]``.
     
     :ivar end: The document offset where the string ends.  (For
         character offsets, one plus the offset of the last character;
         for byte offsets, one plus the offset of the last byte that
-        encodes the last character).  C{source.end} is always equal
-        to C{source.offsets[-1]}.
+        encodes the last character).  ``source.end`` is always equal
+        to ``source.offsets[-1]``.
     """
     def __new__(cls, docid, *args, **kwargs):
         # If the StringSource constructor is called directly, then
@@ -103,14 +103,14 @@ class StringSource(object):
 
     def __init__(self, docid, **kwargs):
         """
-        Create a new C{StringSource}.  When the C{StringSource}
+        Create a new ``StringSource``.  When the ``StringSource``
         constructor is called directly, it automatically delegates to
         one of its two subclasses:
 
-            - If C{begin} and C{end} are specified, then a
-              L{ConsecutiveCharStringSource} is returned.
-            - If C{offsets} is specified, then a 
-              L{ContiguousCharStringSource} is returned.
+            - If ``begin`` and ``end`` are specified, then a
+              ``ConsecutiveCharStringSource`` is returned.
+            - If ``offsets`` is specified, then a 
+              ``ContiguousCharStringSource`` is returned.
               
         In both cases, the arguments must be specified as keyword
         arguments (not positional arguments).
@@ -118,10 +118,10 @@ class StringSource(object):
     
     def __getitem__(self, index):
         """
-        Return a L{StringSource} describing the location where the
-        specified character was found.  In particular, if C{s} is the
+        Return a ``StringSource`` describing the location where the
+        specified character was found.  In particular, if ``s`` is the
         string that this source describes, then return a
-        L{StringSource} describing the location of C{s[index]}.
+        ``StringSource`` describing the location of ``s[index]``.
         
         :raise IndexError: If index is out of range.
         """
@@ -137,18 +137,18 @@ class StringSource(object):
     @abstract
     def __getslice__(self, start, stop):
         """
-        Return a L{StringSource} describing the location where the
-        specified substring was found.  In particular, if C{s} is the
+        Return a ``StringSource`` describing the location where the
+        specified substring was found.  In particular, if ``s`` is the
         string that this source describes, then return a
-        L{StringSource} describing the location of C{s[start:stop]}.
+        ``StringSource`` describing the location of ``s[start:stop]``.
         """
 
     @abstract
     def __len__(self):
         """
         Return the length of the string described by this
-        C{StringSource}.  Note that this may not be equal to
-        C{self.end-self.begin} for unicode strings described using
+        ``StringSource``.  Note that this may not be equal to
+        ``self.end-self.begin`` for unicode strings described using
         byte offsets.
         """
         
@@ -173,7 +173,7 @@ class StringSource(object):
 
 class ConsecutiveCharStringSource(StringSource):
     """
-    A L{StringSource} that specifies the source of strings whose
+    A ``StringSource`` that specifies the source of strings whose
     characters have consecutive offsets.  In particular, the following
     two properties must hold for all valid indices:
 
@@ -183,7 +183,7 @@ class ConsecutiveCharStringSource(StringSource):
     These properties allow the source to be stored using just a start
     offset and an end offset (along with a docid).
     
-    This C{StringSource} can be used to describe byte strings that are
+    This ``StringSource`` can be used to describe byte strings that are
     indexed using byte offsets or character offsets; or unicode
     strings that are indexed using character offsets.
     """
@@ -225,7 +225,7 @@ class ConsecutiveCharStringSource(StringSource):
 
 class ContiguousCharStringSource(StringSource):
     """
-    A L{StringSource} that specifies the source of strings whose
+    A ``StringSource`` that specifies the source of strings whose
     character are contiguous, but do not necessarily have consecutive
     offsets.  In particular, each character's end offset must be equal
     to the next character's start offset:
@@ -233,9 +233,9 @@ class ContiguousCharStringSource(StringSource):
       - source[i].end == source[i+1].begin
     
     This property allow the source to be stored using a list of
-    C{len(source)+1} offsets (along with a docid).
+    ``len(source)+1`` offsets (along with a docid).
     
-    This C{StringSource} can be used to describe unicode strings that
+    This ``StringSource`` can be used to describe unicode strings that
     are indexed using byte offsets.
     """
     CONSTRUCTOR_CHECKS_OFFSETS = False
@@ -288,9 +288,9 @@ class SourcedString(object):
     subclassed from Python strings.  As a result, they can usually be
     used anywhere a normal Python string can be used.
 
-    There are two types of sourced strings: L{SimpleSourcedString}s,
+    There are two types of sourced strings: ``SimpleSourcedString``s,
     which correspond to a single substring of a document; and
-    L{CompoundSourcedString}s, which are constructed by concatenating
+    ``CompoundSourcedString``s, which are constructed by concatenating
     strings from multiple sources.  Each of these types has two
     concrete subclasses: one for unicode strings (subclassed from
     ``unicode``), and one for byte strings (subclassed from ``str``).
@@ -303,8 +303,8 @@ class SourcedString(object):
 
     If you wish to determine whether two sourced strings came from the
     same location in the same document, simply compare their
-    L{sources} attributes.  If you know that both sourced strings are
-    L{SimpleSourcedStrings}, then you can compare their L{source}
+    ``sources`` attributes.  If you know that both sourced strings are
+    ``SimpleSourcedStrings``, then you can compare their ``source``
     attribute instead.
 
     String operations that act on sourced strings will preserve
@@ -318,15 +318,15 @@ class SourcedString(object):
       - String formatting (the ``%`` operator).
       - Regular expression substitution.
 
-    :ivar sources: A sorted tuple of C{(index, source)} pairs.  Each
+    :ivar sources: A sorted tuple of ``(index, source)`` pairs.  Each
         such pair specifies that the source of
-        C{self[index:index+len(source)]} is C{source}.  Any characters
+        ``self[index:index+len(source)]`` is ``source``.  Any characters
         for which no source is specified are sourceless (e.g., plain
         Python characters that were concatenated to a sourced string).
 
         When working with simple sourced strings, it's usually easier
-        to use the L{source} attribute instead; however, the
-        C{sources} attribute is defined for both simple and compound
+        to use the ``source`` attribute instead; however, the
+        ``sources`` attribute is defined for both simple and compound
         sourced strings.
     """
     def __new__(cls, contents, source):
@@ -346,9 +346,9 @@ class SourcedString(object):
         return cls._stringtype.__new__(cls, contents)
 
     _stringtype = None
-    """A class variable, defined by subclasses of L{SourcedString},
+    """A class variable, defined by subclasses of ``SourcedString``,
        determining what type of string this class contains.  Its
-       value must be either str or C{unicode}."""
+       value must be either str or ``unicode``."""
 
     #//////////////////////////////////////////////////////////////////////
     #{ Splitting & Stripping Methods
@@ -435,8 +435,8 @@ class SourcedString(object):
 
         Depending on the types and values of the supplied substrings,
         the concatenated string's value may be a Python string (str
-        or C{unicode}), a L{SimpleSourcedString}, or a
-        L{CompoundSourcedString}.
+        or ``unicode``), a ``SimpleSourcedString``, or a
+        ``CompoundSourcedString``.
         """
         # Flatten nested compound sourced strings, and merge adjacent
         # strings where possible:
@@ -488,8 +488,8 @@ class SourcedString(object):
     @staticmethod
     def __add_substring_to_list(substring, result):
         """
-        Helper for L{concat()}: add C{substring} to the end of the
-        list of substrings in C{result}.  If C{substring} is compound,
+        Helper for ``concat()``: add ``substring`` to the end of the
+        list of substrings in ``result``.  If ``substring`` is compound,
         then add its own substrings instead.  Merge adjacent
         substrings whenever possible.  Discard empty un-sourced
         substrings.
@@ -523,8 +523,8 @@ class SourcedString(object):
     @staticmethod
     def __merge_simple_substrings(lhs, rhs):
         """
-        Helper for L{__add_substring_to_list()}: Merge C{lhs} and
-        C{rhs} into a single simple sourced string, and return it.
+        Helper for ``__add_substring_to_list()``: Merge ``lhs`` and
+        ``rhs`` into a single simple sourced string, and return it.
         """
         contents = lhs._stringtype.__add__(lhs, rhs)
         if (isinstance(lhs.source, ConsecutiveCharStringSource) and
@@ -681,9 +681,9 @@ class SourcedString(object):
     @abstract
     def _decode_one_to_one(unicode_chars):
         """
-        Helper for L{self.decode()}.  Returns a unicode-decoded
-        version of this L{SourcedString}.  C{unicode_chars} is the
-        unicode-decoded contents of this L{SourcedString}.
+        Helper for ``self.decode()``.  Returns a unicode-decoded
+        version of this ``SourcedString``.  ``unicode_chars`` is the
+        unicode-decoded contents of this ``SourcedString``.
 
         This is used in the special case where the decoded string has
         the same length that the source string does.  As a result, we
@@ -698,7 +698,7 @@ class SourcedString(object):
         unicode string and at least one byte string.  (If this is the
         case, then all byte strings should be converted to unicode by
         calling decode() before the operation is performed.  You can
-        do this automatically using L{_decode_and_call()}.
+        do this automatically using ``_decode_and_call()``.
         """
         any_unicode = isinstance(self, unicode)
         any_bytestring = isinstance(self, str)
@@ -711,8 +711,8 @@ class SourcedString(object):
         """
         If self or any of the values in args is a byte string, then
         convert it to unicode by calling its decode() method.  Then
-        return the result of calling self.op(*args).  C{op} is
-        specified using a string, because if C{self} is a byte string,
+        return the result of calling self.op(*args).  ``op`` is
+        specified using a string, because if ``self`` is a byte string,
         then it will change type when it is decoded.
         """
         # Make sure all args are decoded to unicode.
@@ -741,10 +741,10 @@ class SourcedString(object):
             orientation.
             
         :param wrap: Controls when the pretty-printed output is wrapped
-            to the next line.  If C{wrap} is an integer, then lines are
-            wrapped when they become longer than C{wrap}.  If C{wrap} is
+            to the next line.  If ``wrap`` is an integer, then lines are
+            wrapped when they become longer than ``wrap``.  If ``wrap`` is
             a string, then lines are wrapped immediately following that
-            string.  If C{wrap} is None, then lines are never wrapped.
+            string.  If ``wrap`` is None, then lines are never wrapped.
         """
         if len(self) == 0: return '[Empty String]'
         if vertical == 1: return self._pprint_vertical() # special-cased
@@ -863,7 +863,7 @@ class SourcedString(object):
             return r'\u%04x' % ord(char)
             
     def _pprint_char(self, char, output_lines):
-        """Helper for L{pprint()}: add a character to the
+        """Helper for ``pprint()``: add a character to the
         pretty-printed output."""
         char_repr = self._pprint_char_repr(char)
         output_lines[0] += char_repr
@@ -873,7 +873,7 @@ class SourcedString(object):
             output_lines[i] += ' '*len(char_repr)
 
     def _pprint_offset(self, offset, output_lines):
-        """Helper for L{pprint()}: add an offset marker to the
+        """Helper for ``pprint()``: add an offset marker to the
         pretty-printed output."""
         if offset is None: return
         output_lines[0] += '|'
@@ -890,7 +890,7 @@ class SimpleSourcedString(SourcedString):
     """
     A single substring of a document, annotated with information about
     the location in the document where it was originally found.  See
-    L{SourcedString} for more information.
+    ``SourcedString`` for more information.
     """
     def __new__(cls, contents, source):
         # If the SimpleSourcedString constructor is called directly,
@@ -913,13 +913,13 @@ class SimpleSourcedString(SourcedString):
         Construct a new sourced string.
 
         :param contents: The string contents of the new sourced string.
-        :type contents: str or C{unicode}
-        :param source: The source for the new string.  If C{source} is
+        :type contents: str or ``unicode``
+        :param source: The source for the new string.  If ``source`` is
             a string, then it is used to automatically construct a new
-            L{ConsecutiveCharStringSource} with a begin offset of
-            C{0} and an end offset of C{len(contents)}.  Otherwise,
-            C{source} shoulde be a L{StringSource} whose length matches
-            the length of C{contents}.
+            ``ConsecutiveCharStringSource`` with a begin offset of
+            ``0`` and an end offset of ``len(contents)``.  Otherwise,
+            ``source`` shoulde be a ``StringSource`` whose length matches
+            the length of ``contents``.
         """
         if not isinstance(source, StringSource):
             source = ConsecutiveCharStringSource(source, 0, len(contents))
@@ -928,7 +928,7 @@ class SimpleSourcedString(SourcedString):
                              "contents (%d)" % (len(source), len(contents)))
         
         self.source = source
-        """A L{StringLocation} specifying the location where this string
+        """A ``StringLocation`` specifying the location where this string
            occured in the source document."""
 
     @property
@@ -1019,7 +1019,7 @@ class CompoundSourcedString(SourcedString):
     """
     A string constructed by concatenating substrings from multiple
     sources, and annotated with information about the locations where
-    those substrings were originally found.  See L{SourcedString} for
+    those substrings were originally found.  See ``SourcedString`` for
     more information.
 
     :ivar substrings: The tuple of substrings that compose this
@@ -1053,13 +1053,13 @@ class CompoundSourcedString(SourcedString):
         given list of substrings.
 
         Typically, compound sourced strings should not be constructed
-        directly; instead, use L{SourcedString.concat()}, which
+        directly; instead, use ``SourcedString.concat()``, which
         flattens nested compound sourced strings, and merges adjacent
         substrings when possible.
 
-        :raise ValueError: If C{len(substrings)  < 2}
-        :raise ValueError: If C{substrings} contains any
-            C{CompoundSourcedString}s.
+        :raise ValueError: If ``len(substrings)  < 2``
+        :raise ValueError: If ``substrings`` contains any
+            ``CompoundSourcedString``s.
         """
         if len(substrings) < 2:
             raise ValueError("CompoundSourcedString requires at least "
@@ -1190,8 +1190,8 @@ _original_re_subn = re.subn
 
 class SourcedStringRegexp(object):
     """
-    Wrapper for regexp pattern objects that cause the L{sub} and
-    L{subn} methods to return sourced strings.
+    Wrapper for regexp pattern objects that cause the ``sub`` and
+    ``subn`` methods to return sourced strings.
     """
     def __init__(self, pattern, flags=0):
         if isinstance(pattern, basestring):
@@ -1223,10 +1223,10 @@ class SourcedStringRegexp(object):
     @staticmethod
     def patch_re_module():
         """
-        Modify the standard C{re} module by installing new versions of
-        the functions C{re.compile}, C{re.sub}, and C{re.subn},
+        Modify the standard ``re`` module by installing new versions of
+        the functions ``re.compile``, ``re.sub``, and ``re.subn``,
         causing regular expression substitutions to return
-        C{SourcedString}s when called with C{SourcedString}s
+        ``SourcedString``s when called with ``SourcedString``s
         arguments.
 
         Use this function only if necessary: it potentially affects
@@ -1243,8 +1243,8 @@ class SourcedStringRegexp(object):
     @staticmethod
     def unpatch_re_module():
         """
-        Restore the standard C{re} module to its original state
-        (undoing the work that was done by L{patch_re_module()}).
+        Restore the standard ``re`` module to its original state
+        (undoing the work that was done by ``patch_re_module()``).
         """
         re.compile = _original_re_compile
         re.sub = _original_re_sub
@@ -1257,10 +1257,10 @@ class SourcedStringRegexp(object):
 
 class SourcedStringStream(object):
     """
-    Wrapper for a read-only stream that causes C{read()} (and related
-    methods) to return L{sourced string <SourcedStringBase>}s.
-    L{seek()} and L{tell()} are supported, but (currently) there are
-    some restrictions on the values that may be passed to L{seek()}.
+    Wrapper for a read-only stream that causes ``read()`` (and related
+    methods) to return ``sourced string <SourcedStringBase>``s.
+    ``seek()`` and ``tell()`` are supported, but (currently) there are
+    some restrictions on the values that may be passed to ``seek()``.
     """
     def __init__(self, stream, docid=None, byte_offsets=False):
         self.stream = stream
@@ -1291,7 +1291,7 @@ class SourcedStringStream(object):
         Read this file's contents, decode them using this reader's
         encoding, and return it as a list of unicode lines.
 
-        :rtype: list of C{unicode}
+        :rtype: list(unicode)
         :param sizehint: Ignored.
         :param keepends: If false, then strip newlines.
         """
