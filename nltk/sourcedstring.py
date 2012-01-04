@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 """
-X{Sourced strings} are strings that are annotated with information
+"Sourced strings" are strings that are annotated with information
 about the location in a document where they were originally found.
 Sourced strings are subclassed from Python strings.  As a result, they
 can usually be used anywhere a normal Python string can be used.
@@ -1226,7 +1226,7 @@ class SourcedStringRegexp(object):
         Modify the standard ``re`` module by installing new versions of
         the functions ``re.compile``, ``re.sub``, and ``re.subn``,
         causing regular expression substitutions to return
-        ``SourcedString``s when called with ``SourcedString``s
+        ``SourcedStrings`` when called with ``SourcedStrings``
         arguments.
 
         Use this function only if necessary: it potentially affects
@@ -1258,7 +1258,7 @@ class SourcedStringRegexp(object):
 class SourcedStringStream(object):
     """
     Wrapper for a read-only stream that causes ``read()`` (and related
-    methods) to return ``sourced string <SourcedStringBase>``s.
+    methods) to return ``SourcedStringBase``.
     ``seek()`` and ``tell()`` are supported, but (currently) there are
     some restrictions on the values that may be passed to ``seek()``.
     """

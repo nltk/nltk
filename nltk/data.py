@@ -196,8 +196,8 @@ class BufferedGzipFile(GzipFile):
     def __init__(self, filename=None, mode=None, compresslevel=9, 
                  fileobj=None, **kwargs):
         """
-        :return: a buffered gzip file object
-        :rtype: BufferedGzipFile
+        Return a buffered gzip file object.
+
         :param filename: a filesystem path
         :type filename: str
         :param mode: a file mode which can be any of 'r', 'rb', 'a', 'ab', 
@@ -212,6 +212,7 @@ class BufferedGzipFile(GzipFile):
         :type fileobj: StringIO
         :param size: number of bytes to buffer during calls to read() and write()
         :type size: int
+        :rtype: BufferedGzipFile
         """   
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
@@ -1110,9 +1111,9 @@ class SeekableUnicodeStreamReader(object):
         the byte string without the bytes that cause the trunctaion
         error.
 
-        :return: A tuple ``(chars, num_consumed)``, where ``chars`` is
-            the decoded unicode string, and ``num_consumed`` is the
-            number of bytes that were consumed.
+        Return a tuple ``(chars, num_consumed)``, where ``chars`` is
+        the decoded unicode string, and ``num_consumed`` is the
+        number of bytes that were consumed.
         """
         while True:
             try:

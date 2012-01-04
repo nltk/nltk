@@ -52,14 +52,14 @@ def usage(obj, selfname='self'):
 
 def in_idle():
     """
-    :rtype: bool
-    :return: true if this function is run within idle.  Tkinter
+    Return True if this function is run within idle.  Tkinter
     programs that are run in idle should never call ``Tk.mainloop``; so
     this function should be used to gate all calls to ``Tk.mainloop``.
 
     :warning: This function works by checking ``sys.stdin``.  If the
-    user has modified ``sys.stdin``, then it may return incorrect
-    results.
+        user has modified ``sys.stdin``, then it may return incorrect
+        results.
+    :rtype: bool
     """
     import sys, types
     return (type(sys.stdin) == types.InstanceType and \
@@ -125,9 +125,9 @@ class Index(defaultdict):
 
 def re_show(regexp, string, left="{", right="}"):
     """
-    Search str for substrings matching ``regexp`` and wrap
-    the matches with braces.  This is convenient for learning about
-    regular expressions.
+    Return a string with markers surrounding the matched substrings.
+    Search str for substrings matching ``regexp`` and wrap the matches
+    with braces.  This is convenient for learning about regular expressions.
 
     :param regexp: The regular expression.
     :type regexp: str
@@ -138,7 +138,6 @@ def re_show(regexp, string, left="{", right="}"):
     :param right: The right delimiter (printed after the matched substring)
     :type right: str
     :rtype: str
-    :return: A string with markers surrounding the matched substrings.
     """
     print re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
 
@@ -195,7 +194,7 @@ def guess_encoding(data):
     Plus several gathered from locale information.
 
     The calling program *must* first call::
-
+    
         locale.setlocale(locale.LC_ALL, '')
 
     If successful it returns ``(decoded_unicode, successful_encoding)``.
@@ -274,7 +273,6 @@ def transitive_closure(graph, reflexive=False):
     :type graph: dict(set)
     :param reflexive: if set, also make the closure reflexive
     :type reflexive: bool
-    :return: the (reflexive) transitive closure of the graph
     :rtype: dict(set)
     """
     if reflexive:
@@ -377,8 +375,7 @@ def flatten(*args):
 
 def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
-    A utility that produces a sequence of ngrams from a sequence of items.
-    For example:
+    Return a sequence of ngrams from a sequence of items.  For example:
     
     >>> ngrams([1,2,3,4,5], 3)
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
@@ -399,7 +396,6 @@ def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     :type pad_right: bool
     :param pad_symbol: the symbol to use for padding (default is None)
     :type pad_symbol: any
-    :return: The ngrams
     :rtype: list(tuple)
     """
 
@@ -414,8 +410,7 @@ def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
 
 def bigrams(sequence, **kwargs):
     """
-    A utility that produces a sequence of bigrams from a sequence of items.
-    For example:
+    Return a sequence of bigrams from a sequence of items.  For example:
     
     >>> bigrams([1,2,3,4,5])
     [(1, 2), (2, 3), (3, 4), (4, 5)]
@@ -424,15 +419,13 @@ def bigrams(sequence, **kwargs):
 
     :param sequence: the source data to be converted into bigrams
     :type sequence: sequence or iter
-    :return: The bigrams
     :rtype: list(tuple)
     """
     return ngrams(sequence, 2, **kwargs)
 
 def trigrams(sequence, **kwargs):
     """
-    A utility that produces a sequence of trigrams from a sequence of items.
-    For example:
+    Return a sequence of trigrams from a sequence of items.  For example:
     
     >>> trigrams([1,2,3,4,5])
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
@@ -441,15 +434,13 @@ def trigrams(sequence, **kwargs):
 
     :param sequence: the source data to be converted into trigrams
     :type sequence: sequence or iter
-    :return: The trigrams
     :rtype: list(tuple)
     """
     return ngrams(sequence, 3, **kwargs)
 
 def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
-    A utility that produces an iterator over ngrams generated from a sequence of items.
-    
+    Return the ngrams generated from a sequence of items, as an iterator.
     For example:
     
     >>> list(ingrams([1,2,3,4,5], 3))
@@ -471,8 +462,7 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     :type pad_right: bool
     :param pad_symbol: the symbol to use for padding (default is None)
     :type pad_symbol: any
-    :return: The ngrams
-    :rtype: iter of tuples
+    :rtype: iter(tuple)
     """
 
     sequence = iter(sequence)
@@ -492,8 +482,7 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
         
 def ibigrams(sequence, **kwargs):
     """
-    A utility that produces an iterator over bigrams generated from a sequence of items.
-    
+    Return the bigrams generated from a sequence of items, as an iterator.
     For example:
     
     >>> list(ibigrams([1,2,3,4,5]))
@@ -503,8 +492,7 @@ def ibigrams(sequence, **kwargs):
 
     :param sequence: the source data to be converted into bigrams
     :type sequence: sequence or iter
-    :return: The bigrams
-    :rtype: iter of tuples
+    :rtype: iter(tuple)
     """
 
     for item in ingrams(sequence, 2, **kwargs):
@@ -512,8 +500,7 @@ def ibigrams(sequence, **kwargs):
         
 def itrigrams(sequence, **kwargs):
     """
-    A utility that produces an iterator over trigrams generated from a sequence of items.
-    
+    Return the trigrams generated from a sequence of items, as an iterator.
     For example:
     
     >>> list(itrigrams([1,2,3,4,5]))
@@ -523,8 +510,7 @@ def itrigrams(sequence, **kwargs):
 
     :param sequence: the source data to be converted into trigrams
     :type sequence: sequence or iter
-    :return: The trigrams
-    :rtype: iter of tuples
+    :rtype: iter(tuple)
     """
 
     for item in ingrams(sequence, 3, **kwargs):
@@ -642,10 +628,8 @@ class AbstractLazySequence(object):
     sequence caches that element's value or reconstructs it from
     scratch.
 
-    Subclasses are required to define two methods:
-    
-      - ``__len__()``
-      - ``iterate_from()``.
+    Subclasses are required to define two methods: ``__len__()``
+    and ``iterate_from()``.
     """
     def __len__(self):
         """
@@ -665,7 +649,7 @@ class AbstractLazySequence(object):
     
     def __getitem__(self, i):
         """
-        Return the ``i``th token in the corpus file underlying this
+        Return the *i* th token in the corpus file underlying this
         corpus view.  Negative indices and spans are both supported.
         """
         if isinstance(i, slice):
@@ -693,7 +677,7 @@ class AbstractLazySequence(object):
     def index(self, value, start=None, stop=None):
         """Return the index of the first occurance of ``value`` in this
         list that is greater than or equal to ``start`` and less than
-        ``stop``.  Negative start & stop values are treated like negative
+        ``stop``.  Negative start and stop values are treated like negative
         slice bounds -- i.e., they count from the end of the list."""
         start, stop = slice_bounds(self, slice(start, stop))
         for i, elt in enumerate(islice(self, start, stop)):
@@ -723,7 +707,7 @@ class AbstractLazySequence(object):
     _MAX_REPR_SIZE = 60
     def __repr__(self):
         """
-        :return: A string representation for this corpus view that is
+        Return a string representation for this corpus view that is
         similar to a list's representation; but if it would be more
         than 60 characters long, it is truncated.
         """
@@ -741,8 +725,8 @@ class AbstractLazySequence(object):
         """
         Return a number indicating how ``self`` relates to other.
 
-          - If ``other`` is not a corpus view or a list, return -1.
-          - Otherwise, return ``cmp(list(self), list(other))``.
+        - If ``other`` is not a corpus view or a list, return -1.
+        - Otherwise, return ``cmp(list(self), list(other))``.
 
         Note: corpus views do not compare equal to tuples containing
         equal elements.  Otherwise, transitivity would be violated,
@@ -767,10 +751,11 @@ class LazySubsequence(AbstractLazySequence):
     """
 
     MIN_SIZE = 100
-    """The minimum size for which lazy slices should be created.  If
-       ``LazySubsequence()`` is called with a subsequence that is
-       shorter than ``MIN_SIZE``, then a tuple will be returned
-       instead."""
+    """
+    The minimum size for which lazy slices should be created.  If
+    ``LazySubsequence()`` is called with a subsequence that is
+    shorter than ``MIN_SIZE``, then a tuple will be returned instead.
+    """
     
     def __new__(cls, source, start, stop):
         """
@@ -1063,13 +1048,13 @@ class LazyEnumerate(LazyZip):
 # inherited from pywordnet, by Oliver Steele
 def binary_search_file(file, key, cache={}, cacheDepth=-1):
     """
+    Return the line from the file with first word key.
     Searches through a sorted file using the binary search algorithm.
 
-    :type  file: file
+    :type file: file
     :param file: the file to be searched through.
-    :type  key: str
+    :type key: str
     :param key: the identifier we are searching for.
-    :return: The line from the file with first word key.
     """
     
     key = key + ' '
@@ -1142,7 +1127,7 @@ def set_proxy(proxy, (user, password)=(None, '')):
     :param proxy: The HTTP proxy server to use. For example:
         'http://proxy.example.com:3128/'
     :param user: The username to authenticate with. Use None to disable 
-    authentication.
+        authentication.
     :param password: The password to authenticate with.
     """
     import urllib

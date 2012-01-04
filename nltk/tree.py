@@ -66,7 +66,7 @@ class Tree(list):
     property to label syntactic constituents with phrase tags, such as
     "NP" and "VP".
 
-    Several Tree methods use X{tree positions} to specify
+    Several Tree methods use "tree positions" to specify
     children or descendants of a tree.  Tree positions are defined as
     follows:
 

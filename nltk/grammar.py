@@ -56,13 +56,13 @@ Grammars can also be given a more procedural interpretation.  According to
 this interpretation, a Grammar specifies any tree structure *tree* that
 can be produced by the following procedure:
 
-    - Set *tree* to the start symbol
-    - Repeat until *tree* contains no more nonterminal leaves:
-      - Choose a production *prod* with whose left hand side
-        *lhs* is a nonterminal leaf of *tree*.
-      - Replace the nonterminal leaf with a subtree, whose node
-        value is the value wrapped by the nonterminal *lhs*, and
-        whose children are the right hand side of *prod*.
+- Set *tree* to the start symbol
+- Repeat until *tree* contains no more nonterminal leaves:
+  - Choose a production *prod* with whose left hand side
+    *lhs* is a nonterminal leaf of *tree*.
+  - Replace the nonterminal leaf with a subtree, whose node
+    value is the value wrapped by the nonterminal *lhs*, and
+    whose children are the right hand side of *prod*.
 
 The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
@@ -90,11 +90,10 @@ class Nonterminal(object):
     categories (such as ``"NP"`` or ``"VP"``).  However, more complex
     symbol types are sometimes used (e.g., for lexicalized grammars).
     Since symbols are node values, they must be immutable and
-    hashable.  Two ``Nonterminal``s are considered equal if their
+    hashable.  Two ``Nonterminals`` are considered equal if their
     symbols are equal.
 
-    :see: ``ContextFreeGrammar``
-    :see: ``Production``
+    :see: ``ContextFreeGrammar``, ``Production``
     :type _symbol: (any)
     :ivar _symbol: The node value corresponding to this
         ``Nonterminal``.  This value must be immutable and hashable. 
@@ -113,17 +112,18 @@ class Nonterminal(object):
 
     def symbol(self):
         """
-        :return: The node value corresponding to this ``Nonterminal``. 
+        Return the node value corresponding to this ``Nonterminal``. 
+
         :rtype: (any)
         """
         return self._symbol
 
     def __eq__(self, other):
         """
-        :return: True if this non-terminal is equal to ``other``.  In
-            particular, return True iff ``other`` is a ``Nonterminal``
-            and this non-terminal's symbol is equal to ``other`` 's
-            symbol.
+        Return True if this non-terminal is equal to ``other``.  In
+        particular, return True iff ``other`` is a ``Nonterminal``
+        and this non-terminal's symbol is equal to ``other`` 's symbol.
+
         :rtype: bool
         """
         try:
@@ -134,10 +134,10 @@ class Nonterminal(object):
 
     def __ne__(self, other):
         """
-        :return: True if this non-terminal is not equal to ``other``.  In
-            particular, return true iff ``other`` is not a ``Nonterminal``
-            or this non-terminal's symbol is not equal to ``other`` 's
-            symbol.
+        Return True if this non-terminal is not equal to ``other``.  In
+        particular, return true iff ``other`` is not a ``Nonterminal``
+        or this non-terminal's symbol is not equal to ``other`` 's symbol.
+
         :rtype: bool
         """
         return not (self==other)
@@ -153,7 +153,8 @@ class Nonterminal(object):
 
     def __repr__(self):
         """
-        :return: A string representation for this ``Nonterminal``.
+        Return a string representation for this ``Nonterminal``.
+
         :rtype: str
         """
         if isinstance(self._symbol, basestring):
@@ -163,7 +164,8 @@ class Nonterminal(object):
 
     def __str__(self):
         """
-        :return: A string representation for this ``Nonterminal``.
+        Return a string representation for this ``Nonterminal``.
+
         :rtype: str
         """
         if isinstance(self._symbol, basestring):
@@ -173,13 +175,13 @@ class Nonterminal(object):
 
     def __div__(self, rhs):
         """
-        :return: A new nonterminal whose symbol is ``A/B``, where
-            ``A`` is the symbol for this nonterminal, and ``B``
-            is the symbol for rhs.
-        :rtype: Nonterminal
+        Return a new nonterminal whose symbol is ``A/B``, where ``A`` is
+        the symbol for this nonterminal, and ``B`` is the symbol for rhs.
+
         :param rhs: The nonterminal used to form the right hand side
             of the new nonterminal.
         :type rhs: Nonterminal
+        :rtype: Nonterminal
         """
         return Nonterminal('%s/%s' % (self._symbol, rhs._symbol))
 
@@ -223,8 +225,9 @@ def is_nonterminal(item):
 
 def is_terminal(item):
     """
-    :return: True if the item is a terminal, which currently is 
+    Return True if the item is a terminal, which currently is 
     if it is hashable and not a ``Nonterminal``.
+
     :rtype: bool
     """
     return hasattr(item, '__hash__') and not isinstance(item, Nonterminal)
@@ -272,43 +275,48 @@ class Production(object):
 
     def lhs(self):
         """
-        :return: the left-hand side of this ``Production``.
+        Return the left-hand side of this ``Production``.
+
         :rtype: ``Nonterminal``
         """
         return self._lhs
     
     def rhs(self):
         """
-        :return: the right-hand side of this ``Production``.
+        Return the right-hand side of this ``Production``.
+
         :rtype: sequence of (``Nonterminal`` and (terminal))
         """
         return self._rhs
     
     def __len__(self):
         """
-        :return: the length of the right-hand side.
+        Return the length of the right-hand side.
+
         :rtype: int
         """
         return len(self._rhs)
     
     def is_nonlexical(self):
         """
-        :return: True if the right-hand side only contains ``Nonterminal``s
+        Return True if the right-hand side only contains ``Nonterminals``
+
         :rtype: bool
         """
         return all([is_nonterminal(n) for n in self._rhs])
 
     def is_lexical(self):
         """
-        :return: True if the right-hand contain at least one terminal token
+        Return True if the right-hand contain at least one terminal token.
+
         :rtype: bool
         """
         return not self.is_nonlexical()
 
     def __str__(self):
         """
-        :return: A verbose string representation of the
-            ``Production``.
+        Return a verbose string representation of the ``Production``.
+
         :rtype: str
         """
         str = '%r ->' % (self._lhs,)
@@ -318,15 +326,16 @@ class Production(object):
 
     def __repr__(self):
         """
-        :return: A concise string representation of the
-            ``Production``. 
+        Return a concise string representation of the ``Production``. 
+
         :rtype: str
         """
         return '%s' % self
 
     def __eq__(self, other):
         """
-        :return: true if this ``Production`` is equal to ``other``.
+        Return True if this ``Production`` is equal to ``other``.
+
         :rtype: bool
         """
         return (isinstance(other, self.__class__) and
@@ -342,7 +351,8 @@ class Production(object):
 
     def __hash__(self):
         """
-        :return: A hash value for the ``Production``.
+        Return a hash value for the ``Production``.
+
         :rtype: int
         """
         return self._hash
@@ -355,8 +365,8 @@ class DependencyProduction(Production):
     """
     def __str__(self):
         """
-        :return: A verbose string representation of the 
-            ``DependencyProduction``.
+        Return a verbose string representation of the ``DependencyProduction``.
+
         :rtype: str
         """
         str = '\'%s\' ->' % (self._lhs,)
@@ -368,12 +378,11 @@ class DependencyProduction(Production):
 class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
-    PCFG ``WeightedProduction``s are essentially just ``Production``s that
-    have probabilities associated with them.  These probabilities are
-    used to record how likely it is that a given production will
-    be used.  In particular, the probability of a ``WeightedProduction``
-    records the likelihood that its right-hand side is the correct
-    instantiation for any given occurance of its left-hand side.
+    A PCFG ``WeightedProduction`` is essentially just a ``Production`` that
+    has an associated probability, which represents how likely it is that
+    this production will be used.  In particular, the probability of a
+    ``WeightedProduction`` records the likelihood that its right-hand side is
+    the correct instantiation for any given occurance of its left-hand side.
 
     :see: ``Production``
     """
@@ -428,7 +437,7 @@ class ContextFreeGrammar(object):
         :param productions: The list of productions that defines the grammar
         :type productions: list(Production)
         :param calculate_leftcorners: False if we don't want to calculate the 
-        leftcorner relation. In that case, some optimized chart parsers won't work.
+            leftcorner relation. In that case, some optimized chart parsers won't work.
         :type calculate_leftcorners: bool
         """
         self._start = start
@@ -497,7 +506,8 @@ class ContextFreeGrammar(object):
     
     def start(self):
         """
-        :return: The start symbol of the grammar
+        Return the start symbol of the grammar
+
         :rtype: ``Nonterminal``
         """
         return self._start
@@ -511,7 +521,7 @@ class ContextFreeGrammar(object):
         
         :param lhs: Only return productions with the given left-hand side.
         :param rhs: Only return productions with the given first item 
-        in the right-hand side.
+            in the right-hand side.
         :param empty: Only return productions with an empty right-hand side.
         :return: A list of productions matching the given constraints.
         :rtype: list(Production)
@@ -620,13 +630,13 @@ class ContextFreeGrammar(object):
     
     def is_lexical(self):
         """
-        True if all productions are lexicalised.
+        Return True if all productions are lexicalised.
         """
         return self._is_lexical
     
     def is_nonlexical(self):
         """
-        True if all lexical rules are "preterminals", that is,
+        Return True if all lexical rules are "preterminals", that is,
         unary rules which can be separated in a preprocessing step.
         
         This means that all productions are of the forms
@@ -639,40 +649,40 @@ class ContextFreeGrammar(object):
     
     def min_len(self):
         """
-        The right-hand side length of the shortest grammar production.
+        Return the right-hand side length of the shortest grammar production.
         """
         return self._min_len
     
     def max_len(self):
         """
-        The right-hand side length of the longest grammar production.
+        Return the right-hand side length of the longest grammar production.
         """
         return self._max_len
     
     def is_nonempty(self):
         """
-        True if there are no empty productions.
+        Return True if there are no empty productions.
         """
         return self._min_len > 0
     
     def is_binarised(self):
         """
-        True if all productions are at most binary.
+        Return True if all productions are at most binary.
         Note that there can still be empty and unary productions.
         """
         return self._max_len <= 2
     
     def is_flexible_chomsky_normal_form(self):
         """
-        True if all productions are of the forms
+        Return True if all productions are of the forms
         A -> B C, A -> B, or A -> "s".
         """
         return self.is_nonempty() and self.is_nonlexical() and self.is_binarised()
     
     def is_chomsky_normal_form(self):
         """
-        A grammar is of Chomsky normal form if all productions
-        are of the forms A -> B C, or A -> "s".
+        Return True if the grammar is of Chomsky Normal Form, i.e. all productions
+        are of the form A -> B C, or A -> "s".
         """
         return (self.is_flexible_chomsky_normal_form() and 
                 self._all_unary_are_lexical)
@@ -750,9 +760,8 @@ class FeatureGrammar(ContextFreeGrammar):
         
         :param lhs: Only return productions with the given left-hand side.
         :param rhs: Only return productions with the given first item 
-        in the right-hand side.
+            in the right-hand side.
         :param empty: Only return productions with an empty right-hand side.
-        :return: A list of productions matching the given constraints.
         :rtype: list(Production)
         """
         if rhs and empty:
@@ -856,14 +865,14 @@ class DependencyGrammar(object):
 
     def __contains__(self, head, mod):
         """
-        :param head: A head word.
-        :type head: str.
-        :param mod: A mod word, to test as a modifier of 'head'.
-        :type mod: str.
+        Return True if this ``DependencyGrammar`` contains a 
+        ``DependencyProduction`` mapping 'head' to 'mod'.
 
-        :return: true if this ``DependencyGrammar`` contains a 
-            ``DependencyProduction`` mapping 'head' to 'mod'.
-        :rtype: bool.
+        :param head: A head word.
+        :type head: str
+        :param mod: A mod word, to test as a modifier of 'head'.
+        :type mod: str
+        :rtype: bool
         """
         for production in self._productions:
             for possibleMod in production._rhs:
@@ -885,8 +894,8 @@ class DependencyGrammar(object):
 
     def __str__(self):
         """
-        :return: A verbose string representation of the
-            ``DependencyGrammar``
+        Return a verbose string representation of the ``DependencyGrammar``
+        
         :rtype: str
         """
         str = 'Dependency grammar with %d productions' % len(self._productions)
@@ -896,8 +905,7 @@ class DependencyGrammar(object):
             
     def __repr__(self):
         """
-        :return: A concise string representation of the
-            ``DependencyGrammar``
+        Return a concise string representation of the ``DependencyGrammar``
         """
         return 'Dependency grammar with %d productions' % len(self._productions)
     
@@ -914,14 +922,14 @@ class StatisticalDependencyGrammar(object):
 
     def contains(self, head, mod):
         """
-        :param head: A head word.
-        :type head: str.
-        :param mod: A mod word, to test as a modifier of 'head'.
-        :type mod: str.
+        Return True if this ``DependencyGrammar`` contains a 
+        ``DependencyProduction`` mapping 'head' to 'mod'.
 
-        :return: true if this ``DependencyGrammar`` contains a 
-            ``DependencyProduction`` mapping 'head' to 'mod'.
-        :rtype: bool.
+        :param head: A head word.
+        :type head: str
+        :param mod: A mod word, to test as a modifier of 'head'.
+        :type mod: str
+        :rtype: bool
         """
         for production in self._productions:
             for possibleMod in production._rhs:
@@ -931,8 +939,8 @@ class StatisticalDependencyGrammar(object):
 
     def __str__(self):
         """
-        :return: A verbose string representation of the
-            ``StatisticalDependencyGrammar``
+        Return a verbose string representation of the ``StatisticalDependencyGrammar``
+
         :rtype: str
         """
         str = 'Statistical dependency grammar with %d productions' % len(self._productions)
@@ -948,8 +956,7 @@ class StatisticalDependencyGrammar(object):
 
     def __repr__(self):
         """
-        :return: A concise string representation of the
-            ``StatisticalDependencyGrammar``
+        Return a concise string representation of the ``StatisticalDependencyGrammar``
         """
         return 'Statistical Dependency grammar with %d productions' % len(self._productions)
 
@@ -958,8 +965,7 @@ class WeightedGrammar(ContextFreeGrammar):
     """
     A probabilistic context-free grammar.  A Weighted Grammar consists
     of a start state and a set of weighted productions.  The set of
-    terminals and nonterminals is implicitly specified by the
-    productions.
+    terminals and nonterminals is implicitly specified by the productions.
 
     PCFG productions should be ``WeightedProductions``.
     ``WeightedGrammars`` impose the constraint that the set of
@@ -989,7 +995,7 @@ class WeightedGrammar(ContextFreeGrammar):
             do not have probabilities that sum to a value within
             EPSILON of 1.
         :param calculate_leftcorners: False if we don't want to calculate the 
-        leftcorner relation. In that case, some optimized chart parsers won't work.
+            leftcorner relation. In that case, some optimized chart parsers won't work.
         :type calculate_leftcorners: bool
         """
         ContextFreeGrammar.__init__(self, start, productions, calculate_leftcorners)
@@ -1018,8 +1024,8 @@ def induce_pcfg(start, productions):
     The probability of a production A -> B C in a PCFG is:
 
     |                count(A -> B C)
-    |  P(B, C | A) = ---------------       where * is any right hand side
-    |                 count(A -> *)
+    |  P(B, C | A) = ---------------       where \* is any right hand side
+    |                 count(A -> \*)
 
     :param start: The start symbol
     :type start: ``Nonterminal``
@@ -1051,16 +1057,16 @@ def induce_pcfg(start, productions):
 
 def parse_cfg_production(input):
     """
-    :return: a list of context-free ``Productions``.
+    Return a list of context-free ``Productions``.
     """
     return parse_production(input, standard_nonterm_parser)
 
 def parse_cfg(input):
     """
-    :return: a ``ContextFreeGrammar``.
+    Return the ``ContextFreeGrammar`` corresponding to the input string(s).
     
-    :param input: a grammar, either in the form of a string or else 
-    as a list of strings.
+    :param input: a grammar, either in the form of a string or
+        as a list of strings.
     """
     start, productions = parse_grammar(input, standard_nonterm_parser)
     return ContextFreeGrammar(start, productions)
@@ -1069,16 +1075,17 @@ def parse_cfg(input):
 
 def parse_pcfg_production(input):
     """
-    :return: a list of PCFG ``WeightedProductions``.
+    Return a list of PCFG ``WeightedProductions``.
     """
     return parse_production(input, standard_nonterm_parser, probabilistic=True)
 
 def parse_pcfg(input):
     """
-    :return: a probabilistic ``WeightedGrammar``.
+    Return a probabilistic ``WeightedGrammar`` corresponding to the
+    input string(s).
     
     :param input: a grammar, either in the form of a string or else 
-    as a list of strings.
+        as a list of strings.
     """
     start, productions = parse_grammar(input, standard_nonterm_parser, 
                                        probabilistic=True)
@@ -1088,21 +1095,21 @@ def parse_pcfg(input):
 
 def parse_fcfg_production(input, fstruct_parser):
     """
-    :return: a list of feature-based ``Productions``.
+    Return a list of feature-based ``Productions``.
     """
     return parse_production(input, fstruct_parser)
 
 def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
     """
-    :return: a feature structure based ``FeatureGrammar``.
+    Return a feature structure based ``FeatureGrammar``.
     
     :param input: a grammar, either in the form of a string or else 
-    as a list of strings.
+        as a list of strings.
     :param features: a tuple of features (default: SLASH, TYPE)
-    :param logic_parser: a parser for lambda-expressions 
-                         (default: LogicParser())
+    :param logic_parser: a parser for lambda-expressions,
+        by default, ``LogicParser()``
     :param fstruct_parser: a feature structure parser 
-                           (only if features and logic_parser is None)
+        (only if features and logic_parser is None)
     """
     if features is None:
         features = (SLASH, TYPE)
@@ -1181,16 +1188,16 @@ def parse_production(line, nonterm_parser, probabilistic=False):
 
 def parse_grammar(input, nonterm_parser, probabilistic=False):
     """
-    :return: a pair of 
-      - a starting category 
-      - a list of ``Productions``
+    Return a pair consisting of a starting category and a list of
+    ``Productions``.
     
     :param input: a grammar, either in the form of a string or else 
         as a list of strings.
     :param nonterm_parser: a function for parsing nonterminals.
-        It should take a ``(string,position)`` as argument and 
-        return a ``(nonterminal,position)`` as result. 
+        It should take a ``(string, position)`` as argument and 
+        return a ``(nonterminal, position)`` as result. 
     :param probabilistic: are the grammar rules probabilistic?
+    :type probabilistic: bool
     """
     if isinstance(input, basestring):
         lines = input.split('\n')

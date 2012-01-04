@@ -20,18 +20,18 @@ from nltk.chunk.api import ChunkParserI
 class ChunkString(object):
     """
     A string-based encoding of a particular chunking of a text.
-    Internally, the C{ChunkString} class uses a single string to
+    Internally, the ``ChunkString`` class uses a single string to
     encode the chunking of the input text.  This string contains a
     sequence of angle-bracket delimited tags, with chunking indicated
     by braces.  An example of this encoding is::
 
         {<DT><JJ><NN>}<VBN><IN>{<DT><NN>}<.>{<DT><NN>}<VBD><.>
 
-    C{ChunkString} are created from tagged texts (i.e., lists of
-    C{tokens} whose type is C{TaggedType}).  Initially, nothing is
+    ``ChunkString`` are created from tagged texts (i.e., lists of
+    ``tokens`` whose type is ``TaggedType``).  Initially, nothing is
     chunked.
     
-    The chunking of a C{ChunkString} can be modified with the C{xform}
+    The chunking of a ``ChunkString`` can be modified with the ``xform()``
     method, which uses a regular expression to transform the string
     representation.  These transformations should only add and remove
     braces; they should I{not} modify the sequence of angle-bracket
@@ -46,7 +46,7 @@ class ChunkString(object):
             {<DT><JJ><NN>}<VBN><IN>{<DT><NN>}<.>{<DT><NN>}<VBD><.>
 
     :type _pieces: list of pieces (tagged tokens and chunks)
-    :ivar _pieces: The tagged tokens and chunks encoded by this C{ChunkString}.
+    :ivar _pieces: The tagged tokens and chunks encoded by this ``ChunkString``.
     :ivar _debug: The debug level.  See the constructor docs.
                
     @cvar IN_CHUNK_PATTERN: A zero-width regexp pattern string that
@@ -69,14 +69,14 @@ class ChunkString(object):
     
     def __init__(self, chunk_struct, debug_level=1):
         """
-        Construct a new C{ChunkString} that encodes the chunking of
-        the text C{tagged_tokens}.
+        Construct a new ``ChunkString`` that encodes the chunking of
+        the text ``tagged_tokens``.
 
         :type chunk_struct: Tree
         :param chunk_struct: The chunk structure to be further chunked.
         :type debug_level: int
         :param debug_level: The level of debugging which should be
-            applied to transformations on the C{ChunkString}.  The
+            applied to transformations on the ``ChunkString``.  The
             valid levels are:
                 - 0: no checks
                 - 1: full check on to_chunkstruct
@@ -86,7 +86,7 @@ class ChunkString(object):
                    each transformation.
             We recommend you use at least level 1.  You should
             probably use level 3 if you use any non-standard
-            subclasses of C{RegexpChunkRule}.
+            subclasses of ``RegexpChunkRule``.
         """
         self._top_node = chunk_struct.node
         self._pieces = chunk_struct[:]
@@ -105,19 +105,19 @@ class ChunkString(object):
                       
     def _verify(self, s, verify_tags):
         """
-        Check to make sure that C{s} still corresponds to some chunked
-        version of C{_pieces}.
+        Check to make sure that ``s`` still corresponds to some chunked
+        version of ``_pieces``.
 
         :type verify_tags: bool
         :param verify_tags: Whether the individual tags should be
-            checked.  If this is false, C{_verify} will check to make
-            sure that C{_str} encodes a chunked version of I{some}
-            list of tokens.  If this is true, then C{_verify} will
-            check to make sure that the tags in C{_str} match those in
-            C{_pieces}.
+            checked.  If this is false, ``_verify`` will check to make
+            sure that ``_str`` encodes a chunked version of I{some}
+            list of tokens.  If this is true, then ``_verify`` will
+            check to make sure that the tags in ``_str`` match those in
+            ``_pieces``.
         
-        :raise ValueError: if this C{ChunkString}'s internal string
-            representation is invalid or not consistent with _pieces.
+        :raise ValueError: if the internal string representation of
+            this ``ChunkString`` is invalid or not consistent with _pieces.
         """
         # Check overall form
         if not ChunkString._VALID.match(s):
@@ -144,7 +144,8 @@ class ChunkString(object):
 
     def to_chunkstruct(self, chunk_node='CHUNK'):
         """
-        :return: the chunk structure encoded by this C{ChunkString}.
+        Return the chunk structure encoded by this ``ChunkString``.
+
         :rtype: Tree
         :raise ValueError: If a transformation has generated an
             invalid chunkstring.
@@ -175,25 +176,25 @@ class ChunkString(object):
                 
     def xform(self, regexp, repl):
         """
-        Apply the given transformation to this C{ChunkString}'s string
-        encoding.  In particular, find all occurrences that match
-        C{regexp}, and replace them using C{repl} (as done by
-        C{re.sub}).
+        Apply the given transformation to the string encoding of this
+        ``ChunkString``.  In particular, find all occurrences that match
+        ``regexp``, and replace them using ``repl`` (as done by
+        ``re.sub``).
 
         This transformation should only add and remove braces; it
-        should I{not} modify the sequence of angle-bracket delimited
+        should *not* modify the sequence of angle-bracket delimited
         tags.  Furthermore, this transformation may not result in
         improper bracketing.  Note, in particular, that bracketing may
         not be nested.
 
-        :type regexp: str or C{regexp}
+        :type regexp: str or regexp
         :param regexp: A regular expression matching the substring
             that should be replaced.  This will typically include a
-            named group, which can be used by C{repl}.
+            named group, which can be used by ``repl``.
         :type repl: str
         :param repl: An expression specifying what should replace the
             matched substring.  Typically, this will include a named
-            replacement group, specified by C{regexp}.
+            replacement group, specified by ``regexp``.
         :rtype: None
         :raise ValueError: If this transformation generated an
             invalid chunkstring.
@@ -214,23 +215,23 @@ class ChunkString(object):
 
     def __repr__(self):
         """
-        :rtype: str
-        :return: A string representation of this C{ChunkString}.  This
-            string representation has the form::
+        Return a string representation of this ``ChunkString``.
+        It has the form::
             
-                <ChunkString: '{<DT><JJ><NN>}<VBN><IN>{<DT><NN>}'>
+            <ChunkString: '{<DT><JJ><NN>}<VBN><IN>{<DT><NN>}'>
         
+        :rtype: str
         """
         return '<ChunkString: %s>' % `self._str`
 
     def __str__(self):
         """
-        :rtype: str
-        :return: A formatted representation of this C{ChunkString}'s
-            string encoding.  This representation will include extra
-            spaces to ensure that tags will line up with the
-            representation of other C{ChunkStrings} for the same text,
-            regardless of the chunking.
+        Return a formatted representation of this ``ChunkString``.
+        This representation will include extra spaces to ensure that
+        tags will line up with the representation of other
+        ``ChunkStrings`` for the same text, regardless of the chunking.
+ 
+       :rtype: str
         """
         # Add spaces to make everything line up.
         str = re.sub(r'>(?!\})', r'> ', self._str)
@@ -244,25 +245,25 @@ class ChunkString(object):
 
 class RegexpChunkRule(object):
     """
-    A rule specifying how to modify the chunking in a C{ChunkString},
+    A rule specifying how to modify the chunking in a ``ChunkString``,
     using a transformational regular expression.  The
-    C{RegexpChunkRule} class itself can be used to implement any
+    ``RegexpChunkRule`` class itself can be used to implement any
     transformational rule based on regular expressions.  There are
     also a number of subclasses, which can be used to implement
     simpler types of rules, based on matching regular expressions.
 
-    Each C{RegexpChunkRule} has a regular expression and a
-    replacement expression.  When a C{RegexpChunkRule} is X{applied}
-    to a C{ChunkString}, it searches the C{ChunkString} for any
+    Each ``RegexpChunkRule`` has a regular expression and a
+    replacement expression.  When a ``RegexpChunkRule`` is "applied"
+    to a ``ChunkString``, it searches the ``ChunkString`` for any
     substring that matches the regular expression, and replaces it
     using the replacement expression.  This search/replace operation
-    has the same semantics as C{re.sub}.
+    has the same semantics as ``re.sub``.
 
-    Each C{RegexpChunkRule} also has a description string, which
+    Each ``RegexpChunkRule`` also has a description string, which
     gives a short (typically less than 75 characters) description of
     the purpose of the rule.
     
-    This transformation defined by this C{RegexpChunkRule} should
+    This transformation defined by this ``RegexpChunkRule`` should
     only add and remove braces; it should I{not} modify the sequence
     of angle-bracket delimited tags.  Furthermore, this transformation
     may not result in nested or mismatched bracketing.
@@ -271,17 +272,16 @@ class RegexpChunkRule(object):
         """
         Construct a new RegexpChunkRule.
         
-        :type regexp: C{regexp} or str
-        :param regexp: This C{RegexpChunkRule}'s regular expression.
-            When this rule is applied to a C{ChunkString}, any
-            substring that matches C{regexp} will be replaced using
-            the replacement string C{repl}.  Note that this must be a
+        :type regexp: regexp or str
+        :param regexp: The regular expression for this ``RegexpChunkRule``.
+            When this rule is applied to a ``ChunkString``, any
+            substring that matches ``regexp`` will be replaced using
+            the replacement string ``repl``.  Note that this must be a
             normal regular expression, not a tag pattern.
         :type repl: str
-        :param repl: This C{RegexpChunkRule}'s replacement
-            expression.  When this rule is applied to a
-            C{ChunkString}, any substring that matches C{regexp} will
-            be replaced using C{repl}.
+        :param repl: The replacement expression for this ``RegexpChunkRule``.
+            When this rule is applied to a ``ChunkString``, any substring
+            that matches ``regexp`` will be replaced using ``repl``.
         :type descr: str
         :param descr: A short description of the purpose and/or effect
             of this rule.
@@ -295,13 +295,12 @@ class RegexpChunkRule(object):
     def apply(self, chunkstr):
         # Keep docstring generic so we can inherit it.
         """
-        Apply this rule to the given C{ChunkString}.  See the
+        Apply this rule to the given ``ChunkString``.  See the
         class reference documentation for a description of what it
         means to apply a rule.
         
-        :type chunkstr: C{ChunkString}
-        :param chunkstr: The chunkstring to which this rule is
-            applied. 
+        :type chunkstr: ChunkString
+        :param chunkstr: The chunkstring to which this rule is applied. 
         :rtype: None
         :raise ValueError: If this transformation generated an
             invalid chunkstring.
@@ -310,23 +309,24 @@ class RegexpChunkRule(object):
 
     def descr(self):
         """
+        Return a short description of the purpose and/or effect of
+        this rule.
+
         :rtype: str
-        :return: a short description of the purpose and/or effect of
-            this rule.
         """
         return self._descr
 
     def __repr__(self):
         """
+        Return a string representation of this rule.  It has the form::
+
+            <RegexpChunkRule: '{<IN|VB.*>}'->'<IN>'>
+
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+
         :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
-
-                 <RegexpChunkRule: '{<IN|VB.*>}'->'<IN>'>
-
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
         """
         return ('<RegexpChunkRule: '+`self._regexp.pattern`+
                 '->'+`self._repl`+'>')
@@ -342,8 +342,8 @@ class RegexpChunkRule(object):
           regexp}{regexp   # split rule
           regexp{}regexp   # merge rule
 
-        Where C{regexp} is a regular expression for the rule.  Any
-        text following the comment marker (C{#}) will be used as
+        Where ``regexp`` is a regular expression for the rule.  Any
+        text following the comment marker (``#``) will be used as
         the rule's description:
         
         >>> RegexpChunkRule.parse('{<DT>?<NN.*>+}')
@@ -379,8 +379,8 @@ class RegexpChunkRule(object):
 
 class ChunkRule(RegexpChunkRule):
     """
-    A rule specifying how to add chunks to a C{ChunkString}, using a
-    matching tag pattern.  When applied to a C{ChunkString}, it will
+    A rule specifying how to add chunks to a ``ChunkString``, using a
+    matching tag pattern.  When applied to a ``ChunkString``, it will
     find any substring that matches this tag pattern and that is not
     already part of a chunk, and create a new chunk containing that
     substring.
@@ -388,11 +388,11 @@ class ChunkRule(RegexpChunkRule):
     def __init__(self, tag_pattern, descr):
 
         """
-        Construct a new C{ChunkRule}.
+        Construct a new ``ChunkRule``.
         
         :type tag_pattern: str
         :param tag_pattern: This rule's tag pattern.  When
-            applied to a C{ChunkString}, this rule will
+            applied to a ``ChunkString``, this rule will
             chunk any substring that matches this tag pattern and that
             is not already part of a chunk.
         :type descr: str
@@ -407,33 +407,33 @@ class ChunkRule(RegexpChunkRule):
 
     def __repr__(self):
         """
+        Return a string representation of this rule.  It has the form::
+
+            <ChunkRule: '<IN|VB.*>'>
+
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+
         :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
-
-                 <ChunkRule: '<IN|VB.*>'>
-
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
         """
         return '<ChunkRule: '+`self._pattern`+'>'
 
 class ChinkRule(RegexpChunkRule):
     """
-    A rule specifying how to remove chinks to a C{ChunkString},
+    A rule specifying how to remove chinks to a ``ChunkString``,
     using a matching tag pattern.  When applied to a
-    C{ChunkString}, it will find any substring that matches this
+    ``ChunkString``, it will find any substring that matches this
     tag pattern and that is contained in a chunk, and remove it
     from that chunk, thus creating two new chunks.
     """
     def __init__(self, tag_pattern, descr):
         """
-        Construct a new C{ChinkRule}.
+        Construct a new ``ChinkRule``.
         
         :type tag_pattern: str
         :param tag_pattern: This rule's tag pattern.  When
-            applied to a C{ChunkString}, this rule will
+            applied to a ``ChunkString``, this rule will
             find any substring that matches this tag pattern and that
             is contained in a chunk, and remove it from that chunk,
             thus creating two new chunks.
@@ -449,32 +449,32 @@ class ChinkRule(RegexpChunkRule):
 
     def __repr__(self):
         """
+        Return a string representation of this rule.  It has the form::
+
+            <ChinkRule: '<IN|VB.*>'>
+
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+
         :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
-
-                 <ChinkRule: '<IN|VB.*>'>
-
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
         """
         return '<ChinkRule: '+`self._pattern`+'>'
 
 class UnChunkRule(RegexpChunkRule):
     """
-    A rule specifying how to remove chunks to a C{ChunkString},
+    A rule specifying how to remove chunks to a ``ChunkString``,
     using a matching tag pattern.  When applied to a
-    C{ChunkString}, it will find any complete chunk that matches this
+    ``ChunkString``, it will find any complete chunk that matches this
     tag pattern, and un-chunk it.
     """
     def __init__(self, tag_pattern, descr):
         """
-        Construct a new C{UnChunkRule}.
+        Construct a new ``UnChunkRule``.
         
         :type tag_pattern: str
         :param tag_pattern: This rule's tag pattern.  When
-            applied to a C{ChunkString}, this rule will
+            applied to a ``ChunkString``, this rule will
             find any complete chunk that matches this tag pattern,
             and un-chunk it.
         :type descr: str
@@ -488,44 +488,44 @@ class UnChunkRule(RegexpChunkRule):
 
     def __repr__(self):
         """
+        Return a string representation of this rule.  It has the form::
+
+            <UnChunkRule: '<IN|VB.*>'>
+
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+
         :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
-
-                 <UnChunkRule: '<IN|VB.*>'>
-
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
         """
         return '<UnChunkRule: '+`self._pattern`+'>'
 
 class MergeRule(RegexpChunkRule):
     """
-    A rule specifying how to merge chunks in a C{ChunkString}, using
+    A rule specifying how to merge chunks in a ``ChunkString``, using
     two matching tag patterns: a left pattern, and a right pattern.
-    When applied to a C{ChunkString}, it will find any chunk whose end
+    When applied to a ``ChunkString``, it will find any chunk whose end
     matches left pattern, and immediately followed by a chunk whose
     beginning matches right pattern.  It will then merge those two
     chunks into a single chunk.
     """
     def __init__(self, left_tag_pattern, right_tag_pattern, descr):
         """
-        Construct a new C{MergeRule}.
+        Construct a new ``MergeRule``.
 
         :type right_tag_pattern: str
         :param right_tag_pattern: This rule's right tag
-            pattern.  When applied to a C{ChunkString}, this
+            pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose end matches
-            C{left_tag_pattern}, and immediately followed by a chunk
+            ``left_tag_pattern``, and immediately followed by a chunk
             whose beginning matches this pattern.  It will
             then merge those two chunks into a single chunk.
         :type left_tag_pattern: str
         :param left_tag_pattern: This rule's left tag
-            pattern.  When applied to a C{ChunkString}, this
+            pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose end matches
             this pattern, and immediately followed by a chunk
-            whose beginning matches C{right_tag_pattern}.  It will
+            whose beginning matches ``right_tag_pattern``.  It will
             then merge those two chunks into a single chunk.
             
         :type descr: str
@@ -546,44 +546,44 @@ class MergeRule(RegexpChunkRule):
 
     def __repr__(self):
         """
+        Return a string representation of this rule.  It has the form::
+
+            <MergeRule: '<NN|DT|JJ>', '<NN|JJ>'>
+
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+
         :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
-
-                 <MergeRule: '<NN|DT|JJ>', '<NN|JJ>'>
-
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
         """
         return ('<MergeRule: '+`self._left_tag_pattern`+', '+
                 `self._right_tag_pattern`+'>')
 
 class SplitRule(RegexpChunkRule):
     """
-    A rule specifying how to split chunks in a C{ChunkString}, using
+    A rule specifying how to split chunks in a ``ChunkString``, using
     two matching tag patterns: a left pattern, and a right pattern.
-    When applied to a C{ChunkString}, it will find any chunk that
+    When applied to a ``ChunkString``, it will find any chunk that
     matches the left pattern followed by the right pattern.  It will
     then split the chunk into two new chunks, at the point between the
     two pattern matches.
     """
     def __init__(self, left_tag_pattern, right_tag_pattern, descr):
         """
-        Construct a new C{SplitRule}.
+        Construct a new ``SplitRule``.
         
         :type right_tag_pattern: str
         :param right_tag_pattern: This rule's right tag
-            pattern.  When applied to a C{ChunkString}, this rule will
+            pattern.  When applied to a ``ChunkString``, this rule will
             find any chunk containing a substring that matches
-            C{left_tag_pattern} followed by this pattern.  It will
+            ``left_tag_pattern`` followed by this pattern.  It will
             then split the chunk into two new chunks at the point
             between these two matching patterns.
         :type left_tag_pattern: str
         :param left_tag_pattern: This rule's left tag
-            pattern.  When applied to a C{ChunkString}, this rule will
+            pattern.  When applied to a ``ChunkString``, this rule will
             find any chunk containing a substring that matches this
-            pattern followed by C{right_tag_pattern}.  It will then
+            pattern followed by ``right_tag_pattern``.  It will then
             split the chunk into two new chunks at the point between
             these two matching patterns.
         :type descr: str
@@ -604,45 +604,45 @@ class SplitRule(RegexpChunkRule):
 
     def __repr__(self):
         """
-        :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
+        Return a string representation of this rule.  It has the form::
 
-                 <SplitRule: '<NN>', '<DT>'>
+            <SplitRule: '<NN>', '<DT>'>
 
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+ 
+       :rtype: str
         """
         return ('<SplitRule: '+`self._left_tag_pattern`+', '+
                 `self._right_tag_pattern`+'>')
 
 class ExpandLeftRule(RegexpChunkRule):
     """
-    A rule specifying how to expand chunks in a C{ChunkString} to the left,
+    A rule specifying how to expand chunks in a ``ChunkString`` to the left,
     using two matching tag patterns: a left pattern, and a right pattern.
-    When applied to a C{ChunkString}, it will find any chunk whose beginning
+    When applied to a ``ChunkString``, it will find any chunk whose beginning
     matches right pattern, and immediately preceded by a chink whose
     end matches left pattern.  It will then expand the chunk to incorporate
     the new material on the left.
     """
     def __init__(self, left_tag_pattern, right_tag_pattern, descr):
         """
-        Construct a new C{ExpandRightRule}.
+        Construct a new ``ExpandRightRule``.
 
         :type right_tag_pattern: str
         :param right_tag_pattern: This rule's right tag
-            pattern.  When applied to a C{ChunkString}, this
+            pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose beginning matches
-            C{right_tag_pattern}, and immediately preceded by a chink
+            ``right_tag_pattern``, and immediately preceded by a chink
             whose end matches this pattern.  It will
             then merge those two chunks into a single chunk.
         :type left_tag_pattern: str
         :param left_tag_pattern: This rule's left tag
-            pattern.  When applied to a C{ChunkString}, this
+            pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose beginning matches
             this pattern, and immediately preceded by a chink
-            whose end matches C{left_tag_pattern}.  It will
+            whose end matches ``left_tag_pattern``.  It will
             then expand the chunk to incorporate the new material on the left.
             
         :type descr: str
@@ -663,45 +663,45 @@ class ExpandLeftRule(RegexpChunkRule):
 
     def __repr__(self):
         """
+        Return a string representation of this rule.  It has the form::
+
+            <ExpandLeftRule: '<NN|DT|JJ>', '<NN|JJ>'>
+
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+
         :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
-
-                 <ExpandLeftRule: '<NN|DT|JJ>', '<NN|JJ>'>
-
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
         """
         return ('<ExpandLeftRule: '+`self._left_tag_pattern`+', '+
                 `self._right_tag_pattern`+'>')
 
 class ExpandRightRule(RegexpChunkRule):
     """
-    A rule specifying how to expand chunks in a C{ChunkString} to the
+    A rule specifying how to expand chunks in a ``ChunkString`` to the
     right, using two matching tag patterns: a left pattern, and a
-    right pattern.  When applied to a C{ChunkString}, it will find any
+    right pattern.  When applied to a ``ChunkString``, it will find any
     chunk whose end matches left pattern, and immediately followed by
     a chink whose beginning matches right pattern.  It will then
     expand the chunk to incorporate the new material on the right.
     """
     def __init__(self, left_tag_pattern, right_tag_pattern, descr):
         """
-        Construct a new C{ExpandRightRule}.
+        Construct a new ``ExpandRightRule``.
 
         :type right_tag_pattern: str
         :param right_tag_pattern: This rule's right tag
-            pattern.  When applied to a C{ChunkString}, this
+            pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose end matches
-            C{left_tag_pattern}, and immediately followed by a chink
+            ``left_tag_pattern``, and immediately followed by a chink
             whose beginning matches this pattern.  It will
             then merge those two chunks into a single chunk.
         :type left_tag_pattern: str
         :param left_tag_pattern: This rule's left tag
-            pattern.  When applied to a C{ChunkString}, this
+            pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose end matches
             this pattern, and immediately followed by a chink
-            whose beginning matches C{right_tag_pattern}.  It will
+            whose beginning matches ``right_tag_pattern``.  It will
             then expand the chunk to incorporate the new material on the right.
             
         :type descr: str
@@ -722,25 +722,25 @@ class ExpandRightRule(RegexpChunkRule):
 
     def __repr__(self):
         """
+        Return a string representation of this rule.  It has the form::
+
+            <ExpandRightRule: '<NN|DT|JJ>', '<NN|JJ>'>
+
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+
         :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
-
-                 <ExpandRightRule: '<NN|DT|JJ>', '<NN|JJ>'>
-
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
         """
         return ('<ExpandRightRule: '+`self._left_tag_pattern`+', '+
                 `self._right_tag_pattern`+'>')
 
 class ChunkRuleWithContext(RegexpChunkRule):
     """
-    A rule specifying how to add chunks to a C{ChunkString}, using
+    A rule specifying how to add chunks to a ``ChunkString``, using
     three matching tag patterns: one for the left context, one for the
     chunk, and one for the right context.  When applied to a
-    C{ChunkString}, it will find any substring that matches the chunk
+    ``ChunkString``, it will find any substring that matches the chunk
     tag pattern, is surrounded by substrings that match the two
     context patterns, and is not already part of a chunk; and create a
     new chunk containing the substring that matched the chunk tag
@@ -753,11 +753,11 @@ class ChunkRuleWithContext(RegexpChunkRule):
     def __init__(self, left_context_tag_pattern, chunk_tag_pattern,
                  right_context_tag_pattern, descr):
         """
-        Construct a new C{ChunkRuleWithContext}.
+        Construct a new ``ChunkRuleWithContext``.
         
         :type left_context_tag_pattern: str
         :param left_context_tag_pattern: A tag pattern that must match
-            the left context of C{chunk_tag_pattern} for this rule to
+            the left context of ``chunk_tag_pattern`` for this rule to
             apply.
         :type chunk_tag_pattern: str
         :param chunk_tag_pattern: A tag pattern that must match for this
@@ -765,7 +765,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
             also identifies the substring that will be made into a chunk.
         :type right_context_tag_pattern: str
         :param right_context_tag_pattern: A tag pattern that must match
-            the right context of C{chunk_tag_pattern} for this rule to
+            the right context of ``chunk_tag_pattern`` for this rule to
             apply.
         :type descr: str
         :param descr: A short description of the purpose and/or effect
@@ -790,15 +790,15 @@ class ChunkRuleWithContext(RegexpChunkRule):
 
     def __repr__(self):
         """
+        Return a string representation of this rule.  It has the form::
+
+            <ChunkRuleWithContext: '<IN>', '<NN>', '<DT>'>
+
+        Note that this representation does not include the
+        description string; that string can be accessed
+        separately with the ``descr()`` method.
+
         :rtype: str
-        :return: A string representation of this rule.  This
-             string representation has the form::
-
-                 <ChunkRuleWithContext: '<IN>', '<NN>', '<DT>'>
-
-             Note that this representation does not include the
-             description string; that string can be accessed
-             separately with the C{descr} method.
         """
         return '<ChunkRuleWithContext: %r, %r, %r>' % (
             self._left_context_tag_pattern, self._chunk_tag_pattern,
@@ -816,20 +816,20 @@ CHUNK_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
 
 def tag_pattern2re_pattern(tag_pattern):
     """
-    Convert a tag pattern to a regular expression pattern.  A X{tag
-    pattern} is a modified version of a regular expression, designed
+    Convert a tag pattern to a regular expression pattern.  A "tag
+    pattern" is a modified version of a regular expression, designed
     for matching sequences of tags.  The differences between regular
     expression patterns and tag patterns are:
 
-        - In tag patterns, C{'<'} and C{'>'} act as parentheses; so 
-          C{'<NN>+'} matches one or more repetitions of C{'<NN>'}, not
-          C{'<NN'} followed by one or more repetitions of C{'>'}.
+        - In tag patterns, ``'<'`` and ``'>'`` act as parentheses; so 
+          ``'<NN>+'`` matches one or more repetitions of ``'<NN>'``, not
+          ``'<NN'`` followed by one or more repetitions of ``'>'``.
         - Whitespace in tag patterns is ignored.  So
-          C{'<DT> | <NN>'} is equivalant to C{'<DT>|<NN>'}
-        - In tag patterns, C{'.'} is equivalant to C{'[^{}<>]'}; so
-          C{'<NN.*>'} matches any single tag starting with C{'NN'}.
+          ``'<DT> | <NN>'`` is equivalant to ``'<DT>|<NN>'``
+        - In tag patterns, ``'.'`` is equivalant to ``'[^{}<>]'``; so
+          ``'<NN.*>'`` matches any single tag starting with ``'NN'``.
 
-    In particular, C{tag_pattern2re_pattern} performs the following
+    In particular, ``tag_pattern2re_pattern`` performs the following
     transformations on the given pattern:
 
         - Replace '.' with '[^<>{}]'
@@ -843,12 +843,12 @@ def tag_pattern2re_pattern(tag_pattern):
     :type tag_pattern: str
     :param tag_pattern: The tag pattern to convert to a regular
         expression pattern.
-    :raise ValueError: If C{tag_pattern} is not a valid tag pattern.
-        In particular, C{tag_pattern} should not include braces; and it
+    :raise ValueError: If ``tag_pattern`` is not a valid tag pattern.
+        In particular, ``tag_pattern`` should not include braces; and it
         should not contain nested or mismatched angle-brackets.
     :rtype: str
     :return: A regular expression pattern corresponding to
-        C{tag_pattern}. 
+        ``tag_pattern``. 
     """
     # Clean up the regular expression
     tag_pattern = re.sub(r'\s', '', tag_pattern)
@@ -883,20 +883,20 @@ def tag_pattern2re_pattern(tag_pattern):
 
 class RegexpChunkParser(ChunkParserI):
     """
-    A regular expression based chunk parser.  C{RegexpChunkParser} uses a
-    sequence of X{rules} to find chunks of a single type within a
-    text.  The chunking of the text is encoded using a C{ChunkString},
+    A regular expression based chunk parser.  ``RegexpChunkParser`` uses a
+    sequence of "rules" to find chunks of a single type within a
+    text.  The chunking of the text is encoded using a ``ChunkString``,
     and each rule acts by modifying the chunking in the
-    C{ChunkString}.  The rules are all implemented using regular
+    ``ChunkString``.  The rules are all implemented using regular
     expression matching and substitution.
 
-    The C{RegexpChunkRule} class and its subclasses (C{ChunkRule},
-    C{ChinkRule}, C{UnChunkRule}, C{MergeRule}, and C{SplitRule})
-    define the rules that are used by C{RegexpChunkParser}.  Each rule
-    defines an C{apply} method, which modifies the chunking encoded
-    by a given C{ChunkString}.
+    The ``RegexpChunkRule`` class and its subclasses (``ChunkRule``,
+    ``ChinkRule``, ``UnChunkRule``, ``MergeRule``, and ``SplitRule``)
+    define the rules that are used by ``RegexpChunkParser``.  Each rule
+    defines an ``apply()`` method, which modifies the chunking encoded
+    by a given ``ChunkString``.
 
-    :type _rules: list of C{RegexpChunkRule}
+    :type _rules: list(RegexpChunkRule)
     :ivar _rules: The list of rules that should be applied to a text.
     :type _trace: int
     :ivar _trace: The default level of tracing.
@@ -904,23 +904,23 @@ class RegexpChunkParser(ChunkParserI):
     """
     def __init__(self, rules, chunk_node='NP', top_node='S', trace=0):
         """
-        Construct a new C{RegexpChunkParser}.
+        Construct a new ``RegexpChunkParser``.
         
-        :type rules: list of C{RegexpChunkRule}
+        :type rules: list(RegexpChunkRule)
         :param rules: The sequence of rules that should be used to
             generate the chunking for a tagged text.
         :type chunk_node: str
         :param chunk_node: The node value that should be used for
             chunk subtrees.  This is typically a short string
             describing the type of information contained by the chunk,
-            such as C{"NP"} for base noun phrases.
+            such as ``"NP"`` for base noun phrases.
         :type top_node: str
         :param top_node: The node value that should be used for the
             top node of the chunk structure.
         :type trace: int
         :param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            C{1} will generate normal tracing output; and C{2} or
+            parsing a text.  ``0`` will generate no tracing output;
+            ``1`` will generate normal tracing output; and ``2`` or
             higher will generate verbose tracing output.
         """
         self._rules = rules
@@ -930,11 +930,11 @@ class RegexpChunkParser(ChunkParserI):
 
     def _trace_apply(self, chunkstr, verbose):
         """
-        Apply each of this C{RegexpChunkParser}'s rules to C{chunkstr}, in
-        turn.  Generate trace output between each rule.  If C{verbose}
+        Apply each rule of this ``RegexpChunkParser`` to ``chunkstr``, in
+        turn.  Generate trace output between each rule.  If ``verbose``
         is true, then generate verbose output.
 
-        :type chunkstr: C{ChunkString}
+        :type chunkstr: ChunkString
         :param chunkstr: The chunk string to which each rule should be
             applied.
         :type verbose: bool
@@ -953,12 +953,12 @@ class RegexpChunkParser(ChunkParserI):
         
     def _notrace_apply(self, chunkstr):
         """
-        Apply each of this C{RegexpChunkParser}'s rules to C{chunkstr}, in
+        Apply each rule of this ``RegexpChunkParser`` to ``chunkstr``, in
         turn.
 
         :param chunkstr: The chunk string to which each rule should be
             applied.
-        :type chunkstr: C{ChunkString}
+        :type chunkstr: ChunkString
         :rtype: None
         """
         
@@ -971,8 +971,8 @@ class RegexpChunkParser(ChunkParserI):
         :param chunk_struct: the chunk structure to be (further) chunked
         :type trace: int
         :param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            C{1} will generate normal tracing output; and C{2} or
+            parsing a text.  ``0`` will generate no tracing output;
+            ``1`` will generate normal tracing output; and ``2`` or
             highter will generate verbose tracing output.  This value
             overrides the trace level value that was given to the
             constructor. 
@@ -981,7 +981,7 @@ class RegexpChunkParser(ChunkParserI):
             tagged sentence.  A chunk is a non-overlapping linguistic
             group, such as a noun phrase.  The set of chunks
             identified in the chunk structure depends on the rules
-            used to define this C{RegexpChunkParser}.
+            used to define this ``RegexpChunkParser``.
         """
         if len(chunk_struct) == 0:
             print 'Warning: parsing empty text'
@@ -1009,22 +1009,22 @@ class RegexpChunkParser(ChunkParserI):
 
     def rules(self):
         """
-        :return: the sequence of rules used by C{RegexpChunkParser}.
-        :rtype: list of C{RegexpChunkRule}
+        :return: the sequence of rules used by ``RegexpChunkParser``.
+        :rtype: list of ``RegexpChunkRule``
         """
         return self._rules
 
     def __repr__(self):
         """
         :return: a concise string representation of this
-            C{RegexpChunkParser}.
+            ``RegexpChunkParser``.
         :rtype: str
         """
         return "<RegexpChunkParser with %d rules>" % len(self._rules)
 
     def __str__(self):
         """
-        :return: a verbose string representation of this C{RegexpChunkParser}.
+        :return: a verbose string representation of this ``RegexpChunkParser``.
         :rtype: str
         """
         s = "RegexpChunkParser with %d rules:\n" % len(self._rules)
@@ -1045,10 +1045,10 @@ class RegexpChunkParser(ChunkParserI):
 
 class RegexpParser(ChunkParserI):
     """
-    A grammar based chunk parser.  C{chunk.RegexpParser} uses a set of
+    A grammar based chunk parser.  ``chunk.RegexpParser`` uses a set of
     regular expression patterns to specify the behavior of the parser.
-    The chunking of the text is encoded using a C{ChunkString}, and
-    each rule acts by modifying the chunking in the C{ChunkString}.
+    The chunking of the text is encoded using a ``ChunkString``, and
+    each rule acts by modifying the chunking in the ``ChunkString``.
     The rules are all implemented using regular expression matching
     and substitution.
 
@@ -1090,15 +1090,15 @@ class RegexpParser(ChunkParserI):
         and set of chunk patterns.
         
         :param grammar: The grammar, or a list of RegexpChunkParser objects
-        :type grammar: str or list of C{RegexpChunkParser}
+        :type grammar: str or list(RegexpChunkParser)
         :param top_node: The top node of the tree being created
-        :type top_node: str or C{Nonterminal}
+        :type top_node: str or Nonterminal
         :param loop: The number of times to run through the patterns
         :type loop: int
         :type trace: int
         :param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            C{1} will generate normal tracing output; and C{2} or
+            parsing a text.  ``0`` will generate no tracing output;
+            ``1`` will generate normal tracing output; and ``2`` or
             higher will generate verbose tracing output.
         """
         self._trace = trace
@@ -1168,8 +1168,8 @@ class RegexpParser(ChunkParserI):
             (this tree is modified, and is also returned)
         :type trace: int
         :param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            C{1} will generate normal tracing output; and C{2} or
+            parsing a text.  ``0`` will generate no tracing output;
+            ``1`` will generate normal tracing output; and ``2`` or
             highter will generate verbose tracing output.  This value
             overrides the trace level value that was given to the
             constructor. 
@@ -1184,7 +1184,7 @@ class RegexpParser(ChunkParserI):
 
     def __repr__(self):
         """
-        :return: a concise string representation of this C{chunk.RegexpParser}.
+        :return: a concise string representation of this ``chunk.RegexpParser``.
         :rtype: str
         """
         return "<chunk.RegexpParser with %d stages>" % len(self._stages)
@@ -1192,7 +1192,7 @@ class RegexpParser(ChunkParserI):
     def __str__(self):
         """
         :return: a verbose string representation of this
-            C{RegexpChunkParser}.
+            ``RegexpChunkParser``.
         :rtype: str
         """
         s = "chunk.RegexpParser with %d stages:\n" % len(self._stages)
@@ -1208,16 +1208,16 @@ class RegexpParser(ChunkParserI):
 def demo_eval(chunkparser, text):
     """
     Demonstration code for evaluating a chunk parser, using a
-    C{ChunkScore}.  This function assumes that C{text} contains one
+    ``ChunkScore``.  This function assumes that ``text`` contains one
     sentence per line, and that each sentence has the form expected by
-    C{tree.chunk}.  It runs the given chunk parser on each sentence in
+    ``tree.chunk``.  It runs the given chunk parser on each sentence in
     the text, and scores the result.  It prints the final score
     (precision, recall, and f-measure); and reports the set of chunks
     that were missed and the set of chunks that were incorrect.  (At
     most 10 missing chunks and 10 incorrect chunks are reported).
 
     :param chunkparser: The chunkparser to be tested
-    :type chunkparser: C{ChunkParserI}
+    :type chunkparser: ChunkParserI
     :param text: The chunked tagged text that should be used for
         evaluation.
     :type text: str
@@ -1269,7 +1269,7 @@ def demo_eval(chunkparser, text):
 
 def demo():
     """
-    A demonstration for the C{RegexpChunkParser} class.  A single text is
+    A demonstration for the ``RegexpChunkParser`` class.  A single text is
     parsed with four different chunk parsers, using a variety of rules
     and strategies.
     """

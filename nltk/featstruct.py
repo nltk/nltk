@@ -214,11 +214,12 @@ class FeatStruct(SubstituteBindingsI):
 
     def equal_values(self, other, check_reentrance=False):
         """
-        :return: True if ``self`` and ``other`` assign the same value to
-            to every feature.  In particular, return true if
-            ``self[p]==other[p]`` for every feature path *p* such
-            that ``self[p]`` or ``other[p]`` is a base value (i.e.,
-            not a nested feature structure).
+        Return True if ``self`` and ``other`` assign the same value to
+        to every feature.  In particular, return true if
+        ``self[p]==other[p]`` for every feature path *p* such
+        that ``self[p]`` or ``other[p]`` is a base value (i.e.,
+        not a nested feature structure).
+
         :param check_reentrance: If True, then also return False if
             there is any difference between the reentrances of ``self``
             and ``other``.
@@ -263,7 +264,8 @@ class FeatStruct(SubstituteBindingsI):
     def _equal(self, other, check_reentrance, visited_self,
                visited_other, visited_pairs):
         """
-        :return: True iff self and other have equal values.
+        Return True iff self and other have equal values.
+
         :param visited_self: A set containing the ids of all ``self``
             feature structures we've already visited.
         :param visited_other: A set containing the ids of all ``other``
@@ -322,7 +324,8 @@ class FeatStruct(SubstituteBindingsI):
     
     def _hash(self, visited):
         """
-        :return: A hash value for this feature structure.
+        Return a hash value for this feature structure.
+
         :require: ``self`` must be frozen.
         :param visited: A set containing the ids of all feature
             structures we've already visited while hashing.
@@ -418,8 +421,9 @@ class FeatStruct(SubstituteBindingsI):
 
     def reentrances(self):
         """
-        :return: A list of all feature structures that can be reached
-            from ``self`` by multiple feature paths.
+        Return a list of all feature structures that can be reached
+        from ``self`` by multiple feature paths.
+
         :rtype: list(FeatStruct)
         """
         reentrance_dict = self._find_reentrances({})
@@ -498,9 +502,10 @@ class FeatStruct(SubstituteBindingsI):
 
     def remove_variables(self):
         """
-        :rtype: ``FeatStruct``
-        :return: The feature structure that is obtained by deleting
+        Return the feature structure that is obtained by deleting
         any feature whose value is a ``Variable``.
+
+        :rtype: ``FeatStruct``
         """
         return remove_variables(self)
 
@@ -533,7 +538,8 @@ class FeatStruct(SubstituteBindingsI):
 
     def _repr(self, reentrances, reentrance_ids):
         """
-        :return: A string representation of this feature structure.
+        Return a string representation of this feature structure.
+
         :param reentrances: A dictionary that maps from the ``id`` of
             each feature value in self, indicating whether that value
             is reentrant or not.
@@ -1245,53 +1251,43 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
     """
     Unify ``fstruct1`` with ``fstruct2``, and return the resulting feature
     structure.  This unified feature structure is the minimal
-    feature structure that:
-      - contains all feature value assignments from both ``fstruct1``
-        and ``fstruct2``.
-      - preserves all reentrance properties of ``fstruct1`` and
-        ``fstruct2``.
+    feature structure that contains all feature value assignments from both
+    ``fstruct1`` and ``fstruct2``, and that preserves all reentrancies.
 
     If no such feature structure exists (because ``fstruct1`` and
     ``fstruct2`` specify incompatible values for some feature), then
     unification fails, and ``unify`` returns None.
 
+    Bound variables are replaced by their values.  Aliased
+    variables are replaced by their representative variable
+    (if unbound) or the value of their representative variable
+    (if bound).  I.e., if variable *v* is in ``bindings``,
+    then *v* is replaced by ``bindings[v]``.  This will
+    be repeated until the variable is replaced by an unbound
+    variable or a non-variable value.
+
+    Unbound variables are bound when they are unified with
+    values; and aliased when they are unified with variables.
+    I.e., if variable *v* is not in ``bindings``, and is
+    unified with a variable or value *x*, then
+    ``bindings[v]`` is set to *x*.
+    
+    If ``bindings`` is unspecified, then all variables are
+    assumed to be unbound.  I.e., ``bindings`` defaults to an
+    empty dict.
+
+        >>> FeatStruct('[a=?x]').unify(FeatStruct('[b=?x]'))
+        [a=?x, b=?x2]
+
     :type bindings: dict with ``Variable`` keys
     :param bindings: A set of variable bindings to be used and
         updated during unification.
-
-        Bound variables are replaced by their values.  Aliased
-        variables are replaced by their representative variable
-        (if unbound) or the value of their representative variable
-        (if bound).  I.e., if variable *v* is in ``bindings``,
-        then *v* is replaced by ``bindings[v]``.  This will
-        be repeated until the variable is replaced by an unbound
-        variable or a non-variable value.
-
-        Unbound variables are bound when they are unified with
-        values; and aliased when they are unified with variables.
-        I.e., if variable *v* is not in ``bindings``, and is
-        unified with a variable or value *x*, then
-        ``bindings[v]`` is set to *x*.
-    
-        If ``bindings`` is unspecified, then all variables are
-        assumed to be unbound.  I.e., ``bindings`` defaults to an
-        empty dict.
-
     :type trace: bool
     :param trace: If true, generate trace output.
-
     :type rename_vars: bool
-    :param rename_vars: If true, then rename any variables in
-        ``fstruct2`` that are also used in ``fstruct1``.  This prevents
-        aliasing in cases where ``fstruct1`` and ``fstruct2`` use the
-        same variable name.  E.g.:
-
-            >>> FeatStruct('[a=?x]').unify(FeatStruct('[b=?x]'))
-            [a=?x, b=?x2]
-
-        If you intend for a variables in ``fstruct1`` and ``fstruct2`` with
-        the same name to be treated as a single variable, use
-        ``rename_vars=False``.
+    :param rename_vars: If True, then rename any variables in
+        ``fstruct2`` that are also used in ``fstruct1``, in order to
+        avoid collisions on variable names.
     """
     # Decide which class(es) will be treated as feature structures,
     # for the purposes of unification.
@@ -1633,16 +1629,19 @@ def _trace_valrepr(val):
 
 def subsumes(fstruct1, fstruct2):
     """
-    :return: True if ``fstruct1`` subsumes ``fstruct2``.  I.e., return
+    Return True if ``fstruct1`` subsumes ``fstruct2``.  I.e., return
     true if unifying ``fstruct1`` with ``fstruct2`` would result in a
     feature structure equal to ``fstruct2.``
+    
+    :rtype: bool
     """
     return fstruct2 == unify(fstruct1, fstruct2)
 
 def conflicts(fstruct1, fstruct2, trace=0):
     """
-    :return: A list of the feature paths of all features which are
+    Return a list of the feature paths of all features which are
     assigned incompatible values by ``fstruct1`` and ``fstruct2``.
+
     :rtype: list(tuple)
     """
     conflict_list = []
@@ -1928,17 +1927,18 @@ class FeatStructParser(object):
         displayed by repr) into a ``FeatStruct``.  This parse
         imposes the following restrictions on the string
         representation:
-          - Feature names cannot contain any of the following:
-            whitespace, parentheses, quote marks, equals signs,
-            dashes, commas, and square brackets.  Feature names may
-            not begin with plus signs or minus signs.
-          - Only the following basic feature value are supported:
-            strings, integers, variables, None, and unquoted
-            alphanumeric strings.
-          - For reentrant values, the first mention must specify
-            a reentrance identifier and a value; and any subsequent
-            mentions must use arrows (``'->'``) to reference the
-            reentrance identifier.
+
+        - Feature names cannot contain any of the following:
+          whitespace, parentheses, quote marks, equals signs,
+          dashes, commas, and square brackets.  Feature names may
+          not begin with plus signs or minus signs.
+        - Only the following basic feature value are supported:
+          strings, integers, variables, None, and unquoted
+          alphanumeric strings.
+        - For reentrant values, the first mention must specify
+          a reentrance identifier and a value; and any subsequent
+          mentions must use arrows (``'->'``) to reference the
+          reentrance identifier.
         """
         s = s.strip()
         value, position = self.partial_parse(s, 0, {}, fstruct)
@@ -1963,13 +1963,14 @@ class FeatStructParser(object):
     def partial_parse(self, s, position=0, reentrances=None, fstruct=None):
         """
         Helper function that parses a feature structure.
+
         :param s: The string to parse.
         :param position: The position in the string to start parsing.
         :param reentrances: A dictionary from reentrance ids to values.
             Defaults to an empty dictionary.
-        :return: A tuple (val, pos) of the feature structure created
-            by parsing and the position where the parsed feature
-            structure ends.
+        :return: A tuple (val, pos) of the feature structure created by
+            parsing and the position where the parsed feature structure ends.
+        :rtype: bool
         """
         if reentrances is None: reentrances = {}
         try:
@@ -2458,4 +2459,3 @@ if __name__ == '__main__':
 __all__ = ['FeatStruct', 'FeatDict', 'FeatList', 'unify', 'subsumes', 'conflicts',
            'Feature', 'SlashFeature', 'RangeFeature', 'SLASH', 'TYPE',
            'FeatStructParser']
-

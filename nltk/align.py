@@ -293,10 +293,9 @@ class EMIBMModel1(object):
 
     def train(self):
         '''
-        The train() function implements Expectation Maximization training
-        stage that learns word-to-word translation probabilities.
-
-        :return: Number of iterations taken to converge
+        Perform Expectation Maximization training to learn
+        word-to-word translation probabilities, and return
+        the number of iterations that were required for convergence.
         '''
 
         # Collect up sets of all English and foreign words

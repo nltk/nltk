@@ -19,17 +19,17 @@ class ChunkParserI(ParserI):
     A processing interface for identifying non-overlapping groups in
     unrestricted text.  Typically, chunk parsers are used to find base
     syntactic constituants, such as base noun phrases.  Unlike
-    L{ParserI}, C{ChunkParserI} guarantees that the C{parse} method
+    ``ParserI``, ``ChunkParserI`` guarantees that the ``parse()`` method
     will always generate a parse.
     """
     def parse(self, tokens):
         """
-        :return: the best chunk structure for the given tokens
+        Return the best chunk structure for the given tokens
         and return a tree.
         
         :param tokens: The list of (word, tag) tokens to be chunked.
-        :type tokens: list of L{tuple}
-        :rtype: L{Tree}
+        :type tokens: list(tuple)
+        :rtype: Tree
         """
         assert 0, "ChunkParserI is an abstract interface"
 
@@ -37,12 +37,12 @@ class ChunkParserI(ParserI):
         """
         Score the accuracy of the chunker against the gold standard.
         Remove the chunking the gold standard text, rechunk it using
-        the chunker, and return a L{ChunkScore<nltk.chunk.util.ChunkScore>}
-        object reflecting the performance of this chunk peraser.
+        the chunker, and return a ``ChunkScore`` object
+        reflecting the performance of this chunk peraser.
 
-        :type gold: list of L{Tree}
+        :type gold: list(Tree)
         :param gold: The list of chunked sentences to score the chunker on.
-        :rtype:  L{ChunkScore<nltk.chunk.util.ChunkScore>}
+        :rtype: ChunkScore
         """
         chunkscore = ChunkScore()
         for correct in gold:

@@ -23,9 +23,9 @@ def accuracy(chunker, gold):
     Strip the chunk information from the gold standard and rechunk it using
     the chunker, then compute the accuracy score.
 
-    :type chunker: C{ChunkParserI}
+    :type chunker: ChunkParserI
     :param chunker: The chunker being evaluated.
-    :type gold: C{tree}
+    :type gold: tree
     :param gold: The chunk structures to score the chunker on.
     :rtype: float
     """
@@ -49,17 +49,17 @@ def accuracy(chunker, gold):
 #
 class ChunkScore(object):
     """
-    A utility class for scoring chunk parsers.  C{ChunkScore} can
+    A utility class for scoring chunk parsers.  ``ChunkScore`` can
     evaluate a chunk parser's output, based on a number of statistics
     (precision, recall, f-measure, misssed chunks, incorrect chunks).
     It can also combine the scores from the parsing of multiple texts;
     this makes it signifigantly easier to evaluate a chunk parser that
     operates one sentence at a time.
 
-    Texts are evaluated with the C{score} method.  The results of
+    Texts are evaluated with the ``score`` method.  The results of
     evaluation can be accessed via a number of accessor methods, such
-    as C{precision} and C{f_measure}.  A typical use of the
-    C{ChunkScore} class is::
+    as ``precision`` and ``f_measure``.  A typical use of the
+    ``ChunkScore`` class is::
 
         >>> chunkscore = ChunkScore()
         >>> for correct in correct_sentences:
@@ -71,35 +71,35 @@ class ChunkScore(object):
     :ivar kwargs: Keyword arguments:
 
         - max_tp_examples: The maximum number actual examples of true
-          positives to record.  This affects the C{correct} member
-          function: C{correct} will not return more than this number
+          positives to record.  This affects the ``correct`` member
+          function: ``correct`` will not return more than this number
           of true positive examples.  This does *not* affect any of
           the numerical metrics (precision, recall, or f-measure)
 
         - max_fp_examples: The maximum number actual examples of false
-          positives to record.  This affects the C{incorrect} member
-          function and the C{guessed} member function: C{incorrect}
+          positives to record.  This affects the ``incorrect`` member
+          function and the ``guessed`` member function: ``incorrect``
           will not return more than this number of examples, and
-          C{guessed} will not return more than this number of true
+          ``guessed`` will not return more than this number of true
           positive examples.  This does *not* affect any of the
           numerical metrics (precision, recall, or f-measure)
         
         - max_fn_examples: The maximum number actual examples of false
-          negatives to record.  This affects the C{missed} member
-          function and the C{correct} member function: C{missed}
+          negatives to record.  This affects the ``missed`` member
+          function and the ``correct`` member function: ``missed``
           will not return more than this number of examples, and
-          C{correct} will not return more than this number of true
+          ``correct`` will not return more than this number of true
           negative examples.  This does *not* affect any of the
           numerical metrics (precision, recall, or f-measure)
 
         - chunk_node: A regular expression indicating which chunks
-          should be compared.  Defaults to C{'.*'} (i.e., all chunks).
+          should be compared.  Defaults to ``'.*'`` (i.e., all chunks).
         
-    :type _tp: list of C{Token}
+    :type _tp: list(Token)
     :ivar _tp: List of true positives
-    :type _fp: list of C{Token}
+    :type _fp: list(Token)
     :ivar _fp: List of false positives
-    :type _fn: list of C{Token}
+    :type _fn: list(Token)
     :ivar _fn: List of false negatives
     
     :type _tp_num: int
@@ -169,17 +169,20 @@ class ChunkScore(object):
 
     def accuracy(self):
         """
-        :return: The overall tag-based accuracy for all text that have
-            been scored by this C{ChunkScore}, using the IOB (conll2000)
-            tag encoding.
+        Return the overall tag-based accuracy for all text that have
+        been scored by this ``ChunkScore``, using the IOB (conll2000)
+        tag encoding.
+
+        :rtype: float
         """
         if self._tags_total == 0: return 1
         return self._tags_correct/self._tags_total
 
     def precision(self):
         """
-        :return: the overall precision for all texts that have been
-            scored by this C{ChunkScore}.
+        Return the overall precision for all texts that have been
+        scored by this ``ChunkScore``.
+
         :rtype: float
         """
         self._updateMeasures()
@@ -189,8 +192,9 @@ class ChunkScore(object):
     
     def recall(self):
         """
-        :return: the overall recall for all texts that have been
-            scored by this C{ChunkScore}.
+        Return the overall recall for all texts that have been
+        scored by this ``ChunkScore``.
+
         :rtype: float
         """
         self._updateMeasures()
@@ -200,15 +204,15 @@ class ChunkScore(object):
     
     def f_measure(self, alpha=0.5):
         """
-        :return: the overall F measure for all texts that have been
-            scored by this C{ChunkScore}.
-        :rtype: float
-        
+        Return the overall F measure for all texts that have been
+        scored by this ``ChunkScore``.
+
         :param alpha: the relative weighting of precision and recall.
             Larger alpha biases the score towards the precision value,
             while smaller alpha biases the score towards the recall
-            value.  C{alpha} should have a value in the range [0,1].
+            value.  ``alpha`` should have a value in the range [0,1].
         :type alpha: float
+        :rtype: float
         """
         self._updateMeasures()
         p = self.precision()
@@ -219,10 +223,11 @@ class ChunkScore(object):
     
     def missed(self):
         """
+        Return the chunks which were included in the
+        correct chunk structures, but not in the guessed chunk
+        structures, listed in input order.
+
         :rtype: list of chunks
-        :return: the chunks which were included in the
-            correct chunk structures, but not in the guessed chunk
-            structures, listed in input order.
         """
         self._updateMeasures()
         chunks = list(self._fn)
@@ -230,10 +235,10 @@ class ChunkScore(object):
     
     def incorrect(self):
         """
+        Return the chunks which were included in the guessed chunk structures,
+        but not in the correct chunk structures, listed in input order.
+
         :rtype: list of chunks
-        :return: the chunks which were included in the
-            guessed chunk structures, but not in the correct chunk
-            structures, listed in input order.
         """
         self._updateMeasures()
         chunks = list(self._fp)
@@ -241,18 +246,20 @@ class ChunkScore(object):
     
     def correct(self):
         """
+        Return the chunks which were included in the correct
+        chunk structures, listed in input order.
+
         :rtype: list of chunks
-        :return: the chunks which were included in the correct
-            chunk structures, listed in input order.
         """
         chunks = list(self._correct)
         return [c[1] for c in chunks]  # discard position information
 
     def guessed(self):
         """
+        Return the chunks which were included in the guessed
+        chunk structures, listed in input order.
+
         :rtype: list of chunks
-        :return: the chunks which were included in the guessed
-            chunk structures, listed in input order.
         """
         chunks = list(self._guessed)
         return [c[1] for c in chunks]  # discard position information
@@ -263,19 +270,20 @@ class ChunkScore(object):
     
     def __repr__(self):
         """
-        :rtype: C{String}
-        :return: a concise representation of this C{ChunkScoring}.
+        Return a concise representation of this ``ChunkScoring``.
+
+        :rtype: str
         """
         return '<ChunkScoring of '+`len(self)`+' chunks>'
 
     def __str__(self):
         """
-        :rtype: C{String}
-        :return: a verbose representation of this C{ChunkScoring}.
-            This representation includes the precision, recall, and
-            f-measure scores.  For other information about the score,
-            use the accessor methods (e.g., C{missed()} and
-            C{incorrect()}). 
+        Return a verbose representation of this ``ChunkScoring``.
+        This representation includes the precision, recall, and
+        f-measure scores.  For other information about the score,
+        use the accessor methods (e.g., ``missed()`` and ``incorrect()``). 
+
+        :rtype: str
         """
         return ("ChunkParse score:\n" +
                 ("    IOB Accuracy: %5.1f%%\n" % (self.accuracy()*100)) +
@@ -302,19 +310,18 @@ def tagstr2tree(s, chunk_node="NP", top_node="S", sep='/'):
     """
     Divide a string of bracketted tagged text into
     chunks and unchunked tokens, and produce a Tree.
-    Chunks are marked by square brackets (C{[...]}).  Words are
+    Chunks are marked by square brackets (``[...]``).  Words are
     delimited by whitespace, and each word should have the form
-    C{I{text}/I{tag}}.  Words that do not contain a slash are
-    assigned a C{tag} of None.
+    ``text/tag``.  Words that do not contain a slash are
+    assigned a ``tag`` of None.
 
-    :return: A tree corresponding to the string representation.
-    :rtype: C{tree}
     :param s: The string to be converted
     :type s: str
     :param chunk_node: The label to use for chunk nodes
     :type chunk_node: str
     :param top_node: The label to use for the root of the tree
     :type top_node: str
+    :rtype: Tree
     """
 
     WORD_OR_BRACKET = re.compile(r'\[|\]|[^\[\]\s]+')
@@ -347,7 +354,10 @@ def tagstr2tree(s, chunk_node="NP", top_node="S", sep='/'):
 _LINE_RE = re.compile('(\S+)\s+(\S+)\s+([IOB])-?(\S+)?')
 def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
     """
-    Convert a CoNLL IOB string into a tree.  Uses the specified chunk types
+    Return a chunk structure for a single sentence
+    encoded in the given CONLL 2000 style string.
+    This function converts a CoNLL IOB string into a tree.
+    It uses the specified chunk types
     (defaults to NP, PP and VP), and creates a tree rooted at a node
     labeled S (by default).
 
@@ -357,9 +367,7 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
     :type chunk_types: tuple
     :param top_node: The node label to use for the root.
     :type top_node: str
-    :return: A chunk structure for a single sentence
-        encoded in the given CONLL 2000 style string.
-    :rtype: L{Tree}
+    :rtype: Tree
     """
 
     stack = [Tree(top_node, [])]
@@ -397,12 +405,12 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
 
 def tree2conlltags(t):
     """
-    Convert a tree to the CoNLL IOB tag format
+    Return a list of 3-tuples containing ``(word, tag, IOB-tag)``.
+    Convert a tree to the CoNLL IOB tag format.
 
     :param t: The tree to be converted.
     :type t: Tree
-    :return: A list of 3-tuples containing word, tag and IOB tag.
-    :rtype: list of tuple
+    :rtype: list(tuple)
     """
 
     tags = []
@@ -452,11 +460,11 @@ def conlltags2tree(sentence, chunk_types=('NP','PP','VP'),
 
 def tree2conllstr(t):
     """
+    Return a multiline string where each line contains a word, tag and IOB tag.
     Convert a tree to the CoNLL IOB string format
 
     :param t: The tree to be converted.
     :type t: Tree
-    :return: A multiline string where each line contains a word, tag and IOB tag.
     :rtype: str
     """
     lines = [string.join(token) for token in tree2conlltags(t)]
@@ -507,14 +515,14 @@ def _ieer_read_text(s, top_node):
 def ieerstr2tree(s, chunk_types = ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION',
                'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'], top_node="S"):
     """
+    Return a chunk structure containing the chunked tagged text that is
+    encoded in the given IEER style string.
     Convert a string of chunked tagged text in the IEER named
     entity format into a chunk structure.  Chunks are of several
     types, LOCATION, ORGANIZATION, PERSON, DURATION, DATE, CARDINAL,
     PERCENT, MONEY, and MEASURE.
 
-    :return: A chunk structure containing the chunked tagged text that is
-        encoded in the given IEER style string.
-    :rtype: L{Tree}
+    :rtype: Tree
     """
 
     # Try looking for a single document.  If that doesn't work, then just

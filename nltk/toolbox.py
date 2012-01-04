@@ -27,7 +27,8 @@ class StandardFormat(object):
             self.open(filename)
 
     def open(self, sfm_file):
-        """Open a standard format marker file for sequential reading. 
+        """
+        Open a standard format marker file for sequential reading. 
         
         :param sfm_file: name of the standard format marker input file
         :type sfm_file: str
@@ -40,7 +41,8 @@ class StandardFormat(object):
             self._file = codecs.open(sfm_file, 'rU', self._encoding)
 
     def open_string(self, s):
-        """Open a standard format marker string for sequential reading. 
+        """
+        Open a standard format marker string for sequential reading. 
         
         :param s: string to parse as a standard format marker input file
         :type s: str
@@ -48,12 +50,11 @@ class StandardFormat(object):
         self._file = StringIO(s)
 
     def raw_fields(self):
-        """Return an iterator for the fields in the standard format marker
-        file.
-        
-        :return: an iterator that returns the next field in a (marker, value) 
-            tuple. Linebreaks and trailing white space are preserved except 
-            for the final newline in each field.
+        """
+        Return an iterator that returns the next field in a (marker, value) 
+        tuple. Linebreaks and trailing white space are preserved except 
+        for the final newline in each field.
+
         :rtype: iter(tuple(str, str))
         """
         join_string = '\n'
@@ -83,7 +84,10 @@ class StandardFormat(object):
         yield (mkr, join_string.join(value_lines))
 
     def fields(self, strip=True, unwrap=True, encoding=None, errors='strict', unicode_fields=None):
-        """Return an iterator for the fields in the standard format marker file.
+        """
+        Return an iterator that returns the next field in a ``(marker, value)``
+        tuple, where ``marker`` and ``value`` are unicode strings if an ``encoding``
+        was specified in the ``fields()`` method. Otherwise they are non-unicode strings.
         
         :param strip: strip trailing whitespace from the last line of each field
         :type strip: bool
@@ -94,16 +98,13 @@ class StandardFormat(object):
             unicode strings.
         :type encoding: str or None
         :param errors: Error handling scheme for codec. Same as the ``decode()``
-        builtin string method.
+            builtin string method.
         :type errors: str
         :param unicode_fields: Set of marker names whose values are UTF-8 encoded.
             Ignored if encoding is None. If the whole file is UTF-8 encoded set 
             ``encoding='utf8'`` and leave ``unicode_fields`` with its default
             value of None.
         :type unicode_fields: sequence
-        :return: an iterator that returns the next field in a ``(marker, value)``
-            tuple, where ``marker`` and ``value`` are unicode strings if an ``encoding``
-            was specified in the ``fields()`` method. Otherwise they are non-unicode strings.
         :rtype: iter(tuple(str, str))
         """
         if encoding is None and unicode_fields is not None:
@@ -181,8 +182,8 @@ class ToolboxData(StandardFormat):
             </toolbox_data>
 
         :param key: Name of key marker at the start of each record. If set to 
-        None (the default value) the first marker that doesn't begin with an 
-        underscore is assumed to be the key.
+            None (the default value) the first marker that doesn't begin with
+            an underscore is assumed to be the key.
         :type key: str
         :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``
         :type kwargs: dict
@@ -233,7 +234,7 @@ class ToolboxData(StandardFormat):
         
         :type grammar: str
         :param grammar: Contains the chunking rules used to parse the 
-        database.  See ``chunk.RegExp`` for documentation.
+            database.  See ``chunk.RegExp`` for documentation.
         :type top_node: str
         :param top_node: The node value that should be used for the
             top node of the chunk structure.
@@ -245,7 +246,6 @@ class ToolboxData(StandardFormat):
         :type kwargs: dict
         :param kwargs: Keyword arguments passed to ``toolbox.StandardFormat.fields()``
         :rtype: ElementTree._ElementInterface
-        :return: Contents of toolbox data parsed according to the rules in grammar
         """
         from nltk import chunk
         from nltk.parse import Tree
@@ -263,7 +263,8 @@ class ToolboxData(StandardFormat):
 _is_value = re.compile(r"\S")
 
 def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
-    """Return a string with a standard format representation of the toolbox
+    """
+    Return a string with a standard format representation of the toolbox
     data in tree (tree can be a toolbox database or a single record).
     
     :param tree: flat representation of toolbox data (whole database or single record)
@@ -276,7 +277,6 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     :param unicode_fields:
     :type unicode_fields: dict(str) or set(str)
     :rtype: str
-    :return: str using standard format markup
     """
     if tree.tag == 'record':
         root = Element('toolbox_data')
@@ -317,16 +317,16 @@ class ToolboxSettings(StandardFormat):
         super(ToolboxSettings, self).__init__()
 
     def parse(self, encoding=None, errors='strict', **kwargs):
-        """Parses a settings file using ElementTree.
+        """
+        Return the contents of toolbox settings file with a nested structure.
         
         :param encoding: encoding used by settings file
-        :type  encoding: str        
+        :type encoding: str        
         :param errors: Error handling scheme for codec. Same as ``decode()`` builtin method.
         :type errors: str
         :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``
         :type kwargs: dict
         :rtype: ElementTree._ElementInterface
-        :return: contents of toolbox settings file with a nested structure
         """
         builder = TreeBuilder()
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
@@ -375,7 +375,8 @@ def _to_settings_string(node, l, **kwargs):
     return
     
 def remove_blanks(elem):
-    """Remove all elements and subelements with no text and no child elements.
+    """
+    Remove all elements and subelements with no text and no child elements.
     
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
@@ -388,7 +389,8 @@ def remove_blanks(elem):
     elem[:] = out
 
 def add_default_fields(elem, default_fields):
-    """Add blank elements and subelements specified in default_fields.
+    """
+    Add blank elements and subelements specified in default_fields.
     
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
@@ -402,7 +404,8 @@ def add_default_fields(elem, default_fields):
         add_default_fields(child, default_fields)
 
 def sort_fields(elem, field_orders):
-    """Sort the elements and subelements in order specified in field_orders.
+    """
+    Sort the elements and subelements in order specified in field_orders.
     
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
@@ -431,7 +434,8 @@ def _sort_fields(elem, orders_dicts):
             _sort_fields(child, orders_dicts)
 
 def add_blank_lines(tree, blanks_before, blanks_between):
-    """Add blank lines before all elements and subelements specified in blank_before.
+    """
+    Add blank lines before all elements and subelements specified in blank_before.
     
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
