@@ -60,7 +60,7 @@ class ShiftReduceParser(ParserI):
         Create a new ``ShiftReduceParser``, that uses ``grammar`` to
         parse texts.
 
-        :type grammar: ``Grammar``
+        :type grammar: Grammar
         :param grammar: The grammar used to parse texts.
         :type trace: int
         :param trace: The level of tracing that should be used when
@@ -132,7 +132,7 @@ class ShiftReduceParser(ParserI):
             ``rhs`` matches any Tree whose node value is equal
             to the nonterminal's symbol.  A terminal element of ``rhs``
             matches any string whose type is equal to the terminal.
-        :type rhs: list of (terminal and ``Nonterminal``)
+        :type rhs: list(terminal and Nonterminal)
         :param rhs: The right hand side of a CFG production.
         :type rightmost_stack: list(string and Tree)
         :param rightmost_stack: The rightmost elements of the parser's
@@ -159,7 +159,7 @@ class ShiftReduceParser(ParserI):
         earliest in the grammar.  The new Tree replaces the
         elements in the stack.
 
-        :rtype: ``Production`` or None
+        :rtype: Production or None
         :return: If a reduction is performed, then return the CFG
             production that the reduction is based on; otherwise,
             return false.
@@ -338,7 +338,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :return: 0 if no operation was performed; 1 if a shift was
             performed; and the CFG production used to reduce if a
             reduction was performed.
-        :rtype: ``Production`` or bool
+        :rtype: Production or bool
         """
         return self.reduce() or self.shift()
 
@@ -366,7 +366,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
             reduction was performed.  If no reduction was performed,
             return None.
         
-        :rtype: ``Production`` or None
+        :rtype: Production or None
         """
         self._history.append( (self._stack[:], self._remaining_text[:]) )
         return_val = self._reduce(self._stack, self._remaining_text,
@@ -394,7 +394,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         """
         :return: A list of the productions for which reductions are
             available for the current parser state.
-        :rtype: list of ``Production``
+        :rtype: list(Production)
         """
         productions = []
         for production in self._grammar.productions():
@@ -422,7 +422,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         Change the grammar used to parse texts.
         
         :param grammar: The new grammar.
-        :type grammar: ``CFG``
+        :type grammar: CFG
         """
         self._grammar = grammar
     

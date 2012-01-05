@@ -51,7 +51,7 @@ class AlignedCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of words
             and punctuation symbols.
-        :rtype: list of str
+        :rtype: list(str)
         """
         return concat([AlignedSentCorpusView(fileid, enc, False, False,
                                              self._word_tokenizer,
@@ -64,7 +64,7 @@ class AlignedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        :rtype: list of (list of str)
+        :rtype: list(list(str))
         """
         return concat([AlignedSentCorpusView(fileid, enc, False, True,
                                              self._word_tokenizer,
@@ -75,7 +75,7 @@ class AlignedCorpusReader(CorpusReader):
     def aligned_sents(self, fileids=None):
         """
         :return: the given file(s) as a list of AlignedSent objects.
-        :rtype: list of ``AlignedSent``
+        :rtype: list(AlignedSent)
         """
         return concat([AlignedSentCorpusView(fileid, enc, True, True,
                                              self._word_tokenizer,

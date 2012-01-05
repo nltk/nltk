@@ -39,7 +39,7 @@ class CorpusReader(object):
     """
     def __init__(self, root, fileids, encoding=None, tag_mapping_function=None):
         """
-        :type root: ``PathPointer`` or str
+        :type root: PathPointer or str
         :param root: A path pointer identifying the root directory for
             this corpus.  If a string is specified, then it will be
             converted to a ``PathPointer`` automatically.
@@ -136,8 +136,7 @@ class CorpusReader(object):
         :type file: str
         :param file: The file identifier for the file whose path
             should be returned.
-
-        :rtype: ``PathPointer``
+        :rtype: PathPointer
         """
         return self._root.join(fileid)
 
@@ -158,7 +157,7 @@ class CorpusReader(object):
         :param include_encoding: If true, then return a list of
             ``(path_pointer, encoding)`` tuples.
 
-        :rtype: list of ``PathPointer``
+        :rtype: list(PathPointer)
         """
         if fileids is None:
             fileids = self._fileids
@@ -205,7 +204,7 @@ class CorpusReader(object):
     root = property(_get_root, doc="""
         The directory where this corpus is stored.
 
-        :type: ``PathPointer``""")
+        :type: PathPointer""")
 
 
 ######################################################################

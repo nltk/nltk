@@ -79,7 +79,7 @@ class MaltParser(ParserI):
         tagger.
         
         :param sentence: Input sentence to parse
-        :type sentence: ``list`` of ``string``
+        :type sentence: list(str)
         :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
         taggedwords = self.tagger.tag(sentence)
@@ -92,7 +92,7 @@ class MaltParser(ParserI):
         MaltParser instance's tagger.
         
         :param sentence: Input sentence to parse
-        :type sentence: ``string``
+        :type sentence: str
         :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
         words = word_tokenize(sentence)
@@ -105,7 +105,7 @@ class MaltParser(ParserI):
         tagged.
         
         :param sentence: Input sentence to parse
-        :type sentence: ``list`` of (word, tag) ``tuple``s.
+        :type sentence: list(tuple(str, str))
         :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
 

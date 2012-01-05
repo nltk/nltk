@@ -112,11 +112,12 @@ class Variable(object):
 def unique_variable(pattern=None, ignore=None):
     """
     Return a new, unique variable.
-    param pattern: ``Variable`` that is being replaced.  The new variable must
-    be the same type.
-    param term: a set of ``Variable``s that should not be returned from 
-    this function.
-    return: ``Variable``
+
+    :param pattern: ``Variable`` that is being replaced.  The new variable must
+        be the same type.
+    :param term: a set of ``Variable``s that should not be returned from 
+        this function.
+    :rtype: Variable
     """
     if pattern is not None:
         if is_indvar(pattern.name):
@@ -343,8 +344,8 @@ class SubstituteBindingsI(object):
     def substitute_bindings(self, bindings):
         """
         :return: The object that is obtained by replacing
-        each variable bound by ``bindings`` with its values.
-        Aliases are already resolved. (maybe?)
+            each variable bound by ``bindings`` with its values.
+            Aliases are already resolved. (maybe?)
         :rtype: (any)
         """
         raise NotImplementedError()
@@ -438,8 +439,9 @@ class Expression(SubstituteBindingsI):
     def typecheck(self, signature=None):
         """
         Infer and check types.  Raise exceptions if necessary.
+
         :param signature: dict that maps variable names to types (or string 
-        representations of types)
+            representations of types)
         :return: the signature, plus any additional type mappings 
         """
         sig = defaultdict(list)
@@ -460,7 +462,8 @@ class Expression(SubstituteBindingsI):
         """
         Find the type of the given variable as it is used in this expression.
         For example, finding the type of "P" in "P(x) & Q(x,y)" yields "<e,t>"
-        :param variable: ``Variable``  
+
+        :param variable: Variable
         """
         raise NotImplementedError() 
     
@@ -468,9 +471,9 @@ class Expression(SubstituteBindingsI):
         """
         Set the type of this expression to be the given type.  Raise type 
         exceptions where applicable.
-        :param other_type: ``Type`` to set
-        :param signature: ``dict<str, list<AbstractVariableExpression>>`` store 
-        all variable expressions with a given name
+
+        :param other_type: Type
+        :param signature: dict(str -> list(AbstractVariableExpression))
         """
         raise NotImplementedError()
     
@@ -1667,9 +1670,9 @@ def parse_logic(s, logic_parser=None):
     :param s: the contents of the file
     :type s: str
     :param logic_parser: The parser to be used to parse the logical expression
-    :type logic_parser: ``LogicParser``
+    :type logic_parser: LogicParser
     :return: a list of parsed formulas.
-    :rtype: list of ``Expression``
+    :rtype: list(Expression)
     """
     if logic_parser is None:
         logic_parser = LogicParser()

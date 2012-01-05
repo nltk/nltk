@@ -33,7 +33,7 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         :return: the given file(s) as a list of words
             and punctuation symbols.
-        :rtype: list of str
+        :rtype: list(str)
         
         :param strip_space: If true, then strip trailing spaces from
             word tokens.  Otherwise, leave the spaces on the tokens.
@@ -53,7 +53,7 @@ class BNCCorpusReader(XMLCorpusReader):
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             ``(word,tag)``.
-        :rtype: list of ``(str,str)``
+        :rtype: list(tuple(str,str))
         
         :param c5: If true, then the tags used will be the more detailed
             c5 tags.  Otherwise, the simplified tags will be used.
@@ -75,7 +75,7 @@ class BNCCorpusReader(XMLCorpusReader):
         :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        :rtype: list of (list of str)
+        :rtype: list(list(str))
         
         :param strip_space: If true, then strip trailing spaces from
             word tokens.  Otherwise, leave the spaces on the tokens.
@@ -93,7 +93,7 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
-        :rtype: list of (list of ``(str,str)``)
+        :rtype: list(list(tuple(str,str)))
             
         :param c5: If true, then the tags used will be the more detailed
             c5 tags.  Otherwise, the simplified tags will be used.

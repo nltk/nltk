@@ -95,7 +95,7 @@ class MaxentClassifier(ClassifierI):
         Construct a new maxent classifier model.  Typically, new
         classifier models are created using the ``train()`` method.
 
-        :type encoding: ``MaxentFeatureEncodingI``
+        :type encoding: MaxentFeatureEncodingI
         :param encoding: An encoding that is used to convert the
             featuresets that are given to the ``classify`` method into
             joint-feature vectors, which are used by the maxent
@@ -224,7 +224,7 @@ class MaxentClassifier(ClassifierI):
         chosen to maximize entropy while remaining empirically
         consistent with the training corpus.
 
-        :rtype: ``MaxentClassifier``
+        :rtype: MaxentClassifier
         :return: The new maxent classifier
 
         :type train_toks: list
@@ -260,7 +260,7 @@ class MaxentClassifier(ClassifierI):
         :param trace: The level of diagnostic tracing output to produce.
             Higher values produce more verbose output.
 
-        :type encoding: ``MaxentFeatureEncodingI``
+        :type encoding: MaxentFeatureEncodingI
         :param encoding: A feature encoding, used to convert featuresets
             into feature vectors.  If none is specified, then a
             ``BinaryMaxentFeatureEncoding`` will be built based on the
@@ -376,7 +376,7 @@ class MaxentFeatureEncodingI(object):
         each non-zero joint-feature.
         
         :type featureset: dict
-        :rtype: list of ``(int, number)``
+        :rtype: list(tuple(int, int))
         """
         raise AssertionError('Not implemented')
 
@@ -410,7 +410,7 @@ class MaxentFeatureEncodingI(object):
         Construct and return new feature encoding, based on a given
         training corpus ``train_toks``.
 
-        :type train_toks: list of ``tuples`` of (dict, str)
+        :type train_toks: list(tuple(dict, str))
         :param train_toks: Training data, represented as a list of
             pairs, the first member of which is a feature dictionary,
             and the second of which is a classification label.
@@ -616,7 +616,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         ``BinaryMaxentFeatureEncoding`` for a description of the
         joint-features that will be included in this encoding.
 
-        :type train_toks: list of ``tuples`` of (dict, str)
+        :type train_toks: list(tuple(dict, str))
         :param train_toks: Training data, represented as a list of
             pairs, the first member of which is a feature dictionary,
             and the second of which is a classification label.
@@ -952,7 +952,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         Note: recognized feature values types are (int, float), over
         types are interpreted as regular binary features.
 
-        :type train_toks: list of ``tuples`` of (dict, str)
+        :type train_toks: list(tuple(dict, str))
         :param train_toks: Training data, represented as a list of
             pairs, the first member of which is a feature dictionary,
             and the second of which is a classification label.
@@ -1229,7 +1229,7 @@ def calculate_nfmap(train_toks, encoding):
 
     :return: A map that can be used to compress ``nf`` to a dense
         vector.
-    :rtype: ``dictionary`` from int to int
+    :rtype: dict(int -> int)
     """
     # Map from nf to indices.  This allows us to use smaller arrays.
     nfset = set()
@@ -1279,9 +1279,9 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
     matrices, which yields a signifigant performance improvement. 
 
     :param train_toks: The set of training tokens.
-    :type train_toks: list of ``tuples`` of (dict, str)
+    :type train_toks: list(tuple(dict, str))
     :param classifier: The current classifier.
-    :type classifier: ``ClassifierI``
+    :type classifier: ClassifierI
     :param ffreq_empirical: An array containing the empirical
         frequency for each feature.  The *i*\ th element of this
         array is the empirical frequency for feature *i*.
@@ -1293,12 +1293,12 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
     :type unattested: sequence of int
     :param nfmap: A map that can be used to compress ``nf`` to a dense
         vector.
-    :type nfmap: ``dictionary`` from int to int
+    :type nfmap: dict(int -> int)
     :param nfarray: An array that can be used to uncompress ``nf``
         from a dense vector.
-    :type nfarray: ``array`` of float
-    :param nftranspose: ``array`` of float
-    :type nftranspose: The transpose of ``nfarray``
+    :type nfarray: array(float)
+    :param nftranspose: The transpose of ``nfarray``
+    :type nftranspose: array(float)
     """
     # These parameters control when we decide that we've
     # converged.  It probably should be possible to set these

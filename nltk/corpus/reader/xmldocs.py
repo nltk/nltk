@@ -57,7 +57,7 @@ class XMLCorpusReader(CorpusReader):
         fileid can only specify one file.
 
         :return: the given file's text nodes as a list of words and punctuation symbols
-        :rtype: list of str
+        :rtype: list(str)
         """
 
         elt = self.xml(fileid)
@@ -180,7 +180,7 @@ class XMLCorpusView(StreamBackedCorpusView):
 
         :return: The view value corresponding to ``elt``.
 
-        :type elt: ``ElementTree``
+        :type elt: ElementTree
         :param elt: The element that should be converted.
 
         :type context: str

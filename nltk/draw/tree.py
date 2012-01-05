@@ -60,7 +60,7 @@ class TreeSegmentWidget(CanvasWidget):
     def __init__(self, canvas, node, subtrees, **attribs):
         """
         :type node: 
-        :type subtrees: list of ``CanvasWidgetI``
+        :type subtrees: list(CanvasWidgetI)
         """
         self._node = node
         self._subtrees = subtrees

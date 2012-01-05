@@ -54,7 +54,7 @@ class RecursiveDescentParser(ParserI):
         Create a new ``RecursiveDescentParser``, that uses ``grammar``
         to parse texts.
 
-        :type grammar: ``ContextFreeGrammar``
+        :type grammar: ContextFreeGrammar
         :param grammar: The grammar used to parse texts.
         :type trace: int
         :param trace: The level of tracing that should be used when
@@ -101,10 +101,10 @@ class RecursiveDescentParser(ParserI):
             currently being parsed.  The elements of ``tree``
             that are specified by ``frontier`` have not yet been
             expanded or matched.
-        :type remaining_text: list of ``String``s
+        :type remaining_text: list(str)
         :param remaining_text: The portion of the text that is not yet
             covered by ``tree``.
-        :type frontier: list of tuple of int
+        :type frontier: list(tuple(int))
         :param frontier: A list of the locations within ``tree`` of
             all subtrees that have not yet been expanded, and all
             leaves that have not yet been matched.  This list sorted
@@ -151,7 +151,7 @@ class RecursiveDescentParser(ParserI):
             currently being parsed.  The elements of ``tree``
             that are specified by ``frontier`` have not yet been
             expanded or matched.
-        :type rtext: list of ``String``s
+        :type rtext: list(str)
         :param rtext: The portion of the text that is not yet
             covered by ``tree``.
         :type frontier: list of tuple of int
@@ -198,10 +198,10 @@ class RecursiveDescentParser(ParserI):
             currently being parsed.  The elements of ``tree``
             that are specified by ``frontier`` have not yet been
             expanded or matched.
-        :type remaining_text: list of ``String``s
+        :type remaining_text: list(str)
         :param remaining_text: The portion of the text that is not yet
             covered by ``tree``.
-        :type frontier: list of tuple of int
+        :type frontier: list(tuple(int))
         :param frontier: A list of the locations within ``tree`` of
             all subtrees that have not yet been expanded, and all
             leaves that have not yet been matched.
@@ -242,7 +242,7 @@ class RecursiveDescentParser(ParserI):
 
         :param production: The CFG production that licenses the tree
             token that should be returned.
-        :type production: ``Production``
+        :type production: Production
         """
         children = []
         for elt in production.rhs():
@@ -398,7 +398,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         """
         :return: The portion of the text that is not yet covered by the
             tree.
-        :rtype: list of ``String``
+        :rtype: list(str)
         """
         return self._rtext
 
@@ -407,7 +407,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         :return: A list of the tree locations of all subtrees that
             have not yet been expanded, and all leaves that have not
             yet been matched.
-        :rtype: list of tuple of int
+        :rtype: list(tuple(int))
         """
         return self._frontier
 
@@ -432,7 +432,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         :return: 0 if no operation was performed; a token if a match
             was performed; a production if an expansion was performed;
             and 1 if a backtrack operation was performed.
-        :rtype: ``Production`` or ``String`` or bool
+        :rtype: Production or String or bool
         """
         # Try matching (if we haven't already)
         if self.untried_match():
@@ -464,7 +464,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         :return: The production used to expand the frontier, if an
            expansion was performed.  If no expansion was performed,
            return None.
-        :rtype: ``Production`` or None
+        :rtype: Production or None
         """
 
         # Make sure we *can* expand.
@@ -498,7 +498,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
 
         :return: The token matched, if a match operation was
             performed.  If no match was performed, return None
-        :rtype: ``String`` or None
+        :rtype: str or None
         """
         
         # Record that we've tried matching this token.
@@ -536,7 +536,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         """
         :return: A list of all the productions for which expansions
             are available for the current parser state.
-        :rtype: list of ``Production``
+        :rtype: list(Production)
         """
         # Make sure we *can* expand.
         if len(self._frontier) == 0: return []
@@ -552,7 +552,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         """
         :return: A list of all the untried productions for which
             expansions are available for the current parser state.
-        :rtype: list of ``Production``
+        :rtype: list(Production)
         """
         
         tried_expansions = self._tried_e.get(self._freeze(self._tree), [])
@@ -618,7 +618,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         Change the grammar used to parse texts.
         
         :param grammar: The new grammar.
-        :type grammar: ``CFG``
+        :type grammar: CFG
         """
         self._grammar = grammar
         

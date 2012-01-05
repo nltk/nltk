@@ -270,7 +270,7 @@ class IncrementalChartParser(ChartParser):
         Create a new Earley chart parser, that uses ``grammar`` to
         parse texts.
         
-        :type grammar: ``ContextFreeGrammar``
+        :type grammar: ContextFreeGrammar
         :param grammar: The grammar used to parse texts.
         :type trace: int
         :param trace: The level of tracing that should be used when

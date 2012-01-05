@@ -41,7 +41,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
             relation=False, pos=False, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of words
-        :rtype: list of str
+        :rtype: list(str)
         
         :param speaker: If list is specified, select specitic speakers defined
         	in the corpus. Default is 'All' (all participants). Common choices 
@@ -64,7 +64,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             ``(word,tag)``.
-        :rtype: list of ``(str,str)``
+        :rtype: list(tuple(str,str))
         
         :param speaker: If list is specified, select specitic speakers defined
         	in the corpus. Default is 'All' (all participants). Common choices 
@@ -87,7 +87,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        :rtype: list of (list of str)
+        :rtype: list(list(str))
         
         :param speaker: If list is specified, select specitic speakers defined
         	in the corpus. Default is 'All' (all participants). Common choices 
@@ -110,7 +110,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.            
-        :rtype: list of (list of ``(str,str)``)
+        :rtype: list(list(tuple(str,str)))
         
         :param speaker: If list is specified, select specitic speakers defined
         	in the corpus. Default is 'All' (all participants). Common choices 
@@ -131,7 +131,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def corpus(self, fileids=None):
         """
         :return: the given file(s) as a dict of ``(corpus_property_key, value)``
-        :rtype: list of dict
+        :rtype: list(dict)
         """
         return [self._get_corpus(fileid) for fileid in self.abspaths(fileids)]
 
@@ -145,7 +145,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def participants(self, fileids=None):
         """
         :return: the given file(s) as a dict of ``(participant_propperty_key, value)``
-        :rtype: list of dict
+        :rtype: list(dict)
         """
         return [self._get_participants(fileid) 
                             for fileid in self.abspaths(fileids)]
@@ -199,7 +199,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def MLU(self, fileids=None):
         """
         :return: the given file(s) as a floating number
-        :rtype: list of float
+        :rtype: list(float)
         """
         return [self._getMLU(fileid) for fileid in self.abspaths(fileids)]
 

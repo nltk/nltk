@@ -104,7 +104,7 @@ def list2sym(lst):
     Convert a list of strings into a canonical symbol.
     :type lst: list
     :return: a Unicode string without whitespace
-    :rtype: ``unicode``
+    :rtype: unicode
     """
     sym = _join(lst, '_', untag=True)
     sym = sym.lower()
@@ -153,7 +153,7 @@ def mk_reldicts(pairs, window=5, trace=0):
     :param window: a threshold for the number of items to include in the left and right context
     :type window: int
     :return: 'relation' dictionaries whose keys are 'lcon', 'subjclass', 'subjtext', 'subjsym', 'filler', objclass', objtext', 'objsym' and 'rcon'
-    :rtype: list of ``defaultdict``
+    :rtype: list(defaultdict)
     """
     result = []
     while len(pairs) > 2:
@@ -186,17 +186,17 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
     :param objclass: the class of the object Named Entity.
     :type objclass: str
     :param doc: input document
-    :type doc: ``ieer`` document or a list of chunk trees
+    :type doc: ieer document or a list of chunk trees
     :param corpus: name of the corpus to take as input; possible values are         
-    'ieer' and 'conll2002'
+        'ieer' and 'conll2002'
     :type corpus: str
     :param pattern: a regular expression for filtering the fillers of
-    retrieved triples.
-    :type pattern: ``SRE_Pattern``
+        retrieved triples.
+    :type pattern: SRE_Pattern
     :param window: filters out fillers which exceed this threshold
     :type window: int
     :return: see ``mk_reldicts``
-    :rtype: list of ``defaultdict``
+    :rtype: list(defaultdict)
     """
     
     if subjclass and subjclass not in NE_CLASSES[corpus]:
@@ -230,7 +230,7 @@ def show_raw_rtuple(reldict, lcon=False, rcon=False):
     """
     Pretty print the reldict as an rtuple.
     :param reldict: a relation dictionary
-    :type reldict: ``defaultdict``
+    :type reldict: defaultdict
     """
     items = [class_abbrev(reldict['subjclass']), reldict['subjtext'], reldict['filler'], class_abbrev(reldict['objclass']), reldict['objtext']]
     format = '[%s: %r] %r [%s: %r]'
@@ -247,7 +247,7 @@ def show_clause(reldict, relsym):
     """
     Print the relation in clausal form.
     :param reldict: a relation dictionary
-    :type reldict: ``defaultdict``
+    :type reldict: defaultdict
     :param relsym: a label for the relation
     :type relsym: str
     """

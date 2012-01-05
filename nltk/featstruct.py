@@ -505,7 +505,7 @@ class FeatStruct(SubstituteBindingsI):
         Return the feature structure that is obtained by deleting
         any feature whose value is a ``Variable``.
 
-        :rtype: ``FeatStruct``
+        :rtype: FeatStruct
         """
         return remove_variables(self)
 
@@ -1034,7 +1034,7 @@ def substitute_bindings(fstruct, bindings, fs_class='default'):
     variable's value.  If a variable is aliased to an unbound
     variable, then it will be replaced by that variable.
     
-    :type bindings: dict with ``Variable`` keys
+    :type bindings: dict(Variable -> any)
     :param bindings: A dictionary mapping from variables to values.
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
@@ -1132,7 +1132,7 @@ def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
     :type used_vars: set
     :param used_vars: A set of variables whose names should not be
         used by the new variables.
-    :type new_vars: dict from ``Variable`` to ``Variable``
+    :type new_vars: dict(Variable -> Variable)
     :param new_vars: A dictionary that is used to hold the mapping
         from old variables to new variables.  For each variable *v*
         in this feature structure:
@@ -1279,7 +1279,7 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
         >>> FeatStruct('[a=?x]').unify(FeatStruct('[b=?x]'))
         [a=?x, b=?x2]
 
-    :type bindings: dict with ``Variable`` keys
+    :type bindings: dict(Variable -> any)
     :param bindings: A set of variable bindings to be used and
         updated during unification.
     :type trace: bool

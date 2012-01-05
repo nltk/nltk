@@ -913,7 +913,7 @@ class SimpleSourcedString(SourcedString):
         Construct a new sourced string.
 
         :param contents: The string contents of the new sourced string.
-        :type contents: str or ``unicode``
+        :type contents: str or unicode
         :param source: The source for the new string.  If ``source`` is
             a string, then it is used to automatically construct a new
             ``ConsecutiveCharStringSource`` with a begin offset of

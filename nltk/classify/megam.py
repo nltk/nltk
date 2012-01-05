@@ -67,17 +67,17 @@ def write_megam_file(train_toks, encoding, stream,
     Generate an input file for ``megam`` based on the given corpus of
     classified tokens.
 
-    :type train_toks: list of ``tuples`` of (dict, str)
+    :type train_toks: list(tuple(dict, str))
     :param train_toks: Training data, represented as a list of
         pairs, the first member of which is a feature dictionary,
         and the second of which is a classification label.
 
-    :type encoding: ``MaxentFeatureEncodingI``
+    :type encoding: MaxentFeatureEncodingI
     :param encoding: A feature encoding, used to convert featuresets
         into feature vectors. May optionally implement a cost() method
         in order to assign different costs to different class predictions.
 
-    :type stream: ``stream``
+    :type stream: stream
     :param stream: The stream to which the megam input file should be
         written.
 

@@ -326,10 +326,10 @@ class TableauProverCommand(BaseProverCommand):
     def __init__(self, goal=None, assumptions=None, prover=None):
         """
         :param goal: Input expression to prove
-        :type goal: ``logic.Expression``
+        :type goal: sem.Expression
         :param assumptions: Input expressions to use as assumptions in
             the proof.
-        :type assumptions: list of ``logic.Expression``
+        :type assumptions: list(sem.Expression)
         """
         if prover is not None:
             assert isinstance(prover, TableauProver)

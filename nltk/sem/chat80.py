@@ -457,7 +457,7 @@ def unary_concept(label, subj, records):
     :param records: a list of records
     :type records: list of lists
     :return: ``Concept`` of arity 1
-    :rtype: ``Concept``
+    :rtype: Concept
     """
     c = Concept(label, arity=1, extension=set())
     for record in records:
@@ -490,7 +490,7 @@ def binary_concept(label, closures, subj, obj, records):
     :param records: a list of records
     :type records: list of lists
     :return: ``Concept`` of arity 2
-    :rtype: ``Concept``
+    :rtype: Concept
     """
     if not label == 'border' and not label == 'contain':
         label = label + '_of'
@@ -537,10 +537,10 @@ def make_valuation(concepts, read=False, lexicon=False):
     optionally create a ``Valuation`` object.
 
     :param concepts: concepts
-    :type concepts: list of ``Concept``s
+    :type concepts: list(Concept)
     :param read: if ``True``, ``(symbol, set)`` pairs are read into a ``Valuation``
     :type read: bool
-    :rtype: list or a ``Valuation``
+    :rtype: list or Valuation
     """
     vals = []
     
@@ -621,8 +621,8 @@ def label_indivs(valuation, lexicon=False):
     Given a valuation with an entry of the form ``{'rel': {'a': True}}``,
     add a new entry ``{'a': 'a'}``.
 
-    :type valuation: ``Valuation``
-    :rtype: ``Valuation``
+    :type valuation: Valuation
+    :rtype: Valuation
     """
     # collect all the individuals into a domain
     domain = valuation.domain

@@ -191,14 +191,14 @@ class StreamBackedCorpusView(AbstractLazySequence):
     fileid = property(lambda self: self._fileid, doc="""
         The fileid of the file that is accessed by this view.
 
-        :type: str or ``PathPointer``""")
+        :type: str or PathPointer""")
 
     def read_block(self, stream):
         """
         Read a block from the input stream. 
 
         :return: a block of tokens from the input stream
-        :rtype: list of any
+        :rtype: list(any)
         :param stream: an input stream
         :type stream: stream
         """

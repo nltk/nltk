@@ -71,7 +71,7 @@ class TaggedCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of words
             and punctuation symbols.
-        :rtype: list of str
+        :rtype: list(str)
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, False, False,
@@ -86,7 +86,7 @@ class TaggedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        :rtype: list of (list of str)
+        :rtype: list(list(str))
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, True, False,
@@ -101,7 +101,7 @@ class TaggedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        :rtype: list of (list of (list of str))
+        :rtype: list(list(list(str)))
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, True, True,
@@ -116,7 +116,7 @@ class TaggedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             ``(word,tag)``.
-        :rtype: list of ``(str,str)``
+        :rtype: list(tuple(str,str))
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
@@ -135,7 +135,7 @@ class TaggedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
             
-        :rtype: list of (list of ``(str,str)``)
+        :rtype: list(list(tuple(str,str)))
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
@@ -154,7 +154,7 @@ class TaggedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of ``(word,tag)`` tuples.
-        :rtype: list of (list of (list of ``(str,str)``))
+        :rtype: list(list(list(tuple(str,str))))
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function

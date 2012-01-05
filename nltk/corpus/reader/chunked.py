@@ -60,7 +60,7 @@ class ChunkedCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of words
             and punctuation symbols.
-        :rtype: list of str
+        :rtype: list(str)
         """
         return concat([ChunkedCorpusView(f, enc, 0, 0, 0, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -70,7 +70,7 @@ class ChunkedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        :rtype: list of (list of str)
+        :rtype: list(list(str))
         """
         return concat([ChunkedCorpusView(f, enc, 0, 1, 0, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -80,7 +80,7 @@ class ChunkedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        :rtype: list of (list of (list of str))
+        :rtype: list(list(list(str)))
         """
         return concat([ChunkedCorpusView(f, enc, 0, 1, 1, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -90,7 +90,7 @@ class ChunkedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             ``(word,tag)``.
-        :rtype: list of ``(str,str)``
+        :rtype: list(tuple(str,str))
         """
         return concat([ChunkedCorpusView(f, enc, 1, 0, 0, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -100,7 +100,7 @@ class ChunkedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
             
-        :rtype: list of (list of ``(str,str)``)
+        :rtype: list(list(tuple(str,str)))
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 0, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -110,7 +110,7 @@ class ChunkedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of ``(word,tag)`` tuples.
-        :rtype: list of (list of (list of ``(str,str)``))
+        :rtype: list(list(list(tuple(str,str))))
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 1, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -122,7 +122,7 @@ class ChunkedCorpusReader(CorpusReader):
             tuples (if the corpus has tags) or word strings (if the
             corpus has no tags).  Chunks are encoded as depth-one
             trees over ``(word,tag)`` tuples or word strings.
-        :rtype: list of (``(str,str)`` and ``Tree``)
+        :rtype: list(tuple(str,str) and Tree)
         """
         return concat([ChunkedCorpusView(f, enc, 1, 0, 0, 1, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -134,7 +134,7 @@ class ChunkedCorpusReader(CorpusReader):
             of these trees are encoded as ``(word, tag)`` tuples (if
             the corpus has tags) or word strings (if the corpus has no
             tags).
-        :rtype: list of ``Tree``
+        :rtype: list(Tree)
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 0, 1, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -146,7 +146,7 @@ class ChunkedCorpusReader(CorpusReader):
             in turn encoded as a shallow Tree.  The leaves of these
             trees are encoded as ``(word, tag)`` tuples (if the corpus
             has tags) or word strings (if the corpus has no tags).
-        :rtype: list of (list of ``Tree``)
+        :rtype: list(list(Tree))
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 1, 1, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])

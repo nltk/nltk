@@ -97,7 +97,7 @@ class AlignedSent(object):
         The "possible" precision is used since it doesn't penalise for finding
         an alignment that was marked as "possible".
 
-        :type reference: ``AlignedSent`` or ``Alignment``
+        :type reference: AlignedSent or Alignment
         :param reference: A "gold standard" reference aligned sentence.
         :rtype: float or None
         """
@@ -119,7 +119,7 @@ class AlignedSent(object):
         The "sure" recall is used so we don't penalise for missing an 
         alignment that was only marked as "possible".
 
-        :type reference: ``AlignedSent`` or ``Alignment``
+        :type reference: AlignedSent or Alignment
         :param reference: A "gold standard" reference aligned sentence.
         :rtype: float or None
         """
@@ -145,9 +145,9 @@ class AlignedSent(object):
             >>> s.alignment_error_rate(s)
             0.0
 
-        :type reference: ``AlignedSent`` or ``Alignment``
+        :type reference: AlignedSent or Alignment
         :param reference: A "gold standard" reference aligned sentence.
-        :type possible: ``AlignedSent`` or ``Alignment`` or None
+        :type possible: AlignedSent or Alignment or None
         :param possible: A "gold standard" reference of possible alignments
             (defaults to *reference* if None)
         :rtype: float or None

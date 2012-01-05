@@ -28,16 +28,14 @@ def write_tadm_file(train_toks, encoding, stream):
     Generate an input file for ``tadm`` based on the given corpus of
     classified tokens.
 
-    :type train_toks: list of ``tuples`` of (dict, str)
+    :type train_toks: list(tuple(dict, str))
     :param train_toks: Training data, represented as a list of
         pairs, the first member of which is a feature dictionary,
         and the second of which is a classification label.
-
-    :type encoding: ``TadmEventMaxentFeatureEncoding``
+    :type encoding: TadmEventMaxentFeatureEncoding
     :param encoding: A feature encoding, used to convert featuresets
         into feature vectors.
-
-    :type stream: ``stream``
+    :type stream: stream
     :param stream: The stream to which the ``tadm`` input file should be
         written.
     """

@@ -8,12 +8,12 @@
 """
 A graphical tool for exploring the regular expression based chunk
 parser ``nltk.chunk.RegexpChunkParser``.
-
-@todo: Add a way to select the development set from the menubar.  This
-    might just need to be a selection box (conll vs treebank etc) plus
-    configuration parameters to select what's being chunked (eg VP vs NP)
-    and what part of the data is being used as the development set.
 """
+
+# Todo: Add a way to select the development set from the menubar.  This
+# might just need to be a selection box (conll vs treebank etc) plus
+# configuration parameters to select what's being chunked (eg VP vs NP)
+# and what part of the data is being used as the development set.
 
 import time
 import textwrap

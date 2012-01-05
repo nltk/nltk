@@ -146,7 +146,7 @@ class BottomUpProbabilisticChartParser(ParserI):
     queue is defined by the method ``sort_queue``; subclasses are required
     to provide a definition for this method.
 
-    :type _grammar: ``PCFG``
+    :type _grammar: PCFG
     :ivar _grammar: The grammar used to parse sentences.
     :type _trace: int
     :ivar _trace: The level of tracing output that should be generated
@@ -157,7 +157,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         Create a new ``BottomUpProbabilisticChartParser``, that uses 
         ``grammar`` to parse texts.
 
-        :type grammar: ``PCFG``
+        :type grammar: PCFG
         :param grammar: The grammar used to parse texts.
         :type beam_size: int
         :param beam_size: The maximum length for the parser's edge queue.
@@ -273,11 +273,11 @@ class BottomUpProbabilisticChartParser(ParserI):
         :param queue: The queue of ``Edge``s to sort.  Each edge in
             this queue is an edge that could be added to the chart by
             the fundamental rule; but that has not yet been added.
-        :type queue: list of ``Edge``
+        :type queue: list(Edge)
         :param chart: The chart being used to parse the text.  This
             chart can be used to provide extra information for sorting
             the queue.
-        :type chart: ``Chart``
+        :type chart: Chart
         :rtype: None
         """
         raise AssertionError, "BottomUpProbabilisticChartParser is an abstract class"
@@ -315,11 +315,11 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
         :param queue: The queue of ``Edge``s to sort.  Each edge in
             this queue is an edge that could be added to the chart by
             the fundamental rule; but that has not yet been added.
-        :type queue: list of ``Edge``
+        :type queue: list(Edge)
         :param chart: The chart being used to parse the text.  This
             chart can be used to provide extra information for sorting
             the queue.
-        :type chart: ``Chart``
+        :type chart: Chart
         :rtype: None
         """
         queue.sort(lambda e1,e2:cmp(e1.prob(), e2.prob()))

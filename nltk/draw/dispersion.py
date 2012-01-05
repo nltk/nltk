@@ -14,7 +14,7 @@ def dispersion_plot(text, words):
     Generate a lexical dispersion plot.
 
     :param text: The source text
-    :type text: list or ``enum`` of str
+    :type text: list(str) or enum(str)
     :param words: The target words
     :type words: list of str
     """

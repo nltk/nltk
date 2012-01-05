@@ -59,7 +59,7 @@ class ClassifierI(object):
         """
         :return: a probability distribution over labels for the given
             featureset.
-        :rtype: ``ProbDistI <nltk.probability.ProbDistI>``
+        :rtype: ProbDistI
         """
         if overridden(self.batch_prob_classify):
             return self.batch_prob_classify([featureset])[0]
@@ -82,7 +82,7 @@ class ClassifierI(object):
 
             return [self.prob_classify(fs) for fs in featuresets]
 
-        :rtype: list of ``ProbDistI <nltk.probability.ProbDistI>``
+        :rtype: list(ProbDistI)
         """
         return [self.prob_classify(fs) for fs in featuresets]
 
@@ -122,7 +122,7 @@ class MultiClassifierI(object):
         """
         :return: a probability distribution over sets of labels for the
             given featureset.
-        :rtype: ``ProbDistI <nltk.probability.ProbDistI>``
+        :rtype: ProbDistI
         """
         if overridden(self.batch_prob_classify):
             return self.batch_prob_classify([featureset])[0]
@@ -145,7 +145,7 @@ class MultiClassifierI(object):
 
             return [self.prob_classify(fs) for fs in featuresets]
             
-        :rtype: list of ``ProbDistI <nltk.probability.ProbDistI>``
+        :rtype: list(ProbDistI)
         """
         return [self.prob_classify(fs) for fs in featuresets]
 

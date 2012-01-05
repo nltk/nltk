@@ -520,8 +520,8 @@ class Tree(list):
         :param brackets: The bracket characters used to mark the
             beginning and end of trees and subtrees.
             
-        :type parse_node: ``function``
-        :type parse_leaf: ``function``
+        :type parse_node: function
+        :type parse_leaf: function
         :param parse_node, parse_leaf: If specified, these functions
             are applied to the substrings of ``s`` corresponding to
             nodes and leaves (respectively) to obtain the values for

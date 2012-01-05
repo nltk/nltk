@@ -1653,7 +1653,7 @@ class MutableProbDist(ProbDistI):
         one.
 
         :param sample: the sample for which to update the probability
-        :type sample: ``any``
+        :type sample: any
         :param prob: the new probability
         :type prob: float
         :param log: is the probability already logged
@@ -2003,10 +2003,10 @@ class ConditionalProbDist(ConditionalProbDistI):
         the given conditional frequency distribution and ``ProbDist``
         factory.
 
-        :type cfdist: ``ConditionalFreqDist``
+        :type cfdist: ConditionalFreqDist
         :param cfdist: The ``ConditionalFreqDist`` specifying the
             frequency distribution for each condition.
-        :type probdist_factory: ``class`` or ``function``
+        :type probdist_factory: class or function
         :param probdist_factory: The function or class that maps
             a condition's frequency distribution to its probability
             distribution.  The function is called with the frequency

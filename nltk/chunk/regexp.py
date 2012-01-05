@@ -45,7 +45,7 @@ class ChunkString(object):
 
             {<DT><JJ><NN>}<VBN><IN>{<DT><NN>}<.>{<DT><NN>}<VBD><.>
 
-    :type _pieces: list of pieces (tagged tokens and chunks)
+    :type _pieces: list(tagged tokens and chunks)
     :ivar _pieces: The tagged tokens and chunks encoded by this ``ChunkString``.
     :ivar _debug: The debug level.  See the constructor docs.
                
@@ -1010,7 +1010,7 @@ class RegexpChunkParser(ChunkParserI):
     def rules(self):
         """
         :return: the sequence of rules used by ``RegexpChunkParser``.
-        :rtype: list of ``RegexpChunkRule``
+        :rtype: list(RegexpChunkRule)
         """
         return self._rules
 

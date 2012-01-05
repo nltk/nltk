@@ -72,18 +72,18 @@ class ReadingCommand(object):
         as resolving anaphora.
         
         :param sentence_readings: readings to process
-        :type sentence_readings: list of ``Expression``
+        :type sentence_readings: list(Expression)
         :return: the list of readings after processing
-        :rtype: list of ``Expression``   
+        :rtype: list(Expression)
         """
         return sentence_readings
     
     def combine_readings(self, readings):
         """
         :param readings: readings to combine
-        :type readings: list of ``Expression``
+        :type readings: list(Expression)
         :return: one combined reading
-        :rtype: ``Expression``
+        :rtype: Expression
         """
         raise NotImplementedError()
     
@@ -154,7 +154,7 @@ class DiscourseTester(object):
         :param input: the discourse sentences
         :type input: list of str
         :param background: Formulas which express background assumptions
-        :type background: list of ``logic.Expression``.
+        :type background: list(Expression)
         """
         self._input = input
         self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(input)])
@@ -251,7 +251,7 @@ class DiscourseTester(object):
         """
         Build a list of semantic readings for a sentence.
         
-        :rtype: list of  ``logic.Expression``.
+        :rtype: list(Expression)
         """
         return self._reading_command.parse_to_readings(sentence)
                          
@@ -431,7 +431,7 @@ class DiscourseTester(object):
         
         When called,  this method also updates the discourse model's set of readings and threads.
         :param background: Formulas which contain background information
-        :type background: list of ``logic.Expression``.
+        :type background: list(Expression)
         """
         from nltk.sem import Expression
         for (count, e) in enumerate(background):
@@ -466,7 +466,7 @@ class DiscourseTester(object):
         :param discourse: the current list of readings
         :type discourse: list of lists
         :param readings: an additional list of readings
-        :type readings: list of ``logic.Expression``s
+        :type readings: list(Expression)
         :rtype: A list of lists
         """
         result = []
@@ -491,7 +491,7 @@ def parse_fol(s):
     :param s: the contents of the file
     :type s: str
     :return: a list of parsed formulas.
-    :rtype: list of ``Expression``
+    :rtype: list(Expression)
     """
     from nltk.sem import LogicParser
     statements = []

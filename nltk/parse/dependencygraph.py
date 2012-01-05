@@ -294,7 +294,7 @@ def nx_graph(self):
     """
     Convert the data in a ``nodelist`` into a networkx 
     labeled directed graph.
-    :rtype: ``XDigraph``
+    :rtype: XDigraph
     """
     nx_nodelist = range(1, len(self.nodelist))
     nx_edgelist = [(n, self._hd(n), self._rel(n)) 

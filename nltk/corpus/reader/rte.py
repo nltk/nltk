@@ -117,7 +117,7 @@ class RTECorpusReader(XMLCorpusReader):
         find all the ``<pair>`` elements.
         
         :param doc: a parsed XML document
-        :rtype: list of ``RTEPair``s
+        :rtype: list(RTEPair)
         """
         try:
             challenge = doc.attrib['challenge']
@@ -133,7 +133,7 @@ class RTECorpusReader(XMLCorpusReader):
         
         :param fileids: a list of RTE corpus fileids
         :type: list
-        :rtype: list of ``RTEPair``s
+        :rtype: list(RTEPair)
         """
         if isinstance(fileids, basestring): fileids = [fileids]
         return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])

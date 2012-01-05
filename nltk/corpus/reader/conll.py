@@ -149,7 +149,7 @@ class ConllCorpusReader(CorpusReader):
     def iob_words(self, fileids=None, simplify_tags=False):
         """
         :return: a list of word/tag/IOB tuples 
-        :rtype: list of tuple
+        :rtype: list(tuple)
         :param fileids: the list of fileids that make up this corpus 
         :type fileids: None or str or list
         """
@@ -161,7 +161,7 @@ class ConllCorpusReader(CorpusReader):
     def iob_sents(self, fileids=None, simplify_tags=False):
         """
         :return: a list of lists of word/tag/IOB tuples 
-        :rtype: list of list
+        :rtype: list(list)
         :param fileids: the list of fileids that make up this corpus 
         :type fileids: None or str or list
         """

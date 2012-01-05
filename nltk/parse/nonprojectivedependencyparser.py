@@ -35,7 +35,7 @@ class DependencyScorerI(object):
 
     def train(self, graphs):
         """
-        :type graphs: A list of ``DependencyGraph``
+        :type graphs: list(DependencyGraph)
         :param graphs: A list of dependency graphs to train the scorer.
         Typically the edges present in the graphs can be used as
         positive training examples, and the edges not present as negative 
@@ -45,7 +45,7 @@ class DependencyScorerI(object):
 
     def score(self, graph):
         """
-        :type graph: A ``DependencyGraph``
+        :type graph: DependencyGraph
         :param graph: A dependency graph whose set of edges need to be 
         scored.  
         :rtype: A three-dimensional list of numbers.
@@ -101,7 +101,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         negative examples.  Uses a feature vector of head-word,
         head-tag, child-word, and child-tag.
         
-        :type graphs: A list of ``DependencyGraph``
+        :type graphs: list(DependencyGraph)
         :param graphs: A list of dependency graphs to train the scorer.     
         """
 
@@ -216,7 +216,7 @@ class ProbabilisticNonprojectiveParser(object):
         These scores are generated via the parser's scorer which 
         was assigned during the training process.
         
-        :type graph: ``DependencyGraph``
+        :type graph: DependencyGraph
         :param graph: A dependency graph to assign scores to.
         """
         self.scores = self._scorer.score(graph)

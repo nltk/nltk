@@ -138,12 +138,12 @@ class CanvasWidget(object):
     affects the shape or position of the canvas widget's graphical
     elements.
 
-    :type __canvas: ``Tkinter.Canvas``
+    :type __canvas: Tkinter.Canvas
     :ivar __canvas: This ``CanvasWidget``'s canvas.
 
-    :type __parent: ``CanvasWidget`` or None
+    :type __parent: CanvasWidget or None
     :ivar __parent: This ``CanvasWidget``'s hierarchical parent widget.
-    :type __children: list of ``CanvasWidget``
+    :type __children: list(CanvasWidget)
     :ivar __children: This ``CanvasWidget``'s hierarchical child widgets.
 
     :type __updating: bool
@@ -153,13 +153,13 @@ class CanvasWidget(object):
 
     :type __draggable: bool
     :ivar __draggable: Is this canvas widget draggable?
-    :type __press: ``event``
+    :type __press: event
     :ivar __press: The ButtonPress event that we're currently handling.
     :type __drag_x: int
     :ivar __drag_x: Where it's been moved to (to find dx)
     :type __drag_y: int
     :ivar __drag_y: Where it's been moved to (to find dy)
-    :type __callbacks: ``dictionary``
+    :type __callbacks: dictionary
     :ivar __callbacks: Registered callbacks.  Currently, four keys are
         used: ``1``, ``2``, ``3``, and ``'drag'``.  The values are
         callback functions.  Each callback function takes a single
@@ -174,9 +174,9 @@ class CanvasWidget(object):
         objects and registered all child widgets.
 
         :param canvas: This canvas widget's canvas.
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param parent: This canvas widget's hierarchical parent.
-        :type parent: ``CanvasWidget``
+        :type parent: CanvasWidget
         :param attribs: The new canvas widget's attributes.
         """
         if self.__class__ == CanvasWidget:
@@ -230,7 +230,7 @@ class CanvasWidget(object):
             for a rectangle which encloses all of the canvas
             widget's graphical elements.  Bounding box coordinates are
             specified with respect to the coordinate space of the ``Canvas``.
-        :rtype: ``4-tuple`` of ints    
+        :rtype: tuple(int, int, int, int)
         """
         if self.__hidden: return (0,0,0,0)
         if len(self.tags()) == 0: raise ValueError('No tags')
@@ -261,7 +261,7 @@ class CanvasWidget(object):
         :return: The hierarchical parent of this canvas widget.  
             ``self`` is considered a subpart of its parent for
             purposes of user interaction.
-        :rtype: ``CanvasWidget`` or None
+        :rtype: CanvasWidget or None
         """
         return self.__parent
 
@@ -270,14 +270,14 @@ class CanvasWidget(object):
         :return: A list of the hierarchical children of this canvas
             widget.  These children are considered part of ``self``
             for purposes of user interaction.
-        :rtype: list of ``CanvasWidget``
+        :rtype: list of CanvasWidget
         """
         return self.__children
 
     def canvas(self):
         """
         :return: The canvas that this canvas widget is bound to.
-        :rtype: ``Tkinter.Canvas``
+        :rtype: Tkinter.Canvas
         """
         return self.__canvas
 
@@ -357,7 +357,7 @@ class CanvasWidget(object):
         widget's children.
 
         :param child: The child widget that changed.
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         """
         if self.__hidden or child.__hidden: return
         # If we're already updating, then do nothing.  This prevents
@@ -467,7 +467,7 @@ class CanvasWidget(object):
         Register a new callback that will be called whenever this
         ``CanvasWidget`` is clicked on.
 
-        :type callback: ``function``
+        :type callback: function
         :param callback: The callback function that will be called
             whenever this ``CanvasWidget`` is clicked.  This function
             will be called with this ``CanvasWidget`` as its argument.
@@ -484,7 +484,7 @@ class CanvasWidget(object):
         ``CanvasWidget`` is dragged.  This implicitly makes this
         ``CanvasWidget`` draggable.
 
-        :type callback: ``function``
+        :type callback: function
         :param callback: The callback function that will be called
             whenever this ``CanvasWidget`` is clicked.  This function
             will be called with this ``CanvasWidget`` as its argument.
@@ -641,7 +641,7 @@ class CanvasWidget(object):
 
         :param child: The new child widget.  ``child`` must not already
             have a parent.
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         """
         if not hasattr(self, '_CanvasWidget__children'): self.__children = []
         if child.__parent is not None:
@@ -660,7 +660,7 @@ class CanvasWidget(object):
 
         :param child: The child widget to remove.  ``child`` must be a
             child of this canvas widget.
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         """
         self.__children.remove(child)
         child.__parent = None
@@ -695,7 +695,7 @@ class CanvasWidget(object):
         its children.
 
         :param child: The child that changed.
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :rtype: None
         """
         pass
@@ -721,7 +721,7 @@ class TextWidget(CanvasWidget):
         """
         Create a new text widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :type text: str
         :param text: The string of text to display.
@@ -802,7 +802,7 @@ class SymbolWidget(TextWidget):
         """
         Create a new symbol widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :type symbol: str
         :param symbol: The name of the symbol to display.
@@ -880,11 +880,11 @@ class AbstractContainerWidget(CanvasWidget):
         Create a new container widget.  This constructor should only
         be called by subclass constructors.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :param child: The container's child widget.  ``child`` must not
             have a parent.
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param attribs: The new canvas widget's attributes.
         """
         self._child = child
@@ -897,7 +897,7 @@ class AbstractContainerWidget(CanvasWidget):
     def child(self):
         """
         :return: The child widget contained by this container widget.
-        :rtype: ``CanvasWidget``
+        :rtype: CanvasWidget
         """
         return self._child
 
@@ -907,7 +907,7 @@ class AbstractContainerWidget(CanvasWidget):
 
         :param child: The new child widget.  ``child`` must not have a
             parent.  
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :rtype: None
         """
         self._remove_child_widget(self._child)
@@ -936,11 +936,11 @@ class BoxWidget(AbstractContainerWidget):
         """
         Create a new box widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :param child: The child widget.  ``child`` must not have a
             parent. 
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param attribs: The new canvas widget's attributes.
         """
         self._child = child
@@ -990,11 +990,11 @@ class OvalWidget(AbstractContainerWidget):
         """
         Create a new oval widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :param child: The child widget.  ``child`` must not have a
             parent. 
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param attribs: The new canvas widget's attributes.
         """
         self._child = child
@@ -1092,11 +1092,11 @@ class ParenWidget(AbstractContainerWidget):
         """
         Create a new parenthasis widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :param child: The child widget.  ``child`` must not have a
             parent. 
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param attribs: The new canvas widget's attributes.
         """
         self._child = child
@@ -1146,11 +1146,11 @@ class BracketWidget(AbstractContainerWidget):
         """
         Create a new bracket widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :param child: The child widget.  ``child`` must not have a
             parent. 
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param attribs: The new canvas widget's attributes.
         """
         self._child = child
@@ -1204,11 +1204,11 @@ class SequenceWidget(CanvasWidget):
         """
         Create a new sequence widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :param children: The widgets that should be aligned
             horizontally.  Each child must not have a parent.
-        :type children: list of ``CanvasWidget``
+        :type children: list(CanvasWidget)
         :param attribs: The new canvas widget's attributes.
         """
         self._align = 'center'
@@ -1301,9 +1301,9 @@ class SequenceWidget(CanvasWidget):
         ``newchild`` must not have a parent.  ``oldchild``'s parent will
         be set to None.
 
-        :type oldchild: ``CanvasWidget``
+        :type oldchild: CanvasWidget
         :param oldchild: The child canvas widget to remove.
-        :type newchild: ``CanvasWidget``
+        :type newchild: CanvasWidget
         :param newchild: The canvas widget that should replace
             ``oldchild``.
         """
@@ -1318,7 +1318,7 @@ class SequenceWidget(CanvasWidget):
         Remove the given child canvas widget.  ``child``'s parent will
         be set ot None.
 
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param child: The child canvas widget to remove.
         """
         index = self._children.index(child)
@@ -1331,7 +1331,7 @@ class SequenceWidget(CanvasWidget):
         """
         Insert a child canvas widget before a given index.
 
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param child: The canvas widget that should be inserted.
         :type index: int
         :param index: The index where the child widget should be
@@ -1361,11 +1361,11 @@ class StackWidget(CanvasWidget):
         """
         Create a new stack widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :param children: The widgets that should be aligned
             vertically.  Each child must not have a parent.
-        :type children: list of ``CanvasWidget``
+        :type children: list(CanvasWidget)
         :param attribs: The new canvas widget's attributes.
         """
         self._align = 'center'
@@ -1458,9 +1458,9 @@ class StackWidget(CanvasWidget):
         ``newchild`` must not have a parent.  ``oldchild``'s parent will
         be set to None.
 
-        :type oldchild: ``CanvasWidget``
+        :type oldchild: CanvasWidget
         :param oldchild: The child canvas widget to remove.
-        :type newchild: ``CanvasWidget``
+        :type newchild: CanvasWidget
         :param newchild: The canvas widget that should replace
             ``oldchild``.
         """
@@ -1475,7 +1475,7 @@ class StackWidget(CanvasWidget):
         Remove the given child canvas widget.  ``child``'s parent will
         be set ot None.
 
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param child: The child canvas widget to remove.
         """
         index = self._children.index(child)
@@ -1488,7 +1488,7 @@ class StackWidget(CanvasWidget):
         """
         Insert a child canvas widget before a given index.
 
-        :type child: ``CanvasWidget``
+        :type child: CanvasWidget
         :param child: The canvas widget that should be inserted.
         :type index: int
         :param index: The index where the child widget should be
@@ -1513,7 +1513,7 @@ class SpaceWidget(CanvasWidget):
         """
         Create a new space widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
         :type width: int
         :param width: The width of the new space widget.
@@ -1565,9 +1565,9 @@ class ScrollWatcherWidget(CanvasWidget):
         """
         Create a new scroll-watcher widget.
 
-        :type canvas: ``Tkinter.Canvas``
+        :type canvas: Tkinter.Canvas
         :param canvas: This canvas widget's canvas.
-        :type children: list of ``CanvasWidget``
+        :type children: list(CanvasWidget)
         :param children: The canvas widgets watched by the
             scroll-watcher.  The scroll-watcher will ensure that these
             canvas widgets are always contained in their canvas's
@@ -1584,7 +1584,7 @@ class ScrollWatcherWidget(CanvasWidget):
         always contained in its canvas's scrollregion.
 
         :param canvaswidget: The new canvas widget.
-        :type canvaswidget: ``CanvasWidget``
+        :type canvaswidget: CanvasWidget
         :rtype: None
         """
         self._add_child_widget(canvaswidget)
@@ -1597,7 +1597,7 @@ class ScrollWatcherWidget(CanvasWidget):
         widget is always contained in its canvas's scrollregion.
         
         :param canvaswidget: The canvas widget to remove.
-        :type canvaswidget: ``CanvasWidget``
+        :type canvaswidget: CanvasWidget
         :rtype: None
         """
         self._remove_child_widget(canvaswidget)
@@ -1647,7 +1647,7 @@ class CanvasFrame(object):
         """
         Create a new ``CanvasFrame``.
 
-        :type parent: ``Tkinter.BaseWidget`` or ``Tkinter.Tk``
+        :type parent: Tkinter.BaseWidget or Tkinter.Tk
         :param parent: The parent ``Tkinter`` widget.  If no parent is 
             specified, then ``CanvasFrame`` will create a new main
             window.
@@ -1735,7 +1735,7 @@ class CanvasFrame(object):
     def canvas(self):
         """
         :return: The canvas managed by this ``CanvasFrame``.
-        :rtype: ``Tkinter.Canvas``
+        :rtype: Tkinter.Canvas
         """
         return self._canvas
 
@@ -1747,7 +1747,7 @@ class CanvasFrame(object):
         given for the canvas widget, then the ``CanvasFrame`` will
         attempt to find a clear area of the canvas for it.
 
-        :type canvaswidget: ``CanvasWidget``
+        :type canvaswidget: CanvasWidget
         :param canvaswidget: The new canvas widget.  ``canvaswidget``
             must have been created on this ``CanvasFrame``'s canvas.
         :type x: int

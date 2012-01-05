@@ -78,7 +78,7 @@ class FeatureTreeEdge(TreeEdge):
             The new edge's left-hand side and right-hand side will
             be taken from ``production``; its span will be 
             ``(index,index)``; and its dot position will be ``0``.
-        :rtype: ``TreeEdge``
+        :rtype: TreeEdge
         """
         return FeatureTreeEdge(span=(index, index), lhs=production.lhs(),
                                rhs=production.rhs(), dot=0)
@@ -89,7 +89,7 @@ class FeatureTreeEdge(TreeEdge):
         :return: A new ``FeatureTreeEdge`` formed from this edge.
             The new edge's dot position is increased by ``1``, 
             and its end index will be replaced by ``new_end``.
-        :rtype: ``FeatureTreeEdge``
+        :rtype: FeatureTreeEdge
         :param new_end: The new end index.
         :type new_end: int
         :param bindings: Bindings for the new edge.
@@ -115,7 +115,7 @@ class FeatureTreeEdge(TreeEdge):
     def variables(self):
         """
         :return: The set of variables used by this edge.
-        :rtype: set of ``Variable``
+        :rtype: set(Variable)
         """
         return find_variables([self._lhs] + list(self._rhs) +
                               self._bindings.keys() + self._bindings.values(),
@@ -208,7 +208,7 @@ class FeatureChart(Chart):
 
     def _get_type_if_possible(self, item):
         """
-        Helper function which returns the ``TYPE`` feature of the ``item``, 
+        Helper function which returns the ``TYPE`` feature of the ``item``,
         if it exists, otherwise it returns the ``item`` itself
         """
         if isinstance(item, dict) and TYPE in item:

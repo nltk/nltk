@@ -566,38 +566,30 @@ class Table(object):
         """
         Construct a new Table widget.
 
-        :type master: ``Tkinter.Widget``
+        :type master: Tkinter.Widget
         :param master: The widget that should contain the new table.
-
-        :type column_names: list of str
+        :type column_names: list(str)
         :param column_names: A list of names for the columns; these
             names will be used to create labels for each column;
             and can be used as an index when reading or writing
             cell values from the table.
-
-        :type rows: list of list
+        :type rows: list(list)
         :param rows: A list of row values used to initialze the table.
             Each row value should be a tuple of cell values, one for
             each column in the row.
-
         :type scrollbar: bool
         :param scrollbar: If true, then create a scrollbar for the
             new table widget.
-            
         :type click_to_sort: bool
         :param click_to_sort: If true, then create bindings that will
             sort the table's rows by a given column's values if the
             user clicks on that colum's label.
-
-        :type reprfunc: ``function``
+        :type reprfunc: function
         :param reprfunc: If specified, then use this function to
             convert each table cell value to a string suitable for
             display.  ``reprfunc`` has the following signature:
-
-                reprfunc(row_index, col_index, cell_value) -> str
-
+            reprfunc(row_index, col_index, cell_value) -> str
             (Note that the column is specified by index, not by name.)
-
         :param cnf, kw: Configuration parameters for this widget's
             contained ``MultiListbox``.  See ``MultiListbox.__init__()``
             for details.

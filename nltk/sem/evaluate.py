@@ -287,7 +287,7 @@ class Model(object):
         
     :type domain: set
     :param domain: A set of entities representing the domain of discourse of the model.
-    :type valuation: ``Valuation``
+    :type valuation: Valuation
     :param valuation: the valuation of the model.
     :param prop: If this is set, then we are building a propositional\
     model and don't require the domain of *V* to be subset of *D*.
@@ -314,7 +314,7 @@ class Model(object):
         provide a handler for ``satisfy``
         that blocks further propagation of the ``Undefined`` error.
         :param expr: An ``Expression`` of ``logic``.
-        :type g: ``Assignment``
+        :type g: Assignment
         :param g: an assignment to individual variables.
         :rtype: bool or 'Undefined'
         """
@@ -345,7 +345,7 @@ class Model(object):
         is atomic.
         
         :param parsed: An expression of ``logic``.
-        :type g: ``Assignment``
+        :type g: Assignment
         :param g: an assignment to individual variables.
         """
 
@@ -418,7 +418,7 @@ class Model(object):
         - else returns ``Undefined``.
 
         :param parsed: an ``Expression`` of ``logic``.
-        :type g: ``Assignment``
+        :type g: Assignment
         :param g: an assignment to individual variables.
         :return: a semantic value
         """
@@ -438,11 +438,11 @@ class Model(object):
         Generate the entities from the model's domain that satisfy an open formula.
 
         :param parsed: an open formula
-        :type parsed: ``Expression``
+        :type parsed: Expression
         :param varex: the relevant free individual variable in ``parsed``.
-        :type varex: ``VariableExpression`` or str
+        :type varex: VariableExpression or str
         :param g: a variable assignment
-        :type g:  ``Assignment``
+        :type g:  Assignment
         :return: a set of the entities that satisfy ``parsed``.
         """
 

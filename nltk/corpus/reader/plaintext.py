@@ -76,7 +76,7 @@ class PlaintextCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of words
             and punctuation symbols.
-        :rtype: list of str
+        :rtype: list(str)
         """
         # Once we require Python 2.5, use source=(fileid if sourced else None)
         if sourced:
@@ -96,7 +96,7 @@ class PlaintextCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        :rtype: list of (list of str)
+        :rtype: list(list(str))
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
@@ -117,7 +117,7 @@ class PlaintextCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        :rtype: list of (list of (list of str))
+        :rtype: list(list(list(str)))
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
@@ -238,7 +238,7 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
         :return: the given file(s) as a list of
             chapters, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        :rtype: list of (list of (list of str))
+        :rtype: list(list(list(str)))
         """
         return concat([self.CorpusView(fileid, self._read_para_block,
                                        encoding=enc)

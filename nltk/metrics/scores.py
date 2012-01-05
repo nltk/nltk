@@ -48,9 +48,9 @@ def precision(reference, test):
     In particular, return |``reference`` intersection ``test``|/|``test``|.
     If ``test`` is empty, then return None.
     
-    :type reference: ``Set``
+    :type reference: set
     :param reference: A set of reference values.
-    :type test: ``Set``
+    :type test: set
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
@@ -70,9 +70,9 @@ def recall(reference, test):
     In particular, return |``reference`` intersection ``test``|/|``reference``|.
     If ``reference`` is empty, then return None.
     
-    :type reference: ``Set``
+    :type reference: set
     :param reference: A set of reference values.
-    :type test: ``Set``
+    :type test: set
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
@@ -127,7 +127,7 @@ def log_likelihood(reference, test):
     :type reference: list
     :param test: A list of probability distributions over values to
         compare against the corresponding reference values.
-    :type test: list of ``ProbDistI``
+    :type test: list(ProbDistI)
     """
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")

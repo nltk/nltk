@@ -17,7 +17,7 @@ class CooperStore(object):
         """
         :param featstruct: The value of the ``sem`` node in a tree from
             ``parse_with_bindops()``
-        :type featstruct: A ``FeatStruct`` with features ``core`` and ``store``
+        :type featstruct: FeatStruct (with features ``core`` and ``store``)
 
         """ 
         self.featstruct = featstruct

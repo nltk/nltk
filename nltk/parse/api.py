@@ -41,8 +41,8 @@ class ParserI(object):
         multiple parses are found, then return the best parse.
         
         :param sent: The sentence to be parsed
-        :type sent: ``list`` of ``string``
-        :rtype: ``Tree``
+        :type sent: list(str)
+        :rtype: Tree
         """
         if overridden(self.batch_parse):
             return self.batch_parse([sent])[0]
@@ -60,10 +60,10 @@ class ParserI(object):
         parse trees.
         
         :param sent: The sentence to be parsed
-        :type sent: ``list`` of ``string``
+        :type sent: list(str)
         :param n: The maximum number of trees to return.
         :type n: int
-        :rtype: list of ``Tree``
+        :rtype: list(Tree)
         """
         if overridden(self.batch_nbest_parse):
             return self.batch_nbest_parse([sent],n)[0]
@@ -81,8 +81,8 @@ class ParserI(object):
         this list is sorted from most likely to least likely.
         
         :param sent: The sentence to be parsed
-        :type sent: ``list`` of ``string``
-        :rtype: iter of ``Tree``
+        :type sent: list(str)
+        :rtype: iter(Tree)
         """
         if overridden(self.batch_iter_parse):
             return self.batch_iter_parse([sent])[0]
@@ -103,8 +103,8 @@ class ParserI(object):
         that assigns a probability of 1.0 to None.
         
         :param sent: The sentence to be parsed
-        :type sent: ``list`` of ``string``
-        :rtype: ``ProbDistI`` of ``Tree``
+        :type sent: list(str)
+        :rtype: ProbDistI(Tree)
         """
         if overridden(self.batch_prob_parse):
             return self.batch_prob_parse([sent])[0]
@@ -117,7 +117,7 @@ class ParserI(object):
 
             return [self.parse(sent) for sent in sents]
 
-        :rtype: list of ``Tree``
+        :rtype: list(Tree)
         """
         return [self.parse(sent) for sent in sents]
 
@@ -127,7 +127,7 @@ class ParserI(object):
 
             return [self.nbest_parse(sent, n) for sent in sents]
 
-        :rtype: list of list of ``Tree``
+        :rtype: list(list(Tree))
         """
         return [self.nbest_parse(sent,n ) for sent in sents]
 
@@ -137,7 +137,7 @@ class ParserI(object):
 
             return [self.iter_parse(sent) for sent in sents]
 
-        :rtype: list of iter of ``Tree``
+        :rtype: list(iter(Tree))
         """
         return [self.iter_parse(sent) for sent in sents]
 
@@ -147,7 +147,7 @@ class ParserI(object):
 
             return [self.prob_parse(sent) for sent in sents]
 
-        :rtype: list of ``ProbDistI`` of ``Tree``
+        :rtype: list(ProbDistI(Tree))
         """
         return [self.prob_parse(sent) for sent in sents]
 

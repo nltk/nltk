@@ -63,7 +63,7 @@ class ViterbiParser(ParserI):
     |             MLC[start, start+width, prod.lhs] = new_tree
     | Return MLC[0, len(text), start_symbol]
                 
-    :type _grammar: ``WeightedGrammar``
+    :type _grammar: WeightedGrammar
     :ivar _grammar: The grammar used to parse sentences.
     :type _trace: int
     :ivar _trace: The level of tracing output that should be generated
@@ -74,7 +74,7 @@ class ViterbiParser(ParserI):
         Create a new ``ViterbiParser`` parser, that uses ``grammar`` to
         parse texts.
 
-        :type grammar: ``WeightedGrammar``
+        :type grammar: WeightedGrammar
         :param grammar: The grammar used to parse texts.
         :type trace: int
         :param trace: The level of tracing that should be used when
@@ -145,7 +145,7 @@ class ViterbiParser(ParserI):
         to the most likely constituents table.
 
         :rtype: None
-        :type span: ``(int, int)``
+        :type span: tuple(int, int)
         :param span: The section of the text for which we are
             trying to find possible constituents.  The span is
             specified as a pair of integers, where the first integer
@@ -156,9 +156,7 @@ class ViterbiParser(ParserI):
             ``text[span[0]:span[1]]``, where ``text`` is the text
             that we are parsing.
 
-        :type constituents: ``dictionary`` from
-            ``(int,int,Nonterminal)`` to (``ProbabilisticToken`` or
-            ``ProbabilisticTree``).
+        :type constituents: dict(tuple(int,int,Nonterminal) -> ProbabilisticToken or ProbabilisticTree)
         :param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  In particular,
@@ -220,7 +218,7 @@ class ViterbiParser(ParserI):
             of ``pair`` of ``Production``, (list of
             (``ProbabilisticTree`` or token.
 
-        :type span: ``(int, int)``
+        :type span: tuple(int, int)
         :param span: The section of the text for which we are
             trying to find production instantiations.  The span is
             specified as a pair of integers, where the first integer
@@ -228,9 +226,7 @@ class ViterbiParser(ParserI):
             the production instantiation; and the second integer is
             the index of the first token that should not be covered by
             the production instantiation.
-        :type constituents: ``dictionary`` from
-            ``(int,int,Nonterminal)`` to (``ProbabilisticToken`` or
-            ``ProbabilisticTree``).
+        :type constituents: dict(tuple(int,int,Nonterminal) -> ProbabilisticToken or ProbabilisticTree)
         :param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  See the module
@@ -248,26 +244,23 @@ class ViterbiParser(ParserI):
         """
         :return: a set of all the lists of children that cover ``span``
             and that match ``rhs``.
-        :rtype: list of (list of ``ProbabilisticTree`` or
-            ``Token``) 
+        :rtype: list(list(ProbabilisticTree or token)
 
-        :type rhs: list of ``Nonterminal`` or (any)
+        :type rhs: list(Nonterminal or any)
         :param rhs: The list specifying what kinds of children need to
             cover ``span``.  Each nonterminal in ``rhs`` specifies
             that the corresponding child should be a tree whose node
             value is that nonterminal's symbol.  Each terminal in ``rhs``
             specifies that the corresponding child should be a token
             whose type is that terminal.
-        :type span: ``(int, int)``
+        :type span: tuple(int, int)
         :param span: The section of the text for which we are
             trying to find child lists.  The span is specified as a
             pair of integers, where the first integer is the index of
             the first token that should be covered by the child list;
             and the second integer is the index of the first token
             that should not be covered by the child list.
-        :type constituents: ``dictionary`` from
-            ``(int,int,Nonterminal)`` to (``ProbabilisticToken`` or
-            ``ProbabilisticTree``).
+        :type constituents: dict(tuple(int,int,Nonterminal) -> ProbabilisticToken or ProbabilisticTree)
         :param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  See the module
@@ -295,7 +288,7 @@ class ViterbiParser(ParserI):
         applied at a given location.
 
         :param production: The production that has been applied
-        :type production: ``Production``
+        :type production: Production
         :param p: The probability of the tree produced by the production.  
         :type p: float
         :param span: The span of the production

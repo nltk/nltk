@@ -59,7 +59,7 @@ class ModelBuilder(object):
         """
         Perform the actual model building.
         :return: Whether a model was generated, and the model itself
-        :rtype: tuple of (bool, ``nltk.sem.evaluate.Valuation``) 
+        :rtype: tuple(bool, sem.Valuation)
         """
         raise NotImplementedError()
 
@@ -74,7 +74,7 @@ class TheoremToolCommand(object):
         Add new assumptions to the assumption list.
         
         :param new_assumptions: new assumptions
-        :type new_assumptions: list of ``Expression``s
+        :type new_assumptions: list(sem.Expression)
         """
         raise NotImplementedError()
     
@@ -86,7 +86,7 @@ class TheoremToolCommand(object):
         assumptions list.
         :type debug: bool
         :param retracted: assumptions to be retracted
-        :type retracted: list of ``sem.logic.Expression``s
+        :type retracted: list(sem.Expression)
         """
         raise NotImplementedError()
     
@@ -150,7 +150,7 @@ class ModelBuilderCommand(TheoremToolCommand):
         """
         Perform the actual model building.
         :return: A model if one is generated; None otherwise.
-        :rtype: ``nltk.sem.evaluate.Valuation`` 
+        :rtype: sem.Valuation
         """
         raise NotImplementedError()
     
@@ -179,10 +179,10 @@ class BaseTheoremToolCommand(TheoremToolCommand):
     def __init__(self, goal=None, assumptions=None):
         """
         :param goal: Input expression to prove
-        :type goal: ``logic.Expression``
+        :type goal: sem.Expression
         :param assumptions: Input expressions to use as assumptions in 
             the proof.
-        :type assumptions: list of ``logic.Expression``
+        :type assumptions: list(sem.Expression)
         """
         self._goal = goal
         
@@ -199,7 +199,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         Add new assumptions to the assumption list.
         
         :param new_assumptions: new assumptions
-        :type new_assumptions: list of ``sem.logic.Expression``s
+        :type new_assumptions: list(sem.Expression)
         """
         self._assumptions.extend(new_assumptions)
         self._result = None
@@ -212,7 +212,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         assumptions list.
         :type debug: bool
         :param retracted: assumptions to be retracted
-        :type retracted: list of ``sem.logic.Expression``s
+        :type retracted: list(sem.Expression)
         """
         retracted = set(retracted)
         result_list = filter(lambda a: a not in retracted, self._assumptions)
@@ -256,7 +256,7 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
     def __init__(self, prover, goal=None, assumptions=None):
         """
         :param prover: The theorem tool to execute with the assumptions
-        :type prover: ``Prover``
+        :type prover: Prover
         :see: ``BaseTheoremToolCommand``
         """
         self._prover = prover
@@ -310,7 +310,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
     def __init__(self, modelbuilder, goal=None, assumptions=None):
         """
         :param modelbuilder: The theorem tool to execute with the assumptions
-        :type modelbuilder: ``ModelBuilder``
+        :type modelbuilder: ModelBuilder
         :see: ``BaseTheoremToolCommand``
         """
         self._modelbuilder = modelbuilder

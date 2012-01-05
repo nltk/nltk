@@ -30,10 +30,10 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     def __init__(self, goal=None, assumptions=None, max_models=500, model_builder=None):
         """
         :param goal: Input expression to prove
-        :type goal: ``logic.Expression``
+        :type goal: sem.Expression
         :param assumptions: Input expressions to use as assumptions in
             the proof.
-        :type assumptions: list of ``logic.Expression``
+        :type assumptions: list(sem.Expression)
         :param max_models: The maximum number of models that Mace will try before
             simply returning false. (Use 0 for no maximum.)
         :type max_models: int
@@ -52,7 +52,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         Transform the output file into an NLTK-style Valuation. 
         
         :return: A model if one is generated; None otherwise.
-        :rtype: ``nltk.sem.Valuation`` 
+        :rtype: sem.Valuation
         """
         valuation_standard_format = self._transform_output(valuation_str, 'standard')
         

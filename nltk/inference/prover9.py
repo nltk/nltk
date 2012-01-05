@@ -65,15 +65,15 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
     def __init__(self, goal=None, assumptions=None, timeout=60, prover=None):
         """
         :param goal: Input expression to prove
-        :type goal: ``logic.Expression``
+        :type goal: sem.Expression
         :param assumptions: Input expressions to use as assumptions in
             the proof.
-        :type assumptions: list of ``logic.Expression``
+        :type assumptions: list(sem.Expression)
         :param timeout: number of seconds before timeout; set to 0 for
             no timeout.
         :type timeout: int
         :param prover: a prover.  If not set, one will be created.
-        :type prover: ``Prover9``
+        :type prover: Prover9
         """
         if not assumptions:
             assumptions = []

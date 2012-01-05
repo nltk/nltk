@@ -94,7 +94,7 @@ class Nonterminal(object):
     symbols are equal.
 
     :see: ``ContextFreeGrammar``, ``Production``
-    :type _symbol: (any)
+    :type _symbol: any
     :ivar _symbol: The node value corresponding to this
         ``Nonterminal``.  This value must be immutable and hashable. 
     """
@@ -102,7 +102,7 @@ class Nonterminal(object):
         """
         Construct a new non-terminal from the given symbol.
 
-        :type symbol: (any)
+        :type symbol: any
         :param symbol: The node value corresponding to this
             ``Nonterminal``.  This value must be immutable and
             hashable. 
@@ -251,9 +251,9 @@ class Production(object):
     :see: ``ContextFreeGrammar``
     :see: ``DependencyGrammar``
     :see: ``Nonterminal``
-    :type _lhs: ``Nonterminal``
+    :type _lhs: Nonterminal
     :ivar _lhs: The left-hand side of the production.
-    :type _rhs: tuple of (``Nonterminal`` and (terminal))
+    :type _rhs: tuple(Nonterminal, terminal)
     :ivar _rhs: The right-hand side of the production.
     """
 
@@ -262,9 +262,9 @@ class Production(object):
         Construct a new ``Production``.
 
         :param lhs: The left-hand side of the new ``Production``.
-        :type lhs: ``Nonterminal``
+        :type lhs: Nonterminal
         :param rhs: The right-hand side of the new ``Production``.
-        :type rhs: sequence of (``Nonterminal`` and (terminal))
+        :type rhs: sequence(Nonterminal and terminal)
         """
         if isinstance(rhs, (str, unicode)):
             raise TypeError('production right hand side should be a list, '
@@ -277,7 +277,7 @@ class Production(object):
         """
         Return the left-hand side of this ``Production``.
 
-        :rtype: ``Nonterminal``
+        :rtype: Nonterminal
         """
         return self._lhs
     
@@ -285,7 +285,7 @@ class Production(object):
         """
         Return the right-hand side of this ``Production``.
 
-        :rtype: sequence of (``Nonterminal`` and (terminal))
+        :rtype: sequence(Nonterminal and terminal)
         """
         return self._rhs
     
@@ -391,9 +391,9 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
         Construct a new ``WeightedProduction``.
 
         :param lhs: The left-hand side of the new ``WeightedProduction``.
-        :type lhs: ``Nonterminal``
+        :type lhs: Nonterminal
         :param rhs: The right-hand side of the new ``WeightedProduction``.
-        :type rhs: sequence of (``Nonterminal`` and (terminal))
+        :type rhs: sequence(Nonterminal and terminal)
         :param prob: Probability parameters of the new ``WeightedProduction``.
         """
         ImmutableProbabilisticMixIn.__init__(self, **prob)
@@ -433,7 +433,7 @@ class ContextFreeGrammar(object):
         and set of ``Production``s.
         
         :param start: The start symbol
-        :type start: ``Nonterminal``
+        :type start: Nonterminal
         :param productions: The list of productions that defines the grammar
         :type productions: list(Production)
         :param calculate_leftcorners: False if we don't want to calculate the 
@@ -508,7 +508,7 @@ class ContextFreeGrammar(object):
         """
         Return the start symbol of the grammar
 
-        :rtype: ``Nonterminal``
+        :rtype: Nonterminal
         """
         return self._start
 
@@ -564,9 +564,9 @@ class ContextFreeGrammar(object):
         leftcorner relation:  (A > B)  iff  (A -> B beta)
         
         :param cat: the parent of the leftcorners
-        :type cat: ``Nonterminal``
+        :type cat: Nonterminal
         :return: the set of all leftcorners
-        :rtype: set of ``Nonterminal``
+        :rtype: set(Nonterminal)
         """
         return self._leftcorners.get(cat, set([cat]))
     
@@ -576,9 +576,9 @@ class ContextFreeGrammar(object):
         terminal or a nonterminal. 
         
         :param cat: the parent of the leftcorner
-        :type cat: ``Nonterminal``
+        :type cat: Nonterminal
         :param left: the suggested leftcorner
-        :type left: ``Terminal`` or ``Nonterminal``
+        :type left: Terminal or Nonterminal
         :rtype: bool
         """
         if is_nonterminal(left):
@@ -595,9 +595,9 @@ class ContextFreeGrammar(object):
         is a left corner. This is the inverse of the leftcorner relation.
 
         :param cat: the suggested leftcorner
-        :type cat: ``Nonterminal``
+        :type cat: Nonterminal
         :return: the set of all parents to the leftcorner
-        :rtype: set of ``Nonterminal``
+        :rtype: set(Nonterminal)
         """
         return self._leftcorner_parents.get(cat, set([cat]))
     
@@ -714,7 +714,7 @@ class FeatureGrammar(ContextFreeGrammar):
         state and set of ``Productions``.
         
         :param start: The start symbol
-        :type start: ``FeatStructNonterminal``
+        :type start: FeatStructNonterminal
         :param productions: The list of productions that defines the grammar
         :type productions: list(Production)
         """
@@ -849,13 +849,13 @@ class DependencyGrammar(object):
     def contains(self, head, mod):
         """
         :param head: A head word.
-        :type head: str.
+        :type head: str
         :param mod: A mod word, to test as a modifier of 'head'.
-        :type mod: str.
+        :type mod: str
 
         :return: true if this ``DependencyGrammar`` contains a 
             ``DependencyProduction`` mapping 'head' to 'mod'.
-        :rtype: bool.
+        :rtype: bool
         """
         for production in self._productions:
             for possibleMod in production._rhs:
@@ -988,7 +988,7 @@ class WeightedGrammar(ContextFreeGrammar):
         and set of ``WeightedProductions``.
 
         :param start: The start symbol
-        :type start: ``Nonterminal``
+        :type start: Nonterminal
         :param productions: The list of productions that defines the grammar
         :type productions: list(Production)
         :raise ValueError: if the set of productions with any left-hand-side
@@ -1028,7 +1028,7 @@ def induce_pcfg(start, productions):
     |                 count(A -> \*)
 
     :param start: The start symbol
-    :type start: ``Nonterminal``
+    :type start: Nonterminal
     :param productions: The list of productions that defines the grammar
     :type productions: list(Production)
     """

@@ -40,7 +40,7 @@ class DependencySpan(object):
     def head_index(self):
         """
         :return: An value indexing the head of the entire ``DependencySpan``.
-        :rtype: int.
+        :rtype: int
         """
         return self._head_index
     
@@ -54,7 +54,7 @@ class DependencySpan(object):
     def __str__(self):
         """
         :return: A verbose string representation of the ``DependencySpan``.
-        :rtype: str.
+        :rtype: str
         """
         str = 'Span %d-%d; Head Index: %d' % (self._start_index, self._end_index, self._head_index)
         for i in range(len(self._arcs)):
@@ -64,7 +64,7 @@ class DependencySpan(object):
     def __eq__(self, other):
         """
         :return: true if this ``DependencySpan`` is equal to ``other``.
-        :rtype: bool.
+        :rtype: bool
         """
         return (isinstance(other, self.__class__) and
                 self._start_index == other._start_index and
@@ -121,7 +121,7 @@ class ChartCell(object):
         representing the chart cell's entries.
         
         :param span: The span to add.
-        :type span: ``DependencySpan``.
+        :type span: DependencySpan
         """
         self._entries.add(span);
 
@@ -164,7 +164,7 @@ class ProjectiveDependencyParser(object):
         dependency grammar ``DependencyGrammar``.
 
         :param dependency_grammar: A word-to-word relation dependencygrammar.
-        :type dependency_grammar: A ``DependencyGrammar``.
+        :type dependency_grammar: DependencyGrammar
         """
         self._grammar = dependency_grammar
 
@@ -174,9 +174,9 @@ class ProjectiveDependencyParser(object):
         a chart-based, span-concatenation algorithm similar to Eisner (1996).
         
         :param tokens: The list of input tokens.
-        :type tokens:a list of ``String``
+        :type tokens: list(str)
         :return: A list of parse trees.
-        :rtype: a list of ``tree``
+        :rtype: list(Tree)
         """
         self._tokens = list(tokens)
         chart = []
@@ -217,8 +217,8 @@ class ProjectiveDependencyParser(object):
         Eisner's presentation of span concatenation, these spans do not 
         share or pivot on a particular word/word-index.
 
-        return: A list of new spans formed through concatenation.
-        rtype: A list of ``DependencySpan``
+        :return: A list of new spans formed through concatenation.
+        :rtype: list(DependencySpan)
         """
         spans = []
         if span1._start_index == span2._start_index:
@@ -321,8 +321,8 @@ class ProbabilisticProjectiveDependencyParser(object):
         Eisner's presentation of span concatenation, these spans do not 
         share or pivot on a particular word/word-index.
 
-        return: A list of new spans formed through concatenation.
-        rtype: A list of ``DependencySpan``
+        :return: A list of new spans formed through concatenation.
+        :rtype: list(DependencySpan)
         """
         spans = []
         if span1._start_index == span2._start_index:
@@ -352,8 +352,8 @@ class ProbabilisticProjectiveDependencyParser(object):
         Model C, which derives its statistics from head-word, head-tag, 
         child-word, and child-tag relationships.
 
-        param graphs: A list of dependency graphs to train from.
-        type: A list of ``DependencyGraph``
+        :param graphs: A list of dependency graphs to train from.
+        :type: list(DependencyGraph)
         """
         productions = []
         events = {}
@@ -424,10 +424,10 @@ class ProbabilisticProjectiveDependencyParser(object):
         on the parser's probability model (defined by the parser's
         statistical dependency grammar).
 
-        param dg: A dependency graph to score.
-        type dg: a ``DependencyGraph``
-        return: The probability of the dependency graph.
-        rtype: A number/double.
+        :param dg: A dependency graph to score.
+        :type dg: DependencyGraph
+        :return: The probability of the dependency graph.
+        :rtype: int
         """
         prob = 1.0
         for node_index in range(1,len(dg.nodelist)):

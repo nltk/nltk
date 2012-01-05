@@ -54,7 +54,7 @@ def root_semrep(syntree, semkey='SEM'):
     :param syntree: a parse ``Tree``
     :param semkey: the feature label to use for the root semantics in the tree
     :return: the semantic representation at the root of a ``Tree``
-    :rtype: ``logic.Expression``
+    :rtype: sem.Expression
     """
     from nltk.grammar import FeatStructNonterminal
 
@@ -145,7 +145,7 @@ def parse_valuation(s):
     :param s: the contents of a valuation file
     :type s: str
     :return: a ``nltk.sem`` valuation
-    :rtype: ``Valuation``
+    :rtype: Valuation
     """
     statements = []
     for linenum, line in enumerate(s.splitlines()):
