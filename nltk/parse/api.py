@@ -15,18 +15,18 @@ class ParserI(object):
     """
     A processing class for deriving trees that represent possible
     structures for a sequence of tokens.  These tree structures are
-    known as X{parses}.  Typically, parsers are used to derive syntax
+    known as "parses".  Typically, parsers are used to derive syntax
     trees for sentences.  But parsers can also be used to derive other
     kinds of tree structure, such as morphological trees and discourse
     structures.
     
     Subclasses must define:
-      - at least one of: L{parse()}, L{nbest_parse()}, L{iter_parse()},
-        L{batch_parse()}, L{batch_nbest_parse()}, L{batch_iter_parse()}.
+      - at least one of: ``parse()``, ``nbest_parse()``, ``iter_parse()``,
+        ``batch_parse()``, ``batch_nbest_parse()``, ``batch_iter_parse()``.
 
     Subclasses may define:
-      - L{grammar()}
-      - either L{prob_parse()} or L{batch_prob_parse()} (or both)
+      - ``grammar()``
+      - either ``prob_parse()`` or ``batch_prob_parse()`` (or both)
     """
     def grammar(self):
         """
@@ -41,8 +41,8 @@ class ParserI(object):
         multiple parses are found, then return the best parse.
         
         :param sent: The sentence to be parsed
-        :type sent: L{list} of L{string}
-        :rtype: L{Tree}
+        :type sent: ``list`` of ``string``
+        :rtype: ``Tree``
         """
         if overridden(self.batch_parse):
             return self.batch_parse([sent])[0]
@@ -55,15 +55,15 @@ class ParserI(object):
         """
         :return: A list of parse trees that represent possible
         structures for the given sentence.  When possible, this list is
-        sorted from most likely to least likely.  If C{n} is
-        specified, then the returned list will contain at most C{n}
+        sorted from most likely to least likely.  If ``n`` is
+        specified, then the returned list will contain at most ``n``
         parse trees.
         
         :param sent: The sentence to be parsed
-        :type sent: L{list} of L{string}
+        :type sent: ``list`` of ``string``
         :param n: The maximum number of trees to return.
         :type n: int
-        :rtype: list of L{Tree}
+        :rtype: list of ``Tree``
         """
         if overridden(self.batch_nbest_parse):
             return self.batch_nbest_parse([sent],n)[0]
@@ -81,8 +81,8 @@ class ParserI(object):
         this list is sorted from most likely to least likely.
         
         :param sent: The sentence to be parsed
-        :type sent: L{list} of L{string}
-        :rtype: iter of L{Tree}
+        :type sent: ``list`` of ``string``
+        :rtype: iter of ``Tree``
         """
         if overridden(self.batch_iter_parse):
             return self.batch_iter_parse([sent])[0]
@@ -103,8 +103,8 @@ class ParserI(object):
         that assigns a probability of 1.0 to None.
         
         :param sent: The sentence to be parsed
-        :type sent: L{list} of L{string}
-        :rtype: L{ProbDistI} of L{Tree}
+        :type sent: ``list`` of ``string``
+        :rtype: ``ProbDistI`` of ``Tree``
         """
         if overridden(self.batch_prob_parse):
             return self.batch_prob_parse([sent])[0]
@@ -113,41 +113,41 @@ class ParserI(object):
 
     def batch_parse(self, sents):
         """
-        Apply L{self.parse()} to each element of C{sents}.  I.e.:
+        Apply ``self.parse()`` to each element of ``sents``.  I.e.:
 
             return [self.parse(sent) for sent in sents]
 
-        :rtype: list of L{Tree}
+        :rtype: list of ``Tree``
         """
         return [self.parse(sent) for sent in sents]
 
     def batch_nbest_parse(self, sents, n=None):
         """
-        Apply L{self.nbest_parse()} to each element of C{sents}.  I.e.:
+        Apply ``self.nbest_parse()`` to each element of ``sents``.  I.e.:
 
             return [self.nbest_parse(sent, n) for sent in sents]
 
-        :rtype: list of list of L{Tree}
+        :rtype: list of list of ``Tree``
         """
         return [self.nbest_parse(sent,n ) for sent in sents]
 
     def batch_iter_parse(self, sents):
         """
-        Apply L{self.iter_parse()} to each element of C{sents}.  I.e.:
+        Apply ``self.iter_parse()`` to each element of ``sents``.  I.e.:
 
             return [self.iter_parse(sent) for sent in sents]
 
-        :rtype: list of iter of L{Tree}
+        :rtype: list of iter of ``Tree``
         """
         return [self.iter_parse(sent) for sent in sents]
 
     def batch_prob_parse(self, sents):
         """
-        Apply L{self.prob_parse()} to each element of C{sents}.  I.e.:
+        Apply ``self.prob_parse()`` to each element of ``sents``.  I.e.:
 
             return [self.prob_parse(sent) for sent in sents]
 
-        :rtype: list of L{ProbDistI} of L{Tree}
+        :rtype: list of ``ProbDistI`` of ``Tree``
         """
         return [self.prob_parse(sent) for sent in sents]
 

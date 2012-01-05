@@ -75,7 +75,7 @@ class AlignedCorpusReader(CorpusReader):
     def aligned_sents(self, fileids=None):
         """
         :return: the given file(s) as a list of AlignedSent objects.
-        :rtype: list of C{AlignedSent}
+        :rtype: list of ``AlignedSent``
         """
         return concat([AlignedSentCorpusView(fileid, enc, True, True,
                                              self._word_tokenizer,
@@ -86,8 +86,8 @@ class AlignedCorpusReader(CorpusReader):
 class AlignedSentCorpusView(StreamBackedCorpusView):
     """
     A specialized corpus view for aligned sentences.
-    C{AlignedSentCorpusView} objects are typically created by
-    L{AlignedCorpusReader} (not directly by nltk users).
+    ``AlignedSentCorpusView`` objects are typically created by
+    ``AlignedCorpusReader`` (not directly by nltk users).
     """
     def __init__(self, corpus_file, encoding, aligned, group_by_sent,
                  word_tokenizer, sent_tokenizer, alignedsent_block_reader):

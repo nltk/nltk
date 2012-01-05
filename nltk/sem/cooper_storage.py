@@ -15,9 +15,9 @@ class CooperStore(object):
     """
     def __init__(self, featstruct):
         """
-        :param featstruct: The value of the C{sem} node in a tree from
-        L{parse_with_bindops()}
-        :type featstruct: A L{FeatStruct} with features C{core} and C{store}
+        :param featstruct: The value of the ``sem`` node in a tree from
+            ``parse_with_bindops()``
+        :type featstruct: A ``FeatStruct`` with features ``core`` and ``store``
 
         """ 
         self.featstruct = featstruct

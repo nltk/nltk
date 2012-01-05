@@ -181,10 +181,10 @@ class TimitCorpusReader(CorpusReader):
         Return a list of file identifiers for the files that make up
         this corpus.
 
-        :param filetype: If specified, then C{filetype} indicates that
+        :param filetype: If specified, then ``filetype`` indicates that
             only the files that have the given type should be
-            returned.  Accepted values are: C{txt}, C{wrd}, C{phn},
-            C{wav}, or C{metadata},
+            returned.  Accepted values are: ``txt``, ``wrd``, ``phn``,
+            ``wav``, or ``metadata``,
         """
         if filetype is None:
             return CorpusReader.fileids(self)

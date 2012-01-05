@@ -19,29 +19,29 @@ class ShiftReduceParser(ParserI):
     A simple bottom-up CFG parser that uses two operations, "shift"
     and "reduce", to find a single parse for a text.
 
-    C{ShiftReduceParser} maintains a stack, which records the
+    ``ShiftReduceParser`` maintains a stack, which records the
     structure of a portion of the text.  This stack is a list of
     strings and Trees that collectively cover a portion of
     the text.  For example, while parsing the sentence "the dog saw
-    the man" with a typical grammar, C{ShiftReduceParser} will produce
+    the man" with a typical grammar, ``ShiftReduceParser`` will produce
     the following stack, which covers "the dog saw"::
 
        [(NP: (Det: 'the') (N: 'dog')), (V: 'saw')]
 
-    C{ShiftReduceParser} attempts to extend the stack to cover the
+    ``ShiftReduceParser`` attempts to extend the stack to cover the
     entire text, and to combine the stack elements into a single tree,
     producing a complete parse for the sentence.
 
     Initially, the stack is empty.  It is extended to cover the text,
     from left to right, by repeatedly applying two operations:
 
-      - X{shift} moves a token from the beginning of the text to the
+      - "shift" moves a token from the beginning of the text to the
         end of the stack.
-      - X{reduce} uses a CFG production to combine the rightmost stack
+      - "reduce" uses a CFG production to combine the rightmost stack
         elements into a single Tree.
 
     Often, more than one operation can be performed on a given stack.
-    In this case, C{ShiftReduceParser} uses the following heuristics
+    In this case, ``ShiftReduceParser`` uses the following heuristics
     to decide which operation to perform:
 
       - Only shift if no reductions are available.
@@ -50,21 +50,21 @@ class ShiftReduceParser(ParserI):
 
     Note that these heuristics are not guaranteed to choose an
     operation that leads to a parse of the text.  Also, if multiple
-    parses exists, C{ShiftReduceParser} will return at most one of
+    parses exists, ``ShiftReduceParser`` will return at most one of
     them.
 
-    :see: C{nltk.grammar}
+    :see: ``nltk.grammar``
     """
     def __init__(self, grammar, trace=0):
         """
-        Create a new C{ShiftReduceParser}, that uses C{grammar} to
+        Create a new ``ShiftReduceParser``, that uses ``grammar`` to
         parse texts.
 
-        :type grammar: C{Grammar}
+        :type grammar: ``Grammar``
         :param grammar: The grammar used to parse texts.
         :type trace: int
         :param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
+            parsing a text.  ``0`` will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
         """
@@ -106,15 +106,15 @@ class ShiftReduceParser(ParserI):
 
     def _shift(self, stack, remaining_text):
         """
-        Move a token from the beginning of C{remaining_text} to the
-        end of C{stack}.
+        Move a token from the beginning of ``remaining_text`` to the
+        end of ``stack``.
 
         :type stack: list(str and Tree)
         :param stack: A list of strings and Trees, encoding
             the structure of the text that has been parsed so far.
         :type remaining_text: list(str)
         :param remaining_text: The portion of the text that is not yet
-            covered by C{stack}.
+            covered by ``stack``.
         :rtype: None
         """
         stack.append(remaining_text[0])
@@ -125,14 +125,14 @@ class ShiftReduceParser(ParserI):
         """
         :rtype: bool
         :return: true if the right hand side of a CFG production
-            matches the rightmost elements of the stack.  C{rhs}
-            matches C{rightmost_stack} if they are the same length,
-            and each element of C{rhs} matches the corresponding
-            element of C{rightmost_stack}.  A nonterminal element of
-            C{rhs} matches any Tree whose node value is equal
-            to the nonterminal's symbol.  A terminal element of C{rhs}
+            matches the rightmost elements of the stack.  ``rhs``
+            matches ``rightmost_stack`` if they are the same length,
+            and each element of ``rhs`` matches the corresponding
+            element of ``rightmost_stack``.  A nonterminal element of
+            ``rhs`` matches any Tree whose node value is equal
+            to the nonterminal's symbol.  A terminal element of ``rhs``
             matches any string whose type is equal to the terminal.
-        :type rhs: list of (terminal and C{Nonterminal})
+        :type rhs: list of (terminal and ``Nonterminal``)
         :param rhs: The right hand side of a CFG production.
         :type rightmost_stack: list(string and Tree)
         :param rightmost_stack: The rightmost elements of the parser's
@@ -159,7 +159,7 @@ class ShiftReduceParser(ParserI):
         earliest in the grammar.  The new Tree replaces the
         elements in the stack.
 
-        :rtype: C{Production} or None
+        :rtype: ``Production`` or None
         :return: If a reduction is performed, then return the CFG
             production that the reduction is based on; otherwise,
             return false.
@@ -168,7 +168,7 @@ class ShiftReduceParser(ParserI):
             the structure of the text that has been parsed so far.
         :type remaining_text: list(str)
         :param remaining_text: The portion of the text that is not yet
-            covered by C{stack}.
+            covered by ``stack``.
         """
         if production is None: productions = self._grammar.productions()
         else: productions = [production]
@@ -198,7 +198,7 @@ class ShiftReduceParser(ParserI):
         parsing a text.
 
         :type trace: int
-        :param trace: The trace level.  A trace level of C{0} will
+        :param trace: The trace level.  A trace level of ``0`` will
             generate no tracing output; and higher trace levels will
             produce more verbose tracing output.
         :rtype: None
@@ -238,8 +238,8 @@ class ShiftReduceParser(ParserI):
 
     def _trace_reduce(self, stack, production, remaining_text):
         """
-        Print trace output displaying that C{production} was used to
-        reduce C{stack}.
+        Print trace output displaying that ``production`` was used to
+        reduce ``stack``.
         
         :rtype: None
         """
@@ -273,21 +273,21 @@ class ShiftReduceParser(ParserI):
 ##//////////////////////////////////////////////////////
 class SteppingShiftReduceParser(ShiftReduceParser):
     """
-    A C{ShiftReduceParser} that allows you to setp through the parsing
+    A ``ShiftReduceParser`` that allows you to setp through the parsing
     process, performing a single operation at a time.  It also allows
     you to change the parser's grammar midway through parsing a text.
 
-    The C{initialize} method is used to start parsing a text.
-    C{shift} performs a single shift operation, and C{reduce} performs
-    a single reduce operation.  C{step} will perform a single reduce
+    The ``initialize`` method is used to start parsing a text.
+    ``shift`` performs a single shift operation, and ``reduce`` performs
+    a single reduce operation.  ``step`` will perform a single reduce
     operation if possible; otherwise, it will perform a single shift
-    operation.  C{parses} returns the set of parses that have been
+    operation.  ``parses`` returns the set of parses that have been
     found by the parser.
 
-    :ivar _history: A list of C{(stack, remaining_text)} pairs,
+    :ivar _history: A list of ``(stack, remaining_text)`` pairs,
         containing all of the previous states of the parser.  This
-        history is used to implement the C{undo} operation.
-    :see: C{nltk.grammar}
+        history is used to implement the ``undo`` operation.
+    :see: ``nltk.grammar``
     """
     def __init__(self, grammar, trace=0):
         self._grammar = grammar
@@ -321,7 +321,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     def initialize(self, tokens):
         """
         Start parsing a given text.  This sets the parser's stack to
-        C{[]} and sets its remaining text to C{tokens}.
+        ``[]`` and sets its remaining text to ``tokens``.
         """
         self._stack = []
         self._remaining_text = tokens
@@ -338,7 +338,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :return: 0 if no operation was performed; 1 if a shift was
             performed; and the CFG production used to reduce if a
             reduction was performed.
-        :rtype: C{Production} or bool
+        :rtype: ``Production`` or bool
         """
         return self.reduce() or self.shift()
 
@@ -358,15 +358,15 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         
     def reduce(self, production=None):
         """
-        Use C{production} to combine the rightmost stack elements into
-        a single Tree.  If C{production} does not match the
+        Use ``production`` to combine the rightmost stack elements into
+        a single Tree.  If ``production`` does not match the
         rightmost stack elements, then do nothing.
 
         :return: The production used to reduce the stack, if a
             reduction was performed.  If no reduction was performed,
             return None.
         
-        :rtype: C{Production} or None
+        :rtype: ``Production`` or None
         """
         self._history.append( (self._stack[:], self._remaining_text[:]) )
         return_val = self._reduce(self._stack, self._remaining_text,
@@ -378,9 +378,9 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     def undo(self):
         """
         Return the parser to its state before the most recent
-        shift or reduce operation.  Calling C{undo} repeatedly return
+        shift or reduce operation.  Calling ``undo`` repeatedly return
         the parser to successively earlier states.  If no shift or
-        reduce operations have been performed, C{undo} will make no
+        reduce operations have been performed, ``undo`` will make no
         changes.
 
         :return: true if an operation was successfully undone.
@@ -394,7 +394,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         """
         :return: A list of the productions for which reductions are
             available for the current parser state.
-        :rtype: list of C{Production}
+        :rtype: list of ``Production``
         """
         productions = []
         for production in self._grammar.productions():
@@ -422,7 +422,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         Change the grammar used to parse texts.
         
         :param grammar: The new grammar.
-        :type grammar: C{CFG}
+        :type grammar: ``CFG``
         """
         self._grammar = grammar
     

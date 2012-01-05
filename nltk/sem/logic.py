@@ -112,11 +112,11 @@ class Variable(object):
 def unique_variable(pattern=None, ignore=None):
     """
     Return a new, unique variable.
-    param pattern: C{Variable} that is being replaced.  The new variable must
+    param pattern: ``Variable`` that is being replaced.  The new variable must
     be the same type.
-    param term: a set of C{Variable}s that should not be returned from 
+    param term: a set of ``Variable``s that should not be returned from 
     this function.
-    return: C{Variable}
+    return: ``Variable``
     """
     if pattern is not None:
         if is_indvar(pattern.name):
@@ -321,7 +321,7 @@ class IllegalTypeException(TypeException):
 
 def typecheck(expressions, signature=None):
     """
-    Ensure correct typing across a collection of C{Expression}s.
+    Ensure correct typing across a collection of ``Expression``s.
     :param expressions: a collection of expressions
     :param signature: dict that maps variable names to types (or string 
     representations of types)
@@ -343,7 +343,7 @@ class SubstituteBindingsI(object):
     def substitute_bindings(self, bindings):
         """
         :return: The object that is obtained by replacing
-        each variable bound by C{bindings} with its values.
+        each variable bound by ``bindings`` with its values.
         Aliases are already resolved. (maybe?)
         :rtype: (any)
         """
@@ -405,8 +405,8 @@ class Expression(SubstituteBindingsI):
         Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal.
         
-        :param other: an C{Expression} to check equality against
-        :param prover: a C{nltk.inference.api.Prover}
+        :param other: an ``Expression`` to check equality against
+        :param prover: a ``nltk.inference.api.Prover``
         """
         assert isinstance(other, Expression), "%s is not an Expression" % other
         
@@ -460,7 +460,7 @@ class Expression(SubstituteBindingsI):
         """
         Find the type of the given variable as it is used in this expression.
         For example, finding the type of "P" in "P(x) & Q(x,y)" yields "<e,t>"
-        :param variable: C{Variable}  
+        :param variable: ``Variable``  
         """
         raise NotImplementedError() 
     
@@ -468,8 +468,8 @@ class Expression(SubstituteBindingsI):
         """
         Set the type of this expression to be the given type.  Raise type 
         exceptions where applicable.
-        :param other_type: C{Type} to set
-        :param signature: C{dict<str, list<AbstractVariableExpression>>} store 
+        :param other_type: ``Type`` to set
+        :param signature: ``dict<str, list<AbstractVariableExpression>>`` store 
         all variable expressions with a given name
         """
         raise NotImplementedError()
@@ -477,8 +477,8 @@ class Expression(SubstituteBindingsI):
     def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         """
         Replace every instance of 'variable' with 'expression'
-        :param variable: C{Variable} The variable to replace
-        :param expression: C{Expression} The expression with which to replace it
+        :param variable: ``Variable`` The variable to replace
+        :param expression: ``Expression`` The expression with which to replace it
         :param replace_bound: bool Should bound variables be replaced?  
         :param alpha_convert: bool Alpha convert automatically to avoid name clashes?
         """
@@ -521,10 +521,10 @@ class Expression(SubstituteBindingsI):
             
         Bound variables are neither applied upon by the function nor given to 
         the combinator.
-        :param function: C{Function<Expression,T>} to call on each subexpression
-        :param combinator: C{Function<list<T>,R>} to combine the results of the 
+        :param function: ``Function<Expression,T>`` to call on each subexpression
+        :param combinator: ``Function<list<T>,R>`` to combine the results of the 
         function calls
-        :return: result of combination C{R}
+        :return: result of combination ``R``
         """
         raise NotImplementedError()
 
@@ -536,8 +536,8 @@ class Expression(SubstituteBindingsI):
         the same signature as the constructor.  The function is not 
         applied to bound variables, but they are passed to the 
         combinator.
-        :param function: C{Function} to call on each subexpression
-        :param combinator: C{Function} with the same signature as the 
+        :param function: ``Function`` to call on each subexpression
+        :param combinator: ``Function`` with the same signature as the 
         constructor, to combine the results of the function calls
         :return: result of combination
         """
@@ -554,7 +554,7 @@ class Expression(SubstituteBindingsI):
         Return a set of all the variables for binding substitution.
         The variables returned include all free (non-bound) individual 
         variables and any variable starting with '?' or '@'.
-        :return: set of C{Variable}s
+        :return: set of ``Variable``s
         """
         return self.free() | set(p for p in self.predicates()|self.constants() 
                                  if re.match('^[?@]', p.name)) 
@@ -563,7 +563,7 @@ class Expression(SubstituteBindingsI):
         """
         Return a set of all the free (non-bound) variables.  This includes
         both individual and predicate variables, but not constants.
-        :return: set of C{Variable}s
+        :return: set of ``Variable``s
         """
         return self.visit(lambda e: e.free(),
                           lambda parts: reduce(operator.or_, parts, set()))
@@ -571,7 +571,7 @@ class Expression(SubstituteBindingsI):
     def constants(self):
         """
         Return a set of individual constants (non-predicates).
-        :return: set of C{Variable}s
+        :return: set of ``Variable``s
         """
         return self.visit(lambda e: e.constants(), 
                           lambda parts: reduce(operator.or_, parts, set()))
@@ -579,7 +579,7 @@ class Expression(SubstituteBindingsI):
     def predicates(self):
         """
         Return a set of predicates (constants, not variables).
-        :return: set of C{Variable}s
+        :return: set of ``Variable``s
         """
         return self.visit(lambda e: e.predicates(), 
                           lambda parts: reduce(operator.or_, parts, set()))
@@ -599,8 +599,8 @@ class ApplicationExpression(Expression):
     This class is used to represent two related types of logical expressions.
     
     The first is a Predicate Expression, such as "P(x,y)".  A predicate 
-    expression is comprised of a C{FunctionVariableExpression} or 
-    C{ConstantExpression} as the predicate and a list of Expressions as the 
+    expression is comprised of a ``FunctionVariableExpression`` or 
+    ``ConstantExpression`` as the predicate and a list of Expressions as the 
     arguments.
     
     The second is a an application of one expression to another, such as 
@@ -619,13 +619,13 @@ class ApplicationExpression(Expression):
     The str() method will usually print the curried forms of application 
     expressions.  The one exception is when the the application expression is
     really a predicate expression (ie, underlying function is an 
-    C{AbstractVariableExpression}).  This means that the example from above  
+    ``AbstractVariableExpression``).  This means that the example from above  
     will be returned as "(\x y.see(x,y)(john))(mary)".
     """
     def __init__(self, function, argument):
         """
-        :param function: C{Expression}, for the function expression
-        :param argument: C{Expression}, for the argument   
+        :param function: ``Expression``, for the function expression
+        :param argument: ``Expression``, for the argument   
         """
         assert isinstance(function, Expression), "%s is not an Expression" % function
         assert isinstance(argument, Expression), "%s is not an Expression" % argument
@@ -786,7 +786,7 @@ class AbstractVariableExpression(Expression):
     """This class represents a variable to be used as a predicate or entity"""
     def __init__(self, variable):
         """
-        :param variable: C{Variable}, for the variable
+        :param variable: ``Variable``, for the variable
         """
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         self.variable = variable
@@ -833,7 +833,7 @@ class AbstractVariableExpression(Expression):
         return set()
 
     def __eq__(self, other):
-        """Allow equality between instances of C{AbstractVariableExpression} 
+        """Allow equality between instances of ``AbstractVariableExpression`` 
         subtypes."""
         return isinstance(other, AbstractVariableExpression) and \
                self.variable == other.variable
@@ -925,7 +925,7 @@ class ConstantExpression(AbstractVariableExpression):
 def VariableExpression(variable):
     """
     This is a factory method that instantiates and returns a subtype of 
-    C{AbstractVariableExpression} appropriate for the given variable.
+    ``AbstractVariableExpression`` appropriate for the given variable.
     """
     assert isinstance(variable, Variable), "%s is not a Variable" % variable
     if is_indvar(variable.name):
@@ -943,8 +943,8 @@ class VariableBinderExpression(Expression):
     Expression.  This includes LambdaExpressions and Quantified Expressions"""
     def __init__(self, variable, term):
         """
-        :param variable: C{Variable}, for the variable
-        :param term: C{Expression}, for the term
+        :param variable: ``Variable``, for the variable
+        :param term: ``Expression``, for the term
         """
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         assert isinstance(term, Expression), "%s is not an Expression" % term
@@ -976,8 +976,8 @@ class VariableBinderExpression(Expression):
 
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @C{newvar}.
-        :param newvar: C{Variable}, for the new variable
+        binder in the expression to @``newvar``.
+        :param newvar: ``Variable``, for the new variable
         """
         assert isinstance(newvar, Variable), "%s is not a Variable" % newvar
         return self.__class__(newvar, 
@@ -1262,7 +1262,7 @@ class LogicParser(object):
         Parse the expression.
 
         :param data: str for the input to be parsed
-        :param signature: C{dict<str, str>} that maps variable names to type 
+        :param signature: ``dict<str, str>`` that maps variable names to type 
         strings
         :returns: a parsed Expression
         """
@@ -1667,9 +1667,9 @@ def parse_logic(s, logic_parser=None):
     :param s: the contents of the file
     :type s: str
     :param logic_parser: The parser to be used to parse the logical expression
-    :type logic_parser: C{LogicParser}
+    :type logic_parser: ``LogicParser``
     :return: a list of parsed formulas.
-    :rtype: list of L{Expression}
+    :rtype: list of ``Expression``
     """
     if logic_parser is None:
         logic_parser = LogicParser()

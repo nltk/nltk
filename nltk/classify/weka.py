@@ -219,7 +219,7 @@ class ARFF_Formatter:
     strings, appropriate for input into Weka.
 
     Features and classes can be specified manually in the constructor, or may
-    be determined from data using C{from_train}.
+    be determined from data using ``from_train``.
     """
 
     def __init__(self, labels, features):

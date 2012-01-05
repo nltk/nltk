@@ -30,9 +30,9 @@ class ResolutionProver(Prover):
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
         :param goal: Input expression to prove
-        :type goal: L{logic.Expression}
+        :type goal: ``logic.Expression``
         :param assumptions: Input expressions to use as assumptions in the proof
-        :type assumptions: L{list} of logic.Expression objects
+        :type assumptions: ``list`` of logic.Expression objects
         """
         if not assumptions:
             assumptions = []
@@ -94,10 +94,10 @@ class ResolutionProverCommand(BaseProverCommand):
     def __init__(self, goal=None, assumptions=None, prover=None):
         """
         :param goal: Input expression to prove
-        :type goal: L{logic.Expression}
+        :type goal: ``logic.Expression``
         :param assumptions: Input expressions to use as assumptions in
             the proof.
-        :type assumptions: list of L{logic.Expression}
+        :type assumptions: list of ``logic.Expression``
         """
         if prover is not None:
             assert isinstance(prover, ResolutionProver)
@@ -164,18 +164,18 @@ class Clause(list):
         Attempt to unify this Clause with the other, returning a list of 
         resulting, unified, Clauses.
         
-        :param other: C{Clause} with which to unify
-        :param bindings: C{BindingDict} containing bindings that should be used
+        :param other: ``Clause`` with which to unify
+        :param bindings: ``BindingDict`` containing bindings that should be used
         during the unification
         :param used: tuple of two lists of atoms.  The first lists the 
         atoms from 'self' that were successfully unified with atoms from 
         'other'.  The second lists the atoms from 'other' that were successfully
         unified with atoms from 'self'.
-        :param skipped: tuple of two C{Clause}s.  The first is a list of all
+        :param skipped: tuple of two ``Clause``s.  The first is a list of all
         the atoms from the 'self' Clause that have not been unified with 
         anything on the path.  The second is same thing for the 'other' Clause.
         :param debug: bool indicating whether debug statements should print
-        :return: list containing all the resulting C{Clause}s that could be
+        :return: list containing all the resulting ``Clause``s that could be
         obtained by unification
         """
         if bindings is None: bindings = BindingDict()
@@ -204,7 +204,7 @@ class Clause(list):
         """
         Return True iff every term in 'self' is a term in 'other'.
         
-        :param other: C{Clause}
+        :param other: ``Clause``
         :return: bool
         """
         for a in self:
@@ -218,7 +218,7 @@ class Clause(list):
         substitution such that every term in 'self' can be unified with a term
         in 'other'.
         
-        :param other: C{Clause}
+        :param other: ``Clause``
         :return: bool
         """
         negatedother = []
@@ -280,8 +280,8 @@ class Clause(list):
         Replace every instance of variable with expression across every atom
         in the clause
         
-        :param variable: C{Variable}
-        :param expression: C{Expression}
+        :param variable: ``Variable``
+        :param expression: ``Expression``
         """
         return Clause([atom.replace(variable, expression) for atom in self])
     
@@ -291,7 +291,7 @@ class Clause(list):
         
         :param bindings: A list of tuples mapping Variable Expressions to the
         Expressions to which they are bound
-        :return: C{Clause}
+        :return: ``Clause``
         """
         return Clause([atom.substitute_bindings(bindings) for atom in self])
     
@@ -361,12 +361,12 @@ def _unify_terms(a, b, bindings=None, used=None):
     This method attempts to unify two terms.  Two expressions are unifiable 
     if there exists a substitution function S such that S(a) == S(-b).
 
-    :param a: C{Expression} 
-    :param b: C{Expression} 
-    :param bindings: C{BindingDict} a starting set of bindings with which 
+    :param a: ``Expression`` 
+    :param b: ``Expression`` 
+    :param bindings: ``BindingDict`` a starting set of bindings with which 
     the unification must be consistent
-    :return: C{BindingDict} A dictionary of the bindings required to unify
-    :raise C{BindingException}: If the terms cannot be unified
+    :return: ``BindingDict`` A dictionary of the bindings required to unify
+    :raise ``BindingException``: If the terms cannot be unified
     """
     assert isinstance(a, Expression)
     assert isinstance(b, Expression)
@@ -459,7 +459,7 @@ def _clausify(expression):
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """
-        :param binding_list: list of (C{AbstractVariableExpression}, C{AtomicExpression}) to initialize the dictionary
+        :param binding_list: list of (``AbstractVariableExpression``, ``AtomicExpression``) to initialize the dictionary
         """
         self.d = {}
 
@@ -472,8 +472,8 @@ class BindingDict(object):
         A binding is consistent with the dict if its variable is not already bound, OR if its 
         variable is already bound to its argument.
         
-        :param variable: C{Variable} The variable to bind
-        :param binding: C{Expression} The atomic to which 'variable' should be bound
+        :param variable: ``Variable`` The variable to bind
+        :param binding: ``Expression`` The atomic to which 'variable' should be bound
         :raise BindingException: If the variable cannot be bound in this dictionary
         """
         assert isinstance(variable, Variable)
@@ -522,8 +522,8 @@ class BindingDict(object):
 
     def __add__(self, other):
         """
-        :param other: C{BindingDict} The dict with which to combine self
-        :return: C{BindingDict} A new dict containing all the elements of both parameters
+        :param other: ``BindingDict`` The dict with which to combine self
+        :return: ``BindingDict`` A new dict containing all the elements of both parameters
         :raise BindingException: If the parameter dictionaries are not consistent with each other
         """
         try:
@@ -552,9 +552,9 @@ def most_general_unification(a, b, bindings=None):
     """
     Find the most general unification of the two given expressions
     
-    :param a: C{Expression}
-    :param b: C{Expression}
-    :param bindings: C{BindingDict} a starting set of bindings with which the
+    :param a: ``Expression``
+    :param b: ``Expression``
+    :param bindings: ``BindingDict`` a starting set of bindings with which the
                      unification must be consistent
     :return: a list of bindings
     :raise BindingException: if the Expressions cannot be unified

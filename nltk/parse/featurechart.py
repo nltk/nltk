@@ -39,20 +39,20 @@ class FeatureTreeEdge(TreeEdge):
     A specialized tree edge that allows shared variable bindings
     between nonterminals on the left-hand side and right-hand side.
 
-    Each C{FeatureTreeEdge} contains a set of C{bindings}, i.e., a
+    Each ``FeatureTreeEdge`` contains a set of ``bindings``, i.e., a
     dictionary mapping from variables to values.  If the edge is not
     complete, then these bindings are simply stored.  However, if the
     edge is complete, then the constructor applies these bindings to
     every nonterminal in the edge whose symbol implements the
-    interface L{SubstituteBindingsI}.
+    interface ``SubstituteBindingsI``.
     """
     def __init__(self, span, lhs, rhs, dot=0, bindings=None):
         """
         Construct a new edge.  If the edge is incomplete (i.e., if
-        C{dot<len(rhs)}), then store the bindings as-is.  If the edge
-        is complete (i.e., if C{dot==len(rhs)}), then apply the
-        bindings to all nonterminals in C{lhs} and C{rhs}, and then
-        clear the bindings.  See L{TreeEdge} for a description of
+        ``dot<len(rhs)``), then store the bindings as-is.  If the edge
+        is complete (i.e., if ``dot==len(rhs)``), then apply the
+        bindings to all nonterminals in ``lhs`` and ``rhs``, and then
+        clear the bindings.  See ``TreeEdge`` for a description of
         the other arguments.
         """
         if bindings is None: bindings = {}
@@ -74,11 +74,11 @@ class FeatureTreeEdge(TreeEdge):
     # [staticmethod]
     def from_production(production, index):
         """
-        :return: A new C{TreeEdge} formed from the given production.
+        :return: A new ``TreeEdge`` formed from the given production.
             The new edge's left-hand side and right-hand side will
-            be taken from C{production}; its span will be 
-            C{(index,index)}; and its dot position will be C{0}.
-        :rtype: L{TreeEdge}
+            be taken from ``production``; its span will be 
+            ``(index,index)``; and its dot position will be ``0``.
+        :rtype: ``TreeEdge``
         """
         return FeatureTreeEdge(span=(index, index), lhs=production.lhs(),
                                rhs=production.rhs(), dot=0)
@@ -86,10 +86,10 @@ class FeatureTreeEdge(TreeEdge):
 
     def move_dot_forward(self, new_end, bindings=None):
         """
-        :return: A new C{FeatureTreeEdge} formed from this edge.
-            The new edge's dot position is increased by C{1}, 
-            and its end index will be replaced by C{new_end}.
-        :rtype: L{FeatureTreeEdge}
+        :return: A new ``FeatureTreeEdge`` formed from this edge.
+            The new edge's dot position is increased by ``1``, 
+            and its end index will be replaced by ``new_end``.
+        :rtype: ``FeatureTreeEdge``
         :param new_end: The new end index.
         :type new_end: int
         :param bindings: Bindings for the new edge.
@@ -115,7 +115,7 @@ class FeatureTreeEdge(TreeEdge):
     def variables(self):
         """
         :return: The set of variables used by this edge.
-        :rtype: set of L{Variable}
+        :rtype: set of ``Variable``
         """
         return find_variables([self._lhs] + list(self._rhs) +
                               self._bindings.keys() + self._bindings.values(),
@@ -152,14 +152,14 @@ class FeatureTreeEdge(TreeEdge):
 class FeatureChart(Chart):
     """
     A Chart for feature grammars.
-    :see: L{Chart} for more information.
+    :see: ``Chart`` for more information.
     """
 
     def select(self, **restrictions):
         """
         Returns an iterator over the edges in this chart. 
-        See L{Chart.select} for more information about the
-        C{restrictions} on the edges.
+        See ``Chart.select`` for more information about the
+        ``restrictions`` on the edges.
         """
         # If there are no restrictions, then return all edges.
         if restrictions=={}: return iter(self._edges)
@@ -179,7 +179,7 @@ class FeatureChart(Chart):
     
     def _add_index(self, restr_keys):
         """
-        A helper function for L{select}, which creates a new index for
+        A helper function for ``select``, which creates a new index for
         a given set of attributes (aka restriction keys).
         """
         # Make sure it's a valid index.
@@ -198,7 +198,7 @@ class FeatureChart(Chart):
     
     def _register_with_indexes(self, edge):
         """
-        A helper function for L{insert}, which registers the new
+        A helper function for ``insert``, which registers the new
         edge with all existing indexes.
         """
         for (restr_keys, index) in self._indexes.items():
@@ -208,8 +208,8 @@ class FeatureChart(Chart):
 
     def _get_type_if_possible(self, item):
         """
-        Helper function which returns the C{TYPE} feature of the C{item}, 
-        if it exists, otherwise it returns the C{item} itself
+        Helper function which returns the ``TYPE`` feature of the ``item``, 
+        if it exists, otherwise it returns the ``item`` itself
         """
         if isinstance(item, dict) and TYPE in item:
             return item[TYPE]
@@ -233,18 +233,22 @@ class FeatureChart(Chart):
 class FeatureFundamentalRule(FundamentalRule):
     """
     A specialized version of the fundamental rule that operates on
-    nonterminals whose symbols are C{FeatStructNonterminal}s.  Rather
+    nonterminals whose symbols are ``FeatStructNonterminal``s.  Rather
     tha simply comparing the nonterminals for equality, they are
     unified.  Variable bindings from these unifications are collected
-    and stored in the chart using a L{FeatureTreeEdge}.  When a
+    and stored in the chart using a ``FeatureTreeEdge``.  When a
     complete edge is generated, these bindings are applied to all
     nonterminals in the edge.
 
     The fundamental rule states that:
-        - [A S{->} S{alpha} * B1 S{beta}][i:j]
-        - [B2 S{->} S{gamma} *][j:k]
+
+    - ``[A -> alpha \* B1 beta][i:j]``
+    - ``[B2 -> gamma \*][j:k]``
+
     licenses the edge:
-        - [A S{->} S{alpha} B3 * S{beta}][i:j]
+
+    - ``[A -> alpha B3 \* beta][i:j]``
+
     assuming that B1 and B2 can be unified to generate B3.
     """
     def apply_iter(self, chart, grammar, left_edge, right_edge):
@@ -283,7 +287,7 @@ class FeatureFundamentalRule(FundamentalRule):
 class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     """
     A specialized version of the completer / single edge fundamental rule 
-    that operates on nonterminals whose symbols are C{FeatStructNonterminal}s.  
+    that operates on nonterminals whose symbols are ``FeatStructNonterminal``s.  
     Rather than simply comparing the nonterminals for equality, they are
     unified. 
     """
@@ -320,15 +324,19 @@ class FeatureTopDownInitRule(TopDownInitRule):
 class FeatureTopDownPredictRule(CachedTopDownPredictRule):
     """
     A specialized version of the (cached) top down predict rule that operates
-    on nonterminals whose symbols are C{FeatStructNonterminal}s.  Rather
+    on nonterminals whose symbols are ``FeatStructNonterminal``s.  Rather
     than simply comparing the nonterminals for equality, they are
     unified.
 
     The top down expand rule states that:
-        - [A S{->} S{alpha} * B1 S{beta}][i:j]
+
+    - ``[A -> alpha \* B1 beta][i:j]``
+
     licenses the edge:
-        - [B2 S{->} * S{gamma}][j:j]
-    for each grammar production C{B2 S{->} S{gamma}}, assuming that B1
+
+    - ``[B2 -> \* gamma][j:j]``
+
+    for each grammar production ``B2 -> gamma``, assuming that B1
     and B2 can be unified.
     """
     def apply_iter(self, chart, grammar, edge):
@@ -462,8 +470,8 @@ class InstantiateVarsChart(FeatureChart):
     A specialized chart that 'instantiates' variables whose names
     start with '@', by replacing them with unique new variables.
     In particular, whenever a complete edge is added to the chart, any
-    variables in the edge's C{lhs} whose names start with '@' will be
-    replaced by unique new L{Variable}s.
+    variables in the edge's ``lhs`` whose names start with '@' will be
+    replaced by unique new ``Variable``s.
     """
     def __init__(self, tokens):
         FeatureChart.__init__(self, tokens)
@@ -479,7 +487,7 @@ class InstantiateVarsChart(FeatureChart):
     
     def instantiate_edge(self, edge):
         """
-        If the edge is a L{FeatureTreeEdge}, and it is complete, 
+        If the edge is a ``FeatureTreeEdge``, and it is complete, 
         then instantiate all variables whose names start with '@',
         by replacing them with unique new variables.
         

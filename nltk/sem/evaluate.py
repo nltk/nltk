@@ -102,7 +102,7 @@ class Valuation(dict):
     to individuals (represented as strings) and n-ary relations (represented as sets of tuples
     of strings).
 
-    An instance of L{Valuation} will raise a KeyError exception (i.e.,
+    An instance of ``Valuation`` will raise a KeyError exception (i.e.,
     just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
@@ -156,14 +156,14 @@ class Assignment(dict):
 
     An assigment can only assign values from its domain.
 
-    If an unknown expression M{a} is passed to a model M{M}'s
-    interpretation function M{i}, M{i} will first check whether M{M}'s
-    valuation assigns an interpretation to M{a} as a constant, and if
-    this fails, M{i} will delegate the interpretation of M{a} to
-    M{g}. M{g} only assigns values to individual variables (i.e.,
-    members of the class L{IndividualVariableExpression} in the L{logic}
-    module. If a variable is not assigned a value by M{g}, it will raise
-    an C{Undefined} exception.
+    If an unknown expression *a* is passed to a model *M*\ 's
+    interpretation function *i*, *i* will first check whether *M*\ 's
+    valuation assigns an interpretation to *a* as a constant, and if
+    this fails, *i* will delegate the interpretation of *a* to
+    *g*. *g* only assigns values to individual variables (i.e.,
+    members of the class ``IndividualVariableExpression`` in the ``logic``
+    module. If a variable is not assigned a value by *g*, it will raise
+    an ``Undefined`` exception.
     
     A variable *Assignment* is a mapping from individual variables to
     entities in the domain. Individual variables are usually indicated
@@ -228,7 +228,7 @@ class Assignment(dict):
     def purge(self, var=None):
         """
         Remove one or all keys (i.e. logic variables) from an
-        assignment, and update C{self.variant}.
+        assignment, and update ``self.variant``.
 
         :param var: a Variable acting as a key for the assignment.
         """
@@ -263,7 +263,7 @@ class Assignment(dict):
     def add(self, var, val):
         """
         Add a new variable-value pair to the assignment, and update
-        C{self.variant}.
+        ``self.variant``.
 
         """
         assert val in self.domain,\
@@ -277,20 +277,20 @@ class Assignment(dict):
     
 class Model(object):
     """
-    A first order model is a domain M{D} of discourse and a valuation M{V}.
+    A first order model is a domain *D* of discourse and a valuation *V*.
 
-    A domain M{D} is a set, and a valuation M{V} is a map that associates
+    A domain *D* is a set, and a valuation *V* is a map that associates
     expressions with values in the model.
-    The domain of M{V} should be a subset of M{D}.
+    The domain of *V* should be a subset of *D*.
 
-    Construct a new L{Model}.
+    Construct a new ``Model``.
         
     :type domain: set
     :param domain: A set of entities representing the domain of discourse of the model.
-    :type valuation: L{Valuation}
+    :type valuation: ``Valuation``
     :param valuation: the valuation of the model.
     :param prop: If this is set, then we are building a propositional\
-    model and don't require the domain of M{V} to be subset of M{D}.
+    model and don't require the domain of *V* to be subset of *D*.
     """
 
     def __init__(self, domain, valuation):
@@ -310,11 +310,11 @@ class Model(object):
 
     def evaluate(self, expr, g, trace=None):
         """
-        Call the L{LogicParser} to parse input expressions, and
-        provide a handler for L{satisfy}
-        that blocks further propagation of the C{Undefined} error.
-        :param expr: An C{Expression} of L{logic}.
-        :type g: L{Assignment}
+        Call the ``LogicParser`` to parse input expressions, and
+        provide a handler for ``satisfy``
+        that blocks further propagation of the ``Undefined`` error.
+        :param expr: An ``Expression`` of ``logic``.
+        :type g: ``Assignment``
         :param g: an assignment to individual variables.
         :rtype: bool or 'Undefined'
         """
@@ -337,15 +337,15 @@ class Model(object):
         """
         Recursive interpretation function for a formula of first-order logic.
 
-        Raises an C{Undefined} error when C{parsed} is an atomic string
+        Raises an ``Undefined`` error when ``parsed`` is an atomic string
         but is not a symbol or an individual variable.
 
-        :return: Returns a truth value or C{Undefined} if C{parsed} is\
-        complex, and calls the interpretation function C{i} if C{parsed}\
+        :return: Returns a truth value or ``Undefined`` if ``parsed`` is\
+        complex, and calls the interpretation function ``i`` if ``parsed``\
         is atomic.
         
-        :param parsed: An expression of L{logic}.
-        :type g: L{Assignment}
+        :param parsed: An expression of ``logic``.
+        :type g: ``Assignment``
         :param g: an assignment to individual variables.
         """
 
@@ -411,14 +411,14 @@ class Model(object):
         """
         An interpretation function.
 
-        Assuming that C{parsed} is atomic:
+        Assuming that ``parsed`` is atomic:
 
-         - if C{parsed} is a non-logical constant, calls the valuation M{V} 
-         - else if C{parsed} is an individual variable, calls assignment M{g}
-         - else returns C{Undefined}.
+        - if ``parsed`` is a non-logical constant, calls the valuation *V* 
+        - else if ``parsed`` is an individual variable, calls assignment *g*
+        - else returns ``Undefined``.
 
-        :param parsed: an C{Expression} of L{logic}.
-        :type g: L{Assignment}
+        :param parsed: an ``Expression`` of ``logic``.
+        :type g: ``Assignment``
         :param g: an assignment to individual variables.
         :return: a semantic value
         """
@@ -438,12 +438,12 @@ class Model(object):
         Generate the entities from the model's domain that satisfy an open formula.
 
         :param parsed: an open formula
-        :type parsed: L{Expression}
-        :param varex: the relevant free individual variable in C{parsed}.
-        :type varex: C{VariableExpression} or str
+        :type parsed: ``Expression``
+        :param varex: the relevant free individual variable in ``parsed``.
+        :type varex: ``VariableExpression`` or str
         :param g: a variable assignment
-        :type g:  L{Assignment}
-        :return: a set of the entities that satisfy C{parsed}.
+        :type g:  ``Assignment``
+        :return: a set of the entities that satisfy ``parsed``.
         """
 
         spacer = '   '

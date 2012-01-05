@@ -83,7 +83,7 @@ class RecursiveDescentApp(object):
     can expand subtrees on the frontier, match tokens on the frontier
     against the text, and backtrack.  A "step" button simply steps
     through the parsing process, performing the operations that
-    C{RecursiveDescentParser} would use.
+    ``RecursiveDescentParser`` would use.
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent

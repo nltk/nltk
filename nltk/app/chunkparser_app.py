@@ -37,7 +37,7 @@ class RegexpChunkApp(object):
     A graphical tool for exploring the regular expression based chunk
     parser ``nltk.chunk.RegexpChunkParser``.
     
-    See L{HELP} for instructional text.
+    See ``HELP`` for instructional text.
     """
     
     ##/////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ class RegexpChunkApp(object):
     #:   - A title (displayed as a tab)
     #:   - A string description of tabstops (see Tkinter.Text for details)
     #:   - The text contents for the help page.  You can use expressions
-    #:     like <red>...</red> to colorize the text; see L{HELP_AUTOTAG}
+    #:     like <red>...</red> to colorize the text; see ``HELP_AUTOTAG``
     #:     for a list of tags you can use for colorizing.
     HELP = [
         ('Help', '20', 
@@ -265,7 +265,7 @@ class RegexpChunkApp(object):
         :param devset: A list of chunked sentences
         :param grammar: The initial grammar to display.
         :param tagset: Dictionary from tags to string descriptions, used
-            for the help page.  Defaults to C{self.TAGSET}.
+            for the help page.  Defaults to ``self.TAGSET``.
         """
         self._chunk_node = chunk_node
         
@@ -288,7 +288,7 @@ class RegexpChunkApp(object):
         """The unparsed grammar string"""
 
         self.normalized_grammar = None
-        """A normalized version of L{self.grammar}."""
+        """A normalized version of ``self.grammar``."""
 
         self.grammar_changed = 0
         """The last time() that the grammar was changed."""
@@ -319,7 +319,7 @@ class RegexpChunkApp(object):
            demon."""
         
         self._eval_normalized_grammar = None
-        """A normalized copy of L{_eval_grammar}."""
+        """A normalized copy of ``_eval_grammar``."""
         
         self._eval_index = 0
         """The index of the next sentence in the development set that

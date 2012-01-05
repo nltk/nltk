@@ -27,30 +27,30 @@ def load_parser(grammar_url, trace=0,
     on properties of the grammar itself.
     
     The following grammar formats are currently supported:
-      - C{'cfg'}  (CFGs: L{ContextFreeGrammar})
-      - C{'pcfg'} (probabilistic CFGs: L{WeightedGrammar})
-      - C{'fcfg'} (feature-based CFGs: L{ContextFreeGrammar})
+      - ``'cfg'``  (CFGs: ``ContextFreeGrammar``)
+      - ``'pcfg'`` (probabilistic CFGs: ``WeightedGrammar``)
+      - ``'fcfg'`` (feature-based CFGs: ``ContextFreeGrammar``)
 
     :type grammar_url: str
     :param grammar_url: A URL specifying where the grammar is located.
-        The default protocol is C{"nltk:"}, which searches for the file 
+        The default protocol is ``"nltk:"``, which searches for the file 
         in the the NLTK data package.
     :type trace: int
     :param trace: The level of tracing that should be used when
-        parsing a text.  C{0} will generate no tracing output;
+        parsing a text.  ``0`` will generate no tracing output;
         and higher numbers will produce more verbose tracing output.
-    :param parser: The class used for parsing; should be L{ChartParser}
+    :param parser: The class used for parsing; should be ``ChartParser``
         or a subclass.
         If None, the class depends on the grammar format.
     :param chart_class: The class used for storing the chart;
-        should be L{Chart} or a subclass. 
+        should be ``Chart`` or a subclass. 
         Only used for CFGs and feature CFGs.
         If None, the chart class depends on the grammar format.
     :type beam_size: int
     :param beam_size: The maximum length for the parser's edge queue.
         Only used for probabilistic CFGs.
     :param load_args: Keyword parameters used when loading the grammar.
-        See L{data.load} for more information.
+        See ``data.load`` for more information.
     """
     grammar = load(grammar_url, **load_args)
     if not isinstance(grammar, ContextFreeGrammar):
@@ -96,11 +96,11 @@ class TestGrammar(object):
     def run(self, show_trees=False):
         """
         Sentences in the test suite are divided into two classes:
-         - grammatical (C{accept}) and
-         - ungrammatical (C{reject}). 
+         - grammatical (``accept``) and
+         - ungrammatical (``reject``). 
         If a sentence should parse accordng to the grammar, the value of
-        C{trees} will be a non-empty list. If a sentence should be rejected
-        according to the grammar, then the value of C{trees} will be None.
+        ``trees`` will be a non-empty list. If a sentence should be rejected
+        according to the grammar, then the value of ``trees`` will be None.
         """
         for test in self.suite:
             print test['doc'] + ":",
@@ -140,7 +140,7 @@ def extract_test_sentences(string, comment_chars="#%;"):
         where a sentence is a list of str,
         and a result is None, or bool, or int
 
-    :param comment_chars: L{str} of possible comment characters.
+    :param comment_chars: ``str`` of possible comment characters.
     """
     sentences = []
     for sentence in string.split('\n'):

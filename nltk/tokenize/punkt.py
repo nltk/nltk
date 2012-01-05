@@ -582,15 +582,14 @@ class PunktTrainer(PunktBaseClass):
         period.  Bigrams are encoded as tuples of word types.
         Especially common collocations are extracted from this
         frequency distribution, and stored in
-        L{_params}.L{collocations <PunktParameters.collocations>}."""
+        ``_params``.``collocations <PunktParameters.collocations>``."""
         
         self._sent_starter_fdist = FreqDist()
         """A frequency distribution giving the frequency of all words
         that occur at the training data at the beginning of a sentence
         (after the first pass of annotation).  Especially common
         sentence starters are extracted from this frequency
-        distribution, and stored in L{_params}.L{sent_starters
-        <PunktParameters.sent_starters>}.
+        distribution, and stored in ``_params.sent_starters``.
         """
 
         self._sentbreak_count = 0
@@ -1257,7 +1256,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         """
         Given a text, generates the sentences in that text. Annotates all
         tokens, rather than just those with possible sentence breaks. Should
-        produce the same results as L{sentences_from_text}.
+        produce the same results as ``sentences_from_text``.
         """
         tokens = self._annotate_tokens(self._tokenize_words(text))
         return self._build_sentence_list(text, tokens)

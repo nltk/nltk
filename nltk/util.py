@@ -618,7 +618,7 @@ class AbstractLazySequence(object):
     indexed, sliced, and iterated over; but they may not be modified.
 
     The most common application of lazy sequences in NLTK is for
-    I{corpus view} objects, which provide access to the contents of a
+    corpus view objects, which provide access to the contents of a
     corpus without loading the entire corpus into memory, by loading
     pieces of the corpus from disk as needed.
     

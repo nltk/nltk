@@ -29,11 +29,11 @@ class DecisionTreeClassifier(ClassifierI):
         :param feature_name: The name of the feature that this
             decision tree selects for.
         :param decisions: A dictionary mapping from feature values
-            for the feature identified by C{feature_name} to
+            for the feature identified by ``feature_name`` to
             child decision trees.
         :param default: The child that will be used if the value of
-            feature C{feature_name} does not match any of the keys in
-            C{decisions}.  This is used when constructing binary
+            feature ``feature_name`` does not match any of the keys in
+            ``decisions``.  This is used when constructing binary
             decision trees.
         """
         self._label = label

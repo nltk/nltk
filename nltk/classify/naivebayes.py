@@ -65,19 +65,19 @@ class NaiveBayesClassifier(ClassifierI):
     def __init__(self, label_probdist, feature_probdist):
         """
         :param label_probdist: P(label), the probability distribution
-            over labels.  It is expressed as a L{ProbDistI} whose
+            over labels.  It is expressed as a ``ProbDistI`` whose
             samples are labels.  I.e., P(label) =
-            C{label_probdist.prob(label)}.
+            ``label_probdist.prob(label)``.
         
         :param feature_probdist: P(fname=fval|label), the probability
             distribution for feature values, given labels.  It is
-            expressed as a dictionary whose keys are C{(label,fname)}
-            pairs and whose values are L{ProbDistI}s over feature
+            expressed as a dictionary whose keys are ``(label,fname)``
+            pairs and whose values are ``ProbDistI``s over feature
             values.  I.e., P(fname=fval|label) =
-            C{feature_probdist[label,fname].prob(fval)}.  If a given
-            C{(label,fname)} is not a key in C{feature_probdist}, then
+            ``feature_probdist[label,fname].prob(fval)``.  If a given
+            ``(label,fname)`` is not a key in ``feature_probdist``, then
             it is assumed that the corresponding P(fname=fval|label)
-            is 0 for all values of C{fval}.
+            is 0 for all values of ``fval``.
         """
         self._label_probdist = label_probdist
         self._feature_probdist = feature_probdist
@@ -148,7 +148,7 @@ class NaiveBayesClassifier(ClassifierI):
         """
         Return a list of the 'most informative' features used by this
         classifier.  For the purpose of this function, the
-        informativeness of a feature C{(fname,fval)} is equal to the
+        informativeness of a feature ``(fname,fval)`` is equal to the
         highest value of P(fname=fval|label), for any label, divided by
         the lowest value of P(fname=fval|label), for any label::
 
@@ -181,7 +181,7 @@ class NaiveBayesClassifier(ClassifierI):
     def train(labeled_featuresets, estimator=ELEProbDist):
         """
         :param labeled_featuresets: A list of classified featuresets,
-            i.e., a list of tuples C{(featureset, label)}.
+            i.e., a list of tuples ``(featureset, label)``.
         """
         label_freqdist = FreqDist()
         feature_freqdist = defaultdict(FreqDist)

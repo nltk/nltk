@@ -419,7 +419,7 @@ class Synset(_WordNetObject):
         list of the synset nodes traversed on the way to the root.
 
         :return: A list of lists, where each list gives the node sequence
-           connecting the initial L{Synset} node and a root node.
+           connecting the initial ``Synset`` node and a root node.
         """
         paths = []
 
@@ -438,7 +438,7 @@ class Synset(_WordNetObject):
         Find all synsets that are hypernyms of this synset and the
         other synset.
 
-        :type  other: L{Synset}
+        :type  other: ``Synset``
         :param other: other input synset.
         :return: The synsets that are hypernyms of both synsets.
         """
@@ -483,9 +483,9 @@ class Synset(_WordNetObject):
 
         :type  distance: int
         :param distance: the distance (number of edges) from this hypernym to
-            the original hypernym L{Synset} on which this method was called.
-        :return: A set of (L{Synset}, int) tuples where each L{Synset} is
-           a hypernym of the first L{Synset}.
+            the original hypernym ``Synset`` on which this method was called.
+        :return: A set of (``Synset``, int) tuples where each ``Synset`` is
+           a hypernym of the first ``Synset``.
         """
         distances = set([(self, distance)])
         for hypernym in self.hypernyms() + self.instance_hypernyms():
@@ -506,7 +506,7 @@ class Synset(_WordNetObject):
         used. If no ancestor nodes are common, None is returned. If a node is
         compared with itself 0 is returned.
 
-        :type  other: L{Synset}
+        :type  other: ``Synset``
         :param other: The Synset to which the shortest path will be found.
         :return: The number of edges in the shortest path connecting the two
             nodes, or None if no path exists.
@@ -596,9 +596,9 @@ class Synset(_WordNetObject):
         distinct verb taxonomies), in which case None is returned. A score of
         1 represents identity i.e. comparing a sense with itself will return 1.
 
-        :type other: L{Synset}
-        :param other: The L{Synset} that this L{Synset} is being compared to.
-        :type simulate_root: L{bool}
+        :type other: ``Synset``
+        :param other: The ``Synset`` that this ``Synset`` is being compared to.
+        :type simulate_root: ``bool``
         :param simulate_root: The various verb taxonomies do not
             share a single root which disallows this metric from working for
             synsets that are not connected. This flag (True by default)
@@ -607,9 +607,9 @@ class Synset(_WordNetObject):
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
             as well. 
-        :return: A score denoting the similarity of the two L{Synset}s,
+        :return: A score denoting the similarity of the two ``Synset``s,
             normally between 0 and 1. None is returned if no connecting path
-            could be found. 1 is returned if a L{Synset} is compared with
+            could be found. 1 is returned if a ``Synset`` is compared with
             itself.
         """
 
@@ -628,9 +628,9 @@ class Synset(_WordNetObject):
         -log(p/2d) where p is the shortest path length and d is the taxonomy
         depth.
 
-        :type  other: L{Synset}
-        :param other: The L{Synset} that this L{Synset} is being compared to.
-        :type simulate_root: L{bool}
+        :type  other: ``Synset``
+        :param other: The ``Synset`` that this ``Synset`` is being compared to.
+        :type simulate_root: ``bool``
         :param simulate_root: The various verb taxonomies do not
             share a single root which disallows this metric from working for
             synsets that are not connected. This flag (True by default)
@@ -639,9 +639,9 @@ class Synset(_WordNetObject):
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
             as well. 
-        :return: A score denoting the similarity of the two L{Synset}s,
+        :return: A score denoting the similarity of the two ``Synset``s,
             normally greater than 0. None is returned if no connecting path
-            could be found. If a L{Synset} is compared with itself, the
+            could be found. If a ``Synset`` is compared with itself, the
             maximum score is returned, which varies depending on the taxonomy
             depth.
         """
@@ -684,9 +684,9 @@ class Synset(_WordNetObject):
         Where the LCS has multiple paths to the root, the longer path is used
         for the purposes of the calculation.
 
-        :type  other: L{Synset}
-        :param other: The L{Synset} that this L{Synset} is being compared to.
-        :type simulate_root: L{bool}
+        :type  other: ``Synset``
+        :param other: The ``Synset`` that this ``Synset`` is being compared to.
+        :type simulate_root: ``bool``
         :param simulate_root: The various verb taxonomies do not
             share a single root which disallows this metric from working for
             synsets that are not connected. This flag (True by default)
@@ -695,7 +695,7 @@ class Synset(_WordNetObject):
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
             as well. 
-        :return: A float score denoting the similarity of the two L{Synset}s,
+        :return: A float score denoting the similarity of the two ``Synset``s,
             normally greater than zero. If no connecting path between the two
             senses can be found, None is returned.
 
@@ -740,11 +740,11 @@ class Synset(_WordNetObject):
         Information Content (IC) of the Least Common Subsumer (most specific
         ancestor node).
 
-        :type  other: L{Synset}
-        :param other: The L{Synset} that this L{Synset} is being compared to.
+        :type  other: ``Synset``
+        :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type  ic: dict
-        :param ic: an information content object (as returned by L{load_ic()}).
-        :return: A float score denoting the similarity of the two L{Synset}s.
+        :param ic: an information content object (as returned by ``load_ic()``).
+        :return: A float score denoting the similarity of the two ``Synset``s.
             Synsets whose LCS is the root node of the taxonomy will have a
             score of 0 (e.g. N['dog'][0] and N['table'][0]).
         """
@@ -760,11 +760,11 @@ class Synset(_WordNetObject):
         ancestor node) and that of the two input Synsets. The relationship is
         given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
 
-        :type  other: L{Synset}
-        :param other: The L{Synset} that this L{Synset} is being compared to.
+        :type  other: ``Synset``
+        :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type  ic: dict
-        :param ic: an information content object (as returned by L{load_ic()}).
-        :return: A float score denoting the similarity of the two L{Synset}s.
+        :param ic: an information content object (as returned by ``load_ic()``).
+        :return: A float score denoting the similarity of the two ``Synset``s.
         """
 
         if self == other:
@@ -792,11 +792,11 @@ class Synset(_WordNetObject):
         ancestor node) and that of the two input Synsets. The relationship is
         given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
 
-        :type  other: L{Synset}
-        :param other: The L{Synset} that this L{Synset} is being compared to.
+        :type  other: ``Synset``
+        :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type  ic: dict
-        :param ic: an information content object (as returned by L{load_ic()}).
-        :return: A float score denoting the similarity of the two L{Synset}s,
+        :param ic: an information content object (as returned by ``load_ic()``).
+        :return: A float score denoting the similarity of the two ``Synset``s,
             in the range 0 to 1.
         """
 
@@ -805,7 +805,7 @@ class Synset(_WordNetObject):
 
     def _iter_hypernym_lists(self):
         """
-        :return: An iterator over L{Synset}s that are either proper
+        :return: An iterator over ``Synset``s that are either proper
         hypernyms or instance of hypernyms of the synset.
         """
         todo = [self]
@@ -1438,17 +1438,17 @@ class WordNetCorpusReader(CorpusReader):
         """
         Creates an information content lookup dictionary from a corpus.
 
-        :type corpus: L{CorpusReader}
+        :type corpus: ``CorpusReader``
         :param corpus: The corpus from which we create an information
         content dictionary.
-        :type weight_senses_equally: L{bool}
+        :type weight_senses_equally: ``bool``
         :param weight_senses_equally: If this is True, gives all
         possible senses equal weight rather than dividing by the
         number of possible senses.  (If a word has 3 synses, each
         sense gets 0.3333 per appearance when this is False, 1.0 when
         it is true.)
         :param smoothing: How much do we smooth synset counts (default is 1.0)
-        :type smoothing: L{float}
+        :type smoothing: ``float``
         :return: An information content dictionary
         """
         counts = FreqDist()
@@ -1512,7 +1512,7 @@ class WordNetICCorpusReader(CorpusReader):
         NOUN and VERB, whose values are dictionaries that map from
         synsets to information content values.
 
-        :type  icfile: L{str}
+        :type  icfile: ``str``
         :param icfile: The name of the wordnet_ic file (e.g. "ic-brown.dat")
         :return: An information content dictionary
         """
@@ -1580,9 +1580,9 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     where the least common subsumer is defined as the ancestor node common
     to both input synsets whose shortest path to the root node is the longest.
 
-    :type  synset1: L{Synset}
+    :type  synset1: ``Synset``
     :param synset1: First input synset.
-    :type  synset2: L{Synset}
+    :type  synset2: ``Synset``
     :param synset2: Second input synset.
     :return: The ancestor synset common to both input synsets which is also the
     LCS.
@@ -1640,13 +1640,13 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
     explicit common subsumer, assume that they share an artificial
     root node that is the hypernym of all explicit roots.
 
-    :type  synset1: L{Synset}
+    :type  synset1: ``Synset``
     :param synset1: First input synset.
-    :type  synset2: L{Synset}
+    :type  synset2: ``Synset``
     :param synset2: Second input synset.  Must be the same part of
     speech as the first synset.
     :type  ic: dict
-    :param ic: an information content object (as returned by L{load_ic()}).
+    :param ic: an information content object (as returned by ``load_ic()``).
     :return: The information content of the two synsets and their most
     informative subsumer
     """

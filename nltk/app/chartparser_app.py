@@ -465,22 +465,22 @@ class ChartComparer(object):
     :ivar _charts: A dictionary mapping names to charts.  When 
         charts are loaded, they are added to this dictionary.
     
-    :ivar _left_chart: The left L{Chart}.
-    :ivar _left_name: The name C{_left_chart} (derived from filename)
-    :ivar _left_matrix: The L{ChartMatrixView} for C{_left_chart}
-    :ivar _left_selector: The drop-down C{MutableOptionsMenu} used
-          to select C{_left_chart}.
+    :ivar _left_chart: The left ``Chart``.
+    :ivar _left_name: The name ``_left_chart`` (derived from filename)
+    :ivar _left_matrix: The ``ChartMatrixView`` for ``_left_chart``
+    :ivar _left_selector: The drop-down ``MutableOptionsMenu`` used
+          to select ``_left_chart``.
     
-    :ivar _right_chart: The right L{Chart}.
-    :ivar _right_name: The name C{_right_chart} (derived from filename)
-    :ivar _right_matrix: The L{ChartMatrixView} for C{_right_chart}
-    :ivar _right_selector: The drop-down C{MutableOptionsMenu} used
-          to select C{_right_chart}.
+    :ivar _right_chart: The right ``Chart``.
+    :ivar _right_name: The name ``_right_chart`` (derived from filename)
+    :ivar _right_matrix: The ``ChartMatrixView`` for ``_right_chart``
+    :ivar _right_selector: The drop-down ``MutableOptionsMenu`` used
+          to select ``_right_chart``.
     
-    :ivar _out_chart: The out L{Chart}.
-    :ivar _out_name: The name C{_out_chart} (derived from filename)
-    :ivar _out_matrix: The L{ChartMatrixView} for C{_out_chart}
-    :ivar _out_label: The label for C{_out_chart}.
+    :ivar _out_chart: The out ``Chart``.
+    :ivar _out_name: The name ``_out_chart`` (derived from filename)
+    :ivar _out_matrix: The ``ChartMatrixView`` for ``_out_chart``
+    :ivar _out_label: The label for ``_out_chart``.
 
     :ivar _op_label: A Label containing the most recent operation.
     """
@@ -841,13 +841,13 @@ class ChartComparer(object):
 
 class ChartView(object):
     """
-    A component for viewing charts.  This is used by C{ChartParserApp} to
+    A component for viewing charts.  This is used by ``ChartParserApp`` to
     allow students to interactively experiment with various chart
-    parsing techniques.  It is also used by C{Chart.draw()}.
+    parsing techniques.  It is also used by ``Chart.draw()``.
 
     :ivar _chart: The chart that we are giving a view of.  This chart
        may be modified; after it is modified, you should call
-       C{update}.
+       ``update``.
     :ivar _sentence: The list of tokens that the chart spans.
 
     :ivar _root: The root window.
@@ -861,7 +861,7 @@ class ChartView(object):
     :ivar _edgetags: A dictionary mapping from edges to the tags of
         the canvas elements (lines, etc) used to display that edge.
         The values of this dictionary have the form 
-        C{(linetag, rhstag1, dottag, rhstag2, lhstag)}.
+        ``(linetag, rhstag1, dottag, rhstag2, lhstag)``.
     :ivar _treetags: A list of all the tags that make up the tree;
         used to erase the tree (without erasing the loclines).
     :ivar _chart_height: The height of the chart canvas.
@@ -893,7 +893,7 @@ class ChartView(object):
     
     def __init__(self, chart, root=None, **kw):
         """
-        Construct a new C{Chart} display.
+        Construct a new ``Chart`` display.
         """
         # Process keyword args.
         draw_tree = kw.get('draw_tree', 0)
@@ -1062,10 +1062,10 @@ class ChartView(object):
         """
         Draw any edges that have not been drawn.  This is typically
         called when a after modifies the canvas that a CanvasView is
-        displaying.  C{update} will cause any edges that have been
+        displaying.  ``update`` will cause any edges that have been
         added to the chart to be drawn.
 
-        If update is given a C{chart} argument, then it will replace
+        If update is given a ``chart`` argument, then it will replace
         the current chart with the given chart.
         """
         if chart is not None:
@@ -1342,7 +1342,7 @@ class ChartView(object):
         """
         Update the scroll-regions for each canvas.  This ensures that
         everything is within a scroll-region, so the user can use the
-        scrollbars to view the entire display.  This does I{not}
+        scrollbars to view the entire display.  This does *not*
         resize the window.
         """
         c = self._chart_canvas

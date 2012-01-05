@@ -32,16 +32,16 @@ corresponding sequence of states (and what the current state is) is known.
 This is the 'hidden' in the hidden markov model.
 
 Formally, a HMM can be characterised by:
-    - the output observation alphabet. This is the set of symbols which may be
-      observed as output of the system. 
-    - the set of states. 
-    - the transition probabilities M{a_{ij} = P(s_t = j | s_{t-1} = i)}. These
-      represent the probability of transition to each state from a given
-      state. 
-    - the output probability matrix M{b_i(k) = P(X_t = o_k | s_t = i)}. These
-      represent the probability of observing each symbol in a given state.
-    - the initial state distribution. This gives the probability of starting
-      in each state.
+
+- the output observation alphabet. This is the set of symbols which may be
+  observed as output of the system. 
+- the set of states. 
+- the transition probabilities *a_{ij} = P(s_t = j | s_{t-1} = i)*. These
+  represent the probability of transition to each state from a given state. 
+- the output probability matrix *b_i(k) = P(X_t = o_k | s_t = i)*. These
+  represent the probability of observing each symbol in a given state.
+- the initial state distribution. This gives the probability of starting
+  in each state.
 
 To ground this discussion, take a common NLP application, part-of-speech (POS)
 tagging. An HMM is desirable for this task as the highest probability tag
@@ -195,7 +195,7 @@ class HiddenMarkovModelTagger(TaggerI):
     	    i.e. a list of sentences represented as words
     	:type unlabeled_sequence: list(list)
         :param transform: an optional function for transforming training
-            instances, defaults to the identity function, see L{transform()}
+            instances, defaults to the identity function, see ``transform()``
         :type transform: function
         :param estimator: an optional function or class that maps a
             condition's frequency distribution to its probability
@@ -507,24 +507,22 @@ class HiddenMarkovModelTagger(TaggerI):
 
          H(O) = - sum_S Pr(S | O) log Pr(S | O)
 
-        where the summation ranges over all state sequences, S. Let M{Z =
-        Pr(O) = sum_S Pr(S, O)} where the summation ranges over all state
+        where the summation ranges over all state sequences, S. Let
+        *Z = Pr(O) = sum_S Pr(S, O)}* where the summation ranges over all state
         sequences and O is the observation sequence. As such the entropy can
         be re-expressed as::
 
-         H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
-           = log Z - sum_S Pr(S | O) log Pr(S, 0)
-           = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1})
-                                                   + sum_t Pr(O_t | S_t) ]
+        H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
+        = log Z - sum_S Pr(S | O) log Pr(S, 0)
+        = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1}) + sum_t Pr(O_t | S_t) ]
         
         The order of summation for the log terms can be flipped, allowing
         dynamic programming to be used to calculate the entropy. Specifically,
         we use the forward and backward probabilities (alpha, beta) giving::
 
-         H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
-                 + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
-                                 / Z * log Pr(sj | si)
-                 + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
+        H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
+        + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj) / Z * log Pr(sj | si)
+        + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
 
         This simply uses alpha and beta to find the probabilities of partial
         sequences, constrained to include the given state(s) at some point in

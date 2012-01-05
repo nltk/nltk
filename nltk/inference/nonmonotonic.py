@@ -56,9 +56,9 @@ class ClosedDomainProver(ProverCommandDecorator):
          - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR 
                      "P.replace(x, d1) | P.replace(x, d2) | ..."
          - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
-        :param ex: C{Expression}
+        :param ex: ``Expression``
         :param domain: set of {Variable}s
-        :return: C{Expression}
+        :return: ``Expression``
         """
         if isinstance(ex, AllExpression):
             conjuncts = [ex.term.replace(ex.variable, VariableExpression(d)) 
@@ -124,7 +124,7 @@ class SetHolder(list):
     """
     def __getitem__(self, item):
         """
-        :param item: C{Variable}
+        :param item: ``Variable``
         :return: the set containing 'item'
         """
         assert isinstance(item, Variable)
@@ -233,8 +233,8 @@ class ClosedWorldProver(ProverCommandDecorator):
         """
         Create a dictionary of predicates from the assumptions.
         
-        :param assumptions: a list of C{Expression}s
-        :return: dict mapping C{AbstractVariableExpression} to C{PredHolder}
+        :param assumptions: a list of ``Expression``s
+        :return: dict mapping ``AbstractVariableExpression`` to ``PredHolder``
         """
         predicates = defaultdict(PredHolder)
         for a in assumptions:
@@ -271,7 +271,7 @@ class ClosedWorldProver(ProverCommandDecorator):
 class PredHolder(object):
     """
     This class will be used by a dictionary that will store information
-    about predicates to be used by the C{ClosedWorldProver}.
+    about predicates to be used by the ``ClosedWorldProver``.
     
     The 'signatures' property is a list of tuples defining signatures for 
     which the predicate is true.  For instance, 'see(john, mary)' would be 

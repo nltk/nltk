@@ -24,11 +24,11 @@ class ConllCorpusReader(CorpusReader):
     """
     A corpus reader for CoNLL-style files.  These files consist of a
     series of sentences, separated by blank lines.  Each sentence is
-    encoded using a table (or I{grid}) of values, where each line
+    encoded using a table (or "grid") of values, where each line
     corresponds to a single word, and each column corresponds to an
     annotation type.  The set of columns used by CoNLL-style files can
-    vary from corpus to corpus; the C{ConllCorpusReader} constructor
-    therefore takes an argument, C{columntypes}, which is used to
+    vary from corpus to corpus; the ``ConllCorpusReader`` constructor
+    therefore takes an argument, ``columntypes``, which is used to
     specify the columns that are used by a given corpus.
 
     @todo: Add support for reading from corpora where different
@@ -383,7 +383,7 @@ class ConllSRLInstance(object):
         self.verb_head = verb_head
         """The word index of the head word of the verb whose arguments
            are identified by this instance.  E.g., for a sentence that
-           uses the verb 'turn on,' C{verb_head} will be the word index
+           uses the verb 'turn on,' ``verb_head`` will be the word index
            of the word 'turn'."""
 
         self.verb_stem = verb_stem
@@ -391,13 +391,13 @@ class ConllSRLInstance(object):
         self.roleset = roleset
         
         self.arguments = []
-        """A list of C{(argspan, argid)} tuples, specifying the location
+        """A list of ``(argspan, argid)`` tuples, specifying the location
            and type for each of the arguments identified by this
-           instance.  C{argspan} is a tuple C{start, end}, indicating
-           that the argument consists of the C{words[start:end]}."""
+           instance.  ``argspan`` is a tuple ``start, end``, indicating
+           that the argument consists of the ``words[start:end]``."""
 
         self.tagged_spans = tagged_spans
-        """A list of C{(span, id)} tuples, specifying the location and
+        """A list of ``(span, id)`` tuples, specifying the location and
            type for each of the arguments, as well as the verb pieces,
            that make up this instance."""
         

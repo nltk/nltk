@@ -95,9 +95,9 @@ class SExprTokenizer(TokenizerI):
         inside strings, or following backslash characters.)
 
         If the given expression contains non-matching parentheses,
-        then the behavior of the tokenizer depends on the C{strict}
-        parameter to the constructor.  If C{strict} is C{True}, then
-        raise a C{ValueError}.  If C{strict} is C{False}, then any
+        then the behavior of the tokenizer depends on the ``strict``
+        parameter to the constructor.  If ``strict`` is ``True``, then
+        raise a ``ValueError``.  If ``strict`` is ``False``, then any
         unmatched close parentheses will be listed as their own
         s-expression; and the last partial s-expression with unmatched open
         parentheses will be listed as its own s-expression:

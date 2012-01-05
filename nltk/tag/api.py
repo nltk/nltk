@@ -28,7 +28,7 @@ class TaggerI(object):
     ``FeaturesetTagger``, require that each token be a ``featureset``.
 
     Subclasses must define:
-      - either L{tag()} or L{batch_tag()} (or both)
+      - either ``tag()`` or ``batch_tag()`` (or both)
     """
     def tag(self, tokens):
         """
@@ -73,9 +73,9 @@ class TaggerI(object):
         
 class FeaturesetTaggerI(TaggerI):
     """
-    A tagger that requires tokens to be I{featuresets}.  A featureset
-    is a dictionary that maps from I{feature names} to I{feature
-    values}.  See L{nltk.classify} for more information about features
+    A tagger that requires tokens to be ``featuresets``.  A featureset
+    is a dictionary that maps from feature names to feature
+    values.  See ``nltk.classify`` for more information about features
     and featuresets.
     """
 
@@ -83,7 +83,7 @@ class FeaturesetTaggerI(TaggerI):
 class HiddenMarkovModelTaggerTransformI(object):
     """
     An interface for a transformation to be used as the transform parameter
-    of C{HiddenMarkovModelTagger}.
+    of ``HiddenMarkovModelTagger``.
     """
     def __init__(self):
         if self.__class__ == HiddenMarkovModelTaggerTransformI:

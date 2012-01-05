@@ -31,8 +31,8 @@ class TokenizerI(object):
 
     def span_tokenize(self, s):
         """
-        Identify the tokens using integer offsets (start_i, end_i),
-        where s[start_i:end_i] is the corresponding token.
+        Identify the tokens using integer offsets ``(start_i, end_i)``,
+        where ``s[start_i:end_i]`` is the corresponding token.
         
         :rtype: iter(tuple(int, int))
         """
@@ -40,7 +40,7 @@ class TokenizerI(object):
 
     def batch_tokenize(self, strings):
         """
-        Apply ``self.tokenize()`` to each element of C{strings}.  I.e.:
+        Apply ``self.tokenize()`` to each element of ``strings``.  I.e.:
 
             return [self.tokenize(s) for s in strings]
 
@@ -50,7 +50,7 @@ class TokenizerI(object):
 
     def batch_span_tokenize(self, strings):
         """
-        Apply ``self.span_tokenize()`` to each element of C{strings}.  I.e.:
+        Apply ``self.span_tokenize()`` to each element of ``strings``.  I.e.:
 
             return [self.span_tokenize(s) for s in strings]
 

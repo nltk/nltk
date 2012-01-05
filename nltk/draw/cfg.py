@@ -134,7 +134,7 @@ the CFG:
 class CFGEditor(object):
     """
     A dialog window for creating and editing context free grammars.
-    C{CFGEditor} places the following restrictions on what C{CFG}s can
+    ``CFGEditor`` places the following restrictions on what ``CFG``s can
     be edited:
         - All nonterminals must be strings consisting of word
           characters.
@@ -301,7 +301,7 @@ class CFGEditor(object):
 
     def _clear_tags(self, linenum):
         """
-        Remove all tags (except C{arrow} and C{sel}) from the given
+        Remove all tags (except ``arrow`` and ``sel``) from the given
         line of the text widget used for editing the productions.
         """
         start = '%d.0'%linenum
@@ -324,7 +324,7 @@ class CFGEditor(object):
 
     def _replace_arrows(self, *e):
         """
-        Replace any C{'->'} text strings with arrows (char \\256, in
+        Replace any ``'->'`` text strings with arrows (char \\256, in
         symbol font).  This searches the whole buffer, but is fast
         enough to be done anytime they press '>'.
         """
@@ -425,7 +425,7 @@ class CFGEditor(object):
 
     def _analyze(self, *e):
         """
-        Replace C{->} with arrows, and colorize the entire buffer.
+        Replace ``->`` with arrows, and colorize the entire buffer.
         """
         self._replace_arrows()
         numlines = int(self._textwidget.index('end').split('.')[0])

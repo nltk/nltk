@@ -28,12 +28,12 @@ algorithm which may converge to a local maximum. Hence the clustering is
 often repeated with random initial means and the most commonly occurring
 output means are chosen.
 
-The GAAC clusterer starts with each of the M{N} vectors as singleton clusters.
+The GAAC clusterer starts with each of the *N* vectors as singleton clusters.
 It then iteratively merges pairs of clusters which have the closest centroids.
 This continues until there is only one cluster. The order of merges gives rise
 to a dendrogram - a tree with the earlier merges lower than later merges. The
-membership of a given number of clusters M{c}, M{1 <= c <= N}, can be found by
-cutting the dendrogram at depth M{c}.
+membership of a given number of clusters *c*, *1 <= c <= N*, can be found by
+cutting the dendrogram at depth *c*.
 
 The Gaussian EM clusterer models the vectors as being produced by a mixture
 of k Gaussian sources. The parameters of these sources (prior probability,

@@ -39,21 +39,21 @@ class DependencySpan(object):
 
     def head_index(self):
         """
-        :return: An value indexing the head of the entire C{DependencySpan}.
+        :return: An value indexing the head of the entire ``DependencySpan``.
         :rtype: int.
         """
         return self._head_index
     
     def __repr__(self):
         """
-        :return: A concise string representatino of the C{DependencySpan}.
+        :return: A concise string representatino of the ``DependencySpan``.
         :rtype: str.
         """
         return 'Span %d-%d; Head Index: %d' % (self._start_index, self._end_index, self._head_index)
     
     def __str__(self):
         """
-        :return: A verbose string representation of the C{DependencySpan}.
+        :return: A verbose string representation of the ``DependencySpan``.
         :rtype: str.
         """
         str = 'Span %d-%d; Head Index: %d' % (self._start_index, self._end_index, self._head_index)
@@ -63,7 +63,7 @@ class DependencySpan(object):
 
     def __eq__(self, other):
         """
-        :return: true if this C{DependencySpan} is equal to C{other}.
+        :return: true if this ``DependencySpan`` is equal to ``other``.
         :rtype: bool.
         """
         return (isinstance(other, self.__class__) and
@@ -74,7 +74,7 @@ class DependencySpan(object):
 
     def __ne__(self, other):
         """
-        :return: false if this C{DependencySpan} is equal to C{other}
+        :return: false if this ``DependencySpan`` is equal to ``other``
         :rtype: bool	
         """
         return not (self == other)
@@ -90,7 +90,7 @@ class DependencySpan(object):
 
     def __hash__(self):
         """
-        :return: The hash value of this C{DependencySpan}.
+        :return: The hash value of this ``DependencySpan``.
         """
         return self._hash
 
@@ -121,20 +121,20 @@ class ChartCell(object):
         representing the chart cell's entries.
         
         :param span: The span to add.
-        :type span: C{DependencySpan}.
+        :type span: ``DependencySpan``.
         """
         self._entries.add(span);
 
     def __str__(self):
         """
-        :return: A verbose string representation of this C{ChartCell}.
+        :return: A verbose string representation of this ``ChartCell``.
         :rtype: str.
         """ 
         return 'CC[%d,%d]: %s' % (self._x, self._y, self._entries)
         
     def __repr__(self):
         """
-        :return: A concise string representation of this C{ChartCell}.
+        :return: A concise string representation of this ``ChartCell``.
         :rtype: str.
         """
         return '%s' % self
@@ -161,10 +161,10 @@ class ProjectiveDependencyParser(object):
     def __init__(self, dependency_grammar):
         """
         Create a new ProjectiveDependencyParser, from a word-to-word
-        dependency grammar C{DependencyGrammar}.
+        dependency grammar ``DependencyGrammar``.
 
         :param dependency_grammar: A word-to-word relation dependencygrammar.
-        :type dependency_grammar: A C{DependencyGrammar}.
+        :type dependency_grammar: A ``DependencyGrammar``.
         """
         self._grammar = dependency_grammar
 
@@ -174,9 +174,9 @@ class ProjectiveDependencyParser(object):
         a chart-based, span-concatenation algorithm similar to Eisner (1996).
         
         :param tokens: The list of input tokens.
-        :type tokens:a list of L{String}
+        :type tokens:a list of ``String``
         :return: A list of parse trees.
-        :rtype: a list of L{tree}
+        :rtype: a list of ``tree``
         """
         self._tokens = list(tokens)
         chart = []
@@ -218,7 +218,7 @@ class ProjectiveDependencyParser(object):
         share or pivot on a particular word/word-index.
 
         return: A list of new spans formed through concatenation.
-        rtype: A list of L{DependencySpan}
+        rtype: A list of ``DependencySpan``
         """
         spans = []
         if span1._start_index == span2._start_index:
@@ -322,7 +322,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         share or pivot on a particular word/word-index.
 
         return: A list of new spans formed through concatenation.
-        rtype: A list of L{DependencySpan}
+        rtype: A list of ``DependencySpan``
         """
         spans = []
         if span1._start_index == span2._start_index:
@@ -353,7 +353,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         child-word, and child-tag relationships.
 
         param graphs: A list of dependency graphs to train from.
-        type: A list of C{DependencyGraph}
+        type: A list of ``DependencyGraph``
         """
         productions = []
         events = {}
@@ -425,7 +425,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         statistical dependency grammar).
 
         param dg: A dependency graph to score.
-        type dg: a C{DependencyGraph}
+        type dg: a ``DependencyGraph``
         return: The probability of the dependency graph.
         rtype: A number/double.
         """
@@ -484,7 +484,7 @@ def demo():
 def projective_rule_parse_demo():
     """
     A demonstration showing the creation and use of a 
-    C{DependencyGrammar} to perform a projective dependency 
+    ``DependencyGrammar`` to perform a projective dependency 
     parse.
     """
     grammar = parse_dependency_grammar("""
@@ -500,10 +500,10 @@ def projective_rule_parse_demo():
     
 def arity_parse_demo():
     """
-    A demonstration showing the creation of a C{DependencyGrammar} 
+    A demonstration showing the creation of a ``DependencyGrammar`` 
     in which a specific number of modifiers is listed for a given 
     head.  This can further constrain the number of possible parses
-    created by a C{ProjectiveDependencyParser}.
+    created by a ``ProjectiveDependencyParser``.
     """
     print
     print 'A grammar with no arity constraints. Each DependencyProduction'

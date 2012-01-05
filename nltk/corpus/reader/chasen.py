@@ -57,7 +57,7 @@ class ChasenCorpusReader(CorpusReader):
 
 class ChasenCorpusView(StreamBackedCorpusView):
     """
-    A specialized corpus view for ChasenReader. Similar to C{TaggedCorpusView},
+    A specialized corpus view for ChasenReader. Similar to ``TaggedCorpusView``,
     but this'll use fixed sets of word and sentence tokenizer. 
     """
 

@@ -47,13 +47,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
     
     _INDEX_RE = re.compile(r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^>]+>|'
                            r'<VNSUBCLASS ID="([^"]+)"/?>')
-    """Regular expression used by L{_index()} to quickly scan the corpus
+    """Regular expression used by ``_index()`` to quickly scan the corpus
        for basic information."""
 
     def lemmas(self, classid=None):
         """
         Return a list of all verb lemmas that appear in any class, or
-        in the C{classid} if specified.
+        in the ``classid`` if specified.
         """
         if classid is None:
             return sorted(self._lemma_to_class.keys())
@@ -66,7 +66,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
     def wordnetids(self, classid=None):
         """
         Return a list of all wordnet identifiers that appear in any
-        class, or in C{classid} if specified.
+        class, or in ``classid`` if specified.
         """
         if classid is None:
             return sorted(self._wordnet_to_class.keys())
@@ -113,9 +113,9 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
         :param fileid_or_classid: An identifier specifying which class
         should be returned.  Can be a file identifier (such as
-        C{'put-9.1.xml'}), or a verbnet class identifier (such as
-        C{'put-9.1'}) or a short verbnet class identifier (such as
-        C{'9.1'}).
+        ``'put-9.1.xml'``), or a verbnet class identifier (such as
+        ``'put-9.1'``) or a short verbnet class identifier (such as
+        ``'9.1'``).
         """
         # File identifier: just return the xml.
         if fileid_or_classid in self._fileids:
@@ -141,7 +141,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
     def fileids(self, vnclass_ids=None):
         """
         Return a list of fileids that make up this corpus.  If
-        C{vnclass_ids} is specified, then return the fileids that make
+        ``vnclass_ids`` is specified, then return the fileids that make
         up the specified verbnet class(es).
         """
         if vnclass_ids is None:
@@ -159,8 +159,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def _index(self):
         """
-        Initialize the indexes L{_lemma_to_class},
-        L{_wordnet_to_class}, and L{_class_to_fileid} by scanning
+        Initialize the indexes ``_lemma_to_class``,
+        ``_wordnet_to_class``, and ``_class_to_fileid`` by scanning
         through the corpus fileids.  This is fast with cElementTree
         (<0.1 secs), but quite slow (>10 secs) with the python
         implementation of ElementTree.
@@ -169,7 +169,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             self._index_helper(self.xml(fileid), fileid)
 
     def _index_helper(self, xmltree, fileid):
-        """Helper for L{_index()}"""
+        """Helper for ``_index()``"""
         vnclass = xmltree.get('ID')
         self._class_to_fileid[vnclass] = fileid
         self._shortid_to_longid[self.shortid(vnclass)] = vnclass
@@ -182,8 +182,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def _quick_index(self):
         """
-        Initialize the indexes L{_lemma_to_class},
-        L{_wordnet_to_class}, and L{_class_to_fileid} by scanning
+        Initialize the indexes ``_lemma_to_class``,
+        ``_wordnet_to_class``, and ``_class_to_fileid`` by scanning
         through the corpus fileids.  This doesn't do proper xml parsing,
         but is good enough to find everything in the standard verbnet
         corpus -- and it runs about 30 times faster than xml parsing
@@ -215,7 +215,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def longid(self, shortid):
         """Given a short verbnet class identifier (eg '37.10'), map it
-        to a long id (eg 'confess-37.10').  If C{shortid} is already a
+        to a long id (eg 'confess-37.10').  If ``shortid`` is already a
         long id, then return it as-is"""
         if self._LONGID_RE.match(shortid):
             return shortid # it's already a longid.
@@ -228,7 +228,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def shortid(self, longid):
         """Given a long verbnet class identifier (eg 'confess-37.10'),
-        map it to a short id (eg '37.10').  If C{longid} is already a
+        map it to a short id (eg '37.10').  If ``longid`` is already a
         short id, then return it as-is."""
         if self._SHORTID_RE.match(longid):
             return longid # it's already a shortid.

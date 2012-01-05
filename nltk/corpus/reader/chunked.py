@@ -30,7 +30,7 @@ class ChunkedCorpusReader(CorpusReader):
     function.  Each of these steps can be performed using a default
     function or a custom function.  By default, paragraphs are split
     on blank lines; sentences are listed one per line; and sentences
-    are parsed into chunk trees using L{nltk.chunk.tagstr2tree}.
+    are parsed into chunk trees using ``nltk.chunk.tagstr2tree``.
     """
     def __init__(self, root, fileids, extension='', 
                  str2chunktree=tagstr2tree,
@@ -89,8 +89,8 @@ class ChunkedCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
-            C{(word,tag)}.
-        :rtype: list of C{(str,str)}
+            ``(word,tag)``.
+        :rtype: list of ``(str,str)``
         """
         return concat([ChunkedCorpusView(f, enc, 1, 0, 0, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -98,9 +98,9 @@ class ChunkedCorpusReader(CorpusReader):
     def tagged_sents(self, fileids=None):
         """
         :return: the given file(s) as a list of
-            sentences, each encoded as a list of C{(word,tag)} tuples.
+            sentences, each encoded as a list of ``(word,tag)`` tuples.
             
-        :rtype: list of (list of C{(str,str)})
+        :rtype: list of (list of ``(str,str)``)
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 0, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -109,8 +109,8 @@ class ChunkedCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
-            in turn encoded as lists of C{(word,tag)} tuples.
-        :rtype: list of (list of (list of C{(str,str)}))
+            in turn encoded as lists of ``(word,tag)`` tuples.
+        :rtype: list of (list of (list of ``(str,str)``))
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 1, 0, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -118,11 +118,11 @@ class ChunkedCorpusReader(CorpusReader):
     def chunked_words(self, fileids=None):
         """
         :return: the given file(s) as a list of tagged
-            words and chunks.  Words are encoded as C{(word, tag)}
+            words and chunks.  Words are encoded as ``(word, tag)``
             tuples (if the corpus has tags) or word strings (if the
             corpus has no tags).  Chunks are encoded as depth-one
-            trees over C{(word,tag)} tuples or word strings.
-        :rtype: list of (C{(str,str)} and L{Tree})
+            trees over ``(word,tag)`` tuples or word strings.
+        :rtype: list of (``(str,str)`` and ``Tree``)
         """
         return concat([ChunkedCorpusView(f, enc, 1, 0, 0, 1, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -131,10 +131,10 @@ class ChunkedCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a shallow Tree.  The leaves
-            of these trees are encoded as C{(word, tag)} tuples (if
+            of these trees are encoded as ``(word, tag)`` tuples (if
             the corpus has tags) or word strings (if the corpus has no
             tags).
-        :rtype: list of L{Tree}
+        :rtype: list of ``Tree``
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 0, 1, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])
@@ -144,9 +144,9 @@ class ChunkedCorpusReader(CorpusReader):
         :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as a shallow Tree.  The leaves of these
-            trees are encoded as C{(word, tag)} tuples (if the corpus
+            trees are encoded as ``(word, tag)`` tuples (if the corpus
             has tags) or word strings (if the corpus has no tags).
-        :rtype: list of (list of L{Tree})
+        :rtype: list of (list of ``Tree``)
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 1, 1, *self._cv_args)
                        for (f, enc) in self.abspaths(fileids, True)])

@@ -37,9 +37,9 @@ class StreamBackedCorpusView(AbstractLazySequence):
     tokens are only constructed as-needed -- the entire corpus is
     never stored in memory at once.
 
-    The constructor to C{StreamBackedCorpusView} takes two arguments:
-    a corpus fileid (specified as a string or as a L{PathPointer});
-    and a block reader.  A X{block reader} is a function that reads
+    The constructor to ``StreamBackedCorpusView`` takes two arguments:
+    a corpus fileid (specified as a string or as a ``PathPointer``);
+    and a block reader.  A "block reader" is a function that reads
     zero or more tokens from a stream, and returns them as a list.  A
     very simple example of a block reader is:
 
@@ -56,16 +56,16 @@ class StreamBackedCorpusView(AbstractLazySequence):
     increase the memory requirements of the corpus view's internal
     data structures (by 2 integers per block).  On the other hand,
     larger block sizes may decrease performance for random access to
-    the corpus.  (But note that larger block sizes will I{not}
+    the corpus.  (But note that larger block sizes will *not*
     decrease performance for iteration.)
     
-    Internally, C{CorpusView} maintains a partial mapping from token
+    Internally, ``CorpusView`` maintains a partial mapping from token
     index to file position, with one entry per block.  When a token
-    with a given index M{i} is requested, the C{CorpusView} constructs
+    with a given index *i* is requested, the ``CorpusView`` constructs
     it as follows:
 
       1. First, it searches the toknum/filepos mapping for the token
-         index closest to (but less than or equal to) M{i}.
+         index closest to (but less than or equal to) *i*.
          
       2. Then, starting at the file position corresponding to that
          index, it reads one block at a time using the block reader
@@ -80,35 +80,35 @@ class StreamBackedCorpusView(AbstractLazySequence):
     have high degrees of locality, the corpus view may cache one or
     more blocks.
 
-    :note: Each C{CorpusView} object internally maintains an open file
+    :note: Each ``CorpusView`` object internally maintains an open file
         object for its underlying corpus file.  This file should be
-        automatically closed when the C{CorpusView} is garbage collected,
-        but if you wish to close it manually, use the L{close()}
-        method.  If you access a C{CorpusView}'s items after it has been
+        automatically closed when the ``CorpusView`` is garbage collected,
+        but if you wish to close it manually, use the ``close()``
+        method.  If you access a ``CorpusView``'s items after it has been
         closed, the file object will be automatically re-opened.
         
     :warning: If the contents of the file are modified during the
-        lifetime of the C{CorpusView}, then the C{CorpusView}'s behavior
+        lifetime of the ``CorpusView``, then the ``CorpusView``'s behavior
         is undefined.
 
     :warning: If a unicode encoding is specified when constructing a
-        C{CorpusView}, then the block reader may only call
-        C{stream.seek()} with offsets that have been returned by
-        C{stream.tell()}; in particular, calling C{stream.seek()} with
+        ``CorpusView``, then the block reader may only call
+        ``stream.seek()`` with offsets that have been returned by
+        ``stream.tell()``; in particular, calling ``stream.seek()`` with
         relative offsets, or with offsets based on string lengths, may
         lead to incorrect behavior.
 
     :ivar _block_reader: The function used to read 
         a single block from the underlying file stream.
     :ivar _toknum: A list containing the token index of each block
-        that has been processed.  In particular, C{_toknum[i]} is the
-        token index of the first token in block C{i}.  Together
-        with L{_filepos}, this forms a partial mapping between token
+        that has been processed.  In particular, ``_toknum[i]`` is the
+        token index of the first token in block ``i``.  Together
+        with ``_filepos``, this forms a partial mapping between token
         indices and file positions.
     :ivar _filepos: A list containing the file position of each block
-        that has been processed.  In particular, C{_toknum[i]} is the
-        file position of the first character in block C{i}.  Together
-        with L{_toknum}, this forms a partial mapping between token
+        that has been processed.  In particular, ``_toknum[i]`` is the
+        file position of the first character in block ``i``.  Together
+        with ``_toknum``, this forms a partial mapping between token
         indices and file positions.
     :ivar _stream: The stream used to access the underlying corpus file.
     :ivar _len: The total number of tokens in the corpus, if known;
@@ -125,13 +125,13 @@ class StreamBackedCorpusView(AbstractLazySequence):
     def __init__(self, fileid, block_reader=None, startpos=0,
                  encoding=None, source=None):
         """
-        Create a new corpus view, based on the file C{fileid}, and
-        read with C{block_reader}.  See the class documentation
+        Create a new corpus view, based on the file ``fileid``, and
+        read with ``block_reader``.  See the class documentation
         for more information.
 
         :param fileid: The path to the file that is read by this
-            corpus view.  C{fileid} can either be a string or a
-            L{PathPointer}.
+            corpus view.  ``fileid`` can either be a string or a
+            ``PathPointer``.
 
         :param startpos: The file position at which the view will
             start reading.  This can be used to skip over preface
@@ -142,7 +142,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
             then the file's contents will be read as a non-unicode
             string (i.e., a str).
 
-        :param source: If specified, then use an L{SourcedStringStream}
+        :param source: If specified, then use an ``SourcedStringStream``
             to annotate all strings read from the file with
             information about their start offset, end ofset,
             and docid.  The value of ``source`` will be used as the docid.
@@ -162,14 +162,14 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
         self._current_toknum = None
         """This variable is set to the index of the next token that
-           will be read, immediately before L{self.read_block()} is
+           will be read, immediately before ``self.read_block()`` is
            called.  This is provided for the benefit of the block
            reader, which under rare circumstances may need to know
            the current token number."""
         
         self._current_blocknum = None
         """This variable is set to the index of the next block that
-           will be read, immediately before L{self.read_block()} is
+           will be read, immediately before ``self.read_block()`` is
            called.  This is provided for the benefit of the block
            reader, which under rare circumstances may need to know
            the current block number."""
@@ -191,7 +191,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
     fileid = property(lambda self: self._fileid, doc="""
         The fileid of the file that is accessed by this view.
 
-        :type: str or L{PathPointer}""")
+        :type: str or ``PathPointer``""")
 
     def read_block(self, stream):
         """
@@ -356,7 +356,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
 class ConcatenatedCorpusView(AbstractLazySequence):
     """
     A 'view' of a corpus file that joins together one or more
-    L{StreamBackedCorpusViews<StreamBackedCorpusView>}.  At most
+    ``StreamBackedCorpusViews<StreamBackedCorpusView>``.  At most
     one file handle is left open at any time.
     """
     def __init__(self, corpus_views):
@@ -467,7 +467,7 @@ class PickleCorpusView(StreamBackedCorpusView):
     """
     A stream backed corpus view for corpus files that consist of
     sequences of serialized Python objects (serialized using
-    C{pickle.dump}).  One use case for this class is to store the
+    ``pickle.dump``).  One use case for this class is to store the
     result of running feature detection on a corpus to disk.  This can
     be useful when performing feature detection is expensive (so we
     don't want to repeat it); but the corpus is too large to store in
@@ -485,9 +485,9 @@ class PickleCorpusView(StreamBackedCorpusView):
     def __init__(self, fileid, delete_on_gc=False):
         """
         Create a new corpus view that reads the pickle corpus
-        C{fileid}.
+        ``fileid``.
 
-        :param delete_on_gc: If true, then C{fileid} will be deleted
+        :param delete_on_gc: If true, then ``fileid`` will be deleted
             whenever this object gets garbage-collected.
         """
         self._delete_on_gc = delete_on_gc
@@ -502,10 +502,10 @@ class PickleCorpusView(StreamBackedCorpusView):
 
     def __del__(self):
         """
-        If C{delete_on_gc} was set to true when this
-        C{PickleCorpusView} was created, then delete the corpus view's
+        If ``delete_on_gc`` was set to true when this
+        ``PickleCorpusView`` was created, then delete the corpus view's
         fileid.  (This method is called whenever a
-        C{PickledCorpusView} is garbage-collected.
+        ``PickledCorpusView`` is garbage-collected.
         """
         if getattr(self, '_delete_on_gc'):
             if os.path.exists(self._fileid):
@@ -524,7 +524,7 @@ class PickleCorpusView(StreamBackedCorpusView):
     def cache_to_tempfile(cls, sequence, delete_on_gc=True):
         """
         Write the given sequence to a temporary file as a pickle
-        corpus; and then return a C{PickleCorpusView} view for that
+        corpus; and then return a ``PickleCorpusView`` view for that
         temporary corpus file.
         
         :param delete_on_gc: If true, then the temporary file will be
@@ -599,9 +599,9 @@ def read_alignedsent_block(stream):
 def read_regexp_block(stream, start_re, end_re=None):
     """
     Read a sequence of tokens from a stream, where tokens begin with
-    lines that match C{start_re}.  If C{end_re} is specified, then
-    tokens end with lines that match C{end_re}; otherwise, tokens end
-    whenever the next line matching C{start_re} or EOF is found.
+    lines that match ``start_re``.  If ``end_re`` is specified, then
+    tokens end with lines that match ``end_re``; otherwise, tokens end
+    whenever the next line matching ``start_re`` or EOF is found.
     """
     # Scan until we find a line matching the start regexp.
     while True:

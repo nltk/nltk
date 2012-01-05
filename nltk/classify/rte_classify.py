@@ -48,8 +48,8 @@ class RTEFeatureExtractor(object):
     """
     def __init__(self, rtepair, stop=True, lemmatize=False):
         """
-        :param rtepair: a L{RTEPair} from which features should be extracted
-        :param stop: if C{True}, stopwords are thrown away.
+        :param rtepair: a ``RTEPair`` from which features should be extracted
+        :param stop: if ``True``, stopwords are thrown away.
         :type stop: bool
         """
         self.stop = stop

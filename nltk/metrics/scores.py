@@ -23,14 +23,14 @@ def accuracy(reference, test):
     Given a list of reference values and a corresponding list of test
     values, return the fraction of corresponding values that are
     equal.  In particular, return the fraction of indices
-    C{0<i<=len(test)} such that C{test[i] == reference[i]}.
+    ``0<i<=len(test)`` such that ``test[i] == reference[i]``.
 
     :type reference: list
     :param reference: An ordered list of reference values.
     :type test: list
     :param test: A list of values to compare against the corresponding
         reference values.
-    :raise ValueError: If C{reference} and C{length} do not have the
+    :raise ValueError: If ``reference`` and ``length`` do not have the
         same length.
     """
     if len(reference) != len(test):
@@ -45,12 +45,12 @@ def precision(reference, test):
     """
     Given a set of reference values and a set of test values, return
     the fraction of test values that appear in the reference set.
-    In particular, return |C{reference}S{cap}C{test}|/|C{test}|.
-    If C{test} is empty, then return None.
+    In particular, return |``reference`` intersection ``test``|/|``test``|.
+    If ``test`` is empty, then return None.
     
-    :type reference: C{Set}
+    :type reference: ``Set``
     :param reference: A set of reference values.
-    :type test: C{Set}
+    :type test: ``Set``
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
@@ -67,12 +67,12 @@ def recall(reference, test):
     """
     Given a set of reference values and a set of test values, return
     the fraction of reference values that appear in the test set.
-    In particular, return |C{reference}S{cap}C{test}|/|C{reference}|.
-    If C{reference} is empty, then return None.
+    In particular, return |``reference`` intersection ``test``|/|``reference``|.
+    If ``reference`` is empty, then return None.
     
-    :type reference: C{Set}
+    :type reference: ``Set``
     :param reference: A set of reference values.
-    :type test: C{Set}
+    :type test: ``Set``
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
@@ -90,19 +90,22 @@ def f_measure(reference, test, alpha=0.5):
     Given a set of reference values and a set of test values, return
     the f-measure of the test values, when compared against the
     reference values.  The f-measure is the harmonic mean of the
-    L{precision} and L{recall}, weighted by C{alpha}.  In particular,
-    given the precision M{p} and recall M{r} defined by:
-        - M{p} = |C{reference}S{cap}C{test}|/|C{test}|
-        - M{r} = |C{reference}S{cap}C{test}|/|C{reference}|
+    ``precision`` and ``recall``, weighted by ``alpha``.  In particular,
+    given the precision *p* and recall *r* defined by:
+
+    - *p* = |``reference`` intersection ``test``|/|``test``|
+    - *r* = |``reference`` intersection ``test``|/|``reference``|
+
     The f-measure is:
-        - 1/(C{alpha}/M{p} + (1-C{alpha})/M{r})
+
+    - *1/(alpha/p + (1-alpha)/r)*
         
-    If either C{reference} or C{test} is empty, then C{f_measure}
+    If either ``reference`` or ``test`` is empty, then ``f_measure``
     returns None.
     
-    :type reference: C{Set}
+    :type reference: set
     :param reference: A set of reference values.
-    :type test: C{Set}
+    :type test: set
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
@@ -124,7 +127,7 @@ def log_likelihood(reference, test):
     :type reference: list
     :param test: A list of probability distributions over values to
         compare against the corresponding reference values.
-    :type test: list of L{ProbDistI}
+    :type test: list of ``ProbDistI``
     """
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")

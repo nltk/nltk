@@ -23,12 +23,12 @@ class LazyCorpusLoader(object):
 
     The first time this object is accessed in any way, it will load
     the corresponding corpus, and transform itself into that corpus
-    (by modifying its own C{__class__} and C{__dict__} attributes).
+    (by modifying its own ``__class__`` and ``__dict__`` attributes).
 
     If the corpus can not be found, then accessing this object will
     raise an exception, displaying installation instructions for the
     NLTK data package.  Once they've properly installed the data
-    package (or modified C{nltk.data.path} to point to its location),
+    package (or modified ``nltk.data.path`` to point to its location),
     they can then use the corpus object without restarting python.
     """
     def __init__(self, name, reader_cls, *args, **kwargs):

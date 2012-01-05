@@ -39,8 +39,8 @@ class AtomicExpression(Expression):
         If 'self' is bound by 'bindings', return the atomic to which it is bound.  
         Otherwise, return self.
         
-        :param bindings: C{BindingDict} A dictionary of bindings used to simplify
-        :return: C{AtomicExpression}
+        :param bindings: ``BindingDict`` A dictionary of bindings used to simplify
+        :return: ``AtomicExpression``
         """
         if bindings and self in bindings:
             return bindings[self]
@@ -51,9 +51,9 @@ class AtomicExpression(Expression):
         """
         From Iddo Lev's PhD Dissertation p108-109
         
-        :param index_counter: C{Counter} for unique indices
-        :param glueFormulaFactory: C{GlueFormula} for creating new glue formulas
-        :return: (C{Expression},set) for the compiled linear logic and any newly created glue formulas
+        :param index_counter: ``Counter`` for unique indices
+        :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
+        :return: (``Expression``,set) for the compiled linear logic and any newly created glue formulas
         """
         self.dependencies = []
         return (self, [])
@@ -62,9 +62,9 @@ class AtomicExpression(Expression):
         """
         From Iddo Lev's PhD Dissertation p108-109
         
-        :param index_counter: C{Counter} for unique indices
-        :param glueFormulaFactory: C{GlueFormula} for creating new glue formulas
-        :return: (C{Expression},set) for the compiled linear logic and any newly created glue formulas
+        :param index_counter: ``Counter`` for unique indices
+        :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
+        :return: (``Expression``,set) for the compiled linear logic and any newly created glue formulas
         """
         self.dependencies = []
         return (self, [])
@@ -90,9 +90,9 @@ class ConstantExpression(AtomicExpression):
         If 'other' is a constant, then it must be equal to 'self'.  If 'other' is a variable,
         then it must not be bound to anything other than 'self'.
         
-        :param other: C{Expression}
-        :param bindings: C{BindingDict} A dictionary of all current bindings
-        :return: C{BindingDict} A new combined dictionary of of 'bindings' and any new binding
+        :param other: ``Expression``
+        :param bindings: ``BindingDict`` A dictionary of all current bindings
+        :return: ``BindingDict`` A new combined dictionary of of 'bindings' and any new binding
         :raise UnificationException: If 'self' and 'other' cannot be unified in the context of 'bindings'
         """
         assert isinstance(other, Expression)
@@ -110,9 +110,9 @@ class VariableExpression(AtomicExpression):
         """
         'self' must not be bound to anything other than 'other'.
         
-        :param other: C{Expression}
-        :param bindings: C{BindingDict} A dictionary of all current bindings
-        :return: C{BindingDict} A new combined dictionary of of 'bindings' and the new binding
+        :param other: ``Expression``
+        :param bindings: ``BindingDict`` A dictionary of all current bindings
+        :return: ``BindingDict`` A new combined dictionary of of 'bindings' and the new binding
         :raise UnificationException: If 'self' and 'other' cannot be unified in the context of 'bindings'
         """
         assert isinstance(other, Expression)
@@ -127,8 +127,8 @@ class VariableExpression(AtomicExpression):
 class ImpExpression(Expression):
     def __init__(self, antecedent, consequent):
         """
-        :param antecedent: C{Expression} for the antecedent
-        :param consequent: C{Expression} for the consequent
+        :param antecedent: ``Expression`` for the antecedent
+        :param consequent: ``Expression`` for the consequent
         """
         assert isinstance(antecedent, Expression)
         assert isinstance(consequent, Expression)
@@ -142,9 +142,9 @@ class ImpExpression(Expression):
         """
         Both the antecedent and consequent of 'self' and 'other' must unify.
         
-        :param other: C{ImpExpression}
-        :param bindings: C{BindingDict} A dictionary of all current bindings
-        :return: C{BindingDict} A new combined dictionary of of 'bindings' and any new bindings
+        :param other: ``ImpExpression``
+        :param bindings: ``BindingDict`` A dictionary of all current bindings
+        :return: ``BindingDict`` A new combined dictionary of of 'bindings' and any new bindings
         :raise UnificationException: If 'self' and 'other' cannot be unified in the context of 'bindings'
         """
         assert isinstance(other, ImpExpression)
@@ -157,9 +157,9 @@ class ImpExpression(Expression):
         """
         From Iddo Lev's PhD Dissertation p108-109
         
-        :param index_counter: C{Counter} for unique indices
-        :param glueFormulaFactory: C{GlueFormula} for creating new glue formulas
-        :return: (C{Expression},set) for the compiled linear logic and any newly created glue formulas
+        :param index_counter: ``Counter`` for unique indices
+        :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
+        :return: (``Expression``,set) for the compiled linear logic and any newly created glue formulas
         """
         (a, a_new) = self.antecedent.compile_neg(index_counter, glueFormulaFactory)
         (c, c_new) = self.consequent.compile_pos(index_counter, glueFormulaFactory)
@@ -169,9 +169,9 @@ class ImpExpression(Expression):
         """
         From Iddo Lev's PhD Dissertation p108-109
         
-        :param index_counter: C{Counter} for unique indices
-        :param glueFormulaFactory: C{GlueFormula} for creating new glue formulas
-        :return: (C{Expression},list of C{GlueFormula}) for the compiled linear logic and any newly created glue formulas
+        :param index_counter: ``Counter`` for unique indices
+        :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
+        :return: (``Expression``,list of ``GlueFormula``) for the compiled linear logic and any newly created glue formulas
         """
         (a, a_new) = self.antecedent.compile_pos(index_counter, glueFormulaFactory)
         (c, c_new) = self.consequent.compile_neg(index_counter, glueFormulaFactory)
@@ -198,8 +198,8 @@ class ImpExpression(Expression):
 class ApplicationExpression(Expression):
     def __init__(self, function, argument, argument_indices=None):
         """
-        :param function: C{Expression} for the function
-        :param argument: C{Expression} for the argument
+        :param function: ``Expression`` for the function
+        :param argument: ``Expression`` for the argument
         :param argument_indices: set for the indices of the glue formula from which the argument came
         :raise LinearLogicApplicationException: If 'function' cannot be applied to 'argument' given 'argument_indices'.
         """
@@ -238,8 +238,8 @@ class ApplicationExpression(Expression):
         no need to check that the application is valid since the checking is done 
         by the constructor.
         
-        :param bindings: C{BindingDict} A dictionary of bindings used to simplify
-        :return: C{Expression}
+        :param bindings: ``BindingDict`` A dictionary of bindings used to simplify
+        :return: ``Expression``
         """
         if not bindings:
             bindings = self.bindings
@@ -259,7 +259,7 @@ class ApplicationExpression(Expression):
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """
-        :param binding_list: list of (C{VariableExpression}, C{AtomicExpression}) to initialize the dictionary
+        :param binding_list: list of (``VariableExpression``, ``AtomicExpression``) to initialize the dictionary
         """
         self.d = {}
 
@@ -272,8 +272,8 @@ class BindingDict(object):
         A binding is consistent with the dict if its variable is not already bound, OR if its 
         variable is already bound to its argument.
         
-        :param variable: C{VariableExpression} The variable bind
-        :param binding: C{Expression} The expression to which 'variable' should be bound
+        :param variable: ``VariableExpression`` The variable bind
+        :param binding: ``Expression`` The expression to which 'variable' should be bound
         :raise VariableBindingException: If the variable cannot be bound in this dictionary
         """
         assert isinstance(variable, VariableExpression)
@@ -309,8 +309,8 @@ class BindingDict(object):
 
     def __add__(self, other):
         """
-        :param other: C{BindingDict} The dict with which to combine self
-        :return: C{BindingDict} A new dict containing all the elements of both parameters
+        :param other: ``BindingDict`` The dict with which to combine self
+        :return: ``BindingDict`` A new dict containing all the elements of both parameters
         :raise VariableBindingException: If the parameter dictionaries are not consistent with each other
         """
         try:

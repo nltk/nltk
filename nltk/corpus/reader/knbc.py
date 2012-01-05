@@ -22,13 +22,13 @@ _morphs2str_default = lambda morphs: '/'.join(m[0] for m in morphs if m[0] != 'E
 class KNBCorpusReader(SyntaxCorpusReader):
     """
     This class implements:
-      - L{__init__}, which specifies the location of the corpus
+      - ``__init__``, which specifies the location of the corpus
         and a method for detecting the sentence blocks in corpus files.
-      - L{_read_block}, which reads a block from the input stream.
-      - L{_word}, which takes a block and returns a list of list of words.
-      - L{_tag}, which takes a block and returns a list of list of tagged
+      - ``_read_block``, which reads a block from the input stream.
+      - ``_word``, which takes a block and returns a list of list of words.
+      - ``_tag``, which takes a block and returns a list of list of tagged
         words.
-      - L{_parse}, which takes a block and returns a list of parsed
+      - ``_parse``, which takes a block and returns a list of parsed
         sentences.
 
     The structure of tagged words:

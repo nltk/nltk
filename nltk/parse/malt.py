@@ -42,17 +42,17 @@ class MaltParser(ParserI):
     
     def config_malt(self, bin=None, verbose=False):
         """
-        Configure NLTK's interface to the C{malt} package.  This
+        Configure NLTK's interface to the ``malt`` package.  This
         searches for a directory containing the malt jar
         
-        :param bin: The full path to the C{malt} binary.  If not
-            specified, then nltk will search the system for a C{malt}
+        :param bin: The full path to the ``malt`` binary.  If not
+            specified, then nltk will search the system for a ``malt``
             binary; and if one is not found, it will raise a
-            C{LookupError} exception.
+            ``LookupError`` exception.
         :type bin: str
         """
         #: A list of directories that should be searched for the malt
-        #: executables.  This list is used by L{config_malt} when searching
+        #: executables.  This list is used by ``config_malt`` when searching
         #: for the malt executables.
         _malt_path = ['.',
                      '/usr/lib/malt-1*',
@@ -79,8 +79,8 @@ class MaltParser(ParserI):
         tagger.
         
         :param sentence: Input sentence to parse
-        :type sentence: L{list} of L{string}
-        :return: C{DependencyGraph} the dependency graph representation of the sentence
+        :type sentence: ``list`` of ``string``
+        :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
         taggedwords = self.tagger.tag(sentence)
         return self.tagged_parse(taggedwords, verbose)
@@ -92,8 +92,8 @@ class MaltParser(ParserI):
         MaltParser instance's tagger.
         
         :param sentence: Input sentence to parse
-        :type sentence: L{string}
-        :return: C{DependencyGraph} the dependency graph representation of the sentence
+        :type sentence: ``string``
+        :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
         words = word_tokenize(sentence)
         return self.parse(words, verbose)
@@ -105,8 +105,8 @@ class MaltParser(ParserI):
         tagged.
         
         :param sentence: Input sentence to parse
-        :type sentence: L{list} of (word, tag) L{tuple}s.
-        :return: C{DependencyGraph} the dependency graph representation of the sentence
+        :type sentence: ``list`` of (word, tag) ``tuple``s.
+        :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
 
         if not self._malt_bin:
@@ -142,9 +142,9 @@ class MaltParser(ParserI):
     
     def train(self, depgraphs, verbose=False):
         """
-        Train MaltParser from a list of C{DependencyGraph}s
+        Train MaltParser from a list of ``DependencyGraph``s
         
-        :param depgraphs: list of C{DependencyGraph}s for training input data
+        :param depgraphs: list of ``DependencyGraph``s for training input data
         """
         input_file = os.path.join(tempfile.gettempdir(),'malt_train.conll')
 

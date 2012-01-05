@@ -705,7 +705,7 @@ class Tree(list):
           \Tree [.I'' [.N'' [.D The ] [.N' [.N announcement ] ] ]
               [.I' [.V'' [.V' [.V astounded ] [.N'' [.N' [.N us ] ] ] ] ] ] ]
 
-        See U{http://www.ling.upenn.edu/advice/latex.html} for the LaTeX
+        See http://www.ling.upenn.edu/advice/latex.html for the LaTeX
         style file for the qtree package.
 
         :return: A latex qtree representation of this tree.
@@ -1069,7 +1069,7 @@ class ParentedTree(AbstractParentedTree):
         ``ptree.parent[ptree.parent_index] is ptree``.  Note that
         ``ptree.parent_index`` is not necessarily equal to
         ``ptree.parent.index(ptree)``, since the ``index()`` method
-        returns the first child that is I{equal} to its argument.""")
+        returns the first child that is equal to its argument.""")
 
     left_sibling = property(_get_left_sibling, doc="""
         The left sibling of this tree, or None if it has none.""")

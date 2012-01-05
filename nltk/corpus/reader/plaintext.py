@@ -28,12 +28,12 @@ class PlaintextCorpusReader(CorpusReader):
 
     This corpus reader can be customized (e.g., to skip preface
     sections of specific document formats) by creating a subclass and
-    overriding the L{CorpusView} class variable.
+    overriding the ``CorpusView`` class variable.
     """
 
     CorpusView = StreamBackedCorpusView
     """The corpus view class used by this reader.  Subclasses of
-       L{PlaintextCorpusReader} may specify alternative corpus view
+       ``PlaintextCorpusReader`` may specify alternative corpus view
        classes (e.g., to skip the preface sections of documents.)"""
     
     def __init__(self, root, fileids, 
@@ -162,11 +162,9 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
     def __init__(self, *args, **kwargs):
         """
         Initialize the corpus reader.  Categorization arguments
-        (C{cat_pattern}, C{cat_map}, and C{cat_file}) are passed to
-        the L{CategorizedCorpusReader constructor
-        <CategorizedCorpusReader.__init__>}.  The remaining arguments
-        are passed to the L{PlaintextCorpusReader constructor
-        <PlaintextCorpusReader.__init__>}.
+        (``cat_pattern``, ``cat_map``, and ``cat_file``) are passed to
+        the ``CategorizedCorpusReader`` constructor.  The remaining arguments
+        are passed to the ``PlaintextCorpusReader`` constructor.
         """
         CategorizedCorpusReader.__init__(self, kwargs)
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
@@ -204,7 +202,7 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
     Reader for Europarl corpora that consist of plaintext documents.  
     Documents are divided into chapters instead of paragraphs as
     for regular plaintext documents. Chapters are separated using blank
-    lines. Everything is inherited from L{PlaintextCorpusReader} except 
+    lines. Everything is inherited from ``PlaintextCorpusReader`` except 
     that:
       - Since the corpus is pre-processed and pre-tokenized, the
         word tokenizer should just split the line at whitespaces.

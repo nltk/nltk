@@ -92,7 +92,7 @@ class ShiftReduceApp(object):
     can shift tokens onto the stack, and can perform reductions on the
     top elements of the stack.  A "step" button simply steps through
     the parsing process, performing the operations that
-    C{nltk.parse.ShiftReduceParser} would use.
+    ``nltk.parse.ShiftReduceParser`` would use.
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent

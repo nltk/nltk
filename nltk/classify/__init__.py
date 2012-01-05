@@ -7,39 +7,39 @@
 
 """
 Classes and interfaces for labeling tokens with category labels (or
-X{class labels}).  Typically, labels are represented with strings
-(such as C{'health'} or C{'sports'}).  Classifiers can be used to
+"class labels").  Typically, labels are represented with strings
+(such as ``'health'`` or ``'sports'``).  Classifiers can be used to
 perform a wide range of classification tasks.  For example,
 classifiers can be used...
 
-  - to classify documents by topic.
-  - to classify ambiguous words by which word sense is intended.
-  - to classify acoustic signals by which phoneme they represent.
-  - to classify sentences by their author.
+- to classify documents by topic
+- to classify ambiguous words by which word sense is intended
+- to classify acoustic signals by which phoneme they represent
+- to classify sentences by their author
 
 Features
 ========
 In order to decide which category label is appropriate for a given
 token, classifiers examine one or more 'features' of the token.  These
-X{features} are typically chosen by hand, and indicate which aspects
+"features" are typically chosen by hand, and indicate which aspects
 of the token are relevant to the classification decision.  For
 example, a document classifier might use a separate feature for each
 word, recording how often that word occured in the document.
 
 Featuresets
 ===========
-The features describing a token are encoded using a X{featureset},
-which is a dictionary that maps from X{feature names} to X{feature
-values}.  Feature names are unique strings that indicate what aspect
+The features describing a token are encoded using a "featureset",
+which is a dictionary that maps from "feature names" to "feature
+values".  Feature names are unique strings that indicate what aspect
 of the token is encoded by the feature.  Examples include
-C{'prevword'}, for a feature whose value is the previous word; and
-C{'contains-word(library)'} for a feature that is true when a document
-contains the word C{'library'}.  Feature values are typically
+``'prevword'``, for a feature whose value is the previous word; and
+``'contains-word(library)'`` for a feature that is true when a document
+contains the word ``'library'``.  Feature values are typically
 booleans, numbers, or strings, depending on which feature they
 describe.
 
-Featuresets are typically constructed using a X{feature detector}
-(also known as a X{feature extractor}).  A feature detector is a
+Featuresets are typically constructed using a "feature detector"
+(also known as a "feature extractor").  A feature detector is a
 function that takes a token (and sometimes information about its
 context) as its input, and returns a featureset describing that token.
 For example, the following feature detector converts a document
@@ -78,8 +78,8 @@ the target word:
 Training Classifiers
 ====================
 Most classifiers are built by training them on a list of hand-labeled
-examples, known as the X{training set}.  Training sets are represented
-as lists of C{(featuredict, label)} tuples.
+examples, known as the "training set".  Training sets are represented
+as lists of ``(featuredict, label)`` tuples.
 """
 
 from nltk.classify.api import ClassifierI, MultiClassifierI

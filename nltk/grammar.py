@@ -794,7 +794,7 @@ class FeatureGrammar(ContextFreeGrammar):
     def leftcorners(self, cat):
         """
         Return the set of all words that the given category can start with.
-        Also called the I{first set} in compiler construction.
+        Also called the "first set" in compiler construction.
         """
         raise NotImplementedError("Not implemented yet")
     

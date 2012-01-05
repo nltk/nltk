@@ -67,7 +67,7 @@ class HoleSemantics(object):
     """
     def __init__(self, usr):
         """
-        Constructor.  `usr' is a C{sem.Expression} representing an 
+        Constructor.  `usr' is a ``sem.Expression`` representing an 
         Underspecified Representation Structure (USR).  A USR has the following
         special predicates:
         ALL(l,v,n),

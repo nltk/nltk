@@ -21,9 +21,9 @@ from xmldocs import *
 class BNCCorpusReader(XMLCorpusReader):
     """
     Corpus reader for the XML version of the British National Corpus.
-    For access to the complete XML data structure, use the L{xml()}
+    For access to the complete XML data structure, use the ``xml()``
     method.  For access to simple word lists and tagged word lists, use
-    L{words()}, L{sents()}, L{tagged_words()}, and L{tagged_sents()}.
+    ``words()``, ``sents()``, ``tagged_words()``, and ``tagged_sents()``.
     """
     def __init__(self, root, fileids, lazy=True):
         XMLCorpusReader.__init__(self, root, fileids)
@@ -52,8 +52,8 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
-            C{(word,tag)}.
-        :rtype: list of C{(str,str)}
+            ``(word,tag)``.
+        :rtype: list of ``(str,str)``
         
         :param c5: If true, then the tags used will be the more detailed
             c5 tags.  Otherwise, the simplified tags will be used.
@@ -92,8 +92,8 @@ class BNCCorpusReader(XMLCorpusReader):
                      stem=False):
         """
         :return: the given file(s) as a list of
-            sentences, each encoded as a list of C{(word,tag)} tuples.
-        :rtype: list of (list of C{(str,str)})
+            sentences, each encoded as a list of ``(word,tag)`` tuples.
+        :rtype: list of (list of ``(str,str)``)
             
         :param c5: If true, then the tags used will be the more detailed
             c5 tags.  Otherwise, the simplified tags will be used.
@@ -154,8 +154,8 @@ def _all_xmlwords_in(elt, result=None):
 
 class BNCSentence(list):
     """
-    A list of words, augmented by an attribute C{num} used to record
-    the sentence identifier (the C{n} attribute from the XML).
+    A list of words, augmented by an attribute ``num`` used to record
+    the sentence identifier (the ``n`` attribute from the XML).
     """
     def __init__(self, num, items):
         self.num = num

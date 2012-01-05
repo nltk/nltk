@@ -76,8 +76,8 @@ class AbstractDrs(object):
         Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal.
         
-        :param other: an C{AbstractDrs} to check equality against
-        :param prover: a C{nltk.inference.api.Prover}
+        :param other: an ``AbstractDrs`` to check equality against
+        :param prover: a ``nltk.inference.api.Prover``
         """
         assert isinstance(other, AbstractDrs)
         
@@ -100,7 +100,7 @@ class AbstractDrs(object):
         """
         Return the set of discourse referents in this DRS.
         :param recursive: bool Also find discourse referents in subterms?
-        :return: list of C{Variable}s 
+        :return: list of ``Variable``s 
         """
         raise NotImplementedError()
     
@@ -145,9 +145,9 @@ class DRS(AbstractDrs, Expression):
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds, consequent=None):
         """
-        :param refs: list of C{DrtIndividualVariableExpression} for the 
+        :param refs: list of ``DrtIndividualVariableExpression`` for the 
         discourse referents
-        :param conds: list of C{Expression} for the conditions
+        :param conds: list of ``Expression`` for the conditions
         """ 
         self.refs = refs
         self.conds = conds
@@ -347,7 +347,7 @@ class DRS(AbstractDrs, Expression):
 def DrtVariableExpression(variable):
     """
     This is a factory method that instantiates and returns a subtype of 
-    C{DrtAbstractVariableExpression} appropriate for the given variable.
+    ``DrtAbstractVariableExpression`` appropriate for the given variable.
     """
     if is_indvar(variable.name):
         return DrtIndividualVariableExpression(variable)
@@ -454,8 +454,8 @@ class DrtNegatedExpression(AbstractDrs, NegatedExpression):
 class DrtLambdaExpression(AbstractDrs, LambdaExpression):
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @C{newvar}.
-        :param newvar: C{Variable}, for the new variable
+        binder in the expression to @``newvar``.
+        :param newvar: ``Variable``, for the new variable
         """
         return self.__class__(newvar, self.term.replace(self.variable, 
                           DrtVariableExpression(newvar), True))
@@ -778,9 +778,9 @@ class DrsDrawer(object):
     
     def __init__(self, drs, size_canvas=True, canvas=None):
         """
-        :param drs: C{AbstractDrs}, The DRS to be drawn
+        :param drs: ``AbstractDrs``, The DRS to be drawn
         :param size_canvas: bool, True if the canvas size should be the exact size of the DRS
-        :param canvas: C{Canvas} The canvas on which to draw the DRS.  If none is given, create a new canvas. 
+        :param canvas: ``Canvas`` The canvas on which to draw the DRS.  If none is given, create a new canvas. 
         """
         master = None
         if not canvas:

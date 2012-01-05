@@ -27,9 +27,9 @@ def batch_parse(inputs, grammar, trace=0):
     
     :param inputs: sentences to be parsed
     :type inputs: list of str
-    :param grammar: L{FeatureGrammar} or name of feature-based grammar
+    :param grammar: ``FeatureGrammar`` or name of feature-based grammar
     :rtype: dict
-    :return: a mapping from input sentences to a list of L{Tree}s
+    :return: a mapping from input sentences to a list of ``Tree``s
     """
 
     # put imports here to avoid circult dependencies
@@ -51,10 +51,10 @@ def root_semrep(syntree, semkey='SEM'):
     """
     Find the semantic representation at the root of a tree.
     
-    :param syntree: a parse L{Tree}
+    :param syntree: a parse ``Tree``
     :param semkey: the feature label to use for the root semantics in the tree
-    :return: the semantic representation at the root of a L{Tree}
-    :rtype: L{logic.Expression}
+    :return: the semantic representation at the root of a ``Tree``
+    :rtype: ``logic.Expression``
     """
     from nltk.grammar import FeatStructNonterminal
 
@@ -73,7 +73,7 @@ def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
     of each input sentence.
     
     :param inputs: a list of sentences
-    :param grammar: L{FeatureGrammar} or name of feature-based grammar
+    :param grammar: ``FeatureGrammar`` or name of feature-based grammar
     :return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
     :rtype: dict
     """
@@ -86,7 +86,7 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     for each syntactic parse of each input sentences.
     
     :param inputs: a list of sentences
-    :param grammar: L{FeatureGrammar} or name of feature-based grammar    
+    :param grammar: ``FeatureGrammar`` or name of feature-based grammar    
     :return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
     :rtype: dict
     """
@@ -144,8 +144,8 @@ def parse_valuation(s):
     
     :param s: the contents of a valuation file
     :type s: str
-    :return: a L{nltk.sem} valuation
-    :rtype: L{Valuation}
+    :return: a ``nltk.sem`` valuation
+    :rtype: ``Valuation``
     """
     statements = []
     for linenum, line in enumerate(s.splitlines()):
@@ -177,13 +177,13 @@ def demo_model0():
         ('in', set([('b1', 'n'), ('b2', 'n'), ('d2', 'n')])),
         ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')]))
      ]
-    #Read in the data from C{v}
+    #Read in the data from ``v``
     val = evaluate.Valuation(v)
-    #Bind C{dom} to the C{domain} property of C{val}
+    #Bind ``dom`` to the ``domain`` property of ``val``
     dom = val.domain
-    #Initialize a model with parameters C{dom} and C{val}.
+    #Initialize a model with parameters ``dom`` and ``val``.
     m0 = evaluate.Model(dom, val)
-    #Initialize a variable assignment with parameter C{dom}
+    #Initialize a variable assignment with parameter ``dom``
     g0 = evaluate.Assignment(dom)
 
 

@@ -47,8 +47,8 @@ class Boxer(object):
     def __init__(self, boxer_drs_interpreter=None, elimeq=False, bin_dir=None, verbose=False):
         """
         :param boxer_drs_interpreter: A class that converts from the 
-        C{AbstractBoxerDrs} object hierarchy to a different object.  The 
-        default is C{NltkDrtBoxerDrsInterpreter}, which converts to the NLTK 
+        ``AbstractBoxerDrs`` object hierarchy to a different object.  The 
+        default is ``NltkDrtBoxerDrsInterpreter``, which converts to the NLTK 
         DRT hierarchy.
         :param elimeq: When set to true, Boxer removes all equalities from the 
         DRSs and discourse referents standing in the equality relation are 
@@ -74,7 +74,7 @@ class Boxer(object):
         :param input: str Input sentence to parse
         :param occur_index: bool Should predicates be occurrence indexed?
         :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
-        :return: C{drt.AbstractDrs}
+        :return: ``drt.AbstractDrs``
         """
         if discourse_id is not None:
             discourse_ids = [discourse_id]
@@ -92,7 +92,7 @@ class Boxer(object):
         :param input: list of str Input sentences to parse as a single discourse
         :param occur_index: bool Should predicates be occurrence indexed?
         :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
-        :return: C{drt.AbstractDrs}
+        :return: ``drt.AbstractDrs``
         """
         if discourse_id is not None:
             discourse_ids = [discourse_id]
@@ -110,7 +110,7 @@ class Boxer(object):
         :param inputs: list of str Input sentences to parse as individual discourses
         :param occur_index: bool Should predicates be occurrence indexed?
         :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
-        :return: list of C{drt.AbstractDrs}
+        :return: list of ``drt.AbstractDrs``
         """
         return self.batch_interpret_multisentence([[input] for input in inputs], discourse_ids, question, verbose)
 
@@ -121,7 +121,7 @@ class Boxer(object):
         :param inputs: list of list of str Input discourses to parse
         :param occur_index: bool Should predicates be occurrence indexed?
         :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
-        :return: C{drt.AbstractDrs}
+        :return: ``drt.AbstractDrs``
         """
         if discourse_ids is not None:
             assert len(inputs) == len(discourse_ids)
@@ -142,7 +142,7 @@ class Boxer(object):
         
     def _call_candc(self, inputs, discourse_ids, question, verbose=False):
         """
-        Call the C{candc} binary with the given input.
+        Call the ``candc`` binary with the given input.
 
         :param inputs: list of list of str Input discourses to parse
         :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
@@ -155,7 +155,7 @@ class Boxer(object):
 
     def _call_boxer(self, candc_out, verbose=False):
         """
-        Call the C{boxer} binary with the given input.
+        Call the ``boxer`` binary with the given input.
     
         :param candc_out: str output from C&C parser
         :return: stdout
@@ -279,7 +279,7 @@ class BoxerOutputDrsParser(DrtParser):
         """
         Parse a DRS condition
 
-        :return: list of C{AbstractDrs}
+        :return: list of ``AbstractDrs``
         """
         tok = self.token()
         accum = self.handle_condition(tok, indices)
@@ -298,7 +298,7 @@ class BoxerOutputDrsParser(DrtParser):
         Handle a DRS condition
 
         :param indices: list of int
-        :return: list of C{AbstractDrs}
+        :return: list of ``AbstractDrs``
         """
         if tok == 'not':
             return [self._handle_not()]
@@ -593,7 +593,7 @@ class BoxerOutputDrsParser(DrtParser):
 
 class BoxerDrsParser(DrtParser):
     """
-    Reparse the str form of subclasses of C{AbstractBoxerDrs}
+    Reparse the str form of subclasses of ``AbstractBoxerDrs``
     """
     def __init__(self, discourse_id=None):
         DrtParser.__init__(self)
@@ -1108,8 +1108,8 @@ class NltkDrtBoxerDrsInterpreter(object):
     
     def interpret(self, ex):
         """
-        :param ex: C{AbstractBoxerDrs}
-        :return: C{AbstractDrs}
+        :param ex: ``AbstractBoxerDrs``
+        :return: ``AbstractDrs``
         """
         if isinstance(ex, BoxerDrs):
             drs = DRS([Variable('x%d' % r) for r in ex.refs], map(self.interpret, ex.conds))

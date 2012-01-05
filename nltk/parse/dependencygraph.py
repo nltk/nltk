@@ -10,8 +10,8 @@
 
 """
 Tools for reading and writing dependency trees.
-The input is assumed to be in U{Malt-TAB<http://w3.msi.vxu.se/~nivre/research/MaltXML.html>} format.
-
+The input is assumed to be in Malt-TAB format
+(http://w3.msi.vxu.se/~nivre/research/MaltXML.html).
 Currently only reads the first tree in a file.
 """
 
@@ -195,9 +195,9 @@ class DependencyGraph(object):
         Recursive function for turning dependency graphs into
         NLTK trees.
         :type i: int 
-        :param i: index of a node in C{nodelist}
+        :param i: index of a node in ``nodelist``
         :return: either a word (if the indexed node 
-        is a leaf) or a L{Tree}.
+        is a leaf) or a ``Tree``.
         """
 
         node = self.get_by_address(i)
@@ -212,8 +212,8 @@ class DependencyGraph(object):
 
     def tree(self):
         """
-        Starting with the C{root} node, build a dependency tree using the NLTK 
-        L{Tree} constructor. Dependency labels are omitted.
+        Starting with the ``root`` node, build a dependency tree using the NLTK 
+        ``Tree`` constructor. Dependency labels are omitted.
         """
         node = self.root
         word = node['word']
@@ -292,9 +292,9 @@ class DependencyGraph(object):
 
 def nx_graph(self):
     """
-    Convert the data in a C{nodelist} into a networkx 
+    Convert the data in a ``nodelist`` into a networkx 
     labeled directed graph.
-    :rtype: C{XDigraph}
+    :rtype: ``XDigraph``
     """
     nx_nodelist = range(1, len(self.nodelist))
     nx_edgelist = [(n, self._hd(n), self._rel(n)) 

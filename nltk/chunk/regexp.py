@@ -34,7 +34,7 @@ class ChunkString(object):
     The chunking of a ``ChunkString`` can be modified with the ``xform()``
     method, which uses a regular expression to transform the string
     representation.  These transformations should only add and remove
-    braces; they should I{not} modify the sequence of angle-bracket
+    braces; they should *not* modify the sequence of angle-bracket
     delimited tags.
 
     :type _str: str
@@ -111,7 +111,7 @@ class ChunkString(object):
         :type verify_tags: bool
         :param verify_tags: Whether the individual tags should be
             checked.  If this is false, ``_verify`` will check to make
-            sure that ``_str`` encodes a chunked version of I{some}
+            sure that ``_str`` encodes a chunked version of *some*
             list of tokens.  If this is true, then ``_verify`` will
             check to make sure that the tags in ``_str`` match those in
             ``_pieces``.
@@ -264,7 +264,7 @@ class RegexpChunkRule(object):
     the purpose of the rule.
     
     This transformation defined by this ``RegexpChunkRule`` should
-    only add and remove braces; it should I{not} modify the sequence
+    only add and remove braces; it should *not* modify the sequence
     of angle-bracket delimited tags.  Furthermore, this transformation
     may not result in nested or mismatched bracketing.
     """
