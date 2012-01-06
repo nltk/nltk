@@ -35,7 +35,7 @@ class StanfordTagger(TaggerI):
         >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
-    def __init__(self, path_to_model, path_to_jar=None, encoding=None, verbose=False):
+    def __init__(self, path_to_model, path_to_jar=None, encoding=None, verbose=False, java_options='-mx1000m'):
 
         self._stanford_jar = find_jar(
                 'stanford-postagger.jar', path_to_jar,
@@ -46,13 +46,15 @@ class StanfordTagger(TaggerI):
             raise IOError("Stanford tagger model file not found: %s" % path_to_model)
         self._stanford_model = path_to_model
         self._encoding = encoding
-
+        self.java_options = java_options
+    
     def tag(self, tokens):
         return self.batch_tag([tokens])[0]
 
     def batch_tag(self, sentences):
         encoding = self._encoding
-        config_java(options='-mx1000m', verbose=False)
+        default_options = ' '.join(nltk.internals._java_options)
+        config_java(options=self.java_options, verbose=False)
 
         # Create a temporary input file
         _input_fh, _input_file_path = tempfile.mkstemp(text=True)
@@ -80,6 +82,9 @@ class StanfordTagger(TaggerI):
 
         # Delete the temporary file
         os.unlink(_input_file_path)
+
+        # Return java configurations to their default values
+        config_java(options=default_options, verbose=False)
 
         # Output the tagged sentences
         tagged_sentences = []
