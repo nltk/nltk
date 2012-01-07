@@ -32,15 +32,15 @@ usage:
 
 all: dist
 
-upload:
-	$(UPLOAD) --summary="NLTK $(VERSION) for Windows" dist/nltk-$(VERSION)*.win32.exe
-	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION)*.dmg
-	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
-	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
-# 	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.noarch.rpm
-#	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk_$(VERSION)-1_all.deb
-	$(UPLOAD) --summary="NLTK $(VERSION) Egg" dist/nltk-$(VERSION)*.egg
-	$(UPLOAD) --summary="NLTK-Contrib $(VERSION)" ../nltk_contrib/dist/nltk_contrib-$(VERSION)*.zip
+# upload:
+# 	$(UPLOAD) --summary="NLTK $(VERSION) for Windows" dist/nltk-$(VERSION)*.win32.exe
+# 	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION)*.dmg
+# 	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
+# 	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
+# # 	$(UPLOAD) --summary="NLTK $(VERSION) RPM package" dist/nltk-$(VERSION)*.noarch.rpm
+# #	$(UPLOAD) --summary="NLTK $(VERSION) Debian package" dist/nltk_$(VERSION)-1_all.deb
+# 	$(UPLOAD) --summary="NLTK $(VERSION) Egg" dist/nltk-$(VERSION)*.egg
+# 	$(UPLOAD) --summary="NLTK-Contrib $(VERSION)" ../nltk_contrib/dist/nltk_contrib-$(VERSION)*.zip
 
 
 ########################################################################
@@ -79,7 +79,7 @@ nltk/nltk.jar: $(JAVA_SRC)
 # DISTRIBUTIONS
 ########################################################################
 
-dist: zipdist gztardist rpmdist windist eggdist dmgdist
+dist: zipdist gztardist windist
 
 gztardist: clean_code
 	$(PYTHON) setup.py -q sdist --format=gztar
