@@ -12,7 +12,7 @@ structures that represent the internal organization of a text.  The
 probabilistic parser module defines ``BottomUpProbabilisticChartParser``.
 
 ``BottomUpProbabilisticChartParser`` is an abstract class that implements 
-a bottom-up chart parser for ``PCFG``s.  It maintains a queue of edges,
+a bottom-up chart parser for ``PCFG`` grammars.  It maintains a queue of edges,
 and adds them to the chart one at a time.  The ordering of this queue
 is based on the probabilities associated with the edges, allowing the
 parser to expand more likely edges before less likely ones.  Each
@@ -128,7 +128,7 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
     
 class BottomUpProbabilisticChartParser(ParserI):
     """
-    An abstract bottom-up parser for ``PCFG``s that uses a ``Chart`` to
+    An abstract bottom-up parser for ``PCFG`` grammars that uses a ``Chart`` to
     record partial results.  ``BottomUpProbabilisticChartParser`` maintains 
     a queue of edges that can be added to the chart.  This queue is
     initialized with edges for each token in the text that is being
@@ -266,11 +266,11 @@ class BottomUpProbabilisticChartParser(ParserI):
         
     def sort_queue(self, queue, chart):
         """
-        Sort the given queue of ``Edge``s, placing the edge that should
+        Sort the given queue of ``Edge`` objects, placing the edge that should
         be tried first at the beginning of the queue.  This method
         will be called after each ``Edge`` is added to the queue.
 
-        :param queue: The queue of ``Edge``s to sort.  Each edge in
+        :param queue: The queue of ``Edge`` objects to sort.  Each edge in
             this queue is an edge that could be added to the chart by
             the fundamental rule; but that has not yet been added.
         :type queue: list(Edge)
@@ -293,7 +293,7 @@ class BottomUpProbabilisticChartParser(ParserI):
 
 class InsideChartParser(BottomUpProbabilisticChartParser):
     """
-    A bottom-up parser for ``PCFG``s that tries edges in descending
+    A bottom-up parser for ``PCFG`` grammars that tries edges in descending
     order of the inside probabilities of their trees.  The "inside
     probability" of a tree is simply the
     probability of the entire tree, ignoring its context.  In
@@ -312,7 +312,7 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
         Sort the given queue of edges, in descending order of the
         inside probabilities of the edges' trees.
 
-        :param queue: The queue of ``Edge``s to sort.  Each edge in
+        :param queue: The queue of ``Edge`` objects to sort.  Each edge in
             this queue is an edge that could be added to the chart by
             the fundamental rule; but that has not yet been added.
         :type queue: list(Edge)
@@ -355,7 +355,7 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
 import random
 class RandomChartParser(BottomUpProbabilisticChartParser):
     """
-    A bottom-up parser for ``PCFG``s that tries edges in random order.
+    A bottom-up parser for ``PCFG`` grammars that tries edges in random order.
     This sorting order results in a random search strategy.
     """
     # Inherit constructor
@@ -365,14 +365,14 @@ class RandomChartParser(BottomUpProbabilisticChartParser):
 
 class UnsortedChartParser(BottomUpProbabilisticChartParser):
     """
-    A bottom-up parser for ``PCFG``s that tries edges in whatever order.
+    A bottom-up parser for ``PCFG`` grammars that tries edges in whatever order.
     """
     # Inherit constructor
     def sort_queue(self, queue, chart): return
 
 class LongestChartParser(BottomUpProbabilisticChartParser):
     """
-    A bottom-up parser for ``PCFG``s that tries longer edges before
+    A bottom-up parser for ``PCFG`` grammars that tries longer edges before
     shorter ones.  This sorting order results in a type of best-first
     search strategy.
     """

@@ -10,26 +10,26 @@
 """
 A classifier based on the Naive Bayes algorithm.  In order to find the
 probability for a label, this algorithm first uses the Bayes rule to
-express P(label|features) in terms of P(label) and P(features|label)::
+express P(label|features) in terms of P(label) and P(features|label):
 
-                      P(label) * P(features|label)
- P(label|features) = ------------------------------
-                             P(features)
+|                       P(label) * P(features|label)
+|  P(label|features) = ------------------------------
+|                              P(features)
 
 The algorithm then makes the 'naive' assumption that all features are
 independent, given the label::
                              
-                      P(label) * P(f1|label) * ... * P(fn|label)
- P(label|features) = --------------------------------------------
-                                        P(features)
+|                       P(label) * P(f1|label) * ... * P(fn|label)
+|  P(label|features) = --------------------------------------------
+|                                         P(features)
 
 Rather than computing P(featues) explicitly, the algorithm just
 calculates the denominator for each label, and normalizes them so they
 sum to one::
                              
-                      P(label) * P(f1|label) * ... * P(fn|label)
- P(label|features) = --------------------------------------------
-                       SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
+|                       P(label) * P(f1|label) * ... * P(fn|label)
+|  P(label|features) = --------------------------------------------
+|                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
 """
 
 from collections import defaultdict
@@ -71,8 +71,8 @@ class NaiveBayesClassifier(ClassifierI):
         
         :param feature_probdist: P(fname=fval|label), the probability
             distribution for feature values, given labels.  It is
-            expressed as a dictionary whose keys are ``(label,fname)``
-            pairs and whose values are ``ProbDistI``s over feature
+            expressed as a dictionary whose keys are ``(label, fname)``
+            pairs and whose values are ``ProbDistI`` objects over feature
             values.  I.e., P(fname=fval|label) =
             ``feature_probdist[label,fname].prob(fval)``.  If a given
             ``(label,fname)`` is not a key in ``feature_probdist``, then

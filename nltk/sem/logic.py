@@ -115,7 +115,7 @@ def unique_variable(pattern=None, ignore=None):
 
     :param pattern: ``Variable`` that is being replaced.  The new variable must
         be the same type.
-    :param term: a set of ``Variable``s that should not be returned from 
+    :param term: a set of ``Variable`` objects that should not be returned from 
         this function.
     :rtype: Variable
     """
@@ -322,7 +322,7 @@ class IllegalTypeException(TypeException):
 
 def typecheck(expressions, signature=None):
     """
-    Ensure correct typing across a collection of ``Expression``s.
+    Ensure correct typing across a collection of ``Expression`` objects.
     :param expressions: a collection of expressions
     :param signature: dict that maps variable names to types (or string 
     representations of types)
@@ -557,7 +557,7 @@ class Expression(SubstituteBindingsI):
         Return a set of all the variables for binding substitution.
         The variables returned include all free (non-bound) individual 
         variables and any variable starting with '?' or '@'.
-        :return: set of ``Variable``s
+        :return: set of ``Variable`` objects
         """
         return self.free() | set(p for p in self.predicates()|self.constants() 
                                  if re.match('^[?@]', p.name)) 
@@ -566,7 +566,7 @@ class Expression(SubstituteBindingsI):
         """
         Return a set of all the free (non-bound) variables.  This includes
         both individual and predicate variables, but not constants.
-        :return: set of ``Variable``s
+        :return: set of ``Variable`` objects
         """
         return self.visit(lambda e: e.free(),
                           lambda parts: reduce(operator.or_, parts, set()))
@@ -574,7 +574,7 @@ class Expression(SubstituteBindingsI):
     def constants(self):
         """
         Return a set of individual constants (non-predicates).
-        :return: set of ``Variable``s
+        :return: set of ``Variable`` objects
         """
         return self.visit(lambda e: e.constants(), 
                           lambda parts: reduce(operator.or_, parts, set()))
@@ -582,7 +582,7 @@ class Expression(SubstituteBindingsI):
     def predicates(self):
         """
         Return a set of predicates (constants, not variables).
-        :return: set of ``Variable``s
+        :return: set of ``Variable`` objects
         """
         return self.visit(lambda e: e.predicates(), 
                           lambda parts: reduce(operator.or_, parts, set()))
@@ -979,7 +979,7 @@ class VariableBinderExpression(Expression):
 
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @``newvar``.
+        binder in the expression to ``newvar``.
         :param newvar: ``Variable``, for the new variable
         """
         assert isinstance(newvar, Variable), "%s is not a Variable" % newvar

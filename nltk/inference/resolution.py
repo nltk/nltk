@@ -171,11 +171,11 @@ class Clause(list):
         atoms from 'self' that were successfully unified with atoms from 
         'other'.  The second lists the atoms from 'other' that were successfully
         unified with atoms from 'self'.
-        :param skipped: tuple of two ``Clause``s.  The first is a list of all
+        :param skipped: tuple of two ``Clause`` objects.  The first is a list of all
         the atoms from the 'self' Clause that have not been unified with 
         anything on the path.  The second is same thing for the 'other' Clause.
         :param debug: bool indicating whether debug statements should print
-        :return: list containing all the resulting ``Clause``s that could be
+        :return: list containing all the resulting ``Clause`` objects that could be
         obtained by unification
         """
         if bindings is None: bindings = BindingDict()

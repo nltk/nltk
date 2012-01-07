@@ -122,7 +122,7 @@ class CanvasWidget(object):
       - ``_update``: Update this canvas widget in response to a
         change in a single child.
 
-    For ``CanvasWidget``s with no child widgets, the default
+    For a ``CanvasWidget`` with no child widgets, the default
     definitions for ``_manage`` and ``_update`` may be used.
 
     If a subclass defines any attributes, then it should implement
@@ -781,10 +781,11 @@ class SymbolWidget(TextWidget):
     ``rightarrow``, ``equal``, ``notequal``, ``epsilon``.
         
     Attributes:
-      - ``color``: the color of the text.
-      - ``draggable``: whether the text can be dragged by the user.
+
+    - ``color``: the color of the text.
+    - ``draggable``: whether the text can be dragged by the user.
       
-    @cvar SYMBOLS: A dictionary mapping from symbols to the character
+    :cvar SYMBOLS: A dictionary mapping from symbols to the character
         in the ``symbol`` font used to render them.
     """
     SYMBOLS = {'neg':'\330', 'disj':'\332', 'conj': '\331',
@@ -1503,7 +1504,7 @@ class StackWidget(CanvasWidget):
 class SpaceWidget(CanvasWidget):
     """
     A canvas widget that takes up space but does not display
-    anything.  ``SpaceWidget``s can be used to add space between
+    anything.  A ``SpaceWidget`` can be used to add space between
     elements.  Each space widget is characterized by a width and a
     height.  If you wish to only create horizontal space, then use a
     height of zero; and if you wish to only create vertical space, use

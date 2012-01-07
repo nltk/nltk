@@ -351,7 +351,7 @@ class DiscourseTester(object):
     
     def expand_threads(self, thread_id, threads=None):
         """
-        Given a thread ID, find the list of ``logic.Expression``s corresponding to the reading IDs in that thread.
+        Given a thread ID, find the list of ``logic.Expression`` objects corresponding to the reading IDs in that thread.
         
         :param thread_id: thread ID
         :type thread_id: str
@@ -486,7 +486,7 @@ class DiscourseTester(object):
 def parse_fol(s):
     """
     Temporarily duplicated from ``nltk.sem.util``.
-    Convert a  file of First Order Formulas into a list of ``Expression``s.
+    Convert a  file of first order formulas into a list of ``Expression`` objects.
     
     :param s: the contents of the file
     :type s: str

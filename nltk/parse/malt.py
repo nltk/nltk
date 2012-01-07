@@ -142,9 +142,9 @@ class MaltParser(ParserI):
     
     def train(self, depgraphs, verbose=False):
         """
-        Train MaltParser from a list of ``DependencyGraph``s
+        Train MaltParser from a list of ``DependencyGraph`` objects
         
-        :param depgraphs: list of ``DependencyGraph``s for training input data
+        :param depgraphs: list of ``DependencyGraph`` objects for training input data
         """
         input_file = os.path.join(tempfile.gettempdir(),'malt_train.conll')
 

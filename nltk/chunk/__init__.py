@@ -40,7 +40,7 @@ that uses regular-expressions over tags to chunk a text.  Its
 ``parse()`` method first constructs a ``ChunkString``, which encodes a
 particular chunking of the input text.  Initially, nothing is
 chunked.  ``parse.RegexpChunkParser`` then applies a sequence of
-``RegexpChunkRule``s to the ``ChunkString``, each of which modifies
+``RegexpChunkRule`` rules to the ``ChunkString``, each of which modifies
 the chunking that it encodes.  Finally, the ``ChunkString`` is
 transformed back into a chunk structure, which is returned.
 
@@ -54,7 +54,7 @@ chunk parsers in general.)
 RegexpChunkRules
 ----------------
 
-``RegexpChunkRule``s are transformational rules that update the
+A ``RegexpChunkRule`` is a transformational rule that updates the
 chunking of a text by modifying its ``ChunkString``.  Each
 ``RegexpChunkRule`` defines the ``apply()`` method, which modifies
 the chunking encoded by a ``ChunkString``.  The
@@ -80,7 +80,7 @@ simpler types of rules:
 Tag Patterns
 ~~~~~~~~~~~~
 
-``RegexpChunkRule``s use a modified version of regular
+A ``RegexpChunkRule`` uses a modified version of regular
 expression patterns, called "tag patterns".  Tag patterns are
 used to match sequences of tags.  Examples of tag patterns are::
 
@@ -96,7 +96,7 @@ patterns are:
       ``'<NN'`` followed by one or more repetitions of ``'>'``.
     - Whitespace in tag patterns is ignored.  So
       ``'<DT> | <NN>'`` is equivalant to ``'<DT>|<NN>'``
-    - In tag patterns, ``'.'`` is equivalant to ``'[^{``<>]'}; so
+    - In tag patterns, ``'.'`` is equivalant to ``'[^{}<>]'``; so
       ``'<NN.*>'`` matches any single tag starting with ``'NN'``.
 
 The function ``tag_pattern2re_pattern`` can be used to transform
@@ -120,7 +120,7 @@ Emacs Tip
 ---------
 
 If you evaluate the following elisp expression in emacs, it will
-colorize ``ChunkString``s when you use an interactive python shell
+colorize a ``ChunkString`` when you use an interactive python shell
 with emacs or xemacs ("C-c !")::
 
     (let ()
@@ -148,7 +148,7 @@ are not quite as advanced as ``re`` ones (e.g., no leftward
 zero-length assertions).
 
 :type CHUNK_TAG_PATTERN: regexp
-@var CHUNK_TAG_PATTERN: A regular expression to test whether a tag
+:var CHUNK_TAG_PATTERN: A regular expression to test whether a tag
      pattern is valid.
 """
 

@@ -481,10 +481,10 @@ class Synset(_WordNetObject):
         of each node from the initial node on the way. A set of
         (synset, distance) tuples is returned.
 
-        :type  distance: int
+        :type distance: int
         :param distance: the distance (number of edges) from this hypernym to
             the original hypernym ``Synset`` on which this method was called.
-        :return: A set of (``Synset``, int) tuples where each ``Synset`` is
+        :return: A set of ``(Synset, int)`` tuples where each ``Synset`` is
            a hypernym of the first ``Synset``.
         """
         distances = set([(self, distance)])
@@ -607,7 +607,7 @@ class Synset(_WordNetObject):
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
             as well. 
-        :return: A score denoting the similarity of the two ``Synset``s,
+        :return: A score denoting the similarity of the two ``Synset`` objects,
             normally between 0 and 1. None is returned if no connecting path
             could be found. 1 is returned if a ``Synset`` is compared with
             itself.
@@ -639,7 +639,7 @@ class Synset(_WordNetObject):
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
             as well. 
-        :return: A score denoting the similarity of the two ``Synset``s,
+        :return: A score denoting the similarity of the two ``Synset`` objects,
             normally greater than 0. None is returned if no connecting path
             could be found. If a ``Synset`` is compared with itself, the
             maximum score is returned, which varies depending on the taxonomy
@@ -695,7 +695,7 @@ class Synset(_WordNetObject):
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
             as well. 
-        :return: A float score denoting the similarity of the two ``Synset``s,
+        :return: A float score denoting the similarity of the two ``Synset`` objects,
             normally greater than zero. If no connecting path between the two
             senses can be found, None is returned.
 
@@ -744,7 +744,7 @@ class Synset(_WordNetObject):
         :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type ic: dict
         :param ic: an information content object (as returned by ``load_ic()``).
-        :return: A float score denoting the similarity of the two ``Synset``s.
+        :return: A float score denoting the similarity of the two ``Synset`` objects.
             Synsets whose LCS is the root node of the taxonomy will have a
             score of 0 (e.g. N['dog'][0] and N['table'][0]).
         """
@@ -764,7 +764,7 @@ class Synset(_WordNetObject):
         :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type  ic: dict
         :param ic: an information content object (as returned by ``load_ic()``).
-        :return: A float score denoting the similarity of the two ``Synset``s.
+        :return: A float score denoting the similarity of the two ``Synset`` objects.
         """
 
         if self == other:
@@ -796,7 +796,7 @@ class Synset(_WordNetObject):
         :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type ic: dict
         :param ic: an information content object (as returned by ``load_ic()``).
-        :return: A float score denoting the similarity of the two ``Synset``s,
+        :return: A float score denoting the similarity of the two ``Synset`` objects,
             in the range 0 to 1.
         """
 
@@ -805,7 +805,7 @@ class Synset(_WordNetObject):
 
     def _iter_hypernym_lists(self):
         """
-        :return: An iterator over ``Synset``s that are either proper
+        :return: An iterator over ``Synset`` objects that are either proper
         hypernyms or instance of hypernyms of the synset.
         """
         todo = [self]

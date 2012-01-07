@@ -83,8 +83,8 @@ from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
 class Nonterminal(object):
     """
     A non-terminal symbol for a context free grammar.  ``Nonterminal``
-    is a wrapper class for node values; it is used by
-    ``Production``s to distinguish node values from leaf values.
+    is a wrapper class for node values; it is used by ``Production``
+    objects to distinguish node values from leaf values.
     The node value that is wrapped by a ``Nonterminal`` is known as its
     "symbol".  Symbols are typically strings representing phrasal
     categories (such as ``"NP"`` or ``"VP"``).  However, more complex

@@ -134,12 +134,12 @@ the CFG:
 class CFGEditor(object):
     """
     A dialog window for creating and editing context free grammars.
-    ``CFGEditor`` places the following restrictions on what ``CFG``s can
-    be edited:
-        - All nonterminals must be strings consisting of word
-          characters.
-        - All terminals must be strings consisting of word characters
-          and space characters.
+    ``CFGEditor`` imposes the following restrictions:
+
+    - All nonterminals must be strings consisting of word
+      characters.
+    - All terminals must be strings consisting of word characters
+      and space characters.
     """
     # Regular expressions used by _analyze_line.  Precompile them, so
     # we can process the text faster.

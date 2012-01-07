@@ -1868,8 +1868,8 @@ TYPE = Feature('type', display='prefix')
 class CustomFeatureValue(object):
     """
     An abstract base class for base values that define a custom
-    unification method.  A ``CustomFeatureValue``'s custom unification
-    method will be used during feature structure unification if:
+    unification method.  The custom unification method of
+    ``CustomFeatureValue`` will be used during unification if:
 
       - The ``CustomFeatureValue`` is unified with another base value.
       - The ``CustomFeatureValue`` is not the value of a customized

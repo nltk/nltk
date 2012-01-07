@@ -88,7 +88,7 @@ discussed in the next section.
 Concepts
 ========
 In order to encapsulate the results of the extraction, a class of
-``Concept``s is introduced.  A ``Concept`` object has a number of
+``Concept`` objects is introduced.  A ``Concept`` object has a number of
 attributes, in particular a ``prefLabel`` and ``extension``, which make
 it easier to inspect the output of the extraction. In addition, the
 ``extension`` can be further processed: in the case of the ``'border'``
@@ -339,7 +339,7 @@ def clause2concepts(filename, rel_name, schema, closures=[]):
     :type schema: list
     :param closures: closure properties for the extension of the concept
     :type closures: list
-    :return: a list of ``Concept``s
+    :return: a list of ``Concept`` objects
     :rtype: list
     """
     concepts = []
@@ -533,7 +533,7 @@ def process_bundle(rels):
 
 def make_valuation(concepts, read=False, lexicon=False):
     """
-    Convert a list of ``Concept``s into a list of (label, extension) pairs;
+    Convert a list of ``Concept`` objects into a list of (label, extension) pairs;
     optionally create a ``Valuation`` object.
 
     :param concepts: concepts
@@ -676,7 +676,7 @@ def concepts(items = items):
     
     :param items: names of the Chat-80 relations to extract
     :type items: list of strings
-    :return: the ``Concept``s which are extracted from the relations
+    :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list 
     """
     if type(items) is str: items = (items,)

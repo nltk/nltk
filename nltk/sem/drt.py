@@ -100,7 +100,7 @@ class AbstractDrs(object):
         """
         Return the set of discourse referents in this DRS.
         :param recursive: bool Also find discourse referents in subterms?
-        :return: list of ``Variable``s 
+        :return: list of ``Variable`` objects 
         """
         raise NotImplementedError()
     
@@ -454,7 +454,7 @@ class DrtNegatedExpression(AbstractDrs, NegatedExpression):
 class DrtLambdaExpression(AbstractDrs, LambdaExpression):
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @``newvar``.
+        binder in the expression to ``newvar``.
         :param newvar: ``Variable``, for the new variable
         """
         return self.__class__(newvar, self.term.replace(self.variable, 

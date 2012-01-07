@@ -1,6 +1,7 @@
 # babelizer.py - API for simple access to babelfish.altavista.com.
 #                Requires python 2.0 or better.
 # From: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/64937
+# Author: Jonathan Feinberg <jdf@pobox.com>
 # Modified by Steven Bird to work with current babelfish
 #
 # See it in use at http://babel.MrFeinberg.com/
@@ -15,12 +16,6 @@ Summary:
     >>> babelizer.translate('How much is that doggie in the window?',
     ...                     'english', 'french')
     'Combien coute ce chienchien dans la fenetre ?'
-
-@group Helper Functions: clean
-@sort: BabelizerError, BabelfishChangedError, BabelizerIOError
-@var available_languages:
-    A list of languages available for use with babelfish.
-@author: Jonathan Feinberg <jdf@pobox.com>
 """
 
 import re

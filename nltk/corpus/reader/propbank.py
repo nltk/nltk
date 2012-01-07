@@ -245,10 +245,10 @@ class PropbankPointer(object):
       - ``PropbankTreePointer`` is used to point to single constituents.
       - ``PropbankSplitTreePointer`` is used to point to 'split'
         constituents, which consist of a sequence of two or more
-        ``PropbankTreePointer``s.
+        ``PropbankTreePointer`` pointers.
       - ``PropbankChainTreePointer`` is used to point to entire trace
         chains in a tree.  It consists of a sequence of pieces, which
-        can be ``PropbankTreePointer``s or ``PropbankSplitTreePointer``s.
+        can be ``PropbankTreePointer`` or ``PropbankSplitTreePointer`` pointers.
     """
     def __init__(self):
         if self.__class__ == PropbankPoitner:
@@ -258,8 +258,8 @@ class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements may
-           be either ``PropbankSplitTreePointer``s or
-           ``PropbankTreePointer``s."""
+           be either ``PropbankSplitTreePointer`` or
+           ``PropbankTreePointer`` pointers."""
         
     def __str__(self):
         return '*'.join('%s' % p for p in self.pieces)
@@ -273,7 +273,7 @@ class PropbankSplitTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements are
-           all ``PropbankTreePointer``s."""
+           all ``PropbankTreePointer`` pointers."""
         
     def __str__(self):
         return ','.join('%s' % p for p in self.pieces)

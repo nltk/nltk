@@ -248,10 +248,10 @@ class NombankPointer(object):
       - ``NombankTreePointer`` is used to point to single constituents.
       - ``NombankSplitTreePointer`` is used to point to 'split'
         constituents, which consist of a sequence of two or more
-        ``NombankTreePointer``s.
+        ``NombankTreePointer`` pointers.
       - ``NombankChainTreePointer`` is used to point to entire trace
         chains in a tree.  It consists of a sequence of pieces, which
-        can be ``NombankTreePointer``s or ``NombankSplitTreePointer``s.
+        can be ``NombankTreePointer`` or ``NombankSplitTreePointer`` pointers.
     """
     def __init__(self):
         if self.__class__ == NombankPoitner:
@@ -261,8 +261,8 @@ class NombankChainTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements may
-           be either ``NombankSplitTreePointer``s or
-           ``NombankTreePointer``s."""
+           be either ``NombankSplitTreePointer`` or
+           ``NombankTreePointer`` pointers."""
         
     def __str__(self):
         return '*'.join('%s' % p for p in self.pieces)
@@ -276,7 +276,7 @@ class NombankSplitTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements are
-           all ``NombankTreePointer``s."""
+           all ``NombankTreePointer`` pointers."""
         
     def __str__(self):
         return ','.join('%s' % p for p in self.pieces)

@@ -49,9 +49,9 @@ class ChunkString(object):
     :ivar _pieces: The tagged tokens and chunks encoded by this ``ChunkString``.
     :ivar _debug: The debug level.  See the constructor docs.
                
-    @cvar IN_CHUNK_PATTERN: A zero-width regexp pattern string that
+    :cvar IN_CHUNK_PATTERN: A zero-width regexp pattern string that
         will only match positions that are in chunks.
-    @cvar IN_CHINK_PATTERN: A zero-width regexp pattern string that
+    :cvar IN_CHINK_PATTERN: A zero-width regexp pattern string that
         will only match positions that are in chinks.
     """
     CHUNK_TAG_CHAR = r'[^\{\}<>]'

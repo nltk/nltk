@@ -196,7 +196,7 @@ class Prover9Parent(object):
 
 def convert_to_prover9(input):
     """
-    Convert ``logic.Expression``s to Prover9 format.
+    Convert a ``logic.Expression`` to Prover9 format.
     """
     if isinstance(input, list):
         result = []

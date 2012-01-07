@@ -468,7 +468,7 @@ class BrillTemplateI(object):
 class ProximateTokensTemplate(BrillTemplateI):
     """
     A brill template that generates a list of
-    ``ProximateTokensRule``s that apply at a given sentence
+    ``ProximateTokensRule`` rules that apply at a given sentence
     position.  In particular, each ``ProximateTokensTemplate`` is
     parameterized by a proximate token brill rule class and a list of
     boundaries, and generates all rules that:
@@ -556,7 +556,7 @@ class ProximateTokensTemplate(BrillTemplateI):
 
 class SymmetricProximateTokensTemplate(BrillTemplateI):
     """
-    Simulates two ``ProximateTokensTemplate``s which are symmetric
+    Simulates two ``ProximateTokensTemplate`` templates which are symmetric
     across the location of the token.  For rules of the form "If the
     *n*th token is tagged ``A``, and any tag preceding or following
     the *n*th token by a distance between x and y is ``B``, and
