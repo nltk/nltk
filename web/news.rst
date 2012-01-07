@@ -1,6 +1,9 @@
 NLTK News
 =========
 
+NLTK 2.0.1rc3 released : January 2012
+    The third release candidate for NLTK 2.
+
 NLTK 2.0.1rc2 released : December 2011
     The second release candidate for NLTK 2.  For full details see the ChangeLog.
 
