@@ -1,6 +1,9 @@
 # Natural Language Toolkit: Aligned Sentences
 #
 # Copyright (C) 2001-2012 NLTK Project
+# Author: Will Zhang <wilzzha@gmail.com>
+#         Guan Gui <ggui@student.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com> 
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -8,12 +11,28 @@ import sys
 import logging
 from collections import defaultdict
 
-import nltk.metrics
+from nltk.metrics import precision, recall
 
 class AlignedSent(object):
     """
-    Aligned sentence object.  Encapsulates two sentences along with
+    Return an aligned sentence object, which encapsulates two sentences along with
     an ``Alignment`` between them.
+    
+        >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
+        ...     ['the', 'house', 'is', 'small'], '1-3 2-4 3-2 4-1')
+        >>> algnsent.words
+        ['klein', 'ist', 'das', 'Haus']
+        >>> algnsent.mots
+        ['the', 'house', 'is', 'small']
+        >>> algnsent.alignment
+        Alignment([(1, 3), (2, 4), (3, 2), (4, 1)])
+        >>> algnsent.precision('1-3 2-4 3-2 4-4')
+        0.75
+        >>> from nltk.corpus import comtrans
+        >>> comtrans.aligned_sents()[54]
+        <AlignedSent: 'Weshalb also sollten...' -> 'So why should EU arm...'>
+        >>> print comtrans.aligned_sents()[54].alignment
+        0-0 0-1 1-0 2-2 3-4 3-5 4-7 5-8 6-3 7-9 8-9 9-10 9-11 10-12 11-6 12-6 13-13
 
     :param words: source language words
     :type words: list(str)
@@ -55,27 +74,30 @@ class AlignedSent(object):
 
     def _check_align(self, a):
         """
+        Check whether the alignments are legal.
+        
         :param a: alignment to be checked
         :raise IndexError: if alignment is out of sentence boundary
-        :return: True if passed alignment check
         :rtype: boolean
         """
-        if not all([0 <= p[0] < len(self._words) for p in a]):
+        if not all([0 <= p[0] <= len(self._words) for p in a]):
             raise IndexError("Alignment is outside boundary of words")
-        if not all([0 <= p[1] < len(self._mots) for p in a]):
+        if not all([0 <= p[1] <= len(self._mots) for p in a]):
             raise IndexError("Alignment is outside boundary of mots")
         return True
 
     def __repr__(self):
         """
-        :return: A string representation for this ``AlignedSent``.
+        Return a string representation for this ``AlignedSent``.
+
         :rtype: str
         """
         return "AlignedSent(%r, %r, %r)" % (self._words, self._mots, self._alignment)
 
     def __str__(self):
         """
-        :return: A string representation for this ``AlignedSent``.
+        Return a human-readable string representation for this ``AlignedSent``.
+
         :rtype: str
         """
         source = " ".join(self._words)[:20] + "..."
@@ -84,46 +106,48 @@ class AlignedSent(object):
 
     def invert(self):
         """ 
-        :return: the invert object
+        Return the aligned sentence pair, reversing the directionality
+        
         :rtype: AlignedSent
         """
         return AlignedSent(self._mots, self._words,
                                self._alignment.invert())
 
     def precision(self, reference):
-        """Calculates the precision of an aligned sentence with respect to a 
+        """
+        Return the precision of an aligned sentence with respect to a 
         "gold standard" reference ``AlignedSent``.
-
-        The "possible" precision is used since it doesn't penalise for finding
-        an alignment that was marked as "possible".
 
         :type reference: AlignedSent or Alignment
         :param reference: A "gold standard" reference aligned sentence.
         :rtype: float or None
         """
         # Get alignments in set of 2-tuples form
+        # The "possible" precision is used since it doesn't penalize for finding
+        # an alignment that was marked as "possible" (NAACL corpus)
+        
         align = self.alignment
         if isinstance(reference, AlignedSent):
             possible = reference.alignment
         else:
             possible = Alignment(reference)
 
-        # Call NLTKs existing functions for precision
-        return nltk.metrics.scores.precision(possible, align)
+        return precision(possible, align)
 
 
     def recall(self, reference):
-        """Calculates the recall of an aligned sentence with respect to a 
+        """
+        Return the recall of an aligned sentence with respect to a 
         "gold standard" reference ``AlignedSent``.
-
-        The "sure" recall is used so we don't penalise for missing an 
-        alignment that was only marked as "possible".
 
         :type reference: AlignedSent or Alignment
         :param reference: A "gold standard" reference aligned sentence.
         :rtype: float or None
         """
         # Get alignments in set of 2-tuples form
+        # The "sure" recall is used so we don't penalize for missing an 
+        # alignment that was only marked as "possible".
+
         align = self.alignment
         if isinstance(reference, AlignedSent):
             sure = reference.alignment
@@ -131,11 +155,12 @@ class AlignedSent(object):
             sure  = Alignment(reference)
 
         # Call NLTKs existing functions for recall
-        return nltk.metrics.scores.recall(sure, align)
+        return recall(sure, align)
 
 
     def alignment_error_rate(self, reference, possible=None):
-        """Calculates the Alignment Error Rate (AER) of an aligned sentence 
+        """
+        Return the Alignment Error Rate (AER) of an aligned sentence 
         with respect to a "gold standard" reference ``AlignedSent``.
 
         Return an error rate between 0.0 (perfect alignment) and 1.0 (no 
@@ -188,12 +213,17 @@ class Alignment(frozenset):
         >>> a = Alignment([(1, 1), (1, 2), (2, 3), (3, 3)])
         >>> a.invert()
         Alignment([(1, 1), (2, 1), (3, 2), (3, 3)])
+        >>> print a.invert()
+        1-1 2-1 3-2 3-3
         >>> a[1]
         [(1, 2), (1, 1)]
         >>> a.invert()[3]
         [(3, 2), (3, 3)]
         >>> b = Alignment([(1, 1), (1, 2)])
         >>> b.issubset(a)
+        True
+        >>> c = Alignment('1-1 1-2')
+        >>> b == c
         True
     """
 
@@ -258,45 +288,45 @@ class Alignment(frozenset):
             self._index[p[0]].append(p)
 
 
-class EMIBMModel1(object):
-    '''
-    This class contains implementations of the Expectation Maximization
-    algorithm for IBM Model 1. The algorithm runs upon a sentence-aligned 
-    parallel corpus and generates word alignments in aligned sentence pairs.
+class IBMModel1(object):
+    """
+    This class implements the Expectation Maximization algorithm for
+    IBM Model 1. The algorithm runs upon a sentence-aligned parallel 
+    corpus and generates word alignments in aligned sentence pairs.
+    The process is divided into 2 stages:
 
-    The process is divided into 2 main stages.
-    Stage 1: Studies word-to-word translation probabilities by collecting
-    evidence of a English word been the translation of a foreign word from
-    the parallel corpus.
+    - Stage 1: Calculates word-to-word translation probabilities by collecting
+      evidence of a English word being the translation of a foreign word from
+      the parallel corpus.
+    - Stage 2: Generates updated word alignments for the sentence pairs, based
+      on the translation probabilities from Stage 1.
+    
+        >>> from nltk.corpus import comtrans
+        >>> ibm1 = IBMModel1(comtrans.aligned_sents())
 
-    Stage 2: Based on the translation probabilities from Stage 1, generates 
-    word alignments for aligned sentence pairs.
-    '''
+    :param aligned_sents: The parallel text ``corpus.Iterable`` containing 
+        AlignedSent instances of aligned sentence pairs from the corpus.
+    :type aligned_sents: list(AlignedSent)
+    :param convergent_threshold: The threshold value of convergence. An 
+        entry is considered converged if the delta from ``old_t`` to ``new_t``
+        is less than this value. The algorithm terminates when all entries
+        are converged. This parameter is optional, default is 0.01
+    :type convergent_threshold: float
+    """
 
     def __init__(self, aligned_sents, convergent_threshold=1e-2, debug=False):
-        '''
-        Initialize a new ``EMIBMModel1``.
-
-        :param aligned_sents: The parallel text ``corpus.Iterable`` containing 
-            AlignedSent instances of aligned sentence pairs from the corpus.
-        :type aligned_sents: list(AlignedSent)
-        :param convergent_threshold: The threshold value of convergence. An 
-            entry is considered converged if the delta from ``old_t`` to ``new_t``
-            is less than this value. The algorithm terminates when all entries
-            are converged. This parameter is optional, default is 0.01
-        :type convergent_threshold: float
-        '''
         self.aligned_sents = aligned_sents
         self.convergent_threshold = convergent_threshold
         # Dictionary of translation probabilities t(e,f).
         self.probabilities = None
+        self._train()
 
-    def train(self):
-        '''
+    def _train(self):
+        """
         Perform Expectation Maximization training to learn
         word-to-word translation probabilities, and return
         the number of iterations that were required for convergence.
-        '''
+        """
 
         # Collect up sets of all English and foreign words
         english_words = set()
@@ -358,10 +388,11 @@ class EMIBMModel1(object):
         return iteration_count
 
     def aligned(self):
-        '''
-        Returns a list of AlignedSents with Alignments calculated using 
+        """
+        Return a list of AlignedSents with Alignments calculated using 
         IBM-Model 1.
-        '''
+        """
+        
         if self.probablities is None:
             raise ValueError("No probabilities calculated")
 
