@@ -175,44 +175,36 @@ class Lemma(_WordNetObject):
     'salt.n.03' has the Lemmas 'salt.n.03.salt', 'salt.n.03.saltiness' and
     'salt.n.03.salinity'.
 
-    Lemma attributes
-    ----------------
-    name - The canonical name of this lemma.
-    synset - The synset that this lemma belongs to.
-    syntactic_marker - For adjectives, the WordNet string identifying the
-        syntactic position relative modified noun. See:
-            http://wordnet.princeton.edu/man/wninput.5WN.html#sect10
-        For all other parts of speech, this attribute is None.
+    Lemma attributes:
 
-    Lemma methods
-    -------------
+    - name: The canonical name of this lemma.
+    - synset: The synset that this lemma belongs to.
+    - syntactic_marker: For adjectives, the WordNet string identifying the
+      syntactic position relative modified noun. See:
+      http://wordnet.princeton.edu/man/wninput.5WN.html#sect10
+      For all other parts of speech, this attribute is None.
+
+    Lemma methods:
+
     Lemmas have the following methods for retrieving related Lemmas. They
     correspond to the names for the pointer symbols defined here:
-        http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
-    These methods all return lists of Lemmas.
+    http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
+    These methods all return lists of Lemmas:
 
-    antonyms
-    hypernyms
-    instance_hypernyms
-    hyponyms
-    instance_hyponyms
-    member_holonyms
-    substance_holonyms
-    part_holonyms
-    member_meronyms
-    substance_meronyms
-    part_meronyms
-    topic_domains
-    region_domains
-    usage_domains
-    attributes
-    derivationally_related_forms
-    entailments
-    causes
-    also_sees
-    verb_groups
-    similar_tos
-    pertainyms
+    - antonyms
+    - hypernyms, instance_hypernyms
+    - hyponyms, instance_hyponyms
+    - member_holonyms, substance_holonyms, part_holonyms
+    - member_meronyms, substance_meronyms, part_meronyms
+    - topic_domains, region_domains, usage_domains
+    - attributes
+    - derivationally_related_forms
+    - entailments
+    - causes
+    - also_sees
+    - verb_groups
+    - similar_tos
+    - pertainyms
     """
 
     # formerly _from_synset_info
@@ -259,57 +251,51 @@ class Synset(_WordNetObject):
     <pos> is one of the module attributes ADJ, ADJ_SAT, ADV, NOUN or VERB
     <number> is the sense number, counting from 0.
 
-    Synset attributes
-    -----------------
-    name - The canonical name of this synset, formed using the first lemma
-        of this synset. Note that this may be different from the name
-        passed to the constructor if that string used a different lemma to
-        identify the synset.
-    pos - The synset's part of speech, matching one of the module level
-        attributes ADJ, ADJ_SAT, ADV, NOUN or VERB.
-    lemmas - A list of the Lemma objects for this synset.
-    definition - The definition for this synset.
-    examples - A list of example strings for this synset.
-    offset - The offset in the WordNet dict file of this synset.
-    #lexname - The name of the lexicographer file containing this synset.
+    Synset attributes:
+    
+    - name: The canonical name of this synset, formed using the first lemma
+      of this synset. Note that this may be different from the name
+      passed to the constructor if that string used a different lemma to
+      identify the synset.
+    - pos: The synset's part of speech, matching one of the module level
+      attributes ADJ, ADJ_SAT, ADV, NOUN or VERB.
+    - lemmas: A list of the Lemma objects for this synset.
+    - definition: The definition for this synset.
+    - examples: A list of example strings for this synset.
+    - offset: The offset in the WordNet dict file of this synset.
+    - #lexname: The name of the lexicographer file containing this synset.
 
-    Synset methods
-    --------------
+    Synset methods:
+
     Synsets have the following methods for retrieving related Synsets.
     They correspond to the names for the pointer symbols defined here:
-        http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
+    http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
     These methods all return lists of Synsets.
 
-    hypernyms
-    instance_hypernyms
-    hyponyms
-    instance_hyponyms
-    member_holonyms
-    substance_holonyms
-    part_holonyms
-    member_meronyms
-    substance_meronyms
-    part_meronyms
-    attributes
-    entailments
-    causes
-    also_sees
-    verb_groups
-    similar_tos
+    - hypernyms, instance_hypernyms
+    - hyponyms, instance_hyponyms
+    - member_holonyms, substance_holonyms, part_holonyms
+    - member_meronyms, substance_meronyms, part_meronyms
+    - attributes
+    - entailments
+    - causes
+    - also_sees
+    - verb_groups
+    - similar_tos
 
     Additionally, Synsets support the following methods specific to the
     hypernym relation:
 
-    root_hypernyms
-    common_hypernyms
-    lowest_common_hypernyms
+    - root_hypernyms
+    - common_hypernyms
+    - lowest_common_hypernyms
 
     Note that Synsets do not support the following relations because
     these are defined by WordNet as lexical relations:
 
-    antonyms
-    derivationally_related_forms
-    pertainyms
+    - antonyms
+    - derivationally_related_forms
+    - pertainyms
     """
 
     def __init__(self, wordnet_corpus_reader):

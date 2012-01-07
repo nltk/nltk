@@ -17,7 +17,7 @@ express P(label|features) in terms of P(label) and P(features|label):
 |                              P(features)
 
 The algorithm then makes the 'naive' assumption that all features are
-independent, given the label::
+independent, given the label:
                              
 |                       P(label) * P(f1|label) * ... * P(fn|label)
 |  P(label|features) = --------------------------------------------
@@ -25,7 +25,7 @@ independent, given the label::
 
 Rather than computing P(featues) explicitly, the algorithm just
 calculates the denominator for each label, and normalizes them so they
-sum to one::
+sum to one:
                              
 |                       P(label) * P(f1|label) * ... * P(fn|label)
 |  P(label|features) = --------------------------------------------
@@ -150,9 +150,9 @@ class NaiveBayesClassifier(ClassifierI):
         classifier.  For the purpose of this function, the
         informativeness of a feature ``(fname,fval)`` is equal to the
         highest value of P(fname=fval|label), for any label, divided by
-        the lowest value of P(fname=fval|label), for any label::
+        the lowest value of P(fname=fval|label), for any label:
 
-          max[ P(fname=fval|label1) / P(fname=fval|label2) ]
+        |  max[ P(fname=fval|label1) / P(fname=fval|label2) ]
         """
         # The set of (fname, fval) pairs used by this classifier.
         features = set()

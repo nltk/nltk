@@ -245,13 +245,13 @@ class NombankPointer(object):
     a parse tree.  ``NombankPointer`` is an abstract base class with
     three concrete subclasses:
 
-      - ``NombankTreePointer`` is used to point to single constituents.
-      - ``NombankSplitTreePointer`` is used to point to 'split'
-        constituents, which consist of a sequence of two or more
-        ``NombankTreePointer`` pointers.
-      - ``NombankChainTreePointer`` is used to point to entire trace
-        chains in a tree.  It consists of a sequence of pieces, which
-        can be ``NombankTreePointer`` or ``NombankSplitTreePointer`` pointers.
+    - ``NombankTreePointer`` is used to point to single constituents.
+    - ``NombankSplitTreePointer`` is used to point to 'split'
+      constituents, which consist of a sequence of two or more
+      ``NombankTreePointer`` pointers.
+    - ``NombankChainTreePointer`` is used to point to entire trace
+      chains in a tree.  It consists of a sequence of pieces, which
+      can be ``NombankTreePointer`` or ``NombankSplitTreePointer`` pointers.
     """
     def __init__(self):
         if self.__class__ == NombankPoitner:

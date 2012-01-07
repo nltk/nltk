@@ -132,8 +132,8 @@ class DecisionTreeClassifier(ClassifierI):
               verbose=False):
         """
         :param binary: If true, then treat all feature/value pairs a
-        individual binary features, rather than using a single n-way
-        branch for each feature.
+            individual binary features, rather than using a single n-way
+            branch for each feature.
         """
         # Collect a list of all feature names.
         feature_names = set()

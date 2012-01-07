@@ -56,13 +56,13 @@ Grammars can also be given a more procedural interpretation.  According to
 this interpretation, a Grammar specifies any tree structure *tree* that
 can be produced by the following procedure:
 
-- Set *tree* to the start symbol
-- Repeat until *tree* contains no more nonterminal leaves:
-  - Choose a production *prod* with whose left hand side
-    *lhs* is a nonterminal leaf of *tree*.
-  - Replace the nonterminal leaf with a subtree, whose node
-    value is the value wrapped by the nonterminal *lhs*, and
-    whose children are the right hand side of *prod*.
+| Set tree to the start symbol
+| Repeat until tree contains no more nonterminal leaves:
+|   Choose a production prod with whose left hand side
+|     lhs is a nonterminal leaf of tree.
+|   Replace the nonterminal leaf with a subtree, whose node
+|     value is the value wrapped by the nonterminal lhs, and
+|     whose children are the right hand side of prod.
 
 The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as

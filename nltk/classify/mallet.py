@@ -32,15 +32,12 @@ _mallet_home = None
 _mallet_classpath = None
 def config_mallet(mallet_home=None):
     """
-    Configure NLTK's interface to the ``mallet`` machine learning
-    package.
+    Configure NLTK's interface to the Mallet machine learning package.
 
-    Parameters
-    ----------
-    mallet_home : str
-        The full path to the mallet directory. If not specified, then nltk will
-        search the system for a mallet directory; and if one is not found, it
-        will raise a ``LookupError`` exception.
+    :type mallet_home: str
+    :param mallet_home: The full path to the mallet directory. If not
+        specified, then NLTK will search the system for a mallet directory;
+        and if one is not found, it will raise a ``LookupError`` exception.
     """
     global _mallet_home, _mallet_classpath
     

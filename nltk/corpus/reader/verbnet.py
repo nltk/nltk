@@ -112,10 +112,10 @@ class VerbnetCorpusReader(XMLCorpusReader):
         verbnet class.
 
         :param fileid_or_classid: An identifier specifying which class
-        should be returned.  Can be a file identifier (such as
-        ``'put-9.1.xml'``), or a verbnet class identifier (such as
-        ``'put-9.1'``) or a short verbnet class identifier (such as
-        ``'9.1'``).
+            should be returned.  Can be a file identifier (such as
+            ``'put-9.1.xml'``), or a verbnet class identifier (such as
+            ``'put-9.1'``) or a short verbnet class identifier (such as
+            ``'9.1'``).
         """
         # File identifier: just return the xml.
         if fileid_or_classid in self._fileids:
@@ -269,7 +269,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given verbnet class's subclasses.
         
         :param vnclass: A verbnet class identifier; or an ElementTree
-        containing the xml contents of a verbnet class.
+            containing the xml contents of a verbnet class.
         """
         if isinstance(vnclass, basestring):
             vnclass = self.vnclass(vnclass)
@@ -287,7 +287,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given verbnet class's member verbs.
         
         :param vnclass: A verbnet class identifier; or an ElementTree
-        containing the xml contents of a verbnet class.
+            containing the xml contents of a verbnet class.
         """
         if isinstance(vnclass, basestring):
             vnclass = self.vnclass(vnclass)
@@ -305,7 +305,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given verbnet class's thematic roles.
         
         :param vnclass: A verbnet class identifier; or an ElementTree
-        containing the xml contents of a verbnet class.
+            containing the xml contents of a verbnet class.
         """
         if isinstance(vnclass, basestring):
             vnclass = self.vnclass(vnclass)
@@ -327,7 +327,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given verbnet frame.
         
         :param vnframe: An ElementTree containing the xml contents of
-        a verbnet frame.
+            a verbnet frame.
         """
         s = self.pprint_description(vnframe, indent) + '\n'
         s += self.pprint_syntax(vnframe, indent+'  Syntax: ') + '\n'
@@ -341,7 +341,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given verbnet frame description.
         
         :param vnframe: An ElementTree containing the xml contents of
-        a verbnet frame.
+            a verbnet frame.
         """
         descr = vnframe.find('DESCRIPTION')
         s = indent + descr.attrib['primary']
@@ -355,7 +355,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given verbnet frame syntax.
         
         :param vnframe: An ElementTree containing the xml contents of
-        a verbnet frame.
+            a verbnet frame.
         """
         pieces = []
         for elt in vnframe.find('SYNTAX'):
@@ -378,7 +378,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given verbnet frame semantics.
         
         :param vnframe: An ElementTree containing the xml contents of
-        a verbnet frame.
+            a verbnet frame.
         """
         pieces = []
         for pred in vnframe.findall('SEMANTICS/PRED'):

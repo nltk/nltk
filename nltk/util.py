@@ -348,12 +348,13 @@ def clean_url(url):
 ##########################################################################
         
 def flatten(*args):
-    """Flatten a list.
+    """
+    Flatten a list.
 
         >>> flatten(1, 2, ['b', 'a' , ['c', 'd']], 3)
         [1, 2, 'b', 'a', 'c', 'd', 3]
 
-    :param *args: items and lists to be combined into a single list
+    :param args: items and lists to be combined into a single list
     :rtype: list
     """
 

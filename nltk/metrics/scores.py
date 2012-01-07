@@ -45,7 +45,7 @@ def precision(reference, test):
     """
     Given a set of reference values and a set of test values, return
     the fraction of test values that appear in the reference set.
-    In particular, return |``reference`` intersection ``test``|/|``test``|.
+    In particular, return card(``reference`` intersection ``test``)/card(``test``).
     If ``test`` is empty, then return None.
     
     :type reference: set
@@ -67,7 +67,7 @@ def recall(reference, test):
     """
     Given a set of reference values and a set of test values, return
     the fraction of reference values that appear in the test set.
-    In particular, return |``reference`` intersection ``test``|/|``reference``|.
+    In particular, return card(``reference`` intersection ``test``)/card(``reference``).
     If ``reference`` is empty, then return None.
     
     :type reference: set
@@ -93,8 +93,8 @@ def f_measure(reference, test, alpha=0.5):
     ``precision`` and ``recall``, weighted by ``alpha``.  In particular,
     given the precision *p* and recall *r* defined by:
 
-    - *p* = |``reference`` intersection ``test``|/|``test``|
-    - *r* = |``reference`` intersection ``test``|/|``reference``|
+    - *p* = card(``reference`` intersection ``test``)/card(``test``)
+    - *r* = card(``reference`` intersection ``test``)/card(``reference``)
 
     The f-measure is:
 

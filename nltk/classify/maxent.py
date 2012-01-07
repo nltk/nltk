@@ -237,65 +237,54 @@ class MaxentClassifier(ClassifierI):
             algorithm should be used to train the classifier.  The
             following algorithms are currently available.
             
-              - Iterative Scaling Methods
-                - ``'GIS'``: Generalized Iterative Scaling
-                - ``'IIS'``: Improved Iterative Scaling
-                
-              - Optimization Methods (require ``scipy``)
-                - ``'CG'``: Conjugate gradient
-                - ``'BFGS'``: Broyden-Fletcher-Goldfarb-Shanno algorithm
-                - ``'Powell'``: Powell agorithm
-                - ``'LBFGSB'``: A limited-memory variant of the BFGS algorithm
-                - ``'Nelder-Mead'``: The Nelder-Mead algorithm
+            - Iterative Scaling Methods: Generalized Iterative Scaling (``'GIS'``),
+              Improved Iterative Scaling (``'IIS'``) 
+            - Optimization Methods (requiring scipy): Conjugate gradient (``'CG'``) 
+              Broyden-Fletcher-Goldfarb-Shanno algorithm (``'BFGS'``),
+              Powell algorithm (``'Powell'``),
+              A limited-memory variant of the BFGS algorithm (``'LBFGSB'``), 
+              The Nelder-Mead algorithm (``'Nelder-Mead'``). 
+            - External Libraries (requiring megam):
+              LM-BFGS algorithm, with training performed by Megam (``'megam'``) 
 
-              - External Libraries
-                - ``'megam'``: LM-BFGS algorithm, with training performed
-                  by an megam (http://www.cs.utah.edu/~hal/megam/).
-                  (requires that ``megam`` be installed.)
-
-            The default algorithm is ``'CG'`` if ``'scipy'`` is
-            installed; and ``'iis'`` otherwise.
+            The default algorithm is ``'CG'`` if scipy is
+            installed; and ``'IIS'`` otherwise.
 
         :type trace: int
         :param trace: The level of diagnostic tracing output to produce.
             Higher values produce more verbose output.
-
         :type encoding: MaxentFeatureEncodingI
         :param encoding: A feature encoding, used to convert featuresets
             into feature vectors.  If none is specified, then a
             ``BinaryMaxentFeatureEncoding`` will be built based on the
             features that are attested in the training corpus.
-
-        :type labels: list of str
+        :type labels: list(str)
         :param labels: The set of possible labels.  If none is given, then
             the set of all labels attested in the training data will be
             used instead.
-
-        :param sparse: If true, then use sparse matrices instead of
+        :param sparse: If True, then use sparse matrices instead of
             dense matrices.  Currently, this is only supported by
             the scipy (optimization method) algorithms.  For other
             algorithms, its value is ignored.
-        
         :param gaussian_prior_sigma: The sigma value for a gaussian
             prior on model weights.  Currently, this is supported by
             the scipy (optimization method) algorithms and ``megam``.
             For other algorithms, its value is ignored.
-            
         :param cutoffs: Arguments specifying various conditions under
             which the training should be halted.  (Some of the cutoff
             conditions are not supported by some algorithms.)
             
-              - ``max_iter=v``: Terminate after ``v`` iterations.
-              - ``min_ll=v``: Terminate after the negative average
-                log-likelihood drops under ``v``.
-              - ``min_lldelta=v``: Terminate if a single iteration improves
-                log likelihood by less than ``v``.
-              - ``tolerance=v``: Terminate a scipy optimization method when
-                improvement drops below a tolerance level ``v``.  The
-                exact meaning of this tolerance depends on the scipy
-                algorithm used.  See ``scipy`` documentation for more
-                info.  Default values: 1e-3 for CG, 1e-5 for LBFGSB,
-                and 1e-4 for other algorithms.  (``scipy`` only)
+            - ``max_iter=v``: Terminate after ``v`` iterations.
+            - ``min_ll=v``: Terminate after the negative average
+              log-likelihood drops under ``v``.
+            - ``min_lldelta=v``: Terminate if a single iteration improves
+              log likelihood by less than ``v``.
+            - ``tolerance=v``: Terminate a scipy optimization method when
+              improvement drops below a tolerance level ``v``.  The
+              exact meaning of this tolerance depends on the scipy
+              algorithm used.  See ``scipy`` documentation for more
+              info.  Default values: 1e-3 for CG, 1e-5 for LBFGSB,
+              and 1e-4 for other algorithms.  (``scipy`` only)
         """
         if algorithm is None:
             try:
@@ -776,7 +765,7 @@ class TadmEventMaxentFeatureEncoding(BinaryMaxentFeatureEncoding):
 class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
     """
     A feature encoding that generates vectors containing integer, 
-    float and binary joint-features of the form::
+    float and binary joint-features of the form:
 
     Binary (for string and boolean features):
 
