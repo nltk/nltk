@@ -25,11 +25,12 @@ _stanford_url = 'http://nlp.stanford.edu/software'
 class StanfordTagger(TaggerI):
     """
     An interface to Stanford taggers. Subclasses must define:
-      - L{_cmd} property: A property that returns the command that will be
-        executed.
-      - _SEPARATOR: Class constant that represents that character that is used
-        to separate the tokens from their tags.
-      - _JAR file: Class constant that represents the jar file name.
+
+    - ``_cmd`` property: A property that returns the command that will be
+      executed.
+    - ``_SEPARATOR``: Class constant that represents that character that
+      is used to separate the tokens from their tags.
+    - ``_JAR`` file: Class constant that represents the jar file name.
     """
 
     _SEPARATOR = ''
@@ -130,10 +131,11 @@ class POSTagger(StanfordTagger):
 class NERTagger(StanfordTagger):
     """
     A class for ner tagging with Stanford Tagger. The input is the paths to:
-     - a model trained on training data
-     - (optionally) the path to the stanford tagger jar file. If not specified here,
-       then this jar file must be specified in the CLASSPATH envinroment variable.
-     - (optionally) the encoding of the training data (default: ASCII)
+
+    - a model trained on training data
+    - (optionally) the path to the stanford tagger jar file. If not specified here,
+      then this jar file must be specified in the CLASSPATH envinroment variable.
+    - (optionally) the encoding of the training data (default: ASCII)
 
     Example:
 
