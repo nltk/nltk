@@ -757,7 +757,7 @@ def find_corpus_fileids(root, regexp):
     # subdirectories, and match paths against the regexp.
     elif isinstance(root, FileSystemPathPointer):
         items = []
-        for dirname, subdirs, fileids in os.walk(root.path, followlinks=True):
+        for dirname, subdirs, fileids in os.walk(root.path):
             prefix = ''.join('%s/' % p for p in _path_from(root.path, dirname))
             items += [prefix+fileid for fileid in fileids
                       if re.match(regexp, prefix+fileid)]
