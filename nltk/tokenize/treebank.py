@@ -73,7 +73,7 @@ class TreebankWordTokenizer(TokenizerI):
             text = regexp.sub(r'\1 \2 \3', text)
 
         # Separate most punctuation
-        text = re.sub(r"([^\w\.\'\-\/,&])", r' \1 ', text)
+        text = re.sub(r"([^\w\.\'\-\/,&])", r' \1 ', text, flags=re.U)
 
         # Separate commas or single quotes if they're followed by space.
         # (E.g., don't separate 2,500)
