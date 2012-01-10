@@ -1,4 +1,4 @@
-# Natural Language Toolkit: First-Order Tableau Theorem Prover 
+# Natural Language Toolkit: First-Order Tableau Theorem Prover
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
@@ -29,11 +29,11 @@ class ProverParseError(Exception): pass
 
 class TableauProver(Prover):
     _assume_false=False
-    
+
     def _prove(self, goal=None, assumptions=None, verbose=False):
         if not assumptions:
             assumptions = []
-            
+
         result = None
         try:
             agenda = Agenda()
@@ -51,15 +51,15 @@ class TableauProver(Prover):
                 else:
                     raise e
         return (result, '\n'.join(debugger.lines))
-        
+
     def _attempt_proof(self, agenda, accessible_vars, atoms, debug):
         (current, context), category = agenda.pop_first()
-        
+
         #if there's nothing left in the agenda, and we haven't closed the path
         if not current:
-            debug.line('AGENDA EMPTY') 
+            debug.line('AGENDA EMPTY')
             return False
-        
+
         proof_method = { Categories.ATOM:     self._attempt_proof_atom,
                          Categories.PROP:     self._attempt_proof_prop,
                          Categories.N_ATOM:   self._attempt_proof_n_atom,
@@ -82,62 +82,62 @@ class TableauProver(Prover):
                          Categories.EXISTS:   self._attempt_proof_some,
                          Categories.ALL:      self._attempt_proof_all,
                         }[category]
-        
+
         debug.line((current, context))
         return proof_method(current, context, agenda, accessible_vars, atoms, debug)
 
     def _attempt_proof_atom(self, current, context, agenda, accessible_vars, atoms, debug):
         # Check if the branch is closed.  Return 'True' if it is
         if (current, True) in atoms:
-            debug.line('CLOSED', 1) 
+            debug.line('CLOSED', 1)
             return True
-    
+
         if context:
             if isinstance(context.term, NegatedExpression):
                 current = current.negate()
             agenda.put(context(current).simplify())
-            return self._attempt_proof(agenda, accessible_vars, atoms, debug+1) 
+            return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
         else:
             #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
             agenda.mark_alls_fresh();
-            return self._attempt_proof(agenda, accessible_vars|set(current.args), atoms|set([(current, False)]), debug+1) 
-        
+            return self._attempt_proof(agenda, accessible_vars|set(current.args), atoms|set([(current, False)]), debug+1)
+
     def _attempt_proof_n_atom(self, current, context, agenda, accessible_vars, atoms, debug):
         # Check if the branch is closed.  Return 'True' if it is
         if (current.term, False) in atoms:
-            debug.line('CLOSED', 1) 
+            debug.line('CLOSED', 1)
             return True
-    
+
         if context:
             if isinstance(context.term, NegatedExpression):
                 current = current.negate()
             agenda.put(context(current).simplify())
-            return self._attempt_proof(agenda, accessible_vars, atoms, debug+1) 
+            return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
         else:
             #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
             agenda.mark_alls_fresh();
-            return self._attempt_proof(agenda, accessible_vars|set(current.term.args), atoms|set([(current.term, True)]), debug+1) 
-        
+            return self._attempt_proof(agenda, accessible_vars|set(current.term.args), atoms|set([(current.term, True)]), debug+1)
+
     def _attempt_proof_prop(self, current, context, agenda, accessible_vars, atoms, debug):
         # Check if the branch is closed.  Return 'True' if it is
         if (current, True) in atoms:
-            debug.line('CLOSED', 1) 
+            debug.line('CLOSED', 1)
             return True
-    
+
         #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
         agenda.mark_alls_fresh();
-        return self._attempt_proof(agenda, accessible_vars, atoms|set([(current, False)]), debug+1) 
-        
+        return self._attempt_proof(agenda, accessible_vars, atoms|set([(current, False)]), debug+1)
+
     def _attempt_proof_n_prop(self, current, context, agenda, accessible_vars, atoms, debug):
         # Check if the branch is closed.  Return 'True' if it is
         if (current.term, False) in atoms:
-            debug.line('CLOSED', 1) 
+            debug.line('CLOSED', 1)
             return True
-    
+
         #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
         agenda.mark_alls_fresh();
         return self._attempt_proof(agenda, accessible_vars, atoms|set([(current.term, True)]), debug+1)
-    
+
     def _attempt_proof_app(self, current, context, agenda, accessible_vars, atoms, debug):
         f, args = current.uncurry()
         for i, arg in enumerate(args):
@@ -155,7 +155,7 @@ class TableauProver(Prover):
                 agenda.put(arg, ctx)
                 return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
         raise Exception('If this method is called, there must be a non-atomic argument')
-        
+
     def _attempt_proof_n_app(self, current, context, agenda, accessible_vars, atoms, debug):
         f, args = current.term.uncurry()
         for i, arg in enumerate(args):
@@ -174,67 +174,67 @@ class TableauProver(Prover):
                 agenda.put(-arg, ctx)
                 return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
         raise Exception('If this method is called, there must be a non-atomic argument')
-        
+
     def _attempt_proof_n_eq(self, current, context, agenda, accessible_vars, atoms, debug):
         ###########################################################################
         # Since 'current' is of type '~(a=b)', the path is closed if 'a' == 'b'
         ###########################################################################
         if current.term.first == current.term.second:
-            debug.line('CLOSED', 1) 
+            debug.line('CLOSED', 1)
             return True
-        
+
         agenda[Categories.N_EQ].add((current,context))
         current._exhausted = True
-        return self._attempt_proof(agenda, accessible_vars|set([current.term.first, current.term.second]), atoms, debug+1) 
-        
+        return self._attempt_proof(agenda, accessible_vars|set([current.term.first, current.term.second]), atoms, debug+1)
+
     def _attempt_proof_d_neg(self, current, context, agenda, accessible_vars, atoms, debug):
         agenda.put(current.term.term, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
-        
+
     def _attempt_proof_n_all(self, current, context, agenda, accessible_vars, atoms, debug):
         agenda[Categories.EXISTS].add((ExistsExpression(current.term.variable, -current.term.term), context))
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
-        
+
     def _attempt_proof_n_some(self, current, context, agenda, accessible_vars, atoms, debug):
         agenda[Categories.ALL].add((AllExpression(current.term.variable, -current.term.term), context))
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
-    
+
     def _attempt_proof_and(self, current, context, agenda, accessible_vars, atoms, debug):
         agenda.put(current.first, context)
         agenda.put(current.second, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
-        
+
     def _attempt_proof_n_or(self, current, context, agenda, accessible_vars, atoms, debug):
         agenda.put(-current.term.first, context)
         agenda.put(-current.term.second, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
-    
+
     def _attempt_proof_n_imp(self, current, context, agenda, accessible_vars, atoms, debug):
         agenda.put(current.term.first, context)
         agenda.put(-current.term.second, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
-    
+
     def _attempt_proof_or(self, current, context, agenda, accessible_vars, atoms, debug):
         new_agenda = agenda.clone()
         agenda.put(current.first, context)
         new_agenda.put(current.second, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
                 self._attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
-        
+
     def _attempt_proof_imp(self, current, context, agenda, accessible_vars, atoms, debug):
         new_agenda = agenda.clone()
         agenda.put(-current.first, context)
         new_agenda.put(current.second, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
                 self._attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
-        
+
     def _attempt_proof_n_and(self, current, context, agenda, accessible_vars, atoms, debug):
         new_agenda = agenda.clone()
         agenda.put(-current.term.first, context)
         new_agenda.put(-current.term.second, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
                 self._attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
-        
+
     def _attempt_proof_iff(self, current, context, agenda, accessible_vars, atoms, debug):
         new_agenda = agenda.clone()
         agenda.put(current.first, context)
@@ -243,7 +243,7 @@ class TableauProver(Prover):
         new_agenda.put(-current.second, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
                 self._attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
-    
+
     def _attempt_proof_n_iff(self, current, context, agenda, accessible_vars, atoms, debug):
         new_agenda = agenda.clone()
         agenda.put(current.term.first, context)
@@ -252,10 +252,10 @@ class TableauProver(Prover):
         new_agenda.put(current.term.second, context)
         return self._attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
                 self._attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
-    
+
     def _attempt_proof_eq(self, current, context, agenda, accessible_vars, atoms, debug):
         #########################################################################
-        # Since 'current' is of the form '(a = b)', replace ALL free instances  
+        # Since 'current' is of the form '(a = b)', replace ALL free instances
         # of 'a' with 'b'
         #########################################################################
         agenda.put_atoms(atoms)
@@ -263,24 +263,24 @@ class TableauProver(Prover):
         accessible_vars.discard(current.first)
         agenda.mark_neqs_fresh();
         return self._attempt_proof(agenda, accessible_vars, set(), debug+1)
-    
+
     def _attempt_proof_some(self, current, context, agenda, accessible_vars, atoms, debug):
         new_unique_variable = VariableExpression(unique_variable())
         agenda.put(current.term.replace(current.variable, new_unique_variable), context)
         agenda.mark_alls_fresh()
         return self._attempt_proof(agenda, accessible_vars|set([new_unique_variable]), atoms, debug+1)
-        
+
     def _attempt_proof_all(self, current, context, agenda, accessible_vars, atoms, debug):
         try:
             current._used_vars
         except AttributeError:
             current._used_vars = set()
-        
+
         #if there are accessible_vars on the path
         if accessible_vars:
-            # get the set of bound variables that have not be used by this AllExpression 
+            # get the set of bound variables that have not be used by this AllExpression
             bv_available = accessible_vars - current._used_vars
-            
+
             if bv_available:
                 variable_to_use = list(bv_available)[0]
                 debug.line('--> Using \'%s\'' % variable_to_use, 2)
@@ -288,14 +288,14 @@ class TableauProver(Prover):
                 agenda.put(current.term.replace(current.variable, variable_to_use), context)
                 agenda[Categories.ALL].add((current,context))
                 return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
-            
+
             else:
                 #no more available variables to substitute
                 debug.line('--> Variables Exhausted', 2)
                 current._exhausted = True
                 agenda[Categories.ALL].add((current,context))
                 return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
-                
+
         else:
             new_unique_variable = VariableExpression(unique_variable())
             debug.line('--> Using \'%s\'' % new_unique_variable, 2)
@@ -309,7 +309,7 @@ class TableauProver(Prover):
     def is_atom(e):
         if isinstance(e, NegatedExpression):
             e = e.term
-        
+
         if isinstance(e, ApplicationExpression):
             for arg in e.args:
                 if not TableauProver.is_atom(arg):
@@ -342,11 +342,11 @@ class TableauProverCommand(BaseProverCommand):
 class Agenda(object):
     def __init__(self):
         self.sets = tuple(set() for i in range(21))
-        
+
     def clone(self):
         new_agenda = Agenda()
         set_list = [s.copy() for s in self.sets]
-        
+
         new_allExs = set()
         for allEx,_ in set_list[Categories.ALL]:
             new_allEx = AllExpression(allEx.variable, allEx.term)
@@ -356,16 +356,16 @@ class Agenda(object):
                 new_allEx._used_vars = set()
             new_allExs.add((new_allEx,None))
         set_list[Categories.ALL] = new_allExs
-                
-        set_list[Categories.N_EQ] = set((NegatedExpression(n_eq.term),ctx) 
+
+        set_list[Categories.N_EQ] = set((NegatedExpression(n_eq.term),ctx)
                                         for (n_eq,ctx) in set_list[Categories.N_EQ])
 
         new_agenda.sets = tuple(set_list)
         return new_agenda
-        
+
     def __getitem__(self, index):
         return self.sets[index]
-        
+
     def put(self, expression, context=None):
         if isinstance(expression, AllExpression):
             ex_to_add = AllExpression(expression.variable, expression.term)
@@ -376,18 +376,18 @@ class Agenda(object):
         else:
             ex_to_add = expression
         self.sets[self._categorize_expression(ex_to_add)].add((ex_to_add, context))
-        
+
     def put_all(self, expressions):
         for expression in expressions:
             self.put(expression)
-            
+
     def put_atoms(self, atoms):
         for atom, neg in atoms:
             if neg:
                 self[Categories.N_ATOM].add((-atom,None))
             else:
                 self[Categories.ATOM].add((atom,None))
-        
+
     def pop_first(self):
         """ Pop the first expression that appears in the agenda """
         for i,s in enumerate(self.sets):
@@ -404,7 +404,7 @@ class Agenda(object):
                 else:
                     return (s.pop(), i)
         return ((None, None), None)
-        
+
     def replace_all(self, old, new):
         for s in self.sets:
             for ex,ctx in s:
@@ -415,7 +415,7 @@ class Agenda(object):
     def mark_alls_fresh(self):
         for u,_ in self.sets[Categories.ALL]:
             u._exhausted = False
-            
+
     def mark_neqs_fresh(self):
         for neq,_ in self.sets[Categories.N_EQ]:
             neq._exhausted = False
@@ -446,10 +446,10 @@ class Agenda(object):
         else:
             raise ProverParseError("cannot categorize %s" % \
                                    current.__class__.__name__)
-    
+
     def _categorize_NegatedExpression(self, current):
         negated = current.term
-        
+
         if isinstance(negated, NegatedExpression):
             return Categories.D_NEG
         elif isinstance(negated, FunctionVariableExpression):
@@ -481,10 +481,10 @@ class Debug(object):
     def __init__(self, verbose, indent=0, lines=None):
         self.verbose = verbose
         self.indent = indent
-        
+
         if not lines: lines = []
         self.lines = lines
-        
+
     def __add__(self, increment):
         return Debug(self.verbose, self.indent+1, self.lines)
 
@@ -495,17 +495,17 @@ class Debug(object):
                 data = '%s, %s' % (ex, ctx)
             else:
                 data = str(ex)
-                
+
             if isinstance(ex, AllExpression):
                 try:
                     data += ':   %s' % str([ve.variable.name for ve in ex._used_vars])
                 except AttributeError:
                     data += ':   []'
-            
+
         newline = '%s%s' % ('   '*(self.indent+indent), data)
         self.lines.append(newline)
 
-        if self.verbose: 
+        if self.verbose:
             print newline
 
 
@@ -560,24 +560,24 @@ def testTableauProver():
     p2 = 'man(Socrates)'
     c = 'mortal(Socrates)'
     tableau_test(c, [p1, p2])
-    
+
     p1 = 'all x.(man(x) -> walks(x))'
     p2 = 'man(John)'
     c = 'some y.walks(y)'
     tableau_test(c, [p1, p2])
-    
+
     p = '((x = y) & walks(y))'
     c = 'walks(x)'
     tableau_test(c, [p])
-    
+
     p = '((x = y) & ((y = z) & (z = w)))'
     c = '(x = w)'
     tableau_test(c, [p])
-    
+
     p = 'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))'
     c = 'some e0.walk(e0,mary)'
     tableau_test(c, [p])
-    
+
     c = '(exists x.exists z3.((x = Mary) & ((z3 = John) & sees(z3,x))) <-> exists x.exists z4.((x = John) & ((z4 = Mary) & sees(x,z4))))'
     tableau_test(c)
 

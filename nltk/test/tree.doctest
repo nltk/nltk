@@ -5,6 +5,8 @@
  Unit tests for nltk.tree.Tree
 ===============================
 
+    >>> from nltk.tree import *
+
 Some trees to run tests on:
 
     >>> dp1 = Tree('dp', [Tree('d', ['the']), Tree('np', ['dog'])])
@@ -73,7 +75,7 @@ Trees can be compared for equality:
     True
     >>> tree2 != Tree.parse(str(tree))
     True
-    
+
     >>> tree < tree2 or tree > tree2
     True
 
@@ -106,7 +108,7 @@ should be used as brackets:
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 If ``brackets`` is not a string, or is not exactly two characters,
-then `Tree.parse` raises an exception: 
+then `Tree.parse` raises an exception:
 
     >>> Tree.parse('<VP <V enjoyed> <NP my cookie>>', brackets='')
     Traceback (most recent call last):
@@ -134,7 +136,7 @@ Whitespace brackets are not permitted:
     Traceback (most recent call last):
       . . .
     TypeError: whitespace brackets not allowed
-    
+
 If an invalid tree is given to Tree.parse, then it raises a
 ValueError, with a description of the problem:
 
@@ -180,7 +182,7 @@ ValueError, with a description of the problem:
                 at index 0.
                     ""
                      ^
-    
+
 Trees with no children are supported:
 
     >>> print Tree.parse('(S)')
@@ -434,11 +436,11 @@ subtree for "cat," the properties for both the "dog" subtree and the
     >>> print dog.parent, dog.parent_index, dog.left_sibling
     None None None
     >>> # dog is now its own root.
-    >>> print dog.root 
+    >>> print dog.root
     (NOUN dog)
     >>> print dog.treeposition
     ()
-    
+
     >>> # the cat's parent is now the noun phrase:
     >>> print cat.parent
     (NP (DET the) (NOUN cat))
@@ -764,7 +766,7 @@ mptrees are passed as arguments, then they are printed.
     ...             for i in mptree.parent_indices(parent):
     ...                 assert parent[i] is mptree
     ...                 # check left siblings
-    ...                 if i > 0: 
+    ...                 if i > 0:
     ...                     for j in range(len(left_siblings)):
     ...                         if left_siblings[j] is parent[i-1]:
     ...                             del left_siblings[j]
@@ -1009,7 +1011,7 @@ multiple parents.)
     []
     >>> print [str(p) for p in x2.parents]
     ['(A (Y y) (X x))']
-    
+
 Squashed Bugs
 =============
 This used to cause an infinite loop (fixed in svn 6269):
