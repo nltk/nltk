@@ -10,7 +10,7 @@ Resolution Theorem Prover
     >>> from nltk.sem.logic import *
     >>> logic._counter._value = 0
     >>> lp = LogicParser()
-    
+
     >>> P = lp.parse('P')
     >>> Q = lp.parse('Q')
     >>> R = lp.parse('R')
@@ -19,7 +19,7 @@ Resolution Theorem Prover
     >>> x = lp.parse('x')
     >>> y = lp.parse('y')
     >>> z = lp.parse('z')
-    
+
 -------------------------------
 Test most_general_unification()
 -------------------------------
@@ -61,12 +61,12 @@ Test unify()
     [{-Q(B), Q(A)}, {-P(A), P(B)}]
     >>> print Clause([P(x,x), Q(x), R(x)]).unify(Clause([-P(A,z), -Q(B)]))
     [{-Q(B), Q(A), R(A)}, {-P(A,z), R(B), P(B,B)}]
-    
+
     >>> a = clausify(lp.parse('P(A)'))
     >>> b = clausify(lp.parse('A=B'))
     >>> print a[0].unify(b[0])
     [{P(B)}]
- 
+
 -------------------------
 Test is_tautology()
 -------------------------
@@ -82,7 +82,7 @@ Test is_tautology()
     True
     >>> print Clause([P(x), -Q(A)]).is_tautology()
     False
- 
+
 -------------------------
 Test subsumes()
 -------------------------
@@ -138,13 +138,13 @@ Test prove()
     >>> c = lp.parse('mortal(Socrates)')
     >>> ResolutionProverCommand(c, [p1,p2]).prove()
     True
-    
+
     >>> p1 = lp.parse('all x.(man(x) -> walks(x))')
     >>> p2 = lp.parse('man(John)')
     >>> c = lp.parse('some y.walks(y)')
     >>> ResolutionProverCommand(c, [p1,p2]).prove()
     True
-    
+
     >>> p = lp.parse('some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     >>> c = lp.parse('some e0.walk(e0,mary)')
     >>> ResolutionProverCommand(c, [p]).prove()
@@ -161,12 +161,12 @@ Test proof()
     >>> tp.prove()
     True
     >>> print tp.proof()
-    [1] {-mortal(Socrates)}     A 
-    [2] {-man(z2), mortal(z2)}  A 
-    [3] {man(Socrates)}         A 
-    [4] {-man(Socrates)}        (1, 2) 
-    [5] {mortal(Socrates)}      (2, 3) 
-    [6] {}                      (1, 5) 
+    [1] {-mortal(Socrates)}     A
+    [2] {-man(z2), mortal(z2)}  A
+    [3] {man(Socrates)}         A
+    [4] {-man(Socrates)}        (1, 2)
+    [5] {mortal(Socrates)}      (2, 3)
+    [6] {}                      (1, 5)
     <BLANKLINE>
 
 ------------------
@@ -182,15 +182,15 @@ One answer
     >>> print tp.find_answers()
     set([<ConstantExpression art>])
     >>> print tp.proof()
-    [1] {father_of(art,john)}                  A 
-    [2] {father_of(bob,kim)}                   A 
-    [3] {-father_of(z4,z3), parent_of(z4,z3)}  A 
-    [4] {-parent_of(z6,john), ANSWER(z6)}      A 
-    [5] {parent_of(art,john)}                  (1, 3) 
-    [6] {parent_of(bob,kim)}                   (2, 3) 
-    [7] {ANSWER(z6), -father_of(z6,john)}      (3, 4) 
-    [8] {ANSWER(art)}                          (1, 7) 
-    [9] {ANSWER(art)}                          (4, 5) 
+    [1] {father_of(art,john)}                  A
+    [2] {father_of(bob,kim)}                   A
+    [3] {-father_of(z4,z3), parent_of(z4,z3)}  A
+    [4] {-parent_of(z6,john), ANSWER(z6)}      A
+    [5] {parent_of(art,john)}                  (1, 3)
+    [6] {parent_of(bob,kim)}                   (2, 3)
+    [7] {ANSWER(z6), -father_of(z6,john)}      (3, 4)
+    [8] {ANSWER(art)}                          (1, 7)
+    [9] {ANSWER(art)}                          (4, 5)
     <BLANKLINE>
 
 Multiple answers
@@ -204,17 +204,17 @@ Multiple answers
     >>> print tp.find_answers()
     set([<ConstantExpression ann>, <ConstantExpression art>])
     >>> print tp.proof()
-    [ 1] {father_of(art,john)}                  A 
-    [ 2] {mother_of(ann,john)}                  A 
-    [ 3] {-father_of(z4,z3), parent_of(z4,z3)}  A 
-    [ 4] {-mother_of(z8,z7), parent_of(z8,z7)}  A 
-    [ 5] {-parent_of(z10,john), ANSWER(z10)}    A 
-    [ 6] {parent_of(art,john)}                  (1, 3) 
-    [ 7] {parent_of(ann,john)}                  (2, 4) 
-    [ 8] {ANSWER(z10), -father_of(z10,john)}    (3, 5) 
-    [ 9] {ANSWER(art)}                          (1, 8) 
-    [10] {ANSWER(z10), -mother_of(z10,john)}    (4, 5) 
-    [11] {ANSWER(ann)}                          (2, 10) 
-    [12] {ANSWER(art)}                          (5, 6) 
-    [13] {ANSWER(ann)}                          (5, 7) 
+    [ 1] {father_of(art,john)}                  A
+    [ 2] {mother_of(ann,john)}                  A
+    [ 3] {-father_of(z4,z3), parent_of(z4,z3)}  A
+    [ 4] {-mother_of(z8,z7), parent_of(z8,z7)}  A
+    [ 5] {-parent_of(z10,john), ANSWER(z10)}    A
+    [ 6] {parent_of(art,john)}                  (1, 3)
+    [ 7] {parent_of(ann,john)}                  (2, 4)
+    [ 8] {ANSWER(z10), -father_of(z10,john)}    (3, 5)
+    [ 9] {ANSWER(art)}                          (1, 8)
+    [10] {ANSWER(z10), -mother_of(z10,john)}    (4, 5)
+    [11] {ANSWER(ann)}                          (2, 10)
+    [12] {ANSWER(art)}                          (5, 6)
+    [13] {ANSWER(ann)}                          (5, 7)
     <BLANKLINE>
