@@ -46,10 +46,10 @@ class TextTilingTokenizer(TokenizerI):
     :param smoothing_rounds: The number of smoothing passes
     :type smoothing_rounds: int
     :param cutoff_policy: The policy used to determine the number of boundaries:
-      `HC` (default) or `LC` 
+      `HC` (default) or `LC`
     :type cutoff_policy: constant
     """
-        
+
     def __init__(self,
                  w=20,
                  k=10,
@@ -67,7 +67,7 @@ class TextTilingTokenizer(TokenizerI):
             stopwords = stopwords.words('english')
         self.__dict__.update(locals())
         del self.__dict__['self']
-        
+
     def tokenize(self, text):
         """Return a tokenized copy of *text*, where each "token" represents
         a separate topic."""
@@ -77,14 +77,14 @@ class TextTilingTokenizer(TokenizerI):
         text_length = len(lowercase_text)
 
         # Tokenization step starts here
-        
+
         # Remove punctuation
         nopunct_text = ''.join([c for c in lowercase_text
                                       if re.match("[a-z\-\' \n\t]", c)])
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
 
         tokseqs = self._divide_to_tokensequences(nopunct_text)
-        
+
         # The morphological stemming step mentioned in the TextTile
         # paper is not implemented.  A comment in the original C
         # implementation states that it offers no benefit to the
@@ -96,7 +96,7 @@ class TextTilingTokenizer(TokenizerI):
         for ts in tokseqs:
             ts.wrdindex_list = filter(lambda wi: wi[0] not in self.stopwords,
                                       ts.wrdindex_list)
-        
+
         token_table = self._create_token_table(tokseqs, nopunct_par_breaks)
         # End of the Tokenization step
 
@@ -125,7 +125,7 @@ class TextTilingTokenizer(TokenizerI):
             if b == 0:
                 continue
             segmented_text.append(text[prevb:b])
-            prevb = b  
+            prevb = b
 
         if prevb < text_length: # append any text that may be remaining
             segmented_text.append(text[prevb:])
@@ -144,10 +144,10 @@ class TextTilingTokenizer(TokenizerI):
                              token_table[tok].ts_occurences)
             freq = sum([tsocc[1] for tsocc in ts_occs])
             return freq
-            
+
         gap_scores = []
         numgaps = len(tokseqs)-1
-        
+
         for curr_gap in range(numgaps):
             score_dividend, score_divisor_b1, score_divisor_b2 = 0.0, 0.0, 0.0
             score = 0.0
@@ -177,12 +177,12 @@ class TextTilingTokenizer(TokenizerI):
             gap_scores.append(score)
 
         return gap_scores
-        
+
     def _smooth_scores(self, gap_scores):
         "Wraps the smooth function from the SciPy Cookbook"
         return list(smooth(numpy.array(gap_scores[:]),
                            window_len = self.smoothing_width+1))
-    
+
     def _mark_paragraph_breaks(self, text):
         """Identifies indented text or line breaks as the beginning of
         paragraphs"""
@@ -190,7 +190,7 @@ class TextTilingTokenizer(TokenizerI):
         MIN_PARAGRAPH = 100
         pattern = re.compile("[ \t\r\f\v]*\n[ \t\r\f\v]*\n[ \t\r\f\v]*")
         matches = pattern.finditer(text)
-        
+
         last_break = 0
         pbreaks = [0]
         for pb in matches:
@@ -216,7 +216,7 @@ class TextTilingTokenizer(TokenizerI):
         "Creates a table of TokenTableFields"
         token_table = {}
         current_par = 0
-        current_tok_seq = 0 
+        current_tok_seq = 0
         pb_iter = par_breaks.__iter__()
         current_par_break = pb_iter.next()
         if current_par_break == 0:
@@ -235,7 +235,7 @@ class TextTilingTokenizer(TokenizerI):
                 except StopIteration:
                     #hit bottom
                     pass
-                
+
                 if word in token_table.keys():
                     token_table[word].total_count += 1
 
@@ -258,9 +258,9 @@ class TextTilingTokenizer(TokenizerI):
                                                         last_par=current_par,
                                                         last_tok_seq= \
                                                           current_tok_seq)
-                    
+
             current_tok_seq += 1
-            
+
         return token_table
 
     def _identify_boundaries(self, depth_scores):
@@ -268,7 +268,7 @@ class TextTilingTokenizer(TokenizerI):
         differences"""
 
         boundaries = [0 for x in depth_scores]
-        
+
         avg = sum(depth_scores)/len(depth_scores)
         numpy.stdev = numpy.std(depth_scores)
         if self.cutoff_policy == LC:
@@ -292,12 +292,12 @@ class TextTilingTokenizer(TokenizerI):
     def _depth_scores(self, scores):
         """Calculates the depth of each gap, i.e. the average difference
         between the left and right peaks and the gap's score"""
-        
+
         depth_scores = [0 for x in scores]
         #clip boundaries: this holds on the rule of thumb(my thumb)
         #that a section shouldn't be smaller than at least 2
         #pseudosentences for small texts and around 5 for larger ones.
-        
+
         clip = min(max(len(scores)/10, 2), 5)
         index = clip
 
@@ -305,7 +305,7 @@ class TextTilingTokenizer(TokenizerI):
         for i in range(clip):
             depth_scores[i] = 0
             depth_scores[-i-1] = 0
-                        
+
         for gapscore in scores[clip:-clip]:
             lpeak = gapscore
             for score in scores[index::-1]:
@@ -321,17 +321,17 @@ class TextTilingTokenizer(TokenizerI):
                     break
             depth_scores[index] = lpeak + rpeak - 2*gapscore
             index += 1
-            
+
         return depth_scores
 
     def _normalize_boundaries(self, text, boundaries, paragraph_breaks):
         """Normalize the boundaries identified to the original text's
         paragraph breaks"""
-    
+
         norm_boundaries = []
         char_count, word_count, gaps_seen = 0, 0, 0
         seen_word = False
-        
+
         for char in text:
             char_count += 1
             if char in " \t\n" and seen_word:
@@ -355,8 +355,8 @@ class TextTilingTokenizer(TokenizerI):
                 gaps_seen += 1
 
         return norm_boundaries
-    
-                    
+
+
 class TokenTableField(object):
     """A field in the token table holding parameters for each token,
     used later in the process"""
@@ -385,31 +385,27 @@ def smooth(x,window_len=11,window='flat'):
     """smooth the data using a window with requested size.
 
     This method is based on the convolution of a scaled window with the signal.
-    The signal is prepared by introducing reflected copies of the signal 
+    The signal is prepared by introducing reflected copies of the signal
     (with the window size) in both ends so that transient parts are minimized
     in the beginning and end part of the output signal.
 
-    input:
-        x: the input signal 
-        window_len: the dimension of the smoothing window; should be an odd integer
-        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
-            flat window will produce a moving average smoothing.
+    :param x: the input signal
+    :param window_len: the dimension of the smoothing window; should be an odd integer
+    :param window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
+        flat window will produce a moving average smoothing.
 
-    output:
-        the smoothed signal
+    :return: the smoothed signal
 
-    example:
+    example::
 
-    t=linspace(-2,2,0.1)
-    x=sin(t)+randn(len(t))*0.1
-    y=smooth(x)
+        t=linspace(-2,2,0.1)
+        x=sin(t)+randn(len(t))*0.1
+        y=smooth(x)
 
-    see also: 
+    :see also: numpy.hanning, numpy.hamming, numpy.bartlett, numpy.blackman, numpy.convolve,
+        scipy.signal.lfilter
 
-    numpy.hanning, numpy.hamming, numpy.bartlett, numpy.blackman, numpy.convolve
-    scipy.signal.lfilter
-
-    TODO: the window parameter could be the window itself if an array instead of a string   
+    TODO: the window parameter could be the window itself if an array instead of a string
     """
 
     if x.ndim != 1:
@@ -434,8 +430,8 @@ def smooth(x,window_len=11,window='flat'):
 
     y=numpy.convolve(w/w.sum(),s,mode='same')
 
-    return y[window_len-1:-window_len+1]        
-        
+    return y[window_len-1:-window_len+1]
+
 
 def demo(text=None):
     from nltk.corpus import brown
