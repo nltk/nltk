@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
-#         
+#
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -24,21 +24,24 @@ class TnT(TaggerI):
     IMPORTANT NOTES:
 
     * DOES NOT AUTOMATICALLY DEAL WITH UNSEEN WORDS
-      It is possible to provide an untrained POS tagger to
-      create tags for unknown words, see __init__ function
+
+      - It is possible to provide an untrained POS tagger to
+        create tags for unknown words, see __init__ function
 
     * SHOULD BE USED WITH SENTENCE-DELIMITED INPUT
+
       - Due to the nature of this tagger, it works best when
-       trained over sentence delimited input.
-     - However it still produces good results if the training
-       data and testing data are separated on all punctuation eg: [,.?!]
-     - Input for training is expected to be a list of sentences
-       where each sentence is a list of (word, tag) tuples
-     - Input for tag function is a single sentence
-       Input for tagdata function is a list of sentences
-       Output is of a similar form
+        trained over sentence delimited input.
+      - However it still produces good results if the training
+        data and testing data are separated on all punctuation eg: [,.?!]
+      - Input for training is expected to be a list of sentences
+        where each sentence is a list of (word, tag) tuples
+      - Input for tag function is a single sentence
+        Input for tagdata function is a list of sentences
+        Output is of a similar form
 
     * Function provided to process text that is unsegmented
+
       - Please see basic_sent_chop()
 
 
@@ -64,10 +67,10 @@ class TnT(TaggerI):
     The degree of the beam can be changed using N in the initialization.
     N represents the maximum number of possible solutions to maintain
     while tagging.
-   
+
     It is possible to differentiate the tags which are assigned to
     capitalized words. However this does not result in a significant
-    gain in the accuracy of the results. 
+    gain in the accuracy of the results.
     '''
 
     def __init__(self, unk=None, Trained=False, N=1000, C=False):
@@ -81,7 +84,7 @@ class TnT(TaggerI):
         :type  Trained: boolean
         :param N: Beam search degree (see above)
         :type  N:(int)
-        :param C: Capitalization flag 
+        :param C: Capitalization flag
         :type  C: boolean
 
         Initializer, creates frequency distributions to be used
@@ -89,7 +92,7 @@ class TnT(TaggerI):
 
         _lx values represent the portion of the tri/bi/uni taggers
         to be used to calculate the probability
-      
+
         N value is the number of possible solutions to maintain
         while tagging. A good value for this is 1000
 
@@ -102,7 +105,7 @@ class TnT(TaggerI):
 
         self._uni  = FreqDist()
         self._bi   = ConditionalFreqDist()
-        self._tri  = ConditionalFreqDist() 
+        self._tri  = ConditionalFreqDist()
         self._wd   = ConditionalFreqDist()
         self._eos  = ConditionalFreqDist()
         self._l1   = 0.0
@@ -111,7 +114,7 @@ class TnT(TaggerI):
         self._N    = N
         self._C    = C
         self._T    = Trained
-      
+
         self._unk = unk
 
         # statistical tools (ignore or delete me)
@@ -122,7 +125,7 @@ class TnT(TaggerI):
         '''
         Uses a set of tagged data to train the tagger.
         If an unknown word tagger is specified,
-        it is trained on the same data.   
+        it is trained on the same data.
 
         :param data: List of lists of (word, tag) tuples
         :type data: tuple(str)
@@ -130,19 +133,19 @@ class TnT(TaggerI):
 
         # Ensure that local C flag is initialized before use
         C = False
-      
+
         if self._unk != None and self._T == False:
             self._unk.train(data)
-      
+
         for sent in data:
             history = ['BOS', 'BOS']
             for w, t in sent:
-            
+
                 # if capitalization is requested,
                 # and the word begins with a capital
                 # set local flag C to True
                 if self._C and w[0].isupper(): C=True
-            
+
                 self._wd[w].inc(t)
                 self._uni.inc((t,C))
                 self._bi[history[1]].inc((t,C))
@@ -193,14 +196,14 @@ class TnT(TaggerI):
         # for each t1,t2 in system
         for history in self._tri.conditions():
             (h1, h2) = history
-         
+
             # for each t3 given t1,t2 in system
             # (NOTE: tag actually represents (tag,C))
             # However no effect within this function
             for tag in self._tri[history].samples():
 
                 # if there has only been 1 occurance of this tag in the data
-                # then ignore this trigram. 
+                # then ignore this trigram.
                 if self._uni[tag] == 1:
                     continue
 
@@ -351,16 +354,16 @@ class TnT(TaggerI):
             for (history, curr_sent_prob) in current_states:
                 probs = []
 
-                for t in self._wd[word].samples():  
+                for t in self._wd[word].samples():
                     p_uni = self._uni.freq((t,C))
                     p_bi = self._bi[history[-1]].freq((t,C))
                     p_tri = self._tri[tuple(history[-2:])].freq((t,C))
                     p_wd = float(self._wd[word][t])/float(self._uni[(t,C)])
                     p = self._l1 *p_uni + self._l2 *p_bi + self._l3 *p_tri
                     p2 = p * p_wd
-               
+
                     probs.append(((t,C), p2))
-            
+
 
                 # compute the result of appending each tag to this history
                 for (tag, prob) in probs:
@@ -382,13 +385,13 @@ class TnT(TaggerI):
             # if no unknown word tagger has been specified
             # then use the tag 'Unk'
             if self._unk == None:
-                tag = ('Unk',C) 
+                tag = ('Unk',C)
 
             # otherwise apply the unknown word tagger
             else :
                 [(_w, t)] = list(self._unk.tag([word]))
                 tag = (t,C)
-            
+
             for (history, prob) in current_states:
                 history.append(tag)
 
@@ -407,20 +410,20 @@ class TnT(TaggerI):
         # this is the beam search cut
         if len(new_states) > self._N:
             new_states = new_states[:self._N]
-          
+
 
         # compute the tags for the rest of the sentence
         # return the best list of tags for the sentence
         return self._tagword(sent, new_states)
 
-      
-   
+
+
     def _cmp_tup(self, (_hq, p1), (_h2, p2)):
         if (p2-p1) > 0:
             return 1
         else:
             return -1
-      
+
 
 ########################################
 # helper function -- basic sentence tokenizer
@@ -450,7 +453,7 @@ def basic_sent_chop(data, raw=True):
     This is a simple method which enhances the performance of the TnT
     tagger. Better sentence tokenization will further enhance the results.
     '''
-   
+
     new_data = []
     curr_sent = []
     sent_mark = [',','.','?','!']
@@ -510,7 +513,7 @@ def demo2():
     s = tnt.TnT(N=1000, C=True)
     t.train(d[(11)*100:])
     s.train(d[(11)*100:])
-   
+
     for i in range(10):
         tacc = tag.accuracy(t, d[i*100:((i+1)*100)])
         tp_un = float(t.unknown) / float(t.known +t.unknown)
@@ -523,7 +526,7 @@ def demo2():
         print 'Percentage known:', tp_kn
         print 'Percentage unknown:', tp_un
         print 'Accuracy over known words:', (tacc / tp_kn)
-      
+
         sacc = tag.accuracy(s, d[i*100:((i+1)*100)])
         sp_un = float(s.unknown) / float(s.known +s.unknown)
         sp_kn = float(s.known) / float(s.known + s.unknown)
@@ -534,7 +537,7 @@ def demo2():
         print 'Accuracy:', sacc
         print 'Percentage known:', sp_kn
         print 'Percentage unknown:', sp_un
-        print 'Accuracy over known words:', (sacc / sp_kn)   
+        print 'Accuracy over known words:', (sacc / sp_kn)
 
 def demo3():
     from nltk import tag
@@ -564,26 +567,26 @@ def demo3():
 
         dtest = d[(i*d10):((i+1)*d10)]
         etest = e[(i*e10):((i+1)*e10)]
-      
+
         dtrain = d[:(i*d10)] + d[((i+1)*d10):]
-        etrain = e[:(i*e10)] + e[((i+1)*e10):]     
+        etrain = e[:(i*e10)] + e[((i+1)*e10):]
 
         t.train(dtrain)
         s.train(etrain)
-   
+
         tacc = tag.accuracy(t, dtest)
         tp_un = float(t.unknown) / float(t.known +t.unknown)
         tp_kn = float(t.known) / float(t.known + t.unknown)
         tknown += tp_kn
         t.unknown = 0
         t.known = 0
-      
+
         sacc = tag.accuracy(s, etest)
         sp_un = float(s.unknown) / float(s.known + s.unknown)
         sp_kn = float(s.known) / float(s.known + s.unknown)
         sknown += sp_kn
         s.unknown = 0
-        s.known = 0 
+        s.known = 0
 
         tknacc += (tacc / tp_kn)
         sknacc += (sacc / tp_kn)
@@ -591,7 +594,7 @@ def demo3():
         sallacc += sacc
 
         #print i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc
-      
+
 
     print "brown: acc over words known:", 10 * tknacc
     print "     : overall accuracy:", 10 * tallacc
