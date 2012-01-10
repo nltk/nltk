@@ -9,7 +9,7 @@
 from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
                             EqualityExpression, ExistsExpression, IffExpression,
                             ImpExpression, NegatedExpression, OrExpression,
-                            VariableExpression, skolem_function)
+                            VariableExpression, skolem_function, unique_variable)
 
 def skolemize(expression, univ_scope=None, used_variables=None):
     """
@@ -27,15 +27,15 @@ def skolemize(expression, univ_scope=None, used_variables=None):
         return skolemize(expression.first, univ_scope, used_variables) &\
                skolemize(expression.second, univ_scope, used_variables)
     elif isinstance(expression, OrExpression):
-        return to_cnf(skolemize(expression.first, univ_scope, used_variables), 
+        return to_cnf(skolemize(expression.first, univ_scope, used_variables),
                       skolemize(expression.second, univ_scope, used_variables))
     elif isinstance(expression, ImpExpression):
-        return to_cnf(skolemize(-expression.first, univ_scope, used_variables), 
+        return to_cnf(skolemize(-expression.first, univ_scope, used_variables),
                       skolemize(expression.second, univ_scope, used_variables))
     elif isinstance(expression, IffExpression):
-        return to_cnf(skolemize(-expression.first, univ_scope, used_variables), 
+        return to_cnf(skolemize(-expression.first, univ_scope, used_variables),
                       skolemize(expression.second, univ_scope, used_variables)) &\
-               to_cnf(skolemize(expression.first, univ_scope, used_variables), 
+               to_cnf(skolemize(expression.first, univ_scope, used_variables),
                       skolemize(-expression.second, univ_scope, used_variables))
     elif isinstance(expression, EqualityExpression):
         return expression
@@ -49,7 +49,7 @@ def skolemize(expression, univ_scope=None, used_variables=None):
                 skolem_constant = VariableExpression(unique_variable(ignore=used_variables))
                 return term.replace(negated.variable, skolem_constant)
         elif isinstance(negated, AndExpression):
-            return to_cnf(skolemize(-negated.first, univ_scope, used_variables), 
+            return to_cnf(skolemize(-negated.first, univ_scope, used_variables),
                           skolemize(-negated.second, univ_scope, used_variables))
         elif isinstance(negated, OrExpression):
             return skolemize(-negated.first, univ_scope, used_variables) &\
@@ -58,9 +58,9 @@ def skolemize(expression, univ_scope=None, used_variables=None):
             return skolemize(negated.first, univ_scope, used_variables) &\
                    skolemize(-negated.second, univ_scope, used_variables)
         elif isinstance(negated, IffExpression):
-            return to_cnf(skolemize(-negated.first, univ_scope, used_variables), 
+            return to_cnf(skolemize(-negated.first, univ_scope, used_variables),
                           skolemize(-negated.second, univ_scope, used_variables)) &\
-                   to_cnf(skolemize(negated.first, univ_scope, used_variables), 
+                   to_cnf(skolemize(negated.first, univ_scope, used_variables),
                           skolemize(negated.second, univ_scope, used_variables))
         elif isinstance(negated, EqualityExpression):
             return expression

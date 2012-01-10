@@ -1,4 +1,4 @@
-# Natural Language Toolkit: First-order Resolution-based Theorem Prover 
+# Natural Language Toolkit: First-order Resolution-based Theorem Prover
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
@@ -12,8 +12,8 @@ from collections import defaultdict
 from nltk.sem import skolemize
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             ApplicationExpression, LogicParser,
-                            NegatedExpression, Variable, 
-                            AndExpression, unique_variable)
+                            NegatedExpression, Variable,
+                            AndExpression, unique_variable, OrExpression, is_indvar, IndividualVariableExpression, Expression)
 
 from nltk.inference.api import Prover, BaseProverCommand
 
@@ -26,7 +26,7 @@ class ProverParseError(Exception): pass
 class ResolutionProver(Prover):
     ANSWER_KEY = 'ANSWER'
     _assume_false=True
-    
+
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
         :param goal: Input expression to prove
@@ -36,7 +36,7 @@ class ResolutionProver(Prover):
         """
         if not assumptions:
             assumptions = []
-            
+
         result = None
         try:
             clauses = []
@@ -45,7 +45,7 @@ class ResolutionProver(Prover):
             for a in assumptions:
                 clauses.extend(clausify(a))
             result, clauses = self._attempt_proof(clauses)
-            if verbose: 
+            if verbose:
                 print ResolutionProverCommand._decorate_clauses(clauses)
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
@@ -61,35 +61,35 @@ class ResolutionProver(Prover):
     def _attempt_proof(self, clauses):
         #map indices to lists of indices, to store attempted unifications
         tried = defaultdict(list)
-        
+
         i = 0
         while i < len(clauses):
             if not clauses[i].is_tautology():
                 #since we try clauses in order, we should start after the last
                 #index tried
-                if tried[i]: 
+                if tried[i]:
                     j = tried[i][-1] + 1
-                else: 
+                else:
                     j = i + 1 #nothing tried yet for 'i', so start with the next
-                    
+
                 while j < len(clauses):
-                    #don't: 1) unify a clause with itself, 
+                    #don't: 1) unify a clause with itself,
                     #       2) use tautologies
                     if i != j and j and not clauses[j].is_tautology():
-                        tried[i].append(j) 
+                        tried[i].append(j)
                         newclauses = clauses[i].unify(clauses[j])
                         if newclauses:
                             for newclause in newclauses:
                                 newclause._parents = (i+1, j+1)
                                 clauses.append(newclause)
                                 if not len(newclause): #if there's an empty clause
-                                    return (True, clauses) 
-                            i=-1 #since we added a new clause, restart from the top 
+                                    return (True, clauses)
+                            i=-1 #since we added a new clause, restart from the top
                             break
                     j += 1
             i += 1
         return (False, clauses)
-        
+
 class ResolutionProverCommand(BaseProverCommand):
     def __init__(self, goal=None, assumptions=None, prover=None):
         """
@@ -106,14 +106,14 @@ class ResolutionProverCommand(BaseProverCommand):
 
         BaseProverCommand.__init__(self, prover, goal, assumptions)
         self._clauses = None
-    
+
     def prove(self, verbose=False):
         """
         Perform the actual proof.  Store the result to prevent unnecessary
         re-proving.
         """
         if self._result is None:
-            self._result, clauses = self._prover._prove(self.goal(), 
+            self._result, clauses = self._prover._prove(self.goal(),
                                                         self.assumptions(),
                                                         verbose)
             self._clauses = clauses
@@ -122,7 +122,7 @@ class ResolutionProverCommand(BaseProverCommand):
 
     def find_answers(self, verbose=False):
         self.prove(verbose)
-        
+
         answers = set()
         answer_ex = VariableExpression(Variable(ResolutionProver.ANSWER_KEY))
         for clause in self._clauses:
@@ -132,7 +132,7 @@ class ResolutionProverCommand(BaseProverCommand):
                    not isinstance(term.argument, IndividualVariableExpression):
                     answers.add(term.argument)
         return answers
-    
+
     @staticmethod
     def _decorate_clauses(clauses):
         """
@@ -151,28 +151,28 @@ class ResolutionProverCommand(BaseProverCommand):
             parents = ' '*(max_clause_len-len(str(clauses[i]))+1) + parents
             seq = ' '*(max_seq_len-len(str(i+1))) + str(i+1)
             out += '[%s] %s %s %s\n' % (seq, clauses[i], parents, taut)
-        return out 
-    
+        return out
+
 class Clause(list):
     def __init__(self, data):
         list.__init__(self, data)
         self._is_tautology = None
         self._parents = None
-    
+
     def unify(self, other, bindings=None, used=None, skipped=None, debug=False):
         """
-        Attempt to unify this Clause with the other, returning a list of 
+        Attempt to unify this Clause with the other, returning a list of
         resulting, unified, Clauses.
-        
+
         :param other: ``Clause`` with which to unify
         :param bindings: ``BindingDict`` containing bindings that should be used
         during the unification
-        :param used: tuple of two lists of atoms.  The first lists the 
-        atoms from 'self' that were successfully unified with atoms from 
+        :param used: tuple of two lists of atoms.  The first lists the
+        atoms from 'self' that were successfully unified with atoms from
         'other'.  The second lists the atoms from 'other' that were successfully
         unified with atoms from 'self'.
         :param skipped: tuple of two ``Clause`` objects.  The first is a list of all
-        the atoms from the 'self' Clause that have not been unified with 
+        the atoms from the 'self' Clause that have not been unified with
         anything on the path.  The second is same thing for the 'other' Clause.
         :param debug: bool indicating whether debug statements should print
         :return: list containing all the resulting ``Clause`` objects that could be
@@ -193,7 +193,7 @@ class Clause(list):
                 for j, c2 in enumerate(newclauses):
                     if i!=j and j not in subsumed and c1.subsumes(c2):
                         subsumed.append(j)
-        result = []            
+        result = []
         for i in range(len(newclauses)):
             if i not in subsumed:
                 result.append(newclauses[i])
@@ -203,7 +203,7 @@ class Clause(list):
     def isSubsetOf(self, other):
         """
         Return True iff every term in 'self' is a term in 'other'.
-        
+
         :param other: ``Clause``
         :return: bool
         """
@@ -214,10 +214,10 @@ class Clause(list):
 
     def subsumes(self, other):
         """
-        Return True iff 'self' subsumes 'other', this is, if there is a 
+        Return True iff 'self' subsumes 'other', this is, if there is a
         substitution such that every term in 'self' can be unified with a term
         in 'other'.
-        
+
         :param other: ``Clause``
         :return: bool
         """
@@ -227,7 +227,7 @@ class Clause(list):
                 negatedother.append(atom.term)
             else:
                 negatedother.append(-atom)
-        
+
         negatedotherClause = Clause(negatedother)
 
         bindings = BindingDict()
@@ -235,23 +235,23 @@ class Clause(list):
         skipped = ([],[])
         debug = DebugObject(False)
 
-        return len(_iterate_first(self, negatedotherClause, bindings, used, 
-                                      skipped, _subsumes_finalize, 
+        return len(_iterate_first(self, negatedotherClause, bindings, used,
+                                      skipped, _subsumes_finalize,
                                       debug)) > 0
-        
+
     def __getslice__(self, start, end):
         return Clause(list.__getslice__(self, start, end))
-    
+
     def __sub__(self, other):
         return Clause([a for a in self if a not in other])
-    
+
     def __add__(self, other):
         return Clause(list.__add__(self, other))
-    
+
     def is_tautology(self):
         """
-        Self is a tautology if it contains ground terms P and -P.  The ground 
-        term, P, must be an exact match, ie, not using unification. 
+        Self is a tautology if it contains ground terms P and -P.  The ground
+        term, P, must be an exact match, ie, not using unification.
         """
         if self._is_tautology is not None:
             return self._is_tautology
@@ -261,7 +261,7 @@ class Clause(list):
                 while j > i:
                     b = self[j]
                     if isinstance(a, NegatedExpression):
-                        if a.term == b:  
+                        if a.term == b:
                             self._is_tautology = True
                             return True
                     elif isinstance(b, NegatedExpression):
@@ -271,30 +271,30 @@ class Clause(list):
                     j -= 1
         self._is_tautology = False
         return False
-    
+
     def free(self):
         return reduce(operator.or_, ((atom.free() | atom.constants()) for atom in self))
-    
+
     def replace(self, variable, expression):
         """
         Replace every instance of variable with expression across every atom
         in the clause
-        
+
         :param variable: ``Variable``
         :param expression: ``Expression``
         """
         return Clause([atom.replace(variable, expression) for atom in self])
-    
+
     def substitute_bindings(self, bindings):
         """
-        Replace every binding 
-        
+        Replace every binding
+
         :param bindings: A list of tuples mapping Variable Expressions to the
         Expressions to which they are bound
         :return: ``Clause``
         """
         return Clause([atom.substitute_bindings(bindings) for atom in self])
-    
+
     def __str__(self):
         return '{' + ', '.join([str(item) for item in self]) + '}'
 
@@ -309,14 +309,14 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
 
     if not len(first) or not len(second): #if no more recursions can be performed
         return finalize_method(first, second, bindings, used, skipped, debug)
-    else: 
+    else:
         #explore this 'self' atom
         result = _iterate_second(first, second, bindings, used, skipped, finalize_method, debug+1)
-        
+
         #skip this possible 'self' atom
         newskipped = (skipped[0]+[first[0]], skipped[1])
         result += _iterate_first(first[1:], second, bindings, used, newskipped, finalize_method, debug+1)
-                 
+
         try:
             newbindings, newused, unused = _unify_terms(first[0], second[0], bindings, used)
             #Unification found, so progress with this line of unification
@@ -326,9 +326,9 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
             result += _iterate_first(newfirst, newsecond, newbindings, newused, ([],[]), finalize_method, debug+1)
         except BindingException:
             #the atoms could not be unified,
-            pass 
-            
-        return result            
+            pass
+
+        return result
 
 def _iterate_second(first, second, bindings, used, skipped, finalize_method, debug):
     """
@@ -352,18 +352,18 @@ def _iterate_second(first, second, bindings, used, skipped, finalize_method, deb
             result += _iterate_second(newfirst, newsecond, newbindings, newused, ([],[]), finalize_method, debug+1)
         except BindingException:
             #the atoms could not be unified,
-            pass 
-            
+            pass
+
         return result
-    
+
 def _unify_terms(a, b, bindings=None, used=None):
     """
-    This method attempts to unify two terms.  Two expressions are unifiable 
+    This method attempts to unify two terms.  Two expressions are unifiable
     if there exists a substitution function S such that S(a) == S(-b).
 
-    :param a: ``Expression`` 
-    :param b: ``Expression`` 
-    :param bindings: ``BindingDict`` a starting set of bindings with which 
+    :param a: ``Expression``
+    :param b: ``Expression``
+    :param bindings: ``BindingDict`` a starting set of bindings with which
     the unification must be consistent
     :return: ``BindingDict`` A dictionary of the bindings required to unify
     :raise ``BindingException``: If the terms cannot be unified
@@ -384,7 +384,7 @@ def _unify_terms(a, b, bindings=None, used=None):
         newused = (used[0]+[a], used[1]+[b])
         unused = ([],[])
 
-    # Use demodulation 
+    # Use demodulation
     elif isinstance(a, EqualityExpression):
         newbindings = BindingDict([(a.first.variable, a.second)])
         newused = (used[0]+[a], used[1])
@@ -396,7 +396,7 @@ def _unify_terms(a, b, bindings=None, used=None):
 
     else:
         raise BindingException((a, b))
-            
+
     return newbindings, newused, unused
 
 def _complete_unify_path(first, second, bindings, used, skipped, debug):
@@ -410,11 +410,11 @@ def _complete_unify_path(first, second, bindings, used, skipped, debug):
 
 def _subsumes_finalize(first, second, bindings, used, skipped, debug):
     if not len(skipped[0]) and not len(first):
-        #If there are no skipped terms and no terms left in 'first', then 
+        #If there are no skipped terms and no terms left in 'first', then
         #all of the terms in the original 'self' were unified with terms
         #in 'other'.  Therefore, there exists a binding (this one) such that
         #every term in self can be unified with a term in other, which
-        #is the definition of subsumption. 
+        #is the definition of subsumption.
         return [True]
     else:
         return []
@@ -431,7 +431,7 @@ def clausify(expression):
                 clause = clause.replace(free, newvar)
         clause_list.append(clause)
     return clause_list
-    
+
 def _clausify(expression):
     """
     :param expression: a skolemized expression in CNF
@@ -454,8 +454,8 @@ def _clausify(expression):
         elif isinstance(expression.term, EqualityExpression):
             return [Clause([expression])]
     raise ProverParseError()
-    
-    
+
+
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """
@@ -466,24 +466,24 @@ class BindingDict(object):
         if binding_list:
             for (v, b) in binding_list:
                 self[v] = b
-    
+
     def __setitem__(self, variable, binding):
         """
-        A binding is consistent with the dict if its variable is not already bound, OR if its 
+        A binding is consistent with the dict if its variable is not already bound, OR if its
         variable is already bound to its argument.
-        
+
         :param variable: ``Variable`` The variable to bind
         :param binding: ``Expression`` The atomic to which 'variable' should be bound
         :raise BindingException: If the variable cannot be bound in this dictionary
         """
         assert isinstance(variable, Variable)
-        assert isinstance(binding, Expression) 
-        
+        assert isinstance(binding, Expression)
+
         try:
             existing = self[variable]
         except KeyError:
             existing = None
-            
+
         if not existing or binding == existing:
             self.d[variable] = binding
         elif isinstance(binding, IndividualVariableExpression):
@@ -492,9 +492,9 @@ class BindingDict(object):
                 existing = self[binding.variable]
             except KeyError:
                 existing = None
-                
+
             binding2 = VariableExpression(variable)
-                
+
             if not existing or binding2 == existing:
                 self.d[binding.variable] = binding2
             else:
@@ -516,7 +516,7 @@ class BindingDict(object):
                 intermediate = self.d[intermediate]
             except KeyError:
                 return intermediate
-            
+
     def __contains__(self, item):
         return item in self.d
 
@@ -535,12 +535,12 @@ class BindingDict(object):
             return combined
         except BindingException:
             raise BindingException("Attempting to add two contradicting "
-                                   "BindingDicts: '%s' and '%s'" 
+                                   "BindingDicts: '%s' and '%s'"
                                    % (self, other))
 
     def __len__(self):
         return len(self.d)
-    
+
     def __str__(self):
         return '{' + ', '.join(['%s: %s' % (v, self.d[v]) for v in self.d]) + '}'
 
@@ -551,7 +551,7 @@ class BindingDict(object):
 def most_general_unification(a, b, bindings=None):
     """
     Find the most general unification of the two given expressions
-    
+
     :param a: ``Expression``
     :param b: ``Expression``
     :param bindings: ``BindingDict`` a starting set of bindings with which the
@@ -561,7 +561,7 @@ def most_general_unification(a, b, bindings=None):
     """
     if bindings is None:
         bindings = BindingDict()
-    
+
     if a == b:
         return bindings
     elif isinstance(a, IndividualVariableExpression):
@@ -579,30 +579,30 @@ def _mgu_var(var, expression, bindings):
         raise BindingException((var, expression))
     else:
         return BindingDict([(var.variable, expression)]) + bindings
-    
-    
+
+
 class BindingException(Exception):
     def __init__(self, arg):
         if isinstance(arg, tuple):
             Exception.__init__(self, "'%s' cannot be bound to '%s'" % arg)
         else:
             Exception.__init__(self, arg)
-    
+
 class UnificationException(Exception):
     def __init__(self, a, b):
         Exception.__init__(self, "'%s' cannot unify with '%s'" % (a,b))
-    
-    
+
+
 class DebugObject(object):
     def __init__(self, enabled=True, indent=0):
         self.enabled = enabled
         self.indent = indent
-    
+
     def __add__(self, i):
         return DebugObject(self.enabled, self.indent+i)
 
     def line(self, line):
-        if self.enabled: 
+        if self.enabled:
             print '    '*self.indent + line
 
 
@@ -626,16 +626,16 @@ def testResolutionProver():
     p2 = LogicParser().parse(r'man(Socrates)')
     c = LogicParser().parse(r'mortal(Socrates)')
     print '%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2]))
-    
+
     p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
     p2 = LogicParser().parse(r'man(John)')
     c = LogicParser().parse(r'some y.walks(y)')
     print '%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2]))
-    
+
     p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
     print '%s |- %s: %s' % (p, c, ResolutionProver().prove(c, [p]))
-    
+
 def resolution_test(e):
     f = LogicParser().parse(e)
     t = ResolutionProver().prove(f)
@@ -643,12 +643,12 @@ def resolution_test(e):
 
 def test_clausify():
     lp = LogicParser()
-    
+
     print clausify(lp.parse('P(x) | Q(x)'))
     print clausify(lp.parse('(P(x) & Q(x)) | R(x)'))
     print clausify(lp.parse('P(x) | (Q(x) & R(x))'))
     print clausify(lp.parse('(P(x) & Q(x)) | (R(x) & S(x))'))
-        
+
     print clausify(lp.parse('P(x) | Q(x) | R(x)'))
     print clausify(lp.parse('P(x) | (Q(x) & R(x)) | S(x)'))
 
@@ -659,7 +659,7 @@ def test_clausify():
     print clausify(lp.parse('-(P(x) <-> Q(x))'))
     print clausify(lp.parse('-(all x.P(x))'))
     print clausify(lp.parse('-(some x.P(x))'))
-    
+
     print clausify(lp.parse('some x.P(x)'))
     print clausify(lp.parse('some x.all y.P(x,y)'))
     print clausify(lp.parse('all y.some x.P(x,y)'))
@@ -672,9 +672,9 @@ def demo():
     print
     testResolutionProver()
     print
-    
+
     p = LogicParser().parse('man(x)')
     print ResolutionProverCommand(p, [p]).prove()
-    
+
 if __name__ == '__main__':
     demo()
