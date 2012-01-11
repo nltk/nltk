@@ -18,7 +18,7 @@ def update(file, pattern, replacement, verbose=False):
     if verbose:
         print "Updating:", file
 
-    # make sure we can write the file   
+    # make sure we can write the file
     old_perm = os.stat(file)[0]
     if not os.access(file, os.W_OK):
         os.chmod(file, old_perm | stat.S_IWRITE)
@@ -29,7 +29,7 @@ def update(file, pattern, replacement, verbose=False):
     out = open(file, 'wb')
     out.write(t)
     out.close()
-   
+
     # restore permissions
     os.chmod(file, old_perm)
 

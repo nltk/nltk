@@ -13,7 +13,8 @@ from nltk.sem import skolemize
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             ApplicationExpression, LogicParser,
                             NegatedExpression, Variable,
-                            AndExpression, unique_variable, OrExpression, is_indvar, IndividualVariableExpression, Expression)
+                            AndExpression, unique_variable, OrExpression,
+                            is_indvar, IndividualVariableExpression, Expression)
 
 from nltk.inference.api import Prover, BaseProverCommand
 

@@ -35,7 +35,7 @@ class XMLCorpusReader(CorpusReader):
     def __init__(self, root, fileids, wrap_etree=False):
         self._wrap_etree = wrap_etree
         CorpusReader.__init__(self, root, fileids)
-        
+
     def xml(self, fileid=None):
         # Make sure we have exactly one file -- no concatenating XML.
         if fileid is None and len(self._fileids) == 1:
@@ -84,7 +84,7 @@ class XMLCorpusView(StreamBackedCorpusView):
     file, and provides a flat list-like interface for accessing them.
     (Note: ``XMLCorpusView`` is not used by ``XMLCorpusReader`` itself,
     but may be used by subclasses of ``XMLCorpusReader``.)
-    
+
     Every XML corpus view has a "tag specification", indicating what
     XML elements should be included in the view; and each (non-nested)
     element that matches this specification corresponds to one item in
@@ -99,7 +99,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         in the xml tree.
       - ``'.*/(foo|bar)'``: An wlement whose tag is ``foo`` or ``bar``,
         appearing anywhere in the xml tree.
-    
+
     The view items are generated from the selected XML elements via
     the method ``handle_elt()``.  By default, this method returns the
     element as-is (i.e., as an ElementTree object); but it can be
@@ -110,7 +110,7 @@ class XMLCorpusView(StreamBackedCorpusView):
     #: If true, then display debugging output to stdout when reading
     #: blocks.
     _DEBUG = False
-    
+
     #: The number of characters read at a time by this corpus reader.
     _BLOCK_SIZE = 1024
 
@@ -121,7 +121,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         Note that the ``XMLCorpusView`` constructor does not take an
         ``encoding`` argument, because the unicode encoding is
         specified by the XML files themselves.
-    
+
         :type tagspec: str
         :param tagspec: A tag specification, indicating what XML
             elements should be included in the view.  Each non-nested
@@ -136,7 +136,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                 elt_handler(elt, tagspec) -> value
         """
         if elt_handler: self.handle_elt = elt_handler
-        
+
         self._tagspec = re.compile(tagspec+r'\Z')
         """The tag specification for this corpus view."""
 
@@ -170,7 +170,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         if m: return m.group(1)
         # No encoding found -- what should the default be?
         return 'utf-8'
-        
+
     def handle_elt(self, elt, context):
         """
         Convert an element into an appropriate value for inclusion in
@@ -243,7 +243,7 @@ class XMLCorpusView(StreamBackedCorpusView):
             # Read a block and add it to the fragment.
             xml_block = stream.read(self._BLOCK_SIZE)
             fragment += xml_block
-            
+
             # Do we have a well-formed xml fragment?
             if self._VALID_XML_RE.match(fragment):
                 return fragment
@@ -282,7 +282,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         """
         if tagspec is None: tagspec = self._tagspec
         if elt_handler is None: elt_handler = self.handle_elt
-        
+
         # Use a stack of strings to keep track of our context:
         context = list(self._tag_context.get(stream.tell()))
         assert context is not None # check this -- could it ever happen?
@@ -307,7 +307,7 @@ class XMLCorpusView(StreamBackedCorpusView):
             for piece in self._XML_PIECE.finditer(xml_fragment):
                 if self._DEBUG:
                     print '%25s %s' % ('/'.join(context)[-20:], piece.group())
-                
+
                 if piece.group('START_TAG'):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     # Keep context up-to-date.
@@ -317,7 +317,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                         if re.match(tagspec, '/'.join(context)):
                             elt_start = piece.start()
                             elt_depth = len(context)
-    
+
                 elif piece.group('END_TAG'):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     # sanity checks:
@@ -334,14 +334,14 @@ class XMLCorpusView(StreamBackedCorpusView):
                         elt_text = ''
                     # Keep context up-to-date
                     context.pop()
-    
+
                 elif piece.group('EMPTY_ELT_TAG'):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     if elt_start is None:
                         if re.match(tagspec, '/'.join(context)+'/'+name):
                             elts.append((piece.group(),
                                          '/'.join(context)+'/'+name))
-                            
+
             if elt_start is not None:
                 # If we haven't found any elements yet, then keep
                 # looping until we do.

@@ -65,7 +65,7 @@ from nltk.draw import CFGEditor, tree_to_treesegment, TreeSegmentWidget
 
 class EdgeList(ColorizedList):
     ARROW = SymbolWidget.SYMBOLS['rightarrow']
-    
+
     def _init_colortags(self, textwidget, options):
         textwidget.tag_config('terminal', foreground='#006000')
         textwidget.tag_config('arrow', font='symbol', underline='0')
@@ -87,7 +87,7 @@ class EdgeList(ColorizedList):
         if item.is_complete():
             contents.append((' *', 'dot'))
         return contents
-    
+
 #######################################################################
 # Chart Matrix View
 #######################################################################
@@ -101,7 +101,7 @@ class ChartMatrixView(object):
         self._chart = chart
         self._cells = []
         self._marks = []
-        
+
         self._selected_cell = None
 
         if toplevel:
@@ -120,7 +120,7 @@ class ChartMatrixView(object):
             self._numedges_label = None
 
         self._callbacks = {}
-        
+
         self._num_edges = 0
 
         self.draw()
@@ -224,7 +224,7 @@ class ChartMatrixView(object):
         # haven't changed), then do nothing.
         if ((i,j) == self._selected_cell and
             self._chart.num_edges() == self._num_edges): return
-        
+
         self._selected_cell = (i,j)
         self.update()
 
@@ -236,7 +236,7 @@ class ChartMatrixView(object):
         self._selected_cell = None
         self._list.set([])
         self.update()
-        
+
     def _click_cell(self, i, j):
         if self._selected_cell == (i,j):
             self.deselect_cell()
@@ -279,7 +279,7 @@ class ChartMatrixView(object):
                           text=`i`, anchor='e')
             c.create_text(i*dx+dx/2+LEFT_MARGIN, N*dy+TOP_MARGIN+1,
                           text=`i`, anchor='n')
-            c.create_line(LEFT_MARGIN, dy*(i+1)+TOP_MARGIN, 
+            c.create_line(LEFT_MARGIN, dy*(i+1)+TOP_MARGIN,
                           dx*N+LEFT_MARGIN, dy*(i+1)+TOP_MARGIN, dash='.')
             c.create_line(dx*i+LEFT_MARGIN, TOP_MARGIN,
                           dx*i+LEFT_MARGIN, dy*N+TOP_MARGIN, dash='.')
@@ -303,7 +303,7 @@ class ChartMatrixView(object):
 
         # Inactive box
         xmax, ymax = int(c['width']), int(c['height'])
-        t = c.create_rectangle(-100, -100, xmax+100, ymax+100, 
+        t = c.create_rectangle(-100, -100, xmax+100, ymax+100,
                                fill='gray50', state='hidden',
                                tag='inactivebox')
         c.tag_lower(t)
@@ -313,7 +313,7 @@ class ChartMatrixView(object):
 
     def pack(self, *args, **kwargs):
         self._root.pack(*args, **kwargs)
-        
+
 #######################################################################
 # Chart Results View
 #######################################################################
@@ -359,7 +359,7 @@ class ChartResultsView(object):
         if edge is not None:
             if edge.lhs() != self._grammar.start(): return
             if edge.span() != (0, self._chart.num_leaves()): return
-        
+
         for parse in self._chart.parses(self._grammar.start()):
             if parse not in self._trees:
                 self._add(parse)
@@ -462,21 +462,21 @@ class ChartComparer(object):
 
     :ivar _root: The root window
 
-    :ivar _charts: A dictionary mapping names to charts.  When 
+    :ivar _charts: A dictionary mapping names to charts.  When
         charts are loaded, they are added to this dictionary.
-    
+
     :ivar _left_chart: The left ``Chart``.
     :ivar _left_name: The name ``_left_chart`` (derived from filename)
     :ivar _left_matrix: The ``ChartMatrixView`` for ``_left_chart``
     :ivar _left_selector: The drop-down ``MutableOptionsMenu`` used
           to select ``_left_chart``.
-    
+
     :ivar _right_chart: The right ``Chart``.
     :ivar _right_name: The name ``_right_chart`` (derived from filename)
     :ivar _right_matrix: The ``ChartMatrixView`` for ``_right_chart``
     :ivar _right_selector: The drop-down ``MutableOptionsMenu`` used
           to select ``_right_chart``.
-    
+
     :ivar _out_chart: The out ``Chart``.
     :ivar _out_name: The name ``_out_chart`` (derived from filename)
     :ivar _out_matrix: The ``ChartMatrixView`` for ``_out_chart``
@@ -488,7 +488,7 @@ class ChartComparer(object):
     _OPSYMBOL = {'-': '-',
                  'and': SymbolWidget.SYMBOLS['intersection'],
                  'or': SymbolWidget.SYMBOLS['union']}
-    
+
     def __init__(self, *chart_filenames):
         # This chart is displayed when we don't have a value (eg
         # before any chart is loaded).
@@ -500,7 +500,7 @@ class ChartComparer(object):
         self._right_name = 'None'
         self._left_chart = self._emptychart
         self._right_chart = self._emptychart
-            
+
         # The charts that have been loaded.
         self._charts = {'None': self._emptychart}
 
@@ -577,11 +577,11 @@ class ChartComparer(object):
     def _init_divider(self, root):
         divider = Tkinter.Frame(root, border=2, relief='sunken')
         divider.pack(side='top', fill='x', ipady=2)
-        
+
     def _init_chartviews(self, root):
         opfont=('symbol', -36) # Font for operator.
         eqfont=('helvetica', -36) # Font for equals sign.
-        
+
         frame = Tkinter.Frame(root, background='#c0c0c0')
         frame.pack(side='top', expand=1, fill='both')
 
@@ -623,7 +623,7 @@ class ChartComparer(object):
         # The equals sign
         Tkinter.Label(frame, text='=', width=3, background='#c0c0c0',
                       font=eqfont).pack(side='left', padx=5, pady=5)
-                                        
+
         # The output matrix.
         out_frame = Tkinter.Frame(frame, border=3, relief='groove')
         out_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
@@ -637,7 +637,7 @@ class ChartComparer(object):
         self._out_matrix.add_callback('select', self.select_edge)
         self._out_matrix.add_callback('select_cell', self.select_cell)
         self._out_matrix.inactivate()
-                                      
+
     def _init_buttons(self, root):
         buttons = Tkinter.Frame(root)
         buttons.pack(side='bottom', pady=5, fill='x', expand=0)
@@ -653,7 +653,7 @@ class ChartComparer(object):
 
         Tkinter.Button(buttons, text='Detatch Output',
                        command=self._detatch_out).pack(side='right')
-        
+
     def _init_bindings(self, root):
         #root.bind('<Control-s>', self.save_chart)
         root.bind('<Control-o>', self.load_chart_dialog)
@@ -681,7 +681,7 @@ class ChartComparer(object):
         if self._operator == '-': self._difference()
         elif self._operator == 'or': self._union()
         elif self._operator == 'and': self._intersection()
-        
+
 
     #////////////////////////////////////////////////////////////
     # File
@@ -695,10 +695,10 @@ class ChartComparer(object):
         if not filename: return
         try: pickle.dump((self._out_chart), open(filename, 'w'))
         except Exception, e:
-            tkMessageBox.showerror('Error Saving Chart', 
+            tkMessageBox.showerror('Error Saving Chart',
                                    'Unable to open file: %r\n%s' %
                                    (filename, e))
-    
+
     def load_chart_dialog(self, *args):
         filename = askopenfilename(filetypes=self.CHART_FILE_TYPES,
                                    defaultextension='.pickle')
@@ -724,12 +724,12 @@ class ChartComparer(object):
             self._left_selector.set(name)
         elif self._right_chart is self._emptychart:
             self._right_selector.set(name)
-        
+
     def _update_chartviews(self):
         self._left_matrix.update()
         self._right_matrix.update()
         self._out_matrix.update()
-        
+
     #////////////////////////////////////////////////////////////
     # Selection
     #////////////////////////////////////////////////////////////
@@ -774,7 +774,7 @@ class ChartComparer(object):
         for edge in self._left_chart:
             if edge in self._right_chart:
                 out_chart.insert(edge, [])
-                    
+
         self._update('and', out_chart)
 
     def _union(self):
@@ -785,7 +785,7 @@ class ChartComparer(object):
             out_chart.insert(edge, [])
         for edge in self._right_chart:
             out_chart.insert(edge, [])
-    
+
         self._update('or', out_chart)
 
     def _swapcharts(self):
@@ -817,7 +817,7 @@ class ChartComparer(object):
         self._out_label['text'] = '%s %s %s' % (self._left_name,
                                                 self._operator,
                                                 self._right_name)
-            
+
     def _clear_out_chart(self):
         self._out_chart = self._emptychart
         self._out_matrix.set_chart(self._out_chart)
@@ -828,10 +828,10 @@ class ChartComparer(object):
         ChartMatrixView(self._root, self._out_chart,
                         title=self._out_label['text'])
 
-                
-        
 
-            
+
+
+
 
 
 
@@ -852,15 +852,15 @@ class ChartView(object):
 
     :ivar _root: The root window.
     :ivar _chart_canvas: The canvas we're using to display the chart
-        itself. 
+        itself.
     :ivar _tree_canvas: The canvas we're using to display the tree
         that each edge spans.  May be None, if we're not displaying
-        trees. 
+        trees.
     :ivar _sentence_canvas: The canvas we're using to display the sentence
         text.  May be None, if we're not displaying the sentence text.
     :ivar _edgetags: A dictionary mapping from edges to the tags of
         the canvas elements (lines, etc) used to display that edge.
-        The values of this dictionary have the form 
+        The values of this dictionary have the form
         ``(linetag, rhstag1, dottag, rhstag2, lhstag)``.
     :ivar _treetags: A list of all the tags that make up the tree;
         used to erase the tree (without erasing the loclines).
@@ -869,7 +869,7 @@ class ChartView(object):
     :ivar _tree_height: The height of the tree
 
     :ivar _text_height: The height of a text string (in the normal
-        font). 
+        font).
 
     :ivar _edgelevels: A list of edges at each level of the chart (the
         top level is the 0th element).  This list is used to remember
@@ -885,12 +885,12 @@ class ChartView(object):
     :ivar _marks: A dictionary from edges to marks.  Marks are
         strings, specifying colors (e.g. 'green').
     """
-    
+
     _LEAF_SPACING = 10
     _MARGIN = 10
     _TREE_LEVEL_SIZE = 12
     _CHART_LEVEL_SIZE = 40
-    
+
     def __init__(self, chart, root=None, **kw):
         """
         Construct a new ``Chart`` display.
@@ -984,7 +984,7 @@ class ChartView(object):
         self._sysfont = tkFont.Font(font=Tkinter.Button()["font"])
         root.option_add("*Font", self._sysfont)
 
-    def _sb_canvas(self, root, expand='y', 
+    def _sb_canvas(self, root, expand='y',
                    fill='both', side='bottom'):
         """
         Helper for __init__: construct a canvas with a scrollbar.
@@ -992,7 +992,7 @@ class ChartView(object):
         cframe =Tkinter.Frame(root, relief='sunk', border=2)
         cframe.pack(fill=fill, expand=expand, side=side)
         canvas = Tkinter.Canvas(cframe, background='#e0e0e0')
-        
+
         # Give the canvas a scrollbar.
         sb = Tkinter.Scrollbar(cframe, orient='vertical')
         sb.pack(side='right', fill='y')
@@ -1029,13 +1029,13 @@ class ChartView(object):
         # don't understand why not.
         self._chart_canvas.configure(width=width)
         self._chart_canvas.configure(height=self._chart_canvas['height'])
-        
+
         self._unitsize = (width - 2*ChartView._MARGIN) / N
 
         # Reset the height for the sentence window.
         if self._sentence_canvas is not None:
             self._sentence_canvas['height'] = self._sentence_height
-        
+
     def set_font_size(self, size):
         self._font.configure(size=-abs(size))
         self._boldfont.configure(size=-abs(size))
@@ -1043,10 +1043,10 @@ class ChartView(object):
         self._analyze()
         self._grow()
         self.draw()
-            
+
     def get_font_size(self):
         return abs(self._fontsize)
-            
+
     def _configure(self, e):
         """
         The configure callback.  This is called whenever the window is
@@ -1119,7 +1119,7 @@ class ChartView(object):
         else:
             lhs = edge.lhs()
             rhs = ''
-            
+
         for s in (lhs, rhs):
             tag = c.create_text(0,0, text=s,
                                 font=self._boldfont,
@@ -1130,7 +1130,7 @@ class ChartView(object):
             edgelen = max(edge.length(), 1)
             self._unitsize = max(self._unitsize, width/edgelen)
             self._text_height = max(self._text_height, bbox[3] - bbox[1])
-    
+
     def _add_edge(self, edge, minlvl=0):
         """
         Add a single edge to the ChartView:
@@ -1141,7 +1141,7 @@ class ChartView(object):
         """
         # Do NOT show leaf edges in the chart.
         if isinstance(edge, LeafEdge): return
-        
+
         if edge in self._edgetags: return
         self._analyze_edge(edge)
         self._grow()
@@ -1192,7 +1192,7 @@ class ChartView(object):
         Draw a single edge on the ChartView.
         """
         c = self._chart_canvas
-        
+
         # Draw the arrow.
         x1 = (edge.start() * self._unitsize + ChartView._MARGIN)
         x2 = (edge.end() * self._unitsize + ChartView._MARGIN)
@@ -1212,7 +1212,7 @@ class ChartView(object):
         else:
             rhs = []
             pos = 0
-            
+
         rhs1 = string.join(rhs[:pos])
         rhs2 = string.join(rhs[pos:])
         rhstag1 = c.create_text(x1+3, y, text=rhs1,
@@ -1242,7 +1242,7 @@ class ChartView(object):
         c.tag_bind(lhstag, '<Button-1>', cb)
 
         self._color_edge(edge)
-        
+
     def _color_edge(self, edge, linecolor=None, textcolor=None):
         """
         Color in an edge with the given colors.
@@ -1300,7 +1300,7 @@ class ChartView(object):
 
     def _analyze(self):
         """
-        Analyze the sentence string, to figure out how big a unit needs 
+        Analyze the sentence string, to figure out how big a unit needs
         to be, How big the tree should be, etc.
         """
         # Figure out the text height and the unit size.
@@ -1330,7 +1330,7 @@ class ChartView(object):
 
         # Size of chart levels
         self._chart_level_size = self._text_height * 2
-        
+
         # Default tree size..
         self._tree_height = (3 * (ChartView._TREE_LEVEL_SIZE +
                                   self._text_height))
@@ -1359,7 +1359,7 @@ class ChartView(object):
         if self._tree_canvas:
             self._tree_canvas['scrollregion'] = (0, 0, width,
                                                  self._tree_height)
-            
+
     def _draw_loclines(self):
         """
         Draw location lines.  These are vertical gridlines used to
@@ -1404,7 +1404,7 @@ class ChartView(object):
         c = self._sentence_canvas
         margin = ChartView._MARGIN
         y = ChartView._MARGIN
-        
+
         for i, leaf in enumerate(self._chart.leaves()):
             x1 = i * self._unitsize + margin
             x2 = x1 + self._unitsize
@@ -1427,7 +1427,7 @@ class ChartView(object):
     def draw_tree(self, edge=None):
         if edge is None and self._treetoks_edge is None: return
         if edge is None: edge = self._treetoks_edge
-        
+
         # If it's a new edge, then get a new list of treetoks.
         if self._treetoks_edge != edge:
             self._treetoks = [t for t in self._chart.trees(edge)
@@ -1512,7 +1512,7 @@ class ChartView(object):
             # [XX] breaks for null productions.
             nodex = (2*index+1)*self._unitsize/2 + margin
             index += 1
-        
+
         # Draw the node
         nodey = depth * (ChartView._TREE_LEVEL_SIZE + self._text_height)
         tag = c.create_text(nodex, nodey, anchor='n', justify='center',
@@ -1556,7 +1556,7 @@ class ChartView(object):
 
         self._chart_canvas.delete('all')
         self._edgetags = {}
-        
+
         # Redraw any edges we erased.
         for lvl in range(len(self._edgelevels)):
             for edge in self._edgelevels[lvl]:
@@ -1590,7 +1590,7 @@ class EdgeRule(object):
     """
     To create an edge rule, make an empty base class that uses
     EdgeRule as the first base class, and the basic rule as the
-    second base class.  (Order matters!)  
+    second base class.  (Order matters!)
     """
     def __init__(self, edge):
         super = self.__class__.__bases__[1]
@@ -1604,13 +1604,13 @@ class EdgeRule(object):
         super = self.__class__.__bases__[1]
         return super.__str__(self)
 
-class TopDownPredictEdgeRule(EdgeRule, TopDownPredictRule): 
+class TopDownPredictEdgeRule(EdgeRule, TopDownPredictRule):
     pass
-class BottomUpEdgeRule(EdgeRule, BottomUpPredictRule): 
+class BottomUpEdgeRule(EdgeRule, BottomUpPredictRule):
     pass
-class BottomUpLeftCornerEdgeRule(EdgeRule, BottomUpPredictCombineRule): 
+class BottomUpLeftCornerEdgeRule(EdgeRule, BottomUpPredictCombineRule):
     pass
-class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule): 
+class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule):
     pass
 
 #######################################################################
@@ -1621,7 +1621,7 @@ class ChartParserApp(object):
     def __init__(self, grammar, tokens, title='Chart Parser Application'):
         # Initialize the parser
         self._init_parser(grammar, tokens)
-        
+
         self._root = None
         try:
             # Create the root window.
@@ -1646,7 +1646,7 @@ class ChartParserApp(object):
 
             self._matrix = None
             self._results = None
-            
+
             # Set up keyboard bindings.
             self._init_bindings()
 
@@ -1678,12 +1678,12 @@ class ChartParserApp(object):
         self._grammar = grammar
         self._tokens = tokens
         self._reset_parser()
-    
+
     def _reset_parser(self):
         self._cp = SteppingChartParser(self._grammar)
         self._cp.initialize(self._tokens)
         self._chart = self._cp.chart()
-        
+
         # Insert LeafEdges before the parsing starts.
         LeafInitRule().apply(self._chart, self._grammar)
 
@@ -1697,7 +1697,7 @@ class ChartParserApp(object):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
         self._sysfont = tkFont.Font(font=Tkinter.Button()["font"])
         root.option_add("*Font", self._sysfont)
-        
+
         # TWhat's our font size (default=same as sysfont)
         self._size = Tkinter.IntVar(root)
         self._size.set(self._sysfont.cget('size'))
@@ -1717,8 +1717,8 @@ class ChartParserApp(object):
         self._animate.set(3) # Default speed = fast
 
         # Are we currently animating?
-        self._animating = 0  
-        
+        self._animating = 0
+
     def _init_chartview(self, parent):
         self._cv = ChartView(self._chart, parent,
                              draw_tree=1, draw_sentence=1)
@@ -1737,7 +1737,7 @@ class ChartParserApp(object):
         step = Tkinter.Checkbutton(parent, variable=self._step,
                                    text='Step')
         step.pack(side='right')
-        
+
     def _init_buttons(self, parent):
         frame1 = Tkinter.Frame(parent)
         frame2 = Tkinter.Frame(parent)
@@ -1750,7 +1750,7 @@ class ChartParserApp(object):
         #Tkinter.Button(frame1, text='Pause',
         #               background='#90c0d0', foreground='black',
         #               command=self.pause).pack(side='left')
-        
+
         Tkinter.Button(frame1, text='Top Down\nStrategy',
                        background='#90c0d0', foreground='black',
                        command=self.top_down_strategy).pack(side='left')
@@ -1768,7 +1768,7 @@ class ChartParserApp(object):
                        background='#90f090', foreground='black',
                        command=self.top_down_predict).pack(side='left')
         Tkinter.Frame(frame2, width=20).pack(side='left')
-        
+
         Tkinter.Button(frame2, text='Bottom Up Predict\nRule',
                        background='#90f090', foreground='black',
                        command=self.bottom_up).pack(side='left')
@@ -1778,7 +1778,7 @@ class ChartParserApp(object):
                        background='#90f090', foreground='black',
                        command=self.bottom_up_leftcorner).pack(side='left')
         Tkinter.Frame(frame2, width=20).pack(side='left')
-        
+
         Tkinter.Button(frame2, text='Fundamental\nRule',
                        background='#90f090', foreground='black',
                        command=self.fundamental).pack(side='left')
@@ -1791,16 +1791,16 @@ class ChartParserApp(object):
         self._root.bind('<Control-q>', self.destroy)
         self._root.bind('<Control-x>', self.destroy)
         self._root.bind('<F1>', self.help)
-        
+
         self._root.bind('<Control-s>', self.save_chart)
         self._root.bind('<Control-o>', self.load_chart)
         self._root.bind('<Control-r>', self.reset)
-        
+
         self._root.bind('t', self.top_down_strategy)
         self._root.bind('b', self.bottom_up_strategy)
         self._root.bind('c', self.bottom_up_leftcorner_strategy)
         self._root.bind('<space>', self._stop_animation)
-        
+
         self._root.bind('<Control-g>', self.edit_grammar)
         self._root.bind('<Control-t>', self.edit_sentence)
 
@@ -1814,7 +1814,7 @@ class ChartParserApp(object):
 
     def _init_menubar(self):
         menubar = Tkinter.Menu(self._root)
-        
+
         filemenu = Tkinter.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Save Chart', underline=0,
                              command=self.save_chart, accelerator='Ctrl-s')
@@ -1823,15 +1823,15 @@ class ChartParserApp(object):
         filemenu.add_command(label='Reset Chart', underline=0,
                              command=self.reset, accelerator='Ctrl-r')
         filemenu.add_separator()
-        filemenu.add_command(label='Save Grammar', 
+        filemenu.add_command(label='Save Grammar',
                              command=self.save_grammar)
-        filemenu.add_command(label='Load Grammar', 
+        filemenu.add_command(label='Load Grammar',
                              command=self.load_grammar)
         filemenu.add_separator()
         filemenu.add_command(label='Exit', underline=1,
                              command=self.destroy, accelerator='Ctrl-x')
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
-        
+
         editmenu = Tkinter.Menu(menubar, tearoff=0)
         editmenu.add_command(label='Edit Grammar', underline=5,
                              command=self.edit_grammar,
@@ -1840,14 +1840,14 @@ class ChartParserApp(object):
                              command=self.edit_sentence,
                              accelerator='Ctrl-t')
         menubar.add_cascade(label='Edit', underline=0, menu=editmenu)
-        
+
         viewmenu = Tkinter.Menu(menubar, tearoff=0)
         viewmenu.add_command(label='Chart Matrix', underline=6,
                              command=self.view_matrix)
         viewmenu.add_command(label='Results', underline=0,
                              command=self.view_results)
         menubar.add_cascade(label='View', underline=0, menu=viewmenu)
-        
+
         rulemenu = Tkinter.Menu(menubar, tearoff=0)
         rulemenu.add_command(label='Top Down Strategy', underline=0,
                              command=self.top_down_strategy,
@@ -1867,7 +1867,7 @@ class ChartParserApp(object):
                              command=self.top_down_init)
         rulemenu.add_command(label='Top Down Predict Rule',
                              command=self.top_down_predict)
-        rulemenu.add_command(label='Fundamental Rule', 
+        rulemenu.add_command(label='Fundamental Rule',
                              command=self.fundamental)
         menubar.add_cascade(label='Apply', underline=0, menu=rulemenu)
 
@@ -1888,7 +1888,7 @@ class ChartParserApp(object):
                                     variable=self._animate, value=3,
                                     accelerator='+')
         menubar.add_cascade(label="Animate", underline=1, menu=animatemenu)
-        
+
         zoommenu = Tkinter.Menu(menubar, tearoff=0)
         zoommenu.add_radiobutton(label='Tiny', variable=self._size,
                                  underline=0, value=10, command=self.resize)
@@ -1908,7 +1908,7 @@ class ChartParserApp(object):
         helpmenu.add_command(label='Instructions', underline=0,
                              command=self.help, accelerator='F1')
         menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
-        
+
         self._root.config(menu=menubar)
 
     #////////////////////////////////////////////////////////////
@@ -1937,7 +1937,7 @@ class ChartParserApp(object):
         # Update the matrix view.
         if self._matrix: self._matrix.markonly_edge(edge)
         if self._matrix: self._matrix.view_edge(edge)
-        
+
     def _deselect_edge(self):
         self._selection = None
         # Update the chart view.
@@ -1966,7 +1966,7 @@ class ChartParserApp(object):
 
     def help(self, *e):
         self._animating = 0
-        # The default font's not very legible; try using 'fixed' instead. 
+        # The default font's not very legible; try using 'fixed' instead.
         try:
             ShowText(self._root, 'Help: Chart Parser Application',
                      (__doc__).strip(), width=75, font='fixed')
@@ -2016,7 +2016,7 @@ class ChartParserApp(object):
             pickle.dump(self._chart, open(filename, 'w'))
         except Exception, e:
             raise
-            tkMessageBox.showerror('Error Saving Chart', 
+            tkMessageBox.showerror('Error Saving Chart',
                                    'Unable to open file: %r' % filename)
 
     def load_grammar(self, *args):
@@ -2031,7 +2031,7 @@ class ChartParserApp(object):
                 grammar = parse_cfg(open(filename, 'r').read())
             self.set_grammar(grammar)
         except Exception, e:
-            tkMessageBox.showerror('Error Loading Grammar', 
+            tkMessageBox.showerror('Error Loading Grammar',
                                    'Unable to open file: %r' % filename)
 
     def save_grammar(self, *args):
@@ -2052,7 +2052,7 @@ class ChartParserApp(object):
         except Exception, e:
             tkMessageBox.showerror('Error Saving Grammar',
                                    'Unable to open file: %r' % filename)
-            
+
     def reset(self, *args):
         self._animating = 0
         self._reset_parser()
@@ -2110,10 +2110,10 @@ class ChartParserApp(object):
         self._font.configure(size=-abs(size))
         self._boldfont.configure(size=-abs(size))
         self._sysfont.configure(size=-abs(size))
-            
+
     def get_font_size(self):
         return abs(self._size.get())
-            
+
     #////////////////////////////////////////////////////////////
     # Parsing
     #////////////////////////////////////////////////////////////
@@ -2157,7 +2157,7 @@ class ChartParserApp(object):
 
     def _stop_animation(self, *e):
         self._animating = 0
-                                      
+
     def _animate_strategy(self, speed=1):
         if self._animating == 0: return
         if self._apply_strategy() is not None:
@@ -2169,7 +2169,7 @@ class ChartParserApp(object):
                 self._root.after(1000, self._animate_strategy)
             else:
                 self._root.after(20, self._animate_strategy)
-        
+
     def _apply_strategy(self):
         new_edge = self._cpstep.next()
 
@@ -2188,7 +2188,7 @@ class ChartParserApp(object):
     #////////////////////////////////////////////////////////////
     # Parsing Strategies
     #////////////////////////////////////////////////////////////
-    
+
     # Basic rules:
     _TD_INIT     = [TopDownInitRule()]
     _TD_PREDICT  = [TopDownPredictRule()]
@@ -2218,7 +2218,7 @@ class ChartParserApp(object):
         self.apply_strategy(self._BU_LC_STRATEGY, BottomUpLeftCornerEdgeRule)
     def top_down_strategy(self, *e):
         self.apply_strategy(self._TD_STRATEGY, TopDownPredictEdgeRule)
-        
+
 def app():
     grammar = parse_cfg("""
     # Grammatical productions.
@@ -2233,7 +2233,7 @@ def app():
         V -> 'ate' | 'saw'
         P -> 'on' | 'under' | 'with'
     """)
-    
+
     sent = 'John ate the cake on the table with a fork'
     sent = 'John ate the cake on the table'
     tokens = list(sent.split())
@@ -2245,7 +2245,7 @@ def app():
     print 'tokens = %r' % tokens
     print 'Calling "ChartParserApp(grammar, tokens)"...'
     ChartParserApp(grammar, tokens).mainloop()
-        
+
 if __name__ == '__main__':
     app()
 
@@ -2254,7 +2254,7 @@ if __name__ == '__main__':
     #          '/tmp/topdown.pickle',
     #          '/tmp/bottomup.pickle']
     #ChartComparer(*charts).mainloop()
-    
+
     #import profile
     #profile.run('demo2()', '/tmp/profile.out')
     #import pstats

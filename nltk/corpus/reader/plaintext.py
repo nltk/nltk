@@ -35,8 +35,8 @@ class PlaintextCorpusReader(CorpusReader):
     """The corpus view class used by this reader.  Subclasses of
        ``PlaintextCorpusReader`` may specify alternative corpus view
        classes (e.g., to skip the preface sections of documents.)"""
-    
-    def __init__(self, root, fileids, 
+
+    def __init__(self, root, fileids,
                  word_tokenizer=WordPunctTokenizer(),
                  sent_tokenizer=nltk.data.LazyLoader(
                      'tokenizers/punkt/english.pickle'),
@@ -48,7 +48,7 @@ class PlaintextCorpusReader(CorpusReader):
 
             >>> root = '/usr/local/share/nltk_data/corpora/webtext/'
             >>> reader = PlaintextCorpusReader(root, '.*\.txt')
-        
+
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
         :param word_tokenizer: Tokenizer for breaking sentences or
@@ -71,7 +71,7 @@ class PlaintextCorpusReader(CorpusReader):
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
         return concat([self.open(f, sourced).read() for f in fileids])
-    
+
     def words(self, fileids=None, sourced=False):
         """
         :return: the given file(s) as a list of words
@@ -89,8 +89,8 @@ class PlaintextCorpusReader(CorpusReader):
                                            encoding=enc)
                            for (path, enc, fileid)
                            in self.abspaths(fileids, True, True)])
-            
-    
+
+
     def sents(self, fileids=None, sourced=False):
         """
         :return: the given file(s) as a list of
@@ -110,7 +110,7 @@ class PlaintextCorpusReader(CorpusReader):
                                            encoding=enc)
                            for (path, enc, fileid)
                            in self.abspaths(fileids, True, True)])
-            
+
 
     def paras(self, fileids=None, sourced=False):
         """
@@ -137,21 +137,21 @@ class PlaintextCorpusReader(CorpusReader):
         for i in range(20): # Read 20 lines at a time.
             words.extend(self._word_tokenizer.tokenize(stream.readline()))
         return words
-    
+
     def _read_sent_block(self, stream):
         sents = []
         for para in self._para_block_reader(stream):
             sents.extend([self._word_tokenizer.tokenize(sent)
                           for sent in self._sent_tokenizer.tokenize(para)])
         return sents
-    
+
     def _read_para_block(self, stream):
         paras = []
         for para in self._para_block_reader(stream):
             paras.append([self._word_tokenizer.tokenize(sent)
                           for sent in self._sent_tokenizer.tokenize(para)])
         return paras
-            
+
 
 class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
                                     PlaintextCorpusReader):
@@ -199,20 +199,20 @@ class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReade
 class EuroparlCorpusReader(PlaintextCorpusReader):
 
     """
-    Reader for Europarl corpora that consist of plaintext documents.  
+    Reader for Europarl corpora that consist of plaintext documents.
     Documents are divided into chapters instead of paragraphs as
     for regular plaintext documents. Chapters are separated using blank
-    lines. Everything is inherited from ``PlaintextCorpusReader`` except 
+    lines. Everything is inherited from ``PlaintextCorpusReader`` except
     that:
       - Since the corpus is pre-processed and pre-tokenized, the
         word tokenizer should just split the line at whitespaces.
       - For the same reason, the sentence tokenizer should just
         split the paragraph at line breaks.
       - There is a new 'chapters()' method that returns chapters instead
-        instead of paragraphs. 
+        instead of paragraphs.
       - The 'paras()' method inherited from PlaintextCorpusReader is
         made non-functional to remove any confusion between chapters
-        and paragraphs for Europarl. 
+        and paragraphs for Europarl.
     """
 
     def _read_word_block(self, stream):
@@ -243,7 +243,7 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
         return concat([self.CorpusView(fileid, self._read_para_block,
                                        encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
-                       
+
     def paras(self, fileids=None):
         raise NotImplementedError('The Europarl corpus reader does not support paragraphs. Please use chapters() instead.')
 

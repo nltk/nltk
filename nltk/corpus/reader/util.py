@@ -58,7 +58,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
     larger block sizes may decrease performance for random access to
     the corpus.  (But note that larger block sizes will *not*
     decrease performance for iteration.)
-    
+
     Internally, ``CorpusView`` maintains a partial mapping from token
     index to file position, with one entry per block.  When a token
     with a given index *i* is requested, the ``CorpusView`` constructs
@@ -66,7 +66,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
       1. First, it searches the toknum/filepos mapping for the token
          index closest to (but less than or equal to) *i*.
-         
+
       2. Then, starting at the file position corresponding to that
          index, it reads one block at a time using the block reader
          until it reaches the requested token.
@@ -86,7 +86,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
         but if you wish to close it manually, use the ``close()``
         method.  If you access a ``CorpusView``'s items after it has been
         closed, the file object will be automatically re-opened.
-        
+
     :warning: If the contents of the file are modified during the
         lifetime of the ``CorpusView``, then the ``CorpusView``'s behavior
         is undefined.
@@ -98,7 +98,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
         relative offsets, or with offsets based on string lengths, may
         lead to incorrect behavior.
 
-    :ivar _block_reader: The function used to read 
+    :ivar _block_reader: The function used to read
         a single block from the underlying file stream.
     :ivar _toknum: A list containing the token index of each block
         that has been processed.  In particular, ``_toknum[i]`` is the
@@ -166,14 +166,14 @@ class StreamBackedCorpusView(AbstractLazySequence):
            called.  This is provided for the benefit of the block
            reader, which under rare circumstances may need to know
            the current token number."""
-        
+
         self._current_blocknum = None
         """This variable is set to the index of the next block that
            will be read, immediately before ``self.read_block()`` is
            called.  This is provided for the benefit of the block
            reader, which under rare circumstances may need to know
            the current block number."""
-        
+
         # Find the length of the file.
         try:
             if isinstance(self._fileid, PathPointer):
@@ -183,7 +183,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
         except Exception, exc:
             raise ValueError('Unable to open or access %r -- %s' %
                              (fileid, exc))
-        
+
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
@@ -195,7 +195,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
     def read_block(self, stream):
         """
-        Read a block from the input stream. 
+        Read a block from the input stream.
 
         :return: a block of tokens from the input stream
         :rtype: list(any)
@@ -239,7 +239,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
             # of the file:
             for tok in self.iterate_from(self._toknum[-1]): pass
         return self._len
-    
+
     def __getitem__(self, i):
         if isinstance(i, slice):
             start, stop = slice_bounds(self, i)
@@ -271,7 +271,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
             for tok in self._cache[2][start_tok-self._cache[0]:]:
                 yield tok
                 start_tok += 1
-        
+
         # Decide where in the file we should start.  If `start` is in
         # our mapping, then we can jump straight to the correct block;
         # otherwise, start at the last block we've processed.
@@ -287,7 +287,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
         # Open the stream, if it's not open already.
         if self._stream is None:
             self._open()
-            
+
         # Each iteration through this loop, we read a single block
         # from the stream.
         while filepos < self._eofpos:
@@ -307,7 +307,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
             # Update our cache.
             self._cache = (toknum, toknum+num_toks, list(tokens))
-            
+
             # Update our mapping.
             assert toknum <= self._toknum[-1]
             if num_toks > 0:
@@ -341,7 +341,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
         # If we reach this point, then we should know our length.
         assert self._len is not None
-        
+
     # Use concat for these, so we can use a ConcatenatedCorpusView
     # when possible.
     def __add__(self, other):
@@ -363,12 +363,12 @@ class ConcatenatedCorpusView(AbstractLazySequence):
         self._pieces = corpus_views
         """A list of the corpus subviews that make up this
         concatenation."""
-        
+
         self._offsets = [0]
         """A list of offsets, indicating the index at which each
         subview begins.  In particular::
             offsets[i] = sum([len(p) for p in pieces[:i]])"""
-        
+
         self._open_piece = None
         """The most recently accessed corpus subview (or None).
         Before a new subview is accessed, this subview will be closed."""
@@ -377,7 +377,7 @@ class ConcatenatedCorpusView(AbstractLazySequence):
         if len(self._offsets) <= len(self._pieces):
             # Iterate to the end of the corpus.
             for tok in self.iterate_from(self._offsets[-1]): pass
-            
+
         return self._offsets[-1]
 
     def close(self):
@@ -407,7 +407,7 @@ class ConcatenatedCorpusView(AbstractLazySequence):
 
             # Move on to the next piece.
             piecenum += 1
-        
+
 def concat(docs):
     """
     Concatenate together the contents of multiple documents from a
@@ -419,7 +419,7 @@ def concat(docs):
         return docs[0]
     if len(docs) == 0:
         raise ValueError('concat() expects at least one object!')
-    
+
     types = set([d.__class__ for d in docs])
 
     # If they're all strings, use string concatenation.
@@ -447,7 +447,7 @@ def concat(docs):
 
         if issubclass(typ, list):
             return reduce((lambda a,b:a+b), docs, [])
-    
+
         if issubclass(typ, tuple):
             return reduce((lambda a,b:a+b), docs, ())
 
@@ -492,7 +492,7 @@ class PickleCorpusView(StreamBackedCorpusView):
         """
         self._delete_on_gc = delete_on_gc
         StreamBackedCorpusView.__init__(self, fileid)
-    
+
     def read_block(self, stream):
         result = []
         for i in range(self.BLOCK_SIZE):
@@ -526,7 +526,7 @@ class PickleCorpusView(StreamBackedCorpusView):
         Write the given sequence to a temporary file as a pickle
         corpus; and then return a ``PickleCorpusView`` view for that
         temporary corpus file.
-        
+
         :param delete_on_gc: If true, then the temporary file will be
             deleted whenever this object gets garbage-collected.
         """
@@ -538,7 +538,7 @@ class PickleCorpusView(StreamBackedCorpusView):
             return PickleCorpusView(output_file_name, delete_on_gc)
         except (OSError, IOError), e:
             raise ValueError('Error while creating temp file: %s' % e)
-        
+
 
 
 ######################################################################
@@ -638,7 +638,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     If the file ends in in the middle of an s-expression, then that
     incomplete s-expression is returned when the end of the file is
     reached.
-    
+
     :param block_size: The default block size for reading.  If an
         s-expression is longer than one block, then more than one
         block will be read.
@@ -673,13 +673,13 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
             offset = re.compile(r'\s*').search(block, offset).end()
-                
+
             # Move to the end position.
             if encoding is None:
                 stream.seek(start+offset)
             else:
                 stream.seek(start+len(block[:offset].encode(encoding)))
-                
+
             # Return the list of tokens we processed
             return tokens
         except ValueError, e:
@@ -764,10 +764,10 @@ def find_corpus_fileids(root, regexp):
             # Don't visit svn directories:
             if '.svn' in subdirs: subdirs.remove('.svn')
         return sorted(items)
-            
+
     else:
         raise AssertionError("Don't know how to handle %r" % root)
-    
+
 def _path_from(parent, child):
     if os.path.split(parent)[1] == '':
         parent = os.path.split(parent)[0]
@@ -797,4 +797,4 @@ def tagged_treebank_para_block_reader(stream):
         # Content line:
         else:
             para += line
-            
+

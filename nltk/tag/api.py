@@ -70,7 +70,7 @@ class TaggerI(object):
     def _check_params(self, train, model):
         if (train and model) or (not train and not model):
             raise ValueError('Must specify either training data or trained model.')
-        
+
 class FeaturesetTaggerI(TaggerI):
     """
     A tagger that requires tokens to be ``featuresets``.  A featureset
@@ -79,7 +79,7 @@ class FeaturesetTaggerI(TaggerI):
     and featuresets.
     """
 
-    
+
 class HiddenMarkovModelTaggerTransformI(object):
     """
     An interface for a transformation to be used as the transform parameter
@@ -87,16 +87,16 @@ class HiddenMarkovModelTaggerTransformI(object):
     """
     def __init__(self):
         if self.__class__ == HiddenMarkovModelTaggerTransformI:
-            raise AssertionError, "Interfaces can't be instantiated"      
+            raise AssertionError, "Interfaces can't be instantiated"
 
     def transform(self, labeled_symbols):
         """
         :return: a list of transformed symbols
         :rtype: list
-        :param labeled_symbols: a list of labeled untransformed symbols, 
+        :param labeled_symbols: a list of labeled untransformed symbols,
             i.e. symbols that are not (token, tag) or (word, tag)
         :type labeled_symbols: list
-        """      
+        """
         raise NotImplementedError()
 
 

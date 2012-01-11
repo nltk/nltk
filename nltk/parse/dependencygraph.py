@@ -29,7 +29,7 @@ class DependencyGraph(object):
     """
     def __init__(self, tree_str=None):
         """
-        We place a dummy 'top' node in the first position 
+        We place a dummy 'top' node in the first position
         in the nodelist, since the root node is often assigned '0'
         as its head. This also means that the indexing of the nodelist
         corresponds directly to the Malt-TAB format, which starts at 1.
@@ -43,7 +43,7 @@ class DependencyGraph(object):
 
     def remove_by_address(self, address):
         """
-        Removes the node with the given address.  References 
+        Removes the node with the given address.  References
         to this node in others will still exist.
         """
         node_index = len(self.nodelist) - 1
@@ -55,7 +55,7 @@ class DependencyGraph(object):
 
     def redirect_arcs(self, originals, redirect):
         """
-        Redirects arcs to any of the nodes in the originals list 
+        Redirects arcs to any of the nodes in the originals list
         to the redirect node address.
         """
         for node in self.nodelist:
@@ -69,7 +69,7 @@ class DependencyGraph(object):
 
     def add_arc(self, head_address, mod_address):
         """
-        Adds an arc from the node specified by head_address to the 
+        Adds an arc from the node specified by head_address to the
         node specified by the mod address.
         """
         for node in self.nodelist:
@@ -99,17 +99,17 @@ class DependencyGraph(object):
 
     def contains_address(self, node_address):
         """
-        Returns true if the graph contains a node with the given node 
+        Returns true if the graph contains a node with the given node
         address, false otherwise.
         """
         for node in self.nodelist:
             if node['address'] == node_address:
                 return True
         return False
-                    
+
     def __str__(self):
         return pformat(self.nodelist)
-    
+
     def __repr__(self):
         return "<DependencyGraph with %d nodes>" % len(self.nodelist)
 
@@ -141,7 +141,7 @@ class DependencyGraph(object):
         """
         Returns the number of right children under the node specified
         by the given address.
-        """        
+        """
         children = self.nodelist[node_index]['deps']
         index = self.nodelist[node_index]['address']
         return sum(1 for c in children if c > index)
@@ -177,13 +177,13 @@ class DependencyGraph(object):
                     self.nodelist[head]['deps'].append(index+1)
                 except IndexError:
                     temp.append((index+1, head))
-                        
+
             except ValueError:
                 break
 
         root_address = self.nodelist[0]['deps'][0]
         self.root = self.nodelist[root_address]
-        
+
     def _word(self, node, filter=True):
         w = node['word']
         if filter:
@@ -194,9 +194,9 @@ class DependencyGraph(object):
         """
         Recursive function for turning dependency graphs into
         NLTK trees.
-        :type i: int 
+        :type i: int
         :param i: index of a node in ``nodelist``
-        :return: either a word (if the indexed node 
+        :return: either a word (if the indexed node
         is a leaf) or a ``Tree``.
         """
 
@@ -212,7 +212,7 @@ class DependencyGraph(object):
 
     def tree(self):
         """
-        Starting with the ``root`` node, build a dependency tree using the NLTK 
+        Starting with the ``root`` node, build a dependency tree using the NLTK
         ``Tree`` constructor. Dependency labels are omitted.
         """
         node = self.root
@@ -230,7 +230,7 @@ class DependencyGraph(object):
         try:
             return self.nodelist[i]['rel']
         except IndexError:
-            return None  
+            return None
 
     # what's the return type?  Boolean or list?
     def contains_cycle(self):
@@ -254,7 +254,7 @@ class DependencyGraph(object):
                     path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0]) #self.nodelist[pair[0]], pair[0])
                     return path
         return False  # return []?
-        
+
 
     def get_cycle_path(self, curr_node, goal_node_index):
         for dep in curr_node['deps']:
@@ -265,17 +265,17 @@ class DependencyGraph(object):
             if len(path) > 0:
                 path.insert(0, curr_node['address'])
                 return path
-        return [] 
-                
+        return []
+
     def to_conll(self, style):
         """
         The dependency graph in CoNLL format.
-        
+
         :param style: the style to use for the format (3, 4, 10 columns)
         :type style: int
         :rtype: str
         """
-        
+
         lines = []
         for i, node in enumerate(self.nodelist[1:]):
             word, tag, head, rel = node['word'], node['tag'], node['head'], node['rel']
@@ -292,12 +292,12 @@ class DependencyGraph(object):
 
 def nx_graph(self):
     """
-    Convert the data in a ``nodelist`` into a networkx 
+    Convert the data in a ``nodelist`` into a networkx
     labeled directed graph.
     :rtype: XDigraph
     """
     nx_nodelist = range(1, len(self.nodelist))
-    nx_edgelist = [(n, self._hd(n), self._rel(n)) 
+    nx_edgelist = [(n, self._hd(n), self._rel(n))
                         for n in nx_nodelist if self._hd(n)]
     self.nx_labels = {}
     for n in nx_nodelist:
@@ -362,7 +362,7 @@ Nov.    NNP     9       VMOD
 
 def conll_demo():
     """
-    A demonstration of how to read a string representation of 
+    A demonstration of how to read a string representation of
     a CoNLL format dependency tree.
     """
     dg = DependencyGraph(conll_data1)
@@ -383,7 +383,7 @@ def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
     print dg.contains_cycle()
     cyclic_dg = DependencyGraph()
-    top =    {'word':None, 'deps':[1], 'rel': 'TOP', 'address': 0}   
+    top =    {'word':None, 'deps':[1], 'rel': 'TOP', 'address': 0}
     child1 = {'word':None, 'deps':[2], 'rel': 'NTOP', 'address': 1}
     child2 = {'word':None, 'deps':[4], 'rel': 'NTOP', 'address': 2}
     child3 = {'word':None, 'deps':[1], 'rel': 'NTOP', 'address': 3}

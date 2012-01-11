@@ -23,7 +23,7 @@ from nltk.grammar import (Nonterminal, Production, ContextFreeGrammar,
                           FeatStructNonterminal, is_nonterminal,
                           is_terminal)
 from nltk.parse.chart import (TreeEdge, Chart, ChartParser, EdgeI,
-                              FundamentalRule, LeafInitRule, 
+                              FundamentalRule, LeafInitRule,
                               EmptyPredictRule, BottomUpPredictRule,
                               SingleEdgeFundamentalRule,
                               BottomUpPredictCombineRule,
@@ -56,7 +56,7 @@ class FeatureTreeEdge(TreeEdge):
         the other arguments.
         """
         if bindings is None: bindings = {}
-        
+
         # If the edge is complete, then substitute in the bindings,
         # and then throw them away.  (If we didn't throw them away, we
         # might think that 2 complete edges are different just because
@@ -76,7 +76,7 @@ class FeatureTreeEdge(TreeEdge):
         """
         :return: A new ``TreeEdge`` formed from the given production.
             The new edge's left-hand side and right-hand side will
-            be taken from ``production``; its span will be 
+            be taken from ``production``; its span will be
             ``(index,index)``; and its dot position will be ``0``.
         :rtype: TreeEdge
         """
@@ -87,7 +87,7 @@ class FeatureTreeEdge(TreeEdge):
     def move_dot_forward(self, new_end, bindings=None):
         """
         :return: A new ``FeatureTreeEdge`` formed from this edge.
-            The new edge's dot position is increased by ``1``, 
+            The new edge's dot position is increased by ``1``,
             and its end index will be replaced by ``new_end``.
         :rtype: FeatureTreeEdge
         :param new_end: The new end index.
@@ -136,7 +136,7 @@ class FeatureTreeEdge(TreeEdge):
                     self._dot, self._bindings),
                    (other._span, other._lhs, other._rhs,
                     other._dot, other._bindings))
-    
+
     def __hash__(self):
         # cache this:?
         return hash((self._lhs, self._rhs, self._span, self._dot,
@@ -157,13 +157,13 @@ class FeatureChart(Chart):
 
     def select(self, **restrictions):
         """
-        Returns an iterator over the edges in this chart. 
+        Returns an iterator over the edges in this chart.
         See ``Chart.select`` for more information about the
         ``restrictions`` on the edges.
         """
         # If there are no restrictions, then return all edges.
         if restrictions=={}: return iter(self._edges)
-            
+
         # Find the index corresponding to the given restrictions.
         restr_keys = restrictions.keys()
         restr_keys.sort()
@@ -172,11 +172,11 @@ class FeatureChart(Chart):
         # If it doesn't exist, then create it.
         if restr_keys not in self._indexes:
             self._add_index(restr_keys)
-                
-        vals = tuple(self._get_type_if_possible(restrictions[key]) 
+
+        vals = tuple(self._get_type_if_possible(restrictions[key])
                      for key in restr_keys)
         return iter(self._indexes[restr_keys].get(vals, []))
-    
+
     def _add_index(self, restr_keys):
         """
         A helper function for ``select``, which creates a new index for
@@ -192,10 +192,10 @@ class FeatureChart(Chart):
 
         # Add all existing edges to the index.
         for edge in self._edges:
-            vals = tuple(self._get_type_if_possible(getattr(edge, key)()) 
+            vals = tuple(self._get_type_if_possible(getattr(edge, key)())
                          for key in restr_keys)
             index.setdefault(vals, []).append(edge)
-    
+
     def _register_with_indexes(self, edge):
         """
         A helper function for ``insert``, which registers the new
@@ -279,23 +279,23 @@ class FeatureFundamentalRule(FundamentalRule):
 
         # Construct the new edge.
         new_edge = left_edge.move_dot_forward(right_edge.end(), bindings)
-        
+
         # Add it to the chart, with appropriate child pointers.
         if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
             yield new_edge
 
 class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     """
-    A specialized version of the completer / single edge fundamental rule 
-    that operates on nonterminals whose symbols are ``FeatStructNonterminal``s.  
+    A specialized version of the completer / single edge fundamental rule
+    that operates on nonterminals whose symbols are ``FeatStructNonterminal``s.
     Rather than simply comparing the nonterminals for equality, they are
-    unified. 
+    unified.
     """
     _fundamental_rule = FeatureFundamentalRule()
 
     def _apply_complete(self, chart, grammar, right_edge):
         fr = self._fundamental_rule
-        for left_edge in chart.select(end=right_edge.start(), 
+        for left_edge in chart.select(end=right_edge.start(),
                                       is_complete=False,
                                       next=right_edge.lhs()):
             for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
@@ -303,7 +303,7 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
 
     def _apply_incomplete(self, chart, grammar, left_edge):
         fr = self._fundamental_rule
-        for right_edge in chart.select(start=left_edge.end(), 
+        for right_edge in chart.select(start=left_edge.end(),
                                        is_complete=True,
                                        lhs=left_edge.next()):
             for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
@@ -349,23 +349,23 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
         # just return (no new edges to add).
         done = self._done.get((next, index), (None,None))
         if done[0] is chart and done[1] is grammar: return
-        
+
         for prod in grammar.productions(lhs=edge.next()):
-            # If the left corner in the predicted production is 
+            # If the left corner in the predicted production is
             # leaf, it must match with the input.
             if prod.rhs():
                 first = prod.rhs()[0]
                 if is_terminal(first):
                     if index >= chart.num_leaves(): continue
                     if first != chart.leaf(index): continue
-            
+
             # We rename vars here, because we don't want variables
             # from the two different productions to match.
             if unify(prod.lhs(), edge.next_with_bindings(), rename_vars=True):
                 new_edge = FeatureTreeEdge.from_production(prod, edge.end())
                 if chart.insert(new_edge, ()):
                     yield new_edge
-        
+
         # Record the fact that we've applied this rule.
         self._done[next, index] = (chart, grammar)
 
@@ -378,10 +378,10 @@ class FeatureBottomUpPredictRule(BottomUpPredictRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_incomplete(): return
         for prod in grammar.productions(rhs=edge.lhs()):
-            if isinstance(edge, FeatureTreeEdge): 
+            if isinstance(edge, FeatureTreeEdge):
                 next = prod.rhs()[0]
                 if not is_nonterminal(next): continue
-            
+
             new_edge = FeatureTreeEdge.from_production(prod, edge.start())
             if chart.insert(new_edge, ()):
                 yield new_edge
@@ -392,19 +392,19 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
         found = edge.lhs()
         for prod in grammar.productions(rhs=found):
             bindings = {}
-            if isinstance(edge, FeatureTreeEdge): 
+            if isinstance(edge, FeatureTreeEdge):
                 next = prod.rhs()[0]
                 if not is_nonterminal(next): continue
-                
+
                 # We rename vars here, because we don't want variables
                 # from the two different productions to match.
                 used_vars = find_variables((prod.lhs(),) + prod.rhs(),
                                            fs_class=FeatStruct)
                 found = found.rename_variables(used_vars=used_vars)
-                
+
                 result = unify(next, found, bindings, rename_vars=False)
                 if result is None: continue
-            
+
             new_edge = (FeatureTreeEdge.from_production(prod, edge.start())
                         .move_dot_forward(edge.end(), bindings))
             if chart.insert(new_edge, (edge,)):
@@ -424,8 +424,8 @@ class FeatureEmptyPredictRule(EmptyPredictRule):
 #////////////////////////////////////////////////////////////
 
 TD_FEATURE_STRATEGY = [LeafInitRule(),
-                       FeatureTopDownInitRule(), 
-                       FeatureTopDownPredictRule(), 
+                       FeatureTopDownInitRule(),
+                       FeatureTopDownPredictRule(),
                        FeatureSingleEdgeFundamentalRule()]
 BU_FEATURE_STRATEGY = [LeafInitRule(),
                        FeatureEmptyPredictRule(),
@@ -437,15 +437,15 @@ BU_LC_FEATURE_STRATEGY = [LeafInitRule(),
                           FeatureSingleEdgeFundamentalRule()]
 
 class FeatureChartParser(ChartParser):
-    def __init__(self, grammar, 
-                 strategy=BU_LC_FEATURE_STRATEGY, 
-                 trace_chart_width=20, 
-                 chart_class=FeatureChart, 
+    def __init__(self, grammar,
+                 strategy=BU_LC_FEATURE_STRATEGY,
+                 trace_chart_width=20,
+                 chart_class=FeatureChart,
                  **parser_args):
-        ChartParser.__init__(self, grammar, 
-                             strategy=strategy, 
-                             trace_chart_width=trace_chart_width, 
-                             chart_class=chart_class, 
+        ChartParser.__init__(self, grammar,
+                             strategy=strategy,
+                             trace_chart_width=trace_chart_width,
+                             chart_class=chart_class,
                              **parser_args)
 
 class FeatureTopDownChartParser(FeatureChartParser):
@@ -475,7 +475,7 @@ class InstantiateVarsChart(FeatureChart):
     """
     def __init__(self, tokens):
         FeatureChart.__init__(self, tokens)
-        
+
     def initialize(self):
         self._instantiated = set()
         FeatureChart.initialize(self)
@@ -484,32 +484,32 @@ class InstantiateVarsChart(FeatureChart):
         if edge in self._instantiated: return False
         self.instantiate_edge(edge)
         return FeatureChart.insert(self, edge, child_pointer_list)
-    
+
     def instantiate_edge(self, edge):
         """
-        If the edge is a ``FeatureTreeEdge``, and it is complete, 
+        If the edge is a ``FeatureTreeEdge``, and it is complete,
         then instantiate all variables whose names start with '@',
         by replacing them with unique new variables.
-        
+
         Note that instantiation is done in-place, since the
-        parsing algorithms might already hold a reference to 
+        parsing algorithms might already hold a reference to
         the edge for future use.
         """
         # If the edge is a leaf, or is not complete, or is
         # already in the chart, then just return it as-is.
-        if not isinstance(edge, FeatureTreeEdge): return 
-        if not edge.is_complete(): return 
-        if edge in self._edge_to_cpls: return 
-        
+        if not isinstance(edge, FeatureTreeEdge): return
+        if not edge.is_complete(): return
+        if edge in self._edge_to_cpls: return
+
         # Get a list of variables that need to be instantiated.
         # If there are none, then return as-is.
         inst_vars = self.inst_vars(edge)
-        if not inst_vars: return 
-        
+        if not inst_vars: return
+
         # Instantiate the edge!
         self._instantiated.add(edge)
         edge._lhs = edge.lhs().substitute_bindings(inst_vars)
-    
+
     def inst_vars(self, edge):
         return dict((var, logic.unique_variable())
                     for var in edge.lhs().variables()

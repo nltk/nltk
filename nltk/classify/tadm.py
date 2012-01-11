@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to TADM Classifier
 #
-# Copyright (C) 2001-2012 NLTK Project 
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -22,7 +22,7 @@ def config_tadm(bin=None):
         env_vars=['TADM_DIR'],
         binary_names=['tadm'],
         url='http://tadm.sf.net')
-        
+
 def write_tadm_file(train_toks, encoding, stream):
     """
     Generate an input file for ``tadm`` based on the given corpus of
@@ -48,7 +48,7 @@ def write_tadm_file(train_toks, encoding, stream):
         stream.write('%d\n' % len(labels))
         for known_label in labels:
             v = encoding.encode(featureset, known_label)
-            stream.write('%d %d %s\n' % (int(label == known_label), len(v), 
+            stream.write('%d %d %s\n' % (int(label == known_label), len(v),
                 ' '.join('%d %d' % u for u in v)))
 
 def parse_tadm_weights(paramfile):
@@ -60,7 +60,7 @@ def parse_tadm_weights(paramfile):
     weights = []
     for line in paramfile:
         weights.append(float(line.strip()))
-    return numpy.array(weights, 'd')   
+    return numpy.array(weights, 'd')
 
 def call_tadm(args):
     """
@@ -85,7 +85,7 @@ def call_tadm(args):
 def names_demo():
     from nltk.classify.util import names_demo
     from nltk.classify.maxent import TadmMaxentClassifier
-    classifier = names_demo(TadmMaxentClassifier.train)               
+    classifier = names_demo(TadmMaxentClassifier.train)
 
 def encoding_demo():
     import sys
@@ -100,7 +100,7 @@ def encoding_demo():
     for i in range(encoding.length()):
         print '%s --> %d' % (encoding.describe(i), i)
     print
-        
+
 if __name__ == '__main__':
     encoding_demo()
     names_demo()

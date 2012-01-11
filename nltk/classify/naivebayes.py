@@ -18,7 +18,7 @@ express P(label|features) in terms of P(label) and P(features|label):
 
 The algorithm then makes the 'naive' assumption that all features are
 independent, given the label:
-                             
+
 |                       P(label) * P(f1|label) * ... * P(fn|label)
 |  P(label|features) = --------------------------------------------
 |                                         P(features)
@@ -26,7 +26,7 @@ independent, given the label:
 Rather than computing P(featues) explicitly, the algorithm just
 calculates the denominator for each label, and normalizes them so they
 sum to one:
-                             
+
 |                       P(label) * P(f1|label) * ... * P(fn|label)
 |  P(label|features) = --------------------------------------------
 |                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
@@ -49,7 +49,7 @@ class NaiveBayesClassifier(ClassifierI):
 
       - P(label) gives the probability that an input will receive each
         label, given no information about the input's features.
-        
+
       - P(fname=fval|label) gives the probability that a given feature
         (fname) will receive a given value (fval), given that the
         label (label).
@@ -68,7 +68,7 @@ class NaiveBayesClassifier(ClassifierI):
             over labels.  It is expressed as a ``ProbDistI`` whose
             samples are labels.  I.e., P(label) =
             ``label_probdist.prob(label)``.
-        
+
         :param feature_probdist: P(fname=fval|label), the probability
             distribution for feature values, given labels.  It is
             expressed as a dictionary whose keys are ``(label, fname)``
@@ -88,7 +88,7 @@ class NaiveBayesClassifier(ClassifierI):
 
     def classify(self, featureset):
         return self.prob_classify(featureset).max()
-        
+
     def prob_classify(self, featureset):
         # Discard any feature names that we've never seen before.
         # Otherwise, we'll just assign a probability of 0 to
@@ -107,7 +107,7 @@ class NaiveBayesClassifier(ClassifierI):
         logprob = {}
         for label in self._labels:
             logprob[label] = self._label_probdist.logprob(label)
-            
+
         # Then add in the log probability of features given labels.
         for label in self._labels:
             for (fname, fval) in featureset.items():
@@ -119,7 +119,7 @@ class NaiveBayesClassifier(ClassifierI):
                     # classifier was created by
                     # NaiveBayesClassifier.train().
                     logprob[label] += sum_logs([]) # = -INF.
-                    
+
         return DictionaryProbDist(logprob, normalize=True, log=True)
 
     def show_most_informative_features(self, n=10):
@@ -173,7 +173,7 @@ class NaiveBayesClassifier(ClassifierI):
 
         # Convert features to a list, & sort it by how informative
         # features are.
-        features = sorted(features, 
+        features = sorted(features,
             key=lambda feature: minprob[feature]/maxprob[feature])
         return features[:n]
 
@@ -231,8 +231,8 @@ def demo():
     from nltk.classify.util import names_demo
     classifier = names_demo(NaiveBayesClassifier.train)
     classifier.show_most_informative_features()
-    
+
 if __name__ == '__main__':
     demo()
-    
-    
+
+

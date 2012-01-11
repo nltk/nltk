@@ -46,7 +46,7 @@ class ClusterI(object):
         sum = 0.0
         for cluster in self.cluster_names():
             likelihoods[cluster] = self.likelihood(vector, cluster)
-            sum += likelihoods[cluster] 
+            sum += likelihoods[cluster]
         for cluster in self.cluster_names():
             likelihoods[cluster] /= sum
         return DictionaryProbDist(likelihoods)

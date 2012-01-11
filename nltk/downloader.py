@@ -155,7 +155,7 @@ n.b.: there will have to be a fallback to the punkt tokenizer, in case
 they didn't download that model.
 
 default: unzip or not?
-    
+
 """
 import time, re, os, zipfile, sys, textwrap, threading, itertools
 from cStringIO import StringIO
@@ -163,7 +163,7 @@ try:
     from hashlib import md5
 except:
     from md5 import md5
-    
+
 try:
     TKINTER = True
     from Tkinter import Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar
@@ -200,24 +200,24 @@ class Package(object):
                  **kw):
         self.id = id
         """A unique identifier for this package."""
-        
+
         self.name = name or id
         """A string name for this package."""
-        
+
         self.subdir = subdir
         """The subdirectory where this package should be installed.
            E.g., ``'corpora'`` or ``'taggers'``."""
-        
+
         self.url = url
         """A URL that can be used to download this package's file."""
 
         self.size = int(size)
         """The filesize (in bytes) of the package file."""
-        
+
         self.unzipped_size = int(unzipped_size)
         """The total filesize of the files contained in the package's
            zipfile."""
-        
+
         self.checksum = checksum
         """The MD-5 checksum of the package file."""
 
@@ -236,7 +236,7 @@ class Package(object):
 
         self.author = author
         """Author of this package."""
-        
+
         ext = os.path.splitext(url.split('/')[-1])[1]
         self.filename = os.path.join(subdir, id+ext)
         """The filename that should be used for this package's file.  It
@@ -268,14 +268,14 @@ class Collection(object):
     def __init__(self, id, children, name=None, **kw):
         self.id = id
         """A unique identifier for this collection."""
-        
+
         self.name = name or id
         """A string name for this collection."""
-        
+
         self.children = children
         """A list of the ``Collections`` or ``Packages`` directly
            contained by this collection."""
-        
+
         self.packages = None
         """A list of ``Packages`` contained by this collection or any
            collections it recursively contains."""
@@ -345,7 +345,7 @@ class ProgressMessage(DownloaderMessage):
 class SelectDownloadDirMessage(DownloaderMessage):
     """Indicates what download directory the data server is using"""
     def __init__(self, download_dir): self.download_dir = download_dir
-        
+
 ######################################################################
 # NLTK Data Server
 ######################################################################
@@ -355,7 +355,7 @@ class Downloader(object):
     A class used to access the NLTK data server, which can be used to
     download corpora and other data packages.
     """
-    
+
     #/////////////////////////////////////////////////////////////////
     # Configuration
     #/////////////////////////////////////////////////////////////////
@@ -364,7 +364,7 @@ class Downloader(object):
     """The amount of time after which the cached copy of the data
        server index will be considered 'stale,' and will be
        re-downloaded."""
-    
+
     DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
@@ -400,13 +400,13 @@ class Downloader(object):
 
         self._packages = {}
         """Dictionary from package identifier to ``Package``"""
-        
+
         self._download_dir = download_dir
         """The default directory to which packages will be downloaded."""
-        
+
         self._index = None
         """The XML index file downloaded from the data server"""
-        
+
         self._index_timestamp = None
         """Time at which ``self._index`` was downloaded.  If it is more
            than ``INDEX_TIMEOUT`` seconds old, it will be re-downloaded."""
@@ -419,7 +419,7 @@ class Downloader(object):
 
         self._errors = None
         """Flag for telling if all packages got successfully downloaded or not."""
-        
+
         # decide where we're going to save things to.
         if self._download_dir is None:
             self._download_dir = self.default_download_dir()
@@ -505,19 +505,19 @@ class Downloader(object):
     # So this is really what we should do.  That way the threaded
     # downloader in the gui can just kill the download thread anytime
     # it wants.
-        
+
     def incr_download(self, info_or_id, download_dir=None, force=False):
         # If they didn't specify a download_dir, then use the default one.
         if download_dir is None:
             download_dir = self._download_dir
             yield SelectDownloadDirMessage(download_dir)
-        
+
         # If they gave us a list of ids, then download each one.
         if isinstance(info_or_id, (list,tuple)):
             for msg in self._download_list(info_or_id, download_dir, force):
                 yield msg
             return
-        
+
         # Look up the requested collection or package.
         try: info = self._info_or_id(info_or_id)
         except (IOError, ValueError), e:
@@ -562,7 +562,7 @@ class Downloader(object):
                     yield msg
 
             progress += 100*delta
-            
+
     def _download_package(self, info, download_dir, force):
         yield StartPackageMessage(info)
         yield ProgressMessage(0)
@@ -590,7 +590,7 @@ class Downloader(object):
             os.mkdir(download_dir)
         if not os.path.exists(os.path.join(download_dir, info.subdir)):
             os.mkdir(os.path.join(download_dir, info.subdir))
-            
+
         # Download the file.  This will raise an IOError if the url
         # is not found.
         yield StartDownloadMessage(info)
@@ -627,7 +627,7 @@ class Downloader(object):
                     msg.package = info
                     yield msg
                 yield FinishUnzipMessage(info)
-                
+
         yield FinishPackageMessage(info)
 
     def download(self, info_or_id=None, download_dir=None, quiet=False,
@@ -641,13 +641,13 @@ class Downloader(object):
             if download_dir is not None: self._download_dir = download_dir
             self._interactive_download()
             return True
-        
+
         else:
             # Define a helper function for displaying output:
             def show(s, prefix2=''):
                 print textwrap.fill(s, initial_indent=prefix+prefix2,
                                     subsequent_indent=prefix+prefix2+' '*4)
-                
+
             for msg in self.incr_download(info_or_id, download_dir, force):
                 # Error messages
                 if isinstance(msg, ErrorMessage):
@@ -697,12 +697,12 @@ class Downloader(object):
                     #         msg.package.id, '  ')
                     elif isinstance(msg, StartUnzipMessage):
                         show('Unzipping %s.' % msg.package.filename, '  ')
-                        
+
                     # Data directory message:
                     elif isinstance(msg, SelectDownloadDirMessage):
                         download_dir = msg.download_dir
         return True
-        
+
     def is_stale(self, info_or_id, download_dir=None):
         return self.status(info_or_id, download_dir) == self.STALE
 
@@ -714,7 +714,7 @@ class Downloader(object):
             self._status_cache.clear()
         else:
             self._status_cache.pop(id, None)
-        
+
     def status(self, info_or_id, download_dir=None):
         """
         Return a constant describing the status of the given package
@@ -738,7 +738,7 @@ class Downloader(object):
                 return self.NOT_INSTALLED
             else:
                 return self.INSTALLED
-            
+
         # Handle packages:
         else:
             filepath = os.path.join(download_dir, info.filename)
@@ -790,7 +790,7 @@ class Downloader(object):
         for pkg in self.packages():
             if self.status(pkg) == self.STALE:
                 self.download(pkg, quiet=quiet, prefix=prefix)
-        
+
     #/////////////////////////////////////////////////////////////////
     # Index
     #/////////////////////////////////////////////////////////////////
@@ -800,25 +800,25 @@ class Downloader(object):
         up-to-date.  If the index is older than self.INDEX_TIMEOUT,
         then download it again."""
         # Check if the index is aleady up-to-date.  If so, do nothing.
-        if not (self._index is None or url is not None or 
+        if not (self._index is None or url is not None or
                 time.time()-self._index_timestamp > self.INDEX_TIMEOUT):
             return
 
         # If a URL was specified, then update our URL.
         self._url = url or self._url
-        
+
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
             ElementTree.parse(urllib2.urlopen(self._url)).getroot())
         self._index_timestamp = time.time()
 
         # Build a dictionary of packages.
-        packages = [Package.fromxml(p) for p in 
+        packages = [Package.fromxml(p) for p in
                     self._index.findall('packages/package')]
         self._packages = dict((p.id, p) for p in packages)
 
         # Build a dictionary of collections.
-        collections = [Collection.fromxml(c) for c in 
+        collections = [Collection.fromxml(c) for c in
                        self._index.findall('collections/collection')]
         self._collections = dict((c.id, c) for c in collections)
 
@@ -852,7 +852,7 @@ class Downloader(object):
         """
         self._update_index()
         return self._index
-    
+
     def info(self, id):
         """Return the ``Package`` or ``Collection`` record for the
            given item."""
@@ -860,7 +860,7 @@ class Downloader(object):
         if id in self._packages: return self._packages[id]
         if id in self._collections: return self._collections[id]
         raise ValueError('Package %r not found in index' % id)
-        
+
     def xmlinfo(self, id):
         """Return the XML info record for the given item"""
         self._update_index()
@@ -908,7 +908,7 @@ class Downloader(object):
         # Check if we have sufficient permissions to install in a
         # variety of system-wide locations.
         for nltkdir in nltk.data.path:
-            if (os.path.exists(nltkdir) and 
+            if (os.path.exists(nltkdir) and
                 nltk.internals.is_writable(nltkdir)):
                 return nltkdir
 
@@ -929,7 +929,7 @@ class Downloader(object):
         self._download_dir = download_dir
         # Clear the status cache.
         self._status_cache.clear()
-    
+
     download_dir = property(lambda self: self._download_dir,
                             _set_download_dir, doc="""
         The default directory to which packages will be downloaded.
@@ -955,7 +955,7 @@ class Downloader(object):
 class DownloaderShell(object):
     def __init__(self, dataserver):
         self._ds = dataserver
-    
+
     def _simple_interactive_menu(self, *options):
         print '-'*75
         spc = (68 - sum(len(o) for o in options))/(len(options)-1)*' '
@@ -964,8 +964,8 @@ class DownloaderShell(object):
         #fmt = '  ' + ('%-'+str(w)+'s')*(len(options)-1) + '%s'
         #print fmt % options
         print '-'*75
-        
-        
+
+
     def run(self):
         print 'NLTK Downloader'
         while True:
@@ -1056,7 +1056,7 @@ class DownloaderShell(object):
         print 'Commands:'
         print '  d) Download a package or collection     u) Update out of date packages'
         print '  l) List packages & collections          h) Help'
-        print '  c) View & Modify Configuration          q) Quit' 
+        print '  c) View & Modify Configuration          q) Quit'
 
     def _show_config(self):
         print
@@ -1134,7 +1134,7 @@ class DownloaderGUI(object):
        listed) is specified by ``DEFAULT_COLUMN_WIDTH``."""
 
     DEFAULT_COLUMN_WIDTH = 30
-    """The default width for columns that are not explicitly listed 
+    """The default width for columns that are not explicitly listed
        in ``COLUMN_WIDTHS``."""
 
     INITIAL_COLUMNS = ['', 'Identifier', 'Name', 'Size', 'Status']
@@ -1145,13 +1145,13 @@ class DownloaderGUI(object):
     for c in COLUMN_WEIGHTS: assert c in COLUMNS
     for c in COLUMN_WIDTHS: assert c in COLUMNS
     for c in INITIAL_COLUMNS: assert c in COLUMNS
-    
+
     #/////////////////////////////////////////////////////////////////
     # Color Configuration
     #/////////////////////////////////////////////////////////////////
 
     _BACKDROP_COLOR = ('#000', '#ccc')
-    
+
     _ROW_COLOR = {Downloader.INSTALLED: ('#afa', '#080'),
                   Downloader.PARTIAL: ('#ffa', '#880'),
                   Downloader.STALE: ('#faa', '#800'),
@@ -1167,7 +1167,7 @@ class DownloaderGUI(object):
     _PROGRESS_COLOR = ('#f00', '#aaa')
 
     _TAB_FONT = 'helvetica -16 bold'
-    
+
     #/////////////////////////////////////////////////////////////////
     # Constructor
     #/////////////////////////////////////////////////////////////////
@@ -1202,7 +1202,7 @@ class DownloaderGUI(object):
         self._destroyed = False
 
         self._column_vars = {}
-        
+
         # Initialize the GUI.
         self._init_widgets()
         self._init_menu()
@@ -1220,7 +1220,7 @@ class DownloaderGUI(object):
         # Make sure we get notified when we're destroyed, so we can
         # cancel any download in progress.
         self._table.bind('<Destroy>', self._destroy)
-    
+
     def _log(self, msg):
         self._log_messages.append('%s %s%s' % (time.ctime(),
                                      ' | '*self._log_indent, msg))
@@ -1253,7 +1253,7 @@ class DownloaderGUI(object):
         self.top['highlightthickness'] = 0
 
         # Create the tabs
-        self._tab_names = ['Collections', 'Corpora', 
+        self._tab_names = ['Collections', 'Corpora',
                            'Models', 'All Packages',]
         self._tabs = {}
         for i, tab in enumerate(self._tab_names):
@@ -1301,7 +1301,7 @@ class DownloaderGUI(object):
         # If the user edits url or download_dir, and then clicks outside
         # the entry box, then save their results.
         self.top.bind('<Button-1>', self._info_save)
-            
+
         # Create Download & Refresh buttons.
         self._download_button = Button(
             buttonframe, text='Download', command=self._download, width=8)
@@ -1349,7 +1349,7 @@ class DownloaderGUI(object):
             assert column not in self._column_vars
             self._column_vars[column] = var
             if column in self.INITIAL_COLUMNS: var.set(1)
-            viewmenu.add_checkbutton(label=column, underline=0, variable=var, 
+            viewmenu.add_checkbutton(label=column, underline=0, variable=var,
                                      command=self._select_columns)
         menubar.add_cascade(label='View', underline=0, menu=viewmenu)
 
@@ -1376,7 +1376,7 @@ class DownloaderGUI(object):
                              command=self.help, accelerator='F1')
         menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
         self.top.bind('<F1>', self.help)
-        
+
         self.top.config(menu=menubar)
 
     def _select_columns(self):
@@ -1421,7 +1421,7 @@ class DownloaderGUI(object):
             elif val < 1024**2: return '  %.1f KB' % (val/1024.**1)
             elif val < 1024**3: return '  %.1f MB' % (val/1024.**2)
             else: return '  %.1f GB' % (val/1024.**3)
-            
+
         if col in (0, ''): return str(val)
         else: return '  %s' % val
 
@@ -1433,7 +1433,7 @@ class DownloaderGUI(object):
         except IOError, e:
             showerror('Error Setting Server Index', str(e))
         self._show_info()
-            
+
 
     def _set_download_dir(self, download_dir):
         if self._ds.download_dir == download_dir: return
@@ -1521,7 +1521,7 @@ class DownloaderGUI(object):
         self._table.sort_by('Identifier', order='ascending')
         self._color_table()
         self._table.select(selected_row)
-        
+
         # This is a hack, because the scrollbar isn't updating its
         # position right -- I'm not sure what the underlying cause is
         # though.  (This is on OS X w/ python 2.5)  The length of
@@ -1537,13 +1537,13 @@ class DownloaderGUI(object):
             status = self._ds.status(self._table[row_num, 'Identifier'])
             self._table[row_num, 'Status'] = status
         self._color_table()
-        
+
     def _download(self, *e):
         # If we're using threads, then delegate to the threaded
         # downloader instead.
         if self._use_threads:
             return self._download_threaded(*e)
-            
+
         marked = [self._table[row, 'Identifier']
                   for row in range(len(self._table))
                   if self._table[row, 0] != '']
@@ -1626,7 +1626,7 @@ class DownloaderGUI(object):
     def _mark_all(self, *e):
         for row in range(len(self._table)):
             self._table[row,0] = 'X'
-        
+
     def _table_mark(self, *e):
         selection = self._table.selected_row()
         if selection >= 0:
@@ -1671,7 +1671,7 @@ class DownloaderGUI(object):
         if self.top is not None:
             for afterid in self._afterid.values():
                 self.top.after_cancel(afterid)
-            
+
         # Abort any download in progress.
         if self._downloading and self._use_threads:
             self._abort_download()
@@ -1680,7 +1680,7 @@ class DownloaderGUI(object):
         # otherwise, they may get destroyed when we're not in the main
         # thread, which would make Tkinter unhappy.
         self._column_vars.clear()
-        
+
     def mainloop(self, *args, **kwargs):
         self.top.mainloop(*args, **kwargs)
 
@@ -1697,13 +1697,13 @@ class DownloaderGUI(object):
 
     When you download a package, it will be saved to the \"download
     directory.\"  A default download directory is chosen when you run
-    
+
     the downloader; but you may also select a different download
-    directory.  On Windows, the default download directory is 
-    
-    
+    directory.  On Windows, the default download directory is
+
+
     \"package.\"
-    
+
     The NLTK downloader can be used to download a variety of corpora,
     models, and other data packages.
 
@@ -1716,7 +1716,7 @@ class DownloaderGUI(object):
     """)
 
     def help(self, *e):
-        # The default font's not very legible; try using 'fixed' instead. 
+        # The default font's not very legible; try using 'fixed' instead.
         try:
             ShowText(self.top, 'Help: NLTK Dowloader',
                      self.HELP.strip(), width=75, font='fixed')
@@ -1733,7 +1733,7 @@ class DownloaderGUI(object):
             Message(message=ABOUT, title=TITLE).show()
         except ImportError:
             ShowText(self._top, TITLE, ABOUT)
-            
+
     #/////////////////////////////////////////////////////////////////
     # Progress Bar
     #/////////////////////////////////////////////////////////////////
@@ -1749,11 +1749,11 @@ class DownloaderGUI(object):
                           fill='#%02x0000' % (80 + abs(i%6-3)*12))
         c.addtag_all('gradient')
         c.itemconfig('gradient', state='hidden')
-        
+
         # This is used to display progress
         c.addtag_withtag('redbox', c.create_rectangle(
             0, 0, 0, 0, fill=self._PROGRESS_COLOR[0]))
-        
+
     def _show_progress(self, percent):
         c = self._progressbar
         if percent is None:
@@ -1791,7 +1791,7 @@ class DownloaderGUI(object):
 
         # Change the 'download' button to an 'abort' button.
         self._download_button['text'] = 'Cancel'
-    
+
         marked = [self._table[row, 'Identifier']
                   for row in range(len(self._table))
                   if self._table[row, 0] != '']
@@ -1834,7 +1834,7 @@ class DownloaderGUI(object):
             self.message_queue = message_queue
             self.abort = abort
             threading.Thread.__init__(self)
-                     
+
         def run (self):
             for msg in self.data_server.incr_download(self.items):
                 self.lock.acquire()
@@ -1859,7 +1859,7 @@ class DownloaderGUI(object):
         if not self._download_lock.acquire():
             return
         for msg in self._download_msg_queue:
-            
+
             # Done downloading?
             if msg == 'finished' or msg == 'aborted':
                 #self._fill_table(sort=False)
@@ -1939,7 +1939,7 @@ def md5_hexdigest(file):
     """
     if isinstance(file, basestring):
         file = open(file, 'rb')
-    
+
     md5_digest = md5()
     while True:
         block = file.read(1024*16) # 16k blocks
@@ -1958,12 +1958,12 @@ def unzip(filename, root, verbose=True):
     for message in _unzip_iter(filename, root, verbose):
         if isinstance(message, ErrorMessage):
             raise Exception, message
-    
+
 def _unzip_iter(filename, root, verbose=True):
     if verbose:
         sys.stdout.write('Unzipping %s' % os.path.split(filename)[1])
         sys.stdout.flush()
-    
+
     try: zf = zipfile.ZipFile(filename)
     except zipfile.error, e:
         yield ErrorMessage(filename, 'Error with downloaded zip file')
@@ -1971,7 +1971,7 @@ def _unzip_iter(filename, root, verbose=True):
     except Exception, e:
         yield ErrorMessage(filename, e)
         return
-    
+
     # Get lists of directories & files
     namelist = zf.namelist()
     dirlist = [x for x in namelist if x.endswith('/')]
@@ -1980,7 +1980,7 @@ def _unzip_iter(filename, root, verbose=True):
     # Create the target directory if it doesn't exist
     if not os.path.exists(root):
         os.mkdir(root)
-        
+
     # Create the directory structure
     for dirname in sorted(dirlist):
         pieces = dirname[:-1].split('/')
@@ -2037,7 +2037,7 @@ def build_index(root, base_url):
     the identifier given in the package's xml file.
 
     For each collection, there should be a single file ``collection.zip``
-    describing the collection, where *collection* is the name of the collection. 
+    describing the collection, where *collection* is the name of the collection.
 
     All identifiers (for both packages and collections) must be unique.
     """
@@ -2055,7 +2055,7 @@ def build_index(root, base_url):
         pkg_xml.set('subdir', subdir)
         #pkg_xml.set('svn_revision', _svn_revision(zf.filename))
         pkg_xml.set('url', url)
-        
+
         # Record the package.
         packages.append(pkg_xml)
 
@@ -2125,7 +2125,7 @@ def _svn_revision(filename):
         raise ValueError('Error determining svn_revision for %s: %s' %
                          (os.path.split(filename)[1], textwrap.fill(stderr)))
     return stdout.split()[2]
-        
+
 def _find_collections(root):
     """
     Helper for ``build_index()``: Yield a list of ElementTree.Element
@@ -2183,7 +2183,7 @@ def _find_packages(root):
         # Don't recurse into svn subdirectories:
         try: subdirs.remove('.svn')
         except ValueError: pass
-        
+
 ######################################################################
 # Main:
 ######################################################################
@@ -2210,7 +2210,7 @@ if __name__ == '__main__':
                       default=False, help="exit if an error occurs")
 
     (options, args) = parser.parse_args()
-    
+
     if args:
         for pkg_id in args:
             rv = download(info_or_id=pkg_id, download_dir=options.dir,

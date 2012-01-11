@@ -23,12 +23,12 @@ class ConfusionMatrix(object):
     corresponds to correct values; and the off-diagonal entries
     correspond to incorrect values.
     """
-    
+
     def __init__(self, reference, test, sort_by_count=False):
         """
         Construct a new confusion matrix from a list of reference
         values and a corresponding list of test values.
-        
+
         :type reference: list
         :param reference: An ordered list of reference values.
         :type test: list
@@ -39,7 +39,7 @@ class ConfusionMatrix(object):
         """
         if len(reference) != len(test):
             raise ValueError('Lists must have the same length.')
-            
+
         # Get a list of all values.
         if sort_by_count:
             ref_fdist = FreqDist(reference)
@@ -88,7 +88,7 @@ class ConfusionMatrix(object):
 
     def __str__(self):
         return self.pp()
-    
+
     def pp(self, show_percents=False, values_in_chart=True,
            truncate=None, sort_by_count=False):
         """
@@ -119,7 +119,7 @@ class ConfusionMatrix(object):
             value_strings = [str(val) for val in values]
         else:
             value_strings = [str(n+1) for n in range(len(values))]
-            
+
         # Construct a format string for row values
         valuelen = max(len(val) for val in value_strings)
         value_format = '%' + `valuelen` + 's | '
@@ -164,7 +164,7 @@ class ConfusionMatrix(object):
                     s = s[:prevspace] + '<' + s[prevspace+1:] + '>'
                 else: s += ' '
             s += '|\n'
-            
+
         # Write a dividing line
         s += '%s-+-%s+\n' % ('-'*valuelen, '-'*((entrylen+1)*len(values)))
 
@@ -176,7 +176,7 @@ class ConfusionMatrix(object):
                 s += '%6d: %s\n' % (i+1, value)
 
         return s
-        
+
     def key(self):
         values = self._values
         str = 'Value key:\n'

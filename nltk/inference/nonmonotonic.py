@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-A module to perform nonmonotonic reasoning.  The ideas and demonstrations in 
+A module to perform nonmonotonic reasoning.  The ideas and demonstrations in
 this module are based on "Logical Foundations of Artificial Intelligence" by
 Michael R. Genesereth and Nils J. Nilsson.
 """
@@ -35,7 +35,7 @@ def get_domain(goal, assumptions):
 
 class ClosedDomainProver(ProverCommandDecorator):
     """
-    This is a prover decorator that adds domain closure assumptions before 
+    This is a prover decorator that adds domain closure assumptions before
     proving.
     """
     def assumptions(self):
@@ -43,17 +43,17 @@ class ClosedDomainProver(ProverCommandDecorator):
         goal = self._command.goal()
         domain = get_domain(goal, assumptions)
         return list([self.replace_quants(ex, domain) for ex in assumptions])
-    
+
     def goal(self):
         goal = self._command.goal()
         domain = get_domain(goal, self._command.assumptions())
         return self.replace_quants(goal, domain)
-    
+
     def replace_quants(self, ex, domain):
         """
         Apply the closed domain assumption to the expression
          - Domain = union([e.free()|e.constants() for e in all_expressions])
-         - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR 
+         - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR
                      "P.replace(x, d1) | P.replace(x, d2) | ..."
          - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
         :param ex: ``Expression``
@@ -61,7 +61,7 @@ class ClosedDomainProver(ProverCommandDecorator):
         :return: ``Expression``
         """
         if isinstance(ex, AllExpression):
-            conjuncts = [ex.term.replace(ex.variable, VariableExpression(d)) 
+            conjuncts = [ex.term.replace(ex.variable, VariableExpression(d))
                          for d in domain]
             conjuncts = [self.replace_quants(c, domain) for c in conjuncts]
             return reduce(lambda x,y: x&y, conjuncts)
@@ -71,16 +71,16 @@ class ClosedDomainProver(ProverCommandDecorator):
         elif isinstance(ex, NegatedExpression):
             return -self.replace_quants(ex.term, domain)
         elif isinstance(ex, ExistsExpression):
-            disjuncts = [ex.term.replace(ex.variable, VariableExpression(d)) 
+            disjuncts = [ex.term.replace(ex.variable, VariableExpression(d))
                          for d in domain]
             disjuncts = [self.replace_quants(d, domain) for d in disjuncts]
             return reduce(lambda x,y: x|y, disjuncts)
         else:
             return ex
-    
+
 class UniqueNamesProver(ProverCommandDecorator):
     """
-    This is a prover decorator that adds unique names assumptions before 
+    This is a prover decorator that adds unique names assumptions before
     proving.
     """
     def assumptions(self):
@@ -89,9 +89,9 @@ class UniqueNamesProver(ProverCommandDecorator):
          - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
         """
         assumptions = self._command.assumptions()
-        
+
         domain = list(get_domain(self._command.goal(), assumptions))
-        
+
         #build a dictionary of obvious equalities
         eq_sets = SetHolder()
         for a in assumptions:
@@ -100,13 +100,13 @@ class UniqueNamesProver(ProverCommandDecorator):
                 bv = a.second.variable
                 #put 'a' and 'b' in the same set
                 eq_sets[av].add(bv)
-        
+
         new_assumptions = []
         for i,a in enumerate(domain):
             for b in domain[i+1:]:
                 #if a and b are not already in the same equality set
                 if b not in eq_sets[a]:
-                    newEqEx = EqualityExpression(VariableExpression(a), 
+                    newEqEx = EqualityExpression(VariableExpression(a),
                                                  VariableExpression(b))
                     if Prover9().prove(newEqEx, assumptions):
                         #we can prove that the names are the same entity.
@@ -115,9 +115,9 @@ class UniqueNamesProver(ProverCommandDecorator):
                     else:
                         #we can't prove it, so assume unique names
                         new_assumptions.append(-newEqEx)
-                
+
         return assumptions + new_assumptions
-    
+
 class SetHolder(list):
     """
     A list of sets of Variables.
@@ -135,15 +135,15 @@ class SetHolder(list):
         new = set([item])
         self.append(new)
         return new
-    
+
 class ClosedWorldProver(ProverCommandDecorator):
     """
     This is a prover decorator that completes predicates before proving.
 
     If the assumptions contain "P(A)", then "all x.(P(x) -> (x=A))" is the completion of "P".
     If the assumptions contain "all x.(ostrich(x) -> bird(x))", then "all x.(bird(x) -> ostrich(x))" is the completion of "bird".
-    If the assumptions don't contain anything that are "P", then "all x.-P(x)" is the completion of "P". 
-    
+    If the assumptions don't contain anything that are "P", then "all x.-P(x)" is the completion of "P".
+
     walk(Socrates)
     Socrates != Bill
     + all x.(walk(x) -> (x=Socrates))
@@ -157,7 +157,7 @@ class ClosedWorldProver(ProverCommandDecorator):
     + all x.all y.(see(x,y) -> ((x=Socrates & y=John) | (x=John & y=Mary)))
     ----------------
     -see(Socrates, Mary)
-    
+
     all x.(ostrich(x) -> bird(x))
     bird(Tweety)
     -ostrich(Sam)
@@ -166,24 +166,24 @@ class ClosedWorldProver(ProverCommandDecorator):
     + all x.-ostrich(x)
     -------------------
     -bird(Sam)
-    """ 
+    """
     def assumptions(self):
         assumptions = self._command.assumptions()
-        
+
         predicates = self._make_predicate_dict(assumptions)
 
         new_assumptions = []
         for p, predHolder in predicates.iteritems():
             new_sig = self._make_unique_signature(predHolder)
             new_sig_exs = [VariableExpression(v) for v in new_sig]
-            
+
             disjuncts = []
 
             #Turn the signatures into disjuncts
             for sig in predHolder.signatures:
                 equality_exs = []
                 for v1,v2 in zip(new_sig_exs, sig):
-                    equality_exs.append(EqualityExpression(v1,v2)) 
+                    equality_exs.append(EqualityExpression(v1,v2))
                 disjuncts.append(reduce(lambda x,y: x&y, equality_exs))
 
             #Turn the properties into disjuncts
@@ -203,26 +203,26 @@ class ClosedWorldProver(ProverCommandDecorator):
             else:
                 #nothing has property 'p'
                 accum = NegatedExpression(self._make_antecedent(p, new_sig))
-            
+
             #quantify the implication
             for new_sig_var in new_sig[::-1]:
                 accum = AllExpression(new_sig_var, accum)
             new_assumptions.append(accum)
-        
+
         return assumptions + new_assumptions
-    
+
     def _make_unique_signature(self, predHolder):
         """
-        This method figures out how many arguments the predicate takes and 
+        This method figures out how many arguments the predicate takes and
         returns a tuple containing that number of unique variables.
         """
-        return tuple([unique_variable() 
+        return tuple([unique_variable()
                       for i in range(predHolder.signature_len)])
-        
+
     def _make_antecedent(self, predicate, signature):
         """
-        Return an application expression with 'predicate' as the predicate 
-        and 'signature' as the list of arguments. 
+        Return an application expression with 'predicate' as the predicate
+        and 'signature' as the list of arguments.
         """
         antecedent = predicate
         for v in signature:
@@ -232,7 +232,7 @@ class ClosedWorldProver(ProverCommandDecorator):
     def _make_predicate_dict(self, assumptions):
         """
         Create a dictionary of predicates from the assumptions.
-        
+
         :param assumptions: a list of ``Expression``s
         :return: dict mapping ``AbstractVariableExpression`` to ``PredHolder``
         """
@@ -272,11 +272,11 @@ class PredHolder(object):
     """
     This class will be used by a dictionary that will store information
     about predicates to be used by the ``ClosedWorldProver``.
-    
-    The 'signatures' property is a list of tuples defining signatures for 
-    which the predicate is true.  For instance, 'see(john, mary)' would be 
+
+    The 'signatures' property is a list of tuples defining signatures for
+    which the predicate is true.  For instance, 'see(john, mary)' would be
     result in the signature '(john,mary)' for 'see'.
-    
+
     The second element of the pair is a list of pairs such that the first
     element of the pair is a tuple of variables and the second element is an
     expression of those variables that makes the predicate true.  For instance,
@@ -287,11 +287,11 @@ class PredHolder(object):
         self.signatures = []
         self.properties = []
         self.signature_len = None
-    
+
     def append_sig(self, new_sig):
         self.validate_sig_len(new_sig)
         self.signatures.append(new_sig)
-        
+
     def append_prop(self, new_prop):
         self.validate_sig_len(new_prop[0])
         self.properties.append(new_prop)
@@ -303,15 +303,15 @@ class PredHolder(object):
             raise Exception("Signature lengths do not match")
 
     def __str__(self):
-        return '(%s,%s,%s)' % (self.signatures, self.properties, 
+        return '(%s,%s,%s)' % (self.signatures, self.properties,
                                self.signature_len)
-        
+
     def __repr__(self):
         return str(self)
 
 def closed_domain_demo():
     lp = LogicParser()
-    
+
     p1 = lp.parse(r'exists x.walk(x)')
     p2 = lp.parse(r'man(Socrates)')
     c = lp.parse(r'walk(Socrates)')
@@ -374,7 +374,7 @@ def closed_domain_demo():
 
 def unique_names_demo():
     lp = LogicParser()
-    
+
     p1 = lp.parse(r'man(Socrates)')
     p2 = lp.parse(r'man(Bill)')
     c = lp.parse(r'exists x.exists y.(x != y)')
@@ -397,10 +397,10 @@ def unique_names_demo():
     for a in unp.assumptions(): print '   ', a
     print 'goal:', unp.goal()
     print unp.prove()
-    
+
 def closed_world_demo():
     lp = LogicParser()
-    
+
     p1 = lp.parse(r'walk(Socrates)')
     p2 = lp.parse(r'(Socrates != Bill)')
     c = lp.parse(r'-walk(Bill)')
@@ -440,7 +440,7 @@ def closed_world_demo():
 
 def combination_prover_demo():
     lp = LogicParser()
-    
+
     p1 = lp.parse(r'see(Socrates, John)')
     p2 = lp.parse(r'see(John, Mary)')
     c = lp.parse(r'-see(Socrates, Mary)')
@@ -454,7 +454,7 @@ def combination_prover_demo():
 
 def default_reasoning_demo():
     lp = LogicParser()
-    
+
     premises = []
 
     #define taxonomy
@@ -468,7 +468,7 @@ def default_reasoning_demo():
     premises.append(lp.parse(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
     premises.append(lp.parse(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))')) #normal birds fly
     premises.append(lp.parse(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
-    
+
     #specify abnormal entities
     premises.append(lp.parse(r'all x.(bird(x)           -> Ab1(x))')) #flight
     premises.append(lp.parse(r'all x.(ostrich(x)        -> Ab2(x))')) #non-flying bird
@@ -478,7 +478,7 @@ def default_reasoning_demo():
     premises.append(lp.parse(r'elephant(E)'))
     premises.append(lp.parse(r'dove(D)'))
     premises.append(lp.parse(r'ostrich(O)'))
-    
+
     #print the assumptions
     prover = Prover9Command(None, premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))

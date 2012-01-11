@@ -20,13 +20,13 @@ from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 
 class DependencySpan(object):
     """
-    A contiguous span over some part of the input string representing 
-    dependency (head -> modifier) relationships amongst words.  An atomic 
+    A contiguous span over some part of the input string representing
+    dependency (head -> modifier) relationships amongst words.  An atomic
     span corresponds to only one word so it isn't a 'span' in the conventional
     sense, as its _start_index = _end_index = _head_index for concatenation
     purposes.  All other spans are assumed to have arcs between all nodes
     within the start and end indexes of the span, and one head index corresponding
-    to the head word for the entire span.  This is the same as the root node if 
+    to the head word for the entire span.  This is the same as the root node if
     the dependency structure were depicted as a graph.
     """
     def __init__(self, start_index, end_index, head_index, arcs, tags):
@@ -43,14 +43,14 @@ class DependencySpan(object):
         :rtype: int
         """
         return self._head_index
-    
+
     def __repr__(self):
         """
         :return: A concise string representatino of the ``DependencySpan``.
         :rtype: str.
         """
         return 'Span %d-%d; Head Index: %d' % (self._start_index, self._end_index, self._head_index)
-    
+
     def __str__(self):
         """
         :return: A verbose string representation of the ``DependencySpan``.
@@ -75,7 +75,7 @@ class DependencySpan(object):
     def __ne__(self, other):
         """
         :return: false if this ``DependencySpan`` is equal to ``other``
-        :rtype: bool	
+        :rtype: bool
         """
         return not (self == other)
 
@@ -83,7 +83,7 @@ class DependencySpan(object):
         """
         :return: -1 if args are of different class.  Otherwise returns the
         cmp() of the two sets of spans.
-        :rtype: int 
+        :rtype: int
         """
         if not isinstance(other, self.__class__): return -1
         return cmp((self._start_index, self._start_index, self._head_index), (other._end_index, other._end_index, other._head_index))
@@ -114,12 +114,12 @@ class ChartCell(object):
         self._x = x
         self._y = y
         self._entries = set([])
-        
+
     def add(self, span):
         """
         Appends the given span to the list of spans
         representing the chart cell's entries.
-        
+
         :param span: The span to add.
         :type span: DependencySpan
         """
@@ -129,9 +129,9 @@ class ChartCell(object):
         """
         :return: A verbose string representation of this ``ChartCell``.
         :rtype: str.
-        """ 
+        """
         return 'CC[%d,%d]: %s' % (self._x, self._y, self._entries)
-        
+
     def __repr__(self):
         """
         :return: A concise string representation of this ``ChartCell``.
@@ -148,13 +148,13 @@ class ChartCell(object):
 class ProjectiveDependencyParser(object):
     """
     A projective, rule-based, dependency parser.  A ProjectiveDependencyParser
-    is created with a DependencyGrammar, a set of productions specifying 
-    word-to-word dependency relations.  The parse() method will then 
+    is created with a DependencyGrammar, a set of productions specifying
+    word-to-word dependency relations.  The parse() method will then
     return the set of all parses, in tree representation, for a given input
     sequence of tokens.  Each parse must meet the requirements of the both
-    the grammar and the projectivity constraint which specifies that the 
-    branches of the dependency tree are not allowed to cross.  Alternatively, 
-    this can be understood as stating that each parent node and its children 
+    the grammar and the projectivity constraint which specifies that the
+    branches of the dependency tree are not allowed to cross.  Alternatively,
+    this can be understood as stating that each parent node and its children
     in the parse tree form a continuous substring of the input sequence.
     """
 
@@ -172,7 +172,7 @@ class ProjectiveDependencyParser(object):
         """
         Performs a projective dependency parse on the list of tokens using
         a chart-based, span-concatenation algorithm similar to Eisner (1996).
-        
+
         :param tokens: The list of input tokens.
         :type tokens: list(str)
         :return: A list of parse trees.
@@ -206,15 +206,15 @@ class ProjectiveDependencyParser(object):
             graphs.append(dg)
             trees.append(dg.tree())
         return trees
-            
+
 
     def concatenate(self, span1, span2):
         """
         Concatenates the two spans in whichever way possible.  This
-        includes rightward concatenation (from the leftmost word of the 
+        includes rightward concatenation (from the leftmost word of the
         leftmost span to the rightmost word of the rightmost span) and
-        leftward concatenation (vice-versa) between adjacent spans.  Unlike 
-        Eisner's presentation of span concatenation, these spans do not 
+        leftward concatenation (vice-versa) between adjacent spans.  Unlike
+        Eisner's presentation of span concatenation, these spans do not
         share or pivot on a particular word/word-index.
 
         :return: A list of new spans formed through concatenation.
@@ -250,18 +250,18 @@ class ProjectiveDependencyParser(object):
 
 class ProbabilisticProjectiveDependencyParser(object):
     """
-    A probabilistic, projective dependency parser.  This parser returns 
-    the most probable projective parse derived from the probabilistic 
-    dependency grammar derived from the train() method.  The probabilistic 
-    model is an implementation of Eisner's (1996) Model C, which conditions 
-    on head-word, head-tag, child-word, and child-tag.  The decoding 
-    uses a bottom-up chart-based span concatenation algorithm that's 
+    A probabilistic, projective dependency parser.  This parser returns
+    the most probable projective parse derived from the probabilistic
+    dependency grammar derived from the train() method.  The probabilistic
+    model is an implementation of Eisner's (1996) Model C, which conditions
+    on head-word, head-tag, child-word, and child-tag.  The decoding
+    uses a bottom-up chart-based span concatenation algorithm that's
     identical to the one utilized by the rule-based projective parser.
     """
 
     def __init__(self):
         """
-        Create a new probabilistic dependency parser.  No additional 
+        Create a new probabilistic dependency parser.  No additional
         operations are necessary.
         """
         print ''
@@ -269,9 +269,9 @@ class ProbabilisticProjectiveDependencyParser(object):
     def parse(self, tokens):
         """
         Parses the list of tokens subject to the projectivity constraint
-        and the productions in the parser's grammar.  This uses a method 
+        and the productions in the parser's grammar.  This uses a method
         similar to the span-concatenation algorithm defined in Eisner (1996).
-        It returns the most probable parse derived from the parser's 
+        It returns the most probable parse derived from the parser's
         probabilistic dependency grammar.
         """
         self._tokens = list(tokens)
@@ -315,10 +315,10 @@ class ProbabilisticProjectiveDependencyParser(object):
     def concatenate(self, span1, span2):
         """
         Concatenates the two spans in whichever way possible.  This
-        includes rightward concatenation (from the leftmost word of the 
+        includes rightward concatenation (from the leftmost word of the
         leftmost span to the rightmost word of the rightmost span) and
-        leftward concatenation (vice-versa) between adjacent spans.  Unlike 
-        Eisner's presentation of span concatenation, these spans do not 
+        leftward concatenation (vice-versa) between adjacent spans.  Unlike
+        Eisner's presentation of span concatenation, these spans do not
         share or pivot on a particular word/word-index.
 
         :return: A list of new spans formed through concatenation.
@@ -347,9 +347,9 @@ class ProbabilisticProjectiveDependencyParser(object):
 
     def train(self, graphs):
         """
-        Trains a StatisticalDependencyGrammar based on the list of input 
+        Trains a StatisticalDependencyGrammar based on the list of input
         DependencyGraphs.  This model is an implementation of Eisner's (1996)
-        Model C, which derives its statistics from head-word, head-tag, 
+        Model C, which derives its statistics from head-word, head-tag,
         child-word, and child-tag relationships.
 
         :param graphs: A list of dependency graphs to train from.
@@ -417,10 +417,10 @@ class ProbabilisticProjectiveDependencyParser(object):
                             events[mod_event] = 1
         self._grammar = StatisticalDependencyGrammar(productions, events, tags)
 #        print self._grammar
-        
+
     def compute_prob(self, dg):
         """
-        Computes the probability of a dependency graph based 
+        Computes the probability of a dependency graph based
         on the parser's probability model (defined by the parser's
         statistical dependency grammar).
 
@@ -483,8 +483,8 @@ def demo():
 
 def projective_rule_parse_demo():
     """
-    A demonstration showing the creation and use of a 
-    ``DependencyGrammar`` to perform a projective dependency 
+    A demonstration showing the creation and use of a
+    ``DependencyGrammar`` to perform a projective dependency
     parse.
     """
     grammar = parse_dependency_grammar("""
@@ -497,11 +497,11 @@ def projective_rule_parse_demo():
     trees = pdp.parse(['the', 'cats', 'scratch', 'the', 'walls'])
     for tree in trees:
         print tree
-    
+
 def arity_parse_demo():
     """
-    A demonstration showing the creation of a ``DependencyGrammar`` 
-    in which a specific number of modifiers is listed for a given 
+    A demonstration showing the creation of a ``DependencyGrammar``
+    in which a specific number of modifiers is listed for a given
     head.  This can further constrain the number of possible parses
     created by a ``ProjectiveDependencyParser``.
     """
@@ -516,12 +516,12 @@ def arity_parse_demo():
     'stock' -> 'the'
     """)
     print grammar
-    
+
     print
     print 'For the sentence \'The price of the stock fell\', this grammar'
-    print 'will produce the following three parses:'    
+    print 'will produce the following three parses:'
     pdp = ProjectiveDependencyParser(grammar)
-    trees = pdp.parse(['the', 'price', 'of', 'the', 'stock', 'fell'])   
+    trees = pdp.parse(['the', 'price', 'of', 'the', 'stock', 'fell'])
     for tree in trees:
         print tree
 
@@ -537,7 +537,7 @@ def arity_parse_demo():
     'stock' -> 'the'
     """)
     print grammar
-    
+
     print
     print 'This constrains the number of possible parses to just one:' # unimplemented, soon to replace
     pdp = ProjectiveDependencyParser(grammar)
@@ -547,7 +547,7 @@ def arity_parse_demo():
 
 def projective_prob_parse_demo():
     """
-    A demo showing the training and use of a projective 
+    A demo showing the training and use of a projective
     dependency parser.
     """
     graphs = [DependencyGraph(entry)

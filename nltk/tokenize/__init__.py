@@ -46,13 +46,13 @@ tokenization, see the other methods provided in this package.
 For further information, please see Chapter 3 of the NLTK book.
 """
 
-from nltk.data              import load 
+from nltk.data              import load
 from nltk.tokenize.simple   import (SpaceTokenizer, TabTokenizer, LineTokenizer,
                                     line_tokenize)
 from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
                                     BlanklineTokenizer, WordPunctTokenizer,
                                     wordpunct_tokenize, regexp_tokenize,
-                                    blankline_tokenize)          
+                                    blankline_tokenize)
 from nltk.tokenize.punkt    import PunktSentenceTokenizer, PunktWordTokenizer
 from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.treebank import TreebankWordTokenizer
@@ -73,7 +73,7 @@ def sent_tokenize(text):
     """
     tokenizer = load('tokenizers/punkt/english.pickle')
     return tokenizer.tokenize(text)
-    
+
 # Standard word tokenizer.
 _word_tokenize = TreebankWordTokenizer().tokenize
 def word_tokenize(text):

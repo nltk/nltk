@@ -99,19 +99,19 @@ class RegexpTokenizer(TokenizerI):
                  flags=re.UNICODE | re.MULTILINE | re.DOTALL):
         # If they gave us a regexp object, extract the pattern.
         pattern = getattr(pattern, 'pattern', pattern)
-        
+
         self._pattern = pattern
         self._gaps = gaps
         self._discard_empty = discard_empty
         self._flags = flags
         self._regexp = None
-        
+
         # Remove grouping parentheses -- if the regexp contains any
         # grouping parentheses, then the behavior of re.findall and
         # re.split will change.
         nongrouping_pattern = convert_regexp_to_nongrouping(pattern)
 
-        try: 
+        try:
             self._regexp = re.compile(nongrouping_pattern, flags)
         except re.error, e:
             raise ValueError('Error in regular expression %r: %s' %
@@ -137,7 +137,7 @@ class RegexpTokenizer(TokenizerI):
         else:
             for m in finditer(self._regexp, text):
                 yield m.span()
-    
+
     def __repr__(self):
         return ('%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)' %
                 (self.__class__.__name__, self._pattern, self._gaps,
@@ -169,7 +169,7 @@ class BlanklineTokenizer(RegexpTokenizer):
 class WordPunctTokenizer(RegexpTokenizer):
     """
     Tokenize a text into a sequence of alphabetic and
-    non-alphabetic characters, using the regexp ``\w+|[^\w\s]+``. 
+    non-alphabetic characters, using the regexp ``\w+|[^\w\s]+``.
 
         >>> s = "Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks."
         >>> WordPunctTokenizer().tokenize(s)

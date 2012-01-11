@@ -12,7 +12,7 @@ def str2tuple(s, sep='/'):
     corresponding tuple representation.  The rightmost occurrence of
     *sep* in *s* will be used to divide *s* into a word string and
     a tag string.  If *sep* does not occur in *s*, return (s, None).
-    
+
         >>> str2tuple('fly/NN')
         ('fly', 'NN')
 
@@ -35,7 +35,7 @@ def tuple2str(tagged_token, sep='/'):
     formed by concatenating the token's word string, followed by the
     separator, followed by the token's tag.  (If the tag is None,
     then just return the bare word string.)
-    
+
         >>> tagged_token = ('fly', 'NN')
         >>> tuple2str(tagged_token)
         'fly/NN'

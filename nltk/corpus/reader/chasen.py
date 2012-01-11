@@ -14,11 +14,11 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 class ChasenCorpusReader(CorpusReader):
-    
+
     def __init__(self, root, fileids, encoding=None, sent_splitter=None):
         self._sent_splitter = sent_splitter
         CorpusReader.__init__(self, root, fileids, encoding)
-    
+
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -32,12 +32,12 @@ class ChasenCorpusReader(CorpusReader):
     def tagged_words(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         True, False, False, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])  
+            for (fileid, enc) in self.abspaths(fileids, True)])
 
     def sents(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         False, True, False, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])        
+            for (fileid, enc) in self.abspaths(fileids, True)])
 
     def tagged_sents(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
@@ -47,7 +47,7 @@ class ChasenCorpusReader(CorpusReader):
     def paras(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         False, True, True, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])        
+            for (fileid, enc) in self.abspaths(fileids, True)])
 
     def tagged_paras(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
@@ -58,7 +58,7 @@ class ChasenCorpusReader(CorpusReader):
 class ChasenCorpusView(StreamBackedCorpusView):
     """
     A specialized corpus view for ChasenReader. Similar to ``TaggedCorpusView``,
-    but this'll use fixed sets of word and sentence tokenizer. 
+    but this'll use fixed sets of word and sentence tokenizer.
     """
 
     def __init__(self, corpus_file, encoding,
@@ -107,17 +107,17 @@ class ChasenCorpusView(StreamBackedCorpusView):
                 block.append(para)
             else:
                 block.extend(para)
-        
+
         return block
 
 def demo():
-    
+
     import nltk
     from nltk.corpus.util import LazyCorpusLoader
 
     jeita = LazyCorpusLoader(
         'jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
-    print '/'.join( jeita.words()[22100:22140] ) 
+    print '/'.join( jeita.words()[22100:22140] )
 
 
     print '\nEOS\n'.join(['\n'.join("%s/%s" % (w[0],w[1].split('\t')[2]) for w in sent)
@@ -131,7 +131,7 @@ def test():
         'jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
 
     assert isinstance(jeita.tagged_words()[0][1], basestring)
-    
+
 if __name__ == '__main__':
     demo()
     test()

@@ -67,7 +67,7 @@ class HoleSemantics(object):
     """
     def __init__(self, usr):
         """
-        Constructor.  `usr' is a ``sem.Expression`` representing an 
+        Constructor.  `usr' is a ``sem.Expression`` representing an
         Underspecified Representation Structure (USR).  A USR has the following
         special predicates:
         ALL(l,v,n),
@@ -305,7 +305,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         grammar_filename = 'grammars/sample_grammars/hole.fcfg'
 
     if verbose: print 'Reading grammar file', grammar_filename
-    
+
     parser = load_parser(grammar_filename)
 
     # Parse the sentence.
@@ -325,7 +325,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         while isinstance(sem, LambdaExpression):
             sem = sem.term
         skolemized = skolemize(sem)
-        
+
         if verbose: print 'Skolemized:', skolemized
 
         # Break the hole semantics representation down into its components
@@ -350,14 +350,14 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         readings = map(hole_sem.formula_tree, pluggings)
 
         # Print out the formulas in a textual format.
-        if verbose: 
+        if verbose:
             for i,r in enumerate(readings):
                 print
                 print '%d. %s' % (i, r)
             print
-        
+
         all_readings.extend(readings)
-        
+
     return all_readings
 
 
@@ -365,4 +365,4 @@ if __name__ == '__main__':
     for r in hole_readings('a dog barks'): print r
     print
     for r in hole_readings('every girl chases a dog'): print r
-    
+

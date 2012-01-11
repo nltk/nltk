@@ -23,7 +23,7 @@ class LancasterStemmer(StemmerI):
         'maxim'
         >>> st.stem('presumably')  # Don't remove "-um" when word is not intact
         'presum'
-        >>> st.stem('multiply')    # No action taken if word ends with "-ply" 
+        >>> st.stem('multiply')    # No action taken if word ends with "-ply"
         'multiply'
         >>> st.stem('provision')   # Replace "-sion" with "-j" to trigger "j" set of rules
         'provid'
@@ -31,7 +31,7 @@ class LancasterStemmer(StemmerI):
         'ow'
         >>> st.stem('ear')         # ditto
         'ear'
-        >>> st.stem('saying')      # Words starting with consonant must contain at least 3 
+        >>> st.stem('saying')      # Words starting with consonant must contain at least 3
         'say'
         >>> st.stem('crying')      #     letters and one of those letters must be a vowel
         'cry'
@@ -45,88 +45,88 @@ class LancasterStemmer(StemmerI):
 
     # The rule list is static since it doesn't change between instances
     rule_tuple = (
-        "ai*2.",     # -ia > -   if intact 
-        "a*1.",      # -a > -    if intact 
-        "bb1.",      # -bb > -b   
+        "ai*2.",     # -ia > -   if intact
+        "a*1.",      # -a > -    if intact
+        "bb1.",      # -bb > -b
         "city3s.",   # -ytic > -ys
-        "ci2>",      # -ic > -    
-        "cn1t>",     # -nc > -nt  
-        "dd1.",      # -dd > -d   
-        "dei3y>",    # -ied > -y  
-        "deec2ss.",  # -ceed >", -cess 
+        "ci2>",      # -ic > -
+        "cn1t>",     # -nc > -nt
+        "dd1.",      # -dd > -d
+        "dei3y>",    # -ied > -y
+        "deec2ss.",  # -ceed >", -cess
         "dee1.",     # -eed > -ee
-        "de2>",      # -ed > -   
-        "dooh4>",    # -hood > - 
-        "e1>",       # -e > -    
+        "de2>",      # -ed > -
+        "dooh4>",    # -hood > -
+        "e1>",       # -e > -
         "feil1v.",   # -lief > -liev
-        "fi2>",      # -if > -   
-        "gni3>",     # -ing > -  
-        "gai3y.",    # -iag > -y 
-        "ga2>",      # -ag > -   
-        "gg1.",      # -gg > -g  
+        "fi2>",      # -if > -
+        "gni3>",     # -ing > -
+        "gai3y.",    # -iag > -y
+        "ga2>",      # -ag > -
+        "gg1.",      # -gg > -g
         "ht*2.",     # -th > -   if intact
         "hsiug5ct.", # -guish > -ct
-        "hsi3>",     # -ish > -  
+        "hsi3>",     # -ish > -
         "i*1.",      # -i > -    if intact
-        "i1y>",      # -i > -y   
+        "i1y>",      # -i > -y
         "ji1d.",     # -ij > -id   --  see nois4j> & vis3j>
         "juf1s.",    # -fuj > -fus
-        "ju1d.",     # -uj > -ud 
-        "jo1d.",     # -oj > -od 
+        "ju1d.",     # -uj > -ud
+        "jo1d.",     # -oj > -od
         "jeh1r.",    # -hej > -her
         "jrev1t.",   # -verj > -vert
         "jsim2t.",   # -misj > -mit
-        "jn1d.",     # -nj > -nd 
-        "j1s.",      # -j > -s   
+        "jn1d.",     # -nj > -nd
+        "j1s.",      # -j > -s
         "lbaifi6.",  # -ifiabl > -
         "lbai4y.",   # -iabl > -y
-        "lba3>",     # -abl > -  
-        "lbi3.",     # -ibl > -  
+        "lba3>",     # -abl > -
+        "lbi3.",     # -ibl > -
         "lib2l>",    # -bil > -bl
-        "lc1.",      # -cl > c   
+        "lc1.",      # -cl > c
         "lufi4y.",   # -iful > -y
-        "luf3>",     # -ful > -  
-        "lu2.",      # -ul > -   
-        "lai3>",     # -ial > -  
-        "lau3>",     # -ual > -  
-        "la2>",      # -al > -   
-        "ll1.",      # -ll > -l  
-        "mui3.",     # -ium > -  
+        "luf3>",     # -ful > -
+        "lu2.",      # -ul > -
+        "lai3>",     # -ial > -
+        "lau3>",     # -ual > -
+        "la2>",      # -al > -
+        "ll1.",      # -ll > -l
+        "mui3.",     # -ium > -
         "mu*2.",     # -um > -   if intact
-        "msi3>",     # -ism > -  
-        "mm1.",      # -mm > -m  
+        "msi3>",     # -ism > -
+        "mm1.",      # -mm > -m
         "nois4j>",   # -sion > -j
         "noix4ct.",  # -xion > -ct
-        "noi3>",     # -ion > -  
-        "nai3>",     # -ian > -  
-        "na2>",      # -an > -   
+        "noi3>",     # -ion > -
+        "nai3>",     # -ian > -
+        "na2>",      # -an > -
         "nee0.",     # protect  -een
-        "ne2>",      # -en > -   
-        "nn1.",      # -nn > -n  
-        "pihs4>",    # -ship > - 
-        "pp1.",      # -pp > -p  
-        "re2>",      # -er > -   
+        "ne2>",      # -en > -
+        "nn1.",      # -nn > -n
+        "pihs4>",    # -ship > -
+        "pp1.",      # -pp > -p
+        "re2>",      # -er > -
         "rae0.",     # protect  -ear
-        "ra2.",      # -ar > -   
-        "ro2>",      # -or > -   
-        "ru2>",      # -ur > -   
-        "rr1.",      # -rr > -r  
-        "rt1>",      # -tr > -t  
-        "rei3y>",    # -ier > -y 
-        "sei3y>",    # -ies > -y 
-        "sis2.",     # -sis > -s 
-        "si2>",      # -is > -   
-        "ssen4>",    # -ness > - 
+        "ra2.",      # -ar > -
+        "ro2>",      # -or > -
+        "ru2>",      # -ur > -
+        "rr1.",      # -rr > -r
+        "rt1>",      # -tr > -t
+        "rei3y>",    # -ier > -y
+        "sei3y>",    # -ies > -y
+        "sis2.",     # -sis > -s
+        "si2>",      # -is > -
+        "ssen4>",    # -ness > -
         "ss0.",      # protect  -ss
-        "suo3>",     # -ous > -  
+        "suo3>",     # -ous > -
         "su*2.",     # -us > -   if intact
         "s*1>",      # -s > -    if intact
-        "s0.",       # -s > -s   
+        "s0.",       # -s > -s
         "tacilp4y.", # -plicat > -ply
-        "ta2>",      # -at > -   
-        "tnem4>",    # -ment > - 
-        "tne3>",     # -ent > -  
-        "tna3>",     # -ant > -  
+        "ta2>",      # -at > -
+        "tnem4>",    # -ment > -
+        "tne3>",     # -ent > -
+        "tna3>",     # -ant > -
         "tpir2b.",   # -ript > -rib
         "tpro2b.",   # -orpt > -orb
         "tcud1.",    # -duct > -duc
@@ -134,32 +134,32 @@ class LancasterStemmer(StemmerI):
         "tpec2iv.",  # -cept > -ceiv
         "tulo2v.",   # -olut > -olv
         "tsis0.",    # protect  -sist
-        "tsi3>",     # -ist > -  
-        "tt1.",      # -tt > -t  
-        "uqi3.",     # -iqu > -   
+        "tsi3>",     # -ist > -
+        "tt1.",      # -tt > -t
+        "uqi3.",     # -iqu > -
         "ugo1.",     # -ogu > -og
-        "vis3j>",    # -siv > -j 
+        "vis3j>",    # -siv > -j
         "vie0.",     # protect  -eiv
-        "vi2>",      # -iv > -   
+        "vi2>",      # -iv > -
         "ylb1>",     # -bly > -bl
-        "yli3y>",    # -ily > -y 
+        "yli3y>",    # -ily > -y
         "ylp0.",     # protect  -ply
-        "yl2>",      # -ly > -   
+        "yl2>",      # -ly > -
         "ygo1.",     # -ogy > -og
         "yhp1.",     # -phy > -ph
         "ymo1.",     # -omy > -om
         "ypo1.",     # -opy > -op
-        "yti3>",     # -ity > -  
-        "yte3>",     # -ety > -  
-        "ytl2.",     # -lty > -l 
+        "yti3>",     # -ity > -
+        "yte3>",     # -ety > -
+        "ytl2.",     # -lty > -l
         "yrtsi5.",   # -istry > -
-        "yra3>",     # -ary > -  
-        "yro3>",     # -ory > -  
-        "yfi3.",     # -ify > -  
+        "yra3>",     # -ary > -
+        "yro3>",     # -ory > -
+        "yfi3.",     # -ify > -
         "ycn2t>",    # -ncy > -nt
-        "yca3>",     # -acy > -  
-        "zi2>",      # -iz > -   
-        "zy1s."      # -yz > -ys 
+        "yca3>",     # -acy > -
+        "zi2>",      # -iz > -
+        "zy1s."      # -yz > -ys
     )
 
 
@@ -184,7 +184,7 @@ class LancasterStemmer(StemmerI):
                 self.rule_dictionary[first_letter].append(rule)
             else:
                 self.rule_dictionary[first_letter] = [rule]
-            
+
     def stem(self, word):
         """Stem a word using the Lancaster stemmer.
         """
@@ -193,7 +193,7 @@ class LancasterStemmer(StemmerI):
 
         # Save a copy of the original word
         intact_word = word
-        
+
         # If the user hasn't supplied any rules, setup the default rules
         if len(self.rule_dictionary) == 0:
             self.parseRules(LancasterStemmer.rule_tuple)
@@ -285,10 +285,10 @@ class LancasterStemmer(StemmerI):
             if word[1] in "aeiouy":
                 word_is_acceptable = True
             elif word[2] in "aeiouy":
-                word_is_acceptable = True            
+                word_is_acceptable = True
         return word_is_acceptable
-        
-    
+
+
     def __applyRule(self, word, remove_total, append_string):
         """Apply the stemming rule to the word
         """
@@ -303,7 +303,7 @@ class LancasterStemmer(StemmerI):
 
     def __repr__(self):
         return '<LancasterStemmer>'
-                
+
 
 if __name__ == "__main__":
     import doctest

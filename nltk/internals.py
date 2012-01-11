@@ -368,7 +368,7 @@ class Deprecated(object):
         >>> from nltk.internals import Deprecated
         >>> class NewClassName(object):
         ...     pass # All logic goes here.
-        ... 
+        ...
         >>> class OldClassName(Deprecated, NewClassName):
         ...     "Use NewClassName instead."
 

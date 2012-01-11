@@ -15,7 +15,7 @@ class UndirectedBinaryCombinator(object):
     Abstract class for representing a binary combinator.
     Merely defines functions for checking if the function and argument
     are able to be combined, and what the resulting category is.
-    
+
     Note that as no assumptions are made as to direction, the unrestricted
     combinators can perform all backward, forward and crossed variations
     of the combinators; these restrictions must be added in the rule
@@ -36,7 +36,7 @@ class DirectedBinaryCombinator(object):
     """
     def can_combine(self, left, right):
         raise AssertionError, 'DirectedBinaryCombinator is an abstract interface'
-    
+
     def combine(self, left, right):
         raise AssertionError, 'DirectedBinaryCombinator is an abstract interface'
 
@@ -51,7 +51,7 @@ class ForwardCombinator(DirectedBinaryCombinator):
         self._combinator = combinator
         self._predicate = predicate
         self._suffix = suffix
-    
+
     def can_combine(self, left, right):
         return (self._combinator.can_combine(left,right) and
                   self._predicate(left,right))
@@ -59,7 +59,7 @@ class ForwardCombinator(DirectedBinaryCombinator):
     def combine(self, left, right):
         for cat in self._combinator.combine(left,right):
             yield cat
-    
+
     def __str__(self):
         return '>' + str(self._combinator) + self._suffix
 
@@ -81,7 +81,7 @@ class BackwardCombinator(DirectedBinaryCombinator):
 
     def __str__(self):
         return '<' + str(self._combinator) + self._suffix
-        
+
 class UndirectedFunctionApplication(UndirectedBinaryCombinator):
     """
     Class representing function application.
@@ -99,11 +99,11 @@ class UndirectedFunctionApplication(UndirectedBinaryCombinator):
     def combine(self,function,argument):
         if not function.is_function():
             return
-        
+
         subs = function.arg().can_unify(argument)
         if subs is None:
             return
-        
+
         yield function.res().substitute(subs)
 
     def __str__(self):
@@ -153,7 +153,7 @@ class UndirectedComposition(UndirectedBinaryCombinator):
                             argument.arg().substitute(subs),argument.dir())
 
     def __str__(self):
-        return 'B'   
+        return 'B'
 
 # Predicates for restricting application of straight composition.
 def bothForward(left,right):
@@ -198,7 +198,7 @@ class UndirectedSubstitution(UndirectedBinaryCombinator):
     def can_combine(self, function, argument):
         if function.is_primitive() or argument.is_primitive():
             return False
-      
+
         # These could potentially be moved to the predicates, as the
         # constraints may not be general to all languages.
         if function.res().is_primitive():
@@ -209,7 +209,7 @@ class UndirectedSubstitution(UndirectedBinaryCombinator):
         if not (function.dir().can_compose() and argument.dir().can_compose()):
             return False
         return (function.res().arg() == argument.res()) and (function.arg() == argument.arg())
-   
+
     def combine(self,function,argument):
         if self.can_combine(function,argument):
             yield FunctionalCategory(function.res().res(),argument.arg(),argument.dir())
@@ -217,7 +217,7 @@ class UndirectedSubstitution(UndirectedBinaryCombinator):
     def __str__(self):
         return 'S'
 
-# Predicate for forward substitution 
+# Predicate for forward substitution
 def forwardSConstraint(left, right):
     if not bothForward(left, right):
         return False
@@ -282,7 +282,7 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
             yield FunctionalCategory(xcat,
                     FunctionalCategory(xcat,function,arg.dir()),
                     -(arg.dir()))
-    
+
     def __str__(self):
         return 'T'
 

@@ -20,7 +20,7 @@ class GAAClusterer(VectorSpaceClusterer):
     <= c <= N, can be found by cutting the dendrogram at depth c.
 
     This clusterer uses the cosine similarity metric only, which allows for
-    efficient speed-up in the clustering process. 
+    efficient speed-up in the clustering process.
     """
 
     def __init__(self, num_clusters=1, normalise=True, svd_dimensions=None):
@@ -122,7 +122,7 @@ def demo():
 
     # use a set of tokens with 2D indices
     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
-    
+
     # test the GAAC clusterer with 4 clusters
     clusterer = GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
@@ -131,7 +131,7 @@ def demo():
     print 'Clustered:', vectors
     print 'As:', clusters
     print
-    
+
     # show the dendrogram
     clusterer.dendrogram().show()
 

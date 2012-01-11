@@ -1,7 +1,7 @@
 # Natural Language Toolkit: NomBank Corpus Reader
 #
 # Copyright (C) 2001-2012 NLTK Project
-# Authors: Paul Bedaride <paul.bedaride@gmail.com> 
+# Authors: Paul Bedaride <paul.bedaride@gmail.com>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -80,7 +80,7 @@ class NombankCorpusReader(CorpusReader):
     def lines(self):
         """
         :return: a corpus view that acts as a list of strings, one for
-        each line in the predicate-argument annotation file.  
+        each line in the predicate-argument annotation file.
         """
         return StreamBackedCorpusView(self.abspath(self._nomfile),
                                       read_line_block,
@@ -125,7 +125,7 @@ class NombankCorpusReader(CorpusReader):
                 block.append(NombankInstance.parse(
                     line, self._parse_fileid_xform,
                     self._parse_corpus))
-                
+
         return block
 
 ######################################################################
@@ -133,10 +133,10 @@ class NombankCorpusReader(CorpusReader):
 ######################################################################
 
 class NombankInstance(object):
-    
+
     def __init__(self, fileid, sentnum, wordnum, baseform, sensenumber,
                  predicate, predid, arguments, parse_corpus=None):
-        
+
         self.fileid = fileid
         """The name of the file containing the parse tree for this
         instance's sentence."""
@@ -144,25 +144,25 @@ class NombankInstance(object):
         self.sentnum = sentnum
         """The sentence number of this sentence within ``fileid``.
         Indexing starts from zero."""
-        
+
         self.wordnum = wordnum
         """The word number of this instance's predicate within its
         containing sentence.  Word numbers are indexed starting from
         zero, and include traces and other empty parse elements."""
-            
+
         self.baseform = baseform
         """The baseform of the predicate."""
 
         self.sensenumber = sensenumber
         """The sense number os the predicate"""
-               
+
         self.predicate = predicate
         """A ``NombankTreePointer`` indicating the position of this
         instance's predicate within its containing sentence."""
 
         self.predid = predid
         """Identifier of the predicate """
-        
+
         self.arguments = tuple(arguments)
         """A list of tuples (argloc, argid), specifying the location
         and identifier for each of the predicate's argument in the
@@ -204,7 +204,7 @@ class NombankInstance(object):
     @staticmethod
     def parse(s, parse_fileid_xform=None, parse_corpus=None):
         pieces = s.split()
-        if len(pieces) < 6: 
+        if len(pieces) < 6:
             raise ValueError('Badly formatted nombank line: %r' % s)
 
         # Divide the line into its basic pieces.
@@ -236,7 +236,7 @@ class NombankInstance(object):
             arguments.append( (NombankTreePointer.parse(argloc), argid) )
 
         # Put it all together.
-        return NombankInstance(fileid, sentnum, wordnum, baseform, sensenumber, 
+        return NombankInstance(fileid, sentnum, wordnum, baseform, sensenumber,
                                predicate, predid, arguments, parse_corpus)
 
 class NombankPointer(object):
@@ -256,14 +256,14 @@ class NombankPointer(object):
     def __init__(self):
         if self.__class__ == NombankPoitner:
             raise AssertionError('NombankPointer is an abstract base class')
-            
+
 class NombankChainTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements may
            be either ``NombankSplitTreePointer`` or
            ``NombankTreePointer`` pointers."""
-        
+
     def __str__(self):
         return '*'.join('%s' % p for p in self.pieces)
     def __repr__(self):
@@ -277,7 +277,7 @@ class NombankSplitTreePointer(NombankPointer):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements are
            all ``NombankTreePointer`` pointers."""
-        
+
     def __str__(self):
         return ','.join('%s' % p for p in self.pieces)
     def __repr__(self):
@@ -290,7 +290,7 @@ class NombankTreePointer(NombankPointer):
     """
     wordnum:height*wordnum:height*...
     wordnum:height,
-    
+
     """
     def __init__(self, wordnum, height):
         self.wordnum = wordnum
@@ -325,7 +325,7 @@ class NombankTreePointer(NombankPointer):
         while isinstance(other, (NombankChainTreePointer,
                                  NombankSplitTreePointer)):
             other = other.pieces[0]
-        
+
         if not isinstance(other, NombankTreePointer):
             return cmp(id(self), id(other))
 

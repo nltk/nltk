@@ -55,7 +55,7 @@ class HunposTagger(TaggerI):
                  encoding=_hunpos_charset, verbose=False):
         """
         Starts the hunpos-tag executable and establishes a connection with it.
-        
+
         :param path_to_model: The model file.
         :param path_to_bin: The hunpos-tag binary.
         :param encoding: The encoding used by the model. Unicode tokens
@@ -71,10 +71,10 @@ class HunposTagger(TaggerI):
         hunpos_paths = map(os.path.expanduser, hunpos_paths)
 
         self._hunpos_bin = find_binary(
-                'hunpos-tag', path_to_bin, 
+                'hunpos-tag', path_to_bin,
                 env_vars=('HUNPOS', 'HUNPOS_HOME'),
-                searchpath=hunpos_paths, 
-                url=_hunpos_url, 
+                searchpath=hunpos_paths,
+                url=_hunpos_url,
                 verbose=verbose)
 
         if not os.path.isfile(path_to_model):

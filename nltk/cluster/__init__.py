@@ -66,7 +66,7 @@ Usage example (see also demo())::
     from numpy import array
 
     vectors = [array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0]]]
-    
+
     # initialise the clusterer (will also assign the vectors to clusters)
     clusterer = cluster.KMeansClusterer(2, euclidean_distance)
     clusterer.cluster(vectors, True)

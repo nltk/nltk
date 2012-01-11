@@ -1,4 +1,4 @@
-# Chomsky random text generator, version 1.1, Raymond Hettinger, 2005/09/13 
+# Chomsky random text generator, version 1.1, Raymond Hettinger, 2005/09/13
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440546
 
 import string
@@ -126,5 +126,5 @@ def generate_chomsky(times=5, line_length=72):
     output = chain(*islice(izip(*parts), 0, times))
     print textwrap.fill(string.join(output), line_length)
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     generate_chomsky()

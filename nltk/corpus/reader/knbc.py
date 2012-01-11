@@ -56,7 +56,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
             if not re.match(r"EOS|\*|\#|\+", line):
                 cells = line.strip().split(" ")
                 res.append(cells[0])
-        
+
         return res
 
     def _tag(self, t, simplify_tags=False):
@@ -67,7 +67,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
                 cells = line.strip().split(" ")
                 # convert cells to morph tuples
                 res.append( (cells[0], ' '.join(cells[1:])) )
-        
+
         return res
 
     def _parse(self, t):
@@ -76,7 +76,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
         for line in t.splitlines():
             if line.startswith("*") or line.startswith("+"):
                 # start of bunsetsu or tag
-                
+
                 cells = line.strip().split(" ", 3)
                 m = re.match(r"([\-0-9]*)([ADIP])", cells[1])
 
@@ -97,7 +97,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
                     dg.root = node
                 else:
                     dg.nodelist[dep_parent]['deps'].append(i)
-                    
+
                 i += 1
             elif not line.startswith("#"):
                 # normal morph
@@ -109,7 +109,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
         if self.morphs2str:
             for node in dg.nodelist:
                 node['word'] = self.morphs2str(node['word'])
-            
+
         return dg.tree()
 
 ######################################################################
@@ -147,7 +147,7 @@ def demo():
                      for sent in knbc.tagged_sents()[0:2] )
 
 def test():
-    
+
     from nltk.corpus.util import LazyCorpusLoader
 
     knbc = LazyCorpusLoader(

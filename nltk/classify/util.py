@@ -106,17 +106,17 @@ class CutoffChecker(object):
         self.ll = None
         self.acc = None
         self.iter = 1
-        
+
     def check(self, classifier, train_toks):
         cutoffs = self.cutoffs
         self.iter += 1
         if 'max_iter' in cutoffs and self.iter >= cutoffs['max_iter']:
             return True # iteration cutoff.
-        
+
         new_ll = nltk.classify.util.log_likelihood(classifier, train_toks)
         if math.isnan(new_ll):
             return True
-        
+
         if 'min_ll' in cutoffs or 'min_lldelta' in cutoffs:
             if 'min_ll' in cutoffs and new_ll >= cutoffs['min_ll']:
                 return True # log likelihood cutoff
@@ -168,7 +168,7 @@ def names_demo(trainer, features=names_demo_features):
     import random
 
     # Construct a list of classified names, using the names corpus.
-    namelist = ([(name, 'male') for name in names.words('male.txt')] + 
+    namelist = ([(name, 'male') for name in names.words('male.txt')] +
                 [(name, 'female') for name in names.words('female.txt')])
 
     # Randomly split the names into a test & train set.
@@ -204,7 +204,7 @@ def names_demo(trainer, features=names_demo_features):
             print fmt % (name, pdist.prob('male'), pdist.prob('female'))
     except NotImplementedError:
         pass
-    
+
     # Return the classifier
     return classifier
 
@@ -249,7 +249,7 @@ def wsd_demo(trainer, word, features, n=1000):
         print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
     except NotImplementedError:
         pass
-    
+
     # Return the classifier
     return classifier
 

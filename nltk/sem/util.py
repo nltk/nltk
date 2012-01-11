@@ -24,7 +24,7 @@ import re
 def batch_parse(inputs, grammar, trace=0):
     """
     Convert input sentences into syntactic trees.
-    
+
     :param inputs: sentences to be parsed
     :type inputs: list of str
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
@@ -50,7 +50,7 @@ def batch_parse(inputs, grammar, trace=0):
 def root_semrep(syntree, semkey='SEM'):
     """
     Find the semantic representation at the root of a tree.
-    
+
     :param syntree: a parse ``Tree``
     :param semkey: the feature label to use for the root semantics in the tree
     :return: the semantic representation at the root of a ``Tree``
@@ -71,7 +71,7 @@ def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
-    
+
     :param inputs: a list of sentences
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
     :return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
@@ -84,9 +84,9 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
-    
+
     :param inputs: a list of sentences
-    :param grammar: ``FeatureGrammar`` or name of feature-based grammar    
+    :param grammar: ``FeatureGrammar`` or name of feature-based grammar
     :return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
     :rtype: dict
     """
@@ -100,20 +100,20 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
 ##########################################
 _VAL_SPLIT_RE = re.compile(r'\s*=+>\s*')
 _ELEMENT_SPLIT_RE = re.compile(r'\s*,\s*')
-_TUPLES_RE = re.compile(r"""\s*         
+_TUPLES_RE = re.compile(r"""\s*
                                 (\([^)]+\))  # tuple-expression
                                 \s*""", re.VERBOSE)
 
 def parse_valuation_line(s):
     """
     Parse a line in a valuation file.
-    
+
     Lines are expected to be of the form::
-    
+
       noosa => n
       girl => {g1, g2}
       chase => {(b1, g1), (b2, g1), (g1, d1), (g2, d2)}
-    
+
     :param s: input line
     :type s: str
     :return: a pair (symbol, value)
@@ -137,11 +137,11 @@ def parse_valuation_line(s):
             set_elements = _ELEMENT_SPLIT_RE.split(value)
         value = set(set_elements)
     return symbol, value
-    
+
 def parse_valuation(s):
     """
     Convert a valuation file into a valuation.
-    
+
     :param s: the contents of a valuation file
     :type s: str
     :return: a ``nltk.sem`` valuation
@@ -198,9 +198,9 @@ def demo_legacy_grammar():
     """
     Check that batch_interpret() is compatible with legacy grammars that use
     a lowercase 'sem' feature.
-    
+
     Define 'test.fcfg' to be the following
-    
+
     """
     from nltk.grammar import parse_fcfg
 
@@ -212,8 +212,8 @@ def demo_legacy_grammar():
     print "*" * 20
     for reading in batch_interpret(['hello'], g, semkey='sem'):
         syn, sem = reading[0]
-        print 
-        print "output: ", sem     
+        print
+        print "output: ", sem
 
 def demo():
     import sys
@@ -224,7 +224,7 @@ def demo():
     """
 
     opts = OptionParser(description=description)
-    
+
     opts.set_defaults(evaluate=True, beta=True, syntrace=0,
                       semtrace=0, demo='default', grammar='', sentences='')
 
@@ -246,7 +246,7 @@ def demo():
                     help="set semantic tracing on")
 
     (options, args) = opts.parse_args()
-    
+
     SPACER = '-' * 30
 
     demo_model0()
@@ -258,16 +258,16 @@ def demo():
     'every boy chases a girl',
     'John walks with a girl in Noosa',
     'who walks']
-    
+
     gramfile = 'grammars/sample_grammars/sem2.fcfg'
-        
+
     if options.sentences:
         sentsfile = options.sentences
     if options.grammar:
         gramfile = options.grammar
     if options.model:
         exec "import %s as model" % options.model
-    
+
     if sents is None:
         sents = read_sents(sentsfile)
 
@@ -275,19 +275,19 @@ def demo():
     model = m0
     g = g0
 
-    if options.evaluate: 
+    if options.evaluate:
         evaluations = \
             batch_evaluate(sents, gramfile, model, g, trace=options.semtrace)
     else:
         semreps = \
             batch_interpret(sents, gramfile, trace=options.syntrace)
-        
+
     for i, sent in enumerate(sents):
         n = 1
         print '\nSentence: %s' % sent
         print SPACER
-        if options.evaluate: 
-            
+        if options.evaluate:
+
             for (syntree, semrep, value) in evaluations[i]:
                 if isinstance(value, dict):
                     value = set(value.keys())
@@ -295,11 +295,11 @@ def demo():
                 print value
                 n += 1
         else:
-           
+
             for (syntree, semrep) in semreps[i]:
                 print '%d:  %s' % (n, semrep)
                 n += 1
-                
+
 if __name__ == "__main__":
     #demo()
     demo_legacy_grammar()

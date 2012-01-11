@@ -38,7 +38,7 @@ class YCOECorpusReader(CorpusReader):
     """
     def __init__(self, root, encoding=None):
         CorpusReader.__init__(self, root, [], encoding)
-            
+
         self._psd_reader = YCOEParseCorpusReader(
             self.root.join('psd'), '.*', '.psd', encoding=encoding)
         self._pos_reader = YCOETaggedCorpusReader(
@@ -104,7 +104,7 @@ class YCOECorpusReader(CorpusReader):
                         raise ValueError('Document identifier %s not found'
                                          % document)
         return ['%s.%s' % (d, subcorpus) for d in documents]
-    
+
     # Delegate to one of our two sub-readers:
     def words(self, documents=None):
         return self._pos_reader.words(self._getfileids(documents, 'pos'))
@@ -136,7 +136,7 @@ class YCOETaggedCorpusReader(TaggedCorpusReader):
         sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
         TaggedCorpusReader.__init__(self, root, items, sep='_',
                                     sent_tokenizer=sent_tokenizer)
-        
+
 #: A list of all documents and their titles in ycoe.
 documents = {
     'coadrian.o34': 'Adrian and Ritheus',

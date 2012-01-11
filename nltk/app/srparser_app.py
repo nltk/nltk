@@ -18,7 +18,7 @@ the portion of the text which has not yet been considered by the
 parser.
 
 The parser builds up a tree structure for the text using two
-operations: 
+operations:
 
   - "shift" moves the first token from the remaining text to the top
     of the stack.  In the demo, the top of the stack is its right-hand
@@ -42,7 +42,7 @@ which reduction to apply:
   - Click on a CFG production from the list of available reductions,
     on the left side of the main window.  The reduction based on that
     production will be applied to the top of the stack.
-  - Click on one of the stack elements.  A popup window will appear, 
+  - Click on one of the stack elements.  A popup window will appear,
     containing all available reductions.  Select one, and it will be
     applied to the top of the stack.
 
@@ -140,7 +140,7 @@ class ShiftReduceApp(object):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
         self._sysfont = tkFont.Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
-        
+
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget('size'))
@@ -155,7 +155,7 @@ class ShiftReduceApp(object):
         self._prodframe = listframe = Frame(parent)
         self._prodframe.pack(fill='both', side='left', padx=2)
         self._prodlist_label = Label(self._prodframe,
-                                     font=self._boldfont, 
+                                     font=self._boldfont,
                                      text='Available Reductions')
         self._prodlist_label.pack()
         self._prodlist = Listbox(self._prodframe, selectmode='single',
@@ -226,7 +226,7 @@ class ShiftReduceApp(object):
         # Set up the frames.
         self._buttonframe = buttonframe = Frame(parent)
         buttonframe.pack(fill='none', side='bottom')
-        Button(buttonframe, text='Step', 
+        Button(buttonframe, text='Step',
                background='#90c0d0', foreground='black',
                command=self.step,).pack(side='left')
         Button(buttonframe, text='Shift', underline=0,
@@ -311,7 +311,7 @@ class ShiftReduceApp(object):
         helpmenu.add_command(label='Instructions', underline=0,
                              command=self.help, accelerator='F1')
         menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
-        
+
         parent.config(menu=menubar)
 
     def _init_feedback(self, parent):
@@ -331,7 +331,7 @@ class ShiftReduceApp(object):
         self._lastoper2.pack(side='left', fill='x', expand=1)
 
     def _init_canvas(self, parent):
-        self._cframe = CanvasFrame(parent, background='white', 
+        self._cframe = CanvasFrame(parent, background='white',
                                    width=525, closeenough=10,
                                    border=2, relief='sunken')
         self._cframe.pack(expand=1, fill='both', side='top', pady=2)
@@ -410,7 +410,7 @@ class ShiftReduceApp(object):
         # Allow enough room to shift the next token (for animations)
         if len(self._rtextwidgets) > 0:
             stackx += self._rtextwidgets[0].width()
-               
+
         # Move the remaining text to the correct location (keep it
         # right-justified, when possible); and move the remaining text
         # label, if necessary.
@@ -425,7 +425,7 @@ class ShiftReduceApp(object):
         midx = (stackx + cx2-max(rtextwidth, rlabelwidth))/2
         self._canvas.coords(self._stacktop, midx, 0, midx, 5000)
         (x1, y1, x2, y2) = self._stacklabel.bbox()
-        
+
         # Set up binding to allow them to shift a token by dragging it.
         if len(self._rtextwidgets) > 0:
             def drag_shift(widget, midx=midx, self=self):
@@ -467,7 +467,7 @@ class ShiftReduceApp(object):
     def step(self, *e):
         if self.reduce(): return 1
         elif self.shift(): return 1
-        else: 
+        else:
             if len(self._parser.parses()) > 0:
                 self._lastoper1['text'] = 'Finished:'
                 self._lastoper2['text'] = 'Success'
@@ -517,7 +517,7 @@ class ShiftReduceApp(object):
         """
         if in_idle(): return
         self._top.mainloop(*args, **kwargs)
-        
+
     #########################################
     ##  Menubar callbacks
     #########################################
@@ -528,7 +528,7 @@ class ShiftReduceApp(object):
         self._font.configure(size=-(abs(size)))
         self._boldfont.configure(size=-(abs(size)))
         self._sysfont.configure(size=-(abs(size)))
-        
+
         #self._stacklabel['font'] = ('helvetica', -size-4, 'bold')
         #self._rtextlabel['font'] = ('helvetica', -size-4, 'bold')
         #self._lastoper_label['font'] = ('helvetica', -size)
@@ -539,7 +539,7 @@ class ShiftReduceApp(object):
         self._redraw()
 
     def help(self, *e):
-        # The default font's not very legible; try using 'fixed' instead. 
+        # The default font's not very legible; try using 'fixed' instead.
         try:
             ShowText(self._top, 'Help: Shift-Reduce Parser Application',
                      (__doc__).strip(), width=75, font='fixed')
@@ -556,7 +556,7 @@ class ShiftReduceApp(object):
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self._top, TITLE, ABOUT)
-            
+
     def edit_grammar(self, *e):
         CFGEditor(self._top, self._parser.grammar(), self.set_grammar)
 
@@ -566,7 +566,7 @@ class ShiftReduceApp(object):
         self._prodlist.delete(0, 'end')
         for production in self._productions:
             self._prodlist.insert('end', (' %s' % production))
-        
+
     def edit_sentence(self, *e):
         sentence = string.join(self._sent)
         title = 'Edit Text'
@@ -614,7 +614,7 @@ class ShiftReduceApp(object):
         # Remove old commands.
         productions = self._parser.reducible_productions()
         if len(productions) == 0: return
-        
+
         self._reduce_menu.delete(0, 'end')
         for production in productions:
             self._reduce_menu.add_command(label=str(production),
@@ -648,7 +648,7 @@ class ShiftReduceApp(object):
                             frame-1, widget, dx)
         else:
             # but: stacktop??
-            
+
             # Shift the widget to the stack.
             del self._rtextwidgets[0]
             self._stackwidgets.append(widget)
@@ -754,7 +754,7 @@ class ShiftReduceApp(object):
 
         # Remember what production we're hovering over.
         self._hover = index
-                    
+
     def _clear_hover(self, *event):
         # Clear any previous hover highlighting.
         if self._hover == -1: return
@@ -764,19 +764,19 @@ class ShiftReduceApp(object):
                 stackwidget.node()['color'] = 'black'
             else:
                 stackwidget['color'] = 'black'
-        
-    
+
+
 def app():
     """
     Create a shift reduce parser app, using a simple grammar and
-    text. 
+    text.
     """
-    
+
     from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
-    
+
     productions = (
         # Syntactic Productions
         Production(S, [NP, VP]),

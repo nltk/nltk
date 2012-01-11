@@ -36,7 +36,7 @@ class EMClusterer(VectorSpaceClusterer):
         :param  priors: the prior probability for each cluster
         :type   priors: numpy array or seq of float
         :param  covariance_matrices: the covariance matrix for each cluster
-        :type   covariance_matrices: [seq of] numpy array 
+        :type   covariance_matrices: [seq of] numpy array
         :param  conv_threshold: maximum change in likelihood before deemed
                     convergent
         :type   conv_threshold: int or float
@@ -47,7 +47,7 @@ class EMClusterer(VectorSpaceClusterer):
         :type   normalise:  boolean
         :param  svd_dimensions: number of dimensions to use in reducing vector
                                dimensionsionality with SVD
-        :type   svd_dimensions: int 
+        :type   svd_dimensions: int
         """
         VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._means = numpy.array(initial_means, numpy.float64)
@@ -59,7 +59,7 @@ class EMClusterer(VectorSpaceClusterer):
 
     def num_clusters(self):
         return self._num_clusters
-        
+
     def cluster_vectorspace(self, vectors, trace=False):
         assert len(vectors) > 0
 
@@ -70,12 +70,12 @@ class EMClusterer(VectorSpaceClusterer):
         if not priors:
             priors = self._priors = numpy.ones(self._num_clusters,
                                         numpy.float64) / self._num_clusters
-        covariances = self._covariance_matrices 
+        covariances = self._covariance_matrices
         if not covariances:
             covariances = self._covariance_matrices = \
-                [ numpy.identity(dimensions, numpy.float64) 
+                [ numpy.identity(dimensions, numpy.float64)
                   for i in range(self._num_clusters) ]
-            
+
         # do the E and M steps until the likelihood plateaus
         lastl = self._loglikelihood(vectors, priors, means, covariances)
         converged = False
@@ -141,11 +141,11 @@ class EMClusterer(VectorSpaceClusterer):
         try:
             det = numpy.linalg.det(cvm)
             inv = numpy.linalg.inv(cvm)
-            a = det ** -0.5 * (2 * numpy.pi) ** (-m / 2.0) 
+            a = det ** -0.5 * (2 * numpy.pi) ** (-m / 2.0)
             dx = x - mean
             print dx, inv
             b = -0.5 * numpy.dot( numpy.dot(dx, inv), dx)
-            return a * numpy.exp(b) 
+            return a * numpy.exp(b)
         except OverflowError:
             # happens when the exponent is negative infinity - i.e. b = 0
             # i.e. the inverse of cvm is huge (cvm is almost zero)
@@ -182,7 +182,7 @@ def demo():
     print 'Clustered:', vectors
     print 'As:       ', clusters
     print
-    
+
     for c in range(2):
         print 'Cluster:', c
         print 'Prior:  ', clusterer._priors[c]
@@ -208,7 +208,7 @@ def demo():
 #
 #     # use a set of tokens with 2D indices
 #     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
-    
+
 #     # test the EM clusterer with means given by k-means (2) and
 #     # dimensionality reduction
 #     clusterer = cluster.KMeans(2, euclidean_distance, svd_dimensions=1)

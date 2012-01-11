@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Lexical Functional Grammar 
+# Natural Language Toolkit: Lexical Functional Grammar
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
@@ -14,19 +14,19 @@ from nltk.internals import Counter
 class FStructure(dict):
     def safeappend(self, key, item):
         """
-        Append 'item' to the list at 'key'.  If no list exists for 'key', then 
+        Append 'item' to the list at 'key'.  If no list exists for 'key', then
         construct one.
         """
         if key not in self:
             self[key] = []
         self[key].append(item)
-        
+
     def __setitem__(self, key, value):
         dict.__setitem__(self, key.lower(), value)
-        
+
     def __getitem__(self, key):
         return dict.__getitem__(self, key.lower())
-        
+
     def __contains__(self, key):
         return dict.__contains__(self, key.lower())
 
@@ -38,29 +38,29 @@ class FStructure(dict):
         from nltk.parse.dependencygraph import DependencyGraph
         depgraph = DependencyGraph()
         nodelist = depgraph.nodelist
-        
+
         self._to_depgraph(nodelist, 0, 'ROOT')
-        
+
         #Add all the dependencies for all the nodes
         for node_addr, node in enumerate(nodelist):
             for n2 in nodelist[1:]:
                 if n2['head'] == node_addr:
                     node['deps'].append(n2['address'])
-        
+
         depgraph.root = nodelist[1]
 
         return depgraph
 
     def _to_depgraph(self, nodelist, head, rel):
         index = len(nodelist)
-        
+
         nodelist.append({'address': index,
                          'word': self.pred[0],
                          'tag': self.pred[1],
                          'head': head,
                          'rel': rel,
                          'deps': []})
-        
+
         for feature in self:
             for item in self[feature]:
                 if isinstance(item, FStructure):
@@ -81,43 +81,43 @@ class FStructure(dict):
     @staticmethod
     def read_depgraph(depgraph):
         return FStructure._read_depgraph(depgraph.root, depgraph)
-    
+
     @staticmethod
     def _read_depgraph(node, depgraph, label_counter=None, parent=None):
         if not label_counter:
             label_counter = Counter()
-        
+
         if node['rel'].lower() in ['spec', 'punct']:
             # the value of a 'spec' entry is a word, not an FStructure
             return (node['word'], node['tag'])
-            
+
         else:
             fstruct = FStructure()
             fstruct.pred = None
             fstruct.label = FStructure._make_label(label_counter.get())
-    
+
             fstruct.parent = parent
-            
+
             word, tag = node['word'], node['tag']
             if tag[:2] == 'VB':
                 if tag[2:3] == 'D':
                     fstruct.safeappend('tense', ('PAST', 'tense'))
                 fstruct.pred = (word, tag[:2])
-    
+
             if not fstruct.pred:
                 fstruct.pred = (word, tag)
-    
+
             children = [depgraph.nodelist[idx] for idx in node['deps']]
             for child in children:
                 fstruct.safeappend(child['rel'], FStructure._read_depgraph(child, depgraph, label_counter, fstruct))
-    
+
             return fstruct
 
     @staticmethod
     def _make_label(value):
         """
         Pick an alphabetic character as identifier for an entity in the model.
-        
+
         :param value: where to index into the list of characters
         :type value: int
         """
@@ -156,7 +156,7 @@ class FStructure(dict):
         return accum+']'
 
 
-        
+
 def demo_read_depgraph():
     from nltk.parse.dependencygraph import DependencyGraph
     dg1 = DependencyGraph("""\
@@ -190,7 +190,7 @@ dog     NN      3       OBJ
     depgraphs = [dg1,dg2,dg3,dg4]
     for dg in depgraphs:
         print FStructure.read_depgraph(dg)
-        
+
 if __name__ == '__main__':
     demo_read_depgraph()
-    
+

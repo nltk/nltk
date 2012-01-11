@@ -13,7 +13,7 @@
 
 """
 This module provides data structures for representing first-order
-models. 
+models.
 """
 
 from pprint import pformat
@@ -42,7 +42,7 @@ def trace(f, *args, **kw):
         for item in d.items():
             print "%s => %s" % item
     return f(*args, **kw)
-        
+
 def is_rel(s):
     """
     Check whether a set represents a relation (of any arity).
@@ -63,14 +63,14 @@ def is_rel(s):
 
 def set2rel(s):
     """
-    Convert a set containing individuals (strings or numbers) into a set of 
-    unary tuples. Any tuples of strings already in the set are passed through 
+    Convert a set containing individuals (strings or numbers) into a set of
+    unary tuples. Any tuples of strings already in the set are passed through
     unchanged.
-    
+
     For example:
       - set(['a', 'b']) => set([('a',), ('b',)])
       - set([3, 27]) => set([('3',), ('27',)])
-      
+
     :type s: set
     :rtype: set of tuple of str
     """
@@ -82,7 +82,7 @@ def set2rel(s):
             new.add((str(elem,)))
         else:
             new.add(elem)
-    return new   
+    return new
 
 def arity(rel):
     """
@@ -98,7 +98,7 @@ def arity(rel):
 class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
-    Keys are strings representing the constants to be interpreted, and values correspond 
+    Keys are strings representing the constants to be interpreted, and values correspond
     to individuals (represented as strings) and n-ary relations (represented as sets of tuples
     of strings).
 
@@ -119,7 +119,7 @@ class Valuation(dict):
             else:
                 msg = textwrap.fill("Error in initializing Valuation. "
                                     "Unrecognized value for symbol '%s':\n%s" % (sym, val), width=66)
-                
+
                 raise ValueError(msg)
 
     def __getitem__(self, key):
@@ -164,7 +164,7 @@ class Assignment(dict):
     members of the class ``IndividualVariableExpression`` in the ``logic``
     module. If a variable is not assigned a value by *g*, it will raise
     an ``Undefined`` exception.
-    
+
     A variable *Assignment* is a mapping from individual variables to
     entities in the domain. Individual variables are usually indicated
     with the letters ``'x'``, ``'y'``, ``'w'`` and ``'z'``, optionally
@@ -179,7 +179,7 @@ class Assignment(dict):
 
     There is also a ``print`` format for assignments which uses a notation
     closer to that in logic textbooks:
-   
+
         >>> print g3
         g[u2/y][u1/x]
 
@@ -219,12 +219,12 @@ class Assignment(dict):
             return dict.__getitem__(self, key)
         else:
             raise Undefined, "Not recognized as a variable: '%s'" % key
-        
+
     def copy(self):
         new = Assignment(self.domain)
         new.update(self)
         return new
-        
+
     def purge(self, var=None):
         """
         Remove one or all keys (i.e. logic variables) from an
@@ -274,7 +274,7 @@ class Assignment(dict):
         self._addvariant()
         return self
 
-    
+
 class Model(object):
     """
     A first order model is a domain *D* of discourse and a valuation *V*.
@@ -284,7 +284,7 @@ class Model(object):
     The domain of *V* should be a subset of *D*.
 
     Construct a new ``Model``.
-        
+
     :type domain: set
     :param domain: A set of entities representing the domain of discourse of the model.
     :type valuation: Valuation
@@ -331,7 +331,7 @@ class Model(object):
                 print
                 print "'%s' is undefined under M, %s" %  (expr, g)
             return 'Undefined'
-        
+
 
     def satisfy(self, parsed, g, trace=None):
         """
@@ -343,7 +343,7 @@ class Model(object):
         :return: Returns a truth value or ``Undefined`` if ``parsed`` is\
         complex, and calls the interpretation function ``i`` if ``parsed``\
         is atomic.
-        
+
         :param parsed: An expression of ``logic``.
         :type g: Assignment
         :param g: an assignment to individual variables.
@@ -406,14 +406,14 @@ class Model(object):
         else:
             return self.i(parsed, g, trace)
 
-    #@decorator(trace_eval)   
+    #@decorator(trace_eval)
     def i(self, parsed, g, trace=False):
         """
         An interpretation function.
 
         Assuming that ``parsed`` is atomic:
 
-        - if ``parsed`` is a non-logical constant, calls the valuation *V* 
+        - if ``parsed`` is a non-logical constant, calls the valuation *V*
         - else if ``parsed`` is an individual variable, calls assignment *g*
         - else returns ``Undefined``.
 
@@ -422,7 +422,7 @@ class Model(object):
         :param g: an assignment to individual variables.
         :return: a semantic value
         """
-        # If parsed is a propositional letter 'p', 'q', etc, it could be in valuation.symbols 
+        # If parsed is a propositional letter 'p', 'q', etc, it could be in valuation.symbols
         # and also be an IndividualVariableExpression. We want to catch this first case.
         # So there is a procedural consequence to the ordering of clauses here:
         if parsed.variable.name in self.valuation.symbols:
@@ -432,7 +432,7 @@ class Model(object):
 
         else:
             raise Undefined, "Can't find a value for %s" % parsed
-        
+
     def satisfiers(self, parsed, varex, g, trace=None, nesting=0):
         """
         Generate the entities from the model's domain that satisfy an open formula.
@@ -449,12 +449,12 @@ class Model(object):
         spacer = '   '
         indent = spacer + (spacer * nesting)
         candidates = []
-        
+
         if isinstance(varex, str):
             var = Variable(varex)
         else:
             var = varex
-             
+
         if var in parsed.free():
             if trace:
                 print
@@ -467,21 +467,21 @@ class Model(object):
                 else:
                     lowtrace = 0
                 value = self.satisfy(parsed, new_g, lowtrace)
-                
+
                 if trace:
                     print indent + "(trying assignment %s)" % new_g
-                    
+
                 # parsed == False under g[u/var]?
                 if value == False:
                     if trace:
                         print  indent + "value of '%s' under %s is False" % (parsed, new_g)
-                    
+
                 # so g[u/var] is a satisfying assignment
                 else:
                     candidates.append(u)
                     if trace:
                         print indent + "value of '%s' under %s is %s" % (parsed, new_g, value)
-                   
+
             result = set(c for c in candidates)
         # var isn't free in parsed
         else:
@@ -490,12 +490,12 @@ class Model(object):
         return result
 
 
-    
 
-        
+
+
 #//////////////////////////////////////////////////////////////////////
 # Demo..
-#//////////////////////////////////////////////////////////////////////        
+#//////////////////////////////////////////////////////////////////////
 # number of spacer chars
 mult = 30
 
@@ -503,7 +503,7 @@ mult = 30
 #################
 def propdemo(trace=None):
     """Example of a propositional model."""
-    
+
     global val1, dom1, m1, g1
     val1 = Valuation([('P', True), ('Q', True), ('R', False)])
     dom1 = set([])
@@ -547,7 +547,7 @@ def propdemo(trace=None):
 
 # Demo 2: FOL Model
 #############
-            
+
 def folmodel(quiet=False, trace=None):
     """Example of a first-order model."""
 
@@ -560,7 +560,7 @@ def folmodel(quiet=False, trace=None):
     dom2 = val2.domain
     m2 = Model(dom2, val2)
     g2 = Assignment(dom2, [('x', 'b1'), ('y', 'g2')])
-    
+
     if not quiet:
         print
         print '*' * mult
@@ -572,17 +572,17 @@ def folmodel(quiet=False, trace=None):
         exprs = ['adam', 'boy', 'love', 'walks', 'x', 'y', 'z']
         lp = LogicParser()
         parsed_exprs = [lp.parse(e) for e in exprs]
-        
+
         print
         for parsed in parsed_exprs:
             try:
                 print "The interpretation of '%s' in m2 is %s" % (parsed, m2.i(parsed, g2))
             except Undefined:
                 print "The interpretation of '%s' in m2 is Undefined" % parsed
-        
-     
+
+
         applications = [('boy', ('adam')), ('walks', ('adam',)), ('love', ('adam', 'y')), ('love', ('y', 'adam'))]
-                        
+
         for (fun, args) in applications:
             try:
                 funval = m2.i(lp.parse(fun), g2)
@@ -590,10 +590,10 @@ def folmodel(quiet=False, trace=None):
                 print "%s(%s) evaluates to %s" % (fun, args, argsval in funval)
             except Undefined:
                 print "%s(%s) evaluates to Undefined" % (fun, args)
-            
+
 # Demo 3: FOL
 #########
-                
+
 def foldemo(trace=None):
     """
     Interpretation of closed expressions in a first-order model.
@@ -634,10 +634,10 @@ def foldemo(trace=None):
         else:
             print "The value of '%s' is: %s" % (fmla, m2.evaluate(fmla, g2))
 
-            
+
 # Demo 3: Satisfaction
 #############
-            
+
 def satdemo(trace=None):
     """Satisfiers of an open formula in a first order model."""
 
@@ -647,7 +647,7 @@ def satdemo(trace=None):
     print '*' * mult
 
     folmodel(quiet=True)
-    
+
     formulas = [
                'boy(x)',
                '(x = x)',
@@ -672,19 +672,19 @@ def satdemo(trace=None):
 
     if trace:
         print m2
-     
+
     lp = LogicParser()
     for fmla in formulas:
         print fmla
         lp.parse(fmla)
-        
+
     parsed = [lp.parse(fmla) for fmla in formulas]
-    
+
     for p in parsed:
         g2.purge()
         print "The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, 'x', g2, trace))
 
-        
+
 def demo(num=0, trace=None):
     """
     Run exists demos.
@@ -702,13 +702,13 @@ def demo(num=0, trace=None):
         2: folmodel,
         3: foldemo,
         4: satdemo}
-    
+
     try:
         demos[num](trace=trace)
     except KeyError:
         for num in demos:
             demos[num](trace=trace)
 
-            
+
 if __name__ == "__main__":
     demo(2, trace=0)

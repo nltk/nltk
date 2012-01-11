@@ -52,12 +52,12 @@ responses = (
       "Greetings. I sense your mind is troubled. Tell me of your troubles.",
       "Ask the question you have come to ask.",
       "Hello. Do you seek englightenment?")),
-  
+
 
 # "I need" and "I want" can be followed by a thing (eg 'help')
 # or an action (eg 'to see you')
 #
-# This is a problem with this style of response -  
+# This is a problem with this style of response -
 # person:    "I need you"
 # chatbot:    "me can be achieved by hard work and dedication of the mind"
 # i.e. 'you' is not really a thing that can be mapped this way, so this
@@ -72,7 +72,7 @@ responses = (
     ( "Desires of the heart will distract you from the path to enlightenment.",
       "Will%1 help you attain enlightenment?",
       "Is%1 a desire of the mind, or of the heart?")),
-  
+
 
 # why questions are separated into three types:
 # "why..I"     e.g. "why am I here?" "Why do I like cake?"
@@ -113,19 +113,19 @@ responses = (
     (r'what (.*)\?',
     ( "Seek truth, not what%1.",
       "What%1 should not concern you.")),
-  
+
 # how questions, e.g. "how do you do?"
     (r'how (.*)\?',
     ( "How do you suppose?",
       "Will an answer to that really help in your search for enlightenment?",
       "Ask yourself not how, but why.")),
 
-# can questions, e.g. "can you run?", "can you come over here please?"  
+# can questions, e.g. "can you run?", "can you come over here please?"
     (r'can you (.*)\?',
     ( "I probably can, but I may not.",
       "Maybe I can%1, and maybe I cannot.",
       "I can do all, and I can do nothing.")),
-  
+
 # can questions, e.g. "can I have some cake?", "can I know truth?"
     (r'can i (.*)\?',
     ( "You can%1 if you believe you can%1, and have a pure spirit.",
@@ -145,7 +145,7 @@ responses = (
     (r'is(.*)\?',
     ( "%1 is not relevant.",
       "Does this matter?")),
-  
+
 # non-specific question
     (r'(.*)\?',
     ( "Do you think %1?",
@@ -175,7 +175,7 @@ responses = (
 # e.g. "I want a pony"
     (r'i want (.*)',
     ( "Does your heart truely desire %1?",
-      "Is this a desire of the heart, or of the mind?")),  
+      "Is this a desire of the heart, or of the mind?")),
 
 # e.g. "I can't wait" or "I can't do this"
     (r'i can\'t (.*)',
@@ -190,14 +190,14 @@ responses = (
     ( "Uncertainty in an uncertain world.",
      "Indeed, how can we be certain of anything in such uncertain times.",
      "Are you not, in fact, certain that%1?")),
-  
+
 # "I feel...emotions/sick/light-headed..."
     (r'i feel (.*)',
     ( "Your body and your emotions are both symptoms of your mind."
       "What do you believe is the root of such feelings?",
       "Feeling%1 can be a sign of your state-of-mind.")),
-  
-  
+
+
 # exclaimation mark indicating emotion
 # e.g. "Wow!" or "No!"
     (r'(.*)!',
@@ -210,13 +210,13 @@ responses = (
     ( "Does knowning the reasons behind things help you to understand"
       " the things themselves?",
       "If%1, what else must be true?")),
-  
+
 # yes or no - raise an issue of certainty/correctness
     (r'(yes)|(no)',
     ( "Is there certainty in an uncertain world?",
       "It is better to be right than to be certain.")),
 
-# sentence containing word 'love'  
+# sentence containing word 'love'
     (r'(.*)love(.*)',
     ( "Think of the trees: they let the birds perch and fly with no intention to call them when they come, and no longing for their return when they fly away. Let your heart be like the trees.",
       "Free love!")),
@@ -226,7 +226,7 @@ responses = (
     ( "If you understand, things are just as they are;"
       " if you do not understand, things are just as they are.",
       "Imagination is more important than knowledge.")),
-  
+
 # 'I', 'me', 'my' - person is talking about themself.
 # this breaks down when words contain these - eg 'Thyme', 'Irish'
     (r'(.*)(me )|( me)|(my)|(mine)|(i)(.*)',
@@ -248,8 +248,8 @@ responses = (
       "Good bye. We are cups, constantly and quietly being filled."
       "\nThe trick is knowning how to tip ourselves over and let the beautiful stuff out.")),
 
-  
-# fall through case - 
+
+# fall through case -
 # when stumped, respond with generic zen wisdom
 #
     (r'(.*)',
