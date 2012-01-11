@@ -6,6 +6,7 @@
 ===============================
 
     >>> from nltk.tree import *
+    >>> from nltk.test.doctest_utils import *
 
 Some trees to run tests on:
 
@@ -689,16 +690,12 @@ operations:
     ok! (E f)
     >>> ptree[0,0].remove(make_ptree('(Q p)')); pcheck(ptree)
     ok! (A (B (C (D )) g) h)
-    >>> ptree[0,0].remove(make_ptree('(Q p)'))
-    Traceback (most recent call last):
-      . . .
-    ValueError: list.index(x): x not in list
+    >>> should_raise(ValueError, lambda: ptree[0,0].remove(make_ptree('(Q p)')))
+    True
     >>> ptree.remove('h'); pcheck(ptree)
     ok! (A (B (C (D )) g))
-    >>> ptree.remove('h');
-    Traceback (most recent call last):
-      . . .
-    ValueError: list.index(x): x not in list
+    >>> should_raise(ValueError, lambda: ptree.remove('h'))
+    True
     >>> # remove() removes the first subtree that is equal (==) to the
     >>> # given tree, which may not be the identical tree we give it:
     >>> ptree = make_ptree('(A (X x) (Y y) (X x))')
@@ -991,16 +988,12 @@ multiple parents.)
     ok! (E f)
     >>> mptree[0,0].remove(make_mptree('(Q p)')); mpcheck(mptree)
     ok! (A (B (C (D )) g) h)
-    >>> mptree[0,0].remove(make_mptree('(Q p)'))
-    Traceback (most recent call last):
-      . . .
-    ValueError: list.index(x): x not in list
+    >>> should_raise(ValueError, lambda: mptree[0,0].remove(make_mptree('(Q p)')))
+    True
     >>> mptree.remove('h'); mpcheck(mptree)
     ok! (A (B (C (D )) g))
-    >>> mptree.remove('h');
-    Traceback (most recent call last):
-      . . .
-    ValueError: list.index(x): x not in list
+    >>> should_raise(ValueError, lambda:mptree.remove('h'));
+    True
     >>> # remove() removes the first subtree that is equal (==) to the
     >>> # given tree, which may not be the identical tree we give it:
     >>> mptree = make_mptree('(A (X x) (Y y) (X x))')
