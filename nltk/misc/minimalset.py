@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
+from collections import defaultdict
 
 class MinimalSet(object):
     """
