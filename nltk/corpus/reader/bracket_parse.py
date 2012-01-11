@@ -61,7 +61,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             return toks
         else:
             assert 0, 'bad block type'
-    
+
     def _normalize(self, t):
         # If there's an empty set of brackets surrounding the actual
         # parse, then strip them off.

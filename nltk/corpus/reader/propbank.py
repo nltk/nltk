@@ -79,7 +79,7 @@ class PropbankCorpusReader(CorpusReader):
     def lines(self):
         """
         :return: a corpus view that acts as a list of strings, one for
-        each line in the predicate-argument annotation file.  
+        each line in the predicate-argument annotation file.
         """
         return StreamBackedCorpusView(self.abspath(self._propfile),
                                       read_line_block,
@@ -124,7 +124,7 @@ class PropbankCorpusReader(CorpusReader):
                 block.append(PropbankInstance.parse(
                     line, self._parse_fileid_xform,
                     self._parse_corpus))
-                
+
         return block
 
 ######################################################################
@@ -132,10 +132,10 @@ class PropbankCorpusReader(CorpusReader):
 ######################################################################
 
 class PropbankInstance(object):
-    
+
     def __init__(self, fileid, sentnum, wordnum, tagger, roleset,
                  inflection, predicate, arguments, parse_corpus=None):
-        
+
         self.fileid = fileid
         """The name of the file containing the parse tree for this
         instance's sentence."""
@@ -143,29 +143,29 @@ class PropbankInstance(object):
         self.sentnum = sentnum
         """The sentence number of this sentence within ``fileid``.
         Indexing starts from zero."""
-        
+
         self.wordnum = wordnum
         """The word number of this instance's predicate within its
         containing sentence.  Word numbers are indexed starting from
         zero, and include traces and other empty parse elements."""
-        
+
         self.tagger = tagger
         """An identifier for the tagger who tagged this instance; or
         ``'gold'`` if this is an adjuticated instance."""
-        
+
         self.roleset = roleset
         """The name of the roleset used by this instance's predicate.
         Use ``propbank.roleset() <PropbankCorpusReader.roleset>`` to
         look up information about the roleset."""
-        
+
         self.inflection = inflection
         """A ``PropbankInflection`` object describing the inflection of
         this instance's predicate."""
-        
+
         self.predicate = predicate
         """A ``PropbankTreePointer`` indicating the position of this
         instance's predicate within its containing sentence."""
-        
+
         self.arguments = tuple(arguments)
         """A list of tuples (argloc, argid), specifying the location
         and identifier for each of the predicate's argument in the
@@ -200,7 +200,7 @@ class PropbankInstance(object):
     @staticmethod
     def parse(s, parse_fileid_xform=None, parse_corpus=None):
         pieces = s.split()
-        if len(pieces) < 7: 
+        if len(pieces) < 7:
             raise ValueError('Badly formatted propbank line: %r' % s)
 
         # Divide the line into its basic pieces.
@@ -253,14 +253,14 @@ class PropbankPointer(object):
     def __init__(self):
         if self.__class__ == PropbankPoitner:
             raise AssertionError('PropbankPointer is an abstract base class')
-            
+
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements may
            be either ``PropbankSplitTreePointer`` or
            ``PropbankTreePointer`` pointers."""
-        
+
     def __str__(self):
         return '*'.join('%s' % p for p in self.pieces)
     def __repr__(self):
@@ -274,7 +274,7 @@ class PropbankSplitTreePointer(PropbankPointer):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements are
            all ``PropbankTreePointer`` pointers."""
-        
+
     def __str__(self):
         return ','.join('%s' % p for p in self.pieces)
     def __repr__(self):
@@ -287,7 +287,7 @@ class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
     wordnum:height,
-    
+
     """
     def __init__(self, wordnum, height):
         self.wordnum = wordnum
@@ -322,7 +322,7 @@ class PropbankTreePointer(PropbankPointer):
         while isinstance(other, (PropbankChainTreePointer,
                                  PropbankSplitTreePointer)):
             other = other.pieces[0]
-        
+
         if not isinstance(other, PropbankTreePointer):
             return cmp(id(self), id(other))
 
@@ -369,7 +369,7 @@ class PropbankTreePointer(PropbankPointer):
                     stack.pop()
 
 class PropbankInflection(object):
-    #{ Inflection Form 
+    #{ Inflection Form
     INFINITIVE = 'i'
     GERUND = 'g'
     PARTICIPLE = 'p'
@@ -390,7 +390,7 @@ class PropbankInflection(object):
     #{ Inflection
     NONE = '-'
     #}
-    
+
     def __init__(self, form='-', tense='-', aspect='-', person='-', voice='-'):
         self.form = form
         self.tense = tense

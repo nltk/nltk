@@ -7,7 +7,7 @@
 
 """
 A collection of methods for tree (grammar) transformations used
-in parsing natural language.  
+in parsing natural language.
 
 Although many of these methods are technically grammar transformations
 (ie. Chomsky Norm Form), when working with treebanks it is much more
@@ -31,25 +31,25 @@ The following is a short tutorial on the available transformations.
     has either two subtrees as children (binarization), or one leaf node
     (non-terminal).  In order to binarize a subtree with more than two
     children, we must introduce artificial nodes.
-  
+
     There are two popular methods to convert a tree into CNF: left
     factoring and right factoring.  The following example demonstrates
     the difference between them.  Example::
-  
+
      Original       Right-Factored     Left-Factored
-    
-          A              A                      A 
-        / | \          /   \                  /   \ 
-       B  C  D   ==>  B    A|<C-D>   OR   A|<B-C>  D 
-                            /  \          /  \ 
+
+          A              A                      A
+        / | \          /   \                  /   \
+       B  C  D   ==>  B    A|<C-D>   OR   A|<B-C>  D
+                            /  \          /  \
                            C    D        B    C
-  
+
  2. Parent Annotation
-  
+
     In addition to binarizing the tree, there are two standard
     modifications to node labels we can do in the same traversal: parent
     annotation and Markov order-N smoothing (or sibling smoothing).
-  
+
     The purpose of parent annotation is to refine the probabilities of
     productions by adding a small amount of context.  With this simple
     addition, a CYK (inside-outside, dynamic programming chart parse)
@@ -57,53 +57,53 @@ The following is a short tutorial on the available transformations.
     parent annotation is to grandparent annotation and beyond.  The
     tradeoff becomes accuracy gain vs. computational complexity.  We
     must also keep in mind data sparcity issues.  Example::
-  
-     Original       Parent Annotation 
-    
-          A                A^<?>            
-        / | \             /   \            
-       B  C  D   ==>  B^<A>    A|<C-D>^<?>     where ? is the 
+
+     Original       Parent Annotation
+
+          A                A^<?>
+        / | \             /   \
+       B  C  D   ==>  B^<A>    A|<C-D>^<?>     where ? is the
                                  /  \          parent of A
-                             C^<A>   D^<A>   
-  
-  
+                             C^<A>   D^<A>
+
+
  3. Markov order-N smoothing
-  
+
     Markov smoothing combats data sparcity issues as well as decreasing
     computational requirements by limiting the number of children
     included in artificial nodes.  In practice, most people use an order
     2 grammar.  Example::
-  
+
       Original       No Smoothing       Markov order 1   Markov order 2   etc.
-      
-       __A__            A                      A                A 
-      / /|\ \         /   \                  /   \            /   \  
+
+       __A__            A                      A                A
+      / /|\ \         /   \                  /   \            /   \
      B C D E F  ==>  B    A|<C-D-E-F>  ==>  B   A|<C>  ==>   B  A|<C-D>
-                            /   \               /   \            /   \  
+                            /   \               /   \            /   \
                            C    ...            C    ...         C    ...
 
-         
-  
+
+
     Annotation decisions can be thought about in the vertical direction
     (parent, grandparent, etc) and the horizontal direction (number of
     siblings to keep).  Parameters to the following functions specify
     these values.  For more information see:
-  
+
     Dan Klein and Chris Manning (2003) "Accurate Unlexicalized
     Parsing", ACL-03.  http://www.aclweb.org/anthology/P03-1054
-      
- 4. Unary Collapsing  
-  
+
+ 4. Unary Collapsing
+
     Collapse unary productions (ie. subtrees with a single child) into a
     new non-terminal (Tree node).  This is useful when working with
     algorithms that do not allow unary productions, yet you do not wish
     to lose the parent information.  Example::
-  
-       A         
+
+       A
        |
        B   ==>   A+B
-      / \        / \  
-     C   D      C   D    
+      / \        / \
+     C   D      C   D
 
 """
 
@@ -112,22 +112,22 @@ from nltk.tree import Tree
 def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
     # assume all subtrees have homogeneous children
     # assume all terminals have no siblings
-    
+
     # A semi-hack to have elegant looking code below.  As a result,
     # any subtree with a branching factor greater than 999 will be incorrectly truncated.
     if horzMarkov == None: horzMarkov = 999
-    
+
     # Traverse the tree depth-first keeping a list of ancestor nodes to the root.
     # I chose not to use the tree.treepositions() method since it requires
     # two traversals of the tree (one to get the positions, one to iterate
     # over them) and node access time is proportional to the height of the node.
-    # This method is 7x faster which helps when parsing 40,000 sentences.  
+    # This method is 7x faster which helps when parsing 40,000 sentences.
 
     nodeList = [(tree, [tree.node])]
     while nodeList != []:
         node, parent = nodeList.pop()
         if isinstance(node,Tree):
-  
+
             # parent annotation
             parentString = ""
             originalNode = node.node
@@ -135,17 +135,17 @@ def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 
                 parentString = "%s<%s>" % (parentChar, "-".join(parent))
                 node.node += parentString
                 parent = [originalNode] + parent[:vertMarkov - 1]
-    
+
             # add children to the agenda before we mess with them
             for child in node:
                 nodeList.append((child, parent))
-           
+
             # chomsky normal form factorization
             if len(node) > 2:
                 childNodes = [child.node for child in node]
                 nodeCopy = node.copy()
                 node[0:] = [] # delete the children
-      
+
                 curNode = node
                 numChildren = len(nodeCopy)
                 for i in range(1,numChildren - 1):
@@ -161,7 +161,7 @@ def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 
                     curNode = newNode
 
                 curNode[0:] = [child for child in nodeCopy]
-        
+
 
 def un_chomsky_normal_form(tree, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
     # Traverse the tree-depth first keeping a pointer to the parent for modification purposes.
@@ -184,7 +184,7 @@ def un_chomsky_normal_form(tree, expandUnary = True, childChar = "|", parentChar
                     parent.insert(1,node[1])
                 else:
                     parent.extend([node[0],node[1]])
-                
+
                 # parent is now the current node so the children of parent will be added to the agenda
                 node = parent
             else:
@@ -192,7 +192,7 @@ def un_chomsky_normal_form(tree, expandUnary = True, childChar = "|", parentChar
                 if parentIndex != -1:
                     # strip the node name of the parent annotation
                     node.node = node.node[:parentIndex]
-                  
+
                 # expand collapsed unary productions
                 if expandUnary == True:
                     unaryIndex = node.node.find(unaryChar)
@@ -200,7 +200,7 @@ def un_chomsky_normal_form(tree, expandUnary = True, childChar = "|", parentChar
                         newNode = Tree(node.node[unaryIndex + 1:], [i for i in node])
                         node.node = node.node[:unaryIndex]
                         node[0:] = [newNode]
-                      
+
             for child in node:
                 nodeList.append((child,node))
 
@@ -211,12 +211,12 @@ def collapse_unary(tree, collapsePOS = False, collapseRoot = False, joinChar = "
     into a new non-terminal (Tree node) joined by 'joinChar'.
     This is useful when working with algorithms that do not allow
     unary productions, and completely removing the unary productions
-    would require loss of useful information.  The Tree is modified 
+    would require loss of useful information.  The Tree is modified
     directly (since it is passed by reference) and no value is returned.
-    
+
     :param tree: The Tree to be collapsed
     :type  tree: Tree
-    :param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie. 
+    :param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie.
                         Part-of-Speech tags) since they are always unary productions
     :type  collapsePOS: bool
     :param collapseRoot: 'False' (default) will not modify the root production
@@ -226,7 +226,7 @@ def collapse_unary(tree, collapsePOS = False, collapseRoot = False, joinChar = "
     :param joinChar: A string used to connect collapsed node values (default = "+")
     :type  joinChar: str
     """
-    
+
     if collapseRoot == False and isinstance(tree, Tree) and len(tree) == 1:
         nodeList = [tree[0]]
     else:
@@ -235,17 +235,17 @@ def collapse_unary(tree, collapsePOS = False, collapseRoot = False, joinChar = "
     # depth-first traversal of tree
     while nodeList != []:
         node = nodeList.pop()
-        if isinstance(node,Tree):  
+        if isinstance(node,Tree):
             if len(node) == 1 and isinstance(node[0], Tree) and (collapsePOS == True or isinstance(node[0,0], Tree)):
                 node.node += joinChar + node[0].node
                 node[0:] = [child for child in node[0]]
-                # since we assigned the child's children to the current node, 
+                # since we assigned the child's children to the current node,
                 # evaluate the current node again
-                nodeList.append(node) 
+                nodeList.append(node)
             else:
                 for child in node:
-                    nodeList.append(child) 
-          
+                    nodeList.append(child)
+
 #################################################################
 # Demonstration
 #################################################################
@@ -253,12 +253,12 @@ def collapse_unary(tree, collapsePOS = False, collapseRoot = False, joinChar = "
 def demo():
     """
     A demonstration showing how each tree transform can be used.
-    """  
-      
+    """
+
     from nltk.draw.tree import draw_trees
     from nltk import tree, treetransforms
     from copy import deepcopy
-    
+
     # original tree from WSJ bracketed text
     sentence = """(TOP
   (S
@@ -277,29 +277,29 @@ def demo():
     (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right))))
     (. .)))"""
     t = tree.Tree.parse(sentence, remove_empty_top_bracketing=True)
-    
+
     # collapse subtrees with only one child
     collapsedTree = deepcopy(t)
     treetransforms.collapse_unary(collapsedTree)
-    
+
     # convert the tree to CNF
     cnfTree = deepcopy(collapsedTree)
     treetransforms.chomsky_normal_form(cnfTree)
-    
+
     # convert the tree to CNF with parent annotation (one level) and horizontal smoothing of order two
     parentTree = deepcopy(collapsedTree)
     treetransforms.chomsky_normal_form(parentTree, horzMarkov=2, vertMarkov=1)
-    
+
     # convert the tree back to its original form (used to make CYK results comparable)
     original = deepcopy(parentTree)
     treetransforms.un_chomsky_normal_form(original)
-    
+
     # convert tree back to bracketed text
     sentence2 = original.pprint()
     print sentence
     print sentence2
     print "Sentences the same? ", sentence == sentence2
-    
+
     draw_trees(t, collapsedTree, cnfTree, parentTree, original)
 
 if __name__ == '__main__':

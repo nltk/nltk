@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Collocations and Association Measures 
+# Natural Language Toolkit: Collocations and Association Measures
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
@@ -90,7 +90,7 @@ class AbstractCollocationFinder(object):
         ...) evaluates to True.
         """
         self._apply_filter(lambda ng, f: any(fn(w) for w in ng))
- 
+
     def _score_ngrams(self, score_fn):
         """Generates of (ngram, score) pairs as determined by the scoring
         function provided.
@@ -237,7 +237,7 @@ def demo(scorer=None, compare_scorer=None):
         compare_scorer = BigramAssocMeasures.raw_freq
 
     from nltk.corpus import stopwords, webtext
-        
+
     ignored_words = stopwords.words('english')
     word_filter = lambda w: len(w) < 3 or w.lower() in ignored_words
 

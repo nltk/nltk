@@ -46,7 +46,7 @@ pairs = (
     (r'(.*) don\'t you (.*)',
     ( "u think I can%2??! really?? kekeke \<_\<",
       "what do u mean%2??!",
-      "i could if i wanted, don't you think!! kekeke")), 
+      "i could if i wanted, don't you think!! kekeke")),
 
     (r'ye[as] [iI] (.*)',
     ( "u%1? cool!! how?",
@@ -56,7 +56,7 @@ pairs = (
     (r'do (you|u) (.*)\??',
     ( "do i%2? only on tuesdays! kekeke *_*",
       "i dunno! do u%2??")),
-        
+
     (r'(.*)\?',
     ( "man u ask lots of questions!",
       "booooring! how old r u??",
@@ -66,7 +66,7 @@ pairs = (
     ( "hee! i don't believe u! >_<",
       "nuh-uh! >_<",
       "ooooh i agree!")),
-    
+
     (r'why can\'t [iI] (.*)',
     ( "i dunno! y u askin me for!",
       "try harder, silly! hee! ^_^",
@@ -83,7 +83,7 @@ pairs = (
       "oooh anime! i love anime more than anything!",
       "anime is the bestest evar! evangelion is the best!",
       "hee anime is the best! do you have ur fav??")),
-        
+
     (r'I (like|love|watch|play) (.*)',
     ( "yay! %2 rocks!",
       "yay! %2 is neat!",
@@ -99,7 +99,7 @@ pairs = (
       "maybe!  y shud i tell u?? kekeke >_>")),
 
     (r'what (.*)',
-    ( "hee u think im gonna tell u? .v.", 
+    ( "hee u think im gonna tell u? .v.",
       "booooooooring! ask me somethin else!")),
 
     (r'how (.*)',

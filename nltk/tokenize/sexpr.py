@@ -55,13 +55,13 @@ class SExprTokenizer(TokenizerI):
     """
     A tokenizer that divides strings into s-expressions.
     An s-expresion can be either:
-   
+
       - a parenthesized expression, including any nested parenthesized
         expressions, or
       - a sequence of non-whitespace non-parenthesis characters.
-    
+
     For example, the string ``(a (b c)) d e (f)`` consists of four
-    s-expressions: ``(a (b c))``, ``d``, ``e``, and ``(f)``.  
+    s-expressions: ``(a (b c))``, ``d``, ``e``, and ``(f)``.
 
     By default, the characters ``(`` and ``)`` are treated as open and
     close parentheses, but alternative strings may be specified.
@@ -81,12 +81,12 @@ class SExprTokenizer(TokenizerI):
         self._close_paren = parens[1]
         self._paren_regexp = re.compile('%s|%s' % (re.escape(parens[0]),
                                                    re.escape(parens[1])))
-    
+
     def tokenize(self, text):
         """
         Return a list of s-expressions extracted from *text*.
         For example:
-    
+
             >>> SExprTokenizer().tokenize('(a b (c d)) e f (g)')
             ['(a b (c d))', 'e', 'f', '(g)']
 
@@ -104,7 +104,7 @@ class SExprTokenizer(TokenizerI):
 
             >>> SExprTokenizer(strict=False).tokenize('c) d) e (f (g')
             ['c', ')', 'd', ')', 'e', '(f (g']
-        
+
         :param text: the string to be tokenized
         :type text: str or iter(str)
         :rtype: iter(str)

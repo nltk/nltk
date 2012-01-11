@@ -82,7 +82,7 @@ def _merge_lists(b, c):
     else:
         a += b[i:]
     return a, count
-    
+
 def merge(a):
     """
     Merge Sort: split the list in half, and sort each half, then

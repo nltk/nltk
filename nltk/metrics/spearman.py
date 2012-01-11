@@ -62,7 +62,7 @@ def ranks_from_scores(scores, rank_gap=1e-15):
                 rank = i
         except TypeError:
             pass
-       
+
         yield key, rank
         prev_score = score
 

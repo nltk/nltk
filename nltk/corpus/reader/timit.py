@@ -29,11 +29,11 @@ Module contents
 The timit corpus reader provides 4 functions and 4 data items.
 
  - utterances
- 
+
    List of utterances in the corpus.  There are total 160 utterances,
    each of which corresponds to a unique utterance of a speaker.
    Here's an example of an utterance identifier in the list::
- 
+
        dr1-fvmh0/sx206
          - _----  _---
          | |  |   | |
@@ -43,13 +43,13 @@ The timit corpus reader provides 4 functions and 4 data items.
          | |  `--------- speaker ID
          | `------------ sex (m:male, f:female)
          `-------------- dialect region (1..8)
- 
+
  - speakers
- 
+
    List of speaker IDs.  An example of speaker ID::
- 
+
        dr1-fvmh0
- 
+
    Note that if you split an item ID with colon and take the first element of
    the result, you will get a speaker ID.
 
@@ -59,19 +59,19 @@ The timit corpus reader provides 4 functions and 4 data items.
        'dr1-fvmh0'
 
    The second element of the result is a sentence ID.
-   
+
  - dictionary()
- 
+
    Phonetic dictionary of words contained in this corpus.  This is a Python
    dictionary from words to phoneme lists.
-   
+
  - spkrinfo()
- 
+
    Speaker information table.  It's a Python dictionary from speaker IDs to
    records of 10 fields.  Speaker IDs the same as the ones in timie.speakers.
    Each record is a dictionary from field names to values, and the fields are
    as follows::
- 
+
      id         speaker ID as defined in the original TIMIT speaker info table
      sex        speaker gender (M:male, F:female)
      dr         speaker dialect region (1:new england, 2:northern,
@@ -88,36 +88,36 @@ The timit corpus reader provides 4 functions and 4 data items.
                 BS:bachelor's degree (BS or BA), MS:master's degree (MS or MA),
                 PHD:doctorate degree (PhD,JD,MD), ??:unknown)
      comments   comments by the recorder
-   
+
 The 4 functions are as follows.
- 
+
  - tokenized(sentences=items, offset=False)
- 
+
    Given a list of items, returns an iterator of a list of word lists,
    each of which corresponds to an item (sentence).  If offset is set to True,
    each element of the word list is a tuple of word(string), start offset and
    end offset, where offset is represented as a number of 16kHz samples.
-     
+
  - phonetic(sentences=items, offset=False)
- 
+
    Given a list of items, returns an iterator of a list of phoneme lists,
    each of which corresponds to an item (sentence).  If offset is set to True,
    each element of the phoneme list is a tuple of word(string), start offset
    and end offset, where offset is represented as a number of 16kHz samples.
- 
+
  - audiodata(item, start=0, end=None)
- 
+
    Given an item, returns a chunk of audio samples formatted into a string.
    When the fuction is called, if start and end are omitted, the entire
    samples of the recording will be returned.  If only end is omitted,
    samples from the start offset to the end of the recording will be returned.
- 
+
  - play(data)
- 
+
    Play the given audio samples. The audio samples can be obtained from the
    timit.audiodata function.
- 
-"""       
+
+"""
 
 import sys
 import os
@@ -136,10 +136,10 @@ class TimitCorpusReader(CorpusReader):
     Reader for the TIMIT corpus (or any other corpus with the same
     file layout and use of file formats).  The corpus root directory
     should contain the following files:
-    
+
       - timitdic.txt: dictionary of standard transcriptions
       - spkrinfo.txt: table of speaker information
-      
+
     In addition, the root directory should contain one subdirectory
     for each speaker, containing three files for each utterance:
 
@@ -148,12 +148,12 @@ class TimitCorpusReader(CorpusReader):
       - <utterance-id>.phn: phonetic transcription of utterances
       - <utterance-id>.wav: utterance sound file
     """
-    
+
     _FILE_RE = (r'(\w+-\w+/\w+\.(phn|txt|wav|wrd))|' +
                 r'timitdic\.txt|spkrinfo\.txt')
     """A regexp matching fileids that are used by this corpus reader."""
     _UTTERANCE_RE = r'\w+-\w+/\w+\.txt'
-    
+
     def __init__(self, root, encoding=None):
         """
         Construct a new TIMIT corpus reader in the given directory.
@@ -162,7 +162,7 @@ class TimitCorpusReader(CorpusReader):
         # Ensure that wave files don't get treated as unicode data:
         if isinstance(encoding, basestring):
             encoding = [('.*\.wav', None), ('.*', encoding)]
-        
+
         CorpusReader.__init__(self, root,
                               find_corpus_fileids(root, self._FILE_RE),
                               encoding=encoding)
@@ -208,7 +208,7 @@ class TimitCorpusReader(CorpusReader):
         if isinstance(spkrid, basestring): spkrid = [spkrid]
         if isinstance(sent_type, basestring): sent_type = [sent_type]
         if isinstance(sentid, basestring): sentid = [sentid]
-            
+
         utterances = self._utterances[:]
         if dialect is not None:
             utterances = [u for u in utterances if u[2] in dialect]
@@ -258,7 +258,7 @@ class TimitCorpusReader(CorpusReader):
         """
         if speaker in self._utterances:
             speaker = self.spkrid(speaker)
-        
+
         if self._speakerinfo is None:
             self._speakerinfo = {}
             for line in self.open('spkrinfo.txt'):
@@ -306,13 +306,13 @@ class TimitCorpusReader(CorpusReader):
     def phone_trees(self, utterances=None):
         if utterances is None: utterances = self._utterances
         if isinstance(utterances, basestring): utterances = [utterances]
-        
+
         trees = []
         for utterance in utterances:
             word_times = self.word_times(utterance)
             phone_times = self.phone_times(utterance)
             sent_times = self.sent_times(utterance)
-    
+
             while sent_times:
                 (sent, sent_start, sent_end) = sent_times.pop(0)
                 trees.append(Tree('S', []))
@@ -336,7 +336,7 @@ class TimitCorpusReader(CorpusReader):
         wave = import_from_stdlib('wave')
 
         w = wave.open(self.open(utterance+'.wav'), 'rb')
-        
+
         if end is None:
             end = w.getnframes()
 
@@ -376,7 +376,7 @@ class TimitCorpusReader(CorpusReader):
     def play(self, utterance, start=0, end=None):
         """
         Play the given audio sample.
-        
+
         :param utterance: The utterance id of the sample to play
         """
         # Method 1: os audio dev.

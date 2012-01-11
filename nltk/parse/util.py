@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Parser Utility Functions
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-#         
+#
 # Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -16,16 +16,16 @@ from nltk.data import load
 
 from nltk.parse.chart import Chart, ChartParser
 from nltk.parse.pchart import InsideChartParser
-from nltk.parse.featurechart import FeatureChart, FeatureChartParser 
+from nltk.parse.featurechart import FeatureChart, FeatureChartParser
 
-def load_parser(grammar_url, trace=0, 
-                parser=None, chart_class=None, 
+def load_parser(grammar_url, trace=0,
+                parser=None, chart_class=None,
                 beam_size=0, **load_args):
     """
-    Load a grammar from a file, and build a parser based on that grammar. 
+    Load a grammar from a file, and build a parser based on that grammar.
     The parser depends on the grammar format, and might also depend
     on properties of the grammar itself.
-    
+
     The following grammar formats are currently supported:
       - ``'cfg'``  (CFGs: ``ContextFreeGrammar``)
       - ``'pcfg'`` (probabilistic CFGs: ``WeightedGrammar``)
@@ -33,7 +33,7 @@ def load_parser(grammar_url, trace=0,
 
     :type grammar_url: str
     :param grammar_url: A URL specifying where the grammar is located.
-        The default protocol is ``"nltk:"``, which searches for the file 
+        The default protocol is ``"nltk:"``, which searches for the file
         in the the NLTK data package.
     :type trace: int
     :param trace: The level of tracing that should be used when
@@ -43,7 +43,7 @@ def load_parser(grammar_url, trace=0,
         or a subclass.
         If None, the class depends on the grammar format.
     :param chart_class: The class used for storing the chart;
-        should be ``Chart`` or a subclass. 
+        should be ``Chart`` or a subclass.
         Only used for CFGs and feature CFGs.
         If None, the chart class depends on the grammar format.
     :type beam_size: int
@@ -57,21 +57,21 @@ def load_parser(grammar_url, trace=0,
         raise ValueError("The grammar must be a ContextFreeGrammar, "
                          "or a subclass thereof.")
     if isinstance(grammar, WeightedGrammar):
-        if parser is None: 
+        if parser is None:
             parser = InsideChartParser
         return parser(grammar, trace=trace, beam_size=beam_size)
-    
+
     elif isinstance(grammar, FeatureGrammar):
-        if parser is None: 
+        if parser is None:
             parser = FeatureChartParser
-        if chart_class is None: 
+        if chart_class is None:
             chart_class = FeatureChart
         return parser(grammar, trace=trace, chart_class=chart_class)
-    
+
     else: # Plain ContextFreeGrammar.
-        if parser is None: 
+        if parser is None:
             parser = ChartParser
-        if chart_class is None: 
+        if chart_class is None:
             chart_class = Chart
         return parser(grammar, trace=trace, chart_class=chart_class)
 
@@ -86,18 +86,18 @@ class TestGrammar(object):
     """
     def __init__(self, grammar, suite, accept=None, reject=None):
         self.test_grammar = grammar
-        
+
         self.cp = load_parser(grammar, trace=0)
         self.suite = suite
         self._accept = accept
         self._reject = reject
-        
-    
+
+
     def run(self, show_trees=False):
         """
         Sentences in the test suite are divided into two classes:
          - grammatical (``accept``) and
-         - ungrammatical (``reject``). 
+         - ungrammatical (``reject``).
         If a sentence should parse accordng to the grammar, the value of
         ``trees`` will be a non-empty list. If a sentence should be rejected
         according to the grammar, then the value of ``trees`` will be None.
@@ -148,11 +148,11 @@ def extract_test_sentences(string, comment_chars="#%;"):
             continue
         split_info = sentence.split(':', 1)
         result = None
-        if len(split_info) == 2: 
+        if len(split_info) == 2:
             if split_info[0] in ['True','true','False','false']:
                 result = split_info[0] in ['True','true']
                 sentence = split_info[1]
-            else: 
+            else:
                 result = int(split_info[0])
                 sentence = split_info[1]
         tokens = sentence.split()

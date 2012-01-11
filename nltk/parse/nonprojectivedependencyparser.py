@@ -19,12 +19,12 @@ from dependencygraph import DependencyGraph, conll_data2
 
 class DependencyScorerI(object):
     """
-    A scorer for calculated the weights on the edges of a weighted 
-    dependency graph.  This is used by a 
-    ``ProbabilisticNonprojectiveParser`` to initialize the edge  
-    weights of a ``DependencyGraph``.  While typically this would be done 
-    by training a binary classifier, any class that can return a 
-    multidimensional list representation of the edge weights can 
+    A scorer for calculated the weights on the edges of a weighted
+    dependency graph.  This is used by a
+    ``ProbabilisticNonprojectiveParser`` to initialize the edge
+    weights of a ``DependencyGraph``.  While typically this would be done
+    by training a binary classifier, any class that can return a
+    multidimensional list representation of the edge weights can
     implement this interface.  As such, it has no necessary
     fields.
     """
@@ -38,7 +38,7 @@ class DependencyScorerI(object):
         :type graphs: list(DependencyGraph)
         :param graphs: A list of dependency graphs to train the scorer.
         Typically the edges present in the graphs can be used as
-        positive training examples, and the edges not present as negative 
+        positive training examples, and the edges not present as negative
         examples.
         """
         raise AssertionError('DependencyScorerI is an abstract interface')
@@ -46,24 +46,24 @@ class DependencyScorerI(object):
     def score(self, graph):
         """
         :type graph: DependencyGraph
-        :param graph: A dependency graph whose set of edges need to be 
-        scored.  
+        :param graph: A dependency graph whose set of edges need to be
+        scored.
         :rtype: A three-dimensional list of numbers.
         :return: The score is returned in a multidimensional(3) list, such
         that the outer-dimension refers to the head, and the
-        inner-dimension refers to the dependencies.  For instance,  
-        scores[0][1] would reference the list of scores corresponding to 
-        arcs from node 0 to node 1.  The node's 'address' field can be used 
+        inner-dimension refers to the dependencies.  For instance,
+        scores[0][1] would reference the list of scores corresponding to
+        arcs from node 0 to node 1.  The node's 'address' field can be used
         to determine its number identification.
-        
-        For further illustration, a score list corresponding to Fig.2 of 
+
+        For further illustration, a score list corresponding to Fig.2 of
         Keith Hall's 'K-best Spanning Tree Parsing' paper:
               scores = [[[], [5],  [1],  [1]],
                        [[], [],   [11], [4]],
                        [[], [10], [],   [5]],
                        [[], [8],  [8],  []]]
-        When used in conjunction with a MaxEntClassifier, each score would 
-        correspond to the confidence of a particular edge being classified 
+        When used in conjunction with a MaxEntClassifier, each score would
+        correspond to the confidence of a particular edge being classified
         with the positive training examples.
         """
         raise AssertionError('DependencyScorerI is an abstract interface')
@@ -96,13 +96,13 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
 
     def train(self, graphs):
         """
-        Trains a ``NaiveBayesClassifier`` using the edges present in 
+        Trains a ``NaiveBayesClassifier`` using the edges present in
         graphs list as positive examples, the edges not present as
         negative examples.  Uses a feature vector of head-word,
         head-tag, child-word, and child-tag.
-        
+
         :type graphs: list(DependencyGraph)
-        :param graphs: A list of dependency graphs to train the scorer.     
+        :param graphs: A list of dependency graphs to train the scorer.
         """
 
         # Create training labeled training examples
@@ -124,11 +124,11 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
 
     def score(self, graph):
         """
-        Converts the graph into a feature-based representation of 
-        each edge, and then assigns a score to each based on the 
-        confidence of the classifier in assigning it to the 
+        Converts the graph into a feature-based representation of
+        each edge, and then assigns a score to each based on the
+        confidence of the classifier in assigning it to the
         positive label.  Scores are returned in a multidimensional list.
-        
+
         :type graph: DependencyGraph
         :param graph: A dependency graph to score.
         :rtype: 3 dimensional list
@@ -155,7 +155,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
                 edge_scores.append(row)
                 row = []
                 count = 0
-        return edge_scores              
+        return edge_scores
 
 
 #################################################################
@@ -180,12 +180,12 @@ class DemoScorer:
 
 class ProbabilisticNonprojectiveParser(object):
     """
-    A probabilistic non-projective dependency parser.  Nonprojective 
-    dependencies allows for "crossing branches" in the parse tree 
-    which is necessary for representing particular linguistic 
-    phenomena, or even typical parses in some languages.  This parser 
-    follows the MST parsing algorithm, outlined in McDonald(2005), 
-    which likens the search for the best non-projective parse to 
+    A probabilistic non-projective dependency parser.  Nonprojective
+    dependencies allows for "crossing branches" in the parse tree
+    which is necessary for representing particular linguistic
+    phenomena, or even typical parses in some languages.  This parser
+    follows the MST parsing algorithm, outlined in McDonald(2005),
+    which likens the search for the best non-projective parse to
     finding the maximum spanning tree in a weighted directed graph.
     """
     def __init__(self):
@@ -197,10 +197,10 @@ class ProbabilisticNonprojectiveParser(object):
     def train(self, graphs, dependency_scorer):
         """
         Trains a ``DependencyScorerI`` from a set of ``DependencyGraph`` objects,
-        and establishes this as the parser's scorer.  This is used to 
-        initialize the scores on a ``DependencyGraph`` during the parsing 
+        and establishes this as the parser's scorer.  This is used to
+        initialize the scores on a ``DependencyGraph`` during the parsing
         procedure.
-        
+
         :type graphs: list(DependencyGraph)
         :param graphs: A list of dependency graphs to train the scorer.
         :type dependency_scorer: DependencyScorerI
@@ -213,9 +213,9 @@ class ProbabilisticNonprojectiveParser(object):
     def initialize_edge_scores(self, graph):
         """
         Assigns a score to every edge in the ``DependencyGraph`` graph.
-        These scores are generated via the parser's scorer which 
+        These scores are generated via the parser's scorer which
         was assigned during the training process.
-        
+
         :type graph: DependencyGraph
         :param graph: A dependency graph to assign scores to.
         """
@@ -224,9 +224,9 @@ class ProbabilisticNonprojectiveParser(object):
     def collapse_nodes(self, new_node, cycle_path, g_graph, b_graph, c_graph):
         """
         Takes a list of nodes that have been identified to belong to a cycle,
-        and collapses them into on larger node.  The arcs of all nodes in 
+        and collapses them into on larger node.  The arcs of all nodes in
         the graph must be updated to account for this.
-        
+
         :type new_node: Node.
         :param new_node: A Node (Dictionary) to collapse the cycle nodes into.
         :type cycle_path: A list of integers.
@@ -245,7 +245,7 @@ class ProbabilisticNonprojectiveParser(object):
         """
         Updates the edge scores to reflect a collapse operation into
         new_node.
-        
+
         :type new_node: A Node.
         :param new_node: The node which cycle nodes are collapsed into.
         :type cycle_path: A list of integers.
@@ -273,12 +273,12 @@ class ProbabilisticNonprojectiveParser(object):
 
     def compute_original_indexes(self, new_indexes):
         """
-        As nodes are collapsed into others, they are replaced 
+        As nodes are collapsed into others, they are replaced
         by the new node in the graph, but it's still necessary
         to keep track of what these original nodes were.  This
         takes a list of node addresses and replaces any collapsed
         node addresses with their original addresses.
-        
+
         :type new_address: A list of integers.
         :param new_addresses: A list of node addresses to check for
         subsumed nodes.
@@ -297,18 +297,18 @@ class ProbabilisticNonprojectiveParser(object):
                     originals.append(new_index)
             new_indexes = originals
         return new_indexes
-        
+
     def compute_max_subtract_score(self, column_index, cycle_indexes):
         """
         When updating scores the score of the highest-weighted incoming
-        arc is subtracted upon collapse.  This returns the correct 
+        arc is subtracted upon collapse.  This returns the correct
         amount to subtract from that edge.
-        
+
         :type column_index: integer.
         :param column_index: A index representing the column of incoming arcs
         to a particular node being updated
         :type cycle_indexes: A list of integers.
-        :param cycle_indexes: Only arcs from cycle nodes are considered.  This 
+        :param cycle_indexes: Only arcs from cycle nodes are considered.  This
         is a list of such nodes addresses.
         """
         max_score = -100000
@@ -321,9 +321,9 @@ class ProbabilisticNonprojectiveParser(object):
 
     def best_incoming_arc(self, node_index):
         """
-        Returns the source of the best incoming arc to the 
+        Returns the source of the best incoming arc to the
         node with address: node_index
-        
+
         :type node_index: integer.
         :param node_index: The address of the 'destination' node,
         the node that is arced to.
@@ -345,7 +345,7 @@ class ProbabilisticNonprojectiveParser(object):
             if max_arc in replaced_nodes:
                 return key
         return max_arc
-        
+
     def original_best_arc(self, node_index):
         """
         ???
@@ -362,15 +362,15 @@ class ProbabilisticNonprojectiveParser(object):
                     max_orig = col_index
         return [max_arc, max_orig]
 
-                        
+
     def parse(self, tokens, tags):
         """
         Parses a list of tokens in accordance to the MST parsing algorithm
-        for non-projective dependency parses.  Assumes that the tokens to 
-        be parsed have already been tagged and those tags are provided.  Various 
+        for non-projective dependency parses.  Assumes that the tokens to
+        be parsed have already been tagged and those tags are provided.  Various
         scoring methods can be used by implementing the ``DependencyScorerI``
         interface and passing it to the training algorithm.
-        
+
         :type tokens: list(str)
         :param tokens: A list of words or punctuation to be parsed.
         :type tags: list(str)
@@ -382,7 +382,7 @@ class ProbabilisticNonprojectiveParser(object):
         for index, token in enumerate(tokens):
             g_graph.nodelist.append({'word':token, 'tag':tags[index], 'deps':[], 'rel':'NTOP', 'address':index+1})
         # Fully connect non-root nodes in g_graph
-        g_graph.connect_graph() 
+        g_graph.connect_graph()
         original_graph = DependencyGraph()
         for index, token in enumerate(tokens):
             original_graph.nodelist.append({'word':token, 'tag':tags[index], 'deps':[], 'rel':'NTOP', 'address':index+1})
@@ -436,7 +436,7 @@ class ProbabilisticNonprojectiveParser(object):
                 self.inner_nodes[new_node['address']] = cycle_path
 
             # Add v_n+1 to list of unvisited vertices
-                unvisited_vertices.insert(0, nr_vertices + 1)               
+                unvisited_vertices.insert(0, nr_vertices + 1)
             # increment # of nodes counter
                 nr_vertices += 1
             # Remove cycle nodes from b_graph; B = B - cycle c
@@ -467,7 +467,7 @@ class ProbabilisticNonprojectiveParser(object):
         return original_graph
         print 'Done.'
 
-        
+
 
 #################################################################
 # Rule-based Non-Projective Parser
@@ -475,11 +475,11 @@ class ProbabilisticNonprojectiveParser(object):
 
 class NonprojectiveDependencyParser(object):
     """
-    A non-projective, rule-based, dependency parser.  This parser 
-    will return the set of all possible non-projective parses based on 
-    the word-to-word relations defined in the parser's dependency 
-    grammar, and will allow the branches of the parse tree to cross 
-    in order to capture a variety of linguistic phenomena that a 
+    A non-projective, rule-based, dependency parser.  This parser
+    will return the set of all possible non-projective parses based on
+    the word-to-word relations defined in the parser's dependency
+    grammar, and will allow the branches of the parse tree to cross
+    in order to capture a variety of linguistic phenomena that a
     projective parser will not.
     """
 
@@ -494,11 +494,11 @@ class NonprojectiveDependencyParser(object):
 
     def parse(self, tokens):
         """
-        Parses the input tokens with respect to the parser's grammar.  Parsing 
-        is accomplished by representing the search-space of possible parses as 
-        a fully-connected directed graph.  Arcs that would lead to ungrammatical 
-        parses are removed and a lattice is constructed of length n, where n is 
-        the number of input tokens, to represent all possible grammatical 
+        Parses the input tokens with respect to the parser's grammar.  Parsing
+        is accomplished by representing the search-space of possible parses as
+        a fully-connected directed graph.  Arcs that would lead to ungrammatical
+        parses are removed and a lattice is constructed of length n, where n is
+        the number of input tokens, to represent all possible grammatical
         traversals.  All possible paths through the lattice are then enumerated
         to produce the set of non-projective parses.
 
@@ -596,7 +596,7 @@ class NonprojectiveDependencyParser(object):
                 graph.nodelist[0]['deps'] = root + 1
                 for i in range(len(tokens)):
                     node = {'word':tokens[i], 'address':i+1}
-                    node['deps'] = [j+1 for j in range(len(tokens)) if analysis[j] == i] 
+                    node['deps'] = [j+1 for j in range(len(tokens)) if analysis[j] == i]
                     graph.nodelist.append(node)
 #                cycle = graph.contains_cycle()
 #                if not cycle:
@@ -622,7 +622,7 @@ def hall_demo():
 
 def nonprojective_conll_parse_demo():
     graphs = [DependencyGraph(entry)
-              for entry in conll_data2.split('\n\n') if entry]    
+              for entry in conll_data2.split('\n\n') if entry]
     npp = ProbabilisticNonprojectiveParser()
     npp.train(graphs, NaiveBayesDependencyScorer())
     parse_graph = npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc'])

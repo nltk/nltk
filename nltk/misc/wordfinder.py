@@ -97,13 +97,13 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
 #                   used.append((save, dir, x, y, word))
                     used.append(save)
                     break
-    
+
     # Fill up the remaining spaces
     for i in range(rows):
         for j in range(cols):
             if grid[i][j] == '':
                 grid[i][j] = random.choice(alph)
-    
+
     return grid, used
 
 def word_finder():
@@ -120,7 +120,7 @@ def word_finder():
             print grid[i][j],
         print
     print
-    
+
     for i in range(len(used)):
         print "%d:" % (i+1), used[i]
 

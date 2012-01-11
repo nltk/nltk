@@ -37,7 +37,7 @@ class SwitchboardCorpusReader(CorpusReader):
     _FILES = ['tagged']
     # Use the "tagged" file even for non-tagged data methods, since
     # it's tokenized.
-    
+
     def __init__(self, root, tag_mapping_function=None):
         CorpusReader.__init__(self, root, self._FILES)
         self._tag_mapping_function = tag_mapping_function
@@ -111,5 +111,5 @@ class SwitchboardCorpusReader(CorpusReader):
         elif simplify_tags:
             words = [(w, self._tag_mapping_function(t)) for (w,t) in words]
         return SwitchboardTurn(words, speaker, id)
-        
-        
+
+

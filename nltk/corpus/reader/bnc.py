@@ -28,13 +28,13 @@ class BNCCorpusReader(XMLCorpusReader):
     def __init__(self, root, fileids, lazy=True):
         XMLCorpusReader.__init__(self, root, fileids)
         self._lazy = lazy
-    
+
     def words(self, fileids=None, strip_space=True, stem=False):
         """
         :return: the given file(s) as a list of words
             and punctuation symbols.
         :rtype: list(str)
-        
+
         :param strip_space: If true, then strip trailing spaces from
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
@@ -54,7 +54,7 @@ class BNCCorpusReader(XMLCorpusReader):
             words and punctuation symbols, encoded as tuples
             ``(word,tag)``.
         :rtype: list(tuple(str,str))
-        
+
         :param c5: If true, then the tags used will be the more detailed
             c5 tags.  Otherwise, the simplified tags will be used.
         :param strip_space: If true, then strip trailing spaces from
@@ -76,7 +76,7 @@ class BNCCorpusReader(XMLCorpusReader):
             sentences or utterances, each encoded as a list of word
             strings.
         :rtype: list(list(str))
-        
+
         :param strip_space: If true, then strip trailing spaces from
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
@@ -94,7 +94,7 @@ class BNCCorpusReader(XMLCorpusReader):
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
         :rtype: list(list(tuple(str,str)))
-            
+
         :param c5: If true, then the tags used will be the more detailed
             c5 tags.  Otherwise, the simplified tags will be used.
         :param strip_space: If true, then strip trailing spaces from
@@ -114,7 +114,7 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         Helper used to implement the view methods -- returns a list of
         words or a list of sentences, optionally tagged.
-        
+
         :param fileid: The name of the underlying file.
         :param bracket_sent: If true, include sentence bracketing.
         :param tag: The name of the tagset to use, or None for no tags.
@@ -122,7 +122,7 @@ class BNCCorpusReader(XMLCorpusReader):
         :param stem: If true, then substitute stems for words.
         """
         result = []
-        
+
         xmldoc = ElementTree.parse(fileid).getroot()
         for xmlsent in xmldoc.findall('.//s'):
             sent = []
@@ -181,7 +181,7 @@ class BNCWordView(XMLCorpusView):
         self._stem = stem
 
         XMLCorpusView.__init__(self, fileid, tagspec)
-        
+
         # Read in a tasty header.
         self._open()
         self.read_block(self._stream, '.*/teiHeader$', self.handle_header)
@@ -218,7 +218,7 @@ class BNCWordView(XMLCorpusView):
     def handle_elt(self, elt, context):
         if self._sent: return self.handle_sent(elt)
         else: return self.handle_word(elt)
-        
+
     def handle_word(self, elt):
         word = elt.text
         if not word:

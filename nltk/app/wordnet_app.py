@@ -77,7 +77,7 @@ firstClient = True
 
 # True if we're not also running a web browser.  The value f server_mode
 # gets set by demo().
-server_mode = None 
+server_mode = None
 
 # If set this is a file object for writting log messages.
 logfile = None
@@ -102,7 +102,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
         elif sp == 'favicon.ico':
             type = 'image/x-icon'
             page = favicon_data()
-            
+
         elif sp == '': # First request.
             type = 'text/html'
             if not server_mode and firstClient:
@@ -111,7 +111,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
             else:
                 page = get_static_index_page(False)
             word = 'green'
-        
+
         elif sp.endswith('.html'): # Trying to fetch a HTML file TODO:
             type = 'text/html'
             usp = unquote_plus(sp)
@@ -134,7 +134,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
             # This doesn't seem to work with MWEs.
             type = 'text/html'
             parts = (sp.split("?")[1]).split("&")
-            word = [p.split("=")[1].replace("+", " ") 
+            word = [p.split("=")[1].replace("+", " ")
                     for p in parts if p.startswith("nextWord")][0]
             page, word = page_from_word(word)
         elif sp.startswith("lookup_"):
@@ -239,7 +239,7 @@ def get_unique_counter_from_url(sp):
 def wnb(port=8000, runBrowser=True, logfilename=None):
     """
     Run NLTK Wordnet Browser Server.
-    
+
     :param port: The port number for the server to listen on, defaults to
                  8000
     :type  port: int
@@ -251,7 +251,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # The webbrowser module is unpredictable, typically it blocks if it uses
     # a console web browser, and doesn't block if it uses a GUI webbrowser,
     # so we need to force it to have a clear correct behaviour.
-    # 
+    #
     # Normally the server should run for as long as the user wants. they
     # should idealy be able to control this from the UI by closing the
     # window or tab.  Second best would be clicking a button to say
@@ -273,7 +273,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
         try:
             logfile = open(logfilename, "a", 1) # 1 means 'line buffering'
         except IOError, e:
-            sys.stderr.write("Couldn't open %s for writing: %s", 
+            sys.stderr.write("Couldn't open %s for writing: %s",
                              logfilename, e)
             sys.exit(1)
     else:
@@ -292,12 +292,12 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
             'NLTK Wordnet browser server running serving: %s\n' % url)
     if runBrowser:
         server_ready.set()
-    
+
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         pass
-    
+
     if runBrowser:
         browser_thread.join()
 
@@ -403,41 +403,41 @@ def rebuild_tree(orig_tree):
     return (node, [rebuild_tree(t) for t in children])
 
 
-def get_relations_data(word, synset): 
+def get_relations_data(word, synset):
     """
     Get synset relations data for a synset.  Note that this doesn't
     yet support things such as full hyponym vs direct hyponym.
     """
     if synset.pos == wn.NOUN:
-        return ((HYPONYM, 'Hyponyms', 
+        return ((HYPONYM, 'Hyponyms',
                    synset.hyponyms()),
-                (INSTANCE_HYPONYM , 'Instance hyponyms', 
+                (INSTANCE_HYPONYM , 'Instance hyponyms',
                    synset.instance_hyponyms()),
                 (HYPERNYM, 'Direct hypernyms',
                    synset.hypernyms()),
                 (INDIRECT_HYPERNYMS, 'Indirect hypernyms',
                    rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
-#  hypernyms', 'Sister terms', 
-                (INSTANCE_HYPERNYM , 'Instance hypernyms', 
+#  hypernyms', 'Sister terms',
+                (INSTANCE_HYPERNYM , 'Instance hypernyms',
                    synset.instance_hypernyms()),
 #            (CLASS_REGIONAL, ['domain term region'], ),
-                (PART_HOLONYM, 'Part holonyms', 
+                (PART_HOLONYM, 'Part holonyms',
                    synset.part_holonyms()),
-                (PART_MERONYM, 'Part meronyms', 
+                (PART_MERONYM, 'Part meronyms',
                    synset.part_meronyms()),
-                (SUBSTANCE_HOLONYM, 'Substance holonyms', 
+                (SUBSTANCE_HOLONYM, 'Substance holonyms',
                    synset.substance_holonyms()),
-                (SUBSTANCE_MERONYM, 'Substance meronyms', 
+                (SUBSTANCE_MERONYM, 'Substance meronyms',
                    synset.substance_meronyms()),
-                (MEMBER_HOLONYM, 'Member holonyms', 
+                (MEMBER_HOLONYM, 'Member holonyms',
                    synset.member_holonyms()),
-                (MEMBER_MERONYM, 'Member meronyms', 
+                (MEMBER_MERONYM, 'Member meronyms',
                    synset.member_meronyms()),
-                (ATTRIBUTE, 'Attributes', 
+                (ATTRIBUTE, 'Attributes',
                    synset.attributes()),
-                (ANTONYM, "Antonyms", 
+                (ANTONYM, "Antonyms",
                    lemma_property(word, synset, lambda l: l.antonyms())),
-                (DERIVATIONALLY_RELATED_FORM, "Derivationally related form", 
+                (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
     elif synset.pos == wn.VERB:
         return ((ANTONYM, 'Antonym',
@@ -456,8 +456,8 @@ def get_relations_data(word, synset):
                    synset.also_sees()),
                 (VERB_GROUP, 'Verb Groups',
                    synset.verb_groups()),
-                (DERIVATIONALLY_RELATED_FORM, "Derivationally related form", 
-                   lemma_property(word, synset, lambda l: l.derivationally_related_forms())))                
+                (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
+                   lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
     elif synset.pos == wn.ADJ or synset.pos == wn.ADJ_SAT:
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),
@@ -589,7 +589,7 @@ def _collect_one_synset(word, synset, synset_relations):
     synset_label = typ + ";"
     if synset.name in synset_relations.keys():
         synset_label = _bold(synset_label)
-    s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr) 
+    s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr)
     def format_lemma(w):
         w = w.replace('_', ' ')
         if w.lower() == word:
@@ -601,7 +601,7 @@ def _collect_one_synset(word, synset, synset_relations):
     s += ', '.join([format_lemma(l.name) for l in synset.lemmas])
 
     gl = " (%s) <i>%s</i> " % \
-        (synset.definition, 
+        (synset.definition,
          "; ".join(["\"%s\"" % e for e in synset.examples]))
     return s + gl + _synset_relations(word, synset, synset_relations) + '</li>\n'
 
@@ -611,8 +611,8 @@ def _collect_all_synsets(word, pos, synset_relations=dict()):
     part of speach.
     """
     return '<ul>%s\n</ul>\n' % \
-        ''.join((_collect_one_synset(word, synset, synset_relations) 
-                 for synset 
+        ''.join((_collect_one_synset(word, synset, synset_relations)
+                 for synset
                  in wn.synsets(word, pos)))
 
 def _synset_relations(word, synset, synset_relations):
@@ -642,7 +642,7 @@ def _synset_relations(word, synset, synset_relations):
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
             return "%s\n<ul>%s</ul>\n" % \
-                (relation_html(r[0]), 
+                (relation_html(r[0]),
                  ''.join('<li>%s</li>\n' % relation_html(sr) for sr in r[1]))
         else:
             raise TypeError("r must be a synset, lemma or list, it was: type(r) = %s, r = %s" % (type(r), r))
@@ -660,7 +660,7 @@ def _synset_relations(word, synset, synset_relations):
         return synset_html
 
     html = '<ul>' + \
-        '\n'.join(("<li>%s</li>" % make_synset_html(x) for x 
+        '\n'.join(("<li>%s</li>" % make_synset_html(x) for x
                    in get_relations_data(word, synset)
                    if x[2] != [])) + \
         '</ul>'
@@ -676,7 +676,7 @@ class Reference(object):
     def __init__(self, word, synset_relations=dict()):
         """
         Build a reference to a new page.
-        
+
         word is the word or words (seperated by commas) for which to
         search for synsets of
 
@@ -776,13 +776,13 @@ def page_from_reference(href):
     word = href.word
     pos_forms = defaultdict(list)
     words = word.split(',')
-    words = [w for w in [w.strip().lower().replace(' ', '_') 
+    words = [w for w in [w.strip().lower().replace(' ', '_')
                          for w in words]
              if w != ""]
     if len(words) == 0:
         # No words were found.
         return "", "Please specify a word to search for."
-    
+
     # This looks up multiple words at once.  This is probably not
     # necessary and may lead to problems.
     for pos in [wn.NOUN, wn.VERB, wn.ADJ, wn.ADV]:
@@ -803,7 +803,7 @@ def page_from_reference(href):
     if not body:
         body = "The word or words '%s' where not found in the dictonary." % word
     return body, word
-    
+
 
 
 #####################################################################
@@ -975,7 +975,7 @@ def get_static_upper_page(with_shutdown):
         shutdown_link = "<a href=\"SHUTDOWN THE SERVER\">Shutdown</a>"
     else:
         shutdown_link = ""
-    
+
     return template % shutdown_link
 
 
@@ -988,7 +988,7 @@ def usage():
 
 def app():
     # Parse and interpret options.
-    (opts, _) = getopt.getopt(argv[1:], "l:p:sh", 
+    (opts, _) = getopt.getopt(argv[1:], "l:p:sh",
                               ["logfile=", "port=", "server-mode", "help"])
     port = 8000
     server_mode = False

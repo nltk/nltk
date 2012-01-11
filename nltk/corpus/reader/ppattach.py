@@ -36,7 +36,7 @@ Conference.  [http://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
 
 The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.
-"""       
+"""
 
 import codecs
 

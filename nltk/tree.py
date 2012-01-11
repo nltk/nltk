@@ -74,7 +74,7 @@ class Tree(list):
       - The tree position ``()`` specifies the Tree itself.
       - If *p* is the tree position of descendant *d*, then
         *p+i* specifies the *i*\ th child of *d*.
-    
+
     I.e., every tree position is either a single index *i*,
     specifying self[i]; or a sequence *i1, i2, ..., iN*,
     specifying self[i1][Mi2]...[MiN].
@@ -84,7 +84,7 @@ class Tree(list):
 
     - ``Tree(node, children)`` constructs a new tree with the
         specified node value and list of children.
-            
+
     - ``Tree(s)`` constructs a new tree by parsing the string ``s``.
         It is equivalent to calling the class method ``Tree.parse(s)``.
     """
@@ -102,7 +102,7 @@ class Tree(list):
                 raise TypeError("%s() argument 2 should be a list, not a "
                                 "string" % cls.__name__)
             return list.__new__(cls, node_or_str, children)
-    
+
     def __init__(self, node_or_str, children=None):
         # Because __new__ may delegate to Tree.parse(), the __init__
         # method may end up getting called more than once (once when
@@ -111,7 +111,7 @@ class Tree(list):
         # (which will cause __new__ to call Tree.parse()); if so, then
         # __init__ has already been called once, so just return.
         if children is None: return
-        
+
         list.__init__(self, children)
         self.node = node_or_str
 
@@ -136,7 +136,7 @@ class Tree(list):
     def __ge__(self, other):
         if not isinstance(other, Tree): return False
         return self.node >= other.node or list.__ge__(self, other)
-    
+
     #////////////////////////////////////////////////////////////
     # Disabled list operations
     #////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ class Tree(list):
                 return self[int(index[0])]
             else:
                 return self[int(index[0])][index[1:]]
-    
+
     def __setitem__(self, index, value):
         if isinstance(index, (int, slice)):
             return list.__setitem__(self, index, value)
@@ -176,7 +176,7 @@ class Tree(list):
                 self[index[0]] = value
             else:
                 self[index[0]][index[1:]] = value
-    
+
     def __delitem__(self, index):
         if isinstance(index, (int, slice)):
             return list.__delitem__(self, index)
@@ -187,11 +187,11 @@ class Tree(list):
                 del self[index[0]]
             else:
                 del self[index[0]][index[1:]]
-    
+
     #////////////////////////////////////////////////////////////
     # Basic tree operations
     #////////////////////////////////////////////////////////////
-    
+
     def leaves(self):
         """
         Return the leaves of the tree.
@@ -350,7 +350,7 @@ class Tree(list):
         :return: The tree position of the ``index``-th leaf in this
             tree.  I.e., if ``tp=self.leaf_treeposition(i)``, then
             ``self[tp]==self.leaves()[i]``.
-        
+
         :raise IndexError: If this tree contains fewer than ``index+1``
             leaves, or if ``index<0``.
         """
@@ -393,7 +393,7 @@ class Tree(list):
     def chomsky_normal_form(self, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
         """
         This method can modify a tree in three ways:
-        
+
           1. Convert a tree into its Chomsky Normal Form (CNF)
              equivalent -- Every subtree has either two non-terminals
              or one terminal as its children.  This process requires
@@ -401,7 +401,7 @@ class Tree(list):
           2. Markov (vertical) smoothing of children in new artificial
              nodes
           3. Horizontal (parent) annotation of nodes
-      
+
         :param factor: Right or left factoring method (default = "right")
         :type  factor: str = [left|right]
         :param horzMarkov: Markov order for sibling smoothing in artificial nodes (None (default) = include all siblings)
@@ -416,17 +416,17 @@ class Tree(list):
         """
         from treetransforms import chomsky_normal_form
         chomsky_normal_form(self, factor, horzMarkov, vertMarkov, childChar, parentChar)
-            
+
     def un_chomsky_normal_form(self, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
         """
         This method modifies the tree in three ways:
-        
+
           1. Transforms a tree in Chomsky Normal Form back to its
              original structure (branching greater than two)
           2. Removes any parent annotation (if it exists)
           3. (optional) expands unary subtrees (if previously
              collapsed with collapseUnary(...) )
-          
+
         :param expandUnary: Flag to expand unary or not (default = True)
         :type  expandUnary: bool
         :param childChar: A string separating the head node from its children in an artificial node (default = "|")
@@ -434,7 +434,7 @@ class Tree(list):
         :param parentChar: A sting separating the node label from its parent annotation (default = "^")
         :type  parentChar: str
         :param unaryChar: A string joining two non-terminals in a unary production (default = "+")
-        :type  unaryChar: str  
+        :type  unaryChar: str
         """
         from treetransforms import un_chomsky_normal_form
         un_chomsky_normal_form(self, expandUnary, childChar, parentChar, unaryChar)
@@ -445,10 +445,10 @@ class Tree(list):
         into a new non-terminal (Tree node) joined by 'joinChar'.
         This is useful when working with algorithms that do not allow
         unary productions, and completely removing the unary productions
-        would require loss of useful information.  The Tree is modified 
+        would require loss of useful information.  The Tree is modified
         directly (since it is passed by reference) and no value is returned.
-    
-        :param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie. 
+
+        :param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie.
                             Part-of-Speech tags) since they are always unary productions
         :type  collapsePOS: bool
         :param collapseRoot: 'False' (default) will not modify the root production
@@ -505,7 +505,7 @@ class Tree(list):
 
     @classmethod
     def parse(cls, s, brackets='()', parse_node=None, parse_leaf=None,
-              node_pattern=None, leaf_pattern=None, 
+              node_pattern=None, leaf_pattern=None,
               remove_empty_top_bracketing=False):
         """
         Parse a bracketed tree string and return the resulting tree.
@@ -515,11 +515,11 @@ class Tree(list):
 
         :type s: str
         :param s: The string to parse
-        
+
         :type brackets: str (length=2)
         :param brackets: The bracket characters used to mark the
             beginning and end of trees and subtrees.
-            
+
         :type parse_node: function
         :type parse_leaf: function
         :param parse_node, parse_leaf: If specified, these functions
@@ -605,7 +605,7 @@ class Tree(list):
             assert stack[0][0] is None
             assert len(stack[0][1]) == 1
         tree = stack[0][1][0]
-        
+
         # If the tree has an extra level with node='', then get rid of
         # it.  E.g.: "((S (NP ...) (VP ...)))"
         if remove_empty_top_bracketing and tree.node == '' and len(tree) == 1:
@@ -641,7 +641,7 @@ class Tree(list):
     #////////////////////////////////////////////////////////////
     # Visualization & String Representation
     #////////////////////////////////////////////////////////////
-    
+
     def draw(self):
         """
         Open a new window containing a graphical diagram of this tree.
@@ -655,7 +655,7 @@ class Tree(list):
 
     def __str__(self):
         return self.pprint()
-    
+
     def pprint(self, margin=70, indent=0, nodesep='', parens='()', quotes=False):
         """
         :return: A pretty-printed string representation of this tree.
@@ -677,7 +677,7 @@ class Tree(list):
             return s
 
         # If it doesn't fit on one line, then write it on multi-lines.
-        if isinstance(self.node, basestring): 
+        if isinstance(self.node, basestring):
             s = '%s%s%s' % (parens[0], self.node, nodesep)
         else:
             s = '%s%r%s' % (parens[0], self.node, nodesep)
@@ -712,7 +712,7 @@ class Tree(list):
         :rtype: str
         """
         return r'\Tree ' + self.pprint(indent=6, nodesep='', parens=('[.', ' ]'))
-    
+
     def _pprint_flat(self, nodesep, parens, quotes):
         childstrs = []
         for child in self:
@@ -725,10 +725,10 @@ class Tree(list):
             else:
                 childstrs.append('%r' % child)
         if isinstance(self.node, basestring):
-            return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
+            return '%s%s%s %s%s' % (parens[0], self.node, nodesep,
                                     string.join(childstrs), parens[1])
         else:
-            return '%s%r%s %s%s' % (parens[0], self.node, nodesep, 
+            return '%s%r%s %s%s' % (parens[0], self.node, nodesep,
                                     string.join(childstrs), parens[1])
 
 class ImmutableTree(Tree):
@@ -793,7 +793,7 @@ class AbstractParentedTree(Tree):
       - ``ParentedTree`` is used for tree structures where each subtree
         has at most one parent.  This class should be used in cases
         where there is no"sharing" of subtrees.
-        
+
       - ``MultiParentedTree`` is used for tree structures where a
         subtree may have zero or more parents.  This class should be
         used in cases where subtrees may be shared.
@@ -803,7 +803,7 @@ class AbstractParentedTree(Tree):
     The ``AbstractParentedTree`` class redefines all operations that
     modify a tree's structure to call two methods, which are used by
     subclasses to update parent information:
-    
+
       - ``_setparent()`` is called whenever a new child is added.
       - ``_delparent()`` is called whenever a child is removed.
     """
@@ -818,7 +818,7 @@ class AbstractParentedTree(Tree):
         for i, child in enumerate(self):
             if isinstance(child, Tree):
                 self._setparent(child, i)
-        
+
     #////////////////////////////////////////////////////////////
     # Parent management
     #////////////////////////////////////////////////////////////
@@ -844,7 +844,7 @@ class AbstractParentedTree(Tree):
             raise an exception if one is found.
         """
         raise AssertionError('Abstract base class')
-    
+
     def _delparent(self, child, index):
         """
         Update the parent pointer of ``child`` to not point to self.  This
@@ -852,7 +852,7 @@ class AbstractParentedTree(Tree):
         is not called when removing a leaf from a tree.  This method
         is always called before the child is actually removed from the
         child list of ``self``.
-        
+
         :type child: Tree
         :type index: int
         :param index: The index of ``child`` in ``self``.
@@ -875,7 +875,7 @@ class AbstractParentedTree(Tree):
                     self._delparent(self[i], i)
             # Delete the children from our child list.
             super(AbstractParentedTree, self).__delitem__(index)
-            
+
         # del ptree[i]
         elif isinstance(index, int):
             if index < 0: index += len(self)
@@ -889,11 +889,11 @@ class AbstractParentedTree(Tree):
         # del ptree[()]
         elif len(index) == 0:
             raise IndexError('The tree position () may not be deleted.')
-        
+
         # del ptree[(i,)]
         elif len(index) == 1:
             del self[index[0]]
-            
+
         # del ptree[i1, i2, i3]
         else:
             del self[index[0]][index[1:]]
@@ -1015,21 +1015,21 @@ class ParentedTree(AbstractParentedTree):
     single ``ParentedTree`` as a child of more than one parent (or
     as multiple children of the same parent) will cause a
     ``ValueError`` exception to be raised.
-    
+
     ``ParentedTrees`` should never be used in the same tree as ``Trees``
     or ``MultiParentedTrees``.  Mixing tree implementations may result
     in incorrect parent pointers and in ``TypeError`` exceptions.
     """
     def __init__(self, node_or_str, children=None):
         if children is None: return # see note in Tree.__init__()
-        
+
         self._parent = None
         """The parent of this Tree, or None if it has no parent."""
 
         super(ParentedTree, self).__init__(node_or_str, children)
 
     def _frozen_class(self): return ImmutableParentedTree
-    
+
     #/////////////////////////////////////////////////////////////////
     # Properties
     #/////////////////////////////////////////////////////////////////
@@ -1045,13 +1045,13 @@ class ParentedTree(AbstractParentedTree):
         if self._parent and parent_index > 0:
             return self._parent[parent_index-1]
         return None # no left sibling
-    
+
     def _get_right_sibling(self):
         parent_index = self._get_parent_index()
         if self._parent and parent_index < (len(self._parent)-1):
             return self._parent[parent_index+1]
         return None # no right sibling
-    
+
     def _get_treeposition(self):
         if self._parent is None: return ()
         else: return (self._parent._get_treeposition() +
@@ -1063,7 +1063,7 @@ class ParentedTree(AbstractParentedTree):
 
     parent = property(lambda self: self._parent, doc="""
         The parent of this tree, or None if it has no parent.""")
-    
+
     parent_index = property(_get_parent_index, doc="""
         The index of this tree in its parent.  I.e.,
         ``ptree.parent[ptree.parent_index] is ptree``.  Note that
@@ -1122,7 +1122,7 @@ class MultiParentedTree(AbstractParentedTree):
     automatically updated whenever the structure of a multi-parented
     tree is modified: ``parents``, ``parent_indices``, ``left_siblings``,
     ``right_siblings``, ``roots``, ``treepositions``.
-    
+
     Each ``MultiParentedTree`` may have zero or more parents.  In
     particular, subtrees may be shared.  If a single
     ``MultiParentedTree`` is used as multiple children of the same
@@ -1135,7 +1135,7 @@ class MultiParentedTree(AbstractParentedTree):
     """
     def __init__(self, node_or_str, children=None):
         if children is None: return # see note in Tree.__init__()
-        
+
         self._parents = []
         """A list of this tree's parents.  This list should not
            contain duplicates, even if a parent contains this tree
@@ -1144,7 +1144,7 @@ class MultiParentedTree(AbstractParentedTree):
         super(MultiParentedTree, self).__init__(node_or_str, children)
 
     def _frozen_class(self): return ImmutableMultiParentedTree
-    
+
     #/////////////////////////////////////////////////////////////////
     # Properties
     #/////////////////////////////////////////////////////////////////
@@ -1192,7 +1192,7 @@ class MultiParentedTree(AbstractParentedTree):
         of this tree with respect to multiple parents.
 
         :type: list(MultiParentedTree)""")
-    
+
     right_siblings = property(_get_right_siblings, doc="""
         A list of all right siblings of this tree, in any of its parent
         trees.  A tree may be its own right sibling if it is used as
@@ -1201,7 +1201,7 @@ class MultiParentedTree(AbstractParentedTree):
         of this tree with respect to multiple parents.
 
         :type: list(MultiParentedTree)""")
-                              
+
     roots = property(_get_roots, doc="""
         The set of all roots of this tree.  This set is formed by
         tracing all possible parent paths until trees with no parents
@@ -1240,7 +1240,7 @@ class MultiParentedTree(AbstractParentedTree):
                     for treepos in parent.treepositions(root)
                     for (index, child) in enumerate(parent) if child is self]
 
-                              
+
     #/////////////////////////////////////////////////////////////////
     # Parent Management
     #/////////////////////////////////////////////////////////////////
@@ -1250,7 +1250,7 @@ class MultiParentedTree(AbstractParentedTree):
         assert isinstance(child, MultiParentedTree)
         assert self[index] is child
         assert len([p for p in child._parents if p is self]) == 1
-        
+
         # If the only copy of child in self is at index, then delete
         # self from child's parent list.
         for i, c in enumerate(self):
@@ -1270,7 +1270,7 @@ class MultiParentedTree(AbstractParentedTree):
                 if parent is self: break
             else:
                 child._parents.append(self)
-    
+
 class ImmutableParentedTree(ImmutableTree, ParentedTree):
     def __init__(self, node_or_str, children=None):
         if children is None: return # see note in Tree.__init__()
@@ -1373,7 +1373,7 @@ def _child_names(tree):
 ######################################################################
 ## Parsing
 ######################################################################
-    
+
 def bracket_parse(s):
     """
     Use Tree.parse(s, remove_empty_top_bracketing=True) instead.
@@ -1415,7 +1415,7 @@ def sinica_parse(s):
 ######################################################################
 ## Demonstration
 ######################################################################
-        
+
 def demo():
     """
     A demonstration showing how Trees and Trees can be
@@ -1423,7 +1423,7 @@ def demo():
     Tree from the Treebank corpus,
     and shows the results of calling several of their methods.
     """
-    
+
     from nltk import tree
 
     # Demonstrate tree parsing.

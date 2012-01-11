@@ -13,15 +13,15 @@
 # $Id: chart.py 8144 2009-06-01 22:27:39Z edloper $
 
 """
-Data classes and parser implementations for *incremental* chart 
-parsers, which use dynamic programming to efficiently parse a text.  
-A "chart parser" derives parse trees for a text by iteratively adding 
+Data classes and parser implementations for *incremental* chart
+parsers, which use dynamic programming to efficiently parse a text.
+A "chart parser" derives parse trees for a text by iteratively adding
 \"edges\" to a \"chart\".  Each "edge" represents a hypothesis about the tree
 structure for a subsequence of the text.  The "chart" is a
 \"blackboard\" for composing and combining these hypotheses.
 
 A parser is "incremental", if it guarantees that for all i, j where i < j,
-all edges ending at i are built before any edges ending at j.    
+all edges ending at i are built before any edges ending at j.
 This is appealing for, say, speech recognizer hypothesis filtering.
 
 The main parser class is ``EarleyChartParser``, which is a top-down
@@ -51,74 +51,74 @@ class IncrementalChart(Chart):
     def initialize(self):
         # A sequence of edge lists contained in this chart.
         self._edgelists = tuple([] for x in self._positions())
-        
+
         # The set of child pointer lists associated with each edge.
         self._edge_to_cpls = {}
-        
-        # Indexes mapping attribute values to lists of edges 
+
+        # Indexes mapping attribute values to lists of edges
         # (used by select()).
         self._indexes = {}
-    
+
     def edges(self):
         return list(self.iteredges())
-    
+
     def iteredges(self):
         return (edge for edgelist in self._edgelists for edge in edgelist)
-    
+
     def select(self, end, **restrictions):
         edgelist = self._edgelists[end]
-        
+
         # If there are no restrictions, then return all edges.
         if restrictions=={}: return iter(edgelist)
-            
+
         # Find the index corresponding to the given restrictions.
         restr_keys = restrictions.keys()
         restr_keys.sort()
         restr_keys = tuple(restr_keys)
-        
+
         # If it doesn't exist, then create it.
         if restr_keys not in self._indexes:
             self._add_index(restr_keys)
-                
+
         vals = tuple(restrictions[key] for key in restr_keys)
         return iter(self._indexes[restr_keys][end].get(vals, []))
-    
+
     def _add_index(self, restr_keys):
         # Make sure it's a valid index.
         for key in restr_keys:
             if not hasattr(EdgeI, key):
                 raise ValueError, 'Bad restriction: %s' % key
-        
+
         # Create the index.
         index = self._indexes[restr_keys] = tuple({} for x in self._positions())
-        
+
         # Add all existing edges to the index.
         for end, edgelist in enumerate(self._edgelists):
             this_index = index[end]
             for edge in edgelist:
                 vals = tuple(getattr(edge, key)() for key in restr_keys)
                 this_index.setdefault(vals, []).append(edge)
-    
+
     def _register_with_indexes(self, edge):
         end = edge.end()
         for (restr_keys, index) in self._indexes.items():
             vals = tuple(getattr(edge, key)() for key in restr_keys)
             index[end].setdefault(vals, []).append(edge)
-    
+
     def _append_edge(self, edge):
         self._edgelists[edge.end()].append(edge)
-    
+
     def _positions(self):
-        return xrange(self.num_leaves() + 1)    
+        return xrange(self.num_leaves() + 1)
 
 
 class FeatureIncrementalChart(IncrementalChart, FeatureChart):
     def select(self, end, **restrictions):
         edgelist = self._edgelists[end]
-        
+
         # If there are no restrictions, then return all edges.
         if restrictions=={}: return iter(edgelist)
-            
+
         # Find the index corresponding to the given restrictions.
         restr_keys = restrictions.keys()
         restr_keys.sort()
@@ -127,11 +127,11 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
         # If it doesn't exist, then create it.
         if restr_keys not in self._indexes:
             self._add_index(restr_keys)
-                
-        vals = tuple(self._get_type_if_possible(restrictions[key]) 
+
+        vals = tuple(self._get_type_if_possible(restrictions[key])
                      for key in restr_keys)
         return iter(self._indexes[restr_keys][end].get(vals, []))
-    
+
     def _add_index(self, restr_keys):
         # Make sure it's a valid index.
         for key in restr_keys:
@@ -145,10 +145,10 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
         for end, edgelist in enumerate(self._edgelists):
             this_index = index[end]
             for edge in edgelist:
-                vals = tuple(self._get_type_if_possible(getattr(edge, key)()) 
+                vals = tuple(self._get_type_if_possible(getattr(edge, key)())
                              for key in restr_keys)
                 this_index.setdefault(vals, []).append(edge)
-    
+
     def _register_with_indexes(self, edge):
         end = edge.end()
         for (restr_keys, index) in self._indexes.items():
@@ -163,7 +163,7 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
 class CompleteFundamentalRule(SingleEdgeFundamentalRule):
     def _apply_incomplete(self, chart, grammar, left_edge):
         end = left_edge.end()
-        # When the chart is incremental, we only have to look for 
+        # When the chart is incremental, we only have to look for
         # empty complete edges here.
         for right_edge in chart.select(start=end, end=end,
                                        is_complete=True,
@@ -175,14 +175,14 @@ class CompleteFundamentalRule(SingleEdgeFundamentalRule):
 class CompleterRule(CompleteFundamentalRule):
     _fundamental_rule = CompleteFundamentalRule()
     def apply_iter(self, chart, grammar, edge):
-        if not isinstance(edge, LeafEdge): 
+        if not isinstance(edge, LeafEdge):
             for new_edge in self._fundamental_rule.apply_iter(chart, grammar, edge):
                 yield new_edge
 
 class ScannerRule(CompleteFundamentalRule):
     _fundamental_rule = CompleteFundamentalRule()
     def apply_iter(self, chart, grammar, edge):
-        if isinstance(edge, LeafEdge): 
+        if isinstance(edge, LeafEdge):
             for new_edge in self._fundamental_rule.apply_iter(chart, grammar, edge):
                 yield new_edge
 
@@ -205,9 +205,9 @@ class FeatureCompleteFundamentalRule(FeatureSingleEdgeFundamentalRule):
     def _apply_incomplete(self, chart, grammar, left_edge):
         fr = self._fundamental_rule
         end = left_edge.end()
-        # When the chart is incremental, we only have to look for 
+        # When the chart is incremental, we only have to look for
         # empty complete edges here.
-        for right_edge in chart.select(start=end, end=end, 
+        for right_edge in chart.select(start=end, end=end,
                                        is_complete=True,
                                        lhs=left_edge.next()):
             for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
@@ -219,7 +219,7 @@ class FeatureCompleterRule(CompleterRule):
 class FeatureScannerRule(ScannerRule):
     _fundamental_rule = FeatureCompleteFundamentalRule()
 
-class FeaturePredictorRule(FeatureTopDownPredictRule): 
+class FeaturePredictorRule(FeatureTopDownPredictRule):
     pass
 
 #////////////////////////////////////////////////////////////
@@ -227,12 +227,12 @@ class FeaturePredictorRule(FeatureTopDownPredictRule):
 #////////////////////////////////////////////////////////////
 
 EARLEY_STRATEGY = [LeafInitRule(),
-                   TopDownInitRule(), 
-                   CompleterRule(), 
+                   TopDownInitRule(),
+                   CompleterRule(),
                    ScannerRule(),
-                   PredictorRule()] 
+                   PredictorRule()]
 TD_INCREMENTAL_STRATEGY = [LeafInitRule(),
-                           TopDownInitRule(), 
+                           TopDownInitRule(),
                            CachedTopDownPredictRule(),
                            CompleteFundamentalRule()]
 BU_INCREMENTAL_STRATEGY = [LeafInitRule(),
@@ -250,7 +250,7 @@ LC_INCREMENTAL_STRATEGY = [LeafInitRule(),
 
 class IncrementalChartParser(ChartParser):
     """
-    An *incremental* chart parser implementing Jay Earley's 
+    An *incremental* chart parser implementing Jay Earley's
     parsing algorithm:
 
     | For each index end in [0, 1, ..., N]:
@@ -264,12 +264,12 @@ class IncrementalChartParser(ChartParser):
     | Return any complete parses in the chart
     """
     def __init__(self, grammar, strategy=BU_LC_INCREMENTAL_STRATEGY,
-                 trace=0, trace_chart_width=50, 
-                 chart_class=IncrementalChart): 
+                 trace=0, trace_chart_width=50,
+                 chart_class=IncrementalChart):
         """
         Create a new Earley chart parser, that uses ``grammar`` to
         parse texts.
-        
+
         :type grammar: ContextFreeGrammar
         :param grammar: The grammar used to parse texts.
         :type trace: int
@@ -278,9 +278,9 @@ class IncrementalChartParser(ChartParser):
             and higher numbers will produce more verbose tracing
             output.
         :type trace_chart_width: int
-        :param trace_chart_width: The default total width reserved for 
-            the chart in trace output.  The remainder of each line will 
-            be used to display edges. 
+        :param trace_chart_width: The default total width reserved for
+            the chart in trace output.  The remainder of each line will
+            be used to display edges.
         :param chart_class: The class that should be used to create
             the charts used by this parser.
         """
@@ -288,7 +288,7 @@ class IncrementalChartParser(ChartParser):
         self._trace = trace
         self._trace_chart_width = trace_chart_width
         self._chart_class = chart_class
-        
+
         self._axioms = []
         self._inference_rules = []
         for rule in strategy:
@@ -363,12 +363,12 @@ class IncrementalLeftCornerChartParser(IncrementalChartParser):
 #////////////////////////////////////////////////////////////
 
 EARLEY_FEATURE_STRATEGY = [LeafInitRule(),
-                           FeatureTopDownInitRule(), 
-                           FeatureCompleterRule(), 
+                           FeatureTopDownInitRule(),
+                           FeatureCompleterRule(),
                            FeatureScannerRule(),
-                           FeaturePredictorRule()] 
+                           FeaturePredictorRule()]
 TD_INCREMENTAL_FEATURE_STRATEGY = [LeafInitRule(),
-                                   FeatureTopDownInitRule(), 
+                                   FeatureTopDownInitRule(),
                                    FeatureTopDownPredictRule(),
                                    FeatureCompleteFundamentalRule()]
 BU_INCREMENTAL_FEATURE_STRATEGY = [LeafInitRule(),
@@ -381,12 +381,12 @@ BU_LC_INCREMENTAL_FEATURE_STRATEGY = [LeafInitRule(),
                                       FeatureCompleteFundamentalRule()]
 
 class FeatureIncrementalChartParser(IncrementalChartParser, FeatureChartParser):
-    def __init__(self, grammar, 
+    def __init__(self, grammar,
                  strategy=BU_LC_INCREMENTAL_FEATURE_STRATEGY,
-                 trace_chart_width=20, 
+                 trace_chart_width=20,
                  chart_class=FeatureIncrementalChart,
-                 **parser_args): 
-        IncrementalChartParser.__init__(self, grammar, 
+                 **parser_args):
+        IncrementalChartParser.__init__(self, grammar,
                                         strategy=strategy,
                                         trace_chart_width=trace_chart_width,
                                         chart_class=chart_class,
@@ -429,7 +429,7 @@ def demo(should_print_times=True, should_print_grammar=False,
         print grammar
 
     # Tokenize the sample sentence.
-    print "* Sentence:" 
+    print "* Sentence:"
     print sent
     tokens = sent.split()
     print tokens
@@ -441,7 +441,7 @@ def demo(should_print_times=True, should_print_grammar=False,
     chart = earley.chart_parse(tokens)
     parses = chart.parses(grammar.start())
     t = time.clock()-t
-    
+
     # Print results.
     if numparses:
         assert len(parses)==numparses, 'Not all parses found'

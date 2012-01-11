@@ -47,7 +47,7 @@ def precision(reference, test):
     the fraction of test values that appear in the reference set.
     In particular, return card(``reference`` intersection ``test``)/card(``test``).
     If ``test`` is empty, then return None.
-    
+
     :type reference: set
     :param reference: A set of reference values.
     :type test: set
@@ -57,7 +57,7 @@ def precision(reference, test):
     if (not hasattr(reference, 'intersection') or
         not hasattr(test, 'intersection')):
         raise TypeError('reference and test should be sets')
-    
+
     if len(test) == 0:
         return None
     else:
@@ -69,7 +69,7 @@ def recall(reference, test):
     the fraction of reference values that appear in the test set.
     In particular, return card(``reference`` intersection ``test``)/card(``reference``).
     If ``reference`` is empty, then return None.
-    
+
     :type reference: set
     :param reference: A set of reference values.
     :type test: set
@@ -79,7 +79,7 @@ def recall(reference, test):
     if (not hasattr(reference, 'intersection') or
         not hasattr(test, 'intersection')):
         raise TypeError('reference and test should be sets')
-    
+
     if len(reference) == 0:
         return None
     else:
@@ -99,10 +99,10 @@ def f_measure(reference, test, alpha=0.5):
     The f-measure is:
 
     - *1/(alpha/p + (1-alpha)/r)*
-        
+
     If either ``reference`` or ``test`` is empty, then ``f_measure``
     returns None.
-    
+
     :type reference: set
     :param reference: A set of reference values.
     :type test: set
@@ -141,14 +141,14 @@ def approxrand(a, b, **kwargs):
     """
     Returns an approximate significance level between two lists of
     independently generated test values.
-    
+
     Approximate randomization calculates significance by randomly drawing
     from a sample of the possible permutations. At the limit of the number
     of possible permutations, the significance level is exact. The
     approximate significance level is the sample mean number of times the
     statistic of the permutated lists varies from the actual statistic of
     the unpermuted argument lists.
-    
+
     :return: a tuple containing an approximate significance level, the count
              of the number of times the pseudo-statistic varied from the
              actual statistic, and the number of shuffles
@@ -164,16 +164,16 @@ def approxrand(a, b, **kwargs):
         min(shuffles, reduce(lambda x, y: x * y, xrange(1, len(a) + len(b) + 1)))
     stat = kwargs.get('statistic', lambda lst: float(sum(lst)) / len(lst))
     verbose = kwargs.get('verbose', False)
-    
+
     if verbose:
         print 'shuffles: %d' % shuffles
-    
+
     actual_stat = fabs(stat(a) - stat(b))
-    
+
     if verbose:
         print 'actual statistic: %f' % actual_stat
         print '-' * 60
-    
+
     c = 1e-100
     lst = LazyConcatenation([a, b])
     indices = range(len(a) + len(b))
@@ -183,27 +183,27 @@ def approxrand(a, b, **kwargs):
             print 'shuffle: %d' % i
 
         shuffle(indices)
-        
+
         pseudo_stat_a = stat(LazyMap(lambda i: lst[i], indices[:len(a)]))
         pseudo_stat_b = stat(LazyMap(lambda i: lst[i], indices[len(a):]))
         pseudo_stat = fabs(pseudo_stat_a - pseudo_stat_b)
-        
+
         if pseudo_stat >= actual_stat:
             c += 1
-            
+
         if verbose and i % 10 == 0:
             print 'pseudo-statistic: %f' % pseudo_stat
             print 'significance: %f' % (float(c + 1) / (i + 1))
             print '-' * 60
-        
+
     significance = float(c + 1) / (shuffles + 1)
-    
+
     if verbose:
-        print 'significance: %f' % significance        
+        print 'significance: %f' % significance
         if betai:
             for phi in [0.01, 0.05, 0.10, 0.15, 0.25, 0.50]:
                 print "prob(phi<=%f): %f" % (phi, betai(c, shuffles, phi))
-    
+
     return (significance, c, shuffles)
 
 

@@ -35,13 +35,13 @@ to specify the tokenization conventions when building a `CorpusReader`.
 
 """
 
-from nltk.tokenize.api import TokenizerI, StringTokenizer 
+from nltk.tokenize.api import TokenizerI, StringTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
-    
+
 class SpaceTokenizer(StringTokenizer):
     r"""Tokenize a string using the space character as a delimiter,
     which is the same as ``s.split(' ')``.
-    
+
         >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
         >>> SpaceTokenizer().tokenize(s)
         ['Good', 'muffins', 'cost', '$3.88\nin', 'New', 'York.', '',
@@ -49,17 +49,17 @@ class SpaceTokenizer(StringTokenizer):
     """
 
     _string = ' '
-    
+
 class TabTokenizer(StringTokenizer):
     r"""Tokenize a string use the tab character as a delimiter,
     the same as ``s.split('\t')``.
-    
+
         >>> TabTokenizer().tokenize('a\tb c\n\t d')
         ['a', 'b c\n', ' d']
     """
-    
+
     _string = '\t'
-    
+
 class CharTokenizer(StringTokenizer):
     """Tokenize a string into individual characters.  If this functionality
     is ever required directly, use ``for char in string``.
@@ -71,7 +71,7 @@ class CharTokenizer(StringTokenizer):
     def span_tokenize(self, s):
         for i, j in enumerate(range(1, len(s+1))):
             yield i, j
-                              
+
 class LineTokenizer(TokenizerI):
     r"""Tokenize a string into its lines, optionally discarding blank lines.
     This is similar to ``s.split('\n')``.
@@ -86,7 +86,7 @@ class LineTokenizer(TokenizerI):
         'two of them.', 'Thanks.']
 
     :param blanklines: Indicates how blank lines should be handled.  Valid values are:
-        
+
         - ``discard``: strip blank lines out of the token list before returning it.
            A line is considered blank if it contains only whitespace characters.
         - ``keep``: leave all blank lines in the token list.
@@ -99,9 +99,9 @@ class LineTokenizer(TokenizerI):
         if blanklines not in valid_blanklines:
             raise ValueError('Blank lines must be one of: %s' %
                              ' '.join(valid_blanklines))
-            
+
         self._blanklines = blanklines
-    
+
     def tokenize(self, s):
         lines = s.splitlines()
         # If requested, strip off blank lines.

@@ -121,7 +121,7 @@ class POSTagger(StanfordTagger):
 
     def __init__(self, *args, **kwargs):
         super(POSTagger, self).__init__(*args, **kwargs)
-    
+
     @property
     def _cmd(self):
         return ['edu.stanford.nlp.tagger.maxent.MaxentTagger', \

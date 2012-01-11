@@ -10,7 +10,7 @@ from util import Chat, reflections
 """
 Tsu bot responds to all queries with a Sun Tsu sayings
 
-Quoted from Sun Tsu's The Art of War 
+Quoted from Sun Tsu's The Art of War
 Translated by LIONEL GILES, M.A. 1910
 Hosted by the Gutenberg Project
 http://www.gutenberg.org/
@@ -30,8 +30,8 @@ pairs = (
   (r'[0-9]+(.*)',
   ("It is the rule in war, if our forces are ten to the enemy's one, to surround him; if five to one, to attack him; if twice as numerous, to divide our army into two.",
    "There are five essentials for victory")),
- 
-  
+
+
   (r'[A-Ca-c](.*)',
   ("The art of war is of vital importance to the State.",
    "All warfare is based on deception.",

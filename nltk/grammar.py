@@ -96,7 +96,7 @@ class Nonterminal(object):
     :see: ``ContextFreeGrammar``, ``Production``
     :type _symbol: any
     :ivar _symbol: The node value corresponding to this
-        ``Nonterminal``.  This value must be immutable and hashable. 
+        ``Nonterminal``.  This value must be immutable and hashable.
     """
     def __init__(self, symbol):
         """
@@ -105,14 +105,14 @@ class Nonterminal(object):
         :type symbol: any
         :param symbol: The node value corresponding to this
             ``Nonterminal``.  This value must be immutable and
-            hashable. 
+            hashable.
         """
         self._symbol = symbol
         self._hash = hash(symbol)
 
     def symbol(self):
         """
-        Return the node value corresponding to this ``Nonterminal``. 
+        Return the node value corresponding to this ``Nonterminal``.
 
         :rtype: (any)
         """
@@ -143,9 +143,9 @@ class Nonterminal(object):
         return not (self==other)
 
     def __cmp__(self, other):
-        try: 
+        try:
             return cmp(self._symbol, other._symbol)
-        except: 
+        except:
             return -1
 
     def __hash__(self):
@@ -188,7 +188,7 @@ class Nonterminal(object):
 def nonterminals(symbols):
     """
     Given a string containing a list of symbol names, return a list of
-    ``Nonterminals`` constructed from those symbols.  
+    ``Nonterminals`` constructed from those symbols.
 
     :param symbols: The symbol name string.  This string can be
         delimited by either spaces or commas.
@@ -225,7 +225,7 @@ def is_nonterminal(item):
 
 def is_terminal(item):
     """
-    Return True if the item is a terminal, which currently is 
+    Return True if the item is a terminal, which currently is
     if it is hashable and not a ``Nonterminal``.
 
     :rtype: bool
@@ -280,7 +280,7 @@ class Production(object):
         :rtype: Nonterminal
         """
         return self._lhs
-    
+
     def rhs(self):
         """
         Return the right-hand side of this ``Production``.
@@ -288,7 +288,7 @@ class Production(object):
         :rtype: sequence(Nonterminal and terminal)
         """
         return self._rhs
-    
+
     def __len__(self):
         """
         Return the length of the right-hand side.
@@ -296,7 +296,7 @@ class Production(object):
         :rtype: int
         """
         return len(self._rhs)
-    
+
     def is_nonlexical(self):
         """
         Return True if the right-hand side only contains ``Nonterminals``
@@ -326,7 +326,7 @@ class Production(object):
 
     def __repr__(self):
         """
-        Return a concise string representation of the ``Production``. 
+        Return a concise string representation of the ``Production``.
 
         :rtype: str
         """
@@ -341,7 +341,7 @@ class Production(object):
         return (isinstance(other, self.__class__) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
-                 
+
     def __ne__(self, other):
         return not (self == other)
 
@@ -420,7 +420,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
 
 class ContextFreeGrammar(object):
     """
-    A context-free grammar.  A grammar consists of a start state and 
+    A context-free grammar.  A grammar consists of a start state and
     a set of productions.  The set of terminals and nonterminals is
     implicitly specified by the productions.
 
@@ -431,12 +431,12 @@ class ContextFreeGrammar(object):
         """
         Create a new context-free grammar, from the given start state
         and set of ``Production``s.
-        
+
         :param start: The start symbol
         :type start: Nonterminal
         :param productions: The list of productions that defines the grammar
         :type productions: list(Production)
-        :param calculate_leftcorners: False if we don't want to calculate the 
+        :param calculate_leftcorners: False if we don't want to calculate the
             leftcorner relation. In that case, some optimized chart parsers won't work.
         :type calculate_leftcorners: bool
         """
@@ -447,7 +447,7 @@ class ContextFreeGrammar(object):
         self._calculate_grammar_forms()
         if calculate_leftcorners:
             self._calculate_leftcorners()
-    
+
     def _calculate_indexes(self):
         self._lhs_index = {}
         self._rhs_index = {}
@@ -472,7 +472,7 @@ class ContextFreeGrammar(object):
             for token in prod._rhs:
                 if is_terminal(token):
                     self._lexical_index.setdefault(token, set()).add(prod)
-    
+
     def _calculate_leftcorners(self):
         # Calculate leftcorner relations, for use in optimized parsing.
         self._immediate_leftcorner_categories = dict((cat, set([cat])) for cat in self._categories)
@@ -484,11 +484,11 @@ class ContextFreeGrammar(object):
                     self._immediate_leftcorner_categories[cat].add(left)
                 else:
                     self._immediate_leftcorner_words[cat].add(left)
-        
+
         lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
         self._leftcorners = lc
         self._leftcorner_parents = invert_graph(lc)
-        
+
         nr_leftcorner_categories = sum(map(len, self._immediate_leftcorner_categories.values()))
         nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
         if nr_leftcorner_words > nr_leftcorner_categories > 10000:
@@ -496,14 +496,14 @@ class ContextFreeGrammar(object):
             # In that case it is better to calculate the relation on demand.
             self._leftcorner_words = None
             return
-        
+
         self._leftcorner_words = {}
         for cat, lefts in self._leftcorners.iteritems():
             lc = self._leftcorner_words[cat] = set()
             for left in lefts:
                 lc.update(self._immediate_leftcorner_words.get(left, set()))
-        
-    
+
+
     def start(self):
         """
         Return the start symbol of the grammar
@@ -518,9 +518,9 @@ class ContextFreeGrammar(object):
         """
         Return the grammar productions, filtered by the left-hand side
         or the first item in the right-hand side.
-        
+
         :param lhs: Only return productions with the given left-hand side.
-        :param rhs: Only return productions with the given first item 
+        :param rhs: Only return productions with the given first item
             in the right-hand side.
         :param empty: Only return productions with an empty right-hand side.
         :return: A list of productions matching the given constraints.
@@ -529,7 +529,7 @@ class ContextFreeGrammar(object):
         if rhs and empty:
             raise ValueError("You cannot select empty and non-empty "
                              "productions at the same time.")
-        
+
         # no constraints so return everything
         if not lhs and not rhs:
             if not empty:
@@ -554,27 +554,27 @@ class ContextFreeGrammar(object):
         else:
             return [prod for prod in self._lhs_index.get(lhs, [])
                     if prod in self._rhs_index.get(rhs, [])]
-    
+
     def leftcorners(self, cat):
         """
-        Return the set of all nonterminals that the given nonterminal 
+        Return the set of all nonterminals that the given nonterminal
         can start with, including itself.
-        
+
         This is the reflexive, transitive closure of the immediate
         leftcorner relation:  (A > B)  iff  (A -> B beta)
-        
+
         :param cat: the parent of the leftcorners
         :type cat: Nonterminal
         :return: the set of all leftcorners
         :rtype: set(Nonterminal)
         """
         return self._leftcorners.get(cat, set([cat]))
-    
+
     def is_leftcorner(self, cat, left):
         """
         True if left is a leftcorner of cat, where left can be a
-        terminal or a nonterminal. 
-        
+        terminal or a nonterminal.
+
         :param cat: the parent of the leftcorner
         :type cat: Nonterminal
         :param left: the suggested leftcorner
@@ -582,13 +582,13 @@ class ContextFreeGrammar(object):
         :rtype: bool
         """
         if is_nonterminal(left):
-            return left in self.leftcorners(cat)            
+            return left in self.leftcorners(cat)
         elif self._leftcorner_words:
             return left in self._leftcorner_words.get(cat, set())
         else:
             return any([left in _immediate_leftcorner_words.get(parent, set())
                         for parent in self.leftcorners(cat)])
-    
+
     def leftcorner_parents(self, cat):
         """
         Return the set of all nonterminals for which the given category
@@ -600,15 +600,15 @@ class ContextFreeGrammar(object):
         :rtype: set(Nonterminal)
         """
         return self._leftcorner_parents.get(cat, set([cat]))
-    
+
     def check_coverage(self, tokens):
         """
         Check whether the grammar rules cover the given list of tokens.
         If not, then raise an exception.
-        
+
         :type tokens: list(str)
         """
-        missing = [tok for tok in tokens 
+        missing = [tok for tok in tokens
                    if not self._lexical_index.get(tok)]
         if missing:
             missing = ', '.join('%r' % (w,) for w in missing)
@@ -621,70 +621,70 @@ class ContextFreeGrammar(object):
         """
         prods = self._productions
         self._is_lexical = all([p.is_lexical() for p in prods])
-        self._is_nonlexical = all([p.is_nonlexical() for p in prods 
+        self._is_nonlexical = all([p.is_nonlexical() for p in prods
                                   if len(p) != 1])
         self._min_len = min(len(p) for p in prods)
         self._max_len = max(len(p) for p in prods)
-        self._all_unary_are_lexical = all([p.is_lexical() for p in prods 
+        self._all_unary_are_lexical = all([p.is_lexical() for p in prods
                                           if len(p) == 1])
-    
+
     def is_lexical(self):
         """
         Return True if all productions are lexicalised.
         """
         return self._is_lexical
-    
+
     def is_nonlexical(self):
         """
         Return True if all lexical rules are "preterminals", that is,
         unary rules which can be separated in a preprocessing step.
-        
+
         This means that all productions are of the forms
         A -> B1 ... Bn (n>=0), or A -> "s".
-        
+
         Note: is_lexical() and is_nonlexical() are not opposites.
         There are grammars which are neither, and grammars which are both.
         """
         return self._is_nonlexical
-    
+
     def min_len(self):
         """
         Return the right-hand side length of the shortest grammar production.
         """
         return self._min_len
-    
+
     def max_len(self):
         """
         Return the right-hand side length of the longest grammar production.
         """
         return self._max_len
-    
+
     def is_nonempty(self):
         """
         Return True if there are no empty productions.
         """
         return self._min_len > 0
-    
+
     def is_binarised(self):
         """
         Return True if all productions are at most binary.
         Note that there can still be empty and unary productions.
         """
         return self._max_len <= 2
-    
+
     def is_flexible_chomsky_normal_form(self):
         """
         Return True if all productions are of the forms
         A -> B C, A -> B, or A -> "s".
         """
         return self.is_nonempty() and self.is_nonlexical() and self.is_binarised()
-    
+
     def is_chomsky_normal_form(self):
         """
         Return True if the grammar is of Chomsky Normal Form, i.e. all productions
         are of the form A -> B C, or A -> "s".
         """
-        return (self.is_flexible_chomsky_normal_form() and 
+        return (self.is_flexible_chomsky_normal_form() and
                 self._all_unary_are_lexical)
 
     def __repr__(self):
@@ -700,30 +700,30 @@ class ContextFreeGrammar(object):
 
 class FeatureGrammar(ContextFreeGrammar):
     """
-    A feature-based grammar.  This is equivalent to a 
+    A feature-based grammar.  This is equivalent to a
     ``ContextFreeGrammar`` whose nonterminals are all
     ``FeatStructNonterminal``.
 
-    A grammar consists of a start state and a set of 
-    productions.  The set of terminals and nonterminals 
+    A grammar consists of a start state and a set of
+    productions.  The set of terminals and nonterminals
     is implicitly specified by the productions.
     """
     def __init__(self, start, productions):
         """
-        Create a new feature-based grammar, from the given start 
+        Create a new feature-based grammar, from the given start
         state and set of ``Productions``.
-        
+
         :param start: The start symbol
         :type start: FeatStructNonterminal
         :param productions: The list of productions that defines the grammar
         :type productions: list(Production)
         """
         ContextFreeGrammar.__init__(self, start, productions)
-    
+
     # The difference with CFG is that the productions are
     # indexed on the TYPE feature of the nonterminals.
     # This is calculated by the method _get_type_if_possible().
-    
+
     def _calculate_indexes(self):
         self._lhs_index = {}
         self._rhs_index = {}
@@ -757,9 +757,9 @@ class FeatureGrammar(ContextFreeGrammar):
         """
         Return the grammar productions, filtered by the left-hand side
         or the first item in the right-hand side.
-        
+
         :param lhs: Only return productions with the given left-hand side.
-        :param rhs: Only return productions with the given first item 
+        :param rhs: Only return productions with the given first item
             in the right-hand side.
         :param empty: Only return productions with an empty right-hand side.
         :rtype: list(Production)
@@ -767,7 +767,7 @@ class FeatureGrammar(ContextFreeGrammar):
         if rhs and empty:
             raise ValueError("You cannot select empty and non-empty "
                              "productions at the same time.")
-        
+
         # no constraints so return everything
         if not lhs and not rhs:
             if empty:
@@ -790,24 +790,24 @@ class FeatureGrammar(ContextFreeGrammar):
         else:
             return [prod for prod in self._lhs_index.get(self._get_type_if_possible(lhs), [])
                     if prod in self._rhs_index.get(self._get_type_if_possible(rhs), [])]
-    
+
     def leftcorners(self, cat):
         """
         Return the set of all words that the given category can start with.
         Also called the "first set" in compiler construction.
         """
         raise NotImplementedError("Not implemented yet")
-    
+
     def leftcorner_parents(self, cat):
         """
         Return the set of all categories for which the given category
         is a left corner.
         """
         raise NotImplementedError("Not implemented yet")
-    
+
     def _get_type_if_possible(self, item):
         """
-        Helper function which returns the ``TYPE`` feature of the ``item``, 
+        Helper function which returns the ``TYPE`` feature of the ``item``,
         if it exists, otherwise it returns the ``item`` itself
         """
         if isinstance(item, dict) and TYPE in item:
@@ -840,7 +840,7 @@ class DependencyGrammar(object):
     def __init__(self, productions):
         """
         Create a new dependency grammar, from the set of ``Productions``.
-        
+
         :param productions: The list of productions that defines the grammar
         :type productions: list(Production)
         """
@@ -853,7 +853,7 @@ class DependencyGrammar(object):
         :param mod: A mod word, to test as a modifier of 'head'.
         :type mod: str
 
-        :return: true if this ``DependencyGrammar`` contains a 
+        :return: true if this ``DependencyGrammar`` contains a
             ``DependencyProduction`` mapping 'head' to 'mod'.
         :rtype: bool
         """
@@ -865,7 +865,7 @@ class DependencyGrammar(object):
 
     def __contains__(self, head, mod):
         """
-        Return True if this ``DependencyGrammar`` contains a 
+        Return True if this ``DependencyGrammar`` contains a
         ``DependencyProduction`` mapping 'head' to 'mod'.
 
         :param head: A head word.
@@ -895,20 +895,20 @@ class DependencyGrammar(object):
     def __str__(self):
         """
         Return a verbose string representation of the ``DependencyGrammar``
-        
+
         :rtype: str
         """
         str = 'Dependency grammar with %d productions' % len(self._productions)
         for production in self._productions:
             str += '\n  %s' % production
         return str
-            
+
     def __repr__(self):
         """
         Return a concise string representation of the ``DependencyGrammar``
         """
         return 'Dependency grammar with %d productions' % len(self._productions)
-    
+
 
 class StatisticalDependencyGrammar(object):
     """
@@ -922,7 +922,7 @@ class StatisticalDependencyGrammar(object):
 
     def contains(self, head, mod):
         """
-        Return True if this ``DependencyGrammar`` contains a 
+        Return True if this ``DependencyGrammar`` contains a
         ``DependencyProduction`` mapping 'head' to 'mod'.
 
         :param head: A head word.
@@ -994,7 +994,7 @@ class WeightedGrammar(ContextFreeGrammar):
         :raise ValueError: if the set of productions with any left-hand-side
             do not have probabilities that sum to a value within
             EPSILON of 1.
-        :param calculate_leftcorners: False if we don't want to calculate the 
+        :param calculate_leftcorners: False if we don't want to calculate the
             leftcorner relation. In that case, some optimized chart parsers won't work.
         :type calculate_leftcorners: bool
         """
@@ -1035,9 +1035,9 @@ def induce_pcfg(start, productions):
 
     # Production count: the number of times a given production occurs
     pcount = {}
-    
+
     # LHS-count: counts the number of times a given lhs occurs
-    lcount = {} 
+    lcount = {}
 
     for prod in productions:
         lcount[prod.lhs()] = lcount.get(prod.lhs(), 0) + 1
@@ -1064,7 +1064,7 @@ def parse_cfg_production(input):
 def parse_cfg(input):
     """
     Return the ``ContextFreeGrammar`` corresponding to the input string(s).
-    
+
     :param input: a grammar, either in the form of a string or
         as a list of strings.
     """
@@ -1083,11 +1083,11 @@ def parse_pcfg(input):
     """
     Return a probabilistic ``WeightedGrammar`` corresponding to the
     input string(s).
-    
-    :param input: a grammar, either in the form of a string or else 
+
+    :param input: a grammar, either in the form of a string or else
         as a list of strings.
     """
-    start, productions = parse_grammar(input, standard_nonterm_parser, 
+    start, productions = parse_grammar(input, standard_nonterm_parser,
                                        probabilistic=True)
     return WeightedGrammar(start, productions)
 
@@ -1102,20 +1102,20 @@ def parse_fcfg_production(input, fstruct_parser):
 def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
     """
     Return a feature structure based ``FeatureGrammar``.
-    
-    :param input: a grammar, either in the form of a string or else 
+
+    :param input: a grammar, either in the form of a string or else
         as a list of strings.
     :param features: a tuple of features (default: SLASH, TYPE)
     :param logic_parser: a parser for lambda-expressions,
         by default, ``LogicParser()``
-    :param fstruct_parser: a feature structure parser 
+    :param fstruct_parser: a feature structure parser
         (only if features and logic_parser is None)
     """
     if features is None:
         features = (SLASH, TYPE)
-    
+
     if fstruct_parser is None:
-        fstruct_parser = FeatStructParser(features, FeatStructNonterminal, 
+        fstruct_parser = FeatStructParser(features, FeatStructNonterminal,
                                           logic_parser=logic_parser)
     elif logic_parser is not None:
         raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
@@ -1137,7 +1137,7 @@ def parse_production(line, nonterm_parser, probabilistic=False):
     a list of productions.
     """
     pos = 0
-    
+
     # Parse the left-hand side.
     lhs, pos = nonterm_parser(line, pos)
 
@@ -1151,7 +1151,7 @@ def parse_production(line, nonterm_parser, probabilistic=False):
     rhsides = [[]]
     while pos < len(line):
         # Probability.
-        m = _PROBABILITY_RE.match(line, pos) 
+        m = _PROBABILITY_RE.match(line, pos)
         if probabilistic and m:
             pos = m.end()
             probabilities[-1] = float(m.group(1)[1:-1])
@@ -1180,7 +1180,7 @@ def parse_production(line, nonterm_parser, probabilistic=False):
             rhsides[-1].append(nonterm)
 
     if probabilistic:
-        return [WeightedProduction(lhs, rhs, prob=probability) 
+        return [WeightedProduction(lhs, rhs, prob=probability)
                 for (rhs, probability) in zip(rhsides, probabilities)]
     else:
         return [Production(lhs, rhs) for rhs in rhsides]
@@ -1190,12 +1190,12 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
     """
     Return a pair consisting of a starting category and a list of
     ``Productions``.
-    
-    :param input: a grammar, either in the form of a string or else 
+
+    :param input: a grammar, either in the form of a string or else
         as a list of strings.
     :param nonterm_parser: a function for parsing nonterminals.
-        It should take a ``(string, position)`` as argument and 
-        return a ``(nonterminal, position)`` as result. 
+        It should take a ``(string, position)`` as argument and
+        return a ``(nonterminal, position)`` as result.
     :param probabilistic: are the grammar rules probabilistic?
     :type probabilistic: bool
     """
@@ -1240,7 +1240,7 @@ _STANDARD_NONTERM_RE = re.compile('( [\w/][\w/^<>-]* ) \s*', re.VERBOSE)
 
 def standard_nonterm_parser(string, pos):
     m = _STANDARD_NONTERM_RE.match(string, pos)
-    if not m: raise ValueError('Expected a nonterminal, found: ' 
+    if not m: raise ValueError('Expected a nonterminal, found: '
                                + string[pos:])
     return (Nonterminal(m.group(1)), m.end())
 
@@ -1329,7 +1329,7 @@ def cfg_demo():
     # Use string.replace(...) is to line-wrap the output.
     print `grammar.productions()`.replace(',', ',\n'+' '*25)
     print
-    
+
 toy_pcfg1 = parse_pcfg("""
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
@@ -1428,11 +1428,11 @@ def fcfg_demo():
     import nltk.data
     g = nltk.data.load('grammars/book_grammars/feat0.fcfg')
     print g
-    print 
-    
+    print
+
 def dg_demo():
     """
-    A demonstration showing the creation and inspection of a 
+    A demonstration showing the creation and inspection of a
     ``DependencyGrammar``.
     """
     grammar = parse_dependency_grammar("""
@@ -1441,10 +1441,10 @@ def dg_demo():
     'cats' -> 'the'
     """)
     print grammar
-    
+
 def sdg_demo():
     """
-    A demonstration of how to read a string representation of 
+    A demonstration of how to read a string representation of
     a CoNLL format dependency tree.
     """
     dg = DependencyGraph("""
@@ -1478,7 +1478,7 @@ if __name__ == '__main__':
 __all__ = ['Nonterminal', 'nonterminals',
            'Production', 'DependencyProduction', 'WeightedProduction',
            'ContextFreeGrammar', 'WeightedGrammar', 'DependencyGrammar',
-           'StatisticalDependencyGrammar', 
+           'StatisticalDependencyGrammar',
            'induce_pcfg', 'parse_cfg', 'parse_cfg_production',
            'parse_pcfg', 'parse_pcfg_production',
            'parse_fcfg', 'parse_fcfg_production',

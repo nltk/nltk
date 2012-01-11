@@ -9,7 +9,7 @@
 
 """
 A reader for corpora whose documents contain part-of-speech-tagged words.
-"""       
+"""
 
 import os
 
@@ -35,7 +35,7 @@ class TaggedCorpusReader(CorpusReader):
     constructor.  Part of speech tags are case-normalized to upper
     case.
     """
-    def __init__(self, root, fileids, 
+    def __init__(self, root, fileids,
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block,
@@ -47,7 +47,7 @@ class TaggedCorpusReader(CorpusReader):
 
             >>> root = '/...path to corpus.../'
             >>> reader = TaggedCorpusReader(root, '.*', '.txt')
-        
+
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
         """
@@ -134,7 +134,7 @@ class TaggedCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
-            
+
         :rtype: list(list(tuple(str,str)))
         """
         if simplify_tags:
@@ -233,7 +233,7 @@ class TaggedCorpusView(StreamBackedCorpusView):
         self._para_block_reader = para_block_reader
         self._tag_mapping_function = tag_mapping_function
         StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
-        
+
     def read_block(self, stream):
         """Reads one paragraph at a time."""
         block = []
@@ -285,9 +285,9 @@ class TimitTaggedCorpusReader(TaggedCorpusReader):
     def __init__(self, *args, **kwargs):
         TaggedCorpusReader.__init__(
             self, para_block_reader=read_timit_block, *args, **kwargs)
-    
+
     def paras(self):
         raise NotImplementedError('use sents() instead')
-    
+
     def tagged_paras(self):
         raise NotImplementedError('use tagged_sents() instead')

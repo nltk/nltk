@@ -32,7 +32,7 @@ class ChunkedCorpusReader(CorpusReader):
     on blank lines; sentences are listed one per line; and sentences
     are parsed into chunk trees using ``nltk.chunk.tagstr2tree``.
     """
-    def __init__(self, root, fileids, extension='', 
+    def __init__(self, root, fileids, extension='',
                  str2chunktree=tagstr2tree,
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block,
@@ -99,7 +99,7 @@ class ChunkedCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
-            
+
         :rtype: list(list(tuple(str,str)))
         """
         return concat([ChunkedCorpusView(f, enc, 1, 1, 0, 0, *self._cv_args)
@@ -173,7 +173,7 @@ class ChunkedCorpusView(StreamBackedCorpusView):
             para = []
             for sent_str in self._sent_tokenizer.tokenize(para_str):
                 sent = self._str2chunktree(sent_str)
-                
+
                 # If requested, throw away the tags.
                 if not self._tagged:
                     sent = self._untag(sent)
@@ -187,13 +187,13 @@ class ChunkedCorpusView(StreamBackedCorpusView):
                     para.append(sent)
                 else:
                     para.extend(sent)
-                    
+
             # Add the paragraph to `block`.
             if self._group_by_para:
                 block.append(para)
             else:
                 block.extend(para)
-                
+
         # Return the block
         return block
 
@@ -206,4 +206,4 @@ class ChunkedCorpusView(StreamBackedCorpusView):
             else:
                 raise ValueError('expected child to be Tree or tuple')
         return tree
-    
+

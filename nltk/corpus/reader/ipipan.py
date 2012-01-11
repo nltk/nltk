@@ -286,7 +286,7 @@ class IPIPANCorpusView(StreamBackedCorpusView):
             elif line.startswith('<lex'):
                 if not self.disamb_only or line.find('disamb=') != -1:
                     tag = line[line.index('<ctag')+6 : line.index('</ctag') ]
-                    tags.add(tag) 
+                    tags.add(tag)
             elif line.startswith('</tok'):
                 if self.show_tags:
                     if self.simplify_tags:

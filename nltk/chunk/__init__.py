@@ -124,7 +124,7 @@ colorize a ``ChunkString`` when you use an interactive python shell
 with emacs or xemacs ("C-c !")::
 
     (let ()
-      (defconst comint-mode-font-lock-keywords 
+      (defconst comint-mode-font-lock-keywords
         '(("<[^>]+>" 0 'font-lock-reference-face)
           ("[{}]" 0 'font-lock-function-name-face)))
       (add-hook 'comint-mode-hook (lambda () (turn-on-font-lock))))

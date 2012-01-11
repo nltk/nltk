@@ -19,7 +19,7 @@ class ParserI(object):
     trees for sentences.  But parsers can also be used to derive other
     kinds of tree structure, such as morphological trees and discourse
     structures.
-    
+
     Subclasses must define:
       - at least one of: ``parse()``, ``nbest_parse()``, ``iter_parse()``,
         ``batch_parse()``, ``batch_nbest_parse()``, ``batch_iter_parse()``.
@@ -33,13 +33,13 @@ class ParserI(object):
         :return: The grammar used by this parser.
         """
         raise NotImplementedError()
-    
+
     def parse(self, sent):
         """
         :return: A parse tree that represents the structure of the
         given sentence, or None if no parse tree is found.  If
         multiple parses are found, then return the best parse.
-        
+
         :param sent: The sentence to be parsed
         :type sent: list(str)
         :rtype: Tree
@@ -58,7 +58,7 @@ class ParserI(object):
         sorted from most likely to least likely.  If ``n`` is
         specified, then the returned list will contain at most ``n``
         parse trees.
-        
+
         :param sent: The sentence to be parsed
         :type sent: list(str)
         :param n: The maximum number of trees to return.
@@ -79,7 +79,7 @@ class ParserI(object):
         :return: An iterator that generates parse trees that represent
         possible structures for the given sentence.  When possible,
         this list is sorted from most likely to least likely.
-        
+
         :param sent: The sentence to be parsed
         :type sent: list(str)
         :rtype: iter(Tree)
@@ -101,7 +101,7 @@ class ParserI(object):
         trees for the given sentence.  If there are no possible parse
         trees for the given sentence, return a probability distribution
         that assigns a probability of 1.0 to None.
-        
+
         :param sent: The sentence to be parsed
         :type sent: list(str)
         :rtype: ProbDistI(Tree)

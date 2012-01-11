@@ -83,7 +83,7 @@ class ChunkScore(object):
           ``guessed`` will not return more than this number of true
           positive examples.  This does *not* affect any of the
           numerical metrics (precision, recall, or f-measure)
-        
+
         - max_fn_examples: The maximum number actual examples of false
           negatives to record.  This affects the ``missed`` member
           function and the ``correct`` member function: ``missed``
@@ -94,14 +94,14 @@ class ChunkScore(object):
 
         - chunk_node: A regular expression indicating which chunks
           should be compared.  Defaults to ``'.*'`` (i.e., all chunks).
-        
+
     :type _tp: list(Token)
     :ivar _tp: List of true positives
     :type _fp: list(Token)
     :ivar _fp: List of false positives
     :type _fn: list(Token)
     :ivar _fn: List of false negatives
-    
+
     :type _tp_num: int
     :ivar _tp_num: Number of true positives
     :type _fp_num: int
@@ -142,7 +142,7 @@ class ChunkScore(object):
         """
         Given a correctly chunked sentence, score another chunked
         version of the same sentence.
-        
+
         :type correct: chunk structure
         :param correct: The known-correct ("gold standard") chunked
             sentence.
@@ -189,7 +189,7 @@ class ChunkScore(object):
         div = self._tp_num + self._fp_num
         if div == 0: return 0
         else: return float(self._tp_num) / div
-    
+
     def recall(self):
         """
         Return the overall recall for all texts that have been
@@ -201,7 +201,7 @@ class ChunkScore(object):
         div = self._tp_num + self._fn_num
         if div == 0: return 0
         else: return float(self._tp_num) / div
-    
+
     def f_measure(self, alpha=0.5):
         """
         Return the overall F measure for all texts that have been
@@ -220,7 +220,7 @@ class ChunkScore(object):
         if p == 0 or r == 0:    # what if alpha is 0 or 1?
             return 0
         return 1/(alpha/p + (1-alpha)/r)
-    
+
     def missed(self):
         """
         Return the chunks which were included in the
@@ -232,7 +232,7 @@ class ChunkScore(object):
         self._updateMeasures()
         chunks = list(self._fn)
         return [c[1] for c in chunks]  # discard position information
-    
+
     def incorrect(self):
         """
         Return the chunks which were included in the guessed chunk structures,
@@ -243,7 +243,7 @@ class ChunkScore(object):
         self._updateMeasures()
         chunks = list(self._fp)
         return [c[1] for c in chunks]  # discard position information
-    
+
     def correct(self):
         """
         Return the chunks which were included in the correct
@@ -267,7 +267,7 @@ class ChunkScore(object):
     def __len__(self):
         self._updateMeasures()
         return self._tp_num + self._fn_num
-    
+
     def __repr__(self):
         """
         Return a concise representation of this ``ChunkScoring``.
@@ -281,7 +281,7 @@ class ChunkScore(object):
         Return a verbose representation of this ``ChunkScoring``.
         This representation includes the precision, recall, and
         f-measure scores.  For other information about the score,
-        use the accessor methods (e.g., ``missed()`` and ``incorrect()``). 
+        use the accessor methods (e.g., ``missed()`` and ``incorrect()``).
 
         :rtype: str
         """
@@ -290,7 +290,7 @@ class ChunkScore(object):
                 ("    Precision:    %5.1f%%\n" % (self.precision()*100)) +
                 ("    Recall:       %5.1f%%\n" % (self.recall()*100))+
                 ("    F-Measure:    %5.1f%%" % (self.f_measure()*100)))
-        
+
 # extract chunks, and assign unique id, the absolute position of
 # the first word of the chunk
 def _chunksets(t, count, chunk_node):

@@ -9,7 +9,7 @@
 Corpus reader for the Recognizing Textual Entailment (RTE) Challenge Corpora.
 
 The files were taken from the RTE1, RTE2 and RTE3 datasets and the files
-were regularized. 
+were regularized.
 
 Filenames are of the form rte*_dev.xml and rte*_test.xml. The latter are the
 gold standard annotated files.
@@ -18,12 +18,12 @@ Each entailment corpus is a list of 'text'/'hypothesis' pairs. The following
 example is taken from RTE3::
 
  <pair id="1" entailment="YES" task="IE" length="short" >
- 
+
     <t>The sale was made to pay Yukos' US$ 27.5 billion tax bill,
     Yuganskneftegaz was originally sold for US$ 9.4 billion to a little known
     company Baikalfinansgroup which was later bought by the Russian
     state-owned oil company Rosneft .</t>
-    
+
    <h>Baikalfinansgroup was sold to Rosneft.</h>
  </pair>
 
@@ -40,9 +40,9 @@ from xmldocs import *
 
 def norm(value_string):
     """
-    Normalize the string value in an RTE pair's ``value`` or ``entailment`` 
+    Normalize the string value in an RTE pair's ``value`` or ``entailment``
     attribute as an integer (1, 0).
-    
+
     :param value_string: the label used to classify a text/hypothesis pair
     :type value_string: str
     :rtype: int
@@ -58,7 +58,7 @@ class RTEPair:
     """
     Container for RTE text-hypothesis pairs.
 
-    The entailment relation is signalled by the ``value`` attribute in RTE1, and by 
+    The entailment relation is signalled by the ``value`` attribute in RTE1, and by
     ``entailment`` in RTE2 and RTE3. These both get mapped on to the ``entailment``
     attribute of this class.
     """
@@ -73,7 +73,7 @@ class RTEPair:
         :param task: attribute for the particular NLP task that the data was drawn from
         :param length: attribute for the length of the text of the pair
         """
-        self.challenge =  challenge    
+        self.challenge =  challenge
         self.id = pair.attrib["id"]
         self.gid = "%s-%s" % (self.challenge, self.id)
         self.text = pair[0].text
@@ -92,7 +92,7 @@ class RTEPair:
         if "length" in pair.attrib:
             self.length = pair.attrib["length"]
         else:
-            self.length = length 
+            self.length = length
 
     def __repr__(self):
         if self.challenge:
@@ -104,18 +104,18 @@ class RTEPair:
 class RTECorpusReader(XMLCorpusReader):
     """
     Corpus reader for corpora in RTE challenges.
-    
-    This is just a wrapper around the XMLCorpusReader. See module docstring above for the expected 
-    structure of input documents. 
+
+    This is just a wrapper around the XMLCorpusReader. See module docstring above for the expected
+    structure of input documents.
     """
-        
+
     def _read_etree(self, doc):
         """
         Map the XML input into an RTEPair.
-        
+
         This uses the ``getiterator()`` method from the ElementTree package to
         find all the ``<pair>`` elements.
-        
+
         :param doc: a parsed XML document
         :rtype: list(RTEPair)
         """
@@ -130,14 +130,14 @@ class RTECorpusReader(XMLCorpusReader):
     def pairs(self, fileids):
         """
         Build a list of RTEPairs from a RTE corpus.
-        
+
         :param fileids: a list of RTE corpus fileids
         :type: list
         :rtype: list(RTEPair)
         """
         if isinstance(fileids, basestring): fileids = [fileids]
         return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])
-    
+
 
 
 

@@ -126,10 +126,10 @@ class _WordNetObject(object):
 
     def topic_domains(self):
         return self._related(';c')
-        
+
     def region_domains(self):
         return self._related(';r')
-        
+
     def usage_domains(self):
         return self._related(';u')
 
@@ -252,7 +252,7 @@ class Synset(_WordNetObject):
     <number> is the sense number, counting from 0.
 
     Synset attributes:
-    
+
     - name: The canonical name of this synset, formed using the first lemma
       of this synset. Note that this may be different from the name
       passed to the constructor if that string used a different lemma to
@@ -315,7 +315,7 @@ class Synset(_WordNetObject):
         self.lexname = None # lexicographer name
 
         self._pointers = defaultdict(set)
-        self._lemma_pointers = defaultdict(set)        
+        self._lemma_pointers = defaultdict(set)
 
     def _needs_root(self):
         if self.pos == NOUN:
@@ -325,7 +325,7 @@ class Synset(_WordNetObject):
                 return False
         elif self.pos == VERB:
             return True
-        
+
     def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
 
@@ -589,10 +589,10 @@ class Synset(_WordNetObject):
             share a single root which disallows this metric from working for
             synsets that are not connected. This flag (True by default)
             creates a fake root that connects all the taxonomies. Set it
-            to false to disable this behavior. For the noun taxonomy, 
+            to false to disable this behavior. For the noun taxonomy,
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
-            as well. 
+            as well.
         :return: A score denoting the similarity of the two ``Synset`` objects,
             normally between 0 and 1. None is returned if no connecting path
             could be found. 1 is returned if a ``Synset`` is compared with
@@ -621,10 +621,10 @@ class Synset(_WordNetObject):
             share a single root which disallows this metric from working for
             synsets that are not connected. This flag (True by default)
             creates a fake root that connects all the taxonomies. Set it
-            to false to disable this behavior. For the noun taxonomy, 
+            to false to disable this behavior. For the noun taxonomy,
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
-            as well. 
+            as well.
         :return: A score denoting the similarity of the two ``Synset`` objects,
             normally greater than 0. None is returned if no connecting path
             could be found. If a ``Synset`` is compared with itself, the
@@ -645,7 +645,7 @@ class Synset(_WordNetObject):
         depth = self._wordnet_corpus_reader._max_depth[self.pos]
 
         distance = self.shortest_path_distance(other, simulate_root=simulate_root and need_root)
-    
+
         if distance >= 0:
             return -math.log((distance + 1) / (2.0 * depth))
         else:
@@ -657,10 +657,10 @@ class Synset(_WordNetObject):
         Return a score denoting how similar two word senses are, based on the
         depth of the two senses in the taxonomy and that of their Least Common
         Subsumer (most specific ancestor node). Previously, the scores computed
-        by this implementation did _not_ always agree with those given by 
+        by this implementation did _not_ always agree with those given by
         Pedersen's Perl implementation of WordNet Similarity. However, with
-        the addition of the simulate_root flag (see below), the score for 
-        verbs now almost always agree but not always for nouns. 
+        the addition of the simulate_root flag (see below), the score for
+        verbs now almost always agree but not always for nouns.
 
         The LCS does not necessarily feature in the shortest path connecting
         the two senses, as it is by definition the common ancestor deepest in
@@ -677,10 +677,10 @@ class Synset(_WordNetObject):
             share a single root which disallows this metric from working for
             synsets that are not connected. This flag (True by default)
             creates a fake root that connects all the taxonomies. Set it
-            to false to disable this behavior. For the noun taxonomy, 
+            to false to disable this behavior. For the noun taxonomy,
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will be added for nouns
-            as well. 
+            as well.
         :return: A float score denoting the similarity of the two ``Synset`` objects,
             normally greater than zero. If no connecting path between the two
             senses can be found, None is returned.
@@ -695,19 +695,19 @@ class Synset(_WordNetObject):
             return None
 
         subsumer = subsumers[0]
-        
+
         # Get the longest path from the LCS to the root,
         # including a correction:
         # - add one because the calculations include both the start and end
         #   nodes
         depth = subsumer.max_depth() + 1
 
-        # Note: No need for an additional add-one correction for non-nouns 
-        # to account for an imaginary root node because that is now automatically 
-        # handled by simulate_root        
+        # Note: No need for an additional add-one correction for non-nouns
+        # to account for an imaginary root node because that is now automatically
+        # handled by simulate_root
         # if subsumer.pos != NOUN:
         #     depth += 1
-        
+
         # Get the shortest path from the LCS to each of the synsets it is
         # subsuming.  Add this to the LCS path length to get the path
         # length from each synset to the root.
@@ -886,7 +886,7 @@ class WordNetCorpusReader(CorpusReader):
 
         # load the exception file data into memory
         self._load_exception_map()
-        
+
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
@@ -952,7 +952,7 @@ class WordNetCorpusReader(CorpusReader):
             except RuntimeError:
                 print ii
         if simulate_root:
-            depth += 1 
+            depth += 1
         self._max_depth[pos] = depth
 
     def get_version(self):
@@ -962,8 +962,8 @@ class WordNetCorpusReader(CorpusReader):
             if match is not None:
                 version = match.group(1)
                 fh.seek(0)
-                return version        
-            
+                return version
+
     #////////////////////////////////////////////////////////////
     # Loading Lemmas
     #////////////////////////////////////////////////////////////

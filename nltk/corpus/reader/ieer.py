@@ -56,7 +56,7 @@ class IEERDocument:
         else:
             headline = ' '.join([w for w in self.text.leaves()
                                  if w[:1] != '<'][:12])+'...'
-        if self.docno is not None:            
+        if self.docno is not None:
             return '<IEERDocument %s: %r>' % (self.docno, headline)
         else:
             return '<IEERDocument: %r>' % headline
@@ -73,7 +73,7 @@ class IEERCorpusReader(CorpusReader):
         return concat([StreamBackedCorpusView(fileid, self._read_block,
                                               encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
-    
+
     def parsed_docs(self, fileids=None):
         return concat([StreamBackedCorpusView(fileid,
                                               self._read_parsed_block,
@@ -84,14 +84,14 @@ class IEERCorpusReader(CorpusReader):
         # TODO: figure out while empty documents are being returned
         return [self._parse(doc) for doc in self._read_block(stream)
                 if self._parse(doc).docno is not None]
-  
+
     def _parse(self, doc):
         val = nltk.chunk.ieerstr2tree(doc, top_node="DOCUMENT")
         if isinstance(val, dict):
             return IEERDocument(**val)
         else:
             return IEERDocument(val)
-     
+
     def _read_block(self, stream):
         out = []
         # Skip any preamble.

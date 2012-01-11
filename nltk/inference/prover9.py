@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Interface to the Prover9 Theorem Prover 
+# Natural Language Toolkit: Interface to the Prover9 Theorem Prover
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
@@ -20,7 +20,7 @@ from api import BaseProverCommand, Prover
 A theorem prover that makes use of the external 'Prover9' package.
 """
 #
-# Following is not yet used. Return code for 2 actually realized as 512. 
+# Following is not yet used. Return code for 2 actually realized as 512.
 #
 p9_return_codes = {
     0: True,
@@ -32,10 +32,10 @@ p9_return_codes = {
     5: "(MAX_GIVEN)",   # The max_given parameter was exceeded.
     6: "(MAX_KEPT)",    # The max_kept parameter was exceeded.
     7: "(ACTION)",      # A Prover9 action terminated the search.
-    101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
+    101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.
  }
 
- 
+
 class Prover9CommandParent(object):
     """
     A common base class used by both ``Prover9Command`` and ``MaceCommand``,
@@ -44,7 +44,7 @@ class Prover9CommandParent(object):
     """
     def print_assumptions(self, output_format='nltk'):
         """
-        Print the list of the current assumptions.       
+        Print the list of the current assumptions.
         """
         if output_format.lower() == 'nltk':
             for a in self.assumptions():
@@ -77,14 +77,14 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
         """
         if not assumptions:
             assumptions = []
-        
+
         if prover is not None:
             assert isinstance(prover, Prover9)
         else:
             prover = Prover9(timeout)
-         
+
         BaseProverCommand.__init__(self, prover, goal, assumptions)
-        
+
     def decorate_proof(self, proof_string, simplify=True):
         """
         :see BaseProverCommand.decorate_proof()
@@ -103,7 +103,7 @@ class Prover9Parent(object):
     """
 
     _binary_location = None
-    
+
     def config_prover9(self, binary_location, verbose=False):
         if binary_location is None:
             self._binary_location = None
@@ -111,14 +111,14 @@ class Prover9Parent(object):
         else:
             name = 'prover9'
             self._prover9_bin = nltk.internals.find_binary(
-                                  name, 
-                                  path_to_bin=binary_location, 
+                                  name,
+                                  path_to_bin=binary_location,
                                   env_vars=['PROVER9HOME'],
                                   url='http://www.cs.unm.edu/~mccune/prover9/',
                                   binary_names=[name, name + '.exe'],
                                   verbose=verbose)
             self._binary_location = self._prover9_bin.rsplit(os.path.sep, 1)
-    
+
     def prover9_input(self, goal, assumptions):
         """
         :return: The input string that should be provided to the
@@ -126,20 +126,20 @@ class Prover9Parent(object):
         assumptions, and timeout value of this object.
         """
         s = ''
-        
+
         if assumptions:
             s += 'formulas(assumptions).\n'
             for p9_assumption in convert_to_prover9(assumptions):
                 s += '    %s.\n' % p9_assumption
             s += 'end_of_list.\n\n'
-    
+
         if goal:
             s += 'formulas(goals).\n'
             s += '    %s.\n' % convert_to_prover9(goal)
             s += 'end_of_list.\n\n'
 
         return s
-    
+
     def binary_locations(self):
         """
         A list of directories that should be searched for the prover9
@@ -152,22 +152,22 @@ class Prover9Parent(object):
                 '/usr/bin',
                 '/usr/local/prover9',
                 '/usr/local/share/prover9']
-    
+
     def _find_binary(self, name, verbose=False):
         binary_locations = self.binary_locations()
         if self._binary_location is not None:
             binary_locations += [self._binary_location]
-        return nltk.internals.find_binary(name, 
-            searchpath=binary_locations, 
+        return nltk.internals.find_binary(name,
+            searchpath=binary_locations,
             env_vars=['PROVER9HOME'],
             url='http://www.cs.unm.edu/~mccune/prover9/',
             binary_names=[name, name + '.exe'],
             verbose=verbose)
-    
+
     def _call(self, input_str, binary, args=[], verbose=False):
         """
         Call the binary with the given input.
-    
+
         :param input_str: A string whose contents are used as stdin.
         :param binary: The location of the binary to call
         :param args: A list of command-line arguments.
@@ -178,21 +178,21 @@ class Prover9Parent(object):
             print 'Calling:', binary
             print 'Args:', args
             print 'Input:\n', input_str, '\n'
-        
+
         # Call prover9 via a subprocess
         cmd = [binary] + args
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT,
                              stdin=subprocess.PIPE)
         (stdout, stderr) = p.communicate(input_str)
-        
+
         if verbose:
             print 'Return code:', p.returncode
             if stdout: print 'stdout:\n', stdout, '\n'
             if stderr: print 'stderr:\n', stderr, '\n'
-            
+
         return (stdout, p.returncode)
-    
+
 
 def convert_to_prover9(input):
     """
@@ -246,7 +246,7 @@ def _convert_to_prover9(expression):
 class Prover9(Prover9Parent, Prover):
     _prover9_bin = None
     _prooftrans_bin = None
-    
+
     def __init__(self, timeout=60):
         self._timeout = timeout
         """The timeout value for prover9.  If a proof can not be found
@@ -256,28 +256,28 @@ class Prover9(Prover9Parent, Prover):
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
         Use Prover9 to prove a theorem.
-        :return: A pair whose first element is a boolean indicating if the 
+        :return: A pair whose first element is a boolean indicating if the
         proof was successful (i.e. returns value of 0) and whose second element
-        is the output of the prover.        
+        is the output of the prover.
         """
         if not assumptions:
             assumptions = []
-            
+
         stdout, returncode = self._call_prover9(self.prover9_input(goal, assumptions),
                                                 verbose=verbose)
         return (returncode == 0, stdout)
-    
+
     def prover9_input(self, goal, assumptions):
         """
         :see: Prover9Parent.prover9_input
         """
         s = 'clear(auto_denials).\n' #only one proof required
         return s + Prover9Parent.prover9_input(self, goal, assumptions)
-        
+
     def _call_prover9(self, input_str, args=[], verbose=False):
         """
         Call the ``prover9`` binary with the given input.
-    
+
         :param input_str: A string whose contents are used as stdin.
         :param args: A list of command-line arguments.
         :return: A tuple (stdout, returncode)
@@ -285,14 +285,14 @@ class Prover9(Prover9Parent, Prover):
         """
         if self._prover9_bin is None:
             self._prover9_bin = self._find_binary('prover9', verbose)
-      
+
         updated_input_str = ''
-        if self._timeout > 0: 
+        if self._timeout > 0:
             updated_input_str += 'assign(max_seconds, %d).\n\n' % self._timeout
         updated_input_str += input_str
-        
+
         stdout, returncode = self._call(updated_input_str, self._prover9_bin, args, verbose)
-        
+
         if returncode not in [0,2]:
             errormsgprefix = '%%ERROR:'
             if errormsgprefix in stdout:
@@ -304,13 +304,13 @@ class Prover9(Prover9Parent, Prover):
                 raise Prover9LimitExceededException(returncode, errormsg)
             else:
                 raise Prover9FatalException(returncode, errormsg)
-        
+
         return stdout, returncode
-    
+
     def _call_prooftrans(self, input_str, args=[], verbose=False):
         """
         Call the ``prooftrans`` binary with the given input.
-    
+
         :param input_str: A string whose contents are used as stdin.
         :param args: A list of command-line arguments.
         :return: A tuple (stdout, returncode)
@@ -342,7 +342,7 @@ class Prover9LimitExceededException(Prover9Exception):
 ######################################################################
 
 def test_config():
-    
+
     a = LogicParser().parse('(walk(j) & sing(j))')
     g = LogicParser().parse('walk(j)')
     p = Prover9Command(g, assumptions=[a])
@@ -352,7 +352,7 @@ def test_config():
     #config_prover9('/usr/local/bin')
     print p.prove()
     print p.proof()
-    
+
 def test_convert_to_prover9(expr):
     """
     Test that parsing works OK.
@@ -360,7 +360,7 @@ def test_convert_to_prover9(expr):
     for t in expr:
         e = LogicParser().parse(t)
         print convert_to_prover9(e)
-        
+
 def test_prove(arguments):
     """
     Try some proofs and exhibit the results.
@@ -372,7 +372,7 @@ def test_prove(arguments):
         for a in alist:
             print '   %s' % a
         print '|- %s: %s\n' % (g, p)
-    
+
 arguments = [
     ('(man(x) <-> (not (not man(x))))', []),
     ('(not (man(x) & (not man(x))))', []),
@@ -388,9 +388,9 @@ arguments = [
     ('((all x.(man(x) -> walks(x)) & man(Socrates)) -> some y.walks(y))', []),
     ('(all x.man(x) -> all x.man(x))', []),
     ('some x.all y.sees(x,y)', []),
-    ('some e3.(walk(e3) & subj(e3, mary))', 
+    ('some e3.(walk(e3) & subj(e3, mary))',
         ['some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))']),
-    ('some x e1.(see(e1) & subj(e1, x) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))', 
+    ('some x e1.(see(e1) & subj(e1, x) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))',
        ['some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))'])
 ]
 

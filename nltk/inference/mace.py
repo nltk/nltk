@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Interface to the Mace4 Model Builder 
+# Natural Language Toolkit: Interface to the Mace4 Model Builder
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
@@ -26,7 +26,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     of assumptions in multiple formats.
     """
     _interpformat_bin = None
-    
+
     def __init__(self, goal=None, assumptions=None, max_models=500, model_builder=None):
         """
         :param goal: Input expression to prove
@@ -42,28 +42,28 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
             assert isinstance(model_builder, Mace)
         else:
             model_builder = Mace(max_models)
-        
+
         BaseModelBuilderCommand.__init__(self, model_builder, goal, assumptions)
-        
+
     valuation = property(lambda mbc: mbc.model('valuation'))
-        
+
     def _convert2val(self, valuation_str):
         """
-        Transform the output file into an NLTK-style Valuation. 
-        
+        Transform the output file into an NLTK-style Valuation.
+
         :return: A model if one is generated; None otherwise.
         :rtype: sem.Valuation
         """
         valuation_standard_format = self._transform_output(valuation_str, 'standard')
-        
+
         val = []
         for line in valuation_standard_format.splitlines(False):
             l = line.strip()
-            
+
             if l.startswith('interpretation'):
                 # find the number of entities in the model
                 num_entities = int(l[l.index('(')+1:l.index(',')].strip())
-            
+
             elif l.startswith('function') and l.find('_') == -1:
                 # replace the integer identifier with a corresponding alphabetic character
                 name = l[l.index('(')+1:l.index(',')].strip()
@@ -71,7 +71,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
                     name = name.upper()
                 value = int(l[l.index('[')+1:l.index(']')].strip())
                 val.append((name, MaceCommand._make_model_var(value)))
-            
+
             elif l.startswith('relation'):
                 l = l[l.index('(')+1:]
                 if '(' in l:
@@ -86,12 +86,12 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
                     val.append((name, value == 1))
 
         return Valuation(val)
-        
+
     @staticmethod
     def _make_relation_set(num_entities, values):
         """
         Convert a Mace4-style relation table into a dictionary.
-        
+
         :param num_entities: the number of entities in the model; determines the row length in the table.
         :type num_entities: int
         :param values: a list of 1's and 0's that represent whether a relation holds in a Mace4 model.
@@ -101,27 +101,27 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         for position in [pos for (pos,v) in enumerate(values) if v == 1]:
             r.add(tuple(MaceCommand._make_relation_tuple(position, values, num_entities)))
         return r
-                
+
     @staticmethod
     def _make_relation_tuple(position, values, num_entities):
         if len(values) == 1:
             return []
-        else: 
+        else:
             sublist_size = len(values) / num_entities
             sublist_start = position / sublist_size
             sublist_position = position % sublist_size
-            
+
             sublist = values[sublist_start*sublist_size:(sublist_start+1)*sublist_size]
             return [MaceCommand._make_model_var(sublist_start)] + \
-                   MaceCommand._make_relation_tuple(sublist_position, 
-                                                    sublist, 
+                   MaceCommand._make_relation_tuple(sublist_position,
+                                                    sublist,
                                                     num_entities)
-                
+
     @staticmethod
     def _make_model_var(value):
         """
         Pick an alphabetic character as identifier for an entity in the model.
-        
+
         :param value: where to index into the list of characters
         :type value: int
         """
@@ -132,13 +132,13 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
             return letter + str(num)
         else:
             return letter
-                
+
     def _decorate_model(self, valuation_str, format):
         """
-        Print out a Mace4 model using any Mace4 ``interpformat`` format. 
+        Print out a Mace4 model using any Mace4 ``interpformat`` format.
         See http://www.cs.unm.edu/~mccune/mace4/manual/ for details.
-        
-        :param valuation_str: str with the model builder's output 
+
+        :param valuation_str: str with the model builder's output
         :param format: str indicating the format for displaying
         models. Defaults to 'standard' format.
         :return: str
@@ -152,12 +152,12 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 
     def _transform_output(self, valuation_str, format):
         """
-        Transform the output file into any Mace4 ``interpformat`` format. 
-        
-        :param format: Output format for displaying models. 
+        Transform the output file into any Mace4 ``interpformat`` format.
+
+        :param format: Output format for displaying models.
         :type format: str
         """
-        if format in ['standard', 'standard2', 'portable', 'tabular', 
+        if format in ['standard', 'standard2', 'portable', 'tabular',
                       'raw', 'cooked', 'xml', 'tex']:
             return self._call_interpformat(valuation_str, [format])[0]
         else:
@@ -166,7 +166,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     def _call_interpformat(self, input_str, args=[], verbose=False):
         """
         Call the ``interpformat`` binary with the given input.
-    
+
         :param input_str: A string whose contents are used as stdin.
         :param args: A list of command-line arguments.
         :return: A tuple (stdout, returncode)
@@ -176,28 +176,28 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
             self._interpformat_bin = self._modelbuilder._find_binary(
                                                 'interpformat', verbose)
 
-        return self._modelbuilder._call(input_str, self._interpformat_bin, 
+        return self._modelbuilder._call(input_str, self._interpformat_bin,
                                         args, verbose)
 
 
 class Mace(Prover9Parent, ModelBuilder):
     _mace4_bin = None
-    
+
     def __init__(self, end_size=500):
         self._end_size = end_size
-        """The maximum model size that Mace will try before 
+        """The maximum model size that Mace will try before
            simply returning false. (Use -1 for no maximum.)"""
 
     def _build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Use Mace4 to build a first order model.
-        
+
         :return: ``True`` if a model was found (i.e. Mace returns value of 0),
-        else ``False``        
+        else ``False``
         """
         if not assumptions:
             assumptions = []
-            
+
         stdout, returncode = self._call_mace4(self.prover9_input(goal, assumptions),
                                               verbose=verbose)
         return (returncode == 0, stdout)
@@ -205,7 +205,7 @@ class Mace(Prover9Parent, ModelBuilder):
     def _call_mace4(self, input_str, args=[], verbose=False):
         """
         Call the ``mace4`` binary with the given input.
-    
+
         :param input_str: A string whose contents are used as stdin.
         :param args: A list of command-line arguments.
         :return: A tuple (stdout, returncode)
@@ -220,16 +220,16 @@ class Mace(Prover9Parent, ModelBuilder):
         updated_input_str += input_str
 
         return self._call(updated_input_str, self._mace4_bin, args, verbose)
-    
+
 
 def spacer(num=30):
     print '-' * num
 
 def decode_result(found):
     """
-    Decode the result of model_found() 
-    
-    :param found: The output of model_found() 
+    Decode the result of model_found()
+
+    :param found: The output of model_found()
     :type found: bool
     """
     return {True: 'Countermodel found', False: 'No countermodel found', None: 'None'}[found]
@@ -247,21 +247,21 @@ def test_model_found(arguments):
         for a in alist:
             print '   %s' % a
         print '|- %s: %s\n' % (g, decode_result(found))
-        
-        
+
+
 def test_build_model(arguments):
     """
     Try to build a ``nltk.sem.Valuation``.
     """
     lp = LogicParser()
     g = lp.parse('all x.man(x)')
-    alist = [lp.parse(a) for a in ['man(John)', 
-                                   'man(Socrates)', 
-                                   'man(Bill)', 
+    alist = [lp.parse(a) for a in ['man(John)',
+                                   'man(Socrates)',
+                                   'man(Bill)',
                                    'some x.(-(x = John) & man(x) & sees(John,x))',
                                    'some x.(-(x = Bill) & man(x))',
                                    'all x.some y.(man(x) -> gives(Socrates,x,y))']]
-    
+
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
     spacer()
@@ -291,15 +291,15 @@ def test_transform_output(argument_pair):
     print '|- %s: %s\n' % (g, m.build_model())
     for format in ['standard', 'portable', 'xml', 'cooked']:
         spacer()
-        print "Using '%s' format" % format 
+        print "Using '%s' format" % format
         spacer()
         print m.model(format=format)
-        
+
 def test_make_relation_set():
     print MaceCommand._make_relation_set(num_entities=3, values=[1,0,1]) == set([('c',), ('a',)])
     print MaceCommand._make_relation_set(num_entities=3, values=[0,0,0,0,0,0,1,0,0]) == set([('c', 'a')])
     print MaceCommand._make_relation_set(num_entities=2, values=[0,0,1,0,0,0,1,0]) == set([('a', 'b', 'a'), ('b', 'b', 'a')])
-    
+
 arguments = [
     ('mortal(Socrates)', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
     ('(not mortal(Socrates))', ['all x.(man(x) -> mortal(x))', 'man(Socrates)'])

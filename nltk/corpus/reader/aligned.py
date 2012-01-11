@@ -17,7 +17,7 @@ class AlignedCorpusReader(CorpusReader):
     Reader for corpora of word-aligned sentences.  Tokens are assumed
     to be separated by whitespace.  Sentences begin on separate lines.
     """
-    def __init__(self, root, fileids, 
+    def __init__(self, root, fileids,
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  alignedsent_block_reader=read_alignedsent_block,
@@ -28,7 +28,7 @@ class AlignedCorpusReader(CorpusReader):
 
             >>> root = '/...path to corpus.../'
             >>> reader = AlignedCorpusReader(root, '.*', '.txt')
-        
+
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
         """
@@ -97,11 +97,11 @@ class AlignedSentCorpusView(StreamBackedCorpusView):
         self._sent_tokenizer = sent_tokenizer
         self._alignedsent_block_reader = alignedsent_block_reader
         StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
-        
+
     def read_block(self, stream):
         block = [self._word_tokenizer.tokenize(sent_str)
                  for alignedsent_str in self._alignedsent_block_reader(stream)
-                 for sent_str in self._sent_tokenizer.tokenize(alignedsent_str)]     
+                 for sent_str in self._sent_tokenizer.tokenize(alignedsent_str)]
         if self._aligned:
             block[2] = " ".join(block[2]) # kludge; we shouldn't have tokenized the alignment string
             block = [AlignedSent(*block)]

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 #
 # Natural Language Toolkit: The ISRI Arabic Stemmer
 #

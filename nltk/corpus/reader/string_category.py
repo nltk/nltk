@@ -15,7 +15,7 @@ LOC:city What county is Modesto , California in ?
 HUM:desc Who was Galileo ?
 DESC:def What is an atom ?
 NUM:date When did Hawaii become a state ?
-"""       
+"""
 
 # based on PPAttachmentCorpusReader
 

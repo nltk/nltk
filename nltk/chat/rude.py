@@ -16,7 +16,7 @@ pairs = (
     (r'You should (.*)',
         ("Don't tell me what to do, buddy.",
         "Really? I should, should I?")),
- 
+
     (r'You\'re(.*)',
         ("More like YOU'RE %1!",
         "Hah! Look who's talking.",
@@ -40,7 +40,7 @@ pairs = (
         ("I'm getting a bit tired of hearing about you.",
         "How about we talk about me instead?",
         "Me, me, me... Frankly, I don't care.")),
-                
+
     (r'How (.*)',
         ("How do you think?",
         "Take a wild guess.",
@@ -67,14 +67,14 @@ pairs = (
     (r'Hello(.*)',
         ("Oh good, somebody else to talk to. Joy.",
         "'Hello'? How original...")),
-            
+
     (r'(.*)',
         ("I'm getting bored here. Become more interesting.",
         "Either become more thrilling or get lost, buddy.",
         "Change the subject before I die of fatal boredom."))
 )
 
-rude_chatbot = Chat(pairs, reflections) 
+rude_chatbot = Chat(pairs, reflections)
 
 def rude_chat():
     print "Talk to the program by typing in plain English, using normal upper-"

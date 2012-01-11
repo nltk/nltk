@@ -21,7 +21,7 @@ class TokenizerI(object):
     def tokenize(self, s):
         """
         Return a tokenized copy of *s*.
-        
+
         :rtype: list of str
         """
         if overridden(self.batch_tokenize):
@@ -33,7 +33,7 @@ class TokenizerI(object):
         """
         Identify the tokens using integer offsets ``(start_i, end_i)``,
         where ``s[start_i:end_i]`` is the corresponding token.
-        
+
         :rtype: iter(tuple(int, int))
         """
         raise NotImplementedError()
@@ -67,7 +67,7 @@ class StringTokenizer(TokenizerI):
 
     def tokenize(self, s):
         return s.split(self._string)
-    
+
     def span_tokenize(self, s):
         for span in string_span_tokenize(s, self._string):
             yield span

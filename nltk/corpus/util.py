@@ -43,7 +43,7 @@ class LazyCorpusLoader(object):
         # Find the corpus root directory.
         zip_name = re.sub(r'(([^/]*)(/.*)?)', r'\2.zip/\1/', self.__name)
         if TRY_ZIPFILE_FIRST:
-            try: 
+            try:
                 root = nltk.data.find('corpora/%s' % zip_name)
             except LookupError:
                 raise
@@ -57,7 +57,7 @@ class LazyCorpusLoader(object):
 
         # Load the corpus.
         corpus = self.__reader_cls(root, *self.__args, **self.__kwargs)
-        
+
         # This is where the magic happens!  Transform ourselves into
         # the corpus by modifying our own __dict__ and __class__ to
         # match that of the corpus.

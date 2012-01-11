@@ -45,7 +45,7 @@ STRINGS_RE = re.compile(STRINGS_PAT)
 # Define a regexp to search for deprecated definitions.
 DEPRECATED_DEF_PAT = (
     r'^\s*@deprecated\s*\(\s*(%s)\s*\)\s*\n+' % STRINGS_PAT +
-    r'\s*def\s*(\w+).*' + 
+    r'\s*def\s*(\w+).*' +
     r'|' +
     r'^\s*class\s+(\w+)\s*\(.*Deprecated.*\):\s*')
 DEPRECATED_DEF_RE = re.compile(DEPRECATED_DEF_PAT, re.MULTILINE)
@@ -198,7 +198,7 @@ def main():
     except ImportError:
         print 'Unable to import nltk -- check your PYTHONPATH.'
         sys.exit(-1)
-        
+
     print 'Finding definitions of deprecated funtions & classes in nltk...'
     find_deprecated_defs(nltk.__path__[0])
 
@@ -219,8 +219,8 @@ def main():
                                     width=75, initial_indent=' '*2,
                                     subsequent_indent=' '*6)
 
-                
-            
+
+
 if __name__ == '__main__':
     main()
-    
+

@@ -26,7 +26,7 @@ English.
     >>> import nltk.data
     >>> text = '''
     ... Punkt knows that the periods in Mr. Smith and Johann S. Bach
-    ... do not mark sentence boundaries.  And sometimes sentences 
+    ... do not mark sentence boundaries.  And sometimes sentences
     ... can start with non-capitalized words.  i is a good variable
     ... name.
     ... '''
@@ -35,7 +35,7 @@ English.
     Punkt knows that the periods in Mr. Smith and Johann S. Bach
     do not mark sentence boundaries.
     -----
-    And sometimes sentences 
+    And sometimes sentences
     can start with non-capitalized words.
     -----
     i is a good variable
@@ -46,7 +46,7 @@ retained in the output.)
 
 Punctuation following sentences can be included with the realign_boundaries
 flag:
-   
+
     >>> text = '''
     ... (How does it deal with this parenthesis?)  "It should be part of the
     ... previous sentence."
@@ -127,7 +127,7 @@ appropriate orthographic context flag."""
 
 #} (end orthographic context constants)
 ######################################################################
-        
+
 ######################################################################
 #{ Language-dependent variables
 ######################################################################
@@ -248,7 +248,7 @@ numeric tokens are changed to ##number## and hence contain alpha.)"""
 
 #}
 ######################################################################
-        
+
 
 ######################################################################
 #{ Punkt Word Tokenizer
@@ -293,18 +293,18 @@ class PunktParameters(object):
     def __init__(self):
         self.abbrev_types = set()
         """A set of word types for known abbreviations."""
-        
+
         self.collocations = set()
         """A set of word type tuples for known common collocations
         where the first word ends in a period.  E.g., ('S.', 'Bach')
         is a common collocation in a text that discusses 'Johann
         S. Bach'.  These count as negative evidence for sentence
         boundaries."""
-        
+
         self.sent_starters = set()
         """A set of word types for words that often appear at the
         beginning of sentences."""
-        
+
         self.ortho_context = defaultdict(int)
         """A dictionary mapping word types to the set of orthographic
         contexts that word type appears in.  Contexts are represented
@@ -427,7 +427,7 @@ class PunktToken(object):
     def is_non_punct(self):
         """True if the token is either a number or is alphabetic."""
         return _re_non_punct.search(self.type)
-    
+
     #////////////////////////////////////////////////////////////
     #{ String representation
     #////////////////////////////////////////////////////////////
@@ -473,7 +473,7 @@ class PunktBaseClass(object):
     """
     Includes common components of PunktTrainer and PunktSentenceTokenizer.
     """
-    
+
     def __init__(self, lang_vars=PunktLanguageVars(), token_cls=PunktToken,
             params=PunktParameters()):
         self._params = params
@@ -517,7 +517,7 @@ class PunktBaseClass(object):
         """
         Perform the first pass of annotation, which makes decisions
         based purely based on the word type of each word:
-        
+
           - '?', '!', and '.' are marked as sentence breaks.
           - sequences of two or more periods are marked as ellipsis.
           - any word ending in '.' that's a known abbreviation is
@@ -525,7 +525,7 @@ class PunktBaseClass(object):
           - any other word ending in '.' is marked as a sentence break.
 
         Return these annotations as a tuple of three sets:
-        
+
           - sentbreak_toks: The indices of all sentence breaks.
           - abbrev_toks: The indices of all abbreviations.
           - ellipsis_toks: The indices of all ellipsis marks.
@@ -572,10 +572,10 @@ class PunktTrainer(PunktBaseClass):
         self._type_fdist = FreqDist()
         """A frequency distribution giving the frequency of each
         case-normalized token type in the training data."""
-        
+
         self._num_period_toks = 0
         """The number of words ending in period in the training data."""
-        
+
         self._collocation_fdist = FreqDist()
         """A frequency distribution giving the frequency of all
         bigrams in the training data where the first word ends in a
@@ -583,7 +583,7 @@ class PunktTrainer(PunktBaseClass):
         Especially common collocations are extracted from this
         frequency distribution, and stored in
         ``_params``.``collocations <PunktParameters.collocations>``."""
-        
+
         self._sent_starter_fdist = FreqDist()
         """A frequency distribution giving the frequency of all words
         that occur at the training data at the beginning of a sentence
@@ -639,7 +639,7 @@ class PunktTrainer(PunktBaseClass):
     """this includes as potential collocations all word pairs where the first
     word ends in a period. It may be useful in corpora where there is a lot
     of variation that makes abbreviations like Mr difficult to identify."""
-    
+
     INCLUDE_ABBREV_COLLOCS = False
     """this includes as potential collocations all word pairs where the first
     word is an abbreviation. Such collocations override the orthographic
@@ -742,7 +742,7 @@ class PunktTrainer(PunktBaseClass):
 
     def _unique_types(self, tokens):
         return set(aug_tok.type for aug_tok in tokens)
-        
+
     def finalize_training(self, verbose=False):
         """
         Uses data that has been gathered in training to determine likely
@@ -819,7 +819,7 @@ class PunktTrainer(PunktBaseClass):
         # 'initial' or 'internal' or 'unknown'
         context = 'internal'
         tokens = list(tokens)
-        
+
         for aug_tok in tokens:
             # If we encounter a paragraph break, then it's a good sign
             # that it's a sentence break.  But err on the side of
@@ -852,7 +852,7 @@ class PunktTrainer(PunktBaseClass):
                 context = 'unknown'
             else:
                 context = 'internal'
-        
+
     #////////////////////////////////////////////////////////////
     #{ Abbreviations
     #////////////////////////////////////////////////////////////
@@ -880,7 +880,7 @@ class PunktTrainer(PunktBaseClass):
             # clearly not abbrev_types.
             if not _re_non_punct.search(typ) or typ == '##number##':
                 continue
-            
+
             if typ.endswith('.'):
                 if typ in self._params.abbrev_types:
                     continue
@@ -895,7 +895,7 @@ class PunktTrainer(PunktBaseClass):
             # candidate.
             num_periods = typ.count('.') + 1
             num_nonperiods = len(typ) - num_periods + 1
-            
+
             # Let <a> be the candidate without the period, and <b>
             # be the period.  Find a log likelihood ratio that
             # indicates whether <ab> occurs as a single unit (high
@@ -952,7 +952,7 @@ class PunktTrainer(PunktBaseClass):
         # Find the case-normalized type of the token.  If it's
         # a sentence-final token, strip off the period.
         typ = cur_tok.type_no_sentperiod
-        
+
         # Proceed only if the type hasn't been categorized as an
         # abbreviation already, and is sufficiently rare...
         count = self._type_fdist[typ] + self._type_fdist[typ[:-1]]
@@ -992,14 +992,14 @@ class PunktTrainer(PunktBaseClass):
         """
         p1 = float(count_b) / N
         p2 = 0.99
-        
+
         null_hypo = (float(count_ab) * math.log(p1) +
                      (count_a - count_ab) * math.log(1.0 - p1))
         alt_hypo  = (float(count_ab) * math.log(p2) +
                      (count_a - count_ab) * math.log(1.0 - p2))
-        
+
         likelihood = null_hypo - alt_hypo
-        
+
         return (-2.0 * likelihood)
 
     @staticmethod
@@ -1013,7 +1013,7 @@ class PunktTrainer(PunktBaseClass):
         Dunning log-likelihood values
         """
         import math
-        
+
         p = 1.0 * count_b / N
         p1 = 1.0 * count_ab / count_a
         p2 = 1.0 * (count_b - count_ab) / (N - count_a)
@@ -1023,23 +1023,23 @@ class PunktTrainer(PunktBaseClass):
 
         summand2 = ((count_b - count_ab) * math.log(p) +
                     (N - count_a - count_b + count_ab) * math.log(1.0 - p))
-    
+
         if count_a == count_ab:
             summand3 = 0
         else:
             summand3 = (count_ab * math.log(p1) +
                         (count_a - count_ab) * math.log(1.0 - p1))
-    
+
         if count_b == count_ab:
             summand4 = 0
         else:
             summand4 = ((count_b - count_ab) * math.log(p2) +
                         (N - count_a - count_b + count_ab) * math.log(1.0 - p2))
-    
+
         likelihood = summand1 + summand2 - summand3 - summand4
-    
+
         return (-2.0 * likelihood)
-    
+
     #////////////////////////////////////////////////////////////
     #{ Collocation Finder
     #////////////////////////////////////////////////////////////
@@ -1078,7 +1078,7 @@ class PunktTrainer(PunktBaseClass):
                 ll = self._col_log_likelihood(typ1_count, typ2_count,
                                               col_count, self._type_fdist.N())
                 # Filter out the not-so-collocative
-                if (ll >= self.COLLOCATION and 
+                if (ll >= self.COLLOCATION and
                     (float(self._type_fdist.N())/typ1_count >
                      float(typ2_count)/col_count)):
                     yield (typ1, typ2), ll
@@ -1095,7 +1095,7 @@ class PunktTrainer(PunktBaseClass):
         # If a token (i) is preceeded by a sentece break that is
         # not a potential ordinal number or initial, and (ii) is
         # alphabetic, then it is a a sentence-starter.
-        return ( prev_tok.sentbreak and 
+        return ( prev_tok.sentbreak and
              not (prev_tok.is_number or prev_tok.is_initial) and
              cur_tok.is_alpha )
 
@@ -1152,7 +1152,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         """
         PunktBaseClass.__init__(self, lang_vars=lang_vars,
                 token_cls=token_cls)
-        
+
         if train_text:
             self._params = self.train(train_text, verbose)
 
@@ -1166,7 +1166,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             return train_text
         return PunktTrainer(train_text, lang_vars=self._lang_vars,
                 token_cls=self._Token).get_params()
-    
+
     #////////////////////////////////////////////////////////////
     #{ Tokenization
     #////////////////////////////////////////////////////////////
@@ -1216,11 +1216,11 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         should otherwise be included in the same sentence.
 
         For example: "(Sent1.) Sent2." will otherwise be split as::
-        
+
             ["(Sent1.", ") Sent1."].
-            
+
         This method will produce::
-        
+
             ["(Sent1.)", "Sent2."].
         """
         realign = 0
@@ -1251,7 +1251,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             if t.sentbreak:
                 found = True
         return False
-   
+
     def sentences_from_text_legacy(self, text):
         """
         Given a text, generates the sentences in that text. Annotates all
@@ -1275,7 +1275,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                 sentence = []
         if sentence:
             yield sentence
-            
+
     def _annotate_tokens(self, tokens):
         """
         Given a set of tokens augmented with markers for line-start and
@@ -1311,7 +1311,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
 
         # A regular expression that finds pieces of whitespace:
         WS_REGEXP = re.compile(r'\s*')
-        
+
         sentence = ''
         for aug_tok in tokens:
             tok = aug_tok.tok

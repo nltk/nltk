@@ -91,18 +91,18 @@ conll2000 = LazyCorpusLoader(
     ['train.txt', 'test.txt'], ('NP','VP','PP'),
     tag_mapping_function=simplify_wsj_tag)
 conll2002 = LazyCorpusLoader(
-    'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', 
+    'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*',
     ('LOC', 'PER', 'ORG', 'MISC'), encoding='utf-8')
 conll2007 = LazyCorpusLoader(
     'conll2007', DependencyCorpusReader, '.*\.(test|train).*',
-    encoding='utf-8') 
+    encoding='utf-8')
 dependency_treebank = LazyCorpusLoader(
-    'dependency_treebank', DependencyCorpusReader, '.*\.dp') 
+    'dependency_treebank', DependencyCorpusReader, '.*\.dp')
 floresta = LazyCorpusLoader(
     'floresta', BracketParseCorpusReader, r'(?!\.).*\.ptb', '#',
     tag_mapping_function=simplify_tag)
 gazetteers = LazyCorpusLoader(
-    'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt')  
+    'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt')
 genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[
         ('finnish|french|german', 'latin_1'),
@@ -258,4 +258,4 @@ def demo():
 if __name__ == '__main__':
     #demo()
     pass
-    
+

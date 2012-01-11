@@ -18,7 +18,7 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     Compute the windowdiff score for a pair of segmentations.  A segmentation is any sequence
     over a vocabulary of two items (e.g. "0", "1"), where the specified boundary value is used
     to mark the edge of a segmentation.
-    
+
     >>> s1 = "00000010000000001000000"
     >>> s2 = "00000001000000010000000"
     >>> s3 = "00010000000000000001000"
@@ -55,6 +55,6 @@ def demo():
     print "s2:", s2
     print "s3:", s3
 
-    print "windowdiff(s1, s1, 3) = ", windowdiff(s1, s1, 3) 
-    print "windowdiff(s1, s2, 3) = ", windowdiff(s1, s2, 3) 
-    print "windowdiff(s2, s3, 3) = ", windowdiff(s2, s3, 3) 
+    print "windowdiff(s1, s1, 3) = ", windowdiff(s1, s1, 3)
+    print "windowdiff(s1, s2, 3) = ", windowdiff(s1, s2, 3)
+    print "windowdiff(s2, s3, 3) = ", windowdiff(s2, s3, 3)

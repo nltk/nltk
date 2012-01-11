@@ -191,7 +191,7 @@ class DecisionTreeClassifier(ClassifierI):
         if self._fname is None: return
         if depth_cutoff <= 0: return
         for fval in self._decisions:
-            fval_featuresets = [(featureset,label) for (featureset,label) 
+            fval_featuresets = [(featureset,label) for (featureset,label)
                                 in labeled_featuresets
                                 if featureset.get(self._fname) == fval]
 
@@ -268,7 +268,7 @@ class DecisionTreeClassifier(ClassifierI):
             print ('best stump for %6d toks uses %-20s err=%6.4f' %
                    (len(labeled_featuresets), descr, best_error))
         return best_stump
-        
+
 ##//////////////////////////////////////////////////////
 ##  Demo
 ##//////////////////////////////////////////////////////
@@ -285,4 +285,4 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-                             
+
