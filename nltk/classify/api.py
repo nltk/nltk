@@ -34,7 +34,7 @@ class ClassifierI(object):
     Subclasses must define:
       - ``labels()``
       - either ``classify()`` or ``batch_classify()`` (or both)
-      
+
     Subclasses may define:
       - either ``prob_classify()`` or ``batch_prob_classify()`` (or both)
     """
@@ -86,7 +86,7 @@ class ClassifierI(object):
         """
         return [self.prob_classify(fs) for fs in featuresets]
 
-    
+
 class MultiClassifierI(object):
     """
     A processing interface for labeling tokens with zero or more
@@ -97,7 +97,7 @@ class MultiClassifierI(object):
     Subclasses must define:
       - ``labels()``
       - either ``classify()`` or ``batch_classify()`` (or both)
-      
+
     Subclasses may define:
       - either ``prob_classify()`` or ``batch_prob_classify()`` (or both)
     """
@@ -107,7 +107,7 @@ class MultiClassifierI(object):
         :rtype: list of (immutable)
         """
         raise NotImplementedError()
-    
+
     def classify(self, featureset):
         """
         :return: the most appropriate set of labels for the given featureset.
@@ -134,7 +134,7 @@ class MultiClassifierI(object):
         Apply ``self.classify()`` to each element of ``featuresets``.  I.e.:
 
             return [self.classify(fs) for fs in featuresets]
-            
+
         :rtype: list(set(label))
         """
         return [self.classify(fs) for fs in featuresets]
@@ -144,7 +144,7 @@ class MultiClassifierI(object):
         Apply ``self.prob_classify()`` to each element of ``featuresets``.  I.e.:
 
             return [self.prob_classify(fs) for fs in featuresets]
-            
+
         :rtype: list(ProbDistI)
         """
         return [self.prob_classify(fs) for fs in featuresets]
@@ -170,7 +170,7 @@ class MultiClassifierI(object):
 #         """
 #         Return a probability distribution over labels for the given
 #         featureset.
-        
+
 #         If ``featureset`` is a list of featuresets, then return a
 #         corresponding list containing the probability distribution
 #         over labels for each of the given featuresets, where the
@@ -182,7 +182,7 @@ class MultiClassifierI(object):
 #     def classify(self, featureset):
 #         """
 #         Return the most appropriate label for the given featureset.
-        
+
 #         If ``featureset`` is a list of featuresets, then return a
 #         corresponding list containing the most appropriate label for
 #         each of the given featuresets, where the *i*\ th element of

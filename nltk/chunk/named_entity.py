@@ -43,7 +43,7 @@ class NEChunkParserTagger(ClassifierBasedTagger):
             self._en_wordlist = set(words.words('en-basic'))
             wl = self._en_wordlist
         return wl
-    
+
     def _feature_detector(self, tokens, index, history):
         word = tokens[index][0]
         pos = simplify_pos(tokens[index][1])
@@ -99,7 +99,7 @@ class NEChunkParserTagger(ClassifierBasedTagger):
             'pos+prevtag': '%s+%s' % (pos, prevtag),
             'shape+prevtag': '%s+%s' % (prevshape, prevtag),
             }
-        
+
         return features
 
 class NEChunkParser(ChunkParserI):
@@ -128,7 +128,7 @@ class NEChunkParser(ChunkParserI):
         Convert a list of tagged tokens to a chunk-parse tree.
         """
         sent = Tree('S', [])
-        
+
         for (tok,tag) in tagged_tokens:
             if tag == 'O':
                 sent.append(tok)
@@ -198,10 +198,10 @@ def load_ace_data(roots, fmt='binary', skip_bnews=True):
             if root.endswith('bnews') and skip_bnews:
                 continue
             for f in files:
-                if f.endswith('.sgm'): 
+                if f.endswith('.sgm'):
                     for sent in load_ace_file(os.path.join(root, f), fmt):
                         yield sent
-                    
+
 def load_ace_file(textfile, fmt):
     print '  - %s' % os.path.split(textfile)[1]
     annfile = textfile+'.tmx.rdc.xml'
@@ -219,7 +219,7 @@ def load_ace_file(textfile, fmt):
 
     # Read the text file, and mark the entities.
     text = open(textfile).read()
-    
+
     # Strip XML tags, since they don't count towards the indices
     text = re.sub('<(?!/?TEXT)[^>]+>', '', text)
 
@@ -262,7 +262,7 @@ def load_ace_file(textfile, fmt):
 
     else:
         raise ValueError('bad fmt value')
-        
+
 # This probably belongs in a more general-purpose location (as does
 # the parse_to_tagged function).
 def cmp_chunks(correct, guessed):
@@ -295,7 +295,7 @@ def build_model(fmt='binary'):
     eval_paths = [find('corpora/ace_data/ace.eval')]
     eval_trees = load_ace_data(eval_paths, fmt)
     eval_data = [postag_tree(t) for t in eval_trees]
-    
+
     print 'Evaluating...'
     chunkscore = ChunkScore()
     for i, correct in enumerate(eval_data):
@@ -309,7 +309,7 @@ def build_model(fmt='binary'):
     out = open(outfilename, 'wb')
     pickle.dump(cp, out, -1)
     out.close()
-    
+
     return cp
 
 

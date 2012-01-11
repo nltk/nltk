@@ -43,11 +43,11 @@ class KMeansClusterer(VectorSpaceClusterer):
         :type   normalise:  boolean
         :param svd_dimensions: number of dimensions to use in reducing vector
                                dimensionsionality with SVD
-        :type svd_dimensions: int 
+        :type svd_dimensions: int
         :param  rng:        random number generator (or None)
         :type   rng:        Random
-        :param avoid_empty_clusters: include current centroid in computation 
-                                     of next one; avoids undefined behavior 
+        :param avoid_empty_clusters: include current centroid in computation
+                                     of next one; avoids undefined behavior
                                      when clusters become empty
         :type avoid_empty_clusters: boolean
         """
@@ -148,7 +148,7 @@ class KMeansClusterer(VectorSpaceClusterer):
     def _sum_distances(self, vectors1, vectors2):
         difference = 0.0
         for u, v in zip(vectors1, vectors2):
-            difference += self._distance(u, v) 
+            difference += self._distance(u, v)
         return difference
 
     def _centroid(self, cluster, mean):
@@ -196,7 +196,7 @@ def demo():
     print
 
     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
-    
+
     # test k-means using the euclidean distance metric, 2 means and repeat
     # clustering 10 times with random seeds
 

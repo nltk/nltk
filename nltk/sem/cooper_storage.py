@@ -19,7 +19,7 @@ class CooperStore(object):
             ``parse_with_bindops()``
         :type featstruct: FeatStruct (with features ``core`` and ``store``)
 
-        """ 
+        """
         self.featstruct = featstruct
         self.readings = []
         try:
@@ -27,7 +27,7 @@ class CooperStore(object):
             self.store = featstruct['STORE']
         except KeyError:
             print "%s is not a Cooper storage structure" % featstruct
-        
+
     def _permute(self, lst):
         """
         :return: An iterator over the permutations of the input list
@@ -39,7 +39,7 @@ class CooperStore(object):
             for index, x in enumerate(lst):
                 for y in self._permute(remove(lst, index)):
                     yield (x,)+y
-        else: yield ()   
+        else: yield ()
 
     def s_retrieve(self, trace=False):
         """
@@ -51,9 +51,9 @@ class CooperStore(object):
         binding operators in each permutation, and successively apply them to
         the current term, starting with the core semantic representation,
         working from the inside out.
-    
+
         Binding operators are of the form::
-    
+
              bo(\P.all x.(man(x) -> P(x)),z1)
         """
         for perm, store_perm in enumerate(self._permute(self.store)):
@@ -90,28 +90,28 @@ def demo():
     #sentence = "a man gives a bone to every dog"
     print
     print "Analyis of sentence '%s'" % sentence
-    print "=" * 50    
+    print "=" * 50
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
         semrep = cs.CooperStore(tree.node['SEM'])
         print
         print "Binding operators:"
-        print "-" * 15  
-        for s in semrep.store: 
+        print "-" * 15
+        for s in semrep.store:
             print s
-        print 
+        print
         print "Core:"
         print "-" * 15
         print semrep.core
-        print 
+        print
         print "S-Retrieval:"
-        print "-" * 15       
+        print "-" * 15
         semrep.s_retrieve(trace=True)
         print "Readings:"
         print "-" * 15
 
         for i, reading in enumerate(semrep.readings):
             print "%s: %s" % (i+1, reading)
-            
+
 if __name__ == '__main__':
     demo()

@@ -64,16 +64,16 @@ class _OutputRedirectingPdb(pdb.Pdb):
         self.__out = out
         self.__debugger_used = False
         pdb.Pdb.__init__(self)
-        
-    def set_trace(self): 
-        self.__debugger_used = True 
-        pdb.Pdb.set_trace(self) 
-    
-    def set_continue(self): 
-        # Calling set_continue unconditionally would break unit test coverage 
-        # reporting, as Bdb.set_continue calls sys.settrace(None). 
-        if self.__debugger_used: 
-            pdb.Pdb.set_continue(self) 
+
+    def set_trace(self):
+        self.__debugger_used = True
+        pdb.Pdb.set_trace(self)
+
+    def set_continue(self):
+        # Calling set_continue unconditionally would break unit test coverage
+        # reporting, as Bdb.set_continue calls sys.settrace(None).
+        if self.__debugger_used:
+            pdb.Pdb.set_continue(self)
 
     def trace_dispatch(self, *args):
         save_stdout = sys.stdout
@@ -84,7 +84,7 @@ class _OutputRedirectingPdb(pdb.Pdb):
 # Do the actual monkey-patching.
 import doctest
 doctest._OutputRedirectingPdb = _OutputRedirectingPdb
-        
+
 ###########################################################################
 # Utility Functions
 ###########################################################################
@@ -137,7 +137,7 @@ class MyDocTestParser(DocTestParser):
     def parse(self, string, name='<string>'):
         output = []
         lineno_offset = 0
-        
+
         for piecenum, piece in enumerate(self.PYLISTING_RE.split(string)):
             for example in DocTestParser.parse(self, piece, name):
                 if isinstance(example, Example):
@@ -178,11 +178,11 @@ class MyDocTestParser(DocTestParser):
         #output = []
 
         return output
-    
+
     def get_examples(self, string, name='<string>'):
         examples = []
         ignore = False
-        
+
         for x in self.parse(string, name):
             if isinstance(x, Example):
                 if not ignore:
@@ -196,7 +196,7 @@ class MyDocTestParser(DocTestParser):
                 elif x.strip():
                     ignore = False
         return examples
-                
+
 ###########################################################################
 # Update Runner
 ###########################################################################
@@ -242,7 +242,7 @@ class UpdateRunner(DocTestRunner):
             # (In particular, check that the example's expected output
             # appears in old_lines where we expect it to appear.)
             if example.want:
-                assert (example.want.split('\n')[0] == 
+                assert (example.want.split('\n')[0] ==
                         old_lines[lineno][example.indent:]), \
                         'Line number mismatch at %d' % lineno
             # Skip over the old expected output.
@@ -250,7 +250,7 @@ class UpdateRunner(DocTestRunner):
             lineno += old_len
             # Mark any changes we make.
             if self._mark_updates and example in self._new_want:
-                new_lines.append(' '*example.indent + '... ' + 
+                new_lines.append(' '*example.indent + '... ' +
                                  '# [!!] OUTPUT AUTOMATICALLY UPDATED [!!]')
             # Add the new expected output.
             new_want = self._new_want.get(example, example.want)
@@ -342,7 +342,7 @@ class Debugger:
         got = sys.stdout.getvalue()
         sys.stdout.truncate(0)
         if not self.checker.check_output(want, got, optionflags):
-            self.runner.report_failure(self.save_stdout.write, 
+            self.runner.report_failure(self.save_stdout.write,
                                        self.test, example, got)
             return False
         else:
@@ -472,7 +472,7 @@ class Debugger:
         for tok in stmt:
             if tok in '([{': parenlevel += 1
             if tok in '}])': parenlevel -= 1
-            if (parenlevel == 0 and 
+            if (parenlevel == 0 and
                 tok in ('=', '+=', '-=', '*=', '/=', '%=', '&=', '+=',
                        '^=', '<<=', '>>=', '**=', '//=')):
                 return False
@@ -737,7 +737,7 @@ class MyDocTestRunner(DocTestRunner):
                                   self._stderr_term.NORMAL, src))
             if self._verbosity == 2:
                 sys.__stderr__.write('\n')
-            
+
         else:
             DocTestRunner.report_start(self, out, test, example)
         sys.__stdout__.flush()
@@ -795,7 +795,7 @@ class MyDocTestRunner(DocTestRunner):
     def run(self, test, compileflags=None, out=None, clear_globs=True):
         save_stderr = sys.stderr
         sys.stderr = _SpoofOut()
-        
+
         if self._verbosity > 0:
             print >>save_stderr, (
                 self._stderr_term.CYAN+self._stderr_term.BOLD+
@@ -841,7 +841,7 @@ def run(names, optionflags, verbosity, kbinterrupt_continue):
                 sys.stdout.write('.')
             sys.stdout.flush(); sys.stderr.flush()
     return runner
-    
+
     # temporary hack:
 #     for name in names:
 #         testfile(name, optionflags=optionflags, verbose=True,
@@ -914,7 +914,7 @@ def update(names, optionflags, verbosity):
 
 # Action options
 CHECK_OPT    = Option("--check",
-               action="store_const", dest="action", const="check", 
+               action="store_const", dest="action", const="check",
                default="check",
                help="Verify the output of the doctest examples in the "
                     "given files.")
@@ -931,14 +931,14 @@ UPDATE_OPT   = Option("--update", "-u",
                     "carefully, to ensure that you don't accidentally "
                     "create broken test cases.")
 
-DEBUG_OPT    = Option("--debug", 
+DEBUG_OPT    = Option("--debug",
                action="store_const", dest="action", const="debug",
                help="Verify the output of the doctest examples in the "
                     "given files.  If any example fails, then enter the "
                     "python debugger.")
 
 # Reporting options
-VERBOSE_OPT  = Option("-v", "--verbose", 
+VERBOSE_OPT  = Option("-v", "--verbose",
                action="count", dest="verbosity", default=1,
                help="Increase verbosity.")
 

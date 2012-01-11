@@ -10,24 +10,24 @@
 Implementations of inter-annotator agreement coefficients surveyed by Artstein
 and Poesio (2007), Inter-Coder Agreement for Computational Linguistics.
 
-An agreement coefficient calculates the amount that annotators agreed on label 
+An agreement coefficient calculates the amount that annotators agreed on label
 assignments beyond what is expected by chance.
 
-In defining the AnnotationTask class, we use naming conventions similar to the 
-paper's terminology.  There are three types of objects in an annotation task: 
+In defining the AnnotationTask class, we use naming conventions similar to the
+paper's terminology.  There are three types of objects in an annotation task:
 
     the coders (variables "c" and "C")
     the items to be annotated (variables "i" and "I")
     the potential categories to be assigned (variables "k" and "K")
 
-Additionally, it is often the case that we don't want to treat two different 
+Additionally, it is often the case that we don't want to treat two different
 labels as complete disagreement, and so the AnnotationTask constructor can also
-take a distance metric as a final argument.  Distance metrics are simply 
-functions that take two arguments, and return a value between 0.0 and 1.0 
-indicating the distance between them.  If not supplied, the default is binary 
+take a distance metric as a final argument.  Distance metrics are simply
+functions that take two arguments, and return a value between 0.0 and 1.0
+indicating the distance between them.  If not supplied, the default is binary
 comparison between the arguments.
 
-The simplest way to initialize an AnnotationTask is with a list of equal-length 
+The simplest way to initialize an AnnotationTask is with a list of equal-length
 lists, each containing a coder's assignments for all objects in the task:
 
     task = AnnotationTask([],[],[])
@@ -66,7 +66,7 @@ log = logging.getLogger(__file__)
 
 class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
-    
+
     Notation tries to match notation in Artstein and Poesio (2007).
 
     In general, coders and items can be represented as any hashable object.
@@ -96,7 +96,7 @@ class AnnotationTask(object):
 
     def load_array(self, array):
         """Load the results of annotation.
-        
+
         The argument is a list of 3-tuples, each representing a coder's labeling of an item:
             (coder,item,label)
         """
@@ -190,7 +190,7 @@ class AnnotationTask(object):
         total = 0.0
         for i, itemdata in self._grouped_data('item'):
             label_freqs = FreqDist(x['labels'] for x in itemdata)
-            
+
             for j, nj in label_freqs.iteritems():
                 for l, nl in label_freqs.iteritems():
                     total += float(nj * nl) * self.distance(l, j)
@@ -215,7 +215,7 @@ class AnnotationTask(object):
 
     def Do_Kw(self, max_distance=1.0):
         """Averaged over all labelers
-        
+
         """
         ret = self._pairwise_average(lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance))
         log.debug("Observed disagreement: %f", ret)
@@ -226,7 +226,7 @@ class AnnotationTask(object):
         """Bennett, Albert and Goldstein 1954
 
         """
-        Ae = 1.0 / float(len(self.K))        
+        Ae = 1.0 / float(len(self.K))
         ret = (self.avg_Ao() - Ae) / (1.0 - Ae)
         return ret
 
@@ -343,7 +343,7 @@ if __name__ == '__main__':
     parser.add_option("-T", "--thorough", dest="thorough", default=False, action="store_true",
                       help="calculate agreement for every subset of the annotators")
     (options, remainder) = parser.parse_args()
-    
+
     if not options.file:
         parser.print_help()
         exit()

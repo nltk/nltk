@@ -40,7 +40,7 @@ def config_mallet(mallet_home=None):
         and if one is not found, it will raise a ``LookupError`` exception.
     """
     global _mallet_home, _mallet_classpath
-    
+
     # We don't actually care about this binary -- we just use it to
     # make sure we've found the right directory.
     mallethon_bin = find_binary(
@@ -60,7 +60,7 @@ def config_mallet(mallet_home=None):
                                   for filename in sorted(os.listdir(lib_dir))
                                   if filename.endswith('.jar')])
 
-    
+
 def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
                 blocking=True):
     """
@@ -72,7 +72,7 @@ def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     """
     if _mallet_classpath is None:
         config_mallet()
-    
+
     # Set up the classpath
     if classpath is None:
         classpath = _mallet_classpath

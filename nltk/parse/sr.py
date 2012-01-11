@@ -76,13 +76,13 @@ class ShiftReduceParser(ParserI):
         return self._grammar
 
     def parse(self, tokens):
-        tokens = list(tokens)        
+        tokens = list(tokens)
         self._grammar.check_coverage(tokens)
 
         # initialize the stack.
         stack = []
         remaining_text = tokens
-        
+
         # Trace output.
         if self._trace:
             print 'Parsing %r' % " ".join(tokens)
@@ -100,7 +100,7 @@ class ShiftReduceParser(ParserI):
         # Did we end up with the right category?
         if stack[0].node != self._grammar.start().symbol():
             return None
-        
+
         # We parsed successfully!
         return stack[0]
 
@@ -138,7 +138,7 @@ class ShiftReduceParser(ParserI):
         :param rightmost_stack: The rightmost elements of the parser's
             stack.
         """
-        
+
         if len(rightmost_stack) != len(rhs): return 0
         for i in range(len(rightmost_stack)):
             if isinstance(rightmost_stack[i], Tree):
@@ -172,11 +172,11 @@ class ShiftReduceParser(ParserI):
         """
         if production is None: productions = self._grammar.productions()
         else: productions = [production]
-        
+
         # Try each production, in order.
         for production in productions:
             rhslen = len(production.rhs())
-                
+
             # check if the RHS of a production matches the top of the stack
             if self._match_rhs(production.rhs(), stack[-rhslen:]):
 
@@ -211,7 +211,7 @@ class ShiftReduceParser(ParserI):
     def _trace_stack(self, stack, remaining_text, marker=' '):
         """
         Print trace output displaying the given stack and text.
-        
+
         :rtype: None
         :param marker: A character that is printed to the left of the
             stack.  This is used with trace level 2 to print 'S'
@@ -229,7 +229,7 @@ class ShiftReduceParser(ParserI):
     def _trace_shift(self, stack, remaining_text):
         """
         Print trace output displaying that a token has been shifted.
-        
+
         :rtype: None
         """
         if self._trace > 2: print 'Shift %r:' % stack[-1]
@@ -240,7 +240,7 @@ class ShiftReduceParser(ParserI):
         """
         Print trace output displaying that ``production`` was used to
         reduce ``stack``.
-        
+
         :rtype: None
         """
         if self._trace > 2:
@@ -260,7 +260,7 @@ class ShiftReduceParser(ParserI):
         productions = self._grammar.productions()
 
         # Any production whose RHS is an extension of another production's RHS
-        # will never be used. 
+        # will never be used.
         for i in range(len(productions)):
             for j in range(i+1, len(productions)):
                 rhs1 = productions[i].rhs()
@@ -317,7 +317,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :rtype: list(str)
         """
         return self._remaining_text
-        
+
     def initialize(self, tokens):
         """
         Start parsing a given text.  This sets the parser's stack to
@@ -333,7 +333,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         possible, then perform that reduction, and return the
         production that it is based on.  Otherwise, if a shift is
         possible, then perform it, and return 1.  Otherwise,
-        return 0. 
+        return 0.
 
         :return: 0 if no operation was performed; 1 if a shift was
             performed; and the CFG production used to reduce if a
@@ -355,7 +355,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self._history.append( (self._stack[:], self._remaining_text[:]) )
         self._shift(self._stack, self._remaining_text)
         return 1
-        
+
     def reduce(self, production=None):
         """
         Use ``production`` to combine the rightmost stack elements into
@@ -365,7 +365,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :return: The production used to reduce the stack, if a
             reduction was performed.  If no reduction was performed,
             return None.
-        
+
         :rtype: Production or None
         """
         self._history.append( (self._stack[:], self._remaining_text[:]) )
@@ -420,12 +420,12 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     def set_grammar(self, grammar):
         """
         Change the grammar used to parse texts.
-        
+
         :param grammar: The new grammar.
         :type grammar: CFG
         """
         self._grammar = grammar
-    
+
 ##//////////////////////////////////////////////////////
 ##  Demonstration Code
 ##//////////////////////////////////////////////////////

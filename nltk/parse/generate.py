@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 #
 
-from nltk.grammar import Nonterminal, parse_cfg 
+from nltk.grammar import Nonterminal, parse_cfg
 
 def generate(grammar, start=None):
     if not start:
@@ -27,7 +27,7 @@ def _generate_all(grammar, items):
                 for frag in _multiply(frag1, frag2):
                     frags.append(frag)
     return frags
-            
+
 def _multiply(frag1, frag2):
     frags = []
     if len(frag1) == 1:
@@ -52,4 +52,4 @@ grammar = parse_cfg("""
 
 for sent in generate(grammar):
     print ' '.join(sent)
-    
+

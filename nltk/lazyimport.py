@@ -2,7 +2,7 @@
 # distributed under the terms of the eGenix.com Public License Agreement
 # http://www.egenix.com/products/eGenix.com-Public-License-1.1.0.pdf
 
-""" Helper to enable simple lazy module import. 
+""" Helper to enable simple lazy module import.
 
     'Lazy' means the actual import is deferred until an attribute is
     requested from the module's namespace. This has the advantage of
@@ -66,7 +66,7 @@ class LazyModule:
             given module name.
 
             globals is optional and defaults to locals.
-        
+
         """
         self.__lazymodule_locals = locals
         if globals is None:

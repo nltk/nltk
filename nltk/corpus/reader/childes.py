@@ -1,7 +1,7 @@
 # CHILDES XML Corpus Reader
 
 # Copyright (C) 2001-2012 NLTK Project
-# Author: Tomonori Nagano <tnagano@gc.cuny.edu> 
+# Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -25,7 +25,7 @@ NS = 'http://www.talkbank.org/ns/talkbank'
 class CHILDESCorpusReader(XMLCorpusReader):
     """
     Corpus reader for the XML version of the CHILDES corpus.
-    The CHILDES corpus is available at ``http://childes.psy.cmu.edu/``. The XML 
+    The CHILDES corpus is available at ``http://childes.psy.cmu.edu/``. The XML
     version of CHILDES is located at ``http://childes.psy.cmu.edu/data-xml/``.
     Copy the CHILDES XML corpus (at the moment, this CorpusReader
     supports only English corpora at ``http://childes.psy.cmu.edu/data-xml/Eng-USA/``)
@@ -37,95 +37,95 @@ class CHILDESCorpusReader(XMLCorpusReader):
         XMLCorpusReader.__init__(self, root, fileids)
         self._lazy = lazy
 
-    def words(self, fileids=None, speaker='ALL', sent=None, stem=False, 
+    def words(self, fileids=None, speaker='ALL', sent=None, stem=False,
             relation=False, pos=False, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of words
         :rtype: list(str)
-        
+
         :param speaker: If list is specified, select specitic speakers defined
-        	in the corpus. Default is 'All' (all participants). Common choices 
+        	in the corpus. Default is 'All' (all participants). Common choices
         	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
         	researchers)
         :param stem: If true, then use word stems instead of word strings.
-        :param relation: If true, then return tuples of (stem, index, 
+        :param relation: If true, then return tuples of (stem, index,
             dependent_index)
-        :param strip_space: If true, then strip trailing spaces from word 
+        :param strip_space: If true, then strip trailing spaces from word
             tokens. Otherwise, leave the spaces on the tokens.
-        :param replace: If true, then use the replaced word instead 
+        :param replace: If true, then use the replaced word instead
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        return concat([self._get_words(fileid, speaker, sent, stem, relation, 
+        return concat([self._get_words(fileid, speaker, sent, stem, relation,
             pos, strip_space, replace) for fileid in self.abspaths(fileids)])
 
-    def tagged_words(self, fileids=None, speaker='ALL', sent=None, stem=False, 
+    def tagged_words(self, fileids=None, speaker='ALL', sent=None, stem=False,
             relation=False, pos=True, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
             ``(word,tag)``.
         :rtype: list(tuple(str,str))
-        
+
         :param speaker: If list is specified, select specitic speakers defined
-        	in the corpus. Default is 'All' (all participants). Common choices 
+        	in the corpus. Default is 'All' (all participants). Common choices
         	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
         	researchers)
         :param stem: If true, then use word stems instead of word strings.
-        :param relation: If true, then return tuples of (stem, index, 
+        :param relation: If true, then return tuples of (stem, index,
             dependent_index)
-        :param strip_space: If true, then strip trailing spaces from word 
+        :param strip_space: If true, then strip trailing spaces from word
             tokens. Otherwise, leave the spaces on the tokens.
-        :param replace: If true, then use the replaced word instead 
+        :param replace: If true, then use the replaced word instead
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        return concat([self._get_words(fileid, speaker, sent, stem, relation, 
+        return concat([self._get_words(fileid, speaker, sent, stem, relation,
             pos, strip_space, replace) for fileid in self.abspaths(fileids)])
 
-    def sents(self, fileids=None, speaker='ALL', sent=True, stem=False, 
+    def sents(self, fileids=None, speaker='ALL', sent=True, stem=False,
             relation=None, pos=False, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
         :rtype: list(list(str))
-        
+
         :param speaker: If list is specified, select specitic speakers defined
-        	in the corpus. Default is 'All' (all participants). Common choices 
+        	in the corpus. Default is 'All' (all participants). Common choices
         	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
         	researchers)
         :param stem: If true, then use word stems instead of word strings.
         :param relation: If true, then return tuples of ``(str,pos,relation_list)``.
             If there is manually-annotated relation info, it will return tuples of
             tuples of ``(str,pos,test_relation_list,str,pos,gold_relation_list)``
-        :param strip_space: If true, then strip trailing spaces from word 
+        :param strip_space: If true, then strip trailing spaces from word
             tokens. Otherwise, leave the spaces on the tokens.
-        :param replace: If true, then use the replaced word instead 
+        :param replace: If true, then use the replaced word instead
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        return concat([self._get_words(fileid, speaker, sent, stem, relation, 
+        return concat([self._get_words(fileid, speaker, sent, stem, relation,
             pos, strip_space, replace) for fileid in self.abspaths(fileids)])
 
-    def tagged_sents(self, fileids=None, speaker='ALL', sent=True, stem=False, 
+    def tagged_sents(self, fileids=None, speaker='ALL', sent=True, stem=False,
             relation=None, pos=True, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of
-            sentences, each encoded as a list of ``(word,tag)`` tuples.            
+            sentences, each encoded as a list of ``(word,tag)`` tuples.
         :rtype: list(list(tuple(str,str)))
-        
+
         :param speaker: If list is specified, select specitic speakers defined
-        	in the corpus. Default is 'All' (all participants). Common choices 
+        	in the corpus. Default is 'All' (all participants). Common choices
         	are ['CHI'] (all children), ['MOT'] (mothers), ['CHI','MOT'] (exclude
         	researchers)
         :param stem: If true, then use word stems instead of word strings.
         :param relation: If true, then return tuples of ``(str,pos,relation_list)``.
             If there is manually-annotated relation info, it will return tuples of
             tuples of ``(str,pos,test_relation_list,str,pos,gold_relation_list)``
-        :param strip_space: If true, then strip trailing spaces from word 
+        :param strip_space: If true, then strip trailing spaces from word
             tokens. Otherwise, leave the spaces on the tokens.
-        :param replace: If true, then use the replaced word instead 
+        :param replace: If true, then use the replaced word instead
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        return concat([self._get_words(fileid, speaker, sent, stem, relation, 
+        return concat([self._get_words(fileid, speaker, sent, stem, relation,
             pos, strip_space, replace) for fileid in self.abspaths(fileids)])
 
     def corpus(self, fileids=None):
@@ -137,17 +137,17 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def _get_corpus(self, fileid):
         results = dict()
-        xmldoc = ElementTree.parse(fileid).getroot() 
+        xmldoc = ElementTree.parse(fileid).getroot()
         for key, value in xmldoc.items():
-            results[key] = value 
+            results[key] = value
         return results
-        
+
     def participants(self, fileids=None):
         """
         :return: the given file(s) as a dict of ``(participant_propperty_key, value)``
         :rtype: list(dict)
         """
-        return [self._get_participants(fileid) 
+        return [self._get_participants(fileid)
                             for fileid in self.abspaths(fileids)]
 
     def _get_participants(self, fileid):
@@ -155,7 +155,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         def dictOfDicts():
             return defaultdict(dictOfDicts)
 
-        xmldoc = ElementTree.parse(fileid).getroot() 
+        xmldoc = ElementTree.parse(fileid).getroot()
         # getting participants' data
         pat = dictOfDicts()
         for participant in xmldoc.findall('.//{%s}Participants/{%s}participant' % (NS,NS)):
@@ -167,13 +167,13 @@ class CHILDESCorpusReader(XMLCorpusReader):
         """
         :return: the given file(s) as string or int
         :rtype: list or int
-        
+
         :param month: If true, return months instead of year-month-date
         """
         return [self._get_age(fileid,month) for fileid in self.abspaths(fileids)]
 
     def _get_age(self, fileid, month):
-        xmldoc = ElementTree.parse(fileid).getroot() 
+        xmldoc = ElementTree.parse(fileid).getroot()
         for pat in xmldoc.findall('.//{%s}Participants/{%s}participant' % (NS,NS)):
             try:
                 if pat.get('id') == 'CHI':
@@ -195,7 +195,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         except ValueError, e:
             pass
         return age_month
-                
+
     def MLU(self, fileids=None):
         """
         :return: the given file(s) as a floating number
@@ -204,7 +204,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return [self._getMLU(fileid) for fileid in self.abspaths(fileids)]
 
     def _getMLU(self, fileid):
-        sents = self._get_words(fileid, speaker=['CHI'], sent=True, stem=True, 
+        sents = self._get_words(fileid, speaker=['CHI'], sent=True, stem=True,
                     relation=False, pos=True, strip_space=True, replace=True)
         results = []
         lastSent = []
@@ -240,9 +240,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
         # return {'mlu':mlu,'wordNum':numWords,'sentNum':numSents}
         return mlu
 
-    def _get_words(self, fileid, speaker, sent, stem, relation, pos, 
-            strip_space, replace): 
-        xmldoc = ElementTree.parse(fileid).getroot() 
+    def _get_words(self, fileid, speaker, sent, stem, relation, pos,
+            strip_space, replace):
+        xmldoc = ElementTree.parse(fileid).getroot()
         # processing each xml doc
         results = []
         for xmlsent in xmldoc.findall('.//{%s}u' % NS):
@@ -262,8 +262,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     else:
                         word = ''
                     # strip tailing space
-                    if strip_space: 
-                        word = word.strip() 
+                    if strip_space:
+                        word = word.strip()
                     # stem
                     if relation or stem:
                         try:
@@ -289,7 +289,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             xmlpos = xmlword.findall(".//{%s}c" % NS)
                             word = (word,xmlpos[0].text)
                             if len(xmlpos) != 1 and suffixStem:
-                                suffixStem = (suffixStem,xmlpos[1].text) 
+                                suffixStem = (suffixStem,xmlpos[1].text)
                         except (AttributeError,IndexError), e:
                             word = (word,None)
                             if suffixStem:
@@ -331,7 +331,7 @@ def demo():
     """
     from nltk.data import find
     #import urllib2, zipfile, cStringIO
-    
+
     try:
         corpus_root = find('corpora/childes/data-xml/Eng-USA/')
         childes = CHILDESCorpusReader(corpus_root, u'.*.xml')
@@ -356,19 +356,19 @@ def demo():
                         print "\tparticipant", participant, key, ":", value
             print "num of sent:", len(childes.sents(file))
             print "num of morphemes:", len(childes.words(file, stem=True))
-            print "age:", childes.age(file)    
-            print "age in month:", childes.age(file, month=True)    
+            print "age:", childes.age(file)
+            print "age in month:", childes.age(file, month=True)
             print "MLU:", childes.MLU(file)
             print '\r'
     except LookupError, e:
         print """The CHILDES corpus should be manually downloaded from
-        http://childes.psy.cmu.edu/data-xml/Eng-USA/ and save it at 
+        http://childes.psy.cmu.edu/data-xml/Eng-USA/ and save it at
         [NLTK_Data_Dir]/corpora/childes/"""
         #corpus_root_http = urllib2.urlopen('http://childes.psy.cmu.edu/data-xml/Eng-USA/Bates.zip')
         #corpus_root_http_bates = zipfile.ZipFile(cStringIO.StringIO(corpus_root_http.read()))
         ##this fails
         #childes = CHILDESCorpusReader(corpus_root_http_bates,corpus_root_http_bates.namelist())
 
-    
+
 if __name__ == "__main__":
     demo()

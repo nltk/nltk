@@ -62,11 +62,11 @@ class TreebankWordTokenizer(TokenizerI):
                      re.compile(r"(?i)\b(Wan)(na)\b")]
     _CONTRACTIONS3 = [re.compile(r"(?i)\b(Whad)(dd)(ya)\b"),
                      re.compile(r"(?i)\b(Wha)(t)(cha)\b")]
-    
+
     def tokenize(self, text):
         """Return a tokenized copy of *text*, using the tokenization
         conventions of the Penn Treebank.
-        """ 
+        """
         for regexp in self._CONTRACTIONS2:
             text = regexp.sub(r'\1 \2', text)
         for regexp in self._CONTRACTIONS3:

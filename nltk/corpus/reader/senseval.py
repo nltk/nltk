@@ -20,7 +20,7 @@ Distributed with permission.
 The NLTK version of the Senseval 2 files uses well-formed XML.
 Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
-"""       
+"""
 
 import os
 import re
@@ -56,7 +56,7 @@ class SensevalCorpusReader(CorpusReader):
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
-    
+
     def _entry(self, tree):
         elts = []
         for lexelt in tree.findall('lexelt'):
@@ -75,12 +75,12 @@ class SensevalCorpusView(StreamBackedCorpusView):
         self._word_tokenizer = WhitespaceTokenizer()
         self._lexelt_starts = [0] # list of streampos
         self._lexelts = [None] # list of lexelt names
-    
+
     def read_block(self, stream):
         # Decide which lexical element we're in.
         lexelt_num = bisect.bisect_right(self._lexelt_starts, stream.tell())-1
         lexelt = self._lexelts[lexelt_num]
-        
+
         instance_lines = []
         in_instance = False
         while True:
@@ -88,7 +88,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             if line == '':
                 assert instance_lines == []
                 return []
-            
+
             # Start of a lexical element?
             if line.lstrip().startswith('<lexelt'):
                 lexelt_num += 1
@@ -100,7 +100,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                 else:
                     self._lexelts.append(lexelt)
                     self._lexelt_starts.append(stream.tell())
-                
+
             # Start of an instance?
             if line.lstrip().startswith('<instance'):
                 assert instance_lines == []
@@ -127,9 +127,9 @@ class SensevalCorpusView(StreamBackedCorpusView):
             elif child.tag == 'context':
                 context += self._word_tokenizer.tokenize(child.text)
                 for cword in child:
-                    if cword.tag == 'compound': 
+                    if cword.tag == 'compound':
                         cword = cword[0] # is this ok to do?
-                    
+
                     if cword.tag == 'head':
                         # Some santiy checks:
                         assert position is None, 'head specified twice'
@@ -152,7 +152,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                         context.append((cword.text, cword.attrib['pos']))
                     elif cword.tag == 's':
                         pass # Sentence boundary marker.
-                    
+
                     else:
                         print 'ACK', cword.tag
                         assert False, 'expected CDATA or <wf> or <head>'
@@ -161,7 +161,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             else:
                 assert False, 'unexpected tag %s' % child.tag
         return SensevalInstance(lexelt, position, context, senses)
-    
+
 def _fixXML(text):
     """
     Fix the various issues with Senseval pseudo-XML.
@@ -176,7 +176,7 @@ def _fixXML(text):
     text = re.sub(r'(<[^<]*snum=)([^">]+)>', r'\1"\2"/>', text)
     # fix foreign word tag
     text = re.sub(r'<\&frasl>\s*<p[^>]*>', 'FRASL', text)
-    # remove <&I .> 
+    # remove <&I .>
     text = re.sub(r'<\&I[^>]*>', '', text)
     # fix <{word}>
     text = re.sub(r'<{([^}]+)}>', r'\1', text)

@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Kepa Sarasola <kepa.sarasola@ehu.es>
 #         Iker Manterola <returntothehangar@hotmail.com>
-#         
+#
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -14,14 +14,14 @@ from util import *
 from api import *
 
 class DependencyCorpusReader(SyntaxCorpusReader):
-        
+
     def __init__(self, root, fileids, encoding=None,
                  word_tokenizer=TabTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block):
-        
+
         CorpusReader.__init__(self, root, fileids, encoding)
-            
+
     #########################################################
 
     def raw(self, fileids=None):
@@ -31,11 +31,11 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         """
         return concat([open(fileid).read()
                       for fileid in self.abspaths(fileids)])
-    
+
     def words(self, fileids=None):
         return concat([DependencyCorpusView(fileid, False, False, False)
                        for fileid in self.abspaths(fileids)])
-    
+
     def tagged_words(self, fileids=None):
         return concat([DependencyCorpusView(fileid, True, False, False)
                        for fileid in self.abspaths(fileids)])
@@ -57,7 +57,7 @@ class DependencyCorpusReader(SyntaxCorpusReader):
 class DependencyCorpusView(StreamBackedCorpusView):
     _DOCSTART = '-DOCSTART- -DOCSTART- O\n' #dokumentu hasiera definitzen da
 
-    def __init__(self, corpus_file, tagged, group_by_sent, dependencies, 
+    def __init__(self, corpus_file, tagged, group_by_sent, dependencies,
                  chunk_types=None):
         self._tagged = tagged
         self._dependencies = dependencies
@@ -71,7 +71,7 @@ class DependencyCorpusView(StreamBackedCorpusView):
         # Strip off the docstart marker, if present.
         if sent.startswith(self._DOCSTART):
             sent = sent[len(self._DOCSTART):].lstrip()
-        
+
         # extract word and tag from any of the formats
         if not self._dependencies:
             lines = [line.split('\t') for line in sent.split('\n')]
@@ -85,7 +85,7 @@ class DependencyCorpusView(StreamBackedCorpusView):
             # discard tags if they weren't requested
             if not self._tagged:
                 sent = [word for (word, tag) in sent]
-                
+
         # Return the result.
         if self._group_by_sent:
             return [sent]

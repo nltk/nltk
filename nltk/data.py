@@ -14,17 +14,17 @@ supported:
 
   - ``file:path``: Specifies the file whose path is *path*.
     Both relative and absolute paths may be used.
-    
+
   - ``http://host/path``: Specifies the file stored on the web
     server *host* at path *path*.
-    
+
   - ``nltk:path``: Specifies the file stored in the NLTK data
     package at *path*.  NLTK will search for these files in the
     directories specified by ``nltk.data.path``.
 
 If no protocol is specified, then the default protocol ``nltk:`` will
 be used.
- 
+
 This module provides to functions that can be used to access a
 resource file, given its URL: ``load()`` loads a given resource, and
 adds it to a resource cache; and ``retrieve()`` copies a given resource
@@ -51,7 +51,7 @@ try:
     import cPickle as pickle
 except:
     import pickle
-    
+
 try:
     from cStringIO import StringIO
 except:
@@ -121,7 +121,7 @@ class PathPointer(object):
             not contain a readable file.
         """
         raise NotImplementedError('abstract base class')
-    
+
     def join(self, fileid):
         """
         Return a new path pointer formed by starting at the path
@@ -141,7 +141,7 @@ class FileSystemPathPointer(PathPointer, str):
     this allows old code that expected ``nltk.data.find()`` to expect a
     string to usually work (assuming the resource is not found in a
     zipfile).  It also permits ``open()`` to work on a ``FileSystemPathPointer``.
-    
+
     """
     def __init__(self, path):
         """
@@ -153,7 +153,7 @@ class FileSystemPathPointer(PathPointer, str):
         if not os.path.exists(path):
             raise IOError('No such file or directory: %r' % path)
         self._path = path
-        
+
         # There's no need to call str.__init__(), since it's a no-op;
         # str does all of its setup work in __new__.
 
@@ -183,28 +183,28 @@ class FileSystemPathPointer(PathPointer, str):
 class BufferedGzipFile(GzipFile):
     """
     A ``GzipFile`` subclass that buffers calls to ``read()`` and ``write()``.
-    This allows faster reads and writes of data to and from gzip-compressed 
+    This allows faster reads and writes of data to and from gzip-compressed
     files at the cost of using more memory.
-    
+
     The default buffer size is 2MB.
-    
+
     ``BufferedGzipFile`` is useful for loading large gzipped pickle objects
     as well as writing large encoded feature files for classifier training.
-    """    
+    """
     SIZE = 2 * 2**20
 
-    def __init__(self, filename=None, mode=None, compresslevel=9, 
+    def __init__(self, filename=None, mode=None, compresslevel=9,
                  fileobj=None, **kwargs):
         """
         Return a buffered gzip file object.
 
         :param filename: a filesystem path
         :type filename: str
-        :param mode: a file mode which can be any of 'r', 'rb', 'a', 'ab', 
+        :param mode: a file mode which can be any of 'r', 'rb', 'a', 'ab',
             'w', or 'wb'
         :type mode: str
         :param compresslevel: The compresslevel argument is an integer from 1
-            to 9 controlling the level of compression; 1 is fastest and 
+            to 9 controlling the level of compression; 1 is fastest and
             produces the least compression, and 9 is slowest and produces the
             most compression. The default is 9.
         :type compresslevel: int
@@ -213,25 +213,25 @@ class BufferedGzipFile(GzipFile):
         :param size: number of bytes to buffer during calls to read() and write()
         :type size: int
         :rtype: BufferedGzipFile
-        """   
+        """
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
         self._buffer = StringIO()
         # cStringIO does not support len.
         self._len = 0
-        
+
     def _reset_buffer(self):
-        # For some reason calling StringIO.truncate() here will lead to 
+        # For some reason calling StringIO.truncate() here will lead to
         # inconsistent writes so just set _buffer to a new StringIO object.
         self._buffer = StringIO()
         self._len = 0
-        
+
     def _write_buffer(self, data):
         # Simply write to the buffer and increment the buffer size.
         if data is not None:
             self._buffer.write(data)
             self._len += len(data)
-    
+
     def _write_gzip(self, data):
         # Write the current buffer to the GzipFile.
         GzipFile.write(self, self._buffer.getvalue())
@@ -271,7 +271,7 @@ class BufferedGzipFile(GzipFile):
         :param size: buffer at least size bytes before writing to file
         :type size: int
         """
-        if not size: 
+        if not size:
             size = self._size
         if self._len + len(data) <= size:
             self._write_buffer(data)
@@ -307,7 +307,7 @@ class ZipFilePathPointer(PathPointer):
         """
         if isinstance(zipfile, basestring):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
-            
+
         # Normalize the entry string:
         entry = re.sub('(^|/)/+', r'\1', entry)
 
@@ -319,12 +319,12 @@ class ZipFilePathPointer(PathPointer):
                 # the zip file.  So if `entry` is a directory name,
                 # then check if the zipfile contains any files that
                 # are under the given directory.
-                if (entry.endswith('/') and 
+                if (entry.endswith('/') and
                     [n for n in zipfile.namelist() if n.startswith(entry)]):
                     pass # zipfile contains a file in that directory.
                 else:
                     # Otherwise, complain.
-                    raise IOError('Zipfile %r does not contain %r' % 
+                    raise IOError('Zipfile %r does not contain %r' %
                                   (zipfile.filename, entry))
         self._zipfile = zipfile
         self._entry = entry
@@ -340,9 +340,9 @@ class ZipFilePathPointer(PathPointer):
         data = self._zipfile.read(self._entry)
         stream = StringIO(data)
         if self._entry.endswith('.gz'):
-            stream = BufferedGzipFile(self._entry, fileobj=stream)                
+            stream = BufferedGzipFile(self._entry, fileobj=stream)
         elif encoding is not None:
-            stream = SeekableUnicodeStreamReader(stream, encoding)            
+            stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
 
     def file_size(self):
@@ -351,11 +351,11 @@ class ZipFilePathPointer(PathPointer):
     def join(self, fileid):
         entry = '%s/%s' % (self._entry, fileid)
         return ZipFilePathPointer(self._zipfile, entry)
-    
+
     def __repr__(self):
         return 'ZipFilePathPointer(%r, %r)' % (
             self._zipfile.filename, self._entry)
-      
+
 ######################################################################
 # Access Functions
 ######################################################################
@@ -379,7 +379,7 @@ def find(resource_name):
       - If ``resource_name`` contains a component with a ``.zip``
         extension, then it is assumed to be a zipfile; and the
         remaining path components are used to look inside the zipfile.
-        
+
       - If any element of ``nltk.data.path`` has a ``.zip`` extension,
         then it is assumed to be a zipfile.
 
@@ -407,10 +407,10 @@ def find(resource_name):
     # Check if the resource name includes a zipfile name
     m = re.match('(.*\.zip)/?(.*)$|', resource_name)
     zipfile, zipentry = m.groups()
-    
+
     # Check each item in our path
     for path_item in path:
-        
+
         # Is the path item a zipfile?
         if os.path.isfile(path_item) and path_item.endswith('.zip'):
             try: return ZipFilePathPointer(path_item, resource_name)
@@ -423,7 +423,7 @@ def find(resource_name):
                 if os.path.exists(p):
                     if p.endswith('.gz'):
                         return GzipFileSystemPathPointer(p)
-                    else:   
+                    else:
                         return FileSystemPathPointer(p)
             else:
                 p = os.path.join(path_item, *zipfile.split('/'))
@@ -457,7 +457,7 @@ def retrieve(resource_url, filename=None, verbose=True):
     Copy the given resource to a local file.  If no filename is
     specified, then use the URL's filename.  If there is already a
     file named ``filename``, then raise a ``ValueError``.
-    
+
     :type resource_url: str
     :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is "nltk:", which searches
@@ -471,14 +471,14 @@ def retrieve(resource_url, filename=None, verbose=True):
     if os.path.exists(filename):
         filename = os.path.abspath(filename)
         raise ValueError, "File %r already exists!" % filename
-    
+
     if verbose:
         print 'Retrieving %r, saving to %r' % (resource_url, filename)
-        
+
     # Open the input & output streams.
     infile = _open(resource_url)
     outfile = open(filename, 'wb')
-    
+
     # Copy infile -> outfile, using 64k blocks.
     while True:
         s = infile.read(1024*64) # 64k blocks.
@@ -520,7 +520,7 @@ AUTO_FORMATS = {
     'logic': 'logic',
     'val': 'val'}
 
-def load(resource_url, format='auto', cache=True, verbose=False, 
+def load(resource_url, format='auto', cache=True, verbose=False,
          logic_parser=None, fstruct_parser=None):
     """
     Load a given resource from the NLTK data package.  The following
@@ -555,7 +555,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         Messages are not displayed when a resource is retrieved from
         the cache.
     :type logic_parser: LogicParser
-    :param logic_parser: The parser that will be used to parse logical 
+    :param logic_parser: The parser that will be used to parse logical
         expressions.
     :type fstruct_parser: FeatStructParser
     :param fstruct_parser: The parser that will be used to parse the
@@ -568,7 +568,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
             if verbose:
                 print '<<Using cached copy of %s>>' % (resource_url,)
             return resource_val
-    
+
     # Let the user know what's going on.
     if verbose:
         print '<<Loading %s>>' % (resource_url,)
@@ -585,7 +585,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
                              'on its file\nextension; use the "format" '
                              'argument to specify the format explicitly.'
                              % resource_url)
-    
+
     # Load the resource.
     if format == 'pickle':
         resource_val = pickle.load(_open(resource_url))
@@ -597,11 +597,11 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     elif format == 'pcfg':
         resource_val = nltk.grammar.parse_pcfg(_open(resource_url).read())
     elif format == 'fcfg':
-        resource_val = nltk.grammar.parse_fcfg(_open(resource_url).read(), 
-                                      logic_parser=logic_parser, 
+        resource_val = nltk.grammar.parse_fcfg(_open(resource_url).read(),
+                                      logic_parser=logic_parser,
                                       fstruct_parser=fstruct_parser)
     elif format == 'fol':
-        resource_val = nltk.sem.parse_logic(_open(resource_url).read(), 
+        resource_val = nltk.sem.parse_logic(_open(resource_url).read(),
                                        logic_parser=nltk.sem.logic.LogicParser())
     elif format == 'logic':
         resource_val = nltk.sem.parse_logic(_open(resource_url).read(),
@@ -622,7 +622,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
             # We can't create weak references to some object types, like
             # strings and tuples.  For now, just don't cache them.
             pass
-    
+
     return resource_val
 
 def show_cfg(resource_url, escape='##'):
@@ -643,7 +643,7 @@ def show_cfg(resource_url, escape='##'):
         if re.match('^$', l): continue
         print l
 
-    
+
 def clear_cache():
     """
     Remove all objects from the resource cache.
@@ -659,7 +659,7 @@ def _open(resource_url):
     its path, and open it with the given mode; if the resource URL
     uses the 'file' protocol, then open the file with the given mode;
     otherwise, delegate to ``urllib2.urlopen``.
-    
+
     :type resource_url: str
     :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is "nltk:", which searches
@@ -691,7 +691,7 @@ class LazyLoader(object):
         # match that of `resource`.
         self.__dict__ = resource.__dict__
         self.__class__ = resource.__class__
-        
+
     def __getattr__(self, attr):
         self.__load()
         # This looks circular, but its not, since __load() changes our
@@ -724,7 +724,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename
         self.close()
-        
+
     def read(self, name):
         assert self.fp is None
         self.fp = open(self.filename, 'rb')
@@ -758,7 +758,7 @@ class SeekableUnicodeStreamReader(object):
     This class was motivated by ``StreamBackedCorpusView``, which
     makes extensive use of ``seek()`` and ``tell()``, and needs to be
     able to handle unicode-encoded files.
-    
+
     Note: this class requires stateless decoders.  To my knowledge,
     this shouldn't cause a problem with any of python's builtin
     unicode encodings.
@@ -768,19 +768,19 @@ class SeekableUnicodeStreamReader(object):
     def __init__(self, stream, encoding, errors='strict'):
         # Rewind the stream to its beginning.
         stream.seek(0)
-        
+
         self.stream = stream
         """The underlying stream."""
-        
+
         self.encoding = encoding
         """The name of the encoding that should be used to encode the
            underlying stream."""
-        
+
         self.errors = errors
         """The error mode that should be used when decoding data from
            the underlying stream.  Can be 'strict', 'ignore', or
            'replace'."""
-        
+
         self.decode = codecs.getdecoder(encoding)
         """The function that is used to decode byte strings into
            unicode strings."""
@@ -789,7 +789,7 @@ class SeekableUnicodeStreamReader(object):
         """A buffer to use bytes that have been read but have not yet
            been decoded.  This is only used when the final bytes from
            a read do not form a complete encoding for a character."""
-        
+
         self.linebuffer = None
         """A buffer used by ``readline()`` to hold characters that have
            been read, but have not yet been returned by ``read()`` or
@@ -806,7 +806,7 @@ class SeekableUnicodeStreamReader(object):
            underlying stream began.  This is used, together with
            ``_rewind_numchars``, to backtrack to the beginning of
            ``linebuffer`` (which is required by ``tell()``)."""
-        
+
         self._rewind_numchars = None
         """The number of characters that have been returned since the
            read that started at ``_rewind_checkpoint``.  This is used,
@@ -820,7 +820,7 @@ class SeekableUnicodeStreamReader(object):
     #/////////////////////////////////////////////////////////////////
     # Read methods
     #/////////////////////////////////////////////////////////////////
-    
+
     def read(self, size=None):
         """
         Read up to ``size`` bytes, decode them using this reader's
@@ -858,7 +858,7 @@ class SeekableUnicodeStreamReader(object):
             line = self.linebuffer.pop(0)
             self._rewind_numchars += len(line)
             return line
-        
+
         readsize = size or 72
         chars = ''
 
@@ -866,13 +866,13 @@ class SeekableUnicodeStreamReader(object):
         if self.linebuffer:
             chars += self.linebuffer.pop()
             self.linebuffer = None
-        
+
         while True:
             startpos = self.stream.tell() - len(self.bytebuffer)
             new_chars = self._read(readsize)
 
             # If we're at a '\r', then read one extra character, since
-            # it might be a '\n', to get the proper line ending.  
+            # it might be a '\n', to get the proper line ending.
             if new_chars and new_chars.endswith('\r'):
                 new_chars += self._read(1)
 
@@ -890,7 +890,7 @@ class SeekableUnicodeStreamReader(object):
                 if line0withend != line0withoutend: # complete line
                     line = line0withend
                     break
-                
+
             if not new_chars or size is not None:
                 line = chars
                 break
@@ -929,7 +929,7 @@ class SeekableUnicodeStreamReader(object):
     #/////////////////////////////////////////////////////////////////
     # Pass-through methods & properties
     #/////////////////////////////////////////////////////////////////
-    
+
     closed = property(lambda self: self.stream.closed, doc="""
         True if the underlying stream is closed.""")
 
@@ -948,7 +948,7 @@ class SeekableUnicodeStreamReader(object):
     #/////////////////////////////////////////////////////////////////
     # Seek and tell
     #/////////////////////////////////////////////////////////////////
-    
+
     def seek(self, offset, whence=0):
         """
         Move the stream to a new file position.  If the reader is
@@ -998,7 +998,7 @@ class SeekableUnicodeStreamReader(object):
             # Read in a block of bytes.
             newbytes = self.stream.read(est_bytes-len(bytes))
             bytes += newbytes
-                
+
             # Decode the bytes to characters.
             chars, bytes_decoded = self._incr_decode(bytes)
 
@@ -1034,7 +1034,7 @@ class SeekableUnicodeStreamReader(object):
 
         # Otherwise, we'll need to backtrack the filepos until we
         # reach the beginning of the buffer.
-        
+
         # Store our original file position, so we can return here.
         orig_filepos = self.stream.tell()
 
@@ -1066,7 +1066,7 @@ class SeekableUnicodeStreamReader(object):
     #/////////////////////////////////////////////////////////////////
     # Helper methods
     #/////////////////////////////////////////////////////////////////
-    
+
     def _read(self, size=None):
         """
         Read up to ``size`` bytes from the underlying stream, decode
@@ -1074,11 +1074,11 @@ class SeekableUnicodeStreamReader(object):
         unicode string.  ``linebuffer`` is not included in the result.
         """
         if size == 0: return u''
-        
+
         # Skip past the byte order marker, if present.
         if self._bom and self.stream.tell() == 0:
             self.stream.read(self._bom)
-        
+
         # Read the requested number of bytes.
         if size is None:
             new_bytes = self.stream.read()
@@ -1088,7 +1088,7 @@ class SeekableUnicodeStreamReader(object):
 
         # Decode the bytes into unicode characters
         chars, bytes_decoded = self._incr_decode(bytes)
-        
+
         # If we got bytes but couldn't decode any, then read further.
         if (size is not None) and (not chars) and (len(new_bytes) > 0):
             while not chars:
@@ -1096,13 +1096,13 @@ class SeekableUnicodeStreamReader(object):
                 if not new_bytes: break # end of file.
                 bytes += new_bytes
                 chars, bytes_decoded = self._incr_decode(bytes)
-        
+
         # Record any bytes we didn't consume.
         self.bytebuffer = bytes[bytes_decoded:]
 
         # Return the result
         return chars
-        
+
     def _incr_decode(self, bytes):
         """
         Decode the given byte string into a unicode string, using this
@@ -1123,11 +1123,11 @@ class SeekableUnicodeStreamReader(object):
                 # then assume that it's a truncation error.
                 if exc.end == len(bytes):
                     return self.decode(bytes[:exc.start], self.errors)
-                
+
                 # Otherwise, if we're being strict, then raise it.
                 elif self.errors == 'strict':
                     raise
-                
+
                 # If we're not strict, then re-process it with our
                 # errors setting.  This *may* raise an exception.
                 else:
@@ -1148,15 +1148,15 @@ class SeekableUnicodeStreamReader(object):
     def _check_bom(self):
         # Normalize our encoding name
         enc = re.sub('[ -]', '', self.encoding.lower())
-        
+
         # Look up our encoding in the BOM table.
         bom_info = self._BOM_TABLE.get(enc)
-        
+
         if bom_info:
             # Read a prefix, to check against the BOM(s)
             bytes = self.stream.read(16)
             self.stream.seek(0)
-            
+
             # Check for each possible BOM.
             for (bom, new_encoding) in bom_info:
                 if bytes.startswith(bom):

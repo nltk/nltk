@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Linear Logic 
+# Natural Language Toolkit: Linear Logic
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
@@ -14,13 +14,13 @@ _counter = Counter()
 class Expression(object):
     def applyto(self, other, other_indices=None):
         return ApplicationExpression(self, other, other_indices)
-    
+
     def __call__(self, other):
         return self.applyto(other)
-    
+
     def __repr__(self):
         return '<' + self.__class__.__name__ + ' ' + str(self) + '>'
-    
+
 class AtomicExpression(Expression):
     def __init__(self, name, dependencies=None):
         """
@@ -29,16 +29,16 @@ class AtomicExpression(Expression):
         """
         assert isinstance(name, str)
         self.name = name
-        
+
         if not dependencies:
             dependencies = []
         self.dependencies = dependencies
-        
+
     def simplify(self, bindings=None):
         """
-        If 'self' is bound by 'bindings', return the atomic to which it is bound.  
+        If 'self' is bound by 'bindings', return the atomic to which it is bound.
         Otherwise, return self.
-        
+
         :param bindings: ``BindingDict`` A dictionary of bindings used to simplify
         :return: ``AtomicExpression``
         """
@@ -46,11 +46,11 @@ class AtomicExpression(Expression):
             return bindings[self]
         else:
             return self
-        
+
     def compile_pos(self, index_counter, glueFormulaFactory):
         """
         From Iddo Lev's PhD Dissertation p108-109
-        
+
         :param index_counter: ``Counter`` for unique indices
         :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
         :return: (``Expression``,set) for the compiled linear logic and any newly created glue formulas
@@ -61,20 +61,20 @@ class AtomicExpression(Expression):
     def compile_neg(self, index_counter, glueFormulaFactory):
         """
         From Iddo Lev's PhD Dissertation p108-109
-        
+
         :param index_counter: ``Counter`` for unique indices
         :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
         :return: (``Expression``,set) for the compiled linear logic and any newly created glue formulas
         """
         self.dependencies = []
         return (self, [])
-    
+
     def initialize_labels(self, fstruct):
         self.name = fstruct.initialize_label(self.name.lower())
-    
+
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.name == other.name
-        
+
     def __str__(self):
         accum = self.name
         if self.dependencies:
@@ -89,7 +89,7 @@ class ConstantExpression(AtomicExpression):
         """
         If 'other' is a constant, then it must be equal to 'self'.  If 'other' is a variable,
         then it must not be bound to anything other than 'self'.
-        
+
         :param other: ``Expression``
         :param bindings: ``BindingDict`` A dictionary of all current bindings
         :return: ``BindingDict`` A new combined dictionary of of 'bindings' and any new binding
@@ -109,7 +109,7 @@ class VariableExpression(AtomicExpression):
     def unify(self, other, bindings):
         """
         'self' must not be bound to anything other than 'other'.
-        
+
         :param other: ``Expression``
         :param bindings: ``BindingDict`` A dictionary of all current bindings
         :return: ``BindingDict`` A new combined dictionary of of 'bindings' and the new binding
@@ -134,14 +134,14 @@ class ImpExpression(Expression):
         assert isinstance(consequent, Expression)
         self.antecedent = antecedent
         self.consequent = consequent
-        
+
     def simplify(self, bindings=None):
         return self.__class__(self.antecedent.simplify(bindings), self.consequent.simplify(bindings))
-    
+
     def unify(self, other, bindings):
         """
         Both the antecedent and consequent of 'self' and 'other' must unify.
-        
+
         :param other: ``ImpExpression``
         :param bindings: ``BindingDict`` A dictionary of all current bindings
         :return: ``BindingDict`` A new combined dictionary of of 'bindings' and any new bindings
@@ -152,11 +152,11 @@ class ImpExpression(Expression):
             return bindings + self.antecedent.unify(other.antecedent, bindings) + self.consequent.unify(other.consequent, bindings)
         except VariableBindingException:
             raise UnificationException(self, other, bindings)
-        
+
     def compile_pos(self, index_counter, glueFormulaFactory):
         """
         From Iddo Lev's PhD Dissertation p108-109
-        
+
         :param index_counter: ``Counter`` for unique indices
         :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
         :return: (``Expression``,set) for the compiled linear logic and any newly created glue formulas
@@ -168,7 +168,7 @@ class ImpExpression(Expression):
     def compile_neg(self, index_counter, glueFormulaFactory):
         """
         From Iddo Lev's PhD Dissertation p108-109
-        
+
         :param index_counter: ``Counter`` for unique indices
         :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
         :return: (``Expression``,list of ``GlueFormula``) for the compiled linear logic and any newly created glue formulas
@@ -187,7 +187,7 @@ class ImpExpression(Expression):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
                 self.antecedent == other.antecedent and self.consequent == other.consequent
-        
+
     def __str__(self):
         return Tokens.OPEN + str(self.antecedent) + ' ' + Tokens.IMP + \
                ' ' + str(self.consequent) + Tokens.CLOSE
@@ -208,9 +208,9 @@ class ApplicationExpression(Expression):
 
         assert isinstance(function_simp, ImpExpression)
         assert isinstance(argument_simp, Expression)
-        
+
         bindings = BindingDict()
-        
+
         try:
             if isinstance(function, ApplicationExpression):
                 bindings += function.bindings
@@ -219,7 +219,7 @@ class ApplicationExpression(Expression):
             bindings += function_simp.antecedent.unify(argument_simp, bindings)
         except UnificationException, e:
             raise LinearLogicApplicationException, 'Cannot apply %s to %s. %s' % (function_simp, argument_simp, e)
-        
+
         # If you are running it on complied premises, more conditions apply
         if argument_indices:
             # A.dependencies of (A -o (B -o C)) must be a proper subset of argument_indices
@@ -234,22 +234,22 @@ class ApplicationExpression(Expression):
 
     def simplify(self, bindings=None):
         """
-        Since function is an implication, return its consequent.  There should be 
-        no need to check that the application is valid since the checking is done 
+        Since function is an implication, return its consequent.  There should be
+        no need to check that the application is valid since the checking is done
         by the constructor.
-        
+
         :param bindings: ``BindingDict`` A dictionary of bindings used to simplify
         :return: ``Expression``
         """
         if not bindings:
             bindings = self.bindings
-        
+
         return self.function.simplify(bindings).consequent
-        
+
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
                 self.function == other.function and self.argument == other.argument
-        
+
     def __str__(self):
         return str(self.function) + Tokens.OPEN + str(self.argument) + Tokens.CLOSE
 
@@ -266,26 +266,26 @@ class BindingDict(object):
         if binding_list:
             for (v, b) in binding_list:
                 self[v] = b
-    
+
     def __setitem__(self, variable, binding):
         """
-        A binding is consistent with the dict if its variable is not already bound, OR if its 
+        A binding is consistent with the dict if its variable is not already bound, OR if its
         variable is already bound to its argument.
-        
+
         :param variable: ``VariableExpression`` The variable bind
         :param binding: ``Expression`` The expression to which 'variable' should be bound
         :raise VariableBindingException: If the variable cannot be bound in this dictionary
         """
         assert isinstance(variable, VariableExpression)
-        assert isinstance(binding, Expression) 
-        
+        assert isinstance(binding, Expression)
+
         assert variable != binding
-        
+
         try:
             existing = self.d[variable]
         except KeyError:
             existing = None
-            
+
         if not existing or binding == existing:
             self.d[variable] = binding
         else:
@@ -303,7 +303,7 @@ class BindingDict(object):
                 intermediate = self.d[intermediate]
             except KeyError:
                 return intermediate
-            
+
     def __contains__(self, item):
         return item in self.d
 
@@ -329,10 +329,10 @@ class BindingDict(object):
 
     def __repr__(self):
         return 'BindingDict: ' + str(self)
-            
+
 class VariableBindingException(Exception): pass
 
-class UnificationException(Exception): 
+class UnificationException(Exception):
     def __init__(self, a, b, bindings):
         Exception.__init__(self, 'Cannot unify %s with %s given %s' % (a, b, bindings))
 
@@ -343,31 +343,31 @@ class Tokens(object):
     #Punctuation
     OPEN = '('
     CLOSE = ')'
-    
+
     #Operations
     IMP = '-o'
-    
+
     PUNCT = [OPEN, CLOSE]
-    TOKENS = PUNCT + [IMP] 
+    TOKENS = PUNCT + [IMP]
 
 
 class LinearLogicParser(LogicParser):
     """A linear logic expression parser."""
     def __init__(self):
         LogicParser.__init__(self)
-        
+
         self.operator_precedence = {APP: 1, Tokens.IMP: 2, None: 3}
         self.right_associated_operations += [Tokens.IMP]
-    
+
     def get_all_symbols(self):
         return Tokens.TOKENS
-    
+
     def handle(self, tok, context):
         if tok not in Tokens.TOKENS:
             return self.handle_variable(tok, context)
         elif tok == Tokens.OPEN:
             return self.handle_open(tok, context)
-     
+
     def get_BooleanExpression_factory(self, tok):
         if tok == Tokens.IMP:
             return ImpExpression
@@ -376,9 +376,9 @@ class LinearLogicParser(LogicParser):
 
     def make_BooleanExpression(self, factory, first, second):
         return factory(first, second)
-    
+
     def attempt_ApplicationExpression(self, expression, context):
-        """Attempt to make an application expression.  If the next tokens 
+        """Attempt to make an application expression.  If the next tokens
         are an argument in parens, then the argument expression is a
         function being applied to the arguments.  Otherwise, return the
         argument expression."""
@@ -398,7 +398,7 @@ class LinearLogicParser(LogicParser):
 
 def demo():
     llp = LinearLogicParser()
-    
+
     print llp.parse(r'f')
     print llp.parse(r'(g -o f)')
     print llp.parse(r'((g -o G) -o G)')

@@ -9,7 +9,7 @@
 """
 A classifier based on a support vector machine. This code uses Thorsten Joachims'
 SVM^light implementation (http://svmlight.joachims.org/), wrapped using
-PySVMLight (https://bitbucket.org/wcauchois/pysvmlight). The default settings are to 
+PySVMLight (https://bitbucket.org/wcauchois/pysvmlight). The default settings are to
 train a linear classification kernel, though through minor modification, full SVMlight
 capabilities should be accessible if needed. Only binary classification is possible at present.
 """
@@ -77,7 +77,7 @@ class SvmClassifier(ClassifierI):
     hyperplane is then determined that best divides feature space into
     classes, and future instances classified based on which side of
     the hyperplane they lie on, and their proximity to it.
-    
+
     This implementation is for a binary SVM - that is, only two
     classes are supported. You may achieve perform classification with
     more classes by training an SVM per class and then picking a best
@@ -126,7 +126,7 @@ class SvmClassifier(ClassifierI):
         """
         classification = cmp(prediction, 0)
         return self.svm_label_name(classification)
-    
+
     def _get_svm_classification(self, featureset):
         """
         given a set of features, classify them with our trained model
@@ -141,7 +141,7 @@ class SvmClassifier(ClassifierI):
         # it returns a list of floats, too.
         [prediction] = svmlight.classify(self._model, [instance_to_classify])
         return prediction
-    
+
     def prob_classify(self, featureset):
         """
         Return a probability distribution of classifications
@@ -159,7 +159,7 @@ class SvmClassifier(ClassifierI):
 
         # lump it into a boolean class, -1 or +1
         predicted_label = cmp(prediction, 0)
-        
+
         # sometimes the result is not within -1 ... +1; clip it so
         # that it is, and we get a sane-looking probability
         # distribution.  this will upset some results with non-linear
@@ -203,23 +203,23 @@ class SvmClassifier(ClassifierI):
 
         :param featuresets: training instances
         """
-        
+
         # build a unique list of labels
         labels = set()
         for (features, label) in featuresets:
             labels.add(label)
-        
+
         # this is a binary classifier only
         if len(labels) > 2:
             raise ValueError('Can only do boolean classification (labels: '+ str(labels) + ')')
             return False
-        
+
         # we need ordering, so a set's no good
         labels = list(labels)
-        
+
         # next, assign -1 and 1
         labelmapping = {labels[0]:-1, labels[1]:1}
-        
+
         # now for feature conversion
         # iter through instances, building a set of feature:type:str(value) triples
         svmfeatures = set()
@@ -248,8 +248,8 @@ def demo():
 
     from nltk.classify import accuracy
     from nltk.corpus import names
-    
-    
+
+
     import random
     names = ([(name, 'male') for name in names.words('male.txt')] +
              [(name, 'female') for name in names.words('female.txt')])
@@ -277,4 +277,4 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-    
+

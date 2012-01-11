@@ -59,12 +59,12 @@ from nltk.tag.sequential import (SequentialBackoffTagger, ContextTagger,
                                  DefaultTagger, NgramTagger, UnigramTagger,
                                  BigramTagger, TrigramTagger, AffixTagger,
                                  RegexpTagger, ClassifierBasedTagger,
-                                 ClassifierBasedPOSTagger) 
-from nltk.tag.brill      import BrillTagger, BrillTaggerTrainer, FastBrillTaggerTrainer   
+                                 ClassifierBasedPOSTagger)
+from nltk.tag.brill      import BrillTagger, BrillTaggerTrainer, FastBrillTaggerTrainer
 from nltk.tag.tnt        import TnT
 from nltk.tag.hunpos     import HunposTagger
 from nltk.tag.stanford   import StanfordTagger
-from nltk.tag.crf        import MalletCRF 
+from nltk.tag.crf        import MalletCRF
 
 from nltk.data      import load
 
@@ -81,7 +81,7 @@ def pos_tag(tokens):
     """
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
-    
+
         >>> from nltk import pos_tag, word_tokenize
         >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
         [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',

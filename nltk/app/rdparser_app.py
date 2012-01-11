@@ -16,7 +16,7 @@ symbol ("S").  It is shown in the main canvas, to the right of the
 list of available expansions.
 
 The parser builds up a tree structure for the text using three
-operations: 
+operations:
 
   - "expand" uses a CFG production to add children to a node on the
     fringe of the tree.
@@ -66,7 +66,7 @@ Keyboard Shortcuts::
 
 import string
 import tkFont
-from Tkinter import (Listbox, IntVar, Button, 
+from Tkinter import (Listbox, IntVar, Button,
                      Frame, Label, Menu, Scrollbar, Tk)
 
 from nltk.tree import Tree
@@ -74,7 +74,7 @@ from nltk.util import in_idle
 from nltk.parse import SteppingRecursiveDescentParser
 from nltk.draw.util import TextWidget, ShowText, CanvasFrame, EntryDialog
 from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
-        
+
 class RecursiveDescentApp(object):
     """
     A graphical tool for exploring the recursive descent parser.  The tool
@@ -105,7 +105,7 @@ class RecursiveDescentApp(object):
         self._animation_frames.set(5)
         self._animating_lock = 0
         self._autostep = 0
-        
+
         # The user can hide the grammar.
         self._show_grammar = IntVar(self._top)
         self._show_grammar.set(1)
@@ -126,12 +126,12 @@ class RecursiveDescentApp(object):
     #########################################
     ##  Initialization Helpers
     #########################################
-        
+
     def _init_fonts(self, root):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
         self._sysfont = tkFont.Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
-        
+
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget('size'))
@@ -149,7 +149,7 @@ class RecursiveDescentApp(object):
         # Grammar view.
         self._prodframe = listframe = Frame(parent)
         self._prodframe.pack(fill='both', side='left', padx=2)
-        self._prodlist_label = Label(self._prodframe, font=self._boldfont, 
+        self._prodlist_label = Label(self._prodframe, font=self._boldfont,
                                      text='Available Expansions')
         self._prodlist_label.pack()
         self._prodlist = Listbox(self._prodframe, selectmode='single',
@@ -180,7 +180,7 @@ class RecursiveDescentApp(object):
         # Key bindings are a good thing.
         self._top.bind('<Control-q>', self.destroy)
         self._top.bind('<Control-x>', self.destroy)
-        self._top.bind('<Escape>', self.destroy)       
+        self._top.bind('<Escape>', self.destroy)
         self._top.bind('e', self.expand)
         #self._top.bind('<Alt-e>', self.expand)
         #self._top.bind('<Control-e>', self.expand)
@@ -213,10 +213,10 @@ class RecursiveDescentApp(object):
         # Set up the frames.
         self._buttonframe = buttonframe = Frame(parent)
         buttonframe.pack(fill='none', side='bottom', padx=3, pady=2)
-        Button(buttonframe, text='Step', 
+        Button(buttonframe, text='Step',
                background='#90c0d0', foreground='black',
                command=self.step,).pack(side='left')
-        Button(buttonframe, text='Autostep', 
+        Button(buttonframe, text='Autostep',
                background='#90c0d0', foreground='black',
                command=self.autostep,).pack(side='left')
         Button(buttonframe, text='Expand', underline=0,
@@ -257,7 +257,7 @@ class RecursiveDescentApp(object):
         self._lastoper2.pack(side='left', fill='x', expand=1)
 
     def _init_canvas(self, parent):
-        self._cframe = CanvasFrame(parent, background='white', 
+        self._cframe = CanvasFrame(parent, background='white',
                                    #width=525, height=250,
                                    closeenough=10,
                                    border=2, relief='sunken')
@@ -268,7 +268,7 @@ class RecursiveDescentApp(object):
         self._tree = None
         self._textwidgets = []
         self._textline = None
-    
+
     def _init_menubar(self, parent):
         menubar = Menu(parent)
 
@@ -342,9 +342,9 @@ class RecursiveDescentApp(object):
         helpmenu.add_command(label='Instructions', underline=0,
                              command=self.help, accelerator='F1')
         menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
-        
+
         parent.config(menu=menubar)
-        
+
     #########################################
     ##  Helper
     #########################################
@@ -361,7 +361,7 @@ class RecursiveDescentApp(object):
 
     def _redraw(self):
         canvas = self._canvas
-        
+
         # Delete the old tree, widgets, etc.
         if self._tree is not None:
             self._cframe.destroy_widget(self._tree)
@@ -398,10 +398,10 @@ class RecursiveDescentApp(object):
 
         # Make sure the text lines up.
         self._position_text()
-        
+
 
     def _redraw_quick(self):
-        # This should be more-or-less sufficient after an animation. 
+        # This should be more-or-less sufficient after an animation.
         self._highlight_nodes()
         self._highlight_prodlist()
         self._position_text()
@@ -476,7 +476,7 @@ class RecursiveDescentApp(object):
             return leaves
         else:
             return [tree]
-            
+
     #########################################
     ##  Button Callbacks
     #########################################
@@ -507,12 +507,12 @@ class RecursiveDescentApp(object):
         #self._autostep_button['text'] = 'Autostep'
         self._autostep = 0
 
-    # Make sure to stop auto-stepping if we get any user input. 
+    # Make sure to stop auto-stepping if we get any user input.
     def step(self, *e): self._autostep = 0; self._step()
     def match(self, *e): self._autostep = 0; self._match()
     def expand(self, *e): self._autostep = 0; self._expand()
     def backtrack(self, *e): self._autostep = 0; self._backtrack()
-    
+
     def _step(self):
         if self._animating_lock: return
 
@@ -589,10 +589,10 @@ class RecursiveDescentApp(object):
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self._top, TITLE, ABOUT)
-            
+
     def help(self, *e):
         self._autostep = 0
-        # The default font's not very legible; try using 'fixed' instead. 
+        # The default font's not very legible; try using 'fixed' instead.
         try:
             ShowText(self._top, 'Help: Recursive Descent Parser Application',
                      (__doc__).strip(), width=75, font='fixed')
@@ -613,7 +613,7 @@ class RecursiveDescentApp(object):
         """
         if in_idle(): return
         self._top.mainloop(*args, **kwargs)
-        
+
     def resize(self, size=None):
         if size is not None: self._size.set(size)
         size = self._size.get()
@@ -688,7 +688,7 @@ class RecursiveDescentApp(object):
                                      node_color='white',
                                      leaf_font=self._font)
         widget.node()['color'] = '#20a050'
-                                     
+
         (oldx, oldy) = oldtree.node().bbox()[:2]
         (newx, newy) = widget.node().bbox()[:2]
         widget.move(oldx-newx, oldy-newy)
@@ -723,7 +723,7 @@ class RecursiveDescentApp(object):
         if dy > 0:
             for twidget in self._textwidgets: twidget.move(0, dy)
             self._canvas.move(self._textline, 0, dy)
-        
+
         self._animate_expand_frame(widget, colors)
 
     def _makeroom(self, treeseg):
@@ -746,10 +746,10 @@ class RecursiveDescentApp(object):
             lsibling = parent.subtrees()[index-1]
             dx = max(0, lsibling.bbox()[2] - treeseg.bbox()[0] + 10)
             treeseg.move(dx, 0)
-            
+
         # Keep working up the tree.
         self._makeroom(parent)
-        
+
     def _animate_expand_frame(self, widget, colors):
         if len(colors) > 0:
             self._animating_lock = 1
@@ -764,7 +764,7 @@ class RecursiveDescentApp(object):
         else:
             widget['color'] = 'black'
             for subtree in widget.subtrees():
-                if isinstance(subtree, TreeSegmentWidget):                    
+                if isinstance(subtree, TreeSegmentWidget):
                     subtree.node()['color'] = 'black'
                 else:
                     subtree['color'] = 'black'
@@ -772,7 +772,7 @@ class RecursiveDescentApp(object):
             widget.node()['color'] = 'black'
             self._animating_lock = 0
             if self._autostep: self._step()
-            
+
     def _animate_backtrack(self, treeloc):
         # Flash red first, if we're animating.
         if self._animation_frames.get() == 0: colors = []
@@ -786,7 +786,7 @@ class RecursiveDescentApp(object):
                 widgets.append(subtree.node())
             else:
                 widgets.append(subtree)
-        
+
         self._animate_backtrack_frame(widgets, colors)
 
     def _animate_backtrack_frame(self, widgets, colors):
@@ -813,7 +813,7 @@ class RecursiveDescentApp(object):
 
     def _animate_match(self, treeloc):
         widget = self._get(self._tree, treeloc)
-        
+
         dy = ((self._textwidgets[0].bbox()[1] - widget.bbox()[3] - 10.0) /
               max(1, self._animation_frames.get()))
         self._animate_match_frame(self._animation_frames.get(), widget, dy)
@@ -851,7 +851,7 @@ class RecursiveDescentApp(object):
         self._prodlist.delete(0, 'end')
         for production in self._productions:
             self._prodlist.insert('end', (' %s' % production))
-        
+
     def edit_sentence(self, *e):
         sentence = string.join(self._sent)
         title = 'Edit Text'
@@ -866,7 +866,7 @@ def app():
     """
     Create a recursive descent parser demo, using a simple grammar and
     text.
-    """    
+    """
     from nltk.grammar import parse_cfg
     grammar = parse_cfg("""
     # Grammatical productions.
@@ -891,4 +891,4 @@ if __name__ == '__main__':
 
 __all__ = ['app']
 
-        
+

@@ -76,7 +76,7 @@ def translate(phrase, source, target):
     """
     Use babelfish to translate phrase from source language to target language.
     It's only guaranteed to work if 'english' is one of the two languages.
-    
+
     :raise BabelizeError: If an error is encountered.
     """
 
@@ -86,7 +86,7 @@ def translate(phrase, source, target):
         target_code = __languages[target]
     except KeyError, lang:
         raise ValueError, "Language %s not available" % lang
-    
+
 
     params = urllib.urlencode({'doit': 'done',
                                'tt': 'urltext',
@@ -146,13 +146,13 @@ def babelize_shell():
 
     :raise BabelizeError: If an error is encountered.
     """
-    
+
     print "NLTK Babelizer: type 'help' for a list of commands."
-    
+
     language = ''
     phrase = ''
     try:
-        while True: 
+        while True:
             command = raw_input('Babel> ')
             command = clean(command)
             if ' ' not in command:

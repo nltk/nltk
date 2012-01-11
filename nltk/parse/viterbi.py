@@ -62,7 +62,7 @@ class ViterbiParser(ParserI):
     |             new_tree = Tree(prod.lhs, t[1], t[2], ..., t[n])
     |             MLC[start, start+width, prod.lhs] = new_tree
     | Return MLC[0, len(text), start_symbol]
-                
+
     :type _grammar: WeightedGrammar
     :ivar _grammar: The grammar used to parse sentences.
     :type _trace: int
@@ -103,7 +103,7 @@ class ViterbiParser(ParserI):
 
     def parse(self, tokens):
         # Inherit docs from ParserI
-        
+
         tokens = list(tokens)
         self._grammar.check_coverage(tokens)
 
@@ -114,7 +114,7 @@ class ViterbiParser(ParserI):
         # value.  For Tokens, the "type" is the token's type.
         # The table is stored as a dictionary, since it is sparse.
         constituents = {}
-        
+
         # Initialize the constituents dictionary with the words from
         # the text.
         if self._trace: print ('Inserting tokens into the most likely'+
@@ -167,10 +167,10 @@ class ViterbiParser(ParserI):
             ``_add_constituents_spanning`` is called, ``constituents``
             should contain all possible constituents that are shorter
             than ``span``.
-            
+
         :type tokens: list of tokens
         :param tokens: The text we are parsing.  This is only used for
-            trace output.  
+            trace output.
         """
         # Since some of the grammar productions may be unary, we need to
         # repeatedly try all of the productions until none of them add any
@@ -178,7 +178,7 @@ class ViterbiParser(ParserI):
         changed = True
         while changed:
             changed = False
-            
+
             # Find all ways instantiations of the grammar productions that
             # cover the span.
             instantiations = self._find_instantiations(span, constituents)
@@ -235,7 +235,7 @@ class ViterbiParser(ParserI):
         rv = []
         for production in self._grammar.productions():
             childlists = self._match_rhs(production.rhs(), span, constituents)
-                                        
+
             for childlist in childlists:
                 rv.append( (production, childlist) )
         return rv
@@ -267,7 +267,7 @@ class ViterbiParser(ParserI):
             documentation for more information.
         """
         (start, end) = span
-        
+
         # Base case
         if start >= end and rhs == (): return [[]]
         if start >= end or rhs == (): return []
@@ -289,13 +289,13 @@ class ViterbiParser(ParserI):
 
         :param production: The production that has been applied
         :type production: Production
-        :param p: The probability of the tree produced by the production.  
+        :param p: The probability of the tree produced by the production.
         :type p: float
         :param span: The span of the production
         :type span: tuple
         :rtype: None
         """
-        
+
         str = '|' + '.' * span[0]
         str += '=' * (span[1] - span[0])
         str += '.' * (width - span[1]) + '| '

@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Module for reading, writing and manipulating 
+Module for reading, writing and manipulating
 Toolbox databases and settings fileids.
 """
 
@@ -59,9 +59,9 @@ class ToolboxCorpusReader(CorpusReader):
         elif isinstance(fileids, basestring): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
-    
+
 def demo():
     pass
-    
+
 if __name__ == '__main__':
     demo()

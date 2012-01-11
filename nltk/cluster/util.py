@@ -24,12 +24,12 @@ class VectorSpaceClusterer(ClusterI):
         :type normalise:        boolean
         :param svd_dimensions:  number of dimensions to use in reducing vector
                                 dimensionsionality with SVD
-        :type svd_dimensions:   int 
+        :type svd_dimensions:   int
         """
         self._Tt = None
         self._should_normalise = normalise
         self._svd_dimensions = svd_dimensions
-    
+
     def cluster(self, vectors, assign_clusters=False, trace=False):
         assert len(vectors) > 0
 
@@ -46,7 +46,7 @@ class VectorSpaceClusterer(ClusterI):
             Dt = vt[:self._svd_dimensions,:]
             vectors = numpy.transpose(numpy.matrixmultiply(S, Dt))
             self._Tt = numpy.transpose(T)
-            
+
         # call abstract method to cluster the vectors
         self.cluster_vectorspace(vectors, trace)
 
@@ -221,12 +221,12 @@ class Dendrogram(object):
         else:
             root = self._items[0]
         leaves = self._original_items
-        
+
         if leaf_labels:
             last_row = leaf_labels
         else:
             last_row = [str(leaf._value) for leaf in leaves]
-        
+
         # find the bottom row and the best cell width
         width = max(map(len, last_row)) + 1
         lhalf = width / 2
@@ -271,7 +271,7 @@ class Dendrogram(object):
         # finally, display the last line
         display(''.join(item.center(width) for item in last_row))
         display('\n')
-        
+
     def __repr__(self):
         if len(self._items) > 1:
             root = _DendrogramNode(self._merge, *self._items)

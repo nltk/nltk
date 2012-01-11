@@ -1,5 +1,5 @@
 # Copyright (c) 2002 Vivake Gupta (vivakeATomniscia.org).  All rights reserved.
-# 
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of the
@@ -58,7 +58,7 @@ For a more faithful version of the Porter algorithm, see
 Later additions:
 
    June 2000
-   
+
    The 'l' of the 'logi' -> 'log' rule is put with the stem, so that
    short stems like 'geo' 'theo' etc work like 'archaeo' 'philo' etc.
 
@@ -103,7 +103,7 @@ class PorterStemmer(StemmerI):
     ## Add a module docstring
     """
     A word stemmer based on the Porter stemming algorithm.
-    
+
         Porter, M. \"An algorithm for suffix stripping.\"
         Program 14.3 (1980): 130-137.
 
@@ -123,8 +123,8 @@ class PorterStemmer(StemmerI):
     # should be done before stem(...) is called.
 
     def __init__(self):
-        
-        self.b = ""  # buffer for word to be stemmed 
+
+        self.b = ""  # buffer for word to be stemmed
         self.k = 0
         self.k0 = 0
         self.j = 0   # j is a general offset into the string
@@ -146,7 +146,7 @@ class PorterStemmer(StemmerI):
         ##
         ## String sij is mapped to paradigm form pi, and the main stemming
         ## process is then bypassed.
-   
+
         irregular_forms = {
             "sky" :     ["sky", "skies"],
             "die" :     ["dying"],
@@ -184,7 +184,7 @@ class PorterStemmer(StemmerI):
         """m() measures the number of consonant sequences between k0 and j.
         if c is a consonant sequence and v a vowel sequence, and <..>
         indicates arbitrary presence,
-        
+
            <c><v>       gives 0
            <c>vc<v>     gives 1
            <c>vcvc<v>   gives 2
@@ -243,17 +243,17 @@ class PorterStemmer(StemmerI):
            e.g.
 
                cav(e), lov(e), hop(e), crim(e), but
-               snow, box, tray.        
+               snow, box, tray.
         """
         if i == 0: return 0  # i == 0 never happens perhaps
         if i == 1: return (not self.cons(0) and self.cons(1))
         if not self.cons(i) or self.cons(i-1) or not self.cons(i-2): return 0
-        
+
         ch = self.b[i]
         if ch == 'w' or ch == 'x' or ch == 'y':
             return 0
 
-        return 1        
+        return 1
 
     def ends(self, s):
         """ends(s) is TRUE <=> k0,...k ends with the string s."""
@@ -280,24 +280,24 @@ class PorterStemmer(StemmerI):
 
     def step1ab(self):
         """step1ab() gets rid of plurals and -ed or -ing. e.g.
-        
+
            caresses  ->  caress
            ponies    ->  poni
            sties     ->  sti
            tie       ->  tie        (--NEW--: see below)
            caress    ->  caress
            cats      ->  cat
-        
+
            feed      ->  feed
            agreed    ->  agree
            disabled  ->  disable
-        
+
            matting   ->  mat
            mating    ->  mate
            meeting   ->  meet
            milling   ->  mill
            messing   ->  mess
-        
+
            meetings  ->  meet
         """
         if self.b[self.k] == 's':
@@ -494,7 +494,7 @@ class PorterStemmer(StemmerI):
         #print p[i:j+1]
         if j == None:
             j = len(p) - 1
-        
+
         # copy the parameters into statics
         self.b = p
         self.k = j
@@ -502,7 +502,7 @@ class PorterStemmer(StemmerI):
 
         if self.b[self.k0:self.k+1] in self.pool:
             return self.pool[self.b[self.k0:self.k+1]]
-        
+
         if self.k <= self.k0 + 1:
             return self.b # --DEPARTURE--
 
@@ -537,7 +537,7 @@ class PorterStemmer(StemmerI):
     #def stem(self, text):
     #    parts = re.split("(\W+)", text)
     #    numWords = (len(parts) + 1)/2
-    #    
+    #
     #    ret = ""
     #    for i in xrange(numWords):
     #        word = parts[2 * i]

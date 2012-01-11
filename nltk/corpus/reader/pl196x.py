@@ -1,4 +1,4 @@
-# Natural Language Toolkit: 
+# Natural Language Toolkit:
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Piotr Kasprzyk <p.j.kasprzyk@gmail.com>
@@ -29,20 +29,20 @@ TEXTID = re.compile(r'text id="(.*?)"')
 
 
 class TEICorpusView(StreamBackedCorpusView):
-	def __init__(self, corpus_file, 
-					tagged, group_by_sent, group_by_para, 
+	def __init__(self, corpus_file,
+					tagged, group_by_sent, group_by_para,
 					tag_mapping_function=None, headLen=0,
 					textids=None):
 		self._tagged = tagged
 		self._textids = textids
-		
+
 		self._group_by_sent = group_by_sent
 		self._group_by_para = group_by_para
 		# WARNING -- skip header
 		StreamBackedCorpusView.__init__(self, corpus_file, startpos=headLen)
 
 	_pagesize = 4096
-	
+
 	def read_block(self, stream):
 		block = stream.readlines(self._pagesize)
 		block = concat(block)
@@ -90,7 +90,7 @@ class TEICorpusView(StreamBackedCorpusView):
 
 
 class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
-	
+
 	headLen = 2770
 
 	def __init__(self, *args, **kwargs):
@@ -99,9 +99,9 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 
 		XMLCorpusReader.__init__(self, *args)
 		CategorizedCorpusReader.__init__(self, kwargs)
-		
+
 		self._init_textids()
-	
+
 	def _init_textids(self):
 		self._f2t = defaultdict(list)
 		self._t2f = defaultdict(list)
@@ -150,9 +150,9 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 	def textids(self, fileids=None, categories=None):
 		"""
 		In the pl196x corpus each category is stored in single
-		file and thus both methods provide identical functionality. In order 
-		to accommodate finer granularity, a non-standard textids() method was 
-		implemented. All the main functions can be supplied with a list 
+		file and thus both methods provide identical functionality. In order
+		to accommodate finer granularity, a non-standard textids() method was
+		implemented. All the main functions can be supplied with a list
 		of required chunks---giving much more control to the user.
 		"""
 		fileids, _ = self._resolve(fileids, categories)

@@ -111,7 +111,7 @@ class MalletCRF(FeaturesetTaggerI):
         # Write the test corpus to a temporary file
         (fd, test_file) = mkstemp('.txt', 'test')
         self.write_test_corpus(sentences, os.fdopen(fd, 'w'))
-        
+
         try:
             # Run mallet on the test file.
             stdout, stderr = call_mallet([self._RUN_CRF,
@@ -132,7 +132,7 @@ class MalletCRF(FeaturesetTaggerI):
             # Combine the labels and the original sentences.
             return [zip(sent, label) for (sent,label) in
                     zip(sentences, labels)]
-            
+
         finally:
             os.remove(test_file)
 
@@ -142,7 +142,7 @@ class MalletCRF(FeaturesetTaggerI):
 
     #: The name of the java script used to train MalletCRFs.
     _TRAIN_CRF = "org.nltk.mallet.TrainCRF"
-    
+
     @classmethod
     def train(cls, feature_detector, corpus, filename=None,
               weight_groups=None, gaussian_variance=1, default_label='O',
@@ -208,23 +208,23 @@ class MalletCRF(FeaturesetTaggerI):
         # Ensure that the filename ends with '.zip'
         if not filename.endswith('.crf'):
             filename += '.crf'
-        
+
         if trace >= 1:
             print '[MalletCRF] Training a new CRF: %s' % filename
-                
+
         # Create crf-info object describing the new CRF.
         crf_info = MalletCRF._build_crf_info(
             corpus, gaussian_variance, default_label, max_iterations,
             transduction_type, weight_groups, add_start_state,
             add_end_state, filename, feature_detector)
-        
+
         # Create a zipfile, and write crf-info to it.
         if trace >= 2:
             print '[MalletCRF] Adding crf-info.xml to %s' % filename
         zf = zipfile.ZipFile(filename, mode='w')
         zf.writestr('crf-info.xml', crf_info.toxml()+'\n')
         zf.close()
-        
+
         # Create the CRF object.
         crf = MalletCRF(filename, feature_detector)
 
@@ -250,14 +250,14 @@ class MalletCRF(FeaturesetTaggerI):
         finally:
             # Delete the temp file containing the training corpus.
             os.remove(train_file)
-            
+
         if trace >= 1:
             print '[MalletCRF] Training complete.'
             print '[MalletCRF]   Model stored in: %s' % filename
         if trace >= 2:
             dt = time.time()-t0
             print '[MalletCRF]   Total training time: %d seconds' % dt
-                
+
         # Return the completed CRF.
         return crf
 
@@ -322,13 +322,13 @@ class MalletCRF(FeaturesetTaggerI):
                 state_info.transitions.append(
                     CRFInfo.Transition(dst, dst, state_weight_groups))
             state_info_list.append(state_info)
-                
+
         return CRFInfo(state_info_list, gaussian_variance,
                        default_label, max_iterations,
                        transduction_type, weight_groups,
                        add_start_state, add_end_state,
                        model_filename, feature_detector)
-                 
+
     #: A table used to filter the output that mallet generates during
     #: training.  By default, mallet generates very verbose output.
     #: This table is used to select which lines of output are actually
@@ -394,7 +394,7 @@ class MalletCRF(FeaturesetTaggerI):
                 stream.write('__end__ __end__\n')
             stream.write('\n')
         if close_stream: stream.close()
-                    
+
     def write_test_corpus(self, corpus, stream, close_stream=True):
         """
         Write a given test corpus to a given stream, in a format that
@@ -433,7 +433,7 @@ class MalletCRF(FeaturesetTaggerI):
                 corpus.append([])
         if corpus[-1] == []: corpus.pop()
         return corpus
-        
+
     _ESCAPE_RE = re.compile('[^a-zA-Z0-9]')
     @staticmethod
     def _escape_sub(m):
@@ -552,7 +552,7 @@ class CRFInfo(object):
         if fd.find('pickle') is not None:
             try: feature_detector = pickle.loads(fd.find('pickle').text)
             except pickle.PicklingError, e: pass # unable to unpickle it.
-            
+
         return CRFInfo(states,
                        float(etree.find('gaussianVariance').text),
                        etree.find('defaultLabel').text,
@@ -563,7 +563,7 @@ class CRFInfo(object):
                        bool(etree.find('addEndState').text),
                        etree.find('modelFile').text,
                        feature_detector)
-        
+
     def write(self, filename):
         out = open(filename, 'w')
         out.write(self.toxml())
@@ -621,7 +621,7 @@ class CRFInfo(object):
             self.destination = destination
             self.label = label
             self.weightgroups = weightgroups
-        
+
         _XML_TEMPLATE = ('        <transition label="%(label)s" '
                          'destination="%(destination)s" '
                          'weightGroups="%(w_groups)s"/>')
@@ -642,7 +642,7 @@ class CRFInfo(object):
         input-features (which are a function of only the input) should be
         mapped to joint-features (which are a function of both the input
         and the output tags).
-        
+
         Each weight group specifies that a given set of input features
         should be paired with all transitions from a given set of source
         tags to a given set of destination tags.
@@ -685,7 +685,7 @@ class CRFInfo(object):
                                        etree.get('src'),
                                        etree.get('dst'),
                                        etree.get('features'))
-            
+
         # [xx] feature name????
         def match(self, src, dst):
             # Check if the source matches
@@ -696,7 +696,7 @@ class CRFInfo(object):
                 else:
                     src_match = src in self.src
                 self._src_match_cache[src] = src_match
-    
+
             # Check if the dest matches
             dst_match = self._dst_match_cache.get(dst)
             if dst_match is None:
@@ -705,7 +705,7 @@ class CRFInfo(object):
                 else:
                     dst_match = dst in self.dst
                 self._dst_match_cache[dst] = dst_match
-    
+
             # Return true if both matched.
             return src_match and dst_match
 
@@ -718,7 +718,7 @@ def demo(train_size=100, test_size=100,
          mallet_home='/usr/local/mallet-0.4'):
     from nltk.corpus import brown
     import textwrap
-    
+
     # Define a very simple feature detector
     def fd(sentence, index):
         word = sentence[index]

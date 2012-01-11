@@ -41,7 +41,7 @@ corpus, based on one or more "rule templates."
     Finding initial useful rules...
         Found 10210 useful rules.
     <BLANKLINE>
-               B      |     
+               B      |
        S   F   r   O  |        Score = Fixed - Broken
        c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
        o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
@@ -94,7 +94,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
     are created by learning rules from a training corpus, using either
     ``BrillTaggerTrainer`` or ``FastBrillTaggerTrainer``.
     """
-    
+
     yaml_tag = '!nltk.BrillTagger'
     def __init__(self, initial_tagger, rules):
         """
@@ -112,7 +112,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
     def tag(self, tokens):
         # Inherit documentation from TaggerI
-        
+
         # Run the initial tagger.
         tagged_tokens = self._initial_tagger.tag(tokens)
 
@@ -157,13 +157,13 @@ class BrillRule(yaml.YAMLObject):
     def __init__(self, original_tag, replacement_tag):
         assert self.__class__ != BrillRule, \
                "BrillRule is an abstract base class"
-        
+
         self.original_tag = original_tag
         """The tag which this BrillRule may cause to be replaced."""
-        
+
         self.replacement_tag = replacement_tag
         """The tag with which this BrillRule may replace another tag."""
-        
+
     def apply(self, tokens, positions=None):
         """
         Apply this rule at every position in positions where it
@@ -192,12 +192,12 @@ class BrillRule(yaml.YAMLObject):
         # the rule to interact with itself.
         for i in change:
             tokens[i] = (tokens[i][0], self.replacement_tag)
-        
+
         return change
 
     def applies(self, tokens, index):
         """
-        :return: True if the rule would change the tag of 
+        :return: True if the rule would change the tag of
             ``tokens[index]``, False otherwise
         :rtype: bool
         :param tokens: A tagged sentence
@@ -206,7 +206,7 @@ class BrillRule(yaml.YAMLObject):
         :type index: int
         """
         assert False, "Brill rules must define applies()"
-        
+
     # Rules must be comparable and hashable for the algorithm to work
     def __eq__(self):
         assert False, "Brill rules must be comparable"
@@ -214,7 +214,7 @@ class BrillRule(yaml.YAMLObject):
         assert False, "Brill rules must be comparable"
     def __hash__(self):
         assert False, "Brill rules must be hashable"
-    
+
 
 class ProximateTokensRule(BrillRule):
     """
@@ -229,7 +229,7 @@ class ProximateTokensRule(BrillRule):
     and property values to check for in those ranges: ``(start, end, value)``.
 
     The brill rule is then applicable to the *n*th token iff:
-    
+
       - The *n*th token is tagged with the rule's original tag; and
       - For each (start, end, value) triple, the property value of
         at least one token between n+start and n+end (inclusive) is value.
@@ -259,7 +259,7 @@ class ProximateTokensRule(BrillRule):
             if s>e:
                 raise ValueError('Condition %s has an invalid range' %
                                  ((s,e,v),))
-    
+
     # Make Brill rules look nice in YAML.
     @classmethod
     def to_yaml(cls, dumper, data):
@@ -294,17 +294,17 @@ class ProximateTokensRule(BrillRule):
 
     def applies(self, tokens, index):
         # Inherit docs from BrillRule
-        
+
         # Does the given token have this rule's "original tag"?
         if tokens[index][1] != self.original_tag:
             return False
-        
+
         # Check to make sure that every condition holds.
         for (start, end, val) in self._conditions:
             # Find the (absolute) start and end indices.
             s = max(0, index+start)
             e = min(index+end+1, len(tokens))
-            
+
             # Look for *any* token that satisfies the condition.
             for i in range(s, e):
                 if self.extract_property(tokens[i]) == val:
@@ -319,9 +319,9 @@ class ProximateTokensRule(BrillRule):
     def __eq__(self, other):
         return (self is other or
                 (other is not None and
-                 other.__class__ == self.__class__ and 
-                 self.original_tag == other.original_tag and 
-                 self.replacement_tag == other.replacement_tag and 
+                 other.__class__ == self.__class__ and
+                 self.original_tag == other.original_tag and
+                 self.replacement_tag == other.replacement_tag and
                  self._conditions == other._conditions))
 
     def __ne__(self, other):
@@ -335,7 +335,7 @@ class ProximateTokensRule(BrillRule):
             self.__hash = hash( (self.original_tag, self.replacement_tag,
                                  self._conditions, self.__class__.__name__) )
             return self.__hash
-    
+
     def __repr__(self):
         # Cache our repr (justified by profiling -- this is used as
         # a sort key when deterministic=True.)
@@ -348,7 +348,7 @@ class ProximateTokensRule(BrillRule):
                            (self.__class__.__name__, self.original_tag,
                             self.replacement_tag, conditions))
             return self.__repr
-                    
+
 
     def __str__(self):
         replacement = '%s -> %s' % (self.original_tag,
@@ -359,7 +359,7 @@ class ProximateTokensRule(BrillRule):
             conditions = ' if '+ ', and '.join([self._condition_to_str(c)
                                                for c in self._conditions])
         return replacement+conditions
-    
+
     def _condition_to_str(self, condition):
         """
         Return a string representation of the given condition.
@@ -438,7 +438,7 @@ class BrillTemplateI(object):
         If the *i*th token already has the correct tag (i.e., if
         tagged_tokens[i][1] == correctTag), then
         ``applicable_rules()`` should return the empty list.
-        
+
         :param tokens: The tagged tokens being tagged.
         :type tokens: list(tuple)
         :param i: The index of the token whose tag should be corrected.
@@ -448,7 +448,7 @@ class BrillTemplateI(object):
         :rtype: list(BrillRule)
         """
         raise AssertionError, "BrillTemplateI is an abstract interface"
-    
+
     def get_neighborhood(self, token, index):
         """
         Returns the set of indices *i* such that
@@ -464,7 +464,7 @@ class BrillTemplateI(object):
         :rtype: set
         """
         raise AssertionError, "BrillTemplateI is an abstract interface"
-    
+
 class ProximateTokensTemplate(BrillTemplateI):
     """
     A brill template that generates a list of
@@ -472,7 +472,7 @@ class ProximateTokensTemplate(BrillTemplateI):
     position.  In particular, each ``ProximateTokensTemplate`` is
     parameterized by a proximate token brill rule class and a list of
     boundaries, and generates all rules that:
-    
+
       - use the given brill rule class
       - use the given list of boundaries as the start and end
         points for their conditions
@@ -490,7 +490,7 @@ class ProximateTokensTemplate(BrillTemplateI):
         created by each rule.
     :raise ValueError: If start>end for any boundary.
     """
-    
+
     def __init__(self, rule_class, *boundaries):
         self._rule_class = rule_class
         self._boundaries = boundaries
@@ -508,7 +508,7 @@ class ProximateTokensTemplate(BrillTemplateI):
         applicable_conditions = \
              [self._applicable_conditions(tokens, index, start, end)
               for (start, end) in self._boundaries]
-            
+
         # Find all combinations of these applicable conditions.  E.g.,
         # if applicable_conditions=[[A,B], [C,D]], then this will
         # generate [[A,C], [A,D], [B,C], [B,D]].
@@ -543,7 +543,7 @@ class ProximateTokensTemplate(BrillTemplateI):
 
         # applicable_rules(tokens, index, ...) depends on index.
         neighborhood = set([index])
-        
+
         # applicable_rules(tokens, i, ...) depends on index if
         # i+start < index <= i+end.
         for (start, end) in self._boundaries:
@@ -578,7 +578,7 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
 
     Construct a template for generating proximate token brill
     rules.
-        
+
     :type rule_class: class
     :param rule_class: The proximate token brill rule class that
         should be used to generate new rules.  This class must be a
@@ -646,7 +646,7 @@ class BrillTaggerTrainer(object):
         producing at most *max_rules* transformations, each of which
         reduces the net number of errors in the corpus by at least
         *min_score*.
-        
+
         :type train_sents: list(list(tuple))
         :param train_sents: The corpus of tagged sentences
         :type max_rules: int
@@ -663,9 +663,9 @@ class BrillTaggerTrainer(object):
         # test corpus to look more like the training corpus.
         test_sents = [self._initial_tagger.tag(untag(sent))
                       for sent in train_sents]
-        
+
         if self._trace > 2: self._trace_header()
-            
+
         # Look for useful rules.
         rules = []
         try:
@@ -762,7 +762,7 @@ class BrillTaggerTrainer(object):
             is a brill rule and ``fixscore`` is the number of tokens
             whose tag the rule corrects.  Note that ``fixscore`` does
             *not* include the number of tokens whose tags are changed
-            to incorrect values.        
+            to incorrect values.
         """
 
         # Create a list of all indices that are incorrectly tagged.
@@ -783,9 +783,9 @@ class BrillTaggerTrainer(object):
 
         # Convert the dictionary into a list of (rule, score) tuples,
         # sorted in descending order of score.
-        return sorted(rule_score_dict.items(), 
+        return sorted(rule_score_dict.items(),
                       key=lambda (rule,score): -score)
-    
+
     def _find_rules_at(self, test_sent, train_sent, i):
         """
         :rtype: set
@@ -799,7 +799,7 @@ class BrillTaggerTrainer(object):
                 new_rules = template.applicable_rules(test_sent, i,
                                                       correct_tag)
                 applicable_rules.update(new_rules)
-                
+
         return applicable_rules
 
     #////////////////////////////////////////////////////////////
@@ -808,7 +808,7 @@ class BrillTaggerTrainer(object):
 
     def _trace_header(self):
         print """
-           B      |     
+           B      |
    S   F   r   O  |        Score = Fixed - Broken
    c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
    o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
@@ -918,28 +918,28 @@ class FastBrillTaggerTrainer(object):
                     rules.append(rule)
                 else:
                     break # No more good rules left!
-    
+
                 # Report the rule that we found.
                 if self._trace > 1: self._trace_rule(rule)
-    
+
                 # Apply the new rule at the relevant sites
                 self._apply_rule(rule, test_sents)
-                
+
                 # Update _tag_positions[rule.original_tag] and
                 # _tag_positions[rule.replacement_tag] for the affected
                 # positions (i.e., self._positions_by_rule[rule]).
                 self._update_tag_positions(rule)
-                
+
                 # Update rules that were affected by the change.
                 self._update_rules(rule, train_sents, test_sents)
-                
+
         # The user can cancel training manually:
         except KeyboardInterrupt:
             print "Training stopped manually -- %d rules found" % len(rules)
 
         # Discard our tag position mapping & rule mappings.
         self._clean()
-            
+
         # Create and return a tagger from the rules we found.
         return BrillTagger(self._initial_tagger, rules)
 
@@ -960,7 +960,7 @@ class FastBrillTaggerTrainer(object):
         # mapping and all the rule-related mappings.
         for sentnum, sent in enumerate(test_sents):
             for wordnum, (word, tag) in enumerate(sent):
-                
+
                 # Initialize tag_positions
                 self._tag_positions[tag].append( (sentnum,wordnum) )
 
@@ -978,7 +978,7 @@ class FastBrillTaggerTrainer(object):
         self._rules_by_score = None
         self._rule_scores = None
         self._first_unknown_position = None
-        
+
     def _find_rules(self, sent, wordnum, new_tag):
         """
         Use the templates to find rules that apply at index *wordnum*
@@ -994,7 +994,7 @@ class FastBrillTaggerTrainer(object):
         *rule* applies at the position *(sentnum, wordnum)*.
         """
         pos = sentnum, wordnum
-        
+
         # If the rule is already known to apply here, ignore.
         # (This only happens if the position's tag hasn't changed.)
         if pos in self._positions_by_rule[rule]:
@@ -1026,19 +1026,19 @@ class FastBrillTaggerTrainer(object):
         does not apply at the position *(sentnum, wordnum)*.
         """
         pos = sentnum, wordnum
-        
+
         # Update _rule_scores.
         old_score = self._rule_scores[rule]
         self._rule_scores[rule] -= self._positions_by_rule[rule][pos]
-        
+
         # Update _rules_by_score.
         self._rules_by_score[old_score].discard(rule)
         self._rules_by_score[self._rule_scores[rule]].add(rule)
-        
+
         # Update _positions_by_rule
         del self._positions_by_rule[rule][pos]
         self._rules_by_position[pos].remove(rule)
-        
+
         # Optional addition: if the rule now applies nowhere, delete
         # all its dictionary entries.
 
@@ -1065,7 +1065,7 @@ class FastBrillTaggerTrainer(object):
 
                 unk = self._first_unknown_position.get(rule, (0,-1))
                 start = bisect.bisect_left(positions, unk)
-                
+
                 for i in range(start, len(positions)):
                     sentnum, wordnum = positions[i]
                     if rule.applies(test_sents[sentnum], wordnum):
@@ -1097,7 +1097,7 @@ class FastBrillTaggerTrainer(object):
         update_positions = set(self._positions_by_rule[rule])
         old_tag = rule.original_tag
         new_tag = rule.replacement_tag
-        
+
         if self._trace > 3: self._trace_apply(len(update_positions))
 
         # Update test_sents.
@@ -1132,7 +1132,7 @@ class FastBrillTaggerTrainer(object):
                 n = template.get_neighborhood(test_sents[sentnum], wordnum)
                 neighbors.update([(sentnum, i) for i in n])
 
-        # Update the rules at each position.  
+        # Update the rules at each position.
         num_obsolete = num_new = num_unseen = 0
         for sentnum, wordnum in neighbors:
             test_sent = test_sents[sentnum]
@@ -1173,7 +1173,7 @@ class FastBrillTaggerTrainer(object):
                         if new_rule.applies(test_sent, wordnum):
                             self._update_rule_applies(new_rule, sentnum,
                                                       wordnum, train_sents)
-            
+
         if self._trace > 3:
             self._trace_update_rules(num_obsolete, num_new, num_unseen)
 
@@ -1183,7 +1183,7 @@ class FastBrillTaggerTrainer(object):
 
     def _trace_header(self):
         print """
-           B      |     
+           B      |
    S   F   r   O  |        Score = Fixed - Broken
    c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
    o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
@@ -1195,14 +1195,14 @@ class FastBrillTaggerTrainer(object):
     def _trace_rule(self, rule):
         assert self._rule_scores[rule] == \
                sum(self._positions_by_rule[rule].values())
-        
+
         changes = self._positions_by_rule[rule].values()
         num_changed = len(changes)
         num_fixed = len([c for c in changes if c==1])
         num_broken = len([c for c in changes if c==-1])
         num_other = len([c for c in changes if c==0])
         score = self._rule_scores[rule]
-        
+
         if self._trace > 2:
             print '%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other),
             print textwrap.fill(str(rule), initial_indent=' '*20,
@@ -1223,7 +1223,7 @@ class FastBrillTaggerTrainer(object):
                        (num_new, num_unseen))
         print prefix
 
-        
+
 
 ######################################################################
 ## Testing

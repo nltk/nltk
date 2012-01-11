@@ -26,7 +26,7 @@ class ChunkParserI(ParserI):
         """
         Return the best chunk structure for the given tokens
         and return a tree.
-        
+
         :param tokens: The list of (word, tag) tokens to be chunked.
         :type tokens: list(tuple)
         :rtype: Tree
@@ -48,4 +48,4 @@ class ChunkParserI(ParserI):
         for correct in gold:
             chunkscore.score(correct, self.parse(correct.leaves()))
         return chunkscore
-        
+

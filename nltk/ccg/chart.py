@@ -40,7 +40,7 @@ from nltk.ccg.lexicon import parseLexicon
 from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
                                  BackwardApplication, ForwardComposition,
                                  BackwardComposition, ForwardSubstitution,
-                                 BackwardBx, BackwardSx) 
+                                 BackwardBx, BackwardSx)
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't
@@ -62,7 +62,7 @@ class CCGEdge(EdgeI):
     def is_complete(self): return True
     def is_incomplete(self): return False
     def next(self): return None
-    
+
     def categ(self):
         return self._categ
     def rule(self):
@@ -96,7 +96,7 @@ class CCGLeafEdge(EdgeI):
     def is_complete(self): return True
     def is_incomplete(self): return False
     def next(self): return None
-    
+
     def categ(self):
         return self._categ
 
@@ -118,13 +118,13 @@ class BinaryCombinatorRule(AbstractChartRule):
     NUMEDGES = 2
     def __init__(self,combinator):
         self._combinator = combinator
-    
+
     # Apply a combinator
     def apply_iter(self, chart, grammar, left_edge, right_edge):
         # The left & right edges must be touching.
         if not (left_edge.end() == right_edge.start()):
             return
-        
+
         # Check if the two edges are permitted to combine.
         # If so, generate the corresponding edge.
         if self._combinator.can_combine(left_edge.categ(),right_edge.categ()):
@@ -132,7 +132,7 @@ class BinaryCombinatorRule(AbstractChartRule):
                 new_edge = CCGEdge(span=(left_edge.start(), right_edge.end()),categ=res,rule=self._combinator)
                 if chart.insert(new_edge,(left_edge,right_edge)):
                     yield new_edge
-    
+
     # The representation of the combinator (for printing derivations)
     def __str__(self):
         return str(self._combinator)
@@ -210,14 +210,14 @@ class CCGChartParser(ParserI):
         tokens = list(tokens)
         chart = CCGChart(list(tokens))
         lex = self._lexicon
-      
+
         # Initialize leaf edges.
         for index in range(chart.num_leaves()):
             for cat in lex.categories(chart.leaf(index)):
                 new_edge = CCGLeafEdge(index, cat, chart.leaf(index))
                 chart.insert(new_edge, ())
 
-        
+
         # Select a span for the new edges
         for span in range(2,chart.num_leaves()+1):
             for start in range(0,chart.num_leaves()-span+1):
@@ -227,7 +227,7 @@ class CCGChartParser(ParserI):
                     lstart = start
                     mid = start + part
                     rend = start + span
-                    
+
                     for left in chart.select(span=(lstart,mid)):
                         for right in chart.select(span=(mid,rend)):
                             # Generate all possible combinations of the two edges
@@ -235,7 +235,7 @@ class CCGChartParser(ParserI):
                                 edges_added_by_rule = 0
                                 for newedge in rule.apply_iter(chart,lex,left,right):
                                     edges_added_by_rule += 1
-        
+
         # Output the resulting parses
         return chart.parses(lex.start())[:n]
 
@@ -252,13 +252,13 @@ class CCGChart(Chart):
 
         trees = []
         memo[edge] = []
-        
+
         if isinstance(edge,CCGLeafEdge):
             word = tree_class(edge.lhs(),[self._tokens[edge.start()]])
             leaf = tree_class((edge.lhs(),"Leaf"),[word])
             memo[edge] = leaf
             return leaf
-        
+
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class)
                                 for cp in cpl]
@@ -292,23 +292,23 @@ def printCCGDerivation(tree):
         leafstr += ' '*lleaflen + leaf + ' '*rleaflen
     print leafstr
     print catstr
-    
+
     # Display the derivation steps
     printCCGTree(0,tree)
 
 # Prints the sequence of derivation steps.
 def printCCGTree(lwidth,tree):
     rwidth = lwidth
-    
+
     # Is a leaf (word).
     # Increment the span by the space occupied by the leaf.
     if not isinstance(tree,Tree):
         return 2 + lwidth + len(tree)
-    
+
     # Find the width of the current derivation step
     for child in tree:
         rwidth = max(rwidth,printCCGTree(rwidth,child))
-    
+
     # Is a leaf node.
     # Don't print anything, but account for the space occupied.
     if not isinstance(tree.node,tuple):
@@ -338,7 +338,7 @@ lex = parseLexicon('''
 
     I => Pro             # Word -> Category mapping
     you => Pro
-    
+
     the => Det
 
     # Variables have the special keyword 'var'

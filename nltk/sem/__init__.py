@@ -14,7 +14,7 @@ set-theoretic models.
 
     >>> from nltk.sem import logic
     >>> logic._counter._value = 0
-  
+
 The package has two main components:
 
  - ``logic`` provides a parser for analyzing expressions of First

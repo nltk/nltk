@@ -64,7 +64,7 @@ the files ``borders.pl`` and ``contains.pl``. These contain facts of the
 following form::
 
     'borders(albania,greece).'
-    
+
     'contains0(africa,central_africa).'
 
 We do not want to form a unary concept out the element in
@@ -106,7 +106,7 @@ The functions ``val_dump`` and ``val_load`` are provided to allow a
 valuation to be stored in a persistent database and re-loaded, rather
 than having to be re-computed each time.
 
-Individuals and Lexical Items 
+Individuals and Lexical Items
 =============================
 As well as deriving relations from the Chat-80 data, we also create a
 set of individual constants, one for each entity in the domain. The
@@ -207,7 +207,7 @@ item_metadata = {
 
 rels = item_metadata.values()
 
-not_unary = ['borders.pl', 'contain.pl'] 
+not_unary = ['borders.pl', 'contain.pl']
 
 ###########################################################################
 
@@ -226,7 +226,7 @@ class Concept(object):
         :type altLabels: list
         @keyword closures: closure properties of the extension \
             (list items can be ``symmetric``, ``reflexive``, ``transitive``)
-        :type closures: list 
+        :type closures: list
         @keyword extension: the extensional value of the concept
         :type extension: set
         """
@@ -301,8 +301,8 @@ class Concept(object):
             for adjacent in g[node]:
                 pairs.append((node, adjacent))
         return set(pairs)
-                
-        
+
+
     def close(self):
         """
         Close a binary relation in the ``Concept``'s extension set.
@@ -325,7 +325,7 @@ class Concept(object):
             #print sorted(trans)
             self._extension = self._extension.union(trans)
         self.extension = list(self._extension)
-                    
+
 
 def clause2concepts(filename, rel_name, schema, closures=[]):
     """
@@ -333,7 +333,7 @@ def clause2concepts(filename, rel_name, schema, closures=[]):
 
     :param filename: filename containing the relations
     :type filename: str
-    :param rel_name: name of the relation 
+    :param rel_name: name of the relation
     :type rel_name: str
     :param schema: the schema used in a set of relational tuples
     :type schema: list
@@ -358,7 +358,7 @@ def clause2concepts(filename, rel_name, schema, closures=[]):
     # relations in 'not_unary' are more like ordinary binary relations
     if not filename in not_unary:
         concepts.append(unary_concept(pkey, subj, records))
-    
+
     # add a binary concept for each non-key field
     for field in fields:
         obj = schema.index(field)
@@ -369,17 +369,17 @@ def clause2concepts(filename, rel_name, schema, closures=[]):
 def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     """
     Convert a file of Prolog clauses into a database table.
-    
+
     This is not generic, since it doesn't allow arbitrary
     schemas to be set as a parameter.
-    
+
     Intended usage::
-        
-        cities2table('cities.pl', 'city', 'city.db', verbose=True, setup=True) 
+
+        cities2table('cities.pl', 'city', 'city.db', verbose=True, setup=True)
 
     :param filename: filename containing the relations
     :type filename: str
-    :param rel_name: name of the relation 
+    :param rel_name: name of the relation
     :type rel_name: str
     :param dbname: filename of persistent store
     :type schema: str
@@ -411,7 +411,7 @@ def sql_query(dbname, query):
     Execute an SQL query over a database.
     :param dbname: filename of persistent store
     :type schema: str
-    :param query: SQL query 
+    :param query: SQL query
     :type rel_name: str
     """
     try:
@@ -430,7 +430,7 @@ def sql_query(dbname, query):
 def _str2records(filename, rel):
     """
     Read a file into memory and convert each relation clause into a list.
-    """ 
+    """
     recs = []
     path = find("corpora/chat80/%s" % filename)
     for line in path.open():
@@ -477,7 +477,7 @@ def binary_concept(label, closures, subj, obj, records):
     label is bound to ``'B'``, and ``obj`` bound to 1, the derived
     binary concept will have label ``'B_of'``, and its extension will
     be a set of pairs such as ``('a', 'b')``.
-    
+
 
     :param label: the base part of the preferred label for the concept
     :type label: str
@@ -543,7 +543,7 @@ def make_valuation(concepts, read=False, lexicon=False):
     :rtype: list or Valuation
     """
     vals = []
-    
+
     for c in concepts:
         vals.append((c.prefLabel, c.extension))
     if lexicon: read = True
@@ -555,7 +555,7 @@ def make_valuation(concepts, read=False, lexicon=False):
         val = label_indivs(val, lexicon=lexicon)
         return val
     else: return vals
-    
+
 
 def val_dump(rels, db):
     """
@@ -573,10 +573,10 @@ def val_dump(rels, db):
     db_out = shelve.open(db, 'n')
 
     db_out.update(valuation)
-        
+
     db_out.close()
-    
-    
+
+
 def val_load(db):
     """
     Load a ``Valuation`` from a persistent database.
@@ -641,7 +641,7 @@ def make_lex(symbols):
     Create lexical CFG rules for each individual symbol.
 
     Given a valuation with an entry of the form ``{'zloty': 'zloty'}``,
-    create a lexical rule for the proper name 'Zloty'. 
+    create a lexical rule for the proper name 'Zloty'.
 
     :param symbols: a list of individual constants in the semantic representation
     :type symbols: sequence
@@ -651,12 +651,12 @@ def make_lex(symbols):
     header = """
 ##################################################################
 # Lexical rules automatically generated by running 'chat80.py -x'.
-##################################################################  
+##################################################################
 
 """
     lex.append(header)
     template = "PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
-    
+
     for s in symbols:
         parts = s.split('_')
         caps = [p.capitalize() for p in parts]
@@ -669,26 +669,26 @@ def make_lex(symbols):
 ###########################################################################
 # Interface function to emulate other corpus readers
 ###########################################################################
-       
+
 def concepts(items = items):
     """
     Build a list of concepts corresponding to the relation names in ``items``.
-    
+
     :param items: names of the Chat-80 relations to extract
     :type items: list of strings
     :return: the ``Concept`` objects which are extracted from the relations
-    :rtype: list 
+    :rtype: list
     """
     if type(items) is str: items = (items,)
-    
+
     rels = [item_metadata[r] for r in items]
 
     concept_map = process_bundle(rels)
     return concept_map.values()
 
 
-    
-    
+
+
 ###########################################################################
 
 
@@ -722,7 +722,7 @@ Valuation object for use in the NLTK semantics package.
     if options.outdb and options.indb:
         opts.error("Options --store and --load are mutually exclusive")
 
-        
+
     if options.outdb:
         # write the valuation to a persistent database
         if options.verbose:
@@ -767,15 +767,15 @@ Valuation object for use in the NLTK semantics package.
                 else:
                     valuation = make_valuation(concepts, read=True)
                     print valuation
-        
-        
+
+
 def sql_demo():
     """
     Print out every row from the 'city.db' database.
     """
     try:
         import sqlite3
-        print 
+        print
         print "Using SQL to extract rows from 'city.db' RDB."
         for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
             print row
@@ -783,7 +783,7 @@ def sql_demo():
         import warnings
         warnings.warn("To run the SQL demo, first install pysqlite, or else use Python 2.5 or later.")
 
-    
+
 if __name__ == '__main__':
     main()
     sql_demo()

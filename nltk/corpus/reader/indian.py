@@ -16,7 +16,7 @@ Contents:
   - Hindi: Microsoft Research India
   - Marathi: IIT Bombay
   - Telugu: IIIT Hyderabad
-"""       
+"""
 
 import codecs
 
@@ -83,5 +83,5 @@ class IndianCorpusView(StreamBackedCorpusView):
             return [sent]
         else:
             return sent
-        
+
 

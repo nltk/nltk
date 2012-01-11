@@ -35,7 +35,7 @@ def config_weka(classpath=None):
 
     # Make sure java's configured first.
     config_java()
-    
+
     if classpath is not None:
         _weka_classpath = classpath
 
@@ -43,7 +43,7 @@ def config_weka(classpath=None):
         searchpath = _weka_search
         if 'WEKAHOME' in os.environ:
             searchpath.insert(0, os.environ['WEKAHOME'])
-        
+
         for path in searchpath:
             if os.path.exists(os.path.join(path, 'weka.jar')):
                 _weka_classpath = os.path.join(path, 'weka.jar')
@@ -83,22 +83,22 @@ class WekaClassifier(ClassifierI):
 
     def batch_prob_classify(self, featuresets):
         return self._batch_classify(featuresets, ['-p', '0', '-distribution'])
-        
+
     def batch_classify(self, featuresets):
         return self._batch_classify(featuresets, ['-p', '0'])
-        
+
     def _batch_classify(self, featuresets, options):
         # Make sure we can find java & weka.
         config_weka()
-        
+
         temp_dir = tempfile.mkdtemp()
         try:
             # Write the test data file.
             test_filename = os.path.join(temp_dir, 'test.arff')
             self._formatter.write(test_filename, featuresets)
-            
+
             # Call weka to classify the data.
-            cmd = ['weka.classifiers.bayes.NaiveBayes', 
+            cmd = ['weka.classifiers.bayes.NaiveBayes',
                    '-l', self._model, '-T', test_filename] + options
             (stdout, stderr) = java(cmd, classpath=_weka_classpath,
                                     stdout=subprocess.PIPE,
@@ -146,7 +146,7 @@ class WekaClassifier(ClassifierI):
         # is this safe:?
         elif re.match(r'^0 \w+ [01]\.[0-9]* \?\s*$', lines[0]):
             return [line.split()[1] for line in lines if line.strip()]
-            
+
         else:
             for line in lines[:10]: print line
             raise ValueError('Unhandled output format -- your version '
@@ -180,10 +180,10 @@ class WekaClassifier(ClassifierI):
               classifier='naivebayes', options=[], quiet=True):
         # Make sure we can find java & weka.
         config_weka()
-        
+
         # Build an ARFF formatter.
         formatter = ARFF_Formatter.from_train(featuresets)
-    
+
         temp_dir = tempfile.mkdtemp()
         try:
             # Write the training data file.
@@ -196,7 +196,7 @@ class WekaClassifier(ClassifierI):
                 javaclass = classifier
             else:
                 raise ValueError('Unknown classifier %s' % classifier)
-    
+
             # Train the weka model.
             cmd = [javaclass, '-d', model_filename, '-t', train_filename]
             cmd += list(options)
@@ -206,7 +206,7 @@ class WekaClassifier(ClassifierI):
 
             # Return the new classifier.
             return WekaClassifier(formatter, model_filename)
-        
+
         finally:
             for f in os.listdir(temp_dir):
                 os.remove(os.path.join(temp_dir, f))
@@ -257,7 +257,7 @@ class ARFF_Formatter:
         """
         # Find the set of all attested labels.
         labels = set(label for (tok,label) in tokens)
-    
+
         # Determine the types of all features.
         features = {}
         for tok, label in tokens:
@@ -272,12 +272,12 @@ class ARFF_Formatter:
                     continue # can't tell the type.
                 else:
                     raise ValueError('Unsupported value type %r' % ftype)
-    
+
                 if features.get(fname, ftype) != ftype:
                     raise ValueError('Inconsistent type for %s' % fname)
                 features[fname] = ftype
         features = sorted(features.items())
-    
+
         return ARFF_Formatter(labels, features)
 
     def header_section(self):
@@ -286,14 +286,14 @@ class ARFF_Formatter:
         s = ('% Weka ARFF file\n' +
              '% Generated automatically by NLTK\n' +
              '%% %s\n\n' % time.ctime())
-    
+
         # Relation name
         s += '@RELATION rel\n\n'
-    
+
         # Input attribute specifications
         for fname, ftype in self._features:
             s += '@ATTRIBUTE %-30r %s\n' % (fname, ftype)
-    
+
         # Label attribute specification
         s += '@ATTRIBUTE %-30r {%s}\n' % ('-label-', ','.join(self._labels))
 
@@ -302,7 +302,7 @@ class ARFF_Formatter:
     def data_section(self, tokens, labeled=None):
         """
         Returns the ARFF data section for the given data.
-        
+
         :param tokens: a list of featuresets (dicts) or labelled featuresets
             which are tuples (featureset, label).
         :param labeled: Indicates whether the given tokens are labeled
@@ -310,19 +310,19 @@ class ARFF_Formatter:
             labeled if the first token's value is a tuple or list.
         """
         # Check if the tokens are labeled or unlabeled.  If unlabeled,
-        # then use 'None' 
+        # then use 'None'
         if labeled is None:
             labeled = tokens and isinstance(tokens[0], (tuple, list))
         if not labeled:
             tokens = [(tok, None) for tok in tokens]
-    
+
         # Data section
         s = '\n@DATA\n'
         for (tok, label) in tokens:
             for fname, ftype in self._features:
                 s += '%s,' % self._fmt_arff_val(tok.get(fname))
             s += '%s\n' % self._fmt_arff_val(label)
-    
+
         return s
 
     def _fmt_arff_val(self, fval):

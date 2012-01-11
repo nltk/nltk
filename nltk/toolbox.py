@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Module for reading, writing and manipulating 
+Module for reading, writing and manipulating
 Toolbox databases and settings files.
 """
 
@@ -28,8 +28,8 @@ class StandardFormat(object):
 
     def open(self, sfm_file):
         """
-        Open a standard format marker file for sequential reading. 
-        
+        Open a standard format marker file for sequential reading.
+
         :param sfm_file: name of the standard format marker input file
         :type sfm_file: str
         """
@@ -42,8 +42,8 @@ class StandardFormat(object):
 
     def open_string(self, s):
         """
-        Open a standard format marker string for sequential reading. 
-        
+        Open a standard format marker string for sequential reading.
+
         :param s: string to parse as a standard format marker input file
         :type s: str
         """
@@ -51,8 +51,8 @@ class StandardFormat(object):
 
     def raw_fields(self):
         """
-        Return an iterator that returns the next field in a (marker, value) 
-        tuple. Linebreaks and trailing white space are preserved except 
+        Return an iterator that returns the next field in a (marker, value)
+        tuple. Linebreaks and trailing white space are preserved except
         for the final newline in each field.
 
         :rtype: iter(tuple(str, str))
@@ -88,20 +88,20 @@ class StandardFormat(object):
         Return an iterator that returns the next field in a ``(marker, value)``
         tuple, where ``marker`` and ``value`` are unicode strings if an ``encoding``
         was specified in the ``fields()`` method. Otherwise they are non-unicode strings.
-        
+
         :param strip: strip trailing whitespace from the last line of each field
         :type strip: bool
         :param unwrap: Convert newlines in a field to spaces.
         :type unwrap: bool
-        :param encoding: Name of an encoding to use. If it is specified then 
-            the ``fields()`` method returns unicode strings rather than non 
+        :param encoding: Name of an encoding to use. If it is specified then
+            the ``fields()`` method returns unicode strings rather than non
             unicode strings.
         :type encoding: str or None
         :param errors: Error handling scheme for codec. Same as the ``decode()``
             builtin string method.
         :type errors: str
         :param unicode_fields: Set of marker names whose values are UTF-8 encoded.
-            Ignored if encoding is None. If the whole file is UTF-8 encoded set 
+            Ignored if encoding is None. If the whole file is UTF-8 encoded set
             ``encoding='utf8'`` and leave ``unicode_fields`` with its default
             value of None.
         :type unicode_fields: sequence
@@ -142,37 +142,37 @@ class ToolboxData(StandardFormat):
         """
         Returns an element tree structure corresponding to a toolbox data file with
         all markers at the same level.
-       
+
         Thus the following Toolbox database::
             \_sh v3.0  400  Rotokas Dictionary
             \_DateStampHasFourDigitYear
-            
+
             \lx kaa
             \ps V.A
             \ge gag
             \gp nek i pas
-            
+
             \lx kaa
             \ps V.B
             \ge strangle
             \gp pasim nek
 
-        after parsing will end up with the same structure (ignoring the extra 
-        whitespace) as the following XML fragment after being parsed by 
+        after parsing will end up with the same structure (ignoring the extra
+        whitespace) as the following XML fragment after being parsed by
         ElementTree::
             <toolbox_data>
                 <header>
                     <_sh>v3.0  400  Rotokas Dictionary</_sh>
                     <_DateStampHasFourDigitYear/>
                 </header>
-    
+
                 <record>
                     <lx>kaa</lx>
                     <ps>V.A</ps>
                     <ge>gag</ge>
                     <gp>nek i pas</gp>
                 </record>
-                
+
                 <record>
                     <lx>kaa</lx>
                     <ps>V.B</ps>
@@ -181,7 +181,7 @@ class ToolboxData(StandardFormat):
                 </record>
             </toolbox_data>
 
-        :param key: Name of key marker at the start of each record. If set to 
+        :param key: Name of key marker at the start of each record. If set to
             None (the default value) the first marker that doesn't begin with
             an underscore is assumed to be the key.
         :type key: str
@@ -231,9 +231,9 @@ class ToolboxData(StandardFormat):
         """
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the chunk grammar.
-        
+
         :type grammar: str
-        :param grammar: Contains the chunking rules used to parse the 
+        :param grammar: Contains the chunking rules used to parse the
             database.  See ``chunk.RegExp`` for documentation.
         :type top_node: str
         :param top_node: The node value that should be used for the
@@ -266,7 +266,7 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     """
     Return a string with a standard format representation of the toolbox
     data in tree (tree can be a toolbox database or a single record).
-    
+
     :param tree: flat representation of toolbox data (whole database or single record)
     :type tree: ElementTree._ElementInterface
     :param encoding: Name of an encoding to use.
@@ -312,16 +312,16 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
 
 class ToolboxSettings(StandardFormat):
     """This class is the base class for settings files."""
-    
+
     def __init__(self):
         super(ToolboxSettings, self).__init__()
 
     def parse(self, encoding=None, errors='strict', **kwargs):
         """
         Return the contents of toolbox settings file with a nested structure.
-        
+
         :param encoding: encoding used by settings file
-        :type encoding: str        
+        :type encoding: str
         :param errors: Error handling scheme for codec. Same as ``decode()`` builtin method.
         :type errors: str
         :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``
@@ -373,11 +373,11 @@ def _to_settings_string(node, l, **kwargs):
             _to_settings_string(n, l, **kwargs)
         l.append('\\-%s\n' % tag)
     return
-    
+
 def remove_blanks(elem):
     """
     Remove all elements and subelements with no text and no child elements.
-    
+
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     """
@@ -391,7 +391,7 @@ def remove_blanks(elem):
 def add_default_fields(elem, default_fields):
     """
     Add blank elements and subelements specified in default_fields.
-    
+
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     :param default_fields: fields to add to each type of element and subelement
@@ -406,7 +406,7 @@ def add_default_fields(elem, default_fields):
 def sort_fields(elem, field_orders):
     """
     Sort the elements and subelements in order specified in field_orders.
-    
+
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     :param field_orders: order of fields for each type of element and subelement
@@ -416,7 +416,7 @@ def sort_fields(elem, field_orders):
     for field, order in field_orders.items():
         order_dicts[field] = order_key = dict()
         for i, subfield in enumerate(order):
-            order_key[subfield] = i 
+            order_key[subfield] = i
     _sort_fields(elem, order_dicts)
 
 def _sort_fields(elem, orders_dicts):
@@ -436,7 +436,7 @@ def _sort_fields(elem, orders_dicts):
 def add_blank_lines(tree, blanks_before, blanks_between):
     """
     Add blank lines before all elements and subelements specified in blank_before.
-    
+
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     :param blank_before: elements and subelements to add blank lines before
@@ -475,7 +475,7 @@ def demo():
     print 'first field in fourth record:'
     print lexicon[3][0].tag
     print lexicon[3][0].text
-    
+
     print '\nfields in sequential order:'
     for field in islice(lexicon.find('record'), 10):
         print field.tag, field.text
@@ -483,7 +483,7 @@ def demo():
     print '\nlx fields:'
     for field in islice(lexicon.findall('record/lx'), 10):
         print field.text
-    
+
     settings = ToolboxSettings()
     file_path = find('corpora/toolbox/MDF/MDF_AltH.typ')
     settings.open(file_path)

@@ -20,7 +20,7 @@ a unique pronunciation, 6830 words have two pronunciations, and 839 words have
 three or more pronunciations.  Many of these are fast-speech variants.
 
 Phonemes: There are 39 phonemes, as shown below:
-    
+
 Phoneme Example Translation    Phoneme Example Translation
 ------- ------- -----------    ------- ------- -----------
 AA      odd     AA D           AE      at      AE T
@@ -82,7 +82,7 @@ class CMUDictCorpusReader(CorpusReader):
         lowercase words and whose values are lists of pronunciations.
         """
         return dict(Index(self.entries()))
-        
+
 def read_cmudict_block(stream):
     entries = []
     while len(entries) < 100: # Read 100 at a time.

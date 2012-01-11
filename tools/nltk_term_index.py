@@ -19,7 +19,7 @@ def find_all_names(stoplist):
     docindex = epydoc.docbuilder.build_doc_index(ROOT, add_submodules=True)
     valdocs = sorted(docindex.reachable_valdocs(
         imports=False,
-        #packages=False, bases=False, submodules=False, 
+        #packages=False, bases=False, submodules=False,
         #subclasses=False,
         private=False))
     logger._verbosity = 5
@@ -35,7 +35,7 @@ def find_all_names(stoplist):
                 if len(key) == 1: continue
                 if key in stoplist: continue
                 names[key].append(valdoc)
-                
+
     log.info('Found %s names from %s objects' % (len(names), n))
 
     return names
@@ -69,7 +69,7 @@ def scan_xml(filenames, names):
 
     def scansub(match):
         return LINE_RE.sub(linesub, match.group())
-    
+
     for filename in filenames:
         log.info('  %s' % filename)
         src = open(filename, 'rb').read()
@@ -84,7 +84,7 @@ def scan_xml(filenames, names):
                                       for v in names[word][:1]])
         print '[%3d]  %-30s %s' % (fdist[word], word, namestr)
         sys.stdout.flush()
-        
+
 
 def main():
     log.info('Loading stoplist...')

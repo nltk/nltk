@@ -32,7 +32,7 @@ class TreeSegmentWidget(CanvasWidget):
     bottom of the node is connected to the top of each subtree by a
     single line.  However, if the ``roof`` attribute is set, then a
     single triangular "roof" will connect the node to all of its
-    children.  
+    children.
 
     Attributes:
       - ``roof``: What sort of connection to draw between the node and
@@ -59,7 +59,7 @@ class TreeSegmentWidget(CanvasWidget):
     """
     def __init__(self, canvas, node, subtrees, **attribs):
         """
-        :type node: 
+        :type node:
         :type subtrees: list(CanvasWidgetI)
         """
         self._node = node
@@ -98,7 +98,7 @@ class TreeSegmentWidget(CanvasWidget):
             else:
                 for l in self._lines: canvas.itemconfig(l, state='normal')
                 canvas.itemconfig(self._polygon, state='hidden')
-        elif attr == 'orientation': 
+        elif attr == 'orientation':
             if value == 'horizontal': self._horizontal = 1
             elif value == 'vertical': self._horizontal = 0
             else:
@@ -142,7 +142,7 @@ class TreeSegmentWidget(CanvasWidget):
             return self._ordered
         else:
             return CanvasWidget.__getitem__(self, attr)
-        
+
     def node(self):
         return self._node
 
@@ -226,12 +226,12 @@ class TreeSegmentWidget(CanvasWidget):
             ymin = min(ymin, bbox[1])
             xmax = max(xmax, bbox[2])
             ymax = max(ymax, bbox[3])
-                
+
         if self._horizontal:
-            self.canvas().coords(self._polygon, nodex, nodey, xmin, 
+            self.canvas().coords(self._polygon, nodex, nodey, xmin,
                                  ymin, xmin, ymax, nodex, nodey)
         else:
-            self.canvas().coords(self._polygon, nodex, nodey, xmin, 
+            self.canvas().coords(self._polygon, nodex, nodey, xmin,
                                  ymin, xmax, ymin, nodex, nodey)
 
         # Redraw all lines that need it.
@@ -288,10 +288,10 @@ class TreeSegmentWidget(CanvasWidget):
 
         # Return a list of the nodes we moved
         return moved
-    
+
     def _maintain_order_horizontal(self, child):
         (left, top, right, bot) = child.bbox()
-        
+
         if child is self._node:
             # Check all the leaves
             for subtree in self._subtrees:
@@ -378,14 +378,14 @@ class TreeSegmentWidget(CanvasWidget):
         self._managing = True
         (nodex, nodey) = self._node_bottom()
         if len(self._subtrees) == 0: return
-        
+
         if self._horizontal: self._manage_horizontal()
         else: self._manage_vertical()
-            
+
         # Update lines to subtrees.
         for subtree in self._subtrees:
             self._update(subtree)
-            
+
         self._managing = False
 
     def __repr__(self):
@@ -396,7 +396,7 @@ def _tree_to_treeseg(canvas, t, make_node, make_leaf,
                      leaf_attribs, loc_attribs):
     if isinstance(t, Tree):
         node = make_node(canvas, t.node, **node_attribs)
-        subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf, 
+        subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf,
                                      tree_attribs, node_attribs,
                                      leaf_attribs, loc_attribs)
                     for child in t]
@@ -453,20 +453,20 @@ class TreeWidget(CanvasWidget):
     used to display a Tree.
 
     Attributes:
-    
+
       - ``node_attr``: Sets the attribute ``attr`` on all of the
         node widgets for this ``TreeWidget``.
       - ``node_attr``: Sets the attribute ``attr`` on all of the
         leaf widgets for this ``TreeWidget``.
       - ``loc_attr``: Sets the attribute ``attr`` on all of the
         location widgets for this ``TreeWidget`` (if it was built from
-        a Tree).  Note that a location widget is a ``TextWidget``. 
-      
+        a Tree).  Note that a location widget is a ``TextWidget``.
+
       - ``xspace``: The amount of horizontal space to leave between
         subtrees when managing this widget.  Default value is 10.
       - ``yspace``: The amount of space to place between the node and
         its children when managing this widget.  Default value is 15.
-        
+
       - ``line_color``: The color of the lines connecting each expanded
         node to its subtrees.
       - ``roof_color``: The color of the outline of the triangular roof
@@ -474,16 +474,16 @@ class TreeWidget(CanvasWidget):
       - ``roof_fill``: The fill color for the triangular roof for
         collapsed trees.
       - ``width``
-      
+
       - ``orientation``: Determines whether the tree branches downwards
         or rightwards.  Possible values are ``'horizontal'`` and
         ``'vertical'``.  The default value is ``'vertical'`` (i.e.,
         branch downwards).
-        
+
       - ``shapeable``: whether the subtrees can be independantly
         dragged by the user.  THIS property simply sets the
         ``DRAGGABLE`` property on all of the ``TreeWidget``'s tree
-        segments. 
+        segments.
       - ``draggable``: whether the widget can be dragged by the user.
     """
     def __init__(self, canvas, t, make_node=TextWidget,
@@ -566,28 +566,28 @@ class TreeWidget(CanvasWidget):
         """
         for leaf in self._leaves: leaf.bind_click(callback, button)
         for leaf in self._leaves: leaf.bind_click(callback, button)
-            
+
     def bind_drag_leaves(self, callback, button=1):
         """
         Add a binding to all leaves.
         """
         for leaf in self._leaves: leaf.bind_drag(callback, button)
         for leaf in self._leaves: leaf.bind_drag(callback, button)
-            
+
     def bind_click_nodes(self, callback, button=1):
         """
         Add a binding to all nodes.
         """
         for node in self._nodes: node.bind_click(callback, button)
         for node in self._nodes: node.bind_click(callback, button)
-            
+
     def bind_drag_nodes(self, callback, button=1):
         """
         Add a binding to all nodes.
         """
         for node in self._nodes: node.bind_drag(callback, button)
         for node in self._nodes: node.bind_drag(callback, button)
-            
+
     def _make_collapsed_trees(self, canvas, t, key):
         if not isinstance(t, Tree): return
         make_node = self._make_node
@@ -704,7 +704,7 @@ class TreeWidget(CanvasWidget):
         elif attr == 'yspace': return self._yspace
         elif attr == 'orientation': return self._orientation
         else: return CanvasWidget.__getitem__(self, attr)
-        
+
     def _tags(self): return []
 
     def _manage(self):
@@ -745,7 +745,7 @@ class TreeWidget(CanvasWidget):
 
         # We could do parent.manage() here instead, if we wanted.
         new_treeseg.parent().update(new_treeseg)
-        
+
 ##//////////////////////////////////////////////////////
 ##  draw_trees
 ##//////////////////////////////////////////////////////
@@ -753,9 +753,9 @@ class TreeWidget(CanvasWidget):
 class TreeView(object):
     def __init__(self, *trees):
         from math import sqrt, ceil
-    
+
         self._trees = trees
-        
+
         self._top = Tk()
         self._top.title('NLTK')
         self._top.bind('<Control-x>', self.destroy)
@@ -799,7 +799,7 @@ class TreeView(object):
             widget.move(x-oldx, y-oldy)
             x = widget.bbox()[2] + 10
             ymax = max(ymax, widget.bbox()[3] + 10)
-        
+
     def _init_menubar(self):
         menubar = Menu(self._top)
 
@@ -860,7 +860,7 @@ def draw_trees(*trees):
     """
     Open a new window containing a graphical diagram of the given
     trees.
-        
+
     :rtype: None
     """
     TreeView(*trees).mainloop()
@@ -874,20 +874,20 @@ def demo():
     import random
     def fill(cw):
         cw['fill'] = '#%06d' % random.randint(0,999999)
-    
+
     cf = CanvasFrame(width=550, height=450, closeenough=2)
 
     t = Tree.parse('''
     (S (NP the very big cat)
        (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))''')
-                
-    tc = TreeWidget(cf.canvas(), t, draggable=1, 
+
+    tc = TreeWidget(cf.canvas(), t, draggable=1,
                     node_font=('helvetica', -14, 'bold'),
                     leaf_font=('helvetica', -12, 'italic'),
                     roof_fill='white', roof_color='black',
                     leaf_color='green4', node_color='blue2')
     cf.add_widget(tc,10,10)
-    
+
     def boxit(canvas, text):
         big = ('helvetica', -16, 'bold')
         return BoxWidget(canvas, TextWidget(canvas, text,
@@ -898,7 +898,7 @@ def demo():
 
     treetok = Tree.parse('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
-    
+
     def color(node):
         node['color'] = '#%04d00' % random.randint(0,9999)
     def color2(treeseg):

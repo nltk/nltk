@@ -54,7 +54,7 @@ class Chat(object):
         """
         Substitute words in the string, according to the specified reflections,
         e.g. "I'm" -> "you are"
-        
+
         :type str: str
         :param str: The string to be mapped
         :rtype: str
@@ -80,7 +80,7 @@ class Chat(object):
     def respond(self, str):
         """
         Generate a response to the user input.
-        
+
         :type str: str
         :param str: The string to be mapped
         :rtype: str

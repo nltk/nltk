@@ -26,7 +26,7 @@ from nltk.internals import slice_bounds
 def usage(obj, selfname='self'):
     import inspect
     str(obj) # In case it's lazy, this will load it.
-    
+
     if not isinstance(obj, (types.TypeType, types.ClassType)):
         obj = obj.__class__
 
@@ -34,7 +34,7 @@ def usage(obj, selfname='self'):
     for (name, method) in sorted(pydoc.allmethods(obj).items()):
         if name.startswith('_'): continue
         if getattr(method, '__deprecated__', False): continue
-            
+
         args, varargs, varkw, defaults = inspect.getargspec(method)
         if (args and args[0]=='self' and
             (defaults is None or len(args)>len(defaults))):
@@ -112,7 +112,7 @@ def tokenwrap(tokens, separator=" ", width=70):
 ##########################################################################
 
 class Index(defaultdict):
-    
+
     def __init__(self, pairs):
         defaultdict.__init__(self, list)
         for key, value in pairs:
@@ -169,7 +169,7 @@ def breadth_first(tree, children=iter, depth=-1, queue=None):
     if queue == None:
         queue = []
     queue.append(tree)
-    
+
     while queue:
         node = queue.pop(0)
         yield node
@@ -179,7 +179,7 @@ def breadth_first(tree, children=iter, depth=-1, queue=None):
                 depth -= 1
             except:
                 pass
-        
+
 ##########################################################################
 # Guess Character Encoding
 ##########################################################################
@@ -194,7 +194,7 @@ def guess_encoding(data):
     Plus several gathered from locale information.
 
     The calling program *must* first call::
-    
+
         locale.setlocale(locale.LC_ALL, '')
 
     If successful it returns ``(decoded_unicode, successful_encoding)``.
@@ -221,7 +221,7 @@ def guess_encoding(data):
     # we try 'latin-1' last
     encodings.append('latin-1')
     for enc in encodings:
-        # some of the locale calls 
+        # some of the locale calls
         # may have returned None
         if not enc:
             continue
@@ -265,10 +265,10 @@ def transitive_closure(graph, reflexive=False):
     """
     Calculate the transitive closure of a directed graph,
     optionally the reflexive transitive closure.
-    
+
     The algorithm is a slight modification of the "Marking Algorithm" of
     Ioannidis & Ramakrishnan (1998) "Efficient Transitive Closure Algorithms".
-    
+
     :param graph: the initial graph, represented as a dictionary of sets
     :type graph: dict(set)
     :param reflexive: if set, also make the closure reflexive
@@ -298,7 +298,7 @@ def transitive_closure(graph, reflexive=False):
 def invert_graph(graph):
     """
     Inverts a directed graph.
-    
+
     :param graph: the graph, represented as a dictionary of sets
     :type graph: dict(set)
     :return: the inverted graph
@@ -346,7 +346,7 @@ def clean_url(url):
 ##########################################################################
 # FLATTEN LISTS
 ##########################################################################
-        
+
 def flatten(*args):
     """
     Flatten a list.
@@ -377,13 +377,13 @@ def flatten(*args):
 def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
     Return a sequence of ngrams from a sequence of items.  For example:
-    
+
     >>> ngrams([1,2,3,4,5], 3)
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
-    
+
     Use ingram for an iterator version of this function.  Set pad_left
     or pad_right to true in order to get additional ngrams:
-    
+
     >>> ngrams([1,2,3,4,5], 2, pad_right=True)
     [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
@@ -405,17 +405,17 @@ def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     if pad_right:
         sequence = chain(sequence, (pad_symbol,) * (n-1))
     sequence = list(sequence)
-    
+
     count = max(0, len(sequence) - n + 1)
     return [tuple(sequence[i:i+n]) for i in range(count)]
 
 def bigrams(sequence, **kwargs):
     """
     Return a sequence of bigrams from a sequence of items.  For example:
-    
+
     >>> bigrams([1,2,3,4,5])
     [(1, 2), (2, 3), (3, 4), (4, 5)]
-    
+
     Use ibigrams for an iterator version of this function.
 
     :param sequence: the source data to be converted into bigrams
@@ -427,10 +427,10 @@ def bigrams(sequence, **kwargs):
 def trigrams(sequence, **kwargs):
     """
     Return a sequence of trigrams from a sequence of items.  For example:
-    
+
     >>> trigrams([1,2,3,4,5])
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
-    
+
     Use itrigrams for an iterator version of this function.
 
     :param sequence: the source data to be converted into trigrams
@@ -443,13 +443,13 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
     Return the ngrams generated from a sequence of items, as an iterator.
     For example:
-    
+
     >>> list(ingrams([1,2,3,4,5], 3))
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
-    
+
     Use ngrams for a list version of this function.  Set pad_left
     or pad_right to true in order to get additional ngrams:
-    
+
     >>> list(ingrams([1,2,3,4,5], 2, pad_right=True))
     [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
@@ -480,15 +480,15 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
         history.append(item)
         yield tuple(history)
         del history[0]
-        
+
 def ibigrams(sequence, **kwargs):
     """
     Return the bigrams generated from a sequence of items, as an iterator.
     For example:
-    
+
     >>> list(ibigrams([1,2,3,4,5]))
     [(1, 2), (2, 3), (3, 4), (4, 5)]
-    
+
     Use bigrams for a list version of this function.
 
     :param sequence: the source data to be converted into bigrams
@@ -498,15 +498,15 @@ def ibigrams(sequence, **kwargs):
 
     for item in ingrams(sequence, 2, **kwargs):
         yield item
-        
+
 def itrigrams(sequence, **kwargs):
     """
     Return the trigrams generated from a sequence of items, as an iterator.
     For example:
-    
+
     >>> list(itrigrams([1,2,3,4,5]))
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
-    
+
     Use trigrams for a list version of this function.
 
     :param sequence: the source data to be converted into trigrams
@@ -516,7 +516,7 @@ def itrigrams(sequence, **kwargs):
 
     for item in ingrams(sequence, 3, **kwargs):
         yield item
-        
+
 ##########################################################################
 # Ordered Dictionary
 ##########################################################################
@@ -533,7 +533,7 @@ class OrderedDict(dict):
     def __delitem__(self, key):
         dict.__delitem__(self, key)
         self._keys.remove(key)
-        
+
     def __getitem__(self, key):
         try:
             return dict.__getitem__(self, key)
@@ -542,18 +542,18 @@ class OrderedDict(dict):
 
     def __iter__(self):
         return (key for key in self.keys())
-    
+
     def __missing__(self, key):
         if not self._default_factory and key not in self._keys:
             raise KeyError()
         else:
             return self._default_factory()
-        
+
     def __setitem__(self, key, item):
         dict.__setitem__(self, key, item)
         if key not in self._keys:
             self._keys.append(key)
-        
+
     def clear(self):
         dict.clear(self)
         self._keys.clear()
@@ -622,7 +622,7 @@ class AbstractLazySequence(object):
     corpus view objects, which provide access to the contents of a
     corpus without loading the entire corpus into memory, by loading
     pieces of the corpus from disk as needed.
-    
+
     The result of modifying a mutable element of a lazy sequence is
     undefined.  In particular, the modifications made to the element
     may or may not persist, depending on whether and when the lazy
@@ -638,7 +638,7 @@ class AbstractLazySequence(object):
         corpus view.
         """
         raise NotImplementedError('should be implemented by subclass')
-    
+
     def iterate_from(self, start):
         """
         Return an iterator that generates the tokens in the corpus
@@ -647,7 +647,7 @@ class AbstractLazySequence(object):
         generate no tokens.
         """
         raise NotImplementedError('should be implemented by subclass')
-    
+
     def __getitem__(self, i):
         """
         Return the *i* th token in the corpus file underlying this
@@ -674,7 +674,7 @@ class AbstractLazySequence(object):
     def count(self, value):
         """Return the number of times this list contains ``value``."""
         return sum(1 for elt in self if elt==value)
-    
+
     def index(self, value, start=None, stop=None):
         """Return the index of the first occurance of ``value`` in this
         list that is greater than or equal to ``start`` and less than
@@ -688,19 +688,19 @@ class AbstractLazySequence(object):
     def __contains__(self, value):
         """Return true if this list contains ``value``."""
         return bool(self.count(value))
-    
+
     def __add__(self, other):
         """Return a list concatenating self with other."""
         return LazyConcatenation([self, other])
-    
+
     def __radd__(self, other):
         """Return a list concatenating other with self."""
         return LazyConcatenation([other, self])
-    
+
     def __mul__(self, count):
         """Return a list concatenating self with itself ``count`` times."""
         return LazyConcatenation([self] * count)
-    
+
     def __rmul__(self, count):
         """Return a list concatenating self with itself ``count`` times."""
         return LazyConcatenation([self] * count)
@@ -757,7 +757,7 @@ class LazySubsequence(AbstractLazySequence):
     ``LazySubsequence()`` is called with a subsequence that is
     shorter than ``MIN_SIZE``, then a tuple will be returned instead.
     """
-    
+
     def __new__(cls, source, start, stop):
         """
         Construct a new slice from a given underlying sequence.  The
@@ -770,7 +770,7 @@ class LazySubsequence(AbstractLazySequence):
             return list(islice(source.iterate_from(start), stop-start))
         else:
             return object.__new__(cls)
-        
+
     def __init__(self, source, start, stop):
         self._source = source
         self._start = start
@@ -823,7 +823,7 @@ class LazyConcatenation(AbstractLazySequence):
             else:
                 assert self._offsets[sublist_index+1] == index+len(sublist), (
                         'inconsistent list value (num elts)')
-                
+
             for value in sublist[max(0, start_index-index):]:
                 yield value
 
@@ -875,7 +875,7 @@ class LazyMap(AbstractLazySequence):
         """
         if not lists:
             raise TypeError('LazyMap requires at least two args')
-        
+
         self._lists = lists
         self._func = function
         self._cache_size = config.get('cache_size', 5)
@@ -883,11 +883,11 @@ class LazyMap(AbstractLazySequence):
             self._cache = {}
         else:
             self._cache = None
-            
+
         # If you just take bool() of sum() here _all_lazy will be true just
         # in case n >= 1 list is an AbstractLazySequence.  Presumably this
         # isn't what's intended.
-        self._all_lazy = sum(isinstance(lst, AbstractLazySequence) 
+        self._all_lazy = sum(isinstance(lst, AbstractLazySequence)
                              for lst in lists) == len(lists)
 
     def iterate_from(self, index):
@@ -896,7 +896,7 @@ class LazyMap(AbstractLazySequence):
             for value in self._lists[0].iterate_from(index):
                 yield self._func(value)
             return
-        
+
         # Special case: one non-lazy sublist
         elif len(self._lists) == 1:
             while True:
@@ -960,8 +960,8 @@ class LazyMap(AbstractLazySequence):
 
 class LazyZip(LazyMap):
     """
-    A lazy sequence whose elements are tuples, each containing the i-th 
-    element from each of the argument sequences.  The returned list is 
+    A lazy sequence whose elements are tuples, each containing the i-th
+    element from each of the argument sequences.  The returned list is
     truncated in length to the length of the shortest argument sequence. The
     tuples are constructed lazily -- i.e., when you read a value from the
     list, ``LazyZip`` will calculate that value by forming a tuple from
@@ -984,7 +984,7 @@ class LazyZip(LazyMap):
 
     A typical example of a use case for this class is combining long sequences
     of gold standard and predicted values in a classification or tagging task
-    in order to calculate accuracy.  By constructing tuples lazily and 
+    in order to calculate accuracy.  By constructing tuples lazily and
     avoiding the creation of an additional long sequence, memory usage can be
     significantly reduced.
     """
@@ -1001,7 +1001,7 @@ class LazyZip(LazyMap):
             yield iterator.next()
             index += 1
         return
-    
+
     def __len__(self):
         return min(len(lst) for lst in self._lists)
 
@@ -1027,20 +1027,20 @@ class LazyEnumerate(LazyZip):
 
     Lazy enumerations can be useful for conserving memory in cases where the
     argument sequences are particularly long.
-    
+
     A typical example of a use case for this class is obtaining an indexed
-    list for a long sequence of values.  By constructing tuples lazily and 
+    list for a long sequence of values.  By constructing tuples lazily and
     avoiding the creation of an additional long sequence, memory usage can be
     significantly reduced.
     """
-    
+
     def __init__(self, lst):
         """
         :param lst: the underlying list
         :type lst: list
-        """                
+        """
         LazyZip.__init__(self, xrange(len(lst)), lst)
-        
+
 
 ######################################################################
 # Binary Search in a File
@@ -1057,7 +1057,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
     :type key: str
     :param key: the identifier we are searching for.
     """
-    
+
     key = key + ' '
     keylen = len(key)
     start = 0
@@ -1069,7 +1069,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
         file.seek(0, 2)
         end = file.tell() - 1
         file.seek(0)
-        
+
     while start < end:
         lastState = start, end
         middle = (start + end) / 2
@@ -1092,7 +1092,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
                     return None
             if currentDepth < cacheDepth:
                 cache[middle] = (offset, line)
-                
+
         if offset > end:
             assert end != middle - 1, "infinite loop"
             end = middle - 1
@@ -1122,12 +1122,12 @@ def set_proxy(proxy, (user, password)=(None, '')):
     """
     Set the HTTP proxy for Python to download through.
 
-    If ``proxy`` is None then tries to set proxy from enviroment or system 
+    If ``proxy`` is None then tries to set proxy from enviroment or system
     settings.
 
     :param proxy: The HTTP proxy server to use. For example:
         'http://proxy.example.com:3128/'
-    :param user: The username to authenticate with. Use None to disable 
+    :param user: The username to authenticate with. Use None to disable
         authentication.
     :param password: The password to authenticate with.
     """

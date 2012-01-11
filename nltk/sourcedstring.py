@@ -28,11 +28,11 @@ import re, sys
 from nltk.internals import slice_bounds, abstract
 
 __all__ = [
-    'StringSource', 
+    'StringSource',
     'ConsecutiveCharStringSource', 'ContiguousCharStringSource',
     'SourcedString', 'SourcedStringStream', 'SourcedStringRegexp',
     'SimpleSourcedString', 'CompoundSourcedString',
-    'SimpleSourcedByteString', 'SimpleSourcedUnicodeString', 
+    'SimpleSourcedByteString', 'SimpleSourcedUnicodeString',
     'CompoundSourcedByteString', 'CompoundSourcedUnicodeString',
     ]
 
@@ -57,12 +57,12 @@ class StringSource(object):
         whose characters have consecutive offsets (in particular, byte
         strings w/ byte offsets; and unicode strings with character
         offsets).
-        
+
       - ``ContiguousCharStringSource`` describes the source of strings
         whose characters are contiguous, but do not necessarily have
         consecutive offsets (in particular, unicode strings with byte
         offsets).
-        
+
     :ivar docid: An identifier (such as a filename) that specifies
         which document contains the string.
 
@@ -72,11 +72,11 @@ class StringSource(object):
         ``offsets[i+1]``.  The length of the ``offsets`` list is one
         greater than the list of the string described by this
         ``StringSource``.
-    
+
     :ivar begin: The document offset where the string begins.  (I.e.,
         the offset of the first character in the string.)
         ``source.begin`` is always equal to ``source.offsets[0]``.
-    
+
     :ivar end: The document offset where the string ends.  (For
         character offsets, one plus the offset of the last character;
         for byte offsets, one plus the offset of the last byte that
@@ -109,20 +109,20 @@ class StringSource(object):
 
             - If ``begin`` and ``end`` are specified, then a
               ``ConsecutiveCharStringSource`` is returned.
-            - If ``offsets`` is specified, then a 
+            - If ``offsets`` is specified, then a
               ``ContiguousCharStringSource`` is returned.
-              
+
         In both cases, the arguments must be specified as keyword
         arguments (not positional arguments).
         """
-    
+
     def __getitem__(self, index):
         """
         Return a ``StringSource`` describing the location where the
         specified character was found.  In particular, if ``s`` is the
         string that this source describes, then return a
         ``StringSource`` describing the location of ``s[index]``.
-        
+
         :raise IndexError: If index is out of range.
         """
         if isinstance(index, slice):
@@ -151,7 +151,7 @@ class StringSource(object):
         ``self.end-self.begin`` for unicode strings described using
         byte offsets.
         """
-        
+
     def __str__(self):
         if self.end == self.begin+1:
             return '@%s[%s]' % (self.docid, self.begin,)
@@ -182,7 +182,7 @@ class ConsecutiveCharStringSource(StringSource):
 
     These properties allow the source to be stored using just a start
     offset and an end offset (along with a docid).
-    
+
     This ``StringSource`` can be used to describe byte strings that are
     indexed using byte offsets or character offsets; or unicode
     strings that are indexed using character offsets.
@@ -231,10 +231,10 @@ class ContiguousCharStringSource(StringSource):
     to the next character's start offset:
 
       - source[i].end == source[i+1].begin
-    
+
     This property allow the source to be stored using a list of
     ``len(source)+1`` offsets (along with a docid).
-    
+
     This ``StringSource`` can be used to describe unicode strings that
     are indexed using byte offsets.
     """
@@ -276,7 +276,7 @@ class ContiguousCharStringSource(StringSource):
 
     def __repr__(self):
         return 'StringSource(%r, offsets=%r)' % (self.docid, self.offsets)
-    
+
 #//////////////////////////////////////////////////////////////////////
 # Base Class for Sourced Strings.
 #//////////////////////////////////////////////////////////////////////
@@ -353,15 +353,15 @@ class SourcedString(object):
     #//////////////////////////////////////////////////////////////////////
     #{ Splitting & Stripping Methods
     #//////////////////////////////////////////////////////////////////////
-    
+
     def lstrip(self, chars=None):
         s = self._stringtype.lstrip(self, chars)
         return self[len(self)-len(s):]
-    
+
     def rstrip(self, chars=None):
         s = self._stringtype.rstrip(self, chars)
         return self[:len(s)]
-    
+
     def strip(self, chars=None):
         return self.lstrip(chars).rstrip(chars)
 
@@ -408,12 +408,12 @@ class SourcedString(object):
         head, sep, tail = self._stringtype.partition(self, sep)
         i, j = len(head), len(head)+len(sep)
         return (self[:i], self[i:j], self[j:])
-    
+
     def rpartition(self, sep):
         head, sep, tail = self._stringtype.rpartition(self, sep)
         i, j = len(head), len(head)+len(sep)
         return (self[:i], self[i:j], self[j:])
-    
+
     _NEWLINE_RE = re.compile(r'\n')
     _LINE_RE = re.compile(r'.*\n?')
     def splitlines(self, keepends=False):
@@ -502,7 +502,7 @@ class SourcedString(object):
         # Discard empty Python substrings.
         elif len(substring) == 0 and not isinstance(substring, SourcedString):
             pass # discard.
-        
+
         # Merge adjacent simple sourced strings (when possible).
         elif (result and isinstance(result[-1], SimpleSourcedString) and
               isinstance(substring, SimpleSourcedString) and
@@ -546,7 +546,7 @@ class SourcedString(object):
 
     def ljust(self, width, fillchar=' '):
         return self + fillchar * (width-len(self))
-        
+
     def rjust(self, width, fillchar=' '):
         return fillchar * (width-len(self)) + self
 
@@ -593,7 +593,7 @@ class SourcedString(object):
                 if piece == '\n': offset = 0
                 else: offset += len(piece)
         return result
-        
+
     def translate(self, table, deletechars=''):
         # Note: str.translate() and unicode.translate() have
         # different interfaces.
@@ -669,7 +669,7 @@ class SourcedString(object):
                 result.append(SourcedString(unicode_char, source))
             else:
                 result.append(unicode_char)
-                    
+
             # First byte of the next char is 1+last byte of this char.
             first_byte = last_byte+1
         if last_byte+1 != len(self):
@@ -677,7 +677,7 @@ class SourcedString(object):
                                  "encodings that are not symmetric.")
 
         return SourcedString.concat(result)
-    
+
     @abstract
     def _decode_one_to_one(unicode_chars):
         """
@@ -726,7 +726,7 @@ class SourcedString(object):
         # Retry the operation.
         method = getattr(self, op)
         return method(*args)
-    
+
     #//////////////////////////////////////////////////////////////////////
     #{ Display
     #//////////////////////////////////////////////////////////////////////
@@ -739,7 +739,7 @@ class SourcedString(object):
         :param vertical: If true, then the returned display string will
             have vertical orientation, rather than the default horizontal
             orientation.
-            
+
         :param wrap: Controls when the pretty-printed output is wrapped
             to the next line.  If ``wrap`` is an integer, then lines are
             wrapped when they become longer than ``wrap``.  If ``wrap`` is
@@ -775,18 +775,18 @@ class SourcedString(object):
             # Put a cap on the beginning of sourceless strings
             elif not output_lines[0] and char_begin is None:
                 self._pprint_offset(' ', output_lines)
-                
+
             # Display the character.
             if char_begin != prev_offset:
                 self._pprint_offset(char_begin, output_lines)
             self._pprint_char(char, output_lines)
             self._pprint_offset(char_end, output_lines)
             prev_offset = char_end
-            
+
             # Decide whether we're at the end of the line or not.
             line_len = len(output_lines[0])
             if ( (isinstance(wrap, basestring) and
-                  self[max(0,pos-len(wrap)+1):pos+1] == wrap) or 
+                  self[max(0,pos-len(wrap)+1):pos+1] == wrap) or
                  (isinstance(wrap, (int,long)) and line_len>=wrap) or
                  pos == len(self)-1):
 
@@ -812,7 +812,7 @@ class SourcedString(object):
                 prev_docid = None
                 docid_line = ''
                 output_lines = [''] * (max_digits+2)
-                
+
         return '\n'.join(result)
 
     def _pprint_vertical(self):
@@ -828,7 +828,7 @@ class SourcedString(object):
             if char_begin is None:
                 assert char_end is None
                 if pos == 0: result.append('+-----+')
-                result.append(':%s:' % 
+                result.append(':%s:' %
                               self._pprint_char_repr(char).center(5))
                 if pos == len(self)-1: result.append('+-----+')
                 prev_offset = None
@@ -846,7 +846,7 @@ class SourcedString(object):
 
     _PPRINT_CHAR_REPRS = {'\n': r'\n', '\r': r'\r',
                           '\a': r'\a', '\t': r'\t'}
-    
+
     def _pprint_docid(self, width, docid):
         if docid is None: return ' '*width
         else: return '[%s]' % (docid[:width-2].center(width-2, '='))
@@ -861,7 +861,7 @@ class SourcedString(object):
             return r'\x%02x' % ord(char)
         else:
             return r'\u%04x' % ord(char)
-            
+
     def _pprint_char(self, char, output_lines):
         """Helper for ``pprint()``: add a character to the
         pretty-printed output."""
@@ -907,7 +907,7 @@ class SimpleSourcedString(SourcedString):
         # Create the new object using the appropriate string class's
         # __new__, which takes just the contents argument.
         return cls._stringtype.__new__(cls, contents)
-        
+
     def __init__(self, contents, source):
         """
         Construct a new sourced string.
@@ -926,7 +926,7 @@ class SimpleSourcedString(SourcedString):
         elif len(source) != len(contents):
             raise ValueError("Length of source (%d) must match length of "
                              "contents (%d)" % (len(source), len(contents)))
-        
+
         self.source = source
         """A ``StringLocation`` specifying the location where this string
            occured in the source document."""
@@ -945,7 +945,7 @@ class SimpleSourcedString(SourcedString):
         offsets, one plus the offset of the last byte that encodes the
         last character)."""
         return self.source.end
-    
+
     @property
     def docid(self):
         """
@@ -975,7 +975,7 @@ class SimpleSourcedString(SourcedString):
                 return self.__getslice__(start, stop)
         else:
             return SourcedString(result, self.source[index])
-    
+
     def __getslice__(self, start, stop):
         # Negative indices get handled *before* __getslice__ is
         # called.  Restrict start/stop to be within the range of the
@@ -983,34 +983,34 @@ class SimpleSourcedString(SourcedString):
         # twice.
         start = max(0, min(len(self), start))
         stop = max(start, min(len(self), stop))
-        
+
         return SourcedString(
             self._stringtype.__getslice__(self, start, stop),
             self.source[start:stop])
-    
+
     def capitalize(self):
         result = self._stringtype.capitalize(self)
         return SourcedString(result, self.source)
-    
+
     def lower(self):
         result = self._stringtype.lower(self)
         return SourcedString(result, self.source)
-    
+
     def upper(self):
         result = self._stringtype.upper(self)
         return SourcedString(result, self.source)
-    
+
     def swapcase(self):
         result = self._stringtype.swapcase(self)
         return SourcedString(result, self.source)
-    
+
     def title(self):
         result = self._stringtype.title(self)
         return SourcedString(result, self.source)
 
     def _decode_one_to_one(self, unicode_chars):
         return SourcedString(unicode_chars, self.source)
-    
+
 #//////////////////////////////////////////////////////////////////////
 # Compound Sourced String
 #//////////////////////////////////////////////////////////////////////
@@ -1038,7 +1038,7 @@ class CompoundSourcedString(SourcedString):
                 cls = CompoundSourcedUnicodeString
             else:
                 cls = CompoundSourcedByteString
-            
+
         # Build the concatenated string using str.join(), which will
         # return a str or unicode object; never a sourced string.
         contents = ''.join(substrings)
@@ -1064,7 +1064,7 @@ class CompoundSourcedString(SourcedString):
         if len(substrings) < 2:
             raise ValueError("CompoundSourcedString requires at least "
                              "two substrings")
-        
+
         # Don't nest compound sourced strings.
         for substring in substrings:
             if isinstance(substring, CompoundSourcedString):
@@ -1132,16 +1132,16 @@ class CompoundSourcedString(SourcedString):
 
     def capitalize(self):
         return SourcedString.concat([s.capitalize() for s in self.substrings])
-    
+
     def lower(self):
         return SourcedString.concat([s.lower() for s in self.substrings])
-    
+
     def upper(self):
         return SourcedString.concat([s.upper() for s in self.substrings])
-    
+
     def swapcase(self):
         return SourcedString.concat([s.swapcase() for s in self.substrings])
-    
+
     def title(self):
         return SourcedString.concat([s.title() for s in self.substrings])
 
@@ -1216,7 +1216,7 @@ class SourcedStringRegexp(object):
             return result, n
         else:
             return self.pattern.subn(repl, string, count)
- 
+
     def sub(self, repl, string, count=0):
         return self.subn(repl, string, count)[0]
 
@@ -1324,7 +1324,7 @@ class SourcedStringStream(object):
     #/////////////////////////////////////////////////////////////////
     # Pass-through methods & properties
     #/////////////////////////////////////////////////////////////////
-    
+
     closed = property(lambda self: self.stream.closed, doc="""
         True if the underlying stream is closed.""")
 
@@ -1347,7 +1347,7 @@ class SourcedStringStream(object):
             self = int.__new__(cls, bytepos)
             self.charpos = charpos
             return self
-    
+
     def seek(self, offset, whence=0):
         if whence == 0:
             if isinstance(offset, self.SourcedStringStreamPos):
@@ -1372,5 +1372,5 @@ class SourcedStringStream(object):
         bytepos = self.stream.tell()
         return self.SourcedStringStreamPos(bytepos, self.charpos)
 
-                
-        
+
+

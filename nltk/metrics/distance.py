@@ -17,7 +17,7 @@ As metrics, they must satisfy the following three requirements:
 1. d(a, a) = 0
 2. d(a, b) >= 0
 3. d(a, c) <= d(a, b) + d(b, c)
- 
+
 """
 
 def _edit_dist_init(len1, len2):
@@ -140,7 +140,7 @@ def demo():
     s1 = "rain"
     s2 = "shine"
     print "Edit distance between '%s' and '%s':" % (s1,s2), edit_distance(s1, s2)
-    
+
     s1 = set([1,2,3,4])
     s2 = set([3,4,5])
     print "s1:", s1

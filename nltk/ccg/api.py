@@ -9,7 +9,7 @@ class AbstractCCGCategory(object):
     '''
     Interface for categories in combinatory grammars.
     '''
-    
+
     # Returns true if the category is primitive
     def is_primitive(self):
         raise AssertionError, 'AbstractCCGCategory is an abstract interface'
@@ -32,7 +32,7 @@ class AbstractCCGCategory(object):
     #  - Returns a list of necessary substitutions if they can.'''
     def can_unify(self,other):
         raise AssertionError, 'AbstractCCGCategory is an abstract interface'
-    
+
     # Utility functions: comparison, strings and hashing.
     def __cmp__(self,other):
         raise AssertionError, 'AbstractCCGCategory is an abstract interface'
@@ -55,12 +55,12 @@ class CCGVar(AbstractCCGCategory):
     def __init__(self, prim_only=False):
         """Initialize a variable (selects a new identifier)
 
-        :param prim_only: a boolean that determines whether the variable is restricted to primitives 
+        :param prim_only: a boolean that determines whether the variable is restricted to primitives
         :type prim_only: bool
         """
         self._id = self.new_id()
         self._prim_only = prim_only
-    
+
     # A class method allowing generation of unique variable identifiers.
     def new_id(cls):
         cls._maxID = cls._maxID + 1
@@ -75,7 +75,7 @@ class CCGVar(AbstractCCGCategory):
 
     def is_var(self):
         return True
-    
+
     def substitute(self, substitutions):
         """If there is a substitution corresponding to this variable,
         return the substituted category.
@@ -105,7 +105,7 @@ class CCGVar(AbstractCCGCategory):
         return hash(self._id)
     def __str__(self):
         return "_var" + str(self._id)
- 
+
 class Direction:
     '''
     Class representing the direction of a function application.
@@ -115,16 +115,16 @@ class Direction:
     def __init__(self,dir,restrictions):
         self._dir = dir
         self._restrs = restrictions
-    
+
     # Testing the application direction
     def is_forward(self):
         return self._dir == '/'
     def is_backward(self):
         return self._dir == '\\'
-    
+
     def dir(self):
         return self._dir
-    
+
     def restrs(self):
         """A list of restrictions on the combinators.
         '.' denotes that permuting operations are disallowed
@@ -136,7 +136,7 @@ class Direction:
 
     def is_variable(self):
         return self._restrs == '_'
-    
+
     # Unification and substitution of variable directions.
     # Used only if type-raising is implemented as a unary rule, as it
     # must inherit restrictions from the argument category.
@@ -158,11 +158,11 @@ class Direction:
             if var is '_':
                 return Direction(self._dir,restrs)
         return self
-    
+
     # Testing permitted combinators
     def can_compose(self):
-        return not ',' in self._restrs 
-    
+        return not ',' in self._restrs
+
     def can_cross(self):
         return not '.' in self._restrs
 
@@ -178,7 +178,7 @@ class Direction:
         for r in self._restrs:
             r_str = r_str + str(r)
         return str(self._dir) + r_str
-    
+
     # The negation operator reverses the direction of the application
     def __neg__(self):
         if self._dir == '/':
@@ -207,11 +207,11 @@ class PrimitiveCategory(AbstractCCGCategory):
         return False
 
     def restrs(self):
-        return self._restrs 
-    
+        return self._restrs
+
     def categ(self):
         return self._categ
-    
+
     # Substitution does nothing to a primitive category
     def substitute(self,subs):
         return self
@@ -264,7 +264,7 @@ class FunctionalCategory(AbstractCCGCategory):
 
     def is_var(self):
         return False
-    
+
     # Substitution returns the category consisting of the
     # substitution applied to each of its constituents.
     def substitute(self,subs):
@@ -272,7 +272,7 @@ class FunctionalCategory(AbstractCCGCategory):
         sub_dir = self._dir.substitute(subs)
         sub_arg = self._arg.substitute(subs)
         return FunctionalCategory(sub_res,sub_arg,self._dir)
-    
+
     # A function can unify with another function, so long as its
     # constituents can unify, or with an unrestricted variable.
     def can_unify(self,other):
@@ -286,8 +286,8 @@ class FunctionalCategory(AbstractCCGCategory):
                if sb != None:
                    return sa + sb
         return None
-    
-    # Constituent accessors       
+
+    # Constituent accessors
     def arg(self):
         return self._arg
 

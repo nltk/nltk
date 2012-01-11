@@ -45,15 +45,15 @@ class CCGLexicon(object):
         self._primitives = primitives
         self._families = families
         self._entries = entries
-    
+
     # Returns all the possible categories for a word
     def categories(self,word):
         return self._entries[word]
-    
+
     # Returns the target category for the parser
     def start(self):
         return self._start
-    
+
     # String representation of the lexicon
     # Used for debugging
     def __str__(self):
@@ -121,7 +121,7 @@ def parsePrimitiveCategory(chunks,primitives,families,var):
             if var is None:
                 var = CCGVar()
             return (var,var)
-    
+
     catstr = chunks[0]
     if catstr in families:
         (cat, cvar) = families[catstr]
@@ -149,7 +149,7 @@ def augParseCategory(line,primitives,families,var = None):
         (res,var) = augParseCategory(str[1:-1],primitives,families,var)
 
     else:
-#        print rePrim.match(str).groups() 
+#        print rePrim.match(str).groups()
         (res,var) = parsePrimitiveCategory(rePrim.match(str).groups(),primitives,families,var)
 
     while rest != "":
@@ -176,7 +176,7 @@ def parseLexicon(lex_str):
         line = reComm.match(line).groups()[0].strip()
         if line == "":
             continue
-        
+
         if line.startswith(':-'):
             # A line of primitive categories.
             # The first line is the target category
@@ -218,7 +218,7 @@ openccg_tinytiny = parseLexicon('''
 
     book => N[sg]
     books => N[pl]
-   
+
     peach => N[sg]
     peaches => N[pl]
 
@@ -227,10 +227,10 @@ openccg_tinytiny = parseLexicon('''
 
     boy => N[sg]
     boys => N[pl]
-   
+
     sleep => IntransVsg
     sleep => IntransVpl
-   
+
     eat => IntransVpl
     eat => TransVpl
     eats => IntransVsg
