@@ -8,6 +8,7 @@
 
 import os, sys
 import doctest_driver
+import doctest
 
 # Make sure that we are in the test-directory
 _dir = os.path.dirname(sys.argv[0])
@@ -41,7 +42,8 @@ TESTS = [x for x in os.listdir(os.getcwd()) if x.endswith('.doctest') and
 TESTS.sort()
 
 def main():
-    optionflags, verbosity, kbinterrupt_continue = 0, 1, 0
+    optionflags = doctest.NORMALIZE_WHITESPACE | doctest.IGNORE_EXCEPTION_DETAIL
+    verbosity, kbinterrupt_continue = 1, 0
 
     testrun = doctest_driver.run(TESTS, optionflags, verbosity,
                                  kbinterrupt_continue)

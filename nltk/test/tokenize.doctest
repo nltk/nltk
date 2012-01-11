@@ -1,7 +1,6 @@
 .. Copyright (C) 2001-2012 NLTK Project
 .. For license information, see LICENSE.TXT
 
-    >>> from nltk.test.doctest_utils import *
     >>> from nltk.tokenize import *
 
 Regression Tests: Regexp Tokenizer
@@ -48,10 +47,16 @@ Make sure that nested groups don't confuse the tokenizer:
 
 The tokenizer should reject any patterns with backreferences:
 
-    >>> should_raise(ValueError, lambda: regexp_tokenize(s2, r'(.)\1'))
-    True
-    >>> should_raise(ValueError, lambda: regexp_tokenize(s2, r'(?P<foo>)(?P=foo)'))
-    True
+    >>> print regexp_tokenize(s2, r'(.)\1')
+    Traceback (most recent call last):
+       ...
+    ValueError: Regular expressions with back-references are
+    not supported: '(.)\\1'
+    >>> print regexp_tokenize(s2, r'(?P<foo>)(?P=foo)')
+    Traceback (most recent call last):
+       ...
+    ValueError: Regular expressions with back-references are
+    not supported: '(?P<foo>)(?P=foo)'
 
 A simple sentence tokenizer '\.(\s+|$)'
 
