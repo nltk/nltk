@@ -9,6 +9,7 @@ Unit tests for the Context Free Grammar class
 ---------------------------------------------
 
     >>> from nltk import Nonterminal, nonterminals, Production, parse_cfg, ContextFreeGrammar
+    >>> from nltk.test.doctest_utils import *
 
     >>> nt1 = Nonterminal('NP')
     >>> nt2 = Nonterminal('VP')
@@ -23,7 +24,7 @@ Unit tests for the Context Free Grammar class
     False
 
     >>> S, NP, VP, PP = nonterminals('S, NP, VP, PP')
-    >>> N, V, P, DT = nonterminals('N, V, P, DT') 
+    >>> N, V, P, DT = nonterminals('N, V, P, DT')
 
     >>> prod1 = Production(S, [NP, VP])
     >>> prod2 = Production(NP, [DT, NP])
@@ -87,7 +88,7 @@ and unambiguous sentence.
 (add-to-list 'font-lock-keywords
   (car doctest-font-lock-keywords))
 
-        
+
 Unit tests for the sr (Shift Reduce Parser) class
 -------------------------------------------------
 
@@ -170,7 +171,7 @@ First we test tracing with a short sentence
     (S (NP I) (VP (Verb saw) (NP (Det a) (Noun dog))))
     <BLANKLINE>
 
-Then we test the different parsing Strategies. 
+Then we test the different parsing Strategies.
 Note that the number of edges differ between the strategies.
 
 Top-down
@@ -439,7 +440,7 @@ Reading the test sentences.
     17
     >>> sentence = testsentence[0]
 
-Now we test all different parsing strategies. 
+Now we test all different parsing strategies.
 Note that the number of edges differ between the strategies.
 
 Bottom-up parsing.
@@ -549,8 +550,8 @@ Create a set of probabilistic CFG productions.
     >>> prod.rhs()
     (B, B)
 
-    >>> prod.prob()
-    0.29999999999999999
+    >>> float_equal(prod.prob(), 0.29999999999999)
+    True
 
     >>> grammar.start()
     A
@@ -607,7 +608,7 @@ Create several parsers using different queuing strategies and show the
 resulting parses.
 
     >>> from nltk.parse import pchart
-    
+
     >>> parser = pchart.InsideChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
     ...     print t
@@ -639,7 +640,7 @@ resulting parses.
       (VP
         (VP (V saw) (NP (Name Bob)))
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
-        
+
     >>> parser = pchart.UnsortedChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
     ...     print t
@@ -715,8 +716,8 @@ Tracing the Feature Chart Parser
 
 We use the featurechart.demo() function for tracing the Feature Chart Parser.
 
-    >>> nltk.parse.featurechart.demo(should_print_times=False, 
-    ...                              should_print_grammar=True, 
+    >>> nltk.parse.featurechart.demo(should_print_times=False,
+    ...                              should_print_grammar=True,
     ...                              parser=nltk.FeatureChartParser,
     ...                              sent='I saw John with a dog')
     <BLANKLINE>
@@ -812,7 +813,7 @@ The list of parsers we want to test.
     ...            ]
 
 A helper function that tests each parser on the given grammar and sentence.
-We check that the number of trees are correct, and that all parsers 
+We check that the number of trees are correct, and that all parsers
 return the same trees. Otherwise an error is printed.
 
     >>> def unittest(grammar, sentence, nr_trees):
@@ -832,7 +833,7 @@ The demo grammar from before, with an ambiguous sentence.
     >>> isawjohn = nltk.parse.featurechart.demo_grammar()
     >>> unittest(isawjohn, "I saw John with a dog with my cookie", 5)
 
-This grammar tests that variables in different grammar rules are renamed 
+This grammar tests that variables in different grammar rules are renamed
 before unification. (The problematic variable is in this case ?X).
 
     >>> whatwasthat = nltk.parse_fcfg('''
