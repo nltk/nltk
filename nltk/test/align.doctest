@@ -42,34 +42,26 @@ but they are easilly inverted:
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)]))
 
 
-We can also set new alignments, but these need to be in the correct range of
+We can create new alignments, but these need to be in the correct range of
 the corresponding sentences:
 
-    >>> from nltk import align
-    >>> als.alignment = align.Alignment([(0, 0), (1, 4), (2, 1), (3, 3)])
+    >>> from nltk.align import Alignment, AlignedSent
+    >>> als = AlignedSent(['Reprise', 'de', 'la', 'session'],
+    ...                   ['Resumption', 'of', 'the', 'session'],
+    ...                   Alignment([(0, 0), (1, 4), (2, 1), (3, 3)]))
     Traceback (most recent call last):
         ...
     IndexError: Alignment is outside boundary of mots
-    >>> als.alignment = align.Alignment([(-1, 0), (1, 2), (2, 1), (3, 3)])
-    Traceback (most recent call last):
-        ...
-    IndexError: Alignment is outside boundary of words
-    >>> als.alignment
-    Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
-    >>> als.alignment = align.Alignment([(1, 3), (3, 2), (0, 1), (2, 0)])
-    >>> als.alignment
-    Alignment([(0, 1), (1, 3), (2, 0), (3, 2)])
+
+.. in Python 2.6 version, we will support:
+   als.alignment = Alignment([(0, 0), (1, 4), (2, 1), (3, 3)])
 
 
 You can set alignments with any sequence of tuples, so long as the first two
 indexes of the tuple are the alignment indices:
 
-    >>> als.alignment = [(0, 0), (1, 1), (2, 2, "boat"), (3, 3, False, (1,2))]
-    >>> als.alignment
+    >>> Alignment([(0, 0), (1, 1), (2, 2, "boat"), (3, 3, False, (1,2))])
     Alignment([(0, 0), (1, 1), (2, 2, 'boat'), (3, 3, False, (1, 2))])
-    >>> als.alignment = ((0, 0), (1, 1), (2, 2), (3, 3))
-    >>> als.alignment
-    Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
 
 
 Alignment Algorithms
@@ -80,11 +72,11 @@ EM for IBM Model 1
 
 Here is an example from Kohn, 2010:
 
-    >>> corpus = [align.AlignedSent(['the', 'house'], ['das', 'Haus']),
-    ...         align.AlignedSent(['the', 'book'], ['das', 'Buch']),
-    ...         align.AlignedSent(['a', 'book'], ['ein', 'Buch'])]
-    >>> em_ibm1 = align.EMIBMModel1(corpus, 1e-3)
-    >>> iterations = em_ibm1.train()
+    >>> from nltk.align import IBMModel1
+    >>> corpus = [AlignedSent(['the', 'house'], ['das', 'Haus']),
+    ...           AlignedSent(['the', 'book'], ['das', 'Buch']),
+    ...           AlignedSent(['a', 'book'], ['ein', 'Buch'])]
+    >>> em_ibm1 = IBMModel1(corpus, 1e-3)
     >>> print round(em_ibm1.probabilities['the', 'das'], 1)
     1.0
     >>> print round(em_ibm1.probabilities['book', 'das'], 1)
@@ -132,7 +124,7 @@ This then gives us a very clean form for defining our evaluation metrics.
 
 Consider the following aligned sentence for evaluation:
 
-    >>> my_als = align.AlignedSent(['Resumption', 'of', 'the', 'session'],
+    >>> my_als = AlignedSent(['Resumption', 'of', 'the', 'session'],
     ...     ['Reprise', 'de', 'la', 'session'],
     ...     [(0, 0), (3, 3), (1, 2), (1, 1), (1, 3)])
 

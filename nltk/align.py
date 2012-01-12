@@ -18,22 +18,19 @@ class AlignedSent(object):
     Return an aligned sentence object, which encapsulates two sentences along with
     an ``Alignment`` between them.
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.align import AlignedSent
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
-        ...     ['the', 'house', 'is', 'small'], '1-3 2-4 3-2 4-1')
+        ...     ['the', 'house', 'is', 'small'], '0-2 1-3 2-1 3-0')
         >>> algnsent.words
         ['klein', 'ist', 'das', 'Haus']
         >>> algnsent.mots
         ['the', 'house', 'is', 'small']
         >>> algnsent.alignment
-        Alignment([(1, 3), (2, 4), (3, 2), (4, 1)])
-        >>> algnsent.precision('1-3 2-4 3-2 4-4')
+        Alignment([(0, 2), (1, 3), (2, 1), (3, 0)])
+        >>> algnsent.precision('0-2 1-3 2-1 3-3')
         0.75
         >>> from nltk.corpus import comtrans
-        >>> comtrans.aligned_sents()[54]
+        >>> print comtrans.aligned_sents()[54]
         <AlignedSent: 'Weshalb also sollten...' -> 'So why should EU arm...'>
         >>> print comtrans.aligned_sents()[54].alignment
         0-0 0-1 1-0 2-2 3-4 3-5 4-7 5-8 6-3 7-9 8-9 9-10 9-11 10-12 11-6 12-6 13-13
@@ -84,9 +81,9 @@ class AlignedSent(object):
         :raise IndexError: if alignment is out of sentence boundary
         :rtype: boolean
         """
-        if not all([0 <= p[0] <= len(self._words) for p in a]):
+        if not all([0 <= p[0] < len(self._words) for p in a]):
             raise IndexError("Alignment is outside boundary of words")
-        if not all([0 <= p[1] <= len(self._mots) for p in a]):
+        if not all([0 <= p[1] < len(self._mots) for p in a]):
             raise IndexError("Alignment is outside boundary of mots")
         return True
 
@@ -216,19 +213,19 @@ class Alignment(frozenset):
     additional data, such as a boolean to indicate sure vs possible alignments).
 
         >>> from nltk.align import Alignment
-        >>> a = Alignment([(1, 1), (1, 2), (2, 3), (3, 3)])
+        >>> a = Alignment([(0, 0), (0, 1), (1, 2), (2, 2)])
         >>> a.invert()
-        Alignment([(1, 1), (2, 1), (3, 2), (3, 3)])
+        Alignment([(0, 0), (1, 0), (2, 1), (2, 2)])
         >>> print a.invert()
-        1-1 2-1 3-2 3-3
-        >>> a[1]
-        [(1, 2), (1, 1)]
+        0-0 1-0 2-1 2-2
+        >>> a[0]
+        [(0, 1), (0, 0)]
         >>> a.invert()[3]
-        [(3, 2), (3, 3)]
-        >>> b = Alignment([(1, 1), (1, 2)])
+        [(2, 1), (2, 2)]
+        >>> b = Alignment([(0, 0), (0, 1)])
         >>> b.issubset(a)
         True
-        >>> c = Alignment('1-1 1-2')
+        >>> c = Alignment('0-0 0-1')
         >>> b == c
         True
     """
@@ -395,7 +392,6 @@ class IBMModel1(object):
                     num_converged, num_probs, 100.0*num_converged/num_probs))
 
         self.probabilities = dict(t)
-        return iteration_count
 
     def aligned(self):
         """
@@ -403,7 +399,7 @@ class IBMModel1(object):
         IBM-Model 1.
         """
 
-        if self.probablities is None:
+        if self.probabilities is None:
             raise ValueError("No probabilities calculated")
 
         aligned = []
