@@ -53,6 +53,9 @@ words included in the document:
 Feature detectors are typically applied to each token before it is fed
 to the classifier:
 
+.. doctest::
+    :options: +SKIP
+
     >>> # Classify each Gutenberg document.
     >>> from nltk.corpus import gutenberg
     >>> for fileid in gutenberg.fileids():

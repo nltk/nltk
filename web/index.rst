@@ -25,7 +25,7 @@ Tokenize and tag some text:
 
     >>> import nltk
     >>> sentence = """At eight o'clock on Thursday morning
-    Arthur didn't feel very good."""
+    ... Arthur didn't feel very good."""
     >>> tokens = nltk.word_tokenize(sentence)
     >>> tokens
     ['At', 'eight', "o'clock", 'on', 'Thursday', 'morning',
@@ -46,6 +46,9 @@ Identify named entities:
                ('very', 'RB'), ('good', 'JJ'), ('.', '.')])
 
 Display a parse tree:
+
+.. doctest::
+    :options: +SKIP
 
     >>> from nltk.corpus import treebank
     >>> t = treebank.parsed_sents('wsj_0001.mrg')[0]

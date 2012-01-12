@@ -18,6 +18,8 @@ corpus, based on one or more "rule templates."
 
     >>> from nltk.corpus import brown
     >>> from nltk.tag import UnigramTagger
+    >>> from nltk.tag.brill import SymmetricProximateTokensTemplate, ProximateTokensTemplate
+    >>> from nltk.tag.brill import ProximateTagsRule, ProximateWordsRule, FastBrillTaggerTrainer
     >>> brown_train = list(brown.tagged_sents(categories='news')[:500])
     >>> brown_test = list(brown.tagged_sents(categories='news')[500:600])
     >>> unigram_tagger = UnigramTagger(brown_train)

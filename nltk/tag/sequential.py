@@ -213,6 +213,7 @@ class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """
     A tagger that assigns the same tag to every token.
 
+        >>> from nltk.tag.sequential import DefaultTagger
         >>> default_tagger = DefaultTagger('NN')
         >>> default_tagger.tag('This is a test'.split())
         [('This', 'NN'), ('is', 'NN'), ('a', 'NN'), ('test', 'NN')]
@@ -285,6 +286,7 @@ class UnigramTagger(NgramTagger):
     corpus, and then uses that information to assign tags to new tokens.
 
         >>> from nltk.corpus import brown
+        >>> from nltk.tag.sequential import UnigramTagger
         >>> test_sent = brown.sents(categories='news')[0]
         >>> unigram_tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
         >>> unigram_tagger.tag(test_sent)
@@ -424,6 +426,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     of speech tag:
 
         >>> from nltk.corpus import brown
+        >>> from nltk.tag.sequential import RegexpTagger
         >>> test_sent = brown.sents(categories='news')[0]
         >>> regexp_tagger = RegexpTagger(
         ...     [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
