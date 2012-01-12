@@ -18,6 +18,7 @@ class LancasterStemmer(StemmerI):
     """
     Lancaster Stemmer
 
+        >>> from nltk.stem.lancaster import LancasterStemmer
         >>> st = LancasterStemmer()
         >>> st.stem('maximum')     # Remove "-um" when word is intact
         'maxim'

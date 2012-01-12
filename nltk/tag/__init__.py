@@ -34,6 +34,7 @@ training corpus.  For example, the unigram tagger tags each word *w*
 by checking what the most frequent tag for *w* was in a training corpus:
 
     >>> from nltk.corpus import brown
+    >>> from nltk.tag import UnigramTagger
     >>> tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
     >>> tagger.tag(['Mitchell', 'decried', 'the', 'high', 'rate', 'of', 'unemployment'])
     [('Mitchell', 'NP'), ('decried', None), ('the', 'AT'), ('high', 'JJ'),

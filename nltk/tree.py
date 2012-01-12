@@ -34,6 +34,7 @@ class Tree(list):
     where a leaf is a basic (non-tree) value; and a subtree is a
     nested Tree.
 
+        >>> from nltk.tree import Tree
         >>> print Tree(1, [2, Tree(3, [4]), 5])
         (1 2 (3 4) 5)
         >>> vp = Tree('VP', [Tree('V', ['saw']),

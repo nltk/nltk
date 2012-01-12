@@ -19,6 +19,7 @@ This tokenizer performs the following steps:
   - split off commas and single quotes, when followed by whitespace
   - separate periods that appear at the end of line
 
+    >>> from nltk.tokenize import TreebankWordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
     >>> TreebankWordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',

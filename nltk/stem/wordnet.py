@@ -16,6 +16,7 @@ class WordNetLemmatizer(object):
     Lemmatize using WordNet's built-in morphy function.
     The lemmatized form is guaranteed to exist in WordNet.
 
+        >>> from nltk.stem import WordNetLemmatizer
         >>> wnl = WordNetLemmatizer()
         >>> wnl.lemmatize('dogs')
         'dog'

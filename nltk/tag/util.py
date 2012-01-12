@@ -13,6 +13,7 @@ def str2tuple(s, sep='/'):
     *sep* in *s* will be used to divide *s* into a word string and
     a tag string.  If *sep* does not occur in *s*, return (s, None).
 
+        >>> from nltk.tag.util import str2tuple
         >>> str2tuple('fly/NN')
         ('fly', 'NN')
 
@@ -36,6 +37,7 @@ def tuple2str(tagged_token, sep='/'):
     separator, followed by the token's tag.  (If the tag is None,
     then just return the bare word string.)
 
+        >>> from nltk.tag.util import tuple2str
         >>> tagged_token = ('fly', 'NN')
         >>> tuple2str(tagged_token)
         'fly/NN'
@@ -59,6 +61,7 @@ def untag(tagged_sentence):
     sentence.  I.e., return a list containing the first element
     of each tuple in *tagged_sentence*.
 
+        >>> from nltk.tag.util import untag
         >>> untag([('John', 'NNP'), ('saw', 'VBD'), ('Mary', 'NNP')])
         ['John', 'saw', 'Mary']
 

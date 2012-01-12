@@ -268,6 +268,7 @@ class Text(object):
     corpus.  E.g.:
 
     >>> import nltk.corpus
+    >>> from nltk.text import Text
     >>> moby = Text(nltk.corpus.gutenberg.words('melville-moby_dick.txt'))
 
     """
@@ -555,6 +556,7 @@ class TextCollection(Text):
     TextCollection as follows:
 
     >>> import nltk.corpus
+    >>> from nltk.text import TextCollection
     >>> from nltk.book import text1, text2, text3
     >>> gutenberg = TextCollection(nltk.corpus.gutenberg)
     >>> mytexts = TextCollection([text1, text2, text3])

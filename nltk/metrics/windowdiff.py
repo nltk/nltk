@@ -19,6 +19,7 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     over a vocabulary of two items (e.g. "0", "1"), where the specified boundary value is used
     to mark the edge of a segmentation.
 
+    >>> from nltk.metrics.windowdiff import windowdiff
     >>> s1 = "00000010000000001000000"
     >>> s2 = "00000001000000010000000"
     >>> s3 = "00010000000000000001000"

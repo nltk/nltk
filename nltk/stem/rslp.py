@@ -39,6 +39,7 @@ class RSLPStemmer(StemmerI):
     """
     A stemmer for Portuguese.
 
+        >>> from nltk.stem import RSLPStemmer
         >>> st = RSLPStemmer()
         >>> # opening lines of Erico Verissimo's "Música ao Longe"
         >>> text = u'''

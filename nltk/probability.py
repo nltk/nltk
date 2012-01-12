@@ -71,6 +71,7 @@ class FreqDist(dict):
     how often each word occurs in a text:
 
         >>> from nltk.tokenize import word_tokenize
+        >>> from nltk.probability import FreqDist
         >>> sent = 'This is an example sentence'
         >>> fdist = FreqDist()
         >>> for word in word_tokenize(sent):
@@ -1990,6 +1991,7 @@ class ConditionalProbDist(ConditionalProbDistI):
     code constructs a ``ConditionalProbDist``, where the probability
     distribution for each condition is an ``ELEProbDist`` with 10 bins:
 
+        >>> from nltk.probability import ConditionalProbDist, ELEProbDist
         >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
         >>> print cpdist['run'].max()
         'NN'
@@ -2117,6 +2119,7 @@ class ProbabilisticMixIn(object):
     the new class, which explicitly calls the constructors of both its
     parent classes.  For example:
 
+        >>> from nltk.probability import ProbabilisticMixIn
         >>> class A:
         ...     def __init__(self, x, y): self.data = (x,y)
         ...
