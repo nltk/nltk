@@ -39,8 +39,8 @@ VCS setup/integration
 
 All operations are done against the `NLTK repos on Github`_. The Jenkins
 instance on ShiningPanda has a limit to the build time it can use each day.
-Because of this, it only polls the main NLTK repo once a day, using the ``Poll
-SCM`` option in Jenkins. Against the main code repo it uses public access only,
+Because of this, it only polls the main NLTK repo once a day, using the `Poll
+SCM` option in Jenkins. Against the main code repo it uses public access only,
 and for pushing to the nltk.github.com repo it uses the key of the user
 nltk-webdeploy.
 
@@ -54,9 +54,9 @@ To build the project, the following tasks are run:
 
 1. Create a VERSION file
   A VERSION file is created using
-  `git describe --tags --match '*.*.*' > nltk/VERSION`.
+  ``git describe --tags --match '*.*.*' > nltk/VERSION``.
   This makes the most recent VCS tag available in nltk.__version__ etc.
-2. `python setup.py build`
+2. ``python setup.py build``
   This essentially copies the files that are required to run NLTK into build/
 
 
@@ -95,7 +95,7 @@ The builds
 The packages are built using ``make dist``. The outputted builds are all placed
 `in our jenkins workspace`_ and should be safe to distribute. Builds
 specifically for mac are not available. File names are made based on the
-__version__ string, so they change every build.
+``__version__`` string, so they change every build.
 
 .. _`in our jenkins workspace`: http://example.com/
 
@@ -110,3 +110,4 @@ to the repo – because this cannot be done using a deploy key, it has the ssh
 key of the ``nltk-webdeploy`` user.
 
 .. _Sphinx: http://sphinx.pocoo.org
+.. _`nltk.github.com repo on github`: https://github.com/nltk/nltk.github.com
