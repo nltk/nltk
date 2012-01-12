@@ -1148,6 +1148,7 @@ def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
     structures, simply apply rename_variables to each one, using
     the same dictionary:
 
+        >>> from nltk.featstruct import FeatStruct
         >>> fstruct1 = FeatStruct('[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]')
         >>> fstruct2 = FeatStruct('[subj=[agr=[number=?z,gender=?y]], obj=[agr=[number=?z,gender=?y]]]')
         >>> new_vars = {}  # Maps old vars to alpha-renamed vars
@@ -1276,6 +1277,7 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
     assumed to be unbound.  I.e., ``bindings`` defaults to an
     empty dict.
 
+        >>> from nltk.featstruct import FeatStruct
         >>> FeatStruct('[a=?x]').unify(FeatStruct('[b=?x]'))
         [a=?x, b=?x2]
 

@@ -346,6 +346,7 @@ class RegexpChunkRule(object):
         text following the comment marker (``#``) will be used as
         the rule's description:
 
+        >>> from nltk.chunk.regexp import RegexpChunkRule
         >>> RegexpChunkRule.parse('{<DT>?<NN.*>+}')
         <ChunkRule: '<DT>?<NN.*>+'>
         """

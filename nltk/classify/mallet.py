@@ -12,6 +12,9 @@ A set of functions used to interface with the external Mallet_ machine learning
 package. Before mallet can be used, you should tell NLTK where it can find
 the mallet package, using the ``config_mallet()`` function. Typical usage:
 
+.. doctest::
+    :options: +SKIP
+
     >>> from nltk.classify import mallet
     >>> mallet.config_mallet() # pass path to mallet as argument if needed
     [Found mallet: ...]

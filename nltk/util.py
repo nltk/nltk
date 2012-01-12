@@ -351,6 +351,7 @@ def flatten(*args):
     """
     Flatten a list.
 
+        >>> from nltk.util import flatten
         >>> flatten(1, 2, ['b', 'a' , ['c', 'd']], 3)
         [1, 2, 'b', 'a', 'c', 'd', 3]
 
@@ -378,14 +379,15 @@ def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
     Return a sequence of ngrams from a sequence of items.  For example:
 
-    >>> ngrams([1,2,3,4,5], 3)
-    [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+        >>> from nltk.util import ngrams
+        >>> ngrams([1,2,3,4,5], 3)
+        [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
 
     Use ingram for an iterator version of this function.  Set pad_left
     or pad_right to true in order to get additional ngrams:
 
-    >>> ngrams([1,2,3,4,5], 2, pad_right=True)
-    [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
+        >>> ngrams([1,2,3,4,5], 2, pad_right=True)
+        [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
     :param sequence: the source data to be converted into ngrams
     :type sequence: sequence or iter
@@ -413,8 +415,9 @@ def bigrams(sequence, **kwargs):
     """
     Return a sequence of bigrams from a sequence of items.  For example:
 
-    >>> bigrams([1,2,3,4,5])
-    [(1, 2), (2, 3), (3, 4), (4, 5)]
+        >>> from nltk.util import bigrams
+        >>> bigrams([1,2,3,4,5])
+        [(1, 2), (2, 3), (3, 4), (4, 5)]
 
     Use ibigrams for an iterator version of this function.
 
@@ -428,8 +431,9 @@ def trigrams(sequence, **kwargs):
     """
     Return a sequence of trigrams from a sequence of items.  For example:
 
-    >>> trigrams([1,2,3,4,5])
-    [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+        >>> from nltk.util import trigrams
+        >>> trigrams([1,2,3,4,5])
+        [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
 
     Use itrigrams for an iterator version of this function.
 
@@ -444,14 +448,15 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     Return the ngrams generated from a sequence of items, as an iterator.
     For example:
 
-    >>> list(ingrams([1,2,3,4,5], 3))
-    [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+        >>> from nltk.util import ingrams
+        >>> list(ingrams([1,2,3,4,5], 3))
+        [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
 
     Use ngrams for a list version of this function.  Set pad_left
     or pad_right to true in order to get additional ngrams:
 
-    >>> list(ingrams([1,2,3,4,5], 2, pad_right=True))
-    [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
+        >>> list(ingrams([1,2,3,4,5], 2, pad_right=True))
+        [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
     :param sequence: the source data to be converted into ngrams
     :type sequence: sequence or iter
@@ -486,8 +491,9 @@ def ibigrams(sequence, **kwargs):
     Return the bigrams generated from a sequence of items, as an iterator.
     For example:
 
-    >>> list(ibigrams([1,2,3,4,5]))
-    [(1, 2), (2, 3), (3, 4), (4, 5)]
+        >>> from nltk.util import ibigrams
+        >>> list(ibigrams([1,2,3,4,5]))
+        [(1, 2), (2, 3), (3, 4), (4, 5)]
 
     Use bigrams for a list version of this function.
 
@@ -504,8 +510,9 @@ def itrigrams(sequence, **kwargs):
     Return the trigrams generated from a sequence of items, as an iterator.
     For example:
 
-    >>> list(itrigrams([1,2,3,4,5]))
-    [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+        >>> from nltk.util import itrigrams
+        >>> list(itrigrams([1,2,3,4,5]))
+        [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
 
     Use trigrams for a list version of this function.
 
@@ -842,6 +849,7 @@ class LazyMap(AbstractLazySequence):
     ``map``.  In particular, the following two expressions are
     equivalent:
 
+        >>> from nltk.util import LazyMap
         >>> function = str
         >>> sequence = [1,2,3]
         >>> map(function, sequence)
@@ -970,6 +978,7 @@ class LazyZip(LazyMap):
     ``LazyZip`` is essentially a lazy version of the Python primitive function
     ``zip``.  In particular, an evaluated LazyZip is equivalent to a zip:
 
+        >>> from nltk.util import LazyZip
         >>> sequence1, sequence2 = [1, 2, 3], ['a', 'b', 'c']
         >>> zip(sequence1, sequence2)
         [(1, 'a'), (2, 'b'), (3, 'c')]
@@ -1019,6 +1028,7 @@ class LazyEnumerate(LazyZip):
     function ``enumerate``.  In particular, the following two expressions are
     equivalent:
 
+        >>> from nltk.util import LazyEnumerate
         >>> sequence = ['first', 'second', 'third']
         >>> list(enumerate(sequence))
         [(0, 'first'), (1, 'second'), (2, 'third')]

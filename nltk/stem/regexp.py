@@ -17,6 +17,7 @@ class RegexpStemmer(StemmerI):
     affixes.  Any substrings that match the regular expressions will
     be removed.
 
+        >>> from nltk.stem import RegexpStemmer
         >>> st = RegexpStemmer('ing$|s$|e$', min=4)
         >>> st.stem('cars')
         'car'

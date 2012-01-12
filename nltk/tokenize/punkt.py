@@ -61,6 +61,7 @@ flag:
 :class:`.PunktWordTokenizer` uses a regular expression to divide a text into tokens,
 leaving all periods attached to words, but separating off other punctuation:
 
+    >>> from nltk.tokenize.punkt import PunktWordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
     >>> PunktWordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',

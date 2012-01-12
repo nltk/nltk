@@ -18,6 +18,10 @@ class AlignedSent(object):
     Return an aligned sentence object, which encapsulates two sentences along with
     an ``Alignment`` between them.
 
+    .. doctest::
+        :options: +SKIP
+
+        >>> from nltk.align import AlignedSent
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
         ...     ['the', 'house', 'is', 'small'], '1-3 2-4 3-2 4-1')
         >>> algnsent.words
@@ -166,6 +170,7 @@ class AlignedSent(object):
         Return an error rate between 0.0 (perfect alignment) and 1.0 (no
         alignment).
 
+            >>> from nltk.align import AlignedSent
             >>> s = AlignedSent(["the", "cat"], ["le", "chat"], [(0, 0), (1, 1)])
             >>> s.alignment_error_rate(s)
             0.0
@@ -210,6 +215,7 @@ class Alignment(frozenset):
     j-th element of s2.  Tuples are extensible (they might contain
     additional data, such as a boolean to indicate sure vs possible alignments).
 
+        >>> from nltk.align import Alignment
         >>> a = Alignment([(1, 1), (1, 2), (2, 3), (3, 3)])
         >>> a.invert()
         Alignment([(1, 1), (2, 1), (3, 2), (3, 3)])
@@ -301,8 +307,12 @@ class IBMModel1(object):
     - Stage 2: Generates updated word alignments for the sentence pairs, based
       on the translation probabilities from Stage 1.
 
-        >>> from nltk.corpus import comtrans
-        >>> ibm1 = IBMModel1(comtrans.aligned_sents())
+      .. doctest::
+          :options: +SKIP
+
+          >>> from nltk.corpus import comtrans
+          >>> from nltk.align import IBMModel1
+          >>> ibm1 = IBMModel1(comtrans.aligned_sents())
 
     :param aligned_sents: The parallel text ``corpus.Iterable`` containing
         AlignedSent instances of aligned sentence pairs from the corpus.

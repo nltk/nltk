@@ -5,6 +5,7 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from nltk.probability import FreqDist
 
 class ConfusionMatrix(object):
     """
@@ -13,6 +14,7 @@ class ConfusionMatrix(object):
     matrix is a count of the number of times that the reference value
     *r* corresponds to the test value *t*.  E.g.:
 
+        >>> from nltk.metrics import ConfusionMatrix
         >>> ref  = 'DET NN VB DET JJ NN NN IN DET NN'.split()
         >>> test = 'DET VB VB DET NN NN NN IN DET NN'.split()
         >>> cm = ConfusionMatrix(ref, test)

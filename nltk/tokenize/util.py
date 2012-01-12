@@ -12,6 +12,7 @@ def string_span_tokenize(s, sep):
     Return the offsets of the tokens in *s*, as a sequence of ``(start, end)``
     tuples, by splitting the string at each occurrence of *sep*.
 
+        >>> from nltk.tokenize.util import string_span_tokenize
         >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
         ... two of them.\n\nThanks.'''
         >>> list(string_span_tokenize(s, " "))
@@ -70,6 +71,7 @@ def spans_to_relative(spans):
     Return a sequence of relative spans, given a sequence of spans.
 
         >>> from nltk.tokenize import WhitespaceTokenizer
+        >>> from nltk.tokenize.util import spans_to_relative
         >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
         ... two of them.\n\nThanks.'''
         >>> list(spans_to_relative(WhitespaceTokenizer().span_tokenize(s)))

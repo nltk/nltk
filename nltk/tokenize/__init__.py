@@ -14,7 +14,7 @@ Tokenizers divide strings into lists of substrings.  For example,
 tokenizers can be used to find the list of sentences or words in a
 string.
 
-    >>> from nltk import word_tokenize, wordpunct_tokenize
+    >>> from nltk.tokenize import word_tokenize, wordpunct_tokenize, sent_tokenize
     >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
     ... two of them.\n\nThanks.'''
     >>> wordpunct_tokenize(s)
@@ -36,6 +36,7 @@ NLTK tokenizers can produce token-spans, represented as tuples of integers
 having the same semantics as string slices, to support efficient comparison
 of tokenizers.  (These methods are implemented as generators.)
 
+    >>> from nltk.tokenize import WhitespaceTokenizer
     >>> list(WhitespaceTokenizer().span_tokenize(s))
     [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36), (38, 44),
     (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]

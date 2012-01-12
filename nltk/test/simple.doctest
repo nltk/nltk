@@ -8,6 +8,8 @@ EasyInstall Tests
 This file contains some simple tests that will be run by EasyInstall in
 order to test the installation when NLTK-Data is absent.
 
+    >>> from nltk.test.doctest_utils import *
+
 ------------
 Tokenization
 ------------
@@ -30,17 +32,17 @@ Metrics
     >>> test_set = set(test)
     >>> precision(reference_set, test_set)
     1.0
-    >>> recall(reference_set, test_set)
-    0.80000000000000004
-    >>> f_measure(reference_set, test_set)
-    0.88888888888888884
+    >>> float_equal(recall(reference_set, test_set), 0.8)
+    True
+    >>> float_equal(f_measure(reference_set, test_set), 0.88888888888888)
+    True
 
 ------------------
 Feature Structures
 ------------------
 
-    >>> from nltk import FeatStruct    
-    >>> fs1 = FeatStruct(PER=3, NUM='pl', GND='fem')    
+    >>> from nltk import FeatStruct
+    >>> fs1 = FeatStruct(PER=3, NUM='pl', GND='fem')
     >>> fs2 = FeatStruct(POS='N', AGR=fs1)
     >>> print fs2
     [       [ GND = 'fem' ] ]
@@ -58,7 +60,7 @@ Feature Structures
 -------
 Parsing
 -------
-    
+
     >>> from nltk import RecursiveDescentParser, parse_cfg
     >>> grammar = parse_cfg("""
     ... S -> NP VP
@@ -80,4 +82,3 @@ Parsing
       (NP the (N cat))
       (VP (V chased) (NP the (N dog)) (PP (P on) (NP the (N rug)))))
 
-      
