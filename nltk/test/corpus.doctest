@@ -1279,7 +1279,7 @@ corpora, and returns a flat list of word strings:
     >>> nltk.corpus.conll2002.words()
     [u'Sao', u'Paulo', u'(', u'Brasil', u')', u',', u'23', ...]
     >>> nltk.corpus.genesis.words()
-    ['In', 'the', 'beginning', 'God', 'created', 'the', ...]
+    [u'In', u'the', u'beginning', u'God', u'created', ...]
 
 On the other hand, the `tagged_words()` method is only supported by
 corpora that include part-of-speech annotations:
@@ -1622,7 +1622,7 @@ Test the plaintext corpora that come with nltk:
     ...     print '  ', `corpus.fileids()`[:60]
     ...     print '  ', `corpus.words()[:10]`[:60]
     ...     # doctest: +ELLIPSIS
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc.zip/abc/'>
+    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc...>
        ['rural.txt', 'science.txt']
        ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
     <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis.zip/genesis/'>
