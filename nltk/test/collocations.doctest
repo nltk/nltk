@@ -30,9 +30,10 @@ bigrams which occur less than three times in the corpus:
 
     >>> finder.apply_freq_filter(3)
     >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
-    [('Lahai', 'Roi'), ('gray', 'hairs'), ('Beer', 'Lahai'), ('Most', 'High'),
-     ('ewe', 'lambs'), ('many', 'colors'), ('burnt', 'offering'),
-     ('Paddan', 'Aram'), ('east', 'wind'), ('living', 'creature')]
+    [(u'Beer', u'Lahai'), (u'Lahai', u'Roi'), (u'gray', u'hairs'),
+     (u'Most', u'High'), (u'ewe', u'lambs'), (u'many', u'colors'),
+     (u'burnt', u'offering'), (u'Paddan', u'Aram'), (u'east', u'wind'),
+     (u'living', u'creature')]
 
 We may similarly find collocations among tagged words:
 

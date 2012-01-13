@@ -426,6 +426,10 @@ def sql_query(dbname, query):
         import warnings
         warnings.warn("To run this function, first install pysqlite, or else use Python 2.5 or later.")
         raise
+    except ValueError:
+        import warnings
+        warnings.warn("Make sure the database file %s is installed and uncompressed." % dbname)
+        raise
 
 def _str2records(filename, rel):
     """
