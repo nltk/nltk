@@ -1,3 +1,9 @@
+# Natural Language Toolkit: Interface to scikit-learn classifiers
+#
+# Author: Lars Buitinck <L.J.Buitinck@uva.nl>
+# URL: <http://www.nltk.org/>
+# For license information, see LICENSE.TXT
+
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 
