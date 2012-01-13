@@ -356,6 +356,9 @@ class ZipFilePathPointer(PathPointer):
         return 'ZipFilePathPointer(%r, %r)' % (
             self._zipfile.filename, self._entry)
 
+    def __str__(self):
+        return '%r/%r' % (self._zipfile.filename, self._entry)
+
 ######################################################################
 # Access Functions
 ######################################################################
