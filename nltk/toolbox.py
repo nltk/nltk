@@ -248,7 +248,7 @@ class ToolboxData(StandardFormat):
         :rtype: ElementTree._ElementInterface
         """
         from nltk import chunk
-        from nltk.parse import Tree
+        from nltk.tree import Tree
 
         cp = chunk.RegexpParser(grammar, top_node=top_node, trace=trace)
         db = self.parse(**kwargs)
