@@ -97,6 +97,11 @@ from nltk.classify.util import accuracy, log_likelihood
 # Conditional imports
 
 try:
+    from scikitlearn import SklearnClassifier
+except ImportError:
+    pass
+
+try:
     import numpy
     from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
                                       TypedMaxentFeatureEncoding,
