@@ -59,7 +59,7 @@ class CCGLexicon(object):
     def __str__(self):
         st = ""
         first = True
-        for ident in self._entries.keys():
+        for ident in self._entries:
             if not first:
                 st = st + "\n"
             st = st + ident + " => "

@@ -205,7 +205,7 @@ class DecisionTreeClassifier(ClassifierI):
             default_featuresets = [(featureset, label) for (featureset, label)
                                    in labeled_featuresets
                                    if featureset.get(self._fname) not in
-                                   self._decisions.keys()]
+                                   self._decisions]
             label_freqs = FreqDist([label for (featureset,label)
                                     in default_featuresets])
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:

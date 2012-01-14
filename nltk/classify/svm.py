@@ -49,7 +49,7 @@ def map_features_to_svm(features, svmfeatureindex):
         # this does not support scalar features - rather, each value that a feature may take on is a discrete independent label
         # use 1.0 as the feature value to specify the presence of a feature:value couple
         svmfeaturename = featurename(k, v)
-        if svmfeaturename not in svmfeatureindex.keys():
+        if svmfeaturename not in svmfeatureindex:
             # skip over feature:value pairs that were not in the training data and so not included in our mappings
             continue
         instancefeatures.append( (svmfeatureindex[svmfeaturename], 1.0) )

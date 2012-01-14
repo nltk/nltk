@@ -165,7 +165,7 @@ class PorterStemmer(StemmerI):
             }
 
         self.pool = {}
-        for key in irregular_forms.keys():
+        for key in irregular_forms:
             for val in irregular_forms[key]:
                 self.pool[val] = key
 

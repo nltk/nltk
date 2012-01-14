@@ -1718,7 +1718,7 @@ def demo(choice=None,
     if not (should_print_times and times): return
     print "* Parsing times"
     print
-    maxlen = max(len(key) for key in times.keys())
+    maxlen = max(len(key) for key in times)
     format = '%' + `maxlen` + 's parser: %6.3fsec'
     times_items = times.items()
     times_items.sort(lambda a,b:cmp(a[1], b[1]))

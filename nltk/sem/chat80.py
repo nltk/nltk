@@ -526,7 +526,7 @@ def process_bundle(rels):
         concept_list = clause2concepts(filename, rel_name, schema, closures)
         for c in concept_list:
             label = c.prefLabel
-            if(label in concepts.keys()):
+            if (label in concepts):
                 for data in c.extension:
                     concepts[label].augment(data)
                 concepts[label].close()

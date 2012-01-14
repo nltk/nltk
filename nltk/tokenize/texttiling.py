@@ -164,7 +164,7 @@ class TextTilingTokenizer(TokenizerI):
             b2 = [ts.index
                   for ts in tokseqs[curr_gap+1 : curr_gap+window_size+1]]
 
-            for t in token_table.keys():
+            for t in token_table:
                 score_dividend += blk_frq(t, b1)*blk_frq(t, b2)
                 score_divisor_b1 += blk_frq(t, b1)**2
                 score_divisor_b2 += blk_frq(t, b2)**2
@@ -236,7 +236,7 @@ class TextTilingTokenizer(TokenizerI):
                     #hit bottom
                     pass
 
-                if word in token_table.keys():
+                if word in token_table:
                     token_table[word].total_count += 1
 
                     if token_table[word].last_par != current_par:

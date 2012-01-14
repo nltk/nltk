@@ -680,7 +680,7 @@ class DictionaryProbDist(ProbDistI):
                 value_sum = sum_logs(self._prob_dict.values())
                 if value_sum <= _NINF:
                     logp = math.log(1.0/len(prob_dict), 2)
-                    for x in prob_dict.keys():
+                    for x in prob_dict:
                         self._prob_dict[x] = logp
                 else:
                     for (x, p) in self._prob_dict.items():
@@ -1679,7 +1679,7 @@ def log_likelihood(test_pdist, actual_pdist):
         raise ValueError('expected a ProbDist.')
     # Is this right?
     return sum(actual_pdist.prob(s) * math.log(test_pdist.prob(s), 2)
-               for s in actual_pdist.keys())
+               for s in actual_pdist)
 
 def entropy(pdist):
     probs = [pdist.prob(s) for s in pdist.samples()]
@@ -2335,7 +2335,7 @@ def gt_demo():
     katz = SimpleGoodTuringProbDist(fd, 7)
     print '%18s %8s  %12s %14s  %12s' \
         % ("word", "freqency", "GoodTuring", "SimpleGoodTuring", "Katz-cutoff" )
-    for key in fd.keys():
+    for key in fd:
         print '%18s %8d  %12e   %14e   %12e' \
             % (key, fd[key], gt.prob(key), sgt.prob(key), katz.prob(key))
 

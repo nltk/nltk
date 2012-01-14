@@ -182,7 +182,7 @@ class DiscourseTester(object):
         """
         Display the list of sentences in the current discourse.
         """
-        for id in sorted(self._sentences.keys()):
+        for id in sorted(self._sentences):
             print "%s: %s" % (id, self._sentences[id])
 
     def add_sentence(self, sentence, informchk=False, consistchk=False,):
@@ -199,7 +199,7 @@ class DiscourseTester(object):
         # check whether the new sentence is informative (i.e. not entailed by the previous discourse)
         if informchk:
             self.readings(verbose=False)
-            for tid in sorted(self._threads.keys()):
+            for tid in sorted(self._threads):
                 assumptions = [reading for (rid, reading) in self.expand_threads(tid)]
                 assumptions += self._background
                 for sent_reading in self._get_readings(sentence):
@@ -272,8 +272,8 @@ class DiscourseTester(object):
         and use the model builder to construct a value for ``self._filtered_threads``
         """
         thread_list = [[]]
-        for sid in sorted(self._readings.keys()):
-            thread_list = self.multiply(thread_list, sorted(self._readings[sid].keys()))
+        for sid in sorted(self._readings):
+            thread_list = self.multiply(thread_list, sorted(self._readings[sid]))
         self._threads = dict([("d%s" % tid, thread) for tid, thread in enumerate(thread_list)])
         # re-initialize the filtered threads
         self._filtered_threads = {}
@@ -293,7 +293,7 @@ class DiscourseTester(object):
             for r in [str(reading) for reading in (self._get_readings(sentence))]:
                 print "    %s" % r
         else:
-            for sid in sorted(self._readings.keys()):
+            for sid in sorted(self._readings):
                 print
                 print '%s readings:' % sid
                 print #'-' * 30
@@ -310,7 +310,7 @@ class DiscourseTester(object):
             threads = self._filtered_threads
         else:
             threads = self._threads
-        for tid in sorted(threads.keys()):
+        for tid in sorted(threads):
             if show_thread_readings:
                 readings = [self._readings[rid.split('-')[0]][rid]
                             for rid in self._threads[tid]]
@@ -371,7 +371,7 @@ class DiscourseTester(object):
 
     def _check_consistency(self, threads, show=False, verbose=False):
         results = []
-        for tid in sorted(threads.keys()):
+        for tid in sorted(threads):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
             assumptions = self._reading_command.process_thread(assumptions)
             if assumptions:

@@ -52,7 +52,7 @@ __languages = { 'english'   : 'en',
 """
   All of the available language names.
 """
-available_languages = [ x.title() for x in __languages.keys() ]
+available_languages = [x.title() for x in __languages]
 
 class BabelizerError(Exception):
     """

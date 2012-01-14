@@ -687,7 +687,7 @@ class EnglishStemmer(_StandardStemmer):
         if word in self.stopwords or len(word) <= 2:
             return word
 
-        elif word in self.__special_words.keys():
+        elif word in self.__special_words:
             return self.__special_words[word]
 
         # Map the different apostrophe characters to a single consistent one
