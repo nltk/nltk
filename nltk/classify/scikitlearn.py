@@ -60,6 +60,9 @@ class SklearnClassifier(ClassifierI):
         self._dtype = dtype
         self._sparse = sparse
 
+    def __repr__(self):
+        return "<SklearnClassifier(%r)>" % self._clf
+
     def batch_classify(self, featuresets):
         X = self._featuresets_to_array(featuresets)
         y = self._clf.predict(X)
