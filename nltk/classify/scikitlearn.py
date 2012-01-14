@@ -8,6 +8,36 @@ from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 
 import numpy as np
+from scipy.sparse import lil_matrix
+
+"""
+scikit-learn (http://scikit-learn.org) is a machine learning library for
+Python, supporting most of the basic classification algorithms, including SVMs,
+Naive Bayes, logistic regression and decision trees.
+
+This package implement a wrapper around scikit-learn classifiers. To use this
+wrapper, construct a scikit-learn classifier, then use that to construct a
+SklearnClassifier. E.g., to wrap a linear SVM classifier with default settings,
+do
+
+>>> from sklearn.svm.sparse import LinearSVC
+>>> classif = SklearnClassifier(LinearSVC())
+
+The scikit-learn classifier may be arbitrarily complex. E.g., the following
+constructs and wraps a Naive Bayes estimator with tf-idf weighting and
+chi-square feature selection:
+
+>>> from sklearn.feature_extraction.text import TfidfTransformer
+>>> from sklearn.feature_selection import SelectKBest, chi2
+>>> from sklearn.naive_bayes import MultinomialNB
+>>> from sklearn.pipeline import Pipeline
+>>> pipeline = Pipeline([('tfidf', TfidfTransformer()),
+...                      ('chi2', SelectKBest(chi2, k=1000)),
+...                      ('nb', MultinomialNB())])
+>>> classif = SklearnClassifier(pipeline)
+
+(Such a classifier could be trained on word counts for text classification.)
+"""
 
 
 class SklearnClassifier(ClassifierI):
@@ -17,11 +47,14 @@ class SklearnClassifier(ClassifierI):
         """
         :param estimator: scikit-learn classifier object.
 
-        :dtype: data type used when building feature array. Use e.g. bool
+        :param dtype: data type used when building feature array.
+            scikit-learn estimators work exclusively on numeric data; use bool
             when all features are binary.
 
-        :sparse: Whether to use sparse matrices. Note that the estimator
-            must support these; not all scikit-learn classifiers do.
+        :param sparse: Whether to use sparse matrices. The estimator must
+            support these; not all scikit-learn classifiers do. The default
+            value is True, since most NLP problems involve sparse feature sets.
+        :type sparse: boolean.
         """
         self._clf = estimator
         self._dtype = dtype
@@ -41,6 +74,13 @@ class SklearnClassifier(ClassifierI):
         return self._label_index.keys()
 
     def train(self, labeled_featuresets):
+        """
+        Train (fit) the scikit-learn estimator.
+
+        :param labeled_featuresets: A list of classified featuresets,
+            i.e., a list of tuples ``(featureset, label)``.
+        """
+
         self._feature_index = {}
         self._index_label = []
         self._label_index = {}
@@ -54,7 +94,6 @@ class SklearnClassifier(ClassifierI):
                 self._label_index[label] = len(self._label_index)
 
         featuresets, labels = zip(*labeled_featuresets)
-        #featuresets = [fs for fs, _ in labeled_featuresets]
         X = self._featuresets_to_array(featuresets)
         y = np.array([self._label_index[l] for l in labels])
 
@@ -63,8 +102,15 @@ class SklearnClassifier(ClassifierI):
         return self
 
     def _featuresets_to_array(self, featuresets):
+        """Convert featureset to array or sparse matrix.
+
+        Ignores features not seen during training.
+        """
+
         if self._sparse:
-            from scipy.sparse import lil_matrix
+            # XXX Transforming to lil_matrix is wasteful, since scikit-learn
+            # estimators will typically convert to csr_matrix. Building a
+            # csr_matrix directly would be more efficient (but also harder).
             zeros = lil_matrix
         else:
             zeros = np.zeros
@@ -88,12 +134,13 @@ class SklearnClassifier(ClassifierI):
 
 if __name__ == "__main__":
     from nltk.classify.util import names_demo, binary_names_demo_features
+    from sklearn.linear_model.sparse import LogisticRegression
     from sklearn.naive_bayes import BernoulliNB
     from sklearn.svm.sparse import LinearSVC
 
     print("scikit-learn Naive Bayes:")
-    names_demo(SklearnClassifier(BernoulliNB(), dtype=bool).train,
+    names_demo(SklearnClassifier(BernoulliNB(binarize=False), dtype=bool).train,
                features=binary_names_demo_features)
-    print("scikit-learn linear SVM:")
-    names_demo(SklearnClassifier(LinearSVC(), dtype=bool).train,
+    print("scikit-learn logistic regression:")
+    names_demo(SklearnClassifier(LogisticRegression(), dtype=bool).train,
                features=binary_names_demo_features)
