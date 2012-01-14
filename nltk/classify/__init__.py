@@ -99,6 +99,7 @@ from nltk.classify.util import accuracy, log_likelihood
 try:
     import numpy
     from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
+                                      TypedMaxentFeatureEncoding,
                                       ConditionalExponentialClassifier)
     import svmlight
     from nltk.classify.svm import SvmClassifier
