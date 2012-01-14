@@ -309,20 +309,26 @@ Reading the Sinica Treebank:
 Reading the CoNLL 2007 Dependency Treebanks:
 
     >>> from nltk.corpus import conll2007
-    >>> conll2007.sents('cat.train')
-    [['El', 'aumento', 'del', '\xc3\xadndice', 'de', 'desempleo', 'estadounidense', 'fortaleci\xc3\xb3', 'hoy', 'considerablemente', 'al', 'euro', ',', 'que', 'a', 'las', '15.35', 'GMT', 'se', 'cotizaba', 'en', 'el', 'mercado', 'de', 'divisas', 'de', 'Fr\xc3\xa1ncfort', 'a', '0,9452_d\xc3\xb3lares', ',', 'frente_a', 'los', '0,9349_d\xc3\xb3lares', 'de', 'esta', 'ma\xc3\xb1ana', '.'], ['El', 'Banco_Central_Europeo', '-', 'BCE', '-', 'fij\xc3\xb3', 'el', 'cambio', 'oficial', 'del', 'euro', 'en', 'los', '0,9355_d\xc3\xb3lares', '.'], ...]
-    >>> conll2007.parsed_sents('cat.train')[0]
+    >>> conll2007.sents('esp.train')[0]
+    ['El', 'aumento', 'del', '\xc3\xadndice', 'de', 'desempleo', ...]
+    >>> conll2007.parsed_sents('esp.train')[0]
     <DependencyGraph with 38 nodes>
-    >>> conll2007.parsed_sents('cat.train')[0].tree() # doctest: +NORMALIZE_WHITESPACE
-    Tree('fortaleci\xc3\xb3',
-        [Tree('aumento', ['El', Tree('del', [Tree('\xc3\xadndice',
-            [Tree('de', [Tree('desempleo', ['estadounidense'])])])])]),
-        'hoy', 'considerablemente',
-        Tree('al', [Tree('euro', [Tree('cotizaba', [',', 'que',
-            Tree('a', [Tree('15.35', ['las', 'GMT'])]), 'se', Tree('en',
-                [Tree('mercado', ['el', Tree('de', ['divisas']), Tree('de', ['Fr\xc3\xa1ncfort'])])]),
-            Tree('a', ['0,9452_d\xc3\xb3lares']),
-            Tree('frente_a', [',', Tree('0,9349_d\xc3\xb3lares', ['los', Tree('de', [Tree('ma\xc3\xb1ana', ['esta'])])])])])])]), '.'])
+    >>> print conll2007.parsed_sents('esp.train')[0].tree()
+    (fortaleció
+      (aumento El (del (índice (de (desempleo estadounidense)))))
+      hoy
+      considerablemente
+      (al
+        (euro
+          (cotizaba
+            ,
+            que
+            (a (15.35 las GMT))
+            se
+            (en (mercado el (de divisas) (de Fráncfort)))
+            (a 0,9452_dólares)
+            (frente_a , (0,9349_dólares los (de (mañana esta)))))))
+      .)
 
 NLTK also provides a corpus reader for the York-Toronto-Helsinki
 Parsed Corpus of Old English Prose (YCOE); but the corpus itself is
@@ -727,6 +733,20 @@ The Brown Corpus, annotated with WordNet senses.
     ...         print key + '=' + wordform.get(key),
     ...     print
     ...
+    When cmd=ignore pos=WRB
+    several lemma=several cmd=done wnsn=1 pos=JJ lexsn=5:00:00:some(a):00
+    minutes lemma=minute cmd=done wnsn=1 pos=NN lexsn=1:28:00::
+    had cmd=done pos=VBD ot=notag
+    passed lemma=pass cmd=done wnsn=4 pos=VB lexsn=2:38:03::
+    and cmd=ignore pos=CC
+    Curt pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    had cmd=done pos=VBD ot=notag
+    n't lemma=n't cmd=done wnsn=0 pos=RB lexsn=4:02:00::
+    emerged lemma=emerge cmd=done wnsn=1 pos=VB lexsn=2:30:00::
+    from cmd=ignore pos=IN
+    the cmd=ignore pos=DT
+    livery_stable lemma=livery_stable cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    ,
     Brenner pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
     re-entered lemma=re-enter cmd=done wnsn=1 pos=VB lexsn=2:38:00::
     the cmd=ignore pos=DT
@@ -737,6 +757,7 @@ The Brown Corpus, annotated with WordNet senses.
     across cmd=ignore pos=IN
     the cmd=ignore pos=DT
     counter lemma=counter cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    .
 
 
 shakespeare
@@ -774,6 +795,8 @@ reader returns Toolbox files as XML ElementTree objects.  The
 following example loads the Rotokas dictionary, and figures out the
 distribution of part-of-speech tags for reduplicated words.
 
+.. doctest: +SKIP
+
     >>> from nltk.corpus import toolbox
     >>> from nltk.probability import FreqDist
     >>> from xml.etree import ElementTree
@@ -793,6 +816,8 @@ distribution of part-of-speech tags for reduplicated words.
     ??? 4
 
 This example displays some records from a Rotokas text:
+
+.. doctest: +SKIP
 
     >>> river = toolbox.xml('rotokas/river.txt', key='ref')
     >>> for record in river.findall('record')[:3]:
@@ -831,12 +856,12 @@ down into small speech samples, each of which is available as a wave
 file, a phonetic transcription, and a tokenized word list.
 
     >>> from nltk.corpus import timit
-    >>> print timit.utterances() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print timit.utteranceids() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466',
     'dr1-fvmh0/si2096', 'dr1-fvmh0/si836', 'dr1-fvmh0/sx116',
     'dr1-fvmh0/sx206', 'dr1-fvmh0/sx26', 'dr1-fvmh0/sx296', ...]
 
-    >>> item = timit.utterances()[5]
+    >>> item = timit.utteranceids()[5]
     >>> print timit.phones(item) # doctest: +NORMALIZE_WHITESPACE
     ['h#', 'k', 'l', 'ae', 's', 'pcl', 'p', 'dh', 'ax',
      's', 'kcl', 'k', 'r', 'ux', 'ix', 'nx', 'y', 'ax',
@@ -896,7 +921,7 @@ speaker and sentence identifier for a given speech sample:
                 comments='BEST NEW ENGLAND ACCENT SO FAR')
 
     >>> # List the speech samples from the same speaker:
-    >>> timit.utterances(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
+    >>> timit.utteranceids(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
 
 rte
@@ -1068,15 +1093,15 @@ corpus reader instances:
 
     >>> import nltk
     >>> nltk.corpus.brown # doctest: +ELLIPSIS
-    <CategorizedTaggedCorpusReader in '.../corpora/brown'>
+    <CategorizedTaggedCorpusReader ...>
     >>> nltk.corpus.treebank # doctest: +ELLIPSIS
-    <BracketParseCorpusReader in '/usr/sharep/nltk_data/corpora/treebank.zip/treebank/combined/'>
+    <BracketParseCorpusReader ...>
     >>> nltk.corpus.names # doctest: +ELLIPSIS
-    <WordListCorpusReader in '/usr/share/nltk_data/corpora/names.zip/names/'>
+    <WordListCorpusReader ...>
     >>> nltk.corpus.genesis # doctest: +ELLIPSIS
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis.zip/genesis/'>
+    <PlaintextCorpusReader ...>
     >>> nltk.corpus.inaugural # doctest: +ELLIPSIS
-    <PlaintextCorpusReader in '.../corpora/inaugural'>
+    <PlaintextCorpusReader ...>
 
 This sample illustrates that different corpus reader classes are used
 to read different corpora; but that the same corpus reader class may
@@ -1219,21 +1244,12 @@ which can be used to get a list of the files within a specific category:
 The ``abspath()`` method can be used to find the absolute path to a
 corpus file, given its file identifier:
 
-    >>> nltk.corpus.brown.abspath('ce06') # doctest: +ELLIPSIS
-    FileSystemPathPointer('.../corpora/brown/ce06')
+    >>> print nltk.corpus.brown.abspath('ce06') # doctest: +ELLIPSIS
+    '.../corpora/brown/ce06'
 
 The ``abspaths()`` method can be used to find the absolute paths for
-one corpus file, a list of corpus files, or all corpus files,
-depending on its argument type:
-
-    >>> nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [FileSystemPathPointer('.../corpora/brown/ca01'),
-     FileSystemPathPointer('.../corpora/brown/ca02'), ...]
-    >>> nltk.corpus.brown.abspaths('ce06') # doctest: +ELLIPSIS
-    [FileSystemPathPointer('.../corpora/brown/ce06')]
-    >>> nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [FileSystemPathPointer('.../corpora/brown/ce06'),
-     FileSystemPathPointer('.../corpora/brown/ce07')]
+one corpus file, a list of corpus files, or (if no fileids are specified),
+all corpus files.
 
 This method is mainly useful as a helper method when defining corpus
 data access methods, since data access methods can usually be called
@@ -1300,7 +1316,7 @@ content, some corpora use different identifiers instead.  For example,
 the data access methods for the ``timit`` corpus uses *utterance
 identifiers* to select which corpus items should be returned:
 
-    >>> nltk.corpus.timit.utterances() # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.utteranceids() # doctest: +ELLIPSIS
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
     >>> nltk.corpus.timit.words('dr1-fvmh0/sa2')
     ["don't", 'ask', 'me', 'to', 'carry', 'an', 'oily', 'rag', 'like', 'that']
@@ -1388,7 +1404,7 @@ You should also consider what sets of identifiers are appropriate for
 the corpus format.  Where it's practical, file identifiers should be
 used.  However, for some corpora, it may make sense to use additional
 sets of identifiers.  Each set of identifiers should have a distinct
-name (e.g., files, utterances, rolesets); and you should be consistent
+name (e.g., fileids, utteranceids, rolesets); and you should be consistent
 in using that name to refer to that identifier.  Do not use parameter
 names like ``id``, which leave it unclear what type of identifier is
 required.
