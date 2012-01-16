@@ -288,7 +288,7 @@ class ProximateTokensRule(BrillRule):
         of ``ProximateTokensTemplate``.
 
         :param token: The token
-        :type token: str
+        :type token: tuple(str, str)
         :return: The property
         :rtype: any
         """
