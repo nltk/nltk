@@ -137,13 +137,15 @@ class SklearnClassifier(ClassifierI):
 
 if __name__ == "__main__":
     from nltk.classify.util import names_demo, binary_names_demo_features
-    from sklearn.linear_model.sparse import LogisticRegression
+    try:
+        from sklearn.linear_model.sparse import LogisticRegression
+    except ImportError:     # separate sparse LR to be removed in 0.12
+        from sklearn.linear_model import LogisticRegression
     from sklearn.naive_bayes import BernoulliNB
-    from sklearn.svm.sparse import LinearSVC
 
     print("scikit-learn Naive Bayes:")
     names_demo(SklearnClassifier(BernoulliNB(binarize=False), dtype=bool).train,
                features=binary_names_demo_features)
     print("scikit-learn logistic regression:")
-    names_demo(SklearnClassifier(LogisticRegression(), dtype=bool).train,
+    names_demo(SklearnClassifier(LogisticRegression(), dtype=np.float64).train,
                features=binary_names_demo_features)
