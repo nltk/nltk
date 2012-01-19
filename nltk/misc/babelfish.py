@@ -12,10 +12,10 @@ Summary:
 
     >>> from nltk.misc import babelfish as babelizer
     >>> babelizer.available_languages
-    ['Portuguese', 'Chinese', 'German', 'Japanese', 'French', 'Spanish', 'Russian', 'Greek', 'English', 'Korean', 'Italian']
+    ['Portuguese', 'Chinese', 'German', 'English', 'Japanese', 'French', 'Greek', 'Spanish', 'Russian', 'Korean', 'Italian']
     >>> babelizer.translate('How much is that doggie in the window?',
     ...                     'english', 'french')
-    'Combien coute ce chienchien dans la fenetre ?'
+    'Combien co\xfbte ce chienchien dans la fen\xeatre ?'
 """
 
 import re
