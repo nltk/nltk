@@ -90,7 +90,7 @@ class AnnotationTask(object):
         self.K = set()
         self.C = set()
         self.data = []
-        if data != None:
+        if data is not None:
             self.load_array(data)
 
     def __str__(self):

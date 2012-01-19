@@ -582,7 +582,7 @@ def _collect_one_synset(word, synset, synset_relations):
 
     typ = 'S'
     pos_tuple = _pos_match((synset.pos, None, None))
-    assert pos_tuple != None, "pos_tuple is null: synset.pos: %s" % synset.pos
+    assert pos_tuple is not None, "pos_tuple is null: synset.pos: %s" % synset.pos
     descr = pos_tuple[2]
     ref = copy.deepcopy(Reference(word, synset_relations))
     ref.toggle_synset(synset)

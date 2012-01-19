@@ -1627,7 +1627,7 @@ class MutableProbDist(ProbDistI):
     def prob(self, sample):
         # inherit documentation
         i = self._sample_dict.get(sample)
-        if i != None:
+        if i is not None:
             if self._logs:
                 return 2**(self._data[i])
             else:
@@ -1638,7 +1638,7 @@ class MutableProbDist(ProbDistI):
     def logprob(self, sample):
         # inherit documentation
         i = self._sample_dict.get(sample)
-        if i != None:
+        if i is not None:
             if self._logs:
                 return self._data[i]
             else:
@@ -1662,7 +1662,7 @@ class MutableProbDist(ProbDistI):
         :type log: bool
         """
         i = self._sample_dict.get(sample)
-        assert i != None
+        assert i is not None
         if self._logs:
             if log: self._data[i] = prob
             else:   self._data[i] = math.log(prob, 2)
