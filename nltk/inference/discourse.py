@@ -167,7 +167,7 @@ class DiscourseTester(object):
         self._threads = {}
         self._filtered_threads = {}
         if background is not None:
-            from nltk.sem import Expression
+            from nltk.sem.logic import Expression
             for e in background:
                 assert isinstance(e, Expression)
             self._background = background
