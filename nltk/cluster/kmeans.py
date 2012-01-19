@@ -89,7 +89,7 @@ class KMeansClusterer(VectorSpaceClusterer):
                 for j in range(len(meanss)):
                     if i != j:
                         d += self._sum_distances(meanss[i], meanss[j])
-                if min_difference == None or d < min_difference:
+                if min_difference is None or d < min_difference:
                     min_difference, min_means = d, meanss[i]
 
             # use the best means
@@ -129,7 +129,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         for index in range(len(self._means)):
             mean = self._means[index]
             dist = self._distance(vector, mean)
-            if best_distance == None or dist < best_distance:
+            if best_distance is None or dist < best_distance:
                 best_index, best_distance = index, dist
         return best_index
 

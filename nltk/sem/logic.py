@@ -655,7 +655,7 @@ class ApplicationExpression(Expression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         self.argument._set_type(ANY_TYPE, signature)
@@ -810,7 +810,7 @@ class AbstractVariableExpression(Expression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         resolution = other_type
@@ -851,7 +851,7 @@ class IndividualVariableExpression(AbstractVariableExpression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         if not other_type.matches(ENTITY_TYPE):
@@ -896,7 +896,7 @@ class ConstantExpression(AbstractVariableExpression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         if other_type == ANY_TYPE:
@@ -1032,7 +1032,7 @@ class LambdaExpression(VariableBinderExpression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         self.term._set_type(other_type.second, signature)
@@ -1056,7 +1056,7 @@ class QuantifiedExpression(VariableBinderExpression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         if not other_type.matches(TRUTH_TYPE):
@@ -1092,7 +1092,7 @@ class NegatedExpression(Expression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         if not other_type.matches(TRUTH_TYPE):
@@ -1163,7 +1163,7 @@ class BooleanExpression(BinaryExpression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         if not other_type.matches(TRUTH_TYPE):
@@ -1210,7 +1210,7 @@ class EqualityExpression(BinaryExpression):
         """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
 
-        if signature == None:
+        if signature is None:
             signature = defaultdict(list)
 
         if not other_type.matches(TRUTH_TYPE):
@@ -1387,7 +1387,7 @@ class LogicParser(object):
         return the token at currentIndex+location without advancing
         currentIndex; setting it gives lookahead/lookback capability."""
         try:
-            if location == None:
+            if location is None:
                 tok = self._buffer[self._currentIndex]
                 self._currentIndex += 1
             else:

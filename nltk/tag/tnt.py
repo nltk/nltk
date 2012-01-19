@@ -384,7 +384,7 @@ class TnT(TaggerI):
 
             # if no unknown word tagger has been specified
             # then use the tag 'Unk'
-            if self._unk == None:
+            if self._unk is None:
                 tag = ('Unk',C)
 
             # otherwise apply the unknown word tagger
