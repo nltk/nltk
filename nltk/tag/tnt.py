@@ -134,7 +134,7 @@ class TnT(TaggerI):
         # Ensure that local C flag is initialized before use
         C = False
 
-        if self._unk != None and self._T == False:
+        if self._unk is not None and self._T == False:
             self._unk.train(data)
 
         for sent in data:
@@ -384,7 +384,7 @@ class TnT(TaggerI):
 
             # if no unknown word tagger has been specified
             # then use the tag 'Unk'
-            if self._unk == None:
+            if self._unk is None:
                 tag = ('Unk',C)
 
             # otherwise apply the unknown word tagger

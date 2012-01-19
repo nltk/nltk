@@ -994,7 +994,7 @@ class RegexpChunkParser(ChunkParserI):
             chunk_struct = Tree(self._top_node, chunk_struct)
 
         # Use the default trace value?
-        if trace == None: trace = self._trace
+        if trace is None: trace = self._trace
 
         chunkstr = ChunkString(chunk_struct)
 
@@ -1177,7 +1177,7 @@ class RegexpParser(ChunkParserI):
         :return: the chunked output.
         :rtype: Tree
         """
-        if trace == None: trace = self._trace
+        if trace is None: trace = self._trace
         for i in range(self._loop):
             for parser in self._stages:
                 chunk_struct = parser.parse(chunk_struct, trace=trace)

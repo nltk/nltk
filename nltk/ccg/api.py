@@ -281,9 +281,9 @@ class FunctionalCategory(AbstractCCGCategory):
         if other.is_function():
             sa = self._res.can_unify(other.res())
             sd = self._dir.can_unify(other.dir())
-            if sa != None and sd != None:
+            if sa is not None and sd is not None:
                sb = self._arg.substitute(sa).can_unify(other.arg().substitute(sa))
-               if sb != None:
+               if sb is not None:
                    return sa + sb
         return None
 

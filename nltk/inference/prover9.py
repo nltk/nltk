@@ -6,6 +6,9 @@
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+"""
+A theorem prover that makes use of the external 'Prover9' package.
+"""
 
 import os
 import subprocess
@@ -16,9 +19,6 @@ from nltk.sem.logic import LogicParser, ExistsExpression, AllExpression, \
     EqualityExpression, ImpExpression
 from api import BaseProverCommand, Prover
 
-"""
-A theorem prover that makes use of the external 'Prover9' package.
-"""
 #
 # Following is not yet used. Return code for 2 actually realized as 512.
 #

@@ -1178,7 +1178,7 @@ class ChartView(object):
             if edge in self._edgelevels[i]:
                 level = i
                 break
-        if level == None: return
+        if level is None: return
         # Try to view the new edge..
         y = (level+1) * self._chart_level_size
         dy = self._text_height + 10
@@ -1285,7 +1285,7 @@ class ChartView(object):
         """
         Unmark an edge (or all edges)
         """
-        if edge == None:
+        if edge is None:
             old_marked_edges = self._marks.keys()
             self._marks = {}
             for edge in old_marked_edges:
@@ -2178,7 +2178,7 @@ class ChartParserApp(object):
         return new_edge
 
     def _display_rule(self, rule):
-        if rule == None:
+        if rule is None:
             self._rulelabel2['text'] = ''
         else:
             name = str(rule)

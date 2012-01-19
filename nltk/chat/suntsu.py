@@ -5,8 +5,6 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from util import Chat, reflections
-
 """
 Tsu bot responds to all queries with a Sun Tsu sayings
 
@@ -15,6 +13,8 @@ Translated by LIONEL GILES, M.A. 1910
 Hosted by the Gutenberg Project
 http://www.gutenberg.org/
 """
+
+from util import Chat, reflections
 
 pairs = (
 

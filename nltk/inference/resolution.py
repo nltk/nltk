@@ -6,6 +6,10 @@
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
+"""
+Module for a resolution-based First Order theorem prover.
+"""
+
 import operator
 from collections import defaultdict
 
@@ -17,10 +21,6 @@ from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             is_indvar, IndividualVariableExpression, Expression)
 
 from nltk.inference.api import Prover, BaseProverCommand
-
-"""
-Module for a resolution-based First Order theorem prover.
-"""
 
 class ProverParseError(Exception): pass
 

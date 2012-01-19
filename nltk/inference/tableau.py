@@ -6,6 +6,10 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+Module for a tableau-based First Order theorem prover.
+"""
+
 from nltk.internals import Counter
 
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
@@ -18,10 +22,6 @@ from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             OrExpression, FunctionVariableExpression)
 
 from nltk.inference.api import Prover, BaseProverCommand
-
-"""
-Module for a tableau-based First Order theorem prover.
-"""
 
 _counter = Counter()
 

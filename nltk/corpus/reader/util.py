@@ -596,7 +596,7 @@ def read_alignedsent_block(stream):
         # Other line:
         else:
             s += line
-            if re.match('^\d+-\d+', line) != None:
+            if re.match('^\d+-\d+', line) is not None:
                 return [s]
 
 def read_regexp_block(stream, start_re, end_re=None):

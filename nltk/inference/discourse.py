@@ -7,19 +7,6 @@
 # For license information, see LICENSE.TXT
 # $Id$
 
-import os
-from operator import and_, add
-
-from nltk.data import show_cfg
-from nltk.tag import RegexpTagger
-from nltk.parse import load_parser
-from nltk.parse.malt import MaltParser
-from nltk.sem.drt import resolve_anaphora, AnaphoraResolutionException
-from nltk.sem.glue import DrtGlue
-
-from nltk.inference.mace import MaceCommand
-from nltk.inference.prover9 import Prover9Command
-
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity,
 consistency and informativeness.
@@ -56,6 +43,19 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 (This is not intended to scale beyond very short discourses!) The method ``readings(filter=True)`` will only show
 those threads which are consistent (taking into account any background assumptions).
 """
+
+import os
+from operator import and_, add
+
+from nltk.data import show_cfg
+from nltk.tag import RegexpTagger
+from nltk.parse import load_parser
+from nltk.parse.malt import MaltParser
+from nltk.sem.drt import resolve_anaphora, AnaphoraResolutionException
+from nltk.sem.glue import DrtGlue
+
+from nltk.inference.mace import MaceCommand
+from nltk.inference.prover9 import Prover9Command
 
 
 class ReadingCommand(object):

@@ -1013,7 +1013,7 @@ class HiddenMarkovModelTrainer(object):
 
         # default to the MLE estimate
         estimator = kwargs.get('estimator')
-        if estimator == None:
+        if estimator is None:
             estimator = lambda fdist, bins: MLEProbDist(fdist)
 
         # count occurences of starting states, transitions out of each state
@@ -1026,7 +1026,7 @@ class HiddenMarkovModelTrainer(object):
             for token in sequence:
                 state = token[_TAG]
                 symbol = token[_TEXT]
-                if lasts == None:
+                if lasts is None:
                     starting.inc(state)
                 else:
                     transitions[lasts].inc(state)

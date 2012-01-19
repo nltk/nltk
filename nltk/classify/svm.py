@@ -148,7 +148,7 @@ class SvmClassifier(ClassifierI):
 
         :param featureset: a dict of feature/value pairs in NLTK format, representing a single instance
         """
-        if self._model == None:
+        if self._model is None:
             raise Exception('This classifier is not yet trained')
             return None
 

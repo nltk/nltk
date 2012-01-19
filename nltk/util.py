@@ -166,7 +166,7 @@ def breadth_first(tree, children=iter, depth=-1, queue=None):
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
     """
-    if queue == None:
+    if queue is None:
         queue = []
     queue.append(tree)
 
