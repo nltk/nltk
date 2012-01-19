@@ -115,7 +115,7 @@ def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 
 
     # A semi-hack to have elegant looking code below.  As a result,
     # any subtree with a branching factor greater than 999 will be incorrectly truncated.
-    if horzMarkov == None: horzMarkov = 999
+    if horzMarkov is None: horzMarkov = 999
 
     # Traverse the tree depth-first keeping a list of ancestor nodes to the root.
     # I chose not to use the tree.treepositions() method since it requires

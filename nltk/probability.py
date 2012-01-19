@@ -14,8 +14,6 @@
 #
 # $Id$
 
-_NINF = float('-1e300')
-
 """
 Classes for representing and processing probabilistic information.
 
@@ -40,6 +38,9 @@ implementation of the ``ConditionalProbDistI`` interface is
 ``ConditionalProbDist``, a derived distribution.
 
 """
+
+_NINF = float('-1e300')
+
 
 import math
 import random
@@ -1194,9 +1195,9 @@ class WittenBellProbDist(ProbDistI):
             it's assumed to be equal to that of the ``freqdist``
         :type bins: int
         """
-        assert bins == None or bins >= freqdist.B(),\
+        assert bins is None or bins >= freqdist.B(),\
                'Bins parameter must not be less than freqdist.B()'
-        if bins == None:
+        if bins is None:
             bins = freqdist.B()
         self._freqdist = freqdist
         self._T = self._freqdist.B()
@@ -1304,9 +1305,9 @@ class GoodTuringProbDist(ProbDistI):
             it's assumed to be equal to that of the ``freqdist``
         :type bins: int
         """
-        assert bins == None or bins >= freqdist.B(),\
+        assert bins is None or bins >= freqdist.B(),\
                'Bins parameter must not be less than freqdist.B()'
-        if bins == None:
+        if bins is None:
             bins = freqdist.B()
         self._freqdist = freqdist
         self._bins = bins
@@ -1390,9 +1391,9 @@ class SimpleGoodTuringProbDist(ProbDistI):
             then it's assumed to be equal to ``freqdist``.B() + 1
         :type bins: int
         """
-        assert bins == None or bins > freqdist.B(),\
+        assert bins is None or bins > freqdist.B(),\
                'Bins parameter must not be less than freqdist.B() + 1'
-        if bins == None:
+        if bins is None:
             bins = freqdist.B() + 1
         self._freqdist = freqdist
         self._bins = bins
@@ -1626,7 +1627,7 @@ class MutableProbDist(ProbDistI):
     def prob(self, sample):
         # inherit documentation
         i = self._sample_dict.get(sample)
-        if i != None:
+        if i is not None:
             if self._logs:
                 return 2**(self._data[i])
             else:
@@ -1637,7 +1638,7 @@ class MutableProbDist(ProbDistI):
     def logprob(self, sample):
         # inherit documentation
         i = self._sample_dict.get(sample)
-        if i != None:
+        if i is not None:
             if self._logs:
                 return self._data[i]
             else:
@@ -1661,7 +1662,7 @@ class MutableProbDist(ProbDistI):
         :type log: bool
         """
         i = self._sample_dict.get(sample)
-        assert i != None
+        assert i is not None
         if self._logs:
             if log: self._data[i] = prob
             else:   self._data[i] = math.log(prob, 2)

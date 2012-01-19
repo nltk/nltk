@@ -80,7 +80,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
                 cells = line.strip().split(" ", 3)
                 m = re.match(r"([\-0-9]*)([ADIP])", cells[1])
 
-                assert m != None
+                assert m is not None
 
                 node = dg.nodelist[i]
                 node['address'] = i

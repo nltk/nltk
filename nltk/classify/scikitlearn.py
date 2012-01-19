@@ -3,13 +3,6 @@
 # Author: Lars Buitinck <L.J.Buitinck@uva.nl>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
-from nltk.classify.api import ClassifierI
-from nltk.probability import DictionaryProbDist
-
-import numpy as np
-from scipy.sparse import lil_matrix
-
 """
 scikit-learn (http://scikit-learn.org) is a machine learning library for
 Python, supporting most of the basic classification algorithms, including SVMs,
@@ -38,6 +31,12 @@ chi-square feature selection:
 
 (Such a classifier could be trained on word counts for text classification.)
 """
+
+from nltk.classify.api import ClassifierI
+from nltk.probability import DictionaryProbDist
+
+import numpy as np
+from scipy.sparse import lil_matrix
 
 
 class SklearnClassifier(ClassifierI):

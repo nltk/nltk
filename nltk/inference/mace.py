@@ -6,6 +6,10 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+A model builder that makes use of the external 'Mace4' package.
+"""
+
 import os
 import tempfile
 
@@ -15,9 +19,6 @@ from nltk.sem import Valuation, LogicParser
 from nltk.inference.api import ModelBuilder, BaseModelBuilderCommand
 from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent
 
-"""
-A model builder that makes use of the external 'Mace4' package.
-"""
 
 class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     """

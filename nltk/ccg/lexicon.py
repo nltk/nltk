@@ -117,7 +117,7 @@ def parsePrimitiveCategory(chunks,primitives,families,var):
     # If the primitive is the special category 'var',
     # replace it with the correct CCGVar
     if chunks[0] == "var":
-        if chunks[1] == None:
+        if chunks[1] is None:
             if var is None:
                 var = CCGVar()
             return (var,var)

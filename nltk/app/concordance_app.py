@@ -484,7 +484,7 @@ class ConcordanceSearchModel(object):
     def has_more_pages(self, page):
         if self.results == [] or self.results[0] == []:
             return False
-        if self.last_page == None:
+        if self.last_page is None:
             return True
         return page < self.last_page
 

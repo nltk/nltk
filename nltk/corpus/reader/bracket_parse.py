@@ -5,6 +5,9 @@
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+"""
+Corpus reader for corpora that consist of parenthesis-delineated parse trees.
+"""
 
 import sys
 
@@ -13,9 +16,6 @@ from nltk.tree import Tree
 from util import *
 from api import *
 
-"""
-Corpus reader for corpora that consist of parenthesis-delineated parse trees.
-"""
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
 TAGWORD = re.compile(r'\(([^\s()]+) ([^\s()]+)\)')

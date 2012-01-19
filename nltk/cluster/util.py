@@ -64,7 +64,7 @@ class VectorSpaceClusterer(ClusterI):
     def classify(self, vector):
         if self._should_normalise:
             vector = self._normalise(vector)
-        if self._Tt != None:
+        if self._Tt is not None:
             vector = numpy.matrixmultiply(self._Tt, vector)
         cluster = self.classify_vectorspace(vector)
         return self.cluster_name(cluster)
@@ -78,7 +78,7 @@ class VectorSpaceClusterer(ClusterI):
     def likelihood(self, vector, label):
         if self._should_normalise:
             vector = self._normalise(vector)
-        if self._Tt != None:
+        if self._Tt is not None:
             vector = numpy.matrixmultiply(self._Tt, vector)
         return self.likelihood_vectorspace(vector, label)
 
@@ -96,7 +96,7 @@ class VectorSpaceClusterer(ClusterI):
         """
         if self._should_normalise:
             vector = self._normalise(vector)
-        if self._Tt != None:
+        if self._Tt is not None:
             vector = numpy.matrixmultiply(self._Tt, vector)
         return vector
 
