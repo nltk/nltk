@@ -42,16 +42,16 @@ means of a "corpus reader" object from ``nltk.corpus``:
     >>> import nltk.corpus
     >>> # The Brown corpus:
     >>> nltk.corpus.brown
-    <CategorizedTaggedCorpusReader in '.../corpora/brown' (not loaded yet)>
+    <CategorizedTaggedCorpusReader in '.../corpora/brown'...>
     >>> # The Penn Treebank Corpus:
     >>> nltk.corpus.treebank
-    <BracketParseCorpusReader in '.../corpora/treebank/combined' (not loaded yet)>
+    <BracketParseCorpusReader in '.../corpora/treebank/combined'...>
     >>> # The Name Genders Corpus:
     >>> nltk.corpus.names
-    <WordListCorpusReader in '.../corpora/names' (not loaded yet)>
+    <WordListCorpusReader in '.../corpora/names'...>
     >>> # The Inaugural Address Corpus:
     >>> nltk.corpus.inaugural
-    <PlaintextCorpusReader in '.../corpora/inaugural' (not loaded yet)>
+    <PlaintextCorpusReader in '.../corpora/inaugural'...>
 
 Most corpora consist of a set of files, each containing a document (or
 other pieces of text).  A list of identifiers for these files is
@@ -1208,7 +1208,7 @@ directory (or in subdirectories of that root directory).  The absolute
 path to the root directory is stored in the ``root`` property:
 
     >>> print nltk.corpus.genesis.root # doctest: +ELLIPSIS
-    ZipFilePathPointer('/usr/share/nltk_data/corpora/genesis.zip', 'genesis/')
+    ...nltk_data/corpora/genesis...
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the
@@ -1245,7 +1245,7 @@ The ``abspath()`` method can be used to find the absolute path to a
 corpus file, given its file identifier:
 
     >>> print nltk.corpus.brown.abspath('ce06') # doctest: +ELLIPSIS
-    '.../corpora/brown/ce06'
+    .../corpora/brown/ce06
 
 The ``abspaths()`` method can be used to find the absolute paths for
 one corpus file, a list of corpus files, or (if no fileids are specified),
@@ -1638,22 +1638,22 @@ Test the plaintext corpora that come with nltk:
     ...     print '  ', `corpus.fileids()`[:60]
     ...     print '  ', `corpus.words()[:10]`[:60]
     ...     # doctest: +ELLIPSIS
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/abc...>
+    <PlaintextCorpusReader in '.../nltk_data/corpora/abc...>
        ['rural.txt', 'science.txt']
        ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/genesis.zip/genesis/'>
+    <PlaintextCorpusReader in '.../nltk_data/corpora/genesis.zip/genesis/'>
        ['english-kjv.txt', 'english-web.txt', 'finnish.txt', 'frenc
        ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven'
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/inaugural'>
+    <PlaintextCorpusReader in '.../nltk_data/corpora/inaugural'>
        ['1789-Washington.txt', '1793-Washington.txt', '1797-Adams.t
        ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', 'and', 'o
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/state_union.zip/state_union/'>
+    <PlaintextCorpusReader in '.../nltk_data/corpora/state_union.zip/state_union/'>
        ['1945-Truman.txt', '1946-Truman.txt', '1947-Truman.txt', '1
        ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', 'ADDRES
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/webtext.zip/webtext/'>
+    <PlaintextCorpusReader in '.../nltk_data/corpora/webtext.zip/webtext/'>
        ['firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
        ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', 'allow', 's
-    <PlaintextCorpusReader in '/usr/share/nltk_data/corpora/udhr.zip/udhr/'>
+    <PlaintextCorpusReader in '.../nltk_data/corpora/udhr.zip/udhr/'>
        ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1',
        ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
 
