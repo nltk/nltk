@@ -7,6 +7,21 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+An interface to Boxer.
+
+Usage:
+  Set the environment variable CANDCHOME to the bin directory of your CandC installation.
+  The models directory should be in the CandC root directory.
+  For example:
+     /path/to/candc/
+        bin/
+            candc
+            boxer
+        models/
+            boxer/
+"""
+
 import os
 import re
 import operator
@@ -22,21 +37,6 @@ from nltk.sem.logic import (ExpectedMoreTokensException, ParseException,
 from nltk.sem.drt import (DRS, DrtApplicationExpression, DrtEqualityExpression,
                           DrtNegatedExpression, DrtOrExpression, DrtParser,
                           DrtProposition, DrtTokens, DrtVariableExpression)
-
-"""
-An interface to Boxer.
-
-Usage:
-  Set the environment variable CANDCHOME to the bin directory of your CandC installation.
-  The models directory should be in the CandC root directory.
-  For example:
-     /path/to/candc/
-        bin/
-            candc
-            boxer
-        models/
-            boxer/
-"""
 
 class Boxer(object):
     """

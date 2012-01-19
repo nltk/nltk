@@ -1,5 +1,3 @@
-import yaml
-
 """
 Register YAML tags in the NLTK namespace with the YAML loader, by telling it
 what module and class to look for.
@@ -8,6 +6,8 @@ NLTK uses simple '!' tags to mark the types of objects, but the fully-qualified
 "tag:nltk.org,2011:" prefix is also accepted in case anyone ends up
 using it.
 """
+
+import yaml
 
 def custom_import(name):
     components = name.split('.')

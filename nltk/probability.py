@@ -14,8 +14,6 @@
 #
 # $Id$
 
-_NINF = float('-1e300')
-
 """
 Classes for representing and processing probabilistic information.
 
@@ -40,6 +38,9 @@ implementation of the ``ConditionalProbDistI`` interface is
 ``ConditionalProbDist``, a derived distribution.
 
 """
+
+_NINF = float('-1e300')
+
 
 import math
 import random

@@ -7,13 +7,6 @@
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
-from nltk.parse import load_parser
-from nltk.draw.tree import draw_trees
-from nltk.sem.skolemize import skolemize
-from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
-                            ExistsExpression, IffExpression, ImpExpression,
-                            LambdaExpression, NegatedExpression, OrExpression)
-
 """
 An implementation of the Hole Semantics model, following Blackburn and Bos,
 Representation and Inference for Natural Language (CSLI, 2005).
@@ -26,6 +19,15 @@ After parsing, the semantic representation is in the form of an underspecified
 representation that is not easy to read.  We use a "plugging" algorithm to
 convert that representation into first-order logic formulas.
 """
+
+
+from nltk.parse import load_parser
+from nltk.draw.tree import draw_trees
+from nltk.sem.skolemize import skolemize
+from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
+                            ExistsExpression, IffExpression, ImpExpression,
+                            LambdaExpression, NegatedExpression, OrExpression)
+
 
 # Note that in this code there may be multiple types of trees being referred to:
 #
