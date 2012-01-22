@@ -417,77 +417,78 @@ class Counter:
         return self._value
 
 ##########################################################################
-# Search for binaries
+# Search for files/binaries
 ##########################################################################
 
-def find_binary(name, path_to_bin=None, env_vars=(),
-                searchpath=(), binary_names=None, url=None,
-                verbose=True):
+def find_file(filename, env_vars=(), searchpath=(),
+        file_names=None, url=None, verbose=True):
     """
-    Search for the binary for a program that is used by nltk.
+    Search for a file to be used by nltk.
 
-    :param name: The name of the program
-    :param path_to_bin: The user-supplied binary location, or None.
+    :param name: The name of the file
+    :param path_to_file: The user-supplied binary location, or None.
     :param env_vars: A list of environment variable names to check
-    :param binary_names: A list of alternative binary names to check.
+    :param file_names: A list of alternative file names to check.
     :param searchpath: List of directories to search.
     """
-    if binary_names is None: binary_names = [name]
-    assert isinstance(name, basestring)
-    assert not isinstance(binary_names, basestring)
+    if file_names is None: file_names = [filename]
+    assert isinstance(filename, basestring)
+    assert not isinstance(file_names, basestring)
     assert not isinstance(searchpath, basestring)
     if isinstance(env_vars, basestring):
         env_vars = env_vars.split()
 
-    # If an explicit bin was given, then check it, and return it if
-    # it's present; otherwise, complain.
-    if path_to_bin is not None:
-        if os.path.isfile(path_to_bin):
-            return path_to_bin
-        for bin in binary_names:
-            if os.path.isfile(os.path.join(path_to_bin, bin)):
-                return os.path.join(path_to_bin, bin)
-            if os.path.isfile(os.path.join(path_to_bin, 'bin', bin)):
-                return os.path.join(path_to_bin, 'bin', bin)
-        raise ValueError('Could not find %s binary at %s' %
-                         (name, path_to_bin))
+    # File exists, no magic
+    if os.path.isfile(filename):
+        if verbose: print '[Found %s: %s]' % (filename, filename)
+        return filename
+    for alternative in file_names:
+        path_to_file = os.path.join(filename, alternative)
+        if os.path.isfile(path_to_file):
+            if verbose: print '[Found %s: %s]' % (filename, path_to_file)
+            return path_to_file
+        path_to_file = os.path.join(filename, 'file', alternative)
+        if os.path.isfile(path_to_file):
+            if verbose: print '[Found %s: %s]' % (filename, path_to_file)
+            return path_to_file
 
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
-            path_to_bin = os.environ[env_var]
-            if os.path.isfile(path_to_bin):
-                if verbose: print '[Found %s: %s]' % (name, path_to_bin)
-                return os.environ[env_var]
+            path_to_file = os.environ[env_var]
+            if os.path.isfile(path_to_file):
+                if verbose: print '[Found %s: %s]' % (filename, path_to_file)
+                return path_to_file
             else:
-                for bin_name in binary_names:
-                    path_to_bin = os.path.join(os.environ[env_var], bin_name)
-                    if os.path.isfile(path_to_bin):
-                        if verbose: print '[Found %s: %s]'%(name, path_to_bin)
-                        return path_to_bin
-                    path_to_bin = os.path.join(os.environ[env_var], 'bin',
-                                               bin_name)
-                    if os.path.isfile(path_to_bin):
-                        if verbose: print '[Found %s: %s]'%(name, path_to_bin)
-                        return path_to_bin
+                for alternative in file_names:
+                    path_to_file = os.path.join(os.environ[env_var],
+                                                alternative)
+                    if os.path.isfile(path_to_file):
+                        if verbose: print '[Found %s: %s]'%(filename, path_to_file)
+                        return path_to_file
+                    path_to_file = os.path.join(os.environ[env_var], 'file',
+                                                alternative)
+                    if os.path.isfile(path_to_file):
+                        if verbose: print '[Found %s: %s]'%(filename, path_to_file)
+                        return path_to_file
 
     # Check the path list.
     for directory in searchpath:
-        for bin in binary_names:
-            path_to_bin = os.path.join(directory, bin)
-            if os.path.isfile(path_to_bin):
-                return path_to_bin
+        for alternative in file_names:
+            path_to_file = os.path.join(directory, alternative)
+            if os.path.isfile(path_to_file):
+                return path_to_file
 
 
     # If we're on a POSIX system, then try using the 'which' command
-    # to find the binary.
+    # to find the file.
     if os.name == 'posix':
-        for bin in binary_names:
+        for alternative in file_names:
             try:
-                p = subprocess.Popen(['which', bin], stdout=subprocess.PIPE)
+                p = subprocess.Popen(['which', alternative], stdout=subprocess.PIPE)
                 stdout, stderr = p.communicate()
                 path = stdout.strip()
-                if path.endswith(bin) and os.path.exists(path):
+                if path.endswith(alternative) and os.path.exists(path):
                     if verbose: print '[Found %s: %s]' % (name, path)
                     return path
             except KeyboardInterrupt, SystemExit:
@@ -495,12 +496,10 @@ def find_binary(name, path_to_bin=None, env_vars=(),
             except:
                 pass
 
-    msg = ("NLTK was unable to find the %s executable!  Use "
-           "config_%s()" % (name, name))
+    msg = ("NLTK was unable to find the %s file!" "\nUse software specific "
+           "configuration paramaters" % name)
     if env_vars: msg += ' or set the %s environment variable' % env_vars[0]
-    msg = textwrap.fill(msg+'.', initial_indent='  ',
-                        subsequent_indent='  ')
-    msg += "\n\n    >>> config_%s('/path/to/%s')" % (name, name)
+    msg += '.'
     if searchpath:
         msg += '\n\n  Searched in:'
         msg += ''.join('\n    - %s' % d for d in searchpath)
@@ -508,6 +507,11 @@ def find_binary(name, path_to_bin=None, env_vars=(),
                     (name, url))
     div = '='*75
     raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+
+def find_binary(name, path_to_bin=None, env_vars=(), searchpath=(),
+                binary_names=None, url=None, verbose=True):
+    return find_file(path_to_bin or name, env_vars, searchpath, binary_names,
+                     url, verbose)
 
 ##########################################################################
 # Find Java JAR files

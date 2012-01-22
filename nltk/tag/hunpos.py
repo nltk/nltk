@@ -17,7 +17,7 @@ A module for interfacing with the HunPos open-source POS-tagger.
 import os
 from subprocess import Popen, PIPE
 
-from nltk.internals import find_binary
+from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
@@ -83,9 +83,8 @@ class HunposTagger(TaggerI):
                 url=_hunpos_url,
                 verbose=verbose)
 
-        if not os.path.isfile(path_to_model):
-            raise IOError("Hunpos model file not found: %s" % path_to_model)
-        self._hunpos_model = path_to_model
+        self._hunpos_model = find_file(path_to_model,
+                env_vars=('HUNPOS', 'HUNPOS_HOME'), verbose=verbose)
         self._encoding = encoding
         self._hunpos = Popen([self._hunpos_bin, self._hunpos_model],
                              shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)

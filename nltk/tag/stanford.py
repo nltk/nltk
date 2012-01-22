@@ -17,7 +17,7 @@ import os
 import tempfile
 from subprocess import PIPE
 
-from nltk.internals import find_jar, config_java, java, _java_options
+from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
 
 _stanford_url = 'http://nlp.stanford.edu/software'
@@ -43,9 +43,8 @@ class StanfordTagger(TaggerI):
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
-        if not os.path.isfile(path_to_model):
-            raise IOError("Stanford tagger model file not found: %s" % path_to_model)
-        self._stanford_model = path_to_model
+        self._stanford_model = find_file(path_to_model,
+                env_vars=('STANFORD_MODELS'), verbose=verbose)
         self._encoding = encoding
         self.java_options = java_options
 
