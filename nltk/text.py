@@ -506,7 +506,7 @@ class Text(object):
     _CONTEXT_RE = re.compile('\w+|[\.\!\?]')
     def _context(self, tokens, i):
         """
-        One left & one right token, both case-normalied.  Skip over
+        One left & one right token, both case-normalized.  Skip over
         non-sentence-final punctuation.  Used by the ``ContextIndex``
         that is created for ``similar()`` and ``common_contexts()``.
         """

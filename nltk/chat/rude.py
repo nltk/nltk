@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Zen Chatbot
+# Natural Language Toolkit: Rude Chatbot
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Peter Spiller <pspiller@csse.unimelb.edu.au>
