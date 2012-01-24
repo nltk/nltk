@@ -100,6 +100,25 @@ Test the Decision Tree classifier:
       . . .
     NotImplementedError
 
+Test SklearnClassifier, which requires the scikit-learn package.
+
+    >>> from nltk.classify import SklearnClassifier
+    >>> from sklearn.naive_bayes import BernoulliNB
+    >>> from sklearn.svm import SVC
+    >>> train_data = [({"a": 4, "b": 1, "c": 0}, "ham"),
+    ...               ({"a": 5, "b": 2, "c": 1}, "ham"),
+    ...               ({"a": 0, "b": 3, "c": 4}, "spam"),
+    ...               ({"a": 5, "b": 1, "c": 1}, "ham"),
+    ...               ({"a": 1, "b": 4, "c": 3}, "spam")]
+    >>> classif = SklearnClassifier(BernoulliNB()).train(train_data)
+    >>> test_data = [{"a": 3, "b": 2, "c": 1},
+    ...              {"a": 0, "b": 3, "c": 7}]
+    >>> classif.batch_classify(test_data)
+    ['ham', 'spam']
+    >>> classif = SklearnClassifier(SVC(), sparse=False).train(train_data)
+    >>> classif.batch_classify(test_data)
+    ['ham', 'spam']
+
 Test the SVM classifier, which requires the PySVMlight implementation of
 SVMlight.
 
