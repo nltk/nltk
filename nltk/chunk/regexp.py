@@ -1193,7 +1193,7 @@ class RegexpParser(ChunkParserI):
     def __str__(self):
         """
         :return: a verbose string representation of this
-            ``RegexpChunkParser``.
+            ``RegexpParser``.
         :rtype: str
         """
         s = "chunk.RegexpParser with %d stages:\n" % len(self._stages)
