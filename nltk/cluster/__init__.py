@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterers
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -28,12 +28,12 @@ algorithm which may converge to a local maximum. Hence the clustering is
 often repeated with random initial means and the most commonly occurring
 output means are chosen.
 
-The GAAC clusterer starts with each of the M{N} vectors as singleton clusters.
+The GAAC clusterer starts with each of the *N* vectors as singleton clusters.
 It then iteratively merges pairs of clusters which have the closest centroids.
 This continues until there is only one cluster. The order of merges gives rise
 to a dendrogram - a tree with the earlier merges lower than later merges. The
-membership of a given number of clusters M{c}, M{1 <= c <= N}, can be found by
-cutting the dendrogram at depth M{c}.
+membership of a given number of clusters *c*, *1 <= c <= N*, can be found by
+cutting the dendrogram at depth *c*.
 
 The Gaussian EM clusterer models the vectors as being produced by a mixture
 of k Gaussian sources. The parameters of these sources (prior probability,
@@ -79,10 +79,8 @@ objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for
 efficiency when required.
 """
 
-from util import *
-from kmeans import *
-from gaac import *
-from em import *
-
-__all__ = ['KMeansClusterer', 'GAAClusterer', 'EMClusterer',
-           'VectorSpaceClusterer', 'Dendrogram']
+from nltk.cluster.util import (VectorSpaceClusterer, Dendrogram,
+                               euclidean_distance, cosine_distance)
+from nltk.cluster.kmeans import KMeansClusterer
+from nltk.cluster.gaac import GAAClusterer
+from nltk.cluster.em import EMClusterer

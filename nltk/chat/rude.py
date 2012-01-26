@@ -1,11 +1,11 @@
 # Natural Language Toolkit: Zen Chatbot
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Peter Spiller <pspiller@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from util import *
+from util import Chat, reflections
 
 pairs = (
     (r'We (.*)',

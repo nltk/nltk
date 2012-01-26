@@ -1,14 +1,14 @@
 # Natural Language Toolkit: Ngram Association Measures
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 """
 Provides scoring functions for a number of association measures through a
-generic, abstract implementation in L{NgramAssocMeasures}, and n-specific
-L{BigramAssocMeasures} and L{TrigramAssocMeasures}.
+generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
+``BigramAssocMeasures`` and ``TrigramAssocMeasures``.
 """
 
 import math as _math
@@ -42,7 +42,7 @@ class NgramAssocMeasures(object):
                  ...,
                  (count_of_1gram_1, ..., count_of_1gram_n),
                  count_of_total_words)
-    See L{BigramAssocMeasures} and L{TrigramAssocMeasures}
+    See ``BigramAssocMeasures`` and ``TrigramAssocMeasures``
 
     Inheriting classes should define a property _n, and a method _contingency
     which calculates contingency values from marginals in order for all

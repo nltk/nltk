@@ -2,20 +2,21 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os
 import tempfile
-import subprocess
 import glob
 from operator import add
 
-import nltk
-from api import ParserI
-from dependencygraph import DependencyGraph
+from nltk.tag import RegexpTagger
+from nltk.tokenize import word_tokenize
 from nltk.internals import find_binary
+
+from nltk.parse.api import ParserI
+from nltk.parse.dependencygraph import DependencyGraph
 
 class MaltParser(ParserI):
 
@@ -27,7 +28,7 @@ class MaltParser(ParserI):
         if tagger is not None:
             self.tagger = tagger
         else:
-            self.tagger = nltk.tag.RegexpTagger(
+            self.tagger = RegexpTagger(
             [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
              (r'(The|the|A|a|An|an)$', 'AT'),   # articles
              (r'.*able$', 'JJ'),                # adjectives
@@ -41,17 +42,17 @@ class MaltParser(ParserI):
     
     def config_malt(self, bin=None, verbose=False):
         """
-        Configure NLTK's interface to the C{malt} package.  This
+        Configure NLTK's interface to the ``malt`` package.  This
         searches for a directory containing the malt jar
         
-        @param bin: The full path to the C{malt} binary.  If not
-            specified, then nltk will search the system for a C{malt}
+        :param bin: The full path to the ``malt`` binary.  If not
+            specified, then nltk will search the system for a ``malt``
             binary; and if one is not found, it will raise a
-            C{LookupError} exception.
-        @type bin: C{string}
+            ``LookupError`` exception.
+        :type bin: str
         """
         #: A list of directories that should be searched for the malt
-        #: executables.  This list is used by L{config_malt} when searching
+        #: executables.  This list is used by ``config_malt`` when searching
         #: for the malt executables.
         _malt_path = ['.',
                      '/usr/lib/malt-1*',
@@ -77,9 +78,9 @@ class MaltParser(ParserI):
         words; it will be automatically tagged with this MaltParser instance's
         tagger.
         
-        @param sentence: Input sentence to parse
-        @type sentence: L{list} of L{string}
-        @return: C{DependencyGraph} the dependency graph representation of the sentence
+        :param sentence: Input sentence to parse
+        :type sentence: list(str)
+        :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
         taggedwords = self.tagger.tag(sentence)
         return self.tagged_parse(taggedwords, verbose)
@@ -90,11 +91,11 @@ class MaltParser(ParserI):
         before parsing, it will be automatically tokenized and tagged with this
         MaltParser instance's tagger.
         
-        @param sentence: Input sentence to parse
-        @type sentence: L{string}
-        @return: C{DependencyGraph} the dependency graph representation of the sentence
+        :param sentence: Input sentence to parse
+        :type sentence: str
+        :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
-        words = nltk.word_tokenize(sentence)
+        words = word_tokenize(sentence)
         return self.parse(words, verbose)
       
     def tagged_parse(self, sentence, verbose=False):
@@ -103,9 +104,9 @@ class MaltParser(ParserI):
         (word, tag) tuples; the sentence must have already been tokenized and
         tagged.
         
-        @param sentence: Input sentence to parse
-        @type sentence: L{list} of (word, tag) L{tuple}s.
-        @return: C{DependencyGraph} the dependency graph representation of the sentence
+        :param sentence: Input sentence to parse
+        :type sentence: list(tuple(str, str))
+        :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
 
         if not self._malt_bin:
@@ -141,9 +142,9 @@ class MaltParser(ParserI):
     
     def train(self, depgraphs, verbose=False):
         """
-        Train MaltParser from a list of C{DependencyGraph}s
+        Train MaltParser from a list of ``DependencyGraph`` objects
         
-        @param depgraphs: C{list} of C{DependencyGraph}s for training input data
+        :param depgraphs: list of ``DependencyGraph`` objects for training input data
         """
         input_file = os.path.join(tempfile.gettempdir(),'malt_train.conll')
 
@@ -160,7 +161,7 @@ class MaltParser(ParserI):
         """
         Train MaltParser from a file
         
-        @param conll_file: C{str} for the filename of the training input data
+        :param conll_file: str for the filename of the training input data
         """
         if not self._malt_bin:
             raise Exception("MaltParser location is not configured.  Call config_malt() first.")

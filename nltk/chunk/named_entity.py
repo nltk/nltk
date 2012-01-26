@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,28 +11,38 @@ Named entity chunker
 
 import os, re, pickle
 from xml.etree import ElementTree as ET
-from nltk.chunk.api import *
-from nltk.chunk.util import *
-import nltk
 
-# This really shouldn't be loaded at import time.  But it's used by a
-# static method.  Do a lazy loading?
-_short_en_wordlist = set(nltk.corpus.words.words('en-basic'))
+from nltk.tag import ClassifierBasedTagger, pos_tag
+from nltk.classify import MaxentClassifier
+from nltk.tree import Tree
+from nltk.tokenize import word_tokenize
+from nltk.data import find
 
+from nltk.chunk.api import ChunkParserI
+from nltk.chunk.util import ChunkScore
 
-class NEChunkParserTagger(nltk.tag.ClassifierBasedTagger):
+class NEChunkParserTagger(ClassifierBasedTagger):
     """
     The IOB tagger used by the chunk parser.
     """
     def __init__(self, train):
-        nltk.tag.ClassifierBasedTagger.__init__(
+        ClassifierBasedTagger.__init__(
             self, train=train,
             classifier_builder=self._classifier_builder)
 
     def _classifier_builder(self, train):
-        return nltk.MaxentClassifier.train(train, algorithm='megam',
+        return MaxentClassifier.train(train, algorithm='megam',
                                            gaussian_prior_sigma=1,
                                            trace=2)
+
+    def _english_wordlist(self):
+        try:
+            wl = self._en_wordlist
+        except AttributeError:
+            from nltk.corpus import words
+            self._en_wordlist = set(words.words('en-basic'))
+            wl = self._en_wordlist
+        return wl
     
     def _feature_detector(self, tokens, index, history):
         word = tokens[index][0]
@@ -79,7 +89,7 @@ class NEChunkParserTagger(nltk.tag.ClassifierBasedTagger):
             'suffix3': word[-3:].lower(),
             'pos': pos,
             'word': word,
-            'en-wordlist': (word in _short_en_wordlist), # xx!
+            'en-wordlist': (word in self._english_wordlist()),
             'prevtag': prevtag,
             'prevpos': prevpos,
             'nextpos': nextpos,
@@ -117,19 +127,19 @@ class NEChunkParser(ChunkParserI):
         """
         Convert a list of tagged tokens to a chunk-parse tree.
         """
-        sent = nltk.Tree('S', [])
+        sent = Tree('S', [])
         
         for (tok,tag) in tagged_tokens:
             if tag == 'O':
                 sent.append(tok)
             elif tag.startswith('B-'):
-                sent.append(nltk.Tree(tag[2:], [tok]))
+                sent.append(Tree(tag[2:], [tok]))
             elif tag.startswith('I-'):
                 if (sent and isinstance(sent[-1], Tree) and
                     sent[-1].node == tag[2:]):
                     sent[-1].append(tok)
                 else:
-                    sent.append(nltk.Tree(tag[2:], [tok]))
+                    sent.append(Tree(tag[2:], [tok]))
         return sent
 
     @staticmethod
@@ -139,7 +149,7 @@ class NEChunkParser(ChunkParserI):
         """
         toks = []
         for child in sent:
-            if isinstance(child, nltk.Tree):
+            if isinstance(child, Tree):
                 if len(child) == 0:
                     print "Warning -- empty chunk in sentence"
                     continue
@@ -171,10 +181,10 @@ def simplify_pos(s):
 def postag_tree(tree):
     # Part-of-speech tagging.
     words = tree.leaves()
-    tag_iter = (pos for (word, pos) in nltk.pos_tag(words))
+    tag_iter = (pos for (word, pos) in pos_tag(words))
     newtree = Tree('S', [])
     for child in tree:
-        if isinstance(child, nltk.Tree):
+        if isinstance(child, Tree):
             newtree.append(Tree(child.node, []))
             for subchild in child:
                 newtree[-1].append( (subchild, tag_iter.next()) )
@@ -227,27 +237,27 @@ def load_ace_file(textfile, fmt):
     # Binary distinction (NE or not NE)
     if fmt == 'binary':
         i = 0
-        toks = nltk.Tree('S', [])
+        toks = Tree('S', [])
         for (s,e,typ) in sorted(entities):
             if s < i: s = i # Overlapping!  Deal with this better?
             if e <= s: continue
-            toks.extend(nltk.word_tokenize(text[i:s]))
-            toks.append(nltk.Tree('NE', text[s:e].split()))
+            toks.extend(word_tokenize(text[i:s]))
+            toks.append(Tree('NE', text[s:e].split()))
             i = e
-        toks.extend(nltk.word_tokenize(text[i:]))
+        toks.extend(word_tokenize(text[i:]))
         yield toks
 
     # Multiclass distinction (NE type)
     elif fmt == 'multiclass':
         i = 0
-        toks = nltk.Tree('S', [])
+        toks = Tree('S', [])
         for (s,e,typ) in sorted(entities):
             if s < i: s = i # Overlapping!  Deal with this better?
             if e <= s: continue
-            toks.extend(nltk.word_tokenize(text[i:s]))
-            toks.append(nltk.Tree(typ, text[s:e].split()))
+            toks.extend(word_tokenize(text[i:s]))
+            toks.append(Tree(typ, text[s:e].split()))
             i = e
-        toks.extend(nltk.word_tokenize(text[i:]))
+        toks.extend(word_tokenize(text[i:]))
         yield toks
 
     else:
@@ -271,10 +281,10 @@ def cmp_chunks(correct, guessed):
 
 def build_model(fmt='binary'):
     print 'Loading training data...'
-    train_paths = [nltk.data.find('corpora/ace_data/ace.dev'),
-                   nltk.data.find('corpora/ace_data/ace.heldout'),
-                   nltk.data.find('corpora/ace_data/bbn.dev'),
-                   nltk.data.find('corpora/ace_data/muc.dev')]
+    train_paths = [find('corpora/ace_data/ace.dev'),
+                   find('corpora/ace_data/ace.heldout'),
+                   find('corpora/ace_data/bbn.dev'),
+                   find('corpora/ace_data/muc.dev')]
     train_trees = load_ace_data(train_paths, fmt)
     train_data = [postag_tree(t) for t in train_trees]
     print 'Training...'
@@ -282,7 +292,7 @@ def build_model(fmt='binary'):
     del train_data
 
     print 'Loading eval data...'
-    eval_paths = [nltk.data.find('corpora/ace_data/ace.eval')]
+    eval_paths = [find('corpora/ace_data/ace.eval')]
     eval_trees = load_ace_data(eval_paths, fmt)
     eval_data = [postag_tree(t) for t in eval_trees]
     

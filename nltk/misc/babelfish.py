@@ -1,6 +1,7 @@
 # babelizer.py - API for simple access to babelfish.altavista.com.
 #                Requires python 2.0 or better.
 # From: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/64937
+# Author: Jonathan Feinberg <jdf@pobox.com>
 # Modified by Steven Bird to work with current babelfish
 #
 # See it in use at http://babel.MrFeinberg.com/
@@ -9,23 +10,12 @@
 
 Summary:
 
-  >>> import babelizer
-  >>> print ' '.join(babelizer.available_languages)
-  >>> print babelizer.translate( 'How much is that doggie in the window?',
-                                 'English', 'French' )
-  >>> def babel_callback(phrase):
-         print phrase
-         sys.stdout.flush()
-  >>> babelizer.babelize( 'I love a reigning knight.',
-                          'English', 'German',
-                          callback = babel_callback )
-
-@group Helper Functions: clean
-@sort: BabelizerError, BabelfishChangedError, BabelizerIOError
-@var available_languages:
-    A list of languages available for use with babelfish.
-@version: $Id: babelfish.py 1361 2003-10-24 14:41:44Z edloper $
-@author: Jonathan Feinberg <jdf@pobox.com>
+    >>> from nltk.misc import babelfish as babelizer
+    >>> babelizer.available_languages
+    ['Portuguese', 'Chinese', 'German', 'Japanese', 'French', 'Spanish', 'Russian', 'Greek', 'English', 'Korean', 'Italian']
+    >>> babelizer.translate('How much is that doggie in the window?',
+    ...                     'english', 'french')
+    'Combien coute ce chienchien dans la fenetre ?'
 """
 
 import re
@@ -87,7 +77,7 @@ def translate(phrase, source, target):
     Use babelfish to translate phrase from source language to target language.
     It's only guaranteed to work if 'english' is one of the two languages.
     
-    @raise BabelizeError: If an error is encountered.
+    :raise BabelizeError: If an error is encountered.
     """
 
     phrase = clean(phrase)
@@ -117,13 +107,13 @@ def translate(phrase, source, target):
 
 def babelize(phrase, source, target, limit = 12):
     """
-    Uses babelfish to translate back and forth between source and
+    Use babelfish to translate back and forth between source and
     target until either no more changes occur in translation or
     limit iterations have been reached, whichever comes first.
     It's only guaranteed to work if 'english' is one of the two
     languages.
 
-    @raise BabelizeError: If an error is encountered.
+    :raise BabelizeError: If an error is encountered.
     """
     phrase = clean(phrase)
     seen = set([phrase])
@@ -154,7 +144,7 @@ def babelize_shell():
     It's only guaranteed to work if 'english' is one of the two
     languages.
 
-    @raise BabelizeError: If an error is encountered.
+    :raise BabelizeError: If an error is encountered.
     """
     
     print "NLTK Babelizer: type 'help' for a list of commands."
@@ -200,4 +190,3 @@ def babelize_shell():
 
 if __name__ == '__main__':
     babelize_shell()
-

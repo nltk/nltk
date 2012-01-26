@@ -1,13 +1,23 @@
 # Natural Language Toolkit: First-Order Tableau Theorem Prover 
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.sem.logic import *
-from api import Prover, BaseProverCommand
+from nltk.internals import Counter
+
+from nltk.sem.logic import (VariableExpression, EqualityExpression,
+                            ApplicationExpression, LogicParser,
+                            AbstractVariableExpression, AllExpression,
+                            NegatedExpression,
+                            ExistsExpression, Variable, ImpExpression,
+                            AndExpression, unique_variable,
+                            LambdaExpression, IffExpression,
+                            OrExpression, FunctionVariableExpression)
+
+from nltk.inference.api import Prover, BaseProverCommand
 
 """
 Module for a tableau-based First Order theorem prover.
@@ -315,11 +325,11 @@ class TableauProver(Prover):
 class TableauProverCommand(BaseProverCommand):
     def __init__(self, goal=None, assumptions=None, prover=None):
         """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in
+        :param goal: Input expression to prove
+        :type goal: sem.Expression
+        :param assumptions: Input expressions to use as assumptions in
             the proof.
-        @type assumptions: C{list} of L{logic.Expression}
+        :type assumptions: list(sem.Expression)
         """
         if prover is not None:
             assert isinstance(prover, TableauProver)

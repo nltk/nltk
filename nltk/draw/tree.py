@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Graphical Representations for Trees
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,14 +8,17 @@
 # $Id$
 
 """
-Graphically display a C{Tree}.
+Graphically display a Tree.
 """
 
 import sys
 
-from nltk.tree import Tree
+from Tkinter import IntVar, Menu, Tk
 
-from util import *
+from nltk.util import in_idle
+from nltk.tree import Tree
+from nltk.draw.util import (CanvasFrame, CanvasWidget, BoxWidget,
+                            TextWidget, ParenWidget, OvalWidget)
 
 ##//////////////////////////////////////////////////////
 ##  Tree Segment
@@ -24,49 +27,40 @@ from util import *
 class TreeSegmentWidget(CanvasWidget):
     """
     A canvas widget that displays a single segment of a hierarchical
-    tree.  Each C{TreeSegmentWidget} connects a single X{node widget}
-    to a sequence of zero or more X{subtree widgets}.  By default, the
+    tree.  Each ``TreeSegmentWidget`` connects a single "node widget"
+    to a sequence of zero or more "subtree widgets".  By default, the
     bottom of the node is connected to the top of each subtree by a
-    single line.  However, if the C{roof} attribute is set, then a
+    single line.  However, if the ``roof`` attribute is set, then a
     single triangular "roof" will connect the node to all of its
     children.  
 
     Attributes:
-      - C{roof}: What sort of connection to draw between the node and
-        its subtrees.  If C{roof} is true, draw a single triangular
-        "roof" over the subtrees.  If C{roof} is false, draw a line
+      - ``roof``: What sort of connection to draw between the node and
+        its subtrees.  If ``roof`` is true, draw a single triangular
+        "roof" over the subtrees.  If ``roof`` is false, draw a line
         between each subtree and the node.  Default value is false.
-      - C{xspace}: The amount of horizontal space to leave between
+      - ``xspace``: The amount of horizontal space to leave between
         subtrees when managing this widget.  Default value is 10.
-      - C{yspace}: The amount of space to place between the node and
+      - ``yspace``: The amount of space to place between the node and
         its children when managing this widget.  Default value is 15.
-      - C{color}: The color of the lines connecting the node to its
+      - ``color``: The color of the lines connecting the node to its
         subtrees; and of the outline of the triangular roof.  Default
-        value is C{'#006060'}.
-      - C{fill}: The fill color for the triangular roof.  Default
-        value is C{''} (no fill).
-      - C{width}: The width of the lines connecting the node to its
+        value is ``'#006060'``.
+      - ``fill``: The fill color for the triangular roof.  Default
+        value is ``''`` (no fill).
+      - ``width``: The width of the lines connecting the node to its
         subtrees; and of the outline of the triangular roof.  Default
         value is 1.
-      - C{orientation}: Determines whether the tree branches downwards
-        or rightwards.  Possible values are C{'horizontal'} and
-        C{'vertical'}.  The default value is C{'vertical'} (i.e.,
+      - ``orientation``: Determines whether the tree branches downwards
+        or rightwards.  Possible values are ``'horizontal'`` and
+        ``'vertical'``.  The default value is ``'vertical'`` (i.e.,
         branch downwards).
-      - C{draggable}: whether the widget can be dragged by the user.
-
-    The following attributes may also be added in the near future:
-      - C{lineM{n}_color}: The color of the line connecting the node
-        to its C{M{n}}th subtree.
-      - C{lineM{n}_color}: The width of the line connecting the node
-        to its C{M{n}}th subtree.
-      - C{lineM{n}_color}: The dash pattern of the line connecting the
-        node to its C{M{n}}th subtree.
-        
+      - ``draggable``: whether the widget can be dragged by the user.
     """
     def __init__(self, canvas, node, subtrees, **attribs):
         """
-        @type node: 
-        @type subtrees: C{list} of C{CanvasWidgetI}
+        :type node: 
+        :type subtrees: list(CanvasWidgetI)
         """
         self._node = node
         self._subtrees = subtrees
@@ -157,7 +151,7 @@ class TreeSegmentWidget(CanvasWidget):
 
     def set_node(self, node):
         """
-        Set the node to C{node}.
+        Set the node to ``node``.
         """
         self._remove_child_widget(self._node)
         self._add_child_widget(node)
@@ -166,7 +160,7 @@ class TreeSegmentWidget(CanvasWidget):
 
     def replace_child(self, oldchild, newchild):
         """
-        Replace the child C{oldchild} with C{newchild}.
+        Replace the child ``oldchild`` with ``newchild``.
         """
         index = self._subtrees.index(oldchild)
         self._subtrees[index] = newchild
@@ -413,24 +407,24 @@ def _tree_to_treeseg(canvas, t, make_node, make_leaf,
 def tree_to_treesegment(canvas, t, make_node=TextWidget,
                         make_leaf=TextWidget, **attribs):
     """
-    Convert a C{Tree} into a C{TreeSegmentWidget}.
+    Convert a Tree into a ``TreeSegmentWidget``.
 
-    @param make_node: A C{CanvasWidget} constructor or a function that
-        creates C{CanvasWidgets}.  C{make_node} is used to convert
-        the C{Tree}'s nodes into C{CanvasWidgets}.  If no constructor
-        is specified, then C{TextWidget} will be used.
-    @param make_leaf: A C{CanvasWidget} constructor or a function that
-        creates C{CanvasWidgets}.  C{make_leaf} is used to convert
-        the C{Tree}'s leafs into C{CanvasWidgets}.  If no constructor
-        is specified, then C{TextWidget} will be used.
-    @param attribs: Attributes for the canvas widgets that make up the
-        returned C{TreeSegmentWidget}.  Any attribute beginning with
-        C{'tree_'} will be passed to all C{TreeSegmentWidget}s (with
-        the C{'tree_'} prefix removed.  Any attribute beginning with
-        C{'node_'} will be passed to all nodes.  Any attribute
-        beginning with C{'leaf_'} will be passed to all leaves.  And
-        any attribute beginning with C{'loc_'} will be passed to all
-        text locations (for C{Tree}s).
+    :param make_node: A ``CanvasWidget`` constructor or a function that
+        creates ``CanvasWidgets``.  ``make_node`` is used to convert
+        the Tree's nodes into ``CanvasWidgets``.  If no constructor
+        is specified, then ``TextWidget`` will be used.
+    :param make_leaf: A ``CanvasWidget`` constructor or a function that
+        creates ``CanvasWidgets``.  ``make_leaf`` is used to convert
+        the Tree's leafs into ``CanvasWidgets``.  If no constructor
+        is specified, then ``TextWidget`` will be used.
+    :param attribs: Attributes for the canvas widgets that make up the
+        returned ``TreeSegmentWidget``.  Any attribute beginning with
+        ``'tree_'`` will be passed to all ``TreeSegmentWidgets`` (with
+        the ``'tree_'`` prefix removed.  Any attribute beginning with
+        ``'node_'`` will be passed to all nodes.  Any attribute
+        beginning with ``'leaf_'`` will be passed to all leaves.  And
+        any attribute beginning with ``'loc_'`` will be passed to all
+        text locations (for Trees).
     """
     # Process attribs.
     tree_attribs = {}
@@ -454,44 +448,43 @@ def tree_to_treesegment(canvas, t, make_node=TextWidget,
 
 class TreeWidget(CanvasWidget):
     """
-    A canvas widget that displays a single C{Tree}.
-    C{TreeWidget} manages a group of C{TreeSegmentWidget}s that are
-    used to display a C{Tree}.
+    A canvas widget that displays a single Tree.
+    ``TreeWidget`` manages a group of ``TreeSegmentWidgets`` that are
+    used to display a Tree.
 
     Attributes:
     
-      - C{node_M{attr}}: Sets the attribute C{M{attr}} on all of the
-        node widgets for this C{TreeWidget}.
-      - C{node_M{attr}}: Sets the attribute C{M{attr}} on all of the
-        leaf widgets for this C{TreeWidget}.
-      - C{loc_M{attr}}: Sets the attribute C{M{attr}} on all of the
-        location widgets for this C{TreeWidget} (if it was built from
-        a C{Tree}).  Note that location widgets are
-        C{TextWidget}s. 
+      - ``node_attr``: Sets the attribute ``attr`` on all of the
+        node widgets for this ``TreeWidget``.
+      - ``node_attr``: Sets the attribute ``attr`` on all of the
+        leaf widgets for this ``TreeWidget``.
+      - ``loc_attr``: Sets the attribute ``attr`` on all of the
+        location widgets for this ``TreeWidget`` (if it was built from
+        a Tree).  Note that a location widget is a ``TextWidget``. 
       
-      - C{xspace}: The amount of horizontal space to leave between
+      - ``xspace``: The amount of horizontal space to leave between
         subtrees when managing this widget.  Default value is 10.
-      - C{yspace}: The amount of space to place between the node and
+      - ``yspace``: The amount of space to place between the node and
         its children when managing this widget.  Default value is 15.
         
-      - C{line_color}: The color of the lines connecting each expanded
+      - ``line_color``: The color of the lines connecting each expanded
         node to its subtrees.
-      - C{roof_color}: The color of the outline of the triangular roof
+      - ``roof_color``: The color of the outline of the triangular roof
         for collapsed trees.
-      - C{roof_fill}: The fill color for the triangular roof for
+      - ``roof_fill``: The fill color for the triangular roof for
         collapsed trees.
-      - C{width}
+      - ``width``
       
-      - C{orientation}: Determines whether the tree branches downwards
-        or rightwards.  Possible values are C{'horizontal'} and
-        C{'vertical'}.  The default value is C{'vertical'} (i.e.,
+      - ``orientation``: Determines whether the tree branches downwards
+        or rightwards.  Possible values are ``'horizontal'`` and
+        ``'vertical'``.  The default value is ``'vertical'`` (i.e.,
         branch downwards).
         
-      - C{shapeable}: whether the subtrees can be independantly
+      - ``shapeable``: whether the subtrees can be independantly
         dragged by the user.  THIS property simply sets the
-        C{DRAGGABLE} property on all of the C{TreeWidget}'s tree
+        ``DRAGGABLE`` property on all of the ``TreeWidget``'s tree
         segments. 
-      - C{draggable}: whether the widget can be dragged by the user.
+      - ``draggable``: whether the widget can be dragged by the user.
     """
     def __init__(self, canvas, t, make_node=TextWidget,
                  make_leaf=TextWidget, **attribs):
@@ -529,23 +522,23 @@ class TreeWidget(CanvasWidget):
 
     def expanded_tree(self, *path_to_tree):
         """
-        Return the C{TreeSegmentWidget} for the specified subtree.
+        Return the ``TreeSegmentWidget`` for the specified subtree.
 
-        @param path_to_tree: A list of indices i1, i2, ..., in, where
+        :param path_to_tree: A list of indices i1, i2, ..., in, where
             the desired widget is the widget corresponding to
-            C{tree.children()[i1].children()[i2]....children()[in]}.
-            For the root, the path is C{()}.
+            ``tree.children()[i1].children()[i2]....children()[in]``.
+            For the root, the path is ``()``.
         """
         return self._expanded_trees[path_to_tree]
 
     def collapsed_tree(self, *path_to_tree):
         """
-        Return the C{TreeSegmentWidget} for the specified subtree.
+        Return the ``TreeSegmentWidget`` for the specified subtree.
 
-        @param path_to_tree: A list of indices i1, i2, ..., in, where
+        :param path_to_tree: A list of indices i1, i2, ..., in, where
             the desired widget is the widget corresponding to
-            C{tree.children()[i1].children()[i2]....children()[in]}.
-            For the root, the path is C{()}.
+            ``tree.children()[i1].children()[i2]....children()[in]``.
+            For the root, the path is ``()``.
         """
         return self._collapsed_trees[path_to_tree]
 
@@ -868,7 +861,7 @@ def draw_trees(*trees):
     Open a new window containing a graphical diagram of the given
     trees.
         
-    @rtype: None
+    :rtype: None
     """
     TreeView(*trees).mainloop()
     return

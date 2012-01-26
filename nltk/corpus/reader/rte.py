@@ -1,6 +1,6 @@
 # Natural Language Toolkit: RTE Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author:  Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -28,7 +28,7 @@ example is taken from RTE3::
  </pair>
 
 In order to provide globally unique IDs for each pair, a new attribute
-C{challenge} has been added to the root element C{entailment-corpus} of each
+``challenge`` has been added to the root element ``entailment-corpus`` of each
 file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
@@ -40,12 +40,12 @@ from xmldocs import *
 
 def norm(value_string):
     """
-    Normalize the string value in an RTE pair's C{value} or C{entailment} 
+    Normalize the string value in an RTE pair's ``value`` or ``entailment`` 
     attribute as an integer (1, 0).
     
-    @param value_string: the label used to classify a text/hypothesis pair
-    @type value_string: C{str}
-    @rtype: C{int}
+    :param value_string: the label used to classify a text/hypothesis pair
+    :type value_string: str
+    :rtype: int
     """
 
     valdict = {"TRUE": 1,
@@ -58,20 +58,20 @@ class RTEPair:
     """
     Container for RTE text-hypothesis pairs.
 
-    The entailment relation is signalled by the C{value} attribute in RTE1, and by 
-    C{entailment} in RTE2 and RTE3. These both get mapped on to the C{entailment}
+    The entailment relation is signalled by the ``value`` attribute in RTE1, and by 
+    ``entailment`` in RTE2 and RTE3. These both get mapped on to the ``entailment``
     attribute of this class.
     """
     def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
              value=None, task=None, length=None):
         """
-        @param challenge: version of the RTE challenge (i.e., RTE1, RTE2 or RTE3)
-        @param id: identifier for the pair
-        @param text: the text component of the pair
-        @param hyp: the hypothesis component of the pair
-        @param value: classification label for the pair
-        @param task: attribute for the particular NLP task that the data was drawn from
-        @param length: attribute for the length of the text of the pair
+        :param challenge: version of the RTE challenge (i.e., RTE1, RTE2 or RTE3)
+        :param id: identifier for the pair
+        :param text: the text component of the pair
+        :param hyp: the hypothesis component of the pair
+        :param value: classification label for the pair
+        :param task: attribute for the particular NLP task that the data was drawn from
+        :param length: attribute for the length of the text of the pair
         """
         self.challenge =  challenge    
         self.id = pair.attrib["id"]
@@ -113,11 +113,11 @@ class RTECorpusReader(XMLCorpusReader):
         """
         Map the XML input into an RTEPair.
         
-        This uses the C{getiterator()} method from the ElementTree package to
-        find all the C{<pair>} elements.
+        This uses the ``getiterator()`` method from the ElementTree package to
+        find all the ``<pair>`` elements.
         
-        @param doc: a parsed XML document
-        @rtype: C{list} of L{RTEPair}s
+        :param doc: a parsed XML document
+        :rtype: list(RTEPair)
         """
         try:
             challenge = doc.attrib['challenge']
@@ -131,9 +131,9 @@ class RTECorpusReader(XMLCorpusReader):
         """
         Build a list of RTEPairs from a RTE corpus.
         
-        @param fileids: a list of RTE corpus fileids
-        @type: C{list}
-        @rtype: C{list} of L{RTEPair}s
+        :param fileids: a list of RTE corpus fileids
+        :type: list
+        :rtype: list(RTEPair)
         """
         if isinstance(fileids, basestring): fileids = [fileids]
         return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])

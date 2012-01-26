@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Distance Metrics
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         Tom Lippincott <tom@cs.columbia.edu>
@@ -46,10 +46,10 @@ def edit_distance(s1, s2):
     "rain" -> "sain" -> "shin" -> "shine".  These operations could have
     been done in other orders, but at least three steps are needed.
 
-    @param s1, s2: The strings to be analysed
-    @type s1: C{string}
-    @type s2: C{string}
-    @rtype C{int}
+    :param s1, s2: The strings to be analysed
+    :type s1: str
+    :type s2: str
+    :rtype int
     """
     # set up a 2-D array
     len1 = len(s1); len2 = len(s2)

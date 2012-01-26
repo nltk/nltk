@@ -1,15 +1,15 @@
 # Natural Language Toolkit: Evaluation
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
-import sys
-import math
-import random
+from math import fabs
+from random import shuffle
+from itertools import izip
 
 try:
     from scipy.stats.stats import betai
@@ -17,22 +17,20 @@ except ImportError:
     betai = None
 
 from nltk.util import LazyConcatenation, LazyMap
-from itertools import izip
-from nltk.probability import FreqDist
 
 def accuracy(reference, test):
     """
     Given a list of reference values and a corresponding list of test
     values, return the fraction of corresponding values that are
     equal.  In particular, return the fraction of indices
-    C{0<i<=len(test)} such that C{test[i] == reference[i]}.
+    ``0<i<=len(test)`` such that ``test[i] == reference[i]``.
 
-    @type reference: C{list}
-    @param reference: An ordered list of reference values.
-    @type test: C{list}
-    @param test: A list of values to compare against the corresponding
+    :type reference: list
+    :param reference: An ordered list of reference values.
+    :type test: list
+    :param test: A list of values to compare against the corresponding
         reference values.
-    @raise ValueError: If C{reference} and C{length} do not have the
+    :raise ValueError: If ``reference`` and ``length`` do not have the
         same length.
     """
     if len(reference) != len(test):
@@ -47,14 +45,14 @@ def precision(reference, test):
     """
     Given a set of reference values and a set of test values, return
     the fraction of test values that appear in the reference set.
-    In particular, return |C{reference}S{cap}C{test}|/|C{test}|.
-    If C{test} is empty, then return C{None}.
+    In particular, return card(``reference`` intersection ``test``)/card(``test``).
+    If ``test`` is empty, then return None.
     
-    @type reference: C{Set}
-    @param reference: A set of reference values.
-    @type test: C{Set}
-    @param test: A set of values to compare against the reference set.
-    @rtype: C{float} or C{None}
+    :type reference: set
+    :param reference: A set of reference values.
+    :type test: set
+    :param test: A set of values to compare against the reference set.
+    :rtype: float or None
     """
     if (not hasattr(reference, 'intersection') or
         not hasattr(test, 'intersection')):
@@ -69,14 +67,14 @@ def recall(reference, test):
     """
     Given a set of reference values and a set of test values, return
     the fraction of reference values that appear in the test set.
-    In particular, return |C{reference}S{cap}C{test}|/|C{reference}|.
-    If C{reference} is empty, then return C{None}.
+    In particular, return card(``reference`` intersection ``test``)/card(``reference``).
+    If ``reference`` is empty, then return None.
     
-    @type reference: C{Set}
-    @param reference: A set of reference values.
-    @type test: C{Set}
-    @param test: A set of values to compare against the reference set.
-    @rtype: C{float} or C{None}
+    :type reference: set
+    :param reference: A set of reference values.
+    :type test: set
+    :param test: A set of values to compare against the reference set.
+    :rtype: float or None
     """
     if (not hasattr(reference, 'intersection') or
         not hasattr(test, 'intersection')):
@@ -92,21 +90,24 @@ def f_measure(reference, test, alpha=0.5):
     Given a set of reference values and a set of test values, return
     the f-measure of the test values, when compared against the
     reference values.  The f-measure is the harmonic mean of the
-    L{precision} and L{recall}, weighted by C{alpha}.  In particular,
-    given the precision M{p} and recall M{r} defined by:
-        - M{p} = |C{reference}S{cap}C{test}|/|C{test}|
-        - M{r} = |C{reference}S{cap}C{test}|/|C{reference}|
+    ``precision`` and ``recall``, weighted by ``alpha``.  In particular,
+    given the precision *p* and recall *r* defined by:
+
+    - *p* = card(``reference`` intersection ``test``)/card(``test``)
+    - *r* = card(``reference`` intersection ``test``)/card(``reference``)
+
     The f-measure is:
-        - 1/(C{alpha}/M{p} + (1-C{alpha})/M{r})
+
+    - *1/(alpha/p + (1-alpha)/r)*
         
-    If either C{reference} or C{test} is empty, then C{f_measure}
-    returns C{None}.
+    If either ``reference`` or ``test`` is empty, then ``f_measure``
+    returns None.
     
-    @type reference: C{Set}
-    @param reference: A set of reference values.
-    @type test: C{Set}
-    @param test: A set of values to compare against the reference set.
-    @rtype: C{float} or C{None}
+    :type reference: set
+    :param reference: A set of reference values.
+    :type test: set
+    :param test: A set of values to compare against the reference set.
+    :rtype: float or None
     """
     p = precision(reference, test)
     r = recall(reference, test)
@@ -122,11 +123,11 @@ def log_likelihood(reference, test):
     probability distributions, return the average log likelihood of
     the reference values, given the probability distributions.
 
-    @param reference: A list of reference values
-    @type reference: C{list}
-    @param test: A list of probability distributions over values to
+    :param reference: A list of reference values
+    :type reference: list
+    :param test: A list of probability distributions over values to
         compare against the corresponding reference values.
-    @type test: C{list} of L{ProbDistI}
+    :type test: list(ProbDistI)
     """
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")
@@ -148,14 +149,14 @@ def approxrand(a, b, **kwargs):
     statistic of the permutated lists varies from the actual statistic of
     the unpermuted argument lists.
     
-    @return: a tuple containing an approximate significance level, the count
+    :return: a tuple containing an approximate significance level, the count
              of the number of times the pseudo-statistic varied from the
              actual statistic, and the number of shuffles
-    @rtype: C{tuple}
-    @param a: a list of test values
-    @type a: C{list}
-    @param b: another list of independently generated test values
-    @type b: C{list}
+    :rtype: tuple
+    :param a: a list of test values
+    :type a: list
+    :param b: another list of independently generated test values
+    :type b: list
     """
     shuffles = kwargs.get('shuffles', 999)
     # there's no point in trying to shuffle beyond all possible permutations
@@ -167,7 +168,7 @@ def approxrand(a, b, **kwargs):
     if verbose:
         print 'shuffles: %d' % shuffles
     
-    actual_stat = math.fabs(stat(a) - stat(b))
+    actual_stat = fabs(stat(a) - stat(b))
     
     if verbose:
         print 'actual statistic: %f' % actual_stat
@@ -181,11 +182,11 @@ def approxrand(a, b, **kwargs):
         if verbose and i % 10 == 0:
             print 'shuffle: %d' % i
 
-        random.shuffle(indices)
+        shuffle(indices)
         
         pseudo_stat_a = stat(LazyMap(lambda i: lst[i], indices[:len(a)]))
         pseudo_stat_b = stat(LazyMap(lambda i: lst[i], indices[len(a):]))
-        pseudo_stat = math.fabs(pseudo_stat_a - pseudo_stat_b)
+        pseudo_stat = fabs(pseudo_stat_a - pseudo_stat_b)
         
         if pseudo_stat >= actual_stat:
             c += 1

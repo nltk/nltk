@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -73,7 +73,7 @@ class TreebankWordTokenizer(TokenizerI):
             text = regexp.sub(r'\1 \2 \3', text)
 
         # Separate most punctuation
-        text = re.sub(r"([^\w\.\'\-\/,&])", r' \1 ', text)
+        text = re.sub(r"([^\w\.\'\-\/,&])", r' \1 ', text, flags=re.U)
 
         # Separate commas or single quotes if they're followed by space.
         # (E.g., don't separate 2,500)

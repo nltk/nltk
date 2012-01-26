@@ -1,14 +1,14 @@
 # Natural Language Toolkit: Group Average Agglomerative Clusterer
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import numpy
+import copy
 
-from api import *
-from util import *
+from nltk.cluster.util import VectorSpaceClusterer, Dendrogram
 
 class GAAClusterer(VectorSpaceClusterer):
     """
@@ -97,8 +97,8 @@ class GAAClusterer(VectorSpaceClusterer):
 
     def dendrogram(self):
         """
-        @return: The dendrogram representing the current clustering
-        @rtype:  Dendrogram
+        :return: The dendrogram representing the current clustering
+        :rtype:  Dendrogram
         """
         return self._dendrogram
 
@@ -118,13 +118,13 @@ def demo():
     Non-interactive demonstration of the clusterers with simple 2-D data.
     """
 
-    from nltk import cluster
+    from nltk.cluster import GAAClusterer
 
     # use a set of tokens with 2D indices
     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
     
     # test the GAAC clusterer with 4 clusters
-    clusterer = cluster.GAAClusterer(4)
+    clusterer = GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
 
     print 'Clusterer:', clusterer

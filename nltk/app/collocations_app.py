@@ -1,18 +1,23 @@
 # Natural Language Toolkit: Collocations Application
 # Much of the GUI code is imported from concordance.py; We intend to merge these tools together
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
 import threading
+import tkFont
+from Tkinter import (Button, END, Frame, IntVar, LEFT, Label, Menu,
+                     OptionMenu, SUNKEN, Scrollbar, StringVar,
+                     Text, Tk)
 
-import nltk
+from nltk.corpus import (cess_cat, brown, nps_chat, treebank, sinica_treebank, alpino,
+                         indian, floresta, mac_morpho, machado, cess_esp)
 from nltk.util import in_idle
 from nltk.probability import FreqDist
 from nltk.text import Text as TextDomain
-from nltk.draw.util import *
+
 
 CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
 ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
@@ -20,39 +25,39 @@ ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
 _DEFAULT = 'English: Brown Corpus (Humor)'
 _CORPORA = {
             'Catalan: CESS-CAT Corpus':
-                lambda: nltk.corpus.cess_cat.words(),
+                lambda: cess_cat.words(),
             'English: Brown Corpus':
-                lambda: nltk.corpus.brown.words(),
+                lambda: brown.words(),
             'English: Brown Corpus (Press)':
-                lambda: nltk.corpus.brown.words(categories=['news', 'editorial', 'reviews']),
+                lambda: brown.words(categories=['news', 'editorial', 'reviews']),
             'English: Brown Corpus (Religion)':
-                lambda: nltk.corpus.brown.words(categories='religion'),
+                lambda: brown.words(categories='religion'),
             'English: Brown Corpus (Learned)':
-                lambda: nltk.corpus.brown.words(categories='learned'),
+                lambda: brown.words(categories='learned'),
             'English: Brown Corpus (Science Fiction)':
-                lambda: nltk.corpus.brown.words(categories='science_fiction'),
+                lambda: brown.words(categories='science_fiction'),
             'English: Brown Corpus (Romance)':
-                lambda: nltk.corpus.brown.words(categories='romance'),
+                lambda: brown.words(categories='romance'),
             'English: Brown Corpus (Humor)':
-                lambda: nltk.corpus.brown.words(categories='humor'),
+                lambda: brown.words(categories='humor'),
             'English: NPS Chat Corpus':
-                lambda: nltk.corpus.nps_chat.words(),
+                lambda: nps_chat.words(),
             'English: Wall Street Journal Corpus':
-                lambda: nltk.corpus.treebank.words(),
+                lambda: treebank.words(),
             'Chinese: Sinica Corpus':
-                lambda: nltk.corpus.sinica_treebank.words(),
+                lambda: sinica_treebank.words(),
             'Dutch: Alpino Corpus':
-                lambda: nltk.corpus.alpino.words(),
+                lambda: alpino.words(),
             'Hindi: Indian Languages Corpus':
-                lambda: nltk.corpus.indian.words(files='hindi.pos'),
+                lambda: indian.words(files='hindi.pos'),
             'Portuguese: Floresta Corpus (Portugal)':
-                lambda: nltk.corpus.floresta.words(),
+                lambda: floresta.words(),
             'Portuguese: MAC-MORPHO Corpus (Brazil)':
-                lambda: nltk.corpus.mac_morpho.words(),
+                lambda: mac_morpho.words(),
             'Portuguese: Machado Corpus (Brazil)':
-                lambda: nltk.corpus.machado.words(),
+                lambda: machado.words(),
             'Spanish: CESS-ESP Corpus':
-                lambda: nltk.corpus.cess_esp.words(),
+                lambda: cess_esp.words()
            }
 
 class CollocationsView:
@@ -321,8 +326,8 @@ class CollocationsModel:
                 print e
                 self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
 
-def collocations():
-    colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations[:num]]
+#def collocations():
+#    colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations[:num]]
 
 def app():
     c = CollocationsView()

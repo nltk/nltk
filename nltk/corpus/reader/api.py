@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for Corpus Readers
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -21,54 +21,50 @@ from util import *
 
 class CorpusReader(object):
     """
-    A base class for X{corpus reader} classes, each of which can be
+    A base class for "corpus reader" classes, each of which can be
     used to read a specific corpus format.  Each individual corpus
     reader instance is used to read a specific corpus, consisting of
     one or more files under a common root directory.  Each file is
-    identified by its C{file identifier}, which is the relative path
+    identified by its ``file identifier``, which is the relative path
     to the file from the root directory.
 
     A separate subclass is be defined for each corpus format.  These
     subclasses define one or more methods that provide 'views' on the
-    corpus contents, such as C{words()} (for a list of words) and
-    C{parsed_sents()} (for a list of parsed sentences).  Called with
+    corpus contents, such as ``words()`` (for a list of words) and
+    ``parsed_sents()`` (for a list of parsed sentences).  Called with
     no arguments, these methods will return the contents of the entire
     corpus.  For most corpora, these methods define one or more
-    selection arguments, such as C{fileids} or C{categories}, which can
+    selection arguments, such as ``fileids`` or ``categories``, which can
     be used to select which portion of the corpus should be returned.
     """
     def __init__(self, root, fileids, encoding=None, tag_mapping_function=None):
         """
-        @type root: L{PathPointer} or C{str}
-        @param root: A path pointer identifying the root directory for
+        :type root: PathPointer or str
+        :param root: A path pointer identifying the root directory for
             this corpus.  If a string is specified, then it will be
-            converted to a L{PathPointer} automatically.
-        @param fileids: A list of the files that make up this corpus.
+            converted to a ``PathPointer`` automatically.
+        :param fileids: A list of the files that make up this corpus.
             This list can either be specified explicitly, as a list of
             strings; or implicitly, as a regular expression over file
             paths.  The absolute path for each file will be constructed
             by joining the reader's root to each file name.
-        @param encoding: The default unicode encoding for the files
-            that make up the corpus.  C{encoding}'s value can be any
+        :param encoding: The default unicode encoding for the files
+            that make up the corpus.  The value of ``encoding`` can be any
             of the following:
-
-              - B{A string}: C{encoding} is the encoding name for all
-                files.
-              - B{A dictionary}: C{encoding[file_id]} is the encoding
-                name for the file whose identifier is C{file_id}.  If
-                C{file_id} is not in C{encoding}, then the file
-                contents will be processed using non-unicode byte
-                strings.
-              - B{A list}: C{encoding} should be a list of C{(regexp,
-                encoding)} tuples.  The encoding for a file whose
-                identifier is C{file_id} will be the C{encoding} value
-                for the first tuple whose C{regexp} matches the
-                C{file_id}.  If no tuple's C{regexp} matches the
-                C{file_id}, the file contents will be processed using
-                non-unicode byte strings.
-              - C{None}: the file contents of all files will be
-                processed using non-unicode byte strings.
-        @param tag_mapping_function: A function for normalizing or
+            - A string: ``encoding`` is the encoding name for all files.
+            - A dictionary: ``encoding[file_id]`` is the encoding
+              name for the file whose identifier is ``file_id``.  If
+              ``file_id`` is not in ``encoding``, then the file
+              contents will be processed using non-unicode byte strings.
+            - A list: ``encoding`` should be a list of ``(regexp, encoding)``
+              tuples.  The encoding for a file whose identifier is ``file_id``
+              will be the ``encoding`` value for the first tuple whose
+              ``regexp`` matches the ``file_id``.  If no tuple's ``regexp``
+              matches the ``file_id``, the file contents will be processed
+              using non-unicode byte strings.
+            - None: the file contents of all files will be
+              processed using non-unicode byte strings.
+        :param tag_mapping_function: A function for normalizing or
                 simplifying the POS tags returned by the tagged_words()
                 or tagged_sents() methods.
         """
@@ -108,8 +104,8 @@ class CorpusReader(object):
 
         self._encoding = encoding
         """The default unicode encoding for the fileids that make up
-           this corpus.  If C{encoding} is C{None}, then the file
-           contents are processed using byte strings (C{str})."""
+           this corpus.  If ``encoding`` is None, then the file
+           contents are processed using byte strings (str)."""
         self._tag_mapping_function = tag_mapping_function
 
     def __repr__(self):
@@ -137,11 +133,10 @@ class CorpusReader(object):
         """
         Return the absolute path for the given file.
 
-        @type file: C{str}
-        @param file: The file identifier for the file whose path
+        :type file: str
+        :param file: The file identifier for the file whose path
             should be returned.
-
-        @rtype: L{PathPointer}
+        :rtype: PathPointer
         """
         return self._root.join(fileid)
 
@@ -151,18 +146,18 @@ class CorpusReader(object):
         Return a list of the absolute paths for all fileids in this corpus;
         or for the given list of fileids, if specified.
 
-        @type fileids: C{None} or C{str} or C{list}
-        @param fileids: Specifies the set of fileids for which paths should
-            be returned.  Can be C{None}, for all fileids; a list of
+        :type fileids: None or str or list
+        :param fileids: Specifies the set of fileids for which paths should
+            be returned.  Can be None, for all fileids; a list of
             file identifiers, for a specified set of fileids; or a single
             file identifier, for a single file.  Note that the return
-            value is always a list of paths, even if C{fileids} is a
+            value is always a list of paths, even if ``fileids`` is a
             single file identifier.
 
-        @param include_encoding: If true, then return a list of
-            C{(path_pointer, encoding)} tuples.
+        :param include_encoding: If true, then return a list of
+            ``(path_pointer, encoding)`` tuples.
 
-        @rtype: C{list} of L{PathPointer}
+        :rtype: list(PathPointer)
         """
         if fileids is None:
             fileids = self._fileids
@@ -183,10 +178,10 @@ class CorpusReader(object):
     def open(self, file, sourced=False):
         """
         Return an open stream that can be used to read the given file.
-        If the file's encoding is not C{None}, then the stream will
+        If the file's encoding is not None, then the stream will
         automatically decode the file's contents into unicode.
 
-        @param file: The file identifier of the file to read.
+        :param file: The file identifier of the file to read.
         """
         encoding = self.encoding(file)
         stream = self._root.join(file).open(encoding)
@@ -198,7 +193,7 @@ class CorpusReader(object):
         """
         Return the unicode encoding for the given corpus file, if known.
         If the encoding is unknown, or if the given file should be
-        processed using byte strings (C{str}), then return C{None}.
+        processed using byte strings (str), then return None.
         """
         if isinstance(self._encoding, dict):
             return self._encoding.get(file)
@@ -209,7 +204,7 @@ class CorpusReader(object):
     root = property(_get_root, doc="""
         The directory where this corpus is stored.
 
-        @type: L{PathPointer}""")
+        :type: PathPointer""")
 
 
 ######################################################################
@@ -220,17 +215,17 @@ class CategorizedCorpusReader(object):
     """
     A mixin class used to aid in the implementation of corpus readers
     for categorized corpora.  This class defines the method
-    L{categories()}, which returns a list of the categories for the
-    corpus or for a specified set of fileids; and overrides L{fileids()}
-    to take a C{categories} argument, restricting the set of fileids to
+    ``categories()``, which returns a list of the categories for the
+    corpus or for a specified set of fileids; and overrides ``fileids()``
+    to take a ``categories`` argument, restricting the set of fileids to
     be returned.
 
     Subclasses are expected to:
 
-      - Call L{__init__()} to set up the mapping.
+      - Call ``__init__()`` to set up the mapping.
 
-      - Override all view methods to accept a C{categories} parameter,
-        which can be used *instead* of the C{fileids} parameter, to
+      - Override all view methods to accept a ``categories`` parameter,
+        which can be used *instead* of the ``fileids`` parameter, to
         select which fileids should be included in the returned view.
     """
 
@@ -249,9 +244,9 @@ class CategorizedCorpusReader(object):
 
           - cat_file: The name of a file that contains the mapping
             from file identifiers to categories.  The argument
-            C{cat_delimiter} can be used to specify a delimiter.
+            ``cat_delimiter`` can be used to specify a delimiter.
 
-        The corresponding argument will be deleted from C{kwargs}.  If
+        The corresponding argument will be deleted from ``kwargs``.  If
         more than one argument is specified, an exception will be
         raised.
         """
@@ -261,7 +256,7 @@ class CategorizedCorpusReader(object):
         self._pattern = None #: regexp specifying the mapping
         self._map = None #: dict specifying the mapping
         self._file = None #: fileid of file containing the mapping
-        self._delimiter = None #: delimiter for L{self._file}
+        self._delimiter = None #: delimiter for ``self._file``
 
         if 'cat_pattern' in kwargs:
             self._pattern = kwargs['cat_pattern']
@@ -355,13 +350,13 @@ class SyntaxCorpusReader(CorpusReader):
     An abstract base class for reading corpora consisting of
     syntactically parsed text.  Subclasses should define:
 
-      - L{__init__}, which specifies the location of the corpus
+      - ``__init__``, which specifies the location of the corpus
         and a method for detecting the sentence blocks in corpus files.
-      - L{_read_block}, which reads a block from the input stream.
-      - L{_word}, which takes a block and returns a list of list of words.
-      - L{_tag}, which takes a block and returns a list of list of tagged
+      - ``_read_block``, which reads a block from the input stream.
+      - ``_word``, which takes a block and returns a list of list of words.
+      - ``_tag``, which takes a block and returns a list of list of tagged
         words.
-      - L{_parse}, which takes a block and returns a list of parsed
+      - ``_parse``, which takes a block and returns a list of parsed
         sentences.
     """
     def _parse(self, s):

@@ -1,31 +1,9 @@
-.. Copyright (C) 2001-2011 NLTK Project
+.. Copyright (C) 2001-2012 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===============================
  Unit tests for nltk.tree.Tree
 ===============================
-
-    >>> from nltk.tree import *
-
-    >>> print Tree(1, [2, 3, 4])
-    (1 2 3 4)
-    >>> print Tree('S', [Tree('NP', ['I']), 
-    ...                 Tree('VP', [Tree('V', ['saw']),
-    ...                             Tree('NP', ['him'])])])
-    (S (NP I) (VP (V saw) (NP him)))
-
-One exception to "any iterable": in order to avoid confusion,
-strings are *not* accepted as children lists:
-
-    >>> print Tree('NP', 'Bob')
-    Traceback (most recent call last):
-      . . .
-    TypeError: Tree() argument 2 should be a list, not a string
-
-A single level can contain both leaves and subtrees:
-
-    >>> print Tree(1, [2, Tree(3, [4]), 5])
-    (1 2 (3 4) 5)
 
 Some trees to run tests on:
 
@@ -34,72 +12,15 @@ Some trees to run tests on:
     >>> vp = Tree('vp', [Tree('v', ['chased']), dp2])
     >>> tree = Tree('s', [dp1, vp])
     >>> print tree
-    (s (dp (d the) (np dog)) (vp (v chased) (dp (d the) (np cat))))
 
 The node value is stored using the `node` attribute:
 
     >>> dp1.node, dp2.node, vp.node, tree.node
     ('dp', 'dp', 'vp', 's')
 
-This attribute can be modified directly:
 
-    >>> dp1.node = 'np'
-    >>> dp2.node = 'np'
-    >>> print tree
-    (s (np (d the) (np dog)) (vp (v chased) (np (d the) (np cat))))
-
-Children can be accessed with indexing, just as with normal lists:
-
-    >>> print tree[0]
-    (np (d the) (np dog))
-    >>> print tree[1][1]
-    (np (d the) (np cat))
-
-Children can be modified directly, as well:
-
-    >>> tree[0], tree[1][1] = tree[1][1], tree[0]
-    >>> print tree
-    (s (np (d the) (np cat)) (vp (v chased) (np (d the) (np dog))))
-
-The `Tree` class adds a new method of indexing, using tuples rather
-than ints.  ``t[a,b,c]`` is equivalant to ``t[a][b][c]``.  The sequence
-``(a,b,c)`` is called a "tree path".
-
-    >>> print tree[1,1][0]
-    (d the)
-
-    >>> # Switch the cat & dog back the way they were.
-    >>> tree[1,1], tree[0] = tree[0], tree[1,1]
-    >>> print tree
-    (s (np (d the) (np dog)) (vp (v chased) (np (d the) (np cat))))
-
-    >>> path = (1,1,1,0)
     >>> print tree[path]
     cat
-
-The length of a tree is the number of children it has.
-
-    >>> len(tree), len(dp1), len(dp2), len(dp1[0])
-    (2, 2, 2, 1)
-    >>> len(Tree('x', []))
-    0
-
-The `leaves` method returns a list of a tree's leaves:
-
-    >>> print tree.leaves()
-    ['the', 'dog', 'chased', 'the', 'cat']
-
-The `height` method returns the height of the tree.  A tree with no
-children is considered to have a height of 1; a tree with only
-children is considered to have a height of 2; and any other tree's
-height is one plus the maximum of its children's heights:
-
-    >>> print tree.height()
-    5
-    >>> print tree[1,1,1].height()
-    2
-    >>> print tree[0].height()
-    3
 
 The `treepositions` method returns a list of the tree positions of
 subtrees and leaves in a tree.  By default, it gives the position of
@@ -107,33 +28,6 @@ every tree, subtree, and leaf, in prefix order:
 
     >>> print tree.treepositions()
     [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 1), (1, 1, 1, 0)]
-
-The order can also be specified explicitly.  Four orders are currently
-supported:
-
-    # Prefix order
-    >>> print tree.treepositions('preorder')
-    [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 1), (1, 1, 1, 0)]
-
-    # Postfix order
-    >>> print tree.treepositions('postorder')
-    [(0, 0, 0), (0, 0), (0, 1, 0), (0, 1), (0,), (1, 0, 0), (1, 0), (1, 1, 0, 0), (1, 1, 0), (1, 1, 1, 0), (1, 1, 1), (1, 1), (1,), ()]
-    
-    # Both prefix & postfix order (subtrees listed twice, leaves once)
-    >>> print tree.treepositions('bothorder')
-    [(), (0,), (0, 0), (0, 0, 0), (0, 0), (0, 1), (0, 1, 0), (0, 1), (0,), (1,), (1, 0), (1, 0, 0), (1, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 0), (1, 1, 1), (1, 1, 1, 0), (1, 1, 1), (1, 1), (1,), ()]
-    
-    # Leaves only (in order)
-    >>> print tree.treepositions('leaves')
-    [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 0, 0), (1, 1, 1, 0)]
-
-`treepositions` can be useful for modifying a tree.  For example, we
-could upper-case all leaves with:
-
-    >>> for pos in tree.treepositions('leaves'):
-    ...     tree[pos] = tree[pos].upper()
-    >>> print tree
-    (s (np (d THE) (np DOG)) (vp (v CHASED) (np (d THE) (np CAT))))
 
 In addition to `str` and `repr`, several methods exist to convert a
 tree object to one of several standard tree encodings:

@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Chat-80 KB Reader
 # See http://www.w3.org/TR/swbp-skos-core-guide/
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -13,14 +13,14 @@ Overview
 Chat-80 was a natural language system which allowed the user to
 interrogate a Prolog knowledge base in the domain of world
 geography. It was developed in the early '80s by Warren and Pereira; see
-U{http://acl.ldc.upenn.edu/J/J82/J82-3002.pdf} for a description and
-U{http://www.cis.upenn.edu/~pereira/oldies.html} for the source
+``http://www.aclweb.org/anthology/J82-3002.pdf`` for a description and
+``http://www.cis.upenn.edu/~pereira/oldies.html`` for the source
 files.
 
 This module contains functions to extract data from the Chat-80
 relation files ('the world database'), and convert then into a format
 that can be incorporated in the FOL models of
-L{nltk.sem.evaluate}. The code assumes that the Prolog
+``nltk.sem.evaluate``. The code assumes that the Prolog
 input files are available in the NLTK corpora directory.
 
 The Chat-80 World Database consists of the following files::
@@ -32,9 +32,9 @@ The Chat-80 World Database consists of the following files::
     contain.pl
     borders.pl
 
-This module uses a slightly modified version of C{world0.pl}, in which
+This module uses a slightly modified version of ``world0.pl``, in which
 a set of Prolog rules have been omitted. The modified file is named
-C{world1.pl}. Currently, the file C{rivers.pl} is not read in, since
+``world1.pl``. Currently, the file ``rivers.pl`` is not read in, since
 it uses a list rather than a string in the second field.
 
 Reading Chat-80 Files
@@ -45,22 +45,22 @@ relation acts as the name of the table; the first argument acts as the
 'primary key'; and subsequent arguments are further fields in the
 table. In general, the name of the table provides a label for a unary
 predicate whose extension is all the primary keys. For example,
-relations in C{cities.pl} are of the following form::
+relations in ``cities.pl`` are of the following form::
 
    'city(athens,greece,1368).'
 
-Here, C{'athens'} is the key, and will be mapped to a member of the
-unary predicate M{city}.
+Here, ``'athens'`` is the key, and will be mapped to a member of the
+unary predicate *city*.
 
 The fields in the table are mapped to binary predicates. The first
 argument of the predicate is the primary key, while the second
 argument is the data in the relevant field. Thus, in the above
 example, the third field is mapped to the binary predicate
-M{population_of}, whose extension is a set of pairs such as C{'(athens,
-1368)'}.
+*population_of*, whose extension is a set of pairs such as
+``'(athens, 1368)'``.
 
 An exception to this general framework is required by the relations in
-the files C{borders.pl} and C{contains.pl}. These contain facts of the
+the files ``borders.pl`` and ``contains.pl``. These contain facts of the
 following form::
 
     'borders(albania,greece).'
@@ -69,7 +69,7 @@ following form::
 
 We do not want to form a unary concept out the element in
 the first field of these records, and we want the label of the binary
-relation just to be C{'border'}/C{'contain'} respectively.
+relation just to be ``'border'``/``'contain'`` respectively.
 
 In order to drive the extraction process, we use 'relation metadata bundles'
 which are Python dictionaries such as the following::
@@ -79,30 +79,30 @@ which are Python dictionaries such as the following::
           'schema': ['city', 'country', 'population'],
           'filename': 'cities.pl'}
 
-According to this, the file C{city['filename']} contains a list of
+According to this, the file ``city['filename']`` contains a list of
 relational tuples (or more accurately, the corresponding strings in
-Prolog form) whose predicate symbol is C{city['label']} and whose
-relational schema is C{city['schema']}. The notion of a C{closure} is
+Prolog form) whose predicate symbol is ``city['label']`` and whose
+relational schema is ``city['schema']``. The notion of a ``closure`` is
 discussed in the next section.
 
 Concepts
 ========
 In order to encapsulate the results of the extraction, a class of
-L{Concept}s is introduced.  A L{Concept} object has a number of
-attributes, in particular a C{prefLabel} and C{extension}, which make
+``Concept`` objects is introduced.  A ``Concept`` object has a number of
+attributes, in particular a ``prefLabel`` and ``extension``, which make
 it easier to inspect the output of the extraction. In addition, the
-C{extension} can be further processed: in the case of the C{'border'}
-relation, we check that the relation is B{symmetric}, and in the case
-of the C{'contain'} relation, we carry out the B{transitive
-closure}. The closure properties associated with a concept is
+``extension`` can be further processed: in the case of the ``'border'``
+relation, we check that the relation is symmetric, and in the case
+of the ``'contain'`` relation, we carry out the transitive
+closure. The closure properties associated with a concept is
 indicated in the relation metadata, as indicated earlier.
 
-The C{extension} of a L{Concept} object is then incorporated into a
-L{Valuation} object.
+The ``extension`` of a ``Concept`` object is then incorporated into a
+``Valuation`` object.
 
 Persistence
 ===========
-The functions L{val_dump} and L{val_load} are provided to allow a
+The functions ``val_dump`` and ``val_load`` are provided to allow a
 valuation to be stored in a persistent database and re-loaded, rather
 than having to be re-computed each time.
 
@@ -111,14 +111,14 @@ Individuals and Lexical Items
 As well as deriving relations from the Chat-80 data, we also create a
 set of individual constants, one for each entity in the domain. The
 individual constants are string-identical to the entities. For
-example, given a data item such as C{'zloty'}, we add to the valuation
-a pair C{('zloty', 'zloty')}. In order to parse English sentences that
+example, given a data item such as ``'zloty'``, we add to the valuation
+a pair ``('zloty', 'zloty')``. In order to parse English sentences that
 refer to these entities, we also create a lexical item such as the
 following for each individual constant::
 
    PropN[num=sg, sem=<\P.(P zloty)>] -> 'Zloty'
 
-The set of rules is written to the file C{chat_pnames.cfg} in the
+The set of rules is written to the file ``chat_pnames.cfg`` in the
 current directory.
 
 """
@@ -127,7 +127,8 @@ import re
 import shelve
 import os
 import sys
-import nltk
+
+from nltk.data import find
 
 
 ###########################################################################
@@ -212,22 +213,22 @@ not_unary = ['borders.pl', 'contain.pl']
 
 class Concept(object):
     """
-    A Concept class, loosely
-    based on SKOS (U{http://www.w3.org/TR/swbp-skos-core-guide/}).
+    A Concept class, loosely based on SKOS
+    (http://www.w3.org/TR/swbp-skos-core-guide/).
     """
     def __init__(self, prefLabel, arity, altLabels=[], closures=[], extension=set()):
         """
-        @param prefLabel: the preferred label for the concept
-        @type prefLabel: str
-        @param arity: the arity of the concept
-        @type arity: int
+        :param prefLabel: the preferred label for the concept
+        :type prefLabel: str
+        :param arity: the arity of the concept
+        :type arity: int
         @keyword altLabels: other (related) labels
-        @type altLabels: list
+        :type altLabels: list
         @keyword closures: closure properties of the extension \
-            (list items can be C{symmetric}, C{reflexive}, C{transitive})
-        @type closures: list 
+            (list items can be ``symmetric``, ``reflexive``, ``transitive``)
+        :type closures: list 
         @keyword extension: the extensional value of the concept
-        @type extension: set
+        :type extension: set
         """
         self.prefLabel = prefLabel
         self.arity = arity
@@ -254,11 +255,11 @@ class Concept(object):
 
     def augment(self, data):
         """
-        Add more data to the C{Concept}'s extension set.
+        Add more data to the ``Concept``'s extension set.
 
-        @param data: a new semantic value
-        @type data: string or pair of strings
-        @rtype: set
+        :param data: a new semantic value
+        :type data: string or pair of strings
+        :rtype: set
 
         """
         self._extension.add(data)
@@ -304,9 +305,9 @@ class Concept(object):
         
     def close(self):
         """
-        Close a binary relation in the C{Concept}'s extension set.
+        Close a binary relation in the ``Concept``'s extension set.
 
-        @return: a new extension for the C{Concept} in which the
+        :return: a new extension for the ``Concept`` in which the
                  relation is closed under a given property
         """
         from nltk.sem import is_rel
@@ -328,18 +329,18 @@ class Concept(object):
 
 def clause2concepts(filename, rel_name, schema, closures=[]):
     """
-    Convert a file of Prolog clauses into a list of L{Concept} objects.
+    Convert a file of Prolog clauses into a list of ``Concept`` objects.
 
-    @param filename: filename containing the relations
-    @type filename: C{str}
-    @param rel_name: name of the relation 
-    @type rel_name: C{str}
-    @param schema: the schema used in a set of relational tuples
-    @type schema: C{list}
-    @param closures: closure properties for the extension of the concept
-    @type closures: C{list}
-    @return: a list of L{Concept}s
-    @rtype: C{list}
+    :param filename: filename containing the relations
+    :type filename: str
+    :param rel_name: name of the relation 
+    :type rel_name: str
+    :param schema: the schema used in a set of relational tuples
+    :type schema: list
+    :param closures: closure properties for the extension of the concept
+    :type closures: list
+    :return: a list of ``Concept`` objects
+    :rtype: list
     """
     concepts = []
     # position of the subject of a binary relation
@@ -376,12 +377,12 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
         
         cities2table('cities.pl', 'city', 'city.db', verbose=True, setup=True) 
 
-    @param filename: filename containing the relations
-    @type filename: C{str}
-    @param rel_name: name of the relation 
-    @type rel_name: C{str}
-    @param dbname: filename of persistent store
-    @type schema: C{str}
+    :param filename: filename containing the relations
+    :type filename: str
+    :param rel_name: name of the relation 
+    :type rel_name: str
+    :param dbname: filename of persistent store
+    :type schema: str
     """
     try:
         import sqlite3
@@ -408,14 +409,14 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
 def sql_query(dbname, query):
     """
     Execute an SQL query over a database.
-    @param dbname: filename of persistent store
-    @type schema: C{str}
-    @param query: SQL query 
-    @type rel_name: C{str}
+    :param dbname: filename of persistent store
+    :type schema: str
+    :param query: SQL query 
+    :type rel_name: str
     """
     try:
         import sqlite3
-        path = nltk.data.find(dbname)
+        path = find(dbname)
         connection =  sqlite3.connect(path)
         # return ASCII strings if possible
         connection.text_factory = sqlite3.OptimizedUnicode
@@ -431,7 +432,7 @@ def _str2records(filename, rel):
     Read a file into memory and convert each relation clause into a list.
     """ 
     recs = []
-    path = nltk.data.find("corpora/chat80/%s" % filename)
+    path = find("corpora/chat80/%s" % filename)
     for line in path.open():
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
@@ -446,17 +447,17 @@ def unary_concept(label, subj, records):
     Make a unary concept out of the primary key in a record.
 
     A record is a list of entities in some relation, such as
-    C{['france', 'paris']}, where C{'france'} is acting as the primary
+    ``['france', 'paris']``, where ``'france'`` is acting as the primary
     key.
 
-    @param label: the preferred label for the concept
-    @type label: string
-    @param subj: position in the record of the subject of the predicate
-    @type subj: int
-    @param records: a list of records
-    @type records: C{list} of C{list}s
-    @return: L{Concept} of arity 1
-    @rtype: L{Concept}
+    :param label: the preferred label for the concept
+    :type label: string
+    :param subj: position in the record of the subject of the predicate
+    :type subj: int
+    :param records: a list of records
+    :type records: list of lists
+    :return: ``Concept`` of arity 1
+    :rtype: Concept
     """
     c = Concept(label, arity=1, extension=set())
     for record in records:
@@ -468,28 +469,28 @@ def binary_concept(label, closures, subj, obj, records):
     Make a binary concept out of the primary key and another field in a record.
 
     A record is a list of entities in some relation, such as
-    C{['france', 'paris']}, where C{'france'} is acting as the primary
-    key, and C{'paris'} stands in the C{'capital_of'} relation to
-    C{'france'}.
+    ``['france', 'paris']``, where ``'france'`` is acting as the primary
+    key, and ``'paris'`` stands in the ``'capital_of'`` relation to
+    ``'france'``.
 
-    More generally, given a record such as C{['a', 'b', 'c']}, where
-    label is bound to C{'B'}, and C{obj} bound to 1, the derived
-    binary concept will have label C{'B_of'}, and its extension will
-    be a set of pairs such as C{('a', 'b')}.
+    More generally, given a record such as ``['a', 'b', 'c']``, where
+    label is bound to ``'B'``, and ``obj`` bound to 1, the derived
+    binary concept will have label ``'B_of'``, and its extension will
+    be a set of pairs such as ``('a', 'b')``.
     
 
-    @param label: the base part of the preferred label for the concept
-    @type label: C{str}
-    @param closures: closure properties for the extension of the concept
-    @type closures: C{list}
-    @param subj: position in the record of the subject of the predicate
-    @type subj: C{int}
-    @param obj: position in the record of the object of the predicate
-    @type obj: C{int}
-    @param records: a list of records
-    @type records: C{list} of C{list}s
-    @return: L{Concept} of arity 2
-    @rtype: L{Concept}
+    :param label: the base part of the preferred label for the concept
+    :type label: str
+    :param closures: closure properties for the extension of the concept
+    :type closures: list
+    :param subj: position in the record of the subject of the predicate
+    :type subj: int
+    :param obj: position in the record of the object of the predicate
+    :type obj: int
+    :param records: a list of records
+    :type records: list of lists
+    :return: ``Concept`` of arity 2
+    :rtype: Concept
     """
     if not label == 'border' and not label == 'contain':
         label = label + '_of'
@@ -506,10 +507,10 @@ def process_bundle(rels):
     Given a list of relation metadata bundles, make a corresponding
     dictionary of concepts, indexed by the relation name.
 
-    @param rels: bundle of metadata needed for constructing a concept
-    @type rels: C{list} of C{dict}
-    @return: a dictionary of concepts, indexed by the relation name.
-    @rtype: C{dict}
+    :param rels: bundle of metadata needed for constructing a concept
+    :type rels: list of dict
+    :return: a dictionary of concepts, indexed by the relation name.
+    :rtype: dict
     """
     concepts = {}
     for rel in rels:
@@ -532,14 +533,14 @@ def process_bundle(rels):
 
 def make_valuation(concepts, read=False, lexicon=False):
     """
-    Convert a list of C{Concept}s into a list of (label, extension) pairs;
-    optionally create a C{Valuation} object.
+    Convert a list of ``Concept`` objects into a list of (label, extension) pairs;
+    optionally create a ``Valuation`` object.
 
-    @param concepts: concepts
-    @type concepts: list of L{Concept}s
-    @param read: if C{True}, C{(symbol, set)} pairs are read into a C{Valuation}
-    @type read: C{bool}
-    @rtype: C{list} or a L{Valuation}
+    :param concepts: concepts
+    :type concepts: list(Concept)
+    :param read: if ``True``, ``(symbol, set)`` pairs are read into a ``Valuation``
+    :type read: bool
+    :rtype: list or Valuation
     """
     vals = []
     
@@ -558,14 +559,14 @@ def make_valuation(concepts, read=False, lexicon=False):
 
 def val_dump(rels, db):
     """
-    Make a L{Valuation} from a list of relation metadata bundles and dump to
+    Make a ``Valuation`` from a list of relation metadata bundles and dump to
     persistent database.
 
-    @param rels: bundle of metadata needed for constructing a concept
-    @type rels: C{list} of C{dict}
-    @param db: name of file to which data is written.
+    :param rels: bundle of metadata needed for constructing a concept
+    :type rels: list of dict
+    :param db: name of file to which data is written.
                The suffix '.db' will be automatically appended.
-    @type db: string
+    :type db: string
     """
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
@@ -578,11 +579,11 @@ def val_dump(rels, db):
     
 def val_load(db):
     """
-    Load a L{Valuation} from a persistent database.
+    Load a ``Valuation`` from a persistent database.
 
-    @param db: name of file from which data is read.
+    :param db: name of file from which data is read.
                The suffix '.db' should be omitted from the name.
-    @type db: string
+    :type db: string
     """
     dbname = db+".db"
 
@@ -600,9 +601,9 @@ def val_load(db):
     #"""
     #Utility to filter out non-alphabetic constants.
 
-    #@param str: candidate constant
-    #@type str: string
-    #@rtype: bool
+    #:param str: candidate constant
+    #:type str: string
+    #:rtype: bool
     #"""
     #try:
         #int(str)
@@ -615,13 +616,13 @@ def val_load(db):
 
 def label_indivs(valuation, lexicon=False):
     """
-    Assign individual constants to the individuals in the domain of a C{Valuation}.
+    Assign individual constants to the individuals in the domain of a ``Valuation``.
 
-    Given a valuation with an entry of the form {'rel': {'a': True}},
-    add a new entry {'a': 'a'}.
+    Given a valuation with an entry of the form ``{'rel': {'a': True}}``,
+    add a new entry ``{'a': 'a'}``.
 
-    @type valuation: L{Valuation}
-    @rtype: L{Valuation}
+    :type valuation: Valuation
+    :rtype: Valuation
     """
     # collect all the individuals into a domain
     domain = valuation.domain
@@ -639,12 +640,12 @@ def make_lex(symbols):
     """
     Create lexical CFG rules for each individual symbol.
 
-    Given a valuation with an entry of the form {'zloty': 'zloty'},
+    Given a valuation with an entry of the form ``{'zloty': 'zloty'}``,
     create a lexical rule for the proper name 'Zloty'. 
 
-    @param symbols: a list of individual constants in the semantic representation
-    @type symbols: sequence
-    @rtype: list
+    :param symbols: a list of individual constants in the semantic representation
+    :type symbols: sequence
+    :rtype: list
     """
     lex = []
     header = """
@@ -671,12 +672,12 @@ def make_lex(symbols):
        
 def concepts(items = items):
     """
-    Build a list of concepts corresponding to the relation names in C{items}.
+    Build a list of concepts corresponding to the relation names in ``items``.
     
-    @param items: names of the Chat-80 relations to extract
-    @type items: list of strings
-    @return: the L{Concept}s which are extracted from the relations
-    @rtype: list 
+    :param items: names of the Chat-80 relations to extract
+    :type items: list of strings
+    :return: the ``Concept`` objects which are extracted from the relations
+    :rtype: list 
     """
     if type(items) is str: items = (items,)
     

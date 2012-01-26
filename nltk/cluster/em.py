@@ -1,14 +1,13 @@
 # Natural Language Toolkit: Expectation Maximization Clusterer
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import numpy
 
-from api import *
-from util import *
+from util import VectorSpaceClusterer
 
 class EMClusterer(VectorSpaceClusterer):
     """
@@ -32,23 +31,23 @@ class EMClusterer(VectorSpaceClusterer):
         Creates an EM clusterer with the given starting parameters,
         convergence threshold and vector mangling parameters.
 
-        @param  initial_means: the means of the gaussian cluster centers
-        @type   initial_means: [seq of] numpy array or seq of SparseArray
-        @param  priors: the prior probability for each cluster
-        @type   priors: numpy array or seq of float
-        @param  covariance_matrices: the covariance matrix for each cluster
-        @type   covariance_matrices: [seq of] numpy array 
-        @param  conv_threshold: maximum change in likelihood before deemed
+        :param  initial_means: the means of the gaussian cluster centers
+        :type   initial_means: [seq of] numpy array or seq of SparseArray
+        :param  priors: the prior probability for each cluster
+        :type   priors: numpy array or seq of float
+        :param  covariance_matrices: the covariance matrix for each cluster
+        :type   covariance_matrices: [seq of] numpy array 
+        :param  conv_threshold: maximum change in likelihood before deemed
                     convergent
-        @type   conv_threshold: int or float
-        @param  bias: variance bias used to ensure non-singular covariance
+        :type   conv_threshold: int or float
+        :param  bias: variance bias used to ensure non-singular covariance
                       matrices
-        @type   bias: float
-        @param  normalise:  should vectors be normalised to length 1
-        @type   normalise:  boolean
-        @param  svd_dimensions: number of dimensions to use in reducing vector
+        :type   bias: float
+        :param  normalise:  should vectors be normalised to length 1
+        :type   normalise:  boolean
+        :param  svd_dimensions: number of dimensions to use in reducing vector
                                dimensionsionality with SVD
-        @type   svd_dimensions: int 
+        :type   svd_dimensions: int 
         """
         VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._means = numpy.array(initial_means, numpy.float64)

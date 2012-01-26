@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -12,42 +12,41 @@ data packages that can be used with NLTK.
 
 Downloading Packages
 ====================
-If called with no arguments, L{download() <Downloader.download>}
-function will display an interactive interface which can be used to
-download and install new packages.  If Tkinter is available, then a
-graphical interface will be shown; otherwise, a simple text interface
-will be provided.
+If called with no arguments, ``download()`` will display an interactive
+interface which can be used to download and install new packages.
+If Tkinter is available, then a graphical interface will be shown,
+otherwise a simple text interface will be provided.
 
-Individual packages can be downloaded by calling the C{download()}
+Individual packages can be downloaded by calling the ``download()``
 function with a single argument, giving the package identifier for the
 package that should be downloaded:
 
-  >>> download('treebank') # doctest: +SKIP
-  [nltk_data] Downloading package 'treebank'...
-  [nltk_data]   Unzipping corpora/treebank.zip.
+    >>> download('treebank') # doctest: +SKIP
+    [nltk_data] Downloading package 'treebank'...
+    [nltk_data]   Unzipping corpora/treebank.zip.
 
 NLTK also provides a number of \"package collections\", consisting of
 a group of related packages.  To download all packages in a
-colleciton, simply call C{download()} with the collection's
+colleciton, simply call ``download()`` with the collection's
 identifier:
 
-  >>> download('all-corpora') # doctest: +SKIP
-  [nltk_data] Downloading package 'abc'...
-  [nltk_data]   Unzipping corpora/abc.zip.
-  [nltk_data] Downloading package 'alpino'...
-  [nltk_data]   Unzipping corpora/alpino.zip.
-    ...
-  [nltk_data] Downloading package 'words'...
-  [nltk_data]   Unzipping corpora/words.zip.
+    >>> download('all-corpora') # doctest: +SKIP
+    [nltk_data] Downloading package 'abc'...
+    [nltk_data]   Unzipping corpora/abc.zip.
+    [nltk_data] Downloading package 'alpino'...
+    [nltk_data]   Unzipping corpora/alpino.zip.
+      ...
+    [nltk_data] Downloading package 'words'...
+    [nltk_data]   Unzipping corpora/words.zip.
 
 Download Directory
 ==================
 By default, packages are installed in either a system-wide directory
 (if Python has sufficient access to write to it); or in the current
-user's home directory.  However, the C{download_dir} argument may be
+user's home directory.  However, the ``download_dir`` argument may be
 used to specify a different installation target, if desired.
 
-See L{Downloader.default_download_dir()} for more a detailed
+See ``Downloader.default_download_dir()`` for more a detailed
 description of how the default download directory is chosen.
 
 NLTK Download Server
@@ -55,8 +54,8 @@ NLTK Download Server
 Before downloading any packages, the corpus and module downloader
 contacts the NLTK download server, to retrieve an index file
 describing the available packages.  By default, this index file is
-loaded from C{<http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml>}.
-If necessary, it is possible to create a new L{Downloader} object,
+loaded from ``http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml``.
+If necessary, it is possible to create a new ``Downloader`` object,
 specifying a different URL for the package index file.
 
 Usage::
@@ -85,8 +84,7 @@ Handling data files..  Some questions:
   downloader to update the corpora.  Disadvantages: they're big,
   which makes working from svn a bit of a pain.  And we're planning
   to potentially make them much bigger.  I don't think we want
-  people to have to download 400mb corpora just to use nltk from
-  svn.
+  people to have to download 400MB corpora just to use nltk from svn.
 
 * Compromise: keep the data files in trunk/data rather than in
   trunk/nltk.  That way you can check them out in svn if you want
@@ -168,8 +166,8 @@ except:
     
 try:
     TKINTER = True
-    from Tkinter import *
-    from tkMessageBox import *
+    from Tkinter import Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar
+    from tkMessageBox import showerror
     from nltk.draw.table import Table
     from nltk.draw import ShowText
 except:
@@ -189,7 +187,7 @@ class Package(object):
     """
     A directory entry for a downloadable package.  These entries are
     extracted from the XML index file that is downloaded by
-    L{Downloader}.  Each package consists of a single file; but if
+    ``Downloader``.  Each package consists of a single file; but if
     that file is a zip file, then it can be automatically decompressed
     when the package is installed.
     """
@@ -208,7 +206,7 @@ class Package(object):
         
         self.subdir = subdir
         """The subdirectory where this package should be installed.
-           E.g., C{'corpora'} or C{'taggers'}."""
+           E.g., ``'corpora'`` or ``'taggers'``."""
         
         self.url = url
         """A URL that can be used to download this package's file."""
@@ -242,8 +240,8 @@ class Package(object):
         ext = os.path.splitext(url.split('/')[-1])[1]
         self.filename = os.path.join(subdir, id+ext)
         """The filename that should be used for this package's file.  It
-           is formed by joining C{self.subdir} with C{self.id}, and
-           using the same extension as C{url}."""
+           is formed by joining ``self.subdir`` with ``self.id``, and
+           using the same extension as ``url``."""
 
         self.unzip = bool(int(unzip)) # '0' or '1'
         """A flag indicating whether this corpus should be unzipped by
@@ -265,7 +263,7 @@ class Collection(object):
     """
     A directory entry for a collection of downloadable packages.
     These entries are extracted from the XML index file that is
-    downloaded by L{Downloader}.
+    downloaded by ``Downloader``.
     """
     def __init__(self, id, children, name=None, **kw):
         self.id = id
@@ -275,11 +273,11 @@ class Collection(object):
         """A string name for this collection."""
         
         self.children = children
-        """A list of the L{Collections} or L{Packages} directly
+        """A list of the ``Collections`` or ``Packages`` directly
            contained by this collection."""
         
         self.packages = None
-        """A list of L{Packages} contained by this collection or any
+        """A list of ``Packages`` contained by this collection or any
            collections it recursively contains."""
 
         # Include any other attributes provided by the XML file.
@@ -300,7 +298,7 @@ class Collection(object):
 ######################################################################
 
 class DownloaderMessage(object):
-    """A status message object, used by L{incr_download} to
+    """A status message object, used by ``incr_download`` to
        communicate its progress."""
 class StartCollectionMessage(DownloaderMessage):
     """Data server has started working on a collection of packages."""
@@ -370,7 +368,7 @@ class Downloader(object):
     DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
-       C{Downloader} object."""
+       ``Downloader`` object."""
 
     #/////////////////////////////////////////////////////////////////
     # Status Constants
@@ -398,10 +396,10 @@ class Downloader(object):
         """The URL for the data server's index file."""
 
         self._collections = {}
-        """Dictionary from collection identifier to L{Collection}"""
+        """Dictionary from collection identifier to ``Collection``"""
 
         self._packages = {}
-        """Dictionary from package identifier to L{Package}"""
+        """Dictionary from package identifier to ``Package``"""
         
         self._download_dir = download_dir
         """The default directory to which packages will be downloaded."""
@@ -410,13 +408,13 @@ class Downloader(object):
         """The XML index file downloaded from the data server"""
         
         self._index_timestamp = None
-        """Time at which L{self._index} was downloaded.  If it is more
-           than L{INDEX_TIMEOUT} seconds old, it will be re-downloaded."""
+        """Time at which ``self._index`` was downloaded.  If it is more
+           than ``INDEX_TIMEOUT`` seconds old, it will be re-downloaded."""
 
         self._status_cache = {}
         """Dictionary from package/collection identifier to status
-           string (L{INSTALLED}, L{NOT_INSTALLED}, L{STALE}, or
-           L{PARTIAL}).  Cache is used for packages only, not
+           string (``INSTALLED``, ``NOT_INSTALLED``, ``STALE``, or
+           ``PARTIAL``).  Cache is used for packages only, not
            collections."""
 
         self._errors = None
@@ -720,8 +718,8 @@ class Downloader(object):
     def status(self, info_or_id, download_dir=None):
         """
         Return a constant describing the status of the given package
-        or collection.  Status can be one of L{INSTALLED},
-        L{NOT_INSTALLED}, L{STALE}, or L{PARTIAL}.
+        or collection.  Status can be one of ``INSTALLED``,
+        ``NOT_INSTALLED``, ``STALE``, or ``PARTIAL``.
         """
         if download_dir is None: download_dir = self._download_dir
         info = self._info_or_id(info_or_id)
@@ -856,7 +854,7 @@ class Downloader(object):
         return self._index
     
     def info(self, id):
-        """Return the L{Package} or L{Collection} record for the
+        """Return the ``Package`` or ``Collection`` record for the
            given item."""
         self._update_index()
         if id in self._packages: return self._packages[id]
@@ -895,26 +893,17 @@ class Downloader(object):
         """
         Return the directory to which packages will be downloaded by
         default.  This value can be overridden using the constructor,
-        or on a case-by-case basis using the C{download_dir} argument when
-        calling L{download()}.
+        or on a case-by-case basis using the ``download_dir`` argument when
+        calling ``download()``.
 
         On Windows, the default download directory is
-        C{I{PYTHONHOME}/lib/nltk}, where C{I{PYTHONHOME}} is the
-        directory containing Python (e.g. C{C:\\Python25}).
+        ``PYTHONHOME/lib/nltk``, where *PYTHONHOME* is the
+        directory containing Python, e.g. ``C:\\Python25``.
 
-        On all other platforms, the default directory is determined
-        as follows:
-
-          - If C{/usr/share} exists and is writable, then
-            return C{/usr/share/nltk}
-          - If C{/usr/local/share} exists and is writable, then 
-            return C{/usr/local/share/nltk}
-          - If C{/usr/lib} exists and is writable, then 
-            return C{/usr/lib/nltk}
-          - If C{/usr/local/lib} exists and is writable, then 
-            return C{/usr/local/lib/nltk}
-          - Otherwise, return C{~/nltk_data}, where C{~} is the
-            current user's home directory.
+        On all other platforms, the default directory is the first of
+        the following which exists or which can be created with write
+        permission: ``/usr/share/nltk_data``, ``/usr/local/share/nltk_data``,
+        ``/usr/lib/nltk_data``, ``/usr/local/lib/nltk_data``, ``~/nltk_data``.
         """
         # Check if we have sufficient permissions to install in a
         # variety of system-wide locations.
@@ -944,9 +933,9 @@ class Downloader(object):
     download_dir = property(lambda self: self._download_dir,
                             _set_download_dir, doc="""
         The default directory to which packages will be downloaded.
-        This defaults to the value returned by L{default_download_dir()}.
+        This defaults to the value returned by ``default_download_dir()``.
         To override this default on a case-by-case basis, use the
-        C{download_dir} argument when calling L{download()}.""")
+        ``download_dir`` argument when calling ``download()``.""")
 
     #/////////////////////////////////////////////////////////////////
     # Interactive Shell
@@ -1129,7 +1118,7 @@ class DownloaderGUI(object):
                'SVN Revision', 'Subdir', 'Checksum']
     """A list of the names of columns.  This controls the order in
        which the columns will appear.  If this is edited, then
-       L{_package_to_columns()} may need to be edited to match."""
+       ``_package_to_columns()`` may need to be edited to match."""
 
     COLUMN_WEIGHTS = {'': 0, 'Name': 5, 'Size': 0, 'Status': 0}
     """A dictionary specifying how columns should be resized when the
@@ -1142,11 +1131,11 @@ class DownloaderGUI(object):
                      'Status': 12}
     """A dictionary specifying how wide each column should be, in
        characters.  The default width (for columns not explicitly
-       listed) is specified by L{DEFAULT_COLUMN_WIDTH}."""
+       listed) is specified by ``DEFAULT_COLUMN_WIDTH``."""
 
     DEFAULT_COLUMN_WIDTH = 30
     """The default width for columns that are not explicitly listed 
-       in C{COLUMN_WIDTHS}."""
+       in ``COLUMN_WIDTHS``."""
 
     INITIAL_COLUMNS = ['', 'Identifier', 'Name', 'Size', 'Status']
     """The set of columns that should be displayed by default."""
@@ -1654,7 +1643,7 @@ class DownloaderGUI(object):
     def _package_to_columns(self, pkg):
         """
         Given a package, return a list of values describing that
-        package, one for each column in L{self.COLUMNS}.
+        package, one for each column in ``self.COLUMNS``.
         """
         row = []
         for column_index, column_name in enumerate(self.COLUMNS):
@@ -1945,8 +1934,8 @@ class DownloaderGUI(object):
 
 def md5_hexdigest(file):
     """
-    Calculate and return the MD5 checksum for a given file.  C{file}
-    may either be a filename or an open stream.
+    Calculate and return the MD5 checksum for a given file.
+    ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, basestring):
         file = open(file, 'rb')
@@ -1963,8 +1952,8 @@ def md5_hexdigest(file):
 # this when we build the index, anyway.
 def unzip(filename, root, verbose=True):
     """
-    Extract the contents of the zip file C{filename} into the
-    directory C{root}.
+    Extract the contents of the zip file ``filename`` into the
+    directory ``root``.
     """
     for message in _unzip_iter(filename, root, verbose):
         if isinstance(message, ErrorMessage):
@@ -2025,9 +2014,9 @@ import subprocess, zipfile
 def build_index(root, base_url):
     """
     Create a new data.xml index file, by combining the xml description
-    files for various packages and collections.  C{root} should be the
+    files for various packages and collections.  ``root`` should be the
     path to a directory containing the package xml and zip files; and
-    the collection xml files.  The C{root} directory is expected to
+    the collection xml files.  The ``root`` directory is expected to
     have the following subdirectories::
 
       root/
@@ -2039,15 +2028,16 @@ def build_index(root, base_url):
           etc.
         collections/ ............... xml files for collections
 
-    For each package, there should be two files: C{I{package}.zip}
-    contains the package itself, as a compressed zip file; and
-    C{I{package}.xml} is an xml description of the package.  The
-    zipfile C{I{package}.zip} should expand to a single subdirectory
-    named C{I{package/}}.  The base filename C{I{package}} must match
+    For each package, there should be two files: ``package.zip``
+    (where *package* is the package name)
+    which contains the package itself as a compressed zip file; and
+    ``package.xml``, which is an xml description of the package.  The
+    zipfile ``package.zip`` should expand to a single subdirectory
+    named ``package/``.  The base filename ``package`` must match
     the identifier given in the package's xml file.
 
-    For each collection, there should be a single file
-    C{I{collection}.zip}, describing the collection.
+    For each collection, there should be a single file ``collection.zip``
+    describing the collection, where *collection* is the name of the collection. 
 
     All identifiers (for both packages and collections) must be unique.
     """
@@ -2091,8 +2081,8 @@ def build_index(root, base_url):
 
 def _indent_xml(xml, prefix=''):
     """
-    Helper for L{build_index()}: Given an XML ElementTree, modify it
-    (and its descendents) C{text} and C{tail} attributes to generate
+    Helper for ``build_index()``: Given an XML ``ElementTree``, modify it
+    (and its descendents) ``text`` and ``tail`` attributes to generate
     an indented tree, where each nested element is indented by 2
     spaces with respect to its parent.
     """
@@ -2106,7 +2096,7 @@ def _indent_xml(xml, prefix=''):
 
 def _check_package(pkg_xml, zipfilename, zf):
     """
-    Helper for L{build_index()}: Perform some checks to make sure that
+    Helper for ``build_index()``: Perform some checks to make sure that
     the given package is consistent.
     """
     # The filename must patch the id given in the XML file.
@@ -2121,11 +2111,11 @@ def _check_package(pkg_xml, zipfilename, zf):
         raise ValueError('Zipfile %s.zip does not expand to a single '
                          'subdirectory %s/' % (uid, uid))
 
-
+# update for git?
 def _svn_revision(filename):
     """
-    Helper for L{build_index()}: Calculate the subversion revision
-    number for a given file (by using C{subprocess} to run C{svn}).
+    Helper for ``build_index()``: Calculate the subversion revision
+    number for a given file (by using ``subprocess`` to run ``svn``).
     """
     p = subprocess.Popen(['svn', 'status', '-v', filename],
                          stdout=subprocess.PIPE,
@@ -2138,7 +2128,7 @@ def _svn_revision(filename):
         
 def _find_collections(root):
     """
-    Helper for L{build_index()}: Yield a list of ElementTree.Element
+    Helper for ``build_index()``: Yield a list of ElementTree.Element
     objects, each holding the xml for a single package collection.
     """
     packages = []
@@ -2150,12 +2140,12 @@ def _find_collections(root):
 
 def _find_packages(root):
     """
-    Helper for L{build_index()}: Yield a list of tuples C{(pkg_xml,
-    zf, subdir)}, where:
-      - C{pkg_xml} is an ElementTree.Element holding the xml for a
+    Helper for ``build_index()``: Yield a list of tuples
+    ``(pkg_xml, zf, subdir)``, where:
+      - ``pkg_xml`` is an ``ElementTree.Element`` holding the xml for a
         package
-      - C{zf} is a zipfile.ZipFile for the package's contents.
-      - C{subdir} is the subdirectory (relative to C{root}) where
+      - ``zf`` is a ``zipfile.ZipFile`` for the package's contents.
+      - ``subdir`` is the subdirectory (relative to ``root``) where
         the package was found (e.g. 'corpora' or 'grammars').
     """
     from nltk.corpus.reader.util import _path_from

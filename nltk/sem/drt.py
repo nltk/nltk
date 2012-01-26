@@ -2,11 +2,20 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from logic import *
+import operator
+
+from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
+                            AndExpression, ApplicationExpression, BinaryExpression,
+                            BooleanExpression, ConstantExpression, EqualityExpression,
+                            EventVariableExpression, ExistsExpression, Expression,
+                            FunctionVariableExpression, ImpExpression,
+                            IndividualVariableExpression, LambdaExpression, Tokens,
+                            LogicParser, NegatedExpression, OrExpression, Variable,
+                            is_eventvar, is_funcvar, is_indvar)
 
 # Import Tkinter-based modules if they are available
 try:
@@ -67,8 +76,8 @@ class AbstractDrs(object):
         Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal.
         
-        @param other: an C{AbstractDrs} to check equality against
-        @param prover: a C{nltk.inference.api.Prover}
+        :param other: an ``AbstractDrs`` to check equality against
+        :param prover: a ``nltk.inference.api.Prover``
         """
         assert isinstance(other, AbstractDrs)
         
@@ -90,8 +99,8 @@ class AbstractDrs(object):
     def get_refs(self, recursive=False):
         """
         Return the set of discourse referents in this DRS.
-        @param recursive: C{boolean} Also find discourse referents in subterms?
-        @return: C{list} of C{Variable}s 
+        :param recursive: bool Also find discourse referents in subterms?
+        :return: list of ``Variable`` objects 
         """
         raise NotImplementedError()
     
@@ -124,7 +133,7 @@ class AbstractDrs(object):
     def pretty(self):
         """
         Draw the DRS
-        @return: the pretty print string
+        :return: the pretty print string
         """
         return '\n'.join(self._pretty())
 
@@ -136,9 +145,9 @@ class DRS(AbstractDrs, Expression):
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds, consequent=None):
         """
-        @param refs: C{list} of C{DrtIndividualVariableExpression} for the 
+        :param refs: list of ``DrtIndividualVariableExpression`` for the 
         discourse referents
-        @param conds: C{list} of C{Expression} for the conditions
+        :param conds: list of ``Expression`` for the conditions
         """ 
         self.refs = refs
         self.conds = conds
@@ -189,14 +198,14 @@ class DRS(AbstractDrs, Expression):
                        consequent)
 
     def free(self):
-        """@see: Expression.free()"""
+        """:see: Expression.free()"""
         conds_free = reduce(operator.or_, [c.free() for c in self.conds], set())
         if self.consequent:
             conds_free.update(self.consequent.free())
         return conds_free - set(self.refs)
 
     def get_refs(self, recursive=False):
-        """@see: AbstractExpression.get_refs()"""
+        """:see: AbstractExpression.get_refs()"""
         if recursive:
             conds_refs = self.refs + sum((c.get_refs(True) for c in self.conds), [])
             if self.consequent:
@@ -206,14 +215,14 @@ class DRS(AbstractDrs, Expression):
             return self.refs
         
     def visit(self, function, combinator):
-        """@see: Expression.visit()"""
+        """:see: Expression.visit()"""
         parts = map(function, self.conds)
         if self.consequent:
             parts.append(function(self.consequent))
         return combinator(parts)
         
     def visit_structured(self, function, combinator):
-        """@see: Expression.visit_structured()"""
+        """:see: Expression.visit_structured()"""
         if self.consequent:
             consequent = function(self.consequent)
         else:
@@ -338,7 +347,7 @@ class DRS(AbstractDrs, Expression):
 def DrtVariableExpression(variable):
     """
     This is a factory method that instantiates and returns a subtype of 
-    C{DrtAbstractVariableExpression} appropriate for the given variable.
+    ``DrtAbstractVariableExpression`` appropriate for the given variable.
     """
     if is_indvar(variable.name):
         return DrtIndividualVariableExpression(variable)
@@ -355,7 +364,7 @@ class DrtAbstractVariableExpression(AbstractDrs, AbstractVariableExpression):
         return self
     
     def get_refs(self, recursive=False):
-        """@see: AbstractExpression.get_refs()"""
+        """:see: AbstractExpression.get_refs()"""
         return []
     
     def _pretty(self):
@@ -416,11 +425,11 @@ class DrtProposition(AbstractDrs, Expression):
                 map(lambda l: blank+l, drs_s[2:])
         
     def visit(self, function, combinator):
-        """@see: Expression.visit()"""
+        """:see: Expression.visit()"""
         return combinator([function(self.drs)])
         
     def visit_structured(self, function, combinator):
-        """@see: Expression.visit_structured()"""
+        """:see: Expression.visit_structured()"""
         return combinator(self.variable, function(self.drs))
         
     def __str__(self):
@@ -432,7 +441,7 @@ class DrtNegatedExpression(AbstractDrs, NegatedExpression):
         return NegatedExpression(self.term.fol())
 
     def get_refs(self, recursive=False):
-        """@see: AbstractExpression.get_refs()"""
+        """:see: AbstractExpression.get_refs()"""
         return self.term.get_refs(recursive)
 
     def _pretty(self):
@@ -445,8 +454,8 @@ class DrtNegatedExpression(AbstractDrs, NegatedExpression):
 class DrtLambdaExpression(AbstractDrs, LambdaExpression):
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @C{newvar}.
-        @param newvar: C{Variable}, for the new variable
+        binder in the expression to ``newvar``.
+        :param newvar: ``Variable``, for the new variable
         """
         return self.__class__(newvar, self.term.replace(self.variable, 
                           DrtVariableExpression(newvar), True))
@@ -469,7 +478,7 @@ class DrtLambdaExpression(AbstractDrs, LambdaExpression):
 
 class DrtBinaryExpression(AbstractDrs, BinaryExpression):
     def get_refs(self, recursive=False):
-        """@see: AbstractExpression.get_refs()"""
+        """:see: AbstractExpression.get_refs()"""
         if recursive:
             return self.first.get_refs(True) + self.second.get_refs(True)
         else:
@@ -569,7 +578,7 @@ class DrtConcatenation(DrtBooleanExpression):
             return self.__class__(first, second, consequent)
         
     def get_refs(self, recursive=False):
-        """@see: AbstractExpression.get_refs()"""
+        """:see: AbstractExpression.get_refs()"""
         refs = self.first.get_refs(recursive) + self.second.get_refs(recursive)
         if self.consequent and recursive:
             refs.extend(self.consequent.get_refs(True))
@@ -616,7 +625,7 @@ class DrtConcatenation(DrtBooleanExpression):
 
 
     def visit(self, function, combinator):
-        """@see: Expression.visit()"""
+        """:see: Expression.visit()"""
         if self.consequent:
             return combinator([function(self.first), function(self.second), function(self.consequent)])
         else:
@@ -644,7 +653,7 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
         return ApplicationExpression(self.function.fol(), self.argument.fol())
 
     def get_refs(self, recursive=False):
-        """@see: AbstractExpression.get_refs()"""
+        """:see: AbstractExpression.get_refs()"""
         if recursive:
             return self.function.get_refs(True) + self.argument.get_refs(True)
         else:
@@ -769,9 +778,9 @@ class DrsDrawer(object):
     
     def __init__(self, drs, size_canvas=True, canvas=None):
         """
-        @param drs: C{AbstractDrs}, The DRS to be drawn
-        @param size_canvas: C{boolean}, True if the canvas size should be the exact size of the DRS
-        @param canvas: C{Canvas} The canvas on which to draw the DRS.  If none is given, create a new canvas. 
+        :param drs: ``AbstractDrs``, The DRS to be drawn
+        :param size_canvas: bool, True if the canvas size should be the exact size of the DRS
+        :param canvas: ``Canvas`` The canvas on which to draw the DRS.  If none is given, create a new canvas. 
         """
         master = None
         if not canvas:
@@ -816,10 +825,10 @@ class DrsDrawer(object):
         """
         Return the bottom-rightmost point without actually drawing the item
         
-        @param expression: the item to visit
-        @param x: the top of the current drawing area
-        @param y: the left side of the current drawing area
-        @return: the bottom-rightmost point
+        :param expression: the item to visit
+        :param x: the top of the current drawing area
+        :param y: the left side of the current drawing area
+        :return: the bottom-rightmost point
         """
         return self._handle(expression, self._visit_command, x, y)
 
@@ -827,10 +836,10 @@ class DrsDrawer(object):
         """
         Draw the given item at the given location
         
-        @param item: the item to draw
-        @param x: the top of the current drawing area
-        @param y: the left side of the current drawing area
-        @return: the bottom-rightmost point 
+        :param item: the item to draw
+        :param x: the top of the current drawing area
+        :param y: the left side of the current drawing area
+        :return: the bottom-rightmost point 
         """
         if isinstance(item, str):
             self.canvas.create_text(x, y, anchor='nw', font=self.canvas.font, text=item)
@@ -847,10 +856,10 @@ class DrsDrawer(object):
         """
         Return the bottom-rightmost point without actually drawing the item
         
-        @param item: the item to visit
-        @param x: the top of the current drawing area
-        @param y: the left side of the current drawing area
-        @return: the bottom-rightmost point
+        :param item: the item to visit
+        :param x: the top of the current drawing area
+        :param y: the left side of the current drawing area
+        :return: the bottom-rightmost point
         """
         if isinstance(item, str):
             return (x + self.canvas.font.measure(item), y + self._get_text_height())
@@ -859,11 +868,11 @@ class DrsDrawer(object):
     
     def _handle(self, expression, command, x=0, y=0):
         """
-        @param expression: the expression to handle
-        @param command: the function to apply, either _draw_command or _visit_command
-        @param x: the top of the current drawing area
-        @param y: the left side of the current drawing area
-        @return: the bottom-rightmost point
+        :param expression: the expression to handle
+        :param command: the function to apply, either _draw_command or _visit_command
+        :param x: the top of the current drawing area
+        :param y: the left side of the current drawing area
+        :return: the bottom-rightmost point
         """
         if command == self._visit_command:
             #if we don't need to draw the item, then we can use the cached values

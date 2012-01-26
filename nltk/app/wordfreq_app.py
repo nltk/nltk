@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Wordfreq Application
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
+
 import pylab
 import nltk.text
 from nltk.corpus import gutenberg

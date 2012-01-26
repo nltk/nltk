@@ -1,45 +1,45 @@
 # Natural Language Toolkit: Classifiers
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Classes and interfaces for labeling tokens with category labels (or
-X{class labels}).  Typically, labels are represented with strings
-(such as C{'health'} or C{'sports'}).  Classifiers can be used to
+"class labels").  Typically, labels are represented with strings
+(such as ``'health'`` or ``'sports'``).  Classifiers can be used to
 perform a wide range of classification tasks.  For example,
 classifiers can be used...
 
-  - to classify documents by topic.
-  - to classify ambiguous words by which word sense is intended.
-  - to classify acoustic signals by which phoneme they represent.
-  - to classify sentences by their author.
+- to classify documents by topic
+- to classify ambiguous words by which word sense is intended
+- to classify acoustic signals by which phoneme they represent
+- to classify sentences by their author
 
 Features
 ========
 In order to decide which category label is appropriate for a given
 token, classifiers examine one or more 'features' of the token.  These
-X{features} are typically chosen by hand, and indicate which aspects
+"features" are typically chosen by hand, and indicate which aspects
 of the token are relevant to the classification decision.  For
 example, a document classifier might use a separate feature for each
 word, recording how often that word occured in the document.
 
 Featuresets
 ===========
-The features describing a token are encoded using a X{featureset},
-which is a dictionary that maps from X{feature names} to X{feature
-values}.  Feature names are unique strings that indicate what aspect
+The features describing a token are encoded using a "featureset",
+which is a dictionary that maps from "feature names" to "feature
+values".  Feature names are unique strings that indicate what aspect
 of the token is encoded by the feature.  Examples include
-C{'prevword'}, for a feature whose value is the previous word; and
-C{'contains-word(library)'} for a feature that is true when a document
-contains the word C{'library'}.  Feature values are typically
+``'prevword'``, for a feature whose value is the previous word; and
+``'contains-word(library)'`` for a feature that is true when a document
+contains the word ``'library'``.  Feature values are typically
 booleans, numbers, or strings, depending on which feature they
 describe.
 
-Featuresets are typically constructed using a X{feature detector}
-(also known as a X{feature extractor}).  A feature detector is a
+Featuresets are typically constructed using a "feature detector"
+(also known as a "feature extractor").  A feature detector is a
 function that takes a token (and sometimes information about its
 context) as its input, and returns a featureset describing that token.
 For example, the following feature detector converts a document
@@ -78,52 +78,26 @@ the target word:
 Training Classifiers
 ====================
 Most classifiers are built by training them on a list of hand-labeled
-examples, known as the X{training set}.  Training sets are represented
-as lists of C{(featuredict, label)} tuples.
+examples, known as the "training set".  Training sets are represented
+as lists of ``(featuredict, label)`` tuples.
 """
 
-from weka import *
-from megam import *
+from nltk.classify.api import ClassifierI, MultiClassifierI
+from nltk.classify.mallet import config_mallet, call_mallet
+from nltk.classify.megam import config_megam, call_megam
+from nltk.classify.weka import WekaClassifier, config_weka
+from nltk.classify.naivebayes import NaiveBayesClassifier
+from nltk.classify.decisiontree import DecisionTreeClassifier
+from nltk.classify.rte_classify import rte_classifier, rte_features, RTEFeatureExtractor
+from nltk.classify.util import accuracy, log_likelihood
 
-from api import *
-from util import *
-from mallet import *
-from naivebayes import *
-from decisiontree import *
-from rte_classify import *
-
-__all__ = [
-    # Classifier Interfaces
-    'ClassifierI', 'MultiClassifierI',
-    
-    # Classifiers
-    'NaiveBayesClassifier', 'DecisionTreeClassifier', 'WekaClassifier',
-    
-    # Utility functions.  Note that accuracy() is intentionally
-    # omitted -- it should be accessed as nltk.classify.accuracy();
-    # similarly for log_likelihood() and attested_labels().
-    'config_weka', 'config_megam',
-    'config_mallet', 'call_mallet',
-
-    # RTE
-    'rte_classifier', 'rte_features', 'RTEFeatureExtractor',
-
-    # Demos -- not included.
-    ]
-    
 # Conditional imports
 
 try:
     import numpy
-    from maxent import *
-    __all__ += ['MaxentClassifier', 'BinaryMaxentFeatureEncoding',
-                'ConditionalExponentialClassifier']
-except ImportError:
-    pass
-
-try:
+    from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
+                                      ConditionalExponentialClassifier)
     import svmlight
-    from svm import *
-    __all__ += ['SvmClassifier']
+    from nltk.classify.svm import SvmClassifier
 except ImportError:
     pass

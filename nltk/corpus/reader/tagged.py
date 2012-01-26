@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagged Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu>
 #         Jacob Perkins <japerk@gmail.com>
@@ -26,7 +26,7 @@ class TaggedCorpusReader(CorpusReader):
     assumed to be split using blank lines.  Sentences and words can be
     tokenized using the default tokenizers, or by custom tokenizers
     specified as parameters to the constructor.  Words are parsed
-    using L{nltk.tag.str2tuple}.  By default, C{'/'} is used as the
+    using ``nltk.tag.str2tuple``.  By default, ``'/'`` is used as the
     separator.  I.e., words should have the form::
 
        word1/tag1 word2/tag2 word3/tag3 ...
@@ -48,8 +48,8 @@ class TaggedCorpusReader(CorpusReader):
             >>> root = '/...path to corpus.../'
             >>> reader = TaggedCorpusReader(root, '.*', '.txt')
         
-        @param root: The root directory for this corpus.
-        @param fileids: A list or regexp specifying the fileids in this corpus.
+        :param root: The root directory for this corpus.
+        :param fileids: A list or regexp specifying the fileids in this corpus.
         """
         CorpusReader.__init__(self, root, fileids, encoding)
         self._sep = sep
@@ -60,8 +60,8 @@ class TaggedCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the given file(s) as a single string.
-        @rtype: C{str}
+        :return: the given file(s) as a single string.
+        :rtype: str
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -69,9 +69,9 @@ class TaggedCorpusReader(CorpusReader):
 
     def words(self, fileids=None):
         """
-        @return: the given file(s) as a list of words
+        :return: the given file(s) as a list of words
             and punctuation symbols.
-        @rtype: C{list} of C{str}
+        :rtype: list(str)
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, False, False,
@@ -83,10 +83,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def sents(self, fileids=None):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        @rtype: C{list} of (C{list} of C{str})
+        :rtype: list(list(str))
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, True, False,
@@ -98,10 +98,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def paras(self, fileids=None):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        @rtype: C{list} of (C{list} of (C{list} of C{str}))
+        :rtype: list(list(list(str)))
         """
         return concat([TaggedCorpusView(fileid, enc,
                                         False, True, True,
@@ -113,10 +113,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def tagged_words(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file(s) as a list of tagged
+        :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
-            C{(word,tag)}.
-        @rtype: C{list} of C{(str,str)}
+            ``(word,tag)``.
+        :rtype: list(tuple(str,str))
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
@@ -132,10 +132,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def tagged_sents(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file(s) as a list of
-            sentences, each encoded as a list of C{(word,tag)} tuples.
+        :return: the given file(s) as a list of
+            sentences, each encoded as a list of ``(word,tag)`` tuples.
             
-        @rtype: C{list} of (C{list} of C{(str,str)})
+        :rtype: list(list(tuple(str,str)))
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
@@ -151,10 +151,10 @@ class TaggedCorpusReader(CorpusReader):
 
     def tagged_paras(self, fileids=None, simplify_tags=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
-            in turn encoded as lists of C{(word,tag)} tuples.
-        @rtype: C{list} of (C{list} of (C{list} of C{(str,str)}))
+            in turn encoded as lists of ``(word,tag)`` tuples.
+        :rtype: list(list(list(tuple(str,str))))
         """
         if simplify_tags:
             tag_mapping_function = self._tag_mapping_function
@@ -177,11 +177,9 @@ class CategorizedTaggedCorpusReader(CategorizedCorpusReader,
     def __init__(self, *args, **kwargs):
         """
         Initialize the corpus reader.  Categorization arguments
-        (C{cat_pattern}, C{cat_map}, and C{cat_file}) are passed to
-        the L{CategorizedCorpusReader constructor
-        <CategorizedCorpusReader.__init__>}.  The remaining arguments
-        are passed to the L{TaggedCorpusReader constructor
-        <TaggedCorpusReader.__init__>}.
+        (``cat_pattern``, ``cat_map``, and ``cat_file``) are passed to
+        the ``CategorizedCorpusReader`` constructor.  The remaining arguments
+        are passed to the ``TaggedCorpusReader``.
         """
         CategorizedCorpusReader.__init__(self, kwargs)
         TaggedCorpusReader.__init__(self, *args, **kwargs)
@@ -220,8 +218,8 @@ class TaggedCorpusView(StreamBackedCorpusView):
     A specialized corpus view for tagged documents.  It can be
     customized via flags to divide the tagged corpus documents up by
     sentence or paragraph, and to include or omit part of speech tags.
-    C{TaggedCorpusView} objects are typically created by
-    L{TaggedCorpusReader} (not directly by nltk users).
+    ``TaggedCorpusView`` objects are typically created by
+    ``TaggedCorpusReader`` (not directly by nltk users).
     """
     def __init__(self, corpus_file, encoding, tagged, group_by_sent,
                  group_by_para, sep, word_tokenizer, sent_tokenizer,
@@ -265,7 +263,7 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
     single tagged word, using '_' as a separator.  Sentence boundaries
     are based on the end-sentence tag ('_.').  Paragraph information
     is not included in the corpus, so each paragraph returned by
-    L{self.paras()} and L{self.tagged_paras()} contains a single
+    ``self.paras()`` and ``self.tagged_paras()`` contains a single
     sentence.
     """
     def __init__(self, root, fileids, encoding=None, tag_mapping_function=None):

@@ -1,18 +1,13 @@
 # Natural Language Toolkit: CFG visualization
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 Visualization tools for CFGs.
 """
-
-import re
-
 
 """
 Idea for a nice demo:
@@ -53,12 +48,17 @@ Operations:
     - if connected to top & bottom, then disconnect
 """
 
-from nltk.grammar import ContextFreeGrammar, Nonterminal, parse_cfg_production
+import re
+
+from Tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
+                     Scrollbar, Text, Tk, Toplevel)
+
+from nltk.grammar import (ContextFreeGrammar, parse_cfg_production,
+                          Nonterminal, nonterminals)
 from nltk.tree import Tree
-
-from util import *
-from tree import *
-
+from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
+from nltk.draw.util import (CanvasFrame, ColorizedList, ShowText,
+                            SymbolWidget, TextWidget)
 
 ######################################################################
 # Production List
@@ -134,12 +134,12 @@ the CFG:
 class CFGEditor(object):
     """
     A dialog window for creating and editing context free grammars.
-    C{CFGEditor} places the following restrictions on what C{CFG}s can
-    be edited:
-        - All nonterminals must be strings consisting of word
-          characters.
-        - All terminals must be strings consisting of word characters
-          and space characters.
+    ``CFGEditor`` imposes the following restrictions:
+
+    - All nonterminals must be strings consisting of word
+      characters.
+    - All terminals must be strings consisting of word characters
+      and space characters.
     """
     # Regular expressions used by _analyze_line.  Precompile them, so
     # we can process the text faster.
@@ -301,7 +301,7 @@ class CFGEditor(object):
 
     def _clear_tags(self, linenum):
         """
-        Remove all tags (except C{arrow} and C{sel}) from the given
+        Remove all tags (except ``arrow`` and ``sel``) from the given
         line of the text widget used for editing the productions.
         """
         start = '%d.0'%linenum
@@ -324,7 +324,7 @@ class CFGEditor(object):
 
     def _replace_arrows(self, *e):
         """
-        Replace any C{'->'} text strings with arrows (char \\256, in
+        Replace any ``'->'`` text strings with arrows (char \\256, in
         symbol font).  This searches the whole buffer, but is fast
         enough to be done anytime they press '>'.
         """
@@ -425,7 +425,7 @@ class CFGEditor(object):
 
     def _analyze(self, *e):
         """
-        Replace C{->} with arrows, and colorize the entire buffer.
+        Replace ``->`` with arrows, and colorize the entire buffer.
         """
         self._replace_arrows()
         numlines = int(self._textwidget.index('end').split('.')[0])
@@ -585,7 +585,6 @@ class CFGDemo(object):
         # The leaves of the tree.
         leaves = []
         for word in self._text:
-            if isinstance(word, Token): word = word.type()
             leaves.append(TextWidget(c, word, font=leaf_font, draggable=1))
 
         # Put it all together into one tree

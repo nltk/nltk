@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NomBank Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Authors: Paul Bedaride <paul.bedaride@gmail.com> 
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -20,28 +20,28 @@ class NombankCorpusReader(CorpusReader):
     Corpus reader for the nombank corpus, which augments the Penn
     Treebank with information about the predicate argument structure
     of every noun instance.  The corpus consists of two parts: the
-    predicate-argument annotations themselves, and a set of X{frameset
-    files} which define the argument labels used by the annotations,
-    on a per-noun basis.  Each X{frameset file} contains one or more
-    predicates, such as C{'turn'} or C{'turn_on'}, each of which is
-    divided into coarse-grained word senses called X{rolesets}.  For
-    each X{roleset}, the frameset file provides descriptions of the
+    predicate-argument annotations themselves, and a set of "frameset
+    files" which define the argument labels used by the annotations,
+    on a per-noun basis.  Each "frameset file" contains one or more
+    predicates, such as ``'turn'`` or ``'turn_on'``, each of which is
+    divided into coarse-grained word senses called "rolesets".  For
+    each "roleset", the frameset file provides descriptions of the
     argument roles, along with examples.
     """
     def __init__(self, root, nomfile, framefiles='',
                  nounsfile=None, parse_fileid_xform=None,
                  parse_corpus=None, encoding=None):
         """
-        @param root: The root directory for this corpus.
-        @param nomfile: The name of the file containing the predicate-
-            argument annotations (relative to C{root}).
-        @param framefiles: A list or regexp specifying the frameset
+        :param root: The root directory for this corpus.
+        :param nomfile: The name of the file containing the predicate-
+            argument annotations (relative to ``root``).
+        :param framefiles: A list or regexp specifying the frameset
             fileids for this corpus.
-        @param parse_fileid_xform: A transform that should be applied
+        :param parse_fileid_xform: A transform that should be applied
             to the fileids in this corpus.  This should be a function
             of one argument (a fileid) that returns a string (the new
             fileid).
-        @param parse_corpus: The corpus containing the parse trees
+        :param parse_corpus: The corpus containing the parse trees
             corresponding to this corpus.  These parse trees are
             necessary to resolve the tree pointers used by nombank.
         """
@@ -62,7 +62,7 @@ class NombankCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the text contents of the given fileids, as a single string.
+        :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -70,8 +70,8 @@ class NombankCorpusReader(CorpusReader):
 
     def instances(self):
         """
-        @return: a corpus view that acts as a list of
-        L{NombankInstance} objects, one for each noun in the corpus.
+        :return: a corpus view that acts as a list of
+        ``NombankInstance`` objects, one for each noun in the corpus.
         """
         return StreamBackedCorpusView(self.abspath(self._nomfile),
                                       self._read_instance_block,
@@ -79,7 +79,7 @@ class NombankCorpusReader(CorpusReader):
 
     def lines(self):
         """
-        @return: a corpus view that acts as a list of strings, one for
+        :return: a corpus view that acts as a list of strings, one for
         each line in the predicate-argument annotation file.  
         """
         return StreamBackedCorpusView(self.abspath(self._nomfile),
@@ -88,7 +88,7 @@ class NombankCorpusReader(CorpusReader):
 
     def roleset(self, roleset_id):
         """
-        @return: the xml description for the given roleset.
+        :return: the xml description for the given roleset.
         """
         lemma = roleset_id.split('.')[0]
         framefile = 'frames/%s.xml' % lemma
@@ -108,7 +108,7 @@ class NombankCorpusReader(CorpusReader):
 
     def nouns(self):
         """
-        @return: a corpus view that acts as a list of all noun lemmas
+        :return: a corpus view that acts as a list of all noun lemmas
         in this corpus (from the nombank.1.0.words file).
         """
         return StreamBackedCorpusView(self.abspath(self._nounsfile),
@@ -142,7 +142,7 @@ class NombankInstance(object):
         instance's sentence."""
 
         self.sentnum = sentnum
-        """The sentence number of this sentence within L{fileid}.
+        """The sentence number of this sentence within ``fileid``.
         Indexing starts from zero."""
         
         self.wordnum = wordnum
@@ -157,7 +157,7 @@ class NombankInstance(object):
         """The sense number os the predicate"""
                
         self.predicate = predicate
-        """A L{NombankTreePointer} indicating the position of this
+        """A ``NombankTreePointer`` indicating the position of this
         instance's predicate within its containing sentence."""
 
         self.predid = predid
@@ -167,7 +167,7 @@ class NombankInstance(object):
         """A list of tuples (argloc, argid), specifying the location
         and identifier for each of the predicate's argument in the
         containing sentence.  Argument identifiers are strings such as
-        C{'ARG0'} or C{'ARGM-TMP'}.  This list does *not* contain
+        ``'ARG0'`` or ``'ARGM-TMP'``.  This list does *not* contain
         the predicate."""
 
         self.parse_corpus = parse_corpus
@@ -177,7 +177,7 @@ class NombankInstance(object):
     @property
     def roleset(self):
         """The name of the roleset used by this instance's predicate.
-        Use L{nombank.roleset() <NombankCorpusReader.roleset>} to
+        Use ``nombank.roleset() <NombankCorpusReader.roleset>`` to
         look up information about the roleset."""
         return '%s.%s'%(self.baseform, self.sensenumber)
 
@@ -198,7 +198,7 @@ class NombankInstance(object):
         if self.fileid not in self.parse_corpus.fileids(): return None
         return self.parse_corpus.parsed_sents(self.fileid)[self.sentnum]
     tree = property(_get_tree, doc="""
-        The parse tree corresponding to this instance, or C{None} if
+        The parse tree corresponding to this instance, or None if
         the corresponding tree is not available.""")
 
     @staticmethod
@@ -242,16 +242,16 @@ class NombankInstance(object):
 class NombankPointer(object):
     """
     A pointer used by nombank to identify one or more constituents in
-    a parse tree.  C{NombankPointer} is an abstract base class with
+    a parse tree.  ``NombankPointer`` is an abstract base class with
     three concrete subclasses:
 
-      - L{NombankTreePointer} is used to point to single constituents.
-      - L{NombankSplitTreePointer} is used to point to 'split'
-        constituents, which consist of a sequence of two or more
-        C{NombankTreePointer}s.
-      - L{NombankChainTreePointer} is used to point to entire trace
-        chains in a tree.  It consists of a sequence of pieces, which
-        can be C{NombankTreePointer}s or C{NombankSplitTreePointer}s.
+    - ``NombankTreePointer`` is used to point to single constituents.
+    - ``NombankSplitTreePointer`` is used to point to 'split'
+      constituents, which consist of a sequence of two or more
+      ``NombankTreePointer`` pointers.
+    - ``NombankChainTreePointer`` is used to point to entire trace
+      chains in a tree.  It consists of a sequence of pieces, which
+      can be ``NombankTreePointer`` or ``NombankSplitTreePointer`` pointers.
     """
     def __init__(self):
         if self.__class__ == NombankPoitner:
@@ -261,8 +261,8 @@ class NombankChainTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements may
-           be either L{NombankSplitTreePointer}s or
-           L{NombankTreePointer}s."""
+           be either ``NombankSplitTreePointer`` or
+           ``NombankTreePointer`` pointers."""
         
     def __str__(self):
         return '*'.join('%s' % p for p in self.pieces)
@@ -276,7 +276,7 @@ class NombankSplitTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements are
-           all L{NombankTreePointer}s."""
+           all ``NombankTreePointer`` pointers."""
         
     def __str__(self):
         return ','.join('%s' % p for p in self.pieces)

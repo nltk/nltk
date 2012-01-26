@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Eliza
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Authors: Steven Bird <sb@csse.unimelb.edu.au>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -12,7 +12,7 @@
 # a translation table used to convert things you say into things the
 # computer says back, e.g. "I am" --> "you are"
 
-from util import *
+from util import Chat, reflections
 
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,

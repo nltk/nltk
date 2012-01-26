@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -52,14 +52,14 @@ def usage(obj, selfname='self'):
 
 def in_idle():
     """
-    @rtype: C{boolean}
-    @return: true if this function is run within idle.  Tkinter
-    programs that are run in idle should never call C{Tk.mainloop}; so
-    this function should be used to gate all calls to C{Tk.mainloop}.
+    Return True if this function is run within idle.  Tkinter
+    programs that are run in idle should never call ``Tk.mainloop``; so
+    this function should be used to gate all calls to ``Tk.mainloop``.
 
-    @warning: This function works by checking C{sys.stdin}.  If the
-    user has modified C{sys.stdin}, then it may return incorrect
-    results.
+    :warning: This function works by checking ``sys.stdin``.  If the
+        user has modified ``sys.stdin``, then it may return incorrect
+        results.
+    :rtype: bool
     """
     import sys, types
     return (type(sys.stdin) == types.InstanceType and \
@@ -73,12 +73,12 @@ def pr(data, start=0, end=None):
     """
     Pretty print a sequence of data items
 
-    @param data: the data stream to print
-    @type data: C{sequence} or C{iterator}
-    @param start: the start position
-    @type start: C{int}
-    @param end: the end position
-    @type end: C{int}
+    :param data: the data stream to print
+    :type data: sequence or iter
+    :param start: the start position
+    :type start: int
+    :param end: the end position
+    :type end: int
     """
     pprint(list(islice(data, start, end)))
 
@@ -86,10 +86,10 @@ def print_string(s, width=70):
     """
     Pretty print a string, breaking lines on whitespace
 
-    @param s: the string to print, consisting of words and spaces
-    @type s: C{string}
-    @param width: the display width
-    @type width: C{int}
+    :param s: the string to print, consisting of words and spaces
+    :type s: str
+    :param width: the display width
+    :type width: int
     """
     print '\n'.join(textwrap.wrap(s, width=width))
 
@@ -97,12 +97,12 @@ def tokenwrap(tokens, separator=" ", width=70):
     """
     Pretty print a list of text tokens, breaking lines on whitespace
 
-    @param tokens: the tokens to print
-    @type tokens: C{list}
-    @param separator: the string to use to separate tokens
-    @type separator: C{str}
-    @param width: the display width (default=70)
-    @type width: C{int}
+    :param tokens: the tokens to print
+    :type tokens: list
+    :param separator: the string to use to separate tokens
+    :type separator: str
+    :param width: the display width (default=70)
+    :type width: int
     """
     return '\n'.join(textwrap.wrap(separator.join(tokens), width=width))
 
@@ -125,20 +125,19 @@ class Index(defaultdict):
 
 def re_show(regexp, string, left="{", right="}"):
     """
-    Search C{string} for substrings matching C{regexp} and wrap
-    the matches with braces.  This is convenient for learning about
-    regular expressions.
+    Return a string with markers surrounding the matched substrings.
+    Search str for substrings matching ``regexp`` and wrap the matches
+    with braces.  This is convenient for learning about regular expressions.
 
-    @param regexp: The regular expression.
-    @type regexp: C{string}
-    @param string: The string being matched.
-    @type string: C{string}
-    @param left: The left delimiter (printed before the matched substring)
-    @type left: C{string}
-    @param right: The right delimiter (printed after the matched substring)
-    @type right: C{string}
-    @rtype: C{string}
-    @return: A string with markers surrounding the matched substrings.
+    :param regexp: The regular expression.
+    :type regexp: str
+    :param string: The string being matched.
+    :type string: str
+    :param left: The left delimiter (printed before the matched substring)
+    :type left: str
+    :param right: The right delimiter (printed after the matched substring)
+    :type right: str
+    :rtype: str
     """
     print re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
 
@@ -195,11 +194,11 @@ def guess_encoding(data):
     Plus several gathered from locale information.
 
     The calling program *must* first call::
-
+    
         locale.setlocale(locale.LC_ALL, '')
 
-    If successful it returns C{(decoded_unicode, successful_encoding)}.
-    If unsuccessful it raises a C{UnicodeError}.
+    If successful it returns ``(decoded_unicode, successful_encoding)``.
+    If unsuccessful it raises a ``UnicodeError``.
     """
     successful_encoding = None
     # we make 'utf-8' the first encoding
@@ -270,12 +269,11 @@ def transitive_closure(graph, reflexive=False):
     The algorithm is a slight modification of the "Marking Algorithm" of
     Ioannidis & Ramakrishnan (1998) "Efficient Transitive Closure Algorithms".
     
-    @param graph: the initial graph, represented as a dictionary of sets
-    @type graph: C{dict} of C{set}s
-    @param reflexive: if set, also make the closure reflexive
-    @type reflexive: C{bool}
-    @return: the (reflexive) transitive closure of the graph
-    @rtype: C{dict} of C{set}s
+    :param graph: the initial graph, represented as a dictionary of sets
+    :type graph: dict(set)
+    :param reflexive: if set, also make the closure reflexive
+    :type reflexive: bool
+    :rtype: dict(set)
     """
     if reflexive:
         base_set = lambda k: set([k])
@@ -301,10 +299,10 @@ def invert_graph(graph):
     """
     Inverts a directed graph.
     
-    @param graph: the graph, represented as a dictionary of sets
-    @type graph: C{dict} of C{set}s
-    @return: the inverted graph
-    @rtype: C{dict} of C{set}s
+    :param graph: the graph, represented as a dictionary of sets
+    :type graph: dict(set)
+    :return: the inverted graph
+    :rtype: dict(set)
     """
     inverted = {}
     for key, values in graph.iteritems():
@@ -322,9 +320,9 @@ def clean_html(html):
     """
     Remove HTML markup from the given string.
 
-    @param html: the HTML string to be cleaned
-    @type html: C{string}
-    @rtype: C{string}
+    :param html: the HTML string to be cleaned
+    :type html: str
+    :rtype: str
     """
 
     # First we remove inline JavaScript/CSS:
@@ -350,13 +348,14 @@ def clean_url(url):
 ##########################################################################
         
 def flatten(*args):
-    """Flatten a list.
+    """
+    Flatten a list.
 
         >>> flatten(1, 2, ['b', 'a' , ['c', 'd']], 3)
         [1, 2, 'b', 'a', 'c', 'd', 3]
 
-    @param *args: items and lists to be combined into a single list
-    @rtype: C{list}
+    :param args: items and lists to be combined into a single list
+    :rtype: list
     """
 
     x = []
@@ -377,8 +376,7 @@ def flatten(*args):
 
 def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
-    A utility that produces a sequence of ngrams from a sequence of items.
-    For example:
+    Return a sequence of ngrams from a sequence of items.  For example:
     
     >>> ngrams([1,2,3,4,5], 3)
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
@@ -389,18 +387,17 @@ def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     >>> ngrams([1,2,3,4,5], 2, pad_right=True)
     [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
-    @param sequence: the source data to be converted into ngrams
-    @type sequence: C{sequence} or C{iterator}
-    @param n: the degree of the ngrams
-    @type n: C{int}
-    @param pad_left: whether the ngrams should be left-padded
-    @type pad_left: C{boolean}
-    @param pad_right: whether the ngrams should be right-padded
-    @type pad_right: C{boolean}
-    @param pad_symbol: the symbol to use for padding (default is None)
-    @type pad_symbol: C{any}
-    @return: The ngrams
-    @rtype: C{list} of C{tuple}s
+    :param sequence: the source data to be converted into ngrams
+    :type sequence: sequence or iter
+    :param n: the degree of the ngrams
+    :type n: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
+    :param pad_symbol: the symbol to use for padding (default is None)
+    :type pad_symbol: any
+    :rtype: list(tuple)
     """
 
     if pad_left:
@@ -414,42 +411,37 @@ def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
 
 def bigrams(sequence, **kwargs):
     """
-    A utility that produces a sequence of bigrams from a sequence of items.
-    For example:
+    Return a sequence of bigrams from a sequence of items.  For example:
     
     >>> bigrams([1,2,3,4,5])
     [(1, 2), (2, 3), (3, 4), (4, 5)]
     
     Use ibigrams for an iterator version of this function.
 
-    @param sequence: the source data to be converted into bigrams
-    @type sequence: C{sequence} or C{iterator}
-    @return: The bigrams
-    @rtype: C{list} of C{tuple}s
+    :param sequence: the source data to be converted into bigrams
+    :type sequence: sequence or iter
+    :rtype: list(tuple)
     """
     return ngrams(sequence, 2, **kwargs)
 
 def trigrams(sequence, **kwargs):
     """
-    A utility that produces a sequence of trigrams from a sequence of items.
-    For example:
+    Return a sequence of trigrams from a sequence of items.  For example:
     
     >>> trigrams([1,2,3,4,5])
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
     
     Use itrigrams for an iterator version of this function.
 
-    @param sequence: the source data to be converted into trigrams
-    @type sequence: C{sequence} or C{iterator}
-    @return: The trigrams
-    @rtype: C{list} of C{tuple}s
+    :param sequence: the source data to be converted into trigrams
+    :type sequence: sequence or iter
+    :rtype: list(tuple)
     """
     return ngrams(sequence, 3, **kwargs)
 
 def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
-    A utility that produces an iterator over ngrams generated from a sequence of items.
-    
+    Return the ngrams generated from a sequence of items, as an iterator.
     For example:
     
     >>> list(ingrams([1,2,3,4,5], 3))
@@ -461,18 +453,17 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     >>> list(ingrams([1,2,3,4,5], 2, pad_right=True))
     [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
-    @param sequence: the source data to be converted into ngrams
-    @type sequence: C{sequence} or C{iterator}
-    @param n: the degree of the ngrams
-    @type n: C{int}
-    @param pad_left: whether the ngrams should be left-padded
-    @type pad_left: C{boolean}
-    @param pad_right: whether the ngrams should be right-padded
-    @type pad_right: C{boolean}
-    @param pad_symbol: the symbol to use for padding (default is None)
-    @type pad_symbol: C{any}
-    @return: The ngrams
-    @rtype: C{iterator} of C{tuple}s
+    :param sequence: the source data to be converted into ngrams
+    :type sequence: sequence or iter
+    :param n: the degree of the ngrams
+    :type n: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
+    :param pad_symbol: the symbol to use for padding (default is None)
+    :type pad_symbol: any
+    :rtype: iter(tuple)
     """
 
     sequence = iter(sequence)
@@ -492,8 +483,7 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
         
 def ibigrams(sequence, **kwargs):
     """
-    A utility that produces an iterator over bigrams generated from a sequence of items.
-    
+    Return the bigrams generated from a sequence of items, as an iterator.
     For example:
     
     >>> list(ibigrams([1,2,3,4,5]))
@@ -501,10 +491,9 @@ def ibigrams(sequence, **kwargs):
     
     Use bigrams for a list version of this function.
 
-    @param sequence: the source data to be converted into bigrams
-    @type sequence: C{sequence} or C{iterator}
-    @return: The bigrams
-    @rtype: C{iterator} of C{tuple}s
+    :param sequence: the source data to be converted into bigrams
+    :type sequence: sequence or iter
+    :rtype: iter(tuple)
     """
 
     for item in ingrams(sequence, 2, **kwargs):
@@ -512,8 +501,7 @@ def ibigrams(sequence, **kwargs):
         
 def itrigrams(sequence, **kwargs):
     """
-    A utility that produces an iterator over trigrams generated from a sequence of items.
-    
+    Return the trigrams generated from a sequence of items, as an iterator.
     For example:
     
     >>> list(itrigrams([1,2,3,4,5]))
@@ -521,10 +509,9 @@ def itrigrams(sequence, **kwargs):
     
     Use trigrams for a list version of this function.
 
-    @param sequence: the source data to be converted into trigrams
-    @type sequence: C{sequence} or C{iterator}
-    @return: The trigrams
-    @rtype: C{iterator} of C{tuple}s
+    :param sequence: the source data to be converted into trigrams
+    :type sequence: sequence or iter
+    :rtype: iter(tuple)
     """
 
     for item in ingrams(sequence, 3, **kwargs):
@@ -632,7 +619,7 @@ class AbstractLazySequence(object):
     indexed, sliced, and iterated over; but they may not be modified.
 
     The most common application of lazy sequences in NLTK is for
-    I{corpus view} objects, which provide access to the contents of a
+    corpus view objects, which provide access to the contents of a
     corpus without loading the entire corpus into memory, by loading
     pieces of the corpus from disk as needed.
     
@@ -642,10 +629,8 @@ class AbstractLazySequence(object):
     sequence caches that element's value or reconstructs it from
     scratch.
 
-    Subclasses are required to define two methods:
-    
-      - L{__len__()}
-      - L{iterate_from()}.
+    Subclasses are required to define two methods: ``__len__()``
+    and ``iterate_from()``.
     """
     def __len__(self):
         """
@@ -658,14 +643,14 @@ class AbstractLazySequence(object):
         """
         Return an iterator that generates the tokens in the corpus
         file underlying this corpus view, starting at the token number
-        C{start}.  If C{start>=len(self)}, then this iterator will
+        ``start``.  If ``start>=len(self)``, then this iterator will
         generate no tokens.
         """
         raise NotImplementedError('should be implemented by subclass')
     
     def __getitem__(self, i):
         """
-        Return the C{i}th token in the corpus file underlying this
+        Return the *i* th token in the corpus file underlying this
         corpus view.  Negative indices and spans are both supported.
         """
         if isinstance(i, slice):
@@ -687,13 +672,13 @@ class AbstractLazySequence(object):
         return self.iterate_from(0)
 
     def count(self, value):
-        """Return the number of times this list contains C{value}."""
+        """Return the number of times this list contains ``value``."""
         return sum(1 for elt in self if elt==value)
     
     def index(self, value, start=None, stop=None):
-        """Return the index of the first occurance of C{value} in this
-        list that is greater than or equal to C{start} and less than
-        C{stop}.  Negative start & stop values are treated like negative
+        """Return the index of the first occurance of ``value`` in this
+        list that is greater than or equal to ``start`` and less than
+        ``stop``.  Negative start and stop values are treated like negative
         slice bounds -- i.e., they count from the end of the list."""
         start, stop = slice_bounds(self, slice(start, stop))
         for i, elt in enumerate(islice(self, start, stop)):
@@ -701,7 +686,7 @@ class AbstractLazySequence(object):
         raise ValueError('index(x): x not in list')
 
     def __contains__(self, value):
-        """Return true if this list contains C{value}."""
+        """Return true if this list contains ``value``."""
         return bool(self.count(value))
     
     def __add__(self, other):
@@ -713,17 +698,17 @@ class AbstractLazySequence(object):
         return LazyConcatenation([other, self])
     
     def __mul__(self, count):
-        """Return a list concatenating self with itself C{count} times."""
+        """Return a list concatenating self with itself ``count`` times."""
         return LazyConcatenation([self] * count)
     
     def __rmul__(self, count):
-        """Return a list concatenating self with itself C{count} times."""
+        """Return a list concatenating self with itself ``count`` times."""
         return LazyConcatenation([self] * count)
 
     _MAX_REPR_SIZE = 60
     def __repr__(self):
         """
-        @return: A string representation for this corpus view that is
+        Return a string representation for this corpus view that is
         similar to a list's representation; but if it would be more
         than 60 characters long, it is truncated.
         """
@@ -739,10 +724,10 @@ class AbstractLazySequence(object):
 
     def __cmp__(self, other):
         """
-        Return a number indicating how C{self} relates to other.
+        Return a number indicating how ``self`` relates to other.
 
-          - If C{other} is not a corpus view or a C{list}, return -1.
-          - Otherwise, return C{cmp(list(self), list(other))}.
+        - If ``other`` is not a corpus view or a list, return -1.
+        - Otherwise, return ``cmp(list(self), list(other))``.
 
         Note: corpus views do not compare equal to tuples containing
         equal elements.  Otherwise, transitivity would be violated,
@@ -753,7 +738,7 @@ class AbstractLazySequence(object):
 
     def __hash__(self):
         """
-        @raise ValueError: Corpus view objects are unhashable.
+        :raise ValueError: Corpus view objects are unhashable.
         """
         raise ValueError('%s objects are unhashable' %
                          self.__class__.__name__)
@@ -767,17 +752,18 @@ class LazySubsequence(AbstractLazySequence):
     """
 
     MIN_SIZE = 100
-    """The minimum size for which lazy slices should be created.  If
-       C{LazySubsequence()} is called with a subsequence that is
-       shorter than C{MIN_SIZE}, then a tuple will be returned
-       instead."""
+    """
+    The minimum size for which lazy slices should be created.  If
+    ``LazySubsequence()`` is called with a subsequence that is
+    shorter than ``MIN_SIZE``, then a tuple will be returned instead.
+    """
     
     def __new__(cls, source, start, stop):
         """
         Construct a new slice from a given underlying sequence.  The
-        C{start} and C{stop} indices should be absolute indices --
+        ``start`` and ``stop`` indices should be absolute indices --
         i.e., they should not be negative (for indexing from the back
-        of a list) or greater than the length of C{source}.
+        of a list) or greater than the length of ``source``.
         """
         # If the slice is small enough, just use a tuple.
         if stop-start < cls.MIN_SIZE:
@@ -801,7 +787,7 @@ class LazySubsequence(AbstractLazySequence):
 class LazyConcatenation(AbstractLazySequence):
     """
     A lazy sequence formed by concatenating a list of lists.  This
-    underlying list of lists may itself be lazy.  C{LazyConcatenation}
+    underlying list of lists may itself be lazy.  ``LazyConcatenation``
     maintains an index that it uses to keep track of the relationship
     between offsets in the concatenated lists and offsets in the
     sublists.
@@ -850,10 +836,10 @@ class LazyMap(AbstractLazySequence):
     A lazy sequence whose elements are formed by applying a given
     function to each element in one or more underlying lists.  The
     function is applied lazily -- i.e., when you read a value from the
-    list, C{LazyMap} will calculate that value by applying its
-    function to the underlying lists' value(s).  C{LazyMap} is
+    list, ``LazyMap`` will calculate that value by applying its
+    function to the underlying lists' value(s).  ``LazyMap`` is
     essentially a lazy version of the Python primitive function
-    C{map}.  In particular, the following two expressions are
+    ``map``.  In particular, the following two expressions are
     equivalent:
 
         >>> function = str
@@ -863,8 +849,8 @@ class LazyMap(AbstractLazySequence):
         >>> list(LazyMap(function, sequence))
         ['1', '2', '3']
 
-    Like the Python C{map} primitive, if the source lists do not have
-    equal size, then the value C{None} will be supplied for the
+    Like the Python ``map`` primitive, if the source lists do not have
+    equal size, then the value None will be supplied for the
     'missing' elements.
 
     Lazy maps can be useful for conserving memory, in cases where
@@ -875,16 +861,16 @@ class LazyMap(AbstractLazySequence):
     A typical example of a use case for this class is performing
     feature detection on the tokens in a corpus.  Since featuresets
     are encoded as dictionaries, which can take up a lot of memory,
-    using a C{LazyMap} can significantly reduce memory usage when
+    using a ``LazyMap`` can significantly reduce memory usage when
     training and running classifiers.
     """
     def __init__(self, function, *lists, **config):
         """
-        @param function: The function that should be applied to
-            elements of C{lists}.  It should take as many arguments
-            as there are C{lists}.
-        @param lists: The underlying lists.
-        @kwparam cache_size: Determines the size of the cache used
+        :param function: The function that should be applied to
+            elements of ``lists``.  It should take as many arguments
+            as there are ``lists``.
+        :param lists: The underlying lists.
+        :param cache_size: Determines the size of the cache used
             by this lazy map.  (default=5)
         """
         if not lists:
@@ -978,11 +964,11 @@ class LazyZip(LazyMap):
     element from each of the argument sequences.  The returned list is 
     truncated in length to the length of the shortest argument sequence. The
     tuples are constructed lazily -- i.e., when you read a value from the
-    list, C{LazyZip} will calculate that value by forming a C{tuple} from
+    list, ``LazyZip`` will calculate that value by forming a tuple from
     the i-th element of each of the argument sequences.
 
-    C{LazyZip} is essentially a lazy version of the Python primitive function
-    C{zip}.  In particular, an evaluated LazyZip is equivalent to a zip:
+    ``LazyZip`` is essentially a lazy version of the Python primitive function
+    ``zip``.  In particular, an evaluated LazyZip is equivalent to a zip:
 
         >>> sequence1, sequence2 = [1, 2, 3], ['a', 'b', 'c']
         >>> zip(sequence1, sequence2)
@@ -1004,8 +990,8 @@ class LazyZip(LazyMap):
     """
     def __init__(self, *lists):
         """
-        @param lists: the underlying lists
-        @type lists: C{list} of C{list}
+        :param lists: the underlying lists
+        :type lists: list(list)
         """
         LazyMap.__init__(self, lambda *elts: elts, *lists)
 
@@ -1023,14 +1009,14 @@ class LazyZip(LazyMap):
 class LazyEnumerate(LazyZip):
     """
     A lazy sequence whose elements are tuples, each ontaining a count (from
-    zero) and a value yielded by underlying sequence.  C{LazyEnumerate} is
+    zero) and a value yielded by underlying sequence.  ``LazyEnumerate`` is
     useful for obtaining an indexed list. The tuples are constructed lazily
-    -- i.e., when you read a value from the list, C{LazyEnumerate} will
-    calculate that value by forming a C{tuple} from the count of the i-th
+    -- i.e., when you read a value from the list, ``LazyEnumerate`` will
+    calculate that value by forming a tuple from the count of the i-th
     element and the i-th element of the underlying sequence.
 
-    C{LazyEnumerate} is essentially a lazy version of the Python primitive
-    function C{enumerate}.  In particular, the following two expressions are
+    ``LazyEnumerate`` is essentially a lazy version of the Python primitive
+    function ``enumerate``.  In particular, the following two expressions are
     equivalent:
 
         >>> sequence = ['first', 'second', 'third']
@@ -1050,8 +1036,8 @@ class LazyEnumerate(LazyZip):
     
     def __init__(self, lst):
         """
-        @param lst: the underlying list
-        @type lst: C{list}
+        :param lst: the underlying list
+        :type lst: list
         """                
         LazyZip.__init__(self, xrange(len(lst)), lst)
         
@@ -1063,13 +1049,13 @@ class LazyEnumerate(LazyZip):
 # inherited from pywordnet, by Oliver Steele
 def binary_search_file(file, key, cache={}, cacheDepth=-1):
     """
+    Return the line from the file with first word key.
     Searches through a sorted file using the binary search algorithm.
 
-    @type  file: file
-    @param file: the file to be searched through.
-    @type  key: {string}
-    @param key: the identifier we are searching for.
-    @return: The line from the file with first word key.
+    :type file: file
+    :param file: the file to be searched through.
+    :type key: str
+    :param key: the identifier we are searching for.
     """
     
     key = key + ' '
@@ -1136,14 +1122,14 @@ def set_proxy(proxy, (user, password)=(None, '')):
     """
     Set the HTTP proxy for Python to download through.
 
-    If C{proxy} is None then tries to set proxy from enviroment or system 
+    If ``proxy`` is None then tries to set proxy from enviroment or system 
     settings.
 
-    @param proxy: The HTTP proxy server to use. For example:
+    :param proxy: The HTTP proxy server to use. For example:
         'http://proxy.example.com:3128/'
-    @param user: The username to authenticate with. Use C{None} to disable 
-    authentication.
-    @param password: The password to authenticate with.
+    :param user: The username to authenticate with. Use None to disable 
+        authentication.
+    :param password: The password to authenticate with.
     """
     import urllib
     import urllib2

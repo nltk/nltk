@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -10,11 +10,10 @@ import os
 
 import nltk
 from nltk.internals import Counter
-from nltk.parse import *
-from nltk.parse import MaltParser
 from nltk.corpus import brown
-from nltk.tag import *
-import logic
+from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
+from nltk.sem.logic import (LogicParser, Expression, Variable, VariableExpression,
+                            LambdaExpression, AbstractVariableExpression)
 import drt
 import linearlogic
 
@@ -33,8 +32,8 @@ class GlueFormula(object):
             indices = set()
         
         if isinstance(meaning, str):
-            self.meaning = logic.LogicParser().parse(meaning)
-        elif isinstance(meaning, logic.Expression):
+            self.meaning = LogicParser().parse(meaning)
+        elif isinstance(meaning, Expression):
             self.meaning = meaning
         else:
             raise RuntimeError, 'Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__)
@@ -66,21 +65,21 @@ class GlueFormula(object):
         arg_meaning_abstracted = arg.meaning
         if return_indices:
             for dep in self.glue.simplify().antecedent.dependencies[::-1]: # if self.glue is (A -o B), dep is in A.dependencies
-                arg_meaning_abstracted = self.make_LambdaExpression(logic.Variable('v%s' % dep), 
+                arg_meaning_abstracted = self.make_LambdaExpression(Variable('v%s' % dep), 
                                                                     arg_meaning_abstracted)
         return_meaning = self.meaning.applyto(arg_meaning_abstracted)
 
         return self.__class__(return_meaning, return_glue, return_indices)
         
     def make_VariableExpression(self, name):
-        return logic.VariableExpression(name)
+        return VariableExpression(name)
         
     def make_LambdaExpression(self, variable, term):
-        return logic.LambdaExpression(variable, term)
+        return LambdaExpression(variable, term)
         
     def lambda_abstract(self, other):
         assert isinstance(other, GlueFormula)
-        assert isinstance(other.meaning, logic.AbstractVariableExpression)
+        assert isinstance(other.meaning, AbstractVariableExpression)
         return self.__class__(self.make_LambdaExpression(other.meaning.variable, 
                                                          self.meaning),
                               linearlogic.ImpExpression(other.glue, self.glue))
@@ -332,9 +331,9 @@ class GlueDict(dict):
 
     def get_meaning_formula(self, generic, word):
         """
-        @param generic: A meaning formula string containing the 
+        :param generic: A meaning formula string containing the 
         parameter "<word>"
-        @param word: The actual word to be replace "<word>"
+        :param word: The actual word to be replace "<word>"
         """
         word = word.replace('.', '')
         return generic.replace('<word>', word)
@@ -376,8 +375,8 @@ class GlueDict(dict):
         """
         Pick an alphabetic character as identifier for an entity in the model.
         
-        @parameter value: where to index into the list of characters
-        @type value: C{int}
+        :param value: where to index into the list of characters
+        :type value: int
         """
         value = node['address']
         
@@ -519,6 +518,7 @@ class Glue(object):
     def dep_parse(self, sentence='every cat leaves'):
         #Lazy-initialize the depparser
         if self.depparser is None:
+            from nltk.parse import MaltParser
             self.depparser = MaltParser(tagger=self.get_pos_tagger())
         if not self.depparser._trained:
             self.train_depparser()
@@ -613,6 +613,7 @@ class DrtGlue(Glue):
 
 
 def demo(show_example=-1):
+    from nltk.parse import MaltParser
     examples = ['David sees Mary',
                 'David eats a sandwich',
                 'every man chases a dog',

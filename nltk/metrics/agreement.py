@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -56,13 +56,15 @@ Expected results from the Artstein and Poesio survey paper:
 import logging
 from itertools import groupby
 from operator import itemgetter
-from distance import *
+
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
 
+from nltk.metrics.distance import binary_distance
+
 log = logging.getLogger(__file__)
 
-class AnnotationTask:
+class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
     
     Notation tries to match notation in Artstein and Poesio (2007).

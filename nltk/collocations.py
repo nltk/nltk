@@ -1,13 +1,13 @@
 # Natural Language Toolkit: Collocations and Association Measures 
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 """
-Tools to identify X{collocation}s --- words that often appear consecutively
---- within corpora. They may also be used to find other X{association}s between
+Tools to identify collocations --- words that often appear consecutively
+--- within corpora. They may also be used to find other associations between
 word occurrences.
 See Manning and Schutze ch. 5 at http://nlp.stanford.edu/fsnlp/promo/colloc.pdf
 and the Text::NSP Perl package at http://ngram.sourceforge.net
@@ -15,13 +15,13 @@ and the Text::NSP Perl package at http://ngram.sourceforge.net
 Finding collocations requires first calculating the frequencies of words and
 their appearance in the context of other words. Often the collection of words
 will then requiring filtering to only retain useful content terms. Each ngram
-of words may then be scored according to some X{association measure}, in order
+of words may then be scored according to some association measure, in order
 to determine the relative likelihood of each ngram being a collocation.
 
-The L{BigramCollocationFinder} and L{TrigramCollocationFinder} classes provide
+The ``BigramCollocationFinder`` and ``TrigramCollocationFinder`` classes provide
 these functionalities, dependent on being provided a function which scores a
 ngram given appropriate frequency counts. A number of standard association
-measures are provided in L{bigram_measures} and L{trigram_measures}.
+measures are provided in bigram_measures and trigram_measures.
 """
 
 # Possible TODOs:
@@ -36,20 +36,20 @@ from operator import itemgetter as _itemgetter
 from nltk.probability import FreqDist
 from nltk.util import ingrams
 from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures
-from nltk.metrics.spearman import *
+from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
 class AbstractCollocationFinder(object):
     """
-    An abstract base class for X{collocation finder}s whose purpose is to
+    An abstract base class for collocation finders whose purpose is to
     collect collocation candidate frequencies, filter and rank them.
+
+    As a minimum, collocation finders require the frequencies of each
+    word in a corpus, and the joint frequency of word tuples. This data
+    should be provided through nltk.probability.FreqDist objects or an
+    identical interface.
     """
 
     def __init__(self, word_fd, ngram_fd):
-        """As a minimum, collocation finders require the frequencies of each
-        word in a corpus, and the joint frequency of word tuples. This data
-        should be provided through L{nltk.probability.FreqDist} objects or an
-        identical interface.
-        """
         self.word_fd = word_fd
         self.ngram_fd = ngram_fd
 
@@ -236,14 +236,14 @@ def demo(scorer=None, compare_scorer=None):
     if compare_scorer is None:
         compare_scorer = BigramAssocMeasures.raw_freq
 
-    from nltk import corpus
+    from nltk.corpus import stopwords, webtext
         
-    ignored_words = corpus.stopwords.words('english')
+    ignored_words = stopwords.words('english')
     word_filter = lambda w: len(w) < 3 or w.lower() in ignored_words
 
-    for file in corpus.webtext.files():
+    for file in webtext.fileids():
         words = [word.lower()
-                 for word in corpus.webtext.words(file)]
+                 for word in webtext.words(file)]
 
         cf = BigramCollocationFinder.from_words(words)
         cf.apply_freq_filter(3)

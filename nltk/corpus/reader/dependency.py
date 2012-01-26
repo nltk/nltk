@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Kepa Sarasola <kepa.sarasola@ehu.es>
 #         Iker Manterola <returntothehangar@hotmail.com>
 #         
@@ -26,8 +26,8 @@ class DependencyCorpusReader(SyntaxCorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the given file(s) as a single string.
-        @rtype: C{str}
+        :return: the given file(s) as a single string.
+        :rtype: str
         """
         return concat([open(fileid).read()
                       for fileid in self.abspaths(fileids)])

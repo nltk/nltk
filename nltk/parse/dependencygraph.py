@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
 #
@@ -10,8 +10,8 @@
 
 """
 Tools for reading and writing dependency trees.
-The input is assumed to be in U{Malt-TAB<http://w3.msi.vxu.se/~nivre/research/MaltXML.html>} format.
-
+The input is assumed to be in Malt-TAB format
+(http://w3.msi.vxu.se/~nivre/research/MaltXML.html).
 Currently only reads the first tree in a file.
 """
 
@@ -116,7 +116,7 @@ class DependencyGraph(object):
     @staticmethod
     def load(file):
         """
-        @param file: a file in Malt-TAB format
+        :param file: a file in Malt-TAB format
         """
         return DependencyGraph(open(file).read())
 
@@ -194,10 +194,10 @@ class DependencyGraph(object):
         """
         Recursive function for turning dependency graphs into
         NLTK trees.
-        @type i: C{int} 
-        @param i: index of a node in C{nodelist}
-        @return: either a word (if the indexed node 
-        is a leaf) or a L{Tree}.
+        :type i: int 
+        :param i: index of a node in ``nodelist``
+        :return: either a word (if the indexed node 
+        is a leaf) or a ``Tree``.
         """
 
         node = self.get_by_address(i)
@@ -212,8 +212,8 @@ class DependencyGraph(object):
 
     def tree(self):
         """
-        Starting with the C{root} node, build a dependency tree using the NLTK 
-        L{Tree} constructor. Dependency labels are omitted.
+        Starting with the ``root`` node, build a dependency tree using the NLTK 
+        ``Tree`` constructor. Dependency labels are omitted.
         """
         node = self.root
         word = node['word']
@@ -271,9 +271,9 @@ class DependencyGraph(object):
         """
         The dependency graph in CoNLL format.
         
-        @param style: the style to use for the format (3, 4, 10 columns)
-        @type style: C{int}
-        @rtype: C{str}
+        :param style: the style to use for the format (3, 4, 10 columns)
+        :type style: int
+        :rtype: str
         """
         
         lines = []
@@ -292,9 +292,9 @@ class DependencyGraph(object):
 
 def nx_graph(self):
     """
-    Convert the data in a C{nodelist} into a networkx 
+    Convert the data in a ``nodelist`` into a networkx 
     labeled directed graph.
-    @rtype: C{XDigraph}
+    :rtype: XDigraph
     """
     nx_nodelist = range(1, len(self.nodelist))
     nx_edgelist = [(n, self._hd(n), self._rel(n)) 

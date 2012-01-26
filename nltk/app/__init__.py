@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Applications package
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
@@ -47,15 +47,3 @@ else:
                       "(requires the pylab library).")
     else:
         from wordfreq_app import app as wordfreq
-
-# Import wx-based modules if wx is installed
-try:
-    import wx
-except ImportError:
-    pass  # fail silently
-else:
-    try:
-        from wxwordnet_app import app as wxwordnet
-    except ImportError:
-        pass # fail silently -- but this is BROKEN!
-

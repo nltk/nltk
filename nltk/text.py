@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Texts
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -56,8 +56,8 @@ class ContextIndex(object):
 
     def tokens(self):
         """
-        @rtype: C{list} of token
-        @return: The document that this context index was
+        :rtype: list(str)
+        :return: The document that this context index was
             created from.  
         """
         return self._tokens
@@ -92,9 +92,9 @@ class ContextIndex(object):
         return a frequency distribution mapping each context to the
         number of times that context was used.
         
-        @param words: The words used to seed the similarity search
-        @type words: C{str} 
-        @param fail_on_unknown: If true, then raise a value error if
+        :param words: The words used to seed the similarity search
+        :type words: str 
+        :param fail_on_unknown: If true, then raise a value error if
             any of the given words do not occur at all in the index.
         """
         words = [self._key(w) for w in words]
@@ -122,12 +122,12 @@ class ConcordanceIndex(object):
         """
         Construct a new concordance index.
 
-        @param tokens: The document (list of tokens) that this
+        :param tokens: The document (list of tokens) that this
             concordance index was created from.  This list can be used
             to access the context of a given word occurance.
-        @param key: A function that maps each token to a normalized
+        :param key: A function that maps each token to a normalized
             version that will be used as a key in the index.  E.g., if
-            you use C{key=lambda s:s.lower()}, then the index will be
+            you use ``key=lambda s:s.lower()``, then the index will be
             case-insensitive.
         """
         self._tokens = tokens
@@ -148,16 +148,16 @@ class ConcordanceIndex(object):
 
     def tokens(self):
         """
-        @rtype: C{list} of token
-        @return: The document that this concordance index was
+        :rtype: list(str)
+        :return: The document that this concordance index was
             created from.  
         """
         return self._tokens
 
     def offsets(self, word):
         """
-        @rtype: C{list} of C{int}
-        @return: A list of the offset positions at which the given
+        :rtype: list(int)
+        :return: A list of the offset positions at which the given
             word occurs.  If a key function was specified for the
             index, then given word's key will be looked up.
         """
@@ -170,14 +170,14 @@ class ConcordanceIndex(object):
 
     def print_concordance(self, word, width=75, lines=25):
         """
-        Print a concordance for C{word} with the specified context window.
+        Print a concordance for ``word`` with the specified context window.
         
-        @param word: The target word
-        @type word: C{str}
-        @param width: The width of each line, in characters (default=80)
-        @type width: C{int}
-        @param lines: The number of lines to display (default=25)
-        @type lines: C{int}
+        :param word: The target word
+        :type word: str
+        :param width: The width of each line, in characters (default=80)
+        :type width: int
+        :param lines: The number of lines to display (default=25)
+        :type lines: int
         """
         half_width = (width - len(word) - 2) / 2
         context = width/4 # approx number of words of context
@@ -204,10 +204,10 @@ class TokenSearcher(object):
     A class that makes it easier to use regular expressions to search
     over tokenized strings.  The tokenized string is converted to a
     string where tokens are marked with angle brackets -- e.g.,
-    C{'<the><window><is><still><open>'}.  The regular expression
-    passed to the L{findall()} method is modified to treat angle
+    ``'<the><window><is><still><open>'``.  The regular expression
+    passed to the ``findall()`` method is modified to treat angle
     brackets as nongrouping parentheses, in addition to matching the
-    token boundaries; and to have C{'.'} not match the angle brackets.
+    token boundaries; and to have ``'.'`` not match the angle brackets.
     """
     def __init__(self, tokens):
         self._raw = ''.join('<'+w+'>' for w in tokens) 
@@ -232,8 +232,8 @@ class TokenSearcher(object):
         that; that that thing; through these than through; them that the;
         through the thick; them that they; thought that the
 
-        @param regexp: A regular expression
-        @type regexp: C{str}
+        :param regexp: A regular expression
+        :type regexp: str
         """
         # preprocess the regular expression
         regexp = re.sub(r'\s', '', regexp)
@@ -261,10 +261,10 @@ class Text(object):
     on the text's contexts (e.g., counting, concordancing, collocation
     discovery), and display the results.  If you wish to write a
     program which makes use of these analyses, then you should bypass
-    the C{Text} class, and use the appropriate analysis function or
+    the ``Text`` class, and use the appropriate analysis function or
     class directly instead.
 
-    C{Text}s are typically initialized from a given document or
+    A ``Text`` is typically initialized from a given document or
     corpus.  E.g.:
 
     >>> import nltk.corpus
@@ -281,8 +281,8 @@ class Text(object):
         """
         Create a Text object.
         
-        @param tokens: The source text.
-        @type tokens: C{sequence} of C{str}
+        :param tokens: The source text.
+        :type tokens: sequence of str
         """
         if self._COPY_TOKENS:
             tokens = list(tokens)
@@ -315,9 +315,9 @@ class Text(object):
     
     def concordance(self, word, width=79, lines=25):
         """
-        Print a concordance for C{word} with the specified context window.
+        Print a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
-        @seealso: L{ConcordanceIndex}
+        :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
             print "Building index..."
@@ -330,11 +330,11 @@ class Text(object):
         """
         Print collocations derived from the text, ignoring stopwords.
 
-        @seealso: L{find_collocations}
-        @param num: The maximum number of collocations to print.
-        @type num: C{int}
-        @param window_size: The number of tokens spanned by a collocation (default=2)
-        @type window_size: C{int}
+        :seealso: find_collocations
+        :param num: The maximum number of collocations to print.
+        :type num: int
+        :param window_size: The number of tokens spanned by a collocation (default=2)
+        :type window_size: int
         """
         if not ('_collocations' in self.__dict__ and self._num == num and self._window_size == window_size):
             self._num = num
@@ -371,9 +371,9 @@ class Text(object):
         """
         Print random text, generated using a trigram language model.
         
-        @param length: The length of text to generate (default=100)
-        @type length: C{int}
-        @seealso: L{NgramModel}
+        :param length: The length of text to generate (default=100)
+        :type length: int
+        :seealso: NgramModel
         """
         if '_trigram_model' not in self.__dict__:
             print "Building ngram index..."
@@ -386,7 +386,7 @@ class Text(object):
         """
         Search for instances of the regular expression pattern in the text.
         
-        @seealso: L{TokenSearcher}
+        :seealso: TokenSearcher
         """
         if '_token_searcher' not in self.__dict__:
             print "Loading data..."
@@ -399,11 +399,11 @@ class Text(object):
         Distributional similarity: find other words which appear in the
         same contexts as the specified word; list most similar words first.
         
-        @param word: The word used to seed the similarity search
-        @type word: C{str} 
-        @param num: The number of words to generate (default=20)
-        @type num: C{int}
-        @seealso: L{ContextIndex.similar_words()}
+        :param word: The word used to seed the similarity search
+        :type word: str 
+        :param num: The number of words to generate (default=20)
+        :type num: int
+        :seealso: ContextIndex.similar_words()
         """
         if '_word_context_index' not in self.__dict__:
             print 'Building word-context index...'
@@ -430,11 +430,11 @@ class Text(object):
         Find contexts where the specified words appear; list
         most frequent common contexts first.
         
-        @param word: The word used to seed the similarity search
-        @type word: C{str} 
-        @param num: The number of words to generate (default=20)
-        @type num: C{int}
-        @seealso: L{ContextIndex.common_contexts()}
+        :param word: The word used to seed the similarity search
+        :type word: str 
+        :param num: The number of words to generate (default=20)
+        :type num: int
+        :seealso: ContextIndex.common_contexts()
         """
         if '_word_context_index' not in self.__dict__:
             print 'Building word-context index...'
@@ -457,9 +457,9 @@ class Text(object):
         Produce a plot showing the distribution of the words through the text.
         Requires pylab to be installed.
         
-        @param words: The words to be plotted
-        @type word: C{str}
-        @seealso: L{nltk.draw.dispersion_plot()}
+        :param words: The words to be plotted
+        :type word: str
+        :seealso: nltk.draw.dispersion_plot()
         """
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
@@ -467,13 +467,13 @@ class Text(object):
     def plot(self, *args):
         """
         See documentation for FreqDist.plot()
-        @seealso: L{nltk.prob.FreqDist.plot()}
+        :seealso: nltk.prob.FreqDist.plot()
         """
         self.vocab().plot(*args)
     
     def vocab(self):
         """
-        @seealso: L{nltk.prob.FreqDist}
+        :seealso: nltk.prob.FreqDist
         """
         if "_vocab" not in self.__dict__:
             print "Building vocabulary index..."
@@ -499,8 +499,8 @@ class Text(object):
         that; that that thing; through these than through; them that the;
         through the thick; them that they; thought that the
         
-        @param regexp: A regular expression
-        @type regexp: C{str}
+        :param regexp: A regular expression
+        :type regexp: str
         """
         
         if "_token_searcher" not in self.__dict__:
@@ -518,8 +518,8 @@ class Text(object):
     def _context(self, tokens, i):
         """
         One left & one right token, both case-normalied.  Skip over
-        non-sentence-final punctuation.  Used by the L{ContextIndex}
-        that is created for L{similar()} and L{common_contexts()}.
+        non-sentence-final punctuation.  Used by the ``ContextIndex``
+        that is created for ``similar()`` and ``common_contexts()``.
         """
         # Left context
         j = i-1
@@ -541,8 +541,8 @@ class Text(object):
     
     def __repr__(self):
         """
-        @return: A string representation of this C{FreqDist}.
-        @rtype: string
+        :return: A string representation of this FreqDist.
+        :rtype: string
         """
         return '<Text: %s>' % self.name
 

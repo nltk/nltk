@@ -1,11 +1,9 @@
 # Natural Language Toolkit: Recursive Descent Parser Application
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 A graphical tool for exploring the recursive descent parser.
@@ -67,13 +65,15 @@ Keyboard Shortcuts::
 """
 
 import string
+import tkFont
+from Tkinter import (Listbox, IntVar, Button, 
+                     Frame, Label, Menu, Scrollbar, Tk)
 
-import nltk
 from nltk.tree import Tree
 from nltk.util import in_idle
-from nltk.draw.util import *
-from nltk.draw.tree import *
-from nltk.draw.cfg import *
+from nltk.parse import SteppingRecursiveDescentParser
+from nltk.draw.util import TextWidget, ShowText, CanvasFrame, EntryDialog
+from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
         
 class RecursiveDescentApp(object):
     """
@@ -83,11 +83,11 @@ class RecursiveDescentApp(object):
     can expand subtrees on the frontier, match tokens on the frontier
     against the text, and backtrack.  A "step" button simply steps
     through the parsing process, performing the operations that
-    C{RecursiveDescentParser} would use.
+    ``RecursiveDescentParser`` would use.
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = nltk.parse.SteppingRecursiveDescentParser(grammar, trace)
+        self._parser = SteppingRecursiveDescentParser(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()

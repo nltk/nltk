@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifier Utility Functions
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
 # URL: <http://www.nltk.org/>
@@ -25,14 +25,14 @@ from nltk.util import LazyMap
 # or.. just have users use LazyMap directly?
 def apply_features(feature_func, toks, labeled=None):
     """
-    Use the L{LazyMap} class to construct a lazy list-like
-    object that is analogous to C{map(feature_func, toks)}.  In
-    particular, if C{labeled=False}, then the returned list-like
+    Use the ``LazyMap`` class to construct a lazy list-like
+    object that is analogous to ``map(feature_func, toks)``.  In
+    particular, if ``labeled=False``, then the returned list-like
     object's values are equal to::
 
         [feature_func(tok) for tok in toks]
 
-    If C{labeled=True}, then the returned list-like object's values
+    If ``labeled=True``, then the returned list-like object's values
     are equal to::
 
         [(feature_func(tok), label) for (tok, label) in toks]
@@ -44,16 +44,16 @@ def apply_features(feature_func, toks, labeled=None):
     significant when the underlying list of tokens is itself lazy (as
     is the case with many corpus readers).
 
-    @param feature_func: The function that will be applied to each
-        token.  It should return a featureset -- i.e., a C{dict}
+    :param feature_func: The function that will be applied to each
+        token.  It should return a featureset -- i.e., a dict
         mapping feature names to feature values.
-    @param toks: The list of tokens to which C{feature_func} should be
-        applied.  If C{labeled=True}, then the list elements will be
-        passed directly to C{feature_func()}.  If C{labeled=False},
-        then the list elements should be tuples C{(tok,label)}, and
-        C{tok} will be passed to C{feature_func()}.
-    @param labeled: If true, then C{toks} contains labeled tokens --
-        i.e., tuples of the form C{(tok, label)}.  (Default:
+    :param toks: The list of tokens to which ``feature_func`` should be
+        applied.  If ``labeled=True``, then the list elements will be
+        passed directly to ``feature_func()``.  If ``labeled=False``,
+        then the list elements should be tuples ``(tok,label)``, and
+        ``tok`` will be passed to ``feature_func()``.
+    :param labeled: If true, then ``toks`` contains labeled tokens --
+        i.e., tuples of the form ``(tok, label)``.  (Default:
         auto-detect based on types.)
     """
     if labeled is None:
@@ -67,12 +67,12 @@ def apply_features(feature_func, toks, labeled=None):
 
 def attested_labels(tokens):
     """
-    @return: A list of all labels that are attested in the given list
+    :return: A list of all labels that are attested in the given list
         of tokens.
-    @rtype: C{list} of (immutable)
-    @param tokens: The list of classified tokens from which to extract
-        labels.  A classified token has the form C{(token, label)}.
-    @type tokens: C{list}
+    :rtype: list of (immutable)
+    :param tokens: The list of classified tokens from which to extract
+        labels.  A classified token has the form ``(token, label)``.
+    :type tokens: list
     """
     return tuple(set([label for (tok,label) in tokens]))
 

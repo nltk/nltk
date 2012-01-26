@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Switchboard Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -16,7 +16,7 @@ class SwitchboardTurn(list):
     """
     A specialized list object used to encode switchboard utterances.
     The elements of the list are the words in the utterance; and two
-    attributes, C{speaker} and C{id}, are provided to retrieve the
+    attributes, ``speaker`` and ``id``, are provided to retrieve the
     spearker identifier and utterance id.  Note that utterance ids
     are only unique within a given discourse.
     """

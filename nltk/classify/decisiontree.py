@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Decision Tree Classifiers
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -15,25 +15,25 @@ on feature values, and leaves correspond to label assignments.
 
 from collections import defaultdict
 
-from nltk.probability import *
+from nltk.probability import FreqDist, MLEProbDist, entropy
 
-from api import *
+from nltk.classify.api import ClassifierI
 
 class DecisionTreeClassifier(ClassifierI):
     def __init__(self, label, feature_name=None, decisions=None, default=None):
         """
-        @param label: The most likely label for tokens that reach
+        :param label: The most likely label for tokens that reach
             this node in the decision tree.  If this decision tree
             has no children, then this label will be assigned to
             any token that reaches this decision tree.
-        @param feature_name: The name of the feature that this
+        :param feature_name: The name of the feature that this
             decision tree selects for.
-        @param decisions: A dictionary mapping from feature values
-            for the feature identified by C{feature_name} to
+        :param decisions: A dictionary mapping from feature values
+            for the feature identified by ``feature_name`` to
             child decision trees.
-        @param default: The child that will be used if the value of
-            feature C{feature_name} does not match any of the keys in
-            C{decisions}.  This is used when constructing binary
+        :param default: The child that will be used if the value of
+            feature ``feature_name`` does not match any of the keys in
+            ``decisions``.  This is used when constructing binary
             decision trees.
         """
         self._label = label
@@ -131,9 +131,9 @@ class DecisionTreeClassifier(ClassifierI):
               support_cutoff=10, binary=False, feature_values=None,
               verbose=False):
         """
-        @param binary: If true, then treat all feature/value pairs a
-        individual binary features, rather than using a single n-way
-        branch for each feature.
+        :param binary: If true, then treat all feature/value pairs a
+            individual binary features, rather than using a single n-way
+            branch for each feature.
         """
         # Collect a list of all feature names.
         feature_names = set()

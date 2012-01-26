@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Cooper storage for Quantifier Ambiguity
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -15,9 +15,9 @@ class CooperStore(object):
     """
     def __init__(self, featstruct):
         """
-        @param featstruct: The value of the C{sem} node in a tree from
-        L{parse_with_bindops()}
-        @type featstruct: A L{FeatStruct} with features C{core} and C{store}
+        :param featstruct: The value of the ``sem`` node in a tree from
+            ``parse_with_bindops()``
+        :type featstruct: FeatStruct (with features ``core`` and ``store``)
 
         """ 
         self.featstruct = featstruct
@@ -30,9 +30,9 @@ class CooperStore(object):
         
     def _permute(self, lst):
         """
-        @return: An iterator over the permutations of the input list
-        @type lst: C{list}
-        @rtype: C{iterator}
+        :return: An iterator over the permutations of the input list
+        :type lst: list
+        :rtype: iter
         """
         remove = lambda lst0, index: lst0[:index] + lst0[index+1:]
         if lst:

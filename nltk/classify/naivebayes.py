@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Naive Bayes Classifiers
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,33 +10,33 @@
 """
 A classifier based on the Naive Bayes algorithm.  In order to find the
 probability for a label, this algorithm first uses the Bayes rule to
-express P(label|features) in terms of P(label) and P(features|label)::
+express P(label|features) in terms of P(label) and P(features|label):
 
-                      P(label) * P(features|label)
- P(label|features) = ------------------------------
-                             P(features)
+|                       P(label) * P(features|label)
+|  P(label|features) = ------------------------------
+|                              P(features)
 
 The algorithm then makes the 'naive' assumption that all features are
-independent, given the label::
+independent, given the label:
                              
-                      P(label) * P(f1|label) * ... * P(fn|label)
- P(label|features) = --------------------------------------------
-                                        P(features)
+|                       P(label) * P(f1|label) * ... * P(fn|label)
+|  P(label|features) = --------------------------------------------
+|                                         P(features)
 
 Rather than computing P(featues) explicitly, the algorithm just
 calculates the denominator for each label, and normalizes them so they
-sum to one::
+sum to one:
                              
-                      P(label) * P(f1|label) * ... * P(fn|label)
- P(label|features) = --------------------------------------------
-                       SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
+|                       P(label) * P(f1|label) * ... * P(fn|label)
+|  P(label|features) = --------------------------------------------
+|                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
 """
 
 from collections import defaultdict
 
-from nltk.probability import *
+from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
 
-from api import *
+from api import ClassifierI
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier
@@ -64,20 +64,20 @@ class NaiveBayesClassifier(ClassifierI):
     """
     def __init__(self, label_probdist, feature_probdist):
         """
-        @param label_probdist: P(label), the probability distribution
-            over labels.  It is expressed as a L{ProbDistI} whose
+        :param label_probdist: P(label), the probability distribution
+            over labels.  It is expressed as a ``ProbDistI`` whose
             samples are labels.  I.e., P(label) =
-            C{label_probdist.prob(label)}.
+            ``label_probdist.prob(label)``.
         
-        @param feature_probdist: P(fname=fval|label), the probability
+        :param feature_probdist: P(fname=fval|label), the probability
             distribution for feature values, given labels.  It is
-            expressed as a dictionary whose keys are C{(label,fname)}
-            pairs and whose values are L{ProbDistI}s over feature
+            expressed as a dictionary whose keys are ``(label, fname)``
+            pairs and whose values are ``ProbDistI`` objects over feature
             values.  I.e., P(fname=fval|label) =
-            C{feature_probdist[label,fname].prob(fval)}.  If a given
-            C{(label,fname)} is not a key in C{feature_probdist}, then
+            ``feature_probdist[label,fname].prob(fval)``.  If a given
+            ``(label,fname)`` is not a key in ``feature_probdist``, then
             it is assumed that the corresponding P(fname=fval|label)
-            is 0 for all values of C{fval}.
+            is 0 for all values of ``fval``.
         """
         self._label_probdist = label_probdist
         self._feature_probdist = feature_probdist
@@ -148,11 +148,11 @@ class NaiveBayesClassifier(ClassifierI):
         """
         Return a list of the 'most informative' features used by this
         classifier.  For the purpose of this function, the
-        informativeness of a feature C{(fname,fval)} is equal to the
+        informativeness of a feature ``(fname,fval)`` is equal to the
         highest value of P(fname=fval|label), for any label, divided by
-        the lowest value of P(fname=fval|label), for any label::
+        the lowest value of P(fname=fval|label), for any label:
 
-          max[ P(fname=fval|label1) / P(fname=fval|label2) ]
+        |  max[ P(fname=fval|label1) / P(fname=fval|label2) ]
         """
         # The set of (fname, fval) pairs used by this classifier.
         features = set()
@@ -180,8 +180,8 @@ class NaiveBayesClassifier(ClassifierI):
     @staticmethod
     def train(labeled_featuresets, estimator=ELEProbDist):
         """
-        @param labeled_featuresets: A list of classified featuresets,
-            i.e., a list of tuples C{(featureset, label)}.
+        :param labeled_featuresets: A list of classified featuresets,
+            i.e., a list of tuples ``(featureset, label)``.
         """
         label_freqdist = FreqDist()
         feature_freqdist = defaultdict(FreqDist)

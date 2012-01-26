@@ -1,6 +1,6 @@
 # Natural Language Toolkit: String Category Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -30,9 +30,9 @@ from api import *
 class StringCategoryCorpusReader(CorpusReader):
     def __init__(self, root, fileids, delimiter=' ', encoding=None):
         """
-        @param root: The root directory for this corpus.
-        @param fileids: A list or regexp specifying the fileids in this corpus.
-        @param delimiter: Field delimiter
+        :param root: The root directory for this corpus.
+        :param fileids: A list or regexp specifying the fileids in this corpus.
+        :param delimiter: Field delimiter
         """
         CorpusReader.__init__(self, root, fileids, encoding)
         self._delimiter = delimiter
@@ -46,7 +46,7 @@ class StringCategoryCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the text contents of the given fileids, as a single string.
+        :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]

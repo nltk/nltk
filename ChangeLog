@@ -1,3 +1,9 @@
+Version 2.0.1 (rc2) 2011-12-01
+
+* numerous minor bugfixes
+* removed most wildcard imports
+* converted documentation to Sphinx format
+	
 Version 2.0.1 (rc1) 2011-04-11
 
 NLTK:

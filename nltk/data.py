@@ -1,33 +1,33 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
-Functions to find and load NLTK X{resource files}, such as corpora,
+Functions to find and load NLTK resource files, such as corpora,
 grammars, and saved processing objects.  Resource files are identified
-using URLs, such as"C{nltk:corpora/abc/rural.txt}" or
-"C{http://nltk.org/sample/toy.cfg}".  The following URL protocols are
+using URLs, such as ``nltk:corpora/abc/rural.txt`` or
+``http://nltk.org/sample/toy.cfg``.  The following URL protocols are
 supported:
 
-  - "C{file:I{path}}": Specifies the file whose path is C{I{path}}.
+  - ``file:path``: Specifies the file whose path is *path*.
     Both relative and absolute paths may be used.
     
-  - "C{http://I{host}/{path}}": Specifies the file stored on the web
-    server C{I{host}} at path C{I{path}}.
+  - ``http://host/path``: Specifies the file stored on the web
+    server *host* at path *path*.
     
-  - "C{nltk:I{path}}": Specifies the file stored in the NLTK data
-    package at C{I{path}}.  NLTK will search for these files in the
-    directories specified by L{nltk.data.path}.
+  - ``nltk:path``: Specifies the file stored in the NLTK data
+    package at *path*.  NLTK will search for these files in the
+    directories specified by ``nltk.data.path``.
 
-If no protocol is specified, then the default protocol "C{nltk:}" will
+If no protocol is specified, then the default protocol ``nltk:`` will
 be used.
  
 This module provides to functions that can be used to access a
-resource file, given its URL: L{load()} loads a given resource, and
-adds it to a resource cache; and L{retrieve()} copies a given resource
+resource file, given its URL: ``load()`` loads a given resource, and
+adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
 
@@ -97,8 +97,8 @@ class PathPointer(object):
     """
     An abstract base class for 'path pointers,' used by NLTK's data
     package to identify specific paths.  Two subclasses exist:
-    L{FileSystemPathPointer} identifies a file that can be accessed
-    directly via a given absolute path.  L{ZipFilePathPointer}
+    ``FileSystemPathPointer`` identifies a file that can be accessed
+    directly via a given absolute path.  ``ZipFilePathPointer``
     identifies a file contained within a zipfile, that can be accessed
     by reading that zipfile.
     """
@@ -107,7 +107,7 @@ class PathPointer(object):
         Return a seekable read-only stream that can be used to read
         the contents of the file identified by this path pointer.
 
-        @raise IOError: If the path specified by this pointer does
+        :raise IOError: If the path specified by this pointer does
             not contain a readable file.
         """
         raise NotImplementedError('abstract base class')
@@ -117,7 +117,7 @@ class PathPointer(object):
         Return the size of the file pointed to by this path pointer,
         in bytes.
 
-        @raise IOError: If the path specified by this pointer does
+        :raise IOError: If the path specified by this pointer does
             not contain a readable file.
         """
         raise NotImplementedError('abstract base class')
@@ -126,8 +126,8 @@ class PathPointer(object):
         """
         Return a new path pointer formed by starting at the path
         identified by this pointer, and then following the relative
-        path given by C{fileid}.  The path components of C{fileid}
-        should be seperated by forward slashes (C{/}), regardless of
+        path given by ``fileid``.  The path components of ``fileid``
+        should be seperated by forward slashes, regardless of
         the underlying file system's path seperator character.
         """
         raise NotImplementedError('abstract base class')
@@ -136,18 +136,18 @@ class PathPointer(object):
 class FileSystemPathPointer(PathPointer, str):
     """
     A path pointer that identifies a file which can be accessed
-    directly via a given absolute path.  C{FileSystemPathPointer} is a
-    subclass of C{str} for backwards compatibility purposes --
-    this allows old code that expected C{nltk.data.find()} to expect a
+    directly via a given absolute path.  ``FileSystemPathPointer`` is a
+    subclass of ``str`` for backwards compatibility purposes --
+    this allows old code that expected ``nltk.data.find()`` to expect a
     string to usually work (assuming the resource is not found in a
-    zipfile).  It also permits open() to work on a FileSystemPathPointer.
+    zipfile).  It also permits ``open()`` to work on a ``FileSystemPathPointer``.
     
     """
     def __init__(self, path):
         """
         Create a new path pointer for the given absolute path.
 
-        @raise IOError: If the given path does not exist.
+        :raise IOError: If the given path does not exist.
         """
         path = os.path.abspath(path)
         if not os.path.exists(path):
@@ -182,13 +182,13 @@ class FileSystemPathPointer(PathPointer, str):
 
 class BufferedGzipFile(GzipFile):
     """
-    A C{GzipFile} subclass that buffers calls to L{read()} and L{write()}.
+    A ``GzipFile`` subclass that buffers calls to ``read()`` and ``write()``.
     This allows faster reads and writes of data to and from gzip-compressed 
     files at the cost of using more memory.
     
-    The default buffer size is 2mb.
+    The default buffer size is 2MB.
     
-    C{BufferedGzipFile} is useful for loading large gzipped pickle objects
+    ``BufferedGzipFile`` is useful for loading large gzipped pickle objects
     as well as writing large encoded feature files for classifier training.
     """    
     SIZE = 2 * 2**20
@@ -196,23 +196,23 @@ class BufferedGzipFile(GzipFile):
     def __init__(self, filename=None, mode=None, compresslevel=9, 
                  fileobj=None, **kwargs):
         """
-        @return: a buffered gzip file object
-        @rtype: C{BufferedGzipFile}
-        @param filename: a filesystem path
-        @type filename: C{str}
-        @param mode: a file mode which can be any of 'r', 'rb', 'a', 'ab', 
+        Return a buffered gzip file object.
+
+        :param filename: a filesystem path
+        :type filename: str
+        :param mode: a file mode which can be any of 'r', 'rb', 'a', 'ab', 
             'w', or 'wb'
-        @type mode: C{str}
-        @param compresslevel: The compresslevel argument is an integer from 1
+        :type mode: str
+        :param compresslevel: The compresslevel argument is an integer from 1
             to 9 controlling the level of compression; 1 is fastest and 
             produces the least compression, and 9 is slowest and produces the
             most compression. The default is 9.
-        @type compresslevel: C{int}
-        @param fileobj: a StringIO stream to read from instead of a file.
-        @type fileobj: C{StringIO}
-        @kwparam size: number of bytes to buffer during calls to
-            L{read()} and L{write()}
-        @type size: C{int}
+        :type compresslevel: int
+        :param fileobj: a StringIO stream to read from instead of a file.
+        :type fileobj: StringIO
+        :param size: number of bytes to buffer during calls to read() and write()
+        :type size: int
+        :rtype: BufferedGzipFile
         """   
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
@@ -266,10 +266,10 @@ class BufferedGzipFile(GzipFile):
 
     def write(self, data, size=-1):
         """
-        @param data: C{str} to write to file or buffer
-        @type data: C{str}
-        @param size: buffer at least size bytes before writing to file
-        @type size: C{int}
+        :param data: str to write to file or buffer
+        :type data: str
+        :param size: buffer at least size bytes before writing to file
+        :type size: int
         """
         if not size: 
             size = self._size
@@ -281,8 +281,8 @@ class BufferedGzipFile(GzipFile):
 
 class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
-    A subclass of C{FileSystemPathPointer} that identifies a gzip-compressed
-    file located at a given absolute path.  C{GzipFileSystemPathPointer} is
+    A subclass of ``FileSystemPathPointer`` that identifies a gzip-compressed
+    file located at a given absolute path.  ``GzipFileSystemPathPointer`` is
     appropriate for loading large gzip-compressed pickle objects efficiently.
     """
     def open(self, encoding=None):
@@ -302,7 +302,7 @@ class ZipFilePathPointer(PathPointer):
         Create a new path pointer pointing at the specified entry
         in the given zipfile.
 
-        @raise IOError: If the given zipfile does not exist, or if it
+        :raise IOError: If the given zipfile does not exist, or if it
         does not contain the specified entry.
         """
         if isinstance(zipfile, basestring):
@@ -330,10 +330,10 @@ class ZipFilePathPointer(PathPointer):
         self._entry = entry
 
     zipfile = property(lambda self: self._zipfile, doc="""
-        The C{zipfile.ZipFile} object used to access the zip file
+        The zipfile.ZipFile object used to access the zip file
         containing the entry identified by this path pointer.""")
     entry = property(lambda self: self._entry, doc="""
-        The name of the file within C{zipfile} that this path
+        The name of the file within zipfile that this path
         pointer points to.""")
 
     def open(self, encoding=None):
@@ -369,41 +369,40 @@ _resource_cache = {}
 def find(resource_name):
     """
     Find the given resource by searching through the directories and
-    zip files in L{nltk.data.path}, and return a corresponding path
-    name.  If the given resource is not found, raise a C{LookupError},
+    zip files in ``nltk.data.path``, and return a corresponding path
+    name.  If the given resource is not found, raise a ``LookupError``,
     whose message gives a pointer to the installation instructions for
     the NLTK downloader.
 
     Zip File Handling:
 
-      - If C{resource_name} contains a component with a C{.zip}
+      - If ``resource_name`` contains a component with a ``.zip``
         extension, then it is assumed to be a zipfile; and the
         remaining path components are used to look inside the zipfile.
         
-      - If any element of C{nltk.data.path} has a C{.zip} extension,
+      - If any element of ``nltk.data.path`` has a ``.zip`` extension,
         then it is assumed to be a zipfile.
 
       - If a given resource name that does not contain any zipfile
-        component is not found initially, then C{find()} will make a
+        component is not found initially, then ``find()`` will make a
         second attempt to find that resource, by replacing each
-        component I{p} in the path with I{p.zip/p}.  For example, this
-        allows C{find()} to map the resource name
-        C{corpora/chat80/cities.pl} to a zip file path pointer to
-        C{corpora/chat80.zip/chat80/cities.pl}.
+        component *p* in the path with *p.zip/p*.  For example, this
+        allows ``find()`` to map the resource name
+        ``corpora/chat80/cities.pl`` to a zip file path pointer to
+        ``corpora/chat80.zip/chat80/cities.pl``.
 
-      - When using C{find()} to locate a directory contained in a
-        zipfile, the resource name I{must} end with the C{'/'}
-        character.  Otherwise, C{find()} will not locate the
+      - When using ``find()`` to locate a directory contained in a
+        zipfile, the resource name must end with the forward slash
+        character.  Otherwise, ``find()`` will not locate the
         directory.
 
-    @type resource_name: C{str}
-    @param resource_name: The name of the resource to search for.
+    :type resource_name: str
+    :param resource_name: The name of the resource to search for.
         Resource names are posix-style relative path names, such as
-        C{'corpora/brown'}.  In particular, directory names should
-        always be separated by the C{'/'} character, which will be
-        automatically converted to a platform-appropriate path
-        separator.
-    @rtype: C{str}
+        ``corpora/brown``.  In particular, directory names should always
+        be separated by the forward slash character, which will be
+        automatically converted to a platform-appropriate path separator.
+    :rtype: str
     """
     # Check if the resource name includes a zipfile name
     m = re.match('(.*\.zip)/?(.*)$|', resource_name)
@@ -457,11 +456,11 @@ def retrieve(resource_url, filename=None, verbose=True):
     """
     Copy the given resource to a local file.  If no filename is
     specified, then use the URL's filename.  If there is already a
-    file named C{filename}, then raise a C{ValueError}.
+    file named ``filename``, then raise a ``ValueError``.
     
-    @type resource_url: C{str}
-    @param resource_url: A URL specifying where the resource should be
-        loaded from.  The default protocol is C{"nltk:"}, which searches
+    :type resource_url: str
+    :param resource_url: A URL specifying where the resource should be
+        loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
     """
     if filename is None:
@@ -491,7 +490,7 @@ def retrieve(resource_url, filename=None, verbose=True):
     outfile.close()
 
 #: A dictionary describing the formats that are supported by NLTK's
-#: L{load()} method.  Keys are format names, and values are format
+#: load() method.  Keys are format names, and values are format
 #: descriptions.
 FORMATS = {
     'pickle': "A serialized python object, stored using the pickle module.",
@@ -509,7 +508,7 @@ FORMATS = {
     }
 
 #: A dictionary mapping from file extensions to format names, used
-#: by L{load()} when C{format="auto"} to decide the format for a
+#: by load() when format="auto" to decide the format for a
 #: given resource url.
 AUTO_FORMATS = {
     'pickle': 'pickle',
@@ -526,42 +525,41 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
-      - C{'pickle'}
-      - C{'yaml'}
-      - C{'cfg'} (context free grammars)
-      - C{'pcfg'} (probabilistic CFGs)
-      - C{'fcfg'} (feature-based CFGs)
-      - C{'fol'} (formulas of First Order Logic)
-      - C{'logic'} (Logical formulas to be parsed by the given logic_parser)
-      - C{'val'} (valuation of First Order Logic model)
-      - C{'raw'}
 
-    If no format is specified, C{load()} will attempt to determine a
+      - ``pickle``
+      - ``yaml``
+      - ``cfg`` (context free grammars)
+      - ``pcfg`` (probabilistic CFGs)
+      - ``fcfg`` (feature-based CFGs)
+      - ``fol`` (formulas of First Order Logic)
+      - ``logic`` (Logical formulas to be parsed by the given logic_parser)
+      - ``val`` (valuation of First Order Logic model)
+      - ``raw``
+
+    If no format is specified, ``load()`` will attempt to determine a
     format based on the resource name's file extension.  If that
-    fails, C{load()} will raise a C{ValueError} exception.
+    fails, ``load()`` will raise a ``ValueError`` exception.
 
-    @type resource_url: C{str}
-    @param resource_url: A URL specifying where the resource should be
-        loaded from.  The default protocol is C{"nltk:"}, which searches
+    :type resource_url: str
+    :param resource_url: A URL specifying where the resource should be
+        loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
-    @type cache: C{bool}
-    @param cache: If true, add this resource to a cache.  If C{load}
+    :type cache: bool
+    :param cache: If true, add this resource to a cache.  If load()
         finds a resource in its cache, then it will return it from the
         cache rather than loading it.  The cache uses weak references,
         so a resource wil automatically be expunged from the cache
         when no more objects are using it.
-        
-    @type verbose: C{bool}
-    @param verbose: If true, print a message when loading a resource.
+    :type verbose: bool
+    :param verbose: If true, print a message when loading a resource.
         Messages are not displayed when a resource is retrieved from
         the cache.
-    
-    @type logic_parser: C{LogicParser}
-    @param logic_parser: The parser that will be used to parse logical 
-    expressions.
-    @type fstruct_parser: C{FeatStructParser}
-    @param fstruct_parser: The parser that will be used to parse the
-    feature structure of an fcfg.
+    :type logic_parser: LogicParser
+    :param logic_parser: The parser that will be used to parse logical 
+        expressions.
+    :type fstruct_parser: FeatStructParser
+    :param fstruct_parser: The parser that will be used to parse the
+        feature structure of an fcfg.
     """
     # If we've cached the resource, then just return it.
     if cache:
@@ -629,13 +627,14 @@ def load(resource_url, format='auto', cache=True, verbose=False,
 
 def show_cfg(resource_url, escape='##'):
     """
-    Write out a grammar file, ignoring escaped and empty lines
-    @type resource_url: C{str}
-    @param resource_url: A URL specifying where the resource should be
-        loaded from.  The default protocol is C{"nltk:"}, which searches
+    Write out a grammar file, ignoring escaped and empty lines.
+
+    :type resource_url: str
+    :param resource_url: A URL specifying where the resource should be
+        loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
-    @type escape: C{str}
-    @param escape: Prepended string that signals lines to be ignored
+    :type escape: str
+    :param escape: Prepended string that signals lines to be ignored
     """
     resource_val = load(resource_url, format='raw', cache=False)
     lines = resource_val.splitlines()
@@ -648,22 +647,22 @@ def show_cfg(resource_url, escape='##'):
 def clear_cache():
     """
     Remove all objects from the resource cache.
-    @see: L{load()}
+    :see: load()
     """
     _resource_cache.clear()
 
 def _open(resource_url):
     """
     Helper function that returns an open file object for a resource,
-    given its resource URL.  If the given resource URL uses the 'ntlk'
-    protocol, or uses no protocol, then use L{nltk.data.find} to find
+    given its resource URL.  If the given resource URL uses the "nltk:"
+    protocol, or uses no protocol, then use ``nltk.data.find`` to find
     its path, and open it with the given mode; if the resource URL
     uses the 'file' protocol, then open the file with the given mode;
-    otherwise, delegate to C{urllib2.urlopen}.
+    otherwise, delegate to ``urllib2.urlopen``.
     
-    @type resource_url: C{str}
-    @param resource_url: A URL specifying where the resource should be
-        loaded from.  The default protocol is C{"nltk:"}, which searches
+    :type resource_url: str
+    :param resource_url: A URL specifying where the resource should be
+        loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
     """
     # Divide the resource name into "<protocol>:<path>".
@@ -711,13 +710,13 @@ class LazyLoader(object):
 
 class OpenOnDemandZipFile(zipfile.ZipFile):
     """
-    A subclass of C{zipfile.ZipFile} that closes its file pointer
+    A subclass of ``zipfile.ZipFile`` that closes its file pointer
     whenever it is not using it; and re-opens it when it needs to read
     data from the zipfile.  This is useful for reducing the number of
     open file handles when many zip files are being accessed at once.
-    C{OpenOnDemandZipFile} must be constructed from a filename, not a
-    file-like object (to allow re-opening).  C{OpenOnDemandZipFile} is
-    read-only (i.e., C{write} and C{writestr} are disabled.
+    ``OpenOnDemandZipFile`` must be constructed from a filename, not a
+    file-like object (to allow re-opening).  ``OpenOnDemandZipFile`` is
+    read-only (i.e. ``write()`` and ``writestr()`` are disabled.
     """
     def __init__(self, filename):
         if not isinstance(filename, basestring):
@@ -734,11 +733,11 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         return value
 
     def write(self, *args, **kwargs):
-        """@raise NotImplementedError: OpenOnDemandZipfile is read-only"""
+        """:raise NotImplementedError: OpenOnDemandZipfile is read-only"""
         raise NotImplementedError('OpenOnDemandZipfile is read-only')
 
     def writestr(self, *args, **kwargs):
-        """@raise NotImplementedError: OpenOnDemandZipfile is read-only"""
+        """:raise NotImplementedError: OpenOnDemandZipfile is read-only"""
         raise NotImplementedError('OpenOnDemandZipfile is read-only')
 
     def __repr__(self):
@@ -751,13 +750,13 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
 class SeekableUnicodeStreamReader(object):
     """
     A stream reader that automatically encodes the source byte stream
-    into unicode (like C{codecs.StreamReader}); but still supports the
-    C{seek()} and C{tell()} operations correctly.  This is in contrast
-    to C{codecs.StreamReader}, which provide *broken* C{seek()} and
-    C{tell()} methods.
+    into unicode (like ``codecs.StreamReader``); but still supports the
+    ``seek()`` and ``tell()`` operations correctly.  This is in contrast
+    to ``codecs.StreamReader``, which provide *broken* ``seek()`` and
+    ``tell()`` methods.
 
-    This class was motivated by L{StreamBackedCorpusView}, which
-    makes extensive use of C{seek()} and C{tell()}, and needs to be
+    This class was motivated by ``StreamBackedCorpusView``, which
+    makes extensive use of ``seek()`` and ``tell()``, and needs to be
     able to handle unicode-encoded files.
     
     Note: this class requires stateless decoders.  To my knowledge,
@@ -792,32 +791,31 @@ class SeekableUnicodeStreamReader(object):
            a read do not form a complete encoding for a character."""
         
         self.linebuffer = None
-        """A buffer used by L{readline()} to hold characters that have
-           been read, but have not yet been returned by L{read()} or
-           L{readline()}.  This buffer consists of a list of unicode
+        """A buffer used by ``readline()`` to hold characters that have
+           been read, but have not yet been returned by ``read()`` or
+           ``readline()``.  This buffer consists of a list of unicode
            strings, where each string corresponds to a single line.
            The final element of the list may or may not be a complete
            line.  Note that the existence of a linebuffer makes the
-           L{tell()} operation more complex, because it must backtrack
+           ``tell()`` operation more complex, because it must backtrack
            to the beginning of the buffer to determine the correct
            file position in the underlying byte stream."""
 
         self._rewind_checkpoint = 0
         """The file position at which the most recent read on the
            underlying stream began.  This is used, together with
-           L{_rewind_numchars}, to backtrack to the beginning of
-           L{linebuffer} (which is required by L{tell()})."""
+           ``_rewind_numchars``, to backtrack to the beginning of
+           ``linebuffer`` (which is required by ``tell()``)."""
         
         self._rewind_numchars = None
         """The number of characters that have been returned since the
-           read that started at L{_rewind_checkpoint}.  This is used,
-           together with L{_rewind_checkpoint}, to backtrack to the
-           beginning of L{linebuffer} (which is required by
-           L{tell()})."""
+           read that started at ``_rewind_checkpoint``.  This is used,
+           together with ``_rewind_checkpoint``, to backtrack to the
+           beginning of ``linebuffer`` (which is required by ``tell()``)."""
 
         self._bom = self._check_bom()
         """The length of the byte order marker at the beginning of
-           the stream (or C{None} for no byte order marker)."""
+           the stream (or None for no byte order marker)."""
 
     #/////////////////////////////////////////////////////////////////
     # Read methods
@@ -825,13 +823,13 @@ class SeekableUnicodeStreamReader(object):
     
     def read(self, size=None):
         """
-        Read up to C{size} bytes, decode them using this reader's
+        Read up to ``size`` bytes, decode them using this reader's
         encoding, and return the resulting unicode string.
 
-        @param size: The maximum number of bytes to read.  If not
+        :param size: The maximum number of bytes to read.  If not
             specified, then read as many bytes as possible.
-
-        @rtype: C{unicode}
+        :type size: int
+        :rtype: unicode
         """
         chars = self._read(size)
 
@@ -848,10 +846,10 @@ class SeekableUnicodeStreamReader(object):
         Read a line of text, decode it using this reader's encoding,
         and return the resulting unicode string.
 
-        @param size: The maximum number of bytes to read.  If no
-            newline is encountered before C{size} bytes have been
-            read, then the returned value may not be a complete line
-            of text.
+        :param size: The maximum number of bytes to read.  If no
+            newline is encountered before ``size`` bytes have been read,
+            then the returned value may not be a complete line of text.
+        :type size: int
         """
         # If we have a non-empty linebuffer, then return the first
         # line from it.  (Note that the last element of linebuffer may
@@ -908,9 +906,9 @@ class SeekableUnicodeStreamReader(object):
         Read this file's contents, decode them using this reader's
         encoding, and return it as a list of unicode lines.
 
-        @rtype: C{list} of C{unicode}
-        @param sizehint: Ignored.
-        @param keepends: If false, then strip newlines.
+        :rtype: list(unicode)
+        :param sizehint: Ignored.
+        :param keepends: If false, then strip newlines.
         """
         return self.read().splitlines(keepends)
 
@@ -956,11 +954,10 @@ class SeekableUnicodeStreamReader(object):
         Move the stream to a new file position.  If the reader is
         maintaining any buffers, tehn they will be cleared.
 
-        @param offset: A byte count offset.
-        @param whence: If C{whence} is 0, then the offset is from the
-            start of the file (offset should be positive).  If
-            C{whence} is 1, then the offset is from the current
-            position (offset may be positive or negative); and if 2,
+        :param offset: A byte count offset.
+        :param whence: If 0, then the offset is from the start of the file
+            (offset should be positive), if 1, then the offset is from the
+            current position (offset may be positive or negative); and if 2,
             then the offset is from the end of the file (offset should
             typically be negative).
         """
@@ -976,7 +973,7 @@ class SeekableUnicodeStreamReader(object):
 
     def char_seek_forward(self, offset):
         """
-        Move the read pointer forward by C{offset} characters.
+        Move the read pointer forward by ``offset`` characters.
         """
         if offset < 0:
             raise ValueError('Negative offsets are not supported')
@@ -987,12 +984,12 @@ class SeekableUnicodeStreamReader(object):
 
     def _char_seek_forward(self, offset, est_bytes=None):
         """
-        Move the file position forward by C{offset} characters,
+        Move the file position forward by ``offset`` characters,
         ignoring all buffers.
 
-        @param est_bytes: A hint, giving an estimate of the number of
-            bytes that will be neded to move foward by C{offset} chars.
-            Defaults to C{offset}.
+        :param est_bytes: A hint, giving an estimate of the number of
+            bytes that will be neded to move foward by ``offset`` chars.
+            Defaults to ``offset``.
         """
         if est_bytes is None: est_bytes = offset
         bytes = ''
@@ -1072,10 +1069,9 @@ class SeekableUnicodeStreamReader(object):
     
     def _read(self, size=None):
         """
-        Read up to C{size} bytes from the underlying stream, decode
+        Read up to ``size`` bytes from the underlying stream, decode
         them using this reader's encoding, and return the resulting
-        unicode string.  C{linebuffer} is *not* included in the
-        result.
+        unicode string.  ``linebuffer`` is not included in the result.
         """
         if size == 0: return u''
         
@@ -1115,9 +1111,9 @@ class SeekableUnicodeStreamReader(object):
         the byte string without the bytes that cause the trunctaion
         error.
 
-        @return: A tuple C{(chars, num_consumed)}, where C{chars} is
-            the decoded unicode string, and C{num_consumed} is the
-            number of bytes that were consumed.
+        Return a tuple ``(chars, num_consumed)``, where ``chars`` is
+        the decoded unicode string, and ``num_consumed`` is the
+        number of bytes that were consumed.
         """
         while True:
             try:
@@ -1132,7 +1128,7 @@ class SeekableUnicodeStreamReader(object):
                 elif self.errors == 'strict':
                     raise
                 
-                # If we're not strcit, then re-process it with our
+                # If we're not strict, then re-process it with our
                 # errors setting.  This *may* raise an exception.
                 else:
                     return self.decode(bytes, self.errors)

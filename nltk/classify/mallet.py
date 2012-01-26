@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Mallet Machine Learning Package
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,16 +8,16 @@
 # $Id: naivebayes.py 2063 2004-07-17 21:02:24Z edloper $
 
 """
-A set of functions used to interface with the external U{Mallet
-<http://mallet.cs.umass.edu/>} machine learning package.  Before
-C{mallet} can be used, you should tell NLTK where it can find the
-C{mallet} package, using the L{config_mallet()} function.  Typical
-usage:
+A set of functions used to interface with the external Mallet_ machine learning
+package. Before mallet can be used, you should tell NLTK where it can find
+the mallet package, using the ``config_mallet()`` function. Typical usage:
 
-    >>> import nltk
-    >>> nltk.config_mallet('.../path/to/mallet')
+    >>> from nltk.classify import mallet
+    >>> mallet.config_mallet() # pass path to mallet as argument if needed
+    [Found mallet: ...]
+
+.. _Mallet: http://mallet.cs.umass.edu/
 """
-__docformat__ = 'epytext en'
 
 import os
 import os.path
@@ -32,14 +32,12 @@ _mallet_home = None
 _mallet_classpath = None
 def config_mallet(mallet_home=None):
     """
-    Configure NLTK's interface to the C{mallet} machine learning
-    package.
+    Configure NLTK's interface to the Mallet machine learning package.
 
-    @param mallet_home: The full path to the C{mallet} directory.  If
-        not specified, then nltk will search the system for a
-        C{mallet} directory; and if one is not found, it will raise a
-        C{LookupError} exception.
-    @type mallet_home: C{string}
+    :type mallet_home: str
+    :param mallet_home: The full path to the mallet directory. If not
+        specified, then NLTK will search the system for a mallet directory;
+        and if one is not found, it will raise a ``LookupError`` exception.
     """
     global _mallet_home, _mallet_classpath
     
@@ -66,12 +64,11 @@ def config_mallet(mallet_home=None):
 def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
                 blocking=True):
     """
-    Call L{nltk.internals.java()} with the given command, and with the
-    classpath modified to include both C{nltk.jar} and all the C{.jar}
-    files defined by Mallet.
+    Call `nltk.internals.java` with the given command, and with the classpath
+    modified to include both ``nltk.jar`` and all the ``.jar`` files defined by
+    Mallet.
 
-    See L{nltk.internals.java()} for parameter and return value
-    descriptions.
+    See `nltk.internals.java` for parameter and return value descriptions.
     """
     if _mallet_classpath is None:
         config_mallet()

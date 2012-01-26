@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -82,7 +82,7 @@ def binding_ops():
 class Variable(object):
     def __init__(self, name):
         """
-        @param name: the name of the variable
+        :param name: the name of the variable
         """
         assert isinstance(name, str), "%s is not a string" % name
         self.name = name
@@ -112,11 +112,12 @@ class Variable(object):
 def unique_variable(pattern=None, ignore=None):
     """
     Return a new, unique variable.
-    param pattern: C{Variable} that is being replaced.  The new variable must
-    be the same type.
-    param term: a C{set} of C{Variable}s that should not be returned from 
-    this function.
-    return: C{Variable}
+
+    :param pattern: ``Variable`` that is being replaced.  The new variable must
+        be the same type.
+    :param term: a set of ``Variable`` objects that should not be returned from 
+        this function.
+    :rtype: Variable
     """
     if pattern is not None:
         if is_indvar(pattern.name):
@@ -321,9 +322,9 @@ class IllegalTypeException(TypeException):
 
 def typecheck(expressions, signature=None):
     """
-    Ensure correct typing across a collection of C{Expression}s.
-    @param expressions: a collection of expressions
-    @param signature: C{dict} that maps variable names to types (or string 
+    Ensure correct typing across a collection of ``Expression`` objects.
+    :param expressions: a collection of expressions
+    :param signature: dict that maps variable names to types (or string 
     representations of types)
     """
     #typecheck and create master signature
@@ -342,16 +343,16 @@ class SubstituteBindingsI(object):
     """
     def substitute_bindings(self, bindings):
         """
-        @return: The object that is obtained by replacing
-        each variable bound by C{bindings} with its values.
-        Aliases are already resolved. (maybe?)
-        @rtype: (any)
+        :return: The object that is obtained by replacing
+            each variable bound by ``bindings`` with its values.
+            Aliases are already resolved. (maybe?)
+        :rtype: (any)
         """
         raise NotImplementedError()
 
     def variables(self):
         """
-        @return: A list of all variables in this object.
+        :return: A list of all variables in this object.
         """
         raise NotImplementedError()
 
@@ -405,8 +406,8 @@ class Expression(SubstituteBindingsI):
         Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal.
         
-        @param other: an C{Expression} to check equality against
-        @param prover: a C{nltk.inference.api.Prover}
+        :param other: an ``Expression`` to check equality against
+        :param prover: a ``nltk.inference.api.Prover``
         """
         assert isinstance(other, Expression), "%s is not an Expression" % other
         
@@ -438,9 +439,10 @@ class Expression(SubstituteBindingsI):
     def typecheck(self, signature=None):
         """
         Infer and check types.  Raise exceptions if necessary.
-        @param signature: C{dict} that maps variable names to types (or string 
-        representations of types)
-        @return: the signature, plus any additional type mappings 
+
+        :param signature: dict that maps variable names to types (or string 
+            representations of types)
+        :return: the signature, plus any additional type mappings 
         """
         sig = defaultdict(list)
         if signature:
@@ -460,7 +462,8 @@ class Expression(SubstituteBindingsI):
         """
         Find the type of the given variable as it is used in this expression.
         For example, finding the type of "P" in "P(x) & Q(x,y)" yields "<e,t>"
-        @param variable: C{Variable}  
+
+        :param variable: Variable
         """
         raise NotImplementedError() 
     
@@ -468,19 +471,19 @@ class Expression(SubstituteBindingsI):
         """
         Set the type of this expression to be the given type.  Raise type 
         exceptions where applicable.
-        @param other_type: C{Type} to set
-        @param signature: C{dict<str, list<AbstractVariableExpression>>} store 
-        all variable expressions with a given name
+
+        :param other_type: Type
+        :param signature: dict(str -> list(AbstractVariableExpression))
         """
         raise NotImplementedError()
     
     def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         """
         Replace every instance of 'variable' with 'expression'
-        @param variable: C{Variable} The variable to replace
-        @param expression: C{Expression} The expression with which to replace it
-        @param replace_bound: C{boolean} Should bound variables be replaced?  
-        @param alpha_convert: C{boolean} Alpha convert automatically to avoid name clashes?
+        :param variable: ``Variable`` The variable to replace
+        :param expression: ``Expression`` The expression with which to replace it
+        :param replace_bound: bool Should bound variables be replaced?  
+        :param alpha_convert: bool Alpha convert automatically to avoid name clashes?
         """
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         assert isinstance(expression, Expression), "%s is not an Expression" % expression
@@ -521,10 +524,10 @@ class Expression(SubstituteBindingsI):
             
         Bound variables are neither applied upon by the function nor given to 
         the combinator.
-        @param function: C{Function<Expression,T>} to call on each subexpression
-        @param combinator: C{Function<list<T>,R>} to combine the results of the 
+        :param function: ``Function<Expression,T>`` to call on each subexpression
+        :param combinator: ``Function<list<T>,R>`` to combine the results of the 
         function calls
-        @return: result of combination C{R}
+        :return: result of combination ``R``
         """
         raise NotImplementedError()
 
@@ -536,10 +539,10 @@ class Expression(SubstituteBindingsI):
         the same signature as the constructor.  The function is not 
         applied to bound variables, but they are passed to the 
         combinator.
-        @param function: C{Function} to call on each subexpression
-        @param combinator: C{Function} with the same signature as the 
+        :param function: ``Function`` to call on each subexpression
+        :param combinator: ``Function`` with the same signature as the 
         constructor, to combine the results of the function calls
-        @return: result of combination
+        :return: result of combination
         """
         return self.visit(function, lambda parts: combinator(*parts))
 
@@ -554,7 +557,7 @@ class Expression(SubstituteBindingsI):
         Return a set of all the variables for binding substitution.
         The variables returned include all free (non-bound) individual 
         variables and any variable starting with '?' or '@'.
-        @return: C{set} of C{Variable}s
+        :return: set of ``Variable`` objects
         """
         return self.free() | set(p for p in self.predicates()|self.constants() 
                                  if re.match('^[?@]', p.name)) 
@@ -563,7 +566,7 @@ class Expression(SubstituteBindingsI):
         """
         Return a set of all the free (non-bound) variables.  This includes
         both individual and predicate variables, but not constants.
-        @return: C{set} of C{Variable}s
+        :return: set of ``Variable`` objects
         """
         return self.visit(lambda e: e.free(),
                           lambda parts: reduce(operator.or_, parts, set()))
@@ -571,7 +574,7 @@ class Expression(SubstituteBindingsI):
     def constants(self):
         """
         Return a set of individual constants (non-predicates).
-        @return: C{set} of C{Variable}s
+        :return: set of ``Variable`` objects
         """
         return self.visit(lambda e: e.constants(), 
                           lambda parts: reduce(operator.or_, parts, set()))
@@ -579,14 +582,14 @@ class Expression(SubstituteBindingsI):
     def predicates(self):
         """
         Return a set of predicates (constants, not variables).
-        @return: C{set} of C{Variable}s
+        :return: set of ``Variable`` objects
         """
         return self.visit(lambda e: e.predicates(), 
                           lambda parts: reduce(operator.or_, parts, set()))
 
     def simplify(self):
         """
-        @return: beta-converted version of this expression
+        :return: beta-converted version of this expression
         """
         return self.visit_structured(lambda e: e.simplify(), self.__class__)
 
@@ -599,8 +602,8 @@ class ApplicationExpression(Expression):
     This class is used to represent two related types of logical expressions.
     
     The first is a Predicate Expression, such as "P(x,y)".  A predicate 
-    expression is comprised of a C{FunctionVariableExpression} or 
-    C{ConstantExpression} as the predicate and a list of Expressions as the 
+    expression is comprised of a ``FunctionVariableExpression`` or 
+    ``ConstantExpression`` as the predicate and a list of Expressions as the 
     arguments.
     
     The second is a an application of one expression to another, such as 
@@ -619,13 +622,13 @@ class ApplicationExpression(Expression):
     The str() method will usually print the curried forms of application 
     expressions.  The one exception is when the the application expression is
     really a predicate expression (ie, underlying function is an 
-    C{AbstractVariableExpression}).  This means that the example from above  
+    ``AbstractVariableExpression``).  This means that the example from above  
     will be returned as "(\x y.see(x,y)(john))(mary)".
     """
     def __init__(self, function, argument):
         """
-        @param function: C{Expression}, for the function expression
-        @param argument: C{Expression}, for the argument   
+        :param function: ``Expression``, for the function expression
+        :param argument: ``Expression``, for the argument   
         """
         assert isinstance(function, Expression), "%s is not an Expression" % function
         assert isinstance(argument, Expression), "%s is not an Expression" % argument
@@ -649,7 +652,7 @@ class ApplicationExpression(Expression):
     type = property(_get_type)
     
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -666,7 +669,7 @@ class ApplicationExpression(Expression):
                        self.argument.type, self.function.type.first))
 
     def findtype(self, variable):
-        """@see Expression.findtype()"""
+        """:see Expression.findtype()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         if self.is_atom():
             function, args = self.uncurry()
@@ -693,7 +696,7 @@ class ApplicationExpression(Expression):
             return ANY_TYPE
         
     def constants(self):
-        """@see: Expression.constants()"""
+        """:see: Expression.constants()"""
         if isinstance(self.function, AbstractVariableExpression):
             function_constants = set()
         else:
@@ -701,7 +704,7 @@ class ApplicationExpression(Expression):
         return function_constants | self.argument.constants()
 
     def predicates(self):
-        """@see: Expression.predicates()"""
+        """:see: Expression.predicates()"""
         if isinstance(self.function, ConstantExpression):
             function_preds = set([self.function.variable])
         else:
@@ -709,7 +712,7 @@ class ApplicationExpression(Expression):
         return function_preds | self.argument.predicates()
 
     def visit(self, function, combinator):
-        """@see: Expression.visit()"""
+        """:see: Expression.visit()"""
         return combinator([function(self.function), function(self.argument)])
         
     def __eq__(self, other):
@@ -786,7 +789,7 @@ class AbstractVariableExpression(Expression):
     """This class represents a variable to be used as a predicate or entity"""
     def __init__(self, variable):
         """
-        @param variable: C{Variable}, for the variable
+        :param variable: ``Variable``, for the variable
         """
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         self.variable = variable
@@ -795,7 +798,7 @@ class AbstractVariableExpression(Expression):
         return self
 
     def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
-        """@see: Expression.replace()"""
+        """:see: Expression.replace()"""
         assert isinstance(variable, Variable), "%s is not an Variable" % variable
         assert isinstance(expression, Expression), "%s is not an Expression" % expression
         if self.variable == variable:
@@ -804,7 +807,7 @@ class AbstractVariableExpression(Expression):
             return self
     
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -821,7 +824,7 @@ class AbstractVariableExpression(Expression):
             varEx.type = resolution
 
     def findtype(self, variable):
-        """@see Expression.findtype()"""
+        """:see Expression.findtype()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         if self.variable == variable:
             return self.type
@@ -829,11 +832,11 @@ class AbstractVariableExpression(Expression):
             return ANY_TYPE
 
     def predicates(self):
-        """@see: Expression.predicates()"""
+        """:see: Expression.predicates()"""
         return set()
 
     def __eq__(self, other):
-        """Allow equality between instances of C{AbstractVariableExpression} 
+        """Allow equality between instances of ``AbstractVariableExpression`` 
         subtypes."""
         return isinstance(other, AbstractVariableExpression) and \
                self.variable == other.variable
@@ -845,7 +848,7 @@ class IndividualVariableExpression(AbstractVariableExpression):
     """This class represents variables that take the form of a single lowercase
     character (other than 'e') followed by zero or more digits."""
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -859,11 +862,11 @@ class IndividualVariableExpression(AbstractVariableExpression):
     type = property(lambda self: ENTITY_TYPE, _set_type)
 
     def free(self):
-        """@see: Expression.free()"""
+        """:see: Expression.free()"""
         return set([self.variable])
         
     def constants(self):
-        """@see: Expression.constants()"""
+        """:see: Expression.constants()"""
         return set()
 
 class FunctionVariableExpression(AbstractVariableExpression):
@@ -872,11 +875,11 @@ class FunctionVariableExpression(AbstractVariableExpression):
     type = ANY_TYPE
 
     def free(self):
-        """@see: Expression.free()"""
+        """:see: Expression.free()"""
         return set([self.variable])
     
     def constants(self):
-        """@see: Expression.constants()"""
+        """:see: Expression.constants()"""
         return set()
 
 class EventVariableExpression(IndividualVariableExpression):
@@ -890,7 +893,7 @@ class ConstantExpression(AbstractVariableExpression):
     type = ENTITY_TYPE
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -914,18 +917,18 @@ class ConstantExpression(AbstractVariableExpression):
             varEx.type = resolution
 
     def free(self):
-        """@see: Expression.free()"""
+        """:see: Expression.free()"""
         return set()
 
     def constants(self):
-        """@see: Expression.constants()"""
+        """:see: Expression.constants()"""
         return set([self.variable])
 
 
 def VariableExpression(variable):
     """
     This is a factory method that instantiates and returns a subtype of 
-    C{AbstractVariableExpression} appropriate for the given variable.
+    ``AbstractVariableExpression`` appropriate for the given variable.
     """
     assert isinstance(variable, Variable), "%s is not a Variable" % variable
     if is_indvar(variable.name):
@@ -943,8 +946,8 @@ class VariableBinderExpression(Expression):
     Expression.  This includes LambdaExpressions and Quantified Expressions"""
     def __init__(self, variable, term):
         """
-        @param variable: C{Variable}, for the variable
-        @param term: C{Expression}, for the term
+        :param variable: ``Variable``, for the variable
+        :param term: ``Expression``, for the term
         """
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         assert isinstance(term, Expression), "%s is not an Expression" % term
@@ -952,7 +955,7 @@ class VariableBinderExpression(Expression):
         self.term = term
 
     def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
-        """@see: Expression.replace()"""
+        """:see: Expression.replace()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         assert isinstance(expression, Expression), "%s is not an Expression" % expression
         #if the bound variable is the thing being replaced
@@ -976,8 +979,8 @@ class VariableBinderExpression(Expression):
 
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @C{newvar}.
-        @param newvar: C{Variable}, for the new variable
+        binder in the expression to ``newvar``.
+        :param newvar: ``Variable``, for the new variable
         """
         assert isinstance(newvar, Variable), "%s is not a Variable" % newvar
         return self.__class__(newvar, 
@@ -986,11 +989,11 @@ class VariableBinderExpression(Expression):
                                                 True))
 
     def free(self):
-        """@see: Expression.free()"""
+        """:see: Expression.free()"""
         return self.term.free() - set([self.variable])
 
     def findtype(self, variable):
-        """@see Expression.findtype()"""
+        """:see Expression.findtype()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         if variable == self.variable:
             return ANY_TYPE
@@ -998,11 +1001,11 @@ class VariableBinderExpression(Expression):
             return self.term.findtype(variable)
 
     def visit(self, function, combinator):
-        """@see: Expression.visit()"""
+        """:see: Expression.visit()"""
         return combinator([function(self.term)])
         
     def visit_structured(self, function, combinator):
-        """@see: Expression.visit_structured()"""
+        """:see: Expression.visit_structured()"""
         return combinator(self.variable, function(self.term))
 
     def __eq__(self, other):
@@ -1026,7 +1029,7 @@ class LambdaExpression(VariableBinderExpression):
                                 self.term.type))
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -1050,7 +1053,7 @@ class QuantifiedExpression(VariableBinderExpression):
     type = property(lambda self: TRUTH_TYPE)
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -1086,7 +1089,7 @@ class NegatedExpression(Expression):
     type = property(lambda self: TRUTH_TYPE)
     
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -1101,11 +1104,11 @@ class NegatedExpression(Expression):
         return self.term.findtype(variable)
         
     def visit(self, function, combinator):
-        """@see: Expression.visit()"""
+        """:see: Expression.visit()"""
         return combinator([function(self.term)])
         
     def negate(self):
-        """@see: Expression.negate()"""
+        """:see: Expression.negate()"""
         return self.term
     
     def __eq__(self, other):
@@ -1125,7 +1128,7 @@ class BinaryExpression(Expression):
     type = property(lambda self: TRUTH_TYPE)
     
     def findtype(self, variable):
-        """@see Expression.findtype()"""
+        """:see Expression.findtype()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         f = self.first.findtype(variable)
         s = self.second.findtype(variable)
@@ -1137,7 +1140,7 @@ class BinaryExpression(Expression):
             return ANY_TYPE
 
     def visit(self, function, combinator):
-        """@see: Expression.visit()"""
+        """:see: Expression.visit()"""
         return combinator([function(self.first), function(self.second)])
         
     def __eq__(self, other):
@@ -1157,7 +1160,7 @@ class BinaryExpression(Expression):
         
 class BooleanExpression(BinaryExpression):
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -1204,7 +1207,7 @@ class IffExpression(BooleanExpression):
 class EqualityExpression(BinaryExpression):
     """This class represents equality expressions like "(x = y)"."""
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """@see Expression._set_type()"""
+        """:see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -1224,7 +1227,7 @@ class LogicParser(object):
 
     def __init__(self, type_check=False):
         """
-        @param type_check: C{boolean} should type checking be performed?
+        :param type_check: bool should type checking be performed?
         to their types.
         """
         assert isinstance(type_check, bool)
@@ -1261,10 +1264,10 @@ class LogicParser(object):
         """
         Parse the expression.
 
-        @param data: C{str} for the input to be parsed
-        @param signature: C{dict<str, str>} that maps variable names to type 
+        :param data: str for the input to be parsed
+        :param signature: ``dict<str, str>`` that maps variable names to type 
         strings
-        @returns: a parsed Expression
+        :returns: a parsed Expression
         """
         data = data.rstrip()
         
@@ -1660,6 +1663,31 @@ class LogicParser(object):
         return '<' + self.__class__.__name__ + ': ' + msg + '>'
 
             
+def parse_logic(s, logic_parser=None):
+    """
+    Convert a file of First Order Formulas into a list of {Expression}s.
+    
+    :param s: the contents of the file
+    :type s: str
+    :param logic_parser: The parser to be used to parse the logical expression
+    :type logic_parser: LogicParser
+    :return: a list of parsed formulas.
+    :rtype: list(Expression)
+    """
+    if logic_parser is None:
+        logic_parser = LogicParser()
+        
+    statements = []
+    for linenum, line in enumerate(s.splitlines()):
+        line = line.strip()
+        if line.startswith('#') or line=='': continue
+        try:
+            statements.append(logic_parser.parse(line))
+        except ParseException:
+            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+    return statements
+        
+        
 class StringTrie(defaultdict):
     LEAF = "<leaf>" 
 
@@ -1707,8 +1735,8 @@ def is_indvar(expr):
     An individual variable must be a single lowercase character other than 'e',
     followed by zero or more digits.
     
-    @param expr: C{str}
-    @return: C{boolean} True if expr is of the correct form 
+    :param expr: str
+    :return: bool True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r'^[a-df-z]\d*$', expr) is not None
@@ -1718,8 +1746,8 @@ def is_funcvar(expr):
     A function variable must be a single uppercase character followed by
     zero or more digits.
     
-    @param expr: C{str}
-    @return: C{boolean} True if expr is of the correct form 
+    :param expr: str
+    :return: bool True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r'^[A-Z]\d*$', expr) is not None
@@ -1729,8 +1757,8 @@ def is_eventvar(expr):
     An event variable must be a single lowercase 'e' character followed by
     zero or more digits.
     
-    @param expr: C{str}
-    @return: C{boolean} True if expr is of the correct form 
+    :param expr: str
+    :return: bool True if expr is of the correct form 
     """
     assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r'^e\d*$', expr) is not None

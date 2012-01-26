@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Zen Chatbot
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Amy Holland <amyrh@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -36,7 +36,7 @@ respond to a question by asking a different question, in much the same way
 as Eliza.
 """
 
-from util import *
+from util import Chat, reflections
 
 # responses are matched top to bottom, so non-specific matches occur later
 # for each match, a list of possible responses is provided

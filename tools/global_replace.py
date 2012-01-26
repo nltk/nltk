@@ -2,7 +2,7 @@
 #
 ## Natural Language Toolkit: substitute a pattern with a replacement in every file
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     count = 0
 
     for root, dirs, files in os.walk('.'):
-        if '/.svn' not in root:
+        if '/.git' not in root:
             for file in files:
                 path = os.path.join(root, file)
                 if update(path, pattern, replacement):

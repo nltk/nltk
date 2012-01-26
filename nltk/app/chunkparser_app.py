@@ -1,38 +1,43 @@
 # Natural Language Toolkit: Regexp Chunk Parser Application
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: srparser.py 5609 2007-12-31 03:02:41Z stevenbird $
 
 """
 A graphical tool for exploring the regular expression based chunk
-parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
-
-@todo: Add a way to select the development set from the menubar.  This
-    might just need to be a selection box (conll vs treebank etc) plus
-    configuration parameters to select what's being chunked (eg VP vs NP)
-    and what part of the data is being used as the development set.
+parser ``nltk.chunk.RegexpChunkParser``.
 """
+
+# Todo: Add a way to select the development set from the menubar.  This
+# might just need to be a selection box (conll vs treebank etc) plus
+# configuration parameters to select what's being chunked (eg VP vs NP)
+# and what part of the data is being used as the development set.
 
 import time
 import textwrap
 import re
 import random
+import tkFileDialog, tkFont
 
-import nltk
+from Tkinter import (Button, Canvas, Checkbutton,
+                     Frame, IntVar, Label, Menu,
+                     Scrollbar, Text, Tk)
+
 from nltk.tree import Tree
 from nltk.util import in_idle
-from nltk.draw.util import *
+from nltk.draw.util import ShowText
+from nltk.corpus import conll2000, treebank_chunk
+from nltk.chunk import ChunkScore, RegexpChunkParser
+from nltk.chunk.regexp import RegexpChunkRule
 
 class RegexpChunkApp(object):
     """
     A graphical tool for exploring the regular expression based chunk
-    parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
+    parser ``nltk.chunk.RegexpChunkParser``.
     
-    See L{HELP} for instructional text.
+    See ``HELP`` for instructional text.
     """
     
     ##/////////////////////////////////////////////////////////////////
@@ -76,7 +81,7 @@ class RegexpChunkApp(object):
     #:   - A title (displayed as a tab)
     #:   - A string description of tabstops (see Tkinter.Text for details)
     #:   - The text contents for the help page.  You can use expressions
-    #:     like <red>...</red> to colorize the text; see L{HELP_AUTOTAG}
+    #:     like <red>...</red> to colorize the text; see ``HELP_AUTOTAG``
     #:     for a list of tags you can use for colorizing.
     HELP = [
         ('Help', '20', 
@@ -253,14 +258,14 @@ class RegexpChunkApp(object):
     def __init__(self, devset_name='conll2000', devset=None,
                  grammar = '', chunk_node='NP', tagset=None):
         """
-        @param devset_name: The name of the development set; used for
+        :param devset_name: The name of the development set; used for
             display & for save files.  If either the name 'treebank'
             or the name 'conll2000' is used, and devset is None, then
             devset will be set automatically.
-        @param devset: A list of chunked sentences
-        @param grammar: The initial grammar to display.
-        @param tagset: Dictionary from tags to string descriptions, used
-            for the help page.  Defaults to C{self.TAGSET}.
+        :param devset: A list of chunked sentences
+        :param grammar: The initial grammar to display.
+        :param tagset: Dictionary from tags to string descriptions, used
+            for the help page.  Defaults to ``self.TAGSET``.
         """
         self._chunk_node = chunk_node
         
@@ -270,9 +275,9 @@ class RegexpChunkApp(object):
         # Named development sets:
         if devset is None:
             if devset_name == 'conll2000':
-                devset = nltk.corpus.conll2000.chunked_sents('train.txt')#[:100]
+                devset = conll2000.chunked_sents('train.txt')#[:100]
             elif devset == 'treebank':
-                devset = nltk.corpus.treebank_chunk.chunked_sents()#[:100]
+                devset = treebank_chunk.chunked_sents()#[:100]
             else:
                 raise ValueError('Unknown development set %s' % devset_name)
 
@@ -283,7 +288,7 @@ class RegexpChunkApp(object):
         """The unparsed grammar string"""
 
         self.normalized_grammar = None
-        """A normalized version of L{self.grammar}."""
+        """A normalized version of ``self.grammar``."""
 
         self.grammar_changed = 0
         """The last time() that the grammar was changed."""
@@ -314,16 +319,15 @@ class RegexpChunkApp(object):
            demon."""
         
         self._eval_normalized_grammar = None
-        """A normalized copy of L{_eval_grammar}."""
+        """A normalized copy of ``_eval_grammar``."""
         
         self._eval_index = 0
         """The index of the next sentence in the development set that
            should be looked at by the eval demon."""
         
-        self._eval_score = nltk.chunk.ChunkScore(chunk_node=chunk_node)
-        """The L{ChunkScore <nltk.chunk.ChunkScore>} object that's used
-           to keep track of the score of the current grammar on the
-           development set."""
+        self._eval_score = ChunkScore(chunk_node=chunk_node)
+        """The ``ChunkScore`` object that's used to keep track of the score
+        of the current grammar on the development set."""
 
         # Set up the main window.
         top = self.top = Tk()
@@ -573,8 +577,7 @@ class RegexpChunkApp(object):
                     self._eval_normalized_grammar = None
                     return
             self._eval_index = 0
-            self._eval_score = nltk.chunk.ChunkScore(chunk_node=
-                                                self._chunk_node)
+            self._eval_score = ChunkScore(chunk_node=self._chunk_node)
             self._eval_grammar = self.grammar
             self._eval_normalized_grammar = self.normalized_grammar
 
@@ -618,7 +621,7 @@ class RegexpChunkApp(object):
         Modify _EVAL_CHUNK to try to keep the amount of time that the
         eval demon takes between _EVAL_DEMON_MIN and _EVAL_DEMON_MAX.
         
-        @param t: The amount of time that the eval demon took.
+        :param t: The amount of time that the eval demon took.
         """
         if t > self._EVAL_DEMON_MAX and self._EVAL_CHUNK > 5:
             self._EVAL_CHUNK = min(self._EVAL_CHUNK-1,
@@ -826,7 +829,7 @@ class RegexpChunkApp(object):
             self.devsetbox.insert('end', tagseq+'\n')
             self.devsetbox.tag_add('wrapindent','end -2c linestart','end -2c')
             # Run a partial parser, and extract gold & test chunks
-            chunker = nltk.chunk.RegexpChunkParser(rules[:i])
+            chunker = RegexpChunkParser(rules[:i])
             test_tree = self._chunkparse(gold_tree.leaves())
             gold_chunks = self._chunks(gold_tree)
             test_chunks = self._chunks(test_tree)
@@ -898,11 +901,11 @@ class RegexpChunkApp(object):
         self.normalized_grammar = self.normalize_grammar(
             self._history[index][0])
         if self.normalized_grammar:
-            rules = [nltk.chunk.regexp.RegexpChunkRule.parse(line)
+            rules = [RegexpChunkRule.parse(line)
                      for line in self.normalized_grammar.split('\n')]
         else:
             rules = []
-        self.chunker = nltk.chunk.RegexpChunkParser(rules)
+        self.chunker = RegexpChunkParser(rules)
         # Show the score.
         self._eval_plot()
         # Update the devset box
@@ -1030,7 +1033,8 @@ class RegexpChunkApp(object):
             line = re.sub(r'((\\.|[^#])*)(#.*)?', r'\1', line)
             line = line.strip()
             if line:
-                try: nltk.chunk.regexp.RegexpChunkRule.parse(line)
+                try:
+                    RegexpChunkRule.parse(line)
                 except ValueError, e:
                     self.grammarbox.tag_add('error', '%s.0' % (lineno+1),
                                             '%s.0 lineend' % (lineno+1))
@@ -1063,7 +1067,7 @@ class RegexpChunkApp(object):
         try:
             # Note: the normalized grammar has no blank lines.
             if normalized_grammar:
-                rules = [nltk.chunk.regexp.RegexpChunkRule.parse(line)
+                rules = [RegexpChunkRule.parse(line)
                          for line in normalized_grammar.split('\n')]
             else:
                 rules = []
@@ -1073,7 +1077,7 @@ class RegexpChunkApp(object):
             self.chunker = None
             return
 
-        self.chunker = nltk.chunk.RegexpChunkParser(rules)
+        self.chunker = RegexpChunkParser(rules)
         self.grammarbox.tag_remove('error', '1.0', 'end')
         self.grammar_changed = time.time()
         # Display the results

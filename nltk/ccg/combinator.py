@@ -1,11 +1,14 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from api import *
+from nltk.parse import ParserI
+from nltk.internals import Counter
+
+from nltk.ccg.api import FunctionalCategory
 
 class UndirectedBinaryCombinator(object):
     """
@@ -259,6 +262,7 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
 
         arg = innermostFunction(arg)
 
+        # left, arg_categ are undefined!
         subs = left.can_unify(arg_categ.arg())
         if subs is not None:
             return True

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Incremental Earley Chart Parser
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Rob Speer <rspeer@mit.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
@@ -13,26 +13,35 @@
 # $Id: chart.py 8144 2009-06-01 22:27:39Z edloper $
 
 """
-Data classes and parser implementations for I{incremental} chart 
+Data classes and parser implementations for *incremental* chart 
 parsers, which use dynamic programming to efficiently parse a text.  
-A X{chart parser} derives parse trees for a text by iteratively adding 
-\"edges\" to a \"chart\".  Each X{edge} represents a hypothesis about the tree
-structure for a subsequence of the text.  The X{chart} is a
+A "chart parser" derives parse trees for a text by iteratively adding 
+\"edges\" to a \"chart\".  Each "edge" represents a hypothesis about the tree
+structure for a subsequence of the text.  The "chart" is a
 \"blackboard\" for composing and combining these hypotheses.
 
-A parser is X{incremental}, if it guarantees that for all i, j where i < j,
+A parser is "incremental", if it guarantees that for all i, j where i < j,
 all edges ending at i are built before any edges ending at j.    
 This is appealing for, say, speech recognizer hypothesis filtering.
 
-The main parser class is L{EarleyChartParser}, which is a top-down
+The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
 
-from nltk.grammar import *
-
-from api import *
-from chart import *
-from featurechart import *
+from nltk.parse.chart import (Chart, ChartParser, EdgeI, LeafEdge, LeafInitRule,
+                              BottomUpPredictRule, BottomUpPredictCombineRule,
+                              TopDownInitRule, SingleEdgeFundamentalRule,
+                              EmptyPredictRule,
+                              CachedTopDownPredictRule,
+                              FilteredSingleEdgeFundamentalRule,
+                              FilteredBottomUpPredictCombineRule)
+from nltk.parse.featurechart import (FeatureChart, FeatureChartParser,
+                                     FeatureTopDownInitRule,
+                                     FeatureTopDownPredictRule,
+                                     FeatureEmptyPredictRule,
+                                     FeatureBottomUpPredictRule,
+                                     FeatureBottomUpPredictCombineRule,
+                                     FeatureSingleEdgeFundamentalRule)
 
 #////////////////////////////////////////////////////////////
 # Incremental Chart
@@ -241,40 +250,38 @@ LC_INCREMENTAL_STRATEGY = [LeafInitRule(),
 
 class IncrementalChartParser(ChartParser):
     """
-    An I{incremental} chart parser implementing Jay Earley's 
+    An *incremental* chart parser implementing Jay Earley's 
     parsing algorithm:
 
-        - For each index I{end} in [0, 1, ..., N]:
-          - For each I{edge} s.t. I{edge}.end = I{end}:
-            - If I{edge} is incomplete, and I{edge}.next is not a part
-              of speech:
-                - Apply PredictorRule to I{edge}
-            - If I{edge} is incomplete, and I{edge}.next is a part of
-              speech:
-                - Apply ScannerRule to I{edge}
-            - If I{edge} is complete:
-                - Apply CompleterRule to I{edge}
-        - Return any complete parses in the chart
+    | For each index end in [0, 1, ..., N]:
+    |   For each edge such that edge.end = end:
+    |     If edge is incomplete and edge.next is not a part of speech:
+    |       Apply PredictorRule to edge
+    |     If edge is incomplete and edge.next is a part of speech:
+    |       Apply ScannerRule to edge
+    |     If edge is complete:
+    |       Apply CompleterRule to edge
+    | Return any complete parses in the chart
     """
     def __init__(self, grammar, strategy=BU_LC_INCREMENTAL_STRATEGY,
                  trace=0, trace_chart_width=50, 
                  chart_class=IncrementalChart): 
         """
-        Create a new Earley chart parser, that uses C{grammar} to
+        Create a new Earley chart parser, that uses ``grammar`` to
         parse texts.
         
-        @type grammar: C{ContextFreeGrammar}
-        @param grammar: The grammar used to parse texts.
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
+        :type grammar: ContextFreeGrammar
+        :param grammar: The grammar used to parse texts.
+        :type trace: int
+        :param trace: The level of tracing that should be used when
+            parsing a text.  ``0`` will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @type trace_chart_width: C{int}
-        @param trace_chart_width: The default total width reserved for 
+        :type trace_chart_width: int
+        :param trace_chart_width: The default total width reserved for 
             the chart in trace output.  The remainder of each line will 
             be used to display edges. 
-        @param chart_class: The class that should be used to create
+        :param chart_class: The class that should be used to create
             the charts used by this parser.
         """
         self._grammar = grammar
@@ -413,9 +420,10 @@ def demo(should_print_times=True, should_print_grammar=False,
     A demonstration of the Earley parsers.
     """
     import sys, time
+    from nltk.parse.chart import demo_grammar
 
     # The grammar for ChartParser and SteppingChartParser:
-    grammar = nltk.parse.chart.demo_grammar()
+    grammar = demo_grammar()
     if should_print_grammar:
         print "* Grammar"
         print grammar

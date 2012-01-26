@@ -1,15 +1,15 @@
 # Natural Language Toolkit: K-Means Clusterer
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import numpy
 import random
+import copy
 
-from api import *
-from util import *
+from nltk.cluster.util import VectorSpaceClusterer
 
 class KMeansClusterer(VectorSpaceClusterer):
     """
@@ -25,26 +25,31 @@ class KMeansClusterer(VectorSpaceClusterer):
     def __init__(self, num_means, distance, repeats=1,
                        conv_test=1e-6, initial_means=None,
                        normalise=False, svd_dimensions=None,
-                       rng=None):
+                       rng=None, avoid_empty_clusters=False):
+
         """
-        @param  num_means:  the number of means to use (may use fewer)
-        @type   num_means:  int
-        @param  distance:   measure of distance between two vectors
-        @type   distance:   function taking two vectors and returing a float
-        @param  repeats:    number of randomised clustering trials to use
-        @type   repeats:    int
-        @param  conv_test:  maximum variation in mean differences before
+        :param  num_means:  the number of means to use (may use fewer)
+        :type   num_means:  int
+        :param  distance:   measure of distance between two vectors
+        :type   distance:   function taking two vectors and returing a float
+        :param  repeats:    number of randomised clustering trials to use
+        :type   repeats:    int
+        :param  conv_test:  maximum variation in mean differences before
                             deemed convergent
-        @type   conv_test:  number
-        @param  initial_means: set of k initial means
-        @type   initial_means: sequence of vectors
-        @param  normalise:  should vectors be normalised to length 1
-        @type   normalise:  boolean
-        @param svd_dimensions: number of dimensions to use in reducing vector
+        :type   conv_test:  number
+        :param  initial_means: set of k initial means
+        :type   initial_means: sequence of vectors
+        :param  normalise:  should vectors be normalised to length 1
+        :type   normalise:  boolean
+        :param svd_dimensions: number of dimensions to use in reducing vector
                                dimensionsionality with SVD
-        @type svd_dimensions: int 
-        @param  rng:        random number generator (or None)
-        @type   rng:        Random
+        :type svd_dimensions: int 
+        :param  rng:        random number generator (or None)
+        :type   rng:        Random
+        :param avoid_empty_clusters: include current centroid in computation 
+                                     of next one; avoids undefined behavior 
+                                     when clusters become empty
+        :type avoid_empty_clusters: boolean
         """
         VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
         self._num_means = num_means
@@ -57,6 +62,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         self._repeats = repeats
         if rng: self._rng = rng
         else:   self._rng = random.Random()
+        self._avoid_empty_clusters = avoid_empty_clusters
 
     def cluster_vectorspace(self, vectors, trace=False):
         if self._means and self._repeats > 1:
@@ -106,7 +112,7 @@ class KMeansClusterer(VectorSpaceClusterer):
                     #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
                 # recalculate cluster means by computing the centroid of each cluster
-                new_means = map(self._centroid, clusters)
+                new_means = map(self._centroid, clusters, self._means)
 
                 # measure the degree of change from the previous step for convergence
                 difference = self._sum_distances(self._means, new_means)
@@ -145,12 +151,21 @@ class KMeansClusterer(VectorSpaceClusterer):
             difference += self._distance(u, v) 
         return difference
 
-    def _centroid(self, cluster):
-        assert len(cluster) > 0
-        centroid = copy.copy(cluster[0])
-        for vector in cluster[1:]:
-            centroid += vector
-        return centroid / float(len(cluster))
+    def _centroid(self, cluster, mean):
+        if self._avoid_empty_clusters:
+            centroid = copy.copy(mean)
+            for vector in cluster:
+                centroid += vector
+            return centroid / (1+float(len(cluster)))
+        else:
+            if not len(cluster):
+                sys.stderr.write('Error: no centroid defined for empty cluster.\n')
+                sys.stderr.write('Try setting argument \'avoid_empty_clusters\' to True\n')
+                assert(False)
+            centroid = copy.copy(cluster[0])
+            for vector in cluster[1:]:
+                centroid += vector
+            return centroid / float(len(cluster))
 
     def __repr__(self):
         return '<KMeansClusterer means=%s repeats=%d>' % \
@@ -167,12 +182,12 @@ def _vector_compare(x, y):
 def demo():
     # example from figure 14.9, page 517, Manning and Schutze
 
-    from nltk import cluster
+    from nltk.cluster import KMeansClusterer, euclidean_distance
 
     vectors = [numpy.array(f) for f in [[2, 1], [1, 3], [4, 7], [6, 7]]]
     means = [[4, 3], [5, 5]]
 
-    clusterer = cluster.KMeansClusterer(2, euclidean_distance, initial_means=means)
+    clusterer = KMeansClusterer(2, euclidean_distance, initial_means=means)
     clusters = clusterer.cluster(vectors, True, trace=True)
 
     print 'Clustered:', vectors
@@ -185,7 +200,7 @@ def demo():
     # test k-means using the euclidean distance metric, 2 means and repeat
     # clustering 10 times with random seeds
 
-    clusterer = cluster.KMeansClusterer(2, euclidean_distance, repeats=10)
+    clusterer = KMeansClusterer(2, euclidean_distance, repeats=10)
     clusters = clusterer.cluster(vectors, True)
     print 'Clustered:', vectors
     print 'As:', clusters

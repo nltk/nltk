@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Prover9 Theorem Prover 
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 #
@@ -38,10 +38,9 @@ p9_return_codes = {
  
 class Prover9CommandParent(object):
     """
-    A common base class used by both L{Prover9Command} and L{MaceCommand
-    <mace.MaceCommand>}, which is responsible for maintaining a goal and a
-    set of assumptions, and generating prover9-style input files from
-    them.
+    A common base class used by both ``Prover9Command`` and ``MaceCommand``,
+    which is responsible for maintaining a goal and a set of assumptions,
+    and generating prover9-style input files from them.
     """
     def print_assumptions(self, output_format='nltk'):
         """
@@ -59,22 +58,22 @@ class Prover9CommandParent(object):
 
 class Prover9Command(Prover9CommandParent, BaseProverCommand):
     """
-    A L{ProverCommand} specific to the L{Prover9} prover.  It contains
+    A ``ProverCommand`` specific to the ``Prover9`` prover.  It contains
     the a print_assumptions() method that is used to print the list
     of assumptions in multiple formats.
     """
     def __init__(self, goal=None, assumptions=None, timeout=60, prover=None):
         """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in
+        :param goal: Input expression to prove
+        :type goal: sem.Expression
+        :param assumptions: Input expressions to use as assumptions in
             the proof.
-        @type assumptions: C{list} of L{logic.Expression}
-        @param timeout: number of seconds before timeout; set to 0 for
+        :type assumptions: list(sem.Expression)
+        :param timeout: number of seconds before timeout; set to 0 for
             no timeout.
-        @type timeout: C{int}
-        @param prover: a prover.  If not set, one will be created.
-        @type prover: C{Prover9}
+        :type timeout: int
+        :param prover: a prover.  If not set, one will be created.
+        :type prover: Prover9
         """
         if not assumptions:
             assumptions = []
@@ -88,7 +87,7 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
         
     def decorate_proof(self, proof_string, simplify=True):
         """
-        @see BaseProverCommand.decorate_proof()
+        :see BaseProverCommand.decorate_proof()
         """
         if simplify:
             return self._prover._call_prooftrans(proof_string, ['striplabels'])[0].rstrip()
@@ -98,7 +97,7 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
 
 class Prover9Parent(object):
     """
-    A common class extended by both L{Prover9} and L{Mace <mace.Mace>}.
+    A common class extended by both ``Prover9`` and ``Mace <mace.Mace>``.
     It contains the functionality required to convert NLTK-style
     expressions into Prover9-style expressions.
     """
@@ -122,7 +121,7 @@ class Prover9Parent(object):
     
     def prover9_input(self, goal, assumptions):
         """
-        @return: The input string that should be provided to the
+        :return: The input string that should be provided to the
         prover9 binary.  This string is formed based on the goal,
         assumptions, and timeout value of this object.
         """
@@ -144,7 +143,7 @@ class Prover9Parent(object):
     def binary_locations(self):
         """
         A list of directories that should be searched for the prover9
-        executables.  This list is used by L{config_prover9} when searching
+        executables.  This list is used by ``config_prover9`` when searching
         for the prover9 executables.
         """
         return ['/usr/local/bin/prover9',
@@ -169,11 +168,11 @@ class Prover9Parent(object):
         """
         Call the binary with the given input.
     
-        @param input_str: A string whose contents are used as stdin.
-        @param binary: The location of the binary to call
-        @param args: A list of command-line arguments.
-        @return: A tuple (stdout, returncode)
-        @see: L{config_prover9}
+        :param input_str: A string whose contents are used as stdin.
+        :param binary: The location of the binary to call
+        :param args: A list of command-line arguments.
+        :return: A tuple (stdout, returncode)
+        :see: ``config_prover9``
         """
         if verbose:
             print 'Calling:', binary
@@ -197,7 +196,7 @@ class Prover9Parent(object):
 
 def convert_to_prover9(input):
     """
-    Convert C{logic.Expression}s to Prover9 format.
+    Convert a ``logic.Expression`` to Prover9 format.
     """
     if isinstance(input, list):
         result = []
@@ -217,7 +216,7 @@ def convert_to_prover9(input):
 
 def _convert_to_prover9(expression):
     """
-    Convert C{logic.Expression} to Prover9 formatted string.
+    Convert ``logic.Expression`` to Prover9 formatted string.
     """
     if isinstance(expression, ExistsExpression):
         return 'exists ' + str(expression.variable) + ' ' + _convert_to_prover9(expression.term)
@@ -257,7 +256,7 @@ class Prover9(Prover9Parent, Prover):
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
         Use Prover9 to prove a theorem.
-        @return: A pair whose first element is a boolean indicating if the 
+        :return: A pair whose first element is a boolean indicating if the 
         proof was successful (i.e. returns value of 0) and whose second element
         is the output of the prover.        
         """
@@ -270,19 +269,19 @@ class Prover9(Prover9Parent, Prover):
     
     def prover9_input(self, goal, assumptions):
         """
-        @see: Prover9Parent.prover9_input
+        :see: Prover9Parent.prover9_input
         """
         s = 'clear(auto_denials).\n' #only one proof required
         return s + Prover9Parent.prover9_input(self, goal, assumptions)
         
     def _call_prover9(self, input_str, args=[], verbose=False):
         """
-        Call the C{prover9} binary with the given input.
+        Call the ``prover9`` binary with the given input.
     
-        @param input_str: A string whose contents are used as stdin.
-        @param args: A list of command-line arguments.
-        @return: A tuple (stdout, returncode)
-        @see: L{config_prover9}
+        :param input_str: A string whose contents are used as stdin.
+        :param args: A list of command-line arguments.
+        :return: A tuple (stdout, returncode)
+        :see: ``config_prover9``
         """
         if self._prover9_bin is None:
             self._prover9_bin = self._find_binary('prover9', verbose)
@@ -310,12 +309,12 @@ class Prover9(Prover9Parent, Prover):
     
     def _call_prooftrans(self, input_str, args=[], verbose=False):
         """
-        Call the C{prooftrans} binary with the given input.
+        Call the ``prooftrans`` binary with the given input.
     
-        @param input_str: A string whose contents are used as stdin.
-        @param args: A list of command-line arguments.
-        @return: A tuple (stdout, returncode)
-        @see: L{config_prover9}
+        :param input_str: A string whose contents are used as stdin.
+        :param args: A list of command-line arguments.
+        :return: A tuple (stdout, returncode)
+        :see: ``config_prover9``
         """
         if self._prooftrans_bin is None:
             self._prooftrans_bin = self._find_binary('prooftrans', verbose)

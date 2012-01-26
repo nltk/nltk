@@ -9,13 +9,13 @@
 """
 Interfaces and base classes for theorem provers and model builders.
 
-L{Prover} is a standard interface for a theorem prover which tries to prove a goal from a 
+``Prover`` is a standard interface for a theorem prover which tries to prove a goal from a 
 list of assumptions.
 
-L{ModelBuilder} is a standard interface for a model builder. Given just a set of assumptions.
+``ModelBuilder`` is a standard interface for a model builder. Given just a set of assumptions.
 the model builder tries to build a model for the assumptions. Given a set of assumptions and a 
-goal M{G}, the model builder tries to find a counter-model, in the sense of a model that will satisfy
-the assumptions plus the negation of M{G}. 
+goal *G*, the model builder tries to find a counter-model, in the sense of a model that will satisfy
+the assumptions plus the negation of *G*. 
 """
 
 import threading
@@ -24,19 +24,19 @@ import time
 class Prover(object):
     """
     Interface for trying to prove a goal from assumptions.  Both the goal and 
-    the assumptions are constrained to be formulas of L{logic.Expression}.
+    the assumptions are constrained to be formulas of ``logic.Expression``.
     """
     def prove(self, goal=None, assumptions=None, verbose=False):
         """
-        @return: Whether the proof was successful or not.
-        @rtype: C{bool} 
+        :return: Whether the proof was successful or not.
+        :rtype: bool 
         """
         return self._prove(goal, assumptions, verbose)[0]
 
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
-        @return: Whether the proof was successful or not, along with the proof
-        @rtype: C{tuple}: (C{bool}, C{str}) 
+        :return: Whether the proof was successful or not, along with the proof
+        :rtype: tuple: (bool, str) 
         """
         raise NotImplementedError()
     
@@ -45,21 +45,21 @@ class ModelBuilder(object):
     Interface for trying to build a model of set of formulas.
     Open formulas are assumed to be universally quantified.
     Both the goal and the assumptions are constrained to be formulas 
-    of L{logic.Expression}.
+    of ``logic.Expression``.
     """
     def build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Perform the actual model building.
-        @return: Whether a model was generated
-        @rtype: C{bool} 
+        :return: Whether a model was generated
+        :rtype: bool 
         """
         return self._build_model(goal, assumptions, verbose)[0]
 
     def _build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Perform the actual model building.
-        @return: Whether a model was generated, and the model itself
-        @rtype: C{tuple} of (C{bool}, C{nltk.sem.evaluate.Valuation}) 
+        :return: Whether a model was generated, and the model itself
+        :rtype: tuple(bool, sem.Valuation)
         """
         raise NotImplementedError()
 
@@ -73,8 +73,8 @@ class TheoremToolCommand(object):
         """
         Add new assumptions to the assumption list.
         
-        @param new_assumptions: new assumptions
-        @type new_assumptions: C{list} of C{Expression}s
+        :param new_assumptions: new assumptions
+        :type new_assumptions: list(sem.Expression)
         """
         raise NotImplementedError()
     
@@ -82,11 +82,11 @@ class TheoremToolCommand(object):
         """
         Retract assumptions from the assumption list.
         
-        @param debug: If True, give warning when C{retracted} is not present on 
+        :param debug: If True, give warning when ``retracted`` is not present on 
         assumptions list.
-        @type debug: C{bool}
-        @param retracted: assumptions to be retracted
-        @type retracted: C{list} of L{sem.logic.Expression}s
+        :type debug: bool
+        :param retracted: assumptions to be retracted
+        :type retracted: list(sem.Expression)
         """
         raise NotImplementedError()
     
@@ -94,7 +94,7 @@ class TheoremToolCommand(object):
         """
         List the current assumptions.
         
-        @return: C{list} of C{Expression}       
+        :return: list of ``Expression``       
         """
         raise NotImplementedError()
     
@@ -102,7 +102,7 @@ class TheoremToolCommand(object):
         """
         Return the goal
         
-        @return: C{Expression}
+        :return: ``Expression``
         """
         raise NotImplementedError()
         
@@ -115,8 +115,8 @@ class TheoremToolCommand(object):
 
 class ProverCommand(TheoremToolCommand):
     """
-    This class holds a C{Prover}, a goal, and a list of assumptions.  When
-    prove() is called, the C{Prover} is executed with the goal and assumptions.
+    This class holds a ``Prover``, a goal, and a list of assumptions.  When
+    prove() is called, the ``Prover`` is executed with the goal and assumptions.
     """
     def prove(self, verbose=False):
         """
@@ -127,30 +127,30 @@ class ProverCommand(TheoremToolCommand):
     def proof(self, simplify=True):
         """
         Return the proof string
-        @param simplify: C{boolean} simplify the proof?
-        @return: C{str}
+        :param simplify: bool simplify the proof?
+        :return: str
         """
         raise NotImplementedError()
 
     def get_prover(self):
         """
         Return the prover object
-        @return: C{Prover}
+        :return: ``Prover``
         """
         raise NotImplementedError()
 
 
 class ModelBuilderCommand(TheoremToolCommand):
     """
-    This class holds a C{ModelBuilder}, a goal, and a list of assumptions.  
-    When build_model() is called, the C{ModelBuilder} is executed with the goal 
+    This class holds a ``ModelBuilder``, a goal, and a list of assumptions.  
+    When build_model() is called, the ``ModelBuilder`` is executed with the goal 
     and assumptions.
     """
     def build_model(self, verbose=False):
         """
         Perform the actual model building.
-        @return: A model if one is generated; None otherwise.
-        @rtype: C{nltk.sem.evaluate.Valuation} 
+        :return: A model if one is generated; None otherwise.
+        :rtype: sem.Valuation
         """
         raise NotImplementedError()
     
@@ -158,15 +158,15 @@ class ModelBuilderCommand(TheoremToolCommand):
         """
         Return a string representation of the model
         
-        @param simplify: C{boolean} simplify the proof?
-        @return: C{str}
+        :param simplify: bool simplify the proof?
+        :return: str
         """
         raise NotImplementedError()
 
     def get_model_builder(self):
         """
         Return the model builder object
-        @return: C{ModelBuilder}
+        :return: ``ModelBuilder``
         """
         raise NotImplementedError()
 
@@ -178,11 +178,11 @@ class BaseTheoremToolCommand(TheoremToolCommand):
     """
     def __init__(self, goal=None, assumptions=None):
         """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in 
+        :param goal: Input expression to prove
+        :type goal: sem.Expression
+        :param assumptions: Input expressions to use as assumptions in 
             the proof.
-        @type assumptions: C{list} of L{logic.Expression}
+        :type assumptions: list(sem.Expression)
         """
         self._goal = goal
         
@@ -198,8 +198,8 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         """
         Add new assumptions to the assumption list.
         
-        @param new_assumptions: new assumptions
-        @type new_assumptions: C{list} of L{sem.logic.Expression}s
+        :param new_assumptions: new assumptions
+        :type new_assumptions: list(sem.Expression)
         """
         self._assumptions.extend(new_assumptions)
         self._result = None
@@ -208,11 +208,11 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         """
         Retract assumptions from the assumption list.
         
-        @param debug: If True, give warning when C{retracted} is not present on 
+        :param debug: If True, give warning when ``retracted`` is not present on 
         assumptions list.
-        @type debug: C{bool}
-        @param retracted: assumptions to be retracted
-        @type retracted: C{list} of L{sem.logic.Expression}s
+        :type debug: bool
+        :param retracted: assumptions to be retracted
+        :type retracted: list(sem.Expression)
         """
         retracted = set(retracted)
         result_list = filter(lambda a: a not in retracted, self._assumptions)
@@ -228,7 +228,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         """
         List the current assumptions.
         
-        @return: C{list} of C{Expression}       
+        :return: list of ``Expression``       
         """
         return self._assumptions
     
@@ -236,7 +236,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         """
         Return the goal
         
-        @return: C{Expression}
+        :return: ``Expression``
         """
         return self._goal
         
@@ -250,14 +250,14 @@ class BaseTheoremToolCommand(TheoremToolCommand):
 
 class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
     """
-    This class holds a C{Prover}, a goal, and a list of assumptions.  When
-    prove() is called, the C{Prover} is executed with the goal and assumptions.
+    This class holds a ``Prover``, a goal, and a list of assumptions.  When
+    prove() is called, the ``Prover`` is executed with the goal and assumptions.
     """
     def __init__(self, prover, goal=None, assumptions=None):
         """
-        @param prover: The theorem tool to execute with the assumptions
-        @type prover: C{Prover}
-        @see: C{BaseTheoremToolCommand}
+        :param prover: The theorem tool to execute with the assumptions
+        :type prover: Prover
+        :see: ``BaseTheoremToolCommand``
         """
         self._prover = prover
         """The theorem tool to execute with the assumptions"""
@@ -280,8 +280,8 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
     def proof(self, simplify=True):
         """
         Return the proof string
-        @param simplify: C{boolean} simplify the proof?
-        @return: C{str}
+        :param simplify: bool simplify the proof?
+        :return: str
         """
         if self._result is None:
             raise LookupError("You have to call prove() first to get a proof!")
@@ -291,9 +291,9 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
     def decorate_proof(self, proof_string, simplify=True):
         """
         Modify and return the proof string
-        @param proof_string: C{str} the proof to decorate
-        @param simplify: C{boolean} simplify the proof?
-        @return: C{str}
+        :param proof_string: str the proof to decorate
+        :param simplify: bool simplify the proof?
+        :return: str
         """
         return proof_string
 
@@ -303,15 +303,15 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
     
 class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
     """
-    This class holds a C{ModelBuilder}, a goal, and a list of assumptions.  When
-    build_model() is called, the C{ModelBuilder} is executed with the goal and 
+    This class holds a ``ModelBuilder``, a goal, and a list of assumptions.  When
+    build_model() is called, the ``ModelBuilder`` is executed with the goal and 
     assumptions.
     """
     def __init__(self, modelbuilder, goal=None, assumptions=None):
         """
-        @param modelbuilder: The theorem tool to execute with the assumptions
-        @type modelbuilder: C{ModelBuilder}
-        @see: C{BaseTheoremToolCommand}
+        :param modelbuilder: The theorem tool to execute with the assumptions
+        :type modelbuilder: ModelBuilder
+        :see: ``BaseTheoremToolCommand``
         """
         self._modelbuilder = modelbuilder
         """The theorem tool to execute with the assumptions"""
@@ -336,8 +336,8 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         """
         Return a string representation of the model
         
-        @param simplify: C{boolean} simplify the proof?
-        @return: C{str}
+        :param simplify: bool simplify the proof?
+        :return: str
         """
         if self._result is None:
             raise LookupError('You have to call build_model() first to '
@@ -347,9 +347,9 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         
     def _decorate_model(self, valuation_str, format=None):
         """
-        @param valuation_str: C{str} with the model builder's output 
-        @param format: C{str} indicating the format for displaying
-        @return: C{str}
+        :param valuation_str: str with the model builder's output 
+        :param format: str indicating the format for displaying
+        :return: str
         """
         return valuation_str
 
@@ -359,12 +359,12 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
 
 class TheoremToolCommandDecorator(TheoremToolCommand):
     """
-    A base decorator for the C{ProverCommandDecorator} and 
-    C{ModelBuilderCommandDecorator} classes from which decorators can extend.
+    A base decorator for the ``ProverCommandDecorator`` and 
+    ``ModelBuilderCommandDecorator`` classes from which decorators can extend.
     """
     def __init__(self, command):
         """
-        @param command: C{TheoremToolCommand} to decorate
+        :param command: ``TheoremToolCommand`` to decorate
         """
         self._command = command
 
@@ -392,12 +392,12 @@ class TheoremToolCommandDecorator(TheoremToolCommand):
 
 class ProverCommandDecorator(TheoremToolCommandDecorator, ProverCommand):
     """
-    A base decorator for the C{ProverCommand} class from which other 
+    A base decorator for the ``ProverCommand`` class from which other 
     prover command decorators can extend.
     """
     def __init__(self, proverCommand):
         """
-        @param proverCommand: C{ProverCommand} to decorate
+        :param proverCommand: ``ProverCommand`` to decorate
         """
         TheoremToolCommandDecorator.__init__(self, proverCommand)
 
@@ -416,8 +416,8 @@ class ProverCommandDecorator(TheoremToolCommandDecorator, ProverCommand):
     def proof(self, simplify=True):
         """
         Return the proof string
-        @param simplify: C{boolean} simplify the proof?
-        @return: C{str}
+        :param simplify: bool simplify the proof?
+        :return: str
         """
         if self._result is None:
             raise LookupError("You have to call prove() first to get a proof!")
@@ -427,9 +427,9 @@ class ProverCommandDecorator(TheoremToolCommandDecorator, ProverCommand):
     def decorate_proof(self, proof_string, simplify=True):
         """
         Modify and return the proof string
-        @param proof_string: C{str} the proof to decorate
-        @param simplify: C{boolean} simplify the proof?
-        @return: C{str}
+        :param proof_string: str the proof to decorate
+        :param simplify: bool simplify the proof?
+        :return: str
         """
         return self._command.decorate_proof(proof_string, simplify)
 
@@ -439,12 +439,12 @@ class ProverCommandDecorator(TheoremToolCommandDecorator, ProverCommand):
 
 class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderCommand):
     """
-    A base decorator for the C{ModelBuilderCommand} class from which other 
+    A base decorator for the ``ModelBuilderCommand`` class from which other 
     prover command decorators can extend.
     """
     def __init__(self, modelBuilderCommand):
         """
-        @param modelBuilderCommand: C{ModelBuilderCommand} to decorate
+        :param modelBuilderCommand: ``ModelBuilderCommand`` to decorate
         """
         TheoremToolCommandDecorator.__init__(self, modelBuilderCommand)
 
@@ -469,8 +469,8 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         """
         Return a string representation of the model
         
-        @param simplify: C{boolean} simplify the proof?
-        @return: C{str}
+        :param simplify: bool simplify the proof?
+        :return: str
         """
         if self._result is None:
             raise LookupError('You have to call build_model() first to '
@@ -481,9 +481,9 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
     def _decorate_model(self, valuation_str, format=None):
         """
         Modify and return the proof string
-        @param valuation_str: C{str} with the model builder's output 
-        @param format: C{str} indicating the format for displaying
-        @return: C{str}
+        :param valuation_str: str with the model builder's output 
+        :param format: str indicating the format for displaying
+        :return: str
         """
         return self._command._decorate_model(valuation_str, format)
 

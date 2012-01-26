@@ -10,18 +10,13 @@ NLTK is suitable for linguists, engineers, students, educators, researchers, and
 NLTK is available for Windows, Mac OS X, and Linux. Best of all, NLTK is a free, open source, community-driven project.
 
 NLTK has been called "a wonderful tool for teaching, and working in, computational linguistics using Python,"
-and "an amazing library to play with natural language." 
+and "an amazing library to play with natural language."
 
-+-------------------------------+----------------------------------------------------+
-| .. image:: images/book.gif    | Published in 2009 by the creators of NLTK,         |
-|                               | *Natural Language Processing with Python*          |
-|                               | provides a practical introduction to               |
-|                               | programming for language processing.               |
-|                               | It guides the reader through the fundamentals      |
-|                               | of writing Python programs, working with corpora,  |
-|                               | categorizing text, analyzing linguistic structure, |
-|                               | and more.  Read it `here <nltk.org/book>`_.        |
-+-------------------------------+----------------------------------------------------+
+`Natural Language Processing with Python <http://nltk.org/book>`_ provides a practical
+introduction to programming for language processing.
+Written by the creators of NLTK, it guides the reader through the fundamentals
+of writing Python programs, working with corpora, categorizing text, analyzing linguistic structure,
+and more.
 
 Some simple things you can do with NLTK
 ---------------------------------------
@@ -58,18 +53,15 @@ Display a parse tree:
 
 .. image:: images/tree.gif
 
-* `API Documentation <api/nltk.html>`_
-
-Contents:
+Contents
+========
 
 .. toctree::
    :maxdepth: 1
 
    news
-
-
-Indices and tables
-==================
+   install
+   api/nltk
 
 * :ref:`genindex`
 * :ref:`modindex`

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Penn Treebank Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -31,11 +31,11 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
                  detect_blocks='unindented_paren', encoding=None,
                  tag_mapping_function=None):
         """
-        @param root: The root directory for this corpus.
-        @param fileids: A list or regexp specifying the fileids in this corpus.
-        @param comment_char: The character which can appear at the start of
+        :param root: The root directory for this corpus.
+        :param fileids: A list or regexp specifying the fileids in this corpus.
+        :param comment_char: The character which can appear at the start of
             a line to indicate that the rest of the line is a comment.
-        @param detect_blocks: The method that is used to find blocks
+        :param detect_blocks: The method that is used to find blocks
           in the corpus; can be 'unindented_paren' (every unindented
           parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).

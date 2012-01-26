@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Senseval 2 Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
 # URL: <http://www.nltk.org/>
@@ -51,7 +51,7 @@ class SensevalCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the text contents of the given fileids, as a single string.
+        :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]

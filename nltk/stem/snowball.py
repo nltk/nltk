@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
@@ -13,26 +13,21 @@ u"""
 Snowball stemmers and appendant demo function
 
 This module provides a port of the Snowball stemmers
-developed by U{Dr Martin Porter<http://tartarus.org/~martin/>}.
+developed by Martin Porter.
 There is also a demo function demonstrating the different
 algorithms. It can be invoked directly on the command line.
-For more information take a look into the class C{SnowballStemmer}.
-
-@author: Peter Michael Stahl
-@contact: pemistahl@gmail.com
-@contact: U{http://twitter.com/pemistahl}
-
+For more information take a look into the class SnowballStemmer.
 """
 
-from api import *
 from nltk.corpus import stopwords
 from nltk.stem import porter
 
+from api import StemmerI
 
 class SnowballStemmer(StemmerI):
     
     u"""
-    A word stemmer based on the Snowball stemming algorithms.
+    Snowball Stemmer
 
     At the moment, this port is able to stem words from fourteen
     languages: Danish, Dutch, English, Finnish, French, German,
@@ -44,18 +39,19 @@ class SnowballStemmer(StemmerI):
         Porter, M. \"An algorithm for suffix stripping.\"
         Program 14.3 (1980): 130-137.
 
-    The algorithms have been developed by
-    U{Dr Martin Porter<http://tartarus.org/~martin/>}.
+    The algorithms have been developed by Martin Porter.
     These stemmers are called Snowball, because he invented
     a programming language with this name for creating
     new stemming algorithms. There is more information available
-    on the U{Snowball Website<http://snowball.tartarus.org/>}.
+    at http://snowball.tartarus.org/
 
     The stemmer is invoked as shown below:
 
-    >>> from nltk import SnowballStemmer
+    >>> from nltk.stem import SnowballStemmer
     >>> SnowballStemmer.languages # See which languages are supported
-    ('danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian', 'italian', 'norwegian', 'porter', 'portuguese', 'romanian', 'russian', 'spanish', 'swedish')
+    ('danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian',
+    'italian', 'norwegian', 'porter', 'portuguese', 'romanian', 'russian',
+    'spanish', 'swedish')
     >>> stemmer = SnowballStemmer("german") # Choose a language
     >>> stemmer.stem(u"Autobahnen") # Stem a word
     u'autobahn'
@@ -69,15 +65,16 @@ class SnowballStemmer(StemmerI):
     >>> stemmer.stem(u"Autobahnen")
     u'autobahn'
 
-    @author: Peter Michael Stahl
-    @contact: pemistahl@gmail.com
-    @contact: U{http://twitter.com/pemistahl}
-    @cvar languages: A tuple that contains the available language names
-    @type languages: C{tuple}
-    @ivar stopwords: A list that contains stopwords for the respective language
-                     in Unicode format.
-    @type stopwords: C{list}
-    
+    Create a language specific instance of the Snowball stemmer.
+
+    :param language: The language whose subclass is instantiated.
+    :type language: str or unicode
+    :param ignore_stopwords: If set to True, stopwords are
+                             not stemmed and returned unchanged.
+                             Set to False by default.
+    :type ignore_stopwords: bool
+    :raise ValueError: If there is no stemmer for the specified
+                           language, a ValueError is raised.
     """
     
     languages = ("danish", "dutch", "english", "finnish", "french", "german", 
@@ -85,19 +82,6 @@ class SnowballStemmer(StemmerI):
                  "romanian", "russian", "spanish", "swedish")
 
     def __init__(self, language, ignore_stopwords=False):
-        u"""
-        Create a language specific instance of the Snowball stemmer.
-
-        @param language: The language whose subclass is instantiated.
-        @type language: C{str, unicode}
-        @param ignore_stopwords: If set to C{True}, stopwords are
-                                 not stemmed and returned unchanged.
-                                 Set to C{False} by default.
-        @type ignore_stopwords: C{bool}
-        @raise ValueError: If there is no stemmer for the specified
-                           language, a C{ValueError} is raised.
-        
-        """
         if language not in self.languages:
             raise ValueError(u"The language '%s' is not supported." % language)
         stemmerclass = globals()[language.capitalize() + "Stemmer"]
@@ -113,18 +97,15 @@ class _LanguageSpecificStemmer(StemmerI):
     to invoke a specific stemmer directly.
     This is useful if you already know the language to be stemmed at runtime.
     
+    Create an instance of the Snowball stemmer.
+
+    :param ignore_stopwords: If set to True, stopwords are
+                             not stemmed and returned unchanged.
+                             Set to False by default.
+    :type ignore_stopwords: bool
     """
     
     def __init__(self, ignore_stopwords=False):
-        u"""
-        Create an instance of the Snowball stemmer.
-
-        @param ignore_stopwords: If set to C{True}, stopwords are
-                                 not stemmed and returned unchanged.
-                                 Set to C{False} by default.
-        @type ignore_stopwords: C{bool}
-
-        """
         # The language is the name of the class, minus the final "Stemmer".
         language = type(self).__name__.lower()
         if language.endswith("stemmer"):
@@ -156,7 +137,7 @@ class PorterStemmer(_LanguageSpecificStemmer, porter.PorterStemmer):
 
     A few minor modifications have been made to Porter's basic
     algorithm.  See the source code of the module 
-    L{nltk.stem.porter} for more information.
+    nltk.stem.porter for more information.
 
     """
     def __init__(self, ignore_stopwords=False):
@@ -181,16 +162,16 @@ class _ScandinavianStemmer(_LanguageSpecificStemmer):
         such non-vowel. But then R1 is adjusted so that the region
         before it contains at least three letters.
 
-        @param word: The word whose region R1 is determined.
-        @type word: C{str, unicode}
-        @param vowels: The vowels of the respective language that are
+        :param word: The word whose region R1 is determined.
+        :type word: str or unicode
+        :param vowels: The vowels of the respective language that are
                        used to determine the region R1.
-        @type vowels: C{unicode}
-        @return: C{r1}, the region R1 for the respective word.
-        @rtype: C{unicode}
-        @note: This helper method is invoked by the respective stem method of
-               the subclasses L{DanishStemmer}, L{NorwegianStemmer}, and
-               L{SwedishStemmer}. It is not to be invoked directly!
+        :type vowels: unicode
+        :return: the region R1 for the respective word.
+        :rtype: unicode
+        :note: This helper method is invoked by the respective stem method of
+               the subclasses DanishStemmer, NorwegianStemmer, and
+               SwedishStemmer. It is not to be invoked directly!
         
         """
         r1 = u""
@@ -228,22 +209,20 @@ class _StandardStemmer(_LanguageSpecificStemmer):
         in R1, or is the null region at the end of the word if there
         is no such non-vowel.
 
-        @param word: The word whose regions R1 and R2 are determined.
-        @type word: C{str, unicode}
-        @param vowels: The vowels of the respective language that are
+        :param word: The word whose regions R1 and R2 are determined.
+        :type word: str or unicode
+        :param vowels: The vowels of the respective language that are
                        used to determine the regions R1 and R2.
-        @type vowels: C{unicode}
-        @return: C{(r1,r2)}, the regions R1 and R2 for the respective
-                 word.
-        @rtype: C{tuple}
-        @note: This helper method is invoked by the respective stem method of
-               the subclasses L{DutchStemmer}, L{FinnishStemmer},
-               L{FrenchStemmer}, L{GermanStemmer}, L{ItalianStemmer},
-               L{PortugueseStemmer}, L{RomanianStemmer}, and L{SpanishStemmer}.
+        :type vowels: unicode
+        :return: (r1,r2), the regions R1 and R2 for the respective word.
+        :rtype: tuple
+        :note: This helper method is invoked by the respective stem method of
+               the subclasses DutchStemmer, FinnishStemmer,
+               FrenchStemmer, GermanStemmer, ItalianStemmer,
+               PortugueseStemmer, RomanianStemmer, and SpanishStemmer.
                It is not to be invoked directly!
-        @note: A detailed description of how to define R1 and R2
-               can be found under U{http://snowball.tartarus.org/
-               texts/r1r2.html}.
+        :note: A detailed description of how to define R1 and R2
+               can be found at http://snowball.tartarus.org/texts/r1r2.html
 
         """
         r1 = u""
@@ -271,16 +250,16 @@ class _StandardStemmer(_LanguageSpecificStemmer):
         the region after the next following consonant. Otherwise, RV is
         the region after the third letter.
 
-        @param word: The word whose region RV is determined.
-        @type word: C{str, unicode}
-        @param vowels: The vowels of the respective language that are
+        :param word: The word whose region RV is determined.
+        :type word: str or unicode
+        :param vowels: The vowels of the respective language that are
                        used to determine the region RV.
-        @type vowels: C{unicode}
-        @return: C{rv}, the region RV for the respective word.
-        @rtype: C{unicode}
-        @note: This helper method is invoked by the respective stem method of
-               the subclasses L{ItalianStemmer}, L{PortugueseStemmer},
-               L{RomanianStemmer}, and L{SpanishStemmer}. It is not to be
+        :type vowels: unicode
+        :return: the region RV for the respective word.
+        :rtype: unicode
+        :note: This helper method is invoked by the respective stem method of
+               the subclasses ItalianStemmer, PortugueseStemmer,
+               RomanianStemmer, and SpanishStemmer. It is not to be
                invoked directly!
         
         """
@@ -309,24 +288,23 @@ class DanishStemmer(_ScandinavianStemmer):
     u"""
     The Danish Snowball stemmer.
     
-    @cvar __vowels: The Danish vowels.
-    @type __vowels: C{unicode}
-    @cvar __consonants: The Danish consonants.
-    @type __consonants: C{unicode}
-    @cvar __double_consonants: The Danish double consonants.
-    @type __double_consonants: C{tuple}
-    @cvar __s_ending: Letters that may directly appear before a word final 's'.
-    @type __s_ending: C{unicode}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @note: A detailed description of the Danish
+    :cvar __vowels: The Danish vowels.
+    :type __vowels: unicode
+    :cvar __consonants: The Danish consonants.
+    :type __consonants: unicode
+    :cvar __double_consonants: The Danish double consonants.
+    :type __double_consonants: tuple
+    :cvar __s_ending: Letters that may directly appear before a word final 's'.
+    :type __s_ending: unicode
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :note: A detailed description of the Danish
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /danish/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/danish/stemmer.html
     
     """
     
@@ -354,10 +332,10 @@ class DanishStemmer(_ScandinavianStemmer):
         u"""
         Stem a Danish word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         # Every word is put into lower case for normalization.
@@ -429,16 +407,15 @@ class DutchStemmer(_StandardStemmer):
     u"""
     The Dutch Snowball stemmer.
     
-    @cvar __vowels: The Dutch vowels.
-    @type __vowels: C{unicode}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step3b_suffixes: Suffixes to be deleted in step 3b of the algorithm.
-    @type __step3b_suffixes: C{tuple}
-    @note: A detailed description of the Dutch
+    :cvar __vowels: The Dutch vowels.
+    :type __vowels: unicode
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step3b_suffixes: Suffixes to be deleted in step 3b of the algorithm.
+    :type __step3b_suffixes: tuple
+    :note: A detailed description of the Dutch
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /dutch/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/dutch/stemmer.html
                
     """
     
@@ -450,10 +427,10 @@ class DutchStemmer(_StandardStemmer):
         u"""
         Stem a Dutch word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -607,34 +584,32 @@ class EnglishStemmer(_StandardStemmer):
     u"""
     The English Snowball stemmer.
     
-    @cvar __vowels: The English vowels.
-    @type __vowels: C{unicode}
-    @cvar __double_consonants: The English double consonants.
-    @type __double_consonants: C{tuple}
-    @cvar __li_ending: Letters that may directly appear before a word final 'li'.
-    @type __li_ending: C{unicode}
-    @cvar __step0_suffixes: Suffixes to be deleted in step 0 of the algorithm.
-    @type __step0_suffixes: C{tuple}
-    @cvar __step1a_suffixes: Suffixes to be deleted in step 1a of the algorithm.
-    @type __step1a_suffixes: C{tuple}
-    @cvar __step1b_suffixes: Suffixes to be deleted in step 1b of the algorithm.
-    @type __step1b_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
-    @type __step4_suffixes: C{tuple}
-    @cvar __step5_suffixes: Suffixes to be deleted in step 5 of the algorithm.
-    @type __step5_suffixes: C{tuple}
-    @cvar __special_words: A dictionary containing words
+    :cvar __vowels: The English vowels.
+    :type __vowels: unicode
+    :cvar __double_consonants: The English double consonants.
+    :type __double_consonants: tuple
+    :cvar __li_ending: Letters that may directly appear before a word final 'li'.
+    :type __li_ending: unicode
+    :cvar __step0_suffixes: Suffixes to be deleted in step 0 of the algorithm.
+    :type __step0_suffixes: tuple
+    :cvar __step1a_suffixes: Suffixes to be deleted in step 1a of the algorithm.
+    :type __step1a_suffixes: tuple
+    :cvar __step1b_suffixes: Suffixes to be deleted in step 1b of the algorithm.
+    :type __step1b_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
+    :type __step4_suffixes: tuple
+    :cvar __step5_suffixes: Suffixes to be deleted in step 5 of the algorithm.
+    :type __step5_suffixes: tuple
+    :cvar __special_words: A dictionary containing words
                            which have to be stemmed specially.
-    @type __special_words C{dict}
-    @note: A detailed description of the English
+    :type __special_words: dict
+    :note: A detailed description of the English
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /english/stemmer.html}.
-    
+           http://snowball.tartarus.org/algorithms/english/stemmer.html
     """
     
     __vowels = u"aeiouy"
@@ -701,10 +676,10 @@ class EnglishStemmer(_StandardStemmer):
         u"""
         Stem an English word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -1078,29 +1053,27 @@ class FinnishStemmer(_StandardStemmer):
     u"""
     The Finnish Snowball stemmer.
     
-    @cvar __vowels: The Finnish vowels.
-    @type __vowels: C{unicode}
-    @cvar __restricted_vowels: A subset of the Finnish vowels.
-    @type __restricted_vowels: C{unicode}
-    @cvar __long_vowels: The Finnish vowels in their long forms.
-    @type __long_vowels: C{tuple}
-    @cvar __consonants: The Finnish consonants.
-    @type __consonants: C{unicode}
-    @cvar __double_consonants: The Finnish double consonants.
-    @type __double_consonants: C{tuple}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
-    @type __step4_suffixes: C{tuple}
-    @note: A detailed description of the Finnish
+    :cvar __vowels: The Finnish vowels.
+    :type __vowels: unicode
+    :cvar __restricted_vowels: A subset of the Finnish vowels.
+    :type __restricted_vowels: unicode
+    :cvar __long_vowels: The Finnish vowels in their long forms.
+    :type __long_vowels: tuple
+    :cvar __consonants: The Finnish consonants.
+    :type __consonants: unicode
+    :cvar __double_consonants: The Finnish double consonants.
+    :type __double_consonants: tuple
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
+    :type __step4_suffixes: tuple
+    :note: A detailed description of the Finnish
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /finnish/stemmer.html}.
-    
+           http://snowball.tartarus.org/algorithms/finnish/stemmer.html
     """
     
     __vowels = u"aeiouy\xE4\xF6"
@@ -1130,10 +1103,10 @@ class FinnishStemmer(_StandardStemmer):
         u"""
         Stem a Finnish word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -1348,21 +1321,19 @@ class FrenchStemmer(_StandardStemmer):
     u"""
     The French Snowball stemmer.
     
-    @cvar __vowels: The French vowels.
-    @type __vowels: C{unicode}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2a_suffixes: Suffixes to be deleted in step 2a of the algorithm.
-    @type __step2a_suffixes: C{tuple}
-    @cvar __step2b_suffixes: Suffixes to be deleted in step 2b of the algorithm.
-    @type __step2b_suffixes: C{tuple}
-    @cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
-    @type __step4_suffixes: C{tuple}
-    @note: A detailed description of the French
+    :cvar __vowels: The French vowels.
+    :type __vowels: unicode
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2a_suffixes: Suffixes to be deleted in step 2a of the algorithm.
+    :type __step2a_suffixes: tuple
+    :cvar __step2b_suffixes: Suffixes to be deleted in step 2b of the algorithm.
+    :type __step2b_suffixes: tuple
+    :cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
+    :type __step4_suffixes: tuple
+    :note: A detailed description of the French
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /french/stemmer.html}.
-    
+           http://snowball.tartarus.org/algorithms/french/stemmer.html
     """
     
     __vowels = u"aeiouy\xE2\xE0\xEB\xE9\xEA\xE8\xEF\xEE\xF4\xFB\xF9"
@@ -1398,10 +1369,10 @@ class FrenchStemmer(_StandardStemmer):
         u"""
         Stem a French word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -1672,15 +1643,15 @@ class FrenchStemmer(_StandardStemmer):
         u'col' or u'tap' at the beginning of a word is also taken to
         define RV as the region to their right.)
 
-        @param word: The French word whose region RV is determined.
-        @type word: C{str, unicode}
-        @param vowels: The French vowels that are used to determine
+        :param word: The French word whose region RV is determined.
+        :type word: str or unicode
+        :param vowels: The French vowels that are used to determine
                        the region RV.
-        @type vowels: C{unicode}
-        @return: C{rv}, the region RV for the respective French word.
-        @rtype: C{unicode}
-        @note: This helper method is invoked by the stem method of
-               the subclass L{FrenchStemmer}. It is not to be invoked directly!
+        :type vowels: unicode
+        :return: the region RV for the respective French word.
+        :rtype: unicode
+        :note: This helper method is invoked by the stem method of
+               the subclass FrenchStemmer. It is not to be invoked directly!
         
         """
         rv = u""
@@ -1703,22 +1674,21 @@ class GermanStemmer(_StandardStemmer):
     u"""
     The German Snowball stemmer.
     
-    @cvar __vowels: The German vowels.
-    @type __vowels: C{unicode}
-    @cvar __s_ending: Letters that may directly appear before a word final 's'.
-    @type __s_ending: C{unicode}
-    @cvar __st_ending: Letter that may directly appear before a word final 'st'.
-    @type __st_ending: C{unicode}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @note: A detailed description of the German
+    :cvar __vowels: The German vowels.
+    :type __vowels: unicode
+    :cvar __s_ending: Letters that may directly appear before a word final 's'.
+    :type __s_ending: unicode
+    :cvar __st_ending: Letter that may directly appear before a word final 'st'.
+    :type __st_ending: unicode
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :note: A detailed description of the German
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /german/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/german/stemmer.html
     
     """
     
@@ -1735,10 +1705,10 @@ class GermanStemmer(_StandardStemmer):
         u"""
         Stem a German word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -1851,34 +1821,33 @@ class HungarianStemmer(_LanguageSpecificStemmer):
     u"""
     The Hungarian Snowball stemmer.
     
-    @cvar __vowels: The Hungarian vowels.
-    @type __vowels: C{unicode}
-    @cvar __digraphs: The Hungarian digraphs.
-    @type __digraphs: C{tuple}
-    @cvar __double_consonants: The Hungarian double consonants.
-    @type __double_consonants: C{tuple}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
-    @type __step4_suffixes: C{tuple}
-    @cvar __step5_suffixes: Suffixes to be deleted in step 5 of the algorithm.
-    @type __step5_suffixes: C{tuple}
-    @cvar __step6_suffixes: Suffixes to be deleted in step 6 of the algorithm.
-    @type __step6_suffixes: C{tuple}
-    @cvar __step7_suffixes: Suffixes to be deleted in step 7 of the algorithm.
-    @type __step7_suffixes: C{tuple}
-    @cvar __step8_suffixes: Suffixes to be deleted in step 8 of the algorithm.
-    @type __step8_suffixes: C{tuple}
-    @cvar __step9_suffixes: Suffixes to be deleted in step 9 of the algorithm.
-    @type __step9_suffixes: C{tuple}
-    @note: A detailed description of the Hungarian
+    :cvar __vowels: The Hungarian vowels.
+    :type __vowels: unicode
+    :cvar __digraphs: The Hungarian digraphs.
+    :type __digraphs: tuple
+    :cvar __double_consonants: The Hungarian double consonants.
+    :type __double_consonants: tuple
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
+    :type __step4_suffixes: tuple
+    :cvar __step5_suffixes: Suffixes to be deleted in step 5 of the algorithm.
+    :type __step5_suffixes: tuple
+    :cvar __step6_suffixes: Suffixes to be deleted in step 6 of the algorithm.
+    :type __step6_suffixes: tuple
+    :cvar __step7_suffixes: Suffixes to be deleted in step 7 of the algorithm.
+    :type __step7_suffixes: tuple
+    :cvar __step8_suffixes: Suffixes to be deleted in step 8 of the algorithm.
+    :type __step8_suffixes: tuple
+    :cvar __step9_suffixes: Suffixes to be deleted in step 9 of the algorithm.
+    :type __step9_suffixes: tuple
+    :note: A detailed description of the Hungarian
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /hungarian/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/hungarian/stemmer.html
     
     """
     
@@ -1931,10 +1900,10 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         u"""
         Stem an Hungarian word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -2087,18 +2056,18 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         If the word does not contain both a vowel and consonant, R1
         is the null region at the end of the word.
 
-        @param word: The Hungarian word whose region R1 is determined.
-        @type word: C{str, unicode}
-        @param vowels: The Hungarian vowels that are used to determine
+        :param word: The Hungarian word whose region R1 is determined.
+        :type word: str or unicode
+        :param vowels: The Hungarian vowels that are used to determine
                        the region R1.
-        @type vowels: C{unicode}
-        @param digraphs: The digraphs that are used to determine the
+        :type vowels: unicode
+        :param digraphs: The digraphs that are used to determine the
                          region R1.
-        @type digraphs: C{tuple}
-        @return: C{r1}, the region R1 for the respective word.
-        @rtype: C{unicode}
-        @note: This helper method is invoked by the stem method of the subclass
-               L{HungarianStemmer}. It is not to be invoked directly!
+        :type digraphs: tuple
+        :return: the region R1 for the respective word.
+        :rtype: unicode
+        :note: This helper method is invoked by the stem method of the subclass
+               HungarianStemmer. It is not to be invoked directly!
 
         """
         r1 = u""
@@ -2127,18 +2096,17 @@ class ItalianStemmer(_StandardStemmer):
     u"""
     The Italian Snowball stemmer.
     
-    @cvar __vowels: The Italian vowels.
-    @type __vowels: C{unicode}
-    @cvar __step0_suffixes: Suffixes to be deleted in step 0 of the algorithm.
-    @type __step0_suffixes: C{tuple}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @note: A detailed description of the Italian
+    :cvar __vowels: The Italian vowels.
+    :type __vowels: unicode
+    :cvar __step0_suffixes: Suffixes to be deleted in step 0 of the algorithm.
+    :type __step0_suffixes: tuple
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :note: A detailed description of the Italian
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /italian/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/italian/stemmer.html
     
     """
     
@@ -2184,10 +2152,10 @@ class ItalianStemmer(_StandardStemmer):
         u"""
         Stem an Italian word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -2362,20 +2330,19 @@ class NorwegianStemmer(_ScandinavianStemmer):
     u"""
     The Norwegian Snowball stemmer.
     
-    @cvar __vowels: The Norwegian vowels.
-    @type __vowels: C{unicode}
-    @cvar __s_ending: Letters that may directly appear before a word final 's'.
-    @type __s_ending: C{unicode}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @note: A detailed description of the Norwegian
+    :cvar __vowels: The Norwegian vowels.
+    :type __vowels: unicode
+    :cvar __s_ending: Letters that may directly appear before a word final 's'.
+    :type __s_ending: unicode
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :note: A detailed description of the Norwegian
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /norwegian/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/norwegian/stemmer.html
     
     """
     
@@ -2396,10 +2363,10 @@ class NorwegianStemmer(_ScandinavianStemmer):
         u"""
         Stem a Norwegian word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -2449,18 +2416,17 @@ class PortugueseStemmer(_StandardStemmer):
     u"""
     The Portuguese Snowball stemmer.
     
-    @cvar __vowels: The Portuguese vowels.
-    @type __vowels: C{unicode}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
-    @type __step4_suffixes: C{tuple}
-    @note: A detailed description of the Portuguese
+    :cvar __vowels: The Portuguese vowels.
+    :type __vowels: unicode
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step4_suffixes: Suffixes to be deleted in step 4 of the algorithm.
+    :type __step4_suffixes: tuple
+    :note: A detailed description of the Portuguese
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /portuguese/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/portuguese/stemmer.html
     
     """
     
@@ -2510,10 +2476,10 @@ class PortugueseStemmer(_StandardStemmer):
         u"""
         Stem a Portuguese word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -2658,20 +2624,19 @@ class RomanianStemmer(_StandardStemmer):
     u"""
     The Romanian Snowball stemmer.
     
-    @cvar __vowels: The Romanian vowels.
-    @type __vowels: C{unicode}
-    @cvar __step0_suffixes: Suffixes to be deleted in step 0 of the algorithm.
-    @type __step0_suffixes: C{tuple}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @note: A detailed description of the Romanian
+    :cvar __vowels: The Romanian vowels.
+    :type __vowels: unicode
+    :cvar __step0_suffixes: Suffixes to be deleted in step 0 of the algorithm.
+    :type __step0_suffixes: tuple
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :note: A detailed description of the Romanian
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /romanian/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/romanian/stemmer.html
     
     """
     
@@ -2739,10 +2704,10 @@ class RomanianStemmer(_StandardStemmer):
         u"""
         Stem a Romanian word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -2915,24 +2880,23 @@ class RussianStemmer(_LanguageSpecificStemmer):
     u"""
     The Russian Snowball stemmer.
     
-    @cvar __perfective_gerund_suffixes: Suffixes to be deleted.
-    @type __perfective_gerund_suffixes: C{tuple}
-    @cvar __adjectival_suffixes: Suffixes to be deleted.
-    @type __adjectival_suffixes: C{tuple}
-    @cvar __reflexive_suffixes: Suffixes to be deleted.
-    @type __reflexive_suffixes: C{tuple}
-    @cvar __verb_suffixes: Suffixes to be deleted.
-    @type __verb_suffixes: C{tuple}
-    @cvar __noun_suffixes: Suffixes to be deleted.
-    @type __noun_suffixes: C{tuple}
-    @cvar __superlative_suffixes: Suffixes to be deleted.
-    @type __superlative_suffixes: C{tuple}
-    @cvar __derivational_suffixes: Suffixes to be deleted.
-    @type __derivational_suffixes: C{tuple}
-    @note: A detailed description of the Russian
+    :cvar __perfective_gerund_suffixes: Suffixes to be deleted.
+    :type __perfective_gerund_suffixes: tuple
+    :cvar __adjectival_suffixes: Suffixes to be deleted.
+    :type __adjectival_suffixes: tuple
+    :cvar __reflexive_suffixes: Suffixes to be deleted.
+    :type __reflexive_suffixes: tuple
+    :cvar __verb_suffixes: Suffixes to be deleted.
+    :type __verb_suffixes: tuple
+    :cvar __noun_suffixes: Suffixes to be deleted.
+    :type __noun_suffixes: tuple
+    :cvar __superlative_suffixes: Suffixes to be deleted.
+    :type __superlative_suffixes: tuple
+    :cvar __derivational_suffixes: Suffixes to be deleted.
+    :type __derivational_suffixes: tuple
+    :note: A detailed description of the Russian
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /russian/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/russian/stemmer.html
     
     """
     
@@ -3032,10 +2996,10 @@ class RussianStemmer(_LanguageSpecificStemmer):
         u"""
         Stem a Russian word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         if word in self.stopwords:
@@ -3214,13 +3178,12 @@ class RussianStemmer(_LanguageSpecificStemmer):
         R1 is the region after the first non-vowel following a vowel, 
         or the end of the word if there is no such non-vowel.
 
-        @param word: The Russian word whose regions RV and R2 are determined.
-        @type word: C{str, unicode}
-        @return: C{(rv, r2)}, the regions RV and R2 for the 
-                 respective Russian word.
-        @rtype: C{tuple}
-        @note: This helper method is invoked by the stem method of the subclass
-               L{RussianStemmer}. It is not to be invoked directly!
+        :param word: The Russian word whose regions RV and R2 are determined.
+        :type word: str or unicode
+        :return: the regions RV and R2 for the respective Russian word.
+        :rtype: tuple
+        :note: This helper method is invoked by the stem method of the subclass
+               RussianStemmer. It is not to be invoked directly!
 
         """
         r1 = u""
@@ -3267,12 +3230,12 @@ class RussianStemmer(_LanguageSpecificStemmer):
         alphabet are transliterated into the Roman alphabet
         in order to ease the forthcoming stemming process.
 
-        @param word: The word that is transliterated.
-        @type word: C{unicode}
-        @return: C{word}, the transliterated word.
-        @rtype: C{unicode}
-        @note: This helper method is invoked by the stem method of the subclass
-               L{RussianStemmer}. It is not to be invoked directly!
+        :param word: The word that is transliterated.
+        :type word: unicode
+        :return: the transliterated word.
+        :rtype: unicode
+        :note: This helper method is invoked by the stem method of the subclass
+               RussianStemmer. It is not to be invoked directly!
 
         """
         word = (word.replace(u"\u0410", u"a").replace(u"\u0430", u"a")
@@ -3322,12 +3285,12 @@ class RussianStemmer(_LanguageSpecificStemmer):
         in order to ease the stemming process, is transliterated back
         into the Cyrillic alphabet, its original form.
 
-        @param word: The word that is transliterated.
-        @type word: C{str, unicode}
-        @return: C{word}, the transliterated word.
-        @rtype: C{unicode}
-        @note: This helper method is invoked by the stem method of the subclass
-               L{RussianStemmer}. It is not to be invoked directly!
+        :param word: The word that is transliterated.
+        :type word: str or unicode
+        :return: word, the transliterated word.
+        :rtype: unicode
+        :note: This helper method is invoked by the stem method of the subclass
+               RussianStemmer. It is not to be invoked directly!
 
         """
         word = (word.replace(u"i^u", u"\u044E").replace(u"i^a", u"\u044F")
@@ -3358,22 +3321,21 @@ class SpanishStemmer(_StandardStemmer):
     u"""
     The Spanish Snowball stemmer.
     
-    @cvar __vowels: The Spanish vowels.
-    @type __vowels: C{unicode}
-    @cvar __step0_suffixes: Suffixes to be deleted in step 0 of the algorithm.
-    @type __step0_suffixes: C{tuple}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2a_suffixes: Suffixes to be deleted in step 2a of the algorithm.
-    @type __step2a_suffixes: C{tuple}
-    @cvar __step2b_suffixes: Suffixes to be deleted in step 2b of the algorithm.
-    @type __step2b_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @note: A detailed description of the Spanish
+    :cvar __vowels: The Spanish vowels.
+    :type __vowels: unicode
+    :cvar __step0_suffixes: Suffixes to be deleted in step 0 of the algorithm.
+    :type __step0_suffixes: tuple
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2a_suffixes: Suffixes to be deleted in step 2a of the algorithm.
+    :type __step2a_suffixes: tuple
+    :cvar __step2b_suffixes: Suffixes to be deleted in step 2b of the algorithm.
+    :type __step2b_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :note: A detailed description of the Spanish
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /spanish/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/spanish/stemmer.html
     
     """
     
@@ -3427,10 +3389,10 @@ class SpanishStemmer(_StandardStemmer):
         u"""
         Stem a Spanish word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -3610,20 +3572,19 @@ class SwedishStemmer(_ScandinavianStemmer):
     u"""
     The Swedish Snowball stemmer.
     
-    @cvar __vowels: The Swedish vowels.
-    @type __vowels: C{unicode}
-    @cvar __s_ending: Letters that may directly appear before a word final 's'.
-    @type __s_ending: C{unicode}
-    @cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
-    @type __step1_suffixes: C{tuple}
-    @cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
-    @type __step2_suffixes: C{tuple}
-    @cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
-    @type __step3_suffixes: C{tuple}
-    @note: A detailed description of the Swedish
+    :cvar __vowels: The Swedish vowels.
+    :type __vowels: unicode
+    :cvar __s_ending: Letters that may directly appear before a word final 's'.
+    :type __s_ending: unicode
+    :cvar __step1_suffixes: Suffixes to be deleted in step 1 of the algorithm.
+    :type __step1_suffixes: tuple
+    :cvar __step2_suffixes: Suffixes to be deleted in step 2 of the algorithm.
+    :type __step2_suffixes: tuple
+    :cvar __step3_suffixes: Suffixes to be deleted in step 3 of the algorithm.
+    :type __step3_suffixes: tuple
+    :note: A detailed description of the Swedish
            stemming algorithm can be found under
-           U{http://snowball.tartarus.org/algorithms
-           /swedish/stemmer.html}.
+           http://snowball.tartarus.org/algorithms/swedish/stemmer.html
     
     """
     
@@ -3643,10 +3604,10 @@ class SwedishStemmer(_ScandinavianStemmer):
         u"""
         Stem a Swedish word and return the stemmed form.
         
-        @param word: The word that is stemmed.
-        @type word: C{str, unicode}
-        @return: The stemmed form.
-        @rtype: C{unicode}
+        :param word: The word that is stemmed.
+        :type word: str or unicode
+        :return: The stemmed form.
+        :rtype: unicode
         
         """
         word = word.lower()
@@ -3761,5 +3722,7 @@ def demo():
 
 
 
-if __name__ == u"__main__":
-    demo()
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+

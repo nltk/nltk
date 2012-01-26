@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Spearman Rank Correlation
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -43,7 +43,7 @@ def spearman_correlation(ranks1, ranks2):
 
 def ranks_from_sequence(seq):
     """Given a sequence, yields each element with an increasing rank, suitable
-    for use as an argument to L{spearman_correlation}.
+    for use as an argument to ``spearman_correlation``.
     """
     return ((k, i) for i, k in enumerate(seq))
 
@@ -52,7 +52,7 @@ def ranks_from_scores(scores, rank_gap=1e-15):
     """Given a sequence of (key, score) tuples, yields each key with an
     increasing rank, tying with previous key's rank if the difference between
     their scores is less than rank_gap. Suitable for use as an argument to
-    L{spearman_correlation}.
+    ``spearman_correlation``.
     """
     prev_score = None
     rank = 0

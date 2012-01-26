@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterer Utilities
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,7 +10,7 @@ import sys
 import math
 import numpy
 
-from api import *
+from nltk.cluster.api import ClusterI
 
 class VectorSpaceClusterer(ClusterI):
     """
@@ -20,11 +20,11 @@ class VectorSpaceClusterer(ClusterI):
     """
     def __init__(self, normalise=False, svd_dimensions=None):
         """
-        @param normalise:       should vectors be normalised to length 1
-        @type normalise:        boolean
-        @param svd_dimensions:  number of dimensions to use in reducing vector
+        :param normalise:       should vectors be normalised to length 1
+        :type normalise:        boolean
+        :param svd_dimensions:  number of dimensions to use in reducing vector
                                 dimensionsionality with SVD
-        @type svd_dimensions:   int 
+        :type svd_dimensions:   int 
         """
         self._Tt = None
         self._should_normalise = normalise
@@ -116,10 +116,10 @@ def euclidean_distance(u, v):
 
 def cosine_distance(u, v):
     """
-    Returns the cosine of the angle between vectors v and u. This is equal to
-    u.v / |u||v|.
+    Returns 1 minus the cosine of the angle between vectors v and u. This is equal to
+    1 - (u.v / |u||v|).
     """
-    return numpy.dot(u, v) / (math.sqrt(numpy.dot(u, u)) * math.sqrt(numpy.dot(v, v)))
+    return 1 - (numpy.dot(u, v) / (math.sqrt(numpy.dot(u, u)) * math.sqrt(numpy.dot(v, v))))
 
 class _DendrogramNode(object):
     """ Tree node of a dendrogram. """
@@ -170,8 +170,8 @@ class Dendrogram(object):
 
     def __init__(self, items=[]):
         """
-        @param  items: the items at the leaves of the dendrogram
-        @type   items: sequence of (any)
+        :param  items: the items at the leaves of the dendrogram
+        :type   items: sequence of (any)
         """
         self._items = [_DendrogramNode(item) for item in items]
         self._original_items = copy.copy(self._items)
@@ -183,8 +183,8 @@ class Dendrogram(object):
         combined which then replaces the first node specified. All other nodes
         involved in the merge will be removed.
 
-        @param  indices: indices of the items to merge (at least two)
-        @type   indices: seq of int
+        :param  indices: indices of the items to merge (at least two)
+        :type   indices: seq of int
         """
         assert len(indices) >= 2
         node = _DendrogramNode(self._merge, *[self._items[i] for i in indices])
@@ -196,8 +196,8 @@ class Dendrogram(object):
     def groups(self, n):
         """
         Finds the n-groups of items (leaves) reachable from a cut at depth n.
-        @param  n: number of groups
-        @type   n: int
+        :param  n: number of groups
+        :type   n: int
         """
         if len(self._items) > 1:
             root = _DendrogramNode(self._merge, *self._items)
@@ -208,8 +208,8 @@ class Dendrogram(object):
     def show(self, leaf_labels=[]):
         """
         Print the dendrogram in ASCII art to standard out.
-        @param leaf_labels: an optional list of strings to use for labeling the leaves
-        @type leaf_labels: list
+        :param leaf_labels: an optional list of strings to use for labeling the leaves
+        :type leaf_labels: list
         """
 
         # ASCII rendering characters

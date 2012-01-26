@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Hidden Markov Model
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Trevor Cohn <tacohn@csse.unimelb.edu.au>
 #         Philip Blunsom <pcbl@csse.unimelb.edu.au>
 #         Tiago Tresoldi <tiago@tresoldi.pro.br> (fixes)
@@ -32,16 +32,16 @@ corresponding sequence of states (and what the current state is) is known.
 This is the 'hidden' in the hidden markov model.
 
 Formally, a HMM can be characterised by:
-    - the output observation alphabet. This is the set of symbols which may be
-      observed as output of the system. 
-    - the set of states. 
-    - the transition probabilities M{a_{ij} = P(s_t = j | s_{t-1} = i)}. These
-      represent the probability of transition to each state from a given
-      state. 
-    - the output probability matrix M{b_i(k) = P(X_t = o_k | s_t = i)}. These
-      represent the probability of observing each symbol in a given state.
-    - the initial state distribution. This gives the probability of starting
-      in each state.
+
+- the output observation alphabet. This is the set of symbols which may be
+  observed as output of the system. 
+- the set of states. 
+- the transition probabilities *a_{ij} = P(s_t = j | s_{t-1} = i)*. These
+  represent the probability of transition to each state from a given state. 
+- the output probability matrix *b_i(k) = P(X_t = o_k | s_t = i)*. These
+  represent the probability of observing each symbol in a given state.
+- the initial state distribution. This gives the probability of starting
+  in each state.
 
 To ground this discussion, take a common NLP application, part-of-speech (POS)
 tagging. An HMM is desirable for this task as the highest probability tag
@@ -72,7 +72,7 @@ which includes extensive demonstration code.
 
 import re
 import types
-from numpy import *
+from numpy import zeros, ones, float32, float64, log2, hstack, array, argmax
 
 from nltk.probability import (FreqDist, ConditionalFreqDist,
                               ConditionalProbDist, DictionaryProbDist,
@@ -106,30 +106,26 @@ class HiddenMarkovModelTagger(TaggerI):
     specialization function to create a new training set that is more
     appropriate for sequential tagging with an HMM.  A typical use case is 
     chunking.
+
+    :param symbols: the set of output symbols (alphabet)
+    :type symbols: seq of any
+    :param states: a set of states representing state space
+    :type states: seq of any
+    :param transitions: transition probabilities; Pr(s_i | s_j) is the
+        probability of transition from state i given the model is in
+        state_j
+    :type transitions: ConditionalProbDistI
+    :param outputs: output probabilities; Pr(o_k | s_i) is the probability
+        of emitting symbol k when entering state i
+    :type outputs: ConditionalProbDistI
+    :param priors: initial state distribution; Pr(s_i) is the probability
+        of starting in state i
+    :type priors: ProbDistI
+    :param transform: an optional function for transforming training
+        instances, defaults to the identity function.         
+    :type transform: function or HiddenMarkovModelTaggerTransform
     """
     def __init__(self, symbols, states, transitions, outputs, priors, **kwargs):
-        """
-        Creates a hidden markov model parametised by the the states,
-        transition probabilities, output probabilities and priors.
-
-        :param symbols: the set of output symbols (alphabet)
-        :type symbols: seq of any
-        :param states: a set of states representing state space
-        :type states: seq of any
-        :param transitions: transition probabilities; Pr(s_i | s_j) is the
-            probability of transition from state i given the model is in
-            state_j
-        :type transitions: ConditionalProbDistI
-        :param outputs: output probabilities; Pr(o_k | s_i) is the probability
-            of emitting symbol k when entering state i
-        :type outputs: ConditionalProbDistI
-        :param priors: initial state distribution; Pr(s_i) is the probability
-            of starting in state i
-        :type priors: ProbDistI
-        :param transform: an optional function for transforming training
-            instances, defaults to the identity function.         
-        :type transform: function or HiddenMarkovModelTaggerTransform
-        """
         self._states = states
         self._transitions = transitions
         self._symbols = symbols
@@ -199,7 +195,7 @@ class HiddenMarkovModelTagger(TaggerI):
     	    i.e. a list of sentences represented as words
     	:type unlabeled_sequence: list(list)
         :param transform: an optional function for transforming training
-            instances, defaults to the identity function, see L{transform()}
+            instances, defaults to the identity function, see ``transform()``
         :type transform: function
         :param estimator: an optional function or class that maps a
             condition's frequency distribution to its probability
@@ -511,24 +507,22 @@ class HiddenMarkovModelTagger(TaggerI):
 
          H(O) = - sum_S Pr(S | O) log Pr(S | O)
 
-        where the summation ranges over all state sequences, S. Let M{Z =
-        Pr(O) = sum_S Pr(S, O)} where the summation ranges over all state
+        where the summation ranges over all state sequences, S. Let
+        *Z = Pr(O) = sum_S Pr(S, O)}* where the summation ranges over all state
         sequences and O is the observation sequence. As such the entropy can
         be re-expressed as::
 
-         H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
-           = log Z - sum_S Pr(S | O) log Pr(S, 0)
-           = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1})
-                                                   + sum_t Pr(O_t | S_t) ]
+        H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
+        = log Z - sum_S Pr(S | O) log Pr(S, 0)
+        = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1}) + sum_t Pr(O_t | S_t) ]
         
         The order of summation for the log terms can be flipped, allowing
         dynamic programming to be used to calculate the entropy. Specifically,
         we use the forward and backward probabilities (alpha, beta) giving::
 
-         H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
-                 + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
-                                 / Z * log Pr(sj | si)
-                 + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
+        H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
+        + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj) / Z * log Pr(sj | si)
+        + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
 
         This simply uses alpha and beta to find the probabilities of partial
         sequences, constrained to include the given state(s) at some point in
@@ -804,19 +798,18 @@ class HiddenMarkovModelTrainer(object):
     """
     Algorithms for learning HMM parameters from training data. These include
     both supervised learning (MLE) and unsupervised learning (Baum-Welch).
+
+    Creates an HMM trainer to induce an HMM with the given states and
+    output symbol alphabet. A supervised and unsupervised training
+    method may be used. If either of the states or symbols are not given,
+    these may be derived from supervised training.
+
+    :param states:  the set of state labels
+    :type states:   sequence of any
+    :param symbols: the set of observation symbols
+    :type symbols:  sequence of any
     """
     def __init__(self, states=None, symbols=None):
-        """
-        Creates an HMM trainer to induce an HMM with the given states and
-        output symbol alphabet. A supervised and unsupervised training
-        method may be used. If either of the states or symbols are not given,
-        these may be derived from supervised training.
-
-        :param states:  the set of state labels
-        :type states:   sequence of any
-        :param symbols: the set of observation symbols
-        :type symbols:  sequence of any
-        """
         if states:
             self._states = states
         else:

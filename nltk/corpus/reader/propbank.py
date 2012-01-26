@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PropBank Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -19,28 +19,28 @@ class PropbankCorpusReader(CorpusReader):
     Corpus reader for the propbank corpus, which augments the Penn
     Treebank with information about the predicate argument structure
     of every verb instance.  The corpus consists of two parts: the
-    predicate-argument annotations themselves, and a set of X{frameset
-    files} which define the argument labels used by the annotations,
-    on a per-verb basis.  Each X{frameset file} contains one or more
-    predicates, such as C{'turn'} or C{'turn_on'}, each of which is
-    divided into coarse-grained word senses called X{rolesets}.  For
-    each X{roleset}, the frameset file provides descriptions of the
+    predicate-argument annotations themselves, and a set of "frameset
+    files" which define the argument labels used by the annotations,
+    on a per-verb basis.  Each "frameset file" contains one or more
+    predicates, such as ``'turn'`` or ``'turn_on'``, each of which is
+    divided into coarse-grained word senses called "rolesets".  For
+    each "roleset", the frameset file provides descriptions of the
     argument roles, along with examples.
     """
     def __init__(self, root, propfile, framefiles='',
                  verbsfile=None, parse_fileid_xform=None,
                  parse_corpus=None, encoding=None):
         """
-        @param root: The root directory for this corpus.
-        @param propfile: The name of the file containing the predicate-
-            argument annotations (relative to C{root}).
-        @param framefiles: A list or regexp specifying the frameset
+        :param root: The root directory for this corpus.
+        :param propfile: The name of the file containing the predicate-
+            argument annotations (relative to ``root``).
+        :param framefiles: A list or regexp specifying the frameset
             fileids for this corpus.
-        @param parse_fileid_xform: A transform that should be applied
+        :param parse_fileid_xform: A transform that should be applied
             to the fileids in this corpus.  This should be a function
             of one argument (a fileid) that returns a string (the new
             fileid).
-        @param parse_corpus: The corpus containing the parse trees
+        :param parse_corpus: The corpus containing the parse trees
             corresponding to this corpus.  These parse trees are
             necessary to resolve the tree pointers used by propbank.
         """
@@ -61,7 +61,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the text contents of the given fileids, as a single string.
+        :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -69,8 +69,8 @@ class PropbankCorpusReader(CorpusReader):
 
     def instances(self):
         """
-        @return: a corpus view that acts as a list of
-        L{PropbankInstance} objects, one for each verb in the corpus.
+        :return: a corpus view that acts as a list of
+        ``PropbankInstance`` objects, one for each verb in the corpus.
         """
         return StreamBackedCorpusView(self.abspath(self._propfile),
                                       self._read_instance_block,
@@ -78,7 +78,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def lines(self):
         """
-        @return: a corpus view that acts as a list of strings, one for
+        :return: a corpus view that acts as a list of strings, one for
         each line in the predicate-argument annotation file.  
         """
         return StreamBackedCorpusView(self.abspath(self._propfile),
@@ -87,7 +87,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def roleset(self, roleset_id):
         """
-        @return: the xml description for the given roleset.
+        :return: the xml description for the given roleset.
         """
         lemma = roleset_id.split('.')[0]
         framefile = 'frames/%s.xml' % lemma
@@ -107,7 +107,7 @@ class PropbankCorpusReader(CorpusReader):
 
     def verbs(self):
         """
-        @return: a corpus view that acts as a list of all verb lemmas
+        :return: a corpus view that acts as a list of all verb lemmas
         in this corpus (from the verbs.txt file).
         """
         return StreamBackedCorpusView(self.abspath(self._verbsfile),
@@ -141,7 +141,7 @@ class PropbankInstance(object):
         instance's sentence."""
 
         self.sentnum = sentnum
-        """The sentence number of this sentence within L{fileid}.
+        """The sentence number of this sentence within ``fileid``.
         Indexing starts from zero."""
         
         self.wordnum = wordnum
@@ -151,26 +151,26 @@ class PropbankInstance(object):
         
         self.tagger = tagger
         """An identifier for the tagger who tagged this instance; or
-        C{'gold'} if this is an adjuticated instance."""
+        ``'gold'`` if this is an adjuticated instance."""
         
         self.roleset = roleset
         """The name of the roleset used by this instance's predicate.
-        Use L{propbank.roleset() <PropbankCorpusReader.roleset>} to
+        Use ``propbank.roleset() <PropbankCorpusReader.roleset>`` to
         look up information about the roleset."""
         
         self.inflection = inflection
-        """A {PropbankInflection} object describing the inflection of
+        """A ``PropbankInflection`` object describing the inflection of
         this instance's predicate."""
         
         self.predicate = predicate
-        """A L{PropbankTreePointer} indicating the position of this
+        """A ``PropbankTreePointer`` indicating the position of this
         instance's predicate within its containing sentence."""
         
         self.arguments = tuple(arguments)
         """A list of tuples (argloc, argid), specifying the location
         and identifier for each of the predicate's argument in the
         containing sentence.  Argument identifiers are strings such as
-        C{'ARG0'} or C{'ARGM-TMP'}.  This list does *not* contain
+        ``'ARG0'`` or ``'ARGM-TMP'``.  This list does *not* contain
         the predicate."""
 
         self.parse_corpus = parse_corpus
@@ -194,7 +194,7 @@ class PropbankInstance(object):
         if self.fileid not in self.parse_corpus.fileids(): return None
         return self.parse_corpus.parsed_sents(self.fileid)[self.sentnum]
     tree = property(_get_tree, doc="""
-        The parse tree corresponding to this instance, or C{None} if
+        The parse tree corresponding to this instance, or None if
         the corresponding tree is not available.""")
 
     @staticmethod
@@ -239,16 +239,16 @@ class PropbankInstance(object):
 class PropbankPointer(object):
     """
     A pointer used by propbank to identify one or more constituents in
-    a parse tree.  C{PropbankPointer} is an abstract base class with
+    a parse tree.  ``PropbankPointer`` is an abstract base class with
     three concrete subclasses:
 
-      - L{PropbankTreePointer} is used to point to single constituents.
-      - L{PropbankSplitTreePointer} is used to point to 'split'
+      - ``PropbankTreePointer`` is used to point to single constituents.
+      - ``PropbankSplitTreePointer`` is used to point to 'split'
         constituents, which consist of a sequence of two or more
-        C{PropbankTreePointer}s.
-      - L{PropbankChainTreePointer} is used to point to entire trace
+        ``PropbankTreePointer`` pointers.
+      - ``PropbankChainTreePointer`` is used to point to entire trace
         chains in a tree.  It consists of a sequence of pieces, which
-        can be C{PropbankTreePointer}s or C{PropbankSplitTreePointer}s.
+        can be ``PropbankTreePointer`` or ``PropbankSplitTreePointer`` pointers.
     """
     def __init__(self):
         if self.__class__ == PropbankPoitner:
@@ -258,8 +258,8 @@ class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements may
-           be either L{PropbankSplitTreePointer}s or
-           L{PropbankTreePointer}s."""
+           be either ``PropbankSplitTreePointer`` or
+           ``PropbankTreePointer`` pointers."""
         
     def __str__(self):
         return '*'.join('%s' % p for p in self.pieces)
@@ -273,7 +273,7 @@ class PropbankSplitTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
         """A list of the pieces that make up this chain.  Elements are
-           all L{PropbankTreePointer}s."""
+           all ``PropbankTreePointer`` pointers."""
         
     def __str__(self):
         return ','.join('%s' % p for p in self.pieces)

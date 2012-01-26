@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Models for first-order languages with lambda
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -19,9 +19,15 @@ models.
 from pprint import pformat
 import inspect
 import textwrap
+
 from nltk.decorators import decorator
 
-from logic import *
+from nltk.sem.logic import (AbstractVariableExpression, AllExpression,
+                            AndExpression, ApplicationExpression, EqualityExpression,
+                            ExistsExpression, IffExpression, ImpExpression,
+                            IndividualVariableExpression, LambdaExpression,
+                            LogicParser, NegatedExpression, OrExpression,
+                            Variable, is_indvar)
 
 
 class Error(Exception): pass
@@ -41,9 +47,9 @@ def is_rel(s):
     """
     Check whether a set represents a relation (of any arity).
 
-    @param s: a set containing C{tuple}s of C{str} elements
-    @type s: C{set}
-    @rtype: C{bool}
+    :param s: a set containing tuples of str elements
+    :type s: set
+    :rtype: bool
         """
     # we have the empty relation, i.e. set()
     if len(s) == 0:
@@ -65,8 +71,8 @@ def set2rel(s):
       - set(['a', 'b']) => set([('a',), ('b',)])
       - set([3, 27]) => set([('3',), ('27',)])
       
-    @type s: C{set}
-    @rtype: C{set} of C{tuple} of C{str}
+    :type s: set
+    :rtype: set of tuple of str
     """
     new = set()
     for elem in s:
@@ -81,8 +87,8 @@ def set2rel(s):
 def arity(rel):
     """
     Check the arity of a relation.
-    @type rel: C{set} of C{tuple}s
-    @rtype: C{int} of C{tuple} of C{str}
+    :type rel: set of tuples
+    :rtype: int of tuple of str
     """
     if len(rel) == 0:
         return 0
@@ -96,13 +102,13 @@ class Valuation(dict):
     to individuals (represented as strings) and n-ary relations (represented as sets of tuples
     of strings).
 
-    An instance of L{Valuation} will raise a KeyError exception (i.e.,
+    An instance of ``Valuation`` will raise a KeyError exception (i.e.,
     just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
     def __init__(self, iter):
         """
-        @param iter: a C{list} of (symbol, value) pairs.
+        :param iter: a list of (symbol, value) pairs.
         """
         dict.__init__(self)
         for (sym, val) in iter:
@@ -150,22 +156,53 @@ class Assignment(dict):
 
     An assigment can only assign values from its domain.
 
-    If an unknown expression M{a} is passed to a model M{M}'s
-    interpretation function M{i}, M{i} will first check whether M{M}'s
-    valuation assigns an interpretation to M{a} as a constant, and if
-    this fails, M{i} will delegate the interpretation of M{a} to
-    M{g}. M{g} only assigns values to individual variables (i.e.,
-    members of the class L{IndividualVariableExpression} in the L{logic}
-    module. If a variable is not assigned a value by M{g}, it will raise
-    an C{Undefined} exception.
+    If an unknown expression *a* is passed to a model *M*\ 's
+    interpretation function *i*, *i* will first check whether *M*\ 's
+    valuation assigns an interpretation to *a* as a constant, and if
+    this fails, *i* will delegate the interpretation of *a* to
+    *g*. *g* only assigns values to individual variables (i.e.,
+    members of the class ``IndividualVariableExpression`` in the ``logic``
+    module. If a variable is not assigned a value by *g*, it will raise
+    an ``Undefined`` exception.
+    
+    A variable *Assignment* is a mapping from individual variables to
+    entities in the domain. Individual variables are usually indicated
+    with the letters ``'x'``, ``'y'``, ``'w'`` and ``'z'``, optionally
+    followed by an integer (e.g., ``'x0'``, ``'y332'``).  Assignments are
+    created using the ``Assignment`` constructor, which also takes the
+    domain as a parameter.
+
+        >>> dom = set(['u1', 'u2', 'u3', 'u4'])
+        >>> g3 = Assignment(dom, [('x', 'u1'), ('y', 'u2')])
+        >>> g3
+        {'y': 'u2', 'x': 'u1'}
+
+    There is also a ``print`` format for assignments which uses a notation
+    closer to that in logic textbooks:
+   
+        >>> print g3
+        g[u2/y][u1/x]
+
+    It is also possible to update an assignment using the ``add`` method:
+
+        >>> dom = set(['u1', 'u2', 'u3', 'u4'])
+        >>> g4 = Assignment(dom)
+        >>> g4.add('x', 'u1')
+        {'x': 'u1'}
+
+    With no arguments, ``purge()`` is equivalent to ``clear()`` on a dictionary:
+
+        >>> g4.purge()
+        >>> g4
+        {}
+
+    :param domain: the domain of discourse
+    :type domain: set
+    :param assign: a list of (varname, value) associations
+    :type assign: list
     """
+
     def __init__(self, domain, assign=None):
-        """
-        @param domain: the domain of discourse
-        @type domain: C{set}
-        @param assign: a list of (varname, value) associations
-        @type assign: C{list}
-        """
         dict.__init__(self)
         self.domain = domain
         if assign:
@@ -191,9 +228,9 @@ class Assignment(dict):
     def purge(self, var=None):
         """
         Remove one or all keys (i.e. logic variables) from an
-        assignment, and update C{self.variant}.
+        assignment, and update ``self.variant``.
 
-        @param var: a Variable acting as a key for the assignment.
+        :param var: a Variable acting as a key for the assignment.
         """
         if var:
             val = self[var]
@@ -226,7 +263,7 @@ class Assignment(dict):
     def add(self, var, val):
         """
         Add a new variable-value pair to the assignment, and update
-        C{self.variant}.
+        ``self.variant``.
 
         """
         assert val in self.domain,\
@@ -240,24 +277,23 @@ class Assignment(dict):
     
 class Model(object):
     """
-    A first order model is a domain M{D} of discourse and a valuation M{V}.
+    A first order model is a domain *D* of discourse and a valuation *V*.
 
-    A domain M{D} is a set, and a valuation M{V} is a map that associates
+    A domain *D* is a set, and a valuation *V* is a map that associates
     expressions with values in the model.
-    The domain of M{V} should be a subset of M{D}.
-    """
-    
-    def __init__(self, domain, valuation):
-        """
-        Construct a new L{Model}.
+    The domain of *V* should be a subset of *D*.
+
+    Construct a new ``Model``.
         
-        @type domain: C{set}
-        @param domain: A set of entities representing the domain of discourse of the model.
-        @type valuation: L{Valuation}
-        @param valuation: the valuation of the model.
-        @param prop: If this is set, then we are building a propositional\
-        model and don't require the domain of M{V} to be subset of M{D}.
-        """
+    :type domain: set
+    :param domain: A set of entities representing the domain of discourse of the model.
+    :type valuation: Valuation
+    :param valuation: the valuation of the model.
+    :param prop: If this is set, then we are building a propositional\
+    model and don't require the domain of *V* to be subset of *D*.
+    """
+
+    def __init__(self, domain, valuation):
         assert isinstance(domain, set)
         self.domain = domain
         self.valuation = valuation
@@ -274,13 +310,13 @@ class Model(object):
 
     def evaluate(self, expr, g, trace=None):
         """
-        Call the L{LogicParser} to parse input expressions, and
-        provide a handler for L{satisfy}
-        that blocks further propagation of the C{Undefined} error.
-        @param expr: An C{Expression} of L{logic}.
-        @type g: L{Assignment}
-        @param g: an assignment to individual variables.
-        @rtype: C{bool} or 'Undefined'
+        Call the ``LogicParser`` to parse input expressions, and
+        provide a handler for ``satisfy``
+        that blocks further propagation of the ``Undefined`` error.
+        :param expr: An ``Expression`` of ``logic``.
+        :type g: Assignment
+        :param g: an assignment to individual variables.
+        :rtype: bool or 'Undefined'
         """
         try:
             lp = LogicParser()
@@ -301,16 +337,16 @@ class Model(object):
         """
         Recursive interpretation function for a formula of first-order logic.
 
-        Raises an C{Undefined} error when C{parsed} is an atomic string
+        Raises an ``Undefined`` error when ``parsed`` is an atomic string
         but is not a symbol or an individual variable.
 
-        @return: Returns a truth value or C{Undefined} if C{parsed} is\
-        complex, and calls the interpretation function C{i} if C{parsed}\
+        :return: Returns a truth value or ``Undefined`` if ``parsed`` is\
+        complex, and calls the interpretation function ``i`` if ``parsed``\
         is atomic.
         
-        @param parsed: An expression of L{logic}.
-        @type g: L{Assignment}
-        @param g: an assignment to individual variables.
+        :param parsed: An expression of ``logic``.
+        :type g: Assignment
+        :param g: an assignment to individual variables.
         """
 
         if isinstance(parsed, ApplicationExpression):
@@ -375,16 +411,16 @@ class Model(object):
         """
         An interpretation function.
 
-        Assuming that C{parsed} is atomic:
+        Assuming that ``parsed`` is atomic:
 
-         - if C{parsed} is a non-logical constant, calls the valuation M{V} 
-         - else if C{parsed} is an individual variable, calls assignment M{g}
-         - else returns C{Undefined}.
+        - if ``parsed`` is a non-logical constant, calls the valuation *V* 
+        - else if ``parsed`` is an individual variable, calls assignment *g*
+        - else returns ``Undefined``.
 
-        @param parsed: an C{Expression} of L{logic}.
-        @type g: L{Assignment}
-        @param g: an assignment to individual variables.
-        @return: a semantic value
+        :param parsed: an ``Expression`` of ``logic``.
+        :type g: Assignment
+        :param g: an assignment to individual variables.
+        :return: a semantic value
         """
         # If parsed is a propositional letter 'p', 'q', etc, it could be in valuation.symbols 
         # and also be an IndividualVariableExpression. We want to catch this first case.
@@ -401,13 +437,13 @@ class Model(object):
         """
         Generate the entities from the model's domain that satisfy an open formula.
 
-        @param parsed: an open formula
-        @type parsed: L{Expression}
-        @param varex: the relevant free individual variable in C{parsed}.
-        @type varex: C{VariableExpression} or C{str}
-        @param g: a variable assignment
-        @type g:  L{Assignment}
-        @return: a C{set} of the entities that satisfy C{parsed}.
+        :param parsed: an open formula
+        :type parsed: Expression
+        :param varex: the relevant free individual variable in ``parsed``.
+        :type varex: VariableExpression or str
+        :param g: a variable assignment
+        :type g:  Assignment
+        :return: a set of the entities that satisfy ``parsed``.
         """
 
         spacer = '   '
@@ -659,7 +695,7 @@ def demo(num=0, trace=None):
      - num = 4: satisfaction of open formulas demo
      - any other value: run all the demos
 
-    @param trace: trace = 1, or trace = 2 for more verbose tracing
+    :param trace: trace = 1, or trace = 2 for more verbose tracing
     """
     demos = {
         1: propdemo,

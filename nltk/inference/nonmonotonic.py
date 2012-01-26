@@ -2,7 +2,7 @@
 #
 # Author: Daniel H. Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -15,8 +15,14 @@ Michael R. Genesereth and Nils J. Nilsson.
 from prover9 import Prover9, Prover9Command
 from collections import defaultdict
 
-from nltk.sem.logic import *
-from api import Prover, ProverCommandDecorator
+from nltk.sem.logic import (VariableExpression, EqualityExpression,
+                            ApplicationExpression, LogicParser,
+                            AbstractVariableExpression, AllExpression,
+                            BooleanExpression, NegatedExpression,
+                            ExistsExpression, Variable, ImpExpression,
+                            AndExpression, unique_variable, operator)
+
+from nltk.inference.api import Prover, ProverCommandDecorator
 
 class ProverParseError(Exception): pass
 
@@ -50,9 +56,9 @@ class ClosedDomainProver(ProverCommandDecorator):
          - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR 
                      "P.replace(x, d1) | P.replace(x, d2) | ..."
          - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
-        @param ex: C{Expression}
-        @param domain: C{set} of {Variable}s
-        @return: C{Expression}
+        :param ex: ``Expression``
+        :param domain: set of {Variable}s
+        :return: ``Expression``
         """
         if isinstance(ex, AllExpression):
             conjuncts = [ex.term.replace(ex.variable, VariableExpression(d)) 
@@ -118,8 +124,8 @@ class SetHolder(list):
     """
     def __getitem__(self, item):
         """
-        @param item: C{Variable}
-        @return: the C{set} containing 'item'
+        :param item: ``Variable``
+        :return: the set containing 'item'
         """
         assert isinstance(item, Variable)
         for s in self:
@@ -227,8 +233,8 @@ class ClosedWorldProver(ProverCommandDecorator):
         """
         Create a dictionary of predicates from the assumptions.
         
-        @param assumptions: a C{list} of C{Expression}s
-        @return: C{dict} mapping C{AbstractVariableExpression} to C{PredHolder}
+        :param assumptions: a list of ``Expression``s
+        :return: dict mapping ``AbstractVariableExpression`` to ``PredHolder``
         """
         predicates = defaultdict(PredHolder)
         for a in assumptions:
@@ -265,7 +271,7 @@ class ClosedWorldProver(ProverCommandDecorator):
 class PredHolder(object):
     """
     This class will be used by a dictionary that will store information
-    about predicates to be used by the C{ClosedWorldProver}.
+    about predicates to be used by the ``ClosedWorldProver``.
     
     The 'signatures' property is a list of tuples defining signatures for 
     which the predicate is true.  For instance, 'see(john, mary)' would be 

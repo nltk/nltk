@@ -1,41 +1,46 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 The lexicon is constructed by calling
-  lexicon.parseLexicon(<lexicon string>).
+``lexicon.parseLexicon(<lexicon string>)``.
 
 In order to construct a parser, you also need a rule set.
 The standard English rules are provided in chart as
-  chart.DefaultRuleSet
+``chart.DefaultRuleSet``.
 
 The parser can then be constructed by calling, for example:
-  parser = chart.CCGChartParser(<lexicon>, <ruleset>)
+``parser = chart.CCGChartParser(<lexicon>, <ruleset>)``
 
 Parsing is then performed by running
-  parser.nbest_parse(<sentence>.split())
+``parser.nbest_parse(<sentence>.split())``.
 
 While this returns a list of trees, the default representation
 of the produced trees is not very enlightening, particularly
 given that it uses the same tree class as the CFG parsers.
 It is probably better to call:
-  chart.printCCGDerivation(<parse tree extracted from list>)
+``chart.printCCGDerivation(<parse tree extracted from list>)``
 which should print a nice representation of the derivation.
 
 This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
 
-from nltk.parse.api import *
-from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
-from nltk import Tree, defaultdict
+from collections import defaultdict
 
-import lexicon
-from combinator import *
+from nltk.parse import ParserI
+from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
+from nltk.tree import Tree
+
+from nltk.ccg.lexicon import parseLexicon
+from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
+                                 BackwardApplication, ForwardComposition,
+                                 BackwardComposition, ForwardSubstitution,
+                                 BackwardBx, BackwardSx) 
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't
@@ -323,7 +328,7 @@ def printCCGTree(lwidth,tree):
 ### Demonstration code
 
 # Construct the lexicon
-lex = lexicon.parseLexicon('''
+lex = parseLexicon('''
     :- S, NP, N, VP    # Primitive categories, S is the target primitive
 
     Det :: NP/N         # Family of words

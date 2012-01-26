@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CCG Categories
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -55,8 +55,8 @@ class CCGVar(AbstractCCGCategory):
     def __init__(self, prim_only=False):
         """Initialize a variable (selects a new identifier)
 
-        @param prim_only: a boolean that determines whether the variable is restricted to primitives 
-        @type prim_only: C{boolean}
+        :param prim_only: a boolean that determines whether the variable is restricted to primitives 
+        :type prim_only: bool
         """
         self._id = self.new_id()
         self._prim_only = prim_only

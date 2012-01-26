@@ -1,11 +1,9 @@
 # Natural Language Toolkit: Shift-Reduce Parser Application
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 A graphical tool for exploring the shift-reduce parser.
@@ -76,14 +74,16 @@ Possible future improvements:
 """
 
 import string
+import tkFont
+from Tkinter import (IntVar, Listbox, Button, Frame, Label, Menu,
+                     Scrollbar, Tk)
 
-import nltk
+from nltk.tree import Tree
+from nltk.parse import SteppingShiftReduceParser
 from nltk.util import in_idle
-from nltk.draw.util import *
-from nltk.draw.tree import *
-from nltk.draw.cfg import CFGEditor
+from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
+from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
 
-        
 class ShiftReduceApp(object):
     """
     A graphical tool for exploring the shift-reduce parser.  The tool
@@ -92,11 +92,11 @@ class ShiftReduceApp(object):
     can shift tokens onto the stack, and can perform reductions on the
     top elements of the stack.  A "step" button simply steps through
     the parsing process, performing the operations that
-    C{nltk.parse.ShiftReduceParser} would use.
+    ``nltk.parse.ShiftReduceParser`` would use.
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = nltk.parse.SteppingShiftReduceParser(grammar, trace)
+        self._parser = SteppingShiftReduceParser(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()

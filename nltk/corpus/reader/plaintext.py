@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Plaintext Corpus Reader
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Nitin Madnani <nmadnani@umiacs.umd.edu>
@@ -28,12 +28,12 @@ class PlaintextCorpusReader(CorpusReader):
 
     This corpus reader can be customized (e.g., to skip preface
     sections of specific document formats) by creating a subclass and
-    overriding the L{CorpusView} class variable.
+    overriding the ``CorpusView`` class variable.
     """
 
     CorpusView = StreamBackedCorpusView
     """The corpus view class used by this reader.  Subclasses of
-       L{PlaintextCorpusReader} may specify alternative corpus view
+       ``PlaintextCorpusReader`` may specify alternative corpus view
        classes (e.g., to skip the preface sections of documents.)"""
     
     def __init__(self, root, fileids, 
@@ -49,13 +49,13 @@ class PlaintextCorpusReader(CorpusReader):
             >>> root = '/usr/local/share/nltk_data/corpora/webtext/'
             >>> reader = PlaintextCorpusReader(root, '.*\.txt')
         
-        @param root: The root directory for this corpus.
-        @param fileids: A list or regexp specifying the fileids in this corpus.
-        @param word_tokenizer: Tokenizer for breaking sentences or
+        :param root: The root directory for this corpus.
+        :param fileids: A list or regexp specifying the fileids in this corpus.
+        :param word_tokenizer: Tokenizer for breaking sentences or
             paragraphs into words.
-        @param sent_tokenizer: Tokenizer for breaking paragraphs
+        :param sent_tokenizer: Tokenizer for breaking paragraphs
             into words.
-        @param para_block_reader: The block reader used to divide the
+        :param para_block_reader: The block reader used to divide the
             corpus into paragraph blocks.
         """
         CorpusReader.__init__(self, root, fileids, encoding)
@@ -65,8 +65,8 @@ class PlaintextCorpusReader(CorpusReader):
 
     def raw(self, fileids=None, sourced=False):
         """
-        @return: the given file(s) as a single string.
-        @rtype: C{str}
+        :return: the given file(s) as a single string.
+        :rtype: str
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -74,9 +74,9 @@ class PlaintextCorpusReader(CorpusReader):
     
     def words(self, fileids=None, sourced=False):
         """
-        @return: the given file(s) as a list of words
+        :return: the given file(s) as a list of words
             and punctuation symbols.
-        @rtype: C{list} of C{str}
+        :rtype: list(str)
         """
         # Once we require Python 2.5, use source=(fileid if sourced else None)
         if sourced:
@@ -93,10 +93,10 @@ class PlaintextCorpusReader(CorpusReader):
     
     def sents(self, fileids=None, sourced=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings.
-        @rtype: C{list} of (C{list} of C{str})
+        :rtype: list(list(str))
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
@@ -114,10 +114,10 @@ class PlaintextCorpusReader(CorpusReader):
 
     def paras(self, fileids=None, sourced=False):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        @rtype: C{list} of (C{list} of (C{list} of C{str}))
+        :rtype: list(list(list(str)))
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
@@ -162,11 +162,9 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
     def __init__(self, *args, **kwargs):
         """
         Initialize the corpus reader.  Categorization arguments
-        (C{cat_pattern}, C{cat_map}, and C{cat_file}) are passed to
-        the L{CategorizedCorpusReader constructor
-        <CategorizedCorpusReader.__init__>}.  The remaining arguments
-        are passed to the L{PlaintextCorpusReader constructor
-        <PlaintextCorpusReader.__init__>}.
+        (``cat_pattern``, ``cat_map``, and ``cat_file``) are passed to
+        the ``CategorizedCorpusReader`` constructor.  The remaining arguments
+        are passed to the ``PlaintextCorpusReader`` constructor.
         """
         CategorizedCorpusReader.__init__(self, kwargs)
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
@@ -204,7 +202,7 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
     Reader for Europarl corpora that consist of plaintext documents.  
     Documents are divided into chapters instead of paragraphs as
     for regular plaintext documents. Chapters are separated using blank
-    lines. Everything is inherited from L{PlaintextCorpusReader} except 
+    lines. Everything is inherited from ``PlaintextCorpusReader`` except 
     that:
       - Since the corpus is pre-processed and pre-tokenized, the
         word tokenizer should just split the line at whitespaces.
@@ -237,10 +235,10 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
 
     def chapters(self, fileids=None):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             chapters, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        @rtype: C{list} of (C{list} of (C{list} of C{str}))
+        :rtype: list(list(list(str)))
         """
         return concat([self.CorpusView(fileid, self._read_para_block,
                                        encoding=enc)

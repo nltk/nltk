@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Word Finder
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -55,17 +55,17 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
     consisting of the grid and the words that were successfully
     placed.
 
-    @param words: the list of words to be put into the grid
-    @type words: C(list)
-    @param rows: the number of rows in the grid
-    @type rows: C(int)
-    @param cols: the number of columns in the grid
-    @type cols: C(int)
-    @param attempts: the number of times to attempt placing a word
-    @type attempts: C(int)
-    @param alph: the alpabet, to be used for filling blank cells
-    @type alph: C(list)
-    @rtype: C(tuple)
+    :param words: the list of words to be put into the grid
+    :type words: list
+    :param rows: the number of rows in the grid
+    :type rows: int
+    :param cols: the number of columns in the grid
+    :type cols: int
+    :param attempts: the number of times to attempt placing a word
+    :type attempts: int
+    :param alph: the alphabet, to be used for filling blank cells
+    :type alph: list
+    :rtype: tuple
     """
 
     # place longer words first

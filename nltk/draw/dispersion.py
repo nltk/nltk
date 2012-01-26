@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dispersion Plots
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -13,10 +13,10 @@ def dispersion_plot(text, words):
     """
     Generate a lexical dispersion plot.
 
-    @param text: The source text
-    @type text: C{list} or C{enum} of C{str}
-    @param words: The target words
-    @type words: C{list} of C{str}
+    :param text: The source text
+    :type text: list(str) or enum(str)
+    :param words: The target words
+    :type words: list of str
     """
 
     try:

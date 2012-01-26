@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Weka Classsifiers
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -19,10 +19,10 @@ import subprocess
 import re
 import zipfile
 
-from nltk.probability import *
+from nltk.probability import DictionaryProbDist
 from nltk.internals import java, config_java
 
-from api import *
+from nltk.classify.api import ClassifierI
 
 _weka_classpath = None
 _weka_search = ['.',
@@ -219,13 +219,13 @@ class ARFF_Formatter:
     strings, appropriate for input into Weka.
 
     Features and classes can be specified manually in the constructor, or may
-    be determined from data using C{from_train}.
+    be determined from data using ``from_train``.
     """
 
     def __init__(self, labels, features):
         """
-        @param labels: A list of all class labels that can be generated.
-        @param features: A list of feature specifications, where
+        :param labels: A list of all class labels that can be generated.
+        :param features: A list of feature specifications, where
             each feature specification is a tuple (fname, ftype);
             and ftype is an ARFF type string such as NUMERIC or
             STRING.
@@ -302,10 +302,11 @@ class ARFF_Formatter:
     def data_section(self, tokens, labeled=None):
         """
         Returns the ARFF data section for the given data.
-        @param tokens: a list of featuresets (dicts) or labelled featuresets
+        
+        :param tokens: a list of featuresets (dicts) or labelled featuresets
             which are tuples (featureset, label).
-        @param labeled: Indicates whether the given tokens are labeled
-            or not.  If C{None}, then the tokens will be assumed to be
+        :param labeled: Indicates whether the given tokens are labeled
+            or not.  If None, then the tokens will be assumed to be
             labeled if the first token's value is a tuple or list.
         """
         # Check if the tokens are labeled or unlabeled.  If unlabeled,

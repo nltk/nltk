@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Minimal Sets
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
@@ -20,8 +20,8 @@ class MinimalSet(object):
         """
         Create a new minimal set.
 
-        @param parameters: The (context, target, display) tuples for the item
-        @type parameters: C{list} of C{tuple} of C{string}
+        :param parameters: The (context, target, display) tuples for the item
+        :type parameters: list(tuple(str, str, str))
         """
         self._targets = set()  # the contrastive information
         self._contexts = set() # what we are controlling for
@@ -37,12 +37,12 @@ class MinimalSet(object):
         Add a new item to the minimal set, having the specified
         context, target, and display form.
 
-        @param context: The context in which the item of interest appears
-        @type context: C{string}
-        @param target: The item of interest
-        @type target: C{string}
-        @param display: The information to be reported for each item
-        @type display: C{string}
+        :param context: The context in which the item of interest appears
+        :type context: str
+        :param target: The item of interest
+        :type target: str
+        :param display: The information to be reported for each item
+        :type display: str
         """
         # Store the set of targets that occurred in this context
         self._seen[context].add(target)
@@ -58,9 +58,9 @@ class MinimalSet(object):
         """
         Determine which contexts occurred with enough distinct targets.
 
-        @param minimum: the minimum number of distinct target forms
-        @type minimum: C{int}
-        @rtype C{list}
+        :param minimum: the minimum number of distinct target forms
+        :type minimum: int
+        :rtype list
         """
         return [c for c in self._contexts if len(self._seen[c]) >= minimum]
 

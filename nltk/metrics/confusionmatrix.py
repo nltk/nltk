@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Confusion Matrices
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
@@ -9,9 +9,9 @@
 class ConfusionMatrix(object):
     """
     The confusion matrix between a list of reference values and a
-    corresponding list of test values.  Entry [M{r},M{t}] of this
+    corresponding list of test values.  Entry *[r,t]* of this
     matrix is a count of the number of times that the reference value
-    M{r} corresponds to the test value M{t}.  E.g.:
+    *r* corresponds to the test value *t*.  E.g.:
 
         >>> ref  = 'DET NN VB DET JJ NN NN IN DET NN'.split()
         >>> test = 'DET VB VB DET NN NN NN IN DET NN'.split()
@@ -19,7 +19,7 @@ class ConfusionMatrix(object):
         >>> print cm['NN', 'NN']
         3
 
-    Note that the diagonal entries (M{Ri}=M{Tj}) of this matrix
+    Note that the diagonal entries *Ri=Tj* of this matrix
     corresponds to correct values; and the off-diagonal entries
     correspond to incorrect values.
     """
@@ -29,12 +29,12 @@ class ConfusionMatrix(object):
         Construct a new confusion matrix from a list of reference
         values and a corresponding list of test values.
         
-        @type reference: C{list}
-        @param reference: An ordered list of reference values.
-        @type test: C{list}
-        @param test: A list of values to compare against the
+        :type reference: list
+        :param reference: An ordered list of reference values.
+        :type test: list
+        :param test: A list of values to compare against the
             corresponding reference values.
-        @raise ValueError: If C{reference} and C{length} do not have
+        :raise ValueError: If ``reference`` and ``length`` do not have
             the same length.
         """
         if len(reference) != len(test):
@@ -59,13 +59,13 @@ class ConfusionMatrix(object):
             confusion[indices[w]][indices[g]] += 1
             max_conf = max(max_conf, confusion[indices[w]][indices[g]])
 
-        #: A list of all values in C{reference} or C{test}.
+        #: A list of all values in ``reference`` or ``test``.
         self._values = values
-        #: A dictionary mapping values in L{self._values} to their indices.
+        #: A dictionary mapping values in ``self._values`` to their indices.
         self._indices = indices
         #: The confusion matrix itself (as a list of lists of counts).
         self._confusion = confusion
-        #: The greatest count in L{self._confusion} (used for printing).
+        #: The greatest count in ``self._confusion`` (used for printing).
         self._max_conf = max_conf
         #: The total number of values in the confusion matrix.
         self._total = len(reference)
@@ -74,9 +74,9 @@ class ConfusionMatrix(object):
 
     def __getitem__(self, (li,lj)):
         """
-        @return: The number of times that value C{li} was expected and
-        value C{lj} was given.
-        @rtype: C{int}
+        :return: The number of times that value ``li`` was expected and
+        value ``lj`` was given.
+        :rtype: int
         """
         i = self._indices[li]
         j = self._indices[lj]
@@ -92,13 +92,13 @@ class ConfusionMatrix(object):
     def pp(self, show_percents=False, values_in_chart=True,
            truncate=None, sort_by_count=False):
         """
-        @return: A multi-line string representation of this confusion
+        :return: A multi-line string representation of this confusion
         matrix.
-        @type truncate: int
-        @param truncate: If specified, then only show the specified
+        :type truncate: int
+        :param truncate: If specified, then only show the specified
             number of values.  Any sorting (e.g., sort_by_count)
             will be performed before truncation.
-        @param sort_by_count: If true, then sort by the count of each
+        :param sort_by_count: If true, then sort by the count of each
             label in the reference data.  I.e., labels that occur more
             frequently in the reference label will be towards the left
             edge of the matrix, and labels that occur less frequently

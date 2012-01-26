@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Authors: Steven Bird <sb@csse.unimelb.edu.au>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.org/>
@@ -42,7 +42,7 @@ __doc__ += '\n@version: ' + __version__
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2011 NLTK Project.
+Copyright (C) 2001-2012 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
@@ -96,12 +96,10 @@ from internals import config_java
 
 # Import top-level functionality into top-level namespace
 
-from containers import *
 from collocations import *
 from decorators import decorator, memoize
 from featstruct import *
 from grammar import *
-from olac import *
 from probability import *
 from text import *
 from tree import *

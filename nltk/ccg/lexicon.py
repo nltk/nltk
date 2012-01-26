@@ -1,13 +1,14 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import re
-from nltk import defaultdict
-from api import *
+from collections import defaultdict
+
+from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategory
 
 #------------
 # Regular expressions used for parsing components of the lexicon
