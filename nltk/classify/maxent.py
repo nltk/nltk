@@ -656,6 +656,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
     sparse vector always sums to a constant non-negative number.  This
     new feature is used to ensure two preconditions for the GIS
     training algorithm:
+
       - At least one feature vector index must be nonzero for every
         token.
       - The feature vector must sum to a constant non-negative number

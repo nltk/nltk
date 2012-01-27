@@ -94,8 +94,7 @@ class ConfusionMatrix(object):
     def pp(self, show_percents=False, values_in_chart=True,
            truncate=None, sort_by_count=False):
         """
-        :return: A multi-line string representation of this confusion
-        matrix.
+        :return: A multi-line string representation of this confusion matrix.
         :type truncate: int
         :param truncate: If specified, then only show the specified
             number of values.  Any sorting (e.g., sort_by_count)
@@ -105,6 +104,7 @@ class ConfusionMatrix(object):
             frequently in the reference label will be towards the left
             edge of the matrix, and labels that occur less frequently
             will be towards the right edge.
+
         @todo: add marginals?
         """
         confusion = self._confusion
