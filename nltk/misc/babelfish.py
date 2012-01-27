@@ -1,3 +1,4 @@
+# coding: utf8
 # babelizer.py - API for simple access to babelfish.altavista.com.
 #                Requires python 2.0 or better.
 # From: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/64937
@@ -6,13 +7,13 @@
 #
 # See it in use at http://babel.MrFeinberg.com/
 
-"""API for simple access to babelfish.altavista.com.
+r"""API for simple access to babelfish.altavista.com.
 
 Summary:
 
     >>> from nltk.misc import babelfish as babelizer
     >>> babelizer.available_languages
-    ['Portuguese', 'Chinese', 'German', 'English', 'Japanese', 'French', 'Greek', 'Spanish', 'Russian', 'Korean', 'Italian']
+    ['Chinese', 'English', 'French', 'German', 'Greek', 'Italian', 'Japanese', 'Korean', 'Portuguese', 'Russian', 'Spanish']
     >>> babelizer.translate('How much is that doggie in the window?',
     ...                     'english', 'french')
     'Combien co\xfbte ce chienchien dans la fen\xeatre ?'
@@ -52,7 +53,7 @@ __languages = { 'english'   : 'en',
 """
   All of the available language names.
 """
-available_languages = [x.title() for x in __languages]
+available_languages = sorted([x.title() for x in __languages])
 
 class BabelizerError(Exception):
     """
