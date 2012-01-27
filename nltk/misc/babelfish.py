@@ -13,7 +13,7 @@ Summary:
 
     >>> from nltk.misc import babelfish as babelizer
     >>> babelizer.available_languages
-    ['Portuguese', 'Chinese', 'German', 'English', 'Japanese', 'French', 'Greek', 'Spanish', 'Russian', 'Korean', 'Italian']
+    ['Chinese', 'English', 'French', 'German', 'Greek', 'Italian', 'Japanese', 'Korean', 'Portuguese', 'Russian', 'Spanish']
     >>> babelizer.translate('How much is that doggie in the window?',
     ...                     'english', 'french')
     'Combien co\xfbte ce chienchien dans la fen\xeatre ?'
@@ -53,7 +53,7 @@ __languages = { 'english'   : 'en',
 """
   All of the available language names.
 """
-available_languages = [x.title() for x in __languages]
+available_languages = sorted([x.title() for x in __languages])
 
 class BabelizerError(Exception):
     """
