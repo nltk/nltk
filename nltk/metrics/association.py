@@ -35,13 +35,15 @@ TOTAL = -1
 class NgramAssocMeasures(object):
     """
     An abstract class defining a collection of generic association measures.
-    Each public method returns a score, taking the following arguments:
+    Each public method returns a score, taking the following arguments::
+
         score_fn(count_of_ngram,
                  (count_of_n-1gram_1, ..., count_of_n-1gram_j),
                  (count_of_n-2gram_1, ..., count_of_n-2gram_k),
                  ...,
                  (count_of_1gram_1, ..., count_of_1gram_n),
                  count_of_total_words)
+
     See ``BigramAssocMeasures`` and ``TrigramAssocMeasures``
 
     Inheriting classes should define a property _n, and a method _contingency
@@ -141,18 +143,22 @@ class NgramAssocMeasures(object):
 class BigramAssocMeasures(NgramAssocMeasures):
     """
     A collection of trigram association measures. Each association measure
-    is provided as a function with three arguments:
+    is provided as a function with three arguments::
+
         bigram_score_fn(n_ii, (n_ix, n_xi), n_xx)
+
     The arguments constitute the marginals of a contingency table, counting
     the occurrences of particular events in a corpus. The letter i in the
     suffix refers to the appearance of the word in question, while x indicates
-    the appearance of any word. Thus, for example:
-    n_ii counts (w1, w2), i.e. the bigram being scored
-    n_ix counts (w1, *)
-    n_xi counts (*, w2)
-    n_xx counts (*, *), i.e. any bigram
+    the appearance of any word. Thus, for example::
 
-    This may be shown with respect to a contingency table:
+        n_ii counts (w1, w2), i.e. the bigram being scored
+        n_ix counts (w1, *)
+        n_xi counts (*, w2)
+        n_xx counts (*, *), i.e. any bigram
+
+    This may be shown with respect to a contingency table::
+
                 w1    ~w1
              ------ ------
          w2 | n_ii | n_oi | = n_xi
@@ -210,11 +216,13 @@ class BigramAssocMeasures(NgramAssocMeasures):
 class TrigramAssocMeasures(NgramAssocMeasures):
     """
     A collection of trigram association measures. Each association measure
-    is provided as a function with four arguments:
+    is provided as a function with four arguments::
+
         trigram_score_fn(n_iii,
                          (n_iix, n_ixi, n_xii),
                          (n_ixx, n_xix, n_xxi),
                          n_xxx)
+
     The arguments constitute the marginals of a contingency table, counting
     the occurrences of particular events in a corpus. The letter i in the
     suffix refers to the appearance of the word in question, while x indicates

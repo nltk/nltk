@@ -17,6 +17,7 @@ if os.path.isdir(_dir):
 
 # These tests are expected to fail.
 # NOTE: Remember to remove tests from this list after they have been fixed.
+
 FAILING_TESTS = [
     "ccg.doctest", # This test randomly fails - nondeterministic output
     "collocations.doctest",
@@ -29,7 +30,7 @@ FAILING_TESTS = [
 # These tests require extra dependencies and should not run by default
 # TODO: Run the tests if the relevant dependeices are present on the system
 DEPENDENT_TESTS = [
-    "classify.doctest",
+#    "classify.doctest",
     "discourse.doctest",
     "drt.doctest",
     "gluesemantics.doctest",

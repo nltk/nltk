@@ -14,6 +14,7 @@ SklearnClassifier. E.g., to wrap a linear SVM classifier with default settings,
 do
 
 >>> from sklearn.svm.sparse import LinearSVC
+>>> from nltk.classify.scikitlearn import SklearnClassifier
 >>> classif = SklearnClassifier(LinearSVC())
 
 The scikit-learn classifier may be arbitrarily complex. E.g., the following
