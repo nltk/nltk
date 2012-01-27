@@ -1,3 +1,4 @@
+# coding: utf8
 # babelizer.py - API for simple access to babelfish.altavista.com.
 #                Requires python 2.0 or better.
 # From: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/64937
@@ -6,7 +7,7 @@
 #
 # See it in use at http://babel.MrFeinberg.com/
 
-"""API for simple access to babelfish.altavista.com.
+r"""API for simple access to babelfish.altavista.com.
 
 Summary:
 
