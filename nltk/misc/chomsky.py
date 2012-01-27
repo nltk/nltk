@@ -8,6 +8,7 @@ from actual books and articles written by Noam Chomsky.
 Upon request, it assembles the phrases in the elegant
 stylistic patterns that Chomsky is noted for.
 To generate n sentences of linguistic wisdom, type
+
     (CHOMSKY n)  -- for example
     (CHOMSKY 5) generates half a screen of linguistic truth.
 """
