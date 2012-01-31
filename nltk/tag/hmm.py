@@ -126,9 +126,9 @@ class HiddenMarkovModelTagger(TaggerI):
     :type transform: function or HiddenMarkovModelTaggerTransform
     """
     def __init__(self, symbols, states, transitions, outputs, priors, **kwargs):
-        self._states = states
+        self._symbols = list(set(symbols))
+        self._states = list(set(states))
         self._transitions = transitions
-        self._symbols = symbols
         self._outputs = outputs
         self._priors = priors
         self._cache = None

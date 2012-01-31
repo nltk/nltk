@@ -644,8 +644,14 @@ class DictionaryProbDist(ProbDistI):
         probabilities, if ``log`` is true).  If ``normalize`` is
         true, then the probability values are scaled by a constant
         factor such that they sum to 1.
+
+        If called without arguments, the resulting probability
+        distribution assigns zero probabiliy to all values.
         """
-        self._prob_dict = prob_dict.copy()
+        if prob_dict is None:
+            self._prob_dict = {}
+        else:
+            self._prob_dict = prob_dict.copy()
         self._log = log
 
         # Normalize the distribution, if requested.
@@ -1851,7 +1857,7 @@ class ConditionalFreqDist(defaultdict):
         return '<ConditionalFreqDist with %d conditions>' % len(self)
 
 
-class ConditionalProbDistI(object):
+class ConditionalProbDistI(defaultdict):
     """
     A collection of probability distributions for a single experiment
     run under different conditions.  Conditional probability
@@ -1867,26 +1873,6 @@ class ConditionalProbDistI(object):
     def __init__(self):
         raise AssertionError, 'ConditionalProbDistI is an interface'
 
-    def __getitem__(self, condition):
-        """
-        Return the probability distribution for the experiment run
-        under the given condition.
-        :param condition: The condition whose probability distribution
-            should be returned.
-        :type condition: any
-        :rtype: ProbDistI
-        """
-        raise AssertionError
-
-    def __len__(self):
-        """
-        Return the number of conditions that are represented by
-        this ``ConditionalProbDist``.
-
-        :rtype: int
-        """
-        raise AssertionError
-
     def conditions(self):
         """
         Return a list of the conditions that are represented by
@@ -1895,7 +1881,7 @@ class ConditionalProbDistI(object):
 
         :rtype: list
         """
-        raise AssertionError
+        return self.keys()
 
     def __repr__(self):
         """
@@ -1903,13 +1889,9 @@ class ConditionalProbDistI(object):
 
         :rtype: str
         """
-        return '<ConditionalProbDist with %d conditions>' % len(self)
+        return '<%s with %d conditions>' % (type(self).__name__, len(self))
 
-# For now, this is the only implementation of ConditionalProbDistI;
-# but we would want a different implementation if we wanted to build a
-# conditional probability distribution analytically (e.g., a gaussian
-# distribution), rather than basing it on an underlying frequency
-# distribution.
+
 class ConditionalProbDist(ConditionalProbDistI):
     """
     A conditional probability distribution modelling the experiments
@@ -1939,7 +1921,7 @@ class ConditionalProbDist(ConditionalProbDistI):
         >>> print cpdist['run'].prob('NN')
         0.0813
     """
-    def __init__(self, cfdist, probdist_factory,
+    def __init__(self, cfdist, probdist_factory, 
                  *factory_args, **factory_kw_args):
         """
         Construct a new conditional probability distribution, based on
@@ -1964,36 +1946,18 @@ class ConditionalProbDist(ConditionalProbDistI):
         :type factory_kw_args: (any)
         :param factory_kw_args: Extra keyword arguments for ``probdist_factory``.
         """
-        self._probdist_factory = probdist_factory
-        self._cfdist = cfdist
-        self._factory_args = factory_args
-        self._factory_kw_args = factory_kw_args
+        # self._probdist_factory = probdist_factory
+        # self._cfdist = cfdist
+        # self._factory_args = factory_args
+        # self._factory_kw_args = factory_kw_args
 
-        self._pdists = {}
-        for c in cfdist.conditions():
-            pdist = probdist_factory(cfdist[c], *factory_args,
-                                     **factory_kw_args)
-            self._pdists[c] = pdist
+        factory = lambda: probdist_factory(FreqDist(), 
+                                           *factory_args, **factory_kw_args)
+        defaultdict.__init__(self, factory)
+        for condition in cfdist:
+            self[condition] = probdist_factory(cfdist[condition], 
+                                               *factory_args, **factory_kw_args)
 
-    def __contains__(self, condition):
-        return condition in self._pdists
-
-    def __getitem__(self, condition):
-        if condition not in self._pdists:
-            # If it's a condition we haven't seen, create a new prob
-            # dist from the empty freq dist.  Typically, this will
-            # give a uniform prob dist.
-            pdist = self._probdist_factory(FreqDist(), *self._factory_args,
-                                           **self._factory_kw_args)
-            self._pdists[condition] = pdist
-
-        return self._pdists[condition]
-
-    def conditions(self):
-        return self._pdists.keys()
-
-    def __len__(self):
-        return len(self._pdists)
 
 class DictionaryConditionalProbDist(ConditionalProbDistI):
     """
@@ -2007,16 +1971,8 @@ class DictionaryConditionalProbDist(ConditionalProbDistI):
             by the conditions
         :type probdist_dict: dict any -> probdist
         """
-        self._dict = probdist_dict
-
-    def __getitem__(self, condition):
-        # inherit documentation
-        # this will cause an exception for unseen conditions
-        return self._dict[condition]
-
-    def conditions(self):
-        # inherit documentation
-        return self._dict.keys()
+        defaultdict.__init__(self, DictionaryProbDist)
+        self.update(probdist_dict)
 
 ##//////////////////////////////////////////////////////
 ## Adding in log-space.
