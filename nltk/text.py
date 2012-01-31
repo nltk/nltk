@@ -383,18 +383,6 @@ class Text(object):
         text = self._trigram_model.generate(length)
         print tokenwrap(text)
 
-    def search(self, pattern):
-        """
-        Search for instances of the regular expression pattern in the text.
-
-        :seealso: TokenSearcher
-        """
-        if '_token_searcher' not in self.__dict__:
-            print "Loading data..."
-            self._token_searcher = TokenSearcher(self.tokens)
-
-        self._token_searcher.findall(pattern)
-
     def similar(self, word, num=20):
         """
         Distributional similarity: find other words which appear in the
