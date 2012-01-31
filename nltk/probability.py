@@ -47,6 +47,7 @@ import random
 import warnings
 from operator import itemgetter
 from itertools import imap, islice
+from collections import defaultdict
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -160,11 +161,10 @@ class FreqDist(dict):
         """
         return len(self)
 
-    # deprecate this -- use keys() instead?
     def samples(self):
         """
         Return a list of all samples that have been recorded as
-        outcomes by this frequency distribution.  Use ``count()``
+        outcomes by this frequency distribution.  Use ``fd[sample]``
         to determine the count for each sample.
 
         :rtype: list
@@ -216,20 +216,6 @@ class FreqDist(dict):
                 Nr += [0]*(c+1-len(Nr))
             Nr[c] += 1
         self._Nr_cache = Nr
-
-    def count(self, sample):
-        """
-        Return the count of a given sample.  The count of a sample is
-        defined as the number of times that sample outcome was
-        recorded by this FreqDist.  Counts are non-negative
-        integers.  This method has been replaced by conventional
-        dictionary indexing; use fd[item] instead of fd.count(item).
-
-        :rtype: int
-        :param sample: the sample whose count should be returned.
-        :type sample: any
-        """
-        raise AttributeError, "Use indexing to look up an entry in a FreqDist, e.g. fd[item]"
 
     def _cumulative_frequencies(self, samples=None):
         """
@@ -305,7 +291,7 @@ class FreqDist(dict):
         try:
             import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package (aka pylab).'
+            raise ValueError('The plot function requires the matplotlib package (aka pylab). '
                          'See http://matplotlib.sourceforge.net/')
 
         if len(args) == 0:
@@ -362,12 +348,6 @@ class FreqDist(dict):
         for i in range(len(samples)):
             print "%4d" % freqs[i],
         print
-
-    def sorted_samples(self):
-        raise AttributeError, "Use FreqDist.keys(), or iterate over the FreqDist to get its samples in sorted order (most frequent first)"
-
-    def sorted(self):
-        raise AttributeError, "Use FreqDist.keys(), or iterate over the FreqDist to get its samples in sorted order (most frequent first)"
 
     def _sort_keys_by_value(self):
         if not self._item_cache:
@@ -433,10 +413,6 @@ class FreqDist(dict):
         self._sort_keys_by_value()
         return iter(self._item_cache)
 
-#        sort the supplied samples
-#        if samples:
-#            items = [(sample, self[sample]) for sample in set(samples)]
-
     def copy(self):
         """
         Create a copy of this frequency distribution.
@@ -484,11 +460,7 @@ class FreqDist(dict):
         clone = self.copy()
         clone.update(other)
         return clone
-    def __eq__(self, other):
-        if not isinstance(other, FreqDist): return False
-        return self.items() == other.items() # items are already sorted
-    def __ne__(self, other):
-        return not (self == other)
+
     def __le__(self, other):
         if not isinstance(other, FreqDist): return False
         return set(self).issubset(other) and all(self[key] <= other[key] for key in self)
@@ -508,7 +480,7 @@ class FreqDist(dict):
 
         :rtype: string
         """
-        return '<FreqDist with %d outcomes>' % self.N()
+        return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
 
     def __str__(self):
         """
@@ -516,7 +488,9 @@ class FreqDist(dict):
 
         :rtype: string
         """
-        items = ['%r: %r' % (s, self[s]) for s in self]
+        items = ['%r: %r' % (s, self[s]) for s in self.keys()[:10]]
+        if len(self) > 10:
+            items.append('...')
         return '<FreqDist: %s>' % ', '.join(items)
 
     def __getitem__(self, sample):
@@ -587,7 +561,6 @@ class ProbDistI(object):
         """
         raise AssertionError()
 
-    # deprecate this (use keys() instead?)
     def samples(self):
         """
         Return a list of all samples that have nonzero probabilities.
@@ -1690,7 +1663,7 @@ def entropy(pdist):
 ##  Conditional Distributions
 ##//////////////////////////////////////////////////////
 
-class ConditionalFreqDist(object):
+class ConditionalFreqDist(defaultdict):
     """
     A collection of frequency distributions for a single experiment
     run under different conditions.  Conditional frequency
@@ -1747,27 +1720,10 @@ class ConditionalFreqDist(object):
             frequency distribution with
         :type cond_samples: Sequence of (condition, sample) tuples
         """
-        self._fdists = {}
+        defaultdict.__init__(self, FreqDist)
         if cond_samples:
             for (cond, sample) in cond_samples:
                 self[cond].inc(sample)
-
-    def __getitem__(self, condition):
-        """
-        Return the frequency distribution that encodes the frequency
-        of each sample outcome, given that the experiment was run
-        under the given condition.  If the frequency distribution for
-        the given condition has not been accessed before, then this
-        will create a new empty FreqDist for that condition.
-
-        :param condition: The condition under which the experiment was run.
-        :type condition: any
-        :rtype: FreqDist
-        """
-        # Create the conditioned freq dist, if it doesn't exist
-        if condition not in self._fdists:
-            self._fdists[condition] = FreqDist()
-        return self._fdists[condition]
 
     def conditions(self):
         """
@@ -1779,16 +1735,7 @@ class ConditionalFreqDist(object):
 
         :rtype: list
         """
-        return sorted(self._fdists.keys())
-
-    def __len__(self):
-        """
-        Return the number of conditions that have been accessed
-        for this ``ConditionalFreqDist``.
-
-        :rtype: int
-        """
-        return len(self._fdists)
+        return self.keys()
 
     def N(self):
         """
@@ -1797,7 +1744,7 @@ class ConditionalFreqDist(object):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in self._fdists.values())
+        return sum(fdist.N() for fdist in self.itervalues())
 
     def plot(self, *args, **kwargs):
         """
@@ -1816,7 +1763,7 @@ class ConditionalFreqDist(object):
             import pylab
         except ImportError:
             raise ValueError('The plot function requires the matplotlib package (aka pylab).'
-                         'See http://matplotlib.sourceforge.net/')
+                             'See http://matplotlib.sourceforge.net/')
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         conditions = _get_kwarg(kwargs, 'conditions', self.conditions())
@@ -1881,12 +1828,6 @@ class ConditionalFreqDist(object):
                 print "%4d" % f,
             print
 
-    def __eq__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
-        return self.conditions() == other.conditions() \
-               and all(self[c] == other[c] for c in self.conditions()) # conditions are already sorted
-    def __ne__(self, other):
-        return not (self == other)
     def __le__(self, other):
         if not isinstance(other, ConditionalFreqDist): return False
         return set(self.conditions()).issubset(other.conditions()) \
@@ -1903,21 +1844,12 @@ class ConditionalFreqDist(object):
 
     def __repr__(self):
         """
-        Return a string representation of this ``ConditionalProbDist``.
-
-        :rtype: str
-        """
-        return '<ConditionalProbDist with %d conditions>' % self.__len__()
-
-
-    def __repr__(self):
-        """
         Return a string representation of this ``ConditionalFreqDist``.
 
         :rtype: str
         """
-        n = len(self._fdists)
-        return '<ConditionalFreqDist with %d conditions>' % n
+        return '<ConditionalFreqDist with %d conditions>' % len(self)
+
 
 class ConditionalProbDistI(object):
     """
@@ -1964,6 +1896,14 @@ class ConditionalProbDistI(object):
         :rtype: list
         """
         raise AssertionError
+
+    def __repr__(self):
+        """
+        Return a string representation of this ``ConditionalProbDist``.
+
+        :rtype: str
+        """
+        return '<ConditionalProbDist with %d conditions>' % len(self)
 
 # For now, this is the only implementation of ConditionalProbDistI;
 # but we would want a different implementation if we wanted to build a
