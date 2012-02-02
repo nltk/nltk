@@ -14,14 +14,14 @@ Some trees to run tests on:
     >>> vp = Tree('vp', [Tree('v', ['chased']), dp2])
     >>> tree = Tree('s', [dp1, vp])
     >>> print tree
+    (s (dp (d the) (np dog)) (vp (v chased) (dp (d the) (np cat))))
 
 The node value is stored using the `node` attribute:
 
     >>> dp1.node, dp2.node, vp.node, tree.node
     ('dp', 'dp', 'vp', 's')
 
-
-    >>> print tree[path]
+    >>> print tree[1,1,1,0]
     cat
 
 The `treepositions` method returns a list of the tree positions of
@@ -36,8 +36,8 @@ tree object to one of several standard tree encodings:
 
     >>> print tree.pprint_latex_qtree()
     \Tree [.s
-            [.np [.d THE ] [.np DOG ] ]
-            [.vp [.v CHASED ] [.np [.d THE ] [.np CAT ] ] ] ]
+            [.dp [.d the ] [.np dog ] ]
+            [.vp [.v chased ] [.dp [.d the ] [.np cat ] ] ] ]
 
 Trees can be parsed from treebank strings with the static
 `Tree.parse()` method:
@@ -571,10 +571,9 @@ operations:
     ok! (A (B c) (D e) f)
     >>> del ptree[-100:1]; pcheck(ptree)
     ok! (A (D e) f)
-    >>> del ptree[1:2:3]
-    Traceback (most recent call last):
-      . . .
-    ValueError: slices with steps are not supported by ParentedTree
+    >>> ptree = make_ptree('(A (B c) (D e) f g (H i) j (K l))')
+    >>> del ptree[1:-2:2]; pcheck(ptree)
+    ok! (A (B c) f (H i) j (K l))
 
 **__setitem__()**
 
@@ -619,10 +618,8 @@ operations:
     ok! (A (U v) (X ) (X ) n)
     >>> ptree[-1:] = (make_ptree('(X)') for x in range(3)); pcheck(ptree)
     ok! (A (U v) (X ) (X ) (X ) (X ) (X ))
-    >>> ptree[1:2:3] = ['x']
-    Traceback (most recent call last):
-      . . .
-    ValueError: slices with steps are not supported by ParentedTree
+    >>> ptree[1:-2:2] = ['x', 'y']; pcheck(ptree)
+    ok! (A (U v) x (X ) y (X ) (X ))
 
 **append()**
 
@@ -873,10 +870,9 @@ multiple parents.)
     ok! (A (B c) (D e) f)
     >>> del mptree[-100:1]; mpcheck(mptree)
     ok! (A (D e) f)
-    >>> del mptree[1:2:3]
-    Traceback (most recent call last):
-      . . .
-    ValueError: slices with steps are not supported by MultiParentedTree
+    >>> mptree = make_mptree('(A (B c) (D e) f g (H i) j (K l))')
+    >>> del mptree[1:-2:2]; mpcheck(mptree)
+    ok! (A (B c) f (H i) j (K l))
 
 **__setitem__()**
 
@@ -921,10 +917,8 @@ multiple parents.)
     ok! (A (U v) (X ) (X ) n)
     >>> mptree[-1:] = (make_mptree('(X)') for x in range(3)); mpcheck(mptree)
     ok! (A (U v) (X ) (X ) (X ) (X ) (X ))
-    >>> mptree[1:2:3] = ['x']
-    Traceback (most recent call last):
-      . . .
-    ValueError: slices with steps are not supported by MultiParentedTree
+    >>> mptree[1:-2:2] = ['x', 'y']; mpcheck(mptree)
+    ok! (A (U v) x (X ) y (X ) (X ))
 
 **append()**
 
