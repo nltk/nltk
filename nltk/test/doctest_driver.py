@@ -969,6 +969,9 @@ CONTINUE_OPT = Option("--continue", dest='kbinterrupt_continue',
                       "interrupt, then report the interrupt and continue")
 
 # Output Comparison options
+IGNORE_EXCEPTION_DETAIL_OPT = Option("--ignore_exception_detail",
+               action="store_const", dest="ignore_exception_detail", const=1, default=0,
+               help="Ignore exception details in the expected output.")
 ELLIPSIS_OPT = Option("--ellipsis",
                action="store_const", dest="ellipsis", const=1, default=0,
                help="Allow \"...\" to be used for ellipsis in the "
@@ -995,7 +998,7 @@ def main():
     optparser.add_option_group(reporting_group)
 
     compare_group = OptionGroup(optparser, 'Output Comparison')
-    compare_group.add_options([ELLIPSIS_OPT, NORMWS_OPT])
+    compare_group.add_options([IGNORE_EXCEPTION_DETAIL_OPT, ELLIPSIS_OPT, NORMWS_OPT])
     optparser.add_option_group(compare_group)
 
     # Extract optionflags and the list of file names.
@@ -1005,8 +1008,9 @@ def main():
     optionflags = (optionvals.udiff * REPORT_UDIFF |
                    optionvals.cdiff * REPORT_CDIFF |
                    optionvals.ellipsis * ELLIPSIS |
+                   optionvals.ignore_exception_detail * IGNORE_EXCEPTION_DETAIL |
                    optionvals.normws * NORMALIZE_WHITESPACE)
-
+ 
     # Check coverage, if requested
     if optionvals.coverage:
         coverage.use_cache(True, cache_file=optionvals.coverage)
