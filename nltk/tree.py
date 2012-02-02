@@ -162,9 +162,9 @@ class Tree(list):
             if len(index) == 0:
                 return self
             elif len(index) == 1:
-                return self[int(index[0])]
+                return self[index[0]]
             else:
-                return self[int(index[0])][index[1:]]
+                return self[index[0]][index[1:]]
         else:
             raise TypeError("%s indices must be integers, not %s" %
                             (type(self).__name__, type(index).__name__))
