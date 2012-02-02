@@ -158,18 +158,21 @@ class Tree(list):
     def __getitem__(self, index):
         if isinstance(index, (int, slice)):
             return list.__getitem__(self, index)
-        else:
+        elif isinstance(index, (list, tuple)):
             if len(index) == 0:
                 return self
             elif len(index) == 1:
-                return self[int(index[0])]
+                return self[index[0]]
             else:
-                return self[int(index[0])][index[1:]]
+                return self[index[0]][index[1:]]
+        else:
+            raise TypeError("%s indices must be integers, not %s" %
+                            (type(self).__name__, type(index).__name__))
 
     def __setitem__(self, index, value):
         if isinstance(index, (int, slice)):
             return list.__setitem__(self, index, value)
-        else:
+        elif isinstance(index, (list, tuple)):
             if len(index) == 0:
                 raise IndexError('The tree position () may not be '
                                  'assigned to.')
@@ -177,17 +180,23 @@ class Tree(list):
                 self[index[0]] = value
             else:
                 self[index[0]][index[1:]] = value
+        else:
+            raise TypeError("%s indices must be integers, not %s" %
+                            (type(self).__name__, type(index).__name__))
 
     def __delitem__(self, index):
         if isinstance(index, (int, slice)):
             return list.__delitem__(self, index)
-        else:
+        elif isinstance(index, (list, tuple)):
             if len(index) == 0:
                 raise IndexError('The tree position () may not be deleted.')
             elif len(index) == 1:
                 del self[index[0]]
             else:
                 del self[index[0]][index[1:]]
+        else:
+            raise TypeError("%s indices must be integers, not %s" %
+                            (type(self).__name__, type(index).__name__))
 
     #////////////////////////////////////////////////////////////
     # Basic tree operations
@@ -887,17 +896,20 @@ class AbstractParentedTree(Tree):
             # Remove the child from our child list.
             super(AbstractParentedTree, self).__delitem__(index)
 
-        # del ptree[()]
-        elif len(index) == 0:
-            raise IndexError('The tree position () may not be deleted.')
+        elif isinstance(index, (list, tuple)):
+            # del ptree[()]
+            if len(index) == 0:
+                raise IndexError('The tree position () may not be deleted.')
+            # del ptree[(i,)]
+            elif len(index) == 1:
+                del self[index[0]]
+            # del ptree[i1, i2, i3]
+            else:
+                del self[index[0]][index[1:]]
 
-        # del ptree[(i,)]
-        elif len(index) == 1:
-            del self[index[0]]
-
-        # del ptree[i1, i2, i3]
         else:
-            del self[index[0]][index[1:]]
+            raise TypeError("%s indices must be integers, not %s" %
+                            (type(self).__name__, type(index).__name__))
 
     def __setitem__(self, index, value):
         # ptree[start:stop] = value
@@ -940,17 +952,20 @@ class AbstractParentedTree(Tree):
             # Update our child list.
             super(AbstractParentedTree, self).__setitem__(index, value)
 
-        # ptree[()] = value
-        elif len(index) == 0:
-            raise IndexError('The tree position () may not be assigned to.')
+        elif isinstance(index, (list, tuple)):
+            # ptree[()] = value
+            if len(index) == 0:
+                raise IndexError('The tree position () may not be assigned to.')
+            # ptree[(i,)] = value
+            elif len(index) == 1:
+                self[index[0]] = value
+            # ptree[i1, i2, i3] = value
+            else:
+                self[index[0]][index[1:]] = value
 
-        # ptree[(i,)] = value
-        elif len(index) == 1:
-            self[index[0]] = value
-
-        # ptree[i1, i2, i3] = value
         else:
-            self[index[0]][index[1:]] = value
+            raise TypeError("%s indices must be integers, not %s" %
+                            (type(self).__name__, type(index).__name__))
 
     def append(self, child):
         if isinstance(child, Tree):
