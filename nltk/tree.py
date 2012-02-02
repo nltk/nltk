@@ -878,9 +878,9 @@ class AbstractParentedTree(Tree):
     def __delitem__(self, index):
         # del ptree[start:stop]
         if isinstance(index, slice):
-            start, stop = slice_bounds(self, index)
+            start, stop, step = slice_bounds(self, index, allow_step=True)
             # Clear all the children pointers.
-            for i in xrange(start, stop):
+            for i in xrange(start, stop, step):
                 if isinstance(self[i], Tree):
                     self._delparent(self[i], i)
             # Delete the children from our child list.
@@ -914,7 +914,7 @@ class AbstractParentedTree(Tree):
     def __setitem__(self, index, value):
         # ptree[start:stop] = value
         if isinstance(index, slice):
-            start, stop = slice_bounds(self, index)
+            start, stop, step = slice_bounds(self, index, allow_step=True)
             # make a copy of value, in case it's an iterator
             if not isinstance(value, (list, tuple)):
                 value = list(value)
@@ -922,9 +922,9 @@ class AbstractParentedTree(Tree):
             # up in an inconsistent state if an error does occur.
             for i, child in enumerate(value):
                 if isinstance(child, Tree):
-                    self._setparent(child, start+i, dry_run=True)
+                    self._setparent(child, start + i*step, dry_run=True)
             # clear the child pointers of all parents we're removing
-            for i in xrange(start, stop):
+            for i in xrange(start, stop, step):
                 if isinstance(self[i], Tree):
                     self._delparent(self[i], i)
             # set the child pointers of the new children.  We do this
@@ -932,7 +932,7 @@ class AbstractParentedTree(Tree):
             # reversing the elements in a tree.
             for i, child in enumerate(value):
                 if isinstance(child, Tree):
-                    self._setparent(child, start+i)
+                    self._setparent(child, start + i*step)
             # finally, update the content of the child list itself.
             super(AbstractParentedTree, self).__setitem__(index, value)
 
