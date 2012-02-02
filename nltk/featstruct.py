@@ -419,17 +419,6 @@ class FeatStruct(SubstituteBindingsI):
         """
         return self._find_reentrances({})[id(self)]
 
-    def reentrances(self):
-        """
-        Return a list of all feature structures that can be reached
-        from ``self`` by multiple feature paths.
-
-        :rtype: list(FeatStruct)
-        """
-        reentrance_dict = self._find_reentrances({})
-        return [struct for (struct, reentrant) in reentrance_dict.items()
-                if reentrant]
-
     def walk(self):
         """
         Return an iterator that generates this feature structure, and
