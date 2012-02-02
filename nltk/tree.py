@@ -89,29 +89,17 @@ class Tree(list):
     - ``Tree(s)`` constructs a new tree by parsing the string ``s``.
         It is equivalent to calling the class method ``Tree.parse(s)``.
     """
-    def __new__(cls, node_or_str=None, children=None):
-        if node_or_str is None:
-            return list.__new__(cls) # used by copy.deepcopy
-        if children is None:
+    def __init__(self, node_or_str, children=None):
+        if children is None: 
             if not isinstance(node_or_str, basestring):
                 raise TypeError("%s: Expected a node value and child list "
-                                "or a single string" % cls.__name__)
-            return cls.parse(node_or_str)
-        else:
-            if (isinstance(children, basestring) or
-                not hasattr(children, '__iter__')):
-                raise TypeError("%s() argument 2 should be a list, not a "
-                                "string" % cls.__name__)
-            return list.__new__(cls, node_or_str, children)
-
-    def __init__(self, node_or_str, children=None):
-        # Because __new__ may delegate to Tree.parse(), the __init__
-        # method may end up getting called more than once (once when
-        # constructing the return value for Tree.parse; and again when
-        # __new__ returns).  We therefore check if `children` is None
-        # (which will cause __new__ to call Tree.parse()); if so, then
-        # __init__ has already been called once, so just return.
-        if children is None: return
+                                "or a single string" % type(self).__name__)
+            tree = type(self).parse(node_or_str)
+            node_or_str = tree.node
+            children = tree[:]
+        elif isinstance(children, basestring):
+            raise TypeError("%s() argument 2 should be a list, not a "
+                            "string" % type(self).__name__)
 
         list.__init__(self, children)
         self.node = node_or_str
@@ -743,39 +731,39 @@ class Tree(list):
 
 class ImmutableTree(Tree):
     def __init__(self, node_or_str, children=None):
-        if children is None: return # see note in Tree.__init__()
         super(ImmutableTree, self).__init__(node_or_str, children)
         # Precompute our hash value.  This ensures that we're really
         # immutable.  It also means we only have to calculate it once.
         try:
             self._hash = hash( (self.node, tuple(self)) )
         except (TypeError, ValueError):
-            raise ValueError("ImmutableTree's node value and children "
-                             "must be immutable")
-    def __setitem__(self):
-        raise ValueError, 'ImmutableTrees may not be modified'
-    def __setslice__(self):
-        raise ValueError, 'ImmutableTrees may not be modified'
-    def __delitem__(self):
-        raise ValueError, 'ImmutableTrees may not be modified'
-    def __delslice__(self):
-        raise ValueError, 'ImmutableTrees may not be modified'
-    def __iadd__(self):
-        raise ValueError, 'ImmutableTrees may not be modified'
-    def __imul__(self):
-        raise ValueError, 'ImmutableTrees may not be modified'
+            raise ValueError("%s: node value and children "
+                             "must be immutable" % type(self).__name__)
+
+    def __setitem__(self, index, value):
+        raise ValueError('%s may not be modified' % type(self).__name__)
+    def __setslice__(self, i, j, value):
+        raise ValueError('%s may not be modified' % type(self).__name__)
+    def __delitem__(self, index):
+        raise ValueError('%s may not be modified' % type(self).__name__)
+    def __delslice__(self, i, j):
+        raise ValueError('%s may not be modified' % type(self).__name__)
+    def __iadd__(self, other):
+        raise ValueError('%s may not be modified' % type(self).__name__)
+    def __imul__(self, other):
+        raise ValueError('%s may not be modified' % type(self).__name__)
     def append(self, v):
-        raise ValueError, 'ImmutableTrees may not be modified'
+        raise ValueError('%s may not be modified' % type(self).__name__)
     def extend(self, v):
-        raise ValueError, 'ImmutableTrees may not be modified'
+        raise ValueError('%s may not be modified' % type(self).__name__)
     def pop(self, v=None):
-        raise ValueError, 'ImmutableTrees may not be modified'
+        raise ValueError('%s may not be modified' % type(self).__name__)
     def remove(self, v):
-        raise ValueError, 'ImmutableTrees may not be modified'
+        raise ValueError('%s may not be modified' % type(self).__name__)
     def reverse(self):
-        raise ValueError, 'ImmutableTrees may not be modified'
+        raise ValueError('%s may not be modified' % type(self).__name__)
     def sort(self):
-        raise ValueError, 'ImmutableTrees may not be modified'
+        raise ValueError('%s may not be modified' % type(self).__name__)
     def __hash__(self):
         return self._hash
 
@@ -783,7 +771,7 @@ class ImmutableTree(Tree):
         """Set self._node.  This will only succeed the first time the
         node value is set, which should occur in Tree.__init__()."""
         if hasattr(self, 'node'):
-            raise ValueError, 'ImmutableTrees may not be modified'
+            raise ValueError('%s may not be modified' % type(self).__name__)
         self._node = node
     def _get_node(self):
         return self._node
@@ -818,7 +806,6 @@ class AbstractParentedTree(Tree):
       - ``_delparent()`` is called whenever a child is removed.
     """
     def __init__(self, node_or_str, children=None):
-        if children is None: return # see note in Tree.__init__()
         super(AbstractParentedTree, self).__init__(node_or_str, children)
         # iterate over self, and *not* children, because children
         # might be an iterator.
@@ -1037,11 +1024,8 @@ class ParentedTree(AbstractParentedTree):
     in incorrect parent pointers and in ``TypeError`` exceptions.
     """
     def __init__(self, node_or_str, children=None):
-        if children is None: return # see note in Tree.__init__()
-
         self._parent = None
         """The parent of this Tree, or None if it has no parent."""
-
         super(ParentedTree, self).__init__(node_or_str, children)
 
     def _frozen_class(self): return ImmutableParentedTree
@@ -1150,13 +1134,10 @@ class MultiParentedTree(AbstractParentedTree):
     result in incorrect parent pointers and in ``TypeError`` exceptions.
     """
     def __init__(self, node_or_str, children=None):
-        if children is None: return # see note in Tree.__init__()
-
         self._parents = []
         """A list of this tree's parents.  This list should not
            contain duplicates, even if a parent contains this tree
            multiple times."""
-
         super(MultiParentedTree, self).__init__(node_or_str, children)
 
     def _frozen_class(self): return ImmutableMultiParentedTree
@@ -1288,24 +1269,21 @@ class MultiParentedTree(AbstractParentedTree):
                 child._parents.append(self)
 
 class ImmutableParentedTree(ImmutableTree, ParentedTree):
-    def __init__(self, node_or_str, children=None):
-        if children is None: return # see note in Tree.__init__()
-        super(ImmutableParentedTree, self).__init__(node_or_str, children)
+    pass
+    # def __init__(self, node_or_str, children=None):
+    #     super(ImmutableParentedTree, self).__init__(node_or_str, children)
 
 class ImmutableMultiParentedTree(ImmutableTree, MultiParentedTree):
-    def __init__(self, node_or_str, children=None):
-        if children is None: return # see note in Tree.__init__()
-        super(ImmutableMultiParentedTree, self).__init__(node_or_str, children)
+    pass
+    # def __init__(self, node_or_str, children=None):
+    #     super(ImmutableMultiParentedTree, self).__init__(node_or_str, children)
 
 ######################################################################
 ## Probabilistic trees
 ######################################################################
+
 class ProbabilisticTree(Tree, ProbabilisticMixIn):
-    def __new__(cls, node_or_str, children=None, **prob_kwargs):
-        return super(ProbabilisticTree, cls).__new__(
-            cls, node_or_str, children)
     def __init__(self, node_or_str, children=None, **prob_kwargs):
-        if children is None: return # see note in Tree.__init__()
         Tree.__init__(self, node_or_str, children)
         ProbabilisticMixIn.__init__(self, **prob_kwargs)
 
@@ -1339,11 +1317,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     convert = classmethod(convert)
 
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
-    def __new__(cls, node_or_str, children=None, **prob_kwargs):
-        return super(ImmutableProbabilisticTree, cls).__new__(
-            cls, node_or_str, children)
     def __init__(self, node_or_str, children=None, **prob_kwargs):
-        if children is None: return # see note in Tree.__init__()
         ImmutableTree.__init__(self, node_or_str, children)
         ProbabilisticMixIn.__init__(self, **prob_kwargs)
 
