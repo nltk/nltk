@@ -50,6 +50,7 @@ class TreebankWordTokenizer(TokenizerI):
     at the end of a line.
     """
     # List of contractions adapted from Robert MacIntyre's tokenizer.
+
     _CONTRACTIONS2 = [re.compile(r"(?i)(.)('ll|'re|'ve|n't|'s|'m|'d)\b"),
                      re.compile(r"(?i)\b(can)(not)\b"),
                      re.compile(r"(?i)\b(D)('ye)\b"),
@@ -72,16 +73,19 @@ class TreebankWordTokenizer(TokenizerI):
             text = regexp.sub(r'\1 \2', text)
         for regexp in self._CONTRACTIONS3:
             text = regexp.sub(r'\1 \2 \3', text)
-
+        
         # Separate most punctuation
         text = re.sub(r"(?u)([^\w\.\'\-\/,&])", r' \1 ', text)
+
+        text = re.sub(r"([A-Z]+)\s+(\$)", r"\1\2", text)
 
         # Separate commas or single quotes if they're followed by space.
         # (E.g., don't separate 2,500)
         text = re.sub(r"([,']\s)", r' \1', text)
 
         # Separate periods that come before newline or end of string.
-        text = re.sub('\. *(\n|$)', ' . ', text)
+        text = re.sub('(?P<s>[^\.])(?P<dot>\.)\s*(?P<closing>[")]?)\s*(?P<end>$|\n)',
+                      '\g<s> \g<dot> \g<closing>', text)
 
         return text.split()
 
