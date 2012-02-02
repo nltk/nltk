@@ -96,6 +96,14 @@ type:
     (VP (V enjoyed) (NP my cookie))
     >>> print type(tree)
     <class 'nltk.tree.ImmutableTree'>
+    >>> tree[1] = 'x'
+    Traceback (most recent call last):
+      . . .
+    ValueError: ImmutableTree may not be modified
+    >>> del tree[0]
+    Traceback (most recent call last):
+      . . .
+    ValueError: ImmutableTree may not be modified
 
 The ``brackets`` parameter can be used to specify two characters that
 should be used as brackets:
@@ -721,6 +729,22 @@ Test that a tree can not be given multiple parents:
 [more to be written]
 
 
+ImmutableParentedTree Regression Tests
+--------------------------------------
+
+    >>> iptree = ImmutableParentedTree.convert(ptree)
+    >>> type(iptree)
+    <class 'nltk.tree.ImmutableParentedTree'>
+    >>> del iptree[0]
+    Traceback (most recent call last):
+      . . .
+    ValueError: ImmutableParentedTree may not be modified
+    >>> iptree.node = 'newnode'
+    Traceback (most recent call last):
+      . . .
+    ValueError: ImmutableParentedTree may not be modified
+
+
 MultiParentedTree Regression Tests
 ----------------------------------
 Keep track of all trees that we create (including subtrees) using this
@@ -1005,6 +1029,23 @@ multiple parents.)
     []
     >>> print [str(p) for p in x2.parents]
     ['(A (Y y) (X x))']
+
+
+ImmutableMultiParentedTree Regression Tests
+--------------------------------------
+
+    >>> imptree = ImmutableMultiParentedTree.convert(mptree)
+    >>> type(imptree)
+    <class 'nltk.tree.ImmutableMultiParentedTree'>
+    >>> del imptree[0]
+    Traceback (most recent call last):
+      . . .
+    ValueError: ImmutableMultiParentedTree may not be modified
+    >>> imptree.node = 'newnode'
+    Traceback (most recent call last):
+      . . .
+    ValueError: ImmutableMultiParentedTree may not be modified
+
 
 Squashed Bugs
 =============
