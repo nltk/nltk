@@ -1047,6 +1047,33 @@ ImmutableMultiParentedTree Regression Tests
     ValueError: ImmutableMultiParentedTree may not be modified
 
 
+ProbabilisticTree Regression Tests
+----------------------------------
+
+    >>> prtree = ProbabilisticTree("S", [ProbabilisticTree("NP", ["N"], prob=0.3)], prob=0.6)
+    >>> print prtree
+    (S (NP N)) (p=0.6)
+    >>> import copy
+    >>> prtree == copy.deepcopy(prtree) == prtree.copy(deep=True) == prtree.copy()
+    True
+    >>> prtree[0] is prtree.copy()[0]
+    True
+    >>> prtree[0] is prtree.copy(deep=True)[0]
+    False
+
+    >>> imprtree = ImmutableProbabilisticTree.convert(prtree)
+    >>> type(imprtree)
+    <class 'nltk.tree.ImmutableProbabilisticTree'>
+    >>> del imprtree[0]
+    Traceback (most recent call last):
+      . . .
+    ValueError: ImmutableProbabilisticTree may not be modified
+    >>> imprtree.node = 'newnode'
+    Traceback (most recent call last):
+      . . .
+    ValueError: ImmutableProbabilisticTree may not be modified
+
+
 Squashed Bugs
 =============
 This used to cause an infinite loop (fixed in svn 6269):
