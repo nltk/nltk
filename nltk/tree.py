@@ -463,7 +463,7 @@ class Tree(list):
     # Convert, copy
     #////////////////////////////////////////////////////////////
 
-    # [classmethod]
+    @classmethod
     def convert(cls, val):
         """
         Convert a tree between different subtypes of Tree.  ``cls`` determines
@@ -478,7 +478,6 @@ class Tree(list):
             return cls(val.node, children)
         else:
             return val
-    convert = classmethod(convert)
 
     def copy(self, deep=False):
         if not deep: return self.__class__(self.node, self)
@@ -767,15 +766,21 @@ class ImmutableTree(Tree):
     def __hash__(self):
         return self._hash
 
-    def _set_node(self, node):
-        """Set self._node.  This will only succeed the first time the
-        node value is set, which should occur in Tree.__init__()."""
+    @property
+    def node(self):
+        """Get the node value"""
+        return self._node
+
+    @node.setter
+    def node(self, value):
+        """
+        Set the node value.  This will only succeed the first time the
+        node value is set, which should occur in ImmutableTree.__init__().
+        """
         if hasattr(self, 'node'):
             raise ValueError('%s may not be modified' % type(self).__name__)
-        self._node = node
-    def _get_node(self):
-        return self._node
-    node = property(_get_node, _set_node)
+        self._node = value
+
 
 ######################################################################
 ## Parented trees
@@ -1034,58 +1039,59 @@ class ParentedTree(AbstractParentedTree):
     # Properties
     #/////////////////////////////////////////////////////////////////
 
-    def _get_parent_index(self):
+    @property
+    def parent(self): 
+        """The parent of this tree, or None if it has no parent."""
+        return self._parent
+
+    @property
+    def parent_index(self):
+        """
+        The index of this tree in its parent.  I.e.,
+        ``ptree.parent[ptree.parent_index] is ptree``.  Note that
+        ``ptree.parent_index`` is not necessarily equal to
+        ``ptree.parent.index(ptree)``, since the ``index()`` method
+        returns the first child that is equal to its argument.
+        """
         if self._parent is None: return None
         for i, child in enumerate(self._parent):
             if child is self: return i
         assert False, 'expected to find self in self._parent!'
 
-    def _get_left_sibling(self):
-        parent_index = self._get_parent_index()
+    @property
+    def left_sibling(self):
+        """The left sibling of this tree, or None if it has none."""
+        parent_index = self.parent_index
         if self._parent and parent_index > 0:
             return self._parent[parent_index-1]
         return None # no left sibling
 
-    def _get_right_sibling(self):
-        parent_index = self._get_parent_index()
+    @property
+    def right_sibling(self):
+        """The right sibling of this tree, or None if it has none."""
+        parent_index = self.parent_index
         if self._parent and parent_index < (len(self._parent)-1):
             return self._parent[parent_index+1]
         return None # no right sibling
 
-    def _get_treeposition(self):
-        if self._parent is None: return ()
-        else: return (self._parent._get_treeposition() +
-                      (self._get_parent_index(),))
-
-    def _get_root(self):
-        if self._parent is None: return self
-        else: return self._parent._get_root()
-
-    parent = property(lambda self: self._parent, doc="""
-        The parent of this tree, or None if it has no parent.""")
-
-    parent_index = property(_get_parent_index, doc="""
-        The index of this tree in its parent.  I.e.,
-        ``ptree.parent[ptree.parent_index] is ptree``.  Note that
-        ``ptree.parent_index`` is not necessarily equal to
-        ``ptree.parent.index(ptree)``, since the ``index()`` method
-        returns the first child that is equal to its argument.""")
-
-    left_sibling = property(_get_left_sibling, doc="""
-        The left sibling of this tree, or None if it has none.""")
-
-    right_sibling = property(_get_right_sibling, doc="""
-        The right sibling of this tree, or None if it has none.""")
-
-    root = property(_get_root, doc="""
+    @property
+    def root(self):
+        """
         The root of this tree.  I.e., the unique ancestor of this tree
         whose parent is None.  If ``ptree.parent`` is None, then
-        ``ptree`` is its own root.""")
+        ``ptree`` is its own root."""
+        if self._parent is None: return self
+        else: return self._parent.root
 
-    treeposition = property(_get_treeposition, doc="""
+    @property
+    def treeposition(self):
+        """
         The tree position of this tree, relative to the root of the
-        tree.  I.e., ``ptree.root[ptree.treeposition] is ptree``.""")
-    treepos = treeposition # [xx] alias -- which name should we use?
+        tree.  I.e., ``ptree.root[ptree.treeposition] is ptree``.
+        """
+        if self._parent is None: return ()
+        else: return self._parent.treeposition + (self.parent_index,)
+
 
     #/////////////////////////////////////////////////////////////////
     # Parent Management
@@ -1114,6 +1120,7 @@ class ParentedTree(AbstractParentedTree):
         # Set child's parent pointer & index.
         if not dry_run:
             child._parent = self
+
 
 class MultiParentedTree(AbstractParentedTree):
     """
@@ -1146,23 +1153,63 @@ class MultiParentedTree(AbstractParentedTree):
     # Properties
     #/////////////////////////////////////////////////////////////////
 
+    @property
+    def parents(self): 
+        """
+        The set of parents of this tree.  If this tree has no parents,
+        then ``parents`` is the empty set.  To check if a tree is used
+        as multiple children of the same parent, use the
+        ``parent_indices`` property.
+
+        :type: list(MultiParentedTree)
+        """
+        return list(self._parents)
+
+    @property
+    def left_siblings(self):
+        """
+        A list of all left siblings of this tree, in any of its parent
+        trees.  A tree may be its own left sibling if it is used as
+        multiple contiguous children of the same parent.  A tree may
+        appear multiple times in this list if it is the left sibling
+        of this tree with respect to multiple parents.
+
+        :type: list(MultiParentedTree)
+        """
+        return [parent[index-1]
+                for (parent, index) in self._get_parent_indices()
+                if index > 0]
+
+    @property
+    def right_siblings(self):
+        """
+        A list of all right siblings of this tree, in any of its parent
+        trees.  A tree may be its own right sibling if it is used as
+        multiple contiguous children of the same parent.  A tree may
+        appear multiple times in this list if it is the right sibling
+        of this tree with respect to multiple parents.
+
+        :type: list(MultiParentedTree)
+        """
+        return [parent[index+1]
+                for (parent, index) in self._get_parent_indices()
+                if index < (len(parent)-1)]
+
     def _get_parent_indices(self):
         return [(parent, index)
                 for parent in self._parents
                 for index, child in enumerate(parent)
                 if child is self]
 
-    def _get_left_siblings(self):
-        return [parent[index-1]
-                for (parent, index) in self._get_parent_indices()
-                if index > 0]
+    @property
+    def roots(self):
+        """
+        The set of all roots of this tree.  This set is formed by
+        tracing all possible parent paths until trees with no parents
+        are found.
 
-    def _get_right_siblings(self):
-        return [parent[index+1]
-                for (parent, index) in self._get_parent_indices()
-                if index < (len(parent)-1)]
-
-    def _get_roots(self):
+        :type: list(MultiParentedTree)
+        """
         return self._get_roots_helper({}).values()
 
     def _get_roots_helper(self, result):
@@ -1172,39 +1219,6 @@ class MultiParentedTree(AbstractParentedTree):
         else:
             result[id(self)] = self
         return result
-
-    parents = property(lambda self: list(self._parents), doc="""
-        The set of parents of this tree.  If this tree has no parents,
-        then ``parents`` is the empty set.  To check if a tree is used
-        as multiple children of the same parent, use the
-        ``parent_indices`` property.
-
-        :type: list(MultiParentedTree)""")
-
-    left_siblings = property(_get_left_siblings, doc="""
-        A list of all left siblings of this tree, in any of its parent
-        trees.  A tree may be its own left sibling if it is used as
-        multiple contiguous children of the same parent.  A tree may
-        appear multiple times in this list if it is the left sibling
-        of this tree with respect to multiple parents.
-
-        :type: list(MultiParentedTree)""")
-
-    right_siblings = property(_get_right_siblings, doc="""
-        A list of all right siblings of this tree, in any of its parent
-        trees.  A tree may be its own right sibling if it is used as
-        multiple contiguous children of the same parent.  A tree may
-        appear multiple times in this list if it is the right sibling
-        of this tree with respect to multiple parents.
-
-        :type: list(MultiParentedTree)""")
-
-    roots = property(_get_roots, doc="""
-        The set of all roots of this tree.  This set is formed by
-        tracing all possible parent paths until trees with no parents
-        are found.
-
-        :type: list(MultiParentedTree)""")
 
     def parent_indices(self, parent):
         """
@@ -1305,6 +1319,8 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def copy(self, deep=False):
         if not deep: return self.__class__(self.node, self, prob=self.prob())
         else: return self.__class__.convert(self)
+
+    @classmethod
     def convert(cls, val):
         if isinstance(val, Tree):
             children = [cls.convert(child) for child in val]
@@ -1314,7 +1330,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
                 return cls(val.node, children, prob=1.0)
         else:
             return val
-    convert = classmethod(convert)
+
 
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def __init__(self, node_or_str, children=None, **prob_kwargs):
@@ -1339,6 +1355,8 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def copy(self, deep=False):
         if not deep: return self.__class__(self.node, self, prob=self.prob())
         else: return self.__class__.convert(self)
+
+    @classmethod
     def convert(cls, val):
         if isinstance(val, Tree):
             children = [cls.convert(child) for child in val]
@@ -1348,7 +1366,6 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
                 return cls(val.node, children, prob=1)
         else:
             return val
-    convert = classmethod(convert)
 
 
 def _child_names(tree):
