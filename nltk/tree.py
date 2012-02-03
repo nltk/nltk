@@ -77,8 +77,8 @@ class Tree(list):
         *p+i* specifies the *i*\ th child of *d*.
 
     I.e., every tree position is either a single index *i*,
-    specifying self[i]; or a sequence *i1, i2, ..., iN*,
-    specifying self[i1][Mi2]...[MiN].
+    specifying ``tree[i]``; or a sequence *i1, i2, ..., iN*,
+    specifying ``tree[i1][i2]...[iN]``.
 
     Construct a new tree.  This constructor can be called in one
     of two ways:
@@ -95,14 +95,14 @@ class Tree(list):
                 raise TypeError("%s: Expected a node value and child list "
                                 "or a single string" % type(self).__name__)
             tree = type(self).parse(node_or_str)
-            node_or_str = tree.node
-            children = tree[:]
+            list.__init__(self, tree)
+            self.node = tree.node
         elif isinstance(children, basestring):
             raise TypeError("%s() argument 2 should be a list, not a "
                             "string" % type(self).__name__)
-
-        list.__init__(self, children)
-        self.node = node_or_str
+        else:
+            list.__init__(self, children)
+            self.node = node_or_str
 
     #////////////////////////////////////////////////////////////
     # Comparison operators
@@ -464,24 +464,24 @@ class Tree(list):
     #////////////////////////////////////////////////////////////
 
     @classmethod
-    def convert(cls, val):
+    def convert(cls, tree):
         """
         Convert a tree between different subtypes of Tree.  ``cls`` determines
         which class will be used to encode the new tree.
 
-        :type val: Tree
-        :param val: The tree that should be converted.
+        :type tree: Tree
+        :param tree: The tree that should be converted.
         :return: The new Tree.
         """
-        if isinstance(val, Tree):
-            children = [cls.convert(child) for child in val]
-            return cls(val.node, children)
+        if isinstance(tree, Tree):
+            children = [cls.convert(child) for child in tree]
+            return cls(tree.node, children)
         else:
-            return val
+            return tree
 
     def copy(self, deep=False):
-        if not deep: return self.__class__(self.node, self)
-        else: return self.__class__.convert(self)
+        if not deep: return type(self)(self.node, self)
+        else: return type(self).convert(self)
 
     def _frozen_class(self): return ImmutableTree
     def freeze(self, leaf_freezer=None):
@@ -635,6 +635,7 @@ class Tree(list):
             offset = 13
         msg += '\n%s"%s"\n%s^' % (' '*16, s, ' '*(17+offset))
         raise ValueError(msg)
+
     #////////////////////////////////////////////////////////////
     # Visualization & String Representation
     #////////////////////////////////////////////////////////////
@@ -648,7 +649,7 @@ class Tree(list):
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
-        return '%s(%r, [%s])' % (self.__class__.__name__, self.node, childstr)
+        return '%s(%r, [%s])' % (type(self).__name__, self.node, childstr)
 
     def __str__(self):
         return self.pprint()
@@ -727,6 +728,7 @@ class Tree(list):
         else:
             return '%s%r%s %s%s' % (parens[0], self.node, nodesep,
                                     string.join(childstrs), parens[1])
+
 
 class ImmutableTree(Tree):
     def __init__(self, node_or_str, children=None):
@@ -1040,7 +1042,7 @@ class ParentedTree(AbstractParentedTree):
     #/////////////////////////////////////////////////////////////////
 
     @property
-    def parent(self): 
+    def parent(self):
         """The parent of this tree, or None if it has no parent."""
         return self._parent
 
@@ -1079,9 +1081,12 @@ class ParentedTree(AbstractParentedTree):
         """
         The root of this tree.  I.e., the unique ancestor of this tree
         whose parent is None.  If ``ptree.parent`` is None, then
-        ``ptree`` is its own root."""
-        if self._parent is None: return self
-        else: return self._parent.root
+        ``ptree`` is its own root.
+        """
+        root = self
+        while root.parent is not None:
+            root = root.parent
+        return root
 
     @property
     def treeposition(self):
@@ -1089,8 +1094,8 @@ class ParentedTree(AbstractParentedTree):
         The tree position of this tree, relative to the root of the
         tree.  I.e., ``ptree.root[ptree.treeposition] is ptree``.
         """
-        if self._parent is None: return ()
-        else: return self._parent.treeposition + (self.parent_index,)
+        if self.parent is None: return ()
+        else: return self.parent.treeposition + (self.parent_index,)
 
 
     #/////////////////////////////////////////////////////////////////
@@ -1154,7 +1159,7 @@ class MultiParentedTree(AbstractParentedTree):
     #/////////////////////////////////////////////////////////////////
 
     @property
-    def parents(self): 
+    def parents(self):
         """
         The set of parents of this tree.  If this tree has no parents,
         then ``parents`` is the empty set.  To check if a tree is used
@@ -1284,13 +1289,10 @@ class MultiParentedTree(AbstractParentedTree):
 
 class ImmutableParentedTree(ImmutableTree, ParentedTree):
     pass
-    # def __init__(self, node_or_str, children=None):
-    #     super(ImmutableParentedTree, self).__init__(node_or_str, children)
 
 class ImmutableMultiParentedTree(ImmutableTree, MultiParentedTree):
     pass
-    # def __init__(self, node_or_str, children=None):
-    #     super(ImmutableMultiParentedTree, self).__init__(node_or_str, children)
+
 
 ######################################################################
 ## Probabilistic trees
@@ -1308,18 +1310,15 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __str__(self):
         return '%s (p=%s)' % (self.pprint(margin=60), self.prob())
     def __cmp__(self, other):
-        c = Tree.__cmp__(self, other)
-        if c != 0: return c
-        return cmp(self.prob(), other.prob())
+        return Tree.__cmp__(self, other) or cmp(self.prob(), other.prob())
     def __eq__(self, other):
         if not isinstance(other, Tree): return False
         return Tree.__eq__(self, other) and self.prob()==other.prob()
     def __ne__(self, other):
         return not (self == other)
     def copy(self, deep=False):
-        if not deep: return self.__class__(self.node, self, prob=self.prob())
-        else: return self.__class__.convert(self)
-
+        if not deep: return type(self)(self.node, self, prob=self.prob())
+        else: return type(self).convert(self)
     @classmethod
     def convert(cls, val):
         if isinstance(val, Tree):
@@ -1353,9 +1352,8 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def __ne__(self, other):
         return not (self == other)
     def copy(self, deep=False):
-        if not deep: return self.__class__(self.node, self, prob=self.prob())
-        else: return self.__class__.convert(self)
-
+        if not deep: return type(self)(self.node, self, prob=self.prob())
+        else: return type(self).convert(self)
     @classmethod
     def convert(cls, val):
         if isinstance(val, Tree):
@@ -1363,7 +1361,7 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
             if isinstance(val, ProbabilisticMixIn):
                 return cls(val.node, children, prob=val.prob())
             else:
-                return cls(val.node, children, prob=1)
+                return cls(val.node, children, prob=1.0)
         else:
             return val
 
