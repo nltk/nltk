@@ -1325,14 +1325,20 @@ class SourcedStringStream(object):
     # Pass-through methods & properties
     #/////////////////////////////////////////////////////////////////
 
-    closed = property(lambda self: self.stream.closed, doc="""
-        True if the underlying stream is closed.""")
+    @property
+    def closed(self): 
+        """True if the underlying stream is closed."""
+        return self.stream.closed
 
-    name = property(lambda self: self.stream.name, doc="""
-        The name of the underlying stream.""")
+    @property
+    def name(self): 
+        """The name of the underlying stream."""
+        return self.stream.name
 
-    mode = property(lambda self: self.stream.mode, doc="""
-        The mode of the underlying stream.""")
+    @property
+    def mode(self): 
+        """The mode of the underlying stream."""
+        return self.stream.mode
 
     def close(self):
         """Close the underlying stream."""

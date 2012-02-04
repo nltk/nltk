@@ -239,8 +239,11 @@ class AnyType(BasicType, ComplexType):
     def __init__(self):
         pass
 
-    first = property(lambda self: self)
-    second = property(lambda self: self)
+    @property
+    def first(self): return self
+
+    @property
+    def second(self): return self
 
     def __eq__(self, other):
         return isinstance(other, AnyType) or other.__eq__(self)
@@ -643,13 +646,12 @@ class ApplicationExpression(Expression):
         else:
             return self.__class__(function, argument)
 
-    def _get_type(self):
+    @property
+    def type(self):
         if isinstance(self.function.type, ComplexType):
             return self.function.type.second
         else:
             return ANY_TYPE
-
-    type = property(_get_type)
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
         """:see Expression._set_type()"""
@@ -859,7 +861,11 @@ class IndividualVariableExpression(AbstractVariableExpression):
 
         signature[self.variable.name].append(self)
 
-    type = property(lambda self: ENTITY_TYPE, _set_type)
+    @property
+    def type(self): return ENTITY_TYPE
+
+    @type.setter
+    def type(self, other): self._set_type(other)
 
     def free(self):
         """:see: Expression.free()"""
@@ -1024,9 +1030,10 @@ class VariableBinderExpression(Expression):
 
 
 class LambdaExpression(VariableBinderExpression):
-    type = property(lambda self:
-                    ComplexType(self.term.findtype(self.variable),
-                                self.term.type))
+    @property
+    def type(self):
+        return ComplexType(self.term.findtype(self.variable),
+                           self.term.type)
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
         """:see Expression._set_type()"""
@@ -1050,7 +1057,8 @@ class LambdaExpression(VariableBinderExpression):
 
 
 class QuantifiedExpression(VariableBinderExpression):
-    type = property(lambda self: TRUTH_TYPE)
+    @property
+    def type(self): return TRUTH_TYPE
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
         """:see Expression._set_type()"""
@@ -1086,7 +1094,8 @@ class NegatedExpression(Expression):
         assert isinstance(term, Expression), "%s is not an Expression" % term
         self.term = term
 
-    type = property(lambda self: TRUTH_TYPE)
+    @property
+    def type(self): return TRUTH_TYPE
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
         """:see Expression._set_type()"""
@@ -1125,7 +1134,8 @@ class BinaryExpression(Expression):
         self.first = first
         self.second = second
 
-    type = property(lambda self: TRUTH_TYPE)
+    @property
+    def type(self): return TRUTH_TYPE
 
     def findtype(self, variable):
         """:see Expression.findtype()"""

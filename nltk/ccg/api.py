@@ -61,11 +61,11 @@ class CCGVar(AbstractCCGCategory):
         self._id = self.new_id()
         self._prim_only = prim_only
 
-    # A class method allowing generation of unique variable identifiers.
+    @classmethod
     def new_id(cls):
+        """A class method allowing generation of unique variable identifiers."""
         cls._maxID = cls._maxID + 1
         return cls._maxID - 1
-    new_id = classmethod(new_id)
 
     def is_primitive(self):
         return False

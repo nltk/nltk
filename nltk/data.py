@@ -157,8 +157,10 @@ class FileSystemPathPointer(PathPointer, str):
         # There's no need to call str.__init__(), since it's a no-op;
         # str does all of its setup work in __new__.
 
-    path = property(lambda self: self._path, doc="""
-        The absolute path identified by this path pointer.""")
+    @property
+    def path(self):
+        """The absolute path identified by this path pointer."""
+        return self._path
 
     def open(self, encoding=None):
         stream = open(self._path, 'rb')
@@ -329,12 +331,21 @@ class ZipFilePathPointer(PathPointer):
         self._zipfile = zipfile
         self._entry = entry
 
-    zipfile = property(lambda self: self._zipfile, doc="""
+    @property
+    def zipfile(self): 
+        """
         The zipfile.ZipFile object used to access the zip file
-        containing the entry identified by this path pointer.""")
-    entry = property(lambda self: self._entry, doc="""
+        containing the entry identified by this path pointer.
+        """
+        return self._zipfile
+
+    @property
+    def entry(self):
+        """
         The name of the file within zipfile that this path
-        pointer points to.""")
+        pointer points to.
+        """
+        return self._entry
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
@@ -933,14 +944,20 @@ class SeekableUnicodeStreamReader(object):
     # Pass-through methods & properties
     #/////////////////////////////////////////////////////////////////
 
-    closed = property(lambda self: self.stream.closed, doc="""
-        True if the underlying stream is closed.""")
+    @property
+    def closed(self):
+        """True if the underlying stream is closed."""
+        return self.stream.closed
 
-    name = property(lambda self: self.stream.name, doc="""
-        The name of the underlying stream.""")
+    @property
+    def name(self):
+        """The name of the underlying stream."""
+        return self.stream.name
 
-    mode = property(lambda self: self.stream.mode, doc="""
-        The mode of the underlying stream.""")
+    @property
+    def mode(self):
+        """The mode of the underlying stream."""
+        return self.stream.mode
 
     def close(self):
         """
