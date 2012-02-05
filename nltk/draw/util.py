@@ -837,7 +837,7 @@ class SymbolWidget(TextWidget):
     def __repr__(self):
         return '[Symbol: %r]' % self._symbol
 
-    # A staticmethod that displays all symbols.
+    @staticmethod
     def symbolsheet(size=20):
         """
         Open a new Tkinter window that displays the entire alphabet
@@ -864,7 +864,6 @@ class SymbolWidget(TextWidget):
                 text.insert('end', '%-10d  \t' % i)
             text.insert('end', '[%s]\n' % chr(i), 'symbol')
         top.mainloop()
-    symbolsheet = staticmethod(symbolsheet)
 
 
 class AbstractContainerWidget(CanvasWidget):

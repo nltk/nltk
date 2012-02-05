@@ -1785,13 +1785,8 @@ class Feature(object):
         assert display in (None, 'prefix', 'slash')
 
         self._name = name # [xx] rename to .identifier?
-        """The name of this feature."""
-
         self._default = default # [xx] not implemented yet.
-        """Default value for this feature.  Use None for unbound."""
-
         self._display = display
-        """Custom display location: can be prefix, or slash."""
 
         if self._display == 'prefix':
             self._sortkey = (-1, self._name)
@@ -1800,9 +1795,20 @@ class Feature(object):
         else:
             self._sortkey = (0, self._name)
 
-    name = property(lambda self: self._name)
-    default = property(lambda self: self._default)
-    display = property(lambda self: self._display)
+    @property
+    def name(self): 
+        """The name of this feature."""
+        return self._name
+
+    @property
+    def default(self): 
+        """Default value for this feature."""
+        return self._default
+
+    @property
+    def display(self): 
+        """Custom display location: can be prefix, or slash."""
+        return self._display
 
     def __repr__(self):
         return '*%s*' % self.name

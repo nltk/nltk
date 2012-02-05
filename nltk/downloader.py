@@ -876,18 +876,23 @@ class Downloader(object):
     # URL & Data Directory
     #/////////////////////////////////////////////////////////////////
 
-    def _set_url(self, url):
-        # If we're unable to contact the given url, then keep the
-        # original url.
+    @property
+    def url(self): 
+        """The URL for the data server's index file."""
+        return self._url
+
+    @url.setter
+    def url(self, url):
+        """
+        Set a new URL for the data server. If we're unable to contact 
+        the given url, then the original url is kept.
+        """
         original_url = self._url
         try:
             self._update_index(url)
         except:
             self._url = original_url
             raise
-
-    url = property(lambda self: self._url, _set_url, doc="""
-        The URL for the data server's index file.""")
 
     def default_download_dir(self):
         """
@@ -925,17 +930,21 @@ class Downloader(object):
         # append "nltk_data" to the home directory
         return os.path.join(homedir, 'nltk_data')
 
-    def _set_download_dir(self, download_dir):
-        self._download_dir = download_dir
-        # Clear the status cache.
-        self._status_cache.clear()
-
-    download_dir = property(lambda self: self._download_dir,
-                            _set_download_dir, doc="""
+    @property
+    def download_dir(self): 
+        """
         The default directory to which packages will be downloaded.
         This defaults to the value returned by ``default_download_dir()``.
         To override this default on a case-by-case basis, use the
-        ``download_dir`` argument when calling ``download()``.""")
+        ``download_dir`` argument when calling ``download()``.
+        """
+        return self._download_dir
+
+    @download_dir.setter
+    def download_dir(self, download_dir):
+        self._download_dir = download_dir
+        # Clear the status cache.
+        self._status_cache.clear()
 
     #/////////////////////////////////////////////////////////////////
     # Interactive Shell

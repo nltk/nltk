@@ -46,13 +46,9 @@ class AlignedSent(object):
 
     def __init__(self, words = [], mots = [], alignment = '', \
                  encoding = 'latin-1'):
-
-        if not isinstance(alignment, Alignment):
-            alignment = Alignment(alignment)
         self._words = words
         self._mots = mots
-        self._check_align(alignment)
-        self._alignment = alignment
+        self.alignment = alignment
 
     @property
     def words(self):
@@ -66,12 +62,12 @@ class AlignedSent(object):
     def alignment(self):
         return self._alignment
 
-#    @alignment.setter Requires Python 2.6
-#    def alignment(self, alignment):
-#        if not isinstance(alignment, Alignment):
-#            alignment = Alignment(alignment)
-#        self._check_align(alignment)
-#        self._alignment = alignment
+    @alignment.setter
+    def alignment(self, alignment):
+        if not isinstance(alignment, Alignment):
+            alignment = Alignment(alignment)
+        self._check_align(alignment)
+        self._alignment = alignment
 
     def _check_align(self, a):
         """
@@ -220,7 +216,7 @@ class Alignment(frozenset):
         0-0 1-0 2-1 2-2
         >>> a[0]
         [(0, 1), (0, 0)]
-        >>> a.invert()[3]
+        >>> a.invert()[2]
         [(2, 1), (2, 2)]
         >>> b = Alignment([(0, 0), (0, 1)])
         >>> b.issubset(a)

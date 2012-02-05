@@ -85,10 +85,10 @@ class AbstractDrs(object):
         f2 = other.simplify().fol();
         return f1.equiv(f2, prover)
 
-    def _get_type(self):
+    @property
+    def type(self):
         raise AttributeError("'%s' object has no attribute 'type'" %
                              self.__class__.__name__)
-    type = property(_get_type)
 
     def typecheck(self, signature=None):
         raise NotImplementedError()
