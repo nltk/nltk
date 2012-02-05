@@ -302,24 +302,24 @@ incorrect parent pointers and in `TypeError` exceptions:
     >>> # inserting a ParentedTree in a Tree gives incorrect parent pointers:
     >>> broken_tree = Tree('NP', [
     ...     ParentedTree('DET', ['the']), ParentedTree('NOUN', ['dog'])])
-    >>> print broken_tree[0].parent
+    >>> print broken_tree[0].parent()
     None
 
-Parented Tree Properties
+Parented Tree Methods
 ------------------------
 In addition to all the methods defined by the `Tree` class, the
-`ParentedTree` class adds six new properties whose values are
-automatically updated whenver a parented tree is modified: `parent`,
-`parent_index`, `left_sibling`, `right_sibling`, `root`, and
-`treeposition`.
+`ParentedTree` class adds six new methods whose values are
+automatically updated whenver a parented tree is modified: `parent()`,
+`parent_index()`, `left_sibling()`, `right_sibling()`, `root()`, and
+`treeposition()`.
 
-The `parent` property contains a `ParentedTree`\ 's parent, if it has
+The `parent()` method contains a `ParentedTree`\ 's parent, if it has
 one; and ``None`` otherwise.  `ParentedTree`\ s that do not have
 parents are known as "root trees."
 
     >>> for subtree in ptree.subtrees():
     ...     print subtree
-    ...     print '  Parent = %s' % subtree.parent
+    ...     print '  Parent = %s' % subtree.parent()
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Parent = None
     (VERB saw)
@@ -331,15 +331,15 @@ parents are known as "root trees."
     (NOUN dog)
       Parent = (NP (DET the) (NOUN dog))
 
-The `parent_index` property stores the index of a tree in its parent's
+The `parent_index()` method stores the index of a tree in its parent's
 child list.  If a tree does not have a parent, then its `parent_index`
 is ``None``.
 
     >>> for subtree in ptree.subtrees():
     ...     print subtree
-    ...     print '  Parent Index = %s' % subtree.parent_index
-    ...     assert (subtree.parent is None or
-    ...             subtree.parent[subtree.parent_index] is subtree)
+    ...     print '  Parent Index = %s' % subtree.parent_index()
+    ...     assert (subtree.parent() is None or
+    ...             subtree.parent()[subtree.parent_index()] is subtree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Parent Index = None
     (VERB saw)
@@ -351,9 +351,9 @@ is ``None``.
     (NOUN dog)
       Parent Index = 1
 
-Note that ``ptree.parent.index(ptree)`` is *not* equivalent to
-``ptree.parent_index``.  In particular, ``ptree.parent.index(ptree)``
-will return the index of the first child of ``ptree.parent`` that is
+Note that ``ptree.parent().index(ptree)`` is *not* equivalent to
+``ptree.parent_index()``.  In particular, ``ptree.parent().index(ptree)``
+will return the index of the first child of ``ptree.parent()`` that is
 equal to ``ptree`` (using ``==``); and that child may not be
 ``ptree``:
 
@@ -362,19 +362,19 @@ equal to ``ptree`` (using ``==``); and that child may not be
     ...     ParentedTree('COJN', ['and']),
     ...     ParentedTree('PREP', ['on'])])
     >>> second_on = on_and_on[2]
-    >>> print second_on.parent_index
+    >>> print second_on.parent_index()
     2
-    >>> print second_on.parent.index(second_on)
+    >>> print second_on.parent().index(second_on)
     0
 
-The properties `left_sibling` and `right_sibling` can be used to get a
+The methods `left_sibling()` and `right_sibling()` can be used to get a
 parented tree's siblings.  If a tree does not have a left or right
-sibling, then the corresponding property's value is ``None``:
+sibling, then the corresponding method's value is ``None``:
 
     >>> for subtree in ptree.subtrees():
     ...     print subtree
-    ...     print '  Left Sibling  = %s' % subtree.left_sibling
-    ...     print '  Right Sibling = %s' % subtree.right_sibling
+    ...     print '  Left Sibling  = %s' % subtree.left_sibling()
+    ...     print '  Right Sibling = %s' % subtree.right_sibling()
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Left Sibling  = None
       Right Sibling = None
@@ -391,14 +391,14 @@ sibling, then the corresponding property's value is ``None``:
       Left Sibling  = (DET the)
       Right Sibling = None
 
-A parented tree's root tree can be accessed using the `root`
-property.  This property follows the tree's parent pointers until it
+A parented tree's root tree can be accessed using the `root()`
+method.  This method follows the tree's parent pointers until it
 finds a tree without a parent.  If a tree does not have a parent, then
 it is its own root:
 
     >>> for subtree in ptree.subtrees():
     ...     print subtree
-    ...     print '  Root = %s' % subtree.root
+    ...     print '  Root = %s' % subtree.root()
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Root = (VP (VERB saw) (NP (DET the) (NOUN dog)))
     (VERB saw)
@@ -410,13 +410,13 @@ it is its own root:
     (NOUN dog)
       Root = (VP (VERB saw) (NP (DET the) (NOUN dog)))
 
-The `treeposition` property can be used to find a tree's treeposition
+The `treeposition()` method can be used to find a tree's treeposition
 relative to its root:
 
     >>> for subtree in ptree.subtrees():
     ...     print subtree
-    ...     print '  Tree Position = %s' % (subtree.treeposition,)
-    ...     assert subtree.root[subtree.treeposition] is subtree
+    ...     print '  Tree Position = %s' % (subtree.treeposition(),)
+    ...     assert subtree.root()[subtree.treeposition()] is subtree
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Tree Position = ()
     (VERB saw)
@@ -428,11 +428,11 @@ relative to its root:
     (NOUN dog)
       Tree Position = (1, 1)
 
-Whenever a parented tree is modified, all of the properties described
-above (`parent`, `parent_index`, `left_sibling`, `right_sibling`,
-`root`, and `treeposition`) are automatically updated.  For example,
+Whenever a parented tree is modified, all of the methods described
+above (`parent()`, `parent_index()`, `left_sibling()`, `right_sibling()`,
+`root()`, and `treeposition()`) are automatically updated.  For example,
 if we replace ``ptree``\ 's subtree for the word "dog" with a new
-subtree for "cat," the properties for both the "dog" subtree and the
+subtree for "cat," the method values for both the "dog" subtree and the
 "cat" subtree get automatically updated:
 
     >>> # Replace the dog with a cat
@@ -441,24 +441,24 @@ subtree for "cat," the properties for both the "dog" subtree and the
     >>> ptree[1,1] = cat
 
     >>> # the noun phrase is no longer the dog's parent:
-    >>> print dog.parent, dog.parent_index, dog.left_sibling
+    >>> print dog.parent(), dog.parent_index(), dog.left_sibling()
     None None None
     >>> # dog is now its own root.
-    >>> print dog.root
+    >>> print dog.root()
     (NOUN dog)
-    >>> print dog.treeposition
+    >>> print dog.treeposition()
     ()
 
     >>> # the cat's parent is now the noun phrase:
-    >>> print cat.parent
+    >>> print cat.parent()
     (NP (DET the) (NOUN cat))
-    >>> print cat.parent_index
+    >>> print cat.parent_index()
     1
-    >>> print cat.left_sibling
+    >>> print cat.left_sibling()
     (DET the)
-    >>> print cat.root
+    >>> print cat.root()
     (VP (VERB saw) (NP (DET the) (NOUN cat)))
-    >>> print cat.treeposition
+    >>> print cat.treeposition()
     (1, 1)
 
 ParentedTree Regression Tests
@@ -477,47 +477,47 @@ Define a helper funciton to create new parented trees:
     ...     return ptree
 
 Define a test function that examines every subtree in all_ptrees; and
-checks that all six of its properties are defined correctly.  If any
+checks that all six of its methods are defined correctly.  If any
 ptrees are passed as arguments, then they are printed.
 
     >>> def pcheck(*print_ptrees):
     ...     for ptree in all_ptrees:
-    ...         # Check ptree's properties.
-    ...         if ptree.parent is not None:
-    ...             i = ptree.parent_index
-    ...             assert ptree.parent[i] is ptree
+    ...         # Check ptree's methods.
+    ...         if ptree.parent() is not None:
+    ...             i = ptree.parent_index()
+    ...             assert ptree.parent()[i] is ptree
     ...             if i > 0:
-    ...                 assert ptree.left_sibling is ptree.parent[i-1]
-    ...             if i < (len(ptree.parent)-1):
-    ...                 assert ptree.right_sibling is ptree.parent[i+1]
-    ...             assert len(ptree.treeposition) > 0
-    ...             assert (ptree.treeposition ==
-    ...                     ptree.parent.treeposition + (ptree.parent_index,))
-    ...             assert ptree.root is not ptree
-    ...             assert ptree.root is not None
-    ...             assert ptree.root is ptree.parent.root
-    ...             assert ptree.root[ptree.treeposition] is ptree
+    ...                 assert ptree.left_sibling() is ptree.parent()[i-1]
+    ...             if i < (len(ptree.parent())-1):
+    ...                 assert ptree.right_sibling() is ptree.parent()[i+1]
+    ...             assert len(ptree.treeposition()) > 0
+    ...             assert (ptree.treeposition() ==
+    ...                     ptree.parent().treeposition() + (ptree.parent_index(),))
+    ...             assert ptree.root() is not ptree
+    ...             assert ptree.root() is not None
+    ...             assert ptree.root() is ptree.parent().root()
+    ...             assert ptree.root()[ptree.treeposition()] is ptree
     ...         else:
-    ...             assert ptree.parent_index is None
-    ...             assert ptree.left_sibling is None
-    ...             assert ptree.right_sibling is None
-    ...             assert ptree.root is ptree
-    ...             assert ptree.treeposition == ()
-    ...         # Check ptree's children's properties:
+    ...             assert ptree.parent_index() is None
+    ...             assert ptree.left_sibling() is None
+    ...             assert ptree.right_sibling() is None
+    ...             assert ptree.root() is ptree
+    ...             assert ptree.treeposition() == ()
+    ...         # Check ptree's children's methods:
     ...         for i, child in enumerate(ptree):
     ...             if isinstance(child, Tree):
-    ...                 # pcheck parent & parent_index properties
-    ...                 assert child.parent is ptree
-    ...                 assert child.parent_index == i
-    ...                 # pcheck sibling properties
+    ...                 # pcheck parent() & parent_index() methods
+    ...                 assert child.parent() is ptree
+    ...                 assert child.parent_index() == i
+    ...                 # pcheck sibling methods
     ...                 if i == 0:
-    ...                     assert child.left_sibling is None
+    ...                     assert child.left_sibling() is None
     ...                 else:
-    ...                     assert child.left_sibling is ptree[i-1]
+    ...                     assert child.left_sibling() is ptree[i-1]
     ...                 if i == len(ptree)-1:
-    ...                     assert child.right_sibling is None
+    ...                     assert child.right_sibling() is None
     ...                 else:
-    ...                     assert child.right_sibling is ptree[i+1]
+    ...                     assert child.right_sibling() is ptree[i+1]
     ...     if print_ptrees:
     ...         print 'ok!',
     ...         for ptree in print_ptrees: print ptree
@@ -710,10 +710,10 @@ operations:
     >>> x1, y, x2 = ptree
     >>> ptree.remove(ptree[-1]); pcheck(ptree)
     ok! (A (Y y) (X x))
-    >>> print x1.parent; pcheck(x1)
+    >>> print x1.parent(); pcheck(x1)
     None
     ok! (X x)
-    >>> print x2.parent
+    >>> print x2.parent()
     (A (Y y) (X x))
 
 Test that a tree can not be given multiple parents:
@@ -761,7 +761,7 @@ Define a helper funciton to create new parented trees:
     ...     return mptree
 
 Define a test function that examines every subtree in all_mptrees; and
-checks that all six of its properties are defined correctly.  If any
+checks that all six of its methods are defined correctly.  If any
 mptrees are passed as arguments, then they are printed.
 
     >>> def mpcheck(*print_mptrees):
@@ -770,20 +770,20 @@ mptrees are passed as arguments, then they are printed.
     ...             if item is val: return True
     ...         return False
     ...     for mptree in all_mptrees:
-    ...         # Check mptree's properties.
-    ...         if len(mptree.parents) == 0:
-    ...             assert len(mptree.left_siblings) == 0
-    ...             assert len(mptree.right_siblings) == 0
-    ...             assert len(mptree.roots) == 1
-    ...             assert mptree.roots[0] is mptree
+    ...         # Check mptree's methods.
+    ...         if len(mptree.parents()) == 0:
+    ...             assert len(mptree.left_siblings()) == 0
+    ...             assert len(mptree.right_siblings()) == 0
+    ...             assert len(mptree.roots()) == 1
+    ...             assert mptree.roots()[0] is mptree
     ...             assert mptree.treepositions(mptree) == [()]
     ...             left_siblings = right_siblings = ()
     ...             roots = {id(mptree): 1}
     ...         else:
-    ...             roots = dict((id(r), 0) for r in mptree.roots)
-    ...             left_siblings = mptree.left_siblings
-    ...             right_siblings = mptree.right_siblings
-    ...         for parent in mptree.parents:
+    ...             roots = dict((id(r), 0) for r in mptree.roots())
+    ...             left_siblings = mptree.left_siblings()
+    ...             right_siblings = mptree.right_siblings()
+    ...         for parent in mptree.parents():
     ...             for i in mptree.parent_indices(parent):
     ...                 assert parent[i] is mptree
     ...                 # check left siblings
@@ -803,7 +803,7 @@ mptrees are passed as arguments, then they are printed.
     ...                     else:
     ...                         assert 0, 'sibling not found!'
     ...             # check roots
-    ...             for root in parent.roots:
+    ...             for root in parent.roots():
     ...                 assert id(root) in roots, 'missing root'
     ...                 roots[id(root)] += 1
     ...         # check that we don't have any unexplained values
@@ -811,20 +811,20 @@ mptrees are passed as arguments, then they are printed.
     ...         assert len(right_siblings)==0, 'unexpected sibling'
     ...         for v in roots.values(): assert v>0, roots #'unexpected root'
     ...         # check treepositions
-    ...         for root in mptree.roots:
+    ...         for root in mptree.roots():
     ...             for treepos in mptree.treepositions(root):
     ...                 assert root[treepos] is mptree
-    ...         # Check mptree's children's properties:
+    ...         # Check mptree's children's methods:
     ...         for i, child in enumerate(mptree):
     ...             if isinstance(child, Tree):
-    ...                 # mpcheck parent & parent_index properties
-    ...                 assert has(child.parents, mptree)
+    ...                 # mpcheck parent() & parent_index() methods
+    ...                 assert has(child.parents(), mptree)
     ...                 assert i in child.parent_indices(mptree)
-    ...                 # mpcheck sibling properties
+    ...                 # mpcheck sibling methods
     ...                 if i > 0:
-    ...                     assert has(child.left_siblings, mptree[i-1])
+    ...                     assert has(child.left_siblings(), mptree[i-1])
     ...                 if i < len(mptree)-1:
-    ...                     assert has(child.right_siblings, mptree[i+1])
+    ...                     assert has(child.right_siblings(), mptree[i+1])
     ...     if print_mptrees:
     ...         print 'ok!',
     ...         for mptree in print_mptrees: print mptree
@@ -1025,9 +1025,9 @@ multiple parents.)
     >>> x1, y, x2 = mptree
     >>> mptree.remove(mptree[-1]); mpcheck(mptree)
     ok! (A (Y y) (X x))
-    >>> print [str(p) for p in x1.parents]
+    >>> print [str(p) for p in x1.parents()]
     []
-    >>> print [str(p) for p in x2.parents]
+    >>> print [str(p) for p in x2.parents()]
     ['(A (Y y) (X x))']
 
 

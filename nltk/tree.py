@@ -1017,10 +1017,9 @@ class AbstractParentedTree(Tree):
 class ParentedTree(AbstractParentedTree):
     """
     A ``Tree`` that automatically maintains parent pointers for
-    single-parented trees.  The following read-only property values
-    are automatically updated whenever the structure of a parented
-    tree is modified: ``parent``, ``parent_index``, ``left_sibling``,
-    ``right_sibling``, ``root``, ``treeposition``.
+    single-parented trees.  The following are methods for querying 
+    the structure of a parented tree: ``parent``, ``parent_index``, 
+    ``left_sibling``, ``right_sibling``, ``root``, ``treeposition``.
 
     Each ``ParentedTree`` may have at most one parent.  In
     particular, subtrees may not be shared.  Any attempt to reuse a
@@ -1040,20 +1039,18 @@ class ParentedTree(AbstractParentedTree):
     def _frozen_class(self): return ImmutableParentedTree
 
     #/////////////////////////////////////////////////////////////////
-    # Properties
+    # Methods
     #/////////////////////////////////////////////////////////////////
 
-    @property
     def parent(self):
         """The parent of this tree, or None if it has no parent."""
         return self._parent
 
-    @property
     def parent_index(self):
         """
         The index of this tree in its parent.  I.e.,
-        ``ptree.parent[ptree.parent_index] is ptree``.  Note that
-        ``ptree.parent_index`` is not necessarily equal to
+        ``ptree.parent()[ptree.parent_index()] is ptree``.  Note that
+        ``ptree.parent_index()`` is not necessarily equal to
         ``ptree.parent.index(ptree)``, since the ``index()`` method
         returns the first child that is equal to its argument.
         """
@@ -1062,42 +1059,38 @@ class ParentedTree(AbstractParentedTree):
             if child is self: return i
         assert False, 'expected to find self in self._parent!'
 
-    @property
     def left_sibling(self):
         """The left sibling of this tree, or None if it has none."""
-        parent_index = self.parent_index
+        parent_index = self.parent_index()
         if self._parent and parent_index > 0:
             return self._parent[parent_index-1]
         return None # no left sibling
 
-    @property
     def right_sibling(self):
         """The right sibling of this tree, or None if it has none."""
-        parent_index = self.parent_index
+        parent_index = self.parent_index()
         if self._parent and parent_index < (len(self._parent)-1):
             return self._parent[parent_index+1]
         return None # no right sibling
 
-    @property
     def root(self):
         """
         The root of this tree.  I.e., the unique ancestor of this tree
-        whose parent is None.  If ``ptree.parent`` is None, then
+        whose parent is None.  If ``ptree.parent()`` is None, then
         ``ptree`` is its own root.
         """
         root = self
-        while root.parent is not None:
-            root = root.parent
+        while root.parent() is not None:
+            root = root.parent()
         return root
 
-    @property
     def treeposition(self):
         """
         The tree position of this tree, relative to the root of the
         tree.  I.e., ``ptree.root[ptree.treeposition] is ptree``.
         """
-        if self.parent is None: return ()
-        else: return self.parent.treeposition + (self.parent_index,)
+        if self.parent() is None: return ()
+        else: return self.parent().treeposition() + (self.parent_index(),)
 
 
     #/////////////////////////////////////////////////////////////////
@@ -1132,16 +1125,15 @@ class ParentedTree(AbstractParentedTree):
 class MultiParentedTree(AbstractParentedTree):
     """
     A ``Tree`` that automatically maintains parent pointers for
-    multi-parented trees.  The following read-only property values are
-    automatically updated whenever the structure of a multi-parented
-    tree is modified: ``parents``, ``parent_indices``, ``left_siblings``,
-    ``right_siblings``, ``roots``, ``treepositions``.
+    multi-parented trees.  The following are methods for querying the 
+    structure of a multi-parented tree: ``parents()``, ``parent_indices()``, 
+    ``left_siblings()``, ``right_siblings()``, ``roots``, ``treepositions``.
 
     Each ``MultiParentedTree`` may have zero or more parents.  In
     particular, subtrees may be shared.  If a single
     ``MultiParentedTree`` is used as multiple children of the same
     parent, then that parent will appear multiple times in its
-    ``parents`` property.
+    ``parents()`` method.
 
     ``MultiParentedTrees`` should never be used in the same tree as
     ``Trees`` or ``ParentedTrees``.  Mixing tree implementations may
@@ -1157,22 +1149,20 @@ class MultiParentedTree(AbstractParentedTree):
     def _frozen_class(self): return ImmutableMultiParentedTree
 
     #/////////////////////////////////////////////////////////////////
-    # Properties
+    # Methods
     #/////////////////////////////////////////////////////////////////
 
-    @property
     def parents(self):
         """
         The set of parents of this tree.  If this tree has no parents,
         then ``parents`` is the empty set.  To check if a tree is used
         as multiple children of the same parent, use the
-        ``parent_indices`` property.
+        ``parent_indices()`` method.
 
         :type: list(MultiParentedTree)
         """
         return list(self._parents)
 
-    @property
     def left_siblings(self):
         """
         A list of all left siblings of this tree, in any of its parent
@@ -1187,7 +1177,6 @@ class MultiParentedTree(AbstractParentedTree):
                 for (parent, index) in self._get_parent_indices()
                 if index > 0]
 
-    @property
     def right_siblings(self):
         """
         A list of all right siblings of this tree, in any of its parent
@@ -1208,7 +1197,6 @@ class MultiParentedTree(AbstractParentedTree):
                 for index, child in enumerate(parent)
                 if child is self]
 
-    @property
     def roots(self):
         """
         The set of all roots of this tree.  This set is formed by
