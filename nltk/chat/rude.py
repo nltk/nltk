@@ -47,7 +47,7 @@ pairs = (
         "I'm not even going to dignify that with an answer.")),
 
     (r'What (.*)',
-        ("Do I look like an encylopedia?",
+        ("Do I look like an encyclopedia?",
         "Figure it out yourself.")),
 
     (r'Why (.*)',

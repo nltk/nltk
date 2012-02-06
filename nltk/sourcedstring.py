@@ -566,7 +566,7 @@ class SourcedString(object):
         # Check for unicode/bytestring mismatches:
         if self._mixed_string_types(old, new, count):
             return self._decode_and_call('replace', old, new, count)
-        # Use a regexp to find all occurences of old, and replace them w/ new.
+        # Use a regexp to find all occurrences of old, and replace them w/ new.
         result = ''
         pos = 0
         for match in re.finditer(re.escape(old), self):
@@ -929,7 +929,7 @@ class SimpleSourcedString(SourcedString):
 
         self.source = source
         """A ``StringLocation`` specifying the location where this string
-           occured in the source document."""
+           occurred in the source document."""
 
     @property
     def begin(self):

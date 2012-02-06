@@ -480,7 +480,7 @@ class TreeWidget(CanvasWidget):
         ``'vertical'``.  The default value is ``'vertical'`` (i.e.,
         branch downwards).
 
-      - ``shapeable``: whether the subtrees can be independantly
+      - ``shapeable``: whether the subtrees can be independently
         dragged by the user.  THIS property simply sets the
         ``DRAGGABLE`` property on all of the ``TreeWidget``'s tree
         segments.

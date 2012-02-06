@@ -24,7 +24,7 @@ token, classifiers examine one or more 'features' of the token.  These
 "features" are typically chosen by hand, and indicate which aspects
 of the token are relevant to the classification decision.  For
 example, a document classifier might use a separate feature for each
-word, recording how often that word occured in the document.
+word, recording how often that word occurred in the document.
 
 Featuresets
 ===========

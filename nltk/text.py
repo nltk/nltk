@@ -124,7 +124,7 @@ class ConcordanceIndex(object):
 
         :param tokens: The document (list of tokens) that this
             concordance index was created from.  This list can be used
-            to access the context of a given word occurance.
+            to access the context of a given word occurrence.
         :param key: A function that maps each token to a normalized
             version that will be used as a key in the index.  E.g., if
             you use ``key=lambda s:s.lower()``, then the index will be
@@ -273,7 +273,7 @@ class Text(object):
 
     """
     # This defeats lazy loading, but makes things faster.  This
-    # *shouldnt* be necessary because the corpus view *should* be
+    # *shouldn't* be necessary because the corpus view *should* be
     # doing intelligent caching, but without this it's running slow.
     # Look into whether the caching is working correctly.
     _COPY_TOKENS = True

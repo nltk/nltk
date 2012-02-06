@@ -192,8 +192,8 @@ if 0:
 class ParseError(ValueError):
     """
     Exception raised by parse_* functions when they fail.
-    :param position: The index in the input string where an error occured.
-    :param expected: What was expected when an error occured.
+    :param position: The index in the input string where an error occurred.
+    :param expected: What was expected when an error occurred.
     """
     def __init__(self, expected, position):
         ValueError.__init__(self, expected, position)

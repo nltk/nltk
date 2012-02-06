@@ -241,7 +241,7 @@ class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
 class NgramTagger(ContextTagger, yaml.YAMLObject):
     """
     A tagger that chooses a token's tag based on its word string and
-    on the preceeding n word's tags.  In particular, a tuple
+    on the preceding n word's tags.  In particular, a tuple
     (tags[i-n:i-1], words[i]) is looked up in a table, and the
     corresponding tag is returned.  N-gram taggers are typically
     trained on a tagged corpus.
@@ -323,7 +323,7 @@ class UnigramTagger(NgramTagger):
 class BigramTagger(NgramTagger):
     """
     A tagger that chooses a token's tag based its word string and on
-    the preceeding words' tag.  In particular, a tuple consisting
+    the preceding words' tag.  In particular, a tuple consisting
     of the previous tag and the word is looked up in a table, and
     the corresponding tag is returned.
 
@@ -349,7 +349,7 @@ class BigramTagger(NgramTagger):
 class TrigramTagger(NgramTagger):
     """
     A tagger that chooses a token's tag based its word string and on
-    the preceeding two words' tags.  In particular, a tuple consisting
+    the preceding two words' tags.  In particular, a tuple consisting
     of the previous two tags and the word is looked up in a table, and
     the corresponding tag is returned.
 
