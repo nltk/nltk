@@ -251,7 +251,7 @@ class TreeEdge(EdgeI):
         self._span = span
         self._dot = dot
 
-    # [staticmethod]
+    @staticmethod
     def from_production(production, index):
         """
         Return a new ``TreeEdge`` formed from the given production.
@@ -263,7 +263,6 @@ class TreeEdge(EdgeI):
         """
         return TreeEdge(span=(index, index), lhs=production.lhs(),
                         rhs=production.rhs(), dot=0)
-    from_production = staticmethod(from_production)
 
     def move_dot_forward(self, new_end):
         """

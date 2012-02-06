@@ -51,14 +51,17 @@ class ProbabilisticTreeEdge(TreeEdge):
     def __init__(self, prob, *args, **kwargs):
         self._prob = prob
         TreeEdge.__init__(self, *args, **kwargs)
+
     def prob(self): return self._prob
+
     def __cmp__(self, other):
         if self._prob != other.prob(): return -1
         return TreeEdge.__cmp__(self, other)
+
+    @staticmethod
     def from_production(production, index, p):
         return ProbabilisticTreeEdge(p, (index, index), production.lhs(),
                                      production.rhs(), 0)
-    from_production = staticmethod(from_production)
 
 # Rules using probabilistic edges
 class ProbabilisticBottomUpInitRule(AbstractChartRule):

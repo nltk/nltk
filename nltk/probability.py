@@ -1741,7 +1741,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: list
         """
-        return self.keys()
+        return sorted(self.keys())
 
     def N(self):
         """
