@@ -31,26 +31,26 @@ class SennaTagger(TaggerI):
 
     @property
     def executable(self):
-      os_name = system()
-      if os_name == 'Linux':
-        bits = architecture()[0]
-        if bits == '64bit':
-          return os.path.join(self._path, 'senna-linux64')
-        return os.path.join(self._path, 'senna-linux32')
-      if os_name == 'Windows':
-          return os.path.join(self._path, 'senna-win32.exe')
-      if os_name == 'Darwin':
-          return os.path.join(self._path, 'senna-osx')
-      return os.path.join(self._path, 'senna')
+        os_name = system()
+        if os_name == 'Linux':
+            bits = architecture()[0]
+            if bits == '64bit':
+                return os.path.join(self._path, 'senna-linux64')
+            return os.path.join(self._path, 'senna-linux32')
+        if os_name == 'Windows':
+            return os.path.join(self._path, 'senna-win32.exe')
+        if os_name == 'Darwin':
+            return os.path.join(self._path, 'senna-osx')
+        return os.path.join(self._path, 'senna')
 
     def _map(self):
-      _map = {'word':0}
-      i = 1
-      for operation in SennaTagger.__OPS:
-          if operation in self.operations:
-              _map[operation] = i
-              i+= 1
-      return _map
+        _map = {'word':0}
+        i = 1
+        for operation in SennaTagger.__OPS:
+            if operation in self.operations:
+                _map[operation] = i
+                i+= 1
+        return _map
 
     def tag(self, tokens):
         return self.batch_tag([tokens])[0]
@@ -61,7 +61,6 @@ class SennaTagger(TaggerI):
         # Build the senna command to run the tagger
         _senna_cmd = [self.executable, '-path', self._path, '-usrtokens', '-iobtags']
         _senna_cmd.extend(['-'+op for op in self.operations])
-
 
         # Write the actual sentences to the temporary input file
         _input = '\n'.join((' '.join(x) for x in sentences))+'\n'
@@ -111,40 +110,40 @@ class POSTagger(SennaTagger):
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
         ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
-  def __init__(self, path, encoding=None, verbose=False):
-    super(POSTagger, self).__init__(path, {'pos'}, encoding, verbose)
+    def __init__(self, path, encoding=None, verbose=False):
+        super(POSTagger, self).__init__(path, ['pos'], encoding, verbose)
 
-  def batch_tag(self, sentences):
-    tagged_sents = super(POSTagger, self).batch_tag(sentences)
-    for i in range(len(tagged_sents)):
-      for j in range(len(tagged_sents[i])):
-        tagged_sents[i][j] = (sentences[i][j], tagged_sents[i][j]['pos'])
-    return tagged_sents
+    def batch_tag(self, sentences):
+        tagged_sents = super(POSTagger, self).batch_tag(sentences)
+        for i in range(len(tagged_sents)):
+            for j in range(len(tagged_sents[i])):
+                tagged_sents[i][j] = (sentences[i][j], tagged_sents[i][j]['pos'])
+        return tagged_sents
 
 
 class NERTagger(SennaTagger):
-  def __init__(self, path, encoding=None, verbose=False):
-    super(NERTagger, self).__init__(path, {'ner'}, encoding, verbose)
+    def __init__(self, path, encoding=None, verbose=False):
+        super(NERTagger, self).__init__(path, ['ner'], encoding, verbose)
 
-  def batch_tag(self, sentences):
-    tagged_sents = super(NERTagger, self).batch_tag(sentences)
-    for i in range(len(tagged_sents)):
-      for j in range(len(tagged_sents[i])):
-        try:
-          tagged_sents[i][j] = (sentences[i][j], tagged_sents[i][j]['ner'])
-        except:
-          import pdb
-          pdb.set_trace()
-    return tagged_sents
+    def batch_tag(self, sentences):
+        tagged_sents = super(NERTagger, self).batch_tag(sentences)
+        for i in range(len(tagged_sents)):
+            for j in range(len(tagged_sents[i])):
+                try:
+                    tagged_sents[i][j] = (sentences[i][j], tagged_sents[i][j]['ner'])
+                except:
+                    import pdb
+                    pdb.set_trace()
+        return tagged_sents
 
 
 class CHKTagger(SennaTagger):
-  def __init__(self, path, encoding=None, verbose=False):
-    super(CHKTagger, self).__init__(path, {'chk'}, encoding, verbose)
+    def __init__(self, path, encoding=None, verbose=False):
+        super(CHKTagger, self).__init__(path, ['chk'], encoding, verbose)
 
-  def batch_tag(self, sentences):
-    tagged_sents = super(CHKTagger, self).batch_tag(sentences)
-    for i in range(len(tagged_sents)):
-      for j in range(len(tagged_sents[i])):
-        tagged_sents[i][j] = (sentences[i][j], tagged_sents[i][j]['chk'])
-    return tagged_sents
+    def batch_tag(self, sentences):
+        tagged_sents = super(CHKTagger, self).batch_tag(sentences)
+        for i in range(len(tagged_sents)):
+            for j in range(len(tagged_sents[i])):
+                tagged_sents[i][j] = (sentences[i][j], tagged_sents[i][j]['chk'])
+        return tagged_sents

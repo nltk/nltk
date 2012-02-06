@@ -83,22 +83,26 @@ class MalletCRF(FeaturesetTaggerI):
     # Convenience accessors (info also available via self.crf_info)
     #/////////////////////////////////////////////////////////////////
 
-    def _get_filename(self):
-        return self.crf_info.model_filename
-    filename = property(_get_filename , doc="""
+    @property
+    def filename(self):
+        """
         The filename of the crf model file that backs this
         MalletCRF.  The crf model file is actually a zip file, and
         it contains one file for the serialized model
         ``crf-model.ser`` and one file for information about the
-        structure of the CRF ``crf-info.xml``).""")
+        structure of the CRF ``crf-info.xml``).
+        """
+        return self.crf_info.model_filename
 
-    def _get_feature_detector(self):
-        return self.crf_info.model_feature_detector
-    feature_detector = property(_get_feature_detector , doc="""
+    @property
+    def feature_detector(self):
+        """
         The feature detector function that is used to convert tokens
         to featuresets.  This function has the signature::
 
-            feature_detector(tokens, index) -> featureset""")
+        feature_detector(tokens, index) -> featureset
+        """
+        return self.crf_info.model_feature_detector
 
     #/////////////////////////////////////////////////////////////////
     # Tagging
