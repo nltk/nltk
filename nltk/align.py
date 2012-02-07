@@ -301,11 +301,10 @@ class IBMModel1(object):
       on the translation probabilities from Stage 1.
 
       .. doctest::
-          :options: +SKIP
 
-          >>> from nltk.corpus import comtrans
-          >>> from nltk.align import IBMModel1
-          >>> ibm1 = IBMModel1(comtrans.aligned_sents())
+          >> from nltk.corpus import comtrans
+          >> from nltk.align import IBMModel1
+          >> ibm1 = IBMModel1(comtrans.aligned_sents())
 
     :param aligned_sents: The parallel text ``corpus.Iterable`` containing
         AlignedSent instances of aligned sentence pairs from the corpus.
