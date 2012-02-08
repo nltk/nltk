@@ -5,10 +5,10 @@ See https://github.com/nose-devs/nose/issues/7
 """
 from nose.plugins.doctests import *
 
-class DoctestFix(Doctest):
+class _DoctestFix(Doctest):
 
     def options(self, parser, env):
-        super(DoctestFix, self).options(parser, env)
+        super(_DoctestFix, self).options(parser, env)
         parser.add_option('--doctest-options', action="append",
                           dest="doctestOptions",
                           metavar="OPTIONS",
@@ -16,7 +16,7 @@ class DoctestFix(Doctest):
                           "Eg. '+ELLIPSIS,+NORMALIZE_WHITESPACE'")
 
     def configure(self, options, config):
-        super(DoctestFix, self).configure(options, config)
+        super(_DoctestFix, self).configure(options, config)
         self.optionflags = 0
         if options.doctestOptions:
             flags = ",".join(options.doctestOptions).split(',')
@@ -129,3 +129,17 @@ class DoctestFix(Doctest):
                     continue
                 yield DocTestCase(test, obj=obj, optionflags=self.optionflags,
                                   result_var=self.doctest_result_var)
+
+def _plugin_supports_doctest_options(plugin_cls):
+    import optparse
+    plugin = plugin_cls()
+    parser = optparse.OptionParser()
+    plugin.options(parser, {})
+    return parser.has_option('--doctest-options')
+
+if _plugin_supports_doctest_options(Doctest):
+    class DoctestFix(Doctest):
+        pass
+else:
+    class DoctestFix(_DoctestFix):
+        pass
