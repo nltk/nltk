@@ -37,8 +37,9 @@ EXCLUDED_TESTS = FAILING_TESTS + DEPENDENT_TESTS
 _EXCLUDE_ARGV = ['--exclude='+test for test in EXCLUDED_TESTS]
 
 if __name__ == '__main__':
-    from nltk.test.doctest_nose_plugin import DoctestFix, Doctest
+    from nltk.test.doctest_nose_plugin import DoctestFix
     from nose.plugins.manager import PluginManager
+    from nose.plugins.doctests import Doctest
     from nose.plugins import builtin
 
     class NltkPluginManager(PluginManager):
