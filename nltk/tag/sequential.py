@@ -45,11 +45,11 @@ class SequentialBackoffTagger(TaggerI):
         else:
             self._taggers = [self] + backoff._taggers
 
-    def _get_backoff(self):
+    @property
+    def backoff(self):
+        """The backoff tagger for this tagger."""
         if len(self._taggers) < 2: return None
         else: return self._taggers[1]
-    backoff = property(_get_backoff, doc='''
-        The backoff tagger for this tagger.''')
 
     def tag(self, tokens):
         # docs inherited from TaggerI

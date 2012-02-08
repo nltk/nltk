@@ -584,4 +584,5 @@ class TheoremToolThread(threading.Thread):
             print e
             print 'Thread %s completed abnormally' % (self._name)
 
-    result = property(lambda self: self._result)
+    @property
+    def result(self): return self._result

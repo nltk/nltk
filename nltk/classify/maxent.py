@@ -656,6 +656,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
     sparse vector always sums to a constant non-negative number.  This
     new feature is used to ensure two preconditions for the GIS
     training algorithm:
+
       - At least one feature vector index must be nonzero for every
         token.
       - The feature vector must sum to a constant non-negative number
@@ -673,14 +674,13 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
             self, labels, mapping, unseen_features, alwayson_features)
         if C is None:
             C = len(set([fname for (fname,fval,label) in mapping]))+1
-
         self._C = C
-        """The non-negative constant that all encoded feature vectors
-           will sum to."""
 
-    C = property(lambda self: self._C, doc="""
-        The non-negative constant that all encoded feature vectors
-        will sum to.""")
+    @property
+    def C(self): 
+        """The non-negative constant that all encoded feature vectors
+        will sum to."""
+        return self._C
 
     def encode(self, featureset, label):
         # Get the basic encoding.

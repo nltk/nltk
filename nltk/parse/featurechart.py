@@ -71,7 +71,7 @@ class FeatureTreeEdge(TreeEdge):
         TreeEdge.__init__(self, span, lhs, rhs, dot)
         self._bindings = bindings
 
-    # [staticmethod]
+    @staticmethod
     def from_production(production, index):
         """
         :return: A new ``TreeEdge`` formed from the given production.
@@ -82,7 +82,6 @@ class FeatureTreeEdge(TreeEdge):
         """
         return FeatureTreeEdge(span=(index, index), lhs=production.lhs(),
                                rhs=production.rhs(), dot=0)
-    from_production = staticmethod(from_production)
 
     def move_dot_forward(self, new_end, bindings=None):
         """

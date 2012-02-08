@@ -122,6 +122,7 @@ Test SklearnClassifier, which requires the scikit-learn package.
 Test the SVM classifier, which requires the PySVMlight implementation of
 SVMlight.
 
+    >>> import nltk.classify.svm
     >>> nltk.classify.svm.demo()
     --- nltk.classify.svm demo ---
     Number of training examples: 7444
@@ -137,9 +138,9 @@ SVMlight.
     --- Measuring classifier performance ---
     Overall accuracy: 0.762
 
-    
+
 Test the Maximum Entropy classifier training algorithms; they should all
-generate the same results. 
+generate the same results.
 
     >>> def test_maxent(algorithms):
     ...     classifiers = {}
@@ -167,7 +168,7 @@ generate the same results.
     >>> test_maxent(nltk.classify.MaxentClassifier.ALGORITHMS)
     ... # doctest: +ELLIPSIS
     [Found megam: ...]
-                     test[0]        test[1]        test[2]        test[3]  
+                     test[0]        test[1]        test[2]        test[3]
                     p(x)  p(y)     p(x)  p(y)     p(x)  p(y)     p(x)  p(y)
     -----------------------------------------------------------------------
          LBFGSB     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24

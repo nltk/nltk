@@ -46,7 +46,8 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 
         BaseModelBuilderCommand.__init__(self, model_builder, goal, assumptions)
 
-    valuation = property(lambda mbc: mbc.model('valuation'))
+    @property
+    def valuation(mbc): return mbc.model('valuation')
 
     def _convert2val(self, valuation_str):
         """

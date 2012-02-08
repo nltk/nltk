@@ -131,7 +131,9 @@ class Valuation(dict):
     def __str__(self):
         return pformat(self)
 
-    def _getDomain(self):
+    @property
+    def domain(self):
+        """Set-theoretic domain of the value-space of a Valuation."""
         dom = []
         for val in self.values():
             if isinstance(val, str):
@@ -140,14 +142,10 @@ class Valuation(dict):
                 dom.extend([elem for tuple in val for elem in tuple if elem is not None])
         return set(dom)
 
-    domain = property(_getDomain,
-             doc='Set-theoretic domain of the value-space of a Valuation.')
-
-    def _getSymbols(self):
+    @property
+    def symbols(self):
+        """The non-logical constants which the Valuation recognizes."""
         return sorted(self.keys())
-
-    symbols = property(_getSymbols,
-              doc='The non-logical constants which the Valuation recognizes.')
 
 
 class Assignment(dict):

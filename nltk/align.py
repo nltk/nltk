@@ -46,13 +46,9 @@ class AlignedSent(object):
 
     def __init__(self, words = [], mots = [], alignment = '', \
                  encoding = 'latin-1'):
-
-        if not isinstance(alignment, Alignment):
-            alignment = Alignment(alignment)
         self._words = words
         self._mots = mots
-        self._check_align(alignment)
-        self._alignment = alignment
+        self.alignment = alignment
 
     @property
     def words(self):
@@ -66,12 +62,12 @@ class AlignedSent(object):
     def alignment(self):
         return self._alignment
 
-#    @alignment.setter Requires Python 2.6
-#    def alignment(self, alignment):
-#        if not isinstance(alignment, Alignment):
-#            alignment = Alignment(alignment)
-#        self._check_align(alignment)
-#        self._alignment = alignment
+    @alignment.setter
+    def alignment(self, alignment):
+        if not isinstance(alignment, Alignment):
+            alignment = Alignment(alignment)
+        self._check_align(alignment)
+        self._alignment = alignment
 
     def _check_align(self, a):
         """
@@ -220,7 +216,7 @@ class Alignment(frozenset):
         0-0 1-0 2-1 2-2
         >>> a[0]
         [(0, 1), (0, 0)]
-        >>> a.invert()[3]
+        >>> a.invert()[2]
         [(2, 1), (2, 2)]
         >>> b = Alignment([(0, 0), (0, 1)])
         >>> b.issubset(a)
@@ -304,12 +300,16 @@ class IBMModel1(object):
     - Stage 2: Generates updated word alignments for the sentence pairs, based
       on the translation probabilities from Stage 1.
 
-      .. doctest::
-          :options: +SKIP
-
-          >>> from nltk.corpus import comtrans
-          >>> from nltk.align import IBMModel1
-          >>> ibm1 = IBMModel1(comtrans.aligned_sents())
+        >>> corpus = [AlignedSent(['the', 'house'], ['das', 'Haus']),
+        ...           AlignedSent(['the', 'book'], ['das', 'Buch']),
+        ...           AlignedSent(['a', 'book'], ['ein', 'Buch'])]
+        >>> ibm1 = IBMModel1(corpus)
+        >>> print "%.1f" % ibm1.probabilities['book', 'Buch']
+        1.0
+        >>> print "%.1f" % ibm1.probabilities['book', 'das']
+        0.0
+        >>> print "%.1f" % ibm1.probabilities['book', None]
+        0.5
 
     :param aligned_sents: The parallel text ``corpus.Iterable`` containing
         AlignedSent instances of aligned sentence pairs from the corpus.
@@ -331,9 +331,9 @@ class IBMModel1(object):
     def _train(self):
         """
         Perform Expectation Maximization training to learn
-        word-to-word translation probabilities, and return
-        the number of iterations that were required for convergence.
+        word-to-word translation probabilities.
         """
+        logging.debug("Starting training")
 
         # Collect up sets of all English and foreign words
         english_words = set()
@@ -343,15 +343,13 @@ class IBMModel1(object):
             foreign_words.update(aligned_sent.mots)
         # add the NULL token to the foreign word set.
         foreign_words.add(None)
-        num_probs = len(english_words)*len(foreign_words)
+        num_probs = len(english_words) * len(foreign_words)
 
         # Initialise t(e|f) uniformly
-        t = defaultdict(lambda: float(1)/len(english_words))
-        s_total = defaultdict(float)
-        for e in english_words:
-            for f in foreign_words:
-                z = t[e,f]
+        default_prob = 1.0 / len(english_words)
+        t = defaultdict(lambda: default_prob)
 
+        convergent_threshold = self.convergent_threshold
         globally_converged = False
         iteration_count = 0
         while not globally_converged:
@@ -361,6 +359,7 @@ class IBMModel1(object):
             total = defaultdict(float)
 
             for aligned_sent in self.aligned_sents:
+                s_total = {}
                 # Compute normalization
                 for e_w in aligned_sent.words:
                     s_total[e_w] = 0.0
@@ -380,7 +379,7 @@ class IBMModel1(object):
                 for e_w in english_words:
                     new_prob = count[e_w, f_w] / total[f_w]
                     delta = abs(t[e_w, f_w] - new_prob)
-                    if delta < self.convergent_threshold:
+                    if delta < convergent_threshold:
                         num_converged += 1
                     t[e_w, f_w] = new_prob
 
@@ -388,8 +387,8 @@ class IBMModel1(object):
             iteration_count += 1
             if num_converged == num_probs:
                 globally_converged = True
-            logging.debug("%d/%d (%.2f%%) converged"%(
-                    num_converged, num_probs, 100.0*num_converged/num_probs))
+            logging.debug("%d/%d (%.2f%%) converged" %
+                          (num_converged, num_probs, 100.0*num_converged/num_probs))
 
         self.probabilities = dict(t)
 

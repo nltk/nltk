@@ -53,12 +53,11 @@ the corresponding sentences:
         ...
     IndexError: Alignment is outside boundary of mots
 
-.. in Python 2.6 version, we will support:
-   als.alignment = Alignment([(0, 0), (1, 4), (2, 1), (3, 3)])
-
 
 You can set alignments with any sequence of tuples, so long as the first two
 indexes of the tuple are the alignment indices:
+
+als.alignment = Alignment([(0, 0), (1, 1), (2, 2, "boat"), (3, 3, False, (1,2))])
 
     >>> Alignment([(0, 0), (1, 1), (2, 2, "boat"), (3, 3, False, (1,2))])
     Alignment([(0, 0), (1, 1), (2, 2, 'boat'), (3, 3, False, (1, 2))])
@@ -97,7 +96,17 @@ Here is an example from Kohn, 2010:
     0.0
     >>> print round(em_ibm1.probabilities['house', 'Haus'], 1)
     1.0
+    >>> print round(em_ibm1.probabilities['book', None], 1)
+    0.5
 
+And using an NLTK corpus. We train on only 10 sentences, since it is so incredibly slow:
+
+    >>> from nltk.corpus import comtrans
+    >>> com_ibm1 = IBMModel1(comtrans.aligned_sents() [:10])
+    >>> print round(com_ibm1.probabilities['bitte', 'Please'], 1)
+    0.2
+    >>> print round(com_ibm1.probabilities['Sitzungsperiode', 'session'], 1)
+    1.0
 
 Get the alignments:
 

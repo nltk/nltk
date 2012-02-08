@@ -782,15 +782,16 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
     # If allow_step is true, then include the step in our return
     # value tuple.
     if allow_step:
-        if slice_obj.step is None: slice_obj.step = 1
+        step = slice_obj.step
+        if step is None: step = 1
         # Use a recursive call without allow_step to find the slice
         # bounds.  If step is negative, then the roles of start and
         # stop (in terms of default values, etc), are swapped.
-        if slice_obj.step < 0:
+        if step < 0:
             start, stop = slice_bounds(sequence, slice(stop, start))
         else:
             start, stop = slice_bounds(sequence, slice(start, stop))
-        return start, stop, slice_obj.step
+        return start, stop, step
 
     # Otherwise, make sure that no non-default step value is used.
     elif slice_obj.step not in (None, 1):

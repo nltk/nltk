@@ -208,7 +208,7 @@ depending on how it was called:
     StringSource('newt.txt', begin=12, end=18)
     >>> type(StringSource('newt.txt', begin=12, end=18))
     <class 'nltk.sourcedstring.ConsecutiveCharStringSource'>
-    
+
     >>> StringSource('newt.txt', offsets=[12, 15, 16, 18])
     StringSource('newt.txt', offsets=(12, 15, 16, 18))
     >>> type(StringSource('newt.txt', offsets=[12, 15, 16, 18]))
@@ -376,9 +376,9 @@ documents:
     >>> cello = ("Does "+newt[:-1].capitalize()+"on like my " +
     ...      doc2[:5].replace('H','C')+"?")
     >>> print cello.pprint()
-          [newt.tx]            [hello.t]  
-          2 2 2 2 2                       
-          1 2 3 4 5            1 2 3 4 5  
+          [newt.tx]            [hello.t]
+          2 2 2 2 2
+          1 2 3 4 5            1 2 3 4 5
     +-----+-+-+-+-+------------+-+-+-+-+-+
     |Does |N|e|w|t|on like my C|e|l|l|o|?|
     +-----+-+-+-+-+------------+-+-+-+-+-+
@@ -420,9 +420,9 @@ original string.  The padding substring will usually be sourceless
     |          |n|e|w|t|!|
     +----------+-+-+-+-+-+
     >>> print newt.center(15, '.').pprint()
-          [=newt.txt]      
-          2 2 2 2 2 2      
-          1 2 3 4 5 6      
+          [=newt.txt]
+          2 2 2 2 2 2
+          1 2 3 4 5 6
     +-----+-+-+-+-+-+-----+
     |.....|n|e|w|t|!|.....|
     +-----+-+-+-+-+-+-----+
@@ -439,14 +439,14 @@ original string and the replacement string:
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-++-+-+-+-+-++-+
     |S|h|e| |t|u|r|n|e|d| |m|e| |i|n|t|o| |a| ||W|o|r|l|d||!|
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-++-+-+-+-+-++-+
-    
+
 If the replacement string is a Python string, then the
 corresponding substring will be sourceless:
 
     >>> print newt.replace('!', 'on').pprint()
-    [newt.tx]   
-    2 2 2 2 2   
-    1 2 3 4 5   
+    [newt.tx]
+    2 2 2 2 2
+    1 2 3 4 5
     +-+-+-+-+--+
     |n|e|w|t|on|
     +-+-+-+-+--+
@@ -487,7 +487,7 @@ to the appropriate subclass, based on the type of the content string:
     'He was a tall lumberjack.'@[0:25]
     >>> type(SourcedString(byte_str, 'lumberjack.txt'))
     <class 'nltk.sourcedstring.SimpleSourcedByteString'>
-    
+
     >>> unicode_str = u'He was a tall lumberjack.'
     >>> SourcedString(unicode_str, 'lumberjack.txt')
     u'He was a tall lumberjack.'@[0:25]
@@ -806,7 +806,7 @@ Slicing:
     ...             print '%2s:%-2s' % (sliced_source.begin, sliced_source.end),
     ...             assert sliced_source.docid == 'coconut.txt'
     ...         print
-    ...         
+    ...
     >>> source = ConsecutiveCharStringSource('coconut.txt', 15, 28)
     >>> slice_test(source, None, 0, 1, len(source)-1, len(source), 100,
     ...            -1, -len(source)+1, -len(source), -100)
@@ -825,7 +825,7 @@ Slicing:
 
     >>> source = ConsecutiveCharStringSource('coconut.txt', 50, 53)
     >>> slice_test(source, -4, -3, 0, -2, 1, -1, 2, 3, 4, 5)
-         |  -4    -3    0     -2    1     -1    2     3     4     5  
+         |  -4    -3    0     -2    1     -1    2     3     4     5
     -----+------------------------------------------------------------
       -4 | 50:50 50:50 50:50 50:51 50:51 50:52 50:52 50:53 50:53 50:53
       -3 | 50:50 50:50 50:50 50:51 50:51 50:52 50:52 50:53 50:53 50:53
@@ -963,7 +963,7 @@ Slicing:
     ...             print '%2s:%-2s' % (sliced_source.begin, sliced_source.end),
     ...             assert sliced_source.docid == 'coconut.txt'
     ...         print
-    ...         
+    ...
     >>> source = ContiguousCharStringSource('coconut.txt', range(15, 29))
     >>> slice_test(source, None, 0, 1, len(source)-1, len(source), 100,
     ...            -1, -len(source)+1, -len(source), -100)
@@ -982,7 +982,7 @@ Slicing:
 
     >>> source = ContiguousCharStringSource('coconut.txt', range(50, 54))
     >>> slice_test(source, -4, -3, 0, -2, 1, -1, 2, 3, 4, 5)
-         |  -4    -3    0     -2    1     -1    2     3     4     5  
+         |  -4    -3    0     -2    1     -1    2     3     4     5
     -----+------------------------------------------------------------
       -4 | 50:50 50:50 50:50 50:51 50:51 50:52 50:52 50:53 50:53 50:53
       -3 | 50:50 50:50 50:50 50:51 50:51 50:52 50:52 50:53 50:53 50:53
@@ -1049,7 +1049,7 @@ SourcedString indexing:
     Traceback (most recent call last):
       . . .
     IndexError: string index out of range
-    
+
     >>> in_new_york = doc[-49:-38]; in_new_york
     'in New York'@[24:35]
     >>> doc[27], in_new_york[3], s[27]
@@ -1075,7 +1075,7 @@ SourcedString slicing:
     ...         for stop in test_indices:
     ...             test_slice(sstring[start:stop], string[start:stop],
     ...                        print_indices, start, stop)
-    >>> test_slices(in_new_york, 'in New York', 
+    >>> test_slices(in_new_york, 'in New York',
     ...             range(-12, 13)+[None,100,-100, -20, 20],
     ...             ('', 0, 1, -1, 5))
     s[    :    ] = "'in New York'@[24:35]"
@@ -1111,7 +1111,7 @@ SourcedString slicing:
     ...     check(in_new_york[i:])
     ...     assert (in_new_york[i:] == 'in New York'[i:])
     ...     assert (in_new_york[:i] == 'in New York'[:i])
-    
+
 
 Misc other tests:
 
@@ -1191,7 +1191,7 @@ Splitting:
     ['Good'@[0:4], 'muffins'@[5:12], 'cost'@[13:17], '$3.88'@[18:23],
      'in'@[24:26], 'New'@[27:30], 'York.'@[31:36], 'Please'@[38:44],
      'buy'@[45:48], 'me'@[49:51], 'two'@[52:55], 'of'@[56:58],
-     'them.'@[59:64], 'Thanks.'@[66:73]]    
+     'them.'@[59:64], 'Thanks.'@[66:73]]
     >>> doc.split(None, 5) # doctest: +NORMALIZE_WHITESPACE
     ['Good'@[0:4], 'muffins'@[5:12], 'cost'@[13:17], '$3.88'@[18:23],
      'in'@[24:26], 'New York.  Please buy me\ntwo of them.\n\nThanks.'@[27:73]]
@@ -1446,7 +1446,7 @@ But these will all work, because x is ASCII:
     >>> y.partition(x)
     (u'unicode string \ubbbb'@[0:16], u''@[16:16], u''@[16:16])
     >>> x.rpartition(y)
-    ('ascii byte string'@[0:17], ''@[17:17], ''@[17:17])
+    (''@[0:0], ''@[0:0], 'ascii byte string'@[0:17])
     >>> y.rpartition(x)
     (u''@[0:0], u''@[0:0], u'unicode string \ubbbb'@[0:16])
     >>> x.join(y) # doctest: +ELLIPSIS

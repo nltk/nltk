@@ -419,17 +419,6 @@ class FeatStruct(SubstituteBindingsI):
         """
         return self._find_reentrances({})[id(self)]
 
-    def reentrances(self):
-        """
-        Return a list of all feature structures that can be reached
-        from ``self`` by multiple feature paths.
-
-        :rtype: list(FeatStruct)
-        """
-        reentrance_dict = self._find_reentrances({})
-        return [struct for (struct, reentrant) in reentrance_dict.items()
-                if reentrant]
-
     def walk(self):
         """
         Return an iterator that generates this feature structure, and
@@ -1796,13 +1785,8 @@ class Feature(object):
         assert display in (None, 'prefix', 'slash')
 
         self._name = name # [xx] rename to .identifier?
-        """The name of this feature."""
-
         self._default = default # [xx] not implemented yet.
-        """Default value for this feature.  Use None for unbound."""
-
         self._display = display
-        """Custom display location: can be prefix, or slash."""
 
         if self._display == 'prefix':
             self._sortkey = (-1, self._name)
@@ -1811,9 +1795,20 @@ class Feature(object):
         else:
             self._sortkey = (0, self._name)
 
-    name = property(lambda self: self._name)
-    default = property(lambda self: self._default)
-    display = property(lambda self: self._display)
+    @property
+    def name(self): 
+        """The name of this feature."""
+        return self._name
+
+    @property
+    def default(self): 
+        """Default value for this feature."""
+        return self._default
+
+    @property
+    def display(self): 
+        """Custom display location: can be prefix, or slash."""
+        return self._display
 
     def __repr__(self):
         return '*%s*' % self.name

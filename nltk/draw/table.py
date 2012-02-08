@@ -200,25 +200,37 @@ class MultiListbox(Frame):
     # Properties
     #/////////////////////////////////////////////////////////////////
 
-    column_names = property(lambda self: self._column_names, doc="""
+    @property
+    def column_names(self): 
+        """
         A tuple containing the names of the columns used by this
-        multi-column listbox.""")
-    
-    column_labels = property(lambda self: tuple(self._labels), doc="""
+        multi-column listbox.
+        """
+        return self._column_names
+
+    @property
+    def column_labels(self): 
+        """
         A tuple containing the ``Tkinter.Label`` widgets used to
         display the label of each column.  If this multi-column
         listbox was created without labels, then this will be an empty
         tuple.  These widgets will all be augmented with a
         ``column_index`` attribute, which can be used to determine
         which column they correspond to.  This can be convenient,
-        e.g., when defining callbacks for bound events.""")
-    
-    listboxes = property(lambda self: tuple(self._listboxes), doc="""
+        e.g., when defining callbacks for bound events.
+        """
+        return tuple(self._labels)
+
+    @property
+    def listboxes(self): 
+        """
         A tuple containing the ``Tkinter.Listbox`` widgets used to
         display individual columns.  These widgets will all be
         augmented with a ``column_index`` attribute, which can be used
         to determine which column they correspond to.  This can be
-        convenient, e.g., when defining callbacks for bound events.""")
+        convenient, e.g., when defining callbacks for bound events.
+        """
+        return tuple(self._listboxes)
 
     #/////////////////////////////////////////////////////////////////
     # Mouse & Keyboard Callback Functions
@@ -822,8 +834,10 @@ class Table(object):
     # Columns
     #/////////////////////////////////////////////////////////////////
 
-    column_names = property(lambda self: self._mlb.column_names, doc="""
-        A list of the names of the columns in this table.""")
+    @property
+    def column_names(self): 
+        """A list of the names of the columns in this table."""
+        return self._mlb.column_names
 
     def column_index(self, i):
         """
