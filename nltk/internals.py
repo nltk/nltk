@@ -425,11 +425,12 @@ def find_file(filename, env_vars=(), searchpath=(),
     """
     Search for a file to be used by nltk.
 
-    :param name: The name of the file
-    :param path_to_file: The user-supplied binary location, or None.
-    :param env_vars: A list of environment variable names to check
+    :param filename: The name or path of the file.
+    :param env_vars: A list of environment variable names to check.
     :param file_names: A list of alternative file names to check.
     :param searchpath: List of directories to search.
+    :param url: URL presented to user for download help.
+    :param verbose: Whether or not to print path when a file is found.
     """
     if file_names is None: file_names = [filename]
     assert isinstance(filename, basestring)
@@ -510,6 +511,17 @@ def find_file(filename, env_vars=(), searchpath=(),
 
 def find_binary(name, path_to_bin=None, env_vars=(), searchpath=(),
                 binary_names=None, url=None, verbose=True):
+    """
+    Search for a file to be used by nltk.
+
+    :param name: The name or path of the file.
+    :param path_to_bin: The user-supplied binary location (deprecated)
+    :param env_vars: A list of environment variable names to check.
+    :param file_names: A list of alternative file names to check.
+    :param searchpath: List of directories to search.
+    :param url: URL presented to user for download help.
+    :param verbose: Whether or not to print path when a file is found.
+    """
     return find_file(path_to_bin or name, env_vars, searchpath, binary_names,
                      url, verbose)
 
