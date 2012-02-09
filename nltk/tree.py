@@ -18,7 +18,6 @@ syntax trees and morphological trees.
 
 import re
 import string
-from collections import MutableSequence
 
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
@@ -28,7 +27,7 @@ from nltk.util import slice_bounds
 ## Trees
 ######################################################################
 
-class Tree(MutableSequence):
+class Tree(list):
     """
     A Tree represents a hierarchical grouping of leaves and subtrees.
     For example, each constituent in a syntax tree is represented by a single Tree.
@@ -98,13 +97,13 @@ class Tree(MutableSequence):
                 raise TypeError("%s: Expected a node value and child list "
                                 "or a single string" % type(self).__name__)
             tree = type(self).parse(node_or_str)
-            self.children = tree.children
+            list.__init__(self, tree)
             self.node = tree.node
         elif isinstance(children, basestring):
             raise TypeError("%s() argument 2 should be a list, not a "
                             "string" % type(self).__name__)
         else:
-            self.children = list(children)
+            list.__init__(self, children)
             self.node = node_or_str
 
     #////////////////////////////////////////////////////////////
@@ -113,29 +112,42 @@ class Tree(MutableSequence):
 
     def __eq__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node == other.node and self.children == other.children
+        return self.node == other.node and list.__eq__(self, other)
     def __ne__(self, other):
         return not (self == other)
     def __lt__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node < other.node or self.children < other.children
+        return self.node < other.node or list.__lt__(self, other)
     def __le__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node <= other.node or self.children <= other.children
+        return self.node <= other.node or list.__le__(self, other)
     def __gt__(self, other):
         if not isinstance(other, Tree): return True
-        return self.node > other.node or self.children > other.children
+        return self.node > other.node or list.__gt__(self, other)
     def __ge__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node >= other.node or self.children >= other.children
+        return self.node >= other.node or list.__ge__(self, other)
 
     #////////////////////////////////////////////////////////////
-    # Required MutableSequence methods
+    # Disabled list operations
+    #////////////////////////////////////////////////////////////
+
+    def __mul__(self, v):
+        raise TypeError('Tree does not support multiplication')
+    def __rmul__(self, v):
+        raise TypeError('Tree does not support multiplication')
+    def __add__(self, v):
+        raise TypeError('Tree does not support addition')
+    def __radd__(self, v):
+        raise TypeError('Tree does not support addition')
+
+    #////////////////////////////////////////////////////////////
+    # Indexing (with support for tree positions)
     #////////////////////////////////////////////////////////////
 
     def __getitem__(self, index):
         if isinstance(index, (int, slice)):
-            return self.children[index]
+            return list.__getitem__(self, index)
         elif isinstance(index, (list, tuple)):
             if len(index) == 0:
                 return self
@@ -149,7 +161,7 @@ class Tree(MutableSequence):
 
     def __setitem__(self, index, value):
         if isinstance(index, (int, slice)):
-            self.children[index] = value
+            return list.__setitem__(self, index, value)
         elif isinstance(index, (list, tuple)):
             if len(index) == 0:
                 raise IndexError('The tree position () may not be '
@@ -164,7 +176,7 @@ class Tree(MutableSequence):
 
     def __delitem__(self, index):
         if isinstance(index, (int, slice)):
-            del self.children[index]
+            return list.__delitem__(self, index)
         elif isinstance(index, (list, tuple)):
             if len(index) == 0:
                 raise IndexError('The tree position () may not be deleted.')
@@ -175,18 +187,6 @@ class Tree(MutableSequence):
         else:
             raise TypeError("%s indices must be integers, not %s" %
                             (type(self).__name__, type(index).__name__))
-
-    def __contains__(self, child):
-        return child in self.children
-
-    def __len__(self):
-        return len(self.children)
-
-    def __iter__(self):
-        return iter(self.children)
-
-    def insert(self, index, child):
-        self.children.insert(index, child)
 
     #////////////////////////////////////////////////////////////
     # Basic tree operations
@@ -482,7 +482,7 @@ class Tree(MutableSequence):
             return tree
 
     def copy(self, deep=False):
-        if not deep: return type(self)(self.node, self.children[:])
+        if not deep: return type(self)(self.node, self)
         else: return type(self).convert(self)
 
     def _frozen_class(self): return ImmutableTree
@@ -738,7 +738,7 @@ class ImmutableTree(Tree):
         # Precompute our hash value.  This ensures that we're really
         # immutable.  It also means we only have to calculate it once.
         try:
-            self._hash = hash( (self.node, self.children) )
+            self._hash = hash( (self.node, tuple(self)) )
         except (TypeError, ValueError):
             raise ValueError("%s: node value and children "
                              "must be immutable" % type(self).__name__)
@@ -770,13 +770,10 @@ class ImmutableTree(Tree):
     def __hash__(self):
         return self._hash
 
-    @property
-    def node(self):
-        """Get the node value."""
+    def _get_node(self):
+        """Get the node value"""
         return self._node
-
-    @node.setter
-    def node(self, value):
+    def _set_node(self, value):
         """
         Set the node value.  This will only succeed the first time the
         node value is set, which should occur in ImmutableTree.__init__().
@@ -784,21 +781,8 @@ class ImmutableTree(Tree):
         if hasattr(self, 'node'):
             raise ValueError('%s may not be modified' % type(self).__name__)
         self._node = value
+    node = property(_get_node, _set_node)
 
-    @property
-    def children(self):
-        """Get the list of children."""
-        return self._children
-
-    @children.setter
-    def children(self, children):
-        """
-        Set the children.  This will only succeed the first time the 
-        children are set, which should occur in ImmutableTree.__init__().
-        """
-        if hasattr(self, 'children'):
-            raise ValueError('%s may not be modified' % type(self).__name__)
-        self._children = tuple(children)
 
 ######################################################################
 ## Parented trees
@@ -977,6 +961,17 @@ class AbstractParentedTree(Tree):
             raise TypeError("%s indices must be integers, not %s" %
                             (type(self).__name__, type(index).__name__))
 
+    def append(self, child):
+        if isinstance(child, Tree):
+            self._setparent(child, len(self))
+        super(AbstractParentedTree, self).append(child)
+
+    def extend(self, children):
+        for child in children:
+            if isinstance(child, Tree):
+                self._setparent(child, len(self))
+            super(AbstractParentedTree, self).append(child)
+
     def insert(self, index, child):
         # Handle negative indexes.  Note that if index < -len(self),
         # we do *not* raise an IndexError, unlike __getitem__.  This
@@ -988,6 +983,34 @@ class AbstractParentedTree(Tree):
             self._setparent(child, index)
         super(AbstractParentedTree, self).insert(index, child)
 
+    def pop(self, index=-1):
+        if index < 0: index += len(self)
+        if index < 0: raise IndexError('index out of range')
+        if isinstance(self[index], Tree):
+            self._delparent(self[index], index)
+        return super(AbstractParentedTree, self).pop(index)
+
+    # n.b.: like `list`, this is done by equality, not identity!
+    # To remove a specific child, use del ptree[i].
+    def remove(self, child):
+        index = self.index(child)
+        if isinstance(self[index], Tree):
+            self._delparent(self[index], index)
+        super(AbstractParentedTree, self).remove(child)
+
+    # We need to implement __getslice__ and friends, even though
+    # they're deprecated, because otherwise list.__getslice__ will get
+    # called (since we're subclassing from list).  Just delegate to
+    # __getitem__ etc., but use max(0, start) and max(0, stop) because
+    # because negative indices are already handled *before*
+    # __getslice__ is called; and we don't want to double-count them.
+    if hasattr(list, '__getslice__'):
+        def __getslice__(self, start, stop):
+            return self.__getitem__(slice(max(0, start), max(0, stop)))
+        def __delslice__(self, start, stop):
+            return self.__delitem__(slice(max(0, start), max(0, stop)))
+        def __setslice__(self, start, stop, value):
+            return self.__setitem__(slice(max(0, start), max(0, stop)), value)
 
 class ParentedTree(AbstractParentedTree):
     """

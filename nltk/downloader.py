@@ -876,13 +876,10 @@ class Downloader(object):
     # URL & Data Directory
     #/////////////////////////////////////////////////////////////////
 
-    @property
-    def url(self): 
+    def _get_url(self): 
         """The URL for the data server's index file."""
         return self._url
-
-    @url.setter
-    def url(self, url):
+    def _set_url(self, url):
         """
         Set a new URL for the data server. If we're unable to contact 
         the given url, then the original url is kept.
@@ -893,6 +890,7 @@ class Downloader(object):
         except:
             self._url = original_url
             raise
+    url = property(_get_url, _set_url)
 
     def default_download_dir(self):
         """
@@ -930,8 +928,7 @@ class Downloader(object):
         # append "nltk_data" to the home directory
         return os.path.join(homedir, 'nltk_data')
 
-    @property
-    def download_dir(self): 
+    def _get_download_dir(self): 
         """
         The default directory to which packages will be downloaded.
         This defaults to the value returned by ``default_download_dir()``.
@@ -939,12 +936,11 @@ class Downloader(object):
         ``download_dir`` argument when calling ``download()``.
         """
         return self._download_dir
-
-    @download_dir.setter
-    def download_dir(self, download_dir):
+    def _set_download_dir(self, download_dir):
         self._download_dir = download_dir
         # Clear the status cache.
         self._status_cache.clear()
+    download_dir = property(_get_download_dir, _set_download_dir)
 
     #/////////////////////////////////////////////////////////////////
     # Interactive Shell
