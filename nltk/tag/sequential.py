@@ -461,13 +461,17 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     def __init__(self, regexps, backoff=None):
         """
         """
-        self._regexps = regexps
         SequentialBackoffTagger.__init__(self, backoff)
+        labels = ['g'+str(i) for i in range(len(regexps))]
+        tags = [tag for regex, tag in regexps]
+        self._map = dict(zip(labels, tags))
+        regexps_labels = [(regex, label) for ((regex,tag),label) in zip(regexps,labels)]
+        self._regexs = re.compile('|'.join(['(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels]))
 
     def choose_tag(self, tokens, index, history):
-        for regexp, tag in self._regexps:
-            if re.match(regexp, tokens[index]): # ignore history
-                return tag
+        m = self._regexs.match(tokens[index])
+        if m:
+          return self._map[m.lastgroup]
         return None
 
     def __repr__(self):
