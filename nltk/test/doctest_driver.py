@@ -29,7 +29,6 @@ from doctest import *
 from doctest import DocTestCase, DocTestRunner
 from optparse import OptionParser, OptionGroup, Option
 from StringIO import StringIO
-import coverage
 
 # Use local NLTK.
 root_dir = os.path.abspath(os.path.join(sys.path[0], '..', '..'))
@@ -52,38 +51,6 @@ if __name__ == "__main__":
     sys.setdefaultencoding("UTF-8")
     import doctest
     doctest.testmod()
-
-###########################################################################
-# Monkey-Patch to fix Doctest
-###########################################################################
-
-# The original version of this class has a bug that interferes with
-# code coverage functions.  See: http://tinyurl.com/2htvfx
-class _OutputRedirectingPdb(pdb.Pdb):
-    def __init__(self, out):
-        self.__out = out
-        self.__debugger_used = False
-        pdb.Pdb.__init__(self)
-
-    def set_trace(self):
-        self.__debugger_used = True
-        pdb.Pdb.set_trace(self)
-
-    def set_continue(self):
-        # Calling set_continue unconditionally would break unit test coverage
-        # reporting, as Bdb.set_continue calls sys.settrace(None).
-        if self.__debugger_used:
-            pdb.Pdb.set_continue(self)
-
-    def trace_dispatch(self, *args):
-        save_stdout = sys.stdout
-        sys.stdout = self.__out
-        pdb.Pdb.trace_dispatch(self, *args)
-        sys.stdout = save_stdout
-
-# Do the actual monkey-patching.
-import doctest
-doctest._OutputRedirectingPdb = _OutputRedirectingPdb
 
 ###########################################################################
 # Utility Functions
@@ -1054,11 +1021,6 @@ NDIFF_OPT    = Option("--ndiff",
                action="store_const", dest="ndiff", const=1, default=0,
                help="Display test failures using ndiffs.")
 
-COVERAGE_OPT = Option("--coverage",
-               action="store", dest="coverage", metavar='FILENAME',
-               help="Generate coverage information, and write it to the "
-                     "given file.")
-
 CONTINUE_OPT = Option("--continue", dest='kbinterrupt_continue',
                       action='store_const', const=1, default=0,
                       help="If a test is interrupted by a keyboard "
@@ -1090,7 +1052,7 @@ def main():
     reporting_group = OptionGroup(optparser, 'Reporting')
     reporting_group.add_options([VERBOSE_OPT, QUIET_OPT,
                                  UDIFF_OPT, CDIFF_OPT, NDIFF_OPT,
-                                 COVERAGE_OPT, CONTINUE_OPT])
+                                 CONTINUE_OPT])
     optparser.add_option_group(reporting_group)
 
     compare_group = OptionGroup(optparser, 'Output Comparison')
@@ -1107,10 +1069,6 @@ def main():
                    optionvals.ignore_exception_detail * IGNORE_EXCEPTION_DETAIL |
                    optionvals.normws * NORMALIZE_WHITESPACE)
  
-    # Check coverage, if requested
-    if optionvals.coverage:
-        coverage.use_cache(True, cache_file=optionvals.coverage)
-        coverage.start()
 
     # Perform the requested action.
     if optionvals.action == 'check':
@@ -1122,9 +1080,5 @@ def main():
         debug(names, optionflags, optionvals.verbosity)
     else:
         optparser.error('INTERNAL ERROR: Bad action %s' % optionvals.action)
-
-    # Check coverage, if requested
-    if optionvals.coverage:
-        coverage.stop()
 
 if __name__ == '__main__': main()
