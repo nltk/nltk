@@ -861,11 +861,8 @@ class IndividualVariableExpression(AbstractVariableExpression):
 
         signature[self.variable.name].append(self)
 
-    @property
-    def type(self): return ENTITY_TYPE
-
-    @type.setter
-    def type(self, other): self._set_type(other)
+    def _get_type(self): return ENTITY_TYPE
+    type = property(_get_type, _set_type)
 
     def free(self):
         """:see: Expression.free()"""
