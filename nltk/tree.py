@@ -770,13 +770,10 @@ class ImmutableTree(Tree):
     def __hash__(self):
         return self._hash
 
-    @property
-    def node(self):
+    def _get_node(self):
         """Get the node value"""
         return self._node
-
-    @node.setter
-    def node(self, value):
+    def _set_node(self, value):
         """
         Set the node value.  This will only succeed the first time the
         node value is set, which should occur in ImmutableTree.__init__().
@@ -784,6 +781,7 @@ class ImmutableTree(Tree):
         if hasattr(self, 'node'):
             raise ValueError('%s may not be modified' % type(self).__name__)
         self._node = value
+    node = property(_get_node, _set_node)
 
 
 ######################################################################

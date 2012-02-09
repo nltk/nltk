@@ -58,16 +58,14 @@ class AlignedSent(object):
     def mots(self):
         return self._mots
 
-    @property
-    def alignment(self):
+    def _get_alignment(self):
         return self._alignment
-
-    @alignment.setter
-    def alignment(self, alignment):
+    def _set_alignment(self, alignment):
         if not isinstance(alignment, Alignment):
             alignment = Alignment(alignment)
         self._check_align(alignment)
         self._alignment = alignment
+    alignment = property(_get_alignment, _set_alignment)
 
     def _check_align(self, a):
         """
