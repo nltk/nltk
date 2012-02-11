@@ -57,12 +57,11 @@ if __name__ == '__main__':
     manager = NltkPluginManager()
     manager.loadPlugins()
 
-    nose.main(argv=sys.argv[1:] + _EXCLUDE_ARGV + [
+    nose.main(argv=_EXCLUDE_ARGV + [
             #'--with-xunit',
             #'--xunit-file=$WORKSPACE/nosetests.xml',
             '--with-doctest',
             '--doctest-extension=.doctest',
             '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL',
             #'--verbosity=3',
-            NLTK_TEST_DIR
-        ], plugins=manager.plugins)
+        ] + sys.argv[1:] + [NLTK_TEST_DIR], plugins=manager.plugins)
