@@ -1247,7 +1247,7 @@ class ChartView(object):
         """
         Color in an edge with the given colors.
         If no colors are specified, use intelligent defaults
-        (dependant on selection, etc.)
+        (dependent on selection, etc.)
         """
         if edge not in self._edgetags: return
         c = self._chart_canvas

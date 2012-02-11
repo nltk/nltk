@@ -59,7 +59,7 @@ class VectorSpaceClusterer(ClusterI):
         """
         Finds the clusters using the given set of vectors.
         """
-        raise AssertionError()
+        raise NotImplementedError()
 
     def classify(self, vector):
         if self._should_normalise:
@@ -73,7 +73,7 @@ class VectorSpaceClusterer(ClusterI):
         """
         Returns the index of the appropriate cluster for the vector.
         """
-        raise AssertionError()
+        raise NotImplementedError()
 
     def likelihood(self, vector, label):
         if self._should_normalise:

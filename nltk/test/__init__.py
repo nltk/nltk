@@ -8,7 +8,7 @@
 # $Id$
 
 """
-Unit tests for the NLTK modules.  These tests are intented to ensure
+Unit tests for the NLTK modules.  These tests are intended to ensure
 that changes that we make to NLTK's code don't accidentally introduce
 bugs.
 

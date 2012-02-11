@@ -9,9 +9,9 @@
 """
 A classifier model based on maximum entropy modeling framework.  This
 framework considers all of the probability distributions that are
-empirically consistant with the training data; and chooses the
+empirically consistent with the training data; and chooses the
 distribution with the highest entropy.  A probability distribution is
-"empirically consistant" with a set of training data if its estimated
+"empirically consistent" with a set of training data if its estimated
 frequency with which a class and a feature vector value co-occur is
 equal to the actual frequency in the data.
 
@@ -20,7 +20,7 @@ Terminology: 'feature'
 The term *feature* is usually used to refer to some property of an
 unlabeled token.  For example, when performing word sense
 disambiguation, we might define a ``'prevword'`` feature whose value is
-the word preceeding the target word.  However, in the context of
+the word preceding the target word.  However, in the context of
 maxent modeling, the term *feature* is typically used to refer to a
 property of a "labeled" token.  In order to prevent confusion, we
 will introduce two distinct terms to disambiguate these two different
@@ -1265,7 +1265,7 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
     The variables ``nfmap``, ``nfarray``, and ``nftranspose`` are
     used to generate a dense encoding for *nf(ltext)*.  This
     allows ``_deltas`` to calculate *sum1* and *sum2* using
-    matrices, which yields a signifigant performance improvement.
+    matrices, which yields a significant performance improvement.
 
     :param train_toks: The set of training tokens.
     :type train_toks: list(tuple(dict, str))

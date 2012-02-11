@@ -103,7 +103,7 @@ is a list of nonterminals and terminals.
 Nonterminals must be a single word, such as S or NP or NP_subj.
 Currently, nonterminals must consists of alphanumeric characters and
 underscores (_).  Nonterminals are colored blue.  If you place the
-mouse over any nonterminal, then all occurances of that nonterminal
+mouse over any nonterminal, then all occurrences of that nonterminal
 will be highlighted.
 
 Termianals must be surrounded by single quotes (') or double
@@ -118,7 +118,7 @@ converted to an arrow symbol.  When you move your cursor to a
 different line, your production will automatically be colorized.  If
 there are any errors, they will be highlighted in red.
 
-Note that the order of the productions is signifigant for some
+Note that the order of the productions is significant for some
 algorithms.  To re-order the productions, use cut and paste to move
 them.
 

@@ -168,13 +168,13 @@ responses = (
 # desire to do an action
 # e.g. "I want to go shopping"
     (r'i want to (.*)',
-    ( "You may %1 if your heart truely desires to.",
+    ( "You may %1 if your heart truly desires to.",
       "You may have to %1.")),
 
 # desire for an object
 # e.g. "I want a pony"
     (r'i want (.*)',
-    ( "Does your heart truely desire %1?",
+    ( "Does your heart truly desire %1?",
       "Is this a desire of the heart, or of the mind?")),
 
 # e.g. "I can't wait" or "I can't do this"

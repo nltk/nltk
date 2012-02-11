@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Zen Chatbot
+# Natural Language Toolkit: Rude Chatbot
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Peter Spiller <pspiller@csse.unimelb.edu.au>
@@ -47,7 +47,7 @@ pairs = (
         "I'm not even going to dignify that with an answer.")),
 
     (r'What (.*)',
-        ("Do I look like an encylopedia?",
+        ("Do I look like an encyclopedia?",
         "Figure it out yourself.")),
 
     (r'Why (.*)',

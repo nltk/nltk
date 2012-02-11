@@ -188,7 +188,7 @@ class NaiveBayesClassifier(ClassifierI):
         feature_values = defaultdict(set)
         fnames = set()
 
-        # Count up how many times each feature value occured, given
+        # Count up how many times each feature value occurred, given
         # the label and featurename.
         for featureset, label in labeled_featuresets:
             label_freqdist.inc(label)

@@ -913,7 +913,7 @@ class PunktTrainer(PunktBaseClass):
             # likelihood ratio:
             #   F_length: long word -> less likely to be an abbrev
             #   F_periods: more periods -> more likely to be an abbrev
-            #   F_penalty: penalize occurances w/o a period
+            #   F_penalty: penalize occurrences w/o a period
             f_length = math.exp(-num_nonperiods)
             f_periods = num_periods
             f_penalty = (int(self.IGNORE_ABBREV_PENALTY)
@@ -1007,7 +1007,7 @@ class PunktTrainer(PunktBaseClass):
     def _col_log_likelihood(count_a, count_b, count_ab, N):
         """
         A function that will just compute log-likelihood estimate, in
-        the original paper it's decribed in algorithm 6 and 7.
+        the original paper it's described in algorithm 6 and 7.
 
         This *should* be the original Dunning log-likelihood values,
         unlike the previous log_l function where it used modified
@@ -1093,7 +1093,7 @@ class PunktTrainer(PunktBaseClass):
         Returns True given a token and the token that preceds it if it
         seems clear that the token is beginning a sentence.
         """
-        # If a token (i) is preceeded by a sentece break that is
+        # If a token (i) is preceded by a sentece break that is
         # not a potential ordinal number or initial, and (ii) is
         # alphabetic, then it is a a sentence-starter.
         return ( prev_tok.sentbreak and

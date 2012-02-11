@@ -1140,7 +1140,7 @@ class WittenBellProbDist(ProbDistI):
     reserved for unseen events is equal to *T / (N + T)*
     where *T* is the number of observed event types and *N* is the total
     number of observed events. This equates to the maximum likelihood estimate
-    of a new type event occuring. The remaining probability mass is discounted
+    of a new type event occurring. The remaining probability mass is discounted
     such that all probability estimates sum to one, yielding:
 
         - *p = T / Z (N + T)*, if count = 0
@@ -1155,7 +1155,7 @@ class WittenBellProbDist(ProbDistI):
         probability mass reserved for unseen events is equal to *T / (N + T)*
         where *T* is the number of observed event types and *N* is the total
         number of observed events. This equates to the maximum likelihood
-        estimate of a new type event occuring. The remaining probability mass
+        estimate of a new type event occurring. The remaining probability mass
         is discounted such that all probability estimates sum to one,
         yielding:
 
