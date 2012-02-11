@@ -490,7 +490,7 @@ def find_file(filename, env_vars=(), searchpath=(),
                 stdout, stderr = p.communicate()
                 path = stdout.strip()
                 if path.endswith(alternative) and os.path.exists(path):
-                    if verbose: print '[Found %s: %s]' % (name, path)
+                    if verbose: print '[Found %s: %s]' % (filename, path)
                     return path
             except KeyboardInterrupt, SystemExit:
                 raise
@@ -498,14 +498,14 @@ def find_file(filename, env_vars=(), searchpath=(),
                 pass
 
     msg = ("NLTK was unable to find the %s file!" "\nUse software specific "
-           "configuration paramaters" % name)
+           "configuration paramaters" % filename)
     if env_vars: msg += ' or set the %s environment variable' % env_vars[0]
     msg += '.'
     if searchpath:
         msg += '\n\n  Searched in:'
         msg += ''.join('\n    - %s' % d for d in searchpath)
     if url: msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
-                    (name, url))
+                    (filename, url))
     div = '='*75
     raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
 
