@@ -263,7 +263,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # may have to shutdown both programs.
     #
     # Since webbrowser may block, and the webserver will block, we must run
-    # them in seperate threads.
+    # them in separate threads.
     #
     global server_mode, logfile
     server_mode = not runBrowser
@@ -608,7 +608,7 @@ def _collect_one_synset(word, synset, synset_relations):
 def _collect_all_synsets(word, pos, synset_relations=dict()):
     """
     Return a HTML unordered list of synsets for the given word and
-    part of speach.
+    part of speech.
     """
     return '<ul>%s\n</ul>\n' % \
         ''.join((_collect_one_synset(word, synset, synset_relations)
@@ -677,7 +677,7 @@ class Reference(object):
         """
         Build a reference to a new page.
 
-        word is the word or words (seperated by commas) for which to
+        word is the word or words (separated by commas) for which to
         search for synsets of
 
         synset_relations is a dictionary of synset keys to sets of

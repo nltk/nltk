@@ -48,7 +48,7 @@ presented in
 
 Porter, M. "An algorithm for suffix stripping." Program 14.3 (1980): 130-137.
 
-only differing from it at the points maked --DEPARTURE-- and --NEW--
+only differing from it at the points marked --DEPARTURE-- and --NEW--
 below.
 
 For a more faithful version of the Porter algorithm, see
@@ -62,7 +62,7 @@ Later additions:
    The 'l' of the 'logi' -> 'log' rule is put with the stem, so that
    short stems like 'geo' 'theo' etc work like 'archaeo' 'philo' etc.
 
-   This follows a suggestion of Barry Wilkins, reasearch student at
+   This follows a suggestion of Barry Wilkins, research student at
    Birmingham.
 
 

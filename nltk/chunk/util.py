@@ -53,7 +53,7 @@ class ChunkScore(object):
     evaluate a chunk parser's output, based on a number of statistics
     (precision, recall, f-measure, misssed chunks, incorrect chunks).
     It can also combine the scores from the parsing of multiple texts;
-    this makes it signifigantly easier to evaluate a chunk parser that
+    this makes it significantly easier to evaluate a chunk parser that
     operates one sentence at a time.
 
     Texts are evaluated with the ``score`` method.  The results of

@@ -18,7 +18,7 @@ class ChunkParserI(ParserI):
     """
     A processing interface for identifying non-overlapping groups in
     unrestricted text.  Typically, chunk parsers are used to find base
-    syntactic constituants, such as base noun phrases.  Unlike
+    syntactic constituents, such as base noun phrases.  Unlike
     ``ParserI``, ``ChunkParserI`` guarantees that the ``parse()`` method
     will always generate a parse.
     """

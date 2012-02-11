@@ -647,7 +647,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
         block will be read.
     :param comment_char: A character that marks comments.  Any lines
         that begin with this character will be stripped out.
-        (If spaces or tabs preceed the comment character, then the
+        (If spaces or tabs precede the comment character, then the
         line will not be stripped.)
     """
     start = stream.tell()

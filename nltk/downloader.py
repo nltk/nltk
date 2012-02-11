@@ -1809,7 +1809,7 @@ class DownloaderGUI(object):
         # download (e.g., clicking 'refresh' or editing the index url).
         ds = Downloader(self._ds.url, self._ds.download_dir)
 
-        # Start downloading in a seperate thread.
+        # Start downloading in a separate thread.
         assert self._download_msg_queue == []
         assert self._download_abort_queue == []
         self._DownloadThread(ds, marked, self._download_lock,

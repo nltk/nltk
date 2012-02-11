@@ -400,7 +400,7 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
                 print "inserting values into %s: " % table_name, t
         connection.commit()
         if verbose:
-            print "Commiting update to %s" % dbname
+            print "Committing update to %s" % dbname
         cur.close()
     except ImportError:
         import warnings

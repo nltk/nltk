@@ -79,7 +79,7 @@ class EdgeI(object):
 
     - A ``TreeEdge`` records which trees have been found to
       be (partially) consistent with the text.
-    - A ``LeafEdge`` records the tokens occuring in the text.
+    - A ``LeafEdge`` records the tokens occurring in the text.
 
     The ``EdgeI`` interface provides a common interface to both types
     of edge, allowing chart parsers to treat them in a uniform manner.
@@ -1549,7 +1549,7 @@ class SteppingChartParser(ChartParser):
 
     def set_strategy(self, strategy):
         """
-        Change the startegy that the parser uses to decide which edges
+        Change the strategy that the parser uses to decide which edges
         to add to the chart.
 
         :type strategy: list(ChartRuleI)

@@ -127,7 +127,7 @@ class PathPointer(object):
         Return a new path pointer formed by starting at the path
         identified by this pointer, and then following the relative
         path given by ``fileid``.  The path components of ``fileid``
-        should be seperated by forward slashes, regardless of
+        should be separated by forward slashes, regardless of
         the underlying file system's path seperator character.
         """
         raise NotImplementedError('abstract base class')
@@ -1008,7 +1008,7 @@ class SeekableUnicodeStreamReader(object):
         ignoring all buffers.
 
         :param est_bytes: A hint, giving an estimate of the number of
-            bytes that will be neded to move foward by ``offset`` chars.
+            bytes that will be neded to move forward by ``offset`` chars.
             Defaults to ``offset``.
         """
         if est_bytes is None: est_bytes = offset

@@ -1133,7 +1133,7 @@ def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
           ``new_vars``, mapping *v* to the new variable that is used
           to replace it.
 
-    To consistantly rename the variables in a set of feature
+    To consistently rename the variables in a set of feature
     structures, simply apply rename_variables to each one, using
     the same dictionary:
 

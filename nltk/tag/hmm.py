@@ -1016,7 +1016,7 @@ class HiddenMarkovModelTrainer(object):
         if estimator is None:
             estimator = lambda fdist, bins: MLEProbDist(fdist)
 
-        # count occurences of starting states, transitions out of each state
+        # count occurrences of starting states, transitions out of each state
         # and output symbols observed in each state
         starting = FreqDist()
         transitions = ConditionalFreqDist()
