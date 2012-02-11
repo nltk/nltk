@@ -683,7 +683,7 @@ class AbstractLazySequence(object):
         return sum(1 for elt in self if elt==value)
 
     def index(self, value, start=None, stop=None):
-        """Return the index of the first occurance of ``value`` in this
+        """Return the index of the first occurrence of ``value`` in this
         list that is greater than or equal to ``start`` and less than
         ``stop``.  Negative start and stop values are treated like negative
         slice bounds -- i.e., they count from the end of the list."""
@@ -1132,7 +1132,7 @@ def set_proxy(proxy, (user, password)=(None, '')):
     """
     Set the HTTP proxy for Python to download through.
 
-    If ``proxy`` is None then tries to set proxy from enviroment or system
+    If ``proxy`` is None then tries to set proxy from environment or system
     settings.
 
     :param proxy: The HTTP proxy server to use. For example:

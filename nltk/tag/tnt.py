@@ -202,7 +202,7 @@ class TnT(TaggerI):
             # However no effect within this function
             for tag in self._tri[history].samples():
 
-                # if there has only been 1 occurance of this tag in the data
+                # if there has only been 1 occurrence of this tag in the data
                 # then ignore this trigram.
                 if self._uni[tag] == 1:
                     continue

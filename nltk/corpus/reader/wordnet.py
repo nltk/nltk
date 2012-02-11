@@ -345,7 +345,7 @@ class Synset(_WordNetObject):
         return result
 
 # Simpler implementation which makes incorrect assumption that
-# hypernym hierarcy is acyclic:
+# hypernym hierarchy is acyclic:
 #
 #        if not self.hypernyms():
 #            return [self]

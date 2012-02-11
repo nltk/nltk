@@ -19,7 +19,7 @@ class KMeansClusterer(VectorSpaceClusterer):
     process repeats until the cluster memberships stabilise. This is a
     hill-climbing algorithm which may converge to a local maximum. Hence the
     clustering is often repeated with random initial means and the most
-    commonly occuring output means are chosen.
+    commonly occurring output means are chosen.
     """
 
     def __init__(self, num_means, distance, repeats=1,

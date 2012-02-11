@@ -13,7 +13,7 @@
 # Python version, with some minor modifications of mine, to the description
 # presented at http://www.webcitation.org/5NnvdIzOb and to the C source code
 # available at http://www.inf.ufrgs.br/~arcoelho/rslp/integrando_rslp.html.
-# Please note that this stemmer is intended for demostration and educational
+# Please note that this stemmer is intended for demonstration and educational
 # purposes only. Feel free to write me for any comments, including the
 # development of a different and/or better stemmer for Portuguese. I also
 # suggest using NLTK's mailing list for Portuguese for any discussion.

@@ -107,7 +107,7 @@ class WekaClassifier(ClassifierI):
             # Check if something went wrong:
             if stderr and not stdout:
                 if 'Illegal options: -distribution' in stderr:
-                    raise ValueError('The installed verison of weka does '
+                    raise ValueError('The installed version of weka does '
                                      'not support probability distribution '
                                      'output.')
                 else:

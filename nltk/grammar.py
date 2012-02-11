@@ -382,7 +382,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     has an associated probability, which represents how likely it is that
     this production will be used.  In particular, the probability of a
     ``WeightedProduction`` records the likelihood that its right-hand side is
-    the correct instantiation for any given occurance of its left-hand side.
+    the correct instantiation for any given occurrence of its left-hand side.
 
     :see: ``Production``
     """
