@@ -18,14 +18,14 @@ class ClusterI(object):
         Assigns the vectors to clusters, learning the clustering parameters
         from the data. Returns a cluster identifier for each vector.
         """
-        raise AssertionError()
+        raise NotImplementedError()
 
     def classify(self, token):
         """
         Classifies the token into a cluster, setting the token's CLUSTER
         parameter to that cluster identifier.
         """
-        raise AssertionError()
+        raise NotImplementedError()
 
     def likelihood(self, vector, label):
         """
@@ -55,7 +55,7 @@ class ClusterI(object):
         """
         Returns the number of clusters.
         """
-        raise AssertError()
+        raise NotImplementedError()
 
     def cluster_names(self):
         """
@@ -68,4 +68,3 @@ class ClusterI(object):
         Returns the names of the cluster at index.
         """
         return index
-
