@@ -169,7 +169,7 @@ try:
     from Tkinter import Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar
     from tkMessageBox import showerror
     from nltk.draw.table import Table
-    from nltk.draw import ShowText
+    from nltk.draw.util import ShowText
 except:
     TKINTER = False
     TclError = ValueError
