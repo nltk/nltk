@@ -164,7 +164,7 @@ else:
     except RuntimeError, e:
         import warnings
         warnings.warn("Corpus downloader GUI not loaded "
-                      "(RuntimeError during import: %s" % str(e))
+                      "(RuntimeError during import: %s)" % str(e))
 
 # override any accidentally imported demo
 def demo():
