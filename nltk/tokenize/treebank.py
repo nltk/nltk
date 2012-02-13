@@ -37,7 +37,7 @@ class TreebankWordTokenizer(TokenizerI):
         >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks.'''
         >>> TreebankWordTokenizer().tokenize(s)
         ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
-        'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+        'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
         >>> s = "They'll save and invest more."
         >>> TreebankWordTokenizer().tokenize(s)
         ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
