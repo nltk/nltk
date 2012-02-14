@@ -28,7 +28,7 @@ class TreebankWordTokenizer(TokenizerI):
 
     This tokenizer performs the following steps:
 
-    - split standard contractions, e.g. ``don't`` -> ``do n't`` and ``they'll`` -> ``they 'll`` 
+    - split standard contractions, e.g. ``don't`` -> ``do n't`` and ``they'll`` -> ``they 'll``
     - treat most punctuation characters as separate tokens
     - split off commas and single quotes, when followed by whitespace
     - separate periods that appear at the end of line
@@ -37,7 +37,7 @@ class TreebankWordTokenizer(TokenizerI):
         >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks.'''
         >>> TreebankWordTokenizer().tokenize(s)
         ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
-        'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
+        'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
         >>> s = "They'll save and invest more."
         >>> TreebankWordTokenizer().tokenize(s)
         ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
@@ -69,8 +69,9 @@ class TreebankWordTokenizer(TokenizerI):
         text = re.sub(r'([ (\[{<])"', r'\1 `` ', text)
 
         #punctuation
+        text = re.sub(r'([:,])([^\d])', r' \1 \2', text)
         text = re.sub(r'\.\.\.', r' ... ', text)
-        text = re.sub(r'[,;:@#$%&]', r' \g<0> ', text)
+        text = re.sub(r'[;@#$%&]', r' \g<0> ', text)
         text = re.sub(r'([^\.])(\.)([\]\)}>"\']*)\s*$', r'\1 \2\3 ', text)
         text = re.sub(r'[?!]', r' \g<0> ', text)
 
@@ -96,7 +97,7 @@ class TreebankWordTokenizer(TokenizerI):
         for regexp in self.CONTRACTIONS3:
             text = regexp.sub(r' \1 \2 ', text)
 
-        # We are not using CONTRACTIONS4 since 
+        # We are not using CONTRACTIONS4 since
         # they are also commented out in the SED scripts
         # for regexp in self.CONTRACTIONS4:
         #     text = regexp.sub(r' \1 \2 \3 ', text)
