@@ -577,7 +577,7 @@ A transitive sentence:
 
 Turn down the verbosity:
 
-    >>> cp = nltk.load_parser('grammars/sample_grammars/bindop.fcfg', trace=0,
+    >>> cp = parse.load_parser('grammars/sample_grammars/bindop.fcfg', trace=0,
     ...                       chart_class=InstantiateVarsChart)
 
 Reuse the same lexical item twice:

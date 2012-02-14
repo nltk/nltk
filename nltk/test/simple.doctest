@@ -14,7 +14,7 @@ order to test the installation when NLTK-Data is absent.
 Tokenization
 ------------
 
-    >>> from nltk import wordpunct_tokenize
+    >>> from nltk.tokenize import wordpunct_tokenize
     >>> s = ("Good muffins cost $3.88\nin New York.  Please buy me\n"
     ...      "two of them.\n\nThanks.")
     >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
@@ -61,7 +61,7 @@ Feature Structures
 Parsing
 -------
 
-    >>> from nltk import RecursiveDescentParser, parse_cfg
+    >>> from nltk.parse.rd import RecursiveDescentParser, parse_cfg
     >>> grammar = parse_cfg("""
     ... S -> NP VP
     ... PP -> P NP

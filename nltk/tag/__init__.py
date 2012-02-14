@@ -21,7 +21,8 @@ the word ``'fly'`` with a noun part of speech tag (``'NN'``):
 
 An off-the-shelf tagger is available.  It uses the Penn Treebank tagset:
 
-    >>> from nltk import pos_tag, word_tokenize
+    >>> from nltk.tag import pos_tag
+    >>> from nltk.tokenize import word_tokenize
     >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
     [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
     'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
@@ -83,7 +84,8 @@ def pos_tag(tokens):
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
 
-        >>> from nltk import pos_tag, word_tokenize
+        >>> from nltk.tag import pos_tag
+        >>> from nltk.tokenize import word_tokenize
         >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
         [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
         'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),

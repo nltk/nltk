@@ -718,7 +718,7 @@ We use the featurechart.demo() function for tracing the Feature Chart Parser.
 
     >>> nltk.parse.featurechart.demo(should_print_times=False,
     ...                              should_print_grammar=True,
-    ...                              parser=nltk.FeatureChartParser,
+    ...                              parser=nltk.parse.featurechart.FeatureChartParser,
     ...                              sent='I saw John with a dog')
     <BLANKLINE>
     Grammar with 18 productions (start state = S[])
@@ -801,15 +801,15 @@ Unit tests for the Feature Chart Parser classes
 
 The list of parsers we want to test.
 
-    >>> parsers = [nltk.FeatureChartParser,
-    ...            nltk.FeatureTopDownChartParser,
-    ...            nltk.FeatureBottomUpChartParser,
-    ...            nltk.FeatureBottomUpLeftCornerChartParser,
-    ...            nltk.FeatureIncrementalChartParser,
-    ...            nltk.FeatureEarleyChartParser,
-    ...            nltk.FeatureIncrementalTopDownChartParser,
-    ...            nltk.FeatureIncrementalBottomUpChartParser,
-    ...            nltk.FeatureIncrementalBottomUpLeftCornerChartParser,
+    >>> parsers = [nltk.parse.featurechart.FeatureChartParser,
+    ...            nltk.parse.featurechart.FeatureTopDownChartParser,
+    ...            nltk.parse.featurechart.FeatureBottomUpChartParser,
+    ...            nltk.parse.featurechart.FeatureBottomUpLeftCornerChartParser,
+    ...            nltk.parse.earleychart.FeatureIncrementalChartParser,
+    ...            nltk.parse.earleychart.FeatureEarleyChartParser,
+    ...            nltk.parse.earleychart.FeatureIncrementalTopDownChartParser,
+    ...            nltk.parse.earleychart.FeatureIncrementalBottomUpChartParser,
+    ...            nltk.parse.earleychart.FeatureIncrementalBottomUpLeftCornerChartParser,
     ...            ]
 
 A helper function that tests each parser on the given grammar and sentence.
@@ -864,13 +864,13 @@ Tests for loading feature grammar files
 Alternative 1: first load the grammar, then create the parser.
 
     >>> fcfg = nltk.data.load('grammars/book_grammars/feat0.fcfg')
-    >>> fcp1 = nltk.FeatureChartParser(fcfg)
+    >>> fcp1 = nltk.parse.FeatureChartParser(fcfg)
     >>> print type(fcp1)
     <class 'nltk.parse.featurechart.FeatureChartParser'>
 
 Alternative 2: directly load the parser.
 
-    >>> fcp2 = nltk.load_parser('grammars/book_grammars/feat0.fcfg')
+    >>> fcp2 = nltk.parse.load_parser('grammars/book_grammars/feat0.fcfg')
     >>> print type(fcp2)
     <class 'nltk.parse.featurechart.FeatureChartParser'>
 

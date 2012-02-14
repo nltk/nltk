@@ -11,7 +11,7 @@ or ``"sports"``.  In NLTK, classifiers are defined using classes that
 implement the `ClassifyI` interface:
 
     >>> import nltk
-    >>> nltk.usage(nltk.ClassifierI)
+    >>> nltk.usage(nltk.classify.ClassifierI)
     ClassifierI supports the following operations:
       - self.batch_classify(featuresets)
       - self.batch_prob_classify(featuresets)
@@ -59,7 +59,7 @@ haven't done this yet for all tests).
 
 Test the Naive Bayes classifier:
 
-    >>> classifier = nltk.NaiveBayesClassifier.train(train)
+    >>> classifier = nltk.classify.NaiveBayesClassifier.train(train)
     >>> sorted(classifier.labels())
     ['x', 'y']
     >>> classifier.batch_classify(test)
@@ -81,7 +81,7 @@ Test the Naive Bayes classifier:
 
 Test the Decision Tree classifier:
 
-    >>> classifier = nltk.DecisionTreeClassifier.train(
+    >>> classifier = nltk.classify.DecisionTreeClassifier.train(
     ...     train, entropy_cutoff=0,
     ...                                                support_cutoff=0)
     >>> sorted(classifier.labels())
@@ -149,7 +149,7 @@ generate the same results.
     ...             try: nltk.classify.megam.config_megam()
     ...             except: pass
     ...         try:
-    ...             classifiers[algorithm] = nltk.MaxentClassifier.train(
+    ...             classifiers[algorithm] = nltk.classify.MaxentClassifier.train(
     ...                 train, algorithm, trace=0, max_iter=1000)
     ...         except Exception, e:
     ...             classifiers[algorithm] = e
