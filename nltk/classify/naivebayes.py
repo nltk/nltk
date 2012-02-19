@@ -34,7 +34,7 @@ sum to one:
 
 from collections import defaultdict
 
-from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
+from nltk.probability import FreqDist, ConditionalFreqDist, DictionaryProbDist, ELEProbDist, sum_logs
 
 from api import ClassifierI
 
@@ -94,7 +94,7 @@ class NaiveBayesClassifier(ClassifierI):
         # Otherwise, we'll just assign a probability of 0 to
         # everything.
         featureset = featureset.copy()
-        for fname in featureset:
+        for fname in featureset.keys():
             for label in self._labels:
                 if (label, fname) in self._feature_probdist:
                     break
@@ -184,7 +184,7 @@ class NaiveBayesClassifier(ClassifierI):
             i.e., a list of tuples ``(featureset, label)``.
         """
         label_freqdist = FreqDist()
-        feature_freqdist = defaultdict(FreqDist)
+        feature_freqdist = ConditionalFreqDist()
         feature_values = defaultdict(set)
         fnames = set()
 
