@@ -32,8 +32,7 @@ and then express the conditional probability as:
 
 from collections import defaultdict
 
-from nltk.probability import FreqDist, ConditionalFreqDist, DictionaryProbDist, \
-    ELEProbDist
+from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist
 
 from naivebayes import NaiveBayesClassifier
 
@@ -54,8 +53,8 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
         :param positive_prob_prior: A prior estimate of the probability of the label
             ``True`` (default 0.5).
         """
-        positive_feature_freqdist = ConditionalFreqDist()
-        unlabeled_feature_freqdist = ConditionalFreqDist()
+        positive_feature_freqdist = defaultdict(FreqDist)
+        unlabeled_feature_freqdist = defaultdict(FreqDist)
         feature_values = defaultdict(set)
         fnames = set()
         
