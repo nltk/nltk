@@ -90,6 +90,7 @@ from nltk.classify.mallet import config_mallet, call_mallet
 from nltk.classify.megam import config_megam, call_megam
 from nltk.classify.weka import WekaClassifier, config_weka
 from nltk.classify.naivebayes import NaiveBayesClassifier
+from nltk.classify.positivenaivebayes import PositiveNaiveBayesClassifier
 from nltk.classify.decisiontree import DecisionTreeClassifier
 from nltk.classify.rte_classify import rte_classifier, rte_features, RTEFeatureExtractor
 from nltk.classify.util import accuracy, log_likelihood
