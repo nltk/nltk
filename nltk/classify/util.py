@@ -208,6 +208,53 @@ def names_demo(trainer, features=names_demo_features):
     # Return the classifier
     return classifier
 
+def pnb_demo(trainer, features=names_demo_features):
+    from nltk.corpus import names
+    import random
+
+    male_names = names.words('male.txt')
+    female_names = names.words('female.txt')
+
+    random.seed(654321)
+    random.shuffle(male_names)
+    random.shuffle(female_names)
+    positive = map(features, male_names[:2000])
+    unlabeled = map(features, male_names[2000:2500] + female_names[:500])
+    test = [(name, True) for name in male_names[2500:2750]] \
+        + [(name, False) for name in female_names[500:750]]
+    random.shuffle(test)
+
+    # Train up a classifier.
+    print 'Training classifier...'
+    classifier = trainer(positive, unlabeled)
+
+    # Run the classifier on the test data.
+    print 'Testing classifier...'
+    acc = accuracy(classifier, [(features(n),m) for (n,m) in test])
+    print 'Accuracy: %6.4f' % acc
+
+    # For classifiers that can find probabilities, show the log
+    # likelihood and some sample probability distributions.
+    try:
+        test_featuresets = [features(n) for (n,m) in test]
+        pdists = classifier.batch_prob_classify(test_featuresets)
+        ll = [pdist.logprob(gold)
+              for ((name, gold), pdist) in zip(test, pdists)]
+        print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
+        print
+        print 'Unseen Names      P(Male)  P(Female)\n'+'-'*40
+        for ((name, is_male), pdist) in zip(test, pdists)[:5]:
+            if is_male == True:
+                fmt = '  %-15s *%6.4f   %6.4f'
+            else:
+                fmt = '  %-15s  %6.4f  *%6.4f'
+            print fmt % (name, pdist.prob(True), pdist.prob(False))
+    except NotImplementedError:
+        pass
+
+    # Return the classifier
+    return classifier
+
 _inst_cache = {}
 def wsd_demo(trainer, word, features, n=1000):
     from nltk.corpus import senseval
