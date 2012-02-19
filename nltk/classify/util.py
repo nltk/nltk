@@ -208,7 +208,7 @@ def names_demo(trainer, features=names_demo_features):
     # Return the classifier
     return classifier
 
-def pnb_demo(trainer, features=names_demo_features):
+def partial_names_demo(trainer, features=names_demo_features):
     from nltk.corpus import names
     import random
 
@@ -218,10 +218,17 @@ def pnb_demo(trainer, features=names_demo_features):
     random.seed(654321)
     random.shuffle(male_names)
     random.shuffle(female_names)
+
+    # Create a list of male names to be used as positive-labeled examples for training
     positive = map(features, male_names[:2000])
+
+    # Create a list of male and female names to be used as unlabeled examples
     unlabeled = map(features, male_names[2000:2500] + female_names[:500])
+
+    # Create a test set with correctly-labeled male and female names
     test = [(name, True) for name in male_names[2500:2750]] \
         + [(name, False) for name in female_names[500:750]]
+
     random.shuffle(test)
 
     # Train up a classifier.

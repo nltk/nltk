@@ -110,8 +110,8 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
 ##//////////////////////////////////////////////////////
 
 def demo():
-    from nltk.classify.util import pnb_demo
-    classifier = pnb_demo(PositiveNaiveBayesClassifier.train)
+    from nltk.classify.util import partial_names_demo
+    classifier = partial_names_demo(PositiveNaiveBayesClassifier.train)
     classifier.show_most_informative_features()
 
 if __name__ == '__main__':
