@@ -100,7 +100,8 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
                         feature_probdist[True, fname].prob(fval)) \
                         / negative_prob_prior
                 negative_feature_probs[fval] = max(prob, 0.0)
-            feature_probdist[False, fname] = DictionaryProbDist(negative_feature_probs)
+            feature_probdist[False, fname] = DictionaryProbDist(negative_feature_probs,
+                                                                normalize=True)
 
         return PositiveNaiveBayesClassifier(label_probdist, feature_probdist)
                                                  
