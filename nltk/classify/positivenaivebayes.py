@@ -99,6 +99,8 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
                         - positive_prob_prior *
                         feature_probdist[True, fname].prob(fval)) \
                         / negative_prob_prior
+                # TODO: We need to add some kind of smoothing here, instead of
+                # setting negative probabilities to zero and normalizing.
                 negative_feature_probs[fval] = max(prob, 0.0)
             feature_probdist[False, fname] = DictionaryProbDist(negative_feature_probs,
                                                                 normalize=True)
