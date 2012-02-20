@@ -28,6 +28,51 @@ and then express the conditional probability as:
 |                  P(feature) - P(feature|1) * P(1)
 |  P(feature|0) = ----------------------------------
 |                               P(0)
+
+Example:
+
+    >>> from nltk.classify import PositiveNaiveBayesClassifier
+
+Some sentences about sports:
+
+    >>> sports_sentences = [ 'The team dominated the game',
+    ...                      'They lost the ball',
+    ...                      'The game was intense',
+    ...                      'The goalkeeper catched the ball',
+    ...                      'The other team controlled the ball' ]
+
+Mixed topics, including sports:
+    
+    >>> various_sentences = [ 'The President did not comment',
+    ...                       'I lost the keys',
+    ...                       'The team won the game',
+    ...                       'Sara has two kids',
+    ...                       'The ball went off the court',
+    ...                       'They had the ball for the whole game',
+    ...                       'The show is over' ]
+
+The features of a sentence are simply the words it contains:
+    
+    >>> def features(sentence):
+    ...     words = sentence.lower().split()
+    ...     return dict(('contains(%s)' % w, True) for w in words)
+
+We use the sports sentences as positive examples, the mixed ones ad unlabeled examples:
+    
+    >>> positive_featuresets = map(features, sports_sentences)
+    >>> unlabeled_featuresets = map(features, various_sentences)
+    >>> classifier = PositiveNaiveBayesClassifier.train(positive_featuresets,
+    ...                                                 unlabeled_featuresets)
+
+Is the following sentence about sports?
+    
+    >>> print classifier.classify(features('The cat is on the table'))
+    False
+
+What about this one?
+    
+    >>> print classifier.classify(features('My team lost the game'))
+    True
 """
 
 from collections import defaultdict
@@ -57,19 +102,23 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
         unlabeled_feature_freqdist = defaultdict(FreqDist)
         feature_values = defaultdict(set)
         fnames = set()
-        
+
+        # Count up how many times each feature value occurred in positive examples.
         for featureset in positive_featuresets:
             for fname, fval in featureset.items():
                 positive_feature_freqdist[fname].inc(fval)
                 feature_values[fname].add(fval)
                 fnames.add(fname)
                 
+        # Count up how many times each feature value occurred in unlabeled examples.
         for featureset in unlabeled_featuresets:
             for fname, fval in featureset.items():
                 unlabeled_feature_freqdist[fname].inc(fval)
                 feature_values[fname].add(fval)
                 fnames.add(fname)
 
+        # If a feature didn't have a value given for an instance, then we assume that
+        # it gets the implicit value 'None'.
         num_positive_examples = len(positive_featuresets)
         for fname in fnames:
             count = positive_feature_freqdist[fname].N()
@@ -83,9 +132,12 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
             feature_values[fname].add(None)
 
         negative_prob_prior = 1.0 - positive_prob_prior
+
+        # Create the P(label) distribution.
         label_probdist = DictionaryProbDist({True: positive_prob_prior,
                                              False: negative_prob_prior})
-            
+
+        # Create the P(fval|label, fname) distribution.
         feature_probdist = {}
         for fname, freqdist in positive_feature_freqdist.items():
             probdist = estimator(freqdist, bins=len(feature_values[fname]))
@@ -116,8 +168,14 @@ def demo():
     classifier = partial_names_demo(PositiveNaiveBayesClassifier.train)
     classifier.show_most_informative_features()
 
+##//////////////////////////////////////////////////////
+##  Test
+##//////////////////////////////////////////////////////
+    
 if __name__ == '__main__':
-    demo()
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+
             
 
 
