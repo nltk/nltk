@@ -449,7 +449,7 @@ def conlltags2tree(sentence, chunk_types=('NP','PP','VP'),
                     raise ValueError("Bad conll tag sequence")
                 else:
                     # Treat as B-*
-                    tree.append(nltk.Tree(chunktag[2:], [(word,postag)]))
+                    tree.append(Tree(chunktag[2:], [(word,postag)]))
             else:
                 tree[-1].append((word,postag))
         elif chunktag == 'O':
