@@ -92,7 +92,6 @@ def GHD(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
                 else:
                     tab[i, j] = tab[i-1, j-1]
 
-
     # build the bite-site for the target.
     rvec = FillBitPosVec(seg1, boundary)
     nrows = len(rvec)
@@ -112,42 +111,23 @@ def GHD(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
     # both nrows > 0 and ncols > 0
     tab = InitTableau(nrows, ncols, ci, cd) 
     ComputeGHDAux(tab, rvec, cvec, ci, cd, a)
-    return tab[nrows - 1, ncols - 1]
+    return tab[-1, -1]
 
 def demo():
     """
     Same examples than those of Kulyukin C++ implementation
-    """
-    # Test bit vectors for tests
-    gTbitv = '1100100000'
-    gSbitv_1 = '1100010000'
-    gSbitv_2 = '1100000001'
-    gTbitv_2 = '011'
-    gSbitv_3 = '110'
-    gTbitv_3 = '1'
-    gSbitv_4 = '0'
-    gTbitv_4 = '111'
-    gSbitv_5 = '000'
-    gTbitv_5 = '000'
-    gSbitv_6 = '111'
-    
-    print 'gTbitv:', gTbitv
-    print 'gSbitv_1:', gSbitv_1
-    print 'gSbitv_2:', gSbitv_2
-    print 'gTbitv_2:', gTbitv_2
-    print 'gSbitv_3:', gSbitv_3
-    print 'gTbitv_3:', gTbitv_3
-    print 'gSbitv_4:', gSbitv_4
-    print 'gTbitv_4:', gTbitv_4
-    print 'gSbitv_5:', gSbitv_5
-    print 'gTbitv_5:', gTbitv_5
-    print 'gSbitv_6:', gSbitv_6
+    """  
+    tests = [
+        ('1100100000', '1100010000', 1., 1., .5),
+        ('1100100000', '1100000001', 1., 1., .5),
+        ('011', '110', 1., 1., .5),
+        ('1', '0', 1., 1., .5),
+        ('111', '000', 1., 1., .5),
+        # Note that the cost of deletion is 2.0, hence the value of
+        # 6.0.
+        ('000', '111', 1., 2., .5)
+        ]
 
-    print 'GHD(gTbitv, gSbitv_1, 1.0, 1.0, 0.5) = ', GHD(gTbitv, gSbitv_1, 1.0, 1.0, 0.5)
-    print 'GHD(gTbitv, gSbitv_2, 1.0, 1.0, 0.5) = ', GHD(gTbitv, gSbitv_2, 1.0, 1.0, 0.5)
-    print 'GHD(gTbitv_2, gSbitv_3, 1.0, 1.0, 0.5) = ', GHD(gTbitv_2, gSbitv_3, 1.0, 1.0, 0.5)
-    print 'GHD(gTbitv_3, gSbitv_4, 1.0, 1.0, 0.5) = ', GHD(gTbitv_3, gSbitv_4, 1.0, 1.0, 0.5)
-    print 'GHD(gTbitv_4, gSbitv_5, 1.0, 1.0, 0.5) = ', GHD(gTbitv_4, gSbitv_5, 1.0, 1.0, 0.5)
-    # Note that the cost of deletion is 2.0, hence the value of
-    # 6.0.
-    print 'GHD(gTbitv_5, gSbitv_6, 1.0, 2.0, 0.5) = ', GHD(gTbitv_5, gSbitv_6, 1.0, 2.0, 0.5)
+    for seg1, seg2, ci, cd, a in tests:
+        ret = GHD(seg1, seg2, ci, cd, a)
+        print 'GHD(\'%s\', \'%s\', %.1f, %.1f, %.1f) = %.1f' % (seg1, seg2, ci, cd, a, ret)
