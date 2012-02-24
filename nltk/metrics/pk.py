@@ -46,18 +46,17 @@ def Pk(ref, hyp, k=None, boundary='1'):
         bsame_ref_seg = False
         bsame_hyp_seg = False
 
-        if not(boundary in ref[(i+1):(i+k)]):
+        if boundary not in ref[(i+1):(i+k)]:
             n_same_ref += 1.
             bsame_ref_seg = True
-        if not(boundary in hyp[(i+1):(i+k)]):
+        if boundary not in hyp[(i+1):(i+k)]:
             bsame_hyp_seg = True
         
-        if not(bsame_ref_seg) and bsame_hyp_seg:
+        if bsame_hyp_seg and not bsame_ref_seg:
             n_miss += 1
-        if bsame_ref_seg and not(bsame_hyp_seg):
+        if bsame_ref_seg and not bsame_hyp_seg:
             n_false_alarm += 1
-        
-        
+
     prob_same_ref = n_same_ref / n_considered_seg
     prob_diff_ref = 1 - prob_same_ref
     prob_miss = n_miss / n_considered_seg
