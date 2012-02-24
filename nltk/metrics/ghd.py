@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Generalized Hamming Distance for evaluating text segmentation
+# Natural Language Toolkit: Generalized Hamming Distance
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: David Doukhan <david.doukhan@gmail.com>
@@ -77,23 +77,25 @@ def ghd(seg1, seg2, ins_cost=2., del_cost=2., shift_cost_coeff=1., boundary='1')
     :rtype: float
     """
 
-    # build the bite-site for the target.
+    # get boundaries positions
     rvec = _fill_bit_pos_vec(seg1, boundary)
-    nrows = len(rvec)
-    # build the bite-site for the source.
     cvec = _fill_bit_pos_vec(seg2, boundary)
+    nrows = len(rvec)
     ncols = len(cvec)
 
     if nrows == 0 and ncols == 0:
+        # no boundaries in both segmentations
         return 0.
     elif nrows > 0 and ncols == 0:
-        # if there are no bits in the target,
-        # return the cost of the insertions.
+        # if there are no boundaries in seg1
+        # return the cost of the insertions
         return (nrows) * ins_cost
     elif nrows == 0 and ncols > 0:
+        # if there are no boundaries in seg2
+        # return the cost of deletions
         return (ncols) * del_cost
         
-    # both nrows > 0 and ncols > 0
+    # both segmentations contain boundary symbols
     mat = _init_mat(nrows + 1, ncols + 1, ins_cost, del_cost) 
     _compute_ghd_aux(mat, rvec, cvec, ins_cost, del_cost, shift_cost_coeff)
     return mat[-1, -1]
