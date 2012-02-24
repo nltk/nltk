@@ -23,35 +23,36 @@ TALN 2009
 
 import numpy
 
-def _init_mat(nrows, ncols, ci, cd):
+def _init_mat(nrows, ncols, ins_cost, del_cost):
     mat = numpy.empty((nrows, ncols))
-    mat[0, :] = [x * ci for x in xrange(ncols)]
-    mat[:, 0] = [x * cd for x in xrange(nrows)]
+    mat[0, :] = [x * ins_cost for x in xrange(ncols)]
+    mat[:, 0] = [x * del_cost for x in xrange(nrows)]
     return mat
 
 def _fill_bit_pos_vec(bitv, boundary):
     """Returns the indices of bitv containing the given boundary value"""
     return [i for (i, val) in enumerate(bitv) if val == boundary]
 
-def _compute_ghd_aux(mat, rowv, colv, ci, cd, a):
-    for i, ri in enumerate(rowv):
-        for j, cj in enumerate(colv):
-            shift_cost = a * abs(ri - cj) + mat[i, j]
-            if ri > cj:
-                # compare cost of deletion VS cost of shift
-                del_cost = cd + mat[i, j + 1]
-                min_cost = min(del_cost, shift_cost)
-            elif ri < cj:
-                # compare cost of insertion VS const of shift
-                ins_cost = ci + mat[i + 1, j]
-                min_cost = min(ins_cost, shift_cost)
+def _compute_ghd_aux(mat, rowv, colv, ins_cost, del_cost, shift_cost_coeff):
+    for i, rowi in enumerate(rowv):
+        for j, colj in enumerate(colv):          
+            shift_cost = shift_cost_coeff * abs(rowi - colj) + mat[i, j]
+            if rowi == colj:
+                # boundaries are at the same location
+                # no transformation is required to match them
+                tcost = mat[i, j]
+            elif rowi > colj:
+                # boundary match through a deletion
+                tcost = del_cost + mat[i, j + 1]
             else:
-                min_cost = mat[i, j]
-            mat[i + 1, j + 1] = min_cost
+                # boundary match through an insertion
+                tcost = ins_cost + mat[i + 1, j]
+            # keep minimal cost between intertion, deletion, or shift
+            mat[i + 1, j + 1] = min(tcost, shift_cost)
 
 
 
-def ghd(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
+def ghd(seg1, seg2, ins_cost=2., del_cost=2., shift_cost_coeff=1., boundary='1'):
     """
     Compute the Generalized Hamming Distance for a pair of segmentations
     A segmentation is any sequence over a vocabulary
@@ -63,12 +64,14 @@ def ghd(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
     :type seg1: str or list
     :param seg2: a segmentation
     :type seg2: str or list
-    :param ci: insertion cost
-    :type ci: float
-    :param cd: deletion cost
-    :type cd: float
-    :param a: constant used to compute the cost of a shift. shift cost = a * |i - j| where i and j are the positions indicating the shift
-    :type a: float
+    :param ins_cost: insertion cost
+    :type ins_cost: float
+    :param del_cost: deletion cost
+    :type del_cost: float
+    :param shift_cost_coeff: constant used to compute the cost of a shift.
+    shift cost = shift_cost_coeff * |i - j| where i and j are
+    the positions indicating the shift
+    :type shift_cost_coeff: float
     :param boundary: boundary value
     :type boundary: str or int or bool
     :rtype: float
@@ -86,13 +89,13 @@ def ghd(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
     elif nrows > 0 and ncols == 0:
         # if there are no bits in the target,
         # return the cost of the insertions.
-        return (nrows) * ci
+        return (nrows) * ins_cost
     elif nrows == 0 and ncols > 0:
-        return (ncols) * cd
+        return (ncols) * del_cost
         
     # both nrows > 0 and ncols > 0
-    mat = _init_mat(nrows + 1, ncols + 1, ci, cd) 
-    _compute_ghd_aux(mat, rvec, cvec, ci, cd, a)
+    mat = _init_mat(nrows + 1, ncols + 1, ins_cost, del_cost) 
+    _compute_ghd_aux(mat, rvec, cvec, ins_cost, del_cost, shift_cost_coeff)
     return mat[-1, -1]
 
 
@@ -112,6 +115,7 @@ def demo():
         ]
 
     # ref results: .5, 2, 1, 1, 3, 6
-    for seg1, seg2, ci, cd, a in tests:
-        ret = ghd(seg1, seg2, ci, cd, a)
-        print 'ghd(\'%s\', \'%s\', %.1f, %.1f, %.1f) = %.1f' % (seg1, seg2, ci, cd, a, ret)
+    pat = 'ghd(\'%s\', \'%s\', %.1f, %.1f, %.1f) = %.1f'
+    for seg1, seg2, ins_cost, del_cost, shift_cost_coeff in tests:
+        ret = ghd(seg1, seg2, ins_cost, del_cost, shift_cost_coeff)
+        print pat % (seg1, seg2, ins_cost, del_cost, shift_cost_coeff, ret)
