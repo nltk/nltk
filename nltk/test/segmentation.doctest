@@ -25,15 +25,40 @@ The transformation is done though boundary insertions, deletions and shift.
 Each of these operation has a different cost that should be passed to the function.
 Segmentations are represented using strings of 0 and 1, 1 being a boundary.
 
-    >>> ghd('1100100000', '1100010000', 1.0, 1.0, 0.5)
-    0.5
-    >>> ghd('1100100000', '1100000001', 1.0, 1.0, 0.5)
-    2.0
-    >>> ghd('011', '110', 1.0, 1.0, 0.5)
-    1.0
-    >>> ghd('1', '0', 1.0, 1.0, 0.5)
-    1.0
-    >>> ghd('111', '000', 1.0, 1.0, 0.5)
-    3.0
-    >>> ghd('000', '111', 1.0, 2.0, 0.5)
-    6.0
+    >>> float_equal(ghd('1100100000', '1100010000', 1.0, 1.0, 0.5), .5)
+    True
+    >>> float_equal(ghd('1100100000', '1100000001', 1.0, 1.0, 0.5), 2)
+    True
+    >>> float_equal(ghd('011', '110', 1.0, 1.0, 0.5), 1)
+    True
+    >>> float_equal(ghd('1', '0', 1.0, 1.0, 0.5), 1)
+    True
+    >>> float_equal(ghd('111', '000', 1.0, 1.0, 0.5), 3)
+    True
+    >>> float_equal(ghd('000', '111', 1.0, 2.0, 0.5), 6)
+    True
+
+
+------------------
+Befferman's Pk
+------------------
+
+Beeferman's Pk was proposed as an evaluation metric
+for text segmentation. It takes a reference segmentation as first argument,
+an hypothesis segmentation as second argument.
+It returns the propability that randomly chosen
+pair of words a distance of k words is inconsistently classified
+Segmentations are represented using strings of 0 and 1, 1 being a boundary.
+
+    >>> float_equal(pk('1000100', '1000100', 3), 0)
+    True
+    >>> float_equal(pk('100', '010', 2), .5)
+    True
+    >>> float_equal(pk('100100', '111111', 2), .64)
+    True
+    >>> float_equal(pk('100100', '000000', 2), .04)
+    True
+    >>> float_equal(pk('100100', '111111', 3), .25)
+    True
+    >>> float_equal(pk('100100', '000000', 3), .25)
+    True
