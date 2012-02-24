@@ -15,7 +15,7 @@ Statistical Models for Text Segmentation
 Machile Learning, 34(1-3): 177-210 (1999)
 """
 
-def Pk(ref, hyp, k=None, boundary='1'):
+def pk(ref, hyp, k=None, boundary='1'):
     """
     Compute the Pk metric for a pair of segmentations
     A segmentation is any sequence over a vocabulary
@@ -73,6 +73,6 @@ def demo():
     print "s2:", s2
     print "s3:", s3
 
-    print "Pk(s1, s1, 3) = ", Pk(s1, s1, 3)
-    print "Pk(s1, s2, 3) = ", Pk(s1, s2, 3)
-    print "Pk(s2, s3, 3) = ", Pk(s2, s3, 3)
+    print "pk(s1, s1, 3) = ", pk(s1, s1, 3)
+    print "pk(s1, s2, 3) = ", pk(s1, s2, 3)
+    print "pk(s2, s3, 3) = ", pk(s2, s3, 3)

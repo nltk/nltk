@@ -13,5 +13,5 @@ NLTK Segmentation metrics
 Functions for evaluating text segmentation tasks
 """
 
-from nltk.metrics.segmentation.ghd import ghd
-from nltk.metrics.segmentation.pk import pk
+from ghd import ghd
+from pk import pk
