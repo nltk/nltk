@@ -30,10 +30,7 @@ def _init_tableau(nrows, ncols, ci, cd):
     return tab
 
 def _fill_bit_pos_vec(bitv, boundary):
-    if bitv.count(boundary) == 0:
-        return []
-
-    bitPosVec = [0]
+    bitPosVec = []
     for i, e in enumerate(bitv):
         if bitv[i] == boundary:
             bitPosVec.append(i+1)
@@ -41,34 +38,26 @@ def _fill_bit_pos_vec(bitv, boundary):
 
 
 def _compute_ghd_aux(tab, rowv, colv, ci, cd, a):
-    if len(rowv) == 1 or len(colv) == 1:
-        # Nothing to compute because _init_tableau takes
-        # care of this case.
-        return
-    
-    for i in xrange(1, len(rowv)):
-        ri = rowv[i]
-        for j in xrange(1, len(colv)):
-            cj = colv[j]
-            shiftCost = a * abs(ri - cj) + tab[i-1, j-1]
+    for i, ri in enumerate(rowv):
+        for j, cj in enumerate(colv):
+            shiftCost = a * abs(ri - cj) + tab[i, j]
             if ri > cj:
-                delCost = cd + tab[i-1, j]
+                delCost = cd + tab[i, j + 1]
                 # compute the minimum cost
                 if delCost < shiftCost:
                     minCost = delCost
                 else:
                     minCost = shiftCost
-                tab[i, j] = minCost
             elif ri < cj:
-                insCost = ci + tab[i, j-1]
+                insCost = ci + tab[i + 1, j]
                 # compute the minimum cost
                 if insCost < shiftCost:
                     minCost = insCost
                 else:
                     minCost = shiftCost
-                tab[i, j] = minCost
             else:
-                tab[i, j] = tab[i-1, j-1]
+                minCost = tab[i, j]
+            tab[i + 1, j + 1] = minCost
 
 
 
@@ -107,12 +96,12 @@ def ghd(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
     elif nrows > 0 and ncols == 0:
         # if there are no bits in the target,
         # return the cost of the insertions.
-        return (nrows - 1.) * ci
+        return (nrows) * ci
     elif nrows == 0 and ncols > 0:
-        return (ncols - 1.) * cd
+        return (ncols) * cd
         
     # both nrows > 0 and ncols > 0
-    tab = _init_tableau(nrows, ncols, ci, cd) 
+    tab = _init_tableau(nrows + 1, ncols + 1, ci, cd) 
     _compute_ghd_aux(tab, rvec, cvec, ci, cd, a)
     return tab[-1, -1]
 
@@ -132,6 +121,7 @@ def demo():
         ('000', '111', 1., 2., .5)
         ]
 
+    # ref results: .5, 2, 1, 1, 3, 6
     for seg1, seg2, ci, cd, a in tests:
         ret = ghd(seg1, seg2, ci, cd, a)
         print 'ghd(\'%s\', \'%s\', %.1f, %.1f, %.1f) = %.1f' % (seg1, seg2, ci, cd, a, ret)
