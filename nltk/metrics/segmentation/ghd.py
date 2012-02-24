@@ -116,7 +116,6 @@ def demo():
         ('000', '111', 1., 2., .5)
         ]
 
-    # ref results: .5, 2, 1, 1, 3, 6
     pat = 'ghd(\'%s\', \'%s\', %.1f, %.1f, %.1f) = %.1f'
     for seg1, seg2, ins_cost, del_cost, shift_cost_coeff in tests:
         ret = ghd(seg1, seg2, ins_cost, del_cost, shift_cost_coeff)
