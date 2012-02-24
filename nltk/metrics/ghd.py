@@ -23,37 +23,31 @@ TALN 2009
 
 import numpy
 
-def _init_tableau(nrows, ncols, ci, cd):
-    tab = numpy.empty((nrows, ncols))
-    tab[0, :] = [x * ci for x in xrange(ncols)]
-    tab[:, 0] = [x * cd for x in xrange(nrows)]
-    return tab
+def _init_mat(nrows, ncols, ci, cd):
+    mat = numpy.empty((nrows, ncols))
+    mat[0, :] = [x * ci for x in xrange(ncols)]
+    mat[:, 0] = [x * cd for x in xrange(nrows)]
+    return mat
 
 def _fill_bit_pos_vec(bitv, boundary):
     """Returns the indices of bitv containing the given boundary value"""
     return [i for (i, val) in enumerate(bitv) if val == boundary]
 
-def _compute_ghd_aux(tab, rowv, colv, ci, cd, a):
+def _compute_ghd_aux(mat, rowv, colv, ci, cd, a):
     for i, ri in enumerate(rowv):
         for j, cj in enumerate(colv):
-            shiftCost = a * abs(ri - cj) + tab[i, j]
+            shift_cost = a * abs(ri - cj) + mat[i, j]
             if ri > cj:
-                delCost = cd + tab[i, j + 1]
-                # compute the minimum cost
-                if delCost < shiftCost:
-                    minCost = delCost
-                else:
-                    minCost = shiftCost
+                # compare cost of deletion VS cost of shift
+                del_cost = cd + mat[i, j + 1]
+                min_cost = min(del_cost, shift_cost)
             elif ri < cj:
-                insCost = ci + tab[i + 1, j]
-                # compute the minimum cost
-                if insCost < shiftCost:
-                    minCost = insCost
-                else:
-                    minCost = shiftCost
+                # compare cost of insertion VS const of shift
+                ins_cost = ci + mat[i + 1, j]
+                min_cost = min(ins_cost, shift_cost)
             else:
-                minCost = tab[i, j]
-            tab[i + 1, j + 1] = minCost
+                min_cost = mat[i, j]
+            mat[i + 1, j + 1] = min_cost
 
 
 
@@ -97,9 +91,9 @@ def ghd(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
         return (ncols) * cd
         
     # both nrows > 0 and ncols > 0
-    tab = _init_tableau(nrows + 1, ncols + 1, ci, cd) 
-    _compute_ghd_aux(tab, rvec, cvec, ci, cd, a)
-    return tab[-1, -1]
+    mat = _init_mat(nrows + 1, ncols + 1, ci, cd) 
+    _compute_ghd_aux(mat, rvec, cvec, ci, cd, a)
+    return mat[-1, -1]
 
 
 def demo():
