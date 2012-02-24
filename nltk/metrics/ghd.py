@@ -30,12 +30,8 @@ def _init_tableau(nrows, ncols, ci, cd):
     return tab
 
 def _fill_bit_pos_vec(bitv, boundary):
-    bitPosVec = []
-    for i, e in enumerate(bitv):
-        if bitv[i] == boundary:
-            bitPosVec.append(i+1)
-    return bitPosVec
-
+    """Returns the indices of bitv containing the given boundary value"""
+    return [i for (i, val) in enumerate(bitv) if val == boundary]
 
 def _compute_ghd_aux(tab, rowv, colv, ci, cd, a):
     for i, ri in enumerate(rowv):
