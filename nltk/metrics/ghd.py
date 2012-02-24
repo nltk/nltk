@@ -21,9 +21,58 @@ Begsten, Y.  Quel indice pour mesurer l'efficacite en segmentation de textes ?
 TALN 2009
 """
 
-import numpy as N
+import numpy
 
-def GHD(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
+def _init_tableau(nrows, ncols, ci, cd):
+    tab = numpy.empty((nrows, ncols))
+    tab[0, :] = [x * ci for x in xrange(ncols)]
+    tab[:, 0] = [x * cd for x in xrange(nrows)]
+    return tab
+
+def _fill_bit_pos_vec(bitv, boundary):
+    if bitv.count(boundary) == 0:
+        return []
+
+    bitPosVec = [0]
+    for i, e in enumerate(bitv):
+        if bitv[i] == boundary:
+            bitPosVec.append(i+1)
+    return bitPosVec
+
+
+def _compute_ghd_aux(tab, rowv, colv, ci, cd, a):
+    if len(rowv) == 1 or len(colv) == 1:
+        # Nothing to compute because _init_tableau takes
+        # care of this case.
+        return
+    
+    for i in xrange(1, len(rowv)):
+        ri = rowv[i]
+        for j in xrange(1, len(colv)):
+            cj = colv[j]
+            shiftCost = a * abs(ri - cj) + tab[i-1, j-1]
+            if ri > cj:
+                delCost = cd + tab[i-1, j]
+                # compute the minimum cost
+                if delCost < shiftCost:
+                    minCost = delCost
+                else:
+                    minCost = shiftCost
+                tab[i, j] = minCost
+            elif ri < cj:
+                insCost = ci + tab[i, j-1]
+                # compute the minimum cost
+                if insCost < shiftCost:
+                    minCost = insCost
+                else:
+                    minCost = shiftCost
+                tab[i, j] = minCost
+            else:
+                tab[i, j] = tab[i-1, j-1]
+
+
+
+def ghd(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
     """
     Compute the Generalized Hamming Distance for a pair of segmentations
     A segmentation is any sequence over a vocabulary
@@ -45,60 +94,14 @@ def GHD(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
     :type boundary: str or int or bool
     :rtype: float
     """
-    def InitTableau(nrows, ncols, ci, cd):
-        tab = N.empty((nrows, ncols))       
-        tab[0, :] = map(lambda x: x * ci, range(ncols))
-        tab[:, 0] = map(lambda x: x * cd, range(nrows))
-        return tab
-
-    def FillBitPosVec(bitv, boundary):
-        if bitv.count(boundary) == 0:
-            return []
-
-        bitPosVec = [0]
-        for i, e in enumerate(bitv):
-            if bitv[i] == boundary:
-                bitPosVec.append(i+1)
-
-	return bitPosVec
-
-    def ComputeGHDAux(tab, rowv, colv, ci, cd, a):
-	if len(rowv) == 1 or len(colv) == 1:
-            # Nothing to compute because InitTableau takes
-            # care of this case.
-            return
-
-        for i in xrange(1, len(rowv)):
-            ri = rowv[i]
-            for j in xrange(1, len(colv)):
-                cj = colv[j]
-                shiftCost = a * abs(ri - cj) + tab[i-1, j-1]
-                if ri > cj:
-                    delCost = cd + tab[i-1, j]
-                    # compute the minimum cost
-                    if ( delCost < shiftCost):
-                        minCost = delCost
-                    else:
-                        minCost = shiftCost
-                    tab[i, j] = minCost
-                elif ri < cj:
-                    insCost = ci + tab[i, j-1]
-                    # compute the minimum cost
-                    if insCost < shiftCost:
-                        minCost = insCost
-                    else:
-                        minCost = shiftCost
-                    tab[i, j] = minCost
-                else:
-                    tab[i, j] = tab[i-1, j-1]
 
     # build the bite-site for the target.
-    rvec = FillBitPosVec(seg1, boundary)
+    rvec = _fill_bit_pos_vec(seg1, boundary)
     nrows = len(rvec)
     # build the bite-site for the source.
-    cvec = FillBitPosVec(seg2, boundary)
+    cvec = _fill_bit_pos_vec(seg2, boundary)
     ncols = len(cvec)
-    
+
     if nrows == 0 and ncols == 0:
         return 0.
     elif nrows > 0 and ncols == 0:
@@ -109,9 +112,10 @@ def GHD(seg1, seg2, ci=2., cd=2., a=1., boundary='1'):
         return (ncols - 1.) * cd
         
     # both nrows > 0 and ncols > 0
-    tab = InitTableau(nrows, ncols, ci, cd) 
-    ComputeGHDAux(tab, rvec, cvec, ci, cd, a)
+    tab = _init_tableau(nrows, ncols, ci, cd) 
+    _compute_ghd_aux(tab, rvec, cvec, ci, cd, a)
     return tab[-1, -1]
+
 
 def demo():
     """
@@ -129,5 +133,5 @@ def demo():
         ]
 
     for seg1, seg2, ci, cd, a in tests:
-        ret = GHD(seg1, seg2, ci, cd, a)
-        print 'GHD(\'%s\', \'%s\', %.1f, %.1f, %.1f) = %.1f' % (seg1, seg2, ci, cd, a, ret)
+        ret = ghd(seg1, seg2, ci, cd, a)
+        print 'ghd(\'%s\', \'%s\', %.1f, %.1f, %.1f) = %.1f' % (seg1, seg2, ci, cd, a, ret)
