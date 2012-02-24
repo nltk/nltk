@@ -1,0 +1,39 @@
+.. Copyright (C) 2001-2012 NLTK Project
+.. For license information, see LICENSE.TXT
+
+=======
+Segmentation Metrics
+=======
+
+The `nltk.metrics.segmentation` package provides a variety of
+*evaluation measures* which can be used for evaluating text
+segmentation methods
+
+    >>> from nltk.metrics.segmentation import *
+    >>> from nltk.metrics.segmentation.ghd import *
+    >>> from nltk.metrics.segmentation.pk import *
+    >>> from nltk.test.doctest_utils import *
+
+------------------
+Generalized Hamming Distance
+------------------
+
+Generalized Hamming Distance may be used as an evaluation metric
+for text segmentation. It compares two segmentation, and return
+an estimation of the cost to transform a segmentation into another.
+The transformation is done though boundary insertions, deletions and shift.
+Each of these operation has a different cost that should be passed to the function.
+Segmentations are represented using strings of 0 and 1, 1 being a boundary.
+
+    >>> ghd('1100100000', '1100010000', 1.0, 1.0, 0.5)
+    0.5
+    >>> ghd('1100100000', '1100000001', 1.0, 1.0, 0.5)
+    2.0
+    >>> ghd('011', '110', 1.0, 1.0, 0.5)
+    1.0
+    >>> ghd('1', '0', 1.0, 1.0, 0.5)
+    1.0
+    >>> ghd('111', '000', 1.0, 1.0, 0.5)
+    3.0
+    >>> ghd('000', '111', 1.0, 2.0, 0.5)
+    6.0
