@@ -4,8 +4,6 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: Makefile,v 1.2 2004/04/27 04:26:37 stevenbird Exp $
 
 ##############################################
 ##  The name of the report

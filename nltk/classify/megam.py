@@ -4,8 +4,6 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: naivebayes.py 2063 2004-07-17 21:02:24Z edloper $
 
 """
 A set of functions used to interface with the external megam_ maxent

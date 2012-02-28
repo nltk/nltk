@@ -6,8 +6,6 @@
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: stanford.py $
 
 """
 A module for interfacing with the Stanford taggers.

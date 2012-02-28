@@ -6,8 +6,6 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id:$
 
 """
 This command-line tool takes a list of python files or directories,
