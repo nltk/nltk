@@ -5,8 +5,6 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: __init__.py 7460 2009-01-29 01:06:02Z StevenBird1 $
 
 """
 Interactive NLTK Applications:

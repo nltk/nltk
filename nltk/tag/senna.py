@@ -5,8 +5,6 @@
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: senna.py $
 
 """
 A module for interfacing with the SENNA pipeline.

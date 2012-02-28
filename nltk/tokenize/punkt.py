@@ -8,8 +8,6 @@
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: probability.py 4865 2007-07-11 22:6:07Z edloper $
 
 r"""
 Punkt Sentence Tokenizer

@@ -4,8 +4,6 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: util.py 6339 2008-07-30 01:54:47Z stevenbird $
 
 """
 Tools for graphically displaying and interacting with the objects and

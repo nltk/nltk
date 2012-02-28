@@ -4,8 +4,6 @@
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: concordance.py 6121 2008-07-11 02:10:33Z stevenbird $
 
 import re
 import threading
