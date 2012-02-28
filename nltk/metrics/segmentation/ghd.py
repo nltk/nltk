@@ -52,18 +52,23 @@ def _compute_ghd_aux(mat, rowv, colv, ins_cost, del_cost, shift_cost_coeff):
 
 
 
-def ghd(seg1, seg2, ins_cost=2., del_cost=2., shift_cost_coeff=1., boundary='1'):
+def ghd(ref_seg, hyp_seg, ins_cost=2., del_cost=2., shift_cost_coeff=1., boundary='1'):
     """
-    Compute the Generalized Hamming Distance for a pair of segmentations
+    Compute the Generalized Hamming Distance for a reference and
+    an hypothetic segmentation
     A segmentation is any sequence over a vocabulary
     of two items (e.g. "0", "1"),
     where the specified boundary value is used
     to mark the edge of a segmentation
 
-    :param seg1: a segmentation
-    :type seg1: str or list
-    :param seg2: a segmentation
-    :type seg2: str or list
+    Recommended parameter values are a shift_cost_coeff of 2.
+    Associated with a ins_cost, and del_cost equal to the mean segment
+    length in the reference segmentation
+ 
+    :param ref_seg: the reference segmentation
+    :type ref_seg: str or list
+    :param hyp_seg: the hypothetical segmentation
+    :type hyp_seg: str or list
     :param ins_cost: insertion cost
     :type ins_cost: float
     :param del_cost: deletion cost
@@ -78,8 +83,8 @@ def ghd(seg1, seg2, ins_cost=2., del_cost=2., shift_cost_coeff=1., boundary='1')
     """
 
     # get boundaries positions
-    rvec = _fill_bit_pos_vec(seg1, boundary)
-    cvec = _fill_bit_pos_vec(seg2, boundary)
+    rvec = _fill_bit_pos_vec(ref_seg, boundary)
+    cvec = _fill_bit_pos_vec(hyp_seg, boundary)
     nrows = len(rvec)
     ncols = len(cvec)
 
@@ -87,11 +92,11 @@ def ghd(seg1, seg2, ins_cost=2., del_cost=2., shift_cost_coeff=1., boundary='1')
         # no boundaries in both segmentations
         return 0.
     elif nrows > 0 and ncols == 0:
-        # if there are no boundaries in seg1
+        # if there are no boundaries in reference segmentation
         # return the cost of the insertions
         return (nrows) * ins_cost
     elif nrows == 0 and ncols > 0:
-        # if there are no boundaries in seg2
+        # if there are no boundaries in hypothetical segmentation
         # return the cost of deletions
         return (ncols) * del_cost
         
@@ -117,6 +122,6 @@ def demo():
         ]
 
     pat = 'ghd(\'%s\', \'%s\', %.1f, %.1f, %.1f) = %.1f'
-    for seg1, seg2, ins_cost, del_cost, shift_cost_coeff in tests:
-        ret = ghd(seg1, seg2, ins_cost, del_cost, shift_cost_coeff)
-        print pat % (seg1, seg2, ins_cost, del_cost, shift_cost_coeff, ret)
+    for ref_seg, hyp_seg, ins_cost, del_cost, shift_cost_coeff in tests:
+        ret = ghd(ref_seg, hyp_seg, ins_cost, del_cost, shift_cost_coeff)
+        print pat % (ref_seg, hyp_seg, ins_cost, del_cost, shift_cost_coeff, ret)
