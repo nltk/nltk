@@ -54,8 +54,11 @@ def _compute_ghd_aux(mat, rowv, colv, ins_cost, del_cost, shift_cost_coeff):
 
 def ghd(ref_seg, hyp_seg, ins_cost=2., del_cost=2., shift_cost_coeff=1., boundary='1'):
     """
-    Compute the Generalized Hamming Distance for a reference and
-    an hypothetic segmentation
+    Compute the Generalized Hamming Distance for a reference and an hypothetic
+    segmentation, corresponding to the cost related to the transformation
+    of the hypothetical segmentation into the reference segmentation
+    through boundary insert, delete and shift operations
+
     A segmentation is any sequence over a vocabulary
     of two items (e.g. "0", "1"),
     where the specified boundary value is used
@@ -82,27 +85,31 @@ def ghd(ref_seg, hyp_seg, ins_cost=2., del_cost=2., shift_cost_coeff=1., boundar
     :rtype: float
     """
 
-    # get boundaries positions
-    rvec = _fill_bit_pos_vec(ref_seg, boundary)
-    cvec = _fill_bit_pos_vec(hyp_seg, boundary)
-    nrows = len(rvec)
-    ncols = len(cvec)
+    # reference segmentation boundaries indices
+    ref_bound_idx = _fill_bit_pos_vec(ref_seg, boundary)
+    # number of segments in reference segmentation
+    nref_bound = len(ref_bound_idx)
 
-    if nrows == 0 and ncols == 0:
+    # hypothetical segmentation boundaries indices
+    hyp_bound_idx = _fill_bit_pos_vec(hyp_seg, boundary)
+    # number of segments in reference segmentation
+    nhyp_bound = len(hyp_bound_idx)
+
+    if nref_bound == 0 and nhyp_bound == 0:
         # no boundaries in both segmentations
         return 0.
-    elif nrows > 0 and ncols == 0:
-        # if there are no boundaries in reference segmentation
-        # return the cost of the insertions
-        return (nrows) * ins_cost
-    elif nrows == 0 and ncols > 0:
+    elif nref_bound > 0 and nhyp_bound == 0:
         # if there are no boundaries in hypothetical segmentation
+        # return the cost of the insertions
+        return nref_bound * ins_cost
+    elif nref_bound == 0 and nhyp_bound > 0:
+        # if there are no boundaries in reference segmentation
         # return the cost of deletions
-        return (ncols) * del_cost
-        
+        return nhyp_bound * del_cost
+
     # both segmentations contain boundary symbols
-    mat = _init_mat(nrows + 1, ncols + 1, ins_cost, del_cost) 
-    _compute_ghd_aux(mat, rvec, cvec, ins_cost, del_cost, shift_cost_coeff)
+    mat = _init_mat(nhyp_bound + 1, nref_bound + 1, ins_cost, del_cost) 
+    _compute_ghd_aux(mat, hyp_bound_idx, ref_bound_idx, ins_cost, del_cost, shift_cost_coeff)
     return mat[-1, -1]
 
 
