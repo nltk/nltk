@@ -7,9 +7,10 @@
 # For license information, see LICENSE.TXT
 
 
-from math import fabs
-from random import shuffle
 from itertools import izip
+from math import fabs
+import operator
+from random import shuffle
 
 try:
     from scipy.stats.stats import betai
@@ -35,11 +36,7 @@ def accuracy(reference, test):
     """
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")
-    num_correct = 0
-    for x, y in izip(reference, test):
-        if x == y:
-            num_correct += 1
-    return float(num_correct) / len(reference)
+    return float(sum(x == y for x, y in zip(reference, test))) / len(test)
 
 def precision(reference, test):
     """
@@ -161,7 +158,7 @@ def approxrand(a, b, **kwargs):
     shuffles = kwargs.get('shuffles', 999)
     # there's no point in trying to shuffle beyond all possible permutations
     shuffles = \
-        min(shuffles, reduce(lambda x, y: x * y, xrange(1, len(a) + len(b) + 1)))
+        min(shuffles, reduce(operator.mul, xrange(1, len(a) + len(b) + 1)))
     stat = kwargs.get('statistic', lambda lst: float(sum(lst)) / len(lst))
     verbose = kwargs.get('verbose', False)
 
