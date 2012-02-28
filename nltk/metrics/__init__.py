@@ -26,4 +26,9 @@ from nltk.metrics.association     import (NgramAssocMeasures, BigramAssocMeasure
                                           TrigramAssocMeasures, ContingencyMeasures)
 from nltk.metrics.spearman        import (spearman_correlation, ranks_from_sequence,
                                           ranks_from_scores)
-import segmentation; from segmentation import *
+
+import nltk.metrics.segmentation
+import nltk.metrics.segmentation.ghd
+import nltk.metrics.segmentation.pk
+from nltk.metrics.segmentation.ghd import ghd
+from nltk.metrics.segmentation.pk import pk
