@@ -9,8 +9,6 @@
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: chart.py 8144 2009-06-01 22:27:39Z edloper $
 
 """
 Data classes and parser implementations for *incremental* chart

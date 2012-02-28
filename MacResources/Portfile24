@@ -1,5 +1,4 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
-# $Id: Portfile 40109 2008-09-20 21:25:53Z ryandesign  macports.org $
 
 PortSystem 1.0
 PortGroup python24 1.0
