@@ -36,7 +36,7 @@ def accuracy(reference, test):
     """
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")
-    return float(sum(x == y for x, y in zip(reference, test))) / len(test)
+    return float(sum(x == y for x, y in izip(reference, test))) / len(test)
 
 def precision(reference, test):
     """
@@ -131,7 +131,7 @@ def log_likelihood(reference, test):
 
     # Return the average value of dist.logprob(val).
     total_likelihood = sum(dist.logprob(val)
-                            for (val, dist) in zip(reference, test))
+                            for (val, dist) in izip(reference, test))
     return total_likelihood/len(reference)
 
 def approxrand(a, b, **kwargs):
