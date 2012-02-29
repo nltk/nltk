@@ -5,7 +5,6 @@
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-# $Id$
 
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity,
