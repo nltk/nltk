@@ -5,8 +5,6 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 # Import Tkinter-based modules if Tkinter is installed
 try:

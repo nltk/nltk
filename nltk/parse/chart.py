@@ -8,8 +8,6 @@
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 Data classes and parser implementations for "chart parsers", which

@@ -4,8 +4,6 @@
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 #TODO:
     #- fix tracing
