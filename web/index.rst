@@ -56,6 +56,11 @@ Display a parse tree:
 
 .. image:: images/tree.gif
 
+NLTK Development
+----------------
+
+NLTK is open source software, released under the Apache 2.0 License, and hosted at `GitHub <https://github.com/nltk/nltk>`_.
+
 Contents
 ========
 
