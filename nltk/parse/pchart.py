@@ -283,7 +283,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         :type chart: Chart
         :rtype: None
         """
-        raise AssertionError, "BottomUpProbabilisticChartParser is an abstract class"
+        raise NotImplementedError()
 
     def _prune(self, queue, chart):
         """ Discard items in the queue if the queue is longer than the beam."""

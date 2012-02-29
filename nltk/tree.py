@@ -847,7 +847,7 @@ class AbstractParentedTree(Tree):
             parent pointer; just check for any error conditions, and
             raise an exception if one is found.
         """
-        raise AssertionError('Abstract base class')
+        raise NotImplementedError()
 
     def _delparent(self, child, index):
         """
@@ -861,7 +861,7 @@ class AbstractParentedTree(Tree):
         :type index: int
         :param index: The index of ``child`` in ``self``.
         """
-        raise AssertionError('Abstract base class')
+        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Methods that add/remove children

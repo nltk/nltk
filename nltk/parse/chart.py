@@ -98,7 +98,7 @@ class EdgeI(object):
 
         :rtype: tuple(int, int)
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     def start(self):
         """
@@ -106,7 +106,7 @@ class EdgeI(object):
 
         :rtype: int
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     def end(self):
         """
@@ -114,7 +114,7 @@ class EdgeI(object):
 
         :rtype: int
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     def length(self):
         """
@@ -122,7 +122,7 @@ class EdgeI(object):
 
         :rtype: int
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Left Hand Side
@@ -136,7 +136,7 @@ class EdgeI(object):
         :see: ``TreeEdge`` and ``LeafEdge`` for a description of
             the left-hand side values for each edge type.
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Right Hand Side
@@ -150,7 +150,7 @@ class EdgeI(object):
         :see: ``TreeEdge`` and ``LeafEdge`` for a description of
             the right-hand side values for each edge type.
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     def dot(self):
         """
@@ -161,7 +161,7 @@ class EdgeI(object):
 
         :rtype: int
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     def next(self):
         """
@@ -170,7 +170,7 @@ class EdgeI(object):
 
         :rtype: Nonterminal or terminal or None
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     def is_complete(self):
         """
@@ -179,7 +179,7 @@ class EdgeI(object):
 
         :rtype: bool
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     def is_incomplete(self):
         """
@@ -188,16 +188,17 @@ class EdgeI(object):
 
         :rtype: bool
         """
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Comparisons
     #////////////////////////////////////////////////////////////
+
     def __cmp__(self, other):
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
     def __hash__(self, other):
-        raise AssertionError('EdgeI is an abstract interface')
+        raise NotImplementedError()
 
 class TreeEdge(EdgeI):
     """
@@ -884,7 +885,7 @@ class ChartRuleI(object):
             ``NUM_EDGES`` class variable.
         :rtype: list(EdgeI)
         """
-        raise AssertionError, 'ChartRuleI is an abstract interface'
+        raise NotImplementedError()
 
     def apply_iter(self, chart, grammar, *edges):
         """
@@ -899,7 +900,7 @@ class ChartRuleI(object):
             ``NUM_EDGES`` class variable.
         :rtype: iter(EdgeI)
         """
-        raise AssertionError, 'ChartRuleI is an abstract interface'
+        raise NotImplementedError()
 
     def apply_everywhere(self, chart, grammar):
         """
@@ -908,7 +909,7 @@ class ChartRuleI(object):
 
         :rtype: list(EdgeI)
         """
-        raise AssertionError, 'ChartRuleI is an abstract interface'
+        raise NotImplementedError()
 
     def apply_everywhere_iter(self, chart, grammar):
         """
@@ -919,7 +920,7 @@ class ChartRuleI(object):
 
         :rtype: iter(EdgeI)
         """
-        raise AssertionError, 'ChartRuleI is an abstract interface'
+        raise NotImplementedError()
 
 class AbstractChartRule(ChartRuleI):
     """
@@ -938,7 +939,7 @@ class AbstractChartRule(ChartRuleI):
 
     # Subclasses must define apply_iter.
     def apply_iter(self, chart, grammar, *edges):
-        raise AssertionError, 'AbstractChartRule is an abstract class'
+        raise NotImplementedError()
 
     # Default: loop through the given number of edges, and call
     # self.apply() for each set of edges.

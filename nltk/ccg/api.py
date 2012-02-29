@@ -12,36 +12,36 @@ class AbstractCCGCategory(object):
 
     # Returns true if the category is primitive
     def is_primitive(self):
-        raise AssertionError, 'AbstractCCGCategory is an abstract interface'
+        raise NotImplementedError()
 
     # Returns true if the category is a function application
     def is_function(self):
-        raise AssertionError, 'AbstractCCGCategory is an abstract interface'
+        raise NotImplementedError()
 
     # Returns true if the category is a variable
     def is_var(self):
-        raise AssertionError, 'AbstractCCGCategory is an abstract interface'
+        raise NotImplementedError()
 
     # Takes a set of (var, category) substitutions, and replaces every
     # occurrence of the variable with the corresponding category
     def substitute(self,substitutions):
-        raise AssertionError, 'AbstractCCGCategory is an abstract interface'
+        raise NotImplementedError()
 
     # Determines whether two categories can be unified.
     #  - Returns None if they cannot be unified
     #  - Returns a list of necessary substitutions if they can.'''
     def can_unify(self,other):
-        raise AssertionError, 'AbstractCCGCategory is an abstract interface'
+        raise NotImplementedError()
 
     # Utility functions: comparison, strings and hashing.
     def __cmp__(self,other):
-        raise AssertionError, 'AbstractCCGCategory is an abstract interface'
+        raise NotImplementedError()
 
     def __str__(self):
-        raise AssertionError, 'AbstractCCGCategory is an abstract interface'
+        raise NotImplementedError()
 
     def __hash__(self):
-        raise AssertionError, 'AbstractCCGCategory is an abstract interface'
+        raise NotImplementedError()
 
 
 class CCGVar(AbstractCCGCategory):

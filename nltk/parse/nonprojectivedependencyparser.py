@@ -41,7 +41,7 @@ class DependencyScorerI(object):
         positive training examples, and the edges not present as negative
         examples.
         """
-        raise AssertionError('DependencyScorerI is an abstract interface')
+        raise NotImplementedError()
 
     def score(self, graph):
         """
@@ -66,16 +66,17 @@ class DependencyScorerI(object):
         correspond to the confidence of a particular edge being classified
         with the positive training examples.
         """
-        raise AssertionError('DependencyScorerI is an abstract interface')
+        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Comparisons
     #////////////////////////////////////////////////////////////
+
     def __cmp__(self, other):
-        raise AssertionError('DependencyScorerI is an abstract interface')
+        raise NotImplementedError()
 
     def __hash__(self, other):
-        raise AssertionError('DependencyScorerI is an abstract interface')
+        raise NotImplementedError()
 
 
 
