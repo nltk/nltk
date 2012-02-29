@@ -51,7 +51,7 @@ class NgramModel(ModelI):
         :param n: the order of the language model (ngram size)
         :type n: int
         :param train: the training text
-        :type train: list of string
+        :type train: list of string (or list of list of string)
         :param estimator: a function for generating a probability distribution
         :type estimator: a function that takes a ConditionalFreqDist and
               returns a ConditionalProbDist
@@ -74,13 +74,18 @@ class NgramModel(ModelI):
 
         cfd = ConditionalFreqDist()
         self._ngrams = set()
-        self._prefix = ('',) * (n - 1)
+        self._padding = ('',) * (n - 1)
 
-        for ngram in ingrams(chain(self._prefix, train), n):
-            self._ngrams.add(ngram)
-            context = tuple(ngram[:-1])
-            token = ngram[-1]
-            cfd[context].inc(token)
+        # If given a list of strings instead of a list of lists, create enclosing list
+        if (train is not None) and isinstance(train[0], basestring):
+            train = [train]
+
+        for utterance in train:
+            for ngram in ingrams(chain(self._padding, utterance, self._padding), n):
+                self._ngrams.add(ngram)
+                context = tuple(ngram[:-1])
+                token = ngram[-1]
+                cfd[context].inc(token)
 
         if (not estimator_args) and (not estimator_kw_args):
             self._model = ConditionalProbDist(cfd, estimator, len(cfd))
@@ -138,8 +143,6 @@ class NgramModel(ModelI):
 
         return self.generate(1, context)[-1]
 
-    # NB, this will always start with same word since model
-    # is trained on a single text
     def generate(self, num_words, context=()):
         '''
         Generate random text based on the language model.
@@ -156,7 +159,7 @@ class NgramModel(ModelI):
         return text
 
     def _generate_one(self, context):
-        context = (self._prefix + tuple(context))[-self._n+1:]
+        context = (self._padding + tuple(context))[-self._n+1:]
         # print "Context (%d): <%s>" % (self._n, ','.join(context))
         if context in self:
             return self[context].generate()
@@ -176,8 +179,8 @@ class NgramModel(ModelI):
         """
 
         e = 0.0
-        # Add prefix to front to correctly handle first n-1 words
-        text = list(self._prefix) + text
+        # Add padding to front and back to correctly handle first n-1 words
+        text = list(self._padding) + text + list(self._padding)
         for i in range(len(text)):
             context = tuple(text[i-self._n+1:i])
             token = text[i]
