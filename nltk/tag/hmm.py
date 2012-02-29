@@ -8,8 +8,6 @@
 #         Joseph Frazee <jfrazee@mail.utexas.edu> (fixes)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 Hidden Markov Models (HMMs) largely used to assign the correct label sequence

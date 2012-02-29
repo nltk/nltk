@@ -6,8 +6,6 @@
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 Extension of chart parsing implementation to handle grammars with

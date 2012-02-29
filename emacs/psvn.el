@@ -2,7 +2,6 @@
 ;; Copyright (C) 2002-2008 by Stefan Reichoer
 
 ;; Author: Stefan Reichoer <stefan@xsteve.at>
-;; $Id: psvn.el 32032 2008-07-08 17:21:58Z xsteve $
 
 ;; psvn.el is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
