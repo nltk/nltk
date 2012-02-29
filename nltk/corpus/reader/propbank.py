@@ -252,7 +252,7 @@ class PropbankPointer(object):
     """
     def __init__(self):
         if self.__class__ == PropbankPoitner:
-            raise AssertionError('PropbankPointer is an abstract base class')
+            raise NotImplementedError()
 
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):

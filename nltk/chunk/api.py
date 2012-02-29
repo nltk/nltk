@@ -31,7 +31,7 @@ class ChunkParserI(ParserI):
         :type tokens: list(tuple)
         :rtype: Tree
         """
-        assert 0, "ChunkParserI is an abstract interface"
+        raise NotImplementedError()
 
     def evaluate(self, gold):
         """

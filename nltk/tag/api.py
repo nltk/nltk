@@ -87,7 +87,7 @@ class HiddenMarkovModelTaggerTransformI(object):
     """
     def __init__(self):
         if self.__class__ == HiddenMarkovModelTaggerTransformI:
-            raise AssertionError, "Interfaces can't be instantiated"
+            raise NotImplementedError("Interfaces can't be instantiated")
 
     def transform(self, labeled_symbols):
         """

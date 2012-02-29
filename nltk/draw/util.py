@@ -675,7 +675,7 @@ class CanvasWidget(object):
             elements managed by its child widgets.
         :rtype: list of int
         """
-        raise AssertionError()
+        raise NotImplementedError()
 
     def _manage(self):
         """
@@ -2045,7 +2045,7 @@ class ColorizedList(object):
         E.g.:
             >>> textwidget.tag_config('terminal', foreground='black')
         """
-        raise AssertionError, 'Abstract base class'
+        raise NotImplementedError()
 
     def _item_repr(self, item):
         """
@@ -2054,7 +2054,7 @@ class ColorizedList(object):
         representations may not span multiple lines.  I.e., the text
         strings returned may not contain newline characters.
         """
-        raise AssertionError, 'Abstract base class'
+        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Item Access

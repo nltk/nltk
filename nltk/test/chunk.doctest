@@ -175,7 +175,7 @@ instantiated directly.
     >>> ChunkParserI().parse([])
     Traceback (most recent call last):
       . . .
-    AssertionError: ChunkParserI is an abstract interface
+    NotImplementedError
 
 
 ChunkString

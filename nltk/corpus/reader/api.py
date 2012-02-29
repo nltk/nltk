@@ -360,13 +360,13 @@ class SyntaxCorpusReader(CorpusReader):
         sentences.
     """
     def _parse(self, s):
-        raise AssertionError('Abstract method')
+        raise NotImplementedError()
     def _word(self, s):
-        raise AssertionError('Abstract method')
+        raise NotImplementedError()
     def _tag(self, s):
-        raise AssertionError('Abstract method')
+        raise NotImplementedError()
     def _read_block(self, stream):
-        raise AssertionError('Abstract method')
+        raise NotImplementedError()
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids

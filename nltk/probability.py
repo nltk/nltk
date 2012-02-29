@@ -517,7 +517,7 @@ class ProbDistI(object):
 
     def __init__(self):
         if self.__class__ == ProbDistI:
-            raise AssertionError, "Interfaces can't be instantiated"
+            raise NotImplementedError("Interfaces can't be instantiated")
 
     def prob(self, sample):
         """
@@ -529,7 +529,7 @@ class ProbDistI(object):
         :type sample: any
         :rtype: float
         """
-        raise AssertionError()
+        raise NotImplementedError()
 
     def logprob(self, sample):
         """
@@ -557,7 +557,7 @@ class ProbDistI(object):
 
         :rtype: any
         """
-        raise AssertionError()
+        raise NotImplementedError()
 
     def samples(self):
         """
@@ -566,7 +566,7 @@ class ProbDistI(object):
 
         :rtype: list
         """
-        raise AssertionError()
+        raise NotImplementedError()
 
     # cf self.SUM_TO_ONE
     def discount(self):
@@ -1869,7 +1869,7 @@ class ConditionalProbDistI(defaultdict):
     condition.
     """
     def __init__(self):
-        raise AssertionError, 'ConditionalProbDistI is an interface'
+        raise NotImplementedError("Interfaces can't be instantiated")
 
     def conditions(self):
         """

@@ -22,10 +22,10 @@ class UndirectedBinaryCombinator(object):
     class.
     """
     def can_combine(self, function, argument):
-        raise AssertionError, 'UndirectedBinaryCombinator is an abstract interface'
+        raise NotImplementedError()
 
     def combine (self,function,argument):
-        raise AssertionError, 'UndirectedBinaryCombinator is an abstract interface'
+        raise NotImplementedError()
 
 class DirectedBinaryCombinator(object):
     """
@@ -35,10 +35,10 @@ class DirectedBinaryCombinator(object):
     It then decides whether or not they can be combined.
     """
     def can_combine(self, left, right):
-        raise AssertionError, 'DirectedBinaryCombinator is an abstract interface'
+        raise NotImplementedError()
 
     def combine(self, left, right):
-        raise AssertionError, 'DirectedBinaryCombinator is an abstract interface'
+        raise NotImplementedError()
 
 class ForwardCombinator(DirectedBinaryCombinator):
     '''
