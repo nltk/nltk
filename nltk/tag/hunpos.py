@@ -7,8 +7,6 @@
 #         Attila Zseder <zseder@gmail.com> (modifications)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# $Id: hunpos.py $
 
 """
 A module for interfacing with the HunPos open-source POS-tagger.
