@@ -1052,7 +1052,7 @@ class HiddenMarkovModelTaggerTransform(HiddenMarkovModelTaggerTransformI):
     """
     def __init__(self):
         if self.__class__ == HiddenMarkovModelTaggerTransform:
-            raise AssertionError, "Abstract classes can't be instantiated"
+            raise NotImplementedError("Abstract classes can't be instantiated")
 
 
 class LambdaTransform(HiddenMarkovModelTaggerTransform):

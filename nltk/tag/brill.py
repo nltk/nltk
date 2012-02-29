@@ -428,7 +428,7 @@ class BrillTemplateI(object):
     ``Brill`` training algorithms to generate candidate rules.
     """
     def __init__(self):
-        raise AssertionError, "BrillTemplateI is an abstract interface"
+        raise NotImplementedError()
 
     def applicable_rules(self, tokens, i, correctTag):
         """
@@ -449,7 +449,7 @@ class BrillTemplateI(object):
         :type correctTag: any
         :rtype: list(BrillRule)
         """
-        raise AssertionError, "BrillTemplateI is an abstract interface"
+        raise NotImplementedError()
 
     def get_neighborhood(self, token, index):
         """
@@ -465,7 +465,7 @@ class BrillTemplateI(object):
         :type index: int
         :rtype: set
         """
-        raise AssertionError, "BrillTemplateI is an abstract interface"
+        raise NotImplementedError()
 
 class ProximateTokensTemplate(BrillTemplateI):
     """

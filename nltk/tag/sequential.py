@@ -96,7 +96,7 @@ class SequentialBackoffTagger(TaggerI):
         :type history: list(str)
         :param history: A list of the tags for all words before *index*.
         """
-        raise AssertionError('SequentialBackoffTagger is an abstract class')
+        raise NotImplementedError()
 
 
 class ContextTagger(SequentialBackoffTagger):
@@ -131,7 +131,7 @@ class ContextTagger(SequentialBackoffTagger):
             should not be handled by this tagger.
         :rtype: (hashable)
         """
-        raise AssertionError('Abstract base class')
+        raise NotImplementedError()
 
     def choose_tag(self, tokens, index, history):
         context = self.context(tokens, index, history)

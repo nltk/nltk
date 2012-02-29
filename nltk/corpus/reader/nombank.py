@@ -255,7 +255,7 @@ class NombankPointer(object):
     """
     def __init__(self):
         if self.__class__ == NombankPoitner:
-            raise AssertionError('NombankPointer is an abstract base class')
+            raise NotImplementedError()
 
 class NombankChainTreePointer(NombankPointer):
     def __init__(self, pieces):
