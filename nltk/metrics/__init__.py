@@ -28,5 +28,5 @@ from nltk.metrics.spearman        import (spearman_correlation, ranks_from_seque
                                           ranks_from_scores)
 
 import nltk.metrics.segmentation
-import nltk.metrics.segmentation import ghd, pk
+from nltk.metrics.segmentation import ghd, pk
 
