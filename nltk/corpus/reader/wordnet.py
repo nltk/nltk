@@ -729,7 +729,7 @@ class Synset(_WordNetObject):
         :type  other: Synset
         :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type ic: dict
-        :param ic: an information content object (as returned by ``load_ic()``).
+        :param ic: an information content object (as returned by ``nltk.corpus.wordnet_ic.ic()``).
         :return: A float score denoting the similarity of the two ``Synset`` objects.
             Synsets whose LCS is the root node of the taxonomy will have a
             score of 0 (e.g. N['dog'][0] and N['table'][0]).
@@ -749,7 +749,7 @@ class Synset(_WordNetObject):
         :type  other: Synset
         :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type  ic: dict
-        :param ic: an information content object (as returned by ``load_ic()``).
+        :param ic: an information content object (as returned by ``nltk.corpus.wordnet_ic.ic()``).
         :return: A float score denoting the similarity of the two ``Synset`` objects.
         """
 
@@ -781,7 +781,7 @@ class Synset(_WordNetObject):
         :type other: Synset
         :param other: The ``Synset`` that this ``Synset`` is being compared to.
         :type ic: dict
-        :param ic: an information content object (as returned by ``load_ic()``).
+        :param ic: an information content object (as returned by ``nltk.corpus.wordnet_ic.ic()``).
         :return: A float score denoting the similarity of the two ``Synset`` objects,
             in the range 0 to 1.
         """
