@@ -56,6 +56,16 @@ flag:
     "It should be part of the
     previous sentence."
 
+However, Punkt is designed to learn parameters (a list of abbreviations, etc.)
+unsupervised from a corpus similar to the target domain. The pre-packaged models
+may therefore be unsuitable: use ``PunktSentenceTokenizer(text)`` to learn
+parameters from the given text.
+
+:class:`.PunktTrainer` learns parameters such as a list of abbreviations
+(without supervision) from portions of text. Using a ``PunktTrainer`` directly
+allows for incremental training and modification of the hyper-parameters used
+to decide what is considered an abbreviation, etc.
+
 :class:`.PunktWordTokenizer` uses a regular expression to divide a text into tokens,
 leaving all periods attached to words, but separating off other punctuation:
 
