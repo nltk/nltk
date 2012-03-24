@@ -128,6 +128,21 @@ appropriate orthographic context flag."""
 ######################################################################
 
 ######################################################################
+#{ Decision reasons for debugging
+######################################################################
+
+REASON_DEFAULT_DECISION = 'default decision'
+REASON_KNOWN_COLLOCATION = 'known collocation (both words)'
+REASON_ABBR_WITH_ORTHOGRAPHIC_HEURISTIC = 'abbreviation + orthographic heuristic'
+REASON_ABBR_WITH_SENTENCE_STARTER = 'abbreviation + frequent sentence starter'
+REASON_INITIAL_WITH_ORTHOGRAPHIC_HEURISTIC = 'initial + orthographic heuristic'
+REASON_NUMBER_WITH_ORTHOGRAPHIC_HEURISTIC = 'initial + orthographic heuristic'
+REASON_INITIAL_WITH_SPECIAL_ORTHOGRAPHIC_HEURISTIC = 'initial + special orthographic heuristic'
+
+#} (end decision reasons for debugging)
+######################################################################
+
+######################################################################
 #{ Language-dependent variables
 ######################################################################
 
@@ -323,6 +338,21 @@ class PunktParameters(object):
 
     def add_ortho_context(self, typ, flag):
         self.ortho_context[typ] |= flag
+
+    def _debug_ortho_context(self, typ):
+        c = self.ortho_context[typ]
+        if c & _ORTHO_BEG_UC:
+            yield 'BEG-UC'
+        if c & _ORTHO_MID_UC:
+            yield 'MID-UC'
+        if c & _ORTHO_UNK_UC:
+            yield 'UNK-UC'
+        if c & _ORTHO_BEG_LC:
+            yield 'BEG-LC'
+        if c & _ORTHO_MID_LC:
+            yield 'MID-LC'
+        if c & _ORTHO_UNK_LC:
+            yield 'UNK-LC'
 
 ######################################################################
 #{ PunktToken
@@ -1176,6 +1206,35 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         """
         return list(self.sentences_from_text(text, realign_boundaries))
 
+    def debug_decisions(self, text):
+        """
+        Classifies candidate periods as sentence breaks, yielding a dict for
+        each that may be used to understand why the decision was made.
+
+        See format_debug_decision() to help make this output readable.
+        """
+
+        for match in self._lang_vars.period_context_re().finditer(text):
+            decision_text = match.group() + match.group('after_tok')
+            tokens = self._tokenize_words(decision_text)
+            tokens = list(self._annotate_first_pass(tokens))
+            while not tokens[0].period_final:
+                tokens.pop(0)
+            yield dict(period_index=match.end() - 1,
+                text=decision_text,
+                type1=tokens[0].type,
+                type2=tokens[1].type,
+                type1_in_abbrs=bool(tokens[0].abbr),
+                type1_is_initial=bool(tokens[0].is_initial),
+                type2_is_sent_starter=tokens[1].type_no_sentperiod in self._params.sent_starters,
+                type2_ortho_heuristic=self._ortho_heuristic(tokens[1]),
+                type2_ortho_contexts=set(self._params._debug_ortho_context(tokens[1].type_no_sentperiod)),
+                collocation=(tokens[0].type_no_sentperiod, tokens[1].type_no_sentperiod) in self._params.collocations,
+
+                reason=self._second_pass_annotation(tokens[0], tokens[1]) or REASON_DEFAULT_DECISION,
+                break_decision=tokens[0].sentbreak,
+            )
+
     def span_tokenize(self, text):
         """
         Given a text, returns a list of the (start, end) spans of sentences
@@ -1388,7 +1447,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
     def _second_pass_annotation(self, aug_tok1, aug_tok2):
         """
         Performs token-based classification over a pair of contiguous tokens
-        returning an updated augmented token for the first of them.
+        updating the first.
         """
         # Is it the last token? We can't do anything then.
         if not aug_tok2:
@@ -1404,7 +1463,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         next_typ = aug_tok2.type_no_sentperiod
         tok_is_initial = aug_tok1.is_initial
 
-        # [4.1.2. Collocational Heuristic] If there's a
+        # [4.1.2. Collocation Heuristic] If there's a
         # collocation between the word before and after the
         # period, then label tok as an abbreviation and NOT
         # a sentence break. Note that collocations with
@@ -1413,7 +1472,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         if (typ, next_typ) in self._params.collocations:
             aug_tok1.sentbreak = False
             aug_tok1.abbr = True
-            return
+            return REASON_KNOWN_COLLOCATION
 
         # [4.2. Token-Based Reclassification of Abbreviations] If
         # the token is an abbreviation or an ellipsis, then decide
@@ -1426,7 +1485,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             is_sent_starter = self._ortho_heuristic(aug_tok2)
             if is_sent_starter == True:
                 aug_tok1.sentbreak = True
-                return
+                return REASON_ABBR_WITH_ORTHOGRAPHIC_HEURISTIC
 
             # [4.1.3. Frequent Sentence Starter Heruistic] If the
             # next word is capitalized, and is a member of the
@@ -1435,7 +1494,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             if ( aug_tok2.first_upper and
                  next_typ in self._params.sent_starters):
                 aug_tok1.sentbreak = True
-                return
+                return REASON_ABBR_WITH_SENTENCE_STARTER
 
         # [4.3. Token-Based Detection of Initials and Ordinals]
         # Check if any initials or ordinals tokens that are marked
@@ -1450,7 +1509,10 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             if is_sent_starter == False:
                 aug_tok1.sentbreak = False
                 aug_tok1.abbr = True
-                return
+                if tok_is_initial:
+                    return REASON_INITIAL_WITH_ORTHOGRAPHIC_HEURISTIC
+                else:
+                    return REASON_NUMBER_WITH_ORTHOGRAPHIC_HEURISTIC
 
             # Special heuristic for initials: if orthogrpahic
             # heuristc is unknown, and next word is always
@@ -1460,7 +1522,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                  not (self._params.ortho_context[next_typ] & _ORTHO_LC) ):
                 aug_tok1.sentbreak = False
                 aug_tok1.abbr = True
-                return
+                return REASON_INITIAL_WITH_SPECIAL_ORTHOGRAPHIC_HEURISTIC
 
         return
 
@@ -1494,6 +1556,20 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         # Otherwise, we're not sure.
         return 'unknown'
 
+
+DEBUG_DECISION_FMT = '''Text: %(text)r (at offset %(period_index)d)
+Sentence break? %(break_decision)s (%(reason)s)
+Collocation? %(collocation)s
+%(type1)r:
+    known abbreviation: %(type1_in_abbrs)s
+    is initial: %(type1_is_initial)s
+%(type2)r:
+    known sentence starter: %(type2_is_sent_starter)s
+    orthographic heuristic suggests is a sentence starter? %(type2_ortho_heuristic)s
+    orthographic contexts in training: %(type2_ortho_contexts)s
+'''
+def format_debug_decision(d):
+    return DEBUG_DECISION_FMT % d
 
 def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     """Builds a punkt model and applies it to the same text"""
