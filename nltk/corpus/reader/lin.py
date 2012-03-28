@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Lin's Thesaurus
 #
-# Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2001-2012 NLTK Project
 # Author: Dan Blanchard <dan.blanchard@gmail.com>
 # URL: <http://www.nltk.org/>
-# For license information, see LICEimport re
+# For license information, see LICENSE.txt
 import re
 from collections import defaultdict
 
@@ -28,12 +28,12 @@ class LinThesaurusCorpusReader(CorpusReader):
 
         @param root: root directory containing thesaurus LISP files
         @type root: C{string}
-        @param badscore: the score to give to words which do not appear in each other's synsets
+        @param badscore: the score to give to words which do not appear in each other's sets of synonyms
         @type badscore: C{float}
         '''
 
-        super(LinThesaurus, self).__init__(root, r'sim[A-Z]\.lsp')
-        self._thesaurus = defaultdict(LinThesaurus._defaultdict_factory)
+        super(LinThesaurusCorpusReader, self).__init__(root, r'sim[A-Z]\.lsp')
+        self._thesaurus = defaultdict(LinThesaurusCorpusReader._defaultdict_factory)
         self._badscore = badscore
         for path, encoding, fileid in self.abspaths(include_encoding=True, include_fileid=True):
             with open(path) as lin_file:
@@ -42,7 +42,7 @@ class LinThesaurusCorpusReader(CorpusReader):
                     line = line.strip()
                     # Start of entry
                     if first:
-                        key = LinThesaurus._key_re.sub(r'\1', line)
+                        key = LinThesaurusCorpusReader._key_re.sub(r'\1', line)
                         first = False
                         self._thesaurus[fileid][key][key] = 1.0  # thesaurus entries don't contain themselves
                     # End of entry
@@ -115,7 +115,7 @@ class LinThesaurusCorpusReader(CorpusReader):
 def demo():
     import nltk
     print "Loading Lin's Thesaurus...",
-    thes = LinThesaurus(nltk.data.find('corpora/lin_thesaurus'))
+    thes = LinThesaurusCorpusReader(nltk.data.find('corpora/lin_thesaurus'))
     print "done"
 
     word1 = "business"
