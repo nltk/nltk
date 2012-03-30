@@ -18,7 +18,7 @@ class LinThesaurusCorpusReader(CorpusReader):
     _key_re = re.compile(r'\("?([^"]+)"? \(desc [0-9.]+\).+')
 
     @staticmethod
-    def _defaultdict_factory():
+    def __defaultdict_factory():
         ''' Factory for creating defaultdict of defaultdict(dict)s '''
         return defaultdict(dict)
 
@@ -33,7 +33,7 @@ class LinThesaurusCorpusReader(CorpusReader):
         '''
 
         super(LinThesaurusCorpusReader, self).__init__(root, r'sim[A-Z]\.lsp')
-        self._thesaurus = defaultdict(LinThesaurusCorpusReader._defaultdict_factory)
+        self._thesaurus = defaultdict(LinThesaurusCorpusReader.__defaultdict_factory)
         self._badscore = badscore
         for path, encoding, fileid in self.abspaths(include_encoding=True, include_fileid=True):
             with open(path) as lin_file:
@@ -44,7 +44,6 @@ class LinThesaurusCorpusReader(CorpusReader):
                     if first:
                         key = LinThesaurusCorpusReader._key_re.sub(r'\1', line)
                         first = False
-                        self._thesaurus[fileid][key][key] = 1.0  # thesaurus entries don't contain themselves
                     # End of entry
                     elif line == '))':
                         first = True
@@ -68,11 +67,18 @@ class LinThesaurusCorpusReader(CorpusReader):
         @return: If fileid is specified, just the score for the two ngrams; otherwise,
                  list of tuples of fileids and scores.
         '''
-        if fileid:
-            return self._thesaurus[fileid][ngram1][ngram2] if ngram2 in self._thesaurus[fileid][ngram1] else self._badscore
+        # Entries don't contain themselves, so make sure similarity between item and itself is 1.0
+        if ngram1 == ngram2:
+            if fileid:
+                return 1.0
+            else:
+                return [(fid, 1.0) for fid in self._fileids]
         else:
-            return [(fid, (self._thesaurus[fid][ngram1][ngram2] if ngram2 in self._thesaurus[fid][ngram1]
-                              else self._badscore)) for fid in self._fileids]
+            if fileid:
+                return self._thesaurus[fileid][ngram1][ngram2] if ngram2 in self._thesaurus[fileid][ngram1] else self._badscore
+            else:
+                return [(fid, (self._thesaurus[fid][ngram1][ngram2] if ngram2 in self._thesaurus[fid][ngram1]
+                                  else self._badscore)) for fid in self._fileids]
 
     def scored_synonyms(self, ngram, fileid=None):
         '''
@@ -106,6 +112,16 @@ class LinThesaurusCorpusReader(CorpusReader):
             return self._thesaurus[fileid][ngram].keys()
         else:
             return [(fileid, self._thesaurus[fileid][ngram].keys()) for fileid in self._fileids]
+
+    def __contains__(self, ngram):
+        '''
+        Determines whether or not the given ngram is in the thesaurus.
+
+        @param ngram: ngram to lookup
+        @type ngram: C{string}
+        @return: whether the given ngram is in the thesaurus.
+        '''
+        return reduce(lambda accum, fileid: accum or (ngram in self._thesaurus[fileid]), self._fileids, False)
 
 
 ######################################################################
