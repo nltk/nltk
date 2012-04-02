@@ -37,7 +37,7 @@ from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 
 import numpy as np
-from scipy.sparse import lil_matrix
+from scipy.sparse import coo_matrix
 
 
 class SklearnClassifier(ClassifierI):
@@ -64,12 +64,12 @@ class SklearnClassifier(ClassifierI):
         return "<SklearnClassifier(%r)>" % self._clf
 
     def batch_classify(self, featuresets):
-        X = self._featuresets_to_array(featuresets)
+        X = self._convert(featuresets)
         y = self._clf.predict(X)
         return [self._index_label[int(yi)] for yi in y]
 
     def batch_prob_classify(self, featuresets):
-        X = self._featuresets_to_array(featuresets)
+        X = self._convert(featuresets)
         y_proba = self._clf.predict_proba(X)
         return [self._make_probdist(y_proba[i]) for i in xrange(len(y_proba))]
 
@@ -97,29 +97,44 @@ class SklearnClassifier(ClassifierI):
                 self._label_index[label] = len(self._label_index)
 
         featuresets, labels = zip(*labeled_featuresets)
-        X = self._featuresets_to_array(featuresets)
+        X = self._convert(featuresets)
         y = np.array([self._label_index[l] for l in labels])
 
         self._clf.fit(X, y)
 
         return self
 
-    def _featuresets_to_array(self, featuresets):
-        """Convert featureset to array or sparse matrix.
-
-        Ignores features not seen during training.
-        """
-
+    def _convert(self, featuresets):
         if self._sparse:
-            # XXX Transforming to lil_matrix is wasteful, since scikit-learn
-            # estimators will typically convert to csr_matrix. Building a
-            # csr_matrix directly would be more efficient (but also harder).
-            zeros = lil_matrix
+            return self._featuresets_to_coo(featuresets)
         else:
-            zeros = np.zeros
+            return self._featuresets_to_array(featuresets)
 
-        X = zeros((len(featuresets), len(self._feature_index)),
-                  dtype=self._dtype)
+    def _featuresets_to_coo(self, featuresets):
+        """Convert featuresets to sparse matrix (COO format)."""
+
+        i_ind = []
+        j_ind = []
+        values = []
+
+        for i, fs in enumerate(featuresets):
+            for f, v in fs.iteritems():
+                try:
+                    j = self._feature_index[f]
+                    i_ind.append(i)
+                    j_ind.append(j)
+                    values.append(self._dtype(v))
+                except KeyError:
+                    pass
+
+        shape = (i + 1, len(self._feature_index))
+        return coo_matrix((values, (i_ind, j_ind)), shape=shape, dtype=self._dtype)
+
+    def _featuresets_to_array(self, featuresets):
+        """Convert featureset to Numpy array."""
+
+        X = np.zeros((len(featuresets), len(self._feature_index)),
+                     dtype=self._dtype)
 
         for i, fs in enumerate(featuresets):
             for f, v in fs.iteritems():
