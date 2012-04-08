@@ -14,15 +14,18 @@ token to a featureset.  Each feature/value pair is then encoded as a
 single binary feature for Mallet.
 """
 
-from tempfile import mkstemp
-import textwrap
+import os
+import pickle
 import re
-import time
 import subprocess
 import sys
+from tempfile import mkstemp
+import textwrap
+import time
 import zipfile
-import pickle
 from xml.etree import ElementTree
+
+import nltk
 
 from nltk.classify import call_mallet
 
