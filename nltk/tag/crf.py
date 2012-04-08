@@ -720,9 +720,7 @@ class CRFInfo(object):
 ## Demonstration code
 ###########################################################################
 
-def demo(train_size=100, test_size=100,
-         java_home='/usr/local/jdk1.5.0/',
-         mallet_home='/usr/local/mallet-0.4'):
+def demo(train_size=100, test_size=100, java_home=None, mallet_home=None):
     from nltk.corpus import brown
     import textwrap
 
