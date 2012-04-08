@@ -812,16 +812,6 @@ class AbstractParentedTree(Tree):
       - ``_setparent()`` is called whenever a new child is added.
       - ``_delparent()`` is called whenever a child is removed.
     """
-    def __init__(self, node_or_str, children=None):
-        super(AbstractParentedTree, self).__init__(node_or_str, children)
-        # iterate over self, and *not* children, because children
-        # might be an iterator.
-        for i, child in enumerate(self):
-            if isinstance(child, Tree):
-                self._setparent(child, i, dry_run=True)
-        for i, child in enumerate(self):
-            if isinstance(child, Tree):
-                self._setparent(child, i)
 
     #////////////////////////////////////////////////////////////
     # Parent management
