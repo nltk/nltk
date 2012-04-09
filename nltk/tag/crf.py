@@ -757,5 +757,4 @@ def demo(train_size=100, test_size=100, java_home=None, mallet_home=None):
 
 
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    demo()
