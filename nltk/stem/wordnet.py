@@ -14,7 +14,7 @@ class WordNetLemmatizer(object):
     WordNet Lemmatizer
 
     Lemmatize using WordNet's built-in morphy function.
-    The lemmatized form is guaranteed to exist in WordNet.
+    Returns the input word unchanged if it cannot be found in WordNet.
 
         >>> from nltk.stem import WordNetLemmatizer
         >>> wnl = WordNetLemmatizer()
@@ -35,14 +35,10 @@ class WordNetLemmatizer(object):
 
     def lemmatize(self, word, pos=NOUN):
         lemmas = wordnet._morphy(word, pos)
-        if not lemmas:
-            return word
-        lemmas.sort(key=len)
-        return lemmas[0]
+        return min(lemmas, key=len) if lemmas else word
 
     def __repr__(self):
         return '<WordNetLemmatizer>'
-
 
 
 if __name__ == "__main__":
