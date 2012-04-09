@@ -23,7 +23,7 @@ the mallet package, using the ``config_mallet()`` function. Typical usage:
 import os
 import os.path
 
-from nltk.internals import find_binary, java
+from nltk.internals import find_binary, java, CLASSPATH_SEP
 
 ######################################################################
 #{ Configuration
@@ -57,7 +57,7 @@ def config_mallet(mallet_home=None):
     if not os.path.isdir(lib_dir):
         raise ValueError('While configuring mallet: directory %r '
                          'not found.' % lib_dir)
-    _mallet_classpath = ':'.join([os.path.join(lib_dir, filename)
+    _mallet_classpath = CLASSPATH_SEP.join([os.path.join(lib_dir, filename)
                                   for filename in sorted(os.listdir(lib_dir))
                                   if filename.endswith('.jar')])
 
@@ -78,6 +78,6 @@ def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     if classpath is None:
         classpath = _mallet_classpath
     else:
-        classpath += ':' + _mallet_classpath
+        classpath += CLASSPATH_SEP + _mallet_classpath
     # Delegate to java()
     return java(cmd, classpath, stdin, stdout, stderr, blocking)
