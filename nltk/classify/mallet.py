@@ -48,7 +48,7 @@ def config_mallet(mallet_home=None):
         'mallet', mallet_home,
         env_vars=['MALLET',  'MALLET_HOME'],
         binary_names=['mallethon'],
-        url='http://mallet.cs.umass.edu>')
+        url='http://mallet.cs.umass.edu')
     # Record the location where mallet lives.
     bin_dir = os.path.split(mallethon_bin)[0]
     _mallet_home = os.path.split(bin_dir)[0]
