@@ -64,7 +64,7 @@ class SennaTagger(TaggerI):
 
         >>> from nltk.tag.senna import SennaTagger
         >>> pipeline = SennaTagger('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
-        >>> sent = u'Düsseldorf is an international business center'.split()
+        >>> sent = u'D\xfcsseldorf is an international business center'.split()
         >>> pipeline.tag(sent)
         [{'word': u'D\xfcsseldorf', 'chk': u'B-NP', 'ner': u'B-PER', 'pos': u'NNP'},
         {'word': u'is', 'chk': u'B-VP', 'ner': u'O', 'pos': u'VBZ'},
