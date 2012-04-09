@@ -68,9 +68,6 @@ def convert_regexp_to_nongrouping(pattern):
 
 _java_bin = None
 _java_options = []
-CLASSPATH_SEP = ':'
-if os.name == 'nt':
-    CLASSPATH_SEP = ';'
 # [xx] add classpath option to config_java?
 def config_java(bin=None, options=None, verbose=True):
     """
@@ -152,7 +149,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     if classpath is None:
         classpath = NLTK_JAR
     else:
-        classpath += CLASSPATH_SEP + NLTK_JAR
+        classpath += os.path.pathsep + NLTK_JAR
 
     # Construct the full command string.
     cmd = list(cmd)
@@ -569,7 +566,7 @@ def find_jar(name, path_to_jar=None, env_vars=(),
         if env_var in os.environ:
             if env_var == 'CLASSPATH':
                 classpath = os.environ['CLASSPATH']
-                for cp in classpath.split(CLASSPATH_SEP):
+                for cp in classpath.split(os.path.pathsep):
                     if os.path.isfile(cp) and os.path.basename(cp) == name:
                         if verbose: print '[Found %s: %s]' % (name, cp)
                         return cp
