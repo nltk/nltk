@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# encoding: utf-8
 # Natural Language Toolkit: Interface to the Senna tagger
 #
 # Copyright (C) 2001-2012 NLTK Project
@@ -37,7 +37,7 @@ class SentenceMisalignment(Error):
 
 
 class SennaTagger(TaggerI):
-    """
+    r"""
     A general interface of the SENNA pipeline that supports any of the
     operations specified in SUPPORTED_OPERATIONS.
 
@@ -64,7 +64,7 @@ class SennaTagger(TaggerI):
 
         >>> from nltk.tag.senna import SennaTagger
         >>> pipeline = SennaTagger('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
-        >>> sent = u'D\xfcsseldorf is an international business center'.split()
+        >>> sent = u'Düsseldorf is an international business center'.split()
         >>> pipeline.tag(sent)
         [{'word': u'D\xfcsseldorf', 'chk': u'B-NP', 'ner': u'B-PER', 'pos': u'NNP'},
         {'word': u'is', 'chk': u'B-VP', 'ner': u'O', 'pos': u'VBZ'},
@@ -87,7 +87,7 @@ class SennaTagger(TaggerI):
         A property that determines the system specific binary that should be
         used in the pipeline. In case, the system is not known the senna binary will
         be used.
-        """        
+        """
         os_name = system()
         if os_name == 'Linux':
             bits = architecture()[0]
