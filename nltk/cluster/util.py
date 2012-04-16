@@ -41,10 +41,10 @@ class VectorSpaceClusterer(ClusterI):
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
             [u, d, vt] = numpy.linalg.svd(numpy.transpose(numpy.array(vectors)))
             S = d[:self._svd_dimensions] * \
-                numpy.identity(self._svd_dimensions, numpy.Float64)
+                numpy.identity(self._svd_dimensions, numpy.float64)
             T = u[:,:self._svd_dimensions]
             Dt = vt[:self._svd_dimensions,:]
-            vectors = numpy.transpose(numpy.matrixmultiply(S, Dt))
+            vectors = numpy.transpose(numpy.dot(S, Dt))
             self._Tt = numpy.transpose(T)
 
         # call abstract method to cluster the vectors
@@ -65,7 +65,7 @@ class VectorSpaceClusterer(ClusterI):
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt is not None:
-            vector = numpy.matrixmultiply(self._Tt, vector)
+            vector = numpy.dot(self._Tt, vector)
         cluster = self.classify_vectorspace(vector)
         return self.cluster_name(cluster)
 
@@ -79,7 +79,7 @@ class VectorSpaceClusterer(ClusterI):
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt is not None:
-            vector = numpy.matrixmultiply(self._Tt, vector)
+            vector = numpy.dot(self._Tt, vector)
         return self.likelihood_vectorspace(vector, label)
 
     def likelihood_vectorspace(self, vector, cluster):
@@ -97,7 +97,7 @@ class VectorSpaceClusterer(ClusterI):
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt is not None:
-            vector = numpy.matrixmultiply(self._Tt, vector)
+            vector = numpy.dot(self._Tt, vector)
         return vector
 
     def _normalise(self, vector):

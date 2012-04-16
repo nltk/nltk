@@ -5,9 +5,10 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import copy
 import numpy
 import random
-import copy
+import sys
 
 from nltk.cluster.util import VectorSpaceClusterer
 
