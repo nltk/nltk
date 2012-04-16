@@ -9,7 +9,7 @@
 A utility for displaying lexical dispersion.
 """
 
-def dispersion_plot(text, words):
+def dispersion_plot(text, words, ignore_case=False):
     """
     Generate a lexical dispersion plot.
 
@@ -17,6 +17,8 @@ def dispersion_plot(text, words):
     :type text: list(str) or enum(str)
     :param words: The target words
     :type words: list of str
+    :param ignore_case: flag to set if case should be ignored when searching text
+    :type ignore_case: bool
     """
 
     try:
@@ -27,9 +29,17 @@ def dispersion_plot(text, words):
 
     text = list(text)
     words.reverse()
-    points = [(x,y) for x in range(len(text))
-                    for y in range(len(words))
-                    if text[x] == words[y]]
+
+    if ignore_case:
+        words_to_comp = map(str.lower, words)
+        text_to_comp = map(str.lower, text)
+    else:
+        words_to_comp = words
+        text_to_comp = text
+
+    points = [(x,y) for x in range(len(text_to_comp))
+                    for y in range(len(words_to_comp))
+                    if text_to_comp[x] == words_to_comp[y]]
     if points:
         x, y = zip(*points)
     else:
