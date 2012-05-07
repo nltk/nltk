@@ -173,7 +173,10 @@ def breadth_first(tree, children=iter, maxdepth=-1):
         yield node
 
         if depth != maxdepth:
-            queue.extend((c, depth + 1) for c in children(node))
+            try:
+                queue.extend((c, depth + 1) for c in children(node))
+            except TypeError:
+                pass
 
 ##########################################################################
 # Guess Character Encoding
