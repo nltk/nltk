@@ -20,13 +20,9 @@ from nltk.metrics.distance        import (edit_distance, binary_distance,
                                           jaccard_distance, masi_distance,
                                           interval_distance, custom_distance,
                                           presence, fractional_presence)
-from nltk.metrics.windowdiff      import windowdiff
+from nltk.metrics.segmentation    import windowdiff, ghd, pk
 from nltk.metrics.agreement       import AnnotationTask
 from nltk.metrics.association     import (NgramAssocMeasures, BigramAssocMeasures,
                                           TrigramAssocMeasures, ContingencyMeasures)
 from nltk.metrics.spearman        import (spearman_correlation, ranks_from_sequence,
                                           ranks_from_scores)
-
-import nltk.metrics.segmentation
-from nltk.metrics.segmentation import ghd, pk
-

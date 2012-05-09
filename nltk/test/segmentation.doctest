@@ -1,27 +1,46 @@
 .. Copyright (C) 2001-2012 NLTK Project
 .. For license information, see LICENSE.TXT
 
-=======
-Segmentation Metrics
-=======
+=========================
+Text Segmentation Metrics
+=========================
 
-The `nltk.metrics.segmentation` package provides a variety of
+The `nltk.metrics.segmentation` module provides a variety of
 *evaluation measures* which can be used for evaluating text
 segmentation methods
 
-    >>> from nltk.metrics.segmentation.ghd import ghd
-    >>> from nltk.metrics.segmentation.pk import pk
+A segmentation is any sequence over a vocabulary of two items
+(e.g. "0", "1"), where the specified boundary value is used to
+mark the edge of a segmentation.
 
-------------------
+    >>> from nltk.metrics import windowdiff, ghd, pk
+
+----------
+Windowdiff
+----------
+
+Compute the windowdiff score for a pair of segmentations.
+
+    >>> s1 = "00000010000000001000000"
+    >>> s2 = "00000001000000010000000"
+    >>> s3 = "00010000000000000001000"
+    >>> windowdiff(s1, s1, 3)
+    0
+    >>> windowdiff(s1, s2, 3)
+    4
+    >>> windowdiff(s2, s3, 3)
+    16
+
+
+----------------------------
 Generalized Hamming Distance
-------------------
+----------------------------
 
-Generalized Hamming Distance may be used as an evaluation metric
-for text segmentation. It compares two segmentation, and return
-an estimation of the cost to transform a segmentation into another.
-The transformation is done though boundary insertions, deletions and shift.
-Each of these operation has a different cost that should be passed to the function.
-Segmentations are represented using strings of 0 and 1, 1 being a boundary.
+Generalized Hamming Distance may be used as an evaluation metric for
+text segmentation. It compares two segmentations, and returns the cost
+of transforming one segmentation into the other.  The transformation
+is done though boundary insertions, deletions and shifts.  Each
+operation may have a different cost.
 
     >>> ghd('1100100000', '1100010000', 1.0, 1.0, 0.5)
     0.5
@@ -37,16 +56,15 @@ Segmentations are represented using strings of 0 and 1, 1 being a boundary.
     6.0
 
 
-------------------
+--------------
 Befferman's Pk
-------------------
+--------------
 
-Beeferman's Pk was proposed as an evaluation metric
-for text segmentation. It takes a reference segmentation as first argument,
-an hypothesis segmentation as second argument.
-It returns the propability that randomly chosen
-pair of words a distance of k words is inconsistently classified
-Segmentations are represented using strings of 0 and 1, 1 being a boundary.
+Beeferman's Pk was proposed as an evaluation metric for text
+segmentation. It takes a reference segmentation as first argument, an
+hypothesis segmentation as second argument.  It returns the
+propability that randomly chosen pair of words a distance of k words
+is inconsistently classified.
 
     >>> print pk('1000100', '1000100', 3)
     0.0
