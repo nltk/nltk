@@ -15,7 +15,7 @@ import os
 
 from itertools import islice, chain
 from pprint import pprint
-from collections import defaultdict
+from collections import defaultdict, deque
 
 from nltk.internals import slice_bounds
 
@@ -159,25 +159,23 @@ def filestring(f):
 # Breadth-First Search
 ##########################################################################
 
-def breadth_first(tree, children=iter, depth=-1, queue=None):
+def breadth_first(tree, children=iter, maxdepth=-1):
     """Traverse the nodes of a tree in breadth-first order.
     (No need to check for cycles.)
     The first argument should be the tree root;
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
     """
-    if queue is None:
-        queue = []
-    queue.append(tree)
+    queue = deque([(tree, 0)])
 
     while queue:
-        node = queue.pop(0)
+        node, depth = queue.popleft()
         yield node
-        if depth != 0:
+
+        if depth != maxdepth:
             try:
-                queue += children(node)
-                depth -= 1
-            except:
+                queue.extend((c, depth + 1) for c in children(node))
+            except TypeError:
                 pass
 
 ##########################################################################
