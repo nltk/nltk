@@ -6,9 +6,9 @@
 # For license information, see LICENSE.TXT
 
 import copy
-import sys
-import math
 import numpy
+from sys import stdout
+from math import sqrt
 
 from nltk.cluster.api import ClusterI
 
@@ -104,7 +104,7 @@ class VectorSpaceClusterer(ClusterI):
         """
         Normalises the vector to unit length.
         """
-        return vector / math.sqrt(numpy.dot(vector, vector))
+        return vector / sqrt(numpy.dot(vector, vector))
 
 def euclidean_distance(u, v):
     """
@@ -112,14 +112,14 @@ def euclidean_distance(u, v):
     to the length of the vector (u - v).
     """
     diff = u - v
-    return math.sqrt(numpy.dot(diff, diff))
+    return sqrt(numpy.dot(diff, diff))
 
 def cosine_distance(u, v):
     """
     Returns 1 minus the cosine of the angle between vectors v and u. This is equal to
     1 - (u.v / |u||v|).
     """
-    return 1 - (numpy.dot(u, v) / (math.sqrt(numpy.dot(u, u)) * math.sqrt(numpy.dot(v, v))))
+    return 1 - (numpy.dot(u, v) / (sqrt(numpy.dot(u, u)) * sqrt(numpy.dot(v, v))))
 
 class _DendrogramNode(object):
     """ Tree node of a dendrogram. """
@@ -236,7 +236,7 @@ class Dendrogram(object):
         def format(centre, left=' ', right=' '):
             return '%s%s%s' % (lhalf*left, centre, right*rhalf)
         def display(str):
-            sys.stdout.write(str)
+            stdout.write(str)
 
         # for each merge, top down
         queue = [(root._value, root)]
