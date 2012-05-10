@@ -366,7 +366,7 @@ class Downloader(object):
        re-downloaded."""
 
     # DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml'
-    DEFAULT_URL = 'https://raw.github.com/nltk/nltk_data/master/index.xml'
+    DEFAULT_URL = 'http://nltk.github.com/nltk_data/index.html'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
        ``Downloader`` object."""
