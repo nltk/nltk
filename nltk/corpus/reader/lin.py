@@ -4,6 +4,7 @@
 # Author: Dan Blanchard <dan.blanchard@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.txt
+
 import re
 from collections import defaultdict
 
@@ -129,10 +130,7 @@ class LinThesaurusCorpusReader(CorpusReader):
 ######################################################################
 
 def demo():
-    import nltk
-    print "Loading Lin's Thesaurus...",
-    thes = LinThesaurusCorpusReader(nltk.data.find('corpora/lin_thesaurus'))
-    print "done"
+    from nltk.corpus import lin_thesaurus as thes
 
     word1 = "business"
     word2 = "enterprise"
@@ -148,7 +146,8 @@ def demo():
     print "Getting synonyms from simN.lsp (noun subsection) for " + word1
     print thes.synonyms(word1, fileid="simN.lsp")
 
-    print "Similarity score for {} and {}: {}".format(word1, word2, thes.similarity(word1, word2))
+    print "Similarity score for %s and %s:" % (word1, word2)
+    print thes.similarity(word1, word2)
 
 
 if __name__ == '__main__':
