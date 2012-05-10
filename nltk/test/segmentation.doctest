@@ -1,0 +1,80 @@
+.. Copyright (C) 2001-2012 NLTK Project
+.. For license information, see LICENSE.TXT
+
+=========================
+Text Segmentation Metrics
+=========================
+
+The `nltk.metrics.segmentation` module provides a variety of
+*evaluation measures* which can be used for evaluating text
+segmentation methods
+
+A segmentation is any sequence over a vocabulary of two items
+(e.g. "0", "1"), where the specified boundary value is used to
+mark the edge of a segmentation.
+
+    >>> from nltk.metrics import windowdiff, ghd, pk
+
+----------
+Windowdiff
+----------
+
+Compute the windowdiff score for a pair of segmentations.
+
+    >>> s1 = "00000010000000001000000"
+    >>> s2 = "00000001000000010000000"
+    >>> s3 = "00010000000000000001000"
+    >>> windowdiff(s1, s1, 3)
+    0
+    >>> windowdiff(s1, s2, 3)
+    4
+    >>> windowdiff(s2, s3, 3)
+    16
+
+
+----------------------------
+Generalized Hamming Distance
+----------------------------
+
+Generalized Hamming Distance may be used as an evaluation metric for
+text segmentation. It compares two segmentations, and returns the cost
+of transforming one segmentation into the other.  The transformation
+is done though boundary insertions, deletions and shifts.  Each
+operation may have a different cost.
+
+    >>> ghd('1100100000', '1100010000', 1.0, 1.0, 0.5)
+    0.5
+    >>> ghd('1100100000', '1100000001', 1.0, 1.0, 0.5)
+    2.0
+    >>> ghd('011', '110', 1.0, 1.0, 0.5)
+    1.0
+    >>> ghd('1', '0', 1.0, 1.0, 0.5)
+    1.0
+    >>> ghd('111', '000', 1.0, 1.0, 0.5)
+    3.0
+    >>> ghd('000', '111', 1.0, 2.0, 0.5)
+    6.0
+
+
+--------------
+Befferman's Pk
+--------------
+
+Beeferman's Pk was proposed as an evaluation metric for text
+segmentation. It takes a reference segmentation as first argument, an
+hypothesis segmentation as second argument.  It returns the
+propability that randomly chosen pair of words a distance of k words
+is inconsistently classified.
+
+    >>> print pk('1000100', '1000100', 3)
+    0.0
+    >>> print pk('100', '010', 2)
+    0.5
+    >>> print pk('100100', '111111', 2)
+    0.64
+    >>> print pk('100100', '000000', 2)
+    0.04
+    >>> print pk('100100', '111111', 3)
+    0.25
+    >>> print pk('100100', '000000', 3)
+    0.25
