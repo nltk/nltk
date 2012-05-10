@@ -118,5 +118,5 @@ __all__ = [
     'IPIPANCorpusReader', 'Pl196xCorpusReader',
     'TEICorpusView', 'KNBCorpusReader', 'ChasenCorpusReader',
     'CHILDESCorpusReader', 'AlignedCorpusReader',
-    'TimitTaggedCorpusReader'
+    'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader'
 ]
