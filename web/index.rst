@@ -56,6 +56,11 @@ Display a parse tree:
 
 .. image:: images/tree.gif
 
+NLTK Corpora
+------------
+
+The complete list of NLTK corpora is available at `http://nltk.github.com/nltk_data`_.
+
 NLTK Development
 ----------------
 
