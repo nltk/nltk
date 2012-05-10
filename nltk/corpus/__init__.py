@@ -127,6 +127,8 @@ jeita = LazyCorpusLoader(
     'jeita', ChasenCorpusReader, r'.*\.chasen', encoding='utf-8')
 knbc = LazyCorpusLoader(
     'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
+lin_thesaurus = LazyCorpusLoader(
+    'lin_thesaurus', LinThesaurusCorpusReader, r'.*\.lsp')
 mac_morpho = LazyCorpusLoader(
     'mac_morpho', MacMorphoCorpusReader, r'(?!\.).*\.txt',
     tag_mapping_function=simplify_tag, encoding='latin-1')
