@@ -121,18 +121,16 @@ import help
 # PACKAGES
 ###########################################################
 
-# Processing packages -- these define __all__ carefully.
-
-import chunk;     from chunk import *
-import classify;  from classify import *
-import inference; from inference import *
-import metrics;   from metrics import *
-import model;     from model import *
-import parse;     from parse import *
-import tag;       from tag import *
-import tokenize;  from tokenize import *
-import sem;       from sem import *
-import stem;      from stem import *
+from chunk import *
+from classify import *
+from inference import *
+from metrics import *
+from model import *
+from parse import *
+from tag import *
+from tokenize import *
+from sem import *
+from stem import *
 
 # Packages which can be lazily imported
 # (a) we don't import *
@@ -145,6 +143,8 @@ chat = lazyimport.LazyModule('chat', locals(), globals())
 corpus = lazyimport.LazyModule('corpus', locals(), globals())
 draw = lazyimport.LazyModule('draw', locals(), globals())
 toolbox = lazyimport.LazyModule('toolbox', locals(), globals())
+
+# Optional loading
 
 try:
     import numpy
@@ -165,6 +165,15 @@ else:
         import warnings
         warnings.warn("Corpus downloader GUI not loaded "
                       "(RuntimeError during import: %s)" % str(e))
+
+# explicitly import all top-level modules (ensuring
+# they override the same names inadvertently imported
+# from a subpackage)
+
+import align, ccg, chunk, classify, collocations
+import data, featstruct, grammar, inference, metrics
+import misc, model, parse, probability, sem, sourcedstring, stem
+import tag, text, tokenize, tree, treetransforms, util
 
 # override any accidentally imported demo
 def demo():
