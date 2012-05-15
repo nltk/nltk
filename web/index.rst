@@ -76,7 +76,3 @@ Contents
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-9 April 2012
-
-
