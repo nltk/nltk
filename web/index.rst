@@ -59,7 +59,7 @@ Display a parse tree:
 NLTK Corpora
 ------------
 
-The complete list of NLTK corpora is available at `http://nltk.github.com/nltk_data`_.
+The complete list of NLTK corpora is available at `http://nltk.github.com/nltk_data <http://nltk.github.com/nltk_data>`_.
 
 NLTK Development
 ----------------
