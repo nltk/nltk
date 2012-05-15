@@ -21,7 +21,7 @@ If you do, you can skip to the final step and just install NLTK.
 32-bit binary installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Install Python: http://www.python.org/download/releases/2.7.2/
+#. Install Python: http://www.python.org/download/releases/2.7.3/
 #. Install Numpy (optional): http://sourceforge.net/projects/numpy/files/NumPy/1.6.1/numpy-1.6.1-win32-superpack-python2.7.exe
 #. Install NLTK: http://pypi.python.org/pypi/nltk
 #. Test installation: ``Start>Python27``, then type ``import nltk``
@@ -29,7 +29,7 @@ If you do, you can skip to the final step and just install NLTK.
 Source installation (for 32-bit or 64-bit Windows)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Install Python: http://www.python.org/download/releases/2.7.2/
+#. Install Python: http://www.python.org/download/releases/2.7.3/
 #. Install Numpy (optional): http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 #. Install Setuptools: http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
 #. Install Pip: ``Start>Run... c:\Python27\Scripts\easy_install pip``

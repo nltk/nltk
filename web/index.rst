@@ -59,10 +59,9 @@ Display a parse tree:
 Links
 -----
 
-* NLTK development is hosted at `https://github.com/nltk <https://github.com/nltk>`_.
-* NLTK data is hosted at `http://nltk.github.com/nltk_data <http://nltk.github.com/nltk_data>`_.
-* NLTK's previous website is available at `https://sites.google.com/site/naturallanguagetoolkit/ <https://sites.google.com/site/naturallanguagetoolkit/>`_.
-
+* NLTK development is hosted at https://github.com/nltk
+* NLTK data is hosted at http://nltk.github.com/nltk_data
+* NLTK's previous website is available at https://sites.google.com/site/naturallanguagetoolkit
 
 Contents
 ========
