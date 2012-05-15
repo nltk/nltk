@@ -15,6 +15,7 @@ A. MISC PREPARATION
 B. NLTK VERSION
 
   1. Modify nltk/VERSION with the version number and commit
+  2. git tag -a 2.X.Y -m "version 2.X.Y"
 
 C. ERROR CHECKING
 
