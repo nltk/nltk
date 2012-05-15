@@ -10,14 +10,7 @@ PYTHON = python
 VERSION = $(shell $(PYTHON) -c 'import nltk; print nltk.__version__' | sed '/^Warning: */d')
 NLTK_URL = $(shell $(PYTHON) -c 'import nltk; print nltk.__url__' | sed '/^Warning: */d')
 
-.PHONY: usage all doc clean clean_code clean_up
-
-usage:
-	@echo "make dist -- Build distributions (output to dist/)"
-	@echo "make python -- Fetch Python distributions"
-	@echo "make upload -- Upload files to NLTK website"
-	@echo "make clean -- Remove all built files and temporary files"
-	@echo "make clean_code -- Remove temporary files"
+.PHONY: all clean clean_code
 
 all: dist
 
@@ -66,20 +59,12 @@ zipdist: clean_code
 windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst --plat-name=win32
 
-datadist:
-	find nltk_data -print | egrep -v '.svn|.DS_Store' | zip -n .zip:.gz dist/nltk-data-$(VERSION).zip -@
-
-nightlydist: codedist
-	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
-
 ########################################################################
 # CLEAN
 ########################################################################
 
-.PHONY: clean clean_code
-
 clean: clean_code
-	rm -rf build iso dist api MANIFEST $(MACROOT) nltk-$(VERSION)
+	rm -rf build iso dist api MANIFEST nltk-$(VERSION) nltk.egg-info
 	$(MAKE) -C javasrc clean
 #	rm -f nltk/nltk.jar
 

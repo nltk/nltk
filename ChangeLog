@@ -1,9 +1,24 @@
-Version 2.0.1 (rc2) 2011-12-01
+Version 2.0.1 2012-05-15
 
-* numerous minor bugfixes
-* removed most wildcard imports
-* converted documentation to Sphinx format
+* moved NLTK to GitHub: http://github.com/nltk
+* set up integration testing: https://jenkins.shiningpanda.com/nltk/ (Morten Neergaard)
+* converted documentation to Sphinx format: http://nltk.github.com/api/nltk.html
+* dozens of minor enhancements and bugfixes: https://github.com/nltk/nltk/commits/
+* dozens of fixes for conformance with PEP-8
+* dozens of fixes to ensure operation with Python 2.5
+* added interface to Lin's Dependency Thesaurus (Dan Blanchard)
+* added interface to scikit-learn classifiers (Lars Buitinck)
+* added segmentation evaluation measures (David Doukhan)
 	
+Thanks to the following	contributors to	2.0.1 (since 2.0b9, July 2010):
+Rami Al-Rfou', Yonatan Becker, Steven Bethard, Daniel Blanchard, Lars
+Buitinck, David Coles, Lucas Cooper, David Doukhan, Dan Garrette,
+Masato Hagiwara, Michael Hansen, Michael Heilman, Rebecca Ingram,
+Sudharshan Kaushik, Mikhail Korobov, Peter Ljunglof, Nitin Madnani,
+Rob Malouf, Tomonori Nagano, Morten Neergaard, David Nemeskey,
+Joel Nothman, Jacob Perkins, Alessandro Presta, Alex Rudnick,
+Nathan Schneider, Stefano Lattarini, Peter Stahl, Jason Yoder
+
 Version 2.0.1 (rc1) 2011-04-11
 
 NLTK:
@@ -52,13 +67,6 @@ Documentation:
 
 NLTK-Contrib:
 * Viethen and Dale referring expression algorithms
-
-Thanks to the following	contributors to	2.0.1 (since 2.0b9, July 2010)
-Yonatan Becker, Steven Bethard, David Coles, Dan Garrette,
-Masato Hagiwara, Michael Hansen, Rebecca Ingram,
-Sudharshan Kaushik, Peter Ljunglof, Nitin Madnani, Rob Malouf,
-Tomonori Nagano, David Nemeskey, Joel Nothman, Jacob Perkins,
-Alex Rudnick, Nathan Schneider, Peter Stahl, Jason Yoder
 
 
 Version 2.0b9 2010-07-25

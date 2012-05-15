@@ -9,7 +9,7 @@ A. MISC PREPARATION
 
   1. Check for new versions of Python, Numpy, Matplotlib, and update wiki download instructions
   2. Update the data index (make data_index) and commit
-  3. Update the ChangeLog ("svn log; then summarize the key changes")
+  3. Update the ChangeLog
   4. Update the news page in nltk/web/news.rst
 
 B. NLTK VERSION
