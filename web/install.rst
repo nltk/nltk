@@ -33,6 +33,6 @@ Source installation (for 32-bit or 64-bit Windows)
 #. Install Numpy (optional): http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 #. Install Setuptools: http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
 #. Install Pip: ``Start>Run... c:\Python27\Scripts\easy_install pip``
-#. Install NLTK: ``Start>Run... pip install nltk``
+#. Install NLTK: ``Start>Run... c:\Python27\Scripts\pip install nltk``
 #. Test installation: ``Start>Python27``, then type ``import nltk``
 
