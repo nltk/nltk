@@ -5,6 +5,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.txt
 
+from __future__ import with_statement
+
 import re
 from collections import defaultdict
 
