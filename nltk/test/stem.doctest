@@ -16,7 +16,7 @@ word stem.
 Unit tests for the Porter stemmer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    >>> from nltk.stem.porter import * 
+    >>> from nltk.stem.porter import *
 
 Create a new Porter stemmer.
 
@@ -185,7 +185,7 @@ Stem a word.
 
     >>> stemmer_german.stem(u"Schr\xe4nke")
     u'schrank'
- 
+
 Decide not to stem stopwords.
 
     >>> stemmer_german2 = SnowballStemmer("german", ignore_stopwords=True)
@@ -207,7 +207,8 @@ Russian words both consisting of Cyrillic and Roman letters can be stemmed.
     >>> stemmer_russian.stem(u'\u0430\u0432\u0435\u043d\u0430\u043d\u0442\u043d'
     ...                      u'\u0435\u043d\u044c\u043a\u0430\u044f')
     u'\u0430\u0432\u0435\u043d\u0430\u043d\u0442\u043d\u0435\u043d\u044c\u043a'
-    >>> print stemmer_russian.stem(u"авенантненькая")
-    авенантненьк
+    >>> stemmer_russian.stem(u"\u0430\u0432\u0435\u043d\u0430\u043d"
+    ...                u"\u0442\u043d\u0435\u043d\u044c\u043a\u0430\u044f")
+    u'\u0430\u0432\u0435\u043d\u0430\u043d\u0442\u043d\u0435\u043d\u044c\u043a'
     >>> stemmer_russian.stem(u"avenantnen'kai^a")
     u"avenantnen'k"
