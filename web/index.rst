@@ -12,7 +12,7 @@ NLTK is available for Windows, Mac OS X, and Linux. Best of all, NLTK is a free,
 NLTK has been called "a wonderful tool for teaching, and working in, computational linguistics using Python,"
 and "an amazing library to play with natural language."
 
-`Natural Language Processing with Python <http://nltk.org/book>`_ provides a practical
+`Natural Language Processing with Python <https://sites.google.com/site/naturallanguagetoolkit/book>`_ provides a practical
 introduction to programming for language processing.
 Written by the creators of NLTK, it guides the reader through the fundamentals
 of writing Python programs, working with corpora, categorizing text, analyzing linguistic structure,
@@ -62,6 +62,7 @@ Links
 * NLTK development is hosted at https://github.com/nltk
 * NLTK data is hosted at http://nltk.github.com/nltk_data
 * NLTK's previous website is available at https://sites.google.com/site/naturallanguagetoolkit
+* The book is available at https://sites.google.com/site/naturallanguagetoolkit/book
 
 Contents
 ========
