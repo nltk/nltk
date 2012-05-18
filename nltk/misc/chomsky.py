@@ -120,7 +120,8 @@ scope of a complex symbol.
 # List of OBJECTs selected for profound sententiousness.
 
 import textwrap, random
-from itertools import chain, islice, izip
+from itertools import chain, islice
+from nltk.compat import izip
 
 def generate_chomsky(times=5, line_length=72):
     parts = []

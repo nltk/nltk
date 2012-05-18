@@ -17,6 +17,7 @@ from __future__ import print_function
 
 from math import log
 from collections import defaultdict
+from functools import reduce
 import re
 
 from nltk.probability import FreqDist, LidstoneProbDist
@@ -25,7 +26,6 @@ from nltk.util import tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
-from functools import reduce
 
 
 class ContextIndex(object):

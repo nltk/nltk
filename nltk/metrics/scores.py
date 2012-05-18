@@ -7,7 +7,6 @@
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
-from itertools import izip
 from math import fabs
 import operator
 from random import shuffle
@@ -18,7 +17,7 @@ try:
 except ImportError:
     betai = None
 
-from nltk.compat import xrange
+from nltk.compat import xrange, izip
 from nltk.util import LazyConcatenation, LazyMap
 
 def accuracy(reference, test):

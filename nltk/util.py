@@ -571,6 +571,7 @@ class OrderedDict(dict):
         return d
 
     def items(self):
+        # returns iterator under python 3 and list under python 2
         return zip(self.keys(), self.values())
 
     def keys(self, data=None, keys=None):

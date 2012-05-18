@@ -272,7 +272,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
     def _tag(self, unlabeled_sequence):
         path = self._best_path(unlabeled_sequence)
-        return zip(unlabeled_sequence, path)
+        return list(zip(unlabeled_sequence, path))
 
     def _output_logprob(self, state, symbol):
         """

@@ -2204,8 +2204,7 @@ def demo(numsamples=6, numoutcomes=500):
         print(FORMATSTR % val)
 
     # Print the totals for each column (should all be 1.0)
-    zvals = zip(*vals)
-    def sum(lst): return reduce(lambda x,y:x+y, lst, 0)
+    zvals = list(zip(*vals))
     sums = [sum(val) for val in zvals[1:]]
     print('-'*9*(len(pdists)+2))
     FORMATSTR = 'Total ' + '%8.6f '*(len(pdists)) + '| %8.6f'
