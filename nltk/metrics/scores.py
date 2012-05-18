@@ -18,6 +18,7 @@ try:
 except ImportError:
     betai = None
 
+from nltk.compat import xrange
 from nltk.util import LazyConcatenation, LazyMap
 
 def accuracy(reference, test):
@@ -174,9 +175,9 @@ def approxrand(a, b, **kwargs):
 
     c = 1e-100
     lst = LazyConcatenation([a, b])
-    indices = range(len(a) + len(b))
+    indices = list(range(len(a) + len(b)))
 
-    for i in range(shuffles):
+    for i in xrange(shuffles):
         if verbose and i % 10 == 0:
             print 'shuffle: %d' % i
 

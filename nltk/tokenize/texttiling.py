@@ -12,9 +12,9 @@ import numpy
 
 from nltk.tokenize.api import TokenizerI
 
-BLOCK_COMPARISON, VOCABULARY_INTRODUCTION = range(2)
-LC, HC = range(2)
-DEFAULT_SMOOTHING = range(1)
+BLOCK_COMPARISON, VOCABULARY_INTRODUCTION = 0, 1
+LC, HC = 0, 1
+DEFAULT_SMOOTHING = [0]
 
 
 class TextTilingTokenizer(TokenizerI):

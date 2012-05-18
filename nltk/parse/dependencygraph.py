@@ -296,7 +296,7 @@ def nx_graph(self):
     labeled directed graph.
     :rtype: XDigraph
     """
-    nx_nodelist = range(1, len(self.nodelist))
+    nx_nodelist = list(range(1, len(self.nodelist)))
     nx_edgelist = [(n, self._hd(n), self._rel(n))
                         for n in nx_nodelist if self._hd(n)]
     self.nx_labels = {}

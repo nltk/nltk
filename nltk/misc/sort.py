@@ -140,7 +140,7 @@ def demo():
     from random import shuffle
 
     for size in (10, 20, 50, 100, 200, 500, 1000):
-        a = range(size)
+        a = list(range(size))
 
         # various sort methods
         shuffle(a); count_selection = selection(a)

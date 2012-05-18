@@ -129,7 +129,7 @@ class Boxer(object):
             assert reduce(operator.and_, (id is not None for id in discourse_ids))
             use_disc_id = True
         else:
-            discourse_ids = map(str, xrange(len(inputs)))
+            discourse_ids = map(str, range(len(inputs)))
             use_disc_id = False
 
         candc_out = self._call_candc(inputs, discourse_ids, question, verbose=verbose)

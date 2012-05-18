@@ -195,7 +195,7 @@ class MaxentClassifier(ClassifierI):
         """
         :param show: all, neg, or pos (for negative-only or positive-only)
         """
-        fids = sorted(range(len(self._weights)),
+        fids = sorted(list(range(len(self._weights))),
                       key=lambda fid: abs(self._weights[fid]),
                       reverse=True)
         if show == 'pos':

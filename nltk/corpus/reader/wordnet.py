@@ -17,6 +17,7 @@ from collections import defaultdict
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
+from nltk.compat import xrange
 
 ######################################################################
 ## Table of Contents

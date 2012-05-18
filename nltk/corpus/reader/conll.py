@@ -411,7 +411,7 @@ class ConllSRLInstance(object):
         # Fill in the self.verb and self.arguments values.
         for (start, end), tag in tagged_spans:
             if tag in ('V', 'C-V'):
-                self.verb += range(start, end)
+                self.verb += list(range(start, end))
             else:
                 self.arguments.append( ((start, end), tag) )
 

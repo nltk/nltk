@@ -184,7 +184,7 @@ class BrillRule(yaml.YAMLObject):
         :rtype: int
         """
         if positions is None:
-            positions = range(len(tokens))
+            positions = list(range(len(tokens)))
 
         # Determine the indices at which this rule applies.
         change = [i for i in positions if self.applies(tokens, i)]

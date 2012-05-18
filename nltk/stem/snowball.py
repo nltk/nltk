@@ -3009,7 +3009,7 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
         chr_exceeded = False
         for i in range(len(word)):
-            if ord(word[i]) not in range(256):
+            if ord(word[i]) > 255:
                 chr_exceeded = True
                 break
 

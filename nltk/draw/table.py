@@ -77,7 +77,7 @@ class MultiListbox(Frame):
         """
         # If columns was specified as an int, convert it to a list.
         if isinstance(columns, int):
-            columns = range(columns)
+            columns = list(range(columns))
             include_labels = False
         else:
             include_labels = True
@@ -974,7 +974,7 @@ class Table(object):
         """
         # Default value for row_indices is all rows.
         if row_indices is None:
-            row_indices = range(len(self._rows))
+            row_indices = list(range(len(self._rows)))
 
         # Look up our current selection.
         selection = self.selected_row()

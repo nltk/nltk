@@ -61,7 +61,7 @@ class ClusterI(object):
         """
         Returns the names of the clusters.
         """
-        return range(self.num_clusters())
+        return list(range(self.num_clusters()))
 
     def cluster_name(self, index):
         """

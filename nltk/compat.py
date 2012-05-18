@@ -14,6 +14,7 @@ if PY3:
 
     MAXSIZE = sys.maxsize
     im_class = lambda meth: meth.__self__.__class__
+    xrange = range
 else:
     string_types = basestring,
     integer_types = (int, long)
@@ -21,7 +22,7 @@ else:
     text_type = unicode
     binary_type = str
     im_class = lambda meth: meth.im_class
-
+    xrange = xrange
 try:
     from itertools import imap, izip
 except ImportError: # python 3

@@ -42,6 +42,7 @@ import warnings
 
 from nltk.tree import Tree
 from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
+from nltk.compat import xrange
 
 from nltk.parse.api import ParserI
 

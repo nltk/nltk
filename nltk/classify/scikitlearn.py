@@ -70,8 +70,8 @@ class SklearnClassifier(ClassifierI):
 
     def batch_prob_classify(self, featuresets):
         X = self._convert(featuresets)
-        y_proba = self._clf.predict_proba(X)
-        return [self._make_probdist(y_proba[i]) for i in xrange(len(y_proba))]
+        y_proba_list = self._clf.predict_proba(X)
+        return [self._make_probdist(y_proba) for y_proba in y_proba_list]
 
     def labels(self):
         return self._label_index.keys()

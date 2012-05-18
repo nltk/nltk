@@ -1920,7 +1920,7 @@ class ConditionalProbDist(ConditionalProbDistI):
         >>> print cpdist['run'].prob('NN')
         0.0813
     """
-    def __init__(self, cfdist, probdist_factory, 
+    def __init__(self, cfdist, probdist_factory,
                  *factory_args, **factory_kw_args):
         """
         Construct a new conditional probability distribution, based on
@@ -1950,11 +1950,11 @@ class ConditionalProbDist(ConditionalProbDistI):
         # self._factory_args = factory_args
         # self._factory_kw_args = factory_kw_args
 
-        factory = lambda: probdist_factory(FreqDist(), 
+        factory = lambda: probdist_factory(FreqDist(),
                                            *factory_args, **factory_kw_args)
         defaultdict.__init__(self, factory)
         for condition in cfdist:
-            self[condition] = probdist_factory(cfdist[condition], 
+            self[condition] = probdist_factory(cfdist[condition],
                                                *factory_args, **factory_kw_args)
 
 

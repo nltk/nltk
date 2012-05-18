@@ -14,6 +14,7 @@ feature structures as nodes.
 
 from collections import defaultdict
 
+from nltk.compat import xrange
 from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
 from nltk.sem import logic
 from nltk.tree import Tree

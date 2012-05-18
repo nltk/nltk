@@ -45,7 +45,7 @@ def dispersion_plot(text, words, ignore_case=False):
     else:
         x = y = ()
     pylab.plot(x, y, "b|", scalex=.1)
-    pylab.yticks(range(len(words)), words, color="b")
+    pylab.yticks(list(range(len(words))), words, color="b")
     pylab.ylim(-1, len(words))
     pylab.title("Lexical Dispersion Plot")
     pylab.xlabel("Word Offset")

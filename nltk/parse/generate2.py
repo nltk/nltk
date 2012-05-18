@@ -7,6 +7,7 @@
 #
 
 from functools import reduce
+from nltk.compat import xrange
 from nltk.grammar import Nonterminal, parse_cfg
 
 def all_combsi(lol):

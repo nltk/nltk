@@ -42,6 +42,7 @@ Machine Learning, 34, 177-210
 """
 
 import numpy
+from nltk.compat import xrange
 
 def windowdiff(seg1, seg2, k, boundary="1"):
     """
@@ -90,7 +91,7 @@ def _init_mat(nrows, ncols, ins_cost, del_cost):
 
 def _ghd_aux(mat, rowv, colv, ins_cost, del_cost, shift_cost_coeff):
     for i, rowi in enumerate(rowv):
-        for j, colj in enumerate(colv):          
+        for j, colj in enumerate(colv):
             shift_cost = shift_cost_coeff * abs(rowi - colj) + mat[i, j]
             if rowi == colj:
                 # boundaries are at the same location, no transformation required
@@ -163,7 +164,7 @@ def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary='1'
     elif nref_bound == 0 and nhyp_bound > 0:
         return nhyp_bound * del_cost
 
-    mat = _init_mat(nhyp_bound + 1, nref_bound + 1, ins_cost, del_cost) 
+    mat = _init_mat(nhyp_bound + 1, nref_bound + 1, ins_cost, del_cost)
     _ghd_aux(mat, hyp_idx, ref_idx, ins_cost, del_cost, shift_cost_coeff)
     return mat[-1, -1]
 
@@ -200,7 +201,7 @@ def pk(ref, hyp, k=None, boundary='1'):
 
     if k is None:
         k = int(round(len(ref) / (ref.count(boundary) * 2.)))
-    
+
     n_considered_seg = len(ref) - k + 1
     n_same_ref = 0.0
     n_false_alarm = 0.0
@@ -215,7 +216,7 @@ def pk(ref, hyp, k=None, boundary='1'):
             bsame_ref_seg = True
         if boundary not in hyp[(i+1):(i+k)]:
             bsame_hyp_seg = True
-        
+
         if bsame_hyp_seg and not bsame_ref_seg:
             n_miss += 1
         if bsame_ref_seg and not bsame_hyp_seg:

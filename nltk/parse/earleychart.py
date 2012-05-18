@@ -26,6 +26,7 @@ The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
 
+from nltk.compat import xrange
 from nltk.parse.chart import (Chart, ChartParser, EdgeI, LeafEdge, LeafInitRule,
                               BottomUpPredictRule, BottomUpPredictCombineRule,
                               TopDownInitRule, SingleEdgeFundamentalRule,

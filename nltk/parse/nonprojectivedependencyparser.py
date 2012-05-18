@@ -9,6 +9,7 @@
 
 import math
 
+from nltk.compat import xrange
 from nltk.grammar import parse_dependency_grammar
 
 from .dependencygraph import DependencyGraph, conll_data2
