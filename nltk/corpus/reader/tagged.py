@@ -13,6 +13,7 @@ A reader for corpora whose documents contain part-of-speech-tagged words.
 
 import os
 
+from nltk import compat
 from nltk.tag import str2tuple
 from nltk.tokenize import *
 
@@ -64,7 +65,7 @@ class TaggedCorpusReader(CorpusReader):
         :rtype: str
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):

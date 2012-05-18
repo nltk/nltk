@@ -20,6 +20,7 @@ except ImportError:
 try: from xml.etree import cElementTree as ElementTree
 except ImportError: from xml.etree import ElementTree
 
+from nltk import compat
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
@@ -424,8 +425,8 @@ def concat(docs):
     types = set([d.__class__ for d in docs])
 
     # If they're all strings, use string concatenation.
-    if types.issubset([str, unicode, basestring]):
-        return reduce((lambda a,b:a+b), docs, '')
+    if all(isinstance(doc, compat.string_types) for doc in docs):
+        return ''.join(docs)
 
     # If they're all corpus views, then use ConcatenatedCorpusView.
     for typ in types:
@@ -519,7 +520,7 @@ class PickleCorpusView(StreamBackedCorpusView):
 
     @classmethod
     def write(cls, sequence, output_file):
-        if isinstance(output_file, basestring):
+        if isinstance(output_file, compat.string_types):
             output_file = open(output_file, 'wb')
         for item in sequence:
             pickle.dump(item, output_file, cls.PROTOCOL)

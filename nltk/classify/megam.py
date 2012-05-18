@@ -31,6 +31,7 @@ import os
 import os.path
 import subprocess
 
+from nltk import compat
 from nltk.internals import find_binary
 try:
     import numpy
@@ -158,7 +159,7 @@ def call_megam(args):
     """
     Call the ``megam`` binary with the given arguments.
     """
-    if isinstance(args, basestring):
+    if isinstance(args, compat.string_types):
         raise TypeError('args should be a list of strings')
     if _megam_bin is None:
         config_megam()

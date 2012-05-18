@@ -8,6 +8,7 @@
 import os
 import re
 
+from nltk import compat
 from nltk import tokenize, tree
 
 from .util import *
@@ -134,7 +135,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 				raise ValueError('Specify only fileids, categories or textids')
 		if textids is not None:
 			if not tmp:
-				if isinstance(textids, basestring): textids = [textids]
+				if isinstance(textids, compat.string_types): textids = [textids]
 				files = sum((self._t2f[t] for t in textids), [])
 				tdict = dict()
 				for f in files:
@@ -159,14 +160,14 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 		fileids, _ = self._resolve(fileids, categories)
 		if fileids is None: return sorted(self._t2f)
 
-		if isinstance(fileids, basestring):
+		if isinstance(fileids, compat.string_types):
 			fileids = [fileids]
 		return sorted(sum((self._f2t[d] for d in fileids), []))
 
 	def words(self, fileids=None, categories=None, textids=None):
 		fileids, textids = self._resolve(fileids, categories, textids)
 		if fileids is None: fileids = self._fileids
-		elif isinstance(fileids, basestring): fileids = [fileids]
+		elif isinstance(fileids, compat.string_types): fileids = [fileids]
 
 		if textids:
 			return concat([TEICorpusView(self.abspath(fileid),
@@ -183,7 +184,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 	def sents(self, fileids=None, categories=None, textids=None):
 		fileids, textids = self._resolve(fileids, categories, textids)
 		if fileids is None: fileids = self._fileids
-		elif isinstance(fileids, basestring): fileids = [fileids]
+		elif isinstance(fileids, compat.string_types): fileids = [fileids]
 
 		if textids:
 			return concat([TEICorpusView(self.abspath(fileid),
@@ -200,7 +201,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 	def paras(self, fileids=None, categories=None, textids=None):
 		fileids, textids = self._resolve(fileids, categories, textids)
 		if fileids is None: fileids = self._fileids
-		elif isinstance(fileids, basestring): fileids = [fileids]
+		elif isinstance(fileids, compat.string_types): fileids = [fileids]
 
 		if textids:
 			return concat([TEICorpusView(self.abspath(fileid),
@@ -217,7 +218,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 	def tagged_words(self, fileids=None, categories=None, textids=None):
 		fileids, textids = self._resolve(fileids, categories, textids)
 		if fileids is None: fileids = self._fileids
-		elif isinstance(fileids, basestring): fileids = [fileids]
+		elif isinstance(fileids, compat.string_types): fileids = [fileids]
 
 		if textids:
 			return concat([TEICorpusView(self.abspath(fileid),
@@ -234,7 +235,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 	def tagged_sents(self, fileids=None, categories=None, textids=None):
 		fileids, textids = self._resolve(fileids, categories, textids)
 		if fileids is None: fileids = self._fileids
-		elif isinstance(fileids, basestring): fileids = [fileids]
+		elif isinstance(fileids, compat.string_types): fileids = [fileids]
 
 		if textids:
 			return concat([TEICorpusView(self.abspath(fileid),
@@ -251,7 +252,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 	def tagged_paras(self, fileids=None, categories=None, textids=None):
 		fileids, textids = self._resolve(fileids, categories, textids)
 		if fileids is None: fileids = self._fileids
-		elif isinstance(fileids, basestring): fileids = [fileids]
+		elif isinstance(fileids, compat.string_types): fileids = [fileids]
 
 		if textids:
 			return concat([TEICorpusView(self.abspath(fileid),
@@ -273,6 +274,6 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 	def raw(self, fileids=None, categories=None):
 		fileids, _ = self._resolve(fileids, categories)
 		if fileids is None: fileids = self._fileids
-		elif isinstance(fileids, basestring): fileids = [fileids]
+		elif isinstance(fileids, compat.string_types): fileids = [fileids]
 		return concat([self.open(f).read() for f in fileids])
 

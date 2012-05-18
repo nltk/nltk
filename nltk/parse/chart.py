@@ -40,9 +40,9 @@ from __future__ import print_function
 import re
 import warnings
 
+from nltk import compat
 from nltk.tree import Tree
 from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
-from nltk.compat import xrange
 
 from nltk.parse.api import ParserI
 
@@ -705,7 +705,7 @@ class Chart(object):
         children_lists = [[]]
         for child_choice in child_choices:
             if hasattr(child_choice, '__iter__') and \
-                    not isinstance(child_choice, basestring):
+                    not isinstance(child_choice, compat.string_types):
                 # Only iterate over the child trees
                 # if child_choice is iterable and NOT a string
                 children_lists = [child_list+[child]
@@ -1194,7 +1194,7 @@ class EmptyPredictRule(AbstractChartRule):
     NUM_EDGES = 0
     def apply_iter(self, chart, grammar):
         for prod in grammar.productions(empty=True):
-            for index in xrange(chart.num_leaves() + 1):
+            for index in compat.xrange(chart.num_leaves() + 1):
                 new_edge = TreeEdge.from_production(prod, index)
                 if chart.insert(new_edge, ()):
                     yield new_edge

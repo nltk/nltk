@@ -22,6 +22,7 @@ to the YCOE standard: http://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
 import os
 import re
 
+from nltk import compat
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
@@ -62,7 +63,7 @@ class YCOECorpusReader(CorpusReader):
         """
         if fileids is None:
             return self._documents
-        if isinstance(fileids, basestring):
+        if isinstance(fileids, compat.string_types):
             fileids = [fileids]
         for f in fileids:
             if f not in self._fileids:
@@ -77,7 +78,7 @@ class YCOECorpusReader(CorpusReader):
         """
         if documents is None:
             return self._fileids
-        elif isinstance(documents, basestring):
+        elif isinstance(documents, compat.string_types):
             documents = [documents]
         return sorted(set(['%s.pos' % doc for doc in documents] +
                           ['%s.psd' % doc for doc in documents]))
@@ -90,7 +91,7 @@ class YCOECorpusReader(CorpusReader):
         if documents is None:
             documents = self._documents
         else:
-            if isinstance(documents, basestring):
+            if isinstance(documents, compat.string_types):
                 documents = [documents]
             for document in documents:
                 if document not in self._documents:

@@ -53,7 +53,7 @@ except:
     import pickle
 
 import nltk
-from nltk.compat import StringIO, urlopen
+from nltk import compat
 
 ######################################################################
 # Search Path
@@ -214,14 +214,14 @@ class BufferedGzipFile(GzipFile):
         """
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
-        self._buffer = StringIO()
+        self._buffer = compat.StringIO()
         # cStringIO does not support len.
         self._len = 0
 
     def _reset_buffer(self):
         # For some reason calling StringIO.truncate() here will lead to
         # inconsistent writes so just set _buffer to a new StringIO object.
-        self._buffer = StringIO()
+        self._buffer = compat.StringIO()
         self._len = 0
 
     def _write_buffer(self, data):
@@ -251,7 +251,7 @@ class BufferedGzipFile(GzipFile):
     def read(self, size=None):
         if not size:
             size = self._size
-            contents = StringIO()
+            contents = compat.StringIO()
             while True:
                 blocks = GzipFile.read(self, size)
                 if not blocks:
@@ -303,7 +303,7 @@ class ZipFilePathPointer(PathPointer):
         :raise IOError: If the given zipfile does not exist, or if it
         does not contain the specified entry.
         """
-        if isinstance(zipfile, basestring):
+        if isinstance(zipfile, compat.string_types):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Normalize the entry string:
@@ -345,7 +345,7 @@ class ZipFilePathPointer(PathPointer):
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
-        stream = StringIO(data)
+        stream = compat.StringIO(data)
         if self._entry.endswith('.gz'):
             stream = BufferedGzipFile(self._entry, fileobj=stream)
         elif encoding is not None:
@@ -684,7 +684,7 @@ def _open(resource_url):
         # urllib might not use mode='rb', so handle this one ourselves:
         return open(path, 'rb')
     else:
-        return urlopen(resource_url)
+        return compat.urlopen(resource_url)
 
 ######################################################################
 # Lazy Resource Loader
@@ -729,7 +729,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     read-only (i.e. ``write()`` and ``writestr()`` are disabled.
     """
     def __init__(self, filename):
-        if not isinstance(filename, basestring):
+        if not isinstance(filename, compat.string_types):
             raise TypeError('ReopenableZipFile filename must be a string')
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename

@@ -11,6 +11,7 @@ import sys
 import logging
 from collections import defaultdict
 
+from nltk import compat
 from nltk.metrics import precision, recall
 
 class AlignedSent(object):
@@ -225,7 +226,7 @@ class Alignment(frozenset):
     """
 
     def __new__(cls, string_or_pairs):
-        if isinstance(string_or_pairs, basestring):
+        if isinstance(string_or_pairs, compat.string_types):
             string_or_pairs = [_giza2pair(p) for p in string_or_pairs.split()]
         self = frozenset.__new__(cls, string_or_pairs)
         if self == frozenset([]):

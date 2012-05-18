@@ -24,7 +24,7 @@ APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 import codecs
 
 import nltk
-
+from nltk import compat
 from .api import *
 from .util import *
 
@@ -66,7 +66,7 @@ class IEERCorpusReader(CorpusReader):
     """
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def docs(self, fileids=None):

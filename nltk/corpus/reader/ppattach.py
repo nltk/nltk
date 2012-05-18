@@ -40,6 +40,7 @@ of the author.
 
 import codecs
 
+from nltk import compat
 from .util import *
 from .api import *
 
@@ -74,7 +75,7 @@ class PPAttachmentCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _read_tuple_block(self, stream):

@@ -14,6 +14,7 @@ import os
 import re
 from collections import defaultdict
 
+from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.sourcedstring import SourcedStringStream
 
@@ -69,7 +70,7 @@ class CorpusReader(object):
                 or tagged_sents() methods.
         """
         # Convert the root to a path pointer, if necessary.
-        if isinstance(root, basestring):
+        if isinstance(root, compat.string_types):
             m = re.match('(.*\.zip)/?(.*)$|', root)
             zipfile, zipentry = m.groups()
             if zipfile:
@@ -80,7 +81,7 @@ class CorpusReader(object):
             raise TypeError('CorpusReader: expected a string or a PathPointer')
 
         # If `fileids` is a regexp, then expand it.
-        if isinstance(fileids, basestring):
+        if isinstance(fileids, compat.string_types):
             fileids = find_corpus_fileids(root, fileids)
 
         self._fileids = fileids
@@ -161,7 +162,7 @@ class CorpusReader(object):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, basestring):
+        elif isinstance(fileids, compat.string_types):
             fileids = [fileids]
 
         paths = [self._root.join(f) for f in fileids]
@@ -317,7 +318,7 @@ class CategorizedCorpusReader(object):
             self._init()
         if fileids is None:
             return sorted(self._c2f)
-        if isinstance(fileids, basestring):
+        if isinstance(fileids, compat.string_types):
             fileids = [fileids]
         return sorted(set.union(*[self._f2c[d] for d in fileids]))
 
@@ -328,7 +329,7 @@ class CategorizedCorpusReader(object):
         """
         if categories is None:
             return super(CategorizedCorpusReader, self).fileids()
-        elif isinstance(categories, basestring):
+        elif isinstance(categories, compat.string_types):
             if self._f2c is None:
                 self._init()
             if categories in self._c2f:
@@ -370,7 +371,7 @@ class SyntaxCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def parsed_sents(self, fileids=None):

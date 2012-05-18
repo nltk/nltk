@@ -28,7 +28,7 @@ can usually be used anywhere a normal Python string can be used.
 from abc import ABCMeta, abstractmethod
 import re, sys
 from nltk.internals import slice_bounds
-from nltk.compat import text_type, binary_type
+from nltk.compat import text_type, binary_type, string_types, integer_types
 
 __all__ = [
     'StringSource',
@@ -757,7 +757,7 @@ class SourcedString(object):
 
         max_digits = len(str(max(max(getattr(c, 'begin', 0),
                                      getattr(c, 'end', 0)) for c in self)))
-        if not isinstance(wrap, (basestring, int, long, type(None))):
+        if not isinstance(wrap, (string_types, integer_types, type(None))):
             raise TypeError("Expected wrap to be a sring, int, or None.")
 
         result = []
@@ -791,9 +791,9 @@ class SourcedString(object):
 
             # Decide whether we're at the end of the line or not.
             line_len = len(output_lines[0])
-            if ( (isinstance(wrap, basestring) and
+            if ( (isinstance(wrap, string_types) and
                   self[max(0,pos-len(wrap)+1):pos+1] == wrap) or
-                 (isinstance(wrap, (int,long)) and line_len>=wrap) or
+                 (isinstance(wrap, (integer_types)) and line_len>=wrap) or
                  pos == len(self)-1):
 
                 # Put a cap on the end of sourceless strings
@@ -1200,7 +1200,7 @@ class SourcedStringRegexp(object):
     ``subn`` methods to return sourced strings.
     """
     def __init__(self, pattern, flags=0):
-        if isinstance(pattern, basestring):
+        if isinstance(pattern, string_types):
             pattern = _original_re_compile(pattern, flags)
         self.pattern = pattern
     def __getattr__(self, attr):

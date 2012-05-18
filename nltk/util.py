@@ -20,7 +20,7 @@ from collections import defaultdict, deque
 
 from nltk.internals import slice_bounds
 from nltk import compat
-from nltk.compat import class_types, text_type
+from nltk.compat import class_types, text_type, string_types
 
 ######################################################################
 # Short usage message
@@ -153,7 +153,7 @@ def re_show(regexp, string, left="{", right="}"):
 def filestring(f):
     if hasattr(f, 'read'):
         return f.read()
-    elif isinstance(f, basestring):
+    elif isinstance(f, string_types):
         return open(f).read()
     else:
         raise ValueError("Must be called with a filename or file-like object")

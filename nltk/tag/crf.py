@@ -27,7 +27,7 @@ import zipfile
 from xml.etree import ElementTree
 
 import nltk
-
+from nltk import compat
 from nltk.classify import call_mallet
 
 from nltk.tag.api import FeaturesetTaggerI
@@ -456,7 +456,7 @@ class MalletCRF(FeaturesetTaggerI):
         just to be conservative.
         """
         fname = MalletCRF._ESCAPE_RE.sub(MalletCRF._escape_sub, fname)
-        if isinstance(fval, basestring):
+        if isinstance(fval, compat.string_types):
             fval = "'%s'" % MalletCRF._ESCAPE_RE.sub(
                 MalletCRF._escape_sub, fval)
         else:
@@ -502,7 +502,7 @@ class CRFInfo(object):
         self.add_start_state = add_start_state
         self.add_end_state = add_end_state
         self.model_filename = model_filename
-        if isinstance(feature_detector, basestring):
+        if isinstance(feature_detector, compat.string_types):
             self.feature_detector_name = feature_detector
             self.feature_detector = None
         else:
@@ -699,7 +699,7 @@ class CRFInfo(object):
             # Check if the source matches
             src_match = self._src_match_cache.get(src)
             if src_match is None:
-                if isinstance(self.src, basestring):
+                if isinstance(self.src, compat.string_types):
                     src_match = bool(re.match(self.src+'\Z', src))
                 else:
                     src_match = src in self.src
@@ -708,7 +708,7 @@ class CRFInfo(object):
             # Check if the dest matches
             dst_match = self._dst_match_cache.get(dst)
             if dst_match is None:
-                if isinstance(self.dst, basestring):
+                if isinstance(self.dst, compat.string_types):
                     dst_match = bool(re.match(self.dst+'\Z', dst))
                 else:
                     dst_match = dst in self.dst

@@ -9,6 +9,7 @@ import re
 import textwrap
 from collections import defaultdict
 
+from nltk import compat
 from .util import *
 from .api import *
 from .xmldocs import *
@@ -146,7 +147,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         if vnclass_ids is None:
             return self._fileids
-        elif isinstance(vnclass_ids, basestring):
+        elif isinstance(vnclass_ids, compat.string_types):
             return [self._class_to_fileid[self.longid(vnclass_ids)]]
         else:
             return [self._class_to_fileid[self.longid(vnclass_id)]
@@ -250,7 +251,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A verbnet class identifier; or an ElementTree
         containing the xml contents of a verbnet class.
         """
-        if isinstance(vnclass, basestring):
+        if isinstance(vnclass, compat.string_types):
             vnclass = self.vnclass(vnclass)
 
         s = vnclass.get('ID') + '\n'
@@ -271,7 +272,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A verbnet class identifier; or an ElementTree
             containing the xml contents of a verbnet class.
         """
-        if isinstance(vnclass, basestring):
+        if isinstance(vnclass, compat.string_types):
             vnclass = self.vnclass(vnclass)
 
         subclasses = [subclass.get('ID') for subclass in
@@ -289,7 +290,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A verbnet class identifier; or an ElementTree
             containing the xml contents of a verbnet class.
         """
-        if isinstance(vnclass, basestring):
+        if isinstance(vnclass, compat.string_types):
             vnclass = self.vnclass(vnclass)
 
         members = [member.get('name') for member in
@@ -307,7 +308,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A verbnet class identifier; or an ElementTree
             containing the xml contents of a verbnet class.
         """
-        if isinstance(vnclass, basestring):
+        if isinstance(vnclass, compat.string_types):
             vnclass = self.vnclass(vnclass)
 
         pieces = []

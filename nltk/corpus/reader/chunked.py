@@ -15,6 +15,7 @@ import os.path, codecs
 
 import nltk
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
+from nltk import compat
 from nltk.tree import Tree
 from nltk.tokenize import *
 from nltk.chunk import tagstr2tree
@@ -53,7 +54,7 @@ class ChunkedCorpusReader(CorpusReader):
         :rtype: str
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):

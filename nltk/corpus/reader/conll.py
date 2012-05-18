@@ -14,6 +14,7 @@ import os
 import codecs
 import textwrap
 
+from nltk import compat
 from nltk.tree import Tree
 from nltk.util import LazyMap, LazyConcatenation
 
@@ -68,7 +69,7 @@ class ConllCorpusReader(CorpusReader):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad column type %r' % columntype)
-        if isinstance(chunk_types, basestring):
+        if isinstance(chunk_types, compat.string_types):
             chunk_types = [chunk_types]
         self._chunk_types = chunk_types
         self._colmap = dict((c,i) for (i,c) in enumerate(columntypes))
@@ -85,7 +86,7 @@ class ConllCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
@@ -284,8 +285,8 @@ class ConllCorpusReader(CorpusReader):
         if not pos_in_tree:
             for subtree in tree.subtrees():
                 for i, child in enumerate(subtree):
-                    if (isinstance(child, nltk.Tree) and len(child)==1 and
-                        isinstance(child[0], basestring)):
+                    if (isinstance(child, Tree) and len(child)==1 and
+                        isinstance(child[0], compat.string_types)):
                         subtree[i] = (child[0], child.node)
 
         return tree
@@ -486,7 +487,7 @@ class ConllSRLInstanceList(list):
 
     def _tree2conll(self, tree, wordnum, words, pos, synt):
         assert isinstance(tree, Tree)
-        if len(tree) == 1 and isinstance(tree[0], basestring):
+        if len(tree) == 1 and isinstance(tree[0], compat.string_types):
             pos[wordnum] = tree.node
             assert words[wordnum] == tree[0]
             return wordnum+1

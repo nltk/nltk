@@ -25,8 +25,7 @@ except ImportError:
     from xml.etree import ElementTree
 
 from nltk import __file__
-from nltk.compat import im_class
-
+from nltk import compat
 ######################################################################
 # Regular Expression Processing
 ######################################################################
@@ -94,7 +93,7 @@ def config_java(bin=None, options=None, verbose=True):
     _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose)
 
     if options is not None:
-        if isinstance(options, basestring):
+        if isinstance(options, compat.string_types):
             options = options.split()
         _java_options = list(options)
 
@@ -142,7 +141,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     if stdin == 'pipe': stdin = subprocess.PIPE
     if stdout == 'pipe': stdout = subprocess.PIPE
     if stderr == 'pipe': stderr = subprocess.PIPE
-    if isinstance(cmd, basestring):
+    if isinstance(cmd, compat.string_types):
         raise TypeError('cmd should be a list of strings')
 
     # Make sure we know where a java binary is.
@@ -289,10 +288,10 @@ def overridden(method):
     :type method: instance method
     """
     # [xx] breaks on classic classes!
-    if isinstance(method, types.MethodType) and im_class(method) is not None:
+    if isinstance(method, types.MethodType) and compat.im_class(method) is not None:
         name = method.__name__
         funcs = [cls.__dict__[name]
-                 for cls in _mro(im_class(method))
+                 for cls in _mro(compat.im_class(method))
                  if name in cls.__dict__]
         return len(funcs) > 1
     else:
@@ -439,10 +438,10 @@ def find_file(filename, env_vars=(), searchpath=(),
     :param verbose: Whether or not to print path when a file is found.
     """
     if file_names is None: file_names = [filename]
-    assert isinstance(filename, basestring)
-    assert not isinstance(file_names, basestring)
-    assert not isinstance(searchpath, basestring)
-    if isinstance(env_vars, basestring):
+    assert isinstance(filename, compat.string_types)
+    assert not isinstance(file_names, compat.string_types)
+    assert not isinstance(searchpath, compat.string_types)
+    if isinstance(env_vars, compat.string_types):
         env_vars = env_vars.split()
 
     # File exists, no magic
@@ -549,9 +548,9 @@ def find_jar(name, path_to_jar=None, env_vars=(),
     :param searchpath: List of directories to search.
     """
 
-    assert isinstance(name, basestring)
-    assert not isinstance(searchpath, basestring)
-    if isinstance(env_vars, basestring):
+    assert isinstance(name, compat.string_types)
+    assert not isinstance(searchpath, compat.string_types)
+    if isinstance(env_vars, compat.string_types):
         env_vars = env_vars.split()
 
     # Make sure we check the CLASSPATH first
@@ -655,7 +654,7 @@ class ElementWrapper(object):
         ``etree`` is a string, then it will be converted to an
         Element object using ``ElementTree.fromstring()`` first.
         """
-        if isinstance(etree, basestring):
+        if isinstance(etree, compat.string_types):
             etree = ElementTree.fromstring(etree)
         self.__dict__['_etree'] = etree
 

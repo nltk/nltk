@@ -10,8 +10,8 @@ from __future__ import print_function
 
 import sys
 
+from nltk import compat
 from nltk.tree import bracket_parse, Tree
-
 from nltk.parse import DependencyGraph
 
 from nltk.corpus.reader.util import *
@@ -153,8 +153,8 @@ def test():
 
     knbc = LazyCorpusLoader(
         'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
-    assert isinstance(knbc.words()[0], basestring)
-    assert isinstance(knbc.sents()[0][0], basestring)
+    assert isinstance(knbc.words()[0], compat.string_types)
+    assert isinstance(knbc.sents()[0][0], compat.string_types)
     assert isinstance(knbc.tagged_words()[0], tuple)
     assert isinstance(knbc.tagged_sents()[0][0], tuple)
 

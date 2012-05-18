@@ -24,9 +24,10 @@ is tagged with a sense identifier, and supplied with context.
 from __future__ import print_function
 
 import re
-
-from nltk.tokenize import *
 from xml.etree import ElementTree
+
+from nltk import compat
+from nltk.tokenize import *
 
 from .util import *
 from .api import *
@@ -52,7 +53,7 @@ class SensevalCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _entry(self, tree):

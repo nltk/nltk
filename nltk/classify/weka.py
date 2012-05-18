@@ -17,6 +17,7 @@ import subprocess
 import re
 import zipfile
 
+from nltk import compat
 from nltk.probability import DictionaryProbDist
 from nltk.internals import java, config_java
 
@@ -262,9 +263,9 @@ class ARFF_Formatter:
             for (fname, fval) in tok.items():
                 if issubclass(type(fval), bool):
                     ftype = '{True, False}'
-                elif issubclass(type(fval), (int, float, long, bool)):
+                elif issubclass(type(fval), (compat.integer_types, float, bool)):
                     ftype = 'NUMERIC'
-                elif issubclass(type(fval), basestring):
+                elif issubclass(type(fval), compat.string_types):
                     ftype = 'STRING'
                 elif fval is None:
                     continue # can't tell the type.

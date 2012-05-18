@@ -47,6 +47,7 @@ ZH      seizure S IY ZH ER
 
 import codecs
 
+from nltk import compat
 from nltk.util import Index
 
 from .util import *
@@ -67,7 +68,7 @@ class CMUDictCorpusReader(CorpusReader):
         :return: the cmudict lexicon as a raw string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self):

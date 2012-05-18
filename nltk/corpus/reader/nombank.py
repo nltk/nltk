@@ -9,6 +9,7 @@
 import re
 import codecs
 
+from nltk import compat
 from nltk.tree import Tree
 from xml.etree import ElementTree
 
@@ -46,7 +47,7 @@ class NombankCorpusReader(CorpusReader):
             necessary to resolve the tree pointers used by nombank.
         """
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, basestring):
+        if isinstance(framefiles, compat.string_types):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
@@ -65,7 +66,7 @@ class NombankCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def instances(self):
