@@ -11,6 +11,7 @@ from itertools import izip
 from math import fabs
 import operator
 from random import shuffle
+from functools import reduce
 
 try:
     from scipy.stats.stats import betai

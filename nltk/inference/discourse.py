@@ -45,6 +45,7 @@ those threads which are consistent (taking into account any background assumptio
 
 import os
 from operator import and_, add
+from functools import reduce
 
 from nltk.data import show_cfg
 from nltk.tag import RegexpTagger

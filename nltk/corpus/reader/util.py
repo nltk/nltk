@@ -11,6 +11,7 @@ import sys
 import bisect
 import re
 import tempfile
+from functools import reduce
 try: import cPickle as pickle
 except ImportError: import pickle
 from itertools import islice

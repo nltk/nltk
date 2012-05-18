@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import operator
+from functools import reduce
 
 from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             AndExpression, ApplicationExpression, BinaryExpression,

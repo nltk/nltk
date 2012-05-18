@@ -46,6 +46,7 @@ import warnings
 from operator import itemgetter
 from itertools import imap, islice
 from collections import defaultdict
+from functools import reduce
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions

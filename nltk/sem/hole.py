@@ -20,6 +20,7 @@ representation that is not easy to read.  We use a "plugging" algorithm to
 convert that representation into first-order logic formulas.
 """
 
+from functools import reduce
 
 from nltk.parse import load_parser
 from nltk.draw.tree import draw_trees

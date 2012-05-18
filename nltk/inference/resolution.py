@@ -12,6 +12,7 @@ Module for a resolution-based First Order theorem prover.
 
 import operator
 from collections import defaultdict
+from functools import reduce
 
 from nltk.sem import skolemize
 from nltk.sem.logic import (VariableExpression, EqualityExpression,

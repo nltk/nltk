@@ -7,6 +7,7 @@
 
 import re
 from collections import defaultdict
+from functools import reduce
 
 from nltk.corpus.reader import CorpusReader
 

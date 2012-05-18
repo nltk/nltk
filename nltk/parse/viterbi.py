@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from functools import reduce
 from nltk.tree import Tree, ProbabilisticTree
 
 from nltk.parse.api import ParserI

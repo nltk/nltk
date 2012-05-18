@@ -10,6 +10,7 @@ import os
 import tempfile
 import glob
 from operator import add
+from functools import reduce
 
 from nltk.tag import RegexpTagger
 from nltk.tokenize import word_tokenize
@@ -25,7 +26,7 @@ class MaltParser(ParserI):
         An interface for parsing with the Malt Parser.
 
         :param mco: The full path to a pre-trained model. If
-            provided, then training will not be needed. 
+            provided, then training will not be needed.
         :type mco: str
         """
         self.config_malt()

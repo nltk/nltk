@@ -12,6 +12,7 @@ generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
 """
 
 import math as _math
+from functools import reduce
 _log2 = lambda x: _math.log(x, 2.0)
 _ln = _math.log
 

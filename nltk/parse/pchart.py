@@ -37,6 +37,7 @@ argument beam_size.  If non-zero, this controls the size of the beam
 # [XX] This might not be implemented quite right -- it would be better
 # to associate probabilities with child pointer lists.
 
+from functools import reduce
 from nltk.tree import Tree, ProbabilisticTree
 from nltk.grammar import Nonterminal, WeightedGrammar
 

@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 #
 
+from functools import reduce
 from nltk.grammar import Nonterminal, parse_cfg
 
 def all_combsi(lol):

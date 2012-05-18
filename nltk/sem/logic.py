@@ -14,6 +14,7 @@ top of the typed lambda calculus.
 import re
 import operator
 from collections import defaultdict
+from functools import reduce
 
 from nltk.internals import Counter
 
