@@ -24,11 +24,11 @@ def metaloader(classpath):
     return loader
 
 def register_tag(tag, classpath):
-    yaml.add_constructor(u'!'+tag, metaloader(classpath))
-    yaml.add_constructor(u'tag:nltk.org,2011:'+tag,
+    yaml.add_constructor('!'+tag, metaloader(classpath))
+    yaml.add_constructor('tag:nltk.org,2011:'+tag,
                          metaloader(classpath))
 
-register_tag(u'tag.Unigram', 'nltk.tag.unigram.Unigram')
-register_tag(u'tag.Brill', 'nltk.tag.brill.Brill')
+register_tag('tag.Unigram', 'nltk.tag.unigram.Unigram')
+register_tag('tag.Brill', 'nltk.tag.brill.Brill')
 
 __all__ = ['custom_import', 'metaloader', 'register_tag']

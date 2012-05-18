@@ -434,7 +434,7 @@ def demo(corpus_root=None):
         corpus_root = find('corpora/childes/data-xml/Eng-USA/')
 
     try:
-        childes = CHILDESCorpusReader(corpus_root, u'.*.xml')
+        childes = CHILDESCorpusReader(corpus_root, '.*.xml')
         # describe all corpus
         for file in childes.fileids()[:5]:
             corpus = ''
