@@ -33,11 +33,10 @@ to a local file.
 from __future__ import print_function
 
 import sys
-import os, os.path
+import os
 import textwrap
 import weakref
 import re
-import urllib2
 import zipfile
 import codecs
 
@@ -54,7 +53,7 @@ except:
     import pickle
 
 import nltk
-from nltk.compat import StringIO
+from nltk.compat import StringIO, urlopen
 
 ######################################################################
 # Search Path
@@ -685,7 +684,7 @@ def _open(resource_url):
         # urllib might not use mode='rb', so handle this one ourselves:
         return open(path, 'rb')
     else:
-        return urllib2.urlopen(resource_url)
+        return urlopen(resource_url)
 
 ######################################################################
 # Lazy Resource Loader

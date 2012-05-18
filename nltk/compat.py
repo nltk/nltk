@@ -21,9 +21,17 @@ if PY3:
     _itervalues = "values"
     _iteritems = "items"
 
+    imap = map
+    izip = zip
+
     import io
     StringIO = io.StringIO
     BytesIO = io.BytesIO
+
+    import html.entities as htmlentitydefs
+    from urllib.request import (urlopen, ProxyHandler, build_opener, getproxies,
+        HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+    from urllib.error import HTTPError,URLError
 else:
     string_types = basestring,
     integer_types = (int, long)
@@ -36,16 +44,19 @@ else:
     _itervalues = "itervalues"
     _iteritems = "iteritems"
 
+    from itertools import imap, izip
+
     try:
         from cStringIO import StringIO
-    except:
+    except ImportError:
         from StringIO import StringIO
     BytesIO = StringIO
-try:
-    from itertools import imap, izip
-except ImportError: # python 3
-    imap = map
-    izip = zip
+
+    import htmlentitydefs
+    from urllib2 import (urlopen, HTTPError, URLError,
+        ProxyHandler, build_opener, HTTPPasswordMgrWithDefaultRealm,
+        ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+    from urllib import getproxies
 
 def iterkeys(d):
     """Return an iterator over the keys of a dictionary."""
@@ -58,9 +69,4 @@ def itervalues(d):
 def iteritems(d):
     """Return an iterator over the (key, value) pairs of a dictionary."""
     return getattr(d, _iteritems)()
-
-if PY3:
-    import html.entities as htmlentitydefs
-else:
-    import htmlentitydefs
 

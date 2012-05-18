@@ -1143,27 +1143,26 @@ def set_proxy(proxy, user=None, password=''):
         authentication.
     :param password: The password to authenticate with.
     """
-    import urllib
-    import urllib2
+    from nltk import compat
 
     if proxy is None:
         # Try and find the system proxy settings
         try:
-            proxy = urllib.getproxies()['http']
+            proxy = compat.getproxies()['http']
         except KeyError:
             raise ValueError('Could not detect default proxy settings')
 
     # Set up the proxy handler
-    proxy_handler = urllib2.ProxyHandler({'http': proxy})
-    opener = urllib2.build_opener(proxy_handler)
+    proxy_handler = compat.ProxyHandler({'http': proxy})
+    opener = compat.build_opener(proxy_handler)
 
     if user is not None:
         # Set up basic proxy authentication if provided
-        password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        password_manager = compat.HTTPPasswordMgrWithDefaultRealm()
         password_manager.add_password(realm=None, uri=proxy, user=user,
                 passwd=password)
-        opener.add_handler(urllib2.ProxyBasicAuthHandler(password_manager))
-        opener.add_handler(urllib2.ProxyDigestAuthHandler(password_manager))
+        opener.add_handler(compat.ProxyBasicAuthHandler(password_manager))
+        opener.add_handler(compat.ProxyDigestAuthHandler(password_manager))
 
     # Overide the existing url opener
     urllib2.install_opener(opener)
