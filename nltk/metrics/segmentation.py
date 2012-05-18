@@ -41,7 +41,7 @@ Statistical Models for Text Segmentation
 Machine Learning, 34, 177-210
 """
 
-import numpy
+import numpy as np
 from nltk.compat import xrange
 
 def windowdiff(seg1, seg2, k, boundary="1"):
@@ -84,10 +84,11 @@ def windowdiff(seg1, seg2, k, boundary="1"):
 # Generalized Hamming Distance
 
 def _init_mat(nrows, ncols, ins_cost, del_cost):
-    mat = numpy.empty((nrows, ncols))
-    mat[0, :] = [x * ins_cost for x in xrange(ncols)]
-    mat[:, 0] = [x * del_cost for x in xrange(nrows)]
+    mat = np.empty((nrows, ncols))
+    mat[0, :] = ins_cost * np.arange(ncols)
+    mat[:, 0] = del_cost * np.arange(nrows)
     return mat
+
 
 def _ghd_aux(mat, rowv, colv, ins_cost, del_cost, shift_cost_coeff):
     for i, rowi in enumerate(rowv):
