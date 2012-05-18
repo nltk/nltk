@@ -223,7 +223,7 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
                            pattern.match(x['filler']) and
                            x['objclass'] == objclass)
 
-    return filter(relfilter, reldicts)
+    return list(filter(relfilter, reldicts))
 
 
 def show_raw_rtuple(reldict, lcon=False, rcon=False):

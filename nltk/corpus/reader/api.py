@@ -411,14 +411,14 @@ class SyntaxCorpusReader(CorpusReader):
         return sum(self._read_tagged_sent_block(stream, simplify_tags), [])
 
     def _read_sent_block(self, stream):
-        return filter(None, [self._word(t) for t in self._read_block(stream)])
+        return list(filter(None, [self._word(t) for t in self._read_block(stream)]))
 
     def _read_tagged_sent_block(self, stream, simplify_tags=False):
-        return filter(None, [self._tag(t, simplify_tags)
-                             for t in self._read_block(stream)])
+        return list(filter(None, [self._tag(t, simplify_tags)
+                             for t in self._read_block(stream)]))
 
     def _read_parsed_sent_block(self, stream):
-        return filter(None, [self._parse(t) for t in self._read_block(stream)])
+        return list(filter(None, [self._parse(t) for t in self._read_block(stream)]))
 
     #} End of Block Readers
     #------------------------------------------------------------

@@ -215,7 +215,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         :type retracted: list(sem.Expression)
         """
         retracted = set(retracted)
-        result_list = filter(lambda a: a not in retracted, self._assumptions)
+        result_list = list(filter(lambda a: a not in retracted, self._assumptions))
         if debug and result_list == self._assumptions:
             print Warning("Assumptions list has not been changed:")
             self.print_assumptions()

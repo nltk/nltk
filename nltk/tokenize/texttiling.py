@@ -94,8 +94,8 @@ class TextTilingTokenizer(TokenizerI):
 
         # Filter stopwords
         for ts in tokseqs:
-            ts.wrdindex_list = filter(lambda wi: wi[0] not in self.stopwords,
-                                      ts.wrdindex_list)
+            ts.wrdindex_list = [wi for wi in ts.wrdindex_list
+                                if wi[0] not in self.stopwords]
 
         token_table = self._create_token_table(tokseqs, nopunct_par_breaks)
         # End of the Tokenization step
