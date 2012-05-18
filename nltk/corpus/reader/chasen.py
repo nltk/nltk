@@ -8,7 +8,7 @@
 
 import sys
 
-import util
+from . import util
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *

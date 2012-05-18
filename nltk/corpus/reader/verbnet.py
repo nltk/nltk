@@ -9,9 +9,9 @@ import re
 import textwrap
 from collections import defaultdict
 
-from util import *
-from api import *
-from xmldocs import *
+from .util import *
+from .api import *
+from .xmldocs import *
 
 class VerbnetCorpusReader(XMLCorpusReader):
 

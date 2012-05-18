@@ -11,8 +11,8 @@ import codecs
 from nltk.tree import Tree
 from xml.etree import ElementTree
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class PropbankCorpusReader(CorpusReader):
     """

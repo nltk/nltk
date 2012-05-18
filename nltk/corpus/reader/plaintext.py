@@ -16,8 +16,8 @@ import codecs
 import nltk.data
 from nltk.tokenize import *
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class PlaintextCorpusReader(CorpusReader):
     """

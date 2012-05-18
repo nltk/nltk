@@ -16,9 +16,9 @@ import os
 from nltk.tag import str2tuple
 from nltk.tokenize import *
 
-from api import *
-from util import *
-from timit import read_timit_block
+from .api import *
+from .util import *
+from .timit import read_timit_block
 
 class TaggedCorpusReader(CorpusReader):
     """

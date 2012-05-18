@@ -91,7 +91,7 @@ from nltk.corpus.reader.lin import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
-import bracket_parse
+from . import bracket_parse
 
 __all__ = [
     'CorpusReader', 'CategorizedCorpusReader',

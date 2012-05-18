@@ -5,7 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from util import Chat, reflections
+from .util import Chat, reflections
 
 pairs = (
     (r'We (.*)',

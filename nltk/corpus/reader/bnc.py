@@ -14,9 +14,9 @@ import re
 
 import xml.etree.ElementTree as ET
 
-from api import *
-from util import *
-from xmldocs import *
+from .api import *
+from .util import *
+from .xmldocs import *
 
 class BNCCorpusReader(XMLCorpusReader):
     """

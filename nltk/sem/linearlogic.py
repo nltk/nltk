@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.internals import Counter
-from logic import LogicParser, APP
+from .logic import LogicParser, APP
 
 _counter = Counter()
 

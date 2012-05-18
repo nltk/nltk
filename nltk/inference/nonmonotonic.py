@@ -12,7 +12,7 @@ this module are based on "Logical Foundations of Artificial Intelligence" by
 Michael R. Genesereth and Nils J. Nilsson.
 """
 
-from prover9 import Prover9, Prover9Command
+from .prover9 import Prover9, Prover9Command
 from collections import defaultdict
 
 from nltk.sem.logic import (VariableExpression, EqualityExpression,

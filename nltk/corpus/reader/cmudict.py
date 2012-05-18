@@ -49,8 +49,8 @@ import codecs
 
 from nltk.util import Index
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class CMUDictCorpusReader(CorpusReader):
     def entries(self):

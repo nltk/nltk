@@ -10,8 +10,8 @@
 from nltk.parse import DependencyGraph
 from nltk.tokenize import *
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class DependencyCorpusReader(SyntaxCorpusReader):
 

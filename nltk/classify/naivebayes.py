@@ -34,7 +34,7 @@ from collections import defaultdict
 
 from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
 
-from api import ClassifierI
+from .api import ClassifierI
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier

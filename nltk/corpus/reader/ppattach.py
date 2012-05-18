@@ -40,8 +40,8 @@ of the author.
 
 import codecs
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class PPAttachment:
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):

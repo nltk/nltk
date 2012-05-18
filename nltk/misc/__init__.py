@@ -5,8 +5,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from chomsky import generate_chomsky
-from wordfinder import word_finder
-from minimalset import MinimalSet
-from babelfish import babelize, babelize_shell
+from .chomsky import generate_chomsky
+from .wordfinder import word_finder
+from .minimalset import MinimalSet
+from .babelfish import babelize, babelize_shell
 

@@ -11,7 +11,7 @@ import math
 
 from nltk.grammar import parse_dependency_grammar
 
-from dependencygraph import DependencyGraph, conll_data2
+from .dependencygraph import DependencyGraph, conll_data2
 
 #################################################################
 # DependencyScorerI - Interface for Graph-Edge Weight Calculation

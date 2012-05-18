@@ -9,8 +9,8 @@ import re
 
 from nltk.tag import str2tuple
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class SwitchboardTurn(list):
     """

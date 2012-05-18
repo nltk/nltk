@@ -5,7 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
+from .logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 

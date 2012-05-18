@@ -33,9 +33,9 @@ file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
 
-from util import *
-from api import *
-from xmldocs import *
+from .util import *
+from .api import *
+from .xmldocs import *
 
 
 def norm(value_string):

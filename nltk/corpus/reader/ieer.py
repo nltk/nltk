@@ -25,8 +25,8 @@ import codecs
 
 import nltk
 
-from api import *
-from util import *
+from .api import *
+from .util import *
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.

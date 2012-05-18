@@ -13,8 +13,8 @@ import sys
 
 from nltk.tree import Tree
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()

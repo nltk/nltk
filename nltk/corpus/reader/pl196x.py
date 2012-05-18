@@ -10,9 +10,9 @@ import re
 
 from nltk import tokenize, tree
 
-from util import *
-from api import *
-from xmldocs import XMLCorpusReader
+from .util import *
+from .api import *
+from .xmldocs import XMLCorpusReader
 
 # (?:something) -- non-grouping parentheses!
 

@@ -43,8 +43,8 @@ import re
 
 import nltk
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')

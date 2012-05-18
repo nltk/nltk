@@ -11,9 +11,9 @@ import textwrap
 from nltk.util import LazyConcatenation
 from nltk.internals import ElementWrapper
 
-from util import *
-from api import *
-from xmldocs import *
+from .util import *
+from .api import *
+from .xmldocs import *
 
 class NPSChatCorpusReader(XMLCorpusReader):
 

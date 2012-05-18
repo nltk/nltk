@@ -28,14 +28,14 @@ except ImportError:
     warnings.warn("nltk.app package not loaded "
                   "(please install Tkinter library).")
 else:
-    from chartparser_app import app as chartparser
-    from chunkparser_app import app as chunkparser
-    from collocations_app import app as collocations
-    from concordance_app import app as concordance
-    from nemo_app import app as nemo
-    from rdparser_app import app as rdparser
-    from srparser_app import app as srparser
-    from wordnet_app import app as wordnet
+    from .chartparser_app import app as chartparser
+    from .chunkparser_app import app as chunkparser
+    from .collocations_app import app as collocations
+    from .concordance_app import app as concordance
+    from .nemo_app import app as nemo
+    from .rdparser_app import app as rdparser
+    from .srparser_app import app as srparser
+    from .wordnet_app import app as wordnet
 
     try:
         import pylab
@@ -44,4 +44,4 @@ else:
         warnings.warn("nltk.app.wordfreq not loaded "
                       "(requires the pylab library).")
     else:
-        from wordfreq_app import app as wordfreq
+        from .wordfreq_app import app as wordfreq

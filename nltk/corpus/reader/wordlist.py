@@ -8,8 +8,8 @@
 
 from nltk.tokenize import line_tokenize
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class WordListCorpusReader(CorpusReader):
     """

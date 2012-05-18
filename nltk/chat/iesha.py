@@ -11,7 +11,7 @@ anime junky that frequents YahooMessenger or MSNM.
 All spelling mistakes and flawed grammar are intentional.
 """
 
-from util import Chat
+from .util import Chat
 
 reflections = {
     "am"     : "r",

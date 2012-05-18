@@ -18,8 +18,8 @@ import codecs
 
 from nltk.toolbox import ToolboxData
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, fileids, key=None):

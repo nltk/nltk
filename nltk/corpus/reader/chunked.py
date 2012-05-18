@@ -18,8 +18,8 @@ from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.tree import Tree
 from nltk.tokenize import *
 from nltk.chunk import tagstr2tree
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class ChunkedCorpusReader(CorpusReader):
     """

@@ -17,7 +17,7 @@ from collections import defaultdict
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.sourcedstring import SourcedStringStream
 
-from util import *
+from .util import *
 
 class CorpusReader(object):
     """

@@ -22,8 +22,8 @@ import codecs
 
 from nltk.tag.util import str2tuple
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class IndianCorpusReader(CorpusReader):
     """

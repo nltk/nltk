@@ -25,13 +25,13 @@ is tagged with a sense identifier, and supplied with context.
 import os
 import re
 import xml.sax
-from xmldocs import XMLCorpusReader
+from .xmldocs import XMLCorpusReader
 
 from nltk.tokenize import *
 from xml.etree import ElementTree
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):

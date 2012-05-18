@@ -98,7 +98,7 @@ from nltk.classify.util import accuracy, log_likelihood
 # Conditional imports
 
 try:
-    from scikitlearn import SklearnClassifier
+    from .scikitlearn import SklearnClassifier
 except ImportError:
     pass
 

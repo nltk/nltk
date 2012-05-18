@@ -18,7 +18,7 @@ TO DO: add lemmatization
 """
 
 import nltk
-from util import accuracy
+from .util import accuracy
 
 def ne(token):
     """

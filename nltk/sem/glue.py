@@ -14,8 +14,8 @@ from nltk.corpus import brown
 from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
 from nltk.sem.logic import (LogicParser, Expression, Variable, VariableExpression,
                             LambdaExpression, AbstractVariableExpression)
-import drt
-import linearlogic
+from . import drt
+from . import linearlogic
 
 SPEC_SEMTYPES = {'a'       : 'ex_quant',
                  'an'      : 'ex_quant',

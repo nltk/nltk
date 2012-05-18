@@ -17,8 +17,8 @@ import textwrap
 from nltk.tree import Tree
 from nltk.util import LazyMap, LazyConcatenation
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class ConllCorpusReader(CorpusReader):
     """

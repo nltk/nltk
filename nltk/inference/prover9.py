@@ -17,7 +17,7 @@ import nltk
 from nltk.sem.logic import LogicParser, ExistsExpression, AllExpression, \
     NegatedExpression, AndExpression, IffExpression, OrExpression, \
     EqualityExpression, ImpExpression
-from api import BaseProverCommand, Prover
+from .api import BaseProverCommand, Prover
 
 #
 # Following is not yet used. Return code for 2 actually realized as 512.

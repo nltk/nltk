@@ -14,7 +14,7 @@ Hosted by the Gutenberg Project
 http://www.gutenberg.org/
 """
 
-from util import Chat, reflections
+from .util import Chat, reflections
 
 pairs = (
 

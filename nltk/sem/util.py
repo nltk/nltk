@@ -13,7 +13,7 @@ syntax tree, followed by evaluation of the semantic representation in
 a first-order model.
 """
 
-import evaluate
+from . import evaluate
 import re
 
 

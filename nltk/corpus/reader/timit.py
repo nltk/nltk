@@ -128,8 +128,8 @@ import time
 from nltk.tree import Tree
 from nltk.internals import import_from_stdlib
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class TimitCorpusReader(CorpusReader):
     """

@@ -27,8 +27,8 @@ from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
 from string import split
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class YCOECorpusReader(CorpusReader):
     """
