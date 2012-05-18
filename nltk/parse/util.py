@@ -127,7 +127,6 @@ class TestGrammar(object):
             if accepted and rejected:
                 print("All tests passed!")
 
-
 def extract_test_sentences(string, comment_chars="#%;"):
     """
     Parses a string with one test sentence per line.
@@ -162,3 +161,5 @@ def extract_test_sentences(string, comment_chars="#%;"):
         sentences += [(tokens, result)]
     return sentences
 
+# nose thinks it is a test
+extract_test_sentences.__test__ = False
