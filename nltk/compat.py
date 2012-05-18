@@ -29,8 +29,9 @@ if PY3:
     BytesIO = io.BytesIO
 
     import html.entities as htmlentitydefs
-    from urllib.request import (urlopen, ProxyHandler, build_opener, getproxies,
-        HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+    from urllib.request import (install_opener, urlopen, ProxyHandler,
+        build_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
+        ProxyBasicAuthHandler, ProxyDigestAuthHandler)
     from urllib.error import HTTPError,URLError
 else:
     string_types = basestring,
@@ -53,7 +54,7 @@ else:
     BytesIO = StringIO
 
     import htmlentitydefs
-    from urllib2 import (urlopen, HTTPError, URLError,
+    from urllib2 import (install_opener, urlopen, HTTPError, URLError,
         ProxyHandler, build_opener, HTTPPasswordMgrWithDefaultRealm,
         ProxyBasicAuthHandler, ProxyDigestAuthHandler)
     from urllib import getproxies
