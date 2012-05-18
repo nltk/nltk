@@ -434,7 +434,7 @@ class FreqDist(dict):
         try:
             sample_iter = compat.iteritems(samples)
         except:
-            sample_iter = compat.imap(lambda x: (x,1), samples)
+            sample_iter = ((x, 1) for x in samples)
         for sample, count in sample_iter:
             self.inc(sample, count=count)
 
