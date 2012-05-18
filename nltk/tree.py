@@ -18,7 +18,6 @@ from __future__ import print_function
 # TODO: add LabelledTree (can be used for dependency trees)
 
 import re
-import string
 
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
@@ -728,10 +727,10 @@ class Tree(list):
                 childstrs.append('%r' % child)
         if isinstance(self.node, compat.string_types):
             return '%s%s%s %s%s' % (parens[0], self.node, nodesep,
-                                    string.join(childstrs), parens[1])
+                                    " ".join(childstrs), parens[1])
         else:
             return '%s%r%s %s%s' % (parens[0], self.node, nodesep,
-                                    string.join(childstrs), parens[1])
+                                    " ".join(childstrs), parens[1])
 
 
 class ImmutableTree(Tree):
@@ -1389,7 +1388,7 @@ def sinica_parse(s):
         elif tokens[i] == '|':
             tokens[i] = ''
 
-    treebank_string = string.join(tokens)
+    treebank_string = " ".join(tokens)
     return Tree.parse(treebank_string, remove_empty_top_bracketing=True)
 
 #    s = re.sub(r'^#[^\s]*\s', '', s)  # remove leading identifier

@@ -14,9 +14,6 @@ To generate n sentences of linguistic wisdom, type
 """
 from __future__ import print_function
 
-import string
-
-
 leadins = """To characterize a linguistic level L,
     On the other hand,
     This suggests that
@@ -130,7 +127,7 @@ def generate_chomsky(times=5, line_length=72):
         random.shuffle(phraselist)
         parts.append(phraselist)
     output = chain(*islice(izip(*parts), 0, times))
-    print(textwrap.fill(string.join(output), line_length))
+    print(textwrap.fill(" ".join(output), line_length))
 
 if __name__ == '__main__':
     generate_chomsky()

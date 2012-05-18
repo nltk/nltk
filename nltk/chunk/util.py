@@ -8,7 +8,6 @@
 from __future__ import print_function
 
 import re
-import string
 
 from nltk.tree import Tree
 from nltk.tag.util import str2tuple
@@ -468,7 +467,7 @@ def tree2conllstr(t):
     :type t: Tree
     :rtype: str
     """
-    lines = [string.join(token) for token in tree2conlltags(t)]
+    lines = [" ".join(token) for token in tree2conlltags(t)]
     return '\n'.join(lines)
 
 ### IEER

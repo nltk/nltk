@@ -73,7 +73,6 @@ Possible future improvements:
     responsible for that.
 """
 
-import string
 import tkFont
 from Tkinter import (IntVar, Listbox, Button, Frame, Label, Menu,
                      Scrollbar, Tk)
@@ -568,7 +567,7 @@ class ShiftReduceApp(object):
             self._prodlist.insert('end', (' %s' % production))
 
     def edit_sentence(self, *e):
-        sentence = string.join(self._sent)
+        sentence = " ".join(self._sent)
         title = 'Edit Text'
         instr = 'Enter a new sentence to parse.'
         EntryDialog(self._top, sentence, instr, self.set_sentence, title)

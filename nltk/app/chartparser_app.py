@@ -42,7 +42,6 @@ import pickle
 from tkFileDialog import asksaveasfilename, askopenfilename
 import Tkinter
 import math
-import string
 import os.path
 import tkFont, tkMessageBox
 
@@ -1117,7 +1116,7 @@ class ChartView(object):
                     rhselts.append(str(elt.symbol()))
                 else:
                     rhselts.append(repr(elt))
-            rhs = string.join(rhselts)
+            rhs = " ".join(rhselts)
         else:
             lhs = edge.lhs()
             rhs = ''
@@ -1215,8 +1214,8 @@ class ChartView(object):
             rhs = []
             pos = 0
 
-        rhs1 = string.join(rhs[:pos])
-        rhs2 = string.join(rhs[pos:])
+        rhs1 = " ".join(rhs[:pos])
+        rhs2 = " ".join(rhs[pos:])
         rhstag1 = c.create_text(x1+3, y, text=rhs1,
                                 font=self._font,
                                 anchor='nw')
@@ -2076,7 +2075,7 @@ class ChartParserApp(object):
         if self._results: self._results.set_grammar(grammar)
 
     def edit_sentence(self, *e):
-        sentence = string.join(self._tokens)
+        sentence = " ".join(self._tokens)
         title = 'Edit Text'
         instr = 'Enter a new sentence to parse.'
         EntryDialog(self._root, sentence, instr, self.set_sentence, title)
