@@ -276,9 +276,9 @@ class ChartMatrixView(object):
         # Labels and dotted lines
         for i in range(N):
             c.create_text(LEFT_MARGIN-2, i*dy+dy/2+TOP_MARGIN,
-                          text=`i`, anchor='e')
+                          text=repr(i), anchor='e')
             c.create_text(i*dx+dx/2+LEFT_MARGIN, N*dy+TOP_MARGIN+1,
-                          text=`i`, anchor='n')
+                          text=repr(i), anchor='n')
             c.create_line(LEFT_MARGIN, dy*(i+1)+TOP_MARGIN,
                           dx*N+LEFT_MARGIN, dy*(i+1)+TOP_MARGIN, dash='.')
             c.create_line(dx*i+LEFT_MARGIN, TOP_MARGIN,
@@ -1382,7 +1382,7 @@ class ChartView(object):
                 c2.tag_lower(t2)
             t3=c3.create_line(x, 0, x, BOTTOM)
             c3.tag_lower(t3)
-            t4=c3.create_text(x+2, 0, text=`i`, anchor='nw',
+            t4=c3.create_text(x+2, 0, text=repr(i), anchor='nw',
                               font=self._font)
             c3.tag_lower(t4)
             #if i % 4 == 0:

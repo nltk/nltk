@@ -124,15 +124,15 @@ class ConfusionMatrix(object):
 
         # Construct a format string for row values
         valuelen = max(len(val) for val in value_strings)
-        value_format = '%' + `valuelen` + 's | '
+        value_format = '%' + repr(valuelen) + 's | '
         # Construct a format string for matrix entries
         if show_percents:
             entrylen = 6
             entry_format = '%5.1f%%'
             zerostr = '     .'
         else:
-            entrylen = len(`self._max_conf`)
-            entry_format = '%' + `entrylen` + 'd'
+            entrylen = len(repr(self._max_conf))
+            entry_format = '%' + repr(entrylen) + 'd'
             zerostr = ' '*(entrylen-1) + '.'
 
         # Write the column values.
@@ -182,8 +182,8 @@ class ConfusionMatrix(object):
     def key(self):
         values = self._values
         str = 'Value key:\n'
-        indexlen = len(`len(values)-1`)
-        key_format = '  %'+`indexlen`+'d: %s\n'
+        indexlen = len(repr(len(values)-1))
+        key_format = '  %'+repr(indexlen)+'d: %s\n'
         for i in range(len(values)):
             str += key_format % (i, values[i])
 

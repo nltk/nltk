@@ -333,9 +333,9 @@ class Debugger:
         if args == (None,):
             pass
         elif len(args) == 1:
-            print `args[0]`
+            print repr(args[0])
         else:
-            print `args` # not quite right: >>> 1,
+            print repr(args) # not quite right: >>> 1,
 
     def _comment_line(self, line):
         "Return a commented form of the given line"

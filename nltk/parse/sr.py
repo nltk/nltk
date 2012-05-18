@@ -220,9 +220,9 @@ class ShiftReduceParser(ParserI):
         s = '  '+marker+' [ '
         for elt in stack:
             if isinstance(elt, Tree):
-                s += `Nonterminal(elt.node)` + ' '
+                s += repr(Nonterminal(elt.node)) + ' '
             else:
-                s += `elt` + ' '
+                s += repr(elt) + ' '
         s += '* ' + ' '.join(remaining_text) + ']'
         print s
 

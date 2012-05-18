@@ -1715,7 +1715,7 @@ def demo(choice=None,
     print "* Parsing times"
     print
     maxlen = max(len(key) for key in times)
-    format = '%' + `maxlen` + 's parser: %6.3fsec'
+    format = '%' + repr(maxlen) + 's parser: %6.3fsec'
     times_items = times.items()
     times_items.sort(lambda a,b:cmp(a[1], b[1]))
     for (parser, t) in times_items:

@@ -385,7 +385,7 @@ class CFGEditor(object):
         self._clear_tags(linenum)
 
         # Get the line line's text string.
-        line = self._textwidget.get(`linenum`+'.0', `linenum`+'.end')
+        line = self._textwidget.get(repr(linenum)+'.0', repr(linenum)+'.end')
 
         # If it's a valid production, then colorize each token.
         if CFGEditor._PRODUCTION_RE.match(line):

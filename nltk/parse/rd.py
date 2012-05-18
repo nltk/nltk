@@ -277,14 +277,14 @@ class RecursiveDescentParser(ParserI):
 
         if treeloc == (): print "*",
         if isinstance(tree, Tree):
-            if len(tree) == 0: print `Nonterminal(tree.node)`,
+            if len(tree) == 0: print repr(Nonterminal(tree.node)),
             for i in range(len(tree)):
                 if treeloc is not None and i == treeloc[0]:
                     self._trace_fringe(tree[i], treeloc[1:])
                 else:
                     self._trace_fringe(tree[i])
         else:
-            print `tree`,
+            print repr(tree),
 
     def _trace_tree(self, tree, frontier, operation):
         """

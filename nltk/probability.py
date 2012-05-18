@@ -2194,7 +2194,7 @@ def demo(numsamples=6, numoutcomes=500):
            (numsamples, numsamples, numoutcomes))
     print '='*9*(len(pdists)+2)
     FORMATSTR = '      FreqDist '+ '%8s '*(len(pdists)-1) + '|  Actual'
-    print FORMATSTR % tuple(`pdist`[1:9] for pdist in pdists[:-1])
+    print FORMATSTR % tuple(repr(pdist)[1:9] for pdist in pdists[:-1])
     print '-'*9*(len(pdists)+2)
     FORMATSTR = '%3d   %8.6f ' + '%8.6f '*(len(pdists)-1) + '| %8.6f'
     for val in vals:
@@ -2210,7 +2210,7 @@ def demo(numsamples=6, numoutcomes=500):
     print '='*9*(len(pdists)+2)
 
     # Display the distributions themselves, if they're short enough.
-    if len(`str(fdist1)`) < 70:
+    if len(repr(str(fdist1))) < 70:
         print '  fdist1:', str(fdist1)
         print '  fdist2:', str(fdist2)
         print '  fdist3:', str(fdist3)

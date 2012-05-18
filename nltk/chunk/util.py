@@ -274,7 +274,7 @@ class ChunkScore(object):
 
         :rtype: str
         """
-        return '<ChunkScoring of '+`len(self)`+' chunks>'
+        return '<ChunkScoring of '+repr(len(self))+' chunks>'
 
     def __str__(self):
         """

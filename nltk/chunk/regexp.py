@@ -222,7 +222,7 @@ class ChunkString(object):
 
         :rtype: str
         """
-        return '<ChunkString: %s>' % `self._str`
+        return '<ChunkString: %s>' % repr(self._str)
 
     def __str__(self):
         """
@@ -328,8 +328,8 @@ class RegexpChunkRule(object):
 
         :rtype: str
         """
-        return ('<RegexpChunkRule: '+`self._regexp.pattern`+
-                '->'+`self._repl`+'>')
+        return ('<RegexpChunkRule: '+repr(self._regexp.pattern)+
+                '->'+repr(self._repl)+'>')
 
     @staticmethod
     def parse(s):
@@ -418,7 +418,7 @@ class ChunkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return '<ChunkRule: '+`self._pattern`+'>'
+        return '<ChunkRule: '+repr(self._pattern)+'>'
 
 class ChinkRule(RegexpChunkRule):
     """
@@ -460,7 +460,7 @@ class ChinkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return '<ChinkRule: '+`self._pattern`+'>'
+        return '<ChinkRule: '+repr(self._pattern)+'>'
 
 class UnChunkRule(RegexpChunkRule):
     """
@@ -499,7 +499,7 @@ class UnChunkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return '<UnChunkRule: '+`self._pattern`+'>'
+        return '<UnChunkRule: '+repr(self._pattern)+'>'
 
 class MergeRule(RegexpChunkRule):
     """
@@ -557,8 +557,8 @@ class MergeRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return ('<MergeRule: '+`self._left_tag_pattern`+', '+
-                `self._right_tag_pattern`+'>')
+        return ('<MergeRule: '+repr(self._left_tag_pattern)+', '+
+                repr(self._right_tag_pattern)+'>')
 
 class SplitRule(RegexpChunkRule):
     """
@@ -615,8 +615,8 @@ class SplitRule(RegexpChunkRule):
 
        :rtype: str
         """
-        return ('<SplitRule: '+`self._left_tag_pattern`+', '+
-                `self._right_tag_pattern`+'>')
+        return ('<SplitRule: '+repr(self._left_tag_pattern)+', '+
+                repr(self._right_tag_pattern)+'>')
 
 class ExpandLeftRule(RegexpChunkRule):
     """
@@ -674,8 +674,8 @@ class ExpandLeftRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return ('<ExpandLeftRule: '+`self._left_tag_pattern`+', '+
-                `self._right_tag_pattern`+'>')
+        return ('<ExpandLeftRule: '+repr(self._left_tag_pattern)+', '+
+                repr(self._right_tag_pattern)+'>')
 
 class ExpandRightRule(RegexpChunkRule):
     """
@@ -733,8 +733,8 @@ class ExpandRightRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return ('<ExpandRightRule: '+`self._left_tag_pattern`+', '+
-                `self._right_tag_pattern`+'>')
+        return ('<ExpandRightRule: '+repr(self._left_tag_pattern)+', '+
+                repr(self._right_tag_pattern)+'>')
 
 class ChunkRuleWithContext(RegexpChunkRule):
     """
@@ -947,7 +947,7 @@ class RegexpChunkParser(ChunkParserI):
         for rule in self._rules:
             rule.apply(chunkstr)
             if verbose:
-                print '#', rule.descr()+' ('+`rule`+'):'
+                print '#', rule.descr()+' ('+repr(rule)+'):'
             else:
                 print '#', rule.descr()+':'
             print chunkstr
@@ -1033,11 +1033,11 @@ class RegexpChunkParser(ChunkParserI):
         for rule in self._rules:
             margin = max(margin, len(rule.descr()))
         if margin < 35:
-            format = "    %" + `-(margin+3)` + "s%s\n"
+            format = "    %" + repr(-(margin+3)) + "s%s\n"
         else:
             format = "    %s\n      %s\n"
         for rule in self._rules:
-            s += format % (rule.descr(), `rule`)
+            s += format % (rule.descr(), repr(rule))
         return s[:-1]
 
 ##//////////////////////////////////////////////////////

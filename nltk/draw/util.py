@@ -1289,7 +1289,7 @@ class SequenceWidget(CanvasWidget):
             x -= x2-x1 + self._space
 
     def __repr__(self):
-        return '[Sequence: ' + `self._children`[1:-1]+']'
+        return '[Sequence: ' + repr(self._children)[1:-1]+']'
 
     # Provide an alias for the child_widgets() member.
     children = CanvasWidget.child_widgets
@@ -1446,7 +1446,7 @@ class StackWidget(CanvasWidget):
             y -= y2-y1 + self._space
 
     def __repr__(self):
-        return '[Stack: ' + `self._children`[1:-1]+']'
+        return '[Stack: ' + repr(self._children)[1:-1]+']'
 
     # Provide an alias for the child_widgets() member.
     children = CanvasWidget.child_widgets
