@@ -504,7 +504,7 @@ class Debugger:
                 try:
                     sys.stdout = _SpoofOut()
                     try:
-                        execfile(srcfilename, test.globs)
+                        exec(compile(open(srcfilename).read(), srcfilename, 'exec'), test.globs)
                     except bdb.BdbQuit:
                         return
                     except:

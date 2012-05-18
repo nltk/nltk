@@ -266,7 +266,7 @@ def demo():
     if options.grammar:
         gramfile = options.grammar
     if options.model:
-        exec "import %s as model" % options.model
+        exec("import %s as model" % options.model)
 
     if sents is None:
         sents = read_sents(sentsfile)
