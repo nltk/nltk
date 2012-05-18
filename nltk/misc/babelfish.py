@@ -21,8 +21,8 @@ Summary:
 from __future__ import print_function
 
 import re
-import urllib
 import sys
+from nltk import compat
 
 """
 Various patterns I have encountered in looking for the babelfish result.
@@ -89,12 +89,12 @@ def translate(phrase, source, target):
         raise ValueError("Language %s not available" % lang)
 
 
-    params = urllib.urlencode({'doit': 'done',
+    params = compat.urlencode({'doit': 'done',
                                'tt': 'urltext',
                                'urltext': phrase,
                                'lp': source_code + '_' + target_code})
     try:
-        response = urllib.urlopen('http://babelfish.yahoo.com/translate_txt', params)
+        response = compat.urlopen('http://babelfish.yahoo.com/translate_txt', params)
 
     except IOError as what:
         raise BabelizerIOError("Couldn't talk to server: %s" % what)

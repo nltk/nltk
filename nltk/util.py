@@ -339,8 +339,8 @@ def clean_html(html):
     return cleaned.strip()
 
 def clean_url(url):
-    from urllib import urlopen
-    html = urlopen(url).read()
+    from nltk import compat
+    html = compat.urlopen(url).read()
     return clean_html(html)
 
 ##########################################################################
@@ -1165,4 +1165,4 @@ def set_proxy(proxy, user=None, password=''):
         opener.add_handler(compat.ProxyDigestAuthHandler(password_manager))
 
     # Overide the existing url opener
-    urllib2.install_opener(opener)
+    compat.install_opener(opener)
