@@ -620,42 +620,6 @@ def import_from_stdlib(module):
     sys.path = old_path
     return m
 
-##########################################################################
-# Abstract declaration
-##########################################################################
-
-def abstract(func):
-    """
-    A decorator used to mark methods as abstract.  I.e., methods that
-    are marked by this decorator must be overridden by subclasses.  If
-    an abstract method is called (either in the base class or in a
-    subclass that does not override the base class method), it will
-    raise ``NotImplementedError``.
-    """
-    # Avoid problems caused by nltk.tokenize shadowing the stdlib tokenize:
-    inspect = import_from_stdlib('inspect')
-
-    # Read the function's signature.
-    args, varargs, varkw, defaults = inspect.getargspec(func)
-
-    # Create a new function with the same signature (minus defaults)
-    # that raises NotImplementedError.
-    msg = '%s is an abstract method.' % func.__name__
-    signature = inspect.formatargspec(args, varargs, varkw, ())
-    exec ('def newfunc%s: raise NotImplementedError(%r)' % (signature, msg))
-
-    # Substitute in the defaults after-the-fact, since eval(repr(val))
-    # may not work for some default values.
-    newfunc.__defaults__ = func.__defaults__
-
-    # Copy the name and docstring
-    newfunc.__name__ = func.__name__
-    newfunc.__doc__ = func.__doc__
-    newfunc.__abstract__ = True
-    _add_epytext_field(newfunc, "note", "This method is abstract.")
-
-    # Return the function.
-    return newfunc
 
 ##########################################################################
 # Wrapper for ElementTree Elements

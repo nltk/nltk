@@ -19,6 +19,7 @@ from pprint import pprint
 from collections import defaultdict, deque
 
 from nltk.internals import slice_bounds
+from nltk import compat
 from nltk.compat import class_types, text_type
 
 ######################################################################
@@ -339,7 +340,6 @@ def clean_html(html):
     return cleaned.strip()
 
 def clean_url(url):
-    from nltk import compat
     html = compat.urlopen(url).read()
     return clean_html(html)
 

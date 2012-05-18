@@ -8,6 +8,9 @@ import types
 PY3 = sys.version_info[0] == 3
 
 if PY3:
+    def u(s):
+        return s
+
     string_types = str,
     integer_types = int,
     class_types = type,
@@ -20,6 +23,7 @@ if PY3:
     _iterkeys = "keys"
     _itervalues = "values"
     _iteritems = "items"
+    from imp import reload
 
     imap = map
     izip = zip
@@ -34,7 +38,11 @@ if PY3:
         ProxyBasicAuthHandler, ProxyDigestAuthHandler)
     from urllib.error import HTTPError, URLError
     from urllib.parse import quote_plus, unquote_plus, urlencode
+
 else:
+    def u(s):
+        return unicode(s, "unicode_escape")
+
     string_types = basestring,
     integer_types = (int, long)
     class_types = (type, types.ClassType)
@@ -45,6 +53,7 @@ else:
     _iterkeys = "iterkeys"
     _itervalues = "itervalues"
     _iteritems = "iteritems"
+    reload = reload
 
     from itertools import imap, izip
 

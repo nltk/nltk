@@ -29,11 +29,13 @@ import textwrap
 from doctest import *
 from doctest import DocTestCase, DocTestRunner
 from optparse import OptionParser, OptionGroup, Option
-from StringIO import StringIO
+
 
 # Use local NLTK.
 root_dir = os.path.abspath(os.path.join(sys.path[0], '..', '..'))
 sys.path.insert(0, root_dir)
+
+from nltk.compat import StringIO
 
 
 __version__ = '0.1'
@@ -47,9 +49,13 @@ COMPILER_FLAGS = __future__.division.compiler_flag
 ###########################################################################
 
 if __name__ == "__main__":
+    from nltk import compat
     import sys
-    reload(sys)
-    sys.setdefaultencoding("UTF-8")
+    compat.reload(sys)
+    # XXX what should we do in Python 3?
+    if hasattr(sys, "setdefaultencoding"):
+        sys.setdefaultencoding("UTF-8")
+
     import doctest
     doctest.testmod()
 
@@ -955,7 +961,8 @@ class TerminalController:
         # For any modern terminal, we should be able to just ignore
         # these, so strip them out.
         import curses
-        cap = curses.tigetstr(cap_name) or ''
+        cap = curses.tigetstr(cap_name)
+        cap = cap.decode("ascii") if hasattr(cap, "decode") else ""
         return re.sub(r'\$<\d+>[/*]?', '', cap)
 
     def render(self, template):
