@@ -1155,7 +1155,7 @@ class ChartView(object):
 
         # Figure out what level to draw the edge on.
         lvl = 0
-        while 1:
+        while True:
             # If this level doesn't exist yet, create it.
             while lvl >= len(self._edgelevels):
                 self._edgelevels.append([])

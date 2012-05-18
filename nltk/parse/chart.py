@@ -515,8 +515,7 @@ class Chart(object):
         if restrictions=={}: return iter(self._edges)
 
         # Find the index corresponding to the given restrictions.
-        restr_keys = restrictions.keys()
-        restr_keys.sort()
+        restr_keys = sorted(restrictions.keys())
         restr_keys = tuple(restr_keys)
 
         # If it doesn't exist, then create it.
@@ -789,8 +788,7 @@ class Chart(object):
         if width is None: width = 50/(self.num_leaves()+1)
         # sort edges: primary key=length, secondary key=start index.
         # (and filter out the token edges)
-        edges = [(e.length(), e.start(), e) for e in self]
-        edges.sort()
+        edges = sorted([(e.length(), e.start(), e) for e in self])
         edges = [e for (_,_,e) in edges]
 
         return (self.pp_leaves(width) + '\n' +
@@ -1489,7 +1487,7 @@ class SteppingChartParser(ChartParser):
         """
         if self._chart is None:
             raise ValueError, 'Parser must be initialized first'
-        while 1:
+        while True:
             self._restart = False
             w = 50/(self._chart.num_leaves()+1)
 

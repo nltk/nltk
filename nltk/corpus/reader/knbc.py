@@ -154,8 +154,8 @@ def test():
         'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
     assert isinstance(knbc.words()[0], basestring)
     assert isinstance(knbc.sents()[0][0], basestring)
-    assert type(knbc.tagged_words()[0]) == tuple
-    assert type(knbc.tagged_sents()[0][0]) == tuple
+    assert isinstance(knbc.tagged_words()[0], tuple)
+    assert isinstance(knbc.tagged_sents()[0][0], tuple)
 
 if __name__ == '__main__':
     demo()

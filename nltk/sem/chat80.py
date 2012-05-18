@@ -675,7 +675,7 @@ def concepts(items = items):
     :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list
     """
-    if type(items) is str: items = (items,)
+    if isinstance(items, str): items = (items,)
 
     rels = [item_metadata[r] for r in items]
 
@@ -741,8 +741,7 @@ Valuation object for use in the NLTK semantics package.
             concepts = concept_map.values()
             # just print out the vocabulary
             if options.vocab:
-                items = [(c.arity, c.prefLabel) for c in concepts]
-                items.sort()
+                items = sorted([(c.arity, c.prefLabel) for c in concepts])
                 for (arity, label) in items:
                     print label, arity
                 sys.exit(0)

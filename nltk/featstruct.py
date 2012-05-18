@@ -2369,12 +2369,11 @@ def interactive_demo(trace=False):
         print()
 
 
-    while 1:
+    while True:
         # Pick 5 feature structures at random from the master list.
         MAX_CHOICES = 5
         if len(all_fstructs) > MAX_CHOICES:
-            fstructs = random.sample(all_fstructs, MAX_CHOICES)
-            fstructs.sort()
+            fstructs = sorted(random.sample(all_fstructs, MAX_CHOICES))
         else:
             fstructs = all_fstructs
 

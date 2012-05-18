@@ -276,8 +276,7 @@ class TextTilingTokenizer(TokenizerI):
         else:
             cutoff = avg-numpy.stdev/2.0
 
-        depth_tuples = zip(depth_scores, range(len(depth_scores)))
-        depth_tuples.sort()
+        depth_tuples = sorted(zip(depth_scores, range(len(depth_scores))))
         depth_tuples.reverse()
         hp = filter(lambda x:x[0]>cutoff, depth_tuples)
 

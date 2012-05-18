@@ -634,11 +634,11 @@ def _synset_relations(word, synset, synset_relations):
     ref = Reference(word, synset_relations)
 
     def relation_html(r):
-        if type(r) == Synset:
+        if isinstance(r, Synset):
             return make_lookup_link(Reference(r.lemma_names[0]), r.lemma_names[0])
-        elif type(r) == Lemma:
+        elif isinstance(r, Lemma):
             return relation_html(r.synset)
-        elif type(r) == tuple:
+        elif isinstance(r, tuple):
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
             return "%s\n<ul>%s</ul>\n" % \

@@ -95,7 +95,7 @@ class ChunkString(object):
         self._debug = debug_level
 
     def _tag(self, tok):
-        if type(tok) == types.TupleType:
+        if isinstance(tok, types.TupleType):
             return tok[1]
         elif isinstance(tok, Tree):
             return tok.node

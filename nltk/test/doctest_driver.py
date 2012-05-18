@@ -379,7 +379,7 @@ class Debugger:
         # Calculate line offsets
         lines = [0, 0]
         pos = 0
-        while 1:
+        while True:
             pos = s.find('\n', pos)+1
             if not pos: break
             lines.append(pos)

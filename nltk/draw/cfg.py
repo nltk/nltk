@@ -329,7 +329,7 @@ class CFGEditor(object):
         enough to be done anytime they press '>'.
         """
         arrow = '1.0'
-        while 1:
+        while True:
             arrow = self._textwidget.search('->', arrow, 'end+1char')
             if arrow == '': break
             self._textwidget.delete(arrow, arrow+'+2char')
@@ -337,7 +337,7 @@ class CFGEditor(object):
             self._textwidget.insert(arrow, '\t')
 
         arrow = '1.0'
-        while 1:
+        while True:
             arrow = self._textwidget.search(self.ARROW, arrow+'+1char',
                                             'end+1char')
             if arrow == '': break

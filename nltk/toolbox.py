@@ -427,8 +427,7 @@ def _sort_fields(elem, orders_dicts):
     except KeyError:
         pass
     else:
-        tmp = [((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)]
-        tmp.sort()
+        tmp = sorted([((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)])
         elem[:] = [child for key, child in tmp]
     for child in elem:
         if len(child):

@@ -262,7 +262,7 @@ class CCGChart(Chart):
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class)
                                 for cp in cpl]
-            if len(child_choices) > 0 and type(child_choices[0]) == type(""):
+            if len(child_choices) > 0 and isinstance(child_choices[0], type("")):
                 child_choices = [child_choices]
             for children in self._choose_children(child_choices):
                 lhs = (edge.lhs(),str(edge.rule()))

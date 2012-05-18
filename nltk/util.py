@@ -64,7 +64,7 @@ def in_idle():
     :rtype: bool
     """
     import sys, types
-    return (type(sys.stdin) == types.InstanceType and
+    return (isinstance(sys.stdin, types.InstanceType) and
             sys.stdin.__class__.__name__ == 'PyShell')
 
 ##########################################################################

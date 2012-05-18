@@ -194,15 +194,15 @@ class PorterStemmer(StemmerI):
         """
         n = 0
         i = self.k0
-        while 1:
+        while True:
             if i > self.j:
                 return n
             if not self.cons(i):
                 break
             i = i + 1
         i = i + 1
-        while 1:
-            while 1:
+        while True:
+            while True:
                 if i > self.j:
                     return n
                 if self.cons(i):
@@ -210,7 +210,7 @@ class PorterStemmer(StemmerI):
                 i = i + 1
             i = i + 1
             n = n + 1
-            while 1:
+            while True:
                 if i > self.j:
                     return n
                 if not self.cons(i):

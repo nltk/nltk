@@ -162,8 +162,7 @@ class FeatureChart(Chart):
         if restrictions=={}: return iter(self._edges)
 
         # Find the index corresponding to the given restrictions.
-        restr_keys = restrictions.keys()
-        restr_keys.sort()
+        restr_keys = sorted(restrictions.keys())
         restr_keys = tuple(restr_keys)
 
         # If it doesn't exist, then create it.
