@@ -961,7 +961,8 @@ class TerminalController:
         # For any modern terminal, we should be able to just ignore
         # these, so strip them out.
         import curses
-        cap = curses.tigetstr(cap_name) or ''
+        cap = curses.tigetstr(cap_name)
+        cap = cap.decode("ascii") if hasattr(cap, "decode") else ""
         return re.sub(r'\$<\d+>[/*]?', '', cap)
 
     def render(self, template):
