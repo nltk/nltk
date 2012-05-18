@@ -13,12 +13,14 @@ if PY3:
     binary_type = bytes
 
     MAXSIZE = sys.maxsize
+    im_class = lambda meth: meth.__self__.__class__
 else:
     string_types = basestring,
     integer_types = (int, long)
     class_types = (type, types.ClassType)
     text_type = unicode
     binary_type = str
+    im_class = lambda meth: meth.im_class
 
 try:
     from itertools import imap, izip

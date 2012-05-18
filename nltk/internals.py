@@ -19,10 +19,13 @@ import sys
 import stat
 
 # Use the c version of ElementTree, which is faster, if possible:
-try: from xml.etree import cElementTree as ElementTree
-except ImportError: from xml.etree import ElementTree
+try:
+    from xml.etree import cElementTree as ElementTree
+except ImportError:
+    from xml.etree import ElementTree
 
 from nltk import __file__
+from nltk.compat import im_class
 
 ######################################################################
 # Regular Expression Processing
@@ -286,10 +289,10 @@ def overridden(method):
     :type method: instance method
     """
     # [xx] breaks on classic classes!
-    if isinstance(method, types.MethodType) and method.im_class is not None:
+    if isinstance(method, types.MethodType) and im_class(method) is not None:
         name = method.__name__
         funcs = [cls.__dict__[name]
-                 for cls in _mro(method.im_class)
+                 for cls in _mro(im_class(method))
                  if name in cls.__dict__]
         return len(funcs) > 1
     else:
