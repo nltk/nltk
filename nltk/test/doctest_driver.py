@@ -49,9 +49,13 @@ COMPILER_FLAGS = __future__.division.compiler_flag
 ###########################################################################
 
 if __name__ == "__main__":
+    from nltk import compat
     import sys
-    reload(sys)
-    sys.setdefaultencoding("UTF-8")
+    compat.reload(sys)
+    # XXX what should we do in Python 3?
+    if hasattr(sys, "setdefaultencoding"):
+        sys.setdefaultencoding("UTF-8")
+
     import doctest
     doctest.testmod()
 

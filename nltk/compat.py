@@ -23,6 +23,7 @@ if PY3:
     _iterkeys = "keys"
     _itervalues = "values"
     _iteritems = "items"
+    from imp import reload
 
     imap = map
     izip = zip
@@ -52,6 +53,7 @@ else:
     _iterkeys = "iterkeys"
     _itervalues = "itervalues"
     _iteritems = "iteritems"
+    reload = reload
 
     from itertools import imap, izip
 
