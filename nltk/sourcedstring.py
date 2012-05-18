@@ -25,8 +25,9 @@ can usually be used anywhere a normal Python string can be used.
 """
 #from __future__ import unicode_literals
 
+from abc import ABCMeta, abstractmethod
 import re, sys
-from nltk.internals import slice_bounds, abstract
+from nltk.internals import slice_bounds
 from nltk.compat import text_type, binary_type
 
 __all__ = [
@@ -85,6 +86,9 @@ class StringSource(object):
         encodes the last character).  ``source.end`` is always equal
         to ``source.offsets[-1]``.
     """
+
+    __metaclass__ = ABCMeta     # XXX has no effect in Python 3
+
     def __new__(cls, docid, *args, **kwargs):
         # If the StringSource constructor is called directly, then
         # choose one of its subclasses to delegate to.
@@ -136,7 +140,7 @@ class StringSource(object):
                 raise IndexError('StringSource index out of range')
             return self.__getslice__(index, index+1)
 
-    @abstract
+    @abstractmethod
     def __getslice__(self, start, stop):
         """
         Return a ``StringSource`` describing the location where the
@@ -145,7 +149,7 @@ class StringSource(object):
         ``StringSource`` describing the location of ``s[start:stop]``.
         """
 
-    @abstract
+    @abstractmethod
     def __len__(self):
         """
         Return the length of the string described by this
@@ -680,7 +684,7 @@ class SourcedString(object):
 
         return SourcedString.concat(result)
 
-    @abstract
+    @abstractmethod
     def _decode_one_to_one(unicode_chars):
         """
         Helper for ``self.decode()``.  Returns a unicode-decoded
