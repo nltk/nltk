@@ -52,7 +52,6 @@ from sys import path
 import os
 from sys import argv
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from urllib import quote_plus, unquote_plus
 from collections import defaultdict
 import webbrowser
 import datetime
@@ -64,6 +63,7 @@ import base64
 import cPickle
 import copy
 
+from nltk import compat
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Synset, Lemma
 
@@ -91,7 +91,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global firstClient
         sp = self.path[1:]
-        if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
+        if compat.unquote_plus(sp) == 'SHUTDOWN THE SERVER':
             if server_mode:
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
@@ -114,7 +114,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
 
         elif sp.endswith('.html'): # Trying to fetch a HTML file TODO:
             type = 'text/html'
-            usp = unquote_plus(sp)
+            usp = compat.unquote_plus(sp)
             if usp == 'NLTK Wordnet Browser Database Info.html':
                 word = '* Database Info *'
                 if os.path.isfile(usp):

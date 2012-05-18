@@ -19,7 +19,8 @@ from pprint import pprint
 from collections import defaultdict, deque
 
 from nltk.internals import slice_bounds
-from nltk.compat import class_types, install_opener, text_type, urlopen
+from nltk import compat
+from nltk.compat import class_types, text_type
 
 ######################################################################
 # Short usage message
@@ -339,7 +340,7 @@ def clean_html(html):
     return cleaned.strip()
 
 def clean_url(url):
-    html = urlopen(url).read()
+    html = compat.urlopen(url).read()
     return clean_html(html)
 
 ##########################################################################
@@ -1164,4 +1165,4 @@ def set_proxy(proxy, user=None, password=''):
         opener.add_handler(compat.ProxyDigestAuthHandler(password_manager))
 
     # Overide the existing url opener
-    install_opener(opener)
+    compat.install_opener(opener)

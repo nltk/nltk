@@ -29,10 +29,12 @@ if PY3:
     BytesIO = io.BytesIO
 
     import html.entities as htmlentitydefs
-    from urllib.request import (install_opener, urlopen, ProxyHandler,
-        build_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
+    from urllib.request import (urlopen, ProxyHandler, build_opener,
+        install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
         ProxyBasicAuthHandler, ProxyDigestAuthHandler)
-    from urllib.error import HTTPError,URLError
+    from urllib.error import HTTPError, URLError
+    from urllib.parse import quote_plus, unquote_plus, urlencode
+
 else:
     string_types = basestring,
     integer_types = (int, long)
@@ -54,10 +56,11 @@ else:
     BytesIO = StringIO
 
     import htmlentitydefs
-    from urllib2 import (install_opener, urlopen, HTTPError, URLError,
-        ProxyHandler, build_opener, HTTPPasswordMgrWithDefaultRealm,
-        ProxyBasicAuthHandler, ProxyDigestAuthHandler)
-    from urllib import getproxies
+    from urllib2 import (urlopen, HTTPError, URLError,
+        ProxyHandler, build_opener, install_opener,
+        HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
+        ProxyDigestAuthHandler)
+    from urllib import getproxies, quote_plus, unquote_plus, urlencode
 
 def iterkeys(d):
     """Return an iterator over the keys of a dictionary."""
