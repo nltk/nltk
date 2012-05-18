@@ -10,7 +10,7 @@
 from __future__ import print_function
 
 import random
-from string import strip
+
 
 # reverse a word with probability 0.5
 def revword(word):
@@ -81,7 +81,7 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
 
     # try to place each word
     for word in words:
-        word = strip(word).upper()   # normalize
+        word = word.strip().upper()  # normalize
         save = word                  # keep a record of the word
         word = revword(word)
         for attempt in range(attempts):
