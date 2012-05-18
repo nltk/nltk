@@ -1,3 +1,4 @@
+# coding: utf-8
 # Natural Language Toolkit: Toolbox Reader
 #
 # Copyright (C) 2001-2012 NLTK Project
@@ -61,7 +62,7 @@ class StandardFormat(object):
         join_string = '\n'
         line_regexp = r'^%s(?:\\(\S+)\s*)?(.*)$'
         # discard a BOM in the first line
-        first_line_pat = re.compile(line_regexp % '(?:\ufeff)?'.encode('utf8'))
+        first_line_pat = re.compile(line_regexp % '(?:\xef\xbb\xbf)?')
         line_pat = re.compile(line_regexp % '')
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
@@ -300,9 +301,9 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
                 else:
                     cur_encoding = encoding
                 if re.search(_is_value, value):
-                    l.append(("\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors))
+                    l.append((u"\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors))
                 else:
-                    l.append(("\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors))
+                    l.append((u"\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors))
             else:
                 if re.search(_is_value, value):
                     l.append("\\%s %s\n" % (mkr, value))
