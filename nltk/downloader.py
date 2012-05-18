@@ -62,7 +62,7 @@ Usage::
 
     python nltk/downloader.py [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 
-or with py2.5+:
+or::
 
     python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 """

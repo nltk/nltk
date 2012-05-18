@@ -384,27 +384,23 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     :param dbname: filename of persistent store
     :type schema: str
     """
-    try:
-        import sqlite3
-        records = _str2records(filename, rel_name)
-        connection =  sqlite3.connect(dbname)
-        cur = connection.cursor()
-        if setup:
-            cur.execute('''CREATE TABLE city_table
-            (City text, Country text, Population int)''')
+    import sqlite3
+    records = _str2records(filename, rel_name)
+    connection =  sqlite3.connect(dbname)
+    cur = connection.cursor()
+    if setup:
+        cur.execute('''CREATE TABLE city_table
+        (City text, Country text, Population int)''')
 
-        table_name = "city_table"
-        for t in records:
-            cur.execute('insert into %s values (?,?,?)' % table_name, t)
-            if verbose:
-                print "inserting values into %s: " % table_name, t
-        connection.commit()
+    table_name = "city_table"
+    for t in records:
+        cur.execute('insert into %s values (?,?,?)' % table_name, t)
         if verbose:
-            print "Committing update to %s" % dbname
-        cur.close()
-    except ImportError:
-        import warnings
-        warnings.warn("To run this function, first install pysqlite, or else use Python 2.5 or later.")
+            print "inserting values into %s: " % table_name, t
+    connection.commit()
+    if verbose:
+        print "Committing update to %s" % dbname
+    cur.close()
 
 def sql_query(dbname, query):
     """
@@ -422,10 +418,6 @@ def sql_query(dbname, query):
         connection.text_factory = sqlite3.OptimizedUnicode
         cur = connection.cursor()
         return cur.execute(query)
-    except ImportError:
-        import warnings
-        warnings.warn("To run this function, first install pysqlite, or else use Python 2.5 or later.")
-        raise
     except ValueError:
         import warnings
         warnings.warn("Make sure the database file %s is installed and uncompressed." % dbname)
@@ -777,15 +769,10 @@ def sql_demo():
     """
     Print out every row from the 'city.db' database.
     """
-    try:
-        import sqlite3
-        print
-        print "Using SQL to extract rows from 'city.db' RDB."
-        for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
-            print row
-    except ImportError:
-        import warnings
-        warnings.warn("To run the SQL demo, first install pysqlite, or else use Python 2.5 or later.")
+    print
+    print "Using SQL to extract rows from 'city.db' RDB."
+    for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
+        print row
 
 
 if __name__ == '__main__':

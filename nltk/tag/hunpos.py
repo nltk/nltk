@@ -49,7 +49,6 @@ class HunposTagger(TaggerI):
     .. doctest::
         :options: +SKIP
 
-        >>> from __future__ import with_statement # python2.5 compat
         >>> with HunposTagger('english.model') as ht:
         ...     ht.tag('What is the airspeed of an unladen swallow ?'.split())
         ...
