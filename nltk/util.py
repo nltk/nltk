@@ -280,7 +280,7 @@ def transitive_closure(graph, reflexive=False):
     else:
         base_set = lambda k: set()
     # The graph U_i in the article:
-    agenda_graph = dict((k, v.copy()) for (k,v) in graph.iteritems())
+    agenda_graph = dict((k, graph[k].copy()) for k in graph)
     # The graph M_i in the article:
     closure_graph = dict((k, base_set(k)) for k in graph)
     for i in graph:
@@ -305,8 +305,8 @@ def invert_graph(graph):
     :rtype: dict(set)
     """
     inverted = {}
-    for key, values in graph.iteritems():
-        for value in values:
+    for key in graph:
+        for value in graph[key]:
             inverted.setdefault(value, set()).add(key)
     return inverted
 
@@ -479,7 +479,7 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
 
     history = []
     while n > 1:
-        history.append(sequence.next())
+        history.append(next(sequence))
         n -= 1
     for item in sequence:
         history.append(item)
@@ -669,7 +669,7 @@ class AbstractLazySequence(object):
             if i < 0: raise IndexError('index out of range')
             # Use iterate_from to extract it.
             try:
-                return self.iterate_from(i).next()
+                return next(self.iterate_from(i))
             except StopIteration:
                 raise IndexError('index out of range')
 
@@ -918,7 +918,7 @@ class LazyMap(AbstractLazySequence):
             while True:
                 elements = []
                 for iterator in iterators:
-                    try: elements.append(iterator.next())
+                    try: elements.append(next(iterator))
                     except: elements.append(None)
                 if elements == [None] * len(self._lists):
                     return
@@ -951,7 +951,7 @@ class LazyMap(AbstractLazySequence):
             if self._cache is not None and index in self._cache:
                 return self._cache[index]
             # Calculate the value
-            try: val = self.iterate_from(index).next()
+            try: val = next(self.iterate_from(index))
             except StopIteration:
                 raise IndexError('index out of range')
             # Update the cache
@@ -1007,7 +1007,7 @@ class LazyZip(LazyMap):
     def iterate_from(self, index):
         iterator = LazyMap.iterate_from(self, index)
         while index < len(self):
-            yield iterator.next()
+            yield next(iterator)
             index += 1
         return
 

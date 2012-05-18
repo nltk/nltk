@@ -13,6 +13,7 @@
 Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
+from __future__ import print_function
 
 # TODO: add LabelledTree (can be used for dependency trees)
 
@@ -37,25 +38,25 @@ class Tree(list):
     nested Tree.
 
         >>> from nltk.tree import Tree
-        >>> print Tree(1, [2, Tree(3, [4]), 5])
+        >>> print(Tree(1, [2, Tree(3, [4]), 5]))
         (1 2 (3 4) 5)
         >>> vp = Tree('VP', [Tree('V', ['saw']),
         ...                  Tree('NP', ['him'])])
         >>> s = Tree('S', [Tree('NP', ['I']), vp])
-        >>> print s
+        >>> print(s)
         (S (NP I) (VP (V saw) (NP him)))
-        >>> print s[1]
+        >>> print(s[1])
         (VP (V saw) (NP him))
-        >>> print s[1,1]
+        >>> print(s[1,1])
         (NP him)
         >>> t = Tree("(S (NP I) (VP (V saw) (NP him)))")
         >>> s == t
         True
         >>> t[1][1].node = "X"
-        >>> print t
+        >>> print(t)
         (S (NP I) (VP (V saw) (X him)))
         >>> t[0], t[1,1] = t[1,1], t[0]
-        >>> print t
+        >>> print(t)
         (S (X him) (VP (V saw) (NP I)))
 
     The length of a tree is the number of children it has.
@@ -92,7 +93,7 @@ class Tree(list):
         It is equivalent to calling the class method ``Tree.parse(s)``.
     """
     def __init__(self, node_or_str, children=None):
-        if children is None: 
+        if children is None:
             if not isinstance(node_or_str, basestring):
                 raise TypeError("%s: Expected a node value and child list "
                                 "or a single string" % type(self).__name__)
@@ -218,7 +219,7 @@ class Tree(list):
         Return a flat version of the tree, with all non-root non-terminals removed.
 
             >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
-            >>> print t.flatten()
+            >>> print(t.flatten())
             (S the dog chased the cat)
 
         :return: a tree consisting of this tree's root connected directly to
@@ -234,7 +235,7 @@ class Tree(list):
             >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
             >>> t.height()
             5
-            >>> print t[0,0]
+            >>> print(t[0,0])
             (D the)
             >>> t[0,0].height()
             2
@@ -261,7 +262,7 @@ class Tree(list):
             [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), ...]
             >>> for pos in t.treepositions('leaves'):
             ...     t[pos] = t[pos][::-1].upper()
-            >>> print t
+            >>> print(t)
             (S (NP (D EHT) (N GOD)) (VP (V DESAHC) (NP (D EHT) (N TAC))))
 
         :param order: One of: ``preorder``, ``postorder``, ``bothorder``,
@@ -285,7 +286,7 @@ class Tree(list):
 
             >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
             >>> for s in t.subtrees(lambda t: t.height() == 2):
-            ...     print s
+            ...     print(s)
             (D the)
             (N dog)
             (V chased)
@@ -317,7 +318,7 @@ class Tree(list):
         """
 
         if not isinstance(self.node, basestring):
-            raise TypeError, 'Productions can only be generated from trees having node labels that are strings'
+            raise TypeError('Productions can only be generated from trees having node labels that are strings')
 
         prods = [Production(Nonterminal(self.node), _child_names(self))]
         for child in self:
@@ -414,7 +415,7 @@ class Tree(list):
         :param parentChar: A string used to separate the node representation from its vertical annotation
         :type  parentChar: str
         """
-        from treetransforms import chomsky_normal_form
+        from .treetransforms import chomsky_normal_form
         chomsky_normal_form(self, factor, horzMarkov, vertMarkov, childChar, parentChar)
 
     def un_chomsky_normal_form(self, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
@@ -436,7 +437,7 @@ class Tree(list):
         :param unaryChar: A string joining two non-terminals in a unary production (default = "+")
         :type  unaryChar: str
         """
-        from treetransforms import un_chomsky_normal_form
+        from .treetransforms import un_chomsky_normal_form
         un_chomsky_normal_form(self, expandUnary, childChar, parentChar, unaryChar)
 
     def collapse_unary(self, collapsePOS = False, collapseRoot = False, joinChar = "+"):
@@ -458,7 +459,7 @@ class Tree(list):
         :param joinChar: A string used to connect collapsed node values (default = "+")
         :type  joinChar: str
         """
-        from treetransforms import collapse_unary
+        from .treetransforms import collapse_unary
         collapse_unary(self, collapsePOS, collapseRoot, joinChar)
 
     #////////////////////////////////////////////////////////////
@@ -864,7 +865,7 @@ class AbstractParentedTree(Tree):
         if isinstance(index, slice):
             start, stop, step = slice_bounds(self, index, allow_step=True)
             # Clear all the children pointers.
-            for i in xrange(start, stop, step):
+            for i in range(start, stop, step):
                 if isinstance(self[i], Tree):
                     self._delparent(self[i], i)
             # Delete the children from our child list.
@@ -908,7 +909,7 @@ class AbstractParentedTree(Tree):
                 if isinstance(child, Tree):
                     self._setparent(child, start + i*step, dry_run=True)
             # clear the child pointers of all parents we're removing
-            for i in xrange(start, stop, step):
+            for i in range(start, stop, step):
                 if isinstance(self[i], Tree):
                     self._delparent(self[i], i)
             # set the child pointers of the new children.  We do this
@@ -1005,8 +1006,8 @@ class AbstractParentedTree(Tree):
 class ParentedTree(AbstractParentedTree):
     """
     A ``Tree`` that automatically maintains parent pointers for
-    single-parented trees.  The following are methods for querying 
-    the structure of a parented tree: ``parent``, ``parent_index``, 
+    single-parented trees.  The following are methods for querying
+    the structure of a parented tree: ``parent``, ``parent_index``,
     ``left_sibling``, ``right_sibling``, ``root``, ``treeposition``.
 
     Each ``ParentedTree`` may have at most one parent.  In
@@ -1113,8 +1114,8 @@ class ParentedTree(AbstractParentedTree):
 class MultiParentedTree(AbstractParentedTree):
     """
     A ``Tree`` that automatically maintains parent pointers for
-    multi-parented trees.  The following are methods for querying the 
-    structure of a multi-parented tree: ``parents()``, ``parent_indices()``, 
+    multi-parented trees.  The following are methods for querying the
+    structure of a multi-parented tree: ``parents()``, ``parent_indices()``,
     ``left_siblings()``, ``right_siblings()``, ``roots``, ``treepositions``.
 
     Each ``MultiParentedTree`` may have zero or more parents.  In
@@ -1412,63 +1413,63 @@ def demo():
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
     t = Tree(s)
-    print "Convert bracketed string into tree:"
-    print t
-    print t.__repr__()
+    print("Convert bracketed string into tree:")
+    print(t)
+    print(t.__repr__())
 
-    print "Display tree properties:"
-    print t.node           # tree's constituent type
-    print t[0]             # tree's first child
-    print t[1]             # tree's second child
-    print t.height()
-    print t.leaves()
-    print t[1]
-    print t[1,1]
-    print t[1,1,0]
+    print("Display tree properties:")
+    print(t.node)           # tree's constituent type
+    print(t[0])             # tree's first child
+    print(t[1])             # tree's second child
+    print(t.height())
+    print(t.leaves())
+    print(t[1])
+    print(t[1,1])
+    print(t[1,1,0])
 
     # Demonstrate tree modification.
     the_cat = t[0]
     the_cat.insert(1, tree.Tree.parse('(JJ big)'))
-    print "Tree modification:"
-    print t
+    print("Tree modification:")
+    print(t)
     t[1,1,1] = tree.Tree.parse('(NN cake)')
-    print t
-    print
+    print(t)
+    print()
 
     # Tree transforms
-    print "Collapse unary:"
+    print("Collapse unary:")
     t.collapse_unary()
-    print t
-    print "Chomsky normal form:"
+    print(t)
+    print("Chomsky normal form:")
     t.chomsky_normal_form()
-    print t
-    print
+    print(t)
+    print()
 
     # Demonstrate probabilistic trees.
     pt = tree.ProbabilisticTree('x', ['y', 'z'], prob=0.5)
-    print "Probabilistic Tree:"
-    print pt
-    print
+    print("Probabilistic Tree:")
+    print(pt)
+    print()
 
     # Demonstrate parsing of treebank output format.
     t = tree.Tree.parse(t.pprint())
-    print "Convert tree to bracketed string and back again:"
-    print t
-    print
+    print("Convert tree to bracketed string and back again:")
+    print(t)
+    print()
 
     # Demonstrate LaTeX output
-    print "LaTeX output:"
-    print t.pprint_latex_qtree()
-    print
+    print("LaTeX output:")
+    print(t.pprint_latex_qtree())
+    print()
 
     # Demonstrate Productions
-    print "Production output:"
-    print t.productions()
-    print
+    print("Production output:")
+    print(t.productions())
+    print()
 
     # Demonstrate tree nodes containing objects other than strings
     t.node = ('test', 3)
-    print t
+    print(t)
 
 __all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
            'ProbabilisticTree', 'Tree', 'bracket_parse',

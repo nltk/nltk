@@ -172,10 +172,8 @@ Unit tests for Snowball stemmer
 
 See which languages are supported.
 
-    >>> SnowballStemmer.languages # doctest: +NORMALIZE_WHITESPACE
-    ('danish', 'dutch', 'english', 'finnish', 'french', 'german',
-    'hungarian', 'italian', 'norwegian', 'porter', 'portuguese',
-    'romanian', 'russian', 'spanish', 'swedish')
+    >>> print(" ".join(SnowballStemmer.languages))
+    danish dutch english finnish french german hungarian italian norwegian porter portuguese romanian russian spanish swedish
 
 Create a new instance of a language specific subclass.
 
