@@ -89,6 +89,7 @@ or if you plan to use them as dictionary keys, it is strongly
 recommended that you use full-fledged ``FeatStruct`` objects.
 """
 from __future__ import print_function
+from __future__ import division
 
 import re, copy
 
@@ -837,7 +838,7 @@ class FeatDict(FeatStruct, dict):
                 fval_lines = [(' '*(maxfnamelen+3))+l for l in fval_lines]
 
                 # Pick which line we'll display fname on, & splice it in.
-                nameline = (len(fval_lines)-1)/2
+                nameline = (len(fval_lines)-1) // 2
                 fval_lines[nameline] = (
                         fname+' ='+fval_lines[nameline][maxfnamelen+2:])
 
@@ -858,7 +859,7 @@ class FeatDict(FeatStruct, dict):
         if reentrances[id(self)]:
             idstr = '(%s) ' % reentrance_ids[id(self)]
             lines = [(' '*len(idstr))+l for l in lines]
-            idline = (len(lines)-1)/2
+            idline = (len(lines)-1) // 2
             lines[idline] = idstr + lines[idline][len(idstr):]
 
         return lines
