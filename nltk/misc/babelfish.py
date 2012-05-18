@@ -85,7 +85,7 @@ def translate(phrase, source, target):
     try:
         source_code = __languages[source]
         target_code = __languages[target]
-    except KeyError, lang:
+    except KeyError as lang:
         raise ValueError, "Language %s not available" % lang
 
 
@@ -96,7 +96,7 @@ def translate(phrase, source, target):
     try:
         response = urllib.urlopen('http://babelfish.yahoo.com/translate_txt', params)
 
-    except IOError, what:
+    except IOError as what:
         raise BabelizerIOError("Couldn't talk to server: %s" % what)
 
     html = response.read()

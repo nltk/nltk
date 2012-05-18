@@ -750,7 +750,7 @@ class BoxerDrsParser(DrtParser):
                 drs2 = self.parse_Expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
-        except Exception, e:
+        except Exception as e:
             raise ParseException(self._currentIndex, str(e))
         assert False, repr(tok)
 
@@ -761,7 +761,7 @@ class BoxerDrsParser(DrtParser):
     def get_next_token_variable(self, description):
         try:
             return self.token()
-        except ExpectedMoreTokensException, e:
+        except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(e.index, 'Variable expected.')
 
 

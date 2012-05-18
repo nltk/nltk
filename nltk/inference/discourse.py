@@ -316,7 +316,7 @@ class DiscourseTester(object):
                 try:
                     thread_reading = ": %s" % \
                               self._reading_command.combine_readings(readings)
-                except Exception, e:
+                except Exception as e:
                     thread_reading = ': INVALID: %s' % e.__class__.__name__
             else:
                 thread_reading = ''

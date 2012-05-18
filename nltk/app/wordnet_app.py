@@ -272,7 +272,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     if logfilename:
         try:
             logfile = open(logfilename, "a", 1) # 1 means 'line buffering'
-        except IOError, e:
+        except IOError as e:
             sys.stderr.write("Couldn't open %s for writing: %s",
                              logfilename, e)
             sys.exit(1)

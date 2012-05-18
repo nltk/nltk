@@ -1366,14 +1366,14 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
     """
     try:
         import scipy
-    except ImportError, e:
+    except ImportError as e:
         raise ValueError('The maxent training algorithm %r requires '
                          'that the scipy package be installed.  See '
                          'http://www.scipy.org/' % algorithm)
     try:
         # E.g., if libgfortran.2.dylib is not found.
         import scipy.sparse, scipy.maxentropy
-    except ImportError, e:
+    except ImportError as e:
         raise ValueError('Import of scipy package failed: %s' % e)
 
     # Construct an encoding from the training data.
@@ -1486,7 +1486,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
         write_megam_file(train_toks, encoding, trainfile, \
                             explicit=explicit, bernoulli=bernoulli)
         trainfile.close()
-    except (OSError, IOError, ValueError), e:
+    except (OSError, IOError, ValueError) as e:
         raise ValueError('Error while creating megam training file: %s' % e)
 
     # Run megam on the training file.
@@ -1519,7 +1519,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     # print './megam_i686.opt ', ' '.join(options)
     # Delete the training file
     try: os.remove(trainfile_name)
-    except (OSError, IOError), e:
+    except (OSError, IOError) as e:
         print 'Warning: unable to delete %s: %s' % (trainfile_name, e)
 
     # Parse the generated weight vector.

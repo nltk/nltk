@@ -922,7 +922,7 @@ class WordNetCorpusReader(CorpusReader):
                     synset_offsets = [int(next()) for _ in xrange(n_synsets)]
 
                 # raise more informative error with file name and line number
-                except (AssertionError, ValueError), e:
+                except (AssertionError, ValueError) as e:
                     tup = ('index.%s' % suffix), (i + 1), e
                     raise WordNetError('file %s, line %i: %s' % tup)
 
@@ -1155,7 +1155,7 @@ class WordNetCorpusReader(CorpusReader):
                                                    lemma.name)
 
         # raise a more informative error with line text
-        except ValueError, e:
+        except ValueError as e:
             raise WordNetError('line %r: %s' % (data_file_line, e))
 
         # set sense keys for Lemma objects - note that this has to be

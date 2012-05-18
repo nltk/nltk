@@ -123,7 +123,7 @@ class GlueDict(dict):
             # then we need a little extra massaging
             if hasattr(f, 'open'):
                 f = f.open()
-        except LookupError, e:
+        except LookupError as e:
             try:
                 f = open(self.filename)
             except LookupError:
@@ -502,7 +502,7 @@ class Glue(object):
                     if reading.equiv(glueformula.meaning, self.prover):
                         add_reading = False
                         break;
-                except Exception, e:
+                except Exception as e:
                     #if there is an exception, the syntax of the formula
                     #may not be understandable by the prover, so don't
                     #throw out the reading.

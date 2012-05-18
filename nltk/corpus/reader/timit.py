@@ -389,7 +389,7 @@ class TimitCorpusReader(CorpusReader):
                 dsp.speed(16000)
                 dsp.write(self.audiodata(utterance, start, end))
                 dsp.close()
-            except IOError, e:
+            except IOError as e:
                 print >>sys.stderr, ("can't acquire the audio device; please "
                                      "activate your audio device.")
                 print >>sys.stderr, "system error message:", str(e)

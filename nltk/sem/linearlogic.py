@@ -217,7 +217,7 @@ class ApplicationExpression(Expression):
             if isinstance(argument, ApplicationExpression):
                 bindings += argument.bindings
             bindings += function_simp.antecedent.unify(argument_simp, bindings)
-        except UnificationException, e:
+        except UnificationException as e:
             raise LinearLogicApplicationException, 'Cannot apply %s to %s. %s' % (function_simp, argument_simp, e)
 
         # If you are running it on complied premises, more conditions apply

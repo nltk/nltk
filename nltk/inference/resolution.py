@@ -48,7 +48,7 @@ class ResolutionProver(Prover):
             result, clauses = self._attempt_proof(clauses)
             if verbose:
                 print ResolutionProverCommand._decorate_clauses(clauses)
-        except RuntimeError, e:
+        except RuntimeError as e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 result = False
                 clauses = []
