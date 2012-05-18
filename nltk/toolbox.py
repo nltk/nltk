@@ -16,7 +16,7 @@ import os, re, codecs
 from xml.etree import ElementTree
 from xml.etree.ElementTree import TreeBuilder, Element, SubElement
 
-from nltk.compat import StringIO
+from nltk.compat import StringIO, u
 from nltk.data import PathPointer, ZipFilePathPointer, find
 
 
@@ -302,9 +302,9 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
                 else:
                     cur_encoding = encoding
                 if re.search(_is_value, value):
-                    l.append((u"\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors))
+                    l.append((u("\\%s %s\n") % (mkr, value)).encode(cur_encoding, errors))
                 else:
-                    l.append((u"\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors))
+                    l.append((u("\\%s%s\n") % (mkr, value)).encode(cur_encoding, errors))
             else:
                 if re.search(_is_value, value):
                     l.append("\\%s %s\n" % (mkr, value))

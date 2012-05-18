@@ -8,6 +8,9 @@ import types
 PY3 = sys.version_info[0] == 3
 
 if PY3:
+    def u(s):
+        return s
+
     string_types = str,
     integer_types = int,
     class_types = type,
@@ -36,6 +39,9 @@ if PY3:
     from urllib.parse import quote_plus, unquote_plus, urlencode
 
 else:
+    def u(s):
+        return unicode(s, "unicode_escape")
+
     string_types = basestring,
     integer_types = (int, long)
     class_types = (type, types.ClassType)
