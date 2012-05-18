@@ -189,9 +189,10 @@ class GlueDict(dict):
             if relationships is None: #if not specified for a specific relationship set
                 #add all relationship entries for parents
                 if supertype:
-                    for rels, glue in self[supertype].iteritems():
+                    for rels in self[supertype]:
                         if rels not in self[sem]:
                             self[sem][rels] = []
+                        glue = self[supertype][rels]
                         self[sem][rels].extend(glue)
                         self[sem][rels].extend(glue_formulas) # add the glue formulas to every rel entry
                 else:

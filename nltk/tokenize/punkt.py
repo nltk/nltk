@@ -385,8 +385,8 @@ class PunktToken(object):
 
         for p in self._properties:
             setattr(self, p, None)
-        for k, v in params.iteritems():
-            setattr(self, k, v)
+        for k in params:
+            setattr(self, k, params[k])
 
     #////////////////////////////////////////////////////////////
     #{ Regular expressions for properties
@@ -817,7 +817,8 @@ class PunktTrainer(PunktBaseClass):
         if ortho_thresh > 1:
             old_oc = self._params.ortho_context
             self._params.clear_ortho_context()
-            for tok, count in self._type_fdist.iteritems():
+            for tok in self._type_fdist:
+                count = self._type_fdist[tok]
                 if count >= ortho_thresh:
                     self._params.ortho_context[tok] = old_oc[tok]
 
@@ -836,7 +837,8 @@ class PunktTrainer(PunktBaseClass):
         # and so create a new FreqDist rather than working in place.
         res = FreqDist()
         num_removed = 0
-        for tok, count in fdist.iteritems():
+        for tok in fdist:
+            count = fdist[tok]
             if count < threshold:
                 num_removed += 1
             else:
@@ -1099,7 +1101,7 @@ class PunktTrainer(PunktBaseClass):
         """
         Generates likely collocations and their log-likelihood.
         """
-        for types, col_count in self._collocation_fdist.iteritems():
+        for types in self._collocation_fdist:
             try:
                 typ1, typ2 = types
             except TypeError:
@@ -1108,6 +1110,7 @@ class PunktTrainer(PunktBaseClass):
             if typ2 in self._params.sent_starters:
                 continue
 
+            col_count = self._collocation_fdist[types]
             typ1_count = self._type_fdist[typ1]+self._type_fdist[typ1+'.']
             typ2_count = self._type_fdist[typ2]+self._type_fdist[typ2+'.']
             if (typ1_count > 1 and typ2_count > 1
@@ -1143,10 +1146,11 @@ class PunktTrainer(PunktBaseClass):
         Uses collocation heuristics for each candidate token to
         determine if it frequently starts sentences.
         """
-        for (typ, typ_at_break_count) in self._sent_starter_fdist.iteritems():
+        for typ in self._sent_starter_fdist:
             if not typ:
                 continue
 
+            typ_at_break_count = self._sent_starter_fdist[typ]
             typ_count = self._type_fdist[typ]+self._type_fdist[typ+'.']
             if typ_count < typ_at_break_count:
                 # needed after freq_threshold

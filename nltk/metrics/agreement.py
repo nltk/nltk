@@ -63,6 +63,7 @@ from operator import itemgetter
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
+from nltk import compat
 
 from nltk.metrics.distance import binary_distance
 
@@ -195,8 +196,8 @@ class AnnotationTask(object):
         for i, itemdata in self._grouped_data('item'):
             label_freqs = FreqDist(x['labels'] for x in itemdata)
 
-            for j, nj in label_freqs.iteritems():
-                for l, nl in label_freqs.iteritems():
+            for j, nj in compat.iteritems(label_freqs):
+                for l, nl in compat.iteritems(label_freqs):
                     total += float(nj * nl) * self.distance(l, j)
         ret = (1.0 / float((len(self.I) * len(self.C) * (len(self.C) - 1)))) * total
         log.debug("Observed disagreement: %f", ret)
@@ -241,7 +242,7 @@ class AnnotationTask(object):
         """
         total = 0.0
         label_freqs = FreqDist(x['labels'] for x in self.data)
-        for k, f in label_freqs.iteritems():
+        for k, f in compat.iteritems(label_freqs):
             total += f ** 2
         Ae = total / float((len(self.I) * len(self.C)) ** 2)
         return (self.avg_Ao() - Ae) / (1 - Ae)

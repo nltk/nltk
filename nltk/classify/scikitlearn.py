@@ -33,12 +33,12 @@ chi-square feature selection:
 (Such a classifier could be trained on word counts for text classification.)
 """
 
-from nltk.classify.api import ClassifierI
-from nltk.probability import DictionaryProbDist
-
 import numpy as np
 from scipy.sparse import coo_matrix
 
+from nltk.classify.api import ClassifierI
+from nltk.probability import DictionaryProbDist
+from nltk import compat
 
 class SklearnClassifier(ClassifierI):
     """Wrapper for scikit-learn classifiers."""
@@ -89,7 +89,7 @@ class SklearnClassifier(ClassifierI):
         self._label_index = {}
 
         for fs, label in labeled_featuresets:
-            for f in fs.iterkeys():
+            for f in fs:
                 if f not in self._feature_index:
                     self._feature_index[f] = len(self._feature_index)
             if label not in self._label_index:
@@ -118,7 +118,7 @@ class SklearnClassifier(ClassifierI):
         values = []
 
         for i, fs in enumerate(featuresets):
-            for f, v in fs.iteritems():
+            for f, v in compat.iteritems(fs):
                 try:
                     j = self._feature_index[f]
                     i_ind.append(i)
@@ -137,7 +137,7 @@ class SklearnClassifier(ClassifierI):
                      dtype=self._dtype)
 
         for i, fs in enumerate(featuresets):
-            for f, v in fs.iteritems():
+            for f, v in compat.iteritems(fs):
                 try:
                     X[i, self._feature_index[f]] = self._dtype(v)
                 except KeyError:    # feature not seen in training

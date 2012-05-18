@@ -450,7 +450,8 @@ class Expression(SubstituteBindingsI):
         """
         sig = defaultdict(list)
         if signature:
-            for (key, val) in signature.iteritems():
+            for key in signature:
+                val = signature[key]
                 varEx = VariableExpression(Variable(key))
                 if isinstance(val, Type):
                     varEx.type = val
@@ -460,7 +461,7 @@ class Expression(SubstituteBindingsI):
 
         self._set_type(signature=sig)
 
-        return dict([(key, vars[0].type) for (key, vars) in sig.iteritems()])
+        return dict((key, sig[key][0].type) for key in sig)
 
     def findtype(self, variable):
         """

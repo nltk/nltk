@@ -36,7 +36,6 @@ implementation of the ``ConditionalProbDistI`` interface is
 ``ConditionalProbDist``, a derived distribution.
 
 """
-
 _NINF = float('-1e300')
 
 
@@ -47,6 +46,7 @@ from operator import itemgetter
 from itertools import imap, islice
 from collections import defaultdict
 from functools import reduce
+from nltk import compat
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -429,7 +429,7 @@ class FreqDist(dict):
         :type samples: list
         """
         try:
-            sample_iter = samples.iteritems()
+            sample_iter = compat.iteritems(samples)
         except:
             sample_iter = imap(lambda x: (x,1), samples)
         for sample, count in sample_iter:
@@ -1749,7 +1749,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in self.itervalues())
+        return sum(fdist.N() for fdist in compat.itervalues(self))
 
     def plot(self, *args, **kwargs):
         """

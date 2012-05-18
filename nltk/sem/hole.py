@@ -22,6 +22,7 @@ convert that representation into first-order logic formulas.
 
 from functools import reduce
 
+from nltk import compat
 from nltk.parse import load_parser
 from nltk.draw.tree import draw_trees
 from nltk.sem.skolemize import skolemize
@@ -126,7 +127,7 @@ class HoleSemantics(object):
 
     def _find_top_nodes(self, node_list):
         top_nodes = node_list.copy()
-        for f in self.fragments.itervalues():
+        for f in compat.itervalues(self.fragments):
             #the label is the first argument of the predicate
             args = f[1]
             for arg in args:

@@ -174,7 +174,8 @@ class ClosedWorldProver(ProverCommandDecorator):
         predicates = self._make_predicate_dict(assumptions)
 
         new_assumptions = []
-        for p, predHolder in predicates.iteritems():
+        for p in predicates:
+            predHolder = predicates[p]
             new_sig = self._make_unique_signature(predHolder)
             new_sig_exs = [VariableExpression(v) for v in new_sig]
 
