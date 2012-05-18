@@ -33,7 +33,7 @@
 
 from nltk.data import load
 
-from api import StemmerI
+from .api import StemmerI
 
 class RSLPStemmer(StemmerI):
     """
@@ -67,7 +67,7 @@ class RSLPStemmer(StemmerI):
         rules = load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
         lines = rules.split("\n")
 
-        lines = [line for line in lines if line != u""]     # remove blank lines
+        lines = [line for line in lines if line != ""]     # remove blank lines
         lines = [line for line in lines if line[0] != "#"]  # remove comments
 
         # NOTE: a simple but ugly hack to make this parser happy with double '\t's

@@ -159,7 +159,7 @@ class Nonterminal(object):
 
         :rtype: str
         """
-        if isinstance(self._symbol, basestring):
+        if isinstance(self._symbol, string_types):
             return '%s' % (self._symbol,)
         else:
             return '%r' % (self._symbol,)
@@ -170,7 +170,7 @@ class Nonterminal(object):
 
         :rtype: str
         """
-        if isinstance(self._symbol, basestring):
+        if isinstance(self._symbol, string_types):
             return '%s' % (self._symbol,)
         else:
             return '%r' % (self._symbol,)
@@ -500,7 +500,8 @@ class ContextFreeGrammar(object):
             return
 
         self._leftcorner_words = {}
-        for cat, lefts in self._leftcorners.iteritems():
+        for cat in self._leftcorners:
+            lefts = self._leftcorners[cat]
             lc = self._leftcorner_words[cat] = set()
             for left in lefts:
                 lc.update(self._immediate_leftcorner_words.get(left, set()))
@@ -1201,7 +1202,7 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
     :param probabilistic: are the grammar rules probabilistic?
     :type probabilistic: bool
     """
-    if isinstance(input, basestring):
+    if isinstance(input, string_types):
         lines = input.split('\n')
     else:
         lines = input

@@ -9,7 +9,7 @@
 
 import re
 
-from api import StemmerI
+from .api import StemmerI
 
 class RegexpStemmer(StemmerI):
     """

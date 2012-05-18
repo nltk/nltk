@@ -12,7 +12,7 @@ Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 
 import re
 
-from api import StemmerI
+from .api import StemmerI
 
 class LancasterStemmer(StemmerI):
     """
@@ -179,7 +179,7 @@ class LancasterStemmer(StemmerI):
 
         for rule in rule_tuple:
             if not valid_rule.match(rule):
-                raise ValueError, "The rule %s is invalid" % rule
+                raise ValueError("The rule %s is invalid" % rule)
             first_letter = rule[0:1]
             if first_letter in self.rule_dictionary:
                 self.rule_dictionary[first_letter].append(rule)

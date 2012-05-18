@@ -286,10 +286,10 @@ def overridden(method):
     :type method: instance method
     """
     # [xx] breaks on classic classes!
-    if isinstance(method, types.MethodType) and method.__self__.__class__ is not None:
+    if isinstance(method, types.MethodType) and method.im_class is not None:
         name = method.__name__
         funcs = [cls.__dict__[name]
-                 for cls in _mro(method.__self__.__class__)
+                 for cls in _mro(method.im_class)
                  if name in cls.__dict__]
         return len(funcs) > 1
     else:

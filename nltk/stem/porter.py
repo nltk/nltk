@@ -85,6 +85,7 @@ nltk.  All such modifications are marked with \"--NLTK--\".  The nltk
 version of this module is maintained by the NLTK developers, and is
 available from <http://nltk.sourceforge.net>
 """
+from __future__ import print_function
 
 ## --NLTK--
 ## Declare this module's documentation format.
@@ -95,7 +96,7 @@ import re
 
 ## --NLTK--
 ## Import the nltk.stemmer module, which defines the stemmer interface
-from api import StemmerI
+from .api import StemmerI
 
 class PorterStemmer(StemmerI):
 
@@ -523,7 +524,7 @@ class PorterStemmer(StemmerI):
         lower = word.lower()
 
         ret = ""
-        for x in xrange(len(stem)):
+        for x in range(len(stem)):
             if lower[x] == stem[x]:
                 ret += word[x]
             else:
@@ -605,11 +606,11 @@ def demo():
     original = re.sub(r"(.{,70})\s", r'\1\n', original+' ').rstrip()
 
     # Print the results.
-    print '-Original-'.center(70).replace(' ', '*').replace('-', ' ')
-    print original
-    print '-Results-'.center(70).replace(' ', '*').replace('-', ' ')
-    print results
-    print '*'*70
+    print('-Original-'.center(70).replace(' ', '*').replace('-', ' '))
+    print(original)
+    print('-Results-'.center(70).replace(' ', '*').replace('-', ' '))
+    print(results)
+    print('*'*70)
 
 ##--NLTK--
 
