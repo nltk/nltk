@@ -50,10 +50,10 @@ class SnowballStemmer(StemmerI):
     The stemmer is invoked as shown below:
 
     >>> from nltk.stem import SnowballStemmer
-    >>> SnowballStemmer.languages # See which languages are supported
-    ('danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian',
-    'italian', 'norwegian', 'porter', 'portuguese', 'romanian', 'russian',
-    'spanish', 'swedish')
+    >>> print(" ".join(SnowballStemmer.languages)) # See which languages are supported
+    danish dutch english finnish french german hungarian
+    italian norwegian porter portuguese romanian russian
+    spanish swedish
     >>> stemmer = SnowballStemmer("german") # Choose a language
     >>> stemmer.stem(u"Autobahnen") # Stem a word
     u'autobahn'

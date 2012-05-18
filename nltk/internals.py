@@ -340,7 +340,7 @@ def deprecated(message):
         >>> from nltk.internals import deprecated
         >>> @deprecated('Use foo() instead')
         ... def bar(x):
-        ...     print x/10
+        ...     print(x/10)
 
     """
 
