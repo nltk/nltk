@@ -86,7 +86,7 @@ def translate(phrase, source, target):
         source_code = __languages[source]
         target_code = __languages[target]
     except KeyError as lang:
-        raise ValueError, "Language %s not available" % lang
+        raise ValueError("Language %s not available" % lang)
 
 
     params = urllib.urlencode({'doit': 'done',

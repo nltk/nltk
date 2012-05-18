@@ -584,9 +584,9 @@ def import_from_name(name):
     try:
         return __import__(name, globals(), locals(), ['*'])
     except Exception as e:
-        raise ValueError, str(e)
+        raise ValueError(str(e))
     except:
-        raise ValueError, 'Error importing %r' % name
+        raise ValueError('Error importing %r' % name)
 
 def find_module_from_filename(filename):
     """

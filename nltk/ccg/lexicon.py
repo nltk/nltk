@@ -93,7 +93,7 @@ def matchBrackets(string):
             rest = rest[1:]
     if rest.startswith(')'):
         return (inside + ')',rest[1:])
-    raise AssertionError, 'Unmatched bracket in string \'' + string + '\''
+    raise AssertionError('Unmatched bracket in string \'' + string + '\'')
 
 # Separates the string for the next portion of the category
 # from the rest of the string
@@ -134,7 +134,7 @@ def parsePrimitiveCategory(chunks,primitives,families,var):
     if catstr in primitives:
         subscrs = parseSubscripts(chunks[1])
         return (PrimitiveCategory(catstr,subscrs),var)
-    raise AssertionError, 'String \'' + catstr + '\' is neither a family nor primitive category.'
+    raise AssertionError('String \'' + catstr + '\' is neither a family nor primitive category.')
 
 # parseCategory drops the 'var' from the tuple
 def parseCategory(line,primitives,families):

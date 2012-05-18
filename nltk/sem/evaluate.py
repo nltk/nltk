@@ -58,7 +58,7 @@ def is_rel(s):
          len(max(s))==len(min(s)):
         return True
     else:
-        raise ValueError, "Set %r contains sequences of different lengths" % s
+        raise ValueError("Set %r contains sequences of different lengths" % s)
 
 def set2rel(s):
     """
@@ -125,7 +125,7 @@ class Valuation(dict):
         if key in self:
             return dict.__getitem__(self, key)
         else:
-            raise Undefined,  "Unknown expression: '%s'" % key
+            raise Undefined("Unknown expression: '%s'" % key)
 
     def __str__(self):
         return pformat(self)
@@ -216,7 +216,7 @@ class Assignment(dict):
         if key in self:
             return dict.__getitem__(self, key)
         else:
-            raise Undefined, "Not recognized as a variable: '%s'" % key
+            raise Undefined("Not recognized as a variable: '%s'" % key)
 
     def copy(self):
         new = Assignment(self.domain)
@@ -296,9 +296,8 @@ class Model(object):
         self.domain = domain
         self.valuation = valuation
         if not domain.issuperset(valuation.domain):
-            raise Error,\
-                  "The valuation domain, %s, must be a subset of the model's domain, %s"\
-                  % (valuation.domain, domain)
+            raise Error("The valuation domain, %s, must be a subset of the model's domain, %s"\
+                  % (valuation.domain, domain))
 
     def __repr__(self):
         return "(%r, %r)" % (self.domain, self.valuation)
@@ -429,7 +428,7 @@ class Model(object):
             return g[parsed.variable.name]
 
         else:
-            raise Undefined, "Can't find a value for %s" % parsed
+            raise Undefined("Can't find a value for %s" % parsed)
 
     def satisfiers(self, parsed, varex, g, trace=None, nesting=0):
         """
@@ -483,7 +482,7 @@ class Model(object):
             result = set(c for c in candidates)
         # var isn't free in parsed
         else:
-            raise Undefined, "%s is not free in %s" % (var.name, parsed)
+            raise Undefined("%s is not free in %s" % (var.name, parsed))
 
         return result
 

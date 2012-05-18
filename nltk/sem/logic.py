@@ -1694,7 +1694,7 @@ def parse_logic(s, logic_parser=None):
         try:
             statements.append(logic_parser.parse(line))
         except ParseException:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements
 
 

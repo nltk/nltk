@@ -504,7 +504,7 @@ def parse_fol(s):
         try:
             statements.append(lp.parse(line))
         except Error:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements
 
 ###############################
