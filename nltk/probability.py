@@ -42,7 +42,7 @@ import math
 import random
 import warnings
 from operator import itemgetter
-from itertools import imap, islice
+from itertools import islice
 from collections import defaultdict
 from functools import reduce
 from nltk import compat
@@ -434,7 +434,7 @@ class FreqDist(dict):
         try:
             sample_iter = compat.iteritems(samples)
         except:
-            sample_iter = imap(lambda x: (x,1), samples)
+            sample_iter = compat.imap(lambda x: (x,1), samples)
         for sample, count in sample_iter:
             self.inc(sample, count=count)
 
