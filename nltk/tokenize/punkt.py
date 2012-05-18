@@ -301,7 +301,7 @@ def _pair_iter(it):
     pair will have None as its second element.
     """
     it = iter(it)
-    prev = it.next()
+    prev = next(it)
     for el in it:
         yield (prev, el)
         prev = el
@@ -538,7 +538,7 @@ class PunktBaseClass(object):
             if line.strip():
                 line_toks = iter(self._lang_vars.word_tokenize(line))
 
-                yield self._Token(line_toks.next(),
+                yield self._Token(next(line_toks),
                         parastart=parastart, linestart=True)
                 parastart = False
 

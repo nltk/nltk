@@ -933,6 +933,9 @@ class SeekableUnicodeStreamReader(object):
         if line: return line
         else: raise StopIteration
 
+    def __next__(self):
+        return self.next()
+
     def __iter__(self):
         """Return self"""
         return self

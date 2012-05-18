@@ -218,10 +218,10 @@ class TextTilingTokenizer(TokenizerI):
         current_par = 0
         current_tok_seq = 0
         pb_iter = par_breaks.__iter__()
-        current_par_break = pb_iter.next()
+        current_par_break = next(pb_iter)
         if current_par_break == 0:
             try:
-                current_par_break = pb_iter.next() #skip break at 0
+                current_par_break = next(pb_iter) #skip break at 0
             except StopIteration:
                 raise ValueError(
                     "No paragraph breaks were found(text too short perhaps?)"
@@ -230,7 +230,7 @@ class TextTilingTokenizer(TokenizerI):
             for word, index in ts.wrdindex_list:
                 try:
                     while index > current_par_break:
-                        current_par_break = pb_iter.next()
+                        current_par_break = next(pb_iter)
                         current_par += 1
                 except StopIteration:
                     #hit bottom

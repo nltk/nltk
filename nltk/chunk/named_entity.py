@@ -187,9 +187,9 @@ def postag_tree(tree):
         if isinstance(child, Tree):
             newtree.append(Tree(child.node, []))
             for subchild in child:
-                newtree[-1].append( (subchild, tag_iter.next()) )
+                newtree[-1].append( (subchild, next(tag_iter)) )
         else:
-            newtree.append( (child, tag_iter.next()) )
+            newtree.append( (child, next(tag_iter)) )
     return newtree
 
 def load_ace_data(roots, fmt='binary', skip_bnews=True):

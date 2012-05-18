@@ -88,7 +88,7 @@ class ProbabilisticFundamentalRule(AbstractChartRule):
     def apply_iter(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
         if not (left_edge.end() == right_edge.start() and
-                left_edge.next() == right_edge.lhs() and
+                next(left_edge) == right_edge.lhs() and
                 left_edge.is_incomplete() and right_edge.is_complete()):
             return
 
@@ -118,7 +118,7 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
         if edge1.is_incomplete():
             # edge1 = left_edge; edge2 = right_edge
             for edge2 in chart.select(start=edge1.end(), is_complete=True,
-                                     lhs=edge1.next()):
+                                     lhs=next(edge1)):
                 for new_edge in fr.apply_iter(chart, grammar, edge1, edge2):
                     yield new_edge
         else:

@@ -1565,7 +1565,7 @@ class DownloaderGUI(object):
 
     _DL_DELAY=10
     def _download_cb(self, download_iter, ids):
-        try: msg = download_iter.next()
+        try: msg = next(download_iter)
         except StopIteration:
             #self._fill_table(sort=False)
             self._update_table_status()

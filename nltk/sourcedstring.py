@@ -477,7 +477,7 @@ class SourcedString(object):
         # Add the first element; but if sequence is empty, return an
         # empty string.
         try:
-            s = seq_iter.next()
+            s = next(seq_iter)
         except StopIteration:
             return self._stringtype('')
 
@@ -1304,6 +1304,9 @@ class SourcedStringStream(object):
         line = self.readline()
         if line: return line
         else: raise StopIteration
+
+    def __next__(self):
+        return self.next()
 
     def __iter__(self):
         """Return self"""

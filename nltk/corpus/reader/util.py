@@ -7,14 +7,14 @@
 # For license information, see LICENSE.TXT
 
 import os
-import sys
 import bisect
 import re
 import tempfile
 from functools import reduce
-try: import cPickle as pickle
-except ImportError: import pickle
-from itertools import islice
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 # Use the c version of ElementTree, which is faster, if possible:
 try: from xml.etree import cElementTree as ElementTree
@@ -260,7 +260,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
                 return self._cache[2][i-offset]
             # Use iterate_from to extract it.
             try:
-                return self.iterate_from(i).next()
+                return next(self.iterate_from(i))
             except StopIteration:
                 raise IndexError('index out of range')
 

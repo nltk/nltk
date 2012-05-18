@@ -62,6 +62,7 @@ class CCGEdge(EdgeI):
     def is_complete(self): return True
     def is_incomplete(self): return False
     def next(self): return None
+    def __next__(self): return self.next()
 
     def categ(self):
         return self._categ

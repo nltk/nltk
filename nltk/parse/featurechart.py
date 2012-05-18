@@ -102,7 +102,7 @@ class FeatureTreeEdge(TreeEdge):
         return nt.substitute_bindings(bindings)
 
     def next_with_bindings(self):
-        return self._bind(self.next(), self._bindings)
+        return self._bind(next(self), self._bindings)
 
     def bindings(self):
         """
@@ -256,9 +256,9 @@ class FeatureFundamentalRule(FundamentalRule):
                 isinstance(left_edge, FeatureTreeEdge)):
             return
         found = right_edge.lhs()
-        next = left_edge.next()
+        next_edge = next(left_edge)
         if isinstance(right_edge, FeatureTreeEdge):
-            if not is_nonterminal(next): return
+            if not is_nonterminal(next_edge): return
             if left_edge.next()[TYPE] != right_edge.lhs()[TYPE]: return
             # Create a copy of the bindings.
             bindings = left_edge.bindings()
@@ -267,10 +267,10 @@ class FeatureFundamentalRule(FundamentalRule):
             found = found.rename_variables(used_vars=left_edge.variables())
             # Unify B1 (left_edge.next) with B2 (right_edge.lhs) to
             # generate B3 (result).
-            result = unify(next, found, bindings, rename_vars=False)
+            result = unify(next_edge, found, bindings, rename_vars=False)
             if result is None: return
         else:
-            if next != found: return
+            if next_edge != found: return
             # Create a copy of the bindings.
             bindings = left_edge.bindings()
 
@@ -302,7 +302,7 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         fr = self._fundamental_rule
         for right_edge in chart.select(start=left_edge.end(),
                                        is_complete=True,
-                                       lhs=left_edge.next()):
+                                       lhs=next(left_edge)):
             for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
@@ -338,16 +338,16 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
     """
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        next, index = edge.next(), edge.end()
-        if not is_nonterminal(next): return
+        next_edge, index = next(edge), edge.end()
+        if not is_nonterminal(next_edge): return
 
         # If we've already applied this rule to an edge with the same
         # next & end, and the chart & grammar have not changed, then
         # just return (no new edges to add).
-        done = self._done.get((next, index), (None,None))
+        done = self._done.get((next_edge, index), (None,None))
         if done[0] is chart and done[1] is grammar: return
 
-        for prod in grammar.productions(lhs=edge.next()):
+        for prod in grammar.productions(lhs=next(edge)):
             # If the left corner in the predicted production is
             # leaf, it must match with the input.
             if prod.rhs():
@@ -364,7 +364,7 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
                     yield new_edge
 
         # Record the fact that we've applied this rule.
-        self._done[next, index] = (chart, grammar)
+        self._done[next_edge, index] = (chart, grammar)
 
 
 #////////////////////////////////////////////////////////////
@@ -376,8 +376,8 @@ class FeatureBottomUpPredictRule(BottomUpPredictRule):
         if edge.is_incomplete(): return
         for prod in grammar.productions(rhs=edge.lhs()):
             if isinstance(edge, FeatureTreeEdge):
-                next = prod.rhs()[0]
-                if not is_nonterminal(next): continue
+                _next = prod.rhs()[0]
+                if not is_nonterminal(_next): continue
 
             new_edge = FeatureTreeEdge.from_production(prod, edge.start())
             if chart.insert(new_edge, ()):
@@ -390,8 +390,8 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
         for prod in grammar.productions(rhs=found):
             bindings = {}
             if isinstance(edge, FeatureTreeEdge):
-                next = prod.rhs()[0]
-                if not is_nonterminal(next): continue
+                _next = prod.rhs()[0]
+                if not is_nonterminal(_next): continue
 
                 # We rename vars here, because we don't want variables
                 # from the two different productions to match.
@@ -399,7 +399,7 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
                                            fs_class=FeatStruct)
                 found = found.rename_variables(used_vars=used_vars)
 
-                result = unify(next, found, bindings, rename_vars=False)
+                result = unify(_next, found, bindings, rename_vars=False)
                 if result is None: continue
 
             new_edge = (FeatureTreeEdge.from_production(prod, edge.start())

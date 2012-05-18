@@ -116,8 +116,8 @@ class AnnotationTask(object):
 
         """
         data = data or self.data
-        kA = (x for x in data if x['coder']==cA and x['item']==i).next()
-        kB = (x for x in data if x['coder']==cB and x['item']==i).next()
+        kA = next((x for x in data if x['coder']==cA and x['item']==i))
+        kB = next((x for x in data if x['coder']==cB and x['item']==i))
         ret = 1.0 - float(self.distance(kA['labels'], kB['labels']))
         log.debug("Observed agreement between %s and %s on %s: %f",
                       cA, cB, i, ret)

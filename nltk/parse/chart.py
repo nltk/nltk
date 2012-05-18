@@ -173,6 +173,9 @@ class EdgeI(object):
         """
         raise NotImplementedError()
 
+    def __next__(self):
+        return self.next()
+
     def is_complete(self):
         """
         Return True if this edge's structure is fully consistent
@@ -1003,7 +1006,7 @@ class FundamentalRule(AbstractChartRule):
         if not (left_edge.is_incomplete() and
                 right_edge.is_complete() and
                 left_edge.end() == right_edge.start() and
-                left_edge.next() == right_edge.lhs()):
+                next(left_edge) == right_edge.lhs()):
             return
 
         # Construct the new edge.
@@ -1052,7 +1055,7 @@ class SingleEdgeFundamentalRule(FundamentalRule):
     def _apply_incomplete(self, chart, grammar, left_edge):
         for right_edge in chart.select(start=left_edge.end(),
                                        is_complete=True,
-                                       lhs=left_edge.next()):
+                                       lhs=next(left_edge)):
             new_edge = left_edge.move_dot_forward(right_edge.end())
             if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                 yield new_edge
@@ -1100,7 +1103,7 @@ class TopDownPredictRule(AbstractChartRule):
     NUM_EDGES = 1
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        for prod in grammar.productions(lhs=edge.next()):
+        for prod in grammar.productions(lhs=next(edge)):
             new_edge = TreeEdge.from_production(prod, edge.end())
             if chart.insert(new_edge, ()):
                 yield new_edge
@@ -1120,17 +1123,17 @@ class CachedTopDownPredictRule(TopDownPredictRule):
 
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        next, index = edge.next(), edge.end()
-        if not is_nonterminal(next): return
+        next_edge, index = next(edge), edge.end()
+        if not is_nonterminal(next_edge): return
 
         # If we've already applied this rule to an edge with the same
         # next & end, and the chart & grammar have not changed, then
         # just return (no new edges to add).
-        done = self._done.get((next, index), (None,None))
+        done = self._done.get((next_edge, index), (None,None))
         if done[0] is chart and done[1] is grammar: return
 
         # Add all the edges indicated by the top down expand rule.
-        for prod in grammar.productions(lhs=next):
+        for prod in grammar.productions(lhs=next_edge):
             # If the left corner in the predicted production is
             # leaf, it must match with the input.
             if prod.rhs():
@@ -1143,7 +1146,7 @@ class CachedTopDownPredictRule(TopDownPredictRule):
                 yield new_edge
 
         # Record the fact that we've applied this rule.
-        self._done[next, index] = (chart, grammar)
+        self._done[next_edge, index] = (chart, grammar)
 
 #////////////////////////////////////////////////////////////
 # Bottom-Up Prediction
@@ -1216,7 +1219,7 @@ class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     def _apply_incomplete(self, chart, grammar, left_edge):
         for right_edge in chart.select(start=left_edge.end(),
                                        is_complete=True,
-                                       lhs=left_edge.next()):
+                                       lhs=next(left_edge)):
             end = right_edge.end()
             nexttoken = end < chart.num_leaves() and chart.leaf(end)
             if _bottomup_filter(grammar, nexttoken, left_edge.rhs(), left_edge.dot()):
@@ -1226,8 +1229,9 @@ class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
 
 class FilteredBottomUpPredictCombineRule(BottomUpPredictCombineRule):
     def apply_iter(self, chart, grammar, edge):
-        if edge.is_incomplete(): return
-        leftcorners = grammar.leftcorners
+        if edge.is_incomplete():
+            return
+
         end = edge.end()
         nexttoken = end < chart.num_leaves() and chart.leaf(end)
         for prod in grammar.productions(rhs=edge.lhs()):
@@ -1239,11 +1243,11 @@ class FilteredBottomUpPredictCombineRule(BottomUpPredictCombineRule):
 def _bottomup_filter(grammar, nexttoken, rhs, dot=0):
     if len(rhs) <= dot + 1:
         return True
-    next = rhs[dot + 1]
-    if is_terminal(next):
-        return nexttoken == next
+    _next = rhs[dot + 1]
+    if is_terminal(_next):
+        return nexttoken == _next
     else:
-        return grammar.is_leftcorner(next, nexttoken)
+        return grammar.is_leftcorner(_next, nexttoken)
 
 
 ########################################################################
