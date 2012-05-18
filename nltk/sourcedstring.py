@@ -194,9 +194,9 @@ class ConsecutiveCharStringSource(StringSource):
     strings that are indexed using character offsets.
     """
     def __init__(self, docid, begin, end):
-        if not isinstance(begin, (int, long)):
+        if not isinstance(begin, integer_types):
             raise TypeError("begin attribute expected an integer")
-        if not isinstance(end, (int, long)):
+        if not isinstance(end, integer_types):
             raise TypeError("end attribute expected an integer")
         if not  end >= begin:
             raise ValueError("begin must be less than or equal to end")
@@ -251,7 +251,7 @@ class ContiguousCharStringSource(StringSource):
             raise ValueError("at least one offset must be specified")
         if self.CONSTRUCTOR_CHECKS_OFFSETS:
             for i in range(len(offsets)):
-                if not isinstance(offsets[i], (int,long)):
+                if not isinstance(offsets[i], integer_types):
                     raise TypeError("offsets must be integers")
                 if i>0 and offsets[i-1]>offsets[i]:
                     raise TypeError("offsets must be monotonic increasing")

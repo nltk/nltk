@@ -61,6 +61,7 @@ import os
 import gzip
 from collections import defaultdict
 
+from nltk import compat
 from nltk.util import OrderedDict
 from nltk.probability import DictionaryProbDist
 
@@ -569,7 +570,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, (int, long)):
+        if not isinstance(f_id, compat.integer_types):
             raise TypeError('describe() expected an int')
         try:
             self._inv_mapping
@@ -873,7 +874,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         # Convert input-features to joint-features:
         for fname, fval in featureset.items():
-            if(type(fval) in (int, float)):
+            if isinstance(fval, (compat.integer_types, float)):
                 # Known feature name & value:
                 if (fname, type(fval), label) in self._mapping:
                     encoding.append((self._mapping[fname, type(fval), label], fval))
@@ -902,7 +903,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, (int, long)):
+        if not isinstance(f_id, compat.integer_types):
             raise TypeError('describe() expected an int')
         try:
             self._inv_mapping

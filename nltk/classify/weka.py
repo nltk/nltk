@@ -327,7 +327,7 @@ class ARFF_Formatter:
     def _fmt_arff_val(self, fval):
         if fval is None:
             return '?'
-        elif isinstance(fval, (bool, int, long)):
+        elif isinstance(fval, (bool, compat.integer_types)):
             return '%s' % fval
         elif isinstance(fval, float):
             return '%r' % fval
