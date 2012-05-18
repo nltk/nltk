@@ -23,9 +23,11 @@ can usually be used anywhere a normal Python string can be used.
     'newt!'@[21:26]
 
 """
+#from __future__ import unicode_literals
 
 import re, sys
 from nltk.internals import slice_bounds, abstract
+from nltk.compat import text_type, binary_type
 
 __all__ = [
     'StringSource',
@@ -333,9 +335,9 @@ class SourcedString(object):
         # If the SourcedString constructor is called directly, then
         # choose one of its subclasses to delegate to.
         if cls is SourcedString:
-            if isinstance(contents, str):
+            if isinstance(contents, binary_type):
                 cls = SimpleSourcedByteString
-            elif isinstance(contents, unicode):
+            elif isinstance(contents, text_type):
                 cls = SimpleSourcedUnicodeString
             else:
                 raise TypeError("Expected 'contents' to be a unicode "
@@ -597,7 +599,7 @@ class SourcedString(object):
     def translate(self, table, deletechars=''):
         # Note: str.translate() and unicode.translate() have
         # different interfaces.
-        if isinstance(self, unicode):
+        if isinstance(self, text_type):
             if deletechars:
                 raise TypeError('The unicode version of translate() does not '
                                 'accept the deletechars parameter')
@@ -618,7 +620,7 @@ class SourcedString(object):
     # Unicode string -> byte string
     def encode(self, encoding=None, errors='strict'):
         if encoding is None: encoding = sys.getdefaultencoding()
-        if isinstance(self, str):
+        if isinstance(self, binary_type):
             return self.decode().encode(encoding, errors)
 
         # Encode characters one at a time.
@@ -636,7 +638,7 @@ class SourcedString(object):
     # Byte string -> unicode string.
     def decode(self, encoding=None, errors='strict'):
         if encoding is None: encoding = sys.getdefaultencoding()
-        if isinstance(self, unicode):
+        if isinstance(self, text_type):
             return self.encode().decode(encoding, errors)
 
         # Decode self into a plain unicode string.
@@ -700,11 +702,11 @@ class SourcedString(object):
         calling decode() before the operation is performed.  You can
         do this automatically using ``_decode_and_call()``.
         """
-        any_unicode = isinstance(self, unicode)
-        any_bytestring = isinstance(self, str)
+        any_unicode = isinstance(self, text_type)
+        any_bytestring = isinstance(self, binary_type)
         for arg in args:
-            any_unicode = any_unicode or isinstance(arg, unicode)
-            any_bytestring = any_bytestring or isinstance(arg, str)
+            any_unicode = any_unicode or isinstance(arg, text_type)
+            any_bytestring = any_bytestring or isinstance(arg, binary_type)
         return any_unicode and any_bytestring
 
     def _decode_and_call(self, op, *args):
@@ -718,10 +720,10 @@ class SourcedString(object):
         # Make sure all args are decoded to unicode.
         args = list(args)
         for i in range(len(args)):
-            if isinstance(args[i], str):
+            if isinstance(args[i], binary_type):
                 args[i] = args[i].decode()
         # Make sure self is decoded to unicode.
-        if isinstance(self, str):
+        if isinstance(self, binary_type):
             self = self.decode()
         # Retry the operation.
         method = getattr(self, op)
@@ -896,9 +898,9 @@ class SimpleSourcedString(SourcedString):
         # If the SimpleSourcedString constructor is called directly,
         # then choose one of its subclasses to delegate to.
         if cls is SimpleSourcedString:
-            if isinstance(contents, str):
+            if isinstance(contents, binary_type):
                 cls = SimpleSourcedByteString
-            elif isinstance(contents, unicode):
+            elif isinstance(contents, text_type):
                 cls = SimpleSourcedUnicodeString
             else:
                 raise TypeError("Expected 'contents' to be a unicode "
@@ -1032,8 +1034,8 @@ class CompoundSourcedString(SourcedString):
         # then choose one of its subclasses to delegate to.
         if cls is CompoundSourcedString:
             # Decide whether to use a unicode string or a byte string.
-            use_unicode = sum(1 for substring in substrings
-                              if isinstance(substring, unicode))
+            use_unicode = any(1 for substring in substrings
+                              if isinstance(substring, text_type))
             if use_unicode:
                 cls = CompoundSourcedUnicodeString
             else:
@@ -1165,18 +1167,18 @@ class CompoundSourcedString(SourcedString):
 # Concrete Sourced String Classes
 #//////////////////////////////////////////////////////////////////////
 
-class SimpleSourcedByteString(SimpleSourcedString, str):
-    _stringtype = str
-class SimpleSourcedUnicodeString(SimpleSourcedString, unicode):
-    _stringtype = unicode
-class CompoundSourcedByteString(CompoundSourcedString, str):
-    _stringtype = str
-class CompoundSourcedUnicodeString(CompoundSourcedString, unicode):
-    _stringtype = unicode
+class SimpleSourcedByteString(SimpleSourcedString, binary_type):
+    _stringtype = binary_type
+class SimpleSourcedUnicodeString(SimpleSourcedString, text_type):
+    _stringtype = text_type
+class CompoundSourcedByteString(CompoundSourcedString, binary_type):
+    _stringtype = binary_type
+class CompoundSourcedUnicodeString(CompoundSourcedString, text_type):
+    _stringtype = text_type
     def __init__(self, substrings):
         # If any substrings have type 'str', then decode them to unicode.
         for i in range(len(substrings)):
-            if not isinstance(substrings[i], unicode):
+            if not isinstance(substrings[i], text_type):
                 substrings[i] = substrings[i].decode()
         CompoundSourcedString.__init__(self, substrings)
 
@@ -1326,17 +1328,17 @@ class SourcedStringStream(object):
     #/////////////////////////////////////////////////////////////////
 
     @property
-    def closed(self): 
+    def closed(self):
         """True if the underlying stream is closed."""
         return self.stream.closed
 
     @property
-    def name(self): 
+    def name(self):
         """The name of the underlying stream."""
         return self.stream.name
 
     @property
-    def mode(self): 
+    def mode(self):
         """The mode of the underlying stream."""
         return self.stream.mode
 
