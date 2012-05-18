@@ -5,7 +5,7 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
+from __future__ import print_function
 
 from itertools import izip
 from math import fabs
@@ -165,13 +165,13 @@ def approxrand(a, b, **kwargs):
     verbose = kwargs.get('verbose', False)
 
     if verbose:
-        print 'shuffles: %d' % shuffles
+        print('shuffles: %d' % shuffles)
 
     actual_stat = fabs(stat(a) - stat(b))
 
     if verbose:
-        print 'actual statistic: %f' % actual_stat
-        print '-' * 60
+        print('actual statistic: %f' % actual_stat)
+        print('-' * 60)
 
     c = 1e-100
     lst = LazyConcatenation([a, b])
@@ -179,7 +179,7 @@ def approxrand(a, b, **kwargs):
 
     for i in xrange(shuffles):
         if verbose and i % 10 == 0:
-            print 'shuffle: %d' % i
+            print('shuffle: %d' % i)
 
         shuffle(indices)
 
@@ -191,38 +191,38 @@ def approxrand(a, b, **kwargs):
             c += 1
 
         if verbose and i % 10 == 0:
-            print 'pseudo-statistic: %f' % pseudo_stat
-            print 'significance: %f' % (float(c + 1) / (i + 1))
-            print '-' * 60
+            print('pseudo-statistic: %f' % pseudo_stat)
+            print('significance: %f' % (float(c + 1) / (i + 1)))
+            print('-' * 60)
 
     significance = float(c + 1) / (shuffles + 1)
 
     if verbose:
-        print 'significance: %f' % significance
+        print('significance: %f' % significance)
         if betai:
             for phi in [0.01, 0.05, 0.10, 0.15, 0.25, 0.50]:
-                print "prob(phi<=%f): %f" % (phi, betai(c, shuffles, phi))
+                print("prob(phi<=%f): %f" % (phi, betai(c, shuffles, phi)))
 
     return (significance, c, shuffles)
 
 
 def demo():
-    print '-'*75
+    print('-'*75)
     reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
     test    = 'DET VB VB DET NN NN NN IN DET NN'.split()
-    print 'Reference =', reference
-    print 'Test    =', test
-    print 'Accuracy:', accuracy(reference, test)
+    print('Reference =', reference)
+    print('Test    =', test)
+    print('Accuracy:', accuracy(reference, test))
 
-    print '-'*75
+    print('-'*75)
     reference_set = set(reference)
     test_set = set(test)
-    print 'Reference =', reference_set
-    print 'Test =   ', test_set
-    print 'Precision:', precision(reference_set, test_set)
-    print '   Recall:', recall(reference_set, test_set)
-    print 'F-Measure:', f_measure(reference_set, test_set)
-    print '-'*75
+    print('Reference =', reference_set)
+    print('Test =   ', test_set)
+    print('Precision:', precision(reference_set, test_set))
+    print('   Recall:', recall(reference_set, test_set))
+    print('F-Measure:', f_measure(reference_set, test_set))
+    print('-'*75)
 
 if __name__ == '__main__':
     demo()

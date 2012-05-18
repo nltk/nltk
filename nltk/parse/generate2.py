@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
+from __future__ import print_function
 
 from functools import reduce
 from nltk.compat import xrange
@@ -70,7 +71,7 @@ def _generate_demo():
       P -> 'in' | 'with'
     """)
     for s in generate(g):
-        print ' '.join(s)
+        print(' '.join(s))
 
 if __name__ == "__main__":
     _generate_demo()

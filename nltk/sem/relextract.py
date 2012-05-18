@@ -19,6 +19,7 @@ The two serialization outputs are "rtuple" and "clause".
 - A clause is an atom of the form ``relsym(subjsym, objsym)``,
   where the relation, subject and object have been canonicalized to single strings.
 """
+from __future__ import print_function
 
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
@@ -26,7 +27,6 @@ from collections import defaultdict
 from string import join
 import re
 import htmlentitydefs
-from itertools import ifilter
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
@@ -168,7 +168,7 @@ def mk_reldicts(pairs, window=5, trace=0):
         reldict['objsym'] = list2sym(pairs[1][1].leaves())
         reldict['rcon'] = _join(pairs[2][0][:window])
         if trace:
-            print "(rel(%s, %s)" % (reldict['subjclass'], reldict['objclass'])
+            print("(rel(%s, %s)" % (reldict['subjclass'], reldict['objclass']))
         result.append(reldict)
         pairs = pairs[1:]
     return result
@@ -287,17 +287,17 @@ def in_demo(trace=0, sql=True):
 
     IN = re.compile(r'.*\bin\b(?!\b.+ing)')
 
-    print
-    print "IEER: in(ORG, LOC) -- just the clauses:"
-    print "=" * 45
+    print()
+    print("IEER: in(ORG, LOC) -- just the clauses:")
+    print("=" * 45)
 
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             if trace:
-                print doc.docno
-                print "=" * 15
+                print(doc.docno)
+                print("=" * 15)
             for rel in extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern=IN):
-                print show_clause(rel, relsym='IN')
+                print(show_clause(rel, relsym='IN'))
                 if sql:
                     try:
                         rtuple = (rel['subjtext'], rel['objtext'], doc.docno)
@@ -311,11 +311,11 @@ def in_demo(trace=0, sql=True):
         try:
             cur.execute("""select OrgName from Locations
                         where LocationName = 'Atlanta'""")
-            print
-            print "Extract data from SQL table: ORGs in Atlanta"
-            print "-" * 15
+            print()
+            print("Extract data from SQL table: ORGs in Atlanta")
+            print("-" * 15)
             for row in cur:
-                print row
+                print(row)
         except NameError:
             pass
 
@@ -354,19 +354,19 @@ def roles_demo(trace=0):
     """
     ROLES = re.compile(roles, re.VERBOSE)
 
-    print
-    print "IEER: has_role(PER, ORG) -- raw rtuples:"
-    print "=" * 45
+    print()
+    print("IEER: has_role(PER, ORG) -- raw rtuples:")
+    print("=" * 45)
 
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             lcon = rcon = False
             if trace:
-                print doc.docno
-                print "=" * 15
+                print(doc.docno)
+                print("=" * 15)
                 lcon = rcon = True
             for rel in extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
-                print show_raw_rtuple(rel, lcon=lcon, rcon=rcon)
+                print(show_raw_rtuple(rel, lcon=lcon, rcon=rcon))
 
 
 ##############################################
@@ -379,13 +379,13 @@ def ieer_headlines():
     from nltk.corpus import ieer
     from nltk.tree import Tree
 
-    print "IEER: First 20 Headlines"
-    print "=" * 45
+    print("IEER: First 20 Headlines")
+    print("=" * 45)
 
     trees = [doc.headline for file in ieer.fileids() for doc in ieer.parsed_docs(file)]
     for tree in trees[:20]:
-        print
-        print "%s:\n%s" % (doc.docno, tree)
+        print()
+        print("%s:\n%s" % (doc.docno, tree))
 
 
 
@@ -413,9 +413,9 @@ def conllned(trace=1):
     """
     VAN = re.compile(vnv, re.VERBOSE)
 
-    print
-    print "Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:"
-    print "=" * 45
+    print()
+    print("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:")
+    print("=" * 45)
 
 
     for doc in conll2002.chunked_sents('ned.train'):
@@ -423,7 +423,7 @@ def conllned(trace=1):
         if trace:
                 lcon = rcon = True
         for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN, window=10):
-            print show_raw_rtuple(rel, lcon=True, rcon=True)
+            print(show_raw_rtuple(rel, lcon=True, rcon=True))
 
 #############################################
 ## Spanish CONLL2002: (PER, ORG)
@@ -441,13 +441,13 @@ def conllesp():
     """
     DE = re.compile(de, re.VERBOSE)
 
-    print
-    print "Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:"
-    print "=" * 45
+    print()
+    print("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:")
+    print("=" * 45)
     rels = [rel for doc in conll2002.chunked_sents('esp.train')
             for rel in extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
-    for r in rels[:10]: print show_clause(r, relsym='DE')
-    print
+    for r in rels[:10]: print(show_clause(r, relsym='DE'))
+    print()
 
 
 def ne_chunked():
@@ -455,7 +455,7 @@ def ne_chunked():
     rels = []
     for sent in nltk.corpus.treebank.tagged_sents()[:100]:
         sent = nltk.ne_chunk(sent)
-        print extract_rels('ORG', 'LOC', sent, corpus='ace', pattern = IN)
+        print(extract_rels('ORG', 'LOC', sent, corpus='ace', pattern = IN))
 
 
 if __name__ == '__main__':

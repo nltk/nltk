@@ -56,6 +56,7 @@ Expected results from the Artstein and Poesio survey paper:
     0.81999999999999984
 
 """
+from __future__ import print_function
 
 import logging
 from itertools import groupby
@@ -373,7 +374,7 @@ if __name__ == '__main__':
     if options.thorough:
         pass
     else:
-        print getattr(task, options.agreement)()
+        print(getattr(task, options.agreement)())
 
     logging.shutdown()
 

@@ -29,6 +29,7 @@ which should print a nice representation of the derivation.
 This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
+from __future__ import print_function
 
 from collections import defaultdict
 
@@ -291,8 +292,8 @@ def printCCGDerivation(tree):
         lleaflen = (nextlen - len(leaf))/2
         rleaflen = lleaflen + (nextlen - len(leaf))%2
         leafstr += ' '*lleaflen + leaf + ' '*rleaflen
-    print leafstr
-    print catstr
+    print(leafstr)
+    print(catstr)
 
     # Display the derivation steps
     printCCGTree(0,tree)
@@ -319,10 +320,10 @@ def printCCGTree(lwidth,tree):
     (res,op) = tree.node
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
-    print lwidth*' ' + (rwidth-lwidth)*'-' + str(op)
+    print(lwidth*' ' + (rwidth-lwidth)*'-' + str(op))
     # Print the resulting category on a new line.
     respadlen = (rwidth - lwidth - len(str(res)))/2 + lwidth
-    print respadlen*' ' + str(res)
+    print(respadlen*' ' + str(res))
     return rwidth
 
 

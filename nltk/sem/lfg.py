@@ -5,6 +5,7 @@
 # Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function
 
 from collections import defaultdict
 
@@ -189,7 +190,7 @@ dog     NN      3       OBJ
 
     depgraphs = [dg1,dg2,dg3,dg4]
     for dg in depgraphs:
-        print FStructure.read_depgraph(dg)
+        print(FStructure.read_depgraph(dg))
 
 if __name__ == '__main__':
     demo_read_depgraph()

@@ -35,6 +35,7 @@ responses are very limited. Zen Chatbot will usually answer very vaguely, or
 respond to a question by asking a different question, in much the same way
 as Eliza.
 """
+from __future__ import print_function
 
 from .util import Chat, reflections
 
@@ -263,14 +264,14 @@ responses = (
 zen_chatbot = Chat(responses, reflections)
 
 def zen_chat():
-    print '*'*75
-    print "Zen Chatbot!".center(75)
-    print '*'*75
-    print '"Look beyond mere words and letters - look into your mind"'.center(75)
-    print "* Talk your way to truth with Zen Chatbot."
-    print "* Type 'quit' when you have had enough."
-    print '*'*75
-    print "Welcome, my child."
+    print('*'*75)
+    print("Zen Chatbot!".center(75))
+    print('*'*75)
+    print('"Look beyond mere words and letters - look into your mind"'.center(75))
+    print("* Talk your way to truth with Zen Chatbot.")
+    print("* Type 'quit' when you have had enough.")
+    print('*'*75)
+    print("Welcome, my child.")
 
     zen_chatbot.converse()
 

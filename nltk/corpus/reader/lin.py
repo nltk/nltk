@@ -4,6 +4,7 @@
 # Author: Dan Blanchard <dan.blanchard@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.txt
+from __future__ import print_function
 
 import re
 from collections import defaultdict
@@ -135,20 +136,20 @@ def demo():
 
     word1 = "business"
     word2 = "enterprise"
-    print "Getting synonyms for " + word1
-    print thes.synonyms(word1)
+    print("Getting synonyms for " + word1)
+    print(thes.synonyms(word1))
 
-    print "Getting scored synonyms for " + word1
-    print thes.synonyms(word1)
+    print("Getting scored synonyms for " + word1)
+    print(thes.synonyms(word1))
 
-    print "Getting synonyms from simN.lsp (noun subsection) for " + word1
-    print thes.synonyms(word1, fileid="simN.lsp")
+    print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
+    print(thes.synonyms(word1, fileid="simN.lsp"))
 
-    print "Getting synonyms from simN.lsp (noun subsection) for " + word1
-    print thes.synonyms(word1, fileid="simN.lsp")
+    print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
+    print(thes.synonyms(word1, fileid="simN.lsp"))
 
-    print "Similarity score for %s and %s:" % (word1, word2)
-    print thes.similarity(word1, word2)
+    print("Similarity score for %s and %s:" % (word1, word2))
+    print(thes.similarity(word1, word2))
 
 
 if __name__ == '__main__':

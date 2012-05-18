@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
+from __future__ import print_function
 
 import threading
 import tkFont
@@ -16,7 +17,6 @@ from nltk.corpus import (cess_cat, brown, nps_chat, treebank, sinica_treebank, a
                          indian, floresta, mac_morpho, machado, cess_esp)
 from nltk.util import in_idle
 from nltk.probability import FreqDist
-from nltk.text import Text as TextDomain
 
 
 CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
@@ -323,7 +323,7 @@ class CollocationsModel:
                 self.model.collocations = list(map(itemgetter(0), scored))
                 self.model.notify_listeners(CORPUS_LOADED_EVENT)
             except Exception as e:
-                print e
+                print(e)
                 self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
 
 #def collocations():

@@ -5,6 +5,7 @@
 # Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function
 
 from nltk.internals import Counter
 from .logic import LogicParser, APP
@@ -399,14 +400,14 @@ class LinearLogicParser(LogicParser):
 def demo():
     llp = LinearLogicParser()
 
-    print llp.parse(r'f')
-    print llp.parse(r'(g -o f)')
-    print llp.parse(r'((g -o G) -o G)')
-    print llp.parse(r'g -o h -o f')
-    print llp.parse(r'(g -o f)(g)').simplify()
-    print llp.parse(r'(H -o f)(g)').simplify()
-    print llp.parse(r'((g -o G) -o G)((g -o f))').simplify()
-    print llp.parse(r'(H -o H)((g -o f))').simplify()
+    print(llp.parse(r'f'))
+    print(llp.parse(r'(g -o f)'))
+    print(llp.parse(r'((g -o G) -o G)'))
+    print(llp.parse(r'g -o h -o f'))
+    print(llp.parse(r'(g -o f)(g)').simplify())
+    print(llp.parse(r'(H -o f)(g)').simplify())
+    print(llp.parse(r'((g -o G) -o G)((g -o f))').simplify())
+    print(llp.parse(r'(H -o H)((g -o f))').simplify())
 
 
 if __name__ == '__main__':

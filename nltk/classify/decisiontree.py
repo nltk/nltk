@@ -10,11 +10,11 @@ A classifier model that decides which label to assign to a token on
 the basis of a tree structure, where branches correspond to conditions
 on feature values, and leaves correspond to label assignments.
 """
+from __future__ import print_function
 
 from collections import defaultdict
 
 from nltk.probability import FreqDist, MLEProbDist, entropy
-
 from nltk.classify.api import ClassifierI
 
 class DecisionTreeClassifier(ClassifierI):
@@ -222,8 +222,8 @@ class DecisionTreeClassifier(ClassifierI):
                 best_error = stump_error
                 best_stump = stump
         if verbose:
-            print ('best stump for %6d toks uses %-20s err=%6.4f' %
-                   (len(labeled_featuresets), best_stump._fname, best_error))
+            print(('best stump for %6d toks uses %-20s err=%6.4f' %
+                   (len(labeled_featuresets), best_stump._fname, best_error)))
         return best_stump
 
     @staticmethod
@@ -263,8 +263,8 @@ class DecisionTreeClassifier(ClassifierI):
         else:
             descr = '(default)'
         if verbose:
-            print ('best stump for %6d toks uses %-20s err=%6.4f' %
-                   (len(labeled_featuresets), descr, best_error))
+            print(('best stump for %6d toks uses %-20s err=%6.4f' %
+                   (len(labeled_featuresets), descr, best_error)))
         return best_stump
 
 ##//////////////////////////////////////////////////////
@@ -278,8 +278,8 @@ def demo():
     from nltk.classify.util import names_demo, binary_names_demo_features
     classifier = names_demo(f, #DecisionTreeClassifier.train,
                             binary_names_demo_features)
-    print classifier.pp(depth=7)
-    print classifier.pseudocode(depth=7)
+    print(classifier.pp(depth=7))
+    print(classifier.pseudocode(depth=7))
 
 if __name__ == '__main__':
     demo()

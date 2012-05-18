@@ -10,6 +10,7 @@ This module provides a variety of list sorting algorithms, to
 illustrate the many different algorithms (recipes) for solving a
 problem, and how to analyze algorithms experimentally.
 """
+from __future__ import print_function
 
 # These algorithms are taken from:
 # Levitin (2004) The Design and Analysis of Algorithms
@@ -148,10 +149,10 @@ def demo():
         shuffle(a); count_merge     = merge(a)
         shuffle(a); count_quick     = quick(a)
 
-        print (("size=%5d:  selection=%8d,  bubble=%8d,  "
+        print((("size=%5d:  selection=%8d,  bubble=%8d,  "
                 "merge=%6d,  quick=%6d") %
                (size, count_selection, count_bubble,
-                count_merge, count_quick))
+                count_merge, count_quick)))
 
 if __name__ == '__main__':
     demo()

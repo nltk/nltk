@@ -22,6 +22,7 @@ docstrings.  This doctest driver performs three functions:
 A number of other flags can be given; call the driver with the
 `--help` option for a complete list.
 """
+from __future__ import print_function
 
 import os, os.path, sys, unittest, pdb, bdb, re, tempfile, traceback
 import textwrap
@@ -333,9 +334,9 @@ class Debugger:
         if args == (None,):
             pass
         elif len(args) == 1:
-            print repr(args[0])
+            print(repr(args[0]))
         else:
-            print repr(args) # not quite right: >>> 1,
+            print(repr(args)) # not quite right: >>> 1,
 
     def _comment_line(self, line):
         "Return a commented form of the given line"
@@ -761,31 +762,31 @@ class MyDocTestRunner(DocTestRunner):
         sys.stderr = _SpoofOut()
 
         if self._verbosity > 0:
-            print >>save_stderr, (
+            print((
                 self._stderr_term.CYAN+self._stderr_term.BOLD+
-                'Testing %s...'%test.name+self._stderr_term.NORMAL)
+                'Testing %s...'%test.name+self._stderr_term.NORMAL), file=save_stderr)
         try:
             fails, tries = DocTestRunner.run(self, test, compileflags,
                                              out, clear_globs)
         except KeyboardInterrupt:
             if self._current_test is None: raise
 
-            print >>save_stderr, self._failure_header(*self._current_test)
-            print >>save_stderr, (
+            print(self._failure_header(*self._current_test), file=save_stderr)
+            print((
                 self._stderr_term.RED+self._stderr_term.BOLD+
-                'Keyboard Interrupt!'+self._stderr_term.NORMAL)
+                'Keyboard Interrupt!'+self._stderr_term.NORMAL), file=save_stderr)
         if self._verbosity == 1:
             save_stderr.write(self._stderr_term.CLEAR_LINE)
         if self._verbosity > 0:
             if fails:
-                print >>save_stderr, (
+                print((
                     self._stderr_term.RED+self._stderr_term.BOLD+
-                    '  %d example(s) failed!'%fails+self._stderr_term.NORMAL)
+                    '  %d example(s) failed!'%fails+self._stderr_term.NORMAL), file=save_stderr)
             else:
-                print >>save_stderr, (
+                print((
                     self._stderr_term.GREEN+self._stderr_term.BOLD+
-                    '  All examples passed'+self._stderr_term.NORMAL)
-        print >>save_stderr
+                    '  All examples passed'+self._stderr_term.NORMAL), file=save_stderr)
+        print(file=save_stderr)
         sys.stderr = save_stderr
 
 def run(names, optionflags, verbosity, kbinterrupt_continue):
@@ -796,8 +797,8 @@ def run(names, optionflags, verbosity, kbinterrupt_continue):
     for name in names:
         try: tests = find(name)
         except ValueError as e:
-            print >>sys.stderr, ('%s: Error processing %s -- %s' %
-                                 (sys.argv[0], name, e))
+            print(('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e)), file=sys.stderr)
             continue
         for test in tests:
             runner.run(test, COMPILER_FLAGS)
@@ -818,8 +819,8 @@ def run(names, optionflags, verbosity, kbinterrupt_continue):
             for test in find(name):
                 suite.addTest(DocTestCase(test, optionflags))
         except ValueError as e:
-            print >>sys.stderr, ('%s: Error processing %s -- %s' %
-                                 (sys.argv[0], name, e))
+            print(('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e)), file=sys.stderr)
     unittest.TextTestRunner(verbosity=verbosity).run(suite)
 
 def debug(names, optionflags, verbosity, pm=True):
@@ -830,8 +831,8 @@ def debug(names, optionflags, verbosity, pm=True):
                 debugger.debug(test, pm)
         except ValueError as e:
             raise
-            print >>sys.stderr, ('%s: Error processing %s -- %s' %
-                                 (sys.argv[0], name, e))
+            print(('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e)), file=sys.stderr)
 
 def update(names, optionflags, verbosity):
     runner = UpdateRunner(verbose=True)
@@ -848,33 +849,33 @@ def update(names, optionflags, verbosity):
 
             # Confirm the changes.
             if failures == 0:
-                print 'No updates needed!'
+                print('No updates needed!')
             else:
-                print '*'*70
-                print '%d examples updated.' % failures
-                print '-'*70
+                print('*'*70)
+                print('%d examples updated.' % failures)
+                print('-'*70)
                 sys.stdout.write('Accept updates? [y/N] ')
                 sys.stdout.flush()
                 if sys.stdin.readline().lower().strip() in ('y', 'yes'):
                     # Make a backup of the original contents.
                     backup = test.filename+'.bak'
-                    print 'Renaming %s -> %s' % (name, backup)
+                    print('Renaming %s -> %s' % (name, backup))
                     os.rename(test.filename, backup)
                     # Write the new contents.
-                    print 'Writing updated version to %s' % test.filename
+                    print('Writing updated version to %s' % test.filename)
                     out = open(test.filename, 'w')
                     out.write(test.docstring)
                     out.close()
                 else:
-                    print 'Updates rejected!'
+                    print('Updates rejected!')
         except ValueError as e:
             raise
-            print >>sys.stderr, ('%s: Error processing %s -- %s' %
-                                 (sys.argv[0], name, e))
+            print(('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e)), file=sys.stderr)
 
 ######################################################################
 ## Terminal Controler
-## Ruthlessly stolen from epydoc: 
+## Ruthlessly stolen from epydoc:
 ##     http://epydoc.sourceforge.net/
 ## Epydoc is released under the MIT open-source license:
 ##     http://epydoc.sourceforge.net/license.html
@@ -899,9 +900,9 @@ class TerminalController:
     UNDERLINE = ''       #: Underline the text
     REVERSE = ''         #: Reverse the foreground & background
     BLACK = BLUE = GREEN = CYAN = RED = MAGENTA = YELLOW = WHITE = ''
-    
+
     _STRING_CAPABILITIES = """
-    BOL=cr UP=cuu1 DOWN=cud1 LEFT=cub1 RIGHT=cuf1 REVERSE=rev 
+    BOL=cr UP=cuu1 DOWN=cud1 LEFT=cub1 RIGHT=cuf1 REVERSE=rev
     CLEAR_EOL=el BOLD=bold UNDERLINE=smul NORMAL=sgr0""".split()
     _COLORS = """BLACK BLUE GREEN CYAN RED MAGENTA YELLOW WHITE""".split()
     _ANSICOLORS = "BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE".split()
@@ -923,7 +924,7 @@ class TerminalController:
             # simple progress bar.
             self.BOL = '\r'
             self.CLEAR_LINE = '\r' + ' '*self.COLS + '\r'
-            
+
         # Check the terminal type.  If we fail, then assume that the
         # terminal has no capabilities.
         try: curses.setupterm()
@@ -931,7 +932,7 @@ class TerminalController:
 
         # Look up numeric capabilities.
         self.COLS = curses.tigetnum('cols')
-        
+
         # Look up string capabilities.
         for capability in self._STRING_CAPABILITIES:
             (attrib, cap_name) = capability.split('=')
@@ -956,7 +957,7 @@ class TerminalController:
         import curses
         cap = curses.tigetstr(cap_name) or ''
         return re.sub(r'\$<\d+>[/*]?', '', cap)
-    
+
     def render(self, template):
         """
         Replace each $-substitutions in the given template string with
@@ -1068,7 +1069,7 @@ def main():
                    optionvals.ellipsis * ELLIPSIS |
                    optionvals.ignore_exception_detail * IGNORE_EXCEPTION_DETAIL |
                    optionvals.normws * NORMALIZE_WHITESPACE)
- 
+
 
     # Perform the requested action.
     if optionvals.action == 'check':

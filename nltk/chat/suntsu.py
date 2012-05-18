@@ -13,6 +13,7 @@ Translated by LIONEL GILES, M.A. 1910
 Hosted by the Gutenberg Project
 http://www.gutenberg.org/
 """
+from __future__ import print_function
 
 from .util import Chat, reflections
 
@@ -101,10 +102,10 @@ pairs = (
 suntsu_chatbot = Chat(pairs, reflections)
 
 def suntsu_chat():
-    print "Talk to the program by typing in plain English, using normal upper-"
-    print 'and lower-case letters and punctuation.  Enter "quit" when done.'
-    print '='*72
-    print "You seek enlightenment?"
+    print("Talk to the program by typing in plain English, using normal upper-")
+    print('and lower-case letters and punctuation.  Enter "quit" when done.')
+    print('='*72)
+    print("You seek enlightenment?")
 
     suntsu_chatbot.converse()
 

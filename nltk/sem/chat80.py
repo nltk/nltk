@@ -122,6 +122,7 @@ The set of rules is written to the file ``chat_pnames.cfg`` in the
 current directory.
 
 """
+from __future__ import print_function
 
 import re
 import shelve
@@ -396,10 +397,10 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     for t in records:
         cur.execute('insert into %s values (?,?,?)' % table_name, t)
         if verbose:
-            print "inserting values into %s: " % table_name, t
+            print("inserting values into %s: " % table_name, t)
     connection.commit()
     if verbose:
-        print "Committing update to %s" % dbname
+        print("Committing update to %s" % dbname)
     cur.close()
 
 def sql_query(dbname, query):
@@ -723,7 +724,7 @@ Valuation object for use in the NLTK semantics package.
         # write the valuation to a persistent database
         if options.verbose:
             outdb = options.outdb+".db"
-            print "Dumping a valuation to %s" % outdb
+            print("Dumping a valuation to %s" % outdb)
         val_dump(rels, options.outdb)
         sys.exit(0)
     else:
@@ -743,35 +744,35 @@ Valuation object for use in the NLTK semantics package.
             if options.vocab:
                 items = sorted([(c.arity, c.prefLabel) for c in concepts])
                 for (arity, label) in items:
-                    print label, arity
+                    print(label, arity)
                 sys.exit(0)
             # show all the concepts
             if options.concepts:
                 for c in concepts:
-                    print c
-                    print
+                    print(c)
+                    print()
             if options.label:
-                print concept_map[options.label]
+                print(concept_map[options.label])
                 sys.exit(0)
             else:
                 # turn the concepts into a Valuation
                 if options.lex:
                     if options.verbose:
-                        print "Writing out lexical rules"
+                        print("Writing out lexical rules")
                     make_valuation(concepts, lexicon=True)
                 else:
                     valuation = make_valuation(concepts, read=True)
-                    print valuation
+                    print(valuation)
 
 
 def sql_demo():
     """
     Print out every row from the 'city.db' database.
     """
-    print
-    print "Using SQL to extract rows from 'city.db' RDB."
+    print()
+    print("Using SQL to extract rows from 'city.db' RDB.")
     for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
-        print row
+        print(row)
 
 
 if __name__ == '__main__':

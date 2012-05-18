@@ -25,6 +25,7 @@ This is appealing for, say, speech recognizer hypothesis filtering.
 The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
+from __future__ import print_function
 
 from nltk.compat import xrange
 from nltk.parse.chart import (Chart, ChartParser, EdgeI, LeafEdge, LeafInitRule,
@@ -308,7 +309,7 @@ class IncrementalChartParser(ChartParser):
 
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width / (chart.num_leaves() + 1)
-        if trace: print chart.pp_leaves(trace_edge_width)
+        if trace: print(chart.pp_leaves(trace_edge_width))
 
         for axiom in self._axioms:
             new_edges = axiom.apply(chart, grammar)
@@ -316,7 +317,7 @@ class IncrementalChartParser(ChartParser):
 
         inference_rules = self._inference_rules
         for end in range(chart.num_leaves()+1):
-            if trace > 1: print "\n* Processing queue:", end, "\n"
+            if trace > 1: print("\n* Processing queue:", end, "\n")
             agenda = list(chart.select(end=end))
             while agenda:
                 edge = agenda.pop()
@@ -422,15 +423,15 @@ def demo(should_print_times=True, should_print_grammar=False,
     # The grammar for ChartParser and SteppingChartParser:
     grammar = demo_grammar()
     if should_print_grammar:
-        print "* Grammar"
-        print grammar
+        print("* Grammar")
+        print(grammar)
 
     # Tokenize the sample sentence.
-    print "* Sentence:"
-    print sent
+    print("* Sentence:")
+    print(sent)
     tokens = sent.split()
-    print tokens
-    print
+    print(tokens)
+    print()
 
     # Do the parsing.
     earley = EarleyChartParser(grammar, trace=trace)
@@ -443,10 +444,10 @@ def demo(should_print_times=True, should_print_grammar=False,
     if numparses:
         assert len(parses)==numparses, 'Not all parses found'
     if should_print_trees:
-        for tree in parses: print tree
+        for tree in parses: print(tree)
     else:
-        print "Nr trees:", len(parses)
+        print("Nr trees:", len(parses))
     if should_print_times:
-        print "Time:", t
+        print("Time:", t)
 
 if __name__ == '__main__': demo()

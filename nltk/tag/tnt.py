@@ -12,9 +12,9 @@ by Thorsten Brants
 
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 '''
+from __future__ import print_function
 
 from nltk.probability import FreqDist, ConditionalFreqDist
-
 from nltk.tag.api import TaggerI
 
 class TnT(TaggerI):
@@ -500,8 +500,8 @@ def demo():
         s = tagged_data[j]
         t = sents[j+100]
         for i in range(len(s)):
-            print s[i],'--', t[i]
-        print
+            print(s[i],'--', t[i])
+        print()
 
 
 def demo2():
@@ -523,11 +523,11 @@ def demo2():
         t.unknown = 0
         t.known = 0
 
-        print 'Capitalization off:'
-        print 'Accuracy:', tacc
-        print 'Percentage known:', tp_kn
-        print 'Percentage unknown:', tp_un
-        print 'Accuracy over known words:', (tacc / tp_kn)
+        print('Capitalization off:')
+        print('Accuracy:', tacc)
+        print('Percentage known:', tp_kn)
+        print('Percentage unknown:', tp_un)
+        print('Accuracy over known words:', (tacc / tp_kn))
 
         sacc = tag.accuracy(s, d[i*100:((i+1)*100)])
         sp_un = float(s.unknown) / float(s.known +s.unknown)
@@ -535,11 +535,11 @@ def demo2():
         s.unknown = 0
         s.known = 0
 
-        print 'Capitalization on:'
-        print 'Accuracy:', sacc
-        print 'Percentage known:', sp_kn
-        print 'Percentage unknown:', sp_un
-        print 'Accuracy over known words:', (sacc / sp_kn)
+        print('Capitalization on:')
+        print('Accuracy:', sacc)
+        print('Percentage known:', sp_kn)
+        print('Percentage unknown:', sp_un)
+        print('Accuracy over known words:', (sacc / sp_kn))
 
 def demo3():
     from nltk import tag
@@ -598,12 +598,12 @@ def demo3():
         #print i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc
 
 
-    print "brown: acc over words known:", 10 * tknacc
-    print "     : overall accuracy:", 10 * tallacc
-    print "     : words known:", 10 * tknown
-    print "treebank: acc over words known:", 10 * sknacc
-    print "        : overall accuracy:", 10 * sallacc
-    print "        : words known:", 10 * sknown
+    print("brown: acc over words known:", 10 * tknacc)
+    print("     : overall accuracy:", 10 * tallacc)
+    print("     : words known:", 10 * tknown)
+    print("treebank: acc over words known:", 10 * sknacc)
+    print("        : overall accuracy:", 10 * sallacc)
+    print("        : words known:", 10 * sknown)
 
 
 

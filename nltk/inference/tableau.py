@@ -9,6 +9,7 @@
 """
 Module for a tableau-based First Order theorem prover.
 """
+from __future__ import print_function
 
 from nltk.internals import Counter
 
@@ -47,7 +48,7 @@ class TableauProver(Prover):
                 result = False
             else:
                 if verbose:
-                    print e
+                    print(e)
                 else:
                     raise e
         return (result, '\n'.join(debugger.lines))
@@ -506,7 +507,7 @@ class Debug(object):
         self.lines.append(newline)
 
         if self.verbose:
-            print newline
+            print(newline)
 
 
 class Categories(object):
@@ -605,7 +606,7 @@ def tableau_test(c, ps=None, verbose=False):
     else:
         ps = []
         pps = []
-    print '%s |- %s: %s' % (', '.join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose))
+    print('%s |- %s: %s' % (', '.join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose)))
 
 def demo():
     testTableauProver()

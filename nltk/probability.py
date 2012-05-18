@@ -36,8 +36,7 @@ implementation of the ``ConditionalProbDistI`` interface is
 ``ConditionalProbDist``, a derived distribution.
 
 """
-_NINF = float('-1e300')
-
+from __future__ import print_function
 
 import math
 import random
@@ -47,6 +46,8 @@ from itertools import imap, islice
 from collections import defaultdict
 from functools import reduce
 from nltk import compat
+
+_NINF = float('-1e300')
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -342,11 +343,11 @@ class FreqDist(dict):
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
         for i in range(len(samples)):
-            print "%4s" % str(samples[i]),
-        print
+            print("%4s" % str(samples[i]), end=' ')
+        print()
         for i in range(len(samples)):
-            print "%4d" % freqs[i],
-        print
+            print("%4d" % freqs[i], end=' ')
+        print()
 
     def _sort_keys_by_value(self):
         if not self._item_cache:
@@ -1535,7 +1536,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         prob_sum = 0.0
         for i in  range(0, len(self._Nr)):
             prob_sum += self._Nr[i] * self._prob_measure(i) / self._renormal
-        print "Probability Sum:", prob_sum
+        print("Probability Sum:", prob_sum)
         #assert prob_sum != 1.0, "probability sum should be one!"
 
     def discount(self):
@@ -1588,7 +1589,7 @@ class MutableProbDist(ProbDistI):
         try:
             import numpy
         except ImportError:
-            print "Error: Please install numpy; for instructions see http://www.nltk.org/"
+            print("Error: Please install numpy; for instructions see http://www.nltk.org/")
             exit()
         self._samples = samples
         self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
@@ -1820,20 +1821,20 @@ class ConditionalFreqDist(defaultdict):
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
 
         condition_size = max(len(str(c)) for c in conditions)
-        print ' ' * condition_size,
+        print(' ' * condition_size, end=' ')
         for s in samples:
-            print "%4s" % str(s),
-        print
+            print("%4s" % str(s), end=' ')
+        print()
         for c in conditions:
-            print "%*s" % (condition_size, str(c)),
+            print("%*s" % (condition_size, str(c)), end=' ')
             if cumulative:
                 freqs = list(self[c]._cumulative_frequencies(samples))
             else:
                 freqs = [self[c][sample] for sample in samples]
 
             for f in freqs:
-                print "%4d" % f,
-            print
+                print("%4d" % f, end=' ')
+            print()
 
     def __le__(self, other):
         if not isinstance(other, ConditionalFreqDist): return False
@@ -1917,9 +1918,9 @@ class ConditionalProbDist(ConditionalProbDistI):
 
         >>> from nltk.probability import ConditionalProbDist, ELEProbDist
         >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
-        >>> print cpdist['run'].max()
+        >>> print(cpdist['run'].max())
         'NN'
-        >>> print cpdist['run'].prob('NN')
+        >>> print(cpdist['run'].prob('NN'))
         0.0813
     """
     def __init__(self, cfdist, probdist_factory,
@@ -2192,37 +2193,37 @@ def demo(numsamples=6, numoutcomes=500):
                           [pdist.prob(n) for pdist in pdists]))
 
     # Print the results in a formatted table.
-    print ('%d samples (1-%d); %d outcomes were sampled for each FreqDist' %
-           (numsamples, numsamples, numoutcomes))
-    print '='*9*(len(pdists)+2)
+    print(('%d samples (1-%d); %d outcomes were sampled for each FreqDist' %
+           (numsamples, numsamples, numoutcomes)))
+    print('='*9*(len(pdists)+2))
     FORMATSTR = '      FreqDist '+ '%8s '*(len(pdists)-1) + '|  Actual'
-    print FORMATSTR % tuple(repr(pdist)[1:9] for pdist in pdists[:-1])
-    print '-'*9*(len(pdists)+2)
+    print(FORMATSTR % tuple(repr(pdist)[1:9] for pdist in pdists[:-1]))
+    print('-'*9*(len(pdists)+2))
     FORMATSTR = '%3d   %8.6f ' + '%8.6f '*(len(pdists)-1) + '| %8.6f'
     for val in vals:
-        print FORMATSTR % val
+        print(FORMATSTR % val)
 
     # Print the totals for each column (should all be 1.0)
     zvals = zip(*vals)
     def sum(lst): return reduce(lambda x,y:x+y, lst, 0)
     sums = [sum(val) for val in zvals[1:]]
-    print '-'*9*(len(pdists)+2)
+    print('-'*9*(len(pdists)+2))
     FORMATSTR = 'Total ' + '%8.6f '*(len(pdists)) + '| %8.6f'
-    print  FORMATSTR % tuple(sums)
-    print '='*9*(len(pdists)+2)
+    print(FORMATSTR % tuple(sums))
+    print('='*9*(len(pdists)+2))
 
     # Display the distributions themselves, if they're short enough.
     if len(repr(str(fdist1))) < 70:
-        print '  fdist1:', str(fdist1)
-        print '  fdist2:', str(fdist2)
-        print '  fdist3:', str(fdist3)
-    print
+        print('  fdist1:', str(fdist1))
+        print('  fdist2:', str(fdist2))
+        print('  fdist3:', str(fdist3))
+    print()
 
-    print 'Generating:'
+    print('Generating:')
     for pdist in pdists:
         fdist = FreqDist(pdist.generate() for i in range(5000))
-        print '%20s %s' % (pdist.__class__.__name__[:20], str(fdist)[:55])
-    print
+        print('%20s %s' % (pdist.__class__.__name__[:20], str(fdist)[:55]))
+    print()
 
 def gt_demo():
     from nltk import corpus
@@ -2231,11 +2232,11 @@ def gt_demo():
     gt = GoodTuringProbDist(fd)
     sgt = SimpleGoodTuringProbDist(fd)
     katz = SimpleGoodTuringProbDist(fd, 7)
-    print '%18s %8s  %12s %14s  %12s' \
-        % ("word", "freqency", "GoodTuring", "SimpleGoodTuring", "Katz-cutoff" )
+    print('%18s %8s  %12s %14s  %12s' \
+        % ("word", "freqency", "GoodTuring", "SimpleGoodTuring", "Katz-cutoff" ))
     for key in fd:
-        print '%18s %8d  %12e   %14e   %12e' \
-            % (key, fd[key], gt.prob(key), sgt.prob(key), katz.prob(key))
+        print('%18s %8d  %12e   %14e   %12e' \
+            % (key, fd[key], gt.prob(key), sgt.prob(key), katz.prob(key)))
 
 if __name__ == '__main__':
     demo(6, 10)
