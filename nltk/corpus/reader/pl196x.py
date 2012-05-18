@@ -70,7 +70,7 @@ class TEICorpusView(StreamBackedCorpusView):
 				if not self._tagged:
 					sent = WORD.findall(sent_str)
 				else:
-					sent = map(self._parse_tag, TAGGEDWORD.findall(sent_str))
+					sent = list(map(self._parse_tag, TAGGEDWORD.findall(sent_str)))
 				if self._group_by_sent:
 					para.append(sent)
 				else:

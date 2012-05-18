@@ -320,7 +320,7 @@ class CollocationsModel:
                 vocab = FreqDist(text)
                 scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(vocab[w1] * vocab[w2])) for w1, w2 in fd]
                 scored.sort(key=itemgetter(1), reverse=True)
-                self.model.collocations = map(itemgetter(0), scored)
+                self.model.collocations = list(map(itemgetter(0), scored))
                 self.model.notify_listeners(CORPUS_LOADED_EVENT)
             except Exception as e:
                 print e

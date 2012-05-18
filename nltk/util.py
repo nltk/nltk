@@ -613,6 +613,7 @@ class OrderedDict(dict):
                 self._keys.append(key)
 
     def values(self):
+        # returns iterator under python 3
         return map(self.get, self._keys)
 
 ######################################################################

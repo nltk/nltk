@@ -389,7 +389,7 @@ class HiddenMarkovModelTagger(TaggerI):
             current = last
 
         sequence.reverse()
-        return map(self._states.__getitem__, sequence)
+        return list(map(self._states.__getitem__, sequence))
 
     def best_path_simple(self, unlabeled_sequence):
         """

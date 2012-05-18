@@ -217,7 +217,7 @@ class DRS(AbstractDrs, Expression):
 
     def visit(self, function, combinator):
         """:see: Expression.visit()"""
-        parts = map(function, self.conds)
+        parts = list(map(function, self.conds))
         if self.consequent:
             parts.append(function(self.consequent))
         return combinator(parts)
@@ -228,7 +228,7 @@ class DRS(AbstractDrs, Expression):
             consequent = function(self.consequent)
         else:
             consequent = None
-        return combinator(self.refs, map(function, self.conds), consequent)
+        return combinator(self.refs, list(map(function, self.conds)), consequent)
 
     def eliminate_equality(self):
         drs = self
@@ -288,7 +288,7 @@ class DRS(AbstractDrs, Expression):
     def _pretty(self):
         refs_line = ' '.join(self._order_ref_strings(self.refs))
         cond_lines = sum([filter(str.strip, cond._pretty()) for cond in self.conds], [])
-        length = max([len(refs_line)] + map(len, cond_lines))
+        length = max([len(refs_line)] + list(map(len, cond_lines)))
         drs = [' _' + '_'*length + '_ ',
                '| ' + refs_line + ' '*(length-len(refs_line))  + ' |',
                '|-' + '-'*length + '-|'] + \
@@ -423,7 +423,7 @@ class DrtProposition(AbstractDrs, Expression):
         blank = ' '*(len(str(self.variable))+1)
         return [blank + drs_s[0],
                 str(self.variable) + ':' + drs_s[1]] + \
-                map(lambda l: blank+l, drs_s[2:])
+                list(map(lambda l: blank+l, drs_s[2:]))
 
     def visit(self, function, combinator):
         """:see: Expression.visit()"""

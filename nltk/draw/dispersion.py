@@ -31,8 +31,8 @@ def dispersion_plot(text, words, ignore_case=False):
     words.reverse()
 
     if ignore_case:
-        words_to_comp = map(str.lower, words)
-        text_to_comp = map(str.lower, text)
+        words_to_comp = list(map(str.lower, words))
+        text_to_comp = list(map(str.lower, text))
     else:
         words_to_comp = words
         text_to_comp = text

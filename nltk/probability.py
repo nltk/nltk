@@ -359,6 +359,7 @@ class FreqDist(dict):
         :rtype: list(any)
         """
         self._sort_keys_by_value()
+        # this will return iterator under python 3
         return map(itemgetter(0), self._item_cache)
 
     def values(self):
@@ -368,6 +369,7 @@ class FreqDist(dict):
         :rtype: list(any)
         """
         self._sort_keys_by_value()
+        # this will return iterator under python 3
         return map(itemgetter(1), self._item_cache)
 
     def items(self):

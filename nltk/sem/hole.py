@@ -351,7 +351,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         pluggings = hole_sem.pluggings()
 
         # Build FOL formula trees using the pluggings.
-        readings = map(hole_sem.formula_tree, pluggings)
+        readings = list(map(hole_sem.formula_tree, pluggings))
 
         # Print out the formulas in a textual format.
         if verbose:

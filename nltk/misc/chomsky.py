@@ -124,7 +124,7 @@ from itertools import chain, islice, izip
 def generate_chomsky(times=5, line_length=72):
     parts = []
     for part in (leadins, subjects, verbs, objects):
-        phraselist = map(str.strip, part.splitlines())
+        phraselist = list(map(str.strip, part.splitlines()))
         random.shuffle(phraselist)
         parts.append(phraselist)
     output = chain(*islice(izip(*parts), 0, times))

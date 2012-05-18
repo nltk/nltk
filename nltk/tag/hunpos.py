@@ -72,7 +72,7 @@ class HunposTagger(TaggerI):
         """
         hunpos_paths = ['.', '/usr/bin', '/usr/local/bin', '/opt/local/bin',
                         '/Applications/bin', '~/bin', '~/Applications/bin']
-        hunpos_paths = map(os.path.expanduser, hunpos_paths)
+        hunpos_paths = list(map(os.path.expanduser, hunpos_paths))
 
         self._hunpos_bin = find_binary(
                 'hunpos-tag', path_to_bin,

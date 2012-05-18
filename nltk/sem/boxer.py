@@ -129,7 +129,7 @@ class Boxer(object):
             assert reduce(operator.and_, (id is not None for id in discourse_ids))
             use_disc_id = True
         else:
-            discourse_ids = map(str, range(len(inputs)))
+            discourse_ids = list(map(str, range(len(inputs))))
             use_disc_id = False
 
         candc_out = self._call_candc(inputs, discourse_ids, question, verbose=verbose)
@@ -612,7 +612,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.OPEN)
                 label = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
-                refs = map(int, self.handle_refs())
+                refs = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 conds = self.handle_conds(None)
                 self.assertNextToken(DrtTokens.CLOSE)
@@ -623,7 +623,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 variable = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -657,7 +657,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 var1 = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -674,7 +674,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 variable = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -712,7 +712,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 var1 = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -740,7 +740,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 ans_types = self.handle_refs()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -1113,7 +1113,7 @@ class NltkDrtBoxerDrsInterpreter(object):
         :return: ``AbstractDrs``
         """
         if isinstance(ex, BoxerDrs):
-            drs = DRS([Variable('x%d' % r) for r in ex.refs], map(self.interpret, ex.conds))
+            drs = DRS([Variable('x%d' % r) for r in ex.refs], list(map(self.interpret, ex.conds)))
             if ex.label is not None:
                 drs.label = Variable('x%d' % ex.label)
             if ex.consequent is not None:

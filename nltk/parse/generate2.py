@@ -11,7 +11,7 @@ from nltk.compat import xrange
 from nltk.grammar import Nonterminal, parse_cfg
 
 def all_combsi(lol):
-    lens = map(lambda x: len(x), lol)
+    lens = [len(x) for x in lol]
     num_combs = reduce(lambda x, y: x*y, lens, 1)
     for i in xrange(num_combs):
         tmp = [0]*len(lol)
@@ -22,7 +22,7 @@ def all_combsi(lol):
 
 def expand_nonterm(symbol, grammar):
     if isinstance(symbol, Nonterminal):
-        return map(lambda prod: list(prod.rhs()), grammar.productions(lhs=symbol))
+        return list(map(lambda prod: list(prod.rhs()), grammar.productions(lhs=symbol)))
     else:
         return symbol
 
@@ -45,12 +45,12 @@ def flatten(lst):
 
 def generate(grammar, start=None, depth=10):
     def is_terminal(lofs):
-        tmp = map(lambda x: not isinstance(x, Nonterminal), lofs)
-        return all(tmp)
+        return all(not isinstance(x, Nonterminal) for x in lofs)
 
     def get_children(l_of_symbols):
-        x = map(lambda x: expand_nonterm(x, grammar), l_of_symbols)
-        x = map(lambda x: x if isinstance(x, list) else [x], x)
+        x = [expand_nonterm(x, grammar) for x in l_of_symbols]
+        make_list = lambda x: x if isinstance(x, list) else [x]
+        x = list(map(make_list, x))
         for comb in all_combsi(x):
             yield flatten(comb)
 
