@@ -159,8 +159,8 @@ they didn't download that model.
 default: unzip or not?
 
 """
-import time, re, os, zipfile, sys, textwrap, threading, itertools
-from cStringIO import StringIO
+import time, os, zipfile, sys, textwrap, threading, itertools
+
 try:
     from hashlib import md5
 except:

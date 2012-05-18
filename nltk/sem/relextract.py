@@ -24,9 +24,8 @@ from __future__ import print_function
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
 from collections import defaultdict
-from string import join
 import re
-import htmlentitydefs
+from nltk.compat import htmlentitydefs
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
@@ -73,12 +72,12 @@ def _join(lst, sep=' ', untag=False):
     :rtype: str
     """
     try:
-        return join(lst, sep=sep)
+        return sep.join(lst)
     except TypeError:
         if untag:
-            return join([tup[0] for tup in lst], sep=sep)
+            return sep.join(tup[0] for tup in lst)
         from nltk.tag import tuple2str
-        return join([tuple2str(tup) for tup in lst], sep=sep)
+        return sep.join(tuple2str(tup) for tup in lst)
 
 def descape_entity(m, defs=htmlentitydefs.entitydefs):
     """

@@ -13,11 +13,12 @@ Toolbox databases and settings files.
 from __future__ import print_function
 
 import os, re, codecs
-from StringIO import StringIO
 from xml.etree import ElementTree
 from xml.etree.ElementTree import TreeBuilder, Element, SubElement
 
+from nltk.compat import StringIO
 from nltk.data import PathPointer, ZipFilePathPointer, find
+
 
 class StandardFormat(object):
     """

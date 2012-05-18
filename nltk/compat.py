@@ -20,6 +20,10 @@ if PY3:
     _iterkeys = "keys"
     _itervalues = "values"
     _iteritems = "items"
+
+    import io
+    StringIO = io.StringIO
+    BytesIO = io.BytesIO
 else:
     string_types = basestring,
     integer_types = (int, long)
@@ -31,6 +35,12 @@ else:
     _iterkeys = "iterkeys"
     _itervalues = "itervalues"
     _iteritems = "iteritems"
+
+    try:
+        from cStringIO import StringIO
+    except:
+        from StringIO import StringIO
+    BytesIO = StringIO
 try:
     from itertools import imap, izip
 except ImportError: # python 3

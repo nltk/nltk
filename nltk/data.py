@@ -53,12 +53,8 @@ try:
 except:
     import pickle
 
-try:
-    from cStringIO import StringIO
-except:
-    from StringIO import StringIO
-
 import nltk
+from nltk.compat import StringIO
 
 ######################################################################
 # Search Path
