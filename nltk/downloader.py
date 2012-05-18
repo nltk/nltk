@@ -178,7 +178,8 @@ except:
 
 from xml.etree import ElementTree
 import nltk
-urllib2 = nltk.internals.import_from_stdlib('urllib2')
+from nltk import compat
+#urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
 
 ######################################################################
@@ -599,18 +600,17 @@ class Downloader(object):
         yield StartDownloadMessage(info)
         yield ProgressMessage(5)
         try:
-            infile = urllib2.urlopen(info.url)
-            outfile = open(filepath, 'wb')
-            #print info.size
-            num_blocks = max(1, float(info.size)/(1024*16))
-            for block in itertools.count():
-                s = infile.read(1024*16) # 16k blocks.
-                outfile.write(s)
-                if not s: break
-                if block % 2 == 0: # how often?
-                    yield ProgressMessage(min(80, 5+75*(block/num_blocks)))
+            infile = compat.urlopen(info.url)
+            with open(filepath, 'wb') as outfile:
+                #print info.size
+                num_blocks = max(1, float(info.size)/(1024*16))
+                for block in itertools.count():
+                    s = infile.read(1024*16) # 16k blocks.
+                    outfile.write(s)
+                    if not s: break
+                    if block % 2 == 0: # how often?
+                        yield ProgressMessage(min(80, 5+75*(block/num_blocks)))
             infile.close()
-            outfile.close()
         except IOError as e:
             yield ErrorMessage(info, 'Error downloading %r from <%s>:'
                                '\n  %s' % (info.id, info.url, e))
@@ -812,7 +812,7 @@ class Downloader(object):
 
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
-            ElementTree.parse(urllib2.urlopen(self._url)).getroot())
+            ElementTree.parse(compat.urlopen(self._url)).getroot())
         self._index_timestamp = time.time()
 
         # Build a dictionary of packages.
@@ -1000,9 +1000,9 @@ class DownloaderShell(object):
                     self._simple_interactive_update()
                 else:
                     print('Command %r unrecognized' % user_input)
-            except urllib2.HTTPError as e:
+            except compat.HTTPError as e:
                 print('Error reading from server: %s'%e)
-            except urllib2.URLError as e:
+            except compat.URLError as e:
                 print('Error connecting to server: %s'%e.reason)
             # try checking if user_input is a package name, &
             # downloading it?
@@ -1216,9 +1216,9 @@ class DownloaderGUI(object):
         self._init_menu()
         try:
             self._fill_table()
-        except urllib2.HTTPError as e:
+        except compat.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError as e:
+        except compat.URLError as e:
             showerror('Error connecting to server', e.reason)
 
         self._show_info()
@@ -1398,9 +1398,9 @@ class DownloaderGUI(object):
         self._ds.clear_status_cache()
         try:
             self._fill_table()
-        except urllib2.HTTPError as e:
+        except compat.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError as e:
+        except compat.URLError as e:
             showerror('Error connecting to server', e.reason)
         self._table.select(0)
 
@@ -1451,9 +1451,9 @@ class DownloaderGUI(object):
         self._ds.download_dir = download_dir
         try:
             self._fill_table()
-        except urllib2.HTTPError as e:
+        except compat.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError as e:
+        except compat.URLError as e:
             showerror('Error connecting to server', e.reason)
         self._show_info()
 
@@ -1473,9 +1473,9 @@ class DownloaderGUI(object):
                 self._tab = self._tab_names[i-1].lower()
                 try:
                     return self._fill_table()
-                except urllib2.HTTPError as e:
+                except compat.HTTPError as e:
                     showerror('Error reading from server', e)
-                except urllib2.URLError as e:
+                except compat.URLError as e:
                     showerror('Error connecting to server', e.reason)
 
     def _next_tab(self, *e):
@@ -1484,18 +1484,18 @@ class DownloaderGUI(object):
                 self._tab = self._tab_names[i+1].lower()
                 try:
                     return self._fill_table()
-                except urllib2.HTTPError as e:
+                except compat.HTTPError as e:
                     showerror('Error reading from server', e)
-                except urllib2.URLError as e:
+                except compat.URLError as e:
                     showerror('Error connecting to server', e.reason)
 
     def _select_tab(self, event):
         self._tab = event.widget['text'].lower()
         try:
             self._fill_table()
-        except urllib2.HTTPError as e:
+        except compat.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError as e:
+        except compat.URLError as e:
             showerror('Error connecting to server', e.reason)
 
     _tab = 'collections'
