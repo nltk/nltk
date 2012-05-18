@@ -647,7 +647,7 @@ def _synset_relations(word, synset, synset_relations):
         else:
             raise TypeError("r must be a synset, lemma or list, it was: type(r) = %s, r = %s" % (type(r), r))
 
-    def make_synset_html((db_name, disp_name, rels)):
+    def make_synset_html(db_name, disp_name, rels):
         synset_html = '<i>%s</i>\n' % \
             make_lookup_link(
                 copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
@@ -660,9 +660,9 @@ def _synset_relations(word, synset, synset_relations):
         return synset_html
 
     html = '<ul>' + \
-        '\n'.join(("<li>%s</li>" % make_synset_html(x) for x
+        '\n'.join(("<li>%s</li>" % make_synset_html(*rel_data) for rel_data
                    in get_relations_data(word, synset)
-                   if x[2] != [])) + \
+                   if rel_data[2] != [])) + \
         '</ul>'
 
     return html

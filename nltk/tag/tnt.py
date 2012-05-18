@@ -418,7 +418,9 @@ class TnT(TaggerI):
 
 
 
-    def _cmp_tup(self, (_hq, p1), (_h2, p2)):
+    def _cmp_tup(self, tuple1, tuple2):
+        (_hq, p1) = tuple1
+        (_h2, p2) = tuple2
         if (p2-p1) > 0:
             return 1
         else:

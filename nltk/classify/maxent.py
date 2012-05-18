@@ -174,7 +174,7 @@ class MaxentClassifier(ClassifierI):
         sums = defaultdict(int)
         for i, label in enumerate(labels):
             feature_vector = self._encoding.encode(featureset, label)
-            feature_vector.sort(key=lambda (fid,_): abs(self._weights[fid]),
+            feature_vector.sort(key=lambda fid__: abs(self._weights[fid__[0]]),
                                 reverse=True)
             for (f_id, f_val) in feature_vector:
                 if self._logarithmic: score = self._weights[f_id] * f_val

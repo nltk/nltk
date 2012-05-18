@@ -81,7 +81,8 @@ class TEICorpusView(StreamBackedCorpusView):
 				output.extend(para)
 		return output
 
-	def _parse_tag(self, (tag, word)):
+	def _parse_tag(self, tag_word_tuple):
+		(tag, word) = tag_word_tuple
 		if tag.startswith('w'):
 			tag = ANA.search(tag).group(1)
 		else: # tag.startswith('c')

@@ -74,12 +74,13 @@ class ConfusionMatrix(object):
         #: The number of correct (on-diagonal) values in the matrix.
         self._correct = sum(confusion[i][i] for i in range(len(values)))
 
-    def __getitem__(self, (li,lj)):
+    def __getitem__(self, li_lj_tuple):
         """
         :return: The number of times that value ``li`` was expected and
         value ``lj`` was given.
         :rtype: int
         """
+        (li, lj) = li_lj_tuple
         i = self._indices[li]
         j = self._indices[lj]
         return self._confusion[i][j]

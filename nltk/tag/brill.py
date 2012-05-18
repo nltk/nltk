@@ -786,7 +786,7 @@ class BrillTaggerTrainer(object):
         # Convert the dictionary into a list of (rule, score) tuples,
         # sorted in descending order of score.
         return sorted(rule_score_dict.items(),
-                      key=lambda (rule,score): -score)
+                      key=lambda rule_score: -rule_score[1])
 
     def _find_rules_at(self, test_sent, train_sent, i):
         """

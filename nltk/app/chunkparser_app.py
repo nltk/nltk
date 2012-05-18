@@ -855,7 +855,7 @@ class RegexpChunkApp(object):
             if name == tab:
                 text = text.replace('<<TAGSET>>', '\n'.join(
                     ('\t%s\t%s' % item for item in sorted(self.tagset.items(),
-                    key=lambda (t,w):re.match('\w+',t) and (0,t) or (1,t)))))
+                    key=lambda t_w:re.match('\w+',t_w[0]) and (0,t_w[0]) or (1,t_w[0])))))
 
                 self.helptabs[name].config(**self._HELPTAB_FG_PARAMS)
                 self.helpbox.config(tabs=tabstops)
