@@ -63,10 +63,19 @@ def getinfo(func):
         argnames.append(varkwargs)
     signature = inspect.formatargspec(regargs, varargs, varkwargs, defaults,
                                       formatvalue=lambda value: "")[1:-1]
+
+    # pypy compatibility
+    if hasattr(func, '__closure__'):
+        _closure = func.__closure__
+        _globals = func.__globals__
+    else:
+        _closure = func.func_closure
+        _globals = func.func_globals
+
     return dict(name=func.__name__, argnames=argnames, signature=signature,
                 defaults = func.__defaults__, doc=func.__doc__,
                 module=func.__module__, dict=func.__dict__,
-                globals=func.__globals__, closure=func.__closure__)
+                globals=_globals, closure=_closure)
 
 # akin to functools.update_wrapper
 def update_wrapper(wrapper, model, infodict=None):
