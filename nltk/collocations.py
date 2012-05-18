@@ -23,6 +23,7 @@ these functionalities, dependent on being provided a function which scores a
 ngram given appropriate frequency counts. A number of standard association
 measures are provided in bigram_measures and trigram_measures.
 """
+from __future__ import print_function
 
 # Possible TODOs:
 # - consider the distinction between f(x,_) and f(x) and whether our
@@ -137,7 +138,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         bfd = FreqDist()
 
         if window_size < 2:
-            raise ValueError, "Specify window_size at least 2"
+            raise ValueError("Specify window_size at least 2")
 
         for window in ingrams(words, window_size, pad_right=True):
             w1 = window[0]
@@ -249,12 +250,12 @@ def demo(scorer=None, compare_scorer=None):
         cf.apply_freq_filter(3)
         cf.apply_word_filter(word_filter)
 
-        print file
-        print '\t', [' '.join(tup) for tup in cf.nbest(scorer, 15)]
-        print '\t Correlation to %s: %0.4f' % (compare_scorer.__name__,
+        print(file)
+        print('\t', [' '.join(tup) for tup in cf.nbest(scorer, 15)])
+        print('\t Correlation to %s: %0.4f' % (compare_scorer.__name__,
                 spearman_correlation(
                     ranks_from_scores(cf.score_ngrams(scorer)),
-                    ranks_from_scores(cf.score_ngrams(compare_scorer))))
+                    ranks_from_scores(cf.score_ngrams(compare_scorer)))))
 
 # Slows down loading too much
 # bigram_measures = BigramAssocMeasures()

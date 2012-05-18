@@ -258,7 +258,7 @@ class Alignment(frozenset):
         if not self._index:
             self._build_index()
         if not positions:
-            positions = range(len(self._index))
+            positions = list(range(len(self._index)))
         for p in positions:
             image.update(f for _,f in self._index[p])
         return sorted(image)

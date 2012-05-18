@@ -73,5 +73,4 @@ natural language processing.  NLTK requires Python 2.5 or higher.""",
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
     install_requires=['PyYAML>=3.09'],
-    test_suite = 'nltk.test.simple',
     )

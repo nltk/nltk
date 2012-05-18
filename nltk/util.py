@@ -4,6 +4,7 @@
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function
 
 import locale
 import re
@@ -18,6 +19,7 @@ from pprint import pprint
 from collections import defaultdict, deque
 
 from nltk.internals import slice_bounds
+from nltk.compat import class_types, text_type
 
 ######################################################################
 # Short usage message
@@ -27,10 +29,10 @@ def usage(obj, selfname='self'):
     import inspect
     str(obj) # In case it's lazy, this will load it.
 
-    if not isinstance(obj, (types.TypeType, types.ClassType)):
+    if not isinstance(obj, class_types):
         obj = obj.__class__
 
-    print '%s supports the following operations:' % obj.__name__
+    print('%s supports the following operations:' % obj.__name__)
     for (name, method) in sorted(pydoc.allmethods(obj).items()):
         if name.startswith('_'): continue
         if getattr(method, '__deprecated__', False): continue
@@ -42,9 +44,9 @@ def usage(obj, selfname='self'):
             name = '%s.%s' % (selfname, name)
         argspec = inspect.formatargspec(
             args, varargs, varkw, defaults)
-        print textwrap.fill('%s%s' % (name, argspec),
+        print(textwrap.fill('%s%s' % (name, argspec),
                             initial_indent='  - ',
-                            subsequent_indent=' '*(len(name)+5))
+                            subsequent_indent=' '*(len(name)+5)))
 
 ##########################################################################
 # IDLE
@@ -62,7 +64,7 @@ def in_idle():
     :rtype: bool
     """
     import sys, types
-    return (type(sys.stdin) == types.InstanceType and \
+    return (type(sys.stdin) == types.InstanceType and
             sys.stdin.__class__.__name__ == 'PyShell')
 
 ##########################################################################
@@ -91,7 +93,7 @@ def print_string(s, width=70):
     :param width: the display width
     :type width: int
     """
-    print '\n'.join(textwrap.wrap(s, width=width))
+    print('\n'.join(textwrap.wrap(s, width=width)))
 
 def tokenwrap(tokens, separator=" ", width=70):
     """
@@ -139,7 +141,7 @@ def re_show(regexp, string, left="{", right="}"):
     :type right: str
     :rtype: str
     """
-    print re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
+    print(re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
 
 
 ##########################################################################
@@ -153,7 +155,7 @@ def filestring(f):
     elif isinstance(f, basestring):
         return open(f).read()
     else:
-        raise ValueError, "Must be called with a filename or file-like object"
+        raise ValueError("Must be called with a filename or file-like object")
 
 ##########################################################################
 # Breadth-First Search
@@ -224,7 +226,7 @@ def guess_encoding(data):
         if not enc:
             continue
         try:
-            decoded = unicode(data, enc)
+            decoded = text_type(data, enc)
             successful_encoding = enc
 
         except (UnicodeError, LookupError):
@@ -1047,7 +1049,7 @@ class LazyEnumerate(LazyZip):
         :param lst: the underlying list
         :type lst: list
         """
-        LazyZip.__init__(self, xrange(len(lst)), lst)
+        LazyZip.__init__(self, range(len(lst)), lst)
 
 
 ######################################################################
@@ -1126,7 +1128,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
 # Proxy configuration
 ######################################################################
 
-def set_proxy(proxy, (user, password)=(None, '')):
+def set_proxy(proxy, user=None, password=''):
     """
     Set the HTTP proxy for Python to download through.
 

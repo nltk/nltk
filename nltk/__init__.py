@@ -143,7 +143,7 @@ from .stem import *
 # (b) they're slow to import or have run-time dependencies
 #     that can safely fail at run time
 
-import lazyimport
+from . import lazyimport
 app = lazyimport.LazyModule('app', locals(), globals())
 chat = lazyimport.LazyModule('chat', locals(), globals())
 corpus = lazyimport.LazyModule('corpus', locals(), globals())

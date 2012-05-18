@@ -231,7 +231,7 @@ def parse_str(s, start_position):
     # might raise ValueEerror.
     try:
         return eval(s[start_position:match.end()]), match.end()
-    except ValueError, e:
+    except ValueError as e:
         raise ParseError('valid string (%s)' % e, start)
 
 _PARSE_INT_RE = re.compile(r'-?\d+')
@@ -286,10 +286,10 @@ def overridden(method):
     :type method: instance method
     """
     # [xx] breaks on classic classes!
-    if isinstance(method, types.MethodType) and method.im_class is not None:
+    if isinstance(method, types.MethodType) and method.__self__.__class__ is not None:
         name = method.__name__
         funcs = [cls.__dict__[name]
-                 for cls in _mro(method.im_class)
+                 for cls in _mro(method.__self__.__class__)
                  if name in cls.__dict__]
         return len(funcs) > 1
     else:
@@ -495,7 +495,7 @@ def find_file(filename, env_vars=(), searchpath=(),
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose: print('[Found %s: %s]' % (filename, path))
                     return path
-            except KeyboardInterrupt, SystemExit:
+            except KeyboardInterrupt as SystemExit:
                 raise
             except:
                 pass
@@ -643,7 +643,7 @@ def abstract(func):
 
     # Substitute in the defaults after-the-fact, since eval(repr(val))
     # may not work for some default values.
-    newfunc.func_defaults = func.func_defaults
+    newfunc.__defaults__ = func.__defaults__
 
     # Copy the name and docstring
     newfunc.__name__ = func.__name__
@@ -848,13 +848,13 @@ def is_writable(path):
         statdata = os.stat(path)
         perm = stat.S_IMODE(statdata.st_mode)
         # is it world-writable?
-        if (perm & 0002):
+        if (perm & 0o002):
             return True
         # do we own it?
-        elif statdata.st_uid == os.getuid() and (perm & 0200):
+        elif statdata.st_uid == os.getuid() and (perm & 0o200):
             return True
         # are we in a group that can write to it?
-        elif statdata.st_gid == os.getgid() and (perm & 0020):
+        elif statdata.st_gid == os.getgid() and (perm & 0o020):
             return True
         # otherwise, we can't write to it.
         else:

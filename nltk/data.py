@@ -30,6 +30,7 @@ resource file, given its URL: ``load()`` loads a given resource, and
 adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
+from __future__ import print_function
 
 import sys
 import os, os.path
@@ -332,7 +333,7 @@ class ZipFilePathPointer(PathPointer):
         self._entry = entry
 
     @property
-    def zipfile(self): 
+    def zipfile(self):
         """
         The zipfile.ZipFile object used to access the zip file
         containing the entry identified by this path pointer.
@@ -484,10 +485,10 @@ def retrieve(resource_url, filename=None, verbose=True):
             filename = re.sub(r'(^\w+:)?.*/', '', resource_url)
     if os.path.exists(filename):
         filename = os.path.abspath(filename)
-        raise ValueError, "File %r already exists!" % filename
+        raise ValueError("File %r already exists!" % filename)
 
     if verbose:
-        print 'Retrieving %r, saving to %r' % (resource_url, filename)
+        print('Retrieving %r, saving to %r' % (resource_url, filename))
 
     # Open the input & output streams.
     infile = _open(resource_url)
@@ -580,12 +581,12 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         resource_val = _resource_cache.get(resource_url)
         if resource_val is not None:
             if verbose:
-                print '<<Using cached copy of %s>>' % (resource_url,)
+                print('<<Using cached copy of %s>>' % (resource_url,))
             return resource_val
 
     # Let the user know what's going on.
     if verbose:
-        print '<<Loading %s>>' % (resource_url,)
+        print('<<Loading %s>>' % (resource_url,))
 
     # Determine the format of the resource.
     if format == 'auto':
@@ -655,7 +656,7 @@ def show_cfg(resource_url, escape='##'):
     for l in lines:
         if l.startswith(escape): continue
         if re.match('^$', l): continue
-        print l
+        print(l)
 
 
 def clear_cache():
@@ -1093,7 +1094,7 @@ class SeekableUnicodeStreamReader(object):
         them using this reader's encoding, and return the resulting
         unicode string.  ``linebuffer`` is not included in the result.
         """
-        if size == 0: return u''
+        if size == 0: return ''
 
         # Skip past the byte order marker, if present.
         if self._bom and self.stream.tell() == 0:
@@ -1138,7 +1139,7 @@ class SeekableUnicodeStreamReader(object):
         while True:
             try:
                 return self.decode(bytes, 'strict')
-            except UnicodeDecodeError, exc:
+            except UnicodeDecodeError as exc:
                 # If the exception occurs at the end of the string,
                 # then assume that it's a truncation error.
                 if exc.end == len(bytes):
