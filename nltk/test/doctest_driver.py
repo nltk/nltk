@@ -24,6 +24,7 @@ A number of other flags can be given; call the driver with the
 """
 from __future__ import print_function
 
+import codecs
 import os, os.path, sys, unittest, pdb, bdb, re, tempfile, traceback
 import textwrap
 from doctest import *
@@ -35,7 +36,7 @@ from optparse import OptionParser, OptionGroup, Option
 root_dir = os.path.abspath(os.path.join(sys.path[0], '..', '..'))
 sys.path.insert(0, root_dir)
 
-from nltk.compat import StringIO
+from nltk.compat import StringIO, b
 
 
 __version__ = '0.1'
@@ -561,7 +562,7 @@ def find(name):
             if testname is not None:
                 raise ValueError("test names can't be specified "
                                  "for text files")
-            s = open(filename).read().decode('utf8')
+            s = codecs.open(filename, encoding="utf-8").read()
             test = MyDocTestParser().get_doctest(s, {}, name, filename, 0)
             return [test]
         else:
@@ -950,11 +951,11 @@ class TerminalController:
         set_fg = self._tigetstr('setf')
         if set_fg:
             for i,color in enumerate(self._COLORS):
-                setattr(self, color, curses.tparm(set_fg, i) or '')
+                setattr(self, color, curses.tparm(b(set_fg), i) or '')
         set_fg_ansi = self._tigetstr('setaf')
         if set_fg_ansi:
             for i,color in enumerate(self._ANSICOLORS):
-                setattr(self, color, curses.tparm(set_fg_ansi, i) or '')
+                setattr(self, color, curses.tparm(b(set_fg_ansi), i) or '')
 
     def _tigetstr(self, cap_name):
         # String capabilities can include "delays" of the form "$<2>".
