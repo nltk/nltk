@@ -211,7 +211,7 @@ class Alignment(frozenset):
         >>> a = Alignment([(0, 0), (0, 1), (1, 2), (2, 2)])
         >>> a.invert()
         Alignment([(0, 0), (1, 0), (2, 1), (2, 2)])
-        >>>print(a.invert())
+        >>> print(a.invert())
         0-0 1-0 2-1 2-2
         >>> a[0]
         [(0, 1), (0, 0)]
