@@ -659,7 +659,7 @@ class DictionaryProbDist(ProbDistI):
         # Normalize the distribution, if requested.
         if normalize:
             if log:
-                value_sum = sum_logs(self._prob_dict.values())
+                value_sum = sum_logs(list(self._prob_dict.values()))
                 if value_sum <= _NINF:
                     logp = math.log(1.0/len(prob_dict), 2)
                     for x in prob_dict:

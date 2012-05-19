@@ -92,7 +92,7 @@ class NaiveBayesClassifier(ClassifierI):
         # Otherwise, we'll just assign a probability of 0 to
         # everything.
         featureset = featureset.copy()
-        for fname in featureset.keys():
+        for fname in list(featureset.keys()):
             for label in self._labels:
                 if (label, fname) in self._feature_probdist:
                     break
