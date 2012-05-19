@@ -35,7 +35,7 @@ defines three chart parsers:
   - ``SteppingChartParser`` is a subclass of ``ChartParser`` that can
     be used to step through the parsing process.
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 import re
 import warnings
@@ -741,7 +741,7 @@ class Chart(object):
         :param width: The number of characters allotted to each
             index in the sentence.
         """
-        if width is None: width = 50/(self.num_leaves()+1)
+        if width is None: width = 50 // (self.num_leaves()+1)
         (start, end) = (edge.start(), edge.end())
 
         str = '|' + ('.'+' '*(width-1))*start
@@ -769,7 +769,7 @@ class Chart(object):
         chart's leaves.  This string can be used as a header
         for calls to ``pp_edge``.
         """
-        if width is None: width = 50/(self.num_leaves()+1)
+        if width is None: width = 50 // (self.num_leaves()+1)
 
         if self._tokens is not None and width>1:
             header = '|.'
@@ -789,7 +789,7 @@ class Chart(object):
             index in the sentence.
         :rtype: str
         """
-        if width is None: width = 50/(self.num_leaves()+1)
+        if width is None: width = 50 // (self.num_leaves()+1)
         # sort edges: primary key=length, secondary key=start index.
         # (and filter out the token edges)
         edges = sorted([(e.length(), e.start(), e) for e in self])
@@ -1358,7 +1358,7 @@ class ChartParser(ParserI):
         grammar = self._grammar
 
         # Width, for printing trace edges.
-        trace_edge_width = self._trace_chart_width / (chart.num_leaves() + 1)
+        trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace: print(chart.pp_leaves(trace_edge_width))
 
         if self._use_agenda:
@@ -1494,7 +1494,7 @@ class SteppingChartParser(ChartParser):
             raise ValueError('Parser must be initialized first')
         while True:
             self._restart = False
-            w = 50/(self._chart.num_leaves()+1)
+            w = 50 // (self._chart.num_leaves()+1)
 
             for e in self._parse():
                 if self._trace > 1: print(self._current_chartrule)
