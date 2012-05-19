@@ -1210,11 +1210,17 @@ def remove_variables(fstruct, fs_class='default'):
     return _remove_variables(copy.deepcopy(fstruct), fs_class, set())
 
 def _remove_variables(fstruct, fs_class, visited):
-    if id(fstruct) in visited: return
+    if id(fstruct) in visited:
+        return
     visited.add(id(fstruct))
-    if _is_mapping(fstruct): items = fstruct.items()
-    elif _is_sequence(fstruct): items = enumerate(fstruct)
-    else: raise ValueError('Expected mapping or sequence')
+
+    if _is_mapping(fstruct):
+        items = list(fstruct.items())
+    elif _is_sequence(fstruct):
+        items = list(enumerate(fstruct))
+    else:
+        raise ValueError('Expected mapping or sequence')
+
     for (fname, fval) in items:
         if isinstance(fval, Variable):
             del fstruct[fname]
@@ -1650,7 +1656,7 @@ def conflicts(fstruct1, fstruct2, trace=0):
 ######################################################################
 
 def _is_mapping(v):
-    return hasattr(v, 'has_key') and hasattr(v, 'items')
+    return hasattr(v, '__contains__') and hasattr(v, 'keys')
 
 def _is_sequence(v):
     return (hasattr(v, '__iter__') and hasattr(v, '__len__') and
