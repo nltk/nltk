@@ -75,7 +75,10 @@ if __name__ == '__main__':
     nose.main(argv=_EXCLUDE_ARGV + [
             #'--with-xunit',
             #'--xunit-file=$WORKSPACE/nosetests.xml',
+            #'--nocapture',
             '--with-doctest',
+            #'--doctest-tests',
+            #'--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
             '--doctest-extension=.doctest',
             '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL',
             #'--verbosity=3',
