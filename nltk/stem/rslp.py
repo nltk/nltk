@@ -30,7 +30,7 @@
 # comentário, inclusive sobre o desenvolvimento de um stemmer diferente
 # e/ou melhor para o português. Também sugiro utilizar-se a lista de discussão
 # do NLTK para o português para qualquer debate.
-
+from __future__ import print_function, unicode_literals
 from nltk.data import load
 
 from .api import StemmerI
@@ -42,12 +42,12 @@ class RSLPStemmer(StemmerI):
         >>> from nltk.stem import RSLPStemmer
         >>> st = RSLPStemmer()
         >>> # opening lines of Erico Verissimo's "Música ao Longe"
-        >>> text = u'''
+        >>> text = '''
         ... Clarissa risca com giz no quadro-negro a paisagem que os alunos
         ... devem copiar . Uma casinha de porta e janela , em cima duma
         ... coxilha .'''
         >>> for token in text.split():
-        ...     print st.stem(token),
+        ...     print(st.stem(token))
         clariss risc com giz no quadro-negr a pais que os alun dev copi .
         uma cas de port e janel , em cim dum coxilh .
     """

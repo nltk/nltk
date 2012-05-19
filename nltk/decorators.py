@@ -5,6 +5,7 @@ http://www.phyast.pitt.edu/~micheles/python/documentation.html
 
 Included in NLTK for its support of a nice memoization decorator.
 """
+from __future__ import print_function
 __docformat__ = 'restructuredtext en'
 
 ## The basic trick is to generate the source code for the decorated function
@@ -144,7 +145,7 @@ def decorator(caller):
 
     >>> @decorator
     ... def chatty(f, *args, **kw):
-    ...     print "Calling %r" % f.__name__
+    ...     print("Calling %r" % f.__name__)
     ...     return f(*args, **kw)
 
     >>> chatty.__name__

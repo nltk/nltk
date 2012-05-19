@@ -6,7 +6,7 @@
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
+from __future__ import print_function
 import sys
 import logging
 from collections import defaultdict
@@ -31,9 +31,9 @@ class AlignedSent(object):
         >>> algnsent.precision('0-2 1-3 2-1 3-3')
         0.75
         >>> from nltk.corpus import comtrans
-        >>> print comtrans.aligned_sents()[54]
+        >>> print(comtrans.aligned_sents()[54])
         <AlignedSent: 'Weshalb also sollten...' -> 'So why should EU arm...'>
-        >>> print comtrans.aligned_sents()[54].alignment
+        >>> print(comtrans.aligned_sents()[54].alignment)
         0-0 0-1 1-0 2-2 3-4 3-5 4-7 5-8 6-3 7-9 8-9 9-10 9-11 10-12 11-6 12-6 13-13
 
     :param words: source language words
@@ -211,7 +211,7 @@ class Alignment(frozenset):
         >>> a = Alignment([(0, 0), (0, 1), (1, 2), (2, 2)])
         >>> a.invert()
         Alignment([(0, 0), (1, 0), (2, 1), (2, 2)])
-        >>> print a.invert()
+        >>>print(a.invert())
         0-0 1-0 2-1 2-2
         >>> a[0]
         [(0, 1), (0, 0)]
@@ -303,11 +303,11 @@ class IBMModel1(object):
         ...           AlignedSent(['the', 'book'], ['das', 'Buch']),
         ...           AlignedSent(['a', 'book'], ['ein', 'Buch'])]
         >>> ibm1 = IBMModel1(corpus)
-        >>> print "%.1f" % ibm1.probabilities['book', 'Buch']
+        >>> print("%.1f" % ibm1.probabilities['book', 'Buch'])
         1.0
-        >>> print "%.1f" % ibm1.probabilities['book', 'das']
+        >>> print("%.1f" % ibm1.probabilities['book', 'das'])
         0.0
-        >>> print "%.1f" % ibm1.probabilities['book', None]
+        >>> print("%.1f" % ibm1.probabilities['book', None])
         0.5
 
     :param aligned_sents: The parallel text ``corpus.Iterable`` containing
