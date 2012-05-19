@@ -8,6 +8,8 @@ import types
 PY3 = sys.version_info[0] == 3
 
 if PY3:
+    def b(s):
+        return s.encode("latin-1")
     def u(s):
         return s
 
@@ -40,6 +42,8 @@ if PY3:
     from urllib.parse import quote_plus, unquote_plus, urlencode
 
 else:
+    def b(s):
+        return s
     def u(s):
         return unicode(s, "unicode_escape")
 
