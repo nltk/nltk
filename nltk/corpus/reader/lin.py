@@ -55,7 +55,7 @@ class LinThesaurusCorpusReader(CorpusReader):
                         split_line = line.split('\t')
                         if len(split_line) == 2:
                             ngram, score = split_line
-                            self._thesaurus[fileid][key][ngram.strip('"')] = score
+                            self._thesaurus[fileid][key][ngram.strip('"')] = float(score)
 
     def similarity(self, ngram1, ngram2, fileid=None):
         '''
