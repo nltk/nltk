@@ -332,8 +332,10 @@ base value types that have custom unification methods.  For example,
 the following feature value type encodes a range, and defines
 unification as taking the intersection on the ranges:
 
+    >>> from nltk.compat import total_ordering
     >>> from nltk.featstruct import CustomFeatureValue, UnificationFailure
-    >>> class Range(CustomFeatureValue):
+    >>> @total_ordering
+    ... class Range(CustomFeatureValue):
     ...     def __init__(self, low, high):
     ...         assert low <= high
     ...         self.low = low
@@ -347,9 +349,14 @@ unification as taking the intersection on the ranges:
     ...         else: return UnificationFailure
     ...     def __repr__(self):
     ...         return '(%s<x<%s)' % (self.low, self.high)
-    ...     def __cmp__(self, other):
-    ...         if not isinstance(other, Range): return -1
-    ...         return cmp((self.low, self.high), (other.low, other.high))
+    ...     def __eq__(self, other):
+    ...         if not isinstance(other, Range):
+    ...             return False
+    ...         return (self.low == other.low) and (self.high == other.high)
+    ...     def __lt__(self, other):
+    ...         if not isinstance(other, Range):
+    ...             return True
+    ...         return (self.low, self.high) < (other.low, other.high)
 
     >>> fs1 = FeatStruct(x=Range(5,8), y=FeatStruct(z=Range(7,22)))
     >>> print(fs1.unify(FeatStruct(x=Range(6, 22))))

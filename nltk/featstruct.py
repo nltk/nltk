@@ -91,17 +91,19 @@ recommended that you use full-fledged ``FeatStruct`` objects.
 from __future__ import print_function
 from __future__ import division
 
-import re, copy
+import re
+import copy
 
+import nltk.internals
 from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
                             LogicParser, ParseException)
-import nltk.internals
-from nltk.compat import string_types, text_type, integer_types
+from nltk.compat import string_types, text_type, integer_types, total_ordering
 
 ######################################################################
 # Feature Structure
 ######################################################################
 
+@total_ordering
 class FeatStruct(SubstituteBindingsI):
     """
     A mapping from feature identifiers to feature values, where each
@@ -250,6 +252,11 @@ class FeatStruct(SubstituteBindingsI):
         ``not self.equal_values(other, check_reentrance=True)``.
         """
         return not self.__eq__(other)
+
+    def __lt__(self, other):
+        if not isinstance(other, self.__class__):
+            return True
+        return len(self) < len(other)
 
     def __hash__(self):
         """
@@ -1785,6 +1792,7 @@ def _flatten(lst, cls):
 # Specialized Features
 ######################################################################
 
+@total_ordering
 class Feature(object):
     """
     A feature identifier that's specialized to put additional
@@ -1822,10 +1830,16 @@ class Feature(object):
     def __repr__(self):
         return '*%s*' % self.name
 
-    def __cmp__(self, other):
-        if not isinstance(other, Feature): return -1
-        if self._name == other._name: return 0
-        return cmp(self._sortkey, other._sortkey)
+    def __lt__(self, other):
+        if not isinstance(other, Feature):
+            return True
+        return self._sortkey < other._sortkey
+
+    def __eq__(self, other):
+        return isinstance(other, Feature) and self._name == other._name
+
+    def __ne__(self, other):
+        return not (self == other)
 
     def __hash__(self):
         return hash(self._name)
@@ -1871,6 +1885,7 @@ TYPE = Feature('type', display='prefix')
 # Specialized Feature Values
 ######################################################################
 
+@total_ordering
 class CustomFeatureValue(object):
     """
     An abstract base class for base values that define a custom
@@ -1886,8 +1901,8 @@ class CustomFeatureValue(object):
     they return *must* be equal; otherwise, an ``AssertionError`` will
     be raised.
 
-    Subclasses must define ``unify()`` and ``__cmp__()``.  Subclasses
-    may also wish to define ``__hash__()``.
+    Subclasses must define ``unify()``, ``__eq__()`` and ``__lt__()``.
+    Subclasses may also wish to define ``__hash__()``.
     """
     def unify(self, other):
         """
@@ -1895,8 +1910,19 @@ class CustomFeatureValue(object):
         unified value.  Otherwise, return ``UnificationFailure``.
         """
         raise NotImplementedError('abstract base class')
+
     def __cmp__(self, other):
+        raise NotImplementedError('__cmp__ is deprecated')
+
+    def __eq__(self, other):
         raise NotImplementedError('abstract base class')
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    def __lt__(self, other):
+        raise NotImplementedError('abstract base class')
+
     def __hash__(self):
         raise TypeError('%s objects or unhashable' % self.__class__.__name__)
 

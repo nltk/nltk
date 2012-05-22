@@ -73,7 +73,7 @@ from __future__ import print_function
 import re
 
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import string_types
+from nltk.compat import string_types, total_ordering
 
 from nltk.probability import ImmutableProbabilisticMixIn
 from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
@@ -82,6 +82,7 @@ from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
 # Nonterminal
 #################################################################
 
+@total_ordering
 class Nonterminal(object):
     """
     A non-terminal symbol for a context free grammar.  ``Nonterminal``
@@ -123,32 +124,25 @@ class Nonterminal(object):
     def __eq__(self, other):
         """
         Return True if this non-terminal is equal to ``other``.  In
-        particular, return True iff ``other`` is a ``Nonterminal``
+        particular, return True if ``other`` is a ``Nonterminal``
         and this non-terminal's symbol is equal to ``other`` 's symbol.
 
         :rtype: bool
         """
         try:
-            return ((self._symbol == other._symbol) \
+            return ((self._symbol == other._symbol)
                     and isinstance(other, self.__class__))
         except AttributeError:
             return False
 
     def __ne__(self, other):
-        """
-        Return True if this non-terminal is not equal to ``other``.  In
-        particular, return true iff ``other`` is not a ``Nonterminal``
-        or this non-terminal's symbol is not equal to ``other`` 's symbol.
+        return not (self == other)
 
-        :rtype: bool
-        """
-        return not (self==other)
-
-    def __cmp__(self, other):
-        try:
-            return cmp(self._symbol, other._symbol)
-        except:
-            return -1
+    def __lt__(self, other):
+        if not isinstance(other, self.__class__):
+            # XXX: self.__class__ vs Nonterminal?
+            return False
+        return self._symbol < other._symbol
 
     def __hash__(self):
         return self._hash
@@ -239,6 +233,7 @@ def is_terminal(item):
 # Productions
 #################################################################
 
+@total_ordering
 class Production(object):
     """
     A grammar production.  Each production maps a single symbol
@@ -347,9 +342,10 @@ class Production(object):
     def __ne__(self, other):
         return not (self == other)
 
-    def __cmp__(self, other):
-        if not isinstance(other, self.__class__): return -1
-        return cmp((self._lhs, self._rhs), (other._lhs, other._rhs))
+    def __lt__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return (self._lhs, self._rhs) < (other._lhs, other._rhs)
 
     def __hash__(self):
         """
@@ -818,6 +814,7 @@ class FeatureGrammar(ContextFreeGrammar):
         else:
             return item
 
+@total_ordering
 class FeatureValueType(object):
     """
     A helper class for ``FeatureGrammars``, designed to be different
@@ -827,10 +824,23 @@ class FeatureValueType(object):
     def __init__(self, value):
         self._value = value
         self._hash = hash(value)
+
     def __repr__(self):
-        return '<%s>' % self.value
-    def __cmp__(self, other):
-        return cmp(FeatureValueType, type(other)) or cmp(self._value, other._value)
+        return '<%s>' % self._value
+
+    def __eq__(self, other):
+        if other.__class__ != FeatureValueType:
+            return False
+        return self._value == other._value
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    def __lt__(self, other):
+        if other.__class__ != FeatureValueType:
+            return True
+        return self._value < other._value
+
     def __hash__(self):
         return self._hash
 
