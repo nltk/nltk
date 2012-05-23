@@ -124,7 +124,7 @@ class ChartCell(object):
         :param span: The span to add.
         :type span: DependencySpan
         """
-        self._entries.add(span);
+        self._entries.add(span)
 
     def __str__(self):
         """
@@ -191,9 +191,9 @@ class ProjectiveDependencyParser(object):
             for j in range(i-2,-1,-1):
                 for k in range(i-1,j,-1):
                     for span1 in chart[k][j]._entries:
-                            for span2 in chart[i][k]._entries:
-                                for newspan in self.concatenate(span1, span2):
-                                    chart[i][j].add(newspan)
+                        for span2 in chart[i][k]._entries:
+                            for newspan in self.concatenate(span1, span2):
+                                chart[i][j].add(newspan)
         graphs = []
         trees = []
         for parse in chart[len(self._tokens)][0]._entries:
