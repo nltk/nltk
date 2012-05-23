@@ -9,7 +9,6 @@ Unit tests for the Context Free Grammar class
 ---------------------------------------------
 
     >>> from nltk import Nonterminal, nonterminals, Production, parse_cfg, ContextFreeGrammar
-    >>> from nltk.test.doctest_utils import *
 
     >>> nt1 = Nonterminal('NP')
     >>> nt2 = Nonterminal('VP')
@@ -550,8 +549,8 @@ Create a set of probabilistic CFG productions.
     >>> prod.rhs()
     (B, B)
 
-    >>> float_equal(prod.prob(), 0.29999999999999)
-    True
+    >>> print(prod.prob())
+    0.3
 
     >>> grammar.start()
     A

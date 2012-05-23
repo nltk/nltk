@@ -9,7 +9,6 @@ This file contains some simple tests that will be run by EasyInstall in
 order to test the installation when NLTK-Data is absent.
 
     >>> from __future__ import print_function
-    >>> from nltk.test.doctest_utils import *
 
 ------------
 Tokenization
@@ -33,10 +32,10 @@ Metrics
     >>> test_set = set(test)
     >>> precision(reference_set, test_set)
     1.0
-    >>> float_equal(recall(reference_set, test_set), 0.8)
-    True
-    >>> float_equal(f_measure(reference_set, test_set), 0.88888888888888)
-    True
+    >>> print(recall(reference_set, test_set))
+    0.8
+    >>> print(f_measure(reference_set, test_set))
+    0.88888888888...
 
 ------------------
 Feature Structures
