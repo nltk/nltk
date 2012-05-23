@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function
+from __future__ import division
 
 import re
 
@@ -128,7 +129,7 @@ class ChunkString(object):
         # have to do this in pieces, to avoid a maximum recursion
         # depth limit for regular expressions.
         brackets = ChunkString._BRACKETS.sub('', s)
-        for i in range(1+len(brackets)/5000):
+        for i in range(1 + len(brackets) // 5000):
             substr = brackets[i*5000:i*5000+5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
                 raise ValueError('Transformation generated invalid '
