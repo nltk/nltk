@@ -67,11 +67,11 @@ and unambiguous sentence.
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
     >>> for t in rd.nbest_parse(sentence1):
-    ...     print t
+    ...     print(t)
     (S (NP the (N cat)) (VP (V chased) (NP the (N dog))))
 
     >>> for t in rd.nbest_parse(sentence2):
-    ...     print t
+    ...     print(t)
     (S
       (NP the (N cat))
       (VP (V chased) (NP the (N dog) (PP (P on) (NP the (N rug))))))
@@ -102,7 +102,7 @@ and only one parse is ever returned.
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
     >>> for t in sr.nbest_parse(sentence1):
-    ...     print t
+    ...     print(t)
     (S (NP the (N cat)) (VP (V chased) (NP the (N dog))))
 
 
@@ -111,7 +111,7 @@ multiple possible shift or reduce operations available - for the supplied
 grammar clearly the wrong operation is selected.
 
     >>> for t in sr.nbest_parse(sentence2):
-    ...     print t
+    ...     print(t)
 
 
 Unit tests for the Chart Parser class
@@ -446,81 +446,81 @@ Bottom-up parsing.
 
     >>> parser = nltk.parse.BottomUpChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     7661
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Bottom-up Left-corner parsing.
 
     >>> parser = nltk.parse.BottomUpLeftCornerChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     4986
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Left-corner parsing with bottom-up filter.
 
     >>> parser = nltk.parse.LeftCornerChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     1342
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Top-down parsing.
 
     >>> parser = nltk.parse.TopDownChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     28352
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Incremental Bottom-up parsing.
 
     >>> parser = nltk.parse.IncrementalBottomUpChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     7661
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Incremental Bottom-up Left-corner parsing.
 
     >>> parser = nltk.parse.IncrementalBottomUpLeftCornerChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     4986
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Incremental Left-corner parsing with bottom-up filter.
 
     >>> parser = nltk.parse.IncrementalLeftCornerChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     1342
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Incremental Top-down parsing.
 
     >>> parser = nltk.parse.IncrementalTopDownChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     28352
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Earley parsing. This is similar to the incremental top-down algorithm.
 
     >>> parser = nltk.parse.EarleyChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     28352
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 
@@ -549,7 +549,7 @@ Create a set of probabilistic CFG productions.
     >>> prod.rhs()
     (B, B)
 
-    >>> print(prod.prob())
+    >>> print((prod.prob()))
     0.3
 
     >>> grammar.start()
@@ -577,7 +577,7 @@ Unit tests for the Probabilistic Chart Parse classes
 
     >>> tokens = "Jack saw Bob with my cookie".split()
     >>> grammar = toy_pcfg2
-    >>> print grammar
+    >>> print(grammar)
     Grammar with 23 productions (start state = S)
         S -> NP VP [1.0]
         VP -> V NP [0.59]
@@ -610,7 +610,7 @@ resulting parses.
 
     >>> parser = pchart.InsideChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
@@ -626,7 +626,7 @@ resulting parses.
 
     >>> parser = pchart.RandomChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
@@ -642,7 +642,7 @@ resulting parses.
 
     >>> parser = pchart.UnsortedChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
@@ -658,7 +658,7 @@ resulting parses.
 
     >>> parser = pchart.LongestChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
@@ -674,7 +674,7 @@ resulting parses.
 
     >>> parser = pchart.InsideChartParser(grammar, beam_size = len(tokens)+1)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
 
 
 Unit tests for the Viterbi Parse classes
@@ -688,7 +688,7 @@ Parse the tokenized sentence.
 
     >>> parser = ViterbiParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
@@ -821,11 +821,11 @@ return the same trees. Otherwise an error is printed.
     ...     for P in parsers:
     ...         result = P(grammar).nbest_parse(sentence)
     ...         if len(result) != nr_trees:
-    ...             print "Wrong nr of trees:", len(result)
+    ...             print(("Wrong nr of trees:", len(result)))
     ...         elif trees is None:
     ...             trees = result
     ...         elif result != trees:
-    ...             print "Trees differ for parser:", P.__name__
+    ...             print(("Trees differ for parser:", P.__name__))
 
 The demo grammar from before, with an ambiguous sentence.
 
@@ -864,12 +864,14 @@ Alternative 1: first load the grammar, then create the parser.
 
     >>> fcfg = nltk.data.load('grammars/book_grammars/feat0.fcfg')
     >>> fcp1 = nltk.parse.FeatureChartParser(fcfg)
-    >>> print type(fcp1)
+    >>> print((type(fcp1)))
     <class 'nltk.parse.featurechart.FeatureChartParser'>
 
 Alternative 2: directly load the parser.
 
     >>> fcp2 = nltk.parse.load_parser('grammars/book_grammars/feat0.fcfg')
-    >>> print type(fcp2)
+    >>> print((type(fcp2)))
     <class 'nltk.parse.featurechart.FeatureChartParser'>
+
+
 

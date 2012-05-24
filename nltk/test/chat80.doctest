@@ -51,7 +51,7 @@ By analogy with NLTK corpora, ``chat80`` defines a number of 'items'
 which correspond to the relations.
 
     >>> from nltk.sem import chat80
-    >>> print chat80.items # doctest: +ELLIPSIS
+    >>> print(chat80.items) # doctest: +ELLIPSIS
     ('borders', 'circle_of_lat', 'circle_of_long', 'city', ...)
 
 The fields in the table are mapped to binary predicates. The first
@@ -66,7 +66,7 @@ the files ``borders.pl`` and ``contains.pl``. These contain facts of the
 following form::
 
     'borders(albania,greece).'
-    
+
     'contains0(africa,central_africa).'
 
 We do not want to form a unary concept out the element in
@@ -94,7 +94,7 @@ In order to encapsulate the results of the extraction, a class of
 attributes, in particular a ``prefLabel``, an arity and ``extension``.
 
     >>> c1 = chat80.Concept('dog', arity=1, extension=set(['d1', 'd2']))
-    >>> print c1
+    >>> print(c1)
     Label = 'dog'
     Arity = 1
     Extension = ['d2', 'd1']
@@ -109,7 +109,7 @@ the extraction.
     >>> concepts
     [Concept('city'), Concept('country_of'), Concept('population_of')]
     >>> for c in concepts: # doctest: +NORMALIZE_WHITESPACE
-    ...     print "%s:\n\t%s" % (c.prefLabel, c.extension[:4])
+    ...     print("%s:\n\t%s" % (c.prefLabel, c.extension[:4]))
     city:
     	['bucharest', 'hyderabad', 'mexico_city', 'los_angeles']
     country_of:
@@ -126,13 +126,13 @@ metadata, as indicated earlier.
 
     >>> borders = set([('a1', 'a2'), ('a2', 'a3')])
     >>> c2 = chat80.Concept('borders', arity=2, extension=borders)
-    >>> print c2
+    >>> print(c2)
     Label = 'borders'
     Arity = 2
     Extension = [('a1', 'a2'), ('a2', 'a3')]
     >>> c3 = chat80.Concept('borders', arity=2, closures=['symmetric'], extension=borders)
     >>> c3.close()
-    >>> print c3
+    >>> print(c3)
     Label = 'borders'
     Arity = 2
     Extension = [('a2', 'a1'), ('a1', 'a2'), ('a3', 'a2'), ('a2', 'a3')]
@@ -146,7 +146,7 @@ The functions ``val_dump`` and ``val_load`` are provided to allow a
 valuation to be stored in a persistent database and re-loaded, rather
 than having to be re-computed each time.
 
-Individuals and Lexical Items 
+Individuals and Lexical Items
 =============================
 As well as deriving relations from the Chat-80 data, we also create a
 set of individual constants, one for each entity in the domain. The
@@ -170,7 +170,7 @@ using SQL statements.
     >>> import nltk
     >>> q = "SELECT City, Population FROM city_table WHERE Country = 'china' and Population > 1000"
     >>> for answer in chat80.sql_query('corpora/city_database/city.db', q):
-    ...     print "%-10s %4s" % answer
+    ...     print("%-10s %4s" % answer)
     canton     1496
     chungking  1100
     mukden     1551
@@ -205,10 +205,10 @@ Given this grammar, we can express, and then execute, queries in English.
     >>> trees = cp.nbest_parse(query.split())
     >>> answer = trees[0].node['SEM']
     >>> q = join(answer)
-    >>> print q
+    >>> print(q)
     SELECT City FROM city_table WHERE   Country="china"
     >>> rows = chat80.sql_query('corpora/city_database/city.db', q)
-    >>> for r in rows: print "%s" % r,
+    >>> for r in rows: print("%s" % r, end=' ')
     canton chungking dairen harbin kowloon mukden peking shanghai sian tientsin
 
 
@@ -229,4 +229,5 @@ a new ``Valuation`` object which contains the results.
    >>> m = nltk.sem.Model(dom, val)
    >>> m.evaluate(r'population_of(jakarta, 533)', g)
    True
+
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 import sys
 import os
 import nose
@@ -37,10 +37,12 @@ EXCLUDED_TESTS = FAILING_TESTS + DEPENDENT_TESTS
 _EXCLUDE_ARGV = ['--exclude='+test for test in EXCLUDED_TESTS]
 
 if __name__ == '__main__':
-    from nltk.test.doctest_nose_plugin import DoctestFix
+    # XXX: imports can't be moved to the top of the file
+    # because nose loader raises an exception then. Why?
     from nose.plugins.manager import PluginManager
     from nose.plugins.doctests import Doctest
     from nose.plugins import builtin
+    from nltk.test.doctest_nose_plugin import DoctestFix
 
     class NltkPluginManager(PluginManager):
         """

@@ -3,6 +3,7 @@
 Patched version of nose doctest plugin.
 See https://github.com/nose-devs/nose/issues/7
 """
+from __future__ import print_function
 from nose.plugins.doctests import *
 
 class _DoctestFix(Doctest):
@@ -137,9 +138,25 @@ def _plugin_supports_doctest_options(plugin_cls):
     plugin.options(parser, {})
     return parser.has_option('--doctest-options')
 
+
+class PrintFunctionMixin(object):
+    """
+    Doctests don't support __future__ imports and print_function
+    future import is very useful for writing code that run on
+    both python 2 and python 3.
+
+    This mixin adds print_function future import to all test cases.
+    """
+    def loadTestsFromFile(self, filename):
+        cases = super(PrintFunctionMixin, self).loadTestsFromFile(filename)
+        for case in cases:
+            if case:
+                case._dt_test.globs['print_function'] = print_function
+            yield case
+
 if _plugin_supports_doctest_options(Doctest):
-    class DoctestFix(Doctest):
+    class DoctestFix(PrintFunctionMixin, Doctest):
         pass
 else:
-    class DoctestFix(_DoctestFix):
+    class DoctestFix(PrintFunctionMixin, _DoctestFix):
         pass

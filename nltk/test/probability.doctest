@@ -13,7 +13,7 @@ FreqDist
 
     >>> text1 = ['no', 'good', 'fish', 'goes', 'anywhere', 'without', 'a', 'porpoise', '!']
     >>> text2 = ['no', 'good', 'porpoise', 'likes', 'to', 'fish', 'fish', 'anywhere', '.']
-    
+
     >>> fd1 = nltk.FreqDist(text1)
     >>> fd1.items()
     [('!', 1), ('a', 1), ('anywhere', 1), ('fish', 1), ('goes', 1), ('good', 1), ('no', 1), ('porpoise', 1), ('without', 1)]
@@ -31,7 +31,7 @@ Note that items are sorted in order of decreasing frequency; two items of the sa
     True
     >>> fd1 == nltk.FreqDist(text1) # But fd1 is unchanged
     True
-    
+
     >>> fd2 = nltk.FreqDist(text2)
     >>> fd1.update(fd2)
     >>> fd1 == both
@@ -41,51 +41,51 @@ Note that items are sorted in order of decreasing frequency; two items of the sa
     >>> fd1.update(text2)
     >>> fd1 == both
     True
-        
+
     >>> fd1 = nltk.FreqDist(text1)
     >>> fd2 = nltk.FreqDist(fd1)
     >>> fd2 == fd1
     True
-    
+
 Testing some HMM estimators
 ---------------------------
 
 We extract a small part (500 sentences) of the Brown corpus
 
     >>> corpus = nltk.corpus.brown.tagged_sents(categories='adventure')[:500]
-    >>> print len(corpus)
+    >>> print(len(corpus))
     500
 
 We create a HMM trainer - note that we need the tags and symbols
 from the whole corpus, not just the training corpus
 
     >>> tag_set = list(set([tag for sent in corpus for (word,tag) in sent]))
-    >>> print len(tag_set)
+    >>> print(len(tag_set))
     92
     >>> symbols = list(set([word for sent in corpus for (word,tag) in sent]))
-    >>> print len(symbols)
+    >>> print(len(symbols))
     1464
-    >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols) 
+    >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
 
 We divide the corpus into 90% training and 10% testing
 
     >>> train_corpus = []
     >>> test_corpus = []
     >>> for i in range(len(corpus)):
-    ...     if i % 10: 
+    ...     if i % 10:
     ...         train_corpus += [corpus[i]]
-    ...     else: 
+    ...     else:
     ...         test_corpus += [corpus[i]]
-    >>> print len(train_corpus)
+    >>> print(len(train_corpus))
     450
-    >>> print len(test_corpus)
+    >>> print(len(test_corpus))
     50
 
 And now we can test the estimators
 
     >>> def train_and_test(est):
     ...     hmm = trainer.train_supervised(train_corpus, estimator=est)
-    ...     print '%.2f%%' % (100 * hmm.evaluate(test_corpus))
+    ...     print('%.2f%%' % (100 * hmm.evaluate(test_corpus)))
 
 Maximum Likelihood Estimation
 - this resulted in an initialization error before r7209
@@ -107,7 +107,7 @@ Expected Likelihood Estimation (= Lidstone with gamma==0.5)
 Lidstone Estimation, for gamma==0.1, 0.5 and 1
 (the later two should be exactly equal to MLE and ELE above)
 
-    >>> def lidstone(gamma): 
+    >>> def lidstone(gamma):
     ...     return lambda fd, bins: LidstoneProbDist(fd, gamma, bins)
     >>> train_and_test(lidstone(0.1))
     82.51%
@@ -133,7 +133,7 @@ Good Turing Estimation
     >>> train_and_test(gt)
     14.43%
 
-Remains to be added: 
+Remains to be added:
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
 
 Squashed bugs
@@ -173,4 +173,5 @@ Issue 351: fix fileids method of CategorizedCorpusReader to inadvertently add er
     ValueError: Category blah not found
     >>> brown.categories()
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor', 'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
+
 

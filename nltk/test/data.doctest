@@ -20,6 +20,7 @@ takes as its first argument a URL specifying what file should be
 loaded.  The ``nltk:`` protocol loads files from the NLTK data
 distribution:
 
+    >>> from __future__ import print_function
     >>> tokenizer = nltk.data.load('nltk:tokenizers/punkt/english.pickle')
     >>> tokenizer.tokenize('Hello.  This is a test.  It works!')
     ['Hello.', 'This is a test.', 'It works!']
@@ -40,7 +41,7 @@ and ``file:`` URLs, e.g. ``cfg = nltk.data.load('http://example.com/path/to/toy.
     >>> url = 'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg')
     >>> url.replace('\\', '/') # doctest: +ELLIPSIS
     'file:...toy.cfg'
-    >>> print nltk.data.load(url) # doctest: +ELLIPSIS
+    >>> print(nltk.data.load(url)) # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
         S -> NP VP
         PP -> P NP
@@ -55,7 +56,7 @@ currently supported by the data module are described by the dictionary
 `nltk.data.FORMATS`:
 
     >>> for format, descr in sorted(nltk.data.FORMATS.items()):
-    ...     print '%-7s %s' % (format, descr) # doctest: +NORMALIZE_WHITESPACE
+    ...     print('%-7s %s' % (format, descr)) # doctest: +NORMALIZE_WHITESPACE
     cfg     A context free grammar, parsed by nltk.parse_cfg().
     fcfg    A feature CFG, parsed by nltk.parse_fcfg().
     fol     A list of first order logic expressions, parsed by nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.
@@ -79,7 +80,7 @@ based on the filename's extension.  The mapping from file extensions
 to format names is specified by `nltk.data.AUTO_FORMATS`:
 
     >>> for ext, format in sorted(nltk.data.AUTO_FORMATS.items()):
-    ...     print '.%-7s -> %s' % (ext, format)
+    ...     print('.%-7s -> %s' % (ext, format))
     .cfg     -> cfg
     .fcfg    -> fcfg
     .fol     -> fol
@@ -113,21 +114,21 @@ Making Local Copies
     >>> tempdir = tempfile.mkdtemp()
     >>> old_dir = os.path.abspath('.')
     >>> os.chdir(tempdir)
-    
+
 The function `nltk.data.retrieve()` copies a given resource to a local
 file.  This can be useful, for example, if you want to edit one of the
 sample grammars.
 
     >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg')
     Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'toy.cfg'
-    
+
     >>> # Simulate editing the grammar.
     >>> s = open('toy.cfg').read().replace('NP', 'DP')
     >>> out = open('toy.cfg', 'w'); out.write(s); out.close()
 
     >>> # Load the edited grammar, & display it.
     >>> cfg = nltk.data.load('file:toy.cfg')
-    >>> print cfg # doctest: +ELLIPSIS
+    >>> print(cfg) # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
         S -> DP VP
         PP -> P DP
@@ -227,7 +228,7 @@ You can clear the entire contents of the cache, using
 Retrieving other Data Sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     >>> formulas = nltk.data.load('grammars/book_grammars/background.fol')
-    >>> for f in formulas: print str(f)
+    >>> for f in formulas: print(str(f))
     all x.(boxerdog(x) -> dog(x))
     all x.(boxer(x) -> person(x))
     all x.-(dog(x) & person(x))
@@ -283,9 +284,9 @@ internal use by NLTK's corpus readers.
     >>> # Show that it's not loaded yet:
     >>> object.__repr__(ll) # doctest: +ELLIPSIS
     '<nltk.data.LazyLoader object at ...>'
-    
+
     >>> # printing it is enough to cause it to be loaded:
-    >>> print ll
+    >>> print(ll)
     <Grammar with 14 productions>
 
     >>> # Show that it's now been loaded:
@@ -329,4 +330,5 @@ provides.
     >>> test.close()
     >>> import os
     >>> os.unlink('testbuf.gz')
+
 

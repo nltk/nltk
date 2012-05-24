@@ -5,7 +5,6 @@
  Chunking
 ==========
 
-    >>> from __future__ import print_function
     >>> from nltk.chunk import *
     >>> from nltk.chunk.util import *
     >>> from nltk.chunk.regexp import *

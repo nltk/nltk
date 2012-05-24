@@ -19,10 +19,10 @@ A sourced string for a document can be constructed by calling the
     ... She turned me into a newt!
     ... I got better."""
     >>> newt_doc = SourcedString(newt_contents, 'newt.txt')
-    >>> print repr(newt_doc)
+    >>> print(repr(newt_doc))
     'She turned me into a newt!\nI got better.'@[0:40]
     >>> newt = newt_doc.split()[5] # Find the sixth word.
-    >>> print repr(newt)
+    >>> print(repr(newt))
     'newt!'@[21:26]
 
 The suffix ``@[0:40]`` at the end of ``newt_doc``'s string representation
@@ -44,7 +44,7 @@ methods to return sourced strings.
     >>> from StringIO import StringIO
     >>> stream = SourcedStringStream(StringIO(newt_contents))
     >>> for line in stream:
-    ...     print repr(line)
+    ...     print(repr(line))
     'She turned me into a newt!\n'@[0:27]
     'I got better.'@[27:40]
 
@@ -54,7 +54,7 @@ sourced strings instead of Python strings:
     >>> from nltk.corpus import gutenberg
     >>> emma_words = gutenberg.words('austen-emma.txt', sourced=True)
     >>> remembrance = emma_words[114]
-    >>> print repr(remembrance)
+    >>> print(repr(remembrance))
     'remembrance'@[552:563]
     >>> emma_sents = gutenberg.sents('austen-emma.txt', sourced=True)
     >>> emma_sents[28] # doctest: +NORMALIZE_WHITESPACE
@@ -127,7 +127,7 @@ showing the relationship between offsets and characters.  In the
 following example, compare the pretty-printed document with the list
 of offsets in newt's source:
 
-    >>> print newt_doc.pprint(wrap='\n')
+    >>> print(newt_doc.pprint(wrap='\n'))
     [=======================newt.txt=======================]
                         1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2  2
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6  7
@@ -156,7 +156,7 @@ several of its characters span two bytes:
     >>> students_and_time = SourcedString("""\
     ... Le temps est un grand ma\xc3\xaetre, dit-on, le malheur est \
     ... qu'il tue ses \xc3\xa9l\xc3\xa8ves""", 'Berlioz').decode('utf-8')
-    >>> print students_and_time.pprint()
+    >>> print(students_and_time.pprint())
     [==============================Berlioz===============================]
                         1 1 1 1 1 1 1 1 1 1 2 2 2 2 2      2 2 2 2 3 3 3 3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4      6 7 8 9 0 1 2 3
@@ -265,14 +265,14 @@ When sourced strings are concatenated with other strings, the result
 is a compound sourced string:
 
     >>> better_newt = 'My orange ' + newt_doc[21:25] + ' is ' + newt_doc[33:39]
-    >>> print better_newt.pprint()
+    >>> print(better_newt.pprint())
                [newt.tx]    [==newt.txt=]
                2 2 2 2 2    3 3 3 3 3 3 3
                1 2 3 4 5    3 4 5 6 7 8 9
     +----------+-+-+-+-+----+-+-+-+-+-+-+
     |My orange |n|e|w|t| is |b|e|t|t|e|r|
     +----------+-+-+-+-+----+-+-+-+-+-+-+
-    >>> print repr(better_newt)
+    >>> print(repr(better_newt))
     'My orange newt is better'@[...,21:25,...,33:39]
 
 Compound sourced strings keep track of the sources of all the
@@ -322,11 +322,11 @@ simple sourced string, or a compound sourced string:
 
     >>> def check_type(s):
     ...     if isinstance(s, SimpleSourcedString):
-    ...         print 'simple sourced string'
+    ...         print('simple sourced string')
     ...     elif isinstance(s, CompoundSourcedString):
-    ...         print 'compound sourced string'
+    ...         print('compound sourced string')
     ...     else:
-    ...         print 'python string'
+    ...         print('python string')
 
     >>> check_type(better_newt[1:2])
     python string
@@ -359,7 +359,7 @@ never compound strings.
     >>> c2 = ' than your ' + better_newt[3:14]
     >>> c3 = c1+c2
     >>> for substring in c3.substrings:
-    ...     print '%25r %s' % (substring, type(substring).__name__)
+    ...     print('%25r %s' % (substring, type(substring).__name__))
                  'My orange ' str
                'newt'@[21:25] SimpleSourcedByteString
                        ' is ' str
@@ -375,7 +375,7 @@ documents:
     >>> doc2 = SourcedString("Hello World", 'hello.txt')
     >>> cello = ("Does "+newt[:-1].capitalize()+"on like my " +
     ...      doc2[:5].replace('H','C')+"?")
-    >>> print cello.pprint()
+    >>> print(cello.pprint())
           [newt.tx]            [hello.t]
           2 2 2 2 2
           1 2 3 4 5            1 2 3 4 5
@@ -412,14 +412,14 @@ The string justification methods preserve source information of the
 original string.  The padding substring will usually be sourceless
 (unless you supply a sourced string as the fill character):
 
-    >>> print newt.rjust(15).pprint()
+    >>> print(newt.rjust(15).pprint())
                [=newt.txt]
                2 2 2 2 2 2
                1 2 3 4 5 6
     +----------+-+-+-+-+-+
     |          |n|e|w|t|!|
     +----------+-+-+-+-+-+
-    >>> print newt.center(15, '.').pprint()
+    >>> print(newt.center(15, '.').pprint())
           [=newt.txt]
           2 2 2 2 2 2
           1 2 3 4 5 6
@@ -432,7 +432,7 @@ Replacement Method
 The ``replace`` method preserves string information for both the
 original string and the replacement string:
 
-    >>> print sent.replace('newt', doc2[6:]).pprint()
+    >>> print(sent.replace('newt', doc2[6:]).pprint())
     [=================newt.txt================][hello.txt][n]
                         1 1 1 1 1 1 1 1 1 1 2 2        1 12 2
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 16 7 8 9 0 15 6
@@ -443,7 +443,7 @@ original string and the replacement string:
 If the replacement string is a Python string, then the
 corresponding substring will be sourceless:
 
-    >>> print newt.replace('!', 'on').pprint()
+    >>> print(newt.replace('!', 'on').pprint())
     [newt.tx]
     2 2 2 2 2
     1 2 3 4 5
@@ -556,11 +556,11 @@ strings, compound sourced strings, or plain Python strings, then you
 can use ``getattr(s, 'sources', ())``, which will return ``s.sources``
 for sourced strings, and ``()`` for plain Python strings:
 
-    >>> print getattr(cello[:4], 'sources', ())
+    >>> print(getattr(cello[:4], 'sources', ()))
     ()
-    >>> print getattr(cello[5:9], 'sources', ())
+    >>> print(getattr(cello[5:9], 'sources', ()))
     ((0, StringSource('newt.txt', begin=21, end=25)),)
-    >>> print getattr(cello[17:], 'sources', ()) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(getattr(cello[17:], 'sources', ())) # doctest: +NORMALIZE_WHITESPACE
     ((3, StringSource('hello.txt', begin=0, end=0)),
      (4, StringSource('hello.txt', begin=1, end=5)))
 
@@ -766,7 +766,7 @@ Indexing:
 
     >>> source = ConsecutiveCharStringSource('coconut.txt', 15, 21)
     >>> for i in range(-len(source), len(source)):
-    ...     print '  source[%2d] = %r' % (i, source[i])
+    ...     print('  source[%2d] = %r' % (i, source[i]))
       source[-6] = StringSource('coconut.txt', begin=15, end=16)
       source[-5] = StringSource('coconut.txt', begin=16, end=17)
       source[-4] = StringSource('coconut.txt', begin=17, end=18)
@@ -794,18 +794,18 @@ Slicing:
     ...     """Print a table showing the result of slicing the given
     ...     source, using each of the given indices as a start or end
     ...     index for the slice."""
-    ...     print '     |'+' '.join(str(j).center(5) for j in indices)
-    ...     print '-----+'+'------'*len(indices)
+    ...     print('     |'+' '.join(str(j).center(5) for j in indices))
+    ...     print('-----+'+'------'*len(indices))
     ...     for i in indices:
-    ...         print '%4s |' % i,
+    ...         print('%4s |' % i, end=' ')
     ...         for j in indices:
     ...             if i is None and j is None: sliced_source = source[:]
     ...             elif i is None: sliced_source = source[:j]
     ...             elif j is None: sliced_source = source[i:]
     ...             else:  sliced_source = source[i:j]
-    ...             print '%2s:%-2s' % (sliced_source.begin, sliced_source.end),
+    ...             print('%2s:%-2s' % (sliced_source.begin, sliced_source.end), end=' ')
     ...             assert sliced_source.docid == 'coconut.txt'
-    ...         print
+    ...         print()
     ...
     >>> source = ConsecutiveCharStringSource('coconut.txt', 15, 28)
     >>> slice_test(source, None, 0, 1, len(source)-1, len(source), 100,
@@ -923,7 +923,7 @@ Indexing:
 
     >>> source = ContiguousCharStringSource('coconut.txt', range(15, 22))
     >>> for i in range(-len(source), len(source)):
-    ...     print '  source[%2d] = %r' % (i, source[i])
+    ...     print('  source[%2d] = %r' % (i, source[i]))
       source[-6] = StringSource('coconut.txt', offsets=(15, 16))
       source[-5] = StringSource('coconut.txt', offsets=(16, 17))
       source[-4] = StringSource('coconut.txt', offsets=(17, 18))
@@ -951,18 +951,18 @@ Slicing:
     ...     """Print a table showing the result of slicing the given
     ...     source, using each of the given indices as a start or end
     ...     index for the slice."""
-    ...     print '     |'+' '.join(str(j).center(5) for j in indices)
-    ...     print '-----+'+'------'*len(indices)
+    ...     print('     |'+' '.join(str(j).center(5) for j in indices))
+    ...     print('-----+'+'------'*len(indices))
     ...     for i in indices:
-    ...         print '%4s |' % i,
+    ...         print('%4s |' % i, end=' ')
     ...         for j in indices:
     ...             if i is None and j is None: sliced_source = source[:]
     ...             elif i is None: sliced_source = source[:j]
     ...             elif j is None: sliced_source = source[i:]
     ...             else:  sliced_source = source[i:j]
-    ...             print '%2s:%-2s' % (sliced_source.begin, sliced_source.end),
+    ...             print('%2s:%-2s' % (sliced_source.begin, sliced_source.end), end=' ')
     ...             assert sliced_source.docid == 'coconut.txt'
-    ...         print
+    ...         print()
     ...
     >>> source = ContiguousCharStringSource('coconut.txt', range(15, 29))
     >>> slice_test(source, None, 0, 1, len(source)-1, len(source), 100,
@@ -1065,7 +1065,7 @@ SourcedString slicing:
     ...     if (start in print_indices and stop in print_indices):
     ...         s_repr = re.sub(r'^(.{30}).*(.{15})$', r'\1...\2',
     ...                         repr(sstring))
-    ...         print 's[%4s:%4s] = %r' % (start, stop, s_repr)
+    ...         print('s[%4s:%4s] = %r' % (start, stop, s_repr))
     >>> def test_slices(sstring, string, test_indices, print_indices):
     ...     test_slice(sstring[:], string[:], print_indices, '', '')
     ...     for i in test_indices:
@@ -1148,7 +1148,7 @@ Regular expressions can be used to search SourcedStrings:
 
     >>> import re
     >>> intoks = re.findall('in', doc)
-    >>> print intoks
+    >>> print(intoks)
     ['in'@[9:11], 'in'@[24:26]]
 
 Two tokens with the same string contents compare equal even if their
@@ -1493,5 +1493,6 @@ Translate
     u'n3wt*'@[21:26]
     >>> newt.decode().translate({'e':'3', '!':'*', 'w': None})
     u'n3t*'@[21:23,24:26]
+
 
 
