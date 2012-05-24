@@ -390,7 +390,7 @@ examples illustrate the use of the wordlist corpora:
     >>> stopwords.fileids() # doctest: +ELLIPSIS
     ['danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian', ...]
     >>> stopwords.words('portuguese') # doctest: +ELLIPSIS
-    ['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', ...] 
+    ['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', ...]
     >>> names.fileids()
     ['female.txt', 'male.txt']
     >>> names.words('male.txt') # doctest: +ELLIPSIS
@@ -1207,8 +1207,8 @@ assumed to consist of one or more files, all located in a common root
 directory (or in subdirectories of that root directory).  The absolute
 path to the root directory is stored in the ``root`` property:
 
-    >>> print nltk.corpus.genesis.root # doctest: +ELLIPSIS
-    ...nltk_data/corpora/genesis...
+    >>> print(nltk.corpus.genesis.root) # doctest: +ELLIPSIS
+    /.../nltk_data/corpora/genesis
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the
@@ -1244,8 +1244,8 @@ which can be used to get a list of the files within a specific category:
 The ``abspath()`` method can be used to find the absolute path to a
 corpus file, given its file identifier:
 
-    >>> print nltk.corpus.brown.abspath('ce06') # doctest: +ELLIPSIS
-    .../corpora/brown/ce06
+    >>> print(nltk.corpus.brown.abspath('ce06')) # doctest: +ELLIPSIS
+    /.../corpora/brown/ce06
 
 The ``abspaths()`` method can be used to find the absolute paths for
 one corpus file, a list of corpus files, or (if no fileids are specified),
@@ -1939,21 +1939,21 @@ iteration can be interleaved:
     ...     for iterator in iterators:
     ...         print '%-15s' % iterator.next(),
     ...     print
-    My              a               duties          in             
-    fellow          heavy           of              a              
-    citizens:       weight          the             proper         
-    Anyone          of              office          sense          
-    who             responsibility. upon            of             
-    has             If              which           the            
-    taken           not,            he              obligation     
-    the             he              is              which          
-    oath            has             about           the            
-    I               no              to              oath           
-    have            conception      enter,          imposes.       
-    just            of              or              The            
-    taken           the             he              office         
-    must            powers          is              of             
-    feel            and             lacking         an             
+    My              a               duties          in
+    fellow          heavy           of              a
+    citizens:       weight          the             proper
+    Anyone          of              office          sense
+    who             responsibility. upon            of
+    has             If              which           the
+    taken           not,            he              obligation
+    the             he              is              which
+    oath            has             about           the
+    I               no              to              oath
+    have            conception      enter,          imposes.
+    just            of              or              The
+    taken           the             he              office
+    must            powers          is              of
+    feel            and             lacking         an
 
 SeekableUnicodeStreamReader
 ===========================
