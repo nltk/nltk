@@ -23,9 +23,9 @@ using Portuguese.  Please refer to the chapter for full discussion.  *Vamos!*
     Loading ptext1, ... and psent1, ...
     Type the name of the text or sentence to view it.
     Type: 'texts()' or 'sents()' to list the materials.
-    ptext1: Mem—rias P—stumas de Br‡s Cubas (1881)
+    ptext1: MemÃ³rias PÃ³stumas de BrÃ¡s Cubas (1881)
     ptext2: Dom Casmurro (1899)
-    ptext3: Gnesis
+    ptext3: GÃªnesis
     ptext4: Folha de Sau Paulo (1994)
     >>>
 
@@ -43,18 +43,18 @@ A concordance permits us to see words in context.
     >>> ptext1.concordance('olhos')
     Building index...
     Displaying 25 of 138 matches:
-    De pŽ , ˆ cabeceira da cama , com os olhos estœpidos , a boca entreaberta , a t
-    orelhas . Pela minha parte fechei os olhos e deixei - me ir ˆ ventura . J‡ agor
-    x›es de cŽrebro enfermo . Como ia de olhos fechados , n‹o via o caminho ; lembr
+    De pÃ© , Ã  cabeceira da cama , com os olhos estÃºpidos , a boca entreaberta , a t
+    orelhas . Pela minha parte fechei os olhos e deixei - me ir Ã  ventura . JÃ¡ agor
+    xÃµes de cÃ©rebro enfermo . Como ia de olhos fechados , nÃ£o via o caminho ; lembr
     gelos eternos . Com efeito , abri os olhos e vi que o meu animal galopava numa 
-    me apareceu ent‹o , fitando - me uns olhos rutilantes como o sol . Tudo nessa f
-    -mim mesmo . Ent‹o , encarei - a com olhos sœplices , e pedi mais alguns anos .
+    me apareceu entÃ£o , fitando - me uns olhos rutilantes como o sol . Tudo nessa f
+    -mim mesmo . EntÃ£o , encarei - a com olhos sÃºplices , e pedi mais alguns anos .
 
 For a given word, we can find words with a similar text distribution:
 
     >>> ptext1.similar('chegar')
     acabada acudir aludir avistar bramanismo casamento cheguei com contar
-    contr‡rio corpo dali deixei desferirem dizer fazer filhos j‡ leitor lhe
+    contrÃ¡rio corpo dali deixei desferirem dizer fazer filhos jÃ¡ leitor lhe
     >>> ptext3.similar('chegar')
     achar alumiar arrombar destruir governar guardar ir lavrar passar que
     toda tomar ver vir
@@ -63,27 +63,27 @@ We can search for the statistically significant collocations in a text:
 
     >>> ptext1.collocations()
     Building collocations list
-    Quincas Borba; Lobo Neves; alguma coisa; Br‡s Cubas; meu pai; dia
-    seguinte; n‹o sei; Meu pai; alguns instantes; outra vez; outra coisa;
-    por exemplo; mim mesmo; coisa nenhuma; mesma coisa; n‹o era; dias
-    depois; Passeio Pœblico; olhar para; das coisas
+    Quincas Borba; Lobo Neves; alguma coisa; BrÃ¡s Cubas; meu pai; dia
+    seguinte; nÃ£o sei; Meu pai; alguns instantes; outra vez; outra coisa;
+    por exemplo; mim mesmo; coisa nenhuma; mesma coisa; nÃ£o era; dias
+    depois; Passeio PÃºblico; olhar para; das coisas
 
 We can search for words in context, with the help of *regular expressions*, e.g.:
 
     >>> ptext1.findall("<olhos> (<.*>)")
-    estœpidos; e; fechados; rutilantes; sœplices; a; do; babavam;
+    estÃºpidos; e; fechados; rutilantes; sÃºplices; a; do; babavam;
     na; moles; se; da; umas; espraiavam; chamejantes; espetados;
 
 We can automatically generate random text based on a given text, e.g.:
 
     >>> ptext3.generate()
-    No princ’pio , criou Deus os abenoou , dizendo : Onde { est‹o } e atŽ
-    ˆ ave dos cŽus , { que } ser‡ . Disse mais Abr‹o : D‡ - me a mulher
-    que tomaste ; porque daquele poo Eseque , { tinha .} E disse : N‹o
-    poderemos descer ; mas , do campo ainda n‹o estava na casa do teu
-    pescoo . E viveu Serugue , depois Sime‹o e Levi { s‹o } estes ? E o
-    var‹o , porque habitava na terra de Node , da m‹o de Esaœ : Jeœs ,
-    Jal‹o e Cor‡
+    No princÃ­pio , criou Deus os abenÃ§oou , dizendo : Onde { estÃ£o } e atÃ©
+    Ã  ave dos cÃ©us , { que } serÃ¡ . Disse mais AbrÃ£o : DÃ¡ - me a mulher
+    que tomaste ; porque daquele poÃ§o Eseque , { tinha .} E disse : NÃ£o
+    poderemos descer ; mas , do campo ainda nÃ£o estava na casa do teu
+    pescoÃ§o . E viveu Serugue , depois SimeÃ£o e Levi { sÃ£o } estes ? E o
+    varÃ£o , porque habitava na terra de Node , da mÃ£o de EsaÃº : JeÃºs ,
+    JalÃ£o e CorÃ¡
 
 Texts as List of Words
 ----------------------
@@ -100,7 +100,7 @@ A few sentences have been defined for you.
 Notice that the sentence has been *tokenized*.  Each token is
 represented as a string, represented using quotes, e.g. ``'coisa'``.
 Some strings contain special characters, e.g. ``\xf3``,
-the internal representation for —.
+the internal representation for Ã³.
 The tokens are combined in the form of a *list*.  How long is this list?
 
     >>> len(psent1)
@@ -120,9 +120,9 @@ Let's iterate over each item in ``psent2``, and print information for each:
     >>> for w in psent1:
     ...     print w.decode('latin-1'), len(w), w[-1]:
     ... 
-    N‹o 3 o
+    NÃ£o 3 o
     consultes 9 s
-    dicion‡rios 11 s
+    dicionÃ¡rios 11 s
     . 1 .
 
 Observe how we make a human-readable version of a string, using ``decode()``.
@@ -176,7 +176,7 @@ NLTK includes the complete works of Machado de Assis.
 
 Each file corresponds to one of the works of Machado de Assis.  To see a complete
 list of works, you can look at the corpus README file: ``print machado.readme()``.
-Let's access the text of the *Posthumous Memories of Br‡s Cubas*.
+Let's access the text of the *Posthumous Memories of BrÃ¡s Cubas*.
 
 We can access the text as a list of characters, and access 200 characters starting
 from position 10,000.
@@ -211,14 +211,14 @@ particular target word.
     ...
     , com os olhos no
     com os olhos no ar
-    com os olhos no ch‹o
+    com os olhos no chÃ£o
     e todos com os olhos
     me estar com os olhos
-    os olhos estœpidos , a
+    os olhos estÃºpidos , a
     os olhos na costura ,
     os olhos no ar ,
     , com os olhos espetados
-    , com os olhos estœpidos
+    , com os olhos estÃºpidos
     , com os olhos fitos
     , com os olhos naquele
     , com os olhos para
@@ -292,7 +292,7 @@ the plus sign:
 Pretty printing the tagged words:
 
     >>> print ' '.join(word + '/' + tag for (word, tag) in twords[:10])
-    um/art revivalismo/n refrescante/adj o/art 7_e_meio/prop é/v-fin um/art ex-libris/n de/prp a/art
+    um/art revivalismo/n refrescante/adj o/art 7_e_meio/prop Ãˆ/v-fin um/art ex-libris/n de/prp a/art
 
 Count the word tokens and types, and determine the most common word:
 
@@ -358,8 +358,8 @@ Python understands the common character encoding used for Portuguese, ISO 8859-1
     >>> text[:60]
     'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
     >>> print text[:60]
-    O 7 e Meio é um ex-libris da noite algarvia.
-    É uma das mais 
+    O 7 e Meio Ãˆ um ex-libris da noite algarvia.
+    â€¦ uma das mais 
     >>> text[:60].decode('latin-1')
     u'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
     >>> text[:60].decode('latin-1').encode('utf-16')
@@ -452,18 +452,18 @@ Punkt is a language-neutral sentence segmentation tool.  We
     ...     print "<<", sent, ">>"
     ... 
     << Em verdade, parecia ainda mais mulher do que era;
-    seria criana nos seus folgares de moa; mas assim quieta, impass’vel, tinha a
+    seria crianÃ§a nos seus folgares de moÃ§a; mas assim quieta, impassÃ­vel, tinha a
     compostura da mulher casada. >>
-    << Talvez essa circunst‰ncia lhe diminu’a um pouco da
-    graa virginal. >>
-    << Depressa nos familiarizamos; a m‹e fazia-lhe grandes elogios, eu
-    escutava-os de boa sombra, e ela sorria com os olhos fœlgidos, como se l‡ dentro
-    do cŽrebro lhe estivesse a voar uma borboletinha de asas de ouro e olhos de
+    << Talvez essa circunstÃ¢ncia lhe diminuÃ­a um pouco da
+    graÃ§a virginal. >>
+    << Depressa nos familiarizamos; a mÃ£e fazia-lhe grandes elogios, eu
+    escutava-os de boa sombra, e ela sorria com os olhos fÃºlgidos, como se lÃ¡ dentro
+    do cÃ©rebro lhe estivesse a voar uma borboletinha de asas de ouro e olhos de
     diamante... >>
-    << Digo l‡ dentro, porque c‡ fora o
-    que esvoaou foi uma borboleta preta, que subitamente penetrou na varanda, e
-    comeou a bater as asas em derredor de D. EusŽbia. >>
-    << D. EusŽbia deu um grito,
+    << Digo lÃ¡ dentro, porque cÃ¡ fora o
+    que esvoaÃ§ou foi uma borboleta preta, que subitamente penetrou na varanda, e
+    comeÃ§ou a bater as asas em derredor de D. EusÃ©bia. >>
+    << D. EusÃ©bia deu um grito,
     levantou-se, praguejou umas palavras soltas: - T'esconjuro!... >>
 
 The sentence tokenizer can be trained and evaluated on other text.
@@ -546,9 +546,9 @@ and print them in descending order of frequency:
     ...     print word, fd[word]    # doctest: +NORMALIZE_WHITESPACE
     , 13444
     . 7725
-    « 2369
-    » 2310
-    é 1305
+    Â´ 2369
+    Âª 2310
+    Ãˆ 1305
     o 1086
     } 1047
     { 1044
