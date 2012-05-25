@@ -45,8 +45,8 @@ Simplify
     >>> print(llp.parse(r'(g -o f)(g)').simplify())
     f
     >>> try: llp.parse(r'(g -o f)(f)').simplify()
-    ... except LinearLogicApplicationException, e: print(e)
-    ...
+    ... except LinearLogicApplicationException as e: print(e)
+    ... 
     Cannot apply (g -o f) to f. Cannot unify g with f given {}
     >>> print(llp.parse(r'(G -o f)(g)').simplify())
     f
@@ -73,21 +73,21 @@ Test BindingDict
 
     >>> d4 = BindingDict([(F,f)])
     >>> try: d4[F] = g
-    ... except VariableBindingException, e: print(e)
+    ... except VariableBindingException as e: print(e)
     Variable F already bound to another value
 
 Test Unify
 
     >>> try: f.unify(g, BindingDict())
-    ... except UnificationException, e: print(e)
-    ...
+    ... except UnificationException as e: print(e)
+    ... 
     Cannot unify f with g given {}
 
     >>> print(f.unify(G, BindingDict()))
     {G: f}
     >>> try: f.unify(G, BindingDict([(G,h)]))
-    ... except UnificationException, e: print(e)
-    ...
+    ... except UnificationException as e: print(e)
+    ... 
     Cannot unify f with G given {G: h}
     >>> print(f.unify(G, BindingDict([(G,f)])))
     {G: f}
@@ -97,8 +97,8 @@ Test Unify
     >>> print(G.unify(f, BindingDict()))
     {G: f}
     >>> try: G.unify(f, BindingDict([(G,h)]))
-    ... except UnificationException, e: print(e)
-    ...
+    ... except UnificationException as e: print(e)
+    ... 
     Cannot unify G with f given {G: h}
     >>> print(G.unify(f, BindingDict([(G,f)])))
     {G: f}
@@ -108,8 +108,8 @@ Test Unify
     >>> print(G.unify(F, BindingDict()))
     {G: F}
     >>> try: G.unify(F, BindingDict([(G,H)]))
-    ... except UnificationException, e: print(e)
-    ...
+    ... except UnificationException as e: print(e)
+    ... 
     Cannot unify G with F given {G: H}
     >>> print(G.unify(F, BindingDict([(G,F)])))
     {G: F}
@@ -422,4 +422,5 @@ default.
 
     >>> readings[0].equiv(readings[1])
     True
+
 

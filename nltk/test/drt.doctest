@@ -219,7 +219,7 @@ Parser
     >>> print(resolve_anaphora(dp.parse(r'(([x,y],[]) + ([],[PRO(x)]))')).simplify())
     ([x,y],[(x = y)])
     >>> try: print(resolve_anaphora(dp.parse(r'([x],[walks(x), PRO(x)])')))
-    ... except AnaphoraResolutionException, e: print(e)
+    ... except AnaphoraResolutionException as e: print(e)
     Variable 'x' does not resolve to anything.
     >>> print(resolve_anaphora(dp.parse('([e01,z6,z7],[boy(z6), PRO(z7), run(e01), subj(e01,z7)])')))
     ([e01,z6,z7],[boy(z6), (z7 = z6), run(e01), subj(e01,z7)])
@@ -410,57 +410,57 @@ Parse errors
 ============
 
     >>> try: dp.parse(r'')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     End of input found.  Expression expected.
     <BLANKLINE>
     ^
     >>> try: dp.parse(r'(')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     End of input found.  Expression expected.
     (
      ^
     >>> try: dp.parse(r'()')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     Unexpected token: ')'.  Expression expected.
     ()
      ^
     >>> try: dp.parse(r'([')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     End of input found.  Expected token ']'.
     ([
       ^
     >>> try: dp.parse(r'([,')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     ',' is an illegal variable name.  Constants may not be quantified.
     ([,
       ^
     >>> try: dp.parse(r'([x,')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     End of input found.  Variable expected.
     ([x,
         ^
     >>> try: dp.parse(r'([]')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     End of input found.  Expected token '['.
     ([]
        ^
     >>> try: dp.parse(r'([][')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     End of input found.  Expected token ']'.
     ([][
         ^
     >>> try: dp.parse(r'([][,')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     Unexpected token: ','.  Expression expected.
     ([][,
         ^
     >>> try: dp.parse(r'([][]')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     End of input found.  Expected token ')'.
     ([][]
          ^
     >>> try: dp.parse(r'([x][man(x)]) |')
-    ... except ParseException, e: print(e)
+    ... except ParseException as e: print(e)
     End of input found.  Expression expected.
     ([x][man(x)]) |
                    ^
@@ -513,4 +513,5 @@ Pretty Printing
      /\ P Q.(|---| + P(x) + Q(x))( /\ x.|--------|)
              |___|                      | dog(x) |
                                         |________|
+
 
