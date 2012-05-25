@@ -1635,8 +1635,8 @@ Test the plaintext corpora that come with nltk:
     >>> for corpus in (abc, genesis, inaugural, state_union,
     ...                webtext, udhr):
     ...     print(corpus)
-    ...     print('  ', `corpus.fileids()`[:60])
-    ...     print('  ', `corpus.words()[:10]`[:60])
+    ...     print('  ', repr(corpus.fileids())[:60])
+    ...     print('  ', repr(corpus.words()[:10])[:60])
     ...     # doctest: +ELLIPSIS
     <PlaintextCorpusReader in '.../nltk_data/corpora/abc...>
        ['rural.txt', 'science.txt']
@@ -1996,7 +1996,7 @@ return ``unicode`` objects (not ``str`` objects).
     u'is a test file.\n'
     >>> reader.seek(0)        # rewind to the start.
     >>> for line in reader:
-    ...     print(`line`)      # iterate over lines
+    ...     print(repr(line))      # iterate over lines
     u'This is a test file.\n'
     u'It is encoded in ascii.\n'
     >>> reader.seek(0)        # rewind to the start.
@@ -2176,7 +2176,7 @@ input strings and encodings.
     ... """*20]
 
     >>> for i, string in enumerate(strings):
-    ...     print('String %d: %s' % (i, `string[:45]`[:-1]+'...'))
+    ...     print('String %d: %s' % (i, repr(string[:45])[:-1]+'...'))
     ...     for encoding in encodings:
     ...         print(('  - test for %-10s [%s]' %
     ...                (encoding, reader_test(string, encoding))))
@@ -2292,6 +2292,7 @@ access to its tuples() method
     >>> from nltk.corpus import qc
     >>> qc.tuples('test.txt')
     [('NUM:dist', 'How far is it from Denver to Aspen ?'), ('LOC:city', 'What county is Modesto , California in ?'), ...]
+
 
 
 
