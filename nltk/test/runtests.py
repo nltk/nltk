@@ -42,7 +42,9 @@ if __name__ == '__main__':
     from nose.plugins.manager import PluginManager
     from nose.plugins.doctests import Doctest
     from nose.plugins import builtin
-    from nltk.test.doctest_nose_plugin import DoctestFix
+
+    # there shouldn't be import from NLTK for coverage to work properly
+    from doctest_nose_plugin import DoctestFix
 
     class NltkPluginManager(PluginManager):
         """
