@@ -97,7 +97,7 @@ attributes, in particular a ``prefLabel``, an arity and ``extension``.
     >>> print(c1)
     Label = 'dog'
     Arity = 1
-    Extension = ['d2', 'd1']
+    Extension = ['d1', 'd2']
 
 
 
@@ -111,11 +111,11 @@ the extraction.
     >>> for c in concepts: # doctest: +NORMALIZE_WHITESPACE
     ...     print("%s:\n\t%s" % (c.prefLabel, c.extension[:4]))
     city:
-    	['bucharest', 'hyderabad', 'mexico_city', 'los_angeles']
+        ['athens', 'bangkok', 'barcelona', 'berlin']
     country_of:
-    	[('chungking', 'china'), ('karachi', 'pakistan'), ('singapore_city', 'singapore'), ('athens', 'greece')]
+        [('athens', 'greece'), ('bangkok', 'thailand'), ('barcelona', 'spain'), ('berlin', 'east_germany')]
     population_of:
-    	[('sian', '629'), ('dairen', '544'), ('peking', '2031'), ('istanbul', '1215')]
+        [('athens', '1368'), ('bangkok', '1178'), ('barcelona', '1280'), ('berlin', '3481')]
 
 In addition, the ``extension`` can be further
 processed: in the case of the ``'border'`` relation, we check that the
@@ -135,7 +135,7 @@ metadata, as indicated earlier.
     >>> print(c3)
     Label = 'borders'
     Arity = 2
-    Extension = [('a2', 'a1'), ('a1', 'a2'), ('a3', 'a2'), ('a2', 'a3')]
+    Extension = [('a1', 'a2'), ('a2', 'a1'), ('a2', 'a3'), ('a3', 'a2')]
 
 The ``extension`` of a ``Concept`` object is then incorporated into a
 ``Valuation`` object.
@@ -199,12 +199,11 @@ to SQL:
 
 Given this grammar, we can express, and then execute, queries in English.
 
-    >>> from string import join
     >>> cp = nltk.parse.load_parser('grammars/book_grammars/sql0.fcfg')
     >>> query = 'What cities are in China'
     >>> trees = cp.nbest_parse(query.split())
     >>> answer = trees[0].node['SEM']
-    >>> q = join(answer)
+    >>> q = " ".join(answer)
     >>> print(q)
     SELECT City FROM city_table WHERE   Country="china"
     >>> rows = chat80.sql_query('corpora/city_database/city.db', q)
@@ -223,7 +222,7 @@ a new ``Valuation`` object which contains the results.
    >>> 'calcutta' in val['city']
    True
    >>> [town for (town, country) in val['country_of'] if country == 'india']
-   ['bombay', 'delhi', 'madras', 'hyderabad', 'calcutta']
+   ['bombay', 'calcutta', 'delhi', 'hyderabad', 'madras']
    >>> dom = val.domain
    >>> g = nltk.sem.Assignment(dom)
    >>> m = nltk.sem.Model(dom, val)

@@ -238,7 +238,7 @@ class Concept(object):
         #keep _extension internally as a set
         self._extension = extension
         #public access is via a list (for slicing)
-        self.extension = list(extension)
+        self.extension = sorted(list(extension))
 
     def __str__(self):
         #_extension = ''
@@ -264,7 +264,7 @@ class Concept(object):
 
         """
         self._extension.add(data)
-        self.extension = list(self._extension)
+        self.extension = sorted(list(self._extension))
         return self._extension
 
 
@@ -325,7 +325,7 @@ class Concept(object):
             trans = self._make_pairs(closed)
             #print sorted(trans)
             self._extension = self._extension.union(trans)
-        self.extension = list(self._extension)
+        self.extension = sorted(list(self._extension))
 
 
 def clause2concepts(filename, rel_name, schema, closures=[]):
