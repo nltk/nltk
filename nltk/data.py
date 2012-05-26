@@ -206,22 +206,22 @@ class BufferedGzipFile(GzipFile):
             produces the least compression, and 9 is slowest and produces the
             most compression. The default is 9.
         :type compresslevel: int
-        :param fileobj: a StringIO stream to read from instead of a file.
-        :type fileobj: StringIO
+        :param fileobj: a BytesIO stream to read from instead of a file.
+        :type fileobj: BytesIO
         :param size: number of bytes to buffer during calls to read() and write()
         :type size: int
         :rtype: BufferedGzipFile
         """
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
-        self._buffer = compat.StringIO()
+        self._buffer = compat.BytesIO()
         # cStringIO does not support len.
         self._len = 0
 
     def _reset_buffer(self):
-        # For some reason calling StringIO.truncate() here will lead to
-        # inconsistent writes so just set _buffer to a new StringIO object.
-        self._buffer = compat.StringIO()
+        # For some reason calling BytesIO.truncate() here will lead to
+        # inconsistent writes so just set _buffer to a new BytesIO object.
+        self._buffer = compat.BytesIO()
         self._len = 0
 
     def _write_buffer(self, data):
@@ -251,7 +251,7 @@ class BufferedGzipFile(GzipFile):
     def read(self, size=None):
         if not size:
             size = self._size
-            contents = compat.StringIO()
+            contents = compat.BytesIO()
             while True:
                 blocks = GzipFile.read(self, size)
                 if not blocks:
@@ -264,8 +264,8 @@ class BufferedGzipFile(GzipFile):
 
     def write(self, data, size=-1):
         """
-        :param data: str to write to file or buffer
-        :type data: str
+        :param data: bytes to write to file or buffer
+        :type data: bytes
         :param size: buffer at least size bytes before writing to file
         :type size: int
         """
@@ -345,7 +345,7 @@ class ZipFilePathPointer(PathPointer):
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
-        stream = compat.StringIO(data)
+        stream = compat.BytesIO(data)
         if self._entry.endswith('.gz'):
             stream = BufferedGzipFile(self._entry, fileobj=stream)
         elif encoding is not None:

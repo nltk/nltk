@@ -314,18 +314,15 @@ This is mainly intended for internal use. The test simply tests that reading
 and writing work as intended and does not test how much improvement buffering
 provides.
 
-    >>> try:
-    ...    from cStringIO import StringIO
-    ... except:
-    ...    from StringIO import StringIO
+    >>> from nltk.compat import StringIO
     >>> test = nltk.data.BufferedGzipFile('testbuf.gz', 'wb', size=2**10)
     >>> ans = []
-    >>> for i in xrange(10000):
-    ...     ans.append(str(i))
-    ...     test.write(str(i))
+    >>> for i in range(10000):
+    ...     ans.append(str(i).encode('ascii'))
+    ...     test.write(str(i).encode('ascii'))
     >>> test.close()
     >>> test = nltk.data.BufferedGzipFile('testbuf.gz', 'rb')
-    >>> test.read() == ''.join(ans)
+    >>> test.read() == b''.join(ans)
     True
     >>> test.close()
     >>> import os
