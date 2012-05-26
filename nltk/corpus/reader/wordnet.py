@@ -531,7 +531,7 @@ class Synset(_WordNetObject):
             for synset2 in dist_dict2.keys():
                 if synset1 == synset2:
                     new_distance = dist_dict1[synset1] + dist_dict2[synset2]
-                    if path_distance < 0 or new_distance < path_distance:
+                    if path_distance is None or path_distance < 0 or new_distance < path_distance:
                         path_distance = new_distance
 
         return path_distance
@@ -602,10 +602,9 @@ class Synset(_WordNetObject):
         """
 
         distance = self.shortest_path_distance(other, simulate_root=simulate_root and self._needs_root())
-        if distance >= 0:
-            return 1.0 / (distance + 1)
-        else:
+        if distance is None or distance < 0:
             return None
+        return 1.0 / (distance + 1)
 
     def lch_similarity(self, other, verbose=False, simulate_root=True):
         """
@@ -648,10 +647,9 @@ class Synset(_WordNetObject):
 
         distance = self.shortest_path_distance(other, simulate_root=simulate_root and need_root)
 
-        if distance >= 0:
-            return -math.log((distance + 1) / (2.0 * depth))
-        else:
+        if distance is None or distance < 0:
             return None
+        return -math.log((distance + 1) / (2.0 * depth))
 
     def wup_similarity(self, other, verbose=False, simulate_root=True):
         """
@@ -809,7 +807,7 @@ class Synset(_WordNetObject):
                     if hypernym not in seen]
 
     def __repr__(self):
-        return '%s(%r)' % (type(self).__name__, self.name)
+        return "%s('%s')" % (type(self).__name__, self.name)
 
     def _related(self, relation_symbol):
         get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
@@ -826,7 +824,7 @@ class WordNetCorpusReader(CorpusReader):
     A corpus reader used to access wordnet or its variants.
     """
 
-    _ENCODING = None # what encoding should we be using, if any?
+    _ENCODING = 'utf8' #None # what encoding should we be using, if any?
 
     #{ Part-of-speech constants
     ADJ, ADJ_SAT, ADV, NOUN, VERB = 'a', 's', 'r', 'n', 'v'
@@ -853,8 +851,8 @@ class WordNetCorpusReader(CorpusReader):
         Construct a new wordnet corpus reader, with the given root
         directory.
         """
-        CorpusReader.__init__(self, root, self._FILES,
-                              encoding=self._ENCODING)
+        super(WordNetCorpusReader, self).__init__(root, self._FILES,
+                                                  encoding=self._ENCODING)
 
         self._lemma_pos_offset_map = defaultdict(dict)
         """A index that provides the file offset
@@ -898,30 +896,31 @@ class WordNetCorpusReader(CorpusReader):
                 if line.startswith(' '):
                     continue
 
-                next = iter(line.split()).next
+                _iter = iter(line.split())
+                _next_token = lambda: next(_iter)
                 try:
 
                     # get the lemma and part-of-speech
-                    lemma = next()
-                    pos = next()
+                    lemma = _next_token()
+                    pos = _next_token()
 
                     # get the number of synsets for this lemma
-                    n_synsets = int(next())
+                    n_synsets = int(_next_token())
                     assert n_synsets > 0
 
                     # get the pointer symbols for all synsets of this lemma
-                    n_pointers = int(next())
-                    _ = [next() for _ in xrange(n_pointers)]
+                    n_pointers = int(_next_token())
+                    _ = [_next_token() for _ in xrange(n_pointers)]
 
                     # same as number of synsets
-                    n_senses = int(next())
+                    n_senses = int(_next_token())
                     assert n_synsets == n_senses
 
                     # get number of senses ranked according to frequency
-                    _ = int(next())
+                    _ = int(_next_token())
 
                     # get synset offsets
-                    synset_offsets = [int(next()) for _ in xrange(n_synsets)]
+                    synset_offsets = [int(_next_token()) for _ in xrange(n_synsets)]
 
                 # raise more informative error with file name and line number
                 except (AssertionError, ValueError) as e:
@@ -1000,6 +999,7 @@ class WordNetCorpusReader(CorpusReader):
         for lemma in synset.lemmas:
             if lemma.key == key:
                 return lemma
+
         raise WordNetError("No lemma found for for key %r" % key)
 
     #////////////////////////////////////////////////////////////
@@ -1083,25 +1083,26 @@ class WordNetCorpusReader(CorpusReader):
             synset.definition = '; '.join(definitions)
 
             # split the other info into fields
-            next = iter(columns_str.split()).next
+            _iter = iter(columns_str.split())
+            _next_token = lambda: next(_iter)
 
             # get the offset
-            synset.offset = int(next())
+            synset.offset = int(_next_token())
 
             # determine the lexicographer file name
-            lexname_index = int(next())
+            lexname_index = int(_next_token())
             synset.lexname = self._lexnames[lexname_index]
 
             # get the part of speech
-            synset.pos = next()
+            synset.pos = _next_token()
 
             # create Lemma objects for each lemma
-            n_lemmas = int(next(), 16)
+            n_lemmas = int(_next_token(), 16)
             for _ in xrange(n_lemmas):
                 # get the lemma name
-                lemma_name = next()
+                lemma_name = _next_token()
                 # get the lex_id (used for sense_keys)
-                lex_id = int(next(), 16)
+                lex_id = int(_next_token(), 16)
                 # If the lemma has a syntactic marker, extract it.
                 m = re.match(r'(.*?)(\(.*\))?$', lemma_name)
                 lemma_name, syn_mark = m.groups()
@@ -1112,12 +1113,12 @@ class WordNetCorpusReader(CorpusReader):
                 synset.lemma_names.append(lemma.name)
 
             # collect the pointer tuples
-            n_pointers = int(next())
+            n_pointers = int(_next_token())
             for _ in xrange(n_pointers):
-                symbol = next()
-                offset = int(next())
-                pos = next()
-                lemma_ids_str = next()
+                symbol = _next_token()
+                offset = int(_next_token())
+                pos = _next_token()
+                lemma_ids_str = _next_token()
                 if lemma_ids_str == '0000':
                     synset._pointers[symbol].add((pos, offset))
                 else:
@@ -1130,18 +1131,18 @@ class WordNetCorpusReader(CorpusReader):
 
             # read the verb frames
             try:
-                frame_count = int(next())
+                frame_count = int(_next_token())
             except StopIteration:
                 pass
             else:
                 for _ in xrange(frame_count):
                     # read the plus sign
-                    plus = next()
+                    plus = _next_token()
                     assert plus == '+'
                     # read the frame and lemma number
-                    frame_number = int(next())
+                    frame_number = int(_next_token())
                     frame_string_fmt = VERB_FRAME_STRINGS[frame_number]
-                    lemma_number = int(next(), 16)
+                    lemma_number = int(_next_token(), 16)
                     # lemma number of 00 means all words in the synset
                     if lemma_number == 0:
                         synset.frame_ids.append(frame_number)
@@ -1487,7 +1488,7 @@ class WordNetICCorpusReader(CorpusReader):
     """
 
     def __init__(self, root, fileids):
-        CorpusReader.__init__(self, root, fileids)
+        CorpusReader.__init__(self, root, fileids, encoding='utf8')
 
     # this load function would be more efficient if the data was pickled
     # Note that we can't use NLTK's frequency distributions because
@@ -1682,7 +1683,7 @@ def _get_pos(field):
     elif field[-1] == 'v':
         return VERB
     else:
-        msg = "Unidentified part of speech in WordNet Information Content file"
+        msg = "Unidentified part of speech in WordNet Information Content file for field %s" % field
         raise ValueError(msg)
 
 

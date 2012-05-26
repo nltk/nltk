@@ -31,6 +31,7 @@ adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
 from __future__ import print_function
+from __future__ import division
 
 import sys
 import os
@@ -795,7 +796,7 @@ class SeekableUnicodeStreamReader(object):
         """The function that is used to decode byte strings into
            unicode strings."""
 
-        self.bytebuffer = ''
+        self.bytebuffer = b''
         """A buffer to use bytes that have been read but have not yet
            been decoded.  This is only used when the final bytes from
            a read do not form a complete encoding for a character."""
@@ -986,7 +987,7 @@ class SeekableUnicodeStreamReader(object):
                              'using char_seek_forward() instead.')
         self.stream.seek(offset, whence)
         self.linebuffer = None
-        self.bytebuffer = ''
+        self.bytebuffer = b''
         self._rewind_numchars = None
         self._rewind_checkpoint = self.stream.tell()
 
@@ -1011,7 +1012,7 @@ class SeekableUnicodeStreamReader(object):
             Defaults to ``offset``.
         """
         if est_bytes is None: est_bytes = offset
-        bytes = ''
+        bytes = b''
 
         while True:
             # Read in a block of bytes.
@@ -1061,8 +1062,8 @@ class SeekableUnicodeStreamReader(object):
         bytes_read = ( (orig_filepos-len(self.bytebuffer)) -
                        self._rewind_checkpoint )
         buf_size = sum([len(line) for line in self.linebuffer])
-        est_bytes = (bytes_read * self._rewind_numchars /
-                     (self._rewind_numchars + buf_size))
+        est_bytes = int((bytes_read * self._rewind_numchars /
+                     (self._rewind_numchars + buf_size)))
 
         self.stream.seek(self._rewind_checkpoint)
         self._char_seek_forward(self._rewind_numchars, est_bytes)

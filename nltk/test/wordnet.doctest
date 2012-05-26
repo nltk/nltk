@@ -31,13 +31,15 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
 
     >>> wn.synset('dog.n.01')
     Synset('dog.n.01')
-    >>> wn.synset('dog.n.01').definition
-    'a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds'
-    >>> wn.synset('dog.n.01').examples
-    ['the dog barked all night']
+    >>> print(wn.synset('dog.n.01').definition)
+    a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds
+    >>> len(wn.synset('dog.n.01').examples)
+    1
+    >>> print(wn.synset('dog.n.01').examples[0])
+    the dog barked all night
     >>> wn.synset('dog.n.01').lemmas
     [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
-    >>> [lemma.name for lemma in wn.synset('dog.n.01').lemmas]
+    >>> [str(lemma.name) for lemma in wn.synset('dog.n.01').lemmas]
     ['dog', 'domestic_dog', 'Canis_familiaris']
     >>> wn.lemma('dog.n.01.dog').synset
     Synset('dog.n.01')
@@ -83,8 +85,8 @@ Lemmas
     >>> eat = wn.lemma('eat.v.03.eat')
     >>> eat
     Lemma('feed.v.06.eat')
-    >>> eat.key
-    'eat%2:34:02::'
+    >>> print(eat.key)
+    eat%2:34:02::
     >>> eat.count()
     4
     >>> wn.lemma_from_key(eat.key)
@@ -128,26 +130,26 @@ Verb Frames
     [5, 9]
     >>> for lemma in wn.synset('think.v.01').lemmas:
     ...     print(lemma, lemma.frame_ids)
-    ...     print(lemma.frame_strings)
+    ...     print(" | ".join(lemma.frame_strings))
     ...
     Lemma('think.v.01.think') [5, 9]
-    ['Something think something Adjective/Noun', 'Somebody think somebody']
+    Something think something Adjective/Noun | Somebody think somebody
     Lemma('think.v.01.believe') [5, 9]
-    ['Something believe something Adjective/Noun', 'Somebody believe somebody']
+    Something believe something Adjective/Noun | Somebody believe somebody
     Lemma('think.v.01.consider') [5, 9]
-    ['Something consider something Adjective/Noun', 'Somebody consider somebody']
+    Something consider something Adjective/Noun | Somebody consider somebody
     Lemma('think.v.01.conceive') [5, 9]
-    ['Something conceive something Adjective/Noun', 'Somebody conceive somebody']
+    Something conceive something Adjective/Noun | Somebody conceive somebody
     >>> wn.synset('stretch.v.02').frame_ids
     [8]
     >>> for lemma in wn.synset('stretch.v.02').lemmas:
     ...     print(lemma, lemma.frame_ids)
-    ...     print(lemma.frame_strings)
+    ...     print(" | ".join(lemma.frame_strings))
     ...
     Lemma('stretch.v.02.stretch') [8, 2]
-    ['Somebody stretch something', 'Somebody stretch']
+    Somebody stretch something | Somebody stretch
     Lemma('stretch.v.02.extend') [8]
-    ['Somebody extend something']
+    Somebody extend something
 
 
 ----------
@@ -338,8 +340,8 @@ Morphy
 Look up forms not in WordNet, with the help of Morphy:
 
     >>> wn.morphy('denied', wn.NOUN)
-    >>> wn.morphy('denied', wn.VERB)
-    'deny'
+    >>> print(wn.morphy('denied', wn.VERB))
+    deny
     >>> wn.synsets('denied', wn.NOUN)
     []
     >>> wn.synsets('denied', wn.VERB) # doctest: +NORMALIZE_WHITESPACE
@@ -349,20 +351,20 @@ Look up forms not in WordNet, with the help of Morphy:
 Morphy uses a combination of inflectional ending rules and exception
 lists to handle a variety of different possibilities:
 
-    >>> wn.morphy('dogs')
-    'dog'
-    >>> wn.morphy('churches')
-    'church'
-    >>> wn.morphy('aardwolves')
-    'aardwolf'
-    >>> wn.morphy('abaci')
-    'abacus'
-    >>> wn.morphy('book', wn.NOUN)
-    'book'
+    >>> print(wn.morphy('dogs'))
+    dog
+    >>> print(wn.morphy('churches'))
+    church
+    >>> print(wn.morphy('aardwolves'))
+    aardwolf
+    >>> print(wn.morphy('abaci'))
+    abacus
+    >>> print(wn.morphy('book', wn.NOUN))
+    book
     >>> wn.morphy('hardrock', wn.ADV)
     >>> wn.morphy('book', wn.ADJ)
     >>> wn.morphy('his', wn.NOUN)
-	>>>
+    >>>
 
 ---------------
 Synset Closures

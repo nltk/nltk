@@ -1084,7 +1084,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
 
     while start < end:
         lastState = start, end
-        middle = (start + end) / 2
+        middle = (start + end) // 2
 
         if cache.get(middle):
             offset, line = cache[middle]
@@ -1099,7 +1099,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
                 line = file.readline()
                 if line != "": break
                 # at EOF; try to find start of the last line
-                middle = (start + middle)/2
+                middle = (start + middle)//2
                 if middle == end -1:
                     return None
             if currentDepth < cacheDepth:
