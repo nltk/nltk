@@ -70,6 +70,7 @@ class HunposTagger(TaggerI):
             This parameter is ignored for str tokens, which are sent as-is.
             The caller must ensure that tokens are encoded in the right charset.
         """
+        self._closed = True
         hunpos_paths = ['.', '/usr/bin', '/usr/local/bin', '/opt/local/bin',
                         '/Applications/bin', '~/bin', '~/Applications/bin']
         hunpos_paths = list(map(os.path.expanduser, hunpos_paths))
