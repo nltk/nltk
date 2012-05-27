@@ -42,18 +42,15 @@ TODO: Describe handling of multiple coders and missing data
 
 Expected results from the Artstein and Poesio survey paper:
 
-.. doctest::
-    :options: +SKIP
-
     >>> from nltk.metrics.agreement import AnnotationTask
     >>> import os.path
     >>> t = AnnotationTask(data=[x.split() for x in open(os.path.join(os.path.dirname(__file__), "artstein_poesio_example.txt"))])
     >>> t.avg_Ao()
     0.88
     >>> t.pi()
-    0.79953224189776151
+    0.7995322418977615...
     >>> t.S()
-    0.81999999999999984
+    0.8199999999999998...
 
 """
 from __future__ import print_function
