@@ -88,7 +88,7 @@ class TreeSegmentWidget(CanvasWidget):
 
     def __setitem__(self, attr, value):
         canvas = self.canvas()
-        if attr is 'roof':
+        if attr == 'roof':
             self._roof = value
             if self._roof:
                 for l in self._lines: canvas.itemconfig(l, state='hidden')

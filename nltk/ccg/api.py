@@ -155,7 +155,7 @@ class Direction:
             return self
 
         for (var, restrs) in subs:
-            if var is '_':
+            if var == '_':
                 return Direction(self._dir,restrs)
         return self
 

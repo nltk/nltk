@@ -251,7 +251,7 @@ class FreqDist(dict):
         :type sample: any
         :rtype: float
         """
-        if self._N is 0:
+        if self._N == 0:
             return 0
         return float(self[sample]) / self._N
 
