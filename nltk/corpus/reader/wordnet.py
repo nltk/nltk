@@ -824,7 +824,7 @@ class WordNetCorpusReader(CorpusReader):
     A corpus reader used to access wordnet or its variants.
     """
 
-    _ENCODING = 'utf8' #None # what encoding should we be using, if any?
+    _ENCODING = 'utf8' # what encoding should we be using?
 
     #{ Part-of-speech constants
     ADJ, ADJ_SAT, ADV, NOUN, VERB = 'a', 's', 'r', 'n', 'v'
@@ -999,7 +999,6 @@ class WordNetCorpusReader(CorpusReader):
         for lemma in synset.lemmas:
             if lemma.key == key:
                 return lemma
-
         raise WordNetError("No lemma found for for key %r" % key)
 
     #////////////////////////////////////////////////////////////
@@ -1164,7 +1163,7 @@ class WordNetCorpusReader(CorpusReader):
         # set sense keys for Lemma objects - note that this has to be
         # done afterwards so that the relations are available
         for lemma in synset.lemmas:
-            if synset.pos is ADJ_SAT:
+            if synset.pos == ADJ_SAT:
                 head_lemma = synset.similar_tos()[0].lemmas[0]
                 head_name = head_lemma.name
                 head_id = '%02d' % head_lemma._lex_id
