@@ -18,16 +18,16 @@ class WordNetLemmatizer(object):
 
         >>> from nltk.stem import WordNetLemmatizer
         >>> wnl = WordNetLemmatizer()
-        >>> wnl.lemmatize('dogs')
-        'dog'
-        >>> wnl.lemmatize('churches')
-        'church'
-        >>> wnl.lemmatize('aardwolves')
-        'aardwolf'
-        >>> wnl.lemmatize('abaci')
-        'abacus'
-        >>> wnl.lemmatize('hardrock')
-        'hardrock'
+        >>> print(wnl.lemmatize('dogs'))
+        dog
+        >>> print(wnl.lemmatize('churches'))
+        church
+        >>> print(wnl.lemmatize('aardwolves'))
+        aardwolf
+        >>> print(wnl.lemmatize('abaci'))
+        abacus
+        >>> print(wnl.lemmatize('hardrock'))
+        hardrock
     """
 
     def __init__(self):

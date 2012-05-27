@@ -1333,17 +1333,17 @@ class WordNetCorpusReader(CorpusReader):
         speech until a form in WordNet is found.
 
         >>> from nltk.corpus import wordnet as wn
-        >>> wn.morphy('dogs')
-        'dog'
-        >>> wn.morphy('churches')
-        'church'
-        >>> wn.morphy('aardwolves')
-        'aardwolf'
-        >>> wn.morphy('abaci')
-        'abacus'
+        >>> print(wn.morphy('dogs'))
+        dog
+        >>> print(wn.morphy('churches'))
+        church
+        >>> print(wn.morphy('aardwolves'))
+        aardwolf
+        >>> print(wn.morphy('abaci'))
+        abacus
         >>> wn.morphy('hardrock', wn.ADV)
-        >>> wn.morphy('book', wn.NOUN)
-        'book'
+        >>> print(wn.morphy('book', wn.NOUN))
+        book
         >>> wn.morphy('book', wn.ADJ)
         """
 
