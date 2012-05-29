@@ -57,7 +57,7 @@ class SequentialBackoffTagger(TaggerI):
         tags = []
         for i in range(len(tokens)):
             tags.append(self.tag_one(tokens, i, tags))
-        return zip(tokens, tags)
+        return list(zip(tokens, tags))
 
     def tag_one(self, tokens, index, history):
         """

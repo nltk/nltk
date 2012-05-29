@@ -896,7 +896,7 @@ class FastBrillTaggerTrainer(object):
         # Create a new copy of the training corpus, and run the
         # initial tagger on it.  We will progressively update this
         # test corpus to look more like the training corpus.
-        test_sents = [self._initial_tagger.tag(untag(sent))
+        test_sents = [list(self._initial_tagger.tag(untag(sent)))
                       for sent in train_sents]
 
         # Initialize our mappings.  This will find any errors made
