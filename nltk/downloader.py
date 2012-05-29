@@ -160,15 +160,11 @@ default: unzip or not?
 
 """
 import time, os, zipfile, sys, textwrap, threading, itertools
-
-try:
-    from hashlib import md5
-except:
-    from md5 import md5
+from hashlib import md5
 
 try:
     TKINTER = True
-    from Tkinter import Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar
+    from Tkinter import Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar, TclError
     from tkMessageBox import showerror
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
