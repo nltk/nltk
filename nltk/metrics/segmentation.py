@@ -41,7 +41,11 @@ Statistical Models for Text Segmentation
 Machine Learning, 34, 177-210
 """
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    pass
+
 from nltk.compat import xrange
 
 def windowdiff(seg1, seg2, k, boundary="1"):
