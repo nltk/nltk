@@ -13,7 +13,7 @@ Functionality includes: concordancing, collocation discovery,
 regular expression search over tokenized strings, and
 distributional similarity.
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 from math import log
 from collections import defaultdict
@@ -181,8 +181,8 @@ class ConcordanceIndex(object):
         :param lines: The number of lines to display (default=25)
         :type lines: int
         """
-        half_width = (width - len(word) - 2) / 2
-        context = width/4 # approx number of words of context
+        half_width = (width - len(word) - 2) // 2
+        context = width//4 # approx number of words of context
 
         offsets = self.offsets(word)
         if offsets:
@@ -567,7 +567,7 @@ class TextCollection(Text):
 
     def tf(self, term, text, method=None):
         """ The frequency of the term in text. """
-        return float(text.count(term)) / len(text)
+        return text.count(term) / len(text)
 
     def idf(self, term, method=None):
         """ The number of texts in the corpus divided by the
@@ -581,7 +581,7 @@ class TextCollection(Text):
                 # FIXME Should this raise some kind of error instead?
                 idf = 0.0
             else:
-                idf = log(float(len(self._texts)) / matches)
+                idf = log(len(self._texts) / matches)
             self._idf_cache[term] = idf
         return idf
 

@@ -67,7 +67,7 @@ or::
     python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 """
 #----------------------------------------------------------------------
-from __future__ import print_function
+from __future__ import print_function, division
 
 """
 
@@ -557,8 +557,10 @@ class Downloader(object):
         num_packages = sum(self._num_packages(item) for item in items)
         progress = 0
         for i, item in enumerate(items):
-            if isinstance(item, Package): delta = 1./num_packages
-            else: delta = float(len(item.packages))/num_packages
+            if isinstance(item, Package):
+                delta = 1./num_packages
+            else:
+                delta = float(len(item.packages))/num_packages
             for msg in self.incr_download(item, download_dir, force):
                 if isinstance(msg, ProgressMessage):
                     yield ProgressMessage(progress + msg.progress*delta)
@@ -966,7 +968,7 @@ class DownloaderShell(object):
 
     def _simple_interactive_menu(self, *options):
         print('-'*75)
-        spc = (68 - sum(len(o) for o in options))/(len(options)-1)*' '
+        spc = (68 - sum(len(o) for o in options))//(len(options)-1)*' '
         print('    ' + spc.join(options))
         #w = 76/len(options)
         #fmt = '  ' + ('%-'+str(w)+'s')*(len(options)-1) + '%s'
@@ -1750,7 +1752,7 @@ class DownloaderGUI(object):
     def _init_progressbar(self):
         c = self._progressbar
         width, height = int(c['width']), int(c['height'])
-        for i in range(0, (int(c['width'])*2)/self._gradient_width):
+        for i in range(0, (int(c['width'])*2)//self._gradient_width):
             c.create_line(i*self._gradient_width+20, -20,
                           i*self._gradient_width-height-20, height+20,
                           width=self._gradient_width,
@@ -1769,7 +1771,7 @@ class DownloaderGUI(object):
             c.itemconfig('gradient', state='hidden')
         else:
             width, height = int(c['width']), int(c['height'])
-            x = percent * int(width) / 100 + 1
+            x = percent * int(width) // 100 + 1
             c.coords('redbox', 0, 0, x, height+1)
 
     def _progress_alive(self):
