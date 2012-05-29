@@ -221,7 +221,8 @@ class TokenSearcher(object):
         a single token must be surrounded by angle brackets.  E.g.
 
         >>> from nltk.text import TokenSearcher
-        >>> from nltk.book import text1, text5, text9
+        >>> print('hack'); from nltk.book import text1, text5, text9
+        hack...
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -477,7 +478,8 @@ class Text(object):
         The text is a list of tokens, and a regexp pattern to match
         a single token must be surrounded by angle brackets.  E.g.
 
-        >>> from nltk.book import text1, text5, text9
+        >>> print('hack'); from nltk.book import text1, text5, text9
+        hack...
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -547,7 +549,8 @@ class TextCollection(Text):
 
     >>> import nltk.corpus
     >>> from nltk.text import TextCollection
-    >>> from nltk.book import text1, text2, text3
+    >>> print('hack'); from nltk.book import text1, text2, text3
+    hack...
     >>> gutenberg = TextCollection(nltk.corpus.gutenberg)
     >>> mytexts = TextCollection([text1, text2, text3])
 
