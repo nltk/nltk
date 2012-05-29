@@ -26,6 +26,7 @@ if PY3:
     _itervalues = "values"
     _iteritems = "items"
     from imp import reload
+    raw_input = input
 
     imap = map
     izip = zip

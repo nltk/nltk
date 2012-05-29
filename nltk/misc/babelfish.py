@@ -154,7 +154,7 @@ def babelize_shell():
     phrase = ''
     try:
         while True:
-            command = raw_input('Babel> ')
+            command = compat.raw_input('Babel> ')
             command = clean(command)
             if ' ' not in command:
                 command = command.lower()

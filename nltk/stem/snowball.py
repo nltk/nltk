@@ -21,6 +21,7 @@ For more information take a look into the class SnowballStemmer.
 from __future__ import unicode_literals
 from __future__ import print_function
 
+from nltk import compat
 from nltk.corpus import stopwords
 from nltk.stem import porter
 
@@ -3690,7 +3691,7 @@ def demo():
 
     while True:
 
-        language = raw_input("Please enter the name of the language " +
+        language = compat.raw_input("Please enter the name of the language " +
                              "to be demonstrated\n" +
                              "/".join(SnowballStemmer.languages) +
                              "\n" +

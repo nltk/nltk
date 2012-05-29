@@ -12,6 +12,7 @@ from __future__ import print_function
 import string
 import re
 import random
+from nltk import compat
 
 reflections = {
   "am"     : "are",
@@ -106,7 +107,7 @@ class Chat(object):
         input = ""
         while input != quit:
             input = quit
-            try: input = raw_input(">")
+            try: input = compat.raw_input(">")
             except EOFError:
                 print(input)
             if input:
