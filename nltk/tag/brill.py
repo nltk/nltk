@@ -369,7 +369,7 @@ class ProximateTokensRule(BrillRule):
         This helper method is used by __str__.
         """
         (start, end, value) = condition
-        return ('the %s of %s is %r' %
+        return ("the %s of %s is '%s'" %
                 (self.PROPERTY_NAME, self._range_to_str(start, end), value))
 
     def _range_to_str(self, start, end):

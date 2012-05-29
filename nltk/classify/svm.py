@@ -244,18 +244,17 @@ class SvmClassifier(ClassifierI):
 
 
 def demo():
-
-    def gender_features(word):
-        return {'last_letter': word[-1], 'penultimate_letter': word[-2]}
+    import random
 
     from nltk.classify import accuracy
     from nltk.corpus import names
 
+    def gender_features(word):
+        return {'last_letter': word[-1], 'penultimate_letter': word[-2]}
 
-    import random
-    names = ([(name, 'male') for name in names.words('male.txt')] +
-             [(name, 'female') for name in names.words('female.txt')])
-    import random
+    names = ([(str(name), 'male') for name in names.words('male.txt')] +
+             [(str(name), 'female') for name in names.words('female.txt')])
+
     random.seed(60221023)
     random.shuffle(names)
 

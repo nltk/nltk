@@ -30,7 +30,7 @@ class PropbankCorpusReader(CorpusReader):
     """
     def __init__(self, root, propfile, framefiles='',
                  verbsfile=None, parse_fileid_xform=None,
-                 parse_corpus=None, encoding=None):
+                 parse_corpus=None, encoding='latin1'):
         """
         :param root: The root directory for this corpus.
         :param propfile: The name of the file containing the predicate-

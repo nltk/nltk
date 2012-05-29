@@ -88,7 +88,10 @@ class AlignedSent(object):
 
         :rtype: str
         """
-        return "AlignedSent(%r, %r, %r)" % (self._words, self._mots, self._alignment)
+        words = "[%s]" % (", ".join("'%s'" % w for w in self._words))
+        mots = "[%s]" % (", ".join("'%s'" % w for w in self._mots))
+
+        return "AlignedSent(%s, %s, %r)" % (words, mots, self._alignment)
 
     def __str__(self):
         """

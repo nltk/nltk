@@ -11,8 +11,15 @@ Corpus Reader
 -------------
 
     >>> from nltk.corpus import comtrans
-    >>> comtrans.words('alignment-en-fr.txt')
-    ['Resumption', 'of', 'the', 'session', 'I', 'declare', ...]
+    >>> words = comtrans.words('alignment-en-fr.txt')
+    >>> for word in words:
+    ...     print(word)
+    Resumption
+    of
+    the
+    session
+    I
+    declare...
     >>> als = comtrans.aligned_sents('alignment-en-fr.txt')[0]
     >>> als  # doctest: +NORMALIZE_WHITESPACE
     AlignedSent(['Resumption', 'of', 'the', 'session'],
@@ -25,10 +32,10 @@ Alignment Objects
 
 Aligned sentences are simply a mapping between words in a sentence:
 
-    >>> als.words
-    ['Resumption', 'of', 'the', 'session']
-    >>> als.mots
-    ['Reprise', 'de', 'la', 'session']
+    >>> print(" ".join(als.words))
+    Resumption of the session
+    >>> print(" ".join(als.mots))
+    Reprise de la session
     >>> als.alignment
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
 

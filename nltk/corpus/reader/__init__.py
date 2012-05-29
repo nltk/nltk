@@ -48,8 +48,8 @@ For example, to read a list of the words in the Brown Corpus, use
 ``nltk.corpus.brown.words()``:
 
     >>> from nltk.corpus import brown
-    >>> print(brown.words())
-    ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
+    >>> print(", ".join(brown.words()))
+    The, Fulton, County, Grand, Jury, said, ...
 
 """
 

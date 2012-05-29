@@ -73,7 +73,7 @@ from __future__ import print_function
 import re
 
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import string_types, total_ordering
+from nltk.compat import string_types, total_ordering, text_type
 
 from nltk.probability import ImmutableProbabilisticMixIn
 from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
@@ -318,7 +318,10 @@ class Production(object):
         """
         str = '%r ->' % (self._lhs,)
         for elt in self._rhs:
-            str += ' %r' % (elt,)
+            if isinstance(elt, text_type):
+                str += " '%s'" % elt # repr should be the same under python 2 and python 3
+            else:
+                str += ' %r' % (elt,)
         return str
 
     def __repr__(self):

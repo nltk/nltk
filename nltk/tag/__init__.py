@@ -5,7 +5,6 @@
 #         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
 """
 NLTK Taggers
 
@@ -37,9 +36,16 @@ by checking what the most frequent tag for *w* was in a training corpus:
     >>> from nltk.corpus import brown
     >>> from nltk.tag import UnigramTagger
     >>> tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
-    >>> tagger.tag(['Mitchell', 'decried', 'the', 'high', 'rate', 'of', 'unemployment'])
-    [('Mitchell', 'NP'), ('decried', None), ('the', 'AT'), ('high', 'JJ'),
-    ('rate', 'NN'), ('of', 'IN'), ('unemployment', None)]
+    >>> sent = ['Mitchell', 'decried', 'the', 'high', 'rate', 'of', 'unemployment']
+    >>> for word, tag in tagger.tag(sent):
+    ...     print(word, '->', tag)
+    Mitchell -> NP
+    decried -> None
+    the -> AT
+    high -> JJ
+    rate -> NN
+    of -> IN
+    unemployment -> None
 
 Note that words that the tagger has not seen during training receive a tag
 of ``None``.
@@ -51,6 +57,7 @@ We evaluate a tagger on data that was not seen during training:
 
 For more information, please consult chapter 5 of the NLTK Book.
 """
+from __future__ import print_function
 
 from nltk.tag.api        import TaggerI
 from nltk.tag.util       import str2tuple, tuple2str, untag

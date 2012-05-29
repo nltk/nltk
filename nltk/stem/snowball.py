@@ -117,7 +117,7 @@ class _LanguageSpecificStemmer(StemmerI):
         if ignore_stopwords:
             try:
                 for word in stopwords.words(language):
-                    self.stopwords.add(word.decode("utf-8"))
+                    self.stopwords.add(word)
             except IOError:
                 raise ValueError("%r has no list of stopwords. Please set"
                                  " 'ignore_stopwords' to 'False'." % self)

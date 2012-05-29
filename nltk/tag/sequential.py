@@ -216,7 +216,7 @@ class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
 
         >>> from nltk.tag.sequential import DefaultTagger
         >>> default_tagger = DefaultTagger('NN')
-        >>> default_tagger.tag('This is a test'.split())
+        >>> list(default_tagger.tag('This is a test'.split()))
         [('This', 'NN'), ('is', 'NN'), ('a', 'NN'), ('test', 'NN')]
 
     This tagger is recommended as a backoff tagger, in cases where
@@ -290,13 +290,14 @@ class UnigramTagger(NgramTagger):
         >>> from nltk.tag.sequential import UnigramTagger
         >>> test_sent = brown.sents(categories='news')[0]
         >>> unigram_tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
-        >>> unigram_tagger.tag(test_sent)
-        [('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ('Grand', 'JJ-TL'),
-        ('Jury', 'NN-TL'), ('said', 'VBD'), ('Friday', 'NR'), ('an', 'AT'),
-        ('investigation', 'NN'), ('of', 'IN'), ("Atlanta's", 'NP$'), ('recent', 'JJ'),
-        ('primary', 'NN'), ('election', 'NN'), ('produced', 'VBD'), ('``', '``'),
-        ('no', 'AT'), ('evidence', 'NN'), ("''", "''"), ('that', 'CS'), ('any', 'DTI'),
-        ('irregularities', 'NNS'), ('took', 'VBD'), ('place', 'NN'), ('.', '.')]
+        >>> for tok, tag in unigram_tagger.tag(test_sent):
+        ...     print("(%s, %s), " % (tok, tag))
+        (The, AT), (Fulton, NP-TL), (County, NN-TL), (Grand, JJ-TL),
+        (Jury, NN-TL), (said, VBD), (Friday, NR), (an, AT),
+        (investigation, NN), (of, IN), (Atlanta's, NP$), (recent, JJ),
+        (primary, NN), (election, NN), (produced, VBD), (``, ``),
+        (no, AT), (evidence, NN), ('', ''), (that, CS), (any, DTI),
+        (irregularities, NNS), (took, VBD), (place, NN), (., .),
 
     :param train: The corpus of training data, a list of tagged sentences
     :type train: list(list(tuple(str, str)))
@@ -440,13 +441,14 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         ...      (r'.*ed$', 'VBD'),                 # past tense verbs
         ...      (r'.*', 'NN')                      # nouns (default)
         ... ])
-        >>> regexp_tagger.tag(test_sent)
-        [('The', 'AT'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'),
-        ('said', 'NN'), ('Friday', 'NN'), ('an', 'AT'), ('investigation', 'NN'), ('of', 'NN'),
-        ("Atlanta's", 'NNS'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'),
-        ('produced', 'VBD'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'),
-        ('that', 'NN'), ('any', 'NN'), ('irregularities', 'NNS'), ('took', 'NN'),
-        ('place', 'NN'), ('.', 'NN')]
+        >>> for tok, tag in regexp_tagger.tag(test_sent):
+        ...     print("(%s, %s), " % (tok, tag))
+        (The, AT), (Fulton, NN), (County, NN), (Grand, NN), (Jury, NN),
+        (said, NN), (Friday, NN), (an, AT), (investigation, NN), (of, NN),
+        (Atlanta's, NNS), (recent, NN), (primary, NN), (election, NN),
+        (produced, VBD), (``, NN), (no, NN), (evidence, NN), ('', NN),
+        (that, NN), (any, NN), (irregularities, NNS), (took, NN),
+        (place, NN), (., NN),
 
     :type regexps: list(tuple(str, str))
     :param regexps: A list of ``(regexp, tag)`` pairs, each of

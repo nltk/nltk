@@ -22,7 +22,7 @@ class AlignedCorpusReader(CorpusReader):
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  alignedsent_block_reader=read_alignedsent_block,
-                 encoding=None):
+                 encoding='latin1'):
         """
         Construct a new Aligned Corpus reader for a set of documents
         located at the given root directory.  Example usage:
