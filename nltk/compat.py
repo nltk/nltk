@@ -59,6 +59,7 @@ else:
     _itervalues = "itervalues"
     _iteritems = "iteritems"
     reload = reload
+    raw_input = raw_input
 
     from itertools import imap, izip
 
