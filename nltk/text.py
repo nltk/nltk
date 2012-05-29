@@ -18,6 +18,7 @@ from __future__ import print_function, division
 from math import log
 from collections import defaultdict
 from functools import reduce
+from itertools import islice
 import re
 
 from nltk.probability import FreqDist, LidstoneProbDist
@@ -411,7 +412,7 @@ class Text(object):
             contexts = set(wci[word])
             fd = FreqDist(w for w in wci.conditions() for c in wci[w]
                           if c in contexts and not w == word)
-            words = fd.keys()[:num]
+            words = islice(fd.keys(), num)
             print(tokenwrap(words))
         else:
             print("No matches")
@@ -438,7 +439,7 @@ class Text(object):
             if not fd:
                 print("No common contexts were found")
             else:
-                ranked_contexts = fd.keys()[:num]
+                ranked_contexts = islice(fd.keys(), num)
                 print(tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts))
 
         except ValueError as e:
@@ -576,7 +577,7 @@ class TextCollection(Text):
         # idf values are cached for performance.
         idf = self._idf_cache.get(term)
         if idf is None:
-            matches = len(list(True for text in self._texts if term in text))
+            matches = len([True for text in self._texts if term in text])
             if not matches:
                 # FIXME Should this raise some kind of error instead?
                 idf = 0.0

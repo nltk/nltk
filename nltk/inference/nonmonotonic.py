@@ -44,7 +44,7 @@ class ClosedDomainProver(ProverCommandDecorator):
         assumptions = [a for a in self._command.assumptions()]
         goal = self._command.goal()
         domain = get_domain(goal, assumptions)
-        return list([self.replace_quants(ex, domain) for ex in assumptions])
+        return [self.replace_quants(ex, domain) for ex in assumptions]
 
     def goal(self):
         goal = self._command.goal()
