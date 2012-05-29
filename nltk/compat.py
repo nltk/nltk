@@ -38,7 +38,7 @@ if PY3:
     import html.entities as htmlentitydefs
     from urllib.request import (urlopen, ProxyHandler, build_opener,
         install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
-        ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+        ProxyBasicAuthHandler, ProxyDigestAuthHandler, Request)
     from urllib.error import HTTPError, URLError
     from urllib.parse import quote_plus, unquote_plus, urlencode
 
@@ -73,7 +73,7 @@ else:
     from urllib2 import (urlopen, HTTPError, URLError,
         ProxyHandler, build_opener, install_opener,
         HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
-        ProxyDigestAuthHandler)
+        ProxyDigestAuthHandler, Request)
     from urllib import getproxies, quote_plus, unquote_plus, urlencode
 
 def iterkeys(d):

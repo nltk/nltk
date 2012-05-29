@@ -14,9 +14,10 @@ Summary:
     >>> from nltk.misc import babelfish as babelizer
     >>> babelizer.available_languages
     ['Chinese', 'English', 'French', 'German', 'Greek', 'Italian', 'Japanese', 'Korean', 'Portuguese', 'Russian', 'Spanish']
-    >>> babelizer.translate('How much is that doggie in the window?',
-    ...                     'english', 'french')
-    'Combien co\xfbte ce chienchien dans la fen\xeatre ?'
+    >>> phrase = 'How much is that doggie in the window?'
+    >>> translated = babelizer.translate(phrase, 'english', 'french')
+    >>> print(translated.encode('unicode-escape').decode('ascii')) # hack to make output the same for python 2 and python 3
+    Combien co\xfbte ce chienchien dans la fen\xeatre ?
 """
 from __future__ import print_function
 
@@ -82,6 +83,9 @@ def translate(phrase, source, target):
     """
 
     phrase = clean(phrase)
+    if isinstance(phrase, compat.text_type):
+        phrase = phrase.encode('utf8')
+
     try:
         source_code = __languages[source]
         target_code = __languages[target]
@@ -92,18 +96,29 @@ def translate(phrase, source, target):
     params = compat.urlencode({'doit': 'done',
                                'tt': 'urltext',
                                'urltext': phrase,
+                               'ei': 'utf8',
                                'lp': source_code + '_' + target_code})
     try:
-        response = compat.urlopen('http://babelfish.yahoo.com/translate_txt', params)
+        req = compat.Request(
+            'http://babelfish.yahoo.com/translate_txt',
+            params.encode('utf8'),
+            headers={'Accept-Charset': 'utf-8'}
+        )
+        response = compat.urlopen(req)
 
     except IOError as what:
         raise BabelizerIOError("Couldn't talk to server: %s" % what)
 
-    html = response.read()
+    html = response.read().decode('utf8')
+
+    match = None
     for regex in __where:
         match = regex.search(html)
-        if match: break
-    if not match: raise BabelfishChangedError("Can't recognize translated string.")
+        if match:
+            break
+    if not match:
+        raise BabelfishChangedError("Can't recognize translated string.")
+
     return clean(match.group(1))
 
 def babelize(phrase, source, target, limit = 12):
