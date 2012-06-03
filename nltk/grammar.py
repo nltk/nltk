@@ -1447,6 +1447,8 @@ def sdg_demo():
     A demonstration of how to read a string representation of
     a CoNLL format dependency tree.
     """
+    from nltk.parse import DependencyGraph
+
     dg = DependencyGraph("""
     1   Ze                ze                Pron  Pron  per|3|evofmv|nom                 2   su      _  _
     2   had               heb               V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
