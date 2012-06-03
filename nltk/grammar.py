@@ -1398,13 +1398,13 @@ def pcfg_demo():
     print "Induce PCFG grammar from treebank data:"
 
     productions = []
-    for item in treebank.items[:2]:
-        for tree in treebank.parsed_sents(item):
-            # perform optional tree transformations, e.g.:
-            tree.collapse_unary(collapsePOS = False)
-            tree.chomsky_normal_form(horzMarkov = 2)
+    item = treebank._fileids[0]
+    for tree in treebank.parsed_sents(item)[:3]:
+        # perform optional tree transformations, e.g.:
+        tree.collapse_unary(collapsePOS = False)
+        tree.chomsky_normal_form(horzMarkov = 2)
 
-            productions += tree.productions()
+        productions += tree.productions()
 
     S = Nonterminal('S')
     grammar = induce_pcfg(S, productions)
@@ -1419,7 +1419,7 @@ def pcfg_demo():
     # doesn't work as tokens are different:
     #sent = treebank.tokenized('wsj_0001.mrg')[0]
 
-    sent = treebank.parsed_sents('wsj_0001.mrg')[0].leaves()
+    sent = treebank.parsed_sents(item)[0].leaves()
     print sent
     for parse in parser.nbest_parse(sent):
         print parse
