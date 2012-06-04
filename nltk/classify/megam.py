@@ -11,11 +11,8 @@ optimization package. Before megam can be used, you should tell NLTK where it
 can find the megam binary, using the ``config_megam()`` function. Typical
 usage:
 
-.. doctest::
-    :options: +SKIP
-
     >>> from nltk.classify import megam
-    >>> megam.config_megam() # pass path to megam if not found in PATH
+    >>> megam.config_megam() # pass path to megam if not found in PATH # doctest: +SKIP
     [Found megam: ...]
 
 Use with MaxentClassifier. Example below, see MaxentClassifier documentation

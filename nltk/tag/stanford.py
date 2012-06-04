@@ -107,13 +107,10 @@ class POSTagger(StanfordTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.stanford import POSTagger
         >>> st = POSTagger('/usr/share/stanford-postagger/models/english-bidirectional-distsim.tagger',
-        ...                '/usr/share/stanford-postagger/stanford-postagger.jar')
-        >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
+        ...                '/usr/share/stanford-postagger/stanford-postagger.jar') # doctest: +SKIP
+        >>> st.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
 
@@ -140,13 +137,10 @@ class NERTagger(StanfordTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.stanford import NERTagger
         >>> st = NERTagger('/usr/share/stanford-ner/classifiers/all.3class.distsim.crf.ser.gz',
-        ...                '/usr/share/stanford-ner/stanford-ner.jar')
-        >>> st.tag('Rami Eid is studying at Stony Brook University in NY'.split())
+        ...                '/usr/share/stanford-ner/stanford-ner.jar') # doctest: +SKIP
+        >>> st.tag('Rami Eid is studying at Stony Brook University in NY'.split()) # doctest: +SKIP
         [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'),
          ('at', 'O'), ('Stony', 'ORGANIZATION'), ('Brook', 'ORGANIZATION'),
          ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'LOCATION')]

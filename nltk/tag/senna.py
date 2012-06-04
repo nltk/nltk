@@ -11,7 +11,7 @@ A module for interfacing with the SENNA pipeline.
 """
 
 from os import path, sep
-from subprocess import Popen, PIPE 
+from subprocess import Popen, PIPE
 from platform import architecture, system
 from nltk.tag.api import TaggerI
 
@@ -58,9 +58,6 @@ class SennaTagger(TaggerI):
     - (optionally) the encoding of the input data (default:utf-8)
 
     Example:
-
-    .. doctest::
-        :options: +SKIP
 
         >>> from nltk.tag.senna import SennaTagger
         >>> pipeline = SennaTagger('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
@@ -191,9 +188,6 @@ class POSTagger(SennaTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.senna import POSTagger
         >>> postagger = POSTagger('/usr/share/senna-v2.0')
         >>> postagger.tag('What is the airspeed of an unladen swallow ?'.split())
@@ -226,14 +220,11 @@ class NERTagger(SennaTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.senna import NERTagger
         >>> nertagger = NERTagger('/usr/share/senna-v2.0')
         >>> nertagger.tag('Shakespeare theatre was in London .'.split())
         [('Shakespeare', u'B-PER'), ('theatre', u'O'), ('was', u'O'), ('in', u'O'),
-        ('London', u'B-LOC'), ('.', u'O')] 
+        ('London', u'B-LOC'), ('.', u'O')]
         >>> nertagger.tag('UN headquarters are in NY , USA .'.split())
         [('UN', u'B-ORG'), ('headquarters', u'O'), ('are', u'O'), ('in', u'O'),
         ('NY', u'B-LOC'), (',', u'O'), ('USA', u'B-LOC'), ('.', u'O')]
@@ -263,9 +254,6 @@ class CHKTagger(SennaTagger):
     - (optionally) the encoding of the input data (default:utf-8)
 
     Example:
-
-    .. doctest::
-        :options: +SKIP
 
         >>> from nltk.tag.senna import CHKTagger
         >>> chktagger = CHKTagger('/usr/share/senna-v2.0')

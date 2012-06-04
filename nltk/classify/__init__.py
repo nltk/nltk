@@ -53,14 +53,11 @@ words included in the document:
 Feature detectors are typically applied to each token before it is fed
 to the classifier:
 
-.. doctest::
-    :options: +SKIP
-
     >>> # Classify each Gutenberg document.
     >>> from nltk.corpus import gutenberg
-    >>> for fileid in gutenberg.fileids():
-    ...     doc = gutenberg.words(fileid)
-    ...     print fileid, classifier.classify(document_features(doc))
+    >>> for fileid in gutenberg.fileids(): # doctest: +SKIP
+    ...     doc = gutenberg.words(fileid) # doctest: +SKIP
+    ...     print fileid, classifier.classify(document_features(doc)) # doctest: +SKIP
 
 The parameters that a feature detector expects will vary, depending on
 the task and the needs of the feature detector.  For example, a

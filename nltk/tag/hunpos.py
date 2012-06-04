@@ -32,9 +32,6 @@ class HunposTagger(TaggerI):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.hunpos import HunposTagger
         >>> ht = HunposTagger('english.model')
         >>> ht.tag('What is the airspeed of an unladen swallow ?'.split())
@@ -45,9 +42,6 @@ class HunposTagger(TaggerI):
     tagger object is no longer needed, the close() method should be called to
     free system resources. The class supports the context manager interface; if
     used in a with statement, the close() method is invoked automatically:
-
-    .. doctest::
-        :options: +SKIP
 
         >>> with HunposTagger('english.model') as ht:
         ...     ht.tag('What is the airspeed of an unladen swallow ?'.split())

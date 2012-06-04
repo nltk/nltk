@@ -48,7 +48,7 @@ class PlaintextCorpusReader(CorpusReader):
         located at the given root directory.  Example usage:
 
             >>> root = '/usr/local/share/nltk_data/corpora/webtext/'
-            >>> reader = PlaintextCorpusReader(root, '.*\.txt')
+            >>> reader = PlaintextCorpusReader(root, '.*\.txt') # doctest: +SKIP
 
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
