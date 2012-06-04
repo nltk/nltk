@@ -30,7 +30,8 @@ class NgramModel(ModelI):
     """
 
     # add cutoff
-    def __init__(self, n, train, estimator=None, *estimator_args, **estimator_kw_args):
+    def __init__(self, n, train, estimator=None, pad_initial=True, pad_final=False, 
+                 *estimator_args, **estimator_kw_args):
         """
         Creates an ngram language model to capture patterns in n consecutive
         words of training text.  An estimator smooths the probabilities derived
@@ -54,14 +55,32 @@ class NgramModel(ModelI):
         :type train: list of string (or list of list of string)
         :param estimator: a function for generating a probability distribution
         :type estimator: a function that takes a ConditionalFreqDist and
-              returns a ConditionalProbDist
+                         returns a ConditionalProbDist
+        :param pad_initial: whether we should add initial padding to the training 
+                            data and any texts we later get the probability of.
+                            This ensures that we properly apply the chain rule
+                            when getting the probability of a sequence of words.
+                            Do not set this to False unless you have a very good
+                            reason to do so.
+        :type pad_initial: bool
+        :param pad_final: whether we should add final padding to the training data 
+                          and any texts we later get the probability of. For 
+                          backward-compatibility this defaults to False, but most
+                          users will want this to be True, as this is consistent
+                          with most LM packages. When this is set to False,
+                          sentences fragments that end with articles would have 
+                          high probabilities, even though articles cannot usually
+                          end sentences in English.
+        :type pad_final: bool        
         :param estimator_args: Extra arguments for estimator.
-            These arguments are usually used to specify extra
-            properties for the probability distributions of individual
-            conditions, such as the number of bins they contain.
-            Note: For backward-compatibility, if no arguments are specified, the
-            number of bins in the underlying ConditionalFreqDist are passed to
-            the estimator as an argument.
+                               These arguments are usually used to specify extra
+                               properties for the probability distributions of 
+                               individual conditions, such as the number of bins 
+                               they contain.
+                               Note: For backward-compatibility, if no arguments 
+                               are specified, the number of bins in the underlying 
+                               ConditionalFreqDist are passed to the estimator as 
+                               an argument.
         :type estimator_args: (any)
         :param estimator_kw_args: Extra keyword arguments for estimator.
         :type estimator_kw_args: (any)
@@ -75,13 +94,18 @@ class NgramModel(ModelI):
         cfd = ConditionalFreqDist()
         self._ngrams = set()
         self._padding = ('',) * (n - 1)
+        self._pad_initial = pad_initial
+        self._pad_final = pad_final
 
         # If given a list of strings instead of a list of lists, create enclosing list
         if (train is not None) and isinstance(train[0], basestring):
             train = [train]
 
         for utterance in train:
-            for ngram in ingrams(chain(self._padding, utterance, self._padding), n):
+            padded_utterance = chain(self._padding if pad_initial else [],
+                                     utterance,
+                                     self._padding if pad_final else [])
+            for ngram in ingrams(padded_utterance, n):
                 self._ngrams.add(ngram)
                 context = tuple(ngram[:-1])
                 token = ngram[-1]
@@ -90,15 +114,18 @@ class NgramModel(ModelI):
         if (not estimator_args) and (not estimator_kw_args):
             self._model = ConditionalProbDist(cfd, estimator, len(cfd))
         else:
-            self._model = ConditionalProbDist(cfd, estimator, *estimator_args, **estimator_kw_args)
+            self._model = ConditionalProbDist(cfd, estimator, *estimator_args,
+                                              **estimator_kw_args)
 
         # recursively construct the lower-order models
         if n > 1:
-            self._backoff = NgramModel(n-1, train, estimator, *estimator_args, **estimator_kw_args)
+            self._backoff = NgramModel(n-1, train, estimator, *estimator_args,
+                                       **estimator_kw_args)
 
     def prob(self, word, context):
         """
-        Evaluate the probability of this word in this context using Katz Backoff.
+        Evaluate the probability of this word in this context using Katz
+        Backoff.
 
         :param word: the word to get the probability of
         :type word: str
@@ -180,7 +207,9 @@ class NgramModel(ModelI):
 
         e = 0.0
         # Add padding to front and back to correctly handle first n-1 words
-        text = list(self._padding) + text + list(self._padding)
+        text = ((list(self._padding) if self._pad_initial else []) +
+                text +
+                (list(self._padding) if self._pad_final else []))
         for i in range(len(text)):
             context = tuple(text[i-self._n+1:i])
             token = text[i]
