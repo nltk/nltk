@@ -33,7 +33,7 @@ DEPENDENT_TESTS = [
     "nonmonotonic.doctest",
 ]
 
-EXCLUDED_TESTS = FAILING_TESTS + DEPENDENT_TESTS
+EXCLUDED_TESTS = DEPENDENT_TESTS # + FAILING_TESTS
 _EXCLUDE_ARGV = ['--exclude='+test for test in EXCLUDED_TESTS]
 
 if __name__ == '__main__':
