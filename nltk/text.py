@@ -535,8 +535,8 @@ class Text(object):
 
     def __repr__(self):
         """
-        :return: A string representation of this FreqDist.
-        :rtype: string
+        :return: A string representation of this Text.
+        :rtype: str
         """
         return '<Text: %s>' % self.name
 
