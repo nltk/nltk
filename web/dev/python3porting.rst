@@ -152,7 +152,7 @@ This won't help with container types. Python 2.x::
     >>> print([x, x])
     [u'foo', u'foo']
 
-Convert such doctests to use ``join`` method or ``for`` statement::
+Possible fixes are::
 
     >>> for txt in [x, x]:
     ...     print(x)
@@ -163,6 +163,15 @@ or::
 
     >>> print(", ".join([x, x]))
     foo, foo
+
+But in order to make doctests look better NLTK's doctest runner
+doesn't take 'u''s into account; it just considers u'foo' and 'foo' equal
+(and so the fixes above are not needed); developer is free to write
+u'foo' or 'foo'.
+
+This is not absolutely correct but if this distinction is important
+then doctest should be converted to unittest.
+
 
 Float values representation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

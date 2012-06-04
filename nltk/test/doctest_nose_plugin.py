@@ -4,7 +4,37 @@ Patched version of nose doctest plugin.
 See https://github.com/nose-devs/nose/issues/7
 """
 from __future__ import print_function
-from nose.plugins.doctests import *
+from nose.plugins.base import Plugin
+from nose.util import tolist
+import os
+import sys
+import re
+from nose.plugins.doctests import (Doctest, src, log, anyp, getmodule,
+                                   DocTestCase, DocFileCase, ContextList)
+from nose.plugins.doctests import doctest
+
+ALLOW_UNICODE = doctest.register_optionflag('ALLOW_UNICODE')
+
+class _UnicodeOutputChecker(doctest.OutputChecker):
+    _literal_re = re.compile(r"(\W|^)[uU]([rR]?[\'\"])", re.UNICODE)
+
+    def _remove_u_prefixes(self, txt):
+        return re.sub(self._literal_re, r'\1\2', txt)
+
+    def check_output(self, want, got, optionflags):
+        res = doctest.OutputChecker.check_output(self, want, got, optionflags)
+        if res:
+            return True
+        if not (optionflags & ALLOW_UNICODE):
+            return False
+
+        # ALLOW_UNICODE is active and want != got
+        cleaned_want = self._remove_u_prefixes(want)
+        cleaned_got = self._remove_u_prefixes(got)
+        res = doctest.OutputChecker.check_output(self, cleaned_want, cleaned_got, optionflags)
+        return res
+
+_checker = _UnicodeOutputChecker()
 
 class _DoctestFix(Doctest):
 
@@ -16,24 +46,8 @@ class _DoctestFix(Doctest):
                           help="Specify options to pass to doctest. " +
                           "Eg. '+ELLIPSIS,+NORMALIZE_WHITESPACE'")
 
-    def configure(self, options, config):
-        super(_DoctestFix, self).configure(options, config)
-        self.optionflags = 0
-        if options.doctestOptions:
-            flags = ",".join(options.doctestOptions).split(',')
-            for flag in flags:
-                try:
-                    if flag.startswith('+'):
-                        self.optionflags |= getattr(doctest, flag[1:])
-                    elif flag.startswith('-'):
-                        self.optionflags &= ~getattr(doctest, flag[1:])
-                    else:
-                        raise ValueError(
-                            "Must specify doctest options with starting " +
-                            "'+' or '-'.  Got %s" % (flag,))
-                except AttributeError:
-                    raise ValueError("Unknown doctest option %s" %
-                                     (flag[1:],))
+#    def configure(self, options, config):
+#        ... it is fixed in DoctestPluginHelper
 
     def loadTestsFromModule(self, module):
         """Load doctests from the module.
@@ -139,24 +153,54 @@ def _plugin_supports_doctest_options(plugin_cls):
     return parser.has_option('--doctest-options')
 
 
-class PrintFunctionMixin(object):
+class DoctestPluginHelper(object):
     """
-    Doctests don't support __future__ imports and print_function
-    future import is very useful for writing code that run on
-    both python 2 and python 3.
-
     This mixin adds print_function future import to all test cases.
+
+    It also adds support for '#doctest +ALLOW_UNICODE' option that
+    makes DocTestCase think u'foo' == 'foo'.
     """
     def loadTestsFromFile(self, filename):
-        cases = super(PrintFunctionMixin, self).loadTestsFromFile(filename)
+        cases = super(DoctestPluginHelper, self).loadTestsFromFile(filename)
         for case in cases:
             if case:
                 case._dt_test.globs['print_function'] = print_function
+                case._dt_checker = _checker
             yield case
 
+    def configure(self, options, config):
+        # it is overriden in order to fix doctest options discovery
+
+        Plugin.configure(self, options, config)
+        self.doctest_result_var = options.doctest_result_var
+        self.doctest_tests = options.doctest_tests
+        self.extension = tolist(options.doctestExtension)
+        self.fixtures = options.doctestFixtures
+        self.finder = doctest.DocTestFinder()
+
+        #super(DoctestPluginHelper, self).configure(options, config)
+        self.optionflags = 0
+        if options.doctestOptions:
+            flags = ",".join(options.doctestOptions).split(',')
+            for flag in flags:
+                try:
+                    if flag.startswith('+'):
+                        self.optionflags |= doctest.OPTIONFLAGS_BY_NAME[flag[1:]]
+                    elif flag.startswith('-'):
+                        self.optionflags &= ~doctest.OPTIONFLAGS_BY_NAME[flag[1:]]
+                    else:
+                        raise ValueError(
+                            "Must specify doctest options with starting " +
+                            "'+' or '-'.  Got %s" % (flag,))
+                except (AttributeError, KeyError):
+                    raise ValueError("Unknown doctest option %s" %
+                                     (flag[1:],))
+
+
+
 if _plugin_supports_doctest_options(Doctest):
-    class DoctestFix(PrintFunctionMixin, Doctest):
+    class DoctestFix(DoctestPluginHelper, Doctest):
         pass
 else:
-    class DoctestFix(PrintFunctionMixin, _DoctestFix):
+    class DoctestFix(DoctestPluginHelper, _DoctestFix):
         pass
