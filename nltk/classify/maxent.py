@@ -422,7 +422,7 @@ class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
              and a label, and returns the sparse joint feature vector
              that encodes them:
 
-             >>> func(featureset, label) -> feature_vector
+             >>> func(featureset, label) -> feature_vector # doctest: +SKIP
 
              This sparse joint feature vector (``feature_vector``) is a
              list of ``(index,value)`` tuples.
