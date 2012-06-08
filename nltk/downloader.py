@@ -167,6 +167,7 @@ except:
 try:
     TKINTER = True
     from Tkinter import Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar
+    from Tkinter import TclError
     from tkMessageBox import showerror
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
