@@ -38,7 +38,6 @@ class Parameter(object):
         self.evaluation = evaluation
         self.parameter = None
 
-
     def addValue(self, valueName):
         '''
         Adding single value to this Parameter values list. If
@@ -144,8 +143,7 @@ class MaltevalXmlCommands(object):
         self.command.appendChild(self.evaluation)
         self.parameters = {}
 
-
-    def toprettyxml(self, ident=" "):
+    def toPrettyXml(self, ident=" "):
         '''
         Print xml prettily.
         :param ident:   specify ident
@@ -163,7 +161,7 @@ class MaltevalXmlCommands(object):
         :type valueName:String
         '''
         if not parameterName in [name for name in
-                                 dir(MaltevalParameters) if not name.startswith('__')]:
+                    dir(MaltevalParameters) if not name.startswith('__')]:
             raise AttributeError(parameterName)
         if not parameterName in self.parameters:
             parameter = Parameter(parameterName, self.command, self.evaluation)
@@ -184,48 +182,65 @@ class MaltevalXmlCommands(object):
         if parameterName in self.parameters:
             self.parameters[parameterName].deleteValue(valueName)
 
-
     def deleteParam(self, parameterName):
         if parameterName in self.parameters:
             self.parameters[parameterName].delete()
             self.parameters.pop(parameterName)
 
     def maxSentenceLength(self, maxLength):
+        """
+        Shortcut for self.addValue(MaltevalParameters.MaxSentenceLength,
+            str(maxLength)).
+        """
         if maxLength < 1:
             raise AttributeError("maxLength smaller then 1")
         self.addValue(MaltevalParameters.MaxSentenceLength, str(maxLength))
 
     def deleteMaxSentenceLength(self):
+        """
+        Shortcut for self.deleteParam(MaltevalParameters.MaxSentenceLength).
+        """
         self.deleteParam(MaltevalParameters.MaxSentenceLength)
 
     def minSentenceLength(self, minLength):
+        """
+        Shortcut for self.addValue(MaltevalParameters.MinSentenceLength,
+            str(minLength)).
+        """
         if minLength < 1:
             raise AttributeError("minLength smaller then 1")
         self.addValue(MaltevalParameters.MinSentenceLength, str(minLength))
 
     def deleteMinSentenceLength(self):
+        """
+        Shortcut for self.deleteParam(MaltevalParameters.MinSentenceLength).
+        """
         self.deleteParam(MaltevalParameters.MinSentenceLength)
 
     def addGroupBy(self, valueName):
+        """
+        Shortcut for self.addValue(MaltevalParameters.GroupBy, valueName)
+        """
         self.addValue(MaltevalParameters.GroupBy, valueName)
 
     def deleteGroupBy(self, valueName):
+        """
+        Shortcut for self.deleteValue(MaltevalParameters.GroupBy, valueName).
+        """
         self.deleteValue(MaltevalParameters.GroupBy, valueName)
 
     def deleteMetric(self, valueName):
+        """
+        Shortcut for self.deleteValue(MaltevalParameters.Metric, valueName).
+        """
         self.deleteValue(MaltevalParameters.Metric, valueName)
 
     def addMetric(self, valueName):
+        """
+        Shortcut for self.addValue(MaltevalParameters.Metric, valueName)
+        with type checking.
+        """
         if not valueName in [name for name in
                              dir(MaltevalMetric) if not name.startswith('__')]:
             raise AttributeError
         self.addValue(MaltevalParameters.Metric, valueName)
-
-
-
-
-
-
-
-
-

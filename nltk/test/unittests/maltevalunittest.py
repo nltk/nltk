@@ -2,7 +2,7 @@
 import os
 import tempfile
 import unittest
-from nltk.metrics.malteval import Malteval
+from nltk.metrics.malteval import Malteval, MaltevalRuntimeException
 from nltk.parse.dependencygraph import DependencyGraph
 from stat import *
 from nltk.metrics.maltevalxmlcommadns import MaltevalXmlCommands
@@ -34,9 +34,10 @@ class TestMalteval(unittest.TestCase):
         test_file = '/tmp/me/test.conll'
         maltEval.setEvalFile(test_file)
 
+
     def mockedExecute(self, cmd):
         s = 'Evaluation arguments: -g gold.conll -s out.conll'\
-            '\n====================================================\n'\
+            '\n===================================================='\
             'Gold:   /home/kacper/dev/nltkNewDev/nltk/gold.conll\nParsed:'\
             ' /home/kacper/dev/nltkNewDev/nltk/out.conll'\
             '\n====================================================\n'\
@@ -47,9 +48,9 @@ class TestMalteval(unittest.TestCase):
         return s
 
     def mockSetUp(self):
-        maltEval = Malteval(malteval_jar=None, look_for_jar=False)
-        maltEval.setJar(malteval_jar='MaltEval.jar',
-            check_jar_correctness=False)
+        maltEval = Malteval(maltevalJar=None, lookForJar=False)
+        maltEval.setJar(maltevalJar='MaltEval.jar',
+            checkJarCorrectness=False)
         self.setSampleFile(maltEval)
         return maltEval
 
@@ -57,25 +58,33 @@ class TestMalteval(unittest.TestCase):
 
     def test_constructor(self):
         jar = '/x/y/z/1221526/y/'
-        maltEval = Malteval(jar, look_for_jar=False)
-        self.assertEquals(maltEval._malteval_bin, jar)
+        maltEval = Malteval(jar, lookForJar=False)
+        self.assertEquals(maltEval._maltevalBin, jar)
 
-    def test_set_Gold(self):
+    def testSetGold(self):
         maltEval = Malteval(None, False)
         gold_file = '/tmp/me/gold.conll'
         maltEval.setGoldFile(gold_file)
         self.assertEqual(maltEval.goldFile, gold_file)
 
-    def test_set_Eval_File(self):
+    def testIncompleteFile(self):
+        maltEval = Malteval(None, False)
+        f = open("here",'w')
+        f.close()
+        maltEval.setEvalFile("here")
+        self.assertEquals(os.path.abspath(f.name),maltEval.evalFile)
+        os.remove(os.path.abspath(f.name))
+
+    def testSetEvalFile(self):
         maltEval = Malteval(None, False)
         eval_file = '/tmp/me/test.conll'
         maltEval.setEvalFile(eval_file)
         self.assertEqual(maltEval.evalFile, eval_file)
 
-    def test_run_default_evaluation(self):
-        maltEval = Malteval(malteval_jar=None, look_for_jar=False)
-        maltEval.setJar(malteval_jar='MaltEval.jar',
-            check_jar_correctness=False)
+    def testRunDefaultEvaluation(self):
+        maltEval = Malteval(maltevalJar=None, lookForJar=False)
+        maltEval.setJar(maltevalJar='MaltEval.jar',
+            checkJarCorrectness=False)
         self.setSampleFile(maltEval)
         cmd = maltEval.getCommand()
         properCmd = 'java -jar MaltEval.jar '\
@@ -83,20 +92,20 @@ class TestMalteval(unittest.TestCase):
         self.assertEqual(properCmd, cmd)
 
     #    TODO: Figure out right encoding
-    def test_to_file(self):
-        maltEval = Malteval(malteval_jar=None, look_for_jar=False)
+    def testToFile(self):
+        maltEval = Malteval(maltevalJar=None, lookForJar=False)
         f = maltEval._toFile(self.dg, 'tst')
         self.assertNotEqual(f, None)
         self.assertNotEqual(os.stat(f.name)[ST_SIZE], 0)
 
-    def test_create_gold_file(self):
-        maltEval = Malteval(malteval_jar=None, look_for_jar=False)
+    def testCreateGoldFile(self):
+        maltEval = Malteval(maltevalJar=None, lookForJar=False)
         maltEval.createGoldFile(self.dg)
         self.assertTrue(os.path.exists(os.path.join(tempfile.gettempdir(),
             'gold_malteval')))
 
-    def test_create_eval_file(self):
-        maltEval = Malteval(malteval_jar=None, look_for_jar=False)
+    def testCreateEvalFile(self):
+        maltEval = Malteval(maltevalJar=None, lookForJar=False)
         maltEval.createEvalFile(self.dg)
         self.assertTrue(os.path.exists(os.path.join(
             tempfile.gettempdir(),
@@ -104,7 +113,7 @@ class TestMalteval(unittest.TestCase):
 
     @unittest.skipIf(Malteval.canConfigureProperly() == False,
         "MaltEval.jar could not be found automatically. Set MALTEVALHOME ")
-    def test_run_default_cmd(self):
+    def testRunDefaultCmd(self):
         maltEval = Malteval()
         maltEval.createGoldFile(self.dg)
         maltEval.createEvalFile(self.dg)
@@ -112,21 +121,32 @@ class TestMalteval(unittest.TestCase):
         pratial_result = ['1             Row mean', '12            Row count']
         self.assertEquals(res.split("\n")[12:14], pratial_result)
 
+    @unittest.skipIf(Malteval.canConfigureProperly() == False,
+        "MaltEval.jar could not be found automatically. Set MALTEVALHOME ")
+    def testRunError(self):
+        maltEval = Malteval()
+        f = open("tst",'w')
+        f.write("a")
+        f.close()
+        maltEval.setEvalFile("tst")
+        maltEval.setGoldFile("tst")
+        self.assertRaises(MaltevalRuntimeException,maltEval.execute)
+        os.remove(os.path.abspath(f.name))
+
     def testCmdWithEvalFile(self):
         maltEval = self.mockSetUp()
         maltEvalCmd = MaltevalXmlCommands()
-        maltEval.setCommandFile(maltEvalCmd)
+        maltEval.setCommand(maltEvalCmd)
         location = maltEval.commandFilePath
         cmd = maltEval.getCommand()
-        properCmd = 'java -jar MaltEval.jar '\
-                    '-g /tmp/me/gold.conll -s /tmp/me/test.conll '\
-                    '-e ' + location
+        properCmd = 'java -jar MaltEval.jar -e ' + location+\
+                    ' -g /tmp/me/gold.conll -s /tmp/me/test.conll'
         self.assertEqual(properCmd, cmd)
 
     def testDeleteCommandFile(self):
         maltEval = self.mockSetUp()
         maltEvalCmd = MaltevalXmlCommands()
-        maltEval.setCommandFile(maltEvalCmd)
+        maltEval.setCommand(maltEvalCmd)
         maltEval.deleteCommandFile()
         cmd = maltEval.getCommand()
         self.assertEquals(len(cmd.split("-e")), 1)
