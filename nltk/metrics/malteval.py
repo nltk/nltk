@@ -16,6 +16,8 @@ from nltk.internals import find_binary
 import os
 import subprocess
 import tempfile
+from nltk.metrics.maltevalconstans import MaltevalMetric
+from nltk.metrics.maltevalxmlcommadns import MaltevalXmlCommands
 
 
 class Malteval(object):
@@ -37,19 +39,24 @@ class Malteval(object):
         """
 
         if(look_for_jar):
-            self.config_malteval(malteval_jar)
+            self.configMalteval(malteval_jar)
         else:
             self._malteval_bin = malteval_jar
+        self.visual = False
+        self.commandFilePath = None
+        self.goldFile = None
+        self.evalFile = None
+
 
     @staticmethod
-    def can_configure_properly():
+    def canConfigureProperly():
         try:
             Malteval()
         except LookupError:
             return False
         return True
 
-    def config_malteval(self, bin=None, verbose=False):
+    def configMalteval(self, bin=None, verbose=False):
         """
         Configure NLTK's interface to the ``malteval`` package.  This
         searches for a directory containing the malteval.jar
@@ -81,7 +88,7 @@ class Malteval(object):
             url='http://w3.msi.vxu.se/~jni/malteval/',
             verbose=verbose)
 
-    def set_gold_file(self, gold_file):
+    def setGoldFile(self, gold_file):
         '''
         This method will set gold  file and will not check if this file exists.
         Gold file is one which sets standards for evaluation. It should be in
@@ -89,9 +96,9 @@ class Malteval(object):
         :param gold_file: absolute path to gold file
         :type : str
         '''
-        self._gold_file = gold_file
+        self.goldFile = gold_file
 
-    def set_eval_file(self, eval_file):
+    def setEvalFile(self, eval_file):
         '''
         This method will set evaluation file and will
         not check if this file exists. Evaluation file is
@@ -100,9 +107,9 @@ class Malteval(object):
         :param eval_file: absolute path to eval_file
         :type : str
         '''
-        self._eval_file = eval_file
+        self.evalFile = eval_file
 
-    def set_jar(self, malteval_jar=None, check_jar_correctness=False):
+    def setJar(self, malteval_jar=None, check_jar_correctness=False):
         '''
         method for changing location of malteval jar.
         :param malteval_jar: absolute path to malteval jar.
@@ -113,11 +120,11 @@ class Malteval(object):
         :type:bool
         '''
         if (check_jar_correctness):
-            self.config_malteval(malteval_jar)
+            self.configMalteval(malteval_jar)
         else:
             self._malteval_bin = malteval_jar
 
-    def _to_file(self, depgraphs, suffix):
+    def _toFile(self, depgraphs, suffix):
         '''
         saving dependency graphs to file
         :param depgraphs: list of ``DependencyGraph``
@@ -128,37 +135,88 @@ class Malteval(object):
             conll_file.write('\n'.join([dg.to_conll(10) for dg in depgraphs]))
             return conll_file
 
-    def create_gold_file(self, depgraphs):
+    def createGoldFile(self, depgraphs):
         '''
         create gold file from dependency graphs
         :param depgraphs: list of ``DependencyGraph``
         objects for training input data
         '''
-        self.set_gold_file(self._to_file(depgraphs, 'gold_malteval').name)
+        self.setGoldFile(self._toFile(depgraphs, 'gold_malteval').name)
 
-    def create_eval_file(self, depgraphs):
+    def createEvalFile(self, depgraphs):
         '''
         create eval file from dependency graphs
         :param depgraphs: list of ``DependencyGraph``
         objects for training input data
         '''
-        self.set_eval_file(self._to_file(depgraphs, 'eval_malteval').name)
+        self.setEvalFile(self._toFile(depgraphs, 'eval_malteval').name)
 
-    def get_command(self):
+    def getCommand(self):
         '''
         returns command as string based on set options.
         '''
+        if not self.goldFile:
+            raise AttributeError("goldFile not set")
+        if not self.evalFile:
+            raise AttributeError("evalFile not set")
+        if not self._malteval_bin:
+            raise AttributeError("malt eval bin not configured properly")
         cmd = ['java', '-jar',
                '%s' % self._malteval_bin,
-               '-g', '%s' % self._gold_file,
-               '-s', '%s' % self._eval_file]
+               '-g', '%s' % self.goldFile,
+               '-s', '%s' % self.evalFile]
+        if self.commandFilePath:
+            cmd.append('-e')
+            cmd.append('%s' % self.commandFilePath)
+        if self.visual:
+            cmd.append('-v')
+            cmd.append('1')
         self._cmd = cmd
         return ' '.join(cmd)
 
     def execute(self):
-        self.get_command()
+        self.getCommand()
         p = subprocess.Popen(self._cmd, shell=False, stdout=subprocess.PIPE)
         com = p.communicate()
         return com[0]
+
+    def setCommandFile(self, maltEvalCmd):
+        """
+        Set file with commands for MaltEval. File is created from
+        object representing MaltEval command.
+        :param maltEvalCmd: object representing MaltEval command xml file
+        :type maltEvalCmd: MaltevalXmlCommands
+        """
+        self.maltEvalCmd = maltEvalCmd
+        self.commandFilePath = os.path.join(tempfile.gettempdir(),
+            "MaltevalCommandF.xml")
+        with open(self.commandFilePath, "w") as cmdFile:
+            cmdFile.write(maltEvalCmd.toprettyxml())
+
+    def deleteCommandFile(self):
+        self.maltEvalCmd = None
+        self.commandFilePath = None
+
+
+    def setVisual(self, visual):
+        self.visual = visual
+
+    def tryParse(self, maltevalOut):
+        return float(maltevalOut.split("\n")[12].split()[0])
+
+    def singleSimpleMetric(self, metricName):
+        maltevalCommands = MaltevalXmlCommands()
+        maltevalCommands.addMetric(metricName)
+        self.setCommandFile(maltevalCommands)
+        return self.tryParse(self.execute())
+
+
+    def uas(self):
+        return self.singleSimpleMetric(MaltevalMetric.UAS)
+
+
+    def las(self):
+        return self.singleSimpleMetric(MaltevalMetric.LAS)
+
 
 
