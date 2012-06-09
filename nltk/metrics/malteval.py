@@ -205,7 +205,7 @@ class Malteval(object):
         self.commandFilePath = os.path.join(tempfile.gettempdir(),
             "MaltevalCommandF.xml")
         with open(self.commandFilePath, "w") as cmdFile:
-            cmdFile.write(maltevlaCmd.toprettyxml())
+            cmdFile.write(maltevlaCmd.toPrettyXml())
 
     def deleteCommandFile(self):
         self.maltevlaCmd = None

@@ -35,7 +35,7 @@ class TestParameter(TestCase):
         return False
 
     def _getValueSelf(self, parameterName, valueName):
-        return self._getValue(parameterName, valueName, self.malevalCmd.toprettyxml())
+        return self._getValue(parameterName, valueName, self.malevalCmd.toPrettyXml())
 
     def _hasParameter(self, parameterName, doc):
         dom = parseString(doc)
@@ -45,7 +45,7 @@ class TestParameter(TestCase):
         return False
 
     def _hasParameterSelf(self, parameterName):
-        return self._hasParameter(parameterName, self.malevalCmd.toprettyxml())
+        return self._hasParameter(parameterName, self.malevalCmd.toPrettyXml())
 
     ###TESTS
 
@@ -76,7 +76,7 @@ class TestParameter(TestCase):
     def testDoubleAdd(self):
         self.malevalCmd.addValue(MaltevalParameters.Metric, MaltevalMetric.LAS)
         self.malevalCmd.addValue(MaltevalParameters.Metric, MaltevalMetric.LAS)
-        res = self.malevalCmd.toprettyxml()
+        res = self.malevalCmd.toPrettyXml()
         splits = str(res).split(MaltevalParameters.Metric)
         self.assertEqual(len(splits), 2);
 

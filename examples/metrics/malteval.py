@@ -43,7 +43,7 @@ maltevalXmlCommands.addValue(MaltevalParameters.ExcludePdeprels, "apobl|app")
 #used rarely but can be specified
 maltevalXmlCommands.addGroupBy("Cpostag@-1")
 #see if it looks good
-print maltevalXmlCommands.toprettyxml()
+print maltevalXmlCommands.toPrettyXml()
 malteval.setCommand(maltevalXmlCommands)
 print malteval.execute()
 
