@@ -90,6 +90,12 @@ __classifiers__ = [
 
 from internals import config_java
 
+# support numpy from pypy
+try:
+    import numpypy
+except ImportError:
+    pass
+
 ###########################################################
 # TOP-LEVEL MODULES
 ###########################################################

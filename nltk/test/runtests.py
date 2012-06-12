@@ -57,6 +57,21 @@ if __name__ == '__main__':
     manager = NltkPluginManager()
     manager.loadPlugins()
 
+    # allow passing extra options and running individual tests
+    # Examples:
+    #
+    #    python runtests.py semantics.doctest
+    #    python runtests.py --with-id -v
+    #    python runtests.py --with-id -v nltk.featstruct
+
+    args = sys.argv[1:]
+    if not args:
+        args = [NLTK_TEST_DIR]
+
+    if all(arg.startswith('-') for arg in args):
+        # only extra options were passed
+        args += [NLTK_TEST_DIR]
+
     nose.main(argv=_EXCLUDE_ARGV + [
             #'--with-xunit',
             #'--xunit-file=$WORKSPACE/nosetests.xml',
@@ -64,4 +79,4 @@ if __name__ == '__main__':
             '--doctest-extension=.doctest',
             '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL',
             #'--verbosity=3',
-        ] + sys.argv[1:] + [NLTK_TEST_DIR], plugins=manager.plugins)
+        ] + args, plugins=manager.plugins)
