@@ -187,7 +187,7 @@ class NombankInstance(object):
 
     def __str__(self):
         s = '%s %s %s %s %s' % (self.fileid, self.sentnum, self.wordnum,
-                                self.basename, self.sensenumber)
+                                self.baseform, self.sensenumber)
         items = self.arguments + ((self.predicate, 'rel'),)
         for (argloc, argid) in sorted(items):
             s += ' %s-%s' % (argloc, argid)
