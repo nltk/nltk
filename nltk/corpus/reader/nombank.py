@@ -129,7 +129,7 @@ class NombankCorpusReader(CorpusReader):
                     line, self._parse_fileid_xform,
                     self._parse_corpus)
                 if instance_filter(inst):
-                    block.append()
+                    block.append(inst)
 
         return block
 
