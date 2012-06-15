@@ -68,13 +68,16 @@ class NombankCorpusReader(CorpusReader):
         elif isinstance(fileids, basestring): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
-    def instances(self):
+    def instances(self, baseform=None):
         """
         :return: a corpus view that acts as a list of
         ``NombankInstance`` objects, one for each noun in the corpus.
         """
+        kwargs = {}
+        if baseform is not None:
+            kwargs['instance_filter'] = lambda inst: inst.baseform==baseform
         return StreamBackedCorpusView(self.abspath(self._nomfile),
-                                      self._read_instance_block,
+                                      lambda stream: self._read_instance_block(stream, **kwargs),
                                       encoding=self.encoding(self._nomfile))
 
     def lines(self):
@@ -115,16 +118,18 @@ class NombankCorpusReader(CorpusReader):
                                       read_line_block,
                                       encoding=self.encoding(self._nounsfile))
 
-    def _read_instance_block(self, stream):
+    def _read_instance_block(self, stream, instance_filter=lambda inst: True):
         block = []
 
         # Read 100 at a time.
         for i in range(100):
             line = stream.readline().strip()
             if line:
-                block.append(NombankInstance.parse(
+                inst = NombankInstance.parse(
                     line, self._parse_fileid_xform,
-                    self._parse_corpus))
+                    self._parse_corpus)
+                if instance_filter(inst):
+                    block.append(inst)
 
         return block
 
