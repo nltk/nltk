@@ -103,6 +103,63 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     def _word(self, t):
         return WORD.findall(self._normalize(t))
 
+class CategorizedBracketParseCorpusReader(CategorizedCorpusReader,
+                                          BracketParseCorpusReader):
+    """
+    A reader for parsed corpora whose documents are
+    divided into categories based on their file identifiers.
+    @author: Nathan Schneider <nschneid@cs.cmu.edu>
+    """
+    def __init__(self, *args, **kwargs):
+        """
+        Initialize the corpus reader.  Categorization arguments
+        (C{cat_pattern}, C{cat_map}, and C{cat_file}) are passed to
+        the L{CategorizedCorpusReader constructor
+        <CategorizedCorpusReader.__init__>}.  The remaining arguments
+        are passed to the L{BracketParseCorpusReader constructor
+        <BracketParseCorpusReader.__init__>}.
+        """
+        CategorizedCorpusReader.__init__(self, kwargs)
+        BracketParseCorpusReader.__init__(self, *args, **kwargs)
+
+    def _resolve(self, fileids, categories):
+        if fileids is not None and categories is not None:
+            raise ValueError('Specify fileids or categories, not both')
+        if categories is not None:
+            return self.fileids(categories)
+        else:
+            return fileids
+    def raw(self, fileids=None, categories=None):
+        return BracketParseCorpusReader.raw(
+            self, self._resolve(fileids, categories))
+    def words(self, fileids=None, categories=None):
+        return BracketParseCorpusReader.words(
+            self, self._resolve(fileids, categories))
+    def sents(self, fileids=None, categories=None):
+        return BracketParseCorpusReader.sents(
+            self, self._resolve(fileids, categories))
+    def paras(self, fileids=None, categories=None):
+        return BracketParseCorpusReader.paras(
+            self, self._resolve(fileids, categories))
+    def tagged_words(self, fileids=None, categories=None, simplify_tags=False):
+        return BracketParseCorpusReader.tagged_words(
+            self, self._resolve(fileids, categories), simplify_tags)
+    def tagged_sents(self, fileids=None, categories=None, simplify_tags=False):
+        return BracketParseCorpusReader.tagged_sents(
+            self, self._resolve(fileids, categories), simplify_tags)
+    def tagged_paras(self, fileids=None, categories=None, simplify_tags=False):
+        return BracketParseCorpusReader.tagged_paras(
+            self, self._resolve(fileids, categories), simplify_tags)
+    def parsed_words(self, fileids=None, categories=None):
+        return BracketParseCorpusReader.parsed_words(
+            self, self._resolve(fileids, categories))
+    def parsed_sents(self, fileids=None, categories=None):
+        return BracketParseCorpusReader.parsed_sents(
+            self, self._resolve(fileids, categories))
+    def parsed_paras(self, fileids=None, categories=None):
+        return BracketParseCorpusReader.parsed_paras(
+            self, self._resolve(fileids, categories))
+
 class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
