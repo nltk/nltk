@@ -756,11 +756,11 @@ def find_corpus_fileids(root, regexp):
         items = [name for name in fileids if re.match(regexp, name)]
         return sorted(items)
 
-    # Find fileids in a directory: use os.walk to search all
-    # subdirectories, and match paths against the regexp.
+    # Find fileids in a directory: use os.walk to search all (proper
+    # or symlinked) subdirectories, and match paths against the regexp.
     elif isinstance(root, FileSystemPathPointer):
         items = []
-        for dirname, subdirs, fileids in os.walk(root.path):
+        for dirname, subdirs, fileids in os.walk(root.path, followlinks=True):
             prefix = ''.join('%s/' % p for p in _path_from(root.path, dirname))
             items += [prefix+fileid for fileid in fileids
                       if re.match(regexp, prefix+fileid)]

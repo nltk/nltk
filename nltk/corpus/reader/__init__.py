@@ -106,6 +106,7 @@ __all__ = [
     'MacMorphoCorpusReader', 'SyntaxCorpusReader',
     'AlpinoCorpusReader', 'RTECorpusReader',
     'StringCategoryCorpusReader','EuroparlCorpusReader',
+    'CategorizedBracketParseCorpusReader',
     'CategorizedTaggedCorpusReader',
     'CategorizedPlaintextCorpusReader',
     'PortugueseCategorizedPlaintextCorpusReader',
