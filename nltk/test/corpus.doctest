@@ -293,12 +293,10 @@ Reading the Penn Treebank (Wall Street Journal sample):
       (. .))
 
 If you have access to a full installation of the Penn Treebank, NLTK 
-can be configured to load it as well. In your ``nltk_data`` directory, 
-create a directory called ``ptb3`` in which the Treebank files will 
-be stored (alternatively, ``ptb3`` can be a symlink to an existing 
-installation). The ``ptb3`` directory should contain the ``BROWN`` and 
-``WSJ`` subdirectories, as well as ``allcats.txt``. Then use the ``ptb`` 
-module instead of ``treebank``:
+can be configured to load it as well. Download the ``ptb3`` package, 
+and in the directory ``nltk_data/corpora/ptb3`` place the ``BROWN`` 
+and ``WSJ`` directories of the Treebank installation (symlinks work 
+as well). Then use the ``ptb`` module instead of ``treebank``:
 
    >>> from nltk.corpus import ptb
    >>> print ptb.fileids() # doctest: +ELLIPSIS
