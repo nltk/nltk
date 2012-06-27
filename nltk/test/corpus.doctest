@@ -293,8 +293,8 @@ Reading the Penn Treebank (Wall Street Journal sample):
       (. .))
 
 If you have access to a full installation of the Penn Treebank, NLTK 
-can be configured to load it as well. Download the ``ptb3`` package, 
-and in the directory ``nltk_data/corpora/ptb3`` place the ``BROWN`` 
+can be configured to load it as well. Download the ``ptb`` package, 
+and in the directory ``nltk_data/corpora/ptb`` place the ``BROWN`` 
 and ``WSJ`` directories of the Treebank installation (symlinks work 
 as well). Then use the ``ptb`` module instead of ``treebank``:
 
@@ -675,7 +675,7 @@ at 9353:
 
 However, if you supply your own version of the treebank corpus (by
 putting it before the nltk-provided version on `nltk.data.path`, or 
-by creating a `ptb3` directory as described above and using the 
+by creating a `ptb` directory as described above and using the 
 `propbank_ptb` module), then you can access the trees for all 
 instances.
 
