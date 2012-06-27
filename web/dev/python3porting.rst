@@ -20,6 +20,7 @@ General notes
 There are good existing guides for writing Python 2.x - 3.x compatible
 code, e.g.
 
+* http://docs.python.org/dev/howto/pyporting.html
 * http://python3porting.com/
 * http://code.djangoproject.com/wiki/PortingNotesFor2To3
 
@@ -45,11 +46,18 @@ further porting would be easier and there shouldn't be 2.x regressions.
 nltk.compat
 ^^^^^^^^^^^
 
-There is a helper ``nltk.compat`` module that is loosely based on
-`six <http://packages.python.org/six/>`_ library. It provides simple
-utilities for wrapping over differences between Python 2 and Python 3.
-Moved imports, removed/renamed builtins and type names differences
-goes there.
+There is a helper ``nltk.compat`` module that is loosely based on a great
+`six`_ library. It provides simple utilities for wrapping over differences
+between Python 2 and Python 3. Moved imports, removed/renamed builtins
+and type names differences goes there.
+
+.. note::
+
+   We don't use `six`_ directly because it doesn't work well
+   bundled and NLTK needs extra custom 2+3 helpers anyway.
+
+.. _six: http://packages.python.org/six/
+
 
 map vs imap, items vs iteritems, ...
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -93,7 +101,7 @@ compatible so there are some methods to overcome the limitation.
   (foo) == foo; ``print(foo, bar)`` prints tuple; ``print(foo, sep=' ')``
   raises an exception. In order to make print() work this future import
   is injected to all doctests' globals within NLTK test suite
-  (implementation: ``nltk.test.doctest_nose_plugin.PrintFunctionMixin``).
+  (implementation: ``nltk.test.doctest_nose_plugin.DoctestPluginHelper``).
   So NLTK's doctests shouldn't import print_function but they should
   assume this import is in effect.
 
@@ -134,10 +142,20 @@ Python 3.x::
     >>> x
     'foo'
 
-(Note missing 'u' in Python 3 example). This makes writing doctest harder.
-For single variables ``print`` should be used instead.
+(Note the missing 'u' in Python 3 example).
 
-Python 2.x::
+In order to simplify things NLTK's custom doctest runner
+(see ``nltk.test.doctest_nose_plugin.DoctestPluginHelper``) doesn't
+take 'u''s into account; it just considers u'foo' and 'foo' equal;
+developer is free to write u'foo' or 'foo'.
+
+This is not absolutely correct but if this distinction is important
+then doctest should be converted to unittest.
+
+There are other possible fixes for the ``__repr__`` issue but they
+all make doctests less readable.
+
+For single variables ``print`` may be used. Python 2.x::
 
     >>> print(x)
     foo
@@ -152,7 +170,7 @@ This won't help with container types. Python 2.x::
     >>> print([x, x])
     [u'foo', u'foo']
 
-Possible fixes are::
+Possible fixes for lists are::
 
     >>> for txt in [x, x]:
     ...     print(x)
@@ -163,14 +181,6 @@ or::
 
     >>> print(", ".join([x, x]))
     foo, foo
-
-But in order to make doctests look better NLTK's doctest runner
-doesn't take 'u''s into account; it just considers u'foo' and 'foo' equal
-(and so the fixes above are not needed); developer is free to write
-u'foo' or 'foo'.
-
-This is not absolutely correct but if this distinction is important
-then doctest should be converted to unittest.
 
 
 Float values representation
