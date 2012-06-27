@@ -149,7 +149,7 @@ pl196x = LazyCorpusLoader(
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
 ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
-    'ptb3', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
+    'ptb', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
     cat_file='allcats.txt', tag_mapping_function=simplify_wsj_tag)
 qc = LazyCorpusLoader(
     'qc', StringCategoryCorpusReader, ['train.txt', 'test.txt'])
