@@ -93,8 +93,10 @@ class NombankCorpusReader(CorpusReader):
         """
         :return: the xml description for the given roleset.
         """
-        lemma = roleset_id.split('.')[0]
-        framefile = 'frames/%s.xml' % lemma
+        baseform = roleset_id.split('.')[0]
+        baseform = baseform.replace('perc-sign','%')
+        baseform = baseform.replace('oneslashonezero', '1/10').replace('1/10','1-slash-10')
+        framefile = 'frames/%s.xml' % baseform
         if framefile not in self._framefiles:
             raise ValueError('Frameset file for %s not found' %
                              roleset_id)
@@ -108,6 +110,27 @@ class NombankCorpusReader(CorpusReader):
         else:
             raise ValueError('Roleset %s not found in %s' %
                              (roleset_id, framefile))
+
+    def rolesets(self, baseform=None):
+        """
+        :return: list of xml descriptions for rolesets.
+        """
+        if baseform is not None:
+            framefile = 'frames/%s.xml' % baseform
+            if framefile not in self._framefiles:
+                raise ValueError('Frameset file for %s not found' %
+                                 baseform)
+            framefiles = [framefile]
+        else:
+            framefiles = self._framefiles
+
+        rsets = []
+        for framefile in framefiles:
+            # n.b.: The encoding for XML fileids is specified by the file
+            # itself; so we ignore self._encoding here.
+            etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+            rsets.append(etree.findall('predicate/roleset'))
+        return LazyConcatenation(rsets)
 
     def nouns(self):
         """
@@ -159,14 +182,14 @@ class NombankInstance(object):
         """The baseform of the predicate."""
 
         self.sensenumber = sensenumber
-        """The sense number os the predicate"""
+        """The sense number of the predicate."""
 
         self.predicate = predicate
         """A ``NombankTreePointer`` indicating the position of this
         instance's predicate within its containing sentence."""
 
         self.predid = predid
-        """Identifier of the predicate """
+        """Identifier of the predicate."""
 
         self.arguments = tuple(arguments)
         """A list of tuples (argloc, argid), specifying the location
@@ -184,7 +207,9 @@ class NombankInstance(object):
         """The name of the roleset used by this instance's predicate.
         Use ``nombank.roleset() <NombankCorpusReader.roleset>`` to
         look up information about the roleset."""
-        return '%s.%s'%(self.baseform, self.sensenumber)
+        r = self.baseform.replace('%','perc-sign')
+        r = r.replace('1/10','1-slash-10').replace('1-slash-10','oneslashonezero')
+        return '%s.%s'%(r, self.sensenumber)
 
     def __repr__(self):
         return ('<NombankInstance: %s, sent %s, word %s>' %
