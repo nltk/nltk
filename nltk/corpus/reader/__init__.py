@@ -88,6 +88,7 @@ from nltk.corpus.reader.chasen import *
 from nltk.corpus.reader.childes import *
 from nltk.corpus.reader.aligned import *
 from nltk.corpus.reader.lin import *
+from nltk.corpus.reader.semcor import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
@@ -120,5 +121,6 @@ __all__ = [
     'IPIPANCorpusReader', 'Pl196xCorpusReader',
     'TEICorpusView', 'KNBCorpusReader', 'ChasenCorpusReader',
     'CHILDESCorpusReader', 'AlignedCorpusReader',
-    'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader'
+    'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader',
+    'SemcorCorpusReader'
 ]
