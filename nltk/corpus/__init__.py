@@ -159,7 +159,7 @@ reuters = LazyCorpusLoader(
 rte = LazyCorpusLoader(
     'rte', RTECorpusReader, r'(?!\.).*\.xml')
 semcor = LazyCorpusLoader(
-    'semcor', XMLCorpusReader, r'brown./tagfiles/br-.*\.xml')
+    'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml')
 senseval = LazyCorpusLoader(
     'senseval', SensevalCorpusReader, r'(?!\.).*\.pos')
 shakespeare = LazyCorpusLoader(
