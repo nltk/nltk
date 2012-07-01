@@ -228,6 +228,28 @@ CoNLL 2002 Corpus includes named entity chunks.
    arguments, they will return the contents of the entire corpus,
    *including* the 'test' portions of the corpus.)
 
+SemCor is a subset of the Brown corpus tagged with WordNet senses and 
+named entities. Both kinds of lexical items include multiword units, 
+which are encoded as chunks (senses and part-of-speech tags pertain 
+to the entire chunk).
+
+    >>> from nltk.corpus import semcor
+    >>> semcor.words()
+    ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
+    >>> semcor.chunks()
+    [['The'], ['Fulton', 'County', 'Grand', 'Jury'], ['said'], ...]
+    >>> semcor.sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...], 
+    ['The', 'jury', 'further', 'said', ...], ...]
+    >>> semcor.chunk_sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [[['The'], ['Fulton', 'County', 'Grand', 'Jury'], ['said'], ... 
+    ['.']], [['The'], ['jury'], ['further'], ['said'], ... ['.']], ...]
+    >>> list(map(str, semcor.tagged_chunks(tag='both')[:3]))
+    ['(DT The)', '(group.01 (NE (NNP Fulton County Grand Jury)))', '(say.01 (VB said))']
+    >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]] # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [['(DT The)', '(group.01 (NE (NNP Fulton County Grand Jury)))', '(say.01 (VB said))', ...
+     '(None .)'], ['(DT The)', ... '(None .)']]
+
 The IEER corpus is another chunked corpus.  This corpus is unusual in
 that each corpus item contains multiple documents.  (This reflects the
 fact that each corpus file contains multiple documents.)  The IEER
