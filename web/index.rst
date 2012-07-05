@@ -60,7 +60,6 @@ Links
 -----
 
 * NLTK-Users mailing list: http://groups.google.com/group/nltk-users
-* NLTK data: http://nltk.github.com/nltk_data
 * NLTK's previous website: https://sites.google.com/site/naturallanguagetoolkit
 * NLTK development: https://github.com/nltk
 * NLTK-Dev mailing list: http://groups.google.com/group/nltk-dev
@@ -73,6 +72,7 @@ Contents
 
    news
    install
+   data
    api/nltk
 
 * :ref:`genindex`
