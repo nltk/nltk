@@ -1,6 +1,9 @@
 NLTK News
 =========
 
+NLTK 2.0.2 released : July 2012
+    This release contains minor improvements and bugfixes.  For details see https://raw.github.com/nltk/nltk/master/ChangeLog
+
 NLTK 2.0.1 released : May 2012
     The final release of NLTK 2.  For details see https://raw.github.com/nltk/nltk/master/ChangeLog
 
