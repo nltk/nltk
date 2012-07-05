@@ -10,8 +10,8 @@ Mac/Unix
 #. Install Setuptools: Download the corresponding version of Setuptools from
    http://pypi.python.org/pypi/setuptools (scroll to the bottom, and pick the filename that contains the right version number and which has the extension .egg).  Install it by typing ``sudo sh Downloads/setuptools-...egg``, giving the location of the downloaded file.
 #. Install Pip: run ``sudo easy_install pip``
-#. Install Numpy: run ``sudo pip install numpy --upgrade``
-#. Install NLTK: run ``sudo pip install nltk --upgrade``
+#. Install Numpy (optional): run ``sudo pip install -U numpy``
+#. Install PyYAML and NLTK: run ``sudo pip install -U pyyaml nltk``
 #. Test installation: run ``python`` then type ``import nltk``
 
 Windows
@@ -35,6 +35,6 @@ Source installation (for 32-bit or 64-bit Windows)
 #. Install Numpy (optional): http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 #. Install Setuptools: http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
 #. Install Pip: ``Start>Run... c:\Python27\Scripts\easy_install pip``
-#. Install NLTK: ``Start>Run... c:\Python27\Scripts\pip install nltk``
+#. Install PyYAML and NLTK: ``Start>Run... c:\Python27\Scripts\pip install pyyaml nltk``
 #. Test installation: ``Start>All Programs>Python27>IDLE``, then type ``import nltk``
 
