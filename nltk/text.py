@@ -379,7 +379,7 @@ class Text(object):
         if '_trigram_model' not in self.__dict__:
             print "Building ngram index..."
             estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-            self._trigram_model = NgramModel(3, self, estimator)
+            self._trigram_model = NgramModel(3, self, estimator=estimator)
         text = self._trigram_model.generate(length)
         print tokenwrap(text)
 
