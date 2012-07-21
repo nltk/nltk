@@ -27,10 +27,13 @@ functions that take two arguments, and return a value between 0.0 and 1.0
 indicating the distance between them.  If not supplied, the default is binary
 comparison between the arguments.
 
-The simplest way to initialize an AnnotationTask is with a list of equal-length
-lists, each containing a coder's assignments for all objects in the task:
+The simplest way to initialize an AnnotationTask is with a list of triples,
+each containing a coder's assignment for one object in the task:
 
-    task = AnnotationTask([],[],[])
+    task = AnnotationTask(data=[('c1', '1', 'v1'),('c2', '1', 'v1'),...])
+
+Note that the data list needs to contain the same number of triples for each
+individual coder, containing category values for the same set of items.
 
 Alpha (Krippendorff 1980)
 Kappa (Cohen 1960)
@@ -51,9 +54,21 @@ Expected results from the Artstein and Poesio survey paper:
     >>> t.avg_Ao()
     0.88
     >>> t.pi()
-    0.79953224189776151
+    0.7995322418977615
     >>> t.S()
-    0.81999999999999984
+    0.8199999999999998
+    
+    This would have returned a wrong value (0.0) in @785fb79 as coders are in
+    the wrong order. Subsequently, all values for pi(), S(), and kappa() would
+    have been wrong as they are computed with avg_Ao().
+    >>> t2 = AnnotationTask(data=[('b','1','stat'),('a','1','stat')])
+    >>> t2.avg_Ao()
+    1.0
+
+    The following, of course, also works.
+    >>> t3 = AnnotationTask(data=[('a','1','othr'),('b','1','othr')])
+    >>> t3.avg_Ao()
+    1.0
 
 """
 
@@ -115,13 +130,20 @@ class AnnotationTask(object):
 
         """
         data = data or self.data
-        kA = (x for x in data if x['coder']==cA and x['item']==i).next()
-        kB = (x for x in data if x['coder']==cB and x['item']==i).next()
-        ret = 1.0 - float(self.distance(kA['labels'], kB['labels']))
+        # cfedermann: we don't know what combination of coder/item will come
+        # first in x; to avoid StopIteration problems due to assuming an order
+        # cA,cB, we allow either for k1 and then look up the missing as k2.
+        k1 = (x for x in data if x['coder'] in (cA,cB) and x['item']==i).next()
+        if k1['coder'] == cA:
+            k2 = (x for x in data if x['coder']==cB and x['item']==i).next()
+        else:
+            k2 = (x for x in data if x['coder']==cA and x['item']==i).next()
+        
+        ret = 1.0 - float(self.distance(k1['labels'], k2['labels']))
         log.debug("Observed agreement between %s and %s on %s: %f",
                       cA, cB, i, ret)
         log.debug("Distance between \"%r\" and \"%r\": %f",
-                      kA['labels'], kB['labels'], 1.0 - ret)
+                      k1['labels'], k2['labels'], 1.0 - ret)
         return ret
 
     def Nk(self, k):
