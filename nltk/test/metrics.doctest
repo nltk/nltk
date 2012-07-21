@@ -194,3 +194,151 @@ Confusion Matrix
          9: T
         10: h
     <BLANKLINE>
+
+------------------
+MALTEVAL INTERFACE
+------------------
+First lets import some useful libs
+>>> import os
+>>> import tempfile
+>>> from nltk.metrics.malteval import Malteval
+>>> from nltk.parse.dependencygraph import DependencyGraph
+>>> from stat import *
+
+Now we will create 2 graphs to work on
+
+>>> dg1 = DependencyGraph("""1  Na      na      prep    prep    loc     4       pobl    _       _
+...             2       tym     to      psubst  psubst  sg|loc|n        1       pobj    _       _
+...             3       nie     nie     qub     qub     _       4       neg     _       _
+...             4       koncza  konczyc fin     fin     pl|ter|imperf   0       pred    _       _
+...             5       sie     się     qub     qub     _       4       refl    _       _
+...             6       ich     on      ppron3  ppron3  pl|gen|m1|ter|akc|npraep        7       adj     _       _
+...             7       problemy        problem subst   subst   pl|nom|m3       4       subj    _       _
+...             8       .       .       interp  interp  _       4       punct   _       _
+...             """)
+>>> dg2 =DependencyGraph("""1       Zakonczyly      zakonczyc       praet   praet   pl|f|perf       0       pred    _       _
+...             2       sie     sie     qub     qub     _       1       refl    _       _
+...             3       sukcesem        sukces  subst   subst   sg|inst|m3      1       obl     _       _
+...             4       .       .       interp  interp  _       1       punct   _       _
+...             """)
+>>> dg = [dg1,dg2]
+
+We create Malteval object with look_for_jar set to False in order to make it
+ignore the fact that malteval.jar might be not set properly
+
+    >>> jar = '/x/y/z/1221526/y/'
+    >>> maltEval = Malteval(jar,look_for_jar=False)
+    >>> maltEval._malteval_bin
+    '/x/y/z/1221526/y/'
+
+simple setters for gold standard file and file we want to evaluate
+
+    >>> gold_file = '/tmp/me/gold.conll'
+    >>> maltEval.setGoldFile(gold_file)
+    >>> maltEval.goldFile
+    '/tmp/me/gold.conll'
+    >>> eval_file = '/tmp/me/test.conll'
+    >>> maltEval.setEvalFile(eval_file)
+    >>> maltEval.evalFile
+    '/tmp/me/test.conll'
+
+we can also change location of ours MaltEval.jar, and see command we get with options so far
+
+    >>> maltEval.setJar(malteval_jar='MaltEval.jar',check_jar_correctness=False)
+    >>> maltEval.getCommand()
+    'java -jar MaltEval.jar -g /tmp/me/gold.conll -s /tmp/me/test.conll'
+
+We will create gold and eval files from ours graphs
+    >>> f=maltEval._toFile(dg,'tst')
+    >>> f is None
+    False
+    >>> os.stat(f.name)[ST_SIZE]
+    401L
+    >>> maltEval.createGoldFile(dg)
+    >>> os.path.exists(os.path.join(tempfile.gettempdir(),'gold_malteval'))
+    True
+    >>> maltEval.createEvalFile(dg)
+    >>> os.path.exists(os.path.join(tempfile.gettempdir(),'eval_malteval'))
+    True
+
+    Now we will check if Malteval is configured properly (e.g can be instantiated without
+    passing string with jar location to it). such configuration can be achieved by
+    setting MALTEVALHOME to malteval.jar
+
+>>> if (Malteval.canConfigureProperly()):
+...     maltEval = Malteval()
+...     maltEval.createGoldFile(dg)
+...     maltEval.createEvalFile(dg)
+...     res = maltEval.execute()
+...     print("\n".join(res.split("\n")[10:14]))
+accuracy /    Token
+-----------------------
+1             Row mean
+12            Row count
+
+
+>>> from nltk.metrics.maltevalconstans import MaltevalMetric, MaltevalParameters, MaltevalGroupBy
+>>> from nltk.metrics.maltevalxmlcommadns import MaltevalXmlCommands
+>>> maltEvalCmd = MaltevalXmlCommands()
+>>> maltEvalCmd.addGroupBy(MaltevalGroupBy.ArcDepth)
+>>> print  maltEvalCmd.toprettyxml()
+<?xml version="1.0" ?>
+<evaluation>
+ <parameter name="GroupBy">
+  <value>
+   ArcDepth
+  </value>
+ </parameter>
+</evaluation>
+<BLANKLINE>
+>>> maltEvalCmd.addMetric(MaltevalMetric.BothWrong)
+>>> maltEvalCmd.addMetric(MaltevalGroupBy.ArcDepth)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "nltk/metrics/maltevalxmlcommadns.py", line 222, in addMetric
+    raise AttributeError
+AttributeError
+>>> print  maltEvalCmd.toprettyxml()
+<?xml version="1.0" ?>
+<evaluation>
+ <parameter name="GroupBy">
+  <value>
+   ArcDepth
+  </value>
+ </parameter>
+ <parameter name="Metric">
+  <value>
+   BothWrong
+  </value>
+ </parameter>
+</evaluation>
+<BLANKLINE>
+>>> maltEvalCmd.deleteMetric(MaltevalMetric.BothWrong)
+>>> maltEvalCmd.addValue(MaltevalParameters.ExcludeLemmas,"lemma")
+>>> print maltEvalCmd.toprettyxml()
+<?xml version="1.0" ?>
+<evaluation>
+ <parameter name="GroupBy">
+  <value>
+   ArcDepth
+  </value>
+ </parameter>
+ <parameter name="ExcludeLemmas">
+  <value>
+   lemma
+  </value>
+ </parameter>
+</evaluation>
+<BLANKLINE>
+>>> maltEvalCmd.minSentenceLength(-1)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "nltk/metrics/maltevalxmlcommadns.py", line 204, in minSentenceLength
+    raise AttributeError("minLength smaller then 1")
+AttributeError: minLength smaller then 1
+>>> maltEvalCmd.addValue("non",MaltevalMetric.AnyRight)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "nltk/metrics/maltevalxmlcommadns.py", line 167, in addValue
+    raise AttributeError(parameterName)
+AttributeError: non

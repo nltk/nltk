@@ -26,3 +26,6 @@ from nltk.metrics.association     import (NgramAssocMeasures, BigramAssocMeasure
                                           TrigramAssocMeasures, ContingencyMeasures)
 from nltk.metrics.spearman        import (spearman_correlation, ranks_from_sequence,
                                           ranks_from_scores)
+from nltk.metrics.malteval        import Malteval
+from nltk.metrics.maltevalconstans import _MaltevalMetric,_MaltevalParameters,_MaltevalGroupBy
+from nltk.metrics.maltevalxmlcommadns import Parameter,MaltevalXmlCommands
