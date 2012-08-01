@@ -475,7 +475,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         return None
 
     def __repr__(self):
-        return '<Regexp Tagger: size=%d>' % len(self._regexps)
+        return '<Regexp Tagger: size=%d>' % len(self._regexs)
 
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     """
