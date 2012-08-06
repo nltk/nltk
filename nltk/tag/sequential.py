@@ -467,6 +467,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         self._map = dict(zip(labels, tags))
         regexps_labels = [(regex, label) for ((regex,tag),label) in zip(regexps,labels)]
         self._regexs = re.compile('|'.join(['(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels]))
+        self._size=len(regexs)
 
     def choose_tag(self, tokens, index, history):
         m = self._regexs.match(tokens[index])
@@ -475,7 +476,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         return None
 
     def __repr__(self):
-        return '<Regexp Tagger: size=%d>' % len(self._regexs)
+        return '<Regexp Tagger: size=%d>' % self._size
 
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     """
