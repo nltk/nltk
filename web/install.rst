@@ -24,8 +24,9 @@ If you do, you can skip to the final step and just install NLTK.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. Install Python: http://www.python.org/download/releases/2.7.3/
-#. Install Numpy (optional): http://sourceforge.net/projects/numpy/files/NumPy/1.6.1/numpy-1.6.1-win32-superpack-python2.7.exe
+#. Install Numpy (optional): http://sourceforge.net/projects/numpy/files/NumPy/1.6.2/numpy-1.6.2-win32-superpack-python2.7.exe
 #. Install NLTK: http://pypi.python.org/pypi/nltk
+#. Install PyYAML: http://pyyaml.org/wiki/PyYAML
 #. Test installation: ``Start>Python27``, then type ``import nltk``
 
 Source installation (for 32-bit or 64-bit Windows)
