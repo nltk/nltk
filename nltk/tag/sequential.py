@@ -439,6 +439,8 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         ...      (r'.*ed$', 'VBD'),                 # past tense verbs
         ...      (r'.*', 'NN')                      # nouns (default)
         ... ])
+        >>> regexp_tagger
+        <Regexp Tagger: size=9>
         >>> regexp_tagger.tag(test_sent)
         [('The', 'AT'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'),
         ('said', 'NN'), ('Friday', 'NN'), ('an', 'AT'), ('investigation', 'NN'), ('of', 'NN'),
@@ -467,7 +469,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         self._map = dict(zip(labels, tags))
         regexps_labels = [(regex, label) for ((regex,tag),label) in zip(regexps,labels)]
         self._regexs = re.compile('|'.join(['(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels]))
-        self._size=len(regexs)
+        self._size=len(regexps)
 
     def choose_tag(self, tokens, index, history):
         m = self._regexs.match(tokens[index])
