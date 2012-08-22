@@ -69,6 +69,9 @@ from nltk.tag import simplify_brown_tag, simplify_wsj_tag,\
 from util import LazyCorpusLoader
 from reader import *
 
+masc = LazyCorpusLoader(
+    'masc', MascCorpusReader, r'(?!\.).*\.txt', encoding = 'utf-8')
+
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.).*\.txt')
 alpino = LazyCorpusLoader(
