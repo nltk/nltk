@@ -294,9 +294,9 @@ class Text(object):
             self.name = name
         elif ']' in tokens[:20]:
             end = tokens[:20].index(']')
-            self.name = " ".join(map(str, tokens[1:end]))
+            self.name = " ".join(map(unicode, tokens[1:end]))
         else:
-            self.name = " ".join(map(str, tokens[:8])) + "..."
+            self.name = " ".join(map(unicode, tokens[:8])) + "..."
 
     #////////////////////////////////////////////////////////////
     # Support item & slice access
