@@ -63,6 +63,7 @@ Links
 * NLTK's previous website: https://sites.google.com/site/naturallanguagetoolkit
 * NLTK development: https://github.com/nltk
 * NLTK-Dev mailing list: http://groups.google.com/group/nltk-dev
+* Publications about NLTK: http://scholar.google.com.au/scholar?q=NLTK
 
 Contents
 ========
