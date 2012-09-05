@@ -22,8 +22,7 @@ from nltk.parse.dependencygraph import DependencyGraph
 
 class MaltParser(ParserI):
 
-    def __init__(self, tagger=None, mco=None,
-                 working_dir=tempfile.gettempdir()):
+    def __init__(self, tagger=None, mco=None, working_dir=None):
         """
         An interface for parsing with the Malt Parser.
 
@@ -33,7 +32,8 @@ class MaltParser(ParserI):
         """
         self.config_malt()
         self.mco = 'malt_temp' if mco is None else mco
-        self.working_dir = working_dir
+        self.working_dir = tempfile.gettempdir() if working_dir is None\
+                           else working_dir
         self._trained = mco is not None
 
         if tagger is not None:
