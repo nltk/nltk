@@ -28,7 +28,7 @@ class MaltParser(ParserI):
 
         :param mco: The name of the pre-trained model. If provided, training
             will not be required, and MaltParser will use the model file in
-            ${working_dir}/${mco}.
+            ${working_dir}/${mco}.mco.
         :type mco: str
         """
         self.config_malt()
