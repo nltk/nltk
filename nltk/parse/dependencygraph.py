@@ -243,7 +243,6 @@ class DependencyGraph(object):
             for dep in node['deps']:
                 key = tuple([node['address'], dep]) #'%d -> %d' % (node['address'], dep)
                 distances[key] = 1
-        window = 0
         for n in range(len(self.nodelist)):
             new_entries = {}
             for pair1 in distances:
@@ -347,12 +346,10 @@ Nov.    NNP     9       VMOD
     print tree.pprint()
     if nx:
         #currently doesn't work
-        try:
-            import networkx as NX
-            import pylab as P
-        except ImportError:
-            raise
-            g = dg.nx_graph()
+        import networkx as NX
+        import pylab as P
+
+        g = dg.nx_graph()
         g.info()
         pos = NX.spring_layout(g, dim=1)
         NX.draw_networkx_nodes(g, pos, node_size=50)
