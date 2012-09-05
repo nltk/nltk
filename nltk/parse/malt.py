@@ -187,12 +187,11 @@ class MaltParser(ParserI):
             input_file = tempfile.NamedTemporaryFile(prefix='malt_train.conll',
                                                      dir=self.working_dir,
                                                      delete=False)
-            conll_str = conll_file.open().read()
-            conll_file.close()
-            input_file.write(conll_str)
-            input_file.close()
-
             try:
+                conll_str = conll_file.open().read()
+                conll_file.close()
+                input_file.write(conll_str)
+                input_file.close()
                 return self.train_from_file(input_file.name, verbose=verbose)
             finally:
                 input_file.close()
