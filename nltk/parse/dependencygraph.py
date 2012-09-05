@@ -15,6 +15,9 @@ The input is assumed to be in Malt-TAB format
 Currently only reads the first tree in a file.
 """
 
+# python2.5 compatibility
+from __future__ import with_statement
+
 from nltk.tree import Tree
 from pprint import pformat
 import re
@@ -118,7 +121,8 @@ class DependencyGraph(object):
         """
         :param file: a file in Malt-TAB format
         """
-        return DependencyGraph(open(file).read())
+        with open(file) as f:
+            return DependencyGraph(f.read())
 
     @staticmethod
     def _normalize(line):
