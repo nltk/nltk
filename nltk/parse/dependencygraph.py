@@ -15,6 +15,9 @@ The input is assumed to be in Malt-TAB format
 Currently only reads the first tree in a file.
 """
 
+# python2.5 compatibility
+from __future__ import with_statement
+
 from nltk.tree import Tree
 from pprint import pformat
 import re
@@ -118,7 +121,8 @@ class DependencyGraph(object):
         """
         :param file: a file in Malt-TAB format
         """
-        return DependencyGraph(open(file).read())
+        with open(file) as f:
+            return DependencyGraph(f.read())
 
     @staticmethod
     def _normalize(line):
@@ -239,7 +243,6 @@ class DependencyGraph(object):
             for dep in node['deps']:
                 key = tuple([node['address'], dep]) #'%d -> %d' % (node['address'], dep)
                 distances[key] = 1
-        window = 0
         for n in range(len(self.nodelist)):
             new_entries = {}
             for pair1 in distances:
@@ -343,12 +346,10 @@ Nov.    NNP     9       VMOD
     print tree.pprint()
     if nx:
         #currently doesn't work
-        try:
-            import networkx as NX
-            import pylab as P
-        except ImportError:
-            raise
-            g = dg.nx_graph()
+        import networkx as NX
+        import pylab as P
+
+        g = dg.nx_graph()
         g.info()
         pos = NX.spring_layout(g, dim=1)
         NX.draw_networkx_nodes(g, pos, node_size=50)
