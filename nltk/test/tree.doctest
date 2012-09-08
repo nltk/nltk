@@ -697,13 +697,13 @@ operations:
     >>> ptree[0,0].remove(make_ptree('(Q p)'))
     Traceback (most recent call last):
       . . .
-    ValueError: list.index(x): x not in list
+    ValueError: ParentedTree('Q', ['p']) is not in list
     >>> ptree.remove('h'); pcheck(ptree)
     ok! (A (B (C (D )) g))
     >>> ptree.remove('h');
     Traceback (most recent call last):
       . . .
-    ValueError: list.index(x): x not in list
+    ValueError: 'h' is not in list
     >>> # remove() removes the first subtree that is equal (==) to the
     >>> # given tree, which may not be the identical tree we give it:
     >>> ptree = make_ptree('(A (X x) (Y y) (X x))')
@@ -1012,13 +1012,13 @@ multiple parents.)
     >>> mptree[0,0].remove(make_mptree('(Q p)'))
     Traceback (most recent call last):
       . . .
-    ValueError: list.index(x): x not in list
+    ValueError: MultiParentedTree('Q', ['p']) is not in list
     >>> mptree.remove('h'); mpcheck(mptree)
     ok! (A (B (C (D )) g))
     >>> mptree.remove('h');
     Traceback (most recent call last):
       . . .
-    ValueError: list.index(x): x not in list
+    ValueError: 'h' is not in list
     >>> # remove() removes the first subtree that is equal (==) to the
     >>> # given tree, which may not be the identical tree we give it:
     >>> mptree = make_mptree('(A (X x) (Y y) (X x))')
