@@ -13,7 +13,7 @@ FreqDist
 
     >>> text1 = ['no', 'good', 'fish', 'goes', 'anywhere', 'without', 'a', 'porpoise', '!']
     >>> text2 = ['no', 'good', 'porpoise', 'likes', 'to', 'fish', 'fish', 'anywhere', '.']
-    
+
     >>> fd1 = nltk.FreqDist(text1)
     >>> fd1.items()
     [('!', 1), ('a', 1), ('anywhere', 1), ('fish', 1), ('goes', 1), ('good', 1), ('no', 1), ('porpoise', 1), ('without', 1)]
@@ -31,7 +31,7 @@ Note that items are sorted in order of decreasing frequency; two items of the sa
     True
     >>> fd1 == nltk.FreqDist(text1) # But fd1 is unchanged
     True
-    
+
     >>> fd2 = nltk.FreqDist(text2)
     >>> fd1.update(fd2)
     >>> fd1 == both
@@ -41,12 +41,12 @@ Note that items are sorted in order of decreasing frequency; two items of the sa
     >>> fd1.update(text2)
     >>> fd1 == both
     True
-        
+
     >>> fd1 = nltk.FreqDist(text1)
     >>> fd2 = nltk.FreqDist(fd1)
     >>> fd2 == fd1
     True
-    
+
 Testing some HMM estimators
 ---------------------------
 
@@ -65,16 +65,16 @@ from the whole corpus, not just the training corpus
     >>> symbols = list(set([word for sent in corpus for (word,tag) in sent]))
     >>> print len(symbols)
     1464
-    >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols) 
+    >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
 
 We divide the corpus into 90% training and 10% testing
 
     >>> train_corpus = []
     >>> test_corpus = []
     >>> for i in range(len(corpus)):
-    ...     if i % 10: 
+    ...     if i % 10:
     ...         train_corpus += [corpus[i]]
-    ...     else: 
+    ...     else:
     ...         test_corpus += [corpus[i]]
     >>> print len(train_corpus)
     450
@@ -107,7 +107,7 @@ Expected Likelihood Estimation (= Lidstone with gamma==0.5)
 Lidstone Estimation, for gamma==0.1, 0.5 and 1
 (the later two should be exactly equal to MLE and ELE above)
 
-    >>> def lidstone(gamma): 
+    >>> def lidstone(gamma):
     ...     return lambda fd, bins: LidstoneProbDist(fd, gamma, bins)
     >>> train_and_test(lidstone(0.1))
     82.51%
@@ -131,9 +131,9 @@ Good Turing Estimation
 
     >>> gt = lambda fd, bins: SimpleGoodTuringProbDist(fd)
     >>> train_and_test(gt)
-    14.43%
+    0.17%
 
-Remains to be added: 
+Remains to be added:
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
 
 Squashed bugs
@@ -173,4 +173,18 @@ Issue 351: fix fileids method of CategorizedCorpusReader to inadvertently add er
     ValueError: Category blah not found
     >>> brown.categories()
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor', 'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
+
+Issue 175: add the unseen bin to SimpleGoodTuringProbDist by default otherwise any unseen events get a probability of zero, i.e., they don't get smoothed
+
+    >>> from nltk import SimpleGoodTuringProbDist, FreqDist
+    >>> fd = FreqDist({'a':1, 'b':1, 'c': 2, 'd': 3, 'e': 4, 'f': 4, 'g': 4, 'h': 5, 'i': 5, 'j': 6, 'k': 6, 'l': 6, 'm': 7, 'n': 7, 'o': 8, 'p': 9, 'q': 10})
+    >>> p = SimpleGoodTuringProbDist(fd)
+    >>> p.prob('a')
+    0.017649766667026317
+    >>> p.prob('o')
+    0.08433050215340411
+    >>> p.prob('z')
+    0.022727272727272728
+    >>> p.prob('foobar')
+    0.022727272727272728
 
