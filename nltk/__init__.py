@@ -113,8 +113,7 @@ from util import *
 from yamltags import *
 
 # Modules that require Python 2.6
-from sys import version_info as vi
-if vi[0] == 2 and vi[1] >= 6:
+if py26() or py27():
     from align import *
 
 # don't import contents into top-level namespace:

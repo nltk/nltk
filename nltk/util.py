@@ -16,6 +16,7 @@ import os
 from itertools import islice, chain
 from pprint import pprint
 from collections import defaultdict, deque
+from sys import version_info
 
 from nltk.internals import slice_bounds
 
@@ -105,6 +106,18 @@ def tokenwrap(tokens, separator=" ", width=70):
     :type width: int
     """
     return '\n'.join(textwrap.wrap(separator.join(tokens), width=width))
+
+
+##########################################################################
+# Python version
+##########################################################################
+
+def py25():
+    return version_info[0] == 2 and version_info[1] == 5
+def py26():
+    return version_info[0] == 2 and version_info[1] == 6
+def py27():
+    return version_info[0] == 2 and version_info[1] == 7
 
 
 ##########################################################################
