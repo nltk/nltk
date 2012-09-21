@@ -3,8 +3,8 @@ Natural Language Toolkit (NLTK)   www.nltk.org
 
 Authors
 ----------------
-  - Steven Bird <sb@csse.unimelb.edu.au>
-  - Edward Loper <edloper@gradient.cis.upenn.edu>
+  - Steven Bird <stevenbird1@gmail.com>
+  - Edward Loper <edloper@gmail.com>
   - Ewan Klein <ewan@inf.ed.ac.uk>
 
 Copyright (C) 2001-2012 NLTK Project
@@ -21,7 +21,7 @@ A substantial amount of documentation about NLTK is available:
 
   - The [NLTK website](http://nltk.org/) has information about the NLTK community. 
 
-  - The [NLTK Book](http://nltk.org/book) covers a wide range of introductory topics in NLP, and
+  - The [NLTK Book](https://sites.google.com/site/naturallanguagetoolkit/book) covers a wide range of introductory topics in NLP, and
     shows how to do all the processing tasks using the toolkit.
 
   - The [API Documentation](http://nltk.github.com/api/) describes every module,
@@ -35,12 +35,11 @@ Mailing Lists
   - [nltk-users](http://groups.google.com/group/nltk-users): Discussions amongst NLTK users.
   - [nltk-dev](http://groups.google.com/group/nltk-dev): Discussions amongst NLTK developers.
   - [nltk-translation](http://groups.google.com/group/nltk-translation): Discussions about translating the NLTK book.
-  - [nltk-commits](http://groups.google.com/group/nltk-commits): Subversion commit logs for NLTK.
       
 
 Contributing
 ------------------
-If you would like to contribute to NLTK, please see [http://www.nltk.org/contribute](http://www.nltk.org/contribute)
+If you would like to contribute to NLTK, please post your ideas to nltk-dev, or [fork nltk on github](https://github.com/nltk/nltk).
 
 Donating
 ---------------
