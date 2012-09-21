@@ -81,7 +81,7 @@ class MaltParser(ParserI):
         # Find the malt binary.
         self._malt_bin = find_binary('malt.jar', bin,
             searchpath=malt_path, env_vars=['MALTPARSERHOME'],
-            url='http://w3.msi.vxu.se/~jha/maltparser/index.html',
+            url='http://www.maltparser.org/',
             verbose=verbose)
 
     def parse(self, sentence, verbose=False):
