@@ -432,7 +432,7 @@ class DiscourseTester(object):
         :param background: Formulas which contain background information
         :type background: list(Expression)
         """
-        from nltk.sem import Expression
+        from nltk.sem.logic import Expression
         for (count, e) in enumerate(background):
             assert isinstance(e, Expression)
             if verbose:
