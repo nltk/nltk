@@ -1,3 +1,15 @@
+Version 2.0.3 2012-09-24
+
+* fixed corpus/reader/util.py to support Python 2.5
+* make MaltParser safe to use in parallel
+* fixed bug in inter-annotator agreement
+* updates to various doctests (nltk/test)
+* minor bugfixes
+
+Thanks to the following contributors to 2.0.3:
+Robin Cooper, Pablo Duboue, Christian Federmann, Dan Garrette, Ewan Klein,
+Pierre-François Laquerre, Max Leonov, Peter Ljunglöf, Nitin Madnani, Ceri Stagg
+
 Version 2.0.2 2012-07-05
 
 * improvements to PropBank, NomBank, and SemCor corpus readers
@@ -225,7 +237,7 @@ NLTK:
 Version 2.0b1 2009-06-09
 
 NLTK:
-* major refactor of chart parser code and improved API (Peter Ljungl�f)
+* major refactor of chart parser code and improved API (Peter Ljungl喃)
 * added new bottom-up left-corner chart parser strategy
 * misc bugfixes (ChunkScore, chart rules, chatbots, jcn-similarity)
 * improved efficiency of "import nltk" using lazy module imports

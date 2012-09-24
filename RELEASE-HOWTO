@@ -9,7 +9,8 @@ A. PREPARATION
 
   1. Check that installation instructions are up-to-date
   2. Update the data index (make data_index) and commit
-  3. Update the ChangeLog
+  3. Update the ChangeLog (for nltk, nltk_data)
+       git log --since=20XX-YY-ZZ
   4. install the new version, since its the installed code that is checked
   5. cd nltk/test; make (run the tests in nltk.test)
   6. make demotest (run the demonstration code included in many modules)
