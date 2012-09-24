@@ -56,14 +56,22 @@ Display a parse tree:
 
 .. image:: images/tree.gif
 
+NB. If you publish work that uses NLTK, please cite the NLTK book as follows:
+Bird, Steven, Edward Loper and Ewan Klein (2009).
+Natural Language Processing with Python.  O'Reilly Media Inc.
+
 Links
 -----
 
-* NLTK-Users mailing list: http://groups.google.com/group/nltk-users
-* NLTK's previous website: https://sites.google.com/site/naturallanguagetoolkit
-* NLTK development: https://github.com/nltk
-* NLTK-Dev mailing list: http://groups.google.com/group/nltk-dev
-* Publications about NLTK: http://scholar.google.com.au/scholar?q=NLTK
+`Natural Language Processing with Python <https://sites.google.com/site/naturallanguagetoolkit/book>`_ provides a practica
+
+* `NLTK mailing list <http://groups.google.com/group/nltk>`_ - release announcements only, very low volume
+* `NLTK-Users mailing list <http://groups.google.com/group/nltk-users>`_ - user discussions
+* `NLTK-Dev mailing list <http://groups.google.com/group/nltk-dev>`_ - developers only
+* `NLTK-Translation mailing list <http://groups.google.com/group/nltk-translation>`_ - discussions about translating the NLTK book
+* `NLTK's previous website <https://sites.google.com/site/naturallanguagetoolkit>`_
+* `NLTK development at GitHub <https://github.com/nltk>`_
+* `Publications about NLTK <http://scholar.google.com.au/scholar?q=NLTK>`_
 
 Contents
 ========
