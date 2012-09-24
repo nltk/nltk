@@ -85,6 +85,17 @@ class ReadingCommand(object):
         :rtype: Expression
         """
         raise NotImplementedError()
+    
+    def to_fol(self, expression):
+        """
+        Convert this expression into a First-Order Logic expression.
+        
+        :param expression: an expression
+        :type expression: Expression
+        :return: a FOL version of the input expression
+        :rtype: Expression
+        """
+        raise NotImplementedError()
 
 
 class CfgReadingCommand(ReadingCommand):
@@ -109,6 +120,10 @@ class CfgReadingCommand(ReadingCommand):
     def combine_readings(self, readings):
         """:see: ReadingCommand.combine_readings()"""
         return reduce(and_, readings)
+    
+    def to_fol(self, expression):
+        """:see: ReadingCommand.to_fol()"""
+        return expression
 
 
 class DrtGlueReadingCommand(ReadingCommand):
@@ -140,6 +155,10 @@ class DrtGlueReadingCommand(ReadingCommand):
         """:see: ReadingCommand.combine_readings()"""
         thread_reading = reduce(add, readings)
         return resolve_anaphora(thread_reading.simplify())
+    
+    def to_fol(self, expression):
+        """:see: ReadingCommand.to_fol()"""
+        return expression.fol()
 
 
 class DiscourseTester(object):
@@ -372,7 +391,7 @@ class DiscourseTester(object):
         results = []
         for tid in sorted(threads):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
-            assumptions = self._reading_command.process_thread(assumptions)
+            assumptions = map(self._reading_command.to_fol, self._reading_command.process_thread(assumptions))
             if assumptions:
                 assumptions += self._background
                 # if Mace4 finds a model, it always seems to find it quickly
