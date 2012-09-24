@@ -509,35 +509,10 @@ Regression Testing from book
 
     >>> logic._counter._value = 0
 
-    >>> from nltk.tag import RegexpTagger
-    >>> tagger = RegexpTagger(
-    ...     [('^(chases|runs)$', 'VB'),
-    ...      ('^(a)$', 'ex_quant'),
-    ...      ('^(every)$', 'univ_quant'),
-    ...      ('^(dog|boy)$', 'NN'),
-    ...      ('^(He)$', 'PRP')
-    ... ])
-    >>> rc = DrtGlueReadingCommand(depparser=MaltParser(tagger=tagger))
-    >>> dt = DiscourseTester(['Every dog chases a boy', 'He runs'], rc)
-    >>> dt.readings()
-    <BLANKLINE>
-    s0 readings:
-    <BLANKLINE>
-    s0-r0: ([],[(([x],[dog(x)]) -> ([z1],[boy(z1), chases(x,z1)]))])
-    s0-r1: ([z2],[boy(z2), (([x],[dog(x)]) -> ([],[chases(x,z2)]))])
-    <BLANKLINE>
-    s1 readings:
-    <BLANKLINE>
-    s1-r0: ([x],[PRO(x), runs(x)])
-    >>> dt.readings(show_thread_readings=True)
-    d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
-    d1: ['s0-r1', 's1-r0'] : ([z6,z10],[boy(z6), (([x],[dog(x)]) -> ([],[chases(x,z6)])), (z10 = z6), runs(z10)])
-    >>> dt.readings(filter=True, show_thread_readings=True)
-    d1: ['s0-r1', 's1-r0'] : ([z12,z15],[boy(z12), (([x],[dog(x)]) -> ([],[chases(x,z12)])), (z15 = z12), runs(z15)])
-
-    >>> from nltk.parse import load_earley
+    >>> from nltk.parse import FeatureEarleyChartParser
     >>> from nltk.sem.drt import DrtParser
-    >>> parser = load_earley('grammars/book_grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
+    >>> grammar = nltk.data.load('grammars/book_grammars/drt.fcfg', logic_parser=DrtParser())
+    >>> parser = FeatureEarleyChartParser(grammar, trace=0)
     >>> trees = parser.nbest_parse('Angus owns a dog'.split())
     >>> print trees[0].node['SEM'].simplify()
-    ([x,z17],[Angus(x), dog(z17), own(x,z17)])
+    ([x,z2],[Angus(x), dog(z2), own(x,z2)])

@@ -511,11 +511,11 @@ class Glue(object):
         if add_reading:
             reading_list.append(glueformula.meaning)
 
-    def parse_to_compiled(self, sentence='a man sees Mary'):
+    def parse_to_compiled(self, sentence='a man sees Mary'.split()):
         gfls = [self.depgraph_to_glue(dg) for dg in self.dep_parse(sentence)]
         return [self.gfl_to_compiled(gfl) for gfl in gfls]
 
-    def dep_parse(self, sentence='every cat leaves'):
+    def dep_parse(self, sentence='every cat leaves'.split()):
         #Lazy-initialize the depparser
         if self.depparser is None:
             from nltk.parse import MaltParser
@@ -649,7 +649,7 @@ def demo(show_example=-1):
     for (i, sentence) in enumerate(examples):
         if i==show_example or show_example==-1:
             print '[[[Example %s]]]  %s' % (i, sentence)
-            for reading in glue.parse_to_meaning(sentence):
+            for reading in glue.parse_to_meaning(sentence.split()):
                 print reading.simplify()
             print ''
 

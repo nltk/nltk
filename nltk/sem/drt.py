@@ -15,7 +15,7 @@ from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             FunctionVariableExpression, ImpExpression,
                             IndividualVariableExpression, LambdaExpression, Tokens,
                             LogicParser, NegatedExpression, OrExpression, Variable,
-                            is_eventvar, is_funcvar, is_indvar)
+                            is_eventvar, is_funcvar, is_indvar, unique_variable)
 
 # Import Tkinter-based modules if they are available
 try:
