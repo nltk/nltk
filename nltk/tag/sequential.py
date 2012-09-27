@@ -48,8 +48,7 @@ class SequentialBackoffTagger(TaggerI):
     @property
     def backoff(self):
         """The backoff tagger for this tagger."""
-        if len(self._taggers) < 2: return None
-        else: return self._taggers[1]
+        return (self._taggers[1] if len(self._taggers) > 1 else None)
 
     def tag(self, tokens):
         # docs inherited from TaggerI
@@ -119,10 +118,7 @@ class ContextTagger(SequentialBackoffTagger):
         :param backoff: The backoff tagger that should be used for this tagger.
         """
         SequentialBackoffTagger.__init__(self, backoff)
-        if context_to_tag:
-            self._context_to_tag = context_to_tag
-        else:
-            self._context_to_tag = {}
+        self._context_to_tag = (context_to_tag if context_to_tag else {})
 
     def context(self, tokens, index, history):
         """
@@ -558,13 +554,10 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         # higher than that cutoff first; otherwise, return None.
         if self._cutoff_prob is None:
             return self._classifier.classify(featureset)
-        else:
-            pdist = self._classifier.prob_classify(featureset)
-            tag = pdist.max()
-            if pdist.prob(tag) >= self._cutoff_prob:
-                return tag
-            else:
-                return None
+
+        pdist = self._classifier.prob_classify(featureset)
+        tag = pdist.max()
+        return (tag if pdist.prob(tag) >= self._cutoff_prob else None)
 
     def _train(self, tagged_corpus, classifier_builder, verbose):
         """

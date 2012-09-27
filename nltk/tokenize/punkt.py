@@ -477,10 +477,8 @@ class PunktToken(object):
         with eval(), which lists all the token's non-default
         annotations.
         """
-        if self.type != self.tok:
-            typestr = ' type=%s,' % repr(self.type)
-        else:
-            typestr = ''
+        typestr = (' type=%s,' % repr(self.type)
+                   if self.type != self.tok else '')
 
         propvals = ', '.join(
             '%s=%s' % (p, repr(getattr(self, p)))
@@ -1406,9 +1404,8 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             # sentence, then include any whitespace that separated it
             # from the previous token.
             if sentence:
-                sentence += ws + tok
-            else:
-                sentence += tok
+                sentence += ws
+            sentence += tok
 
             # If we're at a sentence break, then start a new sentence.
             if aug_tok.sentbreak:

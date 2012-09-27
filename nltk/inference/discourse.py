@@ -104,10 +104,7 @@ class CfgReadingCommand(ReadingCommand):
         :param gramfile: name of file where grammar can be loaded
         :type gramfile: str
         """
-        if gramfile is None:
-            self._gramfile = 'grammars/book_grammars/discourse.fcfg'
-        else:
-            self._gramfile = gramfile
+        self._gramfile = (gramfile if gramfile else 'grammars/book_grammars/discourse.fcfg')
         self._parser = load_parser(self._gramfile)
 
     def parse_to_readings(self, sentence):
@@ -178,10 +175,7 @@ class DiscourseTester(object):
         self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(input)])
         self._models = None
         self._readings = {}
-        if reading_command is None:
-            self._reading_command = CfgReadingCommand()
-        else:
-            self._reading_command = reading_command
+        self._reading_command = (reading_command if reading_command else CfgReadingCommand())
         self._threads = {}
         self._filtered_threads = {}
         if background is not None:
@@ -324,10 +318,7 @@ class DiscourseTester(object):
         """
         Print out the value of ``self._threads`` or ``self._filtered_hreads``
         """
-        if filter:
-            threads = self._filtered_threads
-        else:
-            threads = self._threads
+        threads = (self._filtered_threads if filter else self._threads)
         for tid in sorted(threads):
             if show_thread_readings:
                 readings = [self._readings[rid.split('-')[0]][rid]
@@ -424,10 +415,7 @@ class DiscourseTester(object):
         """
         self._construct_readings()
         self._construct_threads()
-        if thread_id is None:
-            threads = self._threads
-        else:
-            threads = {thread_id: self._threads[thread_id]}
+        threads = ({thread_id: self._threads[thread_id]} if thread_id else self._threads)
 
         for (tid, modelfound) in self._check_consistency(threads, show=show, verbose=verbose):
             idlist = [rid for rid in threads[tid]]

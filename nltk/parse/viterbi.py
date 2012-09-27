@@ -358,10 +358,8 @@ def demo():
     t = time.time()
     parses = parser.nbest_parse(tokens)
     time = time.time()-t
-    if parses:
-        average = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
-    else:
-        average = 0
+    average = (reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
+               if parses else 0)
     num_parses = len(parses)
     for p in parses:
         all_parses[p.freeze()] = 1

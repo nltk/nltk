@@ -145,10 +145,7 @@ class TableauProver(Prover):
                 ctx = f
                 nv = Variable('X%s' % _counter.get())
                 for j,a in enumerate(args):
-                    if i==j:
-                        ctx = ctx(VariableExpression(nv))
-                    else:
-                        ctx = ctx(a)
+                    ctx = (ctx(VariableExpression(nv)) if i == j else ctx(a))
                 if context:
                     ctx = context(ctx).simplify()
                 ctx = LambdaExpression(nv, ctx)
@@ -164,9 +161,7 @@ class TableauProver(Prover):
                 nv = Variable('X%s' % _counter.get())
                 for j,a in enumerate(args):
                     if i==j:
-                        ctx = ctx(VariableExpression(nv))
-                    else:
-                        ctx = ctx(a)
+                    ctx = (ctx(VariableExpression(nv)) if i == j else ctx(a))
                 if context:
                     #combine new context with existing
                     ctx = context(ctx).simplify()
@@ -600,11 +595,9 @@ def testHigherOrderTableauProver():
 def tableau_test(c, ps=None, verbose=False):
     lp = LogicParser()
     pc = lp.parse(c)
-    if ps:
-        pps = [lp.parse(p) for p in ps]
-    else:
+    pps = ([lp.parse(p) for p in ps] if ps else [])
+    if not ps:
         ps = []
-        pps = []
     print '%s |- %s: %s' % (', '.join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose))
 
 def demo():

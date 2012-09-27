@@ -133,10 +133,7 @@ class NgramModel(ModelI):
         return self._beta(tokens) / self._backoff._beta(tokens[1:])
 
     def _beta(self, tokens):
-        if tokens in self:
-            return self[tokens].discount()
-        else:
-            return 1
+        return (self[tokens].discount() if tokens in self else 1)
 
     def logprob(self, word, context):
         """

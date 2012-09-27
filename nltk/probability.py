@@ -194,8 +194,7 @@ class FreqDist(dict):
 
         # Special case for Nr(0):
         if r == 0:
-            if bins is None: return 0
-            else: return bins-self.B()
+            return (bins-self.B() if bins is not None else 0)
 
         # We have to search the entire distribution to find Nr.  Since
         # this is an expensive operation, and is likely to be used
@@ -203,8 +202,7 @@ class FreqDist(dict):
         if self._Nr_cache is None:
             self._cache_Nr_values()
 
-        if r >= len(self._Nr_cache): return 0
-        return self._Nr_cache[r]
+        return (self._Nr_cache[r] if r < len(self._Nr_cache) else 0)
 
     def _cache_Nr_values(self):
         Nr = [0]
@@ -542,13 +540,8 @@ class ProbDistI(object):
         """
         # Default definition, in terms of prob()
         p = self.prob(sample)
-        if p == 0:
-            # Use some approximation to infinity.  What this does
-            # depends on your system's float implementation.
-            return _NINF
-        else:
-            return math.log(p, 2)
-
+        return (math.log(p, 2) if p != 0 else _NINF)
+            
     def max(self):
         """
         Return the sample with the greatest probability.  If two or
@@ -622,10 +615,14 @@ class UniformProbDist(ProbDistI):
         self._samples = list(self._sampleset)
 
     def prob(self, sample):
-        if sample in self._sampleset: return self._prob
-        else: return 0
-    def max(self): return self._samples[0]
-    def samples(self): return self._samples
+        return (self._prob if sample in self._sampleset else 0)
+
+    def max(self):
+        return self._samples[0]
+
+    def samples(self):
+        return self._samples
+
     def __repr__(self):
         return '<UniformProbDist with %d samples>' % len(self._sampleset)
 
@@ -646,10 +643,8 @@ class DictionaryProbDist(ProbDistI):
         If called without arguments, the resulting probability
         distribution assigns zero probabiliy to all values.
         """
-        if prob_dict is None:
-            self._prob_dict = {}
-        else:
-            self._prob_dict = prob_dict.copy()
+
+        self._prob_dict = (prob_dict.copy() if prob_dict is not None else {})
         self._log = log
 
         # Normalize the distribution, if requested.
@@ -676,8 +671,7 @@ class DictionaryProbDist(ProbDistI):
 
     def prob(self, sample):
         if self._log:
-            if sample not in self._prob_dict: return 0
-            else: return 2**(self._prob_dict[sample])
+            return (2**(self._prob_dict[sample]) if sample in self._prob_dict else 0)
         else:
             return self._prob_dict.get(sample, 0)
 
@@ -1190,10 +1184,7 @@ class WittenBellProbDist(ProbDistI):
     def prob(self, sample):
         # inherit docs from ProbDistI
         c = self._freqdist[sample]
-        if c == 0:
-            return self._P0
-        else:
-            return c / float(self._N + self._T)
+        return (c / float(self._N + self._T) if c != 0 else self._P0)
 
     def max(self):
         return self._freqdist.max()
@@ -1411,14 +1402,8 @@ class SimpleGoodTuringProbDist(ProbDistI):
 
         zr = []
         for j in range(len(r)):
-            if j > 0:
-                i = r[j-1]
-            else:
-                i = 0
-            if j != len(r) - 1:
-                k = r[j+1]
-            else:
-                k = 2 * r[j] - i
+            i = (r[j-1] if j > 0 else 0)
+            k = (2 * r[j] - i if j == len(r) - 1 else r[j+1])
             zr_ = 2.0 * nr[j] / (k - i)
             zr.append(zr_)
 
@@ -1431,10 +1416,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         for (x, y) in zip(log_r, log_zr):
             xy_cov += (x - x_mean) * (y - y_mean)
             x_var += (x - x_mean)**2
-        if x_var != 0:
-            self._slope = xy_cov / x_var
-        else:
-            self._slope = 0.0
+        self._slope = (xy_cov / x_var if x_var != 0 else 0.0)
         self._intercept = y_mean - self._slope * x_mean
 
     def _switch(self, r, nr):
@@ -1604,24 +1586,16 @@ class MutableProbDist(ProbDistI):
     def prob(self, sample):
         # inherit documentation
         i = self._sample_dict.get(sample)
-        if i is not None:
-            if self._logs:
-                return 2**(self._data[i])
-            else:
-                return self._data[i]
-        else:
+        if i is None:
             return 0.0
+        return (2**(self._data[i]) if self._logs else self._data[i])
 
     def logprob(self, sample):
         # inherit documentation
         i = self._sample_dict.get(sample)
-        if i is not None:
-            if self._logs:
-                return self._data[i]
-            else:
-                return math.log(self._data[i], 2)
-        else:
+        if i is None:
             return float('-inf')
+        return (self._data[i] if self._logs else math.log(self._data[i], 2))
 
     def update(self, sample, prob, log=True):
         """
@@ -1641,11 +1615,9 @@ class MutableProbDist(ProbDistI):
         i = self._sample_dict.get(sample)
         assert i is not None
         if self._logs:
-            if log: self._data[i] = prob
-            else:   self._data[i] = math.log(prob, 2)
+            self._data[i] = (prob if log else math.log(prob, 2))
         else:
-            if log: self._data[i] = 2**(prob)
-            else:   self._data[i] = prob
+            self._data[i] = (2**(prob) if log else prob)
 
 ##//////////////////////////////////////////////////////
 ##  Probability Distribution Operations
@@ -1994,12 +1966,7 @@ def add_logs(logx, logy):
     return base + math.log(2**(logx-base) + 2**(logy-base), 2)
 
 def sum_logs(logs):
-    if len(logs) == 0:
-        # Use some approximation to infinity.  What this does
-        # depends on your system's float implementation.
-        return _NINF
-    else:
-        return reduce(add_logs, logs[1:], logs[0])
+    return (reduce(add_logs, logs[1:], logs[0]) if len(logs) != 0 else _NINF)
 
 ##//////////////////////////////////////////////////////
 ##  Probabilistic Mix-in

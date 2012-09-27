@@ -419,10 +419,7 @@ class TnT(TaggerI):
 
 
     def _cmp_tup(self, (_hq, p1), (_h2, p2)):
-        if (p2-p1) > 0:
-            return 1
-        else:
-            return -1
+        return (1 if (p2-p1) > 0 else -1)
 
 
 ########################################

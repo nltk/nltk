@@ -808,14 +808,8 @@ class HiddenMarkovModelTrainer(object):
     :type symbols:  sequence of any
     """
     def __init__(self, states=None, symbols=None):
-        if states:
-            self._states = states
-        else:
-            self._states = []
-        if symbols:
-            self._symbols = symbols
-        else:
-            self._symbols = []
+        self._states = (states if states else [])
+        self._symbols = (symbols if symbols else [])
 
     def train(self, labelled_sequences=None, unlabeled_sequences=None,
               **kwargs):

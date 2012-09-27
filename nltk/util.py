@@ -564,8 +564,7 @@ class OrderedDict(dict):
     def __missing__(self, key):
         if not self._default_factory and key not in self._keys:
             raise KeyError()
-        else:
-            return self._default_factory()
+        return self._default_factory()
 
     def __setitem__(self, key, item):
         dict.__setitem__(self, key, item)
@@ -604,13 +603,13 @@ class OrderedDict(dict):
             return []
 
     def popitem(self):
-        if self._keys:
-            key = self._keys.pop()
-            value = self[key]
-            del self[key]
-            return (key, value)
-        else:
+        if not self._keys:
             raise KeyError()
+
+        key = self._keys.pop()
+        value = self[key]
+        del self[key]
+        return (key, value)
 
     def setdefault(self, key, failobj=None):
         dict.setdefault(self, key, failobj)
@@ -898,10 +897,7 @@ class LazyMap(AbstractLazySequence):
         self._lists = lists
         self._func = function
         self._cache_size = config.get('cache_size', 5)
-        if self._cache_size > 0:
-            self._cache = {}
-        else:
-            self._cache = None
+        self._cache = ({} if self._cache_size > 0 else None)
 
         # If you just take bool() of sum() here _all_lazy will be true just
         # in case n >= 1 list is an AbstractLazySequence.  Presumably this

@@ -203,16 +203,11 @@ class DependencyGraph(object):
         :return: either a word (if the indexed node
         is a leaf) or a ``Tree``.
         """
-
         node = self.get_by_address(i)
         word = node['word']
         deps = node['deps']
 
-        if len(deps) == 0:
-            return word
-        else:
-            return Tree(word, [self._tree(j) for j in deps])
-
+        return (Tree(word, [self._tree(j) for j in deps]) if len(deps) != 0 else word)
 
     def tree(self):
         """
