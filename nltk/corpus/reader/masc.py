@@ -37,10 +37,10 @@ class MascCorpusReader(CorpusReader):
             >>> reader = MascCorpusReader(root, r'(?!\.).*\.txt', 
                                                       encoding = 'utf-8')
 
-        @param root: The root directory for this corpus.
-        @param fileids: A list of regexp specifying the fileids in 
+        :param root: The root directory for this corpus.
+        :param fileids: A list of regexp specifying the fileids in 
                         this corpus.
-        @param encoding: The encoding used for the text files in the corpus.
+        :param encoding: The encoding used for the text files in the corpus.
         """
         self._cur_file = ""
         self._cur_sents_file = ""
@@ -55,8 +55,8 @@ class MascCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        @return: the given file(s) as a single string.
-        @rtype: C{str}
+        :return: the given file(s) as a single string.
+        :rtype: str
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, basestring): fileids = [fileids]
@@ -64,9 +64,9 @@ class MascCorpusReader(CorpusReader):
 
     def words(self, fileids=None):
         """
-        @return: the given file(s) as a list of words
+        :return: the given file(s) as a list of words
             and punctuation symbols.
-        @rtype: C{list} of C{str}
+        :rtype: list(str)
         """
         return concat([self.CorpusView(fileid, self._read_word_block,
                         encoding='utf-8')
@@ -74,10 +74,10 @@ class MascCorpusReader(CorpusReader):
 
     def sents(self, fileids=None):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
             strings
-        @rtype: C{list} of (C{list} of C{str})
+        :rtype: list(list(str))
         """
         return concat([self.CorpusView(fileid, self._read_sent_block, 
                         encoding='utf-8')
@@ -85,10 +85,10 @@ class MascCorpusReader(CorpusReader):
 
     def paras(self, fileids=None):
         """
-        @return: the given file(s) as a list of
+        :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
-        @rtype: C{list} of (C{list} of (C{list} of C{str}))
+        :rtype: list(list(list(str)))
         """
         return concat([self.CorpusView(fileid, self._read_para_block,
                         encoding='utf-8')
@@ -96,8 +96,8 @@ class MascCorpusReader(CorpusReader):
 
     def nouns(self, fileids=None):
         """
-        @return: the given file(s) as a list of nouns
-        @rtype: C{list} of C{str}
+        :return: the given file(s) as a list of nouns
+        :rtype: list(str)
         """
         return concat([self.CorpusView(fileid, self._read_noun_block,
                         encoding = 'utf-8')
@@ -105,8 +105,8 @@ class MascCorpusReader(CorpusReader):
 
     def verbs(self, fileids=None):
         """
-        @return: the given file(s) as a list of verbs
-        @rtype: C{list} of C{str}
+        :return: the given file(s) as a list of verbs
+        :rtype: list(str)
         """
         return concat([self.CorpusView(fileid, self._read_verb_block,
                         encoding='utf-8')
@@ -114,8 +114,8 @@ class MascCorpusReader(CorpusReader):
 
     def persons(self, fileids=None):
         """
-        @return: the given file(s) as a list of verbs
-        @rtype: C{list} of C{str}
+        :return: the given file(s) as a list of verbs
+        :rtype: list(str)
         """
         return concat([self.CorpusView(fileid, self._read_person_block,
                         encoding='utf-8')
@@ -123,10 +123,9 @@ class MascCorpusReader(CorpusReader):
 
     def _get_basename(self, file):
         """
-        @type file: C{str}
-        @param file: full filename
-        @return: the basename of the specified file
-        @rtype: C{str}
+        :param file: full filename as str
+        :return: the basename of the specified file
+        :rtype: str
         """
         return file[0:len(file)-4]
 
@@ -138,8 +137,7 @@ class MascCorpusReader(CorpusReader):
                                        entry = byte number
             2. self._byte_to_char uses key = byte number, 
                                        entry = character number
-        @type stream: StreamBackedCorpusView
-        @param stream: file stream
+        :param stream: file stream as StreamBackedCorpusView
         """
         self._char_to_byte = {}
         self._byte_to_char = {}
@@ -156,14 +154,11 @@ class MascCorpusReader(CorpusReader):
 
     def _get_subset(self, offsets, offsets_start, offsets_end):
         """
-        @type offsets: C{list} of C{int} pairs
-        @param offsets: List of all offsets
-        @type offsets_start: C{int}
-        @param offsets_start: start of requested set of offsets
-        @type offsets_end: C{int}
-        @param offsets_end: end of requested set of offsets
-        @return: a list of all offsets between offsets_start and offset_end
-        @rtype: C{list} of C{str}
+        :param offsets: List of all offsets
+        :param offsets_start: start of requested set of offsets
+        :param offsets_end: end of requested set of offsets
+        :return: a list of all offsets between offsets_start and offset_end
+        :rtype: list(str)
         """
         subset = []
         for i in offsets:
@@ -177,9 +172,9 @@ class MascCorpusReader(CorpusReader):
 
     def _get_read_size(self, subset, char_to_byte, slimit, offset_end):
         """
-        @return: the byte size of text that should be read 
-        next from the file stream
-        @rtype: C{int}
+        :return: the byte size of text that should be read 
+            next from the file stream
+        :rtype: int
         """
         if len(subset) != 0:
             last1 = subset[len(subset)-1]
@@ -194,15 +189,12 @@ class MascCorpusReader(CorpusReader):
     def _get_block(self, subset, text, offsets_start):
         """
         Retrieve the annotated text, annotations are contained in subset
-        @type subset: C{list}
-        @param subset: list of annotation offset pairs
-        @type text: C{str}
-        @param text: text read from text stream
-        @type offsets_start: C{int}
-        @param offset_start: integer to correct for discrepency 
+        :param subset: list of annotation offset pairs
+        :param text: text read from text stream
+        :param offset_start: integer to correct for discrepency 
                             between offsets and text character number
-        @return: list of annotated text
-        @rtype: C{list} of C{str} 
+        :return: list of annotated text
+        :rtype: list(str)
         """
         block = []
         for s in subset:
@@ -216,16 +208,13 @@ class MascCorpusReader(CorpusReader):
     def _read_block(self, stream, file_ending, label):
         """
         Generic method for retrieving annotated text from a file stream.
-        @type stream: SeekableUnicodeStreamReader
-        @param stream: file stream from StreamBackedCorpusView in 
+        :param stream: file stream from StreamBackedCorpusView in 
                        corpus/reader/util.py
-        @type file_ending: C{str}
-        @param file_ending: xml annotation file containing annotation
+        :param file_ending: xml annotation file containing annotation
                             offsets
-        @type label: C{str}
-        @param label: label of requested annotation
-        @return: list of annotated text from a block of the file stream
-        @rtype: C{list} of C{str}
+        :param label: label of requested annotation
+        :return: list of annotated text from a block of the file stream
+        :rtype: list(str)
         """
         file = self._get_basename(stream.name) + file_ending
         if file != self._cur_file:
@@ -276,12 +265,11 @@ class MascCorpusReader(CorpusReader):
         """
         Method for retrieving sentence annotations from text, and 
         the tok annotations within each sentence.
-        @type stream: SeekableUnicodeStreamReader
-        @param stream: file stream from StreamBackedCorpusView 
-                        in corpus/reader/util.py
-        @return: list of sentences, each of which is a list of words, 
+        :param stream: file stream from StreamBackedCorpusView 
+            as SeekableUnicodeStreamReader in corpus/reader/util.py
+        :return: list of sentences, each of which is a list of words, 
                         from a block of the file stream
-        @rtype: C{list} of C{str}
+        :rtype: list(str)
         """
         file = self._get_basename(stream.name) + '-s.xml'
         words_file = self._get_basename(stream.name) + '-ptbtok.xml'
@@ -331,13 +319,12 @@ class MascCorpusReader(CorpusReader):
         """
         Method for retrieving paragraph annotations from text, 
         and the sentence and word annotations within each paragraph.
-        @type stream: SeekableUnicodeStreamReader
-        @param stream: file stream from StreamBackedCorpusView 
-                        in corpus/reader/util.py
-        @return: list of paragraphs, each of which is a list of sentences, 
-                        each of which is a list of words, 
-                        from a block of the file stream
-        @rtype: C{list} of C{list} of C{str}
+        :param stream: file stream from StreamBackedCorpusView 
+            as SeekableUnicodeStreamReader in corpus/reader/util.py
+        :return: list of paragraphs, each of which is a list of sentences, 
+            each of which is a list of words, 
+            from a block of the file stream
+        :rtype: C{list} of C{list} of C{str}
         """
         file = self._get_basename(stream.name) + '-logical.xml'
         sents_file = self._get_basename(stream.name) + '-s.xml'
@@ -419,12 +406,10 @@ class MascCorpusReader(CorpusReader):
         Parses the given annfile and returns the offsets of all
         annotations of type 'label'
 
-        @type annfile: C{str}
-        @param annfile: xml file containing annotation offsets
-        @type label: C{str}
-        @param label: annotation type label
-        @return: list of annotation offsets
-        @rtype: C{list} of C{pairs} of C{int}
+        :param annfile: xml file containing annotation offsets
+        :param label: annotation type label
+        :return: list of annotation offsets
+        :rtype: list(pair(int))
         """
         parser = PyGraphParser()
         g = parser.parse(annfile)
@@ -446,13 +431,11 @@ class MascCorpusReader(CorpusReader):
         _get_offsets for each annotation contained by node, 
         and adds them to the return list if they are oftype 'label'
 
-        @type node: C{PyNode}
-        @param node: a node in the Graf graph
-        @type label: C{str}
-        @param label: annotation type label 
-        @return: the annotation offsets of type 'label' 
+        :param node: a node in the Graf graph as PyNode
+        :param label: annotation type label 
+        :return: the annotation offsets of type 'label' 
                  contained by the specified node
-        @rtype: C{list} of C{pairs} of C{int}
+        :rtype: list(pair(int))
         """
         node_offsets = []
         for a in node._annotations:
@@ -465,10 +448,9 @@ class MascCorpusReader(CorpusReader):
 
     def _get_offsets(self, node):
         """
-        @type node: C{PyNode}
-        @param node: a node in the Graf graph
-        @return: the offsets contained by a given node
-        @rtype: C{pair} of C{int}, or C{None}
+        :param node: a node in the Graf graph as PyNode
+        :return: the offsets contained by a given node
+        :rtype: pair(int) or None
         """
         
         if len(node._links) == 0 and node._outEdgeList != []:
@@ -500,9 +482,9 @@ class MascCorpusReader(CorpusReader):
             
     def _remove_ws(self, chunk):
         """
-        @return: string of text from chunk without end line characters
-        and multiple spaces
-        @rtype: C{str}
+        :return: string of text from chunk without end line characters
+            and multiple spaces
+        :rtype: str
         """
         chunk = chunk.replace("\n", "")
         words = chunk.split()
