@@ -160,7 +160,6 @@ class TableauProver(Prover):
                 ctx = f
                 nv = Variable('X%s' % _counter.get())
                 for j,a in enumerate(args):
-                    if i==j:
                     ctx = (ctx(VariableExpression(nv)) if i == j else ctx(a))
                 if context:
                     #combine new context with existing
