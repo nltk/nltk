@@ -148,9 +148,9 @@ pl196x = LazyCorpusLoader(
     cat_file='cats.txt', textid_file='textids.txt')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
-# ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
-#    'ptb3', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
-#    cat_file='allcats.txt', tag_mapping_function=simplify_wsj_tag)
+ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
+    'ptb', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
+    cat_file='allcats.txt', tag_mapping_function=simplify_wsj_tag)
 qc = LazyCorpusLoader(
     'qc', StringCategoryCorpusReader, ['train.txt', 'test.txt'])
 reuters = LazyCorpusLoader(
@@ -159,7 +159,7 @@ reuters = LazyCorpusLoader(
 rte = LazyCorpusLoader(
     'rte', RTECorpusReader, r'(?!\.).*\.xml')
 semcor = LazyCorpusLoader(
-    'semcor', XMLCorpusReader, r'brown./tagfiles/br-.*\.xml')
+    'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml')
 senseval = LazyCorpusLoader(
     'senseval', SensevalCorpusReader, r'(?!\.).*\.pos')
 shakespeare = LazyCorpusLoader(
@@ -228,6 +228,16 @@ nombank = LazyCorpusLoader(
     'nombank.1.0', 'frames/.*\.xml', 'nombank.1.0.words',
     lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
     treebank) # Must be defined *after* treebank corpus.
+propbank_ptb = LazyCorpusLoader(
+    'propbank', PropbankCorpusReader,
+    'prop.txt', 'frames/.*\.xml', 'verbs.txt',
+    lambda filename: filename.upper(), 
+    ptb) # Must be defined *after* ptb corpus.
+nombank_ptb = LazyCorpusLoader(
+    'nombank.1.0', NombankCorpusReader,
+    'nombank.1.0', 'frames/.*\.xml', 'nombank.1.0.words',
+    lambda filename: filename.upper(), 
+    ptb) # Must be defined *after* ptb corpus.
 
 def demo():
     # This is out-of-date:

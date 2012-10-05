@@ -69,13 +69,16 @@ class NombankCorpusReader(CorpusReader):
         elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
-    def instances(self):
+    def instances(self, baseform=None):
         """
         :return: a corpus view that acts as a list of
         ``NombankInstance`` objects, one for each noun in the corpus.
         """
+        kwargs = {}
+        if baseform is not None:
+            kwargs['instance_filter'] = lambda inst: inst.baseform==baseform
         return StreamBackedCorpusView(self.abspath(self._nomfile),
-                                      self._read_instance_block,
+                                      lambda stream: self._read_instance_block(stream, **kwargs),
                                       encoding=self.encoding(self._nomfile))
 
     def lines(self):
@@ -91,8 +94,10 @@ class NombankCorpusReader(CorpusReader):
         """
         :return: the xml description for the given roleset.
         """
-        lemma = roleset_id.split('.')[0]
-        framefile = 'frames/%s.xml' % lemma
+        baseform = roleset_id.split('.')[0]
+        baseform = baseform.replace('perc-sign','%')
+        baseform = baseform.replace('oneslashonezero', '1/10').replace('1/10','1-slash-10')
+        framefile = 'frames/%s.xml' % baseform
         if framefile not in self._framefiles:
             raise ValueError('Frameset file for %s not found' %
                              roleset_id)
@@ -107,6 +112,27 @@ class NombankCorpusReader(CorpusReader):
             raise ValueError('Roleset %s not found in %s' %
                              (roleset_id, framefile))
 
+    def rolesets(self, baseform=None):
+        """
+        :return: list of xml descriptions for rolesets.
+        """
+        if baseform is not None:
+            framefile = 'frames/%s.xml' % baseform
+            if framefile not in self._framefiles:
+                raise ValueError('Frameset file for %s not found' %
+                                 baseform)
+            framefiles = [framefile]
+        else:
+            framefiles = self._framefiles
+
+        rsets = []
+        for framefile in framefiles:
+            # n.b.: The encoding for XML fileids is specified by the file
+            # itself; so we ignore self._encoding here.
+            etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+            rsets.append(etree.findall('predicate/roleset'))
+        return LazyConcatenation(rsets)
+
     def nouns(self):
         """
         :return: a corpus view that acts as a list of all noun lemmas
@@ -116,16 +142,18 @@ class NombankCorpusReader(CorpusReader):
                                       read_line_block,
                                       encoding=self.encoding(self._nounsfile))
 
-    def _read_instance_block(self, stream):
+    def _read_instance_block(self, stream, instance_filter=lambda inst: True):
         block = []
 
         # Read 100 at a time.
         for i in range(100):
             line = stream.readline().strip()
             if line:
-                block.append(NombankInstance.parse(
+                inst = NombankInstance.parse(
                     line, self._parse_fileid_xform,
-                    self._parse_corpus))
+                    self._parse_corpus)
+                if instance_filter(inst):
+                    block.append(inst)
 
         return block
 
@@ -155,14 +183,14 @@ class NombankInstance(object):
         """The baseform of the predicate."""
 
         self.sensenumber = sensenumber
-        """The sense number os the predicate"""
+        """The sense number of the predicate."""
 
         self.predicate = predicate
         """A ``NombankTreePointer`` indicating the position of this
         instance's predicate within its containing sentence."""
 
         self.predid = predid
-        """Identifier of the predicate """
+        """Identifier of the predicate."""
 
         self.arguments = tuple(arguments)
         """A list of tuples (argloc, argid), specifying the location
@@ -180,7 +208,9 @@ class NombankInstance(object):
         """The name of the roleset used by this instance's predicate.
         Use ``nombank.roleset() <NombankCorpusReader.roleset>`` to
         look up information about the roleset."""
-        return '%s.%s'%(self.baseform, self.sensenumber)
+        r = self.baseform.replace('%','perc-sign')
+        r = r.replace('1/10','1-slash-10').replace('1-slash-10','oneslashonezero')
+        return '%s.%s'%(r, self.sensenumber)
 
     def __repr__(self):
         return ('<NombankInstance: %s, sent %s, word %s>' %
@@ -188,7 +218,7 @@ class NombankInstance(object):
 
     def __str__(self):
         s = '%s %s %s %s %s' % (self.fileid, self.sentnum, self.wordnum,
-                                self.basename, self.sensenumber)
+                                self.baseform, self.sensenumber)
         items = self.arguments + ((self.predicate, 'rel'),)
         for (argloc, argid) in sorted(items):
             s += ' %s-%s' % (argloc, argid)

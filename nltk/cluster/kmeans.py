@@ -62,8 +62,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         assert repeats >= 1
         assert not (initial_means and repeats > 1)
         self._repeats = repeats
-        if rng: self._rng = rng
-        else:   self._rng = random.Random()
+        self._rng = (rng if rng else random.Random())
         self._avoid_empty_clusters = avoid_empty_clusters
 
     def cluster_vectorspace(self, vectors, trace=False):

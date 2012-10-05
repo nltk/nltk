@@ -814,6 +814,21 @@ class AbstractParentedTree(Tree):
       - ``_delparent()`` is called whenever a child is removed.
     """
 
+    def __init__(self, node_or_str, children=None):
+        super(AbstractParentedTree, self).__init__(node_or_str, children)
+        # If children is None, the tree is parsed from node_or_str, and
+        # all parents will be set during parsing.
+        if children is not None:
+            # Otherwise we have to set the parent of the children.
+            # Iterate over self, and *not* children, because children
+            # might be an iterator.
+            for i, child in enumerate(self):
+                if isinstance(child, Tree):
+                    self._setparent(child, i, dry_run=True)
+            for i, child in enumerate(self):
+                if isinstance(child, Tree):
+                    self._setparent(child, i)
+
     #////////////////////////////////////////////////////////////
     # Parent management
     #////////////////////////////////////////////////////////////
@@ -1024,6 +1039,15 @@ class ParentedTree(AbstractParentedTree):
         self._parent = None
         """The parent of this Tree, or None if it has no parent."""
         super(ParentedTree, self).__init__(node_or_str, children)
+        if children is None:
+            # If children is None, the tree is parsed from node_or_str.
+            # After parsing, the parent of the immediate children 
+            # will point to an intermediate tree, not self. 
+            # We fix this by brute force:
+            for i, child in enumerate(self):
+                if isinstance(child, Tree):
+                    child._parent = None
+                    self._setparent(child, i)
 
     def _frozen_class(self): return ImmutableParentedTree
 
@@ -1078,8 +1102,10 @@ class ParentedTree(AbstractParentedTree):
         The tree position of this tree, relative to the root of the
         tree.  I.e., ``ptree.root[ptree.treeposition] is ptree``.
         """
-        if self.parent() is None: return ()
-        else: return self.parent().treeposition() + (self.parent_index(),)
+        if self.parent() is None:
+            return ()
+        else:
+            return self.parent().treeposition() + (self.parent_index(),)
 
 
     #/////////////////////////////////////////////////////////////////
@@ -1134,6 +1160,15 @@ class MultiParentedTree(AbstractParentedTree):
            contain duplicates, even if a parent contains this tree
            multiple times."""
         super(MultiParentedTree, self).__init__(node_or_str, children)
+        if children is None:
+            # If children is None, the tree is parsed from node_or_str.
+            # After parsing, the parent(s) of the immediate children 
+            # will point to an intermediate tree, not self. 
+            # We fix this by brute force:
+            for i, child in enumerate(self):
+                if isinstance(child, Tree):
+                    child._parents = []
+                    self._setparent(child, i)
 
     def _frozen_class(self): return ImmutableMultiParentedTree
 

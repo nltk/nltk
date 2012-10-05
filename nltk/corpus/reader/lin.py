@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Lin's Thesaurus
 #
 # Copyright (C) 2001-2012 NLTK Project
-# Author: Dan Blanchard <dan.blanchard@gmail.com>
+# Author: Dan Blanchard <dblanchard@ets.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.txt
 from __future__ import print_function
@@ -29,10 +29,10 @@ class LinThesaurusCorpusReader(CorpusReader):
         '''
         Initialize the thesaurus.
 
-        @param root: root directory containing thesaurus LISP files
-        @type root: C{string}
-        @param badscore: the score to give to words which do not appear in each other's sets of synonyms
-        @type badscore: C{float}
+        :param root: root directory containing thesaurus LISP files
+        :type root: C{string}
+        :param badscore: the score to give to words which do not appear in each other's sets of synonyms
+        :type badscore: C{float}
         '''
 
         super(LinThesaurusCorpusReader, self).__init__(root, r'sim[A-Z]\.lsp')
@@ -55,19 +55,19 @@ class LinThesaurusCorpusReader(CorpusReader):
                         split_line = line.split('\t')
                         if len(split_line) == 2:
                             ngram, score = split_line
-                            self._thesaurus[fileid][key][ngram.strip('"')] = score
+                            self._thesaurus[fileid][key][ngram.strip('"')] = float(score)
 
     def similarity(self, ngram1, ngram2, fileid=None):
         '''
         Returns the similarity score for two ngrams.
 
-        @param ngram1: first ngram to compare
-        @type ngram1: C{string}
-        @param ngram2: second ngram to compare
-        @type ngram2: C{string}
-        @param fileid: thesaurus fileid to search in. If None, search all fileids.
-        @type fileid: C{string}
-        @return: If fileid is specified, just the score for the two ngrams; otherwise,
+        :param ngram1: first ngram to compare
+        :type ngram1: C{string}
+        :param ngram2: second ngram to compare
+        :type ngram2: C{string}
+        :param fileid: thesaurus fileid to search in. If None, search all fileids.
+        :type fileid: C{string}
+        :return: If fileid is specified, just the score for the two ngrams; otherwise,
                  list of tuples of fileids and scores.
         '''
         # Entries don't contain themselves, so make sure similarity between item and itself is 1.0
@@ -87,11 +87,11 @@ class LinThesaurusCorpusReader(CorpusReader):
         '''
         Returns a list of scored synonyms (tuples of synonyms and scores) for the current ngram
 
-        @param ngram: ngram to lookup
-        @type ngram: C{string}
-        @param fileid: thesaurus fileid to search in. If None, search all fileids.
-        @type fileid: C{string}
-        @return: If fileid is specified, list of tuples of scores and synonyms; otherwise,
+        :param ngram: ngram to lookup
+        :type ngram: C{string}
+        :param fileid: thesaurus fileid to search in. If None, search all fileids.
+        :type fileid: C{string}
+        :return: If fileid is specified, list of tuples of scores and synonyms; otherwise,
                  list of tuples of fileids and lists, where inner lists consist of tuples of
                  scores and synonyms.
         '''
@@ -104,11 +104,11 @@ class LinThesaurusCorpusReader(CorpusReader):
         '''
         Returns a list of synonyms for the current ngram.
 
-        @param ngram: ngram to lookup
-        @type ngram: C{string}
-        @param fileid: thesaurus fileid to search in. If None, search all fileids.
-        @type fileid: C{string}
-        @return: If fileid is specified, list of synonyms; otherwise, list of tuples of fileids and
+        :param ngram: ngram to lookup
+        :type ngram: C{string}
+        :param fileid: thesaurus fileid to search in. If None, search all fileids.
+        :type fileid: C{string}
+        :return: If fileid is specified, list of synonyms; otherwise, list of tuples of fileids and
                  lists, where inner lists contain synonyms.
         '''
         if fileid:
@@ -120,9 +120,9 @@ class LinThesaurusCorpusReader(CorpusReader):
         '''
         Determines whether or not the given ngram is in the thesaurus.
 
-        @param ngram: ngram to lookup
-        @type ngram: C{string}
-        @return: whether the given ngram is in the thesaurus.
+        :param ngram: ngram to lookup
+        :type ngram: C{string}
+        :return: whether the given ngram is in the thesaurus.
         '''
         return reduce(lambda accum, fileid: accum or (ngram in self._thesaurus[fileid]), self._fileids, False)
 

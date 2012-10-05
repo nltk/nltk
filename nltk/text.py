@@ -39,16 +39,16 @@ class ContextIndex(object):
     @staticmethod
     def _default_context(tokens, i):
         """One left token and one right token, normalized to lowercase"""
-        if i == 0: left = '*START*'
-        else: left = tokens[i-1].lower()
-        if i == len(tokens) - 1: right = '*END*'
-        else: right = tokens[i+1].lower()
+        left = (tokens[i-1].lower() if i != 0 else '*START*')
+        right = (tokens[i+1].lower() if i != len(tokens) - 1 else '*END*')
         return (left, right)
 
     def __init__(self, tokens, context_func=None, filter=None, key=lambda x:x):
         self._key = key
         self._tokens = tokens
-        if not context_func:
+        if context_func:
+            self._context_func = context_func
+        else:
             self._context_func = self._default_context
         if filter:
             tokens = [t for t in tokens if filter(t)]
@@ -383,7 +383,7 @@ class Text(object):
         if '_trigram_model' not in self.__dict__:
             print("Building ngram index...")
             estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-            self._trigram_model = NgramModel(3, self, estimator)
+            self._trigram_model = NgramModel(3, self, estimator=estimator)
         text = self._trigram_model.generate(length)
         print(tokenwrap(text))
 
@@ -518,15 +518,15 @@ class Text(object):
         # Left context
         j = i-1
         while j>=0 and not self._CONTEXT_RE.match(tokens[j]):
-            j = j-1
-        if j == 0: left = '*START*'
-        else: left = tokens[j]
+            j -= 1
+        left = (tokens[j] if j != 0 else '*START*')
+
         # Right context
         j = i+1
         while j<len(tokens) and not self._CONTEXT_RE.match(tokens[j]):
-            j = j+1
-        if j == len(tokens): right = '*END*'
-        else: right = tokens[j]
+            j += 1
+        right = (tokens[j] if j != len(tokens) else '*END*')
+
         return (left, right)
 
     #////////////////////////////////////////////////////////////
@@ -578,11 +578,8 @@ class TextCollection(Text):
         idf = self._idf_cache.get(term)
         if idf is None:
             matches = len([True for text in self._texts if term in text])
-            if not matches:
-                # FIXME Should this raise some kind of error instead?
-                idf = 0.0
-            else:
-                idf = log(len(self._texts) / matches)
+            # FIXME Should this raise some kind of error instead?
+            idf = (log(float(len(self._texts)) / matches) if matches else 0.0)
             self._idf_cache[term] = idf
         return idf
 

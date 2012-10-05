@@ -314,15 +314,9 @@ class MalletCRF(FeaturesetTaggerI):
         # transition.
         for src in labels:
             if add_start_state:
-                if src == '__start__':
-                    initial_cost = 0
-                else:
-                    initial_cost = '+inf'
+                initial_cost = (0 if src == '__start__' else '+inf')
             if add_end_state:
-                if src == '__end__':
-                    final_cost = 0
-                else:
-                    final_cost = '+inf'
+                final_cost = (0 if src == '__end__' else '+inf')
             state_info = CRFInfo.State(src, initial_cost, final_cost, [])
             for dst in labels:
                 state_weight_groups = [wg.name for wg in weight_groups

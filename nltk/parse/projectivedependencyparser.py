@@ -10,6 +10,7 @@ from __future__ import print_function
 
 import math
 from pprint import pformat
+from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
                           StatisticalDependencyGrammar, parse_dependency_grammar)
@@ -357,7 +358,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         :type: list(DependencyGraph)
         """
         productions = []
-        events = {}
+        events = defaultdict(int)
         tags = {}
         for dg in graphs:
             for node_index in range(1,len(dg.nodelist)):
@@ -388,14 +389,8 @@ class ProbabilisticProjectiveDependencyParser(object):
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) left))' % (child, child_tag, prev_tag, head_word, head_tag)
                         mod_event = '(mods (%s, %s, %s) left))' % (prev_tag, head_word, head_tag)
-                        if head_event in events:
-                            events[head_event] += 1
-                        else:
-                            events[head_event] = 1
-                        if mod_event in events:
-                            events[mod_event] += 1
-                        else:
-                            events[mod_event] = 1
+                        events[head_event] += 1
+                        events[mod_event] += 1
                     elif child_index > 0:
                         array_index = child_index + nr_left_children - 1
                         if array_index < nr_children:
@@ -408,14 +403,8 @@ class ProbabilisticProjectiveDependencyParser(object):
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) right))' % (child, child_tag, prev_tag, head_word, head_tag)
                         mod_event = '(mods (%s, %s, %s) right))' % (prev_tag, head_word, head_tag)
-                        if head_event in events:
-                            events[head_event] += 1
-                        else:
-                            events[head_event] = 1
-                        if mod_event in events:
-                            events[mod_event] += 1
-                        else:
-                            events[mod_event] = 1
+                        events[head_event] += 1
+                        events[mod_event] += 1
         self._grammar = StatisticalDependencyGrammar(productions, events, tags)
 #        print self._grammar
 

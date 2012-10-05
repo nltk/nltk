@@ -87,6 +87,17 @@ class ReadingCommand(object):
         :rtype: Expression
         """
         raise NotImplementedError()
+    
+    def to_fol(self, expression):
+        """
+        Convert this expression into a First-Order Logic expression.
+        
+        :param expression: an expression
+        :type expression: Expression
+        :return: a FOL version of the input expression
+        :rtype: Expression
+        """
+        raise NotImplementedError()
 
 
 class CfgReadingCommand(ReadingCommand):
@@ -95,10 +106,7 @@ class CfgReadingCommand(ReadingCommand):
         :param gramfile: name of file where grammar can be loaded
         :type gramfile: str
         """
-        if gramfile is None:
-            self._gramfile = 'grammars/book_grammars/discourse.fcfg'
-        else:
-            self._gramfile = gramfile
+        self._gramfile = (gramfile if gramfile else 'grammars/book_grammars/discourse.fcfg')
         self._parser = load_parser(self._gramfile)
 
     def parse_to_readings(self, sentence):
@@ -111,6 +119,10 @@ class CfgReadingCommand(ReadingCommand):
     def combine_readings(self, readings):
         """:see: ReadingCommand.combine_readings()"""
         return reduce(and_, readings)
+    
+    def to_fol(self, expression):
+        """:see: ReadingCommand.to_fol()"""
+        return expression
 
 
 class DrtGlueReadingCommand(ReadingCommand):
@@ -142,6 +154,10 @@ class DrtGlueReadingCommand(ReadingCommand):
         """:see: ReadingCommand.combine_readings()"""
         thread_reading = reduce(add, readings)
         return resolve_anaphora(thread_reading.simplify())
+    
+    def to_fol(self, expression):
+        """:see: ReadingCommand.to_fol()"""
+        return expression.fol()
 
 
 class DiscourseTester(object):
@@ -161,10 +177,7 @@ class DiscourseTester(object):
         self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(input)])
         self._models = None
         self._readings = {}
-        if reading_command is None:
-            self._reading_command = CfgReadingCommand()
-        else:
-            self._reading_command = reading_command
+        self._reading_command = (reading_command if reading_command else CfgReadingCommand())
         self._threads = {}
         self._filtered_threads = {}
         if background is not None:
@@ -308,10 +321,7 @@ class DiscourseTester(object):
         """
         Print out the value of ``self._threads`` or ``self._filtered_hreads``
         """
-        if filter:
-            threads = self._filtered_threads
-        else:
-            threads = self._threads
+        threads = (self._filtered_threads if filter else self._threads)
         for tid in sorted(threads):
             if show_thread_readings:
                 readings = [self._readings[rid.split('-')[0]][rid]
@@ -375,7 +385,7 @@ class DiscourseTester(object):
         results = []
         for tid in sorted(threads):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
-            assumptions = self._reading_command.process_thread(assumptions)
+            assumptions = map(self._reading_command.to_fol, self._reading_command.process_thread(assumptions))
             if assumptions:
                 assumptions += self._background
                 # if Mace4 finds a model, it always seems to find it quickly
@@ -408,10 +418,7 @@ class DiscourseTester(object):
         """
         self._construct_readings()
         self._construct_threads()
-        if thread_id is None:
-            threads = self._threads
-        else:
-            threads = {thread_id: self._threads[thread_id]}
+        threads = ({thread_id: self._threads[thread_id]} if thread_id else self._threads)
 
         for (tid, modelfound) in self._check_consistency(threads, show=show, verbose=verbose):
             idlist = [rid for rid in threads[tid]]
@@ -435,7 +442,7 @@ class DiscourseTester(object):
         :param background: Formulas which contain background information
         :type background: list(Expression)
         """
-        from nltk.sem import Expression
+        from nltk.sem.logic import Expression
         for (count, e) in enumerate(background):
             assert isinstance(e, Expression)
             if verbose:

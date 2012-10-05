@@ -131,7 +131,7 @@ Good Turing Estimation
 
     >>> gt = lambda fd, bins: SimpleGoodTuringProbDist(fd)
     >>> train_and_test(gt)
-    14.43%
+    0.17%
 
 Remains to be added:
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
@@ -174,4 +174,17 @@ Issue 351: fix fileids method of CategorizedCorpusReader to inadvertently add er
     >>> brown.categories()
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor', 'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
 
+Issue 175: add the unseen bin to SimpleGoodTuringProbDist by default otherwise any unseen events get a probability of zero, i.e., they don't get smoothed
+
+    >>> from nltk import SimpleGoodTuringProbDist, FreqDist
+    >>> fd = FreqDist({'a':1, 'b':1, 'c': 2, 'd': 3, 'e': 4, 'f': 4, 'g': 4, 'h': 5, 'i': 5, 'j': 6, 'k': 6, 'l': 6, 'm': 7, 'n': 7, 'o': 8, 'p': 9, 'q': 10})
+    >>> p = SimpleGoodTuringProbDist(fd)
+    >>> p.prob('a')
+    0.017649766667026317...
+    >>> p.prob('o')
+    0.08433050215340411...
+    >>> p.prob('z')
+    0.022727272727272728...
+    >>> p.prob('foobar')
+    0.022727272727272728...
 

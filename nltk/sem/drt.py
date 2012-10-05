@@ -17,7 +17,7 @@ from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             FunctionVariableExpression, ImpExpression,
                             IndividualVariableExpression, LambdaExpression, Tokens,
                             LogicParser, NegatedExpression, OrExpression, Variable,
-                            is_eventvar, is_funcvar, is_indvar)
+                            is_eventvar, is_funcvar, is_indvar, unique_variable)
 
 # Import Tkinter-based modules if they are available
 try:
@@ -225,10 +225,7 @@ class DRS(AbstractDrs, Expression):
 
     def visit_structured(self, function, combinator):
         """:see: Expression.visit_structured()"""
-        if self.consequent:
-            consequent = function(self.consequent)
-        else:
-            consequent = None
+        consequent = (function(self.consequent) if self.consequent else None)
         return combinator(self.refs, list(map(function, self.conds)), consequent)
 
     def eliminate_equality(self):
@@ -256,10 +253,8 @@ class DRS(AbstractDrs, Expression):
                new_cond_simp.refs or new_cond_simp.conds or \
                new_cond_simp.consequent:
                 conds.append(new_cond)
-        if drs.consequent:
-            consequent = drs.consequent.eliminate_equality()
-        else:
-            consequent = None
+
+        consequent = (drs.consequent.eliminate_equality() if drs.consequent else None)
         return DRS(drs.refs, conds, consequent)
 
     def fol(self):
@@ -406,10 +401,7 @@ class DrtProposition(AbstractDrs, Expression):
         return DrtProposition(self.variable, self.drs.eliminate_equality())
 
     def get_refs(self, recursive=False):
-        if recursive:
-            return self.drs.get_refs(True)
-        else:
-            return []
+        return (self.drs.get_refs(True) if recursive else [])
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
@@ -481,10 +473,7 @@ class DrtLambdaExpression(AbstractDrs, LambdaExpression):
 class DrtBinaryExpression(AbstractDrs, BinaryExpression):
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
-        if recursive:
-            return self.first.get_refs(True) + self.second.get_refs(True)
-        else:
-            return []
+        return self.first.get_refs(True) + self.second.get_refs(True) if recursive else []
 
     def _pretty(self):
         return DrtBinaryExpression._assemble_pretty(self._pretty_subex(self.first), self.getOp(), self._pretty_subex(self.second))
@@ -563,10 +552,7 @@ class DrtConcatenation(DrtBooleanExpression):
     def simplify(self):
         first = self.first.simplify()
         second = self.second.simplify()
-        if self.consequent:
-            consequent = self.consequent.simplify()
-        else:
-            consequent = None
+        consequent = (self.consequent.simplify() if self.consequent else None)
 
         if isinstance(first, DRS) and isinstance(second, DRS):
             # For any ref that is in both 'first' and 'second'
@@ -656,10 +642,7 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
 
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
-        if recursive:
-            return self.function.get_refs(True) + self.argument.get_refs(True)
-        else:
-            return []
+        return self.function.get_refs(True) + self.argument.get_refs(True) if recursive else []
 
     def _pretty(self):
         function, args = self.uncurry()

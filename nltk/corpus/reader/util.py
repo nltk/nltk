@@ -26,7 +26,7 @@ from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.sourcedstring import SourcedStringStream
-from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation
+from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
 
 ######################################################################
 #{ Corpus View
@@ -755,11 +755,15 @@ def find_corpus_fileids(root, regexp):
         items = [name for name in fileids if re.match(regexp, name)]
         return sorted(items)
 
-    # Find fileids in a directory: use os.walk to search all
-    # subdirectories, and match paths against the regexp.
+    # Find fileids in a directory: use os.walk to search all (proper
+    # or symlinked) subdirectories, and match paths against the regexp.
     elif isinstance(root, FileSystemPathPointer):
         items = []
-        for dirname, subdirs, fileids in os.walk(root.path):
+        # workaround for py25 which doesn't support followlinks
+        kwargs = {}
+        if not py25():
+            kwargs = {'followlinks': True}
+        for dirname, subdirs, fileids in os.walk(root.path, **kwargs):
             prefix = ''.join('%s/' % p for p in _path_from(root.path, dirname))
             items += [prefix+fileid for fileid in fileids
                       if re.match(regexp, prefix+fileid)]

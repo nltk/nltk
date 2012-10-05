@@ -232,10 +232,7 @@ class Alignment(frozenset):
         if isinstance(string_or_pairs, compat.string_types):
             string_or_pairs = [_giza2pair(p) for p in string_or_pairs.split()]
         self = frozenset.__new__(cls, string_or_pairs)
-        if self == frozenset([]):
-            self._len = 0
-        else:
-            self._len = max(p[0] for p in self)
+        self._len = (max(p[0] for p in self) if self != frozenset([]) else 0)
         self._index = None
         return self
 

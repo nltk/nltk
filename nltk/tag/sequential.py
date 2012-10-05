@@ -49,8 +49,7 @@ class SequentialBackoffTagger(TaggerI):
     @property
     def backoff(self):
         """The backoff tagger for this tagger."""
-        if len(self._taggers) < 2: return None
-        else: return self._taggers[1]
+        return (self._taggers[1] if len(self._taggers) > 1 else None)
 
     def tag(self, tokens):
         # docs inherited from TaggerI
@@ -120,10 +119,7 @@ class ContextTagger(SequentialBackoffTagger):
         :param backoff: The backoff tagger that should be used for this tagger.
         """
         SequentialBackoffTagger.__init__(self, backoff)
-        if context_to_tag:
-            self._context_to_tag = context_to_tag
-        else:
-            self._context_to_tag = {}
+        self._context_to_tag = (context_to_tag if context_to_tag else {})
 
     def context(self, tokens, index, history):
         """
@@ -441,14 +437,15 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         ...      (r'.*ed$', 'VBD'),                 # past tense verbs
         ...      (r'.*', 'NN')                      # nouns (default)
         ... ])
-        >>> for tok, tag in regexp_tagger.tag(test_sent):
-        ...     print("(%s, %s), " % (tok, tag))
-        (The, AT), (Fulton, NN), (County, NN), (Grand, NN), (Jury, NN),
-        (said, NN), (Friday, NN), (an, AT), (investigation, NN), (of, NN),
-        (Atlanta's, NNS), (recent, NN), (primary, NN), (election, NN),
-        (produced, VBD), (``, NN), (no, NN), (evidence, NN), ('', NN),
-        (that, NN), (any, NN), (irregularities, NNS), (took, NN),
-        (place, NN), (., NN),
+        >>> regexp_tagger
+        <Regexp Tagger: size=9>
+        >>> regexp_tagger.tag(test_sent)
+        [('The', 'AT'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'),
+        ('said', 'NN'), ('Friday', 'NN'), ('an', 'AT'), ('investigation', 'NN'), ('of', 'NN'),
+        ("Atlanta's", 'NNS'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'),
+        ('produced', 'VBD'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'),
+        ('that', 'NN'), ('any', 'NN'), ('irregularities', 'NNS'), ('took', 'NN'),
+        ('place', 'NN'), ('.', 'NN')]
 
     :type regexps: list(tuple(str, str))
     :param regexps: A list of ``(regexp, tag)`` pairs, each of
@@ -470,6 +467,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         self._map = dict(zip(labels, tags))
         regexps_labels = [(regex, label) for ((regex,tag),label) in zip(regexps,labels)]
         self._regexs = re.compile('|'.join(['(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels]))
+        self._size=len(regexps)
 
     def choose_tag(self, tokens, index, history):
         m = self._regexs.match(tokens[index])
@@ -478,7 +476,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         return None
 
     def __repr__(self):
-        return '<Regexp Tagger: size=%d>' % len(self._regexps)
+        return '<Regexp Tagger: size=%d>' % self._size
 
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     """
@@ -558,13 +556,10 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         # higher than that cutoff first; otherwise, return None.
         if self._cutoff_prob is None:
             return self._classifier.classify(featureset)
-        else:
-            pdist = self._classifier.prob_classify(featureset)
-            tag = pdist.max()
-            if pdist.prob(tag) >= self._cutoff_prob:
-                return tag
-            else:
-                return None
+
+        pdist = self._classifier.prob_classify(featureset)
+        tag = pdist.max()
+        return (tag if pdist.prob(tag) >= self._cutoff_prob else None)
 
     def _train(self, tagged_corpus, classifier_builder, verbose):
         """

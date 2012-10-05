@@ -5,35 +5,32 @@ Building an NLTK distribution
 @@@ BUILD
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-A. MISC PREPARATION
+A. PREPARATION
 
-  1. Check for new versions of Python, Numpy, Matplotlib, and update wiki download instructions
+  1. Check that installation instructions are up-to-date
   2. Update the data index (make data_index) and commit
-  3. Update the ChangeLog
-  4. Update the news page in nltk/web/news.rst
+  3. Update the ChangeLog (for nltk, nltk_data)
+       git log --since=20XX-YY-ZZ
+  4. install the new version, since its the installed code that is checked
+  5. cd nltk/test; make (run the tests in nltk.test)
+  6. make demotest (run the demonstration code included in many modules)
 
-B. NLTK VERSION
+B. BUILD
 
   1. Modify nltk/VERSION with the version number and commit
-  2. git tag -a 2.X.Y -m "version 2.X.Y"
-
-C. ERROR CHECKING
-
-  1. install the new version, since its the installed code that is checked
-  2. cd nltk/test; make (run the tests in nltk.test)
-  3. make demotest (run the demonstration code included in many modules)
-  4. API docs (cd web; make; cd ../../nltk.github.com; ...)
-  5. Make dist
+  2. Make dist
   ?. (cd ../nltk_contrib; make dist???)
 
-D. UPLOAD
+D. RELEASE
 
-  1. sudo python setup.py register
-  2. Log in to http://pypi.python.org/pypi and upload distributions
-  3. post announcement to NLTK the mailing lists:
+  1. Update the news page in nltk/web/news.rst
+  2. git tag -a 2.X.Y -m "version 2.X.Y"
+  3. sudo python setup.py register
+  4. Log in to http://pypi.python.org/pypi and upload distributions
+  5. post announcement to NLTK the mailing lists:
        nltk-dev (for beta releases)
        nltk (for final releases)
-  4. post announcement to external mailing lists, for major N.N releases only
+  6. post announcement to external mailing lists, for major N.N releases only
        CORPORA@uib.no, linguist@linguistlist.org,
        PythonSIL@lists.sil.org, edu-sig@python.org
        mailing lists for any local courses using NLTK

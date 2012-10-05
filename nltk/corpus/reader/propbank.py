@@ -68,13 +68,16 @@ class PropbankCorpusReader(CorpusReader):
         elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
-    def instances(self):
+    def instances(self, baseform=None):
         """
         :return: a corpus view that acts as a list of
-        ``PropbankInstance`` objects, one for each verb in the corpus.
+        ``PropBankInstance`` objects, one for each noun in the corpus.
         """
+        kwargs = {}
+        if baseform is not None:
+            kwargs['instance_filter'] = lambda inst: inst.baseform==baseform
         return StreamBackedCorpusView(self.abspath(self._propfile),
-                                      self._read_instance_block,
+                                      lambda stream: self._read_instance_block(stream, **kwargs),
                                       encoding=self.encoding(self._propfile))
 
     def lines(self):
@@ -90,8 +93,8 @@ class PropbankCorpusReader(CorpusReader):
         """
         :return: the xml description for the given roleset.
         """
-        lemma = roleset_id.split('.')[0]
-        framefile = 'frames/%s.xml' % lemma
+        baseform = roleset_id.split('.')[0]
+        framefile = 'frames/%s.xml' % baseform
         if framefile not in self._framefiles:
             raise ValueError('Frameset file for %s not found' %
                              roleset_id)
@@ -106,6 +109,27 @@ class PropbankCorpusReader(CorpusReader):
             raise ValueError('Roleset %s not found in %s' %
                              (roleset_id, framefile))
 
+    def rolesets(self, baseform=None):
+        """
+        :return: list of xml descriptions for rolesets.
+        """
+        if baseform is not None:
+            framefile = 'frames/%s.xml' % baseform
+            if framefile not in self._framefiles:
+                raise ValueError('Frameset file for %s not found' %
+                                 baseform)
+            framefiles = [framefile]
+        else:
+            framefiles = self._framefiles
+
+        rsets = []
+        for framefile in framefiles:
+            # n.b.: The encoding for XML fileids is specified by the file
+            # itself; so we ignore self._encoding here.
+            etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+            rsets.append(etree.findall('predicate/roleset'))
+        return LazyConcatenation(rsets)
+
     def verbs(self):
         """
         :return: a corpus view that acts as a list of all verb lemmas
@@ -115,16 +139,18 @@ class PropbankCorpusReader(CorpusReader):
                                       read_line_block,
                                       encoding=self.encoding(self._verbsfile))
 
-    def _read_instance_block(self, stream):
+    def _read_instance_block(self, stream, instance_filter=lambda inst: True):
         block = []
 
         # Read 100 at a time.
         for i in range(100):
             line = stream.readline().strip()
             if line:
-                block.append(PropbankInstance.parse(
+                inst = PropbankInstance.parse(
                     line, self._parse_fileid_xform,
-                    self._parse_corpus))
+                    self._parse_corpus)
+                if instance_filter(inst):
+                    block.append(inst)
 
         return block
 
@@ -177,6 +203,21 @@ class PropbankInstance(object):
         self.parse_corpus = parse_corpus
         """A corpus reader for the parse trees corresponding to the
         instances in this propbank corpus."""
+
+    @property
+    def baseform(self):
+        """The baseform of the predicate."""
+        return self.roleset.split('.')[0]
+
+    @property
+    def sensenumber(self):
+        """The sense number of the predicate."""
+        return self.roleset.split('.')[1]
+
+    @property
+    def predid(self):
+        """Identifier of the predicate."""
+        return 'rel'
 
     def __repr__(self):
         return ('<PropbankInstance: %s, sent %s, word %s>' %

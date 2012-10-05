@@ -1206,10 +1206,11 @@ class WordNetCorpusReader(CorpusReader):
         """Return all Lemma objects with a name matching the specified lemma
         name and part of speech tag. Matches any part of speech tag if none is
         specified."""
+        lemma = lemma.lower()
         return [lemma_obj
                 for synset in self.synsets(lemma, pos)
                 for lemma_obj in synset.lemmas
-                if lemma_obj.name == lemma]
+                if lemma_obj.name.lower() == lemma]
 
     def all_lemma_names(self, pos=None):
         """Return all lemma names for all synsets for the given

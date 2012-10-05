@@ -16,6 +16,9 @@ Currently only reads the first tree in a file.
 """
 from __future__ import print_function
 
+# python2.5 compatibility
+from __future__ import with_statement
+
 from nltk.tree import Tree
 from pprint import pformat
 import re
@@ -119,7 +122,8 @@ class DependencyGraph(object):
         """
         :param file: a file in Malt-TAB format
         """
-        return DependencyGraph(open(file).read())
+        with open(file) as f:
+            return DependencyGraph(f.read())
 
     @staticmethod
     def _normalize(line):
@@ -200,16 +204,11 @@ class DependencyGraph(object):
         :return: either a word (if the indexed node
         is a leaf) or a ``Tree``.
         """
-
         node = self.get_by_address(i)
         word = node['word']
         deps = node['deps']
 
-        if len(deps) == 0:
-            return word
-        else:
-            return Tree(word, [self._tree(j) for j in deps])
-
+        return (Tree(word, [self._tree(j) for j in deps]) if len(deps) != 0 else word)
 
     def tree(self):
         """
@@ -240,7 +239,6 @@ class DependencyGraph(object):
             for dep in node['deps']:
                 key = tuple([node['address'], dep]) #'%d -> %d' % (node['address'], dep)
                 distances[key] = 1
-        window = 0
         for n in range(len(self.nodelist)):
             new_entries = {}
             for pair1 in distances:
@@ -344,12 +342,10 @@ Nov.    NNP     9       VMOD
     print(tree.pprint())
     if nx:
         #currently doesn't work
-        try:
-            import networkx as NX
-            import pylab as P
-        except ImportError:
-            raise
-            g = dg.nx_graph()
+        import networkx as NX
+        import pylab as P
+
+        g = dg.nx_graph()
         g.info()
         pos = NX.spring_layout(g, dim=1)
         NX.draw_networkx_nodes(g, pos, node_size=50)

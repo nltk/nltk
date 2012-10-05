@@ -1,3 +1,28 @@
+Version 2.0.3 2012-09-24
+
+* fixed corpus/reader/util.py to support Python 2.5
+* make MaltParser safe to use in parallel
+* fixed bug in inter-annotator agreement
+* updates to various doctests (nltk/test)
+* minor bugfixes
+
+Thanks to the following contributors to 2.0.3:
+Robin Cooper, Pablo Duboue, Christian Federmann, Dan Garrette, Ewan Klein,
+Pierre-François Laquerre, Max Leonov, Peter Ljunglöf, Nitin Madnani, Ceri Stagg
+
+Version 2.0.2 2012-07-05
+
+* improvements to PropBank, NomBank, and SemCor corpus readers
+* interface to full Penn Treebank Corpus V3 (corpus.ptb)
+* made wordnet.lemmas case-insensitive
+* more flexible padding in model.ngram
+* minor bugfixes and documentation enhancements
+* better support for automated testing
+
+Thanks to the following contributors to 2.0.2:
+Daniel Blanchard, Mikhail Korobov, Nitin Madnani, Duncan McGreggor,
+Morten Neergaard, Nathan Schneider, Rico Sennrich.
+
 Version 2.0.1 2012-05-15
 
 * moved NLTK to GitHub: http://github.com/nltk
@@ -9,7 +34,7 @@ Version 2.0.1 2012-05-15
 * added interface to Lin's Dependency Thesaurus (Dan Blanchard)
 * added interface to scikit-learn classifiers (Lars Buitinck)
 * added segmentation evaluation measures (David Doukhan)
-	
+
 Thanks to the following	contributors to	2.0.1 (since 2.0b9, July 2010):
 Rami Al-Rfou', Yonatan Becker, Steven Bethard, Daniel Blanchard, Lars
 Buitinck, David Coles, Lucas Cooper, David Doukhan, Dan Garrette,
@@ -212,7 +237,7 @@ NLTK:
 Version 2.0b1 2009-06-09
 
 NLTK:
-* major refactor of chart parser code and improved API (Peter Ljungl�f)
+* major refactor of chart parser code and improved API (Peter Ljungl喃)
 * added new bottom-up left-corner chart parser strategy
 * misc bugfixes (ChunkScore, chart rules, chatbots, jcn-similarity)
 * improved efficiency of "import nltk" using lazy module imports

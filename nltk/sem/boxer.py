@@ -78,10 +78,7 @@ class Boxer(object):
         :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
         :return: ``drt.AbstractDrs``
         """
-        if discourse_id is not None:
-            discourse_ids = [discourse_id]
-        else:
-            discourse_ids = None
+        discourse_ids = ([discourse_id] if discourse_id is not None else None)
         d, = self.batch_interpret_multisentence([[input]], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
@@ -96,10 +93,7 @@ class Boxer(object):
         :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
         :return: ``drt.AbstractDrs``
         """
-        if discourse_id is not None:
-            discourse_ids = [discourse_id]
-        else:
-            discourse_ids = None
+        discourse_ids = ([discourse_id] if discourse_id is not None else None)
         d, = self.batch_interpret_multisentence([input], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
@@ -829,17 +823,11 @@ class BoxerDrs(AbstractBoxerDrs):
         return atoms
 
     def clean(self):
-        if self.consequent:
-            consequent = self.consequent.clean()
-        else:
-            consequent = None
+        consequent = (self.consequent.clean() if self.consequent else None)
         return BoxerDrs(self.label, self.refs, [c.clean() for c in self.conds], consequent)
 
     def renumber_sentences(self, f):
-        if self.consequent:
-            consequent = self.consequent.renumber_sentences(f)
-        else:
-            consequent = None
+        consequent = (self.consequent.renumber_sentences(f) if self.consequent else None)
         return BoxerDrs(self.label, self.refs, [c.renumber_sentences(f) for c in self.conds], consequent)
 
     def __repr__(self):

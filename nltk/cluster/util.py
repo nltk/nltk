@@ -88,8 +88,7 @@ class VectorSpaceClusterer(ClusterI):
         Returns the likelihood of the vector belonging to the cluster.
         """
         predicted = self.classify_vectorspace(vector)
-        if cluster == predicted: return 1.0
-        else:                    return 0.0
+        return (1.0 if cluster == predicted else 0.0)
 
     def vector(self, vector):
         """
