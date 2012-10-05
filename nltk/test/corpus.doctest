@@ -69,7 +69,7 @@ words, a list of sentences, or a list of paragraphs.
 
     >>> from nltk.corpus import inaugural
     >>> inaugural.raw('1789-Washington.txt') # doctest: +ELLIPSIS
-    'Fellow-Citizens of the Senate ...
+    'Fellow-Citizens of the Senate ...'
     >>> inaugural.words('1789-Washington.txt')
     ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', ...]
     >>> inaugural.sents('1789-Washington.txt') # doctest: +ELLIPSIS
@@ -107,15 +107,15 @@ Plaintext Corpora
 Here are the first few words from each of NLTK's plaintext corpora:
 
     >>> nltk.corpus.abc.words()
-    ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', ...]
+    ['PM', 'denies', 'knowledge', 'of', 'AWB', ...]
     >>> nltk.corpus.genesis.words()
     [u'In', u'the', u'beginning', u'God', u'created', ...]
     >>> nltk.corpus.gutenberg.words(fileids='austen-emma.txt')
-    ['[', 'Emma', 'by', 'Jane', 'Austen', '1816', ']', ...]
+    ['[', 'Emma', 'by', 'Jane', 'Austen', '1816', ...]
     >>> nltk.corpus.inaugural.words()
-    ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', ...]
+    ['Fellow', '-', 'Citizens', 'of', 'the', ...]
     >>> nltk.corpus.state_union.words()
-    ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', ...]
+    ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", ...]
     >>> nltk.corpus.udhr.words() # doctest: +NORMALIZE_WHITESPACE
     ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0',
      '\xe8\xe7\xe8\xed6\xfa\xe0', ...]
@@ -139,7 +139,7 @@ than just bare word strings.
 
     >>> from nltk.corpus import brown
     >>> print(brown.words())
-    ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
+    ['The', 'Fulton', 'County', 'Grand', 'Jury', ...]
     >>> print(brown.tagged_words())
     [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
     >>> print(brown.sents()) # doctest: +ELLIPSIS
@@ -179,7 +179,7 @@ tags are collapsed to a single category ``N``:
     >>> print(conll2000.tagged_words(simplify_tags=True)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [('Confidence', 'N'), ('in', 'P'), ('the', 'DET'), ...]
     >>> print(switchboard.tagged_words(simplify_tags=True)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [('Uh', 'UH'), (',', ','), ('do', 'V'), ('you', 'PRO'), ...]
+    [('Uh', 'UH'), (',', ','), ('do', 'V'), ...]
 
 Use ``nltk.app.pos_concordance()`` to access a GUI for searching tagged corpora.
 
