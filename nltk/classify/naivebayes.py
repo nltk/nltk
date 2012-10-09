@@ -79,7 +79,7 @@ class NaiveBayesClassifier(ClassifierI):
         """
         self._label_probdist = label_probdist
         self._feature_probdist = feature_probdist
-        self._labels = label_probdist.samples()
+        self._labels = list(label_probdist.samples())
 
     def labels(self):
         return self._labels
