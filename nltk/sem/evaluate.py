@@ -14,6 +14,7 @@ This module provides data structures for representing first-order
 models.
 """
 
+from __future__ import print_function
 from pprint import pformat
 import inspect
 import textwrap
@@ -36,9 +37,9 @@ def trace(f, *args, **kw):
     argspec = inspect.getargspec(f)
     d = dict(zip(argspec[0], args))
     if d.pop('trace', None):
-        print
+        print()
         for item in d.items():
-            print "%s => %s" % item
+            print("%s => %s" % item)
     return f(*args, **kw)
 
 def is_rel(s):
@@ -319,13 +320,13 @@ class Model(object):
             parsed = lp.parse(expr)
             value = self.satisfy(parsed, g, trace=trace)
             if trace:
-                print
-                print "'%s' evaluates to %s under M, %s" %  (expr, value, g)
+                print()
+                print("'%s' evaluates to %s under M, %s" %  (expr, value, g))
             return value
         except Undefined:
             if trace:
-                print
-                print "'%s' is undefined under M, %s" %  (expr, g)
+                print()
+                print("'%s' is undefined under M, %s" %  (expr, g))
             return 'Undefined'
 
 
@@ -453,8 +454,8 @@ class Model(object):
 
         if var in parsed.free():
             if trace:
-                print
-                print (spacer * nesting) + "Open formula is '%s' with assignment %s" % (parsed, g)
+                print()
+                print((spacer * nesting) + "Open formula is '%s' with assignment %s" % (parsed, g))
             for u in self.domain:
                 new_g = g.copy()
                 new_g.add(var.name, u)
@@ -465,18 +466,18 @@ class Model(object):
                 value = self.satisfy(parsed, new_g, lowtrace)
 
                 if trace:
-                    print indent + "(trying assignment %s)" % new_g
+                    print(indent + "(trying assignment %s)" % new_g)
 
                 # parsed == False under g[u/var]?
                 if value == False:
                     if trace:
-                        print  indent + "value of '%s' under %s is False" % (parsed, new_g)
+                        print(indent + "value of '%s' under %s is False" % (parsed, new_g))
 
                 # so g[u/var] is a satisfying assignment
                 else:
                     candidates.append(u)
                     if trace:
-                        print indent + "value of '%s' under %s is %s" % (parsed, new_g, value)
+                        print(indent + "value of '%s' under %s is %s" % (parsed, new_g, value))
 
             result = set(c for c in candidates)
         # var isn't free in parsed
@@ -506,14 +507,14 @@ def propdemo(trace=None):
     m1 = Model(dom1, val1)
     g1 = Assignment(dom1)
 
-    print
-    print '*' * mult
-    print "Propositional Formulas Demo"
-    print '*' * mult
-    print '(Propositional constants treated as nullary predicates)'
-    print
-    print "Model m1:\n", m1
-    print '*' * mult
+    print()
+    print('*' * mult)
+    print("Propositional Formulas Demo")
+    print('*' * mult)
+    print('(Propositional constants treated as nullary predicates)')
+    print()
+    print("Model m1:\n", m1)
+    print('*' * mult)
     sentences = [
     '(P & Q)',
     '(P & R)',
@@ -536,10 +537,10 @@ def propdemo(trace=None):
 
     for sent in sentences:
         if trace:
-            print
+            print()
             m1.evaluate(sent, g1, trace)
         else:
-            print "The value of '%s' is: %s" % (sent, m1.evaluate(sent, g1))
+            print("The value of '%s' is: %s" % (sent, m1.evaluate(sent, g1)))
 
 # Demo 2: FOL Model
 #############
@@ -558,23 +559,23 @@ def folmodel(quiet=False, trace=None):
     g2 = Assignment(dom2, [('x', 'b1'), ('y', 'g2')])
 
     if not quiet:
-        print
-        print '*' * mult
-        print "Models Demo"
-        print "*" * mult
-        print "Model m2:\n", "-" * 14,"\n", m2
-        print "Variable assignment = ", g2
+        print()
+        print('*' * mult)
+        print("Models Demo")
+        print("*" * mult)
+        print("Model m2:\n", "-" * 14,"\n", m2)
+        print("Variable assignment = ", g2)
 
         exprs = ['adam', 'boy', 'love', 'walks', 'x', 'y', 'z']
         lp = LogicParser()
         parsed_exprs = [lp.parse(e) for e in exprs]
 
-        print
+        print()
         for parsed in parsed_exprs:
             try:
-                print "The interpretation of '%s' in m2 is %s" % (parsed, m2.i(parsed, g2))
+                print("The interpretation of '%s' in m2 is %s" % (parsed, m2.i(parsed, g2)))
             except Undefined:
-                print "The interpretation of '%s' in m2 is Undefined" % parsed
+                print("The interpretation of '%s' in m2 is Undefined" % parsed)
 
 
         applications = [('boy', ('adam')), ('walks', ('adam',)), ('love', ('adam', 'y')), ('love', ('y', 'adam'))]
@@ -583,9 +584,9 @@ def folmodel(quiet=False, trace=None):
             try:
                 funval = m2.i(lp.parse(fun), g2)
                 argsval = tuple(m2.i(lp.parse(arg), g2) for arg in args)
-                print "%s(%s) evaluates to %s" % (fun, args, argsval in funval)
+                print("%s(%s) evaluates to %s" % (fun, args, argsval in funval))
             except Undefined:
-                print "%s(%s) evaluates to Undefined" % (fun, args)
+                print("%s(%s) evaluates to Undefined" % (fun, args))
 
 # Demo 3: FOL
 #########
@@ -596,10 +597,10 @@ def foldemo(trace=None):
     """
     folmodel(quiet=True)
 
-    print
-    print '*' * mult
-    print "FOL Formulas Demo"
-    print '*' * mult
+    print()
+    print('*' * mult)
+    print("FOL Formulas Demo")
+    print('*' * mult)
 
     formulas = [
     'love (adam, betty)',
@@ -628,7 +629,7 @@ def foldemo(trace=None):
         if trace:
             m2.evaluate(fmla, g2, trace)
         else:
-            print "The value of '%s' is: %s" % (fmla, m2.evaluate(fmla, g2))
+            print("The value of '%s' is: %s" % (fmla, m2.evaluate(fmla, g2)))
 
 
 # Demo 3: Satisfaction
@@ -637,10 +638,10 @@ def foldemo(trace=None):
 def satdemo(trace=None):
     """Satisfiers of an open formula in a first order model."""
 
-    print
-    print '*' * mult
-    print "Satisfiers Demo"
-    print '*' * mult
+    print()
+    print('*' * mult)
+    print("Satisfiers Demo")
+    print('*' * mult)
 
     folmodel(quiet=True)
 
@@ -667,18 +668,18 @@ def satdemo(trace=None):
                 ]
 
     if trace:
-        print m2
+        print(m2)
 
     lp = LogicParser()
     for fmla in formulas:
-        print fmla
+        print(fmla)
         lp.parse(fmla)
 
     parsed = [lp.parse(fmla) for fmla in formulas]
 
     for p in parsed:
         g2.purge()
-        print "The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, 'x', g2, trace))
+        print("The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, 'x', g2, trace)))
 
 
 def demo(num=0, trace=None):

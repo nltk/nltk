@@ -89,6 +89,7 @@ or if you plan to use them as dictionary keys, it is strongly
 recommended that you use full-fledged ``FeatStruct`` objects.
 """
 
+from __future__ import print_function
 import re, copy
 
 from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
@@ -1583,27 +1584,27 @@ def _resolve_aliases(bindings):
 
 def _trace_unify_start(path, fval1, fval2):
     if path == ():
-        print '\nUnification trace:'
+        print('\nUnification trace:')
     else:
         fullname = '.'.join(str(n) for n in path)
-        print '  '+'|   '*(len(path)-1)+'|'
-        print '  '+'|   '*(len(path)-1)+'| Unify feature: %s' % fullname
-    print '  '+'|   '*len(path)+' / '+_trace_valrepr(fval1)
-    print '  '+'|   '*len(path)+'|\\ '+_trace_valrepr(fval2)
+        print('  '+'|   '*(len(path)-1)+'|')
+        print('  '+'|   '*(len(path)-1)+'| Unify feature: %s' % fullname)
+    print('  '+'|   '*len(path)+' / '+_trace_valrepr(fval1))
+    print('  '+'|   '*len(path)+'|\\ '+_trace_valrepr(fval2))
 def _trace_unify_identity(path, fval1):
-    print '  '+'|   '*len(path)+'|'
-    print '  '+'|   '*len(path)+'| (identical objects)'
-    print '  '+'|   '*len(path)+'|'
-    print '  '+'|   '*len(path)+'+-->'+`fval1`
+    print('  '+'|   '*len(path)+'|')
+    print('  '+'|   '*len(path)+'| (identical objects)')
+    print('  '+'|   '*len(path)+'|')
+    print('  '+'|   '*len(path)+'+-->'+`fval1`)
 def _trace_unify_fail(path, result):
     if result is UnificationFailure: resume = ''
     else: resume = ' (nonfatal)'
-    print '  '+'|   '*len(path)+'|   |'
-    print '  '+'X   '*len(path)+'X   X <-- FAIL'+resume
+    print('  '+'|   '*len(path)+'|   |')
+    print('  '+'X   '*len(path)+'X   X <-- FAIL'+resume)
 def _trace_unify_succeed(path, fval1):
     # Print the result.
-    print '  '+'|   '*len(path)+'|'
-    print '  '+'|   '*len(path)+'+-->'+`fval1`
+    print('  '+'|   '*len(path)+'|')
+    print('  '+'|   '*len(path)+'+-->'+`fval1`)
 def _trace_bindings(path, bindings):
     # Print the bindings (if any).
     if len(bindings) > 0:
@@ -1611,7 +1612,7 @@ def _trace_bindings(path, bindings):
         bindstr = '{%s}' % ', '.join(
             '%s: %s' % (var, _trace_valrepr(val))
             for (var, val) in binditems)
-        print '  '+'|   '*len(path)+'    Bindings: '+bindstr
+        print('  '+'|   '*len(path)+'    Bindings: '+bindstr)
 def _trace_valrepr(val):
     if isinstance(val, Variable):
         return '%s' % val
@@ -2297,25 +2298,25 @@ def display_unification(fs1, fs2, indent='  '):
         blankline = '['+' '*(len(fs1_lines[0])-2)+']'
         fs1_lines += [blankline]*len(fs2_lines)
     for (fs1_line, fs2_line) in zip(fs1_lines, fs2_lines):
-        print indent + fs1_line + '   ' + fs2_line
-    print indent+'-'*len(fs1_lines[0])+'   '+'-'*len(fs2_lines[0])
+        print(indent + fs1_line + '   ' + fs2_line)
+    print(indent+'-'*len(fs1_lines[0])+'   '+'-'*len(fs2_lines[0]))
 
     linelen = len(fs1_lines[0])*2+3
-    print indent+'|               |'.center(linelen)
-    print indent+'+-----UNIFY-----+'.center(linelen)
-    print indent+'|'.center(linelen)
-    print indent+'V'.center(linelen)
+    print(indent+'|               |'.center(linelen))
+    print(indent+'+-----UNIFY-----+'.center(linelen))
+    print(indent+'|'.center(linelen))
+    print(indent+'V'.center(linelen))
 
     bindings = {}
 
     result = fs1.unify(fs2, bindings)
     if result is None:
-        print indent+'(FAILED)'.center(linelen)
+        print(indent+'(FAILED)'.center(linelen))
     else:
-        print '\n'.join(indent+l.center(linelen)
-                         for l in str(result).split('\n'))
+        print('\n'.join(indent+l.center(linelen)
+                         for l in str(result).split('\n')))
         if bindings and len(bindings.bound_variables()) > 0:
-            print repr(bindings).center(linelen)
+            print(repr(bindings).center(linelen))
     return result
 
 def interactive_demo(trace=False):
@@ -2329,7 +2330,7 @@ def interactive_demo(trace=False):
     ?: Help
     '''
 
-    print '''
+    print('''
     This demo will repeatedly present you with a list of feature
     structures, and ask you to choose two for unification.  Whenever a
     new feature structure is generated, it is added to the list of
@@ -2338,8 +2339,8 @@ def interactive_demo(trace=False):
     random subset for you to choose between at a given time.  If you
     want to see the complete lists, type "l".  For a list of valid
     commands, type "?".
-    '''
-    print 'Press "Enter" to continue...'
+    ''')
+    print('Press "Enter" to continue...')
     sys.stdin.readline()
 
     fstruct_strings = [
@@ -2360,11 +2361,11 @@ def interactive_demo(trace=False):
 
     def list_fstructs(fstructs):
         for i, fstruct in fstructs:
-            print
+            print()
             lines = str(fstruct).split('\n')
-            print '%3d: %s' % (i+1, lines[0])
-            for line in lines[1:]: print '     '+line
-        print
+            print('%3d: %s' % (i+1, lines[0]))
+            for line in lines[1:]: print('     '+line)
+        print()
 
 
     while 1:
@@ -2376,32 +2377,32 @@ def interactive_demo(trace=False):
         else:
             fstructs = all_fstructs
 
-        print '_'*75
+        print('_'*75)
 
-        print 'Choose two feature structures to unify:'
+        print('Choose two feature structures to unify:')
         list_fstructs(fstructs)
 
         selected = [None,None]
         for (nth,i) in (('First',0), ('Second',1)):
             while selected[i] is None:
-                print ('%s feature structure (1-%d,q,t,l,?): '
-                       % (nth, len(all_fstructs))),
+                print(('%s feature structure (1-%d,q,t,l,?): '
+                       % (nth, len(all_fstructs))), end=' ')
                 try:
                     input = sys.stdin.readline().strip()
                     if input in ('q', 'Q', 'x', 'X'): return
                     if input in ('t', 'T'):
                         trace = not trace
-                        print '   Trace = %s' % trace
+                        print('   Trace = %s' % trace)
                         continue
                     if input in ('h', 'H', '?'):
-                        print HELP % len(fstructs); continue
+                        print(HELP % len(fstructs)); continue
                     if input in ('l', 'L'):
                         list_fstructs(all_fstructs); continue
                     num = int(input)-1
                     selected[i] = all_fstructs[num][1]
-                    print
+                    print()
                 except:
-                    print 'Bad sentence number'
+                    print('Bad sentence number')
                     continue
 
         if trace:
@@ -2414,7 +2415,7 @@ def interactive_demo(trace=False):
             else:
                 all_fstructs.append((len(all_fstructs), result))
 
-        print '\nType "Enter" to continue unifying; or "q" to quit.'
+        print('\nType "Enter" to continue unifying; or "q" to quit.')
         input = sys.stdin.readline().strip()
         if input in ('q', 'Q', 'x', 'X'): return
 
@@ -2447,7 +2448,7 @@ def demo(trace=False):
 
     for fs1 in all_fstructs:
         for fs2 in all_fstructs:
-            print "\n*******************\nfs1 is:\n%s\n\nfs2 is:\n%s\n\nresult is:\n%s" % (fs1, fs2, unify(fs1, fs2))
+            print("\n*******************\nfs1 is:\n%s\n\nfs2 is:\n%s\n\nresult is:\n%s" % (fs1, fs2, unify(fs1, fs2)))
 
 
 if __name__ == '__main__':

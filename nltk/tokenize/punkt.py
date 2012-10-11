@@ -85,6 +85,7 @@ The algorithm for this tokenizer is described in::
 # TODO: Frequent sentence starters optionally exclude always-capitalised words
 # FIXME: Problem with ending string with e.g. '!!!' -> '!! !'
 
+from __future__ import print_function
 import re
 import math
 from collections import defaultdict
@@ -736,14 +737,14 @@ class PunktTrainer(PunktBaseClass):
                 if is_add:
                     self._params.abbrev_types.add(abbr)
                     if verbose:
-                        print ('  Abbreviation: [%6.4f] %s' %
-                               (score, abbr))
+                        print(('  Abbreviation: [%6.4f] %s' %
+                               (score, abbr)))
             else:
                 if not is_add:
                     self._params.abbrev_types.remove(abbr)
                     if verbose:
-                        print ('  Removed abbreviation: [%6.4f] %s' %
-                               (score, abbr))
+                        print(('  Removed abbreviation: [%6.4f] %s' %
+                               (score, abbr)))
 
         # Make a preliminary pass through the document, marking likely
         # sentence breaks, abbreviations, and ellipsis tokens.
@@ -766,7 +767,7 @@ class PunktTrainer(PunktBaseClass):
             if self._is_rare_abbrev_type(aug_tok1, aug_tok2):
                 self._params.abbrev_types.add(aug_tok1.type_no_period)
                 if verbose:
-                    print ('  Rare Abbrev: %s' % aug_tok1.type)
+                    print(('  Rare Abbrev: %s' % aug_tok1.type))
 
             # Does second token have a high likelihood of starting a sentence?
             if self._is_potential_sent_starter(aug_tok2, aug_tok1):
@@ -789,14 +790,14 @@ class PunktTrainer(PunktBaseClass):
         for typ, ll in self._find_sent_starters():
             self._params.sent_starters.add(typ)
             if verbose:
-                print ('  Sent Starter: [%6.4f] %r' % (ll, typ))
+                print(('  Sent Starter: [%6.4f] %r' % (ll, typ)))
 
         self._params.clear_collocations()
         for (typ1, typ2), ll in self._find_collocations():
             self._params.collocations.add( (typ1,typ2) )
             if verbose:
-                print ('  Collocation: [%6.4f] %r+%r' %
-                       (ll, typ1, typ2))
+                print(('  Collocation: [%6.4f] %r+%r' %
+                       (ll, typ1, typ2)))
 
         self._finalized = True
 
@@ -1418,7 +1419,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
 
     # [XX] TESTING
     def dump(self, tokens):
-        print 'writing to /tmp/punkt.new...'
+        print('writing to /tmp/punkt.new...')
         out = open('/tmp/punkt.new', 'w')
         for aug_tok in tokens:
             if aug_tok.parastart:
@@ -1586,7 +1587,7 @@ def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     trainer.train(text)
     sbd = tok_cls(trainer.get_params())
     for l in sbd.sentences_from_text(text, realign_boundaries=True):
-        print cleanup(l)
+        print(cleanup(l))
 
 
 if __name__ == "__main__":

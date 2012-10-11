@@ -34,6 +34,7 @@ homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
 
+from __future__ import print_function
 from Tkinter import (Button, Canvas, Entry, Frame, Label, Menu, Menubutton,
                      RAISED, Scrollbar, StringVar, Text, Tk, Toplevel, Widget)
 
@@ -605,7 +606,7 @@ class CanvasWidget(object):
                 try:
                     cb(self)
                 except:
-                    print 'Error in drag callback for %r' % self
+                    print('Error in drag callback for %r' % self)
         elif self.__parent is not None:
             self.__parent.__drag()
 

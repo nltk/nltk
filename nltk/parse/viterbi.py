@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 from nltk.tree import Tree, ProbabilisticTree
 
 from nltk.parse.api import ParserI
@@ -117,8 +118,8 @@ class ViterbiParser(ParserI):
 
         # Initialize the constituents dictionary with the words from
         # the text.
-        if self._trace: print ('Inserting tokens into the most likely'+
-                               ' constituents table...')
+        if self._trace: print(('Inserting tokens into the most likely'+
+                               ' constituents table...'))
         for index in range(len(tokens)):
             token = tokens[index]
             constituents[index,index+1,token] = token
@@ -129,8 +130,8 @@ class ViterbiParser(ParserI):
         # that might cover that span to the constituents dictionary.
         for length in range(1, len(tokens)+1):
             if self._trace:
-                print ('Finding the most likely constituents'+
-                       ' spanning %d text elements...' % length)
+                print(('Finding the most likely constituents'+
+                       ' spanning %d text elements...' % length))
             for start in range(len(tokens)-length+1):
                 span = (start, start+length)
                 self._add_constituents_spanning(span, constituents,
@@ -200,9 +201,9 @@ class ViterbiParser(ParserI):
                 if self._trace > 1:
                     if c is None or c != tree:
                         if c is None or c.prob() < tree.prob():
-                            print '   Insert:',
+                            print('   Insert:', end=' ')
                         else:
-                            print '  Discard:',
+                            print('  Discard:', end=' ')
                         self._trace_production(production, p, span, len(tokens))
                 if c is None or c.prob() < tree.prob():
                     constituents[span[0], span[1], production.lhs()] = tree
@@ -302,12 +303,12 @@ class ViterbiParser(ParserI):
         str += '%s' % production
         if self._trace > 2: str = '%-40s %12.10f ' % (str, p)
 
-        print str
+        print(str)
 
     def _trace_lexical_insertion(self, token, index, width):
         str = '   Insert: |' + '.' * index + '=' + '.' * (width-index-1) + '| '
         str += '%s' % (token,)
-        print str
+        print(str)
 
     def __repr__(self):
         return '<ViterbiParser for %r>' % self._grammar
@@ -334,17 +335,17 @@ def demo():
              ('the boy saw Jack with Bob under the table with a telescope', nltk.toy_pcfg2)]
 
     # Ask the user which demo they want to use.
-    print
+    print()
     for i in range(len(demos)):
-        print '%3s: %s' % (i+1, demos[i][0])
-        print '     %r' % demos[i][1]
-        print
-    print 'Which demo (%d-%d)? ' % (1, len(demos)),
+        print('%3s: %s' % (i+1, demos[i][0]))
+        print('     %r' % demos[i][1])
+        print()
+    print('Which demo (%d-%d)? ' % (1, len(demos)), end=' ')
     try:
         snum = int(sys.stdin.readline().strip())-1
         sent, grammar = demos[snum]
     except:
-        print 'Bad sentence number'
+        print('Bad sentence number')
         return
 
     # Tokenize the sentence.
@@ -353,7 +354,7 @@ def demo():
     parser = ViterbiParser(grammar)
     all_parses = {}
 
-    print '\nsent: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar)
+    print('\nsent: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar))
     parser.trace(3)
     t = time.time()
     parses = parser.nbest_parse(tokens)
@@ -365,31 +366,31 @@ def demo():
         all_parses[p.freeze()] = 1
 
     # Print some summary statistics
-    print
-    print 'Time (secs)   # Parses   Average P(parse)'
-    print '-----------------------------------------'
-    print '%11.4f%11d%19.14f' % (time, num_parses, average)
+    print()
+    print('Time (secs)   # Parses   Average P(parse)')
+    print('-----------------------------------------')
+    print('%11.4f%11d%19.14f' % (time, num_parses, average))
     parses = all_parses.keys()
     if parses:
         p = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
     else: p = 0
-    print '------------------------------------------'
-    print '%11s%11d%19.14f' % ('n/a', len(parses), p)
+    print('------------------------------------------')
+    print('%11s%11d%19.14f' % ('n/a', len(parses), p))
 
     # Ask the user if we should draw the parses.
-    print
-    print 'Draw parses (y/n)? ',
+    print()
+    print('Draw parses (y/n)? ', end=' ')
     if sys.stdin.readline().strip().lower().startswith('y'):
         from nltk.draw.tree import draw_trees
-        print '  please wait...'
+        print('  please wait...')
         draw_trees(*parses)
 
     # Ask the user if we should print the parses.
-    print
-    print 'Print parses (y/n)? ',
+    print()
+    print('Print parses (y/n)? ', end=' ')
     if sys.stdin.readline().strip().lower().startswith('y'):
         for parse in parses:
-            print parse
+            print(parse)
 
 if __name__ == '__main__':
     demo()

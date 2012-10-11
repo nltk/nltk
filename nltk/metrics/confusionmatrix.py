@@ -5,6 +5,7 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function
 from nltk.probability import FreqDist
 
 class ConfusionMatrix(object):
@@ -192,11 +193,11 @@ class ConfusionMatrix(object):
 def demo():
     reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
     test    = 'DET VB VB DET NN NN NN IN DET NN'.split()
-    print 'Reference =', reference
-    print 'Test    =', test
-    print 'Confusion matrix:'
-    print ConfusionMatrix(reference, test)
-    print ConfusionMatrix(reference, test).pp(sort_by_count=True)
+    print('Reference =', reference)
+    print('Test    =', test)
+    print('Confusion matrix:')
+    print(ConfusionMatrix(reference, test))
+    print(ConfusionMatrix(reference, test).pp(sort_by_count=True))
 
 if __name__ == '__main__':
     demo()

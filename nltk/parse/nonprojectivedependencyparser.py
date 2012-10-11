@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 #
 
+from __future__ import print_function
 import math
 
 from nltk.grammar import parse_dependency_grammar
@@ -93,7 +94,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
     """
 
     def __init__(self):
-        print # Do nothing without throwing error?
+        print() # Do nothing without throwing error?
 
     def train(self, graphs):
         """
@@ -141,15 +142,15 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
             for j in range(len(graph.nodelist)):
                 head_node = graph.get_by_address(i)
                 child_node = graph.get_by_address(j)
-                print head_node
-                print child_node
+                print(head_node)
+                print(child_node)
                 edges.append((dict(a=head_node['word'],b=head_node['tag'],c=child_node['word'],d=child_node['tag'])))
         # Score edges
         edge_scores = []
         row = []
         count = 0
         for pdist in self.classifier.batch_prob_classify(edges):
-            print '%.4f %.4f' % (pdist.prob('T'), pdist.prob('F'))
+            print('%.4f %.4f' % (pdist.prob('T'), pdist.prob('F')))
             row.append([math.log(pdist.prob("T"))])
             count += 1
             if count == len(graph.nodelist):
@@ -166,7 +167,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
 class DemoScorer:
 
     def train(self, graphs):
-        print 'Training...'
+        print('Training...')
 
     def score(self, graph):
         # scores for Keith Hall 'K-best Spanning Tree Parsing' paper
@@ -193,7 +194,7 @@ class ProbabilisticNonprojectiveParser(object):
         """
         Creates a new non-projective parser.
         """
-        print 'initializing prob. nonprojective...'
+        print('initializing prob. nonprojective...')
 
     def train(self, graphs, dependency_scorer):
         """
@@ -235,7 +236,7 @@ class ProbabilisticNonprojectiveParser(object):
         :type g_graph, b_graph, c_graph: DependencyGraph
         :param g_graph, b_graph, c_graph: Graphs which need to be updated.
         """
-        print 'Collapsing nodes...'
+        print('Collapsing nodes...')
         # Collapse all cycle nodes into v_n+1 in G_Graph
         for cycle_node_index in cycle_path:
             g_graph.remove_by_address(cycle_node_index)
@@ -252,17 +253,17 @@ class ProbabilisticNonprojectiveParser(object):
         :type cycle_path: A list of integers.
         :param cycle_path: A list of node addresses that belong to the cycle.
         """
-        print 'cycle', cycle_path
+        print('cycle', cycle_path)
         cycle_path = self.compute_original_indexes(cycle_path)
-        print 'old cycle ', cycle_path
-        print 'Prior to update:\n', self.scores
+        print('old cycle ', cycle_path)
+        print('Prior to update:\n', self.scores)
         for i, row in enumerate(self.scores):
             for j, column in enumerate(self.scores[i]):
-                print self.scores[i][j]
+                print(self.scores[i][j])
                 if j in cycle_path and not i in cycle_path and len(self.scores[i][j]) > 0:
                     new_vals = []
                     subtract_val = self.compute_max_subtract_score(j, cycle_path)
-                    print self.scores[i][j], ' - ', subtract_val
+                    print(self.scores[i][j], ' - ', subtract_val)
                     for cur_val in self.scores[i][j]:
                         new_vals.append(cur_val - subtract_val)
                     self.scores[i][j] = new_vals
@@ -270,7 +271,7 @@ class ProbabilisticNonprojectiveParser(object):
             for j, cell in enumerate(self.scores[i]):
                 if i in cycle_path and j in cycle_path:
                     self.scores[i][j] = []
-        print 'After update:\n', self.scores
+        print('After update:\n', self.scores)
 
     def compute_original_indexes(self, new_indexes):
         """
@@ -330,7 +331,7 @@ class ProbabilisticNonprojectiveParser(object):
         the node that is arced to.
         """
         originals = self.compute_original_indexes([node_index])
-        print 'originals:', originals
+        print('originals:', originals)
         max_arc = None
         max_score = None
         for row_index in range(len(self.scores)):
@@ -339,8 +340,8 @@ class ProbabilisticNonprojectiveParser(object):
                 if col_index in originals and self.scores[row_index][col_index] > max_score:
                     max_score = self.scores[row_index][col_index]
                     max_arc = row_index
-                    print row_index, ',', col_index
-        print max_score
+                    print(row_index, ',', col_index)
+        print(max_score)
         for key in self.inner_nodes:
             replaced_nodes = self.inner_nodes[key]
             if max_arc in replaced_nodes:
@@ -398,7 +399,7 @@ class ProbabilisticNonprojectiveParser(object):
                             for index, token in enumerate(tokens)]
         # Assign initial scores to g_graph edges
         self.initialize_edge_scores(g_graph)
-        print self.scores
+        print(self.scores)
         # Initialize a list of unvisited vertices (by node address)
         unvisited_vertices = [vertex['address'] for vertex in c_graph.nodelist]
         # Iterate over unvisited vertices
@@ -407,14 +408,14 @@ class ProbabilisticNonprojectiveParser(object):
         while(len(unvisited_vertices) > 0):
             # Mark current node as visited
             current_vertex = unvisited_vertices.pop(0)
-            print 'current_vertex:', current_vertex
+            print('current_vertex:', current_vertex)
             # Get corresponding node n_i to vertex v_i
             current_node = g_graph.get_by_address(current_vertex)
-            print 'current_node:', current_node
+            print('current_node:', current_node)
             # Get best in-edge node b for current node
             best_in_edge = self.best_incoming_arc(current_vertex)
             betas[current_vertex] = self.original_best_arc(current_vertex)
-            print 'best in arc: ', best_in_edge, ' --> ', current_vertex
+            print('best in arc: ', best_in_edge, ' --> ', current_vertex)
             # b_graph = Union(b_graph, b)
             for new_vertex in [current_vertex, best_in_edge]:
                 b_graph.add_node({'word':'TEMP', 'deps':[], 'rel': 'NTOP', 'address': new_vertex})
@@ -443,21 +444,21 @@ class ProbabilisticNonprojectiveParser(object):
             # Remove cycle nodes from b_graph; B = B - cycle c
                 for cycle_node_address in cycle_path:
                     b_graph.remove_by_address(cycle_node_address)
-            print 'g_graph:\n', g_graph
-            print
-            print 'b_graph:\n', b_graph
-            print
-            print 'c_graph:\n', c_graph
-            print
-            print 'Betas:\n', betas
-            print 'replaced nodes', self.inner_nodes
-            print
+            print('g_graph:\n', g_graph)
+            print()
+            print('b_graph:\n', b_graph)
+            print()
+            print('c_graph:\n', c_graph)
+            print()
+            print('Betas:\n', betas)
+            print('replaced nodes', self.inner_nodes)
+            print()
         #Recover parse tree
-        print 'Final scores:\n', self.scores
-        print 'Recovering parse...'
+        print('Final scores:\n', self.scores)
+        print('Recovering parse...')
         for i in range(len(tokens) + 1, nr_vertices + 1):
             betas[betas[i][1]] = betas[i]
-        print 'Betas: ', betas
+        print('Betas: ', betas)
         new_graph = DependencyGraph()
         for node in original_graph.nodelist:
             node['deps'] = []
@@ -466,7 +467,7 @@ class ProbabilisticNonprojectiveParser(object):
             original_graph.add_arc(betas[i][0], betas[i][1])
 #       print original_graph
         return original_graph
-        print 'Done.'
+        print('Done.')
 
 
 
@@ -532,7 +533,7 @@ class NonprojectiveDependencyParser(object):
             possible_heads.append(heads)
         # Set roots to attempt
         if len(roots) > 1:
-            print "No parses found."
+            print("No parses found.")
             return False
         elif len(roots) == 0:
             for i in range(len(tokens)):
@@ -619,7 +620,7 @@ def hall_demo():
     npp = ProbabilisticNonprojectiveParser()
     npp.train([], DemoScorer())
     parse_graph = npp.parse(['v1', 'v2', 'v3'], [None, None, None])
-    print parse_graph
+    print(parse_graph)
 
 def nonprojective_conll_parse_demo():
     graphs = [DependencyGraph(entry)
@@ -627,7 +628,7 @@ def nonprojective_conll_parse_demo():
     npp = ProbabilisticNonprojectiveParser()
     npp.train(graphs, NaiveBayesDependencyScorer())
     parse_graph = npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc'])
-    print parse_graph
+    print(parse_graph)
 
 def rule_based_demo():
     grammar = parse_dependency_grammar("""
@@ -638,12 +639,12 @@ def rule_based_demo():
     'play' -> 'golf' | 'dachshund' | 'to'
     'dachshund' -> 'his'
     """)
-    print grammar
+    print(grammar)
     ndp = NonprojectiveDependencyParser(grammar)
     graphs = ndp.parse(['the', 'man', 'in', 'the', 'corner', 'taught', 'his', 'dachshund', 'to', 'play', 'golf'])
-    print 'Graphs:'
+    print('Graphs:')
     for graph in graphs:
-        print graph
+        print(graph)
 
 if __name__ == '__main__':
     demo()

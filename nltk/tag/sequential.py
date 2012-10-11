@@ -18,6 +18,7 @@ consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
 
+from __future__ import print_function
 import re, yaml
 
 from nltk.probability import FreqDist, ConditionalFreqDist
@@ -197,9 +198,9 @@ class ContextTagger(SequentialBackoffTagger):
             size = len(self._context_to_tag)
             backoff = 100 - (hit_count * 100.0)/ token_count
             pruning = 100 - (size * 100.0) / len(fd.conditions())
-            print "[Trained Unigram tagger:",
-            print "size=%d, backoff=%.2f%%, pruning=%.2f%%]" % (
-                size, backoff, pruning)
+            print("[Trained Unigram tagger:", end=' ')
+            print("size=%d, backoff=%.2f%%, pruning=%.2f%%]" % (
+                size, backoff, pruning))
 
 ######################################################################
 #{ Tagger Classes
@@ -567,7 +568,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         classifier_corpus = []
         if verbose:
-            print 'Constructing training corpus for classifier.'
+            print('Constructing training corpus for classifier.')
 
         for sentence in tagged_corpus:
             history = []
@@ -579,7 +580,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
                 history.append(tags[index])
 
         if verbose:
-            print 'Training classifier (%d instances)' % len(classifier_corpus)
+            print('Training classifier (%d instances)' % len(classifier_corpus))
         self._classifier = classifier_builder(classifier_corpus)
 
     def __repr__(self):

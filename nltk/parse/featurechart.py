@@ -12,6 +12,7 @@ Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
 
+from __future__ import print_function
 from collections import defaultdict
 
 from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
@@ -546,25 +547,25 @@ def demo(should_print_times=True, should_print_grammar=True,
          parser=FeatureChartParser,
          sent='I saw John with a dog with my cookie'):
     import sys, time
-    print
+    print()
     grammar = demo_grammar()
     if should_print_grammar:
-        print grammar
-        print
-    print "*", parser.__name__
+        print(grammar)
+        print()
+    print("*", parser.__name__)
     if should_print_sentence:
-        print "Sentence:", sent
+        print("Sentence:", sent)
     tokens = sent.split()
     t = time.clock()
     cp = parser(grammar, trace=trace)
     chart = cp.chart_parse(tokens)
     trees = chart.parses(grammar.start())
     if should_print_times:
-        print "Time: %s" % (time.clock() - t)
+        print("Time: %s" % (time.clock() - t))
     if should_print_trees:
-        for tree in trees: print tree
+        for tree in trees: print(tree)
     else:
-        print "Nr trees:", len(trees)
+        print("Nr trees:", len(trees))
 
 def run_profile():
     import profile
@@ -577,11 +578,11 @@ def run_profile():
 if __name__ == '__main__':
     from nltk.data import load
     demo()
-    print
+    print()
     grammar = load('grammars/book_grammars/feat0.fcfg')
     cp = FeatureChartParser(grammar, trace=2)
     sent = 'Kim likes children'
     tokens = sent.split()
     trees = cp.nbest_parse(tokens)
     for tree in trees:
-        print tree
+        print(tree)

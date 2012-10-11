@@ -46,6 +46,7 @@ Options::
 # need to be develop to ensure this continues to work in the face of
 # changes to other NLTK packages.
 
+from __future__ import print_function
 # Allow this program to run inside the NLTK source tree.
 from sys import path
 
@@ -96,7 +97,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
             else:
-                print 'Server shutting down!'
+                print('Server shutting down!')
                 os._exit(0)
 
         elif sp == 'favicon.ico':
@@ -184,7 +185,7 @@ def encode_icon():
         else:
             return [s[0:72]] + split(s[72:])
 
-    print split(base64.urlsafe_b64encode(s))
+    print(split(base64.urlsafe_b64encode(s)))
 
 
 FAVICON_BASE64_DATA = \
@@ -984,7 +985,7 @@ def usage():
     """
     Display the command line help message.
     """
-    print __doc__
+    print(__doc__)
 
 def app():
     # Parse and interpret options.

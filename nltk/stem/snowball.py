@@ -19,6 +19,7 @@ algorithms. It can be invoked directly on the command line.
 For more information take a look into the class SnowballStemmer.
 """
 
+from __future__ import print_function
 from nltk.corpus import stopwords
 from nltk.stem import porter
 
@@ -3681,10 +3682,10 @@ def demo():
                    "swedish":    "Swedish_Svenska-Latin1",
                    }
 
-    print u"\n"
-    print u"******************************"
-    print u"Demo for the Snowball stemmers"
-    print u"******************************"
+    print(u"\n")
+    print(u"******************************")
+    print(u"Demo for the Snowball stemmers")
+    print(u"******************************")
 
     while True:
 
@@ -3698,8 +3699,8 @@ def demo():
             break
 
         if language not in SnowballStemmer.languages:
-            print (u"\nOops, there is no stemmer for this language. " +
-                   u"Please try again.\n")
+            print((u"\nOops, there is no stemmer for this language. " +
+                   u"Please try again.\n"))
             continue
 
         stemmer = SnowballStemmer(language)
@@ -3710,15 +3711,15 @@ def demo():
         excerpt = u" ".join(excerpt)
         excerpt = re.sub(r"(.{,70})\s", r'\1\n', excerpt+u' ').rstrip()
 
-        print u"\n"
-        print u'-' * 70
-        print u'ORIGINAL'.center(70)
-        print excerpt
-        print u"\n\n"
-        print u'STEMMED RESULTS'.center(70)
-        print stemmed
-        print u'-' * 70
-        print u"\n"
+        print(u"\n")
+        print(u'-' * 70)
+        print(u'ORIGINAL'.center(70))
+        print(excerpt)
+        print(u"\n\n")
+        print(u'STEMMED RESULTS'.center(70))
+        print(stemmed)
+        print(u'-' * 70)
+        print(u"\n")
 
 
 

@@ -18,6 +18,7 @@ goal *G*, the model builder tries to find a counter-model, in the sense of a mod
 the assumptions plus the negation of *G*.
 """
 
+from __future__ import print_function
 import threading
 import time
 
@@ -217,7 +218,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         retracted = set(retracted)
         result_list = filter(lambda a: a not in retracted, self._assumptions)
         if debug and result_list == self._assumptions:
-            print Warning("Assumptions list has not been changed:")
+            print(Warning("Assumptions list has not been changed:"))
             self.print_assumptions()
 
         self._assumptions = result_list
@@ -245,7 +246,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         Print the list of the current assumptions.
         """
         for a in self.assumptions():
-            print a
+            print(a)
 
 
 class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
@@ -578,11 +579,11 @@ class TheoremToolThread(threading.Thread):
         try:
             self._result = self._command()
             if self._verbose:
-                print 'Thread %s finished with result %s at %s' % \
-                      (self._name, self._result, time.localtime(time.time()))
+                print('Thread %s finished with result %s at %s' % \
+                      (self._name, self._result, time.localtime(time.time())))
         except Exception as e:
-            print e
-            print 'Thread %s completed abnormally' % (self._name)
+            print(e)
+            print('Thread %s completed abnormally' % (self._name))
 
     @property
     def result(self): return self._result

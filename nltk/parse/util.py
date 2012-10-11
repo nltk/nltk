@@ -11,6 +11,7 @@
 Utility functions for parsers.
 """
 
+from __future__ import print_function
 from nltk.grammar import ContextFreeGrammar, FeatureGrammar, WeightedGrammar
 from nltk.data import load
 
@@ -103,16 +104,16 @@ class TestGrammar(object):
         according to the grammar, then the value of ``trees`` will be None.
         """
         for test in self.suite:
-            print test['doc'] + ":",
+            print(test['doc'] + ":", end=' ')
             for key in ['accept', 'reject']:
                 for sent in test[key]:
                     tokens = sent.split()
                     trees = self.cp.parse(tokens)
                     if show_trees and trees:
-                        print
-                        print sent
+                        print()
+                        print(sent)
                         for tree in trees:
-                            print tree
+                            print(tree)
                     if key == 'accept':
                         if trees == []:
                             raise ValueError("Sentence '%s' failed to parse'" % sent)
@@ -124,7 +125,7 @@ class TestGrammar(object):
                         else:
                             rejected = True
             if accepted and rejected:
-                print "All tests passed!"
+                print("All tests passed!")
 
 
 def extract_test_sentences(string, comment_chars="#%;"):

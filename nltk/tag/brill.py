@@ -69,6 +69,7 @@ corpus, based on one or more "rule templates."
 
 """
 
+from __future__ import print_function
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
 import yaml          # to save and load taggers in files
@@ -657,8 +658,8 @@ class BrillTaggerTrainer(object):
         :param min_score: The minimum acceptable net error reduction
             that each transformation must produce in the corpus.
         """
-        if self._trace > 0: print ("Training Brill tagger on %d "
-                                   "sentences..." % len(train_sents))
+        if self._trace > 0: print(("Training Brill tagger on %d "
+                                   "sentences..." % len(train_sents)))
 
         # Create a new copy of the training corpus, and run the
         # initial tagger on it.  We will progressively update this
@@ -676,7 +677,7 @@ class BrillTaggerTrainer(object):
                                                           train_sents)
                 if rule is None or score < min_score:
                     if self._trace > 1:
-                        print 'Insufficient improvement; stopping'
+                        print('Insufficient improvement; stopping')
                     break
                 else:
                     # Add the rule to our list of rules.
@@ -691,7 +692,7 @@ class BrillTaggerTrainer(object):
                         self._trace_rule(rule, score, fixscore, k)
         # The user can also cancel training manually:
         except KeyboardInterrupt:
-            print "Training stopped manually -- %d rules found" % len(rules)
+            print("Training stopped manually -- %d rules found" % len(rules))
 
         # Create and return a tagger from the rules we found.
         return BrillTagger(self._initial_tagger, rules)
@@ -809,7 +810,7 @@ class BrillTaggerTrainer(object):
     #////////////////////////////////////////////////////////////
 
     def _trace_header(self):
-        print """
+        print("""
            B      |
    S   F   r   O  |        Score = Fixed - Broken
    c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
@@ -817,16 +818,16 @@ class BrillTaggerTrainer(object):
    r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
    e   d   n   r  |  e
 ------------------+-------------------------------------------------------
-        """.rstrip()
+        """.rstrip())
 
     def _trace_rule(self, rule, score, fixscore, numchanges):
         if self._trace > 2:
-            print ('%4d%4d%4d%4d ' % (score, fixscore, fixscore-score,
-                                      numchanges-fixscore*2+score)), '|',
-            print textwrap.fill(str(rule), initial_indent=' '*20, width=79,
-                                subsequent_indent=' '*18+'|   ').strip()
+            print(('%4d%4d%4d%4d ' % (score, fixscore, fixscore-score,
+                                      numchanges-fixscore*2+score)), '|', end=' ')
+            print(textwrap.fill(str(rule), initial_indent=' '*20, width=79,
+                                subsequent_indent=' '*18+'|   ').strip())
         else:
-            print rule
+            print(rule)
 
 ######################################################################
 ## Fast Brill Tagger Trainer
@@ -889,8 +890,8 @@ class FastBrillTaggerTrainer(object):
         # Basic idea: Keep track of the rules that apply at each position.
         # And keep track of the positions to which each rule applies.
 
-        if self._trace > 0: print ("Training Brill tagger on %d "
-                                   "sentences..." % len(train_sents))
+        if self._trace > 0: print(("Training Brill tagger on %d "
+                                   "sentences..." % len(train_sents)))
 
         # Create a new copy of the training corpus, and run the
         # initial tagger on it.  We will progressively update this
@@ -901,14 +902,14 @@ class FastBrillTaggerTrainer(object):
         # Initialize our mappings.  This will find any errors made
         # by the initial tagger, and use those to generate repair
         # rules, which are added to the rule mappings.
-        if self._trace > 0: print "Finding initial useful rules..."
+        if self._trace > 0: print("Finding initial useful rules...")
         self._init_mappings(test_sents, train_sents)
-        if self._trace > 0: print ("    Found %d useful rules." %
-                                   len(self._rule_scores))
+        if self._trace > 0: print(("    Found %d useful rules." %
+                                   len(self._rule_scores)))
 
         # Let the user know what we're up to.
         if self._trace > 2: self._trace_header()
-        elif self._trace == 1: print "Selecting rules..."
+        elif self._trace == 1: print("Selecting rules...")
 
         # Repeatedly select the best rule, and add it to `rules`.
         rules = []
@@ -937,7 +938,7 @@ class FastBrillTaggerTrainer(object):
 
         # The user can cancel training manually:
         except KeyboardInterrupt:
-            print "Training stopped manually -- %d rules found" % len(rules)
+            print("Training stopped manually -- %d rules found" % len(rules))
 
         # Discard our tag position mapping & rule mappings.
         self._clean()
@@ -1184,7 +1185,7 @@ class FastBrillTaggerTrainer(object):
     #////////////////////////////////////////////////////////////
 
     def _trace_header(self):
-        print """
+        print("""
            B      |
    S   F   r   O  |        Score = Fixed - Broken
    c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
@@ -1192,7 +1193,7 @@ class FastBrillTaggerTrainer(object):
    r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
    e   d   n   r  |  e
 ------------------+-------------------------------------------------------
-        """.rstrip()
+        """.rstrip())
 
     def _trace_rule(self, rule):
         assert self._rule_scores[rule] == \
@@ -1206,24 +1207,24 @@ class FastBrillTaggerTrainer(object):
         score = self._rule_scores[rule]
 
         if self._trace > 2:
-            print '%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other),
-            print textwrap.fill(str(rule), initial_indent=' '*20,
-                                subsequent_indent=' '*18+'|   ').strip()
+            print('%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other), end=' ')
+            print(textwrap.fill(str(rule), initial_indent=' '*20,
+                                subsequent_indent=' '*18+'|   ').strip())
         else:
-            print rule
+            print(rule)
 
     def _trace_apply(self, num_updates):
         prefix = ' '*18+'|'
-        print prefix
-        print prefix, 'Applying rule to %d positions.' % num_updates
+        print(prefix)
+        print(prefix, 'Applying rule to %d positions.' % num_updates)
 
     def _trace_update_rules(self, num_obsolete, num_new, num_unseen):
         prefix = ' '*18+'|'
-        print prefix, 'Updated rule tables:'
-        print prefix, ('  - %d rule applications removed' % num_obsolete)
-        print prefix, ('  - %d rule applications added (%d novel)' %
-                       (num_new, num_unseen))
-        print prefix
+        print(prefix, 'Updated rule tables:')
+        print(prefix, ('  - %d rule applications removed' % num_obsolete))
+        print(prefix, ('  - %d rule applications added (%d novel)' %
+                       (num_new, num_unseen)))
+        print(prefix)
 
 
 
@@ -1302,7 +1303,7 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
 
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
-    print "Loading tagged data... "
+    print("Loading tagged data... ")
     tagged_data = treebank.tagged_sents()
     if randomize:
         random.seed(len(sents))
@@ -1311,21 +1312,21 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     training_data = tagged_data[:cutoff]
     gold_data = tagged_data[cutoff:num_sents]
     testing_data = [[t[0] for t in sent] for sent in gold_data]
-    print "Done loading."
+    print("Done loading.")
 
     # Unigram tagger
-    print "Training unigram tagger:"
+    print("Training unigram tagger:")
     unigram_tagger = tag.UnigramTagger(training_data,
                                        backoff=nn_cd_tagger)
     if gold_data:
-        print "    [accuracy: %f]" % unigram_tagger.evaluate(gold_data)
+        print("    [accuracy: %f]" % unigram_tagger.evaluate(gold_data))
 
     # Bigram tagger
-    print "Training bigram tagger:"
+    print("Training bigram tagger:")
     bigram_tagger = tag.BigramTagger(training_data,
                                      backoff=unigram_tagger)
     if gold_data:
-        print "    [accuracy: %f]" % bigram_tagger.evaluate(gold_data)
+        print("    [accuracy: %f]" % bigram_tagger.evaluate(gold_data))
 
     # Brill tagger
     templates = [
@@ -1345,12 +1346,12 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     brill_tagger = trainer.train(training_data, max_rules, min_score)
 
     if gold_data:
-        print("\nBrill accuracy: %f" % brill_tagger.evaluate(gold_data))
+        print(("\nBrill accuracy: %f" % brill_tagger.evaluate(gold_data)))
 
     if trace <= 1:
         print("\nRules: ")
         for rule in brill_tagger.rules():
-            print(str(rule))
+            print((str(rule)))
 
     print_rules = file(rule_output, 'w')
     yaml.dump(brill_tagger, print_rules)
@@ -1362,8 +1363,8 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     for e in error_list(gold_data, testing_data):
         error_file.write(e+'\n')
     error_file.close()
-    print ("Done; rules and errors saved to %s and %s." %
-           (rule_output, error_output))
+    print(("Done; rules and errors saved to %s and %s." %
+           (rule_output, error_output)))
 
 
 if __name__ == "__main__":

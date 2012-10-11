@@ -69,6 +69,7 @@ with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
 
+from __future__ import print_function
 import re
 
 from nltk.util import transitive_closure, invert_graph
@@ -1305,11 +1306,11 @@ def cfg_demo():
     N, V, P, Det = nonterminals('N, V, P, Det')
     VP_slash_NP = VP/NP
 
-    print 'Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP/NP]
-    print '    S.symbol() =>', `S.symbol()`
-    print
+    print('Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP/NP])
+    print('    S.symbol() =>', `S.symbol()`)
+    print()
 
-    print Production(S, [NP])
+    print(Production(S, [NP]))
 
     # Create some Grammar Productions
     grammar = parse_cfg("""
@@ -1323,12 +1324,12 @@ def cfg_demo():
       P -> 'on' | 'in'
     """)
 
-    print 'A Grammar:', `grammar`
-    print '    grammar.start()       =>', `grammar.start()`
-    print '    grammar.productions() =>',
+    print('A Grammar:', `grammar`)
+    print('    grammar.start()       =>', `grammar.start()`)
+    print('    grammar.productions() =>', end=' ')
     # Use string.replace(...) is to line-wrap the output.
-    print `grammar.productions()`.replace(',', ',\n'+' '*25)
-    print
+    print(`grammar.productions()`.replace(',', ',\n'+' '*25))
+    print()
 
 toy_pcfg1 = parse_pcfg("""
     S -> NP VP [1.0]
@@ -1380,22 +1381,22 @@ def pcfg_demo():
     pcfg_prods = toy_pcfg1.productions()
 
     pcfg_prod = pcfg_prods[2]
-    print 'A PCFG production:', `pcfg_prod`
-    print '    pcfg_prod.lhs()  =>', `pcfg_prod.lhs()`
-    print '    pcfg_prod.rhs()  =>', `pcfg_prod.rhs()`
-    print '    pcfg_prod.prob() =>', `pcfg_prod.prob()`
-    print
+    print('A PCFG production:', `pcfg_prod`)
+    print('    pcfg_prod.lhs()  =>', `pcfg_prod.lhs()`)
+    print('    pcfg_prod.rhs()  =>', `pcfg_prod.rhs()`)
+    print('    pcfg_prod.prob() =>', `pcfg_prod.prob()`)
+    print()
 
     grammar = toy_pcfg2
-    print 'A PCFG grammar:', `grammar`
-    print '    grammar.start()       =>', `grammar.start()`
-    print '    grammar.productions() =>',
+    print('A PCFG grammar:', `grammar`)
+    print('    grammar.start()       =>', `grammar.start()`)
+    print('    grammar.productions() =>', end=' ')
     # Use string.replace(...) is to line-wrap the output.
-    print `grammar.productions()`.replace(',', ',\n'+' '*26)
-    print
+    print(`grammar.productions()`.replace(',', ',\n'+' '*26))
+    print()
 
     # extract productions from three trees and induce the PCFG
-    print "Induce PCFG grammar from treebank data:"
+    print("Induce PCFG grammar from treebank data:")
 
     productions = []
     item = treebank._fileids[0]
@@ -1408,10 +1409,10 @@ def pcfg_demo():
 
     S = Nonterminal('S')
     grammar = induce_pcfg(S, productions)
-    print grammar
-    print
+    print(grammar)
+    print()
 
-    print "Parse sentence using induced grammar:"
+    print("Parse sentence using induced grammar:")
 
     parser = pchart.InsideChartParser(grammar)
     parser.trace(3)
@@ -1420,15 +1421,15 @@ def pcfg_demo():
     #sent = treebank.tokenized('wsj_0001.mrg')[0]
 
     sent = treebank.parsed_sents(item)[0].leaves()
-    print sent
+    print(sent)
     for parse in parser.nbest_parse(sent):
-        print parse
+        print(parse)
 
 def fcfg_demo():
     import nltk.data
     g = nltk.data.load('grammars/book_grammars/feat0.fcfg')
-    print g
-    print
+    print(g)
+    print()
 
 def dg_demo():
     """
@@ -1440,7 +1441,7 @@ def dg_demo():
     'walls' -> 'the'
     'cats' -> 'the'
     """)
-    print grammar
+    print(grammar)
 
 def sdg_demo():
     """
@@ -1465,7 +1466,7 @@ def sdg_demo():
     13  .                 .                 Punc  Punc  punt                             12  punct   _  _
     """)
     tree = dg.tree()
-    print tree.pprint()
+    print(tree.pprint())
 
 def demo():
     cfg_demo()

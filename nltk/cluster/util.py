@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import copy
 import numpy
 from sys import stdout
@@ -52,7 +53,7 @@ class VectorSpaceClusterer(ClusterI):
 
         # assign the vectors to clusters
         if assign_clusters:
-            print self._Tt, vectors
+            print(self._Tt, vectors)
             return [self.classify(vector) for vector in vectors]
 
     def cluster_vectorspace(self, vectors, trace):

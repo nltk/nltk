@@ -11,6 +11,7 @@ Corpus reader for corpora whose documents are xml files.
 (note -- not named 'xml' to avoid conflicting w/ standard xml package)
 """
 
+from __future__ import print_function
 import codecs
 
 # Use the c version of ElementTree, which is faster, if possible:
@@ -306,7 +307,7 @@ class XMLCorpusView(StreamBackedCorpusView):
             # Process each <tag> in the xml fragment.
             for piece in self._XML_PIECE.finditer(xml_fragment):
                 if self._DEBUG:
-                    print '%25s %s' % ('/'.join(context)[-20:], piece.group())
+                    print('%25s %s' % ('/'.join(context)[-20:], piece.group()))
 
                 if piece.group('START_TAG'):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
@@ -356,7 +357,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # take back the last start-tag, and return what
                     # we've gotten so far (elts is non-empty).
                     if self._DEBUG:
-                        print ' '*36+'(backtrack)'
+                        print(' '*36+'(backtrack)')
                     if isinstance(stream, SeekableUnicodeStreamReader):
                         stream.seek(startpos)
                         stream.char_seek_forward(elt_start)

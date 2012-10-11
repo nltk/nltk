@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import re
 import threading
 import tkFont
@@ -497,7 +498,7 @@ class ConcordanceSearchModel(object):
                 self.model.tagged_sents = [' '.join(w+'/'+t for (w,t) in sent) for sent in ts]
                 self.model.notify_listeners(CORPUS_LOADED_EVENT)
             except Exception as e:
-                print e
+                print(e)
                 self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
 
     class SearchCorpus(threading.Thread):

@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 #
 
+from __future__ import print_function
 from nltk.grammar import Nonterminal, parse_cfg
 
 def generate(grammar, start=None):
@@ -51,5 +52,5 @@ grammar = parse_cfg("""
 """)
 
 for sent in generate(grammar):
-    print ' '.join(sent)
+    print(' '.join(sent))
 

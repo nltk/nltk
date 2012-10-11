@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import sys
 import subprocess
 
@@ -78,8 +79,8 @@ def call_tadm(args):
 
     # Check the return code.
     if p.returncode != 0:
-        print
-        print stderr
+        print()
+        print(stderr)
         raise OSError('tadm command failed!')
 
 def names_demo():
@@ -96,10 +97,10 @@ def encoding_demo():
               ({'f0':2, 'f2':1, 'f3':1, 'f4':1}, 'A')]
     encoding = TadmEventMaxentFeatureEncoding.train(tokens)
     write_tadm_file(tokens, encoding, sys.stdout)
-    print
+    print()
     for i in range(encoding.length()):
-        print '%s --> %d' % (encoding.describe(i), i)
-    print
+        print('%s --> %d' % (encoding.describe(i), i))
+    print()
 
 if __name__ == '__main__':
     encoding_demo()

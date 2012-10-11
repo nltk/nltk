@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import os
 
 import nltk
@@ -506,7 +507,7 @@ class Glue(object):
                     #if there is an exception, the syntax of the formula
                     #may not be understandable by the prover, so don't
                     #throw out the reading.
-                    print 'Error when checking logical equality of statements', e
+                    print('Error when checking logical equality of statements', e)
                     pass
         if add_reading:
             reading_list.append(glueformula.meaning)
@@ -538,9 +539,9 @@ class Glue(object):
             return_list.extend(gf.compile(index_counter))
 
         if self.verbose:
-            print 'Compiled Glue Premises:'
+            print('Compiled Glue Premises:')
             for cgf in return_list:
-                print cgf
+                print(cgf)
 
         return return_list
 
@@ -630,7 +631,7 @@ def demo(show_example=-1):
 #                'every big gray cat leaves',
 #                'a former senator leaves',
 
-    print '============== DEMO =============='
+    print('============== DEMO ==============')
 
     tagger = RegexpTagger(
         [('^(David|Mary|John)$', 'NNP'),
@@ -648,10 +649,10 @@ def demo(show_example=-1):
 
     for (i, sentence) in enumerate(examples):
         if i==show_example or show_example==-1:
-            print '[[[Example %s]]]  %s' % (i, sentence)
+            print('[[[Example %s]]]  %s' % (i, sentence))
             for reading in glue.parse_to_meaning(sentence.split()):
-                print reading.simplify()
-            print ''
+                print(reading.simplify())
+            print('')
 
 
 if __name__ == '__main__':

@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import numpy
 import copy
 
@@ -57,7 +58,7 @@ class GAAClusterer(VectorSpaceClusterer):
             # merge them and replace in cluster list
             i, j = best[1:]
             sum = clusters[i] + clusters[j]
-            if trace: print 'merging %d and %d' % (i, j)
+            if trace: print('merging %d and %d' % (i, j))
 
             clusters[i] = sum
             del clusters[j]
@@ -127,19 +128,19 @@ def demo():
     clusterer = GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
 
-    print 'Clusterer:', clusterer
-    print 'Clustered:', vectors
-    print 'As:', clusters
-    print
+    print('Clusterer:', clusterer)
+    print('Clustered:', vectors)
+    print('As:', clusters)
+    print()
 
     # show the dendrogram
     clusterer.dendrogram().show()
 
     # classify a new vector
     vector = numpy.array([3, 3])
-    print 'classify(%s):' % vector,
-    print clusterer.classify(vector)
-    print
+    print('classify(%s):' % vector, end=' ')
+    print(clusterer.classify(vector))
+    print()
 
 
 if __name__ == '__main__':

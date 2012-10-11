@@ -66,6 +66,9 @@ or with py2.5+:
 
     python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 """
+
+from __future__ import print_function
+
 #----------------------------------------------------------------------
 """
 
@@ -436,11 +439,11 @@ class Downloader(object):
         lines = 0 # for more_prompt
         if download_dir is None:
             download_dir = self._download_dir
-            print 'Using default data directory (%s)' % download_dir
+            print('Using default data directory (%s)' % download_dir)
         if header:
-            print '='*(26+len(self._url))
-            print ' Data server index for <%s>' % self._url
-            print '='*(26+len(self._url))
+            print('='*(26+len(self._url)))
+            print(' Data server index for <%s>' % self._url)
+            print('='*(26+len(self._url)))
             lines += 3 # for more_prompt
         stale = partial = False
 
@@ -448,7 +451,7 @@ class Downloader(object):
         if show_packages: categories.append('packages')
         if show_collections: categories.append('collections')
         for category in categories:
-            print '%s:' % category.capitalize()
+            print('%s:' % category.capitalize())
             lines += 1 # for more_prompt
             for info in sorted(getattr(self, category)()):
                 status = self.status(info, download_dir)
@@ -459,17 +462,17 @@ class Downloader(object):
                           self.PARTIAL:'P', self.NOT_INSTALLED: ' '}[status]
                 name = textwrap.fill('-'*27 + (info.name or info.id),
                                      75, subsequent_indent=27*' ')[27:]
-                print '  [%s] %s %s' % (prefix, info.id.ljust(20, '.'), name)
+                print('  [%s] %s %s' % (prefix, info.id.ljust(20, '.'), name))
                 lines += len(name.split('\n')) # for more_prompt
                 if more_prompt and lines > 20:
                     user_input = raw_input("Hit Enter to continue: ")
                     if (user_input.lower() in ('x', 'q')): return
                     lines = 0
-            print
+            print()
         msg = '([*] marks installed packages'
         if stale: msg += '; [-] marks out-of-date or corrupt packages'
         if partial: msg += '; [P] marks partially installed collections'
-        print textwrap.fill(msg+')', subsequent_indent=' ', width=76)
+        print(textwrap.fill(msg+')', subsequent_indent=' ', width=76))
 
     def packages(self):
         self._update_index()
@@ -647,8 +650,8 @@ class Downloader(object):
         else:
             # Define a helper function for displaying output:
             def show(s, prefix2=''):
-                print textwrap.fill(s, initial_indent=prefix+prefix2,
-                                    subsequent_indent=prefix+prefix2+' '*4)
+                print(textwrap.fill(s, initial_indent=prefix+prefix2,
+                                    subsequent_indent=prefix+prefix2+' '*4))
 
             for msg in self.incr_download(info_or_id, download_dir, force):
                 # Error messages
@@ -660,7 +663,7 @@ class Downloader(object):
                         return False
                     self._errors = True
                     if not quiet:
-                        print "Error installing package. Retry? [n/y/e]"
+                        print("Error installing package. Retry? [n/y/e]")
                         choice = raw_input().strip()
                         if choice in ['y', 'Y']:
                             if not self.download(msg.package.id, download_dir,
@@ -676,9 +679,9 @@ class Downloader(object):
                     if isinstance(msg, StartCollectionMessage):
                         show('Downloading collection %r' % msg.collection.id)
                         prefix += '   | '
-                        print prefix
+                        print(prefix)
                     elif isinstance(msg, FinishCollectionMessage):
-                        print prefix
+                        print(prefix)
                         prefix = prefix[:-4]
                         if self._errors:
                             show('Downloaded collection %r with errors' %
@@ -964,27 +967,27 @@ class DownloaderShell(object):
         self._ds = dataserver
 
     def _simple_interactive_menu(self, *options):
-        print '-'*75
+        print('-'*75)
         spc = (68 - sum(len(o) for o in options))/(len(options)-1)*' '
-        print '    ' + spc.join(options)
+        print('    ' + spc.join(options))
         #w = 76/len(options)
         #fmt = '  ' + ('%-'+str(w)+'s')*(len(options)-1) + '%s'
         #print fmt % options
-        print '-'*75
+        print('-'*75)
 
 
     def run(self):
-        print 'NLTK Downloader'
+        print('NLTK Downloader')
         while True:
             self._simple_interactive_menu(
                 'd) Download', 'l) List', ' u) Update', 'c) Config', 'h) Help', 'q) Quit')
             user_input = raw_input('Downloader> ').strip()
-            if not user_input: print; continue
+            if not user_input: print(); continue
             command = user_input.lower().split()[0]
             args = user_input.split()[1:]
             try:
                 if command == 'l':
-                    print
+                    print()
                     self._ds.list(self._ds.download_dir, header=False,
                                   more_prompt=True)
                 elif command == 'h':
@@ -998,24 +1001,24 @@ class DownloaderShell(object):
                 elif command == 'u':
                     self._simple_interactive_update()
                 else:
-                    print 'Command %r unrecognized' % user_input
+                    print('Command %r unrecognized' % user_input)
             except urllib2.HTTPError as e:
-                print 'Error reading from server: %s'%e
+                print('Error reading from server: %s'%e)
             except urllib2.URLError as e:
-                print 'Error connecting to server: %s'%e.reason
+                print('Error connecting to server: %s'%e.reason)
             # try checking if user_input is a package name, &
             # downloading it?
-            print
+            print()
 
     def _simple_interactive_download(self, args):
         if args:
             for arg in args:
                 try: self._ds.download(arg, prefix='    ')
-                except (IOError, ValueError) as e: print e
+                except (IOError, ValueError) as e: print(e)
         else:
             while True:
-                print
-                print 'Download which package (l=list; x=cancel)?'
+                print()
+                print('Download which package (l=list; x=cancel)?')
                 user_input = raw_input('  Identifier> ')
                 if user_input.lower()=='l':
                     self._ds.list(self._ds.download_dir, header=False,
@@ -1026,7 +1029,7 @@ class DownloaderShell(object):
                 elif user_input:
                     for id in user_input.split():
                         try: self._ds.download(id, prefix='    ')
-                        except (IOError, ValueError) as e: print e
+                        except (IOError, ValueError) as e: print(e)
                     break
 
     def _simple_interactive_update(self):
@@ -1037,50 +1040,50 @@ class DownloaderShell(object):
                 if self._ds.status(info) == self._ds.STALE:
                     stale_packages.append((info.id, info.name))
 
-            print
+            print()
             if stale_packages:
-                print 'Will update following packages (o=ok; x=cancel)'
+                print('Will update following packages (o=ok; x=cancel)')
                 for pid, pname in stale_packages:
                     name = textwrap.fill('-'*27 + (pname),
                                      75, subsequent_indent=27*' ')[27:]
-                    print '  [ ] %s %s' % (pid.ljust(20, '.'), name)
-                print
+                    print('  [ ] %s %s' % (pid.ljust(20, '.'), name))
+                print()
 
                 user_input = raw_input('  Identifier> ')
                 if user_input.lower()=='o':
                     for pid, pname in stale_packages:
                         try: self._ds.download(pid, prefix='    ')
-                        except (IOError, ValueError) as e: print e
+                        except (IOError, ValueError) as e: print(e)
                     break
                 elif user_input.lower() in ('x', 'q', ''):
                     return
             else:
-                print 'Nothing to update.'
+                print('Nothing to update.')
                 return
 
     def _simple_interactive_help(self):
-        print
-        print 'Commands:'
-        print '  d) Download a package or collection     u) Update out of date packages'
-        print '  l) List packages & collections          h) Help'
-        print '  c) View & Modify Configuration          q) Quit'
+        print()
+        print('Commands:')
+        print('  d) Download a package or collection     u) Update out of date packages')
+        print('  l) List packages & collections          h) Help')
+        print('  c) View & Modify Configuration          q) Quit')
 
     def _show_config(self):
-        print
-        print 'Data Server:'
-        print '  - URL: <%s>' % self._ds.url
-        print ('  - %d Package Collections Available' %
-               len(self._ds.collections()))
-        print ('  - %d Individual Packages Available' %
-               len(self._ds.packages()))
-        print
-        print 'Local Machine:'
-        print '  - Data directory: %s' % self._ds.download_dir
+        print()
+        print('Data Server:')
+        print('  - URL: <%s>' % self._ds.url)
+        print(('  - %d Package Collections Available' %
+               len(self._ds.collections())))
+        print(('  - %d Individual Packages Available' %
+               len(self._ds.packages())))
+        print()
+        print('Local Machine:')
+        print('  - Data directory: %s' % self._ds.download_dir)
 
     def _simple_interactive_config(self):
         self._show_config()
         while True:
-            print
+            print()
             self._simple_interactive_menu(
                 's) Show Config', 'u) Set Server URL',
                 'd) Set Data Dir', 'm) Main Menu')
@@ -1090,22 +1093,22 @@ class DownloaderShell(object):
             elif user_input == 'd':
                 new_dl_dir = raw_input('  New Directory> ').strip().lower()
                 if new_dl_dir in ('', 'x', 'q'):
-                    print '  Cancelled!'
+                    print('  Cancelled!')
                 elif os.path.isdir(new_dl_dir):
                     self._ds.download_dir = new_dl_dir
                 else:
-                    print ('Directory %r not found!  Create it first.' %
-                           new_dl_dir)
+                    print(('Directory %r not found!  Create it first.' %
+                           new_dl_dir))
             elif user_input == 'u':
                 new_url = raw_input('  New URL> ').strip().lower()
                 if new_url in ('', 'x', 'q'):
-                    print '  Cancelled!'
+                    print('  Cancelled!')
                 else:
                     if not new_url.startswith('http://'):
                         new_url = 'http://'+new_url
                     try: self._ds.url = new_url
                     except Exception as e:
-                        print 'Error reading <%r>:\n  %s' % (new_url, e)
+                        print('Error reading <%r>:\n  %s' % (new_url, e))
             elif user_input == 'm':
                 break
 
@@ -1457,7 +1460,7 @@ class DownloaderGUI(object):
         self._show_info()
 
     def _show_info(self):
-        print 'showing info', self._ds.url
+        print('showing info', self._ds.url)
         for entry,cb in self._info.values():
             entry['state'] = 'normal'
             entry.delete(0, 'end')
@@ -2010,7 +2013,7 @@ def _unzip_iter(filename, root, verbose=True):
             sys.stdout.write('.')
             sys.stdout.flush()
     if verbose:
-        print
+        print()
 
 ######################################################################
 # Index Builder

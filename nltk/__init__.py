@@ -18,6 +18,7 @@ http://nltk.org/book
 
 # python2.5 compatibility
 from __future__ import with_statement
+from __future__ import print_function
 
 import os
 
@@ -182,4 +183,4 @@ import tag, text, tokenize, tree, treetransforms, util
 
 # override any accidentally imported demo
 def demo():
-    print "To run the demo code for a module, type nltk.module.demo()"
+    print("To run the demo code for a module, type nltk.module.demo()")

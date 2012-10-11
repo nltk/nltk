@@ -15,6 +15,7 @@
     or contact the author. All Rights Reserved.
 """
 
+from __future__ import print_function
 ### Constants
 
 _debug = 0
@@ -89,7 +90,7 @@ class LazyModule:
         if self.__lazymodule_loaded:
             return self.__lazymodule_locals[name]
         if _debug:
-            print 'LazyModule: Loading module %r' % name
+            print('LazyModule: Loading module %r' % name)
         self.__lazymodule_locals[name] \
              = module \
              = __import__(name,
@@ -105,7 +106,7 @@ class LazyModule:
         self.__dict__['__lazymodule_loaded'] = 1
 
         if _debug:
-            print 'LazyModule: Module %r loaded' % name
+            print('LazyModule: Module %r loaded' % name)
         return module
 
     def __getattr__(self, name):
@@ -115,8 +116,8 @@ class LazyModule:
         if self.__lazymodule_loaded:
             raise AttributeError(name)
         if _debug:
-            print 'LazyModule: ' \
-                  'Module load triggered by attribute %r read access' % name
+            print('LazyModule: ' \
+                  'Module load triggered by attribute %r read access' % name)
         module = self.__lazymodule_import()
         return getattr(module, name)
 
@@ -132,8 +133,8 @@ class LazyModule:
             self.__dict__[name] = value
             return
         if _debug:
-            print 'LazyModule: ' \
-                  'Module load triggered by attribute %r write access' % name
+            print('LazyModule: ' \
+                  'Module load triggered by attribute %r write access' % name)
         module = self.__lazymodule_import()
         setattr(module, name, value)
 

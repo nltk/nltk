@@ -21,6 +21,7 @@ convert that representation into first-order logic formulas.
 """
 
 
+from __future__ import print_function
 from nltk.parse import load_parser
 from nltk.draw.tree import draw_trees
 from nltk.sem.skolemize import skolemize
@@ -306,14 +307,14 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
     if not grammar_filename:
         grammar_filename = 'grammars/sample_grammars/hole.fcfg'
 
-    if verbose: print 'Reading grammar file', grammar_filename
+    if verbose: print('Reading grammar file', grammar_filename)
 
     parser = load_parser(grammar_filename)
 
     # Parse the sentence.
     tokens = sentence.split()
     trees = parser.nbest_parse(tokens)
-    if verbose: print 'Got %d different parses' % len(trees)
+    if verbose: print('Got %d different parses' % len(trees))
 
     all_readings = []
     for tree in trees:
@@ -321,14 +322,14 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         sem = tree.node['SEM'].simplify()
 
         # Print the raw semantic representation.
-        if verbose: print 'Raw:       ', sem
+        if verbose: print('Raw:       ', sem)
 
         # Skolemize away all quantifiers.  All variables become unique.
         while isinstance(sem, LambdaExpression):
             sem = sem.term
         skolemized = skolemize(sem)
 
-        if verbose: print 'Skolemized:', skolemized
+        if verbose: print('Skolemized:', skolemized)
 
         # Break the hole semantics representation down into its components
         # i.e. holes, labels, formula fragments and constraints.
@@ -336,14 +337,14 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
         # Maybe show the details of the semantic representation.
         if verbose:
-            print 'Holes:       ', hole_sem.holes
-            print 'Labels:      ', hole_sem.labels
-            print 'Constraints: ', hole_sem.constraints
-            print 'Top hole:    ', hole_sem.top_hole
-            print 'Top labels:  ', hole_sem.top_most_labels
-            print 'Fragments:'
+            print('Holes:       ', hole_sem.holes)
+            print('Labels:      ', hole_sem.labels)
+            print('Constraints: ', hole_sem.constraints)
+            print('Top hole:    ', hole_sem.top_hole)
+            print('Top labels:  ', hole_sem.top_most_labels)
+            print('Fragments:')
             for (l,f) in hole_sem.fragments.items():
-                print '\t%s: %s' % (l, f)
+                print('\t%s: %s' % (l, f))
 
         # Find all the possible ways to plug the formulas together.
         pluggings = hole_sem.pluggings()
@@ -354,9 +355,9 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         # Print out the formulas in a textual format.
         if verbose:
             for i,r in enumerate(readings):
-                print
-                print '%d. %s' % (i, r)
-            print
+                print()
+                print('%d. %s' % (i, r))
+            print()
 
         all_readings.extend(readings)
 
@@ -364,7 +365,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
 
 if __name__ == '__main__':
-    for r in hole_readings('a dog barks'): print r
-    print
-    for r in hole_readings('every girl chases a dog'): print r
+    for r in hole_readings('a dog barks'): print(r)
+    print()
+    for r in hole_readings('every girl chases a dog'): print(r)
 

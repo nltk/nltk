@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import re
 import string
 
@@ -494,7 +495,7 @@ def _ieer_read_text(s, top_node):
         try:
             if piece.startswith('<b_'):
                 m = _IEER_TYPE_RE.match(piece)
-                if m is None: print 'XXXX', piece
+                if m is None: print('XXXX', piece)
                 chunk = Tree(m.group('type'), [])
                 stack[-1].append(chunk)
                 stack.append(chunk)
@@ -547,8 +548,8 @@ def demo():
     s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
     import nltk
     t = nltk.chunk.tagstr2tree(s, chunk_node='NP')
-    print t.pprint()
-    print
+    print(t.pprint())
+    print()
 
     s = """
 These DT B-NP
@@ -581,12 +582,12 @@ better JJR I-ADJP
 """
 
     conll_tree = conllstr2tree(s, chunk_types=('NP', 'PP'))
-    print conll_tree.pprint()
+    print(conll_tree.pprint())
 
     # Demonstrate CoNLL output
-    print "CoNLL output:"
-    print nltk.chunk.tree2conllstr(conll_tree)
-    print
+    print("CoNLL output:")
+    print(nltk.chunk.tree2conllstr(conll_tree))
+    print()
 
 
 if __name__ == '__main__':

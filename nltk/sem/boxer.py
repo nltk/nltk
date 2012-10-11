@@ -22,6 +22,7 @@ Usage:
             boxer/
 """
 
+from __future__ import print_function
 import os
 import re
 import operator
@@ -192,10 +193,10 @@ class Boxer(object):
         :return: stdout
         """
         if verbose:
-            print 'Calling:', binary
-            print 'Args:', args
-            print 'Input:', input_str
-            print 'Command:', binary + ' ' + ' '.join(args)
+            print('Calling:', binary)
+            print('Args:', args)
+            print('Input:', input_str)
+            print('Command:', binary + ' ' + ' '.join(args))
 
         # Call via a subprocess
         if input_str is None:
@@ -207,9 +208,9 @@ class Boxer(object):
         stdout, stderr = p.communicate()
 
         if verbose:
-            print 'Return code:', p.returncode
-            if stdout: print 'stdout:\n', stdout, '\n'
-            if stderr: print 'stderr:\n', stderr, '\n'
+            print('Return code:', p.returncode)
+            if stdout: print('stdout:\n', stdout, '\n')
+            if stderr: print('stderr:\n', stderr, '\n')
         if p.returncode != 0:
             raise Exception('ERROR CALLING: %s %s\nReturncode: %d\n%s' % (binary, ' '.join(args), p.returncode, stderr))
 
@@ -1166,10 +1167,10 @@ if __name__ == '__main__':
     interpreter = NltkDrtBoxerDrsInterpreter(occur_index=options.occur_index)
     drs = Boxer(interpreter).interpret_multisentence(args[0].split(r'\n'), question=options.question, verbose=options.verbose)
     if drs is None:
-        print None
+        print(None)
     else:
         drs = drs.simplify().eliminate_equality()
         if options.fol:
-            print drs.fol().normalize()
+            print(drs.fol().normalize())
         else:
             drs.normalize().pprint()

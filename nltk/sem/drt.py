@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import operator
 
 from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
@@ -128,7 +129,7 @@ class AbstractDrs(object):
         """
         Draw the DRS
         """
-        print self.pretty()
+        print(self.pretty())
 
     def pretty(self):
         """
@@ -1150,34 +1151,34 @@ class DrtParser(LogicParser):
 
 
 def demo():
-    print '='*20 + 'TEST PARSE' + '='*20
+    print('='*20 + 'TEST PARSE' + '='*20)
     parser = DrtParser()
-    print parser.parse(r'([x,y],[sees(x,y)])')
-    print parser.parse(r'([x],[man(x), walks(x)])')
-    print parser.parse(r'\x.\y.([],[sees(x,y)])')
-    print parser.parse(r'\x.([],[walks(x)])(john)')
-    print parser.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))')
-    print parser.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))')
-    print parser.parse(r'([x],[PRO(x), sees(John,x)])')
-    print parser.parse(r'([x],[man(x), -([],[walks(x)])])')
-    print parser.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])')
+    print(parser.parse(r'([x,y],[sees(x,y)])'))
+    print(parser.parse(r'([x],[man(x), walks(x)])'))
+    print(parser.parse(r'\x.\y.([],[sees(x,y)])'))
+    print(parser.parse(r'\x.([],[walks(x)])(john)'))
+    print(parser.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))'))
+    print(parser.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))'))
+    print(parser.parse(r'([x],[PRO(x), sees(John,x)])'))
+    print(parser.parse(r'([x],[man(x), -([],[walks(x)])])'))
+    print(parser.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])'))
 
-    print '='*20 + 'Test fol()' + '='*20
-    print parser.parse(r'([x,y],[sees(x,y)])').fol()
+    print('='*20 + 'Test fol()' + '='*20)
+    print(parser.parse(r'([x,y],[sees(x,y)])').fol())
 
-    print '='*20 + 'Test alpha conversion and lambda expression equality' + '='*20
+    print('='*20 + 'Test alpha conversion and lambda expression equality' + '='*20)
     e1 = parser.parse(r'\x.([],[P(x)])')
-    print e1
+    print(e1)
     e2 = e1.alpha_convert(Variable('z'))
-    print e2
-    print e1 == e2
+    print(e2)
+    print(e1 == e2)
 
-    print '='*20 + 'Test resolve_anaphora()' + '='*20
-    print resolve_anaphora(parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])'))
-    print resolve_anaphora(parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])'))
-    print resolve_anaphora(parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))'))
+    print('='*20 + 'Test resolve_anaphora()' + '='*20)
+    print(resolve_anaphora(parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])')))
+    print(resolve_anaphora(parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])')))
+    print(resolve_anaphora(parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))')))
 
-    print '='*20 + 'Test pprint()' + '='*20
+    print('='*20 + 'Test pprint()' + '='*20)
     parser.parse(r"([],[])").pprint()
     parser.parse(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pprint()
     parser.parse(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pprint()

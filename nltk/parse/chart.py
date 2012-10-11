@@ -36,6 +36,7 @@ defines three chart parsers:
     be used to step through the parsing process.
 """
 
+from __future__ import print_function
 from collections import defaultdict
 import re
 import warnings
@@ -1333,9 +1334,9 @@ class ChartParser(ParserI):
         should_print_rule_header = trace > 1
         for edge in new_edges:
             if should_print_rule_header:
-                print '%s:' % rule
+                print('%s:' % rule)
                 should_print_rule_header = False
-            print chart.pp_edge(edge, edge_width)
+            print(chart.pp_edge(edge, edge_width))
 
     def chart_parse(self, tokens, trace=None):
         """
@@ -1356,7 +1357,7 @@ class ChartParser(ParserI):
 
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width / (chart.num_leaves() + 1)
-        if trace: print chart.pp_leaves(trace_edge_width)
+        if trace: print(chart.pp_leaves(trace_edge_width))
 
         if self._use_agenda:
             # Use an agenda-based algorithm.
@@ -1494,8 +1495,8 @@ class SteppingChartParser(ChartParser):
             w = 50/(self._chart.num_leaves()+1)
 
             for e in self._parse():
-                if self._trace > 1: print self._current_chartrule
-                if self._trace > 0: print self._chart.pp_edge(e,w)
+                if self._trace > 1: print(self._current_chartrule)
+                if self._trace > 0: print(self._chart.pp_edge(e,w))
                 yield e
                 if self._restart: break
             else:
@@ -1629,32 +1630,32 @@ def demo(choice=None,
     # The grammar for ChartParser and SteppingChartParser:
     grammar = demo_grammar()
     if should_print_grammar:
-        print "* Grammar"
-        print grammar
+        print("* Grammar")
+        print(grammar)
 
     # Tokenize the sample sentence.
-    print "* Sentence:"
-    print sent
+    print("* Sentence:")
+    print(sent)
     tokens = sent.split()
-    print tokens
-    print
+    print(tokens)
+    print()
 
     # Ask the user which parser to test,
     # if the parser wasn't provided as an argument
     if choice is None:
-        print '  1: Top-down chart parser'
-        print '  2: Bottom-up chart parser'
-        print '  3: Bottom-up left-corner chart parser'
-        print '  4: Left-corner chart parser with bottom-up filter'
-        print '  5: Stepping chart parser (alternating top-down & bottom-up)'
-        print '  6: All parsers'
-        print '\nWhich parser (1-6)? ',
+        print('  1: Top-down chart parser')
+        print('  2: Bottom-up chart parser')
+        print('  3: Bottom-up left-corner chart parser')
+        print('  4: Left-corner chart parser with bottom-up filter')
+        print('  5: Stepping chart parser (alternating top-down & bottom-up)')
+        print('  6: All parsers')
+        print('\nWhich parser (1-6)? ', end=' ')
         choice = sys.stdin.readline().strip()
-        print
+        print()
 
     choice = str(choice)
     if choice not in "123456":
-        print 'Bad parser number'
+        print('Bad parser number')
         return
 
     # Keep track of how long each parser takes.
@@ -1670,57 +1671,57 @@ def demo(choice=None,
 
     # Run the requested chart parser(s), except the stepping parser.
     for strategy in choices:
-        print "* Strategy: " + strategies[strategy][0]
-        print
+        print("* Strategy: " + strategies[strategy][0])
+        print()
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
         chart = cp.chart_parse(tokens)
         parses = chart.parses(grammar.start())
         times[strategies[strategy][0]] = time.time()-t
-        print "Nr edges in chart:", len(chart.edges())
+        print("Nr edges in chart:", len(chart.edges()))
         if numparses:
             assert len(parses)==numparses, 'Not all parses found'
         if should_print_trees:
-            for tree in parses: print tree
+            for tree in parses: print(tree)
         else:
-            print "Nr trees:", len(parses)
-        print
+            print("Nr trees:", len(parses))
+        print()
 
     # Run the stepping parser, if requested.
     if choice in "56":
-        print "* Strategy: Stepping (top-down vs bottom-up)"
-        print
+        print("* Strategy: Stepping (top-down vs bottom-up)")
+        print()
         t = time.time()
         cp = SteppingChartParser(grammar, trace=trace)
         cp.initialize(tokens)
         for i in range(5):
-            print '*** SWITCH TO TOP DOWN'
+            print('*** SWITCH TO TOP DOWN')
             cp.set_strategy(TD_STRATEGY)
             for j, e in enumerate(cp.step()):
                 if j>20 or e is None: break
-            print '*** SWITCH TO BOTTOM UP'
+            print('*** SWITCH TO BOTTOM UP')
             cp.set_strategy(BU_STRATEGY)
             for j, e in enumerate(cp.step()):
                 if j>20 or e is None: break
         times['Stepping'] = time.time()-t
-        print "Nr edges in chart:", len(cp.chart().edges())
+        print("Nr edges in chart:", len(cp.chart().edges()))
         if numparses:
             assert len(cp.parses())==numparses, 'Not all parses found'
         if should_print_trees:
-            for tree in cp.parses(): print tree
+            for tree in cp.parses(): print(tree)
         else:
-            print "Nr trees:", len(cp.parses())
-        print
+            print("Nr trees:", len(cp.parses()))
+        print()
 
     # Print the times of all parsers:
     if not (should_print_times and times): return
-    print "* Parsing times"
-    print
+    print("* Parsing times")
+    print()
     maxlen = max(len(key) for key in times)
     format = '%' + `maxlen` + 's parser: %6.3fsec'
     times_items = times.items()
     times_items.sort(lambda a,b:cmp(a[1], b[1]))
     for (parser, t) in times_items:
-        print format % (parser, t)
+        print(format % (parser, t))
 
 if __name__ == '__main__': demo()

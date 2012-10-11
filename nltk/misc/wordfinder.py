@@ -8,6 +8,7 @@
 # Simplified from PHP version by Robert Klein <brathna@gmail.com>
 # http://fswordfinder.sourceforge.net/
 
+from __future__ import print_function
 import random
 from string import strip
 
@@ -114,15 +115,15 @@ def word_finder():
     wordlist = [w for w in wordlist if 3 <= len(w) <= 12]
     grid, used = wordfinder(wordlist)
 
-    print "Word Finder\n"
+    print("Word Finder\n")
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            print grid[i][j],
-        print
-    print
+            print(grid[i][j], end=' ')
+        print()
+    print()
 
     for i in range(len(used)):
-        print "%d:" % (i+1), used[i]
+        print("%d:" % (i+1), used[i])
 
 if __name__ == '__main__':
     word_finder()

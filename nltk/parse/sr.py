@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 from nltk.grammar import Nonterminal
 from nltk.tree import Tree
 
@@ -85,7 +86,7 @@ class ShiftReduceParser(ParserI):
 
         # Trace output.
         if self._trace:
-            print 'Parsing %r' % " ".join(tokens)
+            print('Parsing %r' % " ".join(tokens))
             self._trace_stack(stack, remaining_text)
 
         # iterate through the text, pushing the token onto
@@ -224,7 +225,7 @@ class ShiftReduceParser(ParserI):
             else:
                 s += `elt` + ' '
         s += '* ' + ' '.join(remaining_text) + ']'
-        print s
+        print(s)
 
     def _trace_shift(self, stack, remaining_text):
         """
@@ -232,7 +233,7 @@ class ShiftReduceParser(ParserI):
 
         :rtype: None
         """
-        if self._trace > 2: print 'Shift %r:' % stack[-1]
+        if self._trace > 2: print('Shift %r:' % stack[-1])
         if self._trace == 2: self._trace_stack(stack, remaining_text, 'S')
         elif self._trace > 0: self._trace_stack(stack, remaining_text)
 
@@ -245,7 +246,7 @@ class ShiftReduceParser(ParserI):
         """
         if self._trace > 2:
             rhs = " ".join(production.rhs())
-            print 'Reduce %r <- %s' % (production.lhs(), rhs)
+            print('Reduce %r <- %s' % (production.lhs(), rhs))
         if self._trace == 2: self._trace_stack(stack, remaining_text, 'R')
         elif self._trace > 1: self._trace_stack(stack, remaining_text)
 
@@ -266,7 +267,7 @@ class ShiftReduceParser(ParserI):
                 rhs1 = productions[i].rhs()
                 rhs2 = productions[j].rhs()
                 if rhs1[:len(rhs2)] == rhs2:
-                    print 'Warning: %r will never be used' % productions[i]
+                    print('Warning: %r will never be used' % productions[i])
 
 ##//////////////////////////////////////////////////////
 ##  Stepping Shift/Reduce Parser
@@ -453,7 +454,7 @@ def demo():
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
     for p in parser.nbest_parse(sent):
-        print p
+        print(p)
 
 if __name__ == '__main__':
     demo()

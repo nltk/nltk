@@ -10,6 +10,7 @@
 Module for a resolution-based First Order theorem prover.
 """
 
+from __future__ import print_function
 import operator
 from collections import defaultdict
 
@@ -47,14 +48,14 @@ class ResolutionProver(Prover):
                 clauses.extend(clausify(a))
             result, clauses = self._attempt_proof(clauses)
             if verbose:
-                print ResolutionProverCommand._decorate_clauses(clauses)
+                print(ResolutionProverCommand._decorate_clauses(clauses))
         except RuntimeError as e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 result = False
                 clauses = []
             else:
                 if verbose:
-                    print e
+                    print(e)
                 else:
                     raise e
         return (result, clauses)
@@ -604,7 +605,7 @@ class DebugObject(object):
 
     def line(self, line):
         if self.enabled:
-            print '    '*self.indent + line
+            print('    '*self.indent + line)
 
 
 def testResolutionProver():
@@ -626,56 +627,56 @@ def testResolutionProver():
     p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
     p2 = LogicParser().parse(r'man(Socrates)')
     c = LogicParser().parse(r'mortal(Socrates)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2]))
+    print('%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2])))
 
     p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
     p2 = LogicParser().parse(r'man(John)')
     c = LogicParser().parse(r'some y.walks(y)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2]))
+    print('%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2])))
 
     p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
-    print '%s |- %s: %s' % (p, c, ResolutionProver().prove(c, [p]))
+    print('%s |- %s: %s' % (p, c, ResolutionProver().prove(c, [p])))
 
 def resolution_test(e):
     f = LogicParser().parse(e)
     t = ResolutionProver().prove(f)
-    print '|- %s: %s' % (f, t)
+    print('|- %s: %s' % (f, t))
 
 def test_clausify():
     lp = LogicParser()
 
-    print clausify(lp.parse('P(x) | Q(x)'))
-    print clausify(lp.parse('(P(x) & Q(x)) | R(x)'))
-    print clausify(lp.parse('P(x) | (Q(x) & R(x))'))
-    print clausify(lp.parse('(P(x) & Q(x)) | (R(x) & S(x))'))
+    print(clausify(lp.parse('P(x) | Q(x)')))
+    print(clausify(lp.parse('(P(x) & Q(x)) | R(x)')))
+    print(clausify(lp.parse('P(x) | (Q(x) & R(x))')))
+    print(clausify(lp.parse('(P(x) & Q(x)) | (R(x) & S(x))')))
 
-    print clausify(lp.parse('P(x) | Q(x) | R(x)'))
-    print clausify(lp.parse('P(x) | (Q(x) & R(x)) | S(x)'))
+    print(clausify(lp.parse('P(x) | Q(x) | R(x)')))
+    print(clausify(lp.parse('P(x) | (Q(x) & R(x)) | S(x)')))
 
-    print clausify(lp.parse('exists x.P(x) | Q(x)'))
+    print(clausify(lp.parse('exists x.P(x) | Q(x)')))
 
-    print clausify(lp.parse('-(-P(x) & Q(x))'))
-    print clausify(lp.parse('P(x) <-> Q(x)'))
-    print clausify(lp.parse('-(P(x) <-> Q(x))'))
-    print clausify(lp.parse('-(all x.P(x))'))
-    print clausify(lp.parse('-(some x.P(x))'))
+    print(clausify(lp.parse('-(-P(x) & Q(x))')))
+    print(clausify(lp.parse('P(x) <-> Q(x)')))
+    print(clausify(lp.parse('-(P(x) <-> Q(x))')))
+    print(clausify(lp.parse('-(all x.P(x))')))
+    print(clausify(lp.parse('-(some x.P(x))')))
 
-    print clausify(lp.parse('some x.P(x)'))
-    print clausify(lp.parse('some x.all y.P(x,y)'))
-    print clausify(lp.parse('all y.some x.P(x,y)'))
-    print clausify(lp.parse('all z.all y.some x.P(x,y,z)'))
-    print clausify(lp.parse('all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))'))
+    print(clausify(lp.parse('some x.P(x)')))
+    print(clausify(lp.parse('some x.all y.P(x,y)')))
+    print(clausify(lp.parse('all y.some x.P(x,y)')))
+    print(clausify(lp.parse('all z.all y.some x.P(x,y,z)')))
+    print(clausify(lp.parse('all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))')))
 
 
 def demo():
     test_clausify()
-    print
+    print()
     testResolutionProver()
-    print
+    print()
 
     p = LogicParser().parse('man(x)')
-    print ResolutionProverCommand(p, [p]).prove()
+    print(ResolutionProverCommand(p, [p]).prove())
 
 if __name__ == '__main__':
     demo()

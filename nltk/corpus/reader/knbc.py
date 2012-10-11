@@ -7,6 +7,7 @@
 
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
 
+from __future__ import print_function
 import sys
 
 from nltk.tree import bracket_parse, Tree
@@ -132,19 +133,19 @@ def demo():
     knbc = LazyCorpusLoader('knbc/corpus1', KNBCorpusReader,
                             sorted(fileids, key=_knbc_fileids_sort), encoding='euc-jp')
 
-    print knbc.fileids()[:10]
-    print ''.join( knbc.words()[:100] )
+    print(knbc.fileids()[:10])
+    print(''.join( knbc.words()[:100] ))
 
-    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:2] )
+    print('\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:2] ))
 
     knbc.morphs2str = lambda morphs: '/'.join(
         "%s(%s)"%(m[0], m[1].split(' ')[2]) for m in morphs if m[0] != 'EOS'
         ).encode('utf-8')
 
-    print '\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:2] )
+    print('\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:2] ))
 
-    print '\n'.join( ' '.join("%s/%s"%(w[0], w[1].split(' ')[2]) for w in sent)
-                     for sent in knbc.tagged_sents()[0:2] )
+    print('\n'.join( ' '.join("%s/%s"%(w[0], w[1].split(' ')[2]) for w in sent)
+                     for sent in knbc.tagged_sents()[0:2] ))
 
 def test():
 

@@ -14,6 +14,7 @@ token to a featureset.  Each feature/value pair is then encoded as a
 single binary feature for Mallet.
 """
 
+from __future__ import print_function
 import os
 import pickle
 import re
@@ -217,7 +218,7 @@ class MalletCRF(FeaturesetTaggerI):
             filename += '.crf'
 
         if trace >= 1:
-            print '[MalletCRF] Training a new CRF: %s' % filename
+            print('[MalletCRF] Training a new CRF: %s' % filename)
 
         # Create crf-info object describing the new CRF.
         crf_info = MalletCRF._build_crf_info(
@@ -227,7 +228,7 @@ class MalletCRF(FeaturesetTaggerI):
 
         # Create a zipfile, and write crf-info to it.
         if trace >= 2:
-            print '[MalletCRF] Adding crf-info.xml to %s' % filename
+            print('[MalletCRF] Adding crf-info.xml to %s' % filename)
         zf = zipfile.ZipFile(filename, mode='w')
         zf.writestr('crf-info.xml', crf_info.toxml()+'\n')
         zf.close()
@@ -237,13 +238,13 @@ class MalletCRF(FeaturesetTaggerI):
 
         # Write the Training corpus to a temporary file.
         if trace >= 2:
-            print '[MalletCRF] Writing training corpus...'
+            print('[MalletCRF] Writing training corpus...')
         (fd, train_file) = mkstemp('.txt', 'train')
         crf.write_training_corpus(corpus, os.fdopen(fd, 'w'))
 
         try:
             if trace >= 1:
-                print '[MalletCRF] Calling mallet to train CRF...'
+                print('[MalletCRF] Calling mallet to train CRF...')
             cmd = [MalletCRF._TRAIN_CRF,
                    '--model-file', os.path.abspath(filename),
                    '--train-file', train_file]
@@ -259,11 +260,11 @@ class MalletCRF(FeaturesetTaggerI):
             os.remove(train_file)
 
         if trace >= 1:
-            print '[MalletCRF] Training complete.'
-            print '[MalletCRF]   Model stored in: %s' % filename
+            print('[MalletCRF] Training complete.')
+            print('[MalletCRF]   Model stored in: %s' % filename)
         if trace >= 2:
             dt = time.time()-t0
-            print '[MalletCRF]   Total training time: %d seconds' % dt
+            print('[MalletCRF]   Total training time: %d seconds' % dt)
 
         # Return the completed CRF.
         return crf
@@ -364,11 +365,11 @@ class MalletCRF(FeaturesetTaggerI):
                 for (t, regexp) in MalletCRF._FILTER_TRAINING_OUTPUT:
                     if t <= trace and re.match(regexp, line):
                         indent = '  '*t
-                        print '[MalletCRF] %s%s' % (indent, line.rstrip())
+                        print('[MalletCRF] %s%s' % (indent, line.rstrip()))
                         break
         if p.returncode != 0:
-            print "\nError encountered!  Mallet's most recent output:"
-            print ''.join(out[-100:])
+            print("\nError encountered!  Mallet's most recent output:")
+            print(''.join(out[-100:]))
             raise OSError('Mallet command failed')
 
 
@@ -738,13 +739,13 @@ def demo(train_size=100, test_size=100, java_home=None, mallet_home=None):
                           transduction_type='VITERBI')
     sample_output = crf.tag([w for (w,t) in brown_test[5]])
     acc = nltk.tag.accuracy(crf, brown_test)
-    print '\nAccuracy: %.1f%%' % (acc*100)
-    print 'Sample output:'
-    print textwrap.fill(' '.join('%s/%s' % w for w in sample_output),
-                        initial_indent='  ', subsequent_indent='  ')+'\n'
+    print('\nAccuracy: %.1f%%' % (acc*100))
+    print('Sample output:')
+    print(textwrap.fill(' '.join('%s/%s' % w for w in sample_output),
+                        initial_indent='  ', subsequent_indent='  ')+'\n')
 
     # Clean up
-    print 'Clean-up: deleting', crf.filename
+    print('Clean-up: deleting', crf.filename)
     os.remove(crf.filename)
 
     return crf

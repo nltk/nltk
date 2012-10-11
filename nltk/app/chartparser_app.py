@@ -35,6 +35,7 @@ edge you wish to apply a rule to.
 
 # At some point, we should rewrite this tool to use the new canvas
 # widget system.
+from __future__ import print_function
 
 import pickle
 from tkFileDialog import asksaveasfilename, askopenfilename
@@ -1651,7 +1652,7 @@ class ChartParserApp(object):
             self._init_bindings()
 
         except:
-            print 'Error creating Tree View'
+            print('Error creating Tree View')
             self.destroy()
             raise
 
@@ -2238,12 +2239,12 @@ def app():
     sent = 'John ate the cake on the table'
     tokens = list(sent.split())
 
-    print 'grammar= ('
+    print('grammar= (')
     for rule in grammar.productions():
-        print '    ', repr(rule)+','
-    print ')'
-    print 'tokens = %r' % tokens
-    print 'Calling "ChartParserApp(grammar, tokens)"...'
+        print('    ', repr(rule)+',')
+    print(')')
+    print('tokens = %r' % tokens)
+    print('Calling "ChartParserApp(grammar, tokens)"...')
     ChartParserApp(grammar, tokens).mainloop()
 
 if __name__ == '__main__':
