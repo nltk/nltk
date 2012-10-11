@@ -203,18 +203,18 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
         if _expand(subjclass) in NE_CLASSES[corpus]:
             subjclass = _expand(subjclass)
         else:
-            raise ValueError, "your value for the subject type has not been recognized: %s" % subjclass
+            raise ValueError("your value for the subject type has not been recognized: %s" % subjclass)
     if objclass and objclass not in NE_CLASSES[corpus]:
         if _expand(objclass) in NE_CLASSES[corpus]:
             objclass = _expand(objclass)
         else:
-            raise ValueError, "your value for the object type has not been recognized: %s" % objclass
+            raise ValueError("your value for the object type has not been recognized: %s" % objclass)
     if corpus == 'ace' or corpus == 'conll2002':
         pairs = mk_pairs(doc)
     elif corpus == 'ieer':
         pairs = mk_pairs(doc.text) + mk_pairs(doc.headline)
     else:
-        raise ValueError, "corpus type not recognized"
+        raise ValueError("corpus type not recognized")
 
     reldicts = mk_reldicts(pairs)
 

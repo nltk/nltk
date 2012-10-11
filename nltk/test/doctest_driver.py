@@ -582,10 +582,10 @@ def find(name):
 def import_from_name(name):
     try:
         return __import__(name, globals(), locals(), ['*'])
-    except Exception, e:
-        raise ValueError, str(e)
+    except Exception as e:
+        raise ValueError(str(e))
     except:
-        raise ValueError, 'Error importing %r' % name
+        raise ValueError('Error importing %r' % name)
 
 def find_module_from_filename(filename):
     """
@@ -795,7 +795,7 @@ def run(names, optionflags, verbosity, kbinterrupt_continue):
                              kbinterrupt_continue=kbinterrupt_continue)
     for name in names:
         try: tests = find(name)
-        except ValueError, e:
+        except ValueError as e:
             print >>sys.stderr, ('%s: Error processing %s -- %s' %
                                  (sys.argv[0], name, e))
             continue
@@ -817,7 +817,7 @@ def run(names, optionflags, verbosity, kbinterrupt_continue):
         try:
             for test in find(name):
                 suite.addTest(DocTestCase(test, optionflags))
-        except ValueError, e:
+        except ValueError as e:
             print >>sys.stderr, ('%s: Error processing %s -- %s' %
                                  (sys.argv[0], name, e))
     unittest.TextTestRunner(verbosity=verbosity).run(suite)
@@ -828,7 +828,7 @@ def debug(names, optionflags, verbosity, pm=True):
         try:
             for test in find(name):
                 debugger.debug(test, pm)
-        except ValueError, e:
+        except ValueError as e:
             raise
             print >>sys.stderr, ('%s: Error processing %s -- %s' %
                                  (sys.argv[0], name, e))
@@ -867,7 +867,7 @@ def update(names, optionflags, verbosity):
                     out.close()
                 else:
                     print 'Updates rejected!'
-        except ValueError, e:
+        except ValueError as e:
             raise
             print >>sys.stderr, ('%s: Error processing %s -- %s' %
                                  (sys.argv[0], name, e))

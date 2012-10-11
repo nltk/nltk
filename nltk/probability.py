@@ -190,7 +190,7 @@ class FreqDist(dict):
             defaults to ``self.B()`` (so Nr(0) will be 0).
         :rtype: int
         """
-        if r < 0: raise IndexError, 'FreqDist.Nr(): r must be non-negative'
+        if r < 0: raise IndexError('FreqDist.Nr(): r must be non-negative')
 
         # Special case for Nr(0):
         if r == 0:
@@ -2067,9 +2067,9 @@ class ProbabilisticMixIn(object):
 
 class ImmutableProbabilisticMixIn(ProbabilisticMixIn):
     def set_prob(self, prob):
-        raise ValueError, '%s is immutable' % self.__class__.__name__
+        raise ValueError('%s is immutable' % self.__class__.__name__)
     def set_logprob(self, prob):
-        raise ValueError, '%s is immutable' % self.__class__.__name__
+        raise ValueError('%s is immutable' % self.__class__.__name__)
 
 ## Helper function for processing keyword arguments
 

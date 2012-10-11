@@ -326,7 +326,7 @@ class DiscourseTester(object):
                 try:
                     thread_reading = ": %s" % \
                               self._reading_command.combine_readings(readings)
-                except Exception, e:
+                except Exception as e:
                     thread_reading = ': INVALID: %s' % e.__class__.__name__
             else:
                 thread_reading = ''
@@ -508,7 +508,7 @@ def parse_fol(s):
         try:
             statements.append(lp.parse(line))
         except Error:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements
 
 ###############################

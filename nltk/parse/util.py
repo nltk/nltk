@@ -115,12 +115,12 @@ class TestGrammar(object):
                             print tree
                     if key == 'accept':
                         if trees == []:
-                            raise ValueError, "Sentence '%s' failed to parse'" % sent
+                            raise ValueError("Sentence '%s' failed to parse'" % sent)
                         else:
                             accepted = True
                     else:
                         if trees:
-                            raise ValueError, "Sentence '%s' received a parse'" % sent
+                            raise ValueError("Sentence '%s' received a parse'" % sent)
                         else:
                             rejected = True
             if accepted and rejected:

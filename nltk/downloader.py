@@ -522,7 +522,7 @@ class Downloader(object):
 
         # Look up the requested collection or package.
         try: info = self._info_or_id(info_or_id)
-        except (IOError, ValueError), e:
+        except (IOError, ValueError) as e:
             yield ErrorMessage(None, 'Error loading %s: %s' %
                                (info_or_id, e))
             return
@@ -547,7 +547,7 @@ class Downloader(object):
         # Look up the requested items.
         for i in range(len(items)):
             try: items[i] = self._info_or_id(items[i])
-            except (IOError, ValueError), e:
+            except (IOError, ValueError) as e:
                 yield ErrorMessage(items[i], e)
                 return
 
@@ -610,7 +610,7 @@ class Downloader(object):
                     yield ProgressMessage(min(80, 5+75*(block/num_blocks)))
             infile.close()
             outfile.close()
-        except IOError, e:
+        except IOError as e:
             yield ErrorMessage(info, 'Error downloading %r from <%s>:'
                                '\n  %s' % (info.id, info.url, e))
             return
@@ -999,9 +999,9 @@ class DownloaderShell(object):
                     self._simple_interactive_update()
                 else:
                     print 'Command %r unrecognized' % user_input
-            except urllib2.HTTPError, e:
+            except urllib2.HTTPError as e:
                 print 'Error reading from server: %s'%e
-            except urllib2.URLError, e:
+            except urllib2.URLError as e:
                 print 'Error connecting to server: %s'%e.reason
             # try checking if user_input is a package name, &
             # downloading it?
@@ -1011,7 +1011,7 @@ class DownloaderShell(object):
         if args:
             for arg in args:
                 try: self._ds.download(arg, prefix='    ')
-                except (IOError, ValueError), e: print e
+                except (IOError, ValueError) as e: print e
         else:
             while True:
                 print
@@ -1026,7 +1026,7 @@ class DownloaderShell(object):
                 elif user_input:
                     for id in user_input.split():
                         try: self._ds.download(id, prefix='    ')
-                        except (IOError, ValueError), e: print e
+                        except (IOError, ValueError) as e: print e
                     break
 
     def _simple_interactive_update(self):
@@ -1050,7 +1050,7 @@ class DownloaderShell(object):
                 if user_input.lower()=='o':
                     for pid, pname in stale_packages:
                         try: self._ds.download(pid, prefix='    ')
-                        except (IOError, ValueError), e: print e
+                        except (IOError, ValueError) as e: print e
                     break
                 elif user_input.lower() in ('x', 'q', ''):
                     return
@@ -1104,7 +1104,7 @@ class DownloaderShell(object):
                     if not new_url.startswith('http://'):
                         new_url = 'http://'+new_url
                     try: self._ds.url = new_url
-                    except Exception, e:
+                    except Exception as e:
                         print 'Error reading <%r>:\n  %s' % (new_url, e)
             elif user_input == 'm':
                 break
@@ -1215,9 +1215,9 @@ class DownloaderGUI(object):
         self._init_menu()
         try:
             self._fill_table()
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             showerror('Error connecting to server', e.reason)
 
         self._show_info()
@@ -1397,9 +1397,9 @@ class DownloaderGUI(object):
         self._ds.clear_status_cache()
         try:
             self._fill_table()
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             showerror('Error connecting to server', e.reason)
         self._table.select(0)
 
@@ -1437,7 +1437,7 @@ class DownloaderGUI(object):
         try:
             self._ds.url = url
             self._fill_table()
-        except IOError, e:
+        except IOError as e:
             showerror('Error Setting Server Index', str(e))
         self._show_info()
 
@@ -1450,9 +1450,9 @@ class DownloaderGUI(object):
         self._ds.download_dir = download_dir
         try:
             self._fill_table()
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             showerror('Error connecting to server', e.reason)
         self._show_info()
 
@@ -1472,9 +1472,9 @@ class DownloaderGUI(object):
                 self._tab = self._tab_names[i-1].lower()
                 try:
                     return self._fill_table()
-                except urllib2.HTTPError, e:
+                except urllib2.HTTPError as e:
                     showerror('Error reading from server', e)
-                except urllib2.URLError, e:
+                except urllib2.URLError as e:
                     showerror('Error connecting to server', e.reason)
 
     def _next_tab(self, *e):
@@ -1483,18 +1483,18 @@ class DownloaderGUI(object):
                 self._tab = self._tab_names[i+1].lower()
                 try:
                     return self._fill_table()
-                except urllib2.HTTPError, e:
+                except urllib2.HTTPError as e:
                     showerror('Error reading from server', e)
-                except urllib2.URLError, e:
+                except urllib2.URLError as e:
                     showerror('Error connecting to server', e.reason)
 
     def _select_tab(self, event):
         self._tab = event.widget['text'].lower()
         try:
             self._fill_table()
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             showerror('Error connecting to server', e.reason)
 
     _tab = 'collections'
@@ -1964,7 +1964,7 @@ def unzip(filename, root, verbose=True):
     """
     for message in _unzip_iter(filename, root, verbose):
         if isinstance(message, ErrorMessage):
-            raise Exception, message
+            raise Exception(message)
 
 def _unzip_iter(filename, root, verbose=True):
     if verbose:
@@ -1972,10 +1972,10 @@ def _unzip_iter(filename, root, verbose=True):
         sys.stdout.flush()
 
     try: zf = zipfile.ZipFile(filename)
-    except zipfile.error, e:
+    except zipfile.error as e:
         yield ErrorMessage(filename, 'Error with downloaded zip file')
         return
-    except Exception, e:
+    except Exception as e:
         yield ErrorMessage(filename, e)
         return
 
@@ -2001,7 +2001,7 @@ def _unzip_iter(filename, root, verbose=True):
         filepath = os.path.join(root, *filename.split('/'))
         out = open(filepath, 'wb')
         try: contents = zf.read(filename)
-        except Exception, e:
+        except Exception as e:
             yield ErrorMessage(filename, e)
             return
         out.write(contents)
@@ -2165,11 +2165,11 @@ def _find_packages(root):
                 xmlfilename = os.path.join(dirname, filename)
                 zipfilename = xmlfilename[:-4]+'.zip'
                 try: zf = zipfile.ZipFile(zipfilename)
-                except Exception, e:
+                except Exception as e:
                     raise ValueError('Error reading file %r!\n%s' %
                                      (zipfilename, e))
                 try: pkg_xml = ElementTree.parse(xmlfilename).getroot()
-                except Exception, e:
+                except Exception as e:
                     raise ValueError('Error reading file %r!\n%s' %
                                      (xmlfilename, e))
 

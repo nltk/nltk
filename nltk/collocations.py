@@ -137,7 +137,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         bfd = FreqDist()
 
         if window_size < 2:
-            raise ValueError, "Specify window_size at least 2"
+            raise ValueError("Specify window_size at least 2")
 
         for window in ingrams(words, window_size, pad_right=True):
             w1 = window[0]

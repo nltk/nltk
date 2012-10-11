@@ -182,7 +182,7 @@ class FeatureChart(Chart):
         # Make sure it's a valid index.
         for key in restr_keys:
             if not hasattr(EdgeI, key):
-                raise ValueError, 'Bad restriction: %s' % key
+                raise ValueError('Bad restriction: %s' % key)
 
         # Create the index.
         index = self._indexes[restr_keys] = {}

@@ -1285,7 +1285,7 @@ class LogicParser(object):
             result = self.parse_Expression(None)
             if self.inRange(0):
                 raise UnexpectedTokenException(self._currentIndex+1, self.token(0))
-        except ParseException, e:
+        except ParseException as e:
             msg = '%s\n%s\n%s^' % (e, data, ' '*mapping[e.index-1])
             raise ParseException(None, msg)
 
@@ -1479,7 +1479,7 @@ class LogicParser(object):
     def get_next_token_variable(self, description):
         try:
             tok = self.token()
-        except ExpectedMoreTokensException, e:
+        except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(e.index, 'Variable expected.')
         if isinstance(self.make_VariableExpression(tok), ConstantExpression):
             raise ParseException(self._currentIndex,
@@ -1644,7 +1644,7 @@ class LogicParser(object):
     def assertNextToken(self, expected):
         try:
             tok = self.token()
-        except ExpectedMoreTokensException, e:
+        except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(e.index, message="Expected token '%s'." % expected)
 
         if isinstance(expected, list):
@@ -1691,7 +1691,7 @@ def parse_logic(s, logic_parser=None):
         try:
             statements.append(logic_parser.parse(line))
         except ParseException:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements
 
 
@@ -1822,7 +1822,7 @@ def demo_errors():
 def demoException(s):
     try:
         LogicParser().parse(s)
-    except ParseException, e:
+    except ParseException as e:
         print "%s: %s" % (e.__class__.__name__, e)
 
 def printtype(ex):

@@ -166,7 +166,7 @@ def filestring(f):
     elif isinstance(f, basestring):
         return open(f).read()
     else:
-        raise ValueError, "Must be called with a filename or file-like object"
+        raise ValueError("Must be called with a filename or file-like object")
 
 ##########################################################################
 # Breadth-First Search

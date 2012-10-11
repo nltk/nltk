@@ -113,7 +113,7 @@ class LazyModule:
         """ Import the module on demand and get the attribute.
         """
         if self.__lazymodule_loaded:
-            raise AttributeError, name
+            raise AttributeError(name)
         if _debug:
             print 'LazyModule: ' \
                   'Module load triggered by attribute %r read access' % name

@@ -378,7 +378,7 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
         # Decode the line.
         match = _LINE_RE.match(line)
         if match is None:
-            raise ValueError, 'Error on line %d' % lineno
+            raise ValueError('Error on line %d' % lineno)
         (word, tag, state, chunk_type) = match.groups()
 
         # If it's a chunk type we don't care about, treat it as O.
@@ -420,7 +420,7 @@ def tree2conlltags(t):
             prefix = "B-"
             for contents in child:
                 if isinstance(contents, Tree):
-                    raise ValueError, "Tree is too deeply nested to be printed in CoNLL format"
+                    raise ValueError("Tree is too deeply nested to be printed in CoNLL format")
                 tags.append((contents[0], contents[1], prefix+category))
                 prefix = "I-"
         except AttributeError:

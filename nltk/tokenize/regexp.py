@@ -116,7 +116,7 @@ class RegexpTokenizer(TokenizerI):
 
         try:
             self._regexp = re.compile(nongrouping_pattern, flags)
-        except re.error, e:
+        except re.error as e:
             raise ValueError('Error in regular expression %r: %s' %
                              (pattern, e))
 

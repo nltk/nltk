@@ -153,7 +153,7 @@ def parse_valuation(s):
         if line.startswith('#') or line=='': continue
         try: statements.append(parse_valuation_line(line))
         except ValueError:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     val = evaluate.Valuation(statements)
     return val
 

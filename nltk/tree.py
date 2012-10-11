@@ -317,7 +317,7 @@ class Tree(list):
         """
 
         if not isinstance(self.node, basestring):
-            raise TypeError, 'Productions can only be generated from trees having node labels that are strings'
+            raise TypeError('Productions can only be generated from trees having node labels that are strings')
 
         prods = [Production(Nonterminal(self.node), _child_names(self))]
         for child in self:

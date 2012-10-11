@@ -484,7 +484,7 @@ def retrieve(resource_url, filename=None, verbose=True):
             filename = re.sub(r'(^\w+:)?.*/', '', resource_url)
     if os.path.exists(filename):
         filename = os.path.abspath(filename)
-        raise ValueError, "File %r already exists!" % filename
+        raise ValueError("File %r already exists!" % filename)
 
     if verbose:
         print 'Retrieving %r, saving to %r' % (resource_url, filename)
@@ -1138,7 +1138,7 @@ class SeekableUnicodeStreamReader(object):
         while True:
             try:
                 return self.decode(bytes, 'strict')
-            except UnicodeDecodeError, exc:
+            except UnicodeDecodeError as exc:
                 # If the exception occurs at the end of the string,
                 # then assume that it's a truncation error.
                 if exc.end == len(bytes):

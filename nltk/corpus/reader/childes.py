@@ -193,7 +193,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         age = self.convert_age(age)
                     return age
             # some files don't have age data
-            except (TypeError, AttributeError), e:
+            except (TypeError, AttributeError) as e:
                 return None
 
     def convert_age(self, age_year):
@@ -204,7 +204,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
             if int(m.group(3)) > 15:
                 age_month += 1
         # some corpora don't have age information?
-        except ValueError, e:
+        except ValueError as e:
             pass
         return age_month
 
@@ -288,7 +288,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         try:
                             xmlstem = xmlword.find('.//{%s}stem' % NS)
                             word = xmlstem.text
-                        except AttributeError, e:
+                        except AttributeError as e:
                             pass
                         # if there is an inflection
                         try:
@@ -311,7 +311,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             word = (word,xmlpos[0].text)
                             if len(xmlpos) != 1 and suffixStem:
                                 suffixStem = (suffixStem,xmlpos[1].text)
-                        except (AttributeError,IndexError), e:
+                        except (AttributeError,IndexError) as e:
                             word = (word,None)
                             if suffixStem:
                                 suffixStem = (suffixStem,None)
@@ -459,7 +459,7 @@ def demo(corpus_root=None):
             print "MLU:", childes.MLU(file)
             print
 
-    except LookupError, e:
+    except LookupError as e:
         print """The CHILDES corpus, or the parts you need, should be manually
         downloaded from http://childes.psy.cmu.edu/data-xml/ and saved at
         [NLTK_Data_Dir]/corpora/childes/

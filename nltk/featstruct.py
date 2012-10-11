@@ -1972,7 +1972,7 @@ class FeatStructParser(object):
         if reentrances is None: reentrances = {}
         try:
             return self._partial_parse(s, position, reentrances, fstruct)
-        except ValueError, e:
+        except ValueError as e:
             if len(e.args) != 2: raise
             self._error(s, *e.args)
 
@@ -2181,7 +2181,7 @@ class FeatStructParser(object):
         estr = ('Error parsing feature structure\n    ' +
                 lines[0] + '\n    ' + ' '*position + '^ ' +
                 'Expected %s' % expected)
-        raise ValueError, estr
+        raise ValueError(estr)
 
     #////////////////////////////////////////////////////////////
     #{ Value Parsers

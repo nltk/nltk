@@ -438,7 +438,7 @@ class Text(object):
                 ranked_contexts = fd.keys()[:num]
                 print tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts)
 
-        except ValueError, e:
+        except ValueError as e:
             print e
 
     def dispersion_plot(self, words):

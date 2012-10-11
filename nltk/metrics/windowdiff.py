@@ -42,7 +42,7 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     """
 
     if len(seg1) != len(seg2):
-        raise ValueError, "Segmentations have unequal length"
+        raise ValueError("Segmentations have unequal length")
     wd = 0
     for i in range(len(seg1) - k):
         wd += abs(seg1[i:i+k+1].count(boundary) - seg2[i:i+k+1].count(boundary))

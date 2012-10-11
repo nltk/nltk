@@ -1035,7 +1035,7 @@ class RegexpChunkApp(object):
             if line:
                 try:
                     RegexpChunkRule.parse(line)
-                except ValueError, e:
+                except ValueError as e:
                     self.grammarbox.tag_add('error', '%s.0' % (lineno+1),
                                             '%s.0 lineend' % (lineno+1))
         self.status['text'] = ''
@@ -1071,7 +1071,7 @@ class RegexpChunkApp(object):
                          for line in normalized_grammar.split('\n')]
             else:
                 rules = []
-        except ValueError, e:
+        except ValueError as e:
             # Use the un-normalized grammar for error highlighting.
             self._grammarcheck(grammar)
             self.chunker = None
@@ -1115,7 +1115,7 @@ class RegexpChunkApp(object):
     def _chunkparse(self, words):
         try:
             return self.chunker.parse(words)
-        except (ValueError, IndexError), e:
+        except (ValueError, IndexError) as e:
             # There's an error somewhere in the grammar, but we're not sure
             # exactly where, so just mark the whole grammar as bad.
             # E.g., this is caused by: "({<NN>})"

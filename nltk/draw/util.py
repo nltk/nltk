@@ -179,7 +179,7 @@ class CanvasWidget(object):
         :param attribs: The new canvas widget's attributes.
         """
         if self.__class__ == CanvasWidget:
-            raise TypeError, 'CanvasWidget is an abstract base class'
+            raise TypeError('CanvasWidget is an abstract base class')
 
         if not isinstance(canvas, Canvas):
             raise TypeError('Expected a canvas!')

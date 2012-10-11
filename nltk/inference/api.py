@@ -580,7 +580,7 @@ class TheoremToolThread(threading.Thread):
             if self._verbose:
                 print 'Thread %s finished with result %s at %s' % \
                       (self._name, self._result, time.localtime(time.time()))
-        except Exception, e:
+        except Exception as e:
             print e
             print 'Thread %s completed abnormally' % (self._name)
 

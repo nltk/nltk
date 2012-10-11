@@ -34,7 +34,7 @@ try:
         __version__ = fh.read().strip()
 except NameError:
     __version__ = 'unknown (running code interactively?)'
-except IOError, ex:
+except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
 __doc__ += '\n@version: ' + __version__
@@ -166,7 +166,7 @@ except ImportError:
 else:
     try:
         from downloader import download_gui
-    except RuntimeError, e:
+    except RuntimeError as e:
         import warnings
         warnings.warn("Corpus downloader GUI not loaded "
                       "(RuntimeError during import: %s)" % str(e))

@@ -42,7 +42,7 @@ class TableauProver(Prover):
             agenda.put_all(assumptions)
             debugger = Debug(verbose)
             result = self._attempt_proof(agenda, set(), set(), debugger)
-        except RuntimeError, e:
+        except RuntimeError as e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 result = False
             else:

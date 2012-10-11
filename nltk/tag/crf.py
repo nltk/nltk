@@ -552,7 +552,7 @@ class CRFInfo(object):
         feature_detector = fd.get('name')
         if fd.find('pickle') is not None:
             try: feature_detector = pickle.loads(fd.find('pickle').text)
-            except pickle.PicklingError, e: pass # unable to unpickle it.
+            except pickle.PicklingError as e: pass # unable to unpickle it.
 
         return CRFInfo(states,
                        float(etree.find('gaussianVariance').text),

@@ -230,7 +230,7 @@ def parse_str(s, start_position):
     # might raise ValueEerror.
     try:
         return eval(s[start_position:match.end()]), match.end()
-    except ValueError, e:
+    except ValueError as e:
         raise ParseError('valid string (%s)' % e, start)
 
 _PARSE_INT_RE = re.compile(r'-?\d+')
@@ -494,7 +494,7 @@ def find_file(filename, env_vars=(), searchpath=(),
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose: print '[Found %s: %s]' % (filename, path)
                     return path
-            except KeyboardInterrupt, SystemExit:
+            except KeyboardInterrupt as SystemExit:
                 raise
             except:
                 pass

@@ -1226,12 +1226,12 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
             else:
                 # expand out the disjunctions on the RHS
                 productions += parse_production(line, nonterm_parser, probabilistic)
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError('Unable to parse line %s: %s\n%s' %
                              (linenum+1, line, e))
 
     if not productions:
-        raise ValueError, 'No productions found!'
+        raise ValueError('No productions found!')
     if not start:
         start = productions[0].lhs()
     return (start, productions)
@@ -1269,14 +1269,14 @@ def parse_dependency_grammar(s):
         if line.startswith('#') or line=='': continue
         try: productions += parse_dependency_production(line)
         except ValueError:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     if len(productions) == 0:
-        raise ValueError, 'No productions found!'
+        raise ValueError('No productions found!')
     return DependencyGrammar(productions)
 
 def parse_dependency_production(s):
     if not _PARSE_DG_RE.match(s):
-        raise ValueError, 'Bad production string'
+        raise ValueError('Bad production string')
     pieces = _SPLIT_DG_RE.split(s)
     pieces = [p for i,p in enumerate(pieces) if i%2==1]
     lhside = pieces[0].strip('\'\"')

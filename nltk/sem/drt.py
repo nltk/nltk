@@ -885,7 +885,7 @@ class DrsDrawer(object):
         elif isinstance(expression, DrtProposition):
             factory = self._handle_DrtProposition
         else:
-            raise Exception, expression.__class__.__name__
+            raise Exception(expression.__class__.__name__)
 
         (right, bottom) = factory(expression, command, x, y)
 

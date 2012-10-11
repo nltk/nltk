@@ -534,7 +534,7 @@ class Chart(object):
         # Make sure it's a valid index.
         for key in restr_keys:
             if not hasattr(EdgeI, key):
-                raise ValueError, 'Bad restriction: %s' % key
+                raise ValueError('Bad restriction: %s' % key)
 
         # Create the index.
         index = self._indexes[restr_keys] = {}
@@ -967,7 +967,7 @@ class AbstractChartRule(ChartRuleI):
                             yield new_edge
 
         else:
-            raise AssertionError, 'NUM_EDGES>3 is not currently supported'
+            raise AssertionError('NUM_EDGES>3 is not currently supported')
 
     # Default: delegate to apply_iter.
     def apply(self, chart, grammar, *edges):
@@ -1488,7 +1488,7 @@ class SteppingChartParser(ChartParser):
         added with the current strategy and grammar.
         """
         if self._chart is None:
-            raise ValueError, 'Parser must be initialized first'
+            raise ValueError('Parser must be initialized first')
         while 1:
             self._restart = False
             w = 50/(self._chart.num_leaves()+1)

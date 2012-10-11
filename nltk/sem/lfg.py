@@ -76,7 +76,7 @@ class FStructure(dict):
                     for n in item:
                         n._to_depgraph(nodelist, index, feature)
                 else: # ERROR
-                    raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
+                    raise Exception('feature %s is not an FStruct, a list, or a tuple' % feature)
 
     @staticmethod
     def read_depgraph(depgraph):
@@ -152,7 +152,7 @@ class FStructure(dict):
                 elif isinstance(item, list):
                     accum += '\n%s%s {%s}' % (' '*(indent), feature, ('\n%s' % (' '*(indent+len(feature)+2))).join(item))
                 else: # ERROR
-                    raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
+                    raise Exception('feature %s is not an FStruct, a list, or a tuple' % feature)
         return accum+']'
 
 
