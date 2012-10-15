@@ -63,8 +63,6 @@ Natural Language Processing with Python.  O'Reilly Media Inc.
 Links
 -----
 
-`Natural Language Processing with Python <https://sites.google.com/site/naturallanguagetoolkit/book>`_ provides a practica
-
 * `NLTK mailing list <http://groups.google.com/group/nltk>`_ - release announcements only, very low volume
 * `NLTK-Users mailing list <http://groups.google.com/group/nltk-users>`_ - user discussions
 * `NLTK-Dev mailing list <http://groups.google.com/group/nltk-dev>`_ - developers only
