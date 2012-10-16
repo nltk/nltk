@@ -71,7 +71,6 @@ from reader import *
 
 masc = LazyCorpusLoader(
     'masc', MascCorpusReader, r'(?!\.).*\.txt', encoding = 'utf-8')
-
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.).*\.txt')
 alpino = LazyCorpusLoader(

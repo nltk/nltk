@@ -11,11 +11,6 @@ the ISO GrAF format.
 """
 import os.path    	
 
-## note - these imports will change once the
-## graf package is placed within the nltk
-from graf.PyGraph import *
-from graf.PyGraphParser import *
-
 from util import *
 from api import *
 
@@ -42,6 +37,13 @@ class MascCorpusReader(CorpusReader):
                         this corpus.
         :param encoding: The encoding used for the text files in the corpus.
         """
+        try: 
+            #from graf.PyGraph import *
+            from graf.PyGraphParser import PyGraphParser
+        except ImportError:
+            print "You need to install the GrAF library in order to use the MASC corpus reader:\nhttp://pypi.python.org/pypi/graf-python\n"
+            return
+ 
         self._cur_file = ""
         self._cur_sents_file = ""
         self._cur_paras_file = ""
@@ -411,6 +413,7 @@ class MascCorpusReader(CorpusReader):
         :return: list of annotation offsets
         :rtype: list(pair(int))
         """
+        from graf.PyGraphParser import PyGraphParser
         parser = PyGraphParser()
         g = parser.parse(annfile)
         
