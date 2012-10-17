@@ -15,7 +15,6 @@ from __future__ import print_function, division
 # These algorithms are taken from:
 # Levitin (2004) The Design and Analysis of Algorithms
 
-
 ##################################################################
 # Selection Sort
 ##################################################################
