@@ -22,7 +22,7 @@ code, e.g.
 
 * http://docs.python.org/dev/howto/pyporting.html
 * http://python3porting.com/
-* http://code.djangoproject.com/wiki/PortingNotesFor2To3
+* https://docs.djangoproject.com/en/dev/topics/python3/
 
 Take a look at them to have an idea how the approach works and what
 is changed in Python 3.
