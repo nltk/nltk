@@ -71,7 +71,7 @@ words, a list of sentences, or a list of paragraphs.
     >>> inaugural.raw('1789-Washington.txt') # doctest: +ELLIPSIS
     'Fellow-Citizens of the Senate ...'
     >>> inaugural.words('1789-Washington.txt')
-    ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', ...]
+    ['Fellow', '-', 'Citizens', 'of', 'the', ...]
     >>> inaugural.sents('1789-Washington.txt') # doctest: +ELLIPSIS
     [['Fellow', '-', 'Citizens'...], ['Among', 'the', 'vicissitudes'...]...]
     >>> inaugural.paras('1789-Washington.txt') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
@@ -228,21 +228,21 @@ CoNLL 2002 Corpus includes named entity chunks.
    arguments, they will return the contents of the entire corpus,
    *including* the 'test' portions of the corpus.)
 
-SemCor is a subset of the Brown corpus tagged with WordNet senses and 
-named entities. Both kinds of lexical items include multiword units, 
-which are encoded as chunks (senses and part-of-speech tags pertain 
+SemCor is a subset of the Brown corpus tagged with WordNet senses and
+named entities. Both kinds of lexical items include multiword units,
+which are encoded as chunks (senses and part-of-speech tags pertain
 to the entire chunk).
 
     >>> from nltk.corpus import semcor
     >>> semcor.words()
     ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
     >>> semcor.chunks()
-    [['The'], ['Fulton', 'County', 'Grand', 'Jury'], ['said'], ...]
+    [['The'], ['Fulton', 'County', 'Grand', 'Jury'], ...]
     >>> semcor.sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...], 
+    [['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...],
     ['The', 'jury', 'further', 'said', ...], ...]
     >>> semcor.chunk_sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [[['The'], ['Fulton', 'County', 'Grand', 'Jury'], ['said'], ... 
+    [[['The'], ['Fulton', 'County', 'Grand', 'Jury'], ['said'], ...
     ['.']], [['The'], ['jury'], ['further'], ['said'], ... ['.']], ...]
     >>> list(map(str, semcor.tagged_chunks(tag='both')[:3]))
     ['(DT The)', '(group.01 (NE (NNP Fulton County Grand Jury)))', '(say.01 (VB said))']
@@ -301,7 +301,7 @@ Reading the Penn Treebank (Wall Street Journal sample):
     >>> print(treebank.fileids()) # doctest: +ELLIPSIS
     ['wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...]
     >>> print(treebank.words('wsj_0003.mrg'))
-    ['A', 'form', 'of', 'asbestos', 'once', 'used', '*', ...]
+    ['A', 'form', 'of', 'asbestos', 'once', 'used', ...]
     >>> print(treebank.tagged_words('wsj_0003.mrg'))
     [('A', 'DT'), ('form', 'NN'), ('of', 'IN'), ...]
     >>> print(treebank.parsed_sents('wsj_0003.mrg')[0]) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
@@ -314,34 +314,34 @@ Reading the Penn Treebank (Wall Street Journal sample):
       (VP (VBD reported) (SBAR (-NONE- 0) (S (-NONE- *T*-1))))
       (. .))
 
-If you have access to a full installation of the Penn Treebank, NLTK 
-can be configured to load it as well. Download the ``ptb`` package, 
-and in the directory ``nltk_data/corpora/ptb`` place the ``BROWN`` 
-and ``WSJ`` directories of the Treebank installation (symlinks work 
+If you have access to a full installation of the Penn Treebank, NLTK
+can be configured to load it as well. Download the ``ptb`` package,
+and in the directory ``nltk_data/corpora/ptb`` place the ``BROWN``
+and ``WSJ`` directories of the Treebank installation (symlinks work
 as well). Then use the ``ptb`` module instead of ``treebank``:
 
    >>> from nltk.corpus import ptb
-   >>> print ptb.fileids() # doctest: +ELLIPSIS
+   >>> print(ptb.fileids()) # doctest: +ELLIPSIS
    ['BROWN/CF/CF01.MRG', 'BROWN/CF/CF02.MRG', 'BROWN/CF/CF03.MRG', 'BROWN/CF/CF04.MRG', ...]
-   >>> print ptb.words('WSJ/00/WSJ_0003.MRG')
+   >>> print(ptb.words('WSJ/00/WSJ_0003.MRG'))
    ['A', 'form', 'of', 'asbestos', 'once', 'used', '*', ...]
-   >>> print ptb.tagged_words('WSJ/00/WSJ_0003.MRG')
+   >>> print(ptb.tagged_words('WSJ/00/WSJ_0003.MRG'))
    [('A', 'DT'), ('form', 'NN'), ('of', 'IN'), ...]
 
-...and so forth, like ``treebank`` but with extended fileids. Categories 
-specified in ``allcats.txt`` can be used to filter by genre; they consist 
-of ``news`` (for WSJ articles) and names of the Brown subcategories 
+...and so forth, like ``treebank`` but with extended fileids. Categories
+specified in ``allcats.txt`` can be used to filter by genre; they consist
+of ``news`` (for WSJ articles) and names of the Brown subcategories
 (``fiction``, ``humor``, ``romance``, etc.):
 
    >>> ptb.categories()
    ['adventure', 'belles_lettres', 'fiction', 'humor', 'lore', 'mystery', 'news', 'romance', 'science_fiction']
-   >>> print ptb.fileids('news') # doctest: +ELLIPSIS
+   >>> print(ptb.fileids('news')) # doctest: +ELLIPSIS
    ['WSJ/00/WSJ_0001.MRG', 'WSJ/00/WSJ_0002.MRG', 'WSJ/00/WSJ_0003.MRG', ...]
-   >>> print ptb.words(categories=['humor','fiction'])
+   >>> print(ptb.words(categories=['humor','fiction']))
    ['Thirty-three', 'Scotty', 'did', 'not', 'go', 'back', ...]
 
-As PropBank and NomBank depend on the (WSJ portion of the) Penn Treebank, 
-the modules ``propbank_ptb`` and ``nombank_ptb`` are provided for access 
+As PropBank and NomBank depend on the (WSJ portion of the) Penn Treebank,
+the modules ``propbank_ptb`` and ``nombank_ptb`` are provided for access
 to a full PTB installation.
 
 Reading the Sinica Treebank:
@@ -696,9 +696,9 @@ at 9353:
     ValueError: Parse tree not avaialable
 
 However, if you supply your own version of the treebank corpus (by
-putting it before the nltk-provided version on `nltk.data.path`, or 
-by creating a `ptb` directory as described above and using the 
-`propbank_ptb` module), then you can access the trees for all 
+putting it before the nltk-provided version on `nltk.data.path`, or
+by creating a `ptb` directory as described above and using the
+`propbank_ptb` module), then you can access the trees for all
 instances.
 
 A list of the verb lemmas contained in propbank is returned by the
@@ -1343,9 +1343,9 @@ For example, the `words()` method is supported by many different
 corpora, and returns a flat list of word strings:
 
     >>> nltk.corpus.brown.words()
-    ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
+    ['The', 'Fulton', 'County', 'Grand', 'Jury', ...]
     >>> nltk.corpus.treebank.words()
-    ['Pierre', 'Vinken', ',', '61', 'years', 'old', ',', ...]
+    ['Pierre', 'Vinken', ',', '61', 'years', 'old', ...]
     >>> nltk.corpus.conll2002.words()
     [u'Sao', u'Paulo', u'(', u'Brasil', u')', u',', u'23', ...]
     >>> nltk.corpus.genesis.words()
@@ -1357,7 +1357,7 @@ corpora that include part-of-speech annotations:
     >>> nltk.corpus.brown.tagged_words()
     [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
     >>> nltk.corpus.treebank.tagged_words()
-    [('Pierre', 'NNP'), ('Vinken', 'NNP'), (',', ','), ...]
+    [('Pierre', 'NNP'), ('Vinken', 'NNP'), ...]
     >>> nltk.corpus.conll2002.tagged_words()
     [(u'Sao', u'NC'), (u'Paulo', u'VMI'), (u'(', u'Fpa'), ...]
     >>> nltk.corpus.genesis.tagged_words()
@@ -1662,7 +1662,7 @@ The directory containing the corpus is corpus.root:
 We can get a list of words, or the raw string:
 
     >>> corpus.words()
-    ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
+    ['This', 'is', 'the', 'first', 'sentence', '.', ...]
     >>> corpus.raw()[:40]
     'This is the first sentence.  Here is ano'
 
@@ -1672,7 +1672,7 @@ once works:
     >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.fileids()]
     (46, [40, 6])
     >>> corpus.words('a.txt')
-    ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
+    ['This', 'is', 'the', 'first', 'sentence', '.', ...]
     >>> corpus.words('b.txt')
     ['This', 'is', 'the', 'second', 'file', '.']
     >>> corpus.words()[:4], corpus.words()[-4:]
@@ -1692,24 +1692,25 @@ Test the plaintext corpora that come with nltk:
     ...     print('  ', repr(corpus.fileids())[:60])
     ...     print('  ', repr(corpus.words()[:10])[:60])
     ...     # doctest: +ELLIPSIS
-    <PlaintextCorpusReader in '.../nltk_data/corpora/abc...>
+    <PlaintextCorpusReader in '.../nltk_data/corpora/ab...'>
        ['rural.txt', 'science.txt']
-       ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
-    <PlaintextCorpusReader in '.../nltk_data/corpora/genesis.zip/genesis/'>
+       ['PM', 'denies', 'knowledge', 'of', 'AWB', ...
+    <PlaintextCorpusReader in '.../nltk_data/corpora/genesi...'>
        ['english-kjv.txt', 'english-web.txt', 'finnish.txt', 'frenc
-       ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven'
-    <PlaintextCorpusReader in '.../nltk_data/corpora/inaugural'>
+       ['In', 'the', 'beginning', 'God', 'created', 'the', ...
+    <PlaintextCorpusReader in '.../nltk_data/corpora/inaugura...'>
        ['1789-Washington.txt', '1793-Washington.txt', '1797-Adams.t
-       ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', 'and', 'o
-    <PlaintextCorpusReader in '.../nltk_data/corpora/state_union.zip/state_union/'>
+       ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', ...
+    <PlaintextCorpusReader in '.../nltk_data/corpora/state_unio...'>
        ['1945-Truman.txt', '1946-Truman.txt', '1947-Truman.txt', '1
-       ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', 'ADDRES
-    <PlaintextCorpusReader in '.../nltk_data/corpora/webtext.zip/webtext/'>
+       ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", ...
+    <PlaintextCorpusReader in '.../nltk_data/corpora/webtex...'>
        ['firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
-       ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', 'allow', 's
-    <PlaintextCorpusReader in '.../nltk_data/corpora/udhr.zip/udhr/'>
+       ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', ...
+    <PlaintextCorpusReader in '.../nltk_data/corpora/udh...'>
        ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1',
        ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
+
 
 Tagged Corpus Reader
 ====================
@@ -1740,7 +1741,7 @@ By default, they apply to all documents in the corpus.
     >>> str(corpus.root) == str(root)
     True
     >>> corpus.words()
-    ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
+    ['This', 'is', 'the', 'first', 'sentence', '.', ...]
     >>> corpus.sents() # doctest: +ELLIPSIS
     [['This', 'is', 'the', 'first', ...], ['Here', 'is', 'another'...], ...]
     >>> corpus.paras() # doctest: +ELLIPSIS
@@ -1760,7 +1761,7 @@ By default, they apply to all documents in the corpus.
     >>> len(corpus.paras()), [len(corpus.paras(d)) for d in corpus.fileids()]
     (3, [2, 1])
     >>> corpus.words('a')
-    ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
+    ['This', 'is', 'the', 'first', 'sentence', '.', ...]
     >>> corpus.words('b')
     ['This', 'is', 'the', 'second', 'file', '.']
     >>> del_testcorpus(root)
@@ -1776,7 +1777,7 @@ The Brown Corpus uses the tagged corpus reader:
     >>> brown.root # doctest: +ELLIPSIS
     FileSystemPathPointer('.../corpora/brown')
     >>> brown.words()
-    ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
+    ['The', 'Fulton', 'County', 'Grand', 'Jury', ...]
     >>> brown.sents() # doctest: +ELLIPSIS
     [['The', 'Fulton', 'County', 'Grand', ...], ...]
     >>> brown.paras() # doctest: +ELLIPSIS
@@ -2335,8 +2336,8 @@ svn 5728 fixed a bug in Categorized*CorpusReader, which caused them
 to return words from *all* files when just one file was specified.
 
     >>> from nltk.corpus import reuters
-    >>> reuters.words('training/13080')
-    ['U', '.', 'S', '.', 'SCIENTISTS', 'SAY', 'TROPICAL', ...]
+    >>> reuters.words('training/13085')
+    ['SNYDER', '&', 'lt', ';', 'SOI', '>', 'MAKES', ...]
     >>> reuters.words('training/5082')
     ['SHEPPARD', 'RESOURCES', 'TO', 'MERGE', 'WITH', ...]
 
