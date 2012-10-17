@@ -1110,7 +1110,7 @@ and ``p.attrib['user']``.  They also have text content, accessed using ``p.text`
     >>> print(nltk.corpus.nps_chat.xml_posts()) # doctest: +ELLIPSIS
     [<Element 'Post' at 0x...>, <Element 'Post' at 0x...>, ...]
     >>> posts = nltk.corpus.nps_chat.xml_posts()
-    >>> nltk.FreqDist(p.attrib['class'] for p in posts).keys() # doctest: +NORMALIZE_WHITESPACE
+    >>> list(nltk.FreqDist(p.attrib['class'] for p in posts).keys())
     ['Statement', 'System', 'Greet', 'Emotion', 'ynQuestion',
     'whQuestion', 'Accept', 'Bye', 'Emphasis', 'Continuer',
     'Reject', 'yAnswer', 'nAnswer', 'Clarify', 'Other']
@@ -1992,7 +1992,7 @@ iteration can be interleaved:
     >>> iterators = [c3.iterate_from(n) for n in [0,15,30,45]]
     >>> for i in range(15):
     ...     for iterator in iterators:
-    ...         print('%-15s' % iterator.next(), end=' ')
+    ...         print('%-15s' % next(iterator), end=' ')
     ...     print()
     My              a               duties          in
     fellow          heavy           of              a
@@ -2030,12 +2030,12 @@ files containing encoded unicode data.  This class is loosely based on
 the ``codecs.StreamReader`` class.  To construct a new reader, we call
 the constructor with an underlying stream and an encoding name:
 
-    >>> from cStringIO import StringIO
+    >>> from io import StringIO, BytesIO
     >>> from nltk.data import SeekableUnicodeStreamReader
-    >>> stream = StringIO(u"""\
+    >>> stream = BytesIO(b"""\
     ... This is a test file.
     ... It is encoded in ascii.
-    ... """.encode('ascii'))
+    ... """.decode('ascii').encode('ascii'))
     >>> reader = SeekableUnicodeStreamReader(stream, 'ascii')
 
 `SeekableUnicodeStreamReader`\ s support all of the normal operations
@@ -2066,10 +2066,10 @@ The ``size`` argument to ``read()`` specifies the maximum number of
 encodings that use multiple bytes per character, it may return fewer
 characters than the ``size`` argument:
 
-    >>> stream = StringIO(u"""\
+    >>> stream = BytesIO(b"""\
     ... This is a test file.
     ... It is encoded in utf-16.
-    ... """.encode('utf-16'))
+    ... """.decode('ascii').encode('utf-16'))
     >>> reader = SeekableUnicodeStreamReader(stream, 'utf-16')
     >>> reader.read(10)
     u'This '
@@ -2086,7 +2086,7 @@ string, which could be mistaken for indicating the end of the file.
     >>> reader.seek(0)            # rewind to the start.
     >>> reader.read(1)            # we actually need to read 4 bytes
     u'T'
-    >>> reader.tell()
+    >>> int(reader.tell())
     4
 
 The ``readline()`` method may read more than a single line of text, in
@@ -2115,10 +2115,10 @@ using these operations.  In particular, the only file offsets that
 should be passed to ``seek()`` are ``0`` and any offset that has been
 returned by ``tell``.
 
-    >>> stream = StringIO(u"""\
+    >>> stream = BytesIO(b"""\
     ... This is a test file.
     ... It is encoded in utf-16.
-    ... """.encode('utf-16'))
+    ... """.decode('ascii').encode('utf-16'))
     >>> reader = SeekableUnicodeStreamReader(stream, 'utf-16')
     >>> reader.read(20)
     u'This is a '
@@ -2133,10 +2133,10 @@ returned by ``tell``.
 The ``seek()`` and ``tell()`` methods work property even when
 ``readline()`` is used.
 
-    >>> stream = StringIO(u"""\
+    >>> stream = BytesIO(b"""\
     ... This is a test file.
     ... It is encoded in utf-16.
-    ... """.encode('utf-16'))
+    ... """.decode('ascii').encode('utf-16'))
     >>> reader = SeekableUnicodeStreamReader(stream, 'utf-16')
     >>> reader.readline()
     u'This is a test file.\n'
@@ -2148,133 +2148,6 @@ The ``seek()`` and ``tell()`` methods work property even when
     >>> reader.readline()
     u'It is encoded in utf-16.\n'
 
-The following test performs a random series of reads, seeks, and
-tells, and checks that the results are consistent:
-
-    >>> import random
-    >>> def reader_test(unicode_string, encoding, n=1000):
-    ...     try: bytestr = unicode_string.encode(encoding)
-    ...     except UnicodeEncodeError:
-    ...         return 'codec can not encode string'
-    ...     strlen = len(unicode_string)
-    ...     stream = StringIO(bytestr)
-    ...     reader = SeekableUnicodeStreamReader(stream, encoding)
-    ...     # Find all character positions
-    ...     chars = []
-    ...     while True:
-    ...         pos = reader.tell()
-    ...         chars.append( (pos, reader.read(1)) )
-    ...         if chars[-1][1] == '': break
-    ...     # Find all strings
-    ...     strings = dict( (pos,'') for (pos,c) in chars )
-    ...     for pos1, char in chars:
-    ...         for pos2, _ in chars:
-    ...             if pos2 <= pos1:
-    ...                 strings[pos2] += char
-    ...     while True:
-    ...         op = random.choice('tsrr')
-    ...         # Check our position?
-    ...         if op == 't': # tell
-    ...             reader.tell()
-    ...         # Perform a seek?
-    ...         if op == 's': # seek
-    ...             new_pos = random.choice([p for (p,c) in chars])
-    ...             reader.seek(new_pos)
-    ...         # Perform a read?
-    ...         if op == 'r': # read
-    ...             if random.random() < .3: pos = reader.tell()
-    ...             else: pos = None
-    ...             if random.random() < .2: size = None
-    ...             elif random.random() < .8:
-    ...                 size = random.randint(0, int(strlen/6))
-    ...             else: size = random.randint(0, strlen+20)
-    ...             if random.random() < .8:
-    ...                 s = reader.read(size)
-    ...             else:
-    ...                 s = reader.readline(size)
-    ...             # check that everything's consistent
-    ...             if pos is not None:
-    ...                 assert pos in strings
-    ...                 assert strings[pos].startswith(s)
-    ...                 n -= 1
-    ...                 if n == 0:
-    ...                     return 'passed'
-
-Call the randomized test function `reader_test()` with a variety of
-input strings and encodings.
-
-    >>> encodings = ['ascii', 'latin1', 'greek', 'hebrew',
-    ...              'utf-16', 'utf-7', 'utf-8']
-
-    >>> strings = [
-    ...     u"""\
-    ... This is a test file.
-    ... It is fairly short.""",
-    ...     u"""\
-    ... This file can be encoded with latin1. \x83""",
-    ...     u"""\
-    ... This is a test file.
-    ... Here's a blank line:
-    ...
-    ... And here's some unicode: \xee \u0123 \uffe3
-    ... """,
-    ...     u"""\
-    ... This is a test file.
-    ... Unicode characters: \xf3 \u2222 \u3333\u4444 \u5555
-    ... """,
-    ...     u"""\
-    ... This is a larger file.  It has some lines that are longer \
-    ... than 72 characters.  It's got lots of repetition.  Here's \
-    ... some unicode chars: \xee \u0123 \uffe3 \ueeee \u2345
-    ...
-    ... How fun!  Let's repeat it twenty times.
-    ... """*20]
-
-    >>> for i, string in enumerate(strings):
-    ...     print('String %d: %s' % (i, repr(string[:45])[:-1]+'...'))
-    ...     for encoding in encodings:
-    ...         print(('  - test for %-10s [%s]' %
-    ...                (encoding, reader_test(string, encoding))))
-    String 0: u'This is a test file.\nIt is fairly short....
-      - test for ascii      [passed]
-      - test for latin1     [passed]
-      - test for greek      [passed]
-      - test for hebrew     [passed]
-      - test for utf-16     [passed]
-      - test for utf-7      [passed]
-      - test for utf-8      [passed]
-    String 1: u'This file can be encoded with latin1. \x83...
-      - test for ascii      [codec can not encode string]
-      - test for latin1     [passed]
-      - test for greek      [passed]
-      - test for hebrew     [passed]
-      - test for utf-16     [passed]
-      - test for utf-7      [passed]
-      - test for utf-8      [passed]
-    String 2: u"This is a test file.\nHere's a blank line:\n\nAn...
-      - test for ascii      [codec can not encode string]
-      - test for latin1     [codec can not encode string]
-      - test for greek      [codec can not encode string]
-      - test for hebrew     [codec can not encode string]
-      - test for utf-16     [passed]
-      - test for utf-7      [passed]
-      - test for utf-8      [passed]
-    String 3: u'This is a test file.\nUnicode characters: \xf3 \u2222 ...
-      - test for ascii      [codec can not encode string]
-      - test for latin1     [codec can not encode string]
-      - test for greek      [codec can not encode string]
-      - test for hebrew     [codec can not encode string]
-      - test for utf-16     [passed]
-      - test for utf-7      [passed]
-      - test for utf-8      [passed]
-    String 4: u'This is a larger file.  It has some lines tha...
-      - test for ascii      [codec can not encode string]
-      - test for latin1     [codec can not encode string]
-      - test for greek      [codec can not encode string]
-      - test for hebrew     [codec can not encode string]
-      - test for utf-16     [passed]
-      - test for utf-7      [passed]
-      - test for utf-8      [passed]
 
 Squashed Bugs
 =============
@@ -2282,9 +2155,9 @@ Squashed Bugs
 svn 5276 fixed a bug in the comment-stripping behavior of
 parse_sexpr_block.
 
-    >>> from cStringIO import StringIO
+    >>> from io import BytesIO
     >>> from nltk.corpus.reader.util import read_sexpr_block
-    >>> f = StringIO("""
+    >>> f = BytesIO(b"""
     ... (a b c)
     ... # This line is a comment.
     ... (d e f\ng h)""")
@@ -2299,7 +2172,7 @@ token that was not followed by whitespace.  A related bug caused
 an infinite loop if the corpus ended in an unmatched close paren --
 this was fixed in svn 5279
 
-    >>> f = StringIO("""
+    >>> f = BytesIO(b"""
     ... This file ends mid-sexpr
     ... (hello (world""")
     >>> for i in range(3): print(read_sexpr_block(f))
@@ -2307,14 +2180,14 @@ this was fixed in svn 5279
     ['(hello (world']
     []
 
-    >>> f = StringIO("""This file has no trailing whitespace.""")
+    >>> f = BytesIO(b"""This file has no trailing whitespace.""")
     >>> for i in range(3): print(read_sexpr_block(f))
     ['This', 'file', 'has', 'no', 'trailing']
     ['whitespace.']
     []
 
     >>> # Bug fixed in 5279:
-    >>> f = StringIO("""a b c)""")
+    >>> f = BytesIO(b"""a b c)""")
     >>> for i in range(3): print(read_sexpr_block(f))
     ['a', 'b']
     ['c)']
