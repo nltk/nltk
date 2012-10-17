@@ -7,9 +7,9 @@ NLTK testing
        pip install virtualenv
        pip install tox
 
-3. make sure python2.5, python2.6, python2.7 and pypy executables are
-   in system PATH. It is OK not to have all the executables, tests will
-   be executed for available interpreters.
+3. make sure python2.6, python2.7, python3.2, python3.3
+   and pypy executables are in system PATH. It is OK not to have all the
+   executables, tests will be executed for available interpreters.
 
 4. Make sure all NLTK data is downloaded (see `nltk.download()`);
 
@@ -32,4 +32,8 @@ that failed in the last test run::
 Run tree doctests for all available interpreters::
 
     tox -- tree.doctest
+
+Run a selected unit test for the Python 3.2::
+
+    tox -e py32 -- -v nltk.test.unit.test_seekable_unicode_stream_reader
 
