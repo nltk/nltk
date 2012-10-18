@@ -10,6 +10,7 @@
 A theorem prover that makes use of the external 'Prover9' package.
 """
 
+from __future__ import print_function
 import os
 import subprocess
 
@@ -48,10 +49,10 @@ class Prover9CommandParent(object):
         """
         if output_format.lower() == 'nltk':
             for a in self.assumptions():
-                print a
+                print(a)
         elif output_format.lower() == 'prover9':
             for a in convert_to_prover9(self.assumptions()):
-                print a
+                print(a)
         else:
             raise NameError("Unrecognized value for 'output_format': %s" %
                             output_format)
@@ -175,9 +176,9 @@ class Prover9Parent(object):
         :see: ``config_prover9``
         """
         if verbose:
-            print 'Calling:', binary
-            print 'Args:', args
-            print 'Input:\n', input_str, '\n'
+            print('Calling:', binary)
+            print('Args:', args)
+            print('Input:\n', input_str, '\n')
 
         # Call prover9 via a subprocess
         cmd = [binary] + args
@@ -187,9 +188,9 @@ class Prover9Parent(object):
         (stdout, stderr) = p.communicate(input_str)
 
         if verbose:
-            print 'Return code:', p.returncode
-            if stdout: print 'stdout:\n', stdout, '\n'
-            if stderr: print 'stderr:\n', stderr, '\n'
+            print('Return code:', p.returncode)
+            if stdout: print('stdout:\n', stdout, '\n')
+            if stderr: print('stderr:\n', stderr, '\n')
 
         return (stdout, p.returncode)
 
@@ -204,14 +205,14 @@ def convert_to_prover9(input):
             try:
                 result.append(_convert_to_prover9(s.simplify()))
             except:
-                print 'input %s cannot be converted to Prover9 input syntax' % input
+                print('input %s cannot be converted to Prover9 input syntax' % input)
                 raise
         return result
     else:
         try:
             return _convert_to_prover9(input.simplify())
         except:
-            print 'input %s cannot be converted to Prover9 input syntax' % input
+            print('input %s cannot be converted to Prover9 input syntax' % input)
             raise
 
 def _convert_to_prover9(expression):
@@ -350,8 +351,8 @@ def test_config():
     p.prover9_search=[]
     p.prove()
     #config_prover9('/usr/local/bin')
-    print p.prove()
-    print p.proof()
+    print(p.prove())
+    print(p.proof())
 
 def test_convert_to_prover9(expr):
     """
@@ -359,7 +360,7 @@ def test_convert_to_prover9(expr):
     """
     for t in expr:
         e = LogicParser().parse(t)
-        print convert_to_prover9(e)
+        print(convert_to_prover9(e))
 
 def test_prove(arguments):
     """
@@ -370,8 +371,8 @@ def test_prove(arguments):
         alist = [LogicParser().parse(a) for a in assumptions]
         p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
-            print '   %s' % a
-        print '|- %s: %s\n' % (g, p)
+            print('   %s' % a)
+        print('|- %s: %s\n' % (g, p))
 
 arguments = [
     ('(man(x) <-> (not (not man(x))))', []),
@@ -407,18 +408,18 @@ expressions = [r'some x y.sees(x,y)',
                r'all x.(man(x) -> walks(x))']
 
 def spacer(num=45):
-    print '-' * num
+    print('-' * num)
 
 def demo():
-    print "Testing configuration"
+    print("Testing configuration")
     spacer()
     test_config()
-    print
-    print "Testing conversion to Prover9 format"
+    print()
+    print("Testing conversion to Prover9 format")
     spacer()
     test_convert_to_prover9(expressions)
-    print
-    print "Testing proofs"
+    print()
+    print("Testing proofs")
     spacer()
     test_prove(arguments)
 

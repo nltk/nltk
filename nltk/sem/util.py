@@ -13,6 +13,7 @@ syntax tree, followed by evaluation of the semantic representation in
 a first-order model.
 """
 
+from __future__ import print_function
 import evaluate
 import re
 
@@ -63,8 +64,8 @@ def root_semrep(syntree, semkey='SEM'):
     try:
         return node[semkey]
     except KeyError:
-        print node,
-        print "has no specification for the feature %s" % semkey
+        print(node, end=' ')
+        print("has no specification for the feature %s" % semkey)
     raise
 
 def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
@@ -153,7 +154,7 @@ def parse_valuation(s):
         if line.startswith('#') or line=='': continue
         try: statements.append(parse_valuation_line(line))
         except ValueError:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     val = evaluate.Valuation(statements)
     return val
 
@@ -208,12 +209,12 @@ def demo_legacy_grammar():
     % start S
     S[sem=<hello>] -> 'hello'
     """)
-    print "Reading grammar: %s" % g
-    print "*" * 20
+    print("Reading grammar: %s" % g)
+    print("*" * 20)
     for reading in batch_interpret(['hello'], g, semkey='sem'):
         syn, sem = reading[0]
-        print
-        print "output: ", sem
+        print()
+        print("output: ", sem)
 
 def demo():
     import sys
@@ -284,20 +285,20 @@ def demo():
 
     for i, sent in enumerate(sents):
         n = 1
-        print '\nSentence: %s' % sent
-        print SPACER
+        print('\nSentence: %s' % sent)
+        print(SPACER)
         if options.evaluate:
 
             for (syntree, semrep, value) in evaluations[i]:
                 if isinstance(value, dict):
                     value = set(value.keys())
-                print '%d:  %s' % (n, semrep)
-                print value
+                print('%d:  %s' % (n, semrep))
+                print(value)
                 n += 1
         else:
 
             for (syntree, semrep) in semreps[i]:
-                print '%d:  %s' % (n, semrep)
+                print('%d:  %s' % (n, semrep))
                 n += 1
 
 if __name__ == "__main__":

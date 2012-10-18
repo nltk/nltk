@@ -10,6 +10,7 @@ Module for reading, writing and manipulating
 Toolbox databases and settings files.
 """
 
+from __future__ import print_function
 import os, re, codecs
 from StringIO import StringIO
 from xml.etree import ElementTree
@@ -108,7 +109,7 @@ class StandardFormat(object):
         :rtype: iter(tuple(str, str))
         """
         if encoding is None and unicode_fields is not None:
-            raise ValueError, 'unicode_fields is set but not encoding.'
+            raise ValueError('unicode_fields is set but not encoding.')
         unwrap_pat = re.compile(r'\n+')
         for mkr, val in self.raw_fields():
             if encoding:
@@ -284,10 +285,9 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
         tree = root
 
     if tree.tag != 'toolbox_data':
-        raise ValueError, "not a toolbox_data element structure"
+        raise ValueError("not a toolbox_data element structure")
     if encoding is None and unicode_fields is not None:
-        raise ValueError, \
-            "if encoding is not specified then neither should unicode_fields"
+        raise ValueError("if encoding is not specified then neither should unicode_fields")
     l = []
     for rec in tree:
         l.append('\n')
@@ -472,26 +472,26 @@ def demo():
 #    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
     file_path = find('corpora/toolbox/rotokas.dic')
     lexicon = ToolboxData(file_path).parse()
-    print 'first field in fourth record:'
-    print lexicon[3][0].tag
-    print lexicon[3][0].text
+    print('first field in fourth record:')
+    print(lexicon[3][0].tag)
+    print(lexicon[3][0].text)
 
-    print '\nfields in sequential order:'
+    print('\nfields in sequential order:')
     for field in islice(lexicon.find('record'), 10):
-        print field.tag, field.text
+        print(field.tag, field.text)
 
-    print '\nlx fields:'
+    print('\nlx fields:')
     for field in islice(lexicon.findall('record/lx'), 10):
-        print field.text
+        print(field.text)
 
     settings = ToolboxSettings()
     file_path = find('corpora/toolbox/MDF/MDF_AltH.typ')
     settings.open(file_path)
 #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
     tree = settings.parse(unwrap=False, encoding='cp1252')
-    print tree.find('expset/expMDF/rtfPageSetup/paperSize').text
+    print(tree.find('expset/expMDF/rtfPageSetup/paperSize').text)
     settings_tree = ElementTree(tree)
-    print to_settings_string(settings_tree).encode('utf8')
+    print(to_settings_string(settings_tree).encode('utf8'))
 
 if __name__ == '__main__':
     demo()

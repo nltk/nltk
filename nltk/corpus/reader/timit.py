@@ -119,6 +119,7 @@ The 4 functions are as follows.
 
 """
 
+from __future__ import print_function
 import sys
 import os
 import re
@@ -389,10 +390,10 @@ class TimitCorpusReader(CorpusReader):
                 dsp.speed(16000)
                 dsp.write(self.audiodata(utterance, start, end))
                 dsp.close()
-            except IOError, e:
-                print >>sys.stderr, ("can't acquire the audio device; please "
-                                     "activate your audio device.")
-                print >>sys.stderr, "system error message:", str(e)
+            except IOError as e:
+                print(("can't acquire the audio device; please "
+                                     "activate your audio device."), file=sys.stderr)
+                print("system error message:", str(e), file=sys.stderr)
             return
         except ImportError:
             pass
@@ -410,8 +411,8 @@ class TimitCorpusReader(CorpusReader):
             pass
 
         # Method 3: complain. :)
-        print >>sys.stderr, ("you must install pygame or ossaudiodev "
-                             "for audio playback.")
+        print(("you must install pygame or ossaudiodev "
+                             "for audio playback."), file=sys.stderr)
 
 
 class SpeakerInfo:

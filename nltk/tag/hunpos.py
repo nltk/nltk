@@ -119,10 +119,7 @@ class HunposTagger(TaggerI):
         tagged_tokens = []
         for token in tokens:
             tagged = self._hunpos.stdout.readline().strip().split("\t")
-            if len(tagged) > 1:
-                tag = tagged[1]
-            else:
-                tag = None
+            tag = (tagged[1] if len(tagged) > 1 else None)
             tagged_tokens.append((token, tag))
         # We have to read (and dismiss) the final empty line:
         self._hunpos.stdout.readline()

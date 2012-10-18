@@ -72,6 +72,7 @@ Expected results from the Artstein and Poesio survey paper:
 
 """
 
+from __future__ import print_function
 import logging
 from itertools import groupby
 from operator import itemgetter
@@ -394,7 +395,7 @@ if __name__ == '__main__':
     if options.thorough:
         pass
     else:
-        print getattr(task, options.agreement)()
+        print(getattr(task, options.agreement)())
 
     logging.shutdown()
 

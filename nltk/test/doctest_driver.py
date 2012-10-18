@@ -23,6 +23,7 @@ A number of other flags can be given; call the driver with the
 `--help` option for a complete list.
 """
 
+from __future__ import print_function
 import os, os.path, sys, unittest, pdb, bdb, re, tempfile, traceback
 import textwrap
 from doctest import *
@@ -333,9 +334,9 @@ class Debugger:
         if args == (None,):
             pass
         elif len(args) == 1:
-            print `args[0]`
+            print(`args[0]`)
         else:
-            print `args` # not quite right: >>> 1,
+            print(`args`) # not quite right: >>> 1,
 
     def _comment_line(self, line):
         "Return a commented form of the given line"
@@ -582,10 +583,10 @@ def find(name):
 def import_from_name(name):
     try:
         return __import__(name, globals(), locals(), ['*'])
-    except Exception, e:
-        raise ValueError, str(e)
+    except Exception as e:
+        raise ValueError(str(e))
     except:
-        raise ValueError, 'Error importing %r' % name
+        raise ValueError('Error importing %r' % name)
 
 def find_module_from_filename(filename):
     """
@@ -761,31 +762,31 @@ class MyDocTestRunner(DocTestRunner):
         sys.stderr = _SpoofOut()
 
         if self._verbosity > 0:
-            print >>save_stderr, (
+            print((
                 self._stderr_term.CYAN+self._stderr_term.BOLD+
-                'Testing %s...'%test.name+self._stderr_term.NORMAL)
+                'Testing %s...'%test.name+self._stderr_term.NORMAL), file=save_stderr)
         try:
             fails, tries = DocTestRunner.run(self, test, compileflags,
                                              out, clear_globs)
         except KeyboardInterrupt:
             if self._current_test is None: raise
 
-            print >>save_stderr, self._failure_header(*self._current_test)
-            print >>save_stderr, (
+            print(self._failure_header(*self._current_test), file=save_stderr)
+            print((
                 self._stderr_term.RED+self._stderr_term.BOLD+
-                'Keyboard Interrupt!'+self._stderr_term.NORMAL)
+                'Keyboard Interrupt!'+self._stderr_term.NORMAL), file=save_stderr)
         if self._verbosity == 1:
             save_stderr.write(self._stderr_term.CLEAR_LINE)
         if self._verbosity > 0:
             if fails:
-                print >>save_stderr, (
+                print((
                     self._stderr_term.RED+self._stderr_term.BOLD+
-                    '  %d example(s) failed!'%fails+self._stderr_term.NORMAL)
+                    '  %d example(s) failed!'%fails+self._stderr_term.NORMAL), file=save_stderr)
             else:
-                print >>save_stderr, (
+                print((
                     self._stderr_term.GREEN+self._stderr_term.BOLD+
-                    '  All examples passed'+self._stderr_term.NORMAL)
-        print >>save_stderr
+                    '  All examples passed'+self._stderr_term.NORMAL), file=save_stderr)
+        print(file=save_stderr)
         sys.stderr = save_stderr
 
 def run(names, optionflags, verbosity, kbinterrupt_continue):
@@ -795,9 +796,9 @@ def run(names, optionflags, verbosity, kbinterrupt_continue):
                              kbinterrupt_continue=kbinterrupt_continue)
     for name in names:
         try: tests = find(name)
-        except ValueError, e:
-            print >>sys.stderr, ('%s: Error processing %s -- %s' %
-                                 (sys.argv[0], name, e))
+        except ValueError as e:
+            print(('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e)), file=sys.stderr)
             continue
         for test in tests:
             runner.run(test, COMPILER_FLAGS)
@@ -817,9 +818,9 @@ def run(names, optionflags, verbosity, kbinterrupt_continue):
         try:
             for test in find(name):
                 suite.addTest(DocTestCase(test, optionflags))
-        except ValueError, e:
-            print >>sys.stderr, ('%s: Error processing %s -- %s' %
-                                 (sys.argv[0], name, e))
+        except ValueError as e:
+            print(('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e)), file=sys.stderr)
     unittest.TextTestRunner(verbosity=verbosity).run(suite)
 
 def debug(names, optionflags, verbosity, pm=True):
@@ -828,10 +829,10 @@ def debug(names, optionflags, verbosity, pm=True):
         try:
             for test in find(name):
                 debugger.debug(test, pm)
-        except ValueError, e:
+        except ValueError as e:
             raise
-            print >>sys.stderr, ('%s: Error processing %s -- %s' %
-                                 (sys.argv[0], name, e))
+            print(('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e)), file=sys.stderr)
 
 def update(names, optionflags, verbosity):
     runner = UpdateRunner(verbose=True)
@@ -848,29 +849,29 @@ def update(names, optionflags, verbosity):
 
             # Confirm the changes.
             if failures == 0:
-                print 'No updates needed!'
+                print('No updates needed!')
             else:
-                print '*'*70
-                print '%d examples updated.' % failures
-                print '-'*70
+                print('*'*70)
+                print('%d examples updated.' % failures)
+                print('-'*70)
                 sys.stdout.write('Accept updates? [y/N] ')
                 sys.stdout.flush()
                 if sys.stdin.readline().lower().strip() in ('y', 'yes'):
                     # Make a backup of the original contents.
                     backup = test.filename+'.bak'
-                    print 'Renaming %s -> %s' % (name, backup)
+                    print('Renaming %s -> %s' % (name, backup))
                     os.rename(test.filename, backup)
                     # Write the new contents.
-                    print 'Writing updated version to %s' % test.filename
+                    print('Writing updated version to %s' % test.filename)
                     out = open(test.filename, 'w')
                     out.write(test.docstring)
                     out.close()
                 else:
-                    print 'Updates rejected!'
-        except ValueError, e:
+                    print('Updates rejected!')
+        except ValueError as e:
             raise
-            print >>sys.stderr, ('%s: Error processing %s -- %s' %
-                                 (sys.argv[0], name, e))
+            print(('%s: Error processing %s -- %s' %
+                                 (sys.argv[0], name, e)), file=sys.stderr)
 
 ######################################################################
 ## Terminal Controler

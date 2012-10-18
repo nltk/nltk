@@ -180,7 +180,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
                 self._eofpos = self._fileid.file_size()
             else:
                 self._eofpos = os.stat(self._fileid).st_size
-        except Exception, exc:
+        except Exception as exc:
             raise ValueError('Unable to open or access %r -- %s' %
                              (fileid, exc))
 
@@ -539,7 +539,7 @@ class PickleCorpusView(StreamBackedCorpusView):
             cls.write(sequence, output_file)
             output_file.close()
             return PickleCorpusView(output_file_name, delete_on_gc)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             raise ValueError('Error while creating temp file: %s' % e)
 
 
@@ -685,7 +685,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
 
             # Return the list of tokens we processed
             return tokens
-        except ValueError, e:
+        except ValueError as e:
             if e.args[0] == 'Block too small':
                 next_block = stream.read(block_size)
                 if next_block:

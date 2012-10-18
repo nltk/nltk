@@ -30,6 +30,7 @@ sum to one:
 |                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
 """
 
+from __future__ import print_function
 from collections import defaultdict
 
 from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
@@ -123,7 +124,7 @@ class NaiveBayesClassifier(ClassifierI):
     def show_most_informative_features(self, n=10):
         # Determine the most relevant features, and display them.
         cpdist = self._feature_probdist
-        print 'Most Informative Features'
+        print('Most Informative Features')
 
         for (fname, fval) in self.most_informative_features(n):
             def labelprob(l):
@@ -139,8 +140,8 @@ class NaiveBayesClassifier(ClassifierI):
             else:
                 ratio = '%8.1f' % (cpdist[l1,fname].prob(fval) /
                                   cpdist[l0,fname].prob(fval))
-            print ('%24s = %-14r %6s : %-6s = %s : 1.0' %
-                   (fname, fval, str(l1)[:6], str(l0)[:6], ratio))
+            print(('%24s = %-14r %6s : %-6s = %s : 1.0' %
+                   (fname, fval, str(l1)[:6], str(l0)[:6], ratio)))
 
     def most_informative_features(self, n=100):
         """

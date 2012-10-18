@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import re
 import types
 
@@ -942,15 +943,15 @@ class RegexpChunkParser(ChunkParserI):
         :param verbose: Whether output should be verbose.
         :rtype: None
         """
-        print '# Input:'
-        print chunkstr
+        print('# Input:')
+        print(chunkstr)
         for rule in self._rules:
             rule.apply(chunkstr)
             if verbose:
-                print '#', rule.descr()+' ('+`rule`+'):'
+                print('#', rule.descr()+' ('+`rule`+'):')
             else:
-                print '#', rule.descr()+':'
-            print chunkstr
+                print('#', rule.descr()+':')
+            print(chunkstr)
 
     def _notrace_apply(self, chunkstr):
         """
@@ -985,7 +986,7 @@ class RegexpChunkParser(ChunkParserI):
             used to define this ``RegexpChunkParser``.
         """
         if len(chunk_struct) == 0:
-            print 'Warning: parsing empty text'
+            print('Warning: parsing empty text')
             return Tree(self._top_node, [])
 
         try:
@@ -1230,43 +1231,43 @@ def demo_eval(chunkparser, text):
     chunkscore = chunk.ChunkScore()
 
     for sentence in text.split('\n'):
-        print sentence
+        print(sentence)
         sentence = sentence.strip()
         if not sentence: continue
         gold = chunk.tagstr2tree(sentence)
         tokens = gold.leaves()
         test = chunkparser.parse(Tree('S', tokens), trace=1)
         chunkscore.score(gold, test)
-        print
+        print()
 
-    print '/'+('='*75)+'\\'
-    print 'Scoring', chunkparser
-    print ('-'*77)
-    print 'Precision: %5.1f%%' % (chunkscore.precision()*100), ' '*4,
-    print 'Recall: %5.1f%%' % (chunkscore.recall()*100), ' '*6,
-    print 'F-Measure: %5.1f%%' % (chunkscore.f_measure()*100)
+    print('/'+('='*75)+'\\')
+    print('Scoring', chunkparser)
+    print(('-'*77))
+    print('Precision: %5.1f%%' % (chunkscore.precision()*100), ' '*4, end=' ')
+    print('Recall: %5.1f%%' % (chunkscore.recall()*100), ' '*6, end=' ')
+    print('F-Measure: %5.1f%%' % (chunkscore.f_measure()*100))
 
 
     # Missed chunks.
     if chunkscore.missed():
-        print 'Missed:'
+        print('Missed:')
         missed = chunkscore.missed()
         for chunk in missed[:10]:
-            print '  ', ' '.join(c.__str__() for c in chunk)
+            print('  ', ' '.join(c.__str__() for c in chunk))
         if len(chunkscore.missed()) > 10:
-            print '  ...'
+            print('  ...')
 
     # Incorrect chunks.
     if chunkscore.incorrect():
-        print 'Incorrect:'
+        print('Incorrect:')
         incorrect = chunkscore.incorrect()
         for chunk in incorrect[:10]:
-            print '  ', ' '.join(c.__str__() for c in chunk)
+            print('  ', ' '.join(c.__str__() for c in chunk))
         if len(chunkscore.incorrect()) > 10:
-            print '  ...'
+            print('  ...')
 
-    print '\\'+('='*75)+'/'
-    print
+    print('\\'+('='*75)+'/')
+    print()
 
 def demo():
     """
@@ -1283,11 +1284,11 @@ def demo():
     [ John/NNP ] thinks/VBZ [ Mary/NN ] saw/VBD [ the/DT cat/NN ] sit/VB on/IN [ the/DT mat/NN ]./.
     """
 
-    print '*'*75
-    print 'Evaluation text:'
-    print text
-    print '*'*75
-    print
+    print('*'*75)
+    print('Evaluation text:')
+    print(text)
+    print('*'*75)
+    print()
 
     grammar = r"""
     NP:                   # NP stage
@@ -1327,15 +1328,15 @@ def demo():
 
     from nltk.corpus import conll2000
 
-    print
-    print "Demonstration of empty grammar:"
+    print()
+    print("Demonstration of empty grammar:")
 
     cp = chunk.RegexpParser("")
-    print chunk.accuracy(cp, conll2000.chunked_sents('test.txt',
-                                                     chunk_types=('NP',)))
+    print(chunk.accuracy(cp, conll2000.chunked_sents('test.txt',
+                                                     chunk_types=('NP',))))
 
-    print
-    print "Demonstration of accuracy evaluation using CoNLL tags:"
+    print()
+    print("Demonstration of accuracy evaluation using CoNLL tags:")
 
     grammar = r"""
     NP:
@@ -1344,10 +1345,10 @@ def demo():
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
     cp = chunk.RegexpParser(grammar)
-    print chunk.accuracy(cp, conll2000.chunked_sents('test.txt')[:5])
+    print(chunk.accuracy(cp, conll2000.chunked_sents('test.txt')[:5]))
 
-    print
-    print "Demonstration of tagged token input"
+    print()
+    print("Demonstration of tagged token input")
 
     grammar = r"""
     NP: {<.*>*}             # start by chunking everything
@@ -1357,9 +1358,9 @@ def demo():
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
     cp = chunk.RegexpParser(grammar)
-    print cp.parse([("the","DT"), ("little","JJ"), ("cat", "NN"),
+    print(cp.parse([("the","DT"), ("little","JJ"), ("cat", "NN"),
                     ("sat", "VBD"), ("on", "IN"), ("the", "DT"),
-                    ("mat", "NN"), (".", ".")])
+                    ("mat", "NN"), (".", ".")]))
 
 if __name__ == '__main__':
     demo()

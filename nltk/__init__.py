@@ -18,6 +18,7 @@ http://nltk.org/book
 
 # python2.5 compatibility
 from __future__ import with_statement
+from __future__ import print_function
 
 import os
 
@@ -34,7 +35,7 @@ try:
         __version__ = fh.read().strip()
 except NameError:
     __version__ = 'unknown (running code interactively?)'
-except IOError, ex:
+except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
 __doc__ += '\n@version: ' + __version__
@@ -166,7 +167,7 @@ except ImportError:
 else:
     try:
         from downloader import download_gui
-    except RuntimeError, e:
+    except RuntimeError as e:
         import warnings
         warnings.warn("Corpus downloader GUI not loaded "
                       "(RuntimeError during import: %s)" % str(e))
@@ -182,4 +183,4 @@ import tag, text, tokenize, tree, treetransforms, util
 
 # override any accidentally imported demo
 def demo():
-    print "To run the demo code for a module, type nltk.module.demo()"
+    print("To run the demo code for a module, type nltk.module.demo()")

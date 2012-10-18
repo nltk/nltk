@@ -9,6 +9,7 @@
 Provide structured access to documentation.
 """
 
+from __future__ import print_function
 import re
 from textwrap import wrap
 
@@ -32,7 +33,7 @@ def _print_entries(tags, tagdict):
         entry = tagdict[tag]
         defn = [tag + ": " + entry[0]]
         examples = wrap(entry[1], width=75, initial_indent='    ', subsequent_indent='    ')
-        print "\n".join(defn + examples)
+        print("\n".join(defn + examples))
 
 def _format_tagset(tagset, tagpattern=None):
     tagdict = load("help/tagsets/" + tagset + ".pickle")
@@ -46,7 +47,7 @@ def _format_tagset(tagset, tagpattern=None):
         if tags:
             _print_entries(tags, tagdict)
         else:
-            print "No matching tags found."
+            print("No matching tags found.")
 
 if __name__ == '__main__':
     brown_tagset(r'NN.*')

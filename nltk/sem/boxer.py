@@ -22,6 +22,7 @@ Usage:
             boxer/
 """
 
+from __future__ import print_function
 import os
 import re
 import operator
@@ -76,10 +77,7 @@ class Boxer(object):
         :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
         :return: ``drt.AbstractDrs``
         """
-        if discourse_id is not None:
-            discourse_ids = [discourse_id]
-        else:
-            discourse_ids = None
+        discourse_ids = ([discourse_id] if discourse_id is not None else None)
         d, = self.batch_interpret_multisentence([[input]], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
@@ -94,10 +92,7 @@ class Boxer(object):
         :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
         :return: ``drt.AbstractDrs``
         """
-        if discourse_id is not None:
-            discourse_ids = [discourse_id]
-        else:
-            discourse_ids = None
+        discourse_ids = ([discourse_id] if discourse_id is not None else None)
         d, = self.batch_interpret_multisentence([input], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
@@ -198,10 +193,10 @@ class Boxer(object):
         :return: stdout
         """
         if verbose:
-            print 'Calling:', binary
-            print 'Args:', args
-            print 'Input:', input_str
-            print 'Command:', binary + ' ' + ' '.join(args)
+            print('Calling:', binary)
+            print('Args:', args)
+            print('Input:', input_str)
+            print('Command:', binary + ' ' + ' '.join(args))
 
         # Call via a subprocess
         if input_str is None:
@@ -213,9 +208,9 @@ class Boxer(object):
         stdout, stderr = p.communicate()
 
         if verbose:
-            print 'Return code:', p.returncode
-            if stdout: print 'stdout:\n', stdout, '\n'
-            if stderr: print 'stderr:\n', stderr, '\n'
+            print('Return code:', p.returncode)
+            if stdout: print('stdout:\n', stdout, '\n')
+            if stderr: print('stderr:\n', stderr, '\n')
         if p.returncode != 0:
             raise Exception('ERROR CALLING: %s %s\nReturncode: %d\n%s' % (binary, ' '.join(args), p.returncode, stderr))
 
@@ -750,7 +745,7 @@ class BoxerDrsParser(DrtParser):
                 drs2 = self.parse_Expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
-        except Exception, e:
+        except Exception as e:
             raise ParseException(self._currentIndex, str(e))
         assert False, repr(tok)
 
@@ -761,7 +756,7 @@ class BoxerDrsParser(DrtParser):
     def get_next_token_variable(self, description):
         try:
             return self.token()
-        except ExpectedMoreTokensException, e:
+        except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(e.index, 'Variable expected.')
 
 
@@ -827,17 +822,11 @@ class BoxerDrs(AbstractBoxerDrs):
         return atoms
 
     def clean(self):
-        if self.consequent:
-            consequent = self.consequent.clean()
-        else:
-            consequent = None
+        consequent = (self.consequent.clean() if self.consequent else None)
         return BoxerDrs(self.label, self.refs, [c.clean() for c in self.conds], consequent)
 
     def renumber_sentences(self, f):
-        if self.consequent:
-            consequent = self.consequent.renumber_sentences(f)
-        else:
-            consequent = None
+        consequent = (self.consequent.renumber_sentences(f) if self.consequent else None)
         return BoxerDrs(self.label, self.refs, [c.renumber_sentences(f) for c in self.conds], consequent)
 
     def __repr__(self):
@@ -1178,10 +1167,10 @@ if __name__ == '__main__':
     interpreter = NltkDrtBoxerDrsInterpreter(occur_index=options.occur_index)
     drs = Boxer(interpreter).interpret_multisentence(args[0].split(r'\n'), question=options.question, verbose=options.verbose)
     if drs is None:
-        print None
+        print(None)
     else:
         drs = drs.simplify().eliminate_equality()
         if options.fol:
-            print drs.fol().normalize()
+            print(drs.fol().normalize())
         else:
             drs.normalize().pprint()

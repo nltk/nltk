@@ -13,6 +13,7 @@ To generate n sentences of linguistic wisdom, type
     (CHOMSKY 5) generates half a screen of linguistic truth.
 """
 
+from __future__ import print_function
 import string
 
 
@@ -128,7 +129,7 @@ def generate_chomsky(times=5, line_length=72):
         random.shuffle(phraselist)
         parts.append(phraselist)
     output = chain(*islice(izip(*parts), 0, times))
-    print textwrap.fill(string.join(output), line_length)
+    print(textwrap.fill(string.join(output), line_length))
 
 if __name__ == '__main__':
     generate_chomsky()

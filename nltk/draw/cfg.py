@@ -48,6 +48,7 @@ Operations:
     - if connected to top & bottom, then disconnect
 """
 
+from __future__ import print_function
 import re
 
 from Tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
@@ -256,13 +257,13 @@ class CFGEditor(object):
             if (prod_tuples[i][0] == prod_tuples[i-1][0]):
                 if () in prod_tuples[i][1]: continue
                 if () in prod_tuples[i-1][1]: continue
-                print prod_tuples[i-1][1]
-                print prod_tuples[i][1]
+                print(prod_tuples[i-1][1])
+                print(prod_tuples[i][1])
                 prod_tuples[i-1][1].extend(prod_tuples[i][1])
                 del prod_tuples[i]
 
         for lhs, rhss in prod_tuples:
-            print lhs, rhss
+            print(lhs, rhss)
             s = '%s ->' % lhs
             for rhs in rhss:
                 for elt in rhs:
@@ -622,7 +623,7 @@ class CFGDemo(object):
                 else: break
             else:
                 # Everything matched!
-                print 'MATCH AT', i
+                print('MATCH AT', i)
 
     #//////////////////////////////////////////////////
     # Grammar
@@ -727,7 +728,7 @@ def demo():
     P -> 'with'
     """)
 
-    def cb(grammar): print grammar
+    def cb(grammar): print(grammar)
     top = Tk()
     editor = CFGEditor(top, grammar, cb)
     Label(top, text='\nTesting CFG Editor\n').pack()

@@ -92,7 +92,7 @@ class _DoctestFix(Doctest):
                 try:
                     fixture_context = __import__(
                         fixt_mod, globals(), locals(), ["nop"])
-                except ImportError, e:
+                except ImportError as e:
                     log.debug(
                         "Could not import %s: %s (%s)", fixt_mod, e, sys.path)
                 log.debug("Fixture module %s resolved to %s",

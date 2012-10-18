@@ -51,6 +51,7 @@ For all values of ``feat_val`` and ``some_label``.  This mapping is
 performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
+from __future__ import print_function
 __docformat__ = 'epytext en'
 
 import numpy
@@ -168,9 +169,9 @@ class MaxentClassifier(ClassifierI):
         pdist = self.prob_classify(featureset)
         labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
         labels = labels[:columns]
-        print '  Feature'.ljust(descr_width)+''.join(
-            '%8s' % str(l)[:7] for l in labels)
-        print '  '+'-'*(descr_width-2+8*len(labels))
+        print('  Feature'.ljust(descr_width)+''.join(
+            '%8s' % str(l)[:7] for l in labels))
+        print('  '+'-'*(descr_width-2+8*len(labels)))
         sums = defaultdict(int)
         for i, label in enumerate(labels):
             feature_vector = self._encoding.encode(featureset, label)
@@ -183,13 +184,13 @@ class MaxentClassifier(ClassifierI):
                 descr = descr.split(' and label is ')[0] # hack
                 descr += ' (%s)' % f_val                 # hack
                 if len(descr) > 47: descr = descr[:44]+'...'
-                print TEMPLATE % (descr, i*8*' ', score)
+                print(TEMPLATE % (descr, i*8*' ', score))
                 sums[label] += score
-        print '  '+'-'*(descr_width-1+8*len(labels))
-        print '  TOTAL:'.ljust(descr_width)+''.join(
-            '%8.3f' % sums[l] for l in labels)
-        print '  PROBS:'.ljust(descr_width)+''.join(
-            '%8.3f' % pdist.prob(l) for l in labels)
+        print('  '+'-'*(descr_width-1+8*len(labels)))
+        print('  TOTAL:'.ljust(descr_width)+''.join(
+            '%8.3f' % sums[l] for l in labels))
+        print('  PROBS:'.ljust(descr_width)+''.join(
+            '%8.3f' % pdist.prob(l) for l in labels))
 
     def show_most_informative_features(self, n=10, show='all'):
         """
@@ -203,8 +204,8 @@ class MaxentClassifier(ClassifierI):
         elif show == 'neg':
             fids = [fid for fid in fids if self._weights[fid]<0]
         for fid in fids[:n]:
-            print '%8.3f %s' % (self._weights[fid],
-                                self._encoding.describe(fid))
+            print('%8.3f %s' % (self._weights[fid],
+                                self._encoding.describe(fid)))
 
     def __repr__(self):
         return ('<ConditionalExponentialClassifier: %d labels, %d features>' %
@@ -1039,11 +1040,11 @@ def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
     ll_old = None
     acc_old = None
 
-    if trace > 0: print '  ==> Training (%d iterations)' % cutoffs['max_iter']
+    if trace > 0: print('  ==> Training (%d iterations)' % cutoffs['max_iter'])
     if trace > 2:
-        print
-        print '      Iteration    Log Likelihood    Accuracy'
-        print '      ---------------------------------------'
+        print()
+        print('      Iteration    Log Likelihood    Accuracy')
+        print('      ---------------------------------------')
 
     # Train the classifier.
     try:
@@ -1052,7 +1053,7 @@ def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
                 ll = cutoffchecker.ll or log_likelihood(classifier, train_toks)
                 acc = cutoffchecker.acc or accuracy(classifier, train_toks)
                 iternum = cutoffchecker.iter
-                print '     %9d    %14.5f    %9.3f' % (iternum, ll, acc)
+                print('     %9d    %14.5f    %9.3f' % (iternum, ll, acc))
 
             # Use the model to estimate the number of times each
             # feature should occur in the training data.
@@ -1074,14 +1075,14 @@ def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
                 break
 
     except KeyboardInterrupt:
-        print '      Training stopped: keyboard interrupt'
+        print('      Training stopped: keyboard interrupt')
     except:
         raise
 
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
-        print '         Final    %14.5f    %9.3f' % (ll, acc)
+        print('         Final    %14.5f    %9.3f' % (ll, acc))
 
 # Return the classifier.
     return classifier
@@ -1152,11 +1153,11 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
     for fid in unattested: weights[fid] = numpy.NINF
     classifier = ConditionalExponentialClassifier(encoding, weights)
 
-    if trace > 0: print '  ==> Training (%d iterations)' % cutoffs['max_iter']
+    if trace > 0: print('  ==> Training (%d iterations)' % cutoffs['max_iter'])
     if trace > 2:
-        print
-        print '      Iteration    Log Likelihood    Accuracy'
-        print '      ---------------------------------------'
+        print()
+        print('      Iteration    Log Likelihood    Accuracy')
+        print('      ---------------------------------------')
 
     # Old log-likelihood and accuracy; used to check if the change
     # in log-likelihood or accuracy is sufficient to indicate convergence.
@@ -1170,7 +1171,7 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
                 ll = cutoffchecker.ll or log_likelihood(classifier, train_toks)
                 acc = cutoffchecker.acc or accuracy(classifier, train_toks)
                 iternum = cutoffchecker.iter
-                print '     %9d    %14.5f    %9.3f' % (iternum, ll, acc)
+                print('     %9d    %14.5f    %9.3f' % (iternum, ll, acc))
 
             # Calculate the deltas for this iteration, using Newton's method.
             deltas = calculate_deltas(
@@ -1187,7 +1188,7 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
                 break
 
     except KeyboardInterrupt:
-        print '      Training stopped: keyboard interrupt'
+        print('      Training stopped: keyboard interrupt')
     except:
         raise
 
@@ -1195,7 +1196,7 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
-        print '         Final    %14.5f    %9.3f' % (ll, acc)
+        print('         Final    %14.5f    %9.3f' % (ll, acc))
 
     # Return the classifier.
     return classifier
@@ -1366,14 +1367,14 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
     """
     try:
         import scipy
-    except ImportError, e:
+    except ImportError as e:
         raise ValueError('The maxent training algorithm %r requires '
                          'that the scipy package be installed.  See '
                          'http://www.scipy.org/' % algorithm)
     try:
         # E.g., if libgfortran.2.dylib is not found.
         import scipy.sparse, scipy.maxentropy
-    except ImportError, e:
+    except ImportError as e:
         raise ValueError('Import of scipy package failed: %s' % e)
 
     # Construct an encoding from the training data.
@@ -1486,7 +1487,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
         write_megam_file(train_toks, encoding, trainfile, \
                             explicit=explicit, bernoulli=bernoulli)
         trainfile.close()
-    except (OSError, IOError, ValueError), e:
+    except (OSError, IOError, ValueError) as e:
         raise ValueError('Error while creating megam training file: %s' % e)
 
     # Run megam on the training file.
@@ -1519,8 +1520,8 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     # print './megam_i686.opt ', ' '.join(options)
     # Delete the training file
     try: os.remove(trainfile_name)
-    except (OSError, IOError), e:
-        print 'Warning: unable to delete %s: %s' % (trainfile_name, e)
+    except (OSError, IOError) as e:
+        print('Warning: unable to delete %s: %s' % (trainfile_name, e))
 
     # Parse the generated weight vector.
     weights = parse_megam_weights(stdout, encoding.length(), explicit)

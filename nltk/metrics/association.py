@@ -54,13 +54,13 @@ class NgramAssocMeasures(object):
     @staticmethod
     def _contingency(*marginals):
         """Calculates values of a contingency table from marginal values."""
-        raise NotImplementedError, ("The contingency table is not available"
+        raise NotImplementedError("The contingency table is not available"
                                     "in the general ngram case")
 
     @staticmethod
     def _marginals(*contingency):
         """Calculates values of contingency table marginals from its values."""
-        raise NotImplementedError, ("The contingency table is not available"
+        raise NotImplementedError("The contingency table is not available"
                                     "in the general ngram case")
 
     @classmethod

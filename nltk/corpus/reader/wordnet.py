@@ -8,6 +8,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import math
 import re
 from itertools import islice, chain
@@ -922,7 +923,7 @@ class WordNetCorpusReader(CorpusReader):
                     synset_offsets = [int(next()) for _ in xrange(n_synsets)]
 
                 # raise more informative error with file name and line number
-                except (AssertionError, ValueError), e:
+                except (AssertionError, ValueError) as e:
                     tup = ('index.%s' % suffix), (i + 1), e
                     raise WordNetError('file %s, line %i: %s' % tup)
 
@@ -950,7 +951,7 @@ class WordNetCorpusReader(CorpusReader):
             try:
                 depth = max(depth, ii.max_depth())
             except RuntimeError:
-                print ii
+                print(ii)
         if simulate_root:
             depth += 1
         self._max_depth[pos] = depth
@@ -1155,7 +1156,7 @@ class WordNetCorpusReader(CorpusReader):
                                                    lemma.name)
 
         # raise a more informative error with line text
-        except ValueError, e:
+        except ValueError as e:
             raise WordNetError('line %r: %s' % (data_file_line, e))
 
         # set sense keys for Lemma objects - note that this has to be
@@ -1580,7 +1581,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     subsumers = synset1.common_hypernyms(synset2)
 
     if verbose:
-        print "> Subsumers1:", subsumers
+        print("> Subsumers1:", subsumers)
 
     # Eliminate those synsets which are ancestors of other synsets in the
     # set of subsumers.
@@ -1592,12 +1593,12 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
             if s2 in s1.closure(hypernym_relation):
                 eliminated.add(s2)
     if verbose:
-        print "> Eliminated:", eliminated
+        print("> Eliminated:", eliminated)
 
     subsumers = [s for s in subsumers if s not in eliminated]
 
     if verbose:
-        print "> Subsumers2:", subsumers
+        print("> Subsumers2:", subsumers)
 
     # Calculate the length of the shortest path to the root for each
     # subsumer. Select the subsumer with the longest of these.
@@ -1616,7 +1617,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
             subsumer = candidate
 
     if verbose:
-        print "> LCS Subsumer by depth:", subsumer
+        print("> LCS Subsumer by depth:", subsumer)
     return subsumer
 
 
@@ -1651,7 +1652,7 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
         subsumer_ic = max(information_content(s, ic) for s in subsumers)
 
     if verbose:
-        print "> LCS Subsumer by content:", subsumer_ic
+        print("> LCS Subsumer by content:", subsumer_ic)
 
     return ic1, ic2, subsumer_ic
 
@@ -1691,18 +1692,18 @@ def _get_pos(field):
 
 def demo():
     import nltk
-    print 'loading wordnet'
+    print('loading wordnet')
     wn = WordNetCorpusReader(nltk.data.find('corpora/wordnet'))
-    print 'done loading'
+    print('done loading')
     S = wn.synset
     L = wn.lemma
 
-    print 'getting a synset for go'
+    print('getting a synset for go')
     move_synset = S('go.v.21')
-    print move_synset.name, move_synset.pos, move_synset.lexname
-    print move_synset.lemma_names
-    print move_synset.definition
-    print move_synset.examples
+    print(move_synset.name, move_synset.pos, move_synset.lexname)
+    print(move_synset.lemma_names)
+    print(move_synset.definition)
+    print(move_synset.examples)
 
     zap_n = ['zap.n.01']
     zap_v = ['zap.v.01', 'zap.v.02', 'nuke.v.01', 'microwave.v.01']
@@ -1714,67 +1715,67 @@ def demo():
     zap_v_synsets = _get_synsets(zap_v)
     zap_synsets = set(zap_n_synsets + zap_v_synsets)
 
-    print zap_n_synsets
-    print zap_v_synsets
+    print(zap_n_synsets)
+    print(zap_v_synsets)
 
-    print "Navigations:"
-    print S('travel.v.01').hypernyms()
-    print S('travel.v.02').hypernyms()
-    print S('travel.v.03').hypernyms()
+    print("Navigations:")
+    print(S('travel.v.01').hypernyms())
+    print(S('travel.v.02').hypernyms())
+    print(S('travel.v.03').hypernyms())
 
-    print L('zap.v.03.nuke').derivationally_related_forms()
-    print L('zap.v.03.atomize').derivationally_related_forms()
-    print L('zap.v.03.atomise').derivationally_related_forms()
-    print L('zap.v.03.zap').derivationally_related_forms()
+    print(L('zap.v.03.nuke').derivationally_related_forms())
+    print(L('zap.v.03.atomize').derivationally_related_forms())
+    print(L('zap.v.03.atomise').derivationally_related_forms())
+    print(L('zap.v.03.zap').derivationally_related_forms())
 
-    print S('dog.n.01').member_holonyms()
-    print S('dog.n.01').part_meronyms()
+    print(S('dog.n.01').member_holonyms())
+    print(S('dog.n.01').part_meronyms())
 
-    print S('breakfast.n.1').hypernyms()
-    print S('meal.n.1').hyponyms()
-    print S('Austen.n.1').instance_hypernyms()
-    print S('composer.n.1').instance_hyponyms()
+    print(S('breakfast.n.1').hypernyms())
+    print(S('meal.n.1').hyponyms())
+    print(S('Austen.n.1').instance_hypernyms())
+    print(S('composer.n.1').instance_hyponyms())
 
-    print S('faculty.n.2').member_meronyms()
-    print S('copilot.n.1').member_holonyms()
+    print(S('faculty.n.2').member_meronyms())
+    print(S('copilot.n.1').member_holonyms())
 
-    print S('table.n.2').part_meronyms()
-    print S('course.n.7').part_holonyms()
+    print(S('table.n.2').part_meronyms())
+    print(S('course.n.7').part_holonyms())
 
-    print S('water.n.1').substance_meronyms()
-    print S('gin.n.1').substance_holonyms()
+    print(S('water.n.1').substance_meronyms())
+    print(S('gin.n.1').substance_holonyms())
 
-    print L('leader.n.1.leader').antonyms()
-    print L('increase.v.1.increase').antonyms()
+    print(L('leader.n.1.leader').antonyms())
+    print(L('increase.v.1.increase').antonyms())
 
-    print S('snore.v.1').entailments()
-    print S('heavy.a.1').similar_tos()
-    print S('light.a.1').attributes()
-    print S('heavy.a.1').attributes()
+    print(S('snore.v.1').entailments())
+    print(S('heavy.a.1').similar_tos())
+    print(S('light.a.1').attributes())
+    print(S('heavy.a.1').attributes())
 
-    print L('English.a.1.English').pertainyms()
+    print(L('English.a.1.English').pertainyms())
 
-    print S('person.n.01').root_hypernyms()
-    print S('sail.v.01').root_hypernyms()
-    print S('fall.v.12').root_hypernyms()
+    print(S('person.n.01').root_hypernyms())
+    print(S('sail.v.01').root_hypernyms())
+    print(S('fall.v.12').root_hypernyms())
 
-    print S('person.n.01').lowest_common_hypernyms(S('dog.n.01'))
+    print(S('person.n.01').lowest_common_hypernyms(S('dog.n.01')))
 
-    print S('dog.n.01').path_similarity(S('cat.n.01'))
-    print S('dog.n.01').lch_similarity(S('cat.n.01'))
-    print S('dog.n.01').wup_similarity(S('cat.n.01'))
+    print(S('dog.n.01').path_similarity(S('cat.n.01')))
+    print(S('dog.n.01').lch_similarity(S('cat.n.01')))
+    print(S('dog.n.01').wup_similarity(S('cat.n.01')))
 
     wnic = WordNetICCorpusReader(nltk.data.find('corpora/wordnet_ic'),
                                  '.*\.dat')
     ic = wnic.ic('ic-brown.dat')
-    print S('dog.n.01').jcn_similarity(S('cat.n.01'), ic)
+    print(S('dog.n.01').jcn_similarity(S('cat.n.01'), ic))
 
     ic = wnic.ic('ic-semcor.dat')
-    print S('dog.n.01').lin_similarity(S('cat.n.01'), ic)
+    print(S('dog.n.01').lin_similarity(S('cat.n.01'), ic))
 
-    print S('code.n.03').topic_domains()
-    print S('pukka.a.01').region_domains()
-    print S('freaky.a.01').usage_domains()
+    print(S('code.n.03').topic_domains())
+    print(S('pukka.a.01').region_domains())
+    print(S('freaky.a.01').usage_domains())
 
 if __name__ == '__main__':
     demo()

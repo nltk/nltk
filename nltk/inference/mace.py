@@ -10,6 +10,7 @@
 A model builder that makes use of the external 'Mace4' package.
 """
 
+from __future__ import print_function
 import os
 import tempfile
 
@@ -130,10 +131,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         letter = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
                   'o','p','q','r','s','t','u','v','w','x','y','z'][value]
         num = int(value) / 26
-        if num > 0:
-            return letter + str(num)
-        else:
-            return letter
+        return (letter + str(num) if num > 0 else letter)
 
     def _decorate_model(self, valuation_str, format):
         """
@@ -225,7 +223,7 @@ class Mace(Prover9Parent, ModelBuilder):
 
 
 def spacer(num=30):
-    print '-' * num
+    print('-' * num)
 
 def decode_result(found):
     """
@@ -247,8 +245,8 @@ def test_model_found(arguments):
         m = MaceCommand(g, assumptions=alist, end_size=50)
         found = m.build_model()
         for a in alist:
-            print '   %s' % a
-        print '|- %s: %s\n' % (g, decode_result(found))
+            print('   %s' % a)
+        print('|- %s: %s\n' % (g, decode_result(found)))
 
 
 def test_build_model(arguments):
@@ -267,17 +265,17 @@ def test_build_model(arguments):
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
     spacer()
-    print "Assumptions and Goal"
+    print("Assumptions and Goal")
     spacer()
     for a in alist:
-        print '   %s' % a
-    print '|- %s: %s\n' % (g, decode_result(m.build_model()))
+        print('   %s' % a)
+    print('|- %s: %s\n' % (g, decode_result(m.build_model())))
     spacer()
     #print m.model('standard')
     #print m.model('cooked')
-    print "Valuation"
+    print("Valuation")
     spacer()
-    print m.valuation, '\n'
+    print(m.valuation, '\n')
 
 def test_transform_output(argument_pair):
     """
@@ -289,18 +287,18 @@ def test_transform_output(argument_pair):
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
     for a in alist:
-        print '   %s' % a
-    print '|- %s: %s\n' % (g, m.build_model())
+        print('   %s' % a)
+    print('|- %s: %s\n' % (g, m.build_model()))
     for format in ['standard', 'portable', 'xml', 'cooked']:
         spacer()
-        print "Using '%s' format" % format
+        print("Using '%s' format" % format)
         spacer()
-        print m.model(format=format)
+        print(m.model(format=format))
 
 def test_make_relation_set():
-    print MaceCommand._make_relation_set(num_entities=3, values=[1,0,1]) == set([('c',), ('a',)])
-    print MaceCommand._make_relation_set(num_entities=3, values=[0,0,0,0,0,0,1,0,0]) == set([('c', 'a')])
-    print MaceCommand._make_relation_set(num_entities=2, values=[0,0,1,0,0,0,1,0]) == set([('a', 'b', 'a'), ('b', 'b', 'a')])
+    print(MaceCommand._make_relation_set(num_entities=3, values=[1,0,1]) == set([('c',), ('a',)]))
+    print(MaceCommand._make_relation_set(num_entities=3, values=[0,0,0,0,0,0,1,0,0]) == set([('c', 'a')]))
+    print(MaceCommand._make_relation_set(num_entities=2, values=[0,0,1,0,0,0,1,0]) == set([('a', 'b', 'a'), ('b', 'b', 'a')]))
 
 arguments = [
     ('mortal(Socrates)', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),

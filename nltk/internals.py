@@ -7,6 +7,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import subprocess
 import os
 import os.path
@@ -163,7 +164,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
 
     # Check the return code.
     if p.returncode != 0:
-        print stderr
+        print(stderr)
         raise OSError('Java command failed!')
 
     return (stdout, stderr)
@@ -230,7 +231,7 @@ def parse_str(s, start_position):
     # might raise ValueEerror.
     try:
         return eval(s[start_position:match.end()]), match.end()
-    except ValueError, e:
+    except ValueError as e:
         raise ParseError('valid string (%s)' % e, start)
 
 _PARSE_INT_RE = re.compile(r'-?\d+')
@@ -443,16 +444,16 @@ def find_file(filename, env_vars=(), searchpath=(),
 
     # File exists, no magic
     if os.path.isfile(filename):
-        if verbose: print '[Found %s: %s]' % (filename, filename)
+        if verbose: print('[Found %s: %s]' % (filename, filename))
         return filename
     for alternative in file_names:
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print '[Found %s: %s]' % (filename, path_to_file)
+            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
             return path_to_file
         path_to_file = os.path.join(filename, 'file', alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print '[Found %s: %s]' % (filename, path_to_file)
+            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
             return path_to_file
 
     # Check environment variables
@@ -460,19 +461,19 @@ def find_file(filename, env_vars=(), searchpath=(),
         if env_var in os.environ:
             path_to_file = os.environ[env_var]
             if os.path.isfile(path_to_file):
-                if verbose: print '[Found %s: %s]' % (filename, path_to_file)
+                if verbose: print('[Found %s: %s]' % (filename, path_to_file))
                 return path_to_file
             else:
                 for alternative in file_names:
                     path_to_file = os.path.join(os.environ[env_var],
                                                 alternative)
                     if os.path.isfile(path_to_file):
-                        if verbose: print '[Found %s: %s]'%(filename, path_to_file)
+                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
                         return path_to_file
                     path_to_file = os.path.join(os.environ[env_var], 'file',
                                                 alternative)
                     if os.path.isfile(path_to_file):
-                        if verbose: print '[Found %s: %s]'%(filename, path_to_file)
+                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
                         return path_to_file
 
     # Check the path list.
@@ -492,9 +493,9 @@ def find_file(filename, env_vars=(), searchpath=(),
                 stdout, stderr = p.communicate()
                 path = stdout.strip()
                 if path.endswith(alternative) and os.path.exists(path):
-                    if verbose: print '[Found %s: %s]' % (filename, path)
+                    if verbose: print('[Found %s: %s]' % (filename, path))
                     return path
-            except KeyboardInterrupt, SystemExit:
+            except KeyboardInterrupt as SystemExit:
                 raise
             except:
                 pass
@@ -568,19 +569,19 @@ def find_jar(name, path_to_jar=None, env_vars=(),
                 classpath = os.environ['CLASSPATH']
                 for cp in classpath.split(os.path.pathsep):
                     if os.path.isfile(cp) and os.path.basename(cp) == name:
-                        if verbose: print '[Found %s: %s]' % (name, cp)
+                        if verbose: print('[Found %s: %s]' % (name, cp))
                         return cp
             else:
                 path_to_jar = os.environ[env_var]
                 if os.path.isfile(path_to_jar) and os.path.basename(path_to_jar) == name:
-                    if verbose: print '[Found %s: %s]' % (name, path_to_jar)
+                    if verbose: print('[Found %s: %s]' % (name, path_to_jar))
                     return path_to_jar
 
     # Check the path list.
     for directory in searchpath:
         path_to_jar = os.path.join(directory, name)
         if os.path.isfile(path_to_jar):
-            if verbose: print '[Found %s: %s]' % (name, path_to_jar)
+            if verbose: print('[Found %s: %s]' % (name, path_to_jar))
             return path_to_jar
 
     # If nothing was found, raise an error

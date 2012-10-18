@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 from collections import defaultdict
 
 from nltk.internals import Counter
@@ -76,7 +77,7 @@ class FStructure(dict):
                     for n in item:
                         n._to_depgraph(nodelist, index, feature)
                 else: # ERROR
-                    raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
+                    raise Exception('feature %s is not an FStruct, a list, or a tuple' % feature)
 
     @staticmethod
     def read_depgraph(depgraph):
@@ -152,7 +153,7 @@ class FStructure(dict):
                 elif isinstance(item, list):
                     accum += '\n%s%s {%s}' % (' '*(indent), feature, ('\n%s' % (' '*(indent+len(feature)+2))).join(item))
                 else: # ERROR
-                    raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
+                    raise Exception('feature %s is not an FStruct, a list, or a tuple' % feature)
         return accum+']'
 
 
@@ -189,7 +190,7 @@ dog     NN      3       OBJ
 
     depgraphs = [dg1,dg2,dg3,dg4]
     for dg in depgraphs:
-        print FStructure.read_depgraph(dg)
+        print(FStructure.read_depgraph(dg))
 
 if __name__ == '__main__':
     demo_read_depgraph()

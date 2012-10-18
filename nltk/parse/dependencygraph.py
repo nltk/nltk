@@ -17,6 +17,7 @@ Currently only reads the first tree in a file.
 
 # python2.5 compatibility
 from __future__ import with_statement
+from __future__ import print_function
 
 from nltk.tree import Tree
 from pprint import pformat
@@ -97,7 +98,7 @@ class DependencyGraph(object):
         for node in self.nodelist:
             if node['address'] == node_address:
                 return node
-        print 'THROW ERROR: address not found in -get_by_address-'
+        print('THROW ERROR: address not found in -get_by_address-')
         return -1
 
     def contains_address(self, node_address):
@@ -203,16 +204,11 @@ class DependencyGraph(object):
         :return: either a word (if the indexed node
         is a leaf) or a ``Tree``.
         """
-
         node = self.get_by_address(i)
         word = node['word']
         deps = node['deps']
 
-        if len(deps) == 0:
-            return word
-        else:
-            return Tree(word, [self._tree(j) for j in deps])
-
+        return (Tree(word, [self._tree(j) for j in deps]) if len(deps) != 0 else word)
 
     def tree(self):
         """
@@ -253,7 +249,7 @@ class DependencyGraph(object):
             for pair in new_entries:
                 distances[pair] = new_entries[pair]
                 if pair[0] == pair[1]:
-                    print pair[0]
+                    print(pair[0])
                     path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0]) #self.nodelist[pair[0]], pair[0])
                     return path
         return False  # return []?
@@ -343,7 +339,7 @@ Nov.    NNP     9       VMOD
 .       .       9       VMOD
 """)
     tree = dg.tree()
-    print tree.pprint()
+    print(tree.pprint())
     if nx:
         #currently doesn't work
         import networkx as NX
@@ -368,21 +364,21 @@ def conll_demo():
     """
     dg = DependencyGraph(conll_data1)
     tree = dg.tree()
-    print tree.pprint()
-    print dg
-    print dg.to_conll(4)
+    print(tree.pprint())
+    print(dg)
+    print(dg.to_conll(4))
 
 def conll_file_demo():
-    print 'Mass conll_read demo...'
+    print('Mass conll_read demo...')
     graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]
     for graph in graphs:
         tree = graph.tree()
-        print '\n' + tree.pprint()
+        print('\n' + tree.pprint())
 
 def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
-    print dg.contains_cycle()
+    print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
     top =    {'word':None, 'deps':[1], 'rel': 'TOP', 'address': 0}
     child1 = {'word':None, 'deps':[2], 'rel': 'NTOP', 'address': 1}
@@ -391,7 +387,7 @@ def cycle_finding_demo():
     child4 = {'word':None, 'deps':[3], 'rel': 'NTOP', 'address': 4}
     cyclic_dg.nodelist = [top, child1, child2, child3, child4]
     cyclic_dg.root = top
-    print cyclic_dg.contains_cycle()
+    print(cyclic_dg.contains_cycle())
 
 treebank_data = """Pierre  NNP     2       NMOD
 Vinken  NNP     8       SUB

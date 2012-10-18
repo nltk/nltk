@@ -26,7 +26,7 @@ def string_span_tokenize(s, sep):
     :rtype: iter(tuple(int, int))
     """
     if len(sep) == 0:
-        raise ValueError, "Token delimiter must not be empty"
+        raise ValueError("Token delimiter must not be empty")
     left = 0
     while True:
         try:

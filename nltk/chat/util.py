@@ -8,6 +8,7 @@
 # Based on an Eliza implementation by Joe Strout <joe@strout.net>,
 # Jeff Epler <jepler@inetnebr.com> and Jez Higgins <jez@jezuk.co.uk>.
 
+from __future__ import print_function
 import string
 import re
 import random
@@ -107,7 +108,7 @@ class Chat(object):
             input = quit
             try: input = raw_input(">")
             except EOFError:
-                print input
+                print(input)
             if input:
                 while input[-1] in "!.": input = input[:-1]
-                print self.respond(input)
+                print(self.respond(input))

@@ -17,6 +17,7 @@ TO DO: better Named Entity classification
 TO DO: add lemmatization
 """
 
+from __future__ import print_function
 import nltk
 from util import accuracy
 
@@ -90,10 +91,10 @@ class RTEFeatureExtractor(object):
         """
         ne_overlap = set([token for token in self._overlap if ne(token)])
         if toktype == 'ne':
-            if debug: print "ne overlap", ne_overlap
+            if debug: print("ne overlap", ne_overlap)
             return ne_overlap
         elif toktype == 'word':
-            if debug: print "word overlap", self._overlap - ne_overlap
+            if debug: print("word overlap", self._overlap - ne_overlap)
             return self._overlap - ne_overlap
         else:
             raise ValueError("Type not recognized:'%s'" % toktype)
@@ -135,13 +136,13 @@ def rte_classifier(trainer, features=rte_features):
     test = [(pair, pair.value) for pair in nltk.corpus.rte.pairs(['rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml'])]
 
     # Train up a classifier.
-    print 'Training classifier...'
+    print('Training classifier...')
     classifier = trainer( [(features(pair), label) for (pair,label) in train] )
 
     # Run the classifier on the test data.
-    print 'Testing classifier...'
+    print('Testing classifier...')
     acc = accuracy(classifier, [(features(pair), label) for (pair,label) in test])
-    print 'Accuracy: %6.4f' % acc
+    print('Accuracy: %6.4f' % acc)
 
     # Return the classifier
     return classifier
@@ -150,18 +151,18 @@ def rte_classifier(trainer, features=rte_features):
 def demo_features():
     pairs = nltk.corpus.rte.pairs(['rte1_dev.xml'])[:6]
     for pair in pairs:
-        print
+        print()
         for key in sorted(rte_features(pair)):
-            print "%-15s => %s" % (key, rte_features(pair)[key])
+            print("%-15s => %s" % (key, rte_features(pair)[key]))
 
 
 def demo_feature_extractor():
     rtepair = nltk.corpus.rte.pairs(['rte3_dev.xml'])[33]
     extractor = RTEFeatureExtractor(rtepair)
-    print extractor.hyp_words
-    print extractor.overlap('word')
-    print extractor.overlap('ne')
-    print extractor.hyp_extra('word')
+    print(extractor.hyp_words)
+    print(extractor.overlap('word'))
+    print(extractor.overlap('ne'))
+    print(extractor.hyp_extra('word'))
 
 
 def demo():
