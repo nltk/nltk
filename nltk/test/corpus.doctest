@@ -1124,6 +1124,30 @@ the XML structure directly, as follows:
     >>> [t.attrib['pos'] + "/" + t.attrib['word'] for t in tokens]
     ['RB/now', 'PRP/im', 'VBD/left', 'IN/with', 'DT/this', 'JJ/gay', 'NN/name']
 
+masc
+----
+
+The Manually Annotated Sub-Corpus (MASC) consists of approximately 500,000
+words of contemporary American English written and spoken data drawn from the
+OPEN AMERICAN NATIONAL CORPUS (OANC).
+
+All of MASC includes manually validated annotations for sentence boundaries,
+token, lemma and POS; noun and verb chunks; and named entities (person,
+location, organization, date). Additional manually produced or validated
+annotations have been produced by the MASC project for portions of the
+sub-corpus, including full-text annotation for FrameNet frame elements,
+WordNet sense tags, and Penn Treebank syntactic annotation. Annotations of all
+or portions of the sub-corpus for a wide variety of other linguistic phenomena
+have been contributed by other projects.
+
+    >>> import nltk.corpus
+    >>> print nltk.corpus.masc.words()
+    ['IN', 'THE', 'UNITED', 'STATES', 'DISTRICT', 'COURT', ...]
+    >>> print nltk.corpus.masc.verbs()
+    ['occurred', 'Let', 'go', 'are', 'is', ...]
+    >>> print nltk.corpus.masc.persons()
+    ['TAMMY J. KITZMILLER', 'JOHN E. JONES, III', ...]
+
 
 ---------------------
 Corpus Reader Classes
@@ -1262,7 +1286,7 @@ directory (or in subdirectories of that root directory).  The absolute
 path to the root directory is stored in the ``root`` property:
 
     >>> print nltk.corpus.genesis.root # doctest: +ELLIPSIS
-    ...nltk_data/corpora/genesis...
+    /.../nltk_data/corpora/genesis
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the
@@ -1299,7 +1323,7 @@ The ``abspath()`` method can be used to find the absolute path to a
 corpus file, given its file identifier:
 
     >>> print nltk.corpus.brown.abspath('ce06') # doctest: +ELLIPSIS
-    .../corpora/brown/ce06
+    /.../corpora/brown/ce06
 
 The ``abspaths()`` method can be used to find the absolute paths for
 one corpus file, a list of corpus files, or (if no fileids are specified),
