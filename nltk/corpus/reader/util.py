@@ -125,7 +125,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
        block; and tokens is a list of the tokens in the block.
     """
     def __init__(self, fileid, block_reader=None, startpos=0,
-                 encoding='latin1', source=None):
+                 encoding='utf8', source=None):
         """
         Create a new corpus view, based on the file ``fileid``, and
         read with ``block_reader``.  See the class documentation

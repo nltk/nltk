@@ -17,7 +17,7 @@ from nltk.corpus.reader.api import *
 
 class ChasenCorpusReader(CorpusReader):
 
-    def __init__(self, root, fileids, encoding='latin1', sent_splitter=None):
+    def __init__(self, root, fileids, encoding='utf8', sent_splitter=None):
         self._sent_splitter = sent_splitter
         CorpusReader.__init__(self, root, fileids, encoding)
 

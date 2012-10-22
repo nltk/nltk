@@ -37,7 +37,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
       tags = (surface, reading, lemma, pos1, posid1, pos2, posid2, pos3, posid3, others ...)
     """
 
-    def __init__(self, root, fileids, encoding='latin1', morphs2str=_morphs2str_default):
+    def __init__(self, root, fileids, encoding='utf8', morphs2str=_morphs2str_default):
         """
         Initialize KNBCorpusReader
         morphs2str is a function to convert morphlist to str for tree representation

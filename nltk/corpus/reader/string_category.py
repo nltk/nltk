@@ -29,7 +29,7 @@ from .api import *
 # in nltk, we use the form (data, tag) -- e.g., tagged words and
 # labeled texts for classifiers.
 class StringCategoryCorpusReader(CorpusReader):
-    def __init__(self, root, fileids, delimiter=' ', encoding='latin1'):
+    def __init__(self, root, fileids, delimiter=' ', encoding='utf8'):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.

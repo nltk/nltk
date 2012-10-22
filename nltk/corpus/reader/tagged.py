@@ -40,7 +40,7 @@ class TaggedCorpusReader(CorpusReader):
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block,
-                 encoding='latin1',
+                 encoding='utf8',
                  tag_mapping_function=None):
         """
         Construct a new Tagged Corpus reader for a set of documents
@@ -267,7 +267,7 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
     ``self.paras()`` and ``self.tagged_paras()`` contains a single
     sentence.
     """
-    def __init__(self, root, fileids, encoding='latin1', tag_mapping_function=None):
+    def __init__(self, root, fileids, encoding='utf8', tag_mapping_function=None):
         TaggedCorpusReader.__init__(
             self, root, fileids, sep='_',
             word_tokenizer=LineTokenizer(),

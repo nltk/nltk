@@ -42,7 +42,7 @@ class PlaintextCorpusReader(CorpusReader):
                  sent_tokenizer=nltk.data.LazyLoader(
                      'tokenizers/punkt/english.pickle'),
                  para_block_reader=read_blankline_block,
-                 encoding='latin1'):
+                 encoding='utf8'):
         """
         Construct a new plaintext corpus reader for a set of documents
         located at the given root directory.  Example usage:

@@ -156,7 +156,7 @@ class TimitCorpusReader(CorpusReader):
     """A regexp matching fileids that are used by this corpus reader."""
     _UTTERANCE_RE = r'\w+-\w+/\w+\.txt'
 
-    def __init__(self, root, encoding='latin1'):
+    def __init__(self, root, encoding='utf8'):
         """
         Construct a new TIMIT corpus reader in the given directory.
         :param root: The root directory for this corpus.

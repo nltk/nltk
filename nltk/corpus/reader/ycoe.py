@@ -36,7 +36,7 @@ class YCOECorpusReader(CorpusReader):
     English Prose (YCOE), a 1.5 million word syntactically-annotated
     corpus of Old English prose texts.
     """
-    def __init__(self, root, encoding='latin1'):
+    def __init__(self, root, encoding='utf8'):
         CorpusReader.__init__(self, root, [], encoding)
 
         self._psd_reader = YCOEParseCorpusReader(
@@ -131,7 +131,7 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
         return BracketParseCorpusReader._parse(self, t)
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
-    def __init__(self, root, items, encoding='latin1'):
+    def __init__(self, root, items, encoding='utf8'):
         gaps_re = r'(?u)(?<=/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*'
         sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
         TaggedCorpusReader.__init__(self, root, items, sep='_',

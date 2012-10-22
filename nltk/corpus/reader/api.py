@@ -39,7 +39,7 @@ class CorpusReader(object):
     be used to select which portion of the corpus should be returned.
     """
 
-    def __init__(self, root, fileids, encoding='latin1', tag_mapping_function=None):
+    def __init__(self, root, fileids, encoding='utf8', tag_mapping_function=None):
         """
         :type root: PathPointer or str
         :param root: A path pointer identifying the root directory for

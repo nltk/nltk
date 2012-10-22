@@ -15,7 +15,7 @@ from .api import *
 
 class DependencyCorpusReader(SyntaxCorpusReader):
 
-    def __init__(self, root, fileids, encoding='latin1',
+    def __init__(self, root, fileids, encoding='utf8',
                  word_tokenizer=TabTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block):

@@ -64,7 +64,7 @@ class ConllCorpusReader(CorpusReader):
 
     def __init__(self, root, fileids, columntypes,
                  chunk_types=None, top_node='S', pos_in_tree=False,
-                 srl_includes_roleset=True, encoding='latin1',
+                 srl_includes_roleset=True, encoding='utf8',
                  tree_class=Tree, tag_mapping_function=None):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
@@ -508,7 +508,7 @@ class ConllChunkCorpusReader(ConllCorpusReader):
     A ConllCorpusReader whose data file contains three columns: words,
     pos, and chunk.
     """
-    def __init__(self, root, fileids, chunk_types, encoding='latin1',
+    def __init__(self, root, fileids, chunk_types, encoding='utf8',
                  tag_mapping_function=None):
         ConllCorpusReader.__init__(
             self, root, fileids, ('words', 'pos', 'chunk'),

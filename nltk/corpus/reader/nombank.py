@@ -31,7 +31,7 @@ class NombankCorpusReader(CorpusReader):
     """
     def __init__(self, root, nomfile, framefiles='',
                  nounsfile=None, parse_fileid_xform=None,
-                 parse_corpus=None, encoding='latin1'):
+                 parse_corpus=None, encoding='utf8'):
         """
         :param root: The root directory for this corpus.
         :param nomfile: The name of the file containing the predicate-

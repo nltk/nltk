@@ -37,7 +37,7 @@ class ChunkedCorpusReader(CorpusReader):
                  str2chunktree=tagstr2tree,
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block,
-                 encoding='latin1'):
+                 encoding='utf8'):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.

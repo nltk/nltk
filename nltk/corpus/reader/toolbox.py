@@ -27,7 +27,7 @@ class ToolboxCorpusReader(CorpusReader):
         return concat([ToolboxData(path, enc).parse(key=key)
                        for (path, enc) in self.abspaths(fileids, True)])
 
-    def fields(self, fileids, strip=True, unwrap=True, encoding='latin1',
+    def fields(self, fileids, strip=True, unwrap=True, encoding='utf8',
                errors='strict', unicode_fields=None):
         return concat([list(ToolboxData(fileid,enc).fields(
                              strip, unwrap, encoding, errors, unicode_fields))
