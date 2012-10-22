@@ -16,12 +16,10 @@ Currently only reads the first tree in a file.
 """
 from __future__ import print_function
 
-# python2.5 compatibility
-from __future__ import with_statement
+import re
+from pprint import pformat
 
 from nltk.tree import Tree
-from pprint import pformat
-import re
 
 #################################################################
 # DependencyGraph Class

@@ -162,10 +162,10 @@ Similarly, the Indian Langauge POS-Tagged Corpus includes samples of
 Indian text annotated with part-of-speech tags:
 
     >>> from nltk.corpus import indian
-    >>> print(indian.words()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(indian.words()) # doctest: +SKIP
     ['\xe0\xa6\xae\xe0\xa6\xb9\xe0\xa6\xbf\...',
      '\xe0\xa6\xb8\xe0\xa6\xa8\xe0\xa7\x8d\xe0...', ...]
-    >>> print(indian.tagged_words()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(indian.tagged_words()) # doctest: +SKIP
     [('\xe0\xa6\xae\xe0\xa6\xb9\xe0\xa6\xbf...', 'NN'),
      ('\xe0\xa6\xb8\xe0\xa6\xa8\xe0\xa7\x8d\xe0...', 'NN'), ...]
 
@@ -347,9 +347,9 @@ to a full PTB installation.
 Reading the Sinica Treebank:
 
     >>> from nltk.corpus import sinica_treebank
-    >>> print(sinica_treebank.sents())
+    >>> print(sinica_treebank.sents()) # doctest: +SKIP
     [['\xe4\xb8\x80'], ['\xe5\x8f\x8b\xe6\x83\x85'], ...]
-    >>> sinica_treebank.parsed_sents()[25] # doctest: +NORMALIZE_WHITESPACE
+    >>> sinica_treebank.parsed_sents()[25] # doctest: +SKIP
     Tree('S',
         [Tree('NP',
             [Tree('Nba', ['\xe5\x98\x89\xe7\x8f\x8d'])]),
@@ -361,11 +361,11 @@ Reading the Sinica Treebank:
 Reading the CoNLL 2007 Dependency Treebanks:
 
     >>> from nltk.corpus import conll2007
-    >>> conll2007.sents('esp.train')[0]
-    ['El', 'aumento', 'del', '\xc3\xadndice', 'de', 'desempleo', ...]
-    >>> conll2007.parsed_sents('esp.train')[0]
+    >>> conll2007.sents('esp.train')[0] # doctest: +SKIP
+    ['El', 'aumento', 'del', 'índice', 'de', 'desempleo', ...]
+    >>> conll2007.parsed_sents('esp.train')[0] # doctest: +SKIP
     <DependencyGraph with 38 nodes>
-    >>> print(conll2007.parsed_sents('esp.train')[0].tree())
+    >>> print(conll2007.parsed_sents('esp.train')[0].tree()) # doctest: +SKIP
     (fortaleció
       (aumento El (del (índice (de (desempleo estadounidense)))))
       hoy
@@ -662,7 +662,7 @@ descriptions of the argument roles, along with examples.
     m direction, location
 
     >>> from xml.etree import ElementTree
-    >>> print(ElementTree.tostring(turn_01.find('example')).strip())
+    >>> print(ElementTree.tostring(turn_01.find('example')).decode('utf8').strip())
     <example name="transitive agentive">
       <text>
       John turned the key in the lock.
@@ -1390,7 +1390,7 @@ method, which expects a roleset identifier, not a file identifier:
 
     >>> roleset = nltk.corpus.propbank.roleset('eat.01')
     >>> from xml.etree import ElementTree as ET
-    >>> print(ET.tostring(roleset)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(ET.tostring(roleset).decode('utf8')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     <roleset id="eat.01" name="consume" vncls="39.1">
       <roles>
         <role descr="consumer, eater" n="0">...</role>...
@@ -2155,12 +2155,12 @@ Squashed Bugs
 svn 5276 fixed a bug in the comment-stripping behavior of
 parse_sexpr_block.
 
-    >>> from io import BytesIO
+    >>> from io import StringIO
     >>> from nltk.corpus.reader.util import read_sexpr_block
-    >>> f = BytesIO(b"""
+    >>> f = StringIO(b"""
     ... (a b c)
     ... # This line is a comment.
-    ... (d e f\ng h)""")
+    ... (d e f\ng h)""".decode('ascii'))
     >>> print(read_sexpr_block(f, block_size=38, comment_char='#'))
     ['(a b c)']
     >>> print(read_sexpr_block(f, block_size=38, comment_char='#'))
@@ -2172,22 +2172,22 @@ token that was not followed by whitespace.  A related bug caused
 an infinite loop if the corpus ended in an unmatched close paren --
 this was fixed in svn 5279
 
-    >>> f = BytesIO(b"""
+    >>> f = StringIO(b"""
     ... This file ends mid-sexpr
-    ... (hello (world""")
+    ... (hello (world""".decode('ascii'))
     >>> for i in range(3): print(read_sexpr_block(f))
     ['This', 'file', 'ends', 'mid-sexpr']
     ['(hello (world']
     []
 
-    >>> f = BytesIO(b"""This file has no trailing whitespace.""")
+    >>> f = StringIO(b"This file has no trailing whitespace.".decode('ascii'))
     >>> for i in range(3): print(read_sexpr_block(f))
     ['This', 'file', 'has', 'no', 'trailing']
     ['whitespace.']
     []
 
     >>> # Bug fixed in 5279:
-    >>> f = BytesIO(b"""a b c)""")
+    >>> f = StringIO(b"a b c)".decode('ascii'))
     >>> for i in range(3): print(read_sexpr_block(f))
     ['a', 'b']
     ['c)']

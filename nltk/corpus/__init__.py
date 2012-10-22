@@ -75,13 +75,14 @@ alpino = LazyCorpusLoader(
     'alpino', AlpinoCorpusReader, tag_mapping_function=simplify_alpino_tag)
 brown = LazyCorpusLoader(
     'brown', CategorizedTaggedCorpusReader, r'c[a-z]\d\d',
-    cat_file='cats.txt', tag_mapping_function=simplify_brown_tag)
+    cat_file='cats.txt', tag_mapping_function=simplify_brown_tag,
+    encoding="ascii")
 cess_cat = LazyCorpusLoader(
     'cess_cat', BracketParseCorpusReader, r'(?!\.).*\.tbf',
-    tag_mapping_function=simplify_tag)
+    tag_mapping_function=simplify_tag, encoding='ISO-8859-2')
 cess_esp = LazyCorpusLoader(
     'cess_esp', BracketParseCorpusReader, r'(?!\.).*\.tbf',
-    tag_mapping_function=simplify_tag)
+    tag_mapping_function=simplify_tag, encoding='ISO-8859-2')
 cmudict = LazyCorpusLoader(
     'cmudict', CMUDictCorpusReader, ['cmudict'])
 comtrans = LazyCorpusLoader(
@@ -89,7 +90,7 @@ comtrans = LazyCorpusLoader(
 conll2000 = LazyCorpusLoader(
     'conll2000', ConllChunkCorpusReader,
     ['train.txt', 'test.txt'], ('NP','VP','PP'),
-    tag_mapping_function=simplify_wsj_tag)
+    tag_mapping_function=simplify_wsj_tag, encoding='ascii')
 conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*',
     ('LOC', 'PER', 'ORG', 'MISC'), encoding='utf-8')
@@ -97,12 +98,14 @@ conll2007 = LazyCorpusLoader(
     'conll2007', DependencyCorpusReader, '.*\.(test|train).*',
     encoding='utf-8')
 dependency_treebank = LazyCorpusLoader(
-    'dependency_treebank', DependencyCorpusReader, '.*\.dp')
+    'dependency_treebank', DependencyCorpusReader, '.*\.dp',
+    encoding='ascii')
 floresta = LazyCorpusLoader(
     'floresta', BracketParseCorpusReader, r'(?!\.).*\.ptb', '#',
-    tag_mapping_function=simplify_tag)
+    tag_mapping_function=simplify_tag, encoding='IBM855')
 gazetteers = LazyCorpusLoader(
-    'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt')
+    'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt',
+    encoding='ISO-8859-2')
 genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[
         ('finnish|french|german', 'latin_1'),
@@ -120,7 +123,8 @@ inaugural = LazyCorpusLoader(
 # [XX] This should probably just use TaggedCorpusReader:
 indian = LazyCorpusLoader(
     'indian', IndianCorpusReader, r'(?!\.).*\.pos',
-    tag_mapping_function=simplify_indian_tag)
+    tag_mapping_function=simplify_indian_tag,
+    encoding='utf8')
 ipipan = LazyCorpusLoader(
     'ipipan', IPIPANCorpusReader, r'(?!\.).*morph\.xml')
 jeita = LazyCorpusLoader(
@@ -137,15 +141,16 @@ machado = LazyCorpusLoader(
     r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*', encoding='latin-1')
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
-    r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*')
+    r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*',
+    encoding='ascii')
 names = LazyCorpusLoader(
-    'names', WordListCorpusReader, r'(?!\.).*\.txt')
+    'names', WordListCorpusReader, r'(?!\.).*\.txt', encoding='ascii')
 nps_chat = LazyCorpusLoader(
     'nps_chat', NPSChatCorpusReader, r'(?!README|\.).*\.xml',
     tag_mapping_function=simplify_wsj_tag)
 pl196x = LazyCorpusLoader(
     'pl196x', Pl196xCorpusReader, r'[a-z]-.*\.xml',
-    cat_file='cats.txt', textid_file='textids.txt')
+    cat_file='cats.txt', textid_file='textids.txt', encoding='utf8')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
 ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
@@ -166,13 +171,14 @@ shakespeare = LazyCorpusLoader(
     'shakespeare', XMLCorpusReader, r'(?!\.).*\.xml')
 sinica_treebank = LazyCorpusLoader(
     'sinica_treebank', SinicaTreebankCorpusReader, ['parsed'],
-    tag_mapping_function=simplify_tag)
+    tag_mapping_function=simplify_tag, encoding='utf-8')
 state_union = LazyCorpusLoader(
-    'state_union', PlaintextCorpusReader, r'(?!\.).*\.txt')
+    'state_union', PlaintextCorpusReader, r'(?!\.).*\.txt',
+    encoding='ISO-8859-2')
 stopwords = LazyCorpusLoader(
-    'stopwords', WordListCorpusReader, r'(?!README|\.).*')
+    'stopwords', WordListCorpusReader, r'(?!README|\.).*', encoding='utf8')
 swadesh = LazyCorpusLoader(
-    'swadesh', SwadeshCorpusReader, r'(?!README|\.).*')
+    'swadesh', SwadeshCorpusReader, r'(?!README|\.).*', encoding='utf8')
 switchboard = LazyCorpusLoader(
     'switchboard', SwitchboardCorpusReader,
     tag_mapping_function=simplify_wsj_tag)
@@ -180,16 +186,16 @@ timit = LazyCorpusLoader(
     'timit', TimitCorpusReader)
 timit_tagged = LazyCorpusLoader(
     'timit', TimitTaggedCorpusReader, '.+\.tags',
-    tag_mapping_function=simplify_wsj_tag)
+    tag_mapping_function=simplify_wsj_tag, encoding='ascii')
 toolbox = LazyCorpusLoader(
     'toolbox', ToolboxCorpusReader, r'(?!.*(README|\.)).*\.(dic|txt)')
 treebank = LazyCorpusLoader(
     'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg',
-    tag_mapping_function=simplify_wsj_tag)
+    tag_mapping_function=simplify_wsj_tag, encoding='ascii')
 treebank_chunk = LazyCorpusLoader(
     'treebank/tagged', ChunkedCorpusReader, r'wsj_.*\.pos',
     sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s*(?![^\[]*\])', gaps=True),
-    para_block_reader=tagged_treebank_para_block_reader)
+    para_block_reader=tagged_treebank_para_block_reader, encoding='ascii')
 treebank_raw = LazyCorpusLoader(
     'treebank/raw', PlaintextCorpusReader, r'wsj_.*')
 udhr = LazyCorpusLoader(
@@ -214,7 +220,7 @@ wordnet = LazyCorpusLoader(
 wordnet_ic = LazyCorpusLoader(
     'wordnet_ic', WordNetICCorpusReader, '.*\.dat')
 words = LazyCorpusLoader(
-    'words', WordListCorpusReader, r'(?!README|\.).*')
+    'words', WordListCorpusReader, r'(?!README|\.).*', encoding='ascii')
 ycoe = LazyCorpusLoader(
     'ycoe', YCOECorpusReader)
 # defined after treebank
@@ -231,12 +237,12 @@ nombank = LazyCorpusLoader(
 propbank_ptb = LazyCorpusLoader(
     'propbank', PropbankCorpusReader,
     'prop.txt', 'frames/.*\.xml', 'verbs.txt',
-    lambda filename: filename.upper(), 
+    lambda filename: filename.upper(),
     ptb) # Must be defined *after* ptb corpus.
 nombank_ptb = LazyCorpusLoader(
     'nombank.1.0', NombankCorpusReader,
     'nombank.1.0', 'frames/.*\.xml', 'nombank.1.0.words',
-    lambda filename: filename.upper(), 
+    lambda filename: filename.upper(),
     ptb) # Must be defined *after* ptb corpus.
 
 def demo():

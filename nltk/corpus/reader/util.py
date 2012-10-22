@@ -652,7 +652,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     start = stream.tell()
     block = stream.read(block_size)
     encoding = getattr(stream, 'encoding', None)
-    assert encoding is not None or isinstance(block, str)
+    assert encoding is not None or isinstance(block, compat.text_type)
     if encoding not in (None, 'utf-8'):
         import warnings
         warnings.warn('Parsing may fail, depending on the properties '
