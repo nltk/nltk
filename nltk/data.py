@@ -407,7 +407,7 @@ def find(resource_name):
         character.  Otherwise, ``find()`` will not locate the
         directory.
 
-    :type resource_name: str
+    :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.
         Resource names are posix-style relative path names, such as
         ``corpora/brown``.  In particular, directory names should always

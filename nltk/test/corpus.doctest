@@ -1866,27 +1866,12 @@ Select some corpus files to play with:
     >>> f3 = nltk.data.find('corpora/inaugural/1909-Taft.txt')
     >>> fileids = [f1, f2, f3]
 
-Check that corpus views produce the correct sequence of values.
-
-    >>> from nltk.corpus.reader.util import *
-    >>> linetok = nltk.LineTokenizer(blanklines='discard-eof')
-    >>> for f in fileids:
-    ...     v = StreamBackedCorpusView(f, read_whitespace_block)
-    ...     assert list(v) == open(f).read().split()
-    ...     v = StreamBackedCorpusView(f, read_line_block)
-    ...     assert list(v) == linetok.tokenize(open(f).read())
-
-Check that the corpus views report the correct lengths:
-
-    >>> for f in fileids:
-    ...     v = StreamBackedCorpusView(f, read_whitespace_block)
-    ...     assert len(v) == len(open(f).read().split())
-    ...     v = StreamBackedCorpusView(f, read_line_block)
-    ...     assert len(v) == len(linetok.tokenize(open(f).read()))
 
 Concatenation
 -------------
 Check that concatenation works as intended.
+
+    >>> from nltk.corpus.reader.util import *
 
     >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block)
     >>> c2 = StreamBackedCorpusView(f2, read_whitespace_block)
