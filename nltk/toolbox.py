@@ -13,8 +13,7 @@ Toolbox databases and settings files.
 from __future__ import print_function
 
 import os, re, codecs
-from xml.etree import ElementTree
-from xml.etree.ElementTree import TreeBuilder, Element, SubElement
+from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
 
 from nltk.compat import StringIO, u
 from nltk.data import PathPointer, ZipFilePathPointer, find
