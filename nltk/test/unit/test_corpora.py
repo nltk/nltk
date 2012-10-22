@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import unittest
 
 from nltk.corpus import (sinica_treebank, conll2007, indian, cess_cat, cess_esp,
-                         state_union)
+                         floresta)
 from nltk.tree import Tree
 
 class TestIndian(unittest.TestCase):
@@ -28,6 +28,12 @@ class TestCess(unittest.TestCase):
         txt = "El grupo estatal Electricité_de_France -Fpa- EDF -Fpt- anunció hoy , jueves , la compra del"
         self.assertEqual(words, txt.split())
 
+
+class TestFloresta(unittest.TestCase):
+    def test_words(self):
+        words = floresta.words()[:10]
+        txt = "Um revivalismo refrescante O 7_e_Meio é um ex-libris de a"
+        self.assertEqual(words, txt.split())
 
 class TestSinicaTreebank(unittest.TestCase):
 

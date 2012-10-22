@@ -102,7 +102,7 @@ dependency_treebank = LazyCorpusLoader(
     encoding='ascii')
 floresta = LazyCorpusLoader(
     'floresta', BracketParseCorpusReader, r'(?!\.).*\.ptb', '#',
-    tag_mapping_function=simplify_tag, encoding='IBM855')
+    tag_mapping_function=simplify_tag, encoding='ISO-8859-15')
 gazetteers = LazyCorpusLoader(
     'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt',
     encoding='ISO-8859-2')
