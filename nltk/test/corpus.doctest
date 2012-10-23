@@ -321,11 +321,11 @@ and ``WSJ`` directories of the Treebank installation (symlinks work
 as well). Then use the ``ptb`` module instead of ``treebank``:
 
    >>> from nltk.corpus import ptb
-   >>> print(ptb.fileids()) # doctest: +ELLIPSIS
+   >>> print(ptb.fileids()) # doctest: +SKIP
    ['BROWN/CF/CF01.MRG', 'BROWN/CF/CF02.MRG', 'BROWN/CF/CF03.MRG', 'BROWN/CF/CF04.MRG', ...]
-   >>> print(ptb.words('WSJ/00/WSJ_0003.MRG'))
+   >>> print(ptb.words('WSJ/00/WSJ_0003.MRG')) # doctest: +SKIP
    ['A', 'form', 'of', 'asbestos', 'once', 'used', '*', ...]
-   >>> print(ptb.tagged_words('WSJ/00/WSJ_0003.MRG'))
+   >>> print(ptb.tagged_words('WSJ/00/WSJ_0003.MRG')) # doctest: +SKIP
    [('A', 'DT'), ('form', 'NN'), ('of', 'IN'), ...]
 
 ...and so forth, like ``treebank`` but with extended fileids. Categories
@@ -333,11 +333,11 @@ specified in ``allcats.txt`` can be used to filter by genre; they consist
 of ``news`` (for WSJ articles) and names of the Brown subcategories
 (``fiction``, ``humor``, ``romance``, etc.):
 
-   >>> ptb.categories()
+   >>> ptb.categories() # doctest: +SKIP
    ['adventure', 'belles_lettres', 'fiction', 'humor', 'lore', 'mystery', 'news', 'romance', 'science_fiction']
-   >>> print(ptb.fileids('news')) # doctest: +ELLIPSIS
+   >>> print(ptb.fileids('news')) # doctest: +SKIP
    ['WSJ/00/WSJ_0001.MRG', 'WSJ/00/WSJ_0002.MRG', 'WSJ/00/WSJ_0003.MRG', ...]
-   >>> print(ptb.words(categories=['humor','fiction']))
+   >>> print(ptb.words(categories=['humor','fiction'])) # doctest: +SKIP
    ['Thirty-three', 'Scotty', 'did', 'not', 'go', 'back', ...]
 
 As PropBank and NomBank depend on the (WSJ portion of the) Penn Treebank,
