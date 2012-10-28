@@ -30,6 +30,7 @@ measures are provided in bigram_measures and trigram_measures.
 # - add a n-gram collocation finder with measures which only utilise n-gram
 #   and unigram counts (raw_freq, pmi, student_t)
 
+from __future__ import print_function
 import itertools as _itertools
 from operator import itemgetter as _itemgetter
 
@@ -137,7 +138,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         bfd = FreqDist()
 
         if window_size < 2:
-            raise ValueError, "Specify window_size at least 2"
+            raise ValueError("Specify window_size at least 2")
 
         for window in ingrams(words, window_size, pad_right=True):
             w1 = window[0]
@@ -249,12 +250,12 @@ def demo(scorer=None, compare_scorer=None):
         cf.apply_freq_filter(3)
         cf.apply_word_filter(word_filter)
 
-        print file
-        print '\t', [' '.join(tup) for tup in cf.nbest(scorer, 15)]
-        print '\t Correlation to %s: %0.4f' % (compare_scorer.__name__,
+        print(file)
+        print('\t', [' '.join(tup) for tup in cf.nbest(scorer, 15)])
+        print('\t Correlation to %s: %0.4f' % (compare_scorer.__name__,
                 spearman_correlation(
                     ranks_from_scores(cf.score_ngrams(scorer)),
-                    ranks_from_scores(cf.score_ngrams(compare_scorer))))
+                    ranks_from_scores(cf.score_ngrams(compare_scorer)))))
 
 # Slows down loading too much
 # bigram_measures = BigramAssocMeasures()

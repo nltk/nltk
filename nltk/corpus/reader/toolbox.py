@@ -23,7 +23,7 @@ from api import *
 
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, fileids, key=None):
-        return concat([ToolboxData(path, enc).parse(key)
+        return concat([ToolboxData(path, enc).parse(key=key)
                        for (path, enc) in self.abspaths(fileids, True)])
 
     def fields(self, fileids, strip=True, unwrap=True, encoding=None,

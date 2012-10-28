@@ -13,6 +13,8 @@
 # Computational Linguistics,, 28 (1), March 2002, pp. 19-36
 ##########################################################################
 
+from __future__ import print_function
+
 def windowdiff(seg1, seg2, k, boundary="1"):
     """
     Compute the windowdiff score for a pair of segmentations.  A segmentation is any sequence
@@ -42,7 +44,7 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     """
 
     if len(seg1) != len(seg2):
-        raise ValueError, "Segmentations have unequal length"
+        raise ValueError("Segmentations have unequal length")
     wd = 0
     for i in range(len(seg1) - k):
         wd += abs(seg1[i:i+k+1].count(boundary) - seg2[i:i+k+1].count(boundary))
@@ -52,10 +54,10 @@ def demo():
     s1 = "00000010000000001000000"
     s2 = "00000001000000010000000"
     s3 = "00010000000000000001000"
-    print "s1:", s1
-    print "s2:", s2
-    print "s3:", s3
+    print("s1:", s1)
+    print("s2:", s2)
+    print("s3:", s3)
 
-    print "windowdiff(s1, s1, 3) = ", windowdiff(s1, s1, 3)
-    print "windowdiff(s1, s2, 3) = ", windowdiff(s1, s2, 3)
-    print "windowdiff(s2, s3, 3) = ", windowdiff(s2, s3, 3)
+    print("windowdiff(s1, s1, 3) = ", windowdiff(s1, s1, 3))
+    print("windowdiff(s1, s2, 3) = ", windowdiff(s1, s2, 3))
+    print("windowdiff(s2, s3, 3) = ", windowdiff(s2, s3, 3))

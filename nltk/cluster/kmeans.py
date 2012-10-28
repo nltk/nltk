@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import copy
 import numpy
 import random
@@ -61,17 +62,16 @@ class KMeansClusterer(VectorSpaceClusterer):
         assert repeats >= 1
         assert not (initial_means and repeats > 1)
         self._repeats = repeats
-        if rng: self._rng = rng
-        else:   self._rng = random.Random()
+        self._rng = (rng if rng else random.Random())
         self._avoid_empty_clusters = avoid_empty_clusters
 
     def cluster_vectorspace(self, vectors, trace=False):
         if self._means and self._repeats > 1:
-            print 'Warning: means will be discarded for subsequent trials'
+            print('Warning: means will be discarded for subsequent trials')
 
         meanss = []
         for trial in range(self._repeats):
-            if trace: print 'k-means trial', trial
+            if trace: print('k-means trial', trial)
             if not self._means or trial > 1:
                 self._means = self._rng.sample(vectors, self._num_means)
             self._cluster_vectorspace(vectors, trace)
@@ -108,7 +108,7 @@ class KMeansClusterer(VectorSpaceClusterer):
                     index = self.classify_vectorspace(vector)
                     clusters[index].append(vector)
 
-                if trace: print 'iteration'
+                if trace: print('iteration')
                 #for i in range(self._num_means):
                     #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
@@ -191,10 +191,10 @@ def demo():
     clusterer = KMeansClusterer(2, euclidean_distance, initial_means=means)
     clusters = clusterer.cluster(vectors, True, trace=True)
 
-    print 'Clustered:', vectors
-    print 'As:', clusters
-    print 'Means:', clusterer.means()
-    print
+    print('Clustered:', vectors)
+    print('As:', clusters)
+    print('Means:', clusterer.means())
+    print()
 
     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
 
@@ -203,16 +203,16 @@ def demo():
 
     clusterer = KMeansClusterer(2, euclidean_distance, repeats=10)
     clusters = clusterer.cluster(vectors, True)
-    print 'Clustered:', vectors
-    print 'As:', clusters
-    print 'Means:', clusterer.means()
-    print
+    print('Clustered:', vectors)
+    print('As:', clusters)
+    print('Means:', clusterer.means())
+    print()
 
     # classify a new vector
     vector = numpy.array([3, 3])
-    print 'classify(%s):' % vector,
-    print clusterer.classify(vector)
-    print
+    print('classify(%s):' % vector, end=' ')
+    print(clusterer.classify(vector))
+    print()
 
 if __name__ == '__main__':
     demo()

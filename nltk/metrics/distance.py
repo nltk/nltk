@@ -19,6 +19,7 @@ As metrics, they must satisfy the following three requirements:
 3. d(a, c) <= d(a, b) + d(b, c)
 
 """
+from __future__ import print_function
 
 def _edit_dist_init(len1, len2):
     lev = []
@@ -75,11 +76,7 @@ def binary_distance(label1, label2):
     1.0
     """
 
-    if label1 == label2:
-        return 0.0
-    else:
-        return 1.0
-
+    return 0.0 if label1 == label2 else 1.0
 
 def jaccard_distance(label1, label2):
     """Distance metric comparing set-similarity.
@@ -94,12 +91,24 @@ def masi_distance(label1, label2):
 
     >>> from nltk.metrics import masi_distance
     >>> masi_distance(set([1,2]),set([1,2,3,4]))
-    0.5
+    0.665
 
-    Passonneau 2005, Measuring Agreement on Set-Valued Items (MASI) for Semantic and Pragmatic Annotation.
+    Passonneau 2006, Measuring Agreement on Set-Valued Items (MASI) for Semantic and Pragmatic Annotation.
     """
+    len_intersection = len(label1.intersection(label2))
+    len_union = len(label1.union(label2))
+    len_label1 = len(label1)
+    len_label2 = len(label2)
+    if len_label1 == len_label2 and len_label1 == len_intersection:
+        m = 1
+    elif len_intersection == min(len_label1, len_label2):
+        m = 0.67
+    elif len_intersection > 0:
+        m = 0.33
+    else:
+        m = 0
 
-    return 1 - float(len(label1.intersection(label2)))/float(max(len(label1),len(label2)))
+    return 1 - (len_intersection / float(len_union)) * m
 
 
 def interval_distance(label1,label2):
@@ -115,7 +124,7 @@ def interval_distance(label1,label2):
         return pow(label1-label2,2)
 #        return pow(list(label1)[0]-list(label2)[0],2)
     except:
-        print "non-numeric labels not supported with interval distance"
+        print("non-numeric labels not supported with interval distance")
 
 
 def presence(label):
@@ -142,15 +151,15 @@ def custom_distance(file):
 def demo():
     s1 = "rain"
     s2 = "shine"
-    print "Edit distance between '%s' and '%s':" % (s1,s2), edit_distance(s1, s2)
+    print("Edit distance between '%s' and '%s':" % (s1,s2), edit_distance(s1, s2))
 
     s1 = set([1,2,3,4])
     s2 = set([3,4,5])
-    print "s1:", s1
-    print "s2:", s2
-    print "Binary distance:", binary_distance(s1, s2)
-    print "Jaccard distance:", jaccard_distance(s1, s2)
-    print "MASI distance:", masi_distance(s1, s2)
+    print("s1:", s1)
+    print("s2:", s2)
+    print("Binary distance:", binary_distance(s1, s2))
+    print("Jaccard distance:", jaccard_distance(s1, s2))
+    print("MASI distance:", masi_distance(s1, s2))
 
 if __name__ == '__main__':
     demo()

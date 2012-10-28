@@ -19,10 +19,10 @@ measured using Pointwise Mutual Information.
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.genesis.words('english-web.txt'))
     >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
-    [('cutting', 'instrument'), ('sewed', 'fig'), ('sweet', 'savor'),
-     ('Ben', 'Ammi'), ('appoint', 'overseers'), ('olive', 'leaf'),
-     ('months', 'later'), ('remaining', 'silent'), ('seek', 'occasion'),
-     ('leaf', 'plucked')]
+    [(u'Allon', u'Bacuth'), (u'Ashteroth', u'Karnaim'), (u'Ben', u'Ammi'),
+     (u'En', u'Mishpat'), (u'Jegar', u'Sahadutha'), (u'Salt', u'Sea'),
+     (u'Whoever', u'sheds'), (u'appoint', u'overseers'), (u'aromatic', u'resin'),
+     (u'cutting', u'instrument')]
 
 While these words are highly collocated, the expressions are also very
 infrequent.  Therefore it is useful to apply filters, such as ignoring all
@@ -40,19 +40,19 @@ We may similarly find collocations among tagged words:
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.brown.tagged_words('ca01', simplify_tags=True))
     >>> finder.nbest(bigram_measures.pmi, 5)  # doctest: +NORMALIZE_WHITESPACE
-    [(('weekend', 'N'), ('duty', 'N')),
-     (('top', 'ADJ'), ('official', 'N')),
-     (('George', 'NP'), ('P.', 'NP')),
-     (('medical', 'ADJ'), ('intern', 'N')),
-     (('1962', 'NUM'), ("governor's", 'N'))]
+    [(('1,119', 'NUM'), ('votes', 'N')),
+     (('1962', 'NUM'), ("governor's", 'N')),
+     (('637', 'NUM'), ('E.', 'NP')),
+     (('Alpharetta', 'NP'), ('prison', 'N')),
+     (('Bar', 'N'), ('Association', 'N'))]
 
 Or tags alone:
     
     >>> finder = BigramCollocationFinder.from_words(t for w, t in
     ...     nltk.corpus.brown.tagged_words('ca01', simplify_tags=True))
     >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
-    [(':', '('), ('(', 'NUM'), ('NUM', ')'), (':', 'NUM'), (')', 'NUM'),
-     ('-', 'WH'), ('VN', ':'), ('``', 'EX'), ('EX', 'MOD'), ('WH', 'VBZ')]
+    [(':', '('), ('(', 'NUM'), ('NUM', ')'), (':', 'NUM'), ('', 'WH'),
+     (')', 'NUM'), ('VN', ':'), ('``', 'EX'), ('EX', 'MOD'), ('WH', 'VBZ')]
 
 Or spanning intervening words:
 
@@ -63,9 +63,10 @@ Or spanning intervening words:
     >>> ignored_words = nltk.corpus.stopwords.words('english')
     >>> finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
     >>> finder.nbest(bigram_measures.likelihood_ratio, 10) # doctest: +NORMALIZE_WHITESPACE
-    [('chief', 'chief'), ('hundred', 'years'), ('father', 'father'), ('lived', 'years'),
-    ('years', 'father'), ('lived', 'father'), ('land', 'Egypt'), ('land', 'Canaan'),
-    ('lived', 'hundred'), ('land', 'land')]
+    [(u'became', u'father'), (u'hundred', u'years'), (u'lived', u'years'),
+     (u'father', u'became'), (u'years', u'became'), (u'land', u'Egypt'),
+     (u'land', u'Canaan'), (u'lived', u'became'), (u'became', u'years'),
+     (u'years', u'lived')]
 
 Finders
 ~~~~~~~
@@ -180,9 +181,9 @@ Chi-square: examples from Manning and Schutze 5.3.3
 Likelihood ratios: examples from Dunning, CL, 1993
 
    >>> print '%0.2f' % bigram_measures.likelihood_ratio(110, (2552, 221), 31777)
-   270.72
+   541.44
    >>> print '%0.2f' % bigram_measures.likelihood_ratio(8, (13, 32), 31777)
-   95.29
+   190.57
 
 Pointwise Mutual Information: examples from Manning and Schutze 5.4
 
@@ -206,7 +207,7 @@ bigram case.
    >>> from nltk.metrics import ContingencyMeasures
    >>> cont_bigram_measures = ContingencyMeasures(bigram_measures)
    >>> print '%0.2f' % cont_bigram_measures.likelihood_ratio(8, 5, 24, 31740)
-   95.29
+   190.57
    >>> print '%0.2f' % cont_bigram_measures.chi_sq(8, 15820, 4667, 14287173)
    1.55
 

@@ -12,7 +12,7 @@ NLTK is available for Windows, Mac OS X, and Linux. Best of all, NLTK is a free,
 NLTK has been called "a wonderful tool for teaching, and working in, computational linguistics using Python,"
 and "an amazing library to play with natural language."
 
-`Natural Language Processing with Python <https://sites.google.com/site/naturallanguagetoolkit/book>`_ provides a practical
+`Natural Language Processing with Python <http://nltk.org/book>`_ provides a practical
 introduction to programming for language processing.
 Written by the creators of NLTK, it guides the reader through the fundamentals
 of writing Python programs, working with corpora, categorizing text, analyzing linguistic structure,
@@ -56,14 +56,20 @@ Display a parse tree:
 
 .. image:: images/tree.gif
 
+NB. If you publish work that uses NLTK, please cite the NLTK book as follows:
+Bird, Steven, Edward Loper and Ewan Klein (2009).
+Natural Language Processing with Python.  O'Reilly Media Inc.
+
 Links
 -----
 
-* NLTK-Users mailing list: http://groups.google.com/group/nltk-users
-* NLTK's previous website: https://sites.google.com/site/naturallanguagetoolkit
-* NLTK development: https://github.com/nltk
-* NLTK-Dev mailing list: http://groups.google.com/group/nltk-dev
-* Publications about NLTK: http://scholar.google.com.au/scholar?q=NLTK
+* `NLTK mailing list <http://groups.google.com/group/nltk>`_ - release announcements only, very low volume
+* `NLTK-Users mailing list <http://groups.google.com/group/nltk-users>`_ - user discussions
+* `NLTK-Dev mailing list <http://groups.google.com/group/nltk-dev>`_ - developers only
+* `NLTK-Translation mailing list <http://groups.google.com/group/nltk-translation>`_ - discussions about translating the NLTK book
+* `NLTK's previous website <https://sites.google.com/site/naturallanguagetoolkit>`_
+* `NLTK development at GitHub <https://github.com/nltk>`_
+* `Publications about NLTK <http://scholar.google.com.au/scholar?q=NLTK>`_
 
 Contents
 ========

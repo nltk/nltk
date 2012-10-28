@@ -404,7 +404,7 @@ class DrtGlueDemo(object):
                     self._readings = self._glue.parse_to_meaning(example)
                     self._error = None
                     self._readingCache[index] = self._readings
-                except Exception, e:
+                except Exception as e:
                     self._readings = []
                     self._error = DrtVariableExpression(Variable('Error: ' + str(e)))
                     self._readingCache[index] = self._error

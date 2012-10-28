@@ -410,57 +410,57 @@ Parse errors
 ============
 
     >>> try: dp.parse(r'')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     End of input found.  Expression expected.
     <BLANKLINE>
     ^
     >>> try: dp.parse(r'(')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     End of input found.  Expression expected.
     (
      ^
     >>> try: dp.parse(r'()')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     Unexpected token: ')'.  Expression expected.
     ()
      ^
     >>> try: dp.parse(r'([')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     End of input found.  Expected token ']'.
     ([
       ^
     >>> try: dp.parse(r'([,')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     ',' is an illegal variable name.  Constants may not be quantified.
     ([,
       ^
     >>> try: dp.parse(r'([x,')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     End of input found.  Variable expected.
     ([x,
         ^
     >>> try: dp.parse(r'([]')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     End of input found.  Expected token '['.
     ([]
        ^
     >>> try: dp.parse(r'([][')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     End of input found.  Expected token ']'.
     ([][
         ^
     >>> try: dp.parse(r'([][,')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     Unexpected token: ','.  Expression expected.
     ([][,
         ^
     >>> try: dp.parse(r'([][]')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     End of input found.  Expected token ')'.
     ([][]
          ^
     >>> try: dp.parse(r'([x][man(x)]) |')
-    ... except ParseException, e: print e
+    ... except logic.ParseException, e: print e
     End of input found.  Expression expected.
     ([x][man(x)]) |
                    ^

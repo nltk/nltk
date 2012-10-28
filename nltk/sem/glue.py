@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import os
 
 import nltk
@@ -36,14 +37,14 @@ class GlueFormula(object):
         elif isinstance(meaning, Expression):
             self.meaning = meaning
         else:
-            raise RuntimeError, 'Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__)
+            raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
 
         if isinstance(glue, str):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
         else:
-            raise RuntimeError, 'Glue term neither string or expression: %s, %s' % (glue, glue.__class__)
+            raise RuntimeError('Glue term neither string or expression: %s, %s' % (glue, glue.__class__))
 
         self.indices = indices
 
@@ -53,14 +54,14 @@ class GlueFormula(object):
             returns ((walk john),          f)
         """
         if self.indices & arg.indices: # if the sets are NOT disjoint
-            raise linearlogic.LinearLogicApplicationException, "'%s' applied to '%s'.  Indices are not disjoint." % (self, arg)
+            raise linearlogic.LinearLogicApplicationException("'%s' applied to '%s'.  Indices are not disjoint." % (self, arg))
         else: # if the sets ARE disjoint
             return_indices = (self.indices | arg.indices)
 
         try:
             return_glue = linearlogic.ApplicationExpression(self.glue, arg.glue, arg.indices)
         except linearlogic.LinearLogicApplicationException:
-            raise linearlogic.LinearLogicApplicationException, "'%s' applied to '%s'" % (self.simplify(), arg.simplify())
+            raise linearlogic.LinearLogicApplicationException("'%s' applied to '%s'" % (self.simplify(), arg.simplify()))
 
         arg_meaning_abstracted = arg.meaning
         if return_indices:
@@ -123,7 +124,7 @@ class GlueDict(dict):
             # then we need a little extra massaging
             if hasattr(f, 'open'):
                 f = f.open()
-        except LookupError, e:
+        except LookupError as e:
             try:
                 f = open(self.filename)
             except LookupError:
@@ -163,7 +164,7 @@ class GlueDict(dict):
                             tuple_comma = i             # then save the index
                     elif c == '#':                      # skip comments at the ends of lines
                         if parenCount != 0:             # if the line hasn't parsed correctly so far
-                            raise RuntimeError, 'Formula syntax is incorrect for entry ' + line
+                            raise RuntimeError('Formula syntax is incorrect for entry ' + line)
                         break                           # break to the next line
 
             if len(parts) > 2:                      #if there is a relationship entry at the end
@@ -252,9 +253,9 @@ class GlueDict(dict):
         lookup = self._lookup_semtype_option(semtype, node, depgraph)
 
         if not len(lookup):
-            raise KeyError, "There is no GlueDict entry for sem type of '%s'"\
+            raise KeyError("There is no GlueDict entry for sem type of '%s'"\
                     " with tag '%s', and rel '%s'" %\
-                    (node['word'], node['tag'], node['rel'])
+                    (node['word'], node['tag'], node['rel']))
 
         return self.get_glueformulas_from_semtype_entry(lookup, node['word'], node, depgraph, counter)
 
@@ -396,9 +397,9 @@ class GlueDict(dict):
                 if depgraph.nodelist[dep]['rel'].lower() == rel.lower()]
 
         if len(deps) == 0:
-            raise KeyError, "'%s' doesn't contain a feature '%s'" % (node['word'], rel)
+            raise KeyError("'%s' doesn't contain a feature '%s'" % (node['word'], rel))
         elif len(deps) > 1:
-            raise KeyError, "'%s' should only have one feature '%s'" % (node['word'], rel)
+            raise KeyError("'%s' should only have one feature '%s'" % (node['word'], rel))
         else:
             return deps[0]
 
@@ -502,20 +503,20 @@ class Glue(object):
                     if reading.equiv(glueformula.meaning, self.prover):
                         add_reading = False
                         break;
-                except Exception, e:
+                except Exception as e:
                     #if there is an exception, the syntax of the formula
                     #may not be understandable by the prover, so don't
                     #throw out the reading.
-                    print 'Error when checking logical equality of statements', e
+                    print('Error when checking logical equality of statements', e)
                     pass
         if add_reading:
             reading_list.append(glueformula.meaning)
 
-    def parse_to_compiled(self, sentence='a man sees Mary'):
+    def parse_to_compiled(self, sentence='a man sees Mary'.split()):
         gfls = [self.depgraph_to_glue(dg) for dg in self.dep_parse(sentence)]
         return [self.gfl_to_compiled(gfl) for gfl in gfls]
 
-    def dep_parse(self, sentence='every cat leaves'):
+    def dep_parse(self, sentence='every cat leaves'.split()):
         #Lazy-initialize the depparser
         if self.depparser is None:
             from nltk.parse import MaltParser
@@ -538,9 +539,9 @@ class Glue(object):
             return_list.extend(gf.compile(index_counter))
 
         if self.verbose:
-            print 'Compiled Glue Premises:'
+            print('Compiled Glue Premises:')
             for cgf in return_list:
-                print cgf
+                print(cgf)
 
         return return_list
 
@@ -580,14 +581,14 @@ class DrtGlueFormula(GlueFormula):
         elif isinstance(meaning, drt.AbstractDrs):
             self.meaning = meaning
         else:
-            raise RuntimeError, 'Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__)
+            raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
 
         if isinstance(glue, str):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
         else:
-            raise RuntimeError, 'Glue term neither string or expression: %s, %s' % (glue, glue.__class__)
+            raise RuntimeError('Glue term neither string or expression: %s, %s' % (glue, glue.__class__))
 
         self.indices = indices
 
@@ -630,7 +631,7 @@ def demo(show_example=-1):
 #                'every big gray cat leaves',
 #                'a former senator leaves',
 
-    print '============== DEMO =============='
+    print('============== DEMO ==============')
 
     tagger = RegexpTagger(
         [('^(David|Mary|John)$', 'NNP'),
@@ -648,10 +649,10 @@ def demo(show_example=-1):
 
     for (i, sentence) in enumerate(examples):
         if i==show_example or show_example==-1:
-            print '[[[Example %s]]]  %s' % (i, sentence)
-            for reading in glue.parse_to_meaning(sentence):
-                print reading.simplify()
-            print ''
+            print('[[[Example %s]]]  %s' % (i, sentence))
+            for reading in glue.parse_to_meaning(sentence.split()):
+                print(reading.simplify())
+            print('')
 
 
 if __name__ == '__main__':

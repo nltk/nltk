@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 #
 
+from __future__ import print_function
 import threading
 import tkFont
 from Tkinter import (Button, END, Frame, IntVar, LEFT, Label, Menu,
@@ -322,8 +323,8 @@ class CollocationsModel:
                 scored.sort(key=itemgetter(1), reverse=True)
                 self.model.collocations = map(itemgetter(0), scored)
                 self.model.notify_listeners(CORPUS_LOADED_EVENT)
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
                 self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
 
 #def collocations():

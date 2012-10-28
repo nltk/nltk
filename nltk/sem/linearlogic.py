@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 from nltk.internals import Counter
 from logic import LogicParser, APP
 
@@ -217,16 +218,16 @@ class ApplicationExpression(Expression):
             if isinstance(argument, ApplicationExpression):
                 bindings += argument.bindings
             bindings += function_simp.antecedent.unify(argument_simp, bindings)
-        except UnificationException, e:
-            raise LinearLogicApplicationException, 'Cannot apply %s to %s. %s' % (function_simp, argument_simp, e)
+        except UnificationException as e:
+            raise LinearLogicApplicationException('Cannot apply %s to %s. %s' % (function_simp, argument_simp, e))
 
         # If you are running it on complied premises, more conditions apply
         if argument_indices:
             # A.dependencies of (A -o (B -o C)) must be a proper subset of argument_indices
             if not set(function_simp.antecedent.dependencies) < argument_indices:
-                raise LinearLogicApplicationException, 'Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s' % (function_simp, argument_simp)
+                raise LinearLogicApplicationException('Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s' % (function_simp, argument_simp))
             if set(function_simp.antecedent.dependencies) == argument_indices:
-                raise LinearLogicApplicationException, 'Dependencies not a proper subset of indices when attempting to apply Linear Logic formula %s to %s' % (function_simp, argument_simp)
+                raise LinearLogicApplicationException('Dependencies not a proper subset of indices when attempting to apply Linear Logic formula %s to %s' % (function_simp, argument_simp))
 
         self.function = function
         self.argument = argument
@@ -289,7 +290,7 @@ class BindingDict(object):
         if not existing or binding == existing:
             self.d[variable] = binding
         else:
-            raise VariableBindingException, 'Variable %s already bound to another value' % (variable)
+            raise VariableBindingException('Variable %s already bound to another value' % (variable))
 
     def __getitem__(self, variable):
         """
@@ -321,8 +322,8 @@ class BindingDict(object):
                 combined[v] = other.d[v]
             return combined
         except VariableBindingException:
-            raise VariableBindingException, 'Attempting to add two contradicting'\
-                        ' VariableBindingsLists: %s, %s' % (self, other)
+            raise VariableBindingException('Attempting to add two contradicting'\
+                        ' VariableBindingsLists: %s, %s' % (self, other))
 
     def __str__(self):
         return '{' + ', '.join(['%s: %s' % (v, self.d[v]) for v in self.d]) + '}'
@@ -399,14 +400,14 @@ class LinearLogicParser(LogicParser):
 def demo():
     llp = LinearLogicParser()
 
-    print llp.parse(r'f')
-    print llp.parse(r'(g -o f)')
-    print llp.parse(r'((g -o G) -o G)')
-    print llp.parse(r'g -o h -o f')
-    print llp.parse(r'(g -o f)(g)').simplify()
-    print llp.parse(r'(H -o f)(g)').simplify()
-    print llp.parse(r'((g -o G) -o G)((g -o f))').simplify()
-    print llp.parse(r'(H -o H)((g -o f))').simplify()
+    print(llp.parse(r'f'))
+    print(llp.parse(r'(g -o f)'))
+    print(llp.parse(r'((g -o G) -o G)'))
+    print(llp.parse(r'g -o h -o f'))
+    print(llp.parse(r'(g -o f)(g)').simplify())
+    print(llp.parse(r'(H -o f)(g)').simplify())
+    print(llp.parse(r'((g -o G) -o G)((g -o f))').simplify())
+    print(llp.parse(r'(H -o H)((g -o f))').simplify())
 
 
 if __name__ == '__main__':

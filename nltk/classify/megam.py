@@ -26,6 +26,7 @@ for details.
 .. _megam: http://www.cs.utah.edu/~hal/megam/
 """
 
+from __future__ import print_function
 import os
 import os.path
 import subprocess
@@ -169,8 +170,8 @@ def call_megam(args):
 
     # Check the return code.
     if p.returncode != 0:
-        print
-        print stderr
+        print()
+        print(stderr)
         raise OSError('megam command failed!')
 
     return stdout

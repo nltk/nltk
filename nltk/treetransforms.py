@@ -107,6 +107,7 @@ The following is a short tutorial on the available transformations.
 
 """
 
+from __future__ import print_function
 from nltk.tree import Tree
 
 def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
@@ -296,9 +297,9 @@ def demo():
 
     # convert tree back to bracketed text
     sentence2 = original.pprint()
-    print sentence
-    print sentence2
-    print "Sentences the same? ", sentence == sentence2
+    print(sentence)
+    print(sentence2)
+    print("Sentences the same? ", sentence == sentence2)
 
     draw_trees(t, collapsedTree, cnfTree, parentTree, original)
 

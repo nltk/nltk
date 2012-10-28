@@ -10,6 +10,7 @@
 Module for a tableau-based First Order theorem prover.
 """
 
+from __future__ import print_function
 from nltk.internals import Counter
 
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
@@ -42,12 +43,12 @@ class TableauProver(Prover):
             agenda.put_all(assumptions)
             debugger = Debug(verbose)
             result = self._attempt_proof(agenda, set(), set(), debugger)
-        except RuntimeError, e:
+        except RuntimeError as e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 result = False
             else:
                 if verbose:
-                    print e
+                    print(e)
                 else:
                     raise e
         return (result, '\n'.join(debugger.lines))
@@ -145,10 +146,7 @@ class TableauProver(Prover):
                 ctx = f
                 nv = Variable('X%s' % _counter.get())
                 for j,a in enumerate(args):
-                    if i==j:
-                        ctx = ctx(VariableExpression(nv))
-                    else:
-                        ctx = ctx(a)
+                    ctx = (ctx(VariableExpression(nv)) if i == j else ctx(a))
                 if context:
                     ctx = context(ctx).simplify()
                 ctx = LambdaExpression(nv, ctx)
@@ -163,10 +161,7 @@ class TableauProver(Prover):
                 ctx = f
                 nv = Variable('X%s' % _counter.get())
                 for j,a in enumerate(args):
-                    if i==j:
-                        ctx = ctx(VariableExpression(nv))
-                    else:
-                        ctx = ctx(a)
+                    ctx = (ctx(VariableExpression(nv)) if i == j else ctx(a))
                 if context:
                     #combine new context with existing
                     ctx = context(ctx).simplify()
@@ -506,7 +501,7 @@ class Debug(object):
         self.lines.append(newline)
 
         if self.verbose:
-            print newline
+            print(newline)
 
 
 class Categories(object):
@@ -600,12 +595,10 @@ def testHigherOrderTableauProver():
 def tableau_test(c, ps=None, verbose=False):
     lp = LogicParser()
     pc = lp.parse(c)
-    if ps:
-        pps = [lp.parse(p) for p in ps]
-    else:
+    pps = ([lp.parse(p) for p in ps] if ps else [])
+    if not ps:
         ps = []
-        pps = []
-    print '%s |- %s: %s' % (', '.join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose))
+    print('%s |- %s: %s' % (', '.join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose)))
 
 def demo():
     testTableauProver()

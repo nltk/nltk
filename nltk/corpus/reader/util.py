@@ -24,7 +24,7 @@ from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.sourcedstring import SourcedStringStream
-from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation
+from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
 
 ######################################################################
 #{ Corpus View
@@ -180,7 +180,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
                 self._eofpos = self._fileid.file_size()
             else:
                 self._eofpos = os.stat(self._fileid).st_size
-        except Exception, exc:
+        except Exception as exc:
             raise ValueError('Unable to open or access %r -- %s' %
                              (fileid, exc))
 
@@ -539,7 +539,7 @@ class PickleCorpusView(StreamBackedCorpusView):
             cls.write(sequence, output_file)
             output_file.close()
             return PickleCorpusView(output_file_name, delete_on_gc)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             raise ValueError('Error while creating temp file: %s' % e)
 
 
@@ -685,7 +685,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
 
             # Return the list of tokens we processed
             return tokens
-        except ValueError, e:
+        except ValueError as e:
             if e.args[0] == 'Block too small':
                 next_block = stream.read(block_size)
                 if next_block:
@@ -760,7 +760,11 @@ def find_corpus_fileids(root, regexp):
     # or symlinked) subdirectories, and match paths against the regexp.
     elif isinstance(root, FileSystemPathPointer):
         items = []
-        for dirname, subdirs, fileids in os.walk(root.path, followlinks=True):
+        # workaround for py25 which doesn't support followlinks
+        kwargs = {}
+        if not py25():
+            kwargs = {'followlinks': True}
+        for dirname, subdirs, fileids in os.walk(root.path, **kwargs):
             prefix = ''.join('%s/' % p for p in _path_from(root.path, dirname))
             items += [prefix+fileid for fileid in fileids
                       if re.match(regexp, prefix+fileid)]

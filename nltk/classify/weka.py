@@ -9,6 +9,7 @@
 Classifiers that make use of the external 'Weka' package.
 """
 
+from __future__ import print_function
 import time
 import tempfile
 import os
@@ -47,10 +48,10 @@ def config_weka(classpath=None):
                 _weka_classpath = os.path.join(path, 'weka.jar')
                 version = _check_weka_version(_weka_classpath)
                 if version:
-                    print ('[Found Weka: %s (version %s)]' %
-                           (_weka_classpath, version))
+                    print(('[Found Weka: %s (version %s)]' %
+                           (_weka_classpath, version)))
                 else:
-                    print '[Found Weka: %s]' % _weka_classpath
+                    print('[Found Weka: %s]' % _weka_classpath)
                 _check_weka_version(_weka_classpath)
 
     if _weka_classpath is None:
@@ -62,7 +63,7 @@ def config_weka(classpath=None):
 def _check_weka_version(jar):
     try:
         zf = zipfile.ZipFile(jar)
-    except SystemExit, KeyboardInterrupt:
+    except SystemExit as KeyboardInterrupt:
         raise
     except:
         return None
@@ -146,7 +147,7 @@ class WekaClassifier(ClassifierI):
             return [line.split()[1] for line in lines if line.strip()]
 
         else:
-            for line in lines[:10]: print line
+            for line in lines[:10]: print(line)
             raise ValueError('Unhandled output format -- your version '
                              'of weka may not be supported.\n'
                              '  Header: %s' % lines[0])

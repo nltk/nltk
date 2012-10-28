@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 #
 
+from __future__ import print_function
 from nltk.grammar import Nonterminal, parse_cfg
 
 def all_combsi(lol):
@@ -68,7 +69,7 @@ def _generate_demo():
       P -> 'in' | 'with'
     """)
     for s in generate(g):
-        print ' '.join(s)
+        print(' '.join(s))
 
 if __name__ == "__main__":
     _generate_demo()

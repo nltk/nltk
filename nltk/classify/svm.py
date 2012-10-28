@@ -14,6 +14,7 @@ train a linear classification kernel, though through minor modification, full SV
 capabilities should be accessible if needed. Only binary classification is possible at present.
 """
 
+from __future__ import print_function
 from nltk.probability import DictionaryProbDist
 
 from nltk.classify.api import ClassifierI
@@ -136,7 +137,7 @@ class SvmClassifier(ClassifierI):
         """
         instance_to_classify = (0, map_features_to_svm(featureset, self._svmfeatureindex))
         if self._verbose:
-            print 'instance', instance_to_classify
+            print('instance', instance_to_classify)
         # svmlight.classify expects a list; this should be taken advantage of when writing SvmClassifier.batch_classify / .batch_prob_classify.
         # it returns a list of floats, too.
         [prediction] = svmlight.classify(self._model, [instance_to_classify])
@@ -155,7 +156,7 @@ class SvmClassifier(ClassifierI):
         # do the classification
         prediction = self._get_svm_classification(featureset)
         if self._verbose:
-            print 'prediction', prediction
+            print('prediction', prediction)
 
         # lump it into a boolean class, -1 or +1
         predicted_label = cmp(prediction, 0)
@@ -191,7 +192,7 @@ class SvmClassifier(ClassifierI):
         """
         prediction = self._get_svm_classification(featureset)
         if self._verbose:
-            print 'prediction', prediction
+            print('prediction', prediction)
         return self.resolve_prediction(prediction)
 
     @staticmethod
@@ -260,19 +261,19 @@ def demo():
     featuresets = [(gender_features(n), g) for (n,g) in names]
     train_set, test_set = featuresets[500:], featuresets[:500]
 
-    print '--- nltk.classify.svm demo ---'
-    print 'Number of training examples:', len(train_set)
+    print('--- nltk.classify.svm demo ---')
+    print('Number of training examples:', len(train_set))
     classifier = SvmClassifier.train(train_set)
-    print 'Total SVM dimensions:', len(classifier._svmfeatureindex)
-    print 'Label mapping:', classifier._labelmapping
-    print '--- Processing an example instance ---'
-    print 'Reference instance:', names[0]
-    print 'NLTK-format features:\n    ' + str(test_set[0])
-    print 'SVMlight-format features:\n    ' + str(map_instance_to_svm(test_set[0], classifier._labelmapping, classifier._svmfeatureindex))
+    print('Total SVM dimensions:', len(classifier._svmfeatureindex))
+    print('Label mapping:', classifier._labelmapping)
+    print('--- Processing an example instance ---')
+    print('Reference instance:', names[0])
+    print('NLTK-format features:\n    ' + str(test_set[0]))
+    print('SVMlight-format features:\n    ' + str(map_instance_to_svm(test_set[0], classifier._labelmapping, classifier._svmfeatureindex)))
     distr = classifier.prob_classify(test_set[0][0])
-    print 'Instance classification and confidence:', distr.max(), distr.prob(distr.max())
-    print '--- Measuring classifier performance ---'
-    print 'Overall accuracy:', accuracy(classifier, test_set)
+    print('Instance classification and confidence:', distr.max(), distr.prob(distr.max()))
+    print('--- Measuring classifier performance ---')
+    print('Overall accuracy:', accuracy(classifier, test_set))
 
 
 if __name__ == '__main__':

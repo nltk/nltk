@@ -9,6 +9,7 @@
 """
 Utility functions and classes for classifiers.
 """
+from __future__ import print_function
 import math
 
 #from nltk.util import Deprecated
@@ -178,13 +179,13 @@ def names_demo(trainer, features=names_demo_features):
     test = namelist[5000:5500]
 
     # Train up a classifier.
-    print 'Training classifier...'
+    print('Training classifier...')
     classifier = trainer( [(features(n), g) for (n,g) in train] )
 
     # Run the classifier on the test data.
-    print 'Testing classifier...'
+    print('Testing classifier...')
     acc = accuracy(classifier, [(features(n),g) for (n,g) in test])
-    print 'Accuracy: %6.4f' % acc
+    print('Accuracy: %6.4f' % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
@@ -193,15 +194,15 @@ def names_demo(trainer, features=names_demo_features):
         pdists = classifier.batch_prob_classify(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
-        print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
-        print
-        print 'Unseen Names      P(Male)  P(Female)\n'+'-'*40
+        print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
+        print()
+        print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
         for ((name, gender), pdist) in zip(test, pdists)[:5]:
             if gender == 'male':
                 fmt = '  %-15s *%6.4f   %6.4f'
             else:
                 fmt = '  %-15s  %6.4f  *%6.4f'
-            print fmt % (name, pdist.prob('male'), pdist.prob('female'))
+            print(fmt % (name, pdist.prob('male'), pdist.prob('female')))
     except NotImplementedError:
         pass
 
@@ -232,13 +233,13 @@ def partial_names_demo(trainer, features=names_demo_features):
     random.shuffle(test)
 
     # Train up a classifier.
-    print 'Training classifier...'
+    print('Training classifier...')
     classifier = trainer(positive, unlabeled)
 
     # Run the classifier on the test data.
-    print 'Testing classifier...'
+    print('Testing classifier...')
     acc = accuracy(classifier, [(features(n),m) for (n,m) in test])
-    print 'Accuracy: %6.4f' % acc
+    print('Accuracy: %6.4f' % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
@@ -247,15 +248,15 @@ def partial_names_demo(trainer, features=names_demo_features):
         pdists = classifier.batch_prob_classify(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
-        print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
-        print
-        print 'Unseen Names      P(Male)  P(Female)\n'+'-'*40
+        print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
+        print()
+        print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
         for ((name, is_male), pdist) in zip(test, pdists)[:5]:
             if is_male == True:
                 fmt = '  %-15s *%6.4f   %6.4f'
             else:
                 fmt = '  %-15s  %6.4f  *%6.4f'
-            print fmt % (name, pdist.prob(True), pdist.prob(False))
+            print(fmt % (name, pdist.prob(True), pdist.prob(False)))
     except NotImplementedError:
         pass
 
@@ -268,30 +269,30 @@ def wsd_demo(trainer, word, features, n=1000):
     import random
 
     # Get the instances.
-    print 'Reading data...'
+    print('Reading data...')
     global _inst_cache
     if word not in _inst_cache:
         _inst_cache[word] = [(i, i.senses[0]) for i in senseval.instances(word)]
     instances = _inst_cache[word][:]
     if n> len(instances): n = len(instances)
     senses = list(set(l for (i,l) in instances))
-    print '  Senses: ' + ' '.join(senses)
+    print('  Senses: ' + ' '.join(senses))
 
     # Randomly split the names into a test & train set.
-    print 'Splitting into test & train...'
+    print('Splitting into test & train...')
     random.seed(123456)
     random.shuffle(instances)
     train = instances[:int(.8*n)]
     test = instances[int(.8*n):n]
 
     # Train up a classifier.
-    print 'Training classifier...'
+    print('Training classifier...')
     classifier = trainer( [(features(i), l) for (i,l) in train] )
 
     # Run the classifier on the test data.
-    print 'Testing classifier...'
+    print('Testing classifier...')
     acc = accuracy(classifier, [(features(i),l) for (i,l) in test])
-    print 'Accuracy: %6.4f' % acc
+    print('Accuracy: %6.4f' % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
@@ -300,7 +301,7 @@ def wsd_demo(trainer, word, features, n=1000):
         pdists = classifier.batch_prob_classify(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
-        print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
+        print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
     except NotImplementedError:
         pass
 

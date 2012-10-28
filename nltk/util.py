@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import locale
 import re
 import types
@@ -16,6 +17,7 @@ import os
 from itertools import islice, chain
 from pprint import pprint
 from collections import defaultdict, deque
+from sys import version_info
 
 from nltk.internals import slice_bounds
 
@@ -30,7 +32,7 @@ def usage(obj, selfname='self'):
     if not isinstance(obj, (types.TypeType, types.ClassType)):
         obj = obj.__class__
 
-    print '%s supports the following operations:' % obj.__name__
+    print('%s supports the following operations:' % obj.__name__)
     for (name, method) in sorted(pydoc.allmethods(obj).items()):
         if name.startswith('_'): continue
         if getattr(method, '__deprecated__', False): continue
@@ -42,9 +44,9 @@ def usage(obj, selfname='self'):
             name = '%s.%s' % (selfname, name)
         argspec = inspect.formatargspec(
             args, varargs, varkw, defaults)
-        print textwrap.fill('%s%s' % (name, argspec),
+        print(textwrap.fill('%s%s' % (name, argspec),
                             initial_indent='  - ',
-                            subsequent_indent=' '*(len(name)+5))
+                            subsequent_indent=' '*(len(name)+5)))
 
 ##########################################################################
 # IDLE
@@ -91,7 +93,7 @@ def print_string(s, width=70):
     :param width: the display width
     :type width: int
     """
-    print '\n'.join(textwrap.wrap(s, width=width))
+    print('\n'.join(textwrap.wrap(s, width=width)))
 
 def tokenwrap(tokens, separator=" ", width=70):
     """
@@ -105,6 +107,18 @@ def tokenwrap(tokens, separator=" ", width=70):
     :type width: int
     """
     return '\n'.join(textwrap.wrap(separator.join(tokens), width=width))
+
+
+##########################################################################
+# Python version
+##########################################################################
+
+def py25():
+    return version_info[0] == 2 and version_info[1] == 5
+def py26():
+    return version_info[0] == 2 and version_info[1] == 6
+def py27():
+    return version_info[0] == 2 and version_info[1] == 7
 
 
 ##########################################################################
@@ -139,7 +153,7 @@ def re_show(regexp, string, left="{", right="}"):
     :type right: str
     :rtype: str
     """
-    print re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
+    print(re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
 
 
 ##########################################################################
@@ -153,7 +167,7 @@ def filestring(f):
     elif isinstance(f, basestring):
         return open(f).read()
     else:
-        raise ValueError, "Must be called with a filename or file-like object"
+        raise ValueError("Must be called with a filename or file-like object")
 
 ##########################################################################
 # Breadth-First Search
@@ -551,8 +565,7 @@ class OrderedDict(dict):
     def __missing__(self, key):
         if not self._default_factory and key not in self._keys:
             raise KeyError()
-        else:
-            return self._default_factory()
+        return self._default_factory()
 
     def __setitem__(self, key, item):
         dict.__setitem__(self, key, item)
@@ -591,13 +604,13 @@ class OrderedDict(dict):
             return []
 
     def popitem(self):
-        if self._keys:
-            key = self._keys.pop()
-            value = self[key]
-            del self[key]
-            return (key, value)
-        else:
+        if not self._keys:
             raise KeyError()
+
+        key = self._keys.pop()
+        value = self[key]
+        del self[key]
+        return (key, value)
 
     def setdefault(self, key, failobj=None):
         dict.setdefault(self, key, failobj)
@@ -885,10 +898,7 @@ class LazyMap(AbstractLazySequence):
         self._lists = lists
         self._func = function
         self._cache_size = config.get('cache_size', 5)
-        if self._cache_size > 0:
-            self._cache = {}
-        else:
-            self._cache = None
+        self._cache = ({} if self._cache_size > 0 else None)
 
         # If you just take bool() of sum() here _all_lazy will be true just
         # in case n >= 1 list is an AbstractLazySequence.  Presumably this

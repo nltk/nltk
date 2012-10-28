@@ -11,6 +11,7 @@ A version of first order predicate logic, built on
 top of the typed lambda calculus.
 """
 
+from __future__ import print_function
 import re
 import operator
 from collections import defaultdict
@@ -60,7 +61,7 @@ def boolean_ops():
     """
     names =  ["negation", "conjunction", "disjunction", "implication", "equivalence"]
     for pair in zip(names, [Tokens.NOT, Tokens.AND, Tokens.OR, Tokens.IMP, Tokens.IFF]):
-        print "%-15s\t%s" %  pair
+        print("%-15s\t%s" %  pair)
 
 def equality_preds():
     """
@@ -68,7 +69,7 @@ def equality_preds():
     """
     names =  ["equality", "inequality"]
     for pair in zip(names, [Tokens.EQ, Tokens.NEQ]):
-        print "%-15s\t%s" %  pair
+        print("%-15s\t%s" %  pair)
 
 def binding_ops():
     """
@@ -76,7 +77,7 @@ def binding_ops():
     """
     names =  ["existential", "universal", "lambda"]
     for pair in zip(names, [Tokens.EXISTS, Tokens.ALL, Tokens.LAMBDA]):
-        print "%-15s\t%s" %  pair
+        print("%-15s\t%s" %  pair)
 
 
 class Variable(object):
@@ -1285,7 +1286,7 @@ class LogicParser(object):
             result = self.parse_Expression(None)
             if self.inRange(0):
                 raise UnexpectedTokenException(self._currentIndex+1, self.token(0))
-        except ParseException, e:
+        except ParseException as e:
             msg = '%s\n%s\n%s^' % (e, data, ' '*mapping[e.index-1])
             raise ParseException(None, msg)
 
@@ -1479,7 +1480,7 @@ class LogicParser(object):
     def get_next_token_variable(self, description):
         try:
             tok = self.token()
-        except ExpectedMoreTokensException, e:
+        except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(e.index, 'Variable expected.')
         if isinstance(self.make_VariableExpression(tok), ConstantExpression):
             raise ParseException(self._currentIndex,
@@ -1644,7 +1645,7 @@ class LogicParser(object):
     def assertNextToken(self, expected):
         try:
             tok = self.token()
-        except ExpectedMoreTokensException, e:
+        except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(e.index, message="Expected token '%s'." % expected)
 
         if isinstance(expected, list):
@@ -1691,7 +1692,7 @@ def parse_logic(s, logic_parser=None):
         try:
             statements.append(logic_parser.parse(line))
         except ParseException:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements
 
 
@@ -1773,38 +1774,38 @@ def is_eventvar(expr):
 
 def demo():
     p = LogicParser().parse
-    print '='*20 + 'Test parser' + '='*20
-    print p(r'john')
-    print p(r'man(x)')
-    print p(r'-man(x)')
-    print p(r'(man(x) & tall(x) & walks(x))')
-    print p(r'exists x.(man(x) & tall(x) & walks(x))')
-    print p(r'\x.man(x)')
-    print p(r'\x.man(x)(john)')
-    print p(r'\x y.sees(x,y)')
-    print p(r'\x y.sees(x,y)(a,b)')
-    print p(r'(\x.exists y.walks(x,y))(x)')
-    print p(r'exists x.x = y')
-    print p(r'exists x.(x = y)')
-    print p('P(x) & x=y & P(y)')
-    print p(r'\P Q.exists x.(P(x) & Q(x))')
-    print p(r'man(x) <-> tall(x)')
+    print('='*20 + 'Test parser' + '='*20)
+    print(p(r'john'))
+    print(p(r'man(x)'))
+    print(p(r'-man(x)'))
+    print(p(r'(man(x) & tall(x) & walks(x))'))
+    print(p(r'exists x.(man(x) & tall(x) & walks(x))'))
+    print(p(r'\x.man(x)'))
+    print(p(r'\x.man(x)(john)'))
+    print(p(r'\x y.sees(x,y)'))
+    print(p(r'\x y.sees(x,y)(a,b)'))
+    print(p(r'(\x.exists y.walks(x,y))(x)'))
+    print(p(r'exists x.x = y'))
+    print(p(r'exists x.(x = y)'))
+    print(p('P(x) & x=y & P(y)'))
+    print(p(r'\P Q.exists x.(P(x) & Q(x))'))
+    print(p(r'man(x) <-> tall(x)'))
 
-    print '='*20 + 'Test simplify' + '='*20
-    print p(r'\x.\y.sees(x,y)(john)(mary)').simplify()
-    print p(r'\x.\y.sees(x,y)(john, mary)').simplify()
-    print p(r'all x.(man(x) & (\x.exists y.walks(x,y))(x))').simplify()
-    print p(r'(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))').simplify()
+    print('='*20 + 'Test simplify' + '='*20)
+    print(p(r'\x.\y.sees(x,y)(john)(mary)').simplify())
+    print(p(r'\x.\y.sees(x,y)(john, mary)').simplify())
+    print(p(r'all x.(man(x) & (\x.exists y.walks(x,y))(x))').simplify())
+    print(p(r'(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))').simplify())
 
-    print '='*20 + 'Test alpha conversion and binder expression equality' + '='*20
+    print('='*20 + 'Test alpha conversion and binder expression equality' + '='*20)
     e1 = p('exists x.P(x)')
-    print e1
+    print(e1)
     e2 = e1.alpha_convert(Variable('z'))
-    print e2
-    print e1 == e2
+    print(e2)
+    print(e1 == e2)
 
 def demo_errors():
-    print '='*20 + 'Test parser errors' + '='*20
+    print('='*20 + 'Test parser errors' + '='*20)
     demoException('(P(x) & Q(x)')
     demoException('((P(x) &) & Q(x))')
     demoException('P(x) -> ')
@@ -1822,11 +1823,11 @@ def demo_errors():
 def demoException(s):
     try:
         LogicParser().parse(s)
-    except ParseException, e:
-        print "%s: %s" % (e.__class__.__name__, e)
+    except ParseException as e:
+        print("%s: %s" % (e.__class__.__name__, e))
 
 def printtype(ex):
-    print ex.str() + ' : ' + str(ex.type)
+    print(ex.str() + ' : ' + str(ex.type))
 
 if __name__ == '__main__':
     demo()

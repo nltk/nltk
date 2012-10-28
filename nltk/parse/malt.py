@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import os
 import tempfile
 import glob
@@ -81,7 +82,7 @@ class MaltParser(ParserI):
         # Find the malt binary.
         self._malt_bin = find_binary('malt.jar', bin,
             searchpath=malt_path, env_vars=['MALTPARSERHOME'],
-            url='http://w3.msi.vxu.se/~jha/maltparser/index.html',
+            url='http://www.maltparser.org/',
             verbose=verbose)
 
     def parse(self, sentence, verbose=False):
@@ -231,8 +232,8 @@ def demo():
     maltParser = MaltParser()
     maltParser.train([dg1,dg2], verbose=verbose)
 
-    print maltParser.raw_parse('John sees Mary', verbose=verbose).tree().pprint()
-    print maltParser.raw_parse('a man runs', verbose=verbose).tree().pprint()
+    print(maltParser.raw_parse('John sees Mary', verbose=verbose).tree().pprint())
+    print(maltParser.raw_parse('a man runs', verbose=verbose).tree().pprint())
 
 if __name__ == '__main__':
     demo()

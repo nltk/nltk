@@ -7,8 +7,10 @@
 # For license information, see LICENSE.TXT
 #
 
+from __future__ import print_function
 import math
 from pprint import pformat
+from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
                           StatisticalDependencyGrammar, parse_dependency_grammar)
@@ -222,7 +224,7 @@ class ProjectiveDependencyParser(object):
         """
         spans = []
         if span1._start_index == span2._start_index:
-            print 'Error: Mismatched spans - replace this with thrown error'
+            print('Error: Mismatched spans - replace this with thrown error')
         if span1._start_index > span2._start_index:
             temp_span = span1
             span1 = span2
@@ -264,7 +266,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         Create a new probabilistic dependency parser.  No additional
         operations are necessary.
         """
-        print ''
+        print('')
 
     def parse(self, tokens):
         """
@@ -285,7 +287,7 @@ class ProbabilisticProjectiveDependencyParser(object):
                         for tag in self._grammar._tags[tokens[i-1]]:
                             chart[i][j].add(DependencySpan(i-1,i,i-1,[-1], [tag]))
                     else:
-                        print 'No tag found for input token \'%s\', parse is impossible.' % tokens[i-1]
+                        print('No tag found for input token \'%s\', parse is impossible.' % tokens[i-1])
                         return []
         for i in range(1,len(self._tokens)+1):
             for j in range(i-2,-1,-1):
@@ -326,7 +328,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         """
         spans = []
         if span1._start_index == span2._start_index:
-            print 'Error: Mismatched spans - replace this with thrown error'
+            print('Error: Mismatched spans - replace this with thrown error')
         if span1._start_index > span2._start_index:
             temp_span = span1
             span1 = span2
@@ -356,7 +358,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         :type: list(DependencyGraph)
         """
         productions = []
-        events = {}
+        events = defaultdict(int)
         tags = {}
         for dg in graphs:
             for node_index in range(1,len(dg.nodelist)):
@@ -387,14 +389,8 @@ class ProbabilisticProjectiveDependencyParser(object):
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) left))' % (child, child_tag, prev_tag, head_word, head_tag)
                         mod_event = '(mods (%s, %s, %s) left))' % (prev_tag, head_word, head_tag)
-                        if head_event in events:
-                            events[head_event] += 1
-                        else:
-                            events[head_event] = 1
-                        if mod_event in events:
-                            events[mod_event] += 1
-                        else:
-                            events[mod_event] = 1
+                        events[head_event] += 1
+                        events[mod_event] += 1
                     elif child_index > 0:
                         array_index = child_index + nr_left_children - 1
                         if array_index < nr_children:
@@ -407,14 +403,8 @@ class ProbabilisticProjectiveDependencyParser(object):
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) right))' % (child, child_tag, prev_tag, head_word, head_tag)
                         mod_event = '(mods (%s, %s, %s) right))' % (prev_tag, head_word, head_tag)
-                        if head_event in events:
-                            events[head_event] += 1
-                        else:
-                            events[head_event] = 1
-                        if mod_event in events:
-                            events[mod_event] += 1
-                        else:
-                            events[mod_event] = 1
+                        events[head_event] += 1
+                        events[mod_event] += 1
         self._grammar = StatisticalDependencyGrammar(productions, events, tags)
 #        print self._grammar
 
@@ -492,11 +482,11 @@ def projective_rule_parse_demo():
     'walls' -> 'the'
     'cats' -> 'the'
     """)
-    print grammar
+    print(grammar)
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(['the', 'cats', 'scratch', 'the', 'walls'])
     for tree in trees:
-        print tree
+        print(tree)
 
 def arity_parse_demo():
     """
@@ -505,45 +495,45 @@ def arity_parse_demo():
     head.  This can further constrain the number of possible parses
     created by a ``ProjectiveDependencyParser``.
     """
-    print
-    print 'A grammar with no arity constraints. Each DependencyProduction'
-    print 'specifies a relationship between one head word and only one'
-    print 'modifier word.'
+    print()
+    print('A grammar with no arity constraints. Each DependencyProduction')
+    print('specifies a relationship between one head word and only one')
+    print('modifier word.')
     grammar = parse_dependency_grammar("""
     'fell' -> 'price' | 'stock'
     'price' -> 'of' | 'the'
     'of' -> 'stock'
     'stock' -> 'the'
     """)
-    print grammar
+    print(grammar)
 
-    print
-    print 'For the sentence \'The price of the stock fell\', this grammar'
-    print 'will produce the following three parses:'
+    print()
+    print('For the sentence \'The price of the stock fell\', this grammar')
+    print('will produce the following three parses:')
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(['the', 'price', 'of', 'the', 'stock', 'fell'])
     for tree in trees:
-        print tree
+        print(tree)
 
-    print
-    print 'By contrast, the following grammar contains a '
-    print 'DependencyProduction that specifies a relationship'
-    print 'between a single head word, \'price\', and two modifier'
-    print 'words, \'of\' and \'the\'.'
+    print()
+    print('By contrast, the following grammar contains a ')
+    print('DependencyProduction that specifies a relationship')
+    print('between a single head word, \'price\', and two modifier')
+    print('words, \'of\' and \'the\'.')
     grammar = parse_dependency_grammar("""
     'fell' -> 'price' | 'stock'
     'price' -> 'of' 'the'
     'of' -> 'stock'
     'stock' -> 'the'
     """)
-    print grammar
+    print(grammar)
 
-    print
-    print 'This constrains the number of possible parses to just one:' # unimplemented, soon to replace
+    print()
+    print('This constrains the number of possible parses to just one:') # unimplemented, soon to replace
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(['the', 'price', 'of', 'the', 'stock', 'fell'])
     for tree in trees:
-        print tree
+        print(tree)
 
 def projective_prob_parse_demo():
     """
@@ -553,13 +543,13 @@ def projective_prob_parse_demo():
     graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]
     ppdp = ProbabilisticProjectiveDependencyParser()
-    print 'Training Probabilistic Projective Dependency Parser...'
+    print('Training Probabilistic Projective Dependency Parser...')
     ppdp.train(graphs)
     sent = ['Cathy', 'zag', 'hen', 'wild', 'zwaaien', '.']
-    print 'Parsing \'', " ".join(sent), '\'...'
+    print('Parsing \'', " ".join(sent), '\'...')
     parse = ppdp.parse(sent)
-    print 'Parse:'
-    print parse[0]
+    print('Parse:')
+    print(parse[0])
 
 
 if __name__ == '__main__':

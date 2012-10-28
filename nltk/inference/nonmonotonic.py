@@ -12,6 +12,7 @@ this module are based on "Logical Foundations of Artificial Intelligence" by
 Michael R. Genesereth and Nils J. Nilsson.
 """
 
+from __future__ import print_function
 from prover9 import Prover9, Prover9Command
 from collections import defaultdict
 
@@ -316,47 +317,47 @@ def closed_domain_demo():
     p2 = lp.parse(r'man(Socrates)')
     c = lp.parse(r'walk(Socrates)')
     prover = Prover9Command(c, [p1,p2])
-    print prover.prove()
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    print 'assumptions:'
-    for a in cdp.assumptions(): print '   ', a
-    print 'goal:', cdp.goal()
-    print cdp.prove()
+    print('assumptions:')
+    for a in cdp.assumptions(): print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
     p1 = lp.parse(r'exists x.walk(x)')
     p2 = lp.parse(r'man(Socrates)')
     p3 = lp.parse(r'-walk(Bill)')
     c = lp.parse(r'walk(Socrates)')
     prover = Prover9Command(c, [p1,p2,p3])
-    print prover.prove()
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    print 'assumptions:'
-    for a in cdp.assumptions(): print '   ', a
-    print 'goal:', cdp.goal()
-    print cdp.prove()
+    print('assumptions:')
+    for a in cdp.assumptions(): print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
     p1 = lp.parse(r'exists x.walk(x)')
     p2 = lp.parse(r'man(Socrates)')
     p3 = lp.parse(r'-walk(Bill)')
     c = lp.parse(r'walk(Socrates)')
     prover = Prover9Command(c, [p1,p2,p3])
-    print prover.prove()
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    print 'assumptions:'
-    for a in cdp.assumptions(): print '   ', a
-    print 'goal:', cdp.goal()
-    print cdp.prove()
+    print('assumptions:')
+    for a in cdp.assumptions(): print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
     p1 = lp.parse(r'walk(Socrates)')
     p2 = lp.parse(r'walk(Bill)')
     c = lp.parse(r'all x.walk(x)')
     prover = Prover9Command(c, [p1,p2])
-    print prover.prove()
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    print 'assumptions:'
-    for a in cdp.assumptions(): print '   ', a
-    print 'goal:', cdp.goal()
-    print cdp.prove()
+    print('assumptions:')
+    for a in cdp.assumptions(): print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
     p1 = lp.parse(r'girl(mary)')
     p2 = lp.parse(r'dog(rover)')
@@ -365,12 +366,12 @@ def closed_domain_demo():
     p5 = lp.parse(r'chase(mary, rover)')
     c = lp.parse(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
     prover = Prover9Command(c, [p1,p2,p3,p4,p5])
-    print prover.prove()
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    print 'assumptions:'
-    for a in cdp.assumptions(): print '   ', a
-    print 'goal:', cdp.goal()
-    print cdp.prove()
+    print('assumptions:')
+    for a in cdp.assumptions(): print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
 def unique_names_demo():
     lp = LogicParser()
@@ -379,24 +380,24 @@ def unique_names_demo():
     p2 = lp.parse(r'man(Bill)')
     c = lp.parse(r'exists x.exists y.(x != y)')
     prover = Prover9Command(c, [p1,p2])
-    print prover.prove()
+    print(prover.prove())
     unp = UniqueNamesProver(prover)
-    print 'assumptions:'
-    for a in unp.assumptions(): print '   ', a
-    print 'goal:', unp.goal()
-    print unp.prove()
+    print('assumptions:')
+    for a in unp.assumptions(): print('   ', a)
+    print('goal:', unp.goal())
+    print(unp.prove())
 
     p1 = lp.parse(r'all x.(walk(x) -> (x = Socrates))')
     p2 = lp.parse(r'Bill = William')
     p3 = lp.parse(r'Bill = Billy')
     c = lp.parse(r'-walk(William)')
     prover = Prover9Command(c, [p1,p2,p3])
-    print prover.prove()
+    print(prover.prove())
     unp = UniqueNamesProver(prover)
-    print 'assumptions:'
-    for a in unp.assumptions(): print '   ', a
-    print 'goal:', unp.goal()
-    print unp.prove()
+    print('assumptions:')
+    for a in unp.assumptions(): print('   ', a)
+    print('goal:', unp.goal())
+    print(unp.prove())
 
 def closed_world_demo():
     lp = LogicParser()
@@ -405,12 +406,12 @@ def closed_world_demo():
     p2 = lp.parse(r'(Socrates != Bill)')
     c = lp.parse(r'-walk(Bill)')
     prover = Prover9Command(c, [p1,p2])
-    print prover.prove()
+    print(prover.prove())
     cwp = ClosedWorldProver(prover)
-    print 'assumptions:'
-    for a in cwp.assumptions(): print '   ', a
-    print 'goal:', cwp.goal()
-    print cwp.prove()
+    print('assumptions:')
+    for a in cwp.assumptions(): print('   ', a)
+    print('goal:', cwp.goal())
+    print(cwp.prove())
 
     p1 = lp.parse(r'see(Socrates, John)')
     p2 = lp.parse(r'see(John, Mary)')
@@ -418,12 +419,12 @@ def closed_world_demo():
     p4 = lp.parse(r'(John != Mary)')
     c = lp.parse(r'-see(Socrates, Mary)')
     prover = Prover9Command(c, [p1,p2,p3,p4])
-    print prover.prove()
+    print(prover.prove())
     cwp = ClosedWorldProver(prover)
-    print 'assumptions:'
-    for a in cwp.assumptions(): print '   ', a
-    print 'goal:', cwp.goal()
-    print cwp.prove()
+    print('assumptions:')
+    for a in cwp.assumptions(): print('   ', a)
+    print('goal:', cwp.goal())
+    print(cwp.prove())
 
     p1 = lp.parse(r'all x.(ostrich(x) -> bird(x))')
     p2 = lp.parse(r'bird(Tweety)')
@@ -431,12 +432,12 @@ def closed_world_demo():
     p4 = lp.parse(r'Sam != Tweety')
     c = lp.parse(r'-bird(Sam)')
     prover = Prover9Command(c, [p1,p2,p3,p4])
-    print prover.prove()
+    print(prover.prove())
     cwp = ClosedWorldProver(prover)
-    print 'assumptions:'
-    for a in cwp.assumptions(): print '   ', a
-    print 'goal:', cwp.goal()
-    print cwp.prove()
+    print('assumptions:')
+    for a in cwp.assumptions(): print('   ', a)
+    print('goal:', cwp.goal())
+    print(cwp.prove())
 
 def combination_prover_demo():
     lp = LogicParser()
@@ -445,12 +446,12 @@ def combination_prover_demo():
     p2 = lp.parse(r'see(John, Mary)')
     c = lp.parse(r'-see(Socrates, Mary)')
     prover = Prover9Command(c, [p1,p2])
-    print prover.prove()
+    print(prover.prove())
     command = ClosedDomainProver(
                   UniqueNamesProver(
                       ClosedWorldProver(prover)))
-    for a in command.assumptions(): print a
-    print command.prove()
+    for a in command.assumptions(): print(a)
+    print(command.prove())
 
 def default_reasoning_demo():
     lp = LogicParser()
@@ -482,7 +483,7 @@ def default_reasoning_demo():
     #print the assumptions
     prover = Prover9Command(None, premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
-    for a in command.assumptions(): print a
+    for a in command.assumptions(): print(a)
 
     print_proof('-fly(E)', premises)
     print_proof('fly(D)', premises)
@@ -492,7 +493,7 @@ def print_proof(goal, premises):
     lp = LogicParser()
     prover = Prover9Command(lp.parse(goal), premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
-    print goal, prover.prove(), command.prove()
+    print(goal, prover.prove(), command.prove())
 
 def demo():
     closed_domain_demo()

@@ -12,12 +12,12 @@
 Linear logic 
 ======================
 
+    >>> from nltk.sem import logic
     >>> from nltk.sem.linearlogic import *
+    >>> from nltk.sem import linearlogic as linlog 
     >>> from nltk.sem.glue import *
     
     >>> llp = LinearLogicParser()
-    
-    >>> from nltk.sem import logic
     
 Parser
 
@@ -55,13 +55,13 @@ Simplify
 
 Test BindingDict
 
-    >>> h = ConstantExpression('h')
-    >>> g = ConstantExpression('g')
-    >>> f = ConstantExpression('f')
+    >>> h = linlog.ConstantExpression('h')
+    >>> g = linlog.ConstantExpression('g')
+    >>> f = linlog.ConstantExpression('f')
 
-    >>> H = VariableExpression('H')
-    >>> G = VariableExpression('G')
-    >>> F = VariableExpression('F')
+    >>> H = linlog.VariableExpression('H')
+    >>> G = linlog.VariableExpression('G')
+    >>> F = linlog.VariableExpression('F')
  
     >>> d1 = BindingDict([(H,h)])
     >>> d2 = BindingDict([(F,f),(G,F)])
@@ -332,6 +332,8 @@ Derivation:
 ---------------------------------
 Dependency Graph to Glue Formulas
 ---------------------------------
+    >>> from nltk.corpus.reader.dependency import DependencyGraph
+
     >>> depgraph = DependencyGraph("""1	John	_	NNP	NNP	_	2	SUBJ	_	_
     ... 2	sees	_	VB	VB	_	0	ROOT	_	_
     ... 3	a	_	ex_quant	ex_quant	_	4	SPEC	_	_
@@ -347,8 +349,8 @@ Dependency Graph to Glue Formulas
     >>> glue = Glue()
     >>> for r in glue.get_readings(glue.gfl_to_compiled(gfl)): 
     ...     print r.simplify().normalize()
-    exists x.(dog(x) & exists z1.(John(z1) & sees(z1,x)))
-    exists x.(John(x) & exists z1.(dog(z1) & sees(x,z1)))
+    exists z1.(dog(z1) & exists z2.(John(z2) & sees(z2,z1)))
+    exists z1.(John(z1) & exists z2.(dog(z2) & sees(z1,z2)))
 
 -----------------------------------
 Dependency Graph to LFG f-structure
@@ -375,6 +377,8 @@ LFG f-structure to Glue
 --------------------------------
 Initialize the Dependency Parser
 --------------------------------
+    >>> from nltk.parse.malt import MaltParser
+
     >>> tagger = RegexpTagger(
     ...     [('^(John|Mary)$', 'NNP'),
     ...      ('^(sees|chases)$', 'VB'),
@@ -388,16 +392,16 @@ Initialize the Dependency Parser
 Automated Derivation
 --------------------
     >>> glue = Glue(depparser=depparser)
-    >>> for reading in glue.parse_to_meaning('every girl chases a dog'): 
+    >>> for reading in glue.parse_to_meaning('every girl chases a dog'.split()): 
     ...     print reading.simplify().normalize()
-    all x.(girl(x) -> exists z1.(dog(z1) & chases(x,z1)))
-    exists x.(dog(x) & all z1.(girl(z1) -> chases(z1,x)))
+    all z1.(girl(z1) -> exists z2.(dog(z2) & chases(z1,z2)))
+    exists z1.(dog(z1) & all z2.(girl(z2) -> chases(z2,z1)))
 
     >>> drtglue = DrtGlue(depparser=depparser)
-    >>> for reading in drtglue.parse_to_meaning('every girl chases a dog'): 
+    >>> for reading in drtglue.parse_to_meaning('every girl chases a dog'.split()): 
     ...     print reading.simplify().normalize()
-    ([],[(([x],[girl(x)]) -> ([z1],[dog(z1), chases(x,z1)]))])
-    ([z1],[dog(z1), (([x],[girl(x)]) -> ([],[chases(x,z1)]))])
+    ([],[(([z1],[girl(z1)]) -> ([z2],[dog(z2), chases(z1,z2)]))])
+    ([z1],[dog(z1), (([z2],[girl(z2)]) -> ([],[chases(z2,z1)]))])
 
 --------------
 With inference
@@ -408,11 +412,11 @@ For example, the ``glue`` module generates two readings for the sentence
 *John sees Mary*:
 
     >>> from nltk.sem.glue import DrtGlue
-    >>> readings = drtglue.parse_to_meaning('John sees Mary')
+    >>> readings = drtglue.parse_to_meaning('John sees Mary'.split())
     >>> for drs in readings: 
     ...     print drs.simplify().normalize()
-    ([x,z1],[John(x), Mary(z1), sees(x,z1)])
-    ([x,z1],[Mary(x), John(z1), sees(z1,x)])
+    ([z1,z2],[John(z1), Mary(z2), sees(z1,z2)])
+    ([z1,z2],[Mary(z1), John(z2), sees(z2,z1)])
 
 However, it is easy to tell that these two readings are logically the
 same, and therefore one of them is superfluous.  We can use the theorem prover

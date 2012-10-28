@@ -6,6 +6,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import operator
 
 from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
@@ -15,7 +16,7 @@ from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             FunctionVariableExpression, ImpExpression,
                             IndividualVariableExpression, LambdaExpression, Tokens,
                             LogicParser, NegatedExpression, OrExpression, Variable,
-                            is_eventvar, is_funcvar, is_indvar)
+                            is_eventvar, is_funcvar, is_indvar, unique_variable)
 
 # Import Tkinter-based modules if they are available
 try:
@@ -128,7 +129,7 @@ class AbstractDrs(object):
         """
         Draw the DRS
         """
-        print self.pretty()
+        print(self.pretty())
 
     def pretty(self):
         """
@@ -223,10 +224,7 @@ class DRS(AbstractDrs, Expression):
 
     def visit_structured(self, function, combinator):
         """:see: Expression.visit_structured()"""
-        if self.consequent:
-            consequent = function(self.consequent)
-        else:
-            consequent = None
+        consequent = (function(self.consequent) if self.consequent else None)
         return combinator(self.refs, map(function, self.conds), consequent)
 
     def eliminate_equality(self):
@@ -254,10 +252,8 @@ class DRS(AbstractDrs, Expression):
                new_cond_simp.refs or new_cond_simp.conds or \
                new_cond_simp.consequent:
                 conds.append(new_cond)
-        if drs.consequent:
-            consequent = drs.consequent.eliminate_equality()
-        else:
-            consequent = None
+        
+        consequent = (drs.consequent.eliminate_equality() if drs.consequent else None)
         return DRS(drs.refs, conds, consequent)
 
     def fol(self):
@@ -404,10 +400,7 @@ class DrtProposition(AbstractDrs, Expression):
         return DrtProposition(self.variable, self.drs.eliminate_equality())
 
     def get_refs(self, recursive=False):
-        if recursive:
-            return self.drs.get_refs(True)
-        else:
-            return []
+        return (self.drs.get_refs(True) if recursive else [])
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
@@ -479,10 +472,7 @@ class DrtLambdaExpression(AbstractDrs, LambdaExpression):
 class DrtBinaryExpression(AbstractDrs, BinaryExpression):
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
-        if recursive:
-            return self.first.get_refs(True) + self.second.get_refs(True)
-        else:
-            return []
+        return self.first.get_refs(True) + self.second.get_refs(True) if recursive else []
 
     def _pretty(self):
         return DrtBinaryExpression._assemble_pretty(self._pretty_subex(self.first), self.getOp(), self._pretty_subex(self.second))
@@ -561,10 +551,7 @@ class DrtConcatenation(DrtBooleanExpression):
     def simplify(self):
         first = self.first.simplify()
         second = self.second.simplify()
-        if self.consequent:
-            consequent = self.consequent.simplify()
-        else:
-            consequent = None
+        consequent = (self.consequent.simplify() if self.consequent else None)
 
         if isinstance(first, DRS) and isinstance(second, DRS):
             # For any ref that is in both 'first' and 'second'
@@ -654,10 +641,7 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
 
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
-        if recursive:
-            return self.function.get_refs(True) + self.argument.get_refs(True)
-        else:
-            return []
+        return self.function.get_refs(True) + self.argument.get_refs(True) if recursive else []
 
     def _pretty(self):
         function, args = self.uncurry()
@@ -902,7 +886,7 @@ class DrsDrawer(object):
         elif isinstance(expression, DrtProposition):
             factory = self._handle_DrtProposition
         else:
-            raise Exception, expression.__class__.__name__
+            raise Exception(expression.__class__.__name__)
 
         (right, bottom) = factory(expression, command, x, y)
 
@@ -1167,34 +1151,34 @@ class DrtParser(LogicParser):
 
 
 def demo():
-    print '='*20 + 'TEST PARSE' + '='*20
+    print('='*20 + 'TEST PARSE' + '='*20)
     parser = DrtParser()
-    print parser.parse(r'([x,y],[sees(x,y)])')
-    print parser.parse(r'([x],[man(x), walks(x)])')
-    print parser.parse(r'\x.\y.([],[sees(x,y)])')
-    print parser.parse(r'\x.([],[walks(x)])(john)')
-    print parser.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))')
-    print parser.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))')
-    print parser.parse(r'([x],[PRO(x), sees(John,x)])')
-    print parser.parse(r'([x],[man(x), -([],[walks(x)])])')
-    print parser.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])')
+    print(parser.parse(r'([x,y],[sees(x,y)])'))
+    print(parser.parse(r'([x],[man(x), walks(x)])'))
+    print(parser.parse(r'\x.\y.([],[sees(x,y)])'))
+    print(parser.parse(r'\x.([],[walks(x)])(john)'))
+    print(parser.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))'))
+    print(parser.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))'))
+    print(parser.parse(r'([x],[PRO(x), sees(John,x)])'))
+    print(parser.parse(r'([x],[man(x), -([],[walks(x)])])'))
+    print(parser.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])'))
 
-    print '='*20 + 'Test fol()' + '='*20
-    print parser.parse(r'([x,y],[sees(x,y)])').fol()
+    print('='*20 + 'Test fol()' + '='*20)
+    print(parser.parse(r'([x,y],[sees(x,y)])').fol())
 
-    print '='*20 + 'Test alpha conversion and lambda expression equality' + '='*20
+    print('='*20 + 'Test alpha conversion and lambda expression equality' + '='*20)
     e1 = parser.parse(r'\x.([],[P(x)])')
-    print e1
+    print(e1)
     e2 = e1.alpha_convert(Variable('z'))
-    print e2
-    print e1 == e2
+    print(e2)
+    print(e1 == e2)
 
-    print '='*20 + 'Test resolve_anaphora()' + '='*20
-    print resolve_anaphora(parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])'))
-    print resolve_anaphora(parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])'))
-    print resolve_anaphora(parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))'))
+    print('='*20 + 'Test resolve_anaphora()' + '='*20)
+    print(resolve_anaphora(parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])')))
+    print(resolve_anaphora(parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])')))
+    print(resolve_anaphora(parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))')))
 
-    print '='*20 + 'Test pprint()' + '='*20
+    print('='*20 + 'Test pprint()' + '='*20)
     parser.parse(r"([],[])").pprint()
     parser.parse(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pprint()
     parser.parse(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pprint()

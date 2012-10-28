@@ -77,7 +77,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         try:
             return Tree.parse(self._normalize(t))
 
-        except ValueError, e:
+        except ValueError as e:
             sys.stderr.write("Bad tree detected; trying to recover...\n")
             # Try to recover, if we can:
             if e.args == ('mismatched parens',):

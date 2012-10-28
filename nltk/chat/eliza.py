@@ -12,6 +12,7 @@
 # a translation table used to convert things you say into things the
 # computer says back, e.g. "I am" --> "you are"
 
+from __future__ import print_function
 from util import Chat, reflections
 
 # a table of response pairs, where each pair consists of a
@@ -227,11 +228,11 @@ pairs = (
 eliza_chatbot = Chat(pairs, reflections)
 
 def eliza_chat():
-    print "Therapist\n---------"
-    print "Talk to the program by typing in plain English, using normal upper-"
-    print 'and lower-case letters and punctuation.  Enter "quit" when done.'
-    print '='*72
-    print "Hello.  How are you feeling today?"
+    print("Therapist\n---------")
+    print("Talk to the program by typing in plain English, using normal upper-")
+    print('and lower-case letters and punctuation.  Enter "quit" when done.')
+    print('='*72)
+    print("Hello.  How are you feeling today?")
 
     eliza_chatbot.converse()
 

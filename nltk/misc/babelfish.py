@@ -19,6 +19,7 @@ Summary:
     'Combien co\xfbte ce chienchien dans la fen\xeatre ?'
 """
 
+from __future__ import print_function
 import re
 import string
 import urllib
@@ -85,8 +86,8 @@ def translate(phrase, source, target):
     try:
         source_code = __languages[source]
         target_code = __languages[target]
-    except KeyError, lang:
-        raise ValueError, "Language %s not available" % lang
+    except KeyError as lang:
+        raise ValueError("Language %s not available" % lang)
 
 
     params = urllib.urlencode({'doit': 'done',
@@ -96,7 +97,7 @@ def translate(phrase, source, target):
     try:
         response = urllib.urlopen('http://babelfish.yahoo.com/translate_txt', params)
 
-    except IOError, what:
+    except IOError as what:
         raise BabelizerIOError("Couldn't talk to server: %s" % what)
 
     html = response.read()
@@ -148,7 +149,7 @@ def babelize_shell():
     :raise BabelizeError: If an error is encountered.
     """
 
-    print "NLTK Babelizer: type 'help' for a list of commands."
+    print("NLTK Babelizer: type 'help' for a list of commands.")
 
     language = ''
     phrase = ''
@@ -159,29 +160,29 @@ def babelize_shell():
             if ' ' not in command:
                 command = command.lower()
                 if command == 'help':
-                   print HELP
+                   print(HELP)
                 elif command == 'languages':
-                    print ' '.join(sorted(__languages))
+                    print(' '.join(sorted(__languages)))
                 elif command in __languages:
                     language = command
                 elif command in ['quit', 'bye', 'end']:
                     break
                 elif command == 'run':
                     if not language:
-                        print "Please specify a language first (type 'languages' for a list)."
+                        print("Please specify a language first (type 'languages' for a list).")
                     elif not phrase:
-                        print "Please enter a phrase first (just type it in at the prompt)."
+                        print("Please enter a phrase first (just type it in at the prompt).")
                     else:
                         for count, new_phrase in enumerate(babelize(phrase, 'english', language)):
-                            print "%s>" % count, new_phrase
+                            print("%s>" % count, new_phrase)
                             sys.stdout.flush()
                 else:
-                    print "Command not recognized (type 'help' for help)."
+                    print("Command not recognized (type 'help' for help).")
             # if the command contains a space, it must have multiple words, and be a new phrase
             else:
                 phrase = command
     except EOFError:
-        print
+        print()
         pass
 
 # I won't take that from you, or from your doggie (Korean)

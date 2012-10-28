@@ -5,6 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 from logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
@@ -26,7 +27,7 @@ class CooperStore(object):
             self.core = featstruct['CORE']
             self.store = featstruct['STORE']
         except KeyError:
-            print "%s is not a Cooper storage structure" % featstruct
+            print("%s is not a Cooper storage structure" % featstruct)
 
     def _permute(self, lst):
         """
@@ -58,7 +59,7 @@ class CooperStore(object):
         """
         for perm, store_perm in enumerate(self._permute(self.store)):
             if trace:
-                print "Permutation %s" % (perm+1)
+                print("Permutation %s" % (perm+1))
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
@@ -67,7 +68,7 @@ class CooperStore(object):
                 # apply the quantifier to it
                 term = ApplicationExpression(quant, LambdaExpression(varex.variable, term))
                 if trace:
-                    print "  ", term
+                    print("  ", term)
                 term = term.simplify()
             self.readings.append(term)
 
@@ -88,30 +89,30 @@ def demo():
     from nltk.sem import cooper_storage as cs
     sentence = "every girl chases a dog"
     #sentence = "a man gives a bone to every dog"
-    print
-    print "Analyis of sentence '%s'" % sentence
-    print "=" * 50
+    print()
+    print("Analyis of sentence '%s'" % sentence)
+    print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
         semrep = cs.CooperStore(tree.node['SEM'])
-        print
-        print "Binding operators:"
-        print "-" * 15
+        print()
+        print("Binding operators:")
+        print("-" * 15)
         for s in semrep.store:
-            print s
-        print
-        print "Core:"
-        print "-" * 15
-        print semrep.core
-        print
-        print "S-Retrieval:"
-        print "-" * 15
+            print(s)
+        print()
+        print("Core:")
+        print("-" * 15)
+        print(semrep.core)
+        print()
+        print("S-Retrieval:")
+        print("-" * 15)
         semrep.s_retrieve(trace=True)
-        print "Readings:"
-        print "-" * 15
+        print("Readings:")
+        print("-" * 15)
 
         for i, reading in enumerate(semrep.readings):
-            print "%s: %s" % (i+1, reading)
+            print("%s: %s" % (i+1, reading))
 
 if __name__ == '__main__':
     demo()

@@ -51,7 +51,7 @@ class LazyCorpusLoader(object):
         else:
             try:
                 root = nltk.data.find('corpora/%s' % self.__name)
-            except LookupError, e:
+            except LookupError as e:
                 try: root = nltk.data.find('corpora/%s' % zip_name)
                 except LookupError: raise e
 

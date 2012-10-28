@@ -35,6 +35,7 @@ edge you wish to apply a rule to.
 
 # At some point, we should rewrite this tool to use the new canvas
 # widget system.
+from __future__ import print_function
 
 import pickle
 from tkFileDialog import asksaveasfilename, askopenfilename
@@ -694,7 +695,7 @@ class ChartComparer(object):
                                      defaultextension='.pickle')
         if not filename: return
         try: pickle.dump((self._out_chart), open(filename, 'w'))
-        except Exception, e:
+        except Exception as e:
             tkMessageBox.showerror('Error Saving Chart',
                                    'Unable to open file: %r\n%s' %
                                    (filename, e))
@@ -704,7 +705,7 @@ class ChartComparer(object):
                                    defaultextension='.pickle')
         if not filename: return
         try: self.load_chart(filename)
-        except Exception, e:
+        except Exception as e:
             tkMessageBox.showerror('Error Loading Chart',
                                    'Unable to open file: %r\n%s' %
                                    (filename, e))
@@ -1651,7 +1652,7 @@ class ChartParserApp(object):
             self._init_bindings()
 
         except:
-            print 'Error creating Tree View'
+            print('Error creating Tree View')
             self.destroy()
             raise
 
@@ -2002,7 +2003,7 @@ class ChartParserApp(object):
             if self._matrix: self._matrix.deselect_cell()
             if self._results: self._results.set_chart(chart)
             self._cp.set_chart(chart)
-        except Exception, e:
+        except Exception as e:
             raise
             tkMessageBox.showerror('Error Loading Chart',
                                    'Unable to open file: %r' % filename)
@@ -2014,7 +2015,7 @@ class ChartParserApp(object):
         if not filename: return
         try:
             pickle.dump(self._chart, open(filename, 'w'))
-        except Exception, e:
+        except Exception as e:
             raise
             tkMessageBox.showerror('Error Saving Chart',
                                    'Unable to open file: %r' % filename)
@@ -2030,7 +2031,7 @@ class ChartParserApp(object):
             else:
                 grammar = parse_cfg(open(filename, 'r').read())
             self.set_grammar(grammar)
-        except Exception, e:
+        except Exception as e:
             tkMessageBox.showerror('Error Loading Grammar',
                                    'Unable to open file: %r' % filename)
 
@@ -2049,7 +2050,7 @@ class ChartParserApp(object):
                 for prod in start: file.write('%s\n' % prod)
                 for prod in rest: file.write('%s\n' % prod)
                 file.close()
-        except Exception, e:
+        except Exception as e:
             tkMessageBox.showerror('Error Saving Grammar',
                                    'Unable to open file: %r' % filename)
 
@@ -2238,12 +2239,12 @@ def app():
     sent = 'John ate the cake on the table'
     tokens = list(sent.split())
 
-    print 'grammar= ('
+    print('grammar= (')
     for rule in grammar.productions():
-        print '    ', repr(rule)+','
-    print ')'
-    print 'tokens = %r' % tokens
-    print 'Calling "ChartParserApp(grammar, tokens)"...'
+        print('    ', repr(rule)+',')
+    print(')')
+    print('tokens = %r' % tokens)
+    print('Calling "ChartParserApp(grammar, tokens)"...')
     ChartParserApp(grammar, tokens).mainloop()
 
 if __name__ == '__main__':

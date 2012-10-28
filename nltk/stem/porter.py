@@ -86,6 +86,8 @@ version of this module is maintained by the NLTK developers, and is
 available from <http://nltk.sourceforge.net>
 """
 
+from __future__ import print_function
+
 ## --NLTK--
 ## Declare this module's documentation format.
 __docformat__ = 'plaintext'
@@ -675,11 +677,11 @@ def demo():
     original = re.sub(r"(.{,70})\s", r'\1\n', original+' ').rstrip()
 
     # Print the results.
-    print '-Original-'.center(70).replace(' ', '*').replace('-', ' ')
-    print original
-    print '-Results-'.center(70).replace(' ', '*').replace('-', ' ')
-    print results
-    print '*'*70
+    print('-Original-'.center(70).replace(' ', '*').replace('-', ' '))
+    print(original)
+    print('-Results-'.center(70).replace(' ', '*').replace('-', ' '))
+    print(results)
+    print('*'*70)
 
 ##--NLTK--
 

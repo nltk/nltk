@@ -9,6 +9,7 @@
 Named entity chunker
 """
 
+from __future__ import print_function
 import os, re, pickle
 from xml.etree import ElementTree as ET
 
@@ -151,7 +152,7 @@ class NEChunkParser(ChunkParserI):
         for child in sent:
             if isinstance(child, Tree):
                 if len(child) == 0:
-                    print "Warning -- empty chunk in sentence"
+                    print("Warning -- empty chunk in sentence")
                     continue
                 toks.append((child[0], 'B-%s' % child.node))
                 for tok in child[1:]:
@@ -203,7 +204,7 @@ def load_ace_data(roots, fmt='binary', skip_bnews=True):
                         yield sent
 
 def load_ace_file(textfile, fmt):
-    print '  - %s' % os.path.split(textfile)[1]
+    print('  - %s' % os.path.split(textfile)[1])
     annfile = textfile+'.tmx.rdc.xml'
 
     # Read the xml file, and get a list of entities
@@ -272,40 +273,40 @@ def cmp_chunks(correct, guessed):
     for (w, ct), (w, gt) in zip(correct, guessed):
         if ct == gt == 'O':
             if not ellipsis:
-                print "  %-15s %-15s %s" % (ct, gt, w)
-                print '  %-15s %-15s %s' % ('...', '...', '...')
+                print("  %-15s %-15s %s" % (ct, gt, w))
+                print('  %-15s %-15s %s' % ('...', '...', '...'))
                 ellipsis = True
         else:
             ellipsis = False
-            print "  %-15s %-15s %s" % (ct, gt, w)
+            print("  %-15s %-15s %s" % (ct, gt, w))
 
 def build_model(fmt='binary'):
-    print 'Loading training data...'
+    print('Loading training data...')
     train_paths = [find('corpora/ace_data/ace.dev'),
                    find('corpora/ace_data/ace.heldout'),
                    find('corpora/ace_data/bbn.dev'),
                    find('corpora/ace_data/muc.dev')]
     train_trees = load_ace_data(train_paths, fmt)
     train_data = [postag_tree(t) for t in train_trees]
-    print 'Training...'
+    print('Training...')
     cp = NEChunkParser(train_data)
     del train_data
 
-    print 'Loading eval data...'
+    print('Loading eval data...')
     eval_paths = [find('corpora/ace_data/ace.eval')]
     eval_trees = load_ace_data(eval_paths, fmt)
     eval_data = [postag_tree(t) for t in eval_trees]
 
-    print 'Evaluating...'
+    print('Evaluating...')
     chunkscore = ChunkScore()
     for i, correct in enumerate(eval_data):
         guess = cp.parse(correct.leaves())
         chunkscore.score(correct, guess)
         if i < 3: cmp_chunks(correct, guess)
-    print chunkscore
+    print(chunkscore)
 
     outfilename = '/tmp/ne_chunker_%s.pickle' % fmt
-    print 'Saving chunker to %s...' % outfilename
+    print('Saving chunker to %s...' % outfilename)
     out = open(outfilename, 'wb')
     pickle.dump(cp, out, -1)
     out.close()

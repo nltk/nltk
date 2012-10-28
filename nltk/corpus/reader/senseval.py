@@ -22,6 +22,7 @@ Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """
 
+from __future__ import print_function
 import os
 import re
 import xml.sax
@@ -154,7 +155,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                         pass # Sentence boundary marker.
 
                     else:
-                        print 'ACK', cword.tag
+                        print('ACK', cword.tag)
                         assert False, 'expected CDATA or <wf> or <head>'
                     if cword.tail:
                         context += self._word_tokenizer.tokenize(cword.tail)
