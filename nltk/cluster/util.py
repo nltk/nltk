@@ -6,9 +6,13 @@
 # For license information, see LICENSE.TXT
 
 import copy
-import numpy
 from sys import stdout
 from math import sqrt
+
+try:
+    import numpy
+except ImportError:
+    pass
 
 from nltk.cluster.api import ClusterI
 

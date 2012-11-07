@@ -35,10 +35,12 @@ chi-square feature selection:
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
-
-import numpy as np
 from scipy.sparse import coo_matrix
 
+try:
+    import numpy as np
+except ImportError:
+    pass
 
 class SklearnClassifier(ClassifierI):
     """Wrapper for scikit-learn classifiers."""

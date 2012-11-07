@@ -6,9 +6,14 @@
 # For license information, see LICENSE.TXT
 
 import copy
-import numpy
 import random
 import sys
+
+try:
+    import numpy
+except ImportError:
+    pass
+
 
 from nltk.cluster.util import VectorSpaceClusterer
 

@@ -5,8 +5,12 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import numpy
 import copy
+
+try:
+    import numpy
+except ImportError:
+    pass
 
 from nltk.cluster.util import VectorSpaceClusterer, Dendrogram
 

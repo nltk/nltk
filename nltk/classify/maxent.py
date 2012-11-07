@@ -53,7 +53,11 @@ interface.
 """
 __docformat__ = 'epytext en'
 
-import numpy
+try:
+    import numpy
+except ImportError:
+    pass
+
 import time
 import tempfile
 import os

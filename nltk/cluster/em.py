@@ -5,7 +5,10 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import numpy
+try:
+    import numpy
+except ImportError:
+    pass
 
 from util import VectorSpaceClusterer
 
