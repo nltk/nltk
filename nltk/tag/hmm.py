@@ -70,7 +70,11 @@ which includes extensive demonstration code.
 
 import re
 import types
-from numpy import zeros, ones, float32, float64, log2, hstack, array, argmax
+
+try:
+    from numpy import zeros, ones, float32, float64, log2, hstack, array, argmax
+except ImportError:
+    pass
 
 from nltk.probability import (FreqDist, ConditionalFreqDist,
                               ConditionalProbDist, DictionaryProbDist,
