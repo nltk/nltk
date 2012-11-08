@@ -1,6 +1,9 @@
 NLTK News
 =========
 
+NLTK 2.0.4 released : November 2012
+    Minor fix to remove numpy dependency.
+
 NLTK 2.0.3 released : September 2012
     This release contains minor improvements and bugfixes.  This is the final release compatible with Python 2.5.  For details see https://raw.github.com/nltk/nltk/master/ChangeLog
 
