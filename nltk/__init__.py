@@ -38,7 +38,8 @@ except NameError:
 except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
-__doc__ += '\n@version: ' + __version__
+if __doc__ is not None:
+    __doc__ += '\n@version: ' + __version__
 
 
 # Copyright notice
