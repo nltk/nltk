@@ -8,7 +8,11 @@
 
 import re
 import math
-import numpy
+
+try:
+    import numpy
+except ImportError:
+    pass
 
 from nltk.tokenize.api import TokenizerI
 
