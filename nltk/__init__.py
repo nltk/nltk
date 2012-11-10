@@ -15,9 +15,6 @@ Steven Bird, Ewan Klein, and Edward Loper (2009).
 Natural Language Processing with Python.  O'Reilly Media Inc.
 http://nltk.org/book
 """
-
-# python2.5 compatibility
-from __future__ import with_statement
 from __future__ import print_function
 
 import os
@@ -38,7 +35,7 @@ except NameError:
 except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
-if __doc__ is not None:
+if __doc__ is not None: # fix for the ``python -OO``
     __doc__ += '\n@version: ' + __version__
 
 
@@ -54,7 +51,7 @@ __license__ = "Apache License, Version 2.0"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
 The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 2.5 or higher."""
+natural language processing.  NLTK requires Python 2.6 or higher."""
 __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',
@@ -76,7 +73,6 @@ __classifiers__ = [
     'Intended Audience :: Science/Research',
     'License :: OSI Approved :: Apache Software License',
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 2.5',
     'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
     'Topic :: Scientific/Engineering',
@@ -113,10 +109,7 @@ from text import *
 from tree import *
 from util import *
 from yamltags import *
-
-# Modules that require Python 2.6
-if py26() or py27():
-    from align import *
+from align import *
 
 # don't import contents into top-level namespace:
 
