@@ -17,3 +17,6 @@ web/_build
 # editor temporary files
 *.*.sw[op]
 .idea
+/.settings
+/.project
+/.pydevproject
