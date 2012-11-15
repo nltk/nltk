@@ -5,7 +5,10 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import pylab
+try:
+    import pylab
+except:
+    pass
 import nltk.text
 from nltk.corpus import gutenberg
 

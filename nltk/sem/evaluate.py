@@ -178,7 +178,7 @@ class Assignment(dict):
     There is also a ``print`` format for assignments which uses a notation
     closer to that in logic textbooks:
 
-        >>> print g3
+        >>> print( g3 )
         g[u2/y][u1/x]
 
     It is also possible to update an assignment using the ``add`` method:

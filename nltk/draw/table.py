@@ -73,7 +73,7 @@ class MultiListbox(Frame):
             Use ``label_*`` to configure all labels; and ``listbox_*``
             to configure all listboxes.  E.g.:
 
-                >>> mlb = MultiListbox(master, 5, label_foreground='red')
+                >>> mlb = MultiListbox(master, 5, label_foreground='red') # doctest: +SKIP
         """
         # If columns was specified as an int, convert it to a list.
         if isinstance(columns, int):
@@ -294,9 +294,9 @@ class MultiListbox(Frame):
         Configure this widget.  Use ``label_*`` to configure all
         labels; and ``listbox_*`` to configure all listboxes.  E.g.:
 
-                >>> mlb = MultiListbox(master, 5)
-                >>> mlb.configure(label_foreground='red')
-                >>> mlb.configure(listbox_foreground='red')
+                >>> mlb = MultiListbox(master, 5) # doctest: +SKIP
+                >>> mlb.configure(label_foreground='red') # doctest: +SKIP
+                >>> mlb.configure(listbox_foreground='red') # doctest: +SKIP
         """
         cnf = dict(cnf.items() + kw.items())
         for (key, val) in cnf.items():
@@ -541,13 +541,13 @@ class Table(object):
     refers to the j-th column of the i-th row.  This can be used to
     both read and write values from the table.  E.g.:
 
-        >>> table[i,j] = 'hello'
+        >>> table[i,j] = 'hello' # doctest: +SKIP
 
     The column (j) can be given either as an index number, or as a
     column name.  E.g., the following prints the value in the 3rd row
     for the 'First Name' column:
 
-        >>> print table[3, 'First Name']
+        >>> print table[3, 'First Name'] # doctest: +SKIP
         John
 
     You can configure the colors for individual rows, columns, or

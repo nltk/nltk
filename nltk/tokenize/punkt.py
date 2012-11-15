@@ -29,7 +29,7 @@ English.
     ... name.
     ... '''
     >>> sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
-    >>> print '\n-----\n'.join(sent_detector.tokenize(text.strip()))
+    >>> print( '\n-----\n'.join(sent_detector.tokenize(text.strip())))
     Punkt knows that the periods in Mr. Smith and Johann S. Bach
     do not mark sentence boundaries.
     -----
@@ -49,8 +49,8 @@ flag:
     ... (How does it deal with this parenthesis?)  "It should be part of the
     ... previous sentence."
     ... '''
-    >>> print '\n-----\n'.join(
-    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True))
+    >>> print( '\n-----\n'.join(
+    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True)))
     (How does it deal with this parenthesis?)
     -----
     "It should be part of the

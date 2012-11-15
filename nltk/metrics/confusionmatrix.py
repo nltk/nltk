@@ -19,7 +19,7 @@ class ConfusionMatrix(object):
         >>> ref  = 'DET NN VB DET JJ NN NN IN DET NN'.split()
         >>> test = 'DET VB VB DET NN NN NN IN DET NN'.split()
         >>> cm = ConfusionMatrix(ref, test)
-        >>> print cm['NN', 'NN']
+        >>> print(cm['NN', 'NN'])
         3
 
     Note that the diagonal entries *Ri=Tj* of this matrix

@@ -46,7 +46,7 @@ class TaggedCorpusReader(CorpusReader):
         located at the given root directory.  Example usage:
 
             >>> root = '/...path to corpus.../'
-            >>> reader = TaggedCorpusReader(root, '.*', '.txt')
+            >>> reader = TaggedCorpusReader(root, '.*', '.txt') # doctest: +SKIP
 
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.

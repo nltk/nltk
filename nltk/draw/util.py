@@ -68,18 +68,18 @@ class CanvasWidget(object):
     constructor, using keyword arguments of the form
     ``attribute=value``:
 
-        >>> from nltk.draw.util import CanvasText
-        >>> cn = CanvasText(c, 'test', color='red')
+        >>> from nltk.draw.util import CanvasText # doctest: +SKIP
+        >>> cn = CanvasText(c, 'test', color='red') # doctest: +SKIP
 
     Attribute values can also be changed after a canvas widget has
     been constructed, using the ``__setitem__`` operator:
 
-        >>> cn['font'] = 'times'
+        >>> cn['font'] = 'times' # doctest: +SKIP
 
     The current value of an attribute value can be queried using the
     ``__getitem__`` operator:
 
-        >>> cn['color']
+        >>> cn['color'] # doctest: +SKIP
         red
 
     For a list of the attributes supported by a type of canvas widget,
@@ -2044,7 +2044,7 @@ class ColorizedList(object):
         """
         Set up any colortags that will be used by this colorized list.
         E.g.:
-            >>> textwidget.tag_config('terminal', foreground='black')
+            >>> textwidget.tag_config('terminal', foreground='black') # doctest: +SKIP
         """
         raise NotImplementedError()
 

@@ -14,8 +14,8 @@ usage:
 .. doctest::
     :options: +SKIP
 
-    >>> from nltk.classify import megam
-    >>> megam.config_megam() # pass path to megam if not found in PATH
+    >>> from nltk.classify import megam # doctest: +SKIP
+    >>> megam.config_megam() # pass path to megam if not found in PATH # doctest: +SKIP
     [Found megam: ...]
 
 Use with MaxentClassifier. Example below, see MaxentClassifier documentation

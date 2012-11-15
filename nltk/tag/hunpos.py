@@ -36,10 +36,10 @@ class HunposTagger(TaggerI):
         :options: +SKIP
 
         >>> from nltk.tag.hunpos import HunposTagger
-        >>> ht = HunposTagger('english.model')
-        >>> ht.tag('What is the airspeed of an unladen swallow ?'.split())
+        >>> ht = HunposTagger('english.model') # doctest: +SKIP
+        >>> ht.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
-        >>> ht.close()
+        >>> ht.close() # doctest: +SKIP
 
     This class communicates with the hunpos-tag binary via pipes. When the
     tagger object is no longer needed, the close() method should be called to
@@ -50,8 +50,8 @@ class HunposTagger(TaggerI):
         :options: +SKIP
 
         >>> from __future__ import with_statement # python2.5 compat
-        >>> with HunposTagger('english.model') as ht:
-        ...     ht.tag('What is the airspeed of an unladen swallow ?'.split())
+        >>> with HunposTagger('english.model') as ht: # doctest: +SKIP
+        ...     ht.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         ...
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
     """

@@ -63,9 +63,9 @@ class SennaTagger(TaggerI):
         :options: +SKIP
 
         >>> from nltk.tag.senna import SennaTagger
-        >>> pipeline = SennaTagger('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
-        >>> sent = u'Düsseldorf is an international business center'.split()
-        >>> pipeline.tag(sent)
+        >>> pipeline = SennaTagger('/usr/share/senna-v2.0', ['pos', 'chk', 'ner']) # doctest: +SKIP
+        >>> sent = u'Düsseldorf is an international business center'.split() # doctest: +SKIP
+        >>> pipeline.tag(sent) # doctest: +SKIP
         [{'word': u'D\xfcsseldorf', 'chk': u'B-NP', 'ner': u'B-PER', 'pos': u'NNP'},
         {'word': u'is', 'chk': u'B-VP', 'ner': u'O', 'pos': u'VBZ'},
         {'word': u'an', 'chk': u'B-NP', 'ner': u'O', 'pos': u'DT'},
@@ -195,8 +195,8 @@ class POSTagger(SennaTagger):
         :options: +SKIP
 
         >>> from nltk.tag.senna import POSTagger
-        >>> postagger = POSTagger('/usr/share/senna-v2.0')
-        >>> postagger.tag('What is the airspeed of an unladen swallow ?'.split())
+        >>> postagger = POSTagger('/usr/share/senna-v2.0') # doctest: +SKIP
+        >>> postagger.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
         ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
@@ -230,11 +230,11 @@ class NERTagger(SennaTagger):
         :options: +SKIP
 
         >>> from nltk.tag.senna import NERTagger
-        >>> nertagger = NERTagger('/usr/share/senna-v2.0')
-        >>> nertagger.tag('Shakespeare theatre was in London .'.split())
+        >>> nertagger = NERTagger('/usr/share/senna-v2.0') # doctest: +SKIP
+        >>> nertagger.tag('Shakespeare theatre was in London .'.split()) # doctest: +SKIP
         [('Shakespeare', u'B-PER'), ('theatre', u'O'), ('was', u'O'), ('in', u'O'),
         ('London', u'B-LOC'), ('.', u'O')] 
-        >>> nertagger.tag('UN headquarters are in NY , USA .'.split())
+        >>> nertagger.tag('UN headquarters are in NY , USA .'.split()) # doctest: +SKIP
         [('UN', u'B-ORG'), ('headquarters', u'O'), ('are', u'O'), ('in', u'O'),
         ('NY', u'B-LOC'), (',', u'O'), ('USA', u'B-LOC'), ('.', u'O')]
     """
@@ -268,8 +268,8 @@ class CHKTagger(SennaTagger):
         :options: +SKIP
 
         >>> from nltk.tag.senna import CHKTagger
-        >>> chktagger = CHKTagger('/usr/share/senna-v2.0')
-        >>> chktagger.tag('What is the airspeed of an unladen swallow ?'.split())
+        >>> chktagger = CHKTagger('/usr/share/senna-v2.0') # doctest: +SKIP
+        >>> chktagger.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         [('What', u'B-NP'), ('is', u'B-VP'), ('the', u'B-NP'), ('airspeed', u'I-NP'),
         ('of', u'B-PP'), ('an', u'B-NP'), ('unladen', u'I-NP'), ('swallow',u'I-NP'),
         ('?', u'O')]

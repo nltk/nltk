@@ -338,7 +338,7 @@ def deprecated(message):
     a warning to be printed the when the function is used.  Usage:
 
         >>> from nltk.internals import deprecated
-        >>> @deprecated('Use foo() instead')
+        >>> @deprecated('Use foo() instead') # doctest: +SKIP
         ... def bar(x):
         ...     print x/10
 
