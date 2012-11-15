@@ -14,8 +14,8 @@ Summary:
     >>> from nltk.misc import babelfish as babelizer
     >>> babelizer.available_languages
     ['Chinese', 'English', 'French', 'German', 'Greek', 'Italian', 'Japanese', 'Korean', 'Portuguese', 'Russian', 'Spanish']
-    >>> babelizer.translate('How much is that doggie in the window?',
-    ...                     'english', 'french')
+    >>> babelizer.translate('How much is that doggie in the window?', # doctest: +SKIP
+    ...                     'english', 'french') # doctest: +SKIP
     'Combien co\xfbte ce chienchien dans la fen\xeatre ?'
 """
 

@@ -1670,16 +1670,16 @@ class ConditionalFreqDist(defaultdict):
 
     An equivalent way to do this is with the initializer:
 
-        >>> cfdist = ConditionalFreqDist((len(word), word) for word in word_tokenize(sent))
+        >>> cfdist = ConditionalFreqDist((len(word), word) for word in word_tokenize(sent)) # doctest: +SKIP
 
     The frequency distribution for each condition is accessed using
     the indexing operator:
 
-        >>> cfdist[3]
+        >>> cfdist[3] # doctest: +SKIP
         <FreqDist with 6 outcomes>
-        >>> cfdist[3].freq('the')
+        >>> cfdist[3].freq('the') # doctest: +SKIP
         0.5
-        >>> cfdist[3]['dog']
+        >>> cfdist[3]['dog'] # doctest: +SKIP
         2
 
     When the indexing operator is used to access the frequency
@@ -1887,10 +1887,10 @@ class ConditionalProbDist(ConditionalProbDistI):
     distribution for each condition is an ``ELEProbDist`` with 10 bins:
 
         >>> from nltk.probability import ConditionalProbDist, ELEProbDist
-        >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
-        >>> print cpdist['run'].max()
+        >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10) # doctest: +SKIP
+        >>> print( cpdist['run'].max() ) # doctest: +SKIP
         'NN'
-        >>> print cpdist['run'].prob('NN')
+        >>> print( cpdist['run'].prob('NN') ) # doctest: +SKIP
         0.0813
     """
     def __init__(self, cfdist, probdist_factory, 

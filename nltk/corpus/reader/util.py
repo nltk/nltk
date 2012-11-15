@@ -43,7 +43,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
     zero or more tokens from a stream, and returns them as a list.  A
     very simple example of a block reader is:
 
-        >>> def simple_block_reader(stream):
+        >>> def simple_block_reader(stream): 
         ...     return stream.readline().split()
 
     This simple block reader reads a single line at a time, and
@@ -478,9 +478,9 @@ class PickleCorpusView(StreamBackedCorpusView):
 
         >>> from nltk.corpus.reader.util import PickleCorpusView
         >>> from nltk.util import LazyMap
-        >>> feature_corpus = LazyMap(detect_features, corpus)
-        >>> PickleCorpusView.write(feature_corpus, some_fileid)
-        >>> pcv = PickleCorpusView(some_fileid)
+        >>> feature_corpus = LazyMap(detect_features, corpus) # doctest: +SKIP
+        >>> PickleCorpusView.write(feature_corpus, some_fileid) # doctest: +SKIP
+        >>> pcv = PickleCorpusView(some_fileid) # doctest: +SKIP
     """
     BLOCK_SIZE = 100
     PROTOCOL = -1

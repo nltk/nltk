@@ -35,7 +35,7 @@ class TreebankWordTokenizer(TokenizerI):
 
         >>> from nltk.tokenize import TreebankWordTokenizer
         >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks.'''
-        >>> TreebankWordTokenizer().tokenize(s)
+        >>> TreebankWordTokenizer().tokenize(s) # doctest: +SKIP
         ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
         'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
         >>> s = "They'll save and invest more."

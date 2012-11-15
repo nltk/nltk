@@ -13,8 +13,8 @@ the mallet package, using the ``config_mallet()`` function. Typical usage:
 .. doctest::
     :options: +SKIP
 
-    >>> from nltk.classify import mallet
-    >>> mallet.config_mallet() # pass path to mallet as argument if needed
+    >>> from nltk.classify import mallet #doctest: +SKIP
+    >>> mallet.config_mallet() # pass path to mallet as argument if needed #doctest: +SKIP
     [Found mallet: ...]
 
 .. _Mallet: http://mallet.cs.umass.edu/
