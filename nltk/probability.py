@@ -127,8 +127,8 @@ class FreqDist(dict):
 
         :param sample: The sample whose count should be incremented.
         :type sample: any hashable object
-        :param count: The new value for the sample's count
-        :type count: int
+        :param value: The new value for the sample's count
+        :type value: int
         :rtype: None
         :raise TypeError: If ``sample`` is not a supported sample type.
         """

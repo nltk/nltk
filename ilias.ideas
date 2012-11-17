@@ -1,0 +1,8 @@
+My implemented changes:
+
+lines 130, 131:
+updated the docstring for __setitem__()
+
+
+To-Do:
+
