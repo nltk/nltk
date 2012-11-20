@@ -5,6 +5,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
+
 """
 Visualization tools for CFGs.
 """
@@ -47,8 +49,6 @@ Operations:
   - disconnect top & bottom -- right click
     - if connected to top & bottom, then disconnect
 """
-
-from __future__ import print_function
 import re
 
 from Tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
