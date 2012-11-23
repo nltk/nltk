@@ -1,3 +1,5 @@
+from __future__ import print_statement
+
 import re, random
 
 from collections import defaultdict
@@ -26,7 +28,7 @@ def print_conc(pattern, text, num=25):
         m = re.search(pattern, text)
         if not m:
             break
-        print text[m.start()-30:m.start()+40]
+        print(text[m.start()-30:m.start()+40])
         text = text[m.start()+1:]
 
 ###############################################################################
@@ -51,7 +53,7 @@ def print_freq(counts, num=25):
     for i in range(num):
         word, count = sorted_word_counts[i]
         cumulative += count * 100.0 / total
-        print "%3d %3.2d%% %s" % (i, cumulative, word)
+        print("%3d %3.2d%% %s" % (i, cumulative, word))
 
 ###############################################################################
 ### COLLOCATIONS
@@ -94,10 +96,10 @@ def generate(model, num=100):
             word = random.choice(next)
         else:
             word = random.choice(model[prev2])
-        print word,
+        print(word, end='')
         prev2 = prev1
         prev1 = word
-    print
+    print()
 
         
 

@@ -1,3 +1,4 @@
+from __future__ import print_statement
 
 """
 Python dot expression completion using Pymacs.
@@ -78,18 +79,18 @@ def pycomplete(s, imports=None):
     return os.path.commonprefix([k[len(dots[-1]):] for k in completions])
 
 if __name__ == "__main__":
-    print "<empty> ->", pycomplete("")
-    print "sys.get ->", pycomplete("sys.get")
-    print "sy ->", pycomplete("sy")
-    print "sy (sys in context) ->", pycomplete("sy", imports=["import sys"])
-    print "foo. ->", pycomplete("foo.")
-    print "Enc (email * imported) ->",
-    print pycomplete("Enc", imports=["from email import *"])
-    print "E (email * imported) ->",
-    print pycomplete("E", imports=["from email import *"])
+    print("<empty> ->", pycomplete(""))
+    print("sys.get ->", pycomplete("sys.get"))
+    print("sy ->", pycomplete("sy"))
+    print("sy (sys in context) ->", pycomplete("sy", imports=["import sys"]))
+    print("foo. ->", pycomplete("foo."))
+    print("Enc (email * imported) ->",)
+    print(pycomplete("Enc", imports=["from email import *"]))
+    print("E (email * imported) ->",)
+    print(pycomplete("E", imports=["from email import *"]))
 
-    print "Enc ->", pycomplete("Enc")
-    print "E ->", pycomplete("E")
+    print("Enc ->", pycomplete("Enc"))
+    print("E ->", pycomplete("E"))
 
 # Local Variables :
 # pymacs-auto-reload : t

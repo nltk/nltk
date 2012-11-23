@@ -7,6 +7,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_statement
+
 """
 This command-line tool takes a list of python files or directories,
 and searches them for calls to deprecated NLTK functions, or uses of
@@ -143,7 +145,7 @@ def print_deprecated_uses(paths):
                     print_deprecated_uses_in(ex.readline, path, dep_files,
                                              dep_names, example.lineno)
                 except tokenize.TokenError:
-                    print (term.RED + 'Caught TokenError -- '
+                    print(term.RED + 'Caught TokenError -- '
                            'malformatted doctest?' + term.NORMAL)
     return dep_names
 
@@ -173,8 +175,8 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
             continue
         # Print a header for the first use in a file:
         if path not in dep_files:
-            print '\n'+term.BOLD + path + term.NORMAL
-            print '  %slinenum%s' % (term.YELLOW, term.NORMAL)
+            print('\n'+term.BOLD + path + term.NORMAL)
+            print('  %slinenum%s' % (term.YELLOW, term.NORMAL))
             dep_files.add(path)
         # Mark the offending token.
         dep_names.add(tok)
@@ -183,36 +185,36 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
         else: sub = '<<'+tok+'>>'
         line = re.sub(r'\b%s\b' % esctok, sub, line)
         # Print the offending line.
-        print '  %s[%5d]%s %s' % (term.YELLOW, start[0]+lineno_offset,
-                                  term.NORMAL, line.rstrip())
+        print('  %s[%5d]%s %s' % (term.YELLOW, start[0]+lineno_offset,
+                                  term.NORMAL, line.rstrip()))
 
 
 def main():
     paths = sys.argv[1:] or ['.']
 
-    print 'Importing nltk...'
+    print('Importing nltk...')
     try:
         import nltk
     except ImportError:
-        print 'Unable to import nltk -- check your PYTHONPATH.'
+        print('Unable to import nltk -- check your PYTHONPATH.')
         sys.exit(-1)
 
-    print 'Finding definitions of deprecated funtions & classes in nltk...'
+    print('Finding definitions of deprecated funtions & classes in nltk...')
     find_deprecated_defs(nltk.__path__[0])
 
-    print 'Looking for possible uses of deprecated funcs & classes...'
+    print('Looking for possible uses of deprecated funcs & classes...')
     dep_names = print_deprecated_uses(paths)
 
     if not dep_names:
-        print 'No deprecated funcs or classes found!'
+        print('No deprecated funcs or classes found!')
     else:
-        print "\n"+term.BOLD+"What you should use instead:"+term.NORMAL
+        print("\n"+term.BOLD+"What you should use instead:"+term.NORMAL)
         for name in sorted(dep_names):
             msgs = deprecated_funcs[name].union(
                 deprecated_classes[name]).union(
                 deprecated_methods[name])
             for msg, prefix, suffix in msgs:
-                print textwrap.fill(term.RED+prefix+name+suffix+
+                print(textwrap.fill(term.RED+prefix+name+suffix+)
                                     term.NORMAL+': '+msg,
                                     width=75, initial_indent=' '*2,
                                     subsequent_indent=' '*6)
