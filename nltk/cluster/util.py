@@ -7,9 +7,13 @@
 from __future__ import print_function
 
 import copy
-import numpy
 from sys import stdout
 from math import sqrt
+
+try:
+    import numpy
+except ImportError:
+    pass
 
 from nltk.cluster.api import ClusterI
 

@@ -5,10 +5,11 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
+
 """
 Visualization tools for CFGs.
 """
-from __future__ import print_function
 
 """
 Idea for a nice demo:

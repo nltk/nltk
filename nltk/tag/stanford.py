@@ -14,6 +14,7 @@ A module for interfacing with the Stanford taggers.
 import os
 import tempfile
 from subprocess import PIPE
+import warnings
 
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
@@ -36,6 +37,9 @@ class StanfordTagger(TaggerI):
 
     def __init__(self, path_to_model, path_to_jar=None, encoding=None, verbose=False, java_options='-mx1000m'):
 
+        if not self._JAR:
+            warnings.warn('The StanfordTagger class is not meant to be '
+                    'instanciated directly. Did you mean POS- or NERTagger?')
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
                 searchpath=(), url=_stanford_url,

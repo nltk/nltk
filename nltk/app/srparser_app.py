@@ -541,10 +541,10 @@ class ShiftReduceApp(object):
         # The default font's not very legible; try using 'fixed' instead.
         try:
             ShowText(self._top, 'Help: Shift-Reduce Parser Application',
-                     (__doc__).strip(), width=75, font='fixed')
+                     (__doc__ or '').strip(), width=75, font='fixed')
         except:
             ShowText(self._top, 'Help: Shift-Reduce Parser Application',
-                     (__doc__).strip(), width=75)
+                     (__doc__ or '').strip(), width=75)
 
     def about(self, *e):
         ABOUT = ("NLTK Shift-Reduce Parser Application\n"+

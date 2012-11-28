@@ -33,12 +33,15 @@ chi-square feature selection:
 (Such a classifier could be trained on word counts for text classification.)
 """
 
-import numpy as np
-from scipy.sparse import coo_matrix
-
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 from nltk import compat
+
+try:
+    import numpy as np
+    from scipy.sparse import coo_matrix
+except ImportError:
+    pass
 
 class SklearnClassifier(ClassifierI):
     """Wrapper for scikit-learn classifiers."""

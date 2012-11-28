@@ -594,10 +594,10 @@ class RecursiveDescentApp(object):
         # The default font's not very legible; try using 'fixed' instead.
         try:
             ShowText(self._top, 'Help: Recursive Descent Parser Application',
-                     (__doc__).strip(), width=75, font='fixed')
+                     (__doc__ or '').strip(), width=75, font='fixed')
         except:
             ShowText(self._top, 'Help: Recursive Descent Parser Application',
-                     (__doc__).strip(), width=75)
+                     (__doc__ or '').strip(), width=75)
 
     def postscript(self, *e):
         self._autostep = 0

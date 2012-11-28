@@ -40,7 +40,7 @@ def _multiply(frag1, frag2):
             frags.append(f1+f2)
     return frags
 
-grammar = parse_cfg("""
+demo_grammar = """
   S -> NP VP
   NP -> Det N
   VP -> V NP
@@ -49,8 +49,14 @@ grammar = parse_cfg("""
   N -> 'man' | 'park' | 'dog' | 'telescope'
   V -> 'saw' | 'walked'
   P -> 'in' | 'with'
-""")
+"""
 
-for sent in generate(grammar):
-    print(' '.join(sent))
+def demo():
+    print('Generating all sentences for demo grammar:')
+    print(demo_grammar)
+    grammar = parse_cfg(demo_grammar)
+    for sent in generate(grammar):
+        print(' '.join(sent))
 
+if __name__ == '__main__':
+    demo()

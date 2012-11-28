@@ -1,3 +1,5 @@
+from __future__ import print_statement
+
 import nltk
 
 def parse(sent, grammar):
@@ -12,5 +14,5 @@ def parse_draw(sent, grammar):
 def parse_print(sent, grammar):
     trees = parse(sent, grammar)
     for tree in trees:
-        print tree
+        print(tree)
 
