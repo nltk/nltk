@@ -27,7 +27,12 @@ from nltk.classify.api import ClassifierI
 try:
     import svmlight
 except:
-    raise LookupError("\n\n===========================================================================\n  NLTK was unable to import SVMlight!\n\n  For more information, see <https://bitbucket.org/wcauchois/pysvmlight>\n===========================================================================")
+    raise LookupError(
+        "\n\n===========================================================================\n "
+        "NLTK was unable to import SVMlight!\n\n  "
+        "For more information, see <https://bitbucket.org/wcauchois/pysvmlight>\n"
+        "==========================================================================="
+    )
 
 # create a boolean feature name for the SVM from a feature/value pair,
 # that'll take on a 1.0 value if the original feature:value is asserted.
