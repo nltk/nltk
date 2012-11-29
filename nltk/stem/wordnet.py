@@ -41,6 +41,11 @@ class WordNetLemmatizer(object):
         return '<WordNetLemmatizer>'
 
 
+# unload wordnet
+def teardown_module(module):
+    from nltk.corpus import wordnet
+    wordnet._unload()
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -209,6 +209,10 @@ class Lemma(_WordNetObject):
     - pertainyms
     """
 
+    __slots__ = ['_wordnet_corpus_reader', 'name', 'syntactic_marker',
+                 'synset', 'frame_strings', 'frame_ids',
+                 '_lexname_index', '_lex_id', 'key']
+
     # formerly _from_synset_info
     def __init__(self, wordnet_corpus_reader, synset, name,
                  lexname_index, lex_id, syntactic_marker):
@@ -300,6 +304,12 @@ class Synset(_WordNetObject):
     - pertainyms
     """
 
+    __slots__ = ['pos', 'offset', 'name', 'frame_ids',
+                 'lemmas', 'lemma_names',
+                 'definition', 'examples', 'lexname',
+                 '_pointers', '_lemma_pointers', '_max_depth',
+                 '_min_depth', ]
+
     def __init__(self, wordnet_corpus_reader):
         self._wordnet_corpus_reader = wordnet_corpus_reader
         # All of these attributes get initialized by
@@ -311,7 +321,6 @@ class Synset(_WordNetObject):
         self.frame_ids = []
         self.lemmas = []
         self.lemma_names = []
-        self.lemma_infos = []  # never used?
         self.definition = None
         self.examples = []
         self.lexname = None # lexicographer name
@@ -1687,6 +1696,12 @@ def _get_pos(field):
         raise ValueError(msg)
 
 
+# unload corpus after tests
+def teardown_module(module):
+    from nltk.corpus import wordnet
+    wordnet._unload()
+
+
 ######################################################################
 # Demo
 ######################################################################
@@ -1777,6 +1792,7 @@ def demo():
     print(S('code.n.03').topic_domains())
     print(S('pukka.a.01').region_domains())
     print(S('freaky.a.01').usage_domains())
+
 
 if __name__ == '__main__':
     demo()
