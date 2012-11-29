@@ -84,6 +84,7 @@ if __name__ == '__main__':
             #'--doctest-tests',
             #'--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
             '--doctest-extension=.doctest',
+            '--doctest-fixtures=_fixt',
             '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE',
             #'--verbosity=3',
         ] + args, plugins=manager.plugins)

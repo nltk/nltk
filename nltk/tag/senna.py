@@ -276,3 +276,10 @@ class CHKTagger(SennaTagger):
                 annotations = tagged_sents[i][j]
                 tagged_sents[i][j] = (annotations['word'], annotations['chk'])
         return tagged_sents
+
+# skip doctests if Senna is not installed
+def setup_module(module):
+    from nose import SkipTest
+    tagger = POSTagger('/usr/share/senna-v2.0')
+    if not path.isfile(tagger.executable):
+        raise SkipTest("Senna executable expected at /usr/share/senna-v2.0/senna-osx but not found")

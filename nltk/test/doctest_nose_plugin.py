@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+from nose.suite import ContextList
 import re
 import doctest
 from nose.plugins.base import Plugin
@@ -38,11 +39,19 @@ class DoctestPluginHelper(object):
     """
     def loadTestsFromFile(self, filename):
         cases = super(DoctestPluginHelper, self).loadTestsFromFile(filename)
+
         for case in cases:
-            if case:
-                case._dt_test.globs['print_function'] = print_function
-                case._dt_checker = _checker
-            yield case
+            if isinstance(case, ContextList):
+                yield ContextList([self._patchTestCase(c) for c in case], case.context)
+            else:
+                yield self._patchTestCase(case)
+
+    def _patchTestCase(self, case):
+        if case:
+            case._dt_test.globs['print_function'] = print_function
+            case._dt_checker = _checker
+        return case
+
 
     def configure(self, options, config):
         # it is overriden in order to fix doctest options discovery
