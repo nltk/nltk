@@ -277,3 +277,12 @@ if __name__ == '__main__':
     #demo()
     pass
 
+# ** this is for nose **
+# unload all corpus after tests
+def teardown_module(module):
+    import nltk.corpus
+    for name in dir(nltk.corpus):
+        obj = getattr(nltk.corpus, name)
+        if isinstance(obj, CorpusReader):
+            if hasattr(obj, '_unload'):
+                obj._unload()
