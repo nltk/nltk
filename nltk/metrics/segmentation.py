@@ -235,6 +235,15 @@ def pk(ref, hyp, k=None, boundary='1'):
     return prob_miss * prob_diff_ref + prob_false_alarm * prob_same_ref
 
 
+# skip doctests if numpy is not installed
+def setup_module(module):
+    from nose import SkipTest
+    try:
+        import numpy
+    except ImportError:
+        raise SkipTest("numpy is required for nltk.metrics.segmentation")
+
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

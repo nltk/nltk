@@ -14,7 +14,12 @@ import os, re, pickle
 from xml.etree import ElementTree as ET
 
 from nltk.tag import ClassifierBasedTagger, pos_tag
-from nltk.classify import MaxentClassifier
+
+try:
+    from nltk.classify import MaxentClassifier
+except ImportError:
+    pass
+
 from nltk.tree import Tree
 from nltk.tokenize import word_tokenize
 from nltk.data import find

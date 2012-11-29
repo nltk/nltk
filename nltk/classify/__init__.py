@@ -104,6 +104,10 @@ try:
     from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
                                       TypedMaxentFeatureEncoding,
                                       ConditionalExponentialClassifier)
+except ImportError:
+    pass
+
+try:
     import svmlight
     from nltk.classify.svm import SvmClassifier
 except ImportError:

@@ -153,6 +153,14 @@ class SklearnClassifier(ClassifierI):
                                        for i, p in enumerate(y_proba)))
 
 
+# skip doctests if scikit-learn is not installed
+def setup_module(module):
+    from nose import SkipTest
+    try:
+        import sklearn
+    except ImportError:
+        raise SkipTest("scikit-learn is not installed")
+
 if __name__ == "__main__":
     from nltk.classify.util import names_demo, binary_names_demo_features
     try:
