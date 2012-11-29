@@ -158,3 +158,6 @@ class TestPTB(unittest.TestCase):
             ptb.words(categories=['humor','fiction'])[:6],
             ['Thirty-three', 'Scotty', 'did', 'not', 'go', 'back']
         )
+
+# unload corpora
+from nltk.corpus import teardown_module

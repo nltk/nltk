@@ -90,8 +90,8 @@ class NgramModel(ModelI):
 
         cfd = ConditionalFreqDist()
         self._ngrams = set()
-        
-            
+
+
         # If given a list of strings instead of a list of lists, create enclosing list
         if (train is not None) and isinstance(train[0], basestring):
             train = [train]
@@ -222,6 +222,10 @@ class NgramModel(ModelI):
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
 
+
+def teardown_module(module):
+    from nltk.corpus import brown
+    brown._unload()
 
 if __name__ == "__main__":
     import doctest

@@ -104,13 +104,21 @@ than 72 characters.  It's got lots of repetition.  Here's \
 some unicode chars: \xee \u0123 \uffe3 \ueeee \u2345
 
 How fun!  Let's repeat it twenty times.
-"""*20
+"""*10
 
 def test_reader_on_large_string():
     for encoding in ENCODINGS:
         try:
             # skip strings that can't be encoded with the current encoding
             LARGE_STRING.encode(encoding)
-            yield functools.partial(check_reader, LARGE_STRING), encoding
+            def _check(encoding, n=1000):
+                check_reader(LARGE_STRING, encoding, n)
+
+            yield _check, encoding
+
         except UnicodeEncodeError:
             pass
+
+def teardown_module(module):
+    import gc
+    gc.collect()

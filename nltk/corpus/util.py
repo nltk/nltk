@@ -10,6 +10,7 @@
 ######################################################################
 
 import re
+import gc
 import nltk
 
 TRY_ZIPFILE_FIRST = False
@@ -61,8 +62,23 @@ class LazyCorpusLoader(object):
         # This is where the magic happens!  Transform ourselves into
         # the corpus by modifying our own __dict__ and __class__ to
         # match that of the corpus.
+
+        args, kwargs  = self.__args, self.__kwargs
+        name, reader_cls = self.__name, self.__reader_cls
+
         self.__dict__ = corpus.__dict__
         self.__class__ = corpus.__class__
+
+        # _unload support: assign __dict__ and class back, then do GC.
+        # after reassigning __dict__ there shouldn't be any references to
+        # corpus data so the memory should be deallocated after gc.collect()
+        def _unload(self):
+            lazy_reader = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
+            self.__dict__ = lazy_reader.__dict__
+            self.__class__ = lazy_reader.__class__
+            gc.collect()
+
+        self._unload = _make_bound_method(_unload, self)
 
     def __getattr__(self, attr):
         self.__load()
@@ -73,3 +89,18 @@ class LazyCorpusLoader(object):
     def __repr__(self):
         return '<%s in %r (not loaded yet)>' % (
             self.__reader_cls.__name__, '.../corpora/'+self.__name)
+
+
+def _make_bound_method(func, self):
+    """
+    Magic for creating bound methods (used for _unload).
+    """
+    class Foo(object):
+        def meth(self): pass
+    f = Foo()
+    bound_method = type(f.meth)
+
+    try:
+        return bound_method(func, self, self.__class__)
+    except TypeError: # python3
+        return bound_method(func, self)

@@ -1687,6 +1687,12 @@ def _get_pos(field):
         raise ValueError(msg)
 
 
+# unload corpus after tests
+def teardown_module(module):
+    from nltk.corpus import wordnet
+    wordnet._unload()
+
+
 ######################################################################
 # Demo
 ######################################################################
@@ -1777,6 +1783,7 @@ def demo():
     print(S('code.n.03').topic_domains())
     print(S('pukka.a.01').region_domains())
     print(S('freaky.a.01').usage_domains())
+
 
 if __name__ == '__main__':
     demo()
