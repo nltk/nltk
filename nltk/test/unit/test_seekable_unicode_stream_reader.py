@@ -59,7 +59,7 @@ def check_reader(unicode_string, encoding, n=1000):
 #Call the randomized test function `check_reader` with a variety of
 #input strings and encodings.
 
-ENCODINGS = ['ascii', 'latin1', 'greek', 'hebrew', 'utf-16', 'utf-7', 'utf-8']
+ENCODINGS = ['ascii', 'latin1', 'greek', 'hebrew', 'utf-16', 'utf-8']
 
 STRINGS = [
     """

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 """
 Corpus View Regression Tests
 """
+from __future__ import absolute_import, unicode_literals
 import unittest
 import nltk.data
 from nltk.corpus.reader.util import (StreamBackedCorpusView,
