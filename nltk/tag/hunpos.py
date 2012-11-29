@@ -120,6 +120,13 @@ class HunposTagger(TaggerI):
 
         return tagged_tokens
 
+# skip doctests if Hunpos tagger is not installed
+def setup_module(module):
+    from nose import SkipTest
+    try:
+        HunposTagger('english.model')
+    except LookupError:
+        raise SkipTest("HunposTagger is not available")
 
 if __name__ == "__main__":
     import doctest

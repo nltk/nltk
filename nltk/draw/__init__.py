@@ -19,3 +19,8 @@ else:
                       TreeWidget, TreeView, draw_trees)
     from .dispersion import dispersion_plot
     from .table import Table
+
+# skip doctests from this package
+def setup_module(module):
+    from nose import SkipTest
+    raise SkipTest("nltk.draw examples are not doctests")

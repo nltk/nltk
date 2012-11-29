@@ -204,5 +204,11 @@ def babelize_shell():
 # absence makes the heart grow fonder (italian)
 # more idioms: http://www.idiomsite.com/
 
+
+# skip tests for this module because the online service is gone
+def setup_module(module):
+    from nose import SkipTest
+    raise SkipTest("Babelfish online service is gone")
+
 if __name__ == '__main__':
     babelize_shell()
