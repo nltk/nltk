@@ -61,11 +61,11 @@ class ChunkScore(object):
     as ``precision`` and ``f_measure``.  A typical use of the
     ``ChunkScore`` class is::
 
-        >>> chunkscore = ChunkScore()
-        >>> for correct in correct_sentences:
-        ...     guess = chunkparser.parse(correct.leaves())
-        ...     chunkscore.score(correct, guess)
-        >>> print('F Measure:', chunkscore.f_measure())
+        >>> chunkscore = ChunkScore()           # doctest: +SKIP
+        >>> for correct in correct_sentences:   # doctest: +SKIP
+        ...     guess = chunkparser.parse(correct.leaves())   # doctest: +SKIP
+        ...     chunkscore.score(correct, guess)              # doctest: +SKIP
+        >>> print('F Measure:', chunkscore.f_measure())       # doctest: +SKIP
         F Measure: 0.823
 
     :ivar kwargs: Keyword arguments:

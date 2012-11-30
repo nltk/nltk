@@ -545,7 +545,7 @@ class ProbDistI(object):
         # Default definition, in terms of prob()
         p = self.prob(sample)
         return (math.log(p, 2) if p != 0 else _NINF)
-            
+
     def max(self):
         """
         Return the sample with the greatest probability.  If two or
@@ -1678,7 +1678,7 @@ class ConditionalFreqDist(defaultdict):
     the indexing operator:
 
         >>> cfdist[3]
-        <FreqDist with 6 outcomes>
+        <FreqDist with 3 samples and 6 outcomes>
         >>> cfdist[3].freq('the')
         0.5
         >>> cfdist[3]['dog']
