@@ -14,6 +14,8 @@ from nltk.probability import (ConditionalProbDist, ConditionalFreqDist,
 from nltk.util import ingrams
 from nltk.model.api import ModelI
 
+from nltk import compat
+
 
 def _estimator(fdist, bins):
     """
@@ -93,7 +95,7 @@ class NgramModel(ModelI):
 
 
         # If given a list of strings instead of a list of lists, create enclosing list
-        if (train is not None) and isinstance(train[0], basestring):
+        if (train is not None) and isinstance(train[0], compat.string_types):
             train = [train]
 
         for sent in train:
