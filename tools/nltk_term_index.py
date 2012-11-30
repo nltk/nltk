@@ -1,13 +1,14 @@
-
-STOPLIST = '../../tools/nltk_term_index.stoplist'
-FILENAMES = ['ch%02d.xml' % n for n in range(13)]
-TARGET_DIR = 'nlp/'
-#FILENAMES = ['../doc/book/ll.xml']
+from __future__ import print_statement
 
 import re, sys
 import nltk
 import epydoc.docbuilder, epydoc.cli
 from epydoc import log
+
+STOPLIST = '../../tools/nltk_term_index.stoplist'
+FILENAMES = ['ch%02d.xml' % n for n in range(13)]
+TARGET_DIR = 'nlp/'
+#FILENAMES = ['../doc/book/ll.xml']
 
 logger = epydoc.cli.ConsoleLogger(0)
 logger._verbosity = 5
@@ -82,7 +83,7 @@ def scan_xml(filenames, names):
     for word in fdist:
         namestr = ('\n'+38*' ').join([str(v.canonical_name[:-1])
                                       for v in names[word][:1]])
-        print '[%3d]  %-30s %s' % (fdist[word], word, namestr)
+        print('[%3d]  %-30s %s' % (fdist[word], word, namestr))
         sys.stdout.flush()
 
 

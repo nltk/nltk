@@ -7,9 +7,14 @@
 
 from __future__ import print_function
 import copy
-import numpy
 import random
 import sys
+
+try:
+    import numpy
+except ImportError:
+    pass
+
 
 from nltk.cluster.util import VectorSpaceClusterer
 

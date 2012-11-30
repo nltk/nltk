@@ -4,6 +4,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_statement
 
 """
 Demo of how to combine the output of parsing with evaluation in a model.
@@ -94,20 +95,20 @@ Parse and evaluate some sentences.
         
     for sent in sents:
         n = 1
-        print '\nSentence: %s' % sent
-        print SPACER
+        print('\nSentence: %s' % sent)
+        print(SPACER)
         if options.evaluate: 
             
             for (syntree, semrep, value) in evaluations[sent]:
                 if isinstance(value, dict):
                     value = set(value.keys())
-                print '%d:  %s' % (n, semrep.infixify())
-                print value
+                print('%d:  %s' % (n, semrep.infixify()))
+                print(value)
                 n += 1
         else:
            
             for (syntree, semrep) in semreps[sent]:
-                print '%d:  %s' % (n, semrep.infixify())
+                print('%d:  %s' % (n, semrep.infixify()))
                 n += 1
                 
 if __name__ == "__main__":

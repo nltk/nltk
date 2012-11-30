@@ -1,3 +1,5 @@
+from __future__ import print_statement
+
 from words import *
 from nltk.wordnet import *
 from operator import itemgetter
@@ -28,11 +30,11 @@ def associate():
         for i in range(100):
             next = cfd[word].max()
             if next:
-                print "->", next,
+                print("->", next,)
                 word = next
             else:
                 break
-        print
+        print()
 
 def build_word_contexts(words):
     contexts_to_words = {}
@@ -57,7 +59,7 @@ def search_contexts(words):
         hits = []
         word = raw_input("word> ")
         if word not in words_to_contexts:
-            print "Word not found"
+            print("Word not found")
             continue
         contexts = words_to_contexts[word]
         for w in words_to_contexts:  # all words
@@ -67,13 +69,13 @@ def search_contexts(words):
         hit_freqs = count_words(hits).items()
         sorted_hits = sorted(hit_freqs, key=itemgetter(1), reverse=True)
         words = [word for (word, count) in sorted_hits[1:] if count > 1]
-        print join(words)
+        print(join(words))
         
 def lookup(word):
     for category in [N, V, ADJ, ADV]:
         if word in category:
             for synset in category[word]:
-                print category[word], ":", synset.gloss
+                print(category[word], ":", synset.gloss)
 
 ############################################
 # Simple Tagger
@@ -128,7 +130,7 @@ def map2(tag):
 def map(tag):
     return map2(map1(tag.lower()))
 
-# print sorted(set(map2(map1(tag)) for s in brown.tagged() for w,tag in s))
+# print(sorted(set(map2(map1(tag)) for s in brown.tagged() for w,tag in s)))
 
 def load_brown_corpus(sections):
     global map
@@ -147,12 +149,12 @@ def train_tagger(corpus):
     return t3
 
 def tag(corpus):
-    print "Training tagger..."
+    print("Training tagger...")
     tagger = train_tagger(corpus)
     while True:
         text = raw_input("sentence> ")
         words = text.split()
-        print join(word+"/"+tag for word, tag in tagger.tag(words))
+        print(join(word+"/"+tag for word, tag in tagger.tag(words)))
 
 WORD_OR_TAG = '[^/ ]+'
 BOUNDARY = r'\b'
@@ -169,7 +171,7 @@ def process(pattern):
     return join(new)
 
 def search(corpus, num=25):
-    print "Loading corpus..."
+    print("Loading corpus...")
     strings = [join(w+'/'+t for (w,t) in sent) for sent in corpus]
     while True:
         pattern = ""
@@ -181,7 +183,7 @@ def search(corpus, num=25):
             m = re.search(pattern, sent)
             if m:
                 sent = ' '*35 + sent + ' '*45
-                print sent[m.start():m.start()+80]
+                print(sent[m.start():m.start()+80])
                 i += 1
                 if i > num:
                     break
@@ -216,5 +218,5 @@ being, she wrote in a letter posted %(NR)s."""
 # mapping['C'] =
 # mapping['NR'] =
 
-# print madlib % mapping
+# print(madlib % mapping)
 

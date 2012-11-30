@@ -6,7 +6,10 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import print_function
-import numpy
+try:
+    import numpy
+except ImportError:
+    pass
 
 from util import VectorSpaceClusterer
 

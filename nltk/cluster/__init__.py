@@ -72,7 +72,7 @@ Usage example (see also demo())::
     clusterer.cluster(vectors, True)
 
     # classify a new vector
-    print clusterer.classify(array([3, 3]))
+    print(clusterer.classify(array([3, 3])))
 
 Note that the vectors must use numpy array-like
 objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for

@@ -1970,10 +1970,10 @@ class ChartParserApp(object):
         # The default font's not very legible; try using 'fixed' instead.
         try:
             ShowText(self._root, 'Help: Chart Parser Application',
-                     (__doc__).strip(), width=75, font='fixed')
+                     (__doc__ or '').strip(), width=75, font='fixed')
         except:
             ShowText(self._root, 'Help: Chart Parser Application',
-                     (__doc__).strip(), width=75)
+                     (__doc__ or '').strip(), width=75)
 
     def about(self, *e):
         ABOUT = ("NLTK Chart Parser Application\n"+
