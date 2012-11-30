@@ -20,9 +20,9 @@ the word ``'fly'`` with a noun part of speech tag (``'NN'``):
 
 An off-the-shelf tagger is available.  It uses the Penn Treebank tagset:
 
-    >>> from nltk.tag import pos_tag
-    >>> from nltk.tokenize import word_tokenize
-    >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+    >>> from nltk.tag import pos_tag  # doctest: +SKIP
+    >>> from nltk.tokenize import word_tokenize # doctest: +SKIP
+    >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +SKIP
     [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
     'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
     ('.', '.')]
@@ -52,7 +52,7 @@ of ``None``.
 
 We evaluate a tagger on data that was not seen during training:
 
-    >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600]) # doctest: +ELLIPSIS
+    >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600])
     0.734...
 
 For more information, please consult chapter 5 of the NLTK Book.
@@ -91,9 +91,9 @@ def pos_tag(tokens):
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
 
-        >>> from nltk.tag import pos_tag
-        >>> from nltk.tokenize import word_tokenize
-        >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+        >>> from nltk.tag import pos_tag # doctest: +SKIP
+        >>> from nltk.tokenize import word_tokenize # doctest: +SKIP
+        >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +SKIP
         [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
         'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
         ('.', '.')]
