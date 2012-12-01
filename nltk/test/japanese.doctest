@@ -29,12 +29,12 @@ Access the sentences: this should produce a list of lists of strings:
 Access the tagged words: this should produce a list of word, tag pairs:
 
     >>> type(knbc.tagged_words()[0])
-    <type 'tuple'>
+    <... 'tuple'>
 
 Access the tagged sentences: this should produce a list of lists of word, tag pairs:
 
     >>> type(knbc.tagged_sents()[0][0])
-    <type 'tuple'>
+    <... 'tuple'>
 
 
 JEITA Corpus
