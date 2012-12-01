@@ -81,6 +81,14 @@ class LazyCorpusLoader(object):
         self._unload = _make_bound_method(_unload, self)
 
     def __getattr__(self, attr):
+
+        # Fix for inspect.isclass under Python 2.6
+        # (see http://bugs.python.org/issue1225107).
+        # Without this fix tests may take extra 1.5GB RAM
+        # because all corpora gets loaded during test collection.
+        if attr == '__bases__':
+            raise AttributeError("LazyCorpusLoader object has no attribute '__bases__'")
+
         self.__load()
         # This looks circular, but its not, since __load() changes our
         # __class__ to something new:
