@@ -90,8 +90,8 @@ def masi_distance(label1, label2):
     labels are assigned.
 
     >>> from nltk.metrics import masi_distance
-    >>> masi_distance(set([1,2]),set([1,2,3,4]))
-    0.665
+    >>> masi_distance(set([1,2]), set([1,2,3,4]))
+    0.665...
 
     Passonneau 2006, Measuring Agreement on Set-Valued Items (MASI) for Semantic and Pragmatic Annotation.
     """
