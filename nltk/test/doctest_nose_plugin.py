@@ -46,6 +46,13 @@ class DoctestPluginHelper(object):
             else:
                 yield self._patchTestCase(case)
 
+    def loadTestsFromModule(self, module):
+        """Load doctests from the module.
+        """
+        for suite in super(DoctestPluginHelper, self).loadTestsFromModule(module):
+            cases = [self._patchTestCase(case) for case in suite._get_tests()]
+            yield self.suiteClass(cases, context=module, can_split=False)
+
     def _patchTestCase(self, case):
         if case:
             case._dt_test.globs['print_function'] = print_function
