@@ -69,7 +69,7 @@ class LazyCorpusLoader(object):
         self.__dict__ = corpus.__dict__
         self.__class__ = corpus.__class__
 
-        # _unload support: assign __dict__ and class back, then do GC.
+        # _unload support: assign __dict__ and __class__ back, then do GC.
         # after reassigning __dict__ there shouldn't be any references to
         # corpus data so the memory should be deallocated after gc.collect()
         def _unload(self):
