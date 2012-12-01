@@ -3,13 +3,24 @@ from __future__ import absolute_import
 from unittest import TestCase
 from functools import wraps
 from nose.plugins.skip import SkipTest
+from nltk.util import py26
 
 def skip(reason):
     """
     Unconditionally skip a test.
     """
     def decorator(test_item):
-        if not (isinstance(test_item, type) and issubclass(test_item, TestCase)):
+        is_test_class = isinstance(test_item, type) and issubclass(test_item, TestCase)
+
+        if is_test_class and py26():
+            # Patch all test_ methods to raise SkipText exception.
+            # This is necessary for Python 2.6 because its unittest
+            # doesn't understand __unittest_skip__.
+            for meth_name in (m for m in dir(test_item) if m.startswith('test_')):
+                patched_method = skip(reason)(getattr(test_item, meth_name))
+                setattr(test_item, meth_name, patched_method)
+
+        if not is_test_class:
             @wraps(test_item)
             def skip_wrapper(*args, **kwargs):
                 raise SkipTest(reason)
