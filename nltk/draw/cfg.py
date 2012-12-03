@@ -5,50 +5,48 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_function
-
 """
 Visualization tools for CFGs.
 """
 
-"""
-Idea for a nice demo:
-  - 3 panes: grammar, treelet, working area
-    - grammar is a list of productions
-    - when you select a production, the treelet that it licenses appears
-      in the treelet area
-    - the working area has the text on the bottom, and S at top.  When
-      you select a production, it shows (ghosted) the locations where
-      that production's treelet could be attached to either the text
-      or the tree rooted at S.
-    - the user can drag the treelet onto one of those (or click on them?)
-    - the user can delete pieces of the tree from the working area
-      (right click?)
-    - connecting top to bottom? drag one NP onto another?
+# Idea for a nice demo:
+#   - 3 panes: grammar, treelet, working area
+#     - grammar is a list of productions
+#     - when you select a production, the treelet that it licenses appears
+#       in the treelet area
+#     - the working area has the text on the bottom, and S at top.  When
+#       you select a production, it shows (ghosted) the locations where
+#       that production's treelet could be attached to either the text
+#       or the tree rooted at S.
+#     - the user can drag the treelet onto one of those (or click on them?)
+#     - the user can delete pieces of the tree from the working area
+#       (right click?)
+#     - connecting top to bottom? drag one NP onto another?
+#
+# +-------------------------------------------------------------+
+# | S -> NP VP   |                 S                            |
+# |[NP -> Det N ]|                / \                           |
+# |     ...      |              NP  VP                          |
+# | N -> 'dog'   |                                              |
+# | N -> 'cat'   |                                              |
+# |     ...      |                                              |
+# +--------------+                                              |
+# |      NP      |                      Det     N               |
+# |     /  \     |                       |      |               |
+# |   Det   N    |  the    cat    saw   the    dog              |
+# |              |                                              |
+# +--------------+----------------------------------------------+
+#
+# Operations:
+#   - connect a new treelet -- drag or click shadow
+#   - delete a treelet -- right click
+#     - if only connected to top, delete everything below
+#     - if only connected to bottom, delete everything above
+#   - connect top & bottom -- drag a leaf to a root or a root to a leaf
+#   - disconnect top & bottom -- right click
+#     - if connected to top & bottom, then disconnect
 
-+-------------------------------------------------------------+
-| S -> NP VP   |                 S                            |
-|[NP -> Det N ]|                / \                           |
-|     ...      |              NP  VP                          |
-| N -> 'dog'   |                                              |
-| N -> 'cat'   |                                              |
-|     ...      |                                              |
-+--------------+                                              |
-|      NP      |                      Det     N               |
-|     /  \     |                       |      |               |
-|   Det   N    |  the    cat    saw   the    dog              |
-|              |                                              |
-+--------------+----------------------------------------------+
-
-Operations:
-  - connect a new treelet -- drag or click shadow
-  - delete a treelet -- right click
-    - if only connected to top, delete everything below
-    - if only connected to bottom, delete everything above
-  - connect top & bottom -- drag a leaf to a root or a root to a leaf
-  - disconnect top & bottom -- right click
-    - if connected to top & bottom, then disconnect
-"""
+from __future__ import print_function
 
 import re
 

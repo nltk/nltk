@@ -84,12 +84,12 @@ class NgramAssocMeasures(object):
     @classmethod
     def student_t(cls, *marginals):
         """Scores ngrams using Student's t test with independence hypothesis
-        for unigrams, as in Manning and Schutze 5.3.2.
+        for unigrams, as in Manning and Schutze 5.3.1.
         """
-        return ((marginals[NGRAM] * marginals[TOTAL] -
-                 _product(marginals[UNIGRAMS])) /
-                (marginals[TOTAL] ** (cls._n - 1) *
-                (marginals[NGRAM] + _SMALL) ** .5))
+        return ((marginals[NGRAM] -
+                  _product(marginals[UNIGRAMS]) /
+                  float(marginals[TOTAL] ** (cls._n - 1))) /
+                (marginals[NGRAM] + _SMALL) ** .5)
 
     @classmethod
     def chi_sq(cls, *marginals):
