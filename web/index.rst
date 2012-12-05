@@ -81,6 +81,7 @@ Contents
    install
    data
    api/nltk
+   team
 
 * :ref:`genindex`
 * :ref:`modindex`
