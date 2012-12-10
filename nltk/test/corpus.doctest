@@ -1380,10 +1380,10 @@ identifier will result in an exception:
 
     >>> nltk.corpus.timit.fileids() # doctest: +ELLIPSIS
     ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...]
-    >>> nltk.corpus.timit.words('dr1-fvmh0/sa1.txt') # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.words('dr1-fvmh0/sa1.txt') # doctest: +SKIP
     Traceback (most recent call last):
       ...
-    IOError:... No such file or directory: '.../dr1-fvmh0/sa1.txt.wrd'
+    IOError: No such file or directory: '.../dr1-fvmh0/sa1.txt.wrd'
 
 As another example, the ``propbank`` corpus defines the ``roleset()``
 method, which expects a roleset identifier, not a file identifier:
