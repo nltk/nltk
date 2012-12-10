@@ -138,11 +138,11 @@ from .stem import *
 #     that can safely fail at run time
 
 from . import lazyimport
-app = lazyimport.LazyModule('app', locals(), globals())
-chat = lazyimport.LazyModule('chat', locals(), globals())
-corpus = lazyimport.LazyModule('corpus', locals(), globals())
-draw = lazyimport.LazyModule('draw', locals(), globals())
-toolbox = lazyimport.LazyModule('toolbox', locals(), globals())
+app = lazyimport.LazyModule('nltk.app', locals(), globals())
+chat = lazyimport.LazyModule('nltk.chat', locals(), globals())
+corpus = lazyimport.LazyModule('nltk.corpus', locals(), globals())
+draw = lazyimport.LazyModule('nltk.draw', locals(), globals())
+toolbox = lazyimport.LazyModule('nltk.toolbox', locals(), globals())
 
 # Optional loading
 
