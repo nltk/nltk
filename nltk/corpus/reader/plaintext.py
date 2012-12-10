@@ -79,18 +79,11 @@ class PlaintextCorpusReader(CorpusReader):
             and punctuation symbols.
         :rtype: list(str)
         """
-        # Once we require Python 2.5, use source=(fileid if sourced else None)
-        if sourced:
-            return concat([self.CorpusView(path, self._read_word_block,
-                                           encoding=enc, source=fileid)
-                           for (path, enc, fileid)
-                           in self.abspaths(fileids, True, True)])
-        else:
-            return concat([self.CorpusView(path, self._read_word_block,
-                                           encoding=enc)
-                           for (path, enc, fileid)
-                           in self.abspaths(fileids, True, True)])
-
+        return concat([self.CorpusView(path, self._read_word_block,
+                                       encoding=enc,
+                                       source=(fileid if sourced else None))
+                       for (path, enc, fileid)
+                       in self.abspaths(fileids, True, True)])
 
     def sents(self, fileids=None, sourced=False):
         """
@@ -101,17 +94,12 @@ class PlaintextCorpusReader(CorpusReader):
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
-        if sourced:
-            return concat([self.CorpusView(path, self._read_sent_block,
-                                           encoding=enc, source=fileid)
-                           for (path, enc, fileid)
-                           in self.abspaths(fileids, True, True)])
-        else:
-            return concat([self.CorpusView(path, self._read_sent_block,
-                                           encoding=enc)
-                           for (path, enc, fileid)
-                           in self.abspaths(fileids, True, True)])
 
+        return concat([self.CorpusView(path, self._read_sent_block,
+                                       encoding=enc,
+                                       source=(fileid if sourced else None))
+                       for (path, enc, fileid)
+                       in self.abspaths(fileids, True, True)])
 
     def paras(self, fileids=None, sourced=False):
         """
@@ -122,16 +110,12 @@ class PlaintextCorpusReader(CorpusReader):
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
-        if sourced:
-            return concat([self.CorpusView(path, self._read_para_block,
-                                           encoding=enc, source=fileid)
-                           for (path, enc, fileid)
-                           in self.abspaths(fileids, True, True)])
-        else:
-            return concat([self.CorpusView(path, self._read_para_block,
-                                           encoding=enc)
-                           for (path, enc, fileid)
-                           in self.abspaths(fileids, True, True)])
+
+        return concat([self.CorpusView(path, self._read_para_block,
+                                       encoding=enc,
+                                       source=(fileid if sourced else None))
+                       for (path, enc, fileid)
+                       in self.abspaths(fileids, True, True)])
 
     def _read_word_block(self, stream):
         words = []
