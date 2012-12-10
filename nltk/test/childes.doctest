@@ -16,7 +16,7 @@ the nltk_data directory.
 
 Reading files in the Valian corpus (Valian, 1991).
 
-    >>> valian = CHILDESCorpusReader(corpus_root, u'Valian/.*.xml')
+    >>> valian = CHILDESCorpusReader(corpus_root, 'Valian/.*.xml')
     >>> valian.fileids()
     ['Valian/01a.xml', 'Valian/01b.xml', 'Valian/02a.xml', 'Valian/02b.xml',...
 
@@ -160,7 +160,7 @@ Basic stuff
 
 Count the number of words and sentences of each file.
 
-    >>> valian = CHILDESCorpusReader(corpus_root, u'Valian/.*.xml')
+    >>> valian = CHILDESCorpusReader(corpus_root, 'Valian/.*.xml')
     >>> for this_file in valian.fileids()[:6]:
     ...     print(valian.corpus(this_file)[0]['Corpus'], valian.corpus(this_file)[0]['Id'])
     ...     print("num of words: %i" % len(valian.words(this_file)))
