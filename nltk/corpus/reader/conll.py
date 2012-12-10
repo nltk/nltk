@@ -217,14 +217,14 @@ class ConllCorpusReader(CorpusReader):
         pos_tags = self._get_column(grid, self._colmap['pos'])
         if simplify_tags:
             pos_tags = [self._tag_mapping_function(t) for t in pos_tags]
-        return zip(self._get_column(grid, self._colmap['words']), pos_tags)
+        return list(zip(self._get_column(grid, self._colmap['words']), pos_tags))
 
     def _get_iob_words(self, grid, simplify_tags=False):
         pos_tags = self._get_column(grid, self._colmap['pos'])
         if simplify_tags:
             pos_tags = [self._tag_mapping_function(t) for t in pos_tags]
-        return zip(self._get_column(grid, self._colmap['words']), pos_tags,
-                   self._get_column(grid, self._colmap['chunk']))
+        return list(zip(self._get_column(grid, self._colmap['words']), pos_tags,
+                   self._get_column(grid, self._colmap['chunk'])))
 
     def _get_chunked_words(self, grid, chunk_types, simplify_tags=False):
         # n.b.: this method is very similar to conllstr2tree.
