@@ -56,8 +56,8 @@ class SnowballStemmer(StemmerI):
     italian norwegian porter portuguese romanian russian
     spanish swedish
     >>> stemmer = SnowballStemmer("german") # Choose a language
-    >>> stemmer.stem(u"Autobahnen") # Stem a word
-    u'autobahn'
+    >>> stemmer.stem("Autobahnen") # Stem a word
+    'autobahn'
 
     Invoking the stemmers that way is useful if you do not know the
     language to be stemmed at runtime. Alternatively, if you already know
@@ -65,8 +65,8 @@ class SnowballStemmer(StemmerI):
 
     >>> from nltk.stem.snowball import GermanStemmer
     >>> stemmer = GermanStemmer()
-    >>> stemmer.stem(u"Autobahnen")
-    u'autobahn'
+    >>> stemmer.stem("Autobahnen")
+    'autobahn'
 
     Create a language specific instance of the Snowball stemmer.
 
