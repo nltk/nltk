@@ -112,14 +112,14 @@ genesis = LazyCorpusLoader(
         ('swedish', 'cp865'),
         ('.*', 'utf_8')])
 gutenberg = LazyCorpusLoader(
-    'gutenberg', PlaintextCorpusReader, r'(?!\.).*\.txt')
+    'gutenberg', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding='latin1')
 # corpus not available with NLTK; these lines caused help(nltk.corpus) to break
 #hebrew_treebank = LazyCorpusLoader(
 #    'hebrew_treebank', BracketParseCorpusReader, r'.*\.txt')
 ieer = LazyCorpusLoader(
     'ieer', IEERCorpusReader, r'(?!README|\.).*')
 inaugural = LazyCorpusLoader(
-    'inaugural', PlaintextCorpusReader, r'(?!\.).*\.txt')
+    'inaugural', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding='latin1')
 # [XX] This should probably just use TaggedCorpusReader:
 indian = LazyCorpusLoader(
     'indian', IndianCorpusReader, r'(?!\.).*\.pos',
