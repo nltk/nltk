@@ -390,12 +390,6 @@ method `dict.fromkeys()`).  Non-mutating methods:
     [[a=1, b=2, c=3], 'x']
     >>> sorted(fs2.items())                              # items()
     [('x', [a=1, b=2, c=3]), ('y', 'x')]
-    >>> sorted(fs2.iterkeys())                           # iterkeys()
-    ['x', 'y']
-    >>> sorted(fs2.itervalues())                         # itervalues()
-    [[a=1, b=2, c=3], 'x']
-    >>> sorted(fs2.iteritems())                          # iteritems()
-    [('x', [a=1, b=2, c=3]), ('y', 'x')]
     >>> sorted(fs2)                                      # __iter__()
     ['x', 'y']
     >>> 'a' in fs2, 'x' in fs2                           # __contains__()
@@ -635,8 +629,8 @@ triple-quoted strings.
     [a='', b='hello', c="'", d='', e='"']
     >>> FeatStruct(r'[a="\\", b="\"", c="\x6f\\y", d="12"]')
     [a='\\', b='"', c='o\\y', d='12']
-    >>> FeatStruct(r'[a=u"\u1234", b=r"a\b\c"]')
-    [a=u'\u1234', b='a\\b\\c']
+    >>> FeatStruct(r'[b=r"a\b\c"]')
+    [b='a\\b\\c']
     >>> FeatStruct('[x="""a"""]')
     [x='a']
 

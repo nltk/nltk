@@ -691,7 +691,7 @@ class FeatDict(FeatStruct, dict):
         if self._frozen: raise ValueError(_FROZEN_ERROR)
         if features is None:
             items = ()
-        elif hasattr(features, 'has_key'):
+        elif hasattr(features, 'items') and callable(features.items):
             items = features.items()
         elif hasattr(features, '__iter__'):
             items = features

@@ -18,6 +18,7 @@ from collections import defaultdict
 from functools import reduce
 
 from nltk.internals import Counter
+from nltk.compat import total_ordering
 
 APP = 'APP'
 
@@ -81,6 +82,7 @@ def binding_ops():
         print("%-15s\t%s" %  pair)
 
 
+@total_ordering
 class Variable(object):
     def __init__(self, name):
         """
@@ -95,8 +97,10 @@ class Variable(object):
     def __neq__(self, other):
         return not (self == other)
 
-    def __cmp__(self, other):
-        return cmp(type(self), type(other)) or cmp(self.name, other.name)
+    def __lt__(self, other):
+        if type(self) != type(other):
+            return False
+        return self.name < other.name
 
     def substitute_bindings(self, bindings):
         return bindings.get(self, self)
