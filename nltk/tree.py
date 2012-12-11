@@ -113,21 +113,21 @@ class Tree(list):
 
     def __eq__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node == other.node and list.__eq__(self, other)
+        return (self.node, list(self)) == (other.node, list(other))
     def __ne__(self, other):
         return not (self == other)
     def __lt__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node < other.node or list.__lt__(self, other)
+        return (self.node, list(self)) < (other.node, list(other))
     def __le__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node <= other.node or list.__le__(self, other)
+        return (self.node, list(self)) <= (other.node, list(other))
     def __gt__(self, other):
         if not isinstance(other, Tree): return True
-        return self.node > other.node or list.__gt__(self, other)
+        return (self.node, list(self)) > (other.node, list(other))
     def __ge__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node >= other.node or list.__ge__(self, other)
+        return (self.node, list(self)) >= (other.node, list(other))
 
     #////////////////////////////////////////////////////////////
     # Disabled list operations

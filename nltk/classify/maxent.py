@@ -184,7 +184,7 @@ class MaxentClassifier(ClassifierI):
                                 reverse=True)
             for (f_id, f_val) in feature_vector:
                 if self._logarithmic: score = self._weights[f_id] * f_val
-                else: score = self._weights[fid] ** f_val
+                else: score = self._weights[f_id] ** f_val
                 descr = self._encoding.describe(f_id)
                 descr = descr.split(' and label is ')[0] # hack
                 descr += ' (%s)' % f_val                 # hack
@@ -294,7 +294,7 @@ class MaxentClassifier(ClassifierI):
         """
         if algorithm is None:
             try:
-                import scipy
+                import scipy.maxentropy
                 algorithm = 'cg'
             except ImportError:
                 algorithm = 'iis'
@@ -424,9 +424,9 @@ class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         :type func: (callable)
         :param func: A function that takes two arguments, a featureset
              and a label, and returns the sparse joint feature vector
-             that encodes them:
+             that encodes them::
 
-             >>> func(featureset, label) -> feature_vector # doctest: +SKIP
+                 func(featureset, label) -> feature_vector
 
              This sparse joint feature vector (``feature_vector``) is a
              list of ``(index,value)`` tuples.

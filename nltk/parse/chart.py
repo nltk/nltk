@@ -43,6 +43,7 @@ import warnings
 from nltk import compat
 from nltk.tree import Tree
 from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
+from nltk.util import OrderedDict
 
 from nltk.parse.api import ParserI
 
@@ -591,7 +592,7 @@ class Chart(object):
             self._register_with_indexes(edge)
 
         # Get the set of child pointer lists for this edge.
-        cpls = self._edge_to_cpls.setdefault(edge,{})
+        cpls = self._edge_to_cpls.setdefault(edge, OrderedDict())
         chart_was_modified = False
         for child_pointer_list in child_pointer_lists:
             child_pointer_list = tuple(child_pointer_list)
