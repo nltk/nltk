@@ -187,10 +187,10 @@ Top-down
     Nr edges in chart: 48
     (S
       (NP I)
-      (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
+      (VP (Verb saw) (NP (NP John) (PP with (NP (Det a) (Noun dog))))))
     (S
       (NP I)
-      (VP (Verb saw) (NP (NP John) (PP with (NP (Det a) (Noun dog))))))
+      (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
     <BLANKLINE>
 
 Bottom-up
@@ -785,15 +785,15 @@ We use the featurechart.demo() function for tracing the Feature Chart Parser.
     (S[]
       (NP[] I)
       (VP[]
+        (VP[] (Verb[] saw) (NP[] John))
+        (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog)))))
+    (S[]
+      (NP[] I)
+      (VP[]
         (Verb[] saw)
         (NP[]
           (NP[] John)
           (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog))))))
-    (S[]
-      (NP[] I)
-      (VP[]
-        (VP[] (Verb[] saw) (NP[] John))
-        (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog)))))
 
 
 Unit tests for the Feature Chart Parser classes
