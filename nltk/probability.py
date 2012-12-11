@@ -1888,12 +1888,16 @@ class ConditionalProbDist(ConditionalProbDistI):
     code constructs a ``ConditionalProbDist``, where the probability
     distribution for each condition is an ``ELEProbDist`` with 10 bins:
 
-        >>> from nltk.probability import ConditionalProbDist, ELEProbDist
+        >>> from nltk.probability import ConditionalFreqDist, ConditionalProbDist, ELEProbDist
+        >>> data = [('run','NN'), ('run','VB'), ('run','NN')]
+        >>> cfdist = ConditionalFreqDist()
+        >>> for word, tag in data:
+        ...     cfdist[word].inc(tag)
         >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
-        >>> print(cpdist['run'].max())
+        >>> cpdist['run'].max()
         'NN'
-        >>> print(cpdist['run'].prob('NN'))
-        0.0813
+        >>> cpdist['run'].prob('NN')
+        0.3125
     """
     def __init__(self, cfdist, probdist_factory,
                  *factory_args, **factory_kw_args):
