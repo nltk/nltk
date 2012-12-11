@@ -821,7 +821,7 @@ def is_writable(path):
             return True
         # are we in a group that can write to it?
         elif (statdata.st_gid in [os.getgid()] + os.getgroups()) \
-            and (perm & 0020):
+            and (perm & 0o020):
             return True
         # otherwise, we can't write to it.
         else:
