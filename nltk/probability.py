@@ -41,10 +41,10 @@ from __future__ import print_function
 
 _NINF = float('-1e300')
 
-
 import math
 import random
 import warnings
+import array
 from operator import itemgetter
 from itertools import imap, islice
 from collections import defaultdict
@@ -1566,14 +1566,9 @@ class MutableProbDist(ProbDistI):
         :param store_logs: whether to store the probabilities as logarithms
         :type store_logs: bool
         """
-        try:
-            import numpy
-        except ImportError:
-            print("Error: Please install numpy; for instructions see http://www.nltk.org/")
-            exit()
         self._samples = samples
         self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
-        self._data = numpy.zeros(len(samples), numpy.float64)
+        self._data = array.array(str("d"), [0.0]) * len(samples)
         for i in range(len(samples)):
             if store_logs:
                 self._data[i] = prob_dist.logprob(samples[i])
