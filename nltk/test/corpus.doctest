@@ -116,9 +116,6 @@ Here are the first few words from each of NLTK's plaintext corpora:
     ['Fellow', '-', 'Citizens', 'of', 'the', ...]
     >>> nltk.corpus.state_union.words()
     ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", ...]
-    >>> nltk.corpus.udhr.words() # doctest: +NORMALIZE_WHITESPACE
-    ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0',
-     '\xe8\xe7\xe8\xed6\xfa\xe0', ...]
     >>> nltk.corpus.webtext.words()
     ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', ...]
 
@@ -1685,13 +1682,12 @@ We're done with the test corpus:
 Test the plaintext corpora that come with nltk:
 
     >>> from nltk.corpus import abc, genesis, inaugural
-    >>> from nltk.corpus import state_union, webtext, udhr
+    >>> from nltk.corpus import state_union, webtext
     >>> for corpus in (abc, genesis, inaugural, state_union,
-    ...                webtext, udhr):
+    ...                webtext):
     ...     print(corpus)
     ...     print('  ', repr(corpus.fileids())[:60])
     ...     print('  ', repr(corpus.words()[:10])[:60])
-    ...     # doctest: +ELLIPSIS
     <PlaintextCorpusReader in '.../nltk_data/corpora/ab...'>
        ['rural.txt', 'science.txt']
        ['PM', 'denies', 'knowledge', 'of', 'AWB', ...
@@ -1707,9 +1703,6 @@ Test the plaintext corpora that come with nltk:
     <PlaintextCorpusReader in '.../nltk_data/corpora/webtex...'>
        ['firefox.txt', 'grail.txt', 'overheard.txt', 'pirates.txt',
        ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', ...
-    <PlaintextCorpusReader in '.../nltk_data/corpora/udh...'>
-       ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1',
-       ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
 
 
 Tagged Corpus Reader
