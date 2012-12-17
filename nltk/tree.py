@@ -1041,8 +1041,8 @@ class ParentedTree(AbstractParentedTree):
         super(ParentedTree, self).__init__(node_or_str, children)
         if children is None:
             # If children is None, the tree is parsed from node_or_str.
-            # After parsing, the parent of the immediate children 
-            # will point to an intermediate tree, not self. 
+            # After parsing, the parent of the immediate children
+            # will point to an intermediate tree, not self.
             # We fix this by brute force:
             for i, child in enumerate(self):
                 if isinstance(child, Tree):
@@ -1162,8 +1162,8 @@ class MultiParentedTree(AbstractParentedTree):
         super(MultiParentedTree, self).__init__(node_or_str, children)
         if children is None:
             # If children is None, the tree is parsed from node_or_str.
-            # After parsing, the parent(s) of the immediate children 
-            # will point to an intermediate tree, not self. 
+            # After parsing, the parent(s) of the immediate children
+            # will point to an intermediate tree, not self.
             # We fix this by brute force:
             for i, child in enumerate(self):
                 if isinstance(child, Tree):
@@ -1229,7 +1229,7 @@ class MultiParentedTree(AbstractParentedTree):
 
         :type: list(MultiParentedTree)
         """
-        return self._get_roots_helper({}).values()
+        return list(self._get_roots_helper({}).values())
 
     def _get_roots_helper(self, result):
         if self._parents:
