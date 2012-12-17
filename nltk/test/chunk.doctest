@@ -60,10 +60,10 @@ Create and score a series of chunk parsers, successively more complex.
     >>> print(chunkscore.f_measure())
     0
 
-    >>> for chunk in chunkscore.missed(): print(chunk)
+    >>> for chunk in sorted(chunkscore.missed()): print(chunk)
     (NP The/DT cat/NN)
-    (NP the/DT mat/NN)
     (NP the/DT dog/NN)
+    (NP the/DT mat/NN)
 
     >>> for chunk in chunkscore.incorrect(): print(chunk)
     (NP
@@ -102,9 +102,9 @@ Create and score a series of chunk parsers, successively more complex.
     >>> print(chunkscore.f_measure())
     0.4
 
-    >>> for chunk in chunkscore.missed(): print(chunk)
-    (NP the/DT mat/NN)
+    >>> for chunk in sorted(chunkscore.missed()): print(chunk)
     (NP the/DT dog/NN)
+    (NP the/DT mat/NN)
 
     >>> for chunk in chunkscore.incorrect(): print(chunk)
     (NP the/DT mat/NN the/DT dog/NN)
