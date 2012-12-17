@@ -99,10 +99,9 @@ document into a list of two-member lists, each of which consists of a
 (possibly empty) string followed by a `Tree` (i.e., a Named Entity):
 
     >>> from nltk.sem import relextract
-    >>> from string import join
     >>> pairs = relextract.mk_pairs(tree)
     >>> for s, tree in pairs[18:22]:
-    ...     print('("...%s", %s)' % (join(s[-5:]),tree))
+    ...     print('("...%s", %s)' % (" ".join(s[-5:]),tree))
     ("...about first-level questions,'' said Ms.", (PERSON Cohn))
     ("..., a partner in the", (ORGANIZATION McGlashan &AMP; Sarrail))
     ("...firm in", (LOCATION San Mateo))
@@ -116,16 +115,16 @@ and ``Tree3`` is the object of the relation. ``string1`` and ``string3`` are
 stored as left and right context respectively.
 
     >>> reldicts = relextract.mk_reldicts(pairs)
-    >>> for k, v in reldicts[0].items():
+    >>> for k, v in sorted(reldicts[0].items()):
     ...     print(k, '=>', v) # doctest: +ELLIPSIS
-    lcon => transactions.'' Each week, they post
     filler => of messages to their own ``Cyberia'' ...
-    objsym => white_house
+    lcon => transactions.'' Each week, they post
     objclass => ORGANIZATION
+    objsym => white_house
     objtext => White House
-    subjsym => hundreds
-    subjclass => CARDINAL
     rcon => for access to its planned
+    subjclass => CARDINAL
+    subjsym => hundreds
     subjtext => hundreds
 
 The next example shows some of the values for two `reldict`\ s
