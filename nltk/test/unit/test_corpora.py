@@ -2,9 +2,27 @@
 from __future__ import absolute_import, unicode_literals
 import unittest
 from nltk.corpus import (sinica_treebank, conll2007, indian, cess_cat, cess_esp,
-                         floresta, ptb)
+                         floresta, ptb, udhr)
 from nltk.tree import Tree
 from .utils import skipIf
+
+
+class TestUdhr(unittest.TestCase):
+
+    def test_words(self):
+        for name in udhr.fileids():
+            try:
+                words = list(udhr.words(name))
+            except AssertionError:
+                print(name)
+                raise
+            self.assertTrue(words)
+
+    def test_raw_unicode(self):
+        for name in udhr.fileids():
+            txt = udhr.raw(name)
+            assert not isinstance(txt, bytes), name
+
 
 class TestIndian(unittest.TestCase):
 

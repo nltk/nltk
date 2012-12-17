@@ -71,7 +71,7 @@ class CorpusReader(object):
                 or tagged_sents() methods.
         """
         # Convert the root to a path pointer, if necessary.
-        if isinstance(root, compat.string_types):
+        if isinstance(root, compat.string_types) and not isinstance(root, PathPointer):
             m = re.match('(.*\.zip)/?(.*)$|', root)
             zipfile, zipentry = m.groups()
             if zipfile:

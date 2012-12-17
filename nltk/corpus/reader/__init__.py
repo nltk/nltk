@@ -89,6 +89,7 @@ from nltk.corpus.reader.childes import *
 from nltk.corpus.reader.aligned import *
 from nltk.corpus.reader.lin import *
 from nltk.corpus.reader.semcor import *
+from nltk.corpus.reader.udhr import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
@@ -122,5 +123,5 @@ __all__ = [
     'TEICorpusView', 'KNBCorpusReader', 'ChasenCorpusReader',
     'CHILDESCorpusReader', 'AlignedCorpusReader',
     'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader',
-    'SemcorCorpusReader'
+    'SemcorCorpusReader', 'UdhrCorpusReader',
 ]

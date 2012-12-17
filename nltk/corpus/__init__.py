@@ -199,18 +199,7 @@ treebank_chunk = LazyCorpusLoader(
 treebank_raw = LazyCorpusLoader(
     'treebank/raw', PlaintextCorpusReader, r'wsj_.*')
 udhr = LazyCorpusLoader(
-    'udhr', PlaintextCorpusReader, r'(?!README|\.).*',
-    # Encodings specified in filenames but not mapped to anything:
-    # DallakHelv, VIQR, Cyrillic+Abkh, WinResearcher, font,
-    # Afenegus6..60375, VG2Main, VPS, Turkish, TCVN, Az.Times.Lat0117,
-    # EUC, Baltic, err, Az.Times.Cyr.Normal0117, T61, Amahuaca, Agra
-    encoding=[('.*-UTF8$', 'utf-8'), ('.*-Latin1$', 'latin-1'),
-              ('.*-Hebrew$', 'hebrew'), ('.*-Arabic$', 'arabic'),
-              ('.*-Cyrillic$', 'cyrillic'), ('.*-SJIS$', 'SJIS'),
-              ('.*-GB2312$', 'GB2312'), ('.*-Latin2$', 'ISO-8859-2'),
-              ('.*-Greek$', 'greek'), ('.*-UFT8$', 'utf-8'),
-              ('Hungarian_Magyar-Unicode', 'utf-16-le')]
-    )
+    'udhr', UdhrCorpusReader)
 verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.).*\.xml')
 webtext = LazyCorpusLoader(
