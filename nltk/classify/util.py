@@ -12,6 +12,7 @@ Utility functions and classes for classifiers.
 from __future__ import print_function
 
 import math
+from itertools import islice
 
 #from nltk.util import Deprecated
 import nltk.classify.util # for accuracy & log_likelihood
@@ -198,7 +199,7 @@ def names_demo(trainer, features=names_demo_features):
         print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
         print()
         print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
-        for ((name, gender), pdist) in zip(test, pdists)[:5]:
+        for ((name, gender), pdist) in islice(zip(test, pdists), 5):
             if gender == 'male':
                 fmt = '  %-15s *%6.4f   %6.4f'
             else:

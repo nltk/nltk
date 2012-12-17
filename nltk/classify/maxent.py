@@ -223,7 +223,7 @@ class MaxentClassifier(ClassifierI):
 
     @classmethod
     def train(cls, train_toks, algorithm=None, trace=3, encoding=None,
-              labels=None, sparse=True, gaussian_prior_sigma=0, **cutoffs):
+              labels=None, sparse=False, gaussian_prior_sigma=0, **cutoffs):
         """
         Train a new maxent classifier based on the given corpus of
         training samples.  This classifier will have its weights
@@ -294,7 +294,7 @@ class MaxentClassifier(ClassifierI):
         """
         if algorithm is None:
             try:
-                import scipy.maxentropy
+                import nltk.maxentropy
                 algorithm = 'cg'
             except ImportError:
                 algorithm = 'iis'
@@ -1378,7 +1378,7 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
                          'http://www.scipy.org/' % algorithm)
     try:
         # E.g., if libgfortran.2.dylib is not found.
-        import scipy.sparse, scipy.maxentropy
+        import scipy.sparse, nltk.maxentropy
     except ImportError as e:
         raise ValueError('Import of scipy package failed: %s' % e)
 
@@ -1423,7 +1423,7 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
                 F[fid, toknum*len(labels) + labelnum[label2]] = fval
 
     # Set up the scipy model, based on the matrices F and N.
-    model = scipy.maxentropy.conditionalmodel(F, N, num_toks)
+    model = nltk.maxentropy.conditionalmodel(F, N, num_toks)
     # note -- model.setsmooth() is buggy.
     if gaussian_prior_sigma:
         model.sigma2 = gaussian_prior_sigma**2
@@ -1489,8 +1489,9 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     try:
         fd, trainfile_name = tempfile.mkstemp(prefix='nltk-', suffix='.gz')
         trainfile = gzip.open(trainfile_name, 'wb')
-        write_megam_file(train_toks, encoding, trainfile, \
-                            explicit=explicit, bernoulli=bernoulli)
+        write_megam_file(train_toks, encoding, trainfile,
+                            explicit=explicit, bernoulli=bernoulli,
+                            bin_stream=True)
         trainfile.close()
     except (OSError, IOError, ValueError) as e:
         raise ValueError('Error while creating megam training file: %s' % e)
@@ -1565,7 +1566,7 @@ class TadmMaxentClassifier(MaxentClassifier):
             tempfile.mkstemp(prefix='nltk-tadm-weights-')
 
         trainfile = gzip.open(trainfile_name, 'wb')
-        write_tadm_file(train_toks, encoding, trainfile)
+        write_tadm_file(train_toks, encoding, trainfile, bin_stream=True)
         trainfile.close()
 
         options = []

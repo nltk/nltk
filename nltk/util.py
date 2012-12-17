@@ -35,7 +35,10 @@ def usage(obj, selfname='self'):
         obj = obj.__class__
 
     print('%s supports the following operations:' % obj.__name__)
-    for (name, method) in sorted(pydoc.allmethods(obj).items()):
+    for (name, method) in inspect.getmembers(obj):
+        if (not inspect.ismethod(method) and   # python 2.6 and 2.7
+            not inspect.isfunction(method)):   # python 3.x
+           continue
         if name.startswith('_'): continue
         if getattr(method, '__deprecated__', False): continue
 
