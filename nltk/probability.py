@@ -2006,7 +2006,7 @@ class ConditionalProbDist(ConditionalProbDistI):
 
         >>> from nltk.probability import ConditionalProbDist, ELEProbDist
         >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
-        >>> print cpdist['run'].max()
+        >>> cpdist['run'].max()
         'NN'
         >>> print cpdist['run'].prob('NN')
         0.0813

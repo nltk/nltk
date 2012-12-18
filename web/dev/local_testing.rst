@@ -7,7 +7,7 @@ NLTK testing
        pip install virtualenv
        pip install tox
 
-3. make sure python2.5, python2.6, python2.7 and pypy executables are
+3. make sure python2.6, python2.7, python3.3, and pypy executables are
    in system PATH. It is OK not to have all the executables, tests will
    be executed for available interpreters.
 

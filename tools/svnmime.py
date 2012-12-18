@@ -4,6 +4,8 @@
 # configured to automatically set mime types
 # http://code.google.com/p/support/wiki/FAQ
 
+from __future__ import print_statement
+
 import os
 import sys
 
@@ -45,4 +47,4 @@ for file in sys.argv[1:]:
         if extension in types_map:
             os.system("svn propset svn:mime-type %s %s" % (types_map[extension], file))
         else:
-            print "Unrecognized extension", extension
+            print("Unrecognized extension", extension)

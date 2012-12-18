@@ -10,6 +10,9 @@
 """
 An interface to Boxer.
 
+This interface relies on the latest version of the development (subversion) version of
+C&C and Boxer.
+
 Usage:
   Set the environment variable CANDCHOME to the bin directory of your CandC installation.
   The models directory should be in the CandC root directory.
@@ -231,11 +234,22 @@ class Boxer(object):
                 i += 1
                 line = lines[i]
                 assert line.startswith('sem(%s,' % drs_id)
-
-                i += 4
-                line = lines[i]
                 assert line.endswith(').')
-                drs_input = line[:-2].strip()
+                
+                search_start = len('sem(%s,[' % drs_id)
+                brace_count = 1
+                drs_start = -1
+                for j,c in enumerate(line[search_start:]):
+                    if(c == '['): 
+                        brace_count += 1
+                    if(c == ']'): 
+                        brace_count -= 1
+                        if(brace_count == 0): 
+                            drs_start = search_start + j + 2
+                            break
+                assert drs_start > -1
+                    
+                drs_input = line[drs_start:-2].strip()
                 parsed = self._parse_drs(drs_input, discourse_id, use_disc_id)
                 drs_dict[discourse_id] = self._boxer_drs_interpreter.interpret(parsed)
             i += 1

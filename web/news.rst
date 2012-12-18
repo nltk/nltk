@@ -1,6 +1,10 @@
 NLTK News
 =========
 
+Python Grant : November 2012
+   The Python Software Foundation is sponsoring Mikhail Korborov's work on porting NLTK to Python 3.
+   http://pyfound.blogspot.hu/2012/11/grants-to-assist-kivy-nltk-in-porting.html
+
 NLTK 2.0.4 released : November 2012
     Minor fix to remove numpy dependency.
 

@@ -187,10 +187,10 @@ Top-down
     Nr edges in chart: 48
     (S
       (NP I)
-      (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
+      (VP (Verb saw) (NP (NP John) (PP with (NP (Det a) (Noun dog))))))
     (S
       (NP I)
-      (VP (Verb saw) (NP (NP John) (PP with (NP (Det a) (Noun dog))))))
+      (VP (VP (Verb saw) (NP John)) (PP with (NP (Det a) (Noun dog)))))
     <BLANKLINE>
 
 Bottom-up
@@ -785,15 +785,15 @@ We use the featurechart.demo() function for tracing the Feature Chart Parser.
     (S[]
       (NP[] I)
       (VP[]
+        (VP[] (Verb[] saw) (NP[] John))
+        (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog)))))
+    (S[]
+      (NP[] I)
+      (VP[]
         (Verb[] saw)
         (NP[]
           (NP[] John)
           (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog))))))
-    (S[]
-      (NP[] I)
-      (VP[]
-        (VP[] (Verb[] saw) (NP[] John))
-        (PP[] (Prep[] with) (NP[] (Det[-pl] a) (Noun[-pl] dog)))))
 
 
 Unit tests for the Feature Chart Parser classes
@@ -821,12 +821,13 @@ return the same trees. Otherwise an error is printed.
     ...     trees = None
     ...     for P in parsers:
     ...         result = P(grammar).nbest_parse(sentence)
+    ...         result = set([tree.freeze() for tree in result])
     ...         if len(result) != nr_trees:
-    ...             print "Wrong nr of trees:", len(result)
+    ...             print("Wrong nr of trees:", len(result))
     ...         elif trees is None:
     ...             trees = result
     ...         elif result != trees:
-    ...             print "Trees differ for parser:", P.__name__
+    ...             print("Trees differ for parser:", P.__name__)
 
 The demo grammar from before, with an ambiguous sentence.
 

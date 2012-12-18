@@ -14,20 +14,22 @@ import re
 import random
 
 reflections = {
-  "am"     : "are",
-  "was"    : "were",
-  "i"      : "you",
-  "i'd"    : "you would",
-  "i've"   : "you have",
-  "i'll"   : "you will",
-  "my"     : "your",
-  "are"    : "am",
-  "you've" : "I have",
-  "you'll" : "I will",
-  "your"   : "my",
-  "yours"  : "mine",
-  "you"    : "me",
-  "me"     : "you"
+  "i am"       : "you are",
+  "i was"      : "you were",
+  "i"          : "you",
+  "i'm"        : "you are",
+  "i'd"        : "you would",
+  "i've"       : "you have",
+  "i'll"       : "you will",
+  "my"         : "your",
+  "you are"    : "I am",
+  "you were"   : "I was",
+  "you've"     : "I have",
+  "you'll"     : "I will",
+  "your"       : "my",
+  "yours"      : "mine",
+  "you"        : "me",
+  "me"         : "you"
 }
 
 class Chat(object):
@@ -49,8 +51,15 @@ class Chat(object):
 
         self._pairs = [(re.compile(x, re.IGNORECASE),y) for (x,y) in pairs]
         self._reflections = reflections
+        self._regex = self._compile_reflections()
 
-    # bug: only permits single word expressions to be mapped
+
+    def _compile_reflections(self):
+        sorted_refl = sorted(self._reflections.keys(), key=len,
+                reverse=True)
+        return  re.compile(r"\b({0})\b".format("|".join(map(re.escape,
+            sorted_refl))), re.IGNORECASE)
+
     def _substitute(self, str):
         """
         Substitute words in the string, according to the specified reflections,
@@ -61,12 +70,9 @@ class Chat(object):
         :rtype: str
         """
 
-        words = ""
-        for word in string.split(string.lower(str)):
-            if word in self._reflections:
-                word = self._reflections[word]
-            words += ' ' + word
-        return words
+        return self._regex.sub(lambda mo:
+                self._reflections[mo.string[mo.start():mo.end()]],
+                    string.lower(str))
 
     def _wildcards(self, response, match):
         pos = string.find(response,'%')

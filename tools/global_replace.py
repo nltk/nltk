@@ -10,11 +10,13 @@
 
 # NB Should work on all platforms, http://www.python.org/doc/2.5.2/lib/os-file-dir.html
 
+from __future__ import print_statement
+
 import os, stat, sys
 
 def update(file, pattern, replacement, verbose=False):
     if verbose:
-        print "Updating:", file
+        print("Updating:", file)
 
     # make sure we can write the file
     old_perm = os.stat(file)[0]
@@ -47,7 +49,7 @@ if __name__ == '__main__':
             for file in files:
                 path = os.path.join(root, file)
                 if update(path, pattern, replacement):
-                    print "Updated:", path
+                    print("Updated:", path)
                     count += 1
 
-    print "Updated %d files" % count
+    print("Updated %d files" % count)

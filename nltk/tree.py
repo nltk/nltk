@@ -38,25 +38,25 @@ class Tree(list):
     nested Tree.
 
         >>> from nltk.tree import Tree
-        >>> print Tree(1, [2, Tree(3, [4]), 5])
+        >>> print(Tree(1, [2, Tree(3, [4]), 5]))
         (1 2 (3 4) 5)
         >>> vp = Tree('VP', [Tree('V', ['saw']),
         ...                  Tree('NP', ['him'])])
         >>> s = Tree('S', [Tree('NP', ['I']), vp])
-        >>> print s
+        >>> print(s)
         (S (NP I) (VP (V saw) (NP him)))
-        >>> print s[1]
+        >>> print(s[1])
         (VP (V saw) (NP him))
-        >>> print s[1,1]
+        >>> print(s[1,1])
         (NP him)
         >>> t = Tree("(S (NP I) (VP (V saw) (NP him)))")
         >>> s == t
         True
         >>> t[1][1].node = "X"
-        >>> print t
+        >>> print(t)
         (S (NP I) (VP (V saw) (X him)))
         >>> t[0], t[1,1] = t[1,1], t[0]
-        >>> print t
+        >>> print(t)
         (S (X him) (VP (V saw) (NP I)))
 
     The length of a tree is the number of children it has.
@@ -113,21 +113,21 @@ class Tree(list):
 
     def __eq__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node == other.node and list.__eq__(self, other)
+        return (self.node, list(self)) == (other.node, list(other))
     def __ne__(self, other):
         return not (self == other)
     def __lt__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node < other.node or list.__lt__(self, other)
+        return (self.node, list(self)) < (other.node, list(other))
     def __le__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node <= other.node or list.__le__(self, other)
+        return (self.node, list(self)) <= (other.node, list(other))
     def __gt__(self, other):
         if not isinstance(other, Tree): return True
-        return self.node > other.node or list.__gt__(self, other)
+        return (self.node, list(self)) > (other.node, list(other))
     def __ge__(self, other):
         if not isinstance(other, Tree): return False
-        return self.node >= other.node or list.__ge__(self, other)
+        return (self.node, list(self)) >= (other.node, list(other))
 
     #////////////////////////////////////////////////////////////
     # Disabled list operations
@@ -219,7 +219,7 @@ class Tree(list):
         Return a flat version of the tree, with all non-root non-terminals removed.
 
             >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
-            >>> print t.flatten()
+            >>> print(t.flatten())
             (S the dog chased the cat)
 
         :return: a tree consisting of this tree's root connected directly to
@@ -235,7 +235,7 @@ class Tree(list):
             >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
             >>> t.height()
             5
-            >>> print t[0,0]
+            >>> print(t[0,0])
             (D the)
             >>> t[0,0].height()
             2
@@ -262,7 +262,7 @@ class Tree(list):
             [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), ...]
             >>> for pos in t.treepositions('leaves'):
             ...     t[pos] = t[pos][::-1].upper()
-            >>> print t
+            >>> print(t)
             (S (NP (D EHT) (N GOD)) (VP (V DESAHC) (NP (D EHT) (N TAC))))
 
         :param order: One of: ``preorder``, ``postorder``, ``bothorder``,
@@ -286,7 +286,7 @@ class Tree(list):
 
             >>> t = Tree("(S (NP (D the) (N dog)) (VP (V chased) (NP (D the) (N cat))))")
             >>> for s in t.subtrees(lambda t: t.height() == 2):
-            ...     print s
+            ...     print(s)
             (D the)
             (N dog)
             (V chased)
