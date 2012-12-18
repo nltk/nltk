@@ -1221,7 +1221,7 @@ class WittenBellProbDist(ProbDistI):
 # species. (In drawing balls from an urn, the 'objects' would be balls
 # and the 'species' would be the distinct colors of the balls (finite
 # but unknown in number).
-#
+# 
 # The situation frequency zero is quite common in the original
 # Good-Turing estimation.  Bill Gale and Geoffrey Sampson present a
 # simple and effective approach, Simple Good-Turing.  As a smoothing
@@ -1620,6 +1620,124 @@ class MutableProbDist(ProbDistI):
             self._data[i] = (prob if log else math.log(prob, 2))
         else:
             self._data[i] = (2**(prob) if log else prob)
+
+##/////////////////////////////////////////////////////
+##  Kneser-Ney Probability Distribution
+##//////////////////////////////////////////////////////
+
+class KneserNeyProbDist(ProbDistI):
+    """
+    Kneser-Ney estimate of a probability distribution. This is a version of
+    back-off that counts how likely an ngram is provided the n-1gram had
+    been seen in training. Extends the ProbDistI interface, requires a trigram
+    FreqDist instance to train on. Optionally, a different from default discount
+    value can be specified. The default discount is set to 0.75.
+
+    """
+    def __init__(self, trigrams, discount=0.75):
+        """
+        :param trigrams: The trigram frequency distribution upon which to base
+            the estimation
+        :type trigrams: FreqDist
+        :param discount: The discount applied when retrieving counts of
+            trigrams
+        :type discount: float (prefered, but can be set to int)
+        """
+        # set bins, discount parameter
+        self._bins = trigrams.B()
+        self._D = discount
+        # initialize cache used later to speed up probability calculation
+        self._cache = {}
+        # initialize internal bigram and trigram frequency distributions
+        self._bigrams = defaultdict(int)
+        self._trigrams = trigrams
+        # initialize helper dictionaries used to calculate probabilities
+        self._wordtypes_after = defaultdict(float)
+        self._trigrams_contain = defaultdict(float)
+        self._wordtypes_before = defaultdict(float)
+        # looping over trigrams set all the helper dictionaries
+        for w0, w1, w2 in trigrams.iterkeys():
+            # add frequency of trigram to that of corresponding bigram
+            self._bigrams[(w0,w1)] += trigrams[(w0, w1, w2)]
+            # increment the wordtype counter for the bigram
+            self._wordtypes_after[(w0,w1)] += 1
+            # increment trigram counter for trigrams containing w1
+            self._trigrams_contain[w1] += 1
+            # increment wordtype counter for words preceding w1 and w2
+            self._wordtypes_before[(w1,w2)] += 1
+
+    def prob(self, sample):
+        # allow sample to be a nested tuple
+        # this code deals with the possibilities
+        if len(sample) == 2 and type(sample[0]) == tuple:
+            (w0, w1), w2 = prev, x = sample
+            trigram = (w0, w1, w2)
+        elif len(sample) == 2 and type(sample[1]) == tuple:
+            w0, (w1, w2) = x, follow = sample
+            trigram = (w0, w1, w2)
+        elif len(sample) == 3:
+            w0, w1, w2 = sample
+            trigram = (w0, w1, w2)
+        else:
+            # if sample is something unprocessable
+            raise ValueError('Expected a triple')
+        
+        if trigram in self._cache:
+            # check if the answer has been cached
+            return self._cache[trigram]
+        else:
+            # if not, perform computations
+            if trigram in self._trigrams:
+                # if the sample trigram was seen during training
+                prob = (self._trigrams[trigram] - self._D)/self._bigrams[(w0, w1)]
+            elif (w0,w1) in self._bigrams and (w1,w2) in self._wordtypes_before:
+                # else if the 'rougher' environment was seen in training
+                # start by assigning some variables for convenience
+                aftr, bfr = self._wordtypes_after[(w0, w1)], self._wordtypes_before[(w1, w2)]
+                # calculate the probability weight left over from alphas
+                leftover_prob = ((aftr * self._D) / self._bigrams[(w0, w1)])
+                # calculate the beta (including normalization)
+                beta = bfr /(self._trigrams_contain[w1] - aftr)
+                # get the probability score
+                prob = leftover_prob * beta
+            else:
+                # if the passed sample was completely unseen in training
+                prob = 0.0
+            # add prob score to cache for faster retrieval later then return it
+            self._cache[trigram] = prob
+            return prob
+
+    def discount(self):
+        """
+        Return the value by which counts are discounted. By default set to 0.75.
+
+        :rtype: float
+        """
+        return self._D
+
+    def set_discount(self, discount):
+        """
+        Set the value by which counts are discounted to the value of discount.
+
+        :param discount: the new value to discount counts by
+        :type discount: float (preferred, but int possible)        
+        :rtype: None
+        """
+        self._D = discount
+
+    def samples(self):
+        return self._trigrams.keys()
+
+    def max(self):
+        return self._trigrams.keys()[0]
+
+    def __repr__(self):
+        '''
+        Return a string representation of this ProbDist
+
+        :rtype: str
+        '''
+        return '<KneserNeyProbDist based on {} trigrams'.format(self._trigrams.N())
 
 ##//////////////////////////////////////////////////////
 ##  Probability Distribution Operations
