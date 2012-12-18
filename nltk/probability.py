@@ -1625,6 +1625,37 @@ class MutableProbDist(ProbDistI):
 ##  Kneser-Ney Probability Distribution
 ##//////////////////////////////////////////////////////
 
+# This method for calculating probabilities was introduced in 1995 by Reinhard
+# Kneser and Hermann Ney. It was meant to improve the accuracy of language
+# models that use backing-off to deal with sparce data. The authors propose two
+# ways of doing so: a marginal distribution constraint on the back-off
+# distribution and a leave-one-out distribution. For a start, the first one is
+# implemented as a class below.
+# 
+# The idea behind a back-off ngram model is that we have a series of
+# frequency distributions for our ngrams so that in case we have not seen a
+# given ngram during training (and as a result have a 0 probability for it) we
+# can 'back off' (hence the name!) and try testing whether we've seen the
+# n-1gram part of the ngram in training.
+#
+# The novelty of Kneser and Ney's approach was that they decided to fiddle
+# around with the way this latter, backed off probability was being calculated
+# whereas their peers seemed to focus on the primary probability.
+#
+# The implementation below uses one of the techniques described in their paper
+# titled IMPROVED BACKING-OFF FOR M-GRAM LANGUAGE MODELING. In the same paper
+# another technique is introduced to attempt to smooth the back-off
+# distribution as well as the primary one. There is also a much-cited
+# modification of this method proposed by Chen and Goodman.
+#
+# In order for the implementation of Kneser-Ney to be more efficient, some
+# changes have been made to the original algorithm. Namely, the calculation of
+# the normalizing function gamma has been significantly simplified and
+# combined slightly differently with beta. None of these changes affect the
+# nature of the algorithm, but instead aim to cut out unnecessary calculations
+# and take advantage of storing and retrieving information in dictionaries
+# where possible.
+
 class KneserNeyProbDist(ProbDistI):
     """
     Kneser-Ney estimate of a probability distribution. This is a version of
