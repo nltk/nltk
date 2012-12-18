@@ -294,7 +294,7 @@ class MaxentClassifier(ClassifierI):
         """
         if algorithm is None:
             try:
-                import nltk.maxentropy
+                from . import scipy_maxentropy
                 algorithm = 'cg'
             except ImportError:
                 algorithm = 'iis'
@@ -1378,7 +1378,8 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
                          'http://www.scipy.org/' % algorithm)
     try:
         # E.g., if libgfortran.2.dylib is not found.
-        import scipy.sparse, nltk.maxentropy
+        import scipy.sparse
+        from . import scipy_maxentropy
     except ImportError as e:
         raise ValueError('Import of scipy package failed: %s' % e)
 
@@ -1423,7 +1424,7 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
                 F[fid, toknum*len(labels) + labelnum[label2]] = fval
 
     # Set up the scipy model, based on the matrices F and N.
-    model = nltk.maxentropy.conditionalmodel(F, N, num_toks)
+    model = scipy_maxentropy.conditionalmodel(F, N, num_toks)
     # note -- model.setsmooth() is buggy.
     if gaussian_prior_sigma:
         model.sigma2 = gaussian_prior_sigma**2
