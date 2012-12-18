@@ -463,7 +463,7 @@ def columnvariances(A):
 
     """
     if type(A) is numpy.ndarray:
-        return numpy.std(A,0)**2
+        return numpy.std(A, axis=0, ddof=1)**2
     else:
         try:
             m = A.shape[0]
