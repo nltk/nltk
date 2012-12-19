@@ -1713,7 +1713,7 @@ class KneserNeyProbDist(ProbDistI):
             # if not, perform computations
             if trigram in self._trigrams:
                 # if the sample trigram was seen during training
-                prob = (self._trigrams[trigram] - self._D)/self._bigrams[(w0, w1)]
+                prob = (self._trigrams[trigram] - self.discount())/self._bigrams[(w0, w1)]
             elif (w0,w1) in self._bigrams and (w1,w2) in self._wordtypes_before:
                 # else if the 'rougher' environment was seen in training
                 # start by assigning some variables for convenience
