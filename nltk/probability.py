@@ -643,7 +643,7 @@ class DictionaryProbDist(ProbDistI):
         factor such that they sum to 1.
 
         If called without arguments, the resulting probability
-        distribution assigns zero probabiliy to all values.
+        distribution assigns zero probability to all values.
         """
 
         self._prob_dict = (prob_dict.copy() if prob_dict is not None else {})
@@ -742,11 +742,11 @@ class LidstoneProbDist(ProbDistI):
     """
     The Lidstone estimate for the probability distribution of the
     experiment used to generate a frequency distribution.  The
-    "Lidstone estimate" is paramaterized by a real number *gamma*,
+    "Lidstone estimate" is parameterized by a real number *gamma*,
     which typically ranges from 0 to 1.  The Lidstone estimate
     approximates the probability of a sample with count *c* from an
     experiment with *N* outcomes and *B* bins as
-    ``c+gamma)/(N+B*gamma)``.  This is equivalant to adding
+    ``c+gamma)/(N+B*gamma)``.  This is equivalent to adding
     *gamma* to the count for each bin, and taking the maximum
     likelihood estimate of the resulting frequency distribution.
     """
@@ -760,8 +760,8 @@ class LidstoneProbDist(ProbDistI):
         :param freqdist: The frequency distribution that the
             probability estimates should be based on.
         :type gamma: float
-        :param gamma: A real number used to paramaterize the
-            estimate.  The Lidstone estimate is equivalant to adding
+        :param gamma: A real number used to parameterize the
+            estimate.  The Lidstone estimate is equivalent to adding
             *gamma* to the count for each bin, and taking the
             maximum likelihood estimate of the resulting frequency
             distribution.
@@ -838,7 +838,7 @@ class LaplaceProbDist(LidstoneProbDist):
     experiment used to generate a frequency distribution.  The
     "Laplace estimate" approximates the probability of a sample with
     count *c* from an experiment with *N* outcomes and *B* bins as
-    *(c+1)/(N+B)*.  This is equivalant to adding one to the count for
+    *(c+1)/(N+B)*.  This is equivalent to adding one to the count for
     each bin, and taking the maximum likelihood estimate of the
     resulting frequency distribution.
     """
@@ -872,7 +872,7 @@ class ELEProbDist(LidstoneProbDist):
     of the experiment used to generate a frequency distribution.  The
     "expected likelihood estimate" approximates the probability of a
     sample with count *c* from an experiment with *N* outcomes and
-    *B* bins as *(c+0.5)/(N+B/2)*.  This is equivalant to adding 0.5
+    *B* bins as *(c+0.5)/(N+B/2)*.  This is equivalent to adding 0.5
     to the count for each bin, and taking the maximum likelihood
     estimate of the resulting frequency distribution.
     """
@@ -1157,7 +1157,7 @@ class WittenBellProbDist(ProbDistI):
             - *p = c / (N + T)*, otherwise
 
         The parameters *T* and *N* are taken from the ``freqdist`` parameter
-        (the ``B()`` and ``N()`` values). The normalising factor *Z* is
+        (the ``B()`` and ``N()`` values). The normalizing factor *Z* is
         calculated using these values along with the ``bins`` parameter.
 
         :param freqdist: The frequency counts upon which to base the
@@ -1210,7 +1210,7 @@ class WittenBellProbDist(ProbDistI):
 
 
 ##//////////////////////////////////////////////////////
-##  Good-Turing Probablity Distributions
+##  Good-Turing Probability Distributions
 ##//////////////////////////////////////////////////////
 
 # Good-Turing frequency estimation was contributed by Alan Turing and
@@ -1221,14 +1221,14 @@ class WittenBellProbDist(ProbDistI):
 # species. (In drawing balls from an urn, the 'objects' would be balls
 # and the 'species' would be the distinct colors of the balls (finite
 # but unknown in number).
-# 
+#
 # The situation frequency zero is quite common in the original
 # Good-Turing estimation.  Bill Gale and Geoffrey Sampson present a
 # simple and effective approach, Simple Good-Turing.  As a smoothing
 # curve they simply use a power curve:
 #
 #     Nr = a*r^b (with b < -1 to give the appropriate hyperbolic
-#     relationsihp)
+#     relationship)
 #
 # They estimate a and b by simple linear regression technique on the
 # logarithmic form of the equation:
@@ -1240,7 +1240,7 @@ class WittenBellProbDist(ProbDistI):
 # measured Nr directly.  (see M&S, p.213)
 #
 # Gale and Sampson propose to use r while the difference between r and
-# r* is 1.96 greather than the standar deviation, and switch to r* if
+# r* is 1.96 greater than the standard deviation, and switch to r* if
 # it is less or equal:
 #
 #     |r - r*| > 1.96 * sqrt((r + 1)^2 (Nr+1 / Nr^2) (1 + Nr+1 / Nr))
@@ -1334,7 +1334,7 @@ class GoodTuringProbDist(ProbDistI):
 
 class SimpleGoodTuringProbDist(ProbDistI):
     """
-    SimpleGoodTuring ProbDist approximates from frequency to freqency of
+    SimpleGoodTuring ProbDist approximates from frequency to frequency of
     frequency into a linear line under log space by linear regression.
     Details of Simple Good-Turing algorithm can be found in:
 
@@ -1344,8 +1344,8 @@ class SimpleGoodTuringProbDist(ProbDistI):
       2nd Edition, Chapter 4.5 p103 (log(Nc) =  a + b*log(c))
     - http://www.grsampson.net/RGoodTur.html
 
-    Given a set of pair (xi, yi),  where the xi denotes the freqency and
-    yi denotes the freqency of freqency, we want to minimize their
+    Given a set of pair (xi, yi),  where the xi denotes the frequency and
+    yi denotes the frequency of frequency, we want to minimize their
     square variation. E(x) and E(y) represent the mean of xi and yi.
 
     - slope: b = sigma ((xi-E(x)(yi-E(y))) / sigma ((xi-E(x))(xi-E(x)))
@@ -1465,7 +1465,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         """
         Return the number of samples with count r.
 
-        :param r: The amount of freqency.
+        :param r: The amount of frequency.
         :type r: int
         :rtype: float
         """
@@ -1627,7 +1627,7 @@ class MutableProbDist(ProbDistI):
 
 # This method for calculating probabilities was introduced in 1995 by Reinhard
 # Kneser and Hermann Ney. It was meant to improve the accuracy of language
-# models that use backing-off to deal with sparce data. The authors propose two
+# models that use backing-off to deal with sparse data. The authors propose two
 # ways of doing so: a marginal distribution constraint on the back-off
 # distribution and a leave-one-out distribution. For a start, the first one is
 # implemented as a class below.
@@ -1672,7 +1672,7 @@ class KneserNeyProbDist(ProbDistI):
         :type trigrams: FreqDist
         :param discount: The discount applied when retrieving counts of
             trigrams
-        :type discount: float (prefered, but can be set to int)
+        :type discount: float (preferred, but can be set to int)
         """
         # set bins, discount parameter
         self._bins = trigrams.B()
@@ -1690,11 +1690,11 @@ class KneserNeyProbDist(ProbDistI):
         for w0, w1, w2 in trigrams.iterkeys():
             # add frequency of trigram to that of corresponding bigram
             self._bigrams[(w0,w1)] += trigrams[(w0, w1, w2)]
-            # increment the wordtype counter for the bigram
+            # increment the word-type counter for the bigram
             self._wordtypes_after[(w0,w1)] += 1
             # increment trigram counter for trigrams containing w1
             self._trigrams_contain[w1] += 1
-            # increment wordtype counter for words preceding w1 and w2
+            # increment word-type counter for words preceding w1 and w2
             self._wordtypes_before[(w1,w2)] += 1
 
     def prob(self, sample):
@@ -2015,7 +2015,7 @@ class ConditionalProbDistI(defaultdict):
 
 class ConditionalProbDist(ConditionalProbDistI):
     """
-    A conditional probability distribution modelling the experiments
+    A conditional probability distribution modeling the experiments
     that were used to generate a conditional frequency distribution.
     A ConditionalProbDist is constructed from a
     ``ConditionalFreqDist`` and a ``ProbDist`` factory:
