@@ -1675,7 +1675,7 @@ class KneserNeyProbDist(ProbDistI):
         :type discount: float (preferred, but can be set to int)
         """
         # set bins, discount parameter
-        self._bins = trigrams.B()
+        self._bins = freqdist.B()
         self._D = discount
         # initialize cache used later to speed up probability calculation
         self._cache = {}
@@ -1687,9 +1687,9 @@ class KneserNeyProbDist(ProbDistI):
         self._trigrams_contain = defaultdict(float)
         self._wordtypes_before = defaultdict(float)
         # looping over trigrams set all the helper dictionaries
-        for w0, w1, w2 in freqdists:
+        for w0, w1, w2 in freqdist:
             # add frequency of trigram to that of corresponding bigram
-            self._bigrams[(w0,w1)] += trigrams[(w0, w1, w2)]
+            self._bigrams[(w0,w1)] += freqdist[(w0, w1, w2)]
             # increment the word-type counter for the bigram
             self._wordtypes_after[(w0,w1)] += 1
             # increment trigram counter for trigrams containing w1
