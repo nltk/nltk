@@ -1665,7 +1665,7 @@ class KneserNeyProbDist(ProbDistI):
     value can be specified. The default discount is set to 0.75.
 
     """
-    def __init__(self, trigrams, discount=0.75):
+    def __init__(self, freqdist, discount=0.75):
         """
         :param trigrams: The trigram frequency distribution upon which to base
             the estimation
@@ -1681,13 +1681,13 @@ class KneserNeyProbDist(ProbDistI):
         self._cache = {}
         # initialize internal bigram and trigram frequency distributions
         self._bigrams = defaultdict(int)
-        self._trigrams = trigrams
+        self._trigrams = freqdist
         # initialize helper dictionaries used to calculate probabilities
         self._wordtypes_after = defaultdict(float)
         self._trigrams_contain = defaultdict(float)
         self._wordtypes_before = defaultdict(float)
         # looping over trigrams set all the helper dictionaries
-        for w0, w1, w2 in trigrams.iterkeys():
+        for w0, w1, w2 in freqdists:
             # add frequency of trigram to that of corresponding bigram
             self._bigrams[(w0,w1)] += trigrams[(w0, w1, w2)]
             # increment the word-type counter for the bigram
@@ -1698,21 +1698,14 @@ class KneserNeyProbDist(ProbDistI):
             self._wordtypes_before[(w1,w2)] += 1
 
     def prob(self, sample):
-        # allow sample to be a nested tuple
-        # this code deals with the possibilities
-        if len(sample) == 2 and type(sample[0]) == tuple:
-            (w0, w1), w2 = prev, x = sample
-            trigram = (w0, w1, w2)
-        elif len(sample) == 2 and type(sample[1]) == tuple:
-            w0, (w1, w2) = x, follow = sample
-            trigram = (w0, w1, w2)
-        elif len(sample) == 3:
+        # checking sample
+        if len(sample) == 3:
             w0, w1, w2 = sample
-            trigram = (w0, w1, w2)
+            trigram = (w0, w1, w2)          # new variable for convenience
         else:
             # if sample is something unprocessable
-            raise ValueError('Expected a triple')
-        
+            raise ValueError('Expected an iterable with 3 members. Please check your input')
+
         if trigram in self._cache:
             # check if the answer has been cached
             return self._cache[trigram]
@@ -1726,7 +1719,7 @@ class KneserNeyProbDist(ProbDistI):
                 # start by assigning some variables for convenience
                 aftr, bfr = self._wordtypes_after[(w0, w1)], self._wordtypes_before[(w1, w2)]
                 # calculate the probability weight left over from alphas
-                leftover_prob = ((aftr * self._D) / self._bigrams[(w0, w1)])
+                leftover_prob = ((aftr * self.discount()) / self._bigrams[(w0, w1)])
                 # calculate the beta (including normalization)
                 beta = bfr /(self._trigrams_contain[w1] - aftr)
                 # get the probability score
