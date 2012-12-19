@@ -301,6 +301,8 @@ class BoxerOutputDrsParser(DrtParser):
             return self.parse_drs()
         elif tok in ['merge', 'smerge']:
             return self._handle_binary_expression(self._make_merge_expression)(None, [])
+        elif tok in ['alfa']:
+            return self._handle_alfa(self._make_merge_expression)(None, [])
 
     def handle_condition(self, tok, indices):
         """
@@ -523,6 +525,16 @@ class BoxerOutputDrsParser(DrtParser):
 
     def _handle_binary_expression(self, make_callback):
         self.assertToken(self.token(), '(')
+        drs1 = self.parse_Expression(None)
+        self.assertToken(self.token(), ',')
+        drs2 = self.parse_Expression(None)
+        self.assertToken(self.token(), ')')
+        return lambda sent_index, word_indices: make_callback(sent_index, word_indices, drs1, drs2)
+
+    def _handle_alfa(self, make_callback):
+        self.assertToken(self.token(), '(')
+        type = self.token()
+        self.assertToken(self.token(), ',')
         drs1 = self.parse_Expression(None)
         self.assertToken(self.token(), ',')
         drs2 = self.parse_Expression(None)
