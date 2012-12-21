@@ -85,7 +85,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
     """
 
     def __init__(self):
-        print() # Do nothing without throwing error?
+        pass # Do nothing without throwing error
 
     def train(self, graphs):
         """
