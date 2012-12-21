@@ -102,7 +102,7 @@ class FeatureTreeEdge(TreeEdge):
         return nt.substitute_bindings(bindings)
 
     def next_with_bindings(self):
-        return self._bind(next(self), self._bindings)
+        return self._bind(self.nextsym(), self._bindings)
 
     def bindings(self):
         """
@@ -243,21 +243,21 @@ class FeatureFundamentalRule(FundamentalRule):
                 isinstance(left_edge, FeatureTreeEdge)):
             return
         found = right_edge.lhs()
-        next_edge = next(left_edge)
+        nextsym = left_edge.nextsym()
         if isinstance(right_edge, FeatureTreeEdge):
-            if not is_nonterminal(next_edge): return
-            if left_edge.next()[TYPE] != right_edge.lhs()[TYPE]: return
+            if not is_nonterminal(nextsym): return
+            if left_edge.nextsym()[TYPE] != right_edge.lhs()[TYPE]: return
             # Create a copy of the bindings.
             bindings = left_edge.bindings()
             # We rename vars here, because we don't want variables
             # from the two different productions to match.
             found = found.rename_variables(used_vars=left_edge.variables())
-            # Unify B1 (left_edge.next) with B2 (right_edge.lhs) to
+            # Unify B1 (left_edge.nextsym) with B2 (right_edge.lhs) to
             # generate B3 (result).
-            result = unify(next_edge, found, bindings, rename_vars=False)
+            result = unify(nextsym, found, bindings, rename_vars=False)
             if result is None: return
         else:
-            if next_edge != found: return
+            if nextsym != found: return
             # Create a copy of the bindings.
             bindings = left_edge.bindings()
 
@@ -281,7 +281,7 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         fr = self._fundamental_rule
         for left_edge in chart.select(end=right_edge.start(),
                                       is_complete=False,
-                                      next=right_edge.lhs()):
+                                      nextsym=right_edge.lhs()):
             for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
@@ -289,7 +289,7 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         fr = self._fundamental_rule
         for right_edge in chart.select(start=left_edge.end(),
                                        is_complete=True,
-                                       lhs=next(left_edge)):
+                                       lhs=left_edge.nextsym()):
             for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
@@ -325,16 +325,16 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
     """
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        next_edge, index = next(edge), edge.end()
-        if not is_nonterminal(next_edge): return
+        nextsym, index = edge.nextsym(), edge.end()
+        if not is_nonterminal(nextsym): return
 
         # If we've already applied this rule to an edge with the same
         # next & end, and the chart & grammar have not changed, then
         # just return (no new edges to add).
-        done = self._done.get((next_edge, index), (None,None))
+        done = self._done.get((nextsym, index), (None,None))
         if done[0] is chart and done[1] is grammar: return
 
-        for prod in grammar.productions(lhs=next(edge)):
+        for prod in grammar.productions(lhs=edge.nextsym()):
             # If the left corner in the predicted production is
             # leaf, it must match with the input.
             if prod.rhs():
@@ -351,7 +351,7 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
                     yield new_edge
 
         # Record the fact that we've applied this rule.
-        self._done[next_edge, index] = (chart, grammar)
+        self._done[nextsym, index] = (chart, grammar)
 
 
 #////////////////////////////////////////////////////////////

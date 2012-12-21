@@ -168,7 +168,7 @@ class EdgeI(object):
         """
         raise NotImplementedError()
 
-    def next(self):
+    def nextsym(self):
         """
         Return the element of this edge's right-hand side that
         immediately follows its dot.
@@ -176,9 +176,6 @@ class EdgeI(object):
         :rtype: Nonterminal or terminal or None
         """
         raise NotImplementedError()
-
-    def __next__(self):
-        return self.next()
 
     def is_complete(self):
         """
@@ -314,7 +311,7 @@ class TreeEdge(EdgeI):
     def dot(self): return self._dot
     def is_complete(self): return self._dot == len(self._rhs)
     def is_incomplete(self): return self._dot != len(self._rhs)
-    def next(self):
+    def nextsym(self):
         if self._dot >= len(self._rhs): return None
         else: return self._rhs[self._dot]
 
@@ -367,7 +364,7 @@ class LeafEdge(EdgeI):
     def dot(self): return 0
     def is_complete(self): return True
     def is_incomplete(self): return False
-    def next(self): return None
+    def nextsym(self): return None
 
     # String representations
     def __str__(self):
@@ -516,7 +513,8 @@ class Chart(object):
         :param length: Only generate edges ``e`` where ``e.length()==length``
         :param lhs: Only generate edges ``e`` where ``e.lhs()==lhs``
         :param rhs: Only generate edges ``e`` where ``e.rhs()==rhs``
-        :param next: Only generate edges ``e`` where ``e.next()==next``
+        :param nextsym: Only generate edges ``e`` where 
+            ``e.nextsym()==nextsym``
         :param dot: Only generate edges ``e`` where ``e.dot()==dot``
         :param is_complete: Only generate edges ``e`` where
             ``e.is_complete()==is_complete``
@@ -1015,7 +1013,7 @@ class FundamentalRule(AbstractChartRule):
         if not (left_edge.is_incomplete() and
                 right_edge.is_complete() and
                 left_edge.end() == right_edge.start() and
-                next(left_edge) == right_edge.lhs()):
+                left_edge.nextsym() == right_edge.lhs()):
             return
 
         # Construct the new edge.
@@ -1056,7 +1054,7 @@ class SingleEdgeFundamentalRule(FundamentalRule):
     def _apply_complete(self, chart, grammar, right_edge):
         for left_edge in chart.select(end=right_edge.start(),
                                       is_complete=False,
-                                      next=right_edge.lhs()):
+                                      nextsym=right_edge.lhs()):
             new_edge = left_edge.move_dot_forward(right_edge.end())
             if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                 yield new_edge
@@ -1064,7 +1062,7 @@ class SingleEdgeFundamentalRule(FundamentalRule):
     def _apply_incomplete(self, chart, grammar, left_edge):
         for right_edge in chart.select(start=left_edge.end(),
                                        is_complete=True,
-                                       lhs=next(left_edge)):
+                                       lhs=left_edge.nextsym()):
             new_edge = left_edge.move_dot_forward(right_edge.end())
             if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                 yield new_edge
@@ -1112,7 +1110,7 @@ class TopDownPredictRule(AbstractChartRule):
     NUM_EDGES = 1
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        for prod in grammar.productions(lhs=next(edge)):
+        for prod in grammar.productions(lhs=edge.nextsym()):
             new_edge = TreeEdge.from_production(prod, edge.end())
             if chart.insert(new_edge, ()):
                 yield new_edge
@@ -1132,17 +1130,17 @@ class CachedTopDownPredictRule(TopDownPredictRule):
 
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        next_edge, index = next(edge), edge.end()
-        if not is_nonterminal(next_edge): return
+        nextsym, index = edge.nextsym(), edge.end()
+        if not is_nonterminal(nextsym): return
 
         # If we've already applied this rule to an edge with the same
         # next & end, and the chart & grammar have not changed, then
         # just return (no new edges to add).
-        done = self._done.get((next_edge, index), (None,None))
+        done = self._done.get((nextsym, index), (None,None))
         if done[0] is chart and done[1] is grammar: return
 
         # Add all the edges indicated by the top down expand rule.
-        for prod in grammar.productions(lhs=next_edge):
+        for prod in grammar.productions(lhs=nextsym):
             # If the left corner in the predicted production is
             # leaf, it must match with the input.
             if prod.rhs():
@@ -1155,7 +1153,7 @@ class CachedTopDownPredictRule(TopDownPredictRule):
                 yield new_edge
 
         # Record the fact that we've applied this rule.
-        self._done[next_edge, index] = (chart, grammar)
+        self._done[nextsym, index] = (chart, grammar)
 
 #////////////////////////////////////////////////////////////
 # Bottom-Up Prediction
@@ -1219,7 +1217,7 @@ class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         nexttoken = end < chart.num_leaves() and chart.leaf(end)
         for left_edge in chart.select(end=right_edge.start(),
                                       is_complete=False,
-                                      next=right_edge.lhs()):
+                                      nextsym=right_edge.lhs()):
             if _bottomup_filter(grammar, nexttoken, left_edge.rhs(), left_edge.dot()):
                 new_edge = left_edge.move_dot_forward(right_edge.end())
                 if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
@@ -1228,7 +1226,7 @@ class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     def _apply_incomplete(self, chart, grammar, left_edge):
         for right_edge in chart.select(start=left_edge.end(),
                                        is_complete=True,
-                                       lhs=next(left_edge)):
+                                       lhs=left_edge.nextsym()):
             end = right_edge.end()
             nexttoken = end < chart.num_leaves() and chart.leaf(end)
             if _bottomup_filter(grammar, nexttoken, left_edge.rhs(), left_edge.dot()):

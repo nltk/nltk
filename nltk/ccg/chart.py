@@ -63,8 +63,7 @@ class CCGEdge(EdgeI):
     def dot(self): return 0
     def is_complete(self): return True
     def is_incomplete(self): return False
-    def next(self): return None
-    def __next__(self): return self.next()
+    def nextsym(self): return None
 
     def categ(self): return self._categ
     def rule(self): return self._rule
@@ -89,11 +88,9 @@ class CCGLeafEdge(EdgeI):
     def dot(self): return 0
     def is_complete(self): return True
     def is_incomplete(self): return False
-    def next(self): return None
+    def nextsym(self): return None
 
-    def categ(self):
-        return self._categ
-
+    def categ(self): return self._categ
     def leaf(self): return self._leaf
 
 class BinaryCombinatorRule(AbstractChartRule):

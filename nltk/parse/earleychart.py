@@ -165,7 +165,7 @@ class CompleteFundamentalRule(SingleEdgeFundamentalRule):
         # empty complete edges here.
         for right_edge in chart.select(start=end, end=end,
                                        is_complete=True,
-                                       lhs=next(left_edge)):
+                                       lhs=left_edge.nextsym()):
             new_edge = left_edge.move_dot_forward(right_edge.end())
             if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                 yield new_edge
@@ -207,7 +207,7 @@ class FeatureCompleteFundamentalRule(FeatureSingleEdgeFundamentalRule):
         # empty complete edges here.
         for right_edge in chart.select(start=end, end=end,
                                        is_complete=True,
-                                       lhs=next(left_edge)):
+                                       lhs=left_edge.nextsym()):
             for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
