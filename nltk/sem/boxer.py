@@ -846,6 +846,12 @@ class BoxerDrs(AbstractBoxerDrs):
                reduce(operator.and_, (c1==c2 for c1,c2 in zip(self.conds, other.conds))) and \
                self.consequent == other.consequent
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = AbstractBoxerDrs.__hash__
+
+
 class BoxerNot(AbstractBoxerDrs):
     def __init__(self, drs):
         AbstractBoxerDrs.__init__(self)
@@ -869,6 +875,11 @@ class BoxerNot(AbstractBoxerDrs):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.drs == other.drs
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = AbstractBoxerDrs.__hash__
+
 class BoxerIndexed(AbstractBoxerDrs):
     def __init__(self, discourse_id, sent_index, word_indices):
         AbstractBoxerDrs.__init__(self)
@@ -885,6 +896,11 @@ class BoxerIndexed(AbstractBoxerDrs):
                self.sent_index == other.sent_index and \
                self.word_indices == other.word_indices and \
                reduce(operator.and_, (s==o for s,o in zip(self, other)))
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = AbstractBoxerDrs.__hash__
 
     def __repr__(self):
         s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id, self.sent_index, ', '.join(map(str, self.word_indices)))

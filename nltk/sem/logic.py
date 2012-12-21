@@ -18,7 +18,7 @@ from collections import defaultdict
 from functools import reduce
 
 from nltk.internals import Counter
-from nltk.compat import total_ordering
+from nltk.compat import total_ordering, string_types
 
 APP = 'APP'
 
@@ -88,11 +88,14 @@ class Variable(object):
         """
         :param name: the name of the variable
         """
-        assert isinstance(name, str), "%s is not a string" % name
+        assert isinstance(name, string_types), "%s is not a string" % name
         self.name = name
 
     def __eq__(self, other):
         return isinstance(other, Variable) and self.name == other.name
+
+    def __ne__(self, other):
+        return not self == other
 
     def __neq__(self, other):
         return not (self == other)
@@ -173,6 +176,11 @@ class ComplexType(Type):
                self.first == other.first and \
                self.second == other.second
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Type.__hash__
+
     def matches(self, other):
         if isinstance(other, ComplexType):
             return self.first.matches(other.first) and \
@@ -210,6 +218,11 @@ class ComplexType(Type):
 class BasicType(Type):
     def __eq__(self, other):
         return isinstance(other, BasicType) and str(self) == str(other)
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Type.__hash__
 
     def matches(self, other):
         return other == ANY_TYPE or self == other
@@ -254,6 +267,11 @@ class AnyType(BasicType, ComplexType):
     def __eq__(self, other):
         return isinstance(other, AnyType) or other.__eq__(self)
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Type.__hash__
+
     def matches(self, other):
         return True
 
@@ -274,7 +292,7 @@ ANY_TYPE = AnyType()
 
 
 def parse_type(type_string):
-    assert isinstance(type_string, str)
+    assert isinstance(type_string, string_types)
     type_string = type_string.replace(' ', '') #remove spaces
 
     if type_string[0] == '<':
@@ -406,7 +424,7 @@ class Expression(SubstituteBindingsI):
     def __eq__(self, other):
         raise NotImplementedError()
 
-    def __neq__(self, other):
+    def __ne__(self, other):
         return not (self == other)
 
     def equiv(self, other, prover=None):
@@ -729,6 +747,11 @@ class ApplicationExpression(Expression):
                 self.function == other.function and \
                 self.argument == other.argument
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
+
     def __str__(self):
         # uncurry the arguments and find the base function
         if self.is_atom():
@@ -849,6 +872,11 @@ class AbstractVariableExpression(Expression):
         subtypes."""
         return isinstance(other, AbstractVariableExpression) and \
                self.variable == other.variable
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
 
     def __str__(self):
         return str(self.variable)
@@ -1032,6 +1060,11 @@ class VariableBinderExpression(Expression):
         else:
             return False
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
+
 
 class LambdaExpression(VariableBinderExpression):
     @property
@@ -1127,6 +1160,11 @@ class NegatedExpression(Expression):
     def __eq__(self, other):
         return isinstance(other, NegatedExpression) and self.term == other.term
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
+
     def __str__(self):
         return Tokens.NOT + str(self.term)
 
@@ -1161,6 +1199,11 @@ class BinaryExpression(Expression):
         return (isinstance(self, other.__class__) or \
                 isinstance(other, self.__class__)) and \
                self.first == other.first and self.second == other.second
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
 
     def __str__(self):
         first = self._str_subex(self.first)
@@ -1677,7 +1720,7 @@ class LogicParser(object):
         return '<' + self.__class__.__name__ + ': ' + msg + '>'
 
 
-def parse_logic(s, logic_parser=None):
+def parse_logic(s, logic_parser=None, encoding=None):
     """
     Convert a file of First Order Formulas into a list of {Expression}s.
 
@@ -1685,9 +1728,13 @@ def parse_logic(s, logic_parser=None):
     :type s: str
     :param logic_parser: The parser to be used to parse the logical expression
     :type logic_parser: LogicParser
+    :param encoding: the encoding of the input string, if it is binary
+    :type encoding: str
     :return: a list of parsed formulas.
     :rtype: list(Expression)
     """
+    if encoding is not None:
+        s = s.decode(encoding)
     if logic_parser is None:
         logic_parser = LogicParser()
 
@@ -1752,7 +1799,7 @@ def is_indvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, str), "%s is not a string" % expr
+    assert isinstance(expr, string_types), "%s is not a string" % expr
     return re.match(r'^[a-df-z]\d*$', expr) is not None
 
 def is_funcvar(expr):
@@ -1763,7 +1810,7 @@ def is_funcvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, str), "%s is not a string" % expr
+    assert isinstance(expr, string_types), "%s is not a string" % expr
     return re.match(r'^[A-Z]\d*$', expr) is not None
 
 def is_eventvar(expr):
@@ -1774,7 +1821,7 @@ def is_eventvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, str), "%s is not a string" % expr
+    assert isinstance(expr, string_types), "%s is not a string" % expr
     return re.match(r'^e\d*$', expr) is not None
 
 

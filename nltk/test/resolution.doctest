@@ -179,8 +179,8 @@ One answer
     >>> c = lp.parse('all x.(parent_of(x,john) -> ANSWER(x))')
     >>> logic._counter._value = 0
     >>> tp = ResolutionProverCommand(None, [p1,p2,p3,c])
-    >>> print(tp.find_answers())
-    set([<ConstantExpression art>])
+    >>> sorted(tp.find_answers())
+    [<ConstantExpression art>]
     >>> print(tp.proof())
     [1] {father_of(art,john)}                  A
     [2] {father_of(bob,kim)}                   A
@@ -201,8 +201,8 @@ Multiple answers
     >>> c = lp.parse('all x.(parent_of(x,john) -> ANSWER(x))')
     >>> logic._counter._value = 0
     >>> tp = ResolutionProverCommand(None, [p1,p2,p3,p4,c])
-    >>> print(tp.find_answers())
-    set([<ConstantExpression ann>, <ConstantExpression art>])
+    >>> sorted(tp.find_answers())
+    [<ConstantExpression art>, <ConstantExpression ann>]
     >>> print(tp.proof())
     [ 1] {father_of(art,john)}                  A
     [ 2] {mother_of(ann,john)}                  A

@@ -8,6 +8,7 @@
 from __future__ import print_function
 
 from nltk.internals import Counter
+from nltk.compat import string_types
 from .logic import LogicParser, APP
 
 _counter = Counter()
@@ -28,7 +29,7 @@ class AtomicExpression(Expression):
         :param name: str for the constant name
         :param dependencies: list of int for the indices on which this atom is dependent
         """
-        assert isinstance(name, str)
+        assert isinstance(name, string_types)
         self.name = name
 
         if not dependencies:
@@ -75,6 +76,9 @@ class AtomicExpression(Expression):
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.name == other.name
+
+    def __ne__(self, other):
+        return not self == other
 
     def __str__(self):
         accum = self.name
@@ -189,6 +193,9 @@ class ImpExpression(Expression):
         return self.__class__ == other.__class__ and \
                 self.antecedent == other.antecedent and self.consequent == other.consequent
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
         return Tokens.OPEN + str(self.antecedent) + ' ' + Tokens.IMP + \
                ' ' + str(self.consequent) + Tokens.CLOSE
@@ -250,6 +257,9 @@ class ApplicationExpression(Expression):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
                 self.function == other.function and self.argument == other.argument
+
+    def __ne__(self, other):
+        return not self == other
 
     def __str__(self):
         return str(self.function) + Tokens.OPEN + str(self.argument) + Tokens.CLOSE

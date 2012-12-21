@@ -1076,11 +1076,6 @@ ProbabilisticTree Regression Tests
 
 Squashed Bugs
 =============
-This used to cause an infinite loop (fixed in svn 6269):
-
-    >>> tree = Tree.parse('(VP (VERB saw) (NP (DET the) (NOUN cat)))')
-    >>> tree < None
-    False
 
 This used to discard the ``(B b)`` subtree (fixed in svn 6270):
 

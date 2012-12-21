@@ -47,6 +47,8 @@ from collections import defaultdict
 from functools import reduce
 from nltk import compat
 
+from nltk.internals import raise_unorderable_types
+
 _NINF = float('-1e300')
 
 ##//////////////////////////////////////////////////////
@@ -462,17 +464,14 @@ class FreqDist(dict):
         return clone
 
     def __le__(self, other):
-        if not isinstance(other, FreqDist): return False
+        if not isinstance(other, FreqDist): 
+            raise_unorderable_types("<=", self, other)
         return set(self).issubset(other) and all(self[key] <= other[key] for key in self)
-    def __lt__(self, other):
-        if not isinstance(other, FreqDist): return False
-        return self <= other and self != other
-    def __ge__(self, other):
-        if not isinstance(other, FreqDist): return False
-        return other <= self
-    def __gt__(self, other):
-        if not isinstance(other, FreqDist): return False
-        return other < self
+
+    # @total_ordering doesn't work here, since the class inherits from a builtin class
+    __ge__ = lambda self, other: not self <= other or self == other
+    __lt__ = lambda self, other: self <= other and not self == other
+    __gt__ = lambda self, other: not self <= other
 
     def __repr__(self):
         """
@@ -1808,18 +1807,23 @@ class ConditionalFreqDist(defaultdict):
                 print("%4d" % f, end=' ')
             print()
 
+    # @total_ordering doesn't work here, since the class inherits from a builtin class
     def __le__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
+        if not isinstance(other, ConditionalFreqDist): 
+            raise_unorderable_types("<=", self, other)
         return set(self.conditions()).issubset(other.conditions()) \
                and all(self[c] <= other[c] for c in self.conditions())
     def __lt__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
+        if not isinstance(other, ConditionalFreqDist): 
+            raise_unorderable_types("<", self, other)
         return self <= other and self != other
     def __ge__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
+        if not isinstance(other, ConditionalFreqDist): 
+            raise_unorderable_types(">=", self, other)
         return other <= self
     def __gt__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
+        if not isinstance(other, ConditionalFreqDist): 
+            raise_unorderable_types(">", self, other)
         return other < self
 
     def __repr__(self):

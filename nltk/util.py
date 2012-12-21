@@ -19,9 +19,9 @@ from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
 
-from nltk.internals import slice_bounds
+from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk import compat
-from nltk.compat import class_types, text_type, string_types
+from nltk.compat import class_types, text_type, string_types, total_ordering
 
 ######################################################################
 # Short usage message
@@ -633,6 +633,7 @@ class OrderedDict(dict):
 # Lazy Sequences
 ######################################################################
 
+@total_ordering
 class AbstractLazySequence(object):
     """
     An abstract base class for read-only sequences whose values are
@@ -743,19 +744,16 @@ class AbstractLazySequence(object):
         else:
             return '[%s]' % ', '.join(pieces)
 
-    def __cmp__(self, other):
-        """
-        Return a number indicating how ``self`` relates to other.
+    def __eq__(self, other):
+        return (type(self) == type(other) and list(self) == list(other))
 
-        - If ``other`` is not a corpus view or a list, return -1.
-        - Otherwise, return ``cmp(list(self), list(other))``.
+    def __ne__(self, other):
+        return not self == other
 
-        Note: corpus views do not compare equal to tuples containing
-        equal elements.  Otherwise, transitivity would be violated,
-        since tuples do not compare equal to lists.
-        """
-        if not isinstance(other, (AbstractLazySequence, list)): return -1
-        return cmp(list(self), list(other))
+    def __lt__(self, other):
+        if type(other) != type(self):
+            raise_unorderable_types("<", self, other)
+        return list(self) < list(other)
 
     def __hash__(self):
         """

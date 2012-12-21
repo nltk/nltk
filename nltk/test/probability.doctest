@@ -142,11 +142,11 @@ Squashed bugs
 Issue 511: override pop and popitem to invalidate the cache
 
     >>> fd = nltk.FreqDist('a')
-    >>> fd.keys()
+    >>> list(fd.keys())
     ['a']
     >>> fd.pop('a')
     1
-    >>> fd.keys()
+    >>> list(fd.keys())
     []
 
 Issue 533: access cumulative frequencies with no arguments

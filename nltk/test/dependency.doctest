@@ -82,9 +82,9 @@ Projective Dependency Parsing
     >>> dp = ProjectiveDependencyParser(grammar)
     >>> for t in sorted(dp.parse(['the', 'price', 'of', 'the', 'stock', 'fell'])):
     ...     print(t)
+    (fell (price the (of (stock the))))
     (fell (price the of) (stock the))
     (fell (price the of the) stock)
-    (fell (price the (of (stock the))))
 
 Non-Projective Dependency Parsing
 ---------------------------------

@@ -458,73 +458,74 @@ Replace
 Variables / Free
 ================
 
-    >>> examples = map(lp.parse, [r'walk(john)',
-    ...                           r'walk(x)',
-    ...                           r'?vp(?np)',
-    ...                           r'see(john,mary)',
-    ...                           r'exists x.walk(x)',
-    ...                           r'\x.see(john,x)',
-    ...                           r'\x.see(john,x)(mary)',
-    ...                           r'P(x)',
-    ...                           r'\P.P(x)',
-    ...                           r'aa(x,bb(y),cc(z),P(w),u)',
-    ...                           r'bo(?det(?n),@x)'])
+    >>> examples = [r'walk(john)',
+    ...             r'walk(x)',
+    ...             r'?vp(?np)',
+    ...             r'see(john,mary)',
+    ...             r'exists x.walk(x)',
+    ...             r'\x.see(john,x)',
+    ...             r'\x.see(john,x)(mary)',
+    ...             r'P(x)',
+    ...             r'\P.P(x)',
+    ...             r'aa(x,bb(y),cc(z),P(w),u)',
+    ...             r'bo(?det(?n),@x)']
+    >>> examples = [lp.parse(e) for e in examples]
 
     >>> for e in examples:
-    ...     print('%-25s' % e, e.free())
-    walk(john)                set([])
-    walk(x)                   set([Variable('x')])
-    ?vp(?np)                  set([])
-    see(john,mary)            set([])
-    exists x.walk(x)          set([])
-    \x.see(john,x)            set([])
-    (\x.see(john,x))(mary)    set([])
-    P(x)                      set([Variable('P'), Variable('x')])
-    \P.P(x)                   set([Variable('x')])
-    aa(x,bb(y),cc(z),P(w),u)  set([Variable('P'), Variable('u'), Variable('w'), Variable('y'), Variable('x'), Variable('z')])
-    bo(?det(?n),@x)           set([])
+    ...     print('%-25s' % e, sorted(e.free()))
+    walk(john)                []
+    walk(x)                   [Variable('x')]
+    ?vp(?np)                  []
+    see(john,mary)            []
+    exists x.walk(x)          []
+    \x.see(john,x)            []
+    (\x.see(john,x))(mary)    []
+    P(x)                      [Variable('P'), Variable('x')]
+    \P.P(x)                   [Variable('x')]
+    aa(x,bb(y),cc(z),P(w),u)  [Variable('P'), Variable('u'), Variable('w'), Variable('x'), Variable('y'), Variable('z')]
+    bo(?det(?n),@x)           []
 
     >>> for e in examples:
-    ...     print('%-25s' % e, e.constants())
-    walk(john)                set([Variable('john')])
-    walk(x)                   set([])
-    ?vp(?np)                  set([Variable('?np')])
-    see(john,mary)            set([Variable('john'), Variable('mary')])
-    exists x.walk(x)          set([])
-    \x.see(john,x)            set([Variable('john')])
-    (\x.see(john,x))(mary)    set([Variable('john'), Variable('mary')])
-    P(x)                      set([])
-    \P.P(x)                   set([])
-    aa(x,bb(y),cc(z),P(w),u)  set([])
-    bo(?det(?n),@x)           set([Variable('?n'), Variable('@x')])
+    ...     print('%-25s' % e, sorted(e.constants()))
+    walk(john)                [Variable('john')]
+    walk(x)                   []
+    ?vp(?np)                  [Variable('?np')]
+    see(john,mary)            [Variable('john'), Variable('mary')]
+    exists x.walk(x)          []
+    \x.see(john,x)            [Variable('john')]
+    (\x.see(john,x))(mary)    [Variable('john'), Variable('mary')]
+    P(x)                      []
+    \P.P(x)                   []
+    aa(x,bb(y),cc(z),P(w),u)  []
+    bo(?det(?n),@x)           [Variable('?n'), Variable('@x')]
 
     >>> for e in examples:
-    ...     print('%-25s' % e, e.predicates())
-    walk(john)                set([Variable('walk')])
-    walk(x)                   set([Variable('walk')])
-    ?vp(?np)                  set([Variable('?vp')])
-    see(john,mary)            set([Variable('see')])
-    exists x.walk(x)          set([Variable('walk')])
-    \x.see(john,x)            set([Variable('see')])
-    (\x.see(john,x))(mary)    set([Variable('see')])
-    P(x)                      set([])
-    \P.P(x)                   set([])
-    aa(x,bb(y),cc(z),P(w),u)  set([Variable('aa'), Variable('cc'), Variable('bb')])
-    bo(?det(?n),@x)           set([Variable('?det'), Variable('bo')])
+    ...     print('%-25s' % e, sorted(e.predicates()))
+    walk(john)                [Variable('walk')]
+    walk(x)                   [Variable('walk')]
+    ?vp(?np)                  [Variable('?vp')]
+    see(john,mary)            [Variable('see')]
+    exists x.walk(x)          [Variable('walk')]
+    \x.see(john,x)            [Variable('see')]
+    (\x.see(john,x))(mary)    [Variable('see')]
+    P(x)                      []
+    \P.P(x)                   []
+    aa(x,bb(y),cc(z),P(w),u)  [Variable('aa'), Variable('bb'), Variable('cc')]
+    bo(?det(?n),@x)           [Variable('?det'), Variable('bo')]
 
     >>> for e in examples:
-    ...     print('%-25s' % e, e.variables())
-    walk(john)                set([])
-    walk(x)                   set([Variable('x')])
-    ?vp(?np)                  set([Variable('?vp'), Variable('?np')])
-    see(john,mary)            set([])
-    exists x.walk(x)          set([])
-    \x.see(john,x)            set([])
-    (\x.see(john,x))(mary)    set([])
-    P(x)                      set([Variable('P'), Variable('x')])
-    \P.P(x)                   set([Variable('x')])
-    aa(x,bb(y),cc(z),P(w),u)  set([Variable('P'), Variable('u'), Variable('w'), Variable('y'), Variable('x'), Variable('z')])
-    bo(?det(?n),@x)           set([Variable('?n'), Variable('?det'), Variable('@x')])
+    ...     print('%-25s' % e, sorted(e.variables()))
+    walk(john)                []
+    walk(x)                   [Variable('x')]
+    ?vp(?np)                  [Variable('?np'), Variable('?vp')]
+    see(john,mary)            []
+    exists x.walk(x)          []
+    \x.see(john,x)            []
+    (\x.see(john,x))(mary)    []
+    P(x)                      [Variable('P'), Variable('x')]
+    \P.P(x)                   [Variable('x')]
+    aa(x,bb(y),cc(z),P(w),u)  [Variable('P'), Variable('u'), Variable('w'), Variable('x'), Variable('y'), Variable('z')]
+    bo(?det(?n),@x)           [Variable('?det'), Variable('?n'), Variable('@x')]
 
 
 
