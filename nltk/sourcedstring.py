@@ -897,10 +897,10 @@ class SourcedString(object):
             return str(char)
         elif char in self._PPRINT_CHAR_REPRS:
             return self._PPRINT_CHAR_REPRS[char]
-        elif isinstance(char, str):
-            return r'\x%02x' % ord(char)
-        else:
+        elif isinstance(char, text_type):
             return r'\u%04x' % ord(char)
+        else:
+            return r'\x%02x' % ord(char)
 
     def _pprint_char(self, char, output_lines):
         """Helper for ``pprint()``: add a character to the
@@ -1025,7 +1025,7 @@ class SimpleSourcedString(SourcedString):
         stop = max(start, min(len(self), stop))
 
         return SourcedString(
-            self._stringtype.__getslice__(self, start, stop),
+            self._stringtype.__getitem__(self, slice(start, stop)),
             self.source[start:stop])
 
     def capitalize(self):
