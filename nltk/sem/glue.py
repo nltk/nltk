@@ -113,8 +113,9 @@ class GlueFormula(object):
         return str(self)
 
 class GlueDict(dict):
-    def __init__(self, filename):
+    def __init__(self, filename, encoding=None):
         self.filename = filename
+        self.file_encoding = encoding
         self.read_file()
 
     def read_file(self, empty_first=True):
@@ -122,19 +123,14 @@ class GlueDict(dict):
             self.clear()
 
         try:
-            f = nltk.data.find(
-                os.path.join('grammars', 'sample_grammars', self.filename))
-            # if f is a ZipFilePathPointer or a FileSystemPathPointer
-            # then we need a little extra massaging
-            if hasattr(f, 'open'):
-                f = f.open()
+            contents = nltk.data.load(self.filename, format='text', encoding=self.file_encoding)
+            # TODO: the above can't handle zip files, but this should anyway be fixed in nltk.data.load()
         except LookupError as e:
             try:
-                f = open(self.filename)
+                contents = nltk.data.load('file:' + self.filename, format='text', encoding=self.file_encoding)
             except LookupError:
                 raise e
-        lines = f.readlines()
-        f.close()
+        lines = contents.splitlines()
 
         for line in lines:                          # example: 'n : (\\x.(<word> x), (v-or))'
                                                     #     lambdacalc -^  linear logic -^
