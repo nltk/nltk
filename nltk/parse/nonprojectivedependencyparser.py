@@ -70,16 +70,6 @@ class DependencyScorerI(object):
         """
         raise NotImplementedError()
 
-    #////////////////////////////////////////////////////////////
-    # Comparisons
-    #////////////////////////////////////////////////////////////
-
-    def __cmp__(self, other):
-        raise NotImplementedError()
-
-    def __hash__(self, other):
-        raise NotImplementedError()
-
 
 
 #################################################################

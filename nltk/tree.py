@@ -23,6 +23,7 @@ from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
 from nltk import compat
+from nltk.internals import raise_unorderable_types
 
 ######################################################################
 ## Trees
@@ -112,22 +113,25 @@ class Tree(list):
     #////////////////////////////////////////////////////////////
 
     def __eq__(self, other):
-        if not isinstance(other, Tree): return False
-        return (self.node, list(self)) == (other.node, list(other))
-    def __ne__(self, other):
-        return not (self == other)
+        return (self.__class__ is other.__class__ and 
+                (self.node, list(self)) == (other.node, list(other)))
+
     def __lt__(self, other):
-        if not isinstance(other, Tree): return False
+        if not isinstance(other, Tree):
+            # raise_unorderable_types("<", self, other)
+            # Sometimes children can be pure strings, 
+            # so we need to be able to compare with non-trees:
+            return self.__class__.__name__ < other.__class__.__name__
+        elif self.__class__ is other.__class__:
         return (self.node, list(self)) < (other.node, list(other))
-    def __le__(self, other):
-        if not isinstance(other, Tree): return False
-        return (self.node, list(self)) <= (other.node, list(other))
-    def __gt__(self, other):
-        if not isinstance(other, Tree): return True
-        return (self.node, list(self)) > (other.node, list(other))
-    def __ge__(self, other):
-        if not isinstance(other, Tree): return False
-        return (self.node, list(self)) >= (other.node, list(other))
+        else:
+            return self.__class__.__name__ < other.__class__.__name__
+
+    # @total_ordering doesn't work here, since the class inherits from a builtin class
+    __ne__ = lambda self, other: not self == other
+    __gt__ = lambda self, other: not (self < other or self == other)
+    __le__ = lambda self, other: self < other or self == other
+    __ge__ = lambda self, other: not self < other
 
     #////////////////////////////////////////////////////////////
     # Disabled list operations
@@ -1323,13 +1327,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
         return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
     def __str__(self):
         return '%s (p=%s)' % (self.pprint(margin=60), self.prob())
-    def __cmp__(self, other):
-        return Tree.__cmp__(self, other) or cmp(self.prob(), other.prob())
-    def __eq__(self, other):
-        if not isinstance(other, Tree): return False
-        return Tree.__eq__(self, other) and self.prob()==other.prob()
-    def __ne__(self, other):
-        return not (self == other)
+        return '%s (p=%.6g)' % (self.pprint(margin=60), self.prob())
     def copy(self, deep=False):
         if not deep: return type(self)(self.node, self, prob=self.prob())
         else: return type(self).convert(self)
@@ -1344,11 +1342,26 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
         else:
             return val
 
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and 
+                (self.node, list(self), self.prob()) == 
+                (other.node, list(other), other.prob()))
+
+    def __lt__(self, other):
+        if not isinstance(other, Tree):
+            raise_unorderable_types("<", self, other)
+        if self.__class__ is other.__class__:
+            return ((self.node, list(self), self.prob()) <
+                    (other.node, list(other), other.prob()))
+        else:
+            return self.__class__.__name__ < other.__class__.__name__
+
 
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def __init__(self, node_or_str, children=None, **prob_kwargs):
         ImmutableTree.__init__(self, node_or_str, children)
         ProbabilisticMixIn.__init__(self, **prob_kwargs)
+        self._hash = hash((self.node, tuple(self), self.prob()))
 
     # We have to patch up these methods to make them work right:
     def _frozen_class(self): return ImmutableProbabilisticTree
@@ -1356,15 +1369,6 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
         return '%s [%s]' % (Tree.__repr__(self), self.prob())
     def __str__(self):
         return '%s [%s]' % (self.pprint(margin=60), self.prob())
-    def __cmp__(self, other):
-        c = Tree.__cmp__(self, other)
-        if c != 0: return c
-        return cmp(self.prob(), other.prob())
-    def __eq__(self, other):
-        if not isinstance(other, Tree): return False
-        return Tree.__eq__(self, other) and self.prob()==other.prob()
-    def __ne__(self, other):
-        return not (self == other)
     def copy(self, deep=False):
         if not deep: return type(self)(self.node, self, prob=self.prob())
         else: return type(self).convert(self)

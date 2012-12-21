@@ -76,6 +76,9 @@ class AtomicExpression(Expression):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.name == other.name
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
         accum = self.name
         if self.dependencies:
@@ -189,6 +192,9 @@ class ImpExpression(Expression):
         return self.__class__ == other.__class__ and \
                 self.antecedent == other.antecedent and self.consequent == other.consequent
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
         return Tokens.OPEN + str(self.antecedent) + ' ' + Tokens.IMP + \
                ' ' + str(self.consequent) + Tokens.CLOSE
@@ -250,6 +256,9 @@ class ApplicationExpression(Expression):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
                 self.function == other.function and self.argument == other.argument
+
+    def __ne__(self, other):
+        return not self == other
 
     def __str__(self):
         return str(self.function) + Tokens.OPEN + str(self.argument) + Tokens.CLOSE

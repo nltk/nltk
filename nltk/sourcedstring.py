@@ -27,8 +27,9 @@ can usually be used anywhere a normal Python string can be used.
 
 from abc import ABCMeta, abstractmethod
 import re, sys
-from nltk.internals import slice_bounds
-from nltk.compat import text_type, binary_type, string_types, integer_types
+from nltk.internals import slice_bounds, raise_unorderable_types
+from nltk.compat import (text_type, binary_type, string_types,
+                         integer_types, total_ordering)
 
 __all__ = [
     'StringSource',
@@ -43,6 +44,7 @@ __all__ = [
 # String Sources
 #//////////////////////////////////////////////////////////////////////
 
+@total_ordering
 class StringSource(object):
     """
     A description of the location of a string in a document.  Each
@@ -164,18 +166,27 @@ class StringSource(object):
         else:
             return '@%s[%s:%s]' % (self.docid, self.begin, self.end)
 
-    def __cmp__(self, other):
-        return (cmp(self.docid, self.docid) or
-                cmp([(charloc.begin, charloc.end) for charloc in self],
-                    [(charloc.begin, charloc.end) for charloc in other]))
+    def __eq__(self, other):
+        return (isinstance(other, StringSource) and 
+                self._get_comparison_key() == other._get_comparison_key())
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        if not isinstance(other, StringSource):
+            raise_unorderable_types("<", self, other)
+        return self._get_comparison_key() < other._get_comparison_key()
 
     def __hash__(self):
         # Cache hash values.
         if not hasattr(self, '_hash'):
-            self._hash = hash( (self.docid,
-                                tuple((charloc.begin, charloc.end)
-                                      for charloc in self)) )
+            self._hash = hash(self._get_comparison_key())
         return self._hash
+
+    def _get_comparison_key(self):
+        return (self.docid, tuple((charloc.begin, charloc.end) 
+                                  for charloc in self))
 
 class ConsecutiveCharStringSource(StringSource):
     """
@@ -217,13 +228,24 @@ class ConsecutiveCharStringSource(StringSource):
         return ConsecutiveCharStringSource(
             self.docid, self.begin+start, self.begin+stop)
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         if isinstance(other, ConsecutiveCharStringSource):
-            return (cmp(self.docid, other.docid) or
-                    cmp(self.begin, other.begin) or
-                    cmp(self.end, other.end))
+            return ((self.docid, self.begin, self.end) ==
+                    (other.docid, other.begin, other.end))
         else:
-            return StringSource.__cmp__(self, other)
+            return StringSource.__eq__(self, other)
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = StringSource.__hash__
+
+    def __lt__(self, other):
+        if isinstance(other, ConsecutiveCharStringSource):
+            return ((self.docid, self.begin, self.end) < 
+                    (other.docid, other.begin, other.end))
+        else:
+            return StringSource.__lt__(self, other)
 
     def __repr__(self):
         return 'StringSource(%r, begin=%r, end=%r)' % (
@@ -273,12 +295,24 @@ class ContiguousCharStringSource(StringSource):
         return ContiguousCharStringSource(
             self.docid, self.offsets[start:stop+1])
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         if isinstance(other, ConsecutiveCharStringSource):
-            return (cmp(self.docid, other.docid) or
-                    cmp(self.offsets, other._offsets))
+            return ((self.docid, self.offsets) ==
+                    (other.docid, other.offsets))
         else:
-            return StringSource.__cmp__(self, other)
+            return StringSource.__eq__(self, other)
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = StringSource.__hash__
+
+    def __lt__(self, other):
+        if isinstance(other, ConsecutiveCharStringSource):
+            return ((self.docid, self.offsets) <
+                    (other.docid, other.offsets))
+        else:
+            return StringSource.__lt__(self, other)
 
     def __repr__(self):
         return 'StringSource(%r, offsets=%r)' % (self.docid, self.offsets)

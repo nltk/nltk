@@ -51,14 +51,12 @@ class ProbabilisticLeafEdge(LeafEdge):
 
 class ProbabilisticTreeEdge(TreeEdge):
     def __init__(self, prob, *args, **kwargs):
-        self._prob = prob
         TreeEdge.__init__(self, *args, **kwargs)
+        self._prob = prob
+        # two edges with different probabilities are not equal.
+        self._comparison_key = (self._comparison_key, prob)
 
     def prob(self): return self._prob
-
-    def __cmp__(self, other):
-        if self._prob != other.prob(): return -1
-        return TreeEdge.__cmp__(self, other)
 
     @staticmethod
     def from_production(production, index, p):
@@ -244,7 +242,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             self._setprob(parse, prod_probs)
 
         # Sort by probability
-        parses.sort(lambda a,b: cmp(b.prob(), a.prob()))
+        parses.sort(reverse=True, key=lambda tree: tree.prob())
 
         return parses[:n]
 
@@ -327,7 +325,7 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
         :type chart: Chart
         :rtype: None
         """
-        queue.sort(lambda e1,e2:cmp(e1.prob(), e2.prob()))
+        queue.sort(key=lambda edge: edge.prob())
 
 # Eventually, this will become some sort of inside-outside parser:
 # class InsideOutsideParser(BottomUpProbabilisticChartParser):
@@ -350,12 +348,11 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
 #         self._bestp = bestp
 #         for (k,v) in self._bestp.items(): print k,v
 #
-#     def _cmp(self, e1, e2):
-#         return cmp(e1.structure()[PROB]*self._bestp[e1.lhs()],
-#                    e2.structure()[PROB]*self._bestp[e2.lhs()])
+#     def _sortkey(self, edge):
+#         return edge.structure()[PROB] * self._bestp[edge.lhs()]
 #
 #     def sort_queue(self, queue, chart):
-#         queue.sort(self._cmp)
+#         queue.sort(key=self._sortkey)
 
 import random
 class RandomChartParser(BottomUpProbabilisticChartParser):
@@ -383,7 +380,7 @@ class LongestChartParser(BottomUpProbabilisticChartParser):
     """
     # Inherit constructor
     def sort_queue(self, queue, chart):
-        queue.sort(lambda e1,e2: cmp(e1.length(), e2.length()))
+        queue.sort(key=lambda edge: edge.length())
 
 ##//////////////////////////////////////////////////////
 ##  Test Code

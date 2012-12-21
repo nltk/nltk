@@ -68,6 +68,7 @@ class FeatureTreeEdge(TreeEdge):
         # Initialize the edge.
         TreeEdge.__init__(self, span, lhs, rhs, dot)
         self._bindings = bindings
+        self._comparison_key = (self._comparison_key, tuple(sorted(bindings.items())))
 
     @staticmethod
     def from_production(production, index):
@@ -125,19 +126,6 @@ class FeatureTreeEdge(TreeEdge):
             bindings = '{%s}' % ', '.join('%s: %r' % item for item in
                                            sorted(self._bindings.items()))
             return '%s %s' % (TreeEdge.__str__(self), bindings)
-
-    # two edges with different bindings are not equal.
-    def __cmp__(self, other):
-        if self.__class__ != other.__class__: return -1
-        return cmp((self._span, self._lhs, self._rhs,
-                    self._dot, self._bindings),
-                   (other._span, other._lhs, other._rhs,
-                    other._dot, other._bindings))
-
-    def __hash__(self):
-        # cache this:?
-        return hash((self._lhs, self._rhs, self._span, self._dot,
-                     tuple(sorted(self._bindings))))
 
 
 #////////////////////////////////////////////////////////////

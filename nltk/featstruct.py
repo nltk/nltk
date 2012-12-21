@@ -94,7 +94,7 @@ from __future__ import division
 import re
 import copy
 
-import nltk.internals
+from nltk.internals import parse_str, raise_unorderable_types
 from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
                             LogicParser, ParseException)
 from nltk.compat import string_types, text_type, integer_types, total_ordering
@@ -245,18 +245,16 @@ class FeatStruct(SubstituteBindingsI):
         return self._equal(other, True, set(), set(), set())
 
     def __ne__(self, other):
-        """
-        Return true unless ``self`` and ``other`` are both feature
-        structures, assign the same values to all features, and
-        contain the same reentrances.  I.e., return
-        ``not self.equal_values(other, check_reentrance=True)``.
-        """
-        return not self.__eq__(other)
+        return not self == other
 
     def __lt__(self, other):
-        if not isinstance(other, self.__class__):
-            return True
-        return len(self) < len(other)
+        if not isinstance(other, FeatStruct):
+            # raise_unorderable_types("<", self, other)
+            # Sometimes feature values can be pure strings, 
+            # so we need to be able to compare with non-featstructs:
+            return self.__class__.__name__ < other.__class__.__name__
+        else:
+            return len(self) < len(other)
 
     def __hash__(self):
         """
@@ -266,10 +264,10 @@ class FeatStruct(SubstituteBindingsI):
         if not self._frozen:
             raise TypeError('FeatStructs must be frozen before they '
                             'can be hashed.')
-        try: return self.__hash
+        try: return self._hash
         except AttributeError:
-            self.__hash = self._hash(set())
-            return self.__hash
+            self._hash = self._calculate_hashvalue(set())
+            return self._hash
 
     def _equal(self, other, check_reentrance, visited_self,
                visited_other, visited_pairs):
@@ -332,7 +330,7 @@ class FeatStruct(SubstituteBindingsI):
         # Everything matched up; return true.
         return True
 
-    def _hash(self, visited):
+    def _calculate_hashvalue(self, visited):
         """
         Return a hash value for this feature structure.
 
@@ -349,7 +347,7 @@ class FeatStruct(SubstituteBindingsI):
             hashval += hash(fname)
             hashval *= 37
             if isinstance(fval, FeatStruct):
-                hashval += fval._hash(visited)
+                hashval += fval._calculate_hashvalue(visited)
             else:
                 hashval += hash(fval)
             # Convert to a 32 bit int.
@@ -1831,15 +1829,17 @@ class Feature(object):
         return '*%s*' % self.name
 
     def __lt__(self, other):
-        if not isinstance(other, Feature):
+        if isinstance(other, string_types):
             return True
+        if not isinstance(other, Feature):
+            raise_unorderable_types("<", self, other)
         return self._sortkey < other._sortkey
 
     def __eq__(self, other):
-        return isinstance(other, Feature) and self._name == other._name
+        return type(self) == type(other) and self._name == other._name
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __hash__(self):
         return hash(self._name)
@@ -1911,14 +1911,11 @@ class CustomFeatureValue(object):
         """
         raise NotImplementedError('abstract base class')
 
-    def __cmp__(self, other):
-        raise NotImplementedError('__cmp__ is deprecated')
-
     def __eq__(self, other):
         raise NotImplementedError('abstract base class')
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __lt__(self, other):
         raise NotImplementedError('abstract base class')
@@ -2251,7 +2248,7 @@ class FeatStructParser(object):
         return self.partial_parse(s, position, reentrances)
 
     def parse_str_value(self, s, position, reentrances, match):
-        return nltk.internals.parse_str(s, position)
+        return parse_str(s, position)
 
     def parse_int_value(self, s, position, reentrances, match):
         return int(match.group()), match.end()

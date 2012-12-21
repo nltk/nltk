@@ -332,6 +332,11 @@ class DRS(AbstractDrs, Expression):
                     return True
         return False
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
+
     def __str__(self):
         drs = '([%s],[%s])' % (','.join(self._order_ref_strings(self.refs)),
                                ', '.join(map(str, self.conds)))
@@ -407,6 +412,11 @@ class DrtProposition(AbstractDrs, Expression):
         return self.__class__ == other.__class__ and \
                self.variable == other.variable and \
                self.drs == other.drs
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
 
     def fol(self):
         return self.drs.fol()
@@ -590,6 +600,11 @@ class DrtConcatenation(DrtBooleanExpression):
                         self.second == converted_other.second and \
                         self.consequent == converted_other.consequent
         return False
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = DrtBooleanExpression.__hash__
 
     def fol(self):
         e = AndExpression(self.first.fol(), self.second.fol())

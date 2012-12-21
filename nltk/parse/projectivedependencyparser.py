@@ -15,11 +15,14 @@ from collections import defaultdict
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
                           StatisticalDependencyGrammar, parse_dependency_grammar)
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
+from nltk.internals import raise_unorderable_types
+from nltk.compat import total_ordering
 
 #################################################################
 # Dependency Span
 #################################################################
 
+@total_ordering
 class DependencySpan(object):
     """
     A contiguous span over some part of the input string representing
@@ -36,8 +39,9 @@ class DependencySpan(object):
         self._end_index = end_index
         self._head_index = head_index
         self._arcs = arcs
-        self._hash = hash((start_index, end_index, head_index, tuple(arcs)))
         self._tags = tags
+        self._comparison_key = (start_index, end_index, head_index, tuple(arcs))
+        self._hash = hash(self._comparison_key)
 
     def head_index(self):
         """
@@ -64,31 +68,16 @@ class DependencySpan(object):
         return str
 
     def __eq__(self, other):
-        """
-        :return: true if this ``DependencySpan`` is equal to ``other``.
-        :rtype: bool
-        """
-        return (isinstance(other, self.__class__) and
-                self._start_index == other._start_index and
-                self._end_index == other._end_index and
-                self._head_index == other._head_index and
-                self._arcs == other._arcs)
+        return (type(self) == type(other) and 
+                self._comparison_key == other._comparison_key)
 
     def __ne__(self, other):
-        """
-        :return: false if this ``DependencySpan`` is equal to ``other``
-        :rtype: bool
-        """
-        return not (self == other)
+        return not self == other
 
-    def __cmp__(self, other):
-        """
-        :return: -1 if args are of different class.  Otherwise returns the
-        cmp() of the two sets of spans.
-        :rtype: int
-        """
-        if not isinstance(other, self.__class__): return -1
-        return cmp((self._start_index, self._start_index, self._head_index), (other._end_index, other._end_index, other._head_index))
+    def __lt__(self, other):
+        if not isinstance(other, DependencySpan):
+            raise_unorderable_types("<", self, other)
+        return self._comparison_key < other._comparison_key
 
     def __hash__(self):
         """

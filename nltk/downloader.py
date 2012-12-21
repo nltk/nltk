@@ -259,9 +259,6 @@ class Package(object):
     def __repr__(self):
         return '<Package %s>' % self.id
 
-    def __lt__(self, other):
-        return False
-
 class Collection(object):
     """
     A directory entry for a collection of downloadable packages.
@@ -295,9 +292,6 @@ class Collection(object):
 
     def __repr__(self):
         return '<Collection %s>' % self.id
-
-    def __lt__(self, other):
-        return False
 
 ######################################################################
 # Message Passing Objects

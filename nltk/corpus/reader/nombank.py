@@ -12,6 +12,8 @@ import codecs
 from nltk import compat
 from nltk.tree import Tree
 from xml.etree import ElementTree
+from nltk.internals import raise_unorderable_types
+from nltk.compat import total_ordering
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
@@ -317,6 +319,7 @@ class NombankSplitTreePointer(NombankPointer):
         if tree is None: raise ValueError('Parse tree not avaialable')
         return Tree('*SPLIT*', [p.select(tree) for p in self.pieces])
 
+@total_ordering
 class NombankTreePointer(NombankPointer):
     """
     wordnum:height*wordnum:height*...
@@ -352,16 +355,28 @@ class NombankTreePointer(NombankPointer):
     def __repr__(self):
         return 'NombankTreePointer(%d, %d)' % (self.wordnum, self.height)
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         while isinstance(other, (NombankChainTreePointer,
                                  NombankSplitTreePointer)):
             other = other.pieces[0]
 
         if not isinstance(other, NombankTreePointer):
-            return cmp(id(self), id(other))
+            return self is other
 
-        return cmp( (self.wordnum, -self.height),
-                    (other.wordnum, -other.height) )
+        return (self.wordnum == other.wordnum and self.height == other.height)
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        while isinstance(other, (NombankChainTreePointer,
+                                 NombankSplitTreePointer)):
+            other = other.pieces[0]
+
+        if not isinstance(other, NombankTreePointer):
+            return id(self) < id(other)
+
+        return (self.wordnum, -self.height) < (other.wordnum, -other.height)
 
     def select(self, tree):
         if tree is None: raise ValueError('Parse tree not avaialable')

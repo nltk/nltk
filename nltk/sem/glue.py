@@ -98,6 +98,9 @@ class GlueFormula(object):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.meaning == other.meaning and self.glue == other.glue
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
         assert isinstance(self.indices, set)
         accum = '%s : %s' % (self.meaning, self.glue)

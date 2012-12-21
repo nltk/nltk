@@ -44,6 +44,8 @@ from nltk import compat
 from nltk.tree import Tree
 from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
 from nltk.util import OrderedDict
+from nltk.internals import raise_unorderable_types
+from nltk.compat import total_ordering
 
 from nltk.parse.api import ParserI
 
@@ -52,6 +54,7 @@ from nltk.parse.api import ParserI
 ##  Edges
 ########################################################################
 
+@total_ordering
 class EdgeI(object):
     """
     A hypothesis about the structure of part of a sentence.
@@ -196,14 +199,31 @@ class EdgeI(object):
         raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
-    # Comparisons
+    # Comparisons & hashing
     #////////////////////////////////////////////////////////////
 
-    def __cmp__(self, other):
-        raise NotImplementedError()
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and 
+                self._comparison_key == other._comparison_key)
 
-    def __hash__(self, other):
-        raise NotImplementedError()
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        if not isinstance(other, EdgeI):
+            raise_unorderable_types("<", self, other)
+        if self.__class__ is other.__class__:
+            return self._comparison_key < other._comparison_key
+        else:
+            return self.__class__.__name__ < other.__class__.__name__
+
+    def __hash__(self):
+        try:
+            return self._hash
+        except AttributeError:
+            self._hash = hash(self._comparison_key)
+            return self._hash
+
 
 class TreeEdge(EdgeI):
     """
@@ -250,10 +270,12 @@ class TreeEdge(EdgeI):
             ``okens[span[0]:span[1]]`` can be spanned by the
             children specified by ``rhs[:dot]``.
         """
-        self._lhs = lhs
-        self._rhs = tuple(rhs)
         self._span = span
+        self._lhs = lhs
+        rhs = tuple(rhs)
+        self._rhs = rhs
         self._dot = dot
+        self._comparison_key = (span, lhs, rhs, dot)
 
     @staticmethod
     def from_production(production, index):
@@ -296,14 +318,6 @@ class TreeEdge(EdgeI):
         if self._dot >= len(self._rhs): return None
         else: return self._rhs[self._dot]
 
-    # Comparisons & hashing
-    def __cmp__(self, other):
-        if self.__class__ != other.__class__: return -1
-        return cmp((self._span, self.lhs(), self.rhs(), self._dot),
-                   (other._span, other.lhs(), other.rhs(), other._dot))
-    def __hash__(self):
-        return hash((self.lhs(), self.rhs(), self._span, self._dot))
-
     # String representation
     def __str__(self):
         str = '[%s:%s] ' % (self._span[0], self._span[1])
@@ -341,6 +355,7 @@ class LeafEdge(EdgeI):
         """
         self._leaf = leaf
         self._index = index
+        self._comparison_key = (leaf, index)
 
     # Accessors
     def lhs(self): return self._leaf
@@ -353,13 +368,6 @@ class LeafEdge(EdgeI):
     def is_complete(self): return True
     def is_incomplete(self): return False
     def next(self): return None
-
-    # Comparisons & hashing
-    def __cmp__(self, other):
-        if not isinstance(other, LeafEdge): return -1
-        return cmp((self._index, self._leaf), (other._index, other._leaf))
-    def __hash__(self):
-        return hash((self._index, self._leaf))
 
     # String representations
     def __str__(self):
@@ -1723,7 +1731,7 @@ def demo(choice=None,
     maxlen = max(len(key) for key in times)
     format = '%' + repr(maxlen) + 's parser: %6.3fsec'
     times_items = times.items()
-    times_items.sort(lambda a,b:cmp(a[1], b[1]))
+    times_items.sort(key=lambda a:a[1])
     for (parser, t) in times_items:
         print(format % (parser, t))
 

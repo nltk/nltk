@@ -94,6 +94,9 @@ class Variable(object):
     def __eq__(self, other):
         return isinstance(other, Variable) and self.name == other.name
 
+    def __ne__(self, other):
+        return not self == other
+
     def __neq__(self, other):
         return not (self == other)
 
@@ -173,6 +176,11 @@ class ComplexType(Type):
                self.first == other.first and \
                self.second == other.second
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Type.__hash__
+
     def matches(self, other):
         if isinstance(other, ComplexType):
             return self.first.matches(other.first) and \
@@ -210,6 +218,11 @@ class ComplexType(Type):
 class BasicType(Type):
     def __eq__(self, other):
         return isinstance(other, BasicType) and str(self) == str(other)
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Type.__hash__
 
     def matches(self, other):
         return other == ANY_TYPE or self == other
@@ -253,6 +266,11 @@ class AnyType(BasicType, ComplexType):
 
     def __eq__(self, other):
         return isinstance(other, AnyType) or other.__eq__(self)
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Type.__hash__
 
     def matches(self, other):
         return True
@@ -406,7 +424,7 @@ class Expression(SubstituteBindingsI):
     def __eq__(self, other):
         raise NotImplementedError()
 
-    def __neq__(self, other):
+    def __ne__(self, other):
         return not (self == other)
 
     def equiv(self, other, prover=None):
@@ -729,6 +747,11 @@ class ApplicationExpression(Expression):
                 self.function == other.function and \
                 self.argument == other.argument
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
+
     def __str__(self):
         # uncurry the arguments and find the base function
         if self.is_atom():
@@ -849,6 +872,11 @@ class AbstractVariableExpression(Expression):
         subtypes."""
         return isinstance(other, AbstractVariableExpression) and \
                self.variable == other.variable
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
 
     def __str__(self):
         return str(self.variable)
@@ -1032,6 +1060,11 @@ class VariableBinderExpression(Expression):
         else:
             return False
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
+
 
 class LambdaExpression(VariableBinderExpression):
     @property
@@ -1127,6 +1160,11 @@ class NegatedExpression(Expression):
     def __eq__(self, other):
         return isinstance(other, NegatedExpression) and self.term == other.term
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
+
     def __str__(self):
         return Tokens.NOT + str(self.term)
 
@@ -1161,6 +1199,11 @@ class BinaryExpression(Expression):
         return (isinstance(self, other.__class__) or \
                 isinstance(other, self.__class__)) and \
                self.first == other.first and self.second == other.second
+
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = Expression.__hash__
 
     def __str__(self):
         first = self._str_subex(self.first)

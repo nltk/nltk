@@ -74,6 +74,7 @@ import re
 
 from nltk.util import transitive_closure, invert_graph
 from nltk.compat import string_types, total_ordering, text_type
+from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
 from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
@@ -129,19 +130,14 @@ class Nonterminal(object):
 
         :rtype: bool
         """
-        try:
-            return ((self._symbol == other._symbol)
-                    and isinstance(other, self.__class__))
-        except AttributeError:
-            return False
+        return type(self) == type(other) and self._symbol == other._symbol
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __lt__(self, other):
-        if not isinstance(other, self.__class__):
-            # XXX: self.__class__ vs Nonterminal?
-            return False
+        if not isinstance(other, Nonterminal):
+            raise_unorderable_types("<", self, other)
         return self._symbol < other._symbol
 
     def __hash__(self):
@@ -338,16 +334,16 @@ class Production(object):
 
         :rtype: bool
         """
-        return (isinstance(other, self.__class__) and
+        return (type(self) == type(other) and 
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __lt__(self, other):
-        if not isinstance(other, self.__class__):
-            return False
+        if not isinstance(other, Production):
+            raise_unorderable_types("<", self, other)
         return (self._lhs, self._rhs) < (other._lhs, other._rhs)
 
     def __hash__(self):
@@ -404,13 +400,13 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
         return Production.__str__(self) + ' [%s]' % self.prob()
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and
+        return (type(self) == type(other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
                 self.prob() == other.prob())
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
@@ -832,16 +828,14 @@ class FeatureValueType(object):
         return '<%s>' % self._value
 
     def __eq__(self, other):
-        if other.__class__ != FeatureValueType:
-            return False
-        return self._value == other._value
+        return type(self) == type(other) and self._value == other._value
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __lt__(self, other):
-        if other.__class__ != FeatureValueType:
-            return True
+        if not isinstance(other, FeatureValueType):
+            raise_unorderable_types("<", self, other)
         return self._value < other._value
 
     def __hash__(self):

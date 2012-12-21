@@ -51,6 +51,7 @@ class CCGEdge(EdgeI):
         self._span = span
         self._categ = categ
         self._rule = rule
+        self._comparison_key = (span, categ, rule)
 
     # Accessors
     def lhs(self): return self._categ
@@ -65,18 +66,8 @@ class CCGEdge(EdgeI):
     def next(self): return None
     def __next__(self): return self.next()
 
-    def categ(self):
-        return self._categ
-    def rule(self):
-        return self._rule
-
-    def __cmp__(self, other):
-        if not isinstance(other, CCGEdge): return -1
-        return cmp((self._span,self._categ,self._rule),
-                    (other.span(),other.categ(),other.rule()))
-
-    def __hash__(self):
-        return hash((self._span,self._categ,self._rule))
+    def categ(self): return self._categ
+    def rule(self): return self._rule
 
 class CCGLeafEdge(EdgeI):
     '''
@@ -86,6 +77,7 @@ class CCGLeafEdge(EdgeI):
         self._pos = pos
         self._categ = categ
         self._leaf = leaf
+        self._comparison_key = (pos, categ, leaf)
 
     # Accessors
     def lhs(self): return self._categ
@@ -103,14 +95,6 @@ class CCGLeafEdge(EdgeI):
         return self._categ
 
     def leaf(self): return self._leaf
-
-    def __cmp__(self, other):
-        if not isinstance(other, CCGLeafEdge): return -1
-        return cmp((self._span,self._categ,self._rule),
-                    other.span(),other.categ(),other.rule())
-
-    def __hash__(self):
-        return hash((self._pos,self._categ,self._leaf))
 
 class BinaryCombinatorRule(AbstractChartRule):
     '''

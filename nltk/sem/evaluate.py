@@ -459,7 +459,7 @@ class Model(object):
             for u in self.domain:
                 new_g = g.copy()
                 new_g.add(var.name, u)
-                if trace > 1:
+                if trace and trace > 1:
                     lowtrace = trace-1
                 else:
                     lowtrace = 0
