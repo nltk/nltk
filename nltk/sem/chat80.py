@@ -130,6 +130,7 @@ import os
 import sys
 
 import nltk.data 
+from nltk.compat import string_types
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -674,7 +675,7 @@ def concepts(items = items):
     :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list
     """
-    if isinstance(items, str): items = (items,)
+    if isinstance(items, string_types): items = (items,)
 
     rels = [item_metadata[r] for r in items]
 

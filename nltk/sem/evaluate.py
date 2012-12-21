@@ -20,6 +20,7 @@ import inspect
 import textwrap
 
 from nltk.decorators import decorator # this used in code that is commented out
+from nltk.compat import string_types
 
 from nltk.sem.logic import (AbstractVariableExpression, AllExpression,
                             AndExpression, ApplicationExpression, EqualityExpression,
@@ -75,7 +76,7 @@ def set2rel(s):
     """
     new = set()
     for elem in s:
-        if isinstance(elem, str):
+        if isinstance(elem, string_types):
             new.add((elem,))
         elif isinstance(elem, int):
             new.add((str(elem,)))
@@ -111,7 +112,7 @@ class Valuation(dict):
         """
         dict.__init__(self)
         for (sym, val) in iter:
-            if isinstance(val, str) or isinstance(val, bool):
+            if isinstance(val, string_types) or isinstance(val, bool):
                 self[sym] = val
             elif isinstance(val, set):
                 self[sym] = set2rel(val)
@@ -135,7 +136,7 @@ class Valuation(dict):
         """Set-theoretic domain of the value-space of a Valuation."""
         dom = []
         for val in self.values():
-            if isinstance(val, str):
+            if isinstance(val, string_types):
                 dom.append(val)
             elif not isinstance(val, bool):
                 dom.extend([elem for tuple in val for elem in tuple if elem is not None])
@@ -447,7 +448,7 @@ class Model(object):
         indent = spacer + (spacer * nesting)
         candidates = []
 
-        if isinstance(varex, str):
+        if isinstance(varex, string_types):
             var = Variable(varex)
         else:
             var = varex

@@ -17,6 +17,7 @@ import re
 from collections import defaultdict
 
 from nltk.util import flatten
+from nltk.compat import string_types
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
@@ -259,7 +260,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def _get_words(self, fileid, speaker, sent, stem, relation, pos,
             strip_space, replace):
-        if isinstance(speaker, str) and speaker != 'ALL':  # ensure we have a list of speakers
+        if isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
             speaker = [ speaker ]
         xmldoc = ElementTree.parse(fileid).getroot()
         # processing each xml doc
