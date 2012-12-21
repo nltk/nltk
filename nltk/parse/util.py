@@ -127,7 +127,7 @@ class TestGrammar(object):
             if accepted and rejected:
                 print("All tests passed!")
 
-def extract_test_sentences(string, comment_chars="#%;"):
+def extract_test_sentences(string, comment_chars="#%;", encoding=None):
     """
     Parses a string with one test sentence per line.
     Lines can optionally begin with:
@@ -141,7 +141,10 @@ def extract_test_sentences(string, comment_chars="#%;"):
         and a result is None, or bool, or int
 
     :param comment_chars: ``str`` of possible comment characters.
+    :param encoding: the encoding of the string, if it is binary 
     """
+    if encoding is not None:
+        string = string.decode(encoding)
     sentences = []
     for sentence in string.split('\n'):
         if sentence == '' or sentence[0] in comment_chars:
@@ -160,6 +163,6 @@ def extract_test_sentences(string, comment_chars="#%;"):
             continue
         sentences += [(tokens, result)]
     return sentences
-
+    
 # nose thinks it is a test
 extract_test_sentences.__test__ = False

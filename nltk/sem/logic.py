@@ -1720,7 +1720,7 @@ class LogicParser(object):
         return '<' + self.__class__.__name__ + ': ' + msg + '>'
 
 
-def parse_logic(s, logic_parser=None):
+def parse_logic(s, logic_parser=None, encoding=None):
     """
     Convert a file of First Order Formulas into a list of {Expression}s.
 
@@ -1728,9 +1728,13 @@ def parse_logic(s, logic_parser=None):
     :type s: str
     :param logic_parser: The parser to be used to parse the logical expression
     :type logic_parser: LogicParser
+    :param encoding: the encoding of the input string, if it is binary
+    :type encoding: str
     :return: a list of parsed formulas.
     :rtype: list(Expression)
     """
+    if encoding is not None:
+        s = s.decode(encoding)
     if logic_parser is None:
         logic_parser = LogicParser()
 

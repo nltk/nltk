@@ -1071,14 +1071,15 @@ def parse_cfg_production(input):
     """
     return parse_production(input, standard_nonterm_parser)
 
-def parse_cfg(input):
+def parse_cfg(input, encoding=None):
     """
     Return the ``ContextFreeGrammar`` corresponding to the input string(s).
 
     :param input: a grammar, either in the form of a string or
         as a list of strings.
     """
-    start, productions = parse_grammar(input, standard_nonterm_parser)
+    start, productions = parse_grammar(input, standard_nonterm_parser, 
+                                       encoding=encoding)
     return ContextFreeGrammar(start, productions)
 
 # Parsing Probabilistic CFGs
@@ -1089,7 +1090,7 @@ def parse_pcfg_production(input):
     """
     return parse_production(input, standard_nonterm_parser, probabilistic=True)
 
-def parse_pcfg(input):
+def parse_pcfg(input, encoding=None):
     """
     Return a probabilistic ``WeightedGrammar`` corresponding to the
     input string(s).
@@ -1098,7 +1099,7 @@ def parse_pcfg(input):
         as a list of strings.
     """
     start, productions = parse_grammar(input, standard_nonterm_parser,
-                                       probabilistic=True)
+                                       probabilistic=True, encoding=encoding)
     return WeightedGrammar(start, productions)
 
 # Parsing Feature-based CFGs
@@ -1109,7 +1110,8 @@ def parse_fcfg_production(input, fstruct_parser):
     """
     return parse_production(input, fstruct_parser)
 
-def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
+def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None,
+               encoding=None):
     """
     Return a feature structure based ``FeatureGrammar``.
 
@@ -1131,7 +1133,8 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
         raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
                         'not both be set')
 
-    start, productions = parse_grammar(input, fstruct_parser.partial_parse)
+    start, productions = parse_grammar(input, fstruct_parser.partial_parse, 
+                                       encoding=encoding)
     return FeatureGrammar(start, productions)
 
 # Parsing generic grammars
@@ -1196,7 +1199,7 @@ def parse_production(line, nonterm_parser, probabilistic=False):
         return [Production(lhs, rhs) for rhs in rhsides]
 
 
-def parse_grammar(input, nonterm_parser, probabilistic=False):
+def parse_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     """
     Return a pair consisting of a starting category and a list of
     ``Productions``.
@@ -1208,7 +1211,11 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
         return a ``(nonterminal, position)`` as result.
     :param probabilistic: are the grammar rules probabilistic?
     :type probabilistic: bool
+    :param encoding: the encoding of the grammar, if it is a binary string
+    :type encoding: str
     """
+    if encoding is not None:
+        input = input.decode(encoding)
     if isinstance(input, string_types):
         lines = input.split('\n')
     else:
