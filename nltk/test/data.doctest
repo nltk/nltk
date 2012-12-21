@@ -64,6 +64,7 @@ currently supported by the data module are described by the dictionary
     pcfg    A probabilistic CFG, parsed by nltk.parse_pcfg().
     pickle  A serialized python object, stored using the pickle module.
     raw     The raw (byte string) contents of a file.
+    text    The raw (unicode string) contents of a file. 
     val     A semantic valuation, parsed by nltk.sem.parse_valuation().
     yaml    A serialized python object, stored using the yaml module.
 
@@ -87,6 +88,8 @@ to format names is specified by `nltk.data.AUTO_FORMATS`:
     .logic   -> logic
     .pcfg    -> pcfg
     .pickle  -> pickle
+    .text    -> text
+    .txt     -> text
     .val     -> val
     .yaml    -> yaml
 
