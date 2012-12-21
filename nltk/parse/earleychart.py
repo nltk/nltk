@@ -25,7 +25,7 @@ This is appealing for, say, speech recognizer hypothesis filtering.
 The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 from nltk.compat import xrange
 from nltk.parse.chart import (Chart, ChartParser, EdgeI, LeafEdge, LeafInitRule,
@@ -308,7 +308,7 @@ class IncrementalChartParser(ChartParser):
         grammar = self._grammar
 
         # Width, for printing trace edges.
-        trace_edge_width = self._trace_chart_width / (chart.num_leaves() + 1)
+        trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace: print(chart.pp_leaves(trace_edge_width))
 
         for axiom in self._axioms:

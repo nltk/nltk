@@ -5,7 +5,7 @@
 # Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, division
 
 import os
 
@@ -387,7 +387,7 @@ class GlueDict(dict):
 
         letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
                   't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
-        num = int(value) / 26
+        num = int(value) // 26
         if num > 0:
             return letter + str(num)
         else:
