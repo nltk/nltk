@@ -116,7 +116,8 @@ class FeatureTreeEdge(TreeEdge):
         :rtype: set(Variable)
         """
         return find_variables([self._lhs] + list(self._rhs) +
-                              self._bindings.keys() + self._bindings.values(),
+                              list(self._bindings.keys()) + 
+                              list(self._bindings.values()),
                               fs_class=FeatStruct)
 
     def __str__(self):

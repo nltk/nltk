@@ -113,14 +113,14 @@ Relations are sets of tuples, all of the same length.
 Sets of entities are converted into sets of singleton tuples
 (containing strings).
 
-    >>> set2rel(s3)
-    set([('d1',), ('d2',)])
-    >>> set2rel(set([1,3,5,]))
-    set(['1', '3', '5'])
-    >>> set2rel(set())
-    set([])
-    >>> set2rel(set2rel(s3))
-    set([('d1',), ('d2',)])
+    >>> sorted(set2rel(s3))
+    [('d1',), ('d2',)]
+    >>> sorted(set2rel(set([1,3,5,])))
+    ['1', '3', '5']
+    >>> set2rel(set()) == set()
+    True
+    >>> set2rel(set2rel(s3)) == set2rel(s3)
+    True
 
 Predication is evaluated by set membership.
 
@@ -141,8 +141,8 @@ Predication is evaluated by set membership.
 
 
     >>> val = Valuation([('Fido', 'd1'), ('dog', set(['d1', 'd2'])), ('walk', set())])
-    >>> val['dog']
-    set([('d1',), ('d2',)])
+    >>> sorted(val['dog'])
+    [('d1',), ('d2',)]
     >>> val.domain == set(['d1', 'd2'])
     True
     >>> print(val.symbols)
@@ -199,8 +199,8 @@ Unit tests for function argument application in a Model
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
-    >>> print(val['boy'])
-    set([('b1',), ('b2',)])
+    >>> sorted(val['boy'])
+    [('b1',), ('b2',)]
     >>> ('b1',) in val['boy']
     True
     >>> ('g1',) in val['boy']
@@ -211,8 +211,8 @@ Unit tests for function argument application in a Model
     True
     >>> ('b1', 'b1') in val['kiss']
     False
-    >>> val.domain
-    set(['d1', 'g1', 'b1', 'b2', 'g2'])
+    >>> sorted(val.domain)
+    ['b1', 'b2', 'd1', 'g1', 'g2']
 
 
 Model Tests
@@ -323,14 +323,15 @@ Test of i Function
     >>> exprs = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
     >>> lp = LogicParser()
     >>> parsed_exprs = [lp.parse(e) for e in exprs]
+    >>> sorted_set = lambda x: sorted(x) if isinstance(x, set) else x
     >>> for parsed in parsed_exprs:
     ...     try:
-    ...         print("'%s' gets value %s" % (parsed, m.i(parsed, g)))
+    ...         print("'%s' gets value %s" % (parsed, sorted_set(m.i(parsed, g))))
     ...     except Undefined:
     ...         print("'%s' is Undefined" % parsed)
     'adam' gets value b1
-    'girl' gets value set([('g2',), ('g1',)])
-    'love' gets value set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')])
+    'girl' gets value [('g1',), ('g2',)]
+    'love' gets value [('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]
     'walks' is Undefined
     'x' gets value b1
     'y' gets value g2
@@ -441,45 +442,45 @@ Satisfier Tests
     >>> for fmla in formulas: # doctest: +NORMALIZE_WHITESPACE
     ...     p = lp.parse(fmla)
     ...     g.purge()
-    ...     print("Satisfiers of '%s':\n\t%s" % (p, m.satisfiers(p, 'x', g)))
+    ...     print("Satisfiers of '%s':\n\t%s" % (p, sorted(m.satisfiers(p, 'x', g))))
     Satisfiers of 'boy(x)':
-    	set(['b1', 'b2'])
+    	['b1', 'b2']
     Satisfiers of '(x = x)':
-    	set(['g2', 'b2', 'b1', 'g1', 'd1'])
+    	['b1', 'b2', 'd1', 'g1', 'g2']
     Satisfiers of '(boy(x) | girl(x))':
-    	set(['b2', 'b1', 'g1', 'g2'])
+    	['b1', 'b2', 'g1', 'g2']
     Satisfiers of '(boy(x) & girl(x))':
-    	set([])
+    	[]
     Satisfiers of 'love(adam,x)':
-    	set(['g1'])
+    	['g1']
     Satisfiers of 'love(x,adam)':
-    	set(['g2', 'g1'])
+    	['g1', 'g2']
     Satisfiers of '-(x = adam)':
-    	set(['g2', 'b2', 'g1', 'd1'])
+    	['b2', 'd1', 'g1', 'g2']
     Satisfiers of 'exists z22.love(x,z22)':
-    	set(['b2', 'b1', 'g1', 'g2'])
+    	['b1', 'b2', 'g1', 'g2']
     Satisfiers of 'exists y.love(y,x)':
-    	set(['b1', 'g1', 'g2'])
+    	['b1', 'g1', 'g2']
     Satisfiers of 'all y.(girl(y) -> love(x,y))':
-    	set([])
+    	[]
     Satisfiers of 'all y.(girl(y) -> love(y,x))':
-    	set(['b1'])
+    	['b1']
     Satisfiers of 'all y.(girl(y) -> (boy(x) & love(y,x)))':
-    	set(['b1'])
+    	['b1']
     Satisfiers of '(boy(x) & all y.(girl(y) -> love(x,y)))':
-    	set([])
+    	[]
     Satisfiers of '(boy(x) & all y.(girl(y) -> love(y,x)))':
-    	set(['b1'])
+    	['b1']
     Satisfiers of '(boy(x) & exists y.(girl(y) & love(y,x)))':
-    	set(['b1'])
+    	['b1']
     Satisfiers of '(girl(x) -> dog(x))':
-    	set(['b1', 'b2', 'd1'])
+    	['b1', 'b2', 'd1']
     Satisfiers of 'all y.(dog(y) -> (x = y))':
-    	set(['d1'])
+    	['d1']
     Satisfiers of '-exists y.love(y,x)':
-    	set(['b2', 'd1'])
+    	['b2', 'd1']
     Satisfiers of 'exists y.(love(adam,y) & love(y,x))':
-    	set(['b1'])
+    	['b1']
 
 
 Tests based on the Blackburn & Bos testsuite

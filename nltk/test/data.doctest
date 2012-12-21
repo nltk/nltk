@@ -106,8 +106,13 @@ Note that by explicitly specifying the ``format`` argument, you can
 override the load method's default processing behavior.  For example,
 to get the raw contents of any file, simply use ``format="raw"``:
 
-    >>> nltk.data.load('grammars/sample_grammars/toy.cfg', 'raw') # doctest: +ELLIPSIS
-    "S -> NP VP\nPP -> P NP\nNP -> Det N | NP PP\nVP -> V NP | VP PP\n..."
+    >>> s = nltk.data.load('grammars/sample_grammars/toy.cfg', 'text') 
+    >>> print(s) # doctest: +ELLIPSIS
+    S -> NP VP
+    PP -> P NP
+    NP -> Det N | NP PP
+    VP -> V NP | VP PP
+    ...
 
 Making Local Copies
 ~~~~~~~~~~~~~~~~~~~
@@ -126,8 +131,10 @@ sample grammars.
     Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'toy.cfg'
 
     >>> # Simulate editing the grammar.
-    >>> s = open('toy.cfg').read().replace('NP', 'DP')
-    >>> out = open('toy.cfg', 'w'); out.write(s); out.close()
+    >>> with open('toy.cfg') as inp:
+    ...     s = inp.read().replace('NP', 'DP')
+    >>> with open('toy.cfg', 'w') as out:
+    ...     _bytes_written = out.write(s)
 
     >>> # Load the edited grammar, & display it.
     >>> cfg = nltk.data.load('file:toy.cfg')
@@ -182,14 +189,24 @@ contents of the file.
     >>> path = nltk.data.find('corpora/abc/rural.txt')
     >>> str(path) # doctest: +ELLIPSIS
     '...rural.txt'
-    >>> path.open().read(60)
-    'PM denies knowledge of AWB kickbacks\nThe Prime Minister has '
+    >>> print(path.open().read(60).decode())
+    PM denies knowledge of AWB kickbacks
+    The Prime Minister has 
 
 Alternatively, the `nltk.data.load()` function can be used with the
 keyword argument ``format="raw"``:
 
-    >>> nltk.data.load('corpora/abc/rural.txt', format='raw')[:60]
-    'PM denies knowledge of AWB kickbacks\nThe Prime Minister has '
+    >>> s = nltk.data.load('corpora/abc/rural.txt', format='raw')[:60]
+    >>> print(s.decode())
+    PM denies knowledge of AWB kickbacks
+    The Prime Minister has 
+
+Alternatively, you can use the keyword argument ``format="text"``:
+
+    >>> s = nltk.data.load('corpora/abc/rural.txt', format='text')[:60]
+    >>> print(s)
+    PM denies knowledge of AWB kickbacks
+    The Prime Minister has 
 
 Resource Caching
 ~~~~~~~~~~~~~~~~

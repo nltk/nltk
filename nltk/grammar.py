@@ -397,7 +397,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
         Production.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return Production.__str__(self) + ' [%s]' % self.prob()
+        return Production.__str__(self) + ' [%.6g]' % self.prob()
 
     def __eq__(self, other):
         return (type(self) == type(other) and

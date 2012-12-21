@@ -371,13 +371,13 @@ regression tests
     >>> print(d == dp.parse('([l],[A(c), ([m],[B(l,m,z,a)])->([n],[C(l,m,n,a)])])'))
     True
     >>> d = dp.parse('([],[([x,y],[B(x,y,h), ([a,b],[dee(x,a,g)])])->([z,w],[cee(x,y,f), ([c,d],[E(x,c,d,e)])])])')
-    >>> print(d.free())
-    set([Variable('B'), Variable('E'), Variable('g'), Variable('f'), Variable('h'), Variable('e')])
-    >>> print(d.variables())
-    set([Variable('B'), Variable('E'), Variable('g'), Variable('f'), Variable('h'), Variable('e')])
-    >>> print(d.get_refs(True))
-    [Variable('x'), Variable('y'), Variable('a'), Variable('b'), Variable('z'), Variable('w'), Variable('c'), Variable('d')]
-    >>> print(d.conds[0].get_refs(False))
+    >>> sorted(d.free())
+    [Variable('B'), Variable('E'), Variable('e'), Variable('f'), Variable('g'), Variable('h')]
+    >>> sorted(d.variables())
+    [Variable('B'), Variable('E'), Variable('e'), Variable('f'), Variable('g'), Variable('h')]
+    >>> sorted(d.get_refs(True))
+    [Variable('a'), Variable('b'), Variable('c'), Variable('d'), Variable('w'), Variable('x'), Variable('y'), Variable('z')]
+    >>> sorted(d.conds[0].get_refs(False))
     [Variable('x'), Variable('y')]
     >>> print(dp.parse('([x,y],[A(x,y), (x=y), ([],[B(x,y)])->([],[C(x,y)]), ([x,y],[D(x,y)])->([],[E(x,y)]), ([],[F(x,y)])->([x,y],[G(x,y)])])').eliminate_equality())
     ([x],[A(x,x), (([],[B(x,x)]) -> ([],[C(x,x)])), (([x,y],[D(x,y)]) -> ([],[E(x,y)])), (([],[F(x,x)]) -> ([x,y],[G(x,y)]))])
