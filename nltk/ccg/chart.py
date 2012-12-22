@@ -29,7 +29,7 @@ which should print a nice representation of the derivation.
 This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 from collections import defaultdict
 
@@ -47,10 +47,11 @@ from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
 # A number of the properties of the EdgeI interface don't
 # transfer well to CCGs, however.
 class CCGEdge(EdgeI):
-    def __init__(self,span,categ,rule):
+    def __init__(self, span, categ, rule):
         self._span = span
         self._categ = categ
         self._rule = rule
+        self._comparison_key = (span, categ, rule)
 
     # Accessors
     def lhs(self): return self._categ
@@ -62,34 +63,24 @@ class CCGEdge(EdgeI):
     def dot(self): return 0
     def is_complete(self): return True
     def is_incomplete(self): return False
-    def next(self): return None
-    def __next__(self): return self.next()
+    def nextsym(self): return None
 
-    def categ(self):
-        return self._categ
-    def rule(self):
-        return self._rule
-
-    def __cmp__(self, other):
-        if not isinstance(other, CCGEdge): return -1
-        return cmp((self._span,self._categ,self._rule),
-                    (other.span(),other.categ(),other.rule()))
-
-    def __hash__(self):
-        return hash((self._span,self._categ,self._rule))
+    def categ(self): return self._categ
+    def rule(self): return self._rule
 
 class CCGLeafEdge(EdgeI):
     '''
     Class representing leaf edges in a CCG derivation.
     '''
-    def __init__(self,pos,categ,leaf):
+    def __init__(self, pos, categ, leaf):
         self._pos = pos
         self._categ = categ
         self._leaf = leaf
+        self._comparison_key = (pos, categ, leaf)
 
     # Accessors
     def lhs(self): return self._categ
-    def span(self): return (self._pos,self._pos+1)
+    def span(self): return (self._pos, self._pos+1)
     def start(self): return self._pos
     def end(self): return self._pos + 1
     def length(self): return 1
@@ -97,20 +88,10 @@ class CCGLeafEdge(EdgeI):
     def dot(self): return 0
     def is_complete(self): return True
     def is_incomplete(self): return False
-    def next(self): return None
+    def nextsym(self): return None
 
-    def categ(self):
-        return self._categ
-
+    def categ(self): return self._categ
     def leaf(self): return self._leaf
-
-    def __cmp__(self, other):
-        if not isinstance(other, CCGLeafEdge): return -1
-        return cmp((self._span,self._categ,self._rule),
-                    other.span(),other.categ(),other.rule())
-
-    def __hash__(self):
-        return hash((self._pos,self._categ,self._leaf))
 
 class BinaryCombinatorRule(AbstractChartRule):
     '''
@@ -286,11 +267,11 @@ def printCCGDerivation(tree):
     # category aligned.
     for (leaf, cat) in leafcats:
         nextlen = 2 + max(len(leaf),len(str(cat)))
-        lcatlen = (nextlen - len(str(cat)))/2
-        rcatlen = lcatlen + (nextlen - len(str(cat)))%2
+        lcatlen = (nextlen - len(str(cat))) // 2
+        rcatlen = lcatlen + (nextlen - len(str(cat))) % 2
         catstr += ' '*lcatlen + str(cat) + ' '*rcatlen
-        lleaflen = (nextlen - len(leaf))/2
-        rleaflen = lleaflen + (nextlen - len(leaf))%2
+        lleaflen = (nextlen - len(leaf)) // 2
+        rleaflen = lleaflen + (nextlen - len(leaf)) % 2
         leafstr += ' '*lleaflen + leaf + ' '*rleaflen
     print(leafstr)
     print(catstr)
@@ -322,7 +303,7 @@ def printCCGTree(lwidth,tree):
     # and the derivation rule.
     print(lwidth*' ' + (rwidth-lwidth)*'-' + str(op))
     # Print the resulting category on a new line.
-    respadlen = (rwidth - lwidth - len(str(res)))/2 + lwidth
+    respadlen = (rwidth - lwidth - len(str(res))) // 2 + lwidth
     print(respadlen*' ' + str(res))
     return rwidth
 

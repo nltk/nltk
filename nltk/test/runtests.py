@@ -14,12 +14,7 @@ NLTK_TEST_DIR = os.path.join(NLTK_ROOT, 'nltk')
 # These tests are expected to fail.
 # NOTE: Remember to remove tests from this list after they have been fixed.
 FAILING_TESTS = [
-    "ccg.doctest", # This test randomly fails - nondeterministic output
-    "collocations.doctest",
-    "corpus.doctest",
     "portuguese_en.doctest",
-    "probability.doctest",
-    "relextract.doctest",
 ]
 
 # These tests require extra dependencies and should not run by default

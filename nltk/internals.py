@@ -830,3 +830,12 @@ def is_writable(path):
     # Otherwise, we'll assume it's writable.
     # [xx] should we do other checks on other platforms?
     return True
+
+######################################################################
+# NLTK Error reporting
+######################################################################
+
+def raise_unorderable_types(ordering, a, b):
+    raise TypeError("unorderable types: %s() %s %s()" % (type(a).__name__, ordering, type(b).__name__))
+
+

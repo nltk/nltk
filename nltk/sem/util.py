@@ -105,7 +105,7 @@ _TUPLES_RE = re.compile(r"""\s*
                                 (\([^)]+\))  # tuple-expression
                                 \s*""", re.VERBOSE)
 
-def parse_valuation_line(s):
+def parse_valuation_line(s, encoding=None):
     """
     Parse a line in a valuation file.
 
@@ -117,9 +117,13 @@ def parse_valuation_line(s):
 
     :param s: input line
     :type s: str
+    :param encoding: the encoding of the input string, if it is binary
+    :type encoding: str
     :return: a pair (symbol, value)
     :rtype: tuple
     """
+    if encoding is not None:
+        s = s.decode(encoding)
     pieces = _VAL_SPLIT_RE.split(s)
     symbol = pieces[0]
     value = pieces[1]
@@ -139,15 +143,19 @@ def parse_valuation_line(s):
         value = set(set_elements)
     return symbol, value
 
-def parse_valuation(s):
+def parse_valuation(s, encoding=None):
     """
     Convert a valuation file into a valuation.
 
     :param s: the contents of a valuation file
     :type s: str
+    :param encoding: the encoding of the input string, if it is binary
+    :type encoding: str
     :return: a ``nltk.sem`` valuation
     :rtype: Valuation
     """
+    if encoding is not None:
+        s = s.decode(encoding)
     statements = []
     for linenum, line in enumerate(s.splitlines()):
         line = line.strip()

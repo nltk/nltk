@@ -5,12 +5,13 @@
 # Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, division
 
 import os
 
 import nltk
 from nltk.internals import Counter
+from nltk.compat import string_types
 from nltk.corpus import brown
 from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
 from nltk.sem.logic import (LogicParser, Expression, Variable, VariableExpression,
@@ -32,14 +33,14 @@ class GlueFormula(object):
         if not indices:
             indices = set()
 
-        if isinstance(meaning, str):
+        if isinstance(meaning, string_types):
             self.meaning = LogicParser().parse(meaning)
         elif isinstance(meaning, Expression):
             self.meaning = meaning
         else:
             raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
 
-        if isinstance(glue, str):
+        if isinstance(glue, string_types):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
@@ -98,6 +99,9 @@ class GlueFormula(object):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.meaning == other.meaning and self.glue == other.glue
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
         assert isinstance(self.indices, set)
         accum = '%s : %s' % (self.meaning, self.glue)
@@ -109,8 +113,9 @@ class GlueFormula(object):
         return str(self)
 
 class GlueDict(dict):
-    def __init__(self, filename):
+    def __init__(self, filename, encoding=None):
         self.filename = filename
+        self.file_encoding = encoding
         self.read_file()
 
     def read_file(self, empty_first=True):
@@ -118,19 +123,14 @@ class GlueDict(dict):
             self.clear()
 
         try:
-            f = nltk.data.find(
-                os.path.join('grammars', 'sample_grammars', self.filename))
-            # if f is a ZipFilePathPointer or a FileSystemPathPointer
-            # then we need a little extra massaging
-            if hasattr(f, 'open'):
-                f = f.open()
+            contents = nltk.data.load(self.filename, format='text', encoding=self.file_encoding)
+            # TODO: the above can't handle zip files, but this should anyway be fixed in nltk.data.load()
         except LookupError as e:
             try:
-                f = open(self.filename)
+                contents = nltk.data.load('file:' + self.filename, format='text', encoding=self.file_encoding)
             except LookupError:
                 raise e
-        lines = f.readlines()
-        f.close()
+        lines = contents.splitlines()
 
         for line in lines:                          # example: 'n : (\\x.(<word> x), (v-or))'
                                                     #     lambdacalc -^  linear logic -^
@@ -384,7 +384,7 @@ class GlueDict(dict):
 
         letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
                   't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
-        num = int(value) / 26
+        num = int(value) // 26
         if num > 0:
             return letter + str(num)
         else:
@@ -577,14 +577,14 @@ class DrtGlueFormula(GlueFormula):
         if not indices:
             indices = set()
 
-        if isinstance(meaning, str):
+        if isinstance(meaning, string_types):
             self.meaning = drt.DrtParser().parse(meaning)
         elif isinstance(meaning, drt.AbstractDrs):
             self.meaning = meaning
         else:
             raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
 
-        if isinstance(glue, str):
+        if isinstance(glue, string_types):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue

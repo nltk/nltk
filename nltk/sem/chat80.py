@@ -129,8 +129,8 @@ import shelve
 import os
 import sys
 
-from nltk.data import find
-
+import nltk.data 
+from nltk.compat import string_types
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -413,7 +413,7 @@ def sql_query(dbname, query):
     """
     try:
         import sqlite3
-        path = find(dbname)
+        path = nltk.data.find(dbname)
         connection =  sqlite3.connect(path)
         # return ASCII strings if possible
         connection.text_factory = sqlite3.OptimizedUnicode
@@ -429,12 +429,11 @@ def _str2records(filename, rel):
     Read a file into memory and convert each relation clause into a list.
     """
     recs = []
-    path = find("corpora/chat80/%s" % filename)
-    for line in path.open():
+    contents = nltk.data.load("corpora/chat80/%s" % filename, format="text")
+    for line in contents.splitlines():
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
             line = re.sub(r'\)\.$', '', line)
-            line = line[:-1]
             record = line.split(',')
             recs.append(record)
     return recs
@@ -676,7 +675,7 @@ def concepts(items = items):
     :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list
     """
-    if isinstance(items, str): items = (items,)
+    if isinstance(items, string_types): items = (items,)
 
     rels = [item_metadata[r] for r in items]
 

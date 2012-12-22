@@ -5,6 +5,10 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from nltk.internals import raise_unorderable_types
+from nltk.compat import total_ordering
+
+@total_ordering
 class AbstractCCGCategory(object):
     '''
     Interface for categories in combinatory grammars.
@@ -34,14 +38,32 @@ class AbstractCCGCategory(object):
         raise NotImplementedError()
 
     # Utility functions: comparison, strings and hashing.
-    def __cmp__(self,other):
-        raise NotImplementedError()
 
     def __str__(self):
         raise NotImplementedError()
 
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and 
+                self._comparison_key == other._comparison_key)
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        if not isinstance(other, AbstractCCGCategory):
+            raise_unorderable_types("<", self, other)
+        if self.__class__ is other.__class__:
+            return self._comparison_key < other._comparison_key
+        else:
+            return self.__class__.__name__ < other.__class__.__name__
+
     def __hash__(self):
-        raise NotImplementedError()
+        try:
+            return self._hash
+        except AttributeError:
+            self._hash = hash(self._comparison_key)
+            return self._hash
+
 
 
 class CCGVar(AbstractCCGCategory):
@@ -60,6 +82,7 @@ class CCGVar(AbstractCCGCategory):
         """
         self._id = self.new_id()
         self._prim_only = prim_only
+        self._comparison_key = self._id
 
     @classmethod
     def new_id(cls):
@@ -96,17 +119,11 @@ class CCGVar(AbstractCCGCategory):
     def id(self):
         return self._id
 
-    def __cmp__(self,other):
-        if not isinstance(other,CCGVar):
-            return -1
-        return cmp(self._id,other.id())
-
-    def __hash__(self):
-        return hash(self._id)
     def __str__(self):
         return "_var" + str(self._id)
 
-class Direction:
+@total_ordering
+class Direction(object):
     '''
     Class representing the direction of a function application.
     Also contains maintains information as to which combinators
@@ -115,6 +132,7 @@ class Direction:
     def __init__(self,dir,restrictions):
         self._dir = dir
         self._restrs = restrictions
+        self._comparison_key = (dir, tuple(restrictions))
 
     # Testing the application direction
     def is_forward(self):
@@ -166,12 +184,27 @@ class Direction:
     def can_cross(self):
         return not '.' in self._restrs
 
-    def __cmp__(self,other):
-        return cmp((self._dir,self._restrs), (other.dir(),other.restrs()))
-        return res
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and 
+                self._comparison_key == other._comparison_key)
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        if not isinstance(other, Direction):
+            raise_unorderable_types("<", self, other)
+        if self.__class__ is other.__class__:
+            return self._comparison_key < other._comparison_key
+        else:
+            return self.__class__.__name__ < other.__class__.__name__
 
     def __hash__(self):
-      return hash((self._dir,tuple(self._restrs)))
+        try:
+            return self._hash
+        except AttributeError:
+            self._hash = hash(self._comparison_key)
+            return self._hash
 
     def __str__(self):
         r_str = ""
@@ -193,9 +226,10 @@ class PrimitiveCategory(AbstractCCGCategory):
     Takes a string representation of the category, and a
     list of strings specifying the morphological subcategories.
     '''
-    def __init__(self,categ,restrictions=[]):
+    def __init__(self, categ, restrictions=[]):
         self._categ = categ
         self._restrs = restrictions
+        self._comparison_key = (categ, tuple(restrictions))
 
     def is_primitive(self):
         return True
@@ -231,15 +265,6 @@ class PrimitiveCategory(AbstractCCGCategory):
             return []
         return None
 
-    def __cmp__(self,other):
-        if not isinstance(other,PrimitiveCategory):
-            return -1
-        return cmp((self._categ,self.restrs()),
-                    (other.categ(),other.restrs()))
-
-    def __hash__(self):
-        return hash((self._categ,tuple(self._restrs)))
-
     def __str__(self):
         if self._restrs == []:
             return str(self._categ)
@@ -251,10 +276,11 @@ class FunctionalCategory(AbstractCCGCategory):
     Consists of argument and result categories, together with
     an application direction.
     '''
-    def __init__(self,res,arg,dir,):
+    def __init__(self, res, arg, dir):
         self._res = res
         self._arg = arg
         self._dir = dir
+        self._comparison_key = (arg, dir, res)
 
     def is_primitive(self):
         return False
@@ -297,13 +323,7 @@ class FunctionalCategory(AbstractCCGCategory):
     def dir(self):
         return self._dir
 
-    def __cmp__(self,other):
-        if not isinstance(other,FunctionalCategory):
-            return -1
-        return cmp((self._arg,self._dir,self._res),
-                    (other.arg(),other.dir(),other.res()))
-    def __hash__(self):
-        return hash((self._arg,self._dir,self._res))
-
     def __str__(self):
         return "(" + str(self._res) + str(self._dir) + str(self._arg) + ")"
+
+

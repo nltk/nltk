@@ -339,7 +339,7 @@ Dependency Graph to Glue Formulas
     ... 3	a	_	ex_quant	ex_quant	_	4	SPEC	_	_
     ... 4	dog	_	NN	NN	_	2	OBJ	_	_
     ... """)
-    >>> gfl = GlueDict('glue.semtype').to_glueformula_list(depgraph)
+    >>> gfl = GlueDict('nltk:grammars/sample_grammars/glue.semtype').to_glueformula_list(depgraph)
     >>> for gf in gfl: print(gf)
     \x y.sees(x,y) : (f -o (i -o g))
     \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F2) -o F2))
@@ -366,7 +366,7 @@ Dependency Graph to LFG f-structure
 ---------------------------------
 LFG f-structure to Glue
 ---------------------------------
-    >>> for gf in fstruct.to_glueformula_list(GlueDict('glue.semtype')):
+    >>> for gf in fstruct.to_glueformula_list(GlueDict('nltk:grammars/sample_grammars/glue.semtype')):
     ...     print(gf)
     \x y.sees(x,y) : (i -o (g -o f))
     \x.dog(x) : (gv -o gr)

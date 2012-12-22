@@ -516,6 +516,7 @@ FORMATS = {
             "parameter",
     'val': "A semantic valuation, parsed by nltk.sem.parse_valuation().",
     'raw': "The raw (byte string) contents of a file.",
+    'text': "The raw (unicode string) contents of a file. "
     }
 
 #: A dictionary mapping from file extensions to format names, used
@@ -529,10 +530,15 @@ AUTO_FORMATS = {
     'fcfg': 'fcfg',
     'fol': 'fol',
     'logic': 'logic',
-    'val': 'val'}
+    'val': 'val',
+    'txt': 'text',
+    'text': 'text',
+    }
+
+# TODO: load() should be able to read zipfiles too
 
 def load(resource_url, format='auto', cache=True, verbose=False,
-         logic_parser=None, fstruct_parser=None):
+         logic_parser=None, fstruct_parser=None, encoding=None):
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
@@ -545,11 +551,17 @@ def load(resource_url, format='auto', cache=True, verbose=False,
       - ``fol`` (formulas of First Order Logic)
       - ``logic`` (Logical formulas to be parsed by the given logic_parser)
       - ``val`` (valuation of First Order Logic model)
-      - ``raw``
+      - ``text`` (the file contents as a unicode string)
+      - ``raw`` (the raw file contents as a byte string)
 
     If no format is specified, ``load()`` will attempt to determine a
     format based on the resource name's file extension.  If that
     fails, ``load()`` will raise a ``ValueError`` exception.
+
+    For all text formats (everything except ``pickle``, ``yaml`` and ``raw``),
+    it tries to decode the raw contents using UTF-8, and if that doesn't
+    work, it tries with ISO-8859-1 (Latin-1), unless the ``encoding``
+    is specified.
 
     :type resource_url: str
     :param resource_url: A URL specifying where the resource should be
@@ -571,18 +583,9 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     :type fstruct_parser: FeatStructParser
     :param fstruct_parser: The parser that will be used to parse the
         feature structure of an fcfg.
+    :type encoding: str
+    :param encoding: the encoding of the input; only used for text formats.
     """
-    # If we've cached the resource, then just return it.
-    if cache:
-        resource_val = _resource_cache.get(resource_url)
-        if resource_val is not None:
-            if verbose:
-                print('<<Using cached copy of %s>>' % (resource_url,))
-            return resource_val
-
-    # Let the user know what's going on.
-    if verbose:
-        print('<<Loading %s>>' % (resource_url,))
 
     # Determine the format of the resource.
     if format == 'auto':
@@ -597,38 +600,75 @@ def load(resource_url, format='auto', cache=True, verbose=False,
                              'argument to specify the format explicitly.'
                              % resource_url)
 
+    if format not in FORMATS:
+        raise ValueError('Unknown format type: %s!' % (format,))
+
+    # If we've cached the resource, then just return it.
+    if cache:
+        resource_val = _resource_cache.get((resource_url, format))
+        if resource_val is not None:
+            if verbose:
+                print('<<Using cached copy of %s>>' % (resource_url,))
+            return resource_val
+
+    # Let the user know what's going on.
+    if verbose:
+        print('<<Loading %s>>' % (resource_url,))
+
     # Load the resource.
-    if format == 'pickle':
-        resource_val = pickle.load(_open(resource_url))
+    opened_resource = _open(resource_url)
+
+    if format == 'raw':
+        resource_val = opened_resource.read()
+    elif format == 'pickle':
+        resource_val = pickle.load(opened_resource)
     elif format == 'yaml':
         import yaml
-        resource_val = yaml.load(_open(resource_url))
-    elif format == 'cfg':
-        resource_val = nltk.grammar.parse_cfg(_open(resource_url).read())
-    elif format == 'pcfg':
-        resource_val = nltk.grammar.parse_pcfg(_open(resource_url).read())
-    elif format == 'fcfg':
-        resource_val = nltk.grammar.parse_fcfg(_open(resource_url).read(),
-                                      logic_parser=logic_parser,
-                                      fstruct_parser=fstruct_parser)
-    elif format == 'fol':
-        resource_val = nltk.sem.parse_logic(_open(resource_url).read(),
-                                       logic_parser=nltk.sem.logic.LogicParser())
-    elif format == 'logic':
-        resource_val = nltk.sem.parse_logic(_open(resource_url).read(),
-                                       logic_parser=logic_parser)
-    elif format == 'val':
-        resource_val = nltk.sem.parse_valuation(_open(resource_url).read())
-    elif format == 'raw':
-        resource_val = _open(resource_url).read()
+        resource_val = yaml.load(opened_resource)
     else:
-        assert format not in FORMATS
-        raise ValueError('Unknown format type!')
+        # The resource is a text format.
+        binary_data = opened_resource.read()
+        if encoding is not None:
+            string_data = binary_data.decode(encoding)
+        else:
+            try:
+                string_data = binary_data.decode('utf-8')
+            except UnicodeDecodeError:
+                string_data = binary_data.decode('latin-1')
+        if format == 'text':
+            resource_val = string_data
+        elif format == 'cfg':
+            resource_val = nltk.grammar.parse_cfg(
+                string_data, encoding=encoding)
+        elif format == 'pcfg':
+            resource_val = nltk.grammar.parse_pcfg(
+                string_data, encoding=encoding)
+        elif format == 'fcfg':
+            resource_val = nltk.grammar.parse_fcfg(
+                string_data, logic_parser=logic_parser,
+                fstruct_parser=fstruct_parser, encoding=encoding)
+        elif format == 'fol':
+            resource_val = nltk.sem.parse_logic(
+                string_data, logic_parser=nltk.sem.logic.LogicParser(), 
+                encoding=encoding)
+        elif format == 'logic':
+            resource_val = nltk.sem.parse_logic(
+                string_data, logic_parser=logic_parser, encoding=encoding)
+        elif format == 'val':
+            resource_val = nltk.sem.parse_valuation(
+                string_data, encoding=encoding)
+        else:
+            raise AssertionError("Internal NLTK error: Format %s isn't "
+                                 "handled by nltk.data.load()" % (format,))
+
+    opened_resource.close()
 
     # If requested, add it to the cache.
     if cache:
         try:
-            _resource_cache[resource_url] = resource_val
+            _resource_cache[(resource_url, format)] = resource_val
+            # TODO: add this line
+            # print('<<Caching a copy of %s>>' % (resource_url,))
         except TypeError:
             # We can't create weak references to some object types, like
             # strings and tuples.  For now, just don't cache them.
@@ -647,7 +687,7 @@ def show_cfg(resource_url, escape='##'):
     :type escape: str
     :param escape: Prepended string that signals lines to be ignored
     """
-    resource_val = load(resource_url, format='raw', cache=False)
+    resource_val = load(resource_url, format='text', cache=False)
     lines = resource_val.splitlines()
     for l in lines:
         if l.startswith(escape): continue

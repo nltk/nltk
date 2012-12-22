@@ -70,16 +70,6 @@ class DependencyScorerI(object):
         """
         raise NotImplementedError()
 
-    #////////////////////////////////////////////////////////////
-    # Comparisons
-    #////////////////////////////////////////////////////////////
-
-    def __cmp__(self, other):
-        raise NotImplementedError()
-
-    def __hash__(self, other):
-        raise NotImplementedError()
-
 
 
 #################################################################
@@ -95,7 +85,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
     """
 
     def __init__(self):
-        print() # Do nothing without throwing error?
+        pass # Do nothing without throwing error
 
     def train(self, graphs):
         """

@@ -74,6 +74,7 @@ import re
 
 from nltk.util import transitive_closure, invert_graph
 from nltk.compat import string_types, total_ordering, text_type
+from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
 from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
@@ -129,19 +130,14 @@ class Nonterminal(object):
 
         :rtype: bool
         """
-        try:
-            return ((self._symbol == other._symbol)
-                    and isinstance(other, self.__class__))
-        except AttributeError:
-            return False
+        return type(self) == type(other) and self._symbol == other._symbol
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __lt__(self, other):
-        if not isinstance(other, self.__class__):
-            # XXX: self.__class__ vs Nonterminal?
-            return False
+        if not isinstance(other, Nonterminal):
+            raise_unorderable_types("<", self, other)
         return self._symbol < other._symbol
 
     def __hash__(self):
@@ -338,16 +334,16 @@ class Production(object):
 
         :rtype: bool
         """
-        return (isinstance(other, self.__class__) and
+        return (type(self) == type(other) and 
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __lt__(self, other):
-        if not isinstance(other, self.__class__):
-            return False
+        if not isinstance(other, Production):
+            raise_unorderable_types("<", self, other)
         return (self._lhs, self._rhs) < (other._lhs, other._rhs)
 
     def __hash__(self):
@@ -401,16 +397,16 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
         Production.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return Production.__str__(self) + ' [%s]' % self.prob()
+        return Production.__str__(self) + ' [%.6g]' % self.prob()
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and
+        return (type(self) == type(other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
                 self.prob() == other.prob())
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
@@ -832,16 +828,14 @@ class FeatureValueType(object):
         return '<%s>' % self._value
 
     def __eq__(self, other):
-        if other.__class__ != FeatureValueType:
-            return False
-        return self._value == other._value
+        return type(self) == type(other) and self._value == other._value
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __lt__(self, other):
-        if other.__class__ != FeatureValueType:
-            return True
+        if not isinstance(other, FeatureValueType):
+            raise_unorderable_types("<", self, other)
         return self._value < other._value
 
     def __hash__(self):
@@ -1077,14 +1071,15 @@ def parse_cfg_production(input):
     """
     return parse_production(input, standard_nonterm_parser)
 
-def parse_cfg(input):
+def parse_cfg(input, encoding=None):
     """
     Return the ``ContextFreeGrammar`` corresponding to the input string(s).
 
     :param input: a grammar, either in the form of a string or
         as a list of strings.
     """
-    start, productions = parse_grammar(input, standard_nonterm_parser)
+    start, productions = parse_grammar(input, standard_nonterm_parser, 
+                                       encoding=encoding)
     return ContextFreeGrammar(start, productions)
 
 # Parsing Probabilistic CFGs
@@ -1095,7 +1090,7 @@ def parse_pcfg_production(input):
     """
     return parse_production(input, standard_nonterm_parser, probabilistic=True)
 
-def parse_pcfg(input):
+def parse_pcfg(input, encoding=None):
     """
     Return a probabilistic ``WeightedGrammar`` corresponding to the
     input string(s).
@@ -1104,7 +1099,7 @@ def parse_pcfg(input):
         as a list of strings.
     """
     start, productions = parse_grammar(input, standard_nonterm_parser,
-                                       probabilistic=True)
+                                       probabilistic=True, encoding=encoding)
     return WeightedGrammar(start, productions)
 
 # Parsing Feature-based CFGs
@@ -1115,7 +1110,8 @@ def parse_fcfg_production(input, fstruct_parser):
     """
     return parse_production(input, fstruct_parser)
 
-def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
+def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None,
+               encoding=None):
     """
     Return a feature structure based ``FeatureGrammar``.
 
@@ -1137,7 +1133,8 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
         raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
                         'not both be set')
 
-    start, productions = parse_grammar(input, fstruct_parser.partial_parse)
+    start, productions = parse_grammar(input, fstruct_parser.partial_parse, 
+                                       encoding=encoding)
     return FeatureGrammar(start, productions)
 
 # Parsing generic grammars
@@ -1202,7 +1199,7 @@ def parse_production(line, nonterm_parser, probabilistic=False):
         return [Production(lhs, rhs) for rhs in rhsides]
 
 
-def parse_grammar(input, nonterm_parser, probabilistic=False):
+def parse_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     """
     Return a pair consisting of a starting category and a list of
     ``Productions``.
@@ -1214,7 +1211,11 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
         return a ``(nonterminal, position)`` as result.
     :param probabilistic: are the grammar rules probabilistic?
     :type probabilistic: bool
+    :param encoding: the encoding of the grammar, if it is a binary string
+    :type encoding: str
     """
+    if encoding is not None:
+        input = input.decode(encoding)
     if isinstance(input, string_types):
         lines = input.split('\n')
     else:
