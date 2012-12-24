@@ -45,12 +45,12 @@ from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
-except:
+except ImportError:
     from zlib import Z_FINISH as FLUSH
 
 try:
     import cPickle as pickle
-except:
+except ImportError:
     import pickle
 
 import nltk
@@ -137,8 +137,8 @@ class FileSystemPathPointer(PathPointer, str):
     subclass of ``str`` for backwards compatibility purposes --
     this allows old code that expected ``nltk.data.find()`` to expect a
     string to usually work (assuming the resource is not found in a
-    zipfile).  It also permits ``open()`` to work on a ``FileSystemPathPointer``.
-
+    zipfile).  It also permits ``open()`` to work on a
+    ``FileSystemPathPointer``.
     """
     def __init__(self, path):
         """
@@ -312,8 +312,9 @@ class ZipFilePathPointer(PathPointer):
 
         # Check that the entry exists:
         if entry:
-            try: zipfile.getinfo(entry)
-            except:
+            try:
+                zipfile.getinfo(entry)
+            except Exception:
                 # Sometimes directories aren't explicitly listed in
                 # the zip file.  So if `entry` is a directory name,
                 # then check if the zipfile contains any files that
@@ -488,17 +489,15 @@ def retrieve(resource_url, filename=None, verbose=True):
 
     # Open the input & output streams.
     infile = _open(resource_url)
-    outfile = open(filename, 'wb')
 
     # Copy infile -> outfile, using 64k blocks.
-    while True:
-        s = infile.read(1024*64) # 64k blocks.
-        outfile.write(s)
-        if not s: break
+    with open(filename, "wb") as outfile:
+        while True:
+            s = infile.read(1024*64) # 64k blocks.
+            outfile.write(s)
+            if not s: break
 
-    # Close both files.
     infile.close()
-    outfile.close()
 
 #: A dictionary describing the formats that are supported by NLTK's
 #: load() method.  Keys are format names, and values are format
@@ -649,7 +648,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
                 fstruct_parser=fstruct_parser, encoding=encoding)
         elif format == 'fol':
             resource_val = nltk.sem.parse_logic(
-                string_data, logic_parser=nltk.sem.logic.LogicParser(), 
+                string_data, logic_parser=nltk.sem.logic.LogicParser(),
                 encoding=encoding)
         elif format == 'logic':
             resource_val = nltk.sem.parse_logic(
@@ -753,11 +752,12 @@ class LazyLoader(object):
         self.__load()
         # This looks circular, but its not, since __load() changes our
         # __class__ to something new:
-        return '%r' % self
+        return repr(self)
 
 ######################################################################
 # Open-On-Demand ZipFile
 ######################################################################
+
 
 class OpenOnDemandZipFile(zipfile.ZipFile):
     """

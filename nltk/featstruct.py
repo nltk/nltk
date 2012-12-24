@@ -250,7 +250,7 @@ class FeatStruct(SubstituteBindingsI):
     def __lt__(self, other):
         if not isinstance(other, FeatStruct):
             # raise_unorderable_types("<", self, other)
-            # Sometimes feature values can be pure strings, 
+            # Sometimes feature values can be pure strings,
             # so we need to be able to compare with non-featstructs:
             return self.__class__.__name__ < other.__class__.__name__
         else:
@@ -1775,6 +1775,7 @@ class FeatureValueConcat(SubstituteBindingsSequence, tuple):
         # n.b.: len(self) is guaranteed to be 2 or more.
         return '(%s)' % '+'.join('%s' % (b,) for b in self)
 
+
 def _flatten(lst, cls):
     """
     Helper function -- return a copy of list, with all elements of
@@ -2058,7 +2059,7 @@ class FeatStructParser(object):
             match = self._REENTRANCE_RE.match(s, position)
             if match:
                 position = match.end()
-                match = _TARGET_RE.match(s, position)
+                match = self._TARGET_RE.match(s, position)
                 if not match: raise ValueError('identifier', position)
                 target = match.group(1)
                 if target not in reentrances:
@@ -2467,7 +2468,7 @@ def demo(trace=False):
         '[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]',
         '[gender=masc, agr=?C]',
         '[gender=?S, agr=[gender=?S,person=3]]'
-        ]
+    ]
     all_fstructs = [FeatStruct(fss) for fss in fstruct_strings]
     #MAX_CHOICES = 5
     #if len(all_fstructs) > MAX_CHOICES:

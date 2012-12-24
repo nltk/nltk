@@ -81,10 +81,7 @@ def getinfo(func):
 # akin to functools.update_wrapper
 def update_wrapper(wrapper, model, infodict=None):
     infodict = infodict or getinfo(model)
-    try:
-        wrapper.__name__ = infodict['name']
-    except: # Python version < 2.4
-        pass
+    wrapper.__name__ = infodict['name']
     wrapper.__doc__ = infodict['doc']
     wrapper.__module__ = infodict['module']
     wrapper.__dict__.update(infodict['dict'])

@@ -497,7 +497,7 @@ def find_file(filename, env_vars=(), searchpath=(),
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose: print('[Found %s: %s]' % (filename, path))
                     return path
-            except KeyboardInterrupt as SystemExit:
+            except (KeyboardInterrupt, SystemExit):
                 raise
             except:
                 pass

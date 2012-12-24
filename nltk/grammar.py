@@ -48,8 +48,8 @@ corresponding child may be a ``Token`` with the with that type.
 The ``Nonterminal`` class is used to distinguish node values from leaf
 values.  This prevents the grammar from accidentally using a leaf
 value (such as the English word "A") as the node of a subtree.  Within
-a ``ContextFreeGrammar``, all node values are wrapped in the ``Nonterminal`` class.
-Note, however, that the trees that are specified by the grammar do
+a ``ContextFreeGrammar``, all node values are wrapped in the ``Nonterminal``
+class. Note, however, that the trees that are specified by the grammar do
 *not* include these ``Nonterminal`` wrappers.
 
 Grammars can also be given a more procedural interpretation.  According to
@@ -312,13 +312,14 @@ class Production(object):
 
         :rtype: str
         """
-        str = '%r ->' % (self._lhs,)
+        result = '%r ->' % (self._lhs,)
         for elt in self._rhs:
             if isinstance(elt, text_type):
-                str += " '%s'" % elt # repr should be the same under python 2 and python 3
+                # repr should be the same under python 2 and python 3
+                result += " '%s'" % elt
             else:
-                str += ' %r' % (elt,)
-        return str
+                result += ' %r' % (elt,)
+        return result
 
     def __repr__(self):
         """
@@ -334,7 +335,7 @@ class Production(object):
 
         :rtype: bool
         """
-        return (type(self) == type(other) and 
+        return (type(self) == type(other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
 
@@ -584,7 +585,7 @@ class ContextFreeGrammar(object):
         elif self._leftcorner_words:
             return left in self._leftcorner_words.get(cat, set())
         else:
-            return any([left in _immediate_leftcorner_words.get(parent, set())
+            return any([left in self._immediate_leftcorner_words.get(parent, set())
                         for parent in self.leftcorners(cat)])
 
     def leftcorner_parents(self, cat):
@@ -689,11 +690,11 @@ class ContextFreeGrammar(object):
         return '<Grammar with %d productions>' % len(self._productions)
 
     def __str__(self):
-        str = 'Grammar with %d productions' % len(self._productions)
-        str += ' (start state = %r)' % self._start
+        result = 'Grammar with %d productions' % len(self._productions)
+        result += ' (start state = %r)' % self._start
         for production in self._productions:
-            str += '\n    %s' % production
-        return str
+            result += '\n    %s' % production
+        return result
 
 
 class FeatureGrammar(ContextFreeGrammar):
@@ -1078,7 +1079,7 @@ def parse_cfg(input, encoding=None):
     :param input: a grammar, either in the form of a string or
         as a list of strings.
     """
-    start, productions = parse_grammar(input, standard_nonterm_parser, 
+    start, productions = parse_grammar(input, standard_nonterm_parser,
                                        encoding=encoding)
     return ContextFreeGrammar(start, productions)
 
@@ -1133,7 +1134,7 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None,
         raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
                         'not both be set')
 
-    start, productions = parse_grammar(input, fstruct_parser.partial_parse, 
+    start, productions = parse_grammar(input, fstruct_parser.partial_parse,
                                        encoding=encoding)
     return FeatureGrammar(start, productions)
 
