@@ -26,7 +26,7 @@ in a way compatible with Python 3.x:
 
 1) wrap a class with this decorator,
 2) define ``__str__`` and ``__repr__`` methods returning unicode text
-(that's what they must return under Python 3.x),
+   (that's what they must return under Python 3.x),
 
 and they would be fixed under Python 2.x to return byte strings::
 
@@ -61,7 +61,7 @@ Original versions of ``__str__`` and ``__repr__`` are available as
     >>> foo.unicode_repr()
     u'__repr__ is called'
 
-A subclass shouldn't be wrapped to ``@python_2_unicode_compatible``
+There is no need to wrap a subclass with ``@python_2_unicode_compatible``
 if it doesn't override ``__str__`` and ``__repr__``::
 
     >>> class Bar(Foo):
