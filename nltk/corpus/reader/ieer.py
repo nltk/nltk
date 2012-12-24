@@ -20,13 +20,11 @@ and filenames were shortened.
 The corpus contains the following files: APW_19980314, APW_19980424,
 APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
-
-import codecs
+from __future__ import unicode_literals
 
 import nltk
 from nltk import compat
 from .api import *
-from .util import *
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.
@@ -42,7 +40,8 @@ titles = {
 #: A list of all documents in this corpus.
 documents = sorted(titles)
 
-class IEERDocument:
+@compat.python_2_unicode_compatible
+class IEERDocument(object):
     def __init__(self, text, docno=None, doctype=None,
                  date_time=None, headline=''):
         self.text = text
@@ -50,6 +49,7 @@ class IEERDocument:
         self.doctype = doctype
         self.date_time = date_time
         self.headline = headline
+
     def __repr__(self):
         if self.headline:
             headline = ' '.join(self.headline.leaves())

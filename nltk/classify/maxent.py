@@ -51,7 +51,7 @@ For all values of ``feat_val`` and ``some_label``.  This mapping is
 performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 __docformat__ = 'epytext en'
 
 try:
@@ -78,6 +78,7 @@ from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
 #{ Classifier Model
 ######################################################################
 
+@compat.python_2_unicode_compatible
 class MaxentClassifier(ClassifierI):
     """
     A maximum entropy classifier (also known as a "conditional
@@ -175,7 +176,7 @@ class MaxentClassifier(ClassifierI):
         labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
         labels = labels[:columns]
         print('  Feature'.ljust(descr_width)+''.join(
-            '%8s' % str(l)[:7] for l in labels))
+            '%8s' % (("%s" % l)[:7]) for l in labels))
         print('  '+'-'*(descr_width-2+8*len(labels)))
         sums = defaultdict(int)
         for i, label in enumerate(labels):

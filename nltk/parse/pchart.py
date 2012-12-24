@@ -29,7 +29,7 @@ The ``BottomUpProbabilisticChartParser`` constructor has an optional
 argument beam_size.  If non-zero, this controls the size of the beam
 (aka the edge queue).  This option is most useful with InsideChartParser.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 ##//////////////////////////////////////////////////////
 ##  Bottom-Up PCFG Chart Parser
@@ -44,6 +44,7 @@ from nltk.grammar import Nonterminal, WeightedGrammar
 
 from nltk.parse.api import ParserI
 from nltk.parse.chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
+from nltk.compat import python_2_unicode_compatible
 
 # Probabilistic edges
 class ProbabilisticLeafEdge(LeafEdge):
@@ -107,6 +108,7 @@ class ProbabilisticFundamentalRule(AbstractChartRule):
         # If we changed the chart, then generate the edge.
         if changed_chart: yield new_edge
 
+@python_2_unicode_compatible
 class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
     NUM_EDGES=1
 
@@ -127,7 +129,8 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
                 for new_edge in fr.apply_iter(chart, grammar, edge2, edge1):
                     yield new_edge
 
-    def __str__(self): return 'Fundamental Rule'
+    def __str__(self):
+        return 'Fundamental Rule'
 
 class BottomUpProbabilisticChartParser(ParserI):
     """

@@ -118,7 +118,7 @@ The 4 functions are as follows.
    timit.audiodata function.
 
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import sys
 import os
@@ -417,7 +417,8 @@ class TimitCorpusReader(CorpusReader):
                              "for audio playback."), file=sys.stderr)
 
 
-class SpeakerInfo:
+@compat.python_2_unicode_compatible
+class SpeakerInfo(object):
     def __init__(self, id, sex, dr, use, recdate, birthdate,
                  ht, race, edu, comments=None):
         self.id = id
@@ -436,6 +437,7 @@ class SpeakerInfo:
         args = ['%s=%r' % (attr, getattr(self, attr))
                 for attr in attribs.split()]
         return 'SpeakerInfo(%s)' % (', '.join(args))
+
 
 def read_timit_block(stream):
     """

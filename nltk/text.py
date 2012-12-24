@@ -13,7 +13,7 @@ Functionality includes: concordancing, collocation discovery,
 regular expression search over tokenized strings, and
 distributional similarity.
 """
-from __future__ import print_function, division
+from __future__ import print_function, division, unicode_literals
 
 from math import log
 from collections import defaultdict
@@ -27,6 +27,7 @@ from nltk.util import tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
+from nltk.compat import python_2_unicode_compatible, text_type
 
 
 class ContextIndex(object):
@@ -116,6 +117,7 @@ class ContextIndex(object):
                           if c in common)
             return fd
 
+@python_2_unicode_compatible
 class ConcordanceIndex(object):
     """
     An index that can be used to look up the offset locations at which
@@ -183,7 +185,7 @@ class ConcordanceIndex(object):
         :type lines: int
         """
         half_width = (width - len(word) - 2) // 2
-        context = width//4 # approx number of words of context
+        context = width // 4 # approx number of words of context
 
         offsets = self.offsets(word)
         if offsets:
@@ -257,6 +259,8 @@ class TokenSearcher(object):
         hits = [h[1:-1].split('><') for h in hits]
         return hits
 
+
+@python_2_unicode_compatible
 class Text(object):
     """
     A wrapper around a sequence of simple (string) tokens, which is
@@ -297,9 +301,9 @@ class Text(object):
             self.name = name
         elif ']' in tokens[:20]:
             end = tokens[:20].index(']')
-            self.name = " ".join(map(str, tokens[1:end]))
+            self.name = " ".join(text_type(tok) for tok in tokens[1:end])
         else:
-            self.name = " ".join(map(str, tokens[:8])) + "..."
+            self.name = " ".join(text_type(tok) for tok in tokens[:8]) + "..."
 
     #////////////////////////////////////////////////////////////
     # Support item & slice access
@@ -533,11 +537,10 @@ class Text(object):
     # String Display
     #////////////////////////////////////////////////////////////
 
+    def __str__(self):
+        return '<Text: %s>' % self.name
+
     def __repr__(self):
-        """
-        :return: A string representation of this Text.
-        :rtype: str
-        """
         return '<Text: %s>' % self.name
 
 

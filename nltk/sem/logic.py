@@ -10,7 +10,7 @@
 A version of first order predicate logic, built on
 top of the typed lambda calculus.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 import operator
@@ -18,7 +18,8 @@ from collections import defaultdict
 from functools import reduce
 
 from nltk.internals import Counter
-from nltk.compat import total_ordering, string_types
+from nltk.compat import (total_ordering, string_types,
+                         python_2_unicode_compatible)
 
 APP = 'APP'
 
@@ -83,6 +84,7 @@ def binding_ops():
 
 
 @total_ordering
+@python_2_unicode_compatible
 class Variable(object):
     def __init__(self, name):
         """
@@ -96,9 +98,6 @@ class Variable(object):
 
     def __ne__(self, other):
         return not self == other
-
-    def __neq__(self, other):
-        return not (self == other)
 
     def __lt__(self, other):
         if type(self) != type(other):
@@ -140,9 +139,9 @@ def unique_variable(pattern=None, ignore=None):
     else:
         prefix = 'z'
 
-    v = Variable(prefix + str(_counter.get()))
+    v = Variable("%s%s" % (prefix, _counter.get()))
     while ignore is not None and v in ignore:
-        v = Variable(prefix + str(_counter.get()))
+        v = Variable("%s%s" % (prefix, _counter.get()))
     return v
 
 def skolem_function(univ_scope=None):
@@ -157,13 +156,15 @@ def skolem_function(univ_scope=None):
     return skolem
 
 
+@python_2_unicode_compatible
 class Type(object):
     def __repr__(self):
-        return str(self)
+        return "%s" % self
 
     def __hash__(self):
-        return hash(str(self))
+        return hash("%s" % self)
 
+@python_2_unicode_compatible
 class ComplexType(Type):
     def __init__(self, first, second):
         assert(isinstance(first, Type)), "%s is not a Type" % first
@@ -205,7 +206,7 @@ class ComplexType(Type):
 
     def __str__(self):
         if self == ANY_TYPE:
-            return str(ANY_TYPE)
+            return "%s" % ANY_TYPE
         else:
             return '<%s,%s>' % (self.first, self.second)
 
@@ -217,7 +218,7 @@ class ComplexType(Type):
 
 class BasicType(Type):
     def __eq__(self, other):
-        return isinstance(other, BasicType) and str(self) == str(other)
+        return isinstance(other, BasicType) and ("%s" % self) == ("%s" % other)
 
     def __ne__(self, other):
         return not self == other
@@ -233,6 +234,7 @@ class BasicType(Type):
         else:
             return None
 
+@python_2_unicode_compatible
 class EntityType(BasicType):
     def __str__(self):
         return 'e'
@@ -240,6 +242,7 @@ class EntityType(BasicType):
     def str(self):
         return 'IND'
 
+@python_2_unicode_compatible
 class TruthValueType(BasicType):
     def __str__(self):
         return 't'
@@ -247,6 +250,7 @@ class TruthValueType(BasicType):
     def str(self):
         return 'BOOL'
 
+@python_2_unicode_compatible
 class EventType(BasicType):
     def __str__(self):
         return 'v'
@@ -254,6 +258,7 @@ class EventType(BasicType):
     def str(self):
         return 'EVENT'
 
+@python_2_unicode_compatible
 class AnyType(BasicType, ComplexType):
     def __init__(self):
         pass
@@ -309,11 +314,11 @@ def parse_type(type_string):
                     break
         return ComplexType(parse_type(type_string[1  :i ]),
                            parse_type(type_string[i+1:-1]))
-    elif type_string[0] == str(ENTITY_TYPE):
+    elif type_string[0] == "%s" % ENTITY_TYPE:
         return ENTITY_TYPE
-    elif type_string[0] == str(TRUTH_TYPE):
+    elif type_string[0] == "%s" % TRUTH_TYPE:
         return TRUTH_TYPE
-    elif type_string[0] == str(ANY_TYPE):
+    elif type_string[0] == "%s" % ANY_TYPE:
         return ANY_TYPE
     else:
         raise ParseException("Unexpected character: '%s'." % type_string[0])
@@ -384,6 +389,7 @@ class SubstituteBindingsI(object):
         raise NotImplementedError()
 
 
+@python_2_unicode_compatible
 class Expression(SubstituteBindingsI):
     """This is the base abstract object for all logical expressions"""
 
@@ -625,6 +631,7 @@ class Expression(SubstituteBindingsI):
         return VariableExpression(variable)
 
 
+@python_2_unicode_compatible
 class ApplicationExpression(Expression):
     r"""
     This class is used to represent two related types of logical expressions.
@@ -760,9 +767,9 @@ class ApplicationExpression(Expression):
         else:
             #Leave arguments curried
             function = self.function
-            arg_str = str(self.argument)
+            arg_str = "%s" % self.argument
 
-        function_str = str(function)
+        function_str = "%s" % function
         parenthesize_function = False
         if isinstance(function, LambdaExpression):
             if isinstance(function.term, ApplicationExpression):
@@ -817,6 +824,7 @@ class ApplicationExpression(Expression):
         return isinstance(self.pred, AbstractVariableExpression)
 
 
+@python_2_unicode_compatible
 class AbstractVariableExpression(Expression):
     """This class represents a variable to be used as a predicate or entity"""
     def __init__(self, variable):
@@ -879,7 +887,7 @@ class AbstractVariableExpression(Expression):
     __hash__ = Expression.__hash__
 
     def __str__(self):
-        return str(self.variable)
+        return "%s" % self.variable
 
 class IndividualVariableExpression(AbstractVariableExpression):
     """This class represents variables that take the form of a single lowercase
@@ -1066,6 +1074,7 @@ class VariableBinderExpression(Expression):
     __hash__ = Expression.__hash__
 
 
+@python_2_unicode_compatible
 class LambdaExpression(VariableBinderExpression):
     @property
     def type(self):
@@ -1089,10 +1098,11 @@ class LambdaExpression(VariableBinderExpression):
         while term.__class__ == self.__class__:
             variables.append(term.variable)
             term = term.term
-        return Tokens.LAMBDA + ' '.join(map(str, variables)) + \
-               Tokens.DOT + str(term)
+        return Tokens.LAMBDA + ' '.join(["%s" % v for v in variables]) + \
+               Tokens.DOT + "%s" % term
 
 
+@python_2_unicode_compatible
 class QuantifiedExpression(VariableBinderExpression):
     @property
     def type(self): return TRUTH_TYPE
@@ -1114,8 +1124,8 @@ class QuantifiedExpression(VariableBinderExpression):
         while term.__class__ == self.__class__:
             variables.append(term.variable)
             term = term.term
-        return self.getQuantifier() + ' ' + ' '.join(map(str, variables)) + \
-               Tokens.DOT + str(term)
+        return self.getQuantifier() + ' ' + ' '.join(["%s" % v for v in variables]) + \
+               Tokens.DOT + "%s" % term
 
 class ExistsExpression(QuantifiedExpression):
     def getQuantifier(self):
@@ -1126,6 +1136,7 @@ class AllExpression(QuantifiedExpression):
         return Tokens.ALL
 
 
+@python_2_unicode_compatible
 class NegatedExpression(Expression):
     def __init__(self, term):
         assert isinstance(term, Expression), "%s is not an Expression" % term
@@ -1166,9 +1177,10 @@ class NegatedExpression(Expression):
     __hash__ = Expression.__hash__
 
     def __str__(self):
-        return Tokens.NOT + str(self.term)
+        return Tokens.NOT + "%s" % self.term
 
 
+@python_2_unicode_compatible
 class BinaryExpression(Expression):
     def __init__(self, first, second):
         assert isinstance(first, Expression), "%s is not an Expression" % first
@@ -1212,7 +1224,7 @@ class BinaryExpression(Expression):
                 + ' ' + second + Tokens.CLOSE
 
     def _str_subex(self, subex):
-        return str(subex)
+        return "%s" % subex
 
 
 class BooleanExpression(BinaryExpression):
@@ -1234,7 +1246,7 @@ class AndExpression(BooleanExpression):
         return Tokens.AND
 
     def _str_subex(self, subex):
-        s = str(subex)
+        s = "%s" % subex
         if isinstance(subex, AndExpression):
             return s[1:-1]
         return s
@@ -1245,7 +1257,7 @@ class OrExpression(BooleanExpression):
         return Tokens.OR
 
     def _str_subex(self, subex):
-        s = str(subex)
+        s = "%s" % subex
         if isinstance(subex, OrExpression):
             return s[1:-1]
         return s
@@ -1279,6 +1291,7 @@ class EqualityExpression(BinaryExpression):
         return Tokens.EQ
 
 
+@python_2_unicode_compatible
 class LogicParser(object):
     """A lambda calculus expression parser."""
 
@@ -1662,7 +1675,7 @@ class LogicParser(object):
                    not isinstance(expression, FunctionVariableExpression) and \
                    not isinstance(expression, ConstantExpression):
                     raise ParseException(self._currentIndex,
-                                         "The function '" + str(expression) +
+                                         ("The function '%s" % expression) +
                                          "' is not a Lambda Expression, an "
                                          "Application Expression, or a "
                                          "functional predicate, so it may "
@@ -1880,7 +1893,7 @@ def demoException(s):
         print("%s: %s" % (e.__class__.__name__, e))
 
 def printtype(ex):
-    print(ex.str() + ' : ' + str(ex.type))
+    print("%s : %s" % (ex.str(), ex.type))
 
 if __name__ == '__main__':
     demo()

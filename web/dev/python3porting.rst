@@ -27,34 +27,19 @@ code, e.g.
 Take a look at them to have an idea how the approach works and what
 is changed in Python 3.
 
-python-modernize
-^^^^^^^^^^^^^^^^
-
-`python-modernize <https://github.com/mitsuhiko/python-modernize>`_ script
-was used for tedious parts of python3 porting. Take a look at the docs for
-more information. The process was:
-
-* Run NLTK test suite under Python 2.x;
-* fix one specific aspect of NLTK by running one of python-modernize fixers;
-* take a look at changes python-modernize proposes, fix stupid things;
-* run NLTK test suite again under Python 2.x and make sure there are no
-  regressions.
-
-After python-modernize code wouldn't be necessary Python 3.x compatible but
-further porting would be easier and there shouldn't be 2.x regressions.
-
 nltk.compat
 ^^^^^^^^^^^
 
-There is a helper ``nltk.compat`` module that is loosely based on a great
-`six`_ library. It provides simple utilities for wrapping over differences
-between Python 2 and Python 3. Moved imports, removed/renamed builtins
-and type names differences goes there.
+``nltk.compat`` module is loosely based on a great `six`_ library.
+It provides simple utilities for wrapping over differences
+between Python 2 and Python 3. Moved imports, removed/renamed builtins,
+type names differences and support functions are there.
 
 .. note::
 
-   We don't use `six`_ directly because it doesn't work well
-   bundled and NLTK needs extra custom 2+3 helpers anyway.
+   We don't use `six`_ directly because it didn't work well
+   bundled at the time the port was started (this was a bug in six that
+   is fixed now), and NLTK needs extra custom 2+3 helpers anyway.
 
 .. _six: http://packages.python.org/six/
 
@@ -80,6 +65,60 @@ subclass ``items`` method to return a list under Python 3.x).
 Existing code that uses NLTK will have to be ported from
 Python 2.x to 3.x anyway so I think such interface changes are acceptable.
 
+Unicode support
+---------------
+
+Fixing corpora readers
+^^^^^^^^^^^^^^^^^^^^^^
+
+Previously, many corpora readers returned byte strings. In a Python 3.x
+branch the correct encodings are provided for all corpora and all corpora
+readers are now returning unicode.
+
+``__repr__`` and ``__str__``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Under Python 2.x ``obj.__repr__`` and ``obj.__str__`` must return
+byte strings, while under Python 3.x they must return unicode strings.
+
+To make things worse, terminals are tricky, and under Python 2.x
+there is no hassle-free encoding that ``obj.__repr__`` and ``obj.__str__``
+may use except for plain 7 bit ASCII.
+
+..
+
+    Should I link a blog post
+    (http://kmike.ru/python-with-strings-attached/) or extract
+    some text from it to make the statement about encodings more reasoned?
+
+In NLTK most classes with custom ``__repr__`` and/or ``__str__`` should use
+``nltk.compat.python_2_unicode_compatible`` decorator. It works this way:
+
+1) Class should be defined with ``__repr__`` and ``__str__`` methods
+   returning unicode (that's Python 3.x semantics);
+2) under Python 2.x the decorator fixes ``__repr__`` and ``__str__``
+   to return bytestrings;
+3) under both Python 2.x and 3.x the decorator creates
+   ``__unicode__`` method (which is an original ``__str__``)
+   and ``unicode_repr`` method (which is an original ``__repr__``).
+
+Under Python 2.x ``__repr__`` method returns an escaped version
+of the unicode value and ``__str__`` returns a transliterated version.
+For transliteration `Unidecode <http://pypi.python.org/pypi/Unidecode>`_,
+`text-unidecode <http://pypi.python.org/pypi/text-unidecode/0.1>`_
+or a basic "accent remover" may be used, depending on what
+packages are installed.
+
+In order to write unicode-aware ``__str__`` and ``__repr__``, the following
+approach may be used:
+
+1) ``from __future__ import unicode_literals`` is added to a top of file;
+2) ``str(something)`` should be replaced with ``"%s" % something``
+   when used (maybe indirectly) inside ``__str__`` or ``__repr__``;
+3) ``repr(something)`` and ``"%r" % something`` should be replaced with
+   ``unicode_repr(something)`` and ``"%s" % unicode_repr(something)`` when
+   when used (maybe indirectly) inside ``__str__`` or ``__repr__``.
+
 Doctests porting notes
 ----------------------
 
@@ -91,7 +130,7 @@ Python 2.x and Python 3.x extra tricks are needed.
 ``__future__`` imports
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Python's doctest runner doesn't support __future__ imports.
+Python's doctest runner doesn't support ``__future__`` imports.
 They are executed but has no effect in doctests' code.
 These imports are quite useful for making code Python 2.x + 3.x
 compatible so there are some methods to overcome the limitation.
@@ -146,16 +185,15 @@ Python 3.x::
 
 In order to simplify things NLTK's custom doctest runner
 (see ``nltk.test.doctest_nose_plugin.DoctestPluginHelper``) doesn't
-take 'u''s into account; it just considers u'foo' and 'foo' equal;
+take 'u''s into account; it considers u'foo' and 'foo' equal;
 developer is free to write u'foo' or 'foo'.
 
 This is not absolutely correct but if this distinction is important
 then doctest should be converted to unittest.
 
-There are other possible fixes for the ``__repr__`` issue but they
-all make doctests less readable.
-
-For single variables ``print`` may be used. Python 2.x::
+There are other possible fixes for this issue but they
+all make doctests less readable. For example, for single variables
+``print`` may be used. Python 2.x::
 
     >>> print(x)
     foo
@@ -197,16 +235,35 @@ write this::
     >>> print(recall)
     0.88888888888...
 
-Auto-fixing of the common constructions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Porting tools
+-------------
 
-The porting may be tedious, there is a lot of search/replace work
+python-modernize
+^^^^^^^^^^^^^^^^
+
+`python-modernize <https://github.com/mitsuhiko/python-modernize>`_ script
+was used for tedious parts of python3 porting. Take a look at the docs for
+more information. The process was:
+
+* Run NLTK test suite under Python 2.x;
+* fix one specific aspect of NLTK by running one of python-modernize fixers
+  on NLTK source code;
+* take a look at changes python-modernize proposes, fix stupid things;
+* run NLTK test suite again under Python 2.x and make sure there are no
+  regressions.
+
+After python-modernize code wouldn't be necessary Python 3.x compatible but
+further porting would be easier and there shouldn't be 2.x regressions.
+
+2to3
+^^^^
+
+Doctest porting may be tedious, there is a lot of search/replace work
 (e.g. ``print foo`` -> ``print(foo)`` or
 ``raise Exception, e`` -> ``raise Exception as e``). In order to overcome
-this use 2to3 utility, e.g.::
+this 2to3 utility was used, e.g.::
 
     $ 2to3 -d -f print nltk/test/*.doctest
 
-Pass '-w' option to write changes. It is a good idea to apply
-fixers one-by-one, run test suite before and after fixing and check things
-manually.
+Fixers were applied one-by-one, test suite was executed before and after
+fixing.

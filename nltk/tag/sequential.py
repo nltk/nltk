@@ -17,12 +17,14 @@ determine a tag for the specified token, then its backoff tagger is
 consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
-import re, yaml
+import re
+import yaml
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.classify.naivebayes import NaiveBayesClassifier
+from nltk.compat import python_2_unicode_compatible
 
 from nltk.tag.api import TaggerI, FeaturesetTaggerI
 
@@ -99,6 +101,7 @@ class SequentialBackoffTagger(TaggerI):
         raise NotImplementedError()
 
 
+@python_2_unicode_compatible
 class ContextTagger(SequentialBackoffTagger):
     """
     An abstract base class for sequential backoff taggers that choose
@@ -206,6 +209,7 @@ class ContextTagger(SequentialBackoffTagger):
 #{ Tagger Classes
 ######################################################################
 
+@python_2_unicode_compatible
 class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """
     A tagger that assigns the same tag to every token.
@@ -414,6 +418,7 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
             return token[self._affix_length:]
 
 
+@python_2_unicode_compatible
 class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """
     Regular Expression Tagger
@@ -478,6 +483,8 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     def __repr__(self):
         return '<Regexp Tagger: size=%d>' % self._size
 
+
+@python_2_unicode_compatible
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     """
     A sequential tagger that uses a classifier to choose the tag for

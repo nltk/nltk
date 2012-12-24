@@ -37,14 +37,15 @@ Conference.  [http://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
 The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.
 """
-
-import codecs
+from __future__ import unicode_literals
 
 from nltk import compat
 from .util import *
 from .api import *
 
-class PPAttachment:
+
+@compat.python_2_unicode_compatible
+class PPAttachment(object):
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):
         self.sent = sent
         self.verb = verb

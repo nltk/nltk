@@ -5,10 +5,11 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 from functools import reduce
 from nltk.tree import Tree, ProbabilisticTree
+from nltk.compat import python_2_unicode_compatible
 
 from nltk.parse.api import ParserI
 
@@ -16,6 +17,7 @@ from nltk.parse.api import ParserI
 ##  Viterbi PCFG Parser
 ##//////////////////////////////////////////////////////
 
+@python_2_unicode_compatible
 class ViterbiParser(ParserI):
     """
     A bottom-up ``PCFG`` parser that uses dynamic programming to find

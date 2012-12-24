@@ -5,10 +5,13 @@
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
 
 from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet
+from nltk.compat import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class WordNetLemmatizer(object):
     """
     WordNet Lemmatizer

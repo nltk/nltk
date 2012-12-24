@@ -80,7 +80,7 @@ The algorithm for this tokenizer is described in::
   Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence
     Boundary Detection.  Computational Linguistics 32: 485-525.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 # TODO: Make orthographic heuristic less susceptible to overtraining
 # TODO: Frequent sentence starters optionally exclude always-capitalised words
@@ -90,7 +90,7 @@ import re
 import math
 from collections import defaultdict
 
-from nltk import compat
+from nltk.compat import unicode_repr, python_2_unicode_compatible, string_types
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
@@ -370,6 +370,7 @@ class PunktParameters(object):
 #{ PunktToken
 ######################################################################
 
+@python_2_unicode_compatible
 class PunktToken(object):
     """Stores a token of text with annotations produced during
     sentence boundary detection."""
@@ -479,17 +480,17 @@ class PunktToken(object):
         with eval(), which lists all the token's non-default
         annotations.
         """
-        typestr = (' type=%s,' % repr(self.type)
+        typestr = (' type=%s,' % unicode_repr(self.type)
                    if self.type != self.tok else '')
 
         propvals = ', '.join(
-            '%s=%s' % (p, repr(getattr(self, p)))
+            '%s=%s' % (p, unicode_repr(getattr(self, p)))
             for p in self._properties
             if getattr(self, p)
         )
 
         return '%s(%s,%s %s)' % (self.__class__.__name__,
-            repr(self.tok), typestr, propvals)
+            unicode_repr(self.tok), typestr, propvals)
 
     def __str__(self):
         """
@@ -1205,7 +1206,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         given. Repeated calls to this method destroy previous parameters. For
         incremental training, instantiate a separate PunktTrainer instance.
         """
-        if not isinstance(train_text, compat.string_types):
+        if not isinstance(train_text, string_types):
             return train_text
         return PunktTrainer(train_text, lang_vars=self._lang_vars,
                 token_cls=self._Token).get_params()

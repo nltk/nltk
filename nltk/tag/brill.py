@@ -68,7 +68,7 @@ corpus, based on one or more "rule templates."
     0.742...
 
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
@@ -78,6 +78,7 @@ from collections import defaultdict
 
 from nltk.tag.util import untag
 from nltk.tag.api import TaggerI
+from nltk.compat import python_2_unicode_compatible
 
 ######################################################################
 ## The Brill Tagger
@@ -219,6 +220,7 @@ class BrillRule(yaml.YAMLObject):
         assert False, "Brill rules must be hashable"
 
 
+@python_2_unicode_compatible
 class ProximateTokensRule(BrillRule):
     """
     An abstract base class for brill rules whose condition checks for
@@ -267,7 +269,7 @@ class ProximateTokensRule(BrillRule):
     @classmethod
     def to_yaml(cls, dumper, data):
         node = dumper.represent_mapping(cls.yaml_tag, dict(
-            description=str(data),
+            description="%s" % data,
             conditions=list(list(x) for x in data._conditions),
             original=data.original_tag,
             replacement=data.replacement_tag))
@@ -344,7 +346,7 @@ class ProximateTokensRule(BrillRule):
         # a sort key when deterministic=True.)
         try:
             return self.__repr
-        except:
+        except Exception:
             conditions = ' and '.join(['%s in %d...%d' % (v,s,e)
                                        for (s,e,v) in self._conditions])
             self.__repr = ('<%s: %s->%s if %s>' %
@@ -824,7 +826,7 @@ class BrillTaggerTrainer(object):
         if self._trace > 2:
             print(('%4d%4d%4d%4d ' % (score, fixscore, fixscore-score,
                                       numchanges-fixscore*2+score)), '|', end=' ')
-            print(textwrap.fill(str(rule), initial_indent=' '*20, width=79,
+            print(textwrap.fill("%s" % rule, initial_indent=' '*20, width=79,
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
             print(rule)
@@ -1208,7 +1210,7 @@ class FastBrillTaggerTrainer(object):
 
         if self._trace > 2:
             print('%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other), end=' ')
-            print(textwrap.fill(str(rule), initial_indent=' '*20,
+            print(textwrap.fill("%s" % rule, initial_indent=' '*20,
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
             print(rule)
@@ -1351,7 +1353,7 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     if trace <= 1:
         print("\nRules: ")
         for rule in brill_tagger.rules():
-            print((str(rule)))
+            print(rule)
 
     print_rules = file(rule_output, 'w')
     yaml.dump(brill_tagger, print_rules)

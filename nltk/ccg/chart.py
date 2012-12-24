@@ -29,9 +29,7 @@ which should print a nice representation of the derivation.
 This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
-from __future__ import print_function, division
-
-from collections import defaultdict
+from __future__ import print_function, division, unicode_literals
 
 from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
@@ -42,6 +40,7 @@ from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
                                  BackwardApplication, ForwardComposition,
                                  BackwardComposition, ForwardSubstitution,
                                  BackwardBx, BackwardSx)
+from nltk.compat import python_2_unicode_compatible, string_types
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't
@@ -93,6 +92,7 @@ class CCGLeafEdge(EdgeI):
     def categ(self): return self._categ
     def leaf(self): return self._leaf
 
+@python_2_unicode_compatible
 class BinaryCombinatorRule(AbstractChartRule):
     '''
     Class implementing application of a binary combinator to a chart.
@@ -118,10 +118,11 @@ class BinaryCombinatorRule(AbstractChartRule):
 
     # The representation of the combinator (for printing derivations)
     def __str__(self):
-        return str(self._combinator)
+        return "%s" % self._combinator
 
 # Type-raising must be handled slightly differently to the other rules, as the
 # resulting rules only span a single edge, rather than both edges.
+@python_2_unicode_compatible
 class ForwardTypeRaiseRule(AbstractChartRule):
     '''
     Class for applying forward type raising
@@ -138,9 +139,11 @@ class ForwardTypeRaiseRule(AbstractChartRule):
             new_edge = CCGEdge(span=left_edge.span(),categ=res,rule=self._combinator)
             if chart.insert(new_edge,(left_edge,)):
                 yield new_edge
-    def __str__(self):
-        return str(self._combinator)
 
+    def __str__(self):
+        return "%s" % self._combinator
+
+@python_2_unicode_compatible
 class BackwardTypeRaiseRule(AbstractChartRule):
     '''
     Class for applying backward type raising.
@@ -157,17 +160,18 @@ class BackwardTypeRaiseRule(AbstractChartRule):
             new_edge = CCGEdge(span=right_edge.span(),categ=res,rule=self._combinator)
             if chart.insert(new_edge,(right_edge,)):
                 yield new_edge
+
     def __str__(self):
-        return str(self._combinator)
+        return "%s" % self._combinator
 
 
 # Common sets of combinators used for English derivations.
-ApplicationRuleSet = [BinaryCombinatorRule(ForwardApplication), \
+ApplicationRuleSet = [BinaryCombinatorRule(ForwardApplication),
                         BinaryCombinatorRule(BackwardApplication)]
-CompositionRuleSet = [BinaryCombinatorRule(ForwardComposition), \
-                        BinaryCombinatorRule(BackwardComposition), \
+CompositionRuleSet = [BinaryCombinatorRule(ForwardComposition),
+                        BinaryCombinatorRule(BackwardComposition),
                         BinaryCombinatorRule(BackwardBx)]
-SubstitutionRuleSet = [BinaryCombinatorRule(ForwardSubstitution), \
+SubstitutionRuleSet = [BinaryCombinatorRule(ForwardSubstitution),
                         BinaryCombinatorRule(BackwardSx)]
 TypeRaiseRuleSet = [ForwardTypeRaiseRule(), BackwardTypeRaiseRule()]
 
@@ -245,10 +249,10 @@ class CCGChart(Chart):
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class)
                                 for cp in cpl]
-            if len(child_choices) > 0 and isinstance(child_choices[0], type("")):
+            if len(child_choices) > 0 and isinstance(child_choices[0], string_types):
                 child_choices = [child_choices]
             for children in self._choose_children(child_choices):
-                lhs = (edge.lhs(),str(edge.rule()))
+                lhs = (edge.lhs(), "%s" % edge.rule())
                 trees.append(tree_class(lhs, children))
 
         memo[edge] = trees
@@ -266,10 +270,13 @@ def printCCGDerivation(tree):
     # Construct a string with both the leaf word and corresponding
     # category aligned.
     for (leaf, cat) in leafcats:
-        nextlen = 2 + max(len(leaf),len(str(cat)))
-        lcatlen = (nextlen - len(str(cat))) // 2
-        rcatlen = lcatlen + (nextlen - len(str(cat))) % 2
-        catstr += ' '*lcatlen + str(cat) + ' '*rcatlen
+        str_cat = "%s" % cat
+#        print(cat.__class__)
+#        print("str_cat", str_cat)
+        nextlen = 2 + max(len(leaf), len(str_cat))
+        lcatlen = (nextlen - len(str_cat)) // 2
+        rcatlen = lcatlen + (nextlen - len(str_cat)) % 2
+        catstr += ' '*lcatlen + str_cat + ' '*rcatlen
         lleaflen = (nextlen - len(leaf)) // 2
         rleaflen = lleaflen + (nextlen - len(leaf)) % 2
         leafstr += ' '*lleaflen + leaf + ' '*rleaflen
@@ -294,17 +301,18 @@ def printCCGTree(lwidth,tree):
 
     # Is a leaf node.
     # Don't print anything, but account for the space occupied.
-    if not isinstance(tree.node,tuple):
-        return max(rwidth,2 + lwidth + len(str(tree.node)),
+    if not isinstance(tree.node, tuple):
+        return max(rwidth,2 + lwidth + len("%s" % tree.node),
                   2 + lwidth + len(tree[0]))
 
     (res,op) = tree.node
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
-    print(lwidth*' ' + (rwidth-lwidth)*'-' + str(op))
+    print(lwidth*' ' + (rwidth-lwidth)*'-' + "%s" % op)
     # Print the resulting category on a new line.
-    respadlen = (rwidth - lwidth - len(str(res))) // 2 + lwidth
-    print(respadlen*' ' + str(res))
+    str_res = "%s" % res
+    respadlen = (rwidth - lwidth - len(str_res)) // 2 + lwidth
+    print(respadlen*' ' + str_res)
     return rwidth
 
 

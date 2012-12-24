@@ -11,7 +11,7 @@ A module to perform nonmonotonic reasoning.  The ideas and demonstrations in
 this module are based on "Logical Foundations of Artificial Intelligence" by
 Michael R. Genesereth and Nils J. Nilsson.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 from .prover9 import Prover9, Prover9Command
 from collections import defaultdict
@@ -25,6 +25,7 @@ from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             AndExpression, unique_variable, operator)
 
 from nltk.inference.api import Prover, ProverCommandDecorator
+from nltk.compat import python_2_unicode_compatible
 
 class ProverParseError(Exception): pass
 
@@ -271,6 +272,7 @@ class ClosedWorldProver(ProverCommandDecorator):
                         predDict[func2].append_prop((tuple(sig), term.first))
                         predDict[func1].validate_sig_len(sig)
 
+@python_2_unicode_compatible
 class PredHolder(object):
     """
     This class will be used by a dictionary that will store information
@@ -310,7 +312,7 @@ class PredHolder(object):
                                self.signature_len)
 
     def __repr__(self):
-        return str(self)
+        return "%s" % self
 
 def closed_domain_demo():
     lp = LogicParser()

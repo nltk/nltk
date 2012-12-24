@@ -5,6 +5,7 @@
 #          Daniel Blanchard <dblanchard@ets.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
 
 from itertools import chain
 from math import log
@@ -26,6 +27,7 @@ def _estimator(fdist, bins):
     return SimpleGoodTuringProbDist(fdist)
 
 
+@compat.python_2_unicode_compatible
 class NgramModel(ModelI):
     """
     A processing interface for assigning a probability to the next word.

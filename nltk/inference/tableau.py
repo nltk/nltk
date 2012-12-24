@@ -9,7 +9,7 @@
 """
 Module for a tableau-based First Order theorem prover.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 from nltk.internals import Counter
 
@@ -489,11 +489,12 @@ class Debug(object):
             if ctx:
                 data = '%s, %s' % (ex, ctx)
             else:
-                data = str(ex)
+                data = '%s' % ex
 
             if isinstance(ex, AllExpression):
                 try:
-                    data += ':   %s' % str([ve.variable.name for ve in ex._used_vars])
+                    used_vars = "[%s]" % (",".join("%s" % ve.variable.name for ve in ex._used_vars))
+                    data += ':   %s' % used_vars
                 except AttributeError:
                     data += ':   []'
 

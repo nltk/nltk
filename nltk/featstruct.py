@@ -88,8 +88,7 @@ In general, if your feature structures will contain any reentrances,
 or if you plan to use them as dictionary keys, it is strongly
 recommended that you use full-fledged ``FeatStruct`` objects.
 """
-from __future__ import print_function
-from __future__ import division
+from __future__ import print_function, unicode_literals, division
 
 import re
 import copy
@@ -97,7 +96,8 @@ import copy
 from nltk.internals import parse_str, raise_unorderable_types
 from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
                             LogicParser, ParseException)
-from nltk.compat import string_types, text_type, integer_types, total_ordering
+from nltk.compat import (string_types, integer_types, total_ordering,
+                         python_2_unicode_compatible, unicode_repr)
 
 ######################################################################
 # Feature Structure
@@ -569,6 +569,7 @@ def _check_frozen(method, indent=''):
 # Feature Dictionary
 ######################################################################
 
+@python_2_unicode_compatible
 class FeatDict(FeatStruct, dict):
     """
     A feature structure that acts like a Python dictionary.  I.e., a
@@ -610,7 +611,7 @@ class FeatDict(FeatStruct, dict):
     #////////////////////////////////////////////////////////////
     #{ Dict methods
     #////////////////////////////////////////////////////////////
-    _INDEX_ERROR = "Expected feature name or path.  Got %r."
+    _INDEX_ERROR = str("Expected feature name or path.  Got %r.")
 
     def __getitem__(self, name_or_path):
         """If the feature with the given name or path exists, return
@@ -759,7 +760,7 @@ class FeatDict(FeatStruct, dict):
                 if isinstance(fval, Variable):
                     suffix = '/%s' % fval.name
                 else:
-                    suffix = '/%r' % fval
+                    suffix = '/%s' % unicode_repr(fval)
             elif isinstance(fval, Variable):
                 segments.append('%s=%s' % (fname, fval.name))
             elif fval is True:
@@ -769,7 +770,7 @@ class FeatDict(FeatStruct, dict):
             elif isinstance(fval, Expression):
                 segments.append('%s=<%s>' % (fname, fval))
             elif not isinstance(fval, FeatStruct):
-                segments.append('%s=%r' % (fname, fval))
+                segments.append('%s=%s' % (fname, unicode_repr(fval)))
             else:
                 fval_repr = fval._repr(reentrances, reentrance_ids)
                 segments.append('%s=%s' % (fname, fval_repr))
@@ -805,13 +806,13 @@ class FeatDict(FeatStruct, dict):
                 return ['[]']
 
         # What's the longest feature name?  Use this to align names.
-        maxfnamelen = max(len(str(k)) for k in self.keys())
+        maxfnamelen = max(len("%s" % k) for k in self.keys())
 
         lines = []
         # sorting note: keys are unique strings, so we'll never fall
         # through to comparing values.
         for (fname, fval) in sorted(self.items()):
-            fname = str(fname).ljust(maxfnamelen)
+            fname = ("%s" % fname).ljust(maxfnamelen)
             if isinstance(fval, Variable):
                 lines.append('%s = %s' % (fname,fval.name))
 
@@ -820,11 +821,11 @@ class FeatDict(FeatStruct, dict):
 
             elif isinstance(fval, FeatList):
                 fval_repr = fval._repr(reentrances, reentrance_ids)
-                lines.append('%s = %r' % (fname, fval_repr))
+                lines.append('%s = %s' % (fname, unicode_repr(fval_repr)))
 
             elif not isinstance(fval, FeatDict):
                 # It's not a nested feature structure -- just print it.
-                lines.append('%s = %r' % (fname, fval))
+                lines.append('%s = %s' % (fname, unicode_repr(fval)))
 
             elif id(fval) in reentrance_ids:
                 # It's a feature structure we've seen before -- print
@@ -1015,7 +1016,7 @@ class FeatList(FeatStruct, list):
             elif isinstance(fval, FeatStruct):
                 segments.append(fval._repr(reentrances, reentrance_ids))
             else:
-                segments.append('%r' % fval)
+                segments.append('%s' % unicode_repr(fval))
 
         return '%s[%s]' % (prefix, ', '.join(segments))
 
@@ -1238,8 +1239,11 @@ def _remove_variables(fstruct, fs_class, visited):
 # Unification
 ######################################################################
 
+@python_2_unicode_compatible
 class _UnificationFailure(object):
-    def __repr__(self): return 'nltk.featstruct.UnificationFailure'
+    def __repr__(self):
+        return 'nltk.featstruct.UnificationFailure'
+
 UnificationFailure = _UnificationFailure()
 """A unique value used to indicate unification failure.  It can be
    returned by ``Feature.unify_base_values()`` or by custom ``fail()``
@@ -1599,7 +1603,7 @@ def _trace_unify_start(path, fval1, fval2):
     if path == ():
         print('\nUnification trace:')
     else:
-        fullname = '.'.join(str(n) for n in path)
+        fullname = '.'.join("%s" % n for n in path)
         print('  '+'|   '*(len(path)-1)+'|')
         print('  '+'|   '*(len(path)-1)+'| Unify feature: %s' % fullname)
     print('  '+'|   '*len(path)+' / '+_trace_valrepr(fval1))
@@ -1608,7 +1612,7 @@ def _trace_unify_identity(path, fval1):
     print('  '+'|   '*len(path)+'|')
     print('  '+'|   '*len(path)+'| (identical objects)')
     print('  '+'|   '*len(path)+'|')
-    print('  '+'|   '*len(path)+'+-->'+repr(fval1))
+    print('  '+'|   '*len(path)+'+-->'+unicode_repr(fval1))
 def _trace_unify_fail(path, result):
     if result is UnificationFailure: resume = ''
     else: resume = ' (nonfatal)'
@@ -1617,7 +1621,7 @@ def _trace_unify_fail(path, result):
 def _trace_unify_succeed(path, fval1):
     # Print the result.
     print('  '+'|   '*len(path)+'|')
-    print('  '+'|   '*len(path)+'+-->'+repr(fval1))
+    print('  '+'|   '*len(path)+'+-->'+unicode_repr(fval1))
 def _trace_bindings(path, bindings):
     # Print the bindings (if any).
     if len(bindings) > 0:
@@ -1630,7 +1634,7 @@ def _trace_valrepr(val):
     if isinstance(val, Variable):
         return '%s' % val
     else:
-        return '%r' % val
+        return '%s' % unicode_repr(val)
 
 def subsumes(fstruct1, fstruct2):
     """
@@ -1696,6 +1700,7 @@ class SubstituteBindingsSequence(SubstituteBindingsI):
         else:
             return bindings.get(v, v)
 
+@python_2_unicode_compatible
 class FeatureValueTuple(SubstituteBindingsSequence, tuple):
     """
     A base feature value that is a tuple of other base feature values.
@@ -1707,6 +1712,8 @@ class FeatureValueTuple(SubstituteBindingsSequence, tuple):
         if len(self) == 0: return '()'
         return '(%s)' % ', '.join('%s' % (b,) for b in self)
 
+
+@python_2_unicode_compatible
 class FeatureValueSet(SubstituteBindingsSequence, frozenset):
     """
     A base feature value that is a set of other base feature values.
@@ -1721,6 +1728,7 @@ class FeatureValueSet(SubstituteBindingsSequence, frozenset):
         return '{%s}' % ', '.join(sorted('%s' % (b,) for b in self))
     __str__ = __repr__
 
+@python_2_unicode_compatible
 class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
     """
     A base feature value that represents the union of two or more
@@ -1749,6 +1757,7 @@ class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
         # is guaranteed to be 2 or more.
         return '{%s}' % '+'.join(sorted('%s' % (b,) for b in self))
 
+@python_2_unicode_compatible
 class FeatureValueConcat(SubstituteBindingsSequence, tuple):
     """
     A base feature value that represents the concatenation of two or
@@ -1792,6 +1801,7 @@ def _flatten(lst, cls):
 ######################################################################
 
 @total_ordering
+@python_2_unicode_compatible
 class Feature(object):
     """
     A feature identifier that's specialized to put additional
@@ -2321,8 +2331,8 @@ class FeatStructParser(object):
 
 def display_unification(fs1, fs2, indent='  '):
     # Print the two input feature structures, side by side.
-    fs1_lines = str(fs1).split('\n')
-    fs2_lines = str(fs2).split('\n')
+    fs1_lines = ("%s" % fs1).split('\n')
+    fs2_lines = ("%s" % fs2).split('\n')
     if len(fs1_lines) > len(fs2_lines):
         blankline = '['+' '*(len(fs2_lines[0])-2)+']'
         fs2_lines += [blankline]*len(fs1_lines)
@@ -2346,7 +2356,7 @@ def display_unification(fs1, fs2, indent='  '):
         print(indent+'(FAILED)'.center(linelen))
     else:
         print('\n'.join(indent+l.center(linelen)
-                         for l in str(result).split('\n')))
+                         for l in ("%s" % result).split('\n')))
         if bindings and len(bindings.bound_variables()) > 0:
             print(repr(bindings).center(linelen))
     return result
@@ -2394,7 +2404,7 @@ def interactive_demo(trace=False):
     def list_fstructs(fstructs):
         for i, fstruct in fstructs:
             print()
-            lines = str(fstruct).split('\n')
+            lines = ("%s" % fstruct).split('\n')
             print('%3d: %s' % (i+1, lines[0]))
             for line in lines[1:]: print('     '+line)
         print()

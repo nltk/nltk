@@ -5,8 +5,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import unicode_literals
 import re
-import codecs
 from xml.etree import ElementTree
 
 from nltk import compat
@@ -160,6 +160,7 @@ class PropbankCorpusReader(CorpusReader):
 #{ Propbank Instance & related datatypes
 ######################################################################
 
+@compat.python_2_unicode_compatible
 class PropbankInstance(object):
 
     def __init__(self, fileid, sentnum, wordnum, tagger, roleset,
@@ -295,9 +296,10 @@ class PropbankPointer(object):
         can be ``PropbankTreePointer`` or ``PropbankSplitTreePointer`` pointers.
     """
     def __init__(self):
-        if self.__class__ == PropbankPoitner:
+        if self.__class__ == PropbankPointer:
             raise NotImplementedError()
 
+@compat.python_2_unicode_compatible
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -313,6 +315,8 @@ class PropbankChainTreePointer(PropbankPointer):
         if tree is None: raise ValueError('Parse tree not avaialable')
         return Tree('*CHAIN*', [p.select(tree) for p in self.pieces])
 
+
+@compat.python_2_unicode_compatible
 class PropbankSplitTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -327,7 +331,9 @@ class PropbankSplitTreePointer(PropbankPointer):
         if tree is None: raise ValueError('Parse tree not avaialable')
         return Tree('*SPLIT*', [p.select(tree) for p in self.pieces])
 
+
 @total_ordering
+@compat.python_2_unicode_compatible
 class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
@@ -425,6 +431,7 @@ class PropbankTreePointer(PropbankPointer):
                     wordnum += 1
                     stack.pop()
 
+@compat.python_2_unicode_compatible
 class PropbankInflection(object):
     #{ Inflection Form
     INFINITIVE = 'i'

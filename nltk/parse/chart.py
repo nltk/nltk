@@ -35,7 +35,7 @@ defines three chart parsers:
   - ``SteppingChartParser`` is a subclass of ``ChartParser`` that can
     be used to step through the parsing process.
 """
-from __future__ import print_function, division
+from __future__ import print_function, division, unicode_literals
 
 import re
 import warnings
@@ -45,7 +45,8 @@ from nltk.tree import Tree
 from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
 from nltk.util import OrderedDict
 from nltk.internals import raise_unorderable_types
-from nltk.compat import total_ordering
+from nltk.compat import (total_ordering, python_2_unicode_compatible,
+                         unicode_repr)
 
 from nltk.parse.api import ParserI
 
@@ -200,7 +201,7 @@ class EdgeI(object):
     #////////////////////////////////////////////////////////////
 
     def __eq__(self, other):
-        return (self.__class__ is other.__class__ and 
+        return (self.__class__ is other.__class__ and
                 self._comparison_key == other._comparison_key)
 
     def __ne__(self, other):
@@ -222,6 +223,7 @@ class EdgeI(object):
             return self._hash
 
 
+@python_2_unicode_compatible
 class TreeEdge(EdgeI):
     """
     An edge that records the fact that a tree is (partially)
@@ -322,13 +324,15 @@ class TreeEdge(EdgeI):
 
         for i in range(len(self._rhs)):
             if i == self._dot: str += ' *'
-            str += ' %r' % (self._rhs[i],)
+            str += ' %s' % unicode_repr(self._rhs[i])
         if len(self._rhs) == self._dot: str += ' *'
         return str
 
     def __repr__(self):
         return '[Edge: %s]' % self
 
+
+@python_2_unicode_compatible
 class LeafEdge(EdgeI):
     """
     An edge that records the fact that a leaf value is consistent with
@@ -368,7 +372,7 @@ class LeafEdge(EdgeI):
 
     # String representations
     def __str__(self):
-        return '[%s:%s] %r' % (self._index, self._index+1, self._leaf)
+        return '[%s:%s] %s' % (self._index, self._index+1, unicode_repr(self._leaf))
     def __repr__(self):
         return '[Edge: %s]' % (self)
 
@@ -513,7 +517,7 @@ class Chart(object):
         :param length: Only generate edges ``e`` where ``e.length()==length``
         :param lhs: Only generate edges ``e`` where ``e.lhs()==lhs``
         :param rhs: Only generate edges ``e`` where ``e.rhs()==rhs``
-        :param nextsym: Only generate edges ``e`` where 
+        :param nextsym: Only generate edges ``e`` where
             ``e.nextsym()==nextsym``
         :param dot: Only generate edges ``e`` where ``e.dot()==dot``
         :param is_complete: Only generate edges ``e`` where
@@ -931,6 +935,8 @@ class ChartRuleI(object):
         """
         raise NotImplementedError()
 
+
+@python_2_unicode_compatible
 class AbstractChartRule(ChartRuleI):
     """
     An abstract base class for chart rules.  ``AbstractChartRule``

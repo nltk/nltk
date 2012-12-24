@@ -65,6 +65,7 @@ argument.  This differs from the conventions used by Python's
 ``re`` functions, where the pattern is always the first argument.
 (This is for consistency with the other NLTK tokenizers.)
 """
+from __future__ import unicode_literals
 
 import re
 import sre_constants
@@ -72,7 +73,9 @@ import sre_constants
 from nltk.internals import convert_regexp_to_nongrouping
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
+from nltk.compat import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class RegexpTokenizer(TokenizerI):
     """
     A tokenizer that splits a string using a regular expression, which

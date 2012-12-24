@@ -12,7 +12,7 @@ extraction of the semantic representation of the root node of the the
 syntax tree, followed by evaluation of the semantic representation in
 a first-order model.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 from . import evaluate
@@ -91,7 +91,7 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     :return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
     :rtype: dict
     """
-    return [[(syn, sem, model.evaluate(str(sem), assignment, trace=trace))
+    return [[(syn, sem, model.evaluate("%s" % sem, assignment, trace=trace))
             for (syn, sem) in interpretations]
             for interpretations in batch_interpret(inputs, grammar)]
 

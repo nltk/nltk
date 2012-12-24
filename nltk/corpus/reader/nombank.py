@@ -6,14 +6,12 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
-import codecs
+from __future__ import unicode_literals
 
-from nltk import compat
 from nltk.tree import Tree
 from xml.etree import ElementTree
 from nltk.internals import raise_unorderable_types
-from nltk.compat import total_ordering
+from nltk.compat import total_ordering, python_2_unicode_compatible, string_types
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
@@ -49,7 +47,7 @@ class NombankCorpusReader(CorpusReader):
             necessary to resolve the tree pointers used by nombank.
         """
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, compat.string_types):
+        if isinstance(framefiles, string_types):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
@@ -163,6 +161,7 @@ class NombankCorpusReader(CorpusReader):
 #{ Nombank Instance & related datatypes
 ######################################################################
 
+@python_2_unicode_compatible
 class NombankInstance(object):
 
     def __init__(self, fileid, sentnum, wordnum, baseform, sensenumber,
@@ -210,8 +209,8 @@ class NombankInstance(object):
         """The name of the roleset used by this instance's predicate.
         Use ``nombank.roleset() <NombankCorpusReader.roleset>`` to
         look up information about the roleset."""
-        r = self.baseform.replace('%','perc-sign')
-        r = r.replace('1/10','1-slash-10').replace('1-slash-10','oneslashonezero')
+        r = self.baseform.replace('%', 'perc-sign')
+        r = r.replace('1/10', '1-slash-10').replace('1-slash-10', 'oneslashonezero')
         return '%s.%s'%(r, self.sensenumber)
 
     def __repr__(self):
@@ -287,9 +286,10 @@ class NombankPointer(object):
       can be ``NombankTreePointer`` or ``NombankSplitTreePointer`` pointers.
     """
     def __init__(self):
-        if self.__class__ == NombankPoitner:
+        if self.__class__ == NombankPointer:
             raise NotImplementedError()
 
+@python_2_unicode_compatible
 class NombankChainTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -305,6 +305,7 @@ class NombankChainTreePointer(NombankPointer):
         if tree is None: raise ValueError('Parse tree not avaialable')
         return Tree('*CHAIN*', [p.select(tree) for p in self.pieces])
 
+@python_2_unicode_compatible
 class NombankSplitTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -320,6 +321,7 @@ class NombankSplitTreePointer(NombankPointer):
         return Tree('*SPLIT*', [p.select(tree) for p in self.pieces])
 
 @total_ordering
+@python_2_unicode_compatible
 class NombankTreePointer(NombankPointer):
     """
     wordnum:height*wordnum:height*...

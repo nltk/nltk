@@ -4,9 +4,10 @@
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
+from __future__ import unicode_literals
 from nltk.internals import raise_unorderable_types
-from nltk.compat import total_ordering
+from nltk.compat import (total_ordering, python_2_unicode_compatible,
+                         unicode_repr)
 
 @total_ordering
 class AbstractCCGCategory(object):
@@ -43,7 +44,7 @@ class AbstractCCGCategory(object):
         raise NotImplementedError()
 
     def __eq__(self, other):
-        return (self.__class__ is other.__class__ and 
+        return (self.__class__ is other.__class__ and
                 self._comparison_key == other._comparison_key)
 
     def __ne__(self, other):
@@ -65,7 +66,7 @@ class AbstractCCGCategory(object):
             return self._hash
 
 
-
+@python_2_unicode_compatible
 class CCGVar(AbstractCCGCategory):
     '''
     Class representing a variable CCG category.
@@ -123,6 +124,7 @@ class CCGVar(AbstractCCGCategory):
         return "_var" + str(self._id)
 
 @total_ordering
+@python_2_unicode_compatible
 class Direction(object):
     '''
     Class representing the direction of a function application.
@@ -185,7 +187,7 @@ class Direction(object):
         return not '.' in self._restrs
 
     def __eq__(self, other):
-        return (self.__class__ is other.__class__ and 
+        return (self.__class__ is other.__class__ and
                 self._comparison_key == other._comparison_key)
 
     def __ne__(self, other):
@@ -209,8 +211,8 @@ class Direction(object):
     def __str__(self):
         r_str = ""
         for r in self._restrs:
-            r_str = r_str + str(r)
-        return str(self._dir) + r_str
+            r_str = r_str + "%s" % r
+        return "%s%s" % (self._dir, r_str)
 
     # The negation operator reverses the direction of the application
     def __neg__(self):
@@ -220,6 +222,7 @@ class Direction(object):
             return Direction('/',self._restrs)
 
 
+@python_2_unicode_compatible
 class PrimitiveCategory(AbstractCCGCategory):
     '''
     Class representing primitive categories.
@@ -267,9 +270,12 @@ class PrimitiveCategory(AbstractCCGCategory):
 
     def __str__(self):
         if self._restrs == []:
-            return str(self._categ)
-        return str(self._categ) + str(self._restrs)
+            return "%s" % self._categ
+        restrictions = "[%s]" % ",".join(unicode_repr(r) for r in self._restrs)
+        return "%s%s" % (self._categ, restrictions)
 
+
+@python_2_unicode_compatible
 class FunctionalCategory(AbstractCCGCategory):
     '''
     Class that represents a function application category.
@@ -324,6 +330,6 @@ class FunctionalCategory(AbstractCCGCategory):
         return self._dir
 
     def __str__(self):
-        return "(" + str(self._res) + str(self._dir) + str(self._arg) + ")"
+        return "(%s%s%s)" % (self._res, self._dir, self._arg)
 
 

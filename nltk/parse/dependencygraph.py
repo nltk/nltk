@@ -14,17 +14,19 @@ The input is assumed to be in Malt-TAB format
 (http://w3.msi.vxu.se/~nivre/research/MaltXML.html).
 Currently only reads the first tree in a file.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 from pprint import pformat
 
 from nltk.tree import Tree
+from nltk.compat import python_2_unicode_compatible
 
 #################################################################
 # DependencyGraph Class
 #################################################################
 
+@python_2_unicode_compatible
 class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.

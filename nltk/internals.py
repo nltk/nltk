@@ -624,6 +624,8 @@ def import_from_stdlib(module):
 # Wrapper for ElementTree Elements
 ##########################################################################
 
+# TODO: python_2_unicode_compatible
+
 class ElementWrapper(object):
     """
     A wrapper around ElementTree Element objects whose main purpose is

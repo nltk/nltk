@@ -13,14 +13,14 @@
 This module provides data structures for representing first-order
 models.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 from pprint import pformat
 import inspect
 import textwrap
 
 from nltk.decorators import decorator # this used in code that is commented out
-from nltk.compat import string_types
+from nltk.compat import string_types, python_2_unicode_compatible
 
 from nltk.sem.logic import (AbstractVariableExpression, AllExpression,
                             AndExpression, ApplicationExpression, EqualityExpression,
@@ -95,6 +95,7 @@ def arity(rel):
     return len(list(rel)[0])
 
 
+@python_2_unicode_compatible
 class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
@@ -148,6 +149,7 @@ class Valuation(dict):
         return sorted(self.keys())
 
 
+@python_2_unicode_compatible
 class Assignment(dict):
     """
     A dictionary which represents an assignment of values to variables.
@@ -274,6 +276,7 @@ class Assignment(dict):
         return self
 
 
+@python_2_unicode_compatible
 class Model(object):
     """
     A first order model is a domain *D* of discourse and a valuation *V*.

@@ -21,7 +21,8 @@ from sys import version_info
 
 from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk import compat
-from nltk.compat import class_types, text_type, string_types, total_ordering
+from nltk.compat import (class_types, text_type, string_types, total_ordering,
+                         python_2_unicode_compatible)
 
 ######################################################################
 # Short usage message
@@ -634,6 +635,7 @@ class OrderedDict(dict):
 ######################################################################
 
 @total_ordering
+@python_2_unicode_compatible
 class AbstractLazySequence(object):
     """
     An abstract base class for read-only sequences whose values are
@@ -740,9 +742,9 @@ class AbstractLazySequence(object):
             pieces.append(repr(elt))
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return '[%s, ...]' % ', '.join(pieces[:-1])
+                return '[%s, ...]' % text_type(', ').join(pieces[:-1])
         else:
-            return '[%s]' % ', '.join(pieces)
+            return '[%s]' % text_type(', ').join(pieces)
 
     def __eq__(self, other):
         return (type(self) == type(other) and list(self) == list(other))

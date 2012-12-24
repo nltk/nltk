@@ -5,12 +5,12 @@
 # Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import operator
 from functools import reduce
 
-from nltk.compat import string_types
+from nltk.compat import string_types, python_2_unicode_compatible
 from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             AndExpression, ApplicationExpression, BinaryExpression,
                             BooleanExpression, ConstantExpression, EqualityExpression,
@@ -144,6 +144,7 @@ class AbstractDrs(object):
         DrsDrawer(self).draw()
 
 
+@python_2_unicode_compatible
 class DRS(AbstractDrs, Expression):
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds, consequent=None):
@@ -284,8 +285,8 @@ class DRS(AbstractDrs, Expression):
 
     def _pretty(self):
         refs_line = ' '.join(self._order_ref_strings(self.refs))
-        cond_lines = [cond for cond_line in [filter(str.strip, cond._pretty()) 
-                                             for cond in self.conds] 
+        cond_lines = [cond for cond_line in [filter(str.strip, cond._pretty())
+                                             for cond in self.conds]
                       for cond in cond_line]
         length = max([len(refs_line)] + list(map(len, cond_lines)))
         drs = ([' _' + '_' * length            + '_ ',
@@ -342,10 +343,10 @@ class DRS(AbstractDrs, Expression):
 
     def __str__(self):
         drs = '([%s],[%s])' % (','.join(self._order_ref_strings(self.refs)),
-                               ', '.join(map(str, self.conds)))
+                               ', '.join(["%s" % cond for cond in self.conds])) # map(str, self.conds)))
         if self.consequent:
             return DrtTokens.OPEN + drs + ' ' + DrtTokens.IMP + ' ' + \
-                   str(self.consequent) + DrtTokens.CLOSE
+                   "%s" % self.consequent + DrtTokens.CLOSE
         return drs
 
 
@@ -373,7 +374,7 @@ class DrtAbstractVariableExpression(AbstractDrs, AbstractVariableExpression):
         return []
 
     def _pretty(self):
-        s = str(self)
+        s = "%s" % self
         blank = ' '*len(s)
         return [blank, blank, s, blank]
 
@@ -393,6 +394,7 @@ class DrtConstantExpression(DrtAbstractVariableExpression, ConstantExpression):
     pass
 
 
+@python_2_unicode_compatible
 class DrtProposition(AbstractDrs, Expression):
     def __init__(self, variable, drs):
         self.variable = variable
@@ -426,10 +428,10 @@ class DrtProposition(AbstractDrs, Expression):
 
     def _pretty(self):
         drs_s = self.drs._pretty()
-        blank = ' ' * len(str(self.variable))
-        return ([blank              + ' ' + line for line in drs_s[:1]] + 
-                [str(self.variable) + ':' + line for line in drs_s[1:2]] + 
-                [blank              + ' ' + line for line in drs_s[2:]])
+        blank = ' ' * len("%s" % self.variable)
+        return ([blank                + ' ' + line for line in drs_s[:1]] +
+                ["%s" % self.variable + ':' + line for line in drs_s[1:2]] +
+                [blank                + ' ' + line for line in drs_s[2:]])
 
     def visit(self, function, combinator):
         """:see: Expression.visit()"""
@@ -453,9 +455,9 @@ class DrtNegatedExpression(AbstractDrs, NegatedExpression):
 
     def _pretty(self):
         term_lines = self.term._pretty()
-        return (['    ' + line for line in term_lines[:2]] + 
-                ['__  ' + line for line in term_lines[2:3]] + 
-                ['  | ' + line for line in term_lines[3:4]] + 
+        return (['    ' + line for line in term_lines[:2]] +
+                ['__  ' + line for line in term_lines[2:3]] +
+                ['  | ' + line for line in term_lines[3:4]] +
                 ['    ' + line for line in term_lines[4:]])
 
 class DrtLambdaExpression(AbstractDrs, LambdaExpression):
@@ -479,9 +481,9 @@ class DrtLambdaExpression(AbstractDrs, LambdaExpression):
         var_string = ' '.join(map(str, variables)) + DrtTokens.DOT
         term_lines = term._pretty()
         blank = ' ' * len(var_string)
-        return (['    ' + blank      + line for line in term_lines[:1]] + 
-                [' \  ' + blank      + line for line in term_lines[1:2]] + 
-                [' /\ ' + var_string + line for line in term_lines[2:3]] + 
+        return (['    ' + blank      + line for line in term_lines[:1]] +
+                [' \  ' + blank      + line for line in term_lines[1:2]] +
+                [' /\ ' + var_string + line for line in term_lines[2:3]] +
                 ['    ' + blank      + line for line in term_lines[3:]])
 
 class DrtBinaryExpression(AbstractDrs, BinaryExpression):
@@ -499,8 +501,8 @@ class DrtBinaryExpression(AbstractDrs, BinaryExpression):
         second_lines = _pad_vertically(second_lines, max_lines)
         blank = ' ' * len(op)
         first_second_lines = list(zip(first_lines, second_lines))
-        return ([' ' + first_line + ' ' + blank + ' ' + second_line + ' ' for first_line, second_line in first_second_lines[:2]] + 
-                ['(' + first_line + ' ' + op    + ' ' + second_line + ')' for first_line, second_line in first_second_lines[2:3]] + 
+        return ([' ' + first_line + ' ' + blank + ' ' + second_line + ' ' for first_line, second_line in first_second_lines[:2]] +
+                ['(' + first_line + ' ' + op    + ' ' + second_line + ')' for first_line, second_line in first_second_lines[2:3]] +
                 [' ' + first_line + ' ' + blank + ' ' + second_line + ' ' for first_line, second_line in first_second_lines[3:]])
 
     def _pretty_subex(self, subex):
@@ -522,6 +524,7 @@ class DrtEqualityExpression(DrtBinaryExpression, EqualityExpression):
     def fol(self):
         return EqualityExpression(self.first.fol(), self.second.fol())
 
+@python_2_unicode_compatible
 class DrtConcatenation(DrtBooleanExpression):
     """DRS of the form '(DRS + DRS)'"""
     def __init__(self, first, second, consequent=None):
@@ -647,11 +650,11 @@ class DrtConcatenation(DrtBooleanExpression):
                 + ' ' + second + Tokens.CLOSE
         if self.consequent:
             return DrtTokens.OPEN + drs + ' ' + DrtTokens.IMP + ' ' + \
-                   str(self.consequent) + DrtTokens.CLOSE
+                   "%s" % self.consequent + DrtTokens.CLOSE
         return drs
 
     def _str_subex(self, subex):
-        s = str(subex)
+        s = "%s" % subex
         if isinstance(subex, DrtConcatenation) and subex.consequent is None:
             return s[1:-1]
         return s
@@ -663,7 +666,7 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
 
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
-        return (self.function.get_refs(True) + self.argument.get_refs(True) 
+        return (self.function.get_refs(True) + self.argument.get_refs(True)
                 if recursive else [])
 
     def _pretty(self):
@@ -674,16 +677,17 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
         function_lines = _pad_vertically(function_lines, max_lines)
         args_lines = [_pad_vertically(arg_lines, max_lines) for arg_lines in args_lines]
         func_args_lines = list(zip(function_lines, list(zip(*args_lines))))
-        return ([func_line + ' ' + ' '.join(args_line) + ' ' for func_line, args_line in func_args_lines[:2]] + 
-                [func_line + '(' + ','.join(args_line) + ')' for func_line, args_line in func_args_lines[2:3]] + 
+        return ([func_line + ' ' + ' '.join(args_line) + ' ' for func_line, args_line in func_args_lines[:2]] +
+                [func_line + '(' + ','.join(args_line) + ')' for func_line, args_line in func_args_lines[2:3]] +
                 [func_line + ' ' + ' '.join(args_line) + ' ' for func_line, args_line in func_args_lines[3:]])
 
-        
+
 def _pad_vertically(lines, max_lines):
     pad_line = [' ' * len(lines[0])]
     return lines + pad_line * (max_lines - len(lines))
 
 
+@python_2_unicode_compatible
 class PossibleAntecedents(list, AbstractDrs, Expression):
     def free(self):
         """Set of free variables."""
@@ -701,12 +705,12 @@ class PossibleAntecedents(list, AbstractDrs, Expression):
         return result
 
     def _pretty(self):
-        s = str(self)
+        s = "%s" % self
         blank = ' ' * len(s)
         return [blank, blank, s]
 
     def __str__(self):
-        return '[' + ','.join(map(str, self)) + ']'
+        return '[' + ','.join(["%s" % it for it in self]) + ']'
 
 
 class AnaphoraResolutionException(Exception):
@@ -927,7 +931,7 @@ class DrsDrawer(object):
         return (right, bottom)
 
     def _handle_VariableExpression(self, expression, command, x, y):
-        return command(str(expression), x, y)
+        return command("%s" % expression, x, y)
 
     def _handle_NegatedExpression(self, expression, command, x, y):
         # Find the width of the negation symbol
@@ -1003,7 +1007,7 @@ class DrsDrawer(object):
 
     def _handle_LambdaExpression(self, expression, command, x, y):
         # Find the width of the lambda symbol and abstracted variables
-        variables = DrtTokens.LAMBDA + str(expression.variable) + DrtTokens.DOT
+        variables = DrtTokens.LAMBDA + "%s" % expression.variable + DrtTokens.DOT
         right = self._visit_command(variables, x, y)[0]
 
         # Handle term

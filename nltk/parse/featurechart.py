@@ -11,9 +11,9 @@
 Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
-from nltk.compat import xrange
+from nltk.compat import xrange, python_2_unicode_compatible
 from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
 from nltk.sem import logic
 from nltk.tree import Tree
@@ -32,6 +32,7 @@ from nltk.parse.chart import (TreeEdge, Chart, ChartParser, EdgeI,
 # Tree Edge
 #////////////////////////////////////////////////////////////
 
+@python_2_unicode_compatible
 class FeatureTreeEdge(TreeEdge):
     """
     A specialized tree edge that allows shared variable bindings
@@ -116,17 +117,17 @@ class FeatureTreeEdge(TreeEdge):
         :rtype: set(Variable)
         """
         return find_variables([self._lhs] + list(self._rhs) +
-                              list(self._bindings.keys()) + 
+                              list(self._bindings.keys()) +
                               list(self._bindings.values()),
                               fs_class=FeatStruct)
 
     def __str__(self):
         if self.is_complete():
-            return TreeEdge.__str__(self)
+            return TreeEdge.__unicode__(self)
         else:
             bindings = '{%s}' % ', '.join('%s: %r' % item for item in
                                            sorted(self._bindings.items()))
-            return '%s %s' % (TreeEdge.__str__(self), bindings)
+            return '%s %s' % (TreeEdge.__unicode__(self), bindings)
 
 
 #////////////////////////////////////////////////////////////

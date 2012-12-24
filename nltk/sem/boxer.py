@@ -21,7 +21,7 @@ Usage:
         models/
             boxer/
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import os
 import re
@@ -39,6 +39,8 @@ from nltk.sem.logic import (ExpectedMoreTokensException, ParseException,
 from nltk.sem.drt import (DRS, DrtApplicationExpression, DrtEqualityExpression,
                           DrtNegatedExpression, DrtOrExpression, DrtParser,
                           DrtProposition, DrtTokens, DrtVariableExpression)
+
+from nltk.compat import python_2_unicode_compatible
 
 class Boxer(object):
     """
@@ -796,8 +798,10 @@ class AbstractBoxerDrs(object):
         return self
 
     def __hash__(self):
-        return hash(str(self))
+        return hash("%s" % self)
 
+
+@python_2_unicode_compatible
 class BoxerDrs(AbstractBoxerDrs):
     def __init__(self, label, refs, conds, consequent=None):
         AbstractBoxerDrs.__init__(self)
@@ -832,8 +836,8 @@ class BoxerDrs(AbstractBoxerDrs):
 
     def __repr__(self):
         s = 'drs(%s, [%s], [%s])' % (self.label,
-                                        ', '.join(map(str, self.refs)),
-                                        ', '.join(map(str, self.conds)))
+                                    ', '.join(["%s" % r for r in self.refs]),
+                                    ', '.join(["%s" % c for c in self.conds]))
         if self.consequent is not None:
             s = 'imp(%s, %s)' % (s, self.consequent)
         return s
@@ -852,6 +856,7 @@ class BoxerDrs(AbstractBoxerDrs):
     __hash__ = AbstractBoxerDrs.__hash__
 
 
+@python_2_unicode_compatible
 class BoxerNot(AbstractBoxerDrs):
     def __init__(self, drs):
         AbstractBoxerDrs.__init__(self)
@@ -880,6 +885,7 @@ class BoxerNot(AbstractBoxerDrs):
 
     __hash__ = AbstractBoxerDrs.__hash__
 
+@python_2_unicode_compatible
 class BoxerIndexed(AbstractBoxerDrs):
     def __init__(self, discourse_id, sent_index, word_indices):
         AbstractBoxerDrs.__init__(self)
@@ -903,7 +909,8 @@ class BoxerIndexed(AbstractBoxerDrs):
     __hash__ = AbstractBoxerDrs.__hash__
 
     def __repr__(self):
-        s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id, self.sent_index, ', '.join(map(str, self.word_indices)))
+        s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id,
+                                 self.sent_index, ', '.join(["%s" % wi for wi in self.word_indices]))
         for v in self:
             s += ', %s' % v
         return s + ')'

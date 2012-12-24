@@ -5,10 +5,11 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 from nltk.grammar import Nonterminal, parse_cfg
 from nltk.tree import Tree, ImmutableTree
+from nltk.compat import unicode_repr
 
 from nltk.parse.api import ParserI
 
@@ -278,14 +279,15 @@ class RecursiveDescentParser(ParserI):
 
         if treeloc == (): print("*", end=' ')
         if isinstance(tree, Tree):
-            if len(tree) == 0: print(repr(Nonterminal(tree.node)), end=' ')
+            if len(tree) == 0:
+                print(unicode_repr(Nonterminal(tree.node)), end=' ')
             for i in range(len(tree)):
                 if treeloc is not None and i == treeloc[0]:
                     self._trace_fringe(tree[i], treeloc[1:])
                 else:
                     self._trace_fringe(tree[i])
         else:
-            print(repr(tree), end=' ')
+            print(unicode_repr(tree), end=' ')
 
     def _trace_tree(self, tree, frontier, operation):
         """

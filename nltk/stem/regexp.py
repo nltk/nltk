@@ -6,11 +6,13 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
+from __future__ import unicode_literals
 import re
 
 from .api import StemmerI
+from nltk.compat import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class RegexpStemmer(StemmerI):
     """
     A stemmer that uses regular expressions to identify morphological

@@ -32,7 +32,7 @@ In order to provide globally unique IDs for each pair, a new attribute
 file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
-
+from __future__ import unicode_literals
 from nltk import compat
 from .util import *
 from .api import *
@@ -55,7 +55,8 @@ def norm(value_string):
                      "NO": 0}
     return valdict[value_string.upper()]
 
-class RTEPair:
+@compat.python_2_unicode_compatible
+class RTEPair(object):
     """
     Container for RTE text-hypothesis pairs.
 

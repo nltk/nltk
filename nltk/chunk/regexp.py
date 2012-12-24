@@ -5,19 +5,20 @@
 #         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 from __future__ import division
 
 import re
 
-from nltk import compat
 from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
+from nltk.compat import python_2_unicode_compatible, string_types, unicode_repr
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString
 ##//////////////////////////////////////////////////////
 
+@python_2_unicode_compatible
 class ChunkString(object):
     """
     A string-based encoding of a particular chunking of a text.
@@ -223,7 +224,7 @@ class ChunkString(object):
 
         :rtype: str
         """
-        return '<ChunkString: %s>' % repr(self._str)
+        return '<ChunkString: %s>' % unicode_repr(self._str)
 
     def __str__(self):
         """
@@ -244,6 +245,7 @@ class ChunkString(object):
 ##  Chunking Rules
 ##//////////////////////////////////////////////////////
 
+@python_2_unicode_compatible
 class RegexpChunkRule(object):
     """
     A rule specifying how to modify the chunking in a ``ChunkString``,
@@ -287,7 +289,7 @@ class RegexpChunkRule(object):
         :param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        if isinstance(regexp, compat.string_types):
+        if isinstance(regexp, string_types):
             regexp = re.compile(regexp)
         self._repl = repl
         self._descr = descr
@@ -329,8 +331,8 @@ class RegexpChunkRule(object):
 
         :rtype: str
         """
-        return ('<RegexpChunkRule: '+repr(self._regexp.pattern)+
-                '->'+repr(self._repl)+'>')
+        return ('<RegexpChunkRule: '+unicode_repr(self._regexp.pattern)+
+                '->'+unicode_repr(self._repl)+'>')
 
     @staticmethod
     def parse(s):
@@ -379,6 +381,7 @@ class RegexpChunkRule(object):
             raise ValueError('Illegal chunk pattern: %s' % rule)
 
 
+@python_2_unicode_compatible
 class ChunkRule(RegexpChunkRule):
     """
     A rule specifying how to add chunks to a ``ChunkString``, using a
@@ -419,8 +422,9 @@ class ChunkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return '<ChunkRule: '+repr(self._pattern)+'>'
+        return '<ChunkRule: '+unicode_repr(self._pattern)+'>'
 
+@python_2_unicode_compatible
 class ChinkRule(RegexpChunkRule):
     """
     A rule specifying how to remove chinks to a ``ChunkString``,
@@ -461,8 +465,10 @@ class ChinkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return '<ChinkRule: '+repr(self._pattern)+'>'
+        return '<ChinkRule: '+unicode_repr(self._pattern)+'>'
 
+
+@python_2_unicode_compatible
 class UnChunkRule(RegexpChunkRule):
     """
     A rule specifying how to remove chunks to a ``ChunkString``,
@@ -500,8 +506,10 @@ class UnChunkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return '<UnChunkRule: '+repr(self._pattern)+'>'
+        return '<UnChunkRule: '+unicode_repr(self._pattern)+'>'
 
+
+@python_2_unicode_compatible
 class MergeRule(RegexpChunkRule):
     """
     A rule specifying how to merge chunks in a ``ChunkString``, using
@@ -558,9 +566,11 @@ class MergeRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return ('<MergeRule: '+repr(self._left_tag_pattern)+', '+
-                repr(self._right_tag_pattern)+'>')
+        return ('<MergeRule: '+unicode_repr(self._left_tag_pattern)+', '+
+                unicode_repr(self._right_tag_pattern)+'>')
 
+
+@python_2_unicode_compatible
 class SplitRule(RegexpChunkRule):
     """
     A rule specifying how to split chunks in a ``ChunkString``, using
@@ -616,9 +626,11 @@ class SplitRule(RegexpChunkRule):
 
        :rtype: str
         """
-        return ('<SplitRule: '+repr(self._left_tag_pattern)+', '+
-                repr(self._right_tag_pattern)+'>')
+        return ('<SplitRule: '+unicode_repr(self._left_tag_pattern)+', '+
+                unicode_repr(self._right_tag_pattern)+'>')
 
+
+@python_2_unicode_compatible
 class ExpandLeftRule(RegexpChunkRule):
     """
     A rule specifying how to expand chunks in a ``ChunkString`` to the left,
@@ -675,9 +687,11 @@ class ExpandLeftRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return ('<ExpandLeftRule: '+repr(self._left_tag_pattern)+', '+
-                repr(self._right_tag_pattern)+'>')
+        return ('<ExpandLeftRule: '+unicode_repr(self._left_tag_pattern)+', '+
+                unicode_repr(self._right_tag_pattern)+'>')
 
+
+@python_2_unicode_compatible
 class ExpandRightRule(RegexpChunkRule):
     """
     A rule specifying how to expand chunks in a ``ChunkString`` to the
@@ -734,9 +748,11 @@ class ExpandRightRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return ('<ExpandRightRule: '+repr(self._left_tag_pattern)+', '+
-                repr(self._right_tag_pattern)+'>')
+        return ('<ExpandRightRule: '+unicode_repr(self._left_tag_pattern)+', '+
+                unicode_repr(self._right_tag_pattern)+'>')
 
+
+@python_2_unicode_compatible
 class ChunkRuleWithContext(RegexpChunkRule):
     """
     A rule specifying how to add chunks to a ``ChunkString``, using
@@ -802,7 +818,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 
         :rtype: str
         """
-        return '<ChunkRuleWithContext: %r, %r, %r>' % (
+        return '<ChunkRuleWithContext:  %r, %r, %r>' % (
             self._left_context_tag_pattern, self._chunk_tag_pattern,
             self._right_context_tag_pattern)
 
@@ -883,6 +899,7 @@ def tag_pattern2re_pattern(tag_pattern):
 ##  RegexpChunkParser
 ##//////////////////////////////////////////////////////
 
+@python_2_unicode_compatible
 class RegexpChunkParser(ChunkParserI):
     """
     A regular expression based chunk parser.  ``RegexpChunkParser`` uses a
@@ -948,7 +965,7 @@ class RegexpChunkParser(ChunkParserI):
         for rule in self._rules:
             rule.apply(chunkstr)
             if verbose:
-                print('#', rule.descr()+' ('+repr(rule)+'):')
+                print('#', rule.descr()+' ('+unicode_repr(rule)+'):')
             else:
                 print('#', rule.descr()+':')
             print(chunkstr)
@@ -1038,13 +1055,14 @@ class RegexpChunkParser(ChunkParserI):
         else:
             format = "    %s\n      %s\n"
         for rule in self._rules:
-            s += format % (rule.descr(), repr(rule))
+            s += format % (rule.descr(), unicode_repr(rule))
         return s[:-1]
 
 ##//////////////////////////////////////////////////////
 ##  Chunk Grammar
 ##//////////////////////////////////////////////////////
 
+@python_2_unicode_compatible
 class RegexpParser(ChunkParserI):
     """
     A grammar based chunk parser.  ``chunk.RegexpParser`` uses a set of
@@ -1108,7 +1126,7 @@ class RegexpParser(ChunkParserI):
         self._grammar = grammar
         self._loop = loop
 
-        if isinstance(grammar, compat.string_types):
+        if isinstance(grammar, string_types):
             self._parse_grammar(grammar, top_node, trace)
         else:
             # Make sur the grammar looks like it has the right type:
@@ -1200,7 +1218,7 @@ class RegexpParser(ChunkParserI):
         s = "chunk.RegexpParser with %d stages:\n" % len(self._stages)
         margin = 0
         for parser in self._stages:
-            s += parser.__str__() + "\n"
+            s += "%s\n" % parser
         return s[:-1]
 
 ##//////////////////////////////////////////////////////
@@ -1253,7 +1271,7 @@ def demo_eval(chunkparser, text):
         print('Missed:')
         missed = chunkscore.missed()
         for chunk in missed[:10]:
-            print('  ', ' '.join(c.__str__() for c in chunk))
+            print('  ', ' '.join("%s" % c for c in chunk))
         if len(chunkscore.missed()) > 10:
             print('  ...')
 
@@ -1262,7 +1280,7 @@ def demo_eval(chunkparser, text):
         print('Incorrect:')
         incorrect = chunkscore.incorrect()
         for chunk in incorrect[:10]:
-            print('  ', ' '.join(c.__str__() for c in chunk))
+            print('  ', ' '.join("%s" % c for c in chunk))
         if len(chunkscore.incorrect()) > 10:
             print('  ...')
 

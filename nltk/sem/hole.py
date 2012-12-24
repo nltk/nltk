@@ -19,7 +19,7 @@ After parsing, the semantic representation is in the form of an underspecified
 representation that is not easy to read.  We use a "plugging" algorithm to
 convert that representation into first-order logic formulas.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 from functools import reduce
 
@@ -284,6 +284,7 @@ class HoleSemantics(object):
             return node
 
 
+@compat.python_2_unicode_compatible
 class Constraint(object):
     """
     This class represents a constraint of the form (L =< N),

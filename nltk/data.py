@@ -30,7 +30,7 @@ resource file, given its URL: ``load()`` loads a given resource, and
 adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 from __future__ import division
 
 import sys
@@ -68,23 +68,23 @@ path = []
    (e.g., in their home directory under ~/nltk_data)."""
 
 # User-specified locations:
-path += [d for d in os.environ.get('NLTK_DATA', '').split(os.pathsep) if d]
+path += [d for d in os.environ.get('NLTK_DATA', str('')).split(os.pathsep) if d]
 if os.path.expanduser('~/') != '~/': path += [
-    os.path.expanduser('~/nltk_data')]
+    os.path.expanduser(str('~/nltk_data'))]
 
 # Common locations on Windows:
 if sys.platform.startswith('win'): path += [
-    r'C:\nltk_data', r'D:\nltk_data', r'E:\nltk_data',
-    os.path.join(sys.prefix, 'nltk_data'),
-    os.path.join(sys.prefix, 'lib', 'nltk_data'),
-    os.path.join(os.environ.get('APPDATA', 'C:\\'), 'nltk_data')]
+    str(r'C:\nltk_data'), str(r'D:\nltk_data'), str(r'E:\nltk_data'),
+    os.path.join(sys.prefix, str('nltk_data')),
+    os.path.join(sys.prefix, str('lib'), str('nltk_data')),
+    os.path.join(os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data'))]
 
 # Common locations on UNIX & OS X:
 else: path += [
-    '/usr/share/nltk_data',
-    '/usr/local/share/nltk_data',
-    '/usr/lib/nltk_data',
-    '/usr/local/lib/nltk_data']
+    str('/usr/share/nltk_data'),
+    str('/usr/local/share/nltk_data'),
+    str('/usr/lib/nltk_data'),
+    str('/usr/local/lib/nltk_data')]
 
 ######################################################################
 # Path Pointers
@@ -146,6 +146,10 @@ class FileSystemPathPointer(PathPointer, str):
 
         :raise IOError: If the given path does not exist.
         """
+
+        # XXX: ``path`` must be a bytestring under Python 2.x because
+        # FileSystemPathPointer is a str subclass.
+
         path = os.path.abspath(path)
         if not os.path.exists(path):
             raise IOError('No such file or directory: %r' % path)
@@ -169,14 +173,17 @@ class FileSystemPathPointer(PathPointer, str):
         return os.stat(self._path).st_size
 
     def join(self, fileid):
-        path = os.path.join(self._path, *fileid.split('/'))
+        path = os.path.join(self._path, *fileid.split(str('/')))
         return FileSystemPathPointer(path)
 
     def __repr__(self):
-        return 'FileSystemPathPointer(%r)' % self._path
+        # This should be a byte string under Python 2.x;
+        # we don't want transliteration here so
+        # @python_2_unicode_compatible is not used.
+        return str('FileSystemPathPointer(%r)' % self._path)
 
-    def __str__(self):
-        return self._path
+    # there is no need for __str__ method because FileSystemPathPointer
+    # is a str subclass and str.__str__ does the right thing
 
 
 class BufferedGzipFile(GzipFile):
@@ -362,11 +369,11 @@ class ZipFilePathPointer(PathPointer):
         return ZipFilePathPointer(self._zipfile, entry)
 
     def __repr__(self):
-        return 'ZipFilePathPointer(%r, %r)' % (
+        return str('ZipFilePathPointer(%r, %r)') % (
             self._zipfile.filename, self._entry)
 
     def __str__(self):
-        return '%r/%r' % (self._zipfile.filename, self._entry)
+        return str('%r/%r') % (self._zipfile.filename, self._entry)
 
 ######################################################################
 # Access Functions
@@ -730,6 +737,9 @@ def _open(resource_url):
 # Lazy Resource Loader
 ######################################################################
 
+# We shouldn't apply @python_2_unicode_compatible
+# decorator to LazyLoader, this is resource.__class__ responsibility.
+
 class LazyLoader(object):
     def __init__(self, path):
         self.__path = path
@@ -792,7 +802,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         raise NotImplementedError('OpenOnDemandZipfile is read-only')
 
     def __repr__(self):
-        return 'OpenOnDemandZipFile(%r)' % self.filename
+        return repr(str('OpenOnDemandZipFile(%r)') % self.filename)
 
 ######################################################################
 #{ Seekable Unicode Stream Reader

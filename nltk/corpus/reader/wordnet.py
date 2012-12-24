@@ -7,7 +7,7 @@
 #         Nitin Madnani <nmadnani@ets.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import math
 import re
@@ -18,7 +18,7 @@ from collections import defaultdict
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
-from nltk.compat import xrange
+from nltk.compat import xrange, python_2_unicode_compatible
 
 ######################################################################
 ## Table of Contents
@@ -162,6 +162,8 @@ class _WordNetObject(object):
     def __ne__(self, other):
         return self.name != other.name
 
+
+@python_2_unicode_compatible
 class Lemma(_WordNetObject):
     """
     The lexical entry for a single morphological form of a
@@ -251,6 +253,7 @@ class Lemma(_WordNetObject):
         return self._related('\\')
 
 
+@python_2_unicode_compatible
 class Synset(_WordNetObject):
     """Create a Synset from a "<lemma>.<pos>.<number>" string where:
     <lemma> is the word's morphological stem
@@ -833,7 +836,7 @@ class WordNetCorpusReader(CorpusReader):
     A corpus reader used to access wordnet or its variants.
     """
 
-    _ENCODING = 'utf8' # what encoding should we be using?
+    _ENCODING = 'utf8'
 
     #{ Part-of-speech constants
     ADJ, ADJ_SAT, ADV, NOUN, VERB = 'a', 's', 'r', 'n', 'v'

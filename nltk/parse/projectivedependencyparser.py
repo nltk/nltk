@@ -6,23 +6,22 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
-import math
-from pprint import pformat
 from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
                           StatisticalDependencyGrammar, parse_dependency_grammar)
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 from nltk.internals import raise_unorderable_types
-from nltk.compat import total_ordering
+from nltk.compat import total_ordering, python_2_unicode_compatible
 
 #################################################################
 # Dependency Span
 #################################################################
 
 @total_ordering
+@python_2_unicode_compatible
 class DependencySpan(object):
     """
     A contiguous span over some part of the input string representing
@@ -68,7 +67,7 @@ class DependencySpan(object):
         return str
 
     def __eq__(self, other):
-        return (type(self) == type(other) and 
+        return (type(self) == type(other) and
                 self._comparison_key == other._comparison_key)
 
     def __ne__(self, other):
@@ -89,6 +88,7 @@ class DependencySpan(object):
 # Chart Cell
 #################################################################
 
+@python_2_unicode_compatible
 class ChartCell(object):
     """
     A cell from the parse chart formed when performing the CYK algorithm.

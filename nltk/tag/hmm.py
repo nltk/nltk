@@ -67,7 +67,7 @@ of EM.
 For more information, please consult the source code for this module,
 which includes extensive demonstration code.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 import types
@@ -84,6 +84,7 @@ from nltk.probability import (FreqDist, ConditionalFreqDist,
                               MLEProbDist, UniformProbDist)
 from nltk.metrics import accuracy
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
+from nltk.compat import python_2_unicode_compatible
 
 from nltk.tag.api import TaggerI, HiddenMarkovModelTaggerTransformI
 
@@ -93,6 +94,7 @@ _NINF = float('-1e300')
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
 
+@python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
     """
     Hidden Markov model class, a generative model for labelling sequence data.
@@ -766,18 +768,18 @@ class HiddenMarkovModelTagger(TaggerI):
 
             for test_sent, predicted_sent in zip(test_sequence,
                                                  predicted_sequence):
-                print('Test:', \
-                    ' '.join(['%s/%s' % (str(token), str(tag))
+                print('Test:',
+                    ' '.join(['%s/%s' % (token, tag)
                               for (token, tag) in test_sent]))
                 print()
-                print('Untagged:', \
-                    ' '.join([str(token) for (token, tag) in test_sent]))
+                print('Untagged:',
+                    ' '.join(["%s" % token for (token, tag) in test_sent]))
                 print()
-                print('HMM-tagged:', \
-                    ' '.join(['%s/%s' % (str(token), str(tag))
+                print('HMM-tagged:',
+                    ' '.join(['%s/%s' % (token, tag)
                               for (token, tag) in predicted_sent]))
                 print()
-                print('Entropy:', \
+                print('Entropy:',
                     self.entropy([(token, None) for
                                   (token, tag) in predicted_sent]))
                 print()

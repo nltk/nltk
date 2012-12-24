@@ -4,7 +4,7 @@
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import copy
 from sys import stdout
@@ -16,6 +16,7 @@ except ImportError:
     pass
 
 from nltk.cluster.api import ClusterI
+from nltk.compat import python_2_unicode_compatible
 
 class VectorSpaceClusterer(ClusterI):
     """
@@ -164,6 +165,8 @@ class _DendrogramNode(object):
             groups.append(node.leaves())
         return groups
 
+
+@python_2_unicode_compatible
 class Dendrogram(object):
     """
     Represents a dendrogram, a tree with a specified branching order.  This
@@ -229,7 +232,7 @@ class Dendrogram(object):
         if leaf_labels:
             last_row = leaf_labels
         else:
-            last_row = [str(leaf._value) for leaf in leaves]
+            last_row = ["%s" % leaf._value for leaf in leaves]
 
         # find the bottom row and the best cell width
         width = max(map(len, last_row)) + 1

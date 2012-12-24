@@ -4,11 +4,13 @@
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
 
 import re
 from collections import defaultdict
 
 from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategory
+from nltk.compat import python_2_unicode_compatible
 
 #------------
 # Regular expressions used for parsing components of the lexicon
@@ -33,6 +35,7 @@ reComm = re.compile('''([^#]*)(?:#.*)?''')
 #----------
 # Lexicons
 #----------
+@python_2_unicode_compatible
 class CCGLexicon(object):
     '''
     Class representing a lexicon for CCG grammars.
@@ -70,7 +73,7 @@ class CCGLexicon(object):
                     st = st + " | "
                 else:
                     first = False
-                st = st + str(cat)
+                st = st + "%s" % cat
         return st
 
 

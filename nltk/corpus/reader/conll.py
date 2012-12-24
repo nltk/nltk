@@ -10,6 +10,8 @@
 Read CoNLL-style chunk fileids.
 """
 
+from __future__ import unicode_literals
+
 import os
 import codecs
 import textwrap
@@ -367,6 +369,7 @@ class ConllCorpusReader(CorpusReader):
         return [grid[i][column_index] for i in range(len(grid))]
 
 
+@compat.python_2_unicode_compatible
 class ConllSRLInstance(object):
     """
     An SRL instance from a CoNLL corpus, which identifies and
@@ -436,6 +439,7 @@ class ConllSRLInstance(object):
                                    initial_indent='    ',
                                    subsequent_indent='    ')
 
+@compat.python_2_unicode_compatible
 class ConllSRLInstanceList(list):
     """
     Set of instances for a single sentence

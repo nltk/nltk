@@ -32,6 +32,7 @@ chi-square feature selection:
 
 (Such a classifier could be trained on word counts for text classification.)
 """
+from __future__ import print_function, unicode_literals
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
@@ -43,6 +44,7 @@ try:
 except ImportError:
     pass
 
+@compat.python_2_unicode_compatible
 class SklearnClassifier(ClassifierI):
     """Wrapper for scikit-learn classifiers."""
 

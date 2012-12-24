@@ -6,18 +6,18 @@
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
-import sys
+from __future__ import print_function, unicode_literals
 import logging
 from collections import defaultdict
 
 from nltk import compat
 from nltk.metrics import precision, recall
 
+@compat.python_2_unicode_compatible
 class AlignedSent(object):
     """
-    Return an aligned sentence object, which encapsulates two sentences along with
-    an ``Alignment`` between them.
+    Return an aligned sentence object, which encapsulates two sentences
+    along with an ``Alignment`` between them.
 
         >>> from nltk.align import AlignedSent
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
@@ -45,8 +45,7 @@ class AlignedSent(object):
     :type alignment: Alignment
     """
 
-    def __init__(self, words = [], mots = [], alignment = '', \
-                 encoding = 'latin-1'):
+    def __init__(self, words=[], mots=[], alignment='', encoding='utf8'):
         self._words = words
         self._mots = mots
         self.alignment = alignment
@@ -202,6 +201,7 @@ class AlignedSent(object):
                 float(len(align) + len(sure)))
 
 
+@compat.python_2_unicode_compatible
 class Alignment(frozenset):
     """
     A storage class for representing alignment between two sequences, s1, s2.

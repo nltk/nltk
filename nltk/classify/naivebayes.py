@@ -29,7 +29,7 @@ sum to one:
 |  P(label|features) = --------------------------------------------
 |                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
 
@@ -140,7 +140,7 @@ class NaiveBayesClassifier(ClassifierI):
                 ratio = '%8.1f' % (cpdist[l1,fname].prob(fval) /
                                   cpdist[l0,fname].prob(fval))
             print(('%24s = %-14r %6s : %-6s = %s : 1.0' %
-                   (fname, fval, str(l1)[:6], str(l0)[:6], ratio)))
+                   (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)))
 
     def most_informative_features(self, n=100):
         """

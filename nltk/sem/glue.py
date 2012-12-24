@@ -5,7 +5,7 @@
 # Copyright (C) 2001-2012 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, division
+from __future__ import print_function, division, unicode_literals
 
 import os
 
@@ -16,6 +16,7 @@ from nltk.corpus import brown
 from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
 from nltk.sem.logic import (LogicParser, Expression, Variable, VariableExpression,
                             LambdaExpression, AbstractVariableExpression)
+from nltk.compat import python_2_unicode_compatible
 from . import drt
 from . import linearlogic
 
@@ -28,6 +29,7 @@ SPEC_SEMTYPES = {'a'       : 'ex_quant',
 
 OPTIONAL_RELATIONSHIPS = ['nmod', 'vmod', 'punct']
 
+@python_2_unicode_compatible
 class GlueFormula(object):
     def __init__(self, meaning, glue, indices=None):
         if not indices:
@@ -110,8 +112,9 @@ class GlueFormula(object):
         return accum
 
     def __repr__(self):
-        return str(self)
+        return "%s" % self
 
+@python_2_unicode_compatible
 class GlueDict(dict):
     def __init__(self, filename, encoding=None):
         self.filename = filename
@@ -211,16 +214,17 @@ class GlueDict(dict):
     def __str__(self):
         accum = ''
         for pos in self:
+            str_pos = "%s" % pos
             for relset in self[pos]:
                 i = 1
                 for gf in self[pos][relset]:
                     if i==1:
-                        accum += str(pos) + ': '
+                        accum += str_pos + ': '
                     else:
-                        accum += ' '*(len(str(pos))+2)
-                    accum += str(gf)
+                        accum += ' '*(len(str_pos)+2)
+                    accum += "%s" % gf
                     if relset and i==len(self[pos][relset]):
-                        accum += ' : ' + str(relset)
+                        accum += ' : %s' % relset
                     accum += '\n'
                     i += 1
         return accum

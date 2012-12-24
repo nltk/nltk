@@ -85,19 +85,18 @@ nltk.  All such modifications are marked with \"--NLTK--\".  The nltk
 version of this module is maintained by the NLTK developers, and is
 available from <http://nltk.sourceforge.net>
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 ## --NLTK--
 ## Declare this module's documentation format.
 __docformat__ = 'plaintext'
 
-import sys
 import re
 
-## --NLTK--
-## Import the nltk.stemmer module, which defines the stemmer interface
 from .api import StemmerI
+from nltk.compat import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class PorterStemmer(StemmerI):
 
     ## --NLTK--

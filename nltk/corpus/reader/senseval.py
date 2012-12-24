@@ -21,7 +21,7 @@ The NLTK version of the Senseval 2 files uses well-formed XML.
 Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 from xml.etree import ElementTree
@@ -32,16 +32,19 @@ from nltk.tokenize import *
 from .util import *
 from .api import *
 
+@compat.python_2_unicode_compatible
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
         self.word = word
         self.senses = tuple(senses)
         self.position = position
         self.context = context
+
     def __repr__(self):
         return ('SensevalInstance(word=%r, position=%r, '
                 'context=%r, senses=%r)' %
                 (self.word, self.position, self.context, self.senses))
+
 
 class SensevalCorpusReader(CorpusReader):
     def instances(self, fileids=None):

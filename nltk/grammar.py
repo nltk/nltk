@@ -68,12 +68,13 @@ The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import string_types, total_ordering, text_type
+from nltk.compat import (string_types, total_ordering, text_type,
+                         python_2_unicode_compatible, unicode_repr)
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
@@ -84,6 +85,7 @@ from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
 #################################################################
 
 @total_ordering
+@python_2_unicode_compatible
 class Nonterminal(object):
     """
     A non-terminal symbol for a context free grammar.  ``Nonterminal``
@@ -150,9 +152,9 @@ class Nonterminal(object):
         :rtype: str
         """
         if isinstance(self._symbol, string_types):
-            return '%s' % (self._symbol,)
+            return '%s' % self._symbol
         else:
-            return '%r' % (self._symbol,)
+            return '%s' % unicode_repr(self._symbol)
 
     def __str__(self):
         """
@@ -161,9 +163,9 @@ class Nonterminal(object):
         :rtype: str
         """
         if isinstance(self._symbol, string_types):
-            return '%s' % (self._symbol,)
+            return '%s' % self._symbol
         else:
-            return '%r' % (self._symbol,)
+            return '%s' % unicode_repr(self._symbol)
 
     def __div__(self, rhs):
         """
@@ -230,6 +232,7 @@ def is_terminal(item):
 #################################################################
 
 @total_ordering
+@python_2_unicode_compatible
 class Production(object):
     """
     A grammar production.  Each production maps a single symbol
@@ -312,13 +315,8 @@ class Production(object):
 
         :rtype: str
         """
-        result = '%r ->' % (self._lhs,)
-        for elt in self._rhs:
-            if isinstance(elt, text_type):
-                # repr should be the same under python 2 and python 3
-                result += " '%s'" % elt
-            else:
-                result += ' %r' % (elt,)
+        result = '%s -> ' % unicode_repr(self._lhs)
+        result += " ".join([unicode_repr(el) for el in self._rhs])
         return result
 
     def __repr__(self):
@@ -356,6 +354,7 @@ class Production(object):
         return self._hash
 
 
+@python_2_unicode_compatible
 class DependencyProduction(Production):
     """
     A dependency grammar production.  Each production maps a single
@@ -367,12 +366,13 @@ class DependencyProduction(Production):
 
         :rtype: str
         """
-        str = '\'%s\' ->' % (self._lhs,)
+        result = '\'%s\' ->' % (self._lhs,)
         for elt in self._rhs:
-                str += ' \'%s\'' % (elt,)
-        return str
+            result += ' \'%s\'' % (elt,)
+        return result
 
 
+@python_2_unicode_compatible
 class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
@@ -398,7 +398,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
         Production.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return Production.__str__(self) + ' [%.6g]' % self.prob()
+        return Production.__unicode__(self) + ' [%.6g]' % self.prob()
 
     def __eq__(self, other):
         return (type(self) == type(other) and
@@ -416,6 +416,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
 # Grammars
 #################################################################
 
+@python_2_unicode_compatible
 class ContextFreeGrammar(object):
     """
     A context-free grammar.  A grammar consists of a start state and
@@ -815,6 +816,7 @@ class FeatureGrammar(ContextFreeGrammar):
             return item
 
 @total_ordering
+@python_2_unicode_compatible
 class FeatureValueType(object):
     """
     A helper class for ``FeatureGrammars``, designed to be different
@@ -842,6 +844,8 @@ class FeatureValueType(object):
     def __hash__(self):
         return self._hash
 
+
+@python_2_unicode_compatible
 class DependencyGrammar(object):
     """
     A dependency grammar.  A DependencyGrammar consists of a set of
@@ -921,6 +925,7 @@ class DependencyGrammar(object):
         return 'Dependency grammar with %d productions' % len(self._productions)
 
 
+@python_2_unicode_compatible
 class StatisticalDependencyGrammar(object):
     """
 

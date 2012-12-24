@@ -67,7 +67,7 @@ or::
     python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 """
 #----------------------------------------------------------------------
-from __future__ import print_function, division
+from __future__ import print_function, division, unicode_literals
 
 """
 
@@ -258,6 +258,7 @@ class Package(object):
 
     def __repr__(self):
         return '<Package %s>' % self.id
+
 
 class Collection(object):
     """

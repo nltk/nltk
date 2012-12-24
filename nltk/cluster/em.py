@@ -4,14 +4,16 @@
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 try:
     import numpy
 except ImportError:
     pass
 
+from nltk.compat import python_2_unicode_compatible
 from .util import VectorSpaceClusterer
 
+@python_2_unicode_compatible
 class EMClusterer(VectorSpaceClusterer):
     """
     The Gaussian EM clusterer models the vectors as being produced by

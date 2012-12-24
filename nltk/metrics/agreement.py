@@ -68,7 +68,7 @@ Expected results from the Artstein and Poesio survey paper:
     1.0
 
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import logging
 from itertools import groupby
@@ -82,6 +82,7 @@ from nltk.metrics.distance import binary_distance
 
 log = logging.getLogger(__file__)
 
+@compat.python_2_unicode_compatible
 class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
 

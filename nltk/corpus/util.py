@@ -9,12 +9,15 @@
 #{ Lazy Corpus Loader
 ######################################################################
 
+from __future__ import unicode_literals
 import re
 import gc
 import nltk
+from nltk.compat import python_2_unicode_compatible
 
 TRY_ZIPFILE_FIRST = False
 
+@python_2_unicode_compatible
 class LazyCorpusLoader(object):
     """
     A proxy object which is used to stand in for a corpus object

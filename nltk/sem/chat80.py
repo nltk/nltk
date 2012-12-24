@@ -122,15 +122,15 @@ The set of rules is written to the file ``chat_pnames.cfg`` in the
 current directory.
 
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 import shelve
 import os
 import sys
 
-import nltk.data 
-from nltk.compat import string_types
+import nltk.data
+from nltk.compat import string_types, python_2_unicode_compatible
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -212,6 +212,7 @@ not_unary = ['borders.pl', 'contain.pl']
 
 ###########################################################################
 
+@python_2_unicode_compatible
 class Concept(object):
     """
     A Concept class, loosely based on SKOS
@@ -415,8 +416,6 @@ def sql_query(dbname, query):
         import sqlite3
         path = nltk.data.find(dbname)
         connection =  sqlite3.connect(path)
-        # return ASCII strings if possible
-        connection.text_factory = sqlite3.OptimizedUnicode
         cur = connection.cursor()
         return cur.execute(query)
     except ValueError:
@@ -656,7 +655,7 @@ def make_lex(symbols):
     for s in symbols:
         parts = s.split('_')
         caps = [p.capitalize() for p in parts]
-        pname = ('_').join(caps)
+        pname = '_'.join(caps)
         rule = template % (s, pname)
         lex.append(rule)
     return lex
