@@ -116,7 +116,7 @@ approach may be used:
 2) ``str(something)`` should be replaced with ``"%s" % something``
    when used (maybe indirectly) inside ``__str__`` or ``__repr__``;
 3) ``repr(something)`` and ``"%r" % something`` should be replaced with
-   ``unicode_repr(something)`` and ``"%s" % unicode_repr(something)`` when
+   ``unicode_repr(something)`` and ``"%s" % unicode_repr(something)``
    when used (maybe indirectly) inside ``__str__`` or ``__repr__``.
 
 Doctests porting notes
