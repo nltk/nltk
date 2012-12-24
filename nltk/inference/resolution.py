@@ -427,7 +427,7 @@ def clausify(expression):
     Skolemize, clausify, and standardize the variables apart.
     """
     clause_list = []
-    for clause in _clausify(skolemize.skolemize(expression)):
+    for clause in _clausify(skolemize(expression)):
         for free in clause.free():
             if is_indvar(free.name):
                 newvar = VariableExpression(unique_variable())
