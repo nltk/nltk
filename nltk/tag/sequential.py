@@ -471,7 +471,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         tags = [tag for regex, tag in regexps]
         self._map = dict(zip(labels, tags))
         regexps_labels = [(regex, label) for ((regex,tag),label) in zip(regexps,labels)]
-        self._regexs = re.compile('|'.join(['(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels]))
+        self._regexs = re.compile('|'.join('(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels))
         self._size=len(regexps)
 
     def choose_tag(self, tokens, index, history):

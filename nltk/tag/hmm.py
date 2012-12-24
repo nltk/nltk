@@ -769,15 +769,15 @@ class HiddenMarkovModelTagger(TaggerI):
             for test_sent, predicted_sent in zip(test_sequence,
                                                  predicted_sequence):
                 print('Test:',
-                    ' '.join(['%s/%s' % (token, tag)
-                              for (token, tag) in test_sent]))
+                    ' '.join('%s/%s' % (token, tag)
+                             for (token, tag) in test_sent))
                 print()
                 print('Untagged:',
-                    ' '.join(["%s" % token for (token, tag) in test_sent]))
+                    ' '.join("%s" % token for (token, tag) in test_sent))
                 print()
                 print('HMM-tagged:',
-                    ' '.join(['%s/%s' % (token, tag)
-                              for (token, tag) in predicted_sent]))
+                    ' '.join('%s/%s' % (token, tag)
+                              for (token, tag) in predicted_sent))
                 print()
                 print('Entropy:',
                     self.entropy([(token, None) for

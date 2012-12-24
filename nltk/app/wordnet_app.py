@@ -598,11 +598,11 @@ def _collect_one_synset(word, synset, synset_relations):
             ref = Reference(w)
             return make_lookup_link(ref, w)
 
-    s += ', '.join([format_lemma(l.name) for l in synset.lemmas])
+    s += ', '.join(format_lemma(l.name) for l in synset.lemmas)
 
     gl = " (%s) <i>%s</i> " % \
         (synset.definition,
-         "; ".join(["\"%s\"" % e for e in synset.examples]))
+         "; ".join("\"%s\"" % e for e in synset.examples))
     return s + gl + _synset_relations(word, synset, synset_relations) + '</li>\n'
 
 def _collect_all_synsets(word, pos, synset_relations=dict()):

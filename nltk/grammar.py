@@ -316,7 +316,7 @@ class Production(object):
         :rtype: str
         """
         result = '%s -> ' % unicode_repr(self._lhs)
-        result += " ".join([unicode_repr(el) for el in self._rhs])
+        result += " ".join(unicode_repr(el) for el in self._rhs)
         return result
 
     def __repr__(self):

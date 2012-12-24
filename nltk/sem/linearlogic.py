@@ -342,7 +342,7 @@ class BindingDict(object):
                         ' VariableBindingsLists: %s, %s' % (self, other))
 
     def __str__(self):
-        return '{' + ', '.join(['%s: %s' % (v, self.d[v]) for v in self.d]) + '}'
+        return '{' + ', '.join('%s: %s' % (v, self.d[v]) for v in self.d) + '}'
 
     def __repr__(self):
         return 'BindingDict: %s' % self

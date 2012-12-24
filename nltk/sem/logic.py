@@ -763,7 +763,7 @@ class ApplicationExpression(Expression):
         # uncurry the arguments and find the base function
         if self.is_atom():
             function, args = self.uncurry()
-            arg_str = ','.join(map(str, args))
+            arg_str = ','.join("%s" % arg for arg in args)
         else:
             #Leave arguments curried
             function = self.function
@@ -1098,7 +1098,7 @@ class LambdaExpression(VariableBinderExpression):
         while term.__class__ == self.__class__:
             variables.append(term.variable)
             term = term.term
-        return Tokens.LAMBDA + ' '.join(["%s" % v for v in variables]) + \
+        return Tokens.LAMBDA + ' '.join("%s" % v for v in variables) + \
                Tokens.DOT + "%s" % term
 
 
@@ -1124,7 +1124,7 @@ class QuantifiedExpression(VariableBinderExpression):
         while term.__class__ == self.__class__:
             variables.append(term.variable)
             term = term.term
-        return self.getQuantifier() + ' ' + ' '.join(["%s" % v for v in variables]) + \
+        return self.getQuantifier() + ' ' + ' '.join("%s" % v for v in variables) + \
                Tokens.DOT + "%s" % term
 
 class ExistsExpression(QuantifiedExpression):

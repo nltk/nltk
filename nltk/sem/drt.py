@@ -300,7 +300,7 @@ class DRS(AbstractDrs, Expression):
         return drs
 
     def _order_ref_strings(self, refs):
-        strings = map(str, refs)
+        strings = ["%s" % ref for ref in refs]
         ind_vars = []
         func_vars = []
         event_vars = []
@@ -343,7 +343,7 @@ class DRS(AbstractDrs, Expression):
 
     def __str__(self):
         drs = '([%s],[%s])' % (','.join(self._order_ref_strings(self.refs)),
-                               ', '.join(["%s" % cond for cond in self.conds])) # map(str, self.conds)))
+                               ', '.join("%s" % cond for cond in self.conds)) # map(str, self.conds)))
         if self.consequent:
             return DrtTokens.OPEN + drs + ' ' + DrtTokens.IMP + ' ' + \
                    "%s" % self.consequent + DrtTokens.CLOSE
@@ -478,7 +478,7 @@ class DrtLambdaExpression(AbstractDrs, LambdaExpression):
         while term.__class__ == self.__class__:
             variables.append(term.variable)
             term = term.term
-        var_string = ' '.join(map(str, variables)) + DrtTokens.DOT
+        var_string = ' '.join("%s" % v for v in variables) + DrtTokens.DOT
         term_lines = term._pretty()
         blank = ' ' * len(var_string)
         return (['    ' + blank      + line for line in term_lines[:1]] +
@@ -710,7 +710,7 @@ class PossibleAntecedents(list, AbstractDrs, Expression):
         return [blank, blank, s]
 
     def __str__(self):
-        return '[' + ','.join(["%s" % it for it in self]) + ']'
+        return '[' + ','.join("%s" % it for it in self) + ']'
 
 
 class AnaphoraResolutionException(Exception):
@@ -951,7 +951,7 @@ class DrsDrawer(object):
 
         # Handle Discourse Referents
         if expression.refs:
-            refs = ' '.join(map(str, expression.refs))
+            refs = ' '.join("%s"%r for r in expression.refs)
         else:
             refs = '     '
         (max_right, bottom) = command(refs, left, bottom)

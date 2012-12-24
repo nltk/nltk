@@ -836,8 +836,8 @@ class BoxerDrs(AbstractBoxerDrs):
 
     def __repr__(self):
         s = 'drs(%s, [%s], [%s])' % (self.label,
-                                    ', '.join(["%s" % r for r in self.refs]),
-                                    ', '.join(["%s" % c for c in self.conds]))
+                                    ', '.join("%s" % r for r in self.refs),
+                                    ', '.join("%s" % c for c in self.conds))
         if self.consequent is not None:
             s = 'imp(%s, %s)' % (s, self.consequent)
         return s
@@ -910,7 +910,7 @@ class BoxerIndexed(AbstractBoxerDrs):
 
     def __repr__(self):
         s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id,
-                                 self.sent_index, ', '.join(["%s" % wi for wi in self.word_indices]))
+                                 self.sent_index, ', '.join("%s" % wi for wi in self.word_indices))
         for v in self:
             s += ', %s' % v
         return s + ')'

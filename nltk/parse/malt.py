@@ -168,7 +168,7 @@ class MaltParser(ParserI):
                                                  dir=self.working_dir,
                                                  delete=False)
         try:
-            input_file.write('\n'.join([dg.to_conll(10) for dg in depgraphs]))
+            input_file.write('\n'.join(dg.to_conll(10) for dg in depgraphs))
             input_file.close()
             self.train_from_file(input_file.name, verbose=verbose)
         finally:

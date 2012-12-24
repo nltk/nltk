@@ -301,7 +301,7 @@ class Clause(list):
         return Clause([atom.substitute_bindings(bindings) for atom in self])
 
     def __str__(self):
-        return '{' + ', '.join(["%s" % item for item in self]) + '}'
+        return '{' + ', '.join("%s" % item for item in self) + '}'
 
     def __repr__(self):
         return "%s" % self
@@ -548,7 +548,7 @@ class BindingDict(object):
         return len(self.d)
 
     def __str__(self):
-        return '{' + ', '.join(['%s: %s' % (v, self.d[v]) for v in self.d]) + '}'
+        return '{' + ', '.join('%s: %s' % (v, self.d[v]) for v in self.d) + '}'
 
     def __repr__(self):
         return "%s" % self

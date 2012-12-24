@@ -385,6 +385,6 @@ class VerbnetCorpusReader(XMLCorpusReader):
         for pred in vnframe.findall('SEMANTICS/PRED'):
             args = [arg.get('value') for arg in pred.findall('ARGS/ARG')]
             pieces.append('%s(%s)' % (pred.get('value'), ', '.join(args)))
-        return '\n'.join(['%s* %s' % (indent, piece) for piece in pieces])
+        return '\n'.join('%s* %s' % (indent, piece) for piece in pieces)
 
 

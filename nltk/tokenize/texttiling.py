@@ -83,8 +83,8 @@ class TextTilingTokenizer(TokenizerI):
         # Tokenization step starts here
 
         # Remove punctuation
-        nopunct_text = ''.join([c for c in lowercase_text
-                                      if re.match("[a-z\-\' \n\t]", c)])
+        nopunct_text = ''.join(c for c in lowercase_text
+                               if re.match("[a-z\-\' \n\t]", c))
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
 
         tokseqs = self._divide_to_tokensequences(nopunct_text)

@@ -3706,7 +3706,7 @@ def demo():
         stemmer = SnowballStemmer(language)
         excerpt = udhr.words(udhr_corpus[language]) [:300]
 
-        stemmed = " ".join([stemmer.stem(word) for word in excerpt])
+        stemmed = " ".join(stemmer.stem(word) for word in excerpt)
         stemmed = re.sub(r"(.{,70})\s", r'\1\n', stemmed+' ').rstrip()
         excerpt = " ".join(excerpt)
         excerpt = re.sub(r"(.{,70})\s", r'\1\n', excerpt+' ').rstrip()

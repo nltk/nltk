@@ -347,8 +347,8 @@ class ProximateTokensRule(BrillRule):
         try:
             return self.__repr
         except Exception:
-            conditions = ' and '.join(['%s in %d...%d' % (v,s,e)
-                                       for (s,e,v) in self._conditions])
+            conditions = ' and '.join('%s in %d...%d' % (v,s,e)
+                                      for (s,e,v) in self._conditions)
             self.__repr = ('<%s: %s->%s if %s>' %
                            (self.__class__.__name__, self.original_tag,
                             self.replacement_tag, conditions))
@@ -361,8 +361,8 @@ class ProximateTokensRule(BrillRule):
         if len(self._conditions) == 0:
             conditions = ''
         else:
-            conditions = ' if '+ ', and '.join([self._condition_to_str(c)
-                                               for c in self._conditions])
+            conditions = ' if '+ ', and '.join(self._condition_to_str(c)
+                                               for c in self._conditions)
         return replacement+conditions
 
     def _condition_to_str(self, condition):

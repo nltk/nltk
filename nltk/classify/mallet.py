@@ -54,9 +54,9 @@ def config_mallet(mallet_home=None):
     if not os.path.isdir(lib_dir):
         raise ValueError('While configuring mallet: directory %r '
                          'not found.' % lib_dir)
-    _mallet_classpath = os.path.pathsep.join([os.path.join(lib_dir, filename)
+    _mallet_classpath = os.path.pathsep.join(os.path.join(lib_dir, filename)
                                   for filename in sorted(os.listdir(lib_dir))
-                                  if filename.endswith('.jar')])
+                                  if filename.endswith('.jar'))
 
 
 def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
