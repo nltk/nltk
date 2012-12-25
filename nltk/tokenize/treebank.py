@@ -34,18 +34,12 @@ class TreebankWordTokenizer(TokenizerI):
     - separate periods that appear at the end of line
 
         >>> from nltk.tokenize import TreebankWordTokenizer
-        >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks.'''
+        >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'''
         >>> TreebankWordTokenizer().tokenize(s)
-        ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.',
-        'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+        ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
         >>> s = "They'll save and invest more."
         >>> TreebankWordTokenizer().tokenize(s)
         ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
-
-    NB. this tokenizer assumes that the text is presented as one sentence per line,
-    where each line is delimited with a newline character.
-    The only periods to be treated as separate tokens are those appearing
-    at the end of a line.
     """
 
     # List of contractions adapted from Robert MacIntyre's tokenizer.
