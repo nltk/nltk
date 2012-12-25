@@ -39,6 +39,9 @@ def _raise_if_svmlight_is_missing():
         )
 
 
+def cmp(a, b):
+    return (a > b) - (a < b)
+
 # create a boolean feature name for the SVM from a feature/value pair,
 # that'll take on a 1.0 value if the original feature:value is asserted.
 def featurename(feature, value):
@@ -257,8 +260,6 @@ class SvmClassifier(ClassifierI):
 
 
 def demo():
-    import random
-
     from nltk.classify import accuracy
     from nltk.corpus import names
 
@@ -268,8 +269,9 @@ def demo():
     names = ([(str(name), 'male') for name in names.words('male.txt')] +
              [(str(name), 'female') for name in names.words('female.txt')])
 
-    random.seed(60221023)
-    random.shuffle(names)
+    # shuffle
+    ordering = [i * 13 % len(names) for i in range(len(names))]
+    names = [names[i] for i in ordering]
 
     featuresets = [(gender_features(n), g) for (n,g) in names]
     train_set, test_set = featuresets[500:], featuresets[:500]
@@ -284,7 +286,7 @@ def demo():
     print('NLTK-format features:\n    ' + str(test_set[0]))
     print('SVMlight-format features:\n    ' + str(map_instance_to_svm(test_set[0], classifier._labelmapping, classifier._svmfeatureindex)))
     distr = classifier.prob_classify(test_set[0][0])
-    print('Instance classification and confidence:', distr.max(), distr.prob(distr.max()))
+    print('Instance classification and confidence: %s %.5f' % (distr.max(), distr.prob(distr.max())))
     print('--- Measuring classifier performance ---')
     print('Overall accuracy:', accuracy(classifier, test_set))
 

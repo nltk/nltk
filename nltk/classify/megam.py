@@ -22,7 +22,7 @@ for details.
 
 .. _megam: http://www.cs.utah.edu/~hal/megam/
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import os
 import os.path
@@ -62,7 +62,7 @@ def config_megam(bin=None):
 ######################################################################
 
 def write_megam_file(train_toks, encoding, stream,
-                     bernoulli=True, explicit=True):
+                     bernoulli=True, explicit=True, bin_stream=False):
     """
     Generate an input file for ``megam`` based on the given corpus of
     classified tokens.
@@ -91,10 +91,22 @@ def write_megam_file(train_toks, encoding, stream,
         list the features that would fire for any of the possible
         labels, for each token.  If ``explicit=True``, then you must
         call ``megam`` with the ``-explicit`` option.
+
+    :type bin_stream: boolean
+    :param bin_stream: Indicates whether the stream expects unicode
+        string or bytes sequence.
     """
     # Look up the set of labels.
     labels = encoding.labels()
     labelnum = dict([(label, i) for (i, label) in enumerate(labels)])
+
+    if bin_stream == True:
+        class BytesWriter:
+            def __init__(self, stream):
+                self.stream = stream
+            def write(self, s):
+                self.stream.write(s.encode('utf-8'))
+        stream = BytesWriter(stream)
 
     # Write the file, which contains one line per instance.
     for featureset, label in train_toks:
@@ -130,7 +142,7 @@ def parse_megam_weights(s, features_count, explicit=True):
     if numpy is None:
         raise ValueError('This function requires that numpy be installed')
     assert explicit, 'non-explicit not supported yet'
-    lines = s.strip().split('\n')
+    lines = s.decode('utf-8').strip().split('\n')
     weights = numpy.zeros(features_count, 'd')
     for line in lines:
         if line.strip():

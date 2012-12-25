@@ -25,7 +25,7 @@ def config_tadm(bin=None):
         binary_names=['tadm'],
         url='http://tadm.sf.net')
 
-def write_tadm_file(train_toks, encoding, stream):
+def write_tadm_file(train_toks, encoding, stream, bin_stream=False):
     """
     Generate an input file for ``tadm`` based on the given corpus of
     classified tokens.
@@ -40,11 +40,22 @@ def write_tadm_file(train_toks, encoding, stream):
     :type stream: stream
     :param stream: The stream to which the ``tadm`` input file should be
         written.
+    :type bin_stream: boolean
+    :param bin_stream: Indicates whether the stream is in binary mode.
     """
     # See the following for a file format description:
     #
     # http://sf.net/forum/forum.php?thread_id=1391502&forum_id=473054
     # http://sf.net/forum/forum.php?thread_id=1675097&forum_id=473054
+
+    if bin_stream == True:
+        class BytesStream:
+            def __init__(self, stream):
+                self.stream = stream
+            def write(self, s):
+                self.stream.write(s.encode('utf-8'))
+        stream = BytesStream(stream)
+
     labels = encoding.labels()
     for featureset, label in train_toks:
         stream.write('%d\n' % len(labels))
@@ -75,7 +86,7 @@ def call_tadm(args):
 
     # Call tadm via a subprocess
     cmd = [_tadm_bin] + args
-    p = subprocess.Popen(cmd, stdout=sys.stdout)
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
 
     # Check the return code.

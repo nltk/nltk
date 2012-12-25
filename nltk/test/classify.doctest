@@ -126,17 +126,17 @@ SVMlight.
     >>> nltk.classify.svm.demo()
     --- nltk.classify.svm demo ---
     Number of training examples: 7444
-    Total SVM dimensions: 63
+    Total SVM dimensions: 62
     Label mapping: {'male': -1, 'female': 1}
     --- Processing an example instance ---
-    Reference instance: ('Agnola', 'female')
+    Reference instance: ('Aamir', 'male')
     NLTK-format features:
-        ({'penultimate_letter': 'l', 'last_letter': 'a'}, 'female')
+        ({'penultimate_letter': 'i', 'last_letter': 'r'}, 'male')
     SVMlight-format features:
-        (1, [(12, 1.0), (48, 1.0)])
-    Instance classification and confidence: female 1.0
+        (-1, [(17, 1.0), (56, 1.0)])
+    Instance classification and confidence: male 0.99958
     --- Measuring classifier performance ---
-    Overall accuracy: 0.762
+    Overall accuracy: 0.77
 
 
 Test the Maximum Entropy classifier training algorithms; they should all
@@ -145,13 +145,15 @@ generate the same results.
     >>> def test_maxent(algorithms):
     ...     classifiers = {}
     ...     for algorithm in nltk.classify.MaxentClassifier.ALGORITHMS:
-    ...         if algorithm.lower() == 'megam':
+    ...         if algorithm == 'TADM':
+    ...             continue
+    ...         if algorithm == 'MEGAM':
     ...             try: nltk.classify.megam.config_megam()
     ...             except: pass
     ...         try:
     ...             classifiers[algorithm] = nltk.classify.MaxentClassifier.train(
     ...                 train, algorithm, trace=0, max_iter=1000)
-    ...         except Exception, e:
+    ...         except Exception as e:
     ...             classifiers[algorithm] = e
     ...     print(' '*11+''.join('      test[%s]  ' % i
     ...                          for i in range(len(test))))
