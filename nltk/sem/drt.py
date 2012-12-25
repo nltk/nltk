@@ -285,7 +285,8 @@ class DRS(AbstractDrs, Expression):
 
     def _pretty(self):
         refs_line = ' '.join(self._order_ref_strings(self.refs))
-        cond_lines = [cond for cond_line in [filter(str.strip, cond._pretty())
+
+        cond_lines = [cond for cond_line in [filter(lambda s: s.strip(), cond._pretty())
                                              for cond in self.conds]
                       for cond in cond_line]
         length = max([len(refs_line)] + list(map(len, cond_lines)))
