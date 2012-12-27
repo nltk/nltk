@@ -141,15 +141,17 @@ Since the Kneser-Ney distribution is best suited for trigrams, we must adjust
 our testing accordingly.
 
     >>> corpus = [[((x[0],y[0],z[0]),(x[1],y[1],z[1])) 
-            for x, y, z in nltk.trigrams(sent)]
-                for sent in corpus]
+    ...     for x, y, z in nltk.trigrams(sent)]
+    ...         for sent in corpus[:100]]
 
 We will then need to redefine the rest of the training/testing variables
     >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
-    >>> print len(tag_set)
+    >>> len(tag_set)
+    >>> 906
 
     >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
-    >>> print len(symbols)
+    >>> len(symbols)
+    >>> 1341
 
     >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
     >>> train_corpus = []
@@ -161,11 +163,14 @@ We will then need to redefine the rest of the training/testing variables
     ...    else:
     ...        test_corpus += [corpus[i]]
 
-    >>> print len(train_corpus)
-    >>> print len(test_corpus)
+    >>> len(train_corpus)
+    >>> 90
+    >>> len(test_corpus)
+    >>> 10
 
     >>> kn = lambda fd, bins: KneserNeyProbDist(fd)
     >>> train_and_test(kn)
+    >>> 0.86%
 
 Remains to be added:
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
