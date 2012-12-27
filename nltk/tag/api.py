@@ -62,7 +62,7 @@ class TaggerI(object):
         :rtype: float
         """
 
-        tagged_sents = self.batch_tag([untag(sent) for sent in gold])
+        tagged_sents = self.batch_tag(untag(sent) for sent in gold)
         gold_tokens = sum(gold, [])
         test_tokens = sum(tagged_sents, [])
         return accuracy(gold_tokens, test_tokens)

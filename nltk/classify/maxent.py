@@ -536,14 +536,14 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """dict mapping from fname -> fid"""
 
         if alwayson_features:
-            self._alwayson = dict([(label,i+self._length)
-                                   for (i,label) in enumerate(labels)])
+            self._alwayson = dict((label,i+self._length)
+                                   for (i,label) in enumerate(labels))
             self._length += len(self._alwayson)
 
         if unseen_features:
             fnames = set(fname for (fname, fval, label) in mapping)
-            self._unseen = dict([(fname, i+self._length)
-                                 for (i, fname) in enumerate(fnames)])
+            self._unseen = dict((fname, i+self._length)
+                                 for (i, fname) in enumerate(fnames))
             self._length += len(fnames)
 
     def encode(self, featureset, label):
@@ -695,7 +695,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
         base_length = BinaryMaxentFeatureEncoding.length(self)
 
         # Add a correction feature.
-        total = sum([v for (f,v) in encoding])
+        total = sum(v for (f,v) in encoding)
         if total >= self._C:
             raise ValueError('Correction feature is not high enough!')
         encoding.append( (base_length, self._C-total) )
@@ -863,14 +863,14 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """dict mapping from fname -> fid"""
 
         if alwayson_features:
-            self._alwayson = dict([(label,i+self._length)
-                                   for (i,label) in enumerate(labels)])
+            self._alwayson = dict((label, i+self._length)
+                                  for (i,label) in enumerate(labels))
             self._length += len(self._alwayson)
 
         if unseen_features:
             fnames = set(fname for (fname, fval, label) in mapping)
-            self._unseen = dict([(fname, i+self._length)
-                                 for (i, fname) in enumerate(fnames)])
+            self._unseen = dict((fname, i+self._length)
+                                for (i, fname) in enumerate(fnames))
             self._length += len(fnames)
 
     def encode(self, featureset, label):
@@ -1231,8 +1231,8 @@ def calculate_nfmap(train_toks, encoding):
     nfset = set()
     for tok, _ in train_toks:
         for label in encoding.labels():
-            nfset.add(sum([val for (id,val) in encoding.encode(tok,label)]))
-    return dict([(nf, i) for (i, nf) in enumerate(nfset)])
+            nfset.add(sum(val for (id,val) in encoding.encode(tok,label)))
+    return dict((nf, i) for (i, nf) in enumerate(nfset))
 
 def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
                      nfmap, nfarray, nftranspose, encoding):
@@ -1316,7 +1316,7 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
             # Generate the feature vector
             feature_vector = encoding.encode(tok,label)
             # Find the number of active features
-            nf = sum([val for (id, val) in feature_vector])
+            nf = sum(val for (id, val) in feature_vector)
             # Update the A matrix
             for (id, val) in feature_vector:
                 A[nfmap[nf], id] += dist.prob(label) * val

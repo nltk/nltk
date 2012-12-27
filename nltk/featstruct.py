@@ -979,7 +979,7 @@ class FeatList(FeatStruct, list):
 
     def __deepcopy__(self, memo):
         memo[id(self)] = selfcopy = self.__class__()
-        selfcopy.extend([copy.deepcopy(fval,memo) for fval in self])
+        selfcopy.extend(copy.deepcopy(fval,memo) for fval in self)
         return selfcopy
 
     ##////////////////////////////////////////////////////////////

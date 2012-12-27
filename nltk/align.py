@@ -75,9 +75,9 @@ class AlignedSent(object):
         :raise IndexError: if alignment is out of sentence boundary
         :rtype: boolean
         """
-        if not all([0 <= p[0] < len(self._words) for p in a]):
+        if not all(0 <= p[0] < len(self._words) for p in a):
             raise IndexError("Alignment is outside boundary of words")
-        if not all([0 <= p[1] < len(self._mots) for p in a]):
+        if not all(0 <= p[1] < len(self._mots) for p in a):
             raise IndexError("Alignment is outside boundary of mots")
         return True
 

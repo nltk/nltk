@@ -1891,7 +1891,7 @@ class ShowText(object):
     def find_dimentions(self, text, width, height):
         lines = text.split('\n')
         if width is None:
-            maxwidth = max([len(line) for line in lines])
+            maxwidth = max(len(line) for line in lines)
             width = min(maxwidth, 80)
 
         # Now, find height.

@@ -94,7 +94,7 @@ def write_megam_file(train_toks, encoding, stream,
     """
     # Look up the set of labels.
     labels = encoding.labels()
-    labelnum = dict([(label, i) for (i, label) in enumerate(labels)])
+    labelnum = dict((label, i) for (i, label) in enumerate(labels))
 
     # Write the file, which contains one line per instance.
     for featureset, label in train_toks:

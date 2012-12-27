@@ -790,7 +790,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
         acc = accuracy(test_tags, predicted_tags)
 
-        count = sum([len(sent) for sent in test_sequence])
+        count = sum(len(sent) for sent in test_sequence)
 
         print('accuracy over %d tokens: %.2f' % (count, acc * 100))
 

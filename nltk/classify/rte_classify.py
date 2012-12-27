@@ -131,8 +131,8 @@ def rte_classifier(trainer, features=rte_features):
     """
     Classify RTEPairs
     """
-    train = [(pair, pair.value) for pair in nltk.corpus.rte.pairs(['rte1_dev.xml', 'rte2_dev.xml', 'rte3_dev.xml'])]
-    test = [(pair, pair.value) for pair in nltk.corpus.rte.pairs(['rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml'])]
+    train = ((pair, pair.value) for pair in nltk.corpus.rte.pairs(['rte1_dev.xml', 'rte2_dev.xml', 'rte3_dev.xml']))
+    test = ((pair, pair.value) for pair in nltk.corpus.rte.pairs(['rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml']))
 
     # Train up a classifier.
     print('Training classifier...')

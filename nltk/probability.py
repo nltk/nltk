@@ -272,7 +272,7 @@ class FreqDist(dict):
         if self._max_cache is None:
             if len(self) == 0:
                 raise ValueError('A FreqDist must have at least one sample before max is defined.')
-            self._max_cache = max([(a,b) for (b,a) in self.items()])[1]
+            self._max_cache = max((a,b) for (b,a) in self.items())[1]
         return self._max_cache
 
     def plot(self, *args, **kwargs):
@@ -1651,8 +1651,8 @@ def log_likelihood(test_pdist, actual_pdist):
                for s in actual_pdist)
 
 def entropy(pdist):
-    probs = [pdist.prob(s) for s in pdist.samples()]
-    return -sum([p * math.log(p,2) for p in probs])
+    probs = (pdist.prob(s) for s in pdist.samples())
+    return -sum(p * math.log(p,2) for p in probs)
 
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions

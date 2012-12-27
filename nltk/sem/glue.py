@@ -176,7 +176,7 @@ class GlueDict(dict):
                 if relStart == relEnd:
                     relationships = frozenset()
                 else:
-                    relationships = frozenset([r.strip() for r in parts[2][relStart:relEnd].split(',')])
+                    relationships = frozenset(r.strip() for r in parts[2][relStart:relEnd].split(','))
 
             try:
                 startInheritance = parts[0].index('(')
@@ -273,10 +273,10 @@ class GlueDict(dict):
             node['deps'].append(subj['address'])
 
     def _lookup_semtype_option(self, semtype, node, depgraph):
-        relationships = frozenset([depgraph.nodelist[dep]['rel'].lower()
+        relationships = frozenset(depgraph.nodelist[dep]['rel'].lower()
                                    for dep in node['deps']
                                    if depgraph.nodelist[dep]['rel'].lower()
-                                       not in OPTIONAL_RELATIONSHIPS])
+                                       not in OPTIONAL_RELATIONSHIPS)
 
         try:
             lookup = semtype[relationships]
