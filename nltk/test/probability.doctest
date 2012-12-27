@@ -88,6 +88,7 @@ And now we can test the estimators
     ...     print '%.2f%%' % (100 * hmm.evaluate(test_corpus))
 
 Maximum Likelihood Estimation
+-----------------------------
 - this resulted in an initialization error before r7209
 
     >>> mle = lambda fd, bins: MLEProbDist(fd)
@@ -117,6 +118,7 @@ Lidstone Estimation, for gamma==0.1, 0.5 and 1
     66.04%
 
 Witten Bell Estimation
+----------------------
 - This resulted in ZeroDivisionError before r7209
 
     >>> train_and_test(WittenBellProbDist)
@@ -134,7 +136,36 @@ Good Turing Estimation
     0.17%
 
 Kneser Ney Estimation
-- This resulted in ValueError: need more than 2 values to unpack
+---------------------
+Since the Kneser-Ney distribution is best suited for trigrams, we must adjust 
+our testing accordingly.
+
+    >>> corpus = [[((x[0],y[0],z[0]),(x[1],y[1],z[1])) 
+            for x, y, z in nltk.trigrams(sent)]
+                for sent in corpus]
+
+We will then need to redefine the rest of the training/testing variables
+    >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
+    >>> print len(tag_set)
+
+    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
+    >>> print len(symbols)
+
+    >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
+    >>> train_corpus = []
+    >>> test_corpus = []
+
+    >>> for i in range(len(corpus)):
+    ...    if i % 10:
+    ...        train_corpus += [corpus[i]]
+    ...    else:
+    ...        test_corpus += [corpus[i]]
+
+    >>> print len(train_corpus)
+    >>> print len(test_corpus)
+
+    >>> kn = lambda fd, bins: KneserNeyProbDist(fd)
+    >>> train_and_test(kn)
 
 Remains to be added:
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
