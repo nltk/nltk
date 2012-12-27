@@ -680,7 +680,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
         BinaryMaxentFeatureEncoding.__init__(
             self, labels, mapping, unseen_features, alwayson_features)
         if C is None:
-            C = len(set([fname for (fname,fval,label) in mapping]))+1
+            C = len(set(fname for (fname,fval,label) in mapping))+1
         self._C = C
 
     @property

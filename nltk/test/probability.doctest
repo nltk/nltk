@@ -59,10 +59,10 @@ We extract a small part (500 sentences) of the Brown corpus
 We create a HMM trainer - note that we need the tags and symbols
 from the whole corpus, not just the training corpus
 
-    >>> tag_set = list(set([tag for sent in corpus for (word,tag) in sent]))
+    >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
     >>> print(len(tag_set))
     92
-    >>> symbols = list(set([word for sent in corpus for (word,tag) in sent]))
+    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
     >>> print(len(symbols))
     1464
     >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)

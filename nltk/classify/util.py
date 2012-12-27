@@ -76,7 +76,7 @@ def attested_labels(tokens):
         labels.  A classified token has the form ``(token, label)``.
     :type tokens: list
     """
-    return tuple(set([label for (tok,label) in tokens]))
+    return tuple(set(label for (tok,label) in tokens))
 
 def log_likelihood(classifier, gold):
     results = classifier.batch_prob_classify([fs for (fs,l) in gold])

@@ -422,7 +422,7 @@ def concat(docs):
     if len(docs) == 0:
         raise ValueError('concat() expects at least one object!')
 
-    types = set([d.__class__ for d in docs])
+    types = set(d.__class__ for d in docs)
 
     # If they're all strings, use string concatenation.
     if all(isinstance(doc, compat.string_types) for doc in docs):

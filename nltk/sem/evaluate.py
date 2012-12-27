@@ -55,8 +55,7 @@ def is_rel(s):
     if len(s) == 0:
         return True
     # all the elements are tuples of the same length
-    elif s == set([elem for elem in s if isinstance(elem, tuple)]) and\
-         len(max(s))==len(min(s)):
+    elif all(isinstance(el, tuple) for el in s) and len(max(s))==len(min(s)):
         return True
     else:
         raise ValueError("Set %r contains sequences of different lengths" % s)
@@ -355,7 +354,7 @@ class Model(object):
             if isinstance(function, AbstractVariableExpression):
                 #It's a predicate expression ("P(x,y)"), so used uncurried arguments
                 funval = self.satisfy(function, g)
-                argvals = tuple([self.satisfy(arg, g) for arg in arguments])
+                argvals = tuple(self.satisfy(arg, g) for arg in arguments)
                 return argvals in funval
             else:
                 #It must be a lambda expression, so use curried form

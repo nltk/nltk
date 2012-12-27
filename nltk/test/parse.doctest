@@ -820,7 +820,7 @@ return the same trees. Otherwise an error is printed.
     ...     trees = None
     ...     for P in parsers:
     ...         result = P(grammar).nbest_parse(sentence)
-    ...         result = set([tree.freeze() for tree in result])
+    ...         result = set(tree.freeze() for tree in result)
     ...         if len(result) != nr_trees:
     ...             print("Wrong nr of trees:", len(result))
     ...         elif trees is None:

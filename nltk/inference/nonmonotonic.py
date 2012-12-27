@@ -220,8 +220,7 @@ class ClosedWorldProver(ProverCommandDecorator):
         This method figures out how many arguments the predicate takes and
         returns a tuple containing that number of unique variables.
         """
-        return tuple([unique_variable()
-                      for i in range(predHolder.signature_len)])
+        return tuple(unique_variable() for i in range(predHolder.signature_len))
 
     def _make_antecedent(self, predicate, signature):
         """
