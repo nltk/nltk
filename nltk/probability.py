@@ -1659,23 +1659,28 @@ class MutableProbDist(ProbDistI):
 class KneserNeyProbDist(ProbDistI):
     """
     Kneser-Ney estimate of a probability distribution. This is a version of
-    back-off that counts how likely an ngram is provided the n-1gram had
+    back-off that counts hoKneserw likely an ngram is provided the n-1gram had
     been seen in training. Extends the ProbDistI interface, requires a trigram
     FreqDist instance to train on. Optionally, a different from default discount
     value can be specified. The default discount is set to 0.75.
 
     """
-    def __init__(self, freqdist, discount=0.75):
+    def __init__(self, freqdist, bins=None, discount=0.75):
         """
         :param trigrams: The trigram frequency distribution upon which to base
             the estimation
         :type trigrams: FreqDist
+        :param bins: Included for compatibility with nltk.tag.hmm
+        :type bins: int or float
         :param discount: The discount applied when retrieving counts of
             trigrams
         :type discount: float (preferred, but can be set to int)
         """
         # set bins, discount parameter
-        self._bins = freqdist.B()
+        if not bins:
+            self._bins = freqdist.B()
+        else:
+            self._bins = bins
         self._D = discount
         # initialize cache used later to speed up probability calculation
         self._cache = {}
@@ -1753,7 +1758,7 @@ class KneserNeyProbDist(ProbDistI):
         return self._trigrams.keys()
 
     def max(self):
-        return self._trigrams.keys()[0]
+        return self._trigrams.max()
 
     def __repr__(self):
         '''
@@ -2355,6 +2360,6 @@ __all__ = ['ConditionalFreqDist', 'ConditionalProbDist',
            'DictionaryConditionalProbDist', 'DictionaryProbDist', 'ELEProbDist',
            'FreqDist', 'GoodTuringProbDist', 'SimpleGoodTuringProbDist', 'HeldoutProbDist',
            'ImmutableProbabilisticMixIn', 'LaplaceProbDist', 'LidstoneProbDist',
-           'MLEProbDist', 'MutableProbDist', 'ProbDistI', 'ProbabilisticMixIn',
+           'MLEProbDist', 'MutableProbDist', 'KneserNeyProbDist', 'ProbDistI', 'ProbabilisticMixIn',
            'UniformProbDist', 'WittenBellProbDist', 'add_logs',
            'log_likelihood', 'sum_logs', 'entropy']
