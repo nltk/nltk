@@ -651,10 +651,10 @@ class Tree(list):
         draw_trees(self)
 
     def __repr__(self):
-        childstr = ", ".join(repr(c) for c in self)
-        return '%s(%r, [%s])' % (type(self).__name__, self.node, childstr)
+        childstr = u", ".join(repr(c) for c in self)
+        return u'%s(%r, [%s])' % (type(self).__name__, self.node, childstr)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.pprint()
 
     def pprint(self, margin=70, indent=0, nodesep='', parens='()', quotes=False):
@@ -1320,9 +1320,9 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     # We have to patch up these methods to make them work right:
     def _frozen_class(self): return ImmutableProbabilisticTree
     def __repr__(self):
-        return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
-    def __str__(self):
-        return '%s (p=%s)' % (self.pprint(margin=60), self.prob())
+        return u'%s (p=%s)' % (Tree.__repr__(self), self.prob())
+    def __unicode__(self):
+        return u'%s (p=%s)' % (self.pprint(margin=60), self.prob())
     def __cmp__(self, other):
         return Tree.__cmp__(self, other) or cmp(self.prob(), other.prob())
     def __eq__(self, other):
@@ -1353,9 +1353,9 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     # We have to patch up these methods to make them work right:
     def _frozen_class(self): return ImmutableProbabilisticTree
     def __repr__(self):
-        return '%s [%s]' % (Tree.__repr__(self), self.prob())
-    def __str__(self):
-        return '%s [%s]' % (self.pprint(margin=60), self.prob())
+        return u'%s [%s]' % (Tree.__repr__(self), self.prob())
+    def __unicode__(self):
+        return u'%s [%s]' % (self.pprint(margin=60), self.prob())
     def __cmp__(self, other):
         c = Tree.__cmp__(self, other)
         if c != 0: return c
