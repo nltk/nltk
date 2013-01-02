@@ -122,7 +122,6 @@ class PorterStemmer(StemmerI):
 
     def __init__(self):
 
-
         ## --NEW--
         ## This is a table of irregular forms. It is quite short, but still
         ## reflects the errors actually drawn to Martin Porter's attention over
@@ -163,7 +162,7 @@ class PorterStemmer(StemmerI):
             for val in irregular_forms[key]:
                 self.pool[val] = key
                 
-        self.vowels = {'a', 'e', 'i', 'o', 'u'}
+        self.vowels = set(['a', 'e', 'i', 'o', 'u'])
 
     def _cons(self, word, i):
         """cons(i) is TRUE <=> b[i] is a consonant."""
