@@ -162,7 +162,7 @@ class PorterStemmer(StemmerI):
             for val in irregular_forms[key]:
                 self.pool[val] = key
                 
-        self.vowels = set(['a', 'e', 'i', 'o', 'u'])
+        self.vowels = frozenset(['a', 'e', 'i', 'o', 'u'])
 
     def _cons(self, word, i):
         """cons(i) is TRUE <=> b[i] is a consonant."""
