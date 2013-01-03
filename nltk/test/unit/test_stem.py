@@ -21,3 +21,7 @@ class SnowballTest(unittest.TestCase):
 
         assert stemmer_german.stem("keinen") == 'kein'
         assert stemmer_german2.stem("keinen") == 'keinen'
+
+    def test_short_strings_bug(self):
+        stemmer = SnowballStemmer('english')
+        assert stemmer.stem("y's") == 'y'
