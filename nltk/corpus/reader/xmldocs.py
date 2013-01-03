@@ -10,7 +10,7 @@ Corpus reader for corpora whose documents are xml files.
 
 (note -- not named 'xml' to avoid conflicting w/ standard xml package)
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import codecs
 
@@ -155,7 +155,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         if isinstance(fileid, PathPointer):
             s = fileid.open().readline()
         else:
-            s = open(fileid, 'rb').readline()
+            with open(fileid, 'rb') as fp:
+                s = fp.readline()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):

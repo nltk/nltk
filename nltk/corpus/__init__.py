@@ -70,7 +70,9 @@ from .util import LazyCorpusLoader
 from .reader import *
 
 abc = LazyCorpusLoader(
-    'abc', PlaintextCorpusReader, r'(?!\.).*\.txt')
+    'abc', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[
+            ('science', 'latin_1'),
+            ('rural', 'utf8')])
 alpino = LazyCorpusLoader(
     'alpino', AlpinoCorpusReader, tag_mapping_function=simplify_alpino_tag)
 brown = LazyCorpusLoader(
@@ -95,8 +97,9 @@ conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*',
     ('LOC', 'PER', 'ORG', 'MISC'), encoding='utf-8')
 conll2007 = LazyCorpusLoader(
-    'conll2007', DependencyCorpusReader, '.*\.(test|train).*',
-    encoding='utf-8')
+    'conll2007', DependencyCorpusReader, '.*\.(test|train).*', encoding=[
+        ('eus', 'ISO-8859-2'),
+        ('esp', 'utf8')])
 dependency_treebank = LazyCorpusLoader(
     'dependency_treebank', DependencyCorpusReader, '.*\.dp',
     encoding='ascii')
@@ -157,10 +160,10 @@ ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
     'ptb', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
     cat_file='allcats.txt', tag_mapping_function=simplify_wsj_tag)
 qc = LazyCorpusLoader(
-    'qc', StringCategoryCorpusReader, ['train.txt', 'test.txt'])
+    'qc', StringCategoryCorpusReader, ['train.txt', 'test.txt'], encoding='ISO-8859-2')
 reuters = LazyCorpusLoader(
     'reuters', CategorizedPlaintextCorpusReader, '(training|test).*',
-    cat_file='cats.txt')
+    cat_file='cats.txt', encoding='ISO-8859-2')
 rte = LazyCorpusLoader(
     'rte', RTECorpusReader, r'(?!\.).*\.xml')
 semcor = LazyCorpusLoader(
@@ -197,13 +200,13 @@ treebank_chunk = LazyCorpusLoader(
     sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s*(?![^\[]*\])', gaps=True),
     para_block_reader=tagged_treebank_para_block_reader, encoding='ascii')
 treebank_raw = LazyCorpusLoader(
-    'treebank/raw', PlaintextCorpusReader, r'wsj_.*')
+    'treebank/raw', PlaintextCorpusReader, r'wsj_.*', encoding='ISO-8859-2')
 udhr = LazyCorpusLoader(
     'udhr', UdhrCorpusReader)
 verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.).*\.xml')
 webtext = LazyCorpusLoader(
-    'webtext', PlaintextCorpusReader, r'(?!README|\.).*\.txt')
+    'webtext', PlaintextCorpusReader, r'(?!README|\.).*\.txt', encoding='ISO-8859-2')
 wordnet = LazyCorpusLoader(
     'wordnet', WordNetCorpusReader)
 wordnet_ic = LazyCorpusLoader(

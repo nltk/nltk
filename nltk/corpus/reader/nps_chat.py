@@ -4,6 +4,7 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
 
 import re
 import textwrap

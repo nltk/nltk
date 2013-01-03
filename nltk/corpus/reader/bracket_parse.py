@@ -164,7 +164,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
     """
-    def __init__(self, root, encoding='utf8', tag_mapping_function=None):
+    def __init__(self, root, encoding='ISO-8859-1', tag_mapping_function=None):
         BracketParseCorpusReader.__init__(self, root, 'alpino\.xml',
                                  detect_blocks='blankline',
                                  encoding=encoding,
