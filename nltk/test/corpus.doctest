@@ -119,12 +119,6 @@ Here are the first few words from each of NLTK's plaintext corpora:
     >>> nltk.corpus.webtext.words()
     ['Cookie', 'Manager', ':', '"', 'Don', "'", 't', ...]
 
-We can obtain character offsets for tokens in plaintext corpora
-using the ``sourced`` flag:
-
-    >>> nltk.corpus.inaugural.words(sourced=True)
-    ['Fellow'@[0:6], '-'@[6], 'Citizens'@[7:15], ...]
-
 Tagged Corpora
 ==============
 

@@ -172,7 +172,7 @@ else:
 
 from . import align, ccg, chunk, classify, collocations
 from . import data, featstruct, grammar, inference, metrics
-from . import misc, model, parse, probability, sem, sourcedstring, stem
+from . import misc, model, parse, probability, sem, stem
 from . import tag, text, tokenize, tree, treetransforms, util
 
 # override any accidentally imported demo

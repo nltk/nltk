@@ -17,7 +17,6 @@ from collections import defaultdict
 
 from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-from nltk.sourcedstring import SourcedStringStream
 
 from .util import *
 
@@ -179,7 +178,7 @@ class CorpusReader(object):
         else:
             return paths
 
-    def open(self, file, sourced=False):
+    def open(self, file):
         """
         Return an open stream that can be used to read the given file.
         If the file's encoding is not None, then the stream will
@@ -189,8 +188,6 @@ class CorpusReader(object):
         """
         encoding = self.encoding(file)
         stream = self._root.join(file).open(encoding)
-        if sourced:
-            stream = SourcedStringStream(stream, file)
         return stream
 
     def encoding(self, file):

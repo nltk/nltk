@@ -64,28 +64,26 @@ class PlaintextCorpusReader(CorpusReader):
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
 
-    def raw(self, fileids=None, sourced=False):
+    def raw(self, fileids=None):
         """
         :return: the given file(s) as a single string.
         :rtype: str
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, compat.string_types): fileids = [fileids]
-        return concat([self.open(f, sourced).read() for f in fileids])
+        return concat([self.open(f).read() for f in fileids])
 
-    def words(self, fileids=None, sourced=False):
+    def words(self, fileids=None):
         """
         :return: the given file(s) as a list of words
             and punctuation symbols.
         :rtype: list(str)
         """
-        return concat([self.CorpusView(path, self._read_word_block,
-                                       encoding=enc,
-                                       source=(fileid if sourced else None))
+        return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
 
-    def sents(self, fileids=None, sourced=False):
+    def sents(self, fileids=None):
         """
         :return: the given file(s) as a list of
             sentences or utterances, each encoded as a list of word
@@ -95,13 +93,11 @@ class PlaintextCorpusReader(CorpusReader):
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
 
-        return concat([self.CorpusView(path, self._read_sent_block,
-                                       encoding=enc,
-                                       source=(fileid if sourced else None))
+        return concat([self.CorpusView(path, self._read_sent_block, encoding=enc)
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
 
-    def paras(self, fileids=None, sourced=False):
+    def paras(self, fileids=None):
         """
         :return: the given file(s) as a list of
             paragraphs, each encoded as a list of sentences, which are
@@ -111,9 +107,7 @@ class PlaintextCorpusReader(CorpusReader):
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
 
-        return concat([self.CorpusView(path, self._read_para_block,
-                                       encoding=enc,
-                                       source=(fileid if sourced else None))
+        return concat([self.CorpusView(path, self._read_para_block, encoding=enc)
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
 

@@ -25,7 +25,6 @@ from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.data import SeekableUnicodeStreamReader
-from nltk.sourcedstring import SourcedStringStream
 from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
 
 ######################################################################
@@ -125,7 +124,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
        block; and tokens is a list of the tokens in the block.
     """
     def __init__(self, fileid, block_reader=None, startpos=0,
-                 encoding='utf8', source=None):
+                 encoding='utf8'):
         """
         Create a new corpus view, based on the file ``fileid``, and
         read with ``block_reader``.  See the class documentation
@@ -143,11 +142,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
             read the file's contents.  If no encoding is specified,
             then the file's contents will be read as a non-unicode
             string (i.e., a str).
-
-        :param source: If specified, then use an ``SourcedStringStream``
-            to annotate all strings read from the file with
-            information about their start offset, end ofset,
-            and docid.  The value of ``source`` will be used as the docid.
         """
         if block_reader:
             self.read_block = block_reader
@@ -155,7 +149,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
         self._toknum = [0]
         self._filepos = [startpos]
         self._encoding = encoding
-        self._source = source
         # We don't know our length (number of tokens) yet.
         self._len = None
 
@@ -219,8 +212,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
                 open(self._fileid, 'rb'), self._encoding)
         else:
             self._stream = open(self._fileid, 'rb')
-        if self._source is not None:
-            self._stream = SourcedStringStream(self._stream, self._source)
 
     def close(self):
         """
