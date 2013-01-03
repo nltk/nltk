@@ -8,5 +8,4 @@
 from .chomsky import generate_chomsky
 from .wordfinder import word_finder
 from .minimalset import MinimalSet
-from .babelfish import babelize, babelize_shell
-
+from .babelfish import babelize_shell

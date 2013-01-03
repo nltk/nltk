@@ -24,7 +24,7 @@ from nltk.parse.dependencygraph import DependencyGraph
 
 class MaltParser(ParserI):
 
-    def __init__(self, tagger=None, mco=None, working_dir=None):
+    def __init__(self, tagger=None, mco=None, working_dir=None, additional_java_args=None):
         """
         An interface for parsing with the Malt Parser.
 
@@ -37,6 +37,7 @@ class MaltParser(ParserI):
         self.mco = 'malt_temp' if mco is None else mco
         self.working_dir = tempfile.gettempdir() if working_dir is None\
                            else working_dir
+        self.additional_java_args = [] if additional_java_args is None else additional_java_args
         self._trained = mco is not None
 
         if tagger is not None:
@@ -142,7 +143,8 @@ class MaltParser(ParserI):
             input_file.write('\n')
             input_file.close()
 
-            cmd = ['java', '-jar', self._malt_bin, '-w', self.working_dir,
+            cmd = ['java'] + self.additional_java_args + ['-jar', self._malt_bin, 
+                   '-w', self.working_dir,
                    '-c', self.mco, '-i', input_file.name,
                    '-o', output_file.name, '-m', 'parse']
 
