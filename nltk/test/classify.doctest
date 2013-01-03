@@ -142,43 +142,37 @@ SVMlight.
 Test the Maximum Entropy classifier training algorithms; they should all
 generate the same results.
 
-    >>> def test_maxent(algorithms):
-    ...     classifiers = {}
-    ...     for algorithm in nltk.classify.MaxentClassifier.ALGORITHMS:
-    ...         if algorithm.lower() == 'megam':
-    ...             try: nltk.classify.megam.config_megam()
-    ...             except: pass
-    ...         try:
-    ...             classifiers[algorithm] = nltk.classify.MaxentClassifier.train(
-    ...                 train, algorithm, trace=0, max_iter=1000)
-    ...         except Exception, e:
-    ...             classifiers[algorithm] = e
-    ...     print(' '*11+''.join('      test[%s]  ' % i
-    ...                          for i in range(len(test))))
+    >>> def print_maxent_test_header():
+    ...     print(' '*11+''.join(['      test[%s]  ' % i
+    ...                           for i in range(len(test))]))
     ...     print(' '*11+'     p(x)  p(y)'*len(test))
     ...     print('-'*(11+15*len(test)))
-    ...     for algorithm, classifier in classifiers.items():
-    ...         print('%11s' % algorithm, end=' ')
-    ...         if isinstance(classifier, Exception):
-    ...             print('Error: %r' % classifier); continue
-    ...         for featureset in test:
-    ...             pdist = classifier.prob_classify(featureset)
-    ...             print('%8.2f%6.2f' % (pdist.prob('x'), pdist.prob('y')), end=' ')
-    ...         print()
-    >>> test_maxent(nltk.classify.MaxentClassifier.ALGORITHMS)
-    ... # doctest: +ELLIPSIS
-    [Found megam: ...]
+
+    >>> def test_maxent(algorithm):
+    ...     print('%11s' % algorithm, end=' ')
+    ...     try:
+    ...         classifier = nltk.classify.MaxentClassifier.train(
+    ...                         train, algorithm, trace=0, max_iter=1000)
+    ...     except Exception as e:
+    ...         print('Error: %r' % e)
+    ...         return
+    ...
+    ...     for featureset in test:
+    ...         pdist = classifier.prob_classify(featureset)
+    ...         print('%8.2f%6.2f' % (pdist.prob('x'), pdist.prob('y')), end=' ')
+    ...     print()
+
+    >>> print_maxent_test_header(); test_maxent('GIS'); test_maxent('IIS')
                      test[0]        test[1]        test[2]        test[3]
                     p(x)  p(y)     p(x)  p(y)     p(x)  p(y)     p(x)  p(y)
     -----------------------------------------------------------------------
-         LBFGSB     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
             GIS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
             IIS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
-    Nelder-Mead     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
-             CG     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
-           BFGS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
-          MEGAM     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
-         Powell     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+
+    >>> test_maxent('MEGAM'); test_maxent('TADM') # doctest: +SKIP
+            MEGAM   0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+            TADM    0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+
 
 
 Regression tests for TypedMaxentFeatureEncoding

@@ -219,12 +219,11 @@ class MaxentClassifier(ClassifierI):
 
     #: A list of the algorithm names that are accepted for the
     #: ``train()`` method's ``algorithm`` parameter.
-    ALGORITHMS = ['GIS', 'IIS', 'CG', 'BFGS', 'Powell', 'LBFGSB',
-                  'Nelder-Mead', 'MEGAM', 'TADM']
+    ALGORITHMS = ['GIS', 'IIS', 'MEGAM', 'TADM']
 
     @classmethod
     def train(cls, train_toks, algorithm=None, trace=3, encoding=None,
-              labels=None, sparse=True, gaussian_prior_sigma=0, **cutoffs):
+              labels=None, sparse=None, gaussian_prior_sigma=0, **cutoffs):
         """
         Train a new maxent classifier based on the given corpus of
         training samples.  This classifier will have its weights
@@ -246,16 +245,10 @@ class MaxentClassifier(ClassifierI):
 
             - Iterative Scaling Methods: Generalized Iterative Scaling (``'GIS'``),
               Improved Iterative Scaling (``'IIS'``)
-            - Optimization Methods (requiring scipy): Conjugate gradient (``'CG'``)
-              Broyden-Fletcher-Goldfarb-Shanno algorithm (``'BFGS'``),
-              Powell algorithm (``'Powell'``),
-              A limited-memory variant of the BFGS algorithm (``'LBFGSB'``),
-              The Nelder-Mead algorithm (``'Nelder-Mead'``).
             - External Libraries (requiring megam):
               LM-BFGS algorithm, with training performed by Megam (``'megam'``)
 
-            The default algorithm is ``'CG'`` if scipy is
-            installed; and ``'IIS'`` otherwise.
+            The default algorithm is ``'IIS'``.
 
         :type trace: int
         :param trace: The level of diagnostic tracing output to produce.
@@ -269,14 +262,9 @@ class MaxentClassifier(ClassifierI):
         :param labels: The set of possible labels.  If none is given, then
             the set of all labels attested in the training data will be
             used instead.
-        :param sparse: If True, then use sparse matrices instead of
-            dense matrices.  Currently, this is only supported by
-            the scipy (optimization method) algorithms.  For other
-            algorithms, its value is ignored.
         :param gaussian_prior_sigma: The sigma value for a gaussian
             prior on model weights.  Currently, this is supported by
-            the scipy (optimization method) algorithms and ``megam``.
-            For other algorithms, its value is ignored.
+            ``megam``. For other algorithms, its value is ignored.
         :param cutoffs: Arguments specifying various conditions under
             which the training should be halted.  (Some of the cutoff
             conditions are not supported by some algorithms.)
@@ -286,21 +274,11 @@ class MaxentClassifier(ClassifierI):
               log-likelihood drops under ``v``.
             - ``min_lldelta=v``: Terminate if a single iteration improves
               log likelihood by less than ``v``.
-            - ``tolerance=v``: Terminate a scipy optimization method when
-              improvement drops below a tolerance level ``v``.  The
-              exact meaning of this tolerance depends on the scipy
-              algorithm used.  See ``scipy`` documentation for more
-              info.  Default values: 1e-3 for CG, 1e-5 for LBFGSB,
-              and 1e-4 for other algorithms.  (``scipy`` only)
         """
         if algorithm is None:
-            try:
-                import scipy.maxentropy
-                algorithm = 'cg'
-            except ImportError:
-                algorithm = 'iis'
+            algorithm = 'iis'
         for key in cutoffs:
-            if key not in ('max_iter', 'min_ll', 'min_lldelta', 'tolerance',
+            if key not in ('max_iter', 'min_ll', 'min_lldelta',
                            'max_acc', 'min_accdelta', 'count_cutoff',
                            'norm', 'explicit', 'bernoulli'):
                 raise TypeError('Unexpected keyword arg %r' % key)
@@ -311,11 +289,6 @@ class MaxentClassifier(ClassifierI):
         elif algorithm == 'gis':
             return train_maxent_classifier_with_gis(
                 train_toks, trace, encoding, labels, **cutoffs)
-        elif algorithm in cls._SCIPY_ALGS:
-            return train_maxent_classifier_with_scipy(
-                train_toks, trace, encoding, labels,
-                cls._SCIPY_ALGS[algorithm], sparse,
-                gaussian_prior_sigma, **cutoffs)
         elif algorithm == 'megam':
             return train_maxent_classifier_with_megam(
                 train_toks, trace, encoding, labels,
@@ -329,9 +302,6 @@ class MaxentClassifier(ClassifierI):
             return TadmMaxentClassifier.train(train_toks, **kwargs)
         else:
             raise ValueError('Unknown algorithm %s' % algorithm)
-
-    _SCIPY_ALGS = {'cg':'CG', 'bfgs':'BFGS', 'powell':'Powell',
-                   'lbfgsb':'LBFGSB', 'nelder-mead':'Nelder-Mead'}
 
 
 #: Alias for MaxentClassifier.
@@ -1350,103 +1320,6 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
             return deltas
 
     return deltas
-
-######################################################################
-#{ Classifier Trainer: scipy algorithms (GC, LBFGSB, etc.)
-######################################################################
-
-# [xx] n.b.: it's possible to supply custom trace functions, which
-# could be used to make trace output consistent with iis/gis.
-def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
-                                       labels=None,  algorithm='CG',
-                                       sparse=True, gaussian_prior_sigma=0,
-                                       **cutoffs):
-    """
-    Train a new ``ConditionalExponentialClassifier``, using the given
-    training samples, using the specified ``scipy`` optimization
-    algorithm.  This ``ConditionalExponentialClassifier`` will encode
-    the model that maximizes entropy from all the models that are
-    empirically consistent with ``train_toks``.
-
-    :see: ``train_maxent_classifier()`` for parameter descriptions.
-    :require: The ``scipy`` package must be installed.
-    """
-    try:
-        import scipy
-    except ImportError as e:
-        raise ValueError('The maxent training algorithm %r requires '
-                         'that the scipy package be installed.  See '
-                         'http://www.scipy.org/' % algorithm)
-    try:
-        # E.g., if libgfortran.2.dylib is not found.
-        import scipy.sparse, scipy.maxentropy
-    except ImportError as e:
-        raise ValueError('Import of scipy package failed: %s' % e)
-
-    # Construct an encoding from the training data.
-    if encoding is None:
-        encoding = BinaryMaxentFeatureEncoding.train(train_toks, labels=labels)
-    elif labels is not None:
-        raise ValueError('Specify encoding or labels, not both')
-
-    labels = encoding.labels()
-    labelnum = dict([(label, i) for (i, label) in enumerate(labels)])
-    num_features = encoding.length()
-    num_toks = len(train_toks)
-    num_labels = len(labels)
-
-    # Decide whether to use a sparse matrix or a dense one.  Very
-    # limited testing has shown that the lil matrix format
-    # (list-of-lists) performs better than csr and csc formats.
-    # Limited testing also suggests that the sparse matrix format
-    # doesn't save much memory over the dense format in practice
-    # (in terms of max memory usage).
-    if sparse: zeros = scipy.sparse.lil_matrix
-    else: zeros = numpy.zeros
-
-    # Construct the 'F' matrix, which lists the feature values for
-    # each training instance.  F[i, j*len(labels)+k] is equal to the
-    # value of the i'th feature for the feature vector corresponding
-    # to (tok[j], label[k]).
-    F = zeros((num_features, num_toks*num_labels))
-
-    # Construct the 'N' matrix, which specifies the correct label for
-    # each training instance.  N[0, j*len(labels)+k] is equal to one
-    # iff label[k] is the correct label for tok[j].
-    N = zeros((1, num_toks*num_labels))
-
-    # Fill in the 'F' and 'N' matrices (just make one pass through the
-    # training tokens.)
-    for toknum, (featureset, label) in enumerate(train_toks):
-        N[0, toknum*len(labels) + labelnum[label]] += 1
-        for label2 in labels:
-            for (fid, fval) in encoding.encode(featureset, label2):
-                F[fid, toknum*len(labels) + labelnum[label2]] = fval
-
-    # Set up the scipy model, based on the matrices F and N.
-    model = scipy.maxentropy.conditionalmodel(F, N, num_toks)
-    # note -- model.setsmooth() is buggy.
-    if gaussian_prior_sigma:
-        model.sigma2 = gaussian_prior_sigma**2
-    if algorithm == 'LBFGSB':
-        model.log = None
-    if trace >= 3:
-        model.verbose = True
-    if 'max_iter' in cutoffs:
-        model.maxiter = cutoffs['max_iter']
-    if 'tolerance' in cutoffs:
-        if algorithm == 'CG': model.avegtol = cutoffs['tolerance']
-        elif algorithm == 'LBFGSB': model.maxgtol = cutoffs['tolerance']
-        else: model.tol = cutoffs['tolerance']
-
-    # Train the model.
-    model.fit(algorithm=algorithm)
-
-    # Convert the model's weights from base-e to base-2 weights.
-    weights = model.params * numpy.log2(numpy.e)
-
-    # Build the classifier
-    return MaxentClassifier(encoding, weights)
 
 ######################################################################
 #{ Classifier Trainer: megam
