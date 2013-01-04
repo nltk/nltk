@@ -17,6 +17,7 @@ from subprocess import Popen, PIPE
 
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
+from nltk import compat
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
 
@@ -103,7 +104,7 @@ class HunposTagger(TaggerI):
         """
         for token in tokens:
             assert "\n" not in token, "Tokens should not contain newlines"
-            if isinstance(token, unicode):
+            if isinstance(token, compat.text_type):
                 token = token.encode(self._encoding)
             self._hunpos.stdin.write(token + "\n")
         # We write a final empty line to tell hunpos that the sentence is finished:

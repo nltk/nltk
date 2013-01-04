@@ -316,7 +316,7 @@ class FreqDist(dict):
             pylab.title(kwargs["title"])
             del kwargs["title"]
         pylab.plot(freqs, **kwargs)
-        pylab.xticks(range(len(samples)), [unicode(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
@@ -1784,7 +1784,7 @@ class ConditionalFreqDist(defaultdict):
 
         pylab.legend(loc=legend_loc)
         pylab.grid(True, color="silver")
-        pylab.xticks(range(len(samples)), [unicode(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
         if title:
             pylab.title(title)
         pylab.xlabel("Samples")
