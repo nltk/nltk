@@ -224,7 +224,8 @@ def load_ace_file(textfile, fmt):
             entities.append( (s, e, typ) )
 
     # Read the text file, and mark the entities.
-    text = open(textfile).read()
+    with open(textfile) as fp:
+        text = fp.read()
 
     # Strip XML tags, since they don't count towards the indices
     text = re.sub('<(?!/?TEXT)[^>]+>', '', text)
@@ -312,9 +313,9 @@ def build_model(fmt='binary'):
 
     outfilename = '/tmp/ne_chunker_%s.pickle' % fmt
     print('Saving chunker to %s...' % outfilename)
-    out = open(outfilename, 'wb')
-    pickle.dump(cp, out, -1)
-    out.close()
+
+    with open(outfilename, 'wb') as out:
+        pickle.dump(cp, out, -1)
 
     return cp
 

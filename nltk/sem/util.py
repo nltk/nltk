@@ -15,6 +15,7 @@ a first-order model.
 from __future__ import print_function, unicode_literals
 
 import re
+import codecs
 from . import evaluate
 
 
@@ -196,8 +197,10 @@ def demo_model0():
     g0 = evaluate.Assignment(dom)
 
 
-def read_sents(file):
-    sents = [l.rstrip() for l in open(file)]
+def read_sents(filename, encoding='utf8'):
+    with codecs.open(filename, 'r', encoding) as fp:
+        sents = [l.rstrip() for l in fp]
+
     # get rid of blank lines
     sents = [l for l in sents if len(l) > 0]
     sents = [l for l in sents if not l[0] == '#']

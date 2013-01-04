@@ -19,6 +19,7 @@ import os
 import pickle
 import re
 import subprocess
+import codecs
 from tempfile import mkstemp
 import textwrap
 import time
@@ -566,11 +567,10 @@ class CRFInfo(object):
                        etree.find('modelFile').text,
                        feature_detector)
 
-    def write(self, filename):
-        out = open(filename, 'w')
-        out.write(self.toxml())
-        out.write('\n')
-        out.close()
+    def write(self, filename, encoding='utf8'):
+        with codecs.open(filename, 'w', encoding) as out:
+            out.write(self.toxml())
+            out.write('\n')
 
     class State(object):
         """

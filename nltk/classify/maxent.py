@@ -1460,9 +1460,8 @@ class TadmMaxentClassifier(MaxentClassifier):
 
         call_tadm(options)
 
-        weightfile = open(weightfile_name, 'rb')
-        weights = parse_tadm_weights(weightfile)
-        weightfile.close()
+        with open(weightfile_name, 'rb') as weightfile:
+            weights = parse_tadm_weights(weightfile)
 
         os.remove(trainfile_name)
         os.remove(weightfile_name)
