@@ -37,7 +37,7 @@ def assert_classifier_correct(algorithm):
         classifier = classify.MaxentClassifier.train(
             TRAIN, algorithm, trace=0, max_iter=1000
         )
-    except LookupError as e:
+    except (LookupError, AttributeError) as e:
         raise SkipTest(str(e))
 
     for (px, py), featureset in zip(RESULTS, TEST):
