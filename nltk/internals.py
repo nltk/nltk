@@ -624,8 +624,7 @@ def import_from_stdlib(module):
 # Wrapper for ElementTree Elements
 ##########################################################################
 
-# TODO: python_2_unicode_compatible
-
+@compat.python_2_unicode_compatible
 class ElementWrapper(object):
     """
     A wrapper around ElementTree Element objects whose main purpose is
@@ -671,7 +670,7 @@ class ElementWrapper(object):
     ##////////////////////////////////////////////////////////////
 
     def __repr__(self):
-        s = ElementTree.tostring(self._etree)
+        s = ElementTree.tostring(self._etree, encoding='utf8').decode('utf8')
         if len(s) > 60:
             e = s.rfind('<')
             if (len(s)-e) > 30: e = -20
@@ -683,7 +682,7 @@ class ElementWrapper(object):
         :return: the result of applying ``ElementTree.tostring()`` to
         the wrapped Element object.
         """
-        return ElementTree.tostring(self._etree).rstrip()
+        return ElementTree.tostring(self._etree, encoding='utf8').decode('utf8').rstrip()
 
     ##////////////////////////////////////////////////////////////
     #{ Element interface Delegation (pass-through)

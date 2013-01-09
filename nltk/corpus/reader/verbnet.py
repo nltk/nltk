@@ -4,15 +4,14 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
 
 import re
 import textwrap
 from collections import defaultdict
 
 from nltk import compat
-from .util import *
-from .api import *
-from .xmldocs import *
+from .xmldocs import XMLCorpusReader
 
 class VerbnetCorpusReader(XMLCorpusReader):
 

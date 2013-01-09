@@ -63,6 +63,7 @@ class XMLCorpusReader(CorpusReader):
         """
 
         elt = self.xml(fileid)
+        encoding = self.encoding(fileid)
         word_tokenizer=WordPunctTokenizer()
         iterator = elt.getiterator()
         out = []
@@ -70,6 +71,8 @@ class XMLCorpusReader(CorpusReader):
         for node in iterator:
             text = node.text
             if text is not None:
+                if isinstance(text, bytes):
+                    text = text.decode(encoding)
                 toks = word_tokenizer.tokenize(text)
                 out.extend(toks)
         return out
@@ -380,4 +383,3 @@ class XMLCorpusView(StreamBackedCorpusView):
                                   elt.encode('ascii', 'xmlcharrefreplace')),
                             context)
                 for (elt, context) in elts]
-
