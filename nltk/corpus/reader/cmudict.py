@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Genesis Corpus Reader
+# Natural Language Toolkit: Carnegie Mellon Pronouncing Dictionary Corpus Reader
 #
 # Copyright (C) 2001-2012 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
@@ -67,8 +67,9 @@ class CMUDictCorpusReader(CorpusReader):
         """
         :return: the cmudict lexicon as a raw string.
         """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        fileids = self._fileids
+        if isinstance(fileids, compat.string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self):
