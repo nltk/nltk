@@ -825,7 +825,7 @@ class EnglishStemmer(_StandardStemmer):
                 break
 
         # STEP 1c
-        if len(word) > 2 and word[-1] in u"yY" and word[-2] not in self.__vowe:
+        if len(word) > 2 and word[-1] in u"yY" and word[-2] not in self.__vowels:
             word = u"".join((word[:-1], u"i"))
             if len(r1) >= 1:
                 r1 = u"".join((r1[:-1], u"i"))
