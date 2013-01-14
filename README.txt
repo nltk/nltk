@@ -1,10 +1,10 @@
 Natural Language Toolkit (NLTK)   www.nltk.org
 
-Authors: Steven Bird <sb@csse.unimelb.edu.au>
+Authors: Steven Bird <stevenbird1@gmail.com>
          Edward Loper <edloper@gradient.cis.upenn.edu>
          Ewan Klein <ewan@inf.ed.ac.uk>
 
-Copyright (C) 2001-2012 NLTK Project
+Copyright (C) 2001-2013 NLTK Project
 
 For license information, see LICENSE.txt
 

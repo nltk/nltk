@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Relation Extraction
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT

@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 

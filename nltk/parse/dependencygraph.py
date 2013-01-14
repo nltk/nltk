@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
-#         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
+#         Steven Bird <stevenbird1@gmail.com> (modifications)
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT

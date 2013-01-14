@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Feature Structures
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>,
 #         Rob Speer,
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 

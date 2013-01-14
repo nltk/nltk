@@ -1,7 +1,7 @@
 # coding: utf-8
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT

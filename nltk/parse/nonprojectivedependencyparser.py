@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <http://www.nltk.org/>

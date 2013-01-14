@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the HunPos POS-tagger
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         David Nemeskey <nemeskeyd@gmail.com> (modifications)
 #         Attila Zseder <zseder@gmail.com> (modifications)

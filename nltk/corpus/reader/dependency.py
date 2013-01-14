@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Kepa Sarasola <kepa.sarasola@ehu.es>
 #         Iker Manterola <returntothehangar@hotmail.com>
 #

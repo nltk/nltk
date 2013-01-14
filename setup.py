@@ -2,8 +2,8 @@
 #
 # Distribute setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>

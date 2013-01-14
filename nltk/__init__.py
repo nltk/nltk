@@ -1,7 +1,7 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Authors: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -41,7 +41,7 @@ if __doc__ is not None: # fix for the ``python -OO``
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2012 NLTK Project.
+Copyright (C) 2001-2013 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
@@ -60,7 +60,7 @@ __url__ = "http://nltk.org/"
 
 # Maintainer, contributors, etc.
 __maintainer__ = "Steven Bird, Edward Loper, Ewan Klein"
-__maintainer_email__ = "sb@csse.unimelb.edu.au"
+__maintainer_email__ = "stevenbird1@gmail.com"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 

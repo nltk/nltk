@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@seas.upenn.edu>
 #         Jason Narad <jason.narad@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>

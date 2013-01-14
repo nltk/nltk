@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to TADM Classifier
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
