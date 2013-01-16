@@ -774,36 +774,35 @@ The Brown Corpus, annotated with WordNet senses.
     >>> sent = semcor.xml('brown2/tagfiles/br-n12.xml').findall('context/p/s')[0]
     >>> for wordform in sent.getchildren():
     ...     print(wordform.text, end=' ')
-    ...     for key in wordform.keys():
+    ...     for key in sorted(wordform.keys()):
     ...         print(key + '=' + wordform.get(key), end=' ')
     ...     print()
     ...
     When cmd=ignore pos=WRB
-    several lemma=several cmd=done wnsn=1 pos=JJ lexsn=5:00:00:some(a):00
-    minutes lemma=minute cmd=done wnsn=1 pos=NN lexsn=1:28:00::
-    had cmd=done pos=VBD ot=notag
-    passed lemma=pass cmd=done wnsn=4 pos=VB lexsn=2:38:03::
+    several cmd=done lemma=several lexsn=5:00:00:some(a):00 pos=JJ wnsn=1
+    minutes cmd=done lemma=minute lexsn=1:28:00:: pos=NN wnsn=1
+    had cmd=done ot=notag pos=VBD
+    passed cmd=done lemma=pass lexsn=2:38:03:: pos=VB wnsn=4
     and cmd=ignore pos=CC
-    Curt pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
-    had cmd=done pos=VBD ot=notag
-    n't lemma=n't cmd=done wnsn=0 pos=RB lexsn=4:02:00::
-    emerged lemma=emerge cmd=done wnsn=1 pos=VB lexsn=2:30:00::
+    Curt cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
+    had cmd=done ot=notag pos=VBD
+    n't cmd=done lemma=n't lexsn=4:02:00:: pos=RB wnsn=0
+    emerged cmd=done lemma=emerge lexsn=2:30:00:: pos=VB wnsn=1
     from cmd=ignore pos=IN
     the cmd=ignore pos=DT
-    livery_stable lemma=livery_stable cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    livery_stable cmd=done lemma=livery_stable lexsn=1:06:00:: pos=NN wnsn=1
     ,
-    Brenner pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
-    re-entered lemma=re-enter cmd=done wnsn=1 pos=VB lexsn=2:38:00::
+    Brenner cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
+    re-entered cmd=done lemma=re-enter lexsn=2:38:00:: pos=VB wnsn=1
     the cmd=ignore pos=DT
-    hotel lemma=hotel cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    hotel cmd=done lemma=hotel lexsn=1:06:00:: pos=NN wnsn=1
     and cmd=ignore pos=CC
-    faced lemma=face cmd=done wnsn=4 pos=VB lexsn=2:42:02::
-    Summers pn=person cmd=done lexsn=1:03:00:: pos=NNP lemma=person rdf=person wnsn=1
+    faced cmd=done lemma=face lexsn=2:42:02:: pos=VB wnsn=4
+    Summers cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
     across cmd=ignore pos=IN
     the cmd=ignore pos=DT
-    counter lemma=counter cmd=done wnsn=1 pos=NN lexsn=1:06:00::
+    counter cmd=done lemma=counter lexsn=1:06:00:: pos=NN wnsn=1
     .
-
 
 shakespeare
 -----------
