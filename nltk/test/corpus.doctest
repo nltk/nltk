@@ -226,7 +226,7 @@ to the entire chunk).
 
     >>> from nltk.corpus import semcor
     >>> semcor.words()
-    ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
+    ['The', 'Fulton', 'County', 'Grand', 'Jury', ...]
     >>> semcor.chunks()
     [['The'], ['Fulton', 'County', 'Grand', 'Jury'], ...]
     >>> semcor.sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
@@ -1087,7 +1087,7 @@ The NPS Chat Corpus, Release 1.0 consists of over 10,000 posts in age-specific
 chat rooms, which have been anonymized, POS-tagged and dialogue-act tagged.
 
     >>> print(nltk.corpus.nps_chat.words())
-    ['now', 'im', 'left', 'with', 'this', 'gay', 'name', ...]
+    ['now', 'im', 'left', 'with', 'this', 'gay', ...]
     >>> print(nltk.corpus.nps_chat.tagged_words())
     [('now', 'RB'), ('im', 'PRP'), ('left', 'VBD'), ...]
     >>> print(nltk.corpus.nps_chat.tagged_posts()) # doctest: +NORMALIZE_WHITESPACE
