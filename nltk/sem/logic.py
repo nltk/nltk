@@ -824,6 +824,7 @@ class ApplicationExpression(Expression):
         return isinstance(self.pred, AbstractVariableExpression)
 
 
+@total_ordering
 @python_2_unicode_compatible
 class AbstractVariableExpression(Expression):
     """This class represents a variable to be used as a predicate or entity"""
@@ -883,6 +884,11 @@ class AbstractVariableExpression(Expression):
 
     def __ne__(self, other):
         return not self == other
+
+    def __lt__(self, other):
+        if not isinstance(other, AbstractVariableExpression):
+            return False # ?
+        return self.variable < other.variable
 
     __hash__ = Expression.__hash__
 

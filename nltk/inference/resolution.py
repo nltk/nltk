@@ -548,7 +548,8 @@ class BindingDict(object):
         return len(self.d)
 
     def __str__(self):
-        return '{' + ', '.join('%s: %s' % (v, self.d[v]) for v in self.d) + '}'
+        data_str = ', '.join('%s: %s' % (v, self.d[v]) for v in sorted(self.d.keys()))
+        return '{' + data_str + '}'
 
     def __repr__(self):
         return "%s" % self

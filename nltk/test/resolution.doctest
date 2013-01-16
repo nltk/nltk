@@ -36,11 +36,11 @@ Test most_general_unification()
     >>> print(most_general_unification(P(x), P(A)))
     {x: A}
     >>> print(most_general_unification(P(x,B), P(A,y)))
-    {y: B, x: A}
+    {x: A, y: B}
     >>> print(most_general_unification(P(x,B), P(B,x)))
     {x: B}
     >>> print(most_general_unification(P(x,y), P(A,x)))
-    {y: x, x: A}
+    {x: A, y: x}
     >>> print(most_general_unification(P(Q(x)), P(y)))
     {y: Q(x)}
 
@@ -202,7 +202,7 @@ Multiple answers
     >>> logic._counter._value = 0
     >>> tp = ResolutionProverCommand(None, [p1,p2,p3,p4,c])
     >>> sorted(tp.find_answers())
-    [<ConstantExpression art>, <ConstantExpression ann>]
+    [<ConstantExpression ann>, <ConstantExpression art>]
     >>> print(tp.proof())
     [ 1] {father_of(art,john)}                  A
     [ 2] {mother_of(ann,john)}                  A
