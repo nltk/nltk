@@ -183,6 +183,7 @@ from nltk import compat
 # Directory entry objects (from the data server's index file)
 ######################################################################
 
+@compat.python_2_unicode_compatible
 class Package(object):
     """
     A directory entry for a downloadable package.  These entries are
@@ -254,12 +255,14 @@ class Package(object):
     def fromxml(xml):
         if isinstance(xml, compat.string_types):
             xml = ElementTree.parse(xml)
+        for key in xml.attrib:
+            xml.attrib[key] = compat.text_type(xml.attrib[key])
         return Package(**xml.attrib)
 
     def __repr__(self):
         return '<Package %s>' % self.id
 
-
+@compat.python_2_unicode_compatible
 class Collection(object):
     """
     A directory entry for a collection of downloadable packages.
@@ -288,6 +291,8 @@ class Collection(object):
     def fromxml(xml):
         if isinstance(xml, compat.string_types):
             xml = ElementTree.parse(xml)
+        for key in xml.attrib:
+            xml.attrib[key] = compat.text_type(xml.attrib[key])
         children = [child.get('ref') for child in xml.findall('item')]
         return Collection(children=children, **xml.attrib)
 
@@ -685,12 +690,12 @@ class Downloader(object):
                             show('Downloaded collection %r with errors' %
                                  msg.collection.id)
                         else:
-                            show('Done downloading collection %r' %
+                            show('Done downloading collection %s' %
                                  msg.collection.id)
 
                     # Package downloading messages:
                     elif isinstance(msg, StartPackageMessage):
-                        show('Downloading package %r to %s...' %
+                        show('Downloading package %s to %s...' %
                              (msg.package.id, download_dir))
                     elif isinstance(msg, UpToDateMessage):
                         show('Package %s is already up-to-date!' %
@@ -1585,10 +1590,10 @@ class DownloaderGUI(object):
             self._show_progress(None)
             return # halt progress.
         elif isinstance(msg, StartCollectionMessage):
-            show('Downloading collection %r' % msg.collection.id)
+            show('Downloading collection %s' % msg.collection.id)
             self._log_indent += 1
         elif isinstance(msg, StartPackageMessage):
-            show('Downloading package %r' % msg.package.id)
+            show('Downloading package %s' % msg.package.id)
         elif isinstance(msg, UpToDateMessage):
             show('Package %s is up-to-date!' % msg.package.id)
         #elif isinstance(msg, StaleMessage):
