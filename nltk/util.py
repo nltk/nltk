@@ -866,7 +866,7 @@ class LazyMap(AbstractLazySequence):
         >>> from nltk.util import LazyMap
         >>> function = str
         >>> sequence = [1,2,3]
-        >>> map(function, sequence)
+        >>> map(function, sequence) # doctest: +SKIP
         ['1', '2', '3']
         >>> list(LazyMap(function, sequence))
         ['1', '2', '3']
@@ -991,12 +991,12 @@ class LazyZip(LazyMap):
 
         >>> from nltk.util import LazyZip
         >>> sequence1, sequence2 = [1, 2, 3], ['a', 'b', 'c']
-        >>> zip(sequence1, sequence2)
+        >>> zip(sequence1, sequence2) # doctest: +SKIP
         [(1, 'a'), (2, 'b'), (3, 'c')]
         >>> list(LazyZip(sequence1, sequence2))
         [(1, 'a'), (2, 'b'), (3, 'c')]
         >>> sequences = [sequence1, sequence2, [6,7,8,9]]
-        >>> zip(*sequences) == list(LazyZip(*sequences))
+        >>> list(zip(*sequences)) == list(LazyZip(*sequences))
         True
 
     Lazy zips can be useful for conserving memory in cases where the argument
