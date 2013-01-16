@@ -259,6 +259,9 @@ class Package(object):
             xml.attrib[key] = compat.text_type(xml.attrib[key])
         return Package(**xml.attrib)
 
+    def __lt__(self, other):
+        return self.id < other.id
+
     def __repr__(self):
         return '<Package %s>' % self.id
 
@@ -295,6 +298,9 @@ class Collection(object):
             xml.attrib[key] = compat.text_type(xml.attrib[key])
         children = [child.get('ref') for child in xml.findall('item')]
         return Collection(children=children, **xml.attrib)
+
+    def __lt__(self, other):
+        return self.id < other.id
 
     def __repr__(self):
         return '<Collection %s>' % self.id
