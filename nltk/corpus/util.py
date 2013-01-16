@@ -91,11 +91,6 @@ class LazyCorpusLoader(object):
         # because all corpora gets loaded during test collection.
         if attr == '__bases__':
             raise AttributeError("LazyCorpusLoader object has no attribute '__bases__'")
-        if attr == '_unload':
-            # If an exception occures during corpus loading then
-            # '_unload' method may be unattached, so __getattr__ can be called;
-            # we shouldn't trigger corpus loading again in this case.
-            raise AttributeError("LazyCorpusLoader object has no attribute '_unload'")
 
         self.__load()
         # This looks circular, but its not, since __load() changes our
@@ -105,6 +100,12 @@ class LazyCorpusLoader(object):
     def __repr__(self):
         return '<%s in %r (not loaded yet)>' % (
             self.__reader_cls.__name__, '.../corpora/'+self.__name)
+
+    def _unload(self):
+        # If an exception occures during corpus loading then
+        # '_unload' method may be unattached, so __getattr__ can be called;
+        # we shouldn't trigger corpus loading again in this case.
+        pass
 
 
 def _make_bound_method(func, self):
