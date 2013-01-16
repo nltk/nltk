@@ -70,7 +70,7 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
     """
 
     # place longer words first
-    words = sorted(words, key=lambda x: len(x), reverse=True)
+    words = sorted(words, key=len, reverse=True)
 
     grid = []  # the letter grid
     used = []  # the words we used
