@@ -86,9 +86,8 @@ class ContextIndex(object):
         for c in self._word_to_contexts[self._key(word)]:
             for w in self._context_to_words[c]:
                 if w != word:
-                    print(w, c, self._context_to_words[c][word], self._context_to_words[c][w])
                     scores[w] += self._context_to_words[c][word] * self._context_to_words[c][w]
-        return sorted(scores, key=scores.get)[:n]
+        return sorted(scores, key=scores.get, reverse=True)[:n]
 
     def common_contexts(self, words, fail_on_unknown=False):
         """
