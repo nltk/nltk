@@ -48,22 +48,12 @@ except ImportError:
 
 from nltk.compat import xrange
 
-def windowdiff(seg1, seg2, k, boundary="1"):
+def windowdiff(seg1, seg2, k, boundary="1", weighted=True):
     """
     Compute the windowdiff score for a pair of segmentations.  A
     segmentation is any sequence over a vocabulary of two items
     (e.g. "0", "1"), where the specified boundary value is used to
     mark the edge of a segmentation.
-
-    >>> s1 = "00000010000000001000000"
-    >>> s2 = "00000001000000010000000"
-    >>> s3 = "00010000000000000001000"
-    >>> windowdiff(s1, s1, 3)
-    0
-    >>> windowdiff(s1, s2, 3)
-    4
-    >>> windowdiff(s2, s3, 3)
-    16
 
     :param seg1: a segmentation
     :type seg1: str or list
@@ -74,14 +64,22 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     :param boundary: boundary value
     :type boundary: str or int or bool
     :rtype: int
+    :param weighted: use the weighted variant of windowdiff
+    :rtype weighted: boolean
     """
 
     if len(seg1) != len(seg2):
         raise ValueError("Segmentations have unequal length")
+    if k > len(seg1):
+        raise ValueError("Window width k should be smaller or equal than segmentation lengths")
     wd = 0
-    for i in range(len(seg1) - k):
-        wd += abs(seg1[i:i+k+1].count(boundary) - seg2[i:i+k+1].count(boundary))
-    return wd
+    for i in range(len(seg1) - k + 1):
+        ndiff = abs(seg1[i:i+k].count(boundary) - seg2[i:i+k].count(boundary))
+        if weighted:
+            wd += ndiff
+        else:
+            wd += min(1, ndiff)
+    return wd / (len(seg1) - k + 1.)
 
 
 
