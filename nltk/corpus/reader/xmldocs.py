@@ -225,7 +225,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         (?P<COMMENT>        <!--.*?-->                          )|
         (?P<CDATA>          <![CDATA[.*?]]>                     )|
         (?P<PI>             <\?.*?\?>                           )|
-        (?P<DOCTYPE>        <!DOCTYPE\s+[^\[]*(\[[^\]]*])?\s*>  )|
+        (?P<DOCTYPE>        <!DOCTYPE\s+[^\[^>]*(\[[^\]]*])?\s*>)|
         # These are the ones we actually care about:
         (?P<EMPTY_ELT_TAG>  <\s*[^>/\?!\s][^>]*/\s*>            )|
         (?P<START_TAG>      <\s*[^>/\?!\s][^>]*>                )|
