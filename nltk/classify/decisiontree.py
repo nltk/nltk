@@ -131,7 +131,7 @@ class DecisionTreeClassifier(ClassifierI):
               support_cutoff=10, binary=False, feature_values=None,
               verbose=False):
         """
-        :param binary: If true, then treat all feature/value pairs a
+        :param binary: If true, then treat all feature/value pairs as
             individual binary features, rather than using a single n-way
             branch for each feature.
         """
@@ -242,8 +242,15 @@ class DecisionTreeClassifier(ClassifierI):
             else:
                 neg_fdist.inc(label)
 
-        decisions = {feature_value: DecisionTreeClassifier(pos_fdist.max())}
-        default = DecisionTreeClassifier(neg_fdist.max())
+
+        decisions = None
+        default = None
+        # But hopefully we have observations!
+        if pos_fdist.values():
+            decisions = {feature_value: DecisionTreeClassifier(pos_fdist.max())}
+        if neg_fdist.values():
+            default = DecisionTreeClassifier(neg_fdist.max())
+
         return DecisionTreeClassifier(label, feature_name, decisions, default)
 
     @staticmethod
