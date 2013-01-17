@@ -114,7 +114,7 @@ class DecisionTreeClassifier(ClassifierI):
         if self._default is not None:
             if len(self._decisions) == 1:
                 s += '%sif %s != %r: '% (prefix, self._fname,
-                                         self._decisions.keys()[0])
+                                         list(self._decisions.keys())[0])
             else:
                 s += '%selse: ' % (prefix,)
             if self._default._fname is not None and depth>1:
@@ -243,12 +243,12 @@ class DecisionTreeClassifier(ClassifierI):
                 neg_fdist.inc(label)
 
 
-        decisions = None
-        default = None
+        decisions = {}
+        default = label
         # But hopefully we have observations!
-        if pos_fdist.values():
+        if pos_fdist.N() > 0:
             decisions = {feature_value: DecisionTreeClassifier(pos_fdist.max())}
-        if neg_fdist.values():
+        if neg_fdist.N() > 0:
             default = DecisionTreeClassifier(neg_fdist.max())
 
         return DecisionTreeClassifier(label, feature_name, decisions, default)
@@ -268,7 +268,7 @@ class DecisionTreeClassifier(ClassifierI):
                     best_stump = stump
         if best_stump._decisions:
             descr = '%s=%s' % (best_stump._fname,
-                               best_stump._decisions.keys()[0])
+                               list(best_stump._decisions.keys())[0])
         else:
             descr = '(default)'
         if verbose:
