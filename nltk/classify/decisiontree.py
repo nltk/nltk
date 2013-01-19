@@ -114,7 +114,7 @@ class DecisionTreeClassifier(ClassifierI):
         if self._default is not None:
             if len(self._decisions) == 1:
                 s += '%sif %s != %r: '% (prefix, self._fname,
-                                         self._decisions.keys()[0])
+                                         list(self._decisions.keys())[0])
             else:
                 s += '%selse: ' % (prefix,)
             if self._default._fname is not None and depth>1:
@@ -131,7 +131,7 @@ class DecisionTreeClassifier(ClassifierI):
               support_cutoff=10, binary=False, feature_values=None,
               verbose=False):
         """
-        :param binary: If true, then treat all feature/value pairs a
+        :param binary: If true, then treat all feature/value pairs as
             individual binary features, rather than using a single n-way
             branch for each feature.
         """
@@ -242,8 +242,15 @@ class DecisionTreeClassifier(ClassifierI):
             else:
                 neg_fdist.inc(label)
 
-        decisions = {feature_value: DecisionTreeClassifier(pos_fdist.max())}
-        default = DecisionTreeClassifier(neg_fdist.max())
+
+        decisions = {}
+        default = label
+        # But hopefully we have observations!
+        if pos_fdist.N() > 0:
+            decisions = {feature_value: DecisionTreeClassifier(pos_fdist.max())}
+        if neg_fdist.N() > 0:
+            default = DecisionTreeClassifier(neg_fdist.max())
+
         return DecisionTreeClassifier(label, feature_name, decisions, default)
 
     @staticmethod
@@ -261,7 +268,7 @@ class DecisionTreeClassifier(ClassifierI):
                     best_stump = stump
         if best_stump._decisions:
             descr = '%s=%s' % (best_stump._fname,
-                               best_stump._decisions.keys()[0])
+                               list(best_stump._decisions.keys())[0])
         else:
             descr = '(default)'
         if verbose:
