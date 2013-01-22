@@ -308,18 +308,18 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         except AttributeError:
                             suffixStem = ""
                     # pos
-                     if relation or pos:
-                         try:
-                             xmlpos = xmlword.findall(".//{%s}c" % NS)
-                             xmlpos2 = xmlword.findall(".//{%s}s" % NS)
-                             if xmlpos2 != []:
-                                 tag = xmlpos[0].text+":"+xmlpos2[0].text
-                             else:
-                                 tag = xmlpos[0].text
-                                 word = (word,tag)
-                             if len(xmlpos) != 1 and suffixStem:
-                                 suffixStem = (suffixStem,xmlpos[1].text)
-                         except (AttributeError,IndexError) as e:
+                    if relation or pos:
+                        try:
+                            xmlpos = xmlword.findall(".//{%s}c" % NS)
+                            xmlpos2 = xmlword.findall(".//{%s}s" % NS)
+                            if xmlpos2 != []:
+                                tag = xmlpos[0].text+":"+xmlpos2[0].text
+                            else:
+                                tag = xmlpos[0].text
+                                word = (word,tag)
+                            if len(xmlpos) != 1 and suffixStem:
+                                suffixStem = (suffixStem,xmlpos[1].text)
+                        except (AttributeError,IndexError) as e:
                     if relation or pos:
                         try:
                             xmlpos = xmlword.findall(".//{%s}c" % NS)
