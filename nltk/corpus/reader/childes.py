@@ -317,15 +317,6 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             else:
                                 tag = xmlpos[0].text
                                 word = (word,tag)
-                            if len(xmlpos) != 1 and suffixStem:
-                                suffixStem = (suffixStem,xmlpos[1].text)
-                        except (AttributeError,IndexError) as e:
-                    if relation or pos:
-                        try:
-                            xmlpos = xmlword.findall(".//{%s}c" % NS)
-                            word = (word,xmlpos[0].text)
-                            if len(xmlpos) != 1 and suffixStem:
-                                suffixStem = (suffixStem,xmlpos[1].text)
                         except (AttributeError,IndexError) as e:
                             word = (word,None)
                             if suffixStem:
