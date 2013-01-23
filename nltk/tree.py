@@ -717,7 +717,10 @@ class Tree(list):
         :return: A latex qtree representation of this tree.
         :rtype: str
         """
-        return r'\Tree ' + self.pprint(indent=6, nodesep='', parens=('[.', ' ]'))
+        reserved_chars = re.compile('([#\$%&~_\{\}])')
+
+        pprint = self.pprint(indent=6, nodesep='', parens=('[.', ' ]'))
+        return r'\Tree ' + re.sub(reserved_chars, r'\\\1', pprint)
 
     def _pprint_flat(self, nodesep, parens, quotes):
         childstrs = []
