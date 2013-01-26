@@ -647,13 +647,18 @@ class ElementWrapper(object):
         if isinstance(etree, ElementWrapper):
             return etree
         else:
-            return object.__new__(ElementWrapper, etree)
+            return object.__new__(ElementWrapper)
 
     def __init__(self, etree):
-        """
-        Initialize a new Element wrapper for ``etree``.  If
-        ``etree`` is a string, then it will be converted to an
-        Element object using ``ElementTree.fromstring()`` first.
+        r"""
+        Initialize a new Element wrapper for ``etree``.
+
+        If ``etree`` is a string, then it will be converted to an
+        Element object using ``ElementTree.fromstring()`` first:
+
+            >>> ElementWrapper("<test></test>")
+            <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
+
         """
         if isinstance(etree, compat.string_types):
             etree = ElementTree.fromstring(etree)
