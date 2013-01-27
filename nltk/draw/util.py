@@ -33,12 +33,13 @@ structures.  For more information, see the CLIG
 homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
-from __future__ import print_function
 
-from Tkinter import (Button, Canvas, Entry, Frame, Label, Menu, Menubutton,
+
+import nltk.compat
+from tkinter import (Button, Canvas, Entry, Frame, Label, Menu, Menubutton,
                      RAISED, Scrollbar, StringVar, Text, Tk, Toplevel, Widget)
 
-import tkFont, tkMessageBox, tkFileDialog
+import tkinter.font, tkinter.messagebox, tkinter.filedialog
 
 from nltk.util import in_idle
 
@@ -205,7 +206,7 @@ class CanvasWidget(object):
         self.__draggable = 0
 
         # Set up attributes.
-        for (attr, value) in attribs.items(): self[attr] = value
+        for (attr, value) in list(attribs.items()): self[attr] = value
 
         # Manage this canvas widget
         self._manage()
@@ -855,7 +856,7 @@ class SymbolWidget(TextWidget):
         text.tag_config('symbol', font=('symbol', -size))
         for i in range(256):
             if i in (0,10): continue # null and newline
-            for k,v in SymbolWidget.SYMBOLS.items():
+            for k,v in list(SymbolWidget.SYMBOLS.items()):
                 if v == chr(i):
                     text.insert('end', '%-10s\t' % k)
                     break
@@ -1710,7 +1711,7 @@ class CanvasFrame(object):
         :rtype: None
         """
         if filename is None:
-            from tkFileDialog import asksaveasfilename
+            from tkinter.filedialog import asksaveasfilename
             ftypes = [('Postscript files', '.ps'),
                       ('All files', '*')]
             filename = asksaveasfilename(filetypes=ftypes,
@@ -1786,18 +1787,18 @@ class CanvasFrame(object):
 
         if desired_x is not None:
             x = desired_x
-            for y in range(top, bot-h, (bot-top-h)/10):
+            for y in range(top, bot-h, int((bot-top-h)/10)):
                 if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
                     return (x,y)
 
         if desired_y is not None:
             y = desired_y
-            for x in range(left, right-w, (right-left-w)/10):
+            for x in range(left, right-w, int((right-left-w)/10)):
                 if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
                     return (x,y)
 
-        for y in range(top, bot-h, (bot-top-h)/10):
-            for x in range(left, right-w, (right-left-w)/10):
+        for y in range(top, bot-h, int((bot-top-h)/10)):
+            for x in range(left, right-w, int((right-left-w)/10)):
                 if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
                     return (x,y)
         return (0,0)
@@ -2163,7 +2164,7 @@ class ColorizedList(object):
         Deregister a callback function.  If ``func`` is none, then
         all callbacks are removed for the given event.
         """
-        if event is None: events = self._callbacks.keys()
+        if event is None: events = list(self._callbacks.keys())
         elif event == 'select': events = ['click1', 'space', 'return']
         elif event == 'move': events = ['up', 'down', 'next', 'prior']
         else: events = [event]
@@ -2224,7 +2225,7 @@ class ColorizedList(object):
             item = self._items[itemnum]
         else:
             item = None
-        for cb_func in self._callbacks[event].keys():
+        for cb_func in list(self._callbacks[event].keys()):
             cb_func(item)
 
     def _buttonpress(self, event):

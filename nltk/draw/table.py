@@ -8,10 +8,11 @@
 """
 Tkinter widgets for displaying multi-column listboxes and tables.
 """
-from __future__ import print_function
+
+import nltk.compat
 import operator
 
-from Tkinter import (Frame, Label, Listbox, Scrollbar, Tk)
+from tkinter import (Frame, Label, Listbox, Scrollbar, Tk)
 
 
 ######################################################################
@@ -298,8 +299,8 @@ class MultiListbox(Frame):
                 >>> mlb.configure(label_foreground='red')
                 >>> mlb.configure(listbox_foreground='red')
         """
-        cnf = dict(cnf.items() + kw.items())
-        for (key, val) in cnf.items():
+        cnf = dict(list(cnf.items()) + list(kw.items()))
+        for (key, val) in list(cnf.items()):
             if key.startswith('label_') or key.startswith('label-'):
                 for label in self._labels:
                     label.configure({key[6:]: val})
@@ -332,8 +333,8 @@ class MultiListbox(Frame):
         """
         lb = self._listboxes[col_index]
 
-        cnf = dict(cnf.items() + kw.items())
-        for (key, val) in cnf.items():
+        cnf = dict(list(cnf.items()) + list(kw.items()))
+        for (key, val) in list(cnf.items()):
             if key in ('background', 'bg', 'foreground', 'fg',
                        'selectbackground', 'selectforeground'):
                 for i in range(lb.size()): lb.itemconfigure(i, {key:val})
@@ -365,7 +366,7 @@ class MultiListbox(Frame):
             if len(elt) != len(self._column_names):
                 raise ValueError('rows should be tuples whose length '
                                  'is equal to the number of columns')
-        for (lb,elts) in zip(self._listboxes, zip(*rows)):
+        for (lb,elts) in zip(self._listboxes, list(zip(*rows))):
             lb.insert(index, *elts)
 
     def get(self, first, last=None):
