@@ -76,6 +76,40 @@ else:
         ProxyDigestAuthHandler, Request)
     from urllib import getproxies, quote_plus, unquote_plus, urlencode
 
+    # Maps py2 tkinter package structure to py3 using import hook (PEP 302)
+    class TkinterPackage(object):
+        def __init__(self):
+            self.mod = __import__("Tkinter")
+            self.__path__ = ["nltk_py2_tkinter_package_path"]
+        def __getattr__(self, name):
+            return getattr(self.mod, name)
+
+    class TkinterLoader(object):
+        def __init__(self):
+            # module name mapping from py3 to py2
+            self.module_map = {
+                "tkinter": "Tkinter",
+                "tkinter.filedialog": "tkFileDialog",
+                "tkinter.font": "tkFont",
+                "tkinter.messagebox": "tkMessageBox",
+            }
+        def find_module(self, name, path=None):
+            # we are only interested in tkinter modules listed
+            # in self.module_map
+            if name in self.module_map:
+                return self
+        def load_module(self, name):
+            if name not in sys.modules:
+                if name == 'tkinter':
+                    mod = TkinterPackage()
+                else:
+                    mod = __import__(self.module_map[name])
+                sys.modules[name] = mod
+            return sys.modules[name]
+    
+    sys.meta_path = [TkinterLoader()]
+
+
 def iterkeys(d):
     """Return an iterator over the keys of a dictionary."""
     return getattr(d, _iterkeys)()
