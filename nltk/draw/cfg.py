@@ -46,11 +46,12 @@ Visualization tools for CFGs.
 #   - disconnect top & bottom -- right click
 #     - if connected to top & bottom, then disconnect
 
-from __future__ import print_function
 
+
+import nltk.compat
 import re
 
-from Tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
+from tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
                      Scrollbar, Text, Tk, Toplevel)
 
 from nltk.grammar import (ContextFreeGrammar, parse_cfg_production,

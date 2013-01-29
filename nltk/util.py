@@ -66,9 +66,8 @@ def in_idle():
         results.
     :rtype: bool
     """
-    import sys, types
-    return (isinstance(sys.stdin, types.InstanceType) and
-            sys.stdin.__class__.__name__ == 'PyShell')
+    import sys
+    return sys.stdin.__class__.__name__ in ('PyShell', 'RPCProxy')
 
 ##########################################################################
 # PRETTY PRINTING

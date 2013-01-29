@@ -7,7 +7,8 @@ Finding (and Replacing) Nemo
 Instant Regular Expressions
 Created by Aristide Grange
 """
-import Tkinter as tk
+import nltk.compat
+import tkinter as tk
 import re
 import itertools
 
