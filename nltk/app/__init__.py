@@ -21,8 +21,9 @@ wordnet:      WordNet Browser
 
 
 # Import Tkinter-based modules if Tkinter is installed
+import nltk.compat
 try:
-    import Tkinter
+    import tkinter
 except ImportError:
     import warnings
     warnings.warn("nltk.app package not loaded "

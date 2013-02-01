@@ -64,8 +64,9 @@ Keyboard Shortcuts::
       [q]\t Quit
 """
 
-import tkFont
-from Tkinter import (Listbox, IntVar, Button,
+import nltk.compat
+import tkinter.font
+from tkinter import (Listbox, IntVar, Button,
                      Frame, Label, Menu, Scrollbar, Tk)
 
 from nltk.tree import Tree
@@ -128,20 +129,20 @@ class RecursiveDescentApp(object):
 
     def _init_fonts(self, root):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
-        self._sysfont = tkFont.Font(font=Button()["font"])
+        self._sysfont = tkinter.font.Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
 
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget('size'))
 
-        self._boldfont = tkFont.Font(family='helvetica', weight='bold',
+        self._boldfont = tkinter.font.Font(family='helvetica', weight='bold',
                                     size=self._size.get())
-        self._font = tkFont.Font(family='helvetica',
+        self._font = tkinter.font.Font(family='helvetica',
                                     size=self._size.get())
         if self._size.get() < 0: big = self._size.get()-2
         else: big = self._size.get()+2
-        self._bigfont = tkFont.Font(family='helvetica', weight='bold',
+        self._bigfont = tkinter.font.Font(family='helvetica', weight='bold',
                                     size=big)
 
     def _init_grammar(self, parent):
@@ -584,7 +585,7 @@ class RecursiveDescentApp(object):
                  "Written by Edward Loper")
         TITLE = 'About: Recursive Descent Parser Application'
         try:
-            from tkMessageBox import Message
+            from tkinter.messagebox import Message
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self._top, TITLE, ABOUT)

@@ -50,7 +50,7 @@ Unit tests for Wordfinder class
 
     >>> import random
 
-    >>> # The following not enough for reproducibility under Python 2/3
+    >>> # The following is not enough for reproducibility under Python 2/3
     >>> # (see http://bugs.python.org/issue9025) so this test is skipped.
     >>> random.seed(12345)
 

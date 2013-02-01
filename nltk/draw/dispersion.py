@@ -41,7 +41,7 @@ def dispersion_plot(text, words, ignore_case=False):
                     for y in range(len(words_to_comp))
                     if text_to_comp[x] == words_to_comp[y]]
     if points:
-        x, y = zip(*points)
+        x, y = list(zip(*points))
     else:
         x = y = ()
     pylab.plot(x, y, "b|", scalex=.1)
@@ -52,6 +52,7 @@ def dispersion_plot(text, words, ignore_case=False):
     pylab.show()
 
 if __name__ == '__main__':
+    import nltk.compat
     from nltk.corpus import gutenberg
     words = ['Elinor', 'Marianne', 'Edward', 'Willoughby']
     dispersion_plot(gutenberg.words('austen-sense.txt'), words)

@@ -73,8 +73,9 @@ Possible future improvements:
     responsible for that.
 """
 
-import tkFont
-from Tkinter import (IntVar, Listbox, Button, Frame, Label, Menu,
+import nltk.compat
+import tkinter.font
+from tkinter import (IntVar, Listbox, Button, Frame, Label, Menu,
                      Scrollbar, Tk)
 
 from nltk.tree import Tree
@@ -137,16 +138,16 @@ class ShiftReduceApp(object):
 
     def _init_fonts(self, root):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
-        self._sysfont = tkFont.Font(font=Button()["font"])
+        self._sysfont = tkinter.font.Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
 
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget('size'))
 
-        self._boldfont = tkFont.Font(family='helvetica', weight='bold',
+        self._boldfont = tkinter.font.Font(family='helvetica', weight='bold',
                                     size=self._size.get())
-        self._font = tkFont.Font(family='helvetica',
+        self._font = tkinter.font.Font(family='helvetica',
                                     size=self._size.get())
 
     def _init_grammar(self, parent):
@@ -551,7 +552,7 @@ class ShiftReduceApp(object):
                  "Written by Edward Loper")
         TITLE = 'About: Shift-Reduce Parser Application'
         try:
-            from tkMessageBox import Message
+            from tkinter.messagebox import Message
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self._top, TITLE, ABOUT)

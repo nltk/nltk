@@ -36,14 +36,15 @@ edge you wish to apply a rule to.
 # At some point, we should rewrite this tool to use the new canvas
 # widget system.
 
-from __future__ import print_function
 
+
+import nltk.compat
 import pickle
-from tkFileDialog import asksaveasfilename, askopenfilename
-import Tkinter
+from tkinter.filedialog import asksaveasfilename, askopenfilename
+import tkinter
 import math
 import os.path
-import tkFont, tkMessageBox
+import tkinter.font, tkinter.messagebox
 
 from nltk.parse.chart import (BottomUpPredictCombineRule, BottomUpPredictRule,
                               Chart, LeafEdge, LeafInitRule, SingleEdgeFundamentalRule,
@@ -106,12 +107,12 @@ class ChartMatrixView(object):
         self._selected_cell = None
 
         if toplevel:
-            self._root = Tkinter.Toplevel(parent)
+            self._root = tkinter.Toplevel(parent)
             self._root.title(title)
             self._root.bind('<Control-q>', self.destroy)
             self._init_quit(self._root)
         else:
-            self._root = Tkinter.Frame(parent)
+            self._root = tkinter.Frame(parent)
 
         self._init_matrix(self._root)
         self._init_list(self._root)
@@ -127,18 +128,18 @@ class ChartMatrixView(object):
         self.draw()
 
     def _init_quit(self, root):
-        quit = Tkinter.Button(root, text='Quit', command=self.destroy)
+        quit = tkinter.Button(root, text='Quit', command=self.destroy)
         quit.pack(side='bottom', expand=0, fill='none')
 
     def _init_matrix(self, root):
-        cframe = Tkinter.Frame(root, border=2, relief='sunken')
+        cframe = tkinter.Frame(root, border=2, relief='sunken')
         cframe.pack(expand=0, fill='none', padx=1, pady=3, side='top')
-        self._canvas = Tkinter.Canvas(cframe, width=200, height=200,
+        self._canvas = tkinter.Canvas(cframe, width=200, height=200,
                                       background='white')
         self._canvas.pack(expand=0, fill='none')
 
     def _init_numedges(self, root):
-        self._numedges_label = Tkinter.Label(root, text='0 edges')
+        self._numedges_label = tkinter.Label(root, text='0 edges')
         self._numedges_label.pack(expand=0, fill='none', side='top')
 
     def _init_list(self, root):
@@ -216,7 +217,7 @@ class ChartMatrixView(object):
 
     def _fire_callbacks(self, event, *args):
         if event not in self._callbacks: return
-        for cb_func in self._callbacks[event].keys(): cb_func(*args)
+        for cb_func in list(self._callbacks[event].keys()): cb_func(*args)
 
     def select_cell(self, i, j):
         if self._root is None: return
@@ -330,21 +331,21 @@ class ChartResultsView(object):
         self._selectbox = None
 
         if toplevel:
-            self._root = Tkinter.Toplevel(parent)
+            self._root = tkinter.Toplevel(parent)
             self._root.title('Chart Parser Application: Results')
             self._root.bind('<Control-q>', self.destroy)
         else:
-            self._root = Tkinter.Frame(parent)
+            self._root = tkinter.Frame(parent)
 
         # Buttons
         if toplevel:
-            buttons = Tkinter.Frame(self._root)
+            buttons = tkinter.Frame(self._root)
             buttons.pack(side='bottom', expand=0, fill='x')
-            Tkinter.Button(buttons, text='Quit',
+            tkinter.Button(buttons, text='Quit',
                            command=self.destroy).pack(side='right')
-            Tkinter.Button(buttons, text='Print All',
+            tkinter.Button(buttons, text='Print All',
                            command=self.print_all).pack(side='left')
-            Tkinter.Button(buttons, text='Print Selection',
+            tkinter.Button(buttons, text='Print Selection',
                            command=self.print_selection).pack(side='left')
 
         # Canvas frame.
@@ -407,7 +408,7 @@ class ChartResultsView(object):
     def print_selection(self, *e):
         if self._root is None: return
         if self._selection is None:
-            tkMessageBox.showerror('Print Error', 'No tree selected')
+            tkinter.messagebox.showerror('Print Error', 'No tree selected')
         else:
             c = self._cframe.canvas()
             for widget in self._treewidgets:
@@ -512,7 +513,7 @@ class ChartComparer(object):
         self._operator = None
 
         # Set up the root window.
-        self._root = Tkinter.Tk()
+        self._root = tkinter.Tk()
         self._root.title('Chart Comparison')
         self._root.bind('<Control-q>', self.destroy)
         self._root.bind('<Control-x>', self.destroy)
@@ -543,10 +544,10 @@ class ChartComparer(object):
     #////////////////////////////////////////////////////////////
 
     def _init_menubar(self, root):
-        menubar = Tkinter.Menu(root)
+        menubar = tkinter.Menu(root)
 
         # File menu
-        filemenu = Tkinter.Menu(menubar, tearoff=0)
+        filemenu = tkinter.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Load Chart', accelerator='Ctrl-o',
                              underline=0, command=self.load_chart_dialog)
         filemenu.add_command(label='Save Output', accelerator='Ctrl-s',
@@ -557,7 +558,7 @@ class ChartComparer(object):
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
         # Compare menu
-        opmenu = Tkinter.Menu(menubar, tearoff=0)
+        opmenu = tkinter.Menu(menubar, tearoff=0)
         opmenu.add_command(label='Intersection',
                            command=self._intersection,
                            accelerator='+')
@@ -576,21 +577,21 @@ class ChartComparer(object):
         self._root.config(menu=menubar)
 
     def _init_divider(self, root):
-        divider = Tkinter.Frame(root, border=2, relief='sunken')
+        divider = tkinter.Frame(root, border=2, relief='sunken')
         divider.pack(side='top', fill='x', ipady=2)
 
     def _init_chartviews(self, root):
         opfont=('symbol', -36) # Font for operator.
         eqfont=('helvetica', -36) # Font for equals sign.
 
-        frame = Tkinter.Frame(root, background='#c0c0c0')
+        frame = tkinter.Frame(root, background='#c0c0c0')
         frame.pack(side='top', expand=1, fill='both')
 
         # The left matrix.
-        cv1_frame = Tkinter.Frame(frame, border=3, relief='groove')
+        cv1_frame = tkinter.Frame(frame, border=3, relief='groove')
         cv1_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
         self._left_selector = MutableOptionMenu(
-            cv1_frame, self._charts.keys(), command=self._select_left)
+            cv1_frame, list(self._charts.keys()), command=self._select_left)
         self._left_selector.pack(side='top', pady=5, fill='x')
         self._left_matrix = ChartMatrixView(cv1_frame, self._emptychart,
                                             toplevel=False,
@@ -602,15 +603,15 @@ class ChartComparer(object):
         self._left_matrix.inactivate()
 
         # The operator.
-        self._op_label = Tkinter.Label(frame, text=' ', width=3,
+        self._op_label = tkinter.Label(frame, text=' ', width=3,
                                        background='#c0c0c0', font=opfont)
         self._op_label.pack(side='left', padx=5, pady=5)
 
         # The right matrix.
-        cv2_frame = Tkinter.Frame(frame, border=3, relief='groove')
+        cv2_frame = tkinter.Frame(frame, border=3, relief='groove')
         cv2_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
         self._right_selector = MutableOptionMenu(
-            cv2_frame, self._charts.keys(), command=self._select_right)
+            cv2_frame, list(self._charts.keys()), command=self._select_right)
         self._right_selector.pack(side='top', pady=5, fill='x')
         self._right_matrix = ChartMatrixView(cv2_frame, self._emptychart,
                                             toplevel=False,
@@ -622,13 +623,13 @@ class ChartComparer(object):
         self._right_matrix.inactivate()
 
         # The equals sign
-        Tkinter.Label(frame, text='=', width=3, background='#c0c0c0',
+        tkinter.Label(frame, text='=', width=3, background='#c0c0c0',
                       font=eqfont).pack(side='left', padx=5, pady=5)
 
         # The output matrix.
-        out_frame = Tkinter.Frame(frame, border=3, relief='groove')
+        out_frame = tkinter.Frame(frame, border=3, relief='groove')
         out_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
-        self._out_label = Tkinter.Label(out_frame, text='Output')
+        self._out_label = tkinter.Label(out_frame, text='Output')
         self._out_label.pack(side='top', pady=9)
         self._out_matrix = ChartMatrixView(out_frame, self._emptychart,
                                             toplevel=False,
@@ -640,19 +641,19 @@ class ChartComparer(object):
         self._out_matrix.inactivate()
 
     def _init_buttons(self, root):
-        buttons = Tkinter.Frame(root)
+        buttons = tkinter.Frame(root)
         buttons.pack(side='bottom', pady=5, fill='x', expand=0)
-        Tkinter.Button(buttons, text='Intersection',
+        tkinter.Button(buttons, text='Intersection',
                        command=self._intersection).pack(side='left')
-        Tkinter.Button(buttons, text='Union',
+        tkinter.Button(buttons, text='Union',
                        command=self._union).pack(side='left')
-        Tkinter.Button(buttons, text='Difference',
+        tkinter.Button(buttons, text='Difference',
                        command=self._difference).pack(side='left')
-        Tkinter.Frame(buttons, width=20).pack(side='left')
-        Tkinter.Button(buttons, text='Swap Charts',
+        tkinter.Frame(buttons, width=20).pack(side='left')
+        tkinter.Button(buttons, text='Swap Charts',
                        command=self._swapcharts).pack(side='left')
 
-        Tkinter.Button(buttons, text='Detatch Output',
+        tkinter.Button(buttons, text='Detatch Output',
                        command=self._detatch_out).pack(side='right')
 
     def _init_bindings(self, root):
@@ -696,7 +697,7 @@ class ChartComparer(object):
         if not filename: return
         try: pickle.dump((self._out_chart), open(filename, 'w'))
         except Exception as e:
-            tkMessageBox.showerror('Error Saving Chart',
+            tkinter.messagebox.showerror('Error Saving Chart',
                                    'Unable to open file: %r\n%s' %
                                    (filename, e))
 
@@ -706,7 +707,7 @@ class ChartComparer(object):
         if not filename: return
         try: self.load_chart(filename)
         except Exception as e:
-            tkMessageBox.showerror('Error Loading Chart',
+            tkinter.messagebox.showerror('Error Loading Chart',
                                    'Unable to open file: %r\n%s' %
                                    (filename, e))
 
@@ -928,12 +929,12 @@ class ChartView(object):
 
         # If they didn't provide a main window, then set one up.
         if root is None:
-            top = Tkinter.Tk()
+            top = tkinter.Tk()
             top.title('Chart View')
             def destroy1(e, top=top): top.destroy()
             def destroy2(top=top): top.destroy()
             top.bind('q', destroy1)
-            b = Tkinter.Button(top, text='Done', command=destroy2)
+            b = tkinter.Button(top, text='Done', command=destroy2)
             b.pack(side='bottom')
             self._root = top
         else:
@@ -949,9 +950,9 @@ class ChartView(object):
 
         # Create the sentence canvas.
         if draw_sentence:
-            cframe = Tkinter.Frame(self._root, relief='sunk', border=2)
+            cframe = tkinter.Frame(self._root, relief='sunk', border=2)
             cframe.pack(fill='both', side='bottom')
-            self._sentence_canvas = Tkinter.Canvas(cframe, height=50)
+            self._sentence_canvas = tkinter.Canvas(cframe, height=50)
             self._sentence_canvas['background'] = '#e0e0e0'
             self._sentence_canvas.pack(fill='both')
             #self._sentence_canvas['height'] = self._sentence_height
@@ -977,12 +978,12 @@ class ChartView(object):
         self._chart_canvas.bind('<Configure>', self._configure)
 
     def _init_fonts(self, root):
-        self._boldfont = tkFont.Font(family='helvetica', weight='bold',
+        self._boldfont = tkinter.font.Font(family='helvetica', weight='bold',
                                     size=self._fontsize)
-        self._font = tkFont.Font(family='helvetica',
+        self._font = tkinter.font.Font(family='helvetica',
                                     size=self._fontsize)
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
-        self._sysfont = tkFont.Font(font=Tkinter.Button()["font"])
+        self._sysfont = tkinter.font.Font(font=tkinter.Button()["font"])
         root.option_add("*Font", self._sysfont)
 
     def _sb_canvas(self, root, expand='y',
@@ -990,12 +991,12 @@ class ChartView(object):
         """
         Helper for __init__: construct a canvas with a scrollbar.
         """
-        cframe =Tkinter.Frame(root, relief='sunk', border=2)
+        cframe =tkinter.Frame(root, relief='sunk', border=2)
         cframe.pack(fill=fill, expand=expand, side=side)
-        canvas = Tkinter.Canvas(cframe, background='#e0e0e0')
+        canvas = tkinter.Canvas(cframe, background='#e0e0e0')
 
         # Give the canvas a scrollbar.
-        sb = Tkinter.Scrollbar(cframe, orient='vertical')
+        sb = tkinter.Scrollbar(cframe, orient='vertical')
         sb.pack(side='right', fill='y')
         canvas.pack(side='left', fill=fill, expand='yes')
 
@@ -1287,7 +1288,7 @@ class ChartView(object):
         Unmark an edge (or all edges)
         """
         if edge is None:
-            old_marked_edges = self._marks.keys()
+            old_marked_edges = list(self._marks.keys())
             self._marks = {}
             for edge in old_marked_edges:
                 self._color_edge(edge)
@@ -1579,7 +1580,7 @@ class ChartView(object):
 
     def _fire_callbacks(self, event, *args):
         if event not in self._callbacks: return
-        for cb_func in self._callbacks[event].keys(): cb_func(*args)
+        for cb_func in list(self._callbacks[event].keys()): cb_func(*args)
 
 #######################################################################
 # Edge Rules
@@ -1626,14 +1627,14 @@ class ChartParserApp(object):
         self._root = None
         try:
             # Create the root window.
-            self._root = Tkinter.Tk()
+            self._root = tkinter.Tk()
             self._root.title(title)
             self._root.bind('<Control-q>', self.destroy)
 
             # Set up some frames.
-            frame3 = Tkinter.Frame(self._root)
-            frame2 = Tkinter.Frame(self._root)
-            frame1 = Tkinter.Frame(self._root)
+            frame3 = tkinter.Frame(self._root)
+            frame2 = tkinter.Frame(self._root)
+            frame1 = tkinter.Frame(self._root)
             frame3.pack(side='bottom', fill='none')
             frame2.pack(side='bottom', fill='x')
             frame1.pack(side='bottom', fill='both', expand=1)
@@ -1696,25 +1697,25 @@ class ChartParserApp(object):
 
     def _init_fonts(self, root):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
-        self._sysfont = tkFont.Font(font=Tkinter.Button()["font"])
+        self._sysfont = tkinter.font.Font(font=tkinter.Button()["font"])
         root.option_add("*Font", self._sysfont)
 
         # TWhat's our font size (default=same as sysfont)
-        self._size = Tkinter.IntVar(root)
+        self._size = tkinter.IntVar(root)
         self._size.set(self._sysfont.cget('size'))
 
-        self._boldfont = tkFont.Font(family='helvetica', weight='bold',
+        self._boldfont = tkinter.font.Font(family='helvetica', weight='bold',
                                     size=self._size.get())
-        self._font = tkFont.Font(family='helvetica',
+        self._font = tkinter.font.Font(family='helvetica',
                                     size=self._size.get())
 
     def _init_animation(self):
         # Are we stepping? (default=yes)
-        self._step = Tkinter.IntVar(self._root)
+        self._step = tkinter.IntVar(self._root)
         self._step.set(1)
 
         # What's our animation speed (default=fast)
-        self._animate = Tkinter.IntVar(self._root)
+        self._animate = tkinter.IntVar(self._root)
         self._animate.set(3) # Default speed = fast
 
         # Are we currently animating?
@@ -1728,59 +1729,59 @@ class ChartParserApp(object):
     def _init_rulelabel(self, parent):
         ruletxt = 'Last edge generated by:'
 
-        self._rulelabel1 = Tkinter.Label(parent,text=ruletxt,
+        self._rulelabel1 = tkinter.Label(parent,text=ruletxt,
                                          font=self._boldfont)
-        self._rulelabel2 = Tkinter.Label(parent, width=40,
+        self._rulelabel2 = tkinter.Label(parent, width=40,
                                          relief='groove', anchor='w',
                                          font=self._boldfont)
         self._rulelabel1.pack(side='left')
         self._rulelabel2.pack(side='left')
-        step = Tkinter.Checkbutton(parent, variable=self._step,
+        step = tkinter.Checkbutton(parent, variable=self._step,
                                    text='Step')
         step.pack(side='right')
 
     def _init_buttons(self, parent):
-        frame1 = Tkinter.Frame(parent)
-        frame2 = Tkinter.Frame(parent)
+        frame1 = tkinter.Frame(parent)
+        frame2 = tkinter.Frame(parent)
         frame1.pack(side='bottom', fill='x')
         frame2.pack(side='top', fill='none')
 
-        Tkinter.Button(frame1, text='Reset\nParser',
+        tkinter.Button(frame1, text='Reset\nParser',
                        background='#90c0d0', foreground='black',
                        command=self.reset).pack(side='right')
         #Tkinter.Button(frame1, text='Pause',
         #               background='#90c0d0', foreground='black',
         #               command=self.pause).pack(side='left')
 
-        Tkinter.Button(frame1, text='Top Down\nStrategy',
+        tkinter.Button(frame1, text='Top Down\nStrategy',
                        background='#90c0d0', foreground='black',
                        command=self.top_down_strategy).pack(side='left')
-        Tkinter.Button(frame1, text='Bottom Up\nStrategy',
+        tkinter.Button(frame1, text='Bottom Up\nStrategy',
                        background='#90c0d0', foreground='black',
                        command=self.bottom_up_strategy).pack(side='left')
-        Tkinter.Button(frame1, text='Bottom Up\nLeft-Corner Strategy',
+        tkinter.Button(frame1, text='Bottom Up\nLeft-Corner Strategy',
                        background='#90c0d0', foreground='black',
                        command=self.bottom_up_leftcorner_strategy).pack(side='left')
 
-        Tkinter.Button(frame2, text='Top Down Init\nRule',
+        tkinter.Button(frame2, text='Top Down Init\nRule',
                        background='#90f090', foreground='black',
                        command=self.top_down_init).pack(side='left')
-        Tkinter.Button(frame2, text='Top Down Predict\nRule',
+        tkinter.Button(frame2, text='Top Down Predict\nRule',
                        background='#90f090', foreground='black',
                        command=self.top_down_predict).pack(side='left')
-        Tkinter.Frame(frame2, width=20).pack(side='left')
+        tkinter.Frame(frame2, width=20).pack(side='left')
 
-        Tkinter.Button(frame2, text='Bottom Up Predict\nRule',
+        tkinter.Button(frame2, text='Bottom Up Predict\nRule',
                        background='#90f090', foreground='black',
                        command=self.bottom_up).pack(side='left')
-        Tkinter.Frame(frame2, width=20).pack(side='left')
+        tkinter.Frame(frame2, width=20).pack(side='left')
 
-        Tkinter.Button(frame2, text='Bottom Up Left-Corner\nPredict Rule',
+        tkinter.Button(frame2, text='Bottom Up Left-Corner\nPredict Rule',
                        background='#90f090', foreground='black',
                        command=self.bottom_up_leftcorner).pack(side='left')
-        Tkinter.Frame(frame2, width=20).pack(side='left')
+        tkinter.Frame(frame2, width=20).pack(side='left')
 
-        Tkinter.Button(frame2, text='Fundamental\nRule',
+        tkinter.Button(frame2, text='Fundamental\nRule',
                        background='#90f090', foreground='black',
                        command=self.fundamental).pack(side='left')
 
@@ -1814,9 +1815,9 @@ class ChartParserApp(object):
         self._root.bind('s', lambda e,s=self._step:s.set(not s.get()))
 
     def _init_menubar(self):
-        menubar = Tkinter.Menu(self._root)
+        menubar = tkinter.Menu(self._root)
 
-        filemenu = Tkinter.Menu(menubar, tearoff=0)
+        filemenu = tkinter.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Save Chart', underline=0,
                              command=self.save_chart, accelerator='Ctrl-s')
         filemenu.add_command(label='Load Chart', underline=0,
@@ -1833,7 +1834,7 @@ class ChartParserApp(object):
                              command=self.destroy, accelerator='Ctrl-x')
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
-        editmenu = Tkinter.Menu(menubar, tearoff=0)
+        editmenu = tkinter.Menu(menubar, tearoff=0)
         editmenu.add_command(label='Edit Grammar', underline=5,
                              command=self.edit_grammar,
                              accelerator='Ctrl-g')
@@ -1842,14 +1843,14 @@ class ChartParserApp(object):
                              accelerator='Ctrl-t')
         menubar.add_cascade(label='Edit', underline=0, menu=editmenu)
 
-        viewmenu = Tkinter.Menu(menubar, tearoff=0)
+        viewmenu = tkinter.Menu(menubar, tearoff=0)
         viewmenu.add_command(label='Chart Matrix', underline=6,
                              command=self.view_matrix)
         viewmenu.add_command(label='Results', underline=0,
                              command=self.view_results)
         menubar.add_cascade(label='View', underline=0, menu=viewmenu)
 
-        rulemenu = Tkinter.Menu(menubar, tearoff=0)
+        rulemenu = tkinter.Menu(menubar, tearoff=0)
         rulemenu.add_command(label='Top Down Strategy', underline=0,
                              command=self.top_down_strategy,
                              accelerator='t')
@@ -1872,7 +1873,7 @@ class ChartParserApp(object):
                              command=self.fundamental)
         menubar.add_cascade(label='Apply', underline=0, menu=rulemenu)
 
-        animatemenu = Tkinter.Menu(menubar, tearoff=0)
+        animatemenu = tkinter.Menu(menubar, tearoff=0)
         animatemenu.add_checkbutton(label="Step", underline=0,
                                     variable=self._step,
                                     accelerator='s')
@@ -1890,7 +1891,7 @@ class ChartParserApp(object):
                                     accelerator='+')
         menubar.add_cascade(label="Animate", underline=1, menu=animatemenu)
 
-        zoommenu = Tkinter.Menu(menubar, tearoff=0)
+        zoommenu = tkinter.Menu(menubar, tearoff=0)
         zoommenu.add_radiobutton(label='Tiny', variable=self._size,
                                  underline=0, value=10, command=self.resize)
         zoommenu.add_radiobutton(label='Small', variable=self._size,
@@ -1903,7 +1904,7 @@ class ChartParserApp(object):
                                  underline=0, value=24, command=self.resize)
         menubar.add_cascade(label='Zoom', underline=0, menu=zoommenu)
 
-        helpmenu = Tkinter.Menu(menubar, tearoff=0)
+        helpmenu = tkinter.Menu(menubar, tearoff=0)
         helpmenu.add_command(label='About', underline=0,
                              command=self.about)
         helpmenu.add_command(label='Instructions', underline=0,
@@ -1978,7 +1979,7 @@ class ChartParserApp(object):
     def about(self, *e):
         ABOUT = ("NLTK Chart Parser Application\n"+
                  "Written by Edward Loper")
-        tkMessageBox.showinfo('About: Chart Parser Application', ABOUT)
+        tkinter.messagebox.showinfo('About: Chart Parser Application', ABOUT)
 
     #////////////////////////////////////////////////////////////
     # File Menu
@@ -2005,7 +2006,7 @@ class ChartParserApp(object):
             self._cp.set_chart(chart)
         except Exception as e:
             raise
-            tkMessageBox.showerror('Error Loading Chart',
+            tkinter.messagebox.showerror('Error Loading Chart',
                                    'Unable to open file: %r' % filename)
 
     def save_chart(self, *args):
@@ -2017,7 +2018,7 @@ class ChartParserApp(object):
             pickle.dump(self._chart, open(filename, 'w'))
         except Exception as e:
             raise
-            tkMessageBox.showerror('Error Saving Chart',
+            tkinter.messagebox.showerror('Error Saving Chart',
                                    'Unable to open file: %r' % filename)
 
     def load_grammar(self, *args):
@@ -2032,7 +2033,7 @@ class ChartParserApp(object):
                 grammar = parse_cfg(open(filename, 'r').read())
             self.set_grammar(grammar)
         except Exception as e:
-            tkMessageBox.showerror('Error Loading Grammar',
+            tkinter.messagebox.showerror('Error Loading Grammar',
                                    'Unable to open file: %r' % filename)
 
     def save_grammar(self, *args):
@@ -2051,7 +2052,7 @@ class ChartParserApp(object):
                 for prod in rest: file.write('%s\n' % prod)
                 file.close()
         except Exception as e:
-            tkMessageBox.showerror('Error Saving Grammar',
+            tkinter.messagebox.showerror('Error Saving Grammar',
                                    'Unable to open file: %r' % filename)
 
     def reset(self, *args):
@@ -2172,7 +2173,7 @@ class ChartParserApp(object):
                 self._root.after(20, self._animate_strategy)
 
     def _apply_strategy(self):
-        new_edge = self._cpstep.next()
+        new_edge = next(self._cpstep)
 
         if new_edge is not None:
             self._show_new_edge(new_edge)
