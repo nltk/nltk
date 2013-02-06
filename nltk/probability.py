@@ -1673,6 +1673,7 @@ class MutableProbDist(ProbDistI):
 # and take advantage of storing and retrieving information in dictionaries
 # where possible.
 
+@compat.python_2_unicode_compatible
 class KneserNeyProbDist(ProbDistI):
     """
     Kneser-Ney estimate of a probability distribution. This is a version of
