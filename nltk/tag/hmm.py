@@ -1038,7 +1038,6 @@ class HiddenMarkovModelTrainer(object):
 
         # create probability distributions (with smoothing)
         N = len(self._states)
-        print starting
         pi = estimator(starting, N)
         A = ConditionalProbDist(transitions, estimator, N)
         B = ConditionalProbDist(outputs, estimator, len(self._symbols))
