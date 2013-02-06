@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Ngram Association Measures
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -12,6 +12,7 @@ generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
 """
 
 import math as _math
+from functools import reduce
 _log2 = lambda x: _math.log(x, 2.0)
 _ln = _math.log
 
@@ -171,8 +172,9 @@ class BigramAssocMeasures(NgramAssocMeasures):
     _n = 2
 
     @staticmethod
-    def _contingency(n_ii, (n_ix, n_xi), n_xx):
+    def _contingency(n_ii, n_ix_xi_tuple, n_xx):
         """Calculates values of a bigram contingency table from marginal values."""
+        (n_ix, n_xi) = n_ix_xi_tuple
         n_oi = n_xi - n_ii
         n_io = n_ix - n_ii
         return (n_ii, n_oi, n_io, n_xx - n_ii - n_oi - n_io)
@@ -201,15 +203,17 @@ class BigramAssocMeasures(NgramAssocMeasures):
                 ((n_ii + n_io) * (n_ii + n_oi) * (n_io + n_oo) * (n_oi + n_oo)))
 
     @classmethod
-    def chi_sq(cls, n_ii, (n_ix, n_xi), n_xx):
+    def chi_sq(cls, n_ii, n_ix_xi_tuple, n_xx):
         """Scores bigrams using chi-square, i.e. phi-sq multiplied by the number
         of bigrams, as in Manning and Schutze 5.3.3.
         """
+        (n_ix, n_xi) = n_ix_xi_tuple
         return n_xx * cls.phi_sq(n_ii, (n_ix, n_xi), n_xx)
 
     @staticmethod
-    def dice(n_ii, (n_ix, n_xi), n_xx):
+    def dice(n_ii, n_ix_xi_tuple, n_xx):
         """Scores bigrams using Dice's coefficient."""
+        (n_ix, n_xi) = n_ix_xi_tuple
         return 2 * float(n_ii) / (n_ix + n_xi)
 
 
@@ -235,13 +239,13 @@ class TrigramAssocMeasures(NgramAssocMeasures):
     _n = 3
 
     @staticmethod
-    def _contingency(n_iii,
-                 (n_iix, n_ixi, n_xii),
-                 (n_ixx, n_xix, n_xxi),
+    def _contingency(n_iii, n_iix_tuple, n_ixx_tuple,
                  n_xxx):
         """Calculates values of a trigram contingency table (or cube) from marginal
         values.
         """
+        (n_iix, n_ixi, n_xii) = n_iix_tuple
+        (n_ixx, n_xix, n_xxi) = n_iix_tuple
         n_oii = n_xii - n_iii
         n_ioi = n_ixi - n_iii
         n_iio = n_iix - n_iii

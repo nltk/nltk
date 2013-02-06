@@ -2,16 +2,15 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
-from __future__ import print_function
-from collections import defaultdict
+from __future__ import print_function, division, unicode_literals
 
 from nltk.internals import Counter
+from nltk.compat import python_2_unicode_compatible
 
-
+@python_2_unicode_compatible
 class FStructure(dict):
     def safeappend(self, key, item):
         """
@@ -124,16 +123,19 @@ class FStructure(dict):
         """
         letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
                   't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
-        num = int(value) / 26
+        num = int(value) // 26
         if num > 0:
             return letter + str(num)
         else:
             return letter
 
     def __repr__(self):
-        return str(self).replace('\n', '')
+        return self.__unicode__().replace('\n', '')
 
-    def __str__(self, indent=3):
+    def __str__(self):
+        return self.pprint()
+
+    def pprint(self, indent=3):
         try:
             accum = '%s:[' % self.label
         except NameError:
@@ -147,7 +149,7 @@ class FStructure(dict):
             for item in self[feature]:
                 if isinstance(item, FStructure):
                     next_indent = indent+len(feature)+3+len(self.label)
-                    accum += '\n%s%s %s' % (' '*(indent), feature, item.__str__(next_indent))
+                    accum += '\n%s%s %s' % (' '*(indent), feature, item.pprint(next_indent))
                 elif isinstance(item, tuple):
                     accum += '\n%s%s \'%s\'' % (' '*(indent), feature, item[0])
                 elif isinstance(item, list):

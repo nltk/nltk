@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Simple Tokenizers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
@@ -34,7 +34,7 @@ that expects a tokenizer.  For example, these tokenizers can be used
 to specify the tokenization conventions when building a `CorpusReader`.
 
 """
-
+from __future__ import unicode_literals
 from nltk.tokenize.api import TokenizerI, StringTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
 
@@ -111,7 +111,8 @@ class LineTokenizer(TokenizerI):
         if self._blanklines == 'discard':
             lines = [l for l in lines if l.rstrip()]
         elif self._blanklines == 'discard-eof':
-            if lines and not lines[-1].strip(): lines.pop()
+            if lines and not lines[-1].strip():
+                lines.pop()
         return lines
 
     # discard-eof not implemented

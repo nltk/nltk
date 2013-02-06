@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TnT Tagger
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
 #
 # URL: <http://www.nltk.org/>
@@ -12,10 +12,11 @@ by Thorsten Brants
 
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 '''
-
 from __future__ import print_function
-from nltk.probability import FreqDist, ConditionalFreqDist
 
+from operator import itemgetter
+
+from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.tag.api import TaggerI
 
 class TnT(TaggerI):
@@ -403,9 +404,8 @@ class TnT(TaggerI):
         # now have computed a set of possible new_states
 
         # sort states by prob
-        # _cmp_tup is a comparison function,
         # set is now ordered greatest to least probability
-        new_states.sort(self._cmp_tup)
+        new_states.sort(reverse=True, key=itemgetter(1))
 
         # del everything after N (threshold)
         # this is the beam search cut
@@ -416,11 +416,6 @@ class TnT(TaggerI):
         # compute the tags for the rest of the sentence
         # return the best list of tags for the sentence
         return self._tagword(sent, new_states)
-
-
-
-    def _cmp_tup(self, (_hq, p1), (_h2, p2)):
-        return (1 if (p2-p1) > 0 else -1)
 
 
 ########################################

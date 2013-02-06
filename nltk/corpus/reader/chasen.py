@@ -1,28 +1,29 @@
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
-
 from __future__ import print_function
+
 import sys
 
-import util
+from . import util
 
+from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 class ChasenCorpusReader(CorpusReader):
 
-    def __init__(self, root, fileids, encoding=None, sent_splitter=None):
+    def __init__(self, root, fileids, encoding='utf8', sent_splitter=None):
         self._sent_splitter = sent_splitter
         CorpusReader.__init__(self, root, fileids, encoding)
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
@@ -121,8 +122,8 @@ def demo():
     print('/'.join( jeita.words()[22100:22140] ))
 
 
-    print('\nEOS\n'.join(['\n'.join("%s/%s" % (w[0],w[1].split('\t')[2]) for w in sent)
-                          for sent in jeita.tagged_sents()[2170:2173]]))
+    print('\nEOS\n'.join('\n'.join("%s/%s" % (w[0],w[1].split('\t')[2]) for w in sent)
+                          for sent in jeita.tagged_sents()[2170:2173]))
 
 def test():
 
@@ -131,7 +132,7 @@ def test():
     jeita = LazyCorpusLoader(
         'jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
 
-    assert isinstance(jeita.tagged_words()[0][1], basestring)
+    assert isinstance(jeita.tagged_words()[0][1], compat.string_types)
 
 if __name__ == '__main__':
     demo()

@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Distance Metrics
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 #         Tom Lippincott <tom@cs.columbia.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -114,8 +114,8 @@ def masi_distance(label1, label2):
     labels are assigned.
 
     >>> from nltk.metrics import masi_distance
-    >>> masi_distance(set([1,2]),set([1,2,3,4]))
-    0.665
+    >>> masi_distance(set([1,2]), set([1,2,3,4]))
+    0.665...
 
     Passonneau 2006, Measuring Agreement on Set-Valued Items (MASI) for Semantic and Pragmatic Annotation.
     """

@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Senseval 2 Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-#         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
+#         Steven Bird <stevenbird1@gmail.com> (modifications)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -21,29 +21,30 @@ The NLTK version of the Senseval 2 files uses well-formed XML.
 Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
-import os
 import re
-import xml.sax
-from xmldocs import XMLCorpusReader
-
-from nltk.tokenize import *
 from xml.etree import ElementTree
 
-from util import *
-from api import *
+from nltk import compat
+from nltk.tokenize import *
 
+from .util import *
+from .api import *
+
+@compat.python_2_unicode_compatible
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
         self.word = word
         self.senses = tuple(senses)
         self.position = position
         self.context = context
+
     def __repr__(self):
         return ('SensevalInstance(word=%r, position=%r, '
                 'context=%r, senses=%r)' %
                 (self.word, self.position, self.context, self.senses))
+
 
 class SensevalCorpusReader(CorpusReader):
     def instances(self, fileids=None):
@@ -55,7 +56,7 @@ class SensevalCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _entry(self, tree):

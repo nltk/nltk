@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Weka Classsifiers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,16 +8,16 @@
 """
 Classifiers that make use of the external 'Weka' package.
 """
-
 from __future__ import print_function
+
 import time
 import tempfile
 import os
-import os.path
 import subprocess
 import re
 import zipfile
 
+from nltk import compat
 from nltk.probability import DictionaryProbDist
 from nltk.internals import java, config_java
 
@@ -263,9 +263,9 @@ class ARFF_Formatter:
             for (fname, fval) in tok.items():
                 if issubclass(type(fval), bool):
                     ftype = '{True, False}'
-                elif issubclass(type(fval), (int, float, long, bool)):
+                elif issubclass(type(fval), (compat.integer_types, float, bool)):
                     ftype = 'NUMERIC'
-                elif issubclass(type(fval), basestring):
+                elif issubclass(type(fval), compat.string_types):
                     ftype = 'STRING'
                 elif fval is None:
                     continue # can't tell the type.
@@ -327,7 +327,7 @@ class ARFF_Formatter:
     def _fmt_arff_val(self, fval):
         if fval is None:
             return '?'
-        elif isinstance(fval, (bool, int, long)):
+        elif isinstance(fval, (bool, compat.integer_types)):
             return '%s' % fval
         elif isinstance(fval, float):
             return '%r' % fval

@@ -1,7 +1,7 @@
 # Natural Language Toolkit: XML Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -10,14 +10,15 @@ Corpus reader for corpora whose documents are xml files.
 
 (note -- not named 'xml' to avoid conflicting w/ standard xml package)
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import codecs
 
 # Use the c version of ElementTree, which is faster, if possible:
 try: from xml.etree import cElementTree as ElementTree
 except ImportError: from xml.etree import ElementTree
 
+from nltk import compat
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.tokenize import WordPunctTokenizer
 from nltk.internals import ElementWrapper
@@ -41,7 +42,7 @@ class XMLCorpusReader(CorpusReader):
         # Make sure we have exactly one file -- no concatenating XML.
         if fileid is None and len(self._fileids) == 1:
             fileid = self._fileids[0]
-        if not isinstance(fileid, basestring):
+        if not isinstance(fileid, compat.string_types):
             raise TypeError('Expected a single file identifier string')
         # Read the XML in using ElementTree.
         elt = ElementTree.parse(self.abspath(fileid).open()).getroot()
@@ -62,6 +63,7 @@ class XMLCorpusReader(CorpusReader):
         """
 
         elt = self.xml(fileid)
+        encoding = self.encoding(fileid)
         word_tokenizer=WordPunctTokenizer()
         iterator = elt.getiterator()
         out = []
@@ -69,13 +71,15 @@ class XMLCorpusReader(CorpusReader):
         for node in iterator:
             text = node.text
             if text is not None:
+                if isinstance(text, bytes):
+                    text = text.decode(encoding)
                 toks = word_tokenizer.tokenize(text)
                 out.extend(toks)
         return out
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 
@@ -154,7 +158,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         if isinstance(fileid, PathPointer):
             s = fileid.open().readline()
         else:
-            s = open(fileid, 'rb').readline()
+            with open(fileid, 'rb') as fp:
+                s = fp.readline()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):
@@ -165,9 +170,9 @@ class XMLCorpusView(StreamBackedCorpusView):
             return 'utf-32-le'
         if s.startswith(codecs.BOM_UTF8):
             return 'utf-8'
-        m = re.match(r'\s*<?xml\b.*\bencoding="([^"]+)"', s)
+        m = re.match(br'\s*<?xml\b.*\bencoding="([^"]+)"', s)
         if m: return m.group(1)
-        m = re.match(r"\s*<?xml\b.*\bencoding='([^']+)'", s)
+        m = re.match(br"\s*<?xml\b.*\bencoding='([^']+)'", s)
         if m: return m.group(1)
         # No encoding found -- what should the default be?
         return 'utf-8'
@@ -220,7 +225,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         (?P<COMMENT>        <!--.*?-->                          )|
         (?P<CDATA>          <![CDATA[.*?]]>                     )|
         (?P<PI>             <\?.*?\?>                           )|
-        (?P<DOCTYPE>        <!DOCTYPE\s+[^\[]*(\[[^\]]*])?\s*>  )|
+        (?P<DOCTYPE>        <!DOCTYPE\s+[^\[^>]*(\[[^\]]*])?\s*>)|
         # These are the ones we actually care about:
         (?P<EMPTY_ELT_TAG>  <\s*[^>/\?!\s][^>]*/\s*>            )|
         (?P<START_TAG>      <\s*[^>/\?!\s][^>]*>                )|
@@ -378,4 +383,3 @@ class XMLCorpusView(StreamBackedCorpusView):
                                   elt.encode('ascii', 'xmlcharrefreplace')),
                             context)
                 for (elt, context) in elts]
-

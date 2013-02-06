@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Sequential Backoff Taggers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
+#         Steven Bird <stevenbird1@gmail.com> (minor additions)
 #         Tiago Tresoldi <tresoldi@users.sf.net> (original affix tagger)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -17,12 +17,14 @@ determine a tag for the specified token, then its backoff tagger is
 consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
-import re, yaml
+import re
+import yaml
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.classify.naivebayes import NaiveBayesClassifier
+from nltk.compat import python_2_unicode_compatible
 
 from nltk.tag.api import TaggerI, FeaturesetTaggerI
 
@@ -56,7 +58,7 @@ class SequentialBackoffTagger(TaggerI):
         tags = []
         for i in range(len(tokens)):
             tags.append(self.tag_one(tokens, i, tags))
-        return zip(tokens, tags)
+        return list(zip(tokens, tags))
 
     def tag_one(self, tokens, index, history):
         """
@@ -99,6 +101,7 @@ class SequentialBackoffTagger(TaggerI):
         raise NotImplementedError()
 
 
+@python_2_unicode_compatible
 class ContextTagger(SequentialBackoffTagger):
     """
     An abstract base class for sequential backoff taggers that choose
@@ -206,13 +209,14 @@ class ContextTagger(SequentialBackoffTagger):
 #{ Tagger Classes
 ######################################################################
 
+@python_2_unicode_compatible
 class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """
     A tagger that assigns the same tag to every token.
 
         >>> from nltk.tag.sequential import DefaultTagger
         >>> default_tagger = DefaultTagger('NN')
-        >>> default_tagger.tag('This is a test'.split())
+        >>> list(default_tagger.tag('This is a test'.split()))
         [('This', 'NN'), ('is', 'NN'), ('a', 'NN'), ('test', 'NN')]
 
     This tagger is recommended as a backoff tagger, in cases where
@@ -286,13 +290,14 @@ class UnigramTagger(NgramTagger):
         >>> from nltk.tag.sequential import UnigramTagger
         >>> test_sent = brown.sents(categories='news')[0]
         >>> unigram_tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
-        >>> unigram_tagger.tag(test_sent)
-        [('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ('Grand', 'JJ-TL'),
-        ('Jury', 'NN-TL'), ('said', 'VBD'), ('Friday', 'NR'), ('an', 'AT'),
-        ('investigation', 'NN'), ('of', 'IN'), ("Atlanta's", 'NP$'), ('recent', 'JJ'),
-        ('primary', 'NN'), ('election', 'NN'), ('produced', 'VBD'), ('``', '``'),
-        ('no', 'AT'), ('evidence', 'NN'), ("''", "''"), ('that', 'CS'), ('any', 'DTI'),
-        ('irregularities', 'NNS'), ('took', 'VBD'), ('place', 'NN'), ('.', '.')]
+        >>> for tok, tag in unigram_tagger.tag(test_sent):
+        ...     print("(%s, %s), " % (tok, tag))
+        (The, AT), (Fulton, NP-TL), (County, NN-TL), (Grand, JJ-TL),
+        (Jury, NN-TL), (said, VBD), (Friday, NR), (an, AT),
+        (investigation, NN), (of, IN), (Atlanta's, NP$), (recent, JJ),
+        (primary, NN), (election, NN), (produced, VBD), (``, ``),
+        (no, AT), (evidence, NN), ('', ''), (that, CS), (any, DTI),
+        (irregularities, NNS), (took, VBD), (place, NN), (., .),
 
     :param train: The corpus of training data, a list of tagged sentences
     :type train: list(list(tuple(str, str)))
@@ -413,6 +418,7 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
             return token[self._affix_length:]
 
 
+@python_2_unicode_compatible
 class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """
     Regular Expression Tagger
@@ -465,7 +471,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
         tags = [tag for regex, tag in regexps]
         self._map = dict(zip(labels, tags))
         regexps_labels = [(regex, label) for ((regex,tag),label) in zip(regexps,labels)]
-        self._regexs = re.compile('|'.join(['(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels]))
+        self._regexs = re.compile('|'.join('(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels))
         self._size=len(regexps)
 
     def choose_tag(self, tokens, index, history):
@@ -477,6 +483,8 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     def __repr__(self):
         return '<Regexp Tagger: size=%d>' % self._size
 
+
+@python_2_unicode_compatible
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     """
     A sequential tagger that uses a classifier to choose the tag for

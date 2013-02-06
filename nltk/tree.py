@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Text Trees
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 #         Nathan Bodenstab <bodenstab@cslu.ogi.edu> (tree transforms)
 # URL: <http://www.nltk.org/>
@@ -13,21 +13,23 @@
 Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
+from __future__ import print_function, unicode_literals
 
 # TODO: add LabelledTree (can be used for dependency trees)
 
-from __future__ import print_function
 import re
-import string
 
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
+from nltk.compat import string_types, python_2_unicode_compatible, unicode_repr
+from nltk.internals import raise_unorderable_types
 
 ######################################################################
 ## Trees
 ######################################################################
 
+@python_2_unicode_compatible
 class Tree(list):
     """
     A Tree represents a hierarchical grouping of leaves and subtrees.
@@ -93,14 +95,14 @@ class Tree(list):
         It is equivalent to calling the class method ``Tree.parse(s)``.
     """
     def __init__(self, node_or_str, children=None):
-        if children is None: 
-            if not isinstance(node_or_str, basestring):
+        if children is None:
+            if not isinstance(node_or_str, string_types):
                 raise TypeError("%s: Expected a node value and child list "
                                 "or a single string" % type(self).__name__)
             tree = type(self).parse(node_or_str)
             list.__init__(self, tree)
             self.node = tree.node
-        elif isinstance(children, basestring):
+        elif isinstance(children, string_types):
             raise TypeError("%s() argument 2 should be a list, not a "
                             "string" % type(self).__name__)
         else:
@@ -112,22 +114,25 @@ class Tree(list):
     #////////////////////////////////////////////////////////////
 
     def __eq__(self, other):
-        if not isinstance(other, Tree): return False
-        return (self.node, list(self)) == (other.node, list(other))
-    def __ne__(self, other):
-        return not (self == other)
+        return (self.__class__ is other.__class__ and
+                (self.node, list(self)) == (other.node, list(other)))
+
     def __lt__(self, other):
-        if not isinstance(other, Tree): return False
-        return (self.node, list(self)) < (other.node, list(other))
-    def __le__(self, other):
-        if not isinstance(other, Tree): return False
-        return (self.node, list(self)) <= (other.node, list(other))
-    def __gt__(self, other):
-        if not isinstance(other, Tree): return True
-        return (self.node, list(self)) > (other.node, list(other))
-    def __ge__(self, other):
-        if not isinstance(other, Tree): return False
-        return (self.node, list(self)) >= (other.node, list(other))
+        if not isinstance(other, Tree):
+            # raise_unorderable_types("<", self, other)
+            # Sometimes children can be pure strings,
+            # so we need to be able to compare with non-trees:
+            return self.__class__.__name__ < other.__class__.__name__
+        elif self.__class__ is other.__class__:
+            return (self.node, list(self)) < (other.node, list(other))
+        else:
+            return self.__class__.__name__ < other.__class__.__name__
+
+    # @total_ordering doesn't work here, since the class inherits from a builtin class
+    __ne__ = lambda self, other: not self == other
+    __gt__ = lambda self, other: not (self < other or self == other)
+    __le__ = lambda self, other: self < other or self == other
+    __ge__ = lambda self, other: not self < other
 
     #////////////////////////////////////////////////////////////
     # Disabled list operations
@@ -317,7 +322,7 @@ class Tree(list):
         :rtype: list(Production)
         """
 
-        if not isinstance(self.node, basestring):
+        if not isinstance(self.node, string_types):
             raise TypeError('Productions can only be generated from trees having node labels that are strings')
 
         prods = [Production(Nonterminal(self.node), _child_names(self))]
@@ -415,7 +420,7 @@ class Tree(list):
         :param parentChar: A string used to separate the node representation from its vertical annotation
         :type  parentChar: str
         """
-        from treetransforms import chomsky_normal_form
+        from .treetransforms import chomsky_normal_form
         chomsky_normal_form(self, factor, horzMarkov, vertMarkov, childChar, parentChar)
 
     def un_chomsky_normal_form(self, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
@@ -437,7 +442,7 @@ class Tree(list):
         :param unaryChar: A string joining two non-terminals in a unary production (default = "+")
         :type  unaryChar: str
         """
-        from treetransforms import un_chomsky_normal_form
+        from .treetransforms import un_chomsky_normal_form
         un_chomsky_normal_form(self, expandUnary, childChar, parentChar, unaryChar)
 
     def collapse_unary(self, collapsePOS = False, collapseRoot = False, joinChar = "+"):
@@ -459,7 +464,7 @@ class Tree(list):
         :param joinChar: A string used to connect collapsed node values (default = "+")
         :type  joinChar: str
         """
-        from treetransforms import collapse_unary
+        from .treetransforms import collapse_unary
         collapse_unary(self, collapsePOS, collapseRoot, joinChar)
 
     #////////////////////////////////////////////////////////////
@@ -556,7 +561,7 @@ class Tree(list):
             then it will return a tree of that type.
         :rtype: Tree
         """
-        if not isinstance(brackets, basestring) or len(brackets) != 2:
+        if not isinstance(brackets, string_types) or len(brackets) != 2:
             raise TypeError('brackets must be a length-2 string')
         if re.search('\s', brackets):
             raise TypeError('whitespace brackets not allowed')
@@ -651,8 +656,8 @@ class Tree(list):
         draw_trees(self)
 
     def __repr__(self):
-        childstr = ", ".join(repr(c) for c in self)
-        return '%s(%r, [%s])' % (type(self).__name__, self.node, childstr)
+        childstr = ", ".join(unicode_repr(c) for c in self)
+        return '%s(%s, [%s])' % (type(self).__name__, unicode_repr(self.node), childstr)
 
     def __str__(self):
         return self.pprint()
@@ -678,20 +683,20 @@ class Tree(list):
             return s
 
         # If it doesn't fit on one line, then write it on multi-lines.
-        if isinstance(self.node, basestring):
+        if isinstance(self.node, string_types):
             s = '%s%s%s' % (parens[0], self.node, nodesep)
         else:
-            s = '%s%r%s' % (parens[0], self.node, nodesep)
+            s = '%s%s%s' % (parens[0], unicode_repr(self.node), nodesep)
         for child in self:
             if isinstance(child, Tree):
                 s += '\n'+' '*(indent+2)+child.pprint(margin, indent+2,
                                                   nodesep, parens, quotes)
             elif isinstance(child, tuple):
                 s += '\n'+' '*(indent+2)+ "/".join(child)
-            elif isinstance(child, basestring) and not quotes:
+            elif isinstance(child, string_types) and not quotes:
                 s += '\n'+' '*(indent+2)+ '%s' % child
             else:
-                s += '\n'+' '*(indent+2)+ '%r' % child
+                s += '\n'+' '*(indent+2)+ unicode_repr(child)
         return s+parens[1]
 
     def pprint_latex_qtree(self):
@@ -712,7 +717,10 @@ class Tree(list):
         :return: A latex qtree representation of this tree.
         :rtype: str
         """
-        return r'\Tree ' + self.pprint(indent=6, nodesep='', parens=('[.', ' ]'))
+        reserved_chars = re.compile('([#\$%&~_\{\}])')
+
+        pprint = self.pprint(indent=6, nodesep='', parens=('[.', ' ]'))
+        return r'\Tree ' + re.sub(reserved_chars, r'\\\1', pprint)
 
     def _pprint_flat(self, nodesep, parens, quotes):
         childstrs = []
@@ -721,16 +729,16 @@ class Tree(list):
                 childstrs.append(child._pprint_flat(nodesep, parens, quotes))
             elif isinstance(child, tuple):
                 childstrs.append("/".join(child))
-            elif isinstance(child, basestring) and not quotes:
+            elif isinstance(child, string_types) and not quotes:
                 childstrs.append('%s' % child)
             else:
-                childstrs.append('%r' % child)
-        if isinstance(self.node, basestring):
+                childstrs.append(unicode_repr(child))
+        if isinstance(self.node, string_types):
             return '%s%s%s %s%s' % (parens[0], self.node, nodesep,
-                                    string.join(childstrs), parens[1])
+                                    " ".join(childstrs), parens[1])
         else:
-            return '%s%r%s %s%s' % (parens[0], self.node, nodesep,
-                                    string.join(childstrs), parens[1])
+            return '%s%s%s %s%s' % (parens[0], unicode_repr(self.node), nodesep,
+                                    " ".join(childstrs), parens[1])
 
 
 class ImmutableTree(Tree):
@@ -739,7 +747,7 @@ class ImmutableTree(Tree):
         # Precompute our hash value.  This ensures that we're really
         # immutable.  It also means we only have to calculate it once.
         try:
-            self._hash = hash( (self.node, tuple(self)) )
+            self._hash = hash((self.node, tuple(self)))
         except (TypeError, ValueError):
             raise ValueError("%s: node value and children "
                              "must be immutable" % type(self).__name__)
@@ -880,7 +888,7 @@ class AbstractParentedTree(Tree):
         if isinstance(index, slice):
             start, stop, step = slice_bounds(self, index, allow_step=True)
             # Clear all the children pointers.
-            for i in xrange(start, stop, step):
+            for i in range(start, stop, step):
                 if isinstance(self[i], Tree):
                     self._delparent(self[i], i)
             # Delete the children from our child list.
@@ -924,7 +932,7 @@ class AbstractParentedTree(Tree):
                 if isinstance(child, Tree):
                     self._setparent(child, start + i*step, dry_run=True)
             # clear the child pointers of all parents we're removing
-            for i in xrange(start, stop, step):
+            for i in range(start, stop, step):
                 if isinstance(self[i], Tree):
                     self._delparent(self[i], i)
             # set the child pointers of the new children.  We do this
@@ -1021,8 +1029,8 @@ class AbstractParentedTree(Tree):
 class ParentedTree(AbstractParentedTree):
     """
     A ``Tree`` that automatically maintains parent pointers for
-    single-parented trees.  The following are methods for querying 
-    the structure of a parented tree: ``parent``, ``parent_index``, 
+    single-parented trees.  The following are methods for querying
+    the structure of a parented tree: ``parent``, ``parent_index``,
     ``left_sibling``, ``right_sibling``, ``root``, ``treeposition``.
 
     Each ``ParentedTree`` may have at most one parent.  In
@@ -1041,8 +1049,8 @@ class ParentedTree(AbstractParentedTree):
         super(ParentedTree, self).__init__(node_or_str, children)
         if children is None:
             # If children is None, the tree is parsed from node_or_str.
-            # After parsing, the parent of the immediate children 
-            # will point to an intermediate tree, not self. 
+            # After parsing, the parent of the immediate children
+            # will point to an intermediate tree, not self.
             # We fix this by brute force:
             for i, child in enumerate(self):
                 if isinstance(child, Tree):
@@ -1140,8 +1148,8 @@ class ParentedTree(AbstractParentedTree):
 class MultiParentedTree(AbstractParentedTree):
     """
     A ``Tree`` that automatically maintains parent pointers for
-    multi-parented trees.  The following are methods for querying the 
-    structure of a multi-parented tree: ``parents()``, ``parent_indices()``, 
+    multi-parented trees.  The following are methods for querying the
+    structure of a multi-parented tree: ``parents()``, ``parent_indices()``,
     ``left_siblings()``, ``right_siblings()``, ``roots``, ``treepositions``.
 
     Each ``MultiParentedTree`` may have zero or more parents.  In
@@ -1162,8 +1170,8 @@ class MultiParentedTree(AbstractParentedTree):
         super(MultiParentedTree, self).__init__(node_or_str, children)
         if children is None:
             # If children is None, the tree is parsed from node_or_str.
-            # After parsing, the parent(s) of the immediate children 
-            # will point to an intermediate tree, not self. 
+            # After parsing, the parent(s) of the immediate children
+            # will point to an intermediate tree, not self.
             # We fix this by brute force:
             for i, child in enumerate(self):
                 if isinstance(child, Tree):
@@ -1229,7 +1237,7 @@ class MultiParentedTree(AbstractParentedTree):
 
         :type: list(MultiParentedTree)
         """
-        return self._get_roots_helper({}).values()
+        return list(self._get_roots_helper({}).values())
 
     def _get_roots_helper(self, result):
         if self._parents:
@@ -1312,6 +1320,7 @@ class ImmutableMultiParentedTree(ImmutableTree, MultiParentedTree):
 ## Probabilistic trees
 ######################################################################
 
+@python_2_unicode_compatible
 class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __init__(self, node_or_str, children=None, **prob_kwargs):
         Tree.__init__(self, node_or_str, children)
@@ -1320,16 +1329,9 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     # We have to patch up these methods to make them work right:
     def _frozen_class(self): return ImmutableProbabilisticTree
     def __repr__(self):
-        return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
+        return '%s (p=%r)' % (Tree.unicode_repr(self), self.prob())
     def __str__(self):
-        return '%s (p=%s)' % (self.pprint(margin=60), self.prob())
-    def __cmp__(self, other):
-        return Tree.__cmp__(self, other) or cmp(self.prob(), other.prob())
-    def __eq__(self, other):
-        if not isinstance(other, Tree): return False
-        return Tree.__eq__(self, other) and self.prob()==other.prob()
-    def __ne__(self, other):
-        return not (self == other)
+        return '%s (p=%.6g)' % (self.pprint(margin=60), self.prob())
     def copy(self, deep=False):
         if not deep: return type(self)(self.node, self, prob=self.prob())
         else: return type(self).convert(self)
@@ -1344,27 +1346,34 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
         else:
             return val
 
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and
+                (self.node, list(self), self.prob()) ==
+                (other.node, list(other), other.prob()))
 
+    def __lt__(self, other):
+        if not isinstance(other, Tree):
+            raise_unorderable_types("<", self, other)
+        if self.__class__ is other.__class__:
+            return ((self.node, list(self), self.prob()) <
+                    (other.node, list(other), other.prob()))
+        else:
+            return self.__class__.__name__ < other.__class__.__name__
+
+
+@python_2_unicode_compatible
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def __init__(self, node_or_str, children=None, **prob_kwargs):
         ImmutableTree.__init__(self, node_or_str, children)
         ProbabilisticMixIn.__init__(self, **prob_kwargs)
+        self._hash = hash((self.node, tuple(self), self.prob()))
 
     # We have to patch up these methods to make them work right:
     def _frozen_class(self): return ImmutableProbabilisticTree
     def __repr__(self):
-        return '%s [%s]' % (Tree.__repr__(self), self.prob())
+        return '%s [%s]' % (Tree.unicode_repr(self), self.prob())
     def __str__(self):
         return '%s [%s]' % (self.pprint(margin=60), self.prob())
-    def __cmp__(self, other):
-        c = Tree.__cmp__(self, other)
-        if c != 0: return c
-        return cmp(self.prob(), other.prob())
-    def __eq__(self, other):
-        if not isinstance(other, Tree): return False
-        return Tree.__eq__(self, other) and self.prob()==other.prob()
-    def __ne__(self, other):
-        return not (self == other)
     def copy(self, deep=False):
         if not deep: return type(self)(self.node, self, prob=self.prob())
         else: return type(self).convert(self)
@@ -1423,7 +1432,7 @@ def sinica_parse(s):
         elif tokens[i] == '|':
             tokens[i] = ''
 
-    treebank_string = string.join(tokens)
+    treebank_string = " ".join(tokens)
     return Tree.parse(treebank_string, remove_empty_top_bracketing=True)
 
 #    s = re.sub(r'^#[^\s]*\s', '', s)  # remove leading identifier

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===========
@@ -53,17 +53,24 @@ Testing some HMM estimators
 We extract a small part (500 sentences) of the Brown corpus
 
     >>> corpus = nltk.corpus.brown.tagged_sents(categories='adventure')[:500]
-    >>> print len(corpus)
+    >>> print(len(corpus))
     500
 
 We create a HMM trainer - note that we need the tags and symbols
 from the whole corpus, not just the training corpus
 
     >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
+<<<<<<< HEAD
     >>> print len(tag_set)
     92
     >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
     >>> print len(symbols)
+=======
+    >>> print(len(tag_set))
+    92
+    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
+    >>> print(len(symbols))
+>>>>>>> e48192bf984571ed262532d68e46260178dd3da4
     1464
     >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
 
@@ -76,16 +83,16 @@ We divide the corpus into 90% training and 10% testing
     ...         train_corpus += [corpus[i]]
     ...     else:
     ...         test_corpus += [corpus[i]]
-    >>> print len(train_corpus)
+    >>> print(len(train_corpus))
     450
-    >>> print len(test_corpus)
+    >>> print(len(test_corpus))
     50
 
 And now we can test the estimators
 
     >>> def train_and_test(est):
     ...     hmm = trainer.train_supervised(train_corpus, estimator=est)
-    ...     print '%.2f%%' % (100 * hmm.evaluate(test_corpus))
+    ...     print('%.2f%%' % (100 * hmm.evaluate(test_corpus)))
 
 Maximum Likelihood Estimation
 -----------------------------
@@ -181,11 +188,11 @@ Squashed bugs
 Issue 511: override pop and popitem to invalidate the cache
 
     >>> fd = nltk.FreqDist('a')
-    >>> fd.keys()
+    >>> list(fd.keys())
     ['a']
     >>> fd.pop('a')
     1
-    >>> fd.keys()
+    >>> list(fd.keys())
     []
 
 Issue 533: access cumulative frequencies with no arguments
@@ -219,11 +226,11 @@ Issue 175: add the unseen bin to SimpleGoodTuringProbDist by default otherwise a
     >>> fd = FreqDist({'a':1, 'b':1, 'c': 2, 'd': 3, 'e': 4, 'f': 4, 'g': 4, 'h': 5, 'i': 5, 'j': 6, 'k': 6, 'l': 6, 'm': 7, 'n': 7, 'o': 8, 'p': 9, 'q': 10})
     >>> p = SimpleGoodTuringProbDist(fd)
     >>> p.prob('a')
-    0.017649766667026317
+    0.017649766667026317...
     >>> p.prob('o')
-    0.08433050215340411
+    0.08433050215340411...
     >>> p.prob('z')
-    0.022727272727272728
+    0.022727272727272728...
     >>> p.prob('foobar')
-    0.022727272727272728
+    0.022727272727272728...
 

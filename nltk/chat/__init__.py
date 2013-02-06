@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Chatbots
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Authors: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Authors: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -15,14 +15,14 @@ typed by users, and respond with automatically generated sentences.
 These chatbots may not work using the windows command line or the
 windows IDLE GUI.
 """
-
 from __future__ import print_function
-from util import Chat
-from eliza import eliza_chat
-from iesha import iesha_chat
-from rude import rude_chat
-from suntsu import suntsu_chat
-from zen import zen_chat
+
+from .util import Chat
+from .eliza import eliza_chat
+from .iesha import iesha_chat
+from .rude import rude_chat
+from .suntsu import suntsu_chat
+from .zen import zen_chat
 
 bots = [
     (eliza_chat,  'Eliza (psycho-babble)'),

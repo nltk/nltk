@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au> (additions)
+#         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se> (additions)
 #         Liang Dong <ldong@clemson.edu> (additions)
@@ -36,18 +36,21 @@ implementation of the ``ConditionalProbDistI`` interface is
 ``ConditionalProbDist``, a derived distribution.
 
 """
-
-from __future__ import print_function
-
-_NINF = float('-1e300')
-
+from __future__ import print_function, unicode_literals
 
 import math
 import random
 import warnings
+import array
 from operator import itemgetter
-from itertools import imap, islice
+from itertools import islice
 from collections import defaultdict
+from functools import reduce
+from nltk import compat
+
+from nltk.internals import raise_unorderable_types
+
+_NINF = float('-1e300')
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -56,6 +59,7 @@ from collections import defaultdict
 # [SB] inherit from defaultdict?
 # [SB] for NLTK 3.0, inherit from collections.Counter?
 
+@compat.python_2_unicode_compatible
 class FreqDist(dict):
     """
     A frequency distribution for the outcomes of an experiment.  A
@@ -249,7 +253,7 @@ class FreqDist(dict):
         :type sample: any
         :rtype: float
         """
-        if self._N is 0:
+        if self._N == 0:
             return 0
         return float(self[sample]) / self._N
 
@@ -268,7 +272,7 @@ class FreqDist(dict):
         if self._max_cache is None:
             if len(self) == 0:
                 raise ValueError('A FreqDist must have at least one sample before max is defined.')
-            self._max_cache = max([(a,b) for (b,a) in self.items()])[1]
+            self._max_cache = max((a,b) for (b,a) in self.items())[1]
         return self._max_cache
 
     def plot(self, *args, **kwargs):
@@ -312,7 +316,7 @@ class FreqDist(dict):
             pylab.title(kwargs["title"])
             del kwargs["title"]
         pylab.plot(freqs, **kwargs)
-        pylab.xticks(range(len(samples)), [unicode(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
@@ -341,7 +345,7 @@ class FreqDist(dict):
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
         for i in range(len(samples)):
-            print("%4s" % str(samples[i]), end=' ')
+            print("%4s" % samples[i], end=' ')
         print()
         for i in range(len(samples)):
             print("%4d" % freqs[i], end=' ')
@@ -358,6 +362,7 @@ class FreqDist(dict):
         :rtype: list(any)
         """
         self._sort_keys_by_value()
+        # this will return iterator under python 3
         return map(itemgetter(0), self._item_cache)
 
     def values(self):
@@ -367,6 +372,7 @@ class FreqDist(dict):
         :rtype: list(any)
         """
         self._sort_keys_by_value()
+        # this will return iterator under python 3
         return map(itemgetter(1), self._item_cache)
 
     def items(self):
@@ -428,9 +434,9 @@ class FreqDist(dict):
         :type samples: list
         """
         try:
-            sample_iter = samples.iteritems()
+            sample_iter = compat.iteritems(samples)
         except:
-            sample_iter = imap(lambda x: (x,1), samples)
+            sample_iter = ((x, 1) for x in samples)
         for sample, count in sample_iter:
             self.inc(sample, count=count)
 
@@ -460,17 +466,14 @@ class FreqDist(dict):
         return clone
 
     def __le__(self, other):
-        if not isinstance(other, FreqDist): return False
+        if not isinstance(other, FreqDist):
+            raise_unorderable_types("<=", self, other)
         return set(self).issubset(other) and all(self[key] <= other[key] for key in self)
-    def __lt__(self, other):
-        if not isinstance(other, FreqDist): return False
-        return self <= other and self != other
-    def __ge__(self, other):
-        if not isinstance(other, FreqDist): return False
-        return other <= self
-    def __gt__(self, other):
-        if not isinstance(other, FreqDist): return False
-        return other < self
+
+    # @total_ordering doesn't work here, since the class inherits from a builtin class
+    __ge__ = lambda self, other: not self <= other or self == other
+    __lt__ = lambda self, other: self <= other and not self == other
+    __gt__ = lambda self, other: not self <= other
 
     def __repr__(self):
         """
@@ -543,7 +546,7 @@ class ProbDistI(object):
         # Default definition, in terms of prob()
         p = self.prob(sample)
         return (math.log(p, 2) if p != 0 else _NINF)
-            
+
     def max(self):
         """
         Return the sample with the greatest probability.  If two or
@@ -593,6 +596,8 @@ class ProbDistI(object):
                           " is returning an arbitrary sample." % (self, 1-p))
         return random.choice(list(self.samples()))
 
+
+@compat.python_2_unicode_compatible
 class UniformProbDist(ProbDistI):
     """
     A probability distribution that assigns equal probability to each
@@ -628,6 +633,8 @@ class UniformProbDist(ProbDistI):
     def __repr__(self):
         return '<UniformProbDist with %d samples>' % len(self._sampleset)
 
+
+@compat.python_2_unicode_compatible
 class DictionaryProbDist(ProbDistI):
     """
     A probability distribution whose probabilities are directly
@@ -652,7 +659,7 @@ class DictionaryProbDist(ProbDistI):
         # Normalize the distribution, if requested.
         if normalize:
             if log:
-                value_sum = sum_logs(self._prob_dict.values())
+                value_sum = sum_logs(list(self._prob_dict.values()))
                 if value_sum <= _NINF:
                     logp = math.log(1.0/len(prob_dict), 2)
                     for x in prob_dict:
@@ -694,6 +701,8 @@ class DictionaryProbDist(ProbDistI):
     def __repr__(self):
         return '<ProbDist with %d samples>' % len(self._prob_dict)
 
+
+@compat.python_2_unicode_compatible
 class MLEProbDist(ProbDistI):
     """
     The maximum likelihood estimate for the probability distribution
@@ -738,6 +747,8 @@ class MLEProbDist(ProbDistI):
         """
         return '<MLEProbDist based on %d samples>' % self._freqdist.N()
 
+
+@compat.python_2_unicode_compatible
 class LidstoneProbDist(ProbDistI):
     """
     The Lidstone estimate for the probability distribution of the
@@ -832,6 +843,7 @@ class LidstoneProbDist(ProbDistI):
         return '<LidstoneProbDist based on %d samples>' % self._freqdist.N()
 
 
+@compat.python_2_unicode_compatible
 class LaplaceProbDist(LidstoneProbDist):
     """
     The Laplace estimate for the probability distribution of the
@@ -866,6 +878,8 @@ class LaplaceProbDist(LidstoneProbDist):
         """
         return '<LaplaceProbDist based on %d samples>' % self._freqdist.N()
 
+
+@compat.python_2_unicode_compatible
 class ELEProbDist(LidstoneProbDist):
     """
     The expected likelihood estimate for the probability distribution
@@ -901,6 +915,8 @@ class ELEProbDist(LidstoneProbDist):
         """
         return '<ELEProbDist based on %d samples>' % self._freqdist.N()
 
+
+@compat.python_2_unicode_compatible
 class HeldoutProbDist(ProbDistI):
     """
     The heldout estimate for the probability distribution of the
@@ -1059,6 +1075,8 @@ class HeldoutProbDist(ProbDistI):
         s = '<HeldoutProbDist: %d base samples; %d heldout samples>'
         return s % (self._base_fdist.N(), self._heldout_fdist.N())
 
+
+@compat.python_2_unicode_compatible
 class CrossValidationProbDist(ProbDistI):
     """
     The cross-validation estimate for the probability distribution of
@@ -1126,6 +1144,8 @@ class CrossValidationProbDist(ProbDistI):
         """
         return '<CrossValidationProbDist: %d-way>' % len(self._freqdists)
 
+
+@compat.python_2_unicode_compatible
 class WittenBellProbDist(ProbDistI):
     """
     The Witten-Bell estimate of a probability distribution. This distribution
@@ -1250,6 +1270,7 @@ class WittenBellProbDist(ProbDistI):
 # significance criterion.
 #
 
+@compat.python_2_unicode_compatible
 class GoodTuringProbDist(ProbDistI):
     """
     The Good-Turing estimate of a probability distribution. This method
@@ -1332,6 +1353,7 @@ class GoodTuringProbDist(ProbDistI):
 ##  Simple Good-Turing Probablity Distributions
 ##//////////////////////////////////////////////////////
 
+@compat.python_2_unicode_compatible
 class SimpleGoodTuringProbDist(ProbDistI):
     """
     SimpleGoodTuring ProbDist approximates from frequency to frequency of
@@ -1566,14 +1588,9 @@ class MutableProbDist(ProbDistI):
         :param store_logs: whether to store the probabilities as logarithms
         :type store_logs: bool
         """
-        try:
-            import numpy
-        except ImportError:
-            print("Error: Please install numpy; for instructions see http://www.nltk.org/")
-            exit()
         self._samples = samples
         self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
-        self._data = numpy.zeros(len(samples), numpy.float64)
+        self._data = array.array(str("d"), [0.0]) * len(samples)
         for i in range(len(samples)):
             if store_logs:
                 self._data[i] = prob_dist.logprob(samples[i])
@@ -1781,13 +1798,14 @@ def log_likelihood(test_pdist, actual_pdist):
                for s in actual_pdist)
 
 def entropy(pdist):
-    probs = [pdist.prob(s) for s in pdist.samples()]
-    return -sum([p * math.log(p,2) for p in probs])
+    probs = (pdist.prob(s) for s in pdist.samples())
+    return -sum(p * math.log(p,2) for p in probs)
 
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions
 ##//////////////////////////////////////////////////////
 
+@compat.python_2_unicode_compatible
 class ConditionalFreqDist(defaultdict):
     """
     A collection of frequency distributions for a single experiment
@@ -1823,7 +1841,7 @@ class ConditionalFreqDist(defaultdict):
     the indexing operator:
 
         >>> cfdist[3]
-        <FreqDist with 6 outcomes>
+        <FreqDist with 3 samples and 6 outcomes>
         >>> cfdist[3].freq('the')
         0.5
         >>> cfdist[3]['dog']
@@ -1869,7 +1887,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in self.itervalues())
+        return sum(fdist.N() for fdist in compat.itervalues(self))
 
     def plot(self, *args, **kwargs):
         """
@@ -1908,12 +1926,12 @@ class ConditionalFreqDist(defaultdict):
                 ylabel = "Counts"
                 legend_loc = 'upper right'
             # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
-            kwargs['label'] = str(condition)
+            kwargs['label'] = "%s" % condition
             pylab.plot(freqs, *args, **kwargs)
 
         pylab.legend(loc=legend_loc)
         pylab.grid(True, color="silver")
-        pylab.xticks(range(len(samples)), [unicode(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
         if title:
             pylab.title(title)
         pylab.xlabel("Samples")
@@ -1937,13 +1955,13 @@ class ConditionalFreqDist(defaultdict):
         samples = _get_kwarg(kwargs, 'samples',
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
 
-        condition_size = max(len(str(c)) for c in conditions)
+        condition_size = max(len("%s" % c) for c in conditions)
         print(' ' * condition_size, end=' ')
         for s in samples:
-            print("%4s" % str(s), end=' ')
+            print("%4s" % s, end=' ')
         print()
         for c in conditions:
-            print("%*s" % (condition_size, str(c)), end=' ')
+            print("%*s" % (condition_size, c), end=' ')
             if cumulative:
                 freqs = list(self[c]._cumulative_frequencies(samples))
             else:
@@ -1953,18 +1971,23 @@ class ConditionalFreqDist(defaultdict):
                 print("%4d" % f, end=' ')
             print()
 
+    # @total_ordering doesn't work here, since the class inherits from a builtin class
     def __le__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
+        if not isinstance(other, ConditionalFreqDist):
+            raise_unorderable_types("<=", self, other)
         return set(self.conditions()).issubset(other.conditions()) \
                and all(self[c] <= other[c] for c in self.conditions())
     def __lt__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
+        if not isinstance(other, ConditionalFreqDist):
+            raise_unorderable_types("<", self, other)
         return self <= other and self != other
     def __ge__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
+        if not isinstance(other, ConditionalFreqDist):
+            raise_unorderable_types(">=", self, other)
         return other <= self
     def __gt__(self, other):
-        if not isinstance(other, ConditionalFreqDist): return False
+        if not isinstance(other, ConditionalFreqDist):
+            raise_unorderable_types(">", self, other)
         return other < self
 
     def __repr__(self):
@@ -1976,6 +1999,7 @@ class ConditionalFreqDist(defaultdict):
         return '<ConditionalFreqDist with %d conditions>' % len(self)
 
 
+@compat.python_2_unicode_compatible
 class ConditionalProbDistI(defaultdict):
     """
     A collection of probability distributions for a single experiment
@@ -2033,14 +2057,18 @@ class ConditionalProbDist(ConditionalProbDistI):
     code constructs a ``ConditionalProbDist``, where the probability
     distribution for each condition is an ``ELEProbDist`` with 10 bins:
 
+        >>> from nltk.corpus import brown
+        >>> from nltk.probability import ConditionalFreqDist
         >>> from nltk.probability import ConditionalProbDist, ELEProbDist
+        >>> cfdist = ConditionalFreqDist(brown.tagged_words()[:5000])
         >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
-        >>> cpdist['run'].max()
-        'NN'
-        >>> print cpdist['run'].prob('NN')
-        0.0813
+        >>> cpdist['passed'].max()
+        'VBD'
+        >>> cpdist['passed'].prob('VBD')
+        0.423...
+
     """
-    def __init__(self, cfdist, probdist_factory, 
+    def __init__(self, cfdist, probdist_factory,
                  *factory_args, **factory_kw_args):
         """
         Construct a new conditional probability distribution, based on
@@ -2070,11 +2098,11 @@ class ConditionalProbDist(ConditionalProbDistI):
         # self._factory_args = factory_args
         # self._factory_kw_args = factory_kw_args
 
-        factory = lambda: probdist_factory(FreqDist(), 
+        factory = lambda: probdist_factory(FreqDist(),
                                            *factory_args, **factory_kw_args)
         defaultdict.__init__(self, factory)
         for condition in cfdist:
-            self[condition] = probdist_factory(cfdist[condition], 
+            self[condition] = probdist_factory(cfdist[condition],
                                                *factory_args, **factory_kw_args)
 
 
@@ -2309,15 +2337,14 @@ def demo(numsamples=6, numoutcomes=500):
            (numsamples, numsamples, numoutcomes)))
     print('='*9*(len(pdists)+2))
     FORMATSTR = '      FreqDist '+ '%8s '*(len(pdists)-1) + '|  Actual'
-    print(FORMATSTR % tuple(`pdist`[1:9] for pdist in pdists[:-1]))
+    print(FORMATSTR % tuple(repr(pdist)[1:9] for pdist in pdists[:-1]))
     print('-'*9*(len(pdists)+2))
     FORMATSTR = '%3d   %8.6f ' + '%8.6f '*(len(pdists)-1) + '| %8.6f'
     for val in vals:
         print(FORMATSTR % val)
 
     # Print the totals for each column (should all be 1.0)
-    zvals = zip(*vals)
-    def sum(lst): return reduce(lambda x,y:x+y, lst, 0)
+    zvals = list(zip(*vals))
     sums = [sum(val) for val in zvals[1:]]
     print('-'*9*(len(pdists)+2))
     FORMATSTR = 'Total ' + '%8.6f '*(len(pdists)) + '| %8.6f'
@@ -2325,16 +2352,16 @@ def demo(numsamples=6, numoutcomes=500):
     print('='*9*(len(pdists)+2))
 
     # Display the distributions themselves, if they're short enough.
-    if len(`str(fdist1)`) < 70:
-        print('  fdist1:', str(fdist1))
-        print('  fdist2:', str(fdist2))
-        print('  fdist3:', str(fdist3))
+    if len("%s" % fdist1) < 70:
+        print('  fdist1: %s' % fdist1)
+        print('  fdist2: %s' % fdist2)
+        print('  fdist3: %s' % fdist3)
     print()
 
     print('Generating:')
     for pdist in pdists:
         fdist = FreqDist(pdist.generate() for i in range(5000))
-        print('%20s %s' % (pdist.__class__.__name__[:20], str(fdist)[:55]))
+        print('%20s %s' % (pdist.__class__.__name__[:20], ("%s" % fdist)[:55]))
     print()
 
 def gt_demo():

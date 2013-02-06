@@ -1,11 +1,11 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
 from __future__ import print_function
+
 import locale
 import re
 import types
@@ -19,7 +19,10 @@ from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
 
-from nltk.internals import slice_bounds
+from nltk.internals import slice_bounds, raise_unorderable_types
+from nltk import compat
+from nltk.compat import (class_types, text_type, string_types, total_ordering,
+                         python_2_unicode_compatible)
 
 ######################################################################
 # Short usage message
@@ -29,7 +32,7 @@ def usage(obj, selfname='self'):
     import inspect
     str(obj) # In case it's lazy, this will load it.
 
-    if not isinstance(obj, (types.TypeType, types.ClassType)):
+    if not isinstance(obj, class_types):
         obj = obj.__class__
 
     print('%s supports the following operations:' % obj.__name__)
@@ -63,9 +66,8 @@ def in_idle():
         results.
     :rtype: bool
     """
-    import sys, types
-    return (type(sys.stdin) == types.InstanceType and \
-            sys.stdin.__class__.__name__ == 'PyShell')
+    import sys
+    return sys.stdin.__class__.__name__ in ('PyShell', 'RPCProxy')
 
 ##########################################################################
 # PRETTY PRINTING
@@ -164,7 +166,7 @@ def re_show(regexp, string, left="{", right="}"):
 def filestring(f):
     if hasattr(f, 'read'):
         return f.read()
-    elif isinstance(f, basestring):
+    elif isinstance(f, string_types):
         return open(f).read()
     else:
         raise ValueError("Must be called with a filename or file-like object")
@@ -238,7 +240,7 @@ def guess_encoding(data):
         if not enc:
             continue
         try:
-            decoded = unicode(data, enc)
+            decoded = text_type(data, enc)
             successful_encoding = enc
 
         except (UnicodeError, LookupError):
@@ -292,7 +294,7 @@ def transitive_closure(graph, reflexive=False):
     else:
         base_set = lambda k: set()
     # The graph U_i in the article:
-    agenda_graph = dict((k, v.copy()) for (k,v) in graph.iteritems())
+    agenda_graph = dict((k, graph[k].copy()) for k in graph)
     # The graph M_i in the article:
     closure_graph = dict((k, base_set(k)) for k in graph)
     for i in graph:
@@ -317,8 +319,8 @@ def invert_graph(graph):
     :rtype: dict(set)
     """
     inverted = {}
-    for key, values in graph.iteritems():
-        for value in values:
+    for key in graph:
+        for value in graph[key]:
             inverted.setdefault(value, set()).add(key)
     return inverted
 
@@ -351,8 +353,7 @@ def clean_html(html):
     return cleaned.strip()
 
 def clean_url(url):
-    from urllib import urlopen
-    html = urlopen(url).read()
+    html = compat.urlopen(url).read()
     return clean_html(html)
 
 ##########################################################################
@@ -491,7 +492,7 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
 
     history = []
     while n > 1:
-        history.append(sequence.next())
+        history.append(next(sequence))
         n -= 1
     for item in sequence:
         history.append(item)
@@ -582,6 +583,7 @@ class OrderedDict(dict):
         return d
 
     def items(self):
+        # returns iterator under python 3 and list under python 2
         return zip(self.keys(), self.values())
 
     def keys(self, data=None, keys=None):
@@ -624,12 +626,15 @@ class OrderedDict(dict):
                 self._keys.append(key)
 
     def values(self):
+        # returns iterator under python 3
         return map(self.get, self._keys)
 
 ######################################################################
 # Lazy Sequences
 ######################################################################
 
+@total_ordering
+@python_2_unicode_compatible
 class AbstractLazySequence(object):
     """
     An abstract base class for read-only sequences whose values are
@@ -680,7 +685,7 @@ class AbstractLazySequence(object):
             if i < 0: raise IndexError('index out of range')
             # Use iterate_from to extract it.
             try:
-                return self.iterate_from(i).next()
+                return next(self.iterate_from(i))
             except StopIteration:
                 raise IndexError('index out of range')
 
@@ -736,23 +741,20 @@ class AbstractLazySequence(object):
             pieces.append(repr(elt))
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return '[%s, ...]' % ', '.join(pieces[:-1])
+                return '[%s, ...]' % text_type(', ').join(pieces[:-1])
         else:
-            return '[%s]' % ', '.join(pieces)
+            return '[%s]' % text_type(', ').join(pieces)
 
-    def __cmp__(self, other):
-        """
-        Return a number indicating how ``self`` relates to other.
+    def __eq__(self, other):
+        return (type(self) == type(other) and list(self) == list(other))
 
-        - If ``other`` is not a corpus view or a list, return -1.
-        - Otherwise, return ``cmp(list(self), list(other))``.
+    def __ne__(self, other):
+        return not self == other
 
-        Note: corpus views do not compare equal to tuples containing
-        equal elements.  Otherwise, transitivity would be violated,
-        since tuples do not compare equal to lists.
-        """
-        if not isinstance(other, (AbstractLazySequence, list)): return -1
-        return cmp(list(self), list(other))
+    def __lt__(self, other):
+        if type(other) != type(self):
+            raise_unorderable_types("<", self, other)
+        return list(self) < list(other)
 
     def __hash__(self):
         """
@@ -863,7 +865,7 @@ class LazyMap(AbstractLazySequence):
         >>> from nltk.util import LazyMap
         >>> function = str
         >>> sequence = [1,2,3]
-        >>> map(function, sequence)
+        >>> map(function, sequence) # doctest: +SKIP
         ['1', '2', '3']
         >>> list(LazyMap(function, sequence))
         ['1', '2', '3']
@@ -926,7 +928,7 @@ class LazyMap(AbstractLazySequence):
             while True:
                 elements = []
                 for iterator in iterators:
-                    try: elements.append(iterator.next())
+                    try: elements.append(next(iterator))
                     except: elements.append(None)
                 if elements == [None] * len(self._lists):
                     return
@@ -959,7 +961,7 @@ class LazyMap(AbstractLazySequence):
             if self._cache is not None and index in self._cache:
                 return self._cache[index]
             # Calculate the value
-            try: val = self.iterate_from(index).next()
+            try: val = next(self.iterate_from(index))
             except StopIteration:
                 raise IndexError('index out of range')
             # Update the cache
@@ -988,12 +990,12 @@ class LazyZip(LazyMap):
 
         >>> from nltk.util import LazyZip
         >>> sequence1, sequence2 = [1, 2, 3], ['a', 'b', 'c']
-        >>> zip(sequence1, sequence2)
+        >>> zip(sequence1, sequence2) # doctest: +SKIP
         [(1, 'a'), (2, 'b'), (3, 'c')]
         >>> list(LazyZip(sequence1, sequence2))
         [(1, 'a'), (2, 'b'), (3, 'c')]
         >>> sequences = [sequence1, sequence2, [6,7,8,9]]
-        >>> zip(*sequences) == list(LazyZip(*sequences))
+        >>> list(zip(*sequences)) == list(LazyZip(*sequences))
         True
 
     Lazy zips can be useful for conserving memory in cases where the argument
@@ -1015,7 +1017,7 @@ class LazyZip(LazyMap):
     def iterate_from(self, index):
         iterator = LazyMap.iterate_from(self, index)
         while index < len(self):
-            yield iterator.next()
+            yield next(iterator)
             index += 1
         return
 
@@ -1057,7 +1059,7 @@ class LazyEnumerate(LazyZip):
         :param lst: the underlying list
         :type lst: list
         """
-        LazyZip.__init__(self, xrange(len(lst)), lst)
+        LazyZip.__init__(self, range(len(lst)), lst)
 
 
 ######################################################################
@@ -1090,7 +1092,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
 
     while start < end:
         lastState = start, end
-        middle = (start + end) / 2
+        middle = (start + end) // 2
 
         if cache.get(middle):
             offset, line = cache[middle]
@@ -1105,7 +1107,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
                 line = file.readline()
                 if line != "": break
                 # at EOF; try to find start of the last line
-                middle = (start + middle)/2
+                middle = (start + middle)//2
                 if middle == end -1:
                     return None
             if currentDepth < cacheDepth:
@@ -1136,7 +1138,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
 # Proxy configuration
 ######################################################################
 
-def set_proxy(proxy, (user, password)=(None, '')):
+def set_proxy(proxy, user=None, password=''):
     """
     Set the HTTP proxy for Python to download through.
 
@@ -1149,27 +1151,26 @@ def set_proxy(proxy, (user, password)=(None, '')):
         authentication.
     :param password: The password to authenticate with.
     """
-    import urllib
-    import urllib2
+    from nltk import compat
 
     if proxy is None:
         # Try and find the system proxy settings
         try:
-            proxy = urllib.getproxies()['http']
+            proxy = compat.getproxies()['http']
         except KeyError:
             raise ValueError('Could not detect default proxy settings')
 
     # Set up the proxy handler
-    proxy_handler = urllib2.ProxyHandler({'http': proxy})
-    opener = urllib2.build_opener(proxy_handler)
+    proxy_handler = compat.ProxyHandler({'http': proxy})
+    opener = compat.build_opener(proxy_handler)
 
     if user is not None:
         # Set up basic proxy authentication if provided
-        password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        password_manager = compat.HTTPPasswordMgrWithDefaultRealm()
         password_manager.add_password(realm=None, uri=proxy, user=user,
                 passwd=password)
-        opener.add_handler(urllib2.ProxyBasicAuthHandler(password_manager))
-        opener.add_handler(urllib2.ProxyDigestAuthHandler(password_manager))
+        opener.add_handler(compat.ProxyBasicAuthHandler(password_manager))
+        opener.add_handler(compat.ProxyDigestAuthHandler(password_manager))
 
     # Overide the existing url opener
-    urllib2.install_opener(opener)
+    compat.install_opener(opener)

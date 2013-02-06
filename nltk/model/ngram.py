@@ -1,10 +1,11 @@
 # Natural Language Toolkit: Language Models
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Authors: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Authors: Steven Bird <stevenbird1@gmail.com>
 #          Daniel Blanchard <dblanchard@ets.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
 
 from itertools import chain
 from math import log
@@ -13,6 +14,8 @@ from nltk.probability import (ConditionalProbDist, ConditionalFreqDist,
                               SimpleGoodTuringProbDist)
 from nltk.util import ingrams
 from nltk.model.api import ModelI
+
+from nltk import compat
 
 
 def _estimator(fdist, bins):
@@ -24,6 +27,7 @@ def _estimator(fdist, bins):
     return SimpleGoodTuringProbDist(fdist)
 
 
+@compat.python_2_unicode_compatible
 class NgramModel(ModelI):
     """
     A processing interface for assigning a probability to the next word.
@@ -90,10 +94,10 @@ class NgramModel(ModelI):
 
         cfd = ConditionalFreqDist()
         self._ngrams = set()
-        
-            
+
+
         # If given a list of strings instead of a list of lists, create enclosing list
-        if (train is not None) and isinstance(train[0], basestring):
+        if (train is not None) and isinstance(train[0], compat.string_types):
             train = [train]
 
         for sent in train:
@@ -222,6 +226,10 @@ class NgramModel(ModelI):
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
 
+
+def teardown_module(module):
+    from nltk.corpus import brown
+    brown._unload()
 
 if __name__ == "__main__":
     import doctest

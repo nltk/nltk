@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet Browser Application
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 #         Paul Bone <pbone@students.csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
@@ -40,20 +40,18 @@ Options::
         Do not start a web browser, and do not allow a user to
         shotdown the server through the web interface.
 """
-
 # TODO: throughout this package variable names and docstrings need
 # modifying to be compliant with NLTK's coding standards.  Tests also
 # need to be develop to ensure this continues to work in the face of
 # changes to other NLTK packages.
-
 from __future__ import print_function
+
 # Allow this program to run inside the NLTK source tree.
 from sys import path
 
 import os
 from sys import argv
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from urllib import quote_plus, unquote_plus
 from collections import defaultdict
 import webbrowser
 import datetime
@@ -65,6 +63,7 @@ import base64
 import cPickle
 import copy
 
+from nltk import compat
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Synset, Lemma
 
@@ -92,7 +91,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global firstClient
         sp = self.path[1:]
-        if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
+        if compat.unquote_plus(sp) == 'SHUTDOWN THE SERVER':
             if server_mode:
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
@@ -115,7 +114,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
 
         elif sp.endswith('.html'): # Trying to fetch a HTML file TODO:
             type = 'text/html'
-            usp = unquote_plus(sp)
+            usp = compat.unquote_plus(sp)
             if usp == 'NLTK Wordnet Browser Database Info.html':
                 word = '* Database Info *'
                 if os.path.isfile(usp):
@@ -599,11 +598,11 @@ def _collect_one_synset(word, synset, synset_relations):
             ref = Reference(w)
             return make_lookup_link(ref, w)
 
-    s += ', '.join([format_lemma(l.name) for l in synset.lemmas])
+    s += ', '.join(format_lemma(l.name) for l in synset.lemmas)
 
     gl = " (%s) <i>%s</i> " % \
         (synset.definition,
-         "; ".join(["\"%s\"" % e for e in synset.examples]))
+         "; ".join("\"%s\"" % e for e in synset.examples))
     return s + gl + _synset_relations(word, synset, synset_relations) + '</li>\n'
 
 def _collect_all_synsets(word, pos, synset_relations=dict()):
@@ -635,11 +634,11 @@ def _synset_relations(word, synset, synset_relations):
     ref = Reference(word, synset_relations)
 
     def relation_html(r):
-        if type(r) == Synset:
+        if isinstance(r, Synset):
             return make_lookup_link(Reference(r.lemma_names[0]), r.lemma_names[0])
-        elif type(r) == Lemma:
+        elif isinstance(r, Lemma):
             return relation_html(r.synset)
-        elif type(r) == tuple:
+        elif isinstance(r, tuple):
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
             return "%s\n<ul>%s</ul>\n" % \
@@ -648,7 +647,7 @@ def _synset_relations(word, synset, synset_relations):
         else:
             raise TypeError("r must be a synset, lemma or list, it was: type(r) = %s, r = %s" % (type(r), r))
 
-    def make_synset_html((db_name, disp_name, rels)):
+    def make_synset_html(db_name, disp_name, rels):
         synset_html = '<i>%s</i>\n' % \
             make_lookup_link(
                 copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
@@ -661,9 +660,9 @@ def _synset_relations(word, synset, synset_relations):
         return synset_html
 
     html = '<ul>' + \
-        '\n'.join(("<li>%s</li>" % make_synset_html(x) for x
+        '\n'.join(("<li>%s</li>" % make_synset_html(*rel_data) for rel_data
                    in get_relations_data(word, synset)
-                   if x[2] != [])) + \
+                   if rel_data[2] != [])) + \
         '</ul>'
 
     return html
@@ -847,7 +846,7 @@ def get_static_web_help_page():
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2012 NLTK Project
+            Copyright (C) 2001-2013 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
             URL: <http://www.nltk.org/>
             For license information, see LICENSE.TXT -->
@@ -918,7 +917,7 @@ def get_static_index_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2012 NLTK Project
+            Copyright (C) 2001-2013 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
             URL: <http://www.nltk.org/>
             For license information, see LICENSE.TXT -->
@@ -952,7 +951,7 @@ def get_static_upper_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-        Copyright (C) 2001-2012 NLTK Project
+        Copyright (C) 2001-2013 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
         URL: <http://www.nltk.org/>
         For license information, see LICENSE.TXT -->

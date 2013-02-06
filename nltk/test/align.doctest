@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 .. -*- coding: utf-8 -*-
@@ -11,8 +11,15 @@ Corpus Reader
 -------------
 
     >>> from nltk.corpus import comtrans
-    >>> comtrans.words('alignment-en-fr.txt')
-    ['Resumption', 'of', 'the', 'session', 'I', 'declare', ...]
+    >>> words = comtrans.words('alignment-en-fr.txt')
+    >>> for word in words:
+    ...     print(word)
+    Resumption
+    of
+    the
+    session
+    I
+    declare...
     >>> als = comtrans.aligned_sents('alignment-en-fr.txt')[0]
     >>> als  # doctest: +NORMALIZE_WHITESPACE
     AlignedSent(['Resumption', 'of', 'the', 'session'],
@@ -25,10 +32,10 @@ Alignment Objects
 
 Aligned sentences are simply a mapping between words in a sentence:
 
-    >>> als.words
-    ['Resumption', 'of', 'the', 'session']
-    >>> als.mots
-    ['Reprise', 'de', 'la', 'session']
+    >>> print(" ".join(als.words))
+    Resumption of the session
+    >>> print(" ".join(als.mots))
+    Reprise de la session
     >>> als.alignment
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
 
@@ -76,36 +83,36 @@ Here is an example from Kohn, 2010:
     ...           AlignedSent(['the', 'book'], ['das', 'Buch']),
     ...           AlignedSent(['a', 'book'], ['ein', 'Buch'])]
     >>> em_ibm1 = IBMModel1(corpus, 1e-3)
-    >>> print round(em_ibm1.probabilities['the', 'das'], 1)
+    >>> print(round(em_ibm1.probabilities['the', 'das'], 1))
     1.0
-    >>> print round(em_ibm1.probabilities['book', 'das'], 1)
+    >>> print(round(em_ibm1.probabilities['book', 'das'], 1))
     0.0
-    >>> print round(em_ibm1.probabilities['house', 'das'], 1)
+    >>> print(round(em_ibm1.probabilities['house', 'das'], 1))
     0.0
-    >>> print round(em_ibm1.probabilities['the', 'Buch'], 1)
+    >>> print(round(em_ibm1.probabilities['the', 'Buch'], 1))
     0.0
-    >>> print round(em_ibm1.probabilities['book', 'Buch'], 1)
+    >>> print(round(em_ibm1.probabilities['book', 'Buch'], 1))
     1.0
-    >>> print round(em_ibm1.probabilities['a', 'Buch'], 1)
+    >>> print(round(em_ibm1.probabilities['a', 'Buch'], 1))
     0.0
-    >>> print round(em_ibm1.probabilities['book', 'ein'], 1)
+    >>> print(round(em_ibm1.probabilities['book', 'ein'], 1))
     0.0
-    >>> print round(em_ibm1.probabilities['a', 'ein'], 1)
+    >>> print(round(em_ibm1.probabilities['a', 'ein'], 1))
     1.0
-    >>> print round(em_ibm1.probabilities['the', 'Haus'], 1)
+    >>> print(round(em_ibm1.probabilities['the', 'Haus'], 1))
     0.0
-    >>> print round(em_ibm1.probabilities['house', 'Haus'], 1)
+    >>> print(round(em_ibm1.probabilities['house', 'Haus'], 1))
     1.0
-    >>> print round(em_ibm1.probabilities['book', None], 1)
+    >>> print(round(em_ibm1.probabilities['book', None], 1))
     0.5
 
 And using an NLTK corpus. We train on only 10 sentences, since it is so incredibly slow:
 
     >>> from nltk.corpus import comtrans
     >>> com_ibm1 = IBMModel1(comtrans.aligned_sents() [:10])
-    >>> print round(com_ibm1.probabilities['bitte', 'Please'], 1)
+    >>> print(round(com_ibm1.probabilities['bitte', 'Please'], 1))
     0.2
-    >>> print round(com_ibm1.probabilities['Sitzungsperiode', 'session'], 1)
+    >>> print(round(com_ibm1.probabilities['Sitzungsperiode', 'session'], 1))
     1.0
 
 Get the alignments:
@@ -152,15 +159,15 @@ considered to be correct [OCH2000]_.
 
 Here are some examples:
 
-    >>> print als.precision(set())
+    >>> print(als.precision(set()))
     0.0
-    >>> print als.precision([(0,0), (1,1), (2,2), (3,3)])
+    >>> print(als.precision([(0,0), (1,1), (2,2), (3,3)]))
     1.0
-    >>> print als.precision([(0,0), (3,3)])
+    >>> print(als.precision([(0,0), (3,3)]))
     0.5
-    >>> print als.precision([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)])
+    >>> print(als.precision([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)]))
     1.0
-    >>> print my_als.precision(als)
+    >>> print(my_als.precision(als))
     0.6
 
 
@@ -181,15 +188,15 @@ our possible alignments we don't penalise for not finding these [OCH2000]_.
 
 Here are some examples:
 
-    >>> print als.recall(set())
+    >>> print(als.recall(set()))
     None
-    >>> print als.recall([(0,0), (1,1), (2,2), (3,3)])
+    >>> print(als.recall([(0,0), (1,1), (2,2), (3,3)]))
     1.0
-    >>> print als.recall([(0,0), (3,3)])
+    >>> print(als.recall([(0,0), (3,3)]))
     1.0
-    >>> print als.recall([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)])
-    0.666666666667
-    >>> print my_als.recall(als)
+    >>> print(als.recall([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)]))
+    0.66666666666...
+    >>> print(my_als.recall(als))
     0.75
 
 
@@ -214,15 +221,15 @@ possible alignments [MIHALCEA2003]_ [KOEHN2010]_.
 
 Here are some examples:
 
-    >>> print als.alignment_error_rate(set())
+    >>> print(als.alignment_error_rate(set()))
     1.0
-    >>> print als.alignment_error_rate([(0,0), (1,1), (2,2), (3,3)])
+    >>> print(als.alignment_error_rate([(0,0), (1,1), (2,2), (3,3)]))
     0.0
-    >>> print my_als.alignment_error_rate(als)
-    0.333333333333
-    >>> print my_als.alignment_error_rate(als,
-    ...     als.alignment | set([(1,2), (2,1)]))
-    0.222222222222
+    >>> print(my_als.alignment_error_rate(als))
+    0.33333333333...
+    >>> print(my_als.alignment_error_rate(als,
+    ...     als.alignment | set([(1,2), (2,1)])))
+    0.22222222222...
 
 
 .. [OCH2000] Och, F. and Ney, H. (2000)
@@ -233,4 +240,5 @@ Here are some examples:
 
 .. [KOEHN2010] Koehn, P. (2010)
     *Statistical Machine Translation*, Cambridge University Press
+
 

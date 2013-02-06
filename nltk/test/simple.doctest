@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =================
@@ -8,7 +8,7 @@ EasyInstall Tests
 This file contains some simple tests that will be run by EasyInstall in
 order to test the installation when NLTK-Data is absent.
 
-    >>> from nltk.test.doctest_utils import *
+    >>> from __future__ import print_function
 
 ------------
 Tokenization
@@ -32,10 +32,10 @@ Metrics
     >>> test_set = set(test)
     >>> precision(reference_set, test_set)
     1.0
-    >>> float_equal(recall(reference_set, test_set), 0.8)
-    True
-    >>> float_equal(f_measure(reference_set, test_set), 0.88888888888888)
-    True
+    >>> print(recall(reference_set, test_set))
+    0.8
+    >>> print(f_measure(reference_set, test_set))
+    0.88888888888...
 
 ------------------
 Feature Structures
@@ -44,17 +44,17 @@ Feature Structures
     >>> from nltk import FeatStruct
     >>> fs1 = FeatStruct(PER=3, NUM='pl', GND='fem')
     >>> fs2 = FeatStruct(POS='N', AGR=fs1)
-    >>> print fs2
+    >>> print(fs2)
     [       [ GND = 'fem' ] ]
     [ AGR = [ NUM = 'pl'  ] ]
     [       [ PER = 3     ] ]
     [                       ]
     [ POS = 'N'             ]
-    >>> print fs2['AGR']
+    >>> print(fs2['AGR'])
     [ GND = 'fem' ]
     [ NUM = 'pl'  ]
     [ PER = 3     ]
-    >>> print fs2['AGR']['PER']
+    >>> print(fs2['AGR']['PER'])
     3
 
 -------
@@ -74,7 +74,7 @@ Parsing
     >>> rd = RecursiveDescentParser(grammar)
     >>> sent = 'the cat chased the dog on the rug'.split()
     >>> for t in rd.nbest_parse(sent):
-    ...     print t
+    ...     print(t)
     (S
       (NP the (N cat))
       (VP (V chased) (NP the (N dog) (PP (P on) (NP the (N rug))))))

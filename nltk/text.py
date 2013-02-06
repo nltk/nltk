@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Texts
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -13,10 +13,12 @@ Functionality includes: concordancing, collocation discovery,
 regular expression search over tokenized strings, and
 distributional similarity.
 """
+from __future__ import print_function, division, unicode_literals
 
-from __future__ import print_function
 from math import log
 from collections import defaultdict
+from functools import reduce
+from itertools import islice
 import re
 
 from nltk.probability import FreqDist, LidstoneProbDist
@@ -25,6 +27,7 @@ from nltk.util import tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
+from nltk.compat import python_2_unicode_compatible, text_type
 
 
 class ContextIndex(object):
@@ -83,9 +86,8 @@ class ContextIndex(object):
         for c in self._word_to_contexts[self._key(word)]:
             for w in self._context_to_words[c]:
                 if w != word:
-                    print(w, c, self._context_to_words[c][word], self._context_to_words[c][w])
                     scores[w] += self._context_to_words[c][word] * self._context_to_words[c][w]
-        return sorted(scores, key=scores.get)[:n]
+        return sorted(scores, key=scores.get, reverse=True)[:n]
 
     def common_contexts(self, words, fail_on_unknown=False):
         """
@@ -114,6 +116,7 @@ class ContextIndex(object):
                           if c in common)
             return fd
 
+@python_2_unicode_compatible
 class ConcordanceIndex(object):
     """
     An index that can be used to look up the offset locations at which
@@ -180,8 +183,8 @@ class ConcordanceIndex(object):
         :param lines: The number of lines to display (default=25)
         :type lines: int
         """
-        half_width = (width - len(word) - 2) / 2
-        context = width/4 # approx number of words of context
+        half_width = (width - len(word) - 2) // 2
+        context = width // 4 # approx number of words of context
 
         offsets = self.offsets(word)
         if offsets:
@@ -220,7 +223,8 @@ class TokenSearcher(object):
         a single token must be surrounded by angle brackets.  E.g.
 
         >>> from nltk.text import TokenSearcher
-        >>> from nltk.book import text1, text5, text9
+        >>> print('hack'); from nltk.book import text1, text5, text9
+        hack...
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -254,6 +258,8 @@ class TokenSearcher(object):
         hits = [h[1:-1].split('><') for h in hits]
         return hits
 
+
+@python_2_unicode_compatible
 class Text(object):
     """
     A wrapper around a sequence of simple (string) tokens, which is
@@ -294,9 +300,9 @@ class Text(object):
             self.name = name
         elif ']' in tokens[:20]:
             end = tokens[:20].index(']')
-            self.name = " ".join(map(str, tokens[1:end]))
+            self.name = " ".join(text_type(tok) for tok in tokens[1:end])
         else:
-            self.name = " ".join(map(str, tokens[:8])) + "..."
+            self.name = " ".join(text_type(tok) for tok in tokens[:8]) + "..."
 
     #////////////////////////////////////////////////////////////
     # Support item & slice access
@@ -409,7 +415,7 @@ class Text(object):
             contexts = set(wci[word])
             fd = FreqDist(w for w in wci.conditions() for c in wci[w]
                           if c in contexts and not w == word)
-            words = fd.keys()[:num]
+            words = islice(fd.keys(), num)
             print(tokenwrap(words))
         else:
             print("No matches")
@@ -436,7 +442,7 @@ class Text(object):
             if not fd:
                 print("No common contexts were found")
             else:
-                ranked_contexts = fd.keys()[:num]
+                ranked_contexts = islice(fd.keys(), num)
                 print(tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts))
 
         except ValueError as e:
@@ -476,7 +482,8 @@ class Text(object):
         The text is a list of tokens, and a regexp pattern to match
         a single token must be surrounded by angle brackets.  E.g.
 
-        >>> from nltk.book import text1, text5, text9
+        >>> print('hack'); from nltk.book import text1, text5, text9
+        hack...
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -529,11 +536,10 @@ class Text(object):
     # String Display
     #////////////////////////////////////////////////////////////
 
+    def __str__(self):
+        return '<Text: %s>' % self.name
+
     def __repr__(self):
-        """
-        :return: A string representation of this FreqDist.
-        :rtype: string
-        """
         return '<Text: %s>' % self.name
 
 
@@ -546,7 +552,8 @@ class TextCollection(Text):
 
     >>> import nltk.corpus
     >>> from nltk.text import TextCollection
-    >>> from nltk.book import text1, text2, text3
+    >>> print('hack'); from nltk.book import text1, text2, text3
+    hack...
     >>> gutenberg = TextCollection(nltk.corpus.gutenberg)
     >>> mytexts = TextCollection([text1, text2, text3])
 
@@ -563,7 +570,7 @@ class TextCollection(Text):
 
     def tf(self, term, text, method=None):
         """ The frequency of the term in text. """
-        return float(text.count(term)) / len(text)
+        return text.count(term) / len(text)
 
     def idf(self, term, method=None):
         """ The number of texts in the corpus divided by the
@@ -572,7 +579,7 @@ class TextCollection(Text):
         # idf values are cached for performance.
         idf = self._idf_cache.get(term)
         if idf is None:
-            matches = len(list(True for text in self._texts if term in text))
+            matches = len([True for text in self._texts if term in text])
             # FIXME Should this raise some kind of error instead?
             idf = (log(float(len(self._texts)) / matches) if matches else 0.0)
             self._idf_cache[term] = idf

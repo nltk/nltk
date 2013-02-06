@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 import sys
 import os
 import nose
@@ -11,36 +11,15 @@ sys.path.insert(0, NLTK_ROOT)
 NLTK_TEST_DIR = os.path.join(NLTK_ROOT, 'nltk')
 
 
-# These tests are expected to fail.
-# NOTE: Remember to remove tests from this list after they have been fixed.
-FAILING_TESTS = [
-    "ccg.doctest", # This test randomly fails - nondeterministic output
-    "collocations.doctest",
-    "corpus.doctest",
-    "portuguese_en.doctest",
-    "probability.doctest",
-    "relextract.doctest",
-]
-
-# These tests require extra dependencies and should not run by default
-# TODO: Run the tests if the relevant dependeices are present on the system
-DEPENDENT_TESTS = [
-#    "classify.doctest",
-    "discourse.doctest",
-    "drt.doctest",
-    "gluesemantics.doctest",
-    "inference.doctest",
-    "nonmonotonic.doctest",
-]
-
-EXCLUDED_TESTS = FAILING_TESTS + DEPENDENT_TESTS
-_EXCLUDE_ARGV = ['--exclude='+test for test in EXCLUDED_TESTS]
-
 if __name__ == '__main__':
-    from nltk.test.doctest_nose_plugin import DoctestFix
+    # XXX: imports can't be moved to the top of the file
+    # because nose loader raises an exception then. Why?
     from nose.plugins.manager import PluginManager
     from nose.plugins.doctests import Doctest
     from nose.plugins import builtin
+
+    # there shouldn't be import from NLTK for coverage to work properly
+    from doctest_nose_plugin import DoctestFix
 
     class NltkPluginManager(PluginManager):
         """
@@ -72,11 +51,18 @@ if __name__ == '__main__':
         # only extra options were passed
         args += [NLTK_TEST_DIR]
 
-    nose.main(argv=_EXCLUDE_ARGV + [
-            #'--with-xunit',
-            #'--xunit-file=$WORKSPACE/nosetests.xml',
-            '--with-doctest',
-            '--doctest-extension=.doctest',
-            '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL',
-            #'--verbosity=3',
-        ] + args, plugins=manager.plugins)
+    arguments = [
+        '--exclude=', # why is this needed?
+        #'--with-xunit',
+        #'--xunit-file=$WORKSPACE/nosetests.xml',
+        #'--nocapture',
+        '--with-doctest',
+        #'--doctest-tests',
+        #'--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
+        '--doctest-extension=.doctest',
+        '--doctest-fixtures=_fixt',
+        '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE',
+        #'--verbosity=3',
+    ] + args
+
+    nose.main(argv=arguments, plugins=manager.plugins)

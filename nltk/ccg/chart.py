@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -29,9 +29,7 @@ which should print a nice representation of the derivation.
 This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
-
-from __future__ import print_function
-from collections import defaultdict
+from __future__ import print_function, division, unicode_literals
 
 from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
@@ -42,15 +40,17 @@ from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
                                  BackwardApplication, ForwardComposition,
                                  BackwardComposition, ForwardSubstitution,
                                  BackwardBx, BackwardSx)
+from nltk.compat import python_2_unicode_compatible, string_types
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't
 # transfer well to CCGs, however.
 class CCGEdge(EdgeI):
-    def __init__(self,span,categ,rule):
+    def __init__(self, span, categ, rule):
         self._span = span
         self._categ = categ
         self._rule = rule
+        self._comparison_key = (span, categ, rule)
 
     # Accessors
     def lhs(self): return self._categ
@@ -62,33 +62,24 @@ class CCGEdge(EdgeI):
     def dot(self): return 0
     def is_complete(self): return True
     def is_incomplete(self): return False
-    def next(self): return None
+    def nextsym(self): return None
 
-    def categ(self):
-        return self._categ
-    def rule(self):
-        return self._rule
-
-    def __cmp__(self, other):
-        if not isinstance(other, CCGEdge): return -1
-        return cmp((self._span,self._categ,self._rule),
-                    (other.span(),other.categ(),other.rule()))
-
-    def __hash__(self):
-        return hash((self._span,self._categ,self._rule))
+    def categ(self): return self._categ
+    def rule(self): return self._rule
 
 class CCGLeafEdge(EdgeI):
     '''
     Class representing leaf edges in a CCG derivation.
     '''
-    def __init__(self,pos,categ,leaf):
+    def __init__(self, pos, categ, leaf):
         self._pos = pos
         self._categ = categ
         self._leaf = leaf
+        self._comparison_key = (pos, categ, leaf)
 
     # Accessors
     def lhs(self): return self._categ
-    def span(self): return (self._pos,self._pos+1)
+    def span(self): return (self._pos, self._pos+1)
     def start(self): return self._pos
     def end(self): return self._pos + 1
     def length(self): return 1
@@ -96,21 +87,12 @@ class CCGLeafEdge(EdgeI):
     def dot(self): return 0
     def is_complete(self): return True
     def is_incomplete(self): return False
-    def next(self): return None
+    def nextsym(self): return None
 
-    def categ(self):
-        return self._categ
-
+    def categ(self): return self._categ
     def leaf(self): return self._leaf
 
-    def __cmp__(self, other):
-        if not isinstance(other, CCGLeafEdge): return -1
-        return cmp((self._span,self._categ,self._rule),
-                    other.span(),other.categ(),other.rule())
-
-    def __hash__(self):
-        return hash((self._pos,self._categ,self._leaf))
-
+@python_2_unicode_compatible
 class BinaryCombinatorRule(AbstractChartRule):
     '''
     Class implementing application of a binary combinator to a chart.
@@ -136,10 +118,11 @@ class BinaryCombinatorRule(AbstractChartRule):
 
     # The representation of the combinator (for printing derivations)
     def __str__(self):
-        return str(self._combinator)
+        return "%s" % self._combinator
 
 # Type-raising must be handled slightly differently to the other rules, as the
 # resulting rules only span a single edge, rather than both edges.
+@python_2_unicode_compatible
 class ForwardTypeRaiseRule(AbstractChartRule):
     '''
     Class for applying forward type raising
@@ -156,9 +139,11 @@ class ForwardTypeRaiseRule(AbstractChartRule):
             new_edge = CCGEdge(span=left_edge.span(),categ=res,rule=self._combinator)
             if chart.insert(new_edge,(left_edge,)):
                 yield new_edge
-    def __str__(self):
-        return str(self._combinator)
 
+    def __str__(self):
+        return "%s" % self._combinator
+
+@python_2_unicode_compatible
 class BackwardTypeRaiseRule(AbstractChartRule):
     '''
     Class for applying backward type raising.
@@ -175,17 +160,18 @@ class BackwardTypeRaiseRule(AbstractChartRule):
             new_edge = CCGEdge(span=right_edge.span(),categ=res,rule=self._combinator)
             if chart.insert(new_edge,(right_edge,)):
                 yield new_edge
+
     def __str__(self):
-        return str(self._combinator)
+        return "%s" % self._combinator
 
 
 # Common sets of combinators used for English derivations.
-ApplicationRuleSet = [BinaryCombinatorRule(ForwardApplication), \
+ApplicationRuleSet = [BinaryCombinatorRule(ForwardApplication),
                         BinaryCombinatorRule(BackwardApplication)]
-CompositionRuleSet = [BinaryCombinatorRule(ForwardComposition), \
-                        BinaryCombinatorRule(BackwardComposition), \
+CompositionRuleSet = [BinaryCombinatorRule(ForwardComposition),
+                        BinaryCombinatorRule(BackwardComposition),
                         BinaryCombinatorRule(BackwardBx)]
-SubstitutionRuleSet = [BinaryCombinatorRule(ForwardSubstitution), \
+SubstitutionRuleSet = [BinaryCombinatorRule(ForwardSubstitution),
                         BinaryCombinatorRule(BackwardSx)]
 TypeRaiseRuleSet = [ForwardTypeRaiseRule(), BackwardTypeRaiseRule()]
 
@@ -263,10 +249,10 @@ class CCGChart(Chart):
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class)
                                 for cp in cpl]
-            if len(child_choices) > 0 and type(child_choices[0]) == type(""):
+            if len(child_choices) > 0 and isinstance(child_choices[0], string_types):
                 child_choices = [child_choices]
             for children in self._choose_children(child_choices):
-                lhs = (edge.lhs(),str(edge.rule()))
+                lhs = (edge.lhs(), "%s" % edge.rule())
                 trees.append(tree_class(lhs, children))
 
         memo[edge] = trees
@@ -284,12 +270,15 @@ def printCCGDerivation(tree):
     # Construct a string with both the leaf word and corresponding
     # category aligned.
     for (leaf, cat) in leafcats:
-        nextlen = 2 + max(len(leaf),len(str(cat)))
-        lcatlen = (nextlen - len(str(cat)))/2
-        rcatlen = lcatlen + (nextlen - len(str(cat)))%2
-        catstr += ' '*lcatlen + str(cat) + ' '*rcatlen
-        lleaflen = (nextlen - len(leaf))/2
-        rleaflen = lleaflen + (nextlen - len(leaf))%2
+        str_cat = "%s" % cat
+#        print(cat.__class__)
+#        print("str_cat", str_cat)
+        nextlen = 2 + max(len(leaf), len(str_cat))
+        lcatlen = (nextlen - len(str_cat)) // 2
+        rcatlen = lcatlen + (nextlen - len(str_cat)) % 2
+        catstr += ' '*lcatlen + str_cat + ' '*rcatlen
+        lleaflen = (nextlen - len(leaf)) // 2
+        rleaflen = lleaflen + (nextlen - len(leaf)) % 2
         leafstr += ' '*lleaflen + leaf + ' '*rleaflen
     print(leafstr)
     print(catstr)
@@ -312,17 +301,18 @@ def printCCGTree(lwidth,tree):
 
     # Is a leaf node.
     # Don't print anything, but account for the space occupied.
-    if not isinstance(tree.node,tuple):
-        return max(rwidth,2 + lwidth + len(str(tree.node)),
+    if not isinstance(tree.node, tuple):
+        return max(rwidth,2 + lwidth + len("%s" % tree.node),
                   2 + lwidth + len(tree[0]))
 
     (res,op) = tree.node
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
-    print(lwidth*' ' + (rwidth-lwidth)*'-' + str(op))
+    print(lwidth*' ' + (rwidth-lwidth)*'-' + "%s" % op)
     # Print the resulting category on a new line.
-    respadlen = (rwidth - lwidth - len(str(res)))/2 + lwidth
-    print(respadlen*' ' + str(res))
+    str_res = "%s" % res
+    respadlen = (rwidth - lwidth - len(str_res)) // 2 + lwidth
+    print(respadlen*' ' + str_res)
     return rwidth
 
 

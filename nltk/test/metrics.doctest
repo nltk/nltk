@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =======
@@ -8,8 +8,8 @@ Metrics
 The `nltk.metrics` package provides a variety of *evaluation measures*
 which can be used for a wide variety of NLP tasks.
 
+   >>> from __future__ import print_function
    >>> from nltk.metrics import *
-   >>> from nltk.test.doctest_utils import *
 
 ------------------
 Standard IR Scores
@@ -20,8 +20,8 @@ performance of taggers, chunkers, etc.
 
     >>> reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
     >>> test    = 'DET VB VB DET NN NN NN IN DET NN'.split()
-    >>> float_equal(accuracy(reference, test), 0.8)
-    True
+    >>> print(accuracy(reference, test))
+    0.8
 
 
 The following measures apply to sets:
@@ -30,18 +30,18 @@ The following measures apply to sets:
     >>> test_set = set(test)
     >>> precision(reference_set, test_set)
     1.0
-    >>> float_equal(recall(reference_set, test_set), 0.8)
-    True
-    >>> float_equal(f_measure(reference_set, test_set), 0.88888888888)
-    True
+    >>> print(recall(reference_set, test_set))
+    0.8
+    >>> print(f_measure(reference_set, test_set))
+    0.88888888888...
 
 Measuring the likelihood of the data, given probability distributions:
 
     >>> from nltk import FreqDist, MLEProbDist
     >>> pdist1 = MLEProbDist(FreqDist("aldjfalskfjaldsf"))
     >>> pdist2 = MLEProbDist(FreqDist("aldjfalssjjlldss"))
-    >>> float_equal(log_likelihood(['a', 'd'], [pdist1, pdist2]), -2.707518749639422)
-    True
+    >>> print(log_likelihood(['a', 'd'], [pdist1, pdist2]))
+    -2.7075187496...
 
 
 ----------------
@@ -59,16 +59,17 @@ Other distance measures:
     >>> s2 = set([3,4,5])
     >>> binary_distance(s1, s2)
     1.0
-    >>> float_equal(jaccard_distance(s1, s2), 0.6)
-    True
-    >>> float_equal(masi_distance(s1, s2), 0.5)
-    True
+    >>> print(jaccard_distance(s1, s2))
+    0.6
+    >>> print(masi_distance(s1, s2))
+    0.868...
 
 ----------------------
 Miscellaneous Measures
 ----------------------
 
-Rank Correlation works with two dictionaries mapping keys to ranks.  The dictionaries should have the same set of keys.
+Rank Correlation works with two dictionaries mapping keys to ranks.
+The dictionaries should have the same set of keys.
 
     >>> spearman_correlation({'e':1, 't':2, 'a':3}, {'e':1, 'a':2, 't':3})
     0.5
@@ -92,7 +93,7 @@ Confusion Matrix
 
     >>> reference = 'This is the reference data.  Testing 123.  aoaeoeoe'
     >>> test =      'Thos iz_the rifirenci data.  Testeng 123.  aoaeoeoe'
-    >>> print ConfusionMatrix(reference, test)
+    >>> print(ConfusionMatrix(reference, test))
       |   . 1 2 3 T _ a c d e f g h i n o r s t z |
     --+-------------------------------------------+
       |<8>. . . . . 1 . . . . . . . . . . . . . . |
@@ -121,7 +122,7 @@ Confusion Matrix
     <BLANKLINE>
 
     >>> cm = ConfusionMatrix(reference, test)
-    >>> print cm.pp(sort_by_count=True)
+    >>> print(cm.pp(sort_by_count=True))
       |   e a i o s t . T h n r 1 2 3 c d f g _ z |
     --+-------------------------------------------+
       |<8>. . . . . . . . . . . . . . . . . . 1 . |
@@ -149,7 +150,7 @@ Confusion Matrix
     (row = reference; col = test)
     <BLANKLINE>
 
-    >>> print cm.pp(sort_by_count=True, truncate=10)
+    >>> print(cm.pp(sort_by_count=True, truncate=10))
       |   e a i o s t . T h |
     --+---------------------+
       |<8>. . . . . . . . . |
@@ -166,7 +167,7 @@ Confusion Matrix
     (row = reference; col = test)
     <BLANKLINE>
 
-    >>> print cm.pp(sort_by_count=True, truncate=10, values_in_chart=False)
+    >>> print(cm.pp(sort_by_count=True, truncate=10, values_in_chart=False))
        |                   1 |
        | 1 2 3 4 5 6 7 8 9 0 |
     ---+---------------------+

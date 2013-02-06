@@ -2,17 +2,18 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 """
 Module for a resolution-based First Order theorem prover.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import operator
 from collections import defaultdict
+from functools import reduce
 
 from nltk.sem import skolemize
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
@@ -22,6 +23,7 @@ from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             is_indvar, IndividualVariableExpression, Expression)
 
 from nltk.inference.api import Prover, BaseProverCommand
+from nltk.compat import python_2_unicode_compatible
 
 class ProverParseError(Exception): pass
 
@@ -155,6 +157,7 @@ class ResolutionProverCommand(BaseProverCommand):
             out += '[%s] %s %s %s\n' % (seq, clauses[i], parents, taut)
         return out
 
+@python_2_unicode_compatible
 class Clause(list):
     def __init__(self, data):
         list.__init__(self, data)
@@ -298,10 +301,10 @@ class Clause(list):
         return Clause([atom.substitute_bindings(bindings) for atom in self])
 
     def __str__(self):
-        return '{' + ', '.join([str(item) for item in self]) + '}'
+        return '{' + ', '.join("%s" % item for item in self) + '}'
 
     def __repr__(self):
-        return str(self)
+        return "%s" % self
 
 def _iterate_first(first, second, bindings, used, skipped, finalize_method, debug):
     """
@@ -458,6 +461,7 @@ def _clausify(expression):
     raise ProverParseError()
 
 
+@python_2_unicode_compatible
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """
@@ -544,10 +548,11 @@ class BindingDict(object):
         return len(self.d)
 
     def __str__(self):
-        return '{' + ', '.join(['%s: %s' % (v, self.d[v]) for v in self.d]) + '}'
+        data_str = ', '.join('%s: %s' % (v, self.d[v]) for v in sorted(self.d.keys()))
+        return '{' + data_str + '}'
 
     def __repr__(self):
-        return str(self)
+        return "%s" % self
 
 
 def most_general_unification(a, b, bindings=None):

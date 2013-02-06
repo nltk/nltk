@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -48,8 +48,8 @@ For example, to read a list of the words in the Brown Corpus, use
 ``nltk.corpus.brown.words()``:
 
     >>> from nltk.corpus import brown
-    >>> print brown.words()
-    ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
+    >>> print(", ".join(brown.words()))
+    The, Fulton, County, Grand, Jury, said, ...
 
 """
 
@@ -89,10 +89,11 @@ from nltk.corpus.reader.childes import *
 from nltk.corpus.reader.aligned import *
 from nltk.corpus.reader.lin import *
 from nltk.corpus.reader.semcor import *
+from nltk.corpus.reader.udhr import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
-import bracket_parse
+from . import bracket_parse
 
 __all__ = [
     'CorpusReader', 'CategorizedCorpusReader',
@@ -122,5 +123,5 @@ __all__ = [
     'TEICorpusView', 'KNBCorpusReader', 'ChasenCorpusReader',
     'CHILDESCorpusReader', 'AlignedCorpusReader',
     'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader',
-    'SemcorCorpusReader'
+    'SemcorCorpusReader', 'UdhrCorpusReader',
 ]

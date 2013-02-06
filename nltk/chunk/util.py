@@ -1,17 +1,17 @@
 # Natural Language Toolkit: Chunk format conversions
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
+#         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import re
-import string
 
 from nltk.tree import Tree
 from nltk.tag.util import str2tuple
+from nltk.compat import python_2_unicode_compatible
 
 ##//////////////////////////////////////////////////////
 ## EVALUATION
@@ -62,11 +62,11 @@ class ChunkScore(object):
     as ``precision`` and ``f_measure``.  A typical use of the
     ``ChunkScore`` class is::
 
-        >>> chunkscore = ChunkScore()
-        >>> for correct in correct_sentences:
-        ...     guess = chunkparser.parse(correct.leaves())
-        ...     chunkscore.score(correct, guess)
-        >>> print 'F Measure:', chunkscore.f_measure()
+        >>> chunkscore = ChunkScore()           # doctest: +SKIP
+        >>> for correct in correct_sentences:   # doctest: +SKIP
+        ...     guess = chunkparser.parse(correct.leaves())   # doctest: +SKIP
+        ...     chunkscore.score(correct, guess)              # doctest: +SKIP
+        >>> print('F Measure:', chunkscore.f_measure())       # doctest: +SKIP
         F Measure: 0.823
 
     :ivar kwargs: Keyword arguments:
@@ -275,7 +275,7 @@ class ChunkScore(object):
 
         :rtype: str
         """
-        return '<ChunkScoring of '+`len(self)`+' chunks>'
+        return '<ChunkScoring of '+repr(len(self))+' chunks>'
 
     def __str__(self):
         """
@@ -468,7 +468,7 @@ def tree2conllstr(t):
     :type t: Tree
     :rtype: str
     """
-    lines = [string.join(token) for token in tree2conlltags(t)]
+    lines = [" ".join(token) for token in tree2conlltags(t)]
     return '\n'.join(lines)
 
 ### IEER

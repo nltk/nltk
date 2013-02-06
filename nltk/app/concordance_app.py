@@ -1,15 +1,16 @@
 # Natural Language Toolkit: Concordance Application
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_function
+
+import nltk.compat
 import re
 import threading
-import tkFont
-from Tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
+import tkinter.font
+from tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
                      Label, Menu, OptionMenu, SUNKEN, Scrollbar,
                      StringVar, Text)
 
@@ -200,7 +201,7 @@ class ConcordanceSearchView(object):
         Label(innerframe, justify=LEFT, text=' Corpus: ',
               background=self._BACKGROUND_COLOUR, padx = 2, pady = 1, border = 0).pack(side='left')
 
-        other_corpora = self.model.CORPORA.keys().remove(self.model.DEFAULT_CORPUS)
+        other_corpora = list(self.model.CORPORA.keys()).remove(self.model.DEFAULT_CORPUS)
         om = OptionMenu(innerframe, self.var, self.model.DEFAULT_CORPUS, command=self.corpus_selected, *self.model.non_default_corpora())
         om['borderwidth'] = 0
         om['highlightthickness'] = 1
@@ -232,7 +233,7 @@ class ConcordanceSearchView(object):
         vscrollbar = Scrollbar(i1, borderwidth=1)
         hscrollbar = Scrollbar(i2, borderwidth=1, orient='horiz')
         self.results_box = Text(i1,
-                                font=tkFont.Font(family='courier', size='16'),
+                                font=tkinter.font.Font(family='courier', size='16'),
                                 state='disabled', borderwidth=1,
                                                             yscrollcommand=vscrollbar.set,
                                 xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20', exportselection=1)
@@ -253,7 +254,7 @@ class ConcordanceSearchView(object):
         innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
         self.prev = prev = Button(innerframe, text='Previous', command=self.previous, width='10', borderwidth=1, highlightthickness=1, state='disabled')
         prev.pack(side='left', anchor='center')
-        self.next = next = Button(innerframe, text='Next', command=self.next, width='10', borderwidth=1, highlightthickness=1, state='disabled')
+        self.next = next = Button(innerframe, text='Next', command=self.__next__, width='10', borderwidth=1, highlightthickness=1, state='disabled')
         next.pack(side='right', anchor='center')
         innerframe.pack(side='top', fill='y')
         self.current_page = 0
@@ -263,7 +264,7 @@ class ConcordanceSearchView(object):
         self.freeze_editable()
         self.model.prev(self.current_page - 1)
 
-    def next(self):
+    def __next__(self):
         self.clear_results_box()
         self.freeze_editable()
         self.model.next(self.current_page + 1)
@@ -272,7 +273,7 @@ class ConcordanceSearchView(object):
         ABOUT = ("NLTK Concordance Search Demo\n")
         TITLE = 'About: NLTK Concordance Search Demo'
         try:
-            from tkMessageBox import Message
+            from tkinter.messagebox import Message
             Message(message=ABOUT, title=TITLE, parent=self.main_frame).show()
         except:
             ShowText(self.top, TITLE, ABOUT)
@@ -432,7 +433,7 @@ class ConcordanceSearchModel(object):
 
     def non_default_corpora(self):
         copy = []
-        copy.extend(self.CORPORA.keys())
+        copy.extend(list(self.CORPORA.keys()))
         copy.remove(self.DEFAULT_CORPUS)
         copy.sort()
         return copy

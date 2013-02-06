@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Incremental Earley Chart Parser
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Rob Speer <rspeer@mit.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -25,8 +25,9 @@ This is appealing for, say, speech recognizer hypothesis filtering.
 The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
+from __future__ import print_function, division
 
-from __future__ import print_function
+from nltk.compat import xrange
 from nltk.parse.chart import (Chart, ChartParser, EdgeI, LeafEdge, LeafInitRule,
                               BottomUpPredictRule, BottomUpPredictCombineRule,
                               TopDownInitRule, SingleEdgeFundamentalRule,
@@ -71,8 +72,7 @@ class IncrementalChart(Chart):
         if restrictions=={}: return iter(edgelist)
 
         # Find the index corresponding to the given restrictions.
-        restr_keys = restrictions.keys()
-        restr_keys.sort()
+        restr_keys = sorted(restrictions.keys())
         restr_keys = tuple(restr_keys)
 
         # If it doesn't exist, then create it.
@@ -119,8 +119,7 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
         if restrictions=={}: return iter(edgelist)
 
         # Find the index corresponding to the given restrictions.
-        restr_keys = restrictions.keys()
-        restr_keys.sort()
+        restr_keys = sorted(restrictions.keys())
         restr_keys = tuple(restr_keys)
 
         # If it doesn't exist, then create it.
@@ -166,7 +165,7 @@ class CompleteFundamentalRule(SingleEdgeFundamentalRule):
         # empty complete edges here.
         for right_edge in chart.select(start=end, end=end,
                                        is_complete=True,
-                                       lhs=left_edge.next()):
+                                       lhs=left_edge.nextsym()):
             new_edge = left_edge.move_dot_forward(right_edge.end())
             if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                 yield new_edge
@@ -208,7 +207,7 @@ class FeatureCompleteFundamentalRule(FeatureSingleEdgeFundamentalRule):
         # empty complete edges here.
         for right_edge in chart.select(start=end, end=end,
                                        is_complete=True,
-                                       lhs=left_edge.next()):
+                                       lhs=left_edge.nextsym()):
             for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
@@ -309,7 +308,7 @@ class IncrementalChartParser(ChartParser):
         grammar = self._grammar
 
         # Width, for printing trace edges.
-        trace_edge_width = self._trace_chart_width / (chart.num_leaves() + 1)
+        trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace: print(chart.pp_leaves(trace_edge_width))
 
         for axiom in self._axioms:

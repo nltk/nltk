@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Regexp Chunk Parser Application
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -15,13 +15,14 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # configuration parameters to select what's being chunked (eg VP vs NP)
 # and what part of the data is being used as the development set.
 
+import nltk.compat
 import time
 import textwrap
 import re
 import random
-import tkFileDialog, tkFont
+import tkinter.filedialog, tkinter.font
 
-from Tkinter import (Button, Canvas, Checkbutton,
+from tkinter import (Button, Canvas, Checkbutton,
                      Frame, IntVar, Label, Menu,
                      Scrollbar, Text, Tk)
 
@@ -374,10 +375,10 @@ class RegexpChunkApp(object):
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(top)
         self._size.set(20)
-        self._font = tkFont.Font(family='helvetica',
+        self._font = tkinter.font.Font(family='helvetica',
                                  size=-self._size.get())
-        self._smallfont = tkFont.Font(family='helvetica',
-                                      size=-(self._size.get()*14/20))
+        self._smallfont = tkinter.font.Font(family='helvetica',
+                                      size=-(int(self._size.get()*14/20)))
 
     def _init_menubar(self, parent):
         menubar = Menu(parent)
@@ -854,8 +855,8 @@ class RegexpChunkApp(object):
         for (name, tabstops, text) in self.HELP:
             if name == tab:
                 text = text.replace('<<TAGSET>>', '\n'.join(
-                    ('\t%s\t%s' % item for item in sorted(self.tagset.items(),
-                    key=lambda (t,w):re.match('\w+',t) and (0,t) or (1,t)))))
+                    ('\t%s\t%s' % item for item in sorted(list(self.tagset.items()),
+                    key=lambda t_w:re.match('\w+',t_w[0]) and (0,t_w[0]) or (1,t_w[0])))))
 
                 self.helptabs[name].config(**self._HELPTAB_FG_PARAMS)
                 self.helpbox.config(tabs=tabstops)
@@ -1157,7 +1158,7 @@ class RegexpChunkApp(object):
         if not filename:
             ftypes = [('Chunk Gramamr', '.chunk'),
                       ('All files', '*')]
-            filename = tkFileDialog.asksaveasfilename(filetypes=ftypes,
+            filename = tkinter.filedialog.asksaveasfilename(filetypes=ftypes,
                                                       defaultextension='.chunk')
             if not filename: return
         if (self._history and self.normalized_grammar ==
@@ -1180,7 +1181,7 @@ class RegexpChunkApp(object):
         if not filename:
             ftypes = [('Chunk Gramamr', '.chunk'),
                       ('All files', '*')]
-            filename = tkFileDialog.askopenfilename(filetypes=ftypes,
+            filename = tkinter.filedialog.askopenfilename(filetypes=ftypes,
                                                     defaultextension='.chunk')
             if not filename: return
         self.grammarbox.delete('1.0', 'end')
@@ -1195,7 +1196,7 @@ class RegexpChunkApp(object):
         if not filename:
             ftypes = [('Chunk Gramamr History', '.txt'),
                       ('All files', '*')]
-            filename = tkFileDialog.asksaveasfilename(filetypes=ftypes,
+            filename = tkinter.filedialog.asksaveasfilename(filetypes=ftypes,
                                                       defaultextension='.txt')
             if not filename: return
 
@@ -1225,7 +1226,7 @@ class RegexpChunkApp(object):
                  "Written by Edward Loper")
         TITLE = 'About: Regular Expression Chunk Parser Application'
         try:
-            from tkMessageBox import Message
+            from tkinter.messagebox import Message
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self.top, TITLE, ABOUT)

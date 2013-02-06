@@ -2,7 +2,7 @@
 #
 # Author: Daniel H. Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -11,10 +11,11 @@ A module to perform nonmonotonic reasoning.  The ideas and demonstrations in
 this module are based on "Logical Foundations of Artificial Intelligence" by
 Michael R. Genesereth and Nils J. Nilsson.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
-from prover9 import Prover9, Prover9Command
+from .prover9 import Prover9, Prover9Command
 from collections import defaultdict
+from functools import reduce
 
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             ApplicationExpression, LogicParser,
@@ -24,6 +25,7 @@ from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             AndExpression, unique_variable, operator)
 
 from nltk.inference.api import Prover, ProverCommandDecorator
+from nltk.compat import python_2_unicode_compatible
 
 class ProverParseError(Exception): pass
 
@@ -43,7 +45,7 @@ class ClosedDomainProver(ProverCommandDecorator):
         assumptions = [a for a in self._command.assumptions()]
         goal = self._command.goal()
         domain = get_domain(goal, assumptions)
-        return list([self.replace_quants(ex, domain) for ex in assumptions])
+        return [self.replace_quants(ex, domain) for ex in assumptions]
 
     def goal(self):
         goal = self._command.goal()
@@ -174,7 +176,8 @@ class ClosedWorldProver(ProverCommandDecorator):
         predicates = self._make_predicate_dict(assumptions)
 
         new_assumptions = []
-        for p, predHolder in predicates.iteritems():
+        for p in predicates:
+            predHolder = predicates[p]
             new_sig = self._make_unique_signature(predHolder)
             new_sig_exs = [VariableExpression(v) for v in new_sig]
 
@@ -217,8 +220,7 @@ class ClosedWorldProver(ProverCommandDecorator):
         This method figures out how many arguments the predicate takes and
         returns a tuple containing that number of unique variables.
         """
-        return tuple([unique_variable()
-                      for i in range(predHolder.signature_len)])
+        return tuple(unique_variable() for i in range(predHolder.signature_len))
 
     def _make_antecedent(self, predicate, signature):
         """
@@ -269,6 +271,7 @@ class ClosedWorldProver(ProverCommandDecorator):
                         predDict[func2].append_prop((tuple(sig), term.first))
                         predDict[func1].validate_sig_len(sig)
 
+@python_2_unicode_compatible
 class PredHolder(object):
     """
     This class will be used by a dictionary that will store information
@@ -308,7 +311,7 @@ class PredHolder(object):
                                self.signature_len)
 
     def __repr__(self):
-        return str(self)
+        return "%s" % self
 
 def closed_domain_demo():
     lp = LogicParser()

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -62,14 +62,13 @@ Usage::
 
     python nltk/downloader.py [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 
-or with py2.5+:
+or::
 
     python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 """
-
-from __future__ import print_function
-
 #----------------------------------------------------------------------
+from __future__ import print_function, division, unicode_literals
+
 """
 
   0     1  2    3
@@ -160,12 +159,8 @@ they didn't download that model.
 default: unzip or not?
 
 """
-import time, re, os, zipfile, sys, textwrap, threading, itertools
-from cStringIO import StringIO
-try:
-    from hashlib import md5
-except:
-    from md5 import md5
+import time, os, zipfile, sys, textwrap, threading, itertools
+from hashlib import md5
 
 try:
     TKINTER = True
@@ -180,13 +175,15 @@ except:
 
 from xml.etree import ElementTree
 import nltk
-urllib2 = nltk.internals.import_from_stdlib('urllib2')
+from nltk import compat
+#urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
 
 ######################################################################
 # Directory entry objects (from the data server's index file)
 ######################################################################
 
+@compat.python_2_unicode_compatible
 class Package(object):
     """
     A directory entry for a downloadable package.  These entries are
@@ -256,13 +253,19 @@ class Package(object):
 
     @staticmethod
     def fromxml(xml):
-        if isinstance(xml, basestring):
+        if isinstance(xml, compat.string_types):
             xml = ElementTree.parse(xml)
+        for key in xml.attrib:
+            xml.attrib[key] = compat.text_type(xml.attrib[key])
         return Package(**xml.attrib)
+
+    def __lt__(self, other):
+        return self.id < other.id
 
     def __repr__(self):
         return '<Package %s>' % self.id
 
+@compat.python_2_unicode_compatible
 class Collection(object):
     """
     A directory entry for a collection of downloadable packages.
@@ -289,10 +292,15 @@ class Collection(object):
 
     @staticmethod
     def fromxml(xml):
-        if isinstance(xml, basestring):
+        if isinstance(xml, compat.string_types):
             xml = ElementTree.parse(xml)
+        for key in xml.attrib:
+            xml.attrib[key] = compat.text_type(xml.attrib[key])
         children = [child.get('ref') for child in xml.findall('item')]
         return Collection(children=children, **xml.attrib)
+
+    def __lt__(self, other):
+        return self.id < other.id
 
     def __repr__(self):
         return '<Collection %s>' % self.id
@@ -465,7 +473,7 @@ class Downloader(object):
                 print('  [%s] %s %s' % (prefix, info.id.ljust(20, '.'), name))
                 lines += len(name.split('\n')) # for more_prompt
                 if more_prompt and lines > 20:
-                    user_input = raw_input("Hit Enter to continue: ")
+                    user_input = compat.raw_input("Hit Enter to continue: ")
                     if (user_input.lower() in ('x', 'q')): return
                     lines = 0
             print()
@@ -497,7 +505,7 @@ class Downloader(object):
     #/////////////////////////////////////////////////////////////////
 
     def _info_or_id(self, info_or_id):
-        if isinstance(info_or_id, basestring):
+        if isinstance(info_or_id, compat.string_types):
             return self.info(info_or_id)
         else:
             return info_or_id
@@ -558,8 +566,10 @@ class Downloader(object):
         num_packages = sum(self._num_packages(item) for item in items)
         progress = 0
         for i, item in enumerate(items):
-            if isinstance(item, Package): delta = 1./num_packages
-            else: delta = float(len(item.packages))/num_packages
+            if isinstance(item, Package):
+                delta = 1./num_packages
+            else:
+                delta = float(len(item.packages))/num_packages
             for msg in self.incr_download(item, download_dir, force):
                 if isinstance(msg, ProgressMessage):
                     yield ProgressMessage(progress + msg.progress*delta)
@@ -601,18 +611,17 @@ class Downloader(object):
         yield StartDownloadMessage(info)
         yield ProgressMessage(5)
         try:
-            infile = urllib2.urlopen(info.url)
-            outfile = open(filepath, 'wb')
-            #print info.size
-            num_blocks = max(1, float(info.size)/(1024*16))
-            for block in itertools.count():
-                s = infile.read(1024*16) # 16k blocks.
-                outfile.write(s)
-                if not s: break
-                if block % 2 == 0: # how often?
-                    yield ProgressMessage(min(80, 5+75*(block/num_blocks)))
+            infile = compat.urlopen(info.url)
+            with open(filepath, 'wb') as outfile:
+                #print info.size
+                num_blocks = max(1, float(info.size)/(1024*16))
+                for block in itertools.count():
+                    s = infile.read(1024*16) # 16k blocks.
+                    outfile.write(s)
+                    if not s: break
+                    if block % 2 == 0: # how often?
+                        yield ProgressMessage(min(80, 5+75*(block/num_blocks)))
             infile.close()
-            outfile.close()
         except IOError as e:
             yield ErrorMessage(info, 'Error downloading %r from <%s>:'
                                '\n  %s' % (info.id, info.url, e))
@@ -664,7 +673,7 @@ class Downloader(object):
                     self._errors = True
                     if not quiet:
                         print("Error installing package. Retry? [n/y/e]")
-                        choice = raw_input().strip()
+                        choice = compat.raw_input().strip()
                         if choice in ['y', 'Y']:
                             if not self.download(msg.package.id, download_dir,
                                                  quiet, force, prefix,
@@ -687,12 +696,12 @@ class Downloader(object):
                             show('Downloaded collection %r with errors' %
                                  msg.collection.id)
                         else:
-                            show('Done downloading collection %r' %
+                            show('Done downloading collection %s' %
                                  msg.collection.id)
 
                     # Package downloading messages:
                     elif isinstance(msg, StartPackageMessage):
-                        show('Downloading package %r to %s...' %
+                        show('Downloading package %s to %s...' %
                              (msg.package.id, download_dir))
                     elif isinstance(msg, UpToDateMessage):
                         show('Package %s is already up-to-date!' %
@@ -814,7 +823,7 @@ class Downloader(object):
 
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
-            ElementTree.parse(urllib2.urlopen(self._url)).getroot())
+            ElementTree.parse(compat.urlopen(self._url)).getroot())
         self._index_timestamp = time.time()
 
         # Build a dictionary of packages.
@@ -881,12 +890,12 @@ class Downloader(object):
     # URL & Data Directory
     #/////////////////////////////////////////////////////////////////
 
-    def _get_url(self): 
+    def _get_url(self):
         """The URL for the data server's index file."""
         return self._url
     def _set_url(self, url):
         """
-        Set a new URL for the data server. If we're unable to contact 
+        Set a new URL for the data server. If we're unable to contact
         the given url, then the original url is kept.
         """
         original_url = self._url
@@ -933,7 +942,7 @@ class Downloader(object):
         # append "nltk_data" to the home directory
         return os.path.join(homedir, 'nltk_data')
 
-    def _get_download_dir(self): 
+    def _get_download_dir(self):
         """
         The default directory to which packages will be downloaded.
         This defaults to the value returned by ``default_download_dir()``.
@@ -968,7 +977,7 @@ class DownloaderShell(object):
 
     def _simple_interactive_menu(self, *options):
         print('-'*75)
-        spc = (68 - sum(len(o) for o in options))/(len(options)-1)*' '
+        spc = (68 - sum(len(o) for o in options))//(len(options)-1)*' '
         print('    ' + spc.join(options))
         #w = 76/len(options)
         #fmt = '  ' + ('%-'+str(w)+'s')*(len(options)-1) + '%s'
@@ -981,7 +990,7 @@ class DownloaderShell(object):
         while True:
             self._simple_interactive_menu(
                 'd) Download', 'l) List', ' u) Update', 'c) Config', 'h) Help', 'q) Quit')
-            user_input = raw_input('Downloader> ').strip()
+            user_input = compat.raw_input('Downloader> ').strip()
             if not user_input: print(); continue
             command = user_input.lower().split()[0]
             args = user_input.split()[1:]
@@ -1002,9 +1011,9 @@ class DownloaderShell(object):
                     self._simple_interactive_update()
                 else:
                     print('Command %r unrecognized' % user_input)
-            except urllib2.HTTPError as e:
+            except compat.HTTPError as e:
                 print('Error reading from server: %s'%e)
-            except urllib2.URLError as e:
+            except compat.URLError as e:
                 print('Error connecting to server: %s'%e.reason)
             # try checking if user_input is a package name, &
             # downloading it?
@@ -1019,7 +1028,7 @@ class DownloaderShell(object):
             while True:
                 print()
                 print('Download which package (l=list; x=cancel)?')
-                user_input = raw_input('  Identifier> ')
+                user_input = compat.raw_input('  Identifier> ')
                 if user_input.lower()=='l':
                     self._ds.list(self._ds.download_dir, header=False,
                                   more_prompt=True, skip_installed=True)
@@ -1049,7 +1058,7 @@ class DownloaderShell(object):
                     print('  [ ] %s %s' % (pid.ljust(20, '.'), name))
                 print()
 
-                user_input = raw_input('  Identifier> ')
+                user_input = compat.raw_input('  Identifier> ')
                 if user_input.lower()=='o':
                     for pid, pname in stale_packages:
                         try: self._ds.download(pid, prefix='    ')
@@ -1087,11 +1096,11 @@ class DownloaderShell(object):
             self._simple_interactive_menu(
                 's) Show Config', 'u) Set Server URL',
                 'd) Set Data Dir', 'm) Main Menu')
-            user_input = raw_input('Config> ').strip().lower()
+            user_input = compat.raw_input('Config> ').strip().lower()
             if user_input == 's':
                 self._show_config()
             elif user_input == 'd':
-                new_dl_dir = raw_input('  New Directory> ').strip().lower()
+                new_dl_dir = compat.raw_input('  New Directory> ').strip().lower()
                 if new_dl_dir in ('', 'x', 'q'):
                     print('  Cancelled!')
                 elif os.path.isdir(new_dl_dir):
@@ -1100,7 +1109,7 @@ class DownloaderShell(object):
                     print(('Directory %r not found!  Create it first.' %
                            new_dl_dir))
             elif user_input == 'u':
-                new_url = raw_input('  New URL> ').strip().lower()
+                new_url = compat.raw_input('  New URL> ').strip().lower()
                 if new_url in ('', 'x', 'q'):
                     print('  Cancelled!')
                 else:
@@ -1218,9 +1227,9 @@ class DownloaderGUI(object):
         self._init_menu()
         try:
             self._fill_table()
-        except urllib2.HTTPError as e:
+        except compat.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError as e:
+        except compat.URLError as e:
             showerror('Error connecting to server', e.reason)
 
         self._show_info()
@@ -1400,9 +1409,9 @@ class DownloaderGUI(object):
         self._ds.clear_status_cache()
         try:
             self._fill_table()
-        except urllib2.HTTPError as e:
+        except compat.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError as e:
+        except compat.URLError as e:
             showerror('Error connecting to server', e.reason)
         self._table.select(0)
 
@@ -1427,7 +1436,7 @@ class DownloaderGUI(object):
 
     def _table_reprfunc(self, row, col, val):
         if self._table.column_names[col].endswith('Size'):
-            if isinstance(val, basestring): return '  %s' % val
+            if isinstance(val, compat.string_types): return '  %s' % val
             elif val < 1024**2: return '  %.1f KB' % (val/1024.**1)
             elif val < 1024**3: return '  %.1f MB' % (val/1024.**2)
             else: return '  %.1f GB' % (val/1024.**3)
@@ -1453,9 +1462,9 @@ class DownloaderGUI(object):
         self._ds.download_dir = download_dir
         try:
             self._fill_table()
-        except urllib2.HTTPError as e:
+        except compat.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError as e:
+        except compat.URLError as e:
             showerror('Error connecting to server', e.reason)
         self._show_info()
 
@@ -1475,9 +1484,9 @@ class DownloaderGUI(object):
                 self._tab = self._tab_names[i-1].lower()
                 try:
                     return self._fill_table()
-                except urllib2.HTTPError as e:
+                except compat.HTTPError as e:
                     showerror('Error reading from server', e)
-                except urllib2.URLError as e:
+                except compat.URLError as e:
                     showerror('Error connecting to server', e.reason)
 
     def _next_tab(self, *e):
@@ -1486,18 +1495,18 @@ class DownloaderGUI(object):
                 self._tab = self._tab_names[i+1].lower()
                 try:
                     return self._fill_table()
-                except urllib2.HTTPError as e:
+                except compat.HTTPError as e:
                     showerror('Error reading from server', e)
-                except urllib2.URLError as e:
+                except compat.URLError as e:
                     showerror('Error connecting to server', e.reason)
 
     def _select_tab(self, event):
         self._tab = event.widget['text'].lower()
         try:
             self._fill_table()
-        except urllib2.HTTPError as e:
+        except compat.HTTPError as e:
             showerror('Error reading from server', e)
-        except urllib2.URLError as e:
+        except compat.URLError as e:
             showerror('Error connecting to server', e.reason)
 
     _tab = 'collections'
@@ -1567,7 +1576,7 @@ class DownloaderGUI(object):
 
     _DL_DELAY=10
     def _download_cb(self, download_iter, ids):
-        try: msg = download_iter.next()
+        try: msg = next(download_iter)
         except StopIteration:
             #self._fill_table(sort=False)
             self._update_table_status()
@@ -1587,10 +1596,10 @@ class DownloaderGUI(object):
             self._show_progress(None)
             return # halt progress.
         elif isinstance(msg, StartCollectionMessage):
-            show('Downloading collection %r' % msg.collection.id)
+            show('Downloading collection %s' % msg.collection.id)
             self._log_indent += 1
         elif isinstance(msg, StartPackageMessage):
-            show('Downloading package %r' % msg.package.id)
+            show('Downloading package %s' % msg.package.id)
         elif isinstance(msg, UpToDateMessage):
             show('Package %s is up-to-date!' % msg.package.id)
         #elif isinstance(msg, StaleMessage):
@@ -1752,7 +1761,7 @@ class DownloaderGUI(object):
     def _init_progressbar(self):
         c = self._progressbar
         width, height = int(c['width']), int(c['height'])
-        for i in range(0, (int(c['width'])*2)/self._gradient_width):
+        for i in range(0, (int(c['width'])*2)//self._gradient_width):
             c.create_line(i*self._gradient_width+20, -20,
                           i*self._gradient_width-height-20, height+20,
                           width=self._gradient_width,
@@ -1771,7 +1780,7 @@ class DownloaderGUI(object):
             c.itemconfig('gradient', state='hidden')
         else:
             width, height = int(c['width']), int(c['height'])
-            x = percent * int(width) / 100 + 1
+            x = percent * int(width) // 100 + 1
             c.coords('redbox', 0, 0, x, height+1)
 
     def _progress_alive(self):
@@ -1947,15 +1956,19 @@ def md5_hexdigest(file):
     Calculate and return the MD5 checksum for a given file.
     ``file`` may either be a filename or an open stream.
     """
-    if isinstance(file, basestring):
-        file = open(file, 'rb')
+    if isinstance(file, compat.string_types):
+        with open(file, 'rb') as fp:
+            return _md5_hexdigest(fp)
+    return _md5_hexdigest(file)
 
+def _md5_hexdigest(fp):
     md5_digest = md5()
     while True:
-        block = file.read(1024*16) # 16k blocks
+        block = fp.read(1024*16)  # 16k blocks
         if not block: break
         md5_digest.update(block)
     return md5_digest.hexdigest()
+
 
 # change this to periodically yield progress messages?
 # [xx] get rid of topdir parameter -- we should be checking
@@ -2002,13 +2015,15 @@ def _unzip_iter(filename, root, verbose=True):
     # Extract files.
     for i, filename in enumerate(filelist):
         filepath = os.path.join(root, *filename.split('/'))
-        out = open(filepath, 'wb')
-        try: contents = zf.read(filename)
-        except Exception as e:
-            yield ErrorMessage(filename, e)
-            return
-        out.write(contents)
-        out.close()
+
+        with open(filepath, 'wb') as out:
+            try:
+                contents = zf.read(filename)
+            except Exception as e:
+                yield ErrorMessage(filename, e)
+                return
+            out.write(contents)
+
         if verbose and (i*10/len(filelist) > (i-1)*10/len(filelist)):
             sys.stdout.write('.')
             sys.stdout.flush()

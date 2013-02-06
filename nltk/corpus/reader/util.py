@@ -1,29 +1,30 @@
 # Natural Language Toolkit: Corpus Reader Utilities
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os
-import sys
 import bisect
 import re
 import tempfile
-try: import cPickle as pickle
-except ImportError: import pickle
-from itertools import islice
+from functools import reduce
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 # Use the c version of ElementTree, which is faster, if possible:
 try: from xml.etree import cElementTree as ElementTree
 except ImportError: from xml.etree import ElementTree
 
+from nltk import compat
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.data import SeekableUnicodeStreamReader
-from nltk.sourcedstring import SourcedStringStream
 from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
 
 ######################################################################
@@ -123,7 +124,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
        block; and tokens is a list of the tokens in the block.
     """
     def __init__(self, fileid, block_reader=None, startpos=0,
-                 encoding=None, source=None):
+                 encoding='utf8'):
         """
         Create a new corpus view, based on the file ``fileid``, and
         read with ``block_reader``.  See the class documentation
@@ -141,11 +142,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
             read the file's contents.  If no encoding is specified,
             then the file's contents will be read as a non-unicode
             string (i.e., a str).
-
-        :param source: If specified, then use an ``SourcedStringStream``
-            to annotate all strings read from the file with
-            information about their start offset, end ofset,
-            and docid.  The value of ``source`` will be used as the docid.
         """
         if block_reader:
             self.read_block = block_reader
@@ -153,7 +149,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
         self._toknum = [0]
         self._filepos = [startpos]
         self._encoding = encoding
-        self._source = source
         # We don't know our length (number of tokens) yet.
         self._len = None
 
@@ -217,8 +212,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
                 open(self._fileid, 'rb'), self._encoding)
         else:
             self._stream = open(self._fileid, 'rb')
-        if self._source is not None:
-            self._stream = SourcedStringStream(self._stream, self._source)
 
     def close(self):
         """
@@ -259,7 +252,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
                 return self._cache[2][i-offset]
             # Use iterate_from to extract it.
             try:
-                return self.iterate_from(i).next()
+                return next(self.iterate_from(i))
             except StopIteration:
                 raise IndexError('index out of range')
 
@@ -420,11 +413,11 @@ def concat(docs):
     if len(docs) == 0:
         raise ValueError('concat() expects at least one object!')
 
-    types = set([d.__class__ for d in docs])
+    types = set(d.__class__ for d in docs)
 
     # If they're all strings, use string concatenation.
-    if types.issubset([str, unicode, basestring]):
-        return reduce((lambda a,b:a+b), docs, '')
+    if all(isinstance(doc, compat.string_types) for doc in docs):
+        return ''.join(docs)
 
     # If they're all corpus views, then use ConcatenatedCorpusView.
     for typ in types:
@@ -473,14 +466,11 @@ class PickleCorpusView(StreamBackedCorpusView):
     don't want to repeat it); but the corpus is too large to store in
     memory.  The following example illustrates this technique:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.corpus.reader.util import PickleCorpusView
         >>> from nltk.util import LazyMap
-        >>> feature_corpus = LazyMap(detect_features, corpus)
-        >>> PickleCorpusView.write(feature_corpus, some_fileid)
-        >>> pcv = PickleCorpusView(some_fileid)
+        >>> feature_corpus = LazyMap(detect_features, corpus) # doctest: +SKIP
+        >>> PickleCorpusView.write(feature_corpus, some_fileid)  # doctest: +SKIP
+        >>> pcv = PickleCorpusView(some_fileid) # doctest: +SKIP
     """
     BLOCK_SIZE = 100
     PROTOCOL = -1
@@ -518,7 +508,7 @@ class PickleCorpusView(StreamBackedCorpusView):
 
     @classmethod
     def write(cls, sequence, output_file):
-        if isinstance(output_file, basestring):
+        if isinstance(output_file, compat.string_types):
             output_file = open(output_file, 'wb')
         for item in sequence:
             pickle.dump(item, output_file, cls.PROTOCOL)
@@ -653,7 +643,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     start = stream.tell()
     block = stream.read(block_size)
     encoding = getattr(stream, 'encoding', None)
-    assert encoding is not None or isinstance(block, str)
+    assert encoding is not None or isinstance(block, compat.text_type)
     if encoding not in (None, 'utf-8'):
         import warnings
         warnings.warn('Parsing may fail, depending on the properties '

@@ -5,6 +5,7 @@ http://www.phyast.pitt.edu/~micheles/python/documentation.html
 
 Included in NLTK for its support of a nice memoization decorator.
 """
+from __future__ import print_function
 __docformat__ = 'restructuredtext en'
 
 ## The basic trick is to generate the source code for the decorated function
@@ -63,22 +64,28 @@ def getinfo(func):
         argnames.append(varkwargs)
     signature = inspect.formatargspec(regargs, varargs, varkwargs, defaults,
                                       formatvalue=lambda value: "")[1:-1]
+
+    # pypy compatibility
+    if hasattr(func, '__closure__'):
+        _closure = func.__closure__
+        _globals = func.__globals__
+    else:
+        _closure = func.func_closure
+        _globals = func.func_globals
+
     return dict(name=func.__name__, argnames=argnames, signature=signature,
-                defaults = func.func_defaults, doc=func.__doc__,
+                defaults = func.__defaults__, doc=func.__doc__,
                 module=func.__module__, dict=func.__dict__,
-                globals=func.func_globals, closure=func.func_closure)
+                globals=_globals, closure=_closure)
 
 # akin to functools.update_wrapper
 def update_wrapper(wrapper, model, infodict=None):
     infodict = infodict or getinfo(model)
-    try:
-        wrapper.__name__ = infodict['name']
-    except: # Python version < 2.4
-        pass
+    wrapper.__name__ = infodict['name']
     wrapper.__doc__ = infodict['doc']
     wrapper.__module__ = infodict['module']
     wrapper.__dict__.update(infodict['dict'])
-    wrapper.func_defaults = infodict['defaults']
+    wrapper.__defaults__ = infodict['defaults']
     wrapper.undecorated = model
     return wrapper
 
@@ -135,7 +142,7 @@ def decorator(caller):
 
     >>> @decorator
     ... def chatty(f, *args, **kw):
-    ...     print "Calling %r" % f.__name__
+    ...     print("Calling %r" % f.__name__)
     ...     return f(*args, **kw)
 
     >>> chatty.__name__

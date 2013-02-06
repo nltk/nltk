@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Prover9 Theorem Prover
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 #
@@ -9,8 +9,8 @@
 """
 A theorem prover that makes use of the external 'Prover9' package.
 """
-
 from __future__ import print_function
+
 import os
 import subprocess
 
@@ -18,7 +18,7 @@ import nltk
 from nltk.sem.logic import LogicParser, ExistsExpression, AllExpression, \
     NegatedExpression, AndExpression, IffExpression, OrExpression, \
     EqualityExpression, ImpExpression
-from api import BaseProverCommand, Prover
+from .api import BaseProverCommand, Prover
 
 #
 # Following is not yet used. Return code for 2 actually realized as 512.

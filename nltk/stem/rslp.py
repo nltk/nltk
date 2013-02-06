@@ -2,7 +2,7 @@
 
 # Natural Language Toolkit: RSLP Stemmer
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Tiago Tresoldi <tresoldi@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -30,10 +30,10 @@
 # comentário, inclusive sobre o desenvolvimento de um stemmer diferente
 # e/ou melhor para o português. Também sugiro utilizar-se a lista de discussão
 # do NLTK para o português para qualquer debate.
-
+from __future__ import print_function, unicode_literals
 from nltk.data import load
 
-from api import StemmerI
+from .api import StemmerI
 
 class RSLPStemmer(StemmerI):
     """
@@ -42,12 +42,12 @@ class RSLPStemmer(StemmerI):
         >>> from nltk.stem import RSLPStemmer
         >>> st = RSLPStemmer()
         >>> # opening lines of Erico Verissimo's "Música ao Longe"
-        >>> text = u'''
+        >>> text = '''
         ... Clarissa risca com giz no quadro-negro a paisagem que os alunos
         ... devem copiar . Uma casinha de porta e janela , em cima duma
         ... coxilha .'''
         >>> for token in text.split():
-        ...     print st.stem(token),
+        ...     print(st.stem(token))
         clariss risc com giz no quadro-negr a pais que os alun dev copi .
         uma cas de port e janel , em cim dum coxilh .
     """
@@ -67,7 +67,7 @@ class RSLPStemmer(StemmerI):
         rules = load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
         lines = rules.split("\n")
 
-        lines = [line for line in lines if line != u""]     # remove blank lines
+        lines = [line for line in lines if line != ""]     # remove blank lines
         lines = [line for line in lines if line[0] != "#"]  # remove comments
 
         # NOTE: a simple but ugly hack to make this parser happy with double '\t's

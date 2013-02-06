@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for Corpus Readers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -9,16 +9,18 @@
 """
 API for corpus readers.
 """
+from __future__ import unicode_literals
 
 import os
 import re
 from collections import defaultdict
 
+from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-from nltk.sourcedstring import SourcedStringStream
 
-from util import *
+from .util import *
 
+@compat.python_2_unicode_compatible
 class CorpusReader(object):
     """
     A base class for "corpus reader" classes, each of which can be
@@ -37,7 +39,8 @@ class CorpusReader(object):
     selection arguments, such as ``fileids`` or ``categories``, which can
     be used to select which portion of the corpus should be returned.
     """
-    def __init__(self, root, fileids, encoding=None, tag_mapping_function=None):
+
+    def __init__(self, root, fileids, encoding='utf8', tag_mapping_function=None):
         """
         :type root: PathPointer or str
         :param root: A path pointer identifying the root directory for
@@ -69,7 +72,7 @@ class CorpusReader(object):
                 or tagged_sents() methods.
         """
         # Convert the root to a path pointer, if necessary.
-        if isinstance(root, basestring):
+        if isinstance(root, compat.string_types) and not isinstance(root, PathPointer):
             m = re.match('(.*\.zip)/?(.*)$|', root)
             zipfile, zipentry = m.groups()
             if zipfile:
@@ -80,7 +83,7 @@ class CorpusReader(object):
             raise TypeError('CorpusReader: expected a string or a PathPointer')
 
         # If `fileids` is a regexp, then expand it.
-        if isinstance(fileids, basestring):
+        if isinstance(fileids, compat.string_types):
             fileids = find_corpus_fileids(root, fileids)
 
         self._fileids = fileids
@@ -105,7 +108,7 @@ class CorpusReader(object):
         self._encoding = encoding
         """The default unicode encoding for the fileids that make up
            this corpus.  If ``encoding`` is None, then the file
-           contents are processed using byte strings (str)."""
+           contents are processed using byte strings."""
         self._tag_mapping_function = tag_mapping_function
 
     def __repr__(self):
@@ -161,7 +164,7 @@ class CorpusReader(object):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, basestring):
+        elif isinstance(fileids, compat.string_types):
             fileids = [fileids]
 
         paths = [self._root.join(f) for f in fileids]
@@ -175,7 +178,7 @@ class CorpusReader(object):
         else:
             return paths
 
-    def open(self, file, sourced=False):
+    def open(self, file):
         """
         Return an open stream that can be used to read the given file.
         If the file's encoding is not None, then the stream will
@@ -185,8 +188,6 @@ class CorpusReader(object):
         """
         encoding = self.encoding(file)
         stream = self._root.join(file).open(encoding)
-        if sourced:
-            stream = SourcedStringStream(stream, file)
         return stream
 
     def encoding(self, file):
@@ -317,7 +318,7 @@ class CategorizedCorpusReader(object):
             self._init()
         if fileids is None:
             return sorted(self._c2f)
-        if isinstance(fileids, basestring):
+        if isinstance(fileids, compat.string_types):
             fileids = [fileids]
         return sorted(set.union(*[self._f2c[d] for d in fileids]))
 
@@ -328,7 +329,7 @@ class CategorizedCorpusReader(object):
         """
         if categories is None:
             return super(CategorizedCorpusReader, self).fileids()
-        elif isinstance(categories, basestring):
+        elif isinstance(categories, compat.string_types):
             if self._f2c is None:
                 self._init()
             if categories in self._c2f:
@@ -370,7 +371,7 @@ class SyntaxCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def parsed_sents(self, fileids=None):
@@ -411,14 +412,14 @@ class SyntaxCorpusReader(CorpusReader):
         return sum(self._read_tagged_sent_block(stream, simplify_tags), [])
 
     def _read_sent_block(self, stream):
-        return filter(None, [self._word(t) for t in self._read_block(stream)])
+        return list(filter(None, [self._word(t) for t in self._read_block(stream)]))
 
     def _read_tagged_sent_block(self, stream, simplify_tags=False):
-        return filter(None, [self._tag(t, simplify_tags)
-                             for t in self._read_block(stream)])
+        return list(filter(None, [self._tag(t, simplify_tags)
+                             for t in self._read_block(stream)]))
 
     def _read_parsed_sent_block(self, stream):
-        return filter(None, [self._parse(t) for t in self._read_block(stream)])
+        return list(filter(None, [self._parse(t) for t in self._read_block(stream)]))
 
     #} End of Block Readers
     #------------------------------------------------------------

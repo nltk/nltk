@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunked Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -15,11 +15,12 @@ import os.path, codecs
 
 import nltk
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
+from nltk import compat
 from nltk.tree import Tree
 from nltk.tokenize import *
 from nltk.chunk import tagstr2tree
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class ChunkedCorpusReader(CorpusReader):
     """
@@ -36,7 +37,7 @@ class ChunkedCorpusReader(CorpusReader):
                  str2chunktree=tagstr2tree,
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block,
-                 encoding=None):
+                 encoding='utf8'):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
@@ -53,7 +54,7 @@ class ChunkedCorpusReader(CorpusReader):
         :rtype: str
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):

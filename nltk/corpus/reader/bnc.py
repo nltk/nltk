@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Plaintext Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,9 +14,9 @@ import re
 
 import xml.etree.ElementTree as ET
 
-from api import *
-from util import *
-from xmldocs import *
+from .api import *
+from .util import *
+from .xmldocs import *
 
 class BNCCorpusReader(XMLCorpusReader):
     """
@@ -211,9 +211,9 @@ class BNCWordView(XMLCorpusView):
             [editor.text.strip() for editor in editors])
 
         resps = elt.findall('titleStmt/respStmt')
-        if resps: self.resps = '\n\n'.join([
-            '\n'.join([resp_elt.text.strip() for resp_elt in resp])
-            for resp in resps])
+        if resps: self.resps = '\n\n'.join(
+            '\n'.join(resp_elt.text.strip() for resp_elt in resp)
+            for resp in resps)
 
     def handle_elt(self, elt, context):
         if self._sent: return self.handle_sent(elt)

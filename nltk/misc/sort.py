@@ -1,7 +1,7 @@
 # Natural Language Toolkit: List Sorting
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -10,11 +10,10 @@ This module provides a variety of list sorting algorithms, to
 illustrate the many different algorithms (recipes) for solving a
 problem, and how to analyze algorithms experimentally.
 """
+from __future__ import print_function, division
 
 # These algorithms are taken from:
 # Levitin (2004) The Design and Analysis of Algorithms
-
-from __future__ import print_function
 
 ##################################################################
 # Selection Sort
@@ -91,7 +90,7 @@ def merge(a):
     """
     count = 0
     if len(a) > 1:
-        midpoint = len(a)/2
+        midpoint = len(a) // 2
         b = a[:midpoint]
         c = a[midpoint:]
         count_b = merge(b)
@@ -141,7 +140,7 @@ def demo():
     from random import shuffle
 
     for size in (10, 20, 50, 100, 200, 500, 1000):
-        a = range(size)
+        a = list(range(size))
 
         # various sort methods
         shuffle(a); count_selection = selection(a)

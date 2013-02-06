@@ -1,7 +1,7 @@
 # encoding: utf-8
 # Natural Language Toolkit: Interface to the Senna tagger
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,9 +11,10 @@ A module for interfacing with the SENNA pipeline.
 """
 
 from os import path, sep
-from subprocess import Popen, PIPE 
+from subprocess import Popen, PIPE
 from platform import architecture, system
 from nltk.tag.api import TaggerI
+from nltk import compat
 
 _senna_url = 'http://ml.nec-labs.com/senna/'
 
@@ -58,9 +59,6 @@ class SennaTagger(TaggerI):
     - (optionally) the encoding of the input data (default:utf-8)
 
     Example:
-
-    .. doctest::
-        :options: +SKIP
 
         >>> from nltk.tag.senna import SennaTagger
         >>> pipeline = SennaTagger('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
@@ -138,7 +136,7 @@ class SennaTagger(TaggerI):
 
         # Serialize the actual sentences to a temporary string
         _input = '\n'.join((' '.join(x) for x in sentences))+'\n'
-        if isinstance(_input, unicode) and encoding:
+        if isinstance(_input, compat.text_type) and encoding:
             _input = _input.encode(encoding)
 
         # Run the tagger and get the output
@@ -191,9 +189,6 @@ class POSTagger(SennaTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.senna import POSTagger
         >>> postagger = POSTagger('/usr/share/senna-v2.0')
         >>> postagger.tag('What is the airspeed of an unladen swallow ?'.split())
@@ -226,14 +221,11 @@ class NERTagger(SennaTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.senna import NERTagger
         >>> nertagger = NERTagger('/usr/share/senna-v2.0')
         >>> nertagger.tag('Shakespeare theatre was in London .'.split())
         [('Shakespeare', u'B-PER'), ('theatre', u'O'), ('was', u'O'), ('in', u'O'),
-        ('London', u'B-LOC'), ('.', u'O')] 
+        ('London', u'B-LOC'), ('.', u'O')]
         >>> nertagger.tag('UN headquarters are in NY , USA .'.split())
         [('UN', u'B-ORG'), ('headquarters', u'O'), ('are', u'O'), ('in', u'O'),
         ('NY', u'B-LOC'), (',', u'O'), ('USA', u'B-LOC'), ('.', u'O')]
@@ -264,9 +256,6 @@ class CHKTagger(SennaTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.senna import CHKTagger
         >>> chktagger = CHKTagger('/usr/share/senna-v2.0')
         >>> chktagger.tag('What is the airspeed of an unladen swallow ?'.split())
@@ -288,3 +277,10 @@ class CHKTagger(SennaTagger):
                 annotations = tagged_sents[i][j]
                 tagged_sents[i][j] = (annotations['word'], annotations['chk'])
         return tagged_sents
+
+# skip doctests if Senna is not installed
+def setup_module(module):
+    from nose import SkipTest
+    tagger = POSTagger('/usr/share/senna-v2.0')
+    if not path.isfile(tagger.executable):
+        raise SkipTest("Senna executable expected at /usr/share/senna-v2.0/senna-osx but not found")

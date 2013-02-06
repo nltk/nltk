@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Naive Bayes Classifiers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -29,13 +29,12 @@ sum to one:
 |  P(label|features) = --------------------------------------------
 |                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 from collections import defaultdict
 
 from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
-
-from api import ClassifierI
+from .api import ClassifierI
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier
@@ -80,7 +79,7 @@ class NaiveBayesClassifier(ClassifierI):
         """
         self._label_probdist = label_probdist
         self._feature_probdist = feature_probdist
-        self._labels = label_probdist.samples()
+        self._labels = list(label_probdist.samples())
 
     def labels(self):
         return self._labels
@@ -93,7 +92,7 @@ class NaiveBayesClassifier(ClassifierI):
         # Otherwise, we'll just assign a probability of 0 to
         # everything.
         featureset = featureset.copy()
-        for fname in featureset.keys():
+        for fname in list(featureset.keys()):
             for label in self._labels:
                 if (label, fname) in self._feature_probdist:
                     break
@@ -141,7 +140,7 @@ class NaiveBayesClassifier(ClassifierI):
                 ratio = '%8.1f' % (cpdist[l1,fname].prob(fval) /
                                   cpdist[l0,fname].prob(fval))
             print(('%24s = %-14r %6s : %-6s = %s : 1.0' %
-                   (fname, fval, str(l1)[:6], str(l0)[:6], ratio)))
+                   (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)))
 
     def most_informative_features(self, n=100):
         """

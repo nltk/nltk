@@ -1,6 +1,6 @@
 # Natural Language Toolkit: First-Order Tableau Theorem Prover
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # URL: <http://www.nltk.org/>
@@ -9,8 +9,8 @@
 """
 Module for a tableau-based First Order theorem prover.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 from nltk.internals import Counter
 
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
@@ -489,11 +489,12 @@ class Debug(object):
             if ctx:
                 data = '%s, %s' % (ex, ctx)
             else:
-                data = str(ex)
+                data = '%s' % ex
 
             if isinstance(ex, AllExpression):
                 try:
-                    data += ':   %s' % str([ve.variable.name for ve in ex._used_vars])
+                    used_vars = "[%s]" % (",".join("%s" % ve.variable.name for ve in ex._used_vars))
+                    data += ':   %s' % used_vars
                 except AttributeError:
                     data += ':   []'
 

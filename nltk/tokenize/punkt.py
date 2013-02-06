@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
-#         Steven Bird <sb@csse.unimelb.edu.au> (additions)
+#         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Edward Loper <edloper@gradient.cis.upenn.edu> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
 # URL: <http://www.nltk.org/>
@@ -29,7 +29,7 @@ English.
     ... name.
     ... '''
     >>> sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
-    >>> print '\n-----\n'.join(sent_detector.tokenize(text.strip()))
+    >>> print('\n-----\n'.join(sent_detector.tokenize(text.strip())))
     Punkt knows that the periods in Mr. Smith and Johann S. Bach
     do not mark sentence boundaries.
     -----
@@ -49,8 +49,8 @@ flag:
     ... (How does it deal with this parenthesis?)  "It should be part of the
     ... previous sentence."
     ... '''
-    >>> print '\n-----\n'.join(
-    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True))
+    >>> print('\n-----\n'.join(
+    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True)))
     (How does it deal with this parenthesis?)
     -----
     "It should be part of the
@@ -80,16 +80,17 @@ The algorithm for this tokenizer is described in::
   Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence
     Boundary Detection.  Computational Linguistics 32: 485-525.
 """
+from __future__ import print_function, unicode_literals
 
 # TODO: Make orthographic heuristic less susceptible to overtraining
 # TODO: Frequent sentence starters optionally exclude always-capitalised words
 # FIXME: Problem with ending string with e.g. '!!!' -> '!! !'
 
-from __future__ import print_function
 import re
 import math
 from collections import defaultdict
 
+from nltk.compat import unicode_repr, python_2_unicode_compatible, string_types
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
@@ -302,7 +303,7 @@ def _pair_iter(it):
     pair will have None as its second element.
     """
     it = iter(it)
-    prev = it.next()
+    prev = next(it)
     for el in it:
         yield (prev, el)
         prev = el
@@ -369,6 +370,7 @@ class PunktParameters(object):
 #{ PunktToken
 ######################################################################
 
+@python_2_unicode_compatible
 class PunktToken(object):
     """Stores a token of text with annotations produced during
     sentence boundary detection."""
@@ -386,8 +388,8 @@ class PunktToken(object):
 
         for p in self._properties:
             setattr(self, p, None)
-        for k, v in params.iteritems():
-            setattr(self, k, v)
+        for k in params:
+            setattr(self, k, params[k])
 
     #////////////////////////////////////////////////////////////
     #{ Regular expressions for properties
@@ -478,17 +480,17 @@ class PunktToken(object):
         with eval(), which lists all the token's non-default
         annotations.
         """
-        typestr = (' type=%s,' % repr(self.type)
+        typestr = (' type=%s,' % unicode_repr(self.type)
                    if self.type != self.tok else '')
 
         propvals = ', '.join(
-            '%s=%s' % (p, repr(getattr(self, p)))
+            '%s=%s' % (p, unicode_repr(getattr(self, p)))
             for p in self._properties
             if getattr(self, p)
         )
 
         return '%s(%s,%s %s)' % (self.__class__.__name__,
-            repr(self.tok), typestr, propvals)
+            unicode_repr(self.tok), typestr, propvals)
 
     def __str__(self):
         """
@@ -537,7 +539,7 @@ class PunktBaseClass(object):
             if line.strip():
                 line_toks = iter(self._lang_vars.word_tokenize(line))
 
-                yield self._Token(line_toks.next(),
+                yield self._Token(next(line_toks),
                         parastart=parastart, linestart=True)
                 parastart = False
 
@@ -816,7 +818,8 @@ class PunktTrainer(PunktBaseClass):
         if ortho_thresh > 1:
             old_oc = self._params.ortho_context
             self._params.clear_ortho_context()
-            for tok, count in self._type_fdist.iteritems():
+            for tok in self._type_fdist:
+                count = self._type_fdist[tok]
                 if count >= ortho_thresh:
                     self._params.ortho_context[tok] = old_oc[tok]
 
@@ -835,7 +838,8 @@ class PunktTrainer(PunktBaseClass):
         # and so create a new FreqDist rather than working in place.
         res = FreqDist()
         num_removed = 0
-        for tok, count in fdist.iteritems():
+        for tok in fdist:
+            count = fdist[tok]
             if count < threshold:
                 num_removed += 1
             else:
@@ -1098,7 +1102,7 @@ class PunktTrainer(PunktBaseClass):
         """
         Generates likely collocations and their log-likelihood.
         """
-        for types, col_count in self._collocation_fdist.iteritems():
+        for types in self._collocation_fdist:
             try:
                 typ1, typ2 = types
             except TypeError:
@@ -1107,6 +1111,7 @@ class PunktTrainer(PunktBaseClass):
             if typ2 in self._params.sent_starters:
                 continue
 
+            col_count = self._collocation_fdist[types]
             typ1_count = self._type_fdist[typ1]+self._type_fdist[typ1+'.']
             typ2_count = self._type_fdist[typ2]+self._type_fdist[typ2+'.']
             if (typ1_count > 1 and typ2_count > 1
@@ -1142,10 +1147,11 @@ class PunktTrainer(PunktBaseClass):
         Uses collocation heuristics for each candidate token to
         determine if it frequently starts sentences.
         """
-        for (typ, typ_at_break_count) in self._sent_starter_fdist.iteritems():
+        for typ in self._sent_starter_fdist:
             if not typ:
                 continue
 
+            typ_at_break_count = self._sent_starter_fdist[typ]
             typ_count = self._type_fdist[typ]+self._type_fdist[typ+'.']
             if typ_count < typ_at_break_count:
                 # needed after freq_threshold
@@ -1200,7 +1206,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         given. Repeated calls to this method destroy previous parameters. For
         incremental training, instantiate a separate PunktTrainer instance.
         """
-        if type(train_text) not in (type(''), type(u'')):
+        if not isinstance(train_text, string_types):
             return train_text
         return PunktTrainer(train_text, lang_vars=self._lang_vars,
                 token_cls=self._Token).get_params()

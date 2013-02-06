@@ -1,24 +1,24 @@
 #! /usr/bin/env python
 # KNB Corpus reader
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
-
 from __future__ import print_function
+
 import sys
 
+from nltk import compat
 from nltk.tree import bracket_parse, Tree
-
 from nltk.parse import DependencyGraph
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 # default function to convert morphlist to str for tree representation
-_morphs2str_default = lambda morphs: '/'.join(m[0] for m in morphs if m[0] != 'EOS').encode('utf-8')
+_morphs2str_default = lambda morphs: '/'.join(m[0] for m in morphs if m[0] != 'EOS')
 
 class KNBCorpusReader(SyntaxCorpusReader):
     """
@@ -37,7 +37,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
       tags = (surface, reading, lemma, pos1, posid1, pos2, posid2, pos3, posid3, others ...)
     """
 
-    def __init__(self, root, fileids, encoding=None, morphs2str=_morphs2str_default):
+    def __init__(self, root, fileids, encoding='utf8', morphs2str=_morphs2str_default):
         """
         Initialize KNBCorpusReader
         morphs2str is a function to convert morphlist to str for tree representation
@@ -153,10 +153,10 @@ def test():
 
     knbc = LazyCorpusLoader(
         'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
-    assert isinstance(knbc.words()[0], basestring)
-    assert isinstance(knbc.sents()[0][0], basestring)
-    assert type(knbc.tagged_words()[0]) == tuple
-    assert type(knbc.tagged_sents()[0][0]) == tuple
+    assert isinstance(knbc.words()[0], compat.string_types)
+    assert isinstance(knbc.sents()[0][0], compat.string_types)
+    assert isinstance(knbc.tagged_words()[0], tuple)
+    assert isinstance(knbc.tagged_sents()[0][0], tuple)
 
 if __name__ == '__main__':
     demo()

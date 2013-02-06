@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 #         Trevor Cohn <tacohn@csse.unimelb.edu.au>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -65,6 +65,7 @@ argument.  This differs from the conventions used by Python's
 ``re`` functions, where the pattern is always the first argument.
 (This is for consistency with the other NLTK tokenizers.)
 """
+from __future__ import unicode_literals
 
 import re
 import sre_constants
@@ -72,7 +73,9 @@ import sre_constants
 from nltk.internals import convert_regexp_to_nongrouping
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
+from nltk.compat import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class RegexpTokenizer(TokenizerI):
     """
     A tokenizer that splits a string using a regular expression, which

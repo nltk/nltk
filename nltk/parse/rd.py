@@ -1,14 +1,15 @@
 # Natural Language Toolkit: Recursive Descent Parser
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 from nltk.grammar import Nonterminal, parse_cfg
 from nltk.tree import Tree, ImmutableTree
+from nltk.compat import unicode_repr
 
 from nltk.parse.api import ParserI
 
@@ -278,14 +279,15 @@ class RecursiveDescentParser(ParserI):
 
         if treeloc == (): print("*", end=' ')
         if isinstance(tree, Tree):
-            if len(tree) == 0: print(`Nonterminal(tree.node)`, end=' ')
+            if len(tree) == 0:
+                print(unicode_repr(Nonterminal(tree.node)), end=' ')
             for i in range(len(tree)):
                 if treeloc is not None and i == treeloc[0]:
                     self._trace_fringe(tree[i], treeloc[1:])
                 else:
                     self._trace_fringe(tree[i])
         else:
-            print(`tree`, end=' ')
+            print(unicode_repr(tree), end=' ')
 
     def _trace_tree(self, tree, frontier, operation):
         """

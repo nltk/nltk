@@ -75,14 +75,6 @@ nltk Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`sourcedstring` Module
----------------------------
-
-.. automodule:: nltk.sourcedstring
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`text` Module
 ------------------
 

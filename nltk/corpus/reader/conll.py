@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CONLL Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -10,15 +10,18 @@
 Read CoNLL-style chunk fileids.
 """
 
+from __future__ import unicode_literals
+
 import os
 import codecs
 import textwrap
 
+from nltk import compat
 from nltk.tree import Tree
 from nltk.util import LazyMap, LazyConcatenation
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class ConllCorpusReader(CorpusReader):
     """
@@ -63,12 +66,12 @@ class ConllCorpusReader(CorpusReader):
 
     def __init__(self, root, fileids, columntypes,
                  chunk_types=None, top_node='S', pos_in_tree=False,
-                 srl_includes_roleset=True, encoding=None,
+                 srl_includes_roleset=True, encoding='utf8',
                  tree_class=Tree, tag_mapping_function=None):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad column type %r' % columntype)
-        if isinstance(chunk_types, basestring):
+        if isinstance(chunk_types, compat.string_types):
             chunk_types = [chunk_types]
         self._chunk_types = chunk_types
         self._colmap = dict((c,i) for (i,c) in enumerate(columntypes))
@@ -85,7 +88,7 @@ class ConllCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
@@ -216,14 +219,14 @@ class ConllCorpusReader(CorpusReader):
         pos_tags = self._get_column(grid, self._colmap['pos'])
         if simplify_tags:
             pos_tags = [self._tag_mapping_function(t) for t in pos_tags]
-        return zip(self._get_column(grid, self._colmap['words']), pos_tags)
+        return list(zip(self._get_column(grid, self._colmap['words']), pos_tags))
 
     def _get_iob_words(self, grid, simplify_tags=False):
         pos_tags = self._get_column(grid, self._colmap['pos'])
         if simplify_tags:
             pos_tags = [self._tag_mapping_function(t) for t in pos_tags]
-        return zip(self._get_column(grid, self._colmap['words']), pos_tags,
-                   self._get_column(grid, self._colmap['chunk']))
+        return list(zip(self._get_column(grid, self._colmap['words']), pos_tags,
+                   self._get_column(grid, self._colmap['chunk'])))
 
     def _get_chunked_words(self, grid, chunk_types, simplify_tags=False):
         # n.b.: this method is very similar to conllstr2tree.
@@ -284,8 +287,8 @@ class ConllCorpusReader(CorpusReader):
         if not pos_in_tree:
             for subtree in tree.subtrees():
                 for i, child in enumerate(subtree):
-                    if (isinstance(child, nltk.Tree) and len(child)==1 and
-                        isinstance(child[0], basestring)):
+                    if (isinstance(child, Tree) and len(child)==1 and
+                        isinstance(child[0], compat.string_types)):
                         subtree[i] = (child[0], child.node)
 
         return tree
@@ -366,6 +369,7 @@ class ConllCorpusReader(CorpusReader):
         return [grid[i][column_index] for i in range(len(grid))]
 
 
+@compat.python_2_unicode_compatible
 class ConllSRLInstance(object):
     """
     An SRL instance from a CoNLL corpus, which identifies and
@@ -411,7 +415,7 @@ class ConllSRLInstance(object):
         # Fill in the self.verb and self.arguments values.
         for (start, end), tag in tagged_spans:
             if tag in ('V', 'C-V'):
-                self.verb += range(start, end)
+                self.verb += list(range(start, end))
             else:
                 self.arguments.append( ((start, end), tag) )
 
@@ -435,6 +439,7 @@ class ConllSRLInstance(object):
                                    initial_indent='    ',
                                    subsequent_indent='    ')
 
+@compat.python_2_unicode_compatible
 class ConllSRLInstanceList(list):
     """
     Set of instances for a single sentence
@@ -486,7 +491,7 @@ class ConllSRLInstanceList(list):
 
     def _tree2conll(self, tree, wordnum, words, pos, synt):
         assert isinstance(tree, Tree)
-        if len(tree) == 1 and isinstance(tree[0], basestring):
+        if len(tree) == 1 and isinstance(tree[0], compat.string_types):
             pos[wordnum] = tree.node
             assert words[wordnum] == tree[0]
             return wordnum+1
@@ -507,7 +512,7 @@ class ConllChunkCorpusReader(ConllCorpusReader):
     A ConllCorpusReader whose data file contains three columns: words,
     pos, and chunk.
     """
-    def __init__(self, root, fileids, chunk_types, encoding=None,
+    def __init__(self, root, fileids, chunk_types, encoding='utf8',
                  tag_mapping_function=None):
         ConllCorpusReader.__init__(
             self, root, fileids, ('words', 'pos', 'chunk'),

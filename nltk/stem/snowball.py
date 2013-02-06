@@ -2,14 +2,14 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-u"""
+"""
 Snowball stemmers and appendant demo function
 
 This module provides a port of the Snowball stemmers
@@ -18,16 +18,17 @@ There is also a demo function demonstrating the different
 algorithms. It can be invoked directly on the command line.
 For more information take a look into the class SnowballStemmer.
 """
+from __future__ import unicode_literals, print_function
 
-from __future__ import print_function
+from nltk import compat
 from nltk.corpus import stopwords
 from nltk.stem import porter
 
-from api import StemmerI
+from .api import StemmerI
 
 class SnowballStemmer(StemmerI):
 
-    u"""
+    """
     Snowball Stemmer
 
     At the moment, this port is able to stem words from fourteen
@@ -49,13 +50,13 @@ class SnowballStemmer(StemmerI):
     The stemmer is invoked as shown below:
 
     >>> from nltk.stem import SnowballStemmer
-    >>> SnowballStemmer.languages # See which languages are supported
-    ('danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian',
-    'italian', 'norwegian', 'porter', 'portuguese', 'romanian', 'russian',
-    'spanish', 'swedish')
+    >>> print(" ".join(SnowballStemmer.languages)) # See which languages are supported
+    danish dutch english finnish french german hungarian
+    italian norwegian porter portuguese romanian russian
+    spanish swedish
     >>> stemmer = SnowballStemmer("german") # Choose a language
-    >>> stemmer.stem(u"Autobahnen") # Stem a word
-    u'autobahn'
+    >>> stemmer.stem("Autobahnen") # Stem a word
+    'autobahn'
 
     Invoking the stemmers that way is useful if you do not know the
     language to be stemmed at runtime. Alternatively, if you already know
@@ -63,8 +64,8 @@ class SnowballStemmer(StemmerI):
 
     >>> from nltk.stem.snowball import GermanStemmer
     >>> stemmer = GermanStemmer()
-    >>> stemmer.stem(u"Autobahnen")
-    u'autobahn'
+    >>> stemmer.stem("Autobahnen")
+    'autobahn'
 
     Create a language specific instance of the Snowball stemmer.
 
@@ -84,16 +85,17 @@ class SnowballStemmer(StemmerI):
 
     def __init__(self, language, ignore_stopwords=False):
         if language not in self.languages:
-            raise ValueError(u"The language '%s' is not supported." % language)
+            raise ValueError("The language '%s' is not supported." % language)
         stemmerclass = globals()[language.capitalize() + "Stemmer"]
         self.stemmer = stemmerclass(ignore_stopwords)
         self.stem = self.stemmer.stem
         self.stopwords = self.stemmer.stopwords
 
 
+@compat.python_2_unicode_compatible
 class _LanguageSpecificStemmer(StemmerI):
 
-    u"""
+    """
     This helper subclass offers the possibility
     to invoke a specific stemmer directly.
     This is useful if you already know the language to be stemmed at runtime.
@@ -116,13 +118,13 @@ class _LanguageSpecificStemmer(StemmerI):
         if ignore_stopwords:
             try:
                 for word in stopwords.words(language):
-                    self.stopwords.add(word.decode("utf-8"))
+                    self.stopwords.add(word)
             except IOError:
                 raise ValueError("%r has no list of stopwords. Please set"
                                  " 'ignore_stopwords' to 'False'." % self)
 
     def __repr__(self):
-        u"""
+        """
         Print out the string representation of the respective class.
 
         """
@@ -148,14 +150,14 @@ class PorterStemmer(_LanguageSpecificStemmer, porter.PorterStemmer):
 
 class _ScandinavianStemmer(_LanguageSpecificStemmer):
 
-    u"""
+    """
     This subclass encapsulates a method for defining the string region R1.
     It is used by the Danish, Norwegian, and Swedish stemmer.
 
     """
 
     def _r1_scandinavian(self, word, vowels):
-        u"""
+        """
         Return the region R1 that is used by the Scandinavian stemmers.
 
         R1 is the region after the first non-vowel following a vowel,
@@ -175,8 +177,8 @@ class _ScandinavianStemmer(_LanguageSpecificStemmer):
                SwedishStemmer. It is not to be invoked directly!
 
         """
-        r1 = u""
-        for i in xrange(1, len(word)):
+        r1 = ""
+        for i in range(1, len(word)):
             if word[i] not in vowels and word[i-1] in vowels:
                 if len(word[:i+1]) < 3 and len(word[:i+1]) > 0:
                     r1 = word[3:]
@@ -192,14 +194,14 @@ class _ScandinavianStemmer(_LanguageSpecificStemmer):
 
 class _StandardStemmer(_LanguageSpecificStemmer):
 
-    u"""
+    """
     This subclass encapsulates two methods for defining the standard versions
     of the string regions R1, R2, and RV.
 
     """
 
     def _r1r2_standard(self, word, vowels):
-        u"""
+        """
         Return the standard interpretations of the string regions R1 and R2.
 
         R1 is the region after the first non-vowel following a vowel,
@@ -226,14 +228,14 @@ class _StandardStemmer(_LanguageSpecificStemmer):
                can be found at http://snowball.tartarus.org/texts/r1r2.html
 
         """
-        r1 = u""
-        r2 = u""
-        for i in xrange(1, len(word)):
+        r1 = ""
+        r2 = ""
+        for i in range(1, len(word)):
             if word[i] not in vowels and word[i-1] in vowels:
                 r1 = word[i+1:]
                 break
 
-        for i in xrange(1, len(r1)):
+        for i in range(1, len(r1)):
             if r1[i] not in vowels and r1[i-1] in vowels:
                 r2 = r1[i+1:]
                 break
@@ -243,7 +245,7 @@ class _StandardStemmer(_LanguageSpecificStemmer):
 
 
     def _rv_standard(self, word, vowels):
-        u"""
+        """
         Return the standard interpretation of the string region RV.
 
         If the second letter is a consonant, RV is the region after the
@@ -264,16 +266,16 @@ class _StandardStemmer(_LanguageSpecificStemmer):
                invoked directly!
 
         """
-        rv = u""
+        rv = ""
         if len(word) >= 2:
             if word[1] not in vowels:
-                for i in xrange(2, len(word)):
+                for i in range(2, len(word)):
                     if word[i] in vowels:
                         rv = word[i+1:]
                         break
 
             elif word[:2] in vowels:
-                for i in xrange(2, len(word)):
+                for i in range(2, len(word)):
                     if word[i] not in vowels:
                         rv = word[i+1:]
                         break
@@ -286,7 +288,7 @@ class _StandardStemmer(_LanguageSpecificStemmer):
 
 class DanishStemmer(_ScandinavianStemmer):
 
-    u"""
+    """
     The Danish Snowball stemmer.
 
     :cvar __vowels: The Danish vowels.
@@ -310,27 +312,27 @@ class DanishStemmer(_ScandinavianStemmer):
     """
 
     # The language's vowels and other important characters are defined.
-    __vowels = u"aeiouy\xE6\xE5\xF8"
-    __consonants = u"bcdfghjklmnpqrstvwxz"
-    __double_consonants = (u"bb", u"cc", u"dd", u"ff", u"gg", u"hh", u"jj",
-                           u"kk", u"ll", u"mm", u"nn", u"pp", u"qq", u"rr",
-                           u"ss", u"tt", u"vv", u"ww", u"xx", u"zz")
-    __s_ending = u"abcdfghjklmnoprtvyz\xE5"
+    __vowels = "aeiouy\xE6\xE5\xF8"
+    __consonants = "bcdfghjklmnpqrstvwxz"
+    __double_consonants = ("bb", "cc", "dd", "ff", "gg", "hh", "jj",
+                           "kk", "ll", "mm", "nn", "pp", "qq", "rr",
+                           "ss", "tt", "vv", "ww", "xx", "zz")
+    __s_ending = "abcdfghjklmnoprtvyz\xE5"
 
     # The different suffixes, divided into the algorithm's steps
     # and organized by length, are listed in tuples.
-    __step1_suffixes = (u"erendes", u"erende", u"hedens", u"ethed",
-                        u"erede", u"heden", u"heder", u"endes",
-                        u"ernes", u"erens", u"erets", u"ered",
-                        u"ende", u"erne", u"eren", u"erer", u"heds",
-                        u"enes", u"eres", u"eret", u"hed", u"ene", u"ere",
-                        u"ens", u"ers", u"ets", u"en", u"er", u"es", u"et",
-                        u"e", u"s")
-    __step2_suffixes = (u"gd", u"dt", u"gt", u"kt")
-    __step3_suffixes = (u"elig", u"l\xF8st", u"lig", u"els", u"ig")
+    __step1_suffixes = ("erendes", "erende", "hedens", "ethed",
+                        "erede", "heden", "heder", "endes",
+                        "ernes", "erens", "erets", "ered",
+                        "ende", "erne", "eren", "erer", "heds",
+                        "enes", "eres", "eret", "hed", "ene", "ere",
+                        "ens", "ers", "ets", "en", "er", "es", "et",
+                        "e", "s")
+    __step2_suffixes = ("gd", "dt", "gt", "kt")
+    __step3_suffixes = ("elig", "l\xF8st", "lig", "els", "ig")
 
     def stem(self, word):
-        u"""
+        """
         Stem a Danish word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -356,7 +358,7 @@ class DanishStemmer(_ScandinavianStemmer):
         # STEP 1
         for suffix in self.__step1_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"s":
+                if suffix == "s":
                     if word[-2] in self.__s_ending:
                         word = word[:-1]
                         r1 = r1[:-1]
@@ -373,13 +375,13 @@ class DanishStemmer(_ScandinavianStemmer):
                 break
 
         # STEP 3
-        if r1.endswith(u"igst"):
+        if r1.endswith("igst"):
             word = word[:-2]
             r1 = r1[:-2]
 
         for suffix in self.__step3_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"l\xF8st":
+                if suffix == "l\xF8st":
                     word = word[:-1]
                     r1 = r1[:-1]
                 else:
@@ -401,11 +403,9 @@ class DanishStemmer(_ScandinavianStemmer):
         return word
 
 
-
-
 class DutchStemmer(_StandardStemmer):
 
-    u"""
+    """
     The Dutch Snowball stemmer.
 
     :cvar __vowels: The Dutch vowels.
@@ -420,12 +420,12 @@ class DutchStemmer(_StandardStemmer):
 
     """
 
-    __vowels = u"aeiouy\xE8"
-    __step1_suffixes = (u"heden", u"ene", u"en", u"se", u"s")
-    __step3b_suffixes = (u"baar", u"lijk", u"bar", u"end", u"ing", u"ig")
+    __vowels = "aeiouy\xE8"
+    __step1_suffixes = ("heden", "ene", "en", "se", "s")
+    __step3b_suffixes = ("baar", "lijk", "bar", "end", "ing", "ig")
 
     def stem(self, word):
-        u"""
+        """
         Stem a Dutch word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -442,32 +442,32 @@ class DutchStemmer(_StandardStemmer):
         step2_success = False
 
         # Vowel accents are removed.
-        word = (word.replace(u"\xE4", u"a").replace(u"\xE1", u"a")
-                    .replace(u"\xEB", u"e").replace(u"\xE9", u"e")
-                    .replace(u"\xED", u"i").replace(u"\xEF", u"i")
-                    .replace(u"\xF6", u"o").replace(u"\xF3", u"o")
-                    .replace(u"\xFC", u"u").replace(u"\xFA", u"u"))
+        word = (word.replace("\xE4", "a").replace("\xE1", "a")
+                    .replace("\xEB", "e").replace("\xE9", "e")
+                    .replace("\xED", "i").replace("\xEF", "i")
+                    .replace("\xF6", "o").replace("\xF3", "o")
+                    .replace("\xFC", "u").replace("\xFA", "u"))
 
         # An initial 'y', a 'y' after a vowel,
         # and an 'i' between self.__vowels is put into upper case.
         # As from now these are treated as consonants.
-        if word.startswith(u"y"):
-            word = u"".join((u"Y", word[1:]))
+        if word.startswith("y"):
+            word = "".join(("Y", word[1:]))
 
-        for i in xrange(1, len(word)):
-            if word[i-1] in self.__vowels and word[i] == u"y":
-                word = u"".join((word[:i], u"Y", word[i+1:]))
+        for i in range(1, len(word)):
+            if word[i-1] in self.__vowels and word[i] == "y":
+                word = "".join((word[:i], "Y", word[i+1:]))
 
-        for i in xrange(1, len(word)-1):
-            if (word[i-1] in self.__vowels and word[i] == u"i" and
+        for i in range(1, len(word)-1):
+            if (word[i-1] in self.__vowels and word[i] == "i" and
                word[i+1] in self.__vowels):
-                word = u"".join((word[:i], u"I", word[i+1:]))
+                word = "".join((word[:i], "I", word[i+1:]))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
 
         # R1 is adjusted so that the region before it
         # contains at least 3 letters.
-        for i in xrange(1, len(word)):
+        for i in range(1, len(word)):
             if word[i] not in self.__vowels and word[i-1] in self.__vowels:
                 if len(word[:i+1]) < 3 and len(word[:i+1]) > 0:
                     r1 = word[3:]
@@ -478,57 +478,57 @@ class DutchStemmer(_StandardStemmer):
         # STEP 1
         for suffix in self.__step1_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"heden":
-                    word = u"".join((word[:-5], u"heid"))
-                    r1 = u"".join((r1[:-5], u"heid"))
-                    if r2.endswith(u"heden"):
-                        r2 = u"".join((r2[:-5], u"heid"))
+                if suffix == "heden":
+                    word = "".join((word[:-5], "heid"))
+                    r1 = "".join((r1[:-5], "heid"))
+                    if r2.endswith("heden"):
+                        r2 = "".join((r2[:-5], "heid"))
 
-                elif (suffix in (u"ene", u"en") and
-                      not word.endswith(u"heden") and
+                elif (suffix in ("ene", "en") and
+                      not word.endswith("heden") and
                       word[-len(suffix)-1] not in self.__vowels and
-                      word[-len(suffix)-3:-len(suffix)] != u"gem"):
+                      word[-len(suffix)-3:-len(suffix)] != "gem"):
                     word = word[:-len(suffix)]
                     r1 = r1[:-len(suffix)]
                     r2 = r2[:-len(suffix)]
-                    if word.endswith((u"kk", u"dd", u"tt")):
+                    if word.endswith(("kk", "dd", "tt")):
                         word = word[:-1]
                         r1 = r1[:-1]
                         r2 = r2[:-1]
 
-                elif (suffix in (u"se", u"s") and
+                elif (suffix in ("se", "s") and
                       word[-len(suffix)-1] not in self.__vowels and
-                      word[-len(suffix)-1] != u"j"):
+                      word[-len(suffix)-1] != "j"):
                     word = word[:-len(suffix)]
                     r1 = r1[:-len(suffix)]
                     r2 = r2[:-len(suffix)]
                 break
 
         # STEP 2
-        if r1.endswith(u"e") and word[-2] not in self.__vowels:
+        if r1.endswith("e") and word[-2] not in self.__vowels:
             step2_success = True
             word = word[:-1]
             r1 = r1[:-1]
             r2 = r2[:-1]
 
-            if word.endswith((u"kk", u"dd", u"tt")):
+            if word.endswith(("kk", "dd", "tt")):
                 word = word[:-1]
                 r1 = r1[:-1]
                 r2 = r2[:-1]
 
         # STEP 3a
-        if r2.endswith(u"heid") and word[-5] != u"c":
+        if r2.endswith("heid") and word[-5] != "c":
             word = word[:-4]
             r1 = r1[:-4]
             r2 = r2[:-4]
 
-            if (r1.endswith(u"en") and word[-3] not in self.__vowels and
-                word[-5:-2] != u"gem"):
+            if (r1.endswith("en") and word[-3] not in self.__vowels and
+                word[-5:-2] != "gem"):
                 word = word[:-2]
                 r1 = r1[:-2]
                 r2 = r2[:-2]
 
-                if word.endswith((u"kk", u"dd", u"tt")):
+                if word.endswith(("kk", "dd", "tt")):
                     word = word[:-1]
                     r1 = r1[:-1]
                     r2 = r2[:-1]
@@ -536,44 +536,44 @@ class DutchStemmer(_StandardStemmer):
         # STEP 3b: Derivational suffixes
         for suffix in self.__step3b_suffixes:
             if r2.endswith(suffix):
-                if suffix in (u"end", u"ing"):
+                if suffix in ("end", "ing"):
                     word = word[:-3]
                     r2 = r2[:-3]
 
-                    if r2.endswith(u"ig") and word[-3] != u"e":
+                    if r2.endswith("ig") and word[-3] != "e":
                         word = word[:-2]
                     else:
-                        if word.endswith((u"kk", u"dd", u"tt")):
+                        if word.endswith(("kk", "dd", "tt")):
                             word = word[:-1]
 
-                elif suffix == u"ig" and word[-3] != u"e":
+                elif suffix == "ig" and word[-3] != "e":
                     word = word[:-2]
 
-                elif suffix == u"lijk":
+                elif suffix == "lijk":
                     word = word[:-4]
                     r1 = r1[:-4]
 
-                    if r1.endswith(u"e") and word[-2] not in self.__vowels:
+                    if r1.endswith("e") and word[-2] not in self.__vowels:
                         word = word[:-1]
-                        if word.endswith((u"kk", u"dd", u"tt")):
+                        if word.endswith(("kk", "dd", "tt")):
                             word = word[:-1]
 
-                elif suffix == u"baar":
+                elif suffix == "baar":
                     word = word[:-4]
 
-                elif suffix == u"bar" and step2_success:
+                elif suffix == "bar" and step2_success:
                     word = word[:-3]
                 break
 
         # STEP 4: Undouble vowel
         if len(word) >= 4:
-            if word[-1] not in self.__vowels and word[-1] != u"I":
-                if word[-3:-1] in (u"aa", u"ee", u"oo", u"uu"):
+            if word[-1] not in self.__vowels and word[-1] != "I":
+                if word[-3:-1] in ("aa", "ee", "oo", "uu"):
                     if word[-4] not in self.__vowels:
-                        word = u"".join((word[:-3], word[-3], word[-1]))
+                        word = "".join((word[:-3], word[-3], word[-1]))
 
         # All occurrences of 'I' and 'Y' are put back into lower case.
-        word = word.replace(u"I", u"i").replace(u"Y", u"y")
+        word = word.replace("I", "i").replace("Y", "y")
 
 
         return word
@@ -582,7 +582,7 @@ class DutchStemmer(_StandardStemmer):
 
 class EnglishStemmer(_StandardStemmer):
 
-    u"""
+    """
     The English Snowball stemmer.
 
     :cvar __vowels: The English vowels.
@@ -613,68 +613,68 @@ class EnglishStemmer(_StandardStemmer):
            http://snowball.tartarus.org/algorithms/english/stemmer.html
     """
 
-    __vowels = u"aeiouy"
-    __double_consonants = (u"bb", u"dd", u"ff", u"gg", u"mm", u"nn",
-                           u"pp", u"rr", u"tt")
-    __li_ending = u"cdeghkmnrt"
-    __step0_suffixes = (u"'s'", u"'s", u"'")
-    __step1a_suffixes = (u"sses", u"ied", u"ies", u"us", u"ss", u"s")
-    __step1b_suffixes = (u"eedly", u"ingly", u"edly", u"eed", u"ing", u"ed")
-    __step2_suffixes = (u'ization', u'ational', u'fulness', u'ousness',
-                        u'iveness', u'tional', u'biliti', u'lessli',
-                        u'entli', u'ation', u'alism', u'aliti', u'ousli',
-                        u'iviti', u'fulli', u'enci', u'anci', u'abli',
-                        u'izer', u'ator', u'alli', u'bli', u'ogi', u'li')
-    __step3_suffixes = (u'ational', u'tional', u'alize', u'icate', u'iciti',
-                        u'ative', u'ical', u'ness', u'ful')
-    __step4_suffixes = (u'ement', u'ance', u'ence', u'able', u'ible', u'ment',
-                        u'ant', u'ent', u'ism', u'ate', u'iti', u'ous',
-                        u'ive', u'ize', u'ion', u'al', u'er', u'ic')
-    __step5_suffixes = (u"e", u"l")
-    __special_words = {u"skis" : u"ski",
-                       u"skies" : u"sky",
-                       u"dying" : u"die",
-                       u"lying" : u"lie",
-                       u"tying" : u"tie",
-                       u"idly" : u"idl",
-                       u"gently" : u"gentl",
-                       u"ugly" : u"ugli",
-                       u"early" : u"earli",
-                       u"only" : u"onli",
-                       u"singly" : u"singl",
-                       u"sky" : u"sky",
-                       u"news" : u"news",
-                       u"howe" : u"howe",
-                       u"atlas" : u"atlas",
-                       u"cosmos" : u"cosmos",
-                       u"bias" : u"bias",
-                       u"andes" : u"andes",
-                       u"inning" : u"inning",
-                       u"innings" : u"inning",
-                       u"outing" : u"outing",
-                       u"outings" : u"outing",
-                       u"canning" : u"canning",
-                       u"cannings" : u"canning",
-                       u"herring" : u"herring",
-                       u"herrings" : u"herring",
-                       u"earring" : u"earring",
-                       u"earrings" : u"earring",
-                       u"proceed" : u"proceed",
-                       u"proceeds" : u"proceed",
-                       u"proceeded" : u"proceed",
-                       u"proceeding" : u"proceed",
-                       u"exceed" : u"exceed",
-                       u"exceeds" : u"exceed",
-                       u"exceeded" : u"exceed",
-                       u"exceeding" : u"exceed",
-                       u"succeed" : u"succeed",
-                       u"succeeds" : u"succeed",
-                       u"succeeded" : u"succeed",
-                       u"succeeding" : u"succeed"}
+    __vowels = "aeiouy"
+    __double_consonants = ("bb", "dd", "ff", "gg", "mm", "nn",
+                           "pp", "rr", "tt")
+    __li_ending = "cdeghkmnrt"
+    __step0_suffixes = ("'s'", "'s", "'")
+    __step1a_suffixes = ("sses", "ied", "ies", "us", "ss", "s")
+    __step1b_suffixes = ("eedly", "ingly", "edly", "eed", "ing", "ed")
+    __step2_suffixes = ('ization', 'ational', 'fulness', 'ousness',
+                        'iveness', 'tional', 'biliti', 'lessli',
+                        'entli', 'ation', 'alism', 'aliti', 'ousli',
+                        'iviti', 'fulli', 'enci', 'anci', 'abli',
+                        'izer', 'ator', 'alli', 'bli', 'ogi', 'li')
+    __step3_suffixes = ('ational', 'tional', 'alize', 'icate', 'iciti',
+                        'ative', 'ical', 'ness', 'ful')
+    __step4_suffixes = ('ement', 'ance', 'ence', 'able', 'ible', 'ment',
+                        'ant', 'ent', 'ism', 'ate', 'iti', 'ous',
+                        'ive', 'ize', 'ion', 'al', 'er', 'ic')
+    __step5_suffixes = ("e", "l")
+    __special_words = {"skis" : "ski",
+                       "skies" : "sky",
+                       "dying" : "die",
+                       "lying" : "lie",
+                       "tying" : "tie",
+                       "idly" : "idl",
+                       "gently" : "gentl",
+                       "ugly" : "ugli",
+                       "early" : "earli",
+                       "only" : "onli",
+                       "singly" : "singl",
+                       "sky" : "sky",
+                       "news" : "news",
+                       "howe" : "howe",
+                       "atlas" : "atlas",
+                       "cosmos" : "cosmos",
+                       "bias" : "bias",
+                       "andes" : "andes",
+                       "inning" : "inning",
+                       "innings" : "inning",
+                       "outing" : "outing",
+                       "outings" : "outing",
+                       "canning" : "canning",
+                       "cannings" : "canning",
+                       "herring" : "herring",
+                       "herrings" : "herring",
+                       "earring" : "earring",
+                       "earrings" : "earring",
+                       "proceed" : "proceed",
+                       "proceeds" : "proceed",
+                       "proceeded" : "proceed",
+                       "proceeding" : "proceed",
+                       "exceed" : "exceed",
+                       "exceeds" : "exceed",
+                       "exceeded" : "exceed",
+                       "exceeding" : "exceed",
+                       "succeed" : "succeed",
+                       "succeeds" : "succeed",
+                       "succeeded" : "succeed",
+                       "succeeding" : "succeed"}
 
     def stem(self, word):
 
-        u"""
+        """
         Stem an English word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -692,33 +692,33 @@ class EnglishStemmer(_StandardStemmer):
             return self.__special_words[word]
 
         # Map the different apostrophe characters to a single consistent one
-        word = (word.replace(u"\u2019", u"\x27")
-                    .replace(u"\u2018", u"\x27")
-                    .replace(u"\u201B", u"\x27"))
+        word = (word.replace("\u2019", "\x27")
+                    .replace("\u2018", "\x27")
+                    .replace("\u201B", "\x27"))
 
-        if word.startswith(u"\x27"):
+        if word.startswith("\x27"):
             word = word[1:]
 
-        if word.startswith(u"y"):
-            word = "".join((u"Y", word[1:]))
+        if word.startswith("y"):
+            word = "".join(("Y", word[1:]))
 
-        for i in xrange(1, len(word)):
-            if word[i-1] in self.__vowels and word[i] == u"y":
-                word = "".join((word[:i], u"Y", word[i+1:]))
+        for i in range(1, len(word)):
+            if word[i-1] in self.__vowels and word[i] == "y":
+                word = "".join((word[:i], "Y", word[i+1:]))
 
         step1a_vowel_found = False
         step1b_vowel_found = False
 
-        r1 = u""
-        r2 = u""
+        r1 = ""
+        r2 = ""
 
-        if word.startswith((u"gener", u"commun", u"arsen")):
-            if word.startswith((u"gener", u"arsen")):
+        if word.startswith(("gener", "commun", "arsen")):
+            if word.startswith(("gener", "arsen")):
                 r1 = word[5:]
             else:
                 r1 = word[6:]
 
-            for i in xrange(1, len(r1)):
+            for i in range(1, len(r1)):
                 if r1[i] not in self.__vowels and r1[i-1] in self.__vowels:
                     r2 = r1[i+1:]
                     break
@@ -738,12 +738,12 @@ class EnglishStemmer(_StandardStemmer):
         for suffix in self.__step1a_suffixes:
             if word.endswith(suffix):
 
-                if suffix == u"sses":
+                if suffix == "sses":
                     word = word[:-2]
                     r1 = r1[:-2]
                     r2 = r2[:-2]
 
-                elif suffix in (u"ied", u"ies"):
+                elif suffix in ("ied", "ies"):
                     if len(word[:-len(suffix)]) > 1:
                         word = word[:-2]
                         r1 = r1[:-2]
@@ -753,7 +753,7 @@ class EnglishStemmer(_StandardStemmer):
                         r1 = r1[:-1]
                         r2 = r2[:-1]
 
-                elif suffix == u"s":
+                elif suffix == "s":
                     for letter in word[:-2]:
                         if letter in self.__vowels:
                             step1a_vowel_found = True
@@ -768,20 +768,20 @@ class EnglishStemmer(_StandardStemmer):
         # STEP 1b
         for suffix in self.__step1b_suffixes:
             if word.endswith(suffix):
-                if suffix in (u"eed", u"eedly"):
+                if suffix in ("eed", "eedly"):
 
                     if r1.endswith(suffix):
-                        word = u"".join((word[:-len(suffix)], u"ee"))
+                        word = "".join((word[:-len(suffix)], "ee"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"ee"))
+                            r1 = "".join((r1[:-len(suffix)], "ee"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"ee"))
+                            r2 = "".join((r2[:-len(suffix)], "ee"))
                         else:
-                            r2 = u""
+                            r2 = ""
                 else:
                     for letter in word[:-len(suffix)]:
                         if letter in self.__vowels:
@@ -793,171 +793,171 @@ class EnglishStemmer(_StandardStemmer):
                         r1 = r1[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
 
-                        if word.endswith((u"at", u"bl", u"iz")):
-                            word = u"".join((word, u"e"))
-                            r1 = u"".join((r1, u"e"))
+                        if word.endswith(("at", "bl", "iz")):
+                            word = "".join((word, "e"))
+                            r1 = "".join((r1, "e"))
 
                             if len(word) > 5 or len(r1) >=3:
-                                r2 = u"".join((r2, u"e"))
+                                r2 = "".join((r2, "e"))
 
                         elif word.endswith(self.__double_consonants):
                             word = word[:-1]
                             r1 = r1[:-1]
                             r2 = r2[:-1]
 
-                        elif ((r1 == u"" and len(word) >= 3 and
+                        elif ((r1 == "" and len(word) >= 3 and
                                word[-1] not in self.__vowels and
-                               word[-1] not in u"wxY" and
+                               word[-1] not in "wxY" and
                                word[-2] in self.__vowels and
                                word[-3] not in self.__vowels)
                               or
-                              (r1 == u"" and len(word) == 2 and
+                              (r1 == "" and len(word) == 2 and
                                word[0] in self.__vowels and
                                word[1] not in self.__vowels)):
 
-                            word = u"".join((word, u"e"))
+                            word = "".join((word, "e"))
 
                             if len(r1) > 0:
-                                r1 = u"".join((r1, u"e"))
+                                r1 = "".join((r1, "e"))
 
                             if len(r2) > 0:
-                                r2 = u"".join((r2, u"e"))
+                                r2 = "".join((r2, "e"))
                 break
 
         # STEP 1c
-        if word[-1] in u"yY" and word[-2] not in self.__vowels and len(word) > 2:
-            word = u"".join((word[:-1], u"i"))
+        if len(word) > 2 and word[-1] in "yY" and word[-2] not in self.__vowels:
+            word = "".join((word[:-1], "i"))
             if len(r1) >= 1:
-                r1 = u"".join((r1[:-1], u"i"))
+                r1 = "".join((r1[:-1], "i"))
             else:
-                r1 = u""
+                r1 = ""
 
             if len(r2) >= 1:
-                r2 = u"".join((r2[:-1], u"i"))
+                r2 = "".join((r2[:-1], "i"))
             else:
-                r2 = u""
+                r2 = ""
 
         # STEP 2
         for suffix in self.__step2_suffixes:
             if word.endswith(suffix):
                 if r1.endswith(suffix):
-                    if suffix == u"tional":
+                    if suffix == "tional":
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
 
-                    elif suffix in (u"enci", u"anci", u"abli"):
-                        word = u"".join((word[:-1], u"e"))
+                    elif suffix in ("enci", "anci", "abli"):
+                        word = "".join((word[:-1], "e"))
 
                         if len(r1) >= 1:
-                            r1 = u"".join((r1[:-1], u"e"))
+                            r1 = "".join((r1[:-1], "e"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= 1:
-                            r2 = u"".join((r2[:-1], u"e"))
+                            r2 = "".join((r2[:-1], "e"))
                         else:
-                            r2 = u""
+                            r2 = ""
 
-                    elif suffix == u"entli":
+                    elif suffix == "entli":
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
 
-                    elif suffix in (u"izer", u"ization"):
-                        word = u"".join((word[:-len(suffix)], u"ize"))
+                    elif suffix in ("izer", "ization"):
+                        word = "".join((word[:-len(suffix)], "ize"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"ize"))
+                            r1 = "".join((r1[:-len(suffix)], "ize"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"ize"))
+                            r2 = "".join((r2[:-len(suffix)], "ize"))
                         else:
-                            r2 = u""
+                            r2 = ""
 
-                    elif suffix in (u"ational", u"ation", u"ator"):
-                        word = u"".join((word[:-len(suffix)], u"ate"))
+                    elif suffix in ("ational", "ation", "ator"):
+                        word = "".join((word[:-len(suffix)], "ate"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"ate"))
+                            r1 = "".join((r1[:-len(suffix)], "ate"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"ate"))
+                            r2 = "".join((r2[:-len(suffix)], "ate"))
                         else:
-                            r2 = u"e"
+                            r2 = "e"
 
-                    elif suffix in (u"alism", u"aliti", u"alli"):
-                        word = u"".join((word[:-len(suffix)], u"al"))
+                    elif suffix in ("alism", "aliti", "alli"):
+                        word = "".join((word[:-len(suffix)], "al"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"al"))
+                            r1 = "".join((r1[:-len(suffix)], "al"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"al"))
+                            r2 = "".join((r2[:-len(suffix)], "al"))
                         else:
-                            r2 = u""
+                            r2 = ""
 
-                    elif suffix == u"fulness":
+                    elif suffix == "fulness":
                         word = word[:-4]
                         r1 = r1[:-4]
                         r2 = r2[:-4]
 
-                    elif suffix in (u"ousli", u"ousness"):
-                        word = u"".join((word[:-len(suffix)], u"ous"))
+                    elif suffix in ("ousli", "ousness"):
+                        word = "".join((word[:-len(suffix)], "ous"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"ous"))
+                            r1 = "".join((r1[:-len(suffix)], "ous"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"ous"))
+                            r2 = "".join((r2[:-len(suffix)], "ous"))
                         else:
-                            r2 = u""
+                            r2 = ""
 
-                    elif suffix in (u"iveness", u"iviti"):
-                        word = u"".join((word[:-len(suffix)], u"ive"))
+                    elif suffix in ("iveness", "iviti"):
+                        word = "".join((word[:-len(suffix)], "ive"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"ive"))
+                            r1 = "".join((r1[:-len(suffix)], "ive"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"ive"))
+                            r2 = "".join((r2[:-len(suffix)], "ive"))
                         else:
-                            r2 = u"e"
+                            r2 = "e"
 
-                    elif suffix in (u"biliti", u"bli"):
-                        word = u"".join((word[:-len(suffix)], u"ble"))
+                    elif suffix in ("biliti", "bli"):
+                        word = "".join((word[:-len(suffix)], "ble"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"ble"))
+                            r1 = "".join((r1[:-len(suffix)], "ble"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"ble"))
+                            r2 = "".join((r2[:-len(suffix)], "ble"))
                         else:
-                            r2 = u""
+                            r2 = ""
 
-                    elif suffix == u"ogi" and word[-4] == u"l":
+                    elif suffix == "ogi" and word[-4] == "l":
                         word = word[:-1]
                         r1 = r1[:-1]
                         r2 = r2[:-1]
 
-                    elif suffix in (u"fulli", u"lessli"):
+                    elif suffix in ("fulli", "lessli"):
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
 
-                    elif suffix == u"li" and word[-3] in self.__li_ending:
+                    elif suffix == "li" and word[-3] in self.__li_ending:
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
@@ -967,48 +967,48 @@ class EnglishStemmer(_StandardStemmer):
         for suffix in self.__step3_suffixes:
             if word.endswith(suffix):
                 if r1.endswith(suffix):
-                    if suffix == u"tional":
+                    if suffix == "tional":
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
 
-                    elif suffix == u"ational":
-                        word = u"".join((word[:-len(suffix)], u"ate"))
+                    elif suffix == "ational":
+                        word = "".join((word[:-len(suffix)], "ate"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"ate"))
+                            r1 = "".join((r1[:-len(suffix)], "ate"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"ate"))
+                            r2 = "".join((r2[:-len(suffix)], "ate"))
                         else:
-                            r2 = u""
+                            r2 = ""
 
-                    elif suffix == u"alize":
+                    elif suffix == "alize":
                         word = word[:-3]
                         r1 = r1[:-3]
                         r2 = r2[:-3]
 
-                    elif suffix in (u"icate", u"iciti", u"ical"):
-                        word = u"".join((word[:-len(suffix)], u"ic"))
+                    elif suffix in ("icate", "iciti", "ical"):
+                        word = "".join((word[:-len(suffix)], "ic"))
 
                         if len(r1) >= len(suffix):
-                            r1 = u"".join((r1[:-len(suffix)], u"ic"))
+                            r1 = "".join((r1[:-len(suffix)], "ic"))
                         else:
-                            r1 = u""
+                            r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = u"".join((r2[:-len(suffix)], u"ic"))
+                            r2 = "".join((r2[:-len(suffix)], "ic"))
                         else:
-                            r2 = u""
+                            r2 = ""
 
-                    elif suffix in (u"ful", u"ness"):
+                    elif suffix in ("ful", "ness"):
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
 
-                    elif suffix == u"ative" and r2.endswith(suffix):
+                    elif suffix == "ative" and r2.endswith(suffix):
                         word = word[:-5]
                         r1 = r1[:-5]
                         r2 = r2[:-5]
@@ -1018,8 +1018,8 @@ class EnglishStemmer(_StandardStemmer):
         for suffix in self.__step4_suffixes:
             if word.endswith(suffix):
                 if r2.endswith(suffix):
-                    if suffix == u"ion":
-                        if word[-4] in u"st":
+                    if suffix == "ion":
+                        if word[-4] in "st":
                             word = word[:-3]
                             r1 = r1[:-3]
                             r2 = r2[:-3]
@@ -1030,19 +1030,19 @@ class EnglishStemmer(_StandardStemmer):
                 break
 
         # STEP 5
-        if r2.endswith(u"l") and word[-2] == u"l":
+        if r2.endswith("l") and word[-2] == "l":
             word = word[:-1]
-        elif r2.endswith(u"e"):
+        elif r2.endswith("e"):
             word = word[:-1]
-        elif r1.endswith(u"e"):
+        elif r1.endswith("e"):
             if len(word) >= 4 and (word[-2] in self.__vowels or
-                                   word[-2] in u"wxY" or
+                                   word[-2] in "wxY" or
                                    word[-3] not in self.__vowels or
                                    word[-4] in self.__vowels):
                 word = word[:-1]
 
 
-        word = word.replace(u"Y", u"y")
+        word = word.replace("Y", "y")
 
 
         return word
@@ -1051,7 +1051,7 @@ class EnglishStemmer(_StandardStemmer):
 
 class FinnishStemmer(_StandardStemmer):
 
-    u"""
+    """
     The Finnish Snowball stemmer.
 
     :cvar __vowels: The Finnish vowels.
@@ -1077,31 +1077,31 @@ class FinnishStemmer(_StandardStemmer):
            http://snowball.tartarus.org/algorithms/finnish/stemmer.html
     """
 
-    __vowels = u"aeiouy\xE4\xF6"
-    __restricted_vowels = u"aeiou\xE4\xF6"
-    __long_vowels = (u"aa", u"ee", u"ii", u"oo", u"uu", u"\xE4\xE4",
-                     u"\xF6\xF6")
-    __consonants = u"bcdfghjklmnpqrstvwxz"
-    __double_consonants = (u"bb", u"cc", u"dd", u"ff", u"gg", u"hh", u"jj",
-                           u"kk", u"ll", u"mm", u"nn", u"pp", u"qq", u"rr",
-                           u"ss", u"tt", u"vv", u"ww", u"xx", u"zz")
-    __step1_suffixes = (u'kaan', u'k\xE4\xE4n', u'sti', u'kin', u'han',
-                        u'h\xE4n', u'ko', u'k\xF6', u'pa', u'p\xE4')
-    __step2_suffixes = (u'nsa', u'ns\xE4', u'mme', u'nne', u'si', u'ni',
-                        u'an', u'\xE4n', u'en')
-    __step3_suffixes = (u'siin', u'tten', u'seen', u'han', u'hen', u'hin',
-                        u'hon', u'h\xE4n', u'h\xF6n', u'den', u'tta',
-                        u'tt\xE4', u'ssa', u'ss\xE4', u'sta',
-                        u'st\xE4', u'lla', u'll\xE4', u'lta',
-                        u'lt\xE4', u'lle', u'ksi', u'ine', u'ta',
-                        u't\xE4', u'na', u'n\xE4', u'a', u'\xE4',
-                        u'n')
-    __step4_suffixes = (u'impi', u'impa', u'imp\xE4', u'immi', u'imma',
-                        u'imm\xE4', u'mpi', u'mpa', u'mp\xE4', u'mmi',
-                        u'mma', u'mm\xE4', u'eja', u'ej\xE4')
+    __vowels = "aeiouy\xE4\xF6"
+    __restricted_vowels = "aeiou\xE4\xF6"
+    __long_vowels = ("aa", "ee", "ii", "oo", "uu", "\xE4\xE4",
+                     "\xF6\xF6")
+    __consonants = "bcdfghjklmnpqrstvwxz"
+    __double_consonants = ("bb", "cc", "dd", "ff", "gg", "hh", "jj",
+                           "kk", "ll", "mm", "nn", "pp", "qq", "rr",
+                           "ss", "tt", "vv", "ww", "xx", "zz")
+    __step1_suffixes = ('kaan', 'k\xE4\xE4n', 'sti', 'kin', 'han',
+                        'h\xE4n', 'ko', 'k\xF6', 'pa', 'p\xE4')
+    __step2_suffixes = ('nsa', 'ns\xE4', 'mme', 'nne', 'si', 'ni',
+                        'an', '\xE4n', 'en')
+    __step3_suffixes = ('siin', 'tten', 'seen', 'han', 'hen', 'hin',
+                        'hon', 'h\xE4n', 'h\xF6n', 'den', 'tta',
+                        'tt\xE4', 'ssa', 'ss\xE4', 'sta',
+                        'st\xE4', 'lla', 'll\xE4', 'lta',
+                        'lt\xE4', 'lle', 'ksi', 'ine', 'ta',
+                        't\xE4', 'na', 'n\xE4', 'a', '\xE4',
+                        'n')
+    __step4_suffixes = ('impi', 'impa', 'imp\xE4', 'immi', 'imma',
+                        'imm\xE4', 'mpi', 'mpa', 'mp\xE4', 'mmi',
+                        'mma', 'mm\xE4', 'eja', 'ej\xE4')
 
     def stem(self, word):
-        u"""
+        """
         Stem a Finnish word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -1122,13 +1122,13 @@ class FinnishStemmer(_StandardStemmer):
         # STEP 1: Particles etc.
         for suffix in self.__step1_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"sti":
+                if suffix == "sti":
                     if suffix in r2:
                         word = word[:-3]
                         r1 = r1[:-3]
                         r2 = r2[:-3]
                 else:
-                    if word[-len(suffix)-1] in u"ntaeiouy\xE4\xF6":
+                    if word[-len(suffix)-1] in "ntaeiouy\xE4\xF6":
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
@@ -1137,42 +1137,42 @@ class FinnishStemmer(_StandardStemmer):
         # STEP 2: Possessives
         for suffix in self.__step2_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"si":
-                    if word[-3] != u"k":
+                if suffix == "si":
+                    if word[-3] != "k":
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
 
-                elif suffix == u"ni":
+                elif suffix == "ni":
                     word = word[:-2]
                     r1 = r1[:-2]
                     r2 = r2[:-2]
-                    if word.endswith(u"kse"):
-                        word = u"".join((word[:-3], u"ksi"))
+                    if word.endswith("kse"):
+                        word = "".join((word[:-3], "ksi"))
 
-                    if r1.endswith(u"kse"):
-                        r1 = u"".join((r1[:-3], u"ksi"))
+                    if r1.endswith("kse"):
+                        r1 = "".join((r1[:-3], "ksi"))
 
-                    if r2.endswith(u"kse"):
-                        r2 = u"".join((r2[:-3], u"ksi"))
+                    if r2.endswith("kse"):
+                        r2 = "".join((r2[:-3], "ksi"))
 
-                elif suffix == u"an":
-                    if (word[-4:-2] in (u"ta", u"na") or
-                        word[-5:-2] in (u"ssa", u"sta", u"lla", u"lta")):
+                elif suffix == "an":
+                    if (word[-4:-2] in ("ta", "na") or
+                        word[-5:-2] in ("ssa", "sta", "lla", "lta")):
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
 
-                elif suffix == u"\xE4n":
-                    if (word[-4:-2] in (u"t\xE4", u"n\xE4") or
-                        word[-5:-2] in (u"ss\xE4", u"st\xE4",
-                                        u"ll\xE4", u"lt\xE4")):
+                elif suffix == "\xE4n":
+                    if (word[-4:-2] in ("t\xE4", "n\xE4") or
+                        word[-5:-2] in ("ss\xE4", "st\xE4",
+                                        "ll\xE4", "lt\xE4")):
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
 
-                elif suffix == u"en":
-                    if word[-5:-2] in (u"lle", u"ine"):
+                elif suffix == "en":
+                    if word[-5:-2] in ("lle", "ine"):
                         word = word[:-2]
                         r1 = r1[:-2]
                         r2 = r2[:-2]
@@ -1185,21 +1185,21 @@ class FinnishStemmer(_StandardStemmer):
         # STEP 3: Cases
         for suffix in self.__step3_suffixes:
             if r1.endswith(suffix):
-                if suffix in (u"han", u"hen", u"hin", u"hon", u"h\xE4n",
-                              u"h\xF6n"):
-                    if ((suffix == u"han" and word[-4] == u"a") or
-                        (suffix == u"hen" and word[-4] == u"e") or
-                        (suffix == u"hin" and word[-4] == u"i") or
-                        (suffix == u"hon" and word[-4] == u"o") or
-                        (suffix == u"h\xE4n" and word[-4] == u"\xE4") or
-                        (suffix == u"h\xF6n" and word[-4] == u"\xF6")):
+                if suffix in ("han", "hen", "hin", "hon", "h\xE4n",
+                              "h\xF6n"):
+                    if ((suffix == "han" and word[-4] == "a") or
+                        (suffix == "hen" and word[-4] == "e") or
+                        (suffix == "hin" and word[-4] == "i") or
+                        (suffix == "hon" and word[-4] == "o") or
+                        (suffix == "h\xE4n" and word[-4] == "\xE4") or
+                        (suffix == "h\xF6n" and word[-4] == "\xF6")):
                         word = word[:-3]
                         r1 = r1[:-3]
                         r2 = r2[:-3]
                         step3_success = True
 
-                elif suffix in (u"siin", u"den", u"tten"):
-                    if (word[-len(suffix)-1] == u"i" and
+                elif suffix in ("siin", "den", "tten"):
+                    if (word[-len(suffix)-1] == "i" and
                         word[-len(suffix)-2] in self.__restricted_vowels):
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
@@ -1208,7 +1208,7 @@ class FinnishStemmer(_StandardStemmer):
                     else:
                         continue
 
-                elif suffix == u"seen":
+                elif suffix == "seen":
                     if word[-6:-4] in self.__long_vowels:
                         word = word[:-4]
                         r1 = r1[:-4]
@@ -1217,27 +1217,27 @@ class FinnishStemmer(_StandardStemmer):
                     else:
                         continue
 
-                elif suffix in (u"a", u"\xE4"):
+                elif suffix in ("a", "\xE4"):
                     if word[-2] in self.__vowels and word[-3] in self.__consonants:
                         word = word[:-1]
                         r1 = r1[:-1]
                         r2 = r2[:-1]
                         step3_success = True
 
-                elif suffix in (u"tta", u"tt\xE4"):
-                    if word[-4] == u"e":
+                elif suffix in ("tta", "tt\xE4"):
+                    if word[-4] == "e":
                         word = word[:-3]
                         r1 = r1[:-3]
                         r2 = r2[:-3]
                         step3_success = True
 
-                elif suffix == u"n":
+                elif suffix == "n":
                     word = word[:-1]
                     r1 = r1[:-1]
                     r2 = r2[:-1]
                     step3_success = True
 
-                    if word[-2:] == u"ie" or word[-2:] in self.__long_vowels:
+                    if word[-2:] == "ie" or word[-2:] in self.__long_vowels:
                         word = word[:-1]
                         r1 = r1[:-1]
                         r2 = r2[:-1]
@@ -1251,9 +1251,9 @@ class FinnishStemmer(_StandardStemmer):
         # STEP 4: Other endings
         for suffix in self.__step4_suffixes:
             if r2.endswith(suffix):
-                if suffix in (u"mpi", u"mpa", u"mp\xE4", u"mmi", u"mma",
-                              u"mm\xE4"):
-                    if word[-5:-3] != u"po":
+                if suffix in ("mpi", "mpa", "mp\xE4", "mmi", "mma",
+                              "mm\xE4"):
+                    if word[-5:-3] != "po":
                         word = word[:-3]
                         r1 = r1[:-3]
                         r2 = r2[:-3]
@@ -1264,19 +1264,19 @@ class FinnishStemmer(_StandardStemmer):
                 break
 
         # STEP 5: Plurals
-        if step3_success and len(r1) >= 1 and r1[-1] in u"ij":
+        if step3_success and len(r1) >= 1 and r1[-1] in "ij":
             word = word[:-1]
             r1 = r1[:-1]
 
         elif (not step3_success and len(r1) >= 2 and
-              r1[-1] == u"t" and r1[-2] in self.__vowels):
+              r1[-1] == "t" and r1[-2] in self.__vowels):
             word = word[:-1]
             r1 = r1[:-1]
             r2 = r2[:-1]
-            if r2.endswith(u"imma"):
+            if r2.endswith("imma"):
                 word = word[:-4]
                 r1 = r1[:-4]
-            elif r2.endswith(u"mma") and r2[-5:-3] != u"po":
+            elif r2.endswith("mma") and r2[-5:-3] != "po":
                 word = word[:-3]
                 r1 = r1[:-3]
 
@@ -1286,21 +1286,21 @@ class FinnishStemmer(_StandardStemmer):
             r1 = r1[:-1]
 
         if (len(r1) >= 2 and r1[-2] in self.__consonants and
-            r1[-1] in u"a\xE4ei"):
+            r1[-1] in "a\xE4ei"):
             word = word[:-1]
             r1 = r1[:-1]
 
-        if r1.endswith((u"oj", u"uj")):
+        if r1.endswith(("oj", "uj")):
             word = word[:-1]
             r1 = r1[:-1]
 
-        if r1.endswith(u"jo"):
+        if r1.endswith("jo"):
             word = word[:-1]
             r1 = r1[:-1]
 
         # If the word ends with a double consonant
         # followed by zero or more vowels, the last consonant is removed.
-        for i in xrange(1, len(word)):
+        for i in range(1, len(word)):
             if word[-i] in self.__vowels:
                 continue
             else:
@@ -1309,7 +1309,7 @@ class FinnishStemmer(_StandardStemmer):
                         word = word[:-1]
                 else:
                     if word[-i-1:-i+1] in self.__double_consonants:
-                        word = u"".join((word[:-i], word[-i+1:]))
+                        word = "".join((word[:-i], word[-i+1:]))
                 break
 
 
@@ -1319,7 +1319,7 @@ class FinnishStemmer(_StandardStemmer):
 
 class FrenchStemmer(_StandardStemmer):
 
-    u"""
+    """
     The French Snowball stemmer.
 
     :cvar __vowels: The French vowels.
@@ -1337,37 +1337,37 @@ class FrenchStemmer(_StandardStemmer):
            http://snowball.tartarus.org/algorithms/french/stemmer.html
     """
 
-    __vowels = u"aeiouy\xE2\xE0\xEB\xE9\xEA\xE8\xEF\xEE\xF4\xFB\xF9"
-    __step1_suffixes = (u'issements', u'issement', u'atrices', u'atrice',
-                        u'ateurs', u'ations', u'logies', u'usions',
-                        u'utions', u'ements', u'amment', u'emment',
-                        u'ances', u'iqUes', u'ismes', u'ables', u'istes',
-                        u'ateur', u'ation', u'logie', u'usion', u'ution',
-                        u'ences', u'ement', u'euses', u'ments', u'ance',
-                        u'iqUe', u'isme', u'able', u'iste', u'ence',
-                        u'it\xE9s', u'ives', u'eaux', u'euse', u'ment',
-                        u'eux', u'it\xE9', u'ive', u'ifs', u'aux', u'if')
-    __step2a_suffixes = (u'issaIent', u'issantes', u'iraIent', u'issante',
-                         u'issants', u'issions', u'irions', u'issais',
-                         u'issait', u'issant', u'issent', u'issiez', u'issons',
-                         u'irais', u'irait', u'irent', u'iriez', u'irons',
-                         u'iront', u'isses', u'issez', u'\xEEmes',
-                         u'\xEEtes', u'irai', u'iras', u'irez', u'isse',
-                         u'ies', u'ira', u'\xEEt', u'ie', u'ir', u'is',
-                         u'it', u'i')
-    __step2b_suffixes = (u'eraIent', u'assions', u'erions', u'assent',
-                         u'assiez', u'\xE8rent', u'erais', u'erait',
-                         u'eriez', u'erons', u'eront', u'aIent', u'antes',
-                         u'asses', u'ions', u'erai', u'eras', u'erez',
-                         u'\xE2mes', u'\xE2tes', u'ante', u'ants',
-                         u'asse', u'\xE9es', u'era', u'iez', u'ais',
-                         u'ait', u'ant', u'\xE9e', u'\xE9s', u'er',
-                         u'ez', u'\xE2t', u'ai', u'as', u'\xE9', u'a')
-    __step4_suffixes = (u'i\xE8re', u'I\xE8re', u'ion', u'ier', u'Ier',
-                        u'e', u'\xEB')
+    __vowels = "aeiouy\xE2\xE0\xEB\xE9\xEA\xE8\xEF\xEE\xF4\xFB\xF9"
+    __step1_suffixes = ('issements', 'issement', 'atrices', 'atrice',
+                        'ateurs', 'ations', 'logies', 'usions',
+                        'utions', 'ements', 'amment', 'emment',
+                        'ances', 'iqUes', 'ismes', 'ables', 'istes',
+                        'ateur', 'ation', 'logie', 'usion', 'ution',
+                        'ences', 'ement', 'euses', 'ments', 'ance',
+                        'iqUe', 'isme', 'able', 'iste', 'ence',
+                        'it\xE9s', 'ives', 'eaux', 'euse', 'ment',
+                        'eux', 'it\xE9', 'ive', 'ifs', 'aux', 'if')
+    __step2a_suffixes = ('issaIent', 'issantes', 'iraIent', 'issante',
+                         'issants', 'issions', 'irions', 'issais',
+                         'issait', 'issant', 'issent', 'issiez', 'issons',
+                         'irais', 'irait', 'irent', 'iriez', 'irons',
+                         'iront', 'isses', 'issez', '\xEEmes',
+                         '\xEEtes', 'irai', 'iras', 'irez', 'isse',
+                         'ies', 'ira', '\xEEt', 'ie', 'ir', 'is',
+                         'it', 'i')
+    __step2b_suffixes = ('eraIent', 'assions', 'erions', 'assent',
+                         'assiez', '\xE8rent', 'erais', 'erait',
+                         'eriez', 'erons', 'eront', 'aIent', 'antes',
+                         'asses', 'ions', 'erai', 'eras', 'erez',
+                         '\xE2mes', '\xE2tes', 'ante', 'ants',
+                         'asse', '\xE9es', 'era', 'iez', 'ais',
+                         'ait', 'ant', '\xE9e', '\xE9s', 'er',
+                         'ez', '\xE2t', 'ai', 'as', '\xE9', 'a')
+    __step4_suffixes = ('i\xE8re', 'I\xE8re', 'ion', 'ier', 'Ier',
+                        'e', '\xEB')
 
     def stem(self, word):
-        u"""
+        """
         Stem a French word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -1387,25 +1387,25 @@ class FrenchStemmer(_StandardStemmer):
         step2b_success = False
 
         # Every occurrence of 'u' after 'q' is put into upper case.
-        for i in xrange(1, len(word)):
-            if word[i-1] == u"q" and word[i] == u"u":
-                word = u"".join((word[:i], u"U", word[i+1:]))
+        for i in range(1, len(word)):
+            if word[i-1] == "q" and word[i] == "u":
+                word = "".join((word[:i], "U", word[i+1:]))
 
         # Every occurrence of 'u' and 'i'
         # between vowels is put into upper case.
         # Every occurrence of 'y' preceded or
         # followed by a vowel is also put into upper case.
-        for i in xrange(1, len(word)-1):
+        for i in range(1, len(word)-1):
             if word[i-1] in self.__vowels and word[i+1] in self.__vowels:
-                if word[i] == u"u":
-                    word = u"".join((word[:i], u"U", word[i+1:]))
+                if word[i] == "u":
+                    word = "".join((word[:i], "U", word[i+1:]))
 
-                elif word[i] == u"i":
-                    word = u"".join((word[:i], u"I", word[i+1:]))
+                elif word[i] == "i":
+                    word = "".join((word[:i], "I", word[i+1:]))
 
             if word[i-1] in self.__vowels or word[i+1] in self.__vowels:
-                if word[i] == u"y":
-                    word = u"".join((word[:i], u"Y", word[i+1:]))
+                if word[i] == "y":
+                    word = "".join((word[:i], "Y", word[i+1:]))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self.__rv_french(word, self.__vowels)
@@ -1413,131 +1413,131 @@ class FrenchStemmer(_StandardStemmer):
         # STEP 1: Standard suffix removal
         for suffix in self.__step1_suffixes:
             if word.endswith(suffix):
-                if suffix == u"eaux":
+                if suffix == "eaux":
                     word = word[:-1]
                     step1_success = True
 
-                elif suffix in (u"euse", u"euses"):
+                elif suffix in ("euse", "euses"):
                     if suffix in r2:
                         word = word[:-len(suffix)]
                         step1_success = True
 
                     elif suffix in r1:
-                        word = u"".join((word[:-len(suffix)], u"eux"))
+                        word = "".join((word[:-len(suffix)], "eux"))
                         step1_success = True
 
-                elif suffix in (u"ement", u"ements") and suffix in rv:
+                elif suffix in ("ement", "ements") and suffix in rv:
                     word = word[:-len(suffix)]
                     step1_success = True
 
-                    if word[-2:] == u"iv" and u"iv" in r2:
+                    if word[-2:] == "iv" and "iv" in r2:
                         word = word[:-2]
 
-                        if word[-2:] == u"at" and u"at" in r2:
+                        if word[-2:] == "at" and "at" in r2:
                             word = word[:-2]
 
-                    elif word[-3:] == u"eus":
-                        if u"eus" in r2:
+                    elif word[-3:] == "eus":
+                        if "eus" in r2:
                             word = word[:-3]
-                        elif u"eus" in r1:
-                            word = u"".join((word[:-1], u"x"))
+                        elif "eus" in r1:
+                            word = "".join((word[:-1], "x"))
 
-                    elif word[-3:] in (u"abl", u"iqU"):
-                        if u"abl" in r2 or u"iqU" in r2:
+                    elif word[-3:] in ("abl", "iqU"):
+                        if "abl" in r2 or "iqU" in r2:
                             word = word[:-3]
 
-                    elif word[-3:] in (u"i\xE8r", u"I\xE8r"):
-                        if u"i\xE8r" in rv or u"I\xE8r" in rv:
-                            word = u"".join((word[:-3], u"i"))
+                    elif word[-3:] in ("i\xE8r", "I\xE8r"):
+                        if "i\xE8r" in rv or "I\xE8r" in rv:
+                            word = "".join((word[:-3], "i"))
 
-                elif suffix == u"amment" and suffix in rv:
-                    word = u"".join((word[:-6], u"ant"))
-                    rv = u"".join((rv[:-6], u"ant"))
+                elif suffix == "amment" and suffix in rv:
+                    word = "".join((word[:-6], "ant"))
+                    rv = "".join((rv[:-6], "ant"))
                     rv_ending_found = True
 
-                elif suffix == u"emment" and suffix in rv:
-                    word = u"".join((word[:-6], u"ent"))
+                elif suffix == "emment" and suffix in rv:
+                    word = "".join((word[:-6], "ent"))
                     rv_ending_found = True
 
-                elif (suffix in (u"ment", u"ments") and suffix in rv and
+                elif (suffix in ("ment", "ments") and suffix in rv and
                       not rv.startswith(suffix) and
                       rv[rv.rindex(suffix)-1] in self.__vowels):
                     word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
                     rv_ending_found = True
 
-                elif suffix == u"aux" and suffix in r1:
-                    word = u"".join((word[:-2], u"l"))
+                elif suffix == "aux" and suffix in r1:
+                    word = "".join((word[:-2], "l"))
                     step1_success = True
 
-                elif (suffix in (u"issement", u"issements") and suffix in r1
+                elif (suffix in ("issement", "issements") and suffix in r1
                       and word[-len(suffix)-1] not in self.__vowels):
                     word = word[:-len(suffix)]
                     step1_success = True
 
-                elif suffix in (u"ance", u"iqUe", u"isme", u"able", u"iste",
-                              u"eux", u"ances", u"iqUes", u"ismes",
-                              u"ables", u"istes") and suffix in r2:
+                elif suffix in ("ance", "iqUe", "isme", "able", "iste",
+                              "eux", "ances", "iqUes", "ismes",
+                              "ables", "istes") and suffix in r2:
                     word = word[:-len(suffix)]
                     step1_success = True
 
-                elif suffix in (u"atrice", u"ateur", u"ation", u"atrices",
-                                u"ateurs", u"ations") and suffix in r2:
+                elif suffix in ("atrice", "ateur", "ation", "atrices",
+                                "ateurs", "ations") and suffix in r2:
                     word = word[:-len(suffix)]
                     step1_success = True
 
-                    if word[-2:] == u"ic":
-                        if u"ic" in r2:
+                    if word[-2:] == "ic":
+                        if "ic" in r2:
                             word = word[:-2]
                         else:
-                            word = u"".join((word[:-2], u"iqU"))
+                            word = "".join((word[:-2], "iqU"))
 
-                elif suffix in (u"logie", u"logies") and suffix in r2:
-                    word = u"".join((word[:-len(suffix)], u"log"))
+                elif suffix in ("logie", "logies") and suffix in r2:
+                    word = "".join((word[:-len(suffix)], "log"))
                     step1_success = True
 
-                elif (suffix in (u"usion", u"ution", u"usions", u"utions") and
+                elif (suffix in ("usion", "ution", "usions", "utions") and
                       suffix in r2):
-                    word = u"".join((word[:-len(suffix)], u"u"))
+                    word = "".join((word[:-len(suffix)], "u"))
                     step1_success = True
 
-                elif suffix in (u"ence", u"ences") and suffix in r2:
-                    word = u"".join((word[:-len(suffix)], u"ent"))
+                elif suffix in ("ence", "ences") and suffix in r2:
+                    word = "".join((word[:-len(suffix)], "ent"))
                     step1_success = True
 
-                elif suffix in (u"it\xE9", u"it\xE9s") and suffix in r2:
+                elif suffix in ("it\xE9", "it\xE9s") and suffix in r2:
                     word = word[:-len(suffix)]
                     step1_success = True
 
-                    if word[-4:] == u"abil":
-                        if u"abil" in r2:
+                    if word[-4:] == "abil":
+                        if "abil" in r2:
                             word = word[:-4]
                         else:
-                            word = u"".join((word[:-2], u"l"))
+                            word = "".join((word[:-2], "l"))
 
-                    elif word[-2:] == u"ic":
-                        if u"ic" in r2:
+                    elif word[-2:] == "ic":
+                        if "ic" in r2:
                             word = word[:-2]
                         else:
-                            word = u"".join((word[:-2], u"iqU"))
+                            word = "".join((word[:-2], "iqU"))
 
-                    elif word[-2:] == u"iv":
-                        if u"iv" in r2:
+                    elif word[-2:] == "iv":
+                        if "iv" in r2:
                             word = word[:-2]
 
-                elif (suffix in (u"if", u"ive", u"ifs", u"ives") and
+                elif (suffix in ("if", "ive", "ifs", "ives") and
                       suffix in r2):
                     word = word[:-len(suffix)]
                     step1_success = True
 
-                    if word[-2:] == u"at" and u"at" in r2:
+                    if word[-2:] == "at" and "at" in r2:
                         word = word[:-2]
 
-                        if word[-2:] == u"ic":
-                            if u"ic" in r2:
+                        if word[-2:] == "ic":
+                            if "ic" in r2:
                                 word = word[:-2]
                             else:
-                                word = u"".join((word[:-2], u"iqU"))
+                                word = "".join((word[:-2], "iqU"))
                 break
 
         # STEP 2a: Verb suffixes beginning 'i'
@@ -1554,79 +1554,79 @@ class FrenchStemmer(_StandardStemmer):
             if not step2a_success:
                 for suffix in self.__step2b_suffixes:
                     if rv.endswith(suffix):
-                        if suffix == u"ions" and u"ions" in r2:
+                        if suffix == "ions" and "ions" in r2:
                             word = word[:-4]
                             step2b_success = True
 
-                        elif suffix in (u'eraIent', u'erions', u'\xE8rent',
-                                        u'erais', u'erait', u'eriez',
-                                        u'erons', u'eront', u'erai', u'eras',
-                                        u'erez', u'\xE9es', u'era', u'iez',
-                                        u'\xE9e', u'\xE9s', u'er', u'ez',
-                                        u'\xE9'):
+                        elif suffix in ('eraIent', 'erions', '\xE8rent',
+                                        'erais', 'erait', 'eriez',
+                                        'erons', 'eront', 'erai', 'eras',
+                                        'erez', '\xE9es', 'era', 'iez',
+                                        '\xE9e', '\xE9s', 'er', 'ez',
+                                        '\xE9'):
                             word = word[:-len(suffix)]
                             step2b_success = True
 
-                        elif suffix in (u'assions', u'assent', u'assiez',
-                                        u'aIent', u'antes', u'asses',
-                                        u'\xE2mes', u'\xE2tes', u'ante',
-                                        u'ants', u'asse', u'ais', u'ait',
-                                        u'ant', u'\xE2t', u'ai', u'as',
-                                        u'a'):
+                        elif suffix in ('assions', 'assent', 'assiez',
+                                        'aIent', 'antes', 'asses',
+                                        '\xE2mes', '\xE2tes', 'ante',
+                                        'ants', 'asse', 'ais', 'ait',
+                                        'ant', '\xE2t', 'ai', 'as',
+                                        'a'):
                             word = word[:-len(suffix)]
                             rv = rv[:-len(suffix)]
                             step2b_success = True
-                            if rv.endswith(u"e"):
+                            if rv.endswith("e"):
                                 word = word[:-1]
                         break
 
         # STEP 3
         if step1_success or step2a_success or step2b_success:
-            if word[-1] == u"Y":
-                word = u"".join((word[:-1], u"i"))
-            elif word[-1] == u"\xE7":
-                word = u"".join((word[:-1], u"c"))
+            if word[-1] == "Y":
+                word = "".join((word[:-1], "i"))
+            elif word[-1] == "\xE7":
+                word = "".join((word[:-1], "c"))
 
         # STEP 4: Residual suffixes
         else:
-            if (len(word) >= 2 and word[-1] == u"s" and
-                word[-2] not in u"aiou\xE8s"):
+            if (len(word) >= 2 and word[-1] == "s" and
+                word[-2] not in "aiou\xE8s"):
                 word = word[:-1]
 
             for suffix in self.__step4_suffixes:
                 if word.endswith(suffix):
                     if suffix in rv:
-                        if (suffix == u"ion" and suffix in r2 and
-                            rv[-4] in u"st"):
+                        if (suffix == "ion" and suffix in r2 and
+                            rv[-4] in "st"):
                             word = word[:-3]
 
-                        elif suffix in (u"ier", u"i\xE8re", u"Ier",
-                                        u"I\xE8re"):
-                            word = u"".join((word[:-len(suffix)], u"i"))
+                        elif suffix in ("ier", "i\xE8re", "Ier",
+                                        "I\xE8re"):
+                            word = "".join((word[:-len(suffix)], "i"))
 
-                        elif suffix == u"e":
+                        elif suffix == "e":
                             word = word[:-1]
 
-                        elif suffix == u"\xEB" and word[-3:-1] == u"gu":
+                        elif suffix == "\xEB" and word[-3:-1] == "gu":
                             word = word[:-1]
                         break
 
         # STEP 5: Undouble
-        if word.endswith((u"enn", u"onn", u"ett", u"ell", u"eill")):
+        if word.endswith(("enn", "onn", "ett", "ell", "eill")):
             word = word[:-1]
 
         # STEP 6: Un-accent
-        for i in xrange(1, len(word)):
+        for i in range(1, len(word)):
             if word[-i] not in self.__vowels:
                 i += 1
             else:
-                if i != 1 and word[-i] in (u"\xE9", u"\xE8"):
-                    word = u"".join((word[:-i], u"e", word[-i+1:]))
+                if i != 1 and word[-i] in ("\xE9", "\xE8"):
+                    word = "".join((word[:-i], "e", word[-i+1:]))
                 break
 
-        word = (word.replace(u"I", u"i")
-                    .replace(u"U", u"u")
-                    .replace(u"Y", u"y"))
+        word = (word.replace("I", "i")
+                    .replace("U", "u")
+                    .replace("Y", "y"))
 
 
         return word
@@ -1634,7 +1634,7 @@ class FrenchStemmer(_StandardStemmer):
 
 
     def __rv_french(self, word, vowels):
-        u"""
+        """
         Return the region RV that is used by the French stemmer.
 
         If the word begins with two vowels, RV is the region after
@@ -1655,13 +1655,13 @@ class FrenchStemmer(_StandardStemmer):
                the subclass FrenchStemmer. It is not to be invoked directly!
 
         """
-        rv = u""
+        rv = ""
         if len(word) >= 2:
-            if (word.startswith((u"par", u"col", u"tap")) or
+            if (word.startswith(("par", "col", "tap")) or
                 (word[0] in vowels and word[1] in vowels)):
                 rv = word[3:]
             else:
-                for i in xrange(1, len(word)):
+                for i in range(1, len(word)):
                     if word[i] in vowels:
                         rv = word[i+1:]
                         break
@@ -1672,7 +1672,7 @@ class FrenchStemmer(_StandardStemmer):
 
 class GermanStemmer(_StandardStemmer):
 
-    u"""
+    """
     The German Snowball stemmer.
 
     :cvar __vowels: The German vowels.
@@ -1693,17 +1693,17 @@ class GermanStemmer(_StandardStemmer):
 
     """
 
-    __vowels = u"aeiouy\xE4\xF6\xFC"
-    __s_ending = u"bdfghklmnrt"
-    __st_ending = u"bdfghklmnt"
+    __vowels = "aeiouy\xE4\xF6\xFC"
+    __s_ending = "bdfghklmnrt"
+    __st_ending = "bdfghklmnt"
 
-    __step1_suffixes = (u"ern", u"em", u"er", u"en", u"es", u"e", u"s")
-    __step2_suffixes = (u"est", u"en", u"er", u"st")
-    __step3_suffixes = (u"isch", u"lich", u"heit", u"keit",
-                          u"end", u"ung", u"ig", u"ik")
+    __step1_suffixes = ("ern", "em", "er", "en", "es", "e", "s")
+    __step2_suffixes = ("est", "en", "er", "st")
+    __step3_suffixes = ("isch", "lich", "heit", "keit",
+                          "end", "ung", "ig", "ik")
 
     def stem(self, word):
-        u"""
+        """
         Stem a German word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -1717,23 +1717,23 @@ class GermanStemmer(_StandardStemmer):
         if word in self.stopwords:
             return word
 
-        word = word.replace(u"\xDF", u"ss")
+        word = word.replace("\xDF", "ss")
 
         # Every occurrence of 'u' and 'y'
         # between vowels is put into upper case.
-        for i in xrange(1, len(word)-1):
+        for i in range(1, len(word)-1):
             if word[i-1] in self.__vowels and word[i+1] in self.__vowels:
-                if word[i] == u"u":
-                    word = u"".join((word[:i], u"U", word[i+1:]))
+                if word[i] == "u":
+                    word = "".join((word[:i], "U", word[i+1:]))
 
-                elif word[i] == u"y":
-                    word = u"".join((word[:i], u"Y", word[i+1:]))
+                elif word[i] == "y":
+                    word = "".join((word[:i], "Y", word[i+1:]))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
 
         # R1 is adjusted so that the region before it
         # contains at least 3 letters.
-        for i in xrange(1, len(word)):
+        for i in range(1, len(word)):
             if word[i] not in self.__vowels and word[i-1] in self.__vowels:
                 if len(word[:i+1]) < 3 and len(word[:i+1]) > 0:
                     r1 = word[3:]
@@ -1744,13 +1744,13 @@ class GermanStemmer(_StandardStemmer):
         # STEP 1
         for suffix in self.__step1_suffixes:
             if r1.endswith(suffix):
-                if (suffix in (u"en", u"es", u"e") and
-                    word[-len(suffix)-4:-len(suffix)] == u"niss"):
+                if (suffix in ("en", "es", "e") and
+                    word[-len(suffix)-4:-len(suffix)] == "niss"):
                     word = word[:-len(suffix)-1]
                     r1 = r1[:-len(suffix)-1]
                     r2 = r2[:-len(suffix)-1]
 
-                elif suffix == u"s":
+                elif suffix == "s":
                     if word[-2] in self.__s_ending:
                         word = word[:-1]
                         r1 = r1[:-1]
@@ -1764,7 +1764,7 @@ class GermanStemmer(_StandardStemmer):
         # STEP 2
         for suffix in self.__step2_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"st":
+                if suffix == "st":
                     if word[-3] in self.__st_ending and len(word[:-3]) >= 3:
                         word = word[:-2]
                         r1 = r1[:-2]
@@ -1778,29 +1778,29 @@ class GermanStemmer(_StandardStemmer):
         # STEP 3: Derivational suffixes
         for suffix in self.__step3_suffixes:
             if r2.endswith(suffix):
-                if suffix in (u"end", u"ung"):
-                    if (u"ig" in r2[-len(suffix)-2:-len(suffix)] and
-                        u"e" not in r2[-len(suffix)-3:-len(suffix)-2]):
+                if suffix in ("end", "ung"):
+                    if ("ig" in r2[-len(suffix)-2:-len(suffix)] and
+                        "e" not in r2[-len(suffix)-3:-len(suffix)-2]):
                         word = word[:-len(suffix)-2]
                     else:
                         word = word[:-len(suffix)]
 
-                elif (suffix in (u"ig", u"ik", u"isch") and
-                      u"e" not in r2[-len(suffix)-1:-len(suffix)]):
+                elif (suffix in ("ig", "ik", "isch") and
+                      "e" not in r2[-len(suffix)-1:-len(suffix)]):
                     word = word[:-len(suffix)]
 
-                elif suffix in (u"lich", u"heit"):
-                    if (u"er" in r1[-len(suffix)-2:-len(suffix)] or
-                        u"en" in r1[-len(suffix)-2:-len(suffix)]):
+                elif suffix in ("lich", "heit"):
+                    if ("er" in r1[-len(suffix)-2:-len(suffix)] or
+                        "en" in r1[-len(suffix)-2:-len(suffix)]):
                         word = word[:-len(suffix)-2]
                     else:
                         word = word[:-len(suffix)]
 
-                elif suffix == u"keit":
-                    if u"lich" in r2[-len(suffix)-4:-len(suffix)]:
+                elif suffix == "keit":
+                    if "lich" in r2[-len(suffix)-4:-len(suffix)]:
                         word = word[:-len(suffix)-4]
 
-                    elif u"ig" in r2[-len(suffix)-2:-len(suffix)]:
+                    elif "ig" in r2[-len(suffix)-2:-len(suffix)]:
                         word = word[:-len(suffix)-2]
                     else:
                         word = word[:-len(suffix)]
@@ -1808,9 +1808,9 @@ class GermanStemmer(_StandardStemmer):
 
         # Umlaut accents are removed and
         # 'u' and 'y' are put back into lower case.
-        word = (word.replace(u"\xE4", u"a").replace(u"\xF6", u"o")
-                    .replace(u"\xFC", u"u").replace(u"U", u"u")
-                    .replace(u"Y", u"y"))
+        word = (word.replace("\xE4", "a").replace("\xF6", "o")
+                    .replace("\xFC", "u").replace("U", "u")
+                    .replace("Y", "y"))
 
 
         return word
@@ -1819,7 +1819,7 @@ class GermanStemmer(_StandardStemmer):
 
 class HungarianStemmer(_LanguageSpecificStemmer):
 
-    u"""
+    """
     The Hungarian Snowball stemmer.
 
     :cvar __vowels: The Hungarian vowels.
@@ -1852,53 +1852,53 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
     """
 
-    __vowels = u"aeiou\xF6\xFC\xE1\xE9\xED\xF3\xF5\xFA\xFB"
-    __digraphs = (u"cs", u"dz", u"dzs", u"gy", u"ly", u"ny", u"ty", u"zs")
-    __double_consonants = (u"bb", u"cc", u"ccs", u"dd", u"ff", u"gg",
-                             u"ggy", u"jj", u"kk", u"ll", u"lly", u"mm",
-                             u"nn", u"nny", u"pp", u"rr", u"ss", u"ssz",
-                             u"tt", u"tty", u"vv", u"zz", u"zzs")
+    __vowels = "aeiou\xF6\xFC\xE1\xE9\xED\xF3\xF5\xFA\xFB"
+    __digraphs = ("cs", "dz", "dzs", "gy", "ly", "ny", "ty", "zs")
+    __double_consonants = ("bb", "cc", "ccs", "dd", "ff", "gg",
+                             "ggy", "jj", "kk", "ll", "lly", "mm",
+                             "nn", "nny", "pp", "rr", "ss", "ssz",
+                             "tt", "tty", "vv", "zz", "zzs")
 
-    __step1_suffixes = (u"al", u"el")
-    __step2_suffixes = (u'k\xE9ppen', u'onk\xE9nt', u'enk\xE9nt',
-                        u'ank\xE9nt', u'k\xE9pp', u'k\xE9nt', u'ban',
-                        u'ben', u'nak', u'nek', u'val', u'vel', u't\xF3l',
-                        u't\xF5l', u'r\xF3l', u'r\xF5l', u'b\xF3l',
-                        u'b\xF5l', u'hoz', u'hez', u'h\xF6z',
-                        u'n\xE1l', u'n\xE9l', u'\xE9rt', u'kor',
-                        u'ba', u'be', u'ra', u're', u'ig', u'at', u'et',
-                        u'ot', u'\xF6t', u'ul', u'\xFCl', u'v\xE1',
-                        u'v\xE9', u'en', u'on', u'an', u'\xF6n',
-                        u'n', u't')
-    __step3_suffixes = (u"\xE1nk\xE9nt", u"\xE1n", u"\xE9n")
-    __step4_suffixes = (u'astul', u'est\xFCl', u'\xE1stul',
-                        u'\xE9st\xFCl', u'stul', u'st\xFCl')
-    __step5_suffixes = (u"\xE1", u"\xE9")
-    __step6_suffixes = (u'ok\xE9', u'\xF6k\xE9', u'ak\xE9',
-                        u'ek\xE9', u'\xE1k\xE9', u'\xE1\xE9i',
-                        u'\xE9k\xE9', u'\xE9\xE9i', u'k\xE9',
-                        u'\xE9i', u'\xE9\xE9', u'\xE9')
-    __step7_suffixes = (u'\xE1juk', u'\xE9j\xFCk', u'\xFCnk',
-                        u'unk', u'juk', u'j\xFCk', u'\xE1nk',
-                        u'\xE9nk', u'nk', u'uk', u'\xFCk', u'em',
-                        u'om', u'am', u'od', u'ed', u'ad', u'\xF6d',
-                        u'ja', u'je', u'\xE1m', u'\xE1d', u'\xE9m',
-                        u'\xE9d', u'm', u'd', u'a', u'e', u'o',
-                        u'\xE1', u'\xE9')
-    __step8_suffixes = (u'jaitok', u'jeitek', u'jaink', u'jeink', u'aitok',
-                        u'eitek', u'\xE1itok', u'\xE9itek', u'jaim',
-                        u'jeim', u'jaid', u'jeid', u'eink', u'aink',
-                        u'itek', u'jeik', u'jaik', u'\xE1ink',
-                        u'\xE9ink', u'aim', u'eim', u'aid', u'eid',
-                        u'jai', u'jei', u'ink', u'aik', u'eik',
-                        u'\xE1im', u'\xE1id', u'\xE1ik', u'\xE9im',
-                        u'\xE9id', u'\xE9ik', u'im', u'id', u'ai',
-                        u'ei', u'ik', u'\xE1i', u'\xE9i', u'i')
-    __step9_suffixes = (u"\xE1k", u"\xE9k", u"\xF6k", u"ok",
-                        u"ek", u"ak", u"k")
+    __step1_suffixes = ("al", "el")
+    __step2_suffixes = ('k\xE9ppen', 'onk\xE9nt', 'enk\xE9nt',
+                        'ank\xE9nt', 'k\xE9pp', 'k\xE9nt', 'ban',
+                        'ben', 'nak', 'nek', 'val', 'vel', 't\xF3l',
+                        't\xF5l', 'r\xF3l', 'r\xF5l', 'b\xF3l',
+                        'b\xF5l', 'hoz', 'hez', 'h\xF6z',
+                        'n\xE1l', 'n\xE9l', '\xE9rt', 'kor',
+                        'ba', 'be', 'ra', 're', 'ig', 'at', 'et',
+                        'ot', '\xF6t', 'ul', '\xFCl', 'v\xE1',
+                        'v\xE9', 'en', 'on', 'an', '\xF6n',
+                        'n', 't')
+    __step3_suffixes = ("\xE1nk\xE9nt", "\xE1n", "\xE9n")
+    __step4_suffixes = ('astul', 'est\xFCl', '\xE1stul',
+                        '\xE9st\xFCl', 'stul', 'st\xFCl')
+    __step5_suffixes = ("\xE1", "\xE9")
+    __step6_suffixes = ('ok\xE9', '\xF6k\xE9', 'ak\xE9',
+                        'ek\xE9', '\xE1k\xE9', '\xE1\xE9i',
+                        '\xE9k\xE9', '\xE9\xE9i', 'k\xE9',
+                        '\xE9i', '\xE9\xE9', '\xE9')
+    __step7_suffixes = ('\xE1juk', '\xE9j\xFCk', '\xFCnk',
+                        'unk', 'juk', 'j\xFCk', '\xE1nk',
+                        '\xE9nk', 'nk', 'uk', '\xFCk', 'em',
+                        'om', 'am', 'od', 'ed', 'ad', '\xF6d',
+                        'ja', 'je', '\xE1m', '\xE1d', '\xE9m',
+                        '\xE9d', 'm', 'd', 'a', 'e', 'o',
+                        '\xE1', '\xE9')
+    __step8_suffixes = ('jaitok', 'jeitek', 'jaink', 'jeink', 'aitok',
+                        'eitek', '\xE1itok', '\xE9itek', 'jaim',
+                        'jeim', 'jaid', 'jeid', 'eink', 'aink',
+                        'itek', 'jeik', 'jaik', '\xE1ink',
+                        '\xE9ink', 'aim', 'eim', 'aid', 'eid',
+                        'jai', 'jei', 'ink', 'aik', 'eik',
+                        '\xE1im', '\xE1id', '\xE1ik', '\xE9im',
+                        '\xE9id', '\xE9ik', 'im', 'id', 'ai',
+                        'ei', 'ik', '\xE1i', '\xE9i', 'i')
+    __step9_suffixes = ("\xE1k", "\xE9k", "\xF6k", "ok",
+                        "ek", "ak", "k")
 
     def stem(self, word):
-        u"""
+        """
         Stem an Hungarian word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -1918,10 +1918,10 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         if r1.endswith(self.__step1_suffixes):
             for double_cons in self.__double_consonants:
                 if word[-2-len(double_cons):-2] == double_cons:
-                    word = u"".join((word[:-4], word[-3]))
+                    word = "".join((word[:-4], word[-3]))
 
                     if r1[-2-len(double_cons):-2] == double_cons:
-                        r1 = u"".join((r1[:-4], r1[-3]))
+                        r1 = "".join((r1[:-4], r1[-3]))
                     break
 
         # STEP 2: Remove frequent cases
@@ -1931,36 +1931,36 @@ class HungarianStemmer(_LanguageSpecificStemmer):
                     word = word[:-len(suffix)]
                     r1 = r1[:-len(suffix)]
 
-                    if r1.endswith(u"\xE1"):
-                        word = u"".join((word[:-1], u"a"))
-                        r1 = u"".join((r1[:-1], u"a"))
+                    if r1.endswith("\xE1"):
+                        word = "".join((word[:-1], "a"))
+                        r1 = "".join((r1[:-1], "a"))
 
-                    elif r1.endswith(u"\xE9"):
-                        word = u"".join((word[:-1], u"e"))
-                        r1 = u"".join((r1[:-1], u"e"))
+                    elif r1.endswith("\xE9"):
+                        word = "".join((word[:-1], "e"))
+                        r1 = "".join((r1[:-1], "e"))
                 break
 
         # STEP 3: Remove special cases
         for suffix in self.__step3_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"\xE9n":
-                    word = u"".join((word[:-2], u"e"))
-                    r1 = u"".join((r1[:-2], u"e"))
+                if suffix == "\xE9n":
+                    word = "".join((word[:-2], "e"))
+                    r1 = "".join((r1[:-2], "e"))
                 else:
-                    word = u"".join((word[:-len(suffix)], u"a"))
-                    r1 = u"".join((r1[:-len(suffix)], u"a"))
+                    word = "".join((word[:-len(suffix)], "a"))
+                    r1 = "".join((r1[:-len(suffix)], "a"))
                 break
 
         # STEP 4: Remove other cases
         for suffix in self.__step4_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"\xE1stul":
-                    word = u"".join((word[:-5], u"a"))
-                    r1 = u"".join((r1[:-5], u"a"))
+                if suffix == "\xE1stul":
+                    word = "".join((word[:-5], "a"))
+                    r1 = "".join((r1[:-5], "a"))
 
-                elif suffix == u"\xE9st\xFCl":
-                    word = u"".join((word[:-5], u"e"))
-                    r1 = u"".join((r1[:-5], u"e"))
+                elif suffix == "\xE9st\xFCl":
+                    word = "".join((word[:-5], "e"))
+                    r1 = "".join((r1[:-5], "e"))
                 else:
                     word = word[:-len(suffix)]
                     r1 = r1[:-len(suffix)]
@@ -1971,23 +1971,23 @@ class HungarianStemmer(_LanguageSpecificStemmer):
             if r1.endswith(suffix):
                 for double_cons in self.__double_consonants:
                     if word[-1-len(double_cons):-1] == double_cons:
-                        word = u"".join((word[:-3], word[-2]))
+                        word = "".join((word[:-3], word[-2]))
 
                         if r1[-1-len(double_cons):-1] == double_cons:
-                            r1 = u"".join((r1[:-3], r1[-2]))
+                            r1 = "".join((r1[:-3], r1[-2]))
                         break
 
         # STEP 6: Remove owned
         for suffix in self.__step6_suffixes:
             if r1.endswith(suffix):
-                if suffix in (u"\xE1k\xE9", u"\xE1\xE9i"):
-                    word = u"".join((word[:-3], u"a"))
-                    r1 = u"".join((r1[:-3], u"a"))
+                if suffix in ("\xE1k\xE9", "\xE1\xE9i"):
+                    word = "".join((word[:-3], "a"))
+                    r1 = "".join((r1[:-3], "a"))
 
-                elif suffix in (u"\xE9k\xE9", u"\xE9\xE9i",
-                                u"\xE9\xE9"):
-                    word = u"".join((word[:-len(suffix)], u"e"))
-                    r1 = u"".join((r1[:-len(suffix)], u"e"))
+                elif suffix in ("\xE9k\xE9", "\xE9\xE9i",
+                                "\xE9\xE9"):
+                    word = "".join((word[:-len(suffix)], "e"))
+                    r1 = "".join((r1[:-len(suffix)], "e"))
                 else:
                     word = word[:-len(suffix)]
                     r1 = r1[:-len(suffix)]
@@ -1997,15 +1997,15 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         for suffix in self.__step7_suffixes:
             if word.endswith(suffix):
                 if r1.endswith(suffix):
-                    if suffix in (u"\xE1nk", u"\xE1juk", u"\xE1m",
-                                  u"\xE1d", u"\xE1"):
-                        word = u"".join((word[:-len(suffix)], u"a"))
-                        r1 = u"".join((r1[:-len(suffix)], u"a"))
+                    if suffix in ("\xE1nk", "\xE1juk", "\xE1m",
+                                  "\xE1d", "\xE1"):
+                        word = "".join((word[:-len(suffix)], "a"))
+                        r1 = "".join((r1[:-len(suffix)], "a"))
 
-                    elif suffix in (u"\xE9nk", u"\xE9j\xFCk",
-                                    u"\xE9m", u"\xE9d", u"\xE9"):
-                        word = u"".join((word[:-len(suffix)], u"e"))
-                        r1 = u"".join((r1[:-len(suffix)], u"e"))
+                    elif suffix in ("\xE9nk", "\xE9j\xFCk",
+                                    "\xE9m", "\xE9d", "\xE9"):
+                        word = "".join((word[:-len(suffix)], "e"))
+                        r1 = "".join((r1[:-len(suffix)], "e"))
                     else:
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
@@ -2015,15 +2015,15 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         for suffix in self.__step8_suffixes:
             if word.endswith(suffix):
                 if r1.endswith(suffix):
-                    if suffix in (u"\xE1im", u"\xE1id", u"\xE1i",
-                                  u"\xE1ink", u"\xE1itok", u"\xE1ik"):
-                        word = u"".join((word[:-len(suffix)], u"a"))
-                        r1 = u"".join((r1[:-len(suffix)], u"a"))
+                    if suffix in ("\xE1im", "\xE1id", "\xE1i",
+                                  "\xE1ink", "\xE1itok", "\xE1ik"):
+                        word = "".join((word[:-len(suffix)], "a"))
+                        r1 = "".join((r1[:-len(suffix)], "a"))
 
-                    elif suffix in (u"\xE9im", u"\xE9id", u"\xE9i",
-                                    u"\xE9ink", u"\xE9itek", u"\xE9ik"):
-                        word = u"".join((word[:-len(suffix)], u"e"))
-                        r1 = u"".join((r1[:-len(suffix)], u"e"))
+                    elif suffix in ("\xE9im", "\xE9id", "\xE9i",
+                                    "\xE9ink", "\xE9itek", "\xE9ik"):
+                        word = "".join((word[:-len(suffix)], "e"))
+                        r1 = "".join((r1[:-len(suffix)], "e"))
                     else:
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
@@ -2033,10 +2033,10 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         for suffix in self.__step9_suffixes:
             if word.endswith(suffix):
                 if r1.endswith(suffix):
-                    if suffix == u"\xE1k":
-                        word = u"".join((word[:-2], u"a"))
-                    elif suffix == u"\xE9k":
-                        word = u"".join((word[:-2], u"e"))
+                    if suffix == "\xE1k":
+                        word = "".join((word[:-2], "a"))
+                    elif suffix == "\xE9k":
+                        word = "".join((word[:-2], "e"))
                     else:
                         word = word[:-len(suffix)]
                 break
@@ -2047,7 +2047,7 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
 
     def __r1_hungarian(self, word, vowels, digraphs):
-        u"""
+        """
         Return the region R1 that is used by the Hungarian stemmer.
 
         If the word begins with a vowel, R1 is defined as the region
@@ -2071,19 +2071,19 @@ class HungarianStemmer(_LanguageSpecificStemmer):
                HungarianStemmer. It is not to be invoked directly!
 
         """
-        r1 = u""
+        r1 = ""
         if word[0] in vowels:
             for digraph in digraphs:
                 if digraph in word[1:]:
                     r1 = word[word.index(digraph[-1])+1:]
                     return r1
 
-            for i in xrange(1, len(word)):
+            for i in range(1, len(word)):
                 if word[i] not in vowels:
                     r1 = word[i+1:]
                     break
         else:
-            for i in xrange(1, len(word)):
+            for i in range(1, len(word)):
                 if word[i] in vowels:
                     r1 = word[i+1:]
                     break
@@ -2094,7 +2094,7 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
 class ItalianStemmer(_StandardStemmer):
 
-    u"""
+    """
     The Italian Snowball stemmer.
 
     :cvar __vowels: The Italian vowels.
@@ -2111,46 +2111,46 @@ class ItalianStemmer(_StandardStemmer):
 
     """
 
-    __vowels = u"aeiou\xE0\xE8\xEC\xF2\xF9"
-    __step0_suffixes = (u'gliela', u'gliele', u'glieli', u'glielo',
-                        u'gliene', u'sene', u'mela', u'mele', u'meli',
-                        u'melo', u'mene', u'tela', u'tele', u'teli',
-                        u'telo', u'tene', u'cela', u'cele', u'celi',
-                        u'celo', u'cene', u'vela', u'vele', u'veli',
-                        u'velo', u'vene', u'gli', u'ci', u'la', u'le',
-                        u'li', u'lo', u'mi', u'ne', u'si', u'ti', u'vi')
-    __step1_suffixes = (u'atrice', u'atrici', u'azione', u'azioni',
-                        u'uzione', u'uzioni', u'usione', u'usioni',
-                        u'amento', u'amenti', u'imento', u'imenti',
-                        u'amente', u'abile', u'abili', u'ibile', u'ibili',
-                        u'mente', u'atore', u'atori', u'logia', u'logie',
-                        u'anza', u'anze', u'iche', u'ichi', u'ismo',
-                        u'ismi', u'ista', u'iste', u'isti', u'ist\xE0',
-                        u'ist\xE8', u'ist\xEC', u'ante', u'anti',
-                        u'enza', u'enze', u'ico', u'ici', u'ica', u'ice',
-                        u'oso', u'osi', u'osa', u'ose', u'it\xE0',
-                        u'ivo', u'ivi', u'iva', u'ive')
-    __step2_suffixes = (u'erebbero', u'irebbero', u'assero', u'assimo',
-                        u'eranno', u'erebbe', u'eremmo', u'ereste',
-                        u'eresti', u'essero', u'iranno', u'irebbe',
-                        u'iremmo', u'ireste', u'iresti', u'iscano',
-                        u'iscono', u'issero', u'arono', u'avamo', u'avano',
-                        u'avate', u'eremo', u'erete', u'erono', u'evamo',
-                        u'evano', u'evate', u'iremo', u'irete', u'irono',
-                        u'ivamo', u'ivano', u'ivate', u'ammo', u'ando',
-                        u'asse', u'assi', u'emmo', u'enda', u'ende',
-                        u'endi', u'endo', u'erai', u'erei', u'Yamo',
-                        u'iamo', u'immo', u'irai', u'irei', u'isca',
-                        u'isce', u'isci', u'isco', u'ano', u'are', u'ata',
-                        u'ate', u'ati', u'ato', u'ava', u'avi', u'avo',
-                        u'er\xE0', u'ere', u'er\xF2', u'ete', u'eva',
-                        u'evi', u'evo', u'ir\xE0', u'ire', u'ir\xF2',
-                        u'ita', u'ite', u'iti', u'ito', u'iva', u'ivi',
-                        u'ivo', u'ono', u'uta', u'ute', u'uti', u'uto',
-                        u'ar', u'ir')
+    __vowels = "aeiou\xE0\xE8\xEC\xF2\xF9"
+    __step0_suffixes = ('gliela', 'gliele', 'glieli', 'glielo',
+                        'gliene', 'sene', 'mela', 'mele', 'meli',
+                        'melo', 'mene', 'tela', 'tele', 'teli',
+                        'telo', 'tene', 'cela', 'cele', 'celi',
+                        'celo', 'cene', 'vela', 'vele', 'veli',
+                        'velo', 'vene', 'gli', 'ci', 'la', 'le',
+                        'li', 'lo', 'mi', 'ne', 'si', 'ti', 'vi')
+    __step1_suffixes = ('atrice', 'atrici', 'azione', 'azioni',
+                        'uzione', 'uzioni', 'usione', 'usioni',
+                        'amento', 'amenti', 'imento', 'imenti',
+                        'amente', 'abile', 'abili', 'ibile', 'ibili',
+                        'mente', 'atore', 'atori', 'logia', 'logie',
+                        'anza', 'anze', 'iche', 'ichi', 'ismo',
+                        'ismi', 'ista', 'iste', 'isti', 'ist\xE0',
+                        'ist\xE8', 'ist\xEC', 'ante', 'anti',
+                        'enza', 'enze', 'ico', 'ici', 'ica', 'ice',
+                        'oso', 'osi', 'osa', 'ose', 'it\xE0',
+                        'ivo', 'ivi', 'iva', 'ive')
+    __step2_suffixes = ('erebbero', 'irebbero', 'assero', 'assimo',
+                        'eranno', 'erebbe', 'eremmo', 'ereste',
+                        'eresti', 'essero', 'iranno', 'irebbe',
+                        'iremmo', 'ireste', 'iresti', 'iscano',
+                        'iscono', 'issero', 'arono', 'avamo', 'avano',
+                        'avate', 'eremo', 'erete', 'erono', 'evamo',
+                        'evano', 'evate', 'iremo', 'irete', 'irono',
+                        'ivamo', 'ivano', 'ivate', 'ammo', 'ando',
+                        'asse', 'assi', 'emmo', 'enda', 'ende',
+                        'endi', 'endo', 'erai', 'erei', 'Yamo',
+                        'iamo', 'immo', 'irai', 'irei', 'isca',
+                        'isce', 'isci', 'isco', 'ano', 'are', 'ata',
+                        'ate', 'ati', 'ato', 'ava', 'avi', 'avo',
+                        'er\xE0', 'ere', 'er\xF2', 'ete', 'eva',
+                        'evi', 'evo', 'ir\xE0', 'ire', 'ir\xF2',
+                        'ita', 'ite', 'iti', 'ito', 'iva', 'ivi',
+                        'ivo', 'ono', 'uta', 'ute', 'uti', 'uto',
+                        'ar', 'ir')
 
     def stem(self, word):
-        u"""
+        """
         Stem an Italian word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -2167,27 +2167,27 @@ class ItalianStemmer(_StandardStemmer):
         step1_success = False
 
         # All acute accents are replaced by grave accents.
-        word = (word.replace(u"\xE1", u"\xE0")
-                    .replace(u"\xE9", u"\xE8")
-                    .replace(u"\xED", u"\xEC")
-                    .replace(u"\xF3", u"\xF2")
-                    .replace(u"\xFA", u"\xF9"))
+        word = (word.replace("\xE1", "\xE0")
+                    .replace("\xE9", "\xE8")
+                    .replace("\xED", "\xEC")
+                    .replace("\xF3", "\xF2")
+                    .replace("\xFA", "\xF9"))
 
         # Every occurrence of 'u' after 'q'
         # is put into upper case.
-        for i in xrange(1, len(word)):
-            if word[i-1] == u"q" and word[i] == u"u":
-                word = u"".join((word[:i], u"U", word[i+1:]))
+        for i in range(1, len(word)):
+            if word[i-1] == "q" and word[i] == "u":
+                word = "".join((word[:i], "U", word[i+1:]))
 
         # Every occurrence of 'u' and 'i'
         # between vowels is put into upper case.
-        for i in xrange(1, len(word)-1):
+        for i in range(1, len(word)-1):
             if word[i-1] in self.__vowels and word[i+1] in self.__vowels:
-                if word[i] == u"u":
-                    word = u"".join((word[:i], u"U", word[i+1:]))
+                if word[i] == "u":
+                    word = "".join((word[:i], "U", word[i+1:]))
 
-                elif word [i] == u"i":
-                    word = u"".join((word[:i], u"I", word[i+1:]))
+                elif word [i] == "i":
+                    word = "".join((word[:i], "I", word[i+1:]))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
@@ -2195,48 +2195,48 @@ class ItalianStemmer(_StandardStemmer):
         # STEP 0: Attached pronoun
         for suffix in self.__step0_suffixes:
             if rv.endswith(suffix):
-                if rv[-len(suffix)-4:-len(suffix)] in (u"ando", u"endo"):
+                if rv[-len(suffix)-4:-len(suffix)] in ("ando", "endo"):
                     word = word[:-len(suffix)]
                     r1 = r1[:-len(suffix)]
                     r2 = r2[:-len(suffix)]
                     rv = rv[:-len(suffix)]
 
                 elif (rv[-len(suffix)-2:-len(suffix)] in
-                      (u"ar", u"er", u"ir")):
-                    word = u"".join((word[:-len(suffix)], u"e"))
-                    r1 = u"".join((r1[:-len(suffix)], u"e"))
-                    r2 = u"".join((r2[:-len(suffix)], u"e"))
-                    rv = u"".join((rv[:-len(suffix)], u"e"))
+                      ("ar", "er", "ir")):
+                    word = "".join((word[:-len(suffix)], "e"))
+                    r1 = "".join((r1[:-len(suffix)], "e"))
+                    r2 = "".join((r2[:-len(suffix)], "e"))
+                    rv = "".join((rv[:-len(suffix)], "e"))
                 break
 
         # STEP 1: Standard suffix removal
         for suffix in self.__step1_suffixes:
             if word.endswith(suffix):
-                if suffix == u"amente" and r1.endswith(suffix):
+                if suffix == "amente" and r1.endswith(suffix):
                     step1_success = True
                     word = word[:-6]
                     r2 = r2[:-6]
                     rv = rv[:-6]
 
-                    if r2.endswith(u"iv"):
+                    if r2.endswith("iv"):
                         word = word[:-2]
                         r2 = r2[:-2]
                         rv = rv[:-2]
 
-                        if r2.endswith(u"at"):
+                        if r2.endswith("at"):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                    elif r2.endswith((u"os", u"ic")):
+                    elif r2.endswith(("os", "ic")):
                         word = word[:-2]
                         rv = rv[:-2]
 
-                    elif r2 .endswith(u"abil"):
+                    elif r2 .endswith("abil"):
                         word = word[:-4]
                         rv = rv[:-4]
 
-                elif (suffix in (u"amento", u"amenti",
-                                 u"imento", u"imenti") and
+                elif (suffix in ("amento", "amenti",
+                                 "imento", "imenti") and
                       rv.endswith(suffix)):
                     step1_success = True
                     word = word[:-6]
@@ -2244,52 +2244,52 @@ class ItalianStemmer(_StandardStemmer):
 
                 elif r2.endswith(suffix):
                     step1_success = True
-                    if suffix in (u"azione", u"azioni", u"atore", u"atori"):
+                    if suffix in ("azione", "azioni", "atore", "atori"):
                         word = word[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
                         rv = rv[:-len(suffix)]
 
-                        if r2.endswith(u"ic"):
+                        if r2.endswith("ic"):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                    elif suffix in (u"logia", u"logie"):
+                    elif suffix in ("logia", "logie"):
                         word = word[:-2]
                         rv = word[:-2]
 
-                    elif suffix in (u"uzione", u"uzioni",
-                                    u"usione", u"usioni"):
+                    elif suffix in ("uzione", "uzioni",
+                                    "usione", "usioni"):
                         word = word[:-5]
                         rv = rv[:-5]
 
-                    elif suffix in (u"enza", u"enze"):
-                        word = u"".join((word[:-2], u"te"))
-                        rv = u"".join((rv[:-2], u"te"))
+                    elif suffix in ("enza", "enze"):
+                        word = "".join((word[:-2], "te"))
+                        rv = "".join((rv[:-2], "te"))
 
-                    elif suffix == u"it\xE0":
+                    elif suffix == "it\xE0":
                         word = word[:-3]
                         r2 = r2[:-3]
                         rv = rv[:-3]
 
-                        if r2.endswith((u"ic", u"iv")):
+                        if r2.endswith(("ic", "iv")):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                        elif r2.endswith(u"abil"):
+                        elif r2.endswith("abil"):
                             word = word[:-4]
                             rv = rv[:-4]
 
-                    elif suffix in (u"ivo", u"ivi", u"iva", u"ive"):
+                    elif suffix in ("ivo", "ivi", "iva", "ive"):
                         word = word[:-3]
                         r2 = r2[:-3]
                         rv = rv[:-3]
 
-                        if r2.endswith(u"at"):
+                        if r2.endswith("at"):
                             word = word[:-2]
                             r2 = r2[:-2]
                             rv = rv[:-2]
 
-                            if r2.endswith(u"ic"):
+                            if r2.endswith("ic"):
                                 word = word[:-2]
                                 rv = rv[:-2]
                     else:
@@ -2306,20 +2306,20 @@ class ItalianStemmer(_StandardStemmer):
                     break
 
         # STEP 3a
-        if rv.endswith((u"a", u"e", u"i", u"o", u"\xE0", u"\xE8",
-                        u"\xEC", u"\xF2")):
+        if rv.endswith(("a", "e", "i", "o", "\xE0", "\xE8",
+                        "\xEC", "\xF2")):
             word = word[:-1]
             rv = rv[:-1]
 
-            if rv.endswith(u"i"):
+            if rv.endswith("i"):
                 word = word[:-1]
                 rv = rv[:-1]
 
         # STEP 3b
-        if rv.endswith((u"ch", u"gh")):
+        if rv.endswith(("ch", "gh")):
             word = word[:-1]
 
-        word = word.replace(u"I", u"i").replace(u"U", u"u")
+        word = word.replace("I", "i").replace("U", "u")
 
 
         return word
@@ -2328,7 +2328,7 @@ class ItalianStemmer(_StandardStemmer):
 
 class NorwegianStemmer(_ScandinavianStemmer):
 
-    u"""
+    """
     The Norwegian Snowball stemmer.
 
     :cvar __vowels: The Norwegian vowels.
@@ -2347,21 +2347,21 @@ class NorwegianStemmer(_ScandinavianStemmer):
 
     """
 
-    __vowels = u"aeiouy\xE6\xE5\xF8"
-    __s_ending = u"bcdfghjlmnoprtvyz"
-    __step1_suffixes = (u"hetenes", u"hetene", u"hetens", u"heter",
-                        u"heten", u"endes", u"ande", u"ende", u"edes",
-                        u"enes", u"erte", u"ede", u"ane", u"ene", u"ens",
-                        u"ers", u"ets", u"het", u"ast", u"ert", u"en",
-                        u"ar", u"er", u"as", u"es", u"et", u"a", u"e", u"s")
+    __vowels = "aeiouy\xE6\xE5\xF8"
+    __s_ending = "bcdfghjlmnoprtvyz"
+    __step1_suffixes = ("hetenes", "hetene", "hetens", "heter",
+                        "heten", "endes", "ande", "ende", "edes",
+                        "enes", "erte", "ede", "ane", "ene", "ens",
+                        "ers", "ets", "het", "ast", "ert", "en",
+                        "ar", "er", "as", "es", "et", "a", "e", "s")
 
-    __step2_suffixes = (u"dt", u"vt")
+    __step2_suffixes = ("dt", "vt")
 
-    __step3_suffixes = (u"hetslov", u"eleg", u"elig", u"elov", u"slov",
-                          u"leg", u"eig", u"lig", u"els", u"lov", u"ig")
+    __step3_suffixes = ("hetslov", "eleg", "elig", "elov", "slov",
+                          "leg", "eig", "lig", "els", "lov", "ig")
 
     def stem(self, word):
-        u"""
+        """
         Stem a Norwegian word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -2380,13 +2380,13 @@ class NorwegianStemmer(_ScandinavianStemmer):
         # STEP 1
         for suffix in self.__step1_suffixes:
             if r1.endswith(suffix):
-                if suffix in (u"erte", u"ert"):
-                    word = u"".join((word[:-len(suffix)], u"er"))
-                    r1 = u"".join((r1[:-len(suffix)], u"er"))
+                if suffix in ("erte", "ert"):
+                    word = "".join((word[:-len(suffix)], "er"))
+                    r1 = "".join((r1[:-len(suffix)], "er"))
 
-                elif suffix == u"s":
+                elif suffix == "s":
                     if (word[-2] in self.__s_ending or
-                        (word[-2] == u"k" and word[-3] not in self.__vowels)):
+                        (word[-2] == "k" and word[-3] not in self.__vowels)):
                         word = word[:-1]
                         r1 = r1[:-1]
                 else:
@@ -2414,7 +2414,7 @@ class NorwegianStemmer(_ScandinavianStemmer):
 
 class PortugueseStemmer(_StandardStemmer):
 
-    u"""
+    """
     The Portuguese Snowball stemmer.
 
     :cvar __vowels: The Portuguese vowels.
@@ -2431,50 +2431,50 @@ class PortugueseStemmer(_StandardStemmer):
 
     """
 
-    __vowels = u"aeiou\xE1\xE9\xED\xF3\xFA\xE2\xEA\xF4"
-    __step1_suffixes = (u'amentos', u'imentos', u'uciones', u'amento',
-                        u'imento', u'adoras', u'adores', u'a\xE7o~es',
-                        u'log\xEDas', u'\xEAncias', u'amente',
-                        u'idades', u'ismos', u'istas', u'adora',
-                        u'a\xE7a~o', u'antes', u'\xE2ncia',
-                        u'log\xEDa', u'uci\xF3n', u'\xEAncia',
-                        u'mente', u'idade', u'ezas', u'icos', u'icas',
-                        u'ismo', u'\xE1vel', u'\xEDvel', u'ista',
-                        u'osos', u'osas', u'ador', u'ante', u'ivas',
-                        u'ivos', u'iras', u'eza', u'ico', u'ica',
-                        u'oso', u'osa', u'iva', u'ivo', u'ira')
-    __step2_suffixes = (u'ar\xEDamos', u'er\xEDamos', u'ir\xEDamos',
-                        u'\xE1ssemos', u'\xEAssemos', u'\xEDssemos',
-                        u'ar\xEDeis', u'er\xEDeis', u'ir\xEDeis',
-                        u'\xE1sseis', u'\xE9sseis', u'\xEDsseis',
-                        u'\xE1ramos', u'\xE9ramos', u'\xEDramos',
-                        u'\xE1vamos', u'aremos', u'eremos', u'iremos',
-                        u'ariam', u'eriam', u'iriam', u'assem', u'essem',
-                        u'issem', u'ara~o', u'era~o', u'ira~o', u'arias',
-                        u'erias', u'irias', u'ardes', u'erdes', u'irdes',
-                        u'asses', u'esses', u'isses', u'astes', u'estes',
-                        u'istes', u'\xE1reis', u'areis', u'\xE9reis',
-                        u'ereis', u'\xEDreis', u'ireis', u'\xE1veis',
-                        u'\xEDamos', u'armos', u'ermos', u'irmos',
-                        u'aria', u'eria', u'iria', u'asse', u'esse',
-                        u'isse', u'aste', u'este', u'iste', u'arei',
-                        u'erei', u'irei', u'aram', u'eram', u'iram',
-                        u'avam', u'arem', u'erem', u'irem',
-                        u'ando', u'endo', u'indo', u'adas', u'idas',
-                        u'ar\xE1s', u'aras', u'er\xE1s', u'eras',
-                        u'ir\xE1s', u'avas', u'ares', u'eres', u'ires',
-                        u'\xEDeis', u'ados', u'idos', u'\xE1mos',
-                        u'amos', u'emos', u'imos', u'iras', u'ada', u'ida',
-                        u'ar\xE1', u'ara', u'er\xE1', u'era',
-                        u'ir\xE1', u'ava', u'iam', u'ado', u'ido',
-                        u'ias', u'ais', u'eis', u'ira', u'ia', u'ei', u'am',
-                        u'em', u'ar', u'er', u'ir', u'as',
-                        u'es', u'is', u'eu', u'iu', u'ou')
-    __step4_suffixes = (u"os", u"a", u"i", u"o", u"\xE1",
-                        u"\xED", u"\xF3")
+    __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xE2\xEA\xF4"
+    __step1_suffixes = ('amentos', 'imentos', 'uciones', 'amento',
+                        'imento', 'adoras', 'adores', 'a\xE7o~es',
+                        'log\xEDas', '\xEAncias', 'amente',
+                        'idades', 'ismos', 'istas', 'adora',
+                        'a\xE7a~o', 'antes', '\xE2ncia',
+                        'log\xEDa', 'uci\xF3n', '\xEAncia',
+                        'mente', 'idade', 'ezas', 'icos', 'icas',
+                        'ismo', '\xE1vel', '\xEDvel', 'ista',
+                        'osos', 'osas', 'ador', 'ante', 'ivas',
+                        'ivos', 'iras', 'eza', 'ico', 'ica',
+                        'oso', 'osa', 'iva', 'ivo', 'ira')
+    __step2_suffixes = ('ar\xEDamos', 'er\xEDamos', 'ir\xEDamos',
+                        '\xE1ssemos', '\xEAssemos', '\xEDssemos',
+                        'ar\xEDeis', 'er\xEDeis', 'ir\xEDeis',
+                        '\xE1sseis', '\xE9sseis', '\xEDsseis',
+                        '\xE1ramos', '\xE9ramos', '\xEDramos',
+                        '\xE1vamos', 'aremos', 'eremos', 'iremos',
+                        'ariam', 'eriam', 'iriam', 'assem', 'essem',
+                        'issem', 'ara~o', 'era~o', 'ira~o', 'arias',
+                        'erias', 'irias', 'ardes', 'erdes', 'irdes',
+                        'asses', 'esses', 'isses', 'astes', 'estes',
+                        'istes', '\xE1reis', 'areis', '\xE9reis',
+                        'ereis', '\xEDreis', 'ireis', '\xE1veis',
+                        '\xEDamos', 'armos', 'ermos', 'irmos',
+                        'aria', 'eria', 'iria', 'asse', 'esse',
+                        'isse', 'aste', 'este', 'iste', 'arei',
+                        'erei', 'irei', 'aram', 'eram', 'iram',
+                        'avam', 'arem', 'erem', 'irem',
+                        'ando', 'endo', 'indo', 'adas', 'idas',
+                        'ar\xE1s', 'aras', 'er\xE1s', 'eras',
+                        'ir\xE1s', 'avas', 'ares', 'eres', 'ires',
+                        '\xEDeis', 'ados', 'idos', '\xE1mos',
+                        'amos', 'emos', 'imos', 'iras', 'ada', 'ida',
+                        'ar\xE1', 'ara', 'er\xE1', 'era',
+                        'ir\xE1', 'ava', 'iam', 'ado', 'ido',
+                        'ias', 'ais', 'eis', 'ira', 'ia', 'ei', 'am',
+                        'em', 'ar', 'er', 'ir', 'as',
+                        'es', 'is', 'eu', 'iu', 'ou')
+    __step4_suffixes = ("os", "a", "i", "o", "\xE1",
+                        "\xED", "\xF3")
 
     def stem(self, word):
-        u"""
+        """
         Stem a Portuguese word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -2491,8 +2491,8 @@ class PortugueseStemmer(_StandardStemmer):
         step1_success = False
         step2_success = False
 
-        word = (word.replace(u"\xE3", u"a~")
-                    .replace(u"\xF5", u"o~"))
+        word = (word.replace("\xE3", "a~")
+                    .replace("\xF5", "o~"))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
@@ -2500,76 +2500,76 @@ class PortugueseStemmer(_StandardStemmer):
         # STEP 1: Standard suffix removal
         for suffix in self.__step1_suffixes:
             if word.endswith(suffix):
-                if suffix == u"amente" and r1.endswith(suffix):
+                if suffix == "amente" and r1.endswith(suffix):
                     step1_success = True
 
                     word = word[:-6]
                     r2 = r2[:-6]
                     rv = rv[:-6]
 
-                    if r2.endswith(u"iv"):
+                    if r2.endswith("iv"):
                         word = word[:-2]
                         r2 = r2[:-2]
                         rv = rv[:-2]
 
-                        if r2.endswith(u"at"):
+                        if r2.endswith("at"):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                    elif r2.endswith((u"os", u"ic", u"ad")):
+                    elif r2.endswith(("os", "ic", "ad")):
                         word = word[:-2]
                         rv = rv[:-2]
 
-                elif (suffix in (u"ira", u"iras") and rv.endswith(suffix) and
-                      word[-len(suffix)-1:-len(suffix)] == u"e"):
+                elif (suffix in ("ira", "iras") and rv.endswith(suffix) and
+                      word[-len(suffix)-1:-len(suffix)] == "e"):
                     step1_success = True
 
-                    word = u"".join((word[:-len(suffix)], u"ir"))
-                    rv = u"".join((rv[:-len(suffix)], u"ir"))
+                    word = "".join((word[:-len(suffix)], "ir"))
+                    rv = "".join((rv[:-len(suffix)], "ir"))
 
                 elif r2.endswith(suffix):
                     step1_success = True
 
-                    if suffix in (u"log\xEDa", u"log\xEDas"):
+                    if suffix in ("log\xEDa", "log\xEDas"):
                         word = word[:-2]
                         rv = rv[:-2]
 
-                    elif suffix in (u"uci\xF3n", u"uciones"):
-                        word = u"".join((word[:-len(suffix)], u"u"))
-                        rv = u"".join((rv[:-len(suffix)], u"u"))
+                    elif suffix in ("uci\xF3n", "uciones"):
+                        word = "".join((word[:-len(suffix)], "u"))
+                        rv = "".join((rv[:-len(suffix)], "u"))
 
-                    elif suffix in (u"\xEAncia", u"\xEAncias"):
-                        word = u"".join((word[:-len(suffix)], u"ente"))
-                        rv = u"".join((rv[:-len(suffix)], u"ente"))
+                    elif suffix in ("\xEAncia", "\xEAncias"):
+                        word = "".join((word[:-len(suffix)], "ente"))
+                        rv = "".join((rv[:-len(suffix)], "ente"))
 
-                    elif suffix == u"mente":
+                    elif suffix == "mente":
                         word = word[:-5]
                         r2 = r2[:-5]
                         rv = rv[:-5]
 
-                        if r2.endswith((u"ante", u"avel", u"\xEDvel")):
+                        if r2.endswith(("ante", "avel", "\xEDvel")):
                             word = word[:-4]
                             rv = rv[:-4]
 
-                    elif suffix in (u"idade", u"idades"):
+                    elif suffix in ("idade", "idades"):
                         word = word[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
                         rv = rv[:-len(suffix)]
 
-                        if r2.endswith((u"ic", u"iv")):
+                        if r2.endswith(("ic", "iv")):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                        elif r2.endswith(u"abil"):
+                        elif r2.endswith("abil"):
                             word = word[:-4]
                             rv = rv[:-4]
 
-                    elif suffix in (u"iva", u"ivo", u"ivas", u"ivos"):
+                    elif suffix in ("iva", "ivo", "ivas", "ivos"):
                         word = word[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
                         rv = rv[:-len(suffix)]
 
-                        if r2.endswith(u"at"):
+                        if r2.endswith("at"):
                             word = word[:-2]
                             rv = rv[:-2]
                     else:
@@ -2589,7 +2589,7 @@ class PortugueseStemmer(_StandardStemmer):
 
         # STEP 3
         if step1_success or step2_success:
-            if rv.endswith(u"i") and word[-2] == u"c":
+            if rv.endswith("i") and word[-2] == "c":
                 word = word[:-1]
                 rv = rv[:-1]
 
@@ -2602,18 +2602,18 @@ class PortugueseStemmer(_StandardStemmer):
                     break
 
         # STEP 5
-        if rv.endswith((u"e", u"\xE9", u"\xEA")):
+        if rv.endswith(("e", "\xE9", "\xEA")):
             word = word[:-1]
             rv = rv[:-1]
 
-            if ((word.endswith(u"gu") and rv.endswith(u"u")) or
-                (word.endswith(u"ci") and rv.endswith(u"i"))):
+            if ((word.endswith("gu") and rv.endswith("u")) or
+                (word.endswith("ci") and rv.endswith("i"))):
                 word = word[:-1]
 
-        elif word.endswith(u"\xE7"):
-            word = u"".join((word[:-1], u"c"))
+        elif word.endswith("\xE7"):
+            word = "".join((word[:-1], "c"))
 
-        word = word.replace(u"a~", u"\xE3").replace(u"o~", u"\xF5")
+        word = word.replace("a~", "\xE3").replace("o~", "\xF5")
 
 
         return word
@@ -2622,7 +2622,7 @@ class PortugueseStemmer(_StandardStemmer):
 
 class RomanianStemmer(_StandardStemmer):
 
-    u"""
+    """
     The Romanian Snowball stemmer.
 
     :cvar __vowels: The Romanian vowels.
@@ -2641,68 +2641,68 @@ class RomanianStemmer(_StandardStemmer):
 
     """
 
-    __vowels = u"aeiou\u0103\xE2\xEE"
-    __step0_suffixes = (u'iilor', u'ului', u'elor', u'iile', u'ilor',
-                        u'atei', u'a\u0163ie', u'a\u0163ia', u'aua',
-                        u'ele', u'iua', u'iei', u'ile', u'ul', u'ea',
-                        u'ii')
-    __step1_suffixes = (u'abilitate', u'abilitati', u'abilit\u0103\u0163i',
-                        u'ibilitate', u'abilit\u0103i', u'ivitate',
-                        u'ivitati', u'ivit\u0103\u0163i', u'icitate',
-                        u'icitati', u'icit\u0103\u0163i', u'icatori',
-                        u'ivit\u0103i', u'icit\u0103i', u'icator',
-                        u'a\u0163iune', u'atoare', u'\u0103toare',
-                        u'i\u0163iune', u'itoare', u'iciva', u'icive',
-                        u'icivi', u'iciv\u0103', u'icala', u'icale',
-                        u'icali', u'ical\u0103', u'ativa', u'ative',
-                        u'ativi', u'ativ\u0103', u'atori', u'\u0103tori',
-                        u'itiva', u'itive', u'itivi', u'itiv\u0103',
-                        u'itori', u'iciv', u'ical', u'ativ', u'ator',
-                        u'\u0103tor', u'itiv', u'itor')
-    __step2_suffixes = (u'abila', u'abile', u'abili', u'abil\u0103',
-                        u'ibila', u'ibile', u'ibili', u'ibil\u0103',
-                        u'atori', u'itate', u'itati', u'it\u0103\u0163i',
-                        u'abil', u'ibil', u'oasa', u'oas\u0103', u'oase',
-                        u'anta', u'ante', u'anti', u'ant\u0103', u'ator',
-                        u'it\u0103i', u'iune', u'iuni', u'isme', u'ista',
-                        u'iste', u'isti', u'ist\u0103', u'i\u015Fti',
-                        u'ata', u'at\u0103', u'ati', u'ate', u'uta',
-                        u'ut\u0103', u'uti', u'ute', u'ita', u'it\u0103',
-                        u'iti', u'ite', u'ica', u'ice', u'ici', u'ic\u0103',
-                        u'osi', u'o\u015Fi', u'ant', u'iva', u'ive', u'ivi',
-                        u'iv\u0103', u'ism', u'ist', u'at', u'ut', u'it',
-                        u'ic', u'os', u'iv')
-    __step3_suffixes = (u'seser\u0103\u0163i', u'aser\u0103\u0163i',
-                        u'iser\u0103\u0163i', u'\xE2ser\u0103\u0163i',
-                        u'user\u0103\u0163i', u'seser\u0103m',
-                        u'aser\u0103m', u'iser\u0103m', u'\xE2ser\u0103m',
-                        u'user\u0103m', u'ser\u0103\u0163i', u'sese\u015Fi',
-                        u'seser\u0103', u'easc\u0103', u'ar\u0103\u0163i',
-                        u'ur\u0103\u0163i', u'ir\u0103\u0163i',
-                        u'\xE2r\u0103\u0163i', u'ase\u015Fi',
-                        u'aser\u0103', u'ise\u015Fi', u'iser\u0103',
-                        u'\xe2se\u015Fi', u'\xE2ser\u0103',
-                        u'use\u015Fi', u'user\u0103', u'ser\u0103m',
-                        u'sesem', u'indu', u'\xE2ndu', u'eaz\u0103',
-                        u'e\u015Fti', u'e\u015Fte', u'\u0103\u015Fti',
-                        u'\u0103\u015Fte', u'ea\u0163i', u'ia\u0163i',
-                        u'ar\u0103m', u'ur\u0103m', u'ir\u0103m',
-                        u'\xE2r\u0103m', u'asem', u'isem',
-                        u'\xE2sem', u'usem', u'se\u015Fi', u'ser\u0103',
-                        u'sese', u'are', u'ere', u'ire', u'\xE2re',
-                        u'ind', u'\xE2nd', u'eze', u'ezi', u'esc',
-                        u'\u0103sc', u'eam', u'eai', u'eau', u'iam',
-                        u'iai', u'iau', u'a\u015Fi', u'ar\u0103',
-                        u'u\u015Fi', u'ur\u0103', u'i\u015Fi', u'ir\u0103',
-                        u'\xE2\u015Fi', u'\xe2r\u0103', u'ase',
-                        u'ise', u'\xE2se', u'use', u'a\u0163i',
-                        u'e\u0163i', u'i\u0163i', u'\xe2\u0163i', u'sei',
-                        u'ez', u'am', u'ai', u'au', u'ea', u'ia', u'ui',
-                        u'\xE2i', u'\u0103m', u'em', u'im', u'\xE2m',
-                        u'se')
+    __vowels = "aeiou\u0103\xE2\xEE"
+    __step0_suffixes = ('iilor', 'ului', 'elor', 'iile', 'ilor',
+                        'atei', 'a\u0163ie', 'a\u0163ia', 'aua',
+                        'ele', 'iua', 'iei', 'ile', 'ul', 'ea',
+                        'ii')
+    __step1_suffixes = ('abilitate', 'abilitati', 'abilit\u0103\u0163i',
+                        'ibilitate', 'abilit\u0103i', 'ivitate',
+                        'ivitati', 'ivit\u0103\u0163i', 'icitate',
+                        'icitati', 'icit\u0103\u0163i', 'icatori',
+                        'ivit\u0103i', 'icit\u0103i', 'icator',
+                        'a\u0163iune', 'atoare', '\u0103toare',
+                        'i\u0163iune', 'itoare', 'iciva', 'icive',
+                        'icivi', 'iciv\u0103', 'icala', 'icale',
+                        'icali', 'ical\u0103', 'ativa', 'ative',
+                        'ativi', 'ativ\u0103', 'atori', '\u0103tori',
+                        'itiva', 'itive', 'itivi', 'itiv\u0103',
+                        'itori', 'iciv', 'ical', 'ativ', 'ator',
+                        '\u0103tor', 'itiv', 'itor')
+    __step2_suffixes = ('abila', 'abile', 'abili', 'abil\u0103',
+                        'ibila', 'ibile', 'ibili', 'ibil\u0103',
+                        'atori', 'itate', 'itati', 'it\u0103\u0163i',
+                        'abil', 'ibil', 'oasa', 'oas\u0103', 'oase',
+                        'anta', 'ante', 'anti', 'ant\u0103', 'ator',
+                        'it\u0103i', 'iune', 'iuni', 'isme', 'ista',
+                        'iste', 'isti', 'ist\u0103', 'i\u015Fti',
+                        'ata', 'at\u0103', 'ati', 'ate', 'uta',
+                        'ut\u0103', 'uti', 'ute', 'ita', 'it\u0103',
+                        'iti', 'ite', 'ica', 'ice', 'ici', 'ic\u0103',
+                        'osi', 'o\u015Fi', 'ant', 'iva', 'ive', 'ivi',
+                        'iv\u0103', 'ism', 'ist', 'at', 'ut', 'it',
+                        'ic', 'os', 'iv')
+    __step3_suffixes = ('seser\u0103\u0163i', 'aser\u0103\u0163i',
+                        'iser\u0103\u0163i', '\xE2ser\u0103\u0163i',
+                        'user\u0103\u0163i', 'seser\u0103m',
+                        'aser\u0103m', 'iser\u0103m', '\xE2ser\u0103m',
+                        'user\u0103m', 'ser\u0103\u0163i', 'sese\u015Fi',
+                        'seser\u0103', 'easc\u0103', 'ar\u0103\u0163i',
+                        'ur\u0103\u0163i', 'ir\u0103\u0163i',
+                        '\xE2r\u0103\u0163i', 'ase\u015Fi',
+                        'aser\u0103', 'ise\u015Fi', 'iser\u0103',
+                        '\xe2se\u015Fi', '\xE2ser\u0103',
+                        'use\u015Fi', 'user\u0103', 'ser\u0103m',
+                        'sesem', 'indu', '\xE2ndu', 'eaz\u0103',
+                        'e\u015Fti', 'e\u015Fte', '\u0103\u015Fti',
+                        '\u0103\u015Fte', 'ea\u0163i', 'ia\u0163i',
+                        'ar\u0103m', 'ur\u0103m', 'ir\u0103m',
+                        '\xE2r\u0103m', 'asem', 'isem',
+                        '\xE2sem', 'usem', 'se\u015Fi', 'ser\u0103',
+                        'sese', 'are', 'ere', 'ire', '\xE2re',
+                        'ind', '\xE2nd', 'eze', 'ezi', 'esc',
+                        '\u0103sc', 'eam', 'eai', 'eau', 'iam',
+                        'iai', 'iau', 'a\u015Fi', 'ar\u0103',
+                        'u\u015Fi', 'ur\u0103', 'i\u015Fi', 'ir\u0103',
+                        '\xE2\u015Fi', '\xe2r\u0103', 'ase',
+                        'ise', '\xE2se', 'use', 'a\u0163i',
+                        'e\u0163i', 'i\u0163i', '\xe2\u0163i', 'sei',
+                        'ez', 'am', 'ai', 'au', 'ea', 'ia', 'ui',
+                        '\xE2i', '\u0103m', 'em', 'im', '\xE2m',
+                        'se')
 
     def stem(self, word):
-        u"""
+        """
         Stem a Romanian word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -2719,13 +2719,13 @@ class RomanianStemmer(_StandardStemmer):
         step1_success = False
         step2_success = False
 
-        for i in xrange(1, len(word)-1):
+        for i in range(1, len(word)-1):
             if word[i-1] in self.__vowels and word[i+1] in self.__vowels:
-                if word[i] == u"u":
-                    word = u"".join((word[:i], u"U", word[i+1:]))
+                if word[i] == "u":
+                    word = "".join((word[:i], "U", word[i+1:]))
 
-                elif word[i] == u"i":
-                    word = u"".join((word[:i], u"I", word[i+1:]))
+                elif word[i] == "i":
+                    word = "".join((word[:i], "I", word[i+1:]))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
@@ -2734,36 +2734,36 @@ class RomanianStemmer(_StandardStemmer):
         for suffix in self.__step0_suffixes:
             if word.endswith(suffix):
                 if suffix in r1:
-                    if suffix in (u"ul", u"ului"):
+                    if suffix in ("ul", "ului"):
                         word = word[:-len(suffix)]
 
                         if suffix in rv:
                             rv = rv[:-len(suffix)]
                         else:
-                            rv = u""
+                            rv = ""
 
-                    elif (suffix == u"aua" or suffix == u"atei" or
-                          (suffix == u"ile" and word[-5:-3] != u"ab")):
+                    elif (suffix == "aua" or suffix == "atei" or
+                          (suffix == "ile" and word[-5:-3] != "ab")):
                         word = word[:-2]
 
-                    elif suffix in (u"ea", u"ele", u"elor"):
-                        word = u"".join((word[:-len(suffix)], u"e"))
+                    elif suffix in ("ea", "ele", "elor"):
+                        word = "".join((word[:-len(suffix)], "e"))
 
                         if suffix in rv:
-                            rv = u"".join((rv[:-len(suffix)], u"e"))
+                            rv = "".join((rv[:-len(suffix)], "e"))
                         else:
-                            rv = u""
+                            rv = ""
 
-                    elif suffix in (u"ii", u"iua", u"iei",
-                                    u"iile", u"iilor", u"ilor"):
-                        word = u"".join((word[:-len(suffix)], u"i"))
+                    elif suffix in ("ii", "iua", "iei",
+                                    "iile", "iilor", "ilor"):
+                        word = "".join((word[:-len(suffix)], "i"))
 
                         if suffix in rv:
-                            rv = u"".join((rv[:-len(suffix)], u"i"))
+                            rv = "".join((rv[:-len(suffix)], "i"))
                         else:
-                            rv = u""
+                            rv = ""
 
-                    elif suffix in (u"a\u0163ie", u"a\u0163ia"):
+                    elif suffix in ("a\u0163ie", "a\u0163ia"):
                         word = word[:-1]
                 break
 
@@ -2778,44 +2778,44 @@ class RomanianStemmer(_StandardStemmer):
                         step1_success = True
                         replacement_done = True
 
-                        if suffix in (u"abilitate", u"abilitati",
-                                      u"abilit\u0103i",
-                                      u"abilit\u0103\u0163i"):
-                            word = u"".join((word[:-len(suffix)], u"abil"))
+                        if suffix in ("abilitate", "abilitati",
+                                      "abilit\u0103i",
+                                      "abilit\u0103\u0163i"):
+                            word = "".join((word[:-len(suffix)], "abil"))
 
-                        elif suffix == u"ibilitate":
+                        elif suffix == "ibilitate":
                             word = word[:-5]
 
-                        elif suffix in (u"ivitate", u"ivitati",
-                                        u"ivit\u0103i",
-                                        u"ivit\u0103\u0163i"):
-                            word = u"".join((word[:-len(suffix)], u"iv"))
+                        elif suffix in ("ivitate", "ivitati",
+                                        "ivit\u0103i",
+                                        "ivit\u0103\u0163i"):
+                            word = "".join((word[:-len(suffix)], "iv"))
 
-                        elif suffix in (u"icitate", u"icitati", u"icit\u0103i",
-                                        u"icit\u0103\u0163i", u"icator",
-                                        u"icatori", u"iciv", u"iciva",
-                                        u"icive", u"icivi", u"iciv\u0103",
-                                        u"ical", u"icala", u"icale", u"icali",
-                                        u"ical\u0103"):
-                            word = u"".join((word[:-len(suffix)], u"ic"))
+                        elif suffix in ("icitate", "icitati", "icit\u0103i",
+                                        "icit\u0103\u0163i", "icator",
+                                        "icatori", "iciv", "iciva",
+                                        "icive", "icivi", "iciv\u0103",
+                                        "ical", "icala", "icale", "icali",
+                                        "ical\u0103"):
+                            word = "".join((word[:-len(suffix)], "ic"))
 
-                        elif suffix in (u"ativ", u"ativa", u"ative", u"ativi",
-                                        u"ativ\u0103", u"a\u0163iune",
-                                        u"atoare", u"ator", u"atori",
-                                        u"\u0103toare",
-                                        u"\u0103tor", u"\u0103tori"):
-                            word = u"".join((word[:-len(suffix)], u"at"))
-
-                            if suffix in r2:
-                                r2 = u"".join((r2[:-len(suffix)], u"at"))
-
-                        elif suffix in (u"itiv", u"itiva", u"itive", u"itivi",
-                                        u"itiv\u0103", u"i\u0163iune",
-                                        u"itoare", u"itor", u"itori"):
-                            word = u"".join((word[:-len(suffix)], u"it"))
+                        elif suffix in ("ativ", "ativa", "ative", "ativi",
+                                        "ativ\u0103", "a\u0163iune",
+                                        "atoare", "ator", "atori",
+                                        "\u0103toare",
+                                        "\u0103tor", "\u0103tori"):
+                            word = "".join((word[:-len(suffix)], "at"))
 
                             if suffix in r2:
-                                r2 = u"".join((r2[:-len(suffix)], u"it"))
+                                r2 = "".join((r2[:-len(suffix)], "at"))
+
+                        elif suffix in ("itiv", "itiva", "itive", "itivi",
+                                        "itiv\u0103", "i\u0163iune",
+                                        "itoare", "itor", "itori"):
+                            word = "".join((word[:-len(suffix)], "it"))
+
+                            if suffix in r2:
+                                r2 = "".join((r2[:-len(suffix)], "it"))
                     else:
                         step1_success = False
                     break
@@ -2829,13 +2829,13 @@ class RomanianStemmer(_StandardStemmer):
                 if suffix in r2:
                     step2_success = True
 
-                    if suffix in (u"iune", u"iuni"):
-                        if word[-5] == u"\u0163":
-                            word = u"".join((word[:-5], u"t"))
+                    if suffix in ("iune", "iuni"):
+                        if word[-5] == "\u0163":
+                            word = "".join((word[:-5], "t"))
 
-                    elif suffix in (u"ism", u"isme", u"ist", u"ista", u"iste",
-                                    u"isti", u"ist\u0103", u"i\u015Fti"):
-                        word = u"".join((word[:-len(suffix)], u"ist"))
+                    elif suffix in ("ism", "isme", "ist", "ista", "iste",
+                                    "isti", "ist\u0103", "i\u015Fti"):
+                        word = "".join((word[:-len(suffix)], "ist"))
 
                     else:
                         word = word[:-len(suffix)]
@@ -2846,30 +2846,30 @@ class RomanianStemmer(_StandardStemmer):
             for suffix in self.__step3_suffixes:
                 if word.endswith(suffix):
                     if suffix in rv:
-                        if suffix in (u'seser\u0103\u0163i', u'seser\u0103m',
-                                      u'ser\u0103\u0163i', u'sese\u015Fi',
-                                      u'seser\u0103', u'ser\u0103m', u'sesem',
-                                      u'se\u015Fi', u'ser\u0103', u'sese',
-                                      u'a\u0163i', u'e\u0163i', u'i\u0163i',
-                                      u'\xE2\u0163i', u'sei', u'\u0103m',
-                                      u'em', u'im', u'\xE2m', u'se'):
+                        if suffix in ('seser\u0103\u0163i', 'seser\u0103m',
+                                      'ser\u0103\u0163i', 'sese\u015Fi',
+                                      'seser\u0103', 'ser\u0103m', 'sesem',
+                                      'se\u015Fi', 'ser\u0103', 'sese',
+                                      'a\u0163i', 'e\u0163i', 'i\u0163i',
+                                      '\xE2\u0163i', 'sei', '\u0103m',
+                                      'em', 'im', '\xE2m', 'se'):
                             word = word[:-len(suffix)]
                             rv = rv[:-len(suffix)]
                         else:
                             if (not rv.startswith(suffix) and
                                 rv[rv.index(suffix)-1] not in
-                                u"aeio\u0103\xE2\xEE"):
+                                "aeio\u0103\xE2\xEE"):
                                 word = word[:-len(suffix)]
                         break
 
         # STEP 4: Removal of final vowel
-        for suffix in (u"ie", u"a", u"e", u"i", u"\u0103"):
+        for suffix in ("ie", "a", "e", "i", "\u0103"):
             if word.endswith(suffix):
                 if suffix in rv:
                     word = word[:-len(suffix)]
                 break
 
-        word = word.replace(u"I", u"i").replace(u"U", u"u")
+        word = word.replace("I", "i").replace("U", "u")
 
 
         return word
@@ -2878,7 +2878,7 @@ class RomanianStemmer(_StandardStemmer):
 
 class RussianStemmer(_LanguageSpecificStemmer):
 
-    u"""
+    """
     The Russian Snowball stemmer.
 
     :cvar __perfective_gerund_suffixes: Suffixes to be deleted.
@@ -2901,100 +2901,100 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
     """
 
-    __perfective_gerund_suffixes = (u"ivshis'", u"yvshis'", u"vshis'",
-                                      u"ivshi", u"yvshi", u"vshi", u"iv",
-                                      u"yv", u"v")
-    __adjectival_suffixes = (u'ui^ushchi^ui^u', u'ui^ushchi^ai^a',
-                               u'ui^ushchimi', u'ui^ushchymi', u'ui^ushchego',
-                               u'ui^ushchogo', u'ui^ushchemu', u'ui^ushchomu',
-                               u'ui^ushchikh', u'ui^ushchykh',
-                               u'ui^ushchui^u', u'ui^ushchaia',
-                               u'ui^ushchoi^u', u'ui^ushchei^u',
-                               u'i^ushchi^ui^u', u'i^ushchi^ai^a',
-                               u'ui^ushchee', u'ui^ushchie',
-                               u'ui^ushchye', u'ui^ushchoe', u'ui^ushchei`',
-                               u'ui^ushchii`', u'ui^ushchyi`',
-                               u'ui^ushchoi`', u'ui^ushchem', u'ui^ushchim',
-                               u'ui^ushchym', u'ui^ushchom', u'i^ushchimi',
-                               u'i^ushchymi', u'i^ushchego', u'i^ushchogo',
-                               u'i^ushchemu', u'i^ushchomu', u'i^ushchikh',
-                               u'i^ushchykh', u'i^ushchui^u', u'i^ushchai^a',
-                               u'i^ushchoi^u', u'i^ushchei^u', u'i^ushchee',
-                               u'i^ushchie', u'i^ushchye', u'i^ushchoe',
-                               u'i^ushchei`', u'i^ushchii`',
-                               u'i^ushchyi`', u'i^ushchoi`', u'i^ushchem',
-                               u'i^ushchim', u'i^ushchym', u'i^ushchom',
-                               u'shchi^ui^u', u'shchi^ai^a', u'ivshi^ui^u',
-                               u'ivshi^ai^a', u'yvshi^ui^u', u'yvshi^ai^a',
-                               u'shchimi', u'shchymi', u'shchego', u'shchogo',
-                               u'shchemu', u'shchomu', u'shchikh', u'shchykh',
-                               u'shchui^u', u'shchai^a', u'shchoi^u',
-                               u'shchei^u', u'ivshimi', u'ivshymi',
-                               u'ivshego', u'ivshogo', u'ivshemu', u'ivshomu',
-                               u'ivshikh', u'ivshykh', u'ivshui^u',
-                               u'ivshai^a', u'ivshoi^u', u'ivshei^u',
-                               u'yvshimi', u'yvshymi', u'yvshego', u'yvshogo',
-                               u'yvshemu', u'yvshomu', u'yvshikh', u'yvshykh',
-                               u'yvshui^u', u'yvshai^a', u'yvshoi^u',
-                               u'yvshei^u', u'vshi^ui^u', u'vshi^ai^a',
-                               u'shchee', u'shchie', u'shchye', u'shchoe',
-                               u'shchei`', u'shchii`', u'shchyi`', u'shchoi`',
-                               u'shchem', u'shchim', u'shchym', u'shchom',
-                               u'ivshee', u'ivshie', u'ivshye', u'ivshoe',
-                               u'ivshei`', u'ivshii`', u'ivshyi`',
-                               u'ivshoi`', u'ivshem', u'ivshim', u'ivshym',
-                               u'ivshom', u'yvshee', u'yvshie', u'yvshye',
-                               u'yvshoe', u'yvshei`', u'yvshii`',
-                               u'yvshyi`', u'yvshoi`', u'yvshem',
-                               u'yvshim', u'yvshym', u'yvshom', u'vshimi',
-                               u'vshymi', u'vshego', u'vshogo', u'vshemu',
-                               u'vshomu', u'vshikh', u'vshykh', u'vshui^u',
-                               u'vshai^a', u'vshoi^u', u'vshei^u',
-                               u'emi^ui^u', u'emi^ai^a', u'nni^ui^u',
-                               u'nni^ai^a', u'vshee',
-                               u'vshie', u'vshye', u'vshoe', u'vshei`',
-                               u'vshii`', u'vshyi`', u'vshoi`',
-                               u'vshem', u'vshim', u'vshym', u'vshom',
-                               u'emimi', u'emymi', u'emego', u'emogo',
-                               u'ememu', u'emomu', u'emikh', u'emykh',
-                               u'emui^u', u'emai^a', u'emoi^u', u'emei^u',
-                               u'nnimi', u'nnymi', u'nnego', u'nnogo',
-                               u'nnemu', u'nnomu', u'nnikh', u'nnykh',
-                               u'nnui^u', u'nnai^a', u'nnoi^u', u'nnei^u',
-                               u'emee', u'emie', u'emye', u'emoe',
-                               u'emei`', u'emii`', u'emyi`',
-                               u'emoi`', u'emem', u'emim', u'emym',
-                               u'emom', u'nnee', u'nnie', u'nnye', u'nnoe',
-                               u'nnei`', u'nnii`', u'nnyi`',
-                               u'nnoi`', u'nnem', u'nnim', u'nnym',
-                               u'nnom', u'i^ui^u', u'i^ai^a', u'imi', u'ymi',
-                               u'ego', u'ogo', u'emu', u'omu', u'ikh',
-                               u'ykh', u'ui^u', u'ai^a', u'oi^u', u'ei^u',
-                               u'ee', u'ie', u'ye', u'oe', u'ei`',
-                               u'ii`', u'yi`', u'oi`', u'em',
-                               u'im', u'ym', u'om')
-    __reflexive_suffixes = (u"si^a", u"s'")
-    __verb_suffixes = (u"esh'", u'ei`te', u'ui`te', u'ui^ut',
-                         u"ish'", u'ete', u'i`te', u'i^ut', u'nno',
-                         u'ila', u'yla', u'ena', u'ite', u'ili', u'yli',
-                         u'ilo', u'ylo', u'eno', u'i^at', u'uet', u'eny',
-                         u"it'", u"yt'", u'ui^u', u'la', u'na', u'li',
-                         u'em', u'lo', u'no', u'et', u'ny', u"t'",
-                         u'ei`', u'ui`', u'il', u'yl', u'im',
-                         u'ym', u'en', u'it', u'yt', u'i^u', u'i`',
-                         u'l', u'n')
-    __noun_suffixes = (u'ii^ami', u'ii^akh', u'i^ami', u'ii^am', u'i^akh',
-                         u'ami', u'iei`', u'i^am', u'iem', u'akh',
-                         u'ii^u', u"'i^u", u'ii^a', u"'i^a", u'ev', u'ov',
-                         u'ie', u"'e", u'ei', u'ii', u'ei`',
-                         u'oi`', u'ii`', u'em', u'am', u'om',
-                         u'i^u', u'i^a', u'a', u'e', u'i', u'i`',
-                         u'o', u'u', u'y', u"'")
-    __superlative_suffixes = (u"ei`she", u"ei`sh")
-    __derivational_suffixes = (u"ost'", u"ost")
+    __perfective_gerund_suffixes = ("ivshis'", "yvshis'", "vshis'",
+                                      "ivshi", "yvshi", "vshi", "iv",
+                                      "yv", "v")
+    __adjectival_suffixes = ('ui^ushchi^ui^u', 'ui^ushchi^ai^a',
+                               'ui^ushchimi', 'ui^ushchymi', 'ui^ushchego',
+                               'ui^ushchogo', 'ui^ushchemu', 'ui^ushchomu',
+                               'ui^ushchikh', 'ui^ushchykh',
+                               'ui^ushchui^u', 'ui^ushchaia',
+                               'ui^ushchoi^u', 'ui^ushchei^u',
+                               'i^ushchi^ui^u', 'i^ushchi^ai^a',
+                               'ui^ushchee', 'ui^ushchie',
+                               'ui^ushchye', 'ui^ushchoe', 'ui^ushchei`',
+                               'ui^ushchii`', 'ui^ushchyi`',
+                               'ui^ushchoi`', 'ui^ushchem', 'ui^ushchim',
+                               'ui^ushchym', 'ui^ushchom', 'i^ushchimi',
+                               'i^ushchymi', 'i^ushchego', 'i^ushchogo',
+                               'i^ushchemu', 'i^ushchomu', 'i^ushchikh',
+                               'i^ushchykh', 'i^ushchui^u', 'i^ushchai^a',
+                               'i^ushchoi^u', 'i^ushchei^u', 'i^ushchee',
+                               'i^ushchie', 'i^ushchye', 'i^ushchoe',
+                               'i^ushchei`', 'i^ushchii`',
+                               'i^ushchyi`', 'i^ushchoi`', 'i^ushchem',
+                               'i^ushchim', 'i^ushchym', 'i^ushchom',
+                               'shchi^ui^u', 'shchi^ai^a', 'ivshi^ui^u',
+                               'ivshi^ai^a', 'yvshi^ui^u', 'yvshi^ai^a',
+                               'shchimi', 'shchymi', 'shchego', 'shchogo',
+                               'shchemu', 'shchomu', 'shchikh', 'shchykh',
+                               'shchui^u', 'shchai^a', 'shchoi^u',
+                               'shchei^u', 'ivshimi', 'ivshymi',
+                               'ivshego', 'ivshogo', 'ivshemu', 'ivshomu',
+                               'ivshikh', 'ivshykh', 'ivshui^u',
+                               'ivshai^a', 'ivshoi^u', 'ivshei^u',
+                               'yvshimi', 'yvshymi', 'yvshego', 'yvshogo',
+                               'yvshemu', 'yvshomu', 'yvshikh', 'yvshykh',
+                               'yvshui^u', 'yvshai^a', 'yvshoi^u',
+                               'yvshei^u', 'vshi^ui^u', 'vshi^ai^a',
+                               'shchee', 'shchie', 'shchye', 'shchoe',
+                               'shchei`', 'shchii`', 'shchyi`', 'shchoi`',
+                               'shchem', 'shchim', 'shchym', 'shchom',
+                               'ivshee', 'ivshie', 'ivshye', 'ivshoe',
+                               'ivshei`', 'ivshii`', 'ivshyi`',
+                               'ivshoi`', 'ivshem', 'ivshim', 'ivshym',
+                               'ivshom', 'yvshee', 'yvshie', 'yvshye',
+                               'yvshoe', 'yvshei`', 'yvshii`',
+                               'yvshyi`', 'yvshoi`', 'yvshem',
+                               'yvshim', 'yvshym', 'yvshom', 'vshimi',
+                               'vshymi', 'vshego', 'vshogo', 'vshemu',
+                               'vshomu', 'vshikh', 'vshykh', 'vshui^u',
+                               'vshai^a', 'vshoi^u', 'vshei^u',
+                               'emi^ui^u', 'emi^ai^a', 'nni^ui^u',
+                               'nni^ai^a', 'vshee',
+                               'vshie', 'vshye', 'vshoe', 'vshei`',
+                               'vshii`', 'vshyi`', 'vshoi`',
+                               'vshem', 'vshim', 'vshym', 'vshom',
+                               'emimi', 'emymi', 'emego', 'emogo',
+                               'ememu', 'emomu', 'emikh', 'emykh',
+                               'emui^u', 'emai^a', 'emoi^u', 'emei^u',
+                               'nnimi', 'nnymi', 'nnego', 'nnogo',
+                               'nnemu', 'nnomu', 'nnikh', 'nnykh',
+                               'nnui^u', 'nnai^a', 'nnoi^u', 'nnei^u',
+                               'emee', 'emie', 'emye', 'emoe',
+                               'emei`', 'emii`', 'emyi`',
+                               'emoi`', 'emem', 'emim', 'emym',
+                               'emom', 'nnee', 'nnie', 'nnye', 'nnoe',
+                               'nnei`', 'nnii`', 'nnyi`',
+                               'nnoi`', 'nnem', 'nnim', 'nnym',
+                               'nnom', 'i^ui^u', 'i^ai^a', 'imi', 'ymi',
+                               'ego', 'ogo', 'emu', 'omu', 'ikh',
+                               'ykh', 'ui^u', 'ai^a', 'oi^u', 'ei^u',
+                               'ee', 'ie', 'ye', 'oe', 'ei`',
+                               'ii`', 'yi`', 'oi`', 'em',
+                               'im', 'ym', 'om')
+    __reflexive_suffixes = ("si^a", "s'")
+    __verb_suffixes = ("esh'", 'ei`te', 'ui`te', 'ui^ut',
+                         "ish'", 'ete', 'i`te', 'i^ut', 'nno',
+                         'ila', 'yla', 'ena', 'ite', 'ili', 'yli',
+                         'ilo', 'ylo', 'eno', 'i^at', 'uet', 'eny',
+                         "it'", "yt'", 'ui^u', 'la', 'na', 'li',
+                         'em', 'lo', 'no', 'et', 'ny', "t'",
+                         'ei`', 'ui`', 'il', 'yl', 'im',
+                         'ym', 'en', 'it', 'yt', 'i^u', 'i`',
+                         'l', 'n')
+    __noun_suffixes = ('ii^ami', 'ii^akh', 'i^ami', 'ii^am', 'i^akh',
+                         'ami', 'iei`', 'i^am', 'iem', 'akh',
+                         'ii^u', "'i^u", 'ii^a', "'i^a", 'ev', 'ov',
+                         'ie', "'e", 'ei', 'ii', 'ei`',
+                         'oi`', 'ii`', 'em', 'am', 'om',
+                         'i^u', 'i^a', 'a', 'e', 'i', 'i`',
+                         'o', 'u', 'y', "'")
+    __superlative_suffixes = ("ei`she", "ei`sh")
+    __derivational_suffixes = ("ost'", "ost")
 
     def stem(self, word):
-        u"""
+        """
         Stem a Russian word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -3007,8 +3007,8 @@ class RussianStemmer(_LanguageSpecificStemmer):
             return word
 
         chr_exceeded = False
-        for i in xrange(len(word)):
-            if ord(word[i]) not in xrange(256):
+        for i in range(len(word)):
+            if ord(word[i]) > 255:
                 chr_exceeded = True
                 break
 
@@ -3026,7 +3026,7 @@ class RussianStemmer(_LanguageSpecificStemmer):
         # Step 1
         for suffix in self.__perfective_gerund_suffixes:
             if rv.endswith(suffix):
-                if suffix in (u"v", u"vshi", u"vshis'"):
+                if suffix in ("v", "vshi", "vshis'"):
                     if (rv[-len(suffix)-3:-len(suffix)] == "i^a" or
                         rv[-len(suffix)-1:-len(suffix)] == "a"):
                         word = word[:-len(suffix)]
@@ -3051,41 +3051,41 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
             for suffix in self.__adjectival_suffixes:
                 if rv.endswith(suffix):
-                    if suffix in (u'i^ushchi^ui^u', u'i^ushchi^ai^a',
-                              u'i^ushchui^u', u'i^ushchai^a', u'i^ushchoi^u',
-                              u'i^ushchei^u', u'i^ushchimi', u'i^ushchymi',
-                              u'i^ushchego', u'i^ushchogo', u'i^ushchemu',
-                              u'i^ushchomu', u'i^ushchikh', u'i^ushchykh',
-                              u'shchi^ui^u', u'shchi^ai^a', u'i^ushchee',
-                              u'i^ushchie', u'i^ushchye', u'i^ushchoe',
-                              u'i^ushchei`', u'i^ushchii`', u'i^ushchyi`',
-                              u'i^ushchoi`', u'i^ushchem', u'i^ushchim',
-                              u'i^ushchym', u'i^ushchom', u'vshi^ui^u',
-                              u'vshi^ai^a', u'shchui^u', u'shchai^a',
-                              u'shchoi^u', u'shchei^u', u'emi^ui^u',
-                              u'emi^ai^a', u'nni^ui^u', u'nni^ai^a',
-                              u'shchimi', u'shchymi', u'shchego', u'shchogo',
-                              u'shchemu', u'shchomu', u'shchikh', u'shchykh',
-                              u'vshui^u', u'vshai^a', u'vshoi^u', u'vshei^u',
-                              u'shchee', u'shchie', u'shchye', u'shchoe',
-                              u'shchei`', u'shchii`', u'shchyi`', u'shchoi`',
-                              u'shchem', u'shchim', u'shchym', u'shchom',
-                              u'vshimi', u'vshymi', u'vshego', u'vshogo',
-                              u'vshemu', u'vshomu', u'vshikh', u'vshykh',
-                              u'emui^u', u'emai^a', u'emoi^u', u'emei^u',
-                              u'nnui^u', u'nnai^a', u'nnoi^u', u'nnei^u',
-                              u'vshee', u'vshie', u'vshye', u'vshoe',
-                              u'vshei`', u'vshii`', u'vshyi`', u'vshoi`',
-                              u'vshem', u'vshim', u'vshym', u'vshom',
-                              u'emimi', u'emymi', u'emego', u'emogo',
-                              u'ememu', u'emomu', u'emikh', u'emykh',
-                              u'nnimi', u'nnymi', u'nnego', u'nnogo',
-                              u'nnemu', u'nnomu', u'nnikh', u'nnykh',
-                              u'emee', u'emie', u'emye', u'emoe', u'emei`',
-                              u'emii`', u'emyi`', u'emoi`', u'emem', u'emim',
-                              u'emym', u'emom', u'nnee', u'nnie', u'nnye',
-                              u'nnoe', u'nnei`', u'nnii`', u'nnyi`', u'nnoi`',
-                              u'nnem', u'nnim', u'nnym', u'nnom'):
+                    if suffix in ('i^ushchi^ui^u', 'i^ushchi^ai^a',
+                              'i^ushchui^u', 'i^ushchai^a', 'i^ushchoi^u',
+                              'i^ushchei^u', 'i^ushchimi', 'i^ushchymi',
+                              'i^ushchego', 'i^ushchogo', 'i^ushchemu',
+                              'i^ushchomu', 'i^ushchikh', 'i^ushchykh',
+                              'shchi^ui^u', 'shchi^ai^a', 'i^ushchee',
+                              'i^ushchie', 'i^ushchye', 'i^ushchoe',
+                              'i^ushchei`', 'i^ushchii`', 'i^ushchyi`',
+                              'i^ushchoi`', 'i^ushchem', 'i^ushchim',
+                              'i^ushchym', 'i^ushchom', 'vshi^ui^u',
+                              'vshi^ai^a', 'shchui^u', 'shchai^a',
+                              'shchoi^u', 'shchei^u', 'emi^ui^u',
+                              'emi^ai^a', 'nni^ui^u', 'nni^ai^a',
+                              'shchimi', 'shchymi', 'shchego', 'shchogo',
+                              'shchemu', 'shchomu', 'shchikh', 'shchykh',
+                              'vshui^u', 'vshai^a', 'vshoi^u', 'vshei^u',
+                              'shchee', 'shchie', 'shchye', 'shchoe',
+                              'shchei`', 'shchii`', 'shchyi`', 'shchoi`',
+                              'shchem', 'shchim', 'shchym', 'shchom',
+                              'vshimi', 'vshymi', 'vshego', 'vshogo',
+                              'vshemu', 'vshomu', 'vshikh', 'vshykh',
+                              'emui^u', 'emai^a', 'emoi^u', 'emei^u',
+                              'nnui^u', 'nnai^a', 'nnoi^u', 'nnei^u',
+                              'vshee', 'vshie', 'vshye', 'vshoe',
+                              'vshei`', 'vshii`', 'vshyi`', 'vshoi`',
+                              'vshem', 'vshim', 'vshym', 'vshom',
+                              'emimi', 'emymi', 'emego', 'emogo',
+                              'ememu', 'emomu', 'emikh', 'emykh',
+                              'nnimi', 'nnymi', 'nnego', 'nnogo',
+                              'nnemu', 'nnomu', 'nnikh', 'nnykh',
+                              'emee', 'emie', 'emye', 'emoe', 'emei`',
+                              'emii`', 'emyi`', 'emoi`', 'emem', 'emim',
+                              'emym', 'emom', 'nnee', 'nnie', 'nnye',
+                              'nnoe', 'nnei`', 'nnii`', 'nnyi`', 'nnoi`',
+                              'nnem', 'nnim', 'nnym', 'nnom'):
                         if (rv[-len(suffix)-3:-len(suffix)] == "i^a" or
                             rv[-len(suffix)-1:-len(suffix)] == "a"):
                             word = word[:-len(suffix)]
@@ -3103,10 +3103,10 @@ class RussianStemmer(_LanguageSpecificStemmer):
             if not adjectival_removed:
                 for suffix in self.__verb_suffixes:
                     if rv.endswith(suffix):
-                        if suffix in (u"la", u"na", u"ete", u"i`te", u"li",
-                                      u"i`", u"l", u"em", u"n", u"lo", u"no",
-                                      u"et", u"i^ut", u"ny", u"t'", u"esh'",
-                                      u"nno"):
+                        if suffix in ("la", "na", "ete", "i`te", "li",
+                                      "i`", "l", "em", "n", "lo", "no",
+                                      "et", "i^ut", "ny", "t'", "esh'",
+                                      "nno"):
                             if (rv[-len(suffix)-3:-len(suffix)] == "i^a" or
                                 rv[-len(suffix)-1:-len(suffix)] == "a"):
                                 word = word[:-len(suffix)]
@@ -3167,7 +3167,7 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
 
     def __regions_russian(self, word):
-        u"""
+        """
         Return the regions RV and R2 which are used by the Russian stemmer.
 
         In any word, RV is the region after the first vowel,
@@ -3187,36 +3187,36 @@ class RussianStemmer(_LanguageSpecificStemmer):
                RussianStemmer. It is not to be invoked directly!
 
         """
-        r1 = u""
-        r2 = u""
-        rv = u""
+        r1 = ""
+        r2 = ""
+        rv = ""
 
-        vowels = (u"A", u"U", u"E", u"a", u"e", u"i", u"o", u"u", u"y")
-        word = (word.replace(u"i^a", u"A")
-                    .replace(u"i^u", u"U")
-                    .replace(u"e`", u"E"))
+        vowels = ("A", "U", "E", "a", "e", "i", "o", "u", "y")
+        word = (word.replace("i^a", "A")
+                    .replace("i^u", "U")
+                    .replace("e`", "E"))
 
-        for i in xrange(1, len(word)):
+        for i in range(1, len(word)):
             if word[i] not in vowels and word[i-1] in vowels:
                 r1 = word[i+1:]
                 break
 
-        for i in xrange(1, len(r1)):
+        for i in range(1, len(r1)):
             if r1[i] not in vowels and r1[i-1] in vowels:
                 r2 = r1[i+1:]
                 break
 
-        for i in xrange(len(word)):
+        for i in range(len(word)):
             if word[i] in vowels:
                 rv = word[i+1:]
                 break
 
-        r2 = (r2.replace(u"A", u"i^a")
-                .replace(u"U", u"i^u")
-                .replace(u"E", u"e`"))
-        rv = (rv.replace(u"A", u"i^a")
-              .replace(u"U", u"i^u")
-              .replace(u"E", u"e`"))
+        r2 = (r2.replace("A", "i^a")
+                .replace("U", "i^u")
+                .replace("E", "e`"))
+        rv = (rv.replace("A", "i^a")
+              .replace("U", "i^u")
+              .replace("E", "e`"))
 
 
         return (rv, r2)
@@ -3224,7 +3224,7 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
 
     def __cyrillic_to_roman(self, word):
-        u"""
+        """
         Transliterate a Russian word into the Roman alphabet.
 
         A Russian word whose letters consist of the Cyrillic
@@ -3239,39 +3239,39 @@ class RussianStemmer(_LanguageSpecificStemmer):
                RussianStemmer. It is not to be invoked directly!
 
         """
-        word = (word.replace(u"\u0410", u"a").replace(u"\u0430", u"a")
-                    .replace(u"\u0411", u"b").replace(u"\u0431", u"b")
-                    .replace(u"\u0412", u"v").replace(u"\u0432", u"v")
-                    .replace(u"\u0413", u"g").replace(u"\u0433", u"g")
-                    .replace(u"\u0414", u"d").replace(u"\u0434", u"d")
-                    .replace(u"\u0415", u"e").replace(u"\u0435", u"e")
-                    .replace(u"\u0401", u"e").replace(u"\u0451", u"e")
-                    .replace(u"\u0416", u"zh").replace(u"\u0436", u"zh")
-                    .replace(u"\u0417", u"z").replace(u"\u0437", u"z")
-                    .replace(u"\u0418", u"i").replace(u"\u0438", u"i")
-                    .replace(u"\u0419", u"i`").replace(u"\u0439", u"i`")
-                    .replace(u"\u041A", u"k").replace(u"\u043A", u"k")
-                    .replace(u"\u041B", u"l").replace(u"\u043B", u"l")
-                    .replace(u"\u041C", u"m").replace(u"\u043C", u"m")
-                    .replace(u"\u041D", u"n").replace(u"\u043D", u"n")
-                    .replace(u"\u041E", u"o").replace(u"\u043E", u"o")
-                    .replace(u"\u041F", u"p").replace(u"\u043F", u"p")
-                    .replace(u"\u0420", u"r").replace(u"\u0440", u"r")
-                    .replace(u"\u0421", u"s").replace(u"\u0441", u"s")
-                    .replace(u"\u0422", u"t").replace(u"\u0442", u"t")
-                    .replace(u"\u0423", u"u").replace(u"\u0443", u"u")
-                    .replace(u"\u0424", u"f").replace(u"\u0444", u"f")
-                    .replace(u"\u0425", u"kh").replace(u"\u0445", u"kh")
-                    .replace(u"\u0426", u"t^s").replace(u"\u0446", u"t^s")
-                    .replace(u"\u0427", u"ch").replace(u"\u0447", u"ch")
-                    .replace(u"\u0428", u"sh").replace(u"\u0448", u"sh")
-                    .replace(u"\u0429", u"shch").replace(u"\u0449", u"shch")
-                    .replace(u"\u042A", u"''").replace(u"\u044A", u"''")
-                    .replace(u"\u042B", u"y").replace(u"\u044B", u"y")
-                    .replace(u"\u042C", u"'").replace(u"\u044C", u"'")
-                    .replace(u"\u042D", u"e`").replace(u"\u044D", u"e`")
-                    .replace(u"\u042E", u"i^u").replace(u"\u044E", u"i^u")
-                    .replace(u"\u042F", u"i^a").replace(u"\u044F", u"i^a"))
+        word = (word.replace("\u0410", "a").replace("\u0430", "a")
+                    .replace("\u0411", "b").replace("\u0431", "b")
+                    .replace("\u0412", "v").replace("\u0432", "v")
+                    .replace("\u0413", "g").replace("\u0433", "g")
+                    .replace("\u0414", "d").replace("\u0434", "d")
+                    .replace("\u0415", "e").replace("\u0435", "e")
+                    .replace("\u0401", "e").replace("\u0451", "e")
+                    .replace("\u0416", "zh").replace("\u0436", "zh")
+                    .replace("\u0417", "z").replace("\u0437", "z")
+                    .replace("\u0418", "i").replace("\u0438", "i")
+                    .replace("\u0419", "i`").replace("\u0439", "i`")
+                    .replace("\u041A", "k").replace("\u043A", "k")
+                    .replace("\u041B", "l").replace("\u043B", "l")
+                    .replace("\u041C", "m").replace("\u043C", "m")
+                    .replace("\u041D", "n").replace("\u043D", "n")
+                    .replace("\u041E", "o").replace("\u043E", "o")
+                    .replace("\u041F", "p").replace("\u043F", "p")
+                    .replace("\u0420", "r").replace("\u0440", "r")
+                    .replace("\u0421", "s").replace("\u0441", "s")
+                    .replace("\u0422", "t").replace("\u0442", "t")
+                    .replace("\u0423", "u").replace("\u0443", "u")
+                    .replace("\u0424", "f").replace("\u0444", "f")
+                    .replace("\u0425", "kh").replace("\u0445", "kh")
+                    .replace("\u0426", "t^s").replace("\u0446", "t^s")
+                    .replace("\u0427", "ch").replace("\u0447", "ch")
+                    .replace("\u0428", "sh").replace("\u0448", "sh")
+                    .replace("\u0429", "shch").replace("\u0449", "shch")
+                    .replace("\u042A", "''").replace("\u044A", "''")
+                    .replace("\u042B", "y").replace("\u044B", "y")
+                    .replace("\u042C", "'").replace("\u044C", "'")
+                    .replace("\u042D", "e`").replace("\u044D", "e`")
+                    .replace("\u042E", "i^u").replace("\u044E", "i^u")
+                    .replace("\u042F", "i^a").replace("\u044F", "i^a"))
 
 
         return word
@@ -3279,7 +3279,7 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
 
     def __roman_to_cyrillic(self, word):
-        u"""
+        """
         Transliterate a Russian word back into the Cyrillic alphabet.
 
         A Russian word formerly transliterated into the Roman alphabet
@@ -3294,23 +3294,23 @@ class RussianStemmer(_LanguageSpecificStemmer):
                RussianStemmer. It is not to be invoked directly!
 
         """
-        word = (word.replace(u"i^u", u"\u044E").replace(u"i^a", u"\u044F")
-                    .replace(u"shch", u"\u0449").replace(u"kh", u"\u0445")
-                    .replace(u"t^s", u"\u0446").replace(u"ch", u"\u0447")
-                    .replace(u"e`", u"\u044D").replace(u"i`", u"\u0439")
-                    .replace(u"sh", u"\u0448").replace(u"k", u"\u043A")
-                    .replace(u"e", u"\u0435").replace(u"zh", u"\u0436")
-                    .replace(u"a", u"\u0430").replace(u"b", u"\u0431")
-                    .replace(u"v", u"\u0432").replace(u"g", u"\u0433")
-                    .replace(u"d", u"\u0434").replace(u"e", u"\u0435")
-                    .replace(u"z", u"\u0437").replace(u"i", u"\u0438")
-                    .replace(u"l", u"\u043B").replace(u"m", u"\u043C")
-                    .replace(u"n", u"\u043D").replace(u"o", u"\u043E")
-                    .replace(u"p", u"\u043F").replace(u"r", u"\u0440")
-                    .replace(u"s", u"\u0441").replace(u"t", u"\u0442")
-                    .replace(u"u", u"\u0443").replace(u"f", u"\u0444")
-                    .replace(u"''", u"\u044A").replace(u"y", u"\u044B")
-                    .replace(u"'", u"\u044C"))
+        word = (word.replace("i^u", "\u044E").replace("i^a", "\u044F")
+                    .replace("shch", "\u0449").replace("kh", "\u0445")
+                    .replace("t^s", "\u0446").replace("ch", "\u0447")
+                    .replace("e`", "\u044D").replace("i`", "\u0439")
+                    .replace("sh", "\u0448").replace("k", "\u043A")
+                    .replace("e", "\u0435").replace("zh", "\u0436")
+                    .replace("a", "\u0430").replace("b", "\u0431")
+                    .replace("v", "\u0432").replace("g", "\u0433")
+                    .replace("d", "\u0434").replace("e", "\u0435")
+                    .replace("z", "\u0437").replace("i", "\u0438")
+                    .replace("l", "\u043B").replace("m", "\u043C")
+                    .replace("n", "\u043D").replace("o", "\u043E")
+                    .replace("p", "\u043F").replace("r", "\u0440")
+                    .replace("s", "\u0441").replace("t", "\u0442")
+                    .replace("u", "\u0443").replace("f", "\u0444")
+                    .replace("''", "\u044A").replace("y", "\u044B")
+                    .replace("'", "\u044C"))
 
 
         return word
@@ -3319,7 +3319,7 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
 class SpanishStemmer(_StandardStemmer):
 
-    u"""
+    """
     The Spanish Snowball stemmer.
 
     :cvar __vowels: The Spanish vowels.
@@ -3340,54 +3340,54 @@ class SpanishStemmer(_StandardStemmer):
 
     """
 
-    __vowels = u"aeiou\xE1\xE9\xED\xF3\xFA\xFC"
-    __step0_suffixes = (u"selas", u"selos", u"sela", u"selo", u"las",
-                        u"les", u"los", u"nos", u"me", u"se", u"la", u"le",
-                        u"lo")
-    __step1_suffixes = (u'amientos', u'imientos', u'amiento', u'imiento',
-                        u'aciones', u'uciones', u'adoras', u'adores',
-                        u'ancias', u'log\xEDas', u'encias', u'amente',
-                        u'idades', u'anzas', u'ismos', u'ables', u'ibles',
-                        u'istas', u'adora', u'aci\xF3n', u'antes',
-                        u'ancia', u'log\xEDa', u'uci\xf3n', u'encia',
-                        u'mente', u'anza', u'icos', u'icas', u'ismo',
-                        u'able', u'ible', u'ista', u'osos', u'osas',
-                        u'ador', u'ante', u'idad', u'ivas', u'ivos',
-                        u'ico',
-                        u'ica', u'oso', u'osa', u'iva', u'ivo')
-    __step2a_suffixes = (u'yeron', u'yendo', u'yamos', u'yais', u'yan',
-                         u'yen', u'yas', u'yes', u'ya', u'ye', u'yo',
-                         u'y\xF3')
-    __step2b_suffixes = (u'ar\xEDamos', u'er\xEDamos', u'ir\xEDamos',
-                         u'i\xE9ramos', u'i\xE9semos', u'ar\xEDais',
-                         u'aremos', u'er\xEDais', u'eremos',
-                         u'ir\xEDais', u'iremos', u'ierais', u'ieseis',
-                         u'asteis', u'isteis', u'\xE1bamos',
-                         u'\xE1ramos', u'\xE1semos', u'ar\xEDan',
-                         u'ar\xEDas', u'ar\xE9is', u'er\xEDan',
-                         u'er\xEDas', u'er\xE9is', u'ir\xEDan',
-                         u'ir\xEDas', u'ir\xE9is',
-                         u'ieran', u'iesen', u'ieron', u'iendo', u'ieras',
-                         u'ieses', u'abais', u'arais', u'aseis',
-                         u'\xE9amos', u'ar\xE1n', u'ar\xE1s',
-                         u'ar\xEDa', u'er\xE1n', u'er\xE1s',
-                         u'er\xEDa', u'ir\xE1n', u'ir\xE1s',
-                         u'ir\xEDa', u'iera', u'iese', u'aste', u'iste',
-                         u'aban', u'aran', u'asen', u'aron', u'ando',
-                         u'abas', u'adas', u'idas', u'aras', u'ases',
-                         u'\xEDais', u'ados', u'idos', u'amos', u'imos',
-                         u'emos', u'ar\xE1', u'ar\xE9', u'er\xE1',
-                         u'er\xE9', u'ir\xE1', u'ir\xE9', u'aba',
-                         u'ada', u'ida', u'ara', u'ase', u'\xEDan',
-                         u'ado', u'ido', u'\xEDas', u'\xE1is',
-                         u'\xE9is', u'\xEDa', u'ad', u'ed', u'id',
-                         u'an', u'i\xF3', u'ar', u'er', u'ir', u'as',
-                         u'\xEDs', u'en', u'es')
-    __step3_suffixes = (u"os", u"a", u"e", u"o", u"\xE1",
-                        u"\xE9", u"\xED", u"\xF3")
+    __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xFC"
+    __step0_suffixes = ("selas", "selos", "sela", "selo", "las",
+                        "les", "los", "nos", "me", "se", "la", "le",
+                        "lo")
+    __step1_suffixes = ('amientos', 'imientos', 'amiento', 'imiento',
+                        'aciones', 'uciones', 'adoras', 'adores',
+                        'ancias', 'log\xEDas', 'encias', 'amente',
+                        'idades', 'anzas', 'ismos', 'ables', 'ibles',
+                        'istas', 'adora', 'aci\xF3n', 'antes',
+                        'ancia', 'log\xEDa', 'uci\xf3n', 'encia',
+                        'mente', 'anza', 'icos', 'icas', 'ismo',
+                        'able', 'ible', 'ista', 'osos', 'osas',
+                        'ador', 'ante', 'idad', 'ivas', 'ivos',
+                        'ico',
+                        'ica', 'oso', 'osa', 'iva', 'ivo')
+    __step2a_suffixes = ('yeron', 'yendo', 'yamos', 'yais', 'yan',
+                         'yen', 'yas', 'yes', 'ya', 'ye', 'yo',
+                         'y\xF3')
+    __step2b_suffixes = ('ar\xEDamos', 'er\xEDamos', 'ir\xEDamos',
+                         'i\xE9ramos', 'i\xE9semos', 'ar\xEDais',
+                         'aremos', 'er\xEDais', 'eremos',
+                         'ir\xEDais', 'iremos', 'ierais', 'ieseis',
+                         'asteis', 'isteis', '\xE1bamos',
+                         '\xE1ramos', '\xE1semos', 'ar\xEDan',
+                         'ar\xEDas', 'ar\xE9is', 'er\xEDan',
+                         'er\xEDas', 'er\xE9is', 'ir\xEDan',
+                         'ir\xEDas', 'ir\xE9is',
+                         'ieran', 'iesen', 'ieron', 'iendo', 'ieras',
+                         'ieses', 'abais', 'arais', 'aseis',
+                         '\xE9amos', 'ar\xE1n', 'ar\xE1s',
+                         'ar\xEDa', 'er\xE1n', 'er\xE1s',
+                         'er\xEDa', 'ir\xE1n', 'ir\xE1s',
+                         'ir\xEDa', 'iera', 'iese', 'aste', 'iste',
+                         'aban', 'aran', 'asen', 'aron', 'ando',
+                         'abas', 'adas', 'idas', 'aras', 'ases',
+                         '\xEDais', 'ados', 'idos', 'amos', 'imos',
+                         'emos', 'ar\xE1', 'ar\xE9', 'er\xE1',
+                         'er\xE9', 'ir\xE1', 'ir\xE9', 'aba',
+                         'ada', 'ida', 'ara', 'ase', '\xEDan',
+                         'ado', 'ido', '\xEDas', '\xE1is',
+                         '\xE9is', '\xEDa', 'ad', 'ed', 'id',
+                         'an', 'i\xF3', 'ar', 'er', 'ir', 'as',
+                         '\xEDs', 'en', 'es')
+    __step3_suffixes = ("os", "a", "e", "o", "\xE1",
+                        "\xE9", "\xED", "\xF3")
 
     def stem(self, word):
-        u"""
+        """
         Stem a Spanish word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -3410,32 +3410,32 @@ class SpanishStemmer(_StandardStemmer):
         for suffix in self.__step0_suffixes:
             if word.endswith(suffix):
                 if rv.endswith(suffix):
-                    if rv[:-len(suffix)].endswith((u"i\xE9ndo",
-                                                   u"\xE1ndo",
-                                                   u"\xE1r", u"\xE9r",
-                                                   u"\xEDr")):
-                        word = (word[:-len(suffix)].replace(u"\xE1", u"a")
-                                                   .replace(u"\xE9", u"e")
-                                                   .replace(u"\xED", u"i"))
-                        r1 = (r1[:-len(suffix)].replace(u"\xE1", u"a")
-                                               .replace(u"\xE9", u"e")
-                                               .replace(u"\xED", u"i"))
-                        r2 = (r2[:-len(suffix)].replace(u"\xE1", u"a")
-                                               .replace(u"\xE9", u"e")
-                                               .replace(u"\xED", u"i"))
-                        rv = (rv[:-len(suffix)].replace(u"\xE1", u"a")
-                                               .replace(u"\xE9", u"e")
-                                               .replace(u"\xED", u"i"))
+                    if rv[:-len(suffix)].endswith(("i\xE9ndo",
+                                                   "\xE1ndo",
+                                                   "\xE1r", "\xE9r",
+                                                   "\xEDr")):
+                        word = (word[:-len(suffix)].replace("\xE1", "a")
+                                                   .replace("\xE9", "e")
+                                                   .replace("\xED", "i"))
+                        r1 = (r1[:-len(suffix)].replace("\xE1", "a")
+                                               .replace("\xE9", "e")
+                                               .replace("\xED", "i"))
+                        r2 = (r2[:-len(suffix)].replace("\xE1", "a")
+                                               .replace("\xE9", "e")
+                                               .replace("\xED", "i"))
+                        rv = (rv[:-len(suffix)].replace("\xE1", "a")
+                                               .replace("\xE9", "e")
+                                               .replace("\xED", "i"))
 
-                    elif rv[:-len(suffix)].endswith((u"ando", u"iendo",
-                                                     u"ar", u"er", u"ir")):
+                    elif rv[:-len(suffix)].endswith(("ando", "iendo",
+                                                     "ar", "er", "ir")):
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
                         rv = rv[:-len(suffix)]
 
-                    elif (rv[:-len(suffix)].endswith(u"yendo") and
-                          word[:-len(suffix)].endswith(u"uyendo")):
+                    elif (rv[:-len(suffix)].endswith("yendo") and
+                          word[:-len(suffix)].endswith("uyendo")):
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
@@ -3445,74 +3445,74 @@ class SpanishStemmer(_StandardStemmer):
         # STEP 1: Standard suffix removal
         for suffix in self.__step1_suffixes:
             if word.endswith(suffix):
-                if suffix == u"amente" and r1.endswith(suffix):
+                if suffix == "amente" and r1.endswith(suffix):
                     step1_success = True
                     word = word[:-6]
                     r2 = r2[:-6]
                     rv = rv[:-6]
 
-                    if r2.endswith(u"iv"):
+                    if r2.endswith("iv"):
                         word = word[:-2]
                         r2 = r2[:-2]
                         rv = rv[:-2]
 
-                        if r2.endswith(u"at"):
+                        if r2.endswith("at"):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                    elif r2.endswith((u"os", u"ic", u"ad")):
+                    elif r2.endswith(("os", "ic", "ad")):
                         word = word[:-2]
                         rv = rv[:-2]
 
                 elif r2.endswith(suffix):
                     step1_success = True
-                    if suffix in (u"adora", u"ador", u"aci\xF3n", u"adoras",
-                                  u"adores", u"aciones", u"ante", u"antes",
-                                  u"ancia", u"ancias"):
+                    if suffix in ("adora", "ador", "aci\xF3n", "adoras",
+                                  "adores", "aciones", "ante", "antes",
+                                  "ancia", "ancias"):
                         word = word[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
                         rv = rv[:-len(suffix)]
 
-                        if r2.endswith(u"ic"):
+                        if r2.endswith("ic"):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                    elif suffix in (u"log\xEDa", u"log\xEDas"):
-                        word = word.replace(suffix, u"log")
-                        rv = rv.replace(suffix, u"log")
+                    elif suffix in ("log\xEDa", "log\xEDas"):
+                        word = word.replace(suffix, "log")
+                        rv = rv.replace(suffix, "log")
 
-                    elif suffix in (u"uci\xF3n", u"uciones"):
-                        word = word.replace(suffix, u"u")
-                        rv = rv.replace(suffix, u"u")
+                    elif suffix in ("uci\xF3n", "uciones"):
+                        word = word.replace(suffix, "u")
+                        rv = rv.replace(suffix, "u")
 
-                    elif suffix in (u"encia", u"encias"):
-                        word = word.replace(suffix, u"ente")
-                        rv = rv.replace(suffix, u"ente")
+                    elif suffix in ("encia", "encias"):
+                        word = word.replace(suffix, "ente")
+                        rv = rv.replace(suffix, "ente")
 
-                    elif suffix == u"mente":
+                    elif suffix == "mente":
                         word = word[:-5]
                         r2 = r2[:-5]
                         rv = rv[:-5]
 
-                        if r2.endswith((u"ante", u"able", u"ible")):
+                        if r2.endswith(("ante", "able", "ible")):
                             word = word[:-4]
                             rv = rv[:-4]
 
-                    elif suffix in (u"idad", u"idades"):
+                    elif suffix in ("idad", "idades"):
                         word = word[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
                         rv = rv[:-len(suffix)]
 
-                        for pre_suff in (u"abil", u"ic", u"iv"):
+                        for pre_suff in ("abil", "ic", "iv"):
                             if r2.endswith(pre_suff):
                                 word = word[:-len(pre_suff)]
                                 rv = rv[:-len(pre_suff)]
 
-                    elif suffix in (u"ivo", u"iva", u"ivos", u"ivas"):
+                    elif suffix in ("ivo", "iva", "ivos", "ivas"):
                         word = word[:-len(suffix)]
                         r2 = r2[:-len(suffix)]
                         rv = rv[:-len(suffix)]
-                        if r2.endswith(u"at"):
+                        if r2.endswith("at"):
                             word = word[:-2]
                             rv = rv[:-2]
                     else:
@@ -3524,7 +3524,7 @@ class SpanishStemmer(_StandardStemmer):
         if not step1_success:
             for suffix in self.__step2a_suffixes:
                 if (rv.endswith(suffix) and
-                    word[-len(suffix)-1:-len(suffix)] == u"u"):
+                    word[-len(suffix)-1:-len(suffix)] == "u"):
                     word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
                     break
@@ -3532,14 +3532,14 @@ class SpanishStemmer(_StandardStemmer):
         # STEP 2b: Other verb suffixes
             for suffix in self.__step2b_suffixes:
                 if rv.endswith(suffix):
-                    if suffix in (u"en", u"es", u"\xE9is", u"emos"):
+                    if suffix in ("en", "es", "\xE9is", "emos"):
                         word = word[:-len(suffix)]
                         rv = rv[:-len(suffix)]
 
-                        if word.endswith(u"gu"):
+                        if word.endswith("gu"):
                             word = word[:-1]
 
-                        if rv.endswith(u"gu"):
+                        if rv.endswith("gu"):
                             rv = rv[:-1]
                     else:
                         word = word[:-len(suffix)]
@@ -3549,19 +3549,19 @@ class SpanishStemmer(_StandardStemmer):
         # STEP 3: Residual suffix
         for suffix in self.__step3_suffixes:
             if rv.endswith(suffix):
-                if suffix in (u"e", u"\xE9"):
+                if suffix in ("e", "\xE9"):
                     word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
 
-                    if word[-2:] == u"gu" and rv[-1] == u"u":
+                    if word[-2:] == "gu" and rv[-1] == "u":
                         word = word[:-1]
                 else:
                     word = word[:-len(suffix)]
                 break
 
-        word = (word.replace(u"\xE1", u"a").replace(u"\xE9", u"e")
-                    .replace(u"\xED", u"i").replace(u"\xF3", u"o")
-                    .replace(u"\xFA", u"u"))
+        word = (word.replace("\xE1", "a").replace("\xE9", "e")
+                    .replace("\xED", "i").replace("\xF3", "o")
+                    .replace("\xFA", "u"))
 
 
         return word
@@ -3570,7 +3570,7 @@ class SpanishStemmer(_StandardStemmer):
 
 class SwedishStemmer(_ScandinavianStemmer):
 
-    u"""
+    """
     The Swedish Snowball stemmer.
 
     :cvar __vowels: The Swedish vowels.
@@ -3589,20 +3589,20 @@ class SwedishStemmer(_ScandinavianStemmer):
 
     """
 
-    __vowels = u"aeiouy\xE4\xE5\xF6"
-    __s_ending = u"bcdfghjklmnoprtvy"
-    __step1_suffixes = (u"heterna", u"hetens", u"heter", u"heten",
-                        u"anden", u"arnas", u"ernas", u"ornas", u"andes",
-                        u"andet", u"arens", u"arna", u"erna", u"orna",
-                        u"ande", u"arne", u"aste", u"aren", u"ades",
-                        u"erns", u"ade", u"are", u"ern", u"ens", u"het",
-                        u"ast", u"ad", u"en", u"ar", u"er", u"or", u"as",
-                        u"es", u"at", u"a", u"e", u"s")
-    __step2_suffixes = (u"dd", u"gd", u"nn", u"dt", u"gt", u"kt", u"tt")
-    __step3_suffixes = (u"fullt", u"l\xF6st", u"els", u"lig", u"ig")
+    __vowels = "aeiouy\xE4\xE5\xF6"
+    __s_ending = "bcdfghjklmnoprtvy"
+    __step1_suffixes = ("heterna", "hetens", "heter", "heten",
+                        "anden", "arnas", "ernas", "ornas", "andes",
+                        "andet", "arens", "arna", "erna", "orna",
+                        "ande", "arne", "aste", "aren", "ades",
+                        "erns", "ade", "are", "ern", "ens", "het",
+                        "ast", "ad", "en", "ar", "er", "or", "as",
+                        "es", "at", "a", "e", "s")
+    __step2_suffixes = ("dd", "gd", "nn", "dt", "gt", "kt", "tt")
+    __step3_suffixes = ("fullt", "l\xF6st", "els", "lig", "ig")
 
     def stem(self, word):
-        u"""
+        """
         Stem a Swedish word and return the stemmed form.
 
         :param word: The word that is stemmed.
@@ -3621,7 +3621,7 @@ class SwedishStemmer(_ScandinavianStemmer):
         # STEP 1
         for suffix in self.__step1_suffixes:
             if r1.endswith(suffix):
-                if suffix == u"s":
+                if suffix == "s":
                     if word[-2] in self.__s_ending:
                         word = word[:-1]
                         r1 = r1[:-1]
@@ -3640,9 +3640,9 @@ class SwedishStemmer(_ScandinavianStemmer):
         # STEP 3
         for suffix in self.__step3_suffixes:
             if r1.endswith(suffix):
-                if suffix in (u"els", u"lig", u"ig"):
+                if suffix in ("els", "lig", "ig"):
                     word = word[:-len(suffix)]
-                elif suffix in (u"fullt", u"l\xF6st"):
+                elif suffix in ("fullt", "l\xF6st"):
                     word = word[:-1]
                 break
 
@@ -3652,7 +3652,7 @@ class SwedishStemmer(_ScandinavianStemmer):
 
 
 def demo():
-    u"""
+    """
     This function provides a demonstration of the Snowball stemmers.
 
     After invoking this function and specifying a language,
@@ -3682,44 +3682,44 @@ def demo():
                    "swedish":    "Swedish_Svenska-Latin1",
                    }
 
-    print(u"\n")
-    print(u"******************************")
-    print(u"Demo for the Snowball stemmers")
-    print(u"******************************")
+    print("\n")
+    print("******************************")
+    print("Demo for the Snowball stemmers")
+    print("******************************")
 
     while True:
 
-        language = raw_input(u"Please enter the name of the language " +
-                             u"to be demonstrated\n" +
-                             u"/".join(SnowballStemmer.languages) +
-                             u"\n" +
-                             u"(enter 'exit' in order to leave): ")
+        language = compat.raw_input("Please enter the name of the language " +
+                             "to be demonstrated\n" +
+                             "/".join(SnowballStemmer.languages) +
+                             "\n" +
+                             "(enter 'exit' in order to leave): ")
 
-        if language == u"exit":
+        if language == "exit":
             break
 
         if language not in SnowballStemmer.languages:
-            print((u"\nOops, there is no stemmer for this language. " +
-                   u"Please try again.\n"))
+            print(("\nOops, there is no stemmer for this language. " +
+                   "Please try again.\n"))
             continue
 
         stemmer = SnowballStemmer(language)
         excerpt = udhr.words(udhr_corpus[language]) [:300]
 
-        stemmed = u" ".join([stemmer.stem(word) for word in excerpt])
-        stemmed = re.sub(r"(.{,70})\s", r'\1\n', stemmed+u' ').rstrip()
-        excerpt = u" ".join(excerpt)
-        excerpt = re.sub(r"(.{,70})\s", r'\1\n', excerpt+u' ').rstrip()
+        stemmed = " ".join(stemmer.stem(word) for word in excerpt)
+        stemmed = re.sub(r"(.{,70})\s", r'\1\n', stemmed+' ').rstrip()
+        excerpt = " ".join(excerpt)
+        excerpt = re.sub(r"(.{,70})\s", r'\1\n', excerpt+' ').rstrip()
 
-        print(u"\n")
-        print(u'-' * 70)
-        print(u'ORIGINAL'.center(70))
+        print("\n")
+        print('-' * 70)
+        print('ORIGINAL'.center(70))
         print(excerpt)
-        print(u"\n\n")
-        print(u'STEMMED RESULTS'.center(70))
+        print("\n\n")
+        print('STEMMED RESULTS'.center(70))
         print(stemmed)
-        print(u'-' * 70)
-        print(u"\n")
+        print('-' * 70)
+        print("\n")
 
 
 

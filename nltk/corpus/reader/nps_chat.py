@@ -1,9 +1,10 @@
 # Natural Language Toolkit: NPS Chat Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
 
 import re
 import textwrap
@@ -11,9 +12,9 @@ import textwrap
 from nltk.util import LazyConcatenation
 from nltk.internals import ElementWrapper
 
-from util import *
-from api import *
-from xmldocs import *
+from .util import *
+from .api import *
+from .xmldocs import *
 
 class NPSChatCorpusReader(XMLCorpusReader):
 
@@ -67,4 +68,6 @@ class NPSChatCorpusReader(XMLCorpusReader):
     def _simplify_username(word):
         if 'User' in word:
             word = 'U' + word.split('User', 1)[1]
+        elif isinstance(word, bytes):
+            word = word.decode('ascii')
         return word

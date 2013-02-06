@@ -1,6 +1,7 @@
+# coding: utf-8
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -9,13 +10,14 @@
 Module for reading, writing and manipulating
 Toolbox databases and settings files.
 """
-
 from __future__ import print_function
+
 import os, re, codecs
-from StringIO import StringIO
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
 
+from nltk.compat import StringIO, u
 from nltk.data import PathPointer, ZipFilePathPointer, find
+
 
 class StandardFormat(object):
     """
@@ -60,12 +62,12 @@ class StandardFormat(object):
         join_string = '\n'
         line_regexp = r'^%s(?:\\(\S+)\s*)?(.*)$'
         # discard a BOM in the first line
-        first_line_pat = re.compile(line_regexp % u'(?:\ufeff)?'.encode('utf8'))
+        first_line_pat = re.compile(line_regexp % '(?:\xef\xbb\xbf)?')
         line_pat = re.compile(line_regexp % '')
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
         file_iter = iter(self._file)
-        line = file_iter.next()
+        line = next(file_iter)
         mobj = re.match(first_line_pat, line)
         mkr, line_value = mobj.groups()
         value_lines = [line_value,]
@@ -299,9 +301,9 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
                 else:
                     cur_encoding = encoding
                 if re.search(_is_value, value):
-                    l.append((u"\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors))
+                    l.append((u("\\%s %s\n") % (mkr, value)).encode(cur_encoding, errors))
                 else:
-                    l.append((u"\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors))
+                    l.append((u("\\%s%s\n") % (mkr, value)).encode(cur_encoding, errors))
             else:
                 if re.search(_is_value, value):
                     l.append("\\%s %s\n" % (mkr, value))
@@ -425,8 +427,7 @@ def _sort_fields(elem, orders_dicts):
     except KeyError:
         pass
     else:
-        tmp = [((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)]
-        tmp.sort()
+        tmp = sorted([((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)])
         elem[:] = [child for key, child in tmp]
     for child in elem:
         if len(child):

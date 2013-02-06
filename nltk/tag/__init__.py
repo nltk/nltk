@@ -1,11 +1,10 @@
 # Natural Language Toolkit: Taggers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
+#         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
 """
 NLTK Taggers
 
@@ -21,9 +20,9 @@ the word ``'fly'`` with a noun part of speech tag (``'NN'``):
 
 An off-the-shelf tagger is available.  It uses the Penn Treebank tagset:
 
-    >>> from nltk.tag import pos_tag
-    >>> from nltk.tokenize import word_tokenize
-    >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+    >>> from nltk.tag import pos_tag  # doctest: +SKIP
+    >>> from nltk.tokenize import word_tokenize # doctest: +SKIP
+    >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +SKIP
     [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
     'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
     ('.', '.')]
@@ -37,20 +36,28 @@ by checking what the most frequent tag for *w* was in a training corpus:
     >>> from nltk.corpus import brown
     >>> from nltk.tag import UnigramTagger
     >>> tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
-    >>> tagger.tag(['Mitchell', 'decried', 'the', 'high', 'rate', 'of', 'unemployment'])
-    [('Mitchell', 'NP'), ('decried', None), ('the', 'AT'), ('high', 'JJ'),
-    ('rate', 'NN'), ('of', 'IN'), ('unemployment', None)]
+    >>> sent = ['Mitchell', 'decried', 'the', 'high', 'rate', 'of', 'unemployment']
+    >>> for word, tag in tagger.tag(sent):
+    ...     print(word, '->', tag)
+    Mitchell -> NP
+    decried -> None
+    the -> AT
+    high -> JJ
+    rate -> NN
+    of -> IN
+    unemployment -> None
 
 Note that words that the tagger has not seen during training receive a tag
 of ``None``.
 
 We evaluate a tagger on data that was not seen during training:
 
-    >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600]) # doctest: +ELLIPSIS
+    >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600])
     0.734...
 
 For more information, please consult chapter 5 of the NLTK Book.
 """
+from __future__ import print_function
 
 from nltk.tag.api        import TaggerI
 from nltk.tag.util       import str2tuple, tuple2str, untag
@@ -84,9 +91,9 @@ def pos_tag(tokens):
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
 
-        >>> from nltk.tag import pos_tag
-        >>> from nltk.tokenize import word_tokenize
-        >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+        >>> from nltk.tag import pos_tag # doctest: +SKIP
+        >>> from nltk.tokenize import word_tokenize # doctest: +SKIP
+        >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +SKIP
         [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
         'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
         ('.', '.')]

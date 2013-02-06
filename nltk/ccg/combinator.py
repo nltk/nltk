@@ -1,13 +1,12 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
 
-from nltk.parse import ParserI
-from nltk.internals import Counter
-
+from nltk.compat import python_2_unicode_compatible
 from nltk.ccg.api import FunctionalCategory
 
 class UndirectedBinaryCombinator(object):
@@ -40,6 +39,7 @@ class DirectedBinaryCombinator(object):
     def combine(self, left, right):
         raise NotImplementedError()
 
+@python_2_unicode_compatible
 class ForwardCombinator(DirectedBinaryCombinator):
     '''
     Class representing combinators where the primary functor is on the left.
@@ -61,8 +61,9 @@ class ForwardCombinator(DirectedBinaryCombinator):
             yield cat
 
     def __str__(self):
-        return '>' + str(self._combinator) + self._suffix
+        return ">%s%s" % (self._combinator, self._suffix)
 
+@python_2_unicode_compatible
 class BackwardCombinator(DirectedBinaryCombinator):
     '''
     The backward equivalent of the ForwardCombinator class.
@@ -80,8 +81,9 @@ class BackwardCombinator(DirectedBinaryCombinator):
             yield cat
 
     def __str__(self):
-        return '<' + str(self._combinator) + self._suffix
+        return "<%s%s" % (self._combinator, self._suffix)
 
+@python_2_unicode_compatible
 class UndirectedFunctionApplication(UndirectedBinaryCombinator):
     """
     Class representing function application.
@@ -127,6 +129,7 @@ BackwardApplication = BackwardCombinator(UndirectedFunctionApplication(),
                         backwardOnly)
 
 
+@python_2_unicode_compatible
 class UndirectedComposition(UndirectedBinaryCombinator):
     """
     Functional composition (harmonic) combinator.
@@ -187,7 +190,7 @@ BackwardComposition = BackwardCombinator(UndirectedComposition(),
 BackwardBx = BackwardCombinator(UndirectedComposition(),backwardBxConstraint,
                 suffix='x')
 
-
+@python_2_unicode_compatible
 class UndirectedSubstitution(UndirectedBinaryCombinator):
     """
     Substitution (permutation) combinator.
@@ -245,6 +248,7 @@ def innermostFunction(categ):
         categ = categ.res()
     return categ
 
+@python_2_unicode_compatible
 class UndirectedTypeRaise(UndirectedBinaryCombinator):
     '''
     Undirected combinator for type raising.
@@ -269,7 +273,7 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
         return False
 
     def combine(self,function,arg):
-        if not (function.is_primitive() and \
+        if not (function.is_primitive() and
                 arg.is_function() and arg.res().is_function()):
             return
 

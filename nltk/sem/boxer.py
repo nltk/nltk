@@ -3,7 +3,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -24,14 +24,15 @@ Usage:
         models/
             boxer/
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import os
 import re
 import operator
 import subprocess
 from optparse import OptionParser
 import tempfile
+from functools import reduce
 
 from nltk.internals import Counter, find_binary
 
@@ -41,6 +42,8 @@ from nltk.sem.logic import (ExpectedMoreTokensException, ParseException,
 from nltk.sem.drt import (DRS, DrtApplicationExpression, DrtEqualityExpression,
                           DrtNegatedExpression, DrtOrExpression, DrtParser,
                           DrtProposition, DrtTokens, DrtVariableExpression)
+
+from nltk.compat import python_2_unicode_compatible
 
 class Boxer(object):
     """
@@ -126,7 +129,7 @@ class Boxer(object):
             assert reduce(operator.and_, (id is not None for id in discourse_ids))
             use_disc_id = True
         else:
-            discourse_ids = map(str, xrange(len(inputs)))
+            discourse_ids = list(map(str, range(len(inputs))))
             use_disc_id = False
 
         candc_out = self._call_candc(inputs, discourse_ids, question, verbose=verbose)
@@ -632,7 +635,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.OPEN)
                 label = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
-                refs = map(int, self.handle_refs())
+                refs = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 conds = self.handle_conds(None)
                 self.assertNextToken(DrtTokens.CLOSE)
@@ -643,7 +646,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 variable = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -677,7 +680,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 var1 = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -694,7 +697,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 variable = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -732,7 +735,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 var1 = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -760,7 +763,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
-                word_ids = map(int, self.handle_refs())
+                word_ids = list(map(int, self.handle_refs()))
                 self.assertNextToken(DrtTokens.COMMA)
                 ans_types = self.handle_refs()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -821,8 +824,10 @@ class AbstractBoxerDrs(object):
         return self
 
     def __hash__(self):
-        return hash(str(self))
+        return hash("%s" % self)
 
+
+@python_2_unicode_compatible
 class BoxerDrs(AbstractBoxerDrs):
     def __init__(self, label, refs, conds, consequent=None):
         AbstractBoxerDrs.__init__(self)
@@ -857,8 +862,8 @@ class BoxerDrs(AbstractBoxerDrs):
 
     def __repr__(self):
         s = 'drs(%s, [%s], [%s])' % (self.label,
-                                        ', '.join(map(str, self.refs)),
-                                        ', '.join(map(str, self.conds)))
+                                    ', '.join("%s" % r for r in self.refs),
+                                    ', '.join("%s" % c for c in self.conds))
         if self.consequent is not None:
             s = 'imp(%s, %s)' % (s, self.consequent)
         return s
@@ -871,6 +876,13 @@ class BoxerDrs(AbstractBoxerDrs):
                reduce(operator.and_, (c1==c2 for c1,c2 in zip(self.conds, other.conds))) and \
                self.consequent == other.consequent
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = AbstractBoxerDrs.__hash__
+
+
+@python_2_unicode_compatible
 class BoxerNot(AbstractBoxerDrs):
     def __init__(self, drs):
         AbstractBoxerDrs.__init__(self)
@@ -894,6 +906,12 @@ class BoxerNot(AbstractBoxerDrs):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.drs == other.drs
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = AbstractBoxerDrs.__hash__
+
+@python_2_unicode_compatible
 class BoxerIndexed(AbstractBoxerDrs):
     def __init__(self, discourse_id, sent_index, word_indices):
         AbstractBoxerDrs.__init__(self)
@@ -911,8 +929,14 @@ class BoxerIndexed(AbstractBoxerDrs):
                self.word_indices == other.word_indices and \
                reduce(operator.and_, (s==o for s,o in zip(self, other)))
 
+    def __ne__(self, other):
+        return not self == other
+
+    __hash__ = AbstractBoxerDrs.__hash__
+
     def __repr__(self):
-        s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id, self.sent_index, ', '.join(map(str, self.word_indices)))
+        s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id,
+                                 self.sent_index, ', '.join("%s" % wi for wi in self.word_indices))
         for v in self:
             s += ', %s' % v
         return s + ')'
@@ -1127,7 +1151,7 @@ class NltkDrtBoxerDrsInterpreter(object):
         :return: ``AbstractDrs``
         """
         if isinstance(ex, BoxerDrs):
-            drs = DRS([Variable('x%d' % r) for r in ex.refs], map(self.interpret, ex.conds))
+            drs = DRS([Variable('x%d' % r) for r in ex.refs], list(map(self.interpret, ex.conds)))
             if ex.label is not None:
                 drs.label = Variable('x%d' % ex.label)
             if ex.consequent is not None:

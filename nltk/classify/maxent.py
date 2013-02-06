@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Maximum Entropy Classifiers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Dmitry Chichkov <dchichkov@gmail.com> (TypedMaxentFeatureEncoding)
 # URL: <http://www.nltk.org/>
@@ -51,7 +51,7 @@ For all values of ``feat_val`` and ``some_label``.  This mapping is
 performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 __docformat__ = 'epytext en'
 
 try:
@@ -65,11 +65,12 @@ import os
 import gzip
 from collections import defaultdict
 
+from nltk import compat
 from nltk.util import OrderedDict
 from nltk.probability import DictionaryProbDist
 
 from nltk.classify.api import ClassifierI
-from nltk.classify.util import attested_labels, CutoffChecker, accuracy, log_likelihood
+from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
 from nltk.classify.megam import call_megam, write_megam_file, parse_megam_weights
 from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
 
@@ -77,6 +78,7 @@ from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
 #{ Classifier Model
 ######################################################################
 
+@compat.python_2_unicode_compatible
 class MaxentClassifier(ClassifierI):
     """
     A maximum entropy classifier (also known as a "conditional
@@ -174,12 +176,12 @@ class MaxentClassifier(ClassifierI):
         labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
         labels = labels[:columns]
         print('  Feature'.ljust(descr_width)+''.join(
-            '%8s' % str(l)[:7] for l in labels))
+            '%8s' % (("%s" % l)[:7]) for l in labels))
         print('  '+'-'*(descr_width-2+8*len(labels)))
         sums = defaultdict(int)
         for i, label in enumerate(labels):
             feature_vector = self._encoding.encode(featureset, label)
-            feature_vector.sort(key=lambda (fid,_): abs(self._weights[fid]),
+            feature_vector.sort(key=lambda fid__: abs(self._weights[fid__[0]]),
                                 reverse=True)
             for (f_id, f_val) in feature_vector:
                 if self._logarithmic: score = self._weights[f_id] * f_val
@@ -200,7 +202,7 @@ class MaxentClassifier(ClassifierI):
         """
         :param show: all, neg, or pos (for negative-only or positive-only)
         """
-        fids = sorted(range(len(self._weights)),
+        fids = sorted(list(range(len(self._weights))),
                       key=lambda fid: abs(self._weights[fid]),
                       reverse=True)
         if show == 'pos':
@@ -217,12 +219,11 @@ class MaxentClassifier(ClassifierI):
 
     #: A list of the algorithm names that are accepted for the
     #: ``train()`` method's ``algorithm`` parameter.
-    ALGORITHMS = ['GIS', 'IIS', 'CG', 'BFGS', 'Powell', 'LBFGSB',
-                  'Nelder-Mead', 'MEGAM', 'TADM']
+    ALGORITHMS = ['GIS', 'IIS', 'MEGAM', 'TADM']
 
     @classmethod
     def train(cls, train_toks, algorithm=None, trace=3, encoding=None,
-              labels=None, sparse=True, gaussian_prior_sigma=0, **cutoffs):
+              labels=None, sparse=None, gaussian_prior_sigma=0, **cutoffs):
         """
         Train a new maxent classifier based on the given corpus of
         training samples.  This classifier will have its weights
@@ -244,16 +245,10 @@ class MaxentClassifier(ClassifierI):
 
             - Iterative Scaling Methods: Generalized Iterative Scaling (``'GIS'``),
               Improved Iterative Scaling (``'IIS'``)
-            - Optimization Methods (requiring scipy): Conjugate gradient (``'CG'``)
-              Broyden-Fletcher-Goldfarb-Shanno algorithm (``'BFGS'``),
-              Powell algorithm (``'Powell'``),
-              A limited-memory variant of the BFGS algorithm (``'LBFGSB'``),
-              The Nelder-Mead algorithm (``'Nelder-Mead'``).
             - External Libraries (requiring megam):
               LM-BFGS algorithm, with training performed by Megam (``'megam'``)
 
-            The default algorithm is ``'CG'`` if scipy is
-            installed; and ``'IIS'`` otherwise.
+            The default algorithm is ``'IIS'``.
 
         :type trace: int
         :param trace: The level of diagnostic tracing output to produce.
@@ -267,14 +262,9 @@ class MaxentClassifier(ClassifierI):
         :param labels: The set of possible labels.  If none is given, then
             the set of all labels attested in the training data will be
             used instead.
-        :param sparse: If True, then use sparse matrices instead of
-            dense matrices.  Currently, this is only supported by
-            the scipy (optimization method) algorithms.  For other
-            algorithms, its value is ignored.
         :param gaussian_prior_sigma: The sigma value for a gaussian
             prior on model weights.  Currently, this is supported by
-            the scipy (optimization method) algorithms and ``megam``.
-            For other algorithms, its value is ignored.
+            ``megam``. For other algorithms, its value is ignored.
         :param cutoffs: Arguments specifying various conditions under
             which the training should be halted.  (Some of the cutoff
             conditions are not supported by some algorithms.)
@@ -284,21 +274,11 @@ class MaxentClassifier(ClassifierI):
               log-likelihood drops under ``v``.
             - ``min_lldelta=v``: Terminate if a single iteration improves
               log likelihood by less than ``v``.
-            - ``tolerance=v``: Terminate a scipy optimization method when
-              improvement drops below a tolerance level ``v``.  The
-              exact meaning of this tolerance depends on the scipy
-              algorithm used.  See ``scipy`` documentation for more
-              info.  Default values: 1e-3 for CG, 1e-5 for LBFGSB,
-              and 1e-4 for other algorithms.  (``scipy`` only)
         """
         if algorithm is None:
-            try:
-                import scipy.maxentropy
-                algorithm = 'cg'
-            except ImportError:
-                algorithm = 'iis'
+            algorithm = 'iis'
         for key in cutoffs:
-            if key not in ('max_iter', 'min_ll', 'min_lldelta', 'tolerance',
+            if key not in ('max_iter', 'min_ll', 'min_lldelta',
                            'max_acc', 'min_accdelta', 'count_cutoff',
                            'norm', 'explicit', 'bernoulli'):
                 raise TypeError('Unexpected keyword arg %r' % key)
@@ -309,11 +289,6 @@ class MaxentClassifier(ClassifierI):
         elif algorithm == 'gis':
             return train_maxent_classifier_with_gis(
                 train_toks, trace, encoding, labels, **cutoffs)
-        elif algorithm in cls._SCIPY_ALGS:
-            return train_maxent_classifier_with_scipy(
-                train_toks, trace, encoding, labels,
-                cls._SCIPY_ALGS[algorithm], sparse,
-                gaussian_prior_sigma, **cutoffs)
         elif algorithm == 'megam':
             return train_maxent_classifier_with_megam(
                 train_toks, trace, encoding, labels,
@@ -327,9 +302,6 @@ class MaxentClassifier(ClassifierI):
             return TadmMaxentClassifier.train(train_toks, **kwargs)
         else:
             raise ValueError('Unknown algorithm %s' % algorithm)
-
-    _SCIPY_ALGS = {'cg':'CG', 'bfgs':'BFGS', 'powell':'Powell',
-                   'lbfgsb':'LBFGSB', 'nelder-mead':'Nelder-Mead'}
 
 
 #: Alias for MaxentClassifier.
@@ -534,14 +506,14 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """dict mapping from fname -> fid"""
 
         if alwayson_features:
-            self._alwayson = dict([(label,i+self._length)
-                                   for (i,label) in enumerate(labels)])
+            self._alwayson = dict((label,i+self._length)
+                                   for (i,label) in enumerate(labels))
             self._length += len(self._alwayson)
 
         if unseen_features:
             fnames = set(fname for (fname, fval, label) in mapping)
-            self._unseen = dict([(fname, i+self._length)
-                                 for (i, fname) in enumerate(fnames)])
+            self._unseen = dict((fname, i+self._length)
+                                 for (i, fname) in enumerate(fnames))
             self._length += len(fnames)
 
     def encode(self, featureset, label):
@@ -573,7 +545,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, (int, long)):
+        if not isinstance(f_id, compat.integer_types):
             raise TypeError('describe() expected an int')
         try:
             self._inv_mapping
@@ -678,7 +650,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
         BinaryMaxentFeatureEncoding.__init__(
             self, labels, mapping, unseen_features, alwayson_features)
         if C is None:
-            C = len(set([fname for (fname,fval,label) in mapping]))+1
+            C = len(set(fname for (fname,fval,label) in mapping))+1
         self._C = C
 
     @property
@@ -693,7 +665,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
         base_length = BinaryMaxentFeatureEncoding.length(self)
 
         # Add a correction feature.
-        total = sum([v for (f,v) in encoding])
+        total = sum(v for (f,v) in encoding)
         if total >= self._C:
             raise ValueError('Correction feature is not high enough!')
         encoding.append( (base_length, self._C-total) )
@@ -861,14 +833,14 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """dict mapping from fname -> fid"""
 
         if alwayson_features:
-            self._alwayson = dict([(label,i+self._length)
-                                   for (i,label) in enumerate(labels)])
+            self._alwayson = dict((label, i+self._length)
+                                  for (i,label) in enumerate(labels))
             self._length += len(self._alwayson)
 
         if unseen_features:
             fnames = set(fname for (fname, fval, label) in mapping)
-            self._unseen = dict([(fname, i+self._length)
-                                 for (i, fname) in enumerate(fnames)])
+            self._unseen = dict((fname, i+self._length)
+                                for (i, fname) in enumerate(fnames))
             self._length += len(fnames)
 
     def encode(self, featureset, label):
@@ -877,7 +849,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         # Convert input-features to joint-features:
         for fname, fval in featureset.items():
-            if(type(fval) in (int, float)):
+            if isinstance(fval, (compat.integer_types, float)):
                 # Known feature name & value:
                 if (fname, type(fval), label) in self._mapping:
                     encoding.append((self._mapping[fname, type(fval), label], fval))
@@ -906,7 +878,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, (int, long)):
+        if not isinstance(f_id, compat.integer_types):
             raise TypeError('describe() expected an int')
         try:
             self._inv_mapping
@@ -1229,8 +1201,8 @@ def calculate_nfmap(train_toks, encoding):
     nfset = set()
     for tok, _ in train_toks:
         for label in encoding.labels():
-            nfset.add(sum([val for (id,val) in encoding.encode(tok,label)]))
-    return dict([(nf, i) for (i, nf) in enumerate(nfset)])
+            nfset.add(sum(val for (id,val) in encoding.encode(tok,label)))
+    return dict((nf, i) for (i, nf) in enumerate(nfset))
 
 def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
                      nfmap, nfarray, nftranspose, encoding):
@@ -1314,7 +1286,7 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
             # Generate the feature vector
             feature_vector = encoding.encode(tok,label)
             # Find the number of active features
-            nf = sum([val for (id, val) in feature_vector])
+            nf = sum(val for (id, val) in feature_vector)
             # Update the A matrix
             for (id, val) in feature_vector:
                 A[nfmap[nf], id] += dist.prob(label) * val
@@ -1348,103 +1320,6 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
             return deltas
 
     return deltas
-
-######################################################################
-#{ Classifier Trainer: scipy algorithms (GC, LBFGSB, etc.)
-######################################################################
-
-# [xx] n.b.: it's possible to supply custom trace functions, which
-# could be used to make trace output consistent with iis/gis.
-def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
-                                       labels=None,  algorithm='CG',
-                                       sparse=True, gaussian_prior_sigma=0,
-                                       **cutoffs):
-    """
-    Train a new ``ConditionalExponentialClassifier``, using the given
-    training samples, using the specified ``scipy`` optimization
-    algorithm.  This ``ConditionalExponentialClassifier`` will encode
-    the model that maximizes entropy from all the models that are
-    empirically consistent with ``train_toks``.
-
-    :see: ``train_maxent_classifier()`` for parameter descriptions.
-    :require: The ``scipy`` package must be installed.
-    """
-    try:
-        import scipy
-    except ImportError as e:
-        raise ValueError('The maxent training algorithm %r requires '
-                         'that the scipy package be installed.  See '
-                         'http://www.scipy.org/' % algorithm)
-    try:
-        # E.g., if libgfortran.2.dylib is not found.
-        import scipy.sparse, scipy.maxentropy
-    except ImportError as e:
-        raise ValueError('Import of scipy package failed: %s' % e)
-
-    # Construct an encoding from the training data.
-    if encoding is None:
-        encoding = BinaryMaxentFeatureEncoding.train(train_toks, labels=labels)
-    elif labels is not None:
-        raise ValueError('Specify encoding or labels, not both')
-
-    labels = encoding.labels()
-    labelnum = dict([(label, i) for (i, label) in enumerate(labels)])
-    num_features = encoding.length()
-    num_toks = len(train_toks)
-    num_labels = len(labels)
-
-    # Decide whether to use a sparse matrix or a dense one.  Very
-    # limited testing has shown that the lil matrix format
-    # (list-of-lists) performs better than csr and csc formats.
-    # Limited testing also suggests that the sparse matrix format
-    # doesn't save much memory over the dense format in practice
-    # (in terms of max memory usage).
-    if sparse: zeros = scipy.sparse.lil_matrix
-    else: zeros = numpy.zeros
-
-    # Construct the 'F' matrix, which lists the feature values for
-    # each training instance.  F[i, j*len(labels)+k] is equal to the
-    # value of the i'th feature for the feature vector corresponding
-    # to (tok[j], label[k]).
-    F = zeros((num_features, num_toks*num_labels))
-
-    # Construct the 'N' matrix, which specifies the correct label for
-    # each training instance.  N[0, j*len(labels)+k] is equal to one
-    # iff label[k] is the correct label for tok[j].
-    N = zeros((1, num_toks*num_labels))
-
-    # Fill in the 'F' and 'N' matrices (just make one pass through the
-    # training tokens.)
-    for toknum, (featureset, label) in enumerate(train_toks):
-        N[0, toknum*len(labels) + labelnum[label]] += 1
-        for label2 in labels:
-            for (fid, fval) in encoding.encode(featureset, label2):
-                F[fid, toknum*len(labels) + labelnum[label2]] = fval
-
-    # Set up the scipy model, based on the matrices F and N.
-    model = scipy.maxentropy.conditionalmodel(F, N, num_toks)
-    # note -- model.setsmooth() is buggy.
-    if gaussian_prior_sigma:
-        model.sigma2 = gaussian_prior_sigma**2
-    if algorithm == 'LBFGSB':
-        model.log = None
-    if trace >= 3:
-        model.verbose = True
-    if 'max_iter' in cutoffs:
-        model.maxiter = cutoffs['max_iter']
-    if 'tolerance' in cutoffs:
-        if algorithm == 'CG': model.avegtol = cutoffs['tolerance']
-        elif algorithm == 'LBFGSB': model.maxgtol = cutoffs['tolerance']
-        else: model.tol = cutoffs['tolerance']
-
-    # Train the model.
-    model.fit(algorithm=algorithm)
-
-    # Convert the model's weights from base-e to base-2 weights.
-    weights = model.params * numpy.log2(numpy.e)
-
-    # Build the classifier
-    return MaxentClassifier(encoding, weights)
 
 ######################################################################
 #{ Classifier Trainer: megam
@@ -1585,9 +1460,8 @@ class TadmMaxentClassifier(MaxentClassifier):
 
         call_tadm(options)
 
-        weightfile = open(weightfile_name, 'rb')
-        weights = parse_tadm_weights(weightfile)
-        weightfile.close()
+        with open(weightfile_name, 'rb') as weightfile:
+            weights = parse_tadm_weights(weightfile)
 
         os.remove(trainfile_name)
         os.remove(weightfile_name)

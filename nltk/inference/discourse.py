@@ -42,10 +42,11 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 (This is not intended to scale beyond very short discourses!) The method ``readings(filter=True)`` will only show
 those threads which are consistent (taking into account any background assumptions).
 """
-
 from __future__ import print_function
+
 import os
 from operator import and_, add
+from functools import reduce
 
 from nltk.data import show_cfg
 from nltk.tag import RegexpTagger
@@ -274,7 +275,8 @@ class DiscourseTester(object):
         """
         # re-initialize self._readings in case we have retracted a sentence
         self._readings = {}
-        for sid, sentence in self._sentences.iteritems():
+        for sid in self._sentences:
+            sentence = self._sentences[sid]
             readings = self._get_readings(sentence)
             self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading.simplify())
                                                         for rid, reading in enumerate(readings)])

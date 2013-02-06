@@ -1,6 +1,6 @@
 # Natural Language Toolkit: SemCor Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Nathan Schneider <nschneid@cs.cmu.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,15 +8,11 @@
 """
 Corpus reader for the SemCor Corpus.
 """
+from __future__ import absolute_import, unicode_literals
 __docformat__ = 'epytext en'
 
-import re
-
-import xml.etree.ElementTree as ET
-
-from api import *
-from util import *
-from xmldocs import *
+from .api import *
+from .xmldocs import XMLCorpusReader, XMLCorpusView
 from nltk.tree import Tree
 
 class SemcorCorpusReader(XMLCorpusReader):
@@ -39,8 +35,8 @@ class SemcorCorpusReader(XMLCorpusReader):
 
     def chunks(self, fileids=None):
         """
-        :return: the given file(s) as a list of chunks, 
-            each of which is a list of words and punctuation symbols 
+        :return: the given file(s) as a list of chunks,
+            each of which is a list of words and punctuation symbols
             that form a unit.
         :rtype: list(list(str))
         """
@@ -48,22 +44,22 @@ class SemcorCorpusReader(XMLCorpusReader):
 
     def tagged_chunks(self, fileids=None, tag=('pos' or 'sem' or 'both')):
         """
-        :return: the given file(s) as a list of tagged chunks, represented 
+        :return: the given file(s) as a list of tagged chunks, represented
             in tree form.
         :rtype: list(Tree)
 
-        :param tag: `'pos'` (part of speech), `'sem'` (semantic), or `'both'` 
-            to indicate the kind of tags to include.  Semantic tags consist of 
-            WordNet lemma IDs, plus an `'NE'` node if the chunk is a named entity 
-            without a specific entry in WordNet.  (Named entities of type 'other' 
-            have no lemma.  Other chunks not in WordNet have no semantic tag. 
+        :param tag: `'pos'` (part of speech), `'sem'` (semantic), or `'both'`
+            to indicate the kind of tags to include.  Semantic tags consist of
+            WordNet lemma IDs, plus an `'NE'` node if the chunk is a named entity
+            without a specific entry in WordNet.  (Named entities of type 'other'
+            have no lemma.  Other chunks not in WordNet have no semantic tag.
             Punctuation tokens have `None` for their part of speech tag.)
         """
         return self._items(fileids, 'chunk', False, tag!='sem', tag!='pos')
 
     def sents(self, fileids=None):
         """
-        :return: the given file(s) as a list of sentences, each encoded 
+        :return: the given file(s) as a list of sentences, each encoded
             as a list of word strings.
         :rtype: list(list(str))
         """
@@ -71,7 +67,7 @@ class SemcorCorpusReader(XMLCorpusReader):
 
     def chunk_sents(self, fileids=None):
         """
-        :return: the given file(s) as a list of sentences, each encoded 
+        :return: the given file(s) as a list of sentences, each encoded
             as a list of chunks.
         :rtype: list(list(list(str)))
         """
@@ -79,14 +75,14 @@ class SemcorCorpusReader(XMLCorpusReader):
 
     def tagged_sents(self, fileids=None, tag=('pos' or 'sem' or 'both')):
         """
-        :return: the given file(s) as a list of sentences. Each sentence 
+        :return: the given file(s) as a list of sentences. Each sentence
             is represented as a list of tagged chunks (in tree form).
         :rtype: list(list(Tree))
 
-        :param tag: `'pos'` (part of speech), `'sem'` (semantic), or `'both'` 
-            to indicate the kind of tags to include.  Semantic tags consist of 
-            WordNet lemma IDs, plus an `'NE'` node if the chunk is a named entity 
-            without a specific entry in WordNet.  (Named entities of type 'other' 
+        :param tag: `'pos'` (part of speech), `'sem'` (semantic), or `'both'`
+            to indicate the kind of tags to include.  Semantic tags consist of
+            WordNet lemma IDs, plus an `'NE'` node if the chunk is a named entity
+            without a specific entry in WordNet.  (Named entities of type 'other'
             have no lemma.  Other chunks not in WordNet have no semantic tag.
             Punctuation tokens have `None` for their part of speech tag.)
         """
@@ -94,7 +90,7 @@ class SemcorCorpusReader(XMLCorpusReader):
 
     def _items(self, fileids, unit, bracket_sent, pos_tag, sem_tag):
         if unit=='word' and not bracket_sent:
-            # the result of the SemcorWordView may be a multiword unit, so the 
+            # the result of the SemcorWordView may be a multiword unit, so the
             # LazyConcatenation will make sure the sentence is flattened
             _ = lambda *args: LazyConcatenation((SemcorWordView if self._lazy else self._words)(*args))
         else:
@@ -105,15 +101,15 @@ class SemcorCorpusReader(XMLCorpusReader):
     def _words(self, fileid, unit, bracket_sent, pos_tag, sem_tag):
         """
         Helper used to implement the view methods -- returns a list of
-        tokens, (segmented) words, chunks, or sentences. The tokens 
-        and chunks may optionally be tagged (with POS and sense 
+        tokens, (segmented) words, chunks, or sentences. The tokens
+        and chunks may optionally be tagged (with POS and sense
         information).
 
         :param fileid: The name of the underlying file.
         :param unit: One of `'token'`, `'word'`, or `'chunk'`.
         :param bracket_sent: If true, include sentence bracketing.
         :param pos_tag: Whether to include part-of-speech tags.
-        :param sem_tag: Whether to include semantic tags, namely WordNet lemma 
+        :param sem_tag: Whether to include semantic tags, namely WordNet lemma
             and OOV named entity status.
         """
         assert unit in ('token', 'word', 'chunk')
@@ -144,10 +140,10 @@ class SemcorCorpusReader(XMLCorpusReader):
             tkn = "" # fixes issue 337?
 
         lemma = xmlword.get('lemma', tkn) # lemma or NE class
-        redef = xmlword.get('rdf', tkn)	# redefinition--this indicates the lookup string 
-        # does not exactly match the enclosed string, e.g. due to typographical adjustments 
-        # or discontinuity of a multiword expression. If a redefinition has occurred, 
-        # the "rdf" attribute holds its inflected form and "lemma" holds its lemma. 
+        redef = xmlword.get('rdf', tkn)	# redefinition--this indicates the lookup string
+        # does not exactly match the enclosed string, e.g. due to typographical adjustments
+        # or discontinuity of a multiword expression. If a redefinition has occurred,
+        # the "rdf" attribute holds its inflected form and "lemma" holds its lemma.
         # For NEs, "rdf", "lemma", and "pn" all hold the same value (the NE class).
         sensenum = xmlword.get('wnsn')  # WordNet sense number
         isOOVEntity = 'pn' in xmlword.keys()   # a "personal name" (NE) not in WordNet
@@ -210,7 +206,7 @@ class SemcorWordView(XMLCorpusView):
         :param unit: One of `'token'`, `'word'`, or `'chunk'`.
         :param bracket_sent: If true, include sentence bracketing.
         :param pos_tag: Whether to include part-of-speech tags.
-        :param sem_tag: Whether to include semantic tags, namely WordNet lemma 
+        :param sem_tag: Whether to include semantic tags, namely WordNet lemma
             and OOV named entity status.
         """
         if bracket_sent: tagspec = '.*/s'

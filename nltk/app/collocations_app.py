@@ -1,15 +1,16 @@
 # Natural Language Toolkit: Collocations Application
 # Much of the GUI code is imported from concordance.py; We intend to merge these tools together
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
-from __future__ import print_function
+
+import nltk.compat
 import threading
-import tkFont
-from Tkinter import (Button, END, Frame, IntVar, LEFT, Label, Menu,
+import tkinter.font
+from tkinter import (Button, END, Frame, IntVar, LEFT, Label, Menu,
                      OptionMenu, SUNKEN, Scrollbar, StringVar,
                      Text, Tk)
 
@@ -17,7 +18,6 @@ from nltk.corpus import (cess_cat, brown, nps_chat, treebank, sinica_treebank, a
                          indian, floresta, mac_morpho, machado, cess_esp)
 from nltk.util import in_idle
 from nltk.probability import FreqDist
-from nltk.text import Text as TextDomain
 
 
 CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
@@ -94,7 +94,7 @@ class CollocationsView:
         self.var.set(self.model.DEFAULT_CORPUS)
         Label(innerframe, justify=LEFT, text=' Corpus: ', background=self._BACKGROUND_COLOUR, padx = 2, pady = 1, border = 0).pack(side='left')
 
-        other_corpora = self.model.CORPORA.keys().remove(self.model.DEFAULT_CORPUS)
+        other_corpora = list(self.model.CORPORA.keys()).remove(self.model.DEFAULT_CORPUS)
         om = OptionMenu(innerframe, self.var, self.model.DEFAULT_CORPUS, command=self.corpus_selected, *self.model.non_default_corpora())
         om['borderwidth'] = 0
         om['highlightthickness'] = 1
@@ -138,7 +138,7 @@ class CollocationsView:
         vscrollbar = Scrollbar(i1, borderwidth=1)
         hscrollbar = Scrollbar(i2, borderwidth=1, orient='horiz')
         self.results_box = Text(i1,
-                    font=tkFont.Font(family='courier', size='16'),
+                    font=tkinter.font.Font(family='courier', size='16'),
                     state='disabled', borderwidth=1,
                     yscrollcommand=vscrollbar.set,
                     xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20', exportselection=1)
@@ -157,7 +157,7 @@ class CollocationsView:
         innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
         self.prev = prev = Button(innerframe, text='Previous', command=self.previous, width='10', borderwidth=1, highlightthickness=1, state='disabled')
         prev.pack(side='left', anchor='center')
-        self.next = next = Button(innerframe, text='Next', command=self.next, width='10', borderwidth=1, highlightthickness=1, state='disabled')
+        self.next = next = Button(innerframe, text='Next', command=self.__next__, width='10', borderwidth=1, highlightthickness=1, state='disabled')
         next.pack(side='right', anchor='center')
         innerframe.pack(side='top', fill='y')
         self.reset_current_page()
@@ -198,7 +198,7 @@ class CollocationsView:
         self.write_results(collocations)
         self.unfreeze_editable()
 
-    def next(self):
+    def __next__(self):
         self.freeze_editable()
         collocations = self.model.next(self.current_page + 1)
         self.clear_results_box()
@@ -285,7 +285,7 @@ class CollocationsModel:
 
     def non_default_corpora(self):
         copy = []
-        copy.extend(self.CORPORA.keys())
+        copy.extend(list(self.CORPORA.keys()))
         copy.remove(self.DEFAULT_CORPUS)
         copy.sort()
         return copy
@@ -316,12 +316,12 @@ class CollocationsModel:
             try:
                 words = self.model.CORPORA[self.name]()
                 from operator import itemgetter
-                text = filter(lambda w: len(w) > 2, words)
+                text = [w for w in words if len(w) > 2]
                 fd = FreqDist(tuple(text[i:i+2]) for i in range(len(text)-1))
                 vocab = FreqDist(text)
                 scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(vocab[w1] * vocab[w2])) for w1, w2 in fd]
                 scored.sort(key=itemgetter(1), reverse=True)
-                self.model.collocations = map(itemgetter(0), scored)
+                self.model.collocations = list(map(itemgetter(0), scored))
                 self.model.notify_listeners(CORPUS_LOADED_EVENT)
             except Exception as e:
                 print(e)

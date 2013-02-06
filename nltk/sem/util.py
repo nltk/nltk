@@ -2,7 +2,7 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -12,10 +12,11 @@ extraction of the semantic representation of the root node of the the
 syntax tree, followed by evaluation of the semantic representation in
 a first-order model.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
-import evaluate
 import re
+import codecs
+from . import evaluate
 
 
 ##############################################################
@@ -91,7 +92,7 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     :return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
     :rtype: dict
     """
-    return [[(syn, sem, model.evaluate(str(sem), assignment, trace=trace))
+    return [[(syn, sem, model.evaluate("%s" % sem, assignment, trace=trace))
             for (syn, sem) in interpretations]
             for interpretations in batch_interpret(inputs, grammar)]
 
@@ -105,7 +106,7 @@ _TUPLES_RE = re.compile(r"""\s*
                                 (\([^)]+\))  # tuple-expression
                                 \s*""", re.VERBOSE)
 
-def parse_valuation_line(s):
+def parse_valuation_line(s, encoding=None):
     """
     Parse a line in a valuation file.
 
@@ -117,9 +118,13 @@ def parse_valuation_line(s):
 
     :param s: input line
     :type s: str
+    :param encoding: the encoding of the input string, if it is binary
+    :type encoding: str
     :return: a pair (symbol, value)
     :rtype: tuple
     """
+    if encoding is not None:
+        s = s.decode(encoding)
     pieces = _VAL_SPLIT_RE.split(s)
     symbol = pieces[0]
     value = pieces[1]
@@ -139,15 +144,19 @@ def parse_valuation_line(s):
         value = set(set_elements)
     return symbol, value
 
-def parse_valuation(s):
+def parse_valuation(s, encoding=None):
     """
     Convert a valuation file into a valuation.
 
     :param s: the contents of a valuation file
     :type s: str
+    :param encoding: the encoding of the input string, if it is binary
+    :type encoding: str
     :return: a ``nltk.sem`` valuation
     :rtype: Valuation
     """
+    if encoding is not None:
+        s = s.decode(encoding)
     statements = []
     for linenum, line in enumerate(s.splitlines()):
         line = line.strip()
@@ -188,8 +197,10 @@ def demo_model0():
     g0 = evaluate.Assignment(dom)
 
 
-def read_sents(file):
-    sents = [l.rstrip() for l in open(file)]
+def read_sents(filename, encoding='utf8'):
+    with codecs.open(filename, 'r', encoding) as fp:
+        sents = [l.rstrip() for l in fp]
+
     # get rid of blank lines
     sents = [l for l in sents if len(l) > 0]
     sents = [l for l in sents if not l[0] == '#']
@@ -267,7 +278,7 @@ def demo():
     if options.grammar:
         gramfile = options.grammar
     if options.model:
-        exec "import %s as model" % options.model
+        exec("import %s as model" % options.model)
 
     if sents is None:
         sents = read_sents(sentsfile)

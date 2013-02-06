@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TextTiling
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: George Boutsioukis
 #
 # URL: <http://www.nltk.org/>
@@ -16,9 +16,9 @@ except ImportError:
 
 from nltk.tokenize.api import TokenizerI
 
-BLOCK_COMPARISON, VOCABULARY_INTRODUCTION = range(2)
-LC, HC = range(2)
-DEFAULT_SMOOTHING = range(1)
+BLOCK_COMPARISON, VOCABULARY_INTRODUCTION = 0, 1
+LC, HC = 0, 1
+DEFAULT_SMOOTHING = [0]
 
 
 class TextTilingTokenizer(TokenizerI):
@@ -83,8 +83,8 @@ class TextTilingTokenizer(TokenizerI):
         # Tokenization step starts here
 
         # Remove punctuation
-        nopunct_text = ''.join([c for c in lowercase_text
-                                      if re.match("[a-z\-\' \n\t]", c)])
+        nopunct_text = ''.join(c for c in lowercase_text
+                               if re.match("[a-z\-\' \n\t]", c))
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
 
         tokseqs = self._divide_to_tokensequences(nopunct_text)
@@ -98,8 +98,8 @@ class TextTilingTokenizer(TokenizerI):
 
         # Filter stopwords
         for ts in tokseqs:
-            ts.wrdindex_list = filter(lambda wi: wi[0] not in self.stopwords,
-                                      ts.wrdindex_list)
+            ts.wrdindex_list = [wi for wi in ts.wrdindex_list
+                                if wi[0] not in self.stopwords]
 
         token_table = self._create_token_table(tokseqs, nopunct_par_breaks)
         # End of the Tokenization step
@@ -222,10 +222,10 @@ class TextTilingTokenizer(TokenizerI):
         current_par = 0
         current_tok_seq = 0
         pb_iter = par_breaks.__iter__()
-        current_par_break = pb_iter.next()
+        current_par_break = next(pb_iter)
         if current_par_break == 0:
             try:
-                current_par_break = pb_iter.next() #skip break at 0
+                current_par_break = next(pb_iter) #skip break at 0
             except StopIteration:
                 raise ValueError(
                     "No paragraph breaks were found(text too short perhaps?)"
@@ -234,7 +234,7 @@ class TextTilingTokenizer(TokenizerI):
             for word, index in ts.wrdindex_list:
                 try:
                     while index > current_par_break:
-                        current_par_break = pb_iter.next()
+                        current_par_break = next(pb_iter)
                         current_par += 1
                 except StopIteration:
                     #hit bottom
@@ -282,8 +282,7 @@ class TextTilingTokenizer(TokenizerI):
         else:
             cutoff = avg-numpy.stdev/2.0
 
-        depth_tuples = zip(depth_scores, range(len(depth_scores)))
-        depth_tuples.sort()
+        depth_tuples = sorted(zip(depth_scores, range(len(depth_scores))))
         depth_tuples.reverse()
         hp = filter(lambda x:x[0]>cutoff, depth_tuples)
 

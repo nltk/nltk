@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========
@@ -9,7 +9,6 @@ Unit tests for the Context Free Grammar class
 ---------------------------------------------
 
     >>> from nltk import Nonterminal, nonterminals, Production, parse_cfg, ContextFreeGrammar
-    >>> from nltk.test.doctest_utils import *
 
     >>> nt1 = Nonterminal('NP')
     >>> nt2 = Nonterminal('VP')
@@ -68,11 +67,11 @@ and unambiguous sentence.
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
     >>> for t in rd.nbest_parse(sentence1):
-    ...     print t
+    ...     print(t)
     (S (NP the (N cat)) (VP (V chased) (NP the (N dog))))
 
     >>> for t in rd.nbest_parse(sentence2):
-    ...     print t
+    ...     print(t)
     (S
       (NP the (N cat))
       (VP (V chased) (NP the (N dog) (PP (P on) (NP the (N rug))))))
@@ -103,7 +102,7 @@ and only one parse is ever returned.
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
     >>> for t in sr.nbest_parse(sentence1):
-    ...     print t
+    ...     print(t)
     (S (NP the (N cat)) (VP (V chased) (NP the (N dog))))
 
 
@@ -112,7 +111,7 @@ multiple possible shift or reduce operations available - for the supplied
 grammar clearly the wrong operation is selected.
 
     >>> for t in sr.nbest_parse(sentence2):
-    ...     print t
+    ...     print(t)
 
 
 Unit tests for the Chart Parser class
@@ -429,7 +428,7 @@ Reading the ATIS grammar.
 
 Reading the test sentences.
 
-    >>> sentences = nltk.data.load('grammars/large_grammars/atis_sentences.txt', format='raw')
+    >>> sentences = nltk.data.load('grammars/large_grammars/atis_sentences.txt')
     >>> sentences = nltk.parse.util.extract_test_sentences(sentences)
     >>> len(sentences)
     98
@@ -447,81 +446,81 @@ Bottom-up parsing.
 
     >>> parser = nltk.parse.BottomUpChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     7661
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Bottom-up Left-corner parsing.
 
     >>> parser = nltk.parse.BottomUpLeftCornerChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     4986
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Left-corner parsing with bottom-up filter.
 
     >>> parser = nltk.parse.LeftCornerChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     1342
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Top-down parsing.
 
     >>> parser = nltk.parse.TopDownChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     28352
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Incremental Bottom-up parsing.
 
     >>> parser = nltk.parse.IncrementalBottomUpChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     7661
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Incremental Bottom-up Left-corner parsing.
 
     >>> parser = nltk.parse.IncrementalBottomUpLeftCornerChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     4986
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Incremental Left-corner parsing with bottom-up filter.
 
     >>> parser = nltk.parse.IncrementalLeftCornerChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     1342
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Incremental Top-down parsing.
 
     >>> parser = nltk.parse.IncrementalTopDownChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     28352
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 Earley parsing. This is similar to the incremental top-down algorithm.
 
     >>> parser = nltk.parse.EarleyChartParser(grammar)
     >>> chart = parser.chart_parse(sentence)
-    >>> print chart.num_edges()
+    >>> print((chart.num_edges()))
     28352
-    >>> print len(chart.parses(grammar.start()))
+    >>> print((len(chart.parses(grammar.start()))))
     17
 
 
@@ -550,14 +549,14 @@ Create a set of probabilistic CFG productions.
     >>> prod.rhs()
     (B, B)
 
-    >>> float_equal(prod.prob(), 0.29999999999999)
-    True
+    >>> print((prod.prob()))
+    0.3
 
     >>> grammar.start()
     A
 
     >>> grammar.productions()
-    [A -> B B [0.3], A -> C B C [0.7], B -> B D [0.5], B -> C [0.5], C -> 'a' [0.1], C -> 'b' [0.9], D -> 'b' [1.0]]
+    [A -> B B [0.3], A -> C B C [0.7], B -> B D [0.5], B -> C [0.5], C -> 'a' [0.1], C -> 'b' [0.9], D -> 'b' [1]]
 
 Induce some productions using parsed Treebank data.
 
@@ -571,23 +570,23 @@ Induce some productions using parsed Treebank data.
     <Grammar with 71 productions>
 
     >>> grammar.productions()[:5]
-    [PP -> IN NP [1.0], NNP -> 'Nov.' [0.0714285714286], NNP -> 'Agnew' [0.0714285714286], JJ -> 'industrial' [0.142857142857], NP -> CD NNS [0.133333333333]]
+    [PP -> IN NP [1], NNP -> 'Nov.' [0.0714286], NNP -> 'Agnew' [0.0714286], JJ -> 'industrial' [0.142857], NP -> CD NNS [0.133333]]
 
 Unit tests for the Probabilistic Chart Parse classes
 ----------------------------------------------------
 
     >>> tokens = "Jack saw Bob with my cookie".split()
     >>> grammar = toy_pcfg2
-    >>> print grammar
+    >>> print(grammar)
     Grammar with 23 productions (start state = S)
-        S -> NP VP [1.0]
+        S -> NP VP [1]
         VP -> V NP [0.59]
         VP -> V [0.4]
         VP -> VP PP [0.01]
         NP -> Det N [0.41]
         NP -> Name [0.28]
         NP -> NP PP [0.31]
-        PP -> P NP [1.0]
+        PP -> P NP [1]
         V -> 'saw' [0.21]
         V -> 'ate' [0.51]
         V -> 'ran' [0.28]
@@ -611,71 +610,71 @@ resulting parses.
 
     >>> parser = pchart.InsideChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
         (V saw)
         (NP
           (NP (Name Bob))
-          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31607e-06)
     (S
       (NP (Name Jack))
       (VP
         (VP (V saw) (NP (Name Bob)))
-        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
+        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.RandomChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
         (V saw)
         (NP
           (NP (Name Bob))
-          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31607e-06)
     (S
       (NP (Name Jack))
       (VP
         (VP (V saw) (NP (Name Bob)))
-        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
+        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.UnsortedChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
         (V saw)
         (NP
           (NP (Name Bob))
-          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31607e-06)
     (S
       (NP (Name Jack))
       (VP
         (VP (V saw) (NP (Name Bob)))
-        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
+        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.LongestChartParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
         (V saw)
         (NP
           (NP (Name Bob))
-          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31607e-06)
     (S
       (NP (Name Jack))
       (VP
         (VP (V saw) (NP (Name Bob)))
-        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
+        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.InsideChartParser(grammar, beam_size = len(tokens)+1)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
 
 
 Unit tests for the Viterbi Parse classes
@@ -689,14 +688,14 @@ Parse the tokenized sentence.
 
     >>> parser = ViterbiParser(grammar)
     >>> for t in parser.nbest_parse(tokens):
-    ...     print t
+    ...     print(t)
     (S
       (NP (Name Jack))
       (VP
         (V saw)
         (NP
           (NP (Name Bob))
-          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31607e-06)
 
 
 Unit tests for the FeatStructNonterminal class
@@ -821,7 +820,7 @@ return the same trees. Otherwise an error is printed.
     ...     trees = None
     ...     for P in parsers:
     ...         result = P(grammar).nbest_parse(sentence)
-    ...         result = set([tree.freeze() for tree in result])
+    ...         result = set(tree.freeze() for tree in result)
     ...         if len(result) != nr_trees:
     ...             print("Wrong nr of trees:", len(result))
     ...         elif trees is None:
@@ -866,12 +865,14 @@ Alternative 1: first load the grammar, then create the parser.
 
     >>> fcfg = nltk.data.load('grammars/book_grammars/feat0.fcfg')
     >>> fcp1 = nltk.parse.FeatureChartParser(fcfg)
-    >>> print type(fcp1)
+    >>> print((type(fcp1)))
     <class 'nltk.parse.featurechart.FeatureChartParser'>
 
 Alternative 2: directly load the parser.
 
     >>> fcp2 = nltk.parse.load_parser('grammars/book_grammars/feat0.fcfg')
-    >>> print type(fcp2)
+    >>> print((type(fcp2)))
     <class 'nltk.parse.featurechart.FeatureChartParser'>
+
+
 

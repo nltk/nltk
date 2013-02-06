@@ -1,14 +1,15 @@
 # Natural Language Toolkit: Shift-Reduce Parser
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 from nltk.grammar import Nonterminal
 from nltk.tree import Tree
+from nltk.compat import unicode_repr
 
 from nltk.parse.api import ParserI
 
@@ -221,9 +222,9 @@ class ShiftReduceParser(ParserI):
         s = '  '+marker+' [ '
         for elt in stack:
             if isinstance(elt, Tree):
-                s += `Nonterminal(elt.node)` + ' '
+                s += unicode_repr(Nonterminal(elt.node)) + ' '
             else:
-                s += `elt` + ' '
+                s += unicode_repr(elt) + ' '
         s += '* ' + ' '.join(remaining_text) + ']'
         print(s)
 

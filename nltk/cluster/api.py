@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Clusterer Interfaces
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# Porting: Steven Bird <sb@csse.unimelb.edu.au>
+# Porting: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -61,7 +61,7 @@ class ClusterI(object):
         """
         Returns the names of the clusters.
         """
-        return range(self.num_clusters())
+        return list(range(self.num_clusters()))
 
     def cluster_name(self, index):
         """

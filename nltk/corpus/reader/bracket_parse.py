@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Penn Treebank Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -13,8 +13,8 @@ import sys
 
 from nltk.tree import Tree
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
@@ -28,7 +28,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     trees.
     """
     def __init__(self, root, fileids, comment_char=None,
-                 detect_blocks='unindented_paren', encoding=None,
+                 detect_blocks='unindented_paren', encoding='utf8',
                  tag_mapping_function=None):
         """
         :param root: The root directory for this corpus.
@@ -164,7 +164,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
     """
-    def __init__(self, root, encoding=None, tag_mapping_function=None):
+    def __init__(self, root, encoding='ISO-8859-1', tag_mapping_function=None):
         BracketParseCorpusReader.__init__(self, root, 'alpino\.xml',
                                  detect_blocks='blankline',
                                  encoding=encoding,

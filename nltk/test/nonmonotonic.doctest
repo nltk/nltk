@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ======================
@@ -10,15 +10,15 @@ Nonmonotonic Reasoning
     >>> from nltk.sem import logic
     >>> logic._counter._value = 0
     >>> lp = logic.LogicParser()
-    
+
 ------------------------
 Closed Domain Assumption
 ------------------------
 
-The only entities in the domain are those found in the assumptions or goal.  
+The only entities in the domain are those found in the assumptions or goal.
 If the domain only contains "A" and "B", then the expression "exists x.P(x)" can
 be replaced with "P(A) | P(B)" and an expression "all x.P(x)" can be replaced
-with "P(A) & P(B)". 
+with "P(A) & P(B)".
 
     >>> p1 = lp.parse(r'all x.(man(x) -> mortal(x))')
     >>> p2 = lp.parse(r'man(Socrates)')
@@ -27,7 +27,7 @@ with "P(A) & P(B)".
     >>> prover.prove()
     True
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print a
+    >>> for a in cdp.assumptions(): print(a)
     (man(Socrates) -> mortal(Socrates))
     man(Socrates)
     >>> cdp.prove()
@@ -40,7 +40,7 @@ with "P(A) & P(B)".
     >>> prover.prove()
     False
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print a
+    >>> for a in cdp.assumptions(): print(a)
     walk(Socrates)
     man(Socrates)
     >>> cdp.prove()
@@ -54,7 +54,7 @@ with "P(A) & P(B)".
     >>> prover.prove()
     False
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print a
+    >>> for a in cdp.assumptions(): print(a)
     (walk(Socrates) | walk(Bill))
     man(Socrates)
     -walk(Bill)
@@ -68,10 +68,10 @@ with "P(A) & P(B)".
     >>> prover.prove()
     False
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print a
+    >>> for a in cdp.assumptions(): print(a)
     walk(Socrates)
     walk(Bill)
-    >>> print cdp.goal()
+    >>> print(cdp.goal())
     (walk(Socrates) & walk(Bill))
     >>> cdp.prove()
     True
@@ -83,27 +83,27 @@ with "P(A) & P(B)".
     >>> p5 = lp.parse(r'chase(mary, rover)')
     >>> c = lp.parse(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
     >>> prover = Prover9Command(c, [p1,p2,p3,p4,p5])
-    >>> print prover.prove()
+    >>> print(prover.prove())
     False
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print a
+    >>> for a in cdp.assumptions(): print(a)
     girl(mary)
     dog(rover)
     ((girl(rover) -> -dog(rover)) & (girl(mary) -> -dog(mary)))
     ((dog(rover) -> -girl(rover)) & (dog(mary) -> -girl(mary)))
     chase(mary,rover)
-    >>> print cdp.goal()
+    >>> print(cdp.goal())
     ((dog(rover) & (girl(rover) -> chase(rover,rover)) & (girl(mary) -> chase(mary,rover))) | (dog(mary) & (girl(rover) -> chase(rover,mary)) & (girl(mary) -> chase(mary,mary))))
-    >>> print cdp.prove()
+    >>> print(cdp.prove())
     True
 
 -----------------------
 Unique Names Assumption
 -----------------------
 
-No two entities in the domain represent the same entity unless it can be 
-explicitly proven that they do.  Therefore, if the domain contains "A" and "B", 
-then add the assumption "-(A = B)" if it is not the case that 
+No two entities in the domain represent the same entity unless it can be
+explicitly proven that they do.  Therefore, if the domain contains "A" and "B",
+then add the assumption "-(A = B)" if it is not the case that
 "<assumptions> \|- (A = B)".
 
     >>> p1 = lp.parse(r'man(Socrates)')
@@ -113,7 +113,7 @@ then add the assumption "-(A = B)" if it is not the case that
     >>> prover.prove()
     False
     >>> unp = UniqueNamesProver(prover)
-    >>> for a in unp.assumptions(): print a
+    >>> for a in unp.assumptions(): print(a)
     man(Socrates)
     man(Bill)
     -(Socrates = Bill)
@@ -128,7 +128,7 @@ then add the assumption "-(A = B)" if it is not the case that
     >>> prover.prove()
     False
     >>> unp = UniqueNamesProver(prover)
-    >>> for a in unp.assumptions(): print a
+    >>> for a in unp.assumptions(): print(a)
     all x.(walk(x) -> (x = Socrates))
     (Bill = William)
     (Bill = Billy)
@@ -145,11 +145,11 @@ Closed World Assumption
 The only entities that have certain properties are those that is it stated
 have the properties.  We accomplish this assumption by "completing" predicates.
 
-If the assumptions contain "P(A)", then "all x.(P(x) -> (x=A))" is the completion 
-of "P".  If the assumptions contain "all x.(ostrich(x) -> bird(x))", then 
-"all x.(bird(x) -> ostrich(x))" is the completion of "bird".  If the 
-assumptions don't contain anything that are "P", then "all x.-P(x)" is the 
-completion of "P". 
+If the assumptions contain "P(A)", then "all x.(P(x) -> (x=A))" is the completion
+of "P".  If the assumptions contain "all x.(ostrich(x) -> bird(x))", then
+"all x.(bird(x) -> ostrich(x))" is the completion of "bird".  If the
+assumptions don't contain anything that are "P", then "all x.-P(x)" is the
+completion of "P".
 
     >>> p1 = lp.parse(r'walk(Socrates)')
     >>> p2 = lp.parse(r'-(Socrates = Bill)')
@@ -158,7 +158,7 @@ completion of "P".
     >>> prover.prove()
     False
     >>> cwp = ClosedWorldProver(prover)
-    >>> for a in cwp.assumptions(): print a
+    >>> for a in cwp.assumptions(): print(a)
     walk(Socrates)
     -(Socrates = Bill)
     all z1.(walk(z1) -> (z1 = Socrates))
@@ -174,7 +174,7 @@ completion of "P".
     >>> prover.prove()
     False
     >>> cwp = ClosedWorldProver(prover)
-    >>> for a in cwp.assumptions(): print a
+    >>> for a in cwp.assumptions(): print(a)
     see(Socrates,John)
     see(John,Mary)
     -(Socrates = John)
@@ -192,14 +192,14 @@ completion of "P".
     >>> prover.prove()
     False
     >>> cwp = ClosedWorldProver(prover)
-    >>> for a in cwp.assumptions(): print a
+    >>> for a in cwp.assumptions(): print(a)
     all x.(ostrich(x) -> bird(x))
     bird(Tweety)
     -ostrich(Sam)
     -(Sam = Tweety)
     all z7.-ostrich(z7)
     all z8.(bird(z8) -> ((z8 = Tweety) | ostrich(z8)))
-    >>> print cwp.prove()
+    >>> print(cwp.prove())
     True
 
 -----------------------
@@ -212,10 +212,10 @@ Decorators can be nested to utilize multiple assumptions.
     >>> p2 = lp.parse(r'see(John, Mary)')
     >>> c = lp.parse(r'-see(Socrates, Mary)')
     >>> prover = Prover9Command(c, [p1,p2])
-    >>> print prover.prove()
+    >>> print(prover.prove())
     False
     >>> cmd = ClosedDomainProver(UniqueNamesProver(ClosedWorldProver(prover)))
-    >>> print cmd.prove()
+    >>> print(cmd.prove())
     True
 
 -----------------
@@ -235,7 +235,7 @@ default the properties using abnormalities
     >>> premises.append(lp.parse(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
     >>> premises.append(lp.parse(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))'))  #normal birds fly
     >>> premises.append(lp.parse(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
-    
+
 specify abnormal entities
     >>> premises.append(lp.parse(r'all x.(bird(x)           -> Ab1(x))')) #flight
     >>> premises.append(lp.parse(r'all x.(ostrich(x)        -> Ab2(x))')) #non-flying bird
@@ -245,11 +245,11 @@ define entities
     >>> premises.append(lp.parse(r'elephant(el)'))
     >>> premises.append(lp.parse(r'dove(do)'))
     >>> premises.append(lp.parse(r'ostrich(os)'))
-    
+
 print the augmented assumptions list
     >>> prover = Prover9Command(None, premises)
     >>> command = UniqueNamesProver(ClosedWorldProver(prover))
-    >>> for a in command.assumptions(): print a
+    >>> for a in command.assumptions(): print(a)
     all x.(elephant(x) -> animal(x))
     all x.(bird(x) -> animal(x))
     all x.(dove(x) -> bird(x))
@@ -283,3 +283,4 @@ print the augmented assumptions list
     True
     >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lp.parse('-fly(os)'), premises))).prove()
     True
+

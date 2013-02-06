@@ -1,6 +1,6 @@
 NLTK-Java Interface Code
 
-Copyright (C) 2001-2012 NLTK Project
+Copyright (C) 2001-2013 NLTK Project
 For license information, see LICENSE.TXT
 
 The Java code in this directory is used by NLTK to communicate with

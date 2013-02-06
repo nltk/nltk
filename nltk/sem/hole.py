@@ -3,7 +3,7 @@
 # Author:     Peter Wang
 # Updated by: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -19,9 +19,11 @@ After parsing, the semantic representation is in the form of an underspecified
 representation that is not easy to read.  We use a "plugging" algorithm to
 convert that representation into first-order logic formulas.
 """
+from __future__ import print_function, unicode_literals
 
+from functools import reduce
 
-from __future__ import print_function
+from nltk import compat
 from nltk.parse import load_parser
 from nltk.draw.tree import draw_trees
 from nltk.sem.skolemize import skolemize
@@ -126,7 +128,7 @@ class HoleSemantics(object):
 
     def _find_top_nodes(self, node_list):
         top_nodes = node_list.copy()
-        for f in self.fragments.itervalues():
+        for f in compat.itervalues(self.fragments):
             #the label is the first argument of the predicate
             args = f[1]
             for arg in args:
@@ -282,6 +284,7 @@ class HoleSemantics(object):
             return node
 
 
+@compat.python_2_unicode_compatible
 class Constraint(object):
     """
     This class represents a constraint of the form (L =< N),
@@ -350,7 +353,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         pluggings = hole_sem.pluggings()
 
         # Build FOL formula trees using the pluggings.
-        readings = map(hole_sem.formula_tree, pluggings)
+        readings = list(map(hole_sem.formula_tree, pluggings))
 
         # Print out the formulas in a textual format.
         if verbose:

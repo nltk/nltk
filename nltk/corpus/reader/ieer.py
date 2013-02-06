@@ -1,7 +1,7 @@
 # Natural Language Toolkit: IEER Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -20,13 +20,11 @@ and filenames were shortened.
 The corpus contains the following files: APW_19980314, APW_19980424,
 APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
-
-import codecs
+from __future__ import unicode_literals
 
 import nltk
-
-from api import *
-from util import *
+from nltk import compat
+from .api import *
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.
@@ -42,7 +40,8 @@ titles = {
 #: A list of all documents in this corpus.
 documents = sorted(titles)
 
-class IEERDocument:
+@compat.python_2_unicode_compatible
+class IEERDocument(object):
     def __init__(self, text, docno=None, doctype=None,
                  date_time=None, headline=''):
         self.text = text
@@ -50,6 +49,7 @@ class IEERDocument:
         self.doctype = doctype
         self.date_time = date_time
         self.headline = headline
+
     def __repr__(self):
         if self.headline:
             headline = ' '.join(self.headline.leaves())
@@ -66,7 +66,7 @@ class IEERCorpusReader(CorpusReader):
     """
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def docs(self, fileids=None):

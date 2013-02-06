@@ -85,20 +85,18 @@ nltk.  All such modifications are marked with \"--NLTK--\".  The nltk
 version of this module is maintained by the NLTK developers, and is
 available from <http://nltk.sourceforge.net>
 """
-
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 ## --NLTK--
 ## Declare this module's documentation format.
 __docformat__ = 'plaintext'
 
-import sys
 import re
 
-## --NLTK--
-## Import the nltk.stemmer module, which defines the stemmer interface
-from api import StemmerI
+from .api import StemmerI
+from nltk.compat import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class PorterStemmer(StemmerI):
 
     ## --NLTK--
@@ -195,15 +193,15 @@ class PorterStemmer(StemmerI):
         """
         n = 0
         i = self.k0
-        while 1:
+        while True:
             if i > self.j:
                 return n
             if not self.cons(i):
                 break
             i = i + 1
         i = i + 1
-        while 1:
-            while 1:
+        while True:
+            while True:
                 if i > self.j:
                     return n
                 if self.cons(i):
@@ -211,7 +209,7 @@ class PorterStemmer(StemmerI):
                 i = i + 1
             i = i + 1
             n = n + 1
-            while 1:
+            while True:
                 if i > self.j:
                     return n
                 if not self.cons(i):
@@ -525,7 +523,7 @@ class PorterStemmer(StemmerI):
         lower = word.lower()
 
         ret = ""
-        for x in xrange(len(stem)):
+        for x in range(len(stem)):
             if lower[x] == stem[x]:
                 ret += word[x]
             else:

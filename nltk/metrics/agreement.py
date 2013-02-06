@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -45,19 +45,16 @@ TODO: Describe handling of multiple coders and missing data
 
 Expected results from the Artstein and Poesio survey paper:
 
-.. doctest::
-    :options: +SKIP
-
     >>> from nltk.metrics.agreement import AnnotationTask
     >>> import os.path
     >>> t = AnnotationTask(data=[x.split() for x in open(os.path.join(os.path.dirname(__file__), "artstein_poesio_example.txt"))])
     >>> t.avg_Ao()
     0.88
     >>> t.pi()
-    0.7995322418977615
+    0.7995322418977615...
     >>> t.S()
-    0.8199999999999998
-    
+    0.8199999999999998...
+
     This would have returned a wrong value (0.0) in @785fb79 as coders are in
     the wrong order. Subsequently, all values for pi(), S(), and kappa() would
     have been wrong as they are computed with avg_Ao().
@@ -71,19 +68,21 @@ Expected results from the Artstein and Poesio survey paper:
     1.0
 
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import logging
 from itertools import groupby
 from operator import itemgetter
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
+from nltk import compat
 
 from nltk.metrics.distance import binary_distance
 
 log = logging.getLogger(__file__)
 
+@compat.python_2_unicode_compatible
 class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
 
@@ -134,12 +133,12 @@ class AnnotationTask(object):
         # cfedermann: we don't know what combination of coder/item will come
         # first in x; to avoid StopIteration problems due to assuming an order
         # cA,cB, we allow either for k1 and then look up the missing as k2.
-        k1 = (x for x in data if x['coder'] in (cA,cB) and x['item']==i).next()
+        k1 = next((x for x in data if x['coder'] in (cA,cB) and x['item']==i))
         if k1['coder'] == cA:
-            k2 = (x for x in data if x['coder']==cB and x['item']==i).next()
+            k2 = next((x for x in data if x['coder']==cB and x['item']==i))
         else:
-            k2 = (x for x in data if x['coder']==cA and x['item']==i).next()
-        
+            k2 = next((x for x in data if x['coder']==cA and x['item']==i))
+
         ret = 1.0 - float(self.distance(k1['labels'], k2['labels']))
         log.debug("Observed agreement between %s and %s on %s: %f",
                       cA, cB, i, ret)
@@ -218,8 +217,8 @@ class AnnotationTask(object):
         for i, itemdata in self._grouped_data('item'):
             label_freqs = FreqDist(x['labels'] for x in itemdata)
 
-            for j, nj in label_freqs.iteritems():
-                for l, nl in label_freqs.iteritems():
+            for j, nj in compat.iteritems(label_freqs):
+                for l, nl in compat.iteritems(label_freqs):
                     total += float(nj * nl) * self.distance(l, j)
         ret = (1.0 / float((len(self.I) * len(self.C) * (len(self.C) - 1)))) * total
         log.debug("Observed disagreement: %f", ret)
@@ -264,7 +263,7 @@ class AnnotationTask(object):
         """
         total = 0.0
         label_freqs = FreqDist(x['labels'] for x in self.data)
-        for k, f in label_freqs.iteritems():
+        for k, f in compat.iteritems(label_freqs):
             total += f ** 2
         Ae = total / float((len(self.I) * len(self.C)) ** 2)
         return (self.avg_Ao() - Ae) / (1 - Ae)
@@ -345,7 +344,7 @@ if __name__ == '__main__':
 
     import re
     import optparse
-    import distance
+    from . import distance
 
     # process command-line arguments
     parser = optparse.OptionParser()

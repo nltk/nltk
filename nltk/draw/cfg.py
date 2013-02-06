@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CFG visualization
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -46,11 +46,12 @@ Visualization tools for CFGs.
 #   - disconnect top & bottom -- right click
 #     - if connected to top & bottom, then disconnect
 
-from __future__ import print_function
 
+
+import nltk.compat
 import re
 
-from Tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
+from tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
                      Scrollbar, Text, Tk, Toplevel)
 
 from nltk.grammar import (ContextFreeGrammar, parse_cfg_production,
@@ -59,6 +60,7 @@ from nltk.tree import Tree
 from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
 from nltk.draw.util import (CanvasFrame, ColorizedList, ShowText,
                             SymbolWidget, TextWidget)
+from nltk import compat
 
 ######################################################################
 # Production List
@@ -329,7 +331,7 @@ class CFGEditor(object):
         enough to be done anytime they press '>'.
         """
         arrow = '1.0'
-        while 1:
+        while True:
             arrow = self._textwidget.search('->', arrow, 'end+1char')
             if arrow == '': break
             self._textwidget.delete(arrow, arrow+'+2char')
@@ -337,7 +339,7 @@ class CFGEditor(object):
             self._textwidget.insert(arrow, '\t')
 
         arrow = '1.0'
-        while 1:
+        while True:
             arrow = self._textwidget.search(self.ARROW, arrow+'+1char',
                                             'end+1char')
             if arrow == '': break
@@ -385,7 +387,7 @@ class CFGEditor(object):
         self._clear_tags(linenum)
 
         # Get the line line's text string.
-        line = self._textwidget.get(`linenum`+'.0', `linenum`+'.end')
+        line = self._textwidget.get(repr(linenum)+'.0', repr(linenum)+'.end')
 
         # If it's a valid production, then colorize each token.
         if CFGEditor._PRODUCTION_RE.match(line):
@@ -615,7 +617,7 @@ class CFGDemo(object):
                     isinstance(widget, TreeSegmentWidget) and
                     node.symbol == widget.node().text()):
                     pass # matching nonterminal
-                elif (isinstance(node, (str, unicode)) and
+                elif (isinstance(node, compat.string_types) and
                       isinstance(widget, TextWidget) and
                       node == widget.text()):
                     pass # matching nonterminal

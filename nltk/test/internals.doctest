@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==========================================
@@ -33,7 +33,7 @@ perform the other method:
     'yum'
     >>> GoodEater1().batch_eat(['steak', 'peas'])
     ['yum', 'yum']
-    
+
     >>> class GoodEater2(EaterI):
     ...     def batch_eat(self, foods):
     ...         return ['yum' for food in foods]
@@ -79,12 +79,12 @@ It's ok to use intermediate abstract classes:
     >>> class GoodEater3(AbstractEater):
     ...     def eat(self, food):
     ...         return 'yum'
-    ...     
+    ...
     >>> GoodEater3().eat('steak')
     'yum'
     >>> GoodEater3().batch_eat(['steak', 'peas'])
     ['yum', 'yum']
-    
+
     >>> class GoodEater4(AbstractEater):
     ...     def batch_eat(self, foods):
     ...         return ['yum' for food in foods]
@@ -122,19 +122,8 @@ Here's some extra tests:
     >>> overridden(D().f)
     True
 
-overridden() can be called on unbound methods as well:
-
-    >>> overridden(A.f)
-    False
-    >>> overridden(B.f)
-    True
-    >>> overridden(C.f)
-    False
-    >>> overridden(D.f)
-    True
-
 It works for classic classes, too:
- 
+
     >>> class A:
     ...     def f(x): pass
     >>> class B(A):
@@ -149,12 +138,3 @@ It works for classic classes, too:
     False
     >>> overridden(D().f)
     True
-    >>> overridden(A.f)
-    False
-    >>> overridden(B.f)
-    True
-    >>> overridden(C.f)
-    False
-    >>> overridden(D.f)
-    True
- 

@@ -1,14 +1,15 @@
 # Natural Language Toolkit: Interface to TADM Classifier
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
 from __future__ import print_function
+
 import sys
 import subprocess
 
+from nltk import compat
 from nltk.internals import find_binary
 try:
     import numpy
@@ -67,7 +68,7 @@ def call_tadm(args):
     """
     Call the ``tadm`` binary with the given arguments.
     """
-    if isinstance(args, basestring):
+    if isinstance(args, compat.string_types):
         raise TypeError('args should be a list of strings')
     if _tadm_bin is None:
         config_tadm()

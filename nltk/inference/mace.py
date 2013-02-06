@@ -9,8 +9,8 @@
 """
 A model builder that makes use of the external 'Mace4' package.
 """
-
 from __future__ import print_function
+
 import os
 import tempfile
 

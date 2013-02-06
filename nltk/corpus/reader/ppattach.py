@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PP Attachment Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -37,13 +37,15 @@ Conference.  [http://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
 The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.
 """
+from __future__ import unicode_literals
 
-import codecs
+from nltk import compat
+from .util import *
+from .api import *
 
-from util import *
-from api import *
 
-class PPAttachment:
+@compat.python_2_unicode_compatible
+class PPAttachment(object):
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):
         self.sent = sent
         self.verb = verb
@@ -74,7 +76,7 @@ class PPAttachmentCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _read_tuple_block(self, stream):

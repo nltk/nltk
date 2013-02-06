@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Classifier Utility Functions
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
+#         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -10,6 +10,7 @@
 Utility functions and classes for classifiers.
 """
 from __future__ import print_function
+
 import math
 
 #from nltk.util import Deprecated
@@ -75,7 +76,7 @@ def attested_labels(tokens):
         labels.  A classified token has the form ``(token, label)``.
     :type tokens: list
     """
-    return tuple(set([label for (tok,label) in tokens]))
+    return tuple(set(label for (tok,label) in tokens))
 
 def log_likelihood(classifier, gold):
     results = classifier.batch_prob_classify([fs for (fs,l) in gold])

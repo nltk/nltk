@@ -42,7 +42,7 @@ Some sentences about sports:
     ...                      'The other team controlled the ball' ]
 
 Mixed topics, including sports:
-    
+
     >>> various_sentences = [ 'The President did not comment',
     ...                       'I lost the keys',
     ...                       'The team won the game',
@@ -52,26 +52,26 @@ Mixed topics, including sports:
     ...                       'The show is over' ]
 
 The features of a sentence are simply the words it contains:
-    
+
     >>> def features(sentence):
     ...     words = sentence.lower().split()
     ...     return dict(('contains(%s)' % w, True) for w in words)
 
 We use the sports sentences as positive examples, the mixed ones ad unlabeled examples:
-    
-    >>> positive_featuresets = map(features, sports_sentences)
-    >>> unlabeled_featuresets = map(features, various_sentences)
+
+    >>> positive_featuresets = list(map(features, sports_sentences))
+    >>> unlabeled_featuresets = list(map(features, various_sentences))
     >>> classifier = PositiveNaiveBayesClassifier.train(positive_featuresets,
     ...                                                 unlabeled_featuresets)
 
 Is the following sentence about sports?
-    
-    >>> print classifier.classify(features('The cat is on the table'))
+
+    >>> classifier.classify(features('The cat is on the table'))
     False
 
 What about this one?
-    
-    >>> print classifier.classify(features('My team lost the game'))
+
+    >>> classifier.classify(features('My team lost the game'))
     True
 """
 
@@ -79,7 +79,7 @@ from collections import defaultdict
 
 from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist
 
-from naivebayes import NaiveBayesClassifier
+from .naivebayes import NaiveBayesClassifier
 
 ##//////////////////////////////////////////////////////
 ##  Positive Naive Bayes Classifier
@@ -109,7 +109,7 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
                 positive_feature_freqdist[fname].inc(fval)
                 feature_values[fname].add(fval)
                 fnames.add(fname)
-                
+
         # Count up how many times each feature value occurred in unlabeled examples.
         for featureset in unlabeled_featuresets:
             for fname, fval in featureset.items():
@@ -158,7 +158,7 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
                                                                 normalize=True)
 
         return PositiveNaiveBayesClassifier(label_probdist, feature_probdist)
-                                                 
+
 ##//////////////////////////////////////////////////////
 ##  Demo
 ##//////////////////////////////////////////////////////
@@ -171,7 +171,7 @@ def demo():
 ##//////////////////////////////////////////////////////
 ##  Test
 ##//////////////////////////////////////////////////////
-    
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

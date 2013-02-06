@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==================
@@ -207,7 +207,7 @@ method will remind you of what readings it consists of:
 
     >>> thread = dt.expand_threads('d1')
     >>> for rid, reading in thread:
-    ...     print rid, str(reading)
+    ...     print(rid, str(reading))
     s0-r0 exists x.(boxer(x) & walk(x))
     s1-r0 all x.(boxer(x) -> exists z11.(girl(z11) & chase(x,z11)))
     s2-r1 boxerdog(John)
@@ -243,7 +243,7 @@ us to check:
 So let's retract the inconsistent sentence:
 
     >>> dt.retract_sentence('No person dances', verbose=True) # doctest: +NORMALIZE_WHITESPACE
-    Current sentences are 
+    Current sentences are
     s0: A student dances
     s1: Every student is a person
 
@@ -487,7 +487,7 @@ you might want to start off with a local copy of ``background.fol``:
     >>> nltk.data.retrieve('grammars/book_grammars/background.fol')
     Retrieving 'grammars/book_grammars/background.fol', saving to 'background.fol'
 
-After you have modified the file, the ``parse_logic()`` function will parse 
+After you have modified the file, the ``parse_logic()`` function will parse
 the strings in the file into expressions of ``nltk.logic``.
 
     >>> from nltk.inference.discourse import parse_fol
@@ -542,5 +542,5 @@ Regression Testing from book
     >>> grammar = nltk.data.load('grammars/book_grammars/drt.fcfg', logic_parser=DrtParser())
     >>> parser = FeatureEarleyChartParser(grammar, trace=0)
     >>> trees = parser.nbest_parse('Angus owns a dog'.split())
-    >>> print trees[0].node['SEM'].simplify()
+    >>> print(trees[0].node['SEM'].simplify())
     ([x,z2],[Angus(x), dog(z2), own(x,z2)])

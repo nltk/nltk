@@ -2,15 +2,13 @@
 #
 ## Natural Language Toolkit: substitute a pattern with a replacement in every file
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # NB Should work on all platforms, http://www.python.org/doc/2.5.2/lib/os-file-dir.html
-
-from __future__ import print_statement
 
 import os, stat, sys
 
@@ -45,7 +43,7 @@ if __name__ == '__main__':
     count = 0
 
     for root, dirs, files in os.walk('.'):
-        if '/.git' not in root:
+        if not ('/.git' in root or '/.tox' in root):
             for file in files:
                 path = os.path.join(root, file)
                 if update(path, pattern, replacement):

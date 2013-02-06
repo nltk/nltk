@@ -2,21 +2,23 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, division, unicode_literals
 
-from __future__ import print_function
 import os
 
 import nltk
 from nltk.internals import Counter
+from nltk.compat import string_types
 from nltk.corpus import brown
 from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
 from nltk.sem.logic import (LogicParser, Expression, Variable, VariableExpression,
                             LambdaExpression, AbstractVariableExpression)
-import drt
-import linearlogic
+from nltk.compat import python_2_unicode_compatible
+from . import drt
+from . import linearlogic
 
 SPEC_SEMTYPES = {'a'       : 'ex_quant',
                  'an'      : 'ex_quant',
@@ -27,19 +29,20 @@ SPEC_SEMTYPES = {'a'       : 'ex_quant',
 
 OPTIONAL_RELATIONSHIPS = ['nmod', 'vmod', 'punct']
 
+@python_2_unicode_compatible
 class GlueFormula(object):
     def __init__(self, meaning, glue, indices=None):
         if not indices:
             indices = set()
 
-        if isinstance(meaning, str):
+        if isinstance(meaning, string_types):
             self.meaning = LogicParser().parse(meaning)
         elif isinstance(meaning, Expression):
             self.meaning = meaning
         else:
             raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
 
-        if isinstance(glue, str):
+        if isinstance(glue, string_types):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
@@ -98,19 +101,24 @@ class GlueFormula(object):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.meaning == other.meaning and self.glue == other.glue
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
         assert isinstance(self.indices, set)
         accum = '%s : %s' % (self.meaning, self.glue)
         if self.indices:
-            accum += ' : {' + ', '.join([str(index) for index in self.indices]) + '}'
+            accum += ' : {' + ', '.join(str(index) for index in self.indices) + '}'
         return accum
 
     def __repr__(self):
-        return str(self)
+        return "%s" % self
 
+@python_2_unicode_compatible
 class GlueDict(dict):
-    def __init__(self, filename):
+    def __init__(self, filename, encoding=None):
         self.filename = filename
+        self.file_encoding = encoding
         self.read_file()
 
     def read_file(self, empty_first=True):
@@ -118,19 +126,14 @@ class GlueDict(dict):
             self.clear()
 
         try:
-            f = nltk.data.find(
-                os.path.join('grammars', 'sample_grammars', self.filename))
-            # if f is a ZipFilePathPointer or a FileSystemPathPointer
-            # then we need a little extra massaging
-            if hasattr(f, 'open'):
-                f = f.open()
+            contents = nltk.data.load(self.filename, format='text', encoding=self.file_encoding)
+            # TODO: the above can't handle zip files, but this should anyway be fixed in nltk.data.load()
         except LookupError as e:
             try:
-                f = open(self.filename)
+                contents = nltk.data.load('file:' + self.filename, format='text', encoding=self.file_encoding)
             except LookupError:
                 raise e
-        lines = f.readlines()
-        f.close()
+        lines = contents.splitlines()
 
         for line in lines:                          # example: 'n : (\\x.(<word> x), (v-or))'
                                                     #     lambdacalc -^  linear logic -^
@@ -173,7 +176,7 @@ class GlueDict(dict):
                 if relStart == relEnd:
                     relationships = frozenset()
                 else:
-                    relationships = frozenset([r.strip() for r in parts[2][relStart:relEnd].split(',')])
+                    relationships = frozenset(r.strip() for r in parts[2][relStart:relEnd].split(','))
 
             try:
                 startInheritance = parts[0].index('(')
@@ -190,9 +193,10 @@ class GlueDict(dict):
             if relationships is None: #if not specified for a specific relationship set
                 #add all relationship entries for parents
                 if supertype:
-                    for rels, glue in self[supertype].iteritems():
+                    for rels in self[supertype]:
                         if rels not in self[sem]:
                             self[sem][rels] = []
+                        glue = self[supertype][rels]
                         self[sem][rels].extend(glue)
                         self[sem][rels].extend(glue_formulas) # add the glue formulas to every rel entry
                 else:
@@ -210,16 +214,17 @@ class GlueDict(dict):
     def __str__(self):
         accum = ''
         for pos in self:
+            str_pos = "%s" % pos
             for relset in self[pos]:
                 i = 1
                 for gf in self[pos][relset]:
                     if i==1:
-                        accum += str(pos) + ': '
+                        accum += str_pos + ': '
                     else:
-                        accum += ' '*(len(str(pos))+2)
-                    accum += str(gf)
+                        accum += ' '*(len(str_pos)+2)
+                    accum += "%s" % gf
                     if relset and i==len(self[pos][relset]):
-                        accum += ' : ' + str(relset)
+                        accum += ' : %s' % relset
                     accum += '\n'
                     i += 1
         return accum
@@ -268,10 +273,10 @@ class GlueDict(dict):
             node['deps'].append(subj['address'])
 
     def _lookup_semtype_option(self, semtype, node, depgraph):
-        relationships = frozenset([depgraph.nodelist[dep]['rel'].lower()
+        relationships = frozenset(depgraph.nodelist[dep]['rel'].lower()
                                    for dep in node['deps']
                                    if depgraph.nodelist[dep]['rel'].lower()
-                                       not in OPTIONAL_RELATIONSHIPS])
+                                       not in OPTIONAL_RELATIONSHIPS)
 
         try:
             lookup = semtype[relationships]
@@ -383,7 +388,7 @@ class GlueDict(dict):
 
         letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
                   't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
-        num = int(value) / 26
+        num = int(value) // 26
         if num > 0:
             return letter + str(num)
         else:
@@ -576,14 +581,14 @@ class DrtGlueFormula(GlueFormula):
         if not indices:
             indices = set()
 
-        if isinstance(meaning, str):
+        if isinstance(meaning, string_types):
             self.meaning = drt.DrtParser().parse(meaning)
         elif isinstance(meaning, drt.AbstractDrs):
             self.meaning = meaning
         else:
             raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
 
-        if isinstance(glue, str):
+        if isinstance(glue, string_types):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue

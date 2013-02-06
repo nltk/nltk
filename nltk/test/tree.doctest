@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===============================
@@ -13,7 +13,7 @@ Some trees to run tests on:
     >>> dp2 = Tree('dp', [Tree('d', ['the']), Tree('np', ['cat'])])
     >>> vp = Tree('vp', [Tree('v', ['chased']), dp2])
     >>> tree = Tree('s', [dp1, vp])
-    >>> print tree
+    >>> print(tree)
     (s (dp (d the) (np dog)) (vp (v chased) (dp (d the) (np cat))))
 
 The node value is stored using the `node` attribute:
@@ -21,20 +21,20 @@ The node value is stored using the `node` attribute:
     >>> dp1.node, dp2.node, vp.node, tree.node
     ('dp', 'dp', 'vp', 's')
 
-    >>> print tree[1,1,1,0]
+    >>> print(tree[1,1,1,0])
     cat
 
 The `treepositions` method returns a list of the tree positions of
 subtrees and leaves in a tree.  By default, it gives the position of
 every tree, subtree, and leaf, in prefix order:
 
-    >>> print tree.treepositions()
+    >>> print(tree.treepositions())
     [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 1), (1, 1, 1, 0)]
 
 In addition to `str` and `repr`, several methods exist to convert a
 tree object to one of several standard tree encodings:
 
-    >>> print tree.pprint_latex_qtree()
+    >>> print(tree.pprint_latex_qtree())
     \Tree [.s
             [.dp [.d the ] [.np dog ] ]
             [.vp [.v chased ] [.dp [.d the ] [.np cat ] ] ] ]
@@ -43,13 +43,13 @@ Trees can be parsed from treebank strings with the static
 `Tree.parse()` method:
 
     >>> tree2 = Tree.parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
-    >>> print tree2
+    >>> print(tree2)
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 If the `Tree` constructor is called with a single string argument,
 then it simply delegates to `Tree.parse()`.
 
-    >>> print Tree('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
+    >>> print(Tree('(S (NP I) (VP (V enjoyed) (NP my cookie)))'))
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 Trees can be compared for equality:
@@ -85,16 +85,16 @@ Tree Parsing
 The class method `Tree.parse()` can be used to parse trees:
 
     >>> tree = Tree.parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
-    >>> print tree
+    >>> print(tree)
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 When called on a subclass of `Tree`, it will create trees of that
 type:
 
     >>> tree = ImmutableTree.parse('(VP (V enjoyed) (NP my cookie))')
-    >>> print tree
+    >>> print(tree)
     (VP (V enjoyed) (NP my cookie))
-    >>> print type(tree)
+    >>> print(type(tree))
     <class 'nltk.tree.ImmutableTree'>
     >>> tree[1] = 'x'
     Traceback (most recent call last):
@@ -108,11 +108,11 @@ type:
 The ``brackets`` parameter can be used to specify two characters that
 should be used as brackets:
 
-    >>> print Tree.parse('[S [NP I] [VP [V enjoyed] [NP my cookie]]]',
-    ...                  brackets='[]')
+    >>> print(Tree.parse('[S [NP I] [VP [V enjoyed] [NP my cookie]]]',
+    ...                  brackets='[]'))
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
-    >>> print Tree.parse('<S <NP I> <VP <V enjoyed> <NP my cookie>>>',
-    ...                  brackets='<>')
+    >>> print(Tree.parse('<S <NP I> <VP <V enjoyed> <NP my cookie>>>',
+    ...                  brackets='<>'))
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 If ``brackets`` is not a string, or is not exactly two characters,
@@ -193,35 +193,35 @@ ValueError, with a description of the problem:
 
 Trees with no children are supported:
 
-    >>> print Tree.parse('(S)')
+    >>> print(Tree.parse('(S)'))
     (S )
-    >>> print Tree.parse('(X (Y) (Z))')
+    >>> print(Tree.parse('(X (Y) (Z))'))
     (X (Y ) (Z ))
 
 Trees with an empty node and no children are supported:
 
-    >>> print Tree.parse('()')
+    >>> print(Tree.parse('()'))
     ( )
-    >>> print Tree.parse('(X () ())')
+    >>> print(Tree.parse('(X () ())'))
     (X ( ) ( ))
 
 Trees with an empty node and children are supported, but only if the
 first child is not a leaf (otherwise, it will be treated as the node
 value).
 
-    >>> print Tree.parse('((A) (B) (C))')
+    >>> print(Tree.parse('((A) (B) (C))'))
     ( (A ) (B ) (C ))
-    >>> print Tree.parse('((A) leaf)')
+    >>> print(Tree.parse('((A) leaf)'))
     ( (A ) leaf)
-    >>> print Tree.parse('(((())))')
+    >>> print(Tree.parse('(((())))'))
     ( ( ( ( ))))
 
 The optional arguments `parse_node` and `parse_leaf` may be used to
 transform the string values of nodes or leaves.
 
-    >>> print Tree.parse('(A b (C d e) (F (G h i)))',
+    >>> print(Tree.parse('(A b (C d e) (F (G h i)))',
     ...                  parse_node=lambda s: '<%s>' % s,
-    ...                  parse_leaf=lambda s: '"%s"' % s)
+    ...                  parse_leaf=lambda s: '"%s"' % s))
     (<A> "b" (<C> "d" "e") (<F> (<G> "h" "i")))
 
 These transformation functions are typically used when the node or
@@ -234,19 +234,19 @@ whitespace, then you must also use the optional `node_pattern` and
     >>> tree = Tree.parse('([cat=NP] [lex=the] [lex=dog])',
     ...                   parse_node=FeatStruct, parse_leaf=FeatStruct)
     >>> tree.node = tree.node.unify(FeatStruct('[num=singular]'))
-    >>> print tree
+    >>> print(tree)
     ([cat='NP', num='singular'] [lex='the'] [lex='dog'])
 
 The optional argument ``remove_empty_top_bracketing`` can be used to
 remove any top-level empty bracketing that occurs.
 
-    >>> print Tree.parse('((S (NP I) (VP (V enjoyed) (NP my cookie))))',
-    ...                  remove_empty_top_bracketing=True)
+    >>> print(Tree.parse('((S (NP I) (VP (V enjoyed) (NP my cookie))))',
+    ...                  remove_empty_top_bracketing=True))
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 It will not remove a top-level empty bracketing with multiple children:
 
-    >>> print Tree.parse('((A a) (B b))')
+    >>> print(Tree.parse('((A a) (B b))'))
     ( (A a) (B b))
 
 Parented Trees
@@ -261,16 +261,16 @@ created directly from a node value and a list of children:
     ...         ParentedTree('NP', [
     ...             ParentedTree('DET', ['the']),
     ...             ParentedTree('NOUN', ['dog'])])]))
-    >>> print ptree
+    >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
 
 Parented trees can be created from strings using the classmethod
 `ParentedTree.parse`:
 
     >>> ptree = ParentedTree.parse('(VP (VERB saw) (NP (DET the) (NOUN dog)))')
-    >>> print ptree
+    >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
-    >>> print type(ptree)
+    >>> print(type(ptree))
     <class 'nltk.tree.ParentedTree'>
 
 Parented trees can also be created by using the classmethod
@@ -279,9 +279,9 @@ tree:
 
     >>> tree = Tree.parse('(VP (VERB saw) (NP (DET the) (NOUN dog)))')
     >>> ptree = ParentedTree.convert(tree)
-    >>> print ptree
+    >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
-    >>> print type(ptree)
+    >>> print(type(ptree))
     <class 'nltk.tree.ParentedTree'>
 
 .. clean-up:
@@ -302,7 +302,7 @@ incorrect parent pointers and in `TypeError` exceptions:
     >>> # inserting a ParentedTree in a Tree gives incorrect parent pointers:
     >>> broken_tree = Tree('NP', [
     ...     ParentedTree('DET', ['the']), ParentedTree('NOUN', ['dog'])])
-    >>> print broken_tree[0].parent()
+    >>> print(broken_tree[0].parent())
     None
 
 Parented Tree Methods
@@ -318,8 +318,8 @@ one; and ``None`` otherwise.  `ParentedTree`\ s that do not have
 parents are known as "root trees."
 
     >>> for subtree in ptree.subtrees():
-    ...     print subtree
-    ...     print '  Parent = %s' % subtree.parent()
+    ...     print(subtree)
+    ...     print('  Parent = %s' % subtree.parent())
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Parent = None
     (VERB saw)
@@ -336,8 +336,8 @@ child list.  If a tree does not have a parent, then its `parent_index`
 is ``None``.
 
     >>> for subtree in ptree.subtrees():
-    ...     print subtree
-    ...     print '  Parent Index = %s' % subtree.parent_index()
+    ...     print(subtree)
+    ...     print('  Parent Index = %s' % subtree.parent_index())
     ...     assert (subtree.parent() is None or
     ...             subtree.parent()[subtree.parent_index()] is subtree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
@@ -362,9 +362,9 @@ equal to ``ptree`` (using ``==``); and that child may not be
     ...     ParentedTree('COJN', ['and']),
     ...     ParentedTree('PREP', ['on'])])
     >>> second_on = on_and_on[2]
-    >>> print second_on.parent_index()
+    >>> print(second_on.parent_index())
     2
-    >>> print second_on.parent().index(second_on)
+    >>> print(second_on.parent().index(second_on))
     0
 
 The methods `left_sibling()` and `right_sibling()` can be used to get a
@@ -372,9 +372,9 @@ parented tree's siblings.  If a tree does not have a left or right
 sibling, then the corresponding method's value is ``None``:
 
     >>> for subtree in ptree.subtrees():
-    ...     print subtree
-    ...     print '  Left Sibling  = %s' % subtree.left_sibling()
-    ...     print '  Right Sibling = %s' % subtree.right_sibling()
+    ...     print(subtree)
+    ...     print('  Left Sibling  = %s' % subtree.left_sibling())
+    ...     print('  Right Sibling = %s' % subtree.right_sibling())
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Left Sibling  = None
       Right Sibling = None
@@ -397,8 +397,8 @@ finds a tree without a parent.  If a tree does not have a parent, then
 it is its own root:
 
     >>> for subtree in ptree.subtrees():
-    ...     print subtree
-    ...     print '  Root = %s' % subtree.root()
+    ...     print(subtree)
+    ...     print('  Root = %s' % subtree.root())
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Root = (VP (VERB saw) (NP (DET the) (NOUN dog)))
     (VERB saw)
@@ -414,8 +414,8 @@ The `treeposition()` method can be used to find a tree's treeposition
 relative to its root:
 
     >>> for subtree in ptree.subtrees():
-    ...     print subtree
-    ...     print '  Tree Position = %s' % (subtree.treeposition(),)
+    ...     print(subtree)
+    ...     print('  Tree Position = %s' % (subtree.treeposition(),))
     ...     assert subtree.root()[subtree.treeposition()] is subtree
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
       Tree Position = ()
@@ -441,24 +441,24 @@ subtree for "cat," the method values for both the "dog" subtree and the
     >>> ptree[1,1] = cat
 
     >>> # the noun phrase is no longer the dog's parent:
-    >>> print dog.parent(), dog.parent_index(), dog.left_sibling()
+    >>> print(dog.parent(), dog.parent_index(), dog.left_sibling())
     None None None
     >>> # dog is now its own root.
-    >>> print dog.root()
+    >>> print(dog.root())
     (NOUN dog)
-    >>> print dog.treeposition()
+    >>> print(dog.treeposition())
     ()
 
     >>> # the cat's parent is now the noun phrase:
-    >>> print cat.parent()
+    >>> print(cat.parent())
     (NP (DET the) (NOUN cat))
-    >>> print cat.parent_index()
+    >>> print(cat.parent_index())
     1
-    >>> print cat.left_sibling()
+    >>> print(cat.left_sibling())
     (DET the)
-    >>> print cat.root()
+    >>> print(cat.root())
     (VP (VERB saw) (NP (DET the) (NOUN cat)))
-    >>> print cat.treeposition()
+    >>> print(cat.treeposition())
     (1, 1)
 
 ParentedTree Regression Tests
@@ -519,10 +519,10 @@ ptrees are passed as arguments, then they are printed.
     ...                 else:
     ...                     assert child.right_sibling() is ptree[i+1]
     ...     if print_ptrees:
-    ...         print 'ok!',
-    ...         for ptree in print_ptrees: print ptree
+    ...         print('ok!', end=' ')
+    ...         for ptree in print_ptrees: print(ptree)
     ...     else:
-    ...         print 'ok!'
+    ...         print('ok!')
 
 Run our test function on a variety of newly-created trees:
 
@@ -710,10 +710,10 @@ operations:
     >>> x1, y, x2 = ptree
     >>> ptree.remove(ptree[-1]); pcheck(ptree)
     ok! (A (Y y) (X x))
-    >>> print x1.parent(); pcheck(x1)
+    >>> print(x1.parent()); pcheck(x1)
     None
     ok! (X x)
-    >>> print x2.parent()
+    >>> print(x2.parent())
     (A (Y y) (X x))
 
 Test that a tree can not be given multiple parents:
@@ -826,10 +826,10 @@ mptrees are passed as arguments, then they are printed.
     ...                 if i < len(mptree)-1:
     ...                     assert has(child.right_siblings(), mptree[i+1])
     ...     if print_mptrees:
-    ...         print 'ok!',
-    ...         for mptree in print_mptrees: print mptree
+    ...         print('ok!', end=' ')
+    ...         for mptree in print_mptrees: print(mptree)
     ...     else:
-    ...         print 'ok!'
+    ...         print('ok!')
 
 Run our test function on a variety of newly-created trees:
 
@@ -1025,9 +1025,9 @@ multiple parents.)
     >>> x1, y, x2 = mptree
     >>> mptree.remove(mptree[-1]); mpcheck(mptree)
     ok! (A (Y y) (X x))
-    >>> print [str(p) for p in x1.parents()]
+    >>> print([str(p) for p in x1.parents()])
     []
-    >>> print [str(p) for p in x2.parents()]
+    >>> print([str(p) for p in x2.parents()])
     ['(A (Y y) (X x))']
 
 
@@ -1051,7 +1051,7 @@ ProbabilisticTree Regression Tests
 ----------------------------------
 
     >>> prtree = ProbabilisticTree("S", [ProbabilisticTree("NP", ["N"], prob=0.3)], prob=0.6)
-    >>> print prtree
+    >>> print(prtree)
     (S (NP N)) (p=0.6)
     >>> import copy
     >>> prtree == copy.deepcopy(prtree) == prtree.copy(deep=True) == prtree.copy()
@@ -1076,14 +1076,10 @@ ProbabilisticTree Regression Tests
 
 Squashed Bugs
 =============
-This used to cause an infinite loop (fixed in svn 6269):
-
-    >>> tree = Tree.parse('(VP (VERB saw) (NP (DET the) (NOUN cat)))')
-    >>> tree < None
-    False
 
 This used to discard the ``(B b)`` subtree (fixed in svn 6270):
 
-    >>> print Tree.parse('((A a) (B b))')
+    >>> print(Tree.parse('((A a) (B b))'))
     ( (A a) (B b))
+
 

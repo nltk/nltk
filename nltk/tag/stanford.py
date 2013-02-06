@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford NER-tagger
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://www.nltk.org/>
@@ -18,6 +18,7 @@ import warnings
 
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
+from nltk import compat
 
 _stanford_url = 'http://nlp.stanford.edu/software'
 
@@ -71,7 +72,7 @@ class StanfordTagger(TaggerI):
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'w')
         _input = '\n'.join((' '.join(x) for x in sentences))
-        if isinstance(_input, unicode) and encoding:
+        if isinstance(_input, compat.text_type) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
@@ -111,13 +112,10 @@ class POSTagger(StanfordTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.stanford import POSTagger
         >>> st = POSTagger('/usr/share/stanford-postagger/models/english-bidirectional-distsim.tagger',
-        ...                '/usr/share/stanford-postagger/stanford-postagger.jar')
-        >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
+        ...                '/usr/share/stanford-postagger/stanford-postagger.jar') # doctest: +SKIP
+        >>> st.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
 
@@ -144,13 +142,10 @@ class NERTagger(StanfordTagger):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.stanford import NERTagger
         >>> st = NERTagger('/usr/share/stanford-ner/classifiers/all.3class.distsim.crf.ser.gz',
-        ...                '/usr/share/stanford-ner/stanford-ner.jar')
-        >>> st.tag('Rami Eid is studying at Stony Brook University in NY'.split())
+        ...                '/usr/share/stanford-ner/stanford-ner.jar') # doctest: +SKIP
+        >>> st.tag('Rami Eid is studying at Stony Brook University in NY'.split()) # doctest: +SKIP
         [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'),
          ('at', 'O'), ('Stony', 'ORGANIZATION'), ('Brook', 'ORGANIZATION'),
          ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'LOCATION')]

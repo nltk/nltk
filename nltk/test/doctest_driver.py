@@ -22,18 +22,21 @@ docstrings.  This doctest driver performs three functions:
 A number of other flags can be given; call the driver with the
 `--help` option for a complete list.
 """
-
 from __future__ import print_function
+
+import codecs
 import os, os.path, sys, unittest, pdb, bdb, re, tempfile, traceback
 import textwrap
 from doctest import *
 from doctest import DocTestCase, DocTestRunner
 from optparse import OptionParser, OptionGroup, Option
-from StringIO import StringIO
+
 
 # Use local NLTK.
 root_dir = os.path.abspath(os.path.join(sys.path[0], '..', '..'))
 sys.path.insert(0, root_dir)
+
+from nltk.compat import StringIO, b
 
 
 __version__ = '0.1'
@@ -47,9 +50,13 @@ COMPILER_FLAGS = __future__.division.compiler_flag
 ###########################################################################
 
 if __name__ == "__main__":
+    from nltk import compat
     import sys
-    reload(sys)
-    sys.setdefaultencoding("UTF-8")
+    compat.reload(sys)
+    # XXX what should we do in Python 3?
+    if hasattr(sys, "setdefaultencoding"):
+        sys.setdefaultencoding("UTF-8")
+
     import doctest
     doctest.testmod()
 
@@ -334,9 +341,9 @@ class Debugger:
         if args == (None,):
             pass
         elif len(args) == 1:
-            print(`args[0]`)
+            print(repr(args[0]))
         else:
-            print(`args`) # not quite right: >>> 1,
+            print(repr(args)) # not quite right: >>> 1,
 
     def _comment_line(self, line):
         "Return a commented form of the given line"
@@ -380,7 +387,7 @@ class Debugger:
         # Calculate line offsets
         lines = [0, 0]
         pos = 0
-        while 1:
+        while True:
             pos = s.find('\n', pos)+1
             if not pos: break
             lines.append(pos)
@@ -505,7 +512,7 @@ class Debugger:
                 try:
                     sys.stdout = _SpoofOut()
                     try:
-                        execfile(srcfilename, test.globs)
+                        exec(compile(open(srcfilename).read(), srcfilename, 'exec'), test.globs)
                     except bdb.BdbQuit:
                         return
                     except:
@@ -555,7 +562,7 @@ def find(name):
             if testname is not None:
                 raise ValueError("test names can't be specified "
                                  "for text files")
-            s = open(filename).read().decode('utf8')
+            s = codecs.open(filename, encoding="utf-8").read()
             test = MyDocTestParser().get_doctest(s, {}, name, filename, 0)
             return [test]
         else:
@@ -875,7 +882,7 @@ def update(names, optionflags, verbosity):
 
 ######################################################################
 ## Terminal Controler
-## Ruthlessly stolen from epydoc: 
+## Ruthlessly stolen from epydoc:
 ##     http://epydoc.sourceforge.net/
 ## Epydoc is released under the MIT open-source license:
 ##     http://epydoc.sourceforge.net/license.html
@@ -900,9 +907,9 @@ class TerminalController:
     UNDERLINE = ''       #: Underline the text
     REVERSE = ''         #: Reverse the foreground & background
     BLACK = BLUE = GREEN = CYAN = RED = MAGENTA = YELLOW = WHITE = ''
-    
+
     _STRING_CAPABILITIES = """
-    BOL=cr UP=cuu1 DOWN=cud1 LEFT=cub1 RIGHT=cuf1 REVERSE=rev 
+    BOL=cr UP=cuu1 DOWN=cud1 LEFT=cub1 RIGHT=cuf1 REVERSE=rev
     CLEAR_EOL=el BOLD=bold UNDERLINE=smul NORMAL=sgr0""".split()
     _COLORS = """BLACK BLUE GREEN CYAN RED MAGENTA YELLOW WHITE""".split()
     _ANSICOLORS = "BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE".split()
@@ -924,7 +931,7 @@ class TerminalController:
             # simple progress bar.
             self.BOL = '\r'
             self.CLEAR_LINE = '\r' + ' '*self.COLS + '\r'
-            
+
         # Check the terminal type.  If we fail, then assume that the
         # terminal has no capabilities.
         try: curses.setupterm()
@@ -932,7 +939,7 @@ class TerminalController:
 
         # Look up numeric capabilities.
         self.COLS = curses.tigetnum('cols')
-        
+
         # Look up string capabilities.
         for capability in self._STRING_CAPABILITIES:
             (attrib, cap_name) = capability.split('=')
@@ -944,20 +951,21 @@ class TerminalController:
         set_fg = self._tigetstr('setf')
         if set_fg:
             for i,color in enumerate(self._COLORS):
-                setattr(self, color, curses.tparm(set_fg, i) or '')
+                setattr(self, color, curses.tparm(b(set_fg), i) or '')
         set_fg_ansi = self._tigetstr('setaf')
         if set_fg_ansi:
             for i,color in enumerate(self._ANSICOLORS):
-                setattr(self, color, curses.tparm(set_fg_ansi, i) or '')
+                setattr(self, color, curses.tparm(b(set_fg_ansi), i) or '')
 
     def _tigetstr(self, cap_name):
         # String capabilities can include "delays" of the form "$<2>".
         # For any modern terminal, we should be able to just ignore
         # these, so strip them out.
         import curses
-        cap = curses.tigetstr(cap_name) or ''
+        cap = curses.tigetstr(cap_name)
+        cap = cap.decode("ascii") if hasattr(cap, "decode") else ""
         return re.sub(r'\$<\d+>[/*]?', '', cap)
-    
+
     def render(self, template):
         """
         Replace each $-substitutions in the given template string with
@@ -1069,7 +1077,7 @@ def main():
                    optionvals.ellipsis * ELLIPSIS |
                    optionvals.ignore_exception_detail * IGNORE_EXCEPTION_DETAIL |
                    optionvals.normws * NORMALIZE_WHITESPACE)
- 
+
 
     # Perform the requested action.
     if optionvals.action == 'check':

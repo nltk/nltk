@@ -1,22 +1,23 @@
 # Natural Language Toolkit: Aligned Sentences
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
-import sys
+from __future__ import print_function, unicode_literals
 import logging
 from collections import defaultdict
 
+from nltk import compat
 from nltk.metrics import precision, recall
 
+@compat.python_2_unicode_compatible
 class AlignedSent(object):
     """
-    Return an aligned sentence object, which encapsulates two sentences along with
-    an ``Alignment`` between them.
+    Return an aligned sentence object, which encapsulates two sentences
+    along with an ``Alignment`` between them.
 
         >>> from nltk.align import AlignedSent
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
@@ -30,9 +31,9 @@ class AlignedSent(object):
         >>> algnsent.precision('0-2 1-3 2-1 3-3')
         0.75
         >>> from nltk.corpus import comtrans
-        >>> print comtrans.aligned_sents()[54]
+        >>> print(comtrans.aligned_sents()[54])
         <AlignedSent: 'Weshalb also sollten...' -> 'So why should EU arm...'>
-        >>> print comtrans.aligned_sents()[54].alignment
+        >>> print(comtrans.aligned_sents()[54].alignment)
         0-0 0-1 1-0 2-2 3-4 3-5 4-7 5-8 6-3 7-9 8-9 9-10 9-11 10-12 11-6 12-6 13-13
 
     :param words: source language words
@@ -44,8 +45,7 @@ class AlignedSent(object):
     :type alignment: Alignment
     """
 
-    def __init__(self, words = [], mots = [], alignment = '', \
-                 encoding = 'latin-1'):
+    def __init__(self, words=[], mots=[], alignment='', encoding='utf8'):
         self._words = words
         self._mots = mots
         self.alignment = alignment
@@ -75,9 +75,9 @@ class AlignedSent(object):
         :raise IndexError: if alignment is out of sentence boundary
         :rtype: boolean
         """
-        if not all([0 <= p[0] < len(self._words) for p in a]):
+        if not all(0 <= p[0] < len(self._words) for p in a):
             raise IndexError("Alignment is outside boundary of words")
-        if not all([0 <= p[1] < len(self._mots) for p in a]):
+        if not all(0 <= p[1] < len(self._mots) for p in a):
             raise IndexError("Alignment is outside boundary of mots")
         return True
 
@@ -87,7 +87,10 @@ class AlignedSent(object):
 
         :rtype: str
         """
-        return "AlignedSent(%r, %r, %r)" % (self._words, self._mots, self._alignment)
+        words = "[%s]" % (", ".join("'%s'" % w for w in self._words))
+        mots = "[%s]" % (", ".join("'%s'" % w for w in self._mots))
+
+        return "AlignedSent(%s, %s, %r)" % (words, mots, self._alignment)
 
     def __str__(self):
         """
@@ -198,6 +201,7 @@ class AlignedSent(object):
                 float(len(align) + len(sure)))
 
 
+@compat.python_2_unicode_compatible
 class Alignment(frozenset):
     """
     A storage class for representing alignment between two sequences, s1, s2.
@@ -210,7 +214,7 @@ class Alignment(frozenset):
         >>> a = Alignment([(0, 0), (0, 1), (1, 2), (2, 2)])
         >>> a.invert()
         Alignment([(0, 0), (1, 0), (2, 1), (2, 2)])
-        >>> print a.invert()
+        >>> print(a.invert())
         0-0 1-0 2-1 2-2
         >>> a[0]
         [(0, 1), (0, 0)]
@@ -225,7 +229,7 @@ class Alignment(frozenset):
     """
 
     def __new__(cls, string_or_pairs):
-        if isinstance(string_or_pairs, basestring):
+        if isinstance(string_or_pairs, compat.string_types):
             string_or_pairs = [_giza2pair(p) for p in string_or_pairs.split()]
         self = frozenset.__new__(cls, string_or_pairs)
         self._len = (max(p[0] for p in self) if self != frozenset([]) else 0)
@@ -255,7 +259,7 @@ class Alignment(frozenset):
         if not self._index:
             self._build_index()
         if not positions:
-            positions = range(len(self._index))
+            positions = list(range(len(self._index)))
         for p in positions:
             image.update(f for _,f in self._index[p])
         return sorted(image)
@@ -299,11 +303,11 @@ class IBMModel1(object):
         ...           AlignedSent(['the', 'book'], ['das', 'Buch']),
         ...           AlignedSent(['a', 'book'], ['ein', 'Buch'])]
         >>> ibm1 = IBMModel1(corpus)
-        >>> print "%.1f" % ibm1.probabilities['book', 'Buch']
+        >>> print("%.1f" % ibm1.probabilities['book', 'Buch'])
         1.0
-        >>> print "%.1f" % ibm1.probabilities['book', 'das']
+        >>> print("%.1f" % ibm1.probabilities['book', 'das'])
         0.0
-        >>> print "%.1f" % ibm1.probabilities['book', None]
+        >>> print("%.1f" % ibm1.probabilities['book', None])
         0.5
 
     :param aligned_sents: The parallel text ``corpus.Iterable`` containing

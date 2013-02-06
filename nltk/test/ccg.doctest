@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==============================
@@ -153,7 +153,7 @@ Lexicons for the tests:
     ...        you => NP
     ...        will => S\\NP/VP
     ...        cook => VP/NP
-    ...        which => (N\N)/(S/NP)
+    ...        which => (N\\N)/(S/NP)
     ...        and => var\\.,var/.,var
     ...        might => S\\NP/VP
     ...        eat => VP/NP
@@ -165,7 +165,7 @@ Lexicons for the tests:
     ...         articles => N
     ...         the => NP/N
     ...         and => var\\.,var/.,var
-    ...         which => (N\N)/(S/NP)
+    ...         which => (N\\N)/(S/NP)
     ...         I => NP
     ...         anyone => NP
     ...         will => (S/VP)\\NP

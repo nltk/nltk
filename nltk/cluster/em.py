@@ -1,18 +1,19 @@
 # Natural Language Toolkit: Expectation Maximization Clusterer
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 try:
     import numpy
 except ImportError:
     pass
 
-from util import VectorSpaceClusterer
+from nltk.compat import python_2_unicode_compatible
+from .util import VectorSpaceClusterer
 
+@python_2_unicode_compatible
 class EMClusterer(VectorSpaceClusterer):
     """
     The Gaussian EM clusterer models the vectors as being produced by

@@ -1,18 +1,19 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
-
 from __future__ import print_function
+
 import math
 
+from nltk.compat import xrange
 from nltk.grammar import parse_dependency_grammar
 
-from dependencygraph import DependencyGraph, conll_data2
+from .dependencygraph import DependencyGraph, conll_data2
 
 #################################################################
 # DependencyScorerI - Interface for Graph-Edge Weight Calculation
@@ -69,16 +70,6 @@ class DependencyScorerI(object):
         """
         raise NotImplementedError()
 
-    #////////////////////////////////////////////////////////////
-    # Comparisons
-    #////////////////////////////////////////////////////////////
-
-    def __cmp__(self, other):
-        raise NotImplementedError()
-
-    def __hash__(self, other):
-        raise NotImplementedError()
-
 
 
 #################################################################
@@ -94,7 +85,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
     """
 
     def __init__(self):
-        print() # Do nothing without throwing error?
+        pass # Do nothing without throwing error
 
     def train(self, graphs):
         """

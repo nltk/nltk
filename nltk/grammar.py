@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@seas.upenn.edu>
 #         Jason Narad <jason.narad@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
@@ -48,8 +48,8 @@ corresponding child may be a ``Token`` with the with that type.
 The ``Nonterminal`` class is used to distinguish node values from leaf
 values.  This prevents the grammar from accidentally using a leaf
 value (such as the English word "A") as the node of a subtree.  Within
-a ``ContextFreeGrammar``, all node values are wrapped in the ``Nonterminal`` class.
-Note, however, that the trees that are specified by the grammar do
+a ``ContextFreeGrammar``, all node values are wrapped in the ``Nonterminal``
+class. Note, however, that the trees that are specified by the grammar do
 *not* include these ``Nonterminal`` wrappers.
 
 Grammars can also be given a more procedural interpretation.  According to
@@ -68,11 +68,14 @@ The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import re
 
 from nltk.util import transitive_closure, invert_graph
+from nltk.compat import (string_types, total_ordering, text_type,
+                         python_2_unicode_compatible, unicode_repr)
+from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
 from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
@@ -81,6 +84,8 @@ from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
 # Nonterminal
 #################################################################
 
+@total_ordering
+@python_2_unicode_compatible
 class Nonterminal(object):
     """
     A non-terminal symbol for a context free grammar.  ``Nonterminal``
@@ -122,32 +127,20 @@ class Nonterminal(object):
     def __eq__(self, other):
         """
         Return True if this non-terminal is equal to ``other``.  In
-        particular, return True iff ``other`` is a ``Nonterminal``
+        particular, return True if ``other`` is a ``Nonterminal``
         and this non-terminal's symbol is equal to ``other`` 's symbol.
 
         :rtype: bool
         """
-        try:
-            return ((self._symbol == other._symbol) \
-                    and isinstance(other, self.__class__))
-        except AttributeError:
-            return False
+        return type(self) == type(other) and self._symbol == other._symbol
 
     def __ne__(self, other):
-        """
-        Return True if this non-terminal is not equal to ``other``.  In
-        particular, return true iff ``other`` is not a ``Nonterminal``
-        or this non-terminal's symbol is not equal to ``other`` 's symbol.
+        return not self == other
 
-        :rtype: bool
-        """
-        return not (self==other)
-
-    def __cmp__(self, other):
-        try:
-            return cmp(self._symbol, other._symbol)
-        except:
-            return -1
+    def __lt__(self, other):
+        if not isinstance(other, Nonterminal):
+            raise_unorderable_types("<", self, other)
+        return self._symbol < other._symbol
 
     def __hash__(self):
         return self._hash
@@ -158,10 +151,10 @@ class Nonterminal(object):
 
         :rtype: str
         """
-        if isinstance(self._symbol, basestring):
-            return '%s' % (self._symbol,)
+        if isinstance(self._symbol, string_types):
+            return '%s' % self._symbol
         else:
-            return '%r' % (self._symbol,)
+            return '%s' % unicode_repr(self._symbol)
 
     def __str__(self):
         """
@@ -169,10 +162,10 @@ class Nonterminal(object):
 
         :rtype: str
         """
-        if isinstance(self._symbol, basestring):
-            return '%s' % (self._symbol,)
+        if isinstance(self._symbol, string_types):
+            return '%s' % self._symbol
         else:
-            return '%r' % (self._symbol,)
+            return '%s' % unicode_repr(self._symbol)
 
     def __div__(self, rhs):
         """
@@ -238,6 +231,8 @@ def is_terminal(item):
 # Productions
 #################################################################
 
+@total_ordering
+@python_2_unicode_compatible
 class Production(object):
     """
     A grammar production.  Each production maps a single symbol
@@ -267,7 +262,7 @@ class Production(object):
         :param rhs: The right-hand side of the new ``Production``.
         :type rhs: sequence(Nonterminal and terminal)
         """
-        if isinstance(rhs, (str, unicode)):
+        if isinstance(rhs, string_types):
             raise TypeError('production right hand side should be a list, '
                             'not a string')
         self._lhs = lhs
@@ -304,7 +299,7 @@ class Production(object):
 
         :rtype: bool
         """
-        return all([is_nonterminal(n) for n in self._rhs])
+        return all(is_nonterminal(n) for n in self._rhs)
 
     def is_lexical(self):
         """
@@ -320,10 +315,9 @@ class Production(object):
 
         :rtype: str
         """
-        str = '%r ->' % (self._lhs,)
-        for elt in self._rhs:
-            str += ' %r' % (elt,)
-        return str
+        result = '%s -> ' % unicode_repr(self._lhs)
+        result += " ".join(unicode_repr(el) for el in self._rhs)
+        return result
 
     def __repr__(self):
         """
@@ -339,16 +333,17 @@ class Production(object):
 
         :rtype: bool
         """
-        return (isinstance(other, self.__class__) and
+        return (type(self) == type(other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
-    def __cmp__(self, other):
-        if not isinstance(other, self.__class__): return -1
-        return cmp((self._lhs, self._rhs), (other._lhs, other._rhs))
+    def __lt__(self, other):
+        if not isinstance(other, Production):
+            raise_unorderable_types("<", self, other)
+        return (self._lhs, self._rhs) < (other._lhs, other._rhs)
 
     def __hash__(self):
         """
@@ -359,6 +354,7 @@ class Production(object):
         return self._hash
 
 
+@python_2_unicode_compatible
 class DependencyProduction(Production):
     """
     A dependency grammar production.  Each production maps a single
@@ -370,12 +366,13 @@ class DependencyProduction(Production):
 
         :rtype: str
         """
-        str = '\'%s\' ->' % (self._lhs,)
+        result = '\'%s\' ->' % (self._lhs,)
         for elt in self._rhs:
-                str += ' \'%s\'' % (elt,)
-        return str
+            result += ' \'%s\'' % (elt,)
+        return result
 
 
+@python_2_unicode_compatible
 class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
@@ -401,16 +398,16 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
         Production.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return Production.__str__(self) + ' [%s]' % self.prob()
+        return Production.__unicode__(self) + ' [%.6g]' % self.prob()
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and
+        return (type(self) == type(other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
                 self.prob() == other.prob())
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
@@ -419,6 +416,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
 # Grammars
 #################################################################
 
+@python_2_unicode_compatible
 class ContextFreeGrammar(object):
     """
     A context-free grammar.  A grammar consists of a start state and
@@ -499,7 +497,8 @@ class ContextFreeGrammar(object):
             return
 
         self._leftcorner_words = {}
-        for cat, lefts in self._leftcorners.iteritems():
+        for cat in self._leftcorners:
+            lefts = self._leftcorners[cat]
             lc = self._leftcorner_words[cat] = set()
             for left in lefts:
                 lc.update(self._immediate_leftcorner_words.get(left, set()))
@@ -587,8 +586,8 @@ class ContextFreeGrammar(object):
         elif self._leftcorner_words:
             return left in self._leftcorner_words.get(cat, set())
         else:
-            return any([left in _immediate_leftcorner_words.get(parent, set())
-                        for parent in self.leftcorners(cat)])
+            return any(left in self._immediate_leftcorner_words.get(parent, set())
+                       for parent in self.leftcorners(cat))
 
     def leftcorner_parents(self, cat):
         """
@@ -621,13 +620,13 @@ class ContextFreeGrammar(object):
         Pre-calculate of which form(s) the grammar is.
         """
         prods = self._productions
-        self._is_lexical = all([p.is_lexical() for p in prods])
-        self._is_nonlexical = all([p.is_nonlexical() for p in prods
-                                  if len(p) != 1])
+        self._is_lexical = all(p.is_lexical() for p in prods)
+        self._is_nonlexical = all(p.is_nonlexical() for p in prods
+                                  if len(p) != 1)
         self._min_len = min(len(p) for p in prods)
         self._max_len = max(len(p) for p in prods)
-        self._all_unary_are_lexical = all([p.is_lexical() for p in prods
-                                          if len(p) == 1])
+        self._all_unary_are_lexical = all(p.is_lexical() for p in prods
+                                          if len(p) == 1)
 
     def is_lexical(self):
         """
@@ -692,11 +691,11 @@ class ContextFreeGrammar(object):
         return '<Grammar with %d productions>' % len(self._productions)
 
     def __str__(self):
-        str = 'Grammar with %d productions' % len(self._productions)
-        str += ' (start state = %r)' % self._start
+        result = 'Grammar with %d productions' % len(self._productions)
+        result += ' (start state = %r)' % self._start
         for production in self._productions:
-            str += '\n    %s' % production
-        return str
+            result += '\n    %s' % production
+        return result
 
 
 class FeatureGrammar(ContextFreeGrammar):
@@ -816,6 +815,8 @@ class FeatureGrammar(ContextFreeGrammar):
         else:
             return item
 
+@total_ordering
+@python_2_unicode_compatible
 class FeatureValueType(object):
     """
     A helper class for ``FeatureGrammars``, designed to be different
@@ -825,13 +826,26 @@ class FeatureValueType(object):
     def __init__(self, value):
         self._value = value
         self._hash = hash(value)
+
     def __repr__(self):
-        return '<%s>' % self.value
-    def __cmp__(self, other):
-        return cmp(FeatureValueType, type(other)) or cmp(self._value, other._value)
+        return '<%s>' % self._value
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self._value == other._value
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        if not isinstance(other, FeatureValueType):
+            raise_unorderable_types("<", self, other)
+        return self._value < other._value
+
     def __hash__(self):
         return self._hash
 
+
+@python_2_unicode_compatible
 class DependencyGrammar(object):
     """
     A dependency grammar.  A DependencyGrammar consists of a set of
@@ -911,6 +925,7 @@ class DependencyGrammar(object):
         return 'Dependency grammar with %d productions' % len(self._productions)
 
 
+@python_2_unicode_compatible
 class StatisticalDependencyGrammar(object):
     """
 
@@ -1062,14 +1077,15 @@ def parse_cfg_production(input):
     """
     return parse_production(input, standard_nonterm_parser)
 
-def parse_cfg(input):
+def parse_cfg(input, encoding=None):
     """
     Return the ``ContextFreeGrammar`` corresponding to the input string(s).
 
     :param input: a grammar, either in the form of a string or
         as a list of strings.
     """
-    start, productions = parse_grammar(input, standard_nonterm_parser)
+    start, productions = parse_grammar(input, standard_nonterm_parser,
+                                       encoding=encoding)
     return ContextFreeGrammar(start, productions)
 
 # Parsing Probabilistic CFGs
@@ -1080,7 +1096,7 @@ def parse_pcfg_production(input):
     """
     return parse_production(input, standard_nonterm_parser, probabilistic=True)
 
-def parse_pcfg(input):
+def parse_pcfg(input, encoding=None):
     """
     Return a probabilistic ``WeightedGrammar`` corresponding to the
     input string(s).
@@ -1089,7 +1105,7 @@ def parse_pcfg(input):
         as a list of strings.
     """
     start, productions = parse_grammar(input, standard_nonterm_parser,
-                                       probabilistic=True)
+                                       probabilistic=True, encoding=encoding)
     return WeightedGrammar(start, productions)
 
 # Parsing Feature-based CFGs
@@ -1100,7 +1116,8 @@ def parse_fcfg_production(input, fstruct_parser):
     """
     return parse_production(input, fstruct_parser)
 
-def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
+def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None,
+               encoding=None):
     """
     Return a feature structure based ``FeatureGrammar``.
 
@@ -1122,7 +1139,8 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
         raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
                         'not both be set')
 
-    start, productions = parse_grammar(input, fstruct_parser.partial_parse)
+    start, productions = parse_grammar(input, fstruct_parser.partial_parse,
+                                       encoding=encoding)
     return FeatureGrammar(start, productions)
 
 # Parsing generic grammars
@@ -1187,7 +1205,7 @@ def parse_production(line, nonterm_parser, probabilistic=False):
         return [Production(lhs, rhs) for rhs in rhsides]
 
 
-def parse_grammar(input, nonterm_parser, probabilistic=False):
+def parse_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     """
     Return a pair consisting of a starting category and a list of
     ``Productions``.
@@ -1199,8 +1217,12 @@ def parse_grammar(input, nonterm_parser, probabilistic=False):
         return a ``(nonterminal, position)`` as result.
     :param probabilistic: are the grammar rules probabilistic?
     :type probabilistic: bool
+    :param encoding: the encoding of the grammar, if it is a binary string
+    :type encoding: str
     """
-    if isinstance(input, basestring):
+    if encoding is not None:
+        input = input.decode(encoding)
+    if isinstance(input, string_types):
         lines = input.split('\n')
     else:
         lines = input
@@ -1307,7 +1329,7 @@ def cfg_demo():
     VP_slash_NP = VP/NP
 
     print('Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP/NP])
-    print('    S.symbol() =>', `S.symbol()`)
+    print('    S.symbol() =>', repr(S.symbol()))
     print()
 
     print(Production(S, [NP]))
@@ -1324,11 +1346,11 @@ def cfg_demo():
       P -> 'on' | 'in'
     """)
 
-    print('A Grammar:', `grammar`)
-    print('    grammar.start()       =>', `grammar.start()`)
+    print('A Grammar:', repr(grammar))
+    print('    grammar.start()       =>', repr(grammar.start()))
     print('    grammar.productions() =>', end=' ')
     # Use string.replace(...) is to line-wrap the output.
-    print(`grammar.productions()`.replace(',', ',\n'+' '*25))
+    print(repr(grammar.productions()).replace(',', ',\n'+' '*25))
     print()
 
 toy_pcfg1 = parse_pcfg("""
@@ -1381,18 +1403,18 @@ def pcfg_demo():
     pcfg_prods = toy_pcfg1.productions()
 
     pcfg_prod = pcfg_prods[2]
-    print('A PCFG production:', `pcfg_prod`)
-    print('    pcfg_prod.lhs()  =>', `pcfg_prod.lhs()`)
-    print('    pcfg_prod.rhs()  =>', `pcfg_prod.rhs()`)
-    print('    pcfg_prod.prob() =>', `pcfg_prod.prob()`)
+    print('A PCFG production:', repr(pcfg_prod))
+    print('    pcfg_prod.lhs()  =>', repr(pcfg_prod.lhs()))
+    print('    pcfg_prod.rhs()  =>', repr(pcfg_prod.rhs()))
+    print('    pcfg_prod.prob() =>', repr(pcfg_prod.prob()))
     print()
 
     grammar = toy_pcfg2
-    print('A PCFG grammar:', `grammar`)
-    print('    grammar.start()       =>', `grammar.start()`)
+    print('A PCFG grammar:', repr(grammar))
+    print('    grammar.start()       =>', repr(grammar.start()))
     print('    grammar.productions() =>', end=' ')
-    # Use string.replace(...) is to line-wrap the output.
-    print(`grammar.productions()`.replace(',', ',\n'+' '*26))
+    # Use .replace(...) is to line-wrap the output.
+    print(repr(grammar.productions()).replace(',', ',\n'+' '*26))
     print()
 
     # extract productions from three trees and induce the PCFG

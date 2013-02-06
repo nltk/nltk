@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 Regression Tests
@@ -37,7 +37,7 @@ applicable_rules(token, index, ...) depended on *i*.
     >>> from nltk.tag.brill import ProximateTokensTemplate, ProximateWordsRule
     >>> t = ProximateTokensTemplate(ProximateWordsRule, (2,3))
     >>> for i in range(10):
-    ...     print sorted(t.get_neighborhood('abcdefghijkl', i))
+    ...     print(sorted(t.get_neighborhood('abcdefghijkl', i)))
     [0]
     [1]
     [0, 2]
@@ -48,4 +48,5 @@ applicable_rules(token, index, ...) depended on *i*.
     [4, 5, 7]
     [5, 6, 8]
     [6, 7, 9]
+
 

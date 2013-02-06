@@ -7,7 +7,8 @@ Finding (and Replacing) Nemo
 Instant Regular Expressions
 Created by Aristide Grange
 """
-import Tkinter as tk
+import nltk.compat
+import tkinter as tk
 import re
 import itertools
 
@@ -84,7 +85,7 @@ class Zone:
 
 class FindZone(Zone):
     def addTags(self,m):
-        color = self.colorCycle.next()
+        color = next(self.colorCycle)
         self.txt.tag_add(color,"1.0+%sc"%m.start(),"1.0+%sc"%m.end())
         try:
             self.txt.tag_add("emph"+color,"1.0+%sc"%m.start("emph"),
@@ -116,7 +117,7 @@ class ReplaceZone(Zone):
         self.txt.delete("1.0+%sc"%(m.start()+self.diff),
                         "1.0+%sc"%(m.end()+self.diff))
         self.txt.insert("1.0+%sc"%(m.start()+self.diff),s,
-                        self.colorCycle.next())
+                        next(self.colorCycle))
         self.diff += len(s) - (m.end() - m.start())
     def substitute(self):
         self.txt.delete("1.0","end")

@@ -2,7 +2,7 @@
 
 # Natural Language Toolkit: York-Toronto-Helsinki Parsed Corpus of Old English Prose (YCOE)
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Selina Dennis <selina@tranzfusion.net>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -22,13 +22,13 @@ to the YCOE standard: http://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
 import os
 import re
 
+from nltk import compat
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
-from string import split
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class YCOECorpusReader(CorpusReader):
     """
@@ -36,7 +36,7 @@ class YCOECorpusReader(CorpusReader):
     English Prose (YCOE), a 1.5 million word syntactically-annotated
     corpus of Old English prose texts.
     """
-    def __init__(self, root, encoding=None):
+    def __init__(self, root, encoding='utf8'):
         CorpusReader.__init__(self, root, [], encoding)
 
         self._psd_reader = YCOEParseCorpusReader(
@@ -63,7 +63,7 @@ class YCOECorpusReader(CorpusReader):
         """
         if fileids is None:
             return self._documents
-        if isinstance(fileids, basestring):
+        if isinstance(fileids, compat.string_types):
             fileids = [fileids]
         for f in fileids:
             if f not in self._fileids:
@@ -78,7 +78,7 @@ class YCOECorpusReader(CorpusReader):
         """
         if documents is None:
             return self._fileids
-        elif isinstance(documents, basestring):
+        elif isinstance(documents, compat.string_types):
             documents = [documents]
         return sorted(set(['%s.pos' % doc for doc in documents] +
                           ['%s.psd' % doc for doc in documents]))
@@ -91,7 +91,7 @@ class YCOECorpusReader(CorpusReader):
         if documents is None:
             documents = self._documents
         else:
-            if isinstance(documents, basestring):
+            if isinstance(documents, compat.string_types):
                 documents = [documents]
             for document in documents:
                 if document not in self._documents:
@@ -131,7 +131,7 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
         return BracketParseCorpusReader._parse(self, t)
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
-    def __init__(self, root, items, encoding=None):
+    def __init__(self, root, items, encoding='utf8'):
         gaps_re = r'(?u)(?<=/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*'
         sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
         TaggedCorpusReader.__init__(self, root, items, sep='_',

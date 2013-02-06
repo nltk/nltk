@@ -1,21 +1,23 @@
 # Natural Language Toolkit: Dependency Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Kepa Sarasola <kepa.sarasola@ehu.es>
 #         Iker Manterola <returntothehangar@hotmail.com>
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import codecs
+
 from nltk.parse import DependencyGraph
 from nltk.tokenize import *
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class DependencyCorpusReader(SyntaxCorpusReader):
 
-    def __init__(self, root, fileids, encoding=None,
+    def __init__(self, root, fileids, encoding='utf8',
                  word_tokenizer=TabTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block):
@@ -29,28 +31,34 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         :return: the given file(s) as a single string.
         :rtype: str
         """
-        return concat([open(fileid).read()
-                      for fileid in self.abspaths(fileids)])
+        result = []
+        for fileid, encoding in self.abspaths(fileids, include_encoding=True):
+            if isinstance(fileid, PathPointer):
+                result.append(fileid.open(encoding=encoding).read())
+            else:
+                with codecs.open(fileid, "r", encoding) as fp:
+                    result.append(fp.read())
+        return concat(result)
 
     def words(self, fileids=None):
-        return concat([DependencyCorpusView(fileid, False, False, False)
-                       for fileid in self.abspaths(fileids)])
+        return concat([DependencyCorpusView(fileid, False, False, False, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def tagged_words(self, fileids=None):
-        return concat([DependencyCorpusView(fileid, True, False, False)
-                       for fileid in self.abspaths(fileids)])
+        return concat([DependencyCorpusView(fileid, True, False, False, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def sents(self, fileids=None):
-        return concat([DependencyCorpusView(fileid, False, True, False)
-                       for fileid in self.abspaths(fileids)])
+        return concat([DependencyCorpusView(fileid, False, True, False, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def tagged_sents(self, fileids=None):
-            return concat([DependencyCorpusView(fileid, True, True, False)
-                                  for fileid in self.abspaths(fileids)])
+            return concat([DependencyCorpusView(fileid, True, True, False, encoding=enc)
+                           for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def parsed_sents(self, fileids=None):
-        sents=concat([DependencyCorpusView(fileid, False, True, True)
-                                  for fileid in self.abspaths(fileids)])
+        sents=concat([DependencyCorpusView(fileid, False, True, True, encoding=enc)
+                      for fileid, enc in self.abspaths(fileids, include_encoding=True)])
         return [DependencyGraph(sent) for sent in sents]
 
 
@@ -58,12 +66,12 @@ class DependencyCorpusView(StreamBackedCorpusView):
     _DOCSTART = '-DOCSTART- -DOCSTART- O\n' #dokumentu hasiera definitzen da
 
     def __init__(self, corpus_file, tagged, group_by_sent, dependencies,
-                 chunk_types=None):
+                 chunk_types=None, encoding='utf8'):
         self._tagged = tagged
         self._dependencies = dependencies
         self._group_by_sent = group_by_sent
         self._chunk_types = chunk_types
-        StreamBackedCorpusView.__init__(self, corpus_file)
+        StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
 
     def read_block(self, stream):
         # Read the next sentence.

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,13 +8,18 @@
 """
 Named entity chunker
 """
-
 from __future__ import print_function
+
 import os, re, pickle
 from xml.etree import ElementTree as ET
 
 from nltk.tag import ClassifierBasedTagger, pos_tag
-from nltk.classify import MaxentClassifier
+
+try:
+    from nltk.classify import MaxentClassifier
+except ImportError:
+    pass
+
 from nltk.tree import Tree
 from nltk.tokenize import word_tokenize
 from nltk.data import find
@@ -188,9 +193,9 @@ def postag_tree(tree):
         if isinstance(child, Tree):
             newtree.append(Tree(child.node, []))
             for subchild in child:
-                newtree[-1].append( (subchild, tag_iter.next()) )
+                newtree[-1].append( (subchild, next(tag_iter)) )
         else:
-            newtree.append( (child, tag_iter.next()) )
+            newtree.append( (child, next(tag_iter)) )
     return newtree
 
 def load_ace_data(roots, fmt='binary', skip_bnews=True):
@@ -219,7 +224,8 @@ def load_ace_file(textfile, fmt):
             entities.append( (s, e, typ) )
 
     # Read the text file, and mark the entities.
-    text = open(textfile).read()
+    with open(textfile) as fp:
+        text = fp.read()
 
     # Strip XML tags, since they don't count towards the indices
     text = re.sub('<(?!/?TEXT)[^>]+>', '', text)
@@ -307,9 +313,9 @@ def build_model(fmt='binary'):
 
     outfilename = '/tmp/ne_chunker_%s.pickle' % fmt
     print('Saving chunker to %s...' % outfilename)
-    out = open(outfilename, 'wb')
-    pickle.dump(cp, out, -1)
-    out.close()
+
+    with open(outfilename, 'wb') as out:
+        pickle.dump(cp, out, -1)
 
     return cp
 

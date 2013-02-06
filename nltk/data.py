@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -30,14 +30,14 @@ resource file, given its URL: ``load()`` loads a given resource, and
 adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
+from __future__ import print_function, unicode_literals
+from __future__ import division
 
-from __future__ import print_function
 import sys
-import os, os.path
+import os
 import textwrap
 import weakref
 import re
-import urllib2
 import zipfile
 import codecs
 
@@ -45,20 +45,16 @@ from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
-except:
+except ImportError:
     from zlib import Z_FINISH as FLUSH
 
 try:
     import cPickle as pickle
-except:
+except ImportError:
     import pickle
 
-try:
-    from cStringIO import StringIO
-except:
-    from StringIO import StringIO
-
 import nltk
+from nltk import compat
 
 ######################################################################
 # Search Path
@@ -72,23 +68,23 @@ path = []
    (e.g., in their home directory under ~/nltk_data)."""
 
 # User-specified locations:
-path += [d for d in os.environ.get('NLTK_DATA', '').split(os.pathsep) if d]
+path += [d for d in os.environ.get('NLTK_DATA', str('')).split(os.pathsep) if d]
 if os.path.expanduser('~/') != '~/': path += [
-    os.path.expanduser('~/nltk_data')]
+    os.path.expanduser(str('~/nltk_data'))]
 
 # Common locations on Windows:
 if sys.platform.startswith('win'): path += [
-    r'C:\nltk_data', r'D:\nltk_data', r'E:\nltk_data',
-    os.path.join(sys.prefix, 'nltk_data'),
-    os.path.join(sys.prefix, 'lib', 'nltk_data'),
-    os.path.join(os.environ.get('APPDATA', 'C:\\'), 'nltk_data')]
+    str(r'C:\nltk_data'), str(r'D:\nltk_data'), str(r'E:\nltk_data'),
+    os.path.join(sys.prefix, str('nltk_data')),
+    os.path.join(sys.prefix, str('lib'), str('nltk_data')),
+    os.path.join(os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data'))]
 
 # Common locations on UNIX & OS X:
 else: path += [
-    '/usr/share/nltk_data',
-    '/usr/local/share/nltk_data',
-    '/usr/lib/nltk_data',
-    '/usr/local/lib/nltk_data']
+    str('/usr/share/nltk_data'),
+    str('/usr/local/share/nltk_data'),
+    str('/usr/lib/nltk_data'),
+    str('/usr/local/lib/nltk_data')]
 
 ######################################################################
 # Path Pointers
@@ -141,8 +137,8 @@ class FileSystemPathPointer(PathPointer, str):
     subclass of ``str`` for backwards compatibility purposes --
     this allows old code that expected ``nltk.data.find()`` to expect a
     string to usually work (assuming the resource is not found in a
-    zipfile).  It also permits ``open()`` to work on a ``FileSystemPathPointer``.
-
+    zipfile).  It also permits ``open()`` to work on a
+    ``FileSystemPathPointer``.
     """
     def __init__(self, path):
         """
@@ -150,6 +146,10 @@ class FileSystemPathPointer(PathPointer, str):
 
         :raise IOError: If the given path does not exist.
         """
+
+        # XXX: ``path`` must be a bytestring under Python 2.x because
+        # FileSystemPathPointer is a str subclass.
+
         path = os.path.abspath(path)
         if not os.path.exists(path):
             raise IOError('No such file or directory: %r' % path)
@@ -173,14 +173,17 @@ class FileSystemPathPointer(PathPointer, str):
         return os.stat(self._path).st_size
 
     def join(self, fileid):
-        path = os.path.join(self._path, *fileid.split('/'))
+        path = os.path.join(self._path, *fileid.split(str('/')))
         return FileSystemPathPointer(path)
 
     def __repr__(self):
-        return 'FileSystemPathPointer(%r)' % self._path
+        # This should be a byte string under Python 2.x;
+        # we don't want transliteration here so
+        # @python_2_unicode_compatible is not used.
+        return str('FileSystemPathPointer(%r)' % self._path)
 
-    def __str__(self):
-        return self._path
+    # there is no need for __str__ method because FileSystemPathPointer
+    # is a str subclass and str.__str__ does the right thing
 
 
 class BufferedGzipFile(GzipFile):
@@ -211,22 +214,22 @@ class BufferedGzipFile(GzipFile):
             produces the least compression, and 9 is slowest and produces the
             most compression. The default is 9.
         :type compresslevel: int
-        :param fileobj: a StringIO stream to read from instead of a file.
-        :type fileobj: StringIO
+        :param fileobj: a BytesIO stream to read from instead of a file.
+        :type fileobj: BytesIO
         :param size: number of bytes to buffer during calls to read() and write()
         :type size: int
         :rtype: BufferedGzipFile
         """
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
-        self._buffer = StringIO()
+        self._buffer = compat.BytesIO()
         # cStringIO does not support len.
         self._len = 0
 
     def _reset_buffer(self):
-        # For some reason calling StringIO.truncate() here will lead to
-        # inconsistent writes so just set _buffer to a new StringIO object.
-        self._buffer = StringIO()
+        # For some reason calling BytesIO.truncate() here will lead to
+        # inconsistent writes so just set _buffer to a new BytesIO object.
+        self._buffer = compat.BytesIO()
         self._len = 0
 
     def _write_buffer(self, data):
@@ -256,7 +259,7 @@ class BufferedGzipFile(GzipFile):
     def read(self, size=None):
         if not size:
             size = self._size
-            contents = StringIO()
+            contents = compat.BytesIO()
             while True:
                 blocks = GzipFile.read(self, size)
                 if not blocks:
@@ -269,8 +272,8 @@ class BufferedGzipFile(GzipFile):
 
     def write(self, data, size=-1):
         """
-        :param data: str to write to file or buffer
-        :type data: str
+        :param data: bytes to write to file or buffer
+        :type data: bytes
         :param size: buffer at least size bytes before writing to file
         :type size: int
         """
@@ -308,7 +311,7 @@ class ZipFilePathPointer(PathPointer):
         :raise IOError: If the given zipfile does not exist, or if it
         does not contain the specified entry.
         """
-        if isinstance(zipfile, basestring):
+        if isinstance(zipfile, compat.string_types):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Normalize the entry string:
@@ -316,8 +319,9 @@ class ZipFilePathPointer(PathPointer):
 
         # Check that the entry exists:
         if entry:
-            try: zipfile.getinfo(entry)
-            except:
+            try:
+                zipfile.getinfo(entry)
+            except Exception:
                 # Sometimes directories aren't explicitly listed in
                 # the zip file.  So if `entry` is a directory name,
                 # then check if the zipfile contains any files that
@@ -333,7 +337,7 @@ class ZipFilePathPointer(PathPointer):
         self._entry = entry
 
     @property
-    def zipfile(self): 
+    def zipfile(self):
         """
         The zipfile.ZipFile object used to access the zip file
         containing the entry identified by this path pointer.
@@ -350,7 +354,7 @@ class ZipFilePathPointer(PathPointer):
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
-        stream = StringIO(data)
+        stream = compat.BytesIO(data)
         if self._entry.endswith('.gz'):
             stream = BufferedGzipFile(self._entry, fileobj=stream)
         elif encoding is not None:
@@ -365,11 +369,11 @@ class ZipFilePathPointer(PathPointer):
         return ZipFilePathPointer(self._zipfile, entry)
 
     def __repr__(self):
-        return 'ZipFilePathPointer(%r, %r)' % (
+        return str('ZipFilePathPointer(%r, %r)') % (
             self._zipfile.filename, self._entry)
 
     def __str__(self):
-        return '%r/%r' % (self._zipfile.filename, self._entry)
+        return str('%r/%r') % (self._zipfile.filename, self._entry)
 
 ######################################################################
 # Access Functions
@@ -411,7 +415,7 @@ def find(resource_name):
         character.  Otherwise, ``find()`` will not locate the
         directory.
 
-    :type resource_name: str
+    :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.
         Resource names are posix-style relative path names, such as
         ``corpora/brown``.  In particular, directory names should always
@@ -492,17 +496,15 @@ def retrieve(resource_url, filename=None, verbose=True):
 
     # Open the input & output streams.
     infile = _open(resource_url)
-    outfile = open(filename, 'wb')
 
     # Copy infile -> outfile, using 64k blocks.
-    while True:
-        s = infile.read(1024*64) # 64k blocks.
-        outfile.write(s)
-        if not s: break
+    with open(filename, "wb") as outfile:
+        while True:
+            s = infile.read(1024*64) # 64k blocks.
+            outfile.write(s)
+            if not s: break
 
-    # Close both files.
     infile.close()
-    outfile.close()
 
 #: A dictionary describing the formats that are supported by NLTK's
 #: load() method.  Keys are format names, and values are format
@@ -520,6 +522,7 @@ FORMATS = {
             "parameter",
     'val': "A semantic valuation, parsed by nltk.sem.parse_valuation().",
     'raw': "The raw (byte string) contents of a file.",
+    'text': "The raw (unicode string) contents of a file. "
     }
 
 #: A dictionary mapping from file extensions to format names, used
@@ -533,10 +536,15 @@ AUTO_FORMATS = {
     'fcfg': 'fcfg',
     'fol': 'fol',
     'logic': 'logic',
-    'val': 'val'}
+    'val': 'val',
+    'txt': 'text',
+    'text': 'text',
+    }
+
+# TODO: load() should be able to read zipfiles too
 
 def load(resource_url, format='auto', cache=True, verbose=False,
-         logic_parser=None, fstruct_parser=None):
+         logic_parser=None, fstruct_parser=None, encoding=None):
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
@@ -549,11 +557,17 @@ def load(resource_url, format='auto', cache=True, verbose=False,
       - ``fol`` (formulas of First Order Logic)
       - ``logic`` (Logical formulas to be parsed by the given logic_parser)
       - ``val`` (valuation of First Order Logic model)
-      - ``raw``
+      - ``text`` (the file contents as a unicode string)
+      - ``raw`` (the raw file contents as a byte string)
 
     If no format is specified, ``load()`` will attempt to determine a
     format based on the resource name's file extension.  If that
     fails, ``load()`` will raise a ``ValueError`` exception.
+
+    For all text formats (everything except ``pickle``, ``yaml`` and ``raw``),
+    it tries to decode the raw contents using UTF-8, and if that doesn't
+    work, it tries with ISO-8859-1 (Latin-1), unless the ``encoding``
+    is specified.
 
     :type resource_url: str
     :param resource_url: A URL specifying where the resource should be
@@ -575,18 +589,9 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     :type fstruct_parser: FeatStructParser
     :param fstruct_parser: The parser that will be used to parse the
         feature structure of an fcfg.
+    :type encoding: str
+    :param encoding: the encoding of the input; only used for text formats.
     """
-    # If we've cached the resource, then just return it.
-    if cache:
-        resource_val = _resource_cache.get(resource_url)
-        if resource_val is not None:
-            if verbose:
-                print('<<Using cached copy of %s>>' % (resource_url,))
-            return resource_val
-
-    # Let the user know what's going on.
-    if verbose:
-        print('<<Loading %s>>' % (resource_url,))
 
     # Determine the format of the resource.
     if format == 'auto':
@@ -601,38 +606,75 @@ def load(resource_url, format='auto', cache=True, verbose=False,
                              'argument to specify the format explicitly.'
                              % resource_url)
 
+    if format not in FORMATS:
+        raise ValueError('Unknown format type: %s!' % (format,))
+
+    # If we've cached the resource, then just return it.
+    if cache:
+        resource_val = _resource_cache.get((resource_url, format))
+        if resource_val is not None:
+            if verbose:
+                print('<<Using cached copy of %s>>' % (resource_url,))
+            return resource_val
+
+    # Let the user know what's going on.
+    if verbose:
+        print('<<Loading %s>>' % (resource_url,))
+
     # Load the resource.
-    if format == 'pickle':
-        resource_val = pickle.load(_open(resource_url))
+    opened_resource = _open(resource_url)
+
+    if format == 'raw':
+        resource_val = opened_resource.read()
+    elif format == 'pickle':
+        resource_val = pickle.load(opened_resource)
     elif format == 'yaml':
         import yaml
-        resource_val = yaml.load(_open(resource_url))
-    elif format == 'cfg':
-        resource_val = nltk.grammar.parse_cfg(_open(resource_url).read())
-    elif format == 'pcfg':
-        resource_val = nltk.grammar.parse_pcfg(_open(resource_url).read())
-    elif format == 'fcfg':
-        resource_val = nltk.grammar.parse_fcfg(_open(resource_url).read(),
-                                      logic_parser=logic_parser,
-                                      fstruct_parser=fstruct_parser)
-    elif format == 'fol':
-        resource_val = nltk.sem.parse_logic(_open(resource_url).read(),
-                                       logic_parser=nltk.sem.logic.LogicParser())
-    elif format == 'logic':
-        resource_val = nltk.sem.parse_logic(_open(resource_url).read(),
-                                       logic_parser=logic_parser)
-    elif format == 'val':
-        resource_val = nltk.sem.parse_valuation(_open(resource_url).read())
-    elif format == 'raw':
-        resource_val = _open(resource_url).read()
+        resource_val = yaml.load(opened_resource)
     else:
-        assert format not in FORMATS
-        raise ValueError('Unknown format type!')
+        # The resource is a text format.
+        binary_data = opened_resource.read()
+        if encoding is not None:
+            string_data = binary_data.decode(encoding)
+        else:
+            try:
+                string_data = binary_data.decode('utf-8')
+            except UnicodeDecodeError:
+                string_data = binary_data.decode('latin-1')
+        if format == 'text':
+            resource_val = string_data
+        elif format == 'cfg':
+            resource_val = nltk.grammar.parse_cfg(
+                string_data, encoding=encoding)
+        elif format == 'pcfg':
+            resource_val = nltk.grammar.parse_pcfg(
+                string_data, encoding=encoding)
+        elif format == 'fcfg':
+            resource_val = nltk.grammar.parse_fcfg(
+                string_data, logic_parser=logic_parser,
+                fstruct_parser=fstruct_parser, encoding=encoding)
+        elif format == 'fol':
+            resource_val = nltk.sem.parse_logic(
+                string_data, logic_parser=nltk.sem.logic.LogicParser(),
+                encoding=encoding)
+        elif format == 'logic':
+            resource_val = nltk.sem.parse_logic(
+                string_data, logic_parser=logic_parser, encoding=encoding)
+        elif format == 'val':
+            resource_val = nltk.sem.parse_valuation(
+                string_data, encoding=encoding)
+        else:
+            raise AssertionError("Internal NLTK error: Format %s isn't "
+                                 "handled by nltk.data.load()" % (format,))
+
+    opened_resource.close()
 
     # If requested, add it to the cache.
     if cache:
         try:
-            _resource_cache[resource_url] = resource_val
+            _resource_cache[(resource_url, format)] = resource_val
+            # TODO: add this line
+            # print('<<Caching a copy of %s>>' % (resource_url,))
         except TypeError:
             # We can't create weak references to some object types, like
             # strings and tuples.  For now, just don't cache them.
@@ -651,7 +693,7 @@ def show_cfg(resource_url, escape='##'):
     :type escape: str
     :param escape: Prepended string that signals lines to be ignored
     """
-    resource_val = load(resource_url, format='raw', cache=False)
+    resource_val = load(resource_url, format='text', cache=False)
     lines = resource_val.splitlines()
     for l in lines:
         if l.startswith(escape): continue
@@ -689,11 +731,14 @@ def _open(resource_url):
         # urllib might not use mode='rb', so handle this one ourselves:
         return open(path, 'rb')
     else:
-        return urllib2.urlopen(resource_url)
+        return compat.urlopen(resource_url)
 
 ######################################################################
 # Lazy Resource Loader
 ######################################################################
+
+# We shouldn't apply @python_2_unicode_compatible
+# decorator to LazyLoader, this is resource.__class__ responsibility.
 
 class LazyLoader(object):
     def __init__(self, path):
@@ -717,11 +762,12 @@ class LazyLoader(object):
         self.__load()
         # This looks circular, but its not, since __load() changes our
         # __class__ to something new:
-        return '%r' % self
+        return repr(self)
 
 ######################################################################
 # Open-On-Demand ZipFile
 ######################################################################
+
 
 class OpenOnDemandZipFile(zipfile.ZipFile):
     """
@@ -734,7 +780,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     read-only (i.e. ``write()`` and ``writestr()`` are disabled.
     """
     def __init__(self, filename):
-        if not isinstance(filename, basestring):
+        if not isinstance(filename, compat.string_types):
             raise TypeError('ReopenableZipFile filename must be a string')
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename
@@ -756,7 +802,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         raise NotImplementedError('OpenOnDemandZipfile is read-only')
 
     def __repr__(self):
-        return 'OpenOnDemandZipFile(%r)' % self.filename
+        return repr(str('OpenOnDemandZipFile(%r)') % self.filename)
 
 ######################################################################
 #{ Seekable Unicode Stream Reader
@@ -800,7 +846,7 @@ class SeekableUnicodeStreamReader(object):
         """The function that is used to decode byte strings into
            unicode strings."""
 
-        self.bytebuffer = ''
+        self.bytebuffer = b''
         """A buffer to use bytes that have been read but have not yet
            been decoded.  This is only used when the final bytes from
            a read do not form a complete encoding for a character."""
@@ -933,6 +979,9 @@ class SeekableUnicodeStreamReader(object):
         if line: return line
         else: raise StopIteration
 
+    def __next__(self):
+        return self.next()
+
     def __iter__(self):
         """Return self"""
         return self
@@ -988,7 +1037,7 @@ class SeekableUnicodeStreamReader(object):
                              'using char_seek_forward() instead.')
         self.stream.seek(offset, whence)
         self.linebuffer = None
-        self.bytebuffer = ''
+        self.bytebuffer = b''
         self._rewind_numchars = None
         self._rewind_checkpoint = self.stream.tell()
 
@@ -1013,7 +1062,7 @@ class SeekableUnicodeStreamReader(object):
             Defaults to ``offset``.
         """
         if est_bytes is None: est_bytes = offset
-        bytes = ''
+        bytes = b''
 
         while True:
             # Read in a block of bytes.
@@ -1062,9 +1111,9 @@ class SeekableUnicodeStreamReader(object):
         # Calculate an estimate of where we think the newline is.
         bytes_read = ( (orig_filepos-len(self.bytebuffer)) -
                        self._rewind_checkpoint )
-        buf_size = sum([len(line) for line in self.linebuffer])
-        est_bytes = (bytes_read * self._rewind_numchars /
-                     (self._rewind_numchars + buf_size))
+        buf_size = sum(len(line) for line in self.linebuffer)
+        est_bytes = int((bytes_read * self._rewind_numchars /
+                     (self._rewind_numchars + buf_size)))
 
         self.stream.seek(self._rewind_checkpoint)
         self._char_seek_forward(self._rewind_numchars, est_bytes)
@@ -1094,7 +1143,7 @@ class SeekableUnicodeStreamReader(object):
         them using this reader's encoding, and return the resulting
         unicode string.  ``linebuffer`` is not included in the result.
         """
-        if size == 0: return u''
+        if size == 0: return ''
 
         # Skip past the byte order marker, if present.
         if self._bom and self.stream.tell() == 0:

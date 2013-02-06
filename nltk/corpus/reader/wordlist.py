@@ -1,15 +1,16 @@
 # Natural Language Toolkit: Word List Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from nltk import compat
 from nltk.tokenize import line_tokenize
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class WordListCorpusReader(CorpusReader):
     """
@@ -20,7 +21,7 @@ class WordListCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 

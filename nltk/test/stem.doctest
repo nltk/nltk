@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==========
@@ -11,6 +11,7 @@ Overview
 Stemmers remove morphological affixes from words, leaving only the
 word stem.
 
+    >>> from __future__ import print_function
     >>> from nltk.stem import *
 
 Unit tests for the Porter stemmer
@@ -172,43 +173,34 @@ Unit tests for Snowball stemmer
 
 See which languages are supported.
 
-    >>> SnowballStemmer.languages # doctest: +NORMALIZE_WHITESPACE
-    ('danish', 'dutch', 'english', 'finnish', 'french', 'german',
-    'hungarian', 'italian', 'norwegian', 'porter', 'portuguese',
-    'romanian', 'russian', 'spanish', 'swedish')
+    >>> print(" ".join(SnowballStemmer.languages))
+    danish dutch english finnish french german hungarian italian
+    norwegian porter portuguese romanian russian spanish swedish
 
 Create a new instance of a language specific subclass.
 
-    >>> stemmer_german = SnowballStemmer("german")
+    >>> stemmer = SnowballStemmer("english")
 
 Stem a word.
 
-    >>> stemmer_german.stem(u"Schr\xe4nke")
-    u'schrank'
+    >>> print(stemmer.stem("running"))
+    run
 
 Decide not to stem stopwords.
 
-    >>> stemmer_german2 = SnowballStemmer("german", ignore_stopwords=True)
-    >>> stemmer_german.stem(u"keinen")
-    u'kein'
-    >>> stemmer_german2.stem(u"keinen")
-    u'keinen'
+    >>> stemmer2 = SnowballStemmer("english", ignore_stopwords=True)
+    >>> print(stemmer.stem("having"))
+    have
+    >>> print(stemmer2.stem("having"))
+    having
 
 The 'english' stemmer is better than the original 'porter' stemmer.
 
-    >>> SnowballStemmer("english").stem(u"generously")
-    u'generous'
-    >>> SnowballStemmer("porter").stem(u"generously")
-    u'gener'
+    >>> print(SnowballStemmer("english").stem("generously"))
+    generous
+    >>> print(SnowballStemmer("porter").stem("generously"))
+    gener
 
-Russian words both consisting of Cyrillic and Roman letters can be stemmed.
+.. note::
 
-    >>> stemmer_russian = SnowballStemmer("russian")
-    >>> stemmer_russian.stem(u'\u0430\u0432\u0435\u043d\u0430\u043d\u0442\u043d'
-    ...                      u'\u0435\u043d\u044c\u043a\u0430\u044f')
-    u'\u0430\u0432\u0435\u043d\u0430\u043d\u0442\u043d\u0435\u043d\u044c\u043a'
-    >>> stemmer_russian.stem(u"\u0430\u0432\u0435\u043d\u0430\u043d"
-    ...                u"\u0442\u043d\u0435\u043d\u044c\u043a\u0430\u044f")
-    u'\u0430\u0432\u0435\u043d\u0430\u043d\u0442\u043d\u0435\u043d\u044c\u043a'
-    >>> stemmer_russian.stem(u"avenantnen'kai^a")
-    u"avenantnen'k"
+    Extra stemmer tests can be found in `nltk.test.unit.test_stem`.

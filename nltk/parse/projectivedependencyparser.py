@@ -1,25 +1,27 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
-import math
-from pprint import pformat
 from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
                           StatisticalDependencyGrammar, parse_dependency_grammar)
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
+from nltk.internals import raise_unorderable_types
+from nltk.compat import total_ordering, python_2_unicode_compatible
 
 #################################################################
 # Dependency Span
 #################################################################
 
+@total_ordering
+@python_2_unicode_compatible
 class DependencySpan(object):
     """
     A contiguous span over some part of the input string representing
@@ -36,8 +38,9 @@ class DependencySpan(object):
         self._end_index = end_index
         self._head_index = head_index
         self._arcs = arcs
-        self._hash = hash((start_index, end_index, head_index, tuple(arcs)))
         self._tags = tags
+        self._comparison_key = (start_index, end_index, head_index, tuple(arcs))
+        self._hash = hash(self._comparison_key)
 
     def head_index(self):
         """
@@ -64,31 +67,16 @@ class DependencySpan(object):
         return str
 
     def __eq__(self, other):
-        """
-        :return: true if this ``DependencySpan`` is equal to ``other``.
-        :rtype: bool
-        """
-        return (isinstance(other, self.__class__) and
-                self._start_index == other._start_index and
-                self._end_index == other._end_index and
-                self._head_index == other._head_index and
-                self._arcs == other._arcs)
+        return (type(self) == type(other) and
+                self._comparison_key == other._comparison_key)
 
     def __ne__(self, other):
-        """
-        :return: false if this ``DependencySpan`` is equal to ``other``
-        :rtype: bool
-        """
-        return not (self == other)
+        return not self == other
 
-    def __cmp__(self, other):
-        """
-        :return: -1 if args are of different class.  Otherwise returns the
-        cmp() of the two sets of spans.
-        :rtype: int
-        """
-        if not isinstance(other, self.__class__): return -1
-        return cmp((self._start_index, self._start_index, self._head_index), (other._end_index, other._end_index, other._head_index))
+    def __lt__(self, other):
+        if not isinstance(other, DependencySpan):
+            raise_unorderable_types("<", self, other)
+        return self._comparison_key < other._comparison_key
 
     def __hash__(self):
         """
@@ -100,6 +88,7 @@ class DependencySpan(object):
 # Chart Cell
 #################################################################
 
+@python_2_unicode_compatible
 class ChartCell(object):
     """
     A cell from the parse chart formed when performing the CYK algorithm.
@@ -125,7 +114,7 @@ class ChartCell(object):
         :param span: The span to add.
         :type span: DependencySpan
         """
-        self._entries.add(span);
+        self._entries.add(span)
 
     def __str__(self):
         """
@@ -192,9 +181,9 @@ class ProjectiveDependencyParser(object):
             for j in range(i-2,-1,-1):
                 for k in range(i-1,j,-1):
                     for span1 in chart[k][j]._entries:
-                            for span2 in chart[i][k]._entries:
-                                for newspan in self.concatenate(span1, span2):
-                                    chart[i][j].add(newspan)
+                        for span2 in chart[i][k]._entries:
+                            for newspan in self.concatenate(span1, span2):
+                                chart[i][j].add(newspan)
         graphs = []
         trees = []
         for parse in chart[len(self._tokens)][0]._entries:

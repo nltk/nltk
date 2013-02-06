@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collocations and Association Measures
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -23,6 +23,7 @@ these functionalities, dependent on being provided a function which scores a
 ngram given appropriate frequency counts. A number of standard association
 measures are provided in bigram_measures and trigram_measures.
 """
+from __future__ import print_function
 
 # Possible TODOs:
 # - consider the distinction between f(x,_) and f(x) and whether our
@@ -30,7 +31,6 @@ measures are provided in bigram_measures and trigram_measures.
 # - add a n-gram collocation finder with measures which only utilise n-gram
 #   and unigram counts (raw_freq, pmi, student_t)
 
-from __future__ import print_function
 import itertools as _itertools
 from operator import itemgetter as _itemgetter
 

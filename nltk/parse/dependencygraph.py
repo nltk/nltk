@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
-#         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
+#         Steven Bird <stevenbird1@gmail.com> (modifications)
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,19 +14,19 @@ The input is assumed to be in Malt-TAB format
 (http://w3.msi.vxu.se/~nivre/research/MaltXML.html).
 Currently only reads the first tree in a file.
 """
+from __future__ import print_function, unicode_literals
 
-# python2.5 compatibility
-from __future__ import with_statement
-from __future__ import print_function
+import re
+from pprint import pformat
 
 from nltk.tree import Tree
-from pprint import pformat
-import re
+from nltk.compat import python_2_unicode_compatible
 
 #################################################################
 # DependencyGraph Class
 #################################################################
 
+@python_2_unicode_compatible
 class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.
@@ -295,7 +295,7 @@ def nx_graph(self):
     labeled directed graph.
     :rtype: XDigraph
     """
-    nx_nodelist = range(1, len(self.nodelist))
+    nx_nodelist = list(range(1, len(self.nodelist)))
     nx_edgelist = [(n, self._hd(n), self._rel(n))
                         for n in nx_nodelist if self._hd(n)]
     self.nx_labels = {}

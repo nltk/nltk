@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Hidden Markov Model
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Trevor Cohn <tacohn@csse.unimelb.edu.au>
 #         Philip Blunsom <pcbl@csse.unimelb.edu.au>
 #         Tiago Tresoldi <tiago@tresoldi.pro.br> (fixes)
-#         Steven Bird <sb@csse.unimelb.edu.au> (fixes)
+#         Steven Bird <stevenbird1@gmail.com> (fixes)
 #         Joseph Frazee <jfrazee@mail.utexas.edu> (fixes)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -67,8 +67,8 @@ of EM.
 For more information, please consult the source code for this module,
 which includes extensive demonstration code.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import re
 import types
 
@@ -84,6 +84,7 @@ from nltk.probability import (FreqDist, ConditionalFreqDist,
                               MLEProbDist, UniformProbDist)
 from nltk.metrics import accuracy
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
+from nltk.compat import python_2_unicode_compatible
 
 from nltk.tag.api import TaggerI, HiddenMarkovModelTaggerTransformI
 
@@ -93,6 +94,7 @@ _NINF = float('-1e300')
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
 
+@python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
     """
     Hidden Markov model class, a generative model for labelling sequence data.
@@ -276,7 +278,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
     def _tag(self, unlabeled_sequence):
         path = self._best_path(unlabeled_sequence)
-        return zip(unlabeled_sequence, path)
+        return list(zip(unlabeled_sequence, path))
 
     def _output_logprob(self, state, symbol):
         """
@@ -394,7 +396,7 @@ class HiddenMarkovModelTagger(TaggerI):
             current = last
 
         sequence.reverse()
-        return map(self._states.__getitem__, sequence)
+        return list(map(self._states.__getitem__, sequence))
 
     def best_path_simple(self, unlabeled_sequence):
         """
@@ -766,18 +768,18 @@ class HiddenMarkovModelTagger(TaggerI):
 
             for test_sent, predicted_sent in zip(test_sequence,
                                                  predicted_sequence):
-                print('Test:', \
-                    ' '.join(['%s/%s' % (str(token), str(tag))
-                              for (token, tag) in test_sent]))
+                print('Test:',
+                    ' '.join('%s/%s' % (token, tag)
+                             for (token, tag) in test_sent))
                 print()
-                print('Untagged:', \
-                    ' '.join([str(token) for (token, tag) in test_sent]))
+                print('Untagged:',
+                    ' '.join("%s" % token for (token, tag) in test_sent))
                 print()
-                print('HMM-tagged:', \
-                    ' '.join(['%s/%s' % (str(token), str(tag))
-                              for (token, tag) in predicted_sent]))
+                print('HMM-tagged:',
+                    ' '.join('%s/%s' % (token, tag)
+                              for (token, tag) in predicted_sent))
                 print()
-                print('Entropy:', \
+                print('Entropy:',
                     self.entropy([(token, None) for
                                   (token, tag) in predicted_sent]))
                 print()
@@ -788,7 +790,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
         acc = accuracy(test_tags, predicted_tags)
 
-        count = sum([len(sent) for sent in test_sequence])
+        count = sum(len(sent) for sent in test_sequence)
 
         print('accuracy over %d tokens: %.2f' % (count, acc * 100))
 

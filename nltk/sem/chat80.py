@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Chat-80 KB Reader
 # See http://www.w3.org/TR/swbp-skos-core-guide/
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -122,15 +122,15 @@ The set of rules is written to the file ``chat_pnames.cfg`` in the
 current directory.
 
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import re
 import shelve
 import os
 import sys
 
-from nltk.data import find
-
+import nltk.data
+from nltk.compat import string_types, python_2_unicode_compatible
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -212,6 +212,7 @@ not_unary = ['borders.pl', 'contain.pl']
 
 ###########################################################################
 
+@python_2_unicode_compatible
 class Concept(object):
     """
     A Concept class, loosely based on SKOS
@@ -238,7 +239,7 @@ class Concept(object):
         #keep _extension internally as a set
         self._extension = extension
         #public access is via a list (for slicing)
-        self.extension = list(extension)
+        self.extension = sorted(list(extension))
 
     def __str__(self):
         #_extension = ''
@@ -264,7 +265,7 @@ class Concept(object):
 
         """
         self._extension.add(data)
-        self.extension = list(self._extension)
+        self.extension = sorted(list(self._extension))
         return self._extension
 
 
@@ -325,7 +326,7 @@ class Concept(object):
             trans = self._make_pairs(closed)
             #print sorted(trans)
             self._extension = self._extension.union(trans)
-        self.extension = list(self._extension)
+        self.extension = sorted(list(self._extension))
 
 
 def clause2concepts(filename, rel_name, schema, closures=[]):
@@ -385,27 +386,23 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     :param dbname: filename of persistent store
     :type schema: str
     """
-    try:
-        import sqlite3
-        records = _str2records(filename, rel_name)
-        connection =  sqlite3.connect(dbname)
-        cur = connection.cursor()
-        if setup:
-            cur.execute('''CREATE TABLE city_table
-            (City text, Country text, Population int)''')
+    import sqlite3
+    records = _str2records(filename, rel_name)
+    connection =  sqlite3.connect(dbname)
+    cur = connection.cursor()
+    if setup:
+        cur.execute('''CREATE TABLE city_table
+        (City text, Country text, Population int)''')
 
-        table_name = "city_table"
-        for t in records:
-            cur.execute('insert into %s values (?,?,?)' % table_name, t)
-            if verbose:
-                print("inserting values into %s: " % table_name, t)
-        connection.commit()
+    table_name = "city_table"
+    for t in records:
+        cur.execute('insert into %s values (?,?,?)' % table_name, t)
         if verbose:
-            print("Committing update to %s" % dbname)
-        cur.close()
-    except ImportError:
-        import warnings
-        warnings.warn("To run this function, first install pysqlite, or else use Python 2.5 or later.")
+            print("inserting values into %s: " % table_name, t)
+    connection.commit()
+    if verbose:
+        print("Committing update to %s" % dbname)
+    cur.close()
 
 def sql_query(dbname, query):
     """
@@ -417,16 +414,10 @@ def sql_query(dbname, query):
     """
     try:
         import sqlite3
-        path = find(dbname)
+        path = nltk.data.find(dbname)
         connection =  sqlite3.connect(path)
-        # return ASCII strings if possible
-        connection.text_factory = sqlite3.OptimizedUnicode
         cur = connection.cursor()
         return cur.execute(query)
-    except ImportError:
-        import warnings
-        warnings.warn("To run this function, first install pysqlite, or else use Python 2.5 or later.")
-        raise
     except ValueError:
         import warnings
         warnings.warn("Make sure the database file %s is installed and uncompressed." % dbname)
@@ -437,12 +428,11 @@ def _str2records(filename, rel):
     Read a file into memory and convert each relation clause into a list.
     """
     recs = []
-    path = find("corpora/chat80/%s" % filename)
-    for line in path.open():
+    contents = nltk.data.load("corpora/chat80/%s" % filename, format="text")
+    for line in contents.splitlines():
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
             line = re.sub(r'\)\.$', '', line)
-            line = line[:-1]
             record = line.split(',')
             recs.append(record)
     return recs
@@ -665,7 +655,7 @@ def make_lex(symbols):
     for s in symbols:
         parts = s.split('_')
         caps = [p.capitalize() for p in parts]
-        pname = ('_').join(caps)
+        pname = '_'.join(caps)
         rule = template % (s, pname)
         lex.append(rule)
     return lex
@@ -684,7 +674,7 @@ def concepts(items = items):
     :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list
     """
-    if type(items) is str: items = (items,)
+    if isinstance(items, string_types): items = (items,)
 
     rels = [item_metadata[r] for r in items]
 
@@ -750,8 +740,7 @@ Valuation object for use in the NLTK semantics package.
             concepts = concept_map.values()
             # just print out the vocabulary
             if options.vocab:
-                items = [(c.arity, c.prefLabel) for c in concepts]
-                items.sort()
+                items = sorted([(c.arity, c.prefLabel) for c in concepts])
                 for (arity, label) in items:
                     print(label, arity)
                 sys.exit(0)
@@ -778,15 +767,10 @@ def sql_demo():
     """
     Print out every row from the 'city.db' database.
     """
-    try:
-        import sqlite3
-        print()
-        print("Using SQL to extract rows from 'city.db' RDB.")
-        for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
-            print(row)
-    except ImportError:
-        import warnings
-        warnings.warn("To run the SQL demo, first install pysqlite, or else use Python 2.5 or later.")
+    print()
+    print("Using SQL to extract rows from 'city.db' RDB.")
+    for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
+        print(row)
 
 
 if __name__ == '__main__':

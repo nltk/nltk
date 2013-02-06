@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the HunPos POS-tagger
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         David Nemeskey <nemeskeyd@gmail.com> (modifications)
 #         Attila Zseder <zseder@gmail.com> (modifications)
@@ -17,6 +17,7 @@ from subprocess import Popen, PIPE
 
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
+from nltk import compat
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
 
@@ -32,9 +33,6 @@ class HunposTagger(TaggerI):
 
     Example:
 
-    .. doctest::
-        :options: +SKIP
-
         >>> from nltk.tag.hunpos import HunposTagger
         >>> ht = HunposTagger('english.model')
         >>> ht.tag('What is the airspeed of an unladen swallow ?'.split())
@@ -46,10 +44,6 @@ class HunposTagger(TaggerI):
     free system resources. The class supports the context manager interface; if
     used in a with statement, the close() method is invoked automatically:
 
-    .. doctest::
-        :options: +SKIP
-
-        >>> from __future__ import with_statement # python2.5 compat
         >>> with HunposTagger('english.model') as ht:
         ...     ht.tag('What is the airspeed of an unladen swallow ?'.split())
         ...
@@ -71,9 +65,10 @@ class HunposTagger(TaggerI):
             This parameter is ignored for str tokens, which are sent as-is.
             The caller must ensure that tokens are encoded in the right charset.
         """
+        self._closed = True
         hunpos_paths = ['.', '/usr/bin', '/usr/local/bin', '/opt/local/bin',
                         '/Applications/bin', '~/bin', '~/Applications/bin']
-        hunpos_paths = map(os.path.expanduser, hunpos_paths)
+        hunpos_paths = list(map(os.path.expanduser, hunpos_paths))
 
         self._hunpos_bin = find_binary(
                 'hunpos-tag', path_to_bin,
@@ -109,7 +104,7 @@ class HunposTagger(TaggerI):
         """
         for token in tokens:
             assert "\n" not in token, "Tokens should not contain newlines"
-            if isinstance(token, unicode):
+            if isinstance(token, compat.text_type):
                 token = token.encode(self._encoding)
             self._hunpos.stdin.write(token + "\n")
         # We write a final empty line to tell hunpos that the sentence is finished:
@@ -126,6 +121,13 @@ class HunposTagger(TaggerI):
 
         return tagged_tokens
 
+# skip doctests if Hunpos tagger is not installed
+def setup_module(module):
+    from nose import SkipTest
+    try:
+        HunposTagger('english.model')
+    except LookupError:
+        raise SkipTest("HunposTagger is not available")
 
 if __name__ == "__main__":
     import doctest

@@ -1,11 +1,11 @@
 # Natural Language Toolkit: K-Means Clusterer
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import copy
 import random
 import sys
@@ -17,7 +17,10 @@ except ImportError:
 
 
 from nltk.cluster.util import VectorSpaceClusterer
+from nltk.compat import python_2_unicode_compatible
 
+
+@python_2_unicode_compatible
 class KMeansClusterer(VectorSpaceClusterer):
     """
     The K-means clusterer starts with k arbitrary chosen means then allocates
@@ -86,7 +89,7 @@ class KMeansClusterer(VectorSpaceClusterer):
             # sort the means first (so that different cluster numbering won't
             # effect the distance comparison)
             for means in meanss:
-                means.sort(cmp = _vector_compare)
+                means.sort(key=sum)
 
             # find the set of means that's minimally different from the others
             min_difference = min_means = None
@@ -176,12 +179,6 @@ class KMeansClusterer(VectorSpaceClusterer):
     def __repr__(self):
         return '<KMeansClusterer means=%s repeats=%d>' % \
                     (self._means, self._repeats)
-
-def _vector_compare(x, y):
-    xs, ys = sum(x), sum(y)
-    if xs < ys:     return -1
-    elif xs > ys:   return 1
-    else:           return 0
 
 #################################################################################
 

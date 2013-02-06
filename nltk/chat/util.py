@@ -1,17 +1,17 @@
 # Natural Language Toolkit: Chatbot Utilities
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Authors: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Authors: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # Based on an Eliza implementation by Joe Strout <joe@strout.net>,
 # Jeff Epler <jepler@inetnebr.com> and Jez Higgins <jez@jezuk.co.uk>.
-
 from __future__ import print_function
-import string
+
 import re
 import random
+from nltk import compat
 
 reflections = {
   "i am"       : "you are",
@@ -72,16 +72,16 @@ class Chat(object):
 
         return self._regex.sub(lambda mo:
                 self._reflections[mo.string[mo.start():mo.end()]],
-                    string.lower(str))
+                    str.lower())
 
     def _wildcards(self, response, match):
-        pos = string.find(response,'%')
+        pos = response.find('%')
         while pos >= 0:
-            num = string.atoi(response[pos+1:pos+2])
+            num = int(response[pos+1:pos+2])
             response = response[:pos] + \
                 self._substitute(match.group(num)) + \
                 response[pos+2:]
-            pos = string.find(response,'%')
+            pos = response.find('%')
         return response
 
     def respond(self, str):
@@ -112,7 +112,7 @@ class Chat(object):
         input = ""
         while input != quit:
             input = quit
-            try: input = raw_input(">")
+            try: input = compat.raw_input(">")
             except EOFError:
                 print(input)
             if input:

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========================
@@ -23,114 +23,114 @@ Resolution Theorem Prover
 -------------------------------
 Test most_general_unification()
 -------------------------------
-    >>> print most_general_unification(x, x)
+    >>> print(most_general_unification(x, x))
     {}
-    >>> print most_general_unification(A, A)
+    >>> print(most_general_unification(A, A))
     {}
-    >>> print most_general_unification(A, x)
+    >>> print(most_general_unification(A, x))
     {x: A}
-    >>> print most_general_unification(x, A)
+    >>> print(most_general_unification(x, A))
     {x: A}
-    >>> print most_general_unification(x, y)
+    >>> print(most_general_unification(x, y))
     {x: y}
-    >>> print most_general_unification(P(x), P(A))
+    >>> print(most_general_unification(P(x), P(A)))
     {x: A}
-    >>> print most_general_unification(P(x,B), P(A,y))
-    {y: B, x: A}
-    >>> print most_general_unification(P(x,B), P(B,x))
+    >>> print(most_general_unification(P(x,B), P(A,y)))
+    {x: A, y: B}
+    >>> print(most_general_unification(P(x,B), P(B,x)))
     {x: B}
-    >>> print most_general_unification(P(x,y), P(A,x))
-    {y: x, x: A}
-    >>> print most_general_unification(P(Q(x)), P(y))
+    >>> print(most_general_unification(P(x,y), P(A,x)))
+    {x: A, y: x}
+    >>> print(most_general_unification(P(Q(x)), P(y)))
     {y: Q(x)}
 
 ------------
 Test unify()
 ------------
-    >>> print Clause([]).unify(Clause([]))
+    >>> print(Clause([]).unify(Clause([])))
     []
-    >>> print Clause([P(x)]).unify(Clause([-P(A)]))
+    >>> print(Clause([P(x)]).unify(Clause([-P(A)])))
     [{}]
-    >>> print Clause([P(A), Q(x)]).unify(Clause([-P(x), R(x)]))
+    >>> print(Clause([P(A), Q(x)]).unify(Clause([-P(x), R(x)])))
     [{R(A), Q(A)}]
-    >>> print Clause([P(A), Q(x), R(x,y)]).unify(Clause([-P(x), Q(y)]))
+    >>> print(Clause([P(A), Q(x), R(x,y)]).unify(Clause([-P(x), Q(y)])))
     [{Q(y), Q(A), R(A,y)}]
-    >>> print Clause([P(A), -Q(y)]).unify(Clause([-P(x), Q(B)]))
+    >>> print(Clause([P(A), -Q(y)]).unify(Clause([-P(x), Q(B)])))
     [{}]
-    >>> print Clause([P(x), Q(x)]).unify(Clause([-P(A), -Q(B)]))
+    >>> print(Clause([P(x), Q(x)]).unify(Clause([-P(A), -Q(B)])))
     [{-Q(B), Q(A)}, {-P(A), P(B)}]
-    >>> print Clause([P(x,x), Q(x), R(x)]).unify(Clause([-P(A,z), -Q(B)]))
+    >>> print(Clause([P(x,x), Q(x), R(x)]).unify(Clause([-P(A,z), -Q(B)])))
     [{-Q(B), Q(A), R(A)}, {-P(A,z), R(B), P(B,B)}]
 
     >>> a = clausify(lp.parse('P(A)'))
     >>> b = clausify(lp.parse('A=B'))
-    >>> print a[0].unify(b[0])
+    >>> print(a[0].unify(b[0]))
     [{P(B)}]
 
 -------------------------
 Test is_tautology()
 -------------------------
-    >>> print Clause([P(A), -P(A)]).is_tautology()
+    >>> print(Clause([P(A), -P(A)]).is_tautology())
     True
-    >>> print Clause([-P(A), P(A)]).is_tautology()
+    >>> print(Clause([-P(A), P(A)]).is_tautology())
     True
-    >>> print Clause([P(x), -P(A)]).is_tautology()
+    >>> print(Clause([P(x), -P(A)]).is_tautology())
     False
-    >>> print Clause([Q(B), -P(A), P(A)]).is_tautology()
+    >>> print(Clause([Q(B), -P(A), P(A)]).is_tautology())
     True
-    >>> print Clause([-Q(A), P(R(A)), -P(R(A)), Q(x), -R(y)]).is_tautology()
+    >>> print(Clause([-Q(A), P(R(A)), -P(R(A)), Q(x), -R(y)]).is_tautology())
     True
-    >>> print Clause([P(x), -Q(A)]).is_tautology()
+    >>> print(Clause([P(x), -Q(A)]).is_tautology())
     False
 
 -------------------------
 Test subsumes()
 -------------------------
-    >>> print Clause([P(A), Q(B)]).subsumes(Clause([P(A), Q(B)]))
+    >>> print(Clause([P(A), Q(B)]).subsumes(Clause([P(A), Q(B)])))
     True
-    >>> print Clause([-P(A)]).subsumes(Clause([P(A)]))
+    >>> print(Clause([-P(A)]).subsumes(Clause([P(A)])))
     False
-    >>> print Clause([P(A), Q(B)]).subsumes(Clause([Q(B), P(A)]))
+    >>> print(Clause([P(A), Q(B)]).subsumes(Clause([Q(B), P(A)])))
     True
-    >>> print Clause([P(A), Q(B)]).subsumes(Clause([Q(B), R(A), P(A)]))
+    >>> print(Clause([P(A), Q(B)]).subsumes(Clause([Q(B), R(A), P(A)])))
     True
-    >>> print Clause([P(A), R(A), Q(B)]).subsumes(Clause([Q(B), P(A)]))
+    >>> print(Clause([P(A), R(A), Q(B)]).subsumes(Clause([Q(B), P(A)])))
     False
-    >>> print Clause([P(x)]).subsumes(Clause([P(A)]))
+    >>> print(Clause([P(x)]).subsumes(Clause([P(A)])))
     True
-    >>> print Clause([P(A)]).subsumes(Clause([P(x)]))
+    >>> print(Clause([P(A)]).subsumes(Clause([P(x)])))
     True
 
 ------------
 Test prove()
 ------------
-    >>> print ResolutionProverCommand(lp.parse('man(x)')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('man(x)')).prove())
     False
-    >>> print ResolutionProverCommand(lp.parse('(man(x) -> man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('(man(x) -> man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('(man(x) -> --man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('(man(x) -> --man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('-(man(x) & -man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('-(man(x) & -man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('(man(x) | -man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('(man(x) | -man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('(man(x) -> man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('(man(x) -> man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('-(man(x) & -man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('-(man(x) & -man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('(man(x) | -man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('(man(x) | -man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('(man(x) -> man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('(man(x) -> man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('(man(x) <-> man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('(man(x) <-> man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('-(man(x) <-> -man(x))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('-(man(x) <-> -man(x))')).prove())
     True
-    >>> print ResolutionProverCommand(lp.parse('all x.man(x)')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('all x.man(x)')).prove())
     False
-    >>> print ResolutionProverCommand(lp.parse('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')).prove())
     False
-    >>> print ResolutionProverCommand(lp.parse('some x.all y.sees(x,y)')).prove()
+    >>> print(ResolutionProverCommand(lp.parse('some x.all y.sees(x,y)')).prove())
     False
 
     >>> p1 = lp.parse('all x.(man(x) -> mortal(x))')
@@ -160,7 +160,7 @@ Test proof()
     >>> tp = ResolutionProverCommand(c, [p1,p2])
     >>> tp.prove()
     True
-    >>> print tp.proof()
+    >>> print(tp.proof())
     [1] {-mortal(Socrates)}     A
     [2] {-man(z2), mortal(z2)}  A
     [3] {man(Socrates)}         A
@@ -179,9 +179,9 @@ One answer
     >>> c = lp.parse('all x.(parent_of(x,john) -> ANSWER(x))')
     >>> logic._counter._value = 0
     >>> tp = ResolutionProverCommand(None, [p1,p2,p3,c])
-    >>> print tp.find_answers()
-    set([<ConstantExpression art>])
-    >>> print tp.proof()
+    >>> sorted(tp.find_answers())
+    [<ConstantExpression art>]
+    >>> print(tp.proof())
     [1] {father_of(art,john)}                  A
     [2] {father_of(bob,kim)}                   A
     [3] {-father_of(z4,z3), parent_of(z4,z3)}  A
@@ -201,9 +201,9 @@ Multiple answers
     >>> c = lp.parse('all x.(parent_of(x,john) -> ANSWER(x))')
     >>> logic._counter._value = 0
     >>> tp = ResolutionProverCommand(None, [p1,p2,p3,p4,c])
-    >>> print tp.find_answers()
-    set([<ConstantExpression ann>, <ConstantExpression art>])
-    >>> print tp.proof()
+    >>> sorted(tp.find_answers())
+    [<ConstantExpression ann>, <ConstantExpression art>]
+    >>> print(tp.proof())
     [ 1] {father_of(art,john)}                  A
     [ 2] {mother_of(ann,john)}                  A
     [ 3] {-father_of(z4,z3), parent_of(z4,z3)}  A
@@ -218,3 +218,4 @@ Multiple answers
     [12] {ANSWER(art)}                          (5, 6)
     [13] {ANSWER(ann)}                          (5, 7)
     <BLANKLINE>
+

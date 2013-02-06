@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -16,17 +16,18 @@ import os
 import re
 import codecs
 
+from nltk import compat
 from nltk.toolbox import ToolboxData
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, fileids, key=None):
         return concat([ToolboxData(path, enc).parse(key=key)
                        for (path, enc) in self.abspaths(fileids, True)])
 
-    def fields(self, fileids, strip=True, unwrap=True, encoding=None,
+    def fields(self, fileids, strip=True, unwrap=True, encoding='utf8',
                errors='strict', unicode_fields=None):
         return concat([list(ToolboxData(fileid,enc).fields(
                              strip, unwrap, encoding, errors, unicode_fields))
@@ -56,7 +57,7 @@ class ToolboxCorpusReader(CorpusReader):
 
     def raw(self, fileids):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 

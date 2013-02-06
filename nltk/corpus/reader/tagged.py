@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagged Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu>
 #         Jacob Perkins <japerk@gmail.com>
@@ -13,12 +13,13 @@ A reader for corpora whose documents contain part-of-speech-tagged words.
 
 import os
 
+from nltk import compat
 from nltk.tag import str2tuple
 from nltk.tokenize import *
 
-from api import *
-from util import *
-from timit import read_timit_block
+from .api import *
+from .util import *
+from .timit import read_timit_block
 
 class TaggedCorpusReader(CorpusReader):
     """
@@ -39,14 +40,14 @@ class TaggedCorpusReader(CorpusReader):
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block,
-                 encoding=None,
+                 encoding='utf8',
                  tag_mapping_function=None):
         """
         Construct a new Tagged Corpus reader for a set of documents
         located at the given root directory.  Example usage:
 
             >>> root = '/...path to corpus.../'
-            >>> reader = TaggedCorpusReader(root, '.*', '.txt')
+            >>> reader = TaggedCorpusReader(root, '.*', '.txt') # doctest: +SKIP
 
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
@@ -64,7 +65,7 @@ class TaggedCorpusReader(CorpusReader):
         :rtype: str
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
@@ -266,7 +267,7 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
     ``self.paras()`` and ``self.tagged_paras()`` contains a single
     sentence.
     """
-    def __init__(self, root, fileids, encoding=None, tag_mapping_function=None):
+    def __init__(self, root, fileids, encoding='utf8', tag_mapping_function=None):
         TaggedCorpusReader.__init__(
             self, root, fileids, sep='_',
             word_tokenizer=LineTokenizer(),

@@ -2,16 +2,18 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 from nltk.internals import Counter
-from logic import LogicParser, APP
+from nltk.compat import string_types, python_2_unicode_compatible
+from .logic import LogicParser, APP
 
 _counter = Counter()
 
+@python_2_unicode_compatible
 class Expression(object):
     def applyto(self, other, other_indices=None):
         return ApplicationExpression(self, other, other_indices)
@@ -20,15 +22,17 @@ class Expression(object):
         return self.applyto(other)
 
     def __repr__(self):
-        return '<' + self.__class__.__name__ + ' ' + str(self) + '>'
+        return '<%s %s>' % (self.__class__.__name__, self)
 
+
+@python_2_unicode_compatible
 class AtomicExpression(Expression):
     def __init__(self, name, dependencies=None):
         """
         :param name: str for the constant name
         :param dependencies: list of int for the indices on which this atom is dependent
         """
-        assert isinstance(name, str)
+        assert isinstance(name, string_types)
         self.name = name
 
         if not dependencies:
@@ -76,10 +80,13 @@ class AtomicExpression(Expression):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.name == other.name
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
         accum = self.name
         if self.dependencies:
-            accum += str(self.dependencies)
+            accum += "%s" % self.dependencies
         return accum
 
     def __hash__(self):
@@ -103,7 +110,7 @@ class ConstantExpression(AtomicExpression):
             except VariableBindingException:
                 pass
         elif self == other:
-                return bindings
+            return bindings
         raise UnificationException(self, other, bindings)
 
 class VariableExpression(AtomicExpression):
@@ -125,6 +132,7 @@ class VariableExpression(AtomicExpression):
         except VariableBindingException:
             raise UnificationException(self, other, bindings)
 
+@python_2_unicode_compatible
 class ImpExpression(Expression):
     def __init__(self, antecedent, consequent):
         """
@@ -189,13 +197,17 @@ class ImpExpression(Expression):
         return self.__class__ == other.__class__ and \
                 self.antecedent == other.antecedent and self.consequent == other.consequent
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
-        return Tokens.OPEN + str(self.antecedent) + ' ' + Tokens.IMP + \
-               ' ' + str(self.consequent) + Tokens.CLOSE
+        return "%s%s %s %s%s" % (
+            Tokens.OPEN, self.antecedent, Tokens.IMP, self.consequent, Tokens.CLOSE)
 
     def __hash__(self):
         return hash('%s%s%s' % (hash(self.antecedent), Tokens.IMP, hash(self.consequent)))
 
+@python_2_unicode_compatible
 class ApplicationExpression(Expression):
     def __init__(self, function, argument, argument_indices=None):
         """
@@ -251,12 +263,16 @@ class ApplicationExpression(Expression):
         return self.__class__ == other.__class__ and \
                 self.function == other.function and self.argument == other.argument
 
+    def __ne__(self, other):
+        return not self == other
+
     def __str__(self):
-        return str(self.function) + Tokens.OPEN + str(self.argument) + Tokens.CLOSE
+        return "%s" % self.function + Tokens.OPEN + "%s" % self.argument + Tokens.CLOSE
 
     def __hash__(self):
         return hash('%s%s%s' % (hash(self.antecedent), Tokens.OPEN, hash(self.consequent)))
 
+@python_2_unicode_compatible
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """
@@ -326,10 +342,10 @@ class BindingDict(object):
                         ' VariableBindingsLists: %s, %s' % (self, other))
 
     def __str__(self):
-        return '{' + ', '.join(['%s: %s' % (v, self.d[v]) for v in self.d]) + '}'
+        return '{' + ', '.join('%s: %s' % (v, self.d[v]) for v in self.d) + '}'
 
     def __repr__(self):
-        return 'BindingDict: ' + str(self)
+        return 'BindingDict: %s' % self
 
 class VariableBindingException(Exception): pass
 

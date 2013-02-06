@@ -1,18 +1,21 @@
 # Natural Language Toolkit: PropBank Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import unicode_literals
 import re
-import codecs
-
-from nltk.tree import Tree
 from xml.etree import ElementTree
 
-from util import *
-from api import *
+from nltk import compat
+from nltk.tree import Tree
+from nltk.internals import raise_unorderable_types
+from nltk.compat import total_ordering
+
+from .util import *
+from .api import *
 
 class PropbankCorpusReader(CorpusReader):
     """
@@ -29,7 +32,7 @@ class PropbankCorpusReader(CorpusReader):
     """
     def __init__(self, root, propfile, framefiles='',
                  verbsfile=None, parse_fileid_xform=None,
-                 parse_corpus=None, encoding=None):
+                 parse_corpus=None, encoding='utf8'):
         """
         :param root: The root directory for this corpus.
         :param propfile: The name of the file containing the predicate-
@@ -45,7 +48,7 @@ class PropbankCorpusReader(CorpusReader):
             necessary to resolve the tree pointers used by propbank.
         """
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, basestring):
+        if isinstance(framefiles, compat.string_types):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
@@ -64,7 +67,7 @@ class PropbankCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def instances(self, baseform=None):
@@ -157,6 +160,7 @@ class PropbankCorpusReader(CorpusReader):
 #{ Propbank Instance & related datatypes
 ######################################################################
 
+@compat.python_2_unicode_compatible
 class PropbankInstance(object):
 
     def __init__(self, fileid, sentnum, wordnum, tagger, roleset,
@@ -292,9 +296,10 @@ class PropbankPointer(object):
         can be ``PropbankTreePointer`` or ``PropbankSplitTreePointer`` pointers.
     """
     def __init__(self):
-        if self.__class__ == PropbankPoitner:
+        if self.__class__ == PropbankPointer:
             raise NotImplementedError()
 
+@compat.python_2_unicode_compatible
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -310,6 +315,8 @@ class PropbankChainTreePointer(PropbankPointer):
         if tree is None: raise ValueError('Parse tree not avaialable')
         return Tree('*CHAIN*', [p.select(tree) for p in self.pieces])
 
+
+@compat.python_2_unicode_compatible
 class PropbankSplitTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -324,6 +331,9 @@ class PropbankSplitTreePointer(PropbankPointer):
         if tree is None: raise ValueError('Parse tree not avaialable')
         return Tree('*SPLIT*', [p.select(tree) for p in self.pieces])
 
+
+@total_ordering
+@compat.python_2_unicode_compatible
 class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
@@ -359,16 +369,28 @@ class PropbankTreePointer(PropbankPointer):
     def __repr__(self):
         return 'PropbankTreePointer(%d, %d)' % (self.wordnum, self.height)
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         while isinstance(other, (PropbankChainTreePointer,
                                  PropbankSplitTreePointer)):
             other = other.pieces[0]
 
         if not isinstance(other, PropbankTreePointer):
-            return cmp(id(self), id(other))
+            return self is other
 
-        return cmp( (self.wordnum, -self.height),
-                    (other.wordnum, -other.height) )
+        return (self.wordnum == other.wordnum and self.height == other.height)
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        while isinstance(other, (PropbankChainTreePointer,
+                                 PropbankSplitTreePointer)):
+            other = other.pieces[0]
+
+        if not isinstance(other, PropbankTreePointer):
+            return id(self) < id(other)
+
+        return (self.wordnum, -self.height) < (other.wordnum, -other.height)
 
     def select(self, tree):
         if tree is None: raise ValueError('Parse tree not avaialable')
@@ -409,6 +431,7 @@ class PropbankTreePointer(PropbankPointer):
                     wordnum += 1
                     stack.pop()
 
+@compat.python_2_unicode_compatible
 class PropbankInflection(object):
     #{ Inflection Form
     INFINITIVE = 'i'
@@ -449,7 +472,7 @@ class PropbankInflection(object):
 
     @staticmethod
     def parse(s):
-        if not isinstance(s, basestring):
+        if not isinstance(s, compat.string_types):
             raise TypeError('expected a string')
         if (len(s) != 5 or
             not PropbankInflection._VALIDATE.match(s)):

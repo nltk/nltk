@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Models for first-order languages with lambda
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -13,13 +13,14 @@
 This module provides data structures for representing first-order
 models.
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 from pprint import pformat
 import inspect
 import textwrap
 
-from nltk.decorators import decorator
+from nltk.decorators import decorator # this used in code that is commented out
+from nltk.compat import string_types, python_2_unicode_compatible
 
 from nltk.sem.logic import (AbstractVariableExpression, AllExpression,
                             AndExpression, ApplicationExpression, EqualityExpression,
@@ -54,8 +55,7 @@ def is_rel(s):
     if len(s) == 0:
         return True
     # all the elements are tuples of the same length
-    elif s == set([elem for elem in s if isinstance(elem, tuple)]) and\
-         len(max(s))==len(min(s)):
+    elif all(isinstance(el, tuple) for el in s) and len(max(s))==len(min(s)):
         return True
     else:
         raise ValueError("Set %r contains sequences of different lengths" % s)
@@ -75,7 +75,7 @@ def set2rel(s):
     """
     new = set()
     for elem in s:
-        if isinstance(elem, str):
+        if isinstance(elem, string_types):
             new.add((elem,))
         elif isinstance(elem, int):
             new.add((str(elem,)))
@@ -94,6 +94,7 @@ def arity(rel):
     return len(list(rel)[0])
 
 
+@python_2_unicode_compatible
 class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
@@ -111,7 +112,7 @@ class Valuation(dict):
         """
         dict.__init__(self)
         for (sym, val) in iter:
-            if isinstance(val, str) or isinstance(val, bool):
+            if isinstance(val, string_types) or isinstance(val, bool):
                 self[sym] = val
             elif isinstance(val, set):
                 self[sym] = set2rel(val)
@@ -135,7 +136,7 @@ class Valuation(dict):
         """Set-theoretic domain of the value-space of a Valuation."""
         dom = []
         for val in self.values():
-            if isinstance(val, str):
+            if isinstance(val, string_types):
                 dom.append(val)
             elif not isinstance(val, bool):
                 dom.extend([elem for tuple in val for elem in tuple if elem is not None])
@@ -147,6 +148,7 @@ class Valuation(dict):
         return sorted(self.keys())
 
 
+@python_2_unicode_compatible
 class Assignment(dict):
     """
     A dictionary which represents an assignment of values to variables.
@@ -178,7 +180,7 @@ class Assignment(dict):
     There is also a ``print`` format for assignments which uses a notation
     closer to that in logic textbooks:
 
-        >>> print g3
+        >>> print(g3)
         g[u2/y][u1/x]
 
     It is also possible to update an assignment using the ``add`` method:
@@ -273,6 +275,7 @@ class Assignment(dict):
         return self
 
 
+@python_2_unicode_compatible
 class Model(object):
     """
     A first order model is a domain *D* of discourse and a valuation *V*.
@@ -351,7 +354,7 @@ class Model(object):
             if isinstance(function, AbstractVariableExpression):
                 #It's a predicate expression ("P(x,y)"), so used uncurried arguments
                 funval = self.satisfy(function, g)
-                argvals = tuple([self.satisfy(arg, g) for arg in arguments])
+                argvals = tuple(self.satisfy(arg, g) for arg in arguments)
                 return argvals in funval
             else:
                 #It must be a lambda expression, so use curried form
@@ -447,7 +450,7 @@ class Model(object):
         indent = spacer + (spacer * nesting)
         candidates = []
 
-        if isinstance(varex, str):
+        if isinstance(varex, string_types):
             var = Variable(varex)
         else:
             var = varex
@@ -459,7 +462,7 @@ class Model(object):
             for u in self.domain:
                 new_g = g.copy()
                 new_g.add(var.name, u)
-                if trace > 1:
+                if trace and trace > 1:
                     lowtrace = trace-1
                 else:
                     lowtrace = 0

@@ -1,16 +1,16 @@
 # Natural Language Toolkit: Word Finder
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # Simplified from PHP version by Robert Klein <brathna@gmail.com>
 # http://fswordfinder.sourceforge.net/
-
 from __future__ import print_function
+
 import random
-from string import strip
+
 
 # reverse a word with probability 0.5
 def revword(word):
@@ -70,7 +70,7 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
     """
 
     # place longer words first
-    words.sort(cmp=lambda x,y:cmp(len(x),len(y)), reverse=True)
+    words = sorted(words, key=len, reverse=True)
 
     grid = []  # the letter grid
     used = []  # the words we used
@@ -81,7 +81,7 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
 
     # try to place each word
     for word in words:
-        word = strip(word).upper()   # normalize
+        word = word.strip().upper()  # normalize
         save = word                  # keep a record of the word
         word = revword(word)
         for attempt in range(attempts):

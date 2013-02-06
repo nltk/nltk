@@ -1,6 +1,6 @@
 # CHILDES XML Corpus Reader
 
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <http://www.nltk.org/>
@@ -9,14 +9,15 @@
 """
 Corpus reader for the XML version of the CHILDES corpus.
 """
-
 from __future__ import print_function
+
 __docformat__ = 'epytext en'
 
 import re
 from collections import defaultdict
 
 from nltk.util import flatten
+from nltk.compat import string_types
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
@@ -259,7 +260,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def _get_words(self, fileid, speaker, sent, stem, relation, pos,
             strip_space, replace):
-        if isinstance(speaker, str) and speaker != 'ALL':  # ensure we have a list of speakers
+        if isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
             speaker = [ speaker ]
         xmldoc = ElementTree.parse(fileid).getroot()
         # processing each xml doc
@@ -310,9 +311,12 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     if relation or pos:
                         try:
                             xmlpos = xmlword.findall(".//{%s}c" % NS)
-                            word = (word,xmlpos[0].text)
-                            if len(xmlpos) != 1 and suffixStem:
-                                suffixStem = (suffixStem,xmlpos[1].text)
+                            xmlpos2 = xmlword.findall(".//{%s}s" % NS)
+                            if xmlpos2 != []:
+                                tag = xmlpos[0].text+":"+xmlpos2[0].text
+                            else:
+                                tag = xmlpos[0].text
+                                word = (word,tag)
                         except (AttributeError,IndexError) as e:
                             word = (word,None)
                             if suffixStem:
@@ -434,7 +438,7 @@ def demo(corpus_root=None):
         corpus_root = find('corpora/childes/data-xml/Eng-USA/')
 
     try:
-        childes = CHILDESCorpusReader(corpus_root, u'.*.xml')
+        childes = CHILDESCorpusReader(corpus_root, '.*.xml')
         # describe all corpus
         for file in childes.fileids()[:5]:
             corpus = ''

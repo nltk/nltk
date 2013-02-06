@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ====================================
@@ -27,11 +27,11 @@ NLTK Interface to Theorem Provers
 
 The main class used to interface with a theorem prover is the ``Prover``
 class, found in ``nltk.api``.  The ``prove()`` method takes three optional
-arguments: a goal, a list of assumptions, and a ``verbose`` boolean to 
-indicate whether the proof should be printed to the console.  The proof goal 
-and any assumptions need to be instances of the ``Expression`` class 
-specified by ``nltk.sem.logic``.  There are currently three theorem provers 
-included with NLTK: ``Prover9``, ``TableauProver``, and 
+arguments: a goal, a list of assumptions, and a ``verbose`` boolean to
+indicate whether the proof should be printed to the console.  The proof goal
+and any assumptions need to be instances of the ``Expression`` class
+specified by ``nltk.sem.logic``.  There are currently three theorem provers
+included with NLTK: ``Prover9``, ``TableauProver``, and
 ``ResolutionProver``.  The first is an off-the-shelf prover, while the other
 two are written in Python and included in the ``nltk.inference`` package.
 
@@ -44,12 +44,12 @@ two are written in Python and included in the ``nltk.inference`` package.
     >>> TableauProver().prove(c, [p1,p2])
     True
     >>> ResolutionProver().prove(c, [p1,p2], verbose=True)
-    [1] {-mortal(socrates)}     A 
-    [2] {man(socrates)}         A 
-    [3] {-man(z2), mortal(z2)}  A 
-    [4] {-man(socrates)}        (1, 3) 
-    [5] {mortal(socrates)}      (2, 3) 
-    [6] {}                      (1, 5) 
+    [1] {-mortal(socrates)}     A
+    [2] {man(socrates)}         A
+    [3] {-man(z2), mortal(z2)}  A
+    [4] {-man(socrates)}        (1, 3)
+    [5] {mortal(socrates)}      (2, 3)
+    [6] {}                      (1, 5)
     <BLANKLINE>
     True
 
@@ -58,21 +58,21 @@ The ``ProverCommand``
 ---------------------
 
 A ``ProverCommand`` is a stateful holder for a theorem
-prover.  The command stores a theorem prover instance (of type ``Prover``), 
-a goal, a list of assumptions, the result of the proof, and a string version 
-of the entire proof.  Corresponding to the three included ``Prover`` 
-implementations, there are three ``ProverCommand`` implementations: 
-``Prover9Command``, ``TableauProverCommand``, and 
-``ResolutionProverCommand``.  
+prover.  The command stores a theorem prover instance (of type ``Prover``),
+a goal, a list of assumptions, the result of the proof, and a string version
+of the entire proof.  Corresponding to the three included ``Prover``
+implementations, there are three ``ProverCommand`` implementations:
+``Prover9Command``, ``TableauProverCommand``, and
+``ResolutionProverCommand``.
 
-The ``ProverCommand``'s constructor takes its goal and assumptions.  The 
-``prove()`` command executes the ``Prover`` and ``proof()`` 
+The ``ProverCommand``'s constructor takes its goal and assumptions.  The
+``prove()`` command executes the ``Prover`` and ``proof()``
 returns a String form of the proof
 If the ``prove()`` method has not been called,
 then the prover command will be unable to display a proof.
-   
+
     >>> prover = ResolutionProverCommand(c, [p1,p2])
-    >>> print prover.proof() # doctest: +ELLIPSIS
+    >>> print(prover.proof()) # doctest: +ELLIPSIS
     Traceback (most recent call last):
       File "...", line 1212, in __run
         compileflags, 1) in test.globs
@@ -82,17 +82,17 @@ then the prover command will be unable to display a proof.
     LookupError: You have to call prove() first to get a proof!
     >>> prover.prove()
     True
-    >>> print prover.proof()
-    [1] {-mortal(socrates)}     A 
-    [2] {man(socrates)}         A 
-    [3] {-man(z4), mortal(z4)}  A 
-    [4] {-man(socrates)}        (1, 3) 
-    [5] {mortal(socrates)}      (2, 3) 
-    [6] {}                      (1, 5) 
+    >>> print(prover.proof())
+    [1] {-mortal(socrates)}     A
+    [2] {man(socrates)}         A
+    [3] {-man(z4), mortal(z4)}  A
+    [4] {-man(socrates)}        (1, 3)
+    [5] {mortal(socrates)}      (2, 3)
+    [6] {}                      (1, 5)
     <BLANKLINE>
-    
+
 The prover command stores the result of proving so that if ``prove()`` is
-called again, then the command can return the result without executing the 
+called again, then the command can return the result without executing the
 prover again.  This allows the user to access the result of the proof without
 wasting time re-computing what it already knows.
 
@@ -101,23 +101,23 @@ wasting time re-computing what it already knows.
     >>> prover.prove()
     True
 
-The assumptions and goal may be accessed using the ``assumptions()`` and 
-``goal()`` methods, respectively.  
+The assumptions and goal may be accessed using the ``assumptions()`` and
+``goal()`` methods, respectively.
 
     >>> prover.assumptions()
     [<ApplicationExpression man(socrates)>, <AllExpression all x.(man(x) -> mortal(x))>]
     >>> prover.goal()
     <ApplicationExpression mortal(socrates)>
 
-The assumptions list may be modified using the ``add_assumptions()`` and 
+The assumptions list may be modified using the ``add_assumptions()`` and
 ``retract_assumptions()`` methods.  Both methods take a list of ``Expression``
 objects.  Since adding or removing assumptions may change the result of the
 proof, the stored result is cleared when either of these methods are called.
-That means that ``proof()`` will be unavailable until ``prove()`` is called and 
+That means that ``proof()`` will be unavailable until ``prove()`` is called and
 a call to ``prove()`` will execute the theorem prover.
 
     >>> prover.retract_assumptions([lp.parse('man(socrates)')])
-    >>> print prover.proof() # doctest: +ELLIPSIS
+    >>> print(prover.proof()) # doctest: +ELLIPSIS
     Traceback (most recent call last):
       File "...", line 1212, in __run
         compileflags, 1) in test.globs
@@ -127,10 +127,10 @@ a call to ``prove()`` will execute the theorem prover.
     LookupError: You have to call prove() first to get a proof!
     >>> prover.prove()
     False
-    >>> print prover.proof()
-    [1] {-mortal(socrates)}     A 
-    [2] {-man(z6), mortal(z6)}  A 
-    [3] {-man(socrates)}        (1, 2) 
+    >>> print(prover.proof())
+    [1] {-mortal(socrates)}     A
+    [2] {-man(z6), mortal(z6)}  A
+    [3] {-man(socrates)}        (1, 2)
     <BLANKLINE>
     >>> prover.add_assumptions([lp.parse('man(socrates)')])
     >>> prover.prove()
@@ -151,15 +151,15 @@ Install these into an appropriate location; the
 ``prover9_search`` variable is currently configured to look in the
 following locations:
 
-    >>> p = Prover9() 
+    >>> p = Prover9()
     >>> p.binary_locations() # doctest: +NORMALIZE_WHITESPACE
-    ['/usr/local/bin/prover9', 
+    ['/usr/local/bin/prover9',
      '/usr/local/bin/prover9/bin',
-     '/usr/local/bin', 
-     '/usr/bin', 
+     '/usr/local/bin',
+     '/usr/bin',
      '/usr/local/prover9',
      '/usr/local/share/prover9']
-     
+
 Alternatively, the environment variable ``PROVER9HOME`` may be configured with
 the binary's location.
 
@@ -168,13 +168,13 @@ manner:
 
     >>> config_prover9(path='/usr/local/bin') # doctest: +SKIP
     [Found prover9: /usr/local/bin/prover9]
-    
+
 If the executables cannot be found, ``Prover9`` will issue a warning message:
 
     >>> p.prove() # doctest: +SKIP
     Traceback (most recent call last):
       ...
-    LookupError: 
+    LookupError:
     ===========================================================================
       NLTK was unable to find the prover9 executable!  Use config_prover9() or
       set the PROVER9HOME environment variable.
@@ -185,7 +185,7 @@ If the executables cannot be found, ``Prover9`` will issue a warning message:
         <http://www.cs.unm.edu/~mccune/prover9/>
     ===========================================================================
 
-    
+
 Using Prover9
 ~~~~~~~~~~~~~
 
@@ -203,7 +203,7 @@ list of assumptions (in this case, none).
     >>> prover = Prover9Command(goal)
     >>> prover.prove()
     True
-    
+
 Given a ``ProverCommand`` instance ``prover``, the method
 ``prover.proof()`` will return a String of the extensive proof information
 provided by Prover9, shown in abbreviated form here::
@@ -245,17 +245,17 @@ the proof, as shown here.
 
 However, the assumptions are not sufficient to derive the goal:
 
-    >>> print prover.prove()
+    >>> print(prover.prove())
     False
 
 So let's add another assumption:
 
-    >>> a2 = lp.parse('man(socrates)')    
+    >>> a2 = lp.parse('man(socrates)')
     >>> prover.add_assumptions([a2])
     >>> prover.print_assumptions()
     all x.(man(x) -> mortal(x))
     man(socrates)
-    >>> print prover.prove()
+    >>> print(prover.prove())
     True
 
 We can also show the assumptions in ``Prover9`` format.
@@ -286,16 +286,16 @@ statements as new assumptions.
     >>> import nltk.data
     >>> new = nltk.data.load('grammars/sample_grammars/background0.fol')
     >>> for a in new:
-    ...     print a
+    ...     print(a)
     all x.(boxerdog(x) -> dog(x))
     all x.(boxer(x) -> person(x))
     all x.-(dog(x) & person(x))
     exists x.boxer(x)
     exists x.boxerdog(x)
     >>> prover.add_assumptions(new)
-    >>> print prover.prove()
+    >>> print(prover.prove())
     True
-    >>> print prover.proof() # doctest: +ELLIPSIS
+    >>> print(prover.proof()) # doctest: +ELLIPSIS
     ============================== prooftrans ============================
     Prover9 (...) version ...
     Process ... was started by ... on ...
@@ -337,22 +337,22 @@ The equiv() method
 
 One application of the theorem prover functionality is to check if
 two Expressions have the same meaning.
-The ``equiv()`` method calls a theorem prover to determine whether two 
+The ``equiv()`` method calls a theorem prover to determine whether two
 Expressions are logically equivalent.
 
     >>> a = lp.parse(r'exists x.(man(x) & walks(x))')
     >>> b = lp.parse(r'exists x.(walks(x) & man(x))')
-    >>> print a.equiv(b)
+    >>> print(a.equiv(b))
     True
 
-The same method can be used on Discourse Representation Structures (DRSs).  
+The same method can be used on Discourse Representation Structures (DRSs).
 In this case, each DRS is converted to a first order logic form, and then
 passed to the theorem prover.
 
     >>> dp = DrtParser()
     >>> a = dp.parse(r'([x],[man(x), walks(x)])')
     >>> b = dp.parse(r'([x],[walks(x), man(x)])')
-    >>> print a.equiv(b)
+    >>> print(a.equiv(b))
     True
 
 
@@ -368,7 +368,7 @@ in ``nltk.inference.api``.  It is currently only implemented by
 Typically we use a model builder to show that some set of formulas has
 a model, and is therefore consistent. One way of doing this is by
 treating our candidate set of sentences as assumptions, and leaving
-the goal unspecified. 
+the goal unspecified.
 Thus, the following interaction shows how both ``{a, c1}`` and ``{a, c2}``
 are consistent sets, since Mace succeeds in a building a
 model for each of them, while ``{c1, c2}`` is inconsistent.
@@ -377,9 +377,9 @@ model for each of them, while ``{c1, c2}`` is inconsistent.
     >>> c1 = lp.parse('mortal(socrates)')
     >>> c2 = lp.parse('-mortal(socrates)')
     >>> mace = Mace()
-    >>> print mace.build_model(None, [a3, c1])
+    >>> print(mace.build_model(None, [a3, c1]))
     True
-    >>> print mace.build_model(None, [a3, c2])
+    >>> print(mace.build_model(None, [a3, c2]))
     True
 
 We can also use the model builder as an adjunct to theorem prover.
@@ -404,21 +404,21 @@ woman; but Adam does not love Eve.
     >>> a5 = lp.parse('man(adam)')
     >>> a6 = lp.parse('woman(eve)')
     >>> g = lp.parse('love(adam,eve)')
-    >>> print mace.build_model(g, [a4, a5, a6])
+    >>> print(mace.build_model(g, [a4, a5, a6]))
     True
 
 The Model Builder will fail to find a model if the assumptions do entail
 the goal.  Mace will continue to look for models of ever-increasing sizes
-until the end_size number is reached.  By default, end_size is 500, 
+until the end_size number is reached.  By default, end_size is 500,
 but it can be set manually for quicker response time.
 
     >>> a7 = lp.parse('all x.(man(x) -> mortal(x))')
     >>> a8 = lp.parse('man(socrates)')
     >>> g2 = lp.parse('mortal(socrates)')
-    >>> print Mace(end_size=50).build_model(g2, [a7, a8])
+    >>> print(Mace(end_size=50).build_model(g2, [a7, a8]))
     False
 
-There is also a ``ModelBuilderCommand`` class that, like ``ProverCommand``, 
+There is also a ``ModelBuilderCommand`` class that, like ``ProverCommand``,
 stores a ``ModelBuilder``, a goal, assumptions, a result, and a model.  The
 only implementation in NLTK is ``MaceCommand``.
 
@@ -446,7 +446,7 @@ Check whether Mace4 can find a model.
 
 Show the model in 'tabular' format.
 
-    >>> print mb.model(format='tabular')
+    >>> print(mb.model(format='tabular'))
     % number = 1
     % seconds = 0
     <BLANKLINE>
@@ -456,7 +456,7 @@ Show the model in 'tabular' format.
     <BLANKLINE>
      mary : 1
     <BLANKLINE>
-     see : 
+     see :
            | 0 1
         ---+----
          0 | 0 0
@@ -465,7 +465,7 @@ Show the model in 'tabular' format.
 
 Show the model in 'tabular' format.
 
-    >>> print mb.model(format='cooked')
+    >>> print(mb.model(format='cooked'))
     % number = 1
     % seconds = 0
     <BLANKLINE>
@@ -483,14 +483,14 @@ Show the model in 'tabular' format.
 
 The property ``valuation`` accesses the stored ``Valuation``.
 
-    >>> print mb.valuation
+    >>> print(mb.valuation)
     {'john': 'a', 'mary': 'b', 'see': set([('b', 'a')])}
 
 We can return to our earlier example and inspect the model:
 
     >>> mb = MaceCommand(g, assumptions=[a4, a5, a6])
     >>> m = mb.build_model()
-    >>> print mb.model(format='cooked')
+    >>> print(mb.model(format='cooked'))
     % number = 1
     % seconds = 0
     <BLANKLINE>

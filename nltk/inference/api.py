@@ -17,8 +17,8 @@ the model builder tries to build a model for the assumptions. Given a set of ass
 goal *G*, the model builder tries to find a counter-model, in the sense of a model that will satisfy
 the assumptions plus the negation of *G*.
 """
-
 from __future__ import print_function
+
 import threading
 import time
 
@@ -216,7 +216,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         :type retracted: list(sem.Expression)
         """
         retracted = set(retracted)
-        result_list = filter(lambda a: a not in retracted, self._assumptions)
+        result_list = list(filter(lambda a: a not in retracted, self._assumptions))
         if debug and result_list == self._assumptions:
             print(Warning("Assumptions list has not been changed:"))
             self.print_assumptions()

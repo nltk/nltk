@@ -1,23 +1,23 @@
 # Natural Language Toolkit: Evaluation
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
-
 from __future__ import print_function
-from itertools import izip
+
 from math import fabs
 import operator
 from random import shuffle
+from functools import reduce
 
 try:
     from scipy.stats.stats import betai
 except ImportError:
     betai = None
 
+from nltk.compat import xrange, izip
 from nltk.util import LazyConcatenation, LazyMap
 
 def accuracy(reference, test):
@@ -174,9 +174,9 @@ def approxrand(a, b, **kwargs):
 
     c = 1e-100
     lst = LazyConcatenation([a, b])
-    indices = range(len(a) + len(b))
+    indices = list(range(len(a) + len(b)))
 
-    for i in range(shuffles):
+    for i in xrange(shuffles):
         if verbose and i % 10 == 0:
             print('shuffle: %d' % i)
 

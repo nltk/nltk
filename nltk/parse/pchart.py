@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Probabilistic Chart Parsers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -29,6 +29,7 @@ The ``BottomUpProbabilisticChartParser`` constructor has an optional
 argument beam_size.  If non-zero, this controls the size of the beam
 (aka the edge queue).  This option is most useful with InsideChartParser.
 """
+from __future__ import print_function, unicode_literals
 
 ##//////////////////////////////////////////////////////
 ##  Bottom-Up PCFG Chart Parser
@@ -37,12 +38,13 @@ argument beam_size.  If non-zero, this controls the size of the beam
 # [XX] This might not be implemented quite right -- it would be better
 # to associate probabilities with child pointer lists.
 
-from __future__ import print_function
+from functools import reduce
 from nltk.tree import Tree, ProbabilisticTree
 from nltk.grammar import Nonterminal, WeightedGrammar
 
 from nltk.parse.api import ParserI
 from nltk.parse.chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
+from nltk.compat import python_2_unicode_compatible
 
 # Probabilistic edges
 class ProbabilisticLeafEdge(LeafEdge):
@@ -50,14 +52,12 @@ class ProbabilisticLeafEdge(LeafEdge):
 
 class ProbabilisticTreeEdge(TreeEdge):
     def __init__(self, prob, *args, **kwargs):
-        self._prob = prob
         TreeEdge.__init__(self, *args, **kwargs)
+        self._prob = prob
+        # two edges with different probabilities are not equal.
+        self._comparison_key = (self._comparison_key, prob)
 
     def prob(self): return self._prob
-
-    def __cmp__(self, other):
-        if self._prob != other.prob(): return -1
-        return TreeEdge.__cmp__(self, other)
 
     @staticmethod
     def from_production(production, index, p):
@@ -88,7 +88,7 @@ class ProbabilisticFundamentalRule(AbstractChartRule):
     def apply_iter(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
         if not (left_edge.end() == right_edge.start() and
-                left_edge.next() == right_edge.lhs() and
+                left_edge.nextsym() == right_edge.lhs() and
                 left_edge.is_incomplete() and right_edge.is_complete()):
             return
 
@@ -108,6 +108,7 @@ class ProbabilisticFundamentalRule(AbstractChartRule):
         # If we changed the chart, then generate the edge.
         if changed_chart: yield new_edge
 
+@python_2_unicode_compatible
 class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
     NUM_EDGES=1
 
@@ -118,17 +119,18 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
         if edge1.is_incomplete():
             # edge1 = left_edge; edge2 = right_edge
             for edge2 in chart.select(start=edge1.end(), is_complete=True,
-                                     lhs=edge1.next()):
+                                     lhs=edge1.nextsym()):
                 for new_edge in fr.apply_iter(chart, grammar, edge1, edge2):
                     yield new_edge
         else:
             # edge2 = left_edge; edge1 = right_edge
             for edge2 in chart.select(end=edge1.start(), is_complete=False,
-                                     next=edge1.lhs()):
+                                      nextsym=edge1.lhs()):
                 for new_edge in fr.apply_iter(chart, grammar, edge2, edge1):
                     yield new_edge
 
-    def __str__(self): return 'Fundamental Rule'
+    def __str__(self):
+        return 'Fundamental Rule'
 
 class BottomUpProbabilisticChartParser(ParserI):
     """
@@ -243,7 +245,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             self._setprob(parse, prod_probs)
 
         # Sort by probability
-        parses.sort(lambda a,b: cmp(b.prob(), a.prob()))
+        parses.sort(reverse=True, key=lambda tree: tree.prob())
 
         return parses[:n]
 
@@ -326,7 +328,7 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
         :type chart: Chart
         :rtype: None
         """
-        queue.sort(lambda e1,e2:cmp(e1.prob(), e2.prob()))
+        queue.sort(key=lambda edge: edge.prob())
 
 # Eventually, this will become some sort of inside-outside parser:
 # class InsideOutsideParser(BottomUpProbabilisticChartParser):
@@ -349,12 +351,11 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
 #         self._bestp = bestp
 #         for (k,v) in self._bestp.items(): print k,v
 #
-#     def _cmp(self, e1, e2):
-#         return cmp(e1.structure()[PROB]*self._bestp[e1.lhs()],
-#                    e2.structure()[PROB]*self._bestp[e2.lhs()])
+#     def _sortkey(self, edge):
+#         return edge.structure()[PROB] * self._bestp[edge.lhs()]
 #
 #     def sort_queue(self, queue, chart):
-#         queue.sort(self._cmp)
+#         queue.sort(key=self._sortkey)
 
 import random
 class RandomChartParser(BottomUpProbabilisticChartParser):
@@ -382,7 +383,7 @@ class LongestChartParser(BottomUpProbabilisticChartParser):
     """
     # Inherit constructor
     def sort_queue(self, queue, chart):
-        queue.sort(lambda e1,e2: cmp(e1.length(), e2.length()))
+        queue.sort(key=lambda edge: edge.length())
 
 ##//////////////////////////////////////////////////////
 ##  Test Code

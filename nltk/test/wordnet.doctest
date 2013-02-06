@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =================
@@ -31,13 +31,15 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
 
     >>> wn.synset('dog.n.01')
     Synset('dog.n.01')
-    >>> wn.synset('dog.n.01').definition
-    'a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds'
-    >>> wn.synset('dog.n.01').examples
-    ['the dog barked all night']
+    >>> print(wn.synset('dog.n.01').definition)
+    a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds
+    >>> len(wn.synset('dog.n.01').examples)
+    1
+    >>> print(wn.synset('dog.n.01').examples[0])
+    the dog barked all night
     >>> wn.synset('dog.n.01').lemmas
     [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
-    >>> [lemma.name for lemma in wn.synset('dog.n.01').lemmas]
+    >>> [str(lemma.name) for lemma in wn.synset('dog.n.01').lemmas]
     ['dog', 'domestic_dog', 'Canis_familiaris']
     >>> wn.lemma('dog.n.01.dog').synset
     Synset('dog.n.01')
@@ -83,8 +85,8 @@ Lemmas
     >>> eat = wn.lemma('eat.v.03.eat')
     >>> eat
     Lemma('feed.v.06.eat')
-    >>> eat.key
-    'eat%2:34:02::'
+    >>> print(eat.key)
+    eat%2:34:02::
     >>> eat.count()
     4
     >>> wn.lemma_from_key(eat.key)
@@ -94,12 +96,12 @@ Lemmas
     >>> wn.lemma_from_key('feebleminded%5:00:00:retarded:00')
     Lemma('backward.s.03.feebleminded')
     >>> for lemma in wn.synset('eat.v.03').lemmas:
-    ...     print lemma, lemma.count()
+    ...     print(lemma, lemma.count())
     ...
     Lemma('feed.v.06.feed') 3
     Lemma('feed.v.06.eat') 4
     >>> for lemma in wn.lemmas('eat', 'v'):
-    ...     print lemma, lemma.count()
+    ...     print(lemma, lemma.count())
     ...
     Lemma('eat.v.01.eat') 61
     Lemma('eat.v.02.eat') 13
@@ -127,27 +129,27 @@ Verb Frames
     >>> wn.synset('think.v.01').frame_ids
     [5, 9]
     >>> for lemma in wn.synset('think.v.01').lemmas:
-    ...     print lemma, lemma.frame_ids
-    ...     print lemma.frame_strings
+    ...     print(lemma, lemma.frame_ids)
+    ...     print(" | ".join(lemma.frame_strings))
     ...
     Lemma('think.v.01.think') [5, 9]
-    ['Something think something Adjective/Noun', 'Somebody think somebody']
+    Something think something Adjective/Noun | Somebody think somebody
     Lemma('think.v.01.believe') [5, 9]
-    ['Something believe something Adjective/Noun', 'Somebody believe somebody']
+    Something believe something Adjective/Noun | Somebody believe somebody
     Lemma('think.v.01.consider') [5, 9]
-    ['Something consider something Adjective/Noun', 'Somebody consider somebody']
+    Something consider something Adjective/Noun | Somebody consider somebody
     Lemma('think.v.01.conceive') [5, 9]
-    ['Something conceive something Adjective/Noun', 'Somebody conceive somebody']
+    Something conceive something Adjective/Noun | Somebody conceive somebody
     >>> wn.synset('stretch.v.02').frame_ids
     [8]
     >>> for lemma in wn.synset('stretch.v.02').lemmas:
-    ...     print lemma, lemma.frame_ids
-    ...     print lemma.frame_strings
+    ...     print(lemma, lemma.frame_ids)
+    ...     print(" | ".join(lemma.frame_strings))
     ...
     Lemma('stretch.v.02.stretch') [8, 2]
-    ['Somebody stretch something', 'Somebody stretch']
+    Somebody stretch something | Somebody stretch
     Lemma('stretch.v.02.extend') [8]
-    ['Somebody extend something']
+    Somebody extend something
 
 
 ----------
@@ -166,9 +168,9 @@ Return a score denoting how similar two word senses are, based on the
 shortest path that connects the senses in the is-a (hypernym/hypnoym)
 taxonomy. The score is in the range 0 to 1. By default, there is now
 a fake root node added to verbs so for cases where previously a path
-could not be found---and None was returned---it should return a value. 
+could not be found---and None was returned---it should return a value.
 The old behavior can be achieved by setting simulate_root to be False.
-A score of 1 represents identity i.e. comparing a sense with itself 
+A score of 1 represents identity i.e. comparing a sense with itself
 will return 1.
 
     >>> dog.path_similarity(cat)  # doctest: +ELLIPSIS
@@ -180,10 +182,10 @@ will return 1.
     >>> wn.path_similarity(hit, slap)  # doctest: +ELLIPSIS
     0.142...
 
-    >>> print hit.path_similarity(slap, simulate_root=False)
+    >>> print(hit.path_similarity(slap, simulate_root=False))
     None
 
-    >>> print wn.path_similarity(hit, slap, simulate_root=False)
+    >>> print(wn.path_similarity(hit, slap, simulate_root=False))
     None
 
 ``synset1.lch_similarity(synset2):``
@@ -203,12 +205,12 @@ depth.
     >>> wn.lch_similarity(hit, slap)  # doctest: +ELLIPSIS
     1.312...
 
-    >>> print hit.lch_similarity(slap, simulate_root=False)
+    >>> print(hit.lch_similarity(slap, simulate_root=False))
     None
-    
-    >>> print wn.lch_similarity(hit, slap, simulate_root=False)
+
+    >>> print(wn.lch_similarity(hit, slap, simulate_root=False))
     None
-    
+
 ``synset1.wup_similarity(synset2):``
 Wu-Palmer Similarity:
 Return a score denoting how similar two word senses are, based on the
@@ -233,11 +235,11 @@ the purposes of the calculation.
 
     >>> wn.wup_similarity(hit, slap)
     0.25
-    
-    >>> print hit.wup_similarity(slap, simulate_root=False)
+
+    >>> print(hit.wup_similarity(slap, simulate_root=False))
     None
-    
-    >>> print wn.wup_similarity(hit, slap, simulate_root=False)
+
+    >>> print(wn.wup_similarity(hit, slap, simulate_root=False))
     None
 
 ``wordnet_ic``
@@ -298,7 +300,7 @@ Access to all Synsets
 Iterate over all the noun synsets:
 
     >>> for synset in list(wn.all_synsets('n'))[:10]:
-    ...     print synset
+    ...     print(synset)
     ...
     Synset('entity.n.01')
     Synset('physical_entity.n.01')
@@ -322,7 +324,7 @@ Walk through the noun synsets looking at their hypernyms:
 
     >>> from itertools import islice
     >>> for synset in islice(wn.all_synsets('n'), 5):
-    ...     print synset, synset.hypernyms()
+    ...     print(synset, synset.hypernyms())
     ...
     Synset('entity.n.01') []
     Synset('physical_entity.n.01') [Synset('entity.n.01')]
@@ -338,8 +340,8 @@ Morphy
 Look up forms not in WordNet, with the help of Morphy:
 
     >>> wn.morphy('denied', wn.NOUN)
-    >>> wn.morphy('denied', wn.VERB)
-    'deny'
+    >>> print(wn.morphy('denied', wn.VERB))
+    deny
     >>> wn.synsets('denied', wn.NOUN)
     []
     >>> wn.synsets('denied', wn.VERB) # doctest: +NORMALIZE_WHITESPACE
@@ -349,20 +351,20 @@ Look up forms not in WordNet, with the help of Morphy:
 Morphy uses a combination of inflectional ending rules and exception
 lists to handle a variety of different possibilities:
 
-    >>> wn.morphy('dogs')
-    'dog'
-    >>> wn.morphy('churches')
-    'church'
-    >>> wn.morphy('aardwolves')
-    'aardwolf'
-    >>> wn.morphy('abaci')
-    'abacus'
-    >>> wn.morphy('book', wn.NOUN)
-    'book'
+    >>> print(wn.morphy('dogs'))
+    dog
+    >>> print(wn.morphy('churches'))
+    church
+    >>> print(wn.morphy('aardwolves'))
+    aardwolf
+    >>> print(wn.morphy('abaci'))
+    abacus
+    >>> print(wn.morphy('book', wn.NOUN))
+    book
     >>> wn.morphy('hardrock', wn.ADV)
     >>> wn.morphy('book', wn.ADJ)
     >>> wn.morphy('his', wn.NOUN)
-	>>>
+    >>>
 
 ---------------
 Synset Closures
@@ -378,14 +380,14 @@ Compute transitive closures of synsets
     >>> list(dog.closure(hyper, depth=1)) == dog.hypernyms()
     True
     >>> list(dog.closure(hypo)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), Synset('newfoundland.n.01'), Synset('lapdog.n.01'), 
+    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), Synset('newfoundland.n.01'), Synset('lapdog.n.01'),
     Synset('poodle.n.01'), Synset('leonberg.n.01'), Synset('toy_dog.n.01'), Synset('spitz.n.01'), ...]
     >>> list(dog.closure(hyper)) # doctest: +NORMALIZE_WHITESPACE
-    [Synset('domestic_animal.n.01'), Synset('canine.n.02'), Synset('animal.n.01'), Synset('carnivore.n.01'), Synset('organism.n.01'), 
-    Synset('placental.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('whole.n.02'), Synset('vertebrate.n.01'), 
-    Synset('object.n.01'), Synset('chordate.n.01'), Synset('physical_entity.n.01'), Synset('entity.n.01')]    
-    
-    
+    [Synset('domestic_animal.n.01'), Synset('canine.n.02'), Synset('animal.n.01'), Synset('carnivore.n.01'), Synset('organism.n.01'),
+    Synset('placental.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('whole.n.02'), Synset('vertebrate.n.01'),
+    Synset('object.n.01'), Synset('chordate.n.01'), Synset('physical_entity.n.01'), Synset('entity.n.01')]
+
+
 ----------------
 Regression Tests
 ----------------
@@ -410,7 +412,7 @@ Bug 160: wup_similarity breaks when the two synsets have no common hypernym
 
     >>> t = wn.synsets('titan')[1]
     >>> s = wn.synsets('say', wn.VERB)[0]
-    >>> print t.wup_similarity(s)
+    >>> print(t.wup_similarity(s))
     None
 
 Bug 21: "instance of" not included in LCS (very similar to bug 160)
@@ -441,7 +443,7 @@ Bug 99: WordNet root_hypernyms gives incorrect results
     >>> from nltk.corpus import wordnet as wn
     >>> for s in wn.all_synsets(wn.NOUN):
     ...     if s.root_hypernyms()[0] != wn.synset('entity.n.01'):
-    ...             print s, s.root_hypernyms()
+    ...             print(s, s.root_hypernyms())
     ...
     >>>
 
@@ -480,13 +482,13 @@ Bug 484: similarity metrics returned -1 instead of None for no LCS
 
     >>> t = wn.synsets('fly', wn.VERB)[0]
     >>> s = wn.synsets('say', wn.VERB)[0]
-    >>> print s.shortest_path_distance(t)
+    >>> print(s.shortest_path_distance(t))
     None
-    >>> print s.path_similarity(t, simulate_root=False)
+    >>> print(s.path_similarity(t, simulate_root=False))
     None
-    >>> print s.lch_similarity(t, simulate_root=False)
+    >>> print(s.lch_similarity(t, simulate_root=False))
     None
-    >>> print s.wup_similarity(t, simulate_root=False)
+    >>> print(s.wup_similarity(t, simulate_root=False))
     None
 
 Bug 427: "pants" does not return all the senses it should
@@ -532,3 +534,4 @@ Issue 629: wordnet failures when python run with -O optimizations
     >>> # Run the test suite with python -O to check this
     >>> wn.synsets("brunch")
     [Synset('brunch.n.01'), Synset('brunch.v.01')]
+

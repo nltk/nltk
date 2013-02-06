@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Mallet Machine Learning Package
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,11 +10,8 @@ A set of functions used to interface with the external Mallet_ machine learning
 package. Before mallet can be used, you should tell NLTK where it can find
 the mallet package, using the ``config_mallet()`` function. Typical usage:
 
-.. doctest::
-    :options: +SKIP
-
     >>> from nltk.classify import mallet
-    >>> mallet.config_mallet() # pass path to mallet as argument if needed
+    >>> mallet.config_mallet() # pass path to mallet as argument if needed # doctest: +SKIP
     [Found mallet: ...]
 
 .. _Mallet: http://mallet.cs.umass.edu/
@@ -57,9 +54,9 @@ def config_mallet(mallet_home=None):
     if not os.path.isdir(lib_dir):
         raise ValueError('While configuring mallet: directory %r '
                          'not found.' % lib_dir)
-    _mallet_classpath = os.path.pathsep.join([os.path.join(lib_dir, filename)
+    _mallet_classpath = os.path.pathsep.join(os.path.join(lib_dir, filename)
                                   for filename in sorted(os.listdir(lib_dir))
-                                  if filename.endswith('.jar')])
+                                  if filename.endswith('.jar'))
 
 
 def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None,

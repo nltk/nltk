@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===============================
@@ -18,7 +18,7 @@ Unit test cases for ``toolbox``
     >>> import os, tempfile
     >>> (fd, fname) = tempfile.mkstemp()
     >>> tf = os.fdopen(fd, "w")
-    >>> tf.write('\\lx a value\n\\lx another value\n')
+    >>> _ = tf.write('\\lx a value\n\\lx another value\n')
     >>> tf.close()
     >>> f = toolbox.StandardFormat()
     >>> f.open(fname)
@@ -66,7 +66,7 @@ Unit test cases for ``toolbox``
     >>> line_nums
     [2, 5, 7]
 
-``StandardFormat.line_num`` doesn't exist before openning or after closing 
+``StandardFormat.line_num`` doesn't exist before openning or after closing
 a file or string:
 
     >>> f = toolbox.StandardFormat()
@@ -110,7 +110,7 @@ file with only a newline returns WHAT SHOULD IT RETURN???:
     >>> f.open_string('\n')
     >>> list(f.raw_fields())
     [(None, '')]
-    
+
 file with only one field should be parsed ok:
 
     >>> f = toolbox.StandardFormat()
@@ -156,21 +156,21 @@ file ending with a multiline record should be parsed ok:
 file beginning with a BOM should be parsed ok:
 
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string(u'\ufeff\\lx a value\n\\lx another value\n'.encode('utf8'))
+    >>> f.open_string('\xef\xbb\xbf\\lx a value\n\\lx another value\n')
     >>> list(f.raw_fields())
     [('lx', 'a value'), ('lx', 'another value')]
 
 file beginning with two BOMs should ignore only the first one:
 
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string(u'\ufeff\ufeff\\lx a value\n\\lx another value\n'.encode('utf8'))
+    >>> f.open_string('\xef\xbb\xbf\xef\xbb\xbf\\lx a value\n\\lx another value\n')
     >>> list(f.raw_fields())
     [(None, '\xef\xbb\xbf\\lx a value'), ('lx', 'another value')]
 
 should not ignore a BOM not at the beginning of the file:
 
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string(u'\\lx a value\n\ufeff\\lx another value\n'.encode('utf8'))
+    >>> f.open_string('\\lx a value\n\xef\xbb\xbf\\lx another value\n')
     >>> list(f.raw_fields())
     [('lx', 'a value\n\xef\xbb\xbf\\lx another value')]
 
@@ -189,17 +189,17 @@ multiline fields are unwrapped:
     >>> f.open_string('\\lx a value\nmore of the value\nand still more\n\\lc another val\n')
     >>> list(f.fields())
     [('lx', 'a value more of the value and still more'), ('lc', 'another val')]
-    
+
 markers
 -------
-A backslash in the first position on a new line indicates the start of a 
+A backslash in the first position on a new line indicates the start of a
 marker. The backslash is not part of the marker:
 
     >>> f = toolbox.StandardFormat()
     >>> f.open_string('\\mk a value\n')
     >>> list(f.fields())
     [('mk', 'a value')]
-    
+
 If the backslash occurs later in the line it does not indicate the start
 of a marker:
 
@@ -228,14 +228,14 @@ A marker is terminated by any white space character:
     >>> f.open_string('\\mk a value\n\\mk\tanother one\n\\mk\rthird one\n\\mk\ffourth one')
     >>> list(f.fields())
     [('mk', 'a value'), ('mk', 'another one'), ('mk', 'third one'), ('mk', 'fourth one')]
-    
+
 Consecutive whitespace characters (except newline) are treated the same as one:
 
     >>> f = toolbox.StandardFormat()
     >>> f.open_string('\\mk \t\r\fa value\n')
     >>> list(f.fields())
     [('mk', 'a value')]
-    
+
 -----------------------
 ``toolbox.ToolboxData``
 -----------------------
@@ -250,12 +250,12 @@ check that normal parsing works:
     >>> td = toolbox.ToolboxData()
     >>> s = """\\_sh v3.0  400  Rotokas Dictionary
     ... \\_DateStampHasFourDigitYear
-    ... 
+    ...
     ... \\lx kaa
     ... \\ps V.A
     ... \\ge gag
     ... \\gp nek i pas
-    ... 
+    ...
     ... \\lx kaa
     ... \\ps V.B
     ... \\ge strangle
@@ -265,11 +265,11 @@ check that normal parsing works:
     >>> tree = td.parse(key='lx')
     >>> tree.tag
     'toolbox_data'
-    >>> ElementTree.tostring(tree.getchildren()[0])
+    >>> ElementTree.tostring(tree.getchildren()[0]).decode('utf8')
     '<header><_sh>v3.0  400  Rotokas Dictionary</_sh><_DateStampHasFourDigitYear /></header>'
-    >>> ElementTree.tostring(tree.getchildren()[1])
+    >>> ElementTree.tostring(tree.getchildren()[1]).decode('utf8')
     '<record><lx>kaa</lx><ps>V.A</ps><ge>gag</ge><gp>nek i pas</gp></record>'
-    >>> ElementTree.tostring(tree.getchildren()[2])
+    >>> ElementTree.tostring(tree.getchildren()[2]).decode('utf8')
     '<record><lx>kaa</lx><ps>V.B</ps><ge>strangle</ge><gp>pasim nek</gp></record>'
 
 check that guessing the key marker works:
@@ -278,12 +278,12 @@ check that guessing the key marker works:
     >>> td = toolbox.ToolboxData()
     >>> s = """\\_sh v3.0  400  Rotokas Dictionary
     ... \\_DateStampHasFourDigitYear
-    ... 
+    ...
     ... \\lx kaa
     ... \\ps V.A
     ... \\ge gag
     ... \\gp nek i pas
-    ... 
+    ...
     ... \\lx kaa
     ... \\ps V.B
     ... \\ge strangle
@@ -291,11 +291,11 @@ check that guessing the key marker works:
     ... """
     >>> td.open_string(s)
     >>> tree = td.parse()
-    >>> ElementTree.tostring(tree.getchildren()[0])
+    >>> ElementTree.tostring(tree.getchildren()[0]).decode('utf8')
     '<header><_sh>v3.0  400  Rotokas Dictionary</_sh><_DateStampHasFourDigitYear /></header>'
-    >>> ElementTree.tostring(tree.getchildren()[1])
+    >>> ElementTree.tostring(tree.getchildren()[1]).decode('utf8')
     '<record><lx>kaa</lx><ps>V.A</ps><ge>gag</ge><gp>nek i pas</gp></record>'
-    >>> ElementTree.tostring(tree.getchildren()[2])
+    >>> ElementTree.tostring(tree.getchildren()[2]).decode('utf8')
     '<record><lx>kaa</lx><ps>V.B</ps><ge>strangle</ge><gp>pasim nek</gp></record>'
 
 -----------------------

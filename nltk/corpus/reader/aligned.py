@@ -1,10 +1,11 @@
 # Natural Language Toolkit: Aligned Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # URL: <http://www.nltk.org/>
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Author: Steven Bird <stevenbird1@gmail.com>
 # For license information, see LICENSE.TXT
 
+from nltk import compat
 from nltk.tokenize import WhitespaceTokenizer, RegexpTokenizer
 from nltk.align import AlignedSent
 
@@ -21,13 +22,13 @@ class AlignedCorpusReader(CorpusReader):
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  alignedsent_block_reader=read_alignedsent_block,
-                 encoding=None):
+                 encoding='latin1'):
         """
         Construct a new Aligned Corpus reader for a set of documents
         located at the given root directory.  Example usage:
 
             >>> root = '/...path to corpus.../'
-            >>> reader = AlignedCorpusReader(root, '.*', '.txt')
+            >>> reader = AlignedCorpusReader(root, '.*', '.txt') # doctest: +SKIP
 
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
@@ -44,7 +45,7 @@ class AlignedCorpusReader(CorpusReader):
         :rtype: str
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):

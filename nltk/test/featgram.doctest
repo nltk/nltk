@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========================
@@ -9,6 +9,7 @@
 
 Grammars can be parsed from strings.
 
+    >>> from __future__ import print_function
     >>> import nltk
     >>> from nltk import grammar, parse
     >>> g = """
@@ -29,7 +30,7 @@ Grammars can be parsed from strings.
     >>> tokens = 'these girls'.split()
     >>> parser = parse.FeatureEarleyChartParser(grammar)
     >>> trees = parser.nbest_parse(tokens)
-    >>> for tree in trees: print tree
+    >>> for tree in trees: print(tree)
     (DP[AGR=[GND='f', NUM='pl', PERS=3]]
       (D[AGR=[NUM='pl', PERS=3]] these)
       (N[AGR=[GND='f', NUM='pl']] girls))
@@ -50,10 +51,10 @@ inspect it as follows:
     # S expansion productions
     S -> NP[NUM=?n] VP[NUM=?n]
     # NP expansion productions
-    NP[NUM=?n] -> N[NUM=?n] 
-    NP[NUM=?n] -> PropN[NUM=?n] 
+    NP[NUM=?n] -> N[NUM=?n]
+    NP[NUM=?n] -> PropN[NUM=?n]
     NP[NUM=?n] -> Det[NUM=?n] N[NUM=?n]
-    NP[NUM=pl] -> N[NUM=pl] 
+    NP[NUM=pl] -> N[NUM=pl]
     # VP expansion productions
     VP[TENSE=?t, NUM=?n] -> IV[TENSE=?t, NUM=?n]
     VP[TENSE=?t, NUM=?n] -> TV[TENSE=?t, NUM=?n] NP
@@ -65,7 +66,7 @@ inspect it as follows:
     Det -> 'the' | 'some' | 'several'
     PropN[NUM=sg]-> 'Kim' | 'Jody'
     N[NUM=sg] -> 'dog' | 'girl' | 'car' | 'child'
-    N[NUM=pl] -> 'dogs' | 'girls' | 'cars' | 'children' 
+    N[NUM=pl] -> 'dogs' | 'girls' | 'cars' | 'children'
     IV[TENSE=pres,  NUM=sg] -> 'disappears' | 'walks'
     TV[TENSE=pres, NUM=sg] -> 'sees' | 'likes'
     IV[TENSE=pres,  NUM=pl] -> 'disappear' | 'walk'
@@ -98,7 +99,7 @@ read the grammar into NLTK, ready for use in parsing.
     |.    .    [---->| [2:3] S[] -> NP[NUM=?n] * VP[NUM=?n] {?n: 'pl'}
     |.    [---------]| [1:3] VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] NP[] *
     |[==============]| [0:3] S[] -> NP[NUM='sg'] VP[NUM='sg'] *
-    >>> for tree in trees: print tree
+    >>> for tree in trees: print(tree)
     (S[]
       (NP[NUM='sg'] (PropN[NUM='sg'] Kim))
       (VP[NUM='sg', TENSE='pres']
@@ -125,7 +126,7 @@ result of unification, any variable values of features in *B* will be
 instantiated by constant values in the corresponding feature structure
 in *B'*, and these instantiated values will be used in the new edge
 added by the Completer. This instantiation can be seen, for example,
-in the edge 
+in the edge
 [NP [`num`:feat:\ =\ `sg`:fval:] |rarr| PropN[`num`:feat:\ =\ `sg`:fval:] |dot|, (0, 1)]
 in Example 9.2, where the feature `num`:feat: has been assigned the value `sg`:fval:.
 
@@ -133,7 +134,7 @@ Feature structures in NLTK are ... Atomic feature values can be strings or
 integers.
 
     >>> fs1 = nltk.FeatStruct(TENSE='past', NUM='sg')
-    >>> print fs1
+    >>> print(fs1)
     [ NUM   = 'sg'   ]
     [ TENSE = 'past' ]
 
@@ -141,39 +142,39 @@ We can think of a feature structure as being like a Python dictionary,
 and access its values by indexing in the usual way.
 
     >>> fs1 = nltk.FeatStruct(PER=3, NUM='pl', GND='fem')
-    >>> print fs1['GND']
+    >>> print(fs1['GND'])
     fem
 
 We can also define feature structures which have complex values, as
 discussed earlier.
 
     >>> fs2 = nltk.FeatStruct(POS='N', AGR=fs1)
-    >>> print fs2
+    >>> print(fs2)
     [       [ GND = 'fem' ] ]
     [ AGR = [ NUM = 'pl'  ] ]
     [       [ PER = 3     ] ]
     [                       ]
     [ POS = 'N'             ]
-    >>> print fs2['AGR']
+    >>> print(fs2['AGR'])
     [ GND = 'fem' ]
     [ NUM = 'pl'  ]
     [ PER = 3     ]
-    >>> print fs2['AGR']['PER']
+    >>> print(fs2['AGR']['PER'])
     3
 
 Feature structures can also be constructed using the ``parse()``
 method of the ``nltk.FeatStruct`` class. Note that in this case, atomic
 feature values do not need to be enclosed in quotes.
-    
+
     >>> f1 = nltk.FeatStruct("[NUMBER = sg]")
     >>> f2 = nltk.FeatStruct("[PERSON = 3]")
-    >>> print nltk.unify(f1, f2)
+    >>> print(nltk.unify(f1, f2))
     [ NUMBER = 'sg' ]
     [ PERSON = 3    ]
 
     >>> f1 = nltk.FeatStruct("[A = [B = b, D = d]]")
     >>> f2 = nltk.FeatStruct("[A = [C = c, D = d]]")
-    >>> print nltk.unify(f1, f2)
+    >>> print(nltk.unify(f1, f2))
     [     [ B = 'b' ] ]
     [ A = [ C = 'c' ] ]
     [     [ D = 'd' ] ]
@@ -187,22 +188,22 @@ general purpose structures for representing knowledge. For example, we
 could encode information about a person in a feature structure:
 
     >>> person01 = nltk.FeatStruct("[NAME=Lee, TELNO='01 27 86 42 96',AGE=33]")
-    >>> print person01
+    >>> print(person01)
     [ AGE   = 33               ]
     [ NAME  = 'Lee'            ]
     [ TELNO = '01 27 86 42 96' ]
 
 There are a number of notations for representing reentrancy in
 matrix-style representations of feature structures. In NLTK, we adopt
-the following convention: the first occurrence of a shared feature structure 
+the following convention: the first occurrence of a shared feature structure
 is prefixed with an integer in parentheses, such as ``(1)``, and any
 subsequent reference to that structure uses the notation
 ``->(1)``, as shown below.
 
- 
-    >>> fs = nltk.FeatStruct("""[NAME=Lee, ADDRESS=(1)[NUMBER=74, STREET='rue Pascal'], 
+
+    >>> fs = nltk.FeatStruct("""[NAME=Lee, ADDRESS=(1)[NUMBER=74, STREET='rue Pascal'],
     ...                               SPOUSE=[NAME=Kim, ADDRESS->(1)]]""")
-    >>> print fs
+    >>> print(fs)
     [ ADDRESS = (1) [ NUMBER = 74           ] ]
     [               [ STREET = 'rue Pascal' ] ]
     [                                         ]
@@ -214,7 +215,7 @@ subsequent reference to that structure uses the notation
 There can be any number of tags within a single feature structure.
 
     >>> fs3 = nltk.FeatStruct("[A=(1)[B=b], C=(2)[], D->(1), E->(2)]")
-    >>> print fs3
+    >>> print(fs3)
     [ A = (1) [ B = 'b' ] ]
     [                     ]
     [ C = (2) []          ]
@@ -223,7 +224,7 @@ There can be any number of tags within a single feature structure.
     [ E -> (2)            ]
     >>> fs1 = nltk.FeatStruct(NUMBER=74, STREET='rue Pascal')
     >>> fs2 = nltk.FeatStruct(CITY='Paris')
-    >>> print nltk.unify(fs1, fs2)
+    >>> print(nltk.unify(fs1, fs2))
     [ CITY   = 'Paris'      ]
     [ NUMBER = 74           ]
     [ STREET = 'rue Pascal' ]
@@ -248,7 +249,7 @@ this is implemented by setting the result of unification to be
 
     >>> fs0 = nltk.FeatStruct(A='a')
     >>> fs1 = nltk.FeatStruct(A='b')
-    >>> print nltk.unify(fs0, fs1)
+    >>> print(nltk.unify(fs0, fs1))
     None
 
 Now, if we look at how unification interacts with structure-sharing,
@@ -256,13 +257,13 @@ things become really interesting.
 
 
 
-    >>> fs0 = nltk.FeatStruct("""[NAME=Lee, 
-    ...                                ADDRESS=[NUMBER=74, 
-    ...                                         STREET='rue Pascal'], 
+    >>> fs0 = nltk.FeatStruct("""[NAME=Lee,
+    ...                                ADDRESS=[NUMBER=74,
+    ...                                         STREET='rue Pascal'],
     ...                                SPOUSE= [NAME=Kim,
-    ...                                         ADDRESS=[NUMBER=74, 
+    ...                                         ADDRESS=[NUMBER=74,
     ...                                                  STREET='rue Pascal']]]""")
-    >>> print fs0
+    >>> print(fs0)
     [ ADDRESS = [ NUMBER = 74           ]               ]
     [           [ STREET = 'rue Pascal' ]               ]
     [                                                   ]
@@ -275,7 +276,7 @@ things become really interesting.
 
 
     >>> fs1 = nltk.FeatStruct("[SPOUSE=[ADDRESS=[CITY=Paris]]]")
-    >>> print nltk.unify(fs0, fs1)
+    >>> print(nltk.unify(fs0, fs1))
     [ ADDRESS = [ NUMBER = 74           ]               ]
     [           [ STREET = 'rue Pascal' ]               ]
     [                                                   ]
@@ -290,8 +291,8 @@ things become really interesting.
     >>> fs2 = nltk.FeatStruct("""[NAME=Lee, ADDRESS=(1)[NUMBER=74, STREET='rue Pascal'],
     ...                                SPOUSE=[NAME=Kim, ADDRESS->(1)]]""")
 
- 
-    >>> print fs2
+
+    >>> print(fs2)
     [ ADDRESS = (1) [ NUMBER = 74           ] ]
     [               [ STREET = 'rue Pascal' ] ]
     [                                         ]
@@ -301,7 +302,7 @@ things become really interesting.
     [           [ NAME    = 'Kim' ]           ]
 
 
-    >>> print nltk.unify(fs2, fs1)
+    >>> print(nltk.unify(fs2, fs1))
     [               [ CITY   = 'Paris'      ] ]
     [ ADDRESS = (1) [ NUMBER = 74           ] ]
     [               [ STREET = 'rue Pascal' ] ]
@@ -314,16 +315,16 @@ things become really interesting.
 
     >>> fs1 = nltk.FeatStruct("[ADDRESS1=[NUMBER=74, STREET='rue Pascal']]")
     >>> fs2 = nltk.FeatStruct("[ADDRESS1=?x, ADDRESS2=?x]")
-    >>> print fs2
+    >>> print(fs2)
     [ ADDRESS1 = ?x ]
     [ ADDRESS2 = ?x ]
-    >>> print nltk.unify(fs1, fs2)
+    >>> print(nltk.unify(fs1, fs2))
     [ ADDRESS1 = (1) [ NUMBER = 74           ] ]
     [                [ STREET = 'rue Pascal' ] ]
     [                                          ]
     [ ADDRESS2 -> (1)                          ]
 
- 
+
 
 
     >>> sent = 'who do you claim that you like'
@@ -381,7 +382,7 @@ things become really interesting.
     |. . [---------]| [2:7] S[-INV]/NP[] -> NP[] VP[]/NP[] *
     |. [-----------]| [1:7] S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
     |[=============]| [0:7] S[-INV] -> NP[] S[]/NP[] *
-    >>> for tree in trees: print tree
+    >>> for tree in trees: print(tree)
     (S[-INV]
       (NP[+WH] who)
       (S[+INV]/NP[]
@@ -480,7 +481,7 @@ Let's load a German grammar:
     >>> sent = 'die Katze sieht den Hund'
     >>> tokens = sent.split()
     >>> trees = cp.nbest_parse(tokens)
-    >>> for tree in trees: print tree
+    >>> for tree in trees: print(tree)
     (S[]
       (NP[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom']
         (Det[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom'] die)
@@ -508,7 +509,7 @@ chart.  To do this, we use a special subclass of `Chart`, called
     >>> from nltk.parse.featurechart import InstantiateVarsChart
     >>> cp = parse.load_parser('grammars/sample_grammars/bindop.fcfg', trace=1,
     ...                        chart_class=InstantiateVarsChart)
-    >>> print cp.grammar()
+    >>> print(cp.grammar())
     Grammar with 15 productions (start state = S[])
         S[SEM=[BO={?b1+?b2}, CORE=<?vp(?subj)>]] -> NP[SEM=[BO=?b1, CORE=?subj]] VP[SEM=[BO=?b2, CORE=?vp]]
         VP[SEM=[BO={?b1+?b2}, CORE=<?v(?obj)>]] -> TV[SEM=[BO=?b1, CORE=?v]] NP[SEM=[BO=?b2, CORE=?obj]]
@@ -540,7 +541,7 @@ A simple intransitive sentence:
     |.     [-----]| [1:2] IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> 'barks' *
     |.     [-----]| [1:2] VP[SEM=[BO={/}, CORE=<\x.bark(x)>]] -> IV[SEM=[BO={/}, CORE=<\x.bark(x)>]] *
     |[===========]| [0:2] S[SEM=[BO={bo(\P.P(John),z2)}, CORE=<bark(z2)>]] -> NP[SEM=[BO={bo(\P.P(John),z2)}, CORE=<z2>]] VP[SEM=[BO={/}, CORE=<\x.bark(x)>]] *
-    >>> for tree in trees: print tree
+    >>> for tree in trees: print(tree)
     (S[SEM=[BO={bo(\P.P(John),z2)}, CORE=<bark(z2)>]]
       (NP[SEM=[BO={bo(\P.P(John),z101)}, CORE=<z101>]] john)
       (VP[SEM=[BO={/}, CORE=<\x.bark(x)>]]
@@ -566,7 +567,7 @@ A transitive sentence:
     |.   [-----------]| [1:4] VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2)}, CORE=<\y.feed(y,z2)>]] -> TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2)}, CORE=<z2>]] *
     |[===============]| [0:4] S[SEM=[BO={bo(\P.P(John),z2), bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<feed(z2,z3)>]] -> NP[SEM=[BO={bo(\P.P(John),z2)}, CORE=<z2>]] VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<\y.feed(y,z3)>]] *
 
-    >>> for tree in trees: print tree
+    >>> for tree in trees: print(tree)
     (S[SEM=[BO={bo(\P.P(John),z2), bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<feed(z2,z3)>]]
       (NP[SEM=[BO={bo(\P.P(John),z102)}, CORE=<z102>]] john)
       (VP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2)}, CORE=<\y.feed(y,z2)>]]
@@ -583,7 +584,7 @@ Turn down the verbosity:
 Reuse the same lexical item twice:
 
     >>> trees = cp.nbest_parse('john feeds john'.split())
-    >>> for tree in trees: print tree
+    >>> for tree in trees: print(tree)
     (S[SEM=[BO={bo(\P.P(John),z2), bo(\P.P(John),z3)}, CORE=<feed(z2,z3)>]]
       (NP[SEM=[BO={bo(\P.P(John),z104)}, CORE=<z104>]] john)
       (VP[SEM=[BO={bo(\P.P(John),z2)}, CORE=<\y.feed(y,z2)>]]
@@ -591,7 +592,7 @@ Reuse the same lexical item twice:
         (NP[SEM=[BO={bo(\P.P(John),z105)}, CORE=<z105>]] john)))
 
     >>> trees = cp.nbest_parse('a dog feeds a dog'.split())
-    >>> for tree in trees: print tree
+    >>> for tree in trees: print(tree)
     (S[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2), bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<feed(z2,z3)>]]
       (NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z106)}, CORE=<z106>]]
         (Det[SEM=[BO={/}, CORE=<\Q P.exists x.(Q(x) & P(x))>]] a)

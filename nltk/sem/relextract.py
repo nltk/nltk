@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Relation Extraction
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -19,15 +19,13 @@ The two serialization outputs are "rtuple" and "clause".
 - A clause is an atom of the form ``relsym(subjsym, objsym)``,
   where the relation, subject and object have been canonicalized to single strings.
 """
+from __future__ import print_function
 
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
-from __future__ import print_function
 from collections import defaultdict
-from string import join
 import re
-import htmlentitydefs
-from itertools import ifilter
+from nltk.compat import htmlentitydefs
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
@@ -74,12 +72,12 @@ def _join(lst, sep=' ', untag=False):
     :rtype: str
     """
     try:
-        return join(lst, sep=sep)
+        return sep.join(lst)
     except TypeError:
         if untag:
-            return join([tup[0] for tup in lst], sep=sep)
+            return sep.join(tup[0] for tup in lst)
         from nltk.tag import tuple2str
-        return join([tuple2str(tup) for tup in lst], sep=sep)
+        return sep.join(tuple2str(tup) for tup in lst)
 
 def descape_entity(m, defs=htmlentitydefs.entitydefs):
     """
@@ -224,7 +222,7 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
                            pattern.match(x['filler']) and
                            x['objclass'] == objclass)
 
-    return filter(relfilter, reldicts)
+    return list(filter(relfilter, reldicts))
 
 
 def show_raw_rtuple(reldict, lcon=False, rcon=False):

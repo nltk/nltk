@@ -1,12 +1,12 @@
 # Natural Language Toolkit: Generating from a CFG
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
-
 from __future__ import print_function
+
 from nltk.grammar import Nonterminal, parse_cfg
 
 def generate(grammar, start=None):

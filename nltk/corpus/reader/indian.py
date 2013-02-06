@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Indian Language POS-Tagged Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -20,10 +20,11 @@ Contents:
 
 import codecs
 
+from nltk import compat
 from nltk.tag.util import str2tuple
 
-from util import *
-from api import *
+from .util import *
+from .api import *
 
 class IndianCorpusReader(CorpusReader):
     """
@@ -59,7 +60,7 @@ class IndianCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 

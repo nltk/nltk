@@ -32,16 +32,19 @@ chi-square feature selection:
 
 (Such a classifier could be trained on word counts for text classification.)
 """
+from __future__ import print_function, unicode_literals
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
-from scipy.sparse import coo_matrix
+from nltk import compat
 
 try:
     import numpy as np
+    from scipy.sparse import coo_matrix
 except ImportError:
     pass
 
+@compat.python_2_unicode_compatible
 class SklearnClassifier(ClassifierI):
     """Wrapper for scikit-learn classifiers."""
 
@@ -72,8 +75,8 @@ class SklearnClassifier(ClassifierI):
 
     def batch_prob_classify(self, featuresets):
         X = self._convert(featuresets)
-        y_proba = self._clf.predict_proba(X)
-        return [self._make_probdist(y_proba[i]) for i in xrange(len(y_proba))]
+        y_proba_list = self._clf.predict_proba(X)
+        return [self._make_probdist(y_proba) for y_proba in y_proba_list]
 
     def labels(self):
         return self._label_index.keys()
@@ -91,7 +94,7 @@ class SklearnClassifier(ClassifierI):
         self._label_index = {}
 
         for fs, label in labeled_featuresets:
-            for f in fs.iterkeys():
+            for f in fs:
                 if f not in self._feature_index:
                     self._feature_index[f] = len(self._feature_index)
             if label not in self._label_index:
@@ -120,7 +123,7 @@ class SklearnClassifier(ClassifierI):
         values = []
 
         for i, fs in enumerate(featuresets):
-            for f, v in fs.iteritems():
+            for f, v in compat.iteritems(fs):
                 try:
                     j = self._feature_index[f]
                     i_ind.append(i)
@@ -139,7 +142,7 @@ class SklearnClassifier(ClassifierI):
                      dtype=self._dtype)
 
         for i, fs in enumerate(featuresets):
-            for f, v in fs.iteritems():
+            for f, v in compat.iteritems(fs):
                 try:
                     X[i, self._feature_index[f]] = self._dtype(v)
                 except KeyError:    # feature not seen in training
@@ -151,6 +154,14 @@ class SklearnClassifier(ClassifierI):
         return DictionaryProbDist(dict((self._index_label[i], p)
                                        for i, p in enumerate(y_proba)))
 
+
+# skip doctests if scikit-learn is not installed
+def setup_module(module):
+    from nose import SkipTest
+    try:
+        import sklearn
+    except ImportError:
+        raise SkipTest("scikit-learn is not installed")
 
 if __name__ == "__main__":
     from nltk.classify.util import names_demo, binary_names_demo_features

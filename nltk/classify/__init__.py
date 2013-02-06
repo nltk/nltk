@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifiers
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -53,14 +53,11 @@ words included in the document:
 Feature detectors are typically applied to each token before it is fed
 to the classifier:
 
-.. doctest::
-    :options: +SKIP
-
     >>> # Classify each Gutenberg document.
     >>> from nltk.corpus import gutenberg
-    >>> for fileid in gutenberg.fileids():
-    ...     doc = gutenberg.words(fileid)
-    ...     print fileid, classifier.classify(document_features(doc))
+    >>> for fileid in gutenberg.fileids(): # doctest: +SKIP
+    ...     doc = gutenberg.words(fileid) # doctest: +SKIP
+    ...     print fileid, classifier.classify(document_features(doc)) # doctest: +SKIP
 
 The parameters that a feature detector expects will vary, depending on
 the task and the needs of the feature detector.  For example, a
@@ -98,7 +95,7 @@ from nltk.classify.util import accuracy, apply_features, log_likelihood
 # Conditional imports
 
 try:
-    from scikitlearn import SklearnClassifier
+    from .scikitlearn import SklearnClassifier
 except ImportError:
     pass
 
@@ -107,6 +104,10 @@ try:
     from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
                                       TypedMaxentFeatureEncoding,
                                       ConditionalExponentialClassifier)
+except ImportError:
+    pass
+
+try:
     import svmlight
     from nltk.classify.svm import SvmClassifier
 except ImportError:

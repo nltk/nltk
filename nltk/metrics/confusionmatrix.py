@@ -1,13 +1,15 @@
 # Natural Language Toolkit: Confusion Matrices
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 from nltk.probability import FreqDist
+from nltk.compat import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class ConfusionMatrix(object):
     """
     The confusion matrix between a list of reference values and a
@@ -19,7 +21,7 @@ class ConfusionMatrix(object):
         >>> ref  = 'DET NN VB DET JJ NN NN IN DET NN'.split()
         >>> test = 'DET VB VB DET NN NN NN IN DET NN'.split()
         >>> cm = ConfusionMatrix(ref, test)
-        >>> print cm['NN', 'NN']
+        >>> print(cm['NN', 'NN'])
         3
 
     Note that the diagonal entries *Ri=Tj* of this matrix
@@ -75,12 +77,13 @@ class ConfusionMatrix(object):
         #: The number of correct (on-diagonal) values in the matrix.
         self._correct = sum(confusion[i][i] for i in range(len(values)))
 
-    def __getitem__(self, (li,lj)):
+    def __getitem__(self, li_lj_tuple):
         """
         :return: The number of times that value ``li`` was expected and
         value ``lj`` was given.
         :rtype: int
         """
+        (li, lj) = li_lj_tuple
         i = self._indices[li]
         j = self._indices[lj]
         return self._confusion[i][j]
@@ -119,21 +122,21 @@ class ConfusionMatrix(object):
             values = values[:truncate]
 
         if values_in_chart:
-            value_strings = [str(val) for val in values]
+            value_strings = ["%s" % val for val in values]
         else:
             value_strings = [str(n+1) for n in range(len(values))]
 
         # Construct a format string for row values
         valuelen = max(len(val) for val in value_strings)
-        value_format = '%' + `valuelen` + 's | '
+        value_format = '%' + repr(valuelen) + 's | '
         # Construct a format string for matrix entries
         if show_percents:
             entrylen = 6
             entry_format = '%5.1f%%'
             zerostr = '     .'
         else:
-            entrylen = len(`self._max_conf`)
-            entry_format = '%' + `entrylen` + 'd'
+            entrylen = len(repr(self._max_conf))
+            entry_format = '%' + repr(entrylen) + 'd'
             zerostr = ' '*(entrylen-1) + '.'
 
         # Write the column values.
@@ -183,8 +186,8 @@ class ConfusionMatrix(object):
     def key(self):
         values = self._values
         str = 'Value key:\n'
-        indexlen = len(`len(values)-1`)
-        key_format = '  %'+`indexlen`+'d: %s\n'
+        indexlen = len(repr(len(values)-1))
+        key_format = '  %'+repr(indexlen)+'d: %s\n'
         for i in range(len(values)):
             str += key_format % (i, values[i])
 

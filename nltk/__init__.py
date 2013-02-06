@@ -1,7 +1,7 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2012 NLTK Project
-# Authors: Steven Bird <sb@csse.unimelb.edu.au>
+# Copyright (C) 2001-2013 NLTK Project
+# Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -15,7 +15,7 @@ Steven Bird, Ewan Klein, and Edward Loper (2009).
 Natural Language Processing with Python.  O'Reilly Media Inc.
 http://nltk.org/book
 """
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 import os
 
@@ -41,7 +41,7 @@ if __doc__ is not None: # fix for the ``python -OO``
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2012 NLTK Project.
+Copyright (C) 2001-2013 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
@@ -60,7 +60,7 @@ __url__ = "http://nltk.org/"
 
 # Maintainer, contributors, etc.
 __maintainer__ = "Steven Bird, Edward Loper, Ewan Klein"
-__maintainer_email__ = "sb@csse.unimelb.edu.au"
+__maintainer_email__ = "stevenbird1@gmail.com"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 
@@ -86,7 +86,7 @@ __classifiers__ = [
     'Topic :: Text Processing :: Linguistic',
     ]
 
-from internals import config_java
+from .internals import config_java
 
 # support numpy from pypy
 try:
@@ -100,49 +100,49 @@ except ImportError:
 
 # Import top-level functionality into top-level namespace
 
-from collocations import *
-from decorators import decorator, memoize
-from featstruct import *
-from grammar import *
-from probability import *
-from text import *
-from tree import *
-from util import *
-from yamltags import *
-from align import *
+from .collocations import *
+from .decorators import decorator, memoize
+from .featstruct import *
+from .grammar import *
+from .probability import *
+from .text import *
+from .tree import *
+from .util import *
+from .yamltags import *
+from .align import *
 
 # don't import contents into top-level namespace:
 
-import ccg
-import data
-import help
+from . import ccg
+from . import data
+from . import help
 
 ###########################################################
 # PACKAGES
 ###########################################################
 
-from chunk import *
-from classify import *
-from inference import *
-from metrics import *
-from model import *
-from parse import *
-from tag import *
-from tokenize import *
-from sem import *
-from stem import *
+from .chunk import *
+from .classify import *
+from .inference import *
+from .metrics import *
+from .model import *
+from .parse import *
+from .tag import *
+from .tokenize import *
+from .sem import *
+from .stem import *
 
 # Packages which can be lazily imported
 # (a) we don't import *
 # (b) they're slow to import or have run-time dependencies
 #     that can safely fail at run time
 
-import lazyimport
-app = lazyimport.LazyModule('app', locals(), globals())
-chat = lazyimport.LazyModule('chat', locals(), globals())
-corpus = lazyimport.LazyModule('corpus', locals(), globals())
-draw = lazyimport.LazyModule('draw', locals(), globals())
-toolbox = lazyimport.LazyModule('toolbox', locals(), globals())
+from . import lazyimport
+app = lazyimport.LazyModule('nltk.app', locals(), globals())
+chat = lazyimport.LazyModule('nltk.chat', locals(), globals())
+corpus = lazyimport.LazyModule('nltk.corpus', locals(), globals())
+draw = lazyimport.LazyModule('nltk.draw', locals(), globals())
+toolbox = lazyimport.LazyModule('nltk.toolbox', locals(), globals())
 
 # Optional loading
 
@@ -151,16 +151,16 @@ try:
 except ImportError:
     pass
 else:
-    import cluster; from cluster import *
+    from . import cluster; from .cluster import *
 
-from downloader import download, download_shell
+from .downloader import download, download_shell
 try:
     import Tkinter
 except ImportError:
     pass
 else:
     try:
-        from downloader import download_gui
+        from .downloader import download_gui
     except RuntimeError as e:
         import warnings
         warnings.warn("Corpus downloader GUI not loaded "
@@ -170,10 +170,10 @@ else:
 # they override the same names inadvertently imported
 # from a subpackage)
 
-import align, ccg, chunk, classify, collocations
-import data, featstruct, grammar, inference, metrics
-import misc, model, parse, probability, sem, sourcedstring, stem
-import tag, text, tokenize, tree, treetransforms, util
+from . import align, ccg, chunk, classify, collocations
+from . import data, featstruct, grammar, inference, metrics
+from . import misc, model, parse, probability, sem, stem
+from . import tag, text, tokenize, tree, treetransforms, util
 
 # override any accidentally imported demo
 def demo():

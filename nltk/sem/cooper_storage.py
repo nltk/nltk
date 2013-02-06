@@ -1,12 +1,12 @@
 # Natural Language Toolkit: Cooper storage for Quantifier Ambiguity
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
 from __future__ import print_function
-from logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
+
+from .logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 

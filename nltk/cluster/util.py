@@ -1,11 +1,11 @@
 # Natural Language Toolkit: Clusterer Utilities
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import copy
 from sys import stdout
 from math import sqrt
@@ -16,6 +16,7 @@ except ImportError:
     pass
 
 from nltk.cluster.api import ClusterI
+from nltk.compat import python_2_unicode_compatible
 
 class VectorSpaceClusterer(ClusterI):
     """
@@ -40,7 +41,7 @@ class VectorSpaceClusterer(ClusterI):
 
         # normalise the vectors
         if self._should_normalise:
-            vectors = map(self._normalise, vectors)
+            vectors = list(map(self._normalise, vectors))
 
         # use SVD to reduce the dimensionality
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
@@ -164,6 +165,8 @@ class _DendrogramNode(object):
             groups.append(node.leaves())
         return groups
 
+
+@python_2_unicode_compatible
 class Dendrogram(object):
     """
     Represents a dendrogram, a tree with a specified branching order.  This
@@ -229,7 +232,7 @@ class Dendrogram(object):
         if leaf_labels:
             last_row = leaf_labels
         else:
-            last_row = [str(leaf._value) for leaf in leaves]
+            last_row = ["%s" % leaf._value for leaf in leaves]
 
         # find the bottom row and the best cell width
         width = max(map(len, last_row)) + 1
@@ -247,8 +250,8 @@ class Dendrogram(object):
         verticals = [ format(' ') for leaf in leaves ]
         while queue:
             priority, node = queue.pop()
-            child_left_leaf = map(lambda c: c.leaves(False)[0], node._children)
-            indices = map(leaves.index, child_left_leaf)
+            child_left_leaf = list(map(lambda c: c.leaves(False)[0], node._children))
+            indices = list(map(leaves.index, child_left_leaf))
             if child_left_leaf:
                 min_idx = min(indices)
                 max_idx = max(indices)

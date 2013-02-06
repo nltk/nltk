@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Megam Classifier
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,11 +11,8 @@ optimization package. Before megam can be used, you should tell NLTK where it
 can find the megam binary, using the ``config_megam()`` function. Typical
 usage:
 
-.. doctest::
-    :options: +SKIP
-
     >>> from nltk.classify import megam
-    >>> megam.config_megam() # pass path to megam if not found in PATH
+    >>> megam.config_megam() # pass path to megam if not found in PATH # doctest: +SKIP
     [Found megam: ...]
 
 Use with MaxentClassifier. Example below, see MaxentClassifier documentation
@@ -25,12 +22,13 @@ for details.
 
 .. _megam: http://www.cs.utah.edu/~hal/megam/
 """
-
 from __future__ import print_function
+
 import os
 import os.path
 import subprocess
 
+from nltk import compat
 from nltk.internals import find_binary
 try:
     import numpy
@@ -96,7 +94,7 @@ def write_megam_file(train_toks, encoding, stream,
     """
     # Look up the set of labels.
     labels = encoding.labels()
-    labelnum = dict([(label, i) for (i, label) in enumerate(labels)])
+    labelnum = dict((label, i) for (i, label) in enumerate(labels))
 
     # Write the file, which contains one line per instance.
     for featureset, label in train_toks:
@@ -158,7 +156,7 @@ def call_megam(args):
     """
     Call the ``megam`` binary with the given arguments.
     """
-    if isinstance(args, basestring):
+    if isinstance(args, compat.string_types):
         raise TypeError('args should be a list of strings')
     if _megam_bin is None:
         config_megam()

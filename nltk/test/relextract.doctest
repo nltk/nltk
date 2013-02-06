@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ======================
@@ -29,7 +29,7 @@ representation of document NYT_19980315.064:
     >>> from nltk.corpus import ieer
     >>> docs = ieer.parsed_docs('NYT_19980315')
     >>> tree = docs[1].text
-    >>> print tree # doctest: +ELLIPSIS
+    >>> print(tree) # doctest: +ELLIPSIS
     (DOCUMENT
     ...
       ``It's
@@ -64,7 +64,7 @@ this case, the strings are also POS tagged.
 
     >>> from nltk.corpus import conll2002
     >>> for doc in conll2002.chunked_sents('ned.train')[27]:
-    ...     print doc
+    ...     print(doc)
     (u'Het', u'Art')
     (ORG Hof/N van/Prep Cassatie/N)
     (u'verbrak', u'V')
@@ -99,10 +99,9 @@ document into a list of two-member lists, each of which consists of a
 (possibly empty) string followed by a `Tree` (i.e., a Named Entity):
 
     >>> from nltk.sem import relextract
-    >>> from string import join
     >>> pairs = relextract.mk_pairs(tree)
     >>> for s, tree in pairs[18:22]:
-    ...     print '("...%s", %s)' % (join(s[-5:]),tree)
+    ...     print('("...%s", %s)' % (" ".join(s[-5:]),tree))
     ("...about first-level questions,'' said Ms.", (PERSON Cohn))
     ("..., a partner in the", (ORGANIZATION McGlashan &AMP; Sarrail))
     ("...firm in", (LOCATION San Mateo))
@@ -116,26 +115,26 @@ and ``Tree3`` is the object of the relation. ``string1`` and ``string3`` are
 stored as left and right context respectively.
 
     >>> reldicts = relextract.mk_reldicts(pairs)
-    >>> for k, v in reldicts[0].items():
-    ...     print k, '=>', v # doctest: +ELLIPSIS
-    lcon => transactions.'' Each week, they post
+    >>> for k, v in sorted(reldicts[0].items()):
+    ...     print(k, '=>', v) # doctest: +ELLIPSIS
     filler => of messages to their own ``Cyberia'' ...
-    objsym => white_house
+    lcon => transactions.'' Each week, they post
     objclass => ORGANIZATION
+    objsym => white_house
     objtext => White House
-    subjsym => hundreds
-    subjclass => CARDINAL
     rcon => for access to its planned
+    subjclass => CARDINAL
+    subjsym => hundreds
     subjtext => hundreds
 
 The next example shows some of the values for two `reldict`\ s
 corresponding to the ``'NYT_19980315'`` text extract shown earlier.
 
     >>> for r in reldicts[18:20]:
-    ...     print '=' * 20
-    ...     print r['subjtext']
-    ...     print r['filler']
-    ...     print r['objtext']
+    ...     print('=' * 20)
+    ...     print(r['subjtext'])
+    ...     print(r['filler'])
+    ...     print(r['objtext'])
     ====================
     Cohn
     , a partner in the
@@ -157,7 +156,7 @@ signature <ORG, LOC>.
     >>> for fileid in ieer.fileids():
     ...     for doc in ieer.parsed_docs(fileid):
     ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern = IN):
-    ...             print relextract.show_raw_rtuple(rel)  # doctest: +ELLIPSIS
+    ...             print(relextract.show_raw_rtuple(rel))  # doctest: +ELLIPSIS
     [ORG: 'Christian Democrats'] ', the leading political forces in' [LOC: 'Italy']
     [ORG: 'AP'] ') _ Lebanese guerrillas attacked Israeli forces in southern' [LOC: 'Lebanon']
     [ORG: 'Security Council'] 'adopted Resolution 425. Huge yellow banners hung across intersections in' [LOC: 'Beirut']
@@ -180,7 +179,7 @@ The next example illustrates a case where the patter is a disjunction
 of roles that a PERSON can occupy in an ORGANIZATION.
 
     >>> roles = """
-    ... (.*(                   
+    ... (.*(
     ... analyst|
     ... chair(wo)?man|
     ... commissioner|
@@ -188,7 +187,7 @@ of roles that a PERSON can occupy in an ORGANIZATION.
     ... director|
     ... economist|
     ... editor|
-    ... executive|         
+    ... executive|
     ... foreman|
     ... governor|
     ... head|
@@ -209,7 +208,7 @@ of roles that a PERSON can occupy in an ORGANIZATION.
     >>> for fileid in ieer.fileids():
     ...     for doc in ieer.parsed_docs(fileid):
     ...         for rel in relextract.extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
-    ...             print relextract.show_raw_rtuple(rel) # doctest: +ELLIPSIS
+    ...             print(relextract.show_raw_rtuple(rel)) # doctest: +ELLIPSIS
     [PER: 'Kivutha Kibwana'] ', of the' [ORG: 'National Convention Assembly']
     [PER: 'Boban Boskovic'] ', chief executive of the' [ORG: 'Plastika']
     [PER: 'Annan'] ', the first sub-Saharan African to head the' [ORG: 'United Nations']
@@ -221,7 +220,7 @@ of roles that a PERSON can occupy in an ORGANIZATION.
 In the case of the CoNLL2002 data, we can include POS tags in the
 query pattern. This example also illustrates how the output can be
 presented as something that looks more like a clause in a logical language.
-    
+
     >>> de = """
     ... .*
     ... (
@@ -233,7 +232,7 @@ presented as something that looks more like a clause in a logical language.
     >>> rels = [rel for doc in conll2002.chunked_sents('esp.train')
     ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
     >>> for r in rels[:10]:
-    ...     print relextract.show_clause(r, relsym='DE')    # doctest: +NORMALIZE_WHITESPACE
+    ...     print(relextract.show_clause(r, relsym='DE'))    # doctest: +NORMALIZE_WHITESPACE
     DE(u'tribunal_supremo', u'victoria')
     DE(u'museo_de_arte', u'alcorc\xf3n')
     DE(u'museo_de_bellas_artes', u'a_coru\xf1a')
@@ -256,8 +255,8 @@ presented as something that looks more like a clause in a logical language.
     ... """
     >>> VAN = re.compile(vnv, re.VERBOSE)
     >>> for doc in conll2002.chunked_sents('ned.train'):
-    ...     for r in relextract.extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN): 
-    ...         print  relextract.show_clause(r, relsym="VAN")
+    ...     for r in relextract.extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN):
+    ...         print(relextract.show_clause(r, relsym="VAN"))
     VAN(u"cornet_d'elzius", u'buitenlandse_handel')
     VAN(u'johan_rottiers', u'kardinaal_van_roey_instituut')
     VAN(u'annie_lennox', u'eurythmics')

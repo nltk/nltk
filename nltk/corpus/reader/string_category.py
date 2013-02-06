@@ -1,6 +1,6 @@
 # Natural Language Toolkit: String Category Corpus Reader
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://www.nltk.org/>
@@ -21,14 +21,15 @@ NUM:date When did Hawaii become a state ?
 
 import os
 
-from util import *
-from api import *
+from nltk import compat
+from .util import *
+from .api import *
 
 # [xx] Should the order of the tuple be reversed -- in most other places
 # in nltk, we use the form (data, tag) -- e.g., tagged words and
 # labeled texts for classifiers.
 class StringCategoryCorpusReader(CorpusReader):
-    def __init__(self, root, fileids, delimiter=' ', encoding=None):
+    def __init__(self, root, fileids, delimiter=' ', encoding='utf8'):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
@@ -39,7 +40,7 @@ class StringCategoryCorpusReader(CorpusReader):
 
     def tuples(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([StreamBackedCorpusView(fileid, self._read_tuple_block,
                                               encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
@@ -49,7 +50,7 @@ class StringCategoryCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, basestring): fileids = [fileids]
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _read_tuple_block(self, stream):

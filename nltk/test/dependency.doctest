@@ -1,11 +1,11 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===================
 Dependency Grammars
 ===================
 
-    >>> from nltk.grammar import *
+    >>> from nltk.grammar import parse_dependency_grammar
     >>> from nltk.parse import *
 
 CoNLL Data
@@ -33,7 +33,7 @@ CoNLL Data
 
 
     >>> dg = DependencyGraph(treebank_data)
-    >>> print dg.tree().pprint()
+    >>> print(dg.tree().pprint())
     (will
       (Vinken Pierre , (old (years 61)) ,)
       (join (board the) (as (director a nonexecutive)) (Nov. 29) .))
@@ -42,7 +42,7 @@ Using the dependency-parsed version of the Penn Treebank corpus sample.
 
     >>> from nltk.corpus import dependency_treebank
     >>> t = dependency_treebank.parsed_sents()[0]
-    >>> print t.to_conll(3)  # doctest: +NORMALIZE_WHITESPACE
+    >>> print(t.to_conll(3))  # doctest: +NORMALIZE_WHITESPACE
     Pierre      NNP     2
     Vinken      NNP     8
     ,   ,       2
@@ -71,20 +71,20 @@ Projective Dependency Parsing
     ... 'of' -> 'stock'
     ... 'stock' -> 'the'
     ... """)
-    >>> print grammar
+    >>> print(grammar)
     Dependency grammar with 5 productions
       'fell' -> 'price'
       'fell' -> 'stock'
       'price' -> 'of' 'the'
       'of' -> 'stock'
       'stock' -> 'the'
-    
+
     >>> dp = ProjectiveDependencyParser(grammar)
-    >>> for t in dp.parse(['the', 'price', 'of', 'the', 'stock', 'fell']):
-    ...     print t
-    (fell (price the of the) stock)
-    (fell (price the of) (stock the))
+    >>> for t in sorted(dp.parse(['the', 'price', 'of', 'the', 'stock', 'fell'])):
+    ...     print(t)
     (fell (price the (of (stock the))))
+    (fell (price the of) (stock the))
+    (fell (price the of the) stock)
 
 Non-Projective Dependency Parsing
 ---------------------------------
@@ -95,7 +95,7 @@ Non-Projective Dependency Parsing
     ... 'play' -> 'golf' | 'dog' | 'to'
     ... 'dog' -> 'his'
     ... """)
-    >>> print grammar
+    >>> print(grammar)
     Dependency grammar with 7 productions
       'taught' -> 'play'
       'taught' -> 'man'
@@ -104,10 +104,10 @@ Non-Projective Dependency Parsing
       'play' -> 'dog'
       'play' -> 'to'
       'dog' -> 'his'
-    
+
     >>> dp = NonprojectiveDependencyParser(grammar)
     >>> for g in dp.parse(['the', 'man', 'taught', 'his', 'dog', 'to', 'play', 'golf']):
-    ...     print g
+    ...     print(g)
     [{'address': 0, 'deps': 3, 'rel': 'TOP', 'tag': 'TOP', 'word': None},
      {'address': 1, 'deps': [], 'word': 'the'},
      {'address': 2, 'deps': [1], 'word': 'man'},

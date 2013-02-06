@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Brill Tagger
 #
-# Copyright (C) 2001-2012 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
-#          Steven Bird <sb@csse.unimelb.edu.au>
+#          Steven Bird <stevenbird1@gmail.com>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -68,8 +68,8 @@ corpus, based on one or more "rule templates."
     0.742...
 
 """
+from __future__ import print_function, unicode_literals
 
-from __future__ import print_function
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
 import yaml          # to save and load taggers in files
@@ -78,6 +78,7 @@ from collections import defaultdict
 
 from nltk.tag.util import untag
 from nltk.tag.api import TaggerI
+from nltk.compat import python_2_unicode_compatible
 
 ######################################################################
 ## The Brill Tagger
@@ -185,7 +186,7 @@ class BrillRule(yaml.YAMLObject):
         :rtype: int
         """
         if positions is None:
-            positions = range(len(tokens))
+            positions = list(range(len(tokens)))
 
         # Determine the indices at which this rule applies.
         change = [i for i in positions if self.applies(tokens, i)]
@@ -219,6 +220,7 @@ class BrillRule(yaml.YAMLObject):
         assert False, "Brill rules must be hashable"
 
 
+@python_2_unicode_compatible
 class ProximateTokensRule(BrillRule):
     """
     An abstract base class for brill rules whose condition checks for
@@ -267,7 +269,7 @@ class ProximateTokensRule(BrillRule):
     @classmethod
     def to_yaml(cls, dumper, data):
         node = dumper.represent_mapping(cls.yaml_tag, dict(
-            description=str(data),
+            description="%s" % data,
             conditions=list(list(x) for x in data._conditions),
             original=data.original_tag,
             replacement=data.replacement_tag))
@@ -344,9 +346,9 @@ class ProximateTokensRule(BrillRule):
         # a sort key when deterministic=True.)
         try:
             return self.__repr
-        except:
-            conditions = ' and '.join(['%s in %d...%d' % (v,s,e)
-                                       for (s,e,v) in self._conditions])
+        except Exception:
+            conditions = ' and '.join('%s in %d...%d' % (v,s,e)
+                                      for (s,e,v) in self._conditions)
             self.__repr = ('<%s: %s->%s if %s>' %
                            (self.__class__.__name__, self.original_tag,
                             self.replacement_tag, conditions))
@@ -359,8 +361,8 @@ class ProximateTokensRule(BrillRule):
         if len(self._conditions) == 0:
             conditions = ''
         else:
-            conditions = ' if '+ ', and '.join([self._condition_to_str(c)
-                                               for c in self._conditions])
+            conditions = ' if '+ ', and '.join(self._condition_to_str(c)
+                                               for c in self._conditions)
         return replacement+conditions
 
     def _condition_to_str(self, condition):
@@ -369,7 +371,7 @@ class ProximateTokensRule(BrillRule):
         This helper method is used by __str__.
         """
         (start, end, value) = condition
-        return ('the %s of %s is %r' %
+        return ("the %s of %s is '%s'" %
                 (self.PROPERTY_NAME, self._range_to_str(start, end), value))
 
     def _range_to_str(self, start, end):
@@ -787,7 +789,7 @@ class BrillTaggerTrainer(object):
         # Convert the dictionary into a list of (rule, score) tuples,
         # sorted in descending order of score.
         return sorted(rule_score_dict.items(),
-                      key=lambda (rule,score): -score)
+                      key=lambda rule_score: -rule_score[1])
 
     def _find_rules_at(self, test_sent, train_sent, i):
         """
@@ -824,7 +826,7 @@ class BrillTaggerTrainer(object):
         if self._trace > 2:
             print(('%4d%4d%4d%4d ' % (score, fixscore, fixscore-score,
                                       numchanges-fixscore*2+score)), '|', end=' ')
-            print(textwrap.fill(str(rule), initial_indent=' '*20, width=79,
+            print(textwrap.fill("%s" % rule, initial_indent=' '*20, width=79,
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
             print(rule)
@@ -896,7 +898,7 @@ class FastBrillTaggerTrainer(object):
         # Create a new copy of the training corpus, and run the
         # initial tagger on it.  We will progressively update this
         # test corpus to look more like the training corpus.
-        test_sents = [self._initial_tagger.tag(untag(sent))
+        test_sents = [list(self._initial_tagger.tag(untag(sent)))
                       for sent in train_sents]
 
         # Initialize our mappings.  This will find any errors made
@@ -1208,7 +1210,7 @@ class FastBrillTaggerTrainer(object):
 
         if self._trace > 2:
             print('%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other), end=' ')
-            print(textwrap.fill(str(rule), initial_indent=' '*20,
+            print(textwrap.fill("%s" % rule, initial_indent=' '*20,
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
             print(rule)
@@ -1351,7 +1353,7 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     if trace <= 1:
         print("\nRules: ")
         for rule in brill_tagger.rules():
-            print((str(rule)))
+            print(rule)
 
     print_rules = file(rule_output, 'w')
     yaml.dump(brill_tagger, print_rules)

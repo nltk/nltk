@@ -1,9 +1,10 @@
-.. Copyright (C) 2001-2012 NLTK Project
+.. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==================================
  Feature Structures & Unification
 ==================================
+    >>> from __future__ import print_function
     >>> from nltk.featstruct import FeatStruct
     >>> from nltk.sem.logic import Variable, VariableExpression, LogicParser
 
@@ -18,14 +19,14 @@ values, where feature values can be simple values (like strings or
 ints), nested feature structures, or variables:
 
     >>> fs1 = FeatStruct(number='singular', person=3)
-    >>> print fs1
+    >>> print(fs1)
     [ number = 'singular' ]
     [ person = 3          ]
 
 Feature structure may be nested:
 
     >>> fs2 = FeatStruct(type='NP', agr=fs1)
-    >>> print fs2
+    >>> print(fs2)
     [ agr  = [ number = 'singular' ] ]
     [        [ person = 3          ] ]
     [                                ]
@@ -38,7 +39,7 @@ feature fs3['subj']['number'].
 
     >>> fs3 = FeatStruct(agr=FeatStruct(number=Variable('?n')),
     ...                  subj=FeatStruct(number=Variable('?n')))
-    >>> print fs3
+    >>> print(fs3)
     [ agr  = [ number = ?n ] ]
     [                        ]
     [ subj = [ number = ?n ] ]
@@ -50,7 +51,7 @@ value).  Two feature structures that represent (potentially
 overlapping) information about the same object can be combined by
 *unification*.
 
-    >>> print fs2.unify(fs3)
+    >>> print(fs2.unify(fs3))
     [ agr  = [ number = 'singular' ] ]
     [        [ person = 3          ] ]
     [                                ]
@@ -62,9 +63,9 @@ When two inconsistent feature structures are unified, the unification
 fails and returns ``None``.
 
     >>> fs4 = FeatStruct(agr=FeatStruct(person=1))
-    >>> print fs4.unify(fs2)
+    >>> print(fs4.unify(fs2))
     None
-    >>> print fs2.unify(fs4)
+    >>> print(fs2.unify(fs4))
     None
 
 ..
@@ -160,7 +161,7 @@ multiple feature paths.
 
     >>> fs1 = FeatStruct(x='val')
     >>> fs2 = FeatStruct(a=fs1, b=fs1)
-    >>> print fs2
+    >>> print(fs2)
     [ a = (1) [ x = 'val' ] ]
     [                       ]
     [ b -> (1)              ]
@@ -203,23 +204,23 @@ values to all features, *and* they contain the same reentrances.
     >>> fs1 = FeatStruct('[a=(1)[x=1], b->(1)]')
     >>> fs2 = FeatStruct('[a=(1)[x=1], b->(1)]')
     >>> fs3 = FeatStruct('[a=[x=1], b=[x=1]]')
-    >>> print fs1 == fs1, fs1 is fs1
-    True True
-    >>> print fs1 == fs2, fs1 is fs2
-    True False
-    >>> print fs1 == fs3, fs1 is fs3
-    False False
+    >>> fs1 == fs1, fs1 is fs1
+    (True, True)
+    >>> fs1 == fs2, fs1 is fs2
+    (True, False)
+    >>> fs1 == fs3, fs1 is fs3
+    (False, False)
 
 Note that this differs from how Python dictionaries and lists define
 equality -- in particular, Python dictionaries and lists ignore
 reentrance relations.  To test two feature structures for equality
 while ignoring reentrance relations, use the `equal_values()` method:
 
-    >>> print fs1.equal_values(fs1)
+    >>> fs1.equal_values(fs1)
     True
-    >>> print fs1.equal_values(fs2)
+    >>> fs1.equal_values(fs2)
     True
-    >>> print fs1.equal_values(fs3)
+    >>> fs1.equal_values(fs3)
     True
 
 ..
@@ -280,7 +281,7 @@ algorithm would have to arbitrarily choose how to divide the tuple
 to make this decision, and simply unifies based on value.  Because
 (1,2,3,4) is not equal to (?a+?b), fs1 and fs2 will not unify:
 
-    >>> print fs1.unify(fs2)
+    >>> print(fs1.unify(fs2))
     None
 
 If you need a list-like structure that unification does apply to, use
@@ -331,8 +332,10 @@ base value types that have custom unification methods.  For example,
 the following feature value type encodes a range, and defines
 unification as taking the intersection on the ranges:
 
+    >>> from nltk.compat import total_ordering
     >>> from nltk.featstruct import CustomFeatureValue, UnificationFailure
-    >>> class Range(CustomFeatureValue):
+    >>> @total_ordering
+    ... class Range(CustomFeatureValue):
     ...     def __init__(self, low, high):
     ...         assert low <= high
     ...         self.low = low
@@ -346,20 +349,25 @@ unification as taking the intersection on the ranges:
     ...         else: return UnificationFailure
     ...     def __repr__(self):
     ...         return '(%s<x<%s)' % (self.low, self.high)
-    ...     def __cmp__(self, other):
-    ...         if not isinstance(other, Range): return -1
-    ...         return cmp((self.low, self.high), (other.low, other.high))
+    ...     def __eq__(self, other):
+    ...         if not isinstance(other, Range):
+    ...             return False
+    ...         return (self.low == other.low) and (self.high == other.high)
+    ...     def __lt__(self, other):
+    ...         if not isinstance(other, Range):
+    ...             return True
+    ...         return (self.low, self.high) < (other.low, other.high)
 
     >>> fs1 = FeatStruct(x=Range(5,8), y=FeatStruct(z=Range(7,22)))
-    >>> print fs1.unify(FeatStruct(x=Range(6, 22)))
+    >>> print(fs1.unify(FeatStruct(x=Range(6, 22))))
     [ x = (6<x<8)          ]
     [                      ]
     [ y = [ z = (7<x<22) ] ]
-    >>> print fs1.unify(FeatStruct(x=Range(9, 12)))
+    >>> print(fs1.unify(FeatStruct(x=Range(9, 12))))
     None
-    >>> print fs1.unify(FeatStruct(x=12))
+    >>> print(fs1.unify(FeatStruct(x=12)))
     None
-    >>> print fs1.unify(FeatStruct('[x=?x, y=[z=?x]]'))
+    >>> print(fs1.unify(FeatStruct('[x=?x, y=[z=?x]]')))
     [ x = (7<x<8)         ]
     [                     ]
     [ y = [ z = (7<x<8) ] ]
@@ -381,12 +389,6 @@ method `dict.fromkeys()`).  Non-mutating methods:
     >>> sorted(fs2.values())                             # values()
     [[a=1, b=2, c=3], 'x']
     >>> sorted(fs2.items())                              # items()
-    [('x', [a=1, b=2, c=3]), ('y', 'x')]
-    >>> sorted(fs2.iterkeys())                           # iterkeys()
-    ['x', 'y']
-    >>> sorted(fs2.itervalues())                         # itervalues()
-    [[a=1, b=2, c=3], 'x']
-    >>> sorted(fs2.iteritems())                          # iteritems()
     [('x', [a=1, b=2, c=3]), ('y', 'x')]
     >>> sorted(fs2)                                      # __iter__()
     ['x', 'y']
@@ -627,8 +629,8 @@ triple-quoted strings.
     [a='', b='hello', c="'", d='', e='"']
     >>> FeatStruct(r'[a="\\", b="\"", c="\x6f\\y", d="12"]')
     [a='\\', b='"', c='o\\y', d='12']
-    >>> FeatStruct(r'[a=u"\u1234", b=r"a\b\c"]')
-    [a=u'\u1234', b='a\\b\\c']
+    >>> FeatStruct(r'[b=r"a\b\c"]')
+    [b='a\\b\\c']
     >>> FeatStruct('[x="""a"""]')
     [x='a']
 
@@ -663,7 +665,7 @@ Special features:
     NP[]/VP[]
     >>> FeatStruct('?x/?x')
     ?x[]/?x[]
-    >>> print FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
+    >>> print(FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
     [ *type*  = 'VP'              ]
     [                             ]
     [           [ *type* = 'NP' ] ]
@@ -682,7 +684,7 @@ Here the slash feature gets coerced:
     NP[sem=<bob>]/NP[]
     >>> FeatStruct('S[sem=<walk(bob)>]')
     S[sem=<walk(bob)>]
-    >>> print FeatStruct('NP[sem=<bob>]/NP')
+    >>> print(FeatStruct('NP[sem=<bob>]/NP'))
     [ *type*  = 'NP'              ]
     [                             ]
     [ *slash* = [ *type* = 'NP' ] ]
@@ -701,12 +703,12 @@ Playing with ranges:
     [*width*=(2, 12)]
     >>> fs1.unify(fs3)
     [*width*=(-5, -2)]
-    >>> print fs2.unify(fs3) # no overlap in width.
+    >>> print(fs2.unify(fs3)) # no overlap in width.
     None
 
 The slash feature has a default value of 'False':
 
-    >>> print FeatStruct('NP[]/VP').unify(FeatStruct('NP[]'), trace=1)
+    >>> print(FeatStruct('NP[]/VP').unify(FeatStruct('NP[]'), trace=1))
     <BLANKLINE>
     Unification trace:
        / NP[]/VP[]
@@ -740,7 +742,7 @@ do quite the right thing, -- ?x vs x.
     VP[agr=?x, +fin, tense='past']/NP[agr=?x, +pl]
     >>> FeatStruct('S[sem = <app(?subj, ?vp)>]')
     S[sem=<?subj(?vp)>]
-    
+
     >>> FeatStruct('S')
     S[]
 
@@ -750,13 +752,13 @@ The parser also includes support for reading sets and tuples.
     [x={1, 2}, y={/}]
     >>> FeatStruct('[x=(1,2,2,2), y=()]')
     [x=(1, 2, 2, 2), y=()]
-    >>> print FeatStruct('[x=(1,[z=(1,2,?x)],?z,{/})]')
+    >>> print(FeatStruct('[x=(1,[z=(1,2,?x)],?z,{/})]'))
     [ x = (1, [ z = (1, 2, ?x) ], ?z, {/}) ]
 
 Note that we can't put a featstruct inside a tuple, because doing so
 would hash it, and it's not frozen yet:
 
-    >>> print FeatStruct('[x={[]}]')
+    >>> print(FeatStruct('[x={[]}]'))
     Traceback (most recent call last):
       . . .
     TypeError: FeatStructs must be frozen before they can be hashed.
@@ -766,13 +768,13 @@ The elements should only be variables or sets.
 
     >>> FeatStruct('[x={?a+?b+{1,2,3}}]')
     [x={?a+?b+{1, 2, 3}}]
-    
+
 There's a special syntax for taking the concatenation of tuples:
 "(...+...)".  The elements should only be variables or tuples.
 
     >>> FeatStruct('[x=(?a+?b+(1,2,3))]')
     [x=(?a+?b+(1, 2, 3))]
-    
+
 Parsing gives helpful messages if your string contains an error.
 
     >>> FeatStruct('[a=, b=5]]')
@@ -840,7 +842,7 @@ Merging nested structures:
     [A=[B='b', C='c']]
     >>> fs2.unify(fs1)
     [A=[B='b', C='c']]
-    
+
 A basic case of reentrant unification
 
     >>> fs4 = FeatStruct('[A=(1)[B=b], E=[F->(1)]]')
@@ -1010,11 +1012,11 @@ is any difference in the reentrances.
     ...     assert x.equal_values(y, False) == y.equal_values(x, False)
     ...     if x.equal_values(y, True):
     ...         assert x.equal_values(y, False)
-    ...         print 'equal values, same reentrance'
+    ...         print('equal values, same reentrance')
     ...     elif x.equal_values(y, False):
-    ...         print 'equal values, different reentrance'
+    ...         print('equal values, different reentrance')
     ...     else:
-    ...         print 'different values'
+    ...         print('different values')
 
     >>> compare(a, a)
     equal values, same reentrance
@@ -1061,10 +1063,10 @@ but it wouldn't be a bad thing if it changed.
     ...         if hash(fs1) != hash(fs2):
     ...             assert fs1 != fs2
     ...         else:
-    ...             print ('%s and %s have the same hash value,' %
-    ...                    (fs1_name, fs2_name)),
-    ...             if fs1 == fs2: print 'and are equal'
-    ...             else: print 'and are not equal'
+    ...             print('%s and %s have the same hash value,' %
+    ...                    (fs1_name, fs2_name))
+    ...             if fs1 == fs2: print('and are equal')
+    ...             else: print('and are not equal')
     a and a have the same hash value, and are equal
     a and b have the same hash value, and are equal
     b and a have the same hash value, and are equal
@@ -1112,11 +1114,11 @@ Tracing
       +-->[a=(1)[b=(2)[], c='C'], d->(2), e=[f='C', g->(1)]]
           Bindings: {?x: 'C'}
     [a=(1)[b=(2)[], c='C'], d->(2), e=[f='C', g->(1)]]
-    >>> 
+    >>>
     >>> fs1 = FeatStruct('[a=?x, b=?z, c=?z]')
     >>> fs2 = FeatStruct('[a=?y, b=?y, c=?q]')
     >>> #fs1.unify(fs2, trace=True)
-    >>> 
+    >>>
 
 ..
     >>> del fs1, fs2 # clean-up
@@ -1128,7 +1130,7 @@ It's possible to do unification on dictionaries:
     >>> # Note: pformat prints dicts sorted, but only guaranteed if width=1
     >>> from pprint import pformat
     >>> from nltk.featstruct import unify
-    >>> print pformat(unify(dict(x=1, y=dict(z=2)), dict(x=1, q=5)), width=1)
+    >>> print(pformat(unify(dict(x=1, y=dict(z=2)), dict(x=1, q=5)), width=1))
     {'q': 5,
      'x': 1,
      'y': {'z': 2}}
@@ -1140,8 +1142,8 @@ It's possible to do unification on lists as well:
 
 Mixing dicts and lists is fine:
 
-    >>> print pformat(unify([dict(x=1, y=dict(z=2)),3], [dict(x=1, q=5),3]),
-    ...               width=1)
+    >>> print(pformat(unify([dict(x=1, y=dict(z=2)),3], [dict(x=1, q=5),3]),
+    ...               width=1))
     [{'q': 5,
       'x': 1,
       'y': {'z': 2}},
@@ -1167,7 +1169,7 @@ Finding Conflicts
     >>> fs1 = FeatStruct('[a=[b=(1)[c=2], d->(1), e=[f->(1)]]]')
     >>> fs2 = FeatStruct('[a=[b=[c=[x=5]], d=[c=2], e=[f=[c=3]]]]')
     >>> for path in conflicts(fs1, fs2):
-    ...     print '%-8s: %r vs %r' % ('.'.join(path), fs1[path], fs2[path])
+    ...     print('%-8s: %r vs %r' % ('.'.join(path), fs1[path], fs2[path]))
     a.b.c   : 2 vs [x=5]
     a.e.f.c : 2 vs 3
 
@@ -1182,15 +1184,15 @@ Retracting Bindings
     >>> fs1 = FeatStruct('[a=?x, b=[c=?y]]')
     >>> fs2 = FeatStruct('[a=(1)[c=[d=1]], b->(1)]')
     >>> fs3 = fs1.unify(fs2, bindings)
-    >>> print fs3
+    >>> print(fs3)
     [ a = (1) [ c = [ d = 1 ] ] ]
     [                           ]
     [ b -> (1)                  ]
-    >>> print bindings
+    >>> print(bindings)
     {Variable('?y'): [d=1], Variable('?x'): [c=[d=1]]}
     >>> retract_bindings(fs3, bindings)
     [a=?x, b=?x]
-    >>> print bindings
+    >>> print(bindings)
     {Variable('?y'): [d=1], Variable('?x'): [c=?y]}
 
 Squashed Bugs
@@ -1223,7 +1225,7 @@ is present.)
 
     >>> fs1 = FeatStruct('[a=[x=1], b=?x, c=?x]')
     >>> fs2 = FeatStruct('[a=(1)[], b->(1), c=[x=2]]')
-    >>> print fs1.unify(fs2)
+    >>> print(fs1.unify(fs2))
     None
 
 ..
