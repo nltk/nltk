@@ -191,15 +191,12 @@ def pk(ref, hyp, k=None, boundary='1'):
     where the specified boundary value is used to mark the edge of a
     segmentation.
 
-    >>> s1 = "00000010000000001000000"
-    >>> s2 = "00000001000000010000000"
-    >>> s3 = "00010000000000000001000"
-    >>> pk(s1, s1, 3)
-    0.0
-    >>> pk(s1, s2, 3)
-    0.095238...
-    >>> pk(s2, s3, 3)
-    0.190476...
+    >>> '%.2f' % pk('0100'*100, '1'*400, 2)
+    '0.50'
+    >>> '%.2f' % pk('0100'*100, '0'*400, 2)
+    '0.50'
+    >>> '%.2f' % pk('0100'*100, '0100'*100, 2)
+    '0.00'
 
     :param ref: the reference segmentation
     :type ref: str or list
