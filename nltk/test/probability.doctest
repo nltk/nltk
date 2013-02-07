@@ -60,17 +60,15 @@ We create a HMM trainer - note that we need the tags and symbols
 from the whole corpus, not just the training corpus
 
     >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
-<<<<<<< HEAD
-    >>> print len(tag_set)
-    92
-    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
-    >>> print len(symbols)
-=======
     >>> print(len(tag_set))
     92
     >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
     >>> print(len(symbols))
->>>>>>> e48192bf984571ed262532d68e46260178dd3da4
+    1464
+    >>> print(len(tag_set))
+    92
+    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
+    >>> print(len(symbols))
     1464
     >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
 
@@ -144,7 +142,7 @@ Good Turing Estimation
 
 Kneser Ney Estimation
 ---------------------
-Since the Kneser-Ney distribution is best suited for trigrams, we must adjust 
+Since the Kneser-Ney distribution is best suited for trigrams, we must adjust
 our testing accordingly.
 
     >>> corpus = [[((x[0],y[0],z[0]),(x[1],y[1],z[1])) 
@@ -154,11 +152,11 @@ our testing accordingly.
 We will then need to redefine the rest of the training/testing variables
     >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
     >>> len(tag_set)
-    >>> 906
+    906
 
     >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
     >>> len(symbols)
-    >>> 1341
+    1341
 
     >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
     >>> train_corpus = []
@@ -171,13 +169,13 @@ We will then need to redefine the rest of the training/testing variables
     ...        test_corpus += [corpus[i]]
 
     >>> len(train_corpus)
-    >>> 90
+    90
     >>> len(test_corpus)
-    >>> 10
+    10
 
     >>> kn = lambda fd, bins: KneserNeyProbDist(fd)
     >>> train_and_test(kn)
-    >>> 0.86%
+    0.86%
 
 Remains to be added:
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
