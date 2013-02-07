@@ -214,33 +214,14 @@ def pk(ref, hyp, k=None, boundary='1'):
 
     if k is None:
         k = int(round(len(ref) / (ref.count(boundary) * 2.)))
-
-    n_considered_seg = len(ref) - k + 1
-    n_same_ref = 0.0
-    n_false_alarm = 0.0
-    n_miss = 0.0
-
-    for i in xrange(n_considered_seg):
-        bsame_ref_seg = False
-        bsame_hyp_seg = False
-
-        if boundary not in ref[(i+1):(i+k)]:
-            n_same_ref += 1.0
-            bsame_ref_seg = True
-        if boundary not in hyp[(i+1):(i+k)]:
-            bsame_hyp_seg = True
-
-        if bsame_hyp_seg and not bsame_ref_seg:
-            n_miss += 1
-        if bsame_ref_seg and not bsame_hyp_seg:
-            n_false_alarm += 1
-
-    prob_same_ref = n_same_ref / n_considered_seg
-    prob_diff_ref = 1 - prob_same_ref
-    prob_miss = n_miss / n_considered_seg
-    prob_false_alarm = n_false_alarm / n_considered_seg
-
-    return prob_miss * prob_diff_ref + prob_false_alarm * prob_same_ref
+    
+    err = 0
+    for i in xrange(len(ref)-k +1):
+        r = ref[i:i+k].count(boundary) > 0
+        h = hyp[i:i+k].count(boundary) > 0
+        if r != h:
+           err += 1
+    return err / (len(ref)-k +1.)
 
 
 # skip doctests if numpy is not installed
