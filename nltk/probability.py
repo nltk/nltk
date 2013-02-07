@@ -1784,7 +1784,7 @@ class KneserNeyProbDist(ProbDistI):
 
         :rtype: str
         '''
-        return '<KneserNeyProbDist based on {} trigrams'.format(self._trigrams.N())
+        return '<KneserNeyProbDist based on {0} trigrams'.format(self._trigrams.N())
 
 ##//////////////////////////////////////////////////////
 ##  Probability Distribution Operations
