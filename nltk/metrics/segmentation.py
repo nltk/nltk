@@ -48,12 +48,22 @@ except ImportError:
 
 from nltk.compat import xrange
 
-def windowdiff(seg1, seg2, k, boundary="1", weighted=True):
+def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
     """
     Compute the windowdiff score for a pair of segmentations.  A
     segmentation is any sequence over a vocabulary of two items
     (e.g. "0", "1"), where the specified boundary value is used to
     mark the edge of a segmentation.
+
+        >>> s1 = "000100000010"
+        >>> s2 = "000010000100"
+        >>> s3 = "100000010000"
+        >>> windowdiff(s1, s1, 3)
+        0.0
+        >>> windowdiff(s1, s2, 3)
+        0.3
+        >>> windowdiff(s2, s3, 3)
+        0.8
 
     :param seg1: a segmentation
     :type seg1: str or list
@@ -63,9 +73,9 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=True):
     :type k: int
     :param boundary: boundary value
     :type boundary: str or int or bool
-    :rtype: int
     :param weighted: use the weighted variant of windowdiff
-    :rtype weighted: boolean
+    :type weighted: boolean
+    :rtype: float
     """
 
     if len(seg1) != len(seg2):
@@ -123,19 +133,19 @@ def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary='1'
     Associated with a ins_cost, and del_cost equal to the mean segment
     length in the reference segmentation.
 
-    >>> # Same examples as Kulyukin C++ implementation
-    >>> ghd('1100100000', '1100010000', 1.0, 1.0, 0.5)
-    0.5
-    >>> ghd('1100100000', '1100000001', 1.0, 1.0, 0.5)
-    2.0
-    >>> ghd('011', '110', 1.0, 1.0, 0.5)
-    1.0
-    >>> ghd('1', '0', 1.0, 1.0, 0.5)
-    1.0
-    >>> ghd('111', '000', 1.0, 1.0, 0.5)
-    3.0
-    >>> ghd('000', '111', 1.0, 2.0, 0.5)
-    6.0
+        >>> # Same examples as Kulyukin C++ implementation
+        >>> ghd('1100100000', '1100010000', 1.0, 1.0, 0.5)
+        0.5
+        >>> ghd('1100100000', '1100000001', 1.0, 1.0, 0.5)
+        2.0
+        >>> ghd('011', '110', 1.0, 1.0, 0.5)
+        1.0
+        >>> ghd('1', '0', 1.0, 1.0, 0.5)
+        1.0
+        >>> ghd('111', '000', 1.0, 1.0, 0.5)
+        3.0
+        >>> ghd('000', '111', 1.0, 2.0, 0.5)
+        6.0
 
     :param ref: the reference segmentation
     :type ref: str or list
