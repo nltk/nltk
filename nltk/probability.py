@@ -8,6 +8,7 @@
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se> (additions)
 #         Liang Dong <ldong@clemson.edu> (additions)
 #         Geoffrey Sampson <sampson@cantab.net> (additions)
+#         Ilia Kurenkov <ilia.kurenkov@gmail.com> (additions)
 #
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -1649,11 +1650,11 @@ class MutableProbDist(ProbDistI):
 # distribution and a leave-one-out distribution. For a start, the first one is
 # implemented as a class below.
 # 
-# The idea behind a back-off ngram model is that we have a series of
-# frequency distributions for our ngrams so that in case we have not seen a
-# given ngram during training (and as a result have a 0 probability for it) we
+# The idea behind a back-off n-gram model is that we have a series of
+# frequency distributions for our n-grams so that in case we have not seen a
+# given n-gram during training (and as a result have a 0 probability for it) we
 # can 'back off' (hence the name!) and try testing whether we've seen the
-# n-1gram part of the ngram in training.
+# n-1gram part of the n-gram in training.
 #
 # The novelty of Kneser and Ney's approach was that they decided to fiddle
 # around with the way this latter, backed off probability was being calculated
@@ -1677,7 +1678,7 @@ class MutableProbDist(ProbDistI):
 class KneserNeyProbDist(ProbDistI):
     """
     Kneser-Ney estimate of a probability distribution. This is a version of
-    back-off that counts hoKneserw likely an ngram is provided the n-1gram had
+    back-off that counts how likely an n-gram is provided the n-1-gram had
     been seen in training. Extends the ProbDistI interface, requires a trigram
     FreqDist instance to train on. Optionally, a different from default discount
     value can be specified. The default discount is set to 0.75.
@@ -1709,15 +1710,11 @@ class KneserNeyProbDist(ProbDistI):
         self._wordtypes_after = defaultdict(float)
         self._trigrams_contain = defaultdict(float)
         self._wordtypes_before = defaultdict(float)
-        # looping over trigrams set all the helper dictionaries
+        # set values in helper dicts
         for w0, w1, w2 in freqdist:
-            # add frequency of trigram to that of corresponding bigram
             self._bigrams[(w0,w1)] += freqdist[(w0, w1, w2)]
-            # increment the word-type counter for the bigram
             self._wordtypes_after[(w0,w1)] += 1
-            # increment trigram counter for trigrams containing w1
             self._trigrams_contain[w1] += 1
-            # increment word-type counter for words preceding w1 and w2
             self._wordtypes_before[(w1,w2)] += 1
 
     def prob(self, sample):
@@ -1726,7 +1723,7 @@ class KneserNeyProbDist(ProbDistI):
             w0, w1, w2 = sample
             trigram = (w0, w1, w2)          # new variable for convenience
         else:
-            # if sample is something unprocessable
+            # if sample is something that we cannot process (not a triple)
             raise ValueError('Expected an iterable with 3 members. Please check your input')
 
         if trigram in self._cache:
