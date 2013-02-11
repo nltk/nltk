@@ -2242,9 +2242,9 @@ def app():
 
     print('grammar= (')
     for rule in grammar.productions():
-        print('    ', repr(rule)+',')
+        print(('    ', repr(rule)+','))
     print(')')
-    print('tokens = %r' % tokens)
+    print(('tokens = %r' % tokens))
     print('Calling "ChartParserApp(grammar, tokens)"...')
     ChartParserApp(grammar, tokens).mainloop()
 

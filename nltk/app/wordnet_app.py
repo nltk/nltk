@@ -51,7 +51,6 @@ from sys import path
 
 import os
 from sys import argv
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from collections import defaultdict
 import webbrowser
 import datetime
@@ -60,13 +59,17 @@ import threading
 import time
 import getopt
 import base64
-import cPickle
+import pickle
 import copy
 
 from nltk import compat
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Synset, Lemma
 
+if compat.PY3:
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+else:
+    from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 # now included in local file
 # from util import html_header, html_trailer, \
@@ -98,10 +101,6 @@ class MyServerHandler(BaseHTTPRequestHandler):
             else:
                 print('Server shutting down!')
                 os._exit(0)
-
-        elif sp == 'favicon.ico':
-            type = 'image/x-icon'
-            page = favicon_data()
 
         elif sp == '': # First request.
             type = 'text/html'
@@ -153,7 +152,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
 
         # Send result.
         self.send_head(type)
-        self.wfile.write(page)
+        self.wfile.write(page.encode('utf8'))
 
 
     def send_head(self, type=None):
@@ -170,58 +169,6 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 (self.address_string(),
                  self.log_date_time_string(),
                  format%args))
-
-
-# This data was encoded with the following procedure
-def encode_icon():
-    f = open("favicon.ico", "rb")
-    s = f.read()
-    f.close()
-
-    def split(s):
-        if len(s) <= 72:
-            return [s]
-        else:
-            return [s[0:72]] + split(s[72:])
-
-    print(split(base64.urlsafe_b64encode(s)))
-
-
-FAVICON_BASE64_DATA = \
-['AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAD___8A9___ANb3_wDO9_8AjPf_ALXv_wCc7_8AjO__AHvv_wBz7_8Aa-__AKXn',
- '_wCc5_8AlOf_AITn_wBz5_8Aa-f_AGPn_wBa5_8Ac97_AGve_wBj3v8AWt7_AFLe_wBK3v8A',
- 'Qt7_AFrW_wBS1v8AStb_AELW_wA51v8AMdb_ACnO_wAhzv8AGM7_ABjG_wD___cA__f3APf3',
- '9wB73vcAUtb3AErW9wAhxvcAAMb3AFLO7wAYxu8AEMbvACG95wAYvecA9-fWAHPG1gBKvdYA',
- 'Ob3WACG91gDv3s4Axt7OACm1zgCMtb0ASq29ACGlvQBStbUAUq21ADGttQA5pbUA3satAEqc',
- 'rQDWvaUAY62lAOfGnADWvZwAtbWcAJStnADGrZQAzq2MAIycjABznIwAa5yMAN61hADWrXsA',
- 'zq17AMalewCtpXsAa4x7AMaccwC9nHMAtZRzAISUcwBrjHMAzqVrALWUawCtlGsArYxrAHuE',
- 'awBre2sAY3trAHuEYwBzhGMAc3tjAGt7YwDGlFoAvYxaAGNzWgBSa1oAxpRSAK2MUgDGjEoA',
- 'vYxKAL2ESgC1hEoArYRKAIRzSgB7a0oAc2tKAGtrSgBaY0oAtYRCAK17QgCle0IApXM5AJxz',
- 'OQCcazkAjGMxAIRaMQBzWjEAa1oxAIRaKQB7ShAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
- 'AAAAAAAAAAAAAAAGFh4YLAYAAAAAAAAAAAAHGB4gIBYWBgAAAAAAAAAAFhgzQR45MixGMQAA',
- 'AAAAABQYTF0WbzplWQAAAABFVEgKFExdFG59eywWCwBAdHRJCgpLXRhxe3IvIiIDT2p0VAdh',
- 'fn5xbzplciAwFFNqanQ3BwoKChYYGB4gICxYanRqalRPWVRZRhMYHiAYTmlqdnZ2dnh5eX1G',
- 'FhgeFEVjaT1SVithKzg7WhMYGAsATmM9UjgwXDt2eFsIFgcAAAAAFDRDLUo-bnhZAAAAAAAA',
- 'AAgwRS1cO3Z2WgAAAAAAAAADUTZHbVJ0d0kAAAAAAAAAADFPY2pqZEgAAAAAAAAA__8AAP__',
- 'AAD__wAAsaEAAE5eAABOXgAA__4AAPv_AAD__wAA__8AAM3-AADw_wAA__8AAML-AAD__wAA',
- 'xf4=']
-
-
-def favicon_data():
-    """
-    Return the data for the favicon image.
-    """
-    return base64.urlsafe_b64decode(''.join(FAVICON_BASE64_DATA))
 
 
 def get_unique_counter_from_url(sp):
@@ -587,7 +534,7 @@ def _collect_one_synset(word, synset, synset_relations):
     ref = copy.deepcopy(Reference(word, synset_relations))
     ref.toggle_synset(synset)
     synset_label = typ + ";"
-    if synset.name in synset_relations.keys():
+    if synset.name in synset_relations:
         synset_label = _bold(synset_label)
     s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr)
     def format_lemma(w):
@@ -629,7 +576,7 @@ def _synset_relations(word, synset, synset_relations):
     :rtype: str
     '''
 
-    if not synset.name in synset_relations.keys():
+    if not synset.name in synset_relations:
         return ""
     ref = Reference(word, synset_relations)
 
@@ -694,7 +641,7 @@ class Reference(object):
         # This uses a tuple rather than an object since the python
         # pickle representation is much smaller and there is no need
         # to represent the complete object.
-        string = cPickle.dumps((self.word, self.synset_relations), -1)
+        string = pickle.dumps((self.word, self.synset_relations), -1)
         return base64.urlsafe_b64encode(string)
 
     def toggle_synset_relation(self, synset, relation):
@@ -716,7 +663,7 @@ class Reference(object):
         """
         Toggle displaying of the relation types for the given synset
         """
-        if synset.name in self.synset_relations.keys():
+        if synset.name in self.synset_relations:
             del self.synset_relations[synset.name]
         else:
             self.synset_relations[synset.name] = set()
@@ -729,7 +676,7 @@ def decode_reference(string):
     Decode a reference encoded with Reference.encode
     """
     string = base64.urlsafe_b64decode(string)
-    word, synset_relations = cPickle.loads(string)
+    word, synset_relations = pickle.loads(string)
     return Reference(word, synset_relations)
 
 def make_lookup_link(ref, label):
@@ -785,10 +732,11 @@ def page_from_reference(href):
 
     # This looks up multiple words at once.  This is probably not
     # necessary and may lead to problems.
-    for pos in [wn.NOUN, wn.VERB, wn.ADJ, wn.ADV]:
-        form = wn.morphy(w, pos)
-        if form and form not in pos_forms[pos]:
-            pos_forms[pos].append(form)
+    for w in words:
+        for pos in [wn.NOUN, wn.VERB, wn.ADJ, wn.ADV]:
+            form = wn.morphy(w, pos)
+            if form and form not in pos_forms[pos]:
+                pos_forms[pos].append(form)
     body = ''
     for pos,pos_str,name in _pos_tuples():
         if pos in pos_forms:
