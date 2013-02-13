@@ -1,6 +1,10 @@
 NLTK News
 =========
 
+NLTK 3.0a1 released : February 2013
+   This version adds support for NLTK's graphical user interfaces.
+   http://nltk.org/nltk3-alpha/
+
 NLTK 3.0a0 released : January 2013
    The first alpha release of NLTK 3.0 is now available for testing. This version of NLTK works with Python 2.6, 2.7, and Python 3.
    http://nltk.org/nltk3-alpha/
