@@ -65,6 +65,11 @@ from the whole corpus, not just the training corpus
     >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
     >>> print(len(symbols))
     1464
+    >>> print(len(tag_set))
+    92
+    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
+    >>> print(len(symbols))
+    1464
     >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
 
 We divide the corpus into 90% training and 10% testing
@@ -88,6 +93,7 @@ And now we can test the estimators
     ...     print('%.2f%%' % (100 * hmm.evaluate(test_corpus)))
 
 Maximum Likelihood Estimation
+-----------------------------
 - this resulted in an initialization error before r7209
 
     >>> mle = lambda fd, bins: MLEProbDist(fd)
@@ -117,6 +123,7 @@ Lidstone Estimation, for gamma==0.1, 0.5 and 1
     66.04%
 
 Witten Bell Estimation
+----------------------
 - This resulted in ZeroDivisionError before r7209
 
     >>> train_and_test(WittenBellProbDist)
@@ -132,6 +139,43 @@ Good Turing Estimation
     >>> gt = lambda fd, bins: SimpleGoodTuringProbDist(fd)
     >>> train_and_test(gt)
     0.17%
+
+Kneser Ney Estimation
+---------------------
+Since the Kneser-Ney distribution is best suited for trigrams, we must adjust
+our testing accordingly.
+
+    >>> corpus = [[((x[0],y[0],z[0]),(x[1],y[1],z[1])) 
+    ...     for x, y, z in nltk.trigrams(sent)]
+    ...         for sent in corpus[:100]]
+
+We will then need to redefine the rest of the training/testing variables
+    >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
+    >>> len(tag_set)
+    906
+
+    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
+    >>> len(symbols)
+    1341
+
+    >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
+    >>> train_corpus = []
+    >>> test_corpus = []
+
+    >>> for i in range(len(corpus)):
+    ...    if i % 10:
+    ...        train_corpus += [corpus[i]]
+    ...    else:
+    ...        test_corpus += [corpus[i]]
+
+    >>> len(train_corpus)
+    90
+    >>> len(test_corpus)
+    10
+
+    >>> kn = lambda fd, bins: KneserNeyProbDist(fd)
+    >>> train_and_test(kn)
+    0.86%
 
 Remains to be added:
 - Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
