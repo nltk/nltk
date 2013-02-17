@@ -1654,14 +1654,14 @@ class MutableProbDist(ProbDistI):
 # frequency distributions for our n-grams so that in case we have not seen a
 # given n-gram during training (and as a result have a 0 probability for it) we
 # can 'back off' (hence the name!) and try testing whether we've seen the
-# n-1gram part of the n-gram in training.
+# n-1-gram part of the n-gram in training.
 #
 # The novelty of Kneser and Ney's approach was that they decided to fiddle
 # around with the way this latter, backed off probability was being calculated
 # whereas their peers seemed to focus on the primary probability.
 #
 # The implementation below uses one of the techniques described in their paper
-# titled IMPROVED BACKING-OFF FOR M-GRAM LANGUAGE MODELING. In the same paper
+# titled "Improved backing-off for n-gram language modeling." In the same paper
 # another technique is introduced to attempt to smooth the back-off
 # distribution as well as the primary one. There is also a much-cited
 # modification of this method proposed by Chen and Goodman.
@@ -1695,59 +1695,63 @@ class KneserNeyProbDist(ProbDistI):
             trigrams
         :type discount: float (preferred, but can be set to int)
         """
-        # set bins, discount parameter
+
         if not bins:
             self._bins = freqdist.B()
         else:
             self._bins = bins
         self._D = discount
-        # initialize cache used later to speed up probability calculation
+
+        # cache for probability calculation
         self._cache = {}
-        # initialize internal bigram and trigram frequency distributions
+
+        # internal bigram and trigram frequency distributions
         self._bigrams = defaultdict(int)
         self._trigrams = freqdist
-        # initialize helper dictionaries used to calculate probabilities
+
+        # helper dictionaries used to calculate probabilities
         self._wordtypes_after = defaultdict(float)
         self._trigrams_contain = defaultdict(float)
         self._wordtypes_before = defaultdict(float)
-        # set values in helper dicts
         for w0, w1, w2 in freqdist:
             self._bigrams[(w0,w1)] += freqdist[(w0, w1, w2)]
             self._wordtypes_after[(w0,w1)] += 1
             self._trigrams_contain[w1] += 1
             self._wordtypes_before[(w1,w2)] += 1
 
-    def prob(self, sample):
-        # checking sample
-        if len(sample) == 3:
-            w0, w1, w2 = sample
-            trigram = (w0, w1, w2)          # new variable for convenience
-        else:
-            # if sample is something that we cannot process (not a triple)
-            raise ValueError('Expected an iterable with 3 members. Please check your input')
+    def prob(self, trigram):
+        # sample must be a triple
+        if len(trigram) != 3:
+            raise ValueError('Expected an iterable with 3 members.')
+        trigram = tuple(trigram)
+        w0, w1, w2 = trigram
 
         if trigram in self._cache:
-            # check if the answer has been cached
             return self._cache[trigram]
         else:
-            # if not, perform computations
+            # if the sample trigram was seen during training
             if trigram in self._trigrams:
-                # if the sample trigram was seen during training
-                prob = (self._trigrams[trigram] - self.discount())/self._bigrams[(w0, w1)]
+                prob = (self._trigrams[trigram]
+                        - self.discount())/self._bigrams[(w0, w1)]
+
+            # else if the 'rougher' environment was seen during training
             elif (w0,w1) in self._bigrams and (w1,w2) in self._wordtypes_before:
-                # else if the 'rougher' environment was seen in training
-                # start by assigning some variables for convenience
-                aftr, bfr = self._wordtypes_after[(w0, w1)], self._wordtypes_before[(w1, w2)]
-                # calculate the probability weight left over from alphas
-                leftover_prob = ((aftr * self.discount()) / self._bigrams[(w0, w1)])
-                # calculate the beta (including normalization)
+                aftr = self._wordtypes_after[(w0, w1)]
+                bfr = self._wordtypes_before[(w1, w2)]
+
+                # the probability left over from alphas
+                leftover_prob = ((aftr * self.discount())
+                                 / self._bigrams[(w0, w1)])
+
+                # the beta (including normalization)
                 beta = bfr /(self._trigrams_contain[w1] - aftr)
-                # get the probability score
+
                 prob = leftover_prob * beta
+
+            # else the sample was completely unseen during training
             else:
-                # if the passed sample was completely unseen in training
                 prob = 0.0
-            # add prob score to cache for faster retrieval later then return it
+
             self._cache[trigram] = prob
             return prob
 
