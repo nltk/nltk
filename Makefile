@@ -7,8 +7,8 @@
 # For license information, see LICENSE.TXT
 
 PYTHON = python
-VERSION = $(shell $(PYTHON) -c 'import nltk; print nltk.__version__' | sed '/^Warning: */d')
-NLTK_URL = $(shell $(PYTHON) -c 'import nltk; print nltk.__url__' | sed '/^Warning: */d')
+VERSION = $(shell $(PYTHON) -c 'import nltk; print(nltk.__version__)' | sed '/^Warning: */d')
+NLTK_URL = $(shell $(PYTHON) -c 'import nltk; print(nltk.__url__)' | sed '/^Warning: */d')
 
 .PHONY: all clean clean_code
 
@@ -69,7 +69,7 @@ clean: clean_code
 #	rm -f nltk/nltk.jar
 
 clean_code:
-	rm -f `find . -name '*.pyc'`
-	rm -f `find . -name '*.pyo'`
+	rm -f `find nltk -name '*.pyc'`
+	rm -f `find nltk -name '*.pyo'`
 	rm -f `find . -name '*~'`
 	rm -f MANIFEST # regenerate manifest from MANIFEST.in

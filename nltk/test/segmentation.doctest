@@ -22,16 +22,15 @@ Windowdiff
 
 Compute the windowdiff score for a pair of segmentations.
 
-    >>> s1 = "00000010000000001000000"
-    >>> s2 = "00000001000000010000000"
-    >>> s3 = "00010000000000000001000"
+    >>> s1 = "000100000010"
+    >>> s2 = "000010000100"
+    >>> s3 = "100000010000"
     >>> windowdiff(s1, s1, 3)
-    0
+    0.0
     >>> windowdiff(s1, s2, 3)
-    4
+    0.3
     >>> windowdiff(s2, s3, 3)
-    16
-
+    0.8
 
 ----------------------------
 Generalized Hamming Distance
