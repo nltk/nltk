@@ -19,3 +19,6 @@ web/_build
 # editor temporary files
 *.*.sw[op]
 .idea
+
+# git mergetools backups
+*.orig
