@@ -659,6 +659,9 @@ class DictionaryProbDist(ProbDistI):
 
         # Normalize the distribution, if requested.
         if normalize:
+            if len(prob_dict) == 0:
+                raise ValueError('A DictionaryProbDist must have at least one sample ' +
+                             'before it can be normalized.')
             if log:
                 value_sum = sum_logs(list(self._prob_dict.values()))
                 if value_sum <= _NINF:
