@@ -172,5 +172,8 @@ def call_megam(args):
         print(stderr)
         raise OSError('megam command failed!')
 
-    return stdout
+    if isinstance(stdout, compat.string_types):
+        return stdout
+    else:
+        return stdout.decode('utf-8')
 
