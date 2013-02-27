@@ -342,7 +342,7 @@ class BigramTagger(NgramTagger):
     """
     yaml_tag = '!nltk.BigramTagger'
 
-    def __init__(self, train, model=None,
+    def __init__(self, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
         NgramTagger.__init__(self, 2, train, model,
                              backoff, cutoff, verbose)
