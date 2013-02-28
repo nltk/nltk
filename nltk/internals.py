@@ -405,7 +405,7 @@ class Deprecated(object):
                                    subsequent_indent='    ')
         warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
         # Do the actual work of __new__.
-        return object.__new__(cls, *args, **kwargs)
+        return object.__new__(cls)
 
 ##########################################################################
 # COUNTER, FOR UNIQUE NAMING

@@ -461,7 +461,7 @@ class Downloader(object):
         for category in categories:
             print('%s:' % category.capitalize())
             lines += 1 # for more_prompt
-            for info in sorted(getattr(self, category)()):
+            for info in sorted(getattr(self, category)(), key=str):
                 status = self.status(info, download_dir)
                 if status == self.INSTALLED and skip_installed: continue
                 if status == self.STALE: stale = True
@@ -1045,7 +1045,7 @@ class DownloaderShell(object):
         while True:
             stale_packages = []
             stale = partial = False
-            for info in sorted(getattr(self._ds, 'packages')()):
+            for info in sorted(getattr(self._ds, 'packages')(), key=str):
                 if self._ds.status(info) == self._ds.STALE:
                     stale_packages.append((info.id, info.name))
 
