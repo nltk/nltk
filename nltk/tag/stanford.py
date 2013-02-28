@@ -36,7 +36,7 @@ class StanfordTagger(TaggerI):
     _SEPARATOR = ''
     _JAR = ''
 
-    def __init__(self, path_to_model, path_to_jar=None, encoding=None, verbose=False, java_options='-mx1000m'):
+    def __init__(self, path_to_model, path_to_jar=None, encoding='ascii', verbose=False, java_options='-mx1000m'):
 
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
@@ -66,11 +66,10 @@ class StanfordTagger(TaggerI):
         # Create a temporary input file
         _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
 
-        if encoding:
-            self._cmd.extend(['-encoding', encoding])
+        self._cmd.extend(['-encoding', encoding])
 
         # Write the actual sentences to the temporary input file
-        _input_fh = os.fdopen(_input_fh, 'w')
+        _input_fh = os.fdopen(_input_fh, 'wb')
         _input = '\n'.join((' '.join(x) for x in sentences))
         if isinstance(_input, compat.text_type) and encoding:
             _input = _input.encode(encoding)
@@ -80,8 +79,9 @@ class StanfordTagger(TaggerI):
         # Run the tagger and get the output
         stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar, \
                                                        stdout=PIPE, stderr=PIPE)
-        if encoding:
-            stanpos_output = stanpos_output.decode(encoding)
+        stanpos_output = stanpos_output.decode(encoding)
+        if (not compat.PY3) and encoding == 'ascii':
+            stanpos_output = str(stanpos_output)
 
         # Delete the temporary file
         os.unlink(self._input_file_path)
