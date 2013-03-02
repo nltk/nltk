@@ -171,7 +171,7 @@ class PorterStemmer(StemmerI):
                 return True
             else:
                 return (not self._cons(word, i - 1))
-        return 1
+        return True
 
     def _m(self, word, j):
         """m() measures the number of consonant sequences between k0 and j.
@@ -352,7 +352,7 @@ class PorterStemmer(StemmerI):
             if word.endswith("ational"):
                 return word[:-7] + "ate" if self._m(word, len(word)-8) > 0 else word
             elif word.endswith("tional"):
-                return word[:-6] + "ate" if self._m(word, len(word)-7) > 0 else word
+                return word[:-2] if self._m(word, len(word)-7) > 0 else word
             else:
                 return word
         elif ch == 'c':
