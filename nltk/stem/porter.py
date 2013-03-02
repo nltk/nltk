@@ -346,6 +346,9 @@ class PorterStemmer(StemmerI):
         so -ization ( = -ize plus -ation) maps to -ize etc. note that the
         string before the suffix must give m() > 0.
         """
+        if len(word) <= 1: # Only possible at this stage given unusual inputs to stem_word like 'oed'       
+            return word
+        
         ch = word[-2]
         
         if ch == 'a':
@@ -467,6 +470,9 @@ class PorterStemmer(StemmerI):
 
     def _step4(self, word):
         """step4() takes off -ant, -ence etc., in context <c>vcvc<v>."""
+        
+        if len(word) <= 1: # Only possible at this stage given unusual inputs to stem_word like 'oed'       
+            return word
         
         ch = word[-2]
         
