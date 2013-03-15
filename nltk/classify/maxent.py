@@ -1379,7 +1379,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     if gaussian_prior_sigma:
         # Lambda is just the precision of the Gaussian prior, i.e. it's the
         # inverse variance, so the parameter conversion is 1.0/sigma**2.
-        # See http://www.cs.utah.edu/~hal/docs/daume04cg-bfgs.pdf.
+        # See http://www.umiacs.umd.edu/~hal/docs/daume04cg-bfgs.pdf.
         inv_variance = 1.0 / gaussian_prior_sigma**2
     else:
         inv_variance = 0
