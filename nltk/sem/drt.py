@@ -22,9 +22,10 @@ from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
 
 # Import Tkinter-based modules if they are available
 try:
-    from Tkinter import Canvas
-    from Tkinter import Tk
-    from tkFont import Font
+    # imports are fixed for Python 2.x by nltk.compat
+    from tkinter import Canvas
+    from tkinter import Tk
+    from tkinter.font import Font
     from nltk.util import in_idle
 
 except ImportError:

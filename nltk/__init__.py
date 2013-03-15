@@ -155,7 +155,7 @@ else:
 
 from .downloader import download, download_shell
 try:
-    import Tkinter
+    import tkinter
 except ImportError:
     pass
 else:

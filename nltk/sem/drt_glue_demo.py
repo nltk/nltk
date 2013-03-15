@@ -7,9 +7,11 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from tkFont import Font
+from nltk import compat  # this fixes tkinter imports for Python 2.x
 
-from Tkinter import (Button, Frame, IntVar, Label,
+from tkinter.font import Font
+
+from tkinter import (Button, Frame, IntVar, Label,
                      Listbox, Menu, Scrollbar, Tk)
 
 from nltk.draw.util import CanvasFrame, ShowText
@@ -448,7 +450,7 @@ class DrsWidget(object):
         self.bbox = (0, 0, 0, 0)
 
     def draw(self):
-        (right, bottom) = DrsDrawer(self._drs, canvas=self._canvas).draw();
+        (right, bottom) = DrsDrawer(self._drs, canvas=self._canvas).draw()
         self.bbox = (0, 0, right+1, bottom+1)
 
     def clear(self):

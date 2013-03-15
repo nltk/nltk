@@ -164,7 +164,7 @@ from hashlib import md5
 
 try:
     TKINTER = True
-    from Tkinter import (Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar,
+    from tkinter import (Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar,
                          TclError)
     from tkMessageBox import showerror
     from nltk.draw.table import Table
