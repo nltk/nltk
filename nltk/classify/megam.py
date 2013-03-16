@@ -20,7 +20,7 @@ for details.
 
     nltk.classify.MaxentClassifier.train(corpus, 'megam')
 
-.. _megam: http://www.cs.utah.edu/~hal/megam/
+.. _megam: http://www.umiacs.umd.edu/~hal/megam/index.html
 """
 from __future__ import print_function
 
@@ -55,7 +55,7 @@ def config_megam(bin=None):
         'megam', bin,
         env_vars=['MEGAM',  'MEGAMHOME'],
         binary_names=['megam.opt', 'megam', 'megam_686', 'megam_i686.opt'],
-        url='http://www.cs.utah.edu/~hal/megam/')
+        url='http://www.umiacs.umd.edu/~hal/megam/index.html')
 
 ######################################################################
 #{ Megam Interface Functions
