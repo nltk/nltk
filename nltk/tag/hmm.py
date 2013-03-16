@@ -106,7 +106,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
     This implementation is based on the HMM description in Chapter 8, Huang,
     Acero and Hon, Spoken Language Processing and includes an extension for
-    training shallow HMM parsers or specializaed HMMs as in Molina et.
+    training shallow HMM parsers or specialized HMMs as in Molina et.
     al, 2002.  A specialized HMM modifies training data by applying a
     specialization function to create a new training set that is more
     appropriate for sequential tagging with an HMM.  A typical use case is
@@ -1187,7 +1187,7 @@ def demo_pos():
 def _untag(sentences):
     unlabeled = []
     for sentence in sentences:
-        unlabeled.append((token[_TEXT], None) for token in sentence)
+        unlabeled.append([(token[_TEXT], None) for token in sentence])
     return unlabeled
 
 def demo_pos_bw():
@@ -1253,7 +1253,7 @@ def demo_bw():
     rng = random.Random()
     for i in range(10):
         item = model.random_sample(rng, 5)
-        training.append((i[0], None) for i in item)
+        training.append([(i[0], None) for i in item])
 
     # train on those examples, starting with the model that generated them
     trainer = HiddenMarkovModelTrainer(states, symbols)
