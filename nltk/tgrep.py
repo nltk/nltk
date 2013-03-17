@@ -349,3 +349,22 @@ def tgrep_compile(tgrep_string):
     '''
     parser = _build_tgrep_parser(True)
     return list(parser.parseString(tgrep_string))[0]
+
+def tgrep_positions(tree, tgrep_string):
+    '''
+    Return all tree positions in the given tree which match the given
+    tgrep string.
+    '''
+    if not hasattr(tree, 'treepositions'):
+        return []
+    if isinstance(tgrep_string, basestring):
+        tgrep_string = tgrep_compile(tgrep_string)
+    return [position for position in tree.treepositions()
+            if tgrep_string(tree[position])]
+
+def tgrep_nodes(tree, tgrep_string):
+    '''
+    Return all tree nodes in the given tree which match the given
+    tgrep string.
+    '''
+    return [tree[position] for position in tgrep_positions(tree, tgrep_string)]
