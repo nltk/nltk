@@ -308,16 +308,16 @@ def _tgrep_relation_action(_s, _l, tokens):
             assert False, 'operator ">>:" is not yet implemented' # NYI
         # A . B       A immediately precedes B.
         elif operator == '.':
-            assert False, 'operator "." is not yet implemented' # NYI
+            retval = lambda n: any([predicate(x) for x in _immediately_after(n)])
         # A , B       A immediately follows B.
         elif operator == ',':
-            assert False, 'operator "," is not yet implemented' # NYI
+            retval = lambda n: any([predicate(x) for x in _immediately_before(n)])
         # A .. B      A precedes B.
         elif operator == '..':
-            assert False, 'operator ".." is not yet implemented' # NYI
+            retval = lambda n: any([predicate(x) for x in _after(n)])
         # A ,, B      A follows B.
         elif operator == ',,':
-            assert False, 'operator ",," is not yet implemented' # NYI
+            retval = lambda n: any([predicate(x) for x in _before(n)])
         # A $ B       A is a sister of B (and A != B).
         elif operator == '$' or operator == '%':
             retval = lambda n: (hasattr(n, 'parent') and
