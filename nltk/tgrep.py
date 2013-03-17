@@ -81,6 +81,10 @@ def _immediately_before(node):
     '''
     Returns the set of all nodes that are immediately before the given
     node.
+
+    Tree node A immediately precedes node B if the last terminal
+    symbol (word) produced by A immediately precedes the first
+    terminal symbol produced by B.
     '''
     if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
         return []
@@ -111,6 +115,10 @@ def _immediately_after(node):
     '''
     Returns the set of all nodes that are immediately after the given
     node.
+
+    Tree node A immediately follows node B if the first terminal
+    symbol (word) produced by A immediately follows the last
+    terminal symbol produced by B.
     '''
     if (not hasattr(node, 'root') or not hasattr(node, 'treeposition') or
         not hasattr(node, 'parent')):
@@ -308,10 +316,12 @@ def _tgrep_relation_action(_s, _l, tokens):
             assert False, 'operator ">>:" is not yet implemented' # NYI
         # A . B       A immediately precedes B.
         elif operator == '.':
-            retval = lambda n: any([predicate(x) for x in _immediately_after(n)])
+            retval = lambda n: any([predicate(x)
+                                    for x in _immediately_after(n)])
         # A , B       A immediately follows B.
         elif operator == ',':
-            retval = lambda n: any([predicate(x) for x in _immediately_before(n)])
+            retval = lambda n: any([predicate(x)
+                                    for x in _immediately_before(n)])
         # A .. B      A precedes B.
         elif operator == '..':
             retval = lambda n: any([predicate(x) for x in _after(n)])
