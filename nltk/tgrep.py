@@ -14,6 +14,8 @@ Tgrep tutorial:
 http://www.stanford.edu/dept/linguistics/corpora/cas-tut-tgrep.html
 Tgrep2 manual:
 http://tedlab.mit.edu/~dr/Tgrep2/tgrep2.pdf
+Tgrep2 source:
+http://tedlab.mit.edu/~dr/Tgrep2/
 '''
 
 import nltk.tree
@@ -70,22 +72,34 @@ def _tgrep_node_action(_s, _l, tokens):
     depending on the name of its node.
     '''
     # print 'node tokens: ', tokens
-    if tokens[0] == '*' or tokens[0] == '__':
-        return lambda n: True
-    elif tokens[0].startswith('"'):
-        return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
-                                     else n) == s)(tokens[0].strip('"'))
-    elif tokens[0].startswith('/'):
-        return (lambda r: lambda n:
-                r.match(n.node if isinstance(n, nltk.tree.Tree)
-                        else n))(re.compile(tokens[0].strip('/')))
-    elif tokens[0].startswith('i@'):
-        return (lambda s: lambda n:
-                (n.node if isinstance(n, nltk.tree.Tree)
-                 else n).lower() == s)(tokens[0][2:].lower())
+    if len(tokens) > 1:
+        # disjunctive definition of a node name
+        assert list(set(tokens[1::2])) == ['|']
+        # recursively call self to interpret each node name definition
+        tokens = [_tgrep_node_action(None, None, [node]) for node in tokens[::2]]
+        # capture tokens and return the disjunction
+        return (lambda t: lambda n: any(f(n) for f in t))(tokens)
     else:
-        return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
-                                     else n) == s)(tokens[0])
+        if hasattr(tokens[0], '__call__'):
+            # this is a previously interpreted parenthetical node
+            # definition (lambda function)
+            return tokens[0]
+        elif tokens[0] == '*' or tokens[0] == '__':
+            return lambda n: True
+        elif tokens[0].startswith('"'):
+            return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
+                                         else n) == s)(tokens[0].strip('"'))
+        elif tokens[0].startswith('/'):
+            return (lambda r: lambda n:
+                    r.match(n.node if isinstance(n, nltk.tree.Tree)
+                            else n))(re.compile(tokens[0].strip('/')))
+        elif tokens[0].startswith('i@'):
+            return (lambda s: lambda n:
+                    (n.node if isinstance(n, nltk.tree.Tree)
+                     else n).lower() == s)(tokens[0][2:].lower())
+        else:
+            return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
+                                         else n) == s)(tokens[0])
 
 def _tgrep_parens_action(_s, _l, tokens):
     '''
@@ -306,13 +320,13 @@ def _build_tgrep_parser(set_parse_actions = True):
     tgrep_expr = pyparsing.Forward()
     tgrep_relations = pyparsing.Forward()
     tgrep_parens = pyparsing.Literal('(') + tgrep_expr + ')'
-    # NYI: implement disjunction form of node labelling
+    tgrep_node_expr = (tgrep_qstring |
+                       tgrep_node_regex |
+                       '*' |
+                       tgrep_node_literal)
     tgrep_node = (tgrep_parens |
                   (pyparsing.Optional("'") +
-                   (tgrep_qstring |
-                    tgrep_node_regex |
-                    '*' |
-                    tgrep_node_literal)))
+                   tgrep_node_expr + pyparsing.ZeroOrMore("|" + tgrep_node_expr)))
     tgrep_relation = pyparsing.Forward()
     tgrep_brackets = pyparsing.Optional('!') + '[' + tgrep_relations + ']'
     tgrep_relation = tgrep_brackets | tgrep_op + tgrep_node
