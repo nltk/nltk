@@ -156,17 +156,17 @@ def _tgrep_relation_action(_s, _l, tokens):
             # capture the index parameter
             retval = (lambda i: lambda n: (isinstance(n, nltk.tree.Tree) and
                                            bool(list(n)) and
-                                           i < len(n) and
-                                           predicate(n[i])))(idx)
+                                           0 <= i < len(n) and
+                                           predicate(n[i])))(idx - 1)
         # A >N B      A is the Nth child of B (the first child is >1).
         elif operator[0] == '>' and operator[1:].isdigit():
             idx = int(operator[1:])
             # capture the index parameter
             retval = (lambda i: lambda n: (hasattr(n, 'parent') and
                                            bool(n.parent()) and
-                                           i < len(n.parent()) and
+                                           0 <= i < len(n.parent()) and
                                            (n is n.parent()[i]) and
-                                           predicate(n.parent())))(idx)
+                                           predicate(n.parent())))(idx - 1)
         # A <' B      B is the last child of A (also synonymous with A <-1 B).
         # A <- B      B is the last child of A (synonymous with A <-1 B).
         elif operator == '<\'' or operator == '<-' or operator == '<-1':
