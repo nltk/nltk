@@ -66,6 +66,52 @@ def _rightmost_descendants(node):
     rightmost_leaf = max(node.treepositions())
     return [node[rightmost_leaf[:i]] for i in range(1, len(rightmost_leaf) + 1)]
 
+def _immediately_before(node):
+    '''
+    Returns the set of all nodes that are immediately before the given
+    node.
+    '''
+    if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
+        return []
+    tree = node.root()
+    pos = node.treeposition()
+    largest_pos_before = set(x[:len(pos)]
+                             for x in tree.treepositions() if x[:len(pos)] < pos[:len(x)])
+    if not largest_pos_before:
+        return []
+    largest_pos_before = max(largest_pos_before)
+    # find the index+1 of the first location where pos and
+    # largest_pos_before are not equal
+    height = [(i+1) for i,(x,y) in
+              enumerate(zip(pos, largest_pos_before)) if x != y]
+    if height:
+        largest_pos_before = largest_pos_before[:min(height)]
+    before = tree[largest_pos_before]
+    return [before] + _rightmost_descendants(before)
+
+def _immediately_after(node):
+    '''
+    Returns the set of all nodes that are immediately after the given
+    node.
+    '''
+    if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
+        return []
+    tree = node.root()
+    pos = node.treeposition()
+    smallest_pos_after = set(x[:len(pos)]
+                             for x in tree.treepositions() if x[:len(pos)] > pos[:len(x)])
+    if not smallest_pos_after:
+        return []
+    smallest_pos_after = min(smallest_pos_after)
+    # find the index+1 of the first location where pos and
+    # smallest_pos_after are not equal
+    height = [(i+1) for i,(x,y) in
+              enumerate(zip(pos, smallest_pos_after)) if x != y]
+    if height:
+        smallest_pos_after = smallest_pos_after[:min(height)]
+    after = tree[smallest_pos_after]
+    return [after] + _leftmost_descendants(after)
+
 def _tgrep_node_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a predicate on a tree node
