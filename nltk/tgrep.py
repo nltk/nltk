@@ -143,7 +143,8 @@ def _tgrep_node_action(_s, _l, tokens):
         # disjunctive definition of a node name
         assert list(set(tokens[1::2])) == ['|']
         # recursively call self to interpret each node name definition
-        tokens = [_tgrep_node_action(None, None, [node]) for node in tokens[::2]]
+        tokens = [_tgrep_node_action(None, None, [node])
+                  for node in tokens[::2]]
         # capture tokens and return the disjunction
         return (lambda t: lambda n: any(f(n) for f in t))(tokens)
     else:
@@ -255,11 +256,12 @@ def _tgrep_relation_action(_s, _l, tokens):
         elif operator[:2] == '>-' and operator[2:].isdigit():
             idx = -int(operator[2:])
             # capture the index parameter
-            retval = (lambda i: lambda n: (hasattr(n, 'parent') and
-                                           bool(n.parent()) and
-                                           0 <= (i + len(n.parent())) < len(n.parent()) and
-                                           (n is n.parent()[i + len(n.parent())]) and
-                                           predicate(n.parent())))(idx)
+            retval = (lambda i: lambda n:
+                      (hasattr(n, 'parent') and
+                       bool(n.parent()) and
+                       0 <= (i + len(n.parent())) < len(n.parent()) and
+                       (n is n.parent()[i + len(n.parent())]) and
+                       predicate(n.parent())))(idx)
         # A <: B      B is the only child of A
         elif operator == '<:':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
@@ -402,7 +404,8 @@ def _build_tgrep_parser(set_parse_actions = True):
                        tgrep_node_literal)
     tgrep_node = (tgrep_parens |
                   (pyparsing.Optional("'") +
-                   tgrep_node_expr + pyparsing.ZeroOrMore("|" + tgrep_node_expr)))
+                   tgrep_node_expr +
+                   pyparsing.ZeroOrMore("|" + tgrep_node_expr)))
     tgrep_relation = pyparsing.Forward()
     tgrep_brackets = pyparsing.Optional('!') + '[' + tgrep_relations + ']'
     tgrep_relation = tgrep_brackets | tgrep_op + tgrep_node
