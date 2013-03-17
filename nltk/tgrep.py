@@ -69,7 +69,7 @@ def _tgrep_node_action(_s, _l, tokens):
     Builds a lambda function representing a predicate on a tree node
     depending on the name of its node.
     '''
-    print 'node tokens: ', tokens
+    # print 'node tokens: ', tokens
     if tokens[0] == '*' or tokens[0] == '__':
         return lambda n: True
     elif tokens[0].startswith('"'):
@@ -92,7 +92,7 @@ def _tgrep_parens_action(_s, _l, tokens):
     Builds a lambda function representing a predicate on a tree node
     from a parenthetical notation.
     '''
-    print 'parenthetical tokens: ', tokens
+    # print 'parenthetical tokens: ', tokens
     assert len(tokens) == 3
     assert tokens[0] == '('
     assert tokens[2] == ')'
@@ -103,7 +103,7 @@ def _tgrep_relation_action(_s, _l, tokens):
     Builds a lambda function representing a predicate on a tree node
     depending on its relation to other nodes in the tree.
     '''
-    print 'relation tokens: ', tokens
+    # print 'relation tokens: ', tokens
     if tokens[0] == '[' or (tokens[0] == '!' and tokens[1] == '['):
         assert False, 'parsing square brackets not yet implemented' # NYI
     else:
@@ -272,7 +272,7 @@ def _tgrep_rel_conjunction_action(_s, _l, tokens):
     '''
     # filter out the ampersand
     tokens = [x for x in tokens if x != '&']
-    print 'relation conjunction tokens: ', tokens
+    # print 'relation conjunction tokens: ', tokens
     if len(tokens) == 1:
         return tokens[0]
     elif len(tokens) == 2:
@@ -285,7 +285,7 @@ def _tgrep_rel_disjunction_action(_s, _l, tokens):
     '''
     # filter out the pipe
     tokens = [x for x in tokens if x != '|']
-    print 'relation disjunction tokens: ', tokens
+    # print 'relation disjunction tokens: ', tokens
     if len(tokens) == 1:
         return tokens[0]
     elif len(tokens) == 2:
