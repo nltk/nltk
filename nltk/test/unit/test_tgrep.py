@@ -24,8 +24,9 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         tokens = tgrep.tgrep_tokenize('A .. (B !< C . D) | ![<< (E , F) $ G]')
         self.assertEqual(tokens,
-                         ['A', '..', '(', 'B', '!<', 'C', '.', 'D', ')', '|',
-                          '![', '<<', '(', 'E', ',', 'F', ')', '$', 'G', ']'])
+                         ['A', '..', '(', 'B', '!', '<', 'C', '.', 'D', ')',
+                          '|', '!', '[', '<<', '(', 'E', ',', 'F', ')', '$',
+                          'G', ']'])
 
     def test_tokenize_link_types(self):
         '''
@@ -68,22 +69,32 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_tokenize('A!>3B'),   ['A', '!', '>3', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!<,B'),   ['A', '!', '<,', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!>,B'),   ['A', '!', '>,', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!<-3B'),  ['A', '!', '<-3', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!>-3B'),  ['A', '!', '>-3', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!<-3B'),
+                         ['A', '!', '<-3', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!>-3B'),
+                         ['A', '!', '>-3', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!<-B'),   ['A', '!', '<-', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!>-B'),   ['A', '!', '>-', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!<\'B'),  ['A', '!', '<\'', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!>\'B'),  ['A', '!', '>\'', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!<\'B'),
+                         ['A', '!', '<\'', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!>\'B'),
+                         ['A', '!', '>\'', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!<:B'),   ['A', '!', '<:', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!>:B'),   ['A', '!', '>:', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!<<B'),   ['A', '!', '<<', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!>>B'),   ['A', '!', '>>', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!<<,B'),  ['A', '!', '<<,', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!>>,B'),  ['A', '!', '>>,', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!<<\'B'), ['A', '!', '<<\'', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!>>\'B'), ['A', '!', '>>\'', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!<<:B'),  ['A', '!', '<<:', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!>>:B'),  ['A', '!', '>>:', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!<<,B'),
+                         ['A', '!', '<<,', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!>>,B'),
+                         ['A', '!', '>>,', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!<<\'B'),
+                         ['A', '!', '<<\'', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!>>\'B'),
+                         ['A', '!', '>>\'', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!<<:B'),
+                         ['A', '!', '<<:', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!>>:B'),
+                         ['A', '!', '>>:', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!.B'),    ['A', '!', '.', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!,B'),    ['A', '!', ',', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!..B'),   ['A', '!', '..', 'B'])
@@ -91,8 +102,10 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_tokenize('A!$B'),    ['A', '!', '$', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!$.B'),   ['A', '!', '$.', 'B'])
         self.assertEqual(tgrep.tgrep_tokenize('A!$,B'),   ['A', '!', '$,', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!$..B'),  ['A', '!', '$..', 'B'])
-        self.assertEqual(tgrep.tgrep_tokenize('A!$,,B'),  ['A', '!', '$,,', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!$..B'),
+                         ['A', '!', '$..', 'B'])
+        self.assertEqual(tgrep.tgrep_tokenize('A!$,,B'),
+                         ['A', '!', '$,,', 'B'])
 
     def test_tokenize_examples(self):
         '''
@@ -107,7 +120,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_tokenize('NP << PP | . VP'),
                          ['NP', '<<', 'PP', '|', '.', 'VP'])
         self.assertEqual(tgrep.tgrep_tokenize('NP !<< PP [> NP | >> VP]'),
-                         ['NP', '!<<', 'PP', '[', '>', 'NP', '|',
+                         ['NP', '!', '<<', 'PP', '[', '>', 'NP', '|',
                           '>>', 'VP', ']'])
         self.assertEqual(tgrep.tgrep_tokenize('NP << (PP . VP)'),
                          ['NP', '<<', '(', 'PP', '.', 'VP', ')'])
@@ -144,7 +157,6 @@ class TestSequenceFunctions(unittest.TestCase):
     def test_shuffle(self):
         t = ParentedTree('(S (NP (DT the) (JJ big) (NN dog)) '
                          '(VP bit) (NP (DT a) (NN cat)))')
-        pass
 
 if __name__ == '__main__' and sys.argv != ['']:
     unittest.main()
