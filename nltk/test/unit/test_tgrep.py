@@ -145,7 +145,7 @@ class TestSequenceFunctions(unittest.TestCase):
                          ['"A<<:B"', '<<:', '"A $.. B"', '<', '"A>3B"',
                           '<', 'C'])
 
-    def test_nodenames(self):
+    def test_tokenize_nodenames(self):
         '''
         Test tokenization of node names.
         '''
@@ -154,7 +154,11 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_tokenize('*'), ['*'])
         self.assertEqual(tgrep.tgrep_tokenize('__'), ['__'])
 
-    def test_simple_tgrep(self):
+    def test_node_simple(self):
+        '''
+        Test a simple use of tgrep for finding nodes matching a given
+        pattern.
+        '''
         tree = ParentedTree('(S (NP (DT the) (JJ big) (NN dog)) '
                          '(VP bit) (NP (DT a) (NN cat)))')
         self.assertEqual(tgrep.tgrep_positions(tree, 'NN'),
