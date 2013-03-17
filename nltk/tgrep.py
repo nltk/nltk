@@ -154,7 +154,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         elif operator[0] == '<' and operator[1:].isdigit():
             idx = int(operator[1:])
             # capture the index parameter
-            retval = lambda i: (lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = (lambda i: lambda n: (isinstance(n, nltk.tree.Tree) and
                                            bool(list(n)) and
                                            i < len(n) and
                                            predicate(n[i])))(idx)
@@ -162,7 +162,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         elif operator[0] == '>' and operator[1:].isdigit():
             idx = int(operator[1:])
             # capture the index parameter
-            retval = lambda i: (lambda n: (hasattr(n, 'parent') and
+            retval = (lambda i: lambda n: (hasattr(n, 'parent') and
                                            bool(n.parent()) and
                                            i < len(n.parent()) and
                                            (n is n.parent()[i]) and
