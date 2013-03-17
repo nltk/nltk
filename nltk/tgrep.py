@@ -182,11 +182,20 @@ def _tgrep_relation_action(_s, _l, tokens):
         # A <-N B 	  B is the N th-to-last child of A (the last child is <-1).
         elif operator[:2] == '<-' and operator[2:].isdigit():
             idx = -int(operator[2:])
-            assert False, 'operator "<-N" is not yet implemented' # NYI
+            # capture the index parameter
+            retval = (lambda i: lambda n: (isinstance(n, nltk.tree.Tree) and
+                                           bool(list(n)) and
+                                           0 <= (i + len(n)) < len(n) and
+                                           predicate(n[i + len(n)])))(idx)
         # A >-N B 	  A is the N th-to-last child of B (the last child is >-1).
         elif operator[:2] == '>-' and operator[2:].isdigit():
             idx = -int(operator[2:])
-            assert False, 'operator ">-N" is not yet implemented' # NYI
+            # capture the index parameter
+            retval = (lambda i: lambda n: (hasattr(n, 'parent') and
+                                           bool(n.parent()) and
+                                           0 <= (i + len(n.parent())) < len(n.parent()) and
+                                           (n is n.parent()[i + len(n.parent())]) and
+                                           predicate(n.parent())))(idx)
         # A <: B      B is the only child of A
         elif operator == '<:':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
