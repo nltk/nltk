@@ -66,6 +66,17 @@ def _rightmost_descendants(node):
     rightmost_leaf = max(node.treepositions())
     return [node[rightmost_leaf[:i]] for i in range(1, len(rightmost_leaf) + 1)]
 
+def _before(node):
+    '''
+    Returns the set of all nodes that are before the given node.
+    '''
+    if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
+        return []
+    pos = node.treeposition()
+    tree = node.root()
+    return [tree[x] for x in tree.treepositions()
+            if x[:len(pos)] < pos[:len(x)]]
+
 def _immediately_before(node):
     '''
     Returns the set of all nodes that are immediately before the given
@@ -84,6 +95,17 @@ def _immediately_before(node):
     pos[-1] -= 1
     before = node.root()[pos]
     return [before] + _rightmost_descendants(before)
+
+def _after(node):
+    '''
+    Returns the set of all nodes that are after the given node.
+    '''
+    if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
+        return []
+    pos = node.treeposition()
+    tree = node.root()
+    return [tree[x] for x in tree.treepositions()
+            if x[:len(pos)] > pos[:len(x)]]
 
 def _immediately_after(node):
     '''
