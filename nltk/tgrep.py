@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 '''
-TGrep search implementation for NTLK ParentedTrees.
+TGrep search implementation for NTLK trees.
 
 (c) 16 March, 2013 Will Roberts
 
-This module supports tgrep2 syntax for matching parts of NLTK Trees.
+This module supports TGrep2 syntax for matching parts of NLTK Trees.
 Note that many tgrep operators require the tree passed to be a
 ParentedTree.
 
@@ -17,6 +17,7 @@ http://tedlab.mit.edu/~dr/Tgrep2/tgrep2.pdf
 '''
 
 import nltk.tree
+import pyparsing
 import re
 
 def _ancestors(node):
@@ -63,267 +64,288 @@ def _rightmost_descendants(node):
     rightmost_leaf = max(node.treepositions())
     return [node[rightmost_leaf[:i]] for i in range(1, len(rightmost_leaf) + 1)]
 
-def _tgrep_operator (op, pred):
+def _tgrep_node_action(_s, _l, tokens):
     '''
-    Creates lambda functions for the various TGrep links.
+    Builds a lambda function representing a predicate on a tree node
+    depending on the name of its node.
     '''
-    # handle negated operators
-    if op.startswith('!'):
-        not_function = _tgrep_operator(op[1:], pred)
-        # capture not_function
-        return (lambda f: (lambda n: not f(n)))(not_function)
-    # A < B       A is the parent of (immediately dominates) B.
-    if op == '<':
-        return lambda n: (isinstance(n, nltk.tree.Tree) and
-                          any([pred(x) for x in n]))
-    # A > B       A is the child of B.
-    elif op == '>':
-        return lambda n: (hasattr(n, 'parent') and
-                          bool(n.parent()) and
-                          pred(n.parent()))
-    # A <, B      Synonymous with A <1 B.
-    elif op == '<,' or op == '<1':
-        return lambda n: (isinstance(n, nltk.tree.Tree) and
-                          bool(list(n)) and
-                          pred(n[0]))
-    # A >, B      Synonymous with A >1 B.
-    elif op == '>,' or op == '>1':
-        return lambda n: (hasattr(n, 'parent') and
-                          bool(n.parent()) and
-                          (n is n.parent()[0]) and
-                          pred(n.parent()))
-    # A <N B      B is the Nth child of A (the first child is <1).
-    elif op[0] == '<' and op[1:].isdigit():
-        idx = int(op[1:])
-        # capture the index parameter
-        return lambda i: (lambda n: (isinstance(n, nltk.tree.Tree) and
-                                     bool(list(n)) and
-                                     i < len(n) and
-                                     pred(n[i])))(idx)
-    # A >N B      A is the Nth child of B (the first child is >1).
-    elif op[0] == '>' and op[1:].isdigit():
-        idx = int(op[1:])
-        # capture the index parameter
-        return lambda i: (lambda n: (hasattr(n, 'parent') and
-                                     bool(n.parent()) and
-                                     i < len(n.parent()) and
-                                     (n is n.parent()[i]) and
-                                     pred(n.parent())))(idx)
-    # A <' B      B is the last child of A (also synonymous with A <-1 B).
-    # A <- B      B is the last child of A (synonymous with A <-1 B).
-    elif op == '<\'' or op == '<-' or op == '<-1':
-        return lambda n: (isinstance(n, nltk.tree.Tree) and bool(list(n))
-                          and pred(n[-1]))
-    # A >' B      A is the last child of B (also synonymous with A >-1 B).
-    # A >- B      A is the last child of B (synonymous with A >-1 B).
-    elif op == '>\'' or op == '>-' or op == '>-1':
-        return lambda n: (hasattr(n, 'parent') and
-                          bool(n.parent()) and
-                          (n is n.parent()[-1]) and
-                          pred(n.parent()))
-    # A <-N B 	  B is the N th-to-last child of A (the last child is <-1).
-    elif op[:2] == '<-' and op[2:].isdigit():
-        idx = -int(op[2:])
-        assert False, 'operator "<-N" is not yet implemented' # NYI
-    # A >-N B 	  A is the N th-to-last child of B (the last child is >-1).
-    elif op[:2] == '>-' and op[2:].isdigit():
-        idx = -int(op[2:])
-        assert False, 'operator ">-N" is not yet implemented' # NYI
-    # A <: B      B is the only child of A
-    elif op == '<:':
-        return lambda n: (isinstance(n, nltk.tree.Tree) and
-                          len(n) == 1 and
-                          pred(n[0]))
-    # A >: B      A is the only child of B.
-    elif op == '>:':
-        return lambda n: (hasattr(n, 'parent') and
-                          bool(n.parent()) and
-                          len(n.parent()) == 1 and
-                          pred(n.parent()))
-    # A << B      A dominates B (A is an ancestor of B).
-    elif op == '<<':
-        return lambda n: (isinstance(n, nltk.tree.Tree) and
-                          any([pred(x) for x in _descendants(n)]))
-    # A >> B      A is dominated by B (A is a descendant of B).
-    elif op == '>>':
-        return lambda n: any([pred(x) for x in _ancestors(n)])
-    # A <<, B     B is a left-most descendant of A.
-    elif op == '<<,' or op == '<<1':
-        return lambda n: (isinstance(n, nltk.tree.Tree) and
-                          any([pred(x) for x in _leftmost_descendants(n)]))
-    # A >>, B     A is a left-most descendant of B.
-    elif op == '>>,':
-        return lambda n: any([(pred(x) and n in _leftmost_descendants(x))
-                              for x in _ancestors(n)])
-    # A <<' B     B is a right-most descendant of A.
-    elif op == '<<\'':
-        return lambda n: (isinstance(n, nltk.tree.Tree) and
-                          any([pred(x) for x in _rightmost_descendants(n)]))
-    # A >>' B     A is a right-most descendant of B.
-    elif op == '>>\'':
-        return lambda n: any([(pred(x) and n in _rightmost_descendants(x))
-                              for x in _ancestors(n)])
-    # A <<: B     There is a single path of descent from A and B is on it.
-    elif op == '<<:':
-        assert False, 'operator "<<:" is not yet implemented' # NYI
-    # A >>: B     There is a single path of descent from B and A is on it.
-    elif op == '>>:':
-        assert False, 'operator ">>:" is not yet implemented' # NYI
-    # A . B       A immediately precedes B.
-    elif op == '.':
-        assert False, 'operator "." is not yet implemented' # NYI
-    # A , B       A immediately follows B.
-    elif op == ',':
-        assert False, 'operator "," is not yet implemented' # NYI
-    # A .. B      A precedes B.
-    elif op == '..':
-        assert False, 'operator ".." is not yet implemented' # NYI
-    # A ,, B      A follows B.
-    elif op == ',,':
-        assert False, 'operator ",," is not yet implemented' # NYI
-    # A $ B       A is a sister of B (and A != B).
-    elif op == '$' or op == '%':
-        return lambda n: (hasattr(n, 'parent') and
-                          bool(n.parent()) and
-                          any([pred(x) for x in n.parent() if x is not n]))
-    # A $. B      A is a sister of and immediately precedes B.
-    elif op == '$.' or op == '%.':
-        return lambda n: (hasattr(n, 'left_sibling') and
-                          bool(n.left_sibling()) and
-                          pred(n.left_sibling()))
-    # A $, B      A is a sister of and immediately follows B.
-    elif op == '$,' or op == '%,':
-        return lambda n: (hasattr(n, 'right_sibling') and
-                          bool(n.right_sibling()) and
-                          pred(n.right_sibling()))
-    # A $.. B     A is a sister of and precedes B.
-    elif op == '$..' or op == '%..':
-        return lambda n: (hasattr(n, 'parent') and
-                          hasattr(n, 'parent_index') and
-                          bool(n.parent()) and
-                          any([pred(x) for x in
-                               n.parent()[n.parent_index() + 1:]]))
-    # A $,, B     A is a sister of and follows B.
-    elif op == '$,,' or op == '%,,':
-        return lambda n: (hasattr(n, 'parent') and
-                          hasattr(n, 'parent_index') and
-                          bool(n.parent()) and
-                          any([pred(x) for x in
-                               n.parent()[:n.parent_index()]]))
+    print 'node tokens: ', tokens
+    if tokens[0] == '*' or tokens[0] == '__':
+        return lambda n: True
+    elif tokens[0].startswith('"'):
+        return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
+                                     else n) == s)(tokens[0].strip('"'))
+    elif tokens[0].startswith('/'):
+        return (lambda r: lambda n:
+                r.match(n.node if isinstance(n, nltk.tree.Tree)
+                        else n))(re.compile(tokens[0].strip('/')))
+    elif tokens[0].startswith('i@'):
+        return (lambda s: lambda n:
+                (n.node if isinstance(n, nltk.tree.Tree)
+                 else n).lower() == s)(tokens[0][2:].lower())
     else:
-        assert False, 'cannot interpret tgrep operator "{0}"'.format(op)
+        return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
+                                     else n) == s)(tokens[0])
 
-_TGREP_PATS = [ re.compile('^' + pattern) for pattern in
-                (r'"([^"\\]|\\.)*"',                      # quoted strings
-                 '&|(!?[%,.<>$][!%,.<>0-9-\':]*)',        # tgrep operators
-                 '[ \t\n\r]+',                            # whitespace
-                 '\'?/[^/]+/',                            # node name regex
-                 '\(',                                    # open paren
-                 '\)',                                    # close paren
-                 '!?\[',                                  # open square bracket
-                 '\]',                                    # close square bracket
-                 '\|',                                    # pipe (OR)
-                 '\'?\*',                                 # any node
-                 '\'?[^][ \r\t\n;:.,&|<>()$!@%\'^=]+') ]  # node name literal
+def _tgrep_parens_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a predicate on a tree node
+    from a parenthetical notation.
+    '''
+    print 'parenthetical tokens: ', tokens
+    assert len(tokens) == 3
+    assert tokens[0] == '('
+    assert tokens[2] == ')'
+    return tokens[1]
 
-def _tokenize_tgrep(s):
+def _tgrep_relation_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a predicate on a tree node
+    depending on its relation to other nodes in the tree.
+    '''
+    print 'relation tokens: ', tokens
+    if tokens[0] == '[' or (tokens[0] == '!' and tokens[1] == '['):
+        assert False, 'parsing square brackets not yet implemented' # NYI
+    else:
+        negated = False
+        if tokens[0] == '!':
+            negated = True
+            tokens = tokens[1:]
+        assert len(tokens) == 2
+        operator, predicate = tokens
+        # A < B       A is the parent of (immediately dominates) B.
+        if operator == '<':
+            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+                                any([predicate(x) for x in n]))
+        # A > B       A is the child of B.
+        elif operator == '>':
+            retval = lambda n: (hasattr(n, 'parent') and
+                                bool(n.parent()) and
+                                predicate(n.parent()))
+        # A <, B      Synonymous with A <1 B.
+        elif operator == '<,' or operator == '<1':
+            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+                                bool(list(n)) and
+                                predicate(n[0]))
+        # A >, B      Synonymous with A >1 B.
+        elif operator == '>,' or operator == '>1':
+            retval = lambda n: (hasattr(n, 'parent') and
+                                bool(n.parent()) and
+                                (n is n.parent()[0]) and
+                                predicate(n.parent()))
+        # A <N B      B is the Nth child of A (the first child is <1).
+        elif operator[0] == '<' and operator[1:].isdigit():
+            idx = int(operator[1:])
+            # capture the index parameter
+            retval = lambda i: (lambda n: (isinstance(n, nltk.tree.Tree) and
+                                           bool(list(n)) and
+                                           i < len(n) and
+                                           predicate(n[i])))(idx)
+        # A >N B      A is the Nth child of B (the first child is >1).
+        elif operator[0] == '>' and operator[1:].isdigit():
+            idx = int(operator[1:])
+            # capture the index parameter
+            retval = lambda i: (lambda n: (hasattr(n, 'parent') and
+                                           bool(n.parent()) and
+                                           i < len(n.parent()) and
+                                           (n is n.parent()[i]) and
+                                           predicate(n.parent())))(idx)
+        # A <' B      B is the last child of A (also synonymous with A <-1 B).
+        # A <- B      B is the last child of A (synonymous with A <-1 B).
+        elif operator == '<\'' or operator == '<-' or operator == '<-1':
+            retval = lambda n: (isinstance(n, nltk.tree.Tree) and bool(list(n))
+                                and predicate(n[-1]))
+        # A >' B      A is the last child of B (also synonymous with A >-1 B).
+        # A >- B      A is the last child of B (synonymous with A >-1 B).
+        elif operator == '>\'' or operator == '>-' or operator == '>-1':
+            retval = lambda n: (hasattr(n, 'parent') and
+                                bool(n.parent()) and
+                                (n is n.parent()[-1]) and
+                                predicate(n.parent()))
+        # A <-N B 	  B is the N th-to-last child of A (the last child is <-1).
+        elif operator[:2] == '<-' and operator[2:].isdigit():
+            idx = -int(operator[2:])
+            assert False, 'operator "<-N" is not yet implemented' # NYI
+        # A >-N B 	  A is the N th-to-last child of B (the last child is >-1).
+        elif operator[:2] == '>-' and operator[2:].isdigit():
+            idx = -int(operator[2:])
+            assert False, 'operator ">-N" is not yet implemented' # NYI
+        # A <: B      B is the only child of A
+        elif operator == '<:':
+            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+                                len(n) == 1 and
+                                predicate(n[0]))
+        # A >: B      A is the only child of B.
+        elif operator == '>:':
+            retval = lambda n: (hasattr(n, 'parent') and
+                                bool(n.parent()) and
+                                len(n.parent()) == 1 and
+                                predicate(n.parent()))
+        # A << B      A dominates B (A is an ancestor of B).
+        elif operator == '<<':
+            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+                                any([predicate(x) for x in _descendants(n)]))
+        # A >> B      A is dominated by B (A is a descendant of B).
+        elif operator == '>>':
+            retval = lambda n: any([predicate(x) for x in _ancestors(n)])
+        # A <<, B     B is a left-most descendant of A.
+        elif operator == '<<,' or operator == '<<1':
+            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+                                any([predicate(x)
+                                     for x in _leftmost_descendants(n)]))
+        # A >>, B     A is a left-most descendant of B.
+        elif operator == '>>,':
+            retval = lambda n: any([(predicate(x) and
+                                     n in _leftmost_descendants(x))
+                                    for x in _ancestors(n)])
+        # A <<' B     B is a right-most descendant of A.
+        elif operator == '<<\'':
+            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+                                any([predicate(x)
+                                     for x in _rightmost_descendants(n)]))
+        # A >>' B     A is a right-most descendant of B.
+        elif operator == '>>\'':
+            retval = lambda n: any([(predicate(x) and
+                                     n in _rightmost_descendants(x))
+                                    for x in _ancestors(n)])
+        # A <<: B     There is a single path of descent from A and B is on it.
+        elif operator == '<<:':
+            assert False, 'operator "<<:" is not yet implemented' # NYI
+        # A >>: B     There is a single path of descent from B and A is on it.
+        elif operator == '>>:':
+            assert False, 'operator ">>:" is not yet implemented' # NYI
+        # A . B       A immediately precedes B.
+        elif operator == '.':
+            assert False, 'operator "." is not yet implemented' # NYI
+        # A , B       A immediately follows B.
+        elif operator == ',':
+            assert False, 'operator "," is not yet implemented' # NYI
+        # A .. B      A precedes B.
+        elif operator == '..':
+            assert False, 'operator ".." is not yet implemented' # NYI
+        # A ,, B      A follows B.
+        elif operator == ',,':
+            assert False, 'operator ",," is not yet implemented' # NYI
+        # A $ B       A is a sister of B (and A != B).
+        elif operator == '$' or operator == '%':
+            retval = lambda n: (hasattr(n, 'parent') and
+                                bool(n.parent()) and
+                                any([predicate(x)
+                                     for x in n.parent() if x is not n]))
+        # A $. B      A is a sister of and immediately precedes B.
+        elif operator == '$.' or operator == '%.':
+            retval = lambda n: (hasattr(n, 'left_sibling') and
+                                bool(n.left_sibling()) and
+                                predicate(n.left_sibling()))
+        # A $, B      A is a sister of and immediately follows B.
+        elif operator == '$,' or operator == '%,':
+            retval = lambda n: (hasattr(n, 'right_sibling') and
+                                bool(n.right_sibling()) and
+                                predicate(n.right_sibling()))
+        # A $.. B     A is a sister of and precedes B.
+        elif operator == '$..' or operator == '%..':
+            retval = lambda n: (hasattr(n, 'parent') and
+                                hasattr(n, 'parent_index') and
+                                bool(n.parent()) and
+                                any([predicate(x) for x in
+                                     n.parent()[n.parent_index() + 1:]]))
+        # A $,, B     A is a sister of and follows B.
+        elif operator == '$,,' or operator == '%,,':
+            retval = lambda n: (hasattr(n, 'parent') and
+                                hasattr(n, 'parent_index') and
+                                bool(n.parent()) and
+                                any([predicate(x) for x in
+                                     n.parent()[:n.parent_index()]]))
+        else:
+            assert False, 'cannot interpret tgrep operator "{0}"'.format(
+                operator)
+        # now return the built function
+        if negated:
+            return (lambda r: (lambda n: not r(n)))(retval)
+        else:
+            return retval
+
+def _tgrep_rel_conjunction_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a predicate on a tree node
+    from the conjunction of several other such lambda functions.
+    '''
+    # filter out the ampersand
+    tokens = [x for x in tokens if x != '&']
+    print 'relation conjunction tokens: ', tokens
+    if len(tokens) == 1:
+        return tokens[0]
+    elif len(tokens) == 2:
+        return (lambda a, b: lambda n: a(n) and b(n))(tokens[0], tokens[1])
+
+def _tgrep_rel_disjunction_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a predicate on a tree node
+    from the disjunction of several other such lambda functions.
+    '''
+    # filter out the pipe
+    tokens = [x for x in tokens if x != '|']
+    print 'relation disjunction tokens: ', tokens
+    if len(tokens) == 1:
+        return tokens[0]
+    elif len(tokens) == 2:
+        return (lambda a, b: lambda n: a(n) or b(n))(tokens[0], tokens[1])
+
+def _build_tgrep_parser(set_parse_actions = True):
+    '''
+    Builds a pyparsing-based parser object for tokenizing and
+    interpreting tgrep search strings.
+    '''
+    tgrep_op = (pyparsing.Optional('!') +
+                pyparsing.Regex('[$%,.<>][%,.<>0-9-\':]*'))
+    tgrep_qstring = pyparsing.QuotedString(quoteChar='"', escChar='\\',
+                                           unquoteResults=False)
+    tgrep_node_regex = pyparsing.QuotedString(quoteChar='/', escChar='\\',
+                                              unquoteResults=False)
+    tgrep_node_literal = pyparsing.Regex('[^][ \r\t\n;:.,&|<>()$!@%\'^=]+')
+    tgrep_expr = pyparsing.Forward()
+    tgrep_relations = pyparsing.Forward()
+    tgrep_parens = pyparsing.Literal('(') + tgrep_expr + ')'
+    # NYI: implement disjunction form of node labelling
+    tgrep_node = (tgrep_parens |
+                  (pyparsing.Optional("'") +
+                   (tgrep_qstring |
+                    tgrep_node_regex |
+                    '*' |
+                    tgrep_node_literal)))
+    tgrep_relation = pyparsing.Forward()
+    tgrep_brackets = pyparsing.Optional('!') + '[' + tgrep_relations + ']'
+    tgrep_relation = tgrep_brackets | tgrep_op + tgrep_node
+    tgrep_rel_conjunction = pyparsing.Forward()
+    tgrep_rel_conjunction << (tgrep_relation +
+                              pyparsing.ZeroOrMore(pyparsing.Optional('&') +
+                                                   tgrep_rel_conjunction))
+    tgrep_relations << tgrep_rel_conjunction + pyparsing.ZeroOrMore(
+        "|" + tgrep_relations)
+    tgrep_expr << tgrep_node + pyparsing.Optional(tgrep_relations)
+    if set_parse_actions:
+        tgrep_node.setParseAction(_tgrep_node_action)
+        tgrep_parens.setParseAction(_tgrep_parens_action)
+        tgrep_relation.setParseAction(_tgrep_relation_action)
+        tgrep_rel_conjunction.setParseAction(_tgrep_rel_conjunction_action)
+        tgrep_relations.setParseAction(_tgrep_rel_disjunction_action)
+        # the whole expression is also the conjunction of two
+        # predicates: the first node predicate, and the remaining
+        # relation predicates
+        tgrep_expr.setParseAction(_tgrep_rel_conjunction_action)
+    return tgrep_expr
+
+def tgrep_tokenize(tgrep_string):
     '''
     Tokenizes a TGrep search string into separate tokens.
     '''
-    results = []
-    while s:
-        # match the TGrep token syntax (defined by regexes) in the
-        # order they are preferred
-        for p in _TGREP_PATS:
-            m = p.match(s)
-            if m:
-                results.append(m.group(0))
-                s = s[m.end():]
-                break
-        if not m:
-            print 'ERROR: cannot tokenize "{0}"'.format(s)
-            return None
-    return [r for r in results if r.strip()]
+    parser = _build_tgrep_parser(False)
+    return list(parser.parseString(tgrep_string))
 
-def parse_tgrep(toks, hungry = True):
+def tgrep_compile(tgrep_string):
     '''
     Parses (and tokenizes, if necessary) a TGrep search string into a
     lambda function.
     '''
-    if isinstance(toks, basestring):
-        toks = _tokenize_tgrep(toks)
-    #print 'parse_tgrep "{0}"'.format(' '.join(toks))
-    parsed_function = None
-    parsed_length = 0
-    # strip apostrophe (print command) from beginning of token
-    if toks[0][0] == "'":
-        toks[0] = toks[0][1:]
-    # match the first token
-    if toks[0] == '(':
-        depth = 1
-        i = 1
-        while depth > 0 and i < len(toks):
-            if toks[i] == '(':
-                depth += 1
-            elif toks[i] == ')':
-                depth -= 1
-            i += 1
-        if depth > 0:
-            assert False, 'unbalanced brackets in tgrep string "{0}"'.format(
-                ' '.join(toks))
-        p, l = parse_tgrep(toks[1:i-1], True)
-        assert l == i - 2, 'tokens in parenthesis not parsed: "{0}"'.format(
-            ' '.join(toks[1+l:-1]))
-        parsed_function, parsed_length = p, i
-    elif toks[0] == '[' or toks[0] == '![':
-        assert False, 'parsing square brackets not yet implemented' # NYI
-    elif toks[0] == '&':
-        assert False, 'parsing & not yet implemented' # NYI
-    elif _TGREP_PATS[1].match(toks[0]):
-        assert len(toks) > 1, 'no argument to operator "{0}"'.format(toks[0])
-        (p, l) = parse_tgrep(toks[1:], False)
-        p = _tgrep_operator(toks[0], p)
-        l += 1
-        parsed_function, parsed_length = (p, l)
-    elif (toks[0] == '*' or
-          toks[0] == '__' or
-          toks[0].startswith('/') or
-          toks[0].startswith('"') or
-          re.match(_TGREP_PATS[-1], toks[0])):
-        l = 1
-        if toks[0].startswith('"'):
-            toks[0] = toks[0].strip('"')
-        if toks[0] == '*' or toks[0] == '__':
-            p = lambda n: True
-        elif toks[0].startswith('/'):
-            p = lambda n: (n.node if isinstance(n, nltk.tree.Tree)
-                           else n).startswith(toks[0].strip('/'))
-        elif toks[0].startswith('i@'):
-            p = lambda n: ((n.node if isinstance(n, nltk.tree.Tree)
-                            else n).lower() == toks[0][2:].lower())
-        else:
-            p = lambda n: ((n.node if isinstance(n, nltk.tree.Tree)
-                            else n) == toks[0])
-        if len(toks) > 1 and toks[1] == '|':
-            assert len(toks) > 2, 'no predicate following logical OR'
-            (p2, l) = parse_tgrep(toks[2:], False)
-            # combine with OR
-            or_function = p
-            p = lambda n: (or_function(n) or p2(n))
-            l += 2
-        parsed_function, parsed_length = (p, l)
-    else:
-        assert False, 'Could not parse token "{0}"'.format(toks[0])
-    if hungry and parsed_length < len(toks):
-        #print 'AND'
-        (p, l) = parse_tgrep(toks[parsed_length:], True)
-        parsed_length += l
-        assert parsed_length == len(toks), (
-            'could not parse tokens "{0}"'.format(
-                ' '.join(toks[parsed_length:])))
-        # combine with AND
-        and_function = parsed_function
-        # capture and_function and p
-        parsed_function = (lambda a, b: 
-                           (lambda n: a(n) and b(n)))(and_function, p)
-    return (parsed_function, parsed_length)
+    parser = _build_tgrep_parser(True)
+    return list(parser.parseString(tgrep_string))[0]
