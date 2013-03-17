@@ -73,20 +73,16 @@ def _immediately_before(node):
     '''
     if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
         return []
-    tree = node.root()
     pos = node.treeposition()
-    largest_pos_before = set(x[:len(pos)]
-                             for x in tree.treepositions() if x[:len(pos)] < pos[:len(x)])
-    if not largest_pos_before:
+    # go "upwards" from pos until there is a place we can go to the left
+    idx = len(pos) - 1
+    while 0 <= idx and pos[idx] == 0:
+        idx -= 1
+    if idx < 0:
         return []
-    largest_pos_before = max(largest_pos_before)
-    # find the index+1 of the first location where pos and
-    # largest_pos_before are not equal
-    height = [(i+1) for i,(x,y) in
-              enumerate(zip(pos, largest_pos_before)) if x != y]
-    if height:
-        largest_pos_before = largest_pos_before[:min(height)]
-    before = tree[largest_pos_before]
+    pos = list(pos[:idx + 1])
+    pos[-1] -= 1
+    before = node.root()[pos]
     return [before] + _rightmost_descendants(before)
 
 def _immediately_after(node):
@@ -94,22 +90,22 @@ def _immediately_after(node):
     Returns the set of all nodes that are immediately after the given
     node.
     '''
-    if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
+    if (not hasattr(node, 'root') or not hasattr(node, 'treeposition') or
+        not hasattr(node, 'parent')):
         return []
-    tree = node.root()
     pos = node.treeposition()
-    smallest_pos_after = set(x[:len(pos)]
-                             for x in tree.treepositions() if x[:len(pos)] > pos[:len(x)])
-    if not smallest_pos_after:
+    # go "upwards" from pos until there is a place we can go to the
+    # right
+    idx = len(pos) - 1
+    current = node.parent()
+    while 0 <= idx and pos[idx] == len(current) - 1:
+        idx -= 1
+        current = current.parent()
+    if idx < 0:
         return []
-    smallest_pos_after = min(smallest_pos_after)
-    # find the index+1 of the first location where pos and
-    # smallest_pos_after are not equal
-    height = [(i+1) for i,(x,y) in
-              enumerate(zip(pos, smallest_pos_after)) if x != y]
-    if height:
-        smallest_pos_after = smallest_pos_after[:min(height)]
-    after = tree[smallest_pos_after]
+    pos = list(pos[:idx + 1])
+    pos[-1] += 1
+    after = node.root()[pos]
     return [after] + _leftmost_descendants(after)
 
 def _tgrep_node_action(_s, _l, tokens):
