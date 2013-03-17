@@ -72,6 +72,9 @@ def _tgrep_node_action(_s, _l, tokens):
     depending on the name of its node.
     '''
     # print 'node tokens: ', tokens
+    if tokens[0] == "'":
+        # strip initial apostrophe (tgrep2 print command)
+        tokens = tokens[1:]
     if len(tokens) > 1:
         # disjunctive definition of a node name
         assert list(set(tokens[1::2])) == ['|']
