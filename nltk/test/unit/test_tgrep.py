@@ -154,9 +154,13 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_tokenize('*'), ['*'])
         self.assertEqual(tgrep.tgrep_tokenize('__'), ['__'])
 
-    def test_shuffle(self):
-        t = ParentedTree('(S (NP (DT the) (JJ big) (NN dog)) '
+    def test_simple_tgrep(self):
+        tree = ParentedTree('(S (NP (DT the) (JJ big) (NN dog)) '
                          '(VP bit) (NP (DT a) (NN cat)))')
+        self.assertEqual(tgrep.tgrep_positions(tree, 'NN'),
+                         [(0,2), (2,1)])
+        self.assertEqual(tgrep.tgrep_nodes(tree, 'NN'),
+                         [tree[0,2], tree[2,1]])
 
 if __name__ == '__main__' and sys.argv != ['']:
     unittest.main()
