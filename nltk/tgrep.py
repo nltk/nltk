@@ -251,14 +251,14 @@ def _tgrep_relation_action(_s, _l, tokens):
                                      for x in n.parent() if x is not n]))
         # A $. B      A is a sister of and immediately precedes B.
         elif operator == '$.' or operator == '%.':
-            retval = lambda n: (hasattr(n, 'left_sibling') and
-                                bool(n.left_sibling()) and
-                                predicate(n.left_sibling()))
-        # A $, B      A is a sister of and immediately follows B.
-        elif operator == '$,' or operator == '%,':
             retval = lambda n: (hasattr(n, 'right_sibling') and
                                 bool(n.right_sibling()) and
                                 predicate(n.right_sibling()))
+        # A $, B      A is a sister of and immediately follows B.
+        elif operator == '$,' or operator == '%,':
+            retval = lambda n: (hasattr(n, 'left_sibling') and
+                                bool(n.left_sibling()) and
+                                predicate(n.left_sibling()))
         # A $.. B     A is a sister of and precedes B.
         elif operator == '$..' or operator == '%..':
             retval = lambda n: (hasattr(n, 'parent') and
