@@ -89,6 +89,9 @@ class FreqDist(dict):
         >>> fdist = FreqDist(word.lower() for word in word_tokenize(sent))
 
     """
+
+    _N = 0
+
     def __init__(self, samples=None):
         """
         Construct a new frequency distribution.  If ``samples`` is
@@ -106,7 +109,6 @@ class FreqDist(dict):
         :type samples: Sequence
         """
         dict.__init__(self)
-        self._N = 0
         self._reset_caches()
         if samples:
             self.update(samples)
@@ -1652,7 +1654,7 @@ class MutableProbDist(ProbDistI):
 # ways of doing so: a marginal distribution constraint on the back-off
 # distribution and a leave-one-out distribution. For a start, the first one is
 # implemented as a class below.
-# 
+#
 # The idea behind a back-off n-gram model is that we have a series of
 # frequency distributions for our n-grams so that in case we have not seen a
 # given n-gram during training (and as a result have a 0 probability for it) we
@@ -1771,7 +1773,7 @@ class KneserNeyProbDist(ProbDistI):
         Set the value by which counts are discounted to the value of discount.
 
         :param discount: the new value to discount counts by
-        :type discount: float (preferred, but int possible)        
+        :type discount: float (preferred, but int possible)
         :rtype: None
         """
         self._D = discount

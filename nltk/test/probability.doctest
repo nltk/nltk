@@ -47,6 +47,14 @@ Note that items are sorted in order of decreasing frequency; two items of the sa
     >>> fd2 == fd1
     True
 
+``nltk.FreqDist`` can be pickled:
+
+    >>> import pickle
+    >>> fd1 = nltk.FreqDist(text1)
+    >>> pickled = pickle.dumps(fd1)
+    >>> fd1 == pickle.loads(pickled)
+    True
+
 Testing some HMM estimators
 ---------------------------
 
@@ -145,7 +153,7 @@ Kneser Ney Estimation
 Since the Kneser-Ney distribution is best suited for trigrams, we must adjust
 our testing accordingly.
 
-    >>> corpus = [[((x[0],y[0],z[0]),(x[1],y[1],z[1])) 
+    >>> corpus = [[((x[0],y[0],z[0]),(x[1],y[1],z[1]))
     ...     for x, y, z in nltk.trigrams(sent)]
     ...         for sent in corpus[:100]]
 
