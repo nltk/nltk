@@ -171,6 +171,8 @@ class TestSequenceFunctions(unittest.TestCase):
         Test regex matching on nodes.
         '''
         tree = ParentedTree('(S (NP-SBJ x) (NP x) (NNP x) (VP x))')
+        # This is a regular expression that matches any node whose
+        # name starts with NP, including NP-SBJ:
         self.assertEqual(tgrep.tgrep_positions(tree, '/^NP/'),
                          [(0,), (1,)])
 
