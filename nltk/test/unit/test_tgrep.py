@@ -259,6 +259,29 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, '* <-2 A'),  [(2,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* <-3 A'),  [(0,)])
 
+    def test_rel_precedence(self):
+        tree = ParentedTree('(S (NP (NP (PP x)) (NP (AP x)))'
+                            ' (VP (AP (X (PP x)) (Y (AP x))))'
+                            ' (NP (RC (NP (AP x)))))')
+        self.assertEqual(tgrep.tgrep_positions(tree, '* . X'),
+                         [(0,), (0, 1), (0, 1, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* . Y'),
+                         [(1, 0, 0), (1, 0, 0, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* .. X'),
+                         [(0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* .. Y'),
+                         [(0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0),
+                          (1, 0, 0), (1, 0, 0, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* , X'),
+                         [(1, 0, 1), (1, 0, 1, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* , Y'),
+                         [(2,), (2, 0), (2, 0, 0), (2, 0, 0, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* ,, X'),
+                         [(1, 0, 1), (1, 0, 1, 0), (2,), (2, 0), (2, 0, 0),
+                          (2, 0, 0, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* ,, Y'),
+                         [(2,), (2, 0), (2, 0, 0), (2, 0, 0, 0)])
+
 if __name__ == '__main__' and sys.argv != ['']:
     unittest.main()
 
