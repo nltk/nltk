@@ -1017,6 +1017,9 @@ class HiddenMarkovModelTrainer(object):
 
         # count occurrences of starting states, transitions out of each state
         # and output symbols observed in each state
+        known_symbols = set(self._symbols)
+        known_states = set(self._states)
+
         starting = FreqDist()
         transitions = ConditionalFreqDist()
         outputs = ConditionalFreqDist()
@@ -1033,10 +1036,13 @@ class HiddenMarkovModelTrainer(object):
                 lasts = state
 
                 # update the state and symbol lists
-                if state not in self._states:
+                if state not in known_states:
                     self._states.append(state)
-                if symbol not in self._symbols:
+                    known_states.add(state)
+
+                if symbol not in known_symbols:
                     self._symbols.append(symbol)
+                    known_symbols.add(symbol)
 
         # create probability distributions (with smoothing)
         N = len(self._states)
@@ -1176,7 +1182,7 @@ def demo_pos():
     print()
 
     print('Training HMM...')
-    labelled_sequences, tag_set, symbols = load_pos(200)
+    labelled_sequences, tag_set, symbols = load_pos(20000)
     trainer = HiddenMarkovModelTrainer(tag_set, symbols)
     hmm = trainer.train_supervised(labelled_sequences[10:],
                     estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
@@ -1226,9 +1232,7 @@ def demo_bw():
     states = ['bull', 'bear', 'static']
 
     def pd(values, samples):
-        d = {}
-        for value, item in zip(values, samples):
-            d[item] = value
+        d = dict(zip(samples, values))
         return DictionaryProbDist(d)
 
     def cpd(array, conditions, samples):
