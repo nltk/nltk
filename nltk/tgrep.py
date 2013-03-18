@@ -214,13 +214,18 @@ def _tgrep_relation_action(_s, _l, tokens):
     depending on its relation to other nodes in the tree.
     '''
     # print 'relation tokens: ', tokens
-    if tokens[0] == '[' or (tokens[0] == '!' and tokens[1] == '['):
-        assert False, 'parsing square brackets not yet implemented' # NYI
+    # process negation first if needed
+    negated = False
+    if tokens[0] == '!':
+        negated = True
+        tokens = tokens[1:]
+    if tokens[0] == '[':
+        # process square-bracketed relation expressions
+        assert len(tokens) == 3
+        assert tokens[2] == ']'
+        retval = tokens[1]
     else:
-        negated = False
-        if tokens[0] == '!':
-            negated = True
-            tokens = tokens[1:]
+        # process operator-node relation expressions
         assert len(tokens) == 2
         operator, predicate = tokens
         # A < B       A is the parent of (immediately dominates) B.
@@ -381,11 +386,11 @@ def _tgrep_relation_action(_s, _l, tokens):
         else:
             assert False, 'cannot interpret tgrep operator "{0}"'.format(
                 operator)
-        # now return the built function
-        if negated:
-            return (lambda r: (lambda n: not r(n)))(retval)
-        else:
-            return retval
+    # now return the built function
+    if negated:
+        return (lambda r: (lambda n: not r(n)))(retval)
+    else:
+        return retval
 
 def _tgrep_rel_conjunction_action(_s, _l, tokens):
     '''
