@@ -4,7 +4,7 @@
 '''
 TGrep search implementation for NTLK trees.
 
-(c) 16 March, 2013 Will Roberts
+(c) 16 March, 2013 Will Roberts <wildwilhelm@gmail.com>.
 
 This module supports TGrep2 syntax for matching parts of NLTK Trees.
 Note that many tgrep operators require the tree passed to be a
