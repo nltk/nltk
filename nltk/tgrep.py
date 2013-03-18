@@ -70,7 +70,7 @@ def _before(node):
     '''
     Returns the set of all nodes that are before the given node.
     '''
-    if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
+    if not hasattr(node, 'root') or not hasattr(node, 'treeposition'):
         return []
     pos = node.treeposition()
     tree = node.root()
@@ -86,7 +86,7 @@ def _immediately_before(node):
     symbol (word) produced by A immediately precedes the first
     terminal symbol produced by B.
     '''
-    if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
+    if not hasattr(node, 'root') or not hasattr(node, 'treeposition'):
         return []
     pos = node.treeposition()
     # go "upwards" from pos until there is a place we can go to the left
@@ -104,7 +104,7 @@ def _after(node):
     '''
     Returns the set of all nodes that are after the given node.
     '''
-    if not hasattr(node, 'root') and hasattr(node, 'treeposition'):
+    if not hasattr(node, 'root') or not hasattr(node, 'treeposition'):
         return []
     pos = node.treeposition()
     tree = node.root()
