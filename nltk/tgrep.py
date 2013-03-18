@@ -451,7 +451,7 @@ def tgrep_compile(tgrep_string):
     lambda function.
     '''
     parser = _build_tgrep_parser(True)
-    return list(parser.parseString(tgrep_string))[0]
+    return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
 def tgrep_positions(tree, tgrep_string):
     '''
