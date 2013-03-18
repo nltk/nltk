@@ -165,6 +165,8 @@ class TestSequenceFunctions(unittest.TestCase):
                          [(0,2), (2,1)])
         self.assertEqual(tgrep.tgrep_nodes(tree, 'NN'),
                          [tree[0,2], tree[2,1]])
+        self.assertEqual(tgrep.tgrep_positions(tree, 'NN|JJ'),
+                         [(0, 1), (0, 2), (2, 1)])
 
     def test_node_regex(self):
         '''
