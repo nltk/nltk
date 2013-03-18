@@ -223,6 +223,14 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, '* !>: T'),
                          [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0),
                           (1,), (1, 0, 0)])
+        tree = ParentedTree('(S (A (B (C (D (E (T x))))))'
+                            ' (A (B (C (D (E (T x))) (N x)))))')
+        self.assertEqual(tgrep.tgrep_positions(tree, '* <<: T'),
+                         [(0,), (0, 0), (0, 0, 0), (0, 0, 0, 0),
+                          (0, 0, 0, 0, 0), (1, 0, 0, 0), (1, 0, 0, 0, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* >>: A'),
+                         [(0, 0), (0, 0, 0), (0, 0, 0, 0), (0, 0, 0, 0, 0),
+                          (0, 0, 0, 0, 0, 0), (1, 0), (1, 0, 0)])
 
     def test_rel_sister_nodes(self):
         '''

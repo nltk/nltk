@@ -48,12 +48,27 @@ def _ancestors(node):
     This method will not work with leaf nodes, since there is no way
     to recover the parent.
     '''
-    results = []
     # if node is a leaf, we cannot retrieve its parent
     if not hasattr(node, 'parent'):
         return []
+    results = []
     current = node.parent()
     while current:
+        results.append(current)
+        current = current.parent()
+    return results
+
+def _unique_ancestors(node):
+    '''
+    Returns the list of all nodes dominating the given node, where
+    there is only a single path of descent.
+    '''
+    # if node is a leaf, we cannot retrieve its parent
+    if not hasattr(node, 'parent'):
+        return []
+    results = []
+    current = node.parent()
+    while current and len(current) == 1:
         results.append(current)
         current = current.parent()
     return results
@@ -85,6 +100,18 @@ def _rightmost_descendants(node):
         return []
     rightmost_leaf = max(node.treepositions())
     return [node[rightmost_leaf[:i]] for i in range(1, len(rightmost_leaf) + 1)]
+
+def _unique_descendants(node):
+    '''
+    Returns the list of all nodes descended from the given node, where
+    there is only a single path of descent.
+    '''
+    results = []
+    current = node
+    while current and isinstance(current, nltk.tree.Tree) and len(current) == 1:
+        current = current[0]
+        results.append(current)
+    return results
 
 def _before(node):
     '''
@@ -187,12 +214,12 @@ def _tgrep_node_action(_s, _l, tokens):
                                          else n) == s)(tokens[0].strip('"'))
         elif tokens[0].startswith('/'):
             return (lambda r: lambda n:
-                    r.match(n.node if isinstance(n, nltk.tree.Tree)
-                            else n))(re.compile(tokens[0].strip('/')))
+                        r.match(n.node if isinstance(n, nltk.tree.Tree)
+                                else n))(re.compile(tokens[0].strip('/')))
         elif tokens[0].startswith('i@'):
             return (lambda s: lambda n:
-                    (n.node if isinstance(n, nltk.tree.Tree)
-                     else n).lower() == s)(tokens[0][2:].lower())
+                        (n.node if isinstance(n, nltk.tree.Tree)
+                         else n).lower() == s)(tokens[0][2:].lower())
         else:
             return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
                                          else n) == s)(tokens[0])
@@ -231,7 +258,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         # A < B       A is the parent of (immediately dominates) B.
         if operator == '<':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
-                                any([predicate(x) for x in n]))
+                                any(predicate(x) for x in n))
         # A > B       A is the child of B.
         elif operator == '>':
             retval = lambda n: (hasattr(n, 'parent') and
@@ -290,11 +317,11 @@ def _tgrep_relation_action(_s, _l, tokens):
             idx = -int(operator[2:])
             # capture the index parameter
             retval = (lambda i: lambda n:
-                      (hasattr(n, 'parent') and
-                       bool(n.parent()) and
-                       0 <= (i + len(n.parent())) < len(n.parent()) and
-                       (n is n.parent()[i + len(n.parent())]) and
-                       predicate(n.parent())))(idx)
+                          (hasattr(n, 'parent') and
+                           bool(n.parent()) and
+                           0 <= (i + len(n.parent())) < len(n.parent()) and
+                           (n is n.parent()[i + len(n.parent())]) and
+                           predicate(n.parent())))(idx)
         # A <: B      B is the only child of A
         elif operator == '<:':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
@@ -309,56 +336,58 @@ def _tgrep_relation_action(_s, _l, tokens):
         # A << B      A dominates B (A is an ancestor of B).
         elif operator == '<<':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
-                                any([predicate(x) for x in _descendants(n)]))
+                                any(predicate(x) for x in _descendants(n)))
         # A >> B      A is dominated by B (A is a descendant of B).
         elif operator == '>>':
-            retval = lambda n: any([predicate(x) for x in _ancestors(n)])
+            retval = lambda n: any(predicate(x) for x in _ancestors(n))
         # A <<, B     B is a left-most descendant of A.
         elif operator == '<<,' or operator == '<<1':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
-                                any([predicate(x)
-                                     for x in _leftmost_descendants(n)]))
+                                any(predicate(x)
+                                    for x in _leftmost_descendants(n)))
         # A >>, B     A is a left-most descendant of B.
         elif operator == '>>,':
-            retval = lambda n: any([(predicate(x) and
-                                     n in _leftmost_descendants(x))
-                                    for x in _ancestors(n)])
+            retval = lambda n: any((predicate(x) and
+                                    n in _leftmost_descendants(x))
+                                   for x in _ancestors(n))
         # A <<' B     B is a right-most descendant of A.
         elif operator == '<<\'':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
-                                any([predicate(x)
-                                     for x in _rightmost_descendants(n)]))
+                                any(predicate(x)
+                                    for x in _rightmost_descendants(n)))
         # A >>' B     A is a right-most descendant of B.
         elif operator == '>>\'':
-            retval = lambda n: any([(predicate(x) and
-                                     n in _rightmost_descendants(x))
-                                    for x in _ancestors(n)])
+            retval = lambda n: any((predicate(x) and
+                                    n in _rightmost_descendants(x))
+                                   for x in _ancestors(n))
         # A <<: B     There is a single path of descent from A and B is on it.
         elif operator == '<<:':
-            assert False, 'operator "<<:" is not yet implemented' # NYI
+            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+                                any(predicate(x)
+                                    for x in _unique_descendants(n)))
         # A >>: B     There is a single path of descent from B and A is on it.
         elif operator == '>>:':
-            assert False, 'operator ">>:" is not yet implemented' # NYI
+            retval = lambda n: any(predicate(x) for x in _unique_ancestors(n))
         # A . B       A immediately precedes B.
         elif operator == '.':
-            retval = lambda n: any([predicate(x)
-                                    for x in _immediately_after(n)])
+            retval = lambda n: any(predicate(x)
+                                   for x in _immediately_after(n))
         # A , B       A immediately follows B.
         elif operator == ',':
-            retval = lambda n: any([predicate(x)
-                                    for x in _immediately_before(n)])
+            retval = lambda n: any(predicate(x)
+                                   for x in _immediately_before(n))
         # A .. B      A precedes B.
         elif operator == '..':
-            retval = lambda n: any([predicate(x) for x in _after(n)])
+            retval = lambda n: any(predicate(x) for x in _after(n))
         # A ,, B      A follows B.
         elif operator == ',,':
-            retval = lambda n: any([predicate(x) for x in _before(n)])
+            retval = lambda n: any(predicate(x) for x in _before(n))
         # A $ B       A is a sister of B (and A != B).
         elif operator == '$' or operator == '%':
             retval = lambda n: (hasattr(n, 'parent') and
                                 bool(n.parent()) and
-                                any([predicate(x)
-                                     for x in n.parent() if x is not n]))
+                                any(predicate(x)
+                                    for x in n.parent() if x is not n))
         # A $. B      A is a sister of and immediately precedes B.
         elif operator == '$.' or operator == '%.':
             retval = lambda n: (hasattr(n, 'right_sibling') and
@@ -374,15 +403,15 @@ def _tgrep_relation_action(_s, _l, tokens):
             retval = lambda n: (hasattr(n, 'parent') and
                                 hasattr(n, 'parent_index') and
                                 bool(n.parent()) and
-                                any([predicate(x) for x in
-                                     n.parent()[n.parent_index() + 1:]]))
+                                any(predicate(x) for x in
+                                    n.parent()[n.parent_index() + 1:]))
         # A $,, B     A is a sister of and follows B.
         elif operator == '$,,' or operator == '%,,':
             retval = lambda n: (hasattr(n, 'parent') and
                                 hasattr(n, 'parent_index') and
                                 bool(n.parent()) and
-                                any([predicate(x) for x in
-                                     n.parent()[:n.parent_index()]]))
+                                any(predicate(x) for x in
+                                    n.parent()[:n.parent_index()]))
         else:
             assert False, 'cannot interpret tgrep operator "{0}"'.format(
                 operator)
