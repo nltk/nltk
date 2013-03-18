@@ -260,6 +260,9 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, '* <-3 A'),  [(0,)])
 
     def test_rel_precedence(self):
+        '''
+        Test matching nodes based on precedence relations.
+        '''
         tree = ParentedTree('(S (NP (NP (PP x)) (NP (AP x)))'
                             ' (VP (AP (X (PP x)) (Y (AP x))))'
                             ' (NP (RC (NP (AP x)))))')
