@@ -73,9 +73,11 @@ import re
 import types
 
 try:
+    import numpy as np
     from numpy import zeros, ones, float32, float64, log2, hstack, array, argmax
 except ImportError:
     pass
+
 
 from nltk.probability import (FreqDist, ConditionalFreqDist,
                               ConditionalProbDist, DictionaryProbDist,
@@ -377,8 +379,8 @@ class HiddenMarkovModelTagger(TaggerI):
         self._update_cache(unlabeled_sequence)
         P, O, X, S = self._cache
 
-        V = zeros((T, N), float32)
-        B = ones((T, N), int) * -1
+        V = np.zeros((T, N), np.float32)
+        B = -np.ones((T, N), np.int)
 
         V[0] = P + O[:, S[unlabeled_sequence[0]]]
         for t in range(1, T):
@@ -416,7 +418,7 @@ class HiddenMarkovModelTagger(TaggerI):
     def _best_path_simple(self, unlabeled_sequence):
         T = len(unlabeled_sequence)
         N = len(self._states)
-        V = zeros((T, N), float64)
+        V = np.zeros((T, N), np.float64)
         B = {}
 
         # find the starting log probabilities for each state
@@ -690,12 +692,15 @@ class HiddenMarkovModelTagger(TaggerI):
         """
         T = len(unlabeled_sequence)
         N = len(self._states)
-        alpha = zeros((T, N), float64)
+        alpha = np.zeros((T, N), np.float64)
 
+        # Initialization
         symbol = unlabeled_sequence[0][_TEXT]
         for i, state in enumerate(self._states):
             alpha[0, i] = self._priors.logprob(state) + \
                           self._outputs[state].logprob(symbol)
+
+        # Induction
         for t in range(1, T):
             symbol = unlabeled_sequence[t][_TEXT]
             for i, si in enumerate(self._states):
@@ -703,6 +708,7 @@ class HiddenMarkovModelTagger(TaggerI):
                 for j, sj in enumerate(self._states):
                     alpha[t, i] = _log_add(alpha[t, i], alpha[t-1, j] +
                                            self._transitions[sj].logprob(si))
+
                 alpha[t, i] += self._outputs[si].logprob(symbol)
 
         return alpha
@@ -1101,21 +1107,10 @@ def _log_add(*values):
     else:
         return x
 
-def demo():
-    # demonstrates HMM probability calculation
 
-    print()
-    print("HMM probability calculation demo")
-    print()
-
-    # example taken from page 381, Huang et al
-    symbols = ['up', 'down', 'unchanged']
-    states = ['bull', 'bear', 'static']
-
+def _create_hmm_tagger(states, symbols, A, B, pi):
     def pd(values, samples):
-        d = {}
-        for value, item in zip(values, samples):
-            d[item] = value
+        d = dict(zip(samples, values))
         return DictionaryProbDist(d)
 
     def cpd(array, conditions, samples):
@@ -1124,15 +1119,35 @@ def demo():
             d[condition] = pd(values, samples)
         return DictionaryConditionalProbDist(d)
 
-    A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], float64)
     A = cpd(A, states, states)
-    B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], float64)
     B = cpd(B, states, symbols)
-    pi = array([0.5, 0.2, 0.3], float64)
     pi = pd(pi, states)
+    return HiddenMarkovModelTagger(symbols=symbols, states=states,
+                                   transitions=A, outputs=B, priors=pi)
 
-    model = HiddenMarkovModelTagger(symbols=symbols, states=states,
-                              transitions=A, outputs=B, priors=pi)
+
+def _market_hmm_example():
+    """
+    Return an example HMM (described at page 381, Huang et al)
+    """
+    states = ['bull', 'bear', 'static']
+    symbols = ['up', 'down', 'unchanged']
+    A = np.array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], np.float64)
+    B = np.array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], np.float64)
+    pi = np.array([0.5, 0.2, 0.3], np.float64)
+
+    model = _create_hmm_tagger(states, symbols, A, B, pi)
+    return model, states, symbols
+
+
+def demo():
+    # demonstrates HMM probability calculation
+
+    print()
+    print("HMM probability calculation demo")
+    print()
+
+    model, states, symbols = _market_hmm_example()
 
     print('Testing', model)
 
@@ -1227,29 +1242,7 @@ def demo_bw():
     print("Baum-Welch demo for market example")
     print()
 
-    # example taken from page 381, Huang et al
-    symbols = ['up', 'down', 'unchanged']
-    states = ['bull', 'bear', 'static']
-
-    def pd(values, samples):
-        d = dict(zip(samples, values))
-        return DictionaryProbDist(d)
-
-    def cpd(array, conditions, samples):
-        d = {}
-        for values, condition in zip(array, conditions):
-            d[condition] = pd(values, samples)
-        return DictionaryConditionalProbDist(d)
-
-    A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], float64)
-    A = cpd(A, states, states)
-    B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], float64)
-    B = cpd(B, states, symbols)
-    pi = array([0.5, 0.2, 0.3], float64)
-    pi = pd(pi, states)
-
-    model = HiddenMarkovModelTagger(symbols=symbols, states=states,
-                              transitions=A, outputs=B, priors=pi)
+    model, states, symbols = _market_hmm_example()
 
     # generate some random sequences
     training = []
