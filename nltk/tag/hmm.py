@@ -67,7 +67,7 @@ of EM.
 For more information, please consult the source code for this module,
 which includes extensive demonstration code.
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 import re
 import types
@@ -90,8 +90,10 @@ from nltk.compat import python_2_unicode_compatible
 
 from nltk.tag.api import TaggerI, HiddenMarkovModelTaggerTransformI
 
-# _NINF = float('-inf')  # won't work on Windows
-_NINF = float('-1e300')
+# won't work on Windows under Python 2.5, but we require Python 2.6
+# see http://bugs.python.org/issue1635
+_NINF = float('-inf')
+
 
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
@@ -248,7 +250,6 @@ class HiddenMarkovModelTagger(TaggerI):
         sequence = self._transform.transform(sequence)
 
         T = len(sequence)
-        N = len(self._states)
 
         if T > 0 and sequence[0][_TAG]:
             last_state = sequence[0][_TAG]
@@ -692,7 +693,7 @@ class HiddenMarkovModelTagger(TaggerI):
         """
         T = len(unlabeled_sequence)
         N = len(self._states)
-        alpha = np.zeros((T, N), np.float64)
+        alpha = _ninf_array((T, N))
 
         # Initialization
         symbol = unlabeled_sequence[0][_TEXT]
@@ -704,7 +705,6 @@ class HiddenMarkovModelTagger(TaggerI):
         for t in range(1, T):
             symbol = unlabeled_sequence[t][_TEXT]
             for i, si in enumerate(self._states):
-                alpha[t, i] = _NINF
                 for j, sj in enumerate(self._states):
                     alpha[t, i] = _log_add(alpha[t, i], alpha[t-1, j] +
                                            self._transitions[sj].logprob(si))
@@ -728,7 +728,7 @@ class HiddenMarkovModelTagger(TaggerI):
         """
         T = len(unlabeled_sequence)
         N = len(self._states)
-        beta = zeros((T, N), float64)
+        beta = np.zeros((T, N), np.float64)
 
         # initialise the backward values
         beta[T-1, :] = log2(1)
@@ -906,11 +906,12 @@ class HiddenMarkovModelTrainer(object):
         iteration = 0
         max_iterations = kwargs.get('max_iterations', 1000)
         epsilon = kwargs.get('convergence_logprob', 1e-6)
+
         while not converged and iteration < max_iterations:
-            A_numer = ones((N, N), float64) * _NINF
-            B_numer = ones((N, M), float64) * _NINF
-            A_denom = ones(N, float64) * _NINF
-            B_denom = ones(N, float64) * _NINF
+            A_numer = _ninf_array((N, N))
+            B_numer = _ninf_array((N, M))
+            A_denom = _ninf_array(N)
+            B_denom = _ninf_array(N)
 
             logprob = 0
             for sequence in unlabeled_sequences:
@@ -930,10 +931,10 @@ class HiddenMarkovModelTrainer(object):
                 # now update A and B (transition and output probabilities)
                 # using the alpha and beta values. Please refer to Rabiner's
                 # paper for details, it's too hard to explain in comments
-                local_A_numer = ones((N, N), float64) * _NINF
-                local_B_numer = ones((N, M), float64) * _NINF
-                local_A_denom = ones(N, float64) * _NINF
-                local_B_denom = ones(N, float64) * _NINF
+                local_A_numer = _ninf_array((N, N))
+                local_B_numer = _ninf_array((N, M))
+                local_A_denom = _ninf_array(N)
+                local_B_denom = _ninf_array(N)
 
                 # for each position, accumulate sums for A and B
                 for t in range(T):
@@ -1057,6 +1058,12 @@ class HiddenMarkovModelTrainer(object):
         B = ConditionalProbDist(outputs, estimator, len(self._symbols))
 
         return HiddenMarkovModelTagger(self._symbols, self._states, A, B, pi)
+
+
+def _ninf_array(shape):
+    res = np.empty(shape, np.float64)
+    res.fill(_NINF)
+    return res
 
 
 class HiddenMarkovModelTaggerTransform(HiddenMarkovModelTaggerTransformI):
