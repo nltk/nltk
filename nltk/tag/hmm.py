@@ -889,7 +889,7 @@ class HiddenMarkovModelTrainer(object):
 
         N = len(self._states)
         M = len(self._symbols)
-        symbol_dict = dict((self._symbols[i], i) for i in range(M))
+        symbol_dict = dict((sym, i) for i, sym in enumerate(self._symbols))
 
         # update model prob dists so that they can be modified
         model._priors = MutableProbDist(model._priors, self._states)
