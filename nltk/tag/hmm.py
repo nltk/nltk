@@ -71,6 +71,7 @@ from __future__ import print_function, unicode_literals, division
 
 import re
 import types
+import itertools
 
 try:
     import numpy as np
@@ -78,16 +79,14 @@ try:
 except ImportError:
     pass
 
-
 from nltk.probability import (FreqDist, ConditionalFreqDist,
                               ConditionalProbDist, DictionaryProbDist,
                               DictionaryConditionalProbDist,
                               LidstoneProbDist, MutableProbDist,
                               MLEProbDist, UniformProbDist)
 from nltk.metrics import accuracy
-from nltk.util import LazyMap, LazyConcatenation, LazyZip
-from nltk.compat import python_2_unicode_compatible
-
+from nltk.util import LazyMap
+from nltk.compat import python_2_unicode_compatible, izip, imap
 from nltk.tag.api import TaggerI, HiddenMarkovModelTaggerTransformI
 
 # won't work on Windows under Python 2.5, but we require Python 2.6
@@ -746,7 +745,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
         return beta
 
-    def test(self, test_sequence, **kwargs):
+    def test(self, test_sequence, verbose=False, **kwargs):
         """
         Tests the HiddenMarkovModelTagger instance.
 
@@ -763,17 +762,14 @@ class HiddenMarkovModelTagger(TaggerI):
         def tags(sent):
             return [tag for (word, tag) in sent]
 
-        test_sequence = LazyMap(self._transform.transform, test_sequence)
-        predicted_sequence = LazyMap(self._tag, LazyMap(words, test_sequence))
+        def flatten(seq):
+            return list(itertools.chain(*seq))
 
-        if kwargs.get('verbose', False):
-            # This will be used again later for accuracy so there's no sense
-            # in tagging it twice.
-            test_sequence = list(test_sequence)
-            predicted_sequence = list(predicted_sequence)
+        test_sequence = self._transform.transform(test_sequence)
+        predicted_sequence = list(imap(self._tag, imap(words, test_sequence)))
 
-            for test_sent, predicted_sent in zip(test_sequence,
-                                                 predicted_sequence):
+        if verbose:
+            for test_sent, predicted_sent in izip(test_sequence, predicted_sequence):
                 print('Test:',
                     ' '.join('%s/%s' % (token, tag)
                              for (token, tag) in test_sent))
@@ -791,13 +787,11 @@ class HiddenMarkovModelTagger(TaggerI):
                 print()
                 print('-' * 60)
 
-        test_tags = LazyConcatenation(LazyMap(tags, test_sequence))
-        predicted_tags = LazyConcatenation(LazyMap(tags, predicted_sequence))
+        test_tags = flatten(imap(tags, test_sequence))
+        predicted_tags = flatten(imap(tags, predicted_sequence))
 
         acc = accuracy(test_tags, predicted_tags)
-
         count = sum(len(sent) for sent in test_sequence)
-
         print('accuracy over %d tokens: %.2f' % (count, acc * 100))
 
     def __repr__(self):
@@ -885,11 +879,11 @@ class HiddenMarkovModelTrainer(object):
             transitions = DictionaryConditionalProbDist(
                             dict((state, UniformProbDist(self._states))
                                   for state in self._states))
-            output = DictionaryConditionalProbDist(
+            outputs = DictionaryConditionalProbDist(
                             dict((state, UniformProbDist(self._symbols))
                                   for state in self._states))
             model = HiddenMarkovModelTagger(self._symbols, self._states,
-                            transitions, output, priors)
+                            transitions, outputs, priors)
 
         # update model prob dists so that they can be modified
         model._priors = MutableProbDist(model._priors, self._states)
@@ -1233,7 +1227,8 @@ def _untag(sentences):
         unlabeled.append([(token[_TEXT], None) for token in sentence])
     return unlabeled
 
-def demo_pos_bw():
+def demo_pos_bw(test=10, supervised=200, unsupervised=10, verbose=True,
+                max_iterations=5):
     # demonstrates the Baum-Welch algorithm in POS tagging
 
     print()
@@ -1241,20 +1236,26 @@ def demo_pos_bw():
     print()
 
     print('Training HMM (supervised)...')
-    sentences, tag_set, symbols = load_pos(210)
+
+    sentences, tag_set, symbols = load_pos(test + supervised + unsupervised)
+
     symbols = set()
     for sentence in sentences:
         for token in sentence:
             symbols.add(token[_TEXT])
 
     trainer = HiddenMarkovModelTrainer(tag_set, list(symbols))
-    hmm = trainer.train_supervised(sentences[10:200],
+    hmm = trainer.train_supervised(sentences[test:test+supervised],
                     estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
+
+    # hmm.test(sentences[:test], verbose=verbose)
+
     print('Training (unsupervised)...')
-    # it's rather slow - so only use 10 samples
-    unlabeled = _untag(sentences[200:210])
-    hmm = trainer.train_unsupervised(unlabeled, model=hmm, max_iterations=5)
-    hmm.test(sentences[:10], verbose=True)
+    # it's rather slow - so only use 10 samples by default
+    unlabeled = _untag(sentences[test+supervised:])
+    hmm = trainer.train_unsupervised(unlabeled, model=hmm,
+                                     max_iterations=max_iterations)
+    hmm.test(sentences[:test], verbose=verbose)
 
 def demo_bw():
     # demo Baum Welch by generating some sequences and then performing
