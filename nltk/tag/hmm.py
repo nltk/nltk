@@ -280,7 +280,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
     def _tag(self, unlabeled_sequence):
         path = self._best_path(unlabeled_sequence)
-        return list(zip(unlabeled_sequence, path))
+        return list(izip(unlabeled_sequence, path))
 
     def _output_logprob(self, state, symbol):
         """
@@ -315,9 +315,9 @@ class HiddenMarkovModelTagger(TaggerI):
         if not self._cache:
             N = len(self._states)
             M = len(self._symbols)
-            P = zeros(N, float32)
-            X = zeros((N, N), float32)
-            O = zeros((N, M), float32)
+            P = np.zeros(N, np.float32)
+            X = np.zeros((N, N), np.float32)
+            O = np.zeros((N, M), np.float32)
             for i in range(N):
                 si = self._states[i]
                 P[i] = self._priors.logprob(si)
@@ -357,6 +357,9 @@ class HiddenMarkovModelTagger(TaggerI):
                 for k in range(Q, M):
                     S[self._symbols[k]] = k
                 self._cache = (P, O, X, S)
+
+    def reset_cache(self):
+        self._cache = None
 
     def best_path(self, unlabeled_sequence):
         """
@@ -893,6 +896,8 @@ class HiddenMarkovModelTrainer(object):
         model._outputs = DictionaryConditionalProbDist(
             dict((s, MutableProbDist(model._outputs[s], self._symbols))
                  for s in self._states))
+
+        model.reset_cache()
 
         # iterate until convergence
         converged = False
