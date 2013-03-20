@@ -977,14 +977,29 @@ class HiddenMarkovModelTrainer(object):
             # use the calculated values to update the transition and output
             # probability values
             for i in range(N):
+                logprob_Ai = A_numer[i] - A_denom[i]
+                logprob_Bi = B_numer[i] - B_denom[i]
+
+                # We should normalize all probabilities (see p.391 Huang et al)
+                # Let sum(P) be K.
+                # We can divide each Pi by K to make sum(P) == 1.
+                #   Pi' = Pi/K
+                #   log2(Pi') = log2(Pi) - log2(K)
+                logprob_Ai -= _log_add(*logprob_Ai)
+                logprob_Bi -= _log_add(*logprob_Bi)
+
+                # print(logprob_Ai, logprob_Bi, _log_add(*logprob_Ai), _log_add(*logprob_Bi))
+
+                # update output and transition probabilities
                 si = self._states[i]
+
                 for j in range(N):
                     sj = self._states[j]
-                    model._transitions[si].update(sj, A_numer[i,j] -
-                                                  A_denom[i])
+                    model._transitions[si].update(sj, logprob_Ai[j])
+
                 for k in range(M):
                     ok = self._symbols[k]
-                    model._outputs[si].update(ok, B_numer[i,k] - B_denom[i])
+                    model._outputs[si].update(ok, logprob_Bi[k])
                 # Rabiner says the priors don't need to be updated. I don't
                 # believe him. FIXME
 
