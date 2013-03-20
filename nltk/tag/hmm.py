@@ -870,10 +870,6 @@ class HiddenMarkovModelTrainer(object):
             allow convergence
         """
 
-        N = len(self._states)
-        M = len(self._symbols)
-        symbol_dict = dict((self._symbols[i], i) for i in range(M))
-
         # create a uniform HMM, which will be iteratively refined, unless
         # given an existing model
         model = kwargs.get('model')
@@ -888,9 +884,8 @@ class HiddenMarkovModelTrainer(object):
             model = HiddenMarkovModelTagger(self._symbols, self._states,
                             transitions, outputs, priors)
 
-        else:
-            self._states = model._states
-            self._symbols = model._symbols
+        self._states = model._states
+        self._symbols = model._symbols
 
         N = len(self._states)
         M = len(self._symbols)
