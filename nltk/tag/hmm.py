@@ -89,10 +89,6 @@ from nltk.util import LazyMap
 from nltk.compat import python_2_unicode_compatible, izip, imap
 from nltk.tag.api import TaggerI, HiddenMarkovModelTaggerTransformI
 
-# won't work on Windows under Python 2.5, but we require Python 2.6
-# see http://bugs.python.org/issue1635
-_NINF = float('-inf')
-
 
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
@@ -665,8 +661,8 @@ class HiddenMarkovModelTagger(TaggerI):
 
         normalisation = _log_add(*log_probs)
 
-        probabilities = zeros((T, N), float64)
-        probabilities[:] = _NINF
+        probabilities = _ninf_array((T,N))
+
         for labelling, lp in zip(labellings, log_probs):
             lp -= normalisation
             for t, label in enumerate(labelling):
@@ -739,7 +735,7 @@ class HiddenMarkovModelTagger(TaggerI):
         for t in range(T-2, -1, -1):
             symbol = unlabeled_sequence[t+1][_TEXT]
             for i, si in enumerate(self._states):
-                beta[t, i] = _NINF
+                beta[t, i] = -np.inf
                 for j, sj in enumerate(self._states):
                     beta[t, i] = _log_add(beta[t, i],
                                           self._transitions[si].logprob(sj) +
@@ -1079,7 +1075,7 @@ class HiddenMarkovModelTrainer(object):
 
 def _ninf_array(shape):
     res = np.empty(shape, np.float64)
-    res.fill(_NINF)
+    res.fill(-np.inf)
     return res
 
 
@@ -1123,7 +1119,7 @@ def _log_add(*values):
     Adds the logged values, returning the logarithm of the addition.
     """
     x = max(values)
-    if x > _NINF:
+    if x > -np.inf:
         sum_diffs = 0
         for value in values:
             sum_diffs += 2**(value - x)
