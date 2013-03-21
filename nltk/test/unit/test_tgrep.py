@@ -153,6 +153,15 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_tokenize('/^[Bb]ob/'), ['/^[Bb]ob/'])
         self.assertEqual(tgrep.tgrep_tokenize('*'), ['*'])
         self.assertEqual(tgrep.tgrep_tokenize('__'), ['__'])
+        # test tokenization of NLTK tree position syntax
+        self.assertEqual(tgrep.tgrep_tokenize('N()'),
+                         ['N(', ')'])
+        self.assertEqual(tgrep.tgrep_tokenize('N(0,)'),
+                         ['N(', '0', ',', ')'])
+        self.assertEqual(tgrep.tgrep_tokenize('N(0,0)'),
+                         ['N(', '0', ',', '0', ')'])
+        self.assertEqual(tgrep.tgrep_tokenize('N(0,0,)'),
+                         ['N(', '0', ',', '0', ',', ')'])
 
     def test_node_simple(self):
         '''
@@ -177,6 +186,22 @@ class TestSequenceFunctions(unittest.TestCase):
         # name starts with NP, including NP-SBJ:
         self.assertEqual(tgrep.tgrep_positions(tree, '/^NP/'),
                          [(0,), (1,)])
+
+    def test_node_tree_position(self):
+        '''
+        Test matching on nodes based on NLTK tree position.
+        '''
+        tree = ParentedTree('(S (NP-SBJ x) (NP x) (NNP x) (VP x))')
+        # test all tree positions that are not leaves
+        leaf_positions = set([tree.leaf_treeposition(x)
+                              for x in range(len(tree.leaves()))])
+        tree_positions = [x for x in tree.treepositions()
+                          if x not in leaf_positions]
+        for position in tree_positions:
+            node_id = 'N{0}'.format(position)
+            tgrep_positions = tgrep.tgrep_positions(tree, node_id)
+            self.assertEqual(len(tgrep_positions), 1)
+            self.assertEqual(tgrep_positions[0], position)
 
     def tests_rel_dominance(self):
         '''

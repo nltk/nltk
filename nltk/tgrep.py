@@ -235,6 +235,18 @@ def _tgrep_parens_action(_s, _l, tokens):
     assert tokens[2] == ')'
     return tokens[1]
 
+def _tgrep_nltk_tree_pos_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a predicate on a tree node
+    which returns true if the node is located at a specific tree
+    position.
+    '''
+    # recover the tuple from the parsed sting
+    node_tree_position = tuple(int(x) for x in tokens if x.isdigit())
+    # capture the node's tree position
+    return (lambda i: lambda n: (hasattr(n, 'treeposition') and
+                                 n.treeposition() == i))(node_tree_position)
+
 def _tgrep_relation_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a predicate on a tree node
@@ -462,11 +474,18 @@ def _build_tgrep_parser(set_parse_actions = True):
     tgrep_expr = pyparsing.Forward()
     tgrep_relations = pyparsing.Forward()
     tgrep_parens = pyparsing.Literal('(') + tgrep_expr + ')'
+    tgrep_nltk_tree_pos = (
+        pyparsing.Literal('N(') +
+        pyparsing.Optional(pyparsing.Word(pyparsing.nums) + ',' +
+                           pyparsing.Optional(pyparsing.delimitedList(
+                    pyparsing.Word(pyparsing.nums), delim=',') +
+                                              pyparsing.Optional(','))) + ')')
     tgrep_node_expr = (tgrep_qstring |
                        tgrep_node_regex |
                        '*' |
                        tgrep_node_literal)
     tgrep_node = (tgrep_parens |
+                  tgrep_nltk_tree_pos |
                   (pyparsing.Optional("'") +
                    tgrep_node_expr +
                    pyparsing.ZeroOrMore("|" + tgrep_node_expr)))
@@ -483,6 +502,7 @@ def _build_tgrep_parser(set_parse_actions = True):
     if set_parse_actions:
         tgrep_node.setParseAction(_tgrep_node_action)
         tgrep_parens.setParseAction(_tgrep_parens_action)
+        tgrep_nltk_tree_pos.setParseAction(_tgrep_nltk_tree_pos_action)
         tgrep_relation.setParseAction(_tgrep_relation_action)
         tgrep_rel_conjunction.setParseAction(_tgrep_rel_conjunction_action)
         tgrep_relations.setParseAction(_tgrep_rel_disjunction_action)
