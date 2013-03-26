@@ -650,6 +650,7 @@ class RandomProbDist(ProbDistI):
         self._probs = self.unirand(samples)
         self._samples = list(self._probs.keys())
 
+    @classmethod
     def unirand(self, samples):
         """
         The key function that creates a randomized initial distribution 
