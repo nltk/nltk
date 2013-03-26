@@ -648,7 +648,7 @@ class RandomProbDist(ProbDistI):
             raise ValueError('A probability distribution must '+
                              'have at least one sample.')
         self._probs = self.unirand(samples)
-        self._samples = list(self._sampleset)
+        self._samples = list(self._probs.keys())
 
     def unirand(self, samples):
         """
@@ -662,10 +662,11 @@ class RandomProbDist(ProbDistI):
         for i, x in enumerate(randrow):
             randrow[i] = x/total
 
-        if sum(randrow) != 1:
+        total = sum(randrow)
+        if total != 1:
             #this difference, if present, is so small (near NINF) that it 
             #can be subtracted from any element without risking probs not (0 1)
-            randrow[-1] -= sum(randrow) - 1
+            randrow[-1] -= total - 1
 
         return dict((s, randrow[i]) for i, s in enumerate(samples))
 
@@ -676,7 +677,7 @@ class RandomProbDist(ProbDistI):
         return self._samples
 
     def __repr__(self):
-        return '<RandomUniformProbDist with %d samples>' %len(self._sampleset)
+        return '<RandomUniformProbDist with %d samples>' %len(self._probs)
 
 
 @compat.python_2_unicode_compatible
