@@ -620,6 +620,7 @@ class UniformProbDist(ProbDistI):
         if len(samples) == 0:
             raise ValueError('A Uniform probability distribution must '+
                              'have at least one sample.')
+        self._sampleset = set(samples)
         self._prob = 1.0/len(self._sampleset)
         self._samples = list(self._sampleset)
 
