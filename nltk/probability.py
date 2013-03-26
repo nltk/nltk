@@ -651,7 +651,7 @@ class RandomProbDist(ProbDistI):
         self._samples = list(self._probs.keys())
 
     @classmethod
-    def unirand(self, samples):
+    def unirand(cls, samples):
         """
         The key function that creates a randomized initial distribution 
         that still sums to 1. Set as a dictionary of prob values so that 
