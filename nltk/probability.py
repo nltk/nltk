@@ -636,6 +636,55 @@ class UniformProbDist(ProbDistI):
     def __repr__(self):
         return '<UniformProbDist with %d samples>' % len(self._sampleset)
 
+@compat.python_2_unicode_compatible
+class RandomProbDist(ProbDistI):
+    """
+    Generates a random probability distribution whereby each sample
+    will be between 0 and 1 with equal probability (uniform random distribution.
+    Also called a continuous uniform distribution).
+    """
+    def __init__(self, samples):
+        if len(samples) == 0: 
+            raise ValueError('A probability distribution must '+
+                             'have at least one sample.')
+        self._sampleset = set(samples)
+        self._probs = self.unirand(samples)
+        self._samples = list(self._sampleset)
+
+    def unirand(self, samples):
+        """
+        The key function that creates a randomized initial distribution 
+        that still sums to 1. Set as a dictionary of prob values so that 
+        it can still be passed to MutableProbDist and called with identical
+        syntax to UniformProbDist
+        """
+        randrow = [random.random() for i in range(len(samples))]
+        total = sum(randrow)
+        for i, x in enumerate(randrow):
+            randrow[i] = x/total
+
+        if sum(randrow) != 1:
+            #this difference, if present, is so small (near NINF that it 
+            #can be subtracted from any element without risking negative probs)
+            randrow[-1] -= sum(randrow) - 1
+
+        return dict((s, randrow[i]) for i, s in enumerate(samples))
+
+    def prob(self, sample):
+        return (self._probs[sample] if sample in self._sampleset else 0)
+
+    def sum(self):
+        if not self._probs:
+            raise ValueError('no _probs defined, be sure to init using a'+
+                        'set of samples')
+        return sum([v for k, v in self._probs.iteritems()])
+
+    def samples(self):
+        return self._samples
+
+    def __repr__(self):
+        return '<RandomUniformProbDist with %d samples>' %len(self._sampleset)
+
 
 @compat.python_2_unicode_compatible
 class DictionaryProbDist(ProbDistI):
