@@ -83,7 +83,7 @@ from nltk.probability import (FreqDist, ConditionalFreqDist,
                               ConditionalProbDist, DictionaryProbDist,
                               DictionaryConditionalProbDist,
                               LidstoneProbDist, MutableProbDist,
-                              MLEProbDist, RandomProbDist, )
+                              MLEProbDist, RandomProbDist)
 from nltk.metrics import accuracy
 from nltk.util import LazyMap
 from nltk.compat import python_2_unicode_compatible, izip, imap
