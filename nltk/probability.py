@@ -620,7 +620,6 @@ class UniformProbDist(ProbDistI):
         if len(samples) == 0:
             raise ValueError('A Uniform probability distribution must '+
                              'have at least one sample.')
-        self._sampleset = set(samples)
         self._prob = 1.0/len(self._sampleset)
         self._samples = list(self._sampleset)
 
@@ -647,7 +646,6 @@ class RandomProbDist(ProbDistI):
         if len(samples) == 0: 
             raise ValueError('A probability distribution must '+
                              'have at least one sample.')
-        self._sampleset = set(samples)
         self._probs = self.unirand(samples)
         self._samples = list(self._sampleset)
 
@@ -664,20 +662,14 @@ class RandomProbDist(ProbDistI):
             randrow[i] = x/total
 
         if sum(randrow) != 1:
-            #this difference, if present, is so small (near NINF that it 
-            #can be subtracted from any element without risking negative probs)
+            #this difference, if present, is so small (near NINF) that it 
+            #can be subtracted from any element without risking probs not (0 1)
             randrow[-1] -= sum(randrow) - 1
 
         return dict((s, randrow[i]) for i, s in enumerate(samples))
 
     def prob(self, sample):
-        return (self._probs[sample] if sample in self._sampleset else 0)
-
-    def sum(self):
-        if not self._probs:
-            raise ValueError('no _probs defined, be sure to init using a'+
-                        'set of samples')
-        return sum([v for k, v in self._probs.iteritems()])
+        return self._probs.get(sample, 0)
 
     def samples(self):
         return self._samples
