@@ -74,7 +74,6 @@ import itertools
 
 try:
     import numpy as np
-    from numpy import zeros, ones, float32, float64, log2, hstack, array, argmax
 except ImportError:
     pass
 
@@ -337,7 +336,7 @@ class HiddenMarkovModelTagger(TaggerI):
                 Q = O.shape[1]
                 # add new columns to the output probability table without
                 # destroying the old probabilities
-                O = hstack([O, zeros((N, M - Q), float32)])
+                O = np.hstack([O, np.zeros((N, M - Q), np.float32)])
                 for i in range(N):
                     si = self._states[i]
                     # only calculate probabilities for new symbols
@@ -379,11 +378,11 @@ class HiddenMarkovModelTagger(TaggerI):
         for t in range(1, T):
             for j in range(N):
                 vs = V[t-1, :] + X[:, j]
-                best = argmax(vs)
+                best = np.argmax(vs)
                 V[t, j] = vs[best] + O[j, S[unlabeled_sequence[t]]]
                 B[t, j] = best
 
-        current = argmax(V[T-1,:])
+        current = np.argmax(V[T-1,:])
         sequence = [current]
         for t in range(T-1, 0, -1):
             last = B[t, current]
@@ -581,8 +580,8 @@ class HiddenMarkovModelTagger(TaggerI):
         beta = self._backward_probability(unlabeled_sequence)
         normalisation = _log_add(*alpha[T-1, :])
 
-        entropies = zeros(T, float64)
-        probs = zeros(N, float64)
+        entropies = np.zeros(T, np.float64)
+        probs = np.zeros(N, np.float64)
         for t in range(T):
             for s in range(N):
                 probs[s] = alpha[t, s] + beta[t, s] - normalisation
@@ -663,7 +662,7 @@ class HiddenMarkovModelTagger(TaggerI):
                 index = self._states.index(label)
                 probabilities[t, index] = _log_add(probabilities[t, index], lp)
 
-        entropies = zeros(T, float64)
+        entropies = np.zeros(T, np.float64)
         for t in range(T):
             for s in range(N):
                 entropies[t] -= 2**(probabilities[t, s]) * probabilities[t, s]
@@ -723,7 +722,7 @@ class HiddenMarkovModelTagger(TaggerI):
         beta = np.zeros((T, N), np.float64)
 
         # initialise the backward values
-        beta[T-1, :] = log2(1)
+        beta[T-1, :] = np.log2(1)
 
         # inductively calculate remaining backward values
         for t in range(T-2, -1, -1):
@@ -1082,7 +1081,7 @@ def _log_add(*values):
         sum_diffs = 0
         for value in values:
             sum_diffs += 2**(value - x)
-        return x + log2(sum_diffs)
+        return x + np.log2(sum_diffs)
     else:
         return x
 
