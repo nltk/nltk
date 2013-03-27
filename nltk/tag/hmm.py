@@ -146,7 +146,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
     @classmethod
     def _train(cls, labeled_sequence, test_sequence=None,
-    		        unlabeled_sequence=None, **kwargs):
+                    unlabeled_sequence=None, **kwargs):
         transform = kwargs.get('transform', IdentityTransform())
         if isinstance(transform, types.FunctionType):
             transform = LambdaTransform(transform)
@@ -155,7 +155,7 @@ class HiddenMarkovModelTagger(TaggerI):
             raise
 
         estimator = kwargs.get('estimator', lambda fd, bins: \
-    	                                    LidstoneProbDist(fd, 0.1, bins))
+                                            LidstoneProbDist(fd, 0.1, bins))
 
         labeled_sequence = LazyMap(transform.transform, labeled_sequence)
         symbols = list(set(word for sent in labeled_sequence
@@ -182,22 +182,22 @@ class HiddenMarkovModelTagger(TaggerI):
 
     @classmethod
     def train(cls, labeled_sequence, test_sequence=None,
-    		       unlabeled_sequence=None, **kwargs):
+                   unlabeled_sequence=None, **kwargs):
         """
-    	Train a new HiddenMarkovModelTagger using the given labeled and
-    	unlabeled training instances. Testing will be performed if test
-    	instances are provided.
+        Train a new HiddenMarkovModelTagger using the given labeled and
+        unlabeled training instances. Testing will be performed if test
+        instances are provided.
 
-    	:return: a hidden markov model tagger
-    	:rtype: HiddenMarkovModelTagger
-    	:param labeled_sequence: a sequence of labeled training instances,
-    	    i.e. a list of sentences represented as tuples
-    	:type labeled_sequence: list(list)
-    	:param test_sequence: a sequence of labeled test instances
-    	:type test_sequence: list(list)
-    	:param unlabeled_sequence: a sequence of unlabeled training instances,
-    	    i.e. a list of sentences represented as words
-    	:type unlabeled_sequence: list(list)
+        :return: a hidden markov model tagger
+        :rtype: HiddenMarkovModelTagger
+        :param labeled_sequence: a sequence of labeled training instances,
+            i.e. a list of sentences represented as tuples
+        :type labeled_sequence: list(list)
+        :param test_sequence: a sequence of labeled test instances
+        :type test_sequence: list(list)
+        :param unlabeled_sequence: a sequence of unlabeled training instances,
+            i.e. a list of sentences represented as words
+        :type unlabeled_sequence: list(list)
         :param transform: an optional function for transforming training
             instances, defaults to the identity function, see ``transform()``
         :type transform: function
@@ -210,9 +210,9 @@ class HiddenMarkovModelTagger(TaggerI):
         :type verbose: bool
         :param max_iterations: number of Baum-Welch interations to perform
         :type max_iterations: int
-    	"""
+        """
         return cls._train(labeled_sequence, test_sequence,
-    		              unlabeled_sequence, **kwargs)
+                          unlabeled_sequence, **kwargs)
 
     def probability(self, sequence):
         """
@@ -748,7 +748,7 @@ class HiddenMarkovModelTagger(TaggerI):
         """
         Tests the HiddenMarkovModelTagger instance.
 
-    	:param test_sequence: a sequence of labeled test instances
+        :param test_sequence: a sequence of labeled test instances
         :type test_sequence: list(list)
         :param verbose: boolean flag indicating whether training should be
             verbose or include printed output
