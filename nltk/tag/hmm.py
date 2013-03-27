@@ -82,7 +82,7 @@ from nltk.probability import (FreqDist, ConditionalFreqDist,
                               ConditionalProbDist, DictionaryProbDist,
                               DictionaryConditionalProbDist,
                               LidstoneProbDist, MutableProbDist,
-                              MLEProbDist, UniformProbDist)
+                              MLEProbDist, RandomProbDist)
 from nltk.metrics import accuracy
 from nltk.util import LazyMap
 from nltk.compat import python_2_unicode_compatible, izip, imap
@@ -864,12 +864,12 @@ class HiddenMarkovModelTrainer(object):
         # given an existing model
         model = kwargs.get('model')
         if not model:
-            priors = UniformProbDist(self._states)
+            priors = RandomProbDist(self._states)
             transitions = DictionaryConditionalProbDist(
-                            dict((state, UniformProbDist(self._states))
+                            dict((state, RandomProbDist(self._states))
                                   for state in self._states))
             outputs = DictionaryConditionalProbDist(
-                            dict((state, UniformProbDist(self._symbols))
+                            dict((state, RandomProbDist(self._symbols))
                                   for state in self._states))
             model = HiddenMarkovModelTagger(self._symbols, self._states,
                             transitions, outputs, priors)
