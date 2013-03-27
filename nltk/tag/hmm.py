@@ -70,7 +70,6 @@ which includes extensive demonstration code.
 from __future__ import print_function, unicode_literals, division
 
 import re
-import types
 import itertools
 
 try:
@@ -87,11 +86,15 @@ from nltk.probability import (FreqDist, ConditionalFreqDist,
 from nltk.metrics import accuracy
 from nltk.util import LazyMap
 from nltk.compat import python_2_unicode_compatible, izip, imap
-from nltk.tag.api import TaggerI, HiddenMarkovModelTaggerTransformI
+from nltk.tag.api import TaggerI
 
 
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
+
+def _identity(labeled_symbols):
+    return labeled_symbols
+
 
 @python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
@@ -127,37 +130,28 @@ class HiddenMarkovModelTagger(TaggerI):
     :type priors: ProbDistI
     :param transform: an optional function for transforming training
         instances, defaults to the identity function.
-    :type transform: function or HiddenMarkovModelTaggerTransform
+    :type transform: callable
     """
-    def __init__(self, symbols, states, transitions, outputs, priors, **kwargs):
+    def __init__(self, symbols, states, transitions, outputs, priors,
+                 transform=_identity, **kwargs):
         self._symbols = list(set(symbols))
         self._states = list(set(states))
         self._transitions = transitions
         self._outputs = outputs
         self._priors = priors
         self._cache = None
-
-        self._transform = kwargs.get('transform', IdentityTransform())
-        if isinstance(self._transform, types.FunctionType):
-            self._transform = LambdaTransform(self._transform)
-        elif not isinstance(self._transform,
-                            HiddenMarkovModelTaggerTransformI):
-            raise
+        self._transform = transform
 
     @classmethod
     def _train(cls, labeled_sequence, test_sequence=None,
-    		        unlabeled_sequence=None, **kwargs):
-        transform = kwargs.get('transform', IdentityTransform())
-        if isinstance(transform, types.FunctionType):
-            transform = LambdaTransform(transform)
-        elif \
-        not isinstance(transform, HiddenMarkovModelTaggerTransformI):
-            raise
+                    unlabeled_sequence=None, transform=_identity,
+                    estimator=None, **kwargs):
 
-        estimator = kwargs.get('estimator', lambda fd, bins: \
-    	                                    LidstoneProbDist(fd, 0.1, bins))
+        if estimator is None:
+            def estimator(fd, bins):
+                return LidstoneProbDist(fd, 0.1, bins)
 
-        labeled_sequence = LazyMap(transform.transform, labeled_sequence)
+        labeled_sequence = LazyMap(transform, labeled_sequence)
         symbols = list(set(word for sent in labeled_sequence
             for word, tag in sent))
         tag_set = list(set(tag for sent in labeled_sequence
@@ -182,22 +176,22 @@ class HiddenMarkovModelTagger(TaggerI):
 
     @classmethod
     def train(cls, labeled_sequence, test_sequence=None,
-    		       unlabeled_sequence=None, **kwargs):
+                   unlabeled_sequence=None, **kwargs):
         """
-    	Train a new HiddenMarkovModelTagger using the given labeled and
-    	unlabeled training instances. Testing will be performed if test
-    	instances are provided.
+        Train a new HiddenMarkovModelTagger using the given labeled and
+        unlabeled training instances. Testing will be performed if test
+        instances are provided.
 
-    	:return: a hidden markov model tagger
-    	:rtype: HiddenMarkovModelTagger
-    	:param labeled_sequence: a sequence of labeled training instances,
-    	    i.e. a list of sentences represented as tuples
-    	:type labeled_sequence: list(list)
-    	:param test_sequence: a sequence of labeled test instances
-    	:type test_sequence: list(list)
-    	:param unlabeled_sequence: a sequence of unlabeled training instances,
-    	    i.e. a list of sentences represented as words
-    	:type unlabeled_sequence: list(list)
+        :return: a hidden markov model tagger
+        :rtype: HiddenMarkovModelTagger
+        :param labeled_sequence: a sequence of labeled training instances,
+            i.e. a list of sentences represented as tuples
+        :type labeled_sequence: list(list)
+        :param test_sequence: a sequence of labeled test instances
+        :type test_sequence: list(list)
+        :param unlabeled_sequence: a sequence of unlabeled training instances,
+            i.e. a list of sentences represented as words
+        :type unlabeled_sequence: list(list)
         :param transform: an optional function for transforming training
             instances, defaults to the identity function, see ``transform()``
         :type transform: function
@@ -210,9 +204,9 @@ class HiddenMarkovModelTagger(TaggerI):
         :type verbose: bool
         :param max_iterations: number of Baum-Welch interations to perform
         :type max_iterations: int
-    	"""
+        """
         return cls._train(labeled_sequence, test_sequence,
-    		              unlabeled_sequence, **kwargs)
+                          unlabeled_sequence, **kwargs)
 
     def probability(self, sequence):
         """
@@ -227,7 +221,7 @@ class HiddenMarkovModelTagger(TaggerI):
             property, and optionally the TAG property
         :type sequence:  Token
         """
-        return 2**(self.log_probability(self._transform.transform(sequence)))
+        return 2**(self.log_probability(self._transform(sequence)))
 
     def log_probability(self, sequence):
         """
@@ -242,7 +236,7 @@ class HiddenMarkovModelTagger(TaggerI):
             property, and optionally the TAG property
         :type sequence:  Token
         """
-        sequence = self._transform.transform(sequence)
+        sequence = self._transform(sequence)
 
         T = len(sequence)
 
@@ -368,7 +362,7 @@ class HiddenMarkovModelTagger(TaggerI):
         :param unlabeled_sequence: the sequence of unlabeled symbols
         :type unlabeled_sequence: list
         """
-        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform(unlabeled_sequence)
         return self._best_path(unlabeled_sequence)
 
     def _best_path(self, unlabeled_sequence):
@@ -411,7 +405,7 @@ class HiddenMarkovModelTagger(TaggerI):
         :param unlabeled_sequence: the sequence of unlabeled symbols
         :type unlabeled_sequence: list
         """
-        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform(unlabeled_sequence)
         return self._best_path_simple(unlabeled_sequence)
 
     def _best_path_simple(self, unlabeled_sequence):
@@ -534,7 +528,7 @@ class HiddenMarkovModelTagger(TaggerI):
         sequences, constrained to include the given state(s) at some point in
         time.
         """
-        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -578,7 +572,7 @@ class HiddenMarkovModelTagger(TaggerI):
         Returns the pointwise entropy over the possible states at each
         position in the chain, given the observation sequence.
         """
-        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -599,7 +593,7 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropies
 
     def _exhaustive_entropy(self, unlabeled_sequence):
-        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -638,7 +632,7 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropy
 
     def _exhaustive_point_entropy(self, unlabeled_sequence):
-        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -748,7 +742,7 @@ class HiddenMarkovModelTagger(TaggerI):
         """
         Tests the HiddenMarkovModelTagger instance.
 
-    	:param test_sequence: a sequence of labeled test instances
+        :param test_sequence: a sequence of labeled test instances
         :type test_sequence: list(list)
         :param verbose: boolean flag indicating whether training should be
             verbose or include printed output
@@ -764,7 +758,7 @@ class HiddenMarkovModelTagger(TaggerI):
         def flatten(seq):
             return list(itertools.chain(*seq))
 
-        test_sequence = self._transform.transform(test_sequence)
+        test_sequence = self._transform(test_sequence)
         predicted_sequence = list(imap(self._tag, imap(words, test_sequence)))
 
         if verbose:
@@ -1077,41 +1071,6 @@ def _ninf_array(shape):
     res = np.empty(shape, np.float64)
     res.fill(-np.inf)
     return res
-
-
-class HiddenMarkovModelTaggerTransform(HiddenMarkovModelTaggerTransformI):
-    """
-    An abstract subclass of HiddenMarkovModelTaggerTransformI.
-    """
-    def __init__(self):
-        if self.__class__ == HiddenMarkovModelTaggerTransform:
-            raise NotImplementedError("Abstract classes can't be instantiated")
-
-
-class LambdaTransform(HiddenMarkovModelTaggerTransform):
-    """
-    A subclass of HiddenMarkovModelTaggerTransform that is backed by an
-    arbitrary user-defined function, instance method, or lambda function.
-    """
-    def __init__(self, transform):
-        """
-        :param func: a user-defined or lambda transform function
-        :type func: function
-        """
-        self._transform = transform
-
-    def transform(self, labeled_symbols):
-        return self._transform(labeled_symbols)
-
-
-class IdentityTransform(HiddenMarkovModelTaggerTransform):
-    """
-    A subclass of HiddenMarkovModelTaggerTransform that implements
-    transform() as the identity function, i.e. symbols passed to
-    transform() are returned unmodified.
-    """
-    def transform(self, labeled_symbols):
-        return labeled_symbols
 
 
 def _log_add(*values):

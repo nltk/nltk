@@ -10,7 +10,6 @@
 Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
-
 from nltk.internals import overridden
 from nltk.metrics import accuracy
 
@@ -78,26 +77,6 @@ class FeaturesetTaggerI(TaggerI):
     values.  See ``nltk.classify`` for more information about features
     and featuresets.
     """
-
-
-class HiddenMarkovModelTaggerTransformI(object):
-    """
-    An interface for a transformation to be used as the transform parameter
-    of ``HiddenMarkovModelTagger``.
-    """
-    def __init__(self):
-        if self.__class__ == HiddenMarkovModelTaggerTransformI:
-            raise NotImplementedError("Interfaces can't be instantiated")
-
-    def transform(self, labeled_symbols):
-        """
-        :return: a list of transformed symbols
-        :rtype: list
-        :param labeled_symbols: a list of labeled untransformed symbols,
-            i.e. symbols that are not (token, tag) or (word, tag)
-        :type labeled_symbols: list
-        """
-        raise NotImplementedError()
 
 
 if __name__ == "__main__":
