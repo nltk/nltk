@@ -607,10 +607,10 @@ class HiddenMarkovModelTagger(TaggerI):
 
         log_probs = []
         for labelling in labellings:
-            labelled_sequence = unlabeled_sequence[:]
+            labeled_sequence = unlabeled_sequence[:]
             for t, label in enumerate(labelling):
-                labelled_sequence[t] = (labelled_sequence[t][_TEXT], label)
-            lp = self.log_probability(labelled_sequence)
+                labeled_sequence[t] = (labeled_sequence[t][_TEXT], label)
+            lp = self.log_probability(labeled_sequence)
             log_probs.append(lp)
         normalisation = _log_add(*log_probs)
 
@@ -810,7 +810,7 @@ class HiddenMarkovModelTrainer(object):
         self._states = (states if states else [])
         self._symbols = (symbols if symbols else [])
 
-    def train(self, labelled_sequences=None, unlabeled_sequences=None,
+    def train(self, labeled_sequences=None, unlabeled_sequences=None,
               **kwargs):
         """
         Trains the HMM using both (or either of) supervised and unsupervised
@@ -826,10 +826,10 @@ class HiddenMarkovModelTrainer(object):
         :type unlabeled_sequences: list
         :param kwargs: additional arguments to pass to the training methods
         """
-        assert labelled_sequences or unlabeled_sequences
+        assert labeled_sequences or unlabeled_sequences
         model = None
-        if labelled_sequences:
-            model = self.train_supervised(labelled_sequences, **kwargs)
+        if labeled_sequences:
+            model = self.train_supervised(labeled_sequences, **kwargs)
         if unlabeled_sequences:
             if model: kwargs['model'] = model
             model = self.train_unsupervised(unlabeled_sequences, **kwargs)
