@@ -94,6 +94,16 @@ _TAG = 1   # index of tag in a tuple
 def _identity(labeled_symbols):
     return labeled_symbols
 
+# def logsumexp2(arr):
+#     # Use the max to normalize, as with the log this is what accumulates
+#     # the less errors
+#     vmax = arr.max()
+#     res = np.sum(2**(arr - vmax))
+#     out = np.log2(res)
+#     out += vmax
+#     return out
+
+from nltk_speed.math import logsumexp2
 
 @python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
@@ -696,11 +706,15 @@ class HiddenMarkovModelTagger(TaggerI):
         for t in range(1, T):
             symbol = unlabeled_sequence[t][_TEXT]
             for i, si in enumerate(self._states):
-                for j, sj in enumerate(self._states):
-                    alpha[t, i] = _log_add(alpha[t, i], alpha[t-1, j] +
-                                           self._transitions[sj].logprob(si))
-
-                alpha[t, i] += self._outputs[si].logprob(symbol)
+                # don't compute the whole transition probability
+                # matrix to avoid N^2 space complexity
+                transitions_logprob = np.fromiter(
+                    (self._transitions[sj].logprob(si) for sj in self._states),
+                    dtype=np.float64
+                )
+                summand = alpha[t-1] + transitions_logprob
+                alpha[t, i] = logsumexp2(summand) + \
+                              self._outputs[si].logprob(symbol)
 
         return alpha
 
@@ -773,10 +787,10 @@ class HiddenMarkovModelTagger(TaggerI):
                     ' '.join('%s/%s' % (token, tag)
                               for (token, tag) in predicted_sent))
                 print()
-                print('Entropy:',
-                    self.entropy([(token, None) for
-                                  (token, tag) in predicted_sent]))
-                print()
+                # print('Entropy:',
+                #     self.entropy([(token, None) for
+                #                   (token, tag) in predicted_sent]))
+                # print()
                 print('-' * 60)
 
         test_tags = flatten(imap(tags, test_sequence))
@@ -938,12 +952,16 @@ class HiddenMarkovModelTrainer(object):
                         if t < T - 1:
                             for j in range(N):
                                 sj = self._states[j]
-                                local_A_numer[i, j] =  \
-                                    _log_add(local_A_numer[i, j],
-                                        alpha[t, i] +
-                                        model._transitions[si].logprob(sj) +
-                                        model._outputs[sj].logprob(xnext) +
-                                        beta[t+1, j])
+                                trans_logprob = model._transitions[si].logprob(sj)
+                                out_logprob = model._outputs[sj].logprob(xnext)
+
+                                local_A_numer[i, j] = _log_add(
+                                    local_A_numer[i, j],
+                                    alpha[t, i] +
+                                    trans_logprob +
+                                    out_logprob +
+                                    beta[t+1, j]
+                                )
                             local_A_denom[i] = _log_add(local_A_denom[i],
                                 alpha[t, i] + beta[t, i])
                         else:
@@ -1072,18 +1090,22 @@ def _ninf_array(shape):
     return res
 
 
-def _log_add(*values):
-    """
-    Adds the logged values, returning the logarithm of the addition.
-    """
-    x = max(values)
-    if x > -np.inf:
-        sum_diffs = 0
-        for value in values:
-            sum_diffs += 2**(value - x)
-        return x + np.log2(sum_diffs)
-    else:
-        return x
+try:
+    from nltk_speed.math import log_add as _log_add
+    # raise ImportError()
+except ImportError:
+    def _log_add(*values):
+        """
+        Adds the logged values, returning the logarithm of the addition.
+        """
+        x = max(values)
+        if x > -np.inf:
+            sum_diffs = 0
+            for value in values:
+                sum_diffs += 2**(value - x)
+            return x + np.log2(sum_diffs)
+        else:
+            return x
 
 
 def _create_hmm_tagger(states, symbols, A, B, pi):
@@ -1233,7 +1255,8 @@ def demo_bw():
     training = []
     import random
     rng = random.Random()
-    for i in range(10):
+    rng.seed(0)
+    for i in range(1):
         item = model.random_sample(rng, 5)
         training.append([(i[0], None) for i in item])
 
