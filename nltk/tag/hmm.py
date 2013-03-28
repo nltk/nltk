@@ -265,7 +265,7 @@ class HiddenMarkovModelTagger(TaggerI):
         :param unlabeled_sequence: the sequence of unlabeled symbols
         :type unlabeled_sequence: list
         """
-        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform(unlabeled_sequence)
         return self._tag(unlabeled_sequence)
 
     def _tag(self, unlabeled_sequence):
