@@ -94,16 +94,13 @@ _TAG = 1   # index of tag in a tuple
 def _identity(labeled_symbols):
     return labeled_symbols
 
-# def logsumexp2(arr):
-#     # Use the max to normalize, as with the log this is what accumulates
-#     # the less errors
-#     vmax = arr.max()
-#     res = np.sum(2**(arr - vmax))
-#     out = np.log2(res)
-#     out += vmax
-#     return out
+try:
+    from nltk_speed.math import logsumexp2
+except ImportError:
+    def logsumexp2(arr):
+        max_ = arr.max()
+        return np.log2(np.sum(2**(arr - max_))) + max_
 
-from nltk_speed.math import logsumexp2
 
 @python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
@@ -849,7 +846,8 @@ class HiddenMarkovModelTrainer(object):
             model = self.train_unsupervised(unlabeled_sequences, **kwargs)
         return model
 
-    def train_unsupervised(self, unlabeled_sequences, **kwargs):
+    def train_unsupervised(self, unlabeled_sequences, update_outputs=True,
+                           **kwargs):
         """
         Trains the HMM using the Baum-Welch algorithm to maximise the
         probability of the data sequence. This is a variant of the EM
@@ -892,16 +890,19 @@ class HiddenMarkovModelTrainer(object):
 
         N = len(self._states)
         M = len(self._symbols)
-        symbol_dict = dict((sym, i) for i, sym in enumerate(self._symbols))
+        symbol_numbers = dict((sym, i) for i, sym in enumerate(self._symbols))
 
         # update model prob dists so that they can be modified
-        model._priors = MutableProbDist(model._priors, self._states)
+        # model._priors = MutableProbDist(model._priors, self._states)
+
         model._transitions = DictionaryConditionalProbDist(
             dict((s, MutableProbDist(model._transitions[s], self._states))
                  for s in self._states))
-        model._outputs = DictionaryConditionalProbDist(
-            dict((s, MutableProbDist(model._outputs[s], self._symbols))
-                 for s in self._states))
+
+        if update_outputs:
+            model._outputs = DictionaryConditionalProbDist(
+                dict((s, MutableProbDist(model._outputs[s], self._symbols))
+                     for s in self._states))
 
         model.reset_cache()
 
@@ -930,7 +931,7 @@ class HiddenMarkovModelTrainer(object):
 
                 # find the log probability of the sequence
                 T = len(sequence)
-                lpk = _log_add(*alpha[T-1, :])
+                lpk = logsumexp2(alpha[T-1])
                 logprob += lpk
 
                 # now update A and B (transition and output probabilities)
@@ -943,17 +944,20 @@ class HiddenMarkovModelTrainer(object):
 
                 # for each position, accumulate sums for A and B
                 for t in range(T):
-                    x = sequence[t][_TEXT] #not found? FIXME
+
+                    symbol = sequence[t][_TEXT] #not found? FIXME
+                    next_symbol = None
                     if t < T - 1:
-                        xnext = sequence[t+1][_TEXT] #not found? FIXME
-                    xi = symbol_dict[x]
+                        next_symbol = sequence[t+1][_TEXT] #not found? FIXME
+                    xi = symbol_numbers[symbol]
+
                     for i in range(N):
                         si = self._states[i]
                         if t < T - 1:
                             for j in range(N):
                                 sj = self._states[j]
                                 trans_logprob = model._transitions[si].logprob(sj)
-                                out_logprob = model._outputs[sj].logprob(xnext)
+                                out_logprob = model._outputs[sj].logprob(next_symbol)
 
                                 local_A_numer[i, j] = _log_add(
                                     local_A_numer[i, j],
@@ -964,7 +968,8 @@ class HiddenMarkovModelTrainer(object):
                                 )
                             local_A_denom[i] = _log_add(local_A_denom[i],
                                 alpha[t, i] + beta[t, i])
-                        else:
+
+                        else:  # last symbol in sequence
                             local_B_denom[i] = _log_add(local_A_denom[i],
                                 alpha[t, i] + beta[t, i])
 
@@ -1006,9 +1011,11 @@ class HiddenMarkovModelTrainer(object):
                     sj = self._states[j]
                     model._transitions[si].update(sj, logprob_Ai[j])
 
-                for k in range(M):
-                    ok = self._symbols[k]
-                    model._outputs[si].update(ok, logprob_Bi[k])
+                if update_outputs:
+                    for k in range(M):
+                        ok = self._symbols[k]
+                        model._outputs[si].update(ok, logprob_Bi[k])
+
                 # Rabiner says the priors don't need to be updated. I don't
                 # believe him. FIXME
 
@@ -1256,7 +1263,7 @@ def demo_bw():
     import random
     rng = random.Random()
     rng.seed(0)
-    for i in range(1):
+    for i in range(10):
         item = model.random_sample(rng, 5)
         training.append([(i[0], None) for i in item])
 
