@@ -527,6 +527,17 @@ def tgrep_compile(tgrep_string):
     parser = _build_tgrep_parser(True)
     return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
+def _treepositions_no_leaves(tree):
+    search_positions = tree.treepositions()
+    if not hasattr(tree, 'leaves') or not hasattr(tree,
+                                                  'leaf_treeposition'):
+        return []
+    leaf_positions = set([tree.leaf_treeposition(x)
+                          for x in range(len(tree.leaves()))])
+    search_positions = [x for x in search_positions
+                        if x not in leaf_positions]
+    return search_positions
+
 def tgrep_positions(tree, tgrep_string, search_leaves = True):
     '''
     Return all tree positions in the given tree which match the given
@@ -539,15 +550,10 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
         return []
     if isinstance(tgrep_string, basestring):
         tgrep_string = tgrep_compile(tgrep_string)
-    search_positions = tree.treepositions()
-    if not search_leaves:
-        if not hasattr(tree, 'leaves') or not hasattr(tree,
-                                                      'leaf_treeposition'):
-            return []
-        leaf_positions = set([tree.leaf_treeposition(x)
-                              for x in range(len(tree.leaves()))])
-        search_positions = [x for x in search_positions
-                            if x not in leaf_positions]
+    if search_leaves:
+        search_positions = tree.treepositions()
+    else:
+        search_positions = _treepositions_no_leaves(tree)
     return [position for position in search_positions
             if tgrep_string(tree[position])]
 
