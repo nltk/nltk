@@ -676,6 +676,20 @@ class HiddenMarkovModelTagger(TaggerI):
 
         return entropies
 
+    def _transitions_matrix(self):
+        trans_iter = (self._transitions[sj].logprob(si)
+                      for sj in self._states
+                      for si in self._states)
+
+        transitions_logprob = np.fromiter(trans_iter, dtype=np.float64)
+        N = len(self._states)
+        return transitions_logprob.reshape((N, N)).T
+
+    def _outputs_vector(self, symbol):
+        out_iter = (self._outputs[sj].logprob(symbol) for sj in self._states)
+        return np.fromiter(out_iter, dtype=np.float64)
+
+
     def _forward_probability(self, unlabeled_sequence):
         """
         Return the forward probability matrix, a T by N array of
@@ -693,33 +707,24 @@ class HiddenMarkovModelTagger(TaggerI):
         N = len(self._states)
         alpha = _ninf_array((T, N))
 
+        transitions_logprob = self._transitions_matrix()
+
         # Initialization
         symbol = unlabeled_sequence[0][_TEXT]
         for i, state in enumerate(self._states):
             alpha[0, i] = self._priors.logprob(state) + \
                           self._outputs[state].logprob(symbol)
 
-        transitions_logprob = self._transitions_matrix()
-
         # Induction
         for t in range(1, T):
             symbol = unlabeled_sequence[t][_TEXT]
-            for i, si in enumerate(self._states):
+            output_logprob = self._outputs_vector(symbol)
+
+            for i in range(N):
                 summand = alpha[t-1] + transitions_logprob[i]
-                alpha[t, i] = logsumexp2(summand) + \
-                              self._outputs[si].logprob(symbol)
+                alpha[t, i] = logsumexp2(summand) + output_logprob[i]
 
         return alpha
-
-    def _transitions_matrix(self):
-        trans_iter = (self._transitions[sj].logprob(si)
-                      for sj in self._states
-                      for si in self._states)
-
-        transitions_logprob = np.fromiter(trans_iter, dtype=np.float64)
-        N = len(self._states)
-        return transitions_logprob.reshape((N, N)).T
-
 
     def _backward_probability(self, unlabeled_sequence):
         """
@@ -747,10 +752,7 @@ class HiddenMarkovModelTagger(TaggerI):
         # inductively calculate remaining backward values
         for t in range(T-2, -1, -1):
             symbol = unlabeled_sequence[t+1][_TEXT]
-            outputs = np.fromiter(
-                (self._outputs[sj].logprob(symbol) for sj in self._states),
-                dtype=np.float64
-            )
+            outputs = self._outputs_vector(symbol)
 
             for i in range(N):
                 summand = transitions_logprob[i] + beta[t+1] + outputs
@@ -856,6 +858,49 @@ class HiddenMarkovModelTrainer(object):
             model = self.train_unsupervised(unlabeled_sequences, **kwargs)
         return model
 
+
+    def _baum_welch_step(self, sequence, model):
+
+        N = len(model._states)
+        M = len(model._symbols)
+
+        # compute forward and backward probabilities
+        alpha = model._forward_probability(sequence)
+        beta = model._backward_probability(sequence)
+        transitions_logprob = model._transitions_matrix().T
+
+        # find the log probability of the sequence
+        T = len(sequence)
+        lpk = logsumexp2(alpha[T-1])
+
+        A_numer = _ninf_array((N, N))
+        B_numer = _ninf_array((N, M))
+        A_denom = _ninf_array(N)
+        B_denom = _ninf_array(N)
+
+        for t in range(T):
+            symbol = sequence[t][_TEXT] # not found? FIXME
+            next_symbol = None
+            if t < T - 1:
+                next_symbol = sequence[t+1][_TEXT] # not found? FIXME
+            xi = self._symbol_numbers[symbol]
+
+            next_outputs_logprob = model._outputs_vector(next_symbol)  # FIXME
+            alpha_plus_beta = alpha[t] + beta[t]
+
+            if t < T - 1:
+                numer_add = transitions_logprob + next_outputs_logprob + \
+                            beta[t+1] + alpha[t].reshape(N, 1)
+                A_numer = np.logaddexp2(A_numer, numer_add)
+                A_denom = np.logaddexp2(A_denom, alpha_plus_beta)
+            else:
+                B_denom = np.logaddexp2(A_denom, alpha_plus_beta)
+
+            B_numer[:,xi] = np.logaddexp2(B_numer[:,xi], alpha_plus_beta)
+
+
+        return lpk, A_numer, A_denom, B_numer, B_denom
+
     def train_unsupervised(self, unlabeled_sequences, update_outputs=True,
                            **kwargs):
         """
@@ -900,7 +945,7 @@ class HiddenMarkovModelTrainer(object):
 
         N = len(self._states)
         M = len(self._symbols)
-        symbol_numbers = dict((sym, i) for i, sym in enumerate(self._symbols))
+        self._symbol_numbers = dict((sym, i) for i, sym in enumerate(self._symbols))
 
         # update model prob dists so that they can be modified
         # model._priors = MutableProbDist(model._priors, self._states)
@@ -935,68 +980,23 @@ class HiddenMarkovModelTrainer(object):
                 if not sequence:
                     continue
 
-                # compute forward and backward probabilities
-                alpha = model._forward_probability(sequence)
-                beta = model._backward_probability(sequence)
+                (lpk, seq_A_numer, seq_A_denom,
+                seq_B_numer, seq_B_denom) = self._baum_welch_step(sequence, model)
 
-                # find the log probability of the sequence
-                T = len(sequence)
-                lpk = logsumexp2(alpha[T-1])
                 logprob += lpk
-
-                # now update A and B (transition and output probabilities)
-                # using the alpha and beta values. Please refer to Rabiner's
-                # paper for details, it's too hard to explain in comments
-                local_A_numer = _ninf_array((N, N))
-                local_B_numer = _ninf_array((N, M))
-                local_A_denom = _ninf_array(N)
-                local_B_denom = _ninf_array(N)
-
-                # for each position, accumulate sums for A and B
-                for t in range(T):
-
-                    symbol = sequence[t][_TEXT] #not found? FIXME
-                    next_symbol = None
-                    if t < T - 1:
-                        next_symbol = sequence[t+1][_TEXT] #not found? FIXME
-                    xi = symbol_numbers[symbol]
-
-                    for i in range(N):
-                        si = self._states[i]
-                        if t < T - 1:
-                            for j in range(N):
-                                sj = self._states[j]
-                                trans_logprob = model._transitions[si].logprob(sj)
-                                out_logprob = model._outputs[sj].logprob(next_symbol)
-
-                                local_A_numer[i, j] = _log_add(
-                                    local_A_numer[i, j],
-                                    alpha[t, i] +
-                                    trans_logprob +
-                                    out_logprob +
-                                    beta[t+1, j]
-                                )
-                            local_A_denom[i] = _log_add(local_A_denom[i],
-                                alpha[t, i] + beta[t, i])
-
-                        else:  # last symbol in sequence
-                            local_B_denom[i] = _log_add(local_A_denom[i],
-                                alpha[t, i] + beta[t, i])
-
-                        local_B_numer[i, xi] = _log_add(local_B_numer[i, xi],
-                            alpha[t, i] + beta[t, i])
 
                 # add these sums to the global A and B values
                 for i in range(N):
                     for j in range(N):
                         A_numer[i, j] = _log_add(A_numer[i, j],
-                                                local_A_numer[i, j] - lpk)
+                                                seq_A_numer[i, j] - lpk)
                     for k in range(M):
                         B_numer[i, k] = _log_add(B_numer[i, k],
-                                                local_B_numer[i, k] - lpk)
+                                                seq_B_numer[i, k] - lpk)
 
-                    A_denom[i] = _log_add(A_denom[i], local_A_denom[i] - lpk)
-                    B_denom[i] = _log_add(B_denom[i], local_B_denom[i] - lpk)
+                    A_denom[i] = _log_add(A_denom[i], seq_A_denom[i] - lpk)
+                    B_denom[i] = _log_add(B_denom[i], seq_B_denom[i] - lpk)
+
 
             # use the calculated values to update the transition and output
             # probability values
