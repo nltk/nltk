@@ -859,18 +859,17 @@ class HiddenMarkovModelTrainer(object):
         return model
 
 
-    def _baum_welch_step(self, sequence, model):
+    def _baum_welch_step(self, sequence, model, symbol_to_number):
 
         N = len(model._states)
         M = len(model._symbols)
+        T = len(sequence)
 
         # compute forward and backward probabilities
         alpha = model._forward_probability(sequence)
         beta = model._backward_probability(sequence)
-        transitions_logprob = model._transitions_matrix().T
 
         # find the log probability of the sequence
-        T = len(sequence)
         lpk = logsumexp2(alpha[T-1])
 
         A_numer = _ninf_array((N, N))
@@ -878,14 +877,16 @@ class HiddenMarkovModelTrainer(object):
         A_denom = _ninf_array(N)
         B_denom = _ninf_array(N)
 
+        transitions_logprob = model._transitions_matrix().T
+
         for t in range(T):
-            symbol = sequence[t][_TEXT] # not found? FIXME
+            symbol = sequence[t][_TEXT]  # not found? FIXME
             next_symbol = None
             if t < T - 1:
-                next_symbol = sequence[t+1][_TEXT] # not found? FIXME
-            xi = self._symbol_numbers[symbol]
+                next_symbol = sequence[t+1][_TEXT]  # not found? FIXME
+            xi = symbol_to_number[symbol]
 
-            next_outputs_logprob = model._outputs_vector(next_symbol)  # FIXME
+            next_outputs_logprob = model._outputs_vector(next_symbol)
             alpha_plus_beta = alpha[t] + beta[t]
 
             if t < T - 1:
@@ -897,7 +898,6 @@ class HiddenMarkovModelTrainer(object):
                 B_denom = np.logaddexp2(A_denom, alpha_plus_beta)
 
             B_numer[:,xi] = np.logaddexp2(B_numer[:,xi], alpha_plus_beta)
-
 
         return lpk, A_numer, A_denom, B_numer, B_denom
 
@@ -945,7 +945,7 @@ class HiddenMarkovModelTrainer(object):
 
         N = len(self._states)
         M = len(self._symbols)
-        self._symbol_numbers = dict((sym, i) for i, sym in enumerate(self._symbols))
+        symbol_numbers = dict((sym, i) for i, sym in enumerate(self._symbols))
 
         # update model prob dists so that they can be modified
         # model._priors = MutableProbDist(model._priors, self._states)
@@ -981,22 +981,17 @@ class HiddenMarkovModelTrainer(object):
                     continue
 
                 (lpk, seq_A_numer, seq_A_denom,
-                seq_B_numer, seq_B_denom) = self._baum_welch_step(sequence, model)
-
-                logprob += lpk
+                seq_B_numer, seq_B_denom) = self._baum_welch_step(sequence, model, symbol_numbers)
 
                 # add these sums to the global A and B values
                 for i in range(N):
-                    for j in range(N):
-                        A_numer[i, j] = _log_add(A_numer[i, j],
-                                                seq_A_numer[i, j] - lpk)
-                    for k in range(M):
-                        B_numer[i, k] = _log_add(B_numer[i, k],
-                                                seq_B_numer[i, k] - lpk)
+                    A_numer[i] = np.logaddexp2(A_numer[i], seq_A_numer[i]-lpk)
+                    B_numer[i] = np.logaddexp2(B_numer[i], seq_B_numer[i]-lpk)
 
-                    A_denom[i] = _log_add(A_denom[i], seq_A_denom[i] - lpk)
-                    B_denom[i] = _log_add(B_denom[i], seq_B_denom[i] - lpk)
+                A_denom = np.logaddexp2(A_denom, seq_A_denom-lpk)
+                B_denom = np.logaddexp2(B_denom, seq_B_denom-lpk)
 
+                logprob += lpk
 
             # use the calculated values to update the transition and output
             # probability values
