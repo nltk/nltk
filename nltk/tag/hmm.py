@@ -699,21 +699,27 @@ class HiddenMarkovModelTagger(TaggerI):
             alpha[0, i] = self._priors.logprob(state) + \
                           self._outputs[state].logprob(symbol)
 
+        transitions_logprob = self._transitions_matrix()
+
         # Induction
         for t in range(1, T):
             symbol = unlabeled_sequence[t][_TEXT]
             for i, si in enumerate(self._states):
-                # don't compute the whole transition probability
-                # matrix to avoid N^2 space complexity
-                transitions_logprob = np.fromiter(
-                    (self._transitions[sj].logprob(si) for sj in self._states),
-                    dtype=np.float64
-                )
-                summand = alpha[t-1] + transitions_logprob
+                summand = alpha[t-1] + transitions_logprob[i]
                 alpha[t, i] = logsumexp2(summand) + \
                               self._outputs[si].logprob(symbol)
 
         return alpha
+
+    def _transitions_matrix(self):
+        trans_iter = (self._transitions[sj].logprob(si)
+                      for sj in self._states
+                      for si in self._states)
+
+        transitions_logprob = np.fromiter(trans_iter, dtype=np.float64)
+        N = len(self._states)
+        return transitions_logprob.reshape((N, N)).T
+
 
     def _backward_probability(self, unlabeled_sequence):
         """
@@ -730,21 +736,25 @@ class HiddenMarkovModelTagger(TaggerI):
         """
         T = len(unlabeled_sequence)
         N = len(self._states)
-        beta = np.zeros((T, N), np.float64)
+        beta = _ninf_array((T, N))
 
-        # initialise the backward values
+        transitions_logprob = self._transitions_matrix().T
+
+        # initialise the backward values;
+        # "1" is an arbitrarily chosen value from Rabiner tutorial
         beta[T-1, :] = np.log2(1)
 
         # inductively calculate remaining backward values
         for t in range(T-2, -1, -1):
             symbol = unlabeled_sequence[t+1][_TEXT]
-            for i, si in enumerate(self._states):
-                beta[t, i] = -np.inf
-                for j, sj in enumerate(self._states):
-                    beta[t, i] = _log_add(beta[t, i],
-                                          self._transitions[si].logprob(sj) +
-                                          self._outputs[sj].logprob(symbol) +
-                                          beta[t + 1, j])
+            outputs = np.fromiter(
+                (self._outputs[sj].logprob(symbol) for sj in self._states),
+                dtype=np.float64
+            )
+
+            for i in range(N):
+                summand = transitions_logprob[i] + beta[t+1] + outputs
+                beta[t, i] = logsumexp2(summand)
 
         return beta
 
