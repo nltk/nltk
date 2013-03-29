@@ -1218,7 +1218,7 @@ def _untag(sentences):
         unlabeled.append([(token[_TEXT], None) for token in sentence])
     return unlabeled
 
-def demo_pos_bw(test=10, supervised=200, unsupervised=10, verbose=True,
+def demo_pos_bw(test=10, supervised=20, unsupervised=10, verbose=True,
                 max_iterations=5):
     # demonstrates the Baum-Welch algorithm in POS tagging
 
@@ -1226,7 +1226,7 @@ def demo_pos_bw(test=10, supervised=200, unsupervised=10, verbose=True,
     print("Baum-Welch demo for POS tagging")
     print()
 
-    print('Training HMM (supervised)...')
+    print('Training HMM (supervised, %d sentences)...' % supervised)
 
     sentences, tag_set, symbols = load_pos(test + supervised + unsupervised)
 
@@ -1239,9 +1239,9 @@ def demo_pos_bw(test=10, supervised=200, unsupervised=10, verbose=True,
     hmm = trainer.train_supervised(sentences[test:test+supervised],
                     estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
 
-    # hmm.test(sentences[:test], verbose=verbose)
+    hmm.test(sentences[:test], verbose=verbose)
 
-    print('Training (unsupervised)...')
+    print('Training (unsupervised, %d sentences)...' % unsupervised)
     # it's rather slow - so only use 10 samples by default
     unlabeled = _untag(sentences[test+supervised:])
     hmm = trainer.train_unsupervised(unlabeled, model=hmm,
