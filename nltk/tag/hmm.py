@@ -258,7 +258,7 @@ class HiddenMarkovModelTagger(TaggerI):
             return p
         else:
             alpha = self._forward_probability(sequence)
-            p = _log_add(*alpha[T-1, :])
+            p = logsumexp2(alpha[T-1])
             return p
 
     def tag(self, unlabeled_sequence):
@@ -541,7 +541,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
         alpha = self._forward_probability(unlabeled_sequence)
         beta = self._backward_probability(unlabeled_sequence)
-        normalisation = _log_add(*alpha[T-1, :])
+        normalisation = logsumexp2(alpha[T-1])
 
         entropy = normalisation
 
@@ -585,7 +585,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
         alpha = self._forward_probability(unlabeled_sequence)
         beta = self._backward_probability(unlabeled_sequence)
-        normalisation = _log_add(*alpha[T-1, :])
+        normalisation = logsumexp2(alpha[T-1])
 
         entropies = np.zeros(T, np.float64)
         probs = np.zeros(N, np.float64)
@@ -1008,10 +1008,8 @@ class HiddenMarkovModelTrainer(object):
                 # We can divide each Pi by K to make sum(P) == 1.
                 #   Pi' = Pi/K
                 #   log2(Pi') = log2(Pi) - log2(K)
-                logprob_Ai -= _log_add(*logprob_Ai)
-                logprob_Bi -= _log_add(*logprob_Bi)
-
-                # print(logprob_Ai, logprob_Bi, _log_add(*logprob_Ai), _log_add(*logprob_Bi))
+                logprob_Ai -= logsumexp2(logprob_Ai)
+                logprob_Bi -= logsumexp2(logprob_Bi)
 
                 # update output and transition probabilities
                 si = self._states[i]
