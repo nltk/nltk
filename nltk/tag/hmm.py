@@ -94,13 +94,6 @@ _TAG = 1   # index of tag in a tuple
 def _identity(labeled_symbols):
     return labeled_symbols
 
-try:
-    from nltk_speed.math import logsumexp2
-except ImportError:
-    def logsumexp2(arr):
-        max_ = arr.max()
-        return np.log2(np.sum(2**(arr - max_))) + max_
-
 
 @python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
@@ -1104,22 +1097,23 @@ def _ninf_array(shape):
     return res
 
 
-try:
-    from nltk_speed.math import log_add as _log_add
-    # raise ImportError()
-except ImportError:
-    def _log_add(*values):
-        """
-        Adds the logged values, returning the logarithm of the addition.
-        """
-        x = max(values)
-        if x > -np.inf:
-            sum_diffs = 0
-            for value in values:
-                sum_diffs += 2**(value - x)
-            return x + np.log2(sum_diffs)
-        else:
-            return x
+def logsumexp2(arr):
+    max_ = arr.max()
+    return np.log2(np.sum(2**(arr - max_))) + max_
+
+
+def _log_add(*values):
+    """
+    Adds the logged values, returning the logarithm of the addition.
+    """
+    x = max(values)
+    if x > -np.inf:
+        sum_diffs = 0
+        for value in values:
+            sum_diffs += 2**(value - x)
+        return x + np.log2(sum_diffs)
+    else:
+        return x
 
 
 def _create_hmm_tagger(states, symbols, A, B, pi):
