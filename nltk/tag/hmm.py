@@ -74,7 +74,6 @@ import itertools
 
 try:
     import numpy as np
-    from numpy import zeros, ones, float32, float64, log2, hstack, array, argmax
 except ImportError:
     pass
 
@@ -243,16 +242,16 @@ class HiddenMarkovModelTagger(TaggerI):
         if T > 0 and sequence[0][_TAG]:
             last_state = sequence[0][_TAG]
             p = self._priors.logprob(last_state) + \
-                self._outputs[last_state].logprob(sequence[0][_TEXT])
+                self._output_logprob(last_state, sequence[0][_TEXT])
             for t in range(1, T):
                 state = sequence[t][_TAG]
                 p += self._transitions[last_state].logprob(state) + \
-                     self._outputs[state].logprob(sequence[t][_TEXT])
+                     self._output_logprob(state, sequence[t][_TEXT])
                 last_state = state
             return p
         else:
             alpha = self._forward_probability(sequence)
-            p = _log_add(*alpha[T-1, :])
+            p = logsumexp2(alpha[T-1])
             return p
 
     def tag(self, unlabeled_sequence):
@@ -314,7 +313,7 @@ class HiddenMarkovModelTagger(TaggerI):
                 for j in range(N):
                     X[i, j] = self._transitions[si].logprob(self._states[j])
                 for k in range(M):
-                    O[i, k] = self._outputs[si].logprob(self._symbols[k])
+                    O[i, k] = self._output_logprob(si, self._symbols[k])
             S = {}
             for k in range(M):
                 S[self._symbols[k]] = k
@@ -337,12 +336,12 @@ class HiddenMarkovModelTagger(TaggerI):
                 Q = O.shape[1]
                 # add new columns to the output probability table without
                 # destroying the old probabilities
-                O = hstack([O, zeros((N, M - Q), float32)])
+                O = np.hstack([O, np.zeros((N, M - Q), np.float32)])
                 for i in range(N):
                     si = self._states[i]
                     # only calculate probabilities for new symbols
                     for k in range(Q, M):
-                        O[i, k] = self._outputs[si].logprob(self._symbols[k])
+                        O[i, k] = self._output_logprob(si, self._symbols[k])
                 # only create symbol mappings for new symbols
                 for k in range(Q, M):
                     S[self._symbols[k]] = k
@@ -379,11 +378,11 @@ class HiddenMarkovModelTagger(TaggerI):
         for t in range(1, T):
             for j in range(N):
                 vs = V[t-1, :] + X[:, j]
-                best = argmax(vs)
+                best = np.argmax(vs)
                 V[t, j] = vs[best] + O[j, S[unlabeled_sequence[t]]]
                 B[t, j] = best
 
-        current = argmax(V[T-1,:])
+        current = np.argmax(V[T-1,:])
         sequence = [current]
         for t in range(T-1, 0, -1):
             last = B[t, current]
@@ -535,7 +534,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
         alpha = self._forward_probability(unlabeled_sequence)
         beta = self._backward_probability(unlabeled_sequence)
-        normalisation = _log_add(*alpha[T-1, :])
+        normalisation = logsumexp2(alpha[T-1])
 
         entropy = normalisation
 
@@ -579,10 +578,10 @@ class HiddenMarkovModelTagger(TaggerI):
 
         alpha = self._forward_probability(unlabeled_sequence)
         beta = self._backward_probability(unlabeled_sequence)
-        normalisation = _log_add(*alpha[T-1, :])
+        normalisation = logsumexp2(alpha[T-1])
 
-        entropies = zeros(T, float64)
-        probs = zeros(N, float64)
+        entropies = np.zeros(T, np.float64)
+        probs = np.zeros(N, np.float64)
         for t in range(T):
             for s in range(N):
                 probs[s] = alpha[t, s] + beta[t, s] - normalisation
@@ -608,10 +607,10 @@ class HiddenMarkovModelTagger(TaggerI):
 
         log_probs = []
         for labelling in labellings:
-            labelled_sequence = unlabeled_sequence[:]
+            labeled_sequence = unlabeled_sequence[:]
             for t, label in enumerate(labelling):
-                labelled_sequence[t] = (labelled_sequence[t][_TEXT], label)
-            lp = self.log_probability(labelled_sequence)
+                labeled_sequence[t] = (labeled_sequence[t][_TEXT], label)
+            lp = self.log_probability(labeled_sequence)
             log_probs.append(lp)
         normalisation = _log_add(*log_probs)
 
@@ -663,12 +662,30 @@ class HiddenMarkovModelTagger(TaggerI):
                 index = self._states.index(label)
                 probabilities[t, index] = _log_add(probabilities[t, index], lp)
 
-        entropies = zeros(T, float64)
+        entropies = np.zeros(T, np.float64)
         for t in range(T):
             for s in range(N):
                 entropies[t] -= 2**(probabilities[t, s]) * probabilities[t, s]
 
         return entropies
+
+    def _transitions_matrix(self):
+        """ Return a matrix of transition log probabilities. """
+        trans_iter = (self._transitions[sj].logprob(si)
+                      for sj in self._states
+                      for si in self._states)
+
+        transitions_logprob = np.fromiter(trans_iter, dtype=np.float64)
+        N = len(self._states)
+        return transitions_logprob.reshape((N, N)).T
+
+    def _outputs_vector(self, symbol):
+        """
+        Return a vector with log probabilities of emitting a symbol
+        when entering states.
+        """
+        out_iter = (self._output_logprob(sj, symbol) for sj in self._states)
+        return np.fromiter(out_iter, dtype=np.float64)
 
     def _forward_probability(self, unlabeled_sequence):
         """
@@ -687,21 +704,22 @@ class HiddenMarkovModelTagger(TaggerI):
         N = len(self._states)
         alpha = _ninf_array((T, N))
 
+        transitions_logprob = self._transitions_matrix()
+
         # Initialization
         symbol = unlabeled_sequence[0][_TEXT]
         for i, state in enumerate(self._states):
             alpha[0, i] = self._priors.logprob(state) + \
-                          self._outputs[state].logprob(symbol)
+                          self._output_logprob(state, symbol)
 
         # Induction
         for t in range(1, T):
             symbol = unlabeled_sequence[t][_TEXT]
-            for i, si in enumerate(self._states):
-                for j, sj in enumerate(self._states):
-                    alpha[t, i] = _log_add(alpha[t, i], alpha[t-1, j] +
-                                           self._transitions[sj].logprob(si))
+            output_logprob = self._outputs_vector(symbol)
 
-                alpha[t, i] += self._outputs[si].logprob(symbol)
+            for i in range(N):
+                summand = alpha[t-1] + transitions_logprob[i]
+                alpha[t, i] = logsumexp2(summand) + output_logprob[i]
 
         return alpha
 
@@ -720,21 +738,22 @@ class HiddenMarkovModelTagger(TaggerI):
         """
         T = len(unlabeled_sequence)
         N = len(self._states)
-        beta = np.zeros((T, N), np.float64)
+        beta = _ninf_array((T, N))
 
-        # initialise the backward values
-        beta[T-1, :] = log2(1)
+        transitions_logprob = self._transitions_matrix().T
+
+        # initialise the backward values;
+        # "1" is an arbitrarily chosen value from Rabiner tutorial
+        beta[T-1, :] = np.log2(1)
 
         # inductively calculate remaining backward values
         for t in range(T-2, -1, -1):
             symbol = unlabeled_sequence[t+1][_TEXT]
-            for i, si in enumerate(self._states):
-                beta[t, i] = -np.inf
-                for j, sj in enumerate(self._states):
-                    beta[t, i] = _log_add(beta[t, i],
-                                          self._transitions[si].logprob(sj) +
-                                          self._outputs[sj].logprob(symbol) +
-                                          beta[t + 1, j])
+            outputs = self._outputs_vector(symbol)
+
+            for i in range(N):
+                summand = transitions_logprob[i] + beta[t+1] + outputs
+                beta[t, i] = logsumexp2(summand)
 
         return beta
 
@@ -811,7 +830,7 @@ class HiddenMarkovModelTrainer(object):
         self._states = (states if states else [])
         self._symbols = (symbols if symbols else [])
 
-    def train(self, labelled_sequences=None, unlabeled_sequences=None,
+    def train(self, labeled_sequences=None, unlabeled_sequences=None,
               **kwargs):
         """
         Trains the HMM using both (or either of) supervised and unsupervised
@@ -827,16 +846,60 @@ class HiddenMarkovModelTrainer(object):
         :type unlabeled_sequences: list
         :param kwargs: additional arguments to pass to the training methods
         """
-        assert labelled_sequences or unlabeled_sequences
+        assert labeled_sequences or unlabeled_sequences
         model = None
-        if labelled_sequences:
-            model = self.train_supervised(labelled_sequences, **kwargs)
+        if labeled_sequences:
+            model = self.train_supervised(labeled_sequences, **kwargs)
         if unlabeled_sequences:
             if model: kwargs['model'] = model
             model = self.train_unsupervised(unlabeled_sequences, **kwargs)
         return model
 
-    def train_unsupervised(self, unlabeled_sequences, **kwargs):
+
+    def _baum_welch_step(self, sequence, model, symbol_to_number):
+
+        N = len(model._states)
+        M = len(model._symbols)
+        T = len(sequence)
+
+        # compute forward and backward probabilities
+        alpha = model._forward_probability(sequence)
+        beta = model._backward_probability(sequence)
+
+        # find the log probability of the sequence
+        lpk = logsumexp2(alpha[T-1])
+
+        A_numer = _ninf_array((N, N))
+        B_numer = _ninf_array((N, M))
+        A_denom = _ninf_array(N)
+        B_denom = _ninf_array(N)
+
+        transitions_logprob = model._transitions_matrix().T
+
+        for t in range(T):
+            symbol = sequence[t][_TEXT]  # not found? FIXME
+            next_symbol = None
+            if t < T - 1:
+                next_symbol = sequence[t+1][_TEXT]  # not found? FIXME
+            xi = symbol_to_number[symbol]
+
+            next_outputs_logprob = model._outputs_vector(next_symbol)
+            alpha_plus_beta = alpha[t] + beta[t]
+
+            if t < T - 1:
+                numer_add = transitions_logprob + next_outputs_logprob + \
+                            beta[t+1] + alpha[t].reshape(N, 1)
+                A_numer = np.logaddexp2(A_numer, numer_add)
+                A_denom = np.logaddexp2(A_denom, alpha_plus_beta)
+            else:
+                B_denom = np.logaddexp2(A_denom, alpha_plus_beta)
+
+            B_numer[:,xi] = np.logaddexp2(B_numer[:,xi], alpha_plus_beta)
+
+        return lpk, A_numer, A_denom, B_numer, B_denom
+
+    def train_unsupervised(self, unlabeled_sequences, update_outputs=True,
+                           **kwargs):
         """
         Trains the HMM using the Baum-Welch algorithm to maximise the
         probability of the data sequence. This is a variant of the EM
@@ -879,16 +942,19 @@ class HiddenMarkovModelTrainer(object):
 
         N = len(self._states)
         M = len(self._symbols)
-        symbol_dict = dict((sym, i) for i, sym in enumerate(self._symbols))
+        symbol_numbers = dict((sym, i) for i, sym in enumerate(self._symbols))
 
         # update model prob dists so that they can be modified
-        model._priors = MutableProbDist(model._priors, self._states)
+        # model._priors = MutableProbDist(model._priors, self._states)
+
         model._transitions = DictionaryConditionalProbDist(
             dict((s, MutableProbDist(model._transitions[s], self._states))
                  for s in self._states))
-        model._outputs = DictionaryConditionalProbDist(
-            dict((s, MutableProbDist(model._outputs[s], self._symbols))
-                 for s in self._states))
+
+        if update_outputs:
+            model._outputs = DictionaryConditionalProbDist(
+                dict((s, MutableProbDist(model._outputs[s], self._symbols))
+                     for s in self._states))
 
         model.reset_cache()
 
@@ -911,60 +977,18 @@ class HiddenMarkovModelTrainer(object):
                 if not sequence:
                     continue
 
-                # compute forward and backward probabilities
-                alpha = model._forward_probability(sequence)
-                beta = model._backward_probability(sequence)
-
-                # find the log probability of the sequence
-                T = len(sequence)
-                lpk = _log_add(*alpha[T-1, :])
-                logprob += lpk
-
-                # now update A and B (transition and output probabilities)
-                # using the alpha and beta values. Please refer to Rabiner's
-                # paper for details, it's too hard to explain in comments
-                local_A_numer = _ninf_array((N, N))
-                local_B_numer = _ninf_array((N, M))
-                local_A_denom = _ninf_array(N)
-                local_B_denom = _ninf_array(N)
-
-                # for each position, accumulate sums for A and B
-                for t in range(T):
-                    x = sequence[t][_TEXT] #not found? FIXME
-                    if t < T - 1:
-                        xnext = sequence[t+1][_TEXT] #not found? FIXME
-                    xi = symbol_dict[x]
-                    for i in range(N):
-                        si = self._states[i]
-                        if t < T - 1:
-                            for j in range(N):
-                                sj = self._states[j]
-                                local_A_numer[i, j] =  \
-                                    _log_add(local_A_numer[i, j],
-                                        alpha[t, i] +
-                                        model._transitions[si].logprob(sj) +
-                                        model._outputs[sj].logprob(xnext) +
-                                        beta[t+1, j])
-                            local_A_denom[i] = _log_add(local_A_denom[i],
-                                alpha[t, i] + beta[t, i])
-                        else:
-                            local_B_denom[i] = _log_add(local_A_denom[i],
-                                alpha[t, i] + beta[t, i])
-
-                        local_B_numer[i, xi] = _log_add(local_B_numer[i, xi],
-                            alpha[t, i] + beta[t, i])
+                (lpk, seq_A_numer, seq_A_denom,
+                seq_B_numer, seq_B_denom) = self._baum_welch_step(sequence, model, symbol_numbers)
 
                 # add these sums to the global A and B values
                 for i in range(N):
-                    for j in range(N):
-                        A_numer[i, j] = _log_add(A_numer[i, j],
-                                                local_A_numer[i, j] - lpk)
-                    for k in range(M):
-                        B_numer[i, k] = _log_add(B_numer[i, k],
-                                                local_B_numer[i, k] - lpk)
+                    A_numer[i] = np.logaddexp2(A_numer[i], seq_A_numer[i]-lpk)
+                    B_numer[i] = np.logaddexp2(B_numer[i], seq_B_numer[i]-lpk)
 
-                    A_denom[i] = _log_add(A_denom[i], local_A_denom[i] - lpk)
-                    B_denom[i] = _log_add(B_denom[i], local_B_denom[i] - lpk)
+                A_denom = np.logaddexp2(A_denom, seq_A_denom-lpk)
+                B_denom = np.logaddexp2(B_denom, seq_B_denom-lpk)
+
+                logprob += lpk
 
             # use the calculated values to update the transition and output
             # probability values
@@ -977,10 +1001,8 @@ class HiddenMarkovModelTrainer(object):
                 # We can divide each Pi by K to make sum(P) == 1.
                 #   Pi' = Pi/K
                 #   log2(Pi') = log2(Pi) - log2(K)
-                logprob_Ai -= _log_add(*logprob_Ai)
-                logprob_Bi -= _log_add(*logprob_Bi)
-
-                # print(logprob_Ai, logprob_Bi, _log_add(*logprob_Ai), _log_add(*logprob_Bi))
+                logprob_Ai -= logsumexp2(logprob_Ai)
+                logprob_Bi -= logsumexp2(logprob_Bi)
 
                 # update output and transition probabilities
                 si = self._states[i]
@@ -989,9 +1011,11 @@ class HiddenMarkovModelTrainer(object):
                     sj = self._states[j]
                     model._transitions[si].update(sj, logprob_Ai[j])
 
-                for k in range(M):
-                    ok = self._symbols[k]
-                    model._outputs[si].update(ok, logprob_Bi[k])
+                if update_outputs:
+                    for k in range(M):
+                        ok = self._symbols[k]
+                        model._outputs[si].update(ok, logprob_Bi[k])
+
                 # Rabiner says the priors don't need to be updated. I don't
                 # believe him. FIXME
 
@@ -1073,6 +1097,11 @@ def _ninf_array(shape):
     return res
 
 
+def logsumexp2(arr):
+    max_ = arr.max()
+    return np.log2(np.sum(2**(arr - max_))) + max_
+
+
 def _log_add(*values):
     """
     Adds the logged values, returning the logarithm of the addition.
@@ -1082,7 +1111,7 @@ def _log_add(*values):
         sum_diffs = 0
         for value in values:
             sum_diffs += 2**(value - x)
-        return x + log2(sum_diffs)
+        return x + np.log2(sum_diffs)
     else:
         return x
 
@@ -1190,7 +1219,7 @@ def _untag(sentences):
         unlabeled.append([(token[_TEXT], None) for token in sentence])
     return unlabeled
 
-def demo_pos_bw(test=10, supervised=200, unsupervised=10, verbose=True,
+def demo_pos_bw(test=10, supervised=20, unsupervised=10, verbose=True,
                 max_iterations=5):
     # demonstrates the Baum-Welch algorithm in POS tagging
 
@@ -1198,7 +1227,7 @@ def demo_pos_bw(test=10, supervised=200, unsupervised=10, verbose=True,
     print("Baum-Welch demo for POS tagging")
     print()
 
-    print('Training HMM (supervised)...')
+    print('Training HMM (supervised, %d sentences)...' % supervised)
 
     sentences, tag_set, symbols = load_pos(test + supervised + unsupervised)
 
@@ -1211,9 +1240,9 @@ def demo_pos_bw(test=10, supervised=200, unsupervised=10, verbose=True,
     hmm = trainer.train_supervised(sentences[test:test+supervised],
                     estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
 
-    # hmm.test(sentences[:test], verbose=verbose)
+    hmm.test(sentences[:test], verbose=verbose)
 
-    print('Training (unsupervised)...')
+    print('Training (unsupervised, %d sentences)...' % unsupervised)
     # it's rather slow - so only use 10 samples by default
     unlabeled = _untag(sentences[test+supervised:])
     hmm = trainer.train_unsupervised(unlabeled, model=hmm,
@@ -1234,6 +1263,7 @@ def demo_bw():
     training = []
     import random
     rng = random.Random()
+    rng.seed(0)
     for i in range(10):
         item = model.random_sample(rng, 5)
         training.append([(i[0], None) for i in item])
