@@ -310,7 +310,7 @@ class PorterStemmer(StemmerI):
             if word.endswith("at") or word.endswith("bl") or word.endswith("iz"):
                 word += 'e'
             elif self._doublec(word):
-                if word[-1] not in {'l', 's', 'z'}:
+                if word[-1] not in ['l', 's', 'z']:
                     word = word[:-1]
             elif (self._m(word, len(word)-1) == 1 and self._cvc(word, len(word)-1)):
                 word += 'e'
