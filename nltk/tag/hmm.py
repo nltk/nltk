@@ -793,10 +793,10 @@ class HiddenMarkovModelTagger(TaggerI):
                     ' '.join('%s/%s' % (token, tag)
                               for (token, tag) in predicted_sent))
                 print()
-                # print('Entropy:',
-                #     self.entropy([(token, None) for
-                #                   (token, tag) in predicted_sent]))
-                # print()
+                print('Entropy:',
+                    self.entropy([(token, None) for
+                                  (token, tag) in predicted_sent]))
+                print()
                 print('-' * 60)
 
         test_tags = flatten(imap(tags, test_sequence))
