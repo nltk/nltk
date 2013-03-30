@@ -249,11 +249,11 @@ class HiddenMarkovModelTagger(TaggerI):
         if T > 0 and sequence[0][_TAG]:
             last_state = sequence[0][_TAG]
             p = self._priors.logprob(last_state) + \
-                self._outputs[last_state].logprob(sequence[0][_TEXT])
+                self._output_logprob(last_state, sequence[0][_TEXT])
             for t in range(1, T):
                 state = sequence[t][_TAG]
                 p += self._transitions[last_state].logprob(state) + \
-                     self._outputs[state].logprob(sequence[t][_TEXT])
+                     self._output_logprob(state, sequence[t][_TEXT])
                 last_state = state
             return p
         else:
@@ -320,7 +320,7 @@ class HiddenMarkovModelTagger(TaggerI):
                 for j in range(N):
                     X[i, j] = self._transitions[si].logprob(self._states[j])
                 for k in range(M):
-                    O[i, k] = self._outputs[si].logprob(self._symbols[k])
+                    O[i, k] = self._output_logprob(si, self._symbols[k])
             S = {}
             for k in range(M):
                 S[self._symbols[k]] = k
@@ -348,7 +348,7 @@ class HiddenMarkovModelTagger(TaggerI):
                     si = self._states[i]
                     # only calculate probabilities for new symbols
                     for k in range(Q, M):
-                        O[i, k] = self._outputs[si].logprob(self._symbols[k])
+                        O[i, k] = self._output_logprob(si, self._symbols[k])
                 # only create symbol mappings for new symbols
                 for k in range(Q, M):
                     S[self._symbols[k]] = k
@@ -677,6 +677,7 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropies
 
     def _transitions_matrix(self):
+        """ Return a matrix of transition log probabilities. """
         trans_iter = (self._transitions[sj].logprob(si)
                       for sj in self._states
                       for si in self._states)
@@ -686,9 +687,12 @@ class HiddenMarkovModelTagger(TaggerI):
         return transitions_logprob.reshape((N, N)).T
 
     def _outputs_vector(self, symbol):
-        out_iter = (self._outputs[sj].logprob(symbol) for sj in self._states)
+        """
+        Return a vector with log probabilities of emitting a symbol
+        when entering states.
+        """
+        out_iter = (self._output_logprob(sj, symbol) for sj in self._states)
         return np.fromiter(out_iter, dtype=np.float64)
-
 
     def _forward_probability(self, unlabeled_sequence):
         """
@@ -713,7 +717,7 @@ class HiddenMarkovModelTagger(TaggerI):
         symbol = unlabeled_sequence[0][_TEXT]
         for i, state in enumerate(self._states):
             alpha[0, i] = self._priors.logprob(state) + \
-                          self._outputs[state].logprob(symbol)
+                          self._output_logprob(state, symbol)
 
         # Induction
         for t in range(1, T):
