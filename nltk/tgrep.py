@@ -528,15 +528,18 @@ def tgrep_compile(tgrep_string):
     return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
 def _treepositions_no_leaves(tree):
-    search_positions = tree.treepositions()
-    if not hasattr(tree, 'leaves') or not hasattr(tree,
-                                                  'leaf_treeposition'):
-        return []
-    leaf_positions = set([tree.leaf_treeposition(x)
-                          for x in range(len(tree.leaves()))])
-    search_positions = [x for x in search_positions
-                        if x not in leaf_positions]
-    return search_positions
+    '''
+    Returns all the tree positions in the given tree which are not
+    leaf nodes.
+    '''
+    treepositions = tree.treepositions()
+    # leaves are treeposition tuples that are not prefixes of any
+    # other treeposition
+    prefixes = set()
+    for pos in treepositions:
+        for length in range(len(pos)):
+            prefixes.add(pos[:length])
+    return [pos for pos in treepositions if pos in prefixes]
 
 def tgrep_positions(tree, tgrep_string, search_leaves = True):
     '''
