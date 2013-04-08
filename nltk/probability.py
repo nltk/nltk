@@ -636,6 +636,7 @@ class UniformProbDist(ProbDistI):
     def __repr__(self):
         return '<UniformProbDist with %d samples>' % len(self._sampleset)
 
+
 @compat.python_2_unicode_compatible
 class RandomProbDist(ProbDistI):
     """
@@ -644,7 +645,7 @@ class RandomProbDist(ProbDistI):
     Also called a continuous uniform distribution).
     """
     def __init__(self, samples):
-        if len(samples) == 0: 
+        if len(samples) == 0:
             raise ValueError('A probability distribution must '+
                              'have at least one sample.')
         self._probs = self.unirand(samples)
@@ -653,8 +654,8 @@ class RandomProbDist(ProbDistI):
     @classmethod
     def unirand(cls, samples):
         """
-        The key function that creates a randomized initial distribution 
-        that still sums to 1. Set as a dictionary of prob values so that 
+        The key function that creates a randomized initial distribution
+        that still sums to 1. Set as a dictionary of prob values so that
         it can still be passed to MutableProbDist and called with identical
         syntax to UniformProbDist
         """
@@ -665,7 +666,7 @@ class RandomProbDist(ProbDistI):
 
         total = sum(randrow)
         if total != 1:
-            #this difference, if present, is so small (near NINF) that it 
+            #this difference, if present, is so small (near NINF) that it
             #can be subtracted from any element without risking probs not (0 1)
             randrow[-1] -= total - 1
 
@@ -1293,10 +1294,23 @@ class WittenBellProbDist(ProbDistI):
 # and the 'species' would be the distinct colors of the balls (finite
 # but unknown in number).
 #
-# The situation frequency zero is quite common in the original
-# Good-Turing estimation.  Bill Gale and Geoffrey Sampson present a
-# simple and effective approach, Simple Good-Turing.  As a smoothing
-# curve they simply use a power curve:
+# Good-Turing method calculates the probability mass to assign to
+# events with zero or low counts based on the number of events with
+# higher counts. It does so by using the adjusted count *c\**:
+#
+#     - *c\* = (c + 1) N(c + 1) / N(c)*   for c >= 1
+#     - *things with frequency zero in training* = N(1)  for c == 0
+#
+# where *c* is the original count, *N(i)* is the number of event types
+# observed with count *i*. We can think the count of unseen as the count
+# of frequency one (see Jurafsky & Martin 2nd Edition, p101).
+#
+# This method is problematic because the situation ``N(c+1) == 0``
+# is quite common in the original Good-Turing estimation; smoothing or
+# interpolation of *N(i)* values is essential in practice.
+#
+# Bill Gale and Geoffrey Sampson present a simple and effective approach,
+# Simple Good-Turing.  As a smoothing curve they simply use a power curve:
 #
 #     Nr = a*r^b (with b < -1 to give the appropriate hyperbolic
 #     relationship)
@@ -1320,85 +1334,6 @@ class WittenBellProbDist(ProbDistI):
 # some implementations can use a coefficient of 1.65 for a 0.1
 # significance criterion.
 #
-
-@compat.python_2_unicode_compatible
-class GoodTuringProbDist(ProbDistI):
-    """
-    The Good-Turing estimate of a probability distribution. This method
-    calculates the probability mass to assign to events with zero or low
-    counts based on the number of events with higher counts. It does so by
-    using the smoothed count *c\**:
-
-        - *c\* = (c + 1) N(c + 1) / N(c)*   for c >= 1
-        - *things with frequency zero in training* = N(1)  for c == 0
-
-    where *c* is the original count, *N(i)* is the number of event types
-    observed with count *i*. We can think the count of unseen as the count
-    of frequency one (see Jurafsky & Martin 2nd Edition, p101).
-    """
-
-    def __init__(self, freqdist, bins=None):
-        """
-        :param freqdist: The frequency counts upon which to base the
-            estimation.
-        :type freqdist: FreqDist
-        :param bins: The number of possible event types. This must be at least
-            as large as the number of bins in the ``freqdist``. If None, then
-            it's assumed to be equal to that of the ``freqdist``
-        :type bins: int
-        """
-        assert bins is None or bins >= freqdist.B(),\
-               'Bins parameter must not be less than freqdist.B()'
-        if bins is None:
-            bins = freqdist.B()
-        self._freqdist = freqdist
-        self._bins = bins
-
-    def prob(self, sample):
-        count = self._freqdist[sample]
-
-        # unseen sample's frequency (count zero) uses frequency one's
-        if count == 0 and self._freqdist.N() != 0:
-            p0 = 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
-            if self._bins == self._freqdist.B():
-                p0 = 0.0
-            else:
-                p0 = p0 / (1.0 * self._bins - self._freqdist.B())
-
-        nc = self._freqdist.Nr(count)
-        ncn = self._freqdist.Nr(count + 1)
-
-        # avoid divide-by-zero errors for sparse datasets
-        if nc == 0 or self._freqdist.N() == 0:
-            return 0
-
-        return 1.0 * (count + 1) * ncn / (nc * self._freqdist.N())
-
-    def max(self):
-        return self._freqdist.max()
-
-    def samples(self):
-        return self._freqdist.keys()
-
-    def discount(self):
-        """
-        :return: The probability mass transferred from the
-            seen samples to the unseen samples.
-        :rtype: float
-        """
-        return 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
-
-    def freqdist(self):
-        return self._freqdist
-
-    def __repr__(self):
-        """
-        Return a string representation of this ``ProbDist``.
-
-        :rtype: str
-        """
-        return '<GoodTuringProbDist based on %d samples>' % self._freqdist.N()
-
 
 ##//////////////////////////////////////////////////////
 ##  Simple Good-Turing Probablity Distributions
@@ -2372,7 +2307,6 @@ def demo(numsamples=6, numoutcomes=500):
         HeldoutProbDist(fdist1, fdist2, numsamples),
         HeldoutProbDist(fdist2, fdist1, numsamples),
         CrossValidationProbDist([fdist1, fdist2, fdist3], numsamples),
-        GoodTuringProbDist(fdist1),
         SimpleGoodTuringProbDist(fdist1),
         SimpleGoodTuringProbDist(fdist1, 7),
         _create_sum_pdist(numsamples),
@@ -2420,14 +2354,13 @@ def gt_demo():
     from nltk import corpus
     emma_words = corpus.gutenberg.words('austen-emma.txt')
     fd = FreqDist(emma_words)
-    gt = GoodTuringProbDist(fd)
     sgt = SimpleGoodTuringProbDist(fd)
     katz = SimpleGoodTuringProbDist(fd, 7)
-    print('%18s %8s  %12s %14s  %12s' \
-        % ("word", "freqency", "GoodTuring", "SimpleGoodTuring", "Katz-cutoff" ))
+    print('%18s %8s  %14s  %12s' \
+        % ("word", "freqency", "SimpleGoodTuring", "Katz-cutoff" ))
     for key in fd:
         print('%18s %8d  %12e   %14e   %12e' \
-            % (key, fd[key], gt.prob(key), sgt.prob(key), katz.prob(key)))
+            % (key, fd[key], sgt.prob(key), katz.prob(key)))
 
 if __name__ == '__main__':
     demo(6, 10)
@@ -2437,7 +2370,7 @@ if __name__ == '__main__':
 __all__ = ['ConditionalFreqDist', 'ConditionalProbDist',
            'ConditionalProbDistI', 'CrossValidationProbDist',
            'DictionaryConditionalProbDist', 'DictionaryProbDist', 'ELEProbDist',
-           'FreqDist', 'GoodTuringProbDist', 'SimpleGoodTuringProbDist', 'HeldoutProbDist',
+           'FreqDist', 'SimpleGoodTuringProbDist', 'HeldoutProbDist',
            'ImmutableProbabilisticMixIn', 'LaplaceProbDist', 'LidstoneProbDist',
            'MLEProbDist', 'MutableProbDist', 'KneserNeyProbDist', 'ProbDistI', 'ProbabilisticMixIn',
            'UniformProbDist', 'WittenBellProbDist', 'add_logs',
