@@ -140,10 +140,6 @@ Witten Bell Estimation
 Good Turing Estimation
 - The accuracy is only 17%, see issues #26 and #133
 
-    >>> gt = lambda fd, bins: GoodTuringProbDist(fd)
-    >>> train_and_test(gt)
-    0.34%
-
     >>> gt = lambda fd, bins: SimpleGoodTuringProbDist(fd)
     >>> train_and_test(gt)
     0.17%

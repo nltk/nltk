@@ -2306,7 +2306,6 @@ def demo(numsamples=6, numoutcomes=500):
         HeldoutProbDist(fdist1, fdist2, numsamples),
         HeldoutProbDist(fdist2, fdist1, numsamples),
         CrossValidationProbDist([fdist1, fdist2, fdist3], numsamples),
-        GoodTuringProbDist(fdist1),
         SimpleGoodTuringProbDist(fdist1),
         SimpleGoodTuringProbDist(fdist1, 7),
         _create_sum_pdist(numsamples),
@@ -2354,14 +2353,13 @@ def gt_demo():
     from nltk import corpus
     emma_words = corpus.gutenberg.words('austen-emma.txt')
     fd = FreqDist(emma_words)
-    gt = GoodTuringProbDist(fd)
     sgt = SimpleGoodTuringProbDist(fd)
     katz = SimpleGoodTuringProbDist(fd, 7)
-    print('%18s %8s  %12s %14s  %12s' \
-        % ("word", "freqency", "GoodTuring", "SimpleGoodTuring", "Katz-cutoff" ))
+    print('%18s %8s  %14s  %12s' \
+        % ("word", "freqency", "SimpleGoodTuring", "Katz-cutoff" ))
     for key in fd:
         print('%18s %8d  %12e   %14e   %12e' \
-            % (key, fd[key], gt.prob(key), sgt.prob(key), katz.prob(key)))
+            % (key, fd[key], sgt.prob(key), katz.prob(key)))
 
 if __name__ == '__main__':
     demo(6, 10)
@@ -2371,7 +2369,7 @@ if __name__ == '__main__':
 __all__ = ['ConditionalFreqDist', 'ConditionalProbDist',
            'ConditionalProbDistI', 'CrossValidationProbDist',
            'DictionaryConditionalProbDist', 'DictionaryProbDist', 'ELEProbDist',
-           'FreqDist', 'GoodTuringProbDist', 'SimpleGoodTuringProbDist', 'HeldoutProbDist',
+           'FreqDist', 'SimpleGoodTuringProbDist', 'HeldoutProbDist',
            'ImmutableProbabilisticMixIn', 'LaplaceProbDist', 'LidstoneProbDist',
            'MLEProbDist', 'MutableProbDist', 'KneserNeyProbDist', 'ProbDistI', 'ProbabilisticMixIn',
            'UniformProbDist', 'WittenBellProbDist', 'add_logs',
