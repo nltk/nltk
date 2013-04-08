@@ -636,6 +636,7 @@ class UniformProbDist(ProbDistI):
     def __repr__(self):
         return '<UniformProbDist with %d samples>' % len(self._sampleset)
 
+
 @compat.python_2_unicode_compatible
 class RandomProbDist(ProbDistI):
     """
@@ -644,7 +645,7 @@ class RandomProbDist(ProbDistI):
     Also called a continuous uniform distribution).
     """
     def __init__(self, samples):
-        if len(samples) == 0: 
+        if len(samples) == 0:
             raise ValueError('A probability distribution must '+
                              'have at least one sample.')
         self._probs = self.unirand(samples)
@@ -653,8 +654,8 @@ class RandomProbDist(ProbDistI):
     @classmethod
     def unirand(cls, samples):
         """
-        The key function that creates a randomized initial distribution 
-        that still sums to 1. Set as a dictionary of prob values so that 
+        The key function that creates a randomized initial distribution
+        that still sums to 1. Set as a dictionary of prob values so that
         it can still be passed to MutableProbDist and called with identical
         syntax to UniformProbDist
         """
@@ -665,7 +666,7 @@ class RandomProbDist(ProbDistI):
 
         total = sum(randrow)
         if total != 1:
-            #this difference, if present, is so small (near NINF) that it 
+            #this difference, if present, is so small (near NINF) that it
             #can be subtracted from any element without risking probs not (0 1)
             randrow[-1] -= total - 1
 
