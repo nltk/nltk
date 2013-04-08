@@ -842,13 +842,14 @@ class LidstoneProbDist(ProbDistI):
             raise ValueError('\nThe number of bins in a %s distribution ' % name +
                              '(%d) must be greater than or equal to\n' % bins +
                              'the number of bins in the FreqDist used ' +
-                             'to create it (%d).' % freqdist.N())
+                             'to create it (%d).' % freqdist.B())
 
         self._freqdist = freqdist
         self._gamma = float(gamma)
         self._N = self._freqdist.N()
 
-        if bins is None: bins = freqdist.B()
+        if bins is None:
+            bins = freqdist.B()
         self._bins = bins
 
         self._divisor = self._N + bins * gamma
