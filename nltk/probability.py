@@ -211,14 +211,14 @@ class FreqDist(dict):
         if self._Nr_cache is None:
             self._cache_Nr_values()
 
-        return (self._Nr_cache[r] if r < len(self._Nr_cache) else 0)
+        return self._Nr_cache.get(r, 0)
 
     def _cache_Nr_values(self):
-        Nr = [0]
+        Nr = defaultdict(int)
         for sample in self:
             c = self.get(sample, 0)
-            if c >= len(Nr):
-                Nr += [0]*(c+1-len(Nr))
+            if c == 0 and c not in Nr:
+                continue
             Nr[c] += 1
         self._Nr_cache = Nr
 
