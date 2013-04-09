@@ -211,14 +211,22 @@ class FreqDist(dict):
         if self._Nr_cache is None:
             self._cache_Nr_values()
 
-        return (self._Nr_cache[r] if r < len(self._Nr_cache) else 0)
+        return self._Nr_cache.get(r, 0)
+
+    def _Nr_nonzero(self):
+        """
+        Return (r, Nr(r)) tuples for all r such as Nr(r) > 0 (sorted by r).
+        """
+        if self._Nr_cache is None:
+            self._cache_Nr_values()
+        return sorted(self._Nr_cache.items())
 
     def _cache_Nr_values(self):
-        Nr = [0]
+        Nr = defaultdict(int)
         for sample in self:
             c = self.get(sample, 0)
-            if c >= len(Nr):
-                Nr += [0]*(c+1-len(Nr))
+            if c == 0 and c not in Nr:
+                continue
             Nr[c] += 1
         self._Nr_cache = Nr
 
@@ -1384,16 +1392,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         """
         Split the frequency distribution in two list (r, Nr), where Nr(r) > 0
         """
-        r, nr = [], []
-        b, i = 0, 0
-        while b != self._freqdist.B():
-            nr_i = self._freqdist.Nr(i)
-            if nr_i > 0:
-                b += nr_i
-                r.append(i)
-                nr.append(nr_i)
-            i += 1
-        return (r, nr)
+        return zip(*self._freqdist._Nr_nonzero()) or ([], [])
 
     def find_best_fit(self, r, nr):
         """
