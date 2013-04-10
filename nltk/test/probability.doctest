@@ -211,7 +211,8 @@ Issue 579: override clear to reset some variables
     >>> fd.N()
     0
 
-Issue 351: fix fileids method of CategorizedCorpusReader to inadvertently add errant categories
+Issue 351: fix fileids method of CategorizedCorpusReader to inadvertently
+add errant categories
 
     >>> from nltk.corpus import brown
     >>> brown.fileids('blah')
@@ -221,7 +222,9 @@ Issue 351: fix fileids method of CategorizedCorpusReader to inadvertently add er
     >>> brown.categories()
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor', 'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
 
-Issue 175: add the unseen bin to SimpleGoodTuringProbDist by default otherwise any unseen events get a probability of zero, i.e., they don't get smoothed
+Issue 175: add the unseen bin to SimpleGoodTuringProbDist by default
+otherwise any unseen events get a probability of zero, i.e.,
+they don't get smoothed
 
     >>> from nltk import SimpleGoodTuringProbDist, FreqDist
     >>> fd = FreqDist({'a':1, 'b':1, 'c': 2, 'd': 3, 'e': 4, 'f': 4, 'g': 4, 'h': 5, 'i': 5, 'j': 6, 'k': 6, 'l': 6, 'm': 7, 'n': 7, 'o': 8, 'p': 9, 'q': 10})
@@ -234,4 +237,18 @@ Issue 175: add the unseen bin to SimpleGoodTuringProbDist by default otherwise a
     0.022727272727272728...
     >>> p.prob('foobar')
     0.022727272727272728...
+
+``MLEProbDist`` and ``DictionaryConditionalProbDist`` can be pickled:
+
+    >>> import pickle
+    >>> pd = MLEProbDist(fd)
+    >>> pd.samples() == pickle.loads(pickle.dumps(pd)).samples()
+    True
+    >>> dpd = DictionaryConditionalProbDist({'x': pd})
+    >>> unpickled = pickle.loads(pickle.dumps(dpd))
+    >>> dpd['x'].prob('a')
+    0.011363636...
+    >>> dpd['x'].prob('a') == unpickled['x'].prob('a')
+    True
+
 

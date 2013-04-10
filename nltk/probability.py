@@ -2107,6 +2107,9 @@ class DictionaryConditionalProbDist(ConditionalProbDistI):
         defaultdict.__init__(self, DictionaryProbDist)
         self.update(probdist_dict)
 
+    def __reduce__(self):
+        return self.__class__, (self.items(),),
+
 ##//////////////////////////////////////////////////////
 ## Adding in log-space.
 ##//////////////////////////////////////////////////////
