@@ -1854,6 +1854,13 @@ class ConditionalFreqDist(defaultdict):
             for (cond, sample) in cond_samples:
                 self[cond].inc(sample)
 
+    def __reduce__(self):
+        cond_samples = []
+        for condition in self.conditions():
+            cond_samples.extend([(condition, sample)
+                                 for sample in self[condition].samples()])
+        return (self.__class__, (cond_samples,))
+
     def conditions(self):
         """
         Return a list of the conditions that have been accessed for
