@@ -439,6 +439,10 @@ class ContextFreeGrammar(object):
             leftcorner relation. In that case, some optimized chart parsers won't work.
         :type calculate_leftcorners: bool
         """
+        if not is_nonterminal(start):
+            raise TypeError("start should be a Nonterminal object,"
+                            " not a %s" % type(start).__name__)
+
         self._start = start
         self._productions = productions
         self._categories = set(prod.lhs() for prod in productions)
