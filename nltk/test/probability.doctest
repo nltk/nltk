@@ -253,6 +253,8 @@ can be pickled:
     True
     >>> cfd = nltk.probability.ConditionalFreqDist()
     >>> cfd['foo'].inc('hello')
+    >>> cfd['foo'].inc('hello')
+    >>> cfd['bar'].inc('hello')
     >>> cfd2 = pickle.loads(pickle.dumps(cfd))
     >>> cfd2 == cfd
     True
