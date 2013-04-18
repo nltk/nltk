@@ -1855,11 +1855,8 @@ class ConditionalFreqDist(defaultdict):
                 self[cond].inc(sample)
 
     def __reduce__(self):
-        cond_samples = []
-        for condition in self.conditions():
-            cond_samples.extend([(condition, sample)
-                                 for sample in self[condition].samples()])
-        return (self.__class__, (cond_samples,))
+        kv_pairs = [(cond, self[cond]) for cond in self.conditions()]
+        return (self.__class__, (), None, None, iter(kv_pairs))
 
     def conditions(self):
         """
