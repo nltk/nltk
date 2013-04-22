@@ -2087,15 +2087,11 @@ class ConditionalProbDist(ConditionalProbDistI):
         self._factory_args = factory_args
         self._factory_kw_args = factory_kw_args
 
-        ## factory = lambda: probdist_factory(FreqDist(),
-        ##                                   *factory_args, **factory_kw_args)
-        ## defaultdict.__init__(self, factory)
         for condition in cfdist:
             self[condition] = probdist_factory(cfdist[condition],
                                                *factory_args, **factory_kw_args)
 
     def __missing__(self, key):
-        print("YEEEAAAHHH!")
         self[key] = self._probdist_factory(FreqDist(),
                                            *self._factory_args,
                                            **self._factory_kw_args)
