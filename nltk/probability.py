@@ -1990,7 +1990,7 @@ class ConditionalFreqDist(defaultdict):
 
 
 @compat.python_2_unicode_compatible
-class ConditionalProbDistI(defaultdict):
+class ConditionalProbDistI(dict):
     """
     A collection of probability distributions for a single experiment
     run under different conditions.  Conditional probability
@@ -2083,18 +2083,19 @@ class ConditionalProbDist(ConditionalProbDistI):
         :type factory_kw_args: (any)
         :param factory_kw_args: Extra keyword arguments for ``probdist_factory``.
         """
-        # self._probdist_factory = probdist_factory
-        # self._cfdist = cfdist
-        # self._factory_args = factory_args
-        # self._factory_kw_args = factory_kw_args
+        self._probdist_factory = probdist_factory
+        self._factory_args = factory_args
+        self._factory_kw_args = factory_kw_args
 
-        factory = lambda: probdist_factory(FreqDist(),
-                                           *factory_args, **factory_kw_args)
-        defaultdict.__init__(self, factory)
         for condition in cfdist:
             self[condition] = probdist_factory(cfdist[condition],
                                                *factory_args, **factory_kw_args)
 
+    def __missing__(self, key):
+        self[key] = self._probdist_factory(FreqDist(),
+                                           *self._factory_args,
+                                           **self._factory_kw_args)
+        return self[key]
 
 class DictionaryConditionalProbDist(ConditionalProbDistI):
     """
@@ -2108,11 +2109,11 @@ class DictionaryConditionalProbDist(ConditionalProbDistI):
             by the conditions
         :type probdist_dict: dict any -> probdist
         """
-        defaultdict.__init__(self, DictionaryProbDist)
         self.update(probdist_dict)
 
-    def __reduce__(self):
-        return self.__class__, (self.items(),),
+    def __missing__(self, key):
+        self[key] = DictionaryProbDist()
+        return self[key]
 
 ##//////////////////////////////////////////////////////
 ## Adding in log-space.

@@ -238,8 +238,8 @@ they don't get smoothed
     >>> p.prob('foobar')
     0.022727272727272728...
 
-``MLEProbDist``, ``DictionaryConditionalProbDist`` and ``ConditionalFreqDist``
-can be pickled:
+``MLEProbDist``, ``ConditionalProbDist'', ``DictionaryConditionalProbDist`` and
+``ConditionalFreqDist`` can be pickled:
 
     >>> import pickle
     >>> pd = MLEProbDist(fd)
@@ -257,6 +257,10 @@ can be pickled:
     >>> cfd['bar'].inc('hello')
     >>> cfd2 = pickle.loads(pickle.dumps(cfd))
     >>> cfd2 == cfd
+    True
+    >>> cpd = ConditionalProbDist(cfd, SimpleGoodTuringProbDist)
+    >>> cpd2 = pickle.loads(pickle.dumps(cpd))
+    >>> cpd['foo'].prob('hello') == cpd2['foo'].prob('hello')
     True
 
 
