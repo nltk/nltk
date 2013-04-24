@@ -1990,7 +1990,7 @@ class ConditionalFreqDist(defaultdict):
 
 
 @compat.python_2_unicode_compatible
-class ConditionalProbDistI(defaultdict):
+class ConditionalProbDistI(dict):
     """
     A collection of probability distributions for a single experiment
     run under different conditions.  Conditional probability
@@ -2109,11 +2109,11 @@ class DictionaryConditionalProbDist(ConditionalProbDistI):
             by the conditions
         :type probdist_dict: dict any -> probdist
         """
-        defaultdict.__init__(self, DictionaryProbDist)
         self.update(probdist_dict)
 
-    def __reduce__(self):
-        return self.__class__, (self.items(),),
+    def __missing__(self, key):
+        self[key] = DictionaryProbDist()
+        return self[key]
 
 ##//////////////////////////////////////////////////////
 ## Adding in log-space.
