@@ -140,7 +140,7 @@ class TnT(TaggerI):
             self._unk.train(data)
 
         for sent in data:
-            history = ['BOS', 'BOS']
+            history = [('BOS',False), ('BOS',False)]
             for w, t in sent:
 
                 # if capitalization is requested,
