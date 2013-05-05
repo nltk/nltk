@@ -16,7 +16,8 @@ brown_mapping1 = {
     'h': 'V', 'f': 'FW', 'a': 'DET', 't': 'TO',
     'cc': 'CNJ', 'cs': 'CNJ', 'cd': 'NUM',
     'do': 'V', 'dt': 'DET',
-    'nn': 'N', 'nr': 'N', 'np': 'NP', 'nc': 'N'
+    'nn': 'N', 'nr': 'N', 'np': 'NP', 'nc': 'N',
+    '--': '--'
     }
 brown_mapping2 = {
     'vb': 'V', 'vbd': 'VD', 'vbg': 'VG', 'vbn': 'VN'
