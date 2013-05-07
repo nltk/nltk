@@ -1366,6 +1366,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
         write_megam_file(train_toks, encoding, trainfile, \
                             explicit=explicit, bernoulli=bernoulli)
         trainfile.close()
+        os.close(fd)
     except (OSError, IOError, ValueError) as e:
         raise ValueError('Error while creating megam training file: %s' % e)
 
