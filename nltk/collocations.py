@@ -229,7 +229,7 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
 
 
 def demo(scorer=None, compare_scorer=None):
-    """Finds trigram collocations in the files of the WebText corpus."""
+    """Finds bigram collocations in the files of the WebText corpus."""
     from nltk.metrics import BigramAssocMeasures, spearman_correlation, ranks_from_scores
 
     if scorer is None:

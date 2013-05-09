@@ -143,7 +143,7 @@ class NgramAssocMeasures(object):
 
 class BigramAssocMeasures(NgramAssocMeasures):
     """
-    A collection of trigram association measures. Each association measure
+    A collection of bigram association measures. Each association measure
     is provided as a function with three arguments::
 
         bigram_score_fn(n_ii, (n_ix, n_xi), n_xx)
