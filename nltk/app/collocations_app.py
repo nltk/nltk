@@ -171,8 +171,7 @@ class CollocationsView:
     def reset_current_page(self):
         self.current_page = -1
 
-    def _poll(self):
-    
+    def _poll(self):   
         try:
             event = self.queue.get(block=False)
         except q.Empty:
@@ -183,7 +182,6 @@ class CollocationsView:
             elif event == ERROR_LOADING_CORPUS_EVENT:
                 self.handle_error_loading_corpus(event)
         self.after = self.top.after(POLL_INTERVAL, self._poll)
-
 
     def handle_error_loading_corpus(self, event):
         self.status['text'] = 'Error in loading ' + self.var.get()
