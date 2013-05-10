@@ -10,6 +10,10 @@
 import nltk.compat
 import threading
 import tkinter.font
+if nltk.compat.PY3:
+    import queue as q
+else:    
+    import Queue as q
 from tkinter import (Button, END, Frame, IntVar, LEFT, Label, Menu,
                      OptionMenu, SUNKEN, Scrollbar, StringVar,
                      Text, Tk)
@@ -22,6 +26,7 @@ from nltk.probability import FreqDist
 
 CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
 ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
+POLL_INTERVAL = 100
 
 _DEFAULT = 'English: Brown Corpus (Humor)'
 _CORPORA = {
@@ -64,20 +69,21 @@ _CORPORA = {
 class CollocationsView:
     _BACKGROUND_COLOUR='#FFF' #white
 
-    def __init__(self):
-        self.model = CollocationsModel()
-        self.model.add_listener(self)
+    def __init__(self, queue):
+        self.model = CollocationsModel(queue)
         self.top = Tk()
         self._init_top(self.top)
         self._init_menubar()
         self._init_widgets(self.top)
-        self._bind_event_handlers()
+        self.queue = queue
         self.load_corpus(self.model.DEFAULT_CORPUS)
+        self.after = self.top.after(POLL_INTERVAL, self._poll)
 
     def _init_top(self, top):
         top.geometry('550x650+50+50')
         top.title('NLTK Collocations List')
         top.bind('<Control-q>', self.destroy)
+        top.protocol('WM_DELETE_WINDOW', self.destroy)
         top.minsize(550,650)
 
     def _init_widgets(self, parent):
@@ -165,9 +171,19 @@ class CollocationsView:
     def reset_current_page(self):
         self.current_page = -1
 
-    def _bind_event_handlers(self):
-        self.top.bind(CORPUS_LOADED_EVENT, self.handle_corpus_loaded)
-        self.top.bind(ERROR_LOADING_CORPUS_EVENT, self.handle_error_loading_corpus)
+    def _poll(self):
+    
+        try:
+            event = self.queue.get(block=False)
+        except q.Empty:
+            pass
+        else:
+            if event == CORPUS_LOADED_EVENT:
+                self.handle_corpus_loaded(event)
+            elif event == ERROR_LOADING_CORPUS_EVENT:
+                self.handle_error_loading_corpus(event)
+        self.after = self.top.after(POLL_INTERVAL, self._poll)
+
 
     def handle_error_loading_corpus(self, event):
         self.status['text'] = 'Error in loading ' + self.var.get()
@@ -227,6 +243,7 @@ class CollocationsView:
 
     def destroy(self, *e):
         if self.top is None: return
+        self.top.after_cancel(self.after)
         self.top.destroy()
         self.top = None
 
@@ -256,25 +273,18 @@ class CollocationsView:
         self.results_box['state'] = 'disabled'
 
 class CollocationsModel:
-    def __init__(self):
-        self.listeners = []
+    def __init__(self, queue):
         self.result_count = None
         self.selected_corpus = None
         self.collocations = None
         self.CORPORA = _CORPORA
         self.DEFAULT_CORPUS = _DEFAULT
+        self.queue = queue
         self.reset_results()
 
     def reset_results(self):
         self.result_pages = []
         self.results_returned = 0
-
-    def add_listener(self, listener):
-        self.listeners.append(listener)
-
-    def notify_listeners(self, event):
-        for each in self.listeners:
-            each.fire_event(event)
 
     def load_corpus(self, name):
         self.selected_corpus = name
@@ -322,16 +332,17 @@ class CollocationsModel:
                 scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(vocab[w1] * vocab[w2])) for w1, w2 in fd]
                 scored.sort(key=itemgetter(1), reverse=True)
                 self.model.collocations = list(map(itemgetter(0), scored))
-                self.model.notify_listeners(CORPUS_LOADED_EVENT)
+                self.model.queue.put(CORPUS_LOADED_EVENT)
             except Exception as e:
                 print(e)
-                self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
+                self.model.queue.put(ERROR_LOADING_CORPUS_EVENT)
 
 #def collocations():
 #    colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations[:num]]
 
 def app():
-    c = CollocationsView()
+    queue = q.Queue()
+    c = CollocationsView(queue)
     c.mainloop()
 
 if __name__ == '__main__':
