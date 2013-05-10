@@ -102,9 +102,9 @@ class ConcordanceSearchView(object):
     #Percentage of text left of the scrollbar position
     _FRACTION_LEFT_TEXT=0.30
 
-    def __init__(self, queue):
-        self.model = ConcordanceSearchModel(queue)
-        self.queue = queue
+    def __init__(self):
+        self.queue = q.Queue()
+        self.model = ConcordanceSearchModel(self.queue)
         self.top = Tk()
         self._init_top(self.top)
         self._init_menubar()
@@ -561,8 +561,7 @@ class ConcordanceSearchModel(object):
             return ' '.join(new)
 
 def app():
-    queue = q.Queue()
-    d = ConcordanceSearchView(queue)
+    d = ConcordanceSearchView()
     d.mainloop()
 
 if __name__ == '__main__':

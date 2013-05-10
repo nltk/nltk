@@ -69,13 +69,13 @@ _CORPORA = {
 class CollocationsView:
     _BACKGROUND_COLOUR='#FFF' #white
 
-    def __init__(self, queue):
-        self.model = CollocationsModel(queue)
+    def __init__(self):
+        self.queue = q.Queue()
+        self.model = CollocationsModel(self.queue)
         self.top = Tk()
         self._init_top(self.top)
         self._init_menubar()
         self._init_widgets(self.top)
-        self.queue = queue
         self.load_corpus(self.model.DEFAULT_CORPUS)
         self.after = self.top.after(POLL_INTERVAL, self._poll)
 
@@ -339,8 +339,7 @@ class CollocationsModel:
 #    colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations[:num]]
 
 def app():
-    queue = q.Queue()
-    c = CollocationsView(queue)
+    c = CollocationsView()
     c.mainloop()
 
 if __name__ == '__main__':
