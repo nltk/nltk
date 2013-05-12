@@ -13,6 +13,7 @@ by Thorsten Brants
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 '''
 from __future__ import print_function
+from math import log
 
 from operator import itemgetter
 
@@ -300,7 +301,7 @@ class TnT(TaggerI):
         returns a list of (word, tag) tuples
         '''
 
-        current_state = [(['BOS', 'BOS'], 1.0)]
+        current_state = [(['BOS', 'BOS'], 0.0)]
 
         sent = list(data)
 
@@ -362,14 +363,14 @@ class TnT(TaggerI):
                     p_tri = self._tri[tuple(history[-2:])].freq((t,C))
                     p_wd = float(self._wd[word][t])/float(self._uni[(t,C)])
                     p = self._l1 *p_uni + self._l2 *p_bi + self._l3 *p_tri
-                    p2 = p * p_wd
+                    p2 = log(p) + log(p_wd)
 
                     probs.append(((t,C), p2))
 
 
                 # compute the result of appending each tag to this history
                 for (tag, prob) in probs:
-                    new_states.append((history + [tag], curr_sent_prob*prob))
+                    new_states.append((history + [tag], curr_sent_prob+prob))
 
 
 
