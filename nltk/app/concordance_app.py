@@ -9,6 +9,10 @@
 import nltk.compat
 import re
 import threading
+if nltk.compat.PY3:
+    import queue as q
+else:    
+    import Queue as q
 import tkinter.font
 from tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
                      Label, Menu, OptionMenu, SUNKEN, Scrollbar,
@@ -26,6 +30,8 @@ CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
 SEARCH_TERMINATED_EVENT = '<<ST_EVENT>>'
 SEARCH_ERROR_EVENT = '<<SE_EVENT>>'
 ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
+
+POLL_INTERVAL = 50
 
 # NB All corpora must be specified in a lambda expression so as not to be
 # loaded when the module is imported.
@@ -97,19 +103,20 @@ class ConcordanceSearchView(object):
     _FRACTION_LEFT_TEXT=0.30
 
     def __init__(self):
-        self.model = ConcordanceSearchModel()
-        self.model.add_listener(self)
+        self.queue = q.Queue()
+        self.model = ConcordanceSearchModel(self.queue)
         self.top = Tk()
         self._init_top(self.top)
         self._init_menubar()
         self._init_widgets(self.top)
-        self._bind_event_handlers()
         self.load_corpus(self.model.DEFAULT_CORPUS)
+        self.after = self.top.after(POLL_INTERVAL, self._poll)
 
     def _init_top(self, top):
         top.geometry('950x680+50+50')
         top.title('NLTK Concordance Search')
         top.bind('<Control-q>', self.destroy)
+        top.protocol('WM_DELETE_WINDOW', self.destroy)
         top.minsize(950,680)
 
     def _init_widgets(self, parent):
@@ -284,6 +291,22 @@ class ConcordanceSearchView(object):
         self.top.bind(SEARCH_ERROR_EVENT, self.handle_search_error)
         self.top.bind(ERROR_LOADING_CORPUS_EVENT, self.handle_error_loading_corpus)
 
+    def _poll(self):   
+        try:
+            event = self.queue.get(block=False)
+        except q.Empty:
+            pass
+        else:
+            if event == CORPUS_LOADED_EVENT:
+                self.handle_corpus_loaded(event)
+            elif event == SEARCH_TERMINATED_EVENT:
+                self.handle_search_terminated(event)
+            elif event == SEARCH_ERROR_EVENT:
+                self.handle_search_error(event)
+            elif event == ERROR_LOADING_CORPUS_EVENT:
+                self.handle_error_loading_corpus(event)
+        self.after = self.top.after(POLL_INTERVAL, self._poll)
+
     def handle_error_loading_corpus(self, event):
         self.status['text'] = 'Error in loading ' + self.var.get()
         self.unfreeze_editable()
@@ -307,7 +330,6 @@ class ConcordanceSearchView(object):
                 self.current_page = self.model.last_requested_page
         self.unfreeze_editable()
         self.results_box.xview_moveto(self._FRACTION_LEFT_TEXT)
-
 
     def handle_search_error(self, event):
         self.status['text'] = 'Error in query ' + self.model.query
@@ -378,6 +400,7 @@ class ConcordanceSearchView(object):
 
     def destroy(self, *e):
         if self.top is None: return
+        self.top.after_cancel(self.after)
         self.top.destroy()
         self.top = None
 
@@ -421,8 +444,8 @@ class ConcordanceSearchView(object):
         self.top.mainloop(*args, **kwargs)
 
 class ConcordanceSearchModel(object):
-    def __init__(self):
-        self.listeners = []
+    def __init__(self, queue):
+        self.queue = queue
         self.CORPORA = _CORPORA
         self.DEFAULT_CORPUS = _DEFAULT
         self.selected_corpus = None
@@ -454,18 +477,11 @@ class ConcordanceSearchModel(object):
         if len(self.results) < page:
             self.search(self.query, page)
         else:
-            self.notify_listeners(SEARCH_TERMINATED_EVENT)
+            self.queue.put(SEARCH_TERMINATED_EVENT)
 
     def prev(self, page):
         self.last_requested_page = page
-        self.notify_listeners(SEARCH_TERMINATED_EVENT)
-
-    def add_listener(self, listener):
-        self.listeners.append(listener)
-
-    def notify_listeners(self, event):
-        for each in self.listeners:
-            each.fire_event(event)
+        self.queue.put(SEARCH_TERMINATED_EVENT)
 
     def reset_results(self):
         self.last_sent_searched = 0
@@ -497,10 +513,10 @@ class ConcordanceSearchModel(object):
             try:
                 ts = self.model.CORPORA[self.name]()
                 self.model.tagged_sents = [' '.join(w+'/'+t for (w,t) in sent) for sent in ts]
-                self.model.notify_listeners(CORPUS_LOADED_EVENT)
+                self.model.queue.put(CORPUS_LOADED_EVENT)
             except Exception as e:
                 print(e)
-                self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
+                self.model.queue.put(ERROR_LOADING_CORPUS_EVENT)
 
     class SearchCorpus(threading.Thread):
         def __init__(self, model, page, count):
@@ -515,7 +531,7 @@ class ConcordanceSearchModel(object):
                     m = re.search(q, sent)
                 except re.error:
                     self.model.reset_results()
-                    self.model.notify_listeners(SEARCH_ERROR_EVENT)
+                    self.model.queue.put(SEARCH_ERROR_EVENT)
                     return
                 if m:
                     sent_pos.append((sent, m.start(), m.end()))
@@ -530,7 +546,7 @@ class ConcordanceSearchModel(object):
                 self.model.set_results(self.page, sent_pos)
             else:
                 self.model.set_results(self.page, sent_pos[:-1])
-            self.model.notify_listeners(SEARCH_TERMINATED_EVENT)
+            self.model.queue.put(SEARCH_TERMINATED_EVENT)
 
         def processed_query(self):
             new = []
