@@ -59,6 +59,12 @@ class TnT(TaggerI):
     from the training data. It is the set of all tags
     that exact word has been assigned.
 
+    To speed up and get more precision, we can use log addition
+    to instead multiplication, specifically:
+
+      argmax [Sigma(log(P(t_i|t_i-1,t_i-2))+log(P(w_i|t_i)))] +
+             log(P(t_T+1|t_T))
+
     The probability of a tag for a given word is the linear
     interpolation of 3 markov models; a zero-order, first-order,
     and a second order model.
@@ -321,9 +327,9 @@ class TnT(TaggerI):
         :param sent : List of words remaining in the sentence
         :type sent  : [word,]
         :param current_states : List of possible tag combinations for
-                                the sentence so far, and the probability
+                                the sentence so far, and the log probability
                                 associated with each tag combination
-        :type current_states  : [([tag, ],prob), ]
+        :type current_states  : [([tag, ], logprob), ]
 
         Tags the first word in the sentence and
         recursively tags the reminder of sentence
@@ -335,7 +341,7 @@ class TnT(TaggerI):
         # if this word marks the end of the sentance,
         # return the most probable tag
         if sent == []:
-            (h,p) = current_states[0]
+            (h, logp) = current_states[0]
             return h
 
         # otherwise there are more words to be tagged
@@ -350,12 +356,12 @@ class TnT(TaggerI):
 
         # if word is known
         # compute the set of possible tags
-        # and their associated probabilities
+        # and their associated log probabilities
         if word in self._wd.conditions():
             self.known += 1
 
-            for (history, curr_sent_prob) in current_states:
-                probs = []
+            for (history, curr_sent_logprob) in current_states:
+                logprobs = []
 
                 for t in self._wd[word].samples():
                     p_uni = self._uni.freq((t,C))
@@ -363,14 +369,15 @@ class TnT(TaggerI):
                     p_tri = self._tri[tuple(history[-2:])].freq((t,C))
                     p_wd = float(self._wd[word][t])/float(self._uni[(t,C)])
                     p = self._l1 *p_uni + self._l2 *p_bi + self._l3 *p_tri
-                    p2 = log(p) + log(p_wd)
+                    p2 = log(p, 2) + log(p_wd, 2)
 
-                    probs.append(((t,C), p2))
+                    logprobs.append(((t,C), p2))
 
 
                 # compute the result of appending each tag to this history
-                for (tag, prob) in probs:
-                    new_states.append((history + [tag], curr_sent_prob+prob))
+                for (tag, logprob) in logprobs:
+                    new_states.append((history + [tag],
+                                       curr_sent_logprob + logprob))
 
 
 
@@ -395,7 +402,7 @@ class TnT(TaggerI):
                 [(_w, t)] = list(self._unk.tag([word]))
                 tag = (t,C)
 
-            for (history, prob) in current_states:
+            for (history, logprob) in current_states:
                 history.append(tag)
 
             new_states = current_states
@@ -404,8 +411,8 @@ class TnT(TaggerI):
 
         # now have computed a set of possible new_states
 
-        # sort states by prob
-        # set is now ordered greatest to least probability
+        # sort states by log prob
+        # set is now ordered greatest to least log probability
         new_states.sort(reverse=True, key=itemgetter(1))
 
         # del everything after N (threshold)
