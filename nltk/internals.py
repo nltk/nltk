@@ -1,12 +1,11 @@
 # Natural Language Toolkit: Internal utility functions
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Steven Bird <stevenbird1@gmail.com>
+# Copyright (C) 2001-2012 NLTK Project
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Nitin Madnani <nmadnani@ets.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
 
 import subprocess
 import os
@@ -19,13 +18,11 @@ import sys
 import stat
 
 # Use the c version of ElementTree, which is faster, if possible:
-try:
-    from xml.etree import cElementTree as ElementTree
-except ImportError:
-    from xml.etree import ElementTree
+try: from xml.etree import cElementTree as ElementTree
+except ImportError: from xml.etree import ElementTree
 
 from nltk import __file__
-from nltk import compat
+
 ######################################################################
 # Regular Expression Processing
 ######################################################################
@@ -59,10 +56,12 @@ def convert_regexp_to_nongrouping(pattern):
     # of an extension group, ignore those too.  But if we see
     # any other open paren, replace it with "(?:")
     return re.sub(r'''(?x)
-        \\.           |  # Backslashed character
-        \(\?P<[^>]*>  |  # Named group
-        \(\?          |  # Extension group
-        \(               # Grouping parenthesis''', subfunc, pattern)
+        \\.           |  (?# Backslashed character)
+        \(\?P<[^>]*>  |  (?# Named group)
+        \(\?          |  (?# Extension group)
+        \(               (?# Grouping parenthesis)
+        ''', subfunc, pattern)
+
 
 
 ##########################################################################
@@ -90,10 +89,10 @@ def config_java(bin=None, options=None, verbose=True):
     :type options: list(str)
     """
     global _java_bin, _java_options
-    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose)
+    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose, binary_names=['java','java.exe'])
 
     if options is not None:
-        if isinstance(options, compat.string_types):
+        if isinstance(options, basestring):
             options = options.split()
         _java_options = list(options)
 
@@ -141,7 +140,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     if stdin == 'pipe': stdin = subprocess.PIPE
     if stdout == 'pipe': stdout = subprocess.PIPE
     if stderr == 'pipe': stderr = subprocess.PIPE
-    if isinstance(cmd, compat.string_types):
+    if isinstance(cmd, basestring):
         raise TypeError('cmd should be a list of strings')
 
     # Make sure we know where a java binary is.
@@ -166,7 +165,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
 
     # Check the return code.
     if p.returncode != 0:
-        print(stderr)
+        print stderr
         raise OSError('Java command failed!')
 
     return (stdout, stderr)
@@ -233,7 +232,7 @@ def parse_str(s, start_position):
     # might raise ValueEerror.
     try:
         return eval(s[start_position:match.end()]), match.end()
-    except ValueError as e:
+    except ValueError, e:
         raise ParseError('valid string (%s)' % e, start)
 
 _PARSE_INT_RE = re.compile(r'-?\d+')
@@ -288,10 +287,10 @@ def overridden(method):
     :type method: instance method
     """
     # [xx] breaks on classic classes!
-    if isinstance(method, types.MethodType) and compat.im_class(method) is not None:
+    if isinstance(method, types.MethodType) and method.im_class is not None:
         name = method.__name__
         funcs = [cls.__dict__[name]
-                 for cls in _mro(compat.im_class(method))
+                 for cls in _mro(method.im_class)
                  if name in cls.__dict__]
         return len(funcs) > 1
     else:
@@ -342,7 +341,7 @@ def deprecated(message):
         >>> from nltk.internals import deprecated
         >>> @deprecated('Use foo() instead')
         ... def bar(x):
-        ...     print(x/10)
+        ...     print x/10
 
     """
 
@@ -405,7 +404,7 @@ class Deprecated(object):
                                    subsequent_indent='    ')
         warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
         # Do the actual work of __new__.
-        return object.__new__(cls)
+        return object.__new__(cls, *args, **kwargs)
 
 ##########################################################################
 # COUNTER, FOR UNIQUE NAMING
@@ -437,46 +436,49 @@ def find_file(filename, env_vars=(), searchpath=(),
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
+
     if file_names is None: file_names = [filename]
-    assert isinstance(filename, compat.string_types)
-    assert not isinstance(file_names, compat.string_types)
-    assert not isinstance(searchpath, compat.string_types)
-    if isinstance(env_vars, compat.string_types):
+    assert isinstance(filename, basestring)
+    assert not isinstance(file_names, basestring)
+    assert not isinstance(searchpath, basestring)
+    if isinstance(env_vars, basestring):
         env_vars = env_vars.split()
 
     # File exists, no magic
     if os.path.isfile(filename):
-        if verbose: print('[Found %s: %s]' % (filename, filename))
+        if verbose: print '[Found %s: %s]' % (filename, filename)
         return filename
     for alternative in file_names:
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
+            if verbose: print '[Found %s: %s]' % (filename, path_to_file)
             return path_to_file
         path_to_file = os.path.join(filename, 'file', alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
+            if verbose: print '[Found %s: %s]' % (filename, path_to_file)
             return path_to_file
 
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
-            path_to_file = os.environ[env_var]
-            if os.path.isfile(path_to_file):
-                if verbose: print('[Found %s: %s]' % (filename, path_to_file))
-                return path_to_file
-            else:
-                for alternative in file_names:
-                    path_to_file = os.path.join(os.environ[env_var],
-                                                alternative)
-                    if os.path.isfile(path_to_file):
-                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
-                        return path_to_file
-                    path_to_file = os.path.join(os.environ[env_var], 'file',
-                                                alternative)
-                    if os.path.isfile(path_to_file):
-                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
-                        return path_to_file
+            paths_to_file = os.environ[env_var].split(';')
+            for path in paths_to_file:
+                path_to_file = os.path.join(path, filename)
+                if os.path.isfile(path_to_file):
+                    if verbose: print '[Found %s: %s]' % (filename, path_to_file)
+                    return path_to_file
+                else:
+                    for alternative in file_names:
+                        path_to_file = os.path.join(path,
+                                                    alternative)
+                        if os.path.isfile(path_to_file):
+                            if verbose: print '[Found %s: %s]'%(filename, path_to_file)
+                            return path_to_file
+                        path_to_file = os.path.join(path, 'file',
+                                                    alternative)
+                        if os.path.isfile(path_to_file):
+                            if verbose: print '[Found %s: %s]'%(filename, path_to_file)
+                            return path_to_file
 
     # Check the path list.
     for directory in searchpath:
@@ -495,9 +497,9 @@ def find_file(filename, env_vars=(), searchpath=(),
                 stdout, stderr = p.communicate()
                 path = stdout.strip()
                 if path.endswith(alternative) and os.path.exists(path):
-                    if verbose: print('[Found %s: %s]' % (filename, path))
+                    if verbose: print '[Found %s: %s]' % (filename, path)
                     return path
-            except (KeyboardInterrupt, SystemExit):
+            except KeyboardInterrupt, SystemExit:
                 raise
             except:
                 pass
@@ -548,9 +550,9 @@ def find_jar(name, path_to_jar=None, env_vars=(),
     :param searchpath: List of directories to search.
     """
 
-    assert isinstance(name, compat.string_types)
-    assert not isinstance(searchpath, compat.string_types)
-    if isinstance(env_vars, compat.string_types):
+    assert isinstance(name, basestring)
+    assert not isinstance(searchpath, basestring)
+    if isinstance(env_vars, basestring):
         env_vars = env_vars.split()
 
     # Make sure we check the CLASSPATH first
@@ -571,19 +573,19 @@ def find_jar(name, path_to_jar=None, env_vars=(),
                 classpath = os.environ['CLASSPATH']
                 for cp in classpath.split(os.path.pathsep):
                     if os.path.isfile(cp) and os.path.basename(cp) == name:
-                        if verbose: print('[Found %s: %s]' % (name, cp))
+                        if verbose: print '[Found %s: %s]' % (name, cp)
                         return cp
             else:
                 path_to_jar = os.environ[env_var]
                 if os.path.isfile(path_to_jar) and os.path.basename(path_to_jar) == name:
-                    if verbose: print('[Found %s: %s]' % (name, path_to_jar))
+                    if verbose: print '[Found %s: %s]' % (name, path_to_jar)
                     return path_to_jar
 
     # Check the path list.
     for directory in searchpath:
         path_to_jar = os.path.join(directory, name)
         if os.path.isfile(path_to_jar):
-            if verbose: print('[Found %s: %s]' % (name, path_to_jar))
+            if verbose: print '[Found %s: %s]' % (name, path_to_jar)
             return path_to_jar
 
     # If nothing was found, raise an error
@@ -619,12 +621,47 @@ def import_from_stdlib(module):
     sys.path = old_path
     return m
 
+##########################################################################
+# Abstract declaration
+##########################################################################
+
+def abstract(func):
+    """
+    A decorator used to mark methods as abstract.  I.e., methods that
+    are marked by this decorator must be overridden by subclasses.  If
+    an abstract method is called (either in the base class or in a
+    subclass that does not override the base class method), it will
+    raise ``NotImplementedError``.
+    """
+    # Avoid problems caused by nltk.tokenize shadowing the stdlib tokenize:
+    inspect = import_from_stdlib('inspect')
+
+    # Read the function's signature.
+    args, varargs, varkw, defaults = inspect.getargspec(func)
+
+    # Create a new function with the same signature (minus defaults)
+    # that raises NotImplementedError.
+    msg = '%s is an abstract method.' % func.__name__
+    signature = inspect.formatargspec(args, varargs, varkw, ())
+    exec ('def newfunc%s: raise NotImplementedError(%r)' % (signature, msg))
+
+    # Substitute in the defaults after-the-fact, since eval(repr(val))
+    # may not work for some default values.
+    newfunc.func_defaults = func.func_defaults
+
+    # Copy the name and docstring
+    newfunc.__name__ = func.__name__
+    newfunc.__doc__ = func.__doc__
+    newfunc.__abstract__ = True
+    _add_epytext_field(newfunc, "note", "This method is abstract.")
+
+    # Return the function.
+    return newfunc
 
 ##########################################################################
 # Wrapper for ElementTree Elements
 ##########################################################################
 
-@compat.python_2_unicode_compatible
 class ElementWrapper(object):
     """
     A wrapper around ElementTree Element objects whose main purpose is
@@ -647,20 +684,15 @@ class ElementWrapper(object):
         if isinstance(etree, ElementWrapper):
             return etree
         else:
-            return object.__new__(ElementWrapper)
+            return object.__new__(ElementWrapper, etree)
 
     def __init__(self, etree):
-        r"""
-        Initialize a new Element wrapper for ``etree``.
-
-        If ``etree`` is a string, then it will be converted to an
-        Element object using ``ElementTree.fromstring()`` first:
-
-            >>> ElementWrapper("<test></test>")
-            <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
-
         """
-        if isinstance(etree, compat.string_types):
+        Initialize a new Element wrapper for ``etree``.  If
+        ``etree`` is a string, then it will be converted to an
+        Element object using ``ElementTree.fromstring()`` first.
+        """
+        if isinstance(etree, basestring):
             etree = ElementTree.fromstring(etree)
         self.__dict__['_etree'] = etree
 
@@ -675,7 +707,7 @@ class ElementWrapper(object):
     ##////////////////////////////////////////////////////////////
 
     def __repr__(self):
-        s = ElementTree.tostring(self._etree, encoding='utf8').decode('utf8')
+        s = ElementTree.tostring(self._etree)
         if len(s) > 60:
             e = s.rfind('<')
             if (len(s)-e) > 30: e = -20
@@ -687,7 +719,7 @@ class ElementWrapper(object):
         :return: the result of applying ``ElementTree.tostring()`` to
         the wrapped Element object.
         """
-        return ElementTree.tostring(self._etree, encoding='utf8').decode('utf8').rstrip()
+        return ElementTree.tostring(self._etree).rstrip()
 
     ##////////////////////////////////////////////////////////////
     #{ Element interface Delegation (pass-through)
@@ -820,14 +852,13 @@ def is_writable(path):
         statdata = os.stat(path)
         perm = stat.S_IMODE(statdata.st_mode)
         # is it world-writable?
-        if (perm & 0o002):
+        if (perm & 0002):
             return True
         # do we own it?
-        elif statdata.st_uid == os.getuid() and (perm & 0o200):
+        elif statdata.st_uid == os.getuid() and (perm & 0200):
             return True
         # are we in a group that can write to it?
-        elif (statdata.st_gid in [os.getgid()] + os.getgroups()) \
-            and (perm & 0o020):
+        elif statdata.st_gid == os.getgid() and (perm & 0020):
             return True
         # otherwise, we can't write to it.
         else:
@@ -836,12 +867,3 @@ def is_writable(path):
     # Otherwise, we'll assume it's writable.
     # [xx] should we do other checks on other platforms?
     return True
-
-######################################################################
-# NLTK Error reporting
-######################################################################
-
-def raise_unorderable_types(ordering, a, b):
-    raise TypeError("unorderable types: %s() %s %s()" % (type(a).__name__, ordering, type(b).__name__))
-
-
