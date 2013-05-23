@@ -451,32 +451,33 @@ def find_file(filename, env_vars=(), searchpath=(),
     for alternative in file_names:
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
+            if verbose: print('[Found %s: %s]' % (alternative, path_to_file))
             return path_to_file
         path_to_file = os.path.join(filename, 'file', alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
+            if verbose: print('[Found %s: %s]' % (alternative, path_to_file))
             return path_to_file
 
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
-            path_to_file = os.environ[env_var]
-            if os.path.isfile(path_to_file):
-                if verbose: print('[Found %s: %s]' % (filename, path_to_file))
-                return path_to_file
-            else:
-                for alternative in file_names:
-                    path_to_file = os.path.join(os.environ[env_var],
-                                                alternative)
-                    if os.path.isfile(path_to_file):
-                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
-                        return path_to_file
-                    path_to_file = os.path.join(os.environ[env_var], 'file',
-                                                alternative)
-                    if os.path.isfile(path_to_file):
-                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
-                        return path_to_file
+            for env_dir in os.environ[env_var].split(os.pathsep):
+                path_to_file = os.path.join(env_dir, filename)
+                if os.path.isfile(path_to_file):
+                    if verbose: print('[Found %s: %s]' % (filename, env_dir))
+                    return path_to_file
+                else:
+                    for alternative in file_names:
+                        path_to_file = os.path.join(env_dir,
+                                                    alternative)
+                        if os.path.isfile(path_to_file):
+                            if verbose: print('[Found %s: %s]'%(filename, path_to_file))
+                            return path_to_file
+                        path_to_file = os.path.join(env_dir, 'file',
+                                                    alternative)
+                        if os.path.isfile(path_to_file):
+                            if verbose: print('[Found %s: %s]'%(filename, path_to_file))
+                            return path_to_file
 
     # Check the path list.
     for directory in searchpath:
