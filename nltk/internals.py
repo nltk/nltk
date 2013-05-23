@@ -90,7 +90,7 @@ def config_java(bin=None, options=None, verbose=True):
     :type options: list(str)
     """
     global _java_bin, _java_options
-    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose)
+    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose, binary_names=['java.exe'])
 
     if options is not None:
         if isinstance(options, compat.string_types):
