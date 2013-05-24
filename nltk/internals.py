@@ -62,7 +62,8 @@ def convert_regexp_to_nongrouping(pattern):
         \\.           |  # Backslashed character
         \(\?P<[^>]*>  |  # Named group
         \(\?          |  # Extension group
-        \(               # Grouping parenthesis''', subfunc, pattern)
+        \(               # Grouping parenthesis
+        ''', subfunc, pattern)
 
 
 ##########################################################################
@@ -438,6 +439,7 @@ def find_file(filename, env_vars=(), searchpath=(),
     :param verbose: Whether or not to print path when a file is found.
     """
     if file_names is None: file_names = [filename]
+    elif filename not in file_names: file_names.append(filename)
     assert isinstance(filename, compat.string_types)
     assert not isinstance(file_names, compat.string_types)
     assert not isinstance(searchpath, compat.string_types)
@@ -445,39 +447,20 @@ def find_file(filename, env_vars=(), searchpath=(),
         env_vars = env_vars.split()
 
     # File exists, no magic
-    if os.path.isfile(filename):
-        if verbose: print('[Found %s: %s]' % (filename, filename))
-        return filename
     for alternative in file_names:
-        path_to_file = os.path.join(filename, alternative)
-        if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (alternative, path_to_file))
-            return path_to_file
-        path_to_file = os.path.join(filename, 'file', alternative)
-        if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (alternative, path_to_file))
-            return path_to_file
+        if os.path.isfile(alternative):
+            if verbose: print('[Found %s: %s]' % (alternative, alternative))
+            return alternative
 
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
             for env_dir in os.environ[env_var].split(os.pathsep):
-                path_to_file = os.path.join(env_dir, filename)
-                if os.path.isfile(path_to_file):
-                    if verbose: print('[Found %s: %s]' % (filename, env_dir))
-                    return path_to_file
-                else:
-                    for alternative in file_names:
-                        path_to_file = os.path.join(env_dir,
-                                                    alternative)
-                        if os.path.isfile(path_to_file):
-                            if verbose: print('[Found %s: %s]'%(filename, path_to_file))
-                            return path_to_file
-                        path_to_file = os.path.join(env_dir, 'file',
-                                                    alternative)
-                        if os.path.isfile(path_to_file):
-                            if verbose: print('[Found %s: %s]'%(filename, path_to_file))
-                            return path_to_file
+                for alternative in file_names:
+                    path_to_file = os.path.join(env_dir, alternative)
+                    if os.path.isfile(path_to_file):
+                        if verbose: print('[Found %s: %s]'%(alternative, path_to_file))
+                        return path_to_file
 
     # Check the path list.
     for directory in searchpath:
@@ -485,7 +468,6 @@ def find_file(filename, env_vars=(), searchpath=(),
             path_to_file = os.path.join(directory, alternative)
             if os.path.isfile(path_to_file):
                 return path_to_file
-
 
     # If we're on a POSIX system, then try using the 'which' command
     # to find the file.
