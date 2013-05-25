@@ -91,24 +91,8 @@ from nltk.classify.positivenaivebayes import PositiveNaiveBayesClassifier
 from nltk.classify.decisiontree import DecisionTreeClassifier
 from nltk.classify.rte_classify import rte_classifier, rte_features, RTEFeatureExtractor
 from nltk.classify.util import accuracy, apply_features, log_likelihood
-
-# Conditional imports
-
-try:
-    from .scikitlearn import SklearnClassifier
-except ImportError:
-    pass
-
-try:
-    import numpy
-    from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
-                                      TypedMaxentFeatureEncoding,
-                                      ConditionalExponentialClassifier)
-except ImportError:
-    pass
-
-try:
-    import svmlight
-    from nltk.classify.svm import SvmClassifier
-except ImportError:
-    pass
+from nltk.classify.scikitlearn import SklearnClassifier
+from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
+                                  TypedMaxentFeatureEncoding,
+                                  ConditionalExponentialClassifier)
+from nltk.classify.svm import SvmClassifier
