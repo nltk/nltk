@@ -51,7 +51,7 @@ Or tags alone:
     >>> finder = BigramCollocationFinder.from_words(t for w, t in
     ...     nltk.corpus.brown.tagged_words('ca01', simplify_tags=True))
     >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
-    [(':', '('), ('(', 'NUM'), ('NUM', ')'), (':', 'NUM'), ('', 'WH'),
+    [(':', '('), ('(', 'NUM'), ('NUM', ')'), (':', 'NUM'), ('--', 'WH'),
      (')', 'NUM'), ('VN', ':'), ('``', 'EX'), ('EX', 'MOD'), ('WH', 'VBZ')]
 
 Or spanning intervening words:
