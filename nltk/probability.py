@@ -170,9 +170,9 @@ class FreqDist(dict):
 
     def samples(self):
         """
-        Return a list of all samples that have been recorded as
-        outcomes by this frequency distribution.  Use ``fd[sample]``
-        to determine the count for each sample.
+        Return a list (or an iterator under Python 3.x) of all samples
+        that have been recorded as outcomes by this frequency distribution.
+        Use ``fd[sample]`` to determine the count for each sample.
 
         :rtype: list
         """
@@ -369,21 +369,17 @@ class FreqDist(dict):
     def keys(self):
         """
         Return the samples sorted in decreasing order of frequency.
-
-        :rtype: list(any)
+        Returns a list in Python 2.x, and an iterator in Python 3.x.
         """
         self._sort_keys_by_value()
-        # this will return iterator under python 3
         return map(itemgetter(0), self._item_cache)
 
     def values(self):
         """
         Return the samples sorted in decreasing order of frequency.
-
-        :rtype: list(any)
+        Returns a list in Python 2.x, and an iterator in Python 3.x.
         """
         self._sort_keys_by_value()
-        # this will return iterator under python 3
         return map(itemgetter(1), self._item_cache)
 
     def items(self):
