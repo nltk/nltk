@@ -74,15 +74,10 @@ from nltk.tag.tnt        import TnT
 from nltk.tag.hunpos     import HunposTagger
 from nltk.tag.stanford   import StanfordTagger
 from nltk.tag.crf        import MalletCRF
+from nltk.tag.hmm        import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
 
-from nltk.data      import load
+from nltk.data import load
 
-# Import hmm module if numpy is installed
-try:
-    import numpy
-    from nltk.tag.hmm import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
-except ImportError:
-    pass
 
 # Standard treebank POS tagger
 _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'

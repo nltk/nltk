@@ -57,13 +57,7 @@ from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
 from nltk.tokenize.punkt    import PunktSentenceTokenizer, PunktWordTokenizer
 from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.treebank import TreebankWordTokenizer
-
-try:
-    import numpy
-except ImportError:
-    pass
-else:
-    from nltk.tokenize.texttiling import TextTilingTokenizer
+from nltk.tokenize.texttiling import TextTilingTokenizer
 
 # Standard sentence tokenizer.
 def sent_tokenize(text):
