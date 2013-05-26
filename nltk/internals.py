@@ -439,7 +439,7 @@ def find_file(filename, env_vars=(), searchpath=(),
     :param verbose: Whether or not to print path when a file is found.
     """
     if file_names is None: file_names = [filename]
-    elif filename not in file_names: file_names.append(filename)
+    file_names = [filename] + (file_names or [])
     assert isinstance(filename, compat.string_types)
     assert not isinstance(file_names, compat.string_types)
     assert not isinstance(searchpath, compat.string_types)
@@ -448,18 +448,34 @@ def find_file(filename, env_vars=(), searchpath=(),
 
     # File exists, no magic
     for alternative in file_names:
+        # Check if the 'alternative' is a file extension
+        path_to_file = os.path.join(filename, alternative)
+        if os.path.isfile(path_to_file):
+            if verbose: print('[Found %s: %s]' % (filename, alternative))
+            return path_to_file
+        # Check the bare alternatives
         if os.path.isfile(alternative):
-            if verbose: print('[Found %s: %s]' % (alternative, alternative))
+            if verbose: print('[Found %s: %s]' % (filename, alternative))
             return alternative
+        # Check if the alternative is inside a 'file' directory
+        path_to_file = os.path.join(filename, 'file', alternative)
+        if os.path.isfile(path_to_file):
+            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
+            return path_to_file
 
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
             for env_dir in os.environ[env_var].split(os.pathsep):
+                # Check if the environment variable contains a direct path to the bin
+                if os.path.isfile(env_dir):
+                    if verbose: print('[Found %s: %s]'%(filename, env_dir))
+                    return env_dir
+                # Check if the possible bin names exist inside the environment variable directories
                 for alternative in file_names:
                     path_to_file = os.path.join(env_dir, alternative)
                     if os.path.isfile(path_to_file):
-                        if verbose: print('[Found %s: %s]'%(alternative, path_to_file))
+                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
                         return path_to_file
 
     # Check the path list.
