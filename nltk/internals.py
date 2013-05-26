@@ -438,7 +438,6 @@ def find_file(filename, env_vars=(), searchpath=(),
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
-    if file_names is None: file_names = [filename]
     file_names = [filename] + (file_names or [])
     assert isinstance(filename, compat.string_types)
     assert not isinstance(file_names, compat.string_types)
@@ -448,10 +447,9 @@ def find_file(filename, env_vars=(), searchpath=(),
 
     # File exists, no magic
     for alternative in file_names:
-        # Check if the 'alternative' is a file extension
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (filename, alternative))
+            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
             return path_to_file
         # Check the bare alternatives
         if os.path.isfile(alternative):
