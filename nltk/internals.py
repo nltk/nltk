@@ -475,6 +475,11 @@ def find_file(filename, env_vars=(), searchpath=(),
                     if os.path.isfile(path_to_file):
                         if verbose: print('[Found %s: %s]'%(filename, path_to_file))
                         return path_to_file
+                    # Check if the alternative is inside a 'file' directory
+                    path_to_file = os.path.join(env_dir, 'file', alternative)
+                    if os.path.isfile(path_to_file):
+                        if verbose: print('[Found %s: %s]' % (filename, path_to_file))
+                        return path_to_file
 
     # Check the path list.
     for directory in searchpath:
