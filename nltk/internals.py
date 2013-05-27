@@ -62,7 +62,8 @@ def convert_regexp_to_nongrouping(pattern):
         \\.           |  # Backslashed character
         \(\?P<[^>]*>  |  # Named group
         \(\?          |  # Extension group
-        \(               # Grouping parenthesis''', subfunc, pattern)
+        \(               # Grouping parenthesis
+        ''', subfunc, pattern)
 
 
 ##########################################################################
@@ -90,7 +91,7 @@ def config_java(bin=None, options=None, verbose=True):
     :type options: list(str)
     """
     global _java_bin, _java_options
-    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose)
+    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose, binary_names=['java.exe'])
 
     if options is not None:
         if isinstance(options, compat.string_types):
@@ -437,7 +438,7 @@ def find_file(filename, env_vars=(), searchpath=(),
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
-    if file_names is None: file_names = [filename]
+    file_names = [filename] + (file_names or [])
     assert isinstance(filename, compat.string_types)
     assert not isinstance(file_names, compat.string_types)
     assert not isinstance(searchpath, compat.string_types)
@@ -445,14 +446,16 @@ def find_file(filename, env_vars=(), searchpath=(),
         env_vars = env_vars.split()
 
     # File exists, no magic
-    if os.path.isfile(filename):
-        if verbose: print('[Found %s: %s]' % (filename, filename))
-        return filename
     for alternative in file_names:
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
             if verbose: print('[Found %s: %s]' % (filename, path_to_file))
             return path_to_file
+        # Check the bare alternatives
+        if os.path.isfile(alternative):
+            if verbose: print('[Found %s: %s]' % (filename, alternative))
+            return alternative
+        # Check if the alternative is inside a 'file' directory
         path_to_file = os.path.join(filename, 'file', alternative)
         if os.path.isfile(path_to_file):
             if verbose: print('[Found %s: %s]' % (filename, path_to_file))
@@ -461,21 +464,21 @@ def find_file(filename, env_vars=(), searchpath=(),
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
-            path_to_file = os.environ[env_var]
-            if os.path.isfile(path_to_file):
-                if verbose: print('[Found %s: %s]' % (filename, path_to_file))
-                return path_to_file
-            else:
+            for env_dir in os.environ[env_var].split(os.pathsep):
+                # Check if the environment variable contains a direct path to the bin
+                if os.path.isfile(env_dir):
+                    if verbose: print('[Found %s: %s]'%(filename, env_dir))
+                    return env_dir
+                # Check if the possible bin names exist inside the environment variable directories
                 for alternative in file_names:
-                    path_to_file = os.path.join(os.environ[env_var],
-                                                alternative)
+                    path_to_file = os.path.join(env_dir, alternative)
                     if os.path.isfile(path_to_file):
                         if verbose: print('[Found %s: %s]'%(filename, path_to_file))
                         return path_to_file
-                    path_to_file = os.path.join(os.environ[env_var], 'file',
-                                                alternative)
+                    # Check if the alternative is inside a 'file' directory
+                    path_to_file = os.path.join(env_dir, 'file', alternative)
                     if os.path.isfile(path_to_file):
-                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
+                        if verbose: print('[Found %s: %s]' % (filename, path_to_file))
                         return path_to_file
 
     # Check the path list.
@@ -484,7 +487,6 @@ def find_file(filename, env_vars=(), searchpath=(),
             path_to_file = os.path.join(directory, alternative)
             if os.path.isfile(path_to_file):
                 return path_to_file
-
 
     # If we're on a POSIX system, then try using the 'which' command
     # to find the file.
