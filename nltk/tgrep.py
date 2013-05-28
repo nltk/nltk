@@ -185,6 +185,13 @@ def _immediately_after(node):
     after = node.root()[pos]
     return [after] + _leftmost_descendants(after)
 
+def _tgrep_node_literal_value(node):
+    '''
+    Gets the string value of a given parse tree node, for comparison
+    using the tgrep node literal predicates.
+    '''
+    return (node.node if isinstance(node, nltk.tree.Tree) else unicode(node))
+
 def _tgrep_node_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a predicate on a tree node
@@ -210,19 +217,15 @@ def _tgrep_node_action(_s, _l, tokens):
         elif tokens[0] == '*' or tokens[0] == '__':
             return lambda n: True
         elif tokens[0].startswith('"'):
-            return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
-                                         else n) == s)(tokens[0].strip('"'))
+            return (lambda s: lambda n: _tgrep_node_literal_value(n) == s)(tokens[0].strip('"'))
         elif tokens[0].startswith('/'):
             return (lambda r: lambda n:
-                        r.match(n.node if isinstance(n, nltk.tree.Tree)
-                                else n))(re.compile(tokens[0].strip('/')))
+                        r.match(_tgrep_node_literal_value(n)))(re.compile(tokens[0].strip('/')))
         elif tokens[0].startswith('i@'):
             return (lambda s: lambda n:
-                        (n.node if isinstance(n, nltk.tree.Tree)
-                         else n).lower() == s)(tokens[0][2:].lower())
+                        _tgrep_node_literal_value(n).lower() == s)(tokens[0][2:].lower())
         else:
-            return (lambda s: lambda n: (n.node if isinstance(n, nltk.tree.Tree)
-                                         else n) == s)(tokens[0])
+            return (lambda s: lambda n: _tgrep_node_literal_value(n) == s)(tokens[0])
 
 def _tgrep_parens_action(_s, _l, tokens):
     '''
