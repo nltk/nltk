@@ -127,12 +127,20 @@ class BigramCollocationFinder(AbstractCollocationFinder):
     """A tool for the finding and ranking of bigram collocations or other
     association measures. It is often useful to use from_words() rather than
     constructing an instance directly.
-    """
+
+    def __init__(self, word_fd, bigram_fd, window_size=2):
+        """Construct a TrigramCollocationFinder, given FreqDists for
+        appearances of words, bigrams, two words with any word between them,
+        and trigrams.
+        """
+        AbstractCollocationFinder.__init__(self, word_fd, bigram_fd)
+        self.window_size = window_size
 
     @classmethod
     def from_words(cls, words, window_size=2):
         """Construct a BigramCollocationFinder for all bigrams in the given
-        sequence.  By default, bigrams must be contiguous.
+        sequence.  When window_size > 2, count non-contiguous bigrams, in the 
+        style of Church and Hanks's (1990) association ratio. 
         """
         wfd = FreqDist()
         bfd = FreqDist()
@@ -142,12 +150,8 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
         for window in ingrams(words, window_size, pad_right=True):
             w1 = window[0]
-            try:
-                window = window[:list(window).index(w1, 1)]
-            except ValueError:
-                pass
             wfd.inc(w1)
-            for w2 in set(window[1:]):
+            for w2 in window[1:]:
                 if w2 is not None:
                     bfd.inc((w1, w2))
         return cls(wfd, bfd)
@@ -157,7 +161,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         function.
         """
         n_all = self.word_fd.N()
-        n_ii = self.ngram_fd[(w1, w2)]
+        n_ii = self.ngram_fd[(w1, w2)] / (self.window_size - 1.0)
         if not n_ii:
             return
         n_ix = self.word_fd[w1]
