@@ -127,6 +127,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
     """A tool for the finding and ranking of bigram collocations or other
     association measures. It is often useful to use from_words() rather than
     constructing an instance directly.
+    """
 
     def __init__(self, word_fd, bigram_fd, window_size=2):
         """Construct a TrigramCollocationFinder, given FreqDists for
