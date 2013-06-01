@@ -82,31 +82,30 @@ POS tags in the CHILDES are automatically assigned by MOR and POST programs
 (MacWhinney, 2000).
 
     >>> valian.tagged_words('Valian/01a.xml')[:30]
-    [('at', 'prep'), ('Parent', 'n'), ("Lastname's", 'n'), ('house', 'n'),
-     ('with', 'prep'), ('Child', 'n'), ('Lastname', 'n'), ('and', 'coord'),
-     ('it', 'pro'), ('is', 'v'), ('March', 'n'), ('fourth', 'adj'),
-     ('I', 'pro'), ('believe', 'v'), ('and', 'coord'), ('when', 'adv'),
-     ('was', 'v'), ("Parent's", 'n'), ('birthday', 'n'), ("Child's", 'n'),
-     ('oh', 'co'), ("I'm", 'pro'), ('sorry', 'adj'), ("that's", 'pro'),
-     ('okay', 'adj'), ('February', 'n'), ('first', 'adj'),
-     ('nineteen', 'det'), ('eighty', 'det'), ('four', 'det')]
+    [('at', 'prep'), ('Parent', 'n:prop'), ("Lastname's", 'n:prop'), ('house', 'n'),
+    ('with', 'prep'), ('Child', 'n:prop'), ('Lastname', 'n:prop'), ('and', 'coord'),
+    ('it', 'pro'), ('is', 'v:cop'), ('March', 'n:prop'), ('fourth', 'adj'),
+    ('I', 'pro:sub'), ('believe', 'v'), ('and', 'coord'), ('when', 'adv:wh'),
+    ('was', 'v:cop'), ("Parent's", 'n:prop'), ('birthday', 'n'), ("Child's", 'n:prop'),
+    ('oh', 'co'), ("I'm", 'pro:sub'), ('sorry', 'adj'), ("that's", 'pro:dem'),
+    ('okay', 'adj'), ('February', 'n:prop'), ('first', 'adj'),
+    ('nineteen', 'det:num'), ('eighty', 'det:num'), ('four', 'det:num')]
 
     >>> valian.tagged_sents('Valian/01a.xml')[:10]
-    [[('at', 'prep'), ('Parent', 'n'), ("Lastname's", 'n'), ('house', 'n'),
-     ('with', 'prep'), ('Child', 'n'), ('Lastname', 'n'), ('and', 'coord'),
-     ('it', 'pro'), ('is', 'v'), ('March', 'n'), ('fourth', 'adj'),
-     ('I', 'pro'), ('believe', 'v'), ('and', 'coord'), ('when', 'adv'),
-     ('was', 'v'), ("Parent's", 'n'), ('birthday', 'n')],
-     [("Child's", 'n')], [('oh', 'co'), ("I'm", 'pro'), ('sorry', 'adj')],
-     [("that's", 'pro'), ('okay', 'adj')],
-     [('February', 'n'), ('first', 'adj'), ('nineteen', 'det'),
-     ('eighty', 'det'), ('four', 'det')],
-     [('great', 'adj')],
-     [('and', 'coord'), ("she's", 'pro'), ('two', 'det'), ('years', 'n'), ('old', 'adj')],
-     [('correct', 'adj')],
-     [('okay', 'co')],
-     [('she', 'pro'), ('just', 'adv'), ('turned', 'part'), ('two', 'det'),
-     ('a', 'det'), ('month', 'n'), ('ago', 'adv')]]
+    [[('at', 'prep'), ('Parent', 'n:prop'), ("Lastname's", 'n:prop'), ('house', 'n'),
+    ('with', 'prep'), ('Child', 'n:prop'), ('Lastname', 'n:prop'), ('and', 'coord'),
+    ('it', 'pro'), ('is', 'v:cop'), ('March', 'n:prop'), ('fourth', 'adj'),
+    ('I', 'pro:sub'), ('believe', 'v'), ('and', 'coord'), ('when', 'adv:wh'),
+    ('was', 'v:cop'), ("Parent's", 'n:prop'), ('birthday', 'n')],
+    [("Child's", 'n:prop')], [('oh', 'co'), ("I'm", 'pro:sub'), ('sorry', 'adj')],
+    [("that's", 'pro:dem'), ('okay', 'adj')],
+    [('February', 'n:prop'), ('first', 'adj'), ('nineteen', 'det:num'),
+    ('eighty', 'det:num'), ('four', 'det:num')],
+    [('great', 'adj')],
+    [('and', 'coord'), ("she's", 'pro:sub'), ('two', 'det:num'), ('years', 'n'), ('old', 'adj')],
+    [('correct', 'adj')],
+    [('okay', 'co')], [('she', 'pro:sub'), ('just', 'adv:int'), ('turned', 'part'), ('two', 'det:num'),
+    ('a', 'det'), ('month', 'n'), ('ago', 'adv')]]
 
 When the argument *stem* is true, the word stems (e.g., 'is' -> 'be-3PS') are
 used instread of the original words.

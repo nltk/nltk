@@ -316,7 +316,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                 tag = xmlpos[0].text+":"+xmlpos2[0].text
                             else:
                                 tag = xmlpos[0].text
-                                word = (word,tag)
+                            word = (word,tag)
                         except (AttributeError,IndexError) as e:
                             word = (word,None)
                             if suffixStem:
