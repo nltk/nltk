@@ -1388,7 +1388,10 @@ class SimpleGoodTuringProbDist(ProbDistI):
         """
         Split the frequency distribution in two list (r, Nr), where Nr(r) > 0
         """
-        return zip(*self._freqdist._Nr_nonzero()) or ([], [])
+        nonzero = self._freqdist._Nr_nonzero()
+        if not nonzero:
+            return [], []
+        return zip(*nonzero)
 
     def find_best_fit(self, r, nr):
         """
