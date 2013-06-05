@@ -298,6 +298,7 @@ class Synset(_WordNetObject):
     - root_hypernyms
     - common_hypernyms
     - lowest_common_hypernyms
+    - relative_lowest_common_hypernyms
 
     Note that Synsets do not support the following relations because
     these are defined by WordNet as lexical relations:
@@ -451,7 +452,10 @@ class Synset(_WordNetObject):
         return list(self_synsets.intersection(other_synsets))
 
     def lowest_common_hypernyms(self, other, simulate_root=False):
-        """Get the lowest synset that both synsets have as a hypernym."""
+        """Get a list of absolute lowest synset(s) that both synsets have as a hypernym.
+
+        This is calculated by finding the shortest paths for all synsets that are hypernyms
+        of both words, and returning that with the longest path."""
 
         fake_synset = Synset(None)
         fake_synset.name = '*ROOT*'
@@ -474,6 +478,36 @@ class Synset(_WordNetObject):
             return [s for s in synsets if s.min_depth() == max_depth]
         except ValueError:
             return []
+
+    def relative_lowest_common_hypernyms(self, other, simulate_root=False):
+        """Get a list of the lowest synset(s) that both synsets have as a hypernym, relative
+        to the hypernym paths of this synset.
+
+        This compares the hypernym paths of this synset with those of the other word.
+        The lowest hypernym from each path of this word that appears in a hypernym path
+        of the other word is returned."""
+
+        fake_synset = Synset(None)
+        fake_synset.name = '*ROOT*'
+        fake_synset.hypernyms = lambda: []
+        fake_synset.instance_hypernyms = lambda: []
+
+        if simulate_root:
+            self_hypernyms = chain(self.hypernym_paths(), [[fake_synset]])
+            other_hypernyms = chain(other.hypernym_paths(), [[fake_synset]])
+        else:
+            self_hypernyms = self.hypernym_paths()
+            other_hypernyms = other.hypernym_paths()
+
+        results = []
+        for self_path in self_hypernyms:
+            for other_path in other_hypernyms:
+                for s in self_path[::-1]:
+                    if s in other_path:
+                        results.append(s)
+                        break
+
+        return list(set(results))
 
     def hypernym_distances(self, distance=0, simulate_root=False):
         """
