@@ -23,8 +23,8 @@ _SMALL = 1e-20
 try:
     from scipy.stats import fisher_exact
 except ImportError:
-    pass    
-
+    pass
+    
 ### Indices to marginals arguments:
 
 NGRAM = 0
@@ -215,14 +215,15 @@ class BigramAssocMeasures(NgramAssocMeasures):
         return n_xx * cls.phi_sq(n_ii, (n_ix, n_xi), n_xx)
 
     @classmethod
-    def fisher(cls,*marginals):
-        """Scores bigrams using Fisher's Exact Test (Pedersen 1996).  Less sensitive to 
-        small counts that PMI or Chi Sq, but also more expensive to compute.    
+    def fisher(cls, *marginals):
+        """Scores bigrams using Fisher's Exact Test (Pedersen 1996).  Less
+           sensitive to small counts than PMI or Chi Sq, but also more expensive
+           to compute.
         """
 
         n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
 
-        (odds,pvalue) = fisher_exact([[n_ii,n_io],[n_oi,n_oo]],alternative='less')
+        (odds, pvalue) = fisher_exact([[n_ii, n_io], [n_oi, n_oo]], alternative='less')
         return pvalue
 
     @staticmethod

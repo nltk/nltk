@@ -39,6 +39,7 @@ from nltk.util import ingrams
 from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures
 from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
+
 class AbstractCollocationFinder(object):
     """
     An abstract base class for collocation finders whose purpose is to
@@ -130,9 +131,8 @@ class BigramCollocationFinder(AbstractCollocationFinder):
     """
 
     def __init__(self, word_fd, bigram_fd, window_size=2):
-        """Construct a TrigramCollocationFinder, given FreqDists for
-        appearances of words, bigrams, two words with any word between them,
-        and trigrams.
+        """Construct a BigramCollocationFinder, given FreqDists for
+        appearances of words and (possibly non-contiguous) bigrams.
         """
         AbstractCollocationFinder.__init__(self, word_fd, bigram_fd)
         self.window_size = window_size
@@ -140,8 +140,8 @@ class BigramCollocationFinder(AbstractCollocationFinder):
     @classmethod
     def from_words(cls, words, window_size=2):
         """Construct a BigramCollocationFinder for all bigrams in the given
-        sequence.  When window_size > 2, count non-contiguous bigrams, in the 
-        style of Church and Hanks's (1990) association ratio. 
+        sequence.  When window_size > 2, count non-contiguous bigrams, in the
+        style of Church and Hanks's (1990) association ratio.
         """
         wfd = FreqDist()
         bfd = FreqDist()
@@ -155,11 +155,12 @@ class BigramCollocationFinder(AbstractCollocationFinder):
             for w2 in window[1:]:
                 if w2 is not None:
                     bfd.inc((w1, w2))
-        return cls(wfd, bfd)
+        return cls(wfd, bfd, window_size=window_size)
 
     def score_ngram(self, score_fn, w1, w2):
         """Returns the score for a given bigram using the given scoring
-        function.
+        function.  Following Church and Hanks (1990), counts are scaled by 
+        a factor of 1/(window_size - 1).
         """
         n_all = self.word_fd.N()
         n_ii = self.ngram_fd[(w1, w2)] / (self.window_size - 1.0)
