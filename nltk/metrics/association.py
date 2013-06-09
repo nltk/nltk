@@ -217,8 +217,8 @@ class BigramAssocMeasures(NgramAssocMeasures):
     @classmethod
     def fisher(cls, *marginals):
         """Scores bigrams using Fisher's Exact Test (Pedersen 1996).  Less
-           sensitive to small counts than PMI or Chi Sq, but also more expensive
-           to compute.
+        sensitive to small counts than PMI or Chi Sq, but also more expensive
+        to compute. Requires scipy.
         """
 
         n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
