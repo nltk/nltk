@@ -46,17 +46,20 @@ class GAAClusterer(VectorSpaceClusterer):
         cluster_len = [1]*N
         cluster_count = N
         index_map = range(N)
-        
+
         # construct the similarity matrix
-        dims = (N,N)
-        sim = numpy.ones(dims,dtype=numpy.float)*numpy.NINF
+        dims = (N, N)
+        sim = numpy.ones(dims, dtype=numpy.float)*numpy.NINF
         for i in xrange(N):
-            for j in xrange(i+1,N):
-                sim[ i,j ] = self._average_similarity(vectors[i],1,vectors[j],1)
-        
+            for j in xrange(i+1, N):
+                sim[i, j] = self._average_similarity(
+                    vectors[i], 1,
+                    vectors[j], 1)
+
         while cluster_count > max(self._num_clusters, 1):
-            i,j = numpy.unravel_index(sim.argmax(),dims)
-            if trace: print("merging %d and %d" % (i,j))
+            i, j = numpy.unravel_index(sim.argmax(), dims)
+            if trace:
+                print("merging %d and %d" % (i, j))
 
             # update similarities
             cli = cluster_len[i]
@@ -64,24 +67,24 @@ class GAAClusterer(VectorSpaceClusterer):
             cl = cli+clj
 
             # update for x<i
-            sim[ :i,i ] = (sim[ :i,i ]*cli + sim[ :i, j ]*clj)/cl
+            sim[:i, i] = (sim[:i, i]*cli + sim[:i, j]*clj)/cl
             # update for i<x<j
-            sim[ i,i+1:j ] = (sim[ i,i+1:j ]*cli + sim[ i+1:j, j ]*clj)/cl
+            sim[i, i+1:j] = (sim[i, i+1:j]*cli + sim[i+1:j, j]*clj)/cl
             # update for i<j<x
-            sim[ i,j+1: ] = (sim[ i,j+1: ]*cli + sim[j,j+1:]*clj)/cl
+            sim[i, j+1:] = (sim[i, j+1:]*cli + sim[j, j+1:]*clj)/cl
 
             # remove j
-            sim[ :,j ] = numpy.NINF
-            sim[ j,: ] = numpy.NINF
-                
+            sim[:, j] = numpy.NINF
+            sim[j, :] = numpy.NINF
+
             # merge the clusters
             cluster_len[i] = cl
-            self._dendrogram.merge(index_map[i],index_map[j])
+            self._dendrogram.merge(index_map[i], index_map[j])
             cluster_count -= 1
 
             # update the index map to reflect the indexes if we
             # had removed j
-            for x in xrange(j+1,N):
+            for x in xrange(j+1, N):
                 index_map[x] -= 1
             index_map[j] = -1
 
