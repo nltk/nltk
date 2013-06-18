@@ -60,7 +60,7 @@ class GAAClusterer(VectorSpaceClusterer):
                 print("merging %d and %d" % (i, j))
 
             # update similarities for merging i and j
-            self._average_link(dist, cluster_len, i, j)
+            self._merge_similarities(dist, cluster_len, i, j)
 
             # remove j
             dist[:, j] = numpy.inf
@@ -78,7 +78,7 @@ class GAAClusterer(VectorSpaceClusterer):
 
         self.update_clusters(self._num_clusters)
 
-    def _average_link(self, dist, cluster_len, i, j):
+    def _merge_similarities(self, dist, cluster_len, i, j):
         # the new cluster i merged from i and j adopts the average of
         # i and j's similarity to each other cluster, weighted by the
         # number of points in the clusters i and j
