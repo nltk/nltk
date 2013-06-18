@@ -11,7 +11,7 @@ try:
 except ImportError:
     pass
 
-from nltk.cluster.util import VectorSpaceClusterer, Dendrogram
+from nltk.cluster.util import VectorSpaceClusterer, Dendrogram, cosine_distance
 from nltk.compat import python_2_unicode_compatible
 
 @python_2_unicode_compatible
@@ -45,50 +45,55 @@ class GAAClusterer(VectorSpaceClusterer):
         N = len(vectors)
         cluster_len = [1]*N
         cluster_count = N
-        index_map = range(N)
+        index_map = numpy.arange(N)
 
         # construct the similarity matrix
         dims = (N, N)
-        sim = numpy.ones(dims, dtype=numpy.float)*numpy.NINF
+        dist = numpy.ones(dims, dtype=numpy.float)*numpy.inf
         for i in xrange(N):
             for j in xrange(i+1, N):
-                sim[i, j] = self._average_similarity(
-                    vectors[i], 1,
-                    vectors[j], 1)
+                dist[i, j] = cosine_distance(vectors[i], vectors[j])
 
         while cluster_count > max(self._num_clusters, 1):
-            i, j = numpy.unravel_index(sim.argmax(), dims)
+            i, j = numpy.unravel_index(dist.argmin(), dims)
             if trace:
                 print("merging %d and %d" % (i, j))
 
-            # update similarities
-            cli = cluster_len[i]
-            clj = cluster_len[j]
-            cl = cli+clj
-
-            # update for x<i
-            sim[:i, i] = (sim[:i, i]*cli + sim[:i, j]*clj)/cl
-            # update for i<x<j
-            sim[i, i+1:j] = (sim[i, i+1:j]*cli + sim[i+1:j, j]*clj)/cl
-            # update for i<j<x
-            sim[i, j+1:] = (sim[i, j+1:]*cli + sim[j, j+1:]*clj)/cl
+            # update similarities for merging i and j
+            self._average_link(dist, cluster_len, i, j)
 
             # remove j
-            sim[:, j] = numpy.NINF
-            sim[j, :] = numpy.NINF
+            dist[:, j] = numpy.inf
+            dist[j, :] = numpy.inf
 
             # merge the clusters
-            cluster_len[i] = cl
+            cluster_len[i] = cluster_len[i]+cluster_len[j]
             self._dendrogram.merge(index_map[i], index_map[j])
             cluster_count -= 1
 
             # update the index map to reflect the indexes if we
             # had removed j
-            for x in xrange(j+1, N):
-                index_map[x] -= 1
-            index_map[j] = -1
+            index_map[j+1:] -= 1
+            index_map[j] = N
 
         self.update_clusters(self._num_clusters)
+
+    def _average_link(self, dist, cluster_len, i, j):
+        # the new cluster i merged from i and j adopts the average of
+        # i and j's similarity to each other cluster, weighted by the
+        # number of points in the clusters i and j
+        i_weight = cluster_len[i]
+        j_weight = cluster_len[j]
+        weight_sum = i_weight+j_weight
+
+        # update for x<i
+        dist[:i, i] = dist[:i, i]*i_weight + dist[:i, j]*j_weight
+        dist[:i, i] /= weight_sum
+        # update for i<x<j
+        dist[i, i+1:j] = dist[i, i+1:j]*i_weight + dist[i+1:j, j]*j_weight
+        # update for i<j<x
+        dist[i, j+1:] = dist[i, j+1:]*i_weight + dist[j, j+1:]*j_weight
+        dist[i, i+1:] /= weight_sum
 
     def update_clusters(self, num_clusters):
         clusters = self._dendrogram.groups(num_clusters)
@@ -112,9 +117,9 @@ class GAAClusterer(VectorSpaceClusterer):
         best = None
         for i in range(self._num_clusters):
             centroid = self._centroids[i]
-            sim = self._average_similarity(vector, 1, centroid, 1)
-            if not best or sim > best[0]:
-                best = (sim, i)
+            dist = cosine_distance(vector, centroid)
+            if not best or dist < best[0]:
+                best = (dist, i)
         return best[1]
 
     def dendrogram(self):
@@ -126,11 +131,6 @@ class GAAClusterer(VectorSpaceClusterer):
 
     def num_clusters(self):
         return self._num_clusters
-
-    def _average_similarity(self, v1, l1, v2, l2):
-        sum = v1 + v2
-        length = l1 + l2
-        return (numpy.dot(sum, sum) - length) / (length * (length - 1))
 
     def __repr__(self):
         return '<GroupAverageAgglomerative Clusterer n=%d>' % self._num_clusters
