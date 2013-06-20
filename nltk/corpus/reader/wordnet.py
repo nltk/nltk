@@ -453,9 +453,29 @@ class Synset(_WordNetObject):
     def lowest_common_hypernyms(self, other, simulate_root=False, use_max_depth=False):
         """Get a list of absolute lowest synset(s) that both synsets have as a hypernym.
 
-        By default this is calculated by finding the shortest paths for all synsets that are hypernyms
-        of both words, and returning that with the longest path. By setting use_max_depth=True, lower 
-        hypernyms can be found."""
+        By default this is calculated by finding the shortest paths for all synsets that 
+        are hypernyms of both words, and returning that with the longest path.
+
+        By setting the use_max_depth flag to True, lower hypernyms can be found by searching for the 
+        longest paths of each hypernym.
+
+        :type other: Synset
+        :param other: other input synset
+        :type simulate_root: bool
+        :param simulate_root: The various verb taxonomies do not
+            share a single root which disallows this metric from working for
+            synsets that are not connected. This flag (False by default)
+            creates a fake root that connects all the taxonomies. Set it
+            to True to enable this behavior. For the noun taxonomy,
+            there is usually a default root except for WordNet version 1.6.
+            If you are using wordnet 1.6, a fake root will need to be added 
+            for nouns as well.
+        :type use_max_depth: bool
+        :param use_max_depth: If True, will use the max_depth function to 
+            calculate the lowest common hypernyms giving results that should
+            be lower in the tree than when using the default settings.
+        :return: The synsets that are the lowest common hypernyms of both synsets
+        """
 
         fake_synset = Synset(None)
         fake_synset.name = '*ROOT*'
