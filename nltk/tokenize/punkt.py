@@ -15,7 +15,7 @@ Punkt Sentence Tokenizer
 This tokenizer divides a text into a list of sentences,
 by using an unsupervised algorithm to build a model for abbreviation
 words, collocations, and words that start sentences.  It must be
-trained on a large collection of plaintext in the taret language
+trained on a large collection of plaintext in the target language
 before it can be used.
 
 The NLTK data package includes a pre-trained Punkt tokenizer for
