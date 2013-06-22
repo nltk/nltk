@@ -659,7 +659,7 @@ class Synset(_WordNetObject):
 
         distance = self.shortest_path_distance(other, simulate_root=simulate_root and need_root)
 
-        if distance is None or distance < 0:
+        if distance is None or distance < 0 or depth == 0:
             return None
         return -math.log((distance + 1) / (2.0 * depth))
 
