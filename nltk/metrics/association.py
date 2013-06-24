@@ -20,7 +20,11 @@ _product = lambda s: reduce(lambda x, y: x * y, s)
 
 _SMALL = 1e-20
 
-
+try:
+    from scipy.stats import fisher_exact
+except ImportError:
+    pass
+    
 ### Indices to marginals arguments:
 
 NGRAM = 0
@@ -143,7 +147,7 @@ class NgramAssocMeasures(object):
 
 class BigramAssocMeasures(NgramAssocMeasures):
     """
-    A collection of trigram association measures. Each association measure
+    A collection of bigram association measures. Each association measure
     is provided as a function with three arguments::
 
         bigram_score_fn(n_ii, (n_ix, n_xi), n_xx)
@@ -209,6 +213,18 @@ class BigramAssocMeasures(NgramAssocMeasures):
         """
         (n_ix, n_xi) = n_ix_xi_tuple
         return n_xx * cls.phi_sq(n_ii, (n_ix, n_xi), n_xx)
+
+    @classmethod
+    def fisher(cls, *marginals):
+        """Scores bigrams using Fisher's Exact Test (Pedersen 1996).  Less
+        sensitive to small counts than PMI or Chi Sq, but also more expensive
+        to compute. Requires scipy.
+        """
+
+        n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
+
+        (odds, pvalue) = fisher_exact([[n_ii, n_io], [n_oi, n_oo]], alternative='less')
+        return pvalue
 
     @staticmethod
     def dice(n_ii, n_ix_xi_tuple, n_xx):
