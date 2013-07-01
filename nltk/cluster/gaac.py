@@ -5,14 +5,13 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
-import copy
 
 try:
     import numpy
 except ImportError:
     pass
 
-from nltk.cluster.util import VectorSpaceClusterer, Dendrogram
+from nltk.cluster.util import VectorSpaceClusterer, Dendrogram, cosine_distance
 from nltk.compat import python_2_unicode_compatible
 
 @python_2_unicode_compatible
@@ -42,37 +41,59 @@ class GAAClusterer(VectorSpaceClusterer):
         return VectorSpaceClusterer.cluster(self, vectors, assign_clusters, trace)
 
     def cluster_vectorspace(self, vectors, trace=False):
-        # create a cluster for each vector
-        clusters = [[vector] for vector in vectors]
+        # variables describing the initial situation
+        N = len(vectors)
+        cluster_len = [1]*N
+        cluster_count = N
+        index_map = numpy.arange(N)
 
-        # the sum vectors
-        vector_sum = copy.copy(vectors)
+        # construct the similarity matrix
+        dims = (N, N)
+        dist = numpy.ones(dims, dtype=numpy.float)*numpy.inf
+        for i in xrange(N):
+            for j in xrange(i+1, N):
+                dist[i, j] = cosine_distance(vectors[i], vectors[j])
 
-        while len(clusters) > max(self._num_clusters, 1):
-            # find the two best candidate clusters to merge, based on their
-            # S(union c_i, c_j)
-            best = None
-            for i in range(len(clusters)):
-                for j in range(i + 1, len(clusters)):
-                    sim = self._average_similarity(
-                                vector_sum[i], len(clusters[i]),
-                                vector_sum[j], len(clusters[j]))
-                    if not best or sim > best[0]:
-                        best = (sim, i, j)
+        while cluster_count > max(self._num_clusters, 1):
+            i, j = numpy.unravel_index(dist.argmin(), dims)
+            if trace:
+                print("merging %d and %d" % (i, j))
 
-            # merge them and replace in cluster list
-            i, j = best[1:]
-            sum = clusters[i] + clusters[j]
-            if trace: print('merging %d and %d' % (i, j))
+            # update similarities for merging i and j
+            self._merge_similarities(dist, cluster_len, i, j)
 
-            clusters[i] = sum
-            del clusters[j]
-            vector_sum[i] = vector_sum[i] + vector_sum[j]
-            del vector_sum[j]
+            # remove j
+            dist[:, j] = numpy.inf
+            dist[j, :] = numpy.inf
 
-            self._dendrogram.merge(i, j)
+            # merge the clusters
+            cluster_len[i] = cluster_len[i]+cluster_len[j]
+            self._dendrogram.merge(index_map[i], index_map[j])
+            cluster_count -= 1
+
+            # update the index map to reflect the indexes if we
+            # had removed j
+            index_map[j+1:] -= 1
+            index_map[j] = N
 
         self.update_clusters(self._num_clusters)
+
+    def _merge_similarities(self, dist, cluster_len, i, j):
+        # the new cluster i merged from i and j adopts the average of
+        # i and j's similarity to each other cluster, weighted by the
+        # number of points in the clusters i and j
+        i_weight = cluster_len[i]
+        j_weight = cluster_len[j]
+        weight_sum = i_weight+j_weight
+
+        # update for x<i
+        dist[:i, i] = dist[:i, i]*i_weight + dist[:i, j]*j_weight
+        dist[:i, i] /= weight_sum
+        # update for i<x<j
+        dist[i, i+1:j] = dist[i, i+1:j]*i_weight + dist[i+1:j, j]*j_weight
+        # update for i<j<x
+        dist[i, j+1:] = dist[i, j+1:]*i_weight + dist[j, j+1:]*j_weight
+        dist[i, i+1:] /= weight_sum
 
     def update_clusters(self, num_clusters):
         clusters = self._dendrogram.groups(num_clusters)
@@ -96,9 +117,9 @@ class GAAClusterer(VectorSpaceClusterer):
         best = None
         for i in range(self._num_clusters):
             centroid = self._centroids[i]
-            sim = self._average_similarity(vector, 1, centroid, 1)
-            if not best or sim > best[0]:
-                best = (sim, i)
+            dist = cosine_distance(vector, centroid)
+            if not best or dist < best[0]:
+                best = (dist, i)
         return best[1]
 
     def dendrogram(self):
@@ -110,11 +131,6 @@ class GAAClusterer(VectorSpaceClusterer):
 
     def num_clusters(self):
         return self._num_clusters
-
-    def _average_similarity(self, v1, l1, v2, l2):
-        sum = v1 + v2
-        length = l1 + l2
-        return (numpy.dot(sum, sum) - length) / (length * (length - 1))
 
     def __repr__(self):
         return '<GroupAverageAgglomerative Clusterer n=%d>' % self._num_clusters
