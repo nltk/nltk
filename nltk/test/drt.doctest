@@ -85,8 +85,8 @@ Alternatively, a ``FeatStructParser`` can be passed with the ``logic_parser`` se
     >>> from nltk.grammar import FeatStructNonterminal
     >>> parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructParser(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
     >>> trees = parser.nbest_parse('every girl chases a dog'.split())
-    >>> print(trees[0].node['SEM'].simplify())
-    ([],[(([x],[girl(x)]) -> ([z2],[dog(z2), chase(x,z2)]))])
+    >>> print(trees[0].node['SEM'].simplify().normalize())
+    ([],[(([z1],[girl(z1)]) -> ([z2],[dog(z2), chase(z1,z2)]))])
 
 
 

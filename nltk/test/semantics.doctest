@@ -220,22 +220,6 @@ Model Tests
 
 Extension of Lambda expressions
 
-    >>> exprs = [
-    ...     r'\x. \y. love(x, y)',
-    ...     r'\x. dog(x) (adam)',
-    ...     r'\x. (dog(x) | boy(x)) (adam)',
-    ...     r'\x. \y. love(x, y)(fido)',
-    ...     r'\x. \y. love(x, y)(adam)',
-    ...     r'\x. \y. love(x, y)(betty)',
-    ...     r'\x. \y. love(x, y)(betty)(adam)',
-    ...     r'\x. \y. love(x, y)(betty, adam)',
-    ...     r'\y. \x. love(x, y)(fido)(adam)',
-    ...     r'\y. \x. love(x, y)(betty, adam)',
-    ...     r'\x. exists y. love(x, y)',
-    ...     r'\z. adam',
-    ...     r'\z. love(x, y)'
-    ...     ]
-
     >>> v0 = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
     ... ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])),
     ... ('dog', set(['d1'])),
@@ -246,35 +230,32 @@ Extension of Lambda expressions
     >>> m0 = Model(dom0, val0)
     >>> g0 = Assignment(dom0)
 
-    >>> for e in exprs:
-    ...     print(e)
-    ...     print(m0.evaluate(e, g0))
-    \x. \y. love(x, y)
-    {'g2': {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False}, 'b2': {'g2': True, 'b2': False, 'b1': False, 'g1': False, 'd1': False}, 'b1': {'g2': False, 'b2': False, 'b1': False, 'g1': True, 'd1': False}, 'g1': {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False}, 'd1': {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False}}
-    \x. dog(x) (adam)
+    >>> print(m0.evaluate(r'\x. \y. love(x, y)', g0) == {'g2': {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False}, 'b2': {'g2': True, 'b2': False, 'b1': False, 'g1': False, 'd1': False}, 'b1': {'g2': False, 'b2': False, 'b1': False, 'g1': True, 'd1': False}, 'g1': {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False}, 'd1': {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False}})
+    True
+    >>> print(m0.evaluate(r'\x. dog(x) (adam)', g0))
     False
-    \x. (dog(x) | boy(x)) (adam)
+    >>> print(m0.evaluate(r'\x. (dog(x) | boy(x)) (adam)', g0))
     True
-    \x. \y. love(x, y)(fido)
-    {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False}
-    \x. \y. love(x, y)(adam)
-    {'g2': False, 'b2': False, 'b1': False, 'g1': True, 'd1': False}
-    \x. \y. love(x, y)(betty)
-    {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False}
-    \x. \y. love(x, y)(betty)(adam)
+    >>> print(m0.evaluate(r'\x. \y. love(x, y)(fido)', g0) == {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False})
     True
-    \x. \y. love(x, y)(betty, adam)
+    >>> print(m0.evaluate(r'\x. \y. love(x, y)(adam)', g0) == {'g2': False, 'b2': False, 'b1': False, 'g1': True, 'd1': False})
     True
-    \y. \x. love(x, y)(fido)(adam)
+    >>> print(m0.evaluate(r'\x. \y. love(x, y)(betty)', g0) == {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False})
+    True
+    >>> print(m0.evaluate(r'\x. \y. love(x, y)(betty)(adam)', g0))
+    True
+    >>> print(m0.evaluate(r'\x. \y. love(x, y)(betty, adam)', g0))
+    True
+    >>> print(m0.evaluate(r'\y. \x. love(x, y)(fido)(adam)', g0))
     False
-    \y. \x. love(x, y)(betty, adam)
+    >>> print(m0.evaluate(r'\y. \x. love(x, y)(betty, adam)', g0))
     True
-    \x. exists y. love(x, y)
-    {'g2': True, 'b2': True, 'b1': True, 'g1': True, 'd1': False}
-    \z. adam
-    {'g2': 'b1', 'b2': 'b1', 'b1': 'b1', 'g1': 'b1', 'd1': 'b1'}
-    \z. love(x, y)
-    {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False}
+    >>> print(m0.evaluate(r'\x. exists y. love(x, y)', g0) == {'g2': True, 'b2': True, 'b1': True, 'g1': True, 'd1': False})
+    True
+    >>> print(m0.evaluate(r'\z. adam', g0) == {'g2': 'b1', 'b2': 'b1', 'b1': 'b1', 'g1': 'b1', 'd1': 'b1'})
+    True
+    >>> print(m0.evaluate(r'\z. love(x, y)', g0) == {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False})
+    True
 
 
 Propositional Model Test
