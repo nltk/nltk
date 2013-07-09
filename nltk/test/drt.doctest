@@ -85,8 +85,8 @@ Alternatively, a ``FeatStructParser`` can be passed with the ``logic_parser`` se
     >>> from nltk.grammar import FeatStructNonterminal
     >>> parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructParser(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
     >>> trees = parser.nbest_parse('every girl chases a dog'.split())
-    >>> print(trees[0].node['SEM'].simplify())
-    ([],[(([x],[girl(x)]) -> ([z2],[dog(z2), chase(x,z2)]))])
+    >>> print(trees[0].node['SEM'].simplify().normalize())
+    ([],[(([z1],[girl(z1)]) -> ([z2],[dog(z2), chase(z1,z2)]))])
 
 
 
@@ -169,8 +169,8 @@ Parser
     True
 
     >>> logic._counter._value = 0
-    >>> print(dp.parse('([],[(([x],[dog(x)]) -> ([e,y],[boy(y), chase(e), subj(e,x), obj(e,y)]))])+([e,x],[PRO(x), run(e), subj(e,x)])').simplify())
-    ([e02,z1],[(([x],[dog(x)]) -> ([e,y],[boy(y), chase(e), subj(e,x), obj(e,y)])), PRO(z1), run(e02), subj(e02,z1)])
+    >>> print(dp.parse('([],[(([x],[dog(x)]) -> ([e,y],[boy(y), chase(e), subj(e,x), obj(e,y)]))])+([e,x],[PRO(x), run(e), subj(e,x)])').simplify().normalize().normalize())
+    ([e02,z5],[(([z3],[dog(z3)]) -> ([e01,z4],[boy(z4), chase(e01), subj(e01,z3), obj(e01,z4)])), PRO(z5), run(e02), subj(e02,z5)])
 
 ``fol()``
 -----------
@@ -402,8 +402,8 @@ regression tests
     (([x,y],[B(x,y)]) + ([],[C(x,y)]) + ([],[D(x,y)]))
     >>> print(dp.parse('(([],[B(x,y)])+([],[C(x,y)]))+([],[D(x,y)])').replace(Variable('y'), DrtVariableExpression(Variable('x'))))
     (([],[B(x,x)]) + ([],[C(x,x)]) + ([],[D(x,x)]))
-    >>> print(dp.parse('(([],[B(x,y), ([x,y],[A(x,y)])])+([],[C(x,y)]))+([],[D(x,y)])').replace(Variable('y'), DrtVariableExpression(Variable('x'))))
-    (([],[B(z15,x), ([y,z15],[A(z15,y)])]) + ([],[C(z15,x)]) + ([],[D(z15,x)]))
+    >>> print(dp.parse('(([],[B(x,y), ([x,y],[A(x,y)])])+([],[C(x,y)]))+([],[D(x,y)])').replace(Variable('y'), DrtVariableExpression(Variable('x'))).normalize())
+    (([],[B(z3,z1), ([z2,z3],[A(z3,z2)])]) + ([],[C(z3,z1)]) + ([],[D(z3,z1)]))
 
 
 Parse errors

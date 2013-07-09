@@ -743,18 +743,18 @@ typecheck()
     t
 
     >>> e = tlp.parse(r'man(x)')
-    >>> print(e.typecheck())
-    {'x': e, 'man': <e,?>}
+    >>> print(dict((k,str(v)) for k,v in e.typecheck().items()) == {'x': 'e', 'man': '<e,?>'})
+    True
     >>> sig = {'man': '<e, t>'}
     >>> e = tlp.parse(r'man(x)', sig)
     >>> print(e.function.type)
     <e,t>
-    >>> print(e.typecheck())
-    {'x': e, 'man': <e,t>}
+    >>> print(dict((k,str(v)) for k,v in e.typecheck().items()) == {'x': 'e', 'man': '<e,t>'})
+    True
     >>> print(e.function.type)
     <e,t>
-    >>> print(e.typecheck(sig))
-    {'x': e, 'man': <e,t>}
+    >>> print(dict((k,str(v)) for k,v in e.typecheck(sig).items()) == {'x': 'e', 'man': '<e,t>'})
+    True
 
 findtype()
 

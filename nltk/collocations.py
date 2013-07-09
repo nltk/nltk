@@ -39,6 +39,7 @@ from nltk.util import ingrams
 from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures
 from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
+
 class AbstractCollocationFinder(object):
     """
     An abstract base class for collocation finders whose purpose is to
@@ -129,10 +130,18 @@ class BigramCollocationFinder(AbstractCollocationFinder):
     constructing an instance directly.
     """
 
+    def __init__(self, word_fd, bigram_fd, window_size=2):
+        """Construct a BigramCollocationFinder, given FreqDists for
+        appearances of words and (possibly non-contiguous) bigrams.
+        """
+        AbstractCollocationFinder.__init__(self, word_fd, bigram_fd)
+        self.window_size = window_size
+
     @classmethod
     def from_words(cls, words, window_size=2):
         """Construct a BigramCollocationFinder for all bigrams in the given
-        sequence.  By default, bigrams must be contiguous.
+        sequence.  When window_size > 2, count non-contiguous bigrams, in the
+        style of Church and Hanks's (1990) association ratio.
         """
         wfd = FreqDist()
         bfd = FreqDist()
@@ -142,22 +151,19 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
         for window in ingrams(words, window_size, pad_right=True):
             w1 = window[0]
-            try:
-                window = window[:list(window).index(w1, 1)]
-            except ValueError:
-                pass
             wfd.inc(w1)
-            for w2 in set(window[1:]):
+            for w2 in window[1:]:
                 if w2 is not None:
                     bfd.inc((w1, w2))
-        return cls(wfd, bfd)
+        return cls(wfd, bfd, window_size=window_size)
 
     def score_ngram(self, score_fn, w1, w2):
         """Returns the score for a given bigram using the given scoring
-        function.
+        function.  Following Church and Hanks (1990), counts are scaled by 
+        a factor of 1/(window_size - 1).
         """
         n_all = self.word_fd.N()
-        n_ii = self.ngram_fd[(w1, w2)]
+        n_ii = self.ngram_fd[(w1, w2)] / (self.window_size - 1.0)
         if not n_ii:
             return
         n_ix = self.word_fd[w1]
@@ -229,7 +235,7 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
 
 
 def demo(scorer=None, compare_scorer=None):
-    """Finds trigram collocations in the files of the WebText corpus."""
+    """Finds bigram collocations in the files of the WebText corpus."""
     from nltk.metrics import BigramAssocMeasures, spearman_correlation, ranks_from_scores
 
     if scorer is None:

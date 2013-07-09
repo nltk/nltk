@@ -63,10 +63,10 @@ Or spanning intervening words:
     >>> ignored_words = nltk.corpus.stopwords.words('english')
     >>> finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
     >>> finder.nbest(bigram_measures.likelihood_ratio, 10) # doctest: +NORMALIZE_WHITESPACE
-    [(u'became', u'father'), (u'hundred', u'years'), (u'lived', u'years'),
-     (u'father', u'became'), (u'years', u'became'), (u'land', u'Egypt'),
-     (u'land', u'Canaan'), (u'lived', u'became'), (u'became', u'years'),
-     (u'years', u'lived')]
+    [(u'chief', u'chief'), (u'became', u'father'), (u'years', u'became'),
+     (u'hundred', u'years'), (u'lived', u'became'), (u'king', u'king'),
+     (u'lived', u'years'), (u'became', u'became'), (u'chief', u'chiefs'),
+     (u'hundred', u'became')]
 
 Finders
 ~~~~~~~

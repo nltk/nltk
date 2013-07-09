@@ -687,7 +687,7 @@ class Synset(_WordNetObject):
 
         distance = self.shortest_path_distance(other, simulate_root=simulate_root and need_root)
 
-        if distance is None or distance < 0:
+        if distance is None or distance < 0 or depth == 0:
             return None
         return -math.log((distance + 1) / (2.0 * depth))
 
@@ -1601,65 +1601,6 @@ jcn_similarity.__doc__ = Synset.jcn_similarity.__doc__
 def lin_similarity(synset1, synset2, ic, verbose=False):
     return synset1.lin_similarity(synset2, verbose)
 lin_similarity.__doc__ = Synset.lin_similarity.__doc__
-
-
-def _lcs_by_depth(synset1, synset2, verbose=False):
-    """
-    Finds the least common subsumer of two synsets in a WordNet taxonomy,
-    where the least common subsumer is defined as the ancestor node common
-    to both input synsets whose shortest path to the root node is the longest.
-
-    :type synset1: Synset
-    :param synset1: First input synset.
-    :type synset2: Synset
-    :param synset2: Second input synset.
-    :return: The ancestor synset common to both input synsets which is also the
-    LCS.
-    """
-    subsumer = None
-    max_min_path_length = -1
-
-    subsumers = synset1.common_hypernyms(synset2)
-
-    if verbose:
-        print("> Subsumers1:", subsumers)
-
-    # Eliminate those synsets which are ancestors of other synsets in the
-    # set of subsumers.
-
-    eliminated = set()
-    hypernym_relation = lambda s: s.hypernyms() + s.instance_hypernyms()
-    for s1 in subsumers:
-        for s2 in subsumers:
-            if s2 in s1.closure(hypernym_relation):
-                eliminated.add(s2)
-    if verbose:
-        print("> Eliminated:", eliminated)
-
-    subsumers = [s for s in subsumers if s not in eliminated]
-
-    if verbose:
-        print("> Subsumers2:", subsumers)
-
-    # Calculate the length of the shortest path to the root for each
-    # subsumer. Select the subsumer with the longest of these.
-
-    for candidate in subsumers:
-
-        paths_to_root = candidate.hypernym_paths()
-        min_path_length = -1
-
-        for path in paths_to_root:
-            if min_path_length < 0 or len(path) < min_path_length:
-                min_path_length = len(path)
-
-        if min_path_length > max_min_path_length:
-            max_min_path_length = min_path_length
-            subsumer = candidate
-
-    if verbose:
-        print("> LCS Subsumer by depth:", subsumer)
-    return subsumer
 
 
 def _lcs_ic(synset1, synset2, ic, verbose=False):
