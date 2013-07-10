@@ -1271,7 +1271,7 @@ def demo_eval(chunkparser, text):
         print('Missed:')
         missed = chunkscore.missed()
         for chunk in missed[:10]:
-            print('  ', ' '.join("%s" % c for c in chunk))
+            print('  ', ' '.join(map(str,chunk)))
         if len(chunkscore.missed()) > 10:
             print('  ...')
 
@@ -1280,7 +1280,7 @@ def demo_eval(chunkparser, text):
         print('Incorrect:')
         incorrect = chunkscore.incorrect()
         for chunk in incorrect[:10]:
-            print('  ', ' '.join("%s" % c for c in chunk))
+            print('  ', ' '.join(map(str,chunk)))
         if len(chunkscore.incorrect()) > 10:
             print('  ...')
 
@@ -1314,7 +1314,7 @@ def demo():
       {<NNP>+}            # chunk proper nouns
     """
     cp = chunk.RegexpParser(grammar)
-    chunk.demo_eval(cp, text)
+    demo_eval(cp, text)
 
     grammar = r"""
     NP:
@@ -1323,14 +1323,14 @@ def demo():
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
     cp = chunk.RegexpParser(grammar)
-    chunk.demo_eval(cp, text)
+    demo_eval(cp, text)
 
     grammar = r"""
     NP: {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
     VP: {<TO>?<VB.*>}       # VP = verb words
     """
     cp = chunk.RegexpParser(grammar)
-    chunk.demo_eval(cp, text)
+    demo_eval(cp, text)
 
     grammar = r"""
     NP: {<.*>*}             # start by chunking everything
@@ -1340,7 +1340,7 @@ def demo():
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
     cp = chunk.RegexpParser(grammar)
-    chunk.demo_eval(cp, text)
+    demo_eval(cp, text)
 
 # Evaluation
 
