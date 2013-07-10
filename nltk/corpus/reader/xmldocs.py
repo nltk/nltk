@@ -171,9 +171,11 @@ class XMLCorpusView(StreamBackedCorpusView):
         if s.startswith(codecs.BOM_UTF8):
             return 'utf-8'
         m = re.match(br'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
-        if m: return m.group(1)
+        if m:
+            return m.group(1).decode()
         m = re.match(br"\s*<\?xml\b.*\bencoding='([^']+)'", s)
-        if m: return m.group(1)
+        if m:
+            return m.group(1).decode()
         # No encoding found -- what should the default be?
         return 'utf-8'
 
