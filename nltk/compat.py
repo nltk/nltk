@@ -20,7 +20,9 @@ if PY3:
     binary_type = bytes
 
     MAXSIZE = sys.maxsize
-    im_class = lambda meth: meth.__self__.__class__
+    #use _im_class instead of im_class to avoid conflict with nose.suite.ContextSuiteFactory.ancestory
+    #   seeing this module as a class
+    _im_class = lambda meth: meth.__self__.__class__
     xrange = range
     _iterkeys = "keys"
     _itervalues = "values"
@@ -53,7 +55,7 @@ else:
     class_types = (type, types.ClassType)
     text_type = unicode
     binary_type = str
-    im_class = lambda meth: meth.im_class
+    _im_class = lambda meth: meth.im_class
     xrange = xrange
     _iterkeys = "iterkeys"
     _itervalues = "itervalues"
