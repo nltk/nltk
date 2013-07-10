@@ -4,7 +4,7 @@
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import sys
 import subprocess
@@ -47,11 +47,16 @@ def write_tadm_file(train_toks, encoding, stream):
     # http://sf.net/forum/forum.php?thread_id=1675097&forum_id=473054
     labels = encoding.labels()
     for featureset, label in train_toks:
-        stream.write('%d\n' % len(labels))
+        length_line = '%d\n' % len(labels)
+        stream.write(length_line.encode('utf8'))
         for known_label in labels:
             v = encoding.encode(featureset, known_label)
-            stream.write('%d %d %s\n' % (int(label == known_label), len(v),
-                ' '.join('%d %d' % u for u in v)))
+            line = '%d %d %s\n' % (
+                int(label == known_label),
+                len(v),
+                ' '.join('%d %d' % u for u in v)
+            )
+            stream.write(line.encode('utf8'))
 
 def parse_tadm_weights(paramfile):
     """
@@ -92,7 +97,6 @@ def names_demo():
 def encoding_demo():
     import sys
     from nltk.classify.maxent import TadmEventMaxentFeatureEncoding
-    from nltk.classify.tadm import write_tadm_file
     tokens = [({'f0':1, 'f1':1, 'f3':1}, 'A'),
               ({'f0':1, 'f2':1, 'f4':1}, 'B'),
               ({'f0':2, 'f2':1, 'f3':1, 'f4':1}, 'A')]
