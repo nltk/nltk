@@ -83,8 +83,8 @@ class TreebankWordTokenizer(TokenizerI):
         text = re.sub(r'(\S)(\'\')', r'\1 \2 ', text)
 
         text = re.sub(r"([^' ])('[sS]|'[mM]|'[dD]|') ", r"\1 \2 ", text)
-        text = re.sub(r"([^' ])('ll|'re|'ve|n't|) ", r"\1 \2 ", text)
-        text = re.sub(r"([^' ])('LL|'RE|'VE|N'T|) ", r"\1 \2 ", text)
+        text = re.sub(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) ", r"\1 \2 ",
+                      text)
 
         for regexp in self.CONTRACTIONS2:
             text = regexp.sub(r' \1 \2 ', text)
@@ -96,14 +96,8 @@ class TreebankWordTokenizer(TokenizerI):
         # for regexp in self.CONTRACTIONS4:
         #     text = regexp.sub(r' \1 \2 \3 ', text)
 
-        text = re.sub(" +", " ", text)
-        text = text.strip()
-
-        #add space at end to match up with MacIntyre's output (for debugging)
-        if text != "":
-            text += " "
-
         return text.split()
+
 
 if __name__ == "__main__":
     import doctest
