@@ -452,14 +452,21 @@ class Synset(_WordNetObject):
 
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
         """
-        Get a list of absolute lowest synset(s) that both synsets have as a hypernym.
-        This method is an implementation of Ted Pedersen's "Lowest Common Subsumer" method
-        from the Perl Wordnet module. It can return either "self" or "other" if they are a
-        hypernym of the other.
+        Get a list of lowest synset(s) that both synsets have as a hypernym.
+        When `use_min_depth == False` this means that the synset which appears as a 
+        hypernym of both `self` and `other` with the lowest maximum depth is returned
+        or if there are multiple such synsets at the same depth they are all returned
+
+        However, if `use_min_depth == True` then the synset(s) which has/have the lowest
+        minimum depth and appear(s) in both paths is/are returned.
 
         By setting the use_min_depth flag to True, the behavior of NLTK2 can be preserved.
         This was changed in NLTK3 to give more accurate results in a small set of cases,
         generally with synsets concerning people. (eg: 'chef.n.01', 'fireman.n.01', etc.)
+
+        This method is an implementation of Ted Pedersen's "Lowest Common Subsumer" method
+        from the Perl Wordnet module. It can return either "self" or "other" if they are a
+        hypernym of the other.
 
         :type other: Synset
         :param other: other input synset

@@ -60,6 +60,8 @@ Synsets
     [Synset('pack.n.06'), Synset('canis.n.01')]
     >>> dog.root_hypernyms()
     [Synset('entity.n.01')]
+    >>> wn.synset('dog.n.01').lowest_common_hypernyms(wn.synset('cat.n.01'))
+    [Synset('carnivore.n.01')]
 
 Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.
@@ -535,3 +537,7 @@ Issue 629: wordnet failures when python run with -O optimizations
     >>> wn.synsets("brunch")
     [Synset('brunch.n.01'), Synset('brunch.v.01')]
 
+Issue 395: wordnet returns incorrect result for lowest_common_hypernyms of chef and policeman
+
+    >>> wn.synset('policeman.n.01').lowest_common_hypernyms(wn.synset('chef.n.01'))
+    [Synset('person.n.01')]
