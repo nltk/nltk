@@ -34,6 +34,7 @@ from __future__ import print_function, unicode_literals
 from __future__ import division
 
 import sys
+import io
 import os
 import textwrap
 import weakref
@@ -296,6 +297,16 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
         if encoding:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
+
+
+class GzipUnicodeFile(GzipFile):
+    """
+    text mode support for python version <3.3
+    """
+    def __new__(cls, filename=None, mode=None, compresslevel=9,
+                 fileobj=None, encoding='utf-8', errors=None, newline=None):
+        self=GzipFile(filename, mode, compresslevel, fileobj)
+        return io.TextIOWrapper(self, encoding, errors, newline)
 
 
 class ZipFilePathPointer(PathPointer):
