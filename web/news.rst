@@ -14,6 +14,9 @@ NLTK 3.0a0 released : January 2013
    The first alpha release of NLTK 3.0 is now available for testing. This version of NLTK works with Python 2.6, 2.7, and Python 3.
    http://nltk.org/nltk3-alpha/
 
+2012
+----
+
 Python Grant : November 2012
    The Python Software Foundation is sponsoring Mikhail Korborov's work on porting NLTK to Python 3.
    http://pyfound.blogspot.hu/2012/11/grants-to-assist-kivy-nltk-in-porting.html
@@ -35,6 +38,9 @@ NLTK 2.0.1rc4 released : February 2012
 
 NLTK 2.0.1rc3 released : January 2012
     The third release candidate for NLTK 2.
+
+2011
+----
 
 NLTK 2.0.1rc2 released : December 2011
     The second release candidate for NLTK 2.  For full details see the ChangeLog.
