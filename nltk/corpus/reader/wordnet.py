@@ -450,14 +450,23 @@ class Synset(_WordNetObject):
                            for other_synset in other_synsets)
         return list(self_synsets.intersection(other_synsets))
 
-    def lowest_common_hypernyms(self, other, simulate_root=False, use_max_depth=False):
-        """Get a list of absolute lowest synset(s) that both synsets have as a hypernym.
+    def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
+        """
+        Get a list of lowest synset(s) that both synsets have as a hypernym.
+        When `use_min_depth == False` this means that the synset which appears as a 
+        hypernym of both `self` and `other` with the lowest maximum depth is returned
+        or if there are multiple such synsets at the same depth they are all returned
 
-        By default this is calculated by finding the shortest paths for all synsets that 
-        are hypernyms of both words, and returning that with the longest path.
+        However, if `use_min_depth == True` then the synset(s) which has/have the lowest
+        minimum depth and appear(s) in both paths is/are returned.
 
-        By setting the use_max_depth flag to True, lower hypernyms can be found by searching for the 
-        longest paths of each hypernym.
+        By setting the use_min_depth flag to True, the behavior of NLTK2 can be preserved.
+        This was changed in NLTK3 to give more accurate results in a small set of cases,
+        generally with synsets concerning people. (eg: 'chef.n.01', 'fireman.n.01', etc.)
+
+        This method is an implementation of Ted Pedersen's "Lowest Common Subsumer" method
+        from the Perl Wordnet module. It can return either "self" or "other" if they are a
+        hypernym of the other.
 
         :type other: Synset
         :param other: other input synset
@@ -470,10 +479,11 @@ class Synset(_WordNetObject):
             there is usually a default root except for WordNet version 1.6.
             If you are using wordnet 1.6, a fake root will need to be added 
             for nouns as well.
-        :type use_max_depth: bool
-        :param use_max_depth: If True, will use the max_depth function to 
-            calculate the lowest common hypernyms giving results that should
-            be lower in the tree than when using the default settings.
+        :type use_min_depth: bool
+        :param use_min_depth: This setting mimics older (v2) behavior of NLTK wordnet 
+            If True, will use the min_depth function to calculate the lowest common 
+            hypernyms. This is known to give strange results for some synset pairs
+            (eg: 'chef.n.01', 'fireman.n.01') but is retained for backwards compatibility
         :return: The synsets that are the lowest common hypernyms of both synsets
         """
 
@@ -494,12 +504,12 @@ class Synset(_WordNetObject):
         synsets.intersection_update(others)
 
         try:
-            if use_max_depth:
-                max_depth = max(s.max_depth() for s in synsets)
-                return [s for s in synsets if s.max_depth() == max_depth]
-            else:
+            if use_min_depth:
                 max_depth = max(s.min_depth() for s in synsets)
                 return [s for s in synsets if s.min_depth() == max_depth]
+            else:
+                max_depth = max(s.max_depth() for s in synsets)
+                return [s for s in synsets if s.max_depth() == max_depth]
         except ValueError:
             return []
 
@@ -728,7 +738,10 @@ class Synset(_WordNetObject):
         """
 
         need_root = self._needs_root()
-        subsumers = self.lowest_common_hypernyms(other, simulate_root=simulate_root and need_root)
+        # Note that to preserve behavior from NLTK2 we set use_min_depth=True
+        # It is possible that more accurate results could be obtained by
+        # removing this setting and it should be tested later on
+        subsumers = self.lowest_common_hypernyms(other, simulate_root=simulate_root and need_root, use_min_depth=True)
 
         # If no LCS was found return None
         if len(subsumers) == 0:
@@ -1748,6 +1761,7 @@ def demo():
     print(S('fall.v.12').root_hypernyms())
 
     print(S('person.n.01').lowest_common_hypernyms(S('dog.n.01')))
+    print(S('woman.n.01').lowest_common_hypernyms(S('girlfriend.n.02')))
 
     print(S('dog.n.01').path_similarity(S('cat.n.01')))
     print(S('dog.n.01').lch_similarity(S('cat.n.01')))
