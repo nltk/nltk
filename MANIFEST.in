@@ -1,5 +1,5 @@
 include LICENSE.txt INSTALL.txt README.txt MANIFEST.in
-include setup.py distribute_setup.py
+include setup.py
 include nltk/nltk.jar
 include nltk/test/*.doctest
 include nltk/VERSION
