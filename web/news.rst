@@ -1,6 +1,11 @@
 NLTK News
 =========
 
+NLTK 3.0a2 released : July 2013
+   Misc efficiency improvements and bugfixes; for details see
+   details see https://raw.github.com/nltk/nltk/master/ChangeLog
+   http://nltk.org/nltk3-alpha/
+
 NLTK 3.0a1 released : February 2013
    This version adds support for NLTK's graphical user interfaces.
    http://nltk.org/nltk3-alpha/
