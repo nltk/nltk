@@ -1,12 +1,14 @@
-Version 3.0a2 2013-07-08
-* speed improvements in GAAClusterer, TnT tagger, Baum Welch, HMM tagger
+Version 3.0a2 2013-07-12
+* speed improvements in word_tokenize, GAAClusterer, TnT tagger, Baum Welch, HMM tagger
 * small improvements in collocation finders, probability, modelling, Porter Stemmer
+* bugfix in lowest common hypernyn calculation (used in path similarity measures)
 * code cleanups, docstring cleanups, demo fixes
 	
 Thanks to the following contributors to 3.0a2:
-Mark Amery, Michelle Fullwood, Dougal Graham, Tyler Hartley, Bruce Hill,
-Angelos Katharopoulos, Mikhail Korobov, Rob Malouf, Joel Nothman,
-Will Roberts, Alex Rudnick, isnowfy, onesandzeros
+Mark Amery, Lars Buitinck, Michelle Fullwood, Dan Garrette, Dougal Graham,
+Tyler Hartley, Bruce Hill, Angelos Katharopoulos, Mikhail Korobov,
+Rob Malouf, Joel Nothman, Ted Pedersen, Will Roberts, Alex Rudnick,
+Steven Xu, isnowfy, onesandzeros
 
 Version 3.0a1 2013-02-14
 * reinstated tkinter support (Haejoong Lee)
