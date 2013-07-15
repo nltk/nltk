@@ -187,15 +187,10 @@ class PathPointer(object):
         raise NotImplementedError('abstract base class')
 
 
-class FileSystemPathPointer(PathPointer, str):
+class FileSystemPathPointer(PathPointer):
     """
     A path pointer that identifies a file which can be accessed
-    directly via a given absolute path.  ``FileSystemPathPointer`` is a
-    subclass of ``str`` for backwards compatibility purposes --
-    this allows old code that expected ``nltk.data.find()`` to expect a
-    string to usually work (assuming the resource is not found in a
-    zipfile).  It also permits ``open()`` to work on a
-    ``FileSystemPathPointer``.
+    directly via a given absolute path.
     """
     def __init__(self, path):
         """
@@ -203,9 +198,6 @@ class FileSystemPathPointer(PathPointer, str):
 
         :raise IOError: If the given path does not exist.
         """
-
-        # XXX: ``path`` must be a bytestring under Python 2.x because
-        # FileSystemPathPointer is a str subclass.
 
         path = os.path.abspath(path)
         if not os.path.exists(path):
@@ -239,8 +231,8 @@ class FileSystemPathPointer(PathPointer, str):
         # @python_2_unicode_compatible is not used.
         return str('FileSystemPathPointer(%r)' % self._path)
 
-    # there is no need for __str__ method because FileSystemPathPointer
-    # is a str subclass and str.__str__ does the right thing
+    def __str__(self):
+        return self._path
 
 
 class BufferedGzipFile(GzipFile):
