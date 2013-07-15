@@ -32,7 +32,7 @@ Installing via a proxy web server
 
 If your web connection uses a proxy server, you should specify the proxy address as follows.  In the case of an authenticating proxy, specify a username and password.  If the proxy is set to None then this function will attempt to detect the system proxy.
 
-    >>> nltk.set_proxy('http://proxy.example.com:3128' ('USERNAME', 'PASSWORD'))
+    >>> nltk.set_proxy('http://proxy.example.com:3128', ('USERNAME', 'PASSWORD'))
     >>> nltk.download() 
 
 Command line installation
