@@ -128,7 +128,7 @@ file.  This can be useful, for example, if you want to edit one of the
 sample grammars.
 
     >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg')
-    Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'toy.cfg'
+    Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy.cfg'
 
     >>> # Simulate editing the grammar.
     >>> with open('toy.cfg') as inp:
@@ -151,11 +151,11 @@ for the new copy of the file.  By default, the source file's filename
 is used.
 
     >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg', 'mytoy.cfg')
-    Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'mytoy.cfg'
+    Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'mytoy.cfg'
     >>> os.path.isfile('./mytoy.cfg')
     True
     >>> nltk.data.retrieve('grammars/sample_grammars/np.fcfg')
-    Retrieving 'grammars/sample_grammars/np.fcfg', saving to 'np.fcfg'
+    Retrieving 'nltk:grammars/sample_grammars/np.fcfg', saving to 'np.fcfg'
     >>> os.path.isfile('./np.fcfg')
     True
 
@@ -217,9 +217,9 @@ the cache, then the cached copy will be returned.  This behavior can
 be seen by the trace output generated when verbose=True:
 
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
-    <<Loading grammars/book_grammars/feat0.fcfg>>
+    <<Loading nltk:grammars/book_grammars/feat0.fcfg>>
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
-    <<Using cached copy of grammars/book_grammars/feat0.fcfg>>
+    <<Using cached copy of nltk:grammars/book_grammars/feat0.fcfg>>
 
 If you wish to load a resource from its source, bypassing the cache,
 use the ``cache=False`` argument to `nltk.data.load()`.  This can be
@@ -227,7 +227,7 @@ useful, for example, if the resource is loaded from a local file, and
 you are actively editing that file:
 
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',cache=False,verbose=True)
-    <<Loading grammars/book_grammars/feat0.fcfg>>
+    <<Loading nltk:grammars/book_grammars/feat0.fcfg>>
 
 The cache *no longer* uses weak references.  A resource will not be
 automatically expunged from the cache when no more objects are using
@@ -238,7 +238,7 @@ However, the object remains cached:
     >>> del feat0
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',
     ...                        verbose=True)
-    <<Using cached copy of grammars/book_grammars/feat0.fcfg>>
+    <<Using cached copy of nltk:grammars/book_grammars/feat0.fcfg>>
 
 You can clear the entire contents of the cache, using
 `nltk.data.clear_cache()`:
@@ -279,7 +279,7 @@ The `retrieve()` function accepts all url types:
     Retrieving 'http://nltk.googlecode.com/svn/trunk/nltk/nltk/test/toy.cfg', saving to 'toy-0.cfg'
     Retrieving 'file:...toy.cfg', saving to 'toy-1.cfg'
     Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-2.cfg'
-    Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'toy-3.cfg'
+    Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-3.cfg'
 
 Clean up the temp dir:
 
