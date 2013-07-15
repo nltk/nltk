@@ -48,7 +48,7 @@ def write_tadm_file(train_toks, encoding, stream):
     labels = encoding.labels()
     for featureset, label in train_toks:
         length_line = '%d\n' % len(labels)
-        stream.write(length_line.encode('utf8'))
+        stream.write(length_line)
         for known_label in labels:
             v = encoding.encode(featureset, known_label)
             line = '%d %d %s\n' % (
@@ -56,7 +56,7 @@ def write_tadm_file(train_toks, encoding, stream):
                 len(v),
                 ' '.join('%d %d' % u for u in v)
             )
-            stream.write(line.encode('utf8'))
+            stream.write(line)
 
 def parse_tadm_weights(paramfile):
     """
