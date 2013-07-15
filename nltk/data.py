@@ -107,6 +107,13 @@ def normalize_resource_url(resource_url):
         return normalize_resource_name(resource_url)
 
 def normalize_resource_name(resource_name):
+    """
+    normalizes resource name
+    the root directory is the empty string
+    trailing slashes are preserved
+    """
+    if not resource_name:
+        return ''
     is_dir = bool(re.search(r'[\\/]$',resource_name))
     resource_name = os.path.normpath(resource_name).replace(os.path.sep,'/')
     if is_dir:

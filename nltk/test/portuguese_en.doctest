@@ -196,7 +196,7 @@ of a text as a sequence of words and punctuation, not characters:
 
     >>> text1 = machado.words('romance/marm05.txt')
     >>> text1
-    ['Romance', ',', 'Mem\xf3rias', 'P\xf3stumas', 'de', ...]
+    ['Romance', ',', 'Memórias', 'Póstumas', 'de', ...]
     >>> len(text1)
     77098
     >>> len(set(text1))
