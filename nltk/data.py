@@ -87,6 +87,18 @@ else: path += [
     str('/usr/lib/nltk_data'),
     str('/usr/local/lib/nltk_data')]
 
+
+######################################################################
+# Util Functions
+######################################################################
+
+def gzip_open_unicode(filename, mode="rb", compresslevel=9,
+                      encoding='utf-8', fileobj=None, errors=None, newline=None):
+    if fileobj is None:
+        fileobj=GzipFile(filename, mode, compresslevel, fileobj)
+    return io.TextIOWrapper(fileobj, encoding, errors, newline)
+
+
 ######################################################################
 # Path Pointers
 ######################################################################
@@ -297,16 +309,6 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
         if encoding:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
-
-
-class GzipUnicodeFile(GzipFile):
-    """
-    text mode support for python version <3.3
-    """
-    def __new__(cls, filename=None, mode=None, compresslevel=9,
-                 fileobj=None, encoding='utf-8', errors=None, newline=None):
-        self=GzipFile(filename, mode, compresslevel, fileobj)
-        return io.TextIOWrapper(self, encoding, errors, newline)
 
 
 class ZipFilePathPointer(PathPointer):
