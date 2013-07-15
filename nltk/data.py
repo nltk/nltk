@@ -561,7 +561,7 @@ FORMATS = {
     'val': "A semantic valuation, parsed by nltk.sem.parse_valuation().",
     'raw': "The raw (byte string) contents of a file.",
     'text': "The raw (unicode string) contents of a file. "
-    }
+}
 
 #: A dictionary mapping from file extensions to format names, used
 #: by load() when format="auto" to decide the format for a
@@ -577,9 +577,7 @@ AUTO_FORMATS = {
     'val': 'val',
     'txt': 'text',
     'text': 'text',
-    }
-
-# TODO: load() should be able to read zipfiles too
+}
 
 def load(resource_url, format='auto', cache=True, verbose=False,
          logic_parser=None, fstruct_parser=None, encoding=None):
