@@ -61,7 +61,7 @@ from nltk import compat
 # Search Path
 ######################################################################
 
-path = []
+paths = []
 """A list of directories where the NLTK data package might reside.
    These directories will be checked in order when looking for a
    resource in the data package.  Note that this allows users to
@@ -69,19 +69,19 @@ path = []
    (e.g., in their home directory under ~/nltk_data)."""
 
 # User-specified locations:
-path += [d for d in os.environ.get('NLTK_DATA', str('')).split(os.pathsep) if d]
-if os.path.expanduser('~/') != '~/': path += [
+paths += [d for d in os.environ.get('NLTK_DATA', str('')).split(os.pathsep) if d]
+if os.path.expanduser('~/') != '~/': paths += [
     os.path.expanduser(str('~/nltk_data'))]
 
 # Common locations on Windows:
-if sys.platform.startswith('win'): path += [
+if sys.platform.startswith('win'): paths += [
     str(r'C:\nltk_data'), str(r'D:\nltk_data'), str(r'E:\nltk_data'),
     os.path.join(sys.prefix, str('nltk_data')),
     os.path.join(sys.prefix, str('lib'), str('nltk_data')),
     os.path.join(os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data'))]
 
 # Common locations on UNIX & OS X:
-else: path += [
+else: paths += [
     str('/usr/share/nltk_data'),
     str('/usr/local/share/nltk_data'),
     str('/usr/lib/nltk_data'),
@@ -97,6 +97,21 @@ def gzip_open_unicode(filename, mode="rb", compresslevel=9,
     if fileobj is None:
         fileobj=GzipFile(filename, mode, compresslevel, fileobj)
     return io.TextIOWrapper(fileobj, encoding, errors, newline)
+
+def normalize_resource_url(resource_url):
+    try:
+        protocol, name=resource_url.split(':',1)
+        name = normalize_resource_name(name)
+        return ':'.join([protocol,name])
+    except ValueError:
+        return normalize_resource_name(resource_url)
+
+def normalize_resource_name(resource_name):
+    is_dir = bool(re.search(r'[\\/]$',resource_name))
+    resource_name = os.path.normpath(resource_name).replace(os.path.sep,'/')
+    if is_dir:
+        resource_name += '/'
+    return resource_name
 
 
 ######################################################################
@@ -186,7 +201,7 @@ class FileSystemPathPointer(PathPointer, str):
         return os.stat(self._path).st_size
 
     def join(self, fileid):
-        path = os.path.join(self._path, *fileid.split(str('/')))
+        path = os.path.join(self._path, fileid)
         return FileSystemPathPointer(path)
 
     def __repr__(self):
@@ -328,7 +343,7 @@ class ZipFilePathPointer(PathPointer):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Normalize the entry string:
-        entry = re.sub('(^|/)/+', r'\1', entry)
+        entry = normalize_resource_name(entry)
 
         # Check that the entry exists:
         if entry:
@@ -386,7 +401,7 @@ class ZipFilePathPointer(PathPointer):
             self._zipfile.filename, self._entry)
 
     def __str__(self):
-        return str('%r/%r') % (self._zipfile.filename, self._entry)
+        return os.path.normpath(os.path.join(self._zipfile.filename, self._entry))
 
 ######################################################################
 # Access Functions
@@ -398,13 +413,13 @@ _resource_cache = {}
 """A dictionary used to cache resources so that they won't
    need to be loaded more than once."""
 
-def find(resource_name):
+def find(resource_name, paths=paths):
     """
     Find the given resource by searching through the directories and
-    zip files in ``nltk.data.path``, and return a corresponding path
-    name.  If the given resource is not found, raise a ``LookupError``,
-    whose message gives a pointer to the installation instructions for
-    the NLTK downloader.
+    zip files in paths, where a None or empty string specifies an absolute path.
+    Returns a corresponding path name.  If the given resource is not
+    found, raise a ``LookupError``, whose message gives a pointer to
+    the installation instructions for the NLTK downloader.
 
     Zip File Handling:
 
@@ -436,32 +451,39 @@ def find(resource_name):
         automatically converted to a platform-appropriate path separator.
     :rtype: str
     """
+    resource_name = normalize_resource_name(resource_name)
+
     # Check if the resource name includes a zipfile name
-    m = re.match('(.*\.zip)/?(.*)$|', resource_name)
+    m = re.match(r'(.*\.zip)/?(.*)$|', resource_name)
     zipfile, zipentry = m.groups()
 
     # Check each item in our path
-    for path_item in path:
-
+    for path_item in paths:
         # Is the path item a zipfile?
-        if os.path.isfile(path_item) and path_item.endswith('.zip'):
-            try: return ZipFilePathPointer(path_item, resource_name)
-            except IOError: continue # resource not in zipfile
+        if path_item and (os.path.isfile(path_item) and path_item.endswith('.zip')):
+            try:
+                return ZipFilePathPointer(path_item, resource_name)
+            except IOError:
+                # resource not in zipfile
+                continue
 
-        # Is the path item a directory?
-        elif os.path.isdir(path_item):
+        # Is the path item a directory or is resource_name an absolute path?
+        elif not path_item or os.path.isdir(path_item):
             if zipfile is None:
-                p = os.path.join(path_item, *resource_name.split('/'))
+                p = os.path.join(path_item, resource_name)
                 if os.path.exists(p):
                     if p.endswith('.gz'):
                         return GzipFileSystemPathPointer(p)
                     else:
                         return FileSystemPathPointer(p)
             else:
-                p = os.path.join(path_item, *zipfile.split('/'))
+                p = os.path.join(path_item, zipfile)
                 if os.path.exists(p):
-                    try: return ZipFilePathPointer(p, zipentry)
-                    except IOError: continue # resource not in zipfile
+                    try:
+                        return ZipFilePathPointer(p, zipentry)
+                    except IOError:
+                        # resource not in zipfile
+                        continue
 
     # Fallback: if the path doesn't include a zip file, then try
     # again, assuming that one of the path components is inside a
@@ -470,8 +492,10 @@ def find(resource_name):
         pieces = resource_name.split('/')
         for i in range(len(pieces)):
             modified_name = '/'.join(pieces[:i]+[pieces[i]+'.zip']+pieces[i:])
-            try: return find(modified_name)
-            except LookupError: pass
+            try:
+                return find(modified_name, paths)
+            except LookupError:
+                pass
 
     # Display a friendly error message if the resource wasn't found:
     msg = textwrap.fill(
@@ -479,7 +503,7 @@ def find(resource_name):
         'obtain the resource:  >>> nltk.download()' %
         (resource_name,), initial_indent='  ', subsequent_indent='  ',
         width=66)
-    msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in path)
+    msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in paths)
     sep = '*'*70
     resource_not_found = '\n%s\n%s\n%s' % (sep, msg, sep)
     raise LookupError(resource_not_found)
@@ -495,9 +519,10 @@ def retrieve(resource_url, filename=None, verbose=True):
         loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
     """
+    resource_url = normalize_resource_url(resource_url)
     if filename is None:
         if resource_url.startswith('file:'):
-            filename = os.path.split(filename)[-1]
+            filename = os.path.split(resource_url)[-1]
         else:
             filename = re.sub(r'(^\w+:)?.*/', '', resource_url)
     if os.path.exists(filename):
@@ -605,6 +630,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     :type encoding: str
     :param encoding: the encoding of the input; only used for text formats.
     """
+    resource_url=normalize_resource_url(resource_url)
 
     # Determine the format of the resource.
     if format == 'auto':
@@ -706,6 +732,7 @@ def show_cfg(resource_url, escape='##'):
     :type escape: str
     :param escape: Prepended string that signals lines to be ignored
     """
+    resource_url = normalize_resource_url(resource_url)
     resource_val = load(resource_url, format='text', cache=False)
     lines = resource_val.splitlines()
     for l in lines:
@@ -735,14 +762,15 @@ def _open(resource_url):
         loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
     """
+    resource_url = normalize_resource_url(resource_url)
     # Divide the resource name into "<protocol>:<path>".
     protocol, path = re.match('(?:(\w+):)?(.*)', resource_url).groups()
 
     if protocol is None or protocol.lower() == 'nltk':
-        return find(path).open()
+        return find(path, paths + ['']).open()
     elif protocol.lower() == 'file':
         # urllib might not use mode='rb', so handle this one ourselves:
-        return open(path, 'rb')
+        return find(path, ['']).open()
     else:
         return compat.urlopen(resource_url)
 
@@ -1248,7 +1276,7 @@ class SeekableUnicodeStreamReader(object):
 
         return None
 
-__all__ = ['path', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
+__all__ = ['paths', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
            'GzipFileSystemPathPointer', 'GzipFileSystemPathPointer',
            'find', 'retrieve', 'FORMATS', 'AUTO_FORMATS', 'load',
            'show_cfg', 'clear_cache', 'LazyLoader', 'OpenOnDemandZipFile',
