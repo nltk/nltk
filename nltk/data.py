@@ -61,7 +61,7 @@ from nltk import compat
 # Search Path
 ######################################################################
 
-paths = []
+path = []
 """A list of directories where the NLTK data package might reside.
    These directories will be checked in order when looking for a
    resource in the data package.  Note that this allows users to
@@ -69,23 +69,26 @@ paths = []
    (e.g., in their home directory under ~/nltk_data)."""
 
 # User-specified locations:
-paths += [d for d in os.environ.get('NLTK_DATA', str('')).split(os.pathsep) if d]
-if os.path.expanduser('~/') != '~/': paths += [
-    os.path.expanduser(str('~/nltk_data'))]
+path += [d for d in os.environ.get('NLTK_DATA', str('')).split(os.pathsep) if d]
+if os.path.expanduser('~/') != '~/':
+    path.append(os.path.expanduser(str('~/nltk_data')))
 
-# Common locations on Windows:
-if sys.platform.startswith('win'): paths += [
-    str(r'C:\nltk_data'), str(r'D:\nltk_data'), str(r'E:\nltk_data'),
-    os.path.join(sys.prefix, str('nltk_data')),
-    os.path.join(sys.prefix, str('lib'), str('nltk_data')),
-    os.path.join(os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data'))]
-
-# Common locations on UNIX & OS X:
-else: paths += [
-    str('/usr/share/nltk_data'),
-    str('/usr/local/share/nltk_data'),
-    str('/usr/lib/nltk_data'),
-    str('/usr/local/lib/nltk_data')]
+if sys.platform.startswith('win'):
+    # Common locations on Windows:
+    path += [
+        str(r'C:\nltk_data'), str(r'D:\nltk_data'), str(r'E:\nltk_data'),
+        os.path.join(sys.prefix, str('nltk_data')),
+        os.path.join(sys.prefix, str('lib'), str('nltk_data')),
+        os.path.join(os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data'))
+    ]
+else:
+    # Common locations on UNIX & OS X:
+    path += [
+        str('/usr/share/nltk_data'),
+        str('/usr/local/share/nltk_data'),
+        str('/usr/lib/nltk_data'),
+        str('/usr/local/lib/nltk_data')
+    ]
 
 
 ######################################################################
@@ -192,17 +195,17 @@ class FileSystemPathPointer(PathPointer):
     A path pointer that identifies a file which can be accessed
     directly via a given absolute path.
     """
-    def __init__(self, path):
+    def __init__(self, _path):
         """
         Create a new path pointer for the given absolute path.
 
         :raise IOError: If the given path does not exist.
         """
 
-        path = os.path.abspath(path)
-        if not os.path.exists(path):
-            raise IOError('No such file or directory: %r' % path)
-        self._path = path
+        _path = os.path.abspath(_path)
+        if not os.path.exists(_path):
+            raise IOError('No such file or directory: %r' % _path)
+        self._path = _path
 
         # There's no need to call str.__init__(), since it's a no-op;
         # str does all of its setup work in __new__.
@@ -222,8 +225,8 @@ class FileSystemPathPointer(PathPointer):
         return os.stat(self._path).st_size
 
     def join(self, fileid):
-        path = os.path.join(self._path, fileid)
-        return FileSystemPathPointer(path)
+        _path = os.path.join(self._path, fileid)
+        return FileSystemPathPointer(_path)
 
     def __repr__(self):
         # This should be a byte string under Python 2.x;
@@ -434,7 +437,7 @@ _resource_cache = {}
 """A dictionary used to cache resources so that they won't
    need to be loaded more than once."""
 
-def find(resource_name, paths=paths):
+def find(resource_name, paths=None):
     """
     Find the given resource by searching through the directories and
     zip files in paths, where a None or empty string specifies an absolute path.
@@ -474,31 +477,34 @@ def find(resource_name, paths=paths):
     """
     resource_name = normalize_resource_name(resource_name)
 
+    if paths is None:
+        paths=path
+
     # Check if the resource name includes a zipfile name
     m = re.match(r'(.*\.zip)/?(.*)$|', resource_name)
     zipfile, zipentry = m.groups()
 
     # Check each item in our path
-    for path_item in paths:
+    for _path in paths:
         # Is the path item a zipfile?
-        if path_item and (os.path.isfile(path_item) and path_item.endswith('.zip')):
+        if _path and (os.path.isfile(_path) and _path.endswith('.zip')):
             try:
-                return ZipFilePathPointer(path_item, resource_name)
+                return ZipFilePathPointer(_path, resource_name)
             except IOError:
                 # resource not in zipfile
                 continue
 
         # Is the path item a directory or is resource_name an absolute path?
-        elif not path_item or os.path.isdir(path_item):
+        elif not _path or os.path.isdir(_path):
             if zipfile is None:
-                p = os.path.join(path_item, resource_name)
+                p = os.path.join(_path, resource_name)
                 if os.path.exists(p):
                     if p.endswith('.gz'):
                         return GzipFileSystemPathPointer(p)
                     else:
                         return FileSystemPathPointer(p)
             else:
-                p = os.path.join(path_item, zipfile)
+                p = os.path.join(_path, zipfile)
                 if os.path.exists(p):
                     try:
                         return ZipFilePathPointer(p, zipentry)
@@ -782,13 +788,13 @@ def _open(resource_url):
         for the file in the the NLTK data package.
     """
     resource_url = normalize_resource_url(resource_url)
-    protocol, path = split_resource_url(resource_url)
+    protocol, _path = split_resource_url(resource_url)
 
     if protocol is None or protocol.lower() == 'nltk':
-        return find(path, paths + ['']).open()
+        return find(_path, path + ['']).open()
     elif protocol.lower() == 'file':
         # urllib might not use mode='rb', so handle this one ourselves:
-        return find(path, ['']).open()
+        return find(_path, ['']).open()
     else:
         return compat.urlopen(resource_url)
 
@@ -800,11 +806,11 @@ def _open(resource_url):
 # decorator to LazyLoader, this is resource.__class__ responsibility.
 
 class LazyLoader(object):
-    def __init__(self, path):
-        self.__path = path
+    def __init__(self, _path):
+        self._path = _path
 
     def __load(self):
-        resource = load(self.__path)
+        resource = load(self._path)
         # This is where the magic happens!  Transform ourselves into
         # the object by modifying our own __dict__ and __class__ to
         # match that of `resource`.
@@ -1294,7 +1300,7 @@ class SeekableUnicodeStreamReader(object):
 
         return None
 
-__all__ = ['paths', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
+__all__ = ['path', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
            'GzipFileSystemPathPointer', 'GzipFileSystemPathPointer',
            'find', 'retrieve', 'FORMATS', 'AUTO_FORMATS', 'load',
            'show_cfg', 'clear_cache', 'LazyLoader', 'OpenOnDemandZipFile',

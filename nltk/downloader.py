@@ -924,7 +924,7 @@ class Downloader(object):
         """
         # Check if we have sufficient permissions to install in a
         # variety of system-wide locations.
-        for nltkdir in nltk.data.paths:
+        for nltkdir in nltk.data.path:
             if (os.path.exists(nltkdir) and
                 nltk.internals.is_writable(nltkdir)):
                 return nltkdir
