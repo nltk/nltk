@@ -477,6 +477,7 @@ def find(resource_name, paths=None):
     """
     resource_name = normalize_resource_name(resource_name)
 
+    # Resolve default paths at runtime in-case the user overrides nltk.data.path
     if paths is None:
         paths=path
 
