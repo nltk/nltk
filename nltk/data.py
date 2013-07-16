@@ -98,20 +98,40 @@ def gzip_open_unicode(filename, mode="rb", compresslevel=9,
         fileobj=GzipFile(filename, mode, compresslevel, fileobj)
     return io.TextIOWrapper(fileobj, encoding, errors, newline)
 
+def split_resource_url(resource_url):
+    """
+    Divide the resource name into "<protocol>:<path>".
+    """
+    return re.split(r':/*', resource_url, 1)
+
 def normalize_resource_url(resource_url):
     try:
-        protocol, name=resource_url.split(':',1)
-        name = normalize_resource_name(name)
-        return ':'.join([protocol,name])
+        protocol, name = split_resource_url(resource_url)
     except ValueError:
-        return normalize_resource_name(resource_url)
+        # the resource url has no protocol, use the nltk protocol by default
+        protocol = 'nltk'
+        name = resource_url
+    if protocol == 'file':
+        protocol = 'file:///'
+        name = normalize_resource_name(name)
+    elif protocol == 'nltk':
+        protocol = 'nltk:'
+        name = normalize_resource_name(name)
+    else:
+        # handled by urllib
+        protocol += '://'
+    return ''.join([protocol,name])
 
 def normalize_resource_name(resource_name):
     """
-    normalizes resource name
-    the root directory is the empty string
-    starting slashes are stripped
-    trailing slashes are preserved
+    :type resource_name: str or unicode
+    :param resource_name: The name of the resource to search for.
+        Resource names are posix-style relative path names, such as
+        ``corpora/brown``.  Directory names will automatically
+        be converted to a platform-appropriate path separator.
+        The root directory is the empty string
+        Starting slashes are stripped
+        Trailing slashes are preserved
     """
     is_dir = bool(re.search(r'[\\/]$',resource_name))
     resource_name = os.path.normpath(resource_name).replace(os.path.sep,'/')
@@ -770,8 +790,7 @@ def _open(resource_url):
         for the file in the the NLTK data package.
     """
     resource_url = normalize_resource_url(resource_url)
-    # Divide the resource name into "<protocol>:<path>".
-    protocol, path = re.match('(?:(\w+):)?(.*)', resource_url).groups()
+    protocol, path = split_resource_url(resource_url)
 
     if protocol is None or protocol.lower() == 'nltk':
         return find(path, paths + ['']).open()
