@@ -78,43 +78,44 @@ Test BindingDict
 
 Test Unify
 
+    >>> from pprint import pprint
     >>> try: f.unify(g, BindingDict())
     ... except UnificationException as e: print(e)
     ...
     Cannot unify f with g given {}
 
-    >>> print(f.unify(G, BindingDict()))
-    {G: f}
+    >>> pprint(f.unify(G, BindingDict()))
+    BindingDict: {G: f}
     >>> try: f.unify(G, BindingDict([(G,h)]))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify f with G given {G: h}
-    >>> print(f.unify(G, BindingDict([(G,f)])))
-    {G: f}
-    >>> print(f.unify(G, BindingDict([(H,f)])))
-    {H: f, G: f}
+    >>> pprint(f.unify(G, BindingDict([(G,f)])))
+    BindingDict: {G: f}
+    >>> pprint(f.unify(G, BindingDict([(H,f)])))
+    BindingDict: {H: f, G: f}
 
-    >>> print(G.unify(f, BindingDict()))
-    {G: f}
+    >>> pprint(G.unify(f, BindingDict()))
+    BindingDict: {G: f}
     >>> try: G.unify(f, BindingDict([(G,h)]))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify G with f given {G: h}
-    >>> print(G.unify(f, BindingDict([(G,f)])))
-    {G: f}
-    >>> print(G.unify(f, BindingDict([(H,f)])))
-    {H: f, G: f}
+    >>> pprint(G.unify(f, BindingDict([(G,f)])))
+    BindingDict: {G: f}
+    >>> pprint(G.unify(f, BindingDict([(H,f)])))
+    BindingDict: {H: f, G: f}
 
-    >>> print(G.unify(F, BindingDict()))
-    {G: F}
+    >>> pprint(G.unify(F, BindingDict()))
+    BindingDict: {G: F}
     >>> try: G.unify(F, BindingDict([(G,H)]))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify G with F given {G: H}
-    >>> print(G.unify(F, BindingDict([(G,F)])))
-    {G: F}
-    >>> print(G.unify(F, BindingDict([(H,F)])))
-    {H: F, G: F}
+    >>> pprint(G.unify(F, BindingDict([(G,F)])))
+    BindingDict: {G: F}
+    >>> pprint(G.unify(F, BindingDict([(H,F)])))
+    BindingDict: {H: F, G: F}
 
 Test Compile
 
