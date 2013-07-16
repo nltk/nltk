@@ -415,10 +415,10 @@ def sql_query(dbname, query):
     try:
         import sqlite3
         path = nltk.data.find(dbname)
-        connection =  sqlite3.connect(path)
+        connection =  sqlite3.connect(str(path))
         cur = connection.cursor()
         return cur.execute(query)
-    except ValueError:
+    except (ValueError, sqlite3.OperationalError):
         import warnings
         warnings.warn("Make sure the database file %s is installed and uncompressed." % dbname)
         raise

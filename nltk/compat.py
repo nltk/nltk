@@ -61,6 +61,11 @@ else:
     reload = reload
     raw_input = raw_input
 
+    #python 2.7 pickle compatibility
+    import UserString
+    import collections
+    UserString.defaultdict = collections.defaultdict
+
     from itertools import imap, izip
 
     try:

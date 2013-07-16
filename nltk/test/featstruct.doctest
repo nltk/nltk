@@ -298,9 +298,11 @@ full-fledged `FeatDict` and `FeatList` objects.  In other words,
 Python ``dicts`` and ``lists`` can be used as "light-weight" feature
 structures.
 
+    >>> # Note: pprint prints dicts sorted
+    >>> from pprint import pprint
     >>> from nltk.featstruct import unify
-    >>> unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b')))
-    {'y': {'b': 'b'}, 'x': 1, 'a': 'a'}
+    >>> pprint(unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b'))))
+	{'a': 'a', 'x': 1, 'y': {'b': 'b'}}
 
 However, you should keep in mind the following caveats:
 
@@ -1127,13 +1129,9 @@ Unification on Dicts & Lists
 ----------------------------
 It's possible to do unification on dictionaries:
 
-    >>> # Note: pformat prints dicts sorted, but only guaranteed if width=1
-    >>> from pprint import pformat
     >>> from nltk.featstruct import unify
-    >>> print(pformat(unify(dict(x=1, y=dict(z=2)), dict(x=1, q=5)), width=1))
-    {'q': 5,
-     'x': 1,
-     'y': {'z': 2}}
+    >>> pprint(unify(dict(x=1, y=dict(z=2)), dict(x=1, q=5)), width=1)
+    {'q': 5, 'x': 1, 'y': {'z': 2}}
 
 It's possible to do unification on lists as well:
 
@@ -1142,12 +1140,9 @@ It's possible to do unification on lists as well:
 
 Mixing dicts and lists is fine:
 
-    >>> print(pformat(unify([dict(x=1, y=dict(z=2)),3], [dict(x=1, q=5),3]),
-    ...               width=1))
-    [{'q': 5,
-      'x': 1,
-      'y': {'z': 2}},
-     3]
+    >>> pprint(unify([dict(x=1, y=dict(z=2)),3], [dict(x=1, q=5),3]),
+    ...               width=1)
+    [{'q': 5, 'x': 1, 'y': {'z': 2}}, 3]
 
 Mixing dicts and FeatStructs is discouraged:
 
@@ -1188,12 +1183,12 @@ Retracting Bindings
     [ a = (1) [ c = [ d = 1 ] ] ]
     [                           ]
     [ b -> (1)                  ]
-    >>> print(bindings)
-    {Variable('?y'): [d=1], Variable('?x'): [c=[d=1]]}
+    >>> pprint(bindings)
+    {Variable('?x'): [c=[d=1]], Variable('?y'): [d=1]}
     >>> retract_bindings(fs3, bindings)
     [a=?x, b=?x]
-    >>> print(bindings)
-    {Variable('?y'): [d=1], Variable('?x'): [c=?y]}
+    >>> pprint(bindings)
+    {Variable('?x'): [c=?y], Variable('?y'): [d=1]}
 
 Squashed Bugs
 ~~~~~~~~~~~~~
