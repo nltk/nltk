@@ -435,7 +435,7 @@ class Expression(SubstituteBindingsI):
         raise NotImplementedError()
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def equiv(self, other, prover=None):
         """
