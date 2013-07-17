@@ -100,8 +100,8 @@ class Variable(object):
         return not self == other
 
     def __lt__(self, other):
-        if type(self) != type(other):
-            return False
+        if not isinstance(other, Variable):
+            raise TypeError
         return self.name < other.name
 
     def substitute_bindings(self, bindings):
@@ -412,19 +412,23 @@ class Expression(SubstituteBindingsI):
         return -self
 
     def __and__(self, other):
-        assert isinstance(other, Expression), "%s is not an Expression" % other
+        if not isinstance(other, Expression):
+            raise TypeError("%s is not an Expression" % other)
         return AndExpression(self, other)
 
     def __or__(self, other):
-        assert isinstance(other, Expression), "%s is not an Expression" % other
+        if not isinstance(other, Expression):
+            raise TypeError("%s is not an Expression" % other)
         return OrExpression(self, other)
 
     def __gt__(self, other):
-        assert isinstance(other, Expression), "%s is not an Expression" % other
+        if not isinstance(other, Expression):
+            raise TypeError("%s is not an Expression" % other)
         return ImpExpression(self, other)
 
     def __lt__(self, other):
-        assert isinstance(other, Expression), "%s is not an Expression" % other
+        if not isinstance(other, Expression):
+            raise TypeError("%s is not an Expression" % other)
         return IffExpression(self, other)
 
     def __eq__(self, other):
@@ -887,7 +891,7 @@ class AbstractVariableExpression(Expression):
 
     def __lt__(self, other):
         if not isinstance(other, AbstractVariableExpression):
-            return False # ?
+            raise TypeError
         return self.variable < other.variable
 
     __hash__ = Expression.__hash__
