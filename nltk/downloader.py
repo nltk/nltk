@@ -1996,7 +1996,12 @@ def _unzip_iter(filename, root, verbose=True):
 
     # Get lists of directories & files
     namelist = zf.namelist()
-    dirlist = [x for x in namelist if x.endswith('/')]
+    dirlist = set()
+    for x in namelist:
+        if x.endswith('/'):
+            dirlist.add(x)
+        else:
+            dirlist.add(x.rsplit('/',1)[0] + '/')
     filelist = [x for x in namelist if not x.endswith('/')]
 
     # Create the target directory if it doesn't exist
