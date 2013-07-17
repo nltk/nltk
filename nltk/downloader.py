@@ -984,7 +984,6 @@ class DownloaderShell(object):
         #print fmt % options
         print('-'*75)
 
-
     def run(self):
         print('NLTK Downloader')
         while True:
@@ -2218,32 +2217,43 @@ def _find_packages(root):
 # Aliases
 _downloader = Downloader()
 download = _downloader.download
-def download_shell(): DownloaderShell(_downloader).run()
-def download_gui(): DownloaderGUI(_downloader).mainloop()
-def update(): _downloader.update()
+
+def download_shell():
+    DownloaderShell(_downloader).run()
+
+def download_gui():
+    DownloaderGUI(_downloader).mainloop()
+
+def update():
+    _downloader.update()
 
 if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-d", "--dir", dest="dir",
-                      help="download package to directory DIR", metavar="DIR")
+        help="download package to directory DIR", metavar="DIR")
     parser.add_option("-q", "--quiet", dest="quiet", action="store_true",
-                      default=False, help="work quietly")
+        default=False, help="work quietly")
     parser.add_option("-f", "--force", dest="force", action="store_true",
-                      default=False, help="download even if already installed")
+        default=False, help="download even if already installed")
     parser.add_option("-e", "--exit-on-error", dest="halt_on_error", action="store_true",
-                      default=False, help="exit if an error occurs")
+        default=False, help="exit if an error occurs")
+    parser.add_option("-u", "--url", dest="server_index_url",
+        default=None, help="download server index url")
 
     (options, args) = parser.parse_args()
 
+    downloader = Downloader(server_index_url = options.server_index_url)
+
     if args:
         for pkg_id in args:
-            rv = download(info_or_id=pkg_id, download_dir=options.dir,
-                          quiet=options.quiet, force=options.force,
-                          halt_on_error=options.halt_on_error)
+            rv = downloader.download(info_or_id=pkg_id, download_dir=options.dir,
+                quiet=options.quiet, force=options.force,
+                halt_on_error=options.halt_on_error)
             if rv==False and options.halt_on_error:
                 break
     else:
-        download(download_dir=options.dir,
-                 quiet=options.quiet, force=options.force,
-                 halt_on_error=options.halt_on_error)
+        downloader.download(download_dir=options.dir,
+            quiet=options.quiet, force=options.force,
+            halt_on_error=options.halt_on_error)
+
