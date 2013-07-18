@@ -41,16 +41,16 @@ means of a "corpus reader" object from ``nltk.corpus``:
 
     >>> import nltk.corpus
     >>> # The Brown corpus:
-    >>> nltk.corpus.brown
+    >>> print(str(nltk.corpus.brown).replace('\\\\','/'))
     <CategorizedTaggedCorpusReader in '.../corpora/brown'...>
     >>> # The Penn Treebank Corpus:
-    >>> nltk.corpus.treebank
+    >>> print(str(nltk.corpus.treebank).replace('\\\\','/'))
     <BracketParseCorpusReader in '.../corpora/treebank/combined'...>
     >>> # The Name Genders Corpus:
-    >>> nltk.corpus.names
+    >>> print(str(nltk.corpus.names).replace('\\\\','/'))
     <WordListCorpusReader in '.../corpora/names'...>
     >>> # The Inaugural Address Corpus:
-    >>> nltk.corpus.inaugural
+    >>> print(str(nltk.corpus.inaugural).replace('\\\\','/'))
     <PlaintextCorpusReader in '.../corpora/inaugural'...>
 
 Most corpora consist of a set of files, each containing a document (or
@@ -1251,8 +1251,9 @@ assumed to consist of one or more files, all located in a common root
 directory (or in subdirectories of that root directory).  The absolute
 path to the root directory is stored in the ``root`` property:
 
-    >>> print(nltk.corpus.genesis.root) # doctest: +ELLIPSIS
-    /.../nltk_data/corpora/genesis
+	>>> import os
+    >>> str(nltk.corpus.genesis.root).replace(os.path.sep,'/') # doctest: +ELLIPSIS
+	'.../nltk_data/corpora/genesis'
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the
@@ -1261,7 +1262,7 @@ path as follows:
 
     >>> some_corpus_file_id = nltk.corpus.reuters.fileids()[0]
     >>> import os.path
-    >>> os.path.join(*some_corpus_file_id.split('/'))
+    >>> os.path.normpath(some_corpus_file_id).replace(os.path.sep,'/')
     'test/14826'
 
 To get a list of all data files that make up a corpus, use the
@@ -1288,8 +1289,8 @@ which can be used to get a list of the files within a specific category:
 The ``abspath()`` method can be used to find the absolute path to a
 corpus file, given its file identifier:
 
-    >>> print(nltk.corpus.brown.abspath('ce06')) # doctest: +ELLIPSIS
-    /.../corpora/brown/ce06
+    >>> str(nltk.corpus.brown.abspath('ce06')).replace(os.path.sep,'/') # doctest: +ELLIPSIS
+    '.../corpora/brown/ce06'
 
 The ``abspaths()`` method can be used to find the absolute paths for
 one corpus file, a list of corpus files, or (if no fileids are specified),
@@ -1490,12 +1491,12 @@ entire corpus).  The method's implementation converts this argument to
 a list of path names using the `abspaths()` method, which handles all
 three value types (string, list, and None):
 
-    >>> nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(str(nltk.corpus.brown.abspaths()).replace('\\\\','/')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [FileSystemPathPointer('.../corpora/brown/ca01'),
      FileSystemPathPointer('.../corpora/brown/ca02'), ...]
-    >>> nltk.corpus.brown.abspaths('ce06') # doctest: +ELLIPSIS
+    >>> print(str(nltk.corpus.brown.abspaths('ce06')).replace('\\\\','/')) # doctest: +ELLIPSIS
     [FileSystemPathPointer('.../corpora/brown/ce06')]
-    >>> nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(str(nltk.corpus.brown.abspaths(['ce06', 'ce07'])).replace('\\\\','/')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [FileSystemPathPointer('.../corpora/brown/ce06'),
      FileSystemPathPointer('.../corpora/brown/ce07')]
 
@@ -1678,7 +1679,7 @@ Test the plaintext corpora that come with nltk:
     >>> from nltk.corpus import state_union, webtext
     >>> for corpus in (abc, genesis, inaugural, state_union,
     ...                webtext):
-    ...     print(corpus)
+    ...     print(str(corpus).replace('\\\\','/'))
     ...     print('  ', repr(corpus.fileids())[:60])
     ...     print('  ', repr(corpus.words()[:10])[:60])
     <PlaintextCorpusReader in '.../nltk_data/corpora/ab...'>
@@ -1746,9 +1747,9 @@ By default, they apply to all documents in the corpus.
     (6, [5, 1])
     >>> len(corpus.paras()), [len(corpus.paras(d)) for d in corpus.fileids()]
     (3, [2, 1])
-    >>> corpus.words('a')
+    >>> print(corpus.words('a'))
     ['This', 'is', 'the', 'first', 'sentence', '.', ...]
-    >>> corpus.words('b')
+    >>> print(corpus.words('b'))
     ['This', 'is', 'the', 'second', 'file', '.']
     >>> del_testcorpus(root)
 
@@ -1760,7 +1761,7 @@ The Brown Corpus uses the tagged corpus reader:
     >>> brown.categories() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
     'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
-    >>> brown.root # doctest: +ELLIPSIS
+    >>> print(repr(brown.root).replace('\\\\','/')) # doctest: +ELLIPSIS
     FileSystemPathPointer('.../corpora/brown')
     >>> brown.words()
     ['The', 'Fulton', 'County', 'Grand', 'Jury', ...]
@@ -1859,16 +1860,16 @@ Check that concatenation works as intended.
 
     >>> from nltk.corpus.reader.util import *
 
-    >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block)
-    >>> c2 = StreamBackedCorpusView(f2, read_whitespace_block)
-    >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block)
+    >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block, encoding='utf-8')
+    >>> c2 = StreamBackedCorpusView(f2, read_whitespace_block, encoding='utf-8')
+    >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block, encoding='utf-8')
     >>> c123 = c1+c2+c3
     >>> print(c123)
     ['C-Span', 'Inaugural', 'Address', 'Corpus', 'US', ...]
 
-    >>> l1 = open(f1).read().split()
-    >>> l2 = open(f2).read().split()
-    >>> l3 = open(f3).read().split()
+    >>> l1 = f1.open(encoding='utf-8').read().split()
+    >>> l2 = f2.open(encoding='utf-8').read().split()
+    >>> l3 = f3.open(encoding='utf-8').read().split()
     >>> l123 = l1+l2+l3
 
     >>> list(c123) == l123
@@ -1883,8 +1884,8 @@ First, do some tests with fairly small slices.  These will all
 generate tuple values.
 
     >>> from nltk.util import LazySubsequence
-    >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block)
-    >>> l1 = open(f1).read().split()
+    >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block, encoding='utf-8')
+    >>> l1 = f1.open(encoding='utf-8').read().split()
     >>> print(len(c1))
     21
     >>> len(c1) < LazySubsequence.MIN_SIZE
@@ -1920,8 +1921,8 @@ Test slicing with start=stop=None:
 Next, we'll do some tests with much longer slices.  These will
 generate LazySubsequence objects.
 
-    >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block)
-    >>> l3 = open(f3).read().split()
+    >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block, encoding='utf-8')
+    >>> l3 = f3.open(encoding='utf-8').read().split()
     >>> print(len(c3))
     5430
     >>> len(c3) > LazySubsequence.MIN_SIZE*2
