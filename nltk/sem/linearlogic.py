@@ -274,14 +274,19 @@ class ApplicationExpression(Expression):
 
 @python_2_unicode_compatible
 class BindingDict(object):
-    def __init__(self, binding_list=None):
+    def __init__(self, bindings=None):
         """
-        :param binding_list: list of (``VariableExpression``, ``AtomicExpression``) to initialize the dictionary
+        :param bindings:
+            list [(``VariableExpression``, ``AtomicExpression``)] to initialize the dictionary
+            dict {``VariableExpression``: ``AtomicExpression``} to initialize the dictionary
         """
         self.d = {}
 
-        if binding_list:
-            for (v, b) in binding_list:
+        if isinstance(bindings, dict):
+            bindings = bindings.items()
+
+        if bindings:
+            for (v, b) in bindings:
                 self[v] = b
 
     def __setitem__(self, variable, binding):
@@ -298,10 +303,7 @@ class BindingDict(object):
 
         assert variable != binding
 
-        try:
-            existing = self.d[variable]
-        except KeyError:
-            existing = None
+        existing = self.d.get(variable, None)
 
         if not existing or binding == existing:
             self.d[variable] = binding
@@ -341,19 +343,29 @@ class BindingDict(object):
             raise VariableBindingException('Attempting to add two contradicting'\
                         ' VariableBindingsLists: %s, %s' % (self, other))
 
+    def __ne__(self, other):
+        return not self == other
+
+    def __eq__(self, other):
+        if not isinstance(other, BindingDict):
+            raise TypeError
+        return self.d == other.d
+
     def __str__(self):
         return '{' + ', '.join('%s: %s' % (v, self.d[v]) for v in self.d) + '}'
 
     def __repr__(self):
         return 'BindingDict: %s' % self
 
-class VariableBindingException(Exception): pass
+class VariableBindingException(Exception):
+    pass
 
 class UnificationException(Exception):
     def __init__(self, a, b, bindings):
         Exception.__init__(self, 'Cannot unify %s with %s given %s' % (a, b, bindings))
 
-class LinearLogicApplicationException(Exception): pass
+class LinearLogicApplicationException(Exception):
+    pass
 
 
 class Tokens(object):
