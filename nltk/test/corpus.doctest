@@ -1098,7 +1098,7 @@ have ``class`` and ``user`` attributes that we can access using ``p.attrib['clas
 and ``p.attrib['user']``.  They also have text content, accessed using ``p.text``.
 
     >>> print(nltk.corpus.nps_chat.xml_posts()) # doctest: +ELLIPSIS
-    [<Element 'Post' at 0x...>, <Element 'Post' at 0x...>, ...]
+    [<Element 'Post' at 0...>, <Element 'Post' at 0...>, ...]
     >>> posts = nltk.corpus.nps_chat.xml_posts()
     >>> list(nltk.FreqDist(p.attrib['class'] for p in posts).keys())
     ['Statement', 'System', 'Greet', 'Emotion', 'ynQuestion',
