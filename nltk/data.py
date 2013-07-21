@@ -103,44 +103,117 @@ def gzip_open_unicode(filename, mode="rb", compresslevel=9,
 
 def split_resource_url(resource_url):
     """
-    Divide the resource name into "<protocol>:<path>".
+    Splits a resource url into "<protocol>:<path>".
+
+    >>> windows = sys.platform.startswith('win')
+    >>> windows or split_resource_url('file:///home/nltk') == ('file', '/home/nltk')
+    True
+    >>> not windows or split_resource_url('file:///C:/home/nltk') == ('file', 'C:/home/nltk')
+    True
+    >>> split_resource_url('nltk:home/nltk')
+    ('nltk', 'home/nltk')
+    >>> split_resource_url('nltk:/home/nltk')
+    ('nltk', '/home/nltk')
     """
-    return re.split(r':/*', resource_url, 1)
+    protocol, path = resource_url.split(':', 1)
+    if protocol == 'nltk':
+        pass
+    elif protocol == 'file':
+        path = path.lstrip('/')
+        if not sys.platform.startswith('win'):
+            path = '/' + path
+    else:
+        path = re.sub(r'^/{0,2}', '', path)
+    return protocol, path
 
 def normalize_resource_url(resource_url):
+    """
+    Normalizes a resource url
+
+    >>> windows = sys.platform.startswith('win')
+    >>> normalize_resource_url('file:C:/dir/file')
+    'file:///C:/dir/file'
+    >>> normalize_resource_url('file:C:\\\\dir\\\\file')
+    'file:///C:/dir/file'
+    >>> normalize_resource_url('file:C:\\\\dir/file')
+    'file:///C:/dir/file'
+    >>> normalize_resource_url('file://C:/dir/file')
+    'file:///C:/dir/file'
+    >>> normalize_resource_url('file:////C:/dir/file')
+    'file:///C:/dir/file'
+    >>> not windows or normalize_resource_url('nltk:C:/dir/file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('nltk:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
+    True
+    >>> normalize_resource_url('nltk:home/nltk')
+    'nltk:home/nltk'
+    >>> normalize_resource_url('nltk:/home/nltk')
+    'file:///home/nltk'
+    >>> normalize_resource_url('http://example.com/dir/file')
+    'http://example.com/dir/file'
+    >>> normalize_resource_url('dir/file')
+    'nltk:dir/file'
+    """
     try:
         protocol, name = split_resource_url(resource_url)
     except ValueError:
         # the resource url has no protocol, use the nltk protocol by default
         protocol = 'nltk'
         name = resource_url
+    # use file protocol if the path is an absolute path
+    if protocol == 'nltk' and os.path.isabs(name):
+        protocol = 'file'
     if protocol == 'file':
         protocol = 'file:///'
-        name = normalize_resource_name(name)
+        # name is absolute
+        name = normalize_resource_name(name, False).lstrip('/')
     elif protocol == 'nltk':
         protocol = 'nltk:'
-        name = normalize_resource_name(name)
+        name = normalize_resource_name(name, False).lstrip('/')
     else:
         # handled by urllib
         protocol += '://'
+        name = name.lstrip('/')
     return ''.join([protocol,name])
 
-def normalize_resource_name(resource_name):
+def normalize_resource_name(resource_name, allow_relative = True):
     """
     :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.
         Resource names are posix-style relative path names, such as
         ``corpora/brown``.  Directory names will automatically
         be converted to a platform-appropriate path separator.
-        The root directory is the empty string
-        Starting slashes are stripped
-        Trailing slashes are preserved
+        Directory trailing slashes are preserved
+
+    >>> windows = sys.platform.startswith('win')
+    >>> normalize_resource_name('.', True)
+    './'
+    >>> normalize_resource_name('./', True)
+    './'
+    >>> windows or normalize_resource_name('dir/file', False) == '/dir/file'
+    True
+    >>> not windows or normalize_resource_name('C:/file', False) == 'C:/file'
+    True
+    >>> windows or normalize_resource_name('/dir/file', False) == '/dir/file'
+    True
+    >>> windows or normalize_resource_name('../dir/file', False) == '/dir/file'
+    True
+    >>> not windows or normalize_resource_name('/C:/file', False) == 'C:/file'
+    True
+    >>> not windows or normalize_resource_name('../C:/file', False) == 'C:/file'
+    True
     """
-    is_dir = bool(re.search(r'[\\/]$',resource_name))
-    resource_name = os.path.normpath(resource_name).replace(os.path.sep,'/')
-    if resource_name == '.':
-        return ''
-    resource_name = re.sub('^/+', '', resource_name)
+    is_dir = bool(re.search(r'[\\/]$',resource_name)) or resource_name.endswith(os.path.sep)
+    resource_name = os.path.normpath(resource_name).replace('\\','/').replace(os.path.sep,'/')
+    if allow_relative:
+        if resource_name == '.':
+            is_dir = True
+    else:
+        if resource_name[0] == '.':
+            resource_name = re.sub('^[./]+', '', resource_name)
+        resource_name = resource_name.lstrip('/')
+        if not sys.platform.startswith('win'):
+            resource_name = '/' + resource_name
     if is_dir and not resource_name.endswith('/'):
         resource_name += '/'
     return resource_name
@@ -366,8 +439,8 @@ class ZipFilePathPointer(PathPointer):
         if isinstance(zipfile, compat.string_types):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
-        # Normalize the entry string:
-        entry = normalize_resource_name(entry)
+        # Normalize the entry string, it should be absolute:
+        entry = normalize_resource_name(entry, False).lstrip('/')
 
         # Check that the entry exists:
         if entry:
@@ -470,12 +543,11 @@ def find(resource_name, paths=None):
     :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.
         Resource names are posix-style relative path names, such as
-        ``corpora/brown``.  In particular, directory names should always
-        be separated by the forward slash character, which will be
+        ``corpora/brown``.  Directory names will be
         automatically converted to a platform-appropriate path separator.
     :rtype: str
     """
-    resource_name = normalize_resource_name(resource_name)
+    resource_name = normalize_resource_name(resource_name, True)
 
     # Resolve default paths at runtime in-case the user overrides nltk.data.path
     if paths is None:

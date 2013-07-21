@@ -137,7 +137,7 @@ sample grammars.
     ...     _bytes_written = out.write(s)
 
     >>> # Load the edited grammar, & display it.
-    >>> cfg = nltk.data.load('file:toy.cfg')
+    >>> cfg = nltk.data.load('file:///' + os.path.abspath('toy.cfg'))
     >>> print(cfg) # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
         S -> DP VP
