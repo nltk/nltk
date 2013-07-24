@@ -1373,7 +1373,9 @@ class SeekableUnicodeStreamReader(object):
 
         return None
 
-__all__ = ['path', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
+__all__ = ['path', 'gzip_open_unicode', 'split_resource_url',
+           'normalize_resource_url', 'normalize_resource_name'
+           'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
            'GzipFileSystemPathPointer', 'GzipFileSystemPathPointer',
            'find', 'retrieve', 'FORMATS', 'AUTO_FORMATS', 'load',
            'show_cfg', 'clear_cache', 'LazyLoader', 'OpenOnDemandZipFile',
