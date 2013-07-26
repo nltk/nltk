@@ -27,9 +27,9 @@ passed to it as an argument:
     >>> wn.synset('woman.n.01').lowest_common_hypernyms(wn.synset('girlfriend.n.02'))
     [Synset('woman.n.01')]
 
-In NLTK 3.0?? the behavior of lowest_common_hypernyms() was changed to give more
+In NLTK 3.0a2 the behavior of lowest_common_hypernyms() was changed to give more
 accurate results in a small set of cases, generally when dealing with nouns describing 
-social roles or jobs. To emulate the pre v3?? behavior, you can set the use_min_depth=True
+social roles or jobs. To emulate the pre v3.0a2 behavior, you can set the use_min_depth=True
 flag:
 
     >>> wn.synset('policeman.n.01').lowest_common_hypernyms(wn.synset('chef.n.01'))
