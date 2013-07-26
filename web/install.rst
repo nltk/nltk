@@ -7,9 +7,7 @@ NLTK requires Python versions 2.6-2.7.
 Mac/Unix
 --------
 
-#. Open ``Finder>Applications>Utilities>Terminal`` and type ``python -V`` to find out what version of Python is installed
-#. Install Setuptools: Download the corresponding version of Setuptools from
-   http://pypi.python.org/pypi/setuptools (scroll to the bottom, and pick the filename that contains the right version number and which has the extension .egg).  Install it by typing ``sudo sh Downloads/setuptools-...egg``, giving the location of the downloaded file.
+#. Install Setuptools: http://pypi.python.org/pypi/setuptools
 #. Install Pip: run ``sudo easy_install pip``
 #. Install Numpy (optional): run ``sudo pip install -U numpy``
 #. Install PyYAML and NLTK: run ``sudo pip install -U pyyaml nltk``

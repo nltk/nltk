@@ -20,7 +20,7 @@ if PY3:
     binary_type = bytes
 
     MAXSIZE = sys.maxsize
-    im_class = lambda meth: meth.__self__.__class__
+    get_im_class = lambda meth: meth.__self__.__class__
     xrange = range
     _iterkeys = "keys"
     _itervalues = "values"
@@ -53,7 +53,7 @@ else:
     class_types = (type, types.ClassType)
     text_type = unicode
     binary_type = str
-    im_class = lambda meth: meth.im_class
+    get_im_class = lambda meth: meth.im_class
     xrange = xrange
     _iterkeys = "iterkeys"
     _itervalues = "itervalues"
@@ -106,7 +106,7 @@ else:
                     mod = __import__(self.module_map[name])
                 sys.modules[name] = mod
             return sys.modules[name]
-    
+
     sys.meta_path = [TkinterLoader()]
 
 

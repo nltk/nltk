@@ -58,12 +58,12 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
         >>> s1 = "000100000010"
         >>> s2 = "000010000100"
         >>> s3 = "100000010000"
-        >>> windowdiff(s1, s1, 3)
-        0.0
-        >>> windowdiff(s1, s2, 3)
-        0.3
-        >>> windowdiff(s2, s3, 3)
-        0.8
+        >>> '%.2f' % windowdiff(s1, s1, 3)
+        '0.00'
+        >>> '%.2f' % windowdiff(s1, s2, 3)
+        '0.30'
+        >>> '%.2f' % windowdiff(s2, s3, 3)
+        '0.80'
 
     :param seg1: a segmentation
     :type seg1: str or list

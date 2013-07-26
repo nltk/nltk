@@ -66,6 +66,7 @@ import gzip
 from collections import defaultdict
 
 from nltk import compat
+from nltk.data import gzip_open_unicode
 from nltk.util import OrderedDict
 from nltk.probability import DictionaryProbDist
 
@@ -1439,7 +1440,7 @@ class TadmMaxentClassifier(MaxentClassifier):
         weightfile_fd, weightfile_name = \
             tempfile.mkstemp(prefix='nltk-tadm-weights-')
 
-        trainfile = gzip.open(trainfile_name, 'wb')
+        trainfile = gzip_open_unicode(trainfile_name, 'w')
         write_tadm_file(train_toks, encoding, trainfile)
         trainfile.close()
 
@@ -1461,7 +1462,7 @@ class TadmMaxentClassifier(MaxentClassifier):
 
         call_tadm(options)
 
-        with open(weightfile_name, 'rb') as weightfile:
+        with open(weightfile_name, 'r') as weightfile:
             weights = parse_tadm_weights(weightfile)
 
         os.remove(trainfile_name)

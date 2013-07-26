@@ -44,7 +44,6 @@ those threads which are consistent (taking into account any background assumptio
 """
 from __future__ import print_function
 
-import os
 from operator import and_, add
 from functools import reduce
 
@@ -385,7 +384,7 @@ class DiscourseTester(object):
         results = []
         for tid in sorted(threads):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
-            assumptions = map(self._reading_command.to_fol, self._reading_command.process_thread(assumptions))
+            assumptions = list(map(self._reading_command.to_fol, self._reading_command.process_thread(assumptions)))
             if assumptions:
                 assumptions += self._background
                 # if Mace4 finds a model, it always seems to find it quickly
@@ -510,7 +509,7 @@ def parse_fol(s):
         if line.startswith('#') or line=='': continue
         try:
             statements.append(lp.parse(line))
-        except Error:
+        except Exception:
             raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements
 

@@ -63,15 +63,18 @@ Test BindingDict
     >>> G = linlog.VariableExpression('G')
     >>> F = linlog.VariableExpression('F')
 
-    >>> d1 = BindingDict([(H,h)])
-    >>> d2 = BindingDict([(F,f),(G,F)])
+    >>> d1 = BindingDict({H: h})
+    >>> d2 = BindingDict({F: f, G: F})
     >>> d12 = d1 + d2
     >>> all12 = ['%s: %s' % (v, d12[v]) for v in d12.d]
     >>> all12.sort()
     >>> print(all12)
     ['F: f', 'G: f', 'H: h']
+	
+	>>> BindingDict([(F,f),(G,g),(H,h)]) == BindingDict({F:f, G:g, H:h})
+	True
 
-    >>> d4 = BindingDict([(F,f)])
+    >>> d4 = BindingDict({F: f})
     >>> try: d4[F] = g
     ... except VariableBindingException as e: print(e)
     Variable F already bound to another value
@@ -83,38 +86,38 @@ Test Unify
     ...
     Cannot unify f with g given {}
 
-    >>> print(f.unify(G, BindingDict()))
-    {G: f}
-    >>> try: f.unify(G, BindingDict([(G,h)]))
+    >>> f.unify(G, BindingDict()) == BindingDict({G: f})
+	True
+    >>> try: f.unify(G, BindingDict({G: h}))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify f with G given {G: h}
-    >>> print(f.unify(G, BindingDict([(G,f)])))
-    {G: f}
-    >>> print(f.unify(G, BindingDict([(H,f)])))
-    {H: f, G: f}
+    >>> f.unify(G, BindingDict({G: f})) == BindingDict({G: f})
+	True
+    >>> f.unify(G, BindingDict({H: f})) == BindingDict({G: f, H: f})
+	True
 
-    >>> print(G.unify(f, BindingDict()))
-    {G: f}
-    >>> try: G.unify(f, BindingDict([(G,h)]))
+    >>> G.unify(f, BindingDict()) == BindingDict({G: f})
+	True
+    >>> try: G.unify(f, BindingDict({G: h}))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify G with f given {G: h}
-    >>> print(G.unify(f, BindingDict([(G,f)])))
-    {G: f}
-    >>> print(G.unify(f, BindingDict([(H,f)])))
-    {H: f, G: f}
+    >>> G.unify(f, BindingDict({G: f})) == BindingDict({G: f})
+	True
+    >>> G.unify(f, BindingDict({H: f})) == BindingDict({G: f, H: f})
+	True
 
-    >>> print(G.unify(F, BindingDict()))
-    {G: F}
-    >>> try: G.unify(F, BindingDict([(G,H)]))
+    >>> G.unify(F, BindingDict()) == BindingDict({G: F})
+	True
+    >>> try: G.unify(F, BindingDict({G: H}))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify G with F given {G: H}
-    >>> print(G.unify(F, BindingDict([(G,F)])))
-    {G: F}
-    >>> print(G.unify(F, BindingDict([(H,F)])))
-    {H: F, G: F}
+    >>> G.unify(F, BindingDict({G: F})) == BindingDict({G: F})
+	True
+    >>> G.unify(F, BindingDict({H: F})) == BindingDict({G: F, H: F})
+	True
 
 Test Compile
 
@@ -340,7 +343,8 @@ Dependency Graph to Glue Formulas
     ... 4	dog	_	NN	NN	_	2	OBJ	_	_
     ... """)
     >>> gfl = GlueDict('nltk:grammars/sample_grammars/glue.semtype').to_glueformula_list(depgraph)
-    >>> for gf in gfl: print(gf)
+    >>> for gf in gfl:
+    ...     print(gf)
     \x y.sees(x,y) : (f -o (i -o g))
     \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F2) -o F2))
     \x.John(x) : (fv -o fr)
