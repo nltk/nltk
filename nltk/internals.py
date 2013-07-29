@@ -611,7 +611,7 @@ def import_from_stdlib(module):
     current directory is included at the beginning of the search path.
     Unfortunately, that means that modules within nltk can sometimes
     shadow standard library modules.  As an example, the stdlib
-    'inspect' module will attempt to import the stdlib 'tokenzie'
+    'inspect' module will attempt to import the stdlib 'tokenize'
     module, but will instead end up importing NLTK's 'tokenize' module
     instead (causing the import to fail).
     """
