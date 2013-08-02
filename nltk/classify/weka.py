@@ -76,17 +76,49 @@ def _check_weka_version(jar):
         zf.close()
 
 class WekaClassifier(ClassifierI):
+
+    # [xx] full list of classifiers (some may be abstract?):
+    # ADTree, AODE, BayesNet, ComplementNaiveBayes, ConjunctiveRule,
+    # DecisionStump, DecisionTable, HyperPipes, IB1, IBk, Id3, J48,
+    # JRip, KStar, LBR, LeastMedSq, LinearRegression, LMT, Logistic,
+    # LogisticBase, M5Base, MultilayerPerceptron,
+    # MultipleClassifiersCombiner, NaiveBayes, NaiveBayesMultinomial,
+    # NaiveBayesSimple, NBTree, NNge, OneR, PaceRegression, PART,
+    # PreConstructedLinearModel, Prism, RandomForest,
+    # RandomizableClassifier, RandomTree, RBFNetwork, REPTree, Ridor,
+    # RuleNode, SimpleLinearRegression, SimpleLogistic,
+    # SingleClassifierEnhancer, SMO, SMOreg, UserClassifier, VFI,
+    # VotedPerceptron, Winnow, ZeroR
+
+    _CLASSIFIER_CLASS = {
+        'naivebayes': 'weka.classifiers.bayes.NaiveBayes',
+        'C4.5': 'weka.classifiers.trees.J48',
+        'log_regression': 'weka.classifiers.functions.Logistic',
+        'svm': 'weka.classifiers.functions.SMO',
+        'kstar': 'weka.classifiers.lazy.KStar',
+        'ripper': 'weka.classifiers.rules.JRip',
+        }
+
     def __init__(self, formatter, model_filename):
         self._formatter = formatter
         self._model = model_filename
 
-    def batch_prob_classify(self, featuresets):
-        return self._batch_classify(featuresets, ['-p', '0', '-distribution'])
+    def batch_prob_classify(self, featuresets, classifier='naivebayes'):
+        return self._batch_classify(featuresets, ['-p', '0', '-distribution'], classifier)
 
-    def batch_classify(self, featuresets):
-        return self._batch_classify(featuresets, ['-p', '0'])
+    def batch_classify(self, featuresets, classifier='naivebayes'):
+        return self._batch_classify(featuresets, ['-p', '0'], classifier)
 
-    def _batch_classify(self, featuresets, options):
+    @classmethod
+    def _get_classifier_class(cls, classifier):
+        if classifier in cls._CLASSIFIER_CLASS:
+            return cls._CLASSIFIER_CLASS[classifier]
+        elif classifier in cls._CLASSIFIER_CLASS.values():
+            return classifier
+        else:
+            raise ValueError('Unknown classifier %s' % classifier)
+
+    def _batch_classify(self, featuresets, options, classifier='naivebayes'):
         # Make sure we can find java & weka.
         config_weka()
 
@@ -96,9 +128,10 @@ class WekaClassifier(ClassifierI):
             test_filename = os.path.join(temp_dir, 'test.arff')
             self._formatter.write(test_filename, featuresets)
 
+            java_class = self._get_classifier_class(classifier)
+
             # Call weka to classify the data.
-            cmd = ['weka.classifiers.bayes.NaiveBayes',
-                   '-l', self._model, '-T', test_filename] + options
+            cmd = [java_class, '-l', self._model, '-T', test_filename] + options
             (stdout, stderr) = java(cmd, classpath=_weka_classpath,
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
@@ -114,7 +147,7 @@ class WekaClassifier(ClassifierI):
                                      % stderr)
 
             # Parse weka's output.
-            return self.parse_weka_output(stdout.split('\n'))
+            return self.parse_weka_output(stdout.decode().split('\n'))
 
         finally:
             for f in os.listdir(temp_dir):
@@ -152,28 +185,6 @@ class WekaClassifier(ClassifierI):
                              'of weka may not be supported.\n'
                              '  Header: %s' % lines[0])
 
-
-    # [xx] full list of classifiers (some may be abstract?):
-    # ADTree, AODE, BayesNet, ComplementNaiveBayes, ConjunctiveRule,
-    # DecisionStump, DecisionTable, HyperPipes, IB1, IBk, Id3, J48,
-    # JRip, KStar, LBR, LeastMedSq, LinearRegression, LMT, Logistic,
-    # LogisticBase, M5Base, MultilayerPerceptron,
-    # MultipleClassifiersCombiner, NaiveBayes, NaiveBayesMultinomial,
-    # NaiveBayesSimple, NBTree, NNge, OneR, PaceRegression, PART,
-    # PreConstructedLinearModel, Prism, RandomForest,
-    # RandomizableClassifier, RandomTree, RBFNetwork, REPTree, Ridor,
-    # RuleNode, SimpleLinearRegression, SimpleLogistic,
-    # SingleClassifierEnhancer, SMO, SMOreg, UserClassifier, VFI,
-    # VotedPerceptron, Winnow, ZeroR
-
-    _CLASSIFIER_CLASS = {
-        'naivebayes': 'weka.classifiers.bayes.NaiveBayes',
-        'C4.5': 'weka.classifiers.trees.J48',
-        'log_regression': 'weka.classifiers.functions.Logistic',
-        'svm': 'weka.classifiers.functions.SMO',
-        'kstar': 'weka.classifiers.lazy.kstar',
-        'ripper': 'weka.classifiers.rules.JRip',
-        }
     @classmethod
     def train(cls, model_filename, featuresets,
               classifier='naivebayes', options=[], quiet=True):
@@ -189,15 +200,10 @@ class WekaClassifier(ClassifierI):
             train_filename = os.path.join(temp_dir, 'train.arff')
             formatter.write(train_filename, featuresets)
 
-            if classifier in cls._CLASSIFIER_CLASS:
-                javaclass = cls._CLASSIFIER_CLASS[classifier]
-            elif classifier in cls._CLASSIFIER_CLASS.values():
-                javaclass = classifier
-            else:
-                raise ValueError('Unknown classifier %s' % classifier)
+            java_class = cls._get_classifier_class( classifier)
 
             # Train the weka model.
-            cmd = [javaclass, '-d', model_filename, '-t', train_filename]
+            cmd = [java_class, '-d', model_filename, '-t', train_filename]
             cmd += list(options)
             if quiet: stdout = subprocess.PIPE
             else: stdout = None
