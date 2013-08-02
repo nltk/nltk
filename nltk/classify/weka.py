@@ -95,7 +95,7 @@ class WekaClassifier(ClassifierI):
         'C4.5': 'weka.classifiers.trees.J48',
         'log_regression': 'weka.classifiers.functions.Logistic',
         'svm': 'weka.classifiers.functions.SMO',
-        'kstar': 'weka.classifiers.lazy.kstar',
+        'kstar': 'weka.classifiers.lazy.KStar',
         'ripper': 'weka.classifiers.rules.JRip',
         }
 
@@ -147,7 +147,7 @@ class WekaClassifier(ClassifierI):
                                      % stderr)
 
             # Parse weka's output.
-            return self.parse_weka_output(stdout.split('\n'))
+            return self.parse_weka_output(stdout.decode().split('\n'))
 
         finally:
             for f in os.listdir(temp_dir):
