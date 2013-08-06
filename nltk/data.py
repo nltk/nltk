@@ -679,7 +679,7 @@ AUTO_FORMATS = {
     'text': 'text',
 }
 
-def load(resource_url, format_='auto', cache=True, verbose=False,
+def load(resource_url, format='auto', cache=True, verbose=False,
          logic_parser=None, fstruct_parser=None, encoding=None):
     """
     Load a given resource from the NLTK data package.  The following
@@ -731,24 +731,24 @@ def load(resource_url, format_='auto', cache=True, verbose=False,
     resource_url=normalize_resource_url(resource_url)
 
     # Determine the format of the resource.
-    if format_ == 'auto':
+    if format == 'auto':
         resource_url_parts = resource_url.split('.')
         ext = resource_url_parts[-1]
         if ext == 'gz':
             ext = resource_url_parts[-2]
-        format_ = AUTO_FORMATS.get(ext)
-        if format_ is None:
+        format = AUTO_FORMATS.get(ext)
+        if format is None:
             raise ValueError('Could not determine format for %s based '
                              'on its file\nextension; use the "format" '
                              'argument to specify the format explicitly.'
                              % resource_url)
 
-    if format_ not in FORMATS:
-        raise ValueError('Unknown format type: %s!' % (format_,))
+    if format not in FORMATS:
+        raise ValueError('Unknown format type: %s!' % (format,))
 
     # If we've cached the resource, then just return it.
     if cache:
-        resource_val = _resource_cache.get((resource_url, format_))
+        resource_val = _resource_cache.get((resource_url, format))
         if resource_val is not None:
             if verbose:
                 print('<<Using cached copy of %s>>' % (resource_url,))
@@ -761,11 +761,11 @@ def load(resource_url, format_='auto', cache=True, verbose=False,
     # Load the resource.
     opened_resource = _open(resource_url)
 
-    if format_ == 'raw':
+    if format == 'raw':
         resource_val = opened_resource.read()
-    elif format_ == 'pickle':
+    elif format == 'pickle':
         resource_val = pickle.load(opened_resource)
-    elif format_ == 'yaml':
+    elif format == 'yaml':
         import yaml
         resource_val = yaml.load(opened_resource)
     else:
@@ -778,38 +778,38 @@ def load(resource_url, format_='auto', cache=True, verbose=False,
                 string_data = binary_data.decode('utf-8')
             except UnicodeDecodeError:
                 string_data = binary_data.decode('latin-1')
-        if format_ == 'text':
+        if format == 'text':
             resource_val = string_data
-        elif format_ == 'cfg':
+        elif format == 'cfg':
             resource_val = nltk.grammar.parse_cfg(
                 string_data, encoding=encoding)
-        elif format_ == 'pcfg':
+        elif format == 'pcfg':
             resource_val = nltk.grammar.parse_pcfg(
                 string_data, encoding=encoding)
-        elif format_ == 'fcfg':
+        elif format == 'fcfg':
             resource_val = nltk.grammar.parse_fcfg(
                 string_data, logic_parser=logic_parser,
                 fstruct_parser=fstruct_parser, encoding=encoding)
-        elif format_ == 'fol':
+        elif format == 'fol':
             resource_val = nltk.sem.parse_logic(
                 string_data, logic_parser=nltk.sem.logic.LogicParser(),
                 encoding=encoding)
-        elif format_ == 'logic':
+        elif format == 'logic':
             resource_val = nltk.sem.parse_logic(
                 string_data, logic_parser=logic_parser, encoding=encoding)
-        elif format_ == 'val':
+        elif format == 'val':
             resource_val = nltk.sem.parse_valuation(
                 string_data, encoding=encoding)
         else:
             raise AssertionError("Internal NLTK error: Format %s isn't "
-                                 "handled by nltk.data.load()" % (format_,))
+                                 "handled by nltk.data.load()" % (format,))
 
     opened_resource.close()
 
     # If requested, add it to the cache.
     if cache:
         try:
-            _resource_cache[(resource_url, format_)] = resource_val
+            _resource_cache[(resource_url, format)] = resource_val
             # TODO: add this line
             # print('<<Caching a copy of %s>>' % (resource_url,))
         except TypeError:
@@ -831,7 +831,7 @@ def show_cfg(resource_url, escape='##'):
     :param escape: Prepended string that signals lines to be ignored
     """
     resource_url = normalize_resource_url(resource_url)
-    resource_val = load(resource_url, format_='text', cache=False)
+    resource_val = load(resource_url, format='text', cache=False)
     lines = resource_val.splitlines()
     for l in lines:
         if l.startswith(escape): continue

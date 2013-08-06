@@ -126,11 +126,11 @@ class GlueDict(dict):
             self.clear()
 
         try:
-            contents = nltk.data.load(self.filename, format_='text', encoding=self.file_encoding)
+            contents = nltk.data.load(self.filename, format='text', encoding=self.file_encoding)
             # TODO: the above can't handle zip files, but this should anyway be fixed in nltk.data.load()
         except LookupError as e:
             try:
-                contents = nltk.data.load('file:' + self.filename, format_='text', encoding=self.file_encoding)
+                contents = nltk.data.load('file:' + self.filename, format='text', encoding=self.file_encoding)
             except LookupError:
                 raise e
         lines = contents.splitlines()
