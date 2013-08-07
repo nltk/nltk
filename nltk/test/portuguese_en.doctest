@@ -237,7 +237,7 @@ journalistic texts extracted from ten sections of
 the daily newspaper *Folha de Sao Paulo*, 1994.
 
 We can access this corpus as a sequence of words or tagged words as follows:
-
+    >>> import nltk.corpus
     >>> nltk.corpus.mac_morpho.words()
     ['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', ...]
     >>> nltk.corpus.mac_morpho.sents() # doctest: +NORMALIZE_WHITESPACE
@@ -362,7 +362,7 @@ Python understands the common character encoding used for Portuguese, ISO 8859-1
     >>> text[:60]
     'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
     >>> print(text[:60])
-    O 7 e Meio È um ex-libris da noite algarvia.
+    O 7 e Meio é um ex-libris da noite algarvia.
     É uma das mais
 
 For more information about character encodings and Python, please see section 3.3 of the book.
@@ -446,8 +446,6 @@ Punkt is a language-neutral sentence segmentation tool.  We
     >>> sent_tokenizer=nltk.data.load('tokenizers/punkt/portuguese.pickle')
     >>> raw_text = machado.raw('romance/marm05.txt')
     >>> sentences = sent_tokenizer.tokenize(raw_text)
-    >>> for sent in sentences[1000:1005]:
-    ...     print(sent)
     >>> for sent in sentences[1000:1005]:
     ...     print("<<", sent, ">>")
     ...
@@ -546,9 +544,9 @@ and print them in descending order of frequency:
     ...     print(word, fd[word])
     , 13444
     . 7725
-    ´ 2369
-    ª 2310
-    È 1305
+    « 2369
+    » 2310
+    é 1305
     o 1086
     } 1047
     { 1044
