@@ -9,7 +9,6 @@
 Classifiers that make use of the external 'Weka' package.
 """
 from __future__ import print_function
-
 import time
 import tempfile
 import os
@@ -17,6 +16,7 @@ import subprocess
 import re
 import zipfile
 
+from sys import stdin
 from nltk import compat
 from nltk.probability import DictionaryProbDist
 from nltk.internals import java, config_java
@@ -114,7 +114,7 @@ class WekaClassifier(ClassifierI):
                                      % stderr)
 
             # Parse weka's output.
-            return self.parse_weka_output(stdout.split('\n'))
+            return self.parse_weka_output(stdout.decode(stdin.encoding).split('\n'))
 
         finally:
             for f in os.listdir(temp_dir):
@@ -171,7 +171,7 @@ class WekaClassifier(ClassifierI):
         'C4.5': 'weka.classifiers.trees.J48',
         'log_regression': 'weka.classifiers.functions.Logistic',
         'svm': 'weka.classifiers.functions.SMO',
-        'kstar': 'weka.classifiers.lazy.kstar',
+        'kstar': 'weka.classifiers.lazy.KStar',
         'ripper': 'weka.classifiers.rules.JRip',
         }
     @classmethod
