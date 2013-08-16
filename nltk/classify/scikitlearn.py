@@ -133,7 +133,8 @@ class SklearnClassifier(ClassifierI):
                     pass
 
         shape = (i + 1, len(self._feature_index))
-        return coo_matrix((values, (i_ind, j_ind)), shape=shape, dtype=self._dtype)
+        return coo_matrix((values, (i_ind, j_ind)), shape=shape,
+                          dtype=self._dtype)
 
     def _featuresets_to_array(self, featuresets):
         """Convert featureset to Numpy array."""
@@ -165,10 +166,7 @@ def setup_module(module):
 
 if __name__ == "__main__":
     from nltk.classify.util import names_demo, binary_names_demo_features
-    try:
-        from sklearn.linear_model.sparse import LogisticRegression
-    except ImportError:     # separate sparse LR to be removed in 0.12
-        from sklearn.linear_model import LogisticRegression
+    from sklearn.linear_model import LogisticRegression
     from sklearn.naive_bayes import BernoulliNB
 
     print("scikit-learn Naive Bayes:")
