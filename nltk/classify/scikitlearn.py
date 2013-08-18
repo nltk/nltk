@@ -5,21 +5,21 @@
 # For license information, see LICENSE.TXT
 """
 scikit-learn (http://scikit-learn.org) is a machine learning library for
-Python, supporting most of the basic classification algorithms, including SVMs,
-Naive Bayes, logistic regression and decision trees.
+Python. It supports many classification algorithms, including SVMs,
+Naive Bayes, logistic regression (MaxEnt) and decision trees.
 
 This package implement a wrapper around scikit-learn classifiers. To use this
-wrapper, construct a scikit-learn classifier, then use that to construct a
-SklearnClassifier. E.g., to wrap a linear SVM classifier with default settings,
-do
+wrapper, construct a scikit-learn estimator object, then use that to construct
+a SklearnClassifier. E.g., to wrap a linear SVM with default settings:
 
 >>> from sklearn.svm.sparse import LinearSVC
 >>> from nltk.classify.scikitlearn import SklearnClassifier
 >>> classif = SklearnClassifier(LinearSVC())
 
-The scikit-learn classifier may be arbitrarily complex. E.g., the following
-constructs and wraps a Naive Bayes estimator with tf-idf weighting and
-chi-square feature selection:
+A scikit-learn classifier may include preprocessing steps when it's wrapped
+in a Pipeline object. The following constructs and wraps a Naive Bayes text
+classifier with tf-idf weighting and chi-square feature selection to get the
+best 1000 features:
 
 >>> from sklearn.feature_extraction.text import TfidfTransformer
 >>> from sklearn.feature_selection import SelectKBest, chi2
@@ -29,8 +29,6 @@ chi-square feature selection:
 ...                      ('chi2', SelectKBest(chi2, k=1000)),
 ...                      ('nb', MultinomialNB())])
 >>> classif = SklearnClassifier(pipeline)
-
-(Such a classifier could be trained on word counts for text classification.)
 """
 from __future__ import print_function, unicode_literals
 
@@ -53,12 +51,13 @@ class SklearnClassifier(ClassifierI):
         :param estimator: scikit-learn classifier object.
 
         :param dtype: data type used when building feature array.
-            scikit-learn estimators work exclusively on numeric data; use bool
-            when all features are binary.
+            scikit-learn estimators work exclusively on numeric data. The
+            default value should be fine for almost all situations.
 
         :param sparse: Whether to use sparse matrices. The estimator must
             support these; not all scikit-learn classifiers do. The default
             value is True, since most NLP problems involve sparse feature sets.
+            Setting this to False may take a great amount of memory.
         :type sparse: boolean.
         """
         self._clf = estimator
@@ -69,24 +68,42 @@ class SklearnClassifier(ClassifierI):
         return "<SklearnClassifier(%r)>" % self._clf
 
     def batch_classify(self, featuresets):
+        """Classify a batch of samples.
+
+        :param labeled_featuresets: A list of featuresets, each a dict
+            mapping strings to either numbers or booleans.
+        :return: The predicted class label for each input sample.
+        :rtype: list
+        """
         X = self._convert(featuresets)
         y = self._clf.predict(X)
         return [self._index_label[int(yi)] for yi in y]
 
     def batch_prob_classify(self, featuresets):
+        """Compute per-class probabilities for a batch of samples.
+
+        :param labeled_featuresets: A list of featuresets, each a dict
+            mapping strings to either numbers or booleans.
+        :rtype: list of ``ProbDistI``
+        """
         X = self._convert(featuresets)
         y_proba_list = self._clf.predict_proba(X)
         return [self._make_probdist(y_proba) for y_proba in y_proba_list]
 
     def labels(self):
+        """The class labels used by this classifier.
+
+        :rtype: list
+        """
         return self._label_index.keys()
 
     def train(self, labeled_featuresets):
         """
         Train (fit) the scikit-learn estimator.
 
-        :param labeled_featuresets: A list of classified featuresets,
-            i.e., a list of tuples ``(featureset, label)``.
+        :param labeled_featuresets: A list of ``(featureset, label)``
+            where each ``featureset`` is a dict mapping strings to either
+            numbers or booleans.
         """
 
         self._feature_index = {}
@@ -110,13 +127,14 @@ class SklearnClassifier(ClassifierI):
         return self
 
     def _convert(self, featuresets):
+        """Convert featuresets to a format scikit-learn will grok."""
         if self._sparse:
             return self._featuresets_to_coo(featuresets)
         else:
             return self._featuresets_to_array(featuresets)
 
     def _featuresets_to_coo(self, featuresets):
-        """Convert featuresets to sparse matrix (COO format)."""
+        """Convert featuresets to scipy.sparse matrix (COO format)."""
 
         i_ind = []
         j_ind = []
@@ -133,10 +151,11 @@ class SklearnClassifier(ClassifierI):
                     pass
 
         shape = (i + 1, len(self._feature_index))
-        return coo_matrix((values, (i_ind, j_ind)), shape=shape, dtype=self._dtype)
+        return coo_matrix((values, (i_ind, j_ind)), shape=shape,
+                          dtype=self._dtype)
 
     def _featuresets_to_array(self, featuresets):
-        """Convert featureset to Numpy array."""
+        """Convert featureset to NumPy array."""
 
         X = np.zeros((len(featuresets), len(self._feature_index)),
                      dtype=self._dtype)
@@ -165,13 +184,13 @@ def setup_module(module):
 
 if __name__ == "__main__":
     from nltk.classify.util import names_demo, binary_names_demo_features
-    try:
-        from sklearn.linear_model.sparse import LogisticRegression
-    except ImportError:     # separate sparse LR to be removed in 0.12
-        from sklearn.linear_model import LogisticRegression
+    from sklearn.linear_model import LogisticRegression
     from sklearn.naive_bayes import BernoulliNB
 
     print("scikit-learn Naive Bayes:")
+    # Bernoulli Naive Bayes is designed for binary classification. We set the
+    # binarize option to False since we know we're passing binary features
+    # (when binarize=False, scikit-learn does x>0 on the feature values x).
     names_demo(SklearnClassifier(BernoulliNB(binarize=False), dtype=bool).train,
                features=binary_names_demo_features)
     print("scikit-learn logistic regression:")
