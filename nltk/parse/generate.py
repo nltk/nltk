@@ -61,16 +61,14 @@ def _generate_one(grammar, item, depth):
 demo_grammar = """
   S -> NP VP 
   NP -> Det N
-  VP -> V NP 
-  Det -> 'the'
-  Det -> 'a'
-  N -> 'man' | 'park' | 'dog' | 'telescope'
-  V -> 'saw' | 'walked'
+  PP -> P NP
+  VP -> 'slept' | 'saw' NP | 'walked' PP
+  Det -> 'the' | 'a'
+  N -> 'man' | 'park' | 'dog'
   P -> 'in' | 'with'
 """
 
-def demo():
-    N = 42
+def demo(N=23):
     print('Generating the first %d sentences for demo grammar:' % (N,))
     print(demo_grammar)
     grammar = parse_cfg(demo_grammar)
