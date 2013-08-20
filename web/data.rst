@@ -47,3 +47,17 @@ Windows: Use the "Run..." option on the Start menu.  Windows Vista users need to
 Test the installation: Check that the user environment and privileges are set correctly by logging in to a user account,
 starting the Python interpreter, and accessing the Brown Corpus (see the previous section).
 
+.. _puppet_data_installation:
+
+Puppet installation
+-------------------
+
+If you are provisioning many machines with NLTK, it can be convenient
+to use a tool like puppet to download any necessary data on each of
+these machines in a predictable and automated way. The `puppet NLTK
+project <http://forge.puppetlabs.com/DsA/nltk>`_ provides this
+functionality and can be used to install specific corpi (e.g.,
+stopwords) with simple one-liners like::
+
+    puppet::downloader { "stopwords": }
+
