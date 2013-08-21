@@ -37,10 +37,11 @@ from nltk.probability import DictionaryProbDist
 from nltk import compat
 
 try:
-    import numpy as np
-    from scipy.sparse import coo_matrix
+    from sklearn.feature_extraction import DictVectorizer
+    from sklearn.preprocessing import LabelEncoder
 except ImportError:
     pass
+
 
 @compat.python_2_unicode_compatible
 class SklearnClassifier(ClassifierI):
@@ -54,15 +55,17 @@ class SklearnClassifier(ClassifierI):
             scikit-learn estimators work exclusively on numeric data. The
             default value should be fine for almost all situations.
 
-        :param sparse: Whether to use sparse matrices. The estimator must
-            support these; not all scikit-learn classifiers do. The default
-            value is True, since most NLP problems involve sparse feature sets.
-            Setting this to False may take a great amount of memory.
+        :param sparse: Whether to use sparse matrices internally.
+            The estimator must support these; not all scikit-learn classifiers
+            do (see their respective documentation and look for "sparse
+            matrix"). The default value is True, since most NLP problems
+            involve sparse feature sets. Setting this to False may take a
+            great amount of memory.
         :type sparse: boolean.
         """
         self._clf = estimator
-        self._dtype = dtype
-        self._sparse = sparse
+        self._encoder = LabelEncoder()
+        self._vectorizer = DictVectorizer(dtype=dtype, sparse=sparse)
 
     def __repr__(self):
         return "<SklearnClassifier(%r)>" % self._clf
@@ -70,23 +73,23 @@ class SklearnClassifier(ClassifierI):
     def batch_classify(self, featuresets):
         """Classify a batch of samples.
 
-        :param labeled_featuresets: A list of featuresets, each a dict
-            mapping strings to either numbers or booleans.
+        :param featuresets: An iterable over featuresets, each a dict mapping
+            strings to either numbers, booleans or strings.
         :return: The predicted class label for each input sample.
         :rtype: list
         """
-        X = self._convert(featuresets)
-        y = self._clf.predict(X)
-        return [self._index_label[int(yi)] for yi in y]
+        X = self._vectorizer.transform(featuresets)
+        classes = self._encoder.classes_
+        return [classes[i] for i in self._clf.predict(X)]
 
     def batch_prob_classify(self, featuresets):
         """Compute per-class probabilities for a batch of samples.
 
-        :param labeled_featuresets: A list of featuresets, each a dict
-            mapping strings to either numbers or booleans.
+        :param featuresets: An iterable over featuresets, each a dict mapping
+            strings to either numbers, booleans or strings.
         :rtype: list of ``ProbDistI``
         """
-        X = self._convert(featuresets)
+        X = self._vectorizer.transform(featuresets)
         y_proba_list = self._clf.predict_proba(X)
         return [self._make_probdist(y_proba) for y_proba in y_proba_list]
 
@@ -95,7 +98,7 @@ class SklearnClassifier(ClassifierI):
 
         :rtype: list
         """
-        return self._label_index.keys()
+        return list(self._encoder.classes_)
 
     def train(self, labeled_featuresets):
         """
@@ -103,74 +106,19 @@ class SklearnClassifier(ClassifierI):
 
         :param labeled_featuresets: A list of ``(featureset, label)``
             where each ``featureset`` is a dict mapping strings to either
-            numbers or booleans.
+            numbers, booleans or strings.
         """
 
-        self._feature_index = {}
-        self._index_label = []
-        self._label_index = {}
-
-        for fs, label in labeled_featuresets:
-            for f in fs:
-                if f not in self._feature_index:
-                    self._feature_index[f] = len(self._feature_index)
-            if label not in self._label_index:
-                self._index_label.append(label)
-                self._label_index[label] = len(self._label_index)
-
-        featuresets, labels = zip(*labeled_featuresets)
-        X = self._convert(featuresets)
-        y = np.array([self._label_index[l] for l in labels])
-
+        X, y = list(compat.izip(*labeled_featuresets))
+        X = self._vectorizer.fit_transform(X)
+        y = self._encoder.fit_transform(y)
         self._clf.fit(X, y)
 
         return self
 
-    def _convert(self, featuresets):
-        """Convert featuresets to a format scikit-learn will grok."""
-        if self._sparse:
-            return self._featuresets_to_coo(featuresets)
-        else:
-            return self._featuresets_to_array(featuresets)
-
-    def _featuresets_to_coo(self, featuresets):
-        """Convert featuresets to scipy.sparse matrix (COO format)."""
-
-        i_ind = []
-        j_ind = []
-        values = []
-
-        for i, fs in enumerate(featuresets):
-            for f, v in compat.iteritems(fs):
-                try:
-                    j = self._feature_index[f]
-                    i_ind.append(i)
-                    j_ind.append(j)
-                    values.append(self._dtype(v))
-                except KeyError:
-                    pass
-
-        shape = (i + 1, len(self._feature_index))
-        return coo_matrix((values, (i_ind, j_ind)), shape=shape,
-                          dtype=self._dtype)
-
-    def _featuresets_to_array(self, featuresets):
-        """Convert featureset to NumPy array."""
-
-        X = np.zeros((len(featuresets), len(self._feature_index)),
-                     dtype=self._dtype)
-
-        for i, fs in enumerate(featuresets):
-            for f, v in compat.iteritems(fs):
-                try:
-                    X[i, self._feature_index[f]] = self._dtype(v)
-                except KeyError:    # feature not seen in training
-                    pass
-
-        return X
-
     def _make_probdist(self, y_proba):
-        return DictionaryProbDist(dict((self._index_label[i], p)
+        classes = self._encoder.classes_
+        return DictionaryProbDist(dict((classes[i], p)
                                        for i, p in enumerate(y_proba)))
 
 
@@ -182,17 +130,20 @@ def setup_module(module):
     except ImportError:
         raise SkipTest("scikit-learn is not installed")
 
+
 if __name__ == "__main__":
-    from nltk.classify.util import names_demo, binary_names_demo_features
+    from nltk.classify.util import names_demo, names_demo_features
     from sklearn.linear_model import LogisticRegression
     from sklearn.naive_bayes import BernoulliNB
 
-    print("scikit-learn Naive Bayes:")
     # Bernoulli Naive Bayes is designed for binary classification. We set the
-    # binarize option to False since we know we're passing binary features
-    # (when binarize=False, scikit-learn does x>0 on the feature values x).
-    names_demo(SklearnClassifier(BernoulliNB(binarize=False), dtype=bool).train,
-               features=binary_names_demo_features)
-    print("scikit-learn logistic regression:")
-    names_demo(SklearnClassifier(LogisticRegression(), dtype=np.float64).train,
-               features=binary_names_demo_features)
+    # binarize option to False since we know we're passing boolean features.
+    print("scikit-learn Naive Bayes:")
+    names_demo(SklearnClassifier(BernoulliNB(binarize=False)).train,
+               features=names_demo_features)
+
+    # The C parameter on logistic regression (MaxEnt) controls regularization.
+    # The higher it's set, the less regularized the classifier is.
+    print("\n\nscikit-learn logistic regression:")
+    names_demo(SklearnClassifier(LogisticRegression(C=1000)).train,
+               features=names_demo_features)
