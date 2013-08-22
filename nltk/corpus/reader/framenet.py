@@ -4,13 +4,12 @@
 # Author: Chuck Wooters <wooters@icsi.berkeley.edu>x
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function
 
 """
 Corpus reader for the Framenet 1.5 Corpus.
-
-Once this class has been instantiated, it
 """
-from __future__ import absolute_import, unicode_literals, print_function
+
 __docformat__ = 'epytext en'
 
 import os
@@ -159,7 +158,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             raise FramenetError("Unknown document id: {0}".format(fn_docid))
 
         # construct the path name for the xml file containing the document info
-        locpath = os.path.join(self._root,self._fulltext_dir,xmlfname)
+        locpath = os.path.join("{0}".format(self._root),self._fulltext_dir,xmlfname)
 
         # Grab the top-level xml element containing the fulltext annotation
         elt = XMLCorpusView(locpath, 'fullTextAnnotation')[0]
@@ -277,7 +276,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             raise(FramenetError('Unknown frame id: {0}'.format(fn_fid)))
 
         # construct the path name for the xml file containing the Frame info
-        locpath = os.path.join(self._root,self._frame_dir,name+".xml")
+        locpath = os.path.join("{0}".format(self._root),self._frame_dir,name+".xml")
 
         # Grab the xml for the frame from the file
         elt = XMLCorpusView(locpath, 'frame')[0]
@@ -407,7 +406,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         '''
 
         fname = "lu{0}.xml".format(fn_luid)
-        locpath = os.path.join(self._root,self._lu_dir,fname)
+        locpath = os.path.join("{0}".format(self._root),self._lu_dir,fname)
 
         try:
             elt = XMLCorpusView(locpath, 'lexUnit')[0]
@@ -1178,7 +1177,7 @@ def demo():
     firstcorp = list(allcorpora)[0]
     firstcorp_docs = fn.Documents(firstcorp)
     print('\nNames of the annotated documents in the "{0}" corpus:'.format(firstcorp))
-    pprint([x.name for x in firstcorp_docs])
+    pprint([x.filename for x in firstcorp_docs])
 
     #
     # Search for frames containing LUs whose name attribute matches a
