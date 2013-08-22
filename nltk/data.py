@@ -263,7 +263,7 @@ class PathPointer(object):
         raise NotImplementedError('abstract base class')
 
 
-class FileSystemPathPointer(PathPointer):
+class FileSystemPathPointer(PathPointer,compat.text_type):
     """
     A path pointer that identifies a file which can be accessed
     directly via a given absolute path.
