@@ -37,10 +37,10 @@ import sys
 import io
 import os
 import textwrap
-import weakref
 import re
 import zipfile
 import codecs
+import bisect
 
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
 
@@ -679,8 +679,29 @@ AUTO_FORMATS = {
     'text': 'text',
 }
 
+# version mapping of the latest compatible versions
+# consists of directory & file names
+# only the nltk protocol is supported
+# python 3 compatability naming conventions:
+#   for backwards compatibility, '_py3' is appended to package names released for nltk which need a conversion
+#   to python 3, otherwise '_py2' is appended
+
+CURRENT_VERSIONS = {}
+
+if compat.PY3:
+    CURRENT_VERSIONS.update({
+        'nltk:tokenizers/punkt/': 'nltk:tokenizers/punkt_py3/',
+        'nltk:taggers/maxent_treebank_pos_tagger/': 'nltk:taggers/maxent_treebank_pos_tagger_py3/',
+        'nltk:help/tagsets/': 'nltk:help/tagsets_py3/',
+        'nltk:corpora/brown/': 'nltk:corpora/brown_py3/',
+        'nltk:chunkers/maxent_ne_chunker/': 'nltk:chunkers/maxent_ne_chunker_py3/',
+    })
+
+# sorteddict dependency is unnecessary
+CURRENT_VERSIONS_KEYS = sorted(CURRENT_VERSIONS.keys())
+
 def load(resource_url, format='auto', cache=True, verbose=False,
-         logic_parser=None, fstruct_parser=None, encoding=None):
+         logic_parser=None, fstruct_parser=None, encoding=None, versioned=True):
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
@@ -727,8 +748,16 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         feature structure of an fcfg.
     :type encoding: str
     :param encoding: the encoding of the input; only used for text formats.
+    :type versioned: bool
+    :param versioned: mapping the resource url to the latest compaitible version
+        is used iff this is True.
     """
     resource_url=_normalize_resource_url(resource_url)
+    if versioned:
+        # only map when resource exists
+        resource_map_dir=CURRENT_VERSIONS.get(bisect.bisect_right(CURRENT_VERSIONS_KEYS,resource_url)-1,None)
+        if resource_url.startswith(resource_map_dir):
+            resource_url=CURRENT_VERSIONS[resource_map_dir]+resource_url[len(resource_map_dir):]
 
     # Determine the format of the resource.
     if format == 'auto':
