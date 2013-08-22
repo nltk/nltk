@@ -273,7 +273,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             self._buildframeindex()
             name = self._frame_idx[fn_fid]['name']
         except:
-            raise(FramenetError('Unknown frame id: {0}'.format(fn_fid)))
+            raise FramenetError('Unknown frame id: {0}'.format(fn_fid))
 
         # construct the path name for the xml file containing the Frame info
         locpath = os.path.join("{0}".format(self._root),self._frame_dir,name+".xml")
@@ -307,7 +307,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             self._buildframeindex()
 
         outlist = []
-        for fid in self._frame_idx.keys():
+        for fid in list(self._frame_idx.keys()):
             f = self.frame(fid)
             if any([re.search(pat,lu.name) for lu in f.lexUnit]):
                 outlist.append((f.name,f.ID))
@@ -411,7 +411,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         try:
             elt = XMLCorpusView(locpath, 'lexUnit')[0]
         except:
-            raise(FramenetError('Unknown LU id: {0}'.format(fn_luid)))
+            raise FramenetError('Unknown LU id: {0}'.format(fn_luid))
 
         return AttrDict(self._handle_lexunit_elt(elt, ignorekeys))
 
@@ -452,7 +452,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         '''
         if sum([1 for x in [name, abbrev, id] if x is not None]) != 1:
-            raise(FramenetError("semtype(): Must specify one (and only one) arg"))
+            raise FramenetError("semtype(): Must specify one (and only one) arg")
 
         if id is None:
             key = name
@@ -534,10 +534,10 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         """
         try:
-            flist = self._frame_idx.values()
+            flist = list(self._frame_idx.values())
         except:
             self._buildframeindex()
-            flist = self._frame_idx.values()
+            flist = list(self._frame_idx.values())
 
         if name is None:
             return flist
@@ -648,10 +648,10 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
 
         try:
-            lulist = self._lu_idx.values()
+            lulist = list(self._lu_idx.values())
         except:
             self._buildluindex()
-            lulist = self._lu_idx.values()
+            lulist = list(self._lu_idx.values())
 
         if name is None:
             return lulist
@@ -692,10 +692,10 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         '''
         try:
-            ftlist = self._fulltext_idx.values()
+            ftlist = list(self._fulltext_idx.values())
         except:
             self._buildcorpusindex()
-            ftlist = self._fulltext_idx.values()
+            ftlist = list(self._fulltext_idx.values())
 
         if name is None:
             return ftlist
@@ -761,7 +761,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         # Ignore these attributes when loading attributes from an xml node
         ignore_attrs = ['cBy', 'cDate', 'mDate', 'xsi','schemaLocation','xmlns','bgColor','fgColor']
 
-        for attr in attr_dict.keys():
+        for attr in list(attr_dict.keys()):
     
             if any([attr.endswith(x) for x in ignore_attrs]):
                 continue
@@ -831,7 +831,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         for sub in elt:
             if sub.tag.endswith('document'):
                 doc = self._loadXMLAttributes(AttrDict(),sub)
-                if doc.has_key('name'):
+                if 'name' in doc:
                     docname = doc.name
                 else:
                     docname = doc.description
@@ -852,7 +852,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         frinfo['frameRelation'] = []
         frinfo['lexUnit'] = []
         frinfo['semType'] = []
-        map(frinfo.pop, [k for k in frinfo.keys() if k in ignorekeys])
+        list(map(frinfo.pop, [k for k in list(frinfo.keys()) if k in ignorekeys]))
 
         for sub in elt:
             if sub.tag.endswith('definition') and 'definition' not in ignorekeys:
@@ -978,7 +978,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         luinfo['subCorpus'] = []
         luinfo['lexeme'] = AttrDict()
         luinfo['semType'] = AttrDict()
-        map(luinfo.pop, [k for k in luinfo.keys() if k in ignorekeys])
+        list(map(luinfo.pop, [k for k in list(luinfo.keys()) if k in ignorekeys]))
 
         for sub in elt:
             if sub.tag.endswith('header'):
@@ -1002,7 +1002,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         '''Load a subcorpus of a lexical unit from the given xml.'''
         sc = AttrDict()
         try:
-            sc['name'] = unicode(elt.get('name'))
+            sc['name'] = str(elt.get('name'))
         except:
             return None
         sc['sentence'] = []
@@ -1146,7 +1146,7 @@ def demo():
     #
     print('\nAll Lexical Units that are incorporated in the "Ailment" FE:')
     m_frame = fn.frame(239)
-    ailment_lus = filter(lambda x: x.incorporatedFE == 'Ailment', m_frame.lexUnit)
+    ailment_lus = [x for x in m_frame.lexUnit if x.incorporatedFE == 'Ailment']
     print([x.name for x in ailment_lus])
 
     #
