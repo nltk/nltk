@@ -308,7 +308,7 @@ class FileSystemPathPointer(PathPointer,compat.text_type):
         return str('FileSystemPathPointer(%r)' % self._path)
 
     def __str__(self):
-        return self._path
+        return str(self._path)
 
 
 class BufferedGzipFile(GzipFile):
@@ -498,7 +498,7 @@ class ZipFilePathPointer(PathPointer):
             self._zipfile.filename, self._entry)
 
     def __str__(self):
-        return os.path.normpath(os.path.join(self._zipfile.filename, self._entry))
+        return str(os.path.normpath(os.path.join(self._zipfile.filename, self._entry)))
 
 ######################################################################
 # Access Functions
