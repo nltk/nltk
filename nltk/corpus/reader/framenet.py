@@ -188,7 +188,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         :type fn_fid: int
 
         :param ignorekeys: The keys to ignore. These keys will not be
-                           included in the output. (optional) 
+                           included in the output. (optional)
         :type ignorekeys: list of key names
 
         :return: Information about a frame
@@ -266,7 +266,7 @@ class FramenetCorpusReader(XMLCorpusReader):
               - 'excludesFE' : a dict containing the following two keys:
                  - 'name' : the name of another FE in this frame
                  - 'ID'   : the id of the other FE in this frame
-              
+
         - 'frameRelation'      : a list frame relations
            - Each item in the list is dict containing the following keys:
               - 'type'         : a string describing the relationship
@@ -276,7 +276,7 @@ class FramenetCorpusReader(XMLCorpusReader):
            - Each item in the list is a dict with the following keys:
               - 'name' : the name of the Frame Element
               - 'ID'   : the id number of the Frame Element
-        
+
         '''
         # get the name of the frame with this id number
         try:
@@ -357,7 +357,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         :type fn_luid: int
 
         :param ignorekeys: The keys to ignore. These keys will not be
-                           included in the output. (optional) 
+                           included in the output. (optional)
         :type ignorekeys: A list of key names.
 
         :return: All information about the lexical unit
@@ -395,7 +395,7 @@ class FramenetCorpusReader(XMLCorpusReader):
               - 'ID'   : can be used with the semtype() function
         - 'subCorpus'  : a list of subcorpora
            - Each item in the list is a dict containing the following keys:
-              - 'name' : 
+              - 'name' :
               - 'sentence' : a list of sentences in the subcorpus
                  - each item in the list is a dict with the following keys:
                     - 'ID':
@@ -508,7 +508,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         [{'ID': 239, 'name': 'Medical_conditions'}, {'ID': 256, 'name': 'Medical_specialties'}, {'ID': 257, 'name': 'Medical_instruments'}, {'ID': 255, 'name': 'Medical_professionals'}]
 
         A brief intro to Frames (excerpted from "FrameNet II: Extended
-        Theory and Practice" by Ruppenhofer et. al., 2010): 
+        Theory and Practice" by Ruppenhofer et. al., 2010):
 
         A Frame is a script-like conceptual structure that describes a
         particular type of situation, object, or event along with the
@@ -568,7 +568,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                      (e.g. "run") or of multiple lexemes (e.g. "a
                      little"). If 'name' is not given, then all LUs will
                      be returned.
-                     
+
                      The list of valid POSs are:
 
                        v    - verb
@@ -623,7 +623,7 @@ class FramenetCorpusReader(XMLCorpusReader):
            - Absorb_heat: "The potatoes have to bake for more than 30 minutes."
 
         These constitute three different LUs, with different
-        definitions.  
+        definitions.
 
         Multiword expressions such as "given name" and hyphenated words
         like "shut-eye" can also be LUs. Idiomatic phrases such as
