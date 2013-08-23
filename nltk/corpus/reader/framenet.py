@@ -163,7 +163,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             # build the index
             self._buildcorpusindex()
             xmlfname = self._fulltext_idx[fn_docid].filename
-        except:  # probably means that fn_docid was not in the index
+        except KeyError:  # probably means that fn_docid was not in the index
             raise FramenetError("Unknown document id: {0}".format(fn_docid))
 
         # construct the path name for the xml file containing the document info
@@ -282,7 +282,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         except TypeError:
             self._buildframeindex()
             name = self._frame_idx[fn_fid]['name']
-        except:
+        except KeyError:
             raise FramenetError('Unknown frame id: {0}'.format(fn_fid))
 
         # construct the path name for the xml file containing the Frame info
@@ -421,7 +421,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         try:
             elt = XMLCorpusView(locpath, 'lexUnit')[0]
-        except:
+        except IOError:
             raise FramenetError('Unknown LU id: {0}'.format(fn_luid))
 
         return AttrDict(self._handle_lexunit_elt(elt, ignorekeys))
@@ -547,7 +547,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         try:
             flist = list(self._frame_idx.values())
-        except:
+        except AttributeError:
             self._buildframeindex()
             flist = list(self._frame_idx.values())
 
@@ -660,7 +660,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         try:
             lulist = list(self._lu_idx.values())
-        except:
+        except AttributeError:
             self._buildluindex()
             lulist = list(self._lu_idx.values())
 
@@ -704,7 +704,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         try:
             ftlist = list(self._fulltext_idx.values())
-        except:
+        except AttributeError:
             self._buildcorpusindex()
             ftlist = list(self._fulltext_idx.values())
 
@@ -797,7 +797,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         try:
             attr_dict = elt.attrib
-        except:
+        except AttributeError:
             return d
 
         if attr_dict is None:
@@ -851,7 +851,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             data = data.replace('</def-root>', '')
 
             data = data.replace('\n', ' ')
-        except:
+        except AttributeError:
             pass
 
         return data
@@ -898,8 +898,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         frinfo['frameRelation'] = []
         frinfo['lexUnit'] = []
         frinfo['semType'] = []
-        list(
-            map(frinfo.pop, [k for k in list(frinfo.keys()) if k in ignorekeys]))
+        for k in ignorekeys:
+            if k in frinfo:
+                del frinfo[k]
 
         for sub in elt:
             if sub.tag.endswith('definition') and 'definition' not in ignorekeys:
@@ -1029,8 +1030,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         luinfo['subCorpus'] = []
         luinfo['lexeme'] = AttrDict()
         luinfo['semType'] = AttrDict()
-        list(
-            map(luinfo.pop, [k for k in list(luinfo.keys()) if k in ignorekeys]))
+        for k in ignorekeys:
+            if k in luinfo:
+                del luinfo[k]
 
         for sub in elt:
             if sub.tag.endswith('header'):
@@ -1055,7 +1057,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         sc = AttrDict()
         try:
             sc['name'] = str(elt.get('name'))
-        except:
+        except AttributeError:
             return None
         sc['sentence'] = []
 
