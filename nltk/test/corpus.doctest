@@ -1139,14 +1139,14 @@ relations are defined, of which the most important are:
   Employer's and the Employee's point of view, respectively.
 
 To get a list of all of the Frames in FrameNet, you can use the
-`Frames()` function. If you supply a regular expression pattern to the
-`Frames()` function, you will get a list of all Frames whose names match
+`frames()` function. If you supply a regular expression pattern to the
+`frames()` function, you will get a list of all Frames whose names match
 that pattern:
 
     >>> from nltk.corpus import framenet as fn
-    >>> len(fn.Frames())
+    >>> len(fn.frames())
     1019
-    >>> fn.Frames(r'(?i)medical')
+    >>> fn.frames(r'(?i)medical')
     [{'ID': 239, 'name': 'Medical_conditions'}, {'ID': 256, 'name': 'Medical_specialties'}, {'ID': 257, 'name': 'Medical_instruments'}, {'ID': 255, 'name': 'Medical_professionals'}]
 
 To get the details of a particular Frame, you can use the `frame()`
@@ -1242,13 +1242,13 @@ typically serve as dependents rather than clearly evoking their
 own frames.
 
 Details for a specific lexical unit can be obtained using this class's
-`lexicalUnits()` function, which takes an optional regular expression
+`lexical_units()` function, which takes an optional regular expression
 pattern that will be matched against the name of the lexical unit:
 
     >>> from nltk.corpus import framenet as fn
-    >>> len(fn.lexicalUnits())
+    >>> len(fn.lexical_units())
     11829
-    >>> fn.lexicalUnits(r'(?i)a little')
+    >>> fn.lexical_units(r'(?i)a little')
     [{'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.n', 'frameID': 189, 'frameName': 'Quantity', 'ID': 14733}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14743}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little bit.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14744}]
 
 You can obtain detailed information on a particular LU by calling the
@@ -1285,10 +1285,10 @@ the `lu()` function.
 Annotated Documents
 
 The FrameNet corpus contains a small set of annotated documents. A list
-of these documents can be obtained by calling the `Documents()` function:
+of these documents can be obtained by calling the `documents()` function:
 
     >>> from nltk.corpus import framenet as fn
-    >>> docs = fn.Documents()
+    >>> docs = fn.documents()
     >>> len(docs)
     78
     >>> docs[0].keys()
