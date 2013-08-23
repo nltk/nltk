@@ -679,26 +679,47 @@ AUTO_FORMATS = {
     'text': 'text',
 }
 
-# version mapping of the latest compatible versions
-# consists of directory & file names
-# only the nltk protocol is supported
-# python 3 compatability naming conventions:
-#   for backwards compatibility, '_py3' is appended to package names released for nltk which need a conversion
-#   to python 3, otherwise '_py2' is appended
+# Version mapping of the latest compatible versions.
+# Consists of directory & file names.
+# Only the nltk protocol is supported, the file protocol is not, as it may not be possible to determine the root path
+# Python 3 compatability naming conventions:
+#   For backwards compatibility, '_PY3' is appended to the root directory inside a zipped package which need to be
+#   converted to python 3, the python 2 root directory is untouched.
 
 CURRENT_VERSIONS = {}
 
 if compat.PY3:
     CURRENT_VERSIONS.update({
-        'nltk:tokenizers/punkt/': 'nltk:tokenizers/punkt_py3/',
-        'nltk:taggers/maxent_treebank_pos_tagger/': 'nltk:taggers/maxent_treebank_pos_tagger_py3/',
-        'nltk:help/tagsets/': 'nltk:help/tagsets_py3/',
-        'nltk:corpora/brown/': 'nltk:corpora/brown_py3/',
-        'nltk:chunkers/maxent_ne_chunker/': 'nltk:chunkers/maxent_ne_chunker_py3/',
+        'nltk:tokenizers/punkt/': 'nltk:tokenizers/punkt_PY3/',
+        'nltk:taggers/maxent_treebank_pos_tagger/': 'nltk:taggers/maxent_treebank_pos_tagger_PY3/',
+        'nltk:help/tagsets/': 'nltk:help/tagsets_PY3/',
+        'nltk:corpora/brown/': 'nltk:corpora/brown_PY3/',
+        'nltk:chunkers/maxent_ne_chunker/': 'nltk:chunkers/maxent_ne_chunker_PY3/',
     })
 
 # sorteddict dependency is unnecessary
 CURRENT_VERSIONS_KEYS = sorted(CURRENT_VERSIONS.keys())
+
+def _get_current_version_url(resource_url, check_exists=True):
+    # Map if the resource has a version mapping.
+    try:
+        resource_map_dir=CURRENT_VERSIONS_KEYS[bisect.bisect(CURRENT_VERSIONS_KEYS,resource_url)-1]
+    except IndexError:
+        resource_map_dir=None
+    if resource_map_dir is not None:
+        if resource_url.startswith(resource_map_dir):
+            resource_url=CURRENT_VERSIONS[resource_map_dir]+resource_url[len(resource_map_dir):]
+        if check_exists:
+            # Check if the resource exists if it has a version mapping.
+            try:
+                find(_split_resource_url(resource_map_dir)[1], path + [''])
+            except LookupError as err:
+                msg = str(err)
+                msg_download = 'Re-download the package files so they include python 3 data.'
+                sep = '*'*70
+                resource_not_found = '\n%s\n%s\n%s\n%s\n' % (sep, msg, msg_download, sep)
+                raise LookupError(resource_not_found)
+    return resource_url
 
 def load(resource_url, format='auto', cache=True, verbose=False,
          logic_parser=None, fstruct_parser=None, encoding=None, versioned=True):
@@ -753,11 +774,6 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         is used iff this is True.
     """
     resource_url=_normalize_resource_url(resource_url)
-    if versioned:
-        # only map when resource exists
-        resource_map_dir=CURRENT_VERSIONS.get(bisect.bisect_right(CURRENT_VERSIONS_KEYS,resource_url)-1,None)
-        if resource_url.startswith(resource_map_dir):
-            resource_url=CURRENT_VERSIONS[resource_map_dir]+resource_url[len(resource_map_dir):]
 
     # Determine the format of the resource.
     if format == 'auto':
@@ -788,7 +804,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         print('<<Loading %s>>' % (resource_url,))
 
     # Load the resource.
-    opened_resource = _open(resource_url)
+    opened_resource = _open(resource_url, versioned)
 
     if format == 'raw':
         resource_val = opened_resource.read()
@@ -875,7 +891,7 @@ def clear_cache():
     """
     _resource_cache.clear()
 
-def _open(resource_url):
+def _open(resource_url, versioned=True):
     """
     Helper function that returns an open file object for a resource,
     given its resource URL.  If the given resource URL uses the "nltk:"
@@ -890,6 +906,8 @@ def _open(resource_url):
         for the file in the the NLTK data package.
     """
     resource_url = _normalize_resource_url(resource_url)
+    if versioned:
+        resource_url = _get_current_version_url(resource_url, True)
     protocol, _path = _split_resource_url(resource_url)
 
     if protocol is None or protocol.lower() == 'nltk':
