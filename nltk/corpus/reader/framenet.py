@@ -4,13 +4,12 @@
 # Author: Chuck Wooters <wooters@icsi.berkeley.edu>x
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function
 
 """
 Corpus reader for the Framenet 1.5 Corpus.
-
-Once this class has been instantiated, it
 """
-from __future__ import absolute_import, unicode_literals, print_function
+
 __docformat__ = 'epytext en'
 
 import os
@@ -18,10 +17,14 @@ import re
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
 
+
 class FramenetError(Exception):
+
     '''An exception class for framenet-related errors.'''
 
+
 class AttrDict(dict):
+
     '''A class that wraps a dict and allows accessing the keys of the
     dict as if they were attributes. Taken from here:
        http://stackoverflow.com/a/14620633/8879
@@ -37,33 +40,40 @@ class AttrDict(dict):
     {'a': 1, 'c': 3, 'b': 2, 'd': 4}
     >>>
     '''
+
     def __init__(self, *args, **kwargs):
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
+
 class FramenetCorpusReader(XMLCorpusReader):
+
     """
     A corpus reader for the Framenet Corpus.
     """
+
     def __init__(self, root, fileids):
         XMLCorpusReader.__init__(self, root, fileids)
 
         # framenet corpus sub dirs
-        self._frame_dir = "frame" # sub dir containing the xml files for frames
-        self._lu_dir = "lu"       # sub dir containing the xml files for lexical units
-        self._fulltext_dir = "fulltext"  # sub dir containing the xml files for fulltext annotation files
+        # sub dir containing the xml files for frames
+        self._frame_dir = "frame"
+        # sub dir containing the xml files for lexical units
+        self._lu_dir = "lu"
+        # sub dir containing the xml files for fulltext annotation files
+        self._fulltext_dir = "fulltext"
 
         # Indexes used for faster look-ups
-        self._frame_idx   = None
-        self._lu_idx   = None
-        self._fulltext_idx   = None
+        self._frame_idx = None
+        self._lu_idx = None
+        self._fulltext_idx = None
         self._semTypes = None
 
     def _buildframeindex(self):
         # The total number of Frames in Framenet is fairly small (~1200) so
         # this index should not be very large
         self._frame_idx = {}
-        for f in XMLCorpusView(self.abspath("frameIndex.xml"), 
+        for f in XMLCorpusView(self.abspath("frameIndex.xml"),
                                'frameIndex/frame', self._handle_elt):
             self._frame_idx[f['ID']] = f
 
@@ -71,8 +81,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         # The total number of fulltext annotated documents in Framenet
         # is fairly small (~90) so this index should not be very large
         self._fulltext_idx = {}
-        for doclist in XMLCorpusView(self.abspath("fulltextIndex.xml"), 
-                                     'fulltextIndex/corpus', 
+        for doclist in XMLCorpusView(self.abspath("fulltextIndex.xml"),
+                                     'fulltextIndex/corpus',
                                      self._handle_fulltextindex_elt):
             for doc in doclist:
                 self._fulltext_idx[doc.ID] = doc
@@ -81,8 +91,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         # The number of LUs in Framenet is about 13,000 so this index
         # should not be very large
         self._lu_idx = {}
-        for lu in XMLCorpusView(self.abspath("luIndex.xml"), 
-                               'luIndex/lu', self._handle_elt):
+        for lu in XMLCorpusView(self.abspath("luIndex.xml"),
+                                'luIndex/lu', self._handle_elt):
             self._lu_idx[lu['ID']] = lu
 
     def readme(self):
@@ -151,20 +161,21 @@ class FramenetCorpusReader(XMLCorpusReader):
         '''
         try:
             xmlfname = self._fulltext_idx[fn_docid].filename
-        except TypeError: # happens when self._fulltext_idx == None
+        except TypeError:  # happens when self._fulltext_idx == None
             # build the index
             self._buildcorpusindex()
             xmlfname = self._fulltext_idx[fn_docid].filename
-        except: # probably means that fn_docid was not in the index
+        except:  # probably means that fn_docid was not in the index
             raise FramenetError("Unknown document id: {0}".format(fn_docid))
 
         # construct the path name for the xml file containing the document info
-        locpath = os.path.join(self._root,self._fulltext_dir,xmlfname)
+        locpath = os.path.join(
+            "{0}".format(self._root), self._fulltext_dir, xmlfname)
 
         # Grab the top-level xml element containing the fulltext annotation
         elt = XMLCorpusView(locpath, 'fullTextAnnotation')[0]
         return AttrDict(self._handle_fulltextannotation_elt(elt))
-    
+
     def frame(self, fn_fid, ignorekeys=[]):
         '''
         Get the details for the specified Frame using the frame's id
@@ -177,7 +188,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         :type fn_fid: int
 
         :param ignorekeys: The keys to ignore. These keys will not be
-                           included in the output. (optional) 
+                           included in the output. (optional)
         :type ignorekeys: list of key names
 
         :return: Information about a frame
@@ -191,14 +202,14 @@ class FramenetCorpusReader(XMLCorpusReader):
         256
         >>> f.name
         'Medical_specialties'
-        >>> f.definition # doctest:+ELLIPSIS
-        u"This frame includes words that name ..."
+        >>> f.definition # doctest: +ELLIPSIS
+        "This frame includes words that name ..."
         >>> len(f.lexUnit)
         29
         >>> [x.name for x in f.FE]
         ['Specialty', 'Type', 'Body_system', 'Affliction']
         >>> f.frameRelation
-        [{u'relatedFrame': ['Medical_interaction_scenario'], 'type': 'Uses'}]
+        [{'relatedFrame': ['Cure'], 'type': 'Uses'}]
 
         The dict that is returned from this function will contain the
         following information about the Frame:
@@ -255,7 +266,7 @@ class FramenetCorpusReader(XMLCorpusReader):
               - 'excludesFE' : a dict containing the following two keys:
                  - 'name' : the name of another FE in this frame
                  - 'ID'   : the id of the other FE in this frame
-              
+
         - 'frameRelation'      : a list frame relations
            - Each item in the list is dict containing the following keys:
               - 'type'         : a string describing the relationship
@@ -265,7 +276,7 @@ class FramenetCorpusReader(XMLCorpusReader):
            - Each item in the list is a dict with the following keys:
               - 'name' : the name of the Frame Element
               - 'ID'   : the id number of the Frame Element
-        
+
         '''
         # get the name of the frame with this id number
         try:
@@ -274,10 +285,11 @@ class FramenetCorpusReader(XMLCorpusReader):
             self._buildframeindex()
             name = self._frame_idx[fn_fid]['name']
         except:
-            raise(FramenetError('Unknown frame id: {0}'.format(fn_fid)))
+            raise FramenetError('Unknown frame id: {0}'.format(fn_fid))
 
         # construct the path name for the xml file containing the Frame info
-        locpath = os.path.join(self._root,self._frame_dir,name+".xml")
+        locpath = os.path.join(
+            "{0}".format(self._root), self._frame_dir, name + ".xml")
 
         # Grab the xml for the frame from the file
         elt = XMLCorpusView(locpath, 'frame')[0]
@@ -301,17 +313,17 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         >>> from nltk.corpus import framenet as fn
         >>> fn.frames_by_lemma(r'(?i)a little')
-        [('Quantified_mass', 189), ('Degree', 2001)]
+        [('Quantity', 189), ('Degree', 2001)]
 
         '''
         if self._frame_idx is None:
             self._buildframeindex()
 
         outlist = []
-        for fid in self._frame_idx.keys():
+        for fid in list(self._frame_idx.keys()):
             f = self.frame(fid)
-            if any([re.search(pat,lu.name) for lu in f.lexUnit]):
-                outlist.append((f.name,f.ID))
+            if any([re.search(pat, lu.name) for lu in f.lexUnit]):
+                outlist.append((f.name, f.ID))
 
         return outlist
 
@@ -345,7 +357,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         :type fn_luid: int
 
         :param ignorekeys: The keys to ignore. These keys will not be
-                           included in the output. (optional) 
+                           included in the output. (optional)
         :type ignorekeys: A list of key names.
 
         :return: All information about the lexical unit
@@ -357,7 +369,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> fn.lu(256).name
         'foresee.v'
         >>> fn.lu(256).definition
-        u'COD: be aware of beforehand; predict.'
+        'COD: be aware of beforehand; predict.'
         >>> fn.lu(256).frame
         'Expectation'
         >>> fn.lu(256).lexeme
@@ -383,7 +395,7 @@ class FramenetCorpusReader(XMLCorpusReader):
               - 'ID'   : can be used with the semtype() function
         - 'subCorpus'  : a list of subcorpora
            - Each item in the list is a dict containing the following keys:
-              - 'name' : 
+              - 'name' :
               - 'sentence' : a list of sentences in the subcorpus
                  - each item in the list is a dict with the following keys:
                     - 'ID':
@@ -407,12 +419,12 @@ class FramenetCorpusReader(XMLCorpusReader):
         '''
 
         fname = "lu{0}.xml".format(fn_luid)
-        locpath = os.path.join(self._root,self._lu_dir,fname)
+        locpath = os.path.join("{0}".format(self._root), self._lu_dir, fname)
 
         try:
             elt = XMLCorpusView(locpath, 'lexUnit')[0]
         except:
-            raise(FramenetError('Unknown LU id: {0}'.format(fn_luid)))
+            raise FramenetError('Unknown LU id: {0}'.format(fn_luid))
 
         return AttrDict(self._handle_lexunit_elt(elt, ignorekeys))
 
@@ -453,7 +465,8 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         '''
         if sum([1 for x in [name, abbrev, id] if x is not None]) != 1:
-            raise(FramenetError("semtype(): Must specify one (and only one) arg"))
+            raise FramenetError(
+                "semtype(): Must specify one (and only one) arg")
 
         if id is None:
             key = name
@@ -495,7 +508,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         [{'ID': 239, 'name': 'Medical_conditions'}, {'ID': 256, 'name': 'Medical_specialties'}, {'ID': 257, 'name': 'Medical_instruments'}, {'ID': 255, 'name': 'Medical_professionals'}]
 
         A brief intro to Frames (excerpted from "FrameNet II: Extended
-        Theory and Practice" by Ruppenhofer et. al., 2010): 
+        Theory and Practice" by Ruppenhofer et. al., 2010):
 
         A Frame is a script-like conceptual structure that describes a
         particular type of situation, object, or event along with the
@@ -535,16 +548,15 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         """
         try:
-            flist = self._frame_idx.values()
+            flist = list(self._frame_idx.values())
         except:
             self._buildframeindex()
-            flist = self._frame_idx.values()
+            flist = list(self._frame_idx.values())
 
         if name is None:
             return flist
         else:
-            return [x for x in flist if re.search(name,x['name']) is not None]
-
+            return [x for x in flist if re.search(name, x['name']) is not None]
 
     def lexicalUnits(self, name=None):
         """
@@ -556,7 +568,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                      (e.g. "run") or of multiple lexemes (e.g. "a
                      little"). If 'name' is not given, then all LUs will
                      be returned.
-                     
+
                      The list of valid POSs are:
 
                        v    - verb
@@ -611,7 +623,7 @@ class FramenetCorpusReader(XMLCorpusReader):
            - Absorb_heat: "The potatoes have to bake for more than 30 minutes."
 
         These constitute three different LUs, with different
-        definitions.  
+        definitions.
 
         Multiword expressions such as "given name" and hyphenated words
         like "shut-eye" can also be LUs. Idiomatic phrases such as
@@ -649,16 +661,16 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
 
         try:
-            lulist = self._lu_idx.values()
+            lulist = list(self._lu_idx.values())
         except:
             self._buildluindex()
-            lulist = self._lu_idx.values()
+            lulist = list(self._lu_idx.values())
 
         if name is None:
             return lulist
         else:
-            return [x for x in lulist if re.search(name,x['name']) is not None]
-            
+            return [x for x in lulist if re.search(name, x['name']) is not None]
+
     def Documents(self, name=None):
         '''
         Returns a list of the annotated documents in Framenet.
@@ -693,50 +705,83 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         '''
         try:
-            ftlist = self._fulltext_idx.values()
+            ftlist = list(self._fulltext_idx.values())
         except:
             self._buildcorpusindex()
-            ftlist = self._fulltext_idx.values()
+            ftlist = list(self._fulltext_idx.values())
 
         if name is None:
             return ftlist
         else:
-            return [x for x in ftlist if re.search(name,x['filename']) is not None]
+            return [x for x in ftlist if re.search(name, x['filename']) is not None]
 
     def frameRelationTypes(self):
         """
         :return: A list of all of the frame relation types in framenet
         :rtype: list(dict)
+
+        >>> frts = fn.frameRelationTypes()
+        >>> type(frts)
+        <type 'list'>
+        >>> len(frts)
+        9
+        >>> frts[0]
+        {'superFrameName': 'Parent', 'subFrameName': 'Child', 'ID': 1, 'name': 'Inheritance'}
+
         """
-        return [x for x in XMLCorpusView(self.abspath("frRelation.xml"), 
-                                         'frameRelations/frameRelationType', 
+        return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
+                                         'frameRelations/frameRelationType',
                                          self._handle_elt)]
 
     def frameRelations(self):
         """
         :return: A list of all of the frame relations in framenet
         :rtype: list(dict)
+
+        >>> frels = fn.frameRelations()
+        >>> type(frels)
+        <type 'list'>
+        >>> len(frels)
+        1676
+
         """
-        return [x for x in XMLCorpusView(self.abspath("frRelation.xml"), 
-                                         'frameRelations/frameRelationType/frameRelation', 
+        return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
+                                         'frameRelations/frameRelationType/frameRelation',
                                          self._handle_elt)]
 
     def FERelations(self):
         """
         :return: A list of all of the frame element relations in framenet
         :rtype: list(dict)
+
+        >>> ferels = fn.FERelations()
+        >>> type(ferels)
+        <type 'list'>
+        >>> len(ferels)
+        10020
+        >>> ferels[0]
+        {'subID': 2921, 'subFEName': 'Time', 'superFEName': 'Time', 'ID': 808, 'supID': 1446}
+
         """
-        return [x for x in XMLCorpusView(self.abspath("frRelation.xml"), 
-                                         'frameRelations/frameRelationType/frameRelation/FERelation', 
+        return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
+                                         'frameRelations/frameRelationType/frameRelation/FERelation',
                                          self._handle_elt)]
 
     def semTypes(self):
         """
-        :return: A list of all of the semantic types  in framenet
+        :return: A list of all of the semantic types in framenet
         :rtype: list(dict)
+
+        >>> from nltk.corpus import framenet as fn
+        >>> stypes = = fn.semTypes()
+        >>> len(stypes)
+        73
+        >>> stypes[0].keys()
+        ['superType', 'definition', 'abbrev', 'name', 'ID']
+
         """
-        return [x for x in XMLCorpusView(self.abspath("semTypes.xml"), 
-                                         'semTypes/semType', 
+        return [x for x in XMLCorpusView(self.abspath("semTypes.xml"),
+                                         'semTypes/semType',
                                          self._handle_semtype_elt)]
 
     def _loadXMLAttributes(self, d, elt):
@@ -757,16 +802,18 @@ class FramenetCorpusReader(XMLCorpusReader):
         except:
             return d
 
-        if attr_dict is None: return d
+        if attr_dict is None:
+            return d
 
         # Ignore these attributes when loading attributes from an xml node
-        ignore_attrs = ['cBy', 'cDate', 'mDate', 'xsi','schemaLocation','xmlns','bgColor','fgColor']
+        ignore_attrs = ['cBy', 'cDate', 'mDate', 'xsi',
+                        'schemaLocation', 'xmlns', 'bgColor', 'fgColor']
 
-        for attr in attr_dict.keys():
-    
+        for attr in list(attr_dict.keys()):
+
             if any([attr.endswith(x) for x in ignore_attrs]):
                 continue
-    
+
             val = attr_dict[attr]
             if val.isdigit():
                 d[attr] = int(val)
@@ -800,11 +847,11 @@ class FramenetCorpusReader(XMLCorpusReader):
             data = data.replace('</gov>', '')
             data = data.replace('<x>', '')
             data = data.replace('</x>', '')
-    
+
             # Get rid of <def-root> and </def-root> tags
             data = data.replace('<def-root>', '')
             data = data.replace('</def-root>', '')
-            
+
             data = data.replace('\n', ' ')
         except:
             pass
@@ -813,7 +860,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def _handle_elt(self, elt, tagspec=None):
         '''Extracts and returns the attributes of the given element'''
-        return self._loadXMLAttributes(AttrDict(),elt)
+        return self._loadXMLAttributes(AttrDict(), elt)
 
     def _handle_fulltextindex_elt(self, elt, tagspec=None):
         '''Extracts corpus/document info from the fulltextIndex.xml
@@ -827,23 +874,23 @@ class FramenetCorpusReader(XMLCorpusReader):
         '''
         ftinfo = self._loadXMLAttributes(AttrDict(), elt)
         corpname = ftinfo.name
-        corpid   = ftinfo.ID
+        corpid = ftinfo.ID
         retlist = []
         for sub in elt:
             if sub.tag.endswith('document'):
-                doc = self._loadXMLAttributes(AttrDict(),sub)
-                if doc.has_key('name'):
+                doc = self._loadXMLAttributes(AttrDict(), sub)
+                if 'name' in doc:
                     docname = doc.name
                 else:
                     docname = doc.description
-                doc.filename = "{0}__{1}.xml".format(corpname,docname)
+                doc.filename = "{0}__{1}.xml".format(corpname, docname)
                 doc.corpname = corpname
-                doc.corpid   = corpid
+                doc.corpid = corpid
                 retlist.append(doc)
 
         return retlist
 
-    def  _handle_frame_elt(self, elt, ignorekeys=[]):
+    def _handle_frame_elt(self, elt, ignorekeys=[]):
         '''Load the info for a Frame from an frame xml file'''
         frinfo = self._loadXMLAttributes(AttrDict(), elt)
 
@@ -853,7 +900,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         frinfo['frameRelation'] = []
         frinfo['lexUnit'] = []
         frinfo['semType'] = []
-        map(frinfo.pop, [k for k in frinfo.keys() if k in ignorekeys])
+        list(
+            map(frinfo.pop, [k for k in list(frinfo.keys()) if k in ignorekeys]))
 
         for sub in elt:
             if sub.tag.endswith('definition') and 'definition' not in ignorekeys:
@@ -869,7 +917,8 @@ class FramenetCorpusReader(XMLCorpusReader):
             elif sub.tag.endswith('lexUnit') and 'lexUnit' not in ignorekeys:
                 frinfo['lexUnit'].append(self._handle_framelexunit_elt(sub))
             elif sub.tag.endswith('semType') and 'semType' not in ignorekeys:
-                frinfo['semType'].append(self._loadXMLAttributes(AttrDict(),sub))
+                frinfo['semType'].append(
+                    self._loadXMLAttributes(AttrDict(), sub))
 
         return frinfo
 
@@ -884,7 +933,8 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def _handle_framerelation_elt(self, elt):
         '''Load frame relation info from an xml element in a frame.'''
-        if len(elt) == 0: return None
+        if len(elt) == 0:
+            return None
         info = self._loadXMLAttributes(AttrDict(), elt)
         info['relatedFrame'] = []
         for sub in elt:
@@ -903,7 +953,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         for sub in elt:
             if sub.tag.endswith('header'):
-                continue # not used
+                continue  # not used
             elif sub.tag.endswith('sentence'):
                 s = self._handle_fulltext_sentence_elt(sub)
                 info['sentence'].append(s)
@@ -914,7 +964,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         '''Load information from the given "sentence" element. Each
         "sentence" element contains a "text" and an "annotationSet" sub
         element.'''
-        info = self._loadXMLAttributes(AttrDict(),elt)
+        info = self._loadXMLAttributes(AttrDict(), elt)
         info['annotationSet'] = []
         info['text'] = ""
 
@@ -924,13 +974,13 @@ class FramenetCorpusReader(XMLCorpusReader):
             elif sub.tag.endswith('annotationSet'):
                 a = self._handle_fulltextannotationset_elt(sub)
                 info['annotationSet'].append(a)
-                
+
         return info
 
     def _handle_fulltextannotationset_elt(self, elt):
         '''Load information from the given "annotationSet" element. Each
         "annotationSet" contains several "layer" elements.'''
-        info = self._loadXMLAttributes(AttrDict(),elt)
+        info = self._loadXMLAttributes(AttrDict(), elt)
         info['layer'] = []
 
         for sub in elt:
@@ -943,12 +993,12 @@ class FramenetCorpusReader(XMLCorpusReader):
     def _handle_fulltextlayer_elt(self, elt):
         '''Load information from the given "layer" element. Each
         "layer" contains several "label" elements.'''
-        info = self._loadXMLAttributes(AttrDict(),elt)
+        info = self._loadXMLAttributes(AttrDict(), elt)
         info['label'] = []
 
         for sub in elt:
             if sub.tag.endswith('label'):
-                l = self._loadXMLAttributes(AttrDict(),sub)
+                l = self._loadXMLAttributes(AttrDict(), sub)
                 info['label'].append(l)
 
         return info
@@ -957,7 +1007,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         '''Load the lexical unit info from an xml element in a frame's xml file.'''
         luinfo = AttrDict()
         luinfo['incorporatedFE'] = ""
-        luinfo = self._loadXMLAttributes(luinfo,elt)
+        luinfo = self._loadXMLAttributes(luinfo, elt)
         luinfo["definition"] = ""
         luinfo["sentenceCount"] = AttrDict()
         luinfo["lexeme"] = []
@@ -966,26 +1016,29 @@ class FramenetCorpusReader(XMLCorpusReader):
             if sub.tag.endswith('definition'):
                 luinfo['definition'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('sentenceCount'):
-                luinfo['sentenceCount'] = self._loadXMLAttributes(AttrDict(),sub)
+                luinfo['sentenceCount'] = self._loadXMLAttributes(
+                    AttrDict(), sub)
             elif sub.tag.endswith('lexeme'):
-                luinfo['lexeme'].append(self._loadXMLAttributes(AttrDict(),sub))
+                luinfo['lexeme'].append(
+                    self._loadXMLAttributes(AttrDict(), sub))
 
         return luinfo
 
     def _handle_lexunit_elt(self, elt, ignorekeys):
         '''Load full info for a lexical unit from its xml file.'''
-        luinfo = self._loadXMLAttributes(AttrDict(),elt)
+        luinfo = self._loadXMLAttributes(AttrDict(), elt)
         luinfo['definition'] = ""
         luinfo['subCorpus'] = []
         luinfo['lexeme'] = AttrDict()
         luinfo['semType'] = AttrDict()
-        map(luinfo.pop, [k for k in luinfo.keys() if k in ignorekeys])
+        list(
+            map(luinfo.pop, [k for k in list(luinfo.keys()) if k in ignorekeys]))
 
         for sub in elt:
             if sub.tag.endswith('header'):
-                continue # not used
+                continue  # not used
             elif sub.tag.endswith('valences'):
-                continue # not used
+                continue  # not used
             elif sub.tag.endswith('definition') and 'definition' not in ignorekeys:
                 luinfo['definition'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('subCorpus') and 'subCorpus' not in ignorekeys:
@@ -993,9 +1046,9 @@ class FramenetCorpusReader(XMLCorpusReader):
                 if sc is not None:
                     luinfo['subCorpus'].append(sc)
             elif sub.tag.endswith('lexeme') and 'lexeme' not in ignorekeys:
-                luinfo['lexeme'] = self._loadXMLAttributes(AttrDict(),sub)
+                luinfo['lexeme'] = self._loadXMLAttributes(AttrDict(), sub)
             elif sub.tag.endswith('semType') and 'semType' not in ignorekeys:
-                luinfo['semType'] = self._loadXMLAttributes(AttrDict(),sub)
+                luinfo['semType'] = self._loadXMLAttributes(AttrDict(), sub)
 
         return luinfo
 
@@ -1003,7 +1056,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         '''Load a subcorpus of a lexical unit from the given xml.'''
         sc = AttrDict()
         try:
-            sc['name'] = unicode(elt.get('name'))
+            sc['name'] = str(elt.get('name'))
         except:
             return None
         sc['sentence'] = []
@@ -1039,10 +1092,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                 if l is not None:
                     info['layer'].append(l)
         return info
-    
+
     def _handle_lulayer_elt(self, elt):
         '''Load a layer from an annotation set'''
-        layer = self._loadXMLAttributes(AttrDict(),elt)
+        layer = self._loadXMLAttributes(AttrDict(), elt)
         layer['label'] = []
 
         for sub in elt:
@@ -1062,11 +1115,11 @@ class FramenetCorpusReader(XMLCorpusReader):
             if sub.tag.endswith('definition'):
                 feinfo['definition'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('semType'):
-                feinfo['semType'] = self._loadXMLAttributes(AttrDict(),sub)
+                feinfo['semType'] = self._loadXMLAttributes(AttrDict(), sub)
             elif sub.tag.endswith('requiresFE'):
-                feinfo['requiresFE'] = self._loadXMLAttributes(AttrDict(),sub)
+                feinfo['requiresFE'] = self._loadXMLAttributes(AttrDict(), sub)
             elif sub.tag.endswith('excludesFE'):
-                feinfo['excludesFE'] = self._loadXMLAttributes(AttrDict(),sub)
+                feinfo['excludesFE'] = self._loadXMLAttributes(AttrDict(), sub)
 
         return feinfo
 
@@ -1076,15 +1129,14 @@ class FramenetCorpusReader(XMLCorpusReader):
             if sub.text is not None:
                 semt['definition'] = self._strip_tags(sub.text)
             else:
-                semt['superType'] = self._loadXMLAttributes(AttrDict(),sub)
+                semt['superType'] = self._loadXMLAttributes(AttrDict(), sub)
 
         return semt
 
 
-
-######################################################################
+#
 # Demo
-######################################################################
+#
 def demo():
     from pprint import pprint
     from nltk.corpus import framenet as fn
@@ -1100,9 +1152,9 @@ def demo():
     #
     # Get some statistics about the corpus
     #
-    print('Number of Frames:',len(fn.Frames()) )
-    print('Number of Lexical Units:',len(fn.lexicalUnits()) )
-    print('Number of annotated documents:',len(fn.Documents()) )
+    print('Number of Frames:', len(fn.Frames()))
+    print('Number of Lexical Units:', len(fn.lexicalUnits()))
+    print('Number of annotated documents:', len(fn.Documents()))
     print()
 
     #
@@ -1110,36 +1162,40 @@ def demo():
     #
     print('getting frames whose name matches the (case insensitive) regex: "(?i)medical"')
     medframes = fn.Frames(r'(?i)medical')
-    print('Found {0} Frames whose name matches "(?i)medical":'.format(len(medframes)))
-    print([(f.name,f.ID) for f in medframes])
+    print(
+        'Found {0} Frames whose name matches "(?i)medical":'.format(len(medframes)))
+    print([(f.name, f.ID) for f in medframes])
 
     #
     # store the first frame in the list of frames
     #
-    tmp_id    = medframes[0].ID 
-    m_frame  = fn.frame(tmp_id) # reads all info for the frame
+    tmp_id = medframes[0].ID
+    m_frame = fn.frame(tmp_id)  # reads all info for the frame
 
     #
     # get the frame relations
     #
-    print('\nNumber of frame relations for the "{0}" ({1}) frame:'.format(m_frame.name,
-                                                                          m_frame.ID),
-          len(m_frame.frameRelation))
+    print(
+        '\nNumber of frame relations for the "{0}" ({1}) frame:'.format(m_frame.name,
+                                                                        m_frame.ID),
+        len(m_frame.frameRelation))
     for fr in m_frame.frameRelation:
-        print('   ',fr.type+":",fr.relatedFrame)
+        print('   ', fr.type + ":", fr.relatedFrame)
 
     #
     # get the names of the Frame Elements
     #
-    print('\nNumber of Frame Elements in the "{0}" frame:'.format(m_frame.name),
-          len(m_frame.FE))
-    print('   ',[x.name for x in m_frame.FE])
+    print(
+        '\nNumber of Frame Elements in the "{0}" frame:'.format(m_frame.name),
+        len(m_frame.FE))
+    print('   ', [x.name for x in m_frame.FE])
 
     #
     # get the names of the "Core" Frame Elements
     #
-    print('\nThe "core" Frame Elements in the "{0}" frame:'.format(m_frame.name))
-    print('   ',[x.name for x in m_frame.FE if x.coreType == "Core"])
+    print(
+        '\nThe "core" Frame Elements in the "{0}" frame:'.format(m_frame.name))
+    print('   ', [x.name for x in m_frame.FE if x.coreType == "Core"])
 
     #
     # get all of the Lexical Units that are incorporated in the
@@ -1147,7 +1203,7 @@ def demo():
     #
     print('\nAll Lexical Units that are incorporated in the "Ailment" FE:')
     m_frame = fn.frame(239)
-    ailment_lus = filter(lambda x: x.incorporatedFE == 'Ailment', m_frame.lexUnit)
+    ailment_lus = [x for x in m_frame.lexUnit if x.incorporatedFE == 'Ailment']
     print([x.name for x in ailment_lus])
 
     #
@@ -1155,13 +1211,13 @@ def demo():
     #
     print('\nNumber of Lexical Units in the "{0}" frame:'.format(m_frame.name),
           len(m_frame.lexUnit))
-    print('  ',[x.name for x in m_frame.lexUnit[:5]],'...')
+    print('  ', [x.name for x in m_frame.lexUnit[:5]], '...')
 
     #
     # get basic info on the second LU in the frame
     #
-    tmp_id = m_frame.lexUnit[1].ID # grab the id of the second LU
-    luinfo = fn.lu_basic(tmp_id) # get basic info on the LU
+    tmp_id = m_frame.lexUnit[1].ID  # grab the id of the second LU
+    luinfo = fn.lu_basic(tmp_id)  # get basic info on the LU
     print('\nInformation on the LU: {0}'.format(luinfo.name))
     pprint(luinfo)
 
@@ -1177,8 +1233,9 @@ def demo():
     #
     firstcorp = list(allcorpora)[0]
     firstcorp_docs = fn.Documents(firstcorp)
-    print('\nNames of the annotated documents in the "{0}" corpus:'.format(firstcorp))
-    pprint([x.name for x in firstcorp_docs])
+    print(
+        '\nNames of the annotated documents in the "{0}" corpus:'.format(firstcorp))
+    pprint([x.filename for x in firstcorp_docs])
 
     #
     # Search for frames containing LUs whose name attribute matches a
