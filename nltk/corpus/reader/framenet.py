@@ -202,14 +202,14 @@ class FramenetCorpusReader(XMLCorpusReader):
         256
         >>> f.name
         'Medical_specialties'
-        >>> f.definition # doctest:+ELLIPSIS
-        u"This frame includes words that name ..."
+        >>> f.definition # doctest: +ELLIPSIS
+        "This frame includes words that name ..."
         >>> len(f.lexUnit)
         29
         >>> [x.name for x in f.FE]
         ['Specialty', 'Type', 'Body_system', 'Affliction']
         >>> f.frameRelation
-        [{u'relatedFrame': ['Medical_interaction_scenario'], 'type': 'Uses'}]
+        [{'relatedFrame': ['Cure'], 'type': 'Uses'}]
 
         The dict that is returned from this function will contain the
         following information about the Frame:
@@ -313,7 +313,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         >>> from nltk.corpus import framenet as fn
         >>> fn.frames_by_lemma(r'(?i)a little')
-        [('Quantified_mass', 189), ('Degree', 2001)]
+        [('Quantity', 189), ('Degree', 2001)]
 
         '''
         if self._frame_idx is None:
@@ -369,7 +369,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> fn.lu(256).name
         'foresee.v'
         >>> fn.lu(256).definition
-        u'COD: be aware of beforehand; predict.'
+        'COD: be aware of beforehand; predict.'
         >>> fn.lu(256).frame
         'Expectation'
         >>> fn.lu(256).lexeme
@@ -719,6 +719,15 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         :return: A list of all of the frame relation types in framenet
         :rtype: list(dict)
+
+        >>> frts = fn.frameRelationTypes()
+        >>> type(frts)
+        <type 'list'>
+        >>> len(frts)
+        9
+        >>> frts[0]
+        {'superFrameName': 'Parent', 'subFrameName': 'Child', 'ID': 1, 'name': 'Inheritance'}
+
         """
         return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
                                          'frameRelations/frameRelationType',
@@ -728,6 +737,13 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         :return: A list of all of the frame relations in framenet
         :rtype: list(dict)
+
+        >>> frels = fn.frameRelations()
+        >>> type(frels)
+        <type 'list'>
+        >>> len(frels)
+        1676
+
         """
         return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
                                          'frameRelations/frameRelationType/frameRelation',
@@ -737,6 +753,15 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         :return: A list of all of the frame element relations in framenet
         :rtype: list(dict)
+
+        >>> ferels = fn.FERelations()
+        >>> type(ferels)
+        <type 'list'>
+        >>> len(ferels)
+        10020
+        >>> ferels[0]
+        {'subID': 2921, 'subFEName': 'Time', 'superFEName': 'Time', 'ID': 808, 'supID': 1446}
+
         """
         return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
                                          'frameRelations/frameRelationType/frameRelation/FERelation',
@@ -744,8 +769,16 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def semTypes(self):
         """
-        :return: A list of all of the semantic types  in framenet
+        :return: A list of all of the semantic types in framenet
         :rtype: list(dict)
+
+        >>> from nltk.corpus import framenet as fn
+        >>> stypes = = fn.semTypes()
+        >>> len(stypes)
+        73
+        >>> stypes[0].keys()
+        ['superType', 'definition', 'abbrev', 'name', 'ID']
+
         """
         return [x for x in XMLCorpusView(self.abspath("semTypes.xml"),
                                          'semTypes/semType',
