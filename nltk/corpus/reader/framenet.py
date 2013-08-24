@@ -119,12 +119,6 @@ class FramenetCorpusReader(XMLCorpusReader):
         ``fn_docid``. This id number can be obtained by calling the
         Documents() function.
 
-        :param fn_docid: The Framenet id number of the document
-        :type fn_docid: int
-
-        :return: Information about the annotated document
-        :rtype: dict
-
         The dict that is returned from this function will contain the
         following information about the annotated document:
 
@@ -156,6 +150,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                                 - 'name'
                                 - 'feID' (optional)
 
+        :param fn_docid: The Framenet id number of the document
+        :type fn_docid: int
+        :return: Information about the annotated document
+        :rtype: dict
         """
         try:
             xmlfname = self._fulltext_idx[fn_docid].filename
@@ -181,16 +179,6 @@ class FramenetCorpusReader(XMLCorpusReader):
         file on disk each time it is called. So, you may want to cache
         this info if you plan to call this function with the same id
         number multiple times.
-
-        :param fn_fid: The Framenet id number of the frame
-        :type fn_fid: int
-
-        :param ignorekeys: The keys to ignore. These keys will not be
-                           included in the output. (optional)
-        :type ignorekeys: list of key names
-
-        :return: Information about a frame
-        :rtype: dict
 
         Usage examples:
 
@@ -275,6 +263,13 @@ class FramenetCorpusReader(XMLCorpusReader):
               - 'name' : the name of the Frame Element
               - 'ID'   : the id number of the Frame Element
 
+        :param fn_fid: The Framenet id number of the frame
+        :type fn_fid: int
+        :param ignorekeys: The keys to ignore. These keys will not be
+            included in the output. (optional)
+        :type ignorekeys: list(str)
+        :return: Information about a frame
+        :rtype: dict
         """
         # get the name of the frame with this id number
         try:
@@ -306,13 +301,12 @@ class FramenetCorpusReader(XMLCorpusReader):
         frames because each time frames_by_lemma() is called, it has to
         search through ALL of the frame XML files in the db.
 
-        :return: A list of tuples where each tuple has the frame name and ID.
-        :rtype: list(tuple)
-
         >>> from nltk.corpus import framenet as fn
         >>> fn.frames_by_lemma(r'(?i)a little')
         [('Quantity', 189), ('Degree', 2001)]
 
+        :return: A list of tuples where each tuple has the frame name and ID.
+        :rtype: list(tuple)
         """
         if self._frame_idx is None:
             self._buildframeindex()
@@ -331,15 +325,14 @@ class FramenetCorpusReader(XMLCorpusReader):
         ``fn_luid``. This is basically just a wrapper around the
         ``lu()`` function with "subCorpus" info excluded.
 
-        :param fn_luid: The id number of the desired LU
-        :type fn_luid: int
-
-        :return: Basic information about the lexical unit
-        :rtype: dict
-
         >>> from nltk.corpus import framenet as fn
         >>> fn.lu_basic(256)
         {'status': 'FN1_Sent', u'definition': u'COD: be aware of beforehand; predict.', 'name': 'foresee.v', 'frame': 'Expectation', 'POS': 'V', 'frameID': 26, u'lexeme': {'POS': 'V', 'name': 'foresee'}, u'semType': {}, 'totalAnnotated': 44, 'ID': 256}
+
+        :param fn_luid: The id number of the desired LU
+        :type fn_luid: int
+        :return: Basic information about the lexical unit
+        :rtype: dict
         """
         return self.lu(fn_luid, ignorekeys=['subCorpus'])
 
@@ -350,16 +343,6 @@ class FramenetCorpusReader(XMLCorpusReader):
         file on disk each time it is called. You may want to cache this
         info if you plan to call this function with the same id number
         multiple times.
-
-        :param fn_luid: The id number of the lexical unit
-        :type fn_luid: int
-
-        :param ignorekeys: The keys to ignore. These keys will not be
-                           included in the output. (optional)
-        :type ignorekeys: A list of key names.
-
-        :return: All information about the lexical unit
-        :rtype: dict
 
         Usage examples:
 
@@ -414,6 +397,13 @@ class FramenetCorpusReader(XMLCorpusReader):
                                       - 'end': end pos of label in sentence 'text' (0-based)
                                       - 'name': name of label (e.g. 'NN1')
 
+        :param fn_luid: The id number of the lexical unit
+        :type fn_luid: int
+        :param ignorekeys: The keys to ignore. These keys will not be
+            included in the output. (optional)
+        :type ignorekeys: list(str)
+        :return: All information about the lexical unit
+        :rtype: dict
         """
 
         fname = "lu{0}.xml".format(fn_luid)
@@ -441,18 +431,6 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def semtype(self, name=None, abbrev=None, id=None):
         """
-        :param name: The name of the semantic type
-        :type name: string or None
-
-        :param abbrev: The abbreviation of the semantic type
-        :type abbrev: string or None
-
-        :param id: The id number of the semantic type
-        :type id: int or None
-
-        :return: Information about a semantic type
-        :rtype: dict
-
         >>> from nltk.corpus import framenet as fn
         >>> fn.semtype(id=233).name
         'Temperature'
@@ -461,6 +439,14 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> fn.semtype(name='Temperature').ID
         233
 
+        :param name: The name of the semantic type
+        :type name: string or None
+        :param abbrev: The abbreviation of the semantic type
+        :type abbrev: string or None
+        :param id: The id number of the semantic type
+        :type id: int or None
+        :return: Information about a semantic type
+        :rtype: dict
         """
         if sum([1 for x in [name, abbrev, id] if x is not None]) != 1:
             raise FramenetError(
@@ -487,17 +473,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def frames(self, name=None):
         """
-        :param name: A regular expression pattern used to match against
-                     Frame names. If 'name' is None, then a list of all
-                     Framenet Frames will be returned.
-
-        :return: A list of matching Frames (or all Frames)
-        :rtype: list(dict) Each dict in the returned list will contain two keys:
-                  - 'name': the name of the Frame
-                  - 'ID'  : the id number of the Frame
-
-        Details for a specific frame can be obtained using this class's
-        frame() function.
+        Obtain details for a specific frame.
 
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.frames())
@@ -544,6 +520,15 @@ class FramenetCorpusReader(XMLCorpusReader):
              which perspectivize the "Employment_start" frame from the
              Employer's and the Employee's point of view, respectively.
 
+        :param name: A regular expression pattern used to match against
+            Frame names. If 'name' is None, then a list of all
+            Framenet Frames will be returned.
+        :type name: str
+        :return: A list of matching Frames (or all Frames).
+            Each dict in the returned list will contain two keys:
+            - 'name': the name of the Frame
+            - 'ID'  : the id number of the Frame
+        :rtype: list(dict)
         """
         try:
             flist = list(self._frame_idx.values())
@@ -558,38 +543,9 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def lexical_units(self, name=None):
         """
-        :param name: A regular expression pattern used to search the LU
-                     names. Note that LU names take the form of a dotted
-                     string (e.g. "run.v" or "a little.adv") in which a
-                     lemma preceeds the "." and a POS follows the
-                     dot. The lemma may be composed of a single lexeme
-                     (e.g. "run") or of multiple lexemes (e.g. "a
-                     little"). If 'name' is not given, then all LUs will
-                     be returned.
+        Obtain details for a specific lexical unit.
 
-                     The list of valid POSs are:
 
-                       v    - verb
-                       n    - noun
-                       a    - adjective
-                       adv  - adverb
-                       prep - preposition
-                       num  - numbers
-                       intj - interjection
-
-        :return: A list of selected (or all) lexical units
-        :rtype: list of dicts, where each dict object contains the following
-                keys:
-
-                'name'
-                'ID'
-                'hasAnnotation'
-                'frameID'
-                'frameName'
-                'status'
-
-        Details for a specific lexical unit can be obtained using this
-        class's lu() function.
 
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.lexical_units())
@@ -656,6 +612,36 @@ class FramenetCorpusReader(XMLCorpusReader):
         Many common nouns, such as artifacts like "hat" or "tower",
         typically serve as dependents rather than clearly evoking their
         own frames.
+
+        :param name: A regular expression pattern used to search the LU
+            names. Note that LU names take the form of a dotted
+            string (e.g. "run.v" or "a little.adv") in which a
+            lemma preceeds the "." and a POS follows the
+            dot. The lemma may be composed of a single lexeme
+            (e.g. "run") or of multiple lexemes (e.g. "a
+            little"). If 'name' is not given, then all LUs will
+            be returned.
+
+            The list of valid POSs are:
+
+                   v    - verb
+                   n    - noun
+                   a    - adjective
+                   adv  - adverb
+                   prep - preposition
+                   num  - numbers
+                   intj - interjection
+        :type name: str
+        :return: A list of selected (or all) lexical units
+        :rtype: list of dicts, where each dict object contains the following
+           keys:
+
+               - 'name'
+               - 'ID'
+               - 'hasAnnotation'
+               - 'frameID'
+               - 'frameName'
+               - 'status'
         """
 
         try:
@@ -671,26 +657,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def documents(self, name=None):
         """
-        Returns a list of the annotated documents in Framenet.
-
-        :param name: A regular expression pattern used to search the
-                     file name of each annotated document. The document's
-                     file name contains the name of the corpus that the
-                     document is from, followed by two underscores "__"
-                     followed by the document name. So, for example, the
-                     file name "LUCorpus-v0.3__20000410_nyt-NEW.xml" is
-                     from the corpus named "LUCorpus-v0.3" and the
-                     document name is "20000410_nyt-NEW.xml".
-
-        :return: A list of selected (or all) annotated documents
-        :rtype: list of dicts, where each dict object contains the following
-                keys:
-                  'name'
-                  'ID'
-                  'corpid'
-                  'corpname'
-                  'description'
-                  'filename'
+        Return a list of the annotated documents in Framenet.
 
         Details for a specific annotated document can be obtained using this
         class's annotated_document() function and pass it the value of the 'ID' field.
@@ -701,6 +668,25 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> set([x.corpname for x in fn.documents()])
         set(['NTI', 'LUCorpus-v0.3', 'ANC', 'Miscellaneous', 'PropBank', 'KBEval', 'QA', 'SemAnno', 'C-4'])
 
+        :param name: A regular expression pattern used to search the
+            file name of each annotated document. The document's
+            file name contains the name of the corpus that the
+            document is from, followed by two underscores "__"
+            followed by the document name. So, for example, the
+            file name "LUCorpus-v0.3__20000410_nyt-NEW.xml" is
+            from the corpus named "LUCorpus-v0.3" and the
+            document name is "20000410_nyt-NEW.xml".
+        :type name: str
+        :return: A list of selected (or all) annotated documents
+        :rtype: list of dicts, where each dict object contains the following
+                keys:
+
+                - 'name'
+                - 'ID'
+                - 'corpid'
+                - 'corpname'
+                - 'description'
+                - 'filename'
         """
         try:
             ftlist = list(self._fulltext_idx.values())
@@ -715,8 +701,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def frame_relation_types(self):
         """
-        :return: A list of all of the frame relation types in framenet
-        :rtype: list(dict)
+        Obtain a list of frame relation types.
 
         >>> frts = fn.frame_relation_types()
         >>> type(frts)
@@ -726,6 +711,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> frts[0]
         {'superFrameName': 'Parent', 'subFrameName': 'Child', 'ID': 1, 'name': 'Inheritance'}
 
+        :return: A list of all of the frame relation types in framenet
+        :rtype: list(dict)
         """
         return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
                                          'frameRelations/frameRelationType',
@@ -749,8 +736,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def fe_relations(self):
         """
-        :return: A list of all of the frame element relations in framenet
-        :rtype: list(dict)
+        Obtain a list of frame element relations.
 
         >>> ferels = fn.fe_relations()
         >>> type(ferels)
@@ -760,6 +746,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> ferels[0]
         {'subID': 2921, 'subFEName': 'Time', 'superFEName': 'Time', 'ID': 808, 'supID': 1446}
 
+        :return: A list of all of the frame element relations in framenet
+        :rtype: list(dict)
         """
         return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
                                          'frameRelations/frameRelationType/frameRelation/FERelation',
@@ -767,8 +755,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def sem_types(self):
         """
-        :return: A list of all of the semantic types in framenet
-        :rtype: list(dict)
+        Obtain a list of semantic types.
 
         >>> from nltk.corpus import framenet as fn
         >>> stypes = = fn.sem_types()
@@ -777,6 +764,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> stypes[0].keys()
         ['superType', 'definition', 'abbrev', 'name', 'ID']
 
+        :return: A list of all of the semantic types in framenet
+        :rtype: list(dict)
         """
         return [x for x in XMLCorpusView(self.abspath("semTypes.xml"),
                                          'semTypes/semType',
@@ -788,7 +777,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         returns them in a dictionary.
 
         :param d: A dictionary in which to store the attributes.
+        :type d: dict
         :param elt: An ElementTree Element
+        :type elt: Element
         :return: Returns the input dict ``d`` possibly including attributes from ``elt``
         :rtype: dict
         """
@@ -822,10 +813,10 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def _strip_tags(self, data):
         """
+        Gets rid of all tags and newline characters from the given input
+
         :return: A cleaned-up version of the input string
         :rtype: str
-
-        Gets rid of all tags and newline characters from the given input
         """
 
         try:
@@ -861,13 +852,15 @@ class FramenetCorpusReader(XMLCorpusReader):
         return self._load_xml_attributes(AttrDict(), elt)
 
     def _handle_fulltextindex_elt(self, elt, tagspec=None):
-        """Extracts corpus/document info from the fulltextIndex.xml
-        file. Note that this function "flattens" the information
-        contained in each of the "corpus" elements, so that each
-        "document" element will contain attributes for the corpus and
-        corpusid. Also, each of the "document" items will contain a new
-        attribute called "filename" that is the base file name of the
-        xml file for the document in the "fulltext" subdir of the
+        """
+        Extracts corpus/document info from the fulltextIndex.xml file.
+
+        Note that this function "flattens" the information contained
+        in each of the "corpus" elements, so that each "document"
+        element will contain attributes for the corpus and
+        corpusid. Also, each of the "document" items will contain a
+        new attribute called "filename" that is the base file name of
+        the xml file for the document in the "fulltext" subdir of the
         Framenet corpus.
         """
         ftinfo = self._load_xml_attributes(AttrDict(), elt)
