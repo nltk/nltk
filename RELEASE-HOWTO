@@ -24,7 +24,8 @@ B. BUILD
 D. RELEASE
 
   1. Update the news page in nltk/web/news.rst
-  2. git tag -a 2.X.Y -m "version 2.X.Y"
+  2. git tag -a 3.X.Y -m "version 3.X.Y"
+     git push --tags
   3. sudo python setup.py register
   4. Log in to http://pypi.python.org/pypi and upload distributions
   5. post announcement to NLTK the mailing lists:

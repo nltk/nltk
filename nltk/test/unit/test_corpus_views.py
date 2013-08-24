@@ -20,7 +20,7 @@ class TestCorpusViews(unittest.TestCase):
     def data(self):
         for name in self.names:
             f = nltk.data.find(name)
-            with open(f, 'rb') as fp:
+            with f.open() as fp:
                 file_data = fp.read().decode('utf8')
             yield f, file_data
 

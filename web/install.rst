@@ -2,14 +2,12 @@ Installing NLTK
 ===============
 
 NLTK requires Python versions 2.6-2.7.
-(A version supporting Python 3 is under development, see http://nltk.org/nltk3-alpha/).
+(A version supporting Python 3 is available at http://nltk.org/nltk3-alpha/).
 
 Mac/Unix
 --------
 
-#. Open ``Finder>Applications>Utilities>Terminal`` and type ``python -V`` to find out what version of Python is installed
-#. Install Setuptools: Download the corresponding version of Setuptools 0.8 from
-   http://pypi.python.org/pypi/setuptools (scroll to the bottom, and pick the filename that contains the right version number and which has the extension .egg).  Install it by typing ``sudo sh Downloads/setuptools-...egg``, giving the location of the downloaded file.
+#. Install Setuptools: http://pypi.python.org/pypi/setuptools
 #. Install Pip: run ``sudo easy_install pip``
 #. Install Numpy (optional): run ``sudo pip install -U numpy``
 #. Install PyYAML and NLTK: run ``sudo pip install -U pyyaml nltk``
@@ -24,7 +22,7 @@ If you do, you can skip to the final step and just install NLTK.
 32-bit binary installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Install Python: http://www.python.org/download/releases/2.7.3/
+#. Install Python: http://www.python.org/download/releases/2.7.3/ (avoid the 64-bit versions)
 #. Install Numpy (optional): http://sourceforge.net/projects/numpy/files/NumPy/1.6.2/numpy-1.6.2-win32-superpack-python2.7.exe
 #. Install NLTK: http://pypi.python.org/pypi/nltk
 #. Install PyYAML: http://pyyaml.org/wiki/PyYAML

@@ -265,11 +265,11 @@ check that normal parsing works:
     >>> tree = td.parse(key='lx')
     >>> tree.tag
     'toolbox_data'
-    >>> ElementTree.tostring(tree.getchildren()[0]).decode('utf8')
+    >>> ElementTree.tostring(list(tree)[0]).decode('utf8')
     '<header><_sh>v3.0  400  Rotokas Dictionary</_sh><_DateStampHasFourDigitYear /></header>'
-    >>> ElementTree.tostring(tree.getchildren()[1]).decode('utf8')
+    >>> ElementTree.tostring(list(tree)[1]).decode('utf8')
     '<record><lx>kaa</lx><ps>V.A</ps><ge>gag</ge><gp>nek i pas</gp></record>'
-    >>> ElementTree.tostring(tree.getchildren()[2]).decode('utf8')
+    >>> ElementTree.tostring(list(tree)[2]).decode('utf8')
     '<record><lx>kaa</lx><ps>V.B</ps><ge>strangle</ge><gp>pasim nek</gp></record>'
 
 check that guessing the key marker works:
@@ -291,11 +291,11 @@ check that guessing the key marker works:
     ... """
     >>> td.open_string(s)
     >>> tree = td.parse()
-    >>> ElementTree.tostring(tree.getchildren()[0]).decode('utf8')
+    >>> ElementTree.tostring(list(tree)[0]).decode('utf8')
     '<header><_sh>v3.0  400  Rotokas Dictionary</_sh><_DateStampHasFourDigitYear /></header>'
-    >>> ElementTree.tostring(tree.getchildren()[1]).decode('utf8')
+    >>> ElementTree.tostring(list(tree)[1]).decode('utf8')
     '<record><lx>kaa</lx><ps>V.A</ps><ge>gag</ge><gp>nek i pas</gp></record>'
-    >>> ElementTree.tostring(tree.getchildren()[2]).decode('utf8')
+    >>> ElementTree.tostring(list(tree)[2]).decode('utf8')
     '<record><lx>kaa</lx><ps>V.B</ps><ge>strangle</ge><gp>pasim nek</gp></record>'
 
 -----------------------

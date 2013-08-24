@@ -185,7 +185,7 @@ class Prover9Parent(object):
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT,
                              stdin=subprocess.PIPE)
-        (stdout, stderr) = p.communicate(input_str)
+        (stdout, stderr) = p.communicate(input_str.encode())
 
         if verbose:
             print('Return code:', p.returncode)
