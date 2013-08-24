@@ -1,9 +1,9 @@
 .. Copyright (C) 2001-2013 NLTK Project
 .. For license information, see LICENSE.TXT
 
-=================
+===============================
 WordNet Lowest Common Hypernyms
-=================
+===============================
 
 Wordnet's lowest_common_hypernyms() method is based used to locate the 
 lowest single hypernym that is shared by two given words:

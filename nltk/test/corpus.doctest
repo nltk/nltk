@@ -1318,9 +1318,9 @@ assumed to consist of one or more files, all located in a common root
 directory (or in subdirectories of that root directory).  The absolute
 path to the root directory is stored in the ``root`` property:
 
-	>>> import os
+    >>> import os
     >>> str(nltk.corpus.genesis.root).replace(os.path.sep,'/') # doctest: +ELLIPSIS
-	'.../nltk_data/corpora/genesis'
+    '.../nltk_data/corpora/genesis'
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the
