@@ -172,30 +172,98 @@ class FramenetCorpusReader(XMLCorpusReader):
         elt = XMLCorpusView(locpath, 'fullTextAnnotation')[0]
         return AttrDict(self._handle_fulltextannotation_elt(elt))
 
-    def frame(self, fn_fid, ignorekeys=[]):
+    def frame_by_id(self, fn_fid, ignorekeys=[]):
         """
         Get the details for the specified Frame using the frame's id
-        number. This function reads the Frame information from the xml
-        file on disk each time it is called. So, you may want to cache
-        this info if you plan to call this function with the same id
-        number multiple times.
+        number.
 
         Usage examples:
 
         >>> from nltk.corpus import framenet as fn
-        >>> f = fn.frame(256)
+        >>> f = fn.frame_by_id(256)
         >>> f.ID
         256
         >>> f.name
         'Medical_specialties'
         >>> f.definition # doctest: +ELLIPSIS
         "This frame includes words that name ..."
-        >>> len(f.lexUnit)
-        29
-        >>> [x.name for x in f.FE]
-        ['Specialty', 'Type', 'Body_system', 'Affliction']
-        >>> f.frameRelation
-        [{'relatedFrame': ['Cure'], 'type': 'Uses'}]
+
+        :param fn_fid: The Framenet id number of the frame
+        :type fn_fid: int
+        :param ignorekeys: The keys to ignore. These keys will not be
+            included in the output. (optional)
+        :type ignorekeys: list(str)
+        :return: Information about a frame
+        :rtype: dict
+
+        Also see the ``frame()`` function for details about what is
+        contained in the dict that is returned.
+        """
+
+        # get the name of the frame with this id number
+        try:
+            name = self._frame_idx[fn_fid]['name']
+        except TypeError:
+            self._buildframeindex()
+            name = self._frame_idx[fn_fid]['name']
+        except KeyError:
+            raise FramenetError('Unknown frame id: {0}'.format(fn_fid))
+
+        return self.frame_by_name(name, ignorekeys)
+
+    def frame_by_name(self, fn_fname, ignorekeys=[]):
+        """
+        Get the details for the specified Frame using the frame's name.
+
+        Usage examples:
+
+        >>> from nltk.corpus import framenet as fn
+        >>> f = fn.frame_by_name('Medical_specialties')
+        >>> f.ID
+        256
+        >>> f.name
+        'Medical_specialties'
+        >>> f.definition # doctest: +ELLIPSIS
+        "This frame includes words that name ..."
+
+        :param fn_fname: The name of the frame
+        :type fn_fname: str
+        :param ignorekeys: The keys to ignore. These keys will not be
+            included in the output. (optional)
+        :type ignorekeys: list(str)
+        :return: Information about a frame
+        :rtype: dict
+
+        Also see the ``frame()`` function for details about what is
+        contained in the dict that is returned.
+        """
+
+        # construct the path name for the xml file containing the Frame info
+        locpath = os.path.join(
+            "{0}".format(self._root), self._frame_dir, fn_fname + ".xml")
+
+        # Grab the xml for the frame
+        try:
+            elt = XMLCorpusView(locpath, 'frame')[0]
+        except IOError:
+            raise FramenetError('Unknown frame: {0}'.format(fn_fname)) 
+
+        return AttrDict(self._handle_frame_elt(elt, ignorekeys))
+
+    def frame(self, fn_fid_or_fname, ignorekeys=[]):
+        """
+        Get the details for the specified Frame using the frame's name
+        or id number.
+
+        Usage examples:
+
+        >>> from nltk.corpus import framenet as fn
+        >>> f = fn.frame(256)
+        >>> f.name
+        'Medical_specialties'
+        >>> f = fn.frame('Medical_specialties')
+        >>> f.ID
+        256
 
         The dict that is returned from this function will contain the
         following information about the Frame:
@@ -263,30 +331,26 @@ class FramenetCorpusReader(XMLCorpusReader):
               - 'name' : the name of the Frame Element
               - 'ID'   : the id number of the Frame Element
 
-        :param fn_fid: The Framenet id number of the frame
-        :type fn_fid: int
+        :param fn_fid_or_fname: The Framenet name or id number of the frame
+        :type fn_fid_or_fname: int or str
         :param ignorekeys: The keys to ignore. These keys will not be
             included in the output. (optional)
         :type ignorekeys: list(str)
         :return: Information about a frame
         :rtype: dict
         """
-        # get the name of the frame with this id number
         try:
-            name = self._frame_idx[fn_fid]['name']
-        except TypeError:
-            self._buildframeindex()
-            name = self._frame_idx[fn_fid]['name']
-        except KeyError:
-            raise FramenetError('Unknown frame id: {0}'.format(fn_fid))
+            arg_is_strtype = isinstance(fn_fid_or_fname, basestring)
+        except NameError: # python3 doesn't have basestring
+            arg_is_strtype = isinstance(fn_fid_or_fname, str)
 
-        # construct the path name for the xml file containing the Frame info
-        locpath = os.path.join(
-            "{0}".format(self._root), self._frame_dir, name + ".xml")
+        # get the frame info by name or id number
+        if arg_is_strtype:
+            f = self.frame_by_name(fn_fid_or_fname, ignorekeys)
+        else:
+            f = self.frame_by_id(fn_fid_or_fname, ignorekeys)
 
-        # Grab the xml for the frame from the file
-        elt = XMLCorpusView(locpath, 'frame')[0]
-        return AttrDict(self._handle_frame_elt(elt, ignorekeys))
+        return f
 
     def frames_by_lemma(self, pat):
         """
