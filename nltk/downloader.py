@@ -2135,7 +2135,7 @@ def _check_package(pkg_xml, zipfilename, zf):
                          (pkg_xml.get('id'), uid))
 
     # Zip file must expand to a subdir whose name matches uid.
-    if sum( (name!=uid and not name.startswith(uid+'/'))
+    if any((name!=uid and not name.startswith(uid+'/'))
             for name in zf.namelist() ):
         raise ValueError('Zipfile %s.zip does not expand to a single '
                          'subdirectory %s/' % (uid, uid))
@@ -2203,22 +2203,10 @@ def _find_packages(root):
 
                 # Check that the zipfile expands to a subdir whose
                 # name matches the uid.
-                uid_py3=uid+'_PY3'
-                has_uid=False
-                has_uid_other=False
-                for name in zf.namelist():
-                    if name==uid or name.startswith(uid+'/'):
-                        has_uid=True
-                    elif name==uid_py3 or name.startswith(uid_py3+'/'):
-                        pass
-                    else:
-                        has_uid_other=True
-                if not has_uid:
-                    raise ValueError('Zipfile %s.zip does contain a '
-                                     'subdirectory %s/' % (uid, uid))
-                if has_uid_other:
-                    raise ValueError('Zipfile %s.zip contains an unknown '
-                                     'subdirectory %s/' % (uid, uid))
+                if any((name!=uid and not name.startswith(uid+'/'))
+                        for name in zf.namelist()):
+                    raise ValueError('Zipfile %s.zip does not expand to a '
+                                     'single subdirectory %s/' % (uid, uid))
 
                 yield pkg_xml, zf, relpath
         # Don't recurse into svn subdirectories:

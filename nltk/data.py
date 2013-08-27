@@ -690,11 +690,10 @@ CURRENT_VERSIONS = {}
 
 if compat.PY3:
     CURRENT_VERSIONS.update({
-        'nltk:tokenizers/punkt/': 'nltk:tokenizers/punkt_PY3/',
-        'nltk:taggers/maxent_treebank_pos_tagger/': 'nltk:taggers/maxent_treebank_pos_tagger_PY3/',
-        'nltk:help/tagsets/': 'nltk:help/tagsets_PY3/',
-        'nltk:corpora/brown/': 'nltk:corpora/brown_PY3/',
-        'nltk:chunkers/maxent_ne_chunker/': 'nltk:chunkers/maxent_ne_chunker_PY3/',
+        'nltk:tokenizers/punkt/': 'nltk:tokenizers/punkt/PY3/',
+        'nltk:taggers/maxent_treebank_pos_tagger/': 'nltk:taggers/maxent_treebank_pos_tagger/PY3/',
+        'nltk:help/tagsets/': 'nltk:help/tagsets/PY3/',
+        'nltk:chunkers/maxent_ne_chunker/': 'nltk:chunkers/maxent_ne_chunker/PY3/',
     })
 
 # sorteddict dependency is unnecessary
