@@ -464,6 +464,22 @@ strings.
      ['T', 'UW1', 'L'],
      ['K', 'IH1', 'T']]
 
+
+WordNet
+=======
+
+Please see the separate WordNet howto.
+
+FrameNet
+========
+
+Please see the separate FrameNet howto.
+
+PropBank
+========
+
+Please see the separate PropBank howto.
+
 Categorized Corpora
 ===================
 
@@ -526,177 +542,6 @@ category assigned to a document is correct as follows:
     >>> classify(doc) in brown.categories(doc)
     True
 
-Propbank Corpus
-===============
-The Propbank corpus provides predicate-argument annotation for the
-entire treebank.  Each verb in the treebank is annotated by a single
-instance in the propbank corpus, containing information about the
-location of the verb, and the location and identity of its arguments:
-
-    >>> from nltk.corpus import propbank
-    >>> pb_instances = propbank.instances()
-    >>> print(pb_instances) # doctest: +NORMALIZE_WHITESPACE
-    [<PropbankInstance: wsj_0001.mrg, sent 0, word 8>,
-     <PropbankInstance: wsj_0001.mrg, sent 1, word 10>, ...]
-
-Each propbank instance defines the following member variables:
-
-  - Location information: `fileid`, `sentnum`, `wordnum`
-  - Annotator information: `tagger`
-  - Inflection information: `inflection`
-  - Roleset identifier: `roleset`
-  - Verb (aka predicate) location: `predicate`
-  - Argument locations and types: `arguments`
-
-The following examples show the types of these arguments:
-
-    >>> inst = pb_instances[103]
-    >>> (inst.fileid, inst.sentnum, inst.wordnum)
-    ('wsj_0004.mrg', 8, 16)
-    >>> inst.tagger
-    'gold'
-    >>> inst.inflection
-    <PropbankInflection: vp--a>
-    >>> infl = inst.inflection
-    >>> infl.form, infl.tense, infl.aspect, infl.person, infl.voice
-    ('v', 'p', '-', '-', 'a')
-    >>> inst.roleset
-    'rise.01'
-    >>> inst.predicate
-    PropbankTreePointer(16, 0)
-    >>> inst.arguments # doctest: +NORMALIZE_WHITESPACE
-    ((PropbankTreePointer(0, 2), 'ARG1'),
-     (PropbankTreePointer(13, 1), 'ARGM-DIS'),
-     (PropbankTreePointer(17, 1), 'ARG4-to'),
-     (PropbankTreePointer(20, 1), 'ARG3-from'))
-
-The location of the predicate and of the arguments are encoded using
-`PropbankTreePointer` objects, as well as `PropbankChainTreePointer`
-objects and `PropbankSplitTreePointer` objects.  A
-`PropbankTreePointer` consists of a `wordnum` and a `height`:
-
-    >>> print(inst.predicate.wordnum, inst.predicate.height)
-    16 0
-
-This identifies the tree constituent that is headed by the word that
-is the `wordnum`\ 'th token in the sentence, and whose span is found
-by going `height` nodes up in the tree.  This type of pointer is only
-useful if we also have the corresponding tree structure, since it
-includes empty elements such as traces in the word number count.  The
-trees for 10% of the standard propbank corpus are contained in the
-`treebank` corpus:
-
-    >>> tree = inst.tree
-
-    >>> from nltk.corpus import treebank
-    >>> assert tree == treebank.parsed_sents(inst.fileid)[inst.sentnum]
-
-    >>> inst.predicate.select(tree)
-    Tree('VBD', ['rose'])
-    >>> for (argloc, argid) in inst.arguments:
-    ...     print('%-10s %s' % (argid, argloc.select(tree).pprint(500)[:50]))
-    ARG1       (NP-SBJ (NP (DT The) (NN yield)) (PP (IN on) (NP (
-    ARGM-DIS   (PP (IN for) (NP (NN example)))
-    ARG4-to    (PP-DIR (TO to) (NP (CD 8.04) (NN %)))
-    ARG3-from  (PP-DIR (IN from) (NP (CD 7.90) (NN %)))
-
-Propbank tree pointers can be converted to standard tree locations,
-which are usually easier to work with, using the `treepos()` method:
-
-    >>> treepos = inst.predicate.treepos(tree)
-    >>> print (treepos, tree[treepos])
-    (4, 0) (VBD rose)
-
-In some cases, argument locations will be encoded using
-`PropbankChainTreePointer`\ s (for trace chains) or
-`PropbankSplitTreePointer`\ s (for discontinuous constituents).  Both
-of these objects contain a single member variable, `pieces`,
-containing a list of the constituent pieces.  They also define the
-method `select()`, which will return a tree containing all the
-elements of the argument.  (A new head node is created, labeled
-"*CHAIN*" or "*SPLIT*", since the argument is not a single constituent
-in the original tree).  Sentence #6 contains an example of an argument
-that is both discontinuous and contains a chain:
-
-    >>> inst = pb_instances[6]
-    >>> inst.roleset
-    'expose.01'
-    >>> argloc, argid = inst.arguments[2]
-    >>> argloc
-    <PropbankChainTreePointer: 22:1,24:0,25:1*27:0>
-    >>> argloc.pieces
-    [<PropbankSplitTreePointer: 22:1,24:0,25:1>, PropbankTreePointer(27, 0)]
-    >>> argloc.pieces[0].pieces
-    ... # doctest: +NORMALIZE_WHITESPACE
-    [PropbankTreePointer(22, 1), PropbankTreePointer(24, 0),
-     PropbankTreePointer(25, 1)]
-    >>> print(argloc.select(inst.tree))
-    (*CHAIN*
-      (*SPLIT* (NP (DT a) (NN group)) (IN of) (NP (NNS workers)))
-      (-NONE- *))
-
-The propbank corpus also provides access to the frameset files, which
-define the argument labels used by the annotations, on a per-verb
-basis.  Each frameset file contains one or more predicates, such as
-'turn' or 'turn_on', each of which is divided into coarse-grained word
-senses called rolesets.  For each roleset, the frameset file provides
-descriptions of the argument roles, along with examples.
-
-    >>> expose_01 = propbank.roleset('expose.01')
-    >>> turn_01 = propbank.roleset('turn.01')
-    >>> print(turn_01) # doctest: +ELLIPSIS
-    <Element 'roleset' at ...>
-    >>> for role in turn_01.findall("roles/role"):
-    ...     print(role.attrib['n'], role.attrib['descr'])
-    0 turner
-    1 thing turning
-    m direction, location
-
-    >>> from xml.etree import ElementTree
-    >>> print(ElementTree.tostring(turn_01.find('example')).decode('utf8').strip())
-    <example name="transitive agentive">
-      <text>
-      John turned the key in the lock.
-      </text>
-      <arg n="0">John</arg>
-      <rel>turned</rel>
-      <arg n="1">the key</arg>
-      <arg f="LOC" n="m">in the lock</arg>
-    </example>
-
-Note that the standard corpus distribution only contains 10% of the
-treebank, so the parse trees are not available for instances starting
-at 9353:
-
-    >>> inst = pb_instances[9352]
-    >>> inst.fileid
-    'wsj_0199.mrg'
-    >>> print(inst.tree) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
-    (S (NP-SBJ (NNP Trinity)) (VP (VBD said) (SBAR (-NONE- 0) ...))
-    >>> print(inst.predicate.select(inst.tree))
-    (VB begin)
-
-    >>> inst = pb_instances[9353]
-    >>> inst.fileid
-    'wsj_0200.mrg'
-    >>> print(inst.tree)
-    None
-    >>> print(inst.predicate.select(inst.tree))
-    Traceback (most recent call last):
-      . . .
-    ValueError: Parse tree not avaialable
-
-However, if you supply your own version of the treebank corpus (by
-putting it before the nltk-provided version on `nltk.data.path`, or
-by creating a `ptb` directory as described above and using the
-`propbank_ptb` module), then you can access the trees for all
-instances.
-
-A list of the verb lemmas contained in propbank is returned by the
-`propbank.verbs()` method:
-
-    >>> propbank.verbs()
-    ['abandon', 'abate', 'abdicate', 'abet', 'abide', ...]
 
 Other Corpora
 =============
@@ -1079,6 +924,228 @@ consise form.  The simplest such method is `pprint()`:
           Semantics:
             * weather(during(E), Weather_type, Theme)
 
+
+framenet
+--------
+The FrameNet corpus is a lexical database of English that is both human-
+and machine-readable, based on annotating examples of how words are used
+in actual texts. FrameNet is based on a theory of meaning called Frame
+Semantics, deriving from the work of Charles J. Fillmore and colleagues.
+The basic idea is straightforward: that the meanings of most words can
+best be understood on the basis of a semantic frame: a description of a
+type of event, relation, or entity and the participants in it. For
+example, the concept of cooking typically involves a person doing the
+cooking (Cook), the food that is to be cooked (Food), something to hold
+the food while cooking (Container) and a source of heat
+(Heating_instrument). In the FrameNet project, this is represented as a
+frame called Apply_heat, and the Cook, Food, Heating_instrument and
+Container are called frame elements (FEs). Words that evoke this frame,
+such as fry, bake, boil, and broil, are called lexical units (LUs) of
+the Apply_heat frame. The job of FrameNet is to define the frames
+and to annotate sentences to show how the FEs fit syntactically around
+the word that evokes the frame.
+
+Frames
+
+A Frame is a script-like conceptual structure that describes a
+particular type of situation, object, or event along with the
+participants and props that are needed for that Frame. For
+example, the "Apply_heat" frame describes a common situation
+involving a Cook, some Food, and a Heating_Instrument, and is
+evoked by words such as bake, blanch, boil, broil, brown,
+simmer, steam, etc.
+
+We call the roles of a Frame "frame elements" (FEs) and the
+frame-evoking words are called "lexical units" (LUs).
+
+FrameNet includes relations between Frames. Several types of
+relations are defined, of which the most important are:
+
+- Inheritance: An IS-A relation. The child frame is a subtype
+  of the parent frame, and each FE in the parent is bound to
+  a corresponding FE in the child. An example is the
+  "Revenge" frame which inherits from the
+  "Rewards_and_punishments" frame.
+
+- Using: The child frame presupposes the parent frame as
+  background, e.g the "Speed" frame "uses" (or presupposes)
+  the "Motion" frame; however, not all parent FEs need to be
+  bound to child FEs.
+
+- Subframe: The child frame is a subevent of a complex event
+  represented by the parent, e.g. the "Criminal_process" frame
+  has subframes of "Arrest", "Arraignment", "Trial", and
+  "Sentencing".
+
+- Perspective_on: The child frame provides a particular
+  perspective on an un-perspectivized parent frame. A pair of
+  examples consists of the "Hiring" and "Get_a_job" frames,
+  which perspectivize the "Employment_start" frame from the
+  Employer's and the Employee's point of view, respectively.
+
+To get a list of all of the Frames in FrameNet, you can use the
+`frames()` function. If you supply a regular expression pattern to the
+`frames()` function, you will get a list of all Frames whose names match
+that pattern:
+
+    >>> from nltk.corpus import framenet as fn
+    >>> len(fn.frames())
+    1019
+    >>> fn.frames(r'(?i)medical')
+    [{'ID': 239, 'name': 'Medical_conditions'}, {'ID': 256, 'name': 'Medical_specialties'}, {'ID': 257, 'name': 'Medical_instruments'}, {'ID': 255, 'name': 'Medical_professionals'}]
+
+To get the details of a particular Frame, you can use the `frame()`
+function passing in the frame number:
+
+    >>> from nltk.corpus import framenet as fn
+    >>> f = fn.frame(256)
+    >>> f.ID
+    256
+    >>> f.name
+    'Medical_specialties'
+    >>> f.definition # doctest: +ELLIPSIS
+    "This frame includes words that name ..."
+    >>> len(f.lexUnit)
+    29
+    >>> [x.name for x in f.FE]
+    ['Specialty', 'Type', 'Body_system', 'Affliction']
+    >>> f.frameRelation
+    [{'relatedFrame': ['Cure'], 'type': 'Uses'}]
+
+The `frame()` function shown above returns a dict object containing
+detailed information about the Frame. See the documentation on the
+`frame()` function for the specifics.
+
+You can also search for Frames by their Lexical Units (LUs). The
+`frames_by_lemma()` function returns a list of all frames that contain
+LUs in which the 'name' attribute of the LU matchs the given regular
+expression. Note that LU names are composed of "lemma.POS", where the
+"lemma" part can be made up of either a single lexeme (e.g. 'run') or
+multiple lexemes (e.g. 'a little') (see below).
+
+    >>> from nltk.corpus import framenet as fn
+    >>> fn.frames_by_lemma(r'(?i)a little')
+    [('Quantity', 189), ('Degree', 2001)]
+
+Lexical Units
+
+A lexical unit (LU) is a pairing of a word with a meaning. For
+example, the "Apply_heat" Frame describes a common situation
+involving a Cook, some Food, and a Heating Instrument, and is
+_evoked_ by words such as bake, blanch, boil, broil, brown,
+simmer, steam, etc. These frame-evoking words are the LUs in the
+Apply_heat frame. Each sense of a polysemous word is a different
+LU.
+
+We have used the word "word" in talking about LUs. The reality
+is actually rather complex. When we say that the word "bake" is
+polysemous, we mean that the lemma "bake.v" (which has the
+word-forms "bake", "bakes", "baked", and "baking") is linked to
+three different frames:
+
+- Apply_heat: "Michelle baked the potatoes for 45 minutes."
+
+- Cooking_creation: "Michelle baked her mother a cake for her birthday."
+
+- Absorb_heat: "The potatoes have to bake for more than 30 minutes."
+
+These constitute three different LUs, with different
+definitions.
+
+Multiword expressions such as "given name" and hyphenated words
+like "shut-eye" can also be LUs. Idiomatic phrases such as
+"middle of nowhere" and "give the slip (to)" are also defined as
+LUs in the appropriate frames ("Isolated_places" and "Evading",
+respectively), and their internal structure is not analyzed.
+
+Framenet provides multiple annotated examples of each sense of a
+word (i.e. each LU).  Moreover, the set of examples
+(approximately 20 per LU) illustrates all of the combinatorial
+possibilities of the lexical unit.
+
+Each LU is linked to a Frame, and hence to the other words which
+evoke that Frame. This makes the FrameNet database similar to a
+thesaurus, grouping together semantically similar words.
+
+In the simplest case, frame-evoking words are verbs such as
+"fried" in:
+
+   "Matilde fried the catfish in a heavy iron skillet."
+
+Sometimes event nouns may evoke a Frame. For example,
+"reduction" evokes "Cause_change_of_scalar_position" in:
+
+   "...the reduction of debt levels to $665 million from $2.6 billion."
+
+Adjectives may also evoke a Frame. For example, "asleep" may
+evoke the "Sleep" frame as in:
+
+   "They were asleep for hours."
+
+Many common nouns, such as artifacts like "hat" or "tower",
+typically serve as dependents rather than clearly evoking their
+own frames.
+
+Details for a specific lexical unit can be obtained using this class's
+`lexical_units()` function, which takes an optional regular expression
+pattern that will be matched against the name of the lexical unit:
+
+    >>> from nltk.corpus import framenet as fn
+    >>> len(fn.lexical_units())
+    11829
+    >>> fn.lexical_units(r'(?i)a little')
+    [{'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.n', 'frameID': 189, 'frameName': 'Quantity', 'ID': 14733}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14743}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little bit.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14744}]
+
+You can obtain detailed information on a particular LU by calling the
+`lu()` function and passing in LU's 'ID' number:
+
+    >>> from nltk.corpus import framenet as fn
+    >>> fn.lu(256).name
+    'foresee.v'
+    >>> fn.lu(256).definition
+    'COD: be aware of beforehand; predict.'
+    >>> fn.lu(256).frame
+    'Expectation'
+    >>> fn.lu(256).lexeme
+    {'POS': 'V', 'name': 'foresee'}
+
+Note that LU names take the form of a dotted string (e.g. "run.v" or "a
+little.adv") in which a lemma preceeds the "." and a part of speech
+(POS) follows the dot. The lemma may be composed of a single lexeme
+(e.g. "run") or of multiple lexemes (e.g. "a little"). The list of
+POSs used in the LUs is:
+
+v    - verb
+n    - noun
+a    - adjective
+adv  - adverb
+prep - preposition
+num  - numbers
+intj - interjection
+
+For more detailed information about the info that is contained in the
+dict that is returned by the `lu()` function, see the documentation on
+the `lu()` function.
+
+Annotated Documents
+
+The FrameNet corpus contains a small set of annotated documents. A list
+of these documents can be obtained by calling the `documents()` function:
+
+    >>> from nltk.corpus import framenet as fn
+    >>> docs = fn.documents()
+    >>> len(docs)
+    78
+    >>> docs[0].keys()
+    ['corpname', 'filename', 'corpid', 'description', 'ID']
+
+Detailed information about each sentence contained in each document can
+be obtained by calling the `annotated_document()` function and supplying
+the 'ID' number of the document. For detailed information about the info
+that is for each document, see the documentation on the
+`annotated_document()` function.
+
+
 nps_chat
 --------
 
@@ -1251,9 +1318,9 @@ assumed to consist of one or more files, all located in a common root
 directory (or in subdirectories of that root directory).  The absolute
 path to the root directory is stored in the ``root`` property:
 
-	>>> import os
+    >>> import os
     >>> str(nltk.corpus.genesis.root).replace(os.path.sep,'/') # doctest: +ELLIPSIS
-	'.../nltk_data/corpora/genesis'
+    '.../nltk_data/corpora/genesis'
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the

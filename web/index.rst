@@ -80,6 +80,7 @@ Contents
    news
    install
    data
+   howto
    api/nltk
    team
 

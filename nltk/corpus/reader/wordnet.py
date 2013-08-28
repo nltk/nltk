@@ -85,6 +85,8 @@ VERB_FRAME_STRINGS = (
     "It %s that CLAUSE",
     "Something %s INFINITIVE")
 
+SENSENUM_RE = re.compile(r'\.\d\d\.')
+
 ######################################################################
 ## Data Classes
 ######################################################################
@@ -1022,7 +1024,9 @@ class WordNetCorpusReader(CorpusReader):
     # Loading Lemmas
     #////////////////////////////////////////////////////////////
     def lemma(self, name):
-        synset_name, lemma_name = name.rsplit('.', 1)
+        # e.g.: '.45_caliber.a.01..45_caliber'
+        separator = SENSENUM_RE.search(name).start()
+        synset_name, lemma_name = name[:separator+3], name[separator+4:]
         synset = self.synset(synset_name)
         for lemma in synset.lemmas:
             if lemma.name == lemma_name:

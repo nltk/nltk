@@ -5,7 +5,7 @@
  Feature Grammar Parsing
 =========================
 
-.. include:: ../../doc/definitions.rst
+.. include:: ../../../nltk_book/definitions.rst
 
 Grammars can be parsed from strings.
 
