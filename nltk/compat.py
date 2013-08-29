@@ -161,13 +161,17 @@ except ImportError: # python 2.6
         return cls
 
 
-# ======= Compatibility for datasets care about Python versions ========
+# ======= Compatibility for datasets that care about Python versions ========
 
+# The following datasets have a /PY3 subdirectory containing
+# a full copy of the data which has been re-encoded or repickled.
 _PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
                      "help/tagsets",
                      "taggers/maxent_treebank_pos_tagger",
                      "tokenizers/punkt"]
 
+# for use in adding /PY3 to the second (filename) argument
+# of the file pointers in data.py
 def py3_data(init_func):
     def _decorator(*args, **kwargs):
         if PY3:
@@ -175,7 +179,7 @@ def py3_data(init_func):
             for item in _PY3_DATA_UPDATES:
                 if item in path:
                     pos = path.index(item) + len(item)
-                    if ".zip" in path:
+                    if path[pos:pos+4] == ".zip":
                         pos += 4
                     path = path[:pos] + "/PY3" + path[pos:]
                     args = (args[0], path) + args[2:]
