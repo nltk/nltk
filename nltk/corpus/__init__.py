@@ -65,7 +65,6 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.tag import simplify_brown_tag, simplify_wsj_tag,\
                      simplify_alpino_tag, simplify_indian_tag,\
                      simplify_tag
-
 from .util import LazyCorpusLoader
 from .reader import *
 
