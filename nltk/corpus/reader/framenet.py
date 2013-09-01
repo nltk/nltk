@@ -215,19 +215,19 @@ def _pretty_frame(frame):
 
     outstr += "\n[lexUnit] {0} lexical units\n".format(len(frame.lexUnit))
     lustrs = []
-    for lu in frame.lexUnit:
-        tmpstr = '{0.name} ({0.ID})'.format(lu)
+    for luName,lu in sorted(frame.lexUnit.items()):
+        tmpstr = '{0} ({1})'.format(luName, lu.ID)
         lustrs.append(tmpstr)
     outstr += "{0}\n".format(_pretty_longstring(', '.join(lustrs),prefix='  '))
 
     outstr += "\n[FE] {0} frame elements\n".format(len(frame.FE))
     fes = {}
-    for fe in frame.FE:
+    for feName,fe in sorted(frame.FE.items()):
         try:
-            fes[fe.coreType].append('{0.name} ({0.ID})'.format(fe))
+            fes[fe.coreType].append('{0} ({1})'.format(feName, fe.ID))
         except KeyError:
             fes[fe.coreType] = []
-            fes[fe.coreType].append('{0.name} ({0.ID})'.format(fe))
+            fes[fe.coreType].append('{0} ({1})'.format(feName, fe.ID))
     for ct in sorted(fes.keys()):
         outstr += '{0:>15}: {1}\n'.format(ct, ', '.join(sorted(fes[ct])))
 
@@ -610,7 +610,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         outlist = []
         for fid in list(self._frame_idx.keys()):
             f = self.frame(fid)
-            if any([re.search(pat, lu.name) for lu in f.lexUnit]):
+            if any([re.search(pat, luName) for luName in f.lexUnit]):
                 outlist.append((f.name, f.ID))
 
         return outlist
@@ -715,7 +715,7 @@ class FramenetCorpusReader(XMLCorpusReader):
     def _loadsemtypes(self):
         """Create the semantic types index."""
         self._semtypes = AttrDict()
-        for st in self.sem_types():
+        for st in self.semtypes():
             n = st['name']
             a = st['abbrev']
             i = st['ID']
@@ -725,45 +725,35 @@ class FramenetCorpusReader(XMLCorpusReader):
             self._semtypes[a] = i
             self._semtypes[i] = st
 
-    def semtype(self, name=None, abbrev=None, id=None):
+    def semtype(self, key):
         """
         >>> from nltk.corpus import framenet as fn
-        >>> fn.semtype(id=233).name
+        >>> fn.semtype(233).name
         'Temperature'
-        >>> fn.semtype(id=233).abbrev
+        >>> fn.semtype(233).abbrev
         'Temp'
-        >>> fn.semtype(name='Temperature').ID
+        >>> fn.semtype('Temperature').ID
         233
 
-        :param name: The name of the semantic type
-        :type name: string or None
-        :param abbrev: The abbreviation of the semantic type
-        :type abbrev: string or None
-        :param id: The id number of the semantic type
-        :type id: int or None
+        :param key: The name, abbreviation, or id number of the semantic type
+        :type key: string or int
         :return: Information about a semantic type
         :rtype: dict
         """
-        if sum([1 for x in [name, abbrev, id] if x is not None]) != 1:
-            raise FramenetError(
-                "semtype(): Must specify one (and only one) arg")
-
-        if id is None:
-            key = name
-            if key is None:
-                key = abbrev
-
+        if isinstance(key,int):
+            stid = key
+        else:
             try:
-                id = self._semtypes[key]
+                stid = self._semtypes[key]
             except TypeError:
                 self._loadsemtypes()
-                id = self._semtypes[key]
+                stid = self._semtypes[key]
 
         try:
-            st = self._semtypes[id]
+            st = self._semtypes[stid]
         except TypeError:
             self._loadsemtypes()
-            st = self._semtypes[id]
+            st = self._semtypes[stid]
 
         return st
 
@@ -837,14 +827,14 @@ class FramenetCorpusReader(XMLCorpusReader):
         else:
             return [x for x in flist if re.search(name, x['name']) is not None]
 
-    def lexical_units(self, name=None):
+    def lus(self, name=None):
         """
         Obtain details for a specific lexical unit.
 
         >>> from nltk.corpus import framenet as fn
-        >>> len(fn.lexical_units())
+        >>> len(fn.lus())
         11829
-        >>> [dict(lu) for lu in fn.lexical_units(r'(?i)a little')]
+        >>> [dict(lu) for lu in fn.lus(r'(?i)a little')]
         [{'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.n', 'frameID': 189, 'frameName': 'Quantity', 'ID': 14733}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14743}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little bit.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14744}]
 
         A brief intro to Lexical Units (excerpted from "FrameNet II:
@@ -969,7 +959,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             file name of each annotated document. The document's
             file name contains the name of the corpus that the
             document is from, followed by two underscores "__"
-            followed by the document name. So, for example, the
+            followed by the document name. So, for example,s the
             file name "LUCorpus-v0.3__20000410_nyt-NEW.xml" is
             from the corpus named "LUCorpus-v0.3" and the
             document name is "20000410_nyt-NEW.xml".
@@ -1057,12 +1047,12 @@ class FramenetCorpusReader(XMLCorpusReader):
                                          'frameRelations/frameRelationType/frameRelation/FERelation',
                                          self._handle_elt)]
 
-    def sem_types(self):
+    def semtypes(self):
         """
         Obtain a list of semantic types.
 
         >>> from nltk.corpus import framenet as fn
-        >>> stypes = fn.sem_types()
+        >>> stypes = fn.semtypes()
         >>> len(stypes)
         73
         >>> stypes[0].keys()
@@ -1191,10 +1181,10 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         frinfo['_type'] = 'frame'
         frinfo['definition'] = ""
-        frinfo['FE'] = []
+        frinfo['FE'] = {}
         frinfo['FEcoreSet'] = []
         frinfo['frameRelation'] = []
-        frinfo['lexUnit'] = []
+        frinfo['lexUnit'] = {}
         frinfo['semType'] = []
         for k in ignorekeys:
             if k in frinfo:
@@ -1204,7 +1194,8 @@ class FramenetCorpusReader(XMLCorpusReader):
             if sub.tag.endswith('definition') and 'definition' not in ignorekeys:
                 frinfo['definition'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('FE') and 'FE' not in ignorekeys:
-                frinfo['FE'].append(self._handle_fe_elt(sub))
+                feinfo = self._handle_fe_elt(sub)
+                frinfo['FE'][feinfo.name] = feinfo
             elif sub.tag.endswith('FEcoreSet') and 'FEcoreSet' not in ignorekeys:
                 frinfo['FEcoreSet'].extend(self._handle_fecoreset_elt(sub))
             elif sub.tag.endswith('frameRelation') and 'frameRelation' not in ignorekeys:
@@ -1212,7 +1203,8 @@ class FramenetCorpusReader(XMLCorpusReader):
                 if fr is not None:
                     frinfo['frameRelation'].append(fr)
             elif sub.tag.endswith('lexUnit') and 'lexUnit' not in ignorekeys:
-                frinfo['lexUnit'].append(self._handle_framelexunit_elt(sub))
+                luinfo = self._handle_framelexunit_elt(sub)
+                frinfo['lexUnit'][luinfo.name] = luinfo
             elif sub.tag.endswith('semType') and 'semType' not in ignorekeys:
                 frinfo['semType'].append(
                     self._load_xml_attributes(AttrDict(), sub))
@@ -1464,7 +1456,7 @@ def demo():
     # Get some statistics about the corpus
     #
     print('Number of Frames:', len(fn.frames()))
-    print('Number of Lexical Units:', len(fn.lexical_units()))
+    print('Number of Lexical Units:', len(fn.lus()))
     print('Number of annotated documents:', len(fn.documents()))
     print()
 
@@ -1499,14 +1491,14 @@ def demo():
     print(
         '\nNumber of Frame Elements in the "{0}" frame:'.format(m_frame.name),
         len(m_frame.FE))
-    print('   ', [x.name for x in m_frame.FE])
+    print('   ', [x for x in m_frame.FE])
 
     #
     # get the names of the "Core" Frame Elements
     #
     print(
         '\nThe "core" Frame Elements in the "{0}" frame:'.format(m_frame.name))
-    print('   ', [x.name for x in m_frame.FE if x.coreType == "Core"])
+    print('   ', [x.name for x in m_frame.FE.values() if x.coreType == "Core"])
 
     #
     # get all of the Lexical Units that are incorporated in the
@@ -1514,7 +1506,7 @@ def demo():
     #
     print('\nAll Lexical Units that are incorporated in the "Ailment" FE:')
     m_frame = fn.frame(239)
-    ailment_lus = [x for x in m_frame.lexUnit if x.incorporatedFE == 'Ailment']
+    ailment_lus = [x for x in m_frame.lexUnit.values() if x.incorporatedFE == 'Ailment']
     print([x.name for x in ailment_lus])
 
     #
@@ -1522,12 +1514,12 @@ def demo():
     #
     print('\nNumber of Lexical Units in the "{0}" frame:'.format(m_frame.name),
           len(m_frame.lexUnit))
-    print('  ', [x.name for x in m_frame.lexUnit[:5]], '...')
+    print('  ', [x.name for x in m_frame.lexUnit.values()[:5]], '...')
 
     #
     # get basic info on the second LU in the frame
     #
-    tmp_id = m_frame.lexUnit[1].ID  # grab the id of the second LU
+    tmp_id = m_frame.lexUnit['ailment.n'].ID  # grab the id of the specified LU
     luinfo = fn.lu_basic(tmp_id)  # get basic info on the LU
     print('\nInformation on the LU: {0}'.format(luinfo.name))
     pprint(luinfo)
