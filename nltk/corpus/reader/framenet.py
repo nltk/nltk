@@ -73,13 +73,16 @@ def _pretty_semtype(st):
 
     outstr = ""
     outstr += "semantic type ({0.ID}): {0.name}\n".format(st)
-    outstr += "[abbrev] {0}\n".format(st.abbrev)
-    outstr += "[definition]\n"
-    outstr += _pretty_longstring(st.definition,'  ')
-    outstr += "[superType]\n"
-    ststr = "{0}".format(st.superType)
-    for line in ststr.split("\n"):
-        outstr += "  {0}\n".format(line)
+    if 'abbrev' in semkeys:
+        outstr += "[abbrev] {0}\n".format(st.abbrev)
+    if 'definition' in semkeys:
+        outstr += "[definition]\n"
+        outstr += _pretty_longstring(st.definition,'  ')
+    if 'superType' in semkeys:
+        outstr += "[superType]\n"
+        ststr = "{0}".format(st.superType)
+        for line in ststr.split("\n"):
+            outstr += "  {0}\n".format(line)
 
     return outstr
 
@@ -127,7 +130,7 @@ def _pretty_lu(lu):
     if 'status' in lukeys:
         outstr += "\n[status] {0}\n".format(lu.status)
     if 'totalAnnotated' in lukeys:
-        outstr += "\n[#annotated examples] {0}\n".format(lu.totalAnnotated)
+        outstr += "\n[totalAnnotated] {0} annotated examples\n".format(lu.totalAnnotated)
     if 'lexeme' in lukeys:
         outstr += "\n[lexeme] {0}({1})\n".format(lu.lexeme['name'],lu.lexeme['POS'])
     if 'semType' in lukeys:
@@ -163,19 +166,22 @@ def _pretty_fe(fe):
         outstr += "[abbrev] {0}\n".format(fe.abbrev)
     if 'requiresFE' in fekeys:
         outstr += "[requiresFE] "
-        if 'name' in fe.requiresFE:
-            outstr += "{0}\n".format(fe.requiresFE.name)
-        else:
+        if fe.requiresFE is None:
             outstr += "<None>\n"
+        else:
+            outstr += "{0}\n".format(fe.requiresFE.name)
     if 'excludesFE' in fekeys:
         outstr += "[excludesFE] "
-        if 'name' in fe.excludesFE:
-            outstr += "{0}\n".format(fe.excludessFE.name)
-        else:
+        if fe.excludesFE is None:
             outstr += "<None>\n"
+        else:
+            outstr += "{0}\n".format(fe.excludesFE.name)
     if 'semType' in fekeys:
-        outstr += "[semType]\n"
-        outstr += "  " + _pretty_semtype(fe.semType) + '\n'
+        outstr += "[semType] "
+        if fe.semType is None:
+            outstr += "<None>\n"
+        else:
+            outstr += "\n  " + _pretty_semtype(fe.semType) + '\n'
 
     return outstr
 
@@ -208,14 +214,14 @@ def _pretty_frame(frame):
                                          ','.join([x for x in fr['relatedFrame']])))
     outstr += "  " + ", ".join(frels) + '\n'
 
-    outstr += "\n[lu] {0} lexical units\n".format(len(frame.lexUnit))
+    outstr += "\n[lexUnit] {0} lexical units\n".format(len(frame.lexUnit))
     lustrs = []
     for lu in frame.lexUnit:
         tmpstr = '{0.name} ({0.ID})'.format(lu)
         lustrs.append(tmpstr)
     outstr += "{0}\n".format(_pretty_longstring(', '.join(lustrs),prefix='  '))
 
-    outstr += "\n[fe] {0} frame elements\n".format(len(frame.FE))
+    outstr += "\n[FE] {0} frame elements\n".format(len(frame.FE))
     fes = {}
     for fe in frame.FE:
         try:
@@ -275,6 +281,7 @@ class AttrDict(dict):
             outstr = _pretty_any(self)
 
         return outstr
+    __repr__ = __str__
 
 class FramenetCorpusReader(XMLCorpusReader):
 
@@ -1409,9 +1416,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         feinfo = self._load_xml_attributes(AttrDict(), elt)
         feinfo['_type'] = 'fe'
         feinfo['definition'] = ""
-        feinfo['semType'] = AttrDict()
-        feinfo['requiresFE'] = AttrDict()
-        feinfo['excludesFE'] = AttrDict()
+        feinfo['semType'] = None
+        feinfo['requiresFE'] = None
+        feinfo['excludesFE'] = None
         for sub in elt:
             if sub.tag.endswith('definition'):
                 feinfo['definition'] = self._strip_tags(sub.text)
