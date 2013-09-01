@@ -124,7 +124,7 @@ def _pretty_lu(lu):
     if 'frame' in lukeys:
         outstr += "\n[frame] {0}({1})\n".format(lu.frame,lu.frameID)
     if 'incorporatedFE' in lukeys:
-        outstr += _pretty_fe(lu.incorporatedFE)
+        outstr += "\n[incorporatedFE] {0}\n".format(lu.incorporatedFE)
     if 'POS' in lukeys:
         outstr += "\n[POS] {0}\n".format(lu.POS)
     if 'status' in lukeys:
@@ -155,7 +155,6 @@ def _pretty_fe(fe):
     :return: A nicely formated string representation of the frame element.
     :rtype: str
     """
-
     fekeys = fe.keys()
     outstr = ""
     outstr += "frame element ({0.ID}): {0.name}\n\n".format(fe)
