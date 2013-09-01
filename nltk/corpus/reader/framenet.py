@@ -246,12 +246,12 @@ class AttrDict(dict):
 
     >>> foo = {'a':1, 'b':2, 'c':3}
     >>> bar = AttrDict(foo)
-    >>> bar
+    >>> dict(bar)
     {'a': 1, 'c': 3, 'b': 2}
     >>> bar.b
     2
     >>> bar.d = 4
-    >>> bar
+    >>> dict(bar)
     {'a': 1, 'c': 3, 'b': 2, 'd': 4}
     >>>
     """
@@ -622,7 +622,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         ``lu()`` function with "subCorpus" info excluded.
 
         >>> from nltk.corpus import framenet as fn
-        >>> fn.lu_basic(256)
+        >>> dict(fn.lu_basic(256))
         {'status': 'FN1_Sent', u'definition': u'COD: be aware of beforehand; predict.', 'name': 'foresee.v', 'frame': 'Expectation', 'POS': 'V', 'frameID': 26, u'lexeme': {'POS': 'V', 'name': 'foresee'}, u'semType': {}, 'totalAnnotated': 44, 'ID': 256}
 
         :param fn_luid: The id number of the desired LU
@@ -649,7 +649,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         'COD: be aware of beforehand; predict.'
         >>> fn.lu(256).frame
         'Expectation'
-        >>> fn.lu(256).lexeme
+        >>> dict(fn.lu(256).lexeme)
         {'POS': 'V', 'name': 'foresee'}
 
         The dict that is returned from this function will contain the
@@ -774,7 +774,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.frames())
         1019
-        >>> fn.frames(r'(?i)medical')
+        >>> [dict(f) for f in fn.frames(r'(?i)medical')]
         [{'ID': 239, 'name': 'Medical_conditions'}, {'ID': 256, 'name': 'Medical_specialties'}, {'ID': 257, 'name': 'Medical_instruments'}, {'ID': 255, 'name': 'Medical_professionals'}]
 
         A brief intro to Frames (excerpted from "FrameNet II: Extended
@@ -844,7 +844,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.lexical_units())
         11829
-        >>> fn.lexical_units(r'(?i)a little')
+        >>> [dict(lu) for lu in fn.lexical_units(r'(?i)a little')]
         [{'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.n', 'frameID': 189, 'frameName': 'Quantity', 'ID': 14733}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14743}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little bit.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14744}]
 
         A brief intro to Lexical Units (excerpted from "FrameNet II:
@@ -1000,13 +1000,14 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Obtain a list of frame relation types.
 
+        >>> from nltk.corpus import framenet as fn
         >>> frts = fn.frame_relation_types()
         >>> type(frts)
         <type 'list'>
         >>> len(frts)
         9
-        >>> frts[0]
-        {'superFrameName': 'Parent', 'subFrameName': 'Child', 'ID': 1, 'name': 'Inheritance'}
+        >>> dict(frts[0])
+        {'_type': 'framerelationtype', 'subFrameName': 'Child', 'ID': 1, 'name': 'Inheritance', 'superFrameName': 'Parent'}
 
         :return: A list of all of the frame relation types in framenet
         :rtype: list(dict)
@@ -1024,6 +1025,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         :return: A list of all of the frame relations in framenet
         :rtype: list(dict)
 
+        >>> from nltk.corpus import framenet as fn
         >>> frels = fn.frame_relations()
         >>> type(frels)
         <type 'list'>
@@ -1039,12 +1041,13 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Obtain a list of frame element relations.
 
+        >>> from nltk.corpus import framenet as fn
         >>> ferels = fn.fe_relations()
         >>> type(ferels)
         <type 'list'>
         >>> len(ferels)
         10020
-        >>> ferels[0]
+        >>> dict(ferels[0])
         {'subID': 2921, 'subFEName': 'Time', 'superFEName': 'Time', 'ID': 808, 'supID': 1446}
 
         :return: A list of all of the frame element relations in framenet
@@ -1059,11 +1062,11 @@ class FramenetCorpusReader(XMLCorpusReader):
         Obtain a list of semantic types.
 
         >>> from nltk.corpus import framenet as fn
-        >>> stypes = = fn.sem_types()
+        >>> stypes = fn.sem_types()
         >>> len(stypes)
         73
         >>> stypes[0].keys()
-        ['superType', 'definition', 'abbrev', 'name', 'ID']
+        ['definition', '_type', 'name', 'abbrev', 'superType', 'ID']
 
         :return: A list of all of the semantic types in framenet
         :rtype: list(dict)
