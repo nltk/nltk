@@ -18,7 +18,7 @@ import textwrap
 from pprint import pprint, pformat
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
-from nltk.compat import text_type, string_types
+from nltk.compat import text_type, string_types, python_2_unicode_compatible
 
 def _pretty_longstring(defstr, prefix='', wrap_at=65):
 
@@ -238,7 +238,7 @@ class FramenetError(Exception):
 
     """An exception class for framenet-related errors."""
 
-
+@python_2_unicode_compatible
 class AttrDict(dict):
 
     """A class that wraps a dict and allows accessing the keys of the
@@ -261,13 +261,13 @@ class AttrDict(dict):
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
-    def __str__(self, abbrev=False):
-        if abbrev:
-            if hasattr(self,'_type'):
-                return '<{0} ID={1} name={2}>'.format(self['_type'], self['ID'], self['name'])
-            else:
-                return dict.__repr__(self)
-
+    def short_repr(self):
+        if hasattr(self,'_type'):
+            return '<{0} ID={1} name={2}>'.format(self['_type'], self['ID'], self['name'])
+        else:
+            return dict.__repr__(self)
+        
+    def __str__(self):
         outstr = ""
 
         if not self.has_key('_type'):
@@ -289,6 +289,7 @@ class AttrDict(dict):
         return outstr
     __repr__ = __str__
 
+@python_2_unicode_compatible
 class PrettyDict(dict):
     """
     Displays an abbreviated repr of values where possible.
@@ -298,12 +299,13 @@ class PrettyDict(dict):
         for k,v in self.items():
             kv = repr(k)+': '
             try:
-                kv += v.__repr__(abbrev=True)
-            except TypeError:
+                kv += v.short_repr()
+            except AttributeError:
                 kv += repr(v)
             parts.append(kv)
         return '{'+', '.join(parts)+'}'
 
+@python_2_unicode_compatible
 class PrettyList(list):
     """
     Displays an abbreviated repr of only the first several elements, not the whole list.
@@ -319,7 +321,7 @@ class PrettyList(list):
         pieces = []
         length = 5
         for elt in self:
-            pieces.append(elt.__repr__(abbrev=True))
+            pieces.append(elt.short_repr())
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
                 return '[%s, ...]' % text_type(', ').join(pieces[:-1])
