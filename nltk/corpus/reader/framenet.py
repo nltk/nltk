@@ -995,7 +995,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             file name of each annotated document. The document's
             file name contains the name of the corpus that the
             document is from, followed by two underscores "__"
-            followed by the document name. So, for example,s the
+            followed by the document name. So, for example, the
             file name "LUCorpus-v0.3__20000410_nyt-NEW.xml" is
             from the corpus named "LUCorpus-v0.3" and the
             document name is "20000410_nyt-NEW.xml".
