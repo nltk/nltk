@@ -239,15 +239,16 @@ class AttrDict(dict):
     dict as if they were attributes. Taken from here:
        http://stackoverflow.com/a/14620633/8879
 
+    >>> from pprint import pprint
     >>> foo = {'a':1, 'b':2, 'c':3}
     >>> bar = AttrDict(foo)
-    >>> bar
-    {'a': 1, 'c': 3, 'b': 2}
+    >>> pprint(bar)
+    {'a': 1, 'b': 2, 'c': 3}
     >>> bar.b
     2
     >>> bar.d = 4
-    >>> bar
-    {'a': 1, 'c': 3, 'b': 2, 'd': 4}
+    >>> pprint(bar)
+    {'a': 1, 'b': 2, 'c': 3, 'd': 4}
     >>>
     """
 
@@ -615,9 +616,20 @@ class FramenetCorpusReader(XMLCorpusReader):
         ``fn_luid``. This is basically just a wrapper around the
         ``lu()`` function with "subCorpus" info excluded.
 
+        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
-        >>> fn.lu_basic(256)
-        {'status': 'FN1_Sent', u'definition': u'COD: be aware of beforehand; predict.', 'name': 'foresee.v', 'frame': 'Expectation', 'POS': 'V', 'frameID': 26, u'lexeme': {'POS': 'V', 'name': 'foresee'}, u'semType': {}, 'totalAnnotated': 44, 'ID': 256}
+        >>> pprint(fn.lu_basic(256))
+        {'ID': 256,
+         'POS': 'V',
+         '_type': 'lu',
+         'definition': 'COD: be aware of beforehand; predict.',
+         'frame': 'Expectation',
+         'frameID': 26,
+         'lexeme': {'POS': 'V', 'name': 'foresee'},
+         'name': 'foresee.v',
+         'semType': {},
+         'status': 'FN1_Sent',
+         'totalAnnotated': 44}
 
         :param fn_luid: The id number of the desired LU
         :type fn_luid: int
@@ -636,6 +648,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         Usage examples:
 
+        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
         >>> fn.lu(256).name
         'foresee.v'
@@ -643,7 +656,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         'COD: be aware of beforehand; predict.'
         >>> fn.lu(256).frame
         'Expectation'
-        >>> fn.lu(256).lexeme
+        >>> pprint(fn.lu(256).lexeme)
         {'POS': 'V', 'name': 'foresee'}
 
         The dict that is returned from this function will contain the
@@ -765,11 +778,15 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Obtain details for a specific frame.
 
+        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.frames())
         1019
-        >>> fn.frames(r'(?i)medical')
-        [{'ID': 239, 'name': 'Medical_conditions'}, {'ID': 256, 'name': 'Medical_specialties'}, {'ID': 257, 'name': 'Medical_instruments'}, {'ID': 255, 'name': 'Medical_professionals'}]
+        >>> pprint(fn.frames(r'(?i)medical'))
+        [{'ID': 239, 'name': 'Medical_conditions'},
+         {'ID': 256, 'name': 'Medical_specialties'},
+         {'ID': 257, 'name': 'Medical_instruments'},
+         {'ID': 255, 'name': 'Medical_professionals'}]
 
         A brief intro to Frames (excerpted from "FrameNet II: Extended
         Theory and Practice" by Ruppenhofer et. al., 2010):
@@ -835,11 +852,32 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Obtain details for a specific lexical unit.
 
+        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.lexical_units())
         11829
         >>> fn.lexical_units(r'(?i)a little')
-        [{'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.n', 'frameID': 189, 'frameName': 'Quantity', 'ID': 14733}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14743}, {'status': 'Created', 'hasAnnotation': 'false', 'name': 'a little bit.adv', 'frameID': 2001, 'frameName': 'Degree', 'ID': 14744}]
+        [{'ID': 14733,
+          '_type': 'lu',
+          'frameID': 189,
+          'frameName': 'Quantity',
+          'hasAnnotation': 'false',
+          'name': 'a little.n',
+          'status': 'Created'},
+         {'ID': 14743,
+          '_type': 'lu',
+          'frameID': 2001,
+          'frameName': 'Degree',
+          'hasAnnotation': 'false',
+          'name': 'a little.adv',
+          'status': 'Created'},
+         {'ID': 14744,
+          '_type': 'lu',
+          'frameID': 2001,
+          'frameName': 'Degree',
+          'hasAnnotation': 'false',
+          'name': 'a little bit.adv',
+          'status': 'Created'}]
 
         A brief intro to Lexical Units (excerpted from "FrameNet II:
         Extended Theory and Practice" by Ruppenhofer et. al., 2010):
@@ -953,11 +991,20 @@ class FramenetCorpusReader(XMLCorpusReader):
         Details for a specific annotated document can be obtained using this
         class's annotated_document() function and pass it the value of the 'ID' field.
 
+        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.documents())
         78
-        >>> set([x.corpname for x in fn.documents()])
-        set(['NTI', 'LUCorpus-v0.3', 'ANC', 'Miscellaneous', 'PropBank', 'KBEval', 'QA', 'SemAnno', 'C-4'])
+        >>> pprint(set([x.corpname for x in fn.documents()]))
+        set(['ANC',
+             'C-4',
+             'KBEval',
+             'LUCorpus-v0.3',
+             'Miscellaneous',
+             'NTI',
+             'PropBank',
+             'QA',
+             'SemAnno'])
 
         :param name: A regular expression pattern used to search the
             file name of each annotated document. The document's
@@ -994,13 +1041,18 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Obtain a list of frame relation types.
 
+        >>> from pprint import pprint
         >>> frts = fn.frame_relation_types()
         >>> type(frts)
         <type 'list'>
         >>> len(frts)
         9
-        >>> frts[0]
-        {'superFrameName': 'Parent', 'subFrameName': 'Child', 'ID': 1, 'name': 'Inheritance'}
+        >>> pprint(frts[0])
+        {'ID': 1,
+         '_type': 'framerelationtype',
+         'name': 'Inheritance',
+         'subFrameName': 'Child',
+         'superFrameName': 'Parent'}
 
         :return: A list of all of the frame relation types in framenet
         :rtype: list(dict)
@@ -1033,13 +1085,18 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Obtain a list of frame element relations.
 
+        >>> from pprint import pprint
         >>> ferels = fn.fe_relations()
         >>> type(ferels)
         <type 'list'>
         >>> len(ferels)
         10020
         >>> ferels[0]
-        {'subID': 2921, 'subFEName': 'Time', 'superFEName': 'Time', 'ID': 808, 'supID': 1446}
+        {'ID': 808,
+         'subFEName': 'Time',
+         'subID': 2921,
+         'supID': 1446,
+         'superFEName': 'Time'}
 
         :return: A list of all of the frame element relations in framenet
         :rtype: list(dict)
@@ -1052,8 +1109,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Obtain a list of semantic types.
 
+        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
-        >>> stypes = = fn.sem_types()
+        >>> stypes = fn.sem_types()
         >>> len(stypes)
         73
         >>> stypes[0].keys()
