@@ -11,8 +11,7 @@
 """
 Tools for reading and writing dependency trees.
 The input is assumed to be in Malt-TAB format
-(http://w3.msi.vxu.se/~nivre/research/MaltXML.html).
-Currently only reads the first tree in a file.
+(http://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 from __future__ import print_function, unicode_literals
 
@@ -121,9 +120,11 @@ class DependencyGraph(object):
     def load(file):
         """
         :param file: a file in Malt-TAB format
+        :return: a list of DependencyGraphs
         """
         with open(file) as f:
-            return DependencyGraph(f.read())
+            return [DependencyGraph(tree_str) for tree_str in
+                                                  f.read().split('\n\n')]
 
     @staticmethod
     def _normalize(line):
