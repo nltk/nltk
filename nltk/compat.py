@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
+# Natural Language Toolkit: Compatibility
+#
+# Copyright (C) 2001-2013 NLTK Project
+#
+# URL: <http://www.nltk.org/>
+# For license information, see LICENSE.TXT
+
 from __future__ import absolute_import, print_function
 import sys
 import types
+from functools import wraps
 
 # Python 2/3 compatibility layer. Based on six.
 
@@ -153,6 +161,32 @@ except ImportError: # python 2.6
         return cls
 
 
+# ======= Compatibility for datasets that care about Python versions ========
+
+# The following datasets have a /PY3 subdirectory containing
+# a full copy of the data which has been re-encoded or repickled.
+_PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
+                     "help/tagsets",
+                     "taggers/maxent_treebank_pos_tagger",
+                     "tokenizers/punkt"]
+
+# for use in adding /PY3 to the second (filename) argument
+# of the file pointers in data.py
+def py3_data(init_func):
+    def _decorator(*args, **kwargs):
+        if PY3:
+            path = args[1]
+            for item in _PY3_DATA_UPDATES:
+                if item in path:
+                    pos = path.index(item) + len(item)
+                    if path[pos:pos+4] == ".zip":
+                        pos += 4
+                    path = path[:pos] + "/PY3" + path[pos:]
+                    args = (args[0], path) + args[2:]
+                    break
+        return init_func(*args, **kwargs)
+    return wraps(init_func)(_decorator)
+    
 # ======= Compatibility layer for __str__ and __repr__ ==========
 
 import unicodedata
