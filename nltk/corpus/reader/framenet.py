@@ -15,9 +15,10 @@ __docformat__ = 'epytext en'
 import os
 import re
 import textwrap
+from pprint import pprint, pformat
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
-from nltk.compat import string_types
+from nltk.compat import text_type, string_types, python_2_unicode_compatible
 
 def _pretty_longstring(defstr, prefix='', wrap_at=65):
 
@@ -73,13 +74,16 @@ def _pretty_semtype(st):
 
     outstr = ""
     outstr += "semantic type ({0.ID}): {0.name}\n".format(st)
-    outstr += "[abbrev] {0}\n".format(st.abbrev)
-    outstr += "[definition]\n"
-    outstr += _pretty_longstring(st.definition,'  ')
-    outstr += "[superType]\n"
-    ststr = "{0}".format(st.superType)
-    for line in ststr.split("\n"):
-        outstr += "  {0}\n".format(line)
+    if 'abbrev' in semkeys:
+        outstr += "[abbrev] {0}\n".format(st.abbrev)
+    if 'definition' in semkeys:
+        outstr += "[definition]\n"
+        outstr += _pretty_longstring(st.definition,'  ')
+    if 'superType' in semkeys:
+        outstr += "[superType]\n"
+        ststr = "{0}".format(st.superType)
+        for line in ststr.split("\n"):
+            outstr += "  {0}\n".format(line)
 
     return outstr
 
@@ -121,13 +125,13 @@ def _pretty_lu(lu):
     if 'frame' in lukeys:
         outstr += "\n[frame] {0}({1})\n".format(lu.frame,lu.frameID)
     if 'incorporatedFE' in lukeys:
-        outstr += _pretty_fe(lu.incorporatedFE)
+        outstr += "\n[incorporatedFE] {0}\n".format(lu.incorporatedFE)
     if 'POS' in lukeys:
         outstr += "\n[POS] {0}\n".format(lu.POS)
     if 'status' in lukeys:
         outstr += "\n[status] {0}\n".format(lu.status)
     if 'totalAnnotated' in lukeys:
-        outstr += "\n[#annotated examples] {0}\n".format(lu.totalAnnotated)
+        outstr += "\n[totalAnnotated] {0} annotated examples\n".format(lu.totalAnnotated)
     if 'lexeme' in lukeys:
         outstr += "\n[lexeme] {0}({1})\n".format(lu.lexeme['name'],lu.lexeme['POS'])
     if 'semType' in lukeys:
@@ -152,7 +156,6 @@ def _pretty_fe(fe):
     :return: A nicely formated string representation of the frame element.
     :rtype: str
     """
-
     fekeys = fe.keys()
     outstr = ""
     outstr += "frame element ({0.ID}): {0.name}\n\n".format(fe)
@@ -163,19 +166,22 @@ def _pretty_fe(fe):
         outstr += "[abbrev] {0}\n".format(fe.abbrev)
     if 'requiresFE' in fekeys:
         outstr += "[requiresFE] "
-        if 'name' in fe.requiresFE:
-            outstr += "{0}\n".format(fe.requiresFE.name)
-        else:
+        if fe.requiresFE is None:
             outstr += "<None>\n"
+        else:
+            outstr += "{0}\n".format(fe.requiresFE.name)
     if 'excludesFE' in fekeys:
         outstr += "[excludesFE] "
-        if 'name' in fe.excludesFE:
-            outstr += "{0}\n".format(fe.excludessFE.name)
-        else:
+        if fe.excludesFE is None:
             outstr += "<None>\n"
+        else:
+            outstr += "{0}\n".format(fe.excludesFE.name)
     if 'semType' in fekeys:
-        outstr += "[semType]\n"
-        outstr += "  " + _pretty_semtype(fe.semType) + '\n'
+        outstr += "[semType] "
+        if fe.semType is None:
+            outstr += "<None>\n"
+        else:
+            outstr += "\n  " + _pretty_semtype(fe.semType) + '\n'
 
     return outstr
 
@@ -208,21 +214,21 @@ def _pretty_frame(frame):
                                          ','.join([x for x in fr['relatedFrame']])))
     outstr += "  " + ", ".join(frels) + '\n'
 
-    outstr += "\n[lu] {0} lexical units\n".format(len(frame.lexUnit))
+    outstr += "\n[lexUnit] {0} lexical units\n".format(len(frame.lexUnit))
     lustrs = []
-    for lu in frame.lexUnit:
-        tmpstr = '{0.name} ({0.ID})'.format(lu)
+    for luName,lu in sorted(frame.lexUnit.items()):
+        tmpstr = '{0} ({1})'.format(luName, lu.ID)
         lustrs.append(tmpstr)
     outstr += "{0}\n".format(_pretty_longstring(', '.join(lustrs),prefix='  '))
 
-    outstr += "\n[fe] {0} frame elements\n".format(len(frame.FE))
+    outstr += "\n[FE] {0} frame elements\n".format(len(frame.FE))
     fes = {}
-    for fe in frame.FE:
+    for feName,fe in sorted(frame.FE.items()):
         try:
-            fes[fe.coreType].append('{0.name} ({0.ID})'.format(fe))
+            fes[fe.coreType].append('{0} ({1})'.format(feName, fe.ID))
         except KeyError:
             fes[fe.coreType] = []
-            fes[fe.coreType].append('{0.name} ({0.ID})'.format(fe))
+            fes[fe.coreType].append('{0} ({1})'.format(feName, fe.ID))
     for ct in sorted(fes.keys()):
         outstr += '{0:>15}: {1}\n'.format(ct, ', '.join(sorted(fes[ct])))
 
@@ -232,23 +238,22 @@ class FramenetError(Exception):
 
     """An exception class for framenet-related errors."""
 
-
+@python_2_unicode_compatible
 class AttrDict(dict):
 
     """A class that wraps a dict and allows accessing the keys of the
     dict as if they were attributes. Taken from here:
        http://stackoverflow.com/a/14620633/8879
 
-    >>> from pprint import pprint
     >>> foo = {'a':1, 'b':2, 'c':3}
     >>> bar = AttrDict(foo)
-    >>> pprint(bar)
-    {'a': 1, 'b': 2, 'c': 3}
+    >>> dict(bar)
+    {'a': 1, 'c': 3, 'b': 2}
     >>> bar.b
     2
     >>> bar.d = 4
-    >>> pprint(bar)
-    {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+    >>> dict(bar)
+    {'a': 1, 'c': 3, 'b': 2, 'd': 4}
     >>>
     """
 
@@ -256,6 +261,12 @@ class AttrDict(dict):
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
+    def short_repr(self):
+        if hasattr(self,'_type'):
+            return '<{0} ID={1} name={2}>'.format(self['_type'], self['ID'], self['name'])
+        else:
+            return dict.__repr__(self)
+        
     def __str__(self):
         outstr = ""
 
@@ -276,6 +287,46 @@ class AttrDict(dict):
             outstr = _pretty_any(self)
 
         return outstr
+    __repr__ = __str__
+
+@python_2_unicode_compatible
+class PrettyDict(dict):
+    """
+    Displays an abbreviated repr of values where possible.
+    """
+    def __repr__(self):
+        parts = []
+        for k,v in self.items():
+            kv = repr(k)+': '
+            try:
+                kv += v.short_repr()
+            except AttributeError:
+                kv += repr(v)
+            parts.append(kv)
+        return '{'+', '.join(parts)+'}'
+
+@python_2_unicode_compatible
+class PrettyList(list):
+    """
+    Displays an abbreviated repr of only the first several elements, not the whole list.
+    """
+    # from nltk.util
+    _MAX_REPR_SIZE = 60
+    def __repr__(self):
+        """
+        Return a string representation for this corpus view that is
+        similar to a list's representation; but if it would be more
+        than 60 characters long, it is truncated.
+        """
+        pieces = []
+        length = 5
+        for elt in self:
+            pieces.append(elt.short_repr())
+            length += len(pieces[-1]) + 2
+            if length > self._MAX_REPR_SIZE and len(pieces) > 2:
+                return '[%s, ...]' % text_type(', ').join(pieces[:-1])
+        else:
+            return '[%s]' % text_type(', ').join(pieces)
 
 class FramenetCorpusReader(XMLCorpusReader):
 
@@ -594,21 +645,12 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         >>> from nltk.corpus import framenet as fn
         >>> fn.frames_by_lemma(r'(?i)a little')
-        [('Quantity', 189), ('Degree', 2001)]
+        [<frame ID=189 name=Quantity>, <frame ID=2001 name=Degree>]
 
-        :return: A list of tuples where each tuple has the frame name and ID.
-        :rtype: list(tuple)
+        :return: A list of frame objects.
+        :rtype: list(AttrDict)
         """
-        if self._frame_idx is None:
-            self._buildframeindex()
-
-        outlist = []
-        for fid in list(self._frame_idx.keys()):
-            f = self.frame(fid)
-            if any([re.search(pat, lu.name) for lu in f.lexUnit]):
-                outlist.append((f.name, f.ID))
-
-        return outlist
+        return PrettyList(f for f in self.frames() if any(re.search(pat, luName) for luName in f.lexUnit))
 
     def lu_basic(self, fn_luid):
         """
@@ -616,20 +658,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         ``fn_luid``. This is basically just a wrapper around the
         ``lu()`` function with "subCorpus" info excluded.
 
-        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
-        >>> pprint(fn.lu_basic(256))
-        {'ID': 256,
-         'POS': 'V',
-         '_type': 'lu',
-         'definition': 'COD: be aware of beforehand; predict.',
-         'frame': 'Expectation',
-         'frameID': 26,
-         'lexeme': {'POS': 'V', 'name': 'foresee'},
-         'name': 'foresee.v',
-         'semType': {},
-         'status': 'FN1_Sent',
-         'totalAnnotated': 44}
+        >>> PrettyDict(fn.lu_basic(256))
+        {'status': 'FN1_Sent', 'definition': 'COD: be aware of beforehand; predict.', '_type': 'lu', 'name': 'foresee.v', 'frame': 'Expectation', 'POS': 'V', 'frameID': 26, 'lexeme': {'POS': 'V', 'name': 'foresee'}, 'semType': {}, 'totalAnnotated': 44, 'ID': 256}
 
         :param fn_luid: The id number of the desired LU
         :type fn_luid: int
@@ -648,7 +679,6 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         Usage examples:
 
-        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
         >>> fn.lu(256).name
         'foresee.v'
@@ -656,7 +686,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         'COD: be aware of beforehand; predict.'
         >>> fn.lu(256).frame
         'Expectation'
-        >>> pprint(fn.lu(256).lexeme)
+        >>> dict(fn.lu(256).lexeme)
         {'POS': 'V', 'name': 'foresee'}
 
         The dict that is returned from this function will contain the
@@ -722,7 +752,7 @@ class FramenetCorpusReader(XMLCorpusReader):
     def _loadsemtypes(self):
         """Create the semantic types index."""
         self._semtypes = AttrDict()
-        for st in self.sem_types():
+        for st in self.semtypes():
             n = st['name']
             a = st['abbrev']
             i = st['ID']
@@ -732,45 +762,35 @@ class FramenetCorpusReader(XMLCorpusReader):
             self._semtypes[a] = i
             self._semtypes[i] = st
 
-    def semtype(self, name=None, abbrev=None, id=None):
+    def semtype(self, key):
         """
         >>> from nltk.corpus import framenet as fn
-        >>> fn.semtype(id=233).name
+        >>> fn.semtype(233).name
         'Temperature'
-        >>> fn.semtype(id=233).abbrev
+        >>> fn.semtype(233).abbrev
         'Temp'
-        >>> fn.semtype(name='Temperature').ID
+        >>> fn.semtype('Temperature').ID
         233
 
-        :param name: The name of the semantic type
-        :type name: string or None
-        :param abbrev: The abbreviation of the semantic type
-        :type abbrev: string or None
-        :param id: The id number of the semantic type
-        :type id: int or None
+        :param key: The name, abbreviation, or id number of the semantic type
+        :type key: string or int
         :return: Information about a semantic type
         :rtype: dict
         """
-        if sum([1 for x in [name, abbrev, id] if x is not None]) != 1:
-            raise FramenetError(
-                "semtype(): Must specify one (and only one) arg")
-
-        if id is None:
-            key = name
-            if key is None:
-                key = abbrev
-
+        if isinstance(key,int):
+            stid = key
+        else:
             try:
-                id = self._semtypes[key]
+                stid = self._semtypes[key]
             except TypeError:
                 self._loadsemtypes()
-                id = self._semtypes[key]
+                stid = self._semtypes[key]
 
         try:
-            st = self._semtypes[id]
+            st = self._semtypes[stid]
         except TypeError:
             self._loadsemtypes()
-            st = self._semtypes[id]
+            st = self._semtypes[stid]
 
         return st
 
@@ -778,15 +798,11 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Obtain details for a specific frame.
 
-        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.frames())
         1019
-        >>> pprint(fn.frames(r'(?i)medical'))
-        [{'ID': 239, 'name': 'Medical_conditions'},
-         {'ID': 256, 'name': 'Medical_specialties'},
-         {'ID': 257, 'name': 'Medical_instruments'},
-         {'ID': 255, 'name': 'Medical_professionals'}]
+        >>> fn.frames(r'(?i)medical')
+        [<frame ID=239 name=Medical_conditions>, <frame ID=256 name=Medical_specialties>, ...]
 
         A brief intro to Frames (excerpted from "FrameNet II: Extended
         Theory and Practice" by Ruppenhofer et. al., 2010):
@@ -832,52 +848,30 @@ class FramenetCorpusReader(XMLCorpusReader):
             Framenet Frames will be returned.
         :type name: str
         :return: A list of matching Frames (or all Frames).
-            Each dict in the returned list will contain two keys:
-            - 'name': the name of the Frame
-            - 'ID'  : the id number of the Frame
-        :rtype: list(dict)
+        :rtype: list(AttrDict)
         """
         try:
-            flist = list(self._frame_idx.values())
+            flist = self._frame_idx.values()
         except AttributeError:
             self._buildframeindex()
-            flist = list(self._frame_idx.values())
+            flist = self._frame_idx.values()
 
         if name is None:
-            return flist
+            return PrettyList(self.frame(f.ID) for f in flist)
         else:
-            return [x for x in flist if re.search(name, x['name']) is not None]
+            return PrettyList(self.frame(f.ID) for f in flist if re.search(name, f.name) is not None)
 
-    def lexical_units(self, name=None):
+    def lus(self, name=None):
         """
         Obtain details for a specific lexical unit.
 
-        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
-        >>> len(fn.lexical_units())
+        >>> len(fn.lus())
         11829
-        >>> fn.lexical_units(r'(?i)a little')
-        [{'ID': 14733,
-          '_type': 'lu',
-          'frameID': 189,
-          'frameName': 'Quantity',
-          'hasAnnotation': 'false',
-          'name': 'a little.n',
-          'status': 'Created'},
-         {'ID': 14743,
-          '_type': 'lu',
-          'frameID': 2001,
-          'frameName': 'Degree',
-          'hasAnnotation': 'false',
-          'name': 'a little.adv',
-          'status': 'Created'},
-         {'ID': 14744,
-          '_type': 'lu',
-          'frameID': 2001,
-          'frameName': 'Degree',
-          'hasAnnotation': 'false',
-          'name': 'a little bit.adv',
-          'status': 'Created'}]
+        >>> fn.lus(r'(?i)a little')
+        [<lu ID=14733 name=a little.n>, <lu ID=14743 name=a little.adv>, ...]
+        >>> PrettyDict(fn.lu(14743))
+        {'status': 'Created', 'definition': 'FN: to a small degree', '_type': 'lu', 'subCorpus': [], 'name': 'a little.adv', 'frame': 'Degree', 'POS': 'ADV', 'frameID': 2001, 'lexeme': {'POS': 'A', 'headword': 'true', 'breakBefore': 'false', 'order': 2, 'name': 'little'}, 'semType': {}, 'totalAnnotated': 0, 'ID': 14743}
 
         A brief intro to Lexical Units (excerpted from "FrameNet II:
         Extended Theory and Practice" by Ruppenhofer et. al., 2010):
@@ -971,10 +965,10 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
 
         try:
-            lulist = list(self._lu_idx.values())
+            lulist = PrettyList(self._lu_idx.values())
         except AttributeError:
             self._buildluindex()
-            lulist = list(self._lu_idx.values())
+            lulist = PrettyList(self._lu_idx.values())
 
         for lu in lulist:
             lu['_type'] = 'lu'
@@ -982,7 +976,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         if name is None:
             return lulist
         else:
-            return [x for x in lulist if re.search(name, x['name']) is not None]
+            return PrettyList(x for x in lulist if re.search(name, x['name']) is not None)
 
     def documents(self, name=None):
         """
@@ -991,20 +985,11 @@ class FramenetCorpusReader(XMLCorpusReader):
         Details for a specific annotated document can be obtained using this
         class's annotated_document() function and pass it the value of the 'ID' field.
 
-        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.documents())
         78
-        >>> pprint(set([x.corpname for x in fn.documents()]))
-        set(['ANC',
-             'C-4',
-             'KBEval',
-             'LUCorpus-v0.3',
-             'Miscellaneous',
-             'NTI',
-             'PropBank',
-             'QA',
-             'SemAnno'])
+        >>> set([x.corpname for x in fn.documents()])
+        set(['NTI', 'LUCorpus-v0.3', 'ANC', 'Miscellaneous', 'PropBank', 'KBEval', 'QA', 'SemAnno', 'C-4'])
 
         :param name: A regular expression pattern used to search the
             file name of each annotated document. The document's
@@ -1027,39 +1012,35 @@ class FramenetCorpusReader(XMLCorpusReader):
                 - 'filename'
         """
         try:
-            ftlist = list(self._fulltext_idx.values())
+            ftlist = PrettyList(self._fulltext_idx.values())
         except AttributeError:
             self._buildcorpusindex()
-            ftlist = list(self._fulltext_idx.values())
+            ftlist = PrettyList(self._fulltext_idx.values())
 
         if name is None:
             return ftlist
         else:
-            return [x for x in ftlist if re.search(name, x['filename']) is not None]
+            return PrettyList(x for x in ftlist if re.search(name, x['filename']) is not None)
 
     def frame_relation_types(self):
         """
         Obtain a list of frame relation types.
 
-        >>> from pprint import pprint
+        >>> from nltk.corpus import framenet as fn
         >>> frts = fn.frame_relation_types()
-        >>> type(frts)
-        <type 'list'>
+        >>> isinstance(frts,list)
+        True
         >>> len(frts)
         9
-        >>> pprint(frts[0])
-        {'ID': 1,
-         '_type': 'framerelationtype',
-         'name': 'Inheritance',
-         'subFrameName': 'Child',
-         'superFrameName': 'Parent'}
+        >>> dict(frts[0])
+        {'_type': 'framerelationtype', 'subFrameName': 'Child', 'ID': 1, 'name': 'Inheritance', 'superFrameName': 'Parent'}
 
         :return: A list of all of the frame relation types in framenet
         :rtype: list(dict)
         """
-        frtypes = [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
+        frtypes = PrettyList(x for x in XMLCorpusView(self.abspath("frRelation.xml"),
                                             'frameRelations/frameRelationType',
-                                            self._handle_elt)]
+                                            self._handle_elt))
         for frt in frtypes:
             frt['_type'] = 'framerelationtype'
 
@@ -1070,59 +1051,55 @@ class FramenetCorpusReader(XMLCorpusReader):
         :return: A list of all of the frame relations in framenet
         :rtype: list(dict)
 
+        >>> from nltk.corpus import framenet as fn
         >>> frels = fn.frame_relations()
-        >>> type(frels)
-        <type 'list'>
+        >>> isinstance(frels,list)
+        True
         >>> len(frels)
         1676
 
         """
-        return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
+        return PrettyList(x for x in XMLCorpusView(self.abspath("frRelation.xml"),
                                          'frameRelations/frameRelationType/frameRelation',
-                                         self._handle_elt)]
+                                         self._handle_elt))
 
     def fe_relations(self):
         """
         Obtain a list of frame element relations.
 
-        >>> from pprint import pprint
+        >>> from nltk.corpus import framenet as fn
         >>> ferels = fn.fe_relations()
-        >>> type(ferels)
-        <type 'list'>
+        >>> isinstance(ferels,list)
+        True
         >>> len(ferels)
         10020
-        >>> ferels[0]
-        {'ID': 808,
-         'subFEName': 'Time',
-         'subID': 2921,
-         'supID': 1446,
-         'superFEName': 'Time'}
+        >>> dict(ferels[0])
+        {'subID': 2921, 'subFEName': 'Time', 'superFEName': 'Time', 'ID': 808, 'supID': 1446}
 
         :return: A list of all of the frame element relations in framenet
         :rtype: list(dict)
         """
-        return [x for x in XMLCorpusView(self.abspath("frRelation.xml"),
+        return PrettyList(x for x in XMLCorpusView(self.abspath("frRelation.xml"),
                                          'frameRelations/frameRelationType/frameRelation/FERelation',
-                                         self._handle_elt)]
+                                         self._handle_elt))
 
-    def sem_types(self):
+    def semtypes(self):
         """
         Obtain a list of semantic types.
 
-        >>> from pprint import pprint
         >>> from nltk.corpus import framenet as fn
-        >>> stypes = fn.sem_types()
+        >>> stypes = fn.semtypes()
         >>> len(stypes)
         73
         >>> stypes[0].keys()
-        ['superType', 'definition', 'abbrev', 'name', 'ID']
+        ['definition', '_type', 'name', 'abbrev', 'superType', 'ID']
 
         :return: A list of all of the semantic types in framenet
         :rtype: list(dict)
         """
-        return [x for x in XMLCorpusView(self.abspath("semTypes.xml"),
+        return PrettyList(x for x in XMLCorpusView(self.abspath("semTypes.xml"),
                                          'semTypes/semType',
-                                         self._handle_semtype_elt)]
+                                         self._handle_semtype_elt))
 
     def _load_xml_attributes(self, d, elt):
         """
@@ -1153,7 +1130,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         for attr in list(attr_dict.keys()):
 
-            if any([attr.endswith(x) for x in ignore_attrs]):
+            if any(attr.endswith(x) for x in ignore_attrs):
                 continue
 
             val = attr_dict[attr]
@@ -1240,10 +1217,10 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         frinfo['_type'] = 'frame'
         frinfo['definition'] = ""
-        frinfo['FE'] = []
+        frinfo['FE'] = PrettyDict()
         frinfo['FEcoreSet'] = []
         frinfo['frameRelation'] = []
-        frinfo['lexUnit'] = []
+        frinfo['lexUnit'] = PrettyDict()
         frinfo['semType'] = []
         for k in ignorekeys:
             if k in frinfo:
@@ -1253,7 +1230,8 @@ class FramenetCorpusReader(XMLCorpusReader):
             if sub.tag.endswith('definition') and 'definition' not in ignorekeys:
                 frinfo['definition'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('FE') and 'FE' not in ignorekeys:
-                frinfo['FE'].append(self._handle_fe_elt(sub))
+                feinfo = self._handle_fe_elt(sub)
+                frinfo['FE'][feinfo.name] = feinfo
             elif sub.tag.endswith('FEcoreSet') and 'FEcoreSet' not in ignorekeys:
                 frinfo['FEcoreSet'].extend(self._handle_fecoreset_elt(sub))
             elif sub.tag.endswith('frameRelation') and 'frameRelation' not in ignorekeys:
@@ -1261,7 +1239,8 @@ class FramenetCorpusReader(XMLCorpusReader):
                 if fr is not None:
                     frinfo['frameRelation'].append(fr)
             elif sub.tag.endswith('lexUnit') and 'lexUnit' not in ignorekeys:
-                frinfo['lexUnit'].append(self._handle_framelexunit_elt(sub))
+                luinfo = self._handle_framelexunit_elt(sub)
+                frinfo['lexUnit'][luinfo.name] = luinfo
             elif sub.tag.endswith('semType') and 'semType' not in ignorekeys:
                 frinfo['semType'].append(
                     self._load_xml_attributes(AttrDict(), sub))
@@ -1467,9 +1446,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         feinfo = self._load_xml_attributes(AttrDict(), elt)
         feinfo['_type'] = 'fe'
         feinfo['definition'] = ""
-        feinfo['semType'] = AttrDict()
-        feinfo['requiresFE'] = AttrDict()
-        feinfo['excludesFE'] = AttrDict()
+        feinfo['semType'] = None
+        feinfo['requiresFE'] = None
+        feinfo['excludesFE'] = None
         for sub in elt:
             if sub.tag.endswith('definition'):
                 feinfo['definition'] = self._strip_tags(sub.text)
@@ -1498,7 +1477,6 @@ class FramenetCorpusReader(XMLCorpusReader):
 # Demo
 #
 def demo():
-    from pprint import pprint
     from nltk.corpus import framenet as fn
 
     #
@@ -1513,7 +1491,7 @@ def demo():
     # Get some statistics about the corpus
     #
     print('Number of Frames:', len(fn.frames()))
-    print('Number of Lexical Units:', len(fn.lexical_units()))
+    print('Number of Lexical Units:', len(fn.lus()))
     print('Number of annotated documents:', len(fn.documents()))
     print()
 
@@ -1548,14 +1526,14 @@ def demo():
     print(
         '\nNumber of Frame Elements in the "{0}" frame:'.format(m_frame.name),
         len(m_frame.FE))
-    print('   ', [x.name for x in m_frame.FE])
+    print('   ', [x for x in m_frame.FE])
 
     #
     # get the names of the "Core" Frame Elements
     #
     print(
         '\nThe "core" Frame Elements in the "{0}" frame:'.format(m_frame.name))
-    print('   ', [x.name for x in m_frame.FE if x.coreType == "Core"])
+    print('   ', [x.name for x in m_frame.FE.values() if x.coreType == "Core"])
 
     #
     # get all of the Lexical Units that are incorporated in the
@@ -1563,7 +1541,7 @@ def demo():
     #
     print('\nAll Lexical Units that are incorporated in the "Ailment" FE:')
     m_frame = fn.frame(239)
-    ailment_lus = [x for x in m_frame.lexUnit if x.incorporatedFE == 'Ailment']
+    ailment_lus = [x for x in m_frame.lexUnit.values() if x.incorporatedFE == 'Ailment']
     print([x.name for x in ailment_lus])
 
     #
@@ -1571,12 +1549,12 @@ def demo():
     #
     print('\nNumber of Lexical Units in the "{0}" frame:'.format(m_frame.name),
           len(m_frame.lexUnit))
-    print('  ', [x.name for x in m_frame.lexUnit[:5]], '...')
+    print('  ', [x.name for x in m_frame.lexUnit.values()[:5]], '...')
 
     #
     # get basic info on the second LU in the frame
     #
-    tmp_id = m_frame.lexUnit[1].ID  # grab the id of the second LU
+    tmp_id = m_frame.lexUnit['ailment.n'].ID  # grab the id of the specified LU
     luinfo = fn.lu_basic(tmp_id)  # get basic info on the LU
     print('\nInformation on the LU: {0}'.format(luinfo.name))
     pprint(luinfo)
