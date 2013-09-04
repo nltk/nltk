@@ -54,8 +54,11 @@ try:
 except ImportError:
     import pickle
 
+# these imports should be more specific:
 import nltk
 from nltk import compat
+
+from nltk.compat import py3_data
 
 ######################################################################
 # Search Path
