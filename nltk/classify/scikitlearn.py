@@ -12,7 +12,7 @@ This package implement a wrapper around scikit-learn classifiers. To use this
 wrapper, construct a scikit-learn estimator object, then use that to construct
 a SklearnClassifier. E.g., to wrap a linear SVM with default settings:
 
->>> from sklearn.svm.sparse import LinearSVC
+>>> from sklearn.svm import LinearSVC
 >>> from nltk.classify.scikitlearn import SklearnClassifier
 >>> classif = SklearnClassifier(LinearSVC())
 
