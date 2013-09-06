@@ -412,8 +412,8 @@ def sql_query(dbname, query):
     :param query: SQL query
     :type rel_name: str
     """
+    import sqlite3
     try:
-        import sqlite3
         path = nltk.data.find(dbname)
         connection =  sqlite3.connect(str(path))
         cur = connection.cursor()
