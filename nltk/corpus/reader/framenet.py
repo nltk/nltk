@@ -1,7 +1,8 @@
 # Natural Language Toolkit: Framenet Corpus Reader
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Chuck Wooters <wooters@icsi.berkeley.edu>
+# Authors: Chuck Wooters <wooters@icsi.berkeley.edu>, 
+#          Nathan Schneider <nschneid@cs.cmu.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function
@@ -293,7 +294,7 @@ class AttrDict(dict):
         return v
 
     def _short_repr(self):
-        if hasattr(self,'_type'):
+        if '_type' in self:
             if self['_type'].endswith('relation'):
                 return self.__repr__()
             try:
@@ -306,7 +307,7 @@ class AttrDict(dict):
     def __str__(self):
         outstr = ""
 
-        if not self.has_key('_type'):
+        if not '_type' in self:
             return _pretty_any(self)
 
         if self['_type'] == 'frame':
@@ -945,6 +946,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             luinfo = self._lu_idx[fn_luid]
         if ignorekeys:
             return AttrDict({k: v for k,v in luinfo.items() if k not in ignorekeys})
+
         return luinfo
 
     def _lu_file(self, lu, ignorekeys=[]):
@@ -1157,10 +1159,10 @@ class FramenetCorpusReader(XMLCorpusReader):
         :rtype: list(AttrDict)
         """
         try:
-            fIDs = self._frame_idx.keys()
+            fIDs = list(self._frame_idx.keys())
         except AttributeError:
             self._buildframeindex()
-            fIDs = self._frame_idx.keys()
+            fIDs = list(self._frame_idx.keys())
         
         if name is not None:
             return PrettyList(self.frame(fID) for fID,finfo in self.frame_ids_and_names(name).items())
@@ -1282,10 +1284,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                - 'status'
         """
         try:
-            luIDs = self._lu_idx.keys()
+            luIDs = list(self._lu_idx.keys())
         except AttributeError:
             self._buildluindex()
-            luIDs = self._lu_idx.keys()
+            luIDs = list(self._lu_idx.keys())
         
         if name is not None:
             return PrettyList(self.lu(luID) for luID,luName in self.lu_ids_and_names(name).items())
@@ -1490,7 +1492,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         ignore_attrs = ['cBy', 'cDate', 'mDate', 'xsi',
                         'schemaLocation', 'xmlns', 'bgColor', 'fgColor']
 
-        for attr in list(attr_dict.keys()):
+        for attr in attr_dict:
 
             if any(attr.endswith(x) for x in ignore_attrs):
                 continue
@@ -1947,7 +1949,7 @@ def demo():
     #
     print('\nNumber of Lexical Units in the "{0}" frame:'.format(m_frame.name),
           len(m_frame.lexUnit))
-    print('  ', [x.name for x in m_frame.lexUnit.values()[:5]], '...')
+    print('  ', [x.name for x in m_frame.lexUnit.values()][:5], '...')
 
     #
     # get basic info on the second LU in the frame
