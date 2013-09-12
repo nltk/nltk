@@ -162,7 +162,7 @@ def _pretty_lu(lu):
         outstr += "\n[lexemes] {0}\n".format(' '.join('{0}/{1}'.format(lex.name,lex.POS) for lex in lu.lexemes))
     if 'semTypes' in lukeys:
         outstr += "\n[semTypes] {0} semantic types\n".format(len(lu.semTypes))
-        outstr += "  " + ", ".join('{0}({1})'.format(x.name, x.ID) for x in lu.semTypes) + '\n'*(len(lu.semTypes)>0)
+        outstr += "  "*(len(lu.semTypes)>0) + ", ".join('{0}({1})'.format(x.name, x.ID) for x in lu.semTypes) + '\n'*(len(lu.semTypes)>0)
     if 'subCorpus' in lukeys:
         subc = [x.name for x in lu.subCorpus]
         outstr += "\n[subCorpus] {0} subcorpora\n".format(len(lu.subCorpus))
@@ -227,12 +227,9 @@ def _pretty_frame(frame):
     outstr += _pretty_longstring(frame.definition, '  ') + '\n'
 
     outstr += "[semTypes] {0} semantic types\n".format(len(frame.semTypes))
-    outstr += "  " + ", ".join('{0}({1})'.format(x.name, x.ID) for x in frame.semTypes) + '\n'*(len(frame.semTypes)>0)
+    outstr += "  "*(len(frame.semTypes)>0) + ", ".join('{0}({1})'.format(x.name, x.ID) for x in frame.semTypes) + '\n'*(len(frame.semTypes)>0)
 
-    outstr += "[FEcoreSet] {0} frame element core sets\n".format(len(frame.FEcoreSet))
-    outstr += "  " + ", ".join([x.name for x in frame.FEcoreSet]) + '\n'
-
-    outstr += "[frameRelations] {0} frame relations\n".format(len(frame.frameRelations))
+    outstr += "\n[frameRelations] {0} frame relations\n".format(len(frame.frameRelations))
     outstr += '  ' + '\n  '.join(repr(frel) for frel in frame.frameRelations) + '\n'
     
     outstr += "\n[lexUnit] {0} lexical units\n".format(len(frame.lexUnit))
@@ -252,6 +249,9 @@ def _pretty_frame(frame):
             fes[fe.coreType].append('{0} ({1})'.format(feName, fe.ID))
     for ct in sorted(fes.keys()):
         outstr += '{0:>15}: {1}\n'.format(ct, ', '.join(sorted(fes[ct])))
+
+    outstr += "\n[FEcoreSets] {0} frame element core sets\n".format(len(frame.FEcoreSets))
+    outstr += "  " + '\n  '.join(", ".join([x.name for x in coreSet]) for coreSet in frame.FEcoreSets) + '\n'
 
     return outstr
 
@@ -794,10 +794,8 @@ class FramenetCorpusReader(XMLCorpusReader):
                  - 'ID'   : the id of the other FE in this frame
 
         - 'frameRelation'      : a list of objects describing frame relations
-        - 'FEcoreSet'  : a list of Frame Element core sets for this frame
-           - Each item in the list is a dict with the following keys:
-              - 'name' : the name of the Frame Element
-              - 'ID'   : the id number of the Frame Element
+        - 'FEcoreSets'  : a list of Frame Element core sets for this frame
+           - Each item in the list is a list of FE objects
 
         :param fn_fid_or_fname: The Framenet name or id number of the frame
         :type fn_fid_or_fname: int or str
@@ -1623,7 +1621,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         frinfo['_type'] = 'frame'
         frinfo['definition'] = ""
         frinfo['FE'] = PrettyDict()
-        frinfo['FEcoreSet'] = []
+        frinfo['FEcoreSets'] = []
         frinfo['lexUnit'] = PrettyDict()
         frinfo['semTypes'] = []
         for k in ignorekeys:
@@ -1638,7 +1636,9 @@ class FramenetCorpusReader(XMLCorpusReader):
                 frinfo['FE'][feinfo.name] = feinfo
                 feinfo['frame'] = frinfo    # backpointer
             elif sub.tag.endswith('FEcoreSet') and 'FEcoreSet' not in ignorekeys:
-                frinfo['FEcoreSet'].extend(self._handle_fecoreset_elt(sub))
+                coreset = self._handle_fecoreset_elt(sub)
+                # assumes all FEs have been loaded before coresets
+                frinfo['FEcoreSets'].append(PrettyList(frinfo['FE'][fe.name] for fe in coreset))
             elif sub.tag.endswith('lexUnit') and 'lexUnit' not in ignorekeys:
                 luentry = self._handle_framelexunit_elt(sub)
                 if luentry['status'] in self._bad_statuses:
