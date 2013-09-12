@@ -37,7 +37,7 @@ def _pretty_longstring(defstr, prefix='', wrap_at=65):
 
     outstr = ""
     for line in textwrap.fill(defstr, wrap_at).split('\n'):
-        outstr += "{0}{1}\n".format(prefix, line)
+        outstr += prefix+line+'\n'
     return outstr
 
 def _pretty_any(obj):
