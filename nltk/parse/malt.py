@@ -97,8 +97,22 @@ class MaltParser(ParserI):
         :type sentence: list(str)
         :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
-        taggedwords = self.tagger.tag(sentence)
-        return self.tagged_parse(taggedwords, verbose)
+        return self.batch_parse([sentence], verbose)[0]
+
+    def batch_parse(self, sentences, verbose=False):
+        """
+        Use MaltParser to parse multiple sentence. Takes multiple sentences as a
+        list where each sentence is a list of words.
+        Each sentence will be automatically tagged with this MaltParser instance's
+        tagger.
+
+        :param sentences: Input sentences to parse
+        :type sentence: list(list(str))
+        :return: list(``DependencyGraph``) the dependency graph representation
+                 of each sentence
+        """
+        tagged_sentences = [self.tagger.tag(sentence) for sentence in sentences]
+        return self.tagged_batch_parse(tagged_sentences, verbose)
 
     def raw_parse(self, sentence, verbose=False):
         """
@@ -123,6 +137,19 @@ class MaltParser(ParserI):
         :type sentence: list(tuple(str, str))
         :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
+        return self.tagged_batch_parse([sentence], verbose)[0]
+
+    def tagged_batch_parse(self, sentences, verbose=False):
+        """
+        Use MaltParser to parse multiple sentences. Takes multiple sentences
+        where each sentence is a list of (word, tag) tuples.
+        The sentences must have already been tokenized and tagged.
+
+        :param sentences: Input sentences to parse
+        :type sentence: list(list(tuple(str, str)))
+        :return: list(``DependencyGraph``) the dependency graph representation
+                 of each sentence
+        """
 
         if not self._malt_bin:
             raise Exception("MaltParser location is not configured.  Call config_malt() first.")
@@ -137,13 +164,14 @@ class MaltParser(ParserI):
                                                  delete=False)
 
         try:
-            for (i, (word, tag)) in enumerate(sentence, start=1):
-                input_file.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %
-                        (i, word, '_', tag, tag, '_', '0', 'a', '_', '_'))
-            input_file.write('\n')
+            for sentence in sentences:
+                for (i, (word, tag)) in enumerate(sentence, start=1):
+                    input_file.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %
+                            (i, word, '_', tag, tag, '_', '0', 'a', '_', '_'))
+                input_file.write('\n\n')
             input_file.close()
 
-            cmd = ['java'] + self.additional_java_args + ['-jar', self._malt_bin, 
+            cmd = ['java'] + self.additional_java_args + ['-jar', self._malt_bin,
                    '-w', self.working_dir,
                    '-c', self.mco, '-i', input_file.name,
                    '-o', output_file.name, '-m', 'parse']
