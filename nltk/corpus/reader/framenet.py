@@ -189,18 +189,20 @@ def _pretty_fe(fe):
         outstr += _pretty_longstring(fe.definition,'  ')
     if 'abbrev' in fekeys:
         outstr += "[abbrev] {0}\n".format(fe.abbrev)
+    if 'coreType' in fekeys:
+        outstr += "[coreType] {0}\n".format(fe.coreType)
     if 'requiresFE' in fekeys:
         outstr += "[requiresFE] "
         if fe.requiresFE is None:
             outstr += "<None>\n"
         else:
-            outstr += u"{0}\n".format(fe.requiresFE.name)
+            outstr += u"{0}({1})\n".format(fe.requiresFE.name, fe.requiresFE.ID)
     if 'excludesFE' in fekeys:
         outstr += "[excludesFE] "
         if fe.excludesFE is None:
             outstr += "<None>\n"
         else:
-            outstr += u"{0}\n".format(fe.excludesFE.name)
+            outstr += u"{0}({1})\n".format(fe.excludesFE.name, fe.excludesFE.ID)
     if 'semType' in fekeys:
         outstr += "[semType] "
         if fe.semType is None:
@@ -1669,6 +1671,18 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         frinfo['frameRelations'] = sorted(self.frame_relations(frame=frinfo), 
                 key=lambda frel: (frel.type.ID, frel.superFrameName, frel.subFrameName))
+        
+        # resolve 'requires' and 'excludes' links between FEs of this frame
+        for fe in frinfo.FE.values():
+            if fe.requiresFE:
+                name, ID = fe.requiresFE.name, fe.requiresFE.ID
+                fe.requiresFE = frinfo.FE[name]
+                assert fe.requiresFE.ID==ID
+            if fe.excludesFE:
+                name, ID = fe.excludesFE.name, fe.excludesFE.ID
+                fe.excludesFE = frinfo.FE[name]
+                assert fe.excludesFE.ID==ID
+        
         return frinfo
 
     def _handle_fecoreset_elt(self, elt):
@@ -1699,6 +1713,7 @@ class FramenetCorpusReader(XMLCorpusReader):
     def _handle_framerelation_elt(self, elt):
         """Load frame-relation element and its child fe-relation elements from frRelation.xml."""
         info = self._load_xml_attributes(AttrDict(), elt)
+        assert info['superFrameName']!=info['subFrameName'],(elt,info)
         info['_type'] = 'framerelation'
         info['feRelations'] = PrettyList()
 
