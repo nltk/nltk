@@ -249,8 +249,8 @@ def _pretty_frame(frame):
         except KeyError:
             fes[fe.coreType] = []
             fes[fe.coreType].append(u'{0} ({1})'.format(feName, fe.ID))
-    for ct in sorted(fes.keys()):
-        outstr += u'{0:>15}: {1}\n'.format(ct, ', '.join(sorted(fes[ct])))
+    for ct in sorted(fes.keys(), key=lambda ct2: ['Core','Core-Unexpressed','Peripheral','Extra-Thematic'].index(ct2)):
+        outstr += u'{0:>16}: {1}\n'.format(ct, ', '.join(sorted(fes[ct])))
 
     outstr += "\n[FEcoreSets] {0} frame element core sets\n".format(len(frame.FEcoreSets))
     outstr += "  " + '\n  '.join(", ".join([x.name for x in coreSet]) for coreSet in frame.FEcoreSets) + '\n'
