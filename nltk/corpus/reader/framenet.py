@@ -35,9 +35,9 @@ def _pretty_longstring(defstr, prefix='', wrap_at=65):
     :rtype: str
     """
 
-    outstr = ""
+    outstr = u""
     for line in textwrap.fill(defstr, wrap_at).split('\n'):
-        outstr += "{0}{1}\n".format(prefix, line)
+        outstr += prefix + line + '\n'
     return outstr
 
 def _pretty_any(obj):
@@ -51,14 +51,14 @@ def _pretty_any(obj):
     :rtype: str
     """
 
-    outstr = ""
+    outstr = u""
     for k in obj:
         if isinstance(obj[k], string_types) and len(obj[k]) > 65:
-            outstr += "[{0}]\n".format(k)
-            outstr += "{0}".format(_pretty_longstring(obj[k], prefix='  '))
+            outstr += u"[{0}]\n".format(k)
+            outstr += u"{0}".format(_pretty_longstring(obj[k], prefix='  '))
             outstr += '\n'
         else:
-            outstr += "[{0}] {1}\n".format(k, obj[k])
+            outstr += u"[{0}] {1}\n".format(k, obj[k])
 
     return outstr
 
@@ -76,20 +76,20 @@ def _pretty_semtype(st):
     semkeys = st.keys()
     if len(semkeys) == 1: return "<None>"
 
-    outstr = ""
-    outstr += "semantic type ({0.ID}): {0.name}\n".format(st)
+    outstr = u""
+    outstr += u"semantic type ({0.ID}): {0.name}\n".format(st)
     if 'abbrev' in semkeys:
-        outstr += "[abbrev] {0}\n".format(st.abbrev)
+        outstr += u"[abbrev] {0}\n".format(st.abbrev)
     if 'definition' in semkeys:
-        outstr += "[definition]\n"
+        outstr += u"[definition]\n"
         outstr += _pretty_longstring(st.definition,'  ')
-    outstr += "[rootType] {0}({1})\n".format(st.rootType.name, st.rootType.ID)
+    outstr += u"[rootType] {0}({1})\n".format(st.rootType.name, st.rootType.ID)
     if st.superType is None:
         outstr += "[superType] <None>\n"
     else:
-        outstr += "[superType] {0}({1})\n".format(st.superType.name, st.superType.ID)
+        outstr += u"[superType] {0}({1})\n".format(st.superType.name, st.superType.ID)
     outstr += "[subTypes] {0} subtypes\n".format(len(st.subTypes))
-    outstr += "  " + ", ".join('{0}({1})'.format(x.name, x.ID) for x in st.subTypes) + '\n'*(len(st.subTypes)>0)
+    outstr += "  " + ", ".join(u'{0}({1})'.format(x.name, x.ID) for x in st.subTypes) + '\n'*(len(st.subTypes)>0)
     return outstr
 
 def _pretty_frame_relation_type(freltyp):
@@ -102,7 +102,7 @@ def _pretty_frame_relation_type(freltyp):
     :return: A nicely formated string representation of the frame relation type.
     :rtype: str
     """
-    outstr = "<frame relation type ({0.ID}): {0.superFrameName} -- {0.name} -> {0.subFrameName}>".format(freltyp)
+    outstr = u"<frame relation type ({0.ID}): {0.superFrameName} -- {0.name} -> {0.subFrameName}>".format(freltyp)
     return outstr
     
 def _pretty_frame_relation(frel):
@@ -115,7 +115,7 @@ def _pretty_frame_relation(frel):
     :return: A nicely formated string representation of the frame relation.
     :rtype: str
     """
-    outstr = "<{0.type.superFrameName}={0.superFrameName} -- {0.type.name} -> {0.type.subFrameName}={0.subFrameName}>".format(frel)
+    outstr = u"<{0.type.superFrameName}={0.superFrameName} -- {0.type.name} -> {0.type.subFrameName}={0.subFrameName}>".format(frel)
     return outstr
 
 def _pretty_fe_relation(ferel):
@@ -128,7 +128,7 @@ def _pretty_fe_relation(ferel):
     :return: A nicely formated string representation of the FE relation.
     :rtype: str
     """
-    outstr = "<{0.type.superFrameName}={0.frameRelation.superFrameName}.{0.superFEName} -- {0.type.name} -> {0.type.subFrameName}={0.frameRelation.subFrameName}.{0.subFEName}>".format(ferel)
+    outstr = u"<{0.type.superFrameName}={0.frameRelation.superFrameName}.{0.superFEName} -- {0.type.name} -> {0.type.subFrameName}={0.frameRelation.subFrameName}.{0.subFEName}>".format(ferel)
     return outstr
 
 def _pretty_lu(lu):
@@ -143,31 +143,31 @@ def _pretty_lu(lu):
     """
 
     lukeys = lu.keys()
-    outstr = ""
-    outstr += "lexical unit ({0.ID}): {0.name}\n\n".format(lu)
+    outstr = u""
+    outstr += u"lexical unit ({0.ID}): {0.name}\n\n".format(lu)
     if 'definition' in lukeys:
         outstr += "[definition]\n"
         outstr += _pretty_longstring(lu.definition,'  ')
     if 'frame' in lukeys:
-        outstr += "\n[frame] {0}({1})\n".format(lu.frame.name,lu.frame.ID)
+        outstr += u"\n[frame] {0}({1})\n".format(lu.frame.name,lu.frame.ID)
     if 'incorporatedFE' in lukeys:
-        outstr += "\n[incorporatedFE] {0}\n".format(lu.incorporatedFE)
+        outstr += u"\n[incorporatedFE] {0}\n".format(lu.incorporatedFE)
     if 'POS' in lukeys:
-        outstr += "\n[POS] {0}\n".format(lu.POS)
+        outstr += u"\n[POS] {0}\n".format(lu.POS)
     if 'status' in lukeys:
-        outstr += "\n[status] {0}\n".format(lu.status)
+        outstr += u"\n[status] {0}\n".format(lu.status)
     if 'totalAnnotated' in lukeys:
         outstr += "\n[totalAnnotated] {0} annotated examples\n".format(lu.totalAnnotated)
     if 'lexemes' in lukeys:
-        outstr += "\n[lexemes] {0}\n".format(' '.join('{0}/{1}'.format(lex.name,lex.POS) for lex in lu.lexemes))
+        outstr += u"\n[lexemes] {0}\n".format(' '.join('{0}/{1}'.format(lex.name,lex.POS) for lex in lu.lexemes))
     if 'semTypes' in lukeys:
         outstr += "\n[semTypes] {0} semantic types\n".format(len(lu.semTypes))
-        outstr += "  " + ", ".join('{0}({1})'.format(x.name, x.ID) for x in lu.semTypes) + '\n'*(len(lu.semTypes)>0)
+        outstr += "  "*(len(lu.semTypes)>0) + ", ".join(u'{0}({1})'.format(x.name, x.ID) for x in lu.semTypes) + '\n'*(len(lu.semTypes)>0)
     if 'subCorpus' in lukeys:
         subc = [x.name for x in lu.subCorpus]
         outstr += "\n[subCorpus] {0} subcorpora\n".format(len(lu.subCorpus))
         for line in textwrap.fill(", ".join(sorted(subc)), 60).split('\n'): 
-            outstr += "  {0}\n".format(line)
+            outstr += u"  {0}\n".format(line)
 
     return outstr
 
@@ -182,31 +182,33 @@ def _pretty_fe(fe):
     :rtype: str
     """
     fekeys = fe.keys()
-    outstr = ""
-    outstr += "frame element ({0.ID}): {0.name}\n    of {1.name}({1.ID})\n".format(fe, fe.frame)
+    outstr = u""
+    outstr += u"frame element ({0.ID}): {0.name}\n    of {1.name}({1.ID})\n".format(fe, fe.frame)
     if 'definition' in fekeys:
         outstr += "[definition]\n"
         outstr += _pretty_longstring(fe.definition,'  ')
     if 'abbrev' in fekeys:
         outstr += "[abbrev] {0}\n".format(fe.abbrev)
+    if 'coreType' in fekeys:
+        outstr += "[coreType] {0}\n".format(fe.coreType)
     if 'requiresFE' in fekeys:
         outstr += "[requiresFE] "
         if fe.requiresFE is None:
             outstr += "<None>\n"
         else:
-            outstr += "{0}\n".format(fe.requiresFE.name)
+            outstr += u"{0}({1})\n".format(fe.requiresFE.name, fe.requiresFE.ID)
     if 'excludesFE' in fekeys:
         outstr += "[excludesFE] "
         if fe.excludesFE is None:
             outstr += "<None>\n"
         else:
-            outstr += "{0}\n".format(fe.excludesFE.name)
+            outstr += u"{0}({1})\n".format(fe.excludesFE.name, fe.excludesFE.ID)
     if 'semType' in fekeys:
         outstr += "[semType] "
         if fe.semType is None:
             outstr += "<None>\n"
         else:
-            outstr += "\n  " + '{0}({1})'.format(fe.semType.name, fe.semType.ID) + '\n'
+            outstr += "\n  " + u'{0}({1})'.format(fe.semType.name, fe.semType.ID) + '\n'
 
     return outstr
 
@@ -221,18 +223,15 @@ def _pretty_frame(frame):
     :rtype: str
     """
 
-    outstr = ""
-    outstr += "frame ({0.ID}): {0.name}\n\n".format(frame)
+    outstr = u""
+    outstr += u"frame ({0.ID}): {0.name}\n\n".format(frame)
     outstr += "[definition]\n"
     outstr += _pretty_longstring(frame.definition, '  ') + '\n'
 
     outstr += "[semTypes] {0} semantic types\n".format(len(frame.semTypes))
-    outstr += "  " + ", ".join('{0}({1})'.format(x.name, x.ID) for x in frame.semTypes) + '\n'*(len(frame.semTypes)>0)
+    outstr += "  "*(len(frame.semTypes)>0) + ", ".join(u'{0}({1})'.format(x.name, x.ID) for x in frame.semTypes) + '\n'*(len(frame.semTypes)>0)
 
-    outstr += "[FEcoreSet] {0} frame element core sets\n".format(len(frame.FEcoreSet))
-    outstr += "  " + ", ".join([x.name for x in frame.FEcoreSet]) + '\n'
-
-    outstr += "[frameRelations] {0} frame relations\n".format(len(frame.frameRelations))
+    outstr += "\n[frameRelations] {0} frame relations\n".format(len(frame.frameRelations))
     outstr += '  ' + '\n  '.join(repr(frel) for frel in frame.frameRelations) + '\n'
     
     outstr += "\n[lexUnit] {0} lexical units\n".format(len(frame.lexUnit))
@@ -246,12 +245,15 @@ def _pretty_frame(frame):
     fes = {}
     for feName,fe in sorted(frame.FE.items()):
         try:
-            fes[fe.coreType].append('{0} ({1})'.format(feName, fe.ID))
+            fes[fe.coreType].append(u'{0} ({1})'.format(feName, fe.ID))
         except KeyError:
             fes[fe.coreType] = []
-            fes[fe.coreType].append('{0} ({1})'.format(feName, fe.ID))
-    for ct in sorted(fes.keys()):
-        outstr += '{0:>15}: {1}\n'.format(ct, ', '.join(sorted(fes[ct])))
+            fes[fe.coreType].append(u'{0} ({1})'.format(feName, fe.ID))
+    for ct in sorted(fes.keys(), key=lambda ct2: ['Core','Core-Unexpressed','Peripheral','Extra-Thematic'].index(ct2)):
+        outstr += u'{0:>16}: {1}\n'.format(ct, ', '.join(sorted(fes[ct])))
+
+    outstr += "\n[FEcoreSets] {0} frame element core sets\n".format(len(frame.FEcoreSets))
+    outstr += "  " + '\n  '.join(", ".join([x.name for x in coreSet]) for coreSet in frame.FEcoreSets) + '\n'
 
     return outstr
 
@@ -298,19 +300,18 @@ class AttrDict(dict):
             if self['_type'].endswith('relation'):
                 return self.__repr__()
             try:
-                return '<{0} ID={1} name={2}>'.format(self['_type'], self['ID'], self['name'])
+                return u'<{0} ID={1} name={2}>'.format(self['_type'], self['ID'], self['name'])
             except KeyError:    # no ID--e.g., for _type=lusubcorpus
-                return '<{0} name={1}>'.format(self['_type'], self['name'])
+                return u'<{0} name={1}>'.format(self['_type'], self['name'])
         else:
             return dict.__repr__(self)
         
-    def __str__(self):
+    def _str(self):
         outstr = ""
 
         if not '_type' in self:
-            return _pretty_any(self)
-
-        if self['_type'] == 'frame':
+            outstr = _pretty_any(self)
+        elif self['_type'] == 'frame':
             outstr = _pretty_frame(self)
         elif self['_type'] == 'fe':
             outstr = _pretty_fe(self)
@@ -327,8 +328,17 @@ class AttrDict(dict):
         else:
             outstr = _pretty_any(self)
 
+        # ensure result is unicode string prior to applying the 
+        # @python_2_unicode_compatible decorator (because non-ASCII characters 
+        # could in principle occur in the data and would trigger an encoding error when 
+        # passed as arguments to str.format()).
+        assert isinstance(outstr,unicode)
         return outstr
-    __repr__ = __str__
+        
+    def __str__(self):
+        return self._str()
+    def __repr__(self):
+        return self.__str__()
 
 class Future(object):
     """
@@ -364,7 +374,9 @@ class Future(object):
     def __str__(self):
         return self._data().__str__()
     def __repr__(self):
-        return self._data().__repr__()
+        s = self._data().__repr__()
+        assert isinstance(s,unicode)
+        return s
 
 
 @python_2_unicode_compatible
@@ -412,8 +424,8 @@ class PrettyList(list):
             pieces.append(elt._short_repr()) # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if self._MAX_REPR_SIZE and length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return '[%s, ...]' % text_type(',\n ' if self._BREAK_LINES else ', ').join(pieces[:-1])
-        return '[%s]' % text_type(',\n ' if self._BREAK_LINES else ', ').join(pieces)
+                return u'[%s, ...]' % text_type(',\n ' if self._BREAK_LINES else ', ').join(pieces[:-1])
+        return u'[%s]' % text_type(',\n ' if self._BREAK_LINES else ', ').join(pieces)
 
 @python_2_unicode_compatible
 class PrettyLazyMap(LazyMap):
@@ -434,9 +446,9 @@ class PrettyLazyMap(LazyMap):
             pieces.append(elt._short_repr()) # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return '[%s, ...]' % text_type(', ').join(pieces[:-1])
+                return u'[%s, ...]' % text_type(', ').join(pieces[:-1])
         else:
-            return '[%s]' % text_type(', ').join(pieces)
+            return u'[%s]' % text_type(', ').join(pieces)
 
 class FramenetCorpusReader(XMLCorpusReader):
     """A corpus reader for the Framenet Corpus.
@@ -736,6 +748,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> f = fn.frame('Medical_specialties')
         >>> f.ID
         256
+        >>> # ensure non-ASCII character in definition doesn't trigger an encoding error:
+        >>> fn.frame('Imposing_obligation') # doctest: +ELLIPSIS 
+        frame (1494): Imposing_obligation...
 
         The dict that is returned from this function will contain the
         following information about the Frame:
@@ -794,10 +809,8 @@ class FramenetCorpusReader(XMLCorpusReader):
                  - 'ID'   : the id of the other FE in this frame
 
         - 'frameRelation'      : a list of objects describing frame relations
-        - 'FEcoreSet'  : a list of Frame Element core sets for this frame
-           - Each item in the list is a dict with the following keys:
-              - 'name' : the name of the Frame Element
-              - 'ID'   : the id number of the Frame Element
+        - 'FEcoreSets'  : a list of Frame Element core sets for this frame
+           - Each item in the list is a list of FE objects
 
         :param fn_fid_or_fname: The Framenet name or id number of the frame
         :type fn_fid_or_fname: int or str
@@ -1380,10 +1393,14 @@ class FramenetCorpusReader(XMLCorpusReader):
             self._buildrelationindex()
         return self._freltyp_idx.values()
 
-    def frame_relations(self, frame=None):
+    def frame_relations(self, frame=None, frame2=None, type=None):
         """
-        :param frame: frame object, name, or ID; if specified, only relations involving 
+        :param frame: (optional) frame object, name, or ID; only relations involving 
         this frame will be returned
+        :param frame2: (optional; 'frame' must be a different frame) only show relations 
+        between the two specified frames, in either direction
+        :param type: (optional) frame relation type (name or object); show only relations
+        of this type
         :type frame: int or str or AttrDict
         :return: A list of all of the frame relations in framenet
         :rtype: list(dict)
@@ -1404,18 +1421,55 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> PrettyList(fn.frame_relations(fn.frame('Cooking_creation')), breakLines=True)
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>,
          <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>, ...]
+        >>> PrettyList(fn.frame_relations('Cooking_creation', type='Inheritance'))
+        [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>]
+        >>> PrettyList(fn.frame_relations('Cooking_creation', 'Apply_heat'), breakLines=True)
+        [<MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>,
+         <Parent=Apply_heat -- Using -> Child=Cooking_creation>]
         """
         if not self._frel_idx:
             self._buildrelationindex()
-        if frame is None:
-            return PrettyList(self._frel_idx.values())
-        if not isinstance(frame,int):
-            if isinstance(frame,dict):
-                frame = frame.ID
-            else:
-                frame = self.frame_by_name(frame).ID
-        return PrettyList(self._frel_idx[frelID] for frelID in self._frel_f_idx[frame])
-
+        
+        rels = None
+        
+        if type is not None:
+            if not isinstance(type,dict):
+                type = [rt for rt in self.frame_relation_types() if rt.name==type][0]
+                assert isinstance(type,dict)
+        
+        # lookup by 'frame'
+        if frame is not None:
+            if not isinstance(frame,int):
+                if isinstance(frame,dict):
+                    frame = frame.ID
+                else:
+                    frame = self.frame_by_name(frame).ID
+            rels = PrettyList(self._frel_idx[frelID] for frelID in self._frel_f_idx[frame])
+        
+            # filter by 'type'
+            if type is not None:
+                rels = PrettyList(rel for rel in rels if rel.type is type)
+        elif type is not None:
+            # lookup by 'type'
+            rels = PrettyList(type.frameRelations)
+        else:
+            rels = PrettyList(self._frel_idx.values())
+        
+        # filter by 'frame2'
+        if frame2 is not None:
+            if frame is None:
+                raise FramenetError("frame_relations(frame=None, frame2=<value>) is not allowed")
+            if not isinstance(frame2,int):
+                if isinstance(frame2,dict):
+                    frame2 = frame2.ID
+                else:
+                    frame2 = self.frame_by_name(frame2).ID
+            if frame==frame2:
+                raise FramenetError("The two frame arguments to frame_relations() must be different frames")
+            rels = PrettyList(rel for rel in rels if rel.superFrame.ID==frame2 or rel.subFrame.ID==frame2)
+        
+        return rels
+        
     def fe_relations(self):
         """
         Obtain a list of frame element relations.
@@ -1582,7 +1636,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         frinfo['_type'] = 'frame'
         frinfo['definition'] = ""
         frinfo['FE'] = PrettyDict()
-        frinfo['FEcoreSet'] = []
+        frinfo['FEcoreSets'] = []
         frinfo['lexUnit'] = PrettyDict()
         frinfo['semTypes'] = []
         for k in ignorekeys:
@@ -1597,7 +1651,9 @@ class FramenetCorpusReader(XMLCorpusReader):
                 frinfo['FE'][feinfo.name] = feinfo
                 feinfo['frame'] = frinfo    # backpointer
             elif sub.tag.endswith('FEcoreSet') and 'FEcoreSet' not in ignorekeys:
-                frinfo['FEcoreSet'].extend(self._handle_fecoreset_elt(sub))
+                coreset = self._handle_fecoreset_elt(sub)
+                # assumes all FEs have been loaded before coresets
+                frinfo['FEcoreSets'].append(PrettyList(frinfo['FE'][fe.name] for fe in coreset))
             elif sub.tag.endswith('lexUnit') and 'lexUnit' not in ignorekeys:
                 luentry = self._handle_framelexunit_elt(sub)
                 if luentry['status'] in self._bad_statuses:
@@ -1615,6 +1671,18 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         frinfo['frameRelations'] = sorted(self.frame_relations(frame=frinfo), 
                 key=lambda frel: (frel.type.ID, frel.superFrameName, frel.subFrameName))
+        
+        # resolve 'requires' and 'excludes' links between FEs of this frame
+        for fe in frinfo.FE.values():
+            if fe.requiresFE:
+                name, ID = fe.requiresFE.name, fe.requiresFE.ID
+                fe.requiresFE = frinfo.FE[name]
+                assert fe.requiresFE.ID==ID
+            if fe.excludesFE:
+                name, ID = fe.excludesFE.name, fe.excludesFE.ID
+                fe.excludesFE = frinfo.FE[name]
+                assert fe.excludesFE.ID==ID
+        
         return frinfo
 
     def _handle_fecoreset_elt(self, elt):
@@ -1645,6 +1713,7 @@ class FramenetCorpusReader(XMLCorpusReader):
     def _handle_framerelation_elt(self, elt):
         """Load frame-relation element and its child fe-relation elements from frRelation.xml."""
         info = self._load_xml_attributes(AttrDict(), elt)
+        assert info['superFrameName']!=info['subFrameName'],(elt,info)
         info['_type'] = 'framerelation'
         info['feRelations'] = PrettyList()
 
