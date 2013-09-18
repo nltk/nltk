@@ -49,30 +49,30 @@ class TreebankWordTokenizer(TokenizerI):
     # and the corresponding substitution pattern.
     SUBSTITUTIONS1 = [
         #starting quotes
-        (re.compile(r'^\"'), r'``')
-        (re.compile(r'(``)'), r' \1 ')
-        (re.compile(r'([ (\[{<])"'), r'\1 `` ')
+        (re.compile(r'^\"'), r'``'),
+        (re.compile(r'(``)'), r' \1 '),
+        (re.compile(r'([ (\[{<])"'), r'\1 `` '),
 
         #punctuation
-        (re.compile(r'([:,])([^\d])'), r' \1 \2')
-        (re.compile(r'\.\.\.'), r' ... ')
-        (re.compile(r'[;@#$%&]'), r' \g<0> ')
-        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 ')
-        (re.compile(r'[?!]'), r' \g<0> ')
+        (re.compile(r'([:,])([^\d])'), r' \1 \2'),
+        (re.compile(r'\.\.\.'), r' ... '),
+        (re.compile(r'[;@#$%&]'), r' \g<0> '),
+        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 '),
+        (re.compile(r'[?!]'), r' \g<0> '),
 
-        (re.compile(r"([^'])' "), r"\1 ' ")
+        (re.compile(r"([^'])' "), r"\1 ' "),
 
         #parens, brackets, etc.
-        (re.compile(r'[\]\[\(\)\{\}\<\>]'), r' \g<0> ')
-        (re.compile(r'--'), r' -- ')
+        (re.compile(r'[\]\[\(\)\{\}\<\>]'), r' \g<0> '),
+        (re.compile(r'--'), r' -- '),
     ]
     SUBSTITUTIONS2 = [
         #ending quotes
-        (re.compile(r'"'), " '' ")
-        (re.compile(r'(\S)(\'\')'), r'\1 \2 ')
+        (re.compile(r'"'), " '' "),
+        (re.compile(r'(\S)(\'\')'), r'\1 \2 '),
 
-        (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 ")
-        (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 ")
+        (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
+        (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
 
     # List of contractions adapted from Robert MacIntyre's tokenizer.
