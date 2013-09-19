@@ -12,7 +12,7 @@ from __future__ import print_function, unicode_literals
 import math
 import re
 from itertools import islice, chain
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 from collections import defaultdict
 
 from nltk.corpus.reader import CorpusReader
@@ -508,10 +508,11 @@ class Synset(_WordNetObject):
         try:
             if use_min_depth:
                 max_depth = max(s.min_depth() for s in synsets)
-                return [s for s in synsets if s.min_depth() == max_depth]
+                unsorted_lch = [s for s in synsets if s.min_depth() == max_depth]
             else:
                 max_depth = max(s.max_depth() for s in synsets)
-                return [s for s in synsets if s.max_depth() == max_depth]
+                unsorted_lch = [s for s in synsets if s.max_depth() == max_depth]
+            return sorted(unsorted_lch, key=attrgetter('name'))
         except ValueError:
             return []
 
