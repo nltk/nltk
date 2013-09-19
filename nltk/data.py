@@ -37,10 +37,10 @@ import sys
 import io
 import os
 import textwrap
-import weakref
 import re
 import zipfile
 import codecs
+import bisect
 
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
 
@@ -104,18 +104,18 @@ def gzip_open_unicode(filename, mode="rb", compresslevel=9,
         fileobj=GzipFile(filename, mode, compresslevel, fileobj)
     return io.TextIOWrapper(fileobj, encoding, errors, newline)
 
-def split_resource_url(resource_url):
+def _split_resource_url(resource_url):
     """
     Splits a resource url into "<protocol>:<path>".
 
     >>> windows = sys.platform.startswith('win')
-    >>> windows or split_resource_url('file:///home/nltk') == ('file', '/home/nltk')
+    >>> windows or _split_resource_url('file:///home/nltk') == ('file', '/home/nltk')
     True
-    >>> not windows or split_resource_url('file:///C:/home/nltk') == ('file', 'C:/home/nltk')
+    >>> not windows or _split_resource_url('file:///C:/home/nltk') == ('file', 'C:/home/nltk')
     True
-    >>> split_resource_url('nltk:home/nltk')
+    >>> _split_resource_url('nltk:home/nltk')
     ('nltk', 'home/nltk')
-    >>> split_resource_url('nltk:/home/nltk')
+    >>> _split_resource_url('nltk:/home/nltk')
     ('nltk', '/home/nltk')
     """
     protocol, path = resource_url.split(':', 1)
@@ -129,36 +129,36 @@ def split_resource_url(resource_url):
         path = re.sub(r'^/{0,2}', '', path)
     return protocol, path
 
-def normalize_resource_url(resource_url):
+def _normalize_resource_url(resource_url):
     """
     Normalizes a resource url
 
     >>> windows = sys.platform.startswith('win')
-    >>> normalize_resource_url('file:C:/dir/file')
+    >>> _normalize_resource_url('file:C:/dir/file')
     'file:///C:/dir/file'
-    >>> normalize_resource_url('file:C:\\\\dir\\\\file')
+    >>> _normalize_resource_url('file:C:\\\\dir\\\\file')
     'file:///C:/dir/file'
-    >>> normalize_resource_url('file:C:\\\\dir/file')
+    >>> _normalize_resource_url('file:C:\\\\dir/file')
     'file:///C:/dir/file'
-    >>> normalize_resource_url('file://C:/dir/file')
+    >>> _normalize_resource_url('file://C:/dir/file')
     'file:///C:/dir/file'
-    >>> normalize_resource_url('file:////C:/dir/file')
+    >>> _normalize_resource_url('file:////C:/dir/file')
     'file:///C:/dir/file'
-    >>> not windows or normalize_resource_url('nltk:C:/dir/file') == 'file:///C:/dir/file'
+    >>> not windows or _normalize_resource_url('nltk:C:/dir/file') == 'file:///C:/dir/file'
     True
-    >>> not windows or normalize_resource_url('nltk:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
+    >>> not windows or _normalize_resource_url('nltk:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
     True
-    >>> normalize_resource_url('nltk:home/nltk')
+    >>> _normalize_resource_url('nltk:home/nltk')
     'nltk:home/nltk'
-    >>> normalize_resource_url('nltk:/home/nltk')
+    >>> _normalize_resource_url('nltk:/home/nltk')
     'file:///home/nltk'
-    >>> normalize_resource_url('http://example.com/dir/file')
+    >>> _normalize_resource_url('http://example.com/dir/file')
     'http://example.com/dir/file'
-    >>> normalize_resource_url('dir/file')
+    >>> _normalize_resource_url('dir/file')
     'nltk:dir/file'
     """
     try:
-        protocol, name = split_resource_url(resource_url)
+        protocol, name = _split_resource_url(resource_url)
     except ValueError:
         # the resource url has no protocol, use the nltk protocol by default
         protocol = 'nltk'
@@ -169,17 +169,17 @@ def normalize_resource_url(resource_url):
     if protocol == 'file':
         protocol = 'file:///'
         # name is absolute
-        name = normalize_resource_name(name, False).lstrip('/')
+        name = _normalize_resource_name(name, False).lstrip('/')
     elif protocol == 'nltk':
         protocol = 'nltk:'
-        name = normalize_resource_name(name, False).lstrip('/')
+        name = _normalize_resource_name(name, False).lstrip('/')
     else:
         # handled by urllib
         protocol += '://'
         name = name.lstrip('/')
     return ''.join([protocol,name])
 
-def normalize_resource_name(resource_name, allow_relative = True):
+def _normalize_resource_name(resource_name, allow_relative = True):
     """
     :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.
@@ -189,21 +189,21 @@ def normalize_resource_name(resource_name, allow_relative = True):
         Directory trailing slashes are preserved
 
     >>> windows = sys.platform.startswith('win')
-    >>> normalize_resource_name('.', True)
+    >>> _normalize_resource_name('.', True)
     './'
-    >>> normalize_resource_name('./', True)
+    >>> _normalize_resource_name('./', True)
     './'
-    >>> windows or normalize_resource_name('dir/file', False) == '/dir/file'
+    >>> windows or _normalize_resource_name('dir/file', False) == '/dir/file'
     True
-    >>> not windows or normalize_resource_name('C:/file', False) == 'C:/file'
+    >>> not windows or _normalize_resource_name('C:/file', False) == 'C:/file'
     True
-    >>> windows or normalize_resource_name('/dir/file', False) == '/dir/file'
+    >>> windows or _normalize_resource_name('/dir/file', False) == '/dir/file'
     True
-    >>> windows or normalize_resource_name('../dir/file', False) == '/dir/file'
+    >>> windows or _normalize_resource_name('../dir/file', False) == '/dir/file'
     True
-    >>> not windows or normalize_resource_name('/C:/file', False) == 'C:/file'
+    >>> not windows or _normalize_resource_name('/C:/file', False) == 'C:/file'
     True
-    >>> not windows or normalize_resource_name('../C:/file', False) == 'C:/file'
+    >>> not windows or _normalize_resource_name('../C:/file', False) == 'C:/file'
     True
     """
     is_dir = bool(re.search(r'[\\/]$',resource_name)) or resource_name.endswith(os.path.sep)
@@ -312,7 +312,7 @@ class FileSystemPathPointer(PathPointer,compat.text_type):
         return str('FileSystemPathPointer(%r)' % self._path)
 
     def __str__(self):
-        return self._path
+        return str(self._path)
 
 
 class BufferedGzipFile(GzipFile):
@@ -446,7 +446,7 @@ class ZipFilePathPointer(PathPointer):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Normalize the entry string, it should be absolute:
-        entry = normalize_resource_name(entry, False).lstrip('/')
+        entry = _normalize_resource_name(entry, False).lstrip('/')
 
         # Check that the entry exists:
         if entry:
@@ -504,7 +504,7 @@ class ZipFilePathPointer(PathPointer):
             self._zipfile.filename, self._entry)
 
     def __str__(self):
-        return os.path.normpath(os.path.join(self._zipfile.filename, self._entry))
+        return str(os.path.normpath(os.path.join(self._zipfile.filename, self._entry)))
 
 ######################################################################
 # Access Functions
@@ -553,7 +553,7 @@ def find(resource_name, paths=None):
         automatically converted to a platform-appropriate path separator.
     :rtype: str
     """
-    resource_name = normalize_resource_name(resource_name, True)
+    resource_name = _normalize_resource_name(resource_name, True)
 
     # Resolve default paths at runtime in-case the user overrides nltk.data.path
     if paths is None:
@@ -625,7 +625,7 @@ def retrieve(resource_url, filename=None, verbose=True):
         loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
     """
-    resource_url = normalize_resource_url(resource_url)
+    resource_url = _normalize_resource_url(resource_url)
     if filename is None:
         if resource_url.startswith('file:'):
             filename = os.path.split(resource_url)[-1]
@@ -685,8 +685,49 @@ AUTO_FORMATS = {
     'text': 'text',
 }
 
+# Version mapping of the latest compatible versions.
+# Consists of directory & file names.
+# Only the nltk protocol is supported, the file protocol is not, as it may not be possible to determine the root path
+# Python 3 compatability naming conventions:
+#   For backwards compatibility, '_PY3' is appended to the root directory inside a zipped package which need to be
+#   converted to python 3, the python 2 root directory is untouched.
+
+CURRENT_VERSIONS = {}
+
+if compat.PY3:
+    CURRENT_VERSIONS.update({
+        'nltk:tokenizers/punkt/': 'nltk:tokenizers/punkt/PY3/',
+        'nltk:taggers/maxent_treebank_pos_tagger/': 'nltk:taggers/maxent_treebank_pos_tagger/PY3/',
+        'nltk:help/tagsets/': 'nltk:help/tagsets/PY3/',
+        'nltk:chunkers/maxent_ne_chunker/': 'nltk:chunkers/maxent_ne_chunker/PY3/',
+    })
+
+# sorteddict dependency is unnecessary
+CURRENT_VERSIONS_KEYS = sorted(CURRENT_VERSIONS.keys())
+
+def _get_current_version_url(resource_url, check_exists=True):
+    # Map if the resource has a version mapping.
+    try:
+        resource_map_dir=CURRENT_VERSIONS_KEYS[bisect.bisect(CURRENT_VERSIONS_KEYS,resource_url)-1]
+    except IndexError:
+        resource_map_dir=None
+    if resource_map_dir is not None:
+        if resource_url.startswith(resource_map_dir):
+            resource_url=CURRENT_VERSIONS[resource_map_dir]+resource_url[len(resource_map_dir):]
+        if check_exists:
+            # Check if the resource exists if it has a version mapping.
+            try:
+                find(_split_resource_url(resource_map_dir)[1], path + [''])
+            except LookupError as err:
+                msg = str(err)
+                msg_download = 'Re-download the package files so they include python 3 data.'
+                sep = '*'*70
+                resource_not_found = '\n%s\n%s\n%s\n%s\n' % (sep, msg, msg_download, sep)
+                raise LookupError(resource_not_found)
+    return resource_url
+
 def load(resource_url, format='auto', cache=True, verbose=False,
-         logic_parser=None, fstruct_parser=None, encoding=None):
+         logic_parser=None, fstruct_parser=None, encoding=None, versioned=True):
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
@@ -733,8 +774,11 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         feature structure of an fcfg.
     :type encoding: str
     :param encoding: the encoding of the input; only used for text formats.
+    :type versioned: bool
+    :param versioned: mapping the resource url to the latest compaitible version
+        is used iff this is True.
     """
-    resource_url=normalize_resource_url(resource_url)
+    resource_url=_normalize_resource_url(resource_url)
 
     # Determine the format of the resource.
     if format == 'auto':
@@ -765,7 +809,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         print('<<Loading %s>>' % (resource_url,))
 
     # Load the resource.
-    opened_resource = _open(resource_url)
+    opened_resource = _open(resource_url, versioned)
 
     if format == 'raw':
         resource_val = opened_resource.read()
@@ -836,7 +880,7 @@ def show_cfg(resource_url, escape='##'):
     :type escape: str
     :param escape: Prepended string that signals lines to be ignored
     """
-    resource_url = normalize_resource_url(resource_url)
+    resource_url = _normalize_resource_url(resource_url)
     resource_val = load(resource_url, format='text', cache=False)
     lines = resource_val.splitlines()
     for l in lines:
@@ -852,7 +896,7 @@ def clear_cache():
     """
     _resource_cache.clear()
 
-def _open(resource_url):
+def _open(resource_url, versioned=True):
     """
     Helper function that returns an open file object for a resource,
     given its resource URL.  If the given resource URL uses the "nltk:"
@@ -866,8 +910,10 @@ def _open(resource_url):
         loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
     """
-    resource_url = normalize_resource_url(resource_url)
-    protocol, _path = split_resource_url(resource_url)
+    resource_url = _normalize_resource_url(resource_url)
+    if versioned:
+        resource_url = _get_current_version_url(resource_url, True)
+    protocol, _path = _split_resource_url(resource_url)
 
     if protocol is None or protocol.lower() == 'nltk':
         return find(_path, path + ['']).open()
@@ -1382,7 +1428,7 @@ class SeekableUnicodeStreamReader(object):
 
         return None
 
-__all__ = ['path', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
+__all__ = ['path', 'gzip_open_unicode', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
            'GzipFileSystemPathPointer', 'GzipFileSystemPathPointer',
            'find', 'retrieve', 'FORMATS', 'AUTO_FORMATS', 'load',
            'show_cfg', 'clear_cache', 'LazyLoader', 'OpenOnDemandZipFile',
