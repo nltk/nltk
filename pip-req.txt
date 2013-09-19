@@ -6,5 +6,4 @@ hg+https://bitbucket.org/hleeldc/pylint@5fd3997
 numpy==1.6.2
 scipy==0.11.0
 matplotlib==1.2.0
-svmlight==0.4
 scikit-learn==0.12.1
