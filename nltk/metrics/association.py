@@ -77,8 +77,10 @@ class NgramAssocMeasures(object):
         # For each contingency table cell
         for i in range(len(cont)):
             # Yield the expected value
-            yield (_product(cont[i] + cont[i ^ j] for j in bits) /
-                   float(n_all ** 2))
+            yield (_product(sum(cont[x] for x in range(2 ** cls._n)
+                                if (x & j) == (i & j))
+                            for j in bits) /
+                   float(n_all ** (cls._n - 1)))
 
     @staticmethod
     def raw_freq(*marginals):
