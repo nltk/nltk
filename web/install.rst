@@ -38,3 +38,12 @@ Source installation (for 32-bit or 64-bit Windows)
 #. Install PyYAML and NLTK: ``Start>Run... c:\Python27\Scripts\pip install pyyaml nltk``
 #. Test installation: ``Start>All Programs>Python27>IDLE``, then type ``import nltk``
 
+Installation via puppet
+~~~~~~~~~~~~~~~~~~~~~~~
+
+NLTK can also be conveniently `installed via puppet
+<http://forge.puppetlabs.com/DsA/nltk>`_, which has some convenience
+functionality for :ref:`downloading data
+<puppet_data_installation>`. This can be very advantageous when
+installing NLTK on a large number of machines on which you want to
+provision consistent software.
