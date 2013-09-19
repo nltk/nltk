@@ -89,7 +89,7 @@ def _pretty_semtype(st):
     else:
         outstr += "[superType] {0}({1})\n".format(st.superType.name, st.superType.ID)
     outstr += "[subTypes] {0} subtypes\n".format(len(st.subTypes))
-    outstr += "  " + ", ".join(u'{0}({1})'.format(x.name, x.ID) for x in st.subTypes) + '\n'*(len(st.subTypes)>0)
+    outstr += "  " + ", ".join('{0}({1})'.format(x.name, x.ID) for x in st.subTypes) + '\n'*(len(st.subTypes)>0)
     return outstr
 
 def _pretty_frame_relation_type(freltyp):
@@ -162,7 +162,7 @@ def _pretty_lu(lu):
         outstr += "\n[lexemes] {0}\n".format(' '.join('{0}/{1}'.format(lex.name,lex.POS) for lex in lu.lexemes))
     if 'semTypes' in lukeys:
         outstr += "\n[semTypes] {0} semantic types\n".format(len(lu.semTypes))
-        outstr += "  "*(len(lu.semTypes)>0) + ", ".join(u'{0}({1})'.format(x.name, x.ID) for x in lu.semTypes) + '\n'*(len(lu.semTypes)>0)
+        outstr += "  "*(len(lu.semTypes)>0) + ", ".join('{0}({1})'.format(x.name, x.ID) for x in lu.semTypes) + '\n'*(len(lu.semTypes)>0)
     if 'subCorpus' in lukeys:
         subc = [x.name for x in lu.subCorpus]
         outstr += "\n[subCorpus] {0} subcorpora\n".format(len(lu.subCorpus))
@@ -208,7 +208,7 @@ def _pretty_fe(fe):
         if fe.semType is None:
             outstr += "<None>\n"
         else:
-            outstr += "\n  " + u'{0}({1})'.format(fe.semType.name, fe.semType.ID) + '\n'
+            outstr += "\n  " + "{0}({1})".format(fe.semType.name, fe.semType.ID) + '\n'
 
     return outstr
 
@@ -229,7 +229,7 @@ def _pretty_frame(frame):
     outstr += _pretty_longstring(frame.definition, '  ') + '\n'
 
     outstr += "[semTypes] {0} semantic types\n".format(len(frame.semTypes))
-    outstr += "  "*(len(frame.semTypes)>0) + ", ".join(u'{0}({1})'.format(x.name, x.ID) for x in frame.semTypes) + '\n'*(len(frame.semTypes)>0)
+    outstr += "  "*(len(frame.semTypes)>0) + ", ".join("{0}({1})".format(x.name, x.ID) for x in frame.semTypes) + '\n'*(len(frame.semTypes)>0)
 
     outstr += "\n[frameRelations] {0} frame relations\n".format(len(frame.frameRelations))
     outstr += '  ' + '\n  '.join(repr(frel) for frel in frame.frameRelations) + '\n'
@@ -245,12 +245,12 @@ def _pretty_frame(frame):
     fes = {}
     for feName,fe in sorted(frame.FE.items()):
         try:
-            fes[fe.coreType].append(u'{0} ({1})'.format(feName, fe.ID))
+            fes[fe.coreType].append("{0} ({1})".format(feName, fe.ID))
         except KeyError:
             fes[fe.coreType] = []
-            fes[fe.coreType].append(u'{0} ({1})'.format(feName, fe.ID))
+            fes[fe.coreType].append("{0} ({1})".format(feName, fe.ID))
     for ct in sorted(fes.keys(), key=lambda ct2: ['Core','Core-Unexpressed','Peripheral','Extra-Thematic'].index(ct2)):
-        outstr += u'{0:>16}: {1}\n'.format(ct, ', '.join(sorted(fes[ct])))
+        outstr += "{0:>16}: {1}\n".format(ct, ', '.join(sorted(fes[ct])))
 
     outstr += "\n[FEcoreSets] {0} frame element core sets\n".format(len(frame.FEcoreSets))
     outstr += "  " + '\n  '.join(", ".join([x.name for x in coreSet]) for coreSet in frame.FEcoreSets) + '\n'
@@ -300,9 +300,9 @@ class AttrDict(dict):
             if self['_type'].endswith('relation'):
                 return self.__repr__()
             try:
-                return u'<{0} ID={1} name={2}>'.format(self['_type'], self['ID'], self['name'])
+                return "<{0} ID={1} name={2}>".format(self['_type'], self['ID'], self['name'])
             except KeyError:    # no ID--e.g., for _type=lusubcorpus
-                return u'<{0} name={1}>'.format(self['_type'], self['name'])
+                return "<{0} name={1}>".format(self['_type'], self['name'])
         else:
             return dict.__repr__(self)
         
@@ -422,8 +422,8 @@ class PrettyList(list):
             pieces.append(elt._short_repr()) # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if self._MAX_REPR_SIZE and length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return u'[%s, ...]' % text_type(',\n ' if self._BREAK_LINES else ', ').join(pieces[:-1])
-        return u'[%s]' % text_type(',\n ' if self._BREAK_LINES else ', ').join(pieces)
+                return "[%s, ...]" % text_type(',\n ' if self._BREAK_LINES else ', ').join(pieces[:-1])
+        return "[%s]" % text_type(',\n ' if self._BREAK_LINES else ', ').join(pieces)
 
 @python_2_unicode_compatible
 class PrettyLazyMap(LazyMap):
@@ -444,9 +444,9 @@ class PrettyLazyMap(LazyMap):
             pieces.append(elt._short_repr()) # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return u'[%s, ...]' % text_type(', ').join(pieces[:-1])
+                return "[%s, ...]" % text_type(', ').join(pieces[:-1])
         else:
-            return u'[%s]' % text_type(', ').join(pieces)
+            return "[%s]" % text_type(', ').join(pieces)
 
 class FramenetCorpusReader(XMLCorpusReader):
     """A corpus reader for the Framenet Corpus.
