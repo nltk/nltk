@@ -957,7 +957,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             f = self.frame_by_id(luinfo.frameID)
             luinfo = self._lu_idx[fn_luid]
         if ignorekeys:
-            return AttrDict({k: v for k,v in luinfo.items() if k not in ignorekeys})
+            return AttrDict(dict((k, v) for k, v in luinfo.items() if k not in ignorekeys))
 
         return luinfo
 
@@ -1054,7 +1054,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                             ferel.subFE.semType = subST = superST
                             changed = True
                             nPropagations += 1
-                    if ferel.type.name in {'Perspective_on', 'Subframe', 'Precedes'} and subST \
+                    if ferel.type.name in ['Perspective_on', 'Subframe', 'Precedes'] and subST \
                         and subST is not superST:
                         # propagate upward
                         assert superST is None,(superST.name,ferel,subST.name)
@@ -1188,7 +1188,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         if not self._frame_idx:
             self._buildframeindex()
-        return {fID: finfo.name for fID,finfo in self._frame_idx.items() if name is None or re.search(name, finfo.name) is not None}
+        return dict((fID, finfo.name) for fID,finfo in self._frame_idx.items() if name is None or re.search(name, finfo.name) is not None)
 
     def lus(self, name=None):
         """
@@ -1308,7 +1308,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         if not self._lu_idx:
             self._buildluindex()
-        return {luID: luinfo.name for luID,luinfo in self._lu_idx.items() if name is None or re.search(name, luinfo.name) is not None}
+        return dict((luID, luinfo.name) for luID,luinfo in self._lu_idx.items() if name is None or re.search(name, luinfo.name) is not None)
 
     def documents(self, name=None):
         """
