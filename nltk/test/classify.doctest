@@ -119,26 +119,6 @@ Test SklearnClassifier, which requires the scikit-learn package.
     >>> classif.batch_classify(test_data)
     ['ham', 'spam']
 
-Test the SVM classifier, which requires the PySVMlight implementation of
-SVMlight.
-
-    >>> import nltk.classify.svm
-    >>> nltk.classify.svm.demo()
-    --- nltk.classify.svm demo ---
-    Number of training examples: 7444
-    Total SVM dimensions: 63
-    Label mapping: {'male': -1, 'female': 1}
-    --- Processing an example instance ---
-    Reference instance: ('Agnola', 'female')
-    NLTK-format features:
-        ({'penultimate_letter': 'l', 'last_letter': 'a'}, 'female')
-    SVMlight-format features:
-        (1, [(12, 1.0), (48, 1.0)])
-    Instance classification and confidence: female 1.0
-    --- Measuring classifier performance ---
-    Overall accuracy: 0.762
-
-
 Test the Maximum Entropy classifier training algorithms; they should all
 generate the same results.
 
