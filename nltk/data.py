@@ -770,7 +770,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     if format == 'raw':
         resource_val = opened_resource.read()
     elif format == 'pickle':
-        resource_val = pickle.load(opened_resource)
+        resource_val = pickle.load(opened_resource, encoding='iso-8859-1')
     elif format == 'yaml':
         import yaml
         resource_val = yaml.load(opened_resource)
