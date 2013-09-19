@@ -37,7 +37,7 @@ def _pretty_longstring(defstr, prefix='', wrap_at=65):
 
     outstr = ""
     for line in textwrap.fill(defstr, wrap_at).split('\n'):
-        outstr += "{0}{1}\n".format(prefix, line)
+        outstr += prefix+line+'\n'
     return outstr
 
 def _pretty_any(obj):
@@ -565,27 +565,32 @@ class FramenetCorpusReader(XMLCorpusReader):
         Documents() function.
 
         The dict that is returned from this function will contain the
-        following information about the annotated document:
+        following keys:
 
+        - '_type'      : 'fulltextannotation'
         - 'sentence'   : a list of sentences in the document
            - Each item in the list is a dict containing the following keys:
-              - 'ID'
-              - 'text'
-              - 'paragNo'
-              - 'sentNo'
-              - 'docID'
-              - 'corpID'
-              - 'aPos'
+              - 'ID'    : the ID number of the sentence
+              - '_type' : 'sentence'
+              - 'text'  : the text of the sentence
+              - 'paragNo' : the paragraph number
+              - 'sentNo'  : the sentence number
+              - 'docID'   : the document ID number
+              - 'corpID'  : the corpus ID number
+              - 'aPos'    : the annotation position
               - 'annotationSet' : a list of annotation layers for the sentence
                  - Each item in the list is a dict containing the following keys:
-                    - 'ID'
+                    - 'ID'       : the ID number of the annotation set
+                    - '_type'    : 'annotationset'
                     - 'status'   : either 'MANUAL' or 'UNANN'
                     - 'luName'   : (only if status is 'MANUAL')
                     - 'luID'     : (only if status is 'MANUAL')
                     - 'frameID'  : (only if status is 'MANUAL')
                     - 'frameName': (only if status is 'MANUAL')
                     - 'layer' : a list of labels for the layer
-                       - Each item in the layer is a dict containing the following keys:
+                       - Each item in the layer is a dict containing the 
+                         following keys:
+                          - '_type': 'layer'
                           - 'rank'
                           - 'name'
                           - 'label' : a list of labels in the layer
@@ -743,61 +748,45 @@ class FramenetCorpusReader(XMLCorpusReader):
         - 'name'       : the name of the Frame (e.g. 'Birth', 'Apply_heat', etc.)
         - 'definition' : textual definition of the Frame
         - 'ID'         : the internal ID number of the Frame
-        - 'semType'    : a list of semantic types for this frame
+        - 'semTypes'   : a list of semantic types for this frame
            - Each item in the list is a dict containing the following keys:
               - 'name' : can be used with the semtype() function
               - 'ID'   : can be used with the semtype() function
 
-        - 'lexUnit'    : a list of the LUs for this frame
-           - Each item in the list is a dict containing the following keys:
-              - 'name' : lemma+POS (e.g. 'acromegaly.n')
-              - 'ID'   : id number of the LU (can be used with the lu() function)
-              - 'status':
-              - 'incorporatedFE': FE that incorporates this LU (e.g. 'Ailment')
-              - 'POS'  : e.g. 'N'
-              - 'lemmaID': Can be used to connect lemmas in different LUs, not needed though.
-              - 'definition': meaning of this LU
-              - 'sentenceCount': a dict with the following two keys:
-                 - 'annotated': number of sentences annotated with this LU
-                 - 'total': total number of sentences with this LU
-              - 'lexemes': a list of dicts, where each dict has the following keys:
-                 - 'order': the order of the lexeme in the lemma (starting from 1)
-                 - 'headword': a boolean ('true' or 'false')
-                 - 'breakBefore': Can this lexeme be separated from the previous lexeme?
-                                  Consider: "take over.v" as in:
-                                      Germany took over the Netherlands in 2 days.
-                                      Germany took the Netherlands over in 2 days.
-                                  In this case, 'breakBefore' would be "true" for the lexeme
-                                  "over". Contrast this with "take after.v" as in:
-                                      Mary takes after her grandmother.
-                                     *Mary takes her grandmother after.
-                                  In this case, 'breakBefore' would be "false" for the lexeme
-                                  "after".
-                 - 'POS': part of speech of this lexeme
-                 - 'name': the lexeme name (e.g. "german" or "measles")
+        - 'lexUnit'    : a dict containing all of the LUs for this frame.
+                         The keys in this dict are the names of the LUs and 
+                         the value for each key is itself a dict containing 
+                         info about the LU (see the lu() function for more info.)
 
-        - 'FE' : a list of the Frame Elements that are part of this frame
-           - Each item in the list is a dict containing the following keys
-              - 'definition'
-              - 'name'
-              - 'ID'
-              - 'abbrev'
-              - 'coreType': one of "Core", "Peripheral", or "Extra-Thematic"
-              - 'semType' : a dict containing the following two keys
-                 - 'name' : name of the semantic type. can be used with the semtype() function
-                 - 'ID'   : id number of the semantic type. can be used with the semtype() function
-              - 'requiresFE' : a dict containing the following two keys:
+        - 'FE' : a dict containing the Frame Elements that are part of this frame
+                 The keys in this dict are the names of the FEs (e.g. 'Body_system')
+                 and the values are dicts containing the following keys
+              - 'definition' : The definition of the FE
+              - 'name'       : The name of the FE e.g. 'Body_system'
+              - 'ID'         : The id number
+              - '_type'      : 'fe'
+              - 'abbrev'     : Abbreviation e.g. 'bod'
+              - 'coreType'   : one of "Core", "Peripheral", or "Extra-Thematic"
+              - 'semType'    : if not None, a dict with the following two keys:
+                 - 'name' : name of the semantic type. can be used with 
+                            the semtype() function
+                 - 'ID'   : id number of the semantic type. can be used with
+                            the semtype() function
+              - 'requiresFE' : if not None, a dict with the following two keys:
                  - 'name' : the name of another FE in this frame
                  - 'ID'   : the id of the other FE in this frame
-              - 'excludesFE' : a dict containing the following two keys:
+              - 'excludesFE' : if not None, a dict with the following two keys:
                  - 'name' : the name of another FE in this frame
                  - 'ID'   : the id of the other FE in this frame
 
-        - 'frameRelation'      : a list of objects describing frame relations
-        - 'FEcoreSet'  : a list of Frame Element core sets for this frame
-           - Each item in the list is a dict with the following keys:
-              - 'name' : the name of the Frame Element
-              - 'ID'   : the id number of the Frame Element
+        - 'FEcoreSet'     : a possibly-empty list of Frame Element core sets 
+                            for this frame
+              - Each item in the list is a dict with the following keys:
+                 - 'name' : the name of the Frame Element
+                 - 'ID'   : the id number of the Frame Element
+
+        - 'frameRelations': a list of dicts describing frame relations
+                            see the frame_relations() function for more info
 
         :param fn_fid_or_fname: The Framenet name or id number of the frame
         :type fn_fid_or_fname: int or str
@@ -885,20 +874,43 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> pprint(map(PrettyDict, fn.lu(256).lexemes))
         [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}]
 
-        The dict that is returned from this function will contain the
-        following information about the LU:
+        The dict that is returned from this function will contain most of the
+        following information about the LU. Note that some LUs do not contain
+        all of these pieces of information - particularly 'totalAnnotated' and
+        'incorporatedFE' may be missing in some LUs:
 
         - 'name'       : the name of the LU (e.g. 'merger.n')
         - 'definition' : textual definition of the LU
         - 'ID'         : the internal ID number of the LU
+        - '_type'      : 'lu'
         - 'status'     : e.g. 'Created'
         - 'frame'      : Frame that this LU belongs to
         - 'POS'        : the part of speech of this LU (e.g. 'N')
         - 'totalAnnotated' : total number of examples annotated with this LU
-        - 'lexemes'     : a list of dicts describing the lemma of this LU. Contains these keys:
+        - 'incorporatedFE' : FE that incorporates this LU (e.g. 'Ailment')
+        - 'sentenceCount'  : a dict with the following two keys:
+                 - 'annotated': number of sentences annotated with this LU
+                 - 'total'    : total number of sentences with this LU
+
+        - 'lexemes'  : a list of dicts describing the lemma of this LU. 
+           Each dict in the list contains these keys:
            - 'POS'     : part of speech e.g. 'N'
-           - 'name'    : either single-lexeme e.g. 'merger' or multi-lexeme e.g. 'a little'
-        - 'semTypes'    : a list of semantic type objects for this LU
+           - 'name'    : either single-lexeme e.g. 'merger' or 
+                         multi-lexeme e.g. 'a little'
+           - 'order': the order of the lexeme in the lemma (starting from 1)
+           - 'headword': a boolean ('true' or 'false')
+           - 'breakBefore': Can this lexeme be separated from the previous lexeme?
+                Consider: "take over.v" as in:
+                         Germany took over the Netherlands in 2 days.
+                         Germany took the Netherlands over in 2 days.
+                In this case, 'breakBefore' would be "true" for the lexeme
+                "over". Contrast this with "take after.v" as in:
+                         Mary takes after her grandmother.
+                        *Mary takes her grandmother after.
+                In this case, 'breakBefore' would be "false" for the lexeme "after"
+
+        - 'lemmaID'    : Can be used to connect lemmas in different LUs
+        - 'semTypes'   : a list of semantic type objects for this LU
         - 'subCorpus'  : a list of subcorpora
            - Each item in the list is a dict containing the following keys:
               - 'name' :
@@ -1271,17 +1283,12 @@ class FramenetCorpusReader(XMLCorpusReader):
                    art  - article
                    c    - conjunction
                    scon - subordinating conjunction
+
         :type name: str
         :return: A list of selected (or all) lexical units
-        :rtype: list of dicts, where each dict object contains the following
-           keys:
+        :rtype: list of LU objects (dicts). See the lu() function for info
+          about the specifics of LU objects.
 
-               - 'name'
-               - 'ID'
-               - 'hasAnnotation'
-               - 'frameID'
-               - 'frameName'
-               - 'status'
         """
         try:
             luIDs = list(self._lu_idx.keys())
@@ -1404,6 +1411,25 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> PrettyList(fn.frame_relations(fn.frame('Cooking_creation')), breakLines=True)
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>,
          <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>, ...]
+
+        Each item in the returned list is a 'framerelation' dict with 
+        the following keys:
+
+           - '_type'       : 'framerelation'
+           - 'type'        : a 'framerelationtype' dict (see 
+                             the frame_relation_types() function)
+           - 'ID'          : the ID number
+           - 'Parent'      : the parent Frame object (a dict)
+           - 'Child'       : the child Frame object (a dict)
+           - 'feRelations' : a list of 'ferelation' objects (see
+                             the fe_relations() function)
+           - 'superFrame'  : the super Frame object (a dict)
+           - 'supID'       : the ID number of the super Frame
+           - 'superFrameName'  : the name of the super Frame
+           - 'subFrame'    : the sub Frame object (a dict)
+           - 'subID'       : the ID number of the sub Frame
+           - 'subFrameName': the name of the sub Frame
+
         """
         if not self._frel_idx:
             self._buildrelationindex()
