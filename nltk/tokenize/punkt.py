@@ -42,19 +42,46 @@ English.
 (Note that whitespace from the original text, including newlines, is
 retained in the output.)
 
-Punctuation following sentences can be included with the realign_boundaries
-flag:
+Punctuation following sentences is also included by default
+(from NLTK 3.0 onwards). It can be excluded with the realign_boundaries
+flag.
 
     >>> text = '''
     ... (How does it deal with this parenthesis?)  "It should be part of the
-    ... previous sentence."
+    ... previous sentence." "(And the same with this one.)" ('And this one!')
+    ... "('(And (this)) '?)" [(and this.)]
     ... '''
     >>> print('\n-----\n'.join(
-    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True)))
+    ...     sent_detector.tokenize(text.strip())))
     (How does it deal with this parenthesis?)
     -----
     "It should be part of the
     previous sentence."
+    -----
+    "(And the same with this one.)"
+    -----
+    ('And this one!')
+    -----
+    "('(And (this)) '?)"
+    -----
+    [(and this.)]
+    >>> print('\n-----\n'.join(
+    ...     sent_detector.tokenize(text.strip(), realign_boundaries=False)))
+    (How does it deal with this parenthesis?
+    -----
+    )  "It should be part of the
+    previous sentence.
+    -----
+    " "(And the same with this one.
+    -----
+    )" ('And this one!
+    -----
+    ')
+    "('(And (this)) '?
+    -----
+    )" [(and this.
+    -----
+    )]
 
 However, Punkt is designed to learn parameters (a list of abbreviations, etc.)
 unsupervised from a corpus similar to the target domain. The pre-packaged models
@@ -1215,7 +1242,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
     #{ Tokenization
     #////////////////////////////////////////////////////////////
 
-    def tokenize(self, text, realign_boundaries=False):
+    def tokenize(self, text, realign_boundaries=True):
         """
         Given a text, returns a list of the sentences in that text.
         """
@@ -1257,7 +1284,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         """
         return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
 
-    def sentences_from_text(self, text, realign_boundaries=False):
+    def sentences_from_text(self, text, realign_boundaries=True):
         """
         Given a text, generates the sentences in that text by only
         testing candidate sentence breaks. If realign_boundaries is
@@ -1592,7 +1619,7 @@ def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     trainer.INCLUDE_ALL_COLLOCS = True
     trainer.train(text)
     sbd = tok_cls(trainer.get_params())
-    for l in sbd.sentences_from_text(text, realign_boundaries=True):
+    for l in sbd.sentences_from_text(text):
         print(cleanup(l))
 
 
