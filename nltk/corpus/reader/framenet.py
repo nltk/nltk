@@ -1328,7 +1328,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.documents())
         78
-        >>> pprint({x.corpname for x in fn.documents()})
+        >>> pprint(set([x.corpname for x in fn.documents()]))
         {'ANC',
          'C-4',
          'KBEval',
