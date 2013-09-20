@@ -456,7 +456,7 @@ class FramenetCorpusReader(XMLCorpusReader):
     True
     >>> fn.frame_by_name('Replacing') is fn.lus('replace.v')[0].frame
     True
-    >>> list(sorted(fn.lus('prejudice.n')[0].frame.frameRelations)) == list(sorted(fn.frame_relations('Partiality')))
+    >>> fn.lus('prejudice.n')[0].frame.frameRelations == fn.frame_relations('Partiality')
     True
     """
 
@@ -645,7 +645,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         256
         >>> f.name
         'Medical_specialties'
-        >>> f.definition # doctest: +ELLIPSIS
+        >>> f.definition
         "This frame includes words that name ..."
 
         :param fn_fid: The Framenet id number of the frame
@@ -686,7 +686,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         256
         >>> f.name
         'Medical_specialties'
-        >>> f.definition # doctest: +ELLIPSIS
+        >>> f.definition
         "This frame includes words that name ..."
 
         :param fn_fname: The name of the frame
@@ -752,7 +752,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> f.ID
         256
         >>> # ensure non-ASCII character in definition doesn't trigger an encoding error:
-        >>> fn.frame('Imposing_obligation') # doctest: +ELLIPSIS 
+        >>> fn.frame('Imposing_obligation')
         frame (1494): Imposing_obligation...
 
         The dict that is returned from this function will contain the
@@ -879,7 +879,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         'COD: be aware of beforehand; predict.'
         >>> fn.lu(256).frame.name
         'Expectation'
-        >>> pprint(map(PrettyDict, fn.lu(256).lexemes))
+        >>> pprint(list(map(PrettyDict, fn.lu(256).lexemes)))
         [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}]
 
         The dict that is returned from this function will contain most of the
@@ -1328,16 +1328,16 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.documents())
         78
-        >>> pprint(set([x.corpname for x in fn.documents()]))
-        set(['ANC',
-             'C-4',
-             'KBEval',
-             'LUCorpus-v0.3',
-             'Miscellaneous',
-             'NTI',
-             'PropBank',
-             'QA',
-             'SemAnno'])
+        >>> pprint({x.corpname for x in fn.documents()})
+        {'ANC',
+         'C-4',
+         'KBEval',
+         'LUCorpus-v0.3',
+         'Miscellaneous',
+         'NTI',
+         'PropBank',
+         'QA',
+         'SemAnno'}
 
         :param name: A regular expression pattern used to search the
             file name of each annotated document. The document's
@@ -1375,7 +1375,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         Obtain a list of frame relation types.
 
         >>> from nltk.corpus import framenet as fn
-        >>> frts = fn.frame_relation_types()
+        >>> frts = list(fn.frame_relation_types())
         >>> isinstance(frts, list)
         True
         >>> len(frts)
@@ -1484,7 +1484,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         True
         >>> len(ferels)
         10020
-        >>> PrettyDict(ferels[0], breakLines=True)
+        >>> PrettyDict(list(sorted(ferels, key=lambda x: x.ID)), breakLines=True)
         {'ID': 2,
          '_type': 'ferelation',
          'frameRelation': <Parent=Process -- Inheritance -> Child=Precipitation>,
@@ -1513,8 +1513,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> stypes = fn.semtypes()
         >>> len(stypes)
         73
-        >>> stypes[0].keys()
-        ['definition', '_type', 'name', 'rootType', 'abbrev', 'superType', 'subTypes', 'ID']
+        >>> list(sorted(stypes[0].keys()))
+        ['_type', 'ID', 'abbrev', 'definition', 'name', 'rootType', 'subTypes', 'superType']
 
         :return: A list of all of the semantic types in framenet
         :rtype: list(dict)
@@ -1800,7 +1800,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         luinfo['_type'] = 'lu'
         luinfo = self._load_xml_attributes(luinfo, elt)
         luinfo["definition"] = ""
-        luinfo["sentenceCount"] = AttrDict()
+        luinfo["sentenceCount"] = PrettyDict()
         luinfo['lexemes'] = PrettyList()   # multiword LUs have multiple lexemes
         luinfo['semTypes'] = PrettyList()  # an LU can have multiple semtypes
 
