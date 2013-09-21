@@ -455,7 +455,7 @@ class Synset(_WordNetObject):
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
         """
         Get a list of lowest synset(s) that both synsets have as a hypernym.
-        When `use_min_depth == False` this means that the synset which appears as a 
+        When `use_min_depth == False` this means that the synset which appears as a
         hypernym of both `self` and `other` with the lowest maximum depth is returned
         or if there are multiple such synsets at the same depth they are all returned
 
@@ -479,11 +479,11 @@ class Synset(_WordNetObject):
             creates a fake root that connects all the taxonomies. Set it
             to True to enable this behavior. For the noun taxonomy,
             there is usually a default root except for WordNet version 1.6.
-            If you are using wordnet 1.6, a fake root will need to be added 
+            If you are using wordnet 1.6, a fake root will need to be added
             for nouns as well.
         :type use_min_depth: bool
-        :param use_min_depth: This setting mimics older (v2) behavior of NLTK wordnet 
-            If True, will use the min_depth function to calculate the lowest common 
+        :param use_min_depth: This setting mimics older (v2) behavior of NLTK wordnet
+            If True, will use the min_depth function to calculate the lowest common
             hypernyms. This is known to give strange results for some synset pairs
             (eg: 'chef.n.01', 'fireman.n.01') but is retained for backwards compatibility
         :return: The synsets that are the lowest common hypernyms of both synsets
@@ -1687,7 +1687,7 @@ def _get_pos(field):
 
 
 # unload corpus after tests
-def teardown_module(module):
+def teardown_module(module=None):
     from nltk.corpus import wordnet
     wordnet._unload()
 

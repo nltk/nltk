@@ -272,7 +272,7 @@ if __name__ == '__main__':
 
 # ** this is for nose **
 # unload all corpus after tests
-def teardown_module(module):
+def teardown_module(module=None):
     import nltk.corpus
     for name in dir(nltk.corpus):
         obj = getattr(nltk.corpus, name, None)

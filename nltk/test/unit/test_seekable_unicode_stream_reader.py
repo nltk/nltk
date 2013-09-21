@@ -119,6 +119,6 @@ def test_reader_on_large_string():
         except UnicodeEncodeError:
             pass
 
-def teardown_module(module):
+def teardown_module(module=None):
     import gc
     gc.collect()

@@ -227,7 +227,7 @@ class NgramModel(ModelI):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
 
 
-def teardown_module(module):
+def teardown_module(module=None):
     from nltk.corpus import brown
     brown._unload()
 
