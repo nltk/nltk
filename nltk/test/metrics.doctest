@@ -84,10 +84,10 @@ Segmentations are represented using strings of zeros and ones.
     >>> s5 = "111111111111"
     >>> windowdiff(s1, s1, 3)
     0.0
-    >>> windowdiff(s1, s2, 3)
-    0.3
-    >>> windowdiff(s2, s3, 3)
-    0.8
+    >>> abs(windowdiff(s1, s2, 3) - 0.3)  < 1e-6  # windowdiff(s1, s2, 3) == 0.3
+    True
+    >>> abs(windowdiff(s2, s3, 3) - 0.8)  < 1e-6  # windowdiff(s2, s3, 3) == 0.8
+    True
     >>> windowdiff(s1, s4, 3)
     0.5
     >>> windowdiff(s1, s5, 3)
