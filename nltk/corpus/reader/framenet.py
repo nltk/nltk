@@ -1328,16 +1328,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.documents())
         78
-        >>> pprint(set([x.corpname for x in fn.documents()]))
-        {'ANC',
-         'C-4',
-         'KBEval',
-         'LUCorpus-v0.3',
-         'Miscellaneous',
-         'NTI',
-         'PropBank',
-         'QA',
-         'SemAnno'}
+        >>> set([x.corpname for x in fn.documents()])==set(['ANC', 'C-4', 'KBEval', \
+                    'LUCorpus-v0.3', 'Miscellaneous', 'NTI', 'PropBank', 'QA', 'SemAnno'])
+        True
 
         :param name: A regular expression pattern used to search the
             file name of each annotated document. The document's
@@ -1415,19 +1408,19 @@ class FramenetCorpusReader(XMLCorpusReader):
         1676
         >>> PrettyList(fn.frame_relations('Cooking_creation'), maxReprSize=0, breakLines=True)
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>,
-         <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>,
-         <Parent=Apply_heat -- Using -> Child=Cooking_creation>]
+         <Parent=Apply_heat -- Using -> Child=Cooking_creation>,
+         <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>]
         >>> PrettyList(fn.frame_relations(373), breakLines=True)
-        [<Neutral=Topic -- Perspective_on -> Perspectivized=Text_scenario>,
+        [<Parent=Topic -- Using -> Child=Communication>,
          <Source=Discussion -- ReFraming_Mapping -> Target=Topic>, ...]
         >>> PrettyList(fn.frame_relations(fn.frame('Cooking_creation')), breakLines=True)
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>,
-         <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>, ...]
+         <Parent=Apply_heat -- Using -> Child=Cooking_creation>, ...]
         >>> PrettyList(fn.frame_relations('Cooking_creation', type='Inheritance'))
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>]
         >>> PrettyList(fn.frame_relations('Cooking_creation', 'Apply_heat'), breakLines=True)
-        [<MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>,
-         <Parent=Apply_heat -- Using -> Child=Cooking_creation>]
+        [<Parent=Apply_heat -- Using -> Child=Cooking_creation>,
+        <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>]
         """
         relation_type = type
 
@@ -1443,21 +1436,24 @@ class FramenetCorpusReader(XMLCorpusReader):
         
         # lookup by 'frame'
         if frame is not None:
-            if not isinstance(frame, int):
-                if isinstance(frame, dict):
-                    frame = frame.ID
-                else:
-                    frame = self.frame_by_name(frame).ID
-            rels = PrettyList(self._frel_idx[frelID] for frelID in self._frel_f_idx[frame])
+            if isinstance(frame,dict) and 'frameRelations' in frame:
+                rels = PrettyList(frame.frameRelations)
+            else:
+                if not isinstance(frame, int):
+                    if isinstance(frame, dict):
+                        frame = frame.ID
+                    else:
+                        frame = self.frame_by_name(frame).ID
+                rels = [self._frel_idx[frelID] for frelID in self._frel_f_idx[frame]]
         
             # filter by 'type'
             if type is not None:
-                rels = PrettyList(rel for rel in rels if rel.type is type)
+                rels = [rel for rel in rels if rel.type is type]
         elif type is not None:
             # lookup by 'type'
-            rels = PrettyList(type.frameRelations)
+            rels = type.frameRelations
         else:
-            rels = PrettyList(self._frel_idx.values())
+            rels = self._frel_idx.values()
         
         # filter by 'frame2'
         if frame2 is not None:
@@ -1470,9 +1466,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                     frame2 = self.frame_by_name(frame2).ID
             if frame==frame2:
                 raise FramenetError("The two frame arguments to frame_relations() must be different frames")
-            rels = PrettyList(rel for rel in rels if rel.superFrame.ID==frame2 or rel.subFrame.ID==frame2)
+            rels = [rel for rel in rels if rel.superFrame.ID==frame2 or rel.subFrame.ID==frame2]
         
-        return rels
+        return PrettyList(sorted(rels, 
+                key=lambda frel: (frel.type.ID, frel.superFrameName, frel.subFrameName)))
         
     def fe_relations(self):
         """
@@ -1484,26 +1481,28 @@ class FramenetCorpusReader(XMLCorpusReader):
         True
         >>> len(ferels)
         10020
-        >>> PrettyDict(list(sorted(ferels, key=lambda x: x.ID)), breakLines=True)
-        {'ID': 2,
-         '_type': 'ferelation',
-         'frameRelation': <Parent=Process -- Inheritance -> Child=Precipitation>,
-         'subFE': <fe ID=2737 name=Duration>,
-         'subFEName': 'Duration',
-         'subFrame': <frame ID=314 name=Precipitation>,
-         'subID': 2737,
-         'supID': 2026,
-         'superFE': <fe ID=2026 name=Duration>,
-         'superFEName': 'Duration',
-         'superFrame': <frame ID=233 name=Process>,
-         'type': <framerelationtype ID=1 name=Inheritance>}
+        >>> PrettyDict(ferels[0], breakLines=True)
+        {'ID': 14642,
+        '_type': 'ferelation',
+        'frameRelation': <Parent=Abounding_with -- Inheritance -> Child=Lively_place>,
+        'subFE': <fe ID=11370 name=Degree>,
+        'subFEName': 'Degree',
+        'subFrame': <frame ID=1904 name=Lively_place>,
+        'subID': 11370,
+        'supID': 2271,
+        'superFE': <fe ID=2271 name=Degree>,
+        'superFEName': 'Degree',
+        'superFrame': <frame ID=262 name=Abounding_with>,
+        'type': <framerelationtype ID=1 name=Inheritance>}
 
         :return: A list of all of the frame element relations in framenet
         :rtype: list(dict)
         """
         if not self._ferel_idx:
-            self._buildrelationindex()                
-        return PrettyList(self._ferel_idx.values())
+            self._buildrelationindex()
+        return PrettyList(sorted(self._ferel_idx.values(), 
+                key=lambda ferel: (ferel.type.ID, ferel.frameRelation.superFrameName, 
+                    ferel.superFEName, ferel.frameRelation.subFrameName, ferel.subFEName)))
 
     def semtypes(self):
         """
@@ -1513,8 +1512,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> stypes = fn.semtypes()
         >>> len(stypes)
         73
-        >>> list(sorted(stypes[0].keys()))
-        ['_type', 'ID', 'abbrev', 'definition', 'name', 'rootType', 'subTypes', 'superType']
+        >>> sorted(stypes[0].keys())
+        ['ID', '_type', 'abbrev', 'definition', 'name', 'rootType', 'subTypes', 'superType']
 
         :return: A list of all of the semantic types in framenet
         :rtype: list(dict)
@@ -1673,8 +1672,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 semtypeinfo = self._load_xml_attributes(AttrDict(), sub)
                 frinfo['semTypes'].append(self.semtype(semtypeinfo.ID))
 
-        frinfo['frameRelations'] = sorted(self.frame_relations(frame=frinfo), 
-                key=lambda frel: (frel.type.ID, frel.superFrameName, frel.subFrameName))
+        frinfo['frameRelations'] = self.frame_relations(frame=frinfo)
         
         # resolve 'requires' and 'excludes' links between FEs of this frame
         for fe in frinfo.FE.values():
