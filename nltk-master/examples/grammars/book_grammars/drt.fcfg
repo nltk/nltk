@@ -1,0 +1,82 @@
+## Natural Language Toolkit: drt.fcfg
+## 
+## Author: Dan Garrette <dhgarrette@gmail.com> 
+## URL: <http://www.nltk.orgt>
+## For license information, see LICENSE.TXT
+
+% start S
+############################
+# Grammar Rules
+#############################
+
+S[SEM = <app(?subj,?vp)>] -> NP[NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
+
+NP[NUM=?n,SEM=<app(?det,?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
+NP[LOC=?l,NUM=?n,SEM=?np] -> PropN[LOC=?l,NUM=?n,SEM=?np]
+
+Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
+Nom[NUM=?n,SEM=<app(?pp,?nom)>] -> N[NUM=?n,SEM=?nom] PP[SEM=?pp]
+
+VP[NUM=?n,SEM=?v] -> IV[NUM=?n,SEM=?v]
+VP[NUM=?n,SEM=<app(?v,?obj)>] -> TV[NUM=?n,SEM=?v] NP[SEM=?obj]
+
+#############################
+# Lexical Rules
+#############################
+
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[Angus(x)])+P(x))>] -> 'Angus'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[Irene(x)])+P(x))>] -> 'Irene'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[John(x)])+P(x))>] -> 'John'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[Mary(x)])+P(x))>] -> 'Mary'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[Suzie(x)])+P(x))>] -> 'Suzie'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[Vincent(x)])+P(x))>] -> 'Vincent'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[Mia(x)])+P(x))>] -> 'Mia'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[Marsellus(x)])+P(x))>] -> 'Marsellus'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[Fido(x)])+P(x))>] -> 'Fido'
+PropN[+LOC,NUM=sg,SEM=<\P.(DRS([x],[Noosa(x)])+P(x))>] -> 'Noosa'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[PRO(x)])+P(x))>] -> 'he'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[PRO(x)])+P(x))>] -> 'she'
+PropN[-LOC,NUM=sg,SEM=<\P.(DRS([x],[PRO(x)])+P(x))>] -> 'it'
+
+Det[NUM=sg,SEM=<\P Q.DRS([],[((DRS([x],[])+P(x)) implies Q(x))])>] -> 'every' | 'Every' 
+Det[NUM=pl,SEM=<\P Q.DRS([],[((DRS([x],[])+P(x)) implies Q(x))])>] -> 'all' | 'All'
+Det[SEM=<\P Q.((DRS([x],[])+P(x))+Q(x))>] -> 'some' | 'Some'
+Det[NUM=sg,SEM=<\P Q.((DRS([x],[])+P(x))+Q(x))>] -> 'a' | 'A'
+Det[NUM=sg,SEM=<\P Q.(not ((DRS([x],[])+P(x))+Q(x)))>] -> 'no' | 'No'
+
+N[NUM=sg,SEM=<\x.DRS([],[boy(x)])>] -> 'boy'
+N[NUM=pl,SEM=<\x.DRS([],[boy(x)])>] -> 'boys' 
+N[NUM=sg,SEM=<\x.DRS([],[girl(x)])>] -> 'girl'
+N[NUM=pl,SEM=<\x.DRS([],[girl(x)])>] -> 'girls'
+N[NUM=sg,SEM=<\x.DRS([],[dog(x)])>] -> 'dog'
+N[NUM=pl,SEM=<\x.DRS([],[dog(x)])>] -> 'dogs'
+N[NUM=sg,SEM=<\x.DRS([],[student(x)])>] -> 'student'
+N[NUM=pl,SEM=<\x.DRS([],[student(x)])>] -> 'students'
+N[NUM=sg,SEM=<\x.DRS([],[person(x)])>] -> 'person'
+N[NUM=pl,SEM=<\x.DRS([],[person(x)])>] -> 'persons'
+N[NUM=sg,SEM=<\x.DRS([],[boxerdog(x)])>] -> 'boxer'
+N[NUM=pl,SEM=<\x.DRS([],[boxerdog(x)])>] -> 'boxers'
+N[NUM=sg,SEM=<\x.DRS([],[boxer(x)])>] -> 'boxer'
+N[NUM=pl,SEM=<\x.DRS([],[boxer(x)])>] -> 'boxers'
+N[NUM=sg,SEM=<\x.DRS([],[garden(x)])>] -> 'garden'
+N[NUM=sg,SEM=<\x.DRS([],[kitchen(x)])>] -> 'kitchen'
+
+IV[NUM=sg,SEM=<\x.DRS([],[bark(x)])>,tns=pres] -> 'barks'
+IV[NUM=pl,SEM=<\x.DRS([],[bark(x)])>,tns=pres] -> 'bark'
+IV[NUM=sg,SEM=<\x.DRS([],[walk(x)])>,tns=pres] -> 'walks'
+IV[NUM=pl,SEM=<\x.DRS([],[walk(x)])>,tns=pres] -> 'walk'
+IV[NUM=pl,SEM=<\x.DRS([],[dance(x)])>,tns=pres] -> 'dance'
+IV[NUM=sg,SEM=<\x.DRS([],[dance(x)])>,tns=pres] -> 'dances'
+
+TV[NUM=sg,SEM=<\X x.X(\y.DRS([],[own(x,y)]))>,tns=pres] -> 'owns'
+TV[NUM=pl,SEM=<\X x.X(\y.DRS([],[own(x,y)]))>,tns=pres] -> 'own'
+TV[NUM=sg,SEM=<\X x.X(\y.DRS([],[bite(x,y)]))>,tns=pres] -> 'bites'
+TV[NUM=pl,SEM=<\X x.X(\y.DRS([],[bite(x,y)]))>,tns=pres] -> 'bite'
+TV[NUM=sg,SEM=<\X x.X(\y.DRS([],[chase(x,y)]))>,tns=pres] -> 'chases'
+TV[NUM=pl,SEM=<\X x.X(\y.DRS([],[chase(x,y)]))>,tns=pres] -> 'chase'
+TV[NUM=sg,SEM=<\X x.X(\y.DRS([],[marry(x,y)]))>,tns=pres] -> 'marries'
+TV[NUM=pl,SEM=<\X x.X(\y.DRS([],[marry(x,y)]))>,tns=pres] -> 'marry'
+TV[NUM=sg,SEM=<\X x.X(\y.DRS([],[know(x,y)]))>,tns=pres] -> 'knows'
+TV[NUM=pl,SEM=<\X x.X(\y.DRS([],[know(x,y)]))>,tns=pres] -> 'know'
+TV[NUM=sg,SEM=<\X x.X(\y.DRS([],[see(x,y)]))>,tns=pres] -> 'sees'
+TV[NUM=pl,SEM=<\X x.X(\y.DRS([],[see(x,y)]))>,tns=pres] -> 'see'

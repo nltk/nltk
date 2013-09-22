@@ -1,0 +1,19 @@
+## Natural Language Toolkit: sem1.fcfg
+##
+## Minimal feature-based grammar to illustrate the interpretation of
+## determiner phrases.
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+% start S
+
+S[SEM = <?subj(?vp)>] -> NP[SEM=?subj] VP[SEM=?vp]
+VP[SEM=?v] -> IV[SEM=?v]
+NP[SEM=<?det(?n)>] -> Det[SEM=?det] N[SEM=?n]
+
+Det[SEM=<\Q P.exists x.(Q(x) & P(x))>] -> 'a'
+Det[SEM=<\Q P.all x.(Q(x) -> P(x))>] -> 'every'
+N[SEM=<\x.dog(x)>] -> 'dog'
+IV[SEM=<\x.bark(x)>] -> 'barks'

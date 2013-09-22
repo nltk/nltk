@@ -1,0 +1,54 @@
+## Natural Language Toolkit: storage.fcfg
+##
+## Feature-based grammar that implements Cooper storage by dividing the
+## semantics for each phrase into two pieces: the core semantics
+## ('SEM','CORE') and a sequence of binding operators ('SEM','STORE').
+## Each binding operator is encoded as a logic term <bo(quant, var)>,
+## where <quant> is a quantifier expression and the individual variable
+## <@var> specifies the 'address' of the quantifier in the core
+## semantics.  and <predicate> is a predicate describing that variable.
+
+## In order for this grammar to generate the correct results, all
+## variables of the form <@var> must be instantiated (i.e., replaced
+## by unique new variables) whenever they are used.  This can be
+## accomplished by using the InstantiateVarsChart class when parsing.
+## 
+## Author: Edward Loper <edloper@gradient.cis.upenn.edu>,
+##         Ewan Klein <ewan@inf.ed.ac.uk>
+##         Robin Cooper <robin.cooper@ling.gu.se>
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+%start S
+
+S[SEM=[CORE=<?vp(?subj)>, STORE=(?b1+?b2)]] -> NP[SEM=[CORE=?subj, STORE=?b1]] VP[SEM=[CORE=?vp, STORE=?b2]]
+
+VP[SEM=?s] -> IV[SEM=?s]
+VP[SEM=[CORE=<?v(?obj)>, STORE=(?b1+?b2)]] -> TV[SEM=[CORE=?v, STORE=?b1]] NP[SEM=[CORE=?obj, STORE=?b2]]
+VP[SEM=[CORE=<?v(?pp)(?obj)>, STORE=(?b1+?b2+?b3)]] -> DTV[SEM=[CORE=?v, STORE=?b1]] NP[SEM=[CORE=?obj, STORE=?b2]] PP[+TO, SEM=[CORE=?pp, STORE=?b3]]  
+
+NP[SEM=[CORE=<@x>, STORE=((<bo(?det(?n),@x)>)+?b1+?b2)]] -> Det[SEM=[CORE=?det, STORE=?b1]] N[SEM=[CORE=?n, STORE=?b2]]
+
+PP[+TO, SEM=[CORE=?np, STORE=?b1]] -> P NP[SEM=[CORE=?np, STORE=?b1]]
+
+# Lexical items:
+Det[SEM=[CORE=<\Q P.exists x.(Q(x) & P(x))>, STORE=(/)]] -> 'a'
+Det[SEM=[CORE=<\Q P.all x.(Q(x) implies P(x))>, STORE=(/)]] -> 'every'
+
+N[SEM=[CORE=<dog>, STORE=(/)]] -> 'dog' 
+N[SEM=[CORE=<bone>, STORE=(/)]] -> 'bone' 
+N[SEM=[CORE=<girl>, STORE=(/)]] -> 'girl' 
+N[SEM=[CORE=<man>, STORE=(/)]] -> 'man'
+
+IV[SEM=[CORE=<\x.smile(x)>, STORE=(/)]] -> 'smiles' 
+IV[SEM=[CORE=<\x.walk(x)>, STORE=(/)]] -> 'walks'
+
+TV[SEM=[CORE=<\y x.feed(x,y)>, STORE=(/)]] -> 'feeds' 
+TV[SEM=[CORE=<\y x.chase(x,y)>, STORE=(/)]] -> 'chases'
+
+DTV[SEM=[CORE=<\z y x.give(x,y,z)>, STORE=(/)]] -> 'gives' 
+
+NP[SEM=[CORE=<@x>, STORE=(<bo(\P.P(angus),@x)>)]] -> 'Angus' 
+NP[SEM=[CORE=<@x>, STORE=(<bo(\P.P(cyril),@x)>)]] -> 'Cyril'
+
+P[+TO] -> 'to'

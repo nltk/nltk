@@ -1,0 +1,14 @@
+# Natural Language Toolkit: Demo Sentences
+#
+# Author: Ewan Klein <ewan@inf.ed.ac.uk>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+############################################
+# Some example sentences for the sem2.cfg demo
+
+Fido sees a boy with Mary
+John sees Mary
+every girl chases a dog
+every boy chases a girl
+John walks with a girl in Noosa
+who walks

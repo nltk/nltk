@@ -1,0 +1,95 @@
+## Natural Language Toolkit: chat80.fcfg
+##
+##
+## Grammar used to illustrate querying the Chat-80 database.
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+% start S
+# ###########################
+# Grammar Rules
+# ############################
+
+S[SEM=<app(?subj,?vp)>] -> NP[-PRED,NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
+
+Rel[NUM=?n,SEM=<app(?comp,?vp)>] -> Comp[SEM=?comp] VP[NUM=?n,SEM=?vp]
+
+NP[-PRED, NUM=pl,SEM=<(\P Q. exists x. (Q(x) and P(x)) ?nom)>] -> Nom[NUM=pl,SEM=?nom]
+NP[WH=?wh,-PRED,NUM=?n,SEM=<app(?det,?nom)>] -> Det[WH=?wh, NUM=?n,SEM=?det] Nom[NUM=?n,SEM=?nom]
+
+
+NP[+PRED,NUM=sg,SEM=?nom] -> Det[NUM=sg,SEM=?det]  Nom[NUM=sg,SEM=?nom]
+NP[+PRED,NUM=pl,SEM=?nom] -> Nom[NUM=pl,SEM=?nom]
+
+NP[LOC=?l,NUM=?n,SEM=?np] -> PropN[LOC=?l,NUM=?n,SEM=?np]
+
+Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
+Nom[NUM=sg,SEM=<app(?pp,?nom)>] -> N[subcat=11,NUM=sg,SEM=?nom] PP[pform=of,SEM=?pp]
+Nom[NUM=?n,SEM=<app(?mod,?nom)>] -> Nom[NUM=?n,SEM=?nom] Rel[NUM=?n,SEM=?mod]
+Nom[NUM=?n,SEM=<app(?adj,?nom)>] -> A[SEM=?adj] Nom[NUM=?n,SEM=?nom]
+
+##VP[NUM=?n,SEM=?v] -> V[SUBCAT=1,NUM=?n,SEM=?v]
+VP[NUM=?n,SEM=<app(?v,?obj)>] -> V[SUBCAT=2, NUM=?n,SEM=?v] NP[-PRED,SEM=?obj]
+VP[NUM=?n,SEM=<app(?v,?PRED)>] -> V[SUBCAT=3, NUM=?n,SEM=?v] NP[+PRED,SEM=?PRED]
+
+PP[PFORM=?pf,SEM=<app(?p,?np)>] -> P[PFORM=?pf, LOC=?l,SEM=?p] NP[LOC=?l,SEM=?np]
+
+
+# ############################
+# Lexical Rules
+# ############################
+
+% include chat_pnames.cfg
+
+Comp[SEM=<\P Q x.(P(x) and Q(x))>] -> 'that'
+
+NP[+WH, NUM=sg, SEM=<\P.\x.P(x)>] -> 'what'  
+
+Det[-WH,NUM=sg,SEM=<\P Q. all x. (P(x) -> Q(x))>] -> 'every'
+Det[-WH,NUM=pl,SEM=<\P Q. all x. (P(x) -> Q(x))>] -> 'all'
+Det[-WH,SEM=<\P Q. exists x. (P(x) & Q(x))>] -> 'some'
+Det[-WH,NUM=sg,SEM=<\P Q. exists x. (P(x) & Q(x))>] -> 'a'
+Det[-WH,NUM=sg,SEM=<\P Q. exists x. (P(x) & Q(x))>] -> 'the'
+Det[+WH,SEM=<\P Q x. (Q(x) & P(x))>] -> 'which'
+
+N[SUBCAT=10,NUM=sg,SEM=<\x.city(x)>] -> 'city'
+N[SUBCAT=10,NUM=pl,SEM=<\x.city(x)>] -> 'cities'
+N[SUBCAT=10,NUM=sg,SEM=<\x.continent(x)>] -> 'continent'
+N[SUBCAT=10,NUM=pl,SEM=<\x.continent(x)>] -> 'continents'
+N[SUBCAT=10,NUM=sg,SEM=<\x.country(x)>] -> 'country'
+N[SUBCAT=10,NUM=pl,SEM=<\x.country(x)>] -> 'countries'
+N[SUBCAT=10,NUM=sg,SEM=<\x.sea(x)>] -> 'sea'
+N[SUBCAT=10,NUM=pl,SEM=<\x.sea(x)>] -> 'seas'
+N[SUBCAT=10,NUM=sg,SEM=<\x.ocean(x)>] -> 'ocean'
+N[SUBCAT=10,NUM=pl,SEM=<\x.ocean(x)>] -> 'oceans'
+
+PL[SEM=<\P Q. exists x. (P(x) & Q(x))>] -> ' '
+
+N[SUBCAT=11,NUM=sg,SEM=<\x y.area_of(x,y))>] -> 'area'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.capital_of(x,y))>] -> 'capital'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.currency_of(x,y))>] -> 'currency'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.region_of(x,y))>] -> 'region'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.longitude_of(x,y))>] -> 'longitude'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.latitude_of(x,y))>] -> 'latitude'
+N[SUBCAT=11,NUM=sg,SEM=<\x y.population_of(x,y))>] -> 'population'
+
+
+## V[SUBCAT=3,NUM=sg,SEM=<\X y.(X \x.(x = y))>,tns=pres] -> 'is'
+## V[SUBCAT=3,NUM=pl,SEM=<\P.P))>,tns=pres] -> 'are'
+V[SUBCAT=3,NUM=sg,SEM=<\P.P>,tns=pres] -> 'is'
+V[SUBCAT=3,NUM=pl,SEM=<\P.P>,tns=pres] -> 'are'
+V[SUBCAT=2,NUM=sg,SEM=<\X y.(X \x.border(y,x))>,tns=pres] -> 'borders'
+V[SUBCAT=2,NUM=pl,SEM=<\X y.(X \x.border(y,x))>,tns=pres] -> 'border'
+V[SUBCAT=2,NUM=sg,SEM=<\X y.(X \x.contain(y,x))>,tns=pres] -> 'contains'
+V[SUBCAT=2,NUM=pl,SEM=<\X y.(X \x.contain(y,x))>,tns=pres] -> 'contain'
+
+A[SEM=<\P x.(contain(asia,x) & P(x))>] -> 'Asian'
+
+P[PFORM=of,SEM=<\X.X>] -> 'of'
+P[+LOC,SEM=<\X P x.(X \y.(P(x) & in(x,y)))>] -> 'in'
+P[-LOC,SEM=<\X P x.(X \y.(P(x) & with(x,y)))>] -> 'with'
+
+
+

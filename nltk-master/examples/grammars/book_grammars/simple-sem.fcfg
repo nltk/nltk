@@ -1,0 +1,65 @@
+## Natural Language Toolkit: sem3.fcfg
+##
+## Alternative simple grammar with transitive verbs and 
+## quantifiers for the book. 
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+
+% start S
+############################
+# Grammar Rules
+#############################
+
+S[SEM = <?subj(?vp)>] -> NP[NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
+
+NP[NUM=?n,SEM=<?det(?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
+NP[LOC=?l,NUM=?n,SEM=?np] -> PropN[LOC=?l,NUM=?n,SEM=?np]
+
+Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
+
+VP[NUM=?n,SEM=?v] -> IV[NUM=?n,SEM=?v]
+VP[NUM=?n,SEM=<?v(?obj)>] -> TV[NUM=?n,SEM=?v] NP[SEM=?obj]
+VP[NUM=?n,SEM=<?v(?obj,?pp)>] -> DTV[NUM=?n,SEM=?v] NP[SEM=?obj] PP[+TO,SEM=?pp]
+
+PP[+TO, SEM=?np] -> P[+TO] NP[SEM=?np]
+
+#############################
+# Lexical Rules
+#############################
+
+PropN[-LOC,NUM=sg,SEM=<\P.P(angus)>] -> 'Angus'
+PropN[-LOC,NUM=sg,SEM=<\P.P(cyril)>] -> 'Cyril'
+PropN[-LOC,NUM=sg,SEM=<\P.P(irene)>] -> 'Irene'
+
+Det[NUM=sg,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'every'
+Det[NUM=pl,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'all'
+Det[SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'some'
+Det[NUM=sg,SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'a'
+Det[NUM=sg,SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'an'
+
+N[NUM=sg,SEM=<\x.man(x)>] -> 'man'
+N[NUM=sg,SEM=<\x.girl(x)>] -> 'girl'
+N[NUM=sg,SEM=<\x.boy(x)>] -> 'boy'
+N[NUM=sg,SEM=<\x.bone(x)>] -> 'bone'
+N[NUM=sg,SEM=<\x.ankle(x)>] -> 'ankle'
+N[NUM=sg,SEM=<\x.dog(x)>] -> 'dog'
+N[NUM=pl,SEM=<\x.dog(x)>] -> 'dogs'
+
+IV[NUM=sg,SEM=<\x.bark(x)>,TNS=pres] -> 'barks'
+IV[NUM=pl,SEM=<\x.bark(x)>,TNS=pres] -> 'bark'
+IV[NUM=sg,SEM=<\x.walk(x)>,TNS=pres] -> 'walks'
+IV[NUM=pl,SEM=<\x.walk(x)>,TNS=pres] -> 'walk'
+TV[NUM=sg,SEM=<\X x.X(\y.chase(x,y))>,TNS=pres] -> 'chases'
+TV[NUM=pl,SEM=<\X x.X(\y.chase(x,y))>,TNS=pres] -> 'chase'
+TV[NUM=sg,SEM=<\X x.X(\y.see(x,y))>,TNS=pres] -> 'sees'
+TV[NUM=pl,SEM=<\X x.X(\y.see(x,y))>,TNS=pres] -> 'see'
+TV[NUM=sg,SEM=<\X x.X(\y.bite(x,y))>,TNS=pres] -> 'bites'
+TV[NUM=pl,SEM=<\X x.X(\y.bite(x,y))>,TNS=pres] -> 'bite'
+DTV[NUM=sg,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'gives'
+DTV[NUM=pl,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'give'
+
+P[+to] -> 'to'
+

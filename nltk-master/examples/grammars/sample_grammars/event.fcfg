@@ -1,0 +1,72 @@
+## Natural Language Toolkit: event.fcfg
+##
+## Illustrating Davidson-style event semantics
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+% start S
+############################
+# Grammar Rules
+#############################
+
+S[sem = <exists e.?subj(e,?vp)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
+
+NP[num=?n,sem=<?det(?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
+NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
+
+Nom[num=?n,sem=?nom] -> N[num=?n,sem=?nom]
+Nom[num=?n,sem=<?pp(?nom)>] -> N[num=?n,sem=?nom] PP[sem=?pp]
+
+VP[num=?n,sem=?v] -> IV[num=?n,sem=?v]
+VP[num=?n,sem=<?v(?obj)>] -> TV[num=?n,sem=?v] NP[sem=?obj]
+VP[num=?n,sem=<?v(?obj,?pp)>] -> DTV[num=?n,sem=?v] NP[sem=?obj] PP[+to, sem=?pp]
+
+
+VP[num=?n,sem=<?pp(?vp)>] -> VP[num=?n,sem=?vp] PP[sem=?pp]
+VP[num=?n,sem=<?adv(?vp)>] -> VP[num=?n,sem=?vp] Adv[sem=?adv]
+
+PP[sem=<?p(?np)>] -> P[loc=?l,sem=?p] NP[loc=?l,sem=?np]
+
+#############################
+# Lexical Rules
+#############################
+
+PropN[-loc,num=sg,sem=<\e R.R(e,angus)>] -> 'Angus'
+PropN[-loc,num=sg,sem=<\e R.R(e,pat)>] -> 'Pat'
+PropN[-loc,num=sg,sem=<\e R.R(e,irene)>] -> 'Irene'
+PropN[-loc,num=sg,sem=<\e R.R(e,cyril)>] -> 'Cyril'
+PropN[+loc, num=sg,sem=<\e R.R(e,stockbridge)>] -> 'Stockbridge'
+
+NP[-loc, num=sg, sem=<\P.\x.P(x)>] -> 'who'  
+
+Det[num=sg,sem=<\P R e.all x.(P(x) -> R(e,x))>] -> 'every'
+Det[num=pl,sem=<\P R e.all x.(P(x) -> R(e,x))>] -> 'all'
+Det[sem=<\P R e.exists x.(P(x) & R(e,x))>] -> 'some'
+Det[num=sg,sem=<\P R e.exists x.(P(x) & R(e,x))>] -> 'a'
+
+N[num=sg,sem=<boy>] -> 'boy'
+N[num=pl,sem=<boy>] -> 'boys'
+N[num=sg,sem=<girl>] -> 'girl'
+N[num=pl,sem=<girl>] -> 'girls'
+N[num=sg,sem=<bone>] -> 'bone'
+N[num=sg,sem=<dog>] -> 'dog'
+
+IV[num=sg,sem=<\e x.(bark(e) & agent(e,x))>,tns=pres] -> 'barks'
+IV[num=pl,sem=<\e x.(bark(e) & agent(e,x))>,tns=pres] -> 'bark'
+IV[num=sg,sem=<\e x.(walk(e) & agent(e,x))>,tns=pres] -> 'walks'
+IV[num=pl,sem=<\e x.( walk(e) & agent(e,x))>,tns=pres] -> 'walk'
+TV[num=sg,sem=<\X y.X(\e x.(chase(e) & agent(e,y) & patient(e,x)))>,tns=pres] -> 'chases'
+TV[num=pl,sem=<\X y.X(\e x.(chase(e) & agent(e,y) & patient(e,x)))>,tns=pres] -> 'chase'
+TV[num=sg,sem=<\X y.X(\e x.(see(e) & agent(e,y) & patient(e,x)))>,tns=pres] -> 'sees'
+TV[num=pl,sem=<\X y.X(\e x.(see(e) & agent(e,y) & patient(e,x)))>,tns=pres] -> 'see'
+DTV[num=sg,sem=<\Y X x.X(\z.Y(\e y.(give(e) & agent(e,x) & theme(e,y) & recip(e,z))))>,tns=pres] -> 'gives'
+DTV[num=pl,sem=<\Y X x.X(\z.Y(\e y.(give(e) & agent(e,x) & theme(e,y) & recip(e,z))))>,tns=pres] -> 'give'
+
+P[+loc,sem=<\X P e.X(\y.(P(e) & in(e,y)))>] -> 'in'
+P[-loc,sem=<\X P e.X(\y.(P(e) & with(e,y)))>] -> 'with'
+P[+to,sem=<\X.X>] -> 'to'
+
+Adv[sem=<\R e x.(slow(e) & R(e,x))>] -> 'slowly'
+Adv[sem=<\R e x.(thoughtful(e) & R(e,x))>] -> 'thoughtfully'

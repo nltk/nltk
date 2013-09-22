@@ -1,0 +1,864 @@
+\documentclass[11pt]{article}
+\usepackage{colacl06}
+\usepackage{times}
+\usepackage{latexsym}
+
+\usepackage{url}
+\usepackage{fancyvrb}
+\usepackage{relsize}
+%\usepackage{float}
+% \restylefloat{table*}
+% \usepackage{placeins}
+
+\usepackage{examples}
+\exampleindent=\leftmargini
+
+\usepackage{fixltx2e}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\ling}[1]{\textit{#1}}
+\newcommand{\prog}[1]{\textsf{#1}}
+\newcommand{\scare}[1]{`#1'}
+
+\newcommand{\bnb}{B\&B}
+\newcommand{\nltk}{\textsc{nltk}}
+\newcommand{\NLP}{\textsc{nlp}}
+
+\RecustomVerbatimEnvironment
+{Verbatim}{Verbatim}
+{frame=lines,fontfamily=courier}
+
+\DefineVerbatimEnvironment%
+{SmVerbatim}{Verbatim}
+{fontsize=\relsize{-2}, frame=lines}
+
+\DefineVerbatimEnvironment%
+{SVerbatim}{Verbatim}
+{fontsize=\relsize{-2}}
+
+\setlength\titlebox{6.5cm}    % Expanding the titlebox
+
+\title{Computational Semantics in the \textit{Natural Language Toolkit}}
+
+\author{Ewan Klein\\
+  School of Informatics\\
+  University of Edinburgh\\
+  Scotland, UK\\
+  {\tt ewan@inf.ed.ac.uk} }
+
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  \nltk, the Natural Language Toolkit, is an open source project whose
+  goals include providing students with software and language
+  resources that will help them to learn basic \NLP. Until now, the
+  program modules in \nltk\ have covered such topics as tagging,
+  chunking, and parsing, but have not incorporated any aspect of
+  semantic interpretation.  This paper describes recent work on
+  building a new semantics package for \nltk. This currently allows
+  semantic representations to be built compositionally as a part of
+  sentence parsing, and for the representations to be evaluated by a
+  model checker.  We present the main components of this work, and
+  consider comparisons between the Python implementation and the
+  Prolog approach developed by Blackburn and Bos
+  \shortcite{Blackburn:2005:RINL}.
+\end{abstract}
+
+%\section{Credits}
+
+
+
+\section{Introduction}
+
+\nltk, the Natural Language
+Toolkit,\footnote{\url{http://nltk.sourceforge.net/}} is an open
+source project whose goals include providing students with software
+and language resources that will help them to learn basic \NLP. \nltk\
+is implemented in Python, and provides a set of modules (grouped into
+packages) which can be imported into the user's Python programs.
+
+Up till now, the modules in \nltk\ have covered such topics as
+tagging, chunking, and parsing, but have not incorporated any aspect
+of semantic interpretation.  Over the last year, I have been working
+on remedying this lack, and in this paper I will describe progress to
+date. In combination with the \nltk\ \prog{parse} package, \nltk 's
+\prog{semantics} package currently allow semantic representations to
+be built compositionally within a feature-based chart parser, and 
+allows the representations to be evaluated by a model checker.
+
+One source of inspiration for this work came from
+Blackburn and Bos's \shortcite{Blackburn:2005:RINL} landmark book
+\textit{Representation and Inference for Natural Language} (henceforth
+referred to as \bnb). The two primary goals set forth by \bnb\ are (i)
+automating the association of semantic representations with
+expressions of natural language, and (ii) using logical
+representations of natural language to automate the process of drawing
+inferences. I will be focussing on (i), and the related issue of
+defining satisfaction in a model for the semantic representations. By
+contrast, the important topic of (ii) will not be covered---as yet,
+there are no theorem provers in \nltk. That said, as pointed out by
+\bnb, for many inference problems in \NLP\ it is desirable to call
+external and highly sophisticated first-order theorem provers.
+
+One notable feature of \bnb\ is the use of Prolog as the language of
+implementation. It is not hard to defend the use of Prolog in defining
+logical representations, given the presence of first-order clauses in
+Prolog and the fundamental role of resolution in Prolog's model of
+computation. Nevertheless, in some circumstances it may be helpful to
+offer students access to an alternative framework, such as the Python
+implementation presented here. I also hope that the existence of work
+in both programming paradigms will turn out to be mutually beneficial,
+and will lead to a broader community of upcoming researchers becoming
+involved in the area of computational semantics.
+
+% In this paper, I review my experience of attempting to implement
+% something similar to the \cite{Blackburn:2005:RINL} first-order model
+% checker within Python as part of the broader \nltk\ initiative.%
+% \footnote{\url{http://nltk.sourceforge.net/}. See also
+%   \cite{Bird:2005:NES}.}  
+% One motivation for integrating some formal
+% semantics into \nltk\ is that the latter already provides a wealth of
+% tools for computational linguistics, including a variety of parsers,
+% and this makes it extremely easy for students to anchor their
+% understanding of computational semantics within a broader framework of
+% language processing activities.
+
+
+% Since my primary interest is in the contrast between Prolog and
+% Python, I shall not attempt to consider respects in which Python
+% differs from other procedural languages such as Perl or
+% Java.\footnote{However, see
+%   \url{http://nltk.sourceforge.net/lite/doc/en/preface.html} for an
+%   illustration of how Python compares with a number of other
+%   languages, including Prolog, in performing a simple \NLP\ task.}  It
+% should also be noted, of course, that both Python and Prolog offer a
+% wide variety of techniques for implementing concepts from
+% computational semantics, so that a specific approach may say more
+% about the programmer than the language \textit{per se}.
+
+
+\section{Building Semantic Representations}
+
+The initial question that we faced in \nltk\ was how to induce
+semantic representations for English sentences.  Earlier efforts by
+Edward Loper and Rob Speer had led to the construction of a chart
+parser for (untyped) feature-based grammars, and we therefore decided
+to introduce a \code{sem} feature to hold the semantics in a parse
+tree node. However, rather than representing the value of \code{sem}
+as a feature structure, we opted for a more traditional (and more
+succinct) logical formalism. Since the $\lambda$ calculus was the
+pedagogically obvious choice of \scare{glue} language for combining
+the semantic representations of subconstituents in a sentence, we
+opted to build on \prog{church.py},%
+\footnote{\url{http://www.alcyone.com/pyos/church/}.}  an independent
+implementation of the untyped $\lambda$ calculus due to Erik Max
+Francis.  The \nltk\ module \prog{semantics.logic} extends
+\prog{church.py} to bring it closer to first-order logic, though the
+resulting language is still untyped. (\ref{ex:logic1}) illustrates a
+representative formula, translating \ling{A dog barks}. From a Python
+point of view, (\ref{ex:logic1}) is just a string, and has to be
+parsed into an instance of the 
+\code{Expression} class from \prog{semantics.logic}.
+\begin{examples}
+    \item \verb!some x.(and (dog x) (bark x))!   \label{ex:logic1}
+\end{examples}
+The string \code{(dog x)} is analyzed as a function application. A
+statement such as \ling{Suzie chases Fido}, involving a binary
+relation $\mathit{chase}$, will be translated as another function
+application: \code{((chase fido) suzie)}, or equivalently \code{(chase
+  fido suzie)}.  So in this case, \code{chase} is taken to denote a
+function which, when applied to an argument yields the second function
+denoted by \code{(chase fido)}.  Boolean connectives are also parsed
+as functors, as indicated by \code{and} in (\ref{ex:logic1}). However, infix
+notation for Boolean connectives is accepted as input and can also be
+displayed.
+
+
+For comparison, the Prolog counterpart of (\ref{ex:logic1}) on \bnb 's
+approach is shown in (\ref{ex:logic2}).
+\begin{examples}
+    \item \verb!some(X,(and(dog(X),bark(X))!   \label{ex:logic2}
+\end{examples}
+(\ref{ex:logic2}) is a Prolog term and does not require any
+additional parsing machinery; first-order variables are treated as
+Prolog variables.
+
+(\ref{ex:logic3}) illustrates a $\lambda$ term from
+\prog{semantics.logic} that represents the determiner \ling{a}.
+\begin{examples}
+\item \verb!\Q P.some x.(and (Q x) (P x))! \label{ex:logic3}
+\end{examples}
+\verb!\Q! is
+the ascii rendering of $\lambda Q$, and  \verb!\Q P! is
+shorthand for $\lambda Q \lambda P$. 
+
+For comparison, (\ref{ex:logic4})
+illustrates the Prolog counterpart of (\ref{ex:logic3}) in \bnb.
+\begin{examples}
+\item \label{ex:logic4}
+\verb!lam(Q,lam(P,some(X,!
+\verb!    and(app(Q,X),app(P,X)))))!
+\end{examples}
+Note that \verb!app! is used in \bnb\ to signal the application of a
+$\lambda$ term to an argument. The right-branching structure for
+$\lambda$ terms shown in the Prolog rendering can become fairly
+unreadable when there are multiple bindings. Given that readability is
+a design goal in \nltk, the additional overhead of invoking a
+specialized parser for logical representations is arguable a cost
+worth paying.
+
+
+Figure~\ref{fig:gram} presents a minimal grammar exhibiting the most
+important aspects of the grammar formalism extended with the
+\code{sem} feature. 
+\begin{figure*}[tb]
+  \centering
+\begin{Verbatim}
+S[sem = <app(?subj,?vp)>] -> NP[sem=?subj] VP[sem=?vp]
+VP[sem=?v] -> IV[sem=?v]
+NP[sem=<app(?det,?n)>] -> Det[sem=?det] N[sem=?n]
+
+Det[sem=<\Q P. some x. ((Q x) and (P x))>] -> 'a'
+N[sem=<dog>] -> 'dog'
+IV[sem=<\x.(bark x)>] -> 'barks'       
+\end{Verbatim}
+  \caption{Minimal Grammar with Semantics}
+  \label{fig:gram}
+\end{figure*}
+Since the values of the \code{sem} feature have to handed off to a
+separate processor, we have adopted the convention of enclosing the values
+in angle brackets, except in the case of variables (e.g., \code{?subj}
+and \code{?vp}), which undergo unification in the usual way. The
+\code{app} relation corresponds to function application;
+
+% Figure~\ref{fig:tree} gives a parse tree produced by the \nltk\ module 
+% \prog{parse.featurechart}.
+% \begin{figure*}
+%   \begin{tabular}{p{5in}}
+% \begin{Verbatim}
+% ([INIT][]:
+%  (S[ sem = ApplicationExpression('(\Q P.some x.(and (Q x) (P x)) dog)', 'bark') ]:
+%    (NP[ sem = ApplicationExpression('\Q P.some x.(and (Q x) (P x))', 'dog') ]:
+%      (Det[ sem = LambdaExpression('Q', '\P.some x.(and (Q x) (P x))') ]: 'a')
+%      (N[ sem = VariableExpression('dog') ]: 'dog'))
+%    (VP[ sem = VariableExpression('bark') ]:
+%      (IV[ sem = VariableExpression('bark') ]: 'barks'))))    
+% \end{Verbatim}
+%   \end{tabular}
+%   \caption{Parse tree for \ling{a dog barks}}
+%   \label{fig:tree}
+% \end{figure*}
+
+In Figure~\ref{fig:tree}, we show a trace produced by the \nltk\ module 
+\prog{parse.featurechart}. 
+\begin{figure*}[tb]
+{\small
+\begin{Verbatim}
+Predictor |> . . .| S[sem='(?subj ?vp)'] -> * NP[sem=?subj] VP[sem=?vp] 
+Predictor |> . . .| NP[sem='(?det ?n)'] -> * Det[sem=?det] N[sem=?n] 
+Scanner   |[-] . .| [0:1] 'a' 
+Completer |[-> . .| NP[sem='(\\Q P.some x.(and (Q x) (P x)) ?n)']
+                    -> Det[sem='\\Q P.some x.(and (Q x) (P x))'] * N[sem=?n] 
+Scanner   |. [-] .| [1:2] 'dog' 
+Completer |[---] .| NP[sem='(\\Q P.some x.(and (Q x) (P x)) dog)'] 
+                    -> Det[sem='\\Q P.some x.(and (Q x) (P x))'] N[sem='dog'] * 
+Completer |[---> .| S[sem='(\\Q P.some x.(and (Q x) (P x)) dog ?vp)'] 
+                    -> NP[sem='(\\Q P.some x.(and (Q x) (P x)) dog)'] * VP[sem=?vp] 
+Predictor |. . > .| VP[sem=?v] -> * V[sem=?v] 
+Scanner   |. . [-]| [2:3] 'barks' 
+Completer |. . [-]| VP[sem='bark'] -> V[sem='bark'] * 
+Completer |[=====]| S[sem='(\\Q P.some x.(and (Q x) (P x)) dog bark)'] 
+                    -> NP[sem='(\\Q P.some x.(and (Q x) (P x)) dog)'] VP[sem='bark'] * 
+Completer |[=====]| [INIT] -> S *  
+\end{Verbatim}
+}
+  \caption{Parse tree for \ling{a dog barks}}
+  \label{fig:tree}
+\end{figure*}
+This illustrates how variable values of the \code{sem} feature are
+instantiated when completed edges are added to the chart. At present,
+$\beta$ reduction is not carried out as the \code{sem} values are
+constructed, but has to be invoked after the parse has completed.
+
+The following example of a session with the Python interactive
+interpreter illustrates how a grammar and a sentence are processed by
+a parser to produce an object \code{tree}; the semantics is extracted
+from the root node of the latter and bound to the variable \code{e},
+which can then be displayed in various ways.
+\begin{SVerbatim}
+>>> gram = GrammarFile.read_file('sem1.cfg')
+>>> s = 'a dog barks'
+>>> tokens = list(tokenize.whitespace(s))
+>>> parser = gram.earley_parser()
+>>> tree = parser.parse(tokens)
+>>> e = root_semrep(tree)
+>>> print e
+(\Q P.some x.(and (Q x) (P x)) dog \x.(bark x))
+>>> print e.simplify()
+some x.(and (dog x) (bark x))
+>>> print e.simplify().infixify()
+some x.((dog x) and (bark x))
+\end{SVerbatim}
+
+
+
+% Although Blackburn and Bos \shortcite{Blackburn:2005:RINL} commence
+% their presentation by a discussion of how to represent first-order
+% formulas in Prolog, I shall defer this discussion, and instead start
+% out by looking at Python data structures which seem to lend themselves
+% to use in building first-order models.
+
+Apart from the pragmatic reasons for choosing a functional language as
+our starting point, there are also theoretical attractions. It helps
+introduce students to the tradition of Montague Grammar
+\cite{Montague:1974:PTQ,Dowty:1981:IMS}, which in turn provides an
+elegant correspondence between binary syntax trees and semantic
+composition rules, in the style celebrated by categorial grammar.  In
+the next part of the paper, I will turn to the issue of how to
+represent models for the logical representations.
+
+\section{Representing Models in Python}
+
+Although our logical language is untyped, we will interpret it as
+though it were typed. In particular,  expressions which are
+intended to translate unary predicates will be interpreted as
+functions of type $e \rightarrow \{0, 1\}$ (from individuals to truth
+values) and expressions corresponding to binary predicates will be
+interpreted as though they were of 
+type $e \rightarrow (e \rightarrow \{0, 1\})$. We will start
+out by looking at data structures which can be used to
+provide denotations for such expressions.
+
+\subsection{Dictionaries and Boolean Types}
+
+The standard mapping type in Python is the dictionary, which
+associates keys with arbitrary values. Dictionaries are the obvious
+choice for representing various kinds of functions, and can be
+specialized by user-defined classes. This means that it is possible to
+benefit from the standard Python operations on dictionaries, while
+adding additional features and constraints, or in some cases
+overriding the standard operations.  Since we are assuming that our
+logical language is based on function application, we can readily
+construct the interpretation of $n$-ary relations in terms of
+dictionaries-as-functions.
+
+Characteristic functions (i.e.,  functions that correspond to sets)
+are dictionaries with Boolean values:
+\begin{Verbatim}
+cf = {'d1': True, 
+      'd2': True, 
+      'd3': False}
+\end{Verbatim}
+\code{cf} corresponds to the set $\{d_1, d_2\}$. Since functions are
+being implemented as dictionaries, function application is implemented
+as indexing (e.g., \code{cf['d1']} applies \code{cf} to argument
+\code{'d1'}). Note that \code{True} and \code{False} are
+instances of the Python built-in \code{bool} type, and can be used
+in any Boolean context. Since Python also includes \code{and} and
+\code{not}, we can make statements (here, using the Python interactive
+interpreter) such as the following:
+\begin{Verbatim}
+>>> cf['d1'] and not cf['d3']
+True
+\end{Verbatim}
+As mentioned earlier, relations of higher arity are also modeled as
+functions. For example, a binary relation will be a function from
+entities to a characteristic function; we can call these `curryed
+characteristic functions'.
+\begin{Verbatim}
+cf2 = {'d2': {'d1': True},
+       'd3': {'d2': True}}
+\end{Verbatim}
+\code{cf2} corresponds to the relation $\{(d_1, d_2), (d_2, d_3)\}$,
+on two assumptions. First, we are allowed to omit values terminating
+in \code{False}, since arguments that are missing the function will
+be taken to yield \code{False}. Second, as in Montague Grammar, the
+`object' argument of a binary relation is consumed before the
+`subject' argument. Thus we write $((\mathit{love}\; m)\; j)$ in place
+of $\mathit{love}(j, m)$. Recall that we also allow the abbreviated form
+$(\mathit{love}\; m\; j)$
+
+Once we have curryed characteristic functions in place, it is
+straightforward to implement the valuation of non-logical constants as a
+another dictionary-based class \code{Valuation}, where constants are
+the keys and the values are functions (or entities in the case of
+individual constants). 
+
+While variable assignments could be treated as a list of
+variable-value pairs, as in \bnb, an alternative
+is again to use a dictionary-based class. This approach makes it
+relatively easy to impose further restrictions on assignments, such as
+only assigning values to strings of the form \code{x}, \code{y},
+\code{z}, \code{x0}, \code{x1}, \ldots.
+
+
+\subsection{Sets}
+
+Python provides support for sets, including standard operations such as
+intersection and subset relationships. Sets are useful in a wide
+variety of contexts. For example, instances of the class
+\code{Valuation} can be given a property \code{domain}, consisting
+of the \code{set} of entities that act as keys in curryed
+characteristic functions; then a condition on objects in the
+\code{Model} class is that the \code{domain} of some model
+\code{m} is a superset
+of \code{m}'s \code{valuation.domain}:
+\begin{Verbatim}
+m.domain.issuperset
+      (m.valuation.domain)
+\end{Verbatim}
+
+For convenience, \code{Valuation} objects
+have a \code{read} method which allows $n$-ary predicates to be
+specified as relations (i.e., sets of tuples) rather than functions.
+In the following example, \verb!rel! is a set consisting of the
+pairs \code{('d1', 'd2')} and \code{('d2', 'd3')}.
+\begin{Verbatim}
+val = Valuation() 
+rel = set([('d1', 'd2'),('d2', 'd3')])
+val.read([('love', rel)])
+\end{Verbatim}
+\code{read} converts \code{rel} internally to the curryed
+characteristic function \code{cf2} defined earlier.
+
+\section{Key Concepts}
+
+\subsection{Satisfaction}
+
+
+The definition of satisfaction presupposes that we have defined a
+first-order language, and that we have a way of parsing that language
+so that satisfaction can be stated recursively. In the interests of
+modularity, it seems desirable to make the relationship between
+language and interpretation less tightly coupled than it is on the
+approach of \bnb; for example, we would like to be able apply similar
+evaluation techniques to different logical representations. 
+In the current \nltk\ implementation, the
+\verb!nltk_lite.semantics.evaluate! module imports a second module
+\code{logic}, and calls a \code{parse} method from this module to
+determine whether a given Python string can be analysed as first-order
+formula. However, \code{evaluate} tries to make relatively weak
+assumptions about the resulting parse structure. Specifically, given a
+parsed expression, it tries to match the structure with one of the
+following three kinds of pattern:
+\begin{Verbatim}
+(binder, body)
+(op, arg_list)
+(fun, arg)
+\end{Verbatim}
+Any string which cannot be decomposed is taken to be a
+primitive (that is, a non-logical constant or individual variable).
+
+A \code{binder} can be a $\lambda$ or a quantifier (existential or
+universal); an \code{op} can be a Boolean connective or the equality
+symbol. Any other paired expression is assumed to be a function
+application. In principle, it should be possible to interface the
+\code{evaluate} module with any parser for first-order formulas which
+can deliver these structures. Although the model checker expects
+predicate-argument structure as function applications, it would be
+straightforward to accept atomic clauses that have been parsed into a
+predicate and a list of arguments.
+
+Following the functional style of interpretation, Boolean connectives
+in \code{evaluate} are interpreted as truth functions; for example,
+the connective \code{and} can be interpreted as the function
+\code{AND}:
+\begin{Verbatim}
+AND = {True:  {True: True, 
+               False: False},
+       False: {True: False, 
+               False: False}}
+\end{Verbatim}
+We define \code{OPS} as a mapping between the Boolean connectives
+and their associated truth functions. Then the simplified clause for
+the satisfaction of Boolean formulas looks as follows:%
+\footnote{In order to simplify presentation, tracing and some error
+  handling code has been omitted from definitions.  Object-oriented
+  uses of \code{self} have also been suppressed.}
+\begin{SmVerbatim}
+def satisfy(expr, g):
+   if parsed(expr) == (op, args) 
+      if args == (phi, psi):
+         val1 = satisfy(phi, g)
+         val2 = satisfy(psi, g)
+         return OPS[op][val1][val2]
+\end{SmVerbatim}
+% Although Boolean connectives are treated as functions, we also allow
+% infix notation; both of the following formulas are interpretable.
+% \begin{Verbatim}
+% (or (and p q) r)
+% ((p and q) or r)
+% \end{Verbatim}
+% However, since negation is also parsed as an application, we have to
+% be careful to insert brackets properly:
+% \begin{Verbatim}
+% (p or (not p))
+% (not (not p))
+% \end{Verbatim}
+
+% The \code{satisfy} function is defined as a method of the
+% \code{Model} class, and this requires us to use
+% \code{self.satisfy} in recursive calls.
+In this and subsequent clauses for \code{satisfy}, the return value
+is intended to be one of Python's Boolean values, \code{True} or
+\code{False}. (The exceptional case, where the result is undefined,
+is discussed in Section~\ref{sec:partial}.)
+
+An equally viable (and probably more efficient) alternative to logical
+connnectives would be to use the native Python Boolean operators. The
+approach adopted here was chosen on the grounds that it conforms to
+the functional framework adopted elsewhere in the semantic
+representations, and can be expressed succinctly in the satisfaction
+clauses. By contrast, in the \bnb\ Prolog implementation, \code{and}
+and \code{or} each require five clauses in the satisfaction definition
+(one for each combination of Boolean-valued arguments, and a fifth for
+the `undefined' case).
+
+We will defer discussion of the quantifiers to the next section.
+The \code{satisfy} clause for function application is similar to
+that for the connectives. In
+order to handle type errors, application is delegated to a wrapper
+function \code{app} rather than by directly indexing the curryed
+characteristic function as described earlier.
+\begin{SmVerbatim}
+   ...
+   elif parsed(expr) == (fun, arg):
+      funval = satisfy(fun, g)
+      argval = satisfy(psi, g)
+      return app(funval, argval)
+\end{SmVerbatim}
+
+
+\subsection{Quantifers}
+Examples of quantified formulas accepted by the \code{evaluate} module
+are pretty unexceptional. \ling{Some boy loves every girl} is rendered as:
+\begin{Verbatim}
+'some x.((boy x) and 
+      all y.((girl y) implies 
+                    (love y x)))'  
+\end{Verbatim}
+
+The first step in interpreting quantified formulas is to define the
+\textit{satisfiers} of a formula that is open in some
+variable. Formally, given an open formula $\phi[x]$ dependent on $x$
+and a model with domain $D$, we define the set $sat(\phi [x], g)$ of
+satisfiers of $\phi[x]$ to be:
+\[
+ \{u \in D: \mathit{satisfy}(\phi [x], g[u/x]) = \mathit{True} \}
+\]
+We use `$g[u/x]$' to mean that assignment which is just like $g$
+except that $g(x) = u$. In Python, we can build the
+set $sat(\phi [x], g)$ with a \code{for} loop.%
+\footnote{The function \code{satisfiers} is an instance method of the
+  \code{Models} class, and \code{domain} is an attribute of that class.}
+\begin{SmVerbatim}
+def satisfiers(expr, var, g):
+    candidates = []
+    if freevar(var, expr):
+        for u in domain:
+            g.add(u, var)
+            if satisfy(expr, g):
+                candidates.append(u)
+    return set(candidates)
+\end{SmVerbatim}
+An existentially quantified formula $\exists x.\phi[x]$ is held to be
+true if and only if $sat(\phi [x], g)$ is nonempty. In Python, 
+\code{len} can be used to return the cardinality of a set.
+\begin{SmVerbatim}
+   ...
+   elif parsed(expr) == (binder, body):
+      if binder == ('some', var):
+         sat = satisfiers(body, var, g)
+         return len(sat) > 0
+
+\end{SmVerbatim}
+In other words, a formula $\exists x.\phi[x]$ has the same value in
+model $M$ as the statement that the number of satisfiers in $M$ of
+$\phi[x]$ is greater than $0$.
+
+For comparison, Figure~\ref{fig:bb} shows the two Prolog clauses (one
+for truth and one for falsity) used to evaluate existentially
+quantified formulas in the \bnb\ code \code{modelChecker2.pl}.
+\begin{figure*}[tb]
+  \centering
+{\small
+\begin{Verbatim}
+satisfy(Formula,model(D,F),G,pos):-
+   nonvar(Formula),
+   Formula = some(X,SubFormula),
+   var(X),
+   memberList(V,D),
+   satisfy(SubFormula,model(D,F),[g(X,V)|G],pos).
+
+satisfy(Formula,model(D,F),G,neg):-
+   nonvar(Formula),
+   Formula = some(X,SubFormula),
+   var(X),
+   setof(V,memberList(V,D),All),
+   setof(V,
+         (
+          memberList(V,D),
+          satisfy(SubFormula,model(D,F),[g(X,V)|G],neg)
+         ),
+         All).      
+\end{Verbatim}
+}
+  \caption{Prolog Clauses for Existential Quantification}
+  \label{fig:bb}
+\end{figure*}
+One reason why these clauses look more complex than their Python
+counterparts is that they include code for building the list of
+satisfiers by recursion.  
+However, in Python we gain bivalency from
+the use of Boolean types as return values, and do not need to
+explicitly mark the polarity of the satisfaction clause. In addition,
+processing of sets and lists is supplied by a built-in Python library
+which avoids the use of predicates such as \code{memberList} and the
+\code{[Head|Tail]} notation.
+
+A universally quantified formula $\forall x.\phi[x]$ is held to be
+true if and only if every $u$ in the model's domain $D$ belongs to
+$sat(\phi [x], g)$.  The \code{satisfy} clause above for
+existentials can therefore be extended with the clause:
+\begin{SmVerbatim}
+   ...
+   elif parsed(expr) == (binder, body):
+      ...
+      elif binder == ('all', var):
+         sat = self.satisfiers(body,var,g)
+         return domain.issubset(sat)
+\end{SmVerbatim}
+In other words, a formula $\forall x. \phi[x]$ has the same value
+in model $M$ as the statement that the domain of $M$ is a subset of the
+set of satisfiers in $M$ of $\phi[x]$.
+
+
+\subsection{Partiality}
+\label{sec:partial}
+
+
+As pointed out by \bnb, there are at least two
+cases where we might want the model checker to yield an `Undefined'
+value. The first is when we try to assign a semantic value to an
+unknown vocabulary item (i.e., to an unknown non-logical
+constant). The second arises through the use of partial variable
+assignments, when we try to evaluate $g(x)$ for some variable $x$ that
+is outside $g$'s domain. We adopt the assumption that if any sub-part
+of a complex expression is undefined, then the whole expression is
+undefined.%
+\footnote{This is not the only approach, since one could adopt the
+  position that a tautology such as $p \vee \neg p$ should be true
+  even if $p$ is undefined.}
+This means that an `undefined' value needs to propagate through all
+the recursive clauses of the \code{satisfy} function. This is
+potentially quite tedious to implement, since it means that instead of
+the clauses being able to expect return values to be Boolean, we also
+need to allow some alternative return type, such as a
+string. Fortunately, Python offers a nice solution through its
+exception handling mechanism. 
+
+It is possible to create a new class of exceptions, derived from
+Python's \code{Exception} class. The \code{evaluate} module defines
+the class \code{Undefined}, and any function called by
+\code{satisfy} which attempts to interpret unknown vocabulary or
+assign a value to an out-of-domain variable will raise an
+\code{Undefined} exception. A recursive call within \code{satisfy}
+will automatically raise an \code{Undefined} exception to the
+calling function, and this means that an `undefined' value is
+automatically propagated up the stack without any additional
+machinery.  At the top level, we wrap \code{satisfy} with a function
+\code{evaluate} which handles the exception by returning the string
+\code{'Undefined'} as value, rather than allowing the exception to
+raise any higher.
+
+
+\textsc{eafp} stands for `Easier to ask for forgiveness than
+permission'. According to van Rossum \shortcite{vanRossum:2006:PT},
+``this common Python coding style assumes the existence of valid keys
+or attributes and catches exceptions if the assumption proves false.''
+It contrasts with \textsc{lbyl} (`Look before you leap'), which explicitly
+tests for pre-conditions (such as type checks) before making calls or
+lookups. To continue with the discussion of partiality, we can see an
+example of \textsc{eafp} in the definition of the \code{i} function, which
+handles the interpretion of non-logical constants and individual
+variables.
+\begin{Verbatim}
+try:
+    return self.valuation[expr]
+except Undefined:
+    return g[expr]
+\end{Verbatim}
+We first try to evaluate \code{expr} as a non-logical constant; if
+\code{valuation} throws an \code{Undefined} exception, we check
+whether \code{g} can assign a value. If the latter also throws an
+\code{Undefined} exception, this will automatically be raised to the
+calling function.
+
+To sum up, an attractive consequence of this approach in Python is
+that no additional stipulations need to be added to the recursive
+clauses for interpreting Boolean connectives. By contrast, in the \bnb\
+\code{modelChecker2.pl} code, the clauses for existential
+quantification shown in Figure~\ref{fig:bb} need to be supplemented
+with a separate clause for the `undefined' case. In addition, as
+remarked earlier, each Boolean connective receives an additional
+clause when undefined.
+
+
+
+\section{Specifying Models}
+
+Models are specified by instantiating the \code{Model} class. At
+initialization, two parameters are called, determining the model's
+domain and valuation function. In Table~\ref{fig:folmodel}, we start
+by creating a \code{Valuation} object \code{val} (line 1), we then
+specify the valuation as a list \code{v} of \textit{constant-value}
+pairs (lines 2--9), using relational notation. For example, the value
+for \code{'adam'} is the individual \code{'d1'} (i.e., a Python
+string); the value for \code{'girl'} is the set consisting of
+individuals \code{'g1'} and \code{'g1'}; and the value for
+\code{'love'} is a set of pairs, as described above.  We use the
+\code{parse} method to update \code{val} with this information
+(line 10).  As mentioned earlier, a \code{Valuation} object has a
+\code{domain} property (line 11), and in this case \code{dom} will
+evaluate to the set \code{set(['b1', 'b2', 'g1', 'g2', 'd1'])}. It
+is convenient to use this set as the value for the model's domain when
+it is initialized (line 12). We also declare an \code{Assignment}
+object (line 13), specifying that its domain is the same as the model's
+domain.
+\begin{figure*}[tb]
+  \centering
+{\small
+\begin{Verbatim}[numbers=right]
+val = Valuation()
+v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
+     ('girl', set(['g1', 'g2'])),\
+     ('boy', set(['b1', 'b2'])),\
+     ('dog', set(['d1'])),\
+     ('love', set([('b1', 'g1'),\ 
+                   ('b2', 'g2'),\ 
+                   ('g1', 'b1'),\ 
+                   ('g2', 'b1')]))]
+val.parse(v)
+dom = val.domain
+m = Model(dom, val)
+g = Assignment(dom, {'x': 'b1', 'y': 'g2'})
+\end{Verbatim}
+}
+  \caption{First-order model \code{m}}
+  \label{fig:folmodel}
+\end{figure*}
+
+Given model \code{m} and assignment \code{g}, we can evaluate
+\code{m.satisfiers(formula, g)}, for various values of
+\code{formulas}. This is quite a handy way of getting a feel for how
+connectives and quantifiers interact. A range of cases is illustrated
+in Table~\ref{fig:satisfiers}. As pointed out earlier, all formulas
+are represented as Python strings, and therefore need to be parsed
+before being evaluated. 
+\begin{figure*}[htb]
+  \centering
+{\small
+  \begin{tabular}{ll}
+    Formula open in $x$ & Satisfiers \\ \hline
+\code{'(boy x)'}  & \code{set(['b1', 'b2'])}\\
+\code{'(x = x)'}  & \code{set(['b1', 'b2', 'g2', 'g1', 'd1'])}\\
+\code{'((boy x) or (girl x))'}  & \code{set(['b2', 'g2', 'g1', 'b1'])}\\
+\code{'((boy x) and (girl x))'}  & \code{set([])}\\
+\code{'(love x adam)'}  & \code{set(['g1'])}\\
+\code{'(love adam x)'}  & \code{set(['g2', 'g1'])}\\
+\code{'(not (x = adam))'}  & \code{set(['b2', 'g2', 'g1', 'd1'])}\\
+\code{'some y.(love x y)'}  & \code{set(['g2', 'g1', 'b1'])}\\
+\code{'all y.((girl y) implies (love y x))'}  & \code{set([])}\\
+\code{'all y.((girl y) implies (love x y))'}  & \code{set(['b1'])}\\
+\code{'((girl x) implies (dog x))'}  & \code{set(['b1', 'b2', 'd1'])}\\
+\code{'all y.((dog y) implies (x = y))'}  & \code{set(['d1'])}\\
+\code{'(not some y.(love x y))'}  & \code{set(['b2', 'd1'])}\\
+\code{'some y.((love y adam) and (love x y))'}  & \code{set(['b1'])}\\       
+  \end{tabular}
+}
+  \caption{Satisfiers in model \code{m}}
+  \label{fig:satisfiers}
+\end{figure*}
+
+% Tracing of the evaluation process in the \code{evaluate} module is
+% still fairly rudimentary. Table~\ref{tab:trace} illustrates a trace of
+% the model checking carried out on
+% \code{'all x.((boy x) or (girl x))}. Although the final line of the trace
+% specifies a specific assigment, in fact variable assignments are
+% always set to be empty before evaluation commences; in other words,
+% closed formulas are true or false under arbitrary assignments.
+% \begin{table*}
+%   \centering
+%   \begin{tabular}{p{5in}}
+% \begin{Verbatim}
+%    Open formula is '(or (boy x) (girl x))' with assignment g
+%       ...trying assignment g[g2/x]
+%       value of '(or (boy x) (girl x))' under g[g2/x] is True
+%       ...trying assignment g[g1/x]
+%       value of '(or (boy x) (girl x))' under g[g1/x] is True
+%       ...trying assignment g[d1/x]
+%       value of '(or (boy x) (girl x))' under g[d1/x] is False
+%       ...trying assignment g[b2/x]
+%       value of '(or (boy x) (girl x))' under g[b2/x] is True
+%       ...trying assignment g[b1/x]
+%       value of '(or (boy x) (girl x))' under g[b1/x] is True
+%    '(boy x)' evaluates to False under M, g[d1/x]
+%    '(girl x)' evaluates to False under M, g[d1/x]
+%    '(or (boy x) (girl x))' evaluates to False under M, g[d1/x]
+% 'all x.((boy x) or (girl x))' evaluates to False under M, g[d1/x]       
+% \end{Verbatim}
+%   \end{tabular}
+%   \caption{Sample Evaluation Trace}
+%   \label{tab:trace}
+% \end{table*}
+
+%\FloatBarrier
+\section{Conclusion}
+
+In this paper, I have tried to show how various aspects of Python lend
+themselves well to the task of interpreting first-order formulas,
+following closely in the footsteps of Blackburn and Bos. I argue that
+at least in some cases, the Python implementation compares quite
+favourably to a Prolog-based approach. It will be observed that I have
+not considered efficiency issues. Although these cannot be ignored
+(and are certainly worth exploring), they are not a priority at this
+stage of development. As discussed at the outset, our main goal is
+develop a framework that can be used to communicate key ideas of
+formal semantics to students, rather than to build systems which can
+scale easily to tackle large problems.
+
+Clearly, there are many design choices to be made in any
+implementation, and an alternative framework which overlaps in part
+with what I have presented can be found in the Python code
+supplement to \cite{Russell:2003:AIMA}.%
+\footnote{\url{http://aima.cs.berkeley.edu/python}}
+One important distinction is that the approach adopted here is
+explicitly targeted at students learning computational linguistics,
+rather than being intended for a more general artificial intelligence
+audience. 
+
+While I have restricted attention to rather basic topics in semantic
+interpretation, there is no obstacle to addressing more sophisticated
+topics in computational semantics. For example, I have not tried to
+address the crucial issue of quantifier scope ambiguity. However, work
+by Peter Wang (author of the \nltk\ module
+\verb!nltk_lite.contrib.hole!)  implements the Hole Semantics of
+\bnb. This module contains a `plugging' algorithm which converts
+underspecified representations into fully-specified first-order logic
+formulas that can be displayed textually or graphically. In future
+work, we plan to extend the \prog{semantics} package in various
+directions, in particular by adding some basic inferencing mechanisms
+to \nltk.
+
+\subsection*{Acknowledgements}
+I am very grateful to Steven Bird, Patrick Blackburn, Alex Lascarides and
+three anonymous reviewers for helpful feedback and comments.
+
+\bibliographystyle{acl}
+\bibliography{altw-06}
+
+
+
+\end{document}
