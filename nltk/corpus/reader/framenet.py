@@ -304,7 +304,7 @@ class AttrDict(dict):
             except KeyError:    # no ID--e.g., for _type=lusubcorpus
                 return "<{0} name={1}>".format(self['_type'], self['name'])
         else:
-            return dict.__repr__(self)
+            return self.__repr__()
         
     def _str(self):
         outstr = ""
@@ -849,10 +849,10 @@ class FramenetCorpusReader(XMLCorpusReader):
          'definition': 'COD: be aware of beforehand; predict.',
          'frame': <frame ID=26 name=Expectation>,
          'lemmaID': 15082,
-         'lexemes': [{'POS': 'V', 'headword': 'false', 'breakBefore': 'false', 'order': 1, 'name': 'foresee'}],
+         'lexemes': [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}],
          'name': 'foresee.v',
          'semTypes': [],
-         'sentenceCount': {'total': 227, 'annotated': 44},
+         'sentenceCount': {'annotated': 44, 'total': 227},
          'status': 'FN1_Sent'}
 
         :param fn_luid: The id number of the desired LU
@@ -1535,7 +1535,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         :rtype: dict
         """
 
-        d = AttrDict(d)
+        d = type(d)(d)
 
         try:
             attr_dict = elt.attrib
@@ -1807,11 +1807,11 @@ class FramenetCorpusReader(XMLCorpusReader):
                 luinfo['definition'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('sentenceCount'):
                 luinfo['sentenceCount'] = self._load_xml_attributes(
-                    AttrDict(), sub)
+                    PrettyDict(), sub)
             elif sub.tag.endswith('lexeme'):
-                luinfo['lexemes'].append(self._load_xml_attributes(AttrDict(), sub))
+                luinfo['lexemes'].append(self._load_xml_attributes(PrettyDict(), sub))
             elif sub.tag.endswith('semType'):
-                semtypeinfo = self._load_xml_attributes(AttrDict(), sub)
+                semtypeinfo = self._load_xml_attributes(PrettyDict(), sub)
                 luinfo['semTypes'].append(self.semtype(semtypeinfo.ID))
 
         return luinfo
@@ -1844,7 +1844,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 if sc is not None:
                     luinfo['subCorpus'].append(sc)
             elif sub.tag.endswith('lexeme') and 'lexeme' not in ignorekeys:
-                luinfo['lexemes'].append(self._load_xml_attributes(AttrDict(), sub))
+                luinfo['lexemes'].append(self._load_xml_attributes(PrettyDict(), sub))
             elif sub.tag.endswith('semType') and 'semType' not in ignorekeys:
                 semtypeinfo = self._load_xml_attributes(AttrDict(), sub)
                 luinfo['semTypes'].append(self.semtype(semtypeinfo.ID))
