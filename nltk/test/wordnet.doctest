@@ -53,11 +53,11 @@ Synsets
 
     >>> dog = wn.synset('dog.n.01')
     >>> dog.hypernyms()
-    [Synset('domestic_animal.n.01'), Synset('canine.n.02')]
-    >>> dog.hyponyms() # doctest: +ELLIPSIS
-    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), ...]
+    [Synset('canine.n.02'), Synset('domestic_animal.n.01')]
+    >>> dog.hyponyms()  # doctest: +ELLIPSIS
+    [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'), Synset('dalmatian.n.02'), ...]
     >>> dog.member_holonyms()
-    [Synset('pack.n.06'), Synset('canis.n.01')]
+    [Synset('canis.n.01'), Synset('pack.n.06')]
     >>> dog.root_hypernyms()
     [Synset('entity.n.01')]
     >>> wn.synset('dog.n.01').lowest_common_hypernyms(wn.synset('cat.n.01'))
@@ -381,13 +381,18 @@ Compute transitive closures of synsets
     True
     >>> list(dog.closure(hyper, depth=1)) == dog.hypernyms()
     True
-    >>> list(dog.closure(hypo)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), Synset('newfoundland.n.01'), Synset('lapdog.n.01'),
-    Synset('poodle.n.01'), Synset('leonberg.n.01'), Synset('toy_dog.n.01'), Synset('spitz.n.01'), ...]
-    >>> list(dog.closure(hyper)) # doctest: +NORMALIZE_WHITESPACE
-    [Synset('domestic_animal.n.01'), Synset('canine.n.02'), Synset('animal.n.01'), Synset('carnivore.n.01'), Synset('organism.n.01'),
-    Synset('placental.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('whole.n.02'), Synset('vertebrate.n.01'),
-    Synset('object.n.01'), Synset('chordate.n.01'), Synset('physical_entity.n.01'), Synset('entity.n.01')]
+    >>> list(dog.closure(hypo))
+    [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'),
+     Synset('dalmatian.n.02'), Synset('great_pyrenees.n.01'),
+     Synset('griffon.n.02'), Synset('hunting_dog.n.01'), Synset('lapdog.n.01'),
+     Synset('leonberg.n.01'), Synset('mexican_hairless.n.01'),
+     Synset('newfoundland.n.01'), Synset('pooch.n.01'), Synset('poodle.n.01'), ...]
+    >>> list(dog.closure(hyper))
+    [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'),
+    Synset('animal.n.01'), Synset('placental.n.01'), Synset('organism.n.01'),
+    Synset('mammal.n.01'), Synset('living_thing.n.01'), Synset('vertebrate.n.01'),
+    Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),
+    Synset('physical_entity.n.01'), Synset('entity.n.01')]
 
 
 ----------------
@@ -445,7 +450,7 @@ Bug 99: WordNet root_hypernyms gives incorrect results
     >>> from nltk.corpus import wordnet as wn
     >>> for s in wn.all_synsets(wn.NOUN):
     ...     if s.root_hypernyms()[0] != wn.synset('entity.n.01'):
-    ...             print(s, s.root_hypernyms())
+    ...         print(s, s.root_hypernyms())
     ...
     >>>
 
