@@ -302,7 +302,7 @@ structures.
     >>> from pprint import pprint
     >>> from nltk.featstruct import unify
     >>> pprint(unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b'))))
-	{'a': 'a', 'x': 1, 'y': {'b': 'b'}}
+    {'a': 'a', 'x': 1, 'y': {'b': 'b'}}
 
 However, you should keep in mind the following caveats:
 

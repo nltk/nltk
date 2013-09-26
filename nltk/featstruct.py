@@ -62,7 +62,7 @@ Python ``dicts`` and ``lists`` can be used as "light-weight" feature
 structures.
 
     >>> from nltk.featstruct import unify
-    >>> unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b')))
+    >>> unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b')))  # doctest: +SKIP
     {'y': {'b': 'b'}, 'x': 1, 'a': 'a'}
 
 However, you should keep in mind the following caveats:
