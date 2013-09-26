@@ -1,0 +1,62 @@
+########################################################################
+# DRT-Glue Semantics Formulas Using DRT and Event Representation
+#
+# Entries are made up of three parts, separated by colons (":")
+# 
+# 1) The semtype name.
+#    - May appear multiple times with different relationship sets (3)
+#    - May "extend" other semtypes: "type(parent)"
+#  
+# 2) The glue formulas.
+#    - A comma-separated list of tuples representing glue formulas
+#    - If the entry is an extension, then the listed formulas will be added to  
+#      the list from the super type
+# 
+# 3) The relationship set (OPTIONAL)
+#    - If not specified, then assume the entry covers ALL relationship sets
+#    - If the entry is an extension, then the relationship set dictates which
+#      particular entry should be extended.  If no relationship set is 
+#      specified, then every entry of the parent type is extended.
+# 
+########################################################################
+
+#Quantifiers
+def_art : (\P Q.([x],[((([y],[])+Q(y)) <-> (x = y)), P(x)]), ((v -o r) -o ((f -o Var) -o Var)))
+ex_quant : (\P Q.(([x],[])+P(x)+Q(x)), ((super.v -o super.r) -o ((super.f -o super.var) -o super.var)))
+univ_quant : (\P Q.([],[((([x],[])+P(x)) -> Q(x))]), ((super.v -o super.r) -o ((super.f -o super.var) -o super.var)))
+no_quant : (\P Q.(-(([x],[])+P(x)+Q(x))), ((super.v -o super.r) -o ((super.f -o super.var) -o super.var)))
+
+#Nouns
+NN :  (\x.([],[<word>(x)]), (v -o r)) : [spec]
+NN :  (\P Q e.(([x],[]) + P(x) + Q(x,e)), ((v -o r) -o ((f -o var) -o var))), (\x.([],[<word>(x)]), (v -o r)) : [] # treat a noun missing its spec as implicitly existentially quantified
+NNP : (\P Q e.(([x],[]) + P(x) + Q(x,e)), ((v -o r) -o ((f -o var) -o var))), (\x.([],[<word>(x)]), (v -o r))
+NNS(NN)
+PRP : (\P Q e.(([x],[]) + P(x) + Q(x,e)), ((v -o r) -o ((f -o var) -o var))), (\x.([],[PRO(x)]), (v -o r))
+
+#Verbs
+VB : (\x e.([],[<word>(e),subj(e,x)]), (subj -o f)) [subj] #iv
+VB : (\x y e.([],[<word>(e), subj(e,x), obj(e,y)]), (subj -o (obj -o f))) : [subj, obj] #tv
+VB : (\x y z e.([],[<word>(e), subj(e,x), obj(e,y), theme(e,z)]), (subj -o (obj -o (theme -o f)))) : [subj, obj, theme] #dtv
+VB : (\y z e.([x],[<word>(e), subj(e,x), obj(e,y), theme(e,z)]), obj -o (theme -o f)) : [obj, theme] #incomplete dtv
+VB : (\x z e.([y],[<word>(e), subj(e,x), obj(e,y), theme(e,z)]), subj -o (theme -o f)) : [subj, theme] #incomplete dtv
+VB : (\z e.([x,y],[<word>(e), subj(e,x), obj(e,y), theme(e,z)]), theme -o f) : [theme] #incomplete dtv
+VB : (\x y e.(([],[<word>(e), subj(e,x), comp(e,y)])+P(e)), (subj -o (comp -o f))) : [subj, comp] #tv_comp
+VB : (\x P e.([],[<word>(e), subj(e,x), xcomp(e,P)]), (subj -o ((xcomp.subj -o xcomp) -o f))) : [subj, xcomp] #equi
+VB : (\x y P e.([],[<word>(e), subj(e,x), obj(e,y), (xcomp e P)]), (subj -o (obj -o ((xcomp.subj -o xcomp) -o f)))) : [subj, obj, xcomp] # object equi
+VB : (\P e.([],[<word>(e), xcomp(e,P)]), (xcomp -o f)) : [xcomp] #raising
+VBD(VB) : (\P.PAST(P), (f -o f))
+VBZ(VB)
+
+#Modifiers
+nmod : (\x.([],[<word>(x)]), f), (\P Q x.(P(x)+Q(x)), (f -o ((super.v -o super.r) -o (super.v -o super.r)))) : []
+JJ(nmod) : []
+vmod : (\x.([],[<word>(x)]), f), (\P Q x.P(Q(x)), (f -o (super -o super))) : []
+RB(vmod) : []
+tense(vmod) : []
+
+#Prepositions
+IN : (\P Q e1.P(\x e2.(([],[<word>(e2,x)]) + Q(e2)),e1), ((subj -o subj.var) -o subj.var) -o (super -o super)) : [subj]
+IN(vmod) : []
+
+#Conjunctions
+cc_clause : (\P Q.(P + Q), (a -o (b -o f)))

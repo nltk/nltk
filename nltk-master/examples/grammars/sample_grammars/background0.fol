@@ -1,0 +1,19 @@
+## Natural Language Toolkit: background0.fol
+##
+## Illustration of simple knowledge base for use with inference tools.
+## To accompany sem4.fcfg
+##
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+all x. (boxerdog(x) -> dog(x))
+all x. (boxer(x) -> person(x))
+
+all x. (-(dog(x) & person(x)))
+
+some x. boxer(x)
+some x. boxerdog(x)
+
+
+

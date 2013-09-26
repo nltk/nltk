@@ -1,0 +1,52 @@
+.. Copyright (C) 2001-2013 NLTK Project
+.. For license information, see LICENSE.TXT
+
+Regression Tests
+~~~~~~~~~~~~~~~~
+
+Sequential Taggers
+------------------
+
+Add tests for:
+  - make sure backoff is being done correctly.
+  - make sure ngram taggers don't use previous sentences for context.
+  - make sure ngram taggers see 'beginning of the sentence' as a
+    unique context
+  - make sure regexp tagger's regexps are tried in order
+  - train on some simple examples, & make sure that the size & the
+    generated models are correct.
+  - make sure cutoff works as intended
+  - make sure that ngram models only exclude contexts covered by the
+    backoff tagger if the backoff tagger gets that context correct at
+    *all* locations.
+
+Brill Tagger
+------------
+  - test that fast & normal trainers get identical results when
+    deterministic=True is used.
+  - check on some simple examples to make sure they're doing the
+    right thing.
+
+Make sure that get_neighborhoods is implemented correctly -- in
+particular, given *index*, it should return the indices *i* such that
+applicable_rules(token, i, ...) depends on the value of the
+*index*\ th token.  There used to be a bug where this was swapped --
+i.e., it calculated the values of *i* such that
+applicable_rules(token, index, ...) depended on *i*.
+
+    >>> from nltk.tag.brill import ProximateTokensTemplate, ProximateWordsRule
+    >>> t = ProximateTokensTemplate(ProximateWordsRule, (2,3))
+    >>> for i in range(10):
+    ...     print(sorted(t.get_neighborhood('abcdefghijkl', i)))
+    [0]
+    [1]
+    [0, 2]
+    [0, 1, 3]
+    [1, 2, 4]
+    [2, 3, 5]
+    [3, 4, 6]
+    [4, 5, 7]
+    [5, 6, 8]
+    [6, 7, 9]
+
+
