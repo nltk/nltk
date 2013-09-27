@@ -1,0 +1,499 @@
+Index: nltk/cluster/kmeans.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/cluster/kmeans.py	(revision ab75ed4)
++++ nltk/cluster/kmeans.py	(revision fa5690260c9daf6ea96761f66d92ca854a3abb7d)
+@@ -168,9 +168,13 @@
+             return centroid / (1+float(len(cluster)))
+         else:
+             if not len(cluster):
+-                sys.stderr.write('Error: no centroid defined for empty cluster.\n')
+-                sys.stderr.write('Try setting argument \'avoid_empty_clusters\' to True\n')
+-                assert(False)
++                barray1 = 'Error: no centroid defined for empty cluster.\n'
++                barray = barray1.encode('utf-8')
++                barray3 = 'Try setting argument \'avoid_empty_clusters\' to True\n'
++                barray2 = barray3.encode('utf-8')
++                sys.stderr.write(barray)
++                sys.stderr.write(barray2)
++                assert False
+             centroid = copy.copy(cluster[0])
+             for vector in cluster[1:]:
+                 centroid += vector
+Index: nltk/corpus/reader/switchboard.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/corpus/reader/switchboard.py	(revision ab75ed4)
++++ nltk/corpus/reader/switchboard.py	(revision fa5690260c9daf6ea96761f66d92ca854a3abb7d)
+@@ -24,7 +24,7 @@
+     are only unique within a given discourse.
+     """
+     def __init__(self, words, speaker, id):
+-        list.__init__(self, words)
++        list.__init__(list(self), words)
+         self.speaker = speaker
+         self.id = int(id)
+ 
+@@ -103,14 +103,14 @@
+         return sum(self._tagged_discourses_block_reader(stream,
+                                                         simplify_tags)[0], [])
+ 
+-    _UTTERANCE_RE = re.compile('(\w+)\.(\d+)\:\s*(.*)')
++    _UTTERANCE_RE = re.compile('(\w+)\.(\d+):\s*(.*)')
+     _SEP = '/'
+     def _parse_utterance(self, utterance, include_tag, simplify_tags=False):
+         m = self._UTTERANCE_RE.match(utterance)
+         if m is None:
+             raise ValueError('Bad utterance %r' % utterance)
+         speaker, id, text = m.groups()
+-        words = [str2tuple(s, self._SEP) for s in text.split()]
++        words = [str2tuple(s, str(self._SEP)) for s in text.split()]
+         if not include_tag:
+             words = [w for (w,t) in words]
+         elif simplify_tags:
+Index: nltk/corpus/reader/util.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/corpus/reader/util.py	(revision ab75ed4)
++++ nltk/corpus/reader/util.py	(revision fa5690260c9daf6ea96761f66d92ca854a3abb7d)
+@@ -11,6 +11,8 @@
+ import re
+ import tempfile
+ from functools import reduce
++from nltk import corpus
++
+ try:
+     import cPickle as pickle
+ except ImportError:
+@@ -230,7 +232,7 @@
+         if self._len is None:
+             # iterate_from() sets self._len when it reaches the end
+             # of the file:
+-            for tok in self.iterate_from(self._toknum[-1]): pass
++            for _ in self.iterate_from(self._toknum[-1]): pass
+         return self._len
+ 
+     def __getitem__(self, i):
+@@ -369,7 +371,7 @@
+     def __len__(self):
+         if len(self._offsets) <= len(self._pieces):
+             # Iterate to the end of the corpus.
+-            for tok in self.iterate_from(self._offsets[-1]): pass
++            for _ in self.iterate_from(self._offsets[-1]): pass
+ 
+         return self._offsets[-1]
+ 
+@@ -597,6 +599,7 @@
+     whenever the next line matching ``start_re`` or EOF is found.
+     """
+     # Scan until we find a line matching the start regexp.
++    global line
+     while True:
+         line = stream.readline()
+         if not line: return [] # end of file.
+@@ -640,6 +643,7 @@
+         (If spaces or tabs precede the comment character, then the
+         line will not be stripped.)
+     """
++    global COMMENT
+     start = stream.tell()
+     block = stream.read(block_size)
+     encoding = getattr(stream, 'encoding', None)
+@@ -671,7 +675,7 @@
+             if encoding is None:
+                 stream.seek(start+offset)
+             else:
+-                stream.seek(start+len(block[:offset].encode(encoding)))
++                stream.seek(start+len(block[:offset].encode(str(encoding))))
+ 
+             # Return the list of tokens we processed
+             return tokens
+Index: nltk/corpus/reader/wordnet.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/corpus/reader/wordnet.py	(revision ab75ed4)
++++ nltk/corpus/reader/wordnet.py	(revision fa5690260c9daf6ea96761f66d92ca854a3abb7d)
+@@ -12,13 +12,13 @@
+ import math
+ import re
+ from itertools import islice, chain
+-from operator import itemgetter, attrgetter
++from operator import itemgetter
+ from collections import defaultdict
+ 
+ from nltk.corpus.reader import CorpusReader
+ from nltk.util import binary_search_file as _binary_search_file
+ from nltk.probability import FreqDist
+-from nltk.compat import xrange, python_2_unicode_compatible
++from nltk.compat import xrange, python_2_unicode_compatible, total_ordering
+ 
+ ######################################################################
+ ## Table of Contents
+@@ -95,6 +95,7 @@
+     """An exception class for wordnet-related errors."""
+ 
+ 
++@total_ordering
+ class _WordNetObject(object):
+     """A common base class for lemmas and synsets."""
+ 
+@@ -164,7 +165,10 @@
+     def __ne__(self, other):
+         return self.name != other.name
+ 
++    def __lt__(self, other):
++        return self.name < other.name
+ 
++
+ @python_2_unicode_compatible
+ class Lemma(_WordNetObject):
+     """
+@@ -237,9 +241,9 @@
+ 
+     def _related(self, relation_symbol):
+         get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
+-        return [get_synset(pos, offset).lemmas[lemma_index]
++        return sorted([get_synset(pos, offset).lemmas[lemma_index]
+                 for pos, offset, lemma_index
+-                in self.synset._lemma_pointers[self.name, relation_symbol]]
++                in self.synset._lemma_pointers[self.name, relation_symbol]])
+ 
+     def count(self):
+         """Return the frequency count for this Lemma"""
+@@ -332,6 +336,8 @@
+ 
+         self._pointers = defaultdict(set)
+         self._lemma_pointers = defaultdict(set)
++        self._min_depth = 1 + min(h.min_depth() for h in hypernyms)
++        self._max_depth = 1 + max(h.max_depth() for h in hypernyms)
+ 
+     def _needs_root(self):
+         if self.pos == NOUN:
+@@ -379,7 +385,7 @@
+             if not hypernyms:
+                 self._max_depth = 0
+             else:
+-                self._max_depth = 1 + max(h.max_depth() for h in hypernyms)
++                pass
+         return self._max_depth
+ 
+     def min_depth(self):
+@@ -393,7 +399,7 @@
+             if not hypernyms:
+                 self._min_depth = 0
+             else:
+-                self._min_depth = 1 + min(h.min_depth() for h in hypernyms)
++                pass
+         return self._min_depth
+ 
+     def closure(self, rel, depth=-1):
+@@ -404,7 +410,13 @@
+             >>> dog = wn.synset('dog.n.01')
+             >>> hyp = lambda s:s.hypernyms()
+             >>> list(dog.closure(hyp))
+-            [Synset('domestic_animal.n.01'), Synset('canine.n.02'), Synset('animal.n.01'), Synset('carnivore.n.01'), Synset('organism.n.01'), Synset('placental.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('whole.n.02'), Synset('vertebrate.n.01'), Synset('object.n.01'), Synset('chordate.n.01'), Synset('physical_entity.n.01'), Synset('entity.n.01')]
++            [Synset('canine.n.02'), Synset('domestic_animal.n.01'),
++            Synset('carnivore.n.01'), Synset('animal.n.01'),
++            Synset('placental.n.01'), Synset('organism.n.01'),
++            Synset('mammal.n.01'), Synset('living_thing.n.01'),
++            Synset('vertebrate.n.01'), Synset('whole.n.02'),
++            Synset('chordate.n.01'), Synset('object.n.01'),
++            Synset('physical_entity.n.01'), Synset('entity.n.01')]
+ 
+         """
+         from nltk.util import breadth_first
+@@ -512,7 +524,7 @@
+             else:
+                 max_depth = max(s.max_depth() for s in synsets)
+                 unsorted_lch = [s for s in synsets if s.max_depth() == max_depth]
+-            return sorted(unsorted_lch, key=attrgetter('name'))
++            return sorted(unsorted_lch)
+         except ValueError:
+             return []
+ 
+@@ -597,13 +609,6 @@
+         >>> from pprint import pprint
+         >>> pprint(dog.tree(hyp))
+         [Synset('dog.n.01'),
+-         [Synset('domestic_animal.n.01'),
+-          [Synset('animal.n.01'),
+-           [Synset('organism.n.01'),
+-            [Synset('living_thing.n.01'),
+-             [Synset('whole.n.02'),
+-              [Synset('object.n.01'),
+-               [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]],
+          [Synset('canine.n.02'),
+           [Synset('carnivore.n.01'),
+            [Synset('placental.n.01'),
+@@ -616,7 +621,14 @@
+                   [Synset('whole.n.02'),
+                    [Synset('object.n.01'),
+                     [Synset('physical_entity.n.01'),
+-                     [Synset('entity.n.01')]]]]]]]]]]]]]]
++                     [Synset('entity.n.01')]]]]]]]]]]]]],
++         [Synset('domestic_animal.n.01'),
++          [Synset('animal.n.01'),
++           [Synset('organism.n.01'),
++            [Synset('living_thing.n.01'),
++             [Synset('whole.n.02'),
++              [Synset('object.n.01'),
++               [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]]]
+         """
+ 
+         tree = [self]
+@@ -858,8 +870,8 @@
+             yield todo
+             todo = [hypernym
+                     for synset in todo
+-                    for hypernym in (synset.hypernyms() + \
++                    for hypernym in (synset.hypernyms() +
+-                        synset.instance_hypernyms())
++                                     synset.instance_hypernyms())
+                     if hypernym not in seen]
+ 
+     def __repr__(self):
+@@ -868,7 +880,7 @@
+     def _related(self, relation_symbol):
+         get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
+         pointer_tuples = self._pointers[relation_symbol]
+-        return [get_synset(pos, offset) for pos, offset in pointer_tuples]
++        return sorted([get_synset(pos, offset) for pos, offset in pointer_tuples])
+ 
+ 
+ ######################################################################
+@@ -1356,27 +1368,33 @@
+         else:
+             return 0
+ 
+-    def path_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
++    @staticmethod
++    def path_similarity(synset1, synset2, verbose=False, simulate_root=True):
+         return synset1.path_similarity(synset2, verbose, simulate_root)
+     path_similarity.__doc__ = Synset.path_similarity.__doc__
+ 
+-    def lch_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
++    @staticmethod
++    def lch_similarity(synset1, synset2, verbose=False, simulate_root=True):
+         return synset1.lch_similarity(synset2, verbose, simulate_root)
+     lch_similarity.__doc__ = Synset.lch_similarity.__doc__
+ 
+-    def wup_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
++    @staticmethod
++    def wup_similarity(synset1, synset2, verbose=False, simulate_root=True):
+         return synset1.wup_similarity(synset2, verbose, simulate_root)
+     wup_similarity.__doc__ = Synset.wup_similarity.__doc__
+ 
+-    def res_similarity(self, synset1, synset2, ic, verbose=False):
++    @staticmethod
++    def res_similarity(synset1, synset2, ic, verbose=False):
+         return synset1.res_similarity(synset2, ic, verbose)
+     res_similarity.__doc__ = Synset.res_similarity.__doc__
+ 
+-    def jcn_similarity(self, synset1, synset2, ic, verbose=False):
++    @staticmethod
++    def jcn_similarity(synset1, synset2, ic, verbose=False):
+         return synset1.jcn_similarity(synset2, ic, verbose)
+     jcn_similarity.__doc__ = Synset.jcn_similarity.__doc__
+ 
+-    def lin_similarity(self, synset1, synset2, ic, verbose=False):
++    @staticmethod
++    def lin_similarity(synset1, synset2, ic, verbose=False):
+         return synset1.lin_similarity(synset2, ic, verbose)
+     lin_similarity.__doc__ = Synset.lin_similarity.__doc__
+ 
+@@ -1563,9 +1581,7 @@
+         :param icfile: The name of the wordnet_ic file (e.g. "ic-brown.dat")
+         :return: An information content dictionary
+         """
+-        ic = {}
+-        ic[NOUN] = defaultdict(float)
+-        ic[VERB] = defaultdict(float)
++        ic = {NOUN: defaultdict(float), VERB: defaultdict(float)}
+         for num, line in enumerate(self.open(icfile)):
+             if num == 0: # skip the header
+                 continue
+@@ -1774,10 +1790,10 @@
+ 
+     wnic = WordNetICCorpusReader(nltk.data.find('corpora/wordnet_ic'),
+                                  '.*\.dat')
+-    ic = wnic.ic('ic-brown.dat')
++    ic = wnic.ic(str('ic-brown.dat'))
+     print(S('dog.n.01').jcn_similarity(S('cat.n.01'), ic))
+ 
+-    ic = wnic.ic('ic-semcor.dat')
++    ic = wnic.ic(str(str('ic-semcor.dat')))
+     print(S('dog.n.01').lin_similarity(S('cat.n.01'), ic))
+ 
+     print(S('code.n.03').topic_domains())
+@@ -1787,3 +1803,4 @@
+ 
+ if __name__ == '__main__':
+     demo()
++
+Index: nltk/parse/featurechart.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/parse/featurechart.py	(revision ab75ed4)
++++ nltk/parse/featurechart.py	(revision fa5690260c9daf6ea96761f66d92ca854a3abb7d)
+@@ -14,11 +14,10 @@
+ from __future__ import print_function, unicode_literals
+ 
+ from nltk.compat import xrange, python_2_unicode_compatible
+-from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
++from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
+ from nltk.sem import logic
+ from nltk.tree import Tree
+-from nltk.grammar import (Nonterminal, Production, ContextFreeGrammar,
+-                          FeatStructNonterminal, is_nonterminal,
++from nltk.grammar import (   FeatStructNonterminal, is_nonterminal,
+                           is_terminal)
+ from nltk.parse.chart import (TreeEdge, Chart, ChartParser, EdgeI,
+                               FundamentalRule, LeafInitRule,
+@@ -98,7 +97,8 @@
+                                lhs=self._lhs, rhs=self._rhs,
+                                dot=self._dot+1, bindings=bindings)
+ 
+-    def _bind(self, nt, bindings):
++    @staticmethod
++    def _bind(nt, bindings):
+         if not isinstance(nt, FeatStructNonterminal): return nt
+         return nt.substitute_bindings(bindings)
+ 
+@@ -192,7 +192,8 @@
+                          for key in restr_keys)
+             index.setdefault(vals, []).append(edge)
+ 
+-    def _get_type_if_possible(self, item):
++    @staticmethod
++    def _get_type_if_possible(item):
+         """
+         Helper function which returns the ``TYPE`` feature of the ``item``,
+         if it exists, otherwise it returns the ``item`` itself
+@@ -461,9 +462,9 @@
+     """
+     def __init__(self, tokens):
+         FeatureChart.__init__(self, tokens)
++        self._instantiated = set()
+ 
+     def initialize(self):
+-        self._instantiated = set()
+         FeatureChart.initialize(self)
+ 
+     def insert(self, edge, child_pointer_list):
+@@ -496,7 +497,8 @@
+         self._instantiated.add(edge)
+         edge._lhs = edge.lhs().substitute_bindings(inst_vars)
+ 
+-    def inst_vars(self, edge):
++    @staticmethod
++    def inst_vars(edge):
+         return dict((var, logic.unique_variable())
+                     for var in edge.lhs().variables()
+                     if var.name.startswith('@'))
+@@ -534,7 +536,7 @@
+          trace=1,
+          parser=FeatureChartParser,
+          sent='I saw John with a dog with my cookie'):
+-    import sys, time
++    import time
+     print()
+     grammar = demo_grammar()
+     if should_print_grammar:
+@@ -567,7 +569,9 @@
+     from nltk.data import load
+     demo()
+     print()
+-    grammar = load('grammars/book_grammars/feat0.fcfg')
++    loadvar1 = 'grammars/book_grammars/feat0.fcfg'
++    loadvar = loadvar1.encode('utf-8')
++    grammar = load(loadvar)
+     cp = FeatureChartParser(grammar, trace=2)
+     sent = 'Kim likes children'
+     tokens = sent.split()
+Index: nltk/stem/rslp.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/stem/rslp.py	(revision ab75ed4)
++++ nltk/stem/rslp.py	(revision fa5690260c9daf6ea96761f66d92ca854a3abb7d)
+@@ -63,8 +63,9 @@
+         self._model.append( self.read_rule("step5.pt") )
+         self._model.append( self.read_rule("step6.pt") )
+ 
+-    def read_rule (self, filename):
+-        rules = load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
++    @staticmethod
++    def read_rule (filename):
++        rules = load(str('nltk:stemmers/rslp/' + filename, format='raw')).decode("utf8")
+         lines = rules.split("\n")
+ 
+         lines = [line for line in lines if line != ""]     # remove blank lines
+Index: nltk/tag/crf.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/tag/crf.py	(revision ab75ed4)
++++ nltk/tag/crf.py	(revision fa5690260c9daf6ea96761f66d92ca854a3abb7d)
+@@ -21,7 +21,6 @@
+ import subprocess
+ import codecs
+ from tempfile import mkstemp
+-import textwrap
+ import time
+ import zipfile
+ from xml.etree import ElementTree
+@@ -280,6 +279,7 @@
+         set of configuration parameters, and based on the contents of
+         a given corpus.
+         """
++        global final_cost, initial_cost
+         state_info_list = []
+ 
+         labels = set()
+@@ -417,7 +417,8 @@
+             stream.write('\n')
+         if close_stream: stream.close()
+ 
+-    def parse_mallet_output(self, s):
++    @staticmethod
++    def parse_mallet_output(s):
+         """
+         Parse the output that is generated by the java script
+         org.nltk.mallet.TestCRF, and convert it to a labeled
+@@ -432,9 +433,9 @@
+             if line:
+                 corpus[-1].append(line.strip())
+             # Start of new instance?
+-            elif corpus[-1] != []:
++            elif corpus[-1]:
+                 corpus.append([])
+-        if corpus[-1] == []: corpus.pop()
++        if not corpus[-1]: corpus.pop()
+         return corpus
+ 
+     _ESCAPE_RE = re.compile('[^a-zA-Z0-9]')
+@@ -734,9 +735,10 @@
+                                for sent in corpus]
+     brown_train = strip(brown.tagged_sents(categories='news')[:train_size])
+     brown_test = strip(brown.tagged_sents(categories='editorial')[:test_size])
+-
++    brownvar1 = 'VITERBI'
++    brownvar = brownvar1.encode('utf-8')
+     crf = MalletCRF.train(fd, brown_train, #'/tmp/crf-model',
+-                          transduction_type='VITERBI')
++                          transduction_type=brownvar)
+     sample_output = crf.tag([w for (w,t) in brown_test[5]])
+     acc = nltk.tag.accuracy(crf, brown_test)
+     print('\nAccuracy: %.1f%%' % (acc*100))
