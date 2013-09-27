@@ -1,0 +1,169 @@
+Done
+    >>> from nltk.sem import logic
+    >>> lp = logic.LogicParser()
+    >>> e = lp.parse('all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))')
+    >>> e
+    <AllExpression all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))>
+
+Done
+    >>> from nltk.sem import Variable
+    >>> e1 = lp.parse(r'\x.P(x)(y)')
+    >>> print e1.simplify()
+    P(y)
+    >>> e2 = lp.parse('all x.P(x,a,b)')
+    >>> print e2
+    all x.P(x,a,b)
+    >>> print e2.free()
+    set([Variable('a'), Variable('b')])
+    >>> print e2.alpha_convert(Variable('z'))
+    all z.P(z,a,b)
+    >>> e3 = lp.parse('x')
+    >>> print e2.replace(Variable('b'), e3)
+    all z1.P(z1,a,x)
+
+Done
+    >>> from nltk.sem import parse_valuation, Model, Assignment
+    >>> v = """
+    ... suzie => s
+    ... fido => f
+    ... rover => r
+    ... girl => {s}
+    ... chase => {(f, s), (r, s), (s, f)}
+    ... """
+    >>> val = parse_valuation(v) #create a Valuation
+    >>> m = Model(val.domain, val) #initialize a Model
+    >>> g = Assignment(val.domain) #initialize an Assignment
+    >>> e4 = lp.parse('exists y. (girl(y) & chase(x, y))')
+    >>> m.satisfiers(e4, 'x', g) #check satisfiers of e4 wrt to x
+    set(['r', 'f'])
+
+Typed Logic
+    >>> tlp = logic.LogicParser(type_check=True)
+    >>> a = tlp.parse(r'\x y.see(x,y)')
+    >>> b = tlp.parse(r'\x.man(x)')
+    >>> a.type, b.type
+    (<e,<e,t>>, <e,t>)
+    >>> tlp.parse(r'\x y.see(x,y)(\x.man(x))')
+    Traceback (most recent call last):
+      . . .
+    TypeException: The function '\x y.see(x,y)' is of type '<e,<e,t>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
+
+Done
+    >>> from nltk.sem import drt
+    >>> dp = drt.DrtParser()
+    >>> d1 = dp.parse('([x][walk(x)]) + ([y][run(y)])')
+    >>> print d1
+    (([x],[walk(x)]) + ([y],[run(y)]))
+    >>> print d1.simplify()
+    ([x,y],[walk(x), run(y)])
+    >>> d2 = dp.parse('([x,y][Bill(x), Fred(y)])')
+    >>> d3 = dp.parse("""([][([u][Porsche(u), own(x,u)])
+    ...  ->  ([v][Ferrari(v),own(y,u)])])""")
+    >>> d4 = d2 + d3
+    >>> print d4.simplify()
+    ([x,y],[Bill(x), Fred(y), (([u],[Porsche(u), own(x,u)]) -> ([v],[Ferrari(v), own(y,u)]))])
+
+Done
+    >>> print d1.toFol()
+    (exists x.walk(x) & exists y.run(y))
+    >>> #d4.simplify().draw()
+
+Done
+    >>> from nltk.parse import load_earley
+    >>> parser = load_earley('grammars/sem1.fcfg', trace=0)
+    >>> tokens = 'a dog barks'.split()
+    >>> trees = parser.nbest_parse(tokens)
+    >>> print trees[0].node['sem'].simplify()
+    exists x.(dog(x) & bark(x))
+
+Done
+    >>> from nltk.sem import hole
+    >>> readings = hole.hole_readings('every girl chases a dog')
+    >>> for r in readings: print r
+    exists z3.(dog(z3) & all z8.(girl(z8) -> chase(z3,z8)))
+    all z8.(girl(z8) -> exists z3.(dog(z3) & chase(z3,z8)))
+
+Done
+    >>> from nltk.sem.glue import GlueFormula
+    >>> john = GlueFormula(r'john', 'g')
+    >>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
+    >>> john_walks = walks.applyto(john)
+    >>> print john_walks.meaning.simplify()
+    walk(john)
+
+Done
+    >>> from nltk.sem.glue import GlueFormula, Glue
+    >>> a = GlueFormula(r'\Q.all x.(girl(x) -> Q(x))', '((g -o G) -o G)')
+    >>> b = GlueFormula(r'\x y.chase(x,y)', '(g -o (h -o f))')
+    >>> c = GlueFormula(r'\Q.exists x.(dog(x)&Q(x))', '((h -o H) -o H)')
+    >>> glue = Glue()
+    >>> for reading in glue.get_readings(glue.gfl_to_compiled([a,b,c])):
+    ...     print reading.simplify()
+    exists x.(dog(x) & all z13.(girl(z13) -> chase(z13,x)))
+    all x.(girl(x) -> exists z14.(dog(z14) & chase(x,z14)))
+
+Done
+    >>> from nltk import inference
+    >>> a = lp.parse('all x.(dog(x) -> bark(x))')
+    >>> b = lp.parse('dog(rover)')
+    >>> c = lp.parse('bark(rover)')
+    >>> prover = inference.get_prover(c, [a,b])
+    >>> prover.prove()
+    True
+
+Done
+    >>> a = lp.parse('all x.walk(x)')
+    >>> b = lp.parse('all y.walk(y)')
+    >>> a == b
+    True
+    >>> c = lp.parse('-(P(x) & Q(x))')
+    >>> d = lp.parse('-P(x) | -Q(x)')
+    >>> c == d
+    False
+    >>> c.tp_equals(d)
+    True
+
+    >>> from nltk.inference.discourse import DiscourseTester as DT
+    >>> dt = DT(['A student dances', 'Every student is a person'])
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r0: exists x.(student(x) & dance(x))
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: all x.(student(x) -> person(x))
+    >>> dt.add_sentence('No person dances', consistchk=True)
+    Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
+    s0-r0: exists x.(student(x) & dance(x))
+    s1-r0: all x.(student(x) -> person(x))
+    s2-r0: -exists x.(person(x) & dance(x))
+    <BLANKLINE>
+    >>> dt.retract_sentence('No person dances', quiet=False)
+    Current sentences are 
+    s0: A student dances
+    s1: Every student is a person
+    >>> dt.add_sentence('A person dances', informchk=True)
+    Sentence 'A person dances' under reading 'exists x.(person(x) & dance(x))':
+    Not informative relative to thread 'd0'
+    
+
+Discourse in DRT
+    >>> from nltk.inference.discourse import DrtGlueReadingCommand as RC
+    >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r0: ([],[(([x],[dog(x)]) -> ([z15],[boy(z15), chase(x,z15)]))])
+    s0-r1: ([z16],[boy(z16), (([x],[dog(x)]) -> ([],[chase(x,z16)]))])
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: ([x],[PRO(x), run(x)])
+    >>> dt.readings(show_thread_readings=True)
+    d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
+    d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) -> ([],[chase(x,z20)])), (z24 = z20), run(z24)])
+    >>> dt.readings(filter=True, show_thread_readings=True)
+    d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) -> ([],[chase(x,z26)])), (z29 = z26), run(z29)])

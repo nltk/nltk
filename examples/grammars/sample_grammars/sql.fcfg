@@ -1,0 +1,27 @@
+## Natural Language Toolkit: sql.fcfg
+##
+## Deliberately naive string-based grammar for 
+## deriving SQL queries from English
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+% start S
+
+S[sem=(?np + ?vp)] -> NP[sem=?np] VP[sem=?vp]
+
+VP[sem=(?v + ?pp)] -> IV[sem=?v] PP[sem=?pp]
+VP[sem=(?v + ?np)] -> TV[sem=?v] NP[sem=?np]
+
+NP[sem=(?det + ?n)] -> Det[sem=?det] N[sem=?n]
+NP[sem='Country="japan"'] -> 'Japan'
+NP[sem='Country="united_states"'] -> 'USA'
+
+Det[sem='SELECT'] -> 'Which'
+N[sem='City FROM city_table'] -> 'cities'
+
+IV[sem='WHERE'] -> 'are'
+PP[sem=?np] -> P[sem=?p] NP[sem=?np]
+P -> 'in'
+

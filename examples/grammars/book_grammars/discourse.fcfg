@@ -1,0 +1,125 @@
+## Natural Language Toolkit: discourse.fcfg
+##
+## Grammar to illustrate simple 2-3 sentence discourse processing.
+##
+## Developed as an extension of sem3.fcfg
+## Main additions:
+## - a few more lexical entries (including 'no' and 'the')
+## - 'is', 'does' and auxiliary negation
+## - Predicate categories, including predicate nominals and adjectives
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+% start S
+############################
+# Grammar Rules
+#############################
+
+S[SEM = <app(?subj,?vp)>] -> NP[NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
+
+NP[NUM=?n,SEM=<app(?det,?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
+NP[LOC=?l,NUM=?n,SEM=?np] -> PropN[LOC=?l,NUM=?n,SEM=?np]
+
+NP[-LOC,NUM=sg,SEM=<\Q. (- exists x. (person(x) & Q(x)))>] -> 'nobody' | 'Nobody'
+NP[-LOC,NUM=sg,SEM=<\Q. exists x. (person(x) & Q(x))>] -> 'somebody' | 'Somebody'
+
+## Copular predicates
+Pred[SEM=?prd] -> PredN[SEM=?prd] | PP[+LOC,+PRED,SEM=?prd] | Adj[SEM=?prd]
+
+## Predicative NPs
+## Doesn't bLOCk 'is every dog', but determiner SEMantics is ignored
+PredN[NUM=?n, SEM=?nom] -> Det[NUM=?n] Nom[NUM=?n, SEM=?nom]
+
+Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
+Nom[NUM=?n,SEM=<app(?pp,?nom)>] -> N[NUM=?n,SEM=?nom] PP[SEM=?pp]
+
+## Transitive verbs
+VP[NUM=?n,SEM=<app(?v,?obj)>] -> TV[NUM=?n,SEM=?v] NP[SEM=?obj]
+
+## Copular VPs
+VP[NUM=?n,SEM=<app(?v,?prd)>] -> AuxP[+COP,NUM=?n,SEM=?v] Pred[SEM=?prd]
+
+## Do auxiliaries
+VP[+neg,NUM=?n,SEM=<app(?v,?vp)>] -> AuxP[-COP,NUM=?n,SEM=?v] VP[NUM=pl,SEM=?vp]
+
+AuxP[COP=?c,NUM=?n,SEM=<app(?neg,?aux)>] -> Aux[COP=?c,NUM=?n,SEM=?aux] Neg[SEM=?neg]
+AuxP[COP=?c,NUM=?n,SEM=?aux] -> Aux[COP=?c,NUM=?n,SEM=?aux]
+
+## Intransitive verbs
+VP[NUM=?n,SEM=?v] -> IV[NUM=?n,SEM=?v]
+
+## VP-level PPs
+VP[NUM=?n,SEM=<app(?pp,?vp)>] -> VP[NUM=?n,SEM=?vp] PP[-PRED,SEM=?pp]
+
+PP[LOC=?l,PRED=?prd,SEM=<app(?p,?np)>] -> P[LOC=?l,PRED=?prd,SEM=?p] NP[LOC=?l,SEM=?np]
+
+#############################
+# Lexical Rules
+#############################
+
+PropN[-LOC,NUM=sg,SEM=<\P.P(John)>] -> 'John'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Mary)>] -> 'Mary'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Suzie)>] -> 'Suzie'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Vincent)>] -> 'Vincent'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Mia)>] -> 'Mia'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Marsellus)>] -> 'Marsellus'
+PropN[-LOC,NUM=sg,SEM=<\P.P(Fido)>] -> 'Fido'
+PropN[+LOC, NUM=sg,SEM=<\P.P(Noosa)>] -> 'Noosa'
+
+NP[-LOC, NUM=sg, SEM=<\P.\x.P(x)>] -> 'who' | 'Who'
+
+Det[NUM=sg,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'every' | 'Every' 
+Det[NUM=pl,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'all' | 'All'
+Det[SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'some' | 'Some'
+Det[NUM=sg,SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'a' | 'A'
+Det[NUM=sg,SEM=<\P Q.(- exists x.(P(x) & Q(x)))>] -> 'no' | 'No'
+Det[NUM=sg,SEM=<\P Q.exists x.((P(x) & Q(x)) & all y.(P(y) -> (x = y)))>] -> 'the' | 'The' 
+
+N[NUM=sg,SEM=<\x.boy(x)>] -> 'boy'
+N[NUM=pl,SEM=<\x.boy(x)>] -> 'boys' 
+N[NUM=sg,SEM=<\x.girl(x)>] -> 'girl'
+N[NUM=pl,SEM=<\x.girl(x)>] -> 'girls'
+N[NUM=sg,SEM=<\x.dog(x)>] -> 'dog'
+N[NUM=pl,SEM=<\x.dog(x)>] -> 'dogs'
+N[NUM=sg,SEM=<\x.student(x)>] -> 'student'
+N[NUM=pl,SEM=<\x.student(x)>] -> 'students'
+N[NUM=sg,SEM=<\x.person(x)>] -> 'person'
+N[NUM=pl,SEM=<\x.person(x)>] -> 'persons'
+N[NUM=sg,SEM=<\x.boxerdog(x)>] -> 'boxer'
+N[NUM=pl,SEM=<\x.boxerdog(x)>] -> 'boxers'
+N[NUM=sg,SEM=<\x.boxer(x)>] -> 'boxer'
+N[NUM=pl,SEM=<\x.boxer(x)>] -> 'boxers'
+N[NUM=sg,SEM=<\x.garden(x)>] -> 'garden'
+N[NUM=sg,SEM=<\x.kitchen(x)>] -> 'kitchen'
+
+Adj[SEM=<\x.happy(x)>] -> 'happy'
+Adj[SEM=<\x.drunk(x)>] -> 'drunk'
+Adj[SEM=<\x.married(x)>] -> 'married'
+
+TV[NUM=sg,SEM=<\X y.X(\x.chase(y,x))>,tns=pres] -> 'chases'
+TV[NUM=pl,SEM=<\X y.X(\x.chase(y,x))>,tns=pres] -> 'chase'
+TV[NUM=sg,SEM=<\X y.X(\x.marry(y,x))>,tns=pres] -> 'marries'
+TV[NUM=pl,SEM=<\X y.X(\x.marry(y,x))>,tns=pres] -> 'marry'
+TV[NUM=sg,SEM=<\X y.X(\x.know(y,x))>,tns=pres] -> 'knows'
+TV[NUM=pl,SEM=<\X y.X(\x.know(y,x))>,tns=pres] -> 'know'
+TV[NUM=sg,SEM=<\X y.X(\x.see(y,x))>,tns=pres] -> 'sees'
+TV[NUM=pl,SEM=<\X y.X(\x.see(y,x))>,tns=pres] -> 'see'
+IV[NUM=sg,SEM=<\x.bark(x)>,tns=pres] -> 'barks'
+IV[NUM=pl,SEM=<\x.bark(x)>,tns=pres] -> 'bark'
+IV[NUM=sg,SEM=<\x.walk(x)>,tns=pres] -> 'walks'
+IV[NUM=pl,SEM=<\x.walk(x)>,tns=pres] -> 'walk'
+IV[NUM=pl,SEM=<\x.dance(x)>,tns=pres] -> 'dance'
+IV[NUM=sg,SEM=<\x.dance(x)>,tns=pres] -> 'dances'
+
+Aux[+COP,NUM=sg,SEM=<\P x.P(x)>,tns=pres] -> 'is'
+Aux[+COP,NUM=pl,SEM=<\P x.P(x)>,tns=pres] -> 'are'
+Aux[-COP,NUM=sg,SEM=<\P x.P(x)>,tns=pres] -> 'does'
+Aux[-COP,NUM=pl,SEM=<\P x.P(x)>,tns=pres] -> 'do'
+
+P[+LOC,-PRED,SEM=<\X P x.X(\y.(P(x) & in(x,y)))>] -> 'in'
+P[+LOC,+PRED,SEM=<\X x.X(\y.in(x,y))>] -> 'in'
+P[-LOC,SEM=<\X P x.X(\y.(P(x) & with(x,y)))>] -> 'with'
+
+Neg[SEM=<\T P.T(\x.(- P(x)))>] -> 'not'

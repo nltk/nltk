@@ -1,0 +1,4 @@
+
+   	SN:
+     	{<.*>+}           # Crea Un Chunk Con Cualquier Cosa
+     	}<v.*|sp.*|F.*>+{      # Considerar Como Chink Apariciones De Verbos (v.*), Preposiciones (sp.*) y Signos De Puntuación (F.*)

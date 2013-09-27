@@ -1,0 +1,22 @@
+## Natural Language Toolkit: background1.fol
+##
+## Illustration of simple knowledge base for use with inference tools.
+## To accompany sem4.fcfg
+##
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+all x. (boxerdog(x) -> dog(x))
+all x. (boxer(x) -> person(x))
+
+all x. (-(dog(x) & person(x)))
+
+all x. (married(x) <-> exists y. marry(x,y)) 
+all x. (bark(x) -> dog(x))
+
+all x. all y. (marry(x,y) -> (person(x) & person(y)))
+
+(-(Vincent = Mia))
+(-(Vincent = Fido))
+(-(Mia = Fido))

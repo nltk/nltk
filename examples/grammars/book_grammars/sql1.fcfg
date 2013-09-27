@@ -1,0 +1,44 @@
+## Natural Language Toolkit: sql.fcfg
+##
+## Deliberately naive string-based grammar for 
+## deriving SQL queries from English
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+
+% start S
+
+S[SEM=(?np + WHERE + ?vp)] -> NP[SEM=?np] VP[SEM=?vp]
+
+VP[SEM=(?v + ?pp)] -> IV[SEM=?v] PP[SEM=?pp]
+VP[SEM=(?v + ?ap)] -> IV[SEM=?v] AP[SEM=?ap]
+VP[SEM=(?v + ?np)] -> TV[SEM=?v] NP[SEM=?np]
+VP[SEM=(?vp1 + ?c + ?vp2)] -> VP[SEM=?vp1] Conj[SEM=?c] VP[SEM=?vp2]
+
+NP[SEM=(?det + ?n)] -> Det[SEM=?det] N[SEM=?n]
+NP[SEM=(?n + ?pp)]  -> N[SEM=?n] PP[SEM=?pp]
+NP[SEM=?n]  -> N[SEM=?n]  | CardN[SEM=?n] 
+
+## NB Numbers in the Chat-80 database represent thousands.
+CardN[SEM='1000'] -> '1,000,000' 
+
+PP[SEM=(?p + ?np)] -> P[SEM=?p] NP[SEM=?np]
+AP[SEM=?pp] -> A[SEM=?a] PP[SEM=?pp]
+
+NP[SEM='Country="greece"'] -> 'Greece'
+NP[SEM='Country="china"'] -> 'China'
+
+Det[SEM='SELECT'] -> 'Which' | 'What'
+Conj[SEM='AND'] -> 'and'
+
+N[SEM='City FROM city_table'] -> 'cities'
+N[SEM='Population'] -> 'populations'
+
+IV[SEM=''] -> 'are'
+TV[SEM=''] -> 'have'
+A -> 'located'
+P[SEM=''] -> 'in'
+P[SEM='>'] -> 'above'
+
+

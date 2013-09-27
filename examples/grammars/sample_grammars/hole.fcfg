@@ -1,0 +1,23 @@
+## Natural Language Toolkit: hole.fcfg
+##
+## Minimal feature-based grammar with lambda semantics for use by the hole.py
+## module for Hole Semantics (see Blackburn and Bos).
+## 
+## Author: Dan Garrette <DHGarrette@gmail.com> 
+##         Robin Cooper <robin.cooper@ling.gu.se>
+## URL: <http://www.nltk.org>
+## For license information, see LICENSE.TXT
+
+% start S
+
+S[SEM=<?subj(?vp)>] -> NP[SEM=?subj] VP[SEM=?vp]
+VP[SEM=?v] -> IV[SEM=?v]
+VP[NUM=?n,SEM=<?v(?obj)>] -> TV[NUM=?n,SEM=?v] NP[SEM=?obj]
+NP[SEM=<?det(?n)>] -> Det[SEM=?det] N[SEM=?n]
+
+Det[SEM=<\P Q h l.exists h1 l1 l2 l3 x.(ALL(l2,x,l3) & IMP(l3,l1,h1) & LEQ(l,h1) & LEQ(l2,h) & P(x)(h)(l1) & Q(x)(h)(l) & HOLE(h) & HOLE(h1) & LABEL(l) & LABEL(l1) & LABEL(l2) & LABEL(l3))>] -> 'every'
+Det[SEM=<\P Q h l.exists h1 l1 l2 l3 x.(EXISTS(l2,x,l3) & AND(l3,l1,h1) & LEQ(l,h1) & LEQ(l2,h) & P(x)(h)(l1) & Q(x)(h)(l) & HOLE(h) & HOLE(h1) & LABEL(l) & LABEL(l1) & LABEL(l2) & LABEL(l3))>] -> 'a'
+N[SEM=<\x h l.(PRED(l,girl,x) & LEQ(l,h) & HOLE(h) & LABEL(l))>] -> 'girl'
+N[SEM=<\x h l.(PRED(l,dog,x) & LEQ(l,h) & HOLE(h) & LABEL(l))>] -> 'dog'
+IV[SEM=<\x h l.(PRED(l,bark,x) & LEQ(l,h) & HOLE(h) & LABEL(l))>] -> 'barks'
+TV[SEM=<\P x.P(\y h l.(PRED(l,chase,x,y) & LEQ(l,h) & HOLE(h) & LABEL(l)))>] -> 'chases'
