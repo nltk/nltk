@@ -1,0 +1,267 @@
+Index: examples/semantics/model1.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- examples/semantics/model1.py	(revision c744dcd)
++++ examples/semantics/model1.py	(revision 8d55bee5201bbd6683bc8dce62075a632b52d6b9)
+@@ -9,8 +9,9 @@
+ intended to be imported as a module.
+ """
+ 
+-from nltk.semantics import *
++from nltk.semantics import * #cannot find semantics or corpora
+ from nltk.corpora import chat80
++from nltk import Model, Assignment
+ 
+ rels = chat80.rels
+ concept_map = chat80.process_bundle(rels)
+Index: nltk/corpus/reader/framenet.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/corpus/reader/framenet.py	(revision c744dcd)
++++ nltk/corpus/reader/framenet.py	(revision 8d55bee5201bbd6683bc8dce62075a632b52d6b9)
+@@ -6,24 +6,22 @@
+ # URL: <http://www.nltk.org/>
+ # For license information, see LICENSE.TXT
+ from __future__ import print_function, unicode_literals
++from nltk import LazyMap
+ 
+-"""
++var = """
+ Corpus reader for the Framenet 1.5 Corpus.
+ """
+ 
+ __docformat__ = 'epytext en'
+ 
+-import os, sys
++import os
+ import re
+ import textwrap
+ from collections import defaultdict
+-from pprint import pprint, pformat
+-from nltk.internals import ElementWrapper
++from pprint import pprint
+ from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
+ from nltk.compat import text_type, string_types, python_2_unicode_compatible
+-from nltk.util import AbstractLazySequence, LazyMap
+ 
+-
+ def _pretty_longstring(defstr, prefix='', wrap_at=65):
+ 
+     """
+@@ -239,7 +237,7 @@
+     for luName,lu in sorted(frame.lexUnit.items()):
+         tmpstr = '{0} ({1})'.format(luName, lu.ID)
+         lustrs.append(tmpstr)
+-    outstr += "{0}\n".format(_pretty_longstring(', '.join(lustrs),prefix='  '))
++    outstr += "{0}\n".format(_pretty_longstring(str(', '.join(lustrs)),prefix='  '))
+ 
+     outstr += "\n[FE] {0} frame elements\n".format(len(frame.FE))
+     fes = {}
+@@ -372,7 +370,8 @@
+         return self._data().__getattr__(key)
+  
+     def __str__(self):
+-        return self._data().__str__()
++        return self._data().__str__
++
+     def __repr__(self):
+         return self._data().__repr__()
+ 
+@@ -498,7 +497,7 @@
+             # otherwise weird ordering effects might result in incomplete information
+         self._frame_idx = {}
+         for f in XMLCorpusView(self.abspath("frameIndex.xml"),
+-                               'frameIndex/frame', self._handle_elt):
++                               str('frameIndex/frame'), self._handle_elt):
+             self._frame_idx[f['ID']] = f
+ 
+     def _buildcorpusindex(self):
+@@ -506,7 +505,7 @@
+         # is fairly small (~90) so this index should not be very large
+         self._fulltext_idx = {}
+         for doclist in XMLCorpusView(self.abspath("fulltextIndex.xml"),
+-                                     'fulltextIndex/corpus',
++                                     str('fulltextIndex/corpus'),
+                                      self._handle_fulltextindex_elt):
+             for doc in doclist:
+                 self._fulltext_idx[doc.ID] = doc
+@@ -515,15 +514,17 @@
+         # The number of LUs in Framenet is about 13,000 so this index
+         # should not be very large
+         self._lu_idx = {}
+-        for lu in XMLCorpusView(self.abspath("luIndex.xml"),
+-                                'luIndex/lu', self._handle_elt):
++        tostring1 = 'luIndex/lu'
++        tostring = tostring1.encode('utf-8')
++        for lu in XMLCorpusView(self.abspath("luIndex.xml"),tostring
++                                , self._handle_elt):
+             self._lu_idx[lu['ID']] = lu # populate with LU index entries. if any of these 
+             # are looked up they will be replaced by full LU objects.
+ 
+     def _buildrelationindex(self):
+         #print('building relation index...', file=sys.stderr)
+         freltypes = PrettyList(x for x in XMLCorpusView(self.abspath("frRelation.xml"),
+-                                            'frameRelations/frameRelationType',
++                                            str('frameRelations/frameRelationType'),
+                                             self._handle_framerelationtype_elt))
+         self._freltyp_idx = {}
+         self._frel_idx = {}
+@@ -629,10 +630,10 @@
+             "{0}".format(self._root), self._fulltext_dir, xmlfname)
+ 
+         # Grab the top-level xml element containing the fulltext annotation
+-        elt = XMLCorpusView(locpath, 'fullTextAnnotation')[0]
++        elt = XMLCorpusView(locpath, str('fullTextAnnotation'))[0]
+         return self._handle_fulltextannotation_elt(elt)
+ 
+-    def frame_by_id(self, fn_fid, ignorekeys=[]):
++    def frame_by_id(self, fn_fid, ignorekeys=None):
+         """
+         Get the details for the specified Frame using the frame's id
+         number.
+@@ -659,6 +660,7 @@
+         Also see the ``frame()`` function for details about what is
+         contained in the dict that is returned.
+         """
++        if not ignorekeys: ignorekeys = []
+ 
+         # get the name of the frame with this id number
+         try:
+@@ -700,7 +702,7 @@
+         Also see the ``frame()`` function for details about what is
+         contained in the dict that is returned.
+         """
+-        
++
+         if check_cache and fn_fname in self._cached_frames:
+             return self._frame_idx[self._cached_frames[fn_fname]]
+         elif not self._frame_idx:
+@@ -712,7 +714,7 @@
+         #print(locpath, file=sys.stderr)
+         # Grab the xml for the frame
+         try:
+-            elt = XMLCorpusView(locpath, 'frame')[0]
++            elt = XMLCorpusView(locpath, str('frame'))[0]
+         except IOError:
+             raise FramenetError('Unknown frame: {0}'.format(fn_fname)) 
+ 
+@@ -729,15 +731,15 @@
+         
+         self._frame_idx[fentry.ID] = fentry
+         self._cached_frames[fentry.name] = fentry.ID
+-        '''
++        var = '''
+-        # now set up callables to resolve the LU pointers lazily. 
++        # now set up callables to resolve the LU pointers lazily.
+         # (could also do this here--caching avoids infinite recursion.)
+         for luName,luinfo in fentry.lexUnit.items():
+             fentry.lexUnit[luName] = (lambda luID: Future(lambda: self.lu(luID)))(luinfo.ID)
+         '''
+         return fentry
+ 
+-    def frame(self, fn_fid_or_fname, ignorekeys=[]):
++    def frame(self, fn_fid_or_fname, ignorekeys=None):
+         """
+         Get the details for the specified Frame using the frame's name
+         or id number.
+@@ -804,6 +806,7 @@
+         :return: Information about a frame
+         :rtype: dict
+         """
++        if not ignorekeys: ignorekeys = []
+ 
+         # get the frame info by name or id number
+         if isinstance(fn_fid_or_fname, string_types):
+@@ -862,7 +865,7 @@
+         """
+         return self.lu(fn_luid, ignorekeys=['subCorpus'])
+ 
+-    def lu(self, fn_luid, ignorekeys=[]):
++    def lu(self, fn_luid, ignorekeys=None):
+         """
+         Get information about a specific Lexical Unit using the id number
+         ``fn_luid``. This function reads the LU information from the xml
+@@ -956,6 +959,7 @@
+         :return: All information about the lexical unit
+         :rtype: dict
+         """
++        if not ignorekeys: ignorekeys = []
+         # look for this LU in cache
+         if not self._lu_idx:
+             self._buildluindex()
+@@ -969,11 +973,12 @@
+ 
+         return luinfo
+ 
+-    def _lu_file(self, lu, ignorekeys=[]):
++    def _lu_file(self, lu, ignorekeys=None):
+         """
+         Augment the LU information that was loaded from the frame file 
+         with additional information from the LU file.
+         """
++        if not ignorekeys: ignorekeys = []
+         fn_luid = lu.ID
+ 
+         fname = "lu{0}.xml".format(fn_luid)
+@@ -983,7 +988,7 @@
+             self._buildluindex()
+         
+         try:
+-            elt = XMLCorpusView(locpath, 'lexUnit')[0]
++            elt = XMLCorpusView(locpath, str('lexUnit'))[0]
+         except IOError:
+             raise FramenetError('Unknown LU id: {0}'.format(fn_luid))
+ 
+@@ -996,7 +1001,7 @@
+         """Create the semantic types index."""
+         self._semtypes = AttrDict()
+         semtypeXML = [x for x in XMLCorpusView(self.abspath("semTypes.xml"),
+-                                             'semTypes/semType',
++                                             str('semTypes/semType'),
+                                              self._handle_semtype_elt)]
+         for st in semtypeXML:
+             n = st['name']
+@@ -1522,7 +1527,8 @@
+             self._loadsemtypes()
+         return PrettyList(self._semtypes[i] for i in self._semtypes if isinstance(i, int))
+ 
+-    def _load_xml_attributes(self, d, elt):
++    @staticmethod
++    def _load_xml_attributes(d, elt):
+         """
+         Extracts a subset of the attributes from the given element and
+         returns them in a dictionary.
+@@ -1562,7 +1568,8 @@
+ 
+         return d
+ 
+-    def _strip_tags(self, data):
++    @staticmethod
++    def _strip_tags(data):
+         """
+         Gets rid of all tags and newline characters from the given input
+ 
+@@ -1632,8 +1639,9 @@
+ 
+         return retlist
+ 
+-    def _handle_frame_elt(self, elt, ignorekeys=[]):
++    def _handle_frame_elt(self, elt, ignorekeys=None):
+         """Load the info for a Frame from an frame xml file"""
++        if not ignorekeys: ignorekeys = []
+         frinfo = self._load_xml_attributes(AttrDict(), elt)
+ 
+         frinfo['_type'] = 'frame'
+@@ -1672,7 +1680,7 @@
+                 semtypeinfo = self._load_xml_attributes(AttrDict(), sub)
+                 frinfo['semTypes'].append(self.semtype(semtypeinfo.ID))
+ 
+-        frinfo['frameRelations'] = self.frame_relations(frame=frinfo)
++        frinfo['frameRelations'] = self.frame_relations()
+         
+         # resolve 'requires' and 'excludes' links between FEs of this frame
+         for fe in frinfo.FE.values():
