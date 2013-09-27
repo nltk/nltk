@@ -1,0 +1,39 @@
+Index: nltk/ccg/chart.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/ccg/chart.py	(revision fa56902)
++++ nltk/ccg/chart.py	(revision 5eff74e2c0c06dc5a9525ce15192453883ee4fc7)
+@@ -47,6 +47,7 @@
+ # transfer well to CCGs, however.
+ class CCGEdge(EdgeI):
+     def __init__(self, span, categ, rule):
++        super(CCGEdge, self).__init__()
+         self._span = span
+         self._categ = categ
+         self._rule = rule
+@@ -68,10 +69,12 @@
+     def rule(self): return self._rule
+ 
+ class CCGLeafEdge(EdgeI):
+-    '''
++    """
+     Class representing leaf edges in a CCG derivation.
+-    '''
++    """
++
+     def __init__(self, pos, categ, leaf):
++        super(CCGLeafEdge, self).__init__()
+         self._pos = pos
+         self._categ = categ
+         self._leaf = leaf
+@@ -79,7 +82,7 @@
+ 
+     # Accessors
+     def lhs(self): return self._categ
+-    def span(self): return (self._pos, self._pos+1)
++    def span(self): return self._pos, self._pos+1
+     def start(self): return self._pos
+     def end(self): return self._pos + 1
+     def length(self): return 1
