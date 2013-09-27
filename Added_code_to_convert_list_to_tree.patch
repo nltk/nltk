@@ -1,0 +1,263 @@
+Index: nltk/toolbox.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># coding: utf-8\n# Natural Language Toolkit: Toolbox Reader\n#\n# Copyright (C) 2001-2013 NLTK Project\n# Author: Greg Aumann <greg_aumann@sil.org>\n# URL: <http://nltk.org>\n# For license information, see LICENSE.TXT\n\n\"\"\"\nModule for reading, writing and manipulating\nToolbox databases and settings files.\n\"\"\"\nfrom __future__ import print_function\n\nimport os, re, codecs\nfrom xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement\n\nfrom nltk.compat import StringIO, u\nfrom nltk.data import PathPointer, ZipFilePathPointer, find\n\n\nclass StandardFormat(object):\n    \"\"\"\n    Class for reading and processing standard format marker files and strings.\n    \"\"\"\n    def __init__(self, filename=None, encoding=None):\n        self._encoding = encoding\n        if filename is not None:\n            self.open(filename)\n\n    def open(self, sfm_file):\n        \"\"\"\n        Open a standard format marker file for sequential reading.\n\n        :param sfm_file: name of the standard format marker input file\n        :type sfm_file: str\n        \"\"\"\n        if isinstance(sfm_file, PathPointer):\n            # [xx] We don't use 'rU' mode here -- do we need to?\n            #      (PathPointer.open doesn't take a mode option)\n            self._file = sfm_file.open(self._encoding)\n        else:\n            self._file = codecs.open(sfm_file, 'rU', self._encoding)\n\n    def open_string(self, s):\n        \"\"\"\n        Open a standard format marker string for sequential reading.\n\n        :param s: string to parse as a standard format marker input file\n        :type s: str\n        \"\"\"\n        self._file = StringIO(s)\n\n    def raw_fields(self):\n        \"\"\"\n        Return an iterator that returns the next field in a (marker, value)\n        tuple. Linebreaks and trailing white space are preserved except\n        for the final newline in each field.\n\n        :rtype: iter(tuple(str, str))\n        \"\"\"\n        join_string = '\\n'\n        line_regexp = r'^%s(?:\\\\(\\S+)\\s*)?(.*)$'\n        # discard a BOM in the first line\n        first_line_pat = re.compile(line_regexp % '(?:\\xef\\xbb\\xbf)?')\n        line_pat = re.compile(line_regexp % '')\n        # need to get first line outside the loop for correct handling\n        # of the first marker if it spans multiple lines\n        file_iter = iter(self._file)\n        line = next(file_iter)\n        mobj = re.match(first_line_pat, line)\n        mkr, line_value = mobj.groups()\n        value_lines = [line_value,]\n        self.line_num = 0\n        for line in file_iter:\n            self.line_num += 1\n            mobj = re.match(line_pat, line)\n            line_mkr, line_value = mobj.groups()\n            if line_mkr:\n                yield (mkr, join_string.join(value_lines))\n                mkr = line_mkr\n                value_lines = [line_value,]\n            else:\n                value_lines.append(line_value)\n        self.line_num += 1\n        yield (mkr, join_string.join(value_lines))\n\n    def fields(self, strip=True, unwrap=True, encoding=None, errors='strict', unicode_fields=None):\n        \"\"\"\n        Return an iterator that returns the next field in a ``(marker, value)``\n        tuple, where ``marker`` and ``value`` are unicode strings if an ``encoding``\n        was specified in the ``fields()`` method. Otherwise they are non-unicode strings.\n\n        :param strip: strip trailing whitespace from the last line of each field\n        :type strip: bool\n        :param unwrap: Convert newlines in a field to spaces.\n        :type unwrap: bool\n        :param encoding: Name of an encoding to use. If it is specified then\n            the ``fields()`` method returns unicode strings rather than non\n            unicode strings.\n        :type encoding: str or None\n        :param errors: Error handling scheme for codec. Same as the ``decode()``\n            builtin string method.\n        :type errors: str\n        :param unicode_fields: Set of marker names whose values are UTF-8 encoded.\n            Ignored if encoding is None. If the whole file is UTF-8 encoded set\n            ``encoding='utf8'`` and leave ``unicode_fields`` with its default\n            value of None.\n        :type unicode_fields: sequence\n        :rtype: iter(tuple(str, str))\n        \"\"\"\n        if encoding is None and unicode_fields is not None:\n            raise ValueError('unicode_fields is set but not encoding.')\n        unwrap_pat = re.compile(r'\\n+')\n        for mkr, val in self.raw_fields():\n            if encoding:\n                if unicode_fields is not None and mkr in unicode_fields:\n                    val = val.decode('utf8', errors)\n                else:\n                    val = val.decode(encoding, errors)\n                mkr = mkr.decode(encoding, errors)\n            if unwrap:\n                val = unwrap_pat.sub(' ', val)\n            if strip:\n                val = val.rstrip()\n            yield (mkr, val)\n\n    def close(self):\n        \"\"\"Close a previously opened standard format marker file or string.\"\"\"\n        self._file.close()\n        try:\n            del self.line_num\n        except AttributeError:\n            pass\n\nclass ToolboxData(StandardFormat):\n    def parse(self, grammar=None,  **kwargs):\n        if grammar:\n            return self._chunk_parse(grammar=grammar,  **kwargs)\n        else:\n            return self._record_parse(**kwargs)\n\n    def _record_parse(self, key=None, **kwargs):\n        \"\"\"\n        Returns an element tree structure corresponding to a toolbox data file with\n        all markers at the same level.\n\n        Thus the following Toolbox database::\n            \\_sh v3.0  400  Rotokas Dictionary\n            \\_DateStampHasFourDigitYear\n\n            \\lx kaa\n            \\ps V.A\n            \\ge gag\n            \\gp nek i pas\n\n            \\lx kaa\n            \\ps V.B\n            \\ge strangle\n            \\gp pasim nek\n\n        after parsing will end up with the same structure (ignoring the extra\n        whitespace) as the following XML fragment after being parsed by\n        ElementTree::\n            <toolbox_data>\n                <header>\n                    <_sh>v3.0  400  Rotokas Dictionary</_sh>\n                    <_DateStampHasFourDigitYear/>\n                </header>\n\n                <record>\n                    <lx>kaa</lx>\n                    <ps>V.A</ps>\n                    <ge>gag</ge>\n                    <gp>nek i pas</gp>\n                </record>\n\n                <record>\n                    <lx>kaa</lx>\n                    <ps>V.B</ps>\n                    <ge>strangle</ge>\n                    <gp>pasim nek</gp>\n                </record>\n            </toolbox_data>\n\n        :param key: Name of key marker at the start of each record. If set to\n            None (the default value) the first marker that doesn't begin with\n            an underscore is assumed to be the key.\n        :type key: str\n        :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``\n        :type kwargs: dict\n        :rtype: ElementTree._ElementInterface\n        :return: contents of toolbox data divided into header and records\n        \"\"\"\n        builder = TreeBuilder()\n        builder.start('toolbox_data', {})\n        builder.start('header', {})\n        in_records = False\n        for mkr, value in self.fields(**kwargs):\n            if key is None and not in_records and mkr[0] != '_':\n                key = mkr\n            if mkr == key:\n                if in_records:\n                    builder.end('record')\n                else:\n                    builder.end('header')\n                    in_records = True\n                builder.start('record', {})\n            builder.start(mkr, {})\n            builder.data(value)\n            builder.end(mkr)\n        if in_records:\n            builder.end('record')\n        else:\n            builder.end('header')\n        builder.end('toolbox_data')\n        return builder.close()\n\n    def _tree2etree(self, parent):\n        from nltk.tree import Tree\n\n        root = Element(parent.node)\n        for child in parent:\n            if isinstance(child, Tree):\n                root.append(self._tree2etree(child))\n            else:\n                text, tag = child\n                e = SubElement(root, tag)\n                e.text = text\n        return root\n\n    def _chunk_parse(self, grammar=None, top_node='record', trace=0, **kwargs):\n        \"\"\"\n        Returns an element tree structure corresponding to a toolbox data file\n        parsed according to the chunk grammar.\n\n        :type grammar: str\n        :param grammar: Contains the chunking rules used to parse the\n            database.  See ``chunk.RegExp`` for documentation.\n        :type top_node: str\n        :param top_node: The node value that should be used for the\n            top node of the chunk structure.\n        :type trace: int\n        :param trace: The level of tracing that should be used when\n            parsing a text.  ``0`` will generate no tracing output;\n            ``1`` will generate normal tracing output; and ``2`` or\n            higher will generate verbose tracing output.\n        :type kwargs: dict\n        :param kwargs: Keyword arguments passed to ``toolbox.StandardFormat.fields()``\n        :rtype: ElementTree._ElementInterface\n        \"\"\"\n        from nltk import chunk\n        from nltk.tree import Tree\n\n        cp = chunk.RegexpParser(grammar, top_node=top_node, trace=trace)\n        db = self.parse(**kwargs)\n        tb_etree = Element('toolbox_data')\n        header = db.find('header')\n        tb_etree.append(header)\n        for record in db.findall('record'):\n            parsed = cp.parse([(elem.text, elem.tag) for elem in record])\n            tb_etree.append(self._tree2etree(parsed))\n        return tb_etree\n\n_is_value = re.compile(r\"\\S\")\n\ndef to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):\n    \"\"\"\n    Return a string with a standard format representation of the toolbox\n    data in tree (tree can be a toolbox database or a single record).\n\n    :param tree: flat representation of toolbox data (whole database or single record)\n    :type tree: ElementTree._ElementInterface\n    :param encoding: Name of an encoding to use.\n    :type encoding: str\n    :param errors: Error handling scheme for codec. Same as the ``encode()``\n        builtin string method.\n    :type errors: str\n    :param unicode_fields:\n    :type unicode_fields: dict(str) or set(str)\n    :rtype: str\n    \"\"\"\n    if tree.tag == 'record':\n        root = Element('toolbox_data')\n        root.append(tree)\n        tree = root\n\n    if tree.tag != 'toolbox_data':\n        raise ValueError(\"not a toolbox_data element structure\")\n    if encoding is None and unicode_fields is not None:\n        raise ValueError(\"if encoding is not specified then neither should unicode_fields\")\n    l = []\n    for rec in tree:\n        l.append('\\n')\n        for field in rec:\n            mkr = field.tag\n            value = field.text\n            if encoding is not None:\n                if unicode_fields is not None and mkr in unicode_fields:\n                    cur_encoding = 'utf8'\n                else:\n                    cur_encoding = encoding\n                if re.search(_is_value, value):\n                    l.append((u(\"\\\\%s %s\\n\") % (mkr, value)).encode(cur_encoding, errors))\n                else:\n                    l.append((u(\"\\\\%s%s\\n\") % (mkr, value)).encode(cur_encoding, errors))\n            else:\n                if re.search(_is_value, value):\n                    l.append(\"\\\\%s %s\\n\" % (mkr, value))\n                else:\n                    l.append(\"\\\\%s%s\\n\" % (mkr, value))\n    return ''.join(l[1:])\n\nclass ToolboxSettings(StandardFormat):\n    \"\"\"This class is the base class for settings files.\"\"\"\n\n    def __init__(self):\n        super(ToolboxSettings, self).__init__()\n\n    def parse(self, encoding=None, errors='strict', **kwargs):\n        \"\"\"\n        Return the contents of toolbox settings file with a nested structure.\n\n        :param encoding: encoding used by settings file\n        :type encoding: str\n        :param errors: Error handling scheme for codec. Same as ``decode()`` builtin method.\n        :type errors: str\n        :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``\n        :type kwargs: dict\n        :rtype: ElementTree._ElementInterface\n        \"\"\"\n        builder = TreeBuilder()\n        for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):\n            # Check whether the first char of the field marker\n            # indicates a block start (+) or end (-)\n            block=mkr[0]\n            if block in (\"+\", \"-\"):\n                mkr=mkr[1:]\n            else:\n                block=None\n            # Build tree on the basis of block char\n            if block == \"+\":\n                builder.start(mkr, {})\n                builder.data(value)\n            elif block == '-':\n                builder.end(mkr)\n            else:\n                builder.start(mkr, {})\n                builder.data(value)\n                builder.end(mkr)\n        return builder.close()\n\ndef to_settings_string(tree, encoding=None, errors='strict', unicode_fields=None):\n    # write XML to file\n    l = list()\n    _to_settings_string(tree.getroot(), l, encoding=encoding, errors=errors, unicode_fields=unicode_fields)\n    return ''.join(l)\n\ndef _to_settings_string(node, l, **kwargs):\n    # write XML to file\n    tag = node.tag\n    text = node.text\n    if len(node) == 0:\n        if text:\n            l.append('\\\\%s %s\\n' % (tag, text))\n        else:\n            l.append('\\\\%s\\n' % tag)\n    else:\n        if text:\n            l.append('\\\\+%s %s\\n' % (tag, text))\n        else:\n            l.append('\\\\+%s\\n' % tag)\n        for n in node:\n            _to_settings_string(n, l, **kwargs)\n        l.append('\\\\-%s\\n' % tag)\n    return\n\ndef remove_blanks(elem):\n    \"\"\"\n    Remove all elements and subelements with no text and no child elements.\n\n    :param elem: toolbox data in an elementtree structure\n    :type elem: ElementTree._ElementInterface\n    \"\"\"\n    out = list()\n    for child in elem:\n        remove_blanks(child)\n        if child.text or len(child) > 0:\n            out.append(child)\n    elem[:] = out\n\ndef add_default_fields(elem, default_fields):\n    \"\"\"\n    Add blank elements and subelements specified in default_fields.\n\n    :param elem: toolbox data in an elementtree structure\n    :type elem: ElementTree._ElementInterface\n    :param default_fields: fields to add to each type of element and subelement\n    :type default_fields: dict(tuple)\n    \"\"\"\n    for field in default_fields.get(elem.tag,  []):\n        if elem.find(field) is None:\n            SubElement(elem, field)\n    for child in elem:\n        add_default_fields(child, default_fields)\n\ndef sort_fields(elem, field_orders):\n    \"\"\"\n    Sort the elements and subelements in order specified in field_orders.\n\n    :param elem: toolbox data in an elementtree structure\n    :type elem: ElementTree._ElementInterface\n    :param field_orders: order of fields for each type of element and subelement\n    :type field_orders: dict(tuple)\n    \"\"\"\n    order_dicts = dict()\n    for field, order in field_orders.items():\n        order_dicts[field] = order_key = dict()\n        for i, subfield in enumerate(order):\n            order_key[subfield] = i\n    _sort_fields(elem, order_dicts)\n\ndef _sort_fields(elem, orders_dicts):\n    \"\"\"sort the children of elem\"\"\"\n    try:\n        order = orders_dicts[elem.tag]\n    except KeyError:\n        pass\n    else:\n        tmp = sorted([((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)])\n        elem[:] = [child for key, child in tmp]\n    for child in elem:\n        if len(child):\n            _sort_fields(child, orders_dicts)\n\ndef add_blank_lines(tree, blanks_before, blanks_between):\n    \"\"\"\n    Add blank lines before all elements and subelements specified in blank_before.\n\n    :param elem: toolbox data in an elementtree structure\n    :type elem: ElementTree._ElementInterface\n    :param blank_before: elements and subelements to add blank lines before\n    :type blank_before: dict(tuple)\n    \"\"\"\n    try:\n        before = blanks_before[tree.tag]\n        between = blanks_between[tree.tag]\n    except KeyError:\n        for elem in tree:\n            if len(elem):\n                add_blank_lines(elem, blanks_before, blanks_between)\n    else:\n        last_elem = None\n        for elem in tree:\n            tag = elem.tag\n            if last_elem is not None and last_elem.tag != tag:\n                if tag in before and last_elem is not None:\n                    e = last_elem.getiterator()[-1]\n                    e.text = (e.text or \"\") + \"\\n\"\n            else:\n                if tag in between:\n                    e = last_elem.getiterator()[-1]\n                    e.text = (e.text or \"\") + \"\\n\"\n            if len(elem):\n                add_blank_lines(elem, blanks_before, blanks_between)\n            last_elem = elem\n\ndef demo():\n    from itertools import islice\n\n#    zip_path = find('corpora/toolbox.zip')\n#    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()\n    file_path = find('corpora/toolbox/rotokas.dic')\n    lexicon = ToolboxData(file_path).parse()\n    print('first field in fourth record:')\n    print(lexicon[3][0].tag)\n    print(lexicon[3][0].text)\n\n    print('\\nfields in sequential order:')\n    for field in islice(lexicon.find('record'), 10):\n        print(field.tag, field.text)\n\n    print('\\nlx fields:')\n    for field in islice(lexicon.findall('record/lx'), 10):\n        print(field.text)\n\n    settings = ToolboxSettings()\n    file_path = find('corpora/toolbox/MDF/MDF_AltH.typ')\n    settings.open(file_path)\n#    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))\n    tree = settings.parse(unwrap=False, encoding='cp1252')\n    print(tree.find('expset/expMDF/rtfPageSetup/paperSize').text)\n    settings_tree = ElementTree(tree)\n    print(to_settings_string(settings_tree).encode('utf8'))\n\nif __name__ == '__main__':\n    demo()\n
+===================================================================
+--- nltk/toolbox.py	(date 1380250213000)
++++ nltk/toolbox.py	(revision )
+@@ -11,18 +11,19 @@
+ Toolbox databases and settings files.
+ """
+ from __future__ import print_function
+-
+-import os, re, codecs
++import re
++import codecs
+ from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
+ 
+-from nltk.compat import StringIO, u
+-from nltk.data import PathPointer, ZipFilePathPointer, find
++from nltk.compat import u
++from nltk.data import PathPointer, find
+ 
+ 
+ class StandardFormat(object):
+     """
+     Class for reading and processing standard format marker files and strings.
+     """
++
+     def __init__(self, filename=None, encoding=None):
+         self._encoding = encoding
+         if filename is not None:
+@@ -49,8 +50,8 @@
+         :param s: string to parse as a standard format marker input file
+         :type s: str
+         """
+-        self._file = StringIO(s)
+ 
++    @property
+     def raw_fields(self):
+         """
+         Return an iterator that returns the next field in a (marker, value)
+@@ -70,7 +71,7 @@
+         line = next(file_iter)
+         mobj = re.match(first_line_pat, line)
+         mkr, line_value = mobj.groups()
+-        value_lines = [line_value,]
++        value_lines = [line_value, ]
+         self.line_num = 0
+         for line in file_iter:
+             self.line_num += 1
+@@ -79,7 +80,7 @@
+             if line_mkr:
+                 yield (mkr, join_string.join(value_lines))
+                 mkr = line_mkr
+-                value_lines = [line_value,]
++                value_lines = [line_value, ]
+             else:
+                 value_lines.append(line_value)
+         self.line_num += 1
+@@ -112,7 +113,7 @@
+         if encoding is None and unicode_fields is not None:
+             raise ValueError('unicode_fields is set but not encoding.')
+         unwrap_pat = re.compile(r'\n+')
+-        for mkr, val in self.raw_fields():
++        for mkr, val in self.raw_fields:
+             if encoding:
+                 if unicode_fields is not None and mkr in unicode_fields:
+                     val = val.decode('utf8', errors)
+@@ -133,10 +134,11 @@
+         except AttributeError:
+             pass
+ 
++
+ class ToolboxData(StandardFormat):
+-    def parse(self, grammar=None,  **kwargs):
++    def parse(self, grammar=None, **kwargs):
+         if grammar:
+-            return self._chunk_parse(grammar=grammar,  **kwargs)
++            return self._chunk_parse(grammar=grammar, **kwargs)
+         else:
+             return self._record_parse(**kwargs)
+ 
+@@ -250,7 +252,6 @@
+         :rtype: ElementTree._ElementInterface
+         """
+         from nltk import chunk
+-        from nltk.tree import Tree
+ 
+         cp = chunk.RegexpParser(grammar, top_node=top_node, trace=trace)
+         db = self.parse(**kwargs)
+@@ -258,12 +259,49 @@
+         header = db.find('header')
+         tb_etree.append(header)
+         for record in db.findall('record'):
+-            parsed = cp.parse([(elem.text, elem.tag) for elem in record])
++            tree = makeTree(([(elem.text, elem.tag) for elem in record]))
++            parsed = cp.parse(tree) #expects a tree and got a list
++
+             tb_etree.append(self._tree2etree(parsed))
+         return tb_etree
+ 
++
+ _is_value = re.compile(r"\S")
+ 
++def makeTree(elements):
++    if not elements: elements = []
++    elementsTree = []
++    index = 0
++
++    while index < len(elements):
++        # If the next level is greater than current...
++        if index + 1 < len(elements) and \
++                        elements[index][0] < elements[index + 1][0]:
++            # Finds the first and the last index of the direct descendants of
++            # the current level.
++            level = elements[index][0]
++            frm = index + 1
++
++            while index + 1 < len(elements) and \
++                            elements[index + 1][0] != level:
++                index += 1
++
++            to = index + 1
++
++            # Create a new list with the descendants elements, resolve it, and
++            # append as child.
++            elementsTree.append(elements[frm - 1][1:] +
++                                [makeTree(elements[frm: to])])
++        # Just append as is to the list without children elements.
++        else:
++            # Remove the first item.
++            elementsTree.append(elements[index][1:] + [[]])
++
++        index += 1
++
++    return elementsTree
++
++
+ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
+     """
+     Return a string with a standard format representation of the toolbox
+@@ -311,6 +349,7 @@
+                     l.append("\\%s%s\n" % (mkr, value))
+     return ''.join(l[1:])
+ 
++
+ class ToolboxSettings(StandardFormat):
+     """This class is the base class for settings files."""
+ 
+@@ -333,12 +372,12 @@
+         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
+             # Check whether the first char of the field marker
+             # indicates a block start (+) or end (-)
+-            block=mkr[0]
++            block = mkr[0]
+             if block in ("+", "-"):
+-                mkr=mkr[1:]
++                mkr = mkr[1:]
+             else:
+-                block=None
++                block = None
+-            # Build tree on the basis of block char
++                # Build tree on the basis of block char
+             if block == "+":
+                 builder.start(mkr, {})
+                 builder.data(value)
+@@ -350,12 +389,14 @@
+                 builder.end(mkr)
+         return builder.close()
+ 
++
+ def to_settings_string(tree, encoding=None, errors='strict', unicode_fields=None):
+     # write XML to file
+     l = list()
+     _to_settings_string(tree.getroot(), l, encoding=encoding, errors=errors, unicode_fields=unicode_fields)
+     return ''.join(l)
+ 
++
+ def _to_settings_string(node, l, **kwargs):
+     # write XML to file
+     tag = node.tag
+@@ -375,6 +416,7 @@
+         l.append('\\-%s\n' % tag)
+     return
+ 
++
+ def remove_blanks(elem):
+     """
+     Remove all elements and subelements with no text and no child elements.
+@@ -389,6 +431,7 @@
+             out.append(child)
+     elem[:] = out
+ 
++
+ def add_default_fields(elem, default_fields):
+     """
+     Add blank elements and subelements specified in default_fields.
+@@ -398,12 +441,13 @@
+     :param default_fields: fields to add to each type of element and subelement
+     :type default_fields: dict(tuple)
+     """
+-    for field in default_fields.get(elem.tag,  []):
++    for field in default_fields.get(elem.tag, []):
+         if elem.find(field) is None:
+             SubElement(elem, field)
+     for child in elem:
+         add_default_fields(child, default_fields)
+ 
++
+ def sort_fields(elem, field_orders):
+     """
+     Sort the elements and subelements in order specified in field_orders.
+@@ -420,6 +464,7 @@
+             order_key[subfield] = i
+     _sort_fields(elem, order_dicts)
+ 
++
+ def _sort_fields(elem, orders_dicts):
+     """sort the children of elem"""
+     try:
+@@ -433,14 +478,10 @@
+         if len(child):
+             _sort_fields(child, orders_dicts)
+ 
++
+ def add_blank_lines(tree, blanks_before, blanks_between):
+     """
+     Add blank lines before all elements and subelements specified in blank_before.
+-
+-    :param elem: toolbox data in an elementtree structure
+-    :type elem: ElementTree._ElementInterface
+-    :param blank_before: elements and subelements to add blank lines before
+-    :type blank_before: dict(tuple)
+     """
+     try:
+         before = blanks_before[tree.tag]
+@@ -464,12 +505,13 @@
+             if len(elem):
+                 add_blank_lines(elem, blanks_before, blanks_between)
+             last_elem = elem
++
+ 
+ def demo():
+     from itertools import islice
+ 
+-#    zip_path = find('corpora/toolbox.zip')
+-#    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
++    #    zip_path = find('corpora/toolbox.zip')
++    #    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
+     file_path = find('corpora/toolbox/rotokas.dic')
+     lexicon = ToolboxData(file_path).parse()
+     print('first field in fourth record:')
+@@ -487,7 +529,7 @@
+     settings = ToolboxSettings()
+     file_path = find('corpora/toolbox/MDF/MDF_AltH.typ')
+     settings.open(file_path)
+-#    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
++    #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
+     tree = settings.parse(unwrap=False, encoding='cp1252')
+     print(tree.find('expset/expMDF/rtfPageSetup/paperSize').text)
+     settings_tree = ElementTree(tree)
