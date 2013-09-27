@@ -1,0 +1,166 @@
+Index: emacs/pycomplete.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- emacs/pycomplete.py	(revision 3fbcc9f)
++++ emacs/pycomplete.py	(revision c744dcd919088c48352b21412fa5eb541fee125d)
+@@ -1,5 +1,3 @@
+-from __future__ import print_statement
+-
+ """
+ Python dot expression completion using Pymacs.
+ 
+@@ -22,13 +20,12 @@
+ See pycomplete.el for the Emacs Lisp side of things.
+ """
+ 
+-import sys
+ import os.path
+ 
+ try:
+     x = set
+ except NameError:
+-    from sets import Set as set
++    from sets import Set as set #sets is depricated
+ else:
+     del x
+ 
+Index: nltk/sem/glue.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/sem/glue.py	(revision 3fbcc9f)
++++ nltk/sem/glue.py	(revision c744dcd919088c48352b21412fa5eb541fee125d)
+@@ -93,7 +93,7 @@
+         if not counter:
+             counter = Counter()
+         (compiled_glue, new_forms) = self.glue.simplify().compile_pos(counter, self.__class__)
+-        return new_forms + [self.__class__(self.meaning, compiled_glue, set([counter.get()]))]
++        return new_forms + [self.__class__(self.meaning, compiled_glue, {counter.get()})]
+ 
+     def simplify(self):
+         return self.__class__(self.meaning.simplify(), self.glue.simplify(), self.indices)
+@@ -116,7 +116,8 @@
+ 
+ @python_2_unicode_compatible
+ class GlueDict(dict):
+-    def __init__(self, filename, encoding=None):
++    def __init__(self, filename, encoding=None, **kwargs):
++        super(GlueDict, self).__init__(**kwargs)
+         self.filename = filename
+         self.file_encoding = encoding
+         self.read_file()
+@@ -130,7 +131,7 @@
+             # TODO: the above can't handle zip files, but this should anyway be fixed in nltk.data.load()
+         except LookupError as e:
+             try:
+-                contents = nltk.data.load('file:' + self.filename, format='text', encoding=self.file_encoding)
++                contents = nltk.data.load(str('file:' + self.filename), format='text', encoding=self.file_encoding)
+             except LookupError:
+                 raise e
+         lines = contents.splitlines()
+@@ -272,7 +273,8 @@
+             subj = self.lookup_unique('subj', headnode, depgraph)
+             node['deps'].append(subj['address'])
+ 
+-    def _lookup_semtype_option(self, semtype, node, depgraph):
++    @staticmethod
++    def _lookup_semtype_option(semtype, node, depgraph):
+         relationships = frozenset(depgraph.nodelist[dep]['rel'].lower()
+                                    for dep in node['deps']
+                                    if depgraph.nodelist[dep]['rel'].lower()
+@@ -286,7 +288,7 @@
+             # most relations of any possible relationship set that is a subset
+             # of the actual depgraph
+             best_match = frozenset()
+-            for relset_option in set(semtype)-set([None]):
++            for relset_option in set(semtype)- {None}:
+                 if len(relset_option) > len(best_match) and \
+                    relset_option < relationships:
+                     best_match = relset_option
+@@ -299,7 +301,8 @@
+ 
+         return lookup
+ 
+-    def get_semtypes(self, node):
++    @staticmethod
++    def get_semtypes(node):
+         """
+         Based on the node, return a list of plausible semtypes in order of
+         plausibility.
+@@ -335,7 +338,8 @@
+             glueformulas.append(gf)
+         return glueformulas
+ 
+-    def get_meaning_formula(self, generic, word):
++    @staticmethod
++    def get_meaning_formula(generic, word):
+         """
+         :param generic: A meaning formula string containing the
+         parameter "<word>"
+@@ -377,7 +381,8 @@
+             elif name=='b':     return self.get_label(self.lookup_unique('conjb', node, depgraph))
+             else:               return self.get_label(self.lookup_unique(name, node, depgraph))
+ 
+-    def get_label(self, node):
++    @staticmethod
++    def get_label(node):
+         """
+         Pick an alphabetic character as identifier for an entity in the model.
+ 
+@@ -394,7 +399,8 @@
+         else:
+             return letter
+ 
+-    def lookup_unique(self, rel, node, depgraph):
++    @staticmethod
++    def lookup_unique(rel, node, depgraph):
+         """
+         Lookup 'key'. There should be exactly one item in the associated relation.
+         """
+@@ -507,7 +513,7 @@
+                 try:
+                     if reading.equiv(glueformula.meaning, self.prover):
+                         add_reading = False
+-                        break;
++                        break
+                 except Exception as e:
+                     #if there is an exception, the syntax of the formula
+                     #may not be understandable by the prover, so don't
+@@ -550,7 +556,8 @@
+ 
+         return return_list
+ 
+-    def get_pos_tagger(self):
++    @staticmethod
++    def get_pos_tagger():
+         regexp_tagger = RegexpTagger(
+             [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+              (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+@@ -578,23 +585,21 @@
+ 
+ class DrtGlueFormula(GlueFormula):
+     def __init__(self, meaning, glue, indices=None):
++        super(DrtGlueFormula, self).__init__(meaning, glue)
+         if not indices:
+             indices = set()
+-
+         if isinstance(meaning, string_types):
+             self.meaning = drt.DrtParser().parse(meaning)
+         elif isinstance(meaning, drt.AbstractDrs):
+             self.meaning = meaning
+         else:
+             raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
+-
+         if isinstance(glue, string_types):
+             self.glue = linearlogic.LinearLogicParser().parse(glue)
+         elif isinstance(glue, linearlogic.Expression):
+             self.glue = glue
+         else:
+             raise RuntimeError('Glue term neither string or expression: %s, %s' % (glue, glue.__class__))
+-
+         self.indices = indices
+ 
+     def make_VariableExpression(self, name):

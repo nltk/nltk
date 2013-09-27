@@ -1,0 +1,16 @@
+Index: setup.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- setup.py	(revision 5799187)
++++ setup.py	(revision 3fbcc9ff815c0d88288494b5c3f160e0d41b5089)
+@@ -79,5 +79,7 @@
+     package_data = {'nltk': ['nltk.jar', 'test/*.doctest', 'VERSION']},
+     packages = find_packages(),
+     zip_safe=False, # since normal files will be present too?
+-    install_requires=['PyYAML>=3.09'],
++    install_requires=['PyYAML>=3.09', 'numpy', 'epydoc', 'epydoc', 'epydoc', 'epydoc', 'networkx', 'unidecode', 'nose',
++                      'nose', 'scipy', 'scipy', 'nose', 'docutils', 'nose', 'nose', 'nose', 'nose', 'nose', 'nose',
++                      'nose', 'nose', 'nose', 'nose', 'nose', 'enable', 'nose'],
+     )

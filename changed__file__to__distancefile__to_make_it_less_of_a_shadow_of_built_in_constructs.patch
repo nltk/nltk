@@ -1,0 +1,30 @@
+Index: nltk/metrics/distance.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/metrics/distance.py	(revision 5eff74e)
++++ nltk/metrics/distance.py	(revision a2ffdbf787bcf0ff4211f9710f8cad1dd670e519)
+@@ -162,9 +162,9 @@
+     return lambda x,y:abs((float(1.0/len(x)) - float(1.0/len(y))))*(label in x and label in y) or 0.0*(label not in x and label not in y) or abs((float(1.0/len(x))))*(label in x and label not in y) or ((float(1.0/len(y))))*(label not in x and label in y)
+ 
+ 
+-def custom_distance(file):
++def custom_distance(customdistancefile):
+     data = {}
+-    for l in open(file):
++    for l in open(customdistancefile):
+         labelA, labelB, dist = l.strip().split("\t")
+         labelA = frozenset([labelA])
+         labelB = frozenset([labelB])
+@@ -179,8 +179,8 @@
+     for s1, s2 in edit_distance_examples:
+         print("Edit distance with transpositions between '%s' and '%s':" % (s1, s2), edit_distance(s1, s2, transpositions=True))
+ 
+-    s1 = set([1, 2, 3, 4])
+-    s2 = set([3, 4, 5])
++    s1 = {1, 2, 3, 4}
++    s2 = {3, 4, 5}
+     print("s1:", s1)
+     print("s2:", s2)
+     print("Binary distance:", binary_distance(s1, s2))

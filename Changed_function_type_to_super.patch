@@ -1,0 +1,60 @@
+Index: nltk/corpus/reader/propbank.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/corpus/reader/propbank.py	(revision b021664d1e11b86c78082f88be250d9fca78d955)
++++ nltk/corpus/reader/propbank.py	(revision a2ffdbf)
+@@ -11,6 +11,7 @@
+ 
+ from nltk import compat
+ from nltk.tree import Tree
++from nltk.internals import raise_unorderable_types
+ from nltk.compat import total_ordering
+ 
+ from .util import *
+@@ -301,11 +302,10 @@
+ @compat.python_2_unicode_compatible
+ class PropbankChainTreePointer(PropbankPointer):
+     def __init__(self, pieces):
+-        super(PropbankChainTreePointer, self).__init__()
+         self.pieces = pieces
+         """A list of the pieces that make up this chain.  Elements may
+-               be either ``PropbankSplitTreePointer`` or
+-               ``PropbankTreePointer`` pointers."""
++           be either ``PropbankSplitTreePointer`` or
++           ``PropbankTreePointer`` pointers."""
+ 
+     def __str__(self):
+         return '*'.join('%s' % p for p in self.pieces)
+@@ -319,10 +319,9 @@
+ @compat.python_2_unicode_compatible
+ class PropbankSplitTreePointer(PropbankPointer):
+     def __init__(self, pieces):
+-        super(PropbankSplitTreePointer, self).__init__()
+         self.pieces = pieces
+         """A list of the pieces that make up this chain.  Elements are
+-               all ``PropbankTreePointer`` pointers."""
++           all ``PropbankTreePointer`` pointers."""
+ 
+     def __str__(self):
+         return ','.join('%s' % p for p in self.pieces)
+@@ -341,9 +340,7 @@
+     wordnum:height,
+ 
+     """
+-
+     def __init__(self, wordnum, height):
+-        super(PropbankTreePointer, self).__init__()
+         self.wordnum = wordnum
+         self.height = height
+ 
+@@ -380,7 +377,7 @@
+         if not isinstance(other, PropbankTreePointer):
+             return self is other
+ 
+-        return self.wordnum == other.wordnum and self.height == other.height
++        return (self.wordnum == other.wordnum and self.height == other.height)
+ 
+     def __ne__(self, other):
+         return not self == other

@@ -1,0 +1,252 @@
+Index: nltk/chunk/regexp.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- nltk/chunk/regexp.py	(revision 8d55bee)
++++ nltk/chunk/regexp.py	(revision ab75ed47a0df33b2e71124f7596df8d644f236dd)
+@@ -96,7 +96,8 @@
+         self._str = '<' + '><'.join(tags) + '>'
+         self._debug = debug_level
+ 
+-    def _tag(self, tok):
++    @staticmethod
++    def _tag(tok):
+         if isinstance(tok, tuple):
+             return tok[1]
+         elif isinstance(tok, Tree):
+@@ -210,7 +211,8 @@
+         s = re.sub('\{\}', '', s)
+ 
+         # Make sure that the transformation was legal.
+-        if self._debug > 1: self._verify(s, self._debug-2)
++        if self._debug > 1:
++            self._verify(s, bool((self._debug-2)))
+ 
+         # Commit the transformation.
+         self._str = s
+@@ -334,51 +336,51 @@
+         return ('<RegexpChunkRule: '+unicode_repr(self._regexp.pattern)+
+                 '->'+unicode_repr(self._repl)+'>')
+ 
+-    @staticmethod
++
+-    def parse(s):
+-        """
+-        Create a RegexpChunkRule from a string description.
+-        Currently, the following formats are supported::
++def parse(s):
++    """
++    Create a RegexpChunkRule from a string description.
++    Currently, the following formats are supported::
+ 
+-          {regexp}         # chunk rule
+-          }regexp{         # chink rule
+-          regexp}{regexp   # split rule
+-          regexp{}regexp   # merge rule
++      {regexp}         # chunk rule
++      }regexp{         # chink rule
++      regexp}{regexp   # split rule
++      regexp{}regexp   # merge rule
+ 
+-        Where ``regexp`` is a regular expression for the rule.  Any
+-        text following the comment marker (``#``) will be used as
+-        the rule's description:
++    Where ``regexp`` is a regular expression for the rule.  Any
++    text following the comment marker (``#``) will be used as
++    the rule's description:
+ 
+-        >>> from nltk.chunk.regexp import RegexpChunkRule
+-        >>> RegexpChunkRule.parse('{<DT>?<NN.*>+}')
+-        <ChunkRule: '<DT>?<NN.*>+'>
+-        """
+-        # Split off the comment (but don't split on '\#')
+-        m = re.match(r'(?P<rule>(\\.|[^#])*)(?P<comment>#.*)?', s)
+-        rule = m.group('rule').strip()
+-        comment = (m.group('comment') or '')[1:].strip()
++    >>> from nltk.chunk.regexp import RegexpChunkRule
++    >>> RegexpChunkRule.parse('{<DT>?<NN.*>+}')
++    <ChunkRule: '<DT>?<NN.*>+'>
++    """
++    # Split off the comment (but don't split on '\#')
++    m = re.match(r'(?P<rule>(\\.|[^#])*)(?P<comment>#.*)?', s)
++    rule = m.group('rule').strip()
++    comment = (m.group('comment') or '')[1:].strip()
+ 
+-        # Pattern bodies: chunk, chink, split, merge
+-        try:
+-            if not rule:
+-                raise ValueError('Empty chunk pattern')
+-            if rule[0] == '{' and rule[-1] == '}':
+-                return ChunkRule(rule[1:-1], comment)
+-            elif rule[0] == '}' and rule[-1] == '{':
+-                return ChinkRule(rule[1:-1], comment)
+-            elif '}{' in rule:
+-                left, right = rule.split('}{')
+-                return SplitRule(left, right, comment)
+-            elif '{}' in rule:
+-                left, right = rule.split('{}')
+-                return MergeRule(left, right, comment)
++    # Pattern bodies: chunk, chink, split, merge
++    try:
++        if not rule:
++            raise ValueError('Empty chunk pattern')
++        if rule[0] == '{' and rule[-1] == '}':
++            return ChunkRule(rule[1:-1], comment)
++        elif rule[0] == '}' and rule[-1] == '{':
++            return ChinkRule(rule[1:-1], comment)
++        elif '}{' in rule:
++            left, right = rule.split('}{')
++            return SplitRule(left, right, comment)
++        elif '{}' in rule:
++            left, right = rule.split('{}')
++            return MergeRule(left, right, comment)
+-            elif re.match('[^{}]*{[^{}]*}[^{}]*', rule):
++        elif re.match('[^{}]*//{[^{}]*}[^{}]*', rule):
+-                left, chunk, right = re.split('[{}]', rule)
+-                return ChunkRuleWithContext(left, chunk, right, comment)
+-            else:
+-                raise ValueError('Illegal chunk pattern: %s' % rule)
+-        except (ValueError, re.error):
+-            raise ValueError('Illegal chunk pattern: %s' % rule)
++            left, chunk, right = re.split('[{}]', rule)
++            return ChunkRuleWithContext(left, chunk, right, comment)
++        else:
++            raise ValueError('Illegal chunk pattern: %s' % rule)
++    except (ValueError, re.error):
++        raise ValueError('Illegal chunk pattern: %s' % rule)
+ 
+ 
+ @python_2_unicode_compatible
+@@ -552,7 +554,9 @@
+         regexp = re.compile('(?P<left>%s)}{(?=%s)' %
+                             (tag_pattern2re_pattern(left_tag_pattern),
+                              tag_pattern2re_pattern(right_tag_pattern)))
+-        RegexpChunkRule.__init__(self, regexp, '\g<left>', descr)
++        regespvar1 = '\g<left>'
++        regespvar = regespvar1.encode('utf-8')
++        RegexpChunkRule.__init__(self, regexp, regespvar, descr)
+ 
+     def __repr__(self):
+         """
+@@ -612,7 +616,9 @@
+         regexp = re.compile('(?P<left>%s)(?=%s)' %
+                             (tag_pattern2re_pattern(left_tag_pattern),
+                              tag_pattern2re_pattern(right_tag_pattern)))
+-        RegexpChunkRule.__init__(self, regexp, r'\g<left>}{', descr)
++        regexpvar1 = r'\g<left>}{'
++        regexpvar = regexpvar1.encode('utf-8')
++        RegexpChunkRule.__init__(self, regexp, regexpvar, descr)
+ 
+     def __repr__(self):
+         """
+@@ -673,7 +679,9 @@
+         regexp = re.compile('(?P<left>%s)\{(?P<right>%s)' %
+                             (tag_pattern2re_pattern(left_tag_pattern),
+                              tag_pattern2re_pattern(right_tag_pattern)))
+-        RegexpChunkRule.__init__(self, regexp, '{\g<left>\g<right>', descr)
++        regexpvar1 = '{\g<left>\g<right>'
++        regexpvar = regexpvar1.encode('utf-8')
++        RegexpChunkRule.__init__(self, regexp, regexpvar, descr)
+ 
+     def __repr__(self):
+         """
+@@ -734,7 +742,9 @@
+         regexp = re.compile('(?P<left>%s)\}(?P<right>%s)' %
+                             (tag_pattern2re_pattern(left_tag_pattern),
+                              tag_pattern2re_pattern(right_tag_pattern)))
+-        RegexpChunkRule.__init__(self, regexp, '\g<left>\g<right>}', descr)
++        regchunkvar1 = '\g<left>\g<right>}'
++        regchunkvar = regchunkvar1.encode('utf-8')
++        RegexpChunkRule.__init__(self, regexp, regchunkvar, descr)
+ 
+     def __repr__(self):
+         """
+@@ -1024,7 +1034,7 @@
+             self._notrace_apply(chunkstr)
+ 
+         # Use the chunkstring to create a chunk structure.
+-        return chunkstr.to_chunkstruct(self._chunk_node)
++        return chunkstr.to_chunkstruct(unicode(self._chunk_node))
+ 
+     def rules(self):
+         """
+@@ -1172,7 +1182,7 @@
+         """
+         Helper function for __init__: add a new stage to the parser.
+         """
+-        if rules != []:
++        if rules:
+             if not lhs:
+                 raise ValueError('Expected stage marker (eg NP:)')
+             parser = RegexpChunkParser(rules, chunk_node=lhs,
+@@ -1198,7 +1208,7 @@
+         """
+         if trace is None: trace = self._trace
+         for i in range(self._loop):
+-            for parser in self._stages:
++            for parser in self._stages: #cannot iterate over an int
+                 chunk_struct = parser.parse(chunk_struct, trace=trace)
+         return chunk_struct
+ 
+@@ -1209,6 +1219,7 @@
+         """
+         return "<chunk.RegexpParser with %d stages>" % len(self._stages)
+ 
++    @property
+     def __str__(self):
+         """
+         :return: a verbose string representation of this
+@@ -1217,7 +1228,7 @@
+         """
+         s = "chunk.RegexpParser with %d stages:\n" % len(self._stages)
+         margin = 0
+-        for parser in self._stages:
++        for parser in self._stages: #cannot iterate over an int
+             s += "%s\n" % parser
+         return s[:-1]
+ 
+@@ -1294,7 +1305,7 @@
+     and strategies.
+     """
+ 
+-    from nltk import chunk, Tree
++    from nltk import chunk
+ 
+     text = """\
+     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
+@@ -1314,7 +1325,7 @@
+       {<NNP>+}            # chunk proper nouns
+     """
+     cp = chunk.RegexpParser(grammar)
+-    demo_eval(cp, text)
++    demo_eval(cp, str(text))
+ 
+     grammar = r"""
+     NP:
+@@ -1323,14 +1334,14 @@
+       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
+     """
+     cp = chunk.RegexpParser(grammar)
+-    demo_eval(cp, text)
++    demo_eval(cp, str(text))
+ 
+     grammar = r"""
+     NP: {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
+     VP: {<TO>?<VB.*>}       # VP = verb words
+     """
+     cp = chunk.RegexpParser(grammar)
+-    demo_eval(cp, text)
++    demo_eval(cp, str(text))
+ 
+     grammar = r"""
+     NP: {<.*>*}             # start by chunking everything
+@@ -1340,7 +1351,7 @@
+     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
+     """
+     cp = chunk.RegexpParser(grammar)
+-    demo_eval(cp, text)
++    demo_eval(cp, str(text))
+ 
+ # Evaluation
+ 
