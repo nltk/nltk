@@ -204,6 +204,8 @@ treebank_raw = LazyCorpusLoader(
     'treebank/raw', PlaintextCorpusReader, r'wsj_.*', encoding='ISO-8859-2')
 udhr = LazyCorpusLoader(
     'udhr', UdhrCorpusReader)
+udhr2 = LazyCorpusLoader(
+    'udhr2', PlaintextCorpusReader, r'.*\.txt', encoding='utf8')
 verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.).*\.xml')
 webtext = LazyCorpusLoader(
