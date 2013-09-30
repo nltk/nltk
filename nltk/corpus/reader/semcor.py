@@ -170,7 +170,7 @@ class SemcorCorpusReader(XMLCorpusReader):
                 if sensenum is not None:
                     try:
                         sense = wordnet.lemma_from_key(sense_key)   # Lemma object
-                    except:
+                    except Exception:
                         # cannot retrieve the wordnet.Lemma object. possible reasons:
                         #  (a) the wordnet corpus is not downloaded;
                         #  (b) a nonexistant sense is annotated: e.g., such.s.00 triggers: 
