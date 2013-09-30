@@ -18,7 +18,7 @@ from collections import defaultdict
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
-from nltk.compat import xrange, python_2_unicode_compatible
+from nltk.compat import xrange, python_2_unicode_compatible, total_ordering
 
 ######################################################################
 ## Table of Contents
@@ -95,6 +95,7 @@ class WordNetError(Exception):
     """An exception class for wordnet-related errors."""
 
 
+@total_ordering
 class _WordNetObject(object):
     """A common base class for lemmas and synsets."""
 
@@ -163,6 +164,9 @@ class _WordNetObject(object):
 
     def __ne__(self, other):
         return self.name != other.name
+
+    def __lt__(self, other):
+        return self.name < other.name
 
 
 @python_2_unicode_compatible
@@ -237,9 +241,9 @@ class Lemma(_WordNetObject):
 
     def _related(self, relation_symbol):
         get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
-        return [get_synset(pos, offset).lemmas[lemma_index]
+        return sorted([get_synset(pos, offset).lemmas[lemma_index]
                 for pos, offset, lemma_index
-                in self.synset._lemma_pointers[self.name, relation_symbol]]
+                in self.synset._lemma_pointers[self.name, relation_symbol]])
 
     def count(self):
         """Return the frequency count for this Lemma"""
@@ -404,7 +408,13 @@ class Synset(_WordNetObject):
             >>> dog = wn.synset('dog.n.01')
             >>> hyp = lambda s:s.hypernyms()
             >>> list(dog.closure(hyp))
-            [Synset('domestic_animal.n.01'), Synset('canine.n.02'), Synset('animal.n.01'), Synset('carnivore.n.01'), Synset('organism.n.01'), Synset('placental.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('whole.n.02'), Synset('vertebrate.n.01'), Synset('object.n.01'), Synset('chordate.n.01'), Synset('physical_entity.n.01'), Synset('entity.n.01')]
+            [Synset('canine.n.02'), Synset('domestic_animal.n.01'),
+            Synset('carnivore.n.01'), Synset('animal.n.01'),
+            Synset('placental.n.01'), Synset('organism.n.01'),
+            Synset('mammal.n.01'), Synset('living_thing.n.01'),
+            Synset('vertebrate.n.01'), Synset('whole.n.02'),
+            Synset('chordate.n.01'), Synset('object.n.01'),
+            Synset('physical_entity.n.01'), Synset('entity.n.01')]
 
         """
         from nltk.util import breadth_first
@@ -512,7 +522,7 @@ class Synset(_WordNetObject):
             else:
                 max_depth = max(s.max_depth() for s in synsets)
                 unsorted_lch = [s for s in synsets if s.max_depth() == max_depth]
-            return sorted(unsorted_lch, key=attrgetter('name'))
+            return sorted(unsorted_lch)
         except ValueError:
             return []
 
@@ -597,13 +607,6 @@ class Synset(_WordNetObject):
         >>> from pprint import pprint
         >>> pprint(dog.tree(hyp))
         [Synset('dog.n.01'),
-         [Synset('domestic_animal.n.01'),
-          [Synset('animal.n.01'),
-           [Synset('organism.n.01'),
-            [Synset('living_thing.n.01'),
-             [Synset('whole.n.02'),
-              [Synset('object.n.01'),
-               [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]],
          [Synset('canine.n.02'),
           [Synset('carnivore.n.01'),
            [Synset('placental.n.01'),
@@ -616,7 +619,14 @@ class Synset(_WordNetObject):
                   [Synset('whole.n.02'),
                    [Synset('object.n.01'),
                     [Synset('physical_entity.n.01'),
-                     [Synset('entity.n.01')]]]]]]]]]]]]]]
+                     [Synset('entity.n.01')]]]]]]]]]]]]],
+         [Synset('domestic_animal.n.01'),
+          [Synset('animal.n.01'),
+           [Synset('organism.n.01'),
+            [Synset('living_thing.n.01'),
+             [Synset('whole.n.02'),
+              [Synset('object.n.01'),
+               [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]]]
         """
 
         tree = [self]
@@ -868,7 +878,7 @@ class Synset(_WordNetObject):
     def _related(self, relation_symbol):
         get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
         pointer_tuples = self._pointers[relation_symbol]
-        return [get_synset(pos, offset) for pos, offset in pointer_tuples]
+        return sorted([get_synset(pos, offset) for pos, offset in pointer_tuples])
 
 
 ######################################################################
