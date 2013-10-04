@@ -61,9 +61,6 @@ from __future__ import print_function
 
 from nltk.tag.api        import TaggerI
 from nltk.tag.util       import str2tuple, tuple2str, untag
-from nltk.tag.simplify   import (simplify_brown_tag, simplify_wsj_tag,
-                                 simplify_indian_tag, simplify_alpino_tag,
-                                 simplify_tag)
 from nltk.tag.sequential import (SequentialBackoffTagger, ContextTagger,
                                  DefaultTagger, NgramTagger, UnigramTagger,
                                  BigramTagger, TrigramTagger, AffixTagger,
@@ -75,6 +72,7 @@ from nltk.tag.hunpos     import HunposTagger
 from nltk.tag.stanford   import StanfordTagger
 from nltk.tag.crf        import MalletCRF
 from nltk.tag.hmm        import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
+from nltk.tag.mapping    import tagset_mapping, map_tag
 
 from nltk.data import load
 

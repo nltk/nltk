@@ -29,7 +29,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     """
     def __init__(self, root, fileids, comment_char=None,
                  detect_blocks='unindented_paren', encoding='utf8',
-                 tag_mapping_function=None):
+                 tagset=None):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
@@ -39,11 +39,14 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
           in the corpus; can be 'unindented_paren' (every unindented
           parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).
+        :param tagset: The name of the tagset used by this corpus, to be used
+              for normalizing or converting the POS tags returned by the
+              tagged_...() methods.
         """
         CorpusReader.__init__(self, root, fileids, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
-        self._tag_mapping_function = tag_mapping_function
+        self._tagset = tagset
 
     def _read_block(self, stream):
         if self._detect_blocks == 'sexpr':
@@ -93,11 +96,10 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             #sys.stderr.write(' '.join(t.split())+'\n')
             return Tree('S', self._tag(t))
 
-    def _tag(self, t, simplify_tags=False):
+    def _tag(self, t, tagset=None):
         tagged_sent = [(w,t) for (t,w) in TAGWORD.findall(self._normalize(t))]
-        if simplify_tags:
-            tagged_sent = [(w, self._tag_mapping_function(t))
-                           for (w,t) in tagged_sent]
+        if tagset and tagset != self._tagset:
+            tagged_sent = [(w, map_tag(self._tagset, tagset, t)) for (w,t) in tagged_sent]
         return tagged_sent
 
     def _word(self, t):
@@ -141,15 +143,15 @@ class CategorizedBracketParseCorpusReader(CategorizedCorpusReader,
     def paras(self, fileids=None, categories=None):
         return BracketParseCorpusReader.paras(
             self, self._resolve(fileids, categories))
-    def tagged_words(self, fileids=None, categories=None, simplify_tags=False):
+    def tagged_words(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_words(
-            self, self._resolve(fileids, categories), simplify_tags)
-    def tagged_sents(self, fileids=None, categories=None, simplify_tags=False):
+            self, self._resolve(fileids, categories), tagset)
+    def tagged_sents(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_sents(
-            self, self._resolve(fileids, categories), simplify_tags)
-    def tagged_paras(self, fileids=None, categories=None, simplify_tags=False):
+            self, self._resolve(fileids, categories), tagset)
+    def tagged_paras(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_paras(
-            self, self._resolve(fileids, categories), simplify_tags)
+            self, self._resolve(fileids, categories), tagset)
     def parsed_words(self, fileids=None, categories=None):
         return BracketParseCorpusReader.parsed_words(
             self, self._resolve(fileids, categories))
@@ -164,11 +166,11 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
     """
-    def __init__(self, root, encoding='ISO-8859-1', tag_mapping_function=None):
+    def __init__(self, root, encoding='ISO-8859-1', tagset=None):
         BracketParseCorpusReader.__init__(self, root, 'alpino\.xml',
                                  detect_blocks='blankline',
                                  encoding=encoding,
-                                 tag_mapping_function=tag_mapping_function)
+                                 tagset=tagset)
 
     def _normalize(self, t):
         if t[:10] != "<alpino_ds":
