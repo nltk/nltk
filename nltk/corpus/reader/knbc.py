@@ -60,7 +60,8 @@ class KNBCorpusReader(SyntaxCorpusReader):
 
         return res
 
-    def _tag(self, t, simplify_tags=False):
+    # ignores tagset argument
+    def _tag(self, t, tagset=None):
         res = []
         for line in t.splitlines():
             # ignore the Bunsets headers

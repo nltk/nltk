@@ -40,7 +40,7 @@ class CorpusReader(object):
     be used to select which portion of the corpus should be returned.
     """
 
-    def __init__(self, root, fileids, encoding='utf8', tag_mapping_function=None):
+    def __init__(self, root, fileids, encoding='utf8', tagset=None):
         """
         :type root: PathPointer or str
         :param root: A path pointer identifying the root directory for
@@ -67,9 +67,9 @@ class CorpusReader(object):
               using non-unicode byte strings.
             - None: the file contents of all files will be
               processed using non-unicode byte strings.
-        :param tag_mapping_function: A function for normalizing or
-                simplifying the POS tags returned by the tagged_words()
-                or tagged_sents() methods.
+        :param tagset: The name of the tagset used by this corpus, to be used
+              for normalizing or converting the POS tags returned by the
+              tagged_...() methods.
         """
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, compat.string_types) and not isinstance(root, PathPointer):
@@ -109,7 +109,7 @@ class CorpusReader(object):
         """The default unicode encoding for the fileids that make up
            this corpus.  If ``encoding`` is None, then the file
            contents are processed using byte strings."""
-        self._tag_mapping_function = tag_mapping_function
+        self._tagset = tagset
 
     def __repr__(self):
         if isinstance(self._root, ZipFilePathPointer):
@@ -379,9 +379,9 @@ class SyntaxCorpusReader(CorpusReader):
         return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
                        for fileid, enc in self.abspaths(fileids, True)])
 
-    def tagged_sents(self, fileids=None, simplify_tags=False):
+    def tagged_sents(self, fileids=None, tagset=None):
         def reader(stream):
-            return self._read_tagged_sent_block(stream, simplify_tags)
+            return self._read_tagged_sent_block(stream, tagset)
         return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
                        for fileid, enc in self.abspaths(fileids, True)])
 
@@ -390,9 +390,9 @@ class SyntaxCorpusReader(CorpusReader):
         return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
                        for fileid, enc in self.abspaths(fileids, True)])
 
-    def tagged_words(self, fileids=None, simplify_tags=False):
+    def tagged_words(self, fileids=None, tagset=None):
         def reader(stream):
-            return self._read_tagged_word_block(stream, simplify_tags)
+            return self._read_tagged_word_block(stream, tagset)
         return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
                        for fileid, enc in self.abspaths(fileids, True)])
 
@@ -408,14 +408,14 @@ class SyntaxCorpusReader(CorpusReader):
     def _read_word_block(self, stream):
         return sum(self._read_sent_block(stream), [])
 
-    def _read_tagged_word_block(self, stream, simplify_tags=False):
-        return sum(self._read_tagged_sent_block(stream, simplify_tags), [])
+    def _read_tagged_word_block(self, stream, tagset=None):
+        return sum(self._read_tagged_sent_block(stream, tagset), [])
 
     def _read_sent_block(self, stream):
         return list(filter(None, [self._word(t) for t in self._read_block(stream)]))
 
-    def _read_tagged_sent_block(self, stream, simplify_tags=False):
-        return list(filter(None, [self._tag(t, simplify_tags)
+    def _read_tagged_sent_block(self, stream, tagset=None):
+        return list(filter(None, [self._tag(t, tagset)
                              for t in self._read_block(stream)]))
 
     def _read_parsed_sent_block(self, stream):

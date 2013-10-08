@@ -160,17 +160,15 @@ Indian text annotated with part-of-speech tags:
     [('\xe0\xa6\xae\xe0\xa6\xb9\xe0\xa6\xbf...', 'NN'),
      ('\xe0\xa6\xb8\xe0\xa6\xa8\xe0\xa7\x8d\xe0...', 'NN'), ...]
 
-Tagged corpora support access to simplified tags, e.g. where all nouns
-tags are collapsed to a single category ``N``:
+Several tagged corpora support access to a simplified, universal tagset, e.g. where all nouns
+tags are collapsed to a single category ``NOUN``:
 
-    >>> print(brown.tagged_sents(simplify_tags=True)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [[('The', 'DET'), ('Fulton', 'NP'), ('County', 'N'), ('Grand', 'ADJ'), ...],
-     [('The', 'DET'), ('jury', 'N'), ('further', 'ADV'), ('said', 'VD'), ...]...]
+    >>> print(brown.tagged_sents(tagset='universal')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [[('The', 'DET'), ('Fulton', 'NOUN'), ('County', 'NOUN'), ('Grand', 'ADJ'), ('Jury', 'NOUN'), ...],
+     [('The', 'DET'), ('jury', 'NOUN'), ('further', 'ADV'), ('said', 'VERB'), ('in', 'ADP'), ...]...]
     >>> from nltk.corpus import conll2000, switchboard
-    >>> print(conll2000.tagged_words(simplify_tags=True)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [('Confidence', 'N'), ('in', 'P'), ('the', 'DET'), ...]
-    >>> print(switchboard.tagged_words(simplify_tags=True)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [('Uh', 'UH'), (',', ','), ('do', 'V'), ...]
+    >>> print(conll2000.tagged_words(tagset='universal')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [('Confidence', 'NOUN'), ('in', 'ADP'), ('the', 'DET'), ...]
 
 Use ``nltk.app.pos_concordance()`` to access a GUI for searching tagged corpora.
 
