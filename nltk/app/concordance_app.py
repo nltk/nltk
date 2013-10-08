@@ -39,53 +39,53 @@ POLL_INTERVAL = 50
 _DEFAULT = 'English: Brown Corpus (Humor, simplified)'
 _CORPORA = {
             'Catalan: CESS-CAT Corpus (simplified)':
-                lambda: cess_cat.tagged_sents(simplify_tags=True),
+                lambda: cess_cat.tagged_sents(tagset='simple'),
             'English: Brown Corpus':
                 lambda: brown.tagged_sents(),
             'English: Brown Corpus (simplified)':
-                lambda: brown.tagged_sents(simplify_tags=True),
+                lambda: brown.tagged_sents(tagset='simple'),
             'English: Brown Corpus (Press, simplified)':
-                lambda: brown.tagged_sents(categories=['news', 'editorial', 'reviews'], simplify_tags=True),
+                lambda: brown.tagged_sents(categories=['news', 'editorial', 'reviews'], tagset='simple'),
             'English: Brown Corpus (Religion, simplified)':
-                lambda: brown.tagged_sents(categories='religion', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='religion', tagset='simple'),
             'English: Brown Corpus (Learned, simplified)':
-                lambda: brown.tagged_sents(categories='learned', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='learned', tagset='simple'),
             'English: Brown Corpus (Science Fiction, simplified)':
-                lambda: brown.tagged_sents(categories='science_fiction', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='science_fiction', tagset='simple'),
             'English: Brown Corpus (Romance, simplified)':
-                lambda: brown.tagged_sents(categories='romance', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='romance', tagset='simple'),
             'English: Brown Corpus (Humor, simplified)':
-                lambda: brown.tagged_sents(categories='humor', simplify_tags=True),
+                lambda: brown.tagged_sents(categories='humor', tagset='simple'),
             'English: NPS Chat Corpus':
                 lambda: nps_chat.tagged_posts(),
             'English: NPS Chat Corpus (simplified)':
-                lambda: nps_chat.tagged_posts(simplify_tags=True),
+                lambda: nps_chat.tagged_posts(tagset='simple'),
             'English: Wall Street Journal Corpus':
                 lambda: treebank.tagged_sents(),
             'English: Wall Street Journal Corpus (simplified)':
-                lambda: treebank.tagged_sents(simplify_tags=True),
+                lambda: treebank.tagged_sents(tagset='simple'),
             'Chinese: Sinica Corpus':
                 lambda: sinica_treebank.tagged_sents(),
             'Chinese: Sinica Corpus (simplified)':
-                lambda: sinica_treebank.tagged_sents(simplify_tags=True),
+                lambda: sinica_treebank.tagged_sents(tagset='simple'),
             'Dutch: Alpino Corpus':
                 lambda: alpino.tagged_sents(),
             'Dutch: Alpino Corpus (simplified)':
-                lambda: alpino.tagged_sents(simplify_tags=True),
+                lambda: alpino.tagged_sents(tagset='simple'),
             'Hindi: Indian Languages Corpus':
                 lambda: indian.tagged_sents(files='hindi.pos'),
             'Hindi: Indian Languages Corpus (simplified)':
-                lambda: indian.tagged_sents(files='hindi.pos', simplify_tags=True),
+                lambda: indian.tagged_sents(files='hindi.pos', tagset='simple'),
             'Portuguese: Floresta Corpus (Portugal)':
                 lambda: floresta.tagged_sents(),
             'Portuguese: Floresta Corpus (Portugal, simplified)':
-                lambda: floresta.tagged_sents(simplify_tags=True),
+                lambda: floresta.tagged_sents(tagset='simple'),
             'Portuguese: MAC-MORPHO Corpus (Brazil)':
                 lambda: mac_morpho.tagged_sents(),
             'Portuguese: MAC-MORPHO Corpus (Brazil, simplified)':
-                lambda: mac_morpho.tagged_sents(simplify_tags=True),
+                lambda: mac_morpho.tagged_sents(tagset='simple'),
             'Spanish: CESS-ESP Corpus (simplified)':
-                lambda: cess_esp.tagged_sents(simplify_tags=True),
+                lambda: cess_esp.tagged_sents(tagset='simple'),
            }
 
 class ConcordanceSearchView(object):

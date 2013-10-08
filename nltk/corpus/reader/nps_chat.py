@@ -11,6 +11,7 @@ import textwrap
 
 from nltk.util import LazyConcatenation
 from nltk.internals import ElementWrapper
+from nltk.tag import map_tag
 
 from .util import *
 from .api import *
@@ -18,9 +19,9 @@ from .xmldocs import *
 
 class NPSChatCorpusReader(XMLCorpusReader):
 
-    def __init__(self, root, fileids, wrap_etree=False, tag_mapping_function=None):
+    def __init__(self, root, fileids, wrap_etree=False, tagset=None):
         XMLCorpusReader.__init__(self, root, fileids, wrap_etree)
-        self._tag_mapping_function = tag_mapping_function
+        self._tagset = tagset
 
     def xml_posts(self, fileids=None):
         if self._wrap_etree:
@@ -36,9 +37,9 @@ class NPSChatCorpusReader(XMLCorpusReader):
                                      self._elt_to_words)
                        for fileid in self.abspaths(fileids)])
 
-    def tagged_posts(self, fileids=None, simplify_tags=False):
+    def tagged_posts(self, fileids=None, tagset=None):
         def reader(elt, handler):
-            return self._elt_to_tagged_words(elt, handler, simplify_tags)
+            return self._elt_to_tagged_words(elt, handler, tagset)
         return concat([XMLCorpusView(fileid, 'Session/Posts/Post/terminals',
                                      reader)
                        for fileid in self.abspaths(fileids)])
@@ -46,8 +47,8 @@ class NPSChatCorpusReader(XMLCorpusReader):
     def words(self, fileids=None):
         return LazyConcatenation(self.posts(fileids))
 
-    def tagged_words(self, fileids=None, simplify_tags=False):
-        return LazyConcatenation(self.tagged_posts(fileids, simplify_tags))
+    def tagged_words(self, fileids=None, tagset=None):
+        return LazyConcatenation(self.tagged_posts(fileids, tagset))
 
     def _wrap_elt(self, elt, handler):
         return ElementWrapper(elt)
@@ -56,12 +57,11 @@ class NPSChatCorpusReader(XMLCorpusReader):
         return [self._simplify_username(t.attrib['word'])
                 for t in elt.findall('t')]
 
-    def _elt_to_tagged_words(self, elt, handler, simplify_tags=False):
+    def _elt_to_tagged_words(self, elt, handler, tagset=None):
         tagged_post = [(self._simplify_username(t.attrib['word']),
                         t.attrib['pos']) for t in elt.findall('t')]
-        if simplify_tags:
-            tagged_post = [(w, self._tag_mapping_function(t))
-                           for (w,t) in tagged_post]
+        if tagset and tagset != self._tagset:
+            tagged_post = [(w, map_tag(self._tagset, tagset, t)) for (w, t) in tagged_post]
         return tagged_post
 
     @staticmethod

@@ -41,7 +41,8 @@ Extraction, Proceedings of IJCNLP-04, pp560-565.
 import os
 import re
 
-import nltk
+from nltk.tree import sinica_parse
+from nltk.tag import map_tag
 
 from .util import *
 from .api import *
@@ -62,13 +63,12 @@ class SinicaTreebankCorpusReader(SyntaxCorpusReader):
         return [sent]
 
     def _parse(self, sent):
-        return nltk.tree.sinica_parse(sent)
+        return sinica_parse(sent)
 
-    def _tag(self, sent, simplify_tags=None):
+    def _tag(self, sent, tagset=None):
         tagged_sent = [(w,t) for (t,w) in TAGWORD.findall(sent)]
-        if simplify_tags:
-            tagged_sent = [(w, self._tag_mapping_function(t))
-                           for (w,t) in tagged_sent]
+        if tagset and tagset != self._tagset:
+            tagged_sent = [(w, map_tag(self._tagset, tagset, t)) for (w,t) in tagged_sent]
         return tagged_sent
 
     def _word(self, sent):

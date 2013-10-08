@@ -32,8 +32,7 @@ TEXTID = re.compile(r'text id="(.*?)"')
 class TEICorpusView(StreamBackedCorpusView):
 	def __init__(self, corpus_file,
 					tagged, group_by_sent, group_by_para,
-					tag_mapping_function=None, headLen=0,
-					textids=None):
+					tagset=None, headLen=0, textids=None):
 		self._tagged = tagged
 		self._textids = textids
 
