@@ -993,7 +993,7 @@ class RegexpChunkApp(object):
         wordnum = 0
         for child in tree:
             if isinstance(child, Tree):
-                if child.node == self._chunk_node:
+                if child.node() == self._chunk_node:
                     chunks.add( (wordnum, wordnum+len(child)) )
                 wordnum += len(child)
             else:

@@ -301,11 +301,11 @@ def printCCGTree(lwidth,tree):
 
     # Is a leaf node.
     # Don't print anything, but account for the space occupied.
-    if not isinstance(tree.node, tuple):
-        return max(rwidth,2 + lwidth + len("%s" % tree.node),
+    if not isinstance(tree.node(), tuple):
+        return max(rwidth,2 + lwidth + len("%s" % tree.node()),
                   2 + lwidth + len(tree[0]))
 
-    (res,op) = tree.node
+    (res,op) = tree.node()
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
     print(lwidth*' ' + (rwidth-lwidth)*'-' + "%s" % op)

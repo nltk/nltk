@@ -18,7 +18,7 @@ Some trees to run tests on:
 
 The node value is stored using the `node` attribute:
 
-    >>> dp1.node, dp2.node, vp.node, tree.node
+    >>> dp1.node(), dp2.node(), vp.node(), tree.node()
     ('dp', 'dp', 'vp', 's')
 
     >>> print(tree[1,1,1,0])
@@ -233,7 +233,7 @@ whitespace, then you must also use the optional `node_pattern` and
     >>> from nltk.featstruct import FeatStruct
     >>> tree = Tree.parse('([cat=NP] [lex=the] [lex=dog])',
     ...                   parse_node=FeatStruct, parse_leaf=FeatStruct)
-    >>> tree.node = tree.node.unify(FeatStruct('[num=singular]'))
+    >>> tree.set_node(tree.node.unify(FeatStruct('[num=singular]')))
     >>> print(tree)
     ([cat='NP', num='singular'] [lex='the'] [lex='dog'])
 
@@ -739,7 +739,7 @@ ImmutableParentedTree Regression Tests
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableParentedTree may not be modified
-    >>> iptree.node = 'newnode'
+    >>> iptree.set_node('newnode')
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableParentedTree may not be modified
@@ -1041,7 +1041,7 @@ ImmutableMultiParentedTree Regression Tests
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableMultiParentedTree may not be modified
-    >>> imptree.node = 'newnode'
+    >>> imptree.set_node('newnode')
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableMultiParentedTree may not be modified
@@ -1068,7 +1068,7 @@ ProbabilisticTree Regression Tests
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableProbabilisticTree may not be modified
-    >>> imprtree.node = 'newnode'
+    >>> imprtree.set_node('newnode')
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableProbabilisticTree may not be modified
