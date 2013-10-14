@@ -394,7 +394,7 @@ def _tree_to_treeseg(canvas, t, make_node, make_leaf,
                      tree_attribs, node_attribs,
                      leaf_attribs, loc_attribs):
     if isinstance(t, Tree):
-        node = make_node(canvas, t.node, **node_attribs)
+        node = make_node(canvas, t._node, **node_attribs)
         subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf,
                                      tree_attribs, node_attribs,
                                      leaf_attribs, loc_attribs)
@@ -592,7 +592,7 @@ class TreeWidget(CanvasWidget):
         make_node = self._make_node
         make_leaf = self._make_leaf
 
-        node = make_node(canvas, t.node, **self._nodeattribs)
+        node = make_node(canvas, t._node, **self._nodeattribs)
         self._nodes.append(node)
         leaves = [make_leaf(canvas, l, **self._leafattribs)
                   for l in t.leaves()]
@@ -617,7 +617,7 @@ class TreeWidget(CanvasWidget):
         make_leaf = self._make_leaf
 
         if isinstance(t, Tree):
-            node = make_node(canvas, t.node, **self._nodeattribs)
+            node = make_node(canvas, t._node, **self._nodeattribs)
             self._nodes.append(node)
             children = t
             subtrees = [self._make_expanded_tree(canvas, children[i], key+(i,))

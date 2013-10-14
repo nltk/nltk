@@ -299,7 +299,7 @@ def _chunksets(t, count, chunk_node):
     chunks = []
     for child in t:
         if isinstance(child, Tree):
-            if re.match(chunk_node, child.node):
+            if re.match(chunk_node, child.node()):
                 chunks.append(((count, pos), child.freeze()))
             pos += len(child.leaves())
         else:
@@ -389,7 +389,7 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
 
         # For "Begin"/"Outside", finish any completed chunks -
         # also do so for "Inside" which don't match the previous token.
-        mismatch_I = state == 'I' and chunk_type != stack[-1].node
+        mismatch_I = state == 'I' and chunk_type != stack[-1].node()
         if state in 'BO' or mismatch_I:
             if len(stack) == 2: stack.pop()
 
@@ -417,7 +417,7 @@ def tree2conlltags(t):
     tags = []
     for child in t:
         try:
-            category = child.node
+            category = child.node()
             prefix = "B-"
             for contents in child:
                 if isinstance(contents, Tree):
@@ -445,7 +445,7 @@ def conlltags2tree(sentence, chunk_types=('NP','PP','VP'),
             tree.append(Tree(chunktag[2:], [(word,postag)]))
         elif chunktag.startswith('I-'):
             if (len(tree)==0 or not isinstance(tree[-1], Tree) or
-                tree[-1].node != chunktag[2:]):
+                tree[-1].node() != chunktag[2:]):
                 if strict:
                     raise ValueError("Bad conll tag sequence")
                 else:

@@ -248,7 +248,7 @@ class ConllCorpusReader(CorpusReader):
             if chunk_types is not None and chunk_type not in chunk_types:
                 state = 'O'
             # Treat a mismatching I like a B.
-            if state == 'I' and chunk_type != stack[-1].node:
+            if state == 'I' and chunk_type != stack[-1].node():
                 state = 'B'
             # For B or I: close any open chunks
             if state in 'BO' and len(stack) == 2:
@@ -290,7 +290,7 @@ class ConllCorpusReader(CorpusReader):
                 for i, child in enumerate(subtree):
                     if (isinstance(child, Tree) and len(child)==1 and
                         isinstance(child[0], compat.string_types)):
-                        subtree[i] = (child[0], child.node)
+                        subtree[i] = (child[0], child.node())
 
         return tree
 
@@ -493,7 +493,7 @@ class ConllSRLInstanceList(list):
     def _tree2conll(self, tree, wordnum, words, pos, synt):
         assert isinstance(tree, Tree)
         if len(tree) == 1 and isinstance(tree[0], compat.string_types):
-            pos[wordnum] = tree.node
+            pos[wordnum] = tree.node()
             assert words[wordnum] == tree[0]
             return wordnum+1
         elif len(tree) == 1 and isinstance(tree[0], tuple):
@@ -501,7 +501,7 @@ class ConllSRLInstanceList(list):
             pos[wordnum], pos[wordnum] = tree[0]
             return wordnum+1
         else:
-            synt[wordnum] = '(%s%s' % (tree.node, synt[wordnum])
+            synt[wordnum] = '(%s%s' % (tree.node(), synt[wordnum])
             for child in tree:
                 wordnum = self._tree2conll(child, wordnum, words,
                                                   pos, synt)

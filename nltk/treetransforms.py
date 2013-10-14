@@ -124,17 +124,17 @@ def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 
     # over them) and node access time is proportional to the height of the node.
     # This method is 7x faster which helps when parsing 40,000 sentences.
 
-    nodeList = [(tree, [tree.node])]
+    nodeList = [(tree, [tree._node])]
     while nodeList != []:
         node, parent = nodeList.pop()
         if isinstance(node,Tree):
 
             # parent annotation
             parentString = ""
-            originalNode = node.node
+            originalNode = node._node
             if vertMarkov != 0 and node != tree and isinstance(node[0],Tree):
                 parentString = "%s<%s>" % (parentChar, "-".join(parent))
-                node.node += parentString
+                node._node += parentString
                 parent = [originalNode] + parent[:vertMarkov - 1]
 
             # add children to the agenda before we mess with them
@@ -143,7 +143,7 @@ def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 
 
             # chomsky normal form factorization
             if len(node) > 2:
-                childNodes = [child.node for child in node]
+                childNodes = [child._node for child in node]
                 nodeCopy = node.copy()
                 node[0:] = [] # delete the children
 
@@ -173,7 +173,7 @@ def un_chomsky_normal_form(tree, expandUnary = True, childChar = "|", parentChar
             # if the node contains the 'childChar' character it means that
             # it is an artificial node and can be removed, although we still need
             # to move its children to its parent
-            childIndex = node.node.find(childChar)
+            childIndex = node._node.find(childChar)
             if childIndex != -1:
                 nodeIndex = parent.index(node)
                 parent.remove(parent[nodeIndex])
@@ -189,17 +189,17 @@ def un_chomsky_normal_form(tree, expandUnary = True, childChar = "|", parentChar
                 # parent is now the current node so the children of parent will be added to the agenda
                 node = parent
             else:
-                parentIndex = node.node.find(parentChar)
+                parentIndex = node._node.find(parentChar)
                 if parentIndex != -1:
                     # strip the node name of the parent annotation
-                    node.node = node.node[:parentIndex]
+                    node._node = node._node[:parentIndex]
 
                 # expand collapsed unary productions
                 if expandUnary == True:
-                    unaryIndex = node.node.find(unaryChar)
+                    unaryIndex = node._node.find(unaryChar)
                     if unaryIndex != -1:
-                        newNode = Tree(node.node[unaryIndex + 1:], [i for i in node])
-                        node.node = node.node[:unaryIndex]
+                        newNode = Tree(node._node[unaryIndex + 1:], [i for i in node])
+                        node._node = node._node[:unaryIndex]
                         node[0:] = [newNode]
 
             for child in node:
@@ -238,7 +238,7 @@ def collapse_unary(tree, collapsePOS = False, collapseRoot = False, joinChar = "
         node = nodeList.pop()
         if isinstance(node,Tree):
             if len(node) == 1 and isinstance(node[0], Tree) and (collapsePOS == True or isinstance(node[0,0], Tree)):
-                node.node += joinChar + node[0].node
+                node._node += joinChar + node[0]._node
                 node[0:] = [child for child in node[0]]
                 # since we assigned the child's children to the current node,
                 # evaluate the current node again

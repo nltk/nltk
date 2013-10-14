@@ -686,7 +686,7 @@ class ShiftReduceApp(object):
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
             if not isinstance(tok, Tree): raise ValueError()
-            label = TextWidget(self._canvas, str(tok.node), color='#006060',
+            label = TextWidget(self._canvas, str(tok.node()), color='#006060',
                                font=self._boldfont)
             widget = TreeSegmentWidget(self._canvas, label, widgets,
                                        width=2)
