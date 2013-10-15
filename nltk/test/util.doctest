@@ -21,7 +21,7 @@ Utility functions
     ...              Tree(8, [Tree(6, [7]), 9])])
     >>> for x in breadth_first(tree):
     ...     if isinstance(x, int): print(x)
-    ...     else: print(x.node)
+    ...     else: print(x.label())
     5
     4
     8
@@ -33,7 +33,7 @@ Utility functions
     7
     >>> for x in breadth_first(tree, maxdepth=2):
     ...     if isinstance(x, int): print(x)
-    ...     else: print(x.node)
+    ...     else: print(x.label())
     5
     4
     8

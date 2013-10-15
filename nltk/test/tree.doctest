@@ -16,9 +16,9 @@ Some trees to run tests on:
     >>> print(tree)
     (s (dp (d the) (np dog)) (vp (v chased) (dp (d the) (np cat))))
 
-The node value is stored using the `node` attribute:
+The node label is accessed using the `label()` method:
 
-    >>> dp1.node, dp2.node, vp.node, tree.node
+    >>> dp1.label(), dp2.label(), vp.label(), tree.label()
     ('dp', 'dp', 'vp', 's')
 
     >>> print(tree[1,1,1,0])
@@ -198,16 +198,15 @@ Trees with no children are supported:
     >>> print(Tree.parse('(X (Y) (Z))'))
     (X (Y ) (Z ))
 
-Trees with an empty node and no children are supported:
+Trees with an empty node label and no children are supported:
 
     >>> print(Tree.parse('()'))
     ( )
     >>> print(Tree.parse('(X () ())'))
     (X ( ) ( ))
 
-Trees with an empty node and children are supported, but only if the
-first child is not a leaf (otherwise, it will be treated as the node
-value).
+Trees with an empty node label and children are supported, but only if the
+first child is not a leaf (otherwise, it will be treated as the node label).
 
     >>> print(Tree.parse('((A) (B) (C))'))
     ( (A ) (B ) (C ))
@@ -225,15 +224,15 @@ transform the string values of nodes or leaves.
     (<A> "b" (<C> "d" "e") (<F> (<G> "h" "i")))
 
 These transformation functions are typically used when the node or
-leaf values should be parsed to a non-string value (such as a feature
-structure).  If node values and leaf values need to be able to include
+leaf labels should be parsed to a non-string value (such as a feature
+structure).  If node and leaf labels need to be able to include
 whitespace, then you must also use the optional `node_pattern` and
 `leaf_pattern` arguments.
 
     >>> from nltk.featstruct import FeatStruct
     >>> tree = Tree.parse('([cat=NP] [lex=the] [lex=dog])',
     ...                   parse_node=FeatStruct, parse_leaf=FeatStruct)
-    >>> tree.node = tree.node.unify(FeatStruct('[num=singular]'))
+    >>> tree.set_label(tree.label().unify(FeatStruct('[num=singular]')))
     >>> print(tree)
     ([cat='NP', num='singular'] [lex='the'] [lex='dog'])
 
@@ -253,7 +252,7 @@ Parented Trees
 ==============
 `ParentedTree` is a subclass of `Tree` that automatically maintains
 parent pointers for single-parented trees.  Parented trees can be
-created directly from a node value and a list of children:
+created directly from a node label and a list of children:
 
     >>> ptree = (
     ...     ParentedTree('VP', [
@@ -739,7 +738,7 @@ ImmutableParentedTree Regression Tests
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableParentedTree may not be modified
-    >>> iptree.node = 'newnode'
+    >>> iptree.set_label('newnode')
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableParentedTree may not be modified
@@ -1041,7 +1040,7 @@ ImmutableMultiParentedTree Regression Tests
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableMultiParentedTree may not be modified
-    >>> imptree.node = 'newnode'
+    >>> imptree.set_label('newnode')
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableMultiParentedTree may not be modified
@@ -1068,7 +1067,7 @@ ProbabilisticTree Regression Tests
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableProbabilisticTree may not be modified
-    >>> imprtree.node = 'newnode'
+    >>> imprtree.set_label('newnode')
     Traceback (most recent call last):
       . . .
     ValueError: ImmutableProbabilisticTree may not be modified

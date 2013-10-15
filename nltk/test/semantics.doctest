@@ -640,7 +640,7 @@ Cooper Storage
     >>> from nltk.sem import cooper_storage as cs
     >>> sentence = 'every girl chases a dog'
     >>> trees = cs.parse_with_bindops(sentence, grammar='grammars/book_grammars/storage.fcfg')
-    >>> semrep = trees[0].node['SEM']
+    >>> semrep = trees[0].label()['SEM']
     >>> cs_semrep = cs.CooperStore(semrep)
     >>> print(cs_semrep.core)
     chase(z2,z4)

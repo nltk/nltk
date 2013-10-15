@@ -297,15 +297,15 @@ def printCCGTree(lwidth,tree):
 
     # Find the width of the current derivation step
     for child in tree:
-        rwidth = max(rwidth,printCCGTree(rwidth,child))
+        rwidth = max(rwidth, printCCGTree(rwidth,child))
 
     # Is a leaf node.
     # Don't print anything, but account for the space occupied.
-    if not isinstance(tree.node, tuple):
-        return max(rwidth,2 + lwidth + len("%s" % tree.node),
+    if not isinstance(tree.label(), tuple):
+        return max(rwidth,2 + lwidth + len("%s" % tree.label()),
                   2 + lwidth + len(tree[0]))
 
-    (res,op) = tree.node
+    (res,op) = tree.label()
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
     print(lwidth*' ' + (rwidth-lwidth)*'-' + "%s" % op)

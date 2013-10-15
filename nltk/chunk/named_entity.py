@@ -142,7 +142,7 @@ class NEChunkParser(ChunkParserI):
                 sent.append(Tree(tag[2:], [tok]))
             elif tag.startswith('I-'):
                 if (sent and isinstance(sent[-1], Tree) and
-                    sent[-1].node == tag[2:]):
+                    sent[-1].label() == tag[2:]):
                     sent[-1].append(tok)
                 else:
                     sent.append(Tree(tag[2:], [tok]))
@@ -159,9 +159,9 @@ class NEChunkParser(ChunkParserI):
                 if len(child) == 0:
                     print("Warning -- empty chunk in sentence")
                     continue
-                toks.append((child[0], 'B-%s' % child.node))
+                toks.append((child[0], 'B-%s' % child.label()))
                 for tok in child[1:]:
-                    toks.append((tok, 'I-%s' % child.node))
+                    toks.append((tok, 'I-%s' % child.label()))
             else:
                 toks.append((child, 'O'))
         return toks
@@ -191,7 +191,7 @@ def postag_tree(tree):
     newtree = Tree('S', [])
     for child in tree:
         if isinstance(child, Tree):
-            newtree.append(Tree(child.node, []))
+            newtree.append(Tree(child.label(), []))
             for subchild in child:
                 newtree[-1].append( (subchild, next(tag_iter)) )
         else:

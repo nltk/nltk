@@ -394,7 +394,7 @@ class ChartResultsView(object):
                                              width=2, outline='#088')
 
     def _color(self, treewidget, color):
-        treewidget.node()['color'] = color
+        treewidget.label()['color'] = color
         for child in treewidget.subtrees():
             if isinstance(child, TreeSegmentWidget):
                 self._color(child, color)
@@ -1518,7 +1518,7 @@ class ChartView(object):
         # Draw the node
         nodey = depth * (ChartView._TREE_LEVEL_SIZE + self._text_height)
         tag = c.create_text(nodex, nodey, anchor='n', justify='center',
-                            text=str(treetok.node), fill='#042',
+                            text=str(treetok.label()), fill='#042',
                             font=self._boldfont)
         self._tree_tags.append(tag)
 
