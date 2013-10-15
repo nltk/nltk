@@ -158,11 +158,11 @@ def mk_reldicts(pairs, window=5, trace=0):
     while len(pairs) > 2:
         reldict = defaultdict(str)
         reldict['lcon'] = _join(pairs[0][0][-window:])
-        reldict['subjclass'] = pairs[0][1].node()
+        reldict['subjclass'] = pairs[0][1].label()
         reldict['subjtext'] = _join(pairs[0][1].leaves())
         reldict['subjsym'] = list2sym(pairs[0][1].leaves())
         reldict['filler'] = _join(pairs[1][0])
-        reldict['objclass'] = pairs[1][1].node()
+        reldict['objclass'] = pairs[1][1].label()
         reldict['objtext'] = _join(pairs[1][1].leaves())
         reldict['objsym'] = list2sym(pairs[1][1].leaves())
         reldict['rcon'] = _join(pairs[2][0][:window])

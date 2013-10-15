@@ -615,7 +615,7 @@ class CFGDemo(object):
                 widget = tree.subtrees()[i+j]
                 if (isinstance(node, Nonterminal) and
                     isinstance(widget, TreeSegmentWidget) and
-                    node.symbol == widget.label().text()):
+                    node.symbol == widget.node().text()):
                     pass # matching nonterminal
                 elif (isinstance(node, compat.string_types) and
                       isinstance(widget, TextWidget) and

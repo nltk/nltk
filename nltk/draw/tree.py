@@ -190,7 +190,7 @@ class TreeSegmentWidget(CanvasWidget):
 
     def _subtree_top(self, child):
         if isinstance(child, TreeSegmentWidget):
-            bbox = child.node().bbox()
+            bbox = child.label().bbox()
         else:
             bbox = child.bbox()
         if self._horizontal:
@@ -394,7 +394,7 @@ def _tree_to_treeseg(canvas, t, make_node, make_leaf,
                      tree_attribs, node_attribs,
                      leaf_attribs, loc_attribs):
     if isinstance(t, Tree):
-        node = make_node(canvas, t._node, **node_attribs)
+        node = make_node(canvas, t.label(), **node_attribs)
         subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf,
                                      tree_attribs, node_attribs,
                                      leaf_attribs, loc_attribs)
@@ -592,7 +592,7 @@ class TreeWidget(CanvasWidget):
         make_node = self._make_node
         make_leaf = self._make_leaf
 
-        node = make_node(canvas, t._node, **self._nodeattribs)
+        node = make_node(canvas, t.label(), **self._nodeattribs)
         self._nodes.append(node)
         leaves = [make_leaf(canvas, l, **self._leafattribs)
                   for l in t.leaves()]
@@ -617,7 +617,7 @@ class TreeWidget(CanvasWidget):
         make_leaf = self._make_leaf
 
         if isinstance(t, Tree):
-            node = make_node(canvas, t._node, **self._nodeattribs)
+            node = make_node(canvas, t.label(), **self._nodeattribs)
             self._nodes.append(node)
             children = t
             subtrees = [self._make_expanded_tree(canvas, children[i], key+(i,))
@@ -735,8 +735,8 @@ class TreeWidget(CanvasWidget):
         # Move the new tree to where the old tree was.  Show it first,
         # so we can find its bounding box.
         new_treeseg.show()
-        (newx, newy) = new_treeseg.node().bbox()[:2]
-        (oldx, oldy) = old_treeseg.node().bbox()[:2]
+        (newx, newy) = new_treeseg.label().bbox()[:2]
+        (oldx, oldy) = old_treeseg.label().bbox()[:2]
         new_treeseg.move(oldx-newx, oldy-newy)
 
         # Hide the old tree
@@ -901,8 +901,8 @@ def demo():
     def color(node):
         node['color'] = '#%04d00' % random.randint(0,9999)
     def color2(treeseg):
-        treeseg.node()['fill'] = '#%06d' % random.randint(0,9999)
-        treeseg.node().child()['color'] = 'white'
+        treeseg.label()['fill'] = '#%06d' % random.randint(0,9999)
+        treeseg.label().child()['color'] = 'white'
 
     tc.bind_click_trees(tc.toggle_collapsed)
     tc2.bind_click_trees(tc2.toggle_collapsed)

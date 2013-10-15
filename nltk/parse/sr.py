@@ -100,7 +100,7 @@ class ShiftReduceParser(ParserI):
         if len(stack) != 1: return None
 
         # Did we end up with the right category?
-        if stack[0].node() != self._grammar.start().symbol():
+        if stack[0].label() != self._grammar.start().symbol():
             return None
 
         # We parsed successfully!
@@ -145,7 +145,7 @@ class ShiftReduceParser(ParserI):
         for i in range(len(rightmost_stack)):
             if isinstance(rightmost_stack[i], Tree):
                 if not isinstance(rhs[i], Nonterminal): return 0
-                if rightmost_stack[i].node() != rhs[i].symbol(): return 0
+                if rightmost_stack[i].label() != rhs[i].symbol(): return 0
             else:
                 if isinstance(rhs[i], Nonterminal): return 0
                 if rightmost_stack[i] != rhs[i]: return 0
@@ -222,7 +222,7 @@ class ShiftReduceParser(ParserI):
         s = '  '+marker+' [ '
         for elt in stack:
             if isinstance(elt, Tree):
-                s += unicode_repr(Nonterminal(elt.node())) + ' '
+                s += unicode_repr(Nonterminal(elt.label())) + ' '
             else:
                 s += unicode_repr(elt) + ' '
         s += '* ' + ' '.join(remaining_text) + ']'
@@ -413,7 +413,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         """
         if len(self._remaining_text) != 0: return []
         if len(self._stack) != 1: return []
-        if self._stack[0].node() != self._grammar.start().symbol():
+        if self._stack[0].label() != self._grammar.start().symbol():
             return []
         return self._stack
 

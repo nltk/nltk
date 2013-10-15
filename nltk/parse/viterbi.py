@@ -58,7 +58,7 @@ class ViterbiParser(ParserI):
     |   For start in 1...len(text)-width:
     |     For prod in grammar.productions:
     |       For each sequence of subtrees [t[1], t[2], ..., t[n]] in MLC,
-    |         where t[i].node()==prod.rhs[i],
+    |         where t[i].label()==prod.rhs[i],
     |         and the sequence covers [start:start+width]:
     |           old_p = MLC[start, start+width, prod.lhs]
     |           new_p = P(t[1])P(t[1])...P(t[n])P(prod)

@@ -542,5 +542,5 @@ Regression Testing from book
     >>> grammar = nltk.data.load('grammars/book_grammars/drt.fcfg', logic_parser=DrtParser())
     >>> parser = FeatureEarleyChartParser(grammar, trace=0)
     >>> trees = parser.nbest_parse('Angus owns a dog'.split())
-    >>> print(trees[0].node()['SEM'].simplify())
+    >>> print(trees[0].label()['SEM'].simplify())
     ([x,z2],[Angus(x), dog(z2), own(x,z2)])

@@ -90,7 +90,7 @@ class ChunkString(object):
             probably use level 3 if you use any non-standard
             subclasses of ``RegexpChunkRule``.
         """
-        self._top_node = chunk_struct.node()
+        self._top_node = chunk_struct.label()
         self._pieces = chunk_struct[:]
         tags = [self._tag(tok) for tok in self._pieces]
         self._str = '<' + '><'.join(tags) + '>'
@@ -100,7 +100,7 @@ class ChunkString(object):
         if isinstance(tok, tuple):
             return tok[1]
         elif isinstance(tok, Tree):
-            return tok.node()
+            return tok.label()
         else:
             raise ValueError('chunk structures must contain tagged '
                              'tokens or trees')
@@ -1007,7 +1007,7 @@ class RegexpChunkParser(ChunkParserI):
             return Tree(self._top_node, [])
 
         try:
-            chunk_struct.node()
+            chunk_struct.label()
         except AttributeError:
             chunk_struct = Tree(self._top_node, chunk_struct)
 

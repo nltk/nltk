@@ -60,7 +60,7 @@ def root_semrep(syntree, semkey='SEM'):
     """
     from nltk.grammar import FeatStructNonterminal
 
-    node = syntree.node()
+    node = syntree.label()
     assert isinstance(node, FeatStructNonterminal)
     try:
         return node[semkey]
