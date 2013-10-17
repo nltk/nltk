@@ -253,11 +253,11 @@ class BottomUpProbabilisticChartParser(ParserI):
         if tree.prob() is not None: return
 
         # Get the prob of the CFG production.
-        lhs = Nonterminal(tree.node)
+        lhs = Nonterminal(tree.label())
         rhs = []
         for child in tree:
             if isinstance(child, Tree):
-                rhs.append(Nonterminal(child.node))
+                rhs.append(Nonterminal(child.label()))
             else:
                 rhs.append(child)
         prob = prod_probs[lhs, tuple(rhs)]

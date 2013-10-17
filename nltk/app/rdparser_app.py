@@ -352,7 +352,7 @@ class RecursiveDescentApp(object):
     def _get(self, widget, treeloc):
         for i in treeloc: widget = widget.subtrees()[i]
         if isinstance(widget, TreeSegmentWidget):
-            widget = widget.node()
+            widget = widget.label()
         return widget
 
     #########################################
@@ -465,7 +465,7 @@ class RecursiveDescentApp(object):
             widget = self._textwidgets[i]
             leaf = leaves[i]
             dy = widget.bbox()[1] - leaf.bbox()[3] - 10.0
-            dy = max(dy, leaf.parent().node().bbox()[3] - leaf.bbox()[3] + 10)
+            dy = max(dy, leaf.parent().label().bbox()[3] - leaf.bbox()[3] + 10)
             leaf.move(0, dy)
 
     def _tree_leaves(self, tree=None):
@@ -687,15 +687,15 @@ class RecursiveDescentApp(object):
                                      tree_width=2, tree_color='white',
                                      node_color='white',
                                      leaf_font=self._font)
-        widget.node()['color'] = '#20a050'
+        widget.label()['color'] = '#20a050'
 
-        (oldx, oldy) = oldtree.node().bbox()[:2]
-        (newx, newy) = widget.node().bbox()[:2]
+        (oldx, oldy) = oldtree.label().bbox()[:2]
+        (newx, newy) = widget.label().bbox()[:2]
         widget.move(oldx-newx, oldy-newy)
 
         if top:
             self._cframe.add_widget(widget, 0, 5)
-            widget.move(30-widget.node().bbox()[0], 0)
+            widget.move(30-widget.label().bbox()[0], 0)
             self._tree = widget
         else:
             oldtree.parent().replace_child(oldtree, widget)
@@ -703,7 +703,7 @@ class RecursiveDescentApp(object):
         # Move the children over so they don't overlap.
         # Line the children up in a strange way.
         if widget.subtrees():
-            dx = (oldx + widget.node().width()/2 -
+            dx = (oldx + widget.label().width()/2 -
                   widget.subtrees()[0].bbox()[0]/2 -
                   widget.subtrees()[0].bbox()[2]/2)
             for subtree in widget.subtrees(): subtree.move(dx, 0)
@@ -756,7 +756,7 @@ class RecursiveDescentApp(object):
             widget['color'] = colors[0]
             for subtree in widget.subtrees():
                 if isinstance(subtree, TreeSegmentWidget):
-                    subtree.node()['color'] = colors[0]
+                    subtree.label()['color'] = colors[0]
                 else:
                     subtree['color'] = colors[0]
             self._top.after(50, self._animate_expand_frame,
@@ -765,11 +765,11 @@ class RecursiveDescentApp(object):
             widget['color'] = 'black'
             for subtree in widget.subtrees():
                 if isinstance(subtree, TreeSegmentWidget):
-                    subtree.node()['color'] = 'black'
+                    subtree.label()['color'] = 'black'
                 else:
                     subtree['color'] = 'black'
             self._redraw_quick()
-            widget.node()['color'] = 'black'
+            widget.label()['color'] = 'black'
             self._animating_lock = 0
             if self._autostep: self._step()
 
@@ -783,7 +783,7 @@ class RecursiveDescentApp(object):
         widgets = [self._get(self._tree, treeloc).parent()]
         for subtree in widgets[0].subtrees():
             if isinstance(subtree, TreeSegmentWidget):
-                widgets.append(subtree.node())
+                widgets.append(subtree.label())
             else:
                 widgets.append(subtree)
 
@@ -805,7 +805,7 @@ class RecursiveDescentApp(object):
 
     def _animate_match_backtrack(self, treeloc):
         widget = self._get(self._tree, treeloc)
-        node = widget.parent().node()
+        node = widget.parent().label()
         dy = (1.0 * (node.bbox()[3] - widget.bbox()[1] + 14) /
               max(1, self._animation_frames.get()))
         self._animate_match_backtrack_frame(self._animation_frames.get(),
