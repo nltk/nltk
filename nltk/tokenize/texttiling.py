@@ -306,11 +306,6 @@ class TextTilingTokenizer(TokenizerI):
         clip = min(max(len(scores)/10, 2), 5)
         index = clip
 
-        # SB: next three lines are redundant as depth_scores is already full of zeros
-        for i in range(clip):
-            depth_scores[i] = 0
-            depth_scores[-i-1] = 0
-
         for gapscore in scores[clip:-clip]:
             lpeak = gapscore
             for score in scores[index::-1]:
@@ -319,12 +314,12 @@ class TextTilingTokenizer(TokenizerI):
                 else:
                     break
             rpeak = gapscore
-            for score in scores[:index:]:
+            for score in scores[index:]:
                 if score >= rpeak:
-                    rpeak=score
+                    rpeak = score
                 else:
                     break
-            depth_scores[index] = lpeak + rpeak - 2*gapscore
+            depth_scores[index] = lpeak + rpeak - 2 * gapscore
             index += 1
 
         return depth_scores
