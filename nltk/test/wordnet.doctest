@@ -31,17 +31,17 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
 
     >>> wn.synset('dog.n.01')
     Synset('dog.n.01')
-    >>> print(wn.synset('dog.n.01').definition)
+    >>> print(wn.synset('dog.n.01').definition())
     a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds
-    >>> len(wn.synset('dog.n.01').examples)
+    >>> len(wn.synset('dog.n.01').examples())
     1
-    >>> print(wn.synset('dog.n.01').examples[0])
+    >>> print(wn.synset('dog.n.01').examples()[0])
     the dog barked all night
-    >>> wn.synset('dog.n.01').lemmas
+    >>> wn.synset('dog.n.01').lemmas()
     [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
-    >>> [str(lemma.name) for lemma in wn.synset('dog.n.01').lemmas]
+    >>> [str(lemma.name()) for lemma in wn.synset('dog.n.01').lemmas()]
     ['dog', 'domestic_dog', 'Canis_familiaris']
-    >>> wn.lemma('dog.n.01.dog').synset
+    >>> wn.lemma('dog.n.01.dog').synset()
     Synset('dog.n.01')
 
 
@@ -73,7 +73,7 @@ Note that some relations are defined by WordNet only over Lemmas:
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
     AttributeError: 'Synset' object has no attribute 'antonyms'
-    >>> good.lemmas[0].antonyms()
+    >>> good.lemmas()[0].antonyms()
     [Lemma('bad.a.01.bad')]
 
 The relations that are currently defined in this way are `antonyms`,
@@ -87,17 +87,17 @@ Lemmas
     >>> eat = wn.lemma('eat.v.03.eat')
     >>> eat
     Lemma('feed.v.06.eat')
-    >>> print(eat.key)
+    >>> print(eat.key())
     eat%2:34:02::
     >>> eat.count()
     4
-    >>> wn.lemma_from_key(eat.key)
+    >>> wn.lemma_from_key(eat.key())
     Lemma('feed.v.06.eat')
-    >>> wn.lemma_from_key(eat.key).synset
+    >>> wn.lemma_from_key(eat.key()).synset()
     Synset('feed.v.06')
     >>> wn.lemma_from_key('feebleminded%5:00:00:retarded:00')
     Lemma('backward.s.03.feebleminded')
-    >>> for lemma in wn.synset('eat.v.03').lemmas:
+    >>> for lemma in wn.synset('eat.v.03').lemmas():
     ...     print(lemma, lemma.count())
     ...
     Lemma('feed.v.06.feed') 3
@@ -128,11 +128,11 @@ The three relations above exist only on lemmas, not on synsets.
 Verb Frames
 -----------
 
-    >>> wn.synset('think.v.01').frame_ids
+    >>> wn.synset('think.v.01').frame_ids()
     [5, 9]
-    >>> for lemma in wn.synset('think.v.01').lemmas:
-    ...     print(lemma, lemma.frame_ids)
-    ...     print(" | ".join(lemma.frame_strings))
+    >>> for lemma in wn.synset('think.v.01').lemmas():
+    ...     print(lemma, lemma.frame_ids())
+    ...     print(" | ".join(lemma.frame_strings()))
     ...
     Lemma('think.v.01.think') [5, 9]
     Something think something Adjective/Noun | Somebody think somebody
@@ -142,11 +142,11 @@ Verb Frames
     Something consider something Adjective/Noun | Somebody consider somebody
     Lemma('think.v.01.conceive') [5, 9]
     Something conceive something Adjective/Noun | Somebody conceive somebody
-    >>> wn.synset('stretch.v.02').frame_ids
+    >>> wn.synset('stretch.v.02').frame_ids()
     [8]
-    >>> for lemma in wn.synset('stretch.v.02').lemmas:
-    ...     print(lemma, lemma.frame_ids)
-    ...     print(" | ".join(lemma.frame_strings))
+    >>> for lemma in wn.synset('stretch.v.02').lemmas():
+    ...     print(lemma, lemma.frame_ids())
+    ...     print(" | ".join(lemma.frame_strings()))
     ...
     Lemma('stretch.v.02.stretch') [8, 2]
     Somebody stretch something | Somebody stretch
@@ -439,7 +439,7 @@ Bug 221: Verb root IC is zero
 
 Bug 161: Comparison between WN keys/lemmas should not be case sensitive
 
-    >>> k = wn.synsets("jefferson")[0].lemmas[0].key
+    >>> k = wn.synsets("jefferson")[0].lemmas()[0].key()
     >>> wn.lemma_from_key(k)
     Lemma('jefferson.n.01.Jefferson')
     >>> wn.lemma_from_key(k.upper())
