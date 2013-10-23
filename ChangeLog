@@ -1,3 +1,14 @@
+Version 3.0a3 2013-10-??
+* new support for FrameNet
+* API changes:
+  - Tree.node -> Tree.label() / Tree.set_label()
+  - Chunk parser: top_node -> root_label; chunk_node -> chunk_label
+  - WordNet properties are now access methods, e.g. Synset.definition -> Synset.definition()
+* bugfix in texttiling
+* replaced simplify_tags with support for universal tagset (simplify_tags=True -> tagset='universal')
+* Punkt default behavior changed to realign sentence boundaries after trailing parenthesis and quotes
+* deprecated classify.svm (use scikit-learn instead)
+	
 Version 3.0a2 2013-07-12
 * speed improvements in word_tokenize, GAAClusterer, TnT tagger, Baum Welch, HMM tagger
 * small improvements in collocation finders, probability, modelling, Porter Stemmer
