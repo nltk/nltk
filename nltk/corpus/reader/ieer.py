@@ -86,7 +86,7 @@ class IEERCorpusReader(CorpusReader):
                 if self._parse(doc).docno is not None]
 
     def _parse(self, doc):
-        val = nltk.chunk.ieerstr2tree(doc, top_node="DOCUMENT")
+        val = nltk.chunk.ieerstr2tree(doc, root_label="DOCUMENT")
         if isinstance(val, dict):
             return IEERDocument(**val)
         else:

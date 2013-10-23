@@ -257,7 +257,7 @@ class RegexpChunkApp(object):
         return grammar
 
     def __init__(self, devset_name='conll2000', devset=None,
-                 grammar = '', chunk_node='NP', tagset=None):
+                 grammar = '', chunk_label='NP', tagset=None):
         """
         :param devset_name: The name of the development set; used for
             display & for save files.  If either the name 'treebank'
@@ -268,7 +268,7 @@ class RegexpChunkApp(object):
         :param tagset: Dictionary from tags to string descriptions, used
             for the help page.  Defaults to ``self.TAGSET``.
         """
-        self._chunk_node = chunk_node
+        self._chunk_label = chunk_label
 
         if tagset is None: tagset = self.TAGSET
         self.tagset = tagset
@@ -326,7 +326,7 @@ class RegexpChunkApp(object):
         """The index of the next sentence in the development set that
            should be looked at by the eval demon."""
 
-        self._eval_score = ChunkScore(chunk_node=chunk_node)
+        self._eval_score = ChunkScore(chunk_label=chunk_label)
         """The ``ChunkScore`` object that's used to keep track of the score
         of the current grammar on the development set."""
 
@@ -578,7 +578,7 @@ class RegexpChunkApp(object):
                     self._eval_normalized_grammar = None
                     return
             self._eval_index = 0
-            self._eval_score = ChunkScore(chunk_node=self._chunk_node)
+            self._eval_score = ChunkScore(chunk_label=self._chunk_label)
             self._eval_grammar = self.grammar
             self._eval_normalized_grammar = self.normalized_grammar
 
@@ -993,7 +993,7 @@ class RegexpChunkApp(object):
         wordnum = 0
         for child in tree:
             if isinstance(child, Tree):
-                if child.label() == self._chunk_node:
+                if child.label() == self._chunk_label:
                     chunks.add( (wordnum, wordnum+len(child)) )
                 wordnum += len(child)
             else:

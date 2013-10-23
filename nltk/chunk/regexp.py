@@ -90,7 +90,7 @@ class ChunkString(object):
             probably use level 3 if you use any non-standard
             subclasses of ``RegexpChunkRule``.
         """
-        self._top_node = chunk_struct.label()
+        self._root_label = chunk_struct.label()
         self._pieces = chunk_struct[:]
         tags = [self._tag(tok) for tok in self._pieces]
         self._str = '<' + '><'.join(tags) + '>'
@@ -144,7 +144,7 @@ class ChunkString(object):
             raise ValueError('Transformation generated invalid '
                              'chunkstring: tag changed')
 
-    def to_chunkstruct(self, chunk_node='CHUNK'):
+    def to_chunkstruct(self, chunk_label='CHUNK'):
         """
         Return the chunk structure encoded by this ``ChunkString``.
 
@@ -166,7 +166,7 @@ class ChunkString(object):
 
             # Add this list of tokens to our pieces.
             if piece_in_chunk:
-                pieces.append(Tree(chunk_node, subsequence))
+                pieces.append(Tree(chunk_label, subsequence))
             else:
                 pieces += subsequence
 
@@ -174,7 +174,7 @@ class ChunkString(object):
             index += length
             piece_in_chunk = not piece_in_chunk
 
-        return Tree(self._top_node, pieces)
+        return Tree(self._root_label, pieces)
 
     def xform(self, regexp, repl):
         """
@@ -921,20 +921,20 @@ class RegexpChunkParser(ChunkParserI):
     :ivar _trace: The default level of tracing.
 
     """
-    def __init__(self, rules, chunk_node='NP', top_node='S', trace=0):
+    def __init__(self, rules, chunk_label='NP', root_label='S', trace=0):
         """
         Construct a new ``RegexpChunkParser``.
 
         :type rules: list(RegexpChunkRule)
         :param rules: The sequence of rules that should be used to
             generate the chunking for a tagged text.
-        :type chunk_node: str
-        :param chunk_node: The node value that should be used for
+        :type chunk_label: str
+        :param chunk_label: The node value that should be used for
             chunk subtrees.  This is typically a short string
             describing the type of information contained by the chunk,
             such as ``"NP"`` for base noun phrases.
-        :type top_node: str
-        :param top_node: The node value that should be used for the
+        :type root_label: str
+        :param root_label: The node value that should be used for the
             top node of the chunk structure.
         :type trace: int
         :param trace: The level of tracing that should be used when
@@ -944,8 +944,8 @@ class RegexpChunkParser(ChunkParserI):
         """
         self._rules = rules
         self._trace = trace
-        self._chunk_node = chunk_node
-        self._top_node = top_node
+        self._chunk_label = chunk_label
+        self._root_label = root_label
 
     def _trace_apply(self, chunkstr, verbose):
         """
@@ -1004,12 +1004,12 @@ class RegexpChunkParser(ChunkParserI):
         """
         if len(chunk_struct) == 0:
             print('Warning: parsing empty text')
-            return Tree(self._top_node, [])
+            return Tree(self._root_label, [])
 
         try:
             chunk_struct.label()
         except AttributeError:
-            chunk_struct = Tree(self._top_node, chunk_struct)
+            chunk_struct = Tree(self._root_label, chunk_struct)
 
         # Use the default trace value?
         if trace is None: trace = self._trace
@@ -1024,7 +1024,7 @@ class RegexpChunkParser(ChunkParserI):
             self._notrace_apply(chunkstr)
 
         # Use the chunkstring to create a chunk structure.
-        return chunkstr.to_chunkstruct(self._chunk_node)
+        return chunkstr.to_chunkstruct(self._chunk_label)
 
     def rules(self):
         """
@@ -1104,15 +1104,15 @@ class RegexpParser(ChunkParserI):
     :ivar _stages: The list of parsing stages corresponding to the grammar
 
     """
-    def __init__(self, grammar, top_node='S', loop=1, trace=0):
+    def __init__(self, grammar, root_label='S', loop=1, trace=0):
         """
         Create a new chunk parser, from the given start state
         and set of chunk patterns.
 
         :param grammar: The grammar, or a list of RegexpChunkParser objects
         :type grammar: str or list(RegexpChunkParser)
-        :param top_node: The top node of the tree being created
-        :type top_node: str or Nonterminal
+        :param root_label: The top node of the tree being created
+        :type root_label: str or Nonterminal
         :param loop: The number of times to run through the patterns
         :type loop: int
         :type trace: int
@@ -1127,7 +1127,7 @@ class RegexpParser(ChunkParserI):
         self._loop = loop
 
         if isinstance(grammar, string_types):
-            self._parse_grammar(grammar, top_node, trace)
+            self._parse_grammar(grammar, root_label, trace)
         else:
             # Make sur the grammar looks like it has the right type:
             type_err = ('Expected string or list of RegexpChunkParsers '
@@ -1139,7 +1139,7 @@ class RegexpParser(ChunkParserI):
                     raise TypeError(type_err)
             self._stages = grammar
 
-    def _parse_grammar(self, grammar, top_node, trace):
+    def _parse_grammar(self, grammar, root_label, trace):
         """
         Helper function for __init__: parse the grammar if it is a
         string.
@@ -1153,7 +1153,7 @@ class RegexpParser(ChunkParserI):
             m = re.match('(?P<nonterminal>(\\.|[^:])*)(:(?P<rule>.*))', line)
             if m:
                 # Record the stage that we just completed.
-                self._add_stage(rules, lhs, top_node, trace)
+                self._add_stage(rules, lhs, root_label, trace)
                 # Start a new stage.
                 lhs = m.group('nonterminal').strip()
                 rules = []
@@ -1166,17 +1166,17 @@ class RegexpParser(ChunkParserI):
             rules.append(RegexpChunkRule.parse(line))
 
         # Record the final stage
-        self._add_stage(rules, lhs, top_node, trace)
+        self._add_stage(rules, lhs, root_label, trace)
 
-    def _add_stage(self, rules, lhs, top_node, trace):
+    def _add_stage(self, rules, lhs, root_label, trace):
         """
         Helper function for __init__: add a new stage to the parser.
         """
         if rules != []:
             if not lhs:
                 raise ValueError('Expected stage marker (eg NP:)')
-            parser = RegexpChunkParser(rules, chunk_node=lhs,
-                                       top_node=top_node, trace=trace)
+            parser = RegexpChunkParser(rules, chunk_label=lhs,
+                                       root_label=root_label, trace=trace)
             self._stages.append(parser)
 
     def parse(self, chunk_struct, trace=None):
