@@ -18,7 +18,7 @@ import nltk
 from nltk.sem.logic import LogicParser, ExistsExpression, AllExpression, \
     NegatedExpression, AndExpression, IffExpression, OrExpression, \
     EqualityExpression, ImpExpression
-from .api import BaseProverCommand, Prover
+from nltk.inference.api import BaseProverCommand, Prover
 
 #
 # Following is not yet used. Return code for 2 actually realized as 512.
@@ -182,10 +182,14 @@ class Prover9Parent(object):
 
         # Call prover9 via a subprocess
         cmd = [binary] + args
+        try:
+            input_str = input_str.encode("utf8")
+        except AttributeError:
+            pass
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT,
                              stdin=subprocess.PIPE)
-        (stdout, stderr) = p.communicate(input_str.encode())
+        (stdout, stderr) = p.communicate(input=input_str) 
 
         if verbose:
             print('Return code:', p.returncode)
