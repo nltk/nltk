@@ -24,7 +24,7 @@ try:
     from scipy.stats import fisher_exact
 except ImportError:
     pass
-    
+
 ### Indices to marginals arguments:
 
 NGRAM = 0

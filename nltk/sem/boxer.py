@@ -238,20 +238,20 @@ class Boxer(object):
                 line = lines[i]
                 assert line.startswith('sem(%s,' % drs_id)
                 assert line.endswith(').')
-                
+
                 search_start = len('sem(%s,[' % drs_id)
                 brace_count = 1
                 drs_start = -1
                 for j,c in enumerate(line[search_start:]):
-                    if(c == '['): 
+                    if(c == '['):
                         brace_count += 1
-                    if(c == ']'): 
+                    if(c == ']'):
                         brace_count -= 1
-                        if(brace_count == 0): 
+                        if(brace_count == 0):
                             drs_start = search_start + j + 2
                             break
                 assert drs_start > -1
-                    
+
                 drs_input = line[drs_start:-2].strip()
                 parsed = self._parse_drs(drs_input, discourse_id, use_disc_id)
                 drs_dict[discourse_id] = self._boxer_drs_interpreter.interpret(parsed)

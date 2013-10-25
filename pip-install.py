@@ -3,7 +3,7 @@
 # Read pip-req.txt file, which is a pip requirements file, and then install the
 # modules one by one using pip. The installation process stops if there's an
 # installation error before reaching the bottom of the list.
-# 
+#
 
 import sys
 import os

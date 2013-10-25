@@ -159,7 +159,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
     def score_ngram(self, score_fn, w1, w2):
         """Returns the score for a given bigram using the given scoring
-        function.  Following Church and Hanks (1990), counts are scaled by 
+        function.  Following Church and Hanks (1990), counts are scaled by
         a factor of 1/(window_size - 1).
         """
         n_all = self.word_fd.N()

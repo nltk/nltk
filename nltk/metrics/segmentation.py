@@ -211,7 +211,7 @@ def pk(ref, hyp, k=None, boundary='1'):
 
     if k is None:
         k = int(round(len(ref) / (ref.count(boundary) * 2.)))
-    
+
     err = 0
     for i in xrange(len(ref)-k +1):
         r = ref[i:i+k].count(boundary) > 0

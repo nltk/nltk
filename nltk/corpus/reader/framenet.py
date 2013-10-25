@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Framenet Corpus Reader
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Authors: Chuck Wooters <wooters@icsi.berkeley.edu>, 
+# Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nschneid@cs.cmu.edu>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -104,7 +104,7 @@ def _pretty_frame_relation_type(freltyp):
     """
     outstr = "<frame relation type ({0.ID}): {0.superFrameName} -- {0.name} -> {0.subFrameName}>".format(freltyp)
     return outstr
-    
+
 def _pretty_frame_relation(frel):
 
     """
@@ -166,7 +166,7 @@ def _pretty_lu(lu):
     if 'subCorpus' in lukeys:
         subc = [x.name for x in lu.subCorpus]
         outstr += "\n[subCorpus] {0} subcorpora\n".format(len(lu.subCorpus))
-        for line in textwrap.fill(", ".join(sorted(subc)), 60).split('\n'): 
+        for line in textwrap.fill(", ".join(sorted(subc)), 60).split('\n'):
             outstr += "  {0}\n".format(line)
 
     return outstr
@@ -233,7 +233,7 @@ def _pretty_frame(frame):
 
     outstr += "\n[frameRelations] {0} frame relations\n".format(len(frame.frameRelations))
     outstr += '  ' + '\n  '.join(repr(frel) for frel in frame.frameRelations) + '\n'
-    
+
     outstr += "\n[lexUnit] {0} lexical units\n".format(len(frame.lexUnit))
     lustrs = []
     for luName,lu in sorted(frame.lexUnit.items()):
@@ -282,7 +282,7 @@ class AttrDict(dict):
     def __init__(self, *args, **kwargs):
         super(AttrDict, self).__init__(*args, **kwargs)
         #self.__dict__ = self
-    
+
     def __setattr__(self, name, value):
         self[name] = value
     def __getattr__(self, name):
@@ -305,7 +305,7 @@ class AttrDict(dict):
                 return "<{0} name={1}>".format(self['_type'], self['name'])
         else:
             return self.__repr__()
-        
+
     def _str(self):
         outstr = ""
 
@@ -328,13 +328,13 @@ class AttrDict(dict):
         else:
             outstr = _pretty_any(self)
 
-        # ensure result is unicode string prior to applying the 
-        # @python_2_unicode_compatible decorator (because non-ASCII characters 
-        # could in principle occur in the data and would trigger an encoding error when 
+        # ensure result is unicode string prior to applying the
+        # @python_2_unicode_compatible decorator (because non-ASCII characters
+        # could in principle occur in the data and would trigger an encoding error when
         # passed as arguments to str.format()).
         # assert isinstance(outstr, unicode) # not in Python 3.2
         return outstr
-        
+
     def __str__(self):
         return self._str()
     def __repr__(self):
@@ -342,7 +342,7 @@ class AttrDict(dict):
 
 class Future(object):
     """
-    Wraps and acts as a proxy for a value to be loaded lazily (on demand). 
+    Wraps and acts as a proxy for a value to be loaded lazily (on demand).
     Adapted from https://gist.github.com/sergey-miryanov/2935416
     """
     def __init__(self, loader, *args, **kwargs):
@@ -358,19 +358,19 @@ class Future(object):
             self._d = self._loader()
             self._loader = None # the data is now cached
         return self._d
- 
+
     def __nonzero__(self):
         return bool(self._data())
     def __len__(self):
         return len(self._data())
- 
+
     def __setitem__(self, key, value):
         return self._data ().__setitem__(key, value)
     def __getitem__(self, key):
         return self._data ().__getitem__(key)
     def __getattr__(self, key):
         return self._data().__getattr__(key)
- 
+
     def __str__(self):
         return self._data().__str__()
     def __repr__(self):
@@ -381,7 +381,7 @@ class Future(object):
 class PrettyDict(AttrDict):
     """
     Displays an abbreviated repr of values where possible.
-    Inherits from AttrDict, so a callable value will 
+    Inherits from AttrDict, so a callable value will
     be lazily converted to an actual value.
     """
     def __init__(self, *args, **kwargs):
@@ -417,7 +417,7 @@ class PrettyList(list):
         """
         pieces = []
         length = 5
-        
+
         for elt in self:
             pieces.append(elt._short_repr()) # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
@@ -450,7 +450,7 @@ class PrettyLazyMap(LazyMap):
 
 class FramenetCorpusReader(XMLCorpusReader):
     """A corpus reader for the Framenet Corpus.
-    
+
     >>> from nltk.corpus import framenet as fn
     >>> fn.lu(3238).frame.lexUnit['glint.v'] is fn.lu(3238)
     True
@@ -462,9 +462,9 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     _bad_statuses = ['Problem']
     """
-    When loading LUs for a frame, those whose status is in this list will be ignored. 
+    When loading LUs for a frame, those whose status is in this list will be ignored.
     Due to caching, if user code modifies this, it should do so before loading any data.
-    'Problem' should always be listed for FrameNet 1.5, as these LUs are not included 
+    'Problem' should always be listed for FrameNet 1.5, as these LUs are not included
     in the XML index.
     """
 
@@ -494,7 +494,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         # The total number of Frames in Framenet is fairly small (~1200) so
         # this index should not be very large
         if not self._frel_idx:
-            self._buildrelationindex()  # always load frame relations before frames, 
+            self._buildrelationindex()  # always load frame relations before frames,
             # otherwise weird ordering effects might result in incomplete information
         self._frame_idx = {}
         for f in XMLCorpusView(self.abspath("frameIndex.xml"),
@@ -517,7 +517,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         self._lu_idx = {}
         for lu in XMLCorpusView(self.abspath("luIndex.xml"),
                                 'luIndex/lu', self._handle_elt):
-            self._lu_idx[lu['ID']] = lu # populate with LU index entries. if any of these 
+            self._lu_idx[lu['ID']] = lu # populate with LU index entries. if any of these
             # are looked up they will be replaced by full LU objects.
 
     def _buildrelationindex(self):
@@ -529,7 +529,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         self._frel_idx = {}
         self._frel_f_idx = defaultdict(set)
         self._ferel_idx = {}
-        
+
         for freltyp in freltypes:
             self._freltyp_idx[freltyp.ID] = freltyp
             for frel in freltyp.frameRelations:
@@ -598,7 +598,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                     - 'frameID'  : (only if status is 'MANUAL')
                     - 'frameName': (only if status is 'MANUAL')
                     - 'layer' : a list of labels for the layer
-                       - Each item in the layer is a dict containing the 
+                       - Each item in the layer is a dict containing the
                          following keys:
                           - '_type': 'layer'
                           - 'rank'
@@ -700,12 +700,12 @@ class FramenetCorpusReader(XMLCorpusReader):
         Also see the ``frame()`` function for details about what is
         contained in the dict that is returned.
         """
-        
+
         if check_cache and fn_fname in self._cached_frames:
             return self._frame_idx[self._cached_frames[fn_fname]]
         elif not self._frame_idx:
             self._buildframeindex()
-        
+
         # construct the path name for the xml file containing the Frame info
         locpath = os.path.join(
             "{0}".format(self._root), self._frame_dir, fn_fname + ".xml")
@@ -714,23 +714,23 @@ class FramenetCorpusReader(XMLCorpusReader):
         try:
             elt = XMLCorpusView(locpath, 'frame')[0]
         except IOError:
-            raise FramenetError('Unknown frame: {0}'.format(fn_fname)) 
+            raise FramenetError('Unknown frame: {0}'.format(fn_fname))
 
         fentry = self._handle_frame_elt(elt, ignorekeys)
         assert fentry
-        
+
         # INFERENCE RULE: propagate lexical semtypes from the frame to all its LUs
         for st in fentry.semTypes:
             if st.rootType.name=='Lexical_type':
                 for lu in fentry.lexUnit.values():
                     if st not in lu.semTypes:
                         lu.semTypes.append(st)
-        
-        
+
+
         self._frame_idx[fentry.ID] = fentry
         self._cached_frames[fentry.name] = fentry.ID
         '''
-        # now set up callables to resolve the LU pointers lazily. 
+        # now set up callables to resolve the LU pointers lazily.
         # (could also do this here--caching avoids infinite recursion.)
         for luName,luinfo in fentry.lexUnit.items():
             fentry.lexUnit[luName] = (lambda luID: Future(lambda: self.lu(luID)))(luinfo.ID)
@@ -767,8 +767,8 @@ class FramenetCorpusReader(XMLCorpusReader):
               - 'ID'   : can be used with the semtype() function
 
         - 'lexUnit'    : a dict containing all of the LUs for this frame.
-                         The keys in this dict are the names of the LUs and 
-                         the value for each key is itself a dict containing 
+                         The keys in this dict are the names of the LUs and
+                         the value for each key is itself a dict containing
                          info about the LU (see the lu() function for more info.)
 
         - 'FE' : a dict containing the Frame Elements that are part of this frame
@@ -781,7 +781,7 @@ class FramenetCorpusReader(XMLCorpusReader):
               - 'abbrev'     : Abbreviation e.g. 'bod'
               - 'coreType'   : one of "Core", "Peripheral", or "Extra-Thematic"
               - 'semType'    : if not None, a dict with the following two keys:
-                 - 'name' : name of the semantic type. can be used with 
+                 - 'name' : name of the semantic type. can be used with
                             the semtype() function
                  - 'ID'   : id number of the semantic type. can be used with
                             the semtype() function
@@ -900,10 +900,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                  - 'annotated': number of sentences annotated with this LU
                  - 'total'    : total number of sentences with this LU
 
-        - 'lexemes'  : a list of dicts describing the lemma of this LU. 
+        - 'lexemes'  : a list of dicts describing the lemma of this LU.
            Each dict in the list contains these keys:
            - 'POS'     : part of speech e.g. 'N'
-           - 'name'    : either single-lexeme e.g. 'merger' or 
+           - 'name'    : either single-lexeme e.g. 'merger' or
                          multi-lexeme e.g. 'a little'
            - 'order': the order of the lexeme in the lemma (starting from 1)
            - 'headword': a boolean ('true' or 'false')
@@ -942,10 +942,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                                       - 'end': end pos of label in sentence 'text' (0-based)
                                       - 'name': name of label (e.g. 'NN1')
 
-        Under the hood, this implementation looks up the lexical unit information 
-        in the *frame* definition file. That file does not contain 
-        corpus annotations, so the LU files will be accessed on demand if those are 
-        needed. In principle, valence patterns could be loaded here too, 
+        Under the hood, this implementation looks up the lexical unit information
+        in the *frame* definition file. That file does not contain
+        corpus annotations, so the LU files will be accessed on demand if those are
+        needed. In principle, valence patterns could be loaded here too,
         though these are not currently supported.
 
         :param fn_luid: The id number of the lexical unit
@@ -971,7 +971,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def _lu_file(self, lu, ignorekeys=[]):
         """
-        Augment the LU information that was loaded from the frame file 
+        Augment the LU information that was loaded from the frame file
         with additional information from the LU file.
         """
         fn_luid = lu.ID
@@ -981,7 +981,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         #print(locpath, file=sys.stderr)
         if not self._lu_idx:
             self._buildluindex()
-        
+
         try:
             elt = XMLCorpusView(locpath, 'lexUnit')[0]
         except IOError:
@@ -989,7 +989,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         lu2 = self._handle_lexunit_elt(elt, ignorekeys)
         lu.subCorpus = lu2.subCorpus
-        
+
         return lu.subCorpus
 
     def _loadsemtypes(self):
@@ -1027,12 +1027,12 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def propagate_semtypes(self):
         """
-        Apply inference rules to distribute semtypes over relations between FEs. 
+        Apply inference rules to distribute semtypes over relations between FEs.
         For FrameNet 1.5, this results in 1011 semtypes being propagated.
-        (Not done by default because it requires loading all frame files, 
-        which takes several seconds. If this needed to be fast, it could be rewritten 
+        (Not done by default because it requires loading all frame files,
+        which takes several seconds. If this needed to be fast, it could be rewritten
         to traverse the neighboring relations on demand for each FE semtype.)
-        
+
         >>> from nltk.corpus import framenet as fn
         >>> sum(1 for f in fn.frames() for fe in f.FE.values() if fe.semType)
         4241
@@ -1106,7 +1106,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             st = self._semtypes[stid]
 
         return st
-        
+
     def semtype_inherits(self, st, superST):
         if not isinstance(st, dict):
             st = self.semtype(st)
@@ -1183,7 +1183,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         except AttributeError:
             self._buildframeindex()
             fIDs = list(self._frame_idx.keys())
-        
+
         if name is not None:
             return PrettyList(self.frame(fID) for fID,finfo in self.frame_ids_and_names(name).items())
         else:
@@ -1191,7 +1191,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def frame_ids_and_names(self, name=None):
         """
-        Uses the frame index, which is much faster than looking up each frame definition 
+        Uses the frame index, which is much faster than looking up each frame definition
         if only the names and IDs are needed.
         """
         if not self._frame_idx:
@@ -1303,7 +1303,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         except AttributeError:
             self._buildluindex()
             luIDs = list(self._lu_idx.keys())
-        
+
         if name is not None:
             return PrettyList(self.lu(luID) for luID,luName in self.lu_ids_and_names(name).items())
         else:
@@ -1311,7 +1311,7 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def lu_ids_and_names(self, name=None):
         """
-        Uses the LU index, which is much faster than looking up each LU definition 
+        Uses the LU index, which is much faster than looking up each LU definition
         if only the names and IDs are needed.
         """
         if not self._lu_idx:
@@ -1390,9 +1390,9 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def frame_relations(self, frame=None, frame2=None, type=None):
         """
-        :param frame: (optional) frame object, name, or ID; only relations involving 
+        :param frame: (optional) frame object, name, or ID; only relations involving
         this frame will be returned
-        :param frame2: (optional; 'frame' must be a different frame) only show relations 
+        :param frame2: (optional; 'frame' must be a different frame) only show relations
         between the two specified frames, in either direction
         :param type: (optional) frame relation type (name or object); show only relations
         of this type
@@ -1426,14 +1426,14 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         if not self._frel_idx:
             self._buildrelationindex()
-        
+
         rels = None
-        
+
         if relation_type is not None:
             if not isinstance(relation_type, dict):
                 type = [rt for rt in self.frame_relation_types() if rt.name==type][0]
                 assert isinstance(type,dict)
-        
+
         # lookup by 'frame'
         if frame is not None:
             if isinstance(frame,dict) and 'frameRelations' in frame:
@@ -1445,7 +1445,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                     else:
                         frame = self.frame_by_name(frame).ID
                 rels = [self._frel_idx[frelID] for frelID in self._frel_f_idx[frame]]
-        
+
             # filter by 'type'
             if type is not None:
                 rels = [rel for rel in rels if rel.type is type]
@@ -1454,7 +1454,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             rels = type.frameRelations
         else:
             rels = self._frel_idx.values()
-        
+
         # filter by 'frame2'
         if frame2 is not None:
             if frame is None:
@@ -1467,10 +1467,10 @@ class FramenetCorpusReader(XMLCorpusReader):
             if frame==frame2:
                 raise FramenetError("The two frame arguments to frame_relations() must be different frames")
             rels = [rel for rel in rels if rel.superFrame.ID==frame2 or rel.subFrame.ID==frame2]
-        
-        return PrettyList(sorted(rels, 
+
+        return PrettyList(sorted(rels,
                 key=lambda frel: (frel.type.ID, frel.superFrameName, frel.subFrameName)))
-        
+
     def fe_relations(self):
         """
         Obtain a list of frame element relations.
@@ -1500,8 +1500,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         if not self._ferel_idx:
             self._buildrelationindex()
-        return PrettyList(sorted(self._ferel_idx.values(), 
-                key=lambda ferel: (ferel.type.ID, ferel.frameRelation.superFrameName, 
+        return PrettyList(sorted(self._ferel_idx.values(),
+                key=lambda ferel: (ferel.type.ID, ferel.frameRelation.superFrameName,
                     ferel.superFEName, ferel.frameRelation.subFrameName, ferel.subFEName)))
 
     def semtypes(self):
@@ -1673,7 +1673,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 frinfo['semTypes'].append(self.semtype(semtypeinfo.ID))
 
         frinfo['frameRelations'] = self.frame_relations(frame=frinfo)
-        
+
         # resolve 'requires' and 'excludes' links between FEs of this frame
         for fe in frinfo.FE.values():
             if fe.requiresFE:
@@ -1684,7 +1684,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 name, ID = fe.excludesFE.name, fe.excludesFE.ID
                 fe.excludesFE = frinfo.FE[name]
                 assert fe.excludesFE.ID==ID
-        
+
         return frinfo
 
     def _handle_fecoreset_elt(self, elt):
@@ -1701,7 +1701,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         info = self._load_xml_attributes(AttrDict(), elt)
         info['_type'] = 'framerelationtype'
         info['frameRelations'] = PrettyList()
-        
+
         for sub in elt:
             if sub.tag.endswith('frameRelation'):
                 frel = self._handle_framerelation_elt(sub)
@@ -1711,7 +1711,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 info['frameRelations'].append(frel)
 
         return info
-    
+
     def _handle_framerelation_elt(self, elt):
         """Load frame-relation element and its child fe-relation elements from frRelation.xml."""
         info = self._load_xml_attributes(AttrDict(), elt)
@@ -1818,8 +1818,8 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def _handle_lexunit_elt(self, elt, ignorekeys):
         """
-        Load full info for a lexical unit from its xml file. 
-        This should only be called when accessing corpus annotations 
+        Load full info for a lexical unit from its xml file.
+        This should only be called when accessing corpus annotations
         (which are not included in frame files).
         """
         luinfo = self._load_xml_attributes(AttrDict(), elt)

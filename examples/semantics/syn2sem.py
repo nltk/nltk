@@ -33,7 +33,7 @@ Parse and evaluate some sentences.
     """
 
     opts = OptionParser(description=description)
-    
+
     opts.set_defaults(evaluate=True, beta=True, syntrace=0,
                       semtrace=0, demo='default', grammar='', sentences='')
 
@@ -57,7 +57,7 @@ Parse and evaluate some sentences.
 
 
     (options, args) = opts.parse_args()
-    
+
     SPACER = '-' * 30
 
 
@@ -70,35 +70,35 @@ Parse and evaluate some sentences.
         import model0 as model
         sentsfile = 'demo_sentences'
         gramfile = 'sem2.cfg'
-        
+
     if options.sentences:
         sentsfile = options.sentences
     if options.grammar:
         gramfile = options.grammar
     if options.model:
         exec "import %s as model" % options.model
-    
+
     sents = read_sents(sentsfile)
-    
+
     # NB. GrammarFile is imported indirectly via nltk.semantics
     gram = GrammarFile.read_file(gramfile)
 
     m = model.m
     g = model.g
 
-    if options.evaluate: 
+    if options.evaluate:
         evaluations = \
             text_evaluate(sents, gram, m, g, semtrace=options.semtrace)
     else:
         semreps = \
             text_interpret(sents, gram, beta_reduce=options.beta, syntrace=options.syntrace)
-        
+
     for sent in sents:
         n = 1
         print('\nSentence: %s' % sent)
         print(SPACER)
-        if options.evaluate: 
-            
+        if options.evaluate:
+
             for (syntree, semrep, value) in evaluations[sent]:
                 if isinstance(value, dict):
                     value = set(value.keys())
@@ -106,11 +106,11 @@ Parse and evaluate some sentences.
                 print(value)
                 n += 1
         else:
-           
+
             for (syntree, semrep) in semreps[sent]:
                 print('%d:  %s' % (n, semrep.infixify()))
                 n += 1
-                
+
 if __name__ == "__main__":
     demo()
 
