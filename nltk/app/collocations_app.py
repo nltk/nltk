@@ -12,7 +12,7 @@ import threading
 import tkinter.font
 if nltk.compat.PY3:
     import queue as q
-else:    
+else:
     import Queue as q
 from tkinter import (Button, END, Frame, IntVar, LEFT, Label, Menu,
                      OptionMenu, SUNKEN, Scrollbar, StringVar,
@@ -171,7 +171,7 @@ class CollocationsView:
     def reset_current_page(self):
         self.current_page = -1
 
-    def _poll(self):   
+    def _poll(self):
         try:
             event = self.queue.get(block=False)
         except q.Empty:

@@ -86,11 +86,11 @@ class ReadingCommand(object):
         :rtype: Expression
         """
         raise NotImplementedError()
-    
+
     def to_fol(self, expression):
         """
         Convert this expression into a First-Order Logic expression.
-        
+
         :param expression: an expression
         :type expression: Expression
         :return: a FOL version of the input expression
@@ -118,7 +118,7 @@ class CfgReadingCommand(ReadingCommand):
     def combine_readings(self, readings):
         """:see: ReadingCommand.combine_readings()"""
         return reduce(and_, readings)
-    
+
     def to_fol(self, expression):
         """:see: ReadingCommand.to_fol()"""
         return expression
@@ -153,7 +153,7 @@ class DrtGlueReadingCommand(ReadingCommand):
         """:see: ReadingCommand.combine_readings()"""
         thread_reading = reduce(add, readings)
         return resolve_anaphora(thread_reading.simplify())
-    
+
     def to_fol(self, expression):
         """:see: ReadingCommand.to_fol()"""
         return expression.fol()

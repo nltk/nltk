@@ -186,7 +186,7 @@ def py3_data(init_func):
                     break
         return init_func(*args, **kwargs)
     return wraps(init_func)(_decorator)
-    
+
 # ======= Compatibility layer for __str__ and __repr__ ==========
 
 import unicodedata

@@ -159,7 +159,7 @@ class PorterStemmer(StemmerI):
         for key in irregular_forms:
             for val in irregular_forms[key]:
                 self.pool[val] = key
-                
+
         self.vowels = frozenset(['a', 'e', 'i', 'o', 'u'])
 
     def _cons(self, word, i):
@@ -297,15 +297,15 @@ class PorterStemmer(StemmerI):
         elif word.endswith("eed"):
             if self._m(word, len(word)-4) > 0:
                 word = word[:-1]
-        
-        
+
+
         elif word.endswith("ed") and self._vowelinstem(word[:-2]):
             word = word[:-2]
             ed_or_ing_trimmed = True
         elif word.endswith("ing") and self._vowelinstem(word[:-3]):
             word = word[:-3]
             ed_or_ing_trimmed = True
-        
+
         if ed_or_ing_trimmed:
             if word.endswith("at") or word.endswith("bl") or word.endswith("iz"):
                 word += 'e'
@@ -314,7 +314,7 @@ class PorterStemmer(StemmerI):
                     word = word[:-1]
             elif (self._m(word, len(word)-1) == 1 and self._cvc(word, len(word)-1)):
                 word += 'e'
-                
+
         return word
 
     def _step1c(self, word):
@@ -346,11 +346,11 @@ class PorterStemmer(StemmerI):
         so -ization ( = -ize plus -ation) maps to -ize etc. note that the
         string before the suffix must give m() > 0.
         """
-        if len(word) <= 1: # Only possible at this stage given unusual inputs to stem_word like 'oed'       
+        if len(word) <= 1: # Only possible at this stage given unusual inputs to stem_word like 'oed'
             return word
-        
+
         ch = word[-2]
-        
+
         if ch == 'a':
             if word.endswith("ational"):
                 return word[:-7] + "ate" if self._m(word, len(word)-8) > 0 else word
@@ -369,7 +369,7 @@ class PorterStemmer(StemmerI):
             if word.endswith("izer"):
                 return word[:-1] if self._m(word, len(word)-5) > 0 else word
             else:
-                return word                
+                return word
         elif ch == 'l':
             if word.endswith("bli"):
                 return word[:-3] + "ble" if self._m(word, len(word)-4) > 0 else word # --DEPARTURE--
@@ -390,7 +390,7 @@ class PorterStemmer(StemmerI):
             elif word.endswith("ousli"):
                 return word[:-2] if self._m(word, len(word)-6) else word
             else:
-                return word                
+                return word
         elif ch == 'o':
             if word.endswith("ization"):
                 return word[:-7] + "ize" if self._m(word, len(word)-8) else word
@@ -399,7 +399,7 @@ class PorterStemmer(StemmerI):
             elif word.endswith("ator"):
                 return word[:-4] + "ate" if self._m(word, len(word)-5) else word
             else:
-                return word                
+                return word
         elif ch == 's':
             if word.endswith("alism"):
                 return word[:-3] if self._m(word, len(word)-6) else word
@@ -413,7 +413,7 @@ class PorterStemmer(StemmerI):
                 else:
                     return word
             else:
-                return word                    
+                return word
         elif ch == 't':
             if word.endswith("aliti"):
                 return word[:-3] if self._m(word, len(word)-6) else word
@@ -422,22 +422,22 @@ class PorterStemmer(StemmerI):
             elif word.endswith("biliti"):
                 return word[:-6] + "ble" if self._m(word, len(word)-7) else word
             else:
-                return word                
+                return word
         elif ch == 'g': # --DEPARTURE--
             if word.endswith("logi"):
                 return word[:-1] if self._m(word, len(word) - 4) else word # --NEW-- (Barry Wilkins)
             # To match the published algorithm, pass len(word)-5 to _m instead of len(word)-4
             else:
-                return word            
-        
+                return word
+
         else:
             return word
 
     def _step3(self, word):
         """step3() deals with -ic-, -full, -ness etc. similar strategy to step2."""
-        
+
         ch = word[-1]
-        
+
         if ch == 'e':
             if word.endswith("icate"):
                 return word[:-3] if self._m(word, len(word)-6) else word
@@ -451,31 +451,31 @@ class PorterStemmer(StemmerI):
             if word.endswith("iciti"):
                 return word[:-3] if self._m(word, len(word)-6) else word
             else:
-                return word                
+                return word
         elif ch == 'l':
             if word.endswith("ical"):
                 return word[:-2] if self._m(word, len(word)-5) else word
             elif word.endswith("ful"):
                 return word[:-3] if self._m(word, len(word)-4) else word
             else:
-                return word                
+                return word
         elif ch == 's':
             if word.endswith("ness"):
                 return word[:-4] if self._m(word, len(word)-5) else word
             else:
-                return word                
-                
+                return word
+
         else:
             return word
 
     def _step4(self, word):
         """step4() takes off -ant, -ence etc., in context <c>vcvc<v>."""
-        
-        if len(word) <= 1: # Only possible at this stage given unusual inputs to stem_word like 'oed'       
+
+        if len(word) <= 1: # Only possible at this stage given unusual inputs to stem_word like 'oed'
             return word
-        
+
         ch = word[-2]
-        
+
         if ch == 'a':
             if word.endswith("al"):
                 return word[:-2] if self._m(word, len(word)-3) > 1 else word
@@ -563,7 +563,7 @@ class PorterStemmer(StemmerI):
                 word = word[:-1]
         if word.endswith('ll') and self._m(word, len(word)-1) > 1:
             word = word[:-1]
-            
+
         return word
 
     def stem_word(self, p, i=0, j=None):
@@ -587,7 +587,7 @@ class PorterStemmer(StemmerI):
         # stemming process, although no mention is made of this in the
         # published algorithm. Remove the line to match the published
         # algorithm.
-        
+
         word = self._step1ab(word)
         word = self._step1c(word)
         word = self._step2(word)
@@ -595,7 +595,7 @@ class PorterStemmer(StemmerI):
         word = self._step4(word)
         word = self._step5(word)
         return word
-        
+
     def _adjust_case(self, word, stem):
         lower = word.lower()
 
