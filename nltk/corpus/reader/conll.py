@@ -66,7 +66,7 @@ class ConllCorpusReader(CorpusReader):
     #/////////////////////////////////////////////////////////////////
 
     def __init__(self, root, fileids, columntypes,
-                 chunk_types=None, top_node='S', pos_in_tree=False,
+                 chunk_types=None, root_label='S', pos_in_tree=False,
                  srl_includes_roleset=True, encoding='utf8',
                  tree_class=Tree, tagset=None):
         for columntype in columntypes:
@@ -77,7 +77,7 @@ class ConllCorpusReader(CorpusReader):
         self._chunk_types = chunk_types
         self._colmap = dict((c,i) for (i,c) in enumerate(columntypes))
         self._pos_in_tree = pos_in_tree
-        self._top_node = top_node # for chunks
+        self._root_label = root_label # for chunks
         self._srl_includes_roleset = srl_includes_roleset
         self._tree_class = tree_class
         CorpusReader.__init__(self, root, fileids, encoding)
@@ -237,7 +237,7 @@ class ConllCorpusReader(CorpusReader):
             pos_tags = [map_tag(self._tagset, tagset, t) for t in pos_tags]
         chunk_tags = self._get_column(grid, self._colmap['chunk'])
 
-        stack = [Tree(self._top_node, [])]
+        stack = [Tree(self._root_label, [])]
 
         for (word, pos_tag, chunk_tag) in zip(words, pos_tags, chunk_tags):
             if chunk_tag == 'O':
@@ -283,7 +283,7 @@ class ConllCorpusReader(CorpusReader):
             tree = self._tree_class.parse(treestr)
         except (ValueError, IndexError):
             tree = self._tree_class.parse('(%s %s)' %
-                                          (self._top_node, treestr))
+                                          (self._root_label, treestr))
 
         if not pos_in_tree:
             for subtree in tree.subtrees():

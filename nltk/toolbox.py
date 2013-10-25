@@ -229,7 +229,7 @@ class ToolboxData(StandardFormat):
                 e.text = text
         return root
 
-    def _chunk_parse(self, grammar=None, top_node='record', trace=0, **kwargs):
+    def _chunk_parse(self, grammar=None, root_label='record', trace=0, **kwargs):
         """
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the chunk grammar.
@@ -237,8 +237,8 @@ class ToolboxData(StandardFormat):
         :type grammar: str
         :param grammar: Contains the chunking rules used to parse the
             database.  See ``chunk.RegExp`` for documentation.
-        :type top_node: str
-        :param top_node: The node value that should be used for the
+        :type root_label: str
+        :param root_label: The node value that should be used for the
             top node of the chunk structure.
         :type trace: int
         :param trace: The level of tracing that should be used when
@@ -252,7 +252,7 @@ class ToolboxData(StandardFormat):
         from nltk import chunk
         from nltk.tree import Tree
 
-        cp = chunk.RegexpParser(grammar, top_node=top_node, trace=trace)
+        cp = chunk.RegexpParser(grammar, root_label=root_label, trace=trace)
         db = self.parse(**kwargs)
         tb_etree = Element('toolbox_data')
         header = db.find('header')
