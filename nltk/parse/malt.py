@@ -166,9 +166,10 @@ class MaltParser(ParserI):
         try:
             for sentence in sentences:
                 for (i, (word, tag)) in enumerate(sentence, start=1):
-                    input_file.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %
-                            (i, word, '_', tag, tag, '_', '0', 'a', '_', '_'))
-                input_file.write('\n\n')
+                    input_str = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %\
+                        (i, word, '_', tag, tag, '_', '0', 'a', '_', '_')
+                    input_file.write(input_str.encode("utf8"))
+                input_file.write(b'\n\n')
             input_file.close()
 
             cmd = ['java'] + self.additional_java_args + ['-jar', self._malt_bin,
@@ -198,7 +199,8 @@ class MaltParser(ParserI):
                                                  dir=self.working_dir,
                                                  delete=False)
         try:
-            input_file.write('\n'.join(dg.to_conll(10) for dg in depgraphs))
+            input_str = ('\n'.join(dg.to_conll(10) for dg in depgraphs))
+            input_file.write(input_str.encode("utf8"))
             input_file.close()
             self.train_from_file(input_file.name, verbose=verbose)
         finally:
