@@ -47,17 +47,17 @@ Unit tests for Regexp stemmer
 
     >>> stemmer = RegexpStemmer(patterns, 4)
 
-    >>> stemmer.stem("red")
-    'red'
+    >>> print(stemmer.stem("red"))
+    red
 
-    >>> stemmer.stem("hurried")
-    'hurri'
+    >>> print(stemmer.stem("hurried"))
+    hurri
 
-    >>> stemmer.stem("advisable")
-    'advis'
+    >>> print(stemmer.stem("advisable"))
+    advis
 
-    >>> stemmer.stem("impossible")
-    'impossible'
+    >>> print(stemmer.stem("impossible"))
+    impossible
 
 Unit tests for Snowball stemmer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,6 +67,7 @@ Unit tests for Snowball stemmer
 See which languages are supported.
 
     >>> print(" ".join(SnowballStemmer.languages))
+    ... # doctest: +NORMALIZE_WHITESPACE
     danish dutch english finnish french german hungarian italian
     norwegian porter portuguese romanian russian spanish swedish
 
