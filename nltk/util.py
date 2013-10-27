@@ -167,7 +167,8 @@ def filestring(f):
     if hasattr(f, 'read'):
         return f.read()
     elif isinstance(f, string_types):
-        return open(f).read()
+        with open(f, 'r') as infile:
+            return infile.read()
     else:
         raise ValueError("Must be called with a filename or file-like object")
 

@@ -54,7 +54,7 @@ def _generate_one(grammar, item, depth):
             yield [item]
 
 demo_grammar = """
-  S -> NP VP 
+  S -> NP VP
   NP -> Det N
   PP -> P NP
   VP -> 'slept' | 'saw' NP | 'walked' PP

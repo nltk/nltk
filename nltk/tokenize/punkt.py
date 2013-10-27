@@ -101,6 +101,9 @@ leaving all periods attached to words, but separating off other punctuation:
     >>> PunktWordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
     'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+    >>> PunktWordTokenizer().span_tokenize(s)
+    [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36), (38, 44), 
+    (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
 
 The algorithm for this tokenizer is described in::
 
@@ -314,6 +317,23 @@ class PunktWordTokenizer(TokenizerI):
 
     def tokenize(self, text):
         return self._lang_vars.word_tokenize(text)
+
+    def span_tokenize(self, text):
+        """
+        Given a text, returns a list of the (start, end) spans of words
+        in the text.
+        """
+        return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
+
+    def _slices_from_text(self, text):
+        last_break = 0
+        contains_no_words = True
+        for match in self._lang_vars._word_tokenizer_re().finditer(text):
+            contains_no_words = False
+            context = match.group()
+            yield slice(match.start(), match.end())
+        if contains_no_words:
+            yield slice(0, 0) # matches PunktSentenceTokenizer's functionality
 
 #}
 ######################################################################
@@ -1453,17 +1473,16 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
     # [XX] TESTING
     def dump(self, tokens):
         print('writing to /tmp/punkt.new...')
-        out = open('/tmp/punkt.new', 'w')
-        for aug_tok in tokens:
-            if aug_tok.parastart:
-                out.write('\n\n')
-            elif aug_tok.linestart:
-                out.write('\n')
-            else:
-                out.write(' ')
+        with open('/tmp/punkt.new', 'w') as outfile:
+            for aug_tok in tokens:
+                if aug_tok.parastart:
+                    outfile.write('\n\n')
+                elif aug_tok.linestart:
+                    outfile.write('\n')
+                else:
+                    outfile.write(' ')
 
-            out.write(str(aug_tok))
-        out.close()
+                outfile.write(str(aug_tok))
 
     #////////////////////////////////////////////////////////////
     #{ Customization Variables

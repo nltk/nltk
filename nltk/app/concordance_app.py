@@ -11,7 +11,7 @@ import re
 import threading
 if nltk.compat.PY3:
     import queue as q
-else:    
+else:
     import Queue as q
 import tkinter.font
 from tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
@@ -291,7 +291,7 @@ class ConcordanceSearchView(object):
         self.top.bind(SEARCH_ERROR_EVENT, self.handle_search_error)
         self.top.bind(ERROR_LOADING_CORPUS_EVENT, self.handle_error_loading_corpus)
 
-    def _poll(self):   
+    def _poll(self):
         try:
             event = self.queue.get(block=False)
         except q.Empty:

@@ -122,9 +122,9 @@ class DependencyGraph(object):
         :param file: a file in Malt-TAB format
         :return: a list of DependencyGraphs
         """
-        with open(file) as f:
+        with open(file) as infile:
             return [DependencyGraph(tree_str) for tree_str in
-                                                  f.read().split('\n\n')]
+                                                  infile.read().split('\n\n')]
 
     @staticmethod
     def _normalize(line):

@@ -158,8 +158,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         if isinstance(fileid, PathPointer):
             s = fileid.open().readline()
         else:
-            with open(fileid, 'rb') as fp:
-                s = fp.readline()
+            with open(fileid, 'rb') as infile:
+                s = infile.readline()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):

@@ -164,11 +164,12 @@ def fractional_presence(label):
 
 def custom_distance(file):
     data = {}
-    for l in open(file):
-        labelA, labelB, dist = l.strip().split("\t")
-        labelA = frozenset([labelA])
-        labelB = frozenset([labelB])
-        data[frozenset([labelA,labelB])] = float(dist)
+    with open(file, 'r') as infile:
+        for l in infile:
+            labelA, labelB, dist = l.strip().split("\t")
+            labelA = frozenset([labelA])
+            labelB = frozenset([labelB])
+            data[frozenset([labelA,labelB])] = float(dist)
     return lambda x,y:data[frozenset([x,y])]
 
 

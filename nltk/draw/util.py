@@ -1229,7 +1229,7 @@ class SequenceWidget(CanvasWidget):
         else: CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'align': return value
+        if attr == 'align': return self._align
         elif attr == 'space': return self._space
         elif attr == 'ordered': return self._ordered
         else: return CanvasWidget.__getitem__(self, attr)
@@ -1386,7 +1386,7 @@ class StackWidget(CanvasWidget):
         else: CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'align': return value
+        if attr == 'align': return self._align
         elif attr == 'space': return self._space
         elif attr == 'ordered': return self._ordered
         else: return CanvasWidget.__getitem__(self, attr)

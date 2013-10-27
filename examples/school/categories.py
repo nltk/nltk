@@ -70,7 +70,7 @@ def search_contexts(words):
         sorted_hits = sorted(hit_freqs, key=itemgetter(1), reverse=True)
         words = [word for (word, count) in sorted_hits[1:] if count > 1]
         print(join(words))
-        
+
 def lookup(word):
     for category in [N, V, ADJ, ADV]:
         if word in category:
@@ -142,7 +142,7 @@ def train_tagger(corpus):
     t1 = nltk.tag.Unigram(cutoff=0, backoff=t0)
     t2 = nltk.tag.Bigram(cutoff=0, backoff=t1)
     t3 = nltk.tag.Trigram(cutoff=1, backoff=t2)
-    
+
     t1.train(corpus, verbose=True)
     t2.train(corpus, verbose=True)
     t3.train(corpus, verbose=True)

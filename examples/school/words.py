@@ -101,5 +101,5 @@ def generate(model, num=100):
         prev1 = word
     print()
 
-        
+
 

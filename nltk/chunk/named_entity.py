@@ -214,7 +214,8 @@ def load_ace_file(textfile, fmt):
 
     # Read the xml file, and get a list of entities
     entities = []
-    xml = ET.parse(open(annfile)).getroot()
+    with open(annfile, 'r') as infile:
+        xml = ET.parse(infile).getroot()
     for entity in xml.findall('document/entity'):
         typ = entity.find('entity_type').text
         for mention in entity.findall('entity_mention'):
@@ -224,8 +225,8 @@ def load_ace_file(textfile, fmt):
             entities.append( (s, e, typ) )
 
     # Read the text file, and mark the entities.
-    with open(textfile) as fp:
-        text = fp.read()
+    with open(textfile, 'r') as infile:
+        text = infile.read()
 
     # Strip XML tags, since they don't count towards the indices
     text = re.sub('<(?!/?TEXT)[^>]+>', '', text)
@@ -314,8 +315,8 @@ def build_model(fmt='binary'):
     outfilename = '/tmp/ne_chunker_%s.pickle' % fmt
     print('Saving chunker to %s...' % outfilename)
 
-    with open(outfilename, 'wb') as out:
-        pickle.dump(cp, out, -1)
+    with open(outfilename, 'wb') as outfile:
+        pickle.dump(cp, outfile, -1)
 
     return cp
 

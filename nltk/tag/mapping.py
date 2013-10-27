@@ -7,14 +7,14 @@
 # For license information, see LICENSE.TXT
 
 """
-Interface for converting POS tags from various treebanks 
+Interface for converting POS tags from various treebanks
 to the universal tagset of Petrov, Das, & McDonald.
 
 The tagset consists of the following 12 coarse tags:
 
 VERB - verbs (all tenses and modes)
 NOUN - nouns (common and proper)
-PRON - pronouns 
+PRON - pronouns
 ADJ - adjectives
 ADV - adverbs
 ADP - adpositions (prepositions and postpositions)
@@ -55,11 +55,11 @@ def _load_universal_map(fileid):
 
         _MAPPINGS[fileid]['universal'][fine] = coarse
 
-            
+
 def tagset_mapping(source, target):
     """
     Retrieve the mapping dictionary between tagsets.
-    
+
     >>> tagset_mapping('ru-rnc', 'universal') == {'!': '.', 'A': 'ADJ', 'C': 'CONJ', 'AD': 'ADV',\
             'NN': 'NOUN', 'VG': 'VERB', 'COMP': 'CONJ', 'NC': 'NUM', 'VP': 'VERB', 'P': 'ADP',\
             'IJ': 'X', 'V': 'VERB', 'Z': 'X', 'VI': 'VERB', 'YES_NO_SENT': 'X', 'PTCL': 'PRT'}
@@ -74,7 +74,7 @@ def tagset_mapping(source, target):
 def map_tag(source, target, source_tag):
     """
     Maps the tag from the source tagset to the target tagset.
-    
+
     >>> map_tag('en-ptb', 'universal', 'VBZ')
     'VERB'
     >>> map_tag('en-ptb', 'universal', 'VBP')
