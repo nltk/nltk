@@ -315,6 +315,23 @@ class PunktWordTokenizer(TokenizerI):
     def tokenize(self, text):
         return self._lang_vars.word_tokenize(text)
 
+    def span_tokenize(self, text):
+        """
+        Given a text, returns a list of the (start, end) spans of words
+        in the text.
+        """
+        return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
+
+    def _slices_from_text(self, text):
+        last_break = 0
+        contains_no_words = True
+        for match in self._lang_vars._word_tokenizer_re().finditer(text):
+            contains_no_words = False
+            context = match.group()
+            yield slice(match.start(), match.end())
+        if contains_no_words:
+            yield slice(0, 0) # matches PunktSentenceTokenizer's functionality
+
 #}
 ######################################################################
 
