@@ -17,8 +17,8 @@ from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
 from nltk.sem.logic import (LogicParser, Expression, Variable, VariableExpression,
                             LambdaExpression, AbstractVariableExpression)
 from nltk.compat import python_2_unicode_compatible
-from . import drt
-from . import linearlogic
+from nltk.sem import drt
+from nltk.sem import linearlogic
 
 SPEC_SEMTYPES = {'a'       : 'ex_quant',
                  'an'      : 'ex_quant',
@@ -424,7 +424,7 @@ class Glue(object):
         if semtype_file:
             self.semtype_file = semtype_file
         else:
-            self.semtype_file = 'glue.semtype'
+            self.semtype_file = os.path.join('grammars', 'sample_grammars','glue.semtype')
 
     def train_depparser(self, depgraphs=None):
         if depgraphs:
@@ -611,7 +611,7 @@ class DrtGlue(Glue):
     def __init__(self, semtype_file=None, remove_duplicates=False,
                  depparser=None, verbose=False):
         if not semtype_file:
-            semtype_file = 'drt_glue.semtype'
+            semtype_file = os.path.join('grammars', 'sample_grammars','drt_glue.semtype')
         Glue.__init__(self, semtype_file, remove_duplicates, depparser, verbose)
 
     def get_glue_dict(self):
