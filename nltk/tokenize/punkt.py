@@ -101,6 +101,9 @@ leaving all periods attached to words, but separating off other punctuation:
     >>> PunktWordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
     'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+    >>> PunktWordTokenizer().span_tokenize(s)
+    [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36), (38, 44), 
+    (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
 
 The algorithm for this tokenizer is described in::
 
