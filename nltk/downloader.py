@@ -1956,8 +1956,8 @@ def md5_hexdigest(file):
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, compat.string_types):
-        with open(file, 'rb') as fp:
-            return _md5_hexdigest(fp)
+        with open(file, 'rb') as infile:
+            return _md5_hexdigest(infile)
     return _md5_hexdigest(file)
 
 def _md5_hexdigest(fp):
@@ -2020,13 +2020,13 @@ def _unzip_iter(filename, root, verbose=True):
     for i, filename in enumerate(filelist):
         filepath = os.path.join(root, *filename.split('/'))
 
-        with open(filepath, 'wb') as out:
+        with open(filepath, 'wb') as outfile:
             try:
                 contents = zf.read(filename)
             except Exception as e:
                 yield ErrorMessage(filename, e)
                 return
-            out.write(contents)
+            outfile.write(contents)
 
         if verbose and (i*10/len(filelist) > (i-1)*10/len(filelist)):
             sys.stdout.write('.')

@@ -1170,12 +1170,11 @@ class RegexpChunkApp(object):
         else:
             precision = recall = fscore = 'Not finished evaluation yet'
 
-        out = open(filename, 'w')
-        out.write(self.SAVE_GRAMMAR_TEMPLATE % dict(
-            date=time.ctime(), devset=self.devset_name,
-            precision=precision, recall=recall, fscore=fscore,
-            grammar=self.grammar.strip()))
-        out.close()
+        with open(filename, 'w') as outfile:
+            outfile.write(self.SAVE_GRAMMAR_TEMPLATE % dict(
+                date=time.ctime(), devset=self.devset_name,
+                precision=precision, recall=recall, fscore=fscore,
+                grammar=self.grammar.strip()))
 
     def load_grammar(self, filename=None):
         if not filename:
@@ -1186,7 +1185,8 @@ class RegexpChunkApp(object):
             if not filename: return
         self.grammarbox.delete('1.0', 'end')
         self.update()
-        grammar = open(filename).read()
+        with open(filename, 'r') as infile:
+            grammar = infile.read()
         grammar = re.sub('^\# Regexp Chunk Parsing Grammar[\s\S]*'
                          'F-score:.*\n', '', grammar).lstrip()
         self.grammarbox.insert('1.0', grammar)
@@ -1200,26 +1200,25 @@ class RegexpChunkApp(object):
                                                       defaultextension='.txt')
             if not filename: return
 
-        out = open(filename, 'w')
-        out.write('# Regexp Chunk Parsing Grammar History\n')
-        out.write('# Saved %s\n' % time.ctime())
-        out.write('# Development set: %s\n' % self.devset_name)
-        for i, (g, p, r, f) in enumerate(self._history):
-            hdr = ('Grammar %d/%d (precision=%.2f%%, recall=%.2f%%, '
-                   'fscore=%.2f%%)' % (i+1, len(self._history),
-                                       p*100, r*100, f*100))
-            out.write('\n%s\n' % hdr)
-            out.write(''.join('  %s\n' % line for line in g.strip().split()))
+        with open(filename, 'w') as outfile:
+            outfile.write('# Regexp Chunk Parsing Grammar History\n')
+            outfile.write('# Saved %s\n' % time.ctime())
+            outfile.write('# Development set: %s\n' % self.devset_name)
+            for i, (g, p, r, f) in enumerate(self._history):
+                hdr = ('Grammar %d/%d (precision=%.2f%%, recall=%.2f%%, '
+                       'fscore=%.2f%%)' % (i+1, len(self._history),
+                                           p*100, r*100, f*100))
+                outfile.write('\n%s\n' % hdr)
+                outfile.write(''.join('  %s\n' % line for line in g.strip().split()))
 
-        if not (self._history and self.normalized_grammar ==
-                self.normalize_grammar(self._history[-1][0])):
-            if self.chunker is None:
-                out.write('\nCurrent Grammar (not well-formed)\n')
-            else:
-                out.write('\nCurrent Grammar (not evaluated)\n')
-            out.write(''.join('  %s\n' % line for line
-                              in self.grammar.strip().split()))
-        out.close()
+            if not (self._history and self.normalized_grammar ==
+                    self.normalize_grammar(self._history[-1][0])):
+                if self.chunker is None:
+                    outfile.write('\nCurrent Grammar (not well-formed)\n')
+                else:
+                    outfile.write('\nCurrent Grammar (not evaluated)\n')
+                outfile.write(''.join('  %s\n' % line for line
+                                  in self.grammar.strip().split()))
 
     def about(self, *e):
         ABOUT = ("NLTK RegExp Chunk Parser Application\n"+

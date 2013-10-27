@@ -644,13 +644,13 @@ class PorterStemmer(StemmerI):
 #    p = PorterStemmer()
 #    if len(sys.argv) > 1:
 #        for f in sys.argv[1:]:
-#            infile = open(f, 'r')
-#            while 1:
-#                w = infile.readline()
-#                if w == '':
-#                    break
-#                w = w[:-1]
-#                print p.stem(w)
+#            with open(f, 'r') as infile:
+#                while 1:
+#                    w = infile.readline()
+#                    if w == '':
+#                        break
+#                    w = w[:-1]
+#                    print(p.stem(w))
 
 ##--NLTK--
 ## Added a demo() function

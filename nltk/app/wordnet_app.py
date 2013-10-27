@@ -50,6 +50,7 @@ from __future__ import print_function
 from sys import path
 
 import os
+import sys
 from sys import argv
 from collections import defaultdict
 import webbrowser
@@ -117,7 +118,8 @@ class MyServerHandler(BaseHTTPRequestHandler):
             if usp == 'NLTK Wordnet Browser Database Info.html':
                 word = '* Database Info *'
                 if os.path.isfile(usp):
-                    page = open(usp).read()
+                    with open(usp, 'r') as infile:
+                        page = infile.read()
                 else:
                     page = (html_header % word) + \
                         '<p>The database info file:'\
@@ -228,6 +230,10 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
 
     # Compute URL and start web browser
     url = 'http://localhost:' + str(port)
+
+    server_ready = None
+    browser_thread = None
+
     if runBrowser:
         server_ready = threading.Event()
         browser_thread = startBrowser(url, server_ready)
@@ -247,6 +253,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
 
     if runBrowser:
         browser_thread.join()
+
+    if logfile:
+        logfile.close()
 
 
 def startBrowser(url, server_ready):
@@ -778,11 +787,6 @@ def get_static_page_by_path(path):
         return get_static_wx_help_page()
     else:
         return "Internal error: Path for static page '%s' is unknown" % path
-
-    f = open(path)
-    page = f.read()
-    f.close()
-    return page
 
 
 def get_static_web_help_page():
