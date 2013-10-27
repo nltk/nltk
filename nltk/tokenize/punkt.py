@@ -1453,17 +1453,16 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
     # [XX] TESTING
     def dump(self, tokens):
         print('writing to /tmp/punkt.new...')
-        out = open('/tmp/punkt.new', 'w')
-        for aug_tok in tokens:
-            if aug_tok.parastart:
-                out.write('\n\n')
-            elif aug_tok.linestart:
-                out.write('\n')
-            else:
-                out.write(' ')
+        with open('/tmp/punkt.new', 'w') as outfile:
+            for aug_tok in tokens:
+                if aug_tok.parastart:
+                    outfile.write('\n\n')
+                elif aug_tok.linestart:
+                    outfile.write('\n')
+                else:
+                    outfile.write(' ')
 
-            out.write(str(aug_tok))
-        out.close()
+                outfile.write(str(aug_tok))
 
     #////////////////////////////////////////////////////////////
     #{ Customization Variables

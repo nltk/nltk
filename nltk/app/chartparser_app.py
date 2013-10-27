@@ -695,7 +695,9 @@ class ChartComparer(object):
         filename = asksaveasfilename(filetypes=self.CHART_FILE_TYPES,
                                      defaultextension='.pickle')
         if not filename: return
-        try: pickle.dump((self._out_chart), open(filename, 'w'))
+        try:
+            with open(filename, 'wb') as outfile:
+                pickle.dump(self._out_chart, outfile)
         except Exception as e:
             tkinter.messagebox.showerror('Error Saving Chart',
                                    'Unable to open file: %r\n%s' %
@@ -712,7 +714,8 @@ class ChartComparer(object):
                                    (filename, e))
 
     def load_chart(self, filename):
-        chart = pickle.load(open(filename, 'r'))
+        with open(filename, 'rb') as infile:
+            chart = pickle.load(infile)
         name = os.path.basename(filename)
         if name.endswith('.pickle'): name = name[:-7]
         if name.endswith('.chart'): name = name[:-6]
@@ -1997,7 +2000,8 @@ class ChartParserApp(object):
                                    defaultextension='.pickle')
         if not filename: return
         try:
-            chart = pickle.load(open(filename, 'r'))
+            with open(filename, 'rb') as infile:
+                chart = pickle.load(infile)
             self._chart = chart
             self._cv.update(chart)
             if self._matrix: self._matrix.set_chart(chart)
@@ -2015,7 +2019,8 @@ class ChartParserApp(object):
                                      defaultextension='.pickle')
         if not filename: return
         try:
-            pickle.dump(self._chart, open(filename, 'w'))
+            with open(filename, 'wb') as outfile:
+                pickle.dump(self._chart, outfile)
         except Exception as e:
             raise
             tkinter.messagebox.showerror('Error Saving Chart',
@@ -2028,9 +2033,11 @@ class ChartParserApp(object):
         if not filename: return
         try:
             if filename.endswith('.pickle'):
-                grammar = pickle.load(open(filename, 'r'))
+                with open(filename, 'rb') as infile:
+                    grammar = pickle.load(infile)
             else:
-                grammar = parse_cfg(open(filename, 'r').read())
+                with open(filename, 'r') as infile:
+                    grammar = parse_cfg(infile.read())
             self.set_grammar(grammar)
         except Exception as e:
             tkinter.messagebox.showerror('Error Loading Grammar',
@@ -2042,15 +2049,15 @@ class ChartParserApp(object):
         if not filename: return
         try:
             if filename.endswith('.pickle'):
-                pickle.dump((self._chart, self._tokens), open(filename, 'w'))
+                with open(filename, 'wb') as outfile:
+                    pickle.dump((self._chart, self._tokens), outfile)
             else:
-                file = open(filename, 'w')
-                prods = self._grammar.productions()
-                start = [p for p in prods if p.lhs() == self._grammar.start()]
-                rest = [p for p in prods if p.lhs() != self._grammar.start()]
-                for prod in start: file.write('%s\n' % prod)
-                for prod in rest: file.write('%s\n' % prod)
-                file.close()
+                with open(filename, 'w') as outfile:
+                    prods = self._grammar.productions()
+                    start = [p for p in prods if p.lhs() == self._grammar.start()]
+                    rest = [p for p in prods if p.lhs() != self._grammar.start()]
+                    for prod in start: outfile.write('%s\n' % prod)
+                    for prod in rest: outfile.write('%s\n' % prod)
         except Exception as e:
             tkinter.messagebox.showerror('Error Saving Grammar',
                                    'Unable to open file: %r' % filename)

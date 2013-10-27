@@ -1363,10 +1363,9 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     # Write a training file for megam.
     try:
         fd, trainfile_name = tempfile.mkstemp(prefix='nltk-')
-        trainfile = open(trainfile_name, 'w')
-        write_megam_file(train_toks, encoding, trainfile, \
-                            explicit=explicit, bernoulli=bernoulli)
-        trainfile.close()
+        with open(trainfile_name, 'w') as trainfile:
+            write_megam_file(train_toks, encoding, trainfile,
+                                explicit=explicit, bernoulli=bernoulli)
         os.close(fd)
     except (OSError, IOError, ValueError) as e:
         raise ValueError('Error while creating megam training file: %s' % e)

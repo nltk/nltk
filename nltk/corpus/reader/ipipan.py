@@ -62,8 +62,12 @@ class IPIPANCorpusReader(CorpusReader):
     def raw(self, fileids=None):
         if not fileids:
             fileids = self.fileids()
-        return ''.join([open(fileid, 'r').read()
-            for fileid in self._list_morph_files(fileids)])
+
+        filecontents = []
+        for fileid in self._list_morph_files(fileids):
+            with open(fileid, 'r') as infile:
+                filecontents.append(infile.read())
+        return ''.join(filecontents)
 
     def channels(self, fileids=None):
         if not fileids:
@@ -167,7 +171,8 @@ class IPIPANCorpusReader(CorpusReader):
 
     def _get_tag(self, f, tag):
         tags = []
-        header = open(f, 'r').read()
+        with open(f, 'r') as infile:
+            header = infile.read()
         tag_end = 0
         while True:
             tag_pos = header.find('<'+tag, tag_end)
