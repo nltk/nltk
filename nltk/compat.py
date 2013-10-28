@@ -115,7 +115,7 @@ else:
                 sys.modules[name] = mod
             return sys.modules[name]
 
-    sys.meta_path = [TkinterLoader()]
+    sys.meta_path.insert(0, TkinterLoader())
 
 
 def iterkeys(d):
