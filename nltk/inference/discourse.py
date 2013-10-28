@@ -43,6 +43,7 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 those threads which are consistent (taking into account any background assumptions).
 """
 from __future__ import print_function
+import os
 
 from operator import and_, add
 from functools import reduce
@@ -133,7 +134,7 @@ class DrtGlueReadingCommand(ReadingCommand):
         :param depparser: the dependency parser
         """
         if semtype_file is None:
-            semtype_file = 'drt_glue.semtype'
+            semtype_file = os.path.join('grammars', 'sample_grammars','drt_glue.semtype')
         self._glue = DrtGlue(semtype_file=semtype_file,
                              remove_duplicates=remove_duplicates,
                              depparser=depparser)
@@ -274,7 +275,7 @@ class DiscourseTester(object):
         """
         # re-initialize self._readings in case we have retracted a sentence
         self._readings = {}
-        for sid in self._sentences:
+        for sid in sorted(self._sentences):
             sentence = self._sentences[sid]
             readings = self._get_readings(sentence)
             self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading.simplify())
@@ -402,7 +403,7 @@ class DiscourseTester(object):
                         print(a)
                     spacer(80)
                 if modelfound:
-                    print(mb.model(format='cooked'))
+                    print(mb.model(format='cooked').decode('utf8'))
                 else:
                     print("No model found!\n")
         return results
@@ -559,7 +560,9 @@ def discourse_demo(reading_command=None):
                           reading_command)
     dt.readings(filter=True)
     import nltk.data
-    background = nltk.data.load('/grammars/book_grammars/background.fol')
+    background_file = os.path.join('grammars', 'book_grammars', 'background.fol')
+    background = nltk.data.load(background_file)
+    
     print()
     dt.add_background(background, verbose=False)
     dt.background()
