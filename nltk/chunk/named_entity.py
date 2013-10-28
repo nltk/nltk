@@ -167,16 +167,17 @@ class NEChunkParser(ChunkParserI):
         return toks
 
 def shape(word):
-    if re.match('[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$', word):
+    if re.match('[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$', word, re.UNICODE):
         return 'number'
-    elif re.match('\W+$', word):
+    elif re.match('\W+$', word, re.UNICODE):
         return 'punct'
-    elif re.match('[A-Z][a-z]+$', word):
-        return 'upcase'
-    elif re.match('[a-z]+$', word):
-        return 'downcase'
-    elif re.match('\w+$', word):
-        return 'mixedcase'
+    elif re.match('\w+$', word, re.UNICODE):
+        if word.istitle():
+            return 'upcase'
+        elif word.islower():
+            return 'downcase'
+        else:
+            return 'mixedcase'
     else:
         return 'other'
 
