@@ -496,7 +496,7 @@ class FreqDist(dict):
 
         :rtype: string
         """
-        items = ['%r: %r' % (s, self[s]) for s in self.keys()[:10]]
+        items = ['%r: %r' % (s, self[s]) for s in list(self.keys())[:10]]
         if len(self) > 10:
             items.append('...')
         return '<FreqDist: %s>' % ', '.join(items)
