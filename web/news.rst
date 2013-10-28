@@ -1,6 +1,10 @@
 NLTK News
 =========
 
+NLTK Book Updates : October 2013
+   We are updating the NLTK book for Python 3 and NLTK 3; please see
+   http://nltk.org/book3/
+
 NLTK 3.0a2 released : July 2013
    Misc efficiency improvements and bugfixes; for details see
    details see https://raw.github.com/nltk/nltk/master/ChangeLog
