@@ -177,7 +177,7 @@ def py3_data(init_func):
         if PY3:
             path = args[1]
             for item in _PY3_DATA_UPDATES:
-                if item in str(path):
+                if item in str(path) and "/PY3" not in str(path):
                     pos = path.index(item) + len(item)
                     if path[pos:pos+4] == ".zip":
                         pos += 4
