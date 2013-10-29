@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Maximum Entropy Classifiers
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gmail.com>
 #         Dmitry Chichkov <dchichkov@gmail.com> (TypedMaxentFeatureEncoding)
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Plaintext Corpus Reader
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Steven Bird <stevenbird1@gmail.com>
+#         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@umiacs.umd.edu>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

@@ -4,7 +4,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """
 A theorem prover that makes use of the external 'Prover9' package.

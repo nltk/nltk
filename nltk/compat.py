@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from __future__ import absolute_import, print_function

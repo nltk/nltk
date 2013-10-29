@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Simple Tokenizers
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT

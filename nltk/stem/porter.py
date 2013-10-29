@@ -21,7 +21,7 @@
 # Additional modifications were made to incorporate this module into
 # NLTK.  All such modifications are marked with "--NLTK--".  The NLTK
 # version of this module is maintained by NLTK developers,
-# and is available via http://www.nltk.org/
+# and is available via http://nltk.org/
 #
 # GNU Linking Exception:
 # Using this module statically or dynamically with other modules is

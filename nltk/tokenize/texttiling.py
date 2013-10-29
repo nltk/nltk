@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2013 NLTK Project
 # Author: George Boutsioukis
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import re

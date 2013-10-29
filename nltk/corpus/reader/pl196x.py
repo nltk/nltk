@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Piotr Kasprzyk <p.j.kasprzyk@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os

@@ -1,4 +1,4 @@
-Natural Language Toolkit (NLTK) http://www.nltk.org/
+Natural Language Toolkit (NLTK) http://nltk.org/
 
 Copyright (C) 2001-2013 NLTK Project
 

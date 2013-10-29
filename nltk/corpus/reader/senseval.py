@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

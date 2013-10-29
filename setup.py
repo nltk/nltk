@@ -4,7 +4,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Edward Loper <edloper@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

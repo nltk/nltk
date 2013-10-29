@@ -1,7 +1,7 @@
-Natural Language Toolkit (NLTK)   www.nltk.org
+Natural Language Toolkit (NLTK)   nltk.org
 
 Authors: Steven Bird <stevenbird1@gmail.com>
-         Edward Loper <edloper@gradient.cis.upenn.edu>
+         Edward Loper <edloper@gmail.com>
          Ewan Klein <ewan@inf.ed.ac.uk>
 
 Copyright (C) 2001-2013 NLTK Project
@@ -14,7 +14,7 @@ development in Natural Language Processing.
 
 Documentation: A substantial amount of documentation about how
 to use NLTK, including a textbook and API documention, is
-available from the NLTK website: http://www.nltk.org/
+available from the NLTK website: http://nltk.org/
 
   - The book covers a wide range of introductory topics in NLP, and
     shows how to do all the processing tasks using the toolkit.
@@ -37,7 +37,7 @@ Mailing Lists: There are several mailing lists associated with NLTK:
       http://groups.google.com/group/nltk-commits
 
 Contributing: If you would like to contribute to NLTK,
-    please see http://www.nltk.org/contribute
+    please see http://nltk.org/contribute
 
 Donating: Have you found the toolkit helpful?  Please support NLTK development
     by donating to the project via PayPal, using the link on the NLTK homepage.

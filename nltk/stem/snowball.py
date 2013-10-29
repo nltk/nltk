@@ -6,7 +6,7 @@
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

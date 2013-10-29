@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

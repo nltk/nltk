@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
 from nltk.internals import raise_unorderable_types

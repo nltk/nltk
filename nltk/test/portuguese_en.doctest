@@ -7,7 +7,7 @@ Examples for Portuguese Processing
 
 This HOWTO contains a variety of examples relating to the Portuguese language.
 It is intended to be read in conjunction with the NLTK book
-(``http://www.nltk.org/book``).  For instructions on running the Python
+(``http://nltk.org/book``).  For instructions on running the Python
 interpreter, please see the section *Getting Started with Python*, in Chapter 1.
 
 --------------------------------------------

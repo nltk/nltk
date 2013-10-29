@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Text Segmentation Metrics
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         David Doukhan <david.doukhan@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 

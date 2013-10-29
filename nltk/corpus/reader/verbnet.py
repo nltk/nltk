@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Verbnet Corpus Reader
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
 

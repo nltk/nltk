@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Porting: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from nltk.probability import DictionaryProbDist

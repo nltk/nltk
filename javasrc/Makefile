@@ -1,7 +1,7 @@
 # Natural Language Toolkit: java interface code Makefile
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 

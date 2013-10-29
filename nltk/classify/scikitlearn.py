@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Interface to scikit-learn classifiers
 #
 # Author: Lars Buitinck <L.J.Buitinck@uva.nl>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """
 scikit-learn (http://scikit-learn.org) is a machine learning library for

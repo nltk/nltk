@@ -3,7 +3,7 @@
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Dan Garrette <dhgarrette@gmail.com>
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

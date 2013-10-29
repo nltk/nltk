@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Konrad Goluchowski <kodie@mimuw.edu.pl>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import functools
