@@ -12,7 +12,7 @@ from math import log
 
 from nltk.probability import (ConditionalProbDist, ConditionalFreqDist,
                               SimpleGoodTuringProbDist)
-from nltk.util import ingrams
+from nltk.util import ngrams
 from nltk.model.api import ModelI
 
 from nltk import compat
@@ -101,7 +101,7 @@ class NgramModel(ModelI):
             train = [train]
 
         for sent in train:
-            for ngram in ingrams(chain(self._lpad, sent, self._rpad), n):
+            for ngram in ngrams(chain(self._lpad, sent, self._rpad), n):
                 self._ngrams.add(ngram)
                 context = tuple(ngram[:-1])
                 token = ngram[-1]

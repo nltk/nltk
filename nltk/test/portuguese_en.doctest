@@ -205,10 +205,10 @@ of a text as a sequence of words and punctuation, not characters:
 Here's a program that finds the most common ngrams that contain a
 particular target word.
 
-    >>> from nltk import ingrams, FreqDist
+    >>> from nltk import ngrams, FreqDist
     >>> target_word = 'olhos'
     >>> fd = FreqDist(ng
-    ...               for ng in ingrams(text1, 5)
+    ...               for ng in ngrams(text1, 5)
     ...               if target_word in ng)
     >>> for hit in fd.samples():
     ...     print(' '.join(hit))
