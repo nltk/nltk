@@ -30,7 +30,7 @@ clean:
 
 %.zip: %
 	$(ZIP) -r $< $<
-	git add *zip
+#	git add *zip
 
 publish: zip
 	cp $(PACKAGES) $(PUBLISH)
