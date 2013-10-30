@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 DATADIR =  ../../../nltk_data

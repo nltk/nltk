@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2005-2007 Oregon Graduate Institute
 # Author: Nathan Bodenstab <bodenstab@cslu.ogi.edu>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

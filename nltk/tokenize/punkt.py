@@ -4,9 +4,9 @@
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
-#         Edward Loper <edloper@gradient.cis.upenn.edu> (rewrite)
+#         Edward Loper <edloper@gmail.com> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 r"""

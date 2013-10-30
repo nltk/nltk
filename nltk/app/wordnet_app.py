@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 #         Paul Bone <pbone@students.csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -800,7 +800,7 @@ def get_static_web_help_page():
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
             Copyright (C) 2001-2013 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://www.nltk.org/>
+            URL: <http://nltk.org/>
             For license information, see LICENSE.TXT -->
      <head>
           <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
@@ -871,7 +871,7 @@ def get_static_index_page(with_shutdown):
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
             Copyright (C) 2001-2013 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://www.nltk.org/>
+            URL: <http://nltk.org/>
             For license information, see LICENSE.TXT -->
      <HEAD>
          <TITLE>NLTK Wordnet Browser</TITLE>
@@ -905,7 +905,7 @@ def get_static_upper_page(with_shutdown):
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
         Copyright (C) 2001-2013 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-        URL: <http://www.nltk.org/>
+        URL: <http://nltk.org/>
         For license information, see LICENSE.TXT -->
     <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />

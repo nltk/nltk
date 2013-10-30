@@ -7,7 +7,7 @@ Examples for Portuguese Processing
 
 This HOWTO contains a variety of examples relating to the Portuguese language.
 It is intended to be read in conjunction with the NLTK book
-(``http://www.nltk.org/book``).  For instructions on running the Python
+(``http://nltk.org/book``).  For instructions on running the Python
 interpreter, please see the section *Getting Started with Python*, in Chapter 1.
 
 --------------------------------------------
@@ -205,10 +205,10 @@ of a text as a sequence of words and punctuation, not characters:
 Here's a program that finds the most common ngrams that contain a
 particular target word.
 
-    >>> from nltk import ingrams, FreqDist
+    >>> from nltk import ngrams, FreqDist
     >>> target_word = 'olhos'
     >>> fd = FreqDist(ng
-    ...               for ng in ingrams(text1, 5)
+    ...               for ng in ngrams(text1, 5)
     ...               if target_word in ng)
     >>> for hit in fd.samples():
     ...     print(' '.join(hit))

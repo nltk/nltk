@@ -4,7 +4,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Tiago Tresoldi <tresoldi@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 # This code is based on the algorithm presented in the paper "A Stemming

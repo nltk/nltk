@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Leon Derczynski <leon@dcs.shef.ac.uk>
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """
 nltk.classify.svm was deprecated. For classification based

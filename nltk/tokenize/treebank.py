@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Tokenizers
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
 #
 # URL: <http://nltk.sourceforge.net>

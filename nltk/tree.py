@@ -2,11 +2,11 @@
 # Natural Language Toolkit: Text Trees
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 #         Nathan Bodenstab <bodenstab@cslu.ogi.edu> (tree transforms)
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

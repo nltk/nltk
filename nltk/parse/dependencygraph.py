@@ -4,7 +4,7 @@
 # Author: Jason Narad <jason.narad@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 

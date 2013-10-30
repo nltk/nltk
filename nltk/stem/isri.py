@@ -5,7 +5,7 @@
 # Copyright (C) 2001-2013 NLTK Proejct
 # Algorithm: Kazem Taghva, Rania Elkhoury, and Jeffrey Coombs (2005)
 # Author: Hosam Algasaier <hosam_hme@yahoo.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

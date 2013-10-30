@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from __future__ import absolute_import, print_function
@@ -115,7 +115,7 @@ else:
                 sys.modules[name] = mod
             return sys.modules[name]
 
-    sys.meta_path = [TkinterLoader()]
+    sys.meta_path.insert(0, TkinterLoader())
 
 
 def iterkeys(d):
@@ -177,7 +177,7 @@ def py3_data(init_func):
         if PY3:
             path = args[1]
             for item in _PY3_DATA_UPDATES:
-                if item in str(path):
+                if item in str(path) and "/PY3" not in str(path):
                     pos = path.index(item) + len(item)
                     if path[pos:pos+4] == ".zip":
                         pos += 4

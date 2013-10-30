@@ -3,10 +3,10 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-#         Edward Loper <edloper@seas.upenn.edu>
+#         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 

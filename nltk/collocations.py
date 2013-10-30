@@ -35,7 +35,7 @@ import itertools as _itertools
 from operator import itemgetter as _itemgetter
 
 from nltk.probability import FreqDist
-from nltk.util import ingrams
+from nltk.util import ngrams
 from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures
 from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
@@ -149,7 +149,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         if window_size < 2:
             raise ValueError("Specify window_size at least 2")
 
-        for window in ingrams(words, window_size, pad_right=True):
+        for window in ngrams(words, window_size, pad_right=True):
             w1 = window[0]
             wfd.inc(w1)
             for w2 in window[1:]:
@@ -196,7 +196,7 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         bfd = FreqDist()
         tfd = FreqDist()
 
-        for w1, w2, w3 in ingrams(words, 3, pad_right=True):
+        for w1, w2, w3 in ngrams(words, 3, pad_right=True):
             wfd.inc(w1)
             if w2 is None:
                 continue

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
@@ -371,85 +371,17 @@ def flatten(*args):
 
 def ngrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
     """
-    Return a sequence of ngrams from a sequence of items.  For example:
-
-        >>> from nltk.util import ngrams
-        >>> ngrams([1,2,3,4,5], 3)
-        [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
-
-    Use ingram for an iterator version of this function.  Set pad_left
-    or pad_right to true in order to get additional ngrams:
-
-        >>> ngrams([1,2,3,4,5], 2, pad_right=True)
-        [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
-
-    :param sequence: the source data to be converted into ngrams
-    :type sequence: sequence or iter
-    :param n: the degree of the ngrams
-    :type n: int
-    :param pad_left: whether the ngrams should be left-padded
-    :type pad_left: bool
-    :param pad_right: whether the ngrams should be right-padded
-    :type pad_right: bool
-    :param pad_symbol: the symbol to use for padding (default is None)
-    :type pad_symbol: any
-    :rtype: list(tuple)
-    """
-
-    if pad_left:
-        sequence = chain((pad_symbol,) * (n-1), sequence)
-    if pad_right:
-        sequence = chain(sequence, (pad_symbol,) * (n-1))
-    sequence = list(sequence)
-
-    count = max(0, len(sequence) - n + 1)
-    return [tuple(sequence[i:i+n]) for i in range(count)]
-
-def bigrams(sequence, **kwargs):
-    """
-    Return a sequence of bigrams from a sequence of items.  For example:
-
-        >>> from nltk.util import bigrams
-        >>> bigrams([1,2,3,4,5])
-        [(1, 2), (2, 3), (3, 4), (4, 5)]
-
-    Use ibigrams for an iterator version of this function.
-
-    :param sequence: the source data to be converted into bigrams
-    :type sequence: sequence or iter
-    :rtype: list(tuple)
-    """
-    return ngrams(sequence, 2, **kwargs)
-
-def trigrams(sequence, **kwargs):
-    """
-    Return a sequence of trigrams from a sequence of items.  For example:
-
-        >>> from nltk.util import trigrams
-        >>> trigrams([1,2,3,4,5])
-        [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
-
-    Use itrigrams for an iterator version of this function.
-
-    :param sequence: the source data to be converted into trigrams
-    :type sequence: sequence or iter
-    :rtype: list(tuple)
-    """
-    return ngrams(sequence, 3, **kwargs)
-
-def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
-    """
     Return the ngrams generated from a sequence of items, as an iterator.
     For example:
 
-        >>> from nltk.util import ingrams
-        >>> list(ingrams([1,2,3,4,5], 3))
+        >>> from nltk.util import ngrams
+        >>> list(ngrams([1,2,3,4,5], 3))
         [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
 
     Use ngrams for a list version of this function.  Set pad_left
     or pad_right to true in order to get additional ngrams:
 
-        >>> list(ingrams([1,2,3,4,5], 2, pad_right=True))
+        >>> list(ngrams([1,2,3,4,5], 2, pad_right=True))
         [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
 
     :param sequence: the source data to be converted into ngrams
@@ -480,13 +412,13 @@ def ingrams(sequence, n, pad_left=False, pad_right=False, pad_symbol=None):
         yield tuple(history)
         del history[0]
 
-def ibigrams(sequence, **kwargs):
+def bigrams(sequence, **kwargs):
     """
     Return the bigrams generated from a sequence of items, as an iterator.
     For example:
 
-        >>> from nltk.util import ibigrams
-        >>> list(ibigrams([1,2,3,4,5]))
+        >>> from nltk.util import bigrams
+        >>> list(bigrams([1,2,3,4,5]))
         [(1, 2), (2, 3), (3, 4), (4, 5)]
 
     Use bigrams for a list version of this function.
@@ -496,16 +428,16 @@ def ibigrams(sequence, **kwargs):
     :rtype: iter(tuple)
     """
 
-    for item in ingrams(sequence, 2, **kwargs):
+    for item in ngrams(sequence, 2, **kwargs):
         yield item
 
-def itrigrams(sequence, **kwargs):
+def trigrams(sequence, **kwargs):
     """
     Return the trigrams generated from a sequence of items, as an iterator.
     For example:
 
-        >>> from nltk.util import itrigrams
-        >>> list(itrigrams([1,2,3,4,5]))
+        >>> from nltk.util import trigrams
+        >>> list(trigrams([1,2,3,4,5]))
         [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
 
     Use trigrams for a list version of this function.
@@ -515,7 +447,7 @@ def itrigrams(sequence, **kwargs):
     :rtype: iter(tuple)
     """
 
-    for item in ingrams(sequence, 3, **kwargs):
+    for item in ngrams(sequence, 3, **kwargs):
         yield item
 
 ##########################################################################

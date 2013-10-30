@@ -4,7 +4,7 @@
 # Author: Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
 import logging

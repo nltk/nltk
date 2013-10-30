@@ -2,7 +2,7 @@
 # Natural Language Toolkit: Probability and Statistics
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se> (additions)
@@ -10,7 +10,7 @@
 #         Geoffrey Sampson <sampson@cantab.net> (additions)
 #         Ilia Kurenkov <ilia.kurenkov@gmail.com> (additions)
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -496,7 +496,7 @@ class FreqDist(dict):
 
         :rtype: string
         """
-        items = ['%r: %r' % (s, self[s]) for s in self.keys()[:10]]
+        items = ['%r: %r' % (s, self[s]) for s in list(self.keys())[:10]]
         if len(self) > 10:
             items.append('...')
         return '<FreqDist: %s>' % ', '.join(items)
