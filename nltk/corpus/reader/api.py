@@ -170,11 +170,11 @@ class CorpusReader(object):
         paths = [self._root.join(f) for f in fileids]
 
         if include_encoding and include_fileid:
-            return zip(paths, [self.encoding(f) for f in fileids], fileids)
+            return list(zip(paths, [self.encoding(f) for f in fileids], fileids))
         elif include_fileid:
-            return zip(paths, fileids)
+            return list(zip(paths, fileids))
         elif include_encoding:
-            return zip(paths, [self.encoding(f) for f in fileids])
+            return list(zip(paths, [self.encoding(f) for f in fileids]))
         else:
             return paths
 

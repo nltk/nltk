@@ -34,4 +34,4 @@ class SwadeshCorpusReader(WordListCorpusReader):
             fileids = self.fileids()
 
         wordlists = [self.words(f) for f in fileids]
-        return zip(*wordlists)
+        return list(zip(*wordlists))
