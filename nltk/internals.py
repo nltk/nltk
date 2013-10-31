@@ -150,10 +150,11 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
         config_java()
 
     # Set up the classpath.
-    if classpath is None:
-        classpath = NLTK_JAR
-    else:
-        classpath += os.path.pathsep + NLTK_JAR
+    # EK: This doesn't work with 2.x versions of Mallet
+    #if classpath is None:
+        #classpath = NLTK_JAR
+    #else:
+        #classpath += os.path.pathsep + NLTK_JAR
 
     # Construct the full command string.
     cmd = list(cmd)
@@ -495,7 +496,7 @@ def find_file(filename, env_vars=(), searchpath=(),
             try:
                 p = subprocess.Popen(['which', alternative], stdout=subprocess.PIPE)
                 stdout, stderr = p.communicate()
-                path = stdout.strip()
+                path = stdout.decode(stdout.encoding).strip()
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose: print('[Found %s: %s]' % (filename, path))
                     return path
