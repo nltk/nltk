@@ -364,7 +364,7 @@ def get_relations_data(word, synset):
     Get synset relations data for a synset.  Note that this doesn't
     yet support things such as full hyponym vs direct hyponym.
     """
-    if synset.pos == wn.NOUN:
+    if synset.pos() == wn.NOUN:
         return ((HYPONYM, 'Hyponyms',
                    synset.hyponyms()),
                 (INSTANCE_HYPONYM , 'Instance hyponyms',
@@ -395,7 +395,7 @@ def get_relations_data(word, synset):
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
-    elif synset.pos == wn.VERB:
+    elif synset.pos() == wn.VERB:
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (HYPONYM, 'Hyponym',
@@ -414,7 +414,7 @@ def get_relations_data(word, synset):
                    synset.verb_groups()),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
-    elif synset.pos == wn.ADJ or synset.pos == wn.ADJ_SAT:
+    elif synset.pos() == wn.ADJ or synset.pos == wn.ADJ_SAT:
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (SIMILAR, 'Similar to',
@@ -426,14 +426,14 @@ def get_relations_data(word, synset):
                    synset.attributes()),
                 (ALSO_SEE, 'Also see',
                    synset.also_sees()))
-    elif synset.pos == wn.ADV:
+    elif synset.pos() == wn.ADV:
         # This is weird. adverbs such as 'quick' and 'fast' don't seem
         # to have antonyms returned by the corpus.a
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),)
                 # Derived from adjective - not supported by corpus
     else:
-        raise TypeError("Unhandles synset POS type: " + str(synset.pos))
+        raise TypeError("Unhandles synset POS type: " + str(synset.pos()))
 
 
 html_header = '''
@@ -515,7 +515,7 @@ full_hyponym_cont_text = \
 def _get_synset(synset_key):
     """
     The synset key is the unique name of the synset, this can be
-    retrived via synset.name
+    retrived via synset.name()
     """
     return wn.synset(synset_key)
 
@@ -537,13 +537,13 @@ def _collect_one_synset(word, synset, synset_relations):
         raise NotImplementedError("word not supported by _collect_one_synset")
 
     typ = 'S'
-    pos_tuple = _pos_match((synset.pos, None, None))
-    assert pos_tuple is not None, "pos_tuple is null: synset.pos: %s" % synset.pos
+    pos_tuple = _pos_match((synset.pos(), None, None))
+    assert pos_tuple is not None, "pos_tuple is null: synset.pos(): %s" % synset.pos()
     descr = pos_tuple[2]
     ref = copy.deepcopy(Reference(word, synset_relations))
     ref.toggle_synset(synset)
     synset_label = typ + ";"
-    if synset.name in synset_relations:
+    if synset.name() in synset_relations:
         synset_label = _bold(synset_label)
     s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr)
     def format_lemma(w):
@@ -554,11 +554,11 @@ def _collect_one_synset(word, synset, synset_relations):
             ref = Reference(w)
             return make_lookup_link(ref, w)
 
-    s += ', '.join(format_lemma(l.name) for l in synset.lemmas)
+    s += ', '.join(format_lemma(l.name()) for l in synset.lemmas())
 
     gl = " (%s) <i>%s</i> " % \
-        (synset.definition,
-         "; ".join("\"%s\"" % e for e in synset.examples))
+        (synset.definition(),
+         "; ".join("\"%s\"" % e for e in synset.examples()))
     return s + gl + _synset_relations(word, synset, synset_relations) + '</li>\n'
 
 def _collect_all_synsets(word, pos, synset_relations=dict()):
@@ -585,15 +585,15 @@ def _synset_relations(word, synset, synset_relations):
     :rtype: str
     '''
 
-    if not synset.name in synset_relations:
+    if not synset.name() in synset_relations:
         return ""
     ref = Reference(word, synset_relations)
 
     def relation_html(r):
         if isinstance(r, Synset):
-            return make_lookup_link(Reference(r.lemma_names[0]), r.lemma_names[0])
+            return make_lookup_link(Reference(r.lemma_names()[0]), r.lemma_names()[0])
         elif isinstance(r, Lemma):
-            return relation_html(r.synset)
+            return relation_html(r.synset())
         elif isinstance(r, tuple):
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
@@ -609,7 +609,7 @@ def _synset_relations(word, synset, synset_relations):
                 copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
                 disp_name)
 
-        if db_name in ref.synset_relations[synset.name]:
+        if db_name in ref.synset_relations[synset.name()]:
              synset_html += '<ul>%s</ul>\n' % \
                 ''.join("<li>%s</li>\n" % relation_html(r) for r in rels)
 
@@ -661,10 +661,10 @@ class Reference(object):
         This function will throw a KeyError if the synset is currently
         not being displayed.
         """
-        if relation in self.synset_relations[synset.name]:
-            self.synset_relations[synset.name].remove(relation)
+        if relation in self.synset_relations[synset.name()]:
+            self.synset_relations[synset.name()].remove(relation)
         else:
-            self.synset_relations[synset.name].add(relation)
+            self.synset_relations[synset.name()].add(relation)
 
         return self
 
@@ -672,10 +672,10 @@ class Reference(object):
         """
         Toggle displaying of the relation types for the given synset
         """
-        if synset.name in self.synset_relations:
-            del self.synset_relations[synset.name]
+        if synset.name() in self.synset_relations:
+            del self.synset_relations[synset.name()]
         else:
-            self.synset_relations[synset.name] = set()
+            self.synset_relations[synset.name()] = set()
 
         return self
 
