@@ -45,7 +45,7 @@ class MalletCRF(FeaturesetTaggerI):
     converting each feature (name, value) pair to a unique binary
     feature.
 
-    Each MalletCRF object is backed by a crf model file.  This
+    Ecah MalletCRF object is backed by a crf model file.  This
     model file is actually a zip file, and it contains one file for
     the serialized model ``crf-model.ser`` and one file for
     information about the structure of the CRF ``crf-info.xml``.
