@@ -118,11 +118,19 @@ class CorpusReader(object):
             path = '%s' % self._root.path
         return '<%s in %r>' % (self.__class__.__name__, path)
 
+    def ensure_loaded(self):
+        """
+        Load this corpus (if it has not already been loaded).  This is
+        used by LazyCorpusLoader as a simple method that can be used to
+        make sure a corpus is loaded -- e.g., in case a user wants to
+        do help(some_corpus).
+        """
+        pass # no need to actually do anything.
+
     def readme(self):
         """
         Return the contents of the corpus README file, if it exists.
         """
-
         return self.open("README").read()
 
     def fileids(self):
@@ -170,11 +178,11 @@ class CorpusReader(object):
         paths = [self._root.join(f) for f in fileids]
 
         if include_encoding and include_fileid:
-            return zip(paths, [self.encoding(f) for f in fileids], fileids)
+            return list(zip(paths, [self.encoding(f) for f in fileids], fileids))
         elif include_fileid:
-            return zip(paths, fileids)
+            return list(zip(paths, fileids))
         elif include_encoding:
-            return zip(paths, [self.encoding(f) for f in fileids])
+            return list(zip(paths, [self.encoding(f) for f in fileids]))
         else:
             return paths
 

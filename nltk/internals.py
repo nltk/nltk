@@ -496,7 +496,7 @@ def find_file(filename, env_vars=(), searchpath=(),
             try:
                 p = subprocess.Popen(['which', alternative], stdout=subprocess.PIPE)
                 stdout, stderr = p.communicate()
-                path = stdout.decode(stdout.encoding).strip()
+                path = stdout.decode(sys.stdout.encoding).strip()
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose: print('[Found %s: %s]' % (filename, path))
                     return path
