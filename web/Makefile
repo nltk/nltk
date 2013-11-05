@@ -23,6 +23,9 @@ web: clean_api
 	@echo
 	@echo "Build finished. The HTML pages are in $(WEB)."
 
+without_api: clean_api
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(WEB)
+
 clean_api:
 	rm -f api/modules.rst api/nltk.*.rst
 
