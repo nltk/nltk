@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 # Dependencies.
-MALLET_HOME = /usr/local/mallet-2.0.7
+MALLET_HOME = /usr/local/mallet-0.4
 
 # Locate the NLTK java source code
 JAVA_SRC = $(shell find org/nltk -name '*.java')
