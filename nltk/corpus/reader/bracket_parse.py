@@ -12,10 +12,10 @@ Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 import sys
 
 from nltk.tree import Tree
+from nltk.tag import map_tag
 
 from .util import *
 from .api import *
-
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
 TAGWORD = re.compile(r'\(([^\s()]+) ([^\s()]+)\)')
