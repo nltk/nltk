@@ -1,6 +1,0 @@
-Natural Language Toolkit (NLTK) http://nltk.org/
-
-Copyright (C) 2001-2013 NLTK Project
-
-Bird, Steven, Edward Loper and Ewan Klein (2009).
-Natural Language Processing with Python.  O'Reilly Media Inc.
