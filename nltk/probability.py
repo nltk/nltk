@@ -88,8 +88,6 @@ class FreqDist(Counter):
 
     """
 
-    _N = 0
-
     def __init__(self, samples=None):
         """
         Construct a new frequency distribution.  If ``samples`` is
@@ -106,24 +104,7 @@ class FreqDist(Counter):
             distribution with.
         :type samples: Sequence
         """
-        self._reset_caches()
         Counter.__init__(self, samples)
-
-    def inc(self, sample, count=1):
-        """
-        Increment this FreqDist's count for the given sample.
-
-        :param sample: The sample whose count should be incremented.
-        :type sample: any
-        :param count: The amount to increment the sample's count by.
-        :type count: int
-        :rtype: None
-        :raise NotImplementedError: If ``sample`` is not a
-               supported sample type.
-        """
-        if count == 0:
-            return
-        self[sample] += count
 
     def __setitem__(self, sample, value):
         """
@@ -136,12 +117,7 @@ class FreqDist(Counter):
         :rtype: None
         :raise TypeError: If ``sample`` is not a supported sample type.
         """
-
-        self._N += value - self[sample]
         Counter.__setitem__(self, sample, value)
-
-        # Invalidate the caches
-        self._reset_caches()
 
     def N(self):
         """
@@ -152,7 +128,7 @@ class FreqDist(Counter):
 
         :rtype: int
         """
-        return self._N
+        return sum(self.values())
 
     def B(self):
         """
@@ -173,12 +149,10 @@ class FreqDist(Counter):
         """
         return [item for item in self if self[item] == 1]
 
-    def Nr(self, r, bins=None):
+    def Nr(self, bins=None):
         """
-        Return the number of samples with count r.
+        Return the dictionary mapping r to Nr, the number of samples with frequency r, where Nr > 0.
 
-        :type r: int
-        :param r: A sample count.
         :type bins: int
         :param bins: The number of possible sample outcomes.  ``bins``
             is used to calculate Nr(0).  In particular, Nr(0) is
@@ -186,37 +160,19 @@ class FreqDist(Counter):
             defaults to ``self.B()`` (so Nr(0) will be 0).
         :rtype: int
         """
-        if r < 0:
-            raise IndexError('FreqDist.Nr(): r must be non-negative')
 
-        # Special case for Nr(0):
-        if r == 0:
-            return bins-self.B() if bins is not None else 0
+        _Nr = defaultdict(int)
 
-        # We have to search the entire distribution to find Nr. Since
-        # this is an expensive operation, and is likely to be used
-        # repeatedly, cache the results.
-        if self._Nr_cache is None:
-            self._cache_Nr_values()
+        # Special case for Nr[0]:
+        _Nr[0] = bins - self.B() if bins is not None else 0
 
-        return self._Nr_cache.get(r, 0)
-
-    def _Nr_nonzero(self):
-        """
-        Return (r, Nr(r)) tuples for all r such as Nr(r) > 0.
-        """
-        if self._Nr_cache is None:
-            self._cache_Nr_values()
-        return self._Nr_cache.items()
-
-    def _cache_Nr_values(self):
-        Nr = defaultdict(int)
         for sample in self:
             c = self.get(sample, 0)
             if c == 0 and c not in Nr:
                 continue
-            Nr[c] += 1
-        self._Nr_cache = Nr
+            _Nr[c] += 1
+
+        return _Nr
 
     def _cumulative_frequencies(self, samples=None):
         """
@@ -252,9 +208,9 @@ class FreqDist(Counter):
         :type sample: any
         :rtype: float
         """
-        if self._N == 0:
+        if self.N() == 0:
             return 0
-        return float(self[sample]) / self._N
+        return float(self[sample]) / self.N()
 
     def max(self):
         """
@@ -270,7 +226,7 @@ class FreqDist(Counter):
         """
         if len(self) == 0:
             raise ValueError('A FreqDist must have at least one sample before max is defined.')
-        return self.most_common(1)[1]
+        return max(self, key=self.__getitem__)
 
     def plot(self, *args, **kwargs):
         """
@@ -355,24 +311,6 @@ class FreqDist(Counter):
         :rtype: FreqDist
         """
         return self.__class__(self)
-
-    def pop(self, other):
-        self._N -= 1
-        self._reset_caches()
-        return Counter.pop(self, other)
-
-    def popitem(self):
-        self._N -= 1
-        self._reset_caches()
-        return dict.popitem(self)
-
-    def clear(self):
-        self._N = 0
-        self._reset_caches()
-        dict.clear(self)
-
-    def _reset_caches(self):
-        self._Nr_cache = None
 
     def __le__(self, other):
         if not isinstance(other, FreqDist):
