@@ -1179,7 +1179,7 @@ class CrossValidationProbDist(ProbDistI):
 
     def samples(self):
         # [xx] nb: this is not too efficient
-        return set(sum([fd.keys() for fd in self._freqdists], []))
+        return set(sum([list(fd) for fd in self._freqdists], []))
 
     def prob(self, sample):
         # Find the average probability estimate returned by each
@@ -2264,8 +2264,8 @@ def _create_rand_fdist(numsamples, numoutcomes):
     import random
     fdist = FreqDist()
     for x in range(numoutcomes):
-        y = (random.randint(1, (1+numsamples)/2) +
-             random.randint(0, numsamples/2))
+        y = (random.randint(1, (1 + numsamples) // 2) +
+             random.randint(0, numsamples // 2))
         fdist.inc(y)
     return fdist
 
@@ -2275,8 +2275,8 @@ def _create_sum_pdist(numsamples):
     ``_create_rand_fdist(numsamples, x)``.
     """
     fdist = FreqDist()
-    for x in range(1, (1+numsamples)/2+1):
-        for y in range(0, numsamples/2+1):
+    for x in range(1, (1 + numsamples) // 2 + 1):
+        for y in range(0, numsamples // 2 + 1):
             fdist.inc(x+y)
     return MLEProbDist(fdist)
 
