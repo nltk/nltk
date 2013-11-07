@@ -651,7 +651,16 @@ class Reference(object):
         # pickle representation is much smaller and there is no need
         # to represent the complete object.
         string = pickle.dumps((self.word, self.synset_relations), -1)
-        return base64.urlsafe_b64encode(string)
+        return base64.urlsafe_b64encode(string).decode()
+
+    @staticmethod
+    def decode(string):
+        """
+        Decode a reference encoded with Reference.encode
+        """
+        string = base64.urlsafe_b64decode(string.encode())
+        word, synset_relations = pickle.loads(string)
+        return Reference(word, synset_relations)
 
     def toggle_synset_relation(self, synset, relation):
         """
@@ -679,14 +688,6 @@ class Reference(object):
 
         return self
 
-
-def decode_reference(string):
-    """
-    Decode a reference encoded with Reference.encode
-    """
-    string = base64.urlsafe_b64decode(string)
-    word, synset_relations = pickle.loads(string)
-    return Reference(word, synset_relations)
 
 def make_lookup_link(ref, label):
     return '<a href="lookup_%s">%s</a>' % (ref.encode(), label)
@@ -716,7 +717,7 @@ def page_from_href(href):
              word is the new current word
     :rtype: A tuple (str,str)
     '''
-    return page_from_reference(decode_reference(href))
+    return page_from_reference(Reference.decode(href))
 
 def page_from_reference(href):
     '''
