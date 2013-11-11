@@ -14,19 +14,26 @@ Tokenizers divide strings into lists of substrings.  For example,
 tokenizers can be used to find the list of sentences or words in a
 string.
 
-    >>> from nltk.tokenize import word_tokenize, wordpunct_tokenize, sent_tokenize
+    >>> from nltk.tokenize import word_tokenize, wordpunct_tokenize, sent_tokenize, tokenize
     >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
     ... two of them.\n\nThanks.'''
     >>> wordpunct_tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+This is a simple regular-expression based tokenizer which does not handle
+periods very well. We can also use a sentence tokenizer (Punkt) and followed
+by a good sentence-internal word tokenizer (Treebank). The `tokenize()`
+function combines both of these.
+
     >>> sent_tokenize(s)
     ['Good muffins cost $3.88\nin New York.', 'Please buy me\ntwo of them.', 'Thanks.']
     >>> [word_tokenize(t) for t in sent_tokenize(s)]
     [['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.'],
     ['Please', 'buy', 'me', 'two', 'of', 'them', '.'], ['Thanks', '.']]
-
-Caution: only use ``word_tokenize()`` on individual sentences.
+    >>> word_tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
 Caution: when tokenizing a Unicode string, make sure you are not
 using an encoded version of the string (it may be necessary to
@@ -70,7 +77,7 @@ def sent_tokenize(text):
     return tokenizer.tokenize(text)
 
 # Standard word tokenizer.
-_word_tokenize = TreebankWordTokenizer().tokenize
+_treebank_word_tokenize = TreebankWordTokenizer().tokenize
 def word_tokenize(text):
     """
     Return a tokenized copy of *text*,
@@ -78,8 +85,8 @@ def word_tokenize(text):
     (currently :class:`.TreebankWordTokenizer`).
     This tokenizer is designed to work on a sentence at a time.
     """
-    return _word_tokenize(text)
-
+    return [token for sent in sent_tokenize(text)
+            for token in _treebank_word_tokenize(sent)]
 
 if __name__ == "__main__":
     import doctest
