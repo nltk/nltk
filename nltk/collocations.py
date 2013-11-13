@@ -70,7 +70,8 @@ class AbstractCollocationFinder(object):
         """Generic filter removes ngrams from the frequency distribution
         if the function returns True when passed an ngram tuple.
         """
-        for ngram, freq in self.ngram_fd.items():
+        items = list(self.ngram_fd.items())
+        for ngram, freq in items:
             if fn(ngram, freq):
                 try:
                     del self.ngram_fd[ngram]
