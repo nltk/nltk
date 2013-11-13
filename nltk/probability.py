@@ -106,19 +106,6 @@ class FreqDist(Counter):
         """
         Counter.__init__(self, samples)
 
-    def __setitem__(self, sample, value):
-        """
-        Set this FreqDist's count for the given sample.
-
-        :param sample: The sample whose count should be incremented.
-        :type sample: any hashable object
-        :param value: The new value for the sample's count
-        :type value: int
-        :rtype: None
-        :raise TypeError: If ``sample`` is not a supported sample type.
-        """
-        Counter.__setitem__(self, sample, value)
-
     def N(self):
         """
         Return the total number of sample outcomes that have been
@@ -149,7 +136,11 @@ class FreqDist(Counter):
         """
         return [item for item in self if self[item] == 1]
 
-    def Nr(self, bins=None):
+
+    def Nr(self, r):
+        return self.r_Nr()[r]
+
+    def r_Nr(self, bins=None):
         """
         Return the dictionary mapping r to Nr, the number of samples with frequency r, where Nr > 0.
 
@@ -161,18 +152,18 @@ class FreqDist(Counter):
         :rtype: int
         """
 
-        _Nr = defaultdict(int)
+        _r_Nr = defaultdict(int)
 
         # Special case for Nr[0]:
-        _Nr[0] = bins - self.B() if bins is not None else 0
+        _r_Nr[0] = bins - self.B() if bins is not None else 0
 
         for sample in self:
-            c = self.get(sample, 0)
-            if c == 0 and c not in Nr:
+            c = self[sample]
+            if c == 0 and c not in _r_Nr:
                 continue
-            _Nr[c] += 1
+            _r_Nr[c] += 1
 
-        return _Nr
+        return _r_Nr
 
     def _cumulative_frequencies(self, samples=None):
         """
@@ -879,7 +870,7 @@ class HeldoutProbDist(ProbDistI):
 
         # Calculate Tr, Nr, and N.
         Tr = self._calculate_Tr()
-        Nr = [base_fdist.Nr(r, bins) for r in range(self._max_r+1)]
+        Nr = [base_fdist.r_Nr(r, bins) for r in range(self._max_r+1)]
         N = heldout_fdist.N()
 
         # Use Tr, Nr, and N to compute the probability estimate for
@@ -1222,14 +1213,20 @@ class SimpleGoodTuringProbDist(ProbDistI):
         self._switch(r, nr)
         self._renormalize(r, nr)
 
+    def _r_Nr_non_zero(self):
+        r_Nr = self._freqdist.r_Nr()
+        del r_Nr[0]
+        return r_Nr
+ 
     def _r_Nr(self):
         """
         Split the frequency distribution in two list (r, Nr), where Nr(r) > 0
         """
-        nonzero = self._freqdist._Nr_nonzero()
+        nonzero = self._r_Nr_non_zero()
+
         if not nonzero:
             return [], []
-        return zip(*nonzero)
+        return zip(*sorted(nonzero.items()))
 
     def find_best_fit(self, r, nr):
         """
@@ -1736,7 +1733,7 @@ class ConditionalFreqDist(defaultdict):
                              'See http://matplotlib.sourceforge.net/')
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
-        conditions = _get_kwarg(kwargs, 'conditions', self.conditions())
+        conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(kwargs, 'samples',
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
@@ -1778,7 +1775,7 @@ class ConditionalFreqDist(defaultdict):
         """
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
-        conditions = _get_kwarg(kwargs, 'conditions', self.conditions())
+        conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         samples = _get_kwarg(kwargs, 'samples',
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
 
@@ -1851,7 +1848,7 @@ class ConditionalProbDistI(dict):
 
         :rtype: list
         """
-        return self.keys()
+        return list(self.keys())
 
     def __repr__(self):
         """

@@ -15,16 +15,13 @@ FreqDist
     >>> text2 = ['no', 'good', 'porpoise', 'likes', 'to', 'fish', 'fish', 'anywhere', '.']
 
     >>> fd1 = nltk.FreqDist(text1)
-    >>> fd1.items()
-    [('!', 1), ('a', 1), ('anywhere', 1), ('fish', 1), ('goes', 1), ('good', 1), ('no', 1), ('porpoise', 1), ('without', 1)]
-
     >>> fd1 == nltk.FreqDist(text1)
     True
 
-Note that items are sorted in order of decreasing frequency; two items of the same frequency are sorted alphabetically by their key.
+Note that items are sorted in order of decreasing frequency; two items of the same frequency appear in indeterminate order.
 
     >>> both = nltk.FreqDist(text1 + text2)
-    >>> both.items()
+    >>> both.most_common()
     [('fish', 3), ('anywhere', 2), ('good', 2), ('no', 2), ('porpoise', 2), ('!', 1), ('.', 1), ('a', 1), ('goes', 1), ('likes', 1), ('to', 1), ('without', 1)]
 
     >>> both == fd1 + nltk.FreqDist(text2)
@@ -252,9 +249,9 @@ they don't get smoothed
     >>> dpd['x'].prob('a') == unpickled['x'].prob('a')
     True
     >>> cfd = nltk.probability.ConditionalFreqDist()
-    >>> cfd['foo'].inc('hello')
-    >>> cfd['foo'].inc('hello')
-    >>> cfd['bar'].inc('hello')
+    >>> cfd['foo']['hello'] += 1
+    >>> cfd['foo']['hello'] += 1
+    >>> cfd['bar']['hello'] += 1
     >>> cfd2 = pickle.loads(pickle.dumps(cfd))
     >>> cfd2 == cfd
     True
