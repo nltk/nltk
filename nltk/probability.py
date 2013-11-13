@@ -80,7 +80,7 @@ class FreqDist(Counter):
         >>> sent = 'This is an example sentence'
         >>> fdist = FreqDist()
         >>> for word in word_tokenize(sent):
-        ...    fdist.inc(word.lower())
+        ...    fdist[word.lower()] += 1
 
     An equivalent way to do this is with the initializer:
 
@@ -1654,7 +1654,7 @@ class ConditionalFreqDist(defaultdict):
         >>> cfdist = ConditionalFreqDist()
         >>> for word in word_tokenize(sent):
         ...     condition = len(word)
-        ...     cfdist[condition].inc(word)
+        ...     cfdist[condition][word] += 1
 
     An equivalent way to do this is with the initializer:
 
@@ -1689,7 +1689,7 @@ class ConditionalFreqDist(defaultdict):
         defaultdict.__init__(self, FreqDist)
         if cond_samples:
             for (cond, sample) in cond_samples:
-                self[cond].inc(sample)
+                self[cond][sample] += 1
 
     def __reduce__(self):
         kv_pairs = ((cond, self[cond]) for cond in self.conditions())
@@ -2104,7 +2104,7 @@ def _create_rand_fdist(numsamples, numoutcomes):
     for x in range(numoutcomes):
         y = (random.randint(1, (1 + numsamples) // 2) +
              random.randint(0, numsamples // 2))
-        fdist.inc(y)
+        fdist[y] += 1
     return fdist
 
 def _create_sum_pdist(numsamples):
@@ -2115,7 +2115,7 @@ def _create_sum_pdist(numsamples):
     fdist = FreqDist()
     for x in range(1, (1 + numsamples) // 2 + 1):
         for y in range(0, numsamples // 2 + 1):
-            fdist.inc(x+y)
+            fdist[x+y] += 1
     return MLEProbDist(fdist)
 
 def demo(numsamples=6, numoutcomes=500):

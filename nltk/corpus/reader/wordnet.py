@@ -1554,7 +1554,7 @@ class WordNetCorpusReader(CorpusReader):
         """
         counts = FreqDist()
         for ww in corpus.words():
-            counts.inc(ww)
+            counts[ww] += 1
 
         ic = {}
         for pp in POS_LIST:
@@ -1721,7 +1721,7 @@ def information_content(synset, ic):
         raise WordNetError(msg % synset._pos)
 
     counts = icpos[synset._offset]
-    if counts == 0:
+    return _INF if counts == 0 else 
         return _INF
     else:
         return -math.log(counts / icpos[0])

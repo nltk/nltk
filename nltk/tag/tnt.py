@@ -155,10 +155,10 @@ class TnT(TaggerI):
                 # set local flag C to True
                 if self._C and w[0].isupper(): C=True
 
-                self._wd[w].inc(t)
-                self._uni.inc((t,C))
-                self._bi[history[1]].inc((t,C))
-                self._tri[tuple(history)].inc((t,C))
+                self._wd[w][t] += 1
+                self._uni[(t,C)] += 1
+                self._bi[history[1]][(t,C)] += 1
+                self._tri[tuple(history)][(t,C)] += 1
 
                 history.append((t,C))
                 history.pop(0)
@@ -166,7 +166,7 @@ class TnT(TaggerI):
                 # set local flag C to false for the next word
                 C = False
 
-            self._eos[t].inc('EOS')
+            self._eos[t]['EOS'] += 1
 
 
         # compute lambda values from the trained frequency distributions
