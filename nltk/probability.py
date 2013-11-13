@@ -153,15 +153,11 @@ class FreqDist(Counter):
         """
 
         _r_Nr = defaultdict(int)
+        for count in self.values():
+            _r_Nr[count] += 1
 
         # Special case for Nr[0]:
         _r_Nr[0] = bins - self.B() if bins is not None else 0
-
-        for sample in self:
-            c = self[sample]
-            if c == 0 and c not in _r_Nr:
-                continue
-            _r_Nr[c] += 1
 
         return _r_Nr
 
@@ -321,16 +317,26 @@ class FreqDist(Counter):
         """
         return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
 
-    def __str__(self, maxlen = 10):
+    def pprint(self, maxlen=10):
         """
         Return a string representation of this FreqDist.
 
+        :param maxlen: The maximum number of items to display
+        :type maxlen: int
         :rtype: string
         """
         items = ['{0!r}: {1!r}'.format(*item) for item in self.most_common(maxlen)]
         if len(self) > maxlen:
             items.append('...')
         return 'FreqDist({{{0}}})'.format(', '.join(items))
+
+    def __str__(self):
+        """
+        Return a string representation of this FreqDist.
+
+        :rtype: string
+        """
+        return self.pprint()
 
 
 ##//////////////////////////////////////////////////////
