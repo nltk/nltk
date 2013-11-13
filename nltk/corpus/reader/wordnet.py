@@ -1721,7 +1721,7 @@ def information_content(synset, ic):
         raise WordNetError(msg % synset._pos)
 
     counts = icpos[synset._offset]
-    return _INF if counts == 0 else 
+    if counts == 0:
         return _INF
     else:
         return -math.log(counts / icpos[0])
