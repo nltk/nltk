@@ -13,11 +13,11 @@
 
 from __future__ import print_function
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 import yaml
 
 from nltk.tag.api import TaggerI
-
+from nltk.tag.brill import template
 
 ######################################################################
 ## The Brill Tagger
@@ -80,3 +80,32 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
         return tagged_tokens
 
+    def print_template_statistics(self):
+        tids = Counter([r.templateid for r in self.rules()])
+        print("TEMPLATE TRAINING STATISTICS")
+        print("#ID Rules Template")
+        for (tid, count) in tids.most_common():
+            print("{:s} {:5d} {}".format(tid, count, template.Template.ALLTEMPLATES[int(tid)]))
+
+    def batch_tag_incremental(self, tokenses, gold):
+        """
+        Tags by applying each rule to the entire corpus (rather than all rules to a
+        single sequence). The point is to collect statistics for the individual
+        rules.
+
+        NOTE: This is inefficient (does not build any index, so will traverse the entire
+        corpus N times for N rules) -- usually you would not care about statistics for
+        individual rules and thus use batch_tag() instead
+        """
+        def counterrors(tagged_tokenses):
+            return sum(t[1] != g[1]
+                       for (tokens, target) in zip(tagged_tokenses, gold)
+                          for (t,g) in zip(tokens, target))
+        tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in tokenses]
+        errors = [counterrors(tagged_tokenses)]
+        # Apply each rule to the entire corpus, in order
+        for rule in self._rules:
+            for tagged_tokens in tagged_tokenses:
+                rule.apply(tagged_tokens)
+            errors.append(counterrors(tagged_tokenses))
+        return (tagged_tokenses, errors)
