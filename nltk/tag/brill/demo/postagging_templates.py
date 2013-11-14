@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import division, print_function, unicode_literals
+import inspect
+import sys
+
+#multi-feature templates (recommended)
+from nltk.tag.brill.application.postagging import Word, Tag
+from nltk.tag.brill.template import Template
 
 #one-feature templates (for backwards compatibility)
 from nltk.tag.brill.nltk2 import ProximateWordsRule as Word1F
 from nltk.tag.brill.nltk2 import ProximateTagsRule as Tag1F
 from nltk.tag.brill.nltk2 import ProximateTokensTemplate as Template1F
 
-#multi-feature templates (recommended)
-from nltk.tag.brill.application.postagging import Word, Tag
-from nltk.tag.brill.template import Template
 
-def nltkdemo18old():
+
+def nltkdemo18nltk2():
     """
     Return 18 templates, from the nltk2 demo, in the original
     single-feature syntax
@@ -63,7 +68,7 @@ def nltkdemo18():
 
 def nltkdemo18plus():
     """
-    18 templates, from the original nltk demo, and additionally a few
+    Return 18 templates, from the original nltk demo, and additionally a few
     multi-feature ones (the motivation is easy comparison with nltkdemo18)
     """
     return nltkdemo18() + [
@@ -76,10 +81,10 @@ def nltkdemo18plus():
 
 def fntbl37():
     """
-    Return 37 templates[1] taken from the postagging task of the fntbl distribution
-    http://www.cs.jhu.edu/~rflorian/fntbl/
-    [1] after excluding a handful which do not condition on Tag[0];
-    fntbl can do that but the current nltk implementation cannot
+    Return 37 templates taken from the postagging task of the
+    fntbl distribution http://www.cs.jhu.edu/~rflorian/fntbl/
+    (37 is after excluding a handful which do not condition on Tag[0];
+    fntbl can do that but the current nltk implementation cannot.)
     """
     return [
         Template(Word([0]), Word([1]), Word([2])),
@@ -153,28 +158,13 @@ def brill24():
     ]
 
 
-def wordfirst():
-    """
-    To investigate the impact of putting most specific condition first
-    For the record: practically no gain
-    """
-    return [Template(Word([0]), Tag([-1]), Tag([-2]))]
-
-def tagsfirst():
-    """
-    To investigate the impact of putting most specific condition last
-    """
-    return [Template(Tag([-1]), Tag([-2]), Word([0]))]
-
-
-
 def describe_template_sets():
     """
     Print the available template sets in this demo, with a short description"
     """
-    from nltk.tag.brill.demo import postagging_templates
-    templatesets = [t for t in dir(postagging_templates) ]
-    for t in templatesets:
-        print(t.name, "\n  ", t.__doc__, "\n")
-
+    #a bit of magic to get all functions in this module
+    templatesets = inspect.getmembers(sys.modules[__name__], inspect.isfunction)
+    for (name, obj) in templatesets:
+        if name == "describe_template_sets": continue
+        print(name, obj.__doc__, "\n")
 
