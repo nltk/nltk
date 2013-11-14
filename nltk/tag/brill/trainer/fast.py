@@ -24,18 +24,19 @@ from nltk.tag.brill.tagger import BrillTagger
 ## Fast Brill Tagger Trainer
 ######################################################################
 
-class FastBrillTaggerTrainer(object):
+class TaggerTrainer(object):
     """
     A faster trainer for brill taggers.
     """
     def __init__(self, initial_tagger, templates, trace=0,
-                 deterministic=False):
+                 deterministic=False, ruleformat="str"):
         if not deterministic:
             deterministic = (trace > 0)
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
         self._deterministic = deterministic
+        self._ruleformat = ruleformat
 
         self._tag_positions = None
         """Mapping from tags to lists of positions that use that tag."""
@@ -397,12 +398,13 @@ class FastBrillTaggerTrainer(object):
         num_other = len([c for c in changes if c==0])
         score = self._rule_scores[rule]
 
+        rulestr = rule.format(self._ruleformat)
         if self._trace > 2:
             print('%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other), end=' ')
-            print(textwrap.fill("%s" % rule, initial_indent=' '*20,
+            print(textwrap.fill(rulestr, initial_indent=' '*20,
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
-            print(rule)
+            print(rulestr)
 
     def _trace_apply(self, num_updates):
         prefix = ' '*18+'|'
@@ -417,5 +419,6 @@ class FastBrillTaggerTrainer(object):
                        (num_new, num_unseen)))
         print(prefix)
 
-
+#backwards compatibility
+FastBrillTaggerTrainer = TaggerTrainer
 

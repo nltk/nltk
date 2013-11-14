@@ -37,12 +37,14 @@ class BrillTaggerTrainer(object):
     """
 
     def __init__(self, initial_tagger, templates, trace=0,
-                 deterministic=None):
-        if deterministic is None: deterministic = (trace > 0)
+                 deterministic=False, ruleformat="str"):
+        if not deterministic:
+            deterministic = (trace > 0)
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
         self._deterministic = deterministic
+        self._ruleformat = ruleformat
 
     #////////////////////////////////////////////////////////////
     # Training
@@ -226,11 +228,14 @@ class BrillTaggerTrainer(object):
         """.rstrip())
 
     def _trace_rule(self, rule, score, fixscore, numchanges):
+        rulestr = rule.format(self._ruleformat)
+
         if self._trace > 2:
             print(('%4d%4d%4d%4d ' % (score, fixscore, fixscore-score,
                                       numchanges-fixscore*2+score)), '|', end=' ')
-            print(textwrap.fill("%s" % rule, initial_indent=' '*20, width=79,
+            print(textwrap.fill(rulestr, initial_indent=' '*20, width=79,
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
-            print(rule)
+            print(rulestr)
+
 
