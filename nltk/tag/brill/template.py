@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 # Natural Language Toolkit: Brill Tagger
 #
 # Copyright (C) 2001-2013 NLTK Project
@@ -12,7 +10,8 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
-
+import yaml
+import itertools
 
 class BrillTemplateI(object):
     """
@@ -59,3 +58,319 @@ class BrillTemplateI(object):
         :rtype: set
         """
         raise NotImplementedError()
+
+
+from nltk.tag.brill.rule import BrillRule
+
+
+class Template(BrillTemplateI):
+    ALLTEMPLATES = []
+    _ids = itertools.count(0)
+
+    """
+    A brill template that generates a list of
+    L{ProximateTokensRule}s that apply at a given sentence
+    position.  In particular, each C{ProximateTokensTemplate} is
+    parameterized by a list of independent features (a combination of a specific
+    property to extract and a list C{L} of relative positions at which to extract
+    it) and generates all rules that:
+
+      - use the given features, each at its own independent position; and
+      - are applicable to the given token.
+    """
+    def __init__(self, *features):
+        """
+        Construct a template for generating proximate token brill
+        rules.
+
+        @type features: C{iterable}
+        @param features: A list of Features that
+        should be used to generate new rules. A C{Feature} is a combination
+        of a specific property and its relative positions and should be
+        a subclass of L{brill.template.Feature}.
+
+        An alternative calling convention (kept for backwards compatibility,
+        but less expressive as it only permits one feature type) is
+        ProximateTokensTemplate(Feature, (start1, end1), (start2, end2), ...)
+        In new code, that would be better written
+        ProximateTokensTemplate(Feature(start1, end1), Feature(start2, end2), ...)
+        """
+        #determine the calling form: either
+        #Template(Feature, args1, [args2, ...)]
+        #Template(Feature1(args),  Feature2(args), ...)
+        if all(isinstance(f, Feature) for f in features):
+            self._features = features
+        elif issubclass(features[0], Feature) and all(isinstance(a, tuple) for a in features[1:]):
+            self._features = [features[0](*tp) for tp in features[1:]]
+        else:
+            raise TypeError(
+                "expected either Feature1(args), Feature2(args), ... or Feature, (start1, end1), (start2, end2), ...")
+        self.id = "{:03d}".format(self._ids.next())
+        self.ALLTEMPLATES.append(self)
+
+    def __repr__(self):
+        return "%s(%s)" % (self.__class__.__name__, ",".join([str(f) for f in self._features]))
+
+    def applicable_rules(self, tokens, index, correct_tag):
+        if tokens[index][1] == correct_tag:
+            return []
+
+        # For each of this template's features, find the conditions
+        # that are applicable for the given token.
+        # Then, generate one rule for each combination of features
+        # (the crossproduct of the conditions).
+
+        applicable_conditions = self._applicable_conditions(tokens, index)
+        xs = list(itertools.product(*applicable_conditions))
+        return [Rule(self.id, tokens[index][1], correct_tag, tuple(x)) for x in xs]
+
+    def _applicable_conditions(self, tokens, index):
+        """
+        @return: A set of all conditions for proximate token rules
+        that are applicable to C{tokens[index]}.
+        """
+        conditions = []
+
+        for feature in self._features:
+            conditions.append([])
+            for pos in feature.positions:
+                if not (0 <= index+pos < len(tokens)):
+                    continue
+                value = feature.extract_property(tokens, index+pos)
+                conditions[-1].append( (feature, value) )
+        return conditions
+
+    def get_neighborhood(self, tokens, index):
+        # inherit docs from BrillTemplateI
+
+        # applicable_rules(tokens, index, ...) depends on index.
+        neighborhood = set([index])  #set literal for python 2.7+
+
+        # applicable_rules(tokens, i, ...) depends on index if
+        # i+start < index <= i+end.
+
+        allpositions = [0] + [p for feat in self._features for p in feat.positions]
+        start, end = min(allpositions), max(allpositions)
+        s = max(0, index+(-end))
+        e = min(index+(-start)+1, len(tokens))
+        for i in range(s, e):
+            neighborhood.add(i)
+        return neighborhood
+
+    @classmethod
+    def generate_templates(cls, *specs):
+        def expand_features(Feat, starts, winlen, excludezero=False):
+            xs = (starts[i:i+w] for w in winlen for i in range(len(starts)-w+1))
+            return [Feat(x) for x in xs if not (excludezero and 0 in x)]
+        expanded_tpls = [expand_features(*spec) for spec in specs]
+        return [cls(*feats) for feats in itertools.product(*expanded_tpls)]
+
+
+class Feature(yaml.YAMLObject):
+    """
+    An abstract base class for features
+
+    Each subclass should implement a method  M{extract_property(tokens, index)},
+    which extracts or computes a specific property for
+    the token at index. Typical extract_property methods return
+    features such as the token text or tag; but more involved
+    methods may consider the entire sequence M{tokens} and
+    for instance compute the length of the sentence the token belongs to.
+
+    """
+    yaml_tag = u'!Feature'
+
+    def __init__(self, positions, end=None):
+        if end is None:
+            self.positions = tuple(sorted(set([int(i) for i in positions])))
+        else:                #positions was actually not a list, but only the start index
+            if positions > end:
+                raise ValueError(
+                    "illegal interval specification: start={} > end={}".format(positions, end))
+            self.positions = tuple(range(positions, end+1))
+        self.PROPERTY_NAME = self.__class__.__name__
+
+    def __repr__(self):
+        return "%s(%r)" % (
+            self.__class__.__name__, list(self.positions))
+
+
+    @staticmethod
+    def extract_property(tokens, index):
+        raise NotImplementedError("subclass of Feature must define extract_property(tokens, index)")
+
+class Rule(BrillRule):
+    """
+    A Rule checks for a combination of conditions specified by the rule's features;
+    if they are all fulfilled, the Rule is triggered and changes a tag.
+
+    Each rule instance is
+    parameterized by a set of features, each specifying a set of positions
+    and property values to check for in those sets.
+
+    The brill rule is then applicable to the M{n}th token iff:
+
+      - The M{n}th token is tagged with the rule's original tag; and
+      - For each (Feature(positions), M{value}) tuple:
+        - The value of Feature of at least one token in {n+p for p in positions}
+          is M{value}.
+
+    """
+    yaml_tag = '!Rule'
+    def __init__(self, templateid, original_tag, replacement_tag, conditions):
+        """
+        Construct a new brill rule that changes a token's tag from
+        C{original_tag} to C{replacement_tag} if all of the properties
+        specified in C{conditions} hold.
+
+        @type conditions: C{iterable} of C{Feature}
+        @param conditions: A list of Feature(positions),
+            each of which specifies that the property of at least one
+            token in M{n} + p in positions is C{value}.
+
+        """
+        BrillRule.__init__(self, original_tag, replacement_tag)
+        self._conditions = conditions
+        self.templateid = templateid
+
+    # Make Brill rules look nice in YAML.
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        d = dict(
+            description=str(data),
+            conditions=list(data._conditions),
+            original=data.original_tag,
+            replacement=data.replacement_tag,
+            templateid=data.templateid)
+        node = dumper.represent_mapping(cls.yaml_tag, d)
+        return node
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        map = loader.construct_mapping(node, deep=True)
+        return cls(map['templateid'], map['original'], map['replacement'], map['conditions'])
+
+
+    def applies(self, tokens, index):
+        # Inherit docs from BrillRule
+
+        # Does the given token have this rule's "original tag"?
+        if tokens[index][1] != self.original_tag:
+            return False
+
+        # Check to make sure that every condition holds.
+        for (feature, val) in self._conditions:
+
+            # Look for *any* token that satisfies the condition.
+            for pos in feature.positions:
+                if not (0 <= index + pos < len(tokens)):
+                    continue
+                if feature.extract_property(tokens, index+pos) == val:
+                    break
+            else:
+                # No token satisfied the condition; return false.
+                return False
+
+        # Every condition checked out, so the rule is applicable.
+        return True
+
+    def __eq__(self, other):
+        return (self is other or
+                (other is not None and
+                 other.__class__ == self.__class__ and
+                 self.original_tag == other.original_tag and
+                 self.replacement_tag == other.replacement_tag and
+                 self._conditions == other._conditions))
+
+    def __ne__(self, other):
+        return not (self==other)
+
+    def __hash__(self):
+        # Cache our hash value (justified by profiling.)
+        try:
+            return self.__hash
+        except:
+            self.__hash = hash( (self.original_tag, self.replacement_tag,
+                                 self._conditions, self.__class__.__name__) )
+            return self.__hash
+
+    def __repr__(self):
+        # Cache our repr (justified by profiling -- this is used as
+        # a sort key when deterministic=True.)
+        try:
+            return self.__repr
+        except:
+            self.__repr = ('%s(%s, %r, %r, %s)' % (
+                self.__class__.__name__,
+                self.templateid,
+                self.original_tag,
+                self.replacement_tag,
+                list(self._conditions)))
+
+            return self.__repr
+
+    def __str__(self):
+        def _condition_to_logic(feature, value):
+            """
+            Return a compact, predicate-logic styled string representation
+            of the given condition.
+            """
+            return ('%s:%s@[%s]' %
+                (feature.PROPERTY_NAME, value, ",".join(str(w) for w in feature.positions)))
+
+        conditions = ' & '.join([_condition_to_logic(f,v) for (f,v) in self._conditions])
+        s = ('%s->%s if %s' % (
+            self.original_tag,
+            self.replacement_tag,
+            conditions))
+        return s
+
+
+    def format(self, fmt):
+        if fmt == "str":
+            return self.__str__()
+        elif fmt == "repr":
+            return self.__repr__()
+        elif fmt == "verbose":
+            return self._verbose_format()
+        else:
+            raise ValueError("unknown rule format spec: {}".format(fmt))
+
+    def _verbose_format(self):
+        """
+        Return a wordy, human-readable string representation
+        of the given rule.
+
+        Not sure how useful this is.
+        """
+        def condition_to_str(feature, value):
+            return ('the %s of %s is %s' %
+                    (feature.PROPERTY_NAME, range_to_str(feature.positions), value))
+
+        def range_to_str(positions):
+            if len(positions) == 1:
+                p = positions[0]
+                if p == 0:
+                    return 'this word'
+                if p == -1:
+                    return 'the preceding word'
+                elif p == 1:
+                    return 'the following word'
+                elif p < 0:
+                    return 'word i-%d' % -p
+                elif p > 0:
+                    return 'word i+%d' % p
+            else:
+                # for complete compatibility with the wordy format of nltk2
+                mx = max(positions)
+                mn = min(positions)
+                if mx - mn == len(positions) - 1:
+                    return 'words i%+d...i%+d' % (mn, mx)
+                else:
+                    return 'words {%s}' % (",".join("i%+d" % d for d in positions),)
+
+        replacement = '%s -> %s' % (self.original_tag, self.replacement_tag)
+        conditions = (' if ' if self._conditions else "") + ', and '.join(
+            [condition_to_str(f,v) for (f,v) in self._conditions])
+        return replacement + conditions
+
