@@ -15,7 +15,7 @@ from __future__ import print_function
 
 # returns a list of errors in string format
 
-def error_list (train_sents, test_sents, radius=2):
+def error_list (train_sents, test_sents):
     """
     Returns a list of human-readable strings indicating the errors in the
     given tagging of the corpus.
@@ -24,11 +24,6 @@ def error_list (train_sents, test_sents, radius=2):
     :type train_sents: list(tuple)
     :param test_sents: The tagged corpus
     :type test_sents: list(tuple)
-    :param radius: How many tokens on either side of a wrongly-tagged token
-        to include in the error string.  For example, if radius=2,
-        each error string will show the incorrect token plus two
-        tokens on either side.
-    :type radius: int
     """
     hdr = (('%25s | %s | %s\n' + '-'*26+'+'+'-'*24+'+'+'-'*26) %
            ('left context', 'word/test->gold'.center(22), 'right context'))
