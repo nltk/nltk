@@ -20,8 +20,6 @@ from nltk.tag.brill.nltk2.postagging import ProximateTagsRule, ProximateWordsRul
 from nltk.tag.brill.nltk2.template import ProximateTokensTemplate
 from nltk.tag.brill.erroranalysis import error_list
 
-__author__ = 'ling-mun'
-
 ######################################################################
 # Demonstration
 ######################################################################

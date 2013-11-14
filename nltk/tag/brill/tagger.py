@@ -18,7 +18,6 @@ import yaml
 
 from nltk.tag.api import TaggerI
 
-__author__ = 'ling-mun'
 
 ######################################################################
 ## The Brill Tagger

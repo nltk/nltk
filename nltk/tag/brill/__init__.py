@@ -91,7 +91,6 @@ from nltk.tag.brill.nltk2 import (ProximateTagsRule,
 
 
 def run_doctest():
-    print("now doctesting")
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

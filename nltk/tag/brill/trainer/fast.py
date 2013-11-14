@@ -20,8 +20,6 @@ import textwrap
 from nltk.tag.util import untag
 from nltk.tag.brill.tagger import BrillTagger
 
-__author__ = 'ling-mun'
-
 ######################################################################
 ## Fast Brill Tagger Trainer
 ######################################################################
