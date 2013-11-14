@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 # Natural Language Toolkit: Brill Tagger
 #
 # Copyright (C) 2001-2013 NLTK Project
@@ -11,4 +9,30 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function
+from nltk.tag.brill import template
+
+class Word(template.Feature):
+    """
+    Feature which examines the text (word) of nearby tokens.
+    """
+#    PROPERTY_NAME = 'text' # default in case for printing.
+    yaml_tag = '!WordFeature'
+
+    @staticmethod
+    def extract_property(tokens, index):
+        """@return: The given token's text."""
+        return tokens[index][0]
+
+
+class Tag(template.Feature):
+    """
+    Feature which examines the tags of nearby tokens.
+    """
+#    PROPERTY_NAME = 'tag' # for printing.
+    yaml_tag = '!TagFeature'
+
+    @staticmethod
+    def extract_property(tokens, index):
+        """@return: The given token's tag."""
+        return tokens[index][1]
+
