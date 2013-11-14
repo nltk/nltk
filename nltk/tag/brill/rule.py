@@ -87,9 +87,9 @@ class BrillRule(yaml.YAMLObject):
         assert False, "Brill rules must define applies()"
 
     # Rules must be comparable and hashable for the algorithm to work
-    def __eq__(self):
+    def __eq__(self, other):
         assert False, "Brill rules must be comparable"
-    def __ne__(self):
+    def __ne__(self, other):
         assert False, "Brill rules must be comparable"
     def __hash__(self):
         assert False, "Brill rules must be hashable"
