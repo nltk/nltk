@@ -1,5 +1,20 @@
-#!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from __future__ import division, print_function, unicode_literals
 
-__author__ = 'ling-mun'
+
+# Natural Language Toolkit: Brill Tagger
+#
+# Copyright (C) 2001-2013 NLTK Project
+# Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
+#          Edward Loper <edloper@gmail.com>
+#          Steven Bird <stevenbird1@gmail.com>
+#          Marcus Uneson <marcus.uneson@gmail.com>
+# URL: <http://nltk.org/>
+# For license information, see  LICENSE.TXT
+
+from __future__ import print_function
+
+from nltk.tag.brill.nltk2.postagging import (ProximateTagsRule,
+                                             ProximateWordsRule)
+from nltk.tag.brill.nltk2.template import (ProximateTokensRule,
+                                           ProximateTokensTemplate,
+                                           SymmetricProximateTokensTemplate)
