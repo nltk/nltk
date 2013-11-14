@@ -64,37 +64,37 @@ from nltk.tag.brill.rule import BrillRule
 
 
 class Template(BrillTemplateI):
-    ALLTEMPLATES = []
-    _ids = itertools.count(0)
-
     """
-    A brill template that generates a list of
-    L{ProximateTokensRule}s that apply at a given sentence
-    position.  In particular, each C{ProximateTokensTemplate} is
-    parameterized by a list of independent features (a combination of a specific
+    A brill Template that generates a list of L{Rule}s that apply at a given sentence
+    position.  In particular, each C{Template} is parameterized by a list of
+    independent features (a combination of a specific
     property to extract and a list C{L} of relative positions at which to extract
-    it) and generates all rules that:
+    it) and generates all Rules that:
 
       - use the given features, each at its own independent position; and
       - are applicable to the given token.
     """
+    ALLTEMPLATES = []
+    #record a unique id of form "001", for each template created
+    _ids = itertools.count(0)
+
     def __init__(self, *features):
         """
-        Construct a template for generating proximate token brill
-        rules.
+        Construct a Template for generating Rules.
 
         @type features: C{iterable}
         @param features: A list of Features that
-        should be used to generate new rules. A C{Feature} is a combination
+        should be used to generate new Rules. A C{Feature} is a combination
         of a specific property and its relative positions and should be
-        a subclass of L{brill.template.Feature}.
+        a subclass of L{nltk.tag.brill.template.Feature}.
 
         An alternative calling convention (kept for backwards compatibility,
         but less expressive as it only permits one feature type) is
-        ProximateTokensTemplate(Feature, (start1, end1), (start2, end2), ...)
+        Template(Feature, (start1, end1), (start2, end2), ...)
         In new code, that would be better written
-        ProximateTokensTemplate(Feature(start1, end1), Feature(start2, end2), ...)
+        Template(Feature(start1, end1), Feature(start2, end2), ...)
         """
+
         #determine the calling form: either
         #Template(Feature, args1, [args2, ...)]
         #Template(Feature1(args),  Feature2(args), ...)
@@ -115,9 +115,9 @@ class Template(BrillTemplateI):
         if tokens[index][1] == correct_tag:
             return []
 
-        # For each of this template's features, find the conditions
+        # For each of this Template's features, find the conditions
         # that are applicable for the given token.
-        # Then, generate one rule for each combination of features
+        # Then, generate one Rule for each combination of features
         # (the crossproduct of the conditions).
 
         applicable_conditions = self._applicable_conditions(tokens, index)
@@ -126,7 +126,7 @@ class Template(BrillTemplateI):
 
     def _applicable_conditions(self, tokens, index):
         """
-        @return: A set of all conditions for proximate token rules
+        @return: A set of all conditions for rules
         that are applicable to C{tokens[index]}.
         """
         conditions = []
@@ -168,19 +168,19 @@ class Template(BrillTemplateI):
 
 class Feature(yaml.YAMLObject):
     """
-    An abstract base class for features. A feature is a combination of
+    An abstract base class for Features. A Feature is a combination of
     a specific property-computing method and a list of relative positions
     to apply that method to.
 
-    This property-computing method, M{extract_property(tokens, index)},
+    The property-computing method, M{extract_property(tokens, index)},
     must be implemented by every subclass. It extracts or computes a specific
-    property for the token at the current index. Typical extract_property methods return
-    features such as the token text or tag; but more involved
+    property for the token at the current index. Typical extract_property()
+    methods return features such as the token text or tag; but more involved
     methods may consider the entire sequence M{tokens} and
     for instance compute the length of the sentence the token belongs to.
 
     In addition, the subclass may have a PROPERTY_NAME, which is how
-    it will be printed (in rules and templates, etc). If not given, defaults
+    it will be printed (in Rules and Templates, etc). If not given, defaults
     to the classname.
 
     The subclass may also explicitly set a tag for yaml serialization. If
@@ -191,6 +191,21 @@ class Feature(yaml.YAMLObject):
     PROPERTY_NAME = None
 
     def __init__(self, positions, end=None):
+        """
+        Construct a Feature which may apply at C{positions}.
+
+        @type positions: C{iterable of int}
+        @param positions: The positions at which this features should apply
+
+        An alternative calling convention for contiguous positions is Feature(start, end):
+
+        @type start: int
+        @param start: start of range where this feature should apply
+        @type end: int
+        @param end: end of range (NOTE: inclusive!) where this feature should apply
+
+        """
+
         if end is None:
             self.positions = tuple(sorted(set([int(i) for i in positions])))
         else:                #positions was actually not a list, but only the start index
@@ -214,16 +229,17 @@ class Feature(yaml.YAMLObject):
 
 class Rule(BrillRule):
     """
-    A Rule checks for a combination of conditions specified by the rule's features;
-    if they are all fulfilled, the Rule is triggered and changes a tag.
+    A Rule checks the current corpus position for a certain set of conditions;
+    if they are all fulfilled, the Rule is triggered, meaning that it
+    will change tag A to tag B. For other tags than A, nothing happens.
 
-    Each rule instance is
-    parameterized by a set of features, each specifying a set of positions
-    and property values to check for in those sets.
+    The conditions are parameters to the Rule instance. Each condition is a feature-value pair,
+    with a set of positions to check for the value of the corresponding feature.
+    Conceptually, the positions are joined by logical OR, and the feature set by logical AND.
 
-    The brill rule is then applicable to the M{n}th token iff:
+    More formally, the Rule is then applicable to the M{n}th token iff:
 
-      - The M{n}th token is tagged with the rule's original tag; and
+      - The M{n}th token is tagged with the Rule's original tag; and
       - For each (Feature(positions), M{value}) tuple:
         - The value of Feature of at least one token in {n+p for p in positions}
           is M{value}.
@@ -232,13 +248,18 @@ class Rule(BrillRule):
     yaml_tag = '!Rule'
     def __init__(self, templateid, original_tag, replacement_tag, conditions):
         """
-        Construct a new brill rule that changes a token's tag from
+        Construct a new Rule that changes a token's tag from
         C{original_tag} to C{replacement_tag} if all of the properties
         specified in C{conditions} hold.
 
+        @type templateid: string
+        @param templateid: the template id (a zero-padded string, '001' etc,
+          so it will sort nicely)
+
         @type conditions: C{iterable} of C{Feature}
         @param conditions: A list of Feature(positions),
-            each of which specifies that the property of at least one
+            each of which specifies that the property (computed by
+            Feature.extract_property()) of at least one
             token in M{n} + p in positions is C{value}.
 
         """
@@ -246,7 +267,7 @@ class Rule(BrillRule):
         self._conditions = conditions
         self.templateid = templateid
 
-    # Make Brill rules look nice in YAML.
+    # Make Rules look nice in YAML.
     @classmethod
     def to_yaml(cls, dumper, data):
         d = dict(
@@ -267,7 +288,7 @@ class Rule(BrillRule):
     def applies(self, tokens, index):
         # Inherit docs from BrillRule
 
-        # Does the given token have this rule's "original tag"?
+        # Does the given token have this Rule's "original tag"?
         if tokens[index][1] != self.original_tag:
             return False
 
@@ -284,7 +305,7 @@ class Rule(BrillRule):
                 # No token satisfied the condition; return false.
                 return False
 
-        # Every condition checked out, so the rule is applicable.
+        # Every condition checked out, so the Rule is applicable.
         return True
 
     def __eq__(self, other):
