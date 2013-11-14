@@ -15,8 +15,6 @@ class Word(template.Feature):
     """
     Feature which examines the text (word) of nearby tokens.
     """
-    PROPERTY_NAME = 'Word'
-    yaml_tag = '!Word'
 
     @staticmethod
     def extract_property(tokens, index):
@@ -28,8 +26,6 @@ class Tag(template.Feature):
     """
     Feature which examines the tags of nearby tokens.
     """
-    PROPERTY_NAME = 'Tag'
-    yaml_tag = '!Tag'
 
     @staticmethod
     def extract_property(tokens, index):
