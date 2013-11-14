@@ -168,17 +168,27 @@ class Template(BrillTemplateI):
 
 class Feature(yaml.YAMLObject):
     """
-    An abstract base class for features
+    An abstract base class for features. A feature is a combination of
+    a specific property-computing method and a list of relative positions
+    to apply that method to.
 
-    Each subclass should implement a method  M{extract_property(tokens, index)},
-    which extracts or computes a specific property for
-    the token at index. Typical extract_property methods return
+    This property-computing method, M{extract_property(tokens, index)},
+    must be implemented by every subclass. It extracts or computes a specific
+    property for the token at the current index. Typical extract_property methods return
     features such as the token text or tag; but more involved
     methods may consider the entire sequence M{tokens} and
     for instance compute the length of the sentence the token belongs to.
 
+    In addition, the subclass may have a PROPERTY_NAME, which is how
+    it will be printed (in rules and templates, etc). If not given, defaults
+    to the classname.
+
+    The subclass may also explicitly set a tag for yaml serialization. If
+    not given, defaults to '!' + the classname in lowercase (e.g., "!tag").
+
     """
-    yaml_tag = u'!Feature'
+    yaml_tag = None
+    PROPERTY_NAME = None
 
     def __init__(self, positions, end=None):
         if end is None:
@@ -188,7 +198,10 @@ class Feature(yaml.YAMLObject):
                 raise ValueError(
                     "illegal interval specification: start={} > end={}".format(positions, end))
             self.positions = tuple(range(positions, end+1))
-        self.PROPERTY_NAME = self.__class__.__name__
+        self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__
+        self.yaml_tag = self.__class__.yaml_tag or "!{}".format(self.__class__.__name__.lower())
+        print("name", self.PROPERTY_NAME)
+        print("yamltag", self.yaml_tag)
 
     def __repr__(self):
         return "%s(%r)" % (
