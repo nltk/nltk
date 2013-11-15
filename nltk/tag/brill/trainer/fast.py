@@ -74,7 +74,7 @@ class TaggerTrainer(object):
            if the rule applies.  This records the next position we
            need to check to see if the rule messed anything up."""
 
-        self._training_stats = []
+        self._training_stats = {}
 
     #////////////////////////////////////////////////////////////
     # Training
@@ -84,14 +84,24 @@ class TaggerTrainer(object):
         # Basic idea: Keep track of the rules that apply at each position.
         # And keep track of the positions to which each rule applies.
 
-        if self._trace > 0: print(("Training Brill tagger on %d "
-                                   "sentences..." % len(train_sents)))
-
         # Create a new copy of the training corpus, and run the
         # initial tagger on it.  We will progressively update this
         # test corpus to look more like the training corpus.
         test_sents = [list(self._initial_tagger.tag(untag(sent)))
                       for sent in train_sents]
+
+        # Collect some statistics on the training process
+        self._training_stats['tokencount'] = sum(len(t) for t in test_sents)
+        self._training_stats['sequencecount'] = len(test_sents)
+        self._training_stats['templatecount'] = len(self._templates)
+        self._training_stats['rulescores'] = []
+        self._training_stats['initialerrors'] = sum(tag[1] != truth[1]
+                                                    for paired in zip(test_sents, train_sents)
+                                                    for (tag, truth) in zip(*paired))
+
+        if self._trace > 0:
+            print("Training Brill tagger on {sequencecount} sequences/{tokencount} "
+                  "tokens and {templatecount} templates".format(**self._training_stats))
 
         # Initialize our mappings.  This will find any errors made
         # by the initial tagger, and use those to generate repair
@@ -114,7 +124,7 @@ class TaggerTrainer(object):
                 if rule:
                     rules.append(rule)
                     score = self._rule_scores[rule]
-                    self._training_stats.append(score)
+                    self._training_stats['rulescores'].append(score)
                 else:
                     break # No more good rules left!
 
@@ -154,7 +164,6 @@ class TaggerTrainer(object):
         self._rules_by_score = defaultdict(set)
         self._rule_scores = defaultdict(int)
         self._first_unknown_position = defaultdict(int)
-
         # Scan through the corpus, initializing the tag_positions
         # mapping and all the rule-related mappings.
         for sentnum, sent in enumerate(test_sents):

@@ -23,7 +23,7 @@ from nltk.tag.brill.tagger import BrillTagger
 ## Brill Tagger Trainer
 ######################################################################
 
-class BrillTaggerTrainer(object):
+class TaggerTrainer(object):
     """
     A trainer for brill taggers.
 
@@ -45,9 +45,7 @@ class BrillTaggerTrainer(object):
         self._trace = trace
         self._deterministic = deterministic
         self._ruleformat = ruleformat
-        #deliberately vague name -- could hold total errors in corpus,
-        # or rule scores, or something more sophisticated
-        self._training_stats= []
+        self._training_stats = {}
 
     #////////////////////////////////////////////////////////////
     # Training
@@ -68,16 +66,25 @@ class BrillTaggerTrainer(object):
         :param min_score: The minimum acceptable net error reduction
             that each transformation must produce in the corpus.
         """
-        if self._trace > 0: print(("Training Brill tagger on %d "
-                                   "sentences..." % len(train_sents)))
 
         # Create a new copy of the training corpus, and run the
         # initial tagger on it.  We will progressively update this
         # test corpus to look more like the training corpus.
         test_sents = [self._initial_tagger.tag(untag(sent))
                       for sent in train_sents]
+        self._training_stats['tokencount'] = sum(len(t) for t in test_sents)
+        self._training_stats['sequencecount'] = len(test_sents)
+        self._training_stats['templatecount'] = len(self._templates)
+        self._training_stats['rulescores'] = []
+        self._training_stats['initialerrors'] = sum(tag == truth
+                                                    for paired in zip(test_sents, train_sents)
+                                                    for (tag, truth) in zip(*paired))
+        if self._trace > 0:
+            print("Training Brill tagger on {sequencecount} sequences/{tokencount} "
+                  "tokens and {templatecount} templates".format(**self._training_stats))
 
-        if self._trace > 2: self._trace_header()
+        if self._trace > 2:
+            self._trace_header()
 
         # Look for useful rules.
         rules = []
@@ -92,7 +99,7 @@ class BrillTaggerTrainer(object):
                 else:
                     # Add the rule to our list of rules.
                     rules.append(rule)
-                    self._training_stats.append(score)
+                    self._training_stats['rulescores'].append(score)
                     # Use the rules to update the test corpus.  Keep
                     # track of how many times the rule applied (k).
                     k = 0
@@ -242,4 +249,5 @@ class BrillTaggerTrainer(object):
         else:
             print(rulestr)
 
-
+#backwards compatibility
+BrillTaggerTrainer = TaggerTrainer
