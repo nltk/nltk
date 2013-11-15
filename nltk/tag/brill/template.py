@@ -11,7 +11,7 @@
 
 from __future__ import print_function
 import yaml
-import itertools
+import itertools as it
 
 class BrillTemplateI(object):
     """
@@ -76,15 +76,13 @@ class Template(BrillTemplateI):
     """
     ALLTEMPLATES = []
     #record a unique id of form "001", for each template created
-    _ids = itertools.count(0)
+    _ids = it.count(0)
 
     def __init__(self, *features):
         """
         Construct a Template for generating Rules.
 
-        @type features: C{iterable}
-        @param features: A list of Features that
-        should be used to generate new Rules. A C{Feature} is a combination
+        Takes a list of Features. A C{Feature} is a combination
         of a specific property and its relative positions and should be
         a subclass of L{nltk.tag.brill.template.Feature}.
 
@@ -93,6 +91,9 @@ class Template(BrillTemplateI):
         Template(Feature, (start1, end1), (start2, end2), ...)
         In new code, that would be better written
         Template(Feature(start1, end1), Feature(start2, end2), ...)
+
+        :type features: list of Features
+        :param features: the features to build this Template on
         """
 
         #determine the calling form: either
@@ -121,12 +122,12 @@ class Template(BrillTemplateI):
         # (the crossproduct of the conditions).
 
         applicable_conditions = self._applicable_conditions(tokens, index)
-        xs = list(itertools.product(*applicable_conditions))
+        xs = list(it.product(*applicable_conditions))
         return [Rule(self.id, tokens[index][1], correct_tag, tuple(x)) for x in xs]
 
     def _applicable_conditions(self, tokens, index):
         """
-        @return: A set of all conditions for rules
+        :returns: A set of all conditions for rules
         that are applicable to C{tokens[index]}.
         """
         conditions = []
@@ -158,12 +159,72 @@ class Template(BrillTemplateI):
         return neighborhood
 
     @classmethod
-    def generate_templates(cls, *specs):
-        def expand_features(Feat, starts, winlen, excludezero=False):
-            xs = (starts[i:i+w] for w in winlen for i in range(len(starts)-w+1))
-            return [Feat(x) for x in xs if not (excludezero and 0 in x)]
-        expanded_tpls = [expand_features(*spec) for spec in specs]
-        return [cls(*feats) for feats in itertools.product(*expanded_tpls)]
+    def expand(cls, featurelists, propersubsets=True, skipintersecting=True):
+        """
+        Factory method to mass generate Templates from a list L of Feature lists,
+        by computing the Cartesian product of all non-empty subsets of L,
+        and removing any duplicates. The feature lists may have been specified
+        manually, but perhaps generated from Feature.expand(). For instance,
+
+
+          Template.expand([ [Word([0]), Word([0,1])], [Tag([-2]), Tag([-1])] ])
+
+          will return a list of eight templates
+              Template(Word([0])),
+              Template(Word([0, 1])),
+              Template(Tag([-2])),
+              Template(Tag([-1])),
+              Template(Tag([-2]),Word([0])),
+              Template(Tag([-1]),Word([0])),
+              Template(Tag([-2]),Word([0, 1])),
+              Template(Tag([-1]),Word([0, 1]))]
+
+        With propersubsets=False, L itself rather than all its subsets will be used,
+        so that each featurelist in L is represented in all templates in the output
+        (in the example, only the four last templates would be output).
+
+        Templates where one feature is a subset of another, such as
+        Template(Word([0,1]), Word([1]), will not appear in the output.
+        By default, this non-subset constraint is tightened to disjointness:
+        Templates of type Template(Word([0,1]), Word([1,2]) will also be filtered out.
+        With skipintersecting=False, then such Templates are allowed
+
+        WARNING: this method makes it very easy to fill all your memory when training
+        generated templates on any real-world corpus
+
+        :param featurelists: lists of Features, whose Cartesian product will return a set of Templates
+        :type featurelists: list of (list of Features)
+        :param propersubsets: if True, generated Templates will have 1..n features given n feature lists; if False, n
+        :type propersubsets: bool
+        :param skipintersecting: if True, do not output intersecting Templates (non-disjoint positions for some feature)
+        :type skipintersecting: bool
+        :returns: generator of Templates
+
+        """
+
+        def nonempty_powerset(xs):
+            #nonempty_powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
+            #from itertools doc (xs is a list)
+            subsetsize = 1 if propersubsets else len(xs)
+            return it.chain.from_iterable(it.combinations(xs, r)
+                                          for r in range(subsetsize, len(xs)+1))
+        seentemplates = set()
+        for picks in nonempty_powerset(featurelists):
+            for pick in it.product(*picks):
+                if any(i != j and x.issuperset(y)
+                       for (i, x) in enumerate(pick)
+                       for (j,y) in enumerate(pick)):
+                    continue
+                if skipintersecting and any(i != j and x.intersects(y)
+                                            for (i, x) in enumerate(pick)
+                                            for (j, y) in enumerate(pick)):
+                    continue
+                thistemplate = cls(*sorted(pick))
+                strpick = str(thistemplate)
+                if strpick in seentemplates:
+                    continue
+                seentemplates.add(strpick)
+                yield thistemplate
 
 
 class Feature(yaml.YAMLObject):
@@ -190,38 +251,93 @@ class Feature(yaml.YAMLObject):
     yaml_tag = None
     PROPERTY_NAME = None
 
+
     def __init__(self, positions, end=None):
         """
         Construct a Feature which may apply at C{positions}.
 
-        @type positions: C{iterable of int}
-        @param positions: The positions at which this features should apply
+        :type positions: list of int
+        :param positions: the positions at which this features should apply
+        :raises ValueError: illegal position specifications
 
-        An alternative calling convention for contiguous positions is Feature(start, end):
+        An alternative calling convention, for contiguous positions only,
+        is Feature(start, end):
 
-        @type start: int
-        @param start: start of range where this feature should apply
-        @type end: int
-        @param end: end of range (NOTE: inclusive!) where this feature should apply
+        :type start: int
+        :param start: start of range where this feature should apply
+        :type end: int
+        :param end: end of range (NOTE: inclusive!) where this feature should apply
 
         """
-
+        self.positions = None #to avoid warnings
         if end is None:
             self.positions = tuple(sorted(set([int(i) for i in positions])))
         else:                #positions was actually not a list, but only the start index
-            if positions > end:
-                raise ValueError(
-                    "illegal interval specification: start={} > end={}".format(positions, end))
-            self.positions = tuple(range(positions, end+1))
+            try:
+                if positions > end:
+                    raise TypeError()
+                self.positions = tuple(range(positions, end+1))
+            except TypeError:
+                #let any kind of erroneous spec raise ValueError
+                raise ValueError("illegal interval specification: (start={}, end={})".format(positions, end))
+
+        #set property name given in subclass, or otherwise name of subclass
         self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__
+        #set yaml_tag name given in subclass, or otherwise name of subclass, lowercased
         self.yaml_tag = self.__class__.yaml_tag or "!{}".format(self.__class__.__name__.lower())
-        print("name", self.PROPERTY_NAME)
-        print("yamltag", self.yaml_tag)
 
     def __repr__(self):
         return "%s(%r)" % (
             self.__class__.__name__, list(self.positions))
 
+    @classmethod
+    def expand(cls, starts, winlens, excludezero=False):
+        """
+        Return a list of features, one for each start point in starts
+        and for each window length in winlen. If excludezero is True,
+        no Features containing 0 in its positions will be generated
+        (many tbl trainers have a special representation for the
+        target feature at [0])
+
+        :param starts: where to start looking for Feature
+        :type starts: list of ints
+        :param winlens: window lengths where to look for Feature
+        :type starts: list of ints
+        :param excludezero: do not output any Feature with 0 in any of its positions.
+        :type excludezero: bool
+        :returns: list of Features
+        :raises ValueError: for non-positive window lengths
+        """
+        if not all(x > 0 for x in winlens):
+            raise ValueError("non-positive window length in {:s}".format(winlens))
+        xs = (starts[i:i+w] for w in winlens for i in range(len(starts)-w+1))
+        return [cls(x) for x in xs if not (excludezero and 0 in x)]
+
+    def issuperset(self, other):
+        return (self.__class__ is other.__class__ and
+               set(self.positions) >= set(other.positions))
+
+    def intersects(self, other):
+        return (self.__class__ is other.__class__ and
+               set(self.positions) & set(other.positions))
+
+    #Rich comparisons for Features. With @functools.total_ordering (Python 2.7+),
+    # it will be enough to define __lt__ and __eq__
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and
+               self.positions == other.positions)
+    def __lt__(self, other):
+        return (self.__class__.__name__ < other.__class__.__name__ or
+               #self.positions is a sorted tuple of ints
+               self.positions < other.positions)
+    def __ne__(self, other):
+        return not (self == other)
+    def __gt__(self, other):
+        return other < self
+    def __ge__(self, other):
+        return not self < other
+    def __le__(self, other):
+        return self < other or self == other
 
     @staticmethod
     def extract_property(tokens, index):
