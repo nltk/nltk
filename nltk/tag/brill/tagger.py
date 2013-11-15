@@ -43,9 +43,15 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         """
         :param initial_tagger: The initial tagger
         :type initial_tagger: TaggerI
+
         :param rules: An ordered list of transformation rules that
             should be used to correct the initial tagging.
         :type rules: list(BrillRule)
+
+        :param training_stats: A dictionary of statistics collected
+            during training, for possible later use
+        :type rules: dict
+
         """
         self._initial_tagger = initial_tagger
         self._rules = tuple(rules)
@@ -53,6 +59,12 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
     def rules(self):
         return self._rules
+
+    def train_stats(self, statistic=None):
+        if statistic is None:
+            return self._training_stats
+        else:
+            return self._training_stats.get(statistic)
 
     def tag(self, tokens):
         # Inherit documentation from TaggerI
@@ -83,9 +95,9 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
     def print_template_statistics(self, testscores=None, printunused=True):
         tids = [r.templateid for r in self._rules]
-        trainscores = self._training_stats
+        trainscores = self.train_stats('rulescores')
         assert len(trainscores) == len(tids), "corrupt statistics: " \
-            "{} train scores for {} rules".format(len(trainscores), len(tids))
+            "{} train scores for {} rules".format(trainscores, tids)
         template_counts = Counter(tids)
         weighted_traincounts = Counter()
         for (tid, score) in zip(tids, trainscores):
@@ -137,9 +149,10 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
             print_train_stats()
         else:
             print_testtrain_stats()
+        print()
         if printunused:
             print_unused_templates()
-
+        print()
 
     def batch_tag_incremental(self, sequences, gold):
         """
@@ -157,16 +170,21 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         :type gold: list of list of strings
         :returns: tuple of (tagged_sequences, list of rule scores)
         """
-        def counterrors(tagged_tokenses):
+        def counterrors(xs):
             return sum(t[1] != g[1]
-                       for (tokens, target) in zip(tagged_tokenses, gold)
-                          for (t,g) in zip(tokens, target))
+                       for pair in zip(xs, gold)
+                          for (t, g) in zip(*pair))
+        testing_stats = {}
+        testing_stats['tokencount'] = sum(len(t) for t in sequences)
+        testing_stats['sequencecount'] = len(sequences)
         tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
-        errors = [counterrors(tagged_tokenses)]
+        testing_stats['initialerrors'] = counterrors(tagged_tokenses)
         # Apply each rule to the entire corpus, in order
+        errors = [testing_stats['initialerrors']]
         for rule in self._rules:
             for tagged_tokens in tagged_tokenses:
                 rule.apply(tagged_tokens)
             errors.append(counterrors(tagged_tokenses))
-        scores = [err0 - err1 for (err0, err1) in zip(errors, errors[1:])]
-        return (tagged_tokenses, scores)
+        testing_stats['rulescores'] = [err0 - err1 for (err0, err1) in zip(errors, errors[1:])]
+        return (tagged_tokenses, testing_stats)
+
