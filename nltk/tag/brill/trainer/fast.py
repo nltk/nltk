@@ -74,6 +74,8 @@ class TaggerTrainer(object):
            if the rule applies.  This records the next position we
            need to check to see if the rule messed anything up."""
 
+        self._training_stats = []
+
     #////////////////////////////////////////////////////////////
     # Training
     #////////////////////////////////////////////////////////////
@@ -111,6 +113,8 @@ class TaggerTrainer(object):
                 rule = self._best_rule(train_sents, test_sents, min_score)
                 if rule:
                     rules.append(rule)
+                    score = self._rule_scores[rule]
+                    self._training_stats.append(score)
                 else:
                     break # No more good rules left!
 
@@ -136,7 +140,7 @@ class TaggerTrainer(object):
         self._clean()
 
         # Create and return a tagger from the rules we found.
-        return BrillTagger(self._initial_tagger, rules)
+        return BrillTagger(self._initial_tagger, rules, self._training_stats)
 
     def _init_mappings(self, test_sents, train_sents):
         """

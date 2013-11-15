@@ -45,6 +45,9 @@ class BrillTaggerTrainer(object):
         self._trace = trace
         self._deterministic = deterministic
         self._ruleformat = ruleformat
+        #deliberately vague name -- could hold total errors in corpus,
+        # or rule scores, or something more sophisticated
+        self._training_stats= []
 
     #////////////////////////////////////////////////////////////
     # Training
@@ -89,6 +92,7 @@ class BrillTaggerTrainer(object):
                 else:
                     # Add the rule to our list of rules.
                     rules.append(rule)
+                    self._training_stats.append(score)
                     # Use the rules to update the test corpus.  Keep
                     # track of how many times the rule applied (k).
                     k = 0
@@ -102,7 +106,7 @@ class BrillTaggerTrainer(object):
             print("Training stopped manually -- %d rules found" % len(rules))
 
         # Create and return a tagger from the rules we found.
-        return BrillTagger(self._initial_tagger, rules)
+        return BrillTagger(self._initial_tagger, rules, self._training_stats)
 
     #////////////////////////////////////////////////////////////
     # Finding the best rule

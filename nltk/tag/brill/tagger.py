@@ -11,7 +11,7 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function
+from __future__ import print_function, division
 
 from collections import defaultdict, Counter
 import yaml
@@ -39,7 +39,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
     """
 
     yaml_tag = '!nltk.BrillTagger'
-    def __init__(self, initial_tagger, rules):
+    def __init__(self, initial_tagger, rules, training_stats=None):
         """
         :param initial_tagger: The initial tagger
         :type initial_tagger: TaggerI
@@ -49,6 +49,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         """
         self._initial_tagger = initial_tagger
         self._rules = tuple(rules)
+        self._training_stats = training_stats
 
     def rules(self):
         return self._rules
@@ -80,32 +81,92 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
         return tagged_tokens
 
-    def print_template_statistics(self):
-        tids = Counter([r.templateid for r in self.rules()])
-        print("TEMPLATE TRAINING STATISTICS")
-        print("#ID Rules Template")
-        for (tid, count) in tids.most_common():
-            print("{:s} {:5d} {}".format(tid, count, template.Template.ALLTEMPLATES[int(tid)]))
+    def print_template_statistics(self, testscores=None, printunused=True):
+        tids = [r.templateid for r in self._rules]
+        trainscores = self._training_stats
+        assert len(trainscores) == len(tids), "corrupt statistics: " \
+            "{} train scores for {} rules".format(len(trainscores), len(tids))
+        template_counts = Counter(tids)
+        weighted_traincounts = Counter()
+        for (tid, score) in zip(tids, trainscores):
+            weighted_traincounts[tid] += score
+        tottrainscores = sum(trainscores)
 
-    def batch_tag_incremental(self, tokenses, gold):
+        def print_train_stats():
+            print("TEMPLATE TRAINING STATISTICS ({} templates, {} rules)".format(len(template_counts),len(tids)))
+            head = "#ID | Score (train)  | #Rules (train) | Template"
+            print(head, "\n", "-" * len(head), sep="")
+            for (tid, trainscore) in weighted_traincounts.most_common():
+                s = "{:s} |  {:5d}   {:.3f} |   {:4d}   {:.3f} | {:s}".format(
+                 tid,
+                 trainscore,
+                 trainscore/tottrainscores,
+                 template_counts[tid],
+                 template_counts[tid]/len(tids),
+                 template.Template.ALLTEMPLATES[int(tid)])
+                print(s)
+
+        def print_testtrain_stats():
+            print("TEMPLATE TRAINING STATISTICS ({} templates, {} rules)".format(len(template_counts),len(tids)))
+            weighted_testcounts = Counter()
+            for (tid, score) in zip(tids, testscores):
+                weighted_testcounts[tid] += score
+            tottestscores = sum(testscores)
+            head = "#ID | Score (test)  | Score (train)  | #Rules (train) | Template"
+            print(head, "\n", "-" * len(head), sep="")
+            for (tid, testscore) in weighted_testcounts.most_common():
+                s = "{:s} | {:5d}  {:6.3f} |   {:4d}   {:.3f} |   {:4d}   {:.3f} | {:s}".format(
+                 tid,
+                 testscore,
+                 testscore/tottestscores,
+                 weighted_traincounts[tid],
+                 weighted_traincounts[tid]/tottrainscores,
+                 template_counts[tid],
+                 template_counts[tid]/len(tids),
+                 template.Template.ALLTEMPLATES[int(tid)])
+                print(s)
+
+        def print_unused_templates():
+            usedtpls = set([int(tid) for tid in tids])
+            unused = [(tid, tpl) for (tid, tpl) in enumerate(template.Template.ALLTEMPLATES) if tid not in usedtpls]
+            print("UNUSED TEMPLATES ({})".format(len(unused)))
+            for (tid, tpl) in unused:
+                print("{:03d} {:s}".format(tid, tpl))
+
+        if testscores is None:
+            print_train_stats()
+        else:
+            print_testtrain_stats()
+        if printunused:
+            print_unused_templates()
+
+
+    def batch_tag_incremental(self, sequences, gold):
         """
         Tags by applying each rule to the entire corpus (rather than all rules to a
-        single sequence). The point is to collect statistics for the individual
-        rules.
+        single sequence). The point is to collect statistics on the test set for
+        individual rules.
 
         NOTE: This is inefficient (does not build any index, so will traverse the entire
         corpus N times for N rules) -- usually you would not care about statistics for
         individual rules and thus use batch_tag() instead
+
+        :param sequences: lists of token sequences (sentences, in some applications) to be tagged
+        :type sequences: list of list of strings
+        :param gold: the gold standard
+        :type gold: list of list of strings
+        :returns: tuple of (tagged_sequences, list of rule scores)
         """
         def counterrors(tagged_tokenses):
             return sum(t[1] != g[1]
                        for (tokens, target) in zip(tagged_tokenses, gold)
                           for (t,g) in zip(tokens, target))
-        tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in tokenses]
+        tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
         errors = [counterrors(tagged_tokenses)]
         # Apply each rule to the entire corpus, in order
         for rule in self._rules:
             for tagged_tokens in tagged_tokenses:
                 rule.apply(tagged_tokens)
             errors.append(counterrors(tagged_tokenses))
-        return (tagged_tokenses, errors)
+        scores = [err0 - err1 for (err0, err1) in zip(errors, errors[1:])]
+        return (tagged_tokenses, scores)
