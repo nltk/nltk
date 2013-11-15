@@ -14,66 +14,19 @@ from __future__ import print_function, absolute_import, division
 import random
 import yaml
 import time
+import sys
 
 from nltk import tag
 from nltk.corpus import treebank
 
 from nltk.tag.brill.erroranalysis import error_list
 from nltk.tag.brill.trainer.fast import TaggerTrainer
+from nltk.tag.brill.demo import postagging_templates
 
+def corpus_size(seqs):
+    return (len(seqs), sum(len(x) for x in seqs))
 
-def postag(templates,
-           tagged_data=None,
-           num_sents=1000,
-           num_words=None,
-           max_rules=5000,
-           min_score=3,
-           error_output="errors.out",
-           rule_output="rules.yaml",
-           randomize=False,
-           train=.8,
-           trace=3,
-           ruleformat="verbose"):
-    """
-    Brill Tagger Demonstration
-
-    @param num_sents: how many sentences of training and testing data to use
-    @type num_sents: L{int}
-    @param max_rules: maximum number of rule instances to create
-    @type max_rules: L{int}
-    @param min_score: the minimum score for a rule in order for it to
-        be considered
-    @type min_score: L{int}
-    @param error_output: the file where errors will be saved
-    @type error_output: C{string}
-    @param rule_output: the file where rules will be saved
-    @type rule_output: C{string}
-    @param randomize: whether the training data should be a random subset
-        of the corpus
-    @type randomize: boolean
-    @param train: the fraction of the the corpus to be used for training
-        (1=all)
-    @type train: L{float}
-    @param trace: the level of diagnostic tracing output to produce (0-4)
-    @type trace: L{int}
-    """
-
-    nn_cd_tagger = tag.RegexpTagger([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
-                                     (r'.*', 'NN')])
-
-    regexp_tagger = tag.RegexpTagger(
-        [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
-         (r'(The|the|A|a|An|an)$', 'AT'),   # articles
-         (r'.*able$', 'JJ'),                # adjectives
-         (r'.*ness$', 'NN'),                # nouns formed from adjectives
-         (r'.*ly$', 'RB'),                  # adverbs
-         (r'.*s$', 'NNS'),                  # plural nouns
-         (r'.*ing$', 'VBG'),                # gerunds
-         (r'.*ed$', 'VBD'),                 # past tense verbs
-         (r'.*', 'NN')                      # nouns (default)
-    ])
-
-
+def _demo_prepare_data(tagged_data, train, num_sents, randomize):
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
     if tagged_data is None:
@@ -85,91 +38,174 @@ def postag(templates,
         random.seed(len(tagged_data))
         random.shuffle(tagged_data)
     cutoff = int(num_sents * train)
-    #unitrain = cutoff // 4
-    #unitrain_data = tagged_data[:unitrain]
     training_data = tagged_data[:cutoff]
-    unitrain_data = training_data
     gold_data = tagged_data[cutoff:num_sents]
     testing_data = [[t[0] for t in sent] for sent in gold_data]
+    return (training_data, gold_data, testing_data)
 
+
+def _demo_plot_learning_curve(learning_curve_output, trainstats, teststats, take=None):
+   testcurve = [teststats['initialerrors']]
+   for rulescore in teststats['rulescores']:
+       testcurve.append(testcurve[-1] - rulescore)
+   testcurve = [1 - x/teststats['tokencount'] for x in testcurve[:take]]
+
+   traincurve = [trainstats['initialerrors']]
+   for rulescore in trainstats['rulescores']:
+       traincurve.append(traincurve[-1] - rulescore)
+   traincurve = [1 - x/trainstats['tokencount'] for x in traincurve[:take]]
+
+   import matplotlib.pyplot as plt
+   r = list(range(len(testcurve)))
+   plt.plot(r, testcurve, r, traincurve)
+   plt.axis([None, None, None, 1.0])
+   plt.savefig(learning_curve_output)
+
+
+NN_CD_TAGGER = tag.RegexpTagger(
+    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
+     (r'.*', 'NN')])
+
+REGEXP_TAGGER = tag.RegexpTagger(
+    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+     (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+     (r'.*able$', 'JJ'),                # adjectives
+     (r'.*ness$', 'NN'),                # nouns formed from adjectives
+     (r'.*ly$', 'RB'),                  # adverbs
+     (r'.*s$', 'NNS'),                  # plural nouns
+     (r'.*ing$', 'VBG'),                # gerunds
+     (r'.*ed$', 'VBD'),                 # past tense verbs
+     (r'.*', 'NN')                      # nouns (default)
+])
+
+
+
+def postag(templates=None,
+           tagged_data=None,
+           num_sents=3000,
+           max_rules=300,
+           min_score=3,
+           error_output="errors.out",
+           rule_output="rules.yaml",
+           learning_curve_output="learningcurve.png",
+           learning_curve_take=300,
+           baseline_backoff_tagger=None,
+           randomize=False,
+           train=.8,
+           trace=3,
+           ruleformat="str"):
+    """
+    Brill Tagger Demonstration
+    :param templates: how many sentences of training and testing data to use
+    :type templates: L{int}
+
+    :param tagged_data: maximum number of rule instances to create
+    :type tagged_data: L{int}
+
+    :param num_sents: how many sentences of training and testing data to use
+    :type num_sents: L{int}
+
+    :param max_rules: maximum number of rule instances to create
+    :type max_rules: L{int}
+
+    :param min_score: the minimum score for a rule in order for it to be considered
+    :type min_score: L{int}
+
+    :param error_output: the file where errors will be saved
+    :type error_output: C{string}
+
+    :param learning_curve_output: filename of plotted learning curve (train and also test, if available)
+    :type learning_curve_output: C{string}
+
+    :param learning_curve_take: how many rules plotted
+    :type learning_curve_take: C{int}
+
+    :param rule_output: the file where rules will be saved
+    :type rule_output: C{string}
+
+    :param baseline_backoff_tagger: the file where rules will be saved
+    :type baseline_backoff_tagger: tagger
+
+    :param randomize: whether the training data should be a random subset of the corpus
+    :type randomize: boolean
+
+    :param train: the fraction of the the corpus to be used for training (1=all)
+    :type train: L{float}
+
+    :param trace: the level of diagnostic tracing output to produce (0-4)
+    :type trace: L{int}
+
+    :param ruleformat: rule output format, one of "str", "repr", "verbose"
+    :type ruleformat: L{str}
+    """
+
+    # defaults
+    baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
+    templates = templates or postagging_templates.fntbl37()
+
+    (training_data, gold_data, testing_data) = _demo_prepare_data(tagged_data, train, num_sents, randomize)
+    #if we are to study the learning curve, then the baseline must be trained on separate data
+    #or it will be absurdly high
+    if learning_curve_output:
+        baseline_cutoff = len(training_data)//3
+        (baseline_data, training_data) = (training_data[:baseline_cutoff], training_data[baseline_cutoff:])
+    else:
+        baseline_data = training_data
+    (trainseqs, traintokens) = corpus_size(training_data)
+    (testseqs, testtokens) = corpus_size(testing_data)
     print("Read data (train %d sentences/%d words; test %d sentences/%d words)." % (
-        len(training_data), sum(len(t) for t in training_data), len(testing_data), sum(len(t) for t in testing_data)))
+        trainseqs, traintokens, testseqs, testtokens))
 
-    # Unigram tagger
-    print("Training unigram tagger_1 (no backoff):")
-    unigram_tagger1 = tag.UnigramTagger(unitrain_data)
+    # creating a baseline tagger (unigram tagger)
+    tuni = time.time()
+    baseline_tagger = tag.UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
+    print("Trained unigram tagger in {:0.1f} seconds".format(time.time() - tuni))
     if gold_data:
-        print("    [accuracy: %f]" % unigram_tagger1.evaluate(gold_data))
+        print("    [accuracy on test set: %f]" % baseline_tagger.evaluate(gold_data))
 
-    print("Training unigram tagger_2 (backoff=nn_cd):")
-    unigram_tagger2 = tag.UnigramTagger(unitrain_data,
-                                       backoff=nn_cd_tagger)
-    if gold_data:
-        print("    [accuracy: %f]" % unigram_tagger2.evaluate(gold_data))
-
-    print("Training unigram tagger_3 (backoff=regexp):")
-    unigram_tagger3 = tag.UnigramTagger(unitrain_data,
-                                       backoff=regexp_tagger)
-    if gold_data:
-        print("    [accuracy: %f]" % unigram_tagger3.evaluate(gold_data))
-
-    unigram_tagger = unigram_tagger3
-
-    # Bigram tagger
-    print("Training bigram tagger:")
-    bigram_tagger = tag.BigramTagger(unitrain_data,
-                                     backoff=unigram_tagger)
-    if gold_data:
-        print("    [accuracy: %f]" % bigram_tagger.evaluate(gold_data))
-
-    # Brill tagger
-    t0 = time.time()
-    trainer = TaggerTrainer(unigram_tagger, templates, trace, ruleformat=ruleformat)
+    # creating a Brill tagger
+    tbrill = time.time()
+    trainer = TaggerTrainer(baseline_tagger, templates, trace, ruleformat=ruleformat)
     brill_tagger = trainer.train(training_data, max_rules, min_score)
-    thattook = time.time() - t0
-    print("finished training in %f seconds" % thattook)
-
+    print("Trained brill tagger in {:0.1f} seconds".format(time.time() - tbrill))
     if gold_data:
-        print("\nBrill test accuracy: %f" % brill_tagger.evaluate(gold_data))
-    #if gold_data:
-    #    print("\nBrill training accuracy: %f" % brill_tagger.evaluate(training_data))
+        print("    [accuracy on test set: %f]" % brill_tagger.evaluate(gold_data))
 
+    # printing the learned rules (if learned silently)
     if trace <= 1:
-        print("\nRules: ")
-        for rule in brill_tagger.rules():
-            print(str(rule))
+        print("\nLearned rules: ")
+        for (ruleno, rule) in brill_tagger.rules():
+            print("{:3d} {:s}".format(ruleno, rule.format(ruleformat)))
 
-    print_rules = open(rule_output, 'w')
-    yaml.dump(brill_tagger, print_rules)
-    print_rules.close()
+    # printing template statistics
+    brill_tagger.print_template_statistics()
+    (taggedtest, teststats) = brill_tagger.batch_tag_incremental(testing_data, gold_data)
+    trainstats = brill_tagger.train_stats()
+    brill_tagger.print_template_statistics(teststats['rulescores'])
 
-    del brill_tagger
-    print_rules = open(rule_output, "r")
-    brill_tagger = yaml.load(print_rules)
-    print_rules.close()
+    # plotting learning curve
+    if learning_curve_output is not None:
+        _demo_plot_learning_curve(learning_curve_output, trainstats, teststats, take=learning_curve_take)
+        print("Wrote plot of learning curve to {}".format(learning_curve_output))
 
-    #template statistics
-    #brill_tagger.print_template_statistics()
+    # writing error analysis to file
+    if error_output is not None:
+        with open(error_output, 'w') as f:
+            f.write('Errors for Brill Tagger %r\n\n' % rule_output)
+            for e in error_list(gold_data, taggedtest):
+                f.write(e+'\n')
+        print("Wrote tagger errors including context to {}".format(error_output))
 
+    # serializing the tagger to a yaml file
+    if rule_output is not None:
+        with open(rule_output, 'w') as print_rules:
+            yaml.dump(brill_tagger, print_rules)
+        print("Wrote YAML-serialized tagger to {}".format(rule_output))
+        del brill_tagger
+        with open(rule_output, "r") as print_rules:
+            brill_tagger = yaml.load(print_rules)
+        print("Reloaded YAML-serialized tagger from {}".format(rule_output))
 
-    #testing_data2 = [[t[0] for t in sent] for sent in training_data]
-    #(testing_data, ruleerrs) = brill_tagger.batch_tag_incremental(testing_data, gold_data)
-    testing_data = brill_tagger.batch_tag(testing_data)
-    #tokenscount = sum(len(tokens) for tokens in testing_data)
-    #(_junk, ruleerrs2) = brill_tagger.batch_tag_incremental(testing_data2, training_data)
-    #tokenscount2 = sum(len(tokens) for tokens in training_data)
-    #r = list(range(len(ruleerrs)))
-    #import matplotlib.pyplot as plt
-    #plt.plot(r, [1-x/float(tokenscount) for x in ruleerrs], r, [1-y/float(tokenscount2) for y in ruleerrs2])
-    #plt.axis([None, None, None, 1.0])
-    #plt.savefig("learningcurve.png")
-    error_file = file(error_output, 'w')
-    error_file.write('Errors for Brill Tagger %r\n\n' % rule_output)
-    for e in error_list(gold_data, testing_data):
-        error_file.write(e+'\n')
-    error_file.close()
-    print ("Done; rules and errors saved to %s and %s." %
-           (rule_output, error_output))
 
 
 def demo():
