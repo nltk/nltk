@@ -494,7 +494,7 @@ class Rule(BrillRule):
         Not sure how useful this is.
         """
         def condition_to_str(feature, value):
-            return ('the %s of %s is %s' %
+            return ('the %s of %s is "%s"' %
                     (feature.PROPERTY_NAME, range_to_str(feature.positions), value))
 
         def range_to_str(positions):
