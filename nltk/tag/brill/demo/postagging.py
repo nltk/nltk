@@ -22,6 +22,8 @@ from nltk.corpus import treebank
 from nltk.tag.brill.erroranalysis import error_list
 from nltk.tag.brill.trainer.fast import TaggerTrainer
 from nltk.tag.brill.demo import postagging_templates
+from nltk.tag.brill.template import Template
+from nltk.tag.brill.application.postagging import Word, Tag
 
 def corpus_size(seqs):
     return (len(seqs), sum(len(x) for x in seqs))
@@ -82,7 +84,7 @@ REGEXP_TAGGER = tag.RegexpTagger(
 
 def postag(templates=None,
            tagged_data=None,
-           num_sents=3000,
+           num_sents=1000,
            max_rules=300,
            min_score=3,
            error_output="errors.out",
@@ -141,7 +143,16 @@ def postag(templates=None,
 
     # defaults
     baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
-    templates = templates or postagging_templates.fntbl37()
+    if templates is None:
+        #templates = postagging_templates.fntbl37()
+
+        #Template.expand and Feature.expand are class methods facilitating
+        #generating large amounts of templates -- see their documentation
+        #note -- training can easily fill all available memory
+        wordtpls = Word.expand([-1,0,1], [1,2], excludezero=False)
+        tagtpls = Tag.expand([-2,-1,0,1,2], [1,2], excludezero=True)
+        templates = list(Template.expand([wordtpls, tagtpls], combinations=(1,3)))
+        print("generated {} templates for transformation-based learning".format(len(templates)))
 
     (training_data, gold_data, testing_data) = _demo_prepare_data(tagged_data, train, num_sents, randomize)
     #if we are to study the learning curve, then the baseline must be trained on separate data

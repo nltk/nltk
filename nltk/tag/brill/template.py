@@ -76,7 +76,7 @@ class Template(BrillTemplateI):
     """
     ALLTEMPLATES = []
     #record a unique id of form "001", for each template created
-    _ids = it.count(0)
+#    _ids = it.count(0)
 
     def __init__(self, *features):
         """
@@ -106,7 +106,7 @@ class Template(BrillTemplateI):
         else:
             raise TypeError(
                 "expected either Feature1(args), Feature2(args), ... or Feature, (start1, end1), (start2, end2), ...")
-        self.id = "{:03d}".format(self._ids.next())
+        self.id = "{:03d}".format(len(self.ALLTEMPLATES))
         self.ALLTEMPLATES.append(self)
 
     def __repr__(self):
@@ -159,7 +159,7 @@ class Template(BrillTemplateI):
         return neighborhood
 
     @classmethod
-    def expand(cls, featurelists, propersubsets=True, skipintersecting=True):
+    def expand(cls, featurelists, combinations=None, skipintersecting=True):
         """
         Factory method to mass generate Templates from a list L of Feature lists,
         by computing the Cartesian product of all non-empty subsets of L,
@@ -194,20 +194,25 @@ class Template(BrillTemplateI):
 
         :param featurelists: lists of Features, whose Cartesian product will return a set of Templates
         :type featurelists: list of (list of Features)
-        :param propersubsets: if True, generated Templates will have 1..n features given n feature lists; if False, n
-        :type propersubsets: bool
+        :param combinations: given n featurelists: if combinations=k, all generated Templates will have
+                k features; if combinations=(k1,k2) they will have k1..k2 features; if None, defaults to 1..n
+        :type combinations: None, int, or (int, int)
         :param skipintersecting: if True, do not output intersecting Templates (non-disjoint positions for some feature)
         :type skipintersecting: bool
         :returns: generator of Templates
 
         """
 
-        def nonempty_powerset(xs):
-            #nonempty_powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
-            #from itertools doc (xs is a list)
-            subsetsize = 1 if propersubsets else len(xs)
+        def nonempty_powerset(xs): #xs is a list
+            #itertools docnonempty_powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
+
+            #find the correct tuple given combinations, one of {None, k, (k1,k2)}
+            k = combinations #for brevity
+            combrange = ((1, len(xs)+1) if k is None else     #n over 1 .. n over n (all non-empty combinations)
+                         (k, k+1) if isinstance(k, int) else  #n over k (only
+                         (k[0], k[1]+1))                      #n over k1, n over k1+1... n over k2
             return it.chain.from_iterable(it.combinations(xs, r)
-                                          for r in range(subsetsize, len(xs)+1))
+                                          for r in range(*combrange))
         seentemplates = set()
         for picks in nonempty_powerset(featurelists):
             for pick in it.product(*picks):
@@ -221,10 +226,15 @@ class Template(BrillTemplateI):
                     continue
                 thistemplate = cls(*sorted(pick))
                 strpick = str(thistemplate)
-                if strpick in seentemplates:
+                if strpick in seentemplates: #already added
+                    cls.poptemplate()
                     continue
                 seentemplates.add(strpick)
                 yield thistemplate
+
+    @classmethod
+    def poptemplate(cls):
+        return cls.ALLTEMPLATES.pop() if cls.ALLTEMPLATES else None
 
 
 class Feature(yaml.YAMLObject):
