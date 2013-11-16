@@ -446,12 +446,12 @@ class Rule(BrillRule):
         return not (self==other)
 
     def __hash__(self):
+
         # Cache our hash value (justified by profiling.)
         try:
             return self.__hash
         except:
-            self.__hash = hash( (self.original_tag, self.replacement_tag,
-                                 self._conditions, self.__class__.__name__) )
+            self.__hash = hash(repr(self))
             return self.__hash
 
     def __repr__(self):
