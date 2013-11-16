@@ -26,9 +26,6 @@ from nltk.tag.brill.application.postagging import Word, Tag
 def demo():
     postag()
 
-def demo_train_stats():
-    postag(incremental_stats=True)
-
 def demo_repr_rule_format():
     postag(ruleformat="repr")
 
@@ -44,7 +41,7 @@ def demo_multifeature_template():
     postag(templates=[Template(Word([0]), Tag([-2,-1]))])
 
 def demo_template_statistics():
-    postag(templates=[Template(Word([0]), Tag([-2,-1]))])
+    postag(incremental_stats=True, template_stats=True)
 
 def demo_generated_templates():
     #Template.expand and Feature.expand are class methods facilitating
@@ -55,10 +52,20 @@ def demo_generated_templates():
     tagtpls = Tag.expand([-2,-1,0,1], [1,2], excludezero=True)
     templates = list(Template.expand([wordtpls, tagtpls], combinations=(1,3)))
     print("Generated {0} templates for transformation-based learning".format(len(templates)))
-    postag(templates=templates)
+    postag(templates=templates, incremental_stats=True, template_stats=True)
 
 def demo_learning_curve():
-    postag(incremental_stats=True, separate_baseline_data=True, learning_curve_output="learningcurve.png")
+    #requires matplotlib
+    postag(incremental_stats=True, learning_curve_output="learningcurve.png")
+
+def demo_error_analysis():
+    postag(error_output="errors.txt")
+
+def demo_serialize_tagger():
+    postag(rule_output="rules.yaml")
+
+def demo_brillorig_training():
+    postag(training_algorithm="brillorig")
 
 def postag(
     templates=None,
@@ -72,16 +79,14 @@ def postag(
     ruleformat="str",
     incremental_stats=False,
     template_stats=False,
-
-    #the following should rarely need modification for demo purposes
-    cache_baseline_tagger=None,
-    error_output="errors.out",
-    rule_output="rules.yaml",
+    error_output=None,
+    rule_output=None,
     learning_curve_output=None,
     learning_curve_take=300,
     baseline_backoff_tagger=None,
     training_algorithm = "fast",
-    separate_baseline_data=False):
+    separate_baseline_data=True,
+    cache_baseline_tagger=None):
     """
     Brill Tagger Demonstration
     :param templates: how many sentences of training and testing data to use
@@ -117,10 +122,6 @@ def postag(
     :param template_stats: if true, will print per-template statistics collected in training and (optionally) testing
     :type template_stats: C{bool}
 
-    :param cache_baseline_tagger: cache baseline tagger to this file (only interesting as a temporary workaround to get
-                                  deterministic output from the baseline unigram tagger between python versions)
-    :type cache_baseline_tagger: C{string}
-
     :param error_output: the file where errors will be saved
     :type error_output: C{string}
 
@@ -139,8 +140,12 @@ def postag(
     :param training_algorithm: at present, only "fast" or "brillorig"
     :type training_algorithm: C{string}
 
-    :param separate_baseline_data: use a fraction of the training data only for training baseline
+    :param separate_baseline_data: use a fraction of the training data exclusively for training baseline
     :type separate_baseline_data: C{bool}
+
+    :param cache_baseline_tagger: cache baseline tagger to this file (only interesting as a temporary workaround to get
+                                  deterministic output from the baseline unigram tagger between python versions)
+    :type cache_baseline_tagger: C{string}
 
 
     """
