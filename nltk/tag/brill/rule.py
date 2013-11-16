@@ -15,11 +15,11 @@ from __future__ import print_function
 
 import yaml
 
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 
 ######################################################################
 ## Brill Rules
 ######################################################################
-from nltk import python_2_unicode_compatible, unicode_repr
 
 
 class BrillRule(yaml.YAMLObject):
