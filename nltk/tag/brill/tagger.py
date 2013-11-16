@@ -104,11 +104,19 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
             weighted_traincounts[tid] += score
         tottrainscores = sum(trainscores)
 
+        #the convenient Counter.most_common() unfortunately
+        #does not break ties deterministically
+        #between python versions and will break cross-version tests
+        def det_tplsort(tpl_value):
+            return (tpl_value[1], repr(tpl_value[0]))
+
         def print_train_stats():
-            print("TEMPLATE TRAINING STATISTICS ({} templates, {} rules)".format(len(template_counts),len(tids)))
-            head = "#ID | Score (train)  | #Rules (train) | Template"
+            print("TEMPLATE STATISTICS (TRAIN)  {} templates, {} rules)".format(
+                                              len(template_counts),len(tids)))
+            head = "#ID | Score (train)  |     #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
-            for (tid, trainscore) in weighted_traincounts.most_common():
+            train_tplscores = sorted(weighted_traincounts.items(), key=det_tplsort, reverse=True)
+            for (tid, trainscore) in train_tplscores:
                 s = "{:s} |  {:5d}   {:.3f} |   {:4d}   {:.3f} | {:s}".format(
                  tid,
                  trainscore,
@@ -119,14 +127,16 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
                 print(s)
 
         def print_testtrain_stats():
-            print("TEMPLATE TRAINING STATISTICS ({} templates, {} rules)".format(len(template_counts),len(tids)))
+            print("TEMPLATE STATISTICS (TEST AND TRAIN) ({} templates, {} rules)".format(
+                                                  len(template_counts),len(tids)))
             weighted_testcounts = Counter()
             for (tid, score) in zip(tids, testscores):
                 weighted_testcounts[tid] += score
             tottestscores = sum(testscores)
-            head = "#ID | Score (test)  | Score (train)  | #Rules (train) | Template"
+            head = "#ID | Score (test)  | Score (train)  |     #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
-            for (tid, testscore) in weighted_testcounts.most_common():
+            test_tplscores = sorted(weighted_traincounts.items(), key=det_tplsort, reverse=True)
+            for (tid, testscore) in test_tplscores:
                 s = "{:s} | {:5d}  {:6.3f} |   {:4d}   {:.3f} |   {:4d}   {:.3f} | {:s}".format(
                  tid,
                  testscore,
@@ -168,7 +178,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         :type sequences: list of list of strings
         :param gold: the gold standard
         :type gold: list of list of strings
-        :returns: tuple of (tagged_sequences, list of rule scores)
+        :returns: tuple of (tagged_sequences, ordered list of rule scores (one for each rule))
         """
         def counterrors(xs):
             return sum(t[1] != g[1]
