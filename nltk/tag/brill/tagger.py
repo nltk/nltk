@@ -13,9 +13,10 @@
 
 from __future__ import print_function, division
 
-from collections import defaultdict, Counter
+from collections import defaultdict
 import yaml
 
+from nltk.compat import Counter
 from nltk.tag.api import TaggerI
 from nltk.tag.brill import template
 
@@ -50,7 +51,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
         :param training_stats: A dictionary of statistics collected
             during training, for possible later use
-        :type rules: dict
+        :type training_stats: dict
 
         """
         self._initial_tagger = initial_tagger
@@ -97,7 +98,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         tids = [r.templateid for r in self._rules]
         trainscores = self.train_stats('rulescores')
         assert len(trainscores) == len(tids), "corrupt statistics: " \
-            "{} train scores for {} rules".format(trainscores, tids)
+            "{0} train scores for {1} rules".format(trainscores, tids)
         template_counts = Counter(tids)
         weighted_traincounts = Counter()
         for (tid, score) in zip(tids, trainscores):
@@ -111,13 +112,13 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
             return (tpl_value[1], repr(tpl_value[0]))
 
         def print_train_stats():
-            print("TEMPLATE STATISTICS (TRAIN)  {} templates, {} rules)".format(
+            print("TEMPLATE STATISTICS (TRAIN)  {0} templates, {1} rules)".format(
                                               len(template_counts),len(tids)))
             head = "#ID | Score (train)  |     #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
             train_tplscores = sorted(weighted_traincounts.items(), key=det_tplsort, reverse=True)
             for (tid, trainscore) in train_tplscores:
-                s = "{:s} |  {:5d}   {:.3f} |   {:4d}   {:.3f} | {:s}".format(
+                s = "{0:s} |  {1:5d}   {2:.3f} |   {3:4d}   {4:.3f} | {5:s}".format(
                  tid,
                  trainscore,
                  trainscore/tottrainscores,
@@ -127,7 +128,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
                 print(s)
 
         def print_testtrain_stats():
-            print("TEMPLATE STATISTICS (TEST AND TRAIN) ({} templates, {} rules)".format(
+            print("TEMPLATE STATISTICS (TEST AND TRAIN) ({0} templates, {1} rules)".format(
                                                   len(template_counts),len(tids)))
             weighted_testcounts = Counter()
             for (tid, score) in zip(tids, testscores):
@@ -137,7 +138,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
             print(head, "\n", "-" * len(head), sep="")
             test_tplscores = sorted(weighted_traincounts.items(), key=det_tplsort, reverse=True)
             for (tid, testscore) in test_tplscores:
-                s = "{:s} | {:5d}  {:6.3f} |   {:4d}   {:.3f} |   {:4d}   {:.3f} | {:s}".format(
+                s = "{0:s} | {1:5d}  {2:6.3f} |   {3:4d}   {4:.3f} |   {5:4d}   {6:.3f} | {7:s}".format(
                  tid,
                  testscore,
                  testscore/tottestscores,
@@ -151,9 +152,9 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         def print_unused_templates():
             usedtpls = set([int(tid) for tid in tids])
             unused = [(tid, tpl) for (tid, tpl) in enumerate(template.Template.ALLTEMPLATES) if tid not in usedtpls]
-            print("UNUSED TEMPLATES ({})".format(len(unused)))
+            print("UNUSED TEMPLATES ({0})".format(len(unused)))
             for (tid, tpl) in unused:
-                print("{:03d} {:s}".format(tid, tpl))
+                print("{0:03d} {1:s}".format(tid, tpl))
 
         if testscores is None:
             print_train_stats()

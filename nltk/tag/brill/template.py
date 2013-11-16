@@ -13,6 +13,8 @@ from __future__ import print_function
 import yaml
 import itertools as it
 
+from nltk.compat import python_2_unicode_compatible, unicode_repr
+
 class BrillTemplateI(object):
     """
     An interface for generating lists of transformational rules that
@@ -106,7 +108,7 @@ class Template(BrillTemplateI):
         else:
             raise TypeError(
                 "expected either Feature1(args), Feature2(args), ... or Feature, (start1, end1), (start2, end2), ...")
-        self.id = "{:03d}".format(len(self.ALLTEMPLATES))
+        self.id = "{0:03d}".format(len(self.ALLTEMPLATES))
         self.ALLTEMPLATES.append(self)
 
     def __repr__(self):
@@ -237,6 +239,7 @@ class Template(BrillTemplateI):
         return cls.ALLTEMPLATES.pop() if cls.ALLTEMPLATES else None
 
 
+
 class Feature(yaml.YAMLObject):
     """
     An abstract base class for Features. A Feature is a combination of
@@ -289,12 +292,12 @@ class Feature(yaml.YAMLObject):
                 self.positions = tuple(range(positions, end+1))
             except TypeError:
                 #let any kind of erroneous spec raise ValueError
-                raise ValueError("illegal interval specification: (start={}, end={})".format(positions, end))
+                raise ValueError("illegal interval specification: (start={0}, end={1})".format(positions, end))
 
         #set property name given in subclass, or otherwise name of subclass
         self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__
         #set yaml_tag name given in subclass, or otherwise name of subclass, lowercased
-        self.yaml_tag = self.__class__.yaml_tag or "!{}".format(self.__class__.__name__.lower())
+        self.yaml_tag = self.__class__.yaml_tag or "!{0}".format(self.__class__.__name__.lower())
 
     def __repr__(self):
         return "%s(%r)" % (
@@ -319,7 +322,7 @@ class Feature(yaml.YAMLObject):
         :raises ValueError: for non-positive window lengths
         """
         if not all(x > 0 for x in winlens):
-            raise ValueError("non-positive window length in {:s}".format(winlens))
+            raise ValueError("non-positive window length in {0:s}".format(winlens))
         xs = (starts[i:i+w] for w in winlens for i in range(len(starts)-w+1))
         return [cls(x) for x in xs if not (excludezero and 0 in x)]
 
@@ -353,6 +356,8 @@ class Feature(yaml.YAMLObject):
     def extract_property(tokens, index):
         raise NotImplementedError("subclass of Feature must define extract_property(tokens, index)")
 
+
+@python_2_unicode_compatible
 class Rule(BrillRule):
     """
     A Rule checks the current corpus position for a certain set of conditions;
@@ -460,12 +465,15 @@ class Rule(BrillRule):
         try:
             return self.__repr
         except:
-            self.__repr = ('%s(%s, %r, %r, %s)' % (
+            self.__repr = ('%s(%s, %s, %s, [%s])' % (
                 self.__class__.__name__,
                 self.templateid,
-                self.original_tag,
-                self.replacement_tag,
-                list(self._conditions)))
+                unicode_repr(self.original_tag),
+                unicode_repr(self.replacement_tag),
+
+                # list(self._conditions) would be simpler but will not generate
+                # the same Rule.__repr__ in python 2 and 3 and thus break some tests
+                ", ".join("({0:s},{1:s})".format(f,unicode_repr(v)) for (f,v) in self._conditions)))
 
             return self.__repr
 
@@ -494,7 +502,7 @@ class Rule(BrillRule):
         elif fmt == "verbose":
             return self._verbose_format()
         else:
-            raise ValueError("unknown rule format spec: {}".format(fmt))
+            raise ValueError("unknown rule format spec: {0}".format(fmt))
 
     def _verbose_format(self):
         """
