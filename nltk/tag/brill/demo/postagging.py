@@ -65,7 +65,8 @@ def demo_serialize_tagger():
     postag(rule_output="rules.yaml")
 
 def demo_brillorig_training():
-    postag(training_algorithm="brillorig")
+    #much slower, only for demonstration
+    postag(training_algorithm="brillorig", min_score=10)
 
 def postag(
     templates=None,
