@@ -11,7 +11,7 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function
+from __future__ import print_function, division
 
 import bisect
 from collections import defaultdict
@@ -74,7 +74,6 @@ class TaggerTrainer(object):
            if the rule applies.  This records the next position we
            need to check to see if the rule messed anything up."""
 
-        self._training_stats = {}
 
     #////////////////////////////////////////////////////////////
     # Training
@@ -91,17 +90,18 @@ class TaggerTrainer(object):
                       for sent in train_sents]
 
         # Collect some statistics on the training process
-        self._training_stats['tokencount'] = sum(len(t) for t in test_sents)
-        self._training_stats['sequencecount'] = len(test_sents)
-        self._training_stats['templatecount'] = len(self._templates)
-        self._training_stats['rulescores'] = []
-        self._training_stats['initialerrors'] = sum(tag[1] != truth[1]
+        trainstats = {}
+        trainstats['tokencount'] = sum(len(t) for t in test_sents)
+        trainstats['sequencecount'] = len(test_sents)
+        trainstats['templatecount'] = len(self._templates)
+        trainstats['rulescores'] = []
+        trainstats['initialerrors'] = sum(tag[1] != truth[1]
                                                     for paired in zip(test_sents, train_sents)
                                                     for (tag, truth) in zip(*paired))
-
+        trainstats['initialacc'] = 1 - trainstats['initialerrors']/trainstats['tokencount']
         if self._trace > 0:
             print("Training Brill tagger on {sequencecount} sequences/{tokencount} "
-                  "tokens and {templatecount} templates".format(**self._training_stats))
+                  "tokens and {templatecount} templates".format(**trainstats))
 
         # Initialize our mappings.  This will find any errors made
         # by the initial tagger, and use those to generate repair
@@ -124,7 +124,7 @@ class TaggerTrainer(object):
                 if rule:
                     rules.append(rule)
                     score = self._rule_scores[rule]
-                    self._training_stats['rulescores'].append(score)
+                    trainstats['rulescores'].append(score)
                 else:
                     break # No more good rules left!
 
@@ -148,9 +148,10 @@ class TaggerTrainer(object):
 
         # Discard our tag position mapping & rule mappings.
         self._clean()
-
+        trainstats['finalerrors'] = trainstats['initialerrors'] - sum(trainstats['rulescores'])
+        trainstats['finalacc'] = 1 - trainstats['finalerrors']/trainstats['tokencount']
         # Create and return a tagger from the rules we found.
-        return BrillTagger(self._initial_tagger, rules, self._training_stats)
+        return BrillTagger(self._initial_tagger, rules, trainstats)
 
     def _init_mappings(self, test_sents, train_sents):
         """

@@ -45,7 +45,6 @@ class TaggerTrainer(object):
         self._trace = trace
         self._deterministic = deterministic
         self._ruleformat = ruleformat
-        self._training_stats = {}
 
     #////////////////////////////////////////////////////////////
     # Training
@@ -72,16 +71,18 @@ class TaggerTrainer(object):
         # test corpus to look more like the training corpus.
         test_sents = [self._initial_tagger.tag(untag(sent))
                       for sent in train_sents]
-        self._training_stats['tokencount'] = sum(len(t) for t in test_sents)
-        self._training_stats['sequencecount'] = len(test_sents)
-        self._training_stats['templatecount'] = len(self._templates)
-        self._training_stats['rulescores'] = []
-        self._training_stats['initialerrors'] = sum(tag == truth
+        trainstats = {}
+        trainstats['tokencount'] = sum(len(t) for t in test_sents)
+        trainstats['sequencecount'] = len(test_sents)
+        trainstats['templatecount'] = len(self._templates)
+        trainstats['rulescores'] = []
+        trainstats['initialerrors'] = sum(tag == truth
                                                     for paired in zip(test_sents, train_sents)
                                                     for (tag, truth) in zip(*paired))
+        trainstats['initialacc'] = 1 - trainstats['initialerrors']/trainstats['tokencount']
         if self._trace > 0:
             print("Training Brill tagger on {sequencecount} sequences/{tokencount} "
-                  "tokens and {templatecount} templates".format(**self._training_stats))
+                  "tokens and {templatecount} templates".format(**trainstats))
 
         if self._trace > 2:
             self._trace_header()
@@ -99,7 +100,7 @@ class TaggerTrainer(object):
                 else:
                     # Add the rule to our list of rules.
                     rules.append(rule)
-                    self._training_stats['rulescores'].append(score)
+                    trainstats['rulescores'].append(score)
                     # Use the rules to update the test corpus.  Keep
                     # track of how many times the rule applied (k).
                     k = 0
@@ -112,8 +113,10 @@ class TaggerTrainer(object):
         except KeyboardInterrupt:
             print("Training stopped manually -- %d rules found" % len(rules))
 
+        trainstats['finalerrors'] = trainstats['initialerrors'] - sum(trainstats['rulescores'])
+        trainstats['finalacc'] = 1 - trainstats['finalerrors']/trainstats['tokencount']
         # Create and return a tagger from the rules we found.
-        return BrillTagger(self._initial_tagger, rules, self._training_stats)
+        return BrillTagger(self._initial_tagger, rules, trainstats)
 
     #////////////////////////////////////////////////////////////
     # Finding the best rule
