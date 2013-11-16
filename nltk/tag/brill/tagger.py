@@ -94,9 +94,11 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
         return tagged_tokens
 
-    def print_template_statistics(self, testscores=None, printunused=True):
+    def print_template_statistics(self, test_stats=None, printunused=True):
         tids = [r.templateid for r in self._rules]
-        trainscores = self.train_stats('rulescores')
+        train_stats = self.train_stats()
+        testscores = test_stats['rulescores']
+        trainscores = train_stats['rulescores']
         assert len(trainscores) == len(tids), "corrupt statistics: " \
             "{0} train scores for {1} rules".format(trainscores, tids)
         template_counts = Counter(tids)
@@ -114,6 +116,8 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         def print_train_stats():
             print("TEMPLATE STATISTICS (TRAIN)  {0} templates, {1} rules)".format(
                                               len(template_counts),len(tids)))
+            print("TRAIN ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
+                  "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats))
             head = "#ID | Score (train)  |     #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
             train_tplscores = sorted(weighted_traincounts.items(), key=det_tplsort, reverse=True)
@@ -130,6 +134,10 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         def print_testtrain_stats():
             print("TEMPLATE STATISTICS (TEST AND TRAIN) ({0} templates, {1} rules)".format(
                                                   len(template_counts),len(tids)))
+            print("TEST  ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
+                  "final: {finalerrors:5d} {finalacc:.4f} ".format(**test_stats))
+            print("TRAIN ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
+                  "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats))
             weighted_testcounts = Counter()
             for (tid, score) in zip(tids, testscores):
                 weighted_testcounts[tid] += score
@@ -190,6 +198,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         testing_stats['sequencecount'] = len(sequences)
         tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
         testing_stats['initialerrors'] = counterrors(tagged_tokenses)
+        testing_stats['initialacc'] = 1- testing_stats['initialerrors']/testing_stats['tokencount']
         # Apply each rule to the entire corpus, in order
         errors = [testing_stats['initialerrors']]
         for rule in self._rules:
@@ -197,5 +206,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
                 rule.apply(tagged_tokens)
             errors.append(counterrors(tagged_tokenses))
         testing_stats['rulescores'] = [err0 - err1 for (err0, err1) in zip(errors, errors[1:])]
+        testing_stats['finalerrors'] = errors[-1]
+        testing_stats['finalacc'] = 1 - testing_stats['finalerrors']/testing_stats['tokencount']
         return (tagged_tokenses, testing_stats)
 
