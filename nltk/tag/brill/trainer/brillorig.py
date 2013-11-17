@@ -11,7 +11,7 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function
+from __future__ import print_function, division
 
 from collections import defaultdict
 import textwrap
@@ -50,7 +50,7 @@ class TaggerTrainer(object):
     # Training
     #////////////////////////////////////////////////////////////
 
-    def train(self, train_sents, max_rules=200, min_score=2):
+    def train(self, train_sents, max_rules=200, min_score=2, min_acc=None):
         """
         Trains the Brill tagger on the corpus *train_sents*,
         producing at most *max_rules* transformations, each of which
@@ -72,17 +72,19 @@ class TaggerTrainer(object):
         test_sents = [self._initial_tagger.tag(untag(sent))
                       for sent in train_sents]
         trainstats = {}
+        trainstats['min_acc'] = min_acc
+        trainstats['min_score'] = min_score
         trainstats['tokencount'] = sum(len(t) for t in test_sents)
         trainstats['sequencecount'] = len(test_sents)
         trainstats['templatecount'] = len(self._templates)
         trainstats['rulescores'] = []
-        trainstats['initialerrors'] = sum(tag == truth
+        trainstats['initialerrors'] = sum(tag[1] != truth[1]
                                                     for paired in zip(test_sents, train_sents)
                                                     for (tag, truth) in zip(*paired))
         trainstats['initialacc'] = 1 - trainstats['initialerrors']/trainstats['tokencount']
         if self._trace > 0:
-            print("Training Brill tagger on {sequencecount} sequences/{tokencount} "
-                  "tokens and {templatecount} templates".format(**trainstats))
+            print("TBL train (orig) (seqs: {sequencecount}; tokens: {tokencount}; "
+                  "tpls: {templatecount}; min score: {min_score}; min acc: {min_acc})".format(**trainstats))
 
         if self._trace > 2:
             self._trace_header()
@@ -92,7 +94,7 @@ class TaggerTrainer(object):
         try:
             while len(rules) < max_rules:
                 (rule, score, fixscore) = self._best_rule(test_sents,
-                                                          train_sents)
+                                                          train_sents, min_acc=min_acc)
                 if rule is None or score < min_score:
                     if self._trace > 1:
                         print('Insufficient improvement; stopping')
@@ -124,7 +126,7 @@ class TaggerTrainer(object):
 
     # Finds the rule that makes the biggest net improvement in the corpus.
     # Returns a (rule, score) pair.
-    def _best_rule(self, test_sents, train_sents):
+    def _best_rule(self, test_sents, train_sents, min_acc):
         # Create a dictionary mapping from each tag to a list of the
         # indices that have that tag in both test_sents and
         # train_sents (i.e., where it is correctly tagged).
@@ -154,25 +156,34 @@ class TaggerTrainer(object):
                                          not self._deterministic):
                 return best_rule, best_score, best_fixscore
 
-            # Calculate the actual score, by decrementing fixscore
-            # once for each tag that the rule changes to an incorrect
+            # Calculate the actual score, by decrementing score (initialized
+            # to fixscore once for each tag that the rule changes to an incorrect
             # value.
             score = fixscore
             if rule.original_tag in correct_indices:
                 for (sentnum, wordnum) in correct_indices[rule.original_tag]:
                     if rule.applies(test_sents[sentnum], wordnum):
                         score -= 1
+                        # If the rule accuracy goes below min_acc,
+                        # this rule is not eligible; so move on
+
+                        if min_acc is not None and fixscore/(2*fixscore-score) < min_acc:
+                            #print("not eligible {} {} {:.2f} {}".format(fixscore, score, fixscore/(2*fixscore-score), rule))
+                            break
                         # If the score goes below best_score, then we know
-                        # that this isn't the best rule; so move on:
+                        # that this isn't the best rule; so move on
                         if score < best_score or (score == best_score and
                                                   not self._deterministic):
                             break
 
             # If the actual score is better than the best score, then
             # update best_score and best_rule.
-            if score > best_score or (score == best_score and
-                                      self._deterministic and
-                                      repr(rule) < repr(best_rule)):
+            if (( min_acc is None or                          #IF: either no threshold for accuracy,
+                  fixscore/(2*fixscore-score) >= min_acc) and #or accuracy good enough AND
+                ( score > best_score or                       #(score is higher than current leader OR
+                  (score == best_score and                    #score is same as leader, but this
+                   self._deterministic and                    #rule sorts before it when determinism
+                   repr(rule) < repr(best_rule)))):           # is asked for): THEN update...
                 best_rule, best_score, best_fixscore = rule, score, fixscore
 
         # Return the best rule, and its score.

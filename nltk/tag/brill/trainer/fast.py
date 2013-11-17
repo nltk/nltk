@@ -79,7 +79,7 @@ class TaggerTrainer(object):
     # Training
     #////////////////////////////////////////////////////////////
 
-    def train(self, train_sents, max_rules=200, min_score=2):
+    def train(self, train_sents, max_rules=200, min_score=2, min_acc=None):
         # Basic idea: Keep track of the rules that apply at each position.
         # And keep track of the positions to which each rule applies.
 
@@ -91,6 +91,8 @@ class TaggerTrainer(object):
 
         # Collect some statistics on the training process
         trainstats = {}
+        trainstats['min_acc'] = min_acc
+        trainstats['min_score'] = min_score
         trainstats['tokencount'] = sum(len(t) for t in test_sents)
         trainstats['sequencecount'] = len(test_sents)
         trainstats['templatecount'] = len(self._templates)
@@ -100,8 +102,8 @@ class TaggerTrainer(object):
                                                     for (tag, truth) in zip(*paired))
         trainstats['initialacc'] = 1 - trainstats['initialerrors']/trainstats['tokencount']
         if self._trace > 0:
-            print("Training Brill tagger on {sequencecount} sequences/{tokencount} "
-                  "tokens and {templatecount} templates".format(**trainstats))
+            print("TBL train (fast) (seqs: {sequencecount}; tokens: {tokencount}; "
+                  "tpls: {templatecount}; min score: {min_score}; min acc: {min_acc})".format(**trainstats))
 
         # Initialize our mappings.  This will find any errors made
         # by the initial tagger, and use those to generate repair
@@ -120,7 +122,7 @@ class TaggerTrainer(object):
         try:
             while (len(rules) < max_rules):
                 # Find the best rule, and add it to our rule list.
-                rule = self._best_rule(train_sents, test_sents, min_score)
+                rule = self._best_rule(train_sents, test_sents, min_score, min_acc)
                 if rule:
                     rules.append(rule)
                     score = self._rule_scores[rule]
@@ -251,7 +253,7 @@ class TaggerTrainer(object):
         # Optional addition: if the rule now applies nowhere, delete
         # all its dictionary entries.
 
-    def _best_rule(self, train_sents, test_sents, min_score):
+    def _best_rule(self, train_sents, test_sents, min_score, min_acc):
         """
         Find the next best rule.  This is done by repeatedly taking a
         rule with the highest score and stepping through the corpus to
@@ -261,11 +263,11 @@ class TaggerTrainer(object):
         score *and* which has been tested against the entire corpus, we
         can conclude that it's the next best rule.
         """
-        if self._rules_by_score == {}:
-            return None
-        max_score = max(self._rules_by_score)
-
-        while max_score >= min_score:
+        for max_score in sorted(self._rules_by_score.keys(), reverse=True):
+            if len(self._rules_by_score) == 0:
+                return None
+            if max_score < min_score or max_score <= 0:
+                return None
             best_rules = list(self._rules_by_score[max_score])
             if self._deterministic:
                 best_rules.sort(key=repr)
@@ -287,16 +289,32 @@ class TaggerTrainer(object):
 
                 if self._rule_scores[rule] == max_score:
                     self._first_unknown_position[rule] = (len(train_sents)+1,0)
-                    return rule
+                    if False and min_acc is None: #if no threshold given, don't bother compute accuracy
+                        return rule
+                    else:
+                        changes = self._positions_by_rule[rule].values()
+                        num_fixed = len([c for c in changes if c==1])
+                        num_broken = len([c for c in changes if c==-1])
+                        #acc here is fixed/(fixed+broken); could also be
+                        #fixed/(fixed+broken+other) == num_fixed/len(changes)
+                        acc = num_fixed/(num_fixed+num_broken)
+                        if acc >= min_acc:
+                            #print("*** found rule: {} {} {} {:.2f} {}".format(
+                            #    num_fixed-num_broken, num_fixed, num_broken, acc,rule))
+                            return rule
+                        else:
+                            pass
+                            #print("!!! discarded rule: {} {} {} {:.2f} {}".format(
+                            #    num_fixed-num_broken, num_fixed, num_broken, acc,rule))
 
-            # We demoted all the rules with score==max_score.
-            assert not self._rules_by_score[max_score]
-            del self._rules_by_score[max_score]
-            if len(self._rules_by_score) == 0: return None
-            max_score = max(self._rules_by_score)
+            # We demoted (or skipped due to < min_acc, if that was given)
+            # all the rules with score==max_score.
+            assert min_acc or not self._rules_by_score[max_score]
+            if not self._rules_by_score[max_score]:
+                del self._rules_by_score[max_score]
 
-        # We reached the min-score threshold.
-        return None
+
+
 
     def _apply_rule(self, rule, test_sents):
         """
@@ -415,7 +433,7 @@ class TaggerTrainer(object):
         rulestr = rule.format(self._ruleformat)
         if self._trace > 2:
             print('%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other), end=' ')
-            print(textwrap.fill(rulestr, initial_indent=' '*20,
+            print(textwrap.fill(rulestr, initial_indent=' '*20, width=79,
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
             print(rulestr)
