@@ -24,30 +24,64 @@ from nltk.tag.brill.template import Template
 from nltk.tag.brill.application.postagging import Word, Pos
 
 def demo():
+    """
+    Run a demo with defaults. See source comments for details,
+    or docstrings of any of the more specific demo_* functions.
+    """
     postag()
 
 def demo_repr_rule_format():
+    """
+    Exemplify repr(Rule) (see also str(Rule) and Rule.format("verbose"))
+    """
     postag(ruleformat="repr")
 
 def demo_verbose_rule_format():
+    """
+    Exemplify Rule.format("verbose")
+    """
     postag(ruleformat="verbose")
 
-def demo_multiposition_template():
-    #for contiguous ranges, a 2-arg form giving inclusive end
-    # points can also be used: Pos(-3, -1)
+def demo_multiposition_feature():
+    """
+    The feature/s of a template takes a list of positions
+    relative to the current word where the feature should be
+    looked for, conceptually joined by logical OR. For instance,
+    Pos([-1, 1]), given a value V, will hold whenever V is found
+    one step to the left and/or one step to the right.
+
+    For contiguous ranges, a 2-arg form giving inclusive end
+    points can also be used: Pos(-3, -1) is the same as the arg
+    below.
+    """
     postag(templates=[Template(Pos([-3,-2,-1]))])
 
 def demo_multifeature_template():
+    """
+    Templates can have more than a single feature.
+    """
     postag(templates=[Template(Word([0]), Pos([-2,-1]))])
 
 def demo_template_statistics():
+    """
+    Show aggregate statistics per template. Little used templates are
+    candidates for deletion, much used templates may possibly be refined.
+
+    Deleting unused templates is mostly about saving time and/or space:
+    training is basically O(T) in the number of templates T
+    (also in terms of memory usage, which often will be the limiting factor).
+    """
     postag(incremental_stats=True, template_stats=True)
 
 def demo_generated_templates():
-    #Template.expand and Feature.expand are class methods facilitating
-    #generating large amounts of templates -- see their documentation
-    #note -- training with 500 templates can easily fill all available
-    #even on relatively small corpora
+    """
+    Template.expand and Feature.expand are class methods facilitating
+    generating large amounts of templates. See their documentation for
+    details.
+
+    Note: training with 500 templates can easily fill all available
+    even on relatively small corpora
+    """
     wordtpls = Word.expand([-1,0,1], [1,2], excludezero=False)
     tagtpls = Pos.expand([-2,-1,0,1], [1,2], excludezero=True)
     templates = list(Template.expand([wordtpls, tagtpls], combinations=(1,3)))
@@ -55,18 +89,42 @@ def demo_generated_templates():
     postag(templates=templates, incremental_stats=True, template_stats=True)
 
 def demo_learning_curve():
-    #requires matplotlib
+    """
+    Plot a learning curve -- the contribution on tagging accuracy of
+    the individual rules.
+    Note: requires matplotlib
+    """
     postag(incremental_stats=True, learning_curve_output="learningcurve.png")
 
 def demo_error_analysis():
+    """
+    Writes a file with context for each erroneous word after tagging testing data
+    """
     postag(error_output="errors.txt")
 
 def demo_serialize_tagger():
+    """
+    Serializes the learned tagger to a file in yaml format; reloads it
+    and validates the process.
+    """
     postag(serialize_output="rules.yaml")
 
+def demo_high_accuracy_rules():
+    """
+    Discard rules with low accuracy. This may hurt performance a bit,
+    but will often produce rules which are more interesting read to a human.
+    """
+    postag(num_sents=3000, min_acc=0.96, min_score=10, training_algorithm="slow")
+
 def demo_brillorig_training():
-    #much slower, only for demonstration
+    """
+    Demonstrate the original Brill algorithm. With the same min_score (and
+    quite a bit of patience), it should produce the same result as its
+    faster cousins.
+    """
     postag(training_algorithm="brillorig", min_score=10)
+
+
 
 def postag(
     templates=None,
@@ -74,6 +132,7 @@ def postag(
     num_sents=1000,
     max_rules=300,
     min_score=3,
+    min_acc=None,
     train=0.8,
     trace=3,
     randomize=False,
@@ -104,6 +163,9 @@ def postag(
 
     :param min_score: the minimum score for a rule in order for it to be considered
     :type min_score: C{int}
+
+    :param min_acc: the minimum score for a rule in order for it to be considered
+    :type min_acc: C{float}
 
     :param train: the fraction of the the corpus to be used for training (1=all)
     :type train: C{float}
@@ -188,7 +250,7 @@ def postag(
     tbrill = time.time()
     trainer = TaggerTrainer(baseline_tagger, templates, trace, ruleformat=ruleformat)
     print("Training brill tagger...")
-    brill_tagger = trainer.train(training_data, max_rules, min_score)
+    brill_tagger = trainer.train(training_data, max_rules, min_score, min_acc)
     print("Trained brill tagger in {0:0.2f} seconds".format(time.time() - tbrill))
     if gold_data:
         print("    Accuracy on test set: %.4f" % brill_tagger.evaluate(gold_data))
