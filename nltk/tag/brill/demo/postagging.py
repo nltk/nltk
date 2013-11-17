@@ -36,6 +36,12 @@ def demo_repr_rule_format():
     """
     postag(ruleformat="repr")
 
+def demo_str_rule_format():
+    """
+    Exemplify repr(Rule) (see also str(Rule) and Rule.format("verbose"))
+    """
+    postag(ruleformat="str")
+
 def demo_verbose_rule_format():
     """
     Exemplify Rule.format("verbose")
