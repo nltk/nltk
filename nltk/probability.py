@@ -137,8 +137,8 @@ class FreqDist(Counter):
         return [item for item in self if self[item] == 1]
 
 
-    def Nr(self, r):
-        return self.r_Nr()[r]
+    def Nr(self, r, bins=None):
+        return self.r_Nr(bins)[r]
 
     def r_Nr(self, bins=None):
         """
@@ -213,7 +213,7 @@ class FreqDist(Counter):
         """
         if len(self) == 0:
             raise ValueError('A FreqDist must have at least one sample before max is defined.')
-        return self.most_common(1)[0]
+        return self.most_common(1)[0][0]
 
     def plot(self, *args, **kwargs):
         """
@@ -876,7 +876,7 @@ class HeldoutProbDist(ProbDistI):
 
         # Calculate Tr, Nr, and N.
         Tr = self._calculate_Tr()
-        Nr = [base_fdist.r_Nr(r, bins) for r in range(self._max_r+1)]
+        Nr = [base_fdist.Nr(r, bins) for r in range(self._max_r+1)]
         N = heldout_fdist.N()
 
         # Use Tr, Nr, and N to compute the probability estimate for
