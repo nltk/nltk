@@ -62,7 +62,7 @@ def demo_error_analysis():
     postag(error_output="errors.txt")
 
 def demo_serialize_tagger():
-    postag(rule_output="rules.yaml")
+    postag(serialize_output="rules.yaml")
 
 def demo_brillorig_training():
     #much slower, only for demonstration
@@ -81,7 +81,7 @@ def postag(
     incremental_stats=False,
     template_stats=False,
     error_output=None,
-    rule_output=None,
+    serialize_output=None,
     learning_curve_output=None,
     learning_curve_take=300,
     baseline_backoff_tagger=None,
@@ -126,8 +126,8 @@ def postag(
     :param error_output: the file where errors will be saved
     :type error_output: C{string}
 
-    :param rule_output: the file where the learned brill tagger will be saved
-    :type rule_output: C{string}
+    :param serialize_output: the file where the learned brill tagger will be saved
+    :type serialize_output: C{string}
 
     :param learning_curve_output: filename of plot of learning curve(s) (train and also test, if available)
     :type learning_curve_output: C{string}
@@ -221,20 +221,22 @@ def postag(
     # writing error analysis to file
     if error_output is not None:
         with open(error_output, 'w') as f:
-            f.write('Errors for Brill Tagger %r\n\n' % rule_output)
+            f.write('Errors for Brill Tagger %r\n\n' % serialize_output)
             for e in error_list(gold_data, taggedtest):
                 f.write(e+'\n')
         print("Wrote tagger errors including context to {0}".format(error_output))
 
     # serializing the tagger to a yaml file and reloading (just to see it works)
-    if rule_output is not None:
-        with open(rule_output, 'w') as print_rules:
+    if serialize_output is not None:
+        taggedtest = brill_tagger.batch_tag(testing_data)
+        with open(serialize_output, 'w') as print_rules:
             yaml.dump(brill_tagger, print_rules)
-        print("Wrote YAML-serialized tagger to {0}".format(rule_output))
-        del brill_tagger
-        with open(rule_output, "r") as print_rules:
-            brill_tagger = yaml.load(print_rules)
-        print("Reloaded YAML-serialized tagger from {0}".format(rule_output))
+        print("Wrote YAML-serialized tagger to {0}".format(serialize_output))
+        with open(serialize_output, "r") as print_rules:
+            brill_tagger_reloaded = yaml.load(print_rules)
+        print("Reloaded YAML-serialized tagger from {0}".format(serialize_output))
+        taggedtest_reloaded = brill_tagger.batch_tag(testing_data)
+        assert taggedtest == taggedtest_reloaded, "serialization failed"
 
 def _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseline_data):
     # train is the proportion of data used in training; the rest is reserved
