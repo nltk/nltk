@@ -5,7 +5,7 @@ import inspect
 import sys
 
 #multi-feature templates (recommended)
-from nltk.tag.brill.application.postagging import Word, Tag
+from nltk.tag.brill.application.postagging import Word, Pos
 from nltk.tag.brill.template import Template
 
 #one-feature templates (for backwards compatibility)
@@ -46,15 +46,15 @@ def nltkdemo18():
     Return 18 templates, from the original nltk demo, in multi-feature syntax
     """
     return [
-        Template(Tag([-1])),
-        Template(Tag([1])),
-        Template(Tag([-2])),
-        Template(Tag([2])),
-        Template(Tag([-2, -1])),
-        Template(Tag([1, 2])),
-        Template(Tag([-3, -2, -1])),
-        Template(Tag([1, 2, 3])),
-        Template(Tag([-1]), Tag([1])),
+        Template(Pos([-1])),
+        Template(Pos([1])),
+        Template(Pos([-2])),
+        Template(Pos([2])),
+        Template(Pos([-2, -1])),
+        Template(Pos([1, 2])),
+        Template(Pos([-3, -2, -1])),
+        Template(Pos([1, 2, 3])),
+        Template(Pos([-1]), Pos([1])),
         Template(Word([-1])),
         Template(Word([1])),
         Template(Word([-2])),
@@ -72,18 +72,18 @@ def nltkdemo18plus():
     multi-feature ones (the motivation is easy comparison with nltkdemo18)
     """
     return nltkdemo18() + [
-        Template(Word([-1]), Tag([1])),
-        Template(Tag([-1]), Word([1])),
-        Template(Word([-1]), Word([0]), Tag([1])),
-        Template(Tag([-1]), Word([0]), Word([1])),
-        Template(Tag([-1]), Word([0]), Tag([1])),
+        Template(Word([-1]), Pos([1])),
+        Template(Pos([-1]), Word([1])),
+        Template(Word([-1]), Word([0]), Pos([1])),
+        Template(Pos([-1]), Word([0]), Word([1])),
+        Template(Pos([-1]), Word([0]), Pos([1])),
     ]
 
 def fntbl37():
     """
     Return 37 templates taken from the postagging task of the
     fntbl distribution http://www.cs.jhu.edu/~rflorian/fntbl/
-    (37 is after excluding a handful which do not condition on Tag[0];
+    (37 is after excluding a handful which do not condition on Pos[0];
     fntbl can do that but the current nltk implementation cannot.)
     """
     return [
@@ -97,33 +97,33 @@ def fntbl37():
         Template(Word([-2, -1])),
         Template(Word([1, 2, 3])),
         Template(Word([-3, -2, -1])),
-        Template(Word([0]), Tag([2])),
-        Template(Word([0]), Tag([-2])),
-        Template(Word([0]), Tag([1])),
-        Template(Word([0]), Tag([-1])),
+        Template(Word([0]), Pos([2])),
+        Template(Word([0]), Pos([-2])),
+        Template(Word([0]), Pos([1])),
+        Template(Word([0]), Pos([-1])),
         Template(Word([0])),
         Template(Word([-2])),
         Template(Word([2])),
         Template(Word([1])),
         Template(Word([-1])),
-        Template(Tag([-1]), Tag([1])),
-        Template(Tag([1]), Tag([2])),
-        Template(Tag([-1]), Tag([-2])),
-        Template(Tag([1])),
-        Template(Tag([-1])),
-        Template(Tag([-2])),
-        Template(Tag([2])),
-        Template(Tag([1, 2, 3])),
-        Template(Tag([1, 2])),
-        Template(Tag([-3, -2, -1])),
-        Template(Tag([-2, -1])),
-        Template(Tag([1]), Word([0]), Word([1])),
-        Template(Tag([1]), Word([0]), Word([-1])),
-        Template(Tag([-1]), Word([-1]), Word([0])),
-        Template(Tag([-1]), Word([0]), Word([1])),
-        Template(Tag([-2]), Tag([-1])),
-        Template(Tag([1]), Tag([2])),
-        Template(Tag([1]), Tag([2]), Word([1]))
+        Template(Pos([-1]), Pos([1])),
+        Template(Pos([1]), Pos([2])),
+        Template(Pos([-1]), Pos([-2])),
+        Template(Pos([1])),
+        Template(Pos([-1])),
+        Template(Pos([-2])),
+        Template(Pos([2])),
+        Template(Pos([1, 2, 3])),
+        Template(Pos([1, 2])),
+        Template(Pos([-3, -2, -1])),
+        Template(Pos([-2, -1])),
+        Template(Pos([1]), Word([0]), Word([1])),
+        Template(Pos([1]), Word([0]), Word([-1])),
+        Template(Pos([-1]), Word([-1]), Word([0])),
+        Template(Pos([-1]), Word([0]), Word([1])),
+        Template(Pos([-2]), Pos([-1])),
+        Template(Pos([1]), Pos([2])),
+        Template(Pos([1]), Pos([2]), Word([1]))
     ]
 
 def brill24():
@@ -131,17 +131,17 @@ def brill24():
     Return 24 templates of the seminal TBL paper, Brill (1995)
     """
     return [
-        Template(Tag([-1])),
-        Template(Tag([1])),
-        Template(Tag([-2])),
-        Template(Tag([2])),
-        Template(Tag([-2, -1])),
-        Template(Tag([1, 2])),
-        Template(Tag([-3, -2, -1])),
-        Template(Tag([1, 2, 3])),
-        Template(Tag([-1]), Tag([1])),
-        Template(Tag([-2]), Tag([-1])),
-        Template(Tag([1]), Tag([2])),
+        Template(Pos([-1])),
+        Template(Pos([1])),
+        Template(Pos([-2])),
+        Template(Pos([2])),
+        Template(Pos([-2, -1])),
+        Template(Pos([1, 2])),
+        Template(Pos([-3, -2, -1])),
+        Template(Pos([1, 2, 3])),
+        Template(Pos([-1]), Pos([1])),
+        Template(Pos([-2]), Pos([-1])),
+        Template(Pos([1]), Pos([2])),
         Template(Word([-1])),
         Template(Word([1])),
         Template(Word([-2])),
@@ -151,10 +151,10 @@ def brill24():
         Template(Word([-1, 0])),
         Template(Word([0, 1])),
         Template(Word([0])),
-        Template(Word([-1]), Tag([-1])),
-        Template(Word([1]), Tag([1])),
-        Template(Word([0]), Word([-1]), Tag([-1])),
-        Template(Word([0]), Word([1]), Tag([1])),
+        Template(Word([-1]), Pos([-1])),
+        Template(Word([1]), Pos([1])),
+        Template(Word([0]), Word([-1]), Pos([-1])),
+        Template(Word([0]), Word([1]), Pos([1])),
     ]
 
 

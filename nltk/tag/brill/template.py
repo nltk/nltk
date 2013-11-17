@@ -168,17 +168,17 @@ class Template(BrillTemplateI):
         manually, but perhaps generated from Feature.expand(). For instance,
 
 
-          Template.expand([ [Word([0]), Word([0,1])], [Tag([-2]), Tag([-1])] ])
+          Template.expand([ [Word([0]), Word([0,1])], [Pos([-2]), Pos([-1])] ])
 
           will return a list of eight templates
               Template(Word([0])),
               Template(Word([0, 1])),
-              Template(Tag([-2])),
-              Template(Tag([-1])),
-              Template(Tag([-2]),Word([0])),
-              Template(Tag([-1]),Word([0])),
-              Template(Tag([-2]),Word([0, 1])),
-              Template(Tag([-1]),Word([0, 1]))]
+              Template(Pos([-2])),
+              Template(Pos([-1])),
+              Template(Pos([-2]),Word([0])),
+              Template(Pos([-1]),Word([0])),
+              Template(Pos([-2]),Word([0, 1])),
+              Template(Pos([-1]),Word([0, 1]))]
 
         With propersubsets=False, L itself rather than all its subsets will be used,
         so that each featurelist in L is represented in all templates in the output

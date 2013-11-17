@@ -21,7 +21,7 @@ from nltk.corpus import treebank
 
 from nltk.tag.brill.erroranalysis import error_list
 from nltk.tag.brill.template import Template
-from nltk.tag.brill.application.postagging import Word, Tag
+from nltk.tag.brill.application.postagging import Word, Pos
 
 def demo():
     postag()
@@ -34,11 +34,11 @@ def demo_verbose_rule_format():
 
 def demo_multiposition_template():
     #for contiguous ranges, a 2-arg form giving inclusive end
-    # points can also be used: Tag(-3, -1)
-    postag(templates=[Template(Tag([-3,-2,-1]))])
+    # points can also be used: Pos(-3, -1)
+    postag(templates=[Template(Pos([-3,-2,-1]))])
 
 def demo_multifeature_template():
-    postag(templates=[Template(Word([0]), Tag([-2,-1]))])
+    postag(templates=[Template(Word([0]), Pos([-2,-1]))])
 
 def demo_template_statistics():
     postag(incremental_stats=True, template_stats=True)
@@ -49,7 +49,7 @@ def demo_generated_templates():
     #note -- training with 500 templates can easily fill all available
     #even on relatively small corpora
     wordtpls = Word.expand([-1,0,1], [1,2], excludezero=False)
-    tagtpls = Tag.expand([-2,-1,0,1], [1,2], excludezero=True)
+    tagtpls = Pos.expand([-2,-1,0,1], [1,2], excludezero=True)
     templates = list(Template.expand([wordtpls, tagtpls], combinations=(1,3)))
     print("Generated {0} templates for transformation-based learning".format(len(templates)))
     postag(templates=templates, incremental_stats=True, template_stats=True)

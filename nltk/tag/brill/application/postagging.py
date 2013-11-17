@@ -22,7 +22,7 @@ class Word(template.Feature):
         return tokens[index][0]
 
 
-class Tag(template.Feature):
+class Pos(template.Feature):
     """
     Feature which examines the tags of nearby tokens.
     """
