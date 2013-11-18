@@ -168,7 +168,6 @@ class TaggerTrainer(object):
                         # this rule is not eligible; so move on
 
                         if min_acc is not None and fixscore/(2*fixscore-score) < min_acc:
-                            #print("not eligible {} {} {:.2f} {}".format(fixscore, score, fixscore/(2*fixscore-score), rule))
                             break
                         # If the score goes below best_score, then we know
                         # that this isn't the best rule; so move on

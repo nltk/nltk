@@ -289,7 +289,8 @@ class TaggerTrainer(object):
 
                 if self._rule_scores[rule] == max_score:
                     self._first_unknown_position[rule] = (len(train_sents)+1,0)
-                    if False and min_acc is None: #if no threshold given, don't bother compute accuracy
+                    #optimization: if no threshold given, don't bother compute accuracy
+                    if min_acc is None:
                         return rule
                     else:
                         changes = self._positions_by_rule[rule].values()
@@ -299,16 +300,12 @@ class TaggerTrainer(object):
                         #fixed/(fixed+broken+other) == num_fixed/len(changes)
                         acc = num_fixed/(num_fixed+num_broken)
                         if acc >= min_acc:
-                            #print("*** found rule: {} {} {} {:.2f} {}".format(
-                            #    num_fixed-num_broken, num_fixed, num_broken, acc,rule))
                             return rule
-                        else:
-                            pass
-                            #print("!!! discarded rule: {} {} {} {:.2f} {}".format(
-                            #    num_fixed-num_broken, num_fixed, num_broken, acc,rule))
+                        #else: rule too inaccurate, discard and try next
 
             # We demoted (or skipped due to < min_acc, if that was given)
             # all the rules with score==max_score.
+            
             assert min_acc or not self._rules_by_score[max_score]
             if not self._rules_by_score[max_score]:
                 del self._rules_by_score[max_score]
