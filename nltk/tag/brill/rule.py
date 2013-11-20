@@ -12,6 +12,7 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
+import abc
 
 import yaml
 
@@ -35,9 +36,8 @@ class BrillRule(yaml.YAMLObject):
 
     Brill rules must be comparable and hashable.
     """
+
     def __init__(self, original_tag, replacement_tag):
-        assert self.__class__ != BrillRule, \
-               "BrillRule is an abstract base class"
 
         self.original_tag = original_tag
         """The tag which this BrillRule may cause to be replaced."""
@@ -86,15 +86,15 @@ class BrillRule(yaml.YAMLObject):
         :param index: The index to check
         :type index: int
         """
-        assert False, "Brill rules must define applies()"
+        raise NotImplementedError
 
     # Rules must be comparable and hashable for the algorithm to work
     def __eq__(self, other):
-        assert False, "Brill rules must be comparable"
+        raise TypeError("Rules must implement __eq__()")
     def __ne__(self, other):
-        assert False, "Brill rules must be comparable"
+        raise TypeError("Rules must implement __ne__()")
     def __hash__(self):
-        assert False, "Brill rules must be hashable"
+        raise TypeError("Rules must implement __hash__()")
 
 
 @python_2_unicode_compatible
