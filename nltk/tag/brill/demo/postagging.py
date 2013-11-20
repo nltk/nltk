@@ -304,7 +304,10 @@ def postag(
             brill_tagger_reloaded = yaml.load(print_rules)
         print("Reloaded YAML-serialized tagger from {0}".format(serialize_output))
         taggedtest_reloaded = brill_tagger.batch_tag(testing_data)
-        assert taggedtest == taggedtest_reloaded, "serialization failed"
+        if taggedtest == taggedtest_reloaded:
+            print("Reloaded tagger tried with identical results on test set")
+        else:
+            print("PROBLEM: Reloaded tagger gave different results on test set")
 
 def _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseline_data):
     # train is the proportion of data used in training; the rest is reserved
