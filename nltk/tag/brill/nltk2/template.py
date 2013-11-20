@@ -12,6 +12,7 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
+import abc
 
 from nltk import python_2_unicode_compatible
 from nltk.tag.brill.template import BrillTemplateI
@@ -52,10 +53,13 @@ class ProximateTokensRule(BrillRule):
         token between n+start and n+end (inclusive) is value.
     :raise ValueError: If start>end for any condition.
     """
+    #!!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
+    # and metaclass=abc.ABCMeta rather than NotImplementedError
+    #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
 
     def __init__(self, original_tag, replacement_tag, *conditions):
-        assert self.__class__ != ProximateTokensRule, \
-               "ProximateTokensRule is an abstract base class"
+        if self.__class__ != ProximateTokensRule: raise TypeError(
+               "ProximateTokensRule is an abstract base class")
         BrillRule.__init__(self, original_tag, replacement_tag)
         self._conditions = conditions
         for (s,e,v) in conditions:
@@ -72,6 +76,7 @@ class ProximateTokensRule(BrillRule):
             original=data.original_tag,
             replacement=data.replacement_tag))
         return node
+
     @classmethod
     def from_yaml(cls, loader, node):
         map = loader.construct_mapping(node, deep=True)
@@ -79,7 +84,7 @@ class ProximateTokensRule(BrillRule):
         *(tuple(x) for x in map['conditions']))
 
     @staticmethod
-    def extract_property(token):
+    def extract_property(tokens):
         """
         Returns some property characterizing this token, such as its
         base lexical item or its tag.
@@ -93,7 +98,7 @@ class ProximateTokensRule(BrillRule):
         :return: The property
         :rtype: any
         """
-        assert False, "ProximateTokenRules must define extract_property()"
+        raise NotImplementedError
 
     def applies(self, tokens, index):
         # Inherit docs from BrillRule

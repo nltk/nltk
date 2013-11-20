@@ -289,7 +289,7 @@ class TaggerTrainer(object):
 
                 if self._rule_scores[rule] == max_score:
                     self._first_unknown_position[rule] = (len(train_sents)+1,0)
-                    #optimization: if no threshold given, don't bother compute accuracy
+                    #optimization: if no min_acc threshold given, don't bother computing accuracy
                     if min_acc is None:
                         return rule
                     else:
@@ -305,8 +305,8 @@ class TaggerTrainer(object):
 
             # We demoted (or skipped due to < min_acc, if that was given)
             # all the rules with score==max_score.
-            
-            assert min_acc or not self._rules_by_score[max_score]
+
+            assert min_acc is not None or not self._rules_by_score[max_score]
             if not self._rules_by_score[max_score]:
                 del self._rules_by_score[max_score]
 

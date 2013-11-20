@@ -107,8 +107,8 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
             weighted_traincounts[tid] += score
         tottrainscores = sum(trainscores)
 
-        #for deterministic sorting;
-        #the convenient Counter.most_common() unfortunately
+        #det_tplsort() is for deterministic sorting;
+        #the otherwise convenient Counter.most_common() unfortunately
         #does not break ties deterministically
         #between python versions and will break cross-version tests
         def det_tplsort(tpl_value):

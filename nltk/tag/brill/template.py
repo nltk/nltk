@@ -10,6 +10,7 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
+import abc
 import yaml
 import itertools as it
 
@@ -20,9 +21,9 @@ class BrillTemplateI(object):
     apply at given sentence positions.  ``BrillTemplateI`` is used by
     ``Brill`` training algorithms to generate candidate rules.
     """
-    def __init__(self):
-        raise NotImplementedError()
-
+    #!!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
+    # and metaclass=abc.ABCMeta rather than NotImplementedError
+    #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
     def applicable_rules(self, tokens, i, correctTag):
         """
         Return a list of the transformational rules that would correct
@@ -42,7 +43,7 @@ class BrillTemplateI(object):
         :type correctTag: any
         :rtype: list(BrillRule)
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_neighborhood(self, token, index):
         """
@@ -58,7 +59,7 @@ class BrillTemplateI(object):
         :type index: int
         :rtype: set
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 from nltk.tag.brill.rule import Rule
@@ -260,6 +261,10 @@ class Feature(yaml.YAMLObject):
     not given, defaults to '!' + the classname in lowercase (e.g., "!tag").
 
     """
+    #!!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
+    # and metaclass=abc.ABCMeta rather than NotImplementedError
+    #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
+
     yaml_tag = None
     PROPERTY_NAME = None
 
@@ -287,7 +292,7 @@ class Feature(yaml.YAMLObject):
         else:                #positions was actually not a list, but only the start index
             try:
                 if positions > end:
-                    raise TypeError()
+                    raise TypeError
                 self.positions = tuple(range(positions, end+1))
             except TypeError:
                 #let any kind of erroneous spec raise ValueError
@@ -353,6 +358,15 @@ class Feature(yaml.YAMLObject):
 
     @staticmethod
     def extract_property(tokens, index):
-        raise NotImplementedError("subclass of Feature must define extract_property(tokens, index)")
+        """
+        Any subclass of Feature must define static method extract_property(tokens, index)
 
+        :param tokens: the sequence of tokens
+        :type tokens: list of tokens
+        :param index: the current index
+        :type index: int
+        :return: feature value
+        :rtype: any (but usually scalar)
+        """
+        raise NotImplementedError
 
