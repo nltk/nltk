@@ -37,8 +37,8 @@ class TaggerTrainer(object):
     """
 
     def __init__(self, initial_tagger, templates, trace=0,
-                 deterministic=False, ruleformat="str"):
-        if not deterministic:
+                 deterministic=None, ruleformat="str"):
+        if deterministic is None:
             deterministic = (trace > 0)
         self._initial_tagger = initial_tagger
         self._templates = templates
