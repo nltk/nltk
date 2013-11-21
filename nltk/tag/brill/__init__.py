@@ -17,83 +17,57 @@ The Brill Tagger is a transformational rule-based tagger.
 It starts by running an initial tagger, and then
 improves the tagging by applying a list of transformation rules.
 These transformation rules are automatically learned from the training
-corpus, based on one or more "rule templates."
-
-    >>> from nltk.tag.brill import FastBrillTaggerTrainer
-    >>> from nltk.tag.brill.nltk2 import ProximateTokensTemplate, SymmetricProximateTokensTemplate
-    >>> from nltk.tag.brill.nltk2 import ProximateTagsRule, ProximateWordsRule
-    >>> from nltk.corpus import brown
-    >>> from nltk.tag import UnigramTagger
-    >>> brown_train = list(brown.tagged_sents(categories='news')[:500])
-    >>> brown_test = list(brown.tagged_sents(categories='news')[500:600])
-    >>> unigram_tagger = UnigramTagger(brown_train)
-    >>> templates = [
-    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,1)),
-    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (2,2)),
-    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,2)),
-    ...     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,3)),
-    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,1)),
-    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (2,2)),
-    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,2)),
-    ...     SymmetricProximateTokensTemplate(ProximateWordsRule, (1,3)),
-    ...     ProximateTokensTemplate(ProximateTagsRule, (-1, -1), (1,1)),
-    ...     ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
-    ...     ]
-    >>> trainer = FastBrillTaggerTrainer(initial_tagger=unigram_tagger,
-    ...                                  templates=templates, trace=3,
-    ...                                  deterministic=True)
-    >>> brill_tagger = trainer.train(brown_train, max_rules=10)
-    Training Brill tagger on 500 sentences...
-    Finding initial useful rules...
-        Found 10210 useful rules.
-    <BLANKLINE>
-               B      |
-       S   F   r   O  |        Score = Fixed - Broken
-       c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
-       o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
-       r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
-       e   d   n   r  |  e
-    ------------------+-------------------------------------------------------
-      46  46   0   0  | TO -> IN if the tag of the following word is 'AT'
-      18  20   2   0  | TO -> IN if the tag of words i+1...i+3 is 'CD'
-      14  14   0   0  | IN -> IN-TL if the tag of the preceding word is
-                      |   'NN-TL', and the tag of the following word is
-                      |   'NN-TL'
-      11  11   0   1  | TO -> IN if the tag of the following word is 'NNS'
-      10  10   0   0  | TO -> IN if the tag of the following word is 'JJ'
-       8   8   0   0  | , -> ,-HL if the tag of the preceding word is 'NP-
-                      |   HL'
-       7   7   0   1  | NN -> VB if the tag of the preceding word is 'MD'
-       7  13   6   0  | NN -> VB if the tag of the preceding word is 'TO'
-       7   7   0   0  | NP-TL -> NP if the tag of words i+1...i+2 is 'NNS'
-       7   7   0   0  | VBN -> VBD if the tag of the preceding word is
-                      |   'NP'
-    >>> brill_tagger.evaluate(brown_test) # doctest: +ELLIPSIS
-    0.742...
-
+corpus, based on one or more rule templates, which is the main
+mechanism for encoding domain knowledge to the system.
 """
 
-from nltk.tag.brill.tagger import BrillTagger
-from nltk.tag.brill.trainer.brillorig import BrillTaggerTrainer
-from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer
-from nltk.tag.brill.rule import BrillRule
-from nltk.tag.brill.template import BrillTemplateI
+
+#here goes imports which are re-exported for convenient top-level import
+#(as nltk.tag.brill.*)
+
+from nltk.tag.brill.template import (
+    Template,         #API: Template(...), Template.expand(...)
+    Feature           #API: Feature(...), Feature.expand(...)
+    )
+from nltk.tag.brill.rule import (
+    Rule              #API: Rule.format(...), Rule.templatetid
+    )
+
 from nltk.tag.brill.erroranalysis import error_list
 
-#These re-exports are deprecated and will disappear
-#They should be imported explicitly from nltk.tag.brill.nltk2
-from nltk.tag.brill.nltk2 import (ProximateTagsRule,
-                                  ProximateWordsRule,
-                                  ProximateTokensRule,
-                                  ProximateTokensTemplate,
-                                  SymmetricProximateTokensTemplate)
+from nltk.tag.brill.trainer.fast import (
+    TaggerTrainer     #API: TaggerTrainer(...), TaggerTrainer.train(...)
+    )
+
+from nltk.tag.brill.trainer.fast import (
+    TaggerTrainer     #API: TaggerTrainer(...), TaggerTrainer.train(...);
+    )
+
+#for reference:
+#API of nltk.tag.brill.tagger.BrillTagger,
+#returned by TaggerTrainer.train(...):
+#    t = TaggerTrainer.train(...)
+#    t.rules(...)
+#    t.train_stats(...)
+#    t.tag(...)
+#    t.batch_tag_incremental(...)
+#    t.print_template_statistics(...)
+#    t.batch_tag(...)
+#    t.evaluate(...)
 
 
 
+#!! these re-exports are DEPRECATED -- import as from nltk.tag.brill.nltk2 instead
+from nltk.tag.brill.nltk2 import (
+    BrillTagger,
+    ProximateTagsRule,
+    ProximateWordsRule,
+    ProximateTokensRule,
+    ProximateTokensTemplate,
+    SymmetricProximateTokensTemplate
+)
 
-def run_doctest():
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer
+from nltk.tag.brill.trainer.brillorig import BrillTaggerTrainer
+from nltk.tag.brill.tagger import BrillTagger
 
-if __name__ == "__main__":
-    run_doctest()
