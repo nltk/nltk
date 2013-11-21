@@ -30,6 +30,24 @@ class TaggerTrainer(object):
     """
     def __init__(self, initial_tagger, templates, trace=0,
                  deterministic=None, ruleformat="str"):
+        """
+        Construct a Brill tagger from a baseline tagger and a
+        set of templates
+
+        :param initial_tagger: the baseline tagger
+        :type initial_tagger: Tagger
+        :param templates: templates to be used in training
+        :type templates: list of Templates
+        :param trace: verbosity level
+        :type trace: int
+        :param deterministic: if True, adjudicate ties deterministically
+        :type deterministic: bool
+        :param ruleformat: format of reported Rules
+        :type ruleformat: str
+        :return: An untrained BrillTagger
+        :rtype: BrillTagger
+        """
+
         if deterministic is None:
             deterministic = (trace > 0)
         self._initial_tagger = initial_tagger
@@ -80,6 +98,127 @@ class TaggerTrainer(object):
     #////////////////////////////////////////////////////////////
 
     def train(self, train_sents, max_rules=200, min_score=2, min_acc=None):
+
+        """
+        Trains the Brill tagger on the corpus *train_sents*,
+        producing at most *max_rules* transformations, each of which
+        reduces the net number of errors in the corpus by at least
+        *min_score*, and each of which has accuracy not lower than
+        *min_acc*.
+
+        #imports
+        >>> from nltk.tag.brill.template import Template
+        >>> from nltk.tag.brill.application.postagging import Pos, Word
+        >>> from nltk.tag import UnigramTagger, RegexpTagger
+        >>> from nltk.tag.brill.trainer.fast import TaggerTrainer
+
+        #some data
+        >>> from nltk.corpus import treebank
+        >>> training_data = treebank.tagged_sents()[:200]
+        >>> baseline_data = treebank.tagged_sents()[200:400]
+        >>> gold_data = treebank.tagged_sents()[400:500]
+        >>> testing_data = [untag(s) for s in gold_data] #[[t[0] for t in sent] for sent in gold_data])
+
+        #baseline
+        >>> backoff = RegexpTagger([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),(r'.*', 'NN')])
+        >>> baseline = UnigramTagger(baseline_data, backoff=backoff)
+
+        #templates
+        >>> Template._cleartemplates() #clear any templates created in earlier tests
+        >>> templates = [Template(Pos([-1])), Template(Pos([-1]), Word([0]))]
+
+        #construct a TaggerTrainer
+        >>> tt = TaggerTrainer(baseline, templates, trace=3)
+        >>> tagger1 = tt.train(training_data, max_rules=5)
+        TBL train (fast) (seqs: 200; tokens: 5111; tpls: 2; min score: 2; min acc: None)
+        Finding initial useful rules...
+            Found 1279 useful rules.
+        <BLANKLINE>
+                   B      |
+           S   F   r   O  |        Score = Fixed - Broken
+           c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
+           o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
+           r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
+           e   d   n   r  |  e
+        ------------------+-------------------------------------------------------
+          40  45   5  14  | NN->NNP if Pos:NNP@[-1]
+          36  38   2  10  | NN->VB if Pos:TO@[-1]
+          24  24   0   0  | NN->VB if Pos:MD@[-1]
+          10  10   0   6  | NN->NNP if Pos:NNP@[-1]
+           9  12   3   3  | NN->-NONE- if Pos:WDT@[-1]
+
+        >>> tagger1.rules()[1:3]
+        (Rule(000, 'NN', 'VB', [(Pos([-1]),'TO')]), Rule(000, 'NN', 'VB', [(Pos([-1]),'MD')]))
+
+        >>> train_stats = tagger1.train_stats()
+        >>> [train_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
+        [1323, 1204, [40, 36, 24, 10, 9]]
+
+        #the following test fails -- why?
+        #>>> tagger1.print_template_statistics()
+        TEMPLATE STATISTICS (TRAIN)  1 templates, 5 rules)
+        TRAIN (   5111 tokens) initial  1323 0.7411 final:  1204 0.7644
+        #ID | Score (train) |  #Rules     | Template
+        --------------------------------------------
+        000 |   119   1.000 |   5   1.000 | Template(Pos([-1]))
+        <BLANKLINE>
+        UNUSED TEMPLATES (1)
+        001 Template(Pos([-1]),Word([0]))
+        <BLANKLINE>
+
+        >>> round(tagger1.evaluate(gold_data), 5)
+        0.73843
+
+
+        >>> (tagged, test_stats) = tagger1.batch_tag_incremental(testing_data, gold_data)
+        >>> tagged[33][4:8]
+        [(u'Commerce', u'NNP'), (u'Department', u'NNP'), (u"'s", u'POS'), (u'latest', u'JJS')]
+
+        >>> [test_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
+        [725, 684, [17, 10, 4, 7, 3]]
+
+        #a high-accuracy tagger
+        >>> tagger2 = tt.train(training_data, max_rules=5, min_acc=0.99)
+        TBL train (fast) (seqs: 200; tokens: 5111; tpls: 2; min score: 2; min acc: 0.99)
+        Finding initial useful rules...
+            Found 1279 useful rules.
+        <BLANKLINE>
+                   B      |
+           S   F   r   O  |        Score = Fixed - Broken
+           c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
+           o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
+           r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
+           e   d   n   r  |  e
+        ------------------+-------------------------------------------------------
+          24  24   0   0  | NN->VB if Pos:MD@[-1]
+           9   9   0   7  | NN->VBN if Pos:VBP@[-1]
+           8   8   0   0  | NN->-NONE- if Pos:WP@[-1]
+           8   8   0   1  | NN->NNP if Pos:DT@[-1] & Word:Cray-3@[0]
+           8   8   0   0  | NN->NNP if Pos:NNP@[-1] & Word:Hampshire@[0]
+
+        >>> round(tagger2.evaluate(gold_data), 5)
+        0.72772
+
+        >>> tagger2.rules()[2:4]
+        (Rule(000, 'NN', '-NONE-', [(Pos([-1]),'WP')]), Rule(001, 'NN', 'NNP', [(Pos([-1]),'DT'), (Word([0]),'Cray-3')]))
+
+
+        :param train_sents: training data
+        :type train_sents: list(list(tuple))
+        :param max_rules: output at most max_rules rules
+        :type max_rules: int
+        :param min_score: stop training when no rules better than min_score can be found
+        :type min_score: int
+        :param min_acc: discard any rule with lower accuracy than min_acc
+        :type min_acc: float or None
+        :return: the learned tagger
+        :rtype: BrillTagger
+
+        """
+        #!! FIXME: several tests are a bit too dependent on tracing format
+        #!! FIXME: tests in trainer.fast and trainer.brillorig are exact duplicates
+
+
         # Basic idea: Keep track of the rules that apply at each position.
         # And keep track of the positions to which each rule applies.
 

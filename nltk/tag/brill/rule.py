@@ -235,6 +235,38 @@ class Rule(BrillRule):
 
 
     def format(self, fmt):
+        """
+        Return a string representation of this rule.
+
+        >>> from nltk.tag.brill.rule import Rule
+        >>> from nltk.tag.brill.application.postagging import Pos
+
+        >>> r = Rule(23, "VB", "NN", [(Pos([-2,-1]), 'DT')])
+
+        #r.format("str") == str(r)
+        >>> r.format("str")
+        'VB->NN if Pos:DT@[-2,-1]'
+
+        #r.format("repr") == repr(r)
+        >>> r.format("repr")
+        "Rule(23, 'VB', 'NN', [(Pos([-2, -1]),'DT')])"
+
+        >>> r.format("verbose")
+        'VB -> NN if the Pos of words i-2...i-1 is "DT"'
+
+        >>> r.format("not_found")
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+          File "nltk/tag/brill/rule.py", line 256, in format
+            raise ValueError("unknown rule format spec: {0}".format(fmt))
+        ValueError: unknown rule format spec: not_found
+        >>>
+
+        :param fmt: format specification
+        :type fmt: str
+        :return: string representation
+        :rtype: str
+        """
         if fmt == "str":
             return self.__str__()
         elif fmt == "repr":
