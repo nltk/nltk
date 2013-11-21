@@ -15,7 +15,7 @@ from __future__ import print_function
 
 # returns a list of errors in string format
 
-def error_list (train_sents, test_sents):
+def error_list(train_sents, test_sents):
     """
     Returns a list of human-readable strings indicating the errors in the
     given tagging of the corpus.
