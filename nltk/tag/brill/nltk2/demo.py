@@ -15,9 +15,13 @@ from __future__ import print_function
 import random
 import yaml
 
-from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer
-from nltk.tag.brill.nltk2.postagging import ProximateTagsRule, ProximateWordsRule
-from nltk.tag.brill.nltk2.template import ProximateTokensTemplate
+from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer as TaggerTrainer
+from nltk.tag.brill.nltk2 import (
+    ProximateTagsRule,
+    ProximateWordsRule,
+    ProximateTokensRule,
+    ProximateTokensTemplate,
+    SymmetricProximateTokensTemplate)
 from nltk.tag.brill.erroranalysis import error_list
 
 ######################################################################
@@ -99,8 +103,7 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
       ProximateTokensTemplate(ProximateTagsRule, (-1, -1), (1,1)),
       ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
       ]
-    trainer = FastBrillTaggerTrainer(bigram_tagger, templates, trace)
-    #trainer = brill.BrillTaggerTrainer(u, templates, trace)
+    trainer = TaggerTrainer(bigram_tagger, templates, trace)
     brill_tagger = trainer.train(training_data, max_rules, min_score)
 
     if gold_data:
@@ -123,3 +126,6 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     error_file.close()
     print(("Done; rules and errors saved to %s and %s." %
            (rule_output, error_output)))
+
+if __name__ == '__main__':
+    demo()

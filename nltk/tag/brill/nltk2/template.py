@@ -58,7 +58,7 @@ class ProximateTokensRule(BrillRule):
     #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
 
     def __init__(self, original_tag, replacement_tag, *conditions):
-        if self.__class__ != ProximateTokensRule: raise TypeError(
+        if self.__class__ == ProximateTokensRule: raise TypeError(
                "ProximateTokensRule is an abstract base class")
         BrillRule.__init__(self, original_tag, replacement_tag)
         self._conditions = conditions
@@ -157,6 +157,11 @@ class ProximateTokensRule(BrillRule):
                             self.replacement_tag, conditions))
             return self.__repr
 
+    def format(self, _fmt):
+        """
+        A stub for API compatibility -- ignores the format argument and returns str(self)
+        """
+        return str(self)
 
     def __str__(self):
         replacement = '%s -> %s' % (self.original_tag,
