@@ -59,9 +59,24 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         self._training_stats = training_stats
 
     def rules(self):
+        """
+        Return the ordered list of  transformation rules that this tagger has learnt
+
+        :return: the ordered list of transformation rules that correct the initial tagging
+        :rtype: list of Rules
+        """
         return self._rules
 
     def train_stats(self, statistic=None):
+        """
+        Return a named statistic collected during training, or a dictionary of all
+        available statistics if no name given
+
+        :param statistic: name of statistic
+        :type statistic: str
+        :return: some statistic collected during training of this tagger
+        :rtype: any (but usually a number)
+        """
         if statistic is None:
             return self._training_stats
         else:
@@ -95,6 +110,23 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
         return tagged_tokens
 
     def print_template_statistics(self, test_stats=None, printunused=True):
+        """
+        Print a list of all templates, ranked according to efficiency.
+
+        If test_stats is available, the templates are ranked according to their
+        relative contribution (summed for all rules created from a given template,
+        weighted by score) to the performance on the test set. If no test_stats, then
+        statistics collected during training are used instead. There is also
+        an unweighted measure (just counting the rules). This is less informative,
+        though, as many low-score rules will appear towards end of training.
+
+        :param test_stats: dictionary of statistics collected during testing
+        :type test_stats: dict of str -> any (but usually numbers)
+        :param printunused: if True, print a list of all unused templates
+        :type printunused: bool
+        :return: None
+        :rtype: None
+        """
         tids = [r.templateid for r in self._rules]
         train_stats = self.train_stats()
 
