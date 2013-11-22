@@ -2203,12 +2203,12 @@ def gt_demo():
     emma_words = corpus.gutenberg.words('austen-emma.txt')
     fd = FreqDist(emma_words)
     sgt = SimpleGoodTuringProbDist(fd)
-    katz = SimpleGoodTuringProbDist(fd, 7)
-    print('%18s %8s  %14s  %12s' \
-        % ("word", "freqency", "SimpleGoodTuring", "Katz-cutoff" ))
-    for key in fd:
-        print('%18s %8d  %12e   %14e   %12e' \
-            % (key, fd[key], sgt.prob(key), katz.prob(key)))
+    print('%18s %8s  %14s' \
+        % ("word", "freqency", "SimpleGoodTuring"))
+    fd_keys_sorted=(key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True))
+    for key in fd_keys_sorted:
+        print('%18s %8d  %14e' \
+            % (key, fd[key], sgt.prob(key)))
 
 if __name__ == '__main__':
     demo(6, 10)
