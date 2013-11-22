@@ -426,6 +426,7 @@ class ProbDistI(object):
         ``self.prob(samp)``.
         """
         p = random.random()
+        p_init = p
         for sample in self.samples():
             p -= self.prob(sample)
             if p <= 0: return sample
@@ -435,7 +436,7 @@ class ProbDistI(object):
         # we *should* never get here
         if self.SUM_TO_ONE:
             warnings.warn("Probability distribution %r sums to %r; generate()"
-                          " is returning an arbitrary sample." % (self, 1-p))
+                          " is returning an arbitrary sample." % (self, p_init-p))
         return random.choice(list(self.samples()))
 
 
