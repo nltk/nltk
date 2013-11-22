@@ -1200,6 +1200,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
     - slope: b = sigma ((xi-E(x)(yi-E(y))) / sigma ((xi-E(x))(xi-E(x)))
     - intercept: a = E(y) - b.E(x)
     """
+    SUM_TO_ONE = False
     def __init__(self, freqdist, bins=None):
         """
         :param freqdist: The frequency counts upon which to base the
