@@ -876,7 +876,8 @@ class HeldoutProbDist(ProbDistI):
 
         # Calculate Tr, Nr, and N.
         Tr = self._calculate_Tr()
-        Nr = [base_fdist.Nr(r, bins) for r in range(self._max_r+1)]
+        r_Nr = base_fdist.r_Nr(bins)
+        Nr = [r_Nr[r] for r in range(self._max_r+1)]
         N = heldout_fdist.N()
 
         # Use Tr, Nr, and N to compute the probability estimate for
