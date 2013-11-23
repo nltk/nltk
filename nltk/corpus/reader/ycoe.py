@@ -27,8 +27,8 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class YCOECorpusReader(CorpusReader):
     """

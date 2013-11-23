@@ -16,7 +16,7 @@ from __future__ import print_function, unicode_literals
 
 import re
 import codecs
-from . import evaluate
+from nltk.sem import evaluate
 
 
 ##############################################################

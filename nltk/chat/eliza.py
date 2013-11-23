@@ -13,7 +13,7 @@
 # computer says back, e.g. "I am" --> "you are"
 
 from __future__ import print_function
-from .util import Chat, reflections
+from nltk.chat.util import Chat, reflections
 
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,

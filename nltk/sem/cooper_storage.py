@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
-from .logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
+from nltk.sem.logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 

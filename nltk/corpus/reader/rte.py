@@ -34,9 +34,9 @@ challenge number and 'n' is the pair ID.
 """
 from __future__ import unicode_literals
 from nltk import compat
-from .util import *
-from .api import *
-from .xmldocs import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.xmldocs import *
 
 
 def norm(value_string):

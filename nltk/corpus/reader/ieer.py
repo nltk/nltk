@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 
 import nltk
 from nltk import compat
-from .api import *
+from nltk.corpus.reader.api import *
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.

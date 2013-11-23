@@ -344,7 +344,7 @@ if __name__ == '__main__':
 
     import re
     import optparse
-    from . import distance
+    from nltk.metrics import distance
 
     # process command-line arguments
     parser = optparse.OptionParser()

@@ -10,8 +10,8 @@ import re
 from nltk.tag import str2tuple, map_tag
 from nltk import compat
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
 @compat.python_2_unicode_compatible

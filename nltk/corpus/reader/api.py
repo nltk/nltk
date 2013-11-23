@@ -18,7 +18,7 @@ from collections import defaultdict
 from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
-from .util import *
+from nltk.corpus.reader.util import *
 
 @compat.python_2_unicode_compatible
 class CorpusReader(object):

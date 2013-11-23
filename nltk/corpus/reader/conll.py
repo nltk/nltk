@@ -21,8 +21,8 @@ from nltk.tree import Tree
 from nltk.util import LazyMap, LazyConcatenation
 from nltk.tag import map_tag
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class ConllCorpusReader(CorpusReader):
     """

@@ -19,7 +19,7 @@ TO DO: add lemmatization
 from __future__ import print_function
 
 import nltk
-from .util import accuracy
+from nltk.classify.util import accuracy
 
 def ne(token):
     """

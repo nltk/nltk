@@ -23,8 +23,8 @@ import codecs
 from nltk import compat
 from nltk.tag import str2tuple, map_tag
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class IndianCorpusReader(CorpusReader):
     """

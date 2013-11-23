@@ -24,7 +24,7 @@ from nltk import compat
 from nltk.corpus import stopwords
 from nltk.stem import porter
 
-from .api import StemmerI
+from nltk.stem.api import StemmerI
 
 class SnowballStemmer(StemmerI):
 

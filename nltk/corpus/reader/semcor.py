@@ -11,8 +11,8 @@ Corpus reader for the SemCor Corpus.
 from __future__ import absolute_import, unicode_literals
 __docformat__ = 'epytext en'
 
-from .api import *
-from .xmldocs import XMLCorpusReader, XMLCorpusView
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 from nltk.tree import Tree
 
 class SemcorCorpusReader(XMLCorpusReader):

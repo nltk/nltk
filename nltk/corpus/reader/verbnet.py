@@ -11,7 +11,7 @@ import textwrap
 from collections import defaultdict
 
 from nltk import compat
-from .xmldocs import XMLCorpusReader
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
 class VerbnetCorpusReader(XMLCorpusReader):
 

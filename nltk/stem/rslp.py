@@ -33,7 +33,7 @@
 from __future__ import print_function, unicode_literals
 from nltk.data import load
 
-from .api import StemmerI
+from nltk.stem.api import StemmerI
 
 class RSLPStemmer(StemmerI):
     """
