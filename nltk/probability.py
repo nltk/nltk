@@ -1080,7 +1080,7 @@ class WittenBellProbDist(ProbDistI):
         :type bins: int
         """
         assert bins is None or bins >= freqdist.B(),\
-               'Bins parameter must not be less than freqdist.B()'
+               'bins parameter must not be less than %d=freqdist.B()' % freqdist.B()
         if bins is None:
             bins = freqdist.B()
         self._freqdist = freqdist
@@ -1209,7 +1209,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         :type bins: int
         """
         assert bins is None or bins > freqdist.B(),\
-               'Bins parameter must not be less than freqdist.B() + 1'
+               'bins parameter must not be less than %d=freqdist.B()+1' % (freqdist.B()+1)
         if bins is None:
             bins = freqdist.B() + 1
         self._freqdist = freqdist
