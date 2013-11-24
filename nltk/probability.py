@@ -270,7 +270,9 @@ class FreqDist(Counter):
         """
         if len(self) == 0:
             raise ValueError('A FreqDist must have at least one sample before max is defined.')
-        return self.most_common(1)[0]
+        #FreqDist.most_common() (inherited from Counter) returns a list of (key,count) pairs,
+        #so sample with max outcome is at most_common(1)[0][0] ( bugfix: was most_common(1)[0] )
+        return self.most_common(1)[0][0]
 
     def plot(self, *args, **kwargs):
         """
