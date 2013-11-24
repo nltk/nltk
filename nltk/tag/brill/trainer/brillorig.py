@@ -62,18 +62,31 @@ class TaggerTrainer(object):
         >>> from nltk.tag.brill.template import Template
         >>> from nltk.tag.brill.application.postagging import Pos, Word
         >>> from nltk.tag import UnigramTagger, RegexpTagger
-        >>> from nltk.tag.brill.trainer.fast import TaggerTrainer
+        >>> from nltk.tag.brill.trainer.brillorig import TaggerTrainer
 
         #some data
         >>> from nltk.corpus import treebank
-        >>> training_data = treebank.tagged_sents()[:200]
-        >>> baseline_data = treebank.tagged_sents()[200:400]
-        >>> gold_data = treebank.tagged_sents()[400:500]
-        >>> testing_data = [untag(s) for s in gold_data] #[[t[0] for t in sent] for sent in gold_data])
+        >>> training_data = treebank.tagged_sents()[:100]
+        >>> baseline_data = treebank.tagged_sents()[100:200]
+        >>> gold_data = treebank.tagged_sents()[200:300]
+        >>> testing_data = [untag(s) for s in gold_data]
 
-        #baseline
-        >>> backoff = RegexpTagger([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),(r'.*', 'NN')])
-        >>> baseline = UnigramTagger(baseline_data, backoff=backoff)
+        >>> backoff = RegexpTagger([
+        ... (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+        ... (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+        ... (r'.*able$', 'JJ'),                # adjectives
+        ... (r'.*ness$', 'NN'),                # nouns formed from adjectives
+        ... (r'.*ly$', 'RB'),                  # adverbs
+        ... (r'.*s$', 'NNS'),                  # plural nouns
+        ... (r'.*ing$', 'VBG'),                # gerunds
+        ... (r'.*ed$', 'VBD'),                 # past tense verbs
+        ... (r'.*', 'NN')                      # nouns (default)
+        ... ])
+
+        >>> baseline = backoff #see NOTE1
+
+        >>> baseline.evaluate(gold_data) #doctest: +ELLIPSIS
+        0.2450142...
 
         #templates
         >>> Template._cleartemplates() #clear any templates created in earlier tests
@@ -81,10 +94,8 @@ class TaggerTrainer(object):
 
         #construct a TaggerTrainer
         >>> tt = TaggerTrainer(baseline, templates, trace=3)
-        >>> tagger1 = tt.train(training_data, max_rules=5)
-        TBL train (fast) (seqs: 200; tokens: 5111; tpls: 2; min score: 2; min acc: None)
-        Finding initial useful rules...
-            Found 1279 useful rules.
+        >>> tagger1 = tt.train(training_data, max_rules=10)
+        TBL train (orig) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: None)
         <BLANKLINE>
                    B      |
            S   F   r   O  |        Score = Fixed - Broken
@@ -93,47 +104,58 @@ class TaggerTrainer(object):
            r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
            e   d   n   r  |  e
         ------------------+-------------------------------------------------------
-          40  45   5  14  | NN->NNP if Pos:NNP@[-1]
-          36  38   2  10  | NN->VB if Pos:TO@[-1]
-          24  24   0   0  | NN->VB if Pos:MD@[-1]
-          10  10   0   6  | NN->NNP if Pos:NNP@[-1]
-           9  12   3   3  | NN->-NONE- if Pos:WDT@[-1]
+         132 132   0   0  | AT->DT if Pos:NN@[-1]
+          85  85   0   0  | NN->, if Pos:NN@[-1] & Word:,@[0]
+          69  69   0   0  | NN->. if Pos:NN@[-1] & Word:.@[0]
+          51  51   0   0  | NN->IN if Pos:NN@[-1] & Word:of@[0]
+          47  63  16 161  | NN->IN if Pos:NNS@[-1]
+          33  33   0   0  | NN->TO if Pos:NN@[-1] & Word:to@[0]
+          26  26   0   0  | IN->. if Pos:NNS@[-1] & Word:.@[0]
+          24  24   0   0  | IN->, if Pos:NNS@[-1] & Word:,@[0]
+          22  27   5  24  | NN->-NONE- if Pos:VBD@[-1]
+          17  17   0   0  | NN->CC if Pos:NN@[-1] & Word:and@[0]
+
+
 
         >>> tagger1.rules()[1:3]
-        (Rule(000, 'NN', 'VB', [(Pos([-1]),'TO')]), Rule(000, 'NN', 'VB', [(Pos([-1]),'MD')]))
+        (Rule('001', 'NN', ',', [(Pos([-1]),'NN'), (Word([0]),',')]), Rule('001', 'NN', '.', [(Pos([-1]),'NN'), (Word([0]),'.')]))
+
 
         >>> train_stats = tagger1.train_stats()
         >>> [train_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
-        [1323, 1204, [40, 36, 24, 10, 9]]
+        [1775, 1269, [132, 85, 69, 51, 47, 33, 26, 24, 22, 17]]
 
-        #the following test fails -- why?
-        #>>> tagger1.print_template_statistics()
-        TEMPLATE STATISTICS (TRAIN)  1 templates, 5 rules)
-        TRAIN (   5111 tokens) initial  1323 0.7411 final:  1204 0.7644
-        #ID | Score (train) |  #Rules     | Template
-        --------------------------------------------
-        000 |   119   1.000 |   5   1.000 | Template(Pos([-1]))
-        <BLANKLINE>
-        UNUSED TEMPLATES (1)
-        001 Template(Pos([-1]),Word([0]))
-        <BLANKLINE>
 
-        >>> round(tagger1.evaluate(gold_data), 5)
-        0.73843
+        ##FIXME: the following test fails -- why?
+        #
+        #>>> tagger1.print_template_statistics(printunused=False)
+        #TEMPLATE STATISTICS (TRAIN)  2 templates, 10 rules)
+        #TRAIN (   3163 tokens) initial  2358 0.2545 final:  1719 0.4565
+        ##ID | Score (train) |  #Rules     | Template
+        #--------------------------------------------
+        #001 |   404   0.632 |   7   0.700 | Template(Pos([-1]),Word([0]))
+        #000 |   235   0.368 |   3   0.300 | Template(Pos([-1]))
+        #<BLANKLINE>
+        #<BLANKLINE>
 
+        >>> tagger1.evaluate(gold_data) # doctest: +ELLIPSIS
+        0.43996...
 
         >>> (tagged, test_stats) = tagger1.batch_tag_incremental(testing_data, gold_data)
-        >>> tagged[33][4:8]
-        [(u'Commerce', u'NNP'), (u'Department', u'NNP'), (u"'s", u'POS'), (u'latest', u'JJS')]
+
+
+        >>> tagged[33][12:] == [('foreign', 'IN'), ('debt', 'NN'), ('of', 'IN'), ('$', 'NN'), ('64', 'CD'),
+        ... ('billion', 'NN'), ('*U*', 'NN'), ('--', 'NN'), ('the', 'DT'), ('third-highest', 'NN'), ('in', 'NN'),
+        ... ('the', 'DT'), ('developing', 'VBG'), ('world', 'NN'), ('.', '.')]
+        True
+
 
         >>> [test_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
-        [725, 684, [17, 10, 4, 7, 3]]
+        [1855, 1376, [100, 85, 67, 58, 27, 36, 27, 16, 31, 32]]
 
-        #a high-accuracy tagger
-        >>> tagger2 = tt.train(training_data, max_rules=5, min_acc=0.99)
-        TBL train (fast) (seqs: 200; tokens: 5111; tpls: 2; min score: 2; min acc: 0.99)
-        Finding initial useful rules...
-            Found 1279 useful rules.
+        ##a high-accuracy tagger
+        >>> tagger2 = tt.train(training_data, max_rules=10, min_acc=0.99)
+        TBL train (orig) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: 0.99)
         <BLANKLINE>
                    B      |
            S   F   r   O  |        Score = Fixed - Broken
@@ -142,18 +164,30 @@ class TaggerTrainer(object):
            r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
            e   d   n   r  |  e
         ------------------+-------------------------------------------------------
-          24  24   0   0  | NN->VB if Pos:MD@[-1]
-           9   9   0   7  | NN->VBN if Pos:VBP@[-1]
-           8   8   0   0  | NN->-NONE- if Pos:WP@[-1]
-           8   8   0   1  | NN->NNP if Pos:DT@[-1] & Word:Cray-3@[0]
-           8   8   0   0  | NN->NNP if Pos:NNP@[-1] & Word:Hampshire@[0]
+         132 132   0   0  | AT->DT if Pos:NN@[-1]
+          85  85   0   0  | NN->, if Pos:NN@[-1] & Word:,@[0]
+          69  69   0   0  | NN->. if Pos:NN@[-1] & Word:.@[0]
+          51  51   0   0  | NN->IN if Pos:NN@[-1] & Word:of@[0]
+          36  36   0   0  | NN->TO if Pos:NN@[-1] & Word:to@[0]
+          26  26   0   0  | NN->. if Pos:NNS@[-1] & Word:.@[0]
+          24  24   0   0  | NN->, if Pos:NNS@[-1] & Word:,@[0]
+          19  19   0   6  | NN->VB if Pos:TO@[-1]
+          18  18   0   0  | CD->-NONE- if Pos:NN@[-1] & Word:0@[0]
+          18  18   0   0  | NN->CC if Pos:NN@[-1] & Word:and@[0]
 
-        >>> round(tagger2.evaluate(gold_data), 5)
-        0.72772
+
+        >>> tagger2.evaluate(gold_data) # doctest: +ELLIPSIS
+        0.44159544...
 
         >>> tagger2.rules()[2:4]
-        (Rule(000, 'NN', '-NONE-', [(Pos([-1]),'WP')]), Rule(001, 'NN', 'NNP', [(Pos([-1]),'DT'), (Word([0]),'Cray-3')]))
+        (Rule('001', 'NN', '.', [(Pos([-1]),'NN'), (Word([0]),'.')]), Rule('001', 'NN', 'IN', [(Pos([-1]),'NN'), (Word([0]),'of')]))
 
+        #NOTE1: (!!FIXME) A far better baseline uses nltk.tag.UnigramTagger,
+        #with a RegexpTagger only as backoff. For instance,
+        #>>> baseline = UnigramTagger(baseline_data, backoff=backoff)
+        #However, as of Nov 2013, nltk.tag.UnigramTagger does not yield consistent results
+        #between python versions. The simplistic backoff above is a workaround to make doctests
+        #get consistent input.
 
         :param train_sents: training data
         :type train_sents: list(list(tuple))

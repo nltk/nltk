@@ -200,12 +200,12 @@ class Rule(BrillRule):
             return self.__hash
 
     def __repr__(self):
-        # Cache our repr (justified by profiling -- this is used as
+        # Cache the repr (justified by profiling -- this is used as
         # a sort key when deterministic=True.)
         try:
             return self.__repr
         except:
-            self.__repr = ('%s(%s, %s, %s, [%s])' % (
+            self.__repr = ('%s(%r, %s, %s, [%s])' % (
                 self.__class__.__name__,
                 self.templateid,
                 unicode_repr(self.original_tag),
