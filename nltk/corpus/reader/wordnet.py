@@ -1554,7 +1554,7 @@ class WordNetCorpusReader(CorpusReader):
         """
         counts = FreqDist()
         for ww in corpus.words():
-            counts.inc(ww)
+            counts[ww] += 1
 
         ic = {}
         for pp in POS_LIST:

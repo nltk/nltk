@@ -152,10 +152,10 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
         for window in ngrams(words, window_size, pad_right=True):
             w1 = window[0]
-            wfd.inc(w1)
+            wfd[w1] += 1
             for w2 in window[1:]:
                 if w2 is not None:
-                    bfd.inc((w1, w2))
+                    bfd[(w1, w2)] += 1
         return cls(wfd, bfd, window_size=window_size)
 
     def score_ngram(self, score_fn, w1, w2):
@@ -198,14 +198,14 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         tfd = FreqDist()
 
         for w1, w2, w3 in ngrams(words, 3, pad_right=True):
-            wfd.inc(w1)
+            wfd[w1] += 1
             if w2 is None:
                 continue
-            bfd.inc((w1, w2))
+            bfd[(w1, w2)] += 1
             if w3 is None:
                 continue
-            wildfd.inc((w1, w3))
-            tfd.inc((w1, w2, w3))
+            wildfd[(w1, w3)] += 1
+            tfd[(w1, w2, w3)] += 1
         return cls(wfd, bfd, wildfd, tfd)
 
     def bigram_finder(self):

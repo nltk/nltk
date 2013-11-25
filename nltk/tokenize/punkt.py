@@ -775,7 +775,7 @@ class PunktTrainer(PunktBaseClass):
         # strip off final periods.)  Also keep track of the number of
         # tokens that end in periods.
         for aug_tok in tokens:
-            self._type_fdist.inc(aug_tok.type)
+            self._type_fdist[aug_tok.type] += 1
             if aug_tok.period_final:
                 self._num_period_toks += 1
 
@@ -820,12 +820,12 @@ class PunktTrainer(PunktBaseClass):
 
             # Does second token have a high likelihood of starting a sentence?
             if self._is_potential_sent_starter(aug_tok2, aug_tok1):
-                self._sent_starter_fdist.inc(aug_tok2.type)
+                self._sent_starter_fdist[aug_tok2.type] += 1
 
             # Is this bigram a potential collocation?
             if self._is_potential_collocation(aug_tok1, aug_tok2):
-                self._collocation_fdist.inc(
-                    (aug_tok1.type_no_period, aug_tok2.type_no_sentperiod))
+                self._collocation_fdist[
+                    (aug_tok1.type_no_period, aug_tok2.type_no_sentperiod)] += 1
 
     def _unique_types(self, tokens):
         return set(aug_tok.type for aug_tok in tokens)
@@ -890,8 +890,8 @@ class PunktTrainer(PunktBaseClass):
             if count < threshold:
                 num_removed += 1
             else:
-                res.inc(tok, count)
-        res.inc(None, num_removed)
+                res[tok] += count
+        res[None] += num_removed
         return res
 
     #////////////////////////////////////////////////////////////

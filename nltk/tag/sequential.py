@@ -180,7 +180,7 @@ class ContextTagger(SequentialBackoffTagger):
                 token_count += 1
                 context = self.context(tokens, index, tags[:index])
                 if context is None: continue
-                fd[context].inc(tag)
+                fd[context][tag] += 1
                 # If the backoff got it wrong, this context is useful:
                 if (self.backoff is None or
                     tag != self.backoff.tag_one(tokens, index, tags[:index])):
