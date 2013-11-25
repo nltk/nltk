@@ -426,6 +426,7 @@ class ProbDistI(object):
         ``self.prob(samp)``.
         """
         p = random.random()
+        p_init = p
         for sample in self.samples():
             p -= self.prob(sample)
             if p <= 0: return sample
@@ -435,7 +436,7 @@ class ProbDistI(object):
         # we *should* never get here
         if self.SUM_TO_ONE:
             warnings.warn("Probability distribution %r sums to %r; generate()"
-                          " is returning an arbitrary sample." % (self, 1-p))
+                          " is returning an arbitrary sample." % (self, p_init-p))
         return random.choice(list(self.samples()))
 
 
@@ -876,7 +877,8 @@ class HeldoutProbDist(ProbDistI):
 
         # Calculate Tr, Nr, and N.
         Tr = self._calculate_Tr()
-        Nr = [base_fdist.Nr(r, bins) for r in range(self._max_r+1)]
+        r_Nr = base_fdist.r_Nr(bins)
+        Nr = [r_Nr[r] for r in range(self._max_r+1)]
         N = heldout_fdist.N()
 
         # Use Tr, Nr, and N to compute the probability estimate for
@@ -1198,6 +1200,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
     - slope: b = sigma ((xi-E(x)(yi-E(y))) / sigma ((xi-E(x))(xi-E(x)))
     - intercept: a = E(y) - b.E(x)
     """
+    SUM_TO_ONE = False
     def __init__(self, freqdist, bins=None):
         """
         :param freqdist: The frequency counts upon which to base the
@@ -2202,12 +2205,12 @@ def gt_demo():
     emma_words = corpus.gutenberg.words('austen-emma.txt')
     fd = FreqDist(emma_words)
     sgt = SimpleGoodTuringProbDist(fd)
-    katz = SimpleGoodTuringProbDist(fd, 7)
-    print('%18s %8s  %14s  %12s' \
-        % ("word", "freqency", "SimpleGoodTuring", "Katz-cutoff" ))
-    for key in fd:
-        print('%18s %8d  %12e   %14e   %12e' \
-            % (key, fd[key], sgt.prob(key), katz.prob(key)))
+    print('%18s %8s  %14s' \
+        % ("word", "freqency", "SimpleGoodTuring"))
+    fd_keys_sorted=(key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True))
+    for key in fd_keys_sorted:
+        print('%18s %8d  %14e' \
+            % (key, fd[key], sgt.prob(key)))
 
 if __name__ == '__main__':
     demo(6, 10)
