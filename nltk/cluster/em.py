@@ -11,7 +11,7 @@ except ImportError:
     pass
 
 from nltk.compat import python_2_unicode_compatible
-from .util import VectorSpaceClusterer
+from nltk.cluster.util import VectorSpaceClusterer
 
 @python_2_unicode_compatible
 class EMClusterer(VectorSpaceClusterer):

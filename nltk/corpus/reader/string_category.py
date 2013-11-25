@@ -22,8 +22,8 @@ NUM:date When did Hawaii become a state ?
 import os
 
 from nltk import compat
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 # [xx] Should the order of the tuple be reversed -- in most other places
 # in nltk, we use the form (data, tag) -- e.g., tagged words and

@@ -8,8 +8,8 @@
 import functools
 
 from nltk import compat
-from .util import StreamBackedCorpusView, concat
-from .api import CorpusReader
+from nltk.corpus.reader.util import StreamBackedCorpusView, concat
+from nltk.corpus.reader.api import CorpusReader
 
 def _parse_args(fun):
     @functools.wraps(fun)

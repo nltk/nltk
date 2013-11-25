@@ -121,7 +121,7 @@ class KMeansClusterer(VectorSpaceClusterer):
                     #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
                 # recalculate cluster means by computing the centroid of each cluster
-                new_means = map(self._centroid, clusters, self._means)
+                new_means = list(map(self._centroid, clusters, self._means))
 
                 # measure the degree of change from the previous step for convergence
                 difference = self._sum_distances(self._means, new_means)

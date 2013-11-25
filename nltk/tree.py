@@ -455,7 +455,7 @@ class Tree(list):
         :param parentChar: A string used to separate the node representation from its vertical annotation
         :type  parentChar: str
         """
-        from .treetransforms import chomsky_normal_form
+        from nltk.treetransforms import chomsky_normal_form
         chomsky_normal_form(self, factor, horzMarkov, vertMarkov, childChar, parentChar)
 
     def un_chomsky_normal_form(self, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
@@ -477,7 +477,7 @@ class Tree(list):
         :param unaryChar: A string joining two non-terminals in a unary production (default = "+")
         :type  unaryChar: str
         """
-        from .treetransforms import un_chomsky_normal_form
+        from nltk.treetransforms import un_chomsky_normal_form
         un_chomsky_normal_form(self, expandUnary, childChar, parentChar, unaryChar)
 
     def collapse_unary(self, collapsePOS = False, collapseRoot = False, joinChar = "+"):
@@ -499,7 +499,7 @@ class Tree(list):
         :param joinChar: A string used to connect collapsed node values (default = "+")
         :type  joinChar: str
         """
-        from .treetransforms import collapse_unary
+        from nltk.treetransforms import collapse_unary
         collapse_unary(self, collapsePOS, collapseRoot, joinChar)
 
     #////////////////////////////////////////////////////////////

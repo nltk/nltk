@@ -9,7 +9,7 @@ from __future__ import print_function
 
 import sys
 
-from . import util
+from nltk.corpus.reader import util
 
 from nltk import compat
 from nltk.corpus.reader.util import *

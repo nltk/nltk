@@ -86,7 +86,7 @@ __classifiers__ = [
     'Topic :: Text Processing :: Linguistic',
     ]
 
-from .internals import config_java
+from nltk.internals import config_java
 
 # support numpy from pypy
 try:
@@ -100,44 +100,44 @@ except ImportError:
 
 # Import top-level functionality into top-level namespace
 
-from .collocations import *
-from .decorators import decorator, memoize
-from .featstruct import *
-from .grammar import *
-from .probability import *
-from .text import *
-from .tree import *
-from .util import *
-from .yamltags import *
-from .align import *
+from nltk.collocations import *
+from nltk.decorators import decorator, memoize
+from nltk.featstruct import *
+from nltk.grammar import *
+from nltk.probability import *
+from nltk.text import *
+from nltk.tree import *
+from nltk.util import *
+from nltk.yamltags import *
+from nltk.align import *
 
 # don't import contents into top-level namespace:
 
-from . import ccg
-from . import data
-from . import help
+from nltk import ccg
+from nltk import data
+from nltk import help
 
 ###########################################################
 # PACKAGES
 ###########################################################
 
-from .chunk import *
-from .classify import *
-from .inference import *
-from .metrics import *
-from .model import *
-from .parse import *
-from .tag import *
-from .tokenize import *
-from .sem import *
-from .stem import *
+from nltk.chunk import *
+from nltk.classify import *
+from nltk.inference import *
+from nltk.metrics import *
+from nltk.model import *
+from nltk.parse import *
+from nltk.tag import *
+from nltk.tokenize import *
+from nltk.sem import *
+from nltk.stem import *
 
 # Packages which can be lazily imported
 # (a) we don't import *
 # (b) they're slow to import or have run-time dependencies
 #     that can safely fail at run time
 
-from . import lazyimport
+from nltk import lazyimport
 app = lazyimport.LazyModule('nltk.app', locals(), globals())
 chat = lazyimport.LazyModule('nltk.chat', locals(), globals())
 corpus = lazyimport.LazyModule('nltk.corpus', locals(), globals())
@@ -151,16 +151,16 @@ try:
 except ImportError:
     pass
 else:
-    from . import cluster; from .cluster import *
+    from nltk import cluster; from .cluster import *
 
-from .downloader import download, download_shell
+from nltk.downloader import download, download_shell
 try:
     import tkinter
 except ImportError:
     pass
 else:
     try:
-        from .downloader import download_gui
+        from nltk.downloader import download_gui
     except RuntimeError as e:
         import warnings
         warnings.warn("Corpus downloader GUI not loaded "
@@ -170,10 +170,10 @@ else:
 # they override the same names inadvertently imported
 # from a subpackage)
 
-from . import align, ccg, chunk, classify, collocations
-from . import data, featstruct, grammar, inference, metrics
-from . import misc, model, parse, probability, sem, stem
-from . import tag, text, tokenize, tree, treetransforms, util
+from nltk import align, ccg, chunk, classify, collocations
+from nltk import data, featstruct, grammar, inference, metrics
+from nltk import misc, model, parse, probability, sem, stem
+from nltk import tag, text, tokenize, tree, treetransforms, util
 
 # override any accidentally imported demo
 def demo():

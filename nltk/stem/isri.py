@@ -32,7 +32,7 @@ increases the word ambiguities and changes the original root.
 from __future__ import unicode_literals
 import re
 
-from .api import StemmerI
+from nltk.stem.api import StemmerI
 
 class ISRIStemmer(StemmerI):
     '''

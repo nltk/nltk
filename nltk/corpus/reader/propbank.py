@@ -14,8 +14,8 @@ from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
 from nltk.compat import total_ordering
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class PropbankCorpusReader(CorpusReader):
     """

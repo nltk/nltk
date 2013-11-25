@@ -40,8 +40,8 @@ of the author.
 from __future__ import unicode_literals
 
 from nltk import compat
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
 @compat.python_2_unicode_compatible

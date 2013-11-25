@@ -29,8 +29,8 @@ from xml.etree import ElementTree
 from nltk import compat
 from nltk.tokenize import *
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 @compat.python_2_unicode_compatible
 class SensevalInstance(object):

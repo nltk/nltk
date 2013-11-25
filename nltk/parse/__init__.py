@@ -73,4 +73,4 @@ from nltk.parse.projectivedependencyparser import (ProjectiveDependencyParser,
 from nltk.parse.nonprojectivedependencyparser import (NonprojectiveDependencyParser,
                                                       NaiveBayesDependencyScorer,
                                                       ProbabilisticNonprojectiveParser)
-from .malt import MaltParser
+from nltk.parse.malt import MaltParser

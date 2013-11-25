@@ -9,7 +9,7 @@ from __future__ import print_function, unicode_literals
 
 from nltk.internals import Counter
 from nltk.compat import string_types, python_2_unicode_compatible
-from .logic import LogicParser, APP
+from nltk.sem.logic import LogicParser, APP
 
 _counter = Counter()
 

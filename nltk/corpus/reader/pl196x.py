@@ -11,9 +11,9 @@ import re
 from nltk import compat
 from nltk import tokenize, tree
 
-from .util import *
-from .api import *
-from .xmldocs import XMLCorpusReader
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
 # (?:something) -- non-grouping parentheses!
 
