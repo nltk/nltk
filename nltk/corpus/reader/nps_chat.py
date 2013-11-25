@@ -13,9 +13,9 @@ from nltk.util import LazyConcatenation
 from nltk.internals import ElementWrapper
 from nltk.tag import map_tag
 
-from .util import *
-from .api import *
-from .xmldocs import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.xmldocs import *
 
 class NPSChatCorpusReader(XMLCorpusReader):
 

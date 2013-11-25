@@ -44,8 +44,8 @@ import re
 from nltk.tree import sinica_parse
 from nltk.tag import map_tag
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')

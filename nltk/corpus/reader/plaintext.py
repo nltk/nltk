@@ -17,8 +17,8 @@ from nltk import compat
 import nltk.data
 from nltk.tokenize import *
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class PlaintextCorpusReader(CorpusReader):
     """

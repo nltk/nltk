@@ -6,8 +6,8 @@
 # For license information, see LICENSE.TXT
 
 import re
-from .util import LazyCorpusLoader
-from .reader import *
+from nltk.corpus.util import LazyCorpusLoader
+from nltk.corpus.reader import *
 
 # Create a new corpus reader instance for each European language
 danish = LazyCorpusLoader(

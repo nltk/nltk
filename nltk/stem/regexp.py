@@ -9,7 +9,7 @@
 from __future__ import unicode_literals
 import re
 
-from .api import StemmerI
+from nltk.stem.api import StemmerI
 from nltk.compat import python_2_unicode_compatible
 
 @python_2_unicode_compatible

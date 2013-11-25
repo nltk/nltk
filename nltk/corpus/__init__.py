@@ -62,8 +62,8 @@ For example, to read a list of the words in the Brown Corpus, use
 import re
 
 from nltk.tokenize import RegexpTokenizer
-from .util import LazyCorpusLoader
-from .reader import *
+from nltk.corpus.util import LazyCorpusLoader
+from nltk.corpus.reader import *
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[

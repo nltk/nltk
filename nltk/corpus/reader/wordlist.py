@@ -9,8 +9,8 @@
 from nltk import compat
 from nltk.tokenize import line_tokenize
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class WordListCorpusReader(CorpusReader):
     """

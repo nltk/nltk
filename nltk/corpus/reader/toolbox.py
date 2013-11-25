@@ -19,8 +19,8 @@ import codecs
 from nltk import compat
 from nltk.toolbox import ToolboxData
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, fileids, key=None):
