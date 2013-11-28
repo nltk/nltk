@@ -234,10 +234,11 @@ to the entire chunk).
     [[['The'], ['Fulton', 'County', 'Grand', 'Jury'], ['said'], ...
     ['.']], [['The'], ['jury'], ['further'], ['said'], ... ['.']], ...]
     >>> list(map(str, semcor.tagged_chunks(tag='both')[:3]))
-    ['(DT The)', '(group.01 (NE (NNP Fulton County Grand Jury)))', '(say.01 (VB said))']
-    >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]] # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [['(DT The)', '(group.01 (NE (NNP Fulton County Grand Jury)))', '(say.01 (VB said))', ...
+    ['(DT The)', "(Lemma('group.n.01.group') (NE (NNP Fulton County Grand Jury)))", "(Lemma('state.v.01.say') (VB said))"]
+    >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]]
+    [['(DT The)', "(Lemma('group.n.01.group') (NE (NNP Fulton County Grand Jury)))", ...
      '(None .)'], ['(DT The)', ... '(None .)']]
+    
 
 The IEER corpus is another chunked corpus.  This corpus is unusual in
 that each corpus item contains multiple documents.  (This reflects the
