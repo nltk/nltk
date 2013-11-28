@@ -161,8 +161,6 @@ reuters = LazyCorpusLoader(
     cat_file='cats.txt', encoding='ISO-8859-2')
 rte = LazyCorpusLoader(
     'rte', RTECorpusReader, r'(?!\.).*\.xml')
-semcor = LazyCorpusLoader(
-    'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml')
 senseval = LazyCorpusLoader(
     'senseval', SensevalCorpusReader, r'(?!\.).*\.pos')
 shakespeare = LazyCorpusLoader(
@@ -232,6 +230,9 @@ nombank_ptb = LazyCorpusLoader(
     'nombank.1.0', 'frames/.*\.xml', 'nombank.1.0.words',
     lambda filename: filename.upper(),
     ptb) # Must be defined *after* ptb corpus.
+semcor = LazyCorpusLoader(
+    'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
+    wordnet) # Must be defined *after* wordnet corpus.
 
 def demo():
     # This is out-of-date:

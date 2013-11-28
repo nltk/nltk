@@ -22,9 +22,10 @@ class SemcorCorpusReader(XMLCorpusReader):
     method.  For access to simple word lists and tagged word lists, use
     ``words()``, ``sents()``, ``tagged_words()``, and ``tagged_sents()``.
     """
-    def __init__(self, root, fileids, lazy=True):
+    def __init__(self, root, fileids, wordnet, lazy=True):
         XMLCorpusReader.__init__(self, root, fileids)
         self._lazy = lazy
+        self._wordnet = wordnet
 
     def words(self, fileids=None):
         """
@@ -95,7 +96,7 @@ class SemcorCorpusReader(XMLCorpusReader):
             _ = lambda *args: LazyConcatenation((SemcorWordView if self._lazy else self._words)(*args))
         else:
             _ = SemcorWordView if self._lazy else self._words
-        return concat([_(fileid, unit, bracket_sent, pos_tag, sem_tag)
+        return concat([_(fileid, unit, bracket_sent, pos_tag, sem_tag, self._wordnet)
                        for fileid in self.abspaths(fileids)])
 
     def _words(self, fileid, unit, bracket_sent, pos_tag, sem_tag):
@@ -119,7 +120,7 @@ class SemcorCorpusReader(XMLCorpusReader):
         for xmlsent in xmldoc.findall('.//s'):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):
-                itm = SemcorCorpusReader._word(xmlword, unit, pos_tag, sem_tag)
+                itm = SemcorCorpusReader._word(xmlword, unit, pos_tag, sem_tag, self._wordnet)
                 if unit=='word':
                     sent.extend(itm)
                 else:
@@ -134,12 +135,18 @@ class SemcorCorpusReader(XMLCorpusReader):
         return result
 
     @staticmethod
-    def _word(xmlword, unit, pos_tag, sem_tag):
+    def _word(xmlword, unit, pos_tag, sem_tag, wordnet):
         tkn = xmlword.text
         if not tkn:
             tkn = "" # fixes issue 337?
 
         lemma = xmlword.get('lemma', tkn) # lemma or NE class
+        lexsn = xmlword.get('lexsn') # lex_sense (locator for the lemma's sense)
+        if lexsn is not None:
+            sense_key = lemma + '%' + lexsn
+            wnpos = ('n','v','a','r','s')[int(lexsn.split(':')[0])-1]   # see http://wordnet.princeton.edu/man/senseidx.5WN.html
+        else:
+            sense_key = wnpos = None
         redef = xmlword.get('rdf', tkn)	# redefinition--this indicates the lookup string
         # does not exactly match the enclosed string, e.g. due to typographical adjustments
         # or discontinuity of a multiword expression. If a redefinition has occurred,
@@ -153,7 +160,7 @@ class SemcorCorpusReader(XMLCorpusReader):
             if not pos_tag and not sem_tag:
                 itm = tkn
             else:
-                itm = (tkn,) + ((pos,) if pos_tag else ()) + ((lemma, sensenum, isOOVEntity) if sem_tag else ())
+                itm = (tkn,) + ((pos,) if pos_tag else ()) + ((lemma, wnpos, sensenum, isOOVEntity) if sem_tag else ())
             return itm
         else:
             ww = tkn.split('_') # TODO: case where punctuation intervenes in MWE
@@ -162,9 +169,17 @@ class SemcorCorpusReader(XMLCorpusReader):
             else:
                 if sensenum is not None:
                     try:
-                        sense = '%s.%02d' % (lemma, int(sensenum))
-                    except ValueError:
-                        sense = lemma+'.'+sensenum  # e.g. the sense number may be "2;1"
+                        sense = wordnet.lemma_from_key(sense_key)   # Lemma object
+                    except Exception:
+                        # cannot retrieve the wordnet.Lemma object. possible reasons:
+                        #  (a) the wordnet corpus is not downloaded;
+                        #  (b) a nonexistant sense is annotated: e.g., such.s.00 triggers: 
+                        #  nltk.corpus.reader.wordnet.WordNetError: No synset found for key u'such%5:00:01:specified:00'
+                        # solution: just use the lemma name as a string
+                        try:
+                            sense = '%s.%s.%02d' % (lemma, wnpos, int(sensenum))    # e.g.: reach.v.02
+                        except ValueError:
+                            sense = lemma+'.'+wnpos+'.'+sensenum  # e.g. the sense number may be "2;1"
 
                 bottom = [Tree(pos, ww)] if pos_tag else ww
 
@@ -200,7 +215,7 @@ class SemcorWordView(XMLCorpusView):
     """
     A stream backed corpus view specialized for use with the BNC corpus.
     """
-    def __init__(self, fileid, unit, bracket_sent, pos_tag, sem_tag):
+    def __init__(self, fileid, unit, bracket_sent, pos_tag, sem_tag, wordnet):
         """
         :param fileid: The name of the underlying file.
         :param unit: One of `'token'`, `'word'`, or `'chunk'`.
@@ -216,6 +231,7 @@ class SemcorWordView(XMLCorpusView):
         self._sent = bracket_sent
         self._pos_tag = pos_tag
         self._sem_tag = sem_tag
+        self._wordnet = wordnet
 
         XMLCorpusView.__init__(self, fileid, tagspec)
 
@@ -224,7 +240,7 @@ class SemcorWordView(XMLCorpusView):
         else: return self.handle_word(elt)
 
     def handle_word(self, elt):
-        return SemcorCorpusReader._word(elt, self._unit, self._pos_tag, self._sem_tag)
+        return SemcorCorpusReader._word(elt, self._unit, self._pos_tag, self._sem_tag, self._wordnet)
 
     def handle_sent(self, elt):
         sent = []
