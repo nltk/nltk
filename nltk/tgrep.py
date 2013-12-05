@@ -530,7 +530,7 @@ def tgrep_compile(tgrep_string):
     parser = _build_tgrep_parser(True)
     return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
-def _treepositions_no_leaves(tree):
+def treepositions_no_leaves(tree):
     '''
     Returns all the tree positions in the given tree which are not
     leaf nodes.
@@ -559,7 +559,7 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
     if search_leaves:
         search_positions = tree.treepositions()
     else:
-        search_positions = _treepositions_no_leaves(tree)
+        search_positions = treepositions_no_leaves(tree)
     return [position for position in search_positions
             if tgrep_string(tree[position])]
 
