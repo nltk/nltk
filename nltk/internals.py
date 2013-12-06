@@ -168,7 +168,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
 
     # Check the return code.
     if p.returncode != 0:
-        print(stderr)
+        print(stderr.decode(sys.stdout.encoding))
         raise OSError('Java command failed!')
 
     return (stdout, stderr)
