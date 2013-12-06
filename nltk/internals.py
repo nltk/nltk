@@ -10,8 +10,7 @@ from __future__ import print_function
 
 import subprocess
 import os
-import os.path
-import re
+import re, sre_constants, sre_parse, sre_compile
 import warnings
 import textwrap
 import types
@@ -42,28 +41,17 @@ def convert_regexp_to_nongrouping(pattern):
     :type pattern: str
     :rtype: str
     """
-    # Sanity check: back-references are not allowed!
-    for s in re.findall(r'\\.|\(\?P=', pattern):
-        if s[1] in '0123456789' or s == '(?P=':
-            raise ValueError('Regular expressions with back-references '
-                             'are not supported: %r' % pattern)
+    def convert_regexp_to_nongrouping_parsed(parsed_pattern):
+        res_data = []
+        for key, value in parsed_pattern.data:
+            if key == sre_constants.SUBPATTERN:
+                index, subpattern = value
+                value = (None, convert_regexp_to_nongrouping_parsed(subpattern))
+            res_data.append((key, value))
+        parsed_pattern.data = res_data
+        return parsed_pattern
 
-    # This regexp substitution function replaces the string '('
-    # with the string '(?:', but otherwise makes no changes.
-    def subfunc(m):
-        return re.sub('^\((\?P<[^>]*>)?$', '(?:', m.group())
-
-    # Scan through the regular expression.  If we see any backslashed
-    # characters, ignore them.  If we see a named group, then
-    # replace it with "(?:".  If we see any open parens that are part
-    # of an extension group, ignore those too.  But if we see
-    # any other open paren, replace it with "(?:")
-    return re.sub(r'''(?x)
-        \\.           |  # Backslashed character
-        \(\?P<[^>]*>  |  # Named group
-        \(\?          |  # Extension group
-        \(               # Grouping parenthesis
-        ''', subfunc, pattern)
+    return sre_compile.compile(convert_regexp_to_nongrouping_parsed(sre_parse.parse(pattern)))
 
 
 ##########################################################################
@@ -150,10 +138,12 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
         config_java()
 
     # Set up the classpath.
-    if classpath is None:
-        classpath = NLTK_JAR
+    if isinstance(classpath, compat.string_types):
+        classpaths=[classpath]
     else:
-        classpath += os.path.pathsep + NLTK_JAR
+        classpaths=list(classpath)
+    classpaths.append(NLTK_JAR)
+    classpath=os.path.pathsep.join(classpaths)
 
     # Construct the full command string.
     cmd = list(cmd)
@@ -235,7 +225,7 @@ def parse_str(s, start_position):
     try:
         return eval(s[start_position:match.end()]), match.end()
     except ValueError as e:
-        raise ParseError('valid string (%s)' % e, start)
+        raise ParseError('invalid valid string (%s)' % e)
 
 _PARSE_INT_RE = re.compile(r'-?\d+')
 def parse_int(s, start_position):
