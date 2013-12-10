@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import tempfile
+import os
 from subprocess import PIPE
 
 from nltk import compat
@@ -154,9 +155,10 @@ class StanfordParser(ParserI):
 
         default_options = ' '.join(_java_options)
 
-        #configure java
+        # Configure java.
         config_java(options=self.java_options, verbose=verbose)
 
+        # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
         with tempfile.NamedTemporaryFile(mode='wb', delete=False) as input_file:
             # Write the actual sentences to the temporary input file
             if isinstance(input_, compat.text_type) and encoding:
@@ -166,14 +168,16 @@ class StanfordParser(ParserI):
 
             cmd.append(input_file.name)
 
-            # Run the tagger and get the output
+            # Run the tagger and get the output.
             stdout, stderr = java(cmd, classpath=(self._stanford_jar, self._model_jar),
                                   stdout=PIPE, stderr=PIPE)
             stdout = stdout.decode(encoding)
             if (not compat.PY3) and encoding == 'ascii':
                 stdout = str(stdout)
 
-        # Return java configurations to their default values
+        os.unlink(input_file.name)
+
+        # Return java configurations to their default values.
         config_java(options=default_options, verbose=False)
 
         return stdout
