@@ -34,6 +34,17 @@ class StanfordParser(ParserI):
         self._encoding = encoding
         self.java_options = java_options
 
+    def _parse_trees_output(self, output_):
+        res = []
+        cur_lines = []
+        for line in output_.splitlines(False):
+            if line == '':
+                res.append(Tree.parse('\n'.join(cur_lines)))
+                cur_lines = []
+            else:
+                cur_lines.append(line)
+        return res
+
     def parse(self, sentence, verbose=False):
         """
         Use StanfordParser to parse a sentence. Takes a sentence as a list of
@@ -52,11 +63,23 @@ class StanfordParser(ParserI):
         list where each sentence is a list of words.
         Each sentence will be automatically tagged with this StanfordParser instance's
         tagger.
+        If whitespaces exists inside a token, then the token will be treated as
+        separate tokens.
 
         :param sentences: Input sentences to parse
-        :type sentences: list(list(str))
+        :type sentence: list(list(str))
         :rtype: list(Tree)
         """
+        cmd = [
+            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            '-model', self.model_path,
+            '-sentences', 'newline',
+            '-outputFormat', 'penn',
+            '-tokenized',
+            '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor',
+        ]
+        return self._parse_trees_output(self._execute(
+            cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))
 
     def raw_parse(self, sentence, verbose=False):
         """
@@ -86,16 +109,7 @@ class StanfordParser(ParserI):
             '-sentences', 'newline',
             '-outputFormat', 'penn',
         ]
-        output_ = self._execute(cmd, '\n'.join(sentences), verbose)
-        res = []
-        cur_lines = []
-        for line in output_.splitlines(False):
-            if line == '':
-                res.append(Tree.parse('\n'.join(cur_lines)))
-                cur_lines = []
-            else:
-                cur_lines.append(line)
-        return res
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
 
     def tagged_parse(self, sentence, verbose=False):
         """
