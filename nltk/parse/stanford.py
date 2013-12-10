@@ -130,9 +130,23 @@ class StanfordParser(ParserI):
         The sentences must have already been tokenized and tagged.
 
         :param sentences: Input sentences to parse
-        :type sentence: list(list(tuple(str, str)))
+        :type sentences: list(list(tuple(str, str)))
         :rtype: Tree
         """
+        tagSeparator = '/'
+        cmd = [
+            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            '-model', self.model_path,
+            '-sentences', 'newline',
+            '-outputFormat', 'penn',
+            '-tokenized',
+            '-tagSeparator', tagSeparator,
+            '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer',
+            '-tokenizerMethod', 'newCoreLabelTokenizerFactory',
+        ]
+        # We don't need to escape slashes as "splitting is done on the last instance of the character in the token"
+        return self._parse_trees_output(self._execute(
+            cmd, '\n'.join(' '.join(tagSeparator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
 
     def _execute(self, cmd, input_, verbose=False):
         encoding = self._encoding
