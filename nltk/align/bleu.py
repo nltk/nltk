@@ -135,7 +135,7 @@ class BLEU(object):
 
         lengthes_ref = map(lambda x: abs(len(x) - c), references)
 
-        r = reduce(lambda x, y: min(x,y), lengthes_ref)
+        r = min(*lengthes_ref)
 
         if c > r:
             return 1
