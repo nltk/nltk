@@ -20,8 +20,6 @@ http://aclweb.org/anthology/J93-1004.pdf
 from __future__ import division
 import math
 
-from util import *
-
 infinity = float("inf")
 
 def erfcc(x):
@@ -38,7 +36,7 @@ def erfcc(x):
                           (-1.13520398 + t *
                            (1.48851587 + t *
                             (-.82215223 + t * .17087277)))))))))
-    if (x >= 0.):
+    if x >= 0.:
         return r
     else:
         return 2. - r
