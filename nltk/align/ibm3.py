@@ -8,9 +8,8 @@
 
 from __future__  import division
 from collections import defaultdict
-from nltk.align  import AlignedSent, Alignment
-from nltk.corpus import comtrans
-from ibm2 import IBMModel2
+from nltk.align  import AlignedSent
+from nltk.align.ibm2 import IBMModel2
 from math import factorial
 
 class hashabledict(dict):

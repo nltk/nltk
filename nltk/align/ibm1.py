@@ -14,7 +14,7 @@
 
 from __future__  import division
 from collections import defaultdict
-from nltk.align  import AlignedSent, Alignment
+from nltk.align  import AlignedSent
 from nltk.corpus import comtrans
 
 class IBMModel1(object):
