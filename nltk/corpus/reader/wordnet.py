@@ -551,7 +551,7 @@ class Synset(_WordNetObject):
             fake_synset._name = '*ROOT*'
             fake_synset.hypernyms = lambda: []
             fake_synset.instance_hypernyms = lambda: []
-            synsets.add(fake_synset)
+            synsets.append(fake_synset)
 
         try:
             if use_min_depth:
