@@ -545,7 +545,7 @@ class Synset(_WordNetObject):
             (eg: 'chef.n.01', 'fireman.n.01') but is retained for backwards compatibility
         :return: The synsets that are the lowest common hypernyms of both synsets
         """
-        synsets = self.common_hypernyms(self, other)
+        synsets = self.common_hypernyms(other)
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = '*ROOT*'
