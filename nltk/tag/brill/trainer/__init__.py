@@ -12,3 +12,6 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
+
+
+from nltk.tag.brill.trainer.fast import TaggerTrainer

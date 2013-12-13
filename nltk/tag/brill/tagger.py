@@ -35,8 +35,8 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
     Brill taggers can be created directly, from an initial tagger and
     a list of transformational rules; but more often, Brill taggers
-    are created by learning rules from a training corpus, using either
-    ``BrillTaggerTrainer`` or ``FastBrillTaggerTrainer``.
+    are created by learning rules from a training corpus, using one
+    of the TaggerTrainers available.
     """
 
     yaml_tag = '!nltk.BrillTagger'

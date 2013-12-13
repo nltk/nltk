@@ -57,7 +57,8 @@ from nltk.tag.brill.trainer.fast import (
 
 
 
-from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer
-from nltk.tag.brill.trainer.brillorig import BrillTaggerTrainer
+from nltk.tag.brill.trainer import TaggerTrainer
 from nltk.tag.brill.tagger import BrillTagger
+from nltk.tag.brill.erroranalysis import error_list
+from nltk.tag.brill.template import Template
 

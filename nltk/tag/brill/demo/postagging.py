@@ -19,8 +19,7 @@ import time
 from nltk import tag
 from nltk.corpus import treebank
 
-from nltk.tag.brill.erroranalysis import error_list
-from nltk.tag.brill.template import Template
+from nltk.tag.brill import error_list, Template, TaggerTrainer
 from nltk.tag.brill.application.postagging import Word, Pos
 
 def demo():
@@ -120,15 +119,9 @@ def demo_high_accuracy_rules():
     Discard rules with low accuracy. This may hurt performance a bit,
     but will often produce rules which are more interesting read to a human.
     """
-    postag(num_sents=3000, min_acc=0.96, min_score=10, training_algorithm="slow")
+    postag(num_sents=3000, min_acc=0.96, min_score=10)
 
-def demo_brillorig_training():
-    """
-    Demonstrate the original Brill algorithm. With the same min_score (and
-    quite a bit of patience), it should produce the same result as its
-    faster cousins.
-    """
-    postag(training_algorithm="brillorig", min_score=10)
+
 
 
 
@@ -150,7 +143,6 @@ def postag(
     learning_curve_output=None,
     learning_curve_take=300,
     baseline_backoff_tagger=None,
-    training_algorithm = "fast",
     separate_baseline_data=True,
     cache_baseline_tagger=None):
     """
@@ -206,9 +198,6 @@ def postag(
     :param baseline_backoff_tagger: the file where rules will be saved
     :type baseline_backoff_tagger: tagger
 
-    :param training_algorithm: at present, only "fast" or "brillorig"
-    :type training_algorithm: C{string}
-
     :param separate_baseline_data: use a fraction of the training data exclusively for training baseline
     :type separate_baseline_data: C{bool}
 
@@ -220,10 +209,6 @@ def postag(
     """
 
     # defaults
-    if training_algorithm == "fast":
-        from nltk.tag.brill.trainer.fast import TaggerTrainer
-    else:
-        from nltk.tag.brill.trainer.brillorig import TaggerTrainer
     baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
     if templates is None:
         ## pre-built template sets taken from typical systems or publications
