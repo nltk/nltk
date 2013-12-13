@@ -39,7 +39,7 @@ corpus, based on one or more "rule templates."
     ... (r'.*', 'NN')                      # nouns (default)
     ... ])
 
-    #!!TODO: update to use baseline = tag.UnigramTagger(training_data,
+    #!! FIXME: update to use baseline = tag.UnigramTagger(training_data,
     #backoff=backoff) as soon as UT gives consistent results for different python versions
     >>> baseline = backoff
     >>> templates = [
