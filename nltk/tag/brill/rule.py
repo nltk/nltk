@@ -239,7 +239,7 @@ class Rule(BrillRule):
         Return a string representation of this rule.
 
         >>> from nltk.tag.brill.rule import Rule
-        >>> from nltk.tag.brill.application.postagging import Pos
+        >>> from nltk.tag.brill.task.postagging import Pos
 
         >>> r = Rule(23, "VB", "NN", [(Pos([-2,-1]), 'DT')])
 

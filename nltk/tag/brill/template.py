@@ -97,7 +97,7 @@ class Template(BrillTemplateI):
 
         #For instance, importing some features
         >>> from nltk.tag.brill.template import Template
-        >>> from nltk.tag.brill.application.postagging import Word, Pos
+        >>> from nltk.tag.brill.task.postagging import Word, Pos
 
         #create some features
 
@@ -207,7 +207,7 @@ class Template(BrillTemplateI):
         The feature lists may have been specified
         manually, or generated from Feature.expand(). For instance,
 
-        >>> from nltk.tag.brill.application.postagging import Word, Pos
+        >>> from nltk.tag.brill.task.postagging import Word, Pos
         >>> from nltk.tag.brill.template import Template
 
         #creating some features
@@ -342,7 +342,7 @@ class Feature(yaml.YAMLObject):
         Construct a Feature which may apply at C{positions}.
 
         #For instance, importing some concrete subclasses (Feature is abstract)
-        >>> from nltk.tag.brill.application.postagging import Word, Pos
+        >>> from nltk.tag.brill.task.postagging import Word, Pos
 
         #Feature Word, applying at one of [-2, -1]
         >>> Word([-2,-1])
@@ -409,7 +409,7 @@ class Feature(yaml.YAMLObject):
         target feature at [0])
 
         #For instance, importing a concrete subclass (Feature is abstract)
-        >>> from nltk.tag.brill.application.postagging import Word
+        >>> from nltk.tag.brill.task.postagging import Word
 
         #First argument gives the possible start positions, second the
         #possible window lengths
@@ -463,7 +463,7 @@ class Feature(yaml.YAMLObject):
         other positions in addition).
 
         #For instance, importing a concrete subclass (Feature is abstract)
-        >>> from nltk.tag.brill.application.postagging import Word, Pos
+        >>> from nltk.tag.brill.task.postagging import Word, Pos
 
         >>> Word([-3,-2,-1]).issuperset(Word([-3,-2]))
         True
@@ -493,7 +493,7 @@ class Feature(yaml.YAMLObject):
         and there is some overlap in the positions they look at.
 
         #For instance, importing a concrete subclass (Feature is abstract)
-        >>> from nltk.tag.brill.application.postagging import Word, Pos
+        >>> from nltk.tag.brill.task.postagging import Word, Pos
 
         >>> Word([-3,-2,-1]).intersects(Word([-3,-2]))
         True

@@ -20,7 +20,7 @@ from nltk import tag
 from nltk.corpus import treebank
 
 from nltk.tag.brill import error_list, Template, TaggerTrainer
-from nltk.tag.brill.application.postagging import Word, Pos
+from nltk.tag.brill.task.postagging import Word, Pos
 
 def demo():
     """

@@ -8,7 +8,7 @@ import nltk
 from nltk import tag
 
 #multi-feature templates (recommended)
-from nltk.tag.brill.application.postagging import Word, Pos
+from nltk.tag.brill.task.postagging import Word, Pos
 from nltk.tag.brill.template import Template
 
 def nltkdemo18():
