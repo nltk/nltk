@@ -57,16 +57,6 @@ from nltk.tag.brill.trainer.fast import (
 
 
 
-#!! these re-exports are DEPRECATED -- import as from nltk.tag.brill.nltk2 instead
-from nltk.tag.brill.nltk2 import (
-    BrillTagger,
-    ProximateTagsRule,
-    ProximateWordsRule,
-    ProximateTokensRule,
-    ProximateTokensTemplate,
-    SymmetricProximateTokensTemplate
-)
-
 from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer
 from nltk.tag.brill.trainer.brillorig import BrillTaggerTrainer
 from nltk.tag.brill.tagger import BrillTagger

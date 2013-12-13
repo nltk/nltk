@@ -7,44 +7,9 @@ import sys
 import nltk
 from nltk import tag
 
-from nltk.tag.brill import nltk2
-
 #multi-feature templates (recommended)
 from nltk.tag.brill.application.postagging import Word, Pos
 from nltk.tag.brill.template import Template
-
-#one-feature templates (for backwards compatibility)
-from nltk.tag.brill.nltk2 import ProximateWordsRule as Word1F
-from nltk.tag.brill.nltk2 import ProximateTagsRule as Tag1F
-from nltk.tag.brill.nltk2 import ProximateTokensTemplate as Template1F
-
-
-
-def nltkdemo18nltk2():
-    """
-    Return 18 templates, from the nltk2 demo, in the original
-    single-feature syntax
-    """
-    return [
-        Template1F(Tag1F, (-1, -1)),
-        Template1F(Tag1F, ( 1, 1)),
-        Template1F(Tag1F, (-2, -2)),
-        Template1F(Tag1F, ( 2, 2)),
-        Template1F(Tag1F, (-2, -1)),
-        Template1F(Tag1F, ( 1, 2)),
-        Template1F(Tag1F, (-3, -1)),
-        Template1F(Tag1F, ( 1, 3)),
-        Template1F(Tag1F, (-1, -1), (1, 1)),
-        Template1F(Word1F, (-1, -1)),
-        Template1F(Word1F, ( 1, 1)),
-        Template1F(Word1F, (-2, -2)),
-        Template1F(Word1F, ( 2, 2)),
-        Template1F(Word1F, (-2, -1)),
-        Template1F(Word1F, ( 1, 2)),
-        Template1F(Word1F, (-3, -1)),
-        Template1F(Word1F, ( 1, 3)),
-        Template1F(Word1F, (-1, -1), (1, 1)),
-    ]
 
 def nltkdemo18():
     """
