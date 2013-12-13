@@ -4,6 +4,11 @@ from __future__ import division, print_function, unicode_literals
 import inspect
 import sys
 
+import nltk
+from nltk import tag
+
+from nltk.tag.brill import nltk2
+
 #multi-feature templates (recommended)
 from nltk.tag.brill.application.postagging import Word, Pos
 from nltk.tag.brill.template import Template
