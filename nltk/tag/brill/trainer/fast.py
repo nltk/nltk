@@ -108,7 +108,7 @@ class TaggerTrainer(object):
         #imports
         >>> from nltk.tag.brill.template import Template
         >>> from nltk.tag.brill.task.postagging import Pos, Word
-        >>> from nltk.tag import UnigramTagger, RegexpTagger
+        >>> from nltk.tag import RegexpTagger
         >>> from nltk.tag.brill.trainer.fast import TaggerTrainer
 
         #some data

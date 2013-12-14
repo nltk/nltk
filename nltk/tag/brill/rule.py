@@ -9,7 +9,6 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
-import abc
 
 
 from nltk.compat import python_2_unicode_compatible, unicode_repr
