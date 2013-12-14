@@ -100,7 +100,7 @@ def demo_learning_curve():
     the individual rules.
     Note: requires matplotlib
     """
-    postag(incremental_stats=True, learning_curve_output="learningcurve.png")
+    postag(incremental_stats=True, separate_baseline_data=True, learning_curve_output="learningcurve.png")
 
 def demo_error_analysis():
     """
@@ -144,7 +144,7 @@ def postag(
     learning_curve_output=None,
     learning_curve_take=300,
     baseline_backoff_tagger=None,
-    separate_baseline_data=True,
+    separate_baseline_data=False,
     cache_baseline_tagger=None):
     """
     Brill Tagger Demonstration
@@ -207,6 +207,9 @@ def postag(
     :type cache_baseline_tagger: C{string}
 
 
+    Note on separate_baseline_data: if True, reuse training data both for baseline and rule learner. This
+    is fast and fine for a demo, but is likely to generalize worse on unseen data.
+    Also cannot be sensibly used for learning curves on training data (the baseline will be artificially high).
     """
 
     # defaults
@@ -260,6 +263,9 @@ def postag(
         print("Incrementally tagging the test data, collecting individual rule statistics")
         (taggedtest, teststats) = brill_tagger.batch_tag_incremental(testing_data, gold_data)
         print("    Rule statistics collected")
+        if not separate_baseline_data:
+            print("WARNING: train_stats asked for separate_baseline_data=True; the baseline "
+                  "will be artificially high")
         trainstats = brill_tagger.train_stats()
         if template_stats:
             brill_tagger.print_template_statistics(teststats)
@@ -291,7 +297,7 @@ def postag(
         print("Reloaded pickled tagger from {0}".format(serialize_output))
         taggedtest_reloaded = brill_tagger.batch_tag(testing_data)
         if taggedtest == taggedtest_reloaded:
-            print("Reloaded tagger tried with identical results on test set")
+            print("Reloaded tagger tried on test set, results identical")
         else:
             print("PROBLEM: Reloaded tagger gave different results on test set")
 
@@ -364,4 +370,4 @@ def corpus_size(seqs):
     return (len(seqs), sum(len(x) for x in seqs))
 
 if __name__ == '__main__':
-    demo_serialize_tagger()
+    demo_learning_curve()
