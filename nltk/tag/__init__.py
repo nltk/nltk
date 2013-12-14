@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Taggers
 #
 # Copyright (C) 2001-2013 NLTK Project
@@ -66,7 +67,7 @@ from nltk.tag.sequential import (SequentialBackoffTagger, ContextTagger,
                                  BigramTagger, TrigramTagger, AffixTagger,
                                  RegexpTagger, ClassifierBasedTagger,
                                  ClassifierBasedPOSTagger)
-from nltk.tag.brill      import BrillTagger, BrillTaggerTrainer, FastBrillTaggerTrainer
+from nltk.tag.tbl      import BrillTagger, BrillTaggerTrainer, FastBrillTaggerTrainer
 from nltk.tag.tnt        import TnT
 from nltk.tag.hunpos     import HunposTagger
 from nltk.tag.stanford   import StanfordTagger

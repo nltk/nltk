@@ -1,20 +1,15 @@
 # -*- coding: utf-8 -*-
-
-
-# Natural Language Toolkit: Brill Tagger
+# Natural Language Toolkit: Transformation-based learning
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
-#          Edward Loper <edloper@gmail.com>
-#          Steven Bird <stevenbird1@gmail.com>
-#          Marcus Uneson <marcus.uneson@gmail.com>
+# Author: Marcus Uneson <marcus.uneson@gmail.com>
+#   based on previous (nltk2) version by
+#   Christopher Maloof, Edward Loper, Steven Bird
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
-import abc
 
-import yaml
 
 from nltk.compat import python_2_unicode_compatible, unicode_repr
 
@@ -23,10 +18,10 @@ from nltk.compat import python_2_unicode_compatible, unicode_repr
 ######################################################################
 
 
-class BrillRule(yaml.YAMLObject):
+class BrillRule(object):
     """
     An interface for tag transformations on a tagged corpus, as
-    performed by brill taggers.  Each transformation finds all tokens
+    performed by tbl taggers.  Each transformation finds all tokens
     in the corpus that are tagged with a specific original tag and
     satisfy a specific condition, and replaces their tags with a
     replacement tag.  For any given transformation, the original
@@ -116,7 +111,6 @@ class Rule(BrillRule):
           is M{value}.
 
     """
-    yaml_tag = '!Rule'
     def __init__(self, templateid, original_tag, replacement_tag, conditions):
         """
         Construct a new Rule that changes a token's tag from
@@ -138,22 +132,6 @@ class Rule(BrillRule):
         self._conditions = conditions
         self.templateid = templateid
 
-    # Make Rules look nice in YAML.
-    @classmethod
-    def to_yaml(cls, dumper, data):
-        d = dict(
-            description=str(data),
-            conditions=list(data._conditions),
-            original=data.original_tag,
-            replacement=data.replacement_tag,
-            templateid=data.templateid)
-        node = dumper.represent_mapping(cls.yaml_tag, d)
-        return node
-
-    @classmethod
-    def from_yaml(cls, loader, node):
-        map = loader.construct_mapping(node, deep=True)
-        return cls(map['templateid'], map['original'], map['replacement'], map['conditions'])
 
 
     def applies(self, tokens, index):
@@ -238,8 +216,8 @@ class Rule(BrillRule):
         """
         Return a string representation of this rule.
 
-        >>> from nltk.tag.brill.rule import Rule
-        >>> from nltk.tag.brill.application.postagging import Pos
+        >>> from nltk.tag.tbl.rule import Rule
+        >>> from nltk.tag.tbl.task.postagging import Pos
 
         >>> r = Rule(23, "VB", "NN", [(Pos([-2,-1]), 'DT')])
 
@@ -257,7 +235,7 @@ class Rule(BrillRule):
         >>> r.format("not_found")
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-          File "nltk/tag/brill/rule.py", line 256, in format
+          File "nltk/tag/tbl/rule.py", line 256, in format
             raise ValueError("unknown rule format spec: {0}".format(fmt))
         ValueError: unknown rule format spec: not_found
         >>>

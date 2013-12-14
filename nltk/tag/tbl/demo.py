@@ -1,27 +1,27 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Brill Tagger
+# Natural Language Toolkit: Transformation-based learning
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
-#          Edward Loper <edloper@gmail.com>
-#          Steven Bird <stevenbird1@gmail.com>
-#          Marcus Uneson <marcus.uneson@gmail.com>
+# Author: Marcus Uneson <marcus.uneson@gmail.com>
+#   based on previous (nltk2) version by
+#   Christopher Maloof, Edward Loper, Steven Bird
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function, absolute_import, division
 import os
+import pickle
 
 import random
-import yaml
 import time
 
 from nltk import tag
 from nltk.corpus import treebank
 
-from nltk.tag.brill.erroranalysis import error_list
-from nltk.tag.brill.template import Template
-from nltk.tag.brill.application.postagging import Word, Pos
+
+
+from nltk.tag.tbl import error_list, Template, TaggerTrainer
+from nltk.tag.tbl.task.postagging import Word, Pos
 
 def demo():
     """
@@ -100,7 +100,7 @@ def demo_learning_curve():
     the individual rules.
     Note: requires matplotlib
     """
-    postag(incremental_stats=True, learning_curve_output="learningcurve.png")
+    postag(incremental_stats=True, separate_baseline_data=True, learning_curve_output="learningcurve.png")
 
 def demo_error_analysis():
     """
@@ -110,25 +110,19 @@ def demo_error_analysis():
 
 def demo_serialize_tagger():
     """
-    Serializes the learned tagger to a file in yaml format; reloads it
+    Serializes the learned tagger to a file in pickle format; reloads it
     and validates the process.
     """
-    postag(serialize_output="rules.yaml")
+    postag(serialize_output="tagger.pcl")
 
 def demo_high_accuracy_rules():
     """
     Discard rules with low accuracy. This may hurt performance a bit,
     but will often produce rules which are more interesting read to a human.
     """
-    postag(num_sents=3000, min_acc=0.96, min_score=10, training_algorithm="slow")
+    postag(num_sents=3000, min_acc=0.96, min_score=10)
 
-def demo_brillorig_training():
-    """
-    Demonstrate the original Brill algorithm. With the same min_score (and
-    quite a bit of patience), it should produce the same result as its
-    faster cousins.
-    """
-    postag(training_algorithm="brillorig", min_score=10)
+
 
 
 
@@ -150,8 +144,7 @@ def postag(
     learning_curve_output=None,
     learning_curve_take=300,
     baseline_backoff_tagger=None,
-    training_algorithm = "fast",
-    separate_baseline_data=True,
+    separate_baseline_data=False,
     cache_baseline_tagger=None):
     """
     Brill Tagger Demonstration
@@ -194,7 +187,7 @@ def postag(
     :param error_output: the file where errors will be saved
     :type error_output: C{string}
 
-    :param serialize_output: the file where the learned brill tagger will be saved
+    :param serialize_output: the file where the learned tbl tagger will be saved
     :type serialize_output: C{string}
 
     :param learning_curve_output: filename of plot of learning curve(s) (train and also test, if available)
@@ -206,9 +199,6 @@ def postag(
     :param baseline_backoff_tagger: the file where rules will be saved
     :type baseline_backoff_tagger: tagger
 
-    :param training_algorithm: at present, only "fast" or "brillorig"
-    :type training_algorithm: C{string}
-
     :param separate_baseline_data: use a fraction of the training data exclusively for training baseline
     :type separate_baseline_data: C{bool}
 
@@ -217,20 +207,19 @@ def postag(
     :type cache_baseline_tagger: C{string}
 
 
+    Note on separate_baseline_data: if True, reuse training data both for baseline and rule learner. This
+    is fast and fine for a demo, but is likely to generalize worse on unseen data.
+    Also cannot be sensibly used for learning curves on training data (the baseline will be artificially high).
     """
 
     # defaults
-    if training_algorithm == "fast":
-        from nltk.tag.brill.trainer.fast import TaggerTrainer
-    else:
-        from nltk.tag.brill.trainer.brillorig import TaggerTrainer
     baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
     if templates is None:
-        ## pre-built template sets taken from typical systems or publications
-        from nltk.tag.brill.demo import postagging_templates
-        ## for instance:
-        templates = postagging_templates.fntbl37()
-
+        from nltk.tag.tbl.task import postagging
+        # some pre-built template sets taken from typical systems or publications are
+        # available. Print a list with postagging.describe_template_sets()
+        # for instance:
+        templates = postagging.brill24()
     (training_data, baseline_data, gold_data, testing_data) = \
        _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseline_data)
 
@@ -241,11 +230,11 @@ def postag(
         if not os.path.exists(cache_baseline_tagger):
             baseline_tagger = tag.UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
             with open(cache_baseline_tagger, 'w') as print_rules:
-                yaml.dump(baseline_tagger, print_rules)
-            print("Trained baseline tagger, wrote yaml to {0}".format(cache_baseline_tagger))
+                pickle.dump(baseline_tagger, print_rules)
+            print("Trained baseline tagger, pickled it to {0}".format(cache_baseline_tagger))
         with open(cache_baseline_tagger, "r") as print_rules:
-            baseline_tagger= yaml.load(print_rules)
-            print("Reloaded YAML-serialized tagger from {0}".format(cache_baseline_tagger))
+            baseline_tagger= pickle.load(print_rules)
+            print("Reloaded pickled tagger from {0}".format(cache_baseline_tagger))
     else:
         baseline_tagger = tag.UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
         print("Trained baseline tagger")
@@ -255,9 +244,9 @@ def postag(
     # creating a Brill tagger
     tbrill = time.time()
     trainer = TaggerTrainer(baseline_tagger, templates, trace, ruleformat=ruleformat)
-    print("Training brill tagger...")
+    print("Training tbl tagger...")
     brill_tagger = trainer.train(training_data, max_rules, min_score, min_acc)
-    print("Trained brill tagger in {0:0.2f} seconds".format(time.time() - tbrill))
+    print("Trained tbl tagger in {0:0.2f} seconds".format(time.time() - tbrill))
     if gold_data:
         print("    Accuracy on test set: %.4f" % brill_tagger.evaluate(gold_data))
 
@@ -274,6 +263,9 @@ def postag(
         print("Incrementally tagging the test data, collecting individual rule statistics")
         (taggedtest, teststats) = brill_tagger.batch_tag_incremental(testing_data, gold_data)
         print("    Rule statistics collected")
+        if not separate_baseline_data:
+            print("WARNING: train_stats asked for separate_baseline_data=True; the baseline "
+                  "will be artificially high")
         trainstats = brill_tagger.train_stats()
         if template_stats:
             brill_tagger.print_template_statistics(teststats)
@@ -294,18 +286,18 @@ def postag(
                 f.write(e+'\n')
         print("Wrote tagger errors including context to {0}".format(error_output))
 
-    # serializing the tagger to a yaml file and reloading (just to see it works)
+    # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.batch_tag(testing_data)
         with open(serialize_output, 'w') as print_rules:
-            yaml.dump(brill_tagger, print_rules)
-        print("Wrote YAML-serialized tagger to {0}".format(serialize_output))
+            pickle.dump(brill_tagger, print_rules)
+        print("Wrote pickled tagger to {0}".format(serialize_output))
         with open(serialize_output, "r") as print_rules:
-            brill_tagger_reloaded = yaml.load(print_rules)
-        print("Reloaded YAML-serialized tagger from {0}".format(serialize_output))
+            brill_tagger_reloaded = pickle.load(print_rules)
+        print("Reloaded pickled tagger from {0}".format(serialize_output))
         taggedtest_reloaded = brill_tagger.batch_tag(testing_data)
         if taggedtest == taggedtest_reloaded:
-            print("Reloaded tagger tried with identical results on test set")
+            print("Reloaded tagger tried on test set, results identical")
         else:
             print("PROBLEM: Reloaded tagger gave different results on test set")
 
@@ -376,3 +368,6 @@ REGEXP_TAGGER = tag.RegexpTagger(
 
 def corpus_size(seqs):
     return (len(seqs), sum(len(x) for x in seqs))
+
+if __name__ == '__main__':
+    demo_learning_curve()

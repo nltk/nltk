@@ -1,30 +1,26 @@
 # -*- coding: utf-8 -*-
-
-
-# Natural Language Toolkit: Brill Tagger
+# Natural Language Toolkit: Transformation-based learning
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
-#          Edward Loper <edloper@gmail.com>
-#          Steven Bird <stevenbird1@gmail.com>
-#          Marcus Uneson <marcus.uneson@gmail.com>
+# Author: Marcus Uneson <marcus.uneson@gmail.com>
+#   based on previous (nltk2) version by
+#   Christopher Maloof, Edward Loper, Steven Bird
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function, division
 
 from collections import defaultdict
-import yaml
 
 from nltk.compat import Counter
 from nltk.tag.api import TaggerI
-from nltk.tag.brill import template
+from nltk.tag.tbl import template
 
 ######################################################################
 ## The Brill Tagger
 ######################################################################
 
-class BrillTagger(TaggerI, yaml.YAMLObject):
+class BrillTagger(TaggerI):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     initial tagger (such as ``tag.DefaultTagger``) to assign an initial
@@ -35,11 +31,10 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 
     Brill taggers can be created directly, from an initial tagger and
     a list of transformational rules; but more often, Brill taggers
-    are created by learning rules from a training corpus, using either
-    ``BrillTaggerTrainer`` or ``FastBrillTaggerTrainer``.
+    are created by learning rules from a training corpus, using one
+    of the TaggerTrainers available.
     """
 
-    yaml_tag = '!nltk.BrillTagger'
     def __init__(self, initial_tagger, rules, training_stats=None):
         """
         :param initial_tagger: The initial tagger

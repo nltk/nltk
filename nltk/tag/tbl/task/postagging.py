@@ -1,45 +1,39 @@
 # -*- coding: utf-8 -*-
+# Natural Language Toolkit: Transformation-based learning
+#
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Marcus Uneson <marcus.uneson@gmail.com>
+#   based on previous (nltk2) version by
+#   Christopher Maloof, Edward Loper, Steven Bird
+# URL: <http://nltk.org/>
+# For license information, see  LICENSE.TXT
 
-from __future__ import division, print_function, unicode_literals
-import inspect
-import sys
-
-#multi-feature templates (recommended)
-from nltk.tag.brill.application.postagging import Word, Pos
-from nltk.tag.brill.template import Template
-
-#one-feature templates (for backwards compatibility)
-from nltk.tag.brill.nltk2 import ProximateWordsRule as Word1F
-from nltk.tag.brill.nltk2 import ProximateTagsRule as Tag1F
-from nltk.tag.brill.nltk2 import ProximateTokensTemplate as Template1F
+import inspect, sys
+from nltk.tag.tbl import Feature, Template
 
 
-
-def nltkdemo18nltk2():
+class Word(Feature):
     """
-    Return 18 templates, from the nltk2 demo, in the original
-    single-feature syntax
+    Feature which examines the text (word) of nearby tokens.
     """
-    return [
-        Template1F(Tag1F, (-1, -1)),
-        Template1F(Tag1F, ( 1, 1)),
-        Template1F(Tag1F, (-2, -2)),
-        Template1F(Tag1F, ( 2, 2)),
-        Template1F(Tag1F, (-2, -1)),
-        Template1F(Tag1F, ( 1, 2)),
-        Template1F(Tag1F, (-3, -1)),
-        Template1F(Tag1F, ( 1, 3)),
-        Template1F(Tag1F, (-1, -1), (1, 1)),
-        Template1F(Word1F, (-1, -1)),
-        Template1F(Word1F, ( 1, 1)),
-        Template1F(Word1F, (-2, -2)),
-        Template1F(Word1F, ( 2, 2)),
-        Template1F(Word1F, (-2, -1)),
-        Template1F(Word1F, ( 1, 2)),
-        Template1F(Word1F, (-3, -1)),
-        Template1F(Word1F, ( 1, 3)),
-        Template1F(Word1F, (-1, -1), (1, 1)),
-    ]
+
+    @staticmethod
+    def extract_property(tokens, index):
+        """@return: The given token's text."""
+        return tokens[index][0]
+
+
+class Pos(Feature):
+    """
+    Feature which examines the tags of nearby tokens.
+    """
+
+    @staticmethod
+    def extract_property(tokens, index):
+        """@return: The given token's tag."""
+        return tokens[index][1]
+
+
 
 def nltkdemo18():
     """
@@ -165,6 +159,7 @@ def describe_template_sets():
     #a bit of magic to get all functions in this module
     templatesets = inspect.getmembers(sys.modules[__name__], inspect.isfunction)
     for (name, obj) in templatesets:
-        if name == "describe_template_sets": continue
+        if name == "describe_template_sets":
+            continue
         print(name, obj.__doc__, "\n")
 
