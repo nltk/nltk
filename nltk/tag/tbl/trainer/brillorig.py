@@ -14,7 +14,7 @@ from collections import defaultdict
 import textwrap
 
 from nltk.tag.util import untag
-from nltk.tag.brill.tagger import BrillTagger
+from nltk.tag.tbl.tagger import BrillTagger
 
 ######################################################################
 ## Brill Tagger Trainer
@@ -22,7 +22,7 @@ from nltk.tag.brill.tagger import BrillTagger
 
 class TaggerTrainer(object):
     """
-    A trainer for brill taggers.
+    A trainer for tbl taggers.
 
     :param deterministic: If true, then choose between rules that
         have the same score by picking the one whose __repr__
@@ -56,10 +56,10 @@ class TaggerTrainer(object):
         *min_acc*.
 
         #imports
-        >>> from nltk.tag.brill.template import Template
-        >>> from nltk.tag.brill.task.postagging import Pos, Word
+        >>> from nltk.tag.tbl.template import Template
+        >>> from nltk.tag.tbl.task.postagging import Pos, Word
         >>> from nltk.tag import RegexpTagger
-        >>> from nltk.tag.brill.trainer.brillorig import TaggerTrainer
+        >>> from nltk.tag.tbl.trainer.brillorig import TaggerTrainer
 
         #some data
         >>> from nltk.corpus import treebank
@@ -338,7 +338,7 @@ class TaggerTrainer(object):
         Find all rules that correct at least one token's tag in *test_sents*.
 
         :return: A list of tuples ``(rule, fixscore)``, where rule
-            is a brill rule and ``fixscore`` is the number of tokens
+            is a tbl rule and ``fixscore`` is the number of tokens
             whose tag the rule corrects.  Note that ``fixscore`` does
             *not* include the number of tokens whose tags are changed
             to incorrect values.

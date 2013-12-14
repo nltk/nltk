@@ -17,7 +17,7 @@ from codecs import open
 import textwrap
 
 from nltk.tag.util import untag
-from nltk.tag.brill.tagger import BrillTagger
+from nltk.tag.tbl.tagger import BrillTagger
 
 ######################################################################
 ## Fast Brill Tagger Trainer
@@ -25,7 +25,7 @@ from nltk.tag.brill.tagger import BrillTagger
 
 class TaggerTrainer(object):
     """
-    A faster trainer for brill taggers.
+    A faster trainer for tbl taggers.
     """
     def __init__(self, initial_tagger, templates, trace=0,
                  deterministic=None, ruleformat="str"):
@@ -106,10 +106,10 @@ class TaggerTrainer(object):
         *min_acc*.
 
         #imports
-        >>> from nltk.tag.brill.template import Template
-        >>> from nltk.tag.brill.task.postagging import Pos, Word
+        >>> from nltk.tag.tbl.template import Template
+        >>> from nltk.tag.tbl.task.postagging import Pos, Word
         >>> from nltk.tag import RegexpTagger
-        >>> from nltk.tag.brill.trainer.fast import TaggerTrainer
+        >>> from nltk.tag.tbl.trainer.fast import TaggerTrainer
 
         #some data
         >>> from nltk.corpus import treebank

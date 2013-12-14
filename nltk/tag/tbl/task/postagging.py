@@ -9,7 +9,7 @@
 # For license information, see  LICENSE.TXT
 
 import inspect, sys
-from nltk.tag.brill import Feature, Template
+from nltk.tag.tbl import Feature, Template
 
 
 class Word(Feature):

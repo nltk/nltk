@@ -21,24 +21,24 @@ mechanism for encoding domain knowledge to the system.
 
 
 #here goes imports which are re-exported for convenient top-level import
-#(as nltk.tag.brill.*)
+#(as nltk.tag.tbl.*)
 
-from nltk.tag.brill.template import Template
+from nltk.tag.tbl.template import Template
 #API: Template(...), Template.expand(...)
 
-from nltk.tag.brill.task.api import Feature
+from nltk.tag.tbl.task.api import Feature
 #API: Feature(...), Feature.expand(...)
 
-from nltk.tag.brill.rule import Rule
+from nltk.tag.tbl.rule import Rule
 #API: Rule.format(...), Rule.templatetid
 
-from nltk.tag.brill.erroranalysis import error_list
+from nltk.tag.tbl.erroranalysis import error_list
 
-from nltk.tag.brill.trainer.fast import TaggerTrainer
+from nltk.tag.tbl.trainer.fast import TaggerTrainer
 #API: TaggerTrainer(...), TaggerTrainer.train(...)
 
 #for reference:
-#API of nltk.tag.brill.tagger.BrillTagger,
+#API of nltk.tag.tbl.tagger.BrillTagger,
 #returned by TaggerTrainer.train(...):
 #    t = TaggerTrainer.train(...)
 #    t.rules(...)
@@ -51,7 +51,7 @@ from nltk.tag.brill.trainer.fast import TaggerTrainer
 
 #some additional exports, not part of the primary API but used in some doctests
 #(candidates for deletion)
-from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer
-from nltk.tag.brill.trainer.brillorig import BrillTaggerTrainer
-from nltk.tag.brill.tagger import BrillTagger
+from nltk.tag.tbl.trainer.fast import FastBrillTaggerTrainer
+from nltk.tag.tbl.trainer.brillorig import BrillTaggerTrainer
+from nltk.tag.tbl.tagger import BrillTagger
 

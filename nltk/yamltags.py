@@ -29,6 +29,6 @@ def register_tag(tag, classpath):
                          metaloader(classpath))
 
 register_tag('tag.Unigram', 'nltk.tag.unigram.Unigram')
-register_tag('tag.Brill', 'nltk.tag.brill.Brill')
+register_tag('tag.Brill', 'nltk.tag.tbl.Brill')
 
 __all__ = ['custom_import', 'metaloader', 'register_tag']

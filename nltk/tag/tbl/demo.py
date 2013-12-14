@@ -20,8 +20,8 @@ from nltk.corpus import treebank
 
 
 
-from nltk.tag.brill import error_list, Template, TaggerTrainer
-from nltk.tag.brill.task.postagging import Word, Pos
+from nltk.tag.tbl import error_list, Template, TaggerTrainer
+from nltk.tag.tbl.task.postagging import Word, Pos
 
 def demo():
     """
@@ -187,7 +187,7 @@ def postag(
     :param error_output: the file where errors will be saved
     :type error_output: C{string}
 
-    :param serialize_output: the file where the learned brill tagger will be saved
+    :param serialize_output: the file where the learned tbl tagger will be saved
     :type serialize_output: C{string}
 
     :param learning_curve_output: filename of plot of learning curve(s) (train and also test, if available)
@@ -215,7 +215,7 @@ def postag(
     # defaults
     baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
     if templates is None:
-        from nltk.tag.brill.task import postagging
+        from nltk.tag.tbl.task import postagging
         # some pre-built template sets taken from typical systems or publications are
         # available. Print a list with postagging.describe_template_sets()
         # for instance:
@@ -244,9 +244,9 @@ def postag(
     # creating a Brill tagger
     tbrill = time.time()
     trainer = TaggerTrainer(baseline_tagger, templates, trace, ruleformat=ruleformat)
-    print("Training brill tagger...")
+    print("Training tbl tagger...")
     brill_tagger = trainer.train(training_data, max_rules, min_score, min_acc)
-    print("Trained brill tagger in {0:0.2f} seconds".format(time.time() - tbrill))
+    print("Trained tbl tagger in {0:0.2f} seconds".format(time.time() - tbrill))
     if gold_data:
         print("    Accuracy on test set: %.4f" % brill_tagger.evaluate(gold_data))
 

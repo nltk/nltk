@@ -10,7 +10,7 @@
 
 from __future__ import print_function
 import itertools as it
-from nltk.tag.brill.task.api import Feature
+from nltk.tag.tbl.task.api import Feature
 
 
 class BrillTemplateI(object):
@@ -60,12 +60,12 @@ class BrillTemplateI(object):
         raise NotImplementedError
 
 
-from nltk.tag.brill.rule import Rule
+from nltk.tag.tbl.rule import Rule
 
 
 class Template(BrillTemplateI):
     """
-    A brill Template that generates a list of L{Rule}s that apply at a given sentence
+    A tbl Template that generates a list of L{Rule}s that apply at a given sentence
     position.  In particular, each C{Template} is parameterized by a list of
     independent features (a combination of a specific
     property to extract and a list C{L} of relative positions at which to extract
@@ -85,7 +85,7 @@ class Template(BrillTemplateI):
 
         Takes a list of Features. A C{Feature} is a combination
         of a specific property and its relative positions and should be
-        a subclass of L{nltk.tag.brill.template.Feature}.
+        a subclass of L{nltk.tag.tbl.template.Feature}.
 
         An alternative calling convention (kept for backwards compatibility,
         but less expressive as it only permits one feature type) is
@@ -94,8 +94,8 @@ class Template(BrillTemplateI):
         Template(Feature(start1, end1), Feature(start2, end2), ...)
 
         #For instance, importing some features
-        >>> from nltk.tag.brill.template import Template
-        >>> from nltk.tag.brill.task.postagging import Word, Pos
+        >>> from nltk.tag.tbl.template import Template
+        >>> from nltk.tag.tbl.task.postagging import Word, Pos
 
         #create some features
 
@@ -122,7 +122,7 @@ class Template(BrillTemplateI):
         >>> Template(Word, (-2,-1), Pos, (0,0))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-          File "nltk/tag/brill/template.py", line 143, in __init__
+          File "nltk/tag/tbl/template.py", line 143, in __init__
             raise TypeError(
         TypeError: expected either Feature1(args), Feature2(args), ... or Feature, (start1, end1), (start2, end2), ...
 
@@ -205,8 +205,8 @@ class Template(BrillTemplateI):
         The feature lists may have been specified
         manually, or generated from Feature.expand(). For instance,
 
-        >>> from nltk.tag.brill.task.postagging import Word, Pos
-        >>> from nltk.tag.brill.template import Template
+        >>> from nltk.tag.tbl.task.postagging import Word, Pos
+        >>> from nltk.tag.tbl.template import Template
 
         #creating some features
         >>> (wd_0, wd_01) = (Word([0]), Word([0,1]))

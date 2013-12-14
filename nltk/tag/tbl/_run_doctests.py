@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-run the doctests in nltk.tag.brill
+run the doctests in nltk.tag.tbl
 """
 
 
@@ -10,8 +10,8 @@ import glob, sys, subprocess, os.path
 from os.path import abspath
 
 currdir = os.getcwd()
-if not currdir.endswith("nltk/tag/brill"):
-    raise RuntimeError("run me in /<PATH/TO/NLTK>/nltk/tag/brill/")
+if not currdir.endswith("nltk/tag/tbl"):
+    raise RuntimeError("run me in /<PATH/TO/NLTK>/nltk/tag/tbl/")
 sys.path.insert(0, "../../..")
 
 #a list of all the python files in this dir and two levels of subdirs

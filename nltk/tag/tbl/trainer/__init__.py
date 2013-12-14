@@ -11,4 +11,4 @@
 from __future__ import print_function
 
 
-from nltk.tag.brill.trainer.fast import TaggerTrainer
+from nltk.tag.tbl.trainer.fast import TaggerTrainer

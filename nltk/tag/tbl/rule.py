@@ -21,7 +21,7 @@ from nltk.compat import python_2_unicode_compatible, unicode_repr
 class BrillRule(object):
     """
     An interface for tag transformations on a tagged corpus, as
-    performed by brill taggers.  Each transformation finds all tokens
+    performed by tbl taggers.  Each transformation finds all tokens
     in the corpus that are tagged with a specific original tag and
     satisfy a specific condition, and replaces their tags with a
     replacement tag.  For any given transformation, the original
@@ -216,8 +216,8 @@ class Rule(BrillRule):
         """
         Return a string representation of this rule.
 
-        >>> from nltk.tag.brill.rule import Rule
-        >>> from nltk.tag.brill.task.postagging import Pos
+        >>> from nltk.tag.tbl.rule import Rule
+        >>> from nltk.tag.tbl.task.postagging import Pos
 
         >>> r = Rule(23, "VB", "NN", [(Pos([-2,-1]), 'DT')])
 
@@ -235,7 +235,7 @@ class Rule(BrillRule):
         >>> r.format("not_found")
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-          File "nltk/tag/brill/rule.py", line 256, in format
+          File "nltk/tag/tbl/rule.py", line 256, in format
             raise ValueError("unknown rule format spec: {0}".format(fmt))
         ValueError: unknown rule format spec: not_found
         >>>

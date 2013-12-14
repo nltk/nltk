@@ -14,7 +14,7 @@ from collections import defaultdict
 
 from nltk.compat import Counter
 from nltk.tag.api import TaggerI
-from nltk.tag.brill import template
+from nltk.tag.tbl import template
 
 ######################################################################
 ## The Brill Tagger
