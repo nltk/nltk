@@ -11,9 +11,9 @@
 
 from __future__ import print_function, absolute_import, division
 import os
+import pickle
 
 import random
-import yaml
 import time
 
 from nltk import tag
@@ -109,10 +109,10 @@ def demo_error_analysis():
 
 def demo_serialize_tagger():
     """
-    Serializes the learned tagger to a file in yaml format; reloads it
+    Serializes the learned tagger to a file in pickle format; reloads it
     and validates the process.
     """
-    postag(serialize_output="rules.yaml")
+    postag(serialize_output="tagger.pcl")
 
 def demo_high_accuracy_rules():
     """
@@ -226,11 +226,11 @@ def postag(
         if not os.path.exists(cache_baseline_tagger):
             baseline_tagger = tag.UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
             with open(cache_baseline_tagger, 'w') as print_rules:
-                yaml.dump(baseline_tagger, print_rules)
-            print("Trained baseline tagger, wrote yaml to {0}".format(cache_baseline_tagger))
+                pickle.dump(baseline_tagger, print_rules)
+            print("Trained baseline tagger, pickled it to {0}".format(cache_baseline_tagger))
         with open(cache_baseline_tagger, "r") as print_rules:
-            baseline_tagger= yaml.load(print_rules)
-            print("Reloaded YAML-serialized tagger from {0}".format(cache_baseline_tagger))
+            baseline_tagger= pickle.load(print_rules)
+            print("Reloaded pickled tagger from {0}".format(cache_baseline_tagger))
     else:
         baseline_tagger = tag.UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
         print("Trained baseline tagger")
@@ -279,15 +279,15 @@ def postag(
                 f.write(e+'\n')
         print("Wrote tagger errors including context to {0}".format(error_output))
 
-    # serializing the tagger to a yaml file and reloading (just to see it works)
+    # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.batch_tag(testing_data)
         with open(serialize_output, 'w') as print_rules:
-            yaml.dump(brill_tagger, print_rules)
-        print("Wrote YAML-serialized tagger to {0}".format(serialize_output))
+            pickle.dump(brill_tagger, print_rules)
+        print("Wrote pickled tagger to {0}".format(serialize_output))
         with open(serialize_output, "r") as print_rules:
-            brill_tagger_reloaded = yaml.load(print_rules)
-        print("Reloaded YAML-serialized tagger from {0}".format(serialize_output))
+            brill_tagger_reloaded = pickle.load(print_rules)
+        print("Reloaded pickled tagger from {0}".format(serialize_output))
         taggedtest_reloaded = brill_tagger.batch_tag(testing_data)
         if taggedtest == taggedtest_reloaded:
             print("Reloaded tagger tried with identical results on test set")

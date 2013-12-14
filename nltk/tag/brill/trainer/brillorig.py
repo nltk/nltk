@@ -60,7 +60,7 @@ class TaggerTrainer(object):
 
         #imports
         >>> from nltk.tag.brill.template import Template
-        >>> from nltk.tag.brill.application.postagging import Pos, Word
+        >>> from nltk.tag.brill.task.postagging import Pos, Word
         >>> from nltk.tag import UnigramTagger, RegexpTagger
         >>> from nltk.tag.brill.trainer.brillorig import TaggerTrainer
 

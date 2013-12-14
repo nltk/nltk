@@ -14,7 +14,6 @@
 from __future__ import print_function
 import abc
 
-import yaml
 
 from nltk.compat import python_2_unicode_compatible, unicode_repr
 
@@ -23,7 +22,7 @@ from nltk.compat import python_2_unicode_compatible, unicode_repr
 ######################################################################
 
 
-class BrillRule(yaml.YAMLObject):
+class BrillRule(object):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by brill taggers.  Each transformation finds all tokens
@@ -116,7 +115,6 @@ class Rule(BrillRule):
           is M{value}.
 
     """
-    yaml_tag = '!Rule'
     def __init__(self, templateid, original_tag, replacement_tag, conditions):
         """
         Construct a new Rule that changes a token's tag from
@@ -138,22 +136,6 @@ class Rule(BrillRule):
         self._conditions = conditions
         self.templateid = templateid
 
-    # Make Rules look nice in YAML.
-    @classmethod
-    def to_yaml(cls, dumper, data):
-        d = dict(
-            description=str(data),
-            conditions=list(data._conditions),
-            original=data.original_tag,
-            replacement=data.replacement_tag,
-            templateid=data.templateid)
-        node = dumper.represent_mapping(cls.yaml_tag, d)
-        return node
-
-    @classmethod
-    def from_yaml(cls, loader, node):
-        map = loader.construct_mapping(node, deep=True)
-        return cls(map['templateid'], map['original'], map['replacement'], map['conditions'])
 
 
     def applies(self, tokens, index):

@@ -14,7 +14,6 @@
 from __future__ import print_function, division
 
 from collections import defaultdict
-import yaml
 
 from nltk.compat import Counter
 from nltk.tag.api import TaggerI
@@ -24,7 +23,7 @@ from nltk.tag.brill import template
 ## The Brill Tagger
 ######################################################################
 
-class BrillTagger(TaggerI, yaml.YAMLObject):
+class BrillTagger(TaggerI):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     initial tagger (such as ``tag.DefaultTagger``) to assign an initial
@@ -39,7 +38,6 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
     of the TaggerTrainers available.
     """
 
-    yaml_tag = '!nltk.BrillTagger'
     def __init__(self, initial_tagger, rules, training_stats=None):
         """
         :param initial_tagger: The initial tagger

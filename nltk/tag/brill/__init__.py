@@ -39,9 +39,6 @@ from nltk.tag.brill.trainer.fast import (
     TaggerTrainer     #API: TaggerTrainer(...), TaggerTrainer.train(...)
     )
 
-from nltk.tag.brill.trainer.fast import (
-    TaggerTrainer     #API: TaggerTrainer(...), TaggerTrainer.train(...);
-    )
 
 #for reference:
 #API of nltk.tag.brill.tagger.BrillTagger,
@@ -55,10 +52,8 @@ from nltk.tag.brill.trainer.fast import (
 #    t.batch_tag(...)
 #    t.evaluate(...)
 
-
-
-from nltk.tag.brill.trainer import TaggerTrainer
+#some additional exports, not part of the primary API but used in some doctests
+from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer
+from nltk.tag.brill.trainer.brillorig import BrillTaggerTrainer
 from nltk.tag.brill.tagger import BrillTagger
-from nltk.tag.brill.erroranalysis import error_list
-from nltk.tag.brill.template import Template
 

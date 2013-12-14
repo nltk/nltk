@@ -11,7 +11,6 @@
 
 from __future__ import print_function
 import abc
-import yaml
 import itertools as it
 
 
@@ -308,7 +307,7 @@ class Template(BrillTemplateI):
 
 
 
-class Feature(yaml.YAMLObject):
+class Feature(object):
     """
     An abstract base class for Features. A Feature is a combination of
     a specific property-computing method and a list of relative positions
@@ -325,15 +324,11 @@ class Feature(yaml.YAMLObject):
     it will be printed (in Rules and Templates, etc). If not given, defaults
     to the classname.
 
-    The subclass may also explicitly set a tag for yaml serialization. If
-    not given, defaults to '!' + the classname in lowercase (e.g., "!tag").
-
     """
     #!!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
     # and metaclass=abc.ABCMeta rather than NotImplementedError
     #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
 
-    yaml_tag = None
     PROPERTY_NAME = None
 
 
@@ -392,8 +387,6 @@ class Feature(yaml.YAMLObject):
 
         #set property name given in subclass, or otherwise name of subclass
         self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__
-        #set yaml_tag name given in subclass, or otherwise name of subclass, lowercased
-        self.yaml_tag = self.__class__.yaml_tag or "!{0}".format(self.__class__.__name__.lower())
 
     def __repr__(self):
         return "%s(%r)" % (
