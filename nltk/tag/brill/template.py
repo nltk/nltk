@@ -10,7 +10,7 @@
 
 from __future__ import print_function
 import itertools as it
-from tag.brill.task.api import Feature
+from nltk.tag.brill.task.api import Feature
 
 
 class BrillTemplateI(object):

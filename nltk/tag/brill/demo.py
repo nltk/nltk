@@ -18,6 +18,8 @@ import time
 from nltk import tag
 from nltk.corpus import treebank
 
+
+
 from nltk.tag.brill import error_list, Template, TaggerTrainer
 from nltk.tag.brill.task.postagging import Word, Pos
 
@@ -210,11 +212,11 @@ def postag(
     # defaults
     baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
     if templates is None:
-        ## pre-built template sets taken from typical systems or publications
-        from nltk.tag.brill.task.postagging import postagging_templates
-        ## for instance:
-        templates = postagging_templates.fntbl37()
-
+        from nltk.tag.brill.task import postagging
+        # some pre-built template sets taken from typical systems or publications are
+        # available. Print a list with postagging.describe_template_sets()
+        # for instance:
+        templates = postagging.brill24()
     (training_data, baseline_data, gold_data, testing_data) = \
        _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseline_data)
 
@@ -360,3 +362,6 @@ REGEXP_TAGGER = tag.RegexpTagger(
 
 def corpus_size(seqs):
     return (len(seqs), sum(len(x) for x in seqs))
+
+if __name__ == '__main__':
+    demo_serialize_tagger()
