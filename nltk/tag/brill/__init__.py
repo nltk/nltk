@@ -26,8 +26,8 @@ mechanism for encoding domain knowledge to the system.
 #(as nltk.tag.brill.*)
 
 from nltk.tag.brill.template import (
-    Template,         #API: Template(...), Template.expand(...)
-    Feature           #API: Feature(...), Feature.expand(...)
+    Template#API: Template(...), Template.expand(...)
+#API: Feature(...), Feature.expand(...)
     )
 from nltk.tag.brill.rule import (
     Rule              #API: Rule.format(...), Rule.templatetid
@@ -56,4 +56,5 @@ from nltk.tag.brill.trainer.fast import (
 from nltk.tag.brill.trainer.fast import FastBrillTaggerTrainer
 from nltk.tag.brill.trainer.brillorig import BrillTaggerTrainer
 from nltk.tag.brill.tagger import BrillTagger
+from tag.brill.task.api import Feature
 

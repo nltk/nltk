@@ -10,8 +10,10 @@
 # For license information, see  LICENSE.TXT
 
 from nltk.tag.brill import template
+from tag.brill.task.api import Feature
 
-class Word(template.Feature):
+
+class Word(Feature):
     """
     Feature which examines the text (word) of nearby tokens.
     """
@@ -22,7 +24,7 @@ class Word(template.Feature):
         return tokens[index][0]
 
 
-class Pos(template.Feature):
+class Pos(Feature):
     """
     Feature which examines the tags of nearby tokens.
     """
