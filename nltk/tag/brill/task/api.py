@@ -1,8 +1,14 @@
-#!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from __future__ import division, print_function, unicode_literals
+# Natural Language Toolkit: Transformation-based learning
+#
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Marcus Uneson <marcus.uneson@gmail.com>
+#   based on previous (nltk2) version by
+#   Christopher Maloof, Edward Loper, Steven Bird
+# URL: <http://nltk.org/>
+# For license information, see  LICENSE.TXT
 
-__author__ = 'ling-mun'
+from __future__ import division, print_function, unicode_literals
 
 
 class Feature(object):

@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Brill Tagger
+# Natural Language Toolkit: Transformation-based learning
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
-#          Edward Loper <edloper@gmail.com>
-#          Steven Bird <stevenbird1@gmail.com>
-#          Marcus Uneson <marcus.uneson@gmail.com>
+# Author: Marcus Uneson <marcus.uneson@gmail.com>
+#   based on previous (nltk2) version by
+#   Christopher Maloof, Edward Loper, Steven Bird
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
