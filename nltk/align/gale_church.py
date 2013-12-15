@@ -16,37 +16,46 @@ http://aclweb.org/anthology/J93-1004.pdf
 
 """
 
-
 from __future__ import division
 import math
 
-from util import *
+try:
+    from scipy.stats import norm
+    from norm import logsf as norm_logsf
+except ImportError:
+    def erfcc(x):
+        """Complementary error function."""
+        z = abs(x)
+        t = 1 / (1 + 0.5 * z)
+        r = t * math.exp(-z * z -
+                         1.26551223 + t *
+                         (1.00002368 + t *
+                          (.37409196 + t *
+                           (.09678418 + t *
+                            (-.18628806 + t *
+                             (.27886807 + t *
+                              (-1.13520398 + t *
+                               (1.48851587 + t *
+                                (-.82215223 + t * .17087277)))))))))
+        if x >= 0.:
+            return r
+        else:
+            return 2. - r
 
-infinity = float("inf")
 
-def erfcc(x):
-    """Complementary error function."""
-    z = abs(x)
-    t = 1 / (1 + 0.5 * z)
-    r = t * math.exp(-z * z -
-                     1.26551223 + t *
-                     (1.00002368 + t *
-                      (.37409196 + t *
-                       (.09678418 + t *
-                        (-.18628806 + t *
-                         (.27886807 + t *
-                          (-1.13520398 + t *
-                           (1.48851587 + t *
-                            (-.82215223 + t * .17087277)))))))))
-    if (x >= 0.):
-        return r
-    else:
-        return 2. - r
+    def norm_cdf(x):
+        """Return the area under the normal distribution from M{-∞..x}."""
+        return 1 - 0.5 * erfcc(x / math.sqrt(2))
 
 
-def norm_cdf(x):
-    """Return the area under the normal distribution from M{-∞..x}."""
-    return 1 - 0.5 * erfcc(x / math.sqrt(2))
+    def norm_logsf(x):
+        try:
+            return math.log(1 - norm_cdf(x))
+        except ValueError:
+            return float('-inf')
+
+
+LOG2 = math.log(2)
 
 
 class LanguageIndependent(object):
@@ -69,20 +78,20 @@ class LanguageIndependent(object):
 
 def trace(backlinks, source, target):
     links = []
-    pos = (len(source) - 1, len(target) - 1)
+    pos = (len(source), len(target))
 
-    while pos != (-1, -1):
+    while pos != (0, 0):
         s, t = backlinks[pos]
         for i in range(s):
             for j in range(t):
-                links.append((pos[0] - i, pos[1] - j))
+                links.append((pos[0] - i - 1, pos[1] - j - 1))
         pos = (pos[0] - s, pos[1] - t)
 
     return links[::-1]
 
 
-def align_probability(i, j, source_sents, target_sents, alignment, params):
-    """Returns the probability of the two sentences C{source_sents[i]}, C{target_sents[j]}
+def align_log_prob(i, j, source_sents, target_sents, alignment, params):
+    """Returns the log probability of the two sentences C{source_sents[i]}, C{target_sents[j]}
     being aligned with a specific C{alignment}.
 
     @param i: The offset of the source sentence.
@@ -92,19 +101,19 @@ def align_probability(i, j, source_sents, target_sents, alignment, params):
     @param alignment: The alignment type, a tuple of two integers.
     @param params: The sentence alignment parameters.
 
-    @returns: The probability of a specific alignment between the two sentences, given the parameters.
+    @returns: The log probability of a specific alignment between the two sentences, given the parameters.
     """
-    l_s = sum(source_sents[i - offset] for offset in range(alignment[0]))
-    l_t = sum(target_sents[j - offset] for offset in range(alignment[1]))
+    l_s = sum(source_sents[i - offset - 1] for offset in range(alignment[0]))
+    l_t = sum(target_sents[j - offset - 1] for offset in range(alignment[1]))
     try:
         # actually, the paper says l_s * params.VARIANCE_CHARACTERS, this is based on the C
         # reference implementation. With l_s in the denominator, insertions are impossible.
         m = (l_s + l_t / params.AVERAGE_CHARACTERS) / 2
-        delta = (l_t - l_s * params.AVERAGE_CHARACTERS) / math.sqrt(m * params.VARIANCE_CHARACTERS)
+        delta = (l_s * params.AVERAGE_CHARACTERS - l_t) / math.sqrt(m * params.VARIANCE_CHARACTERS)
     except ZeroDivisionError:
-        delta = infinity
+        return float('-inf')
 
-    return 2 * (1 - norm_cdf(delta)) * params.PRIORS[alignment]
+    return - (LOG2 + norm_logsf(abs(delta)) + math.log(params.PRIORS[alignment]))
 
 
 def align_blocks(source_sents, target_sents, params = LanguageIndependent):
@@ -128,38 +137,33 @@ def align_blocks(source_sents, target_sents, params = LanguageIndependent):
     alignment_types = list(params.PRIORS.keys())
 
     # there are always three rows in the history (with the last of them being filled)
-    # and the rows are always |target_text| + 2, so that we never have to do
-    # boundary checks
-    D = [(len(target_sents) + 2) * [0] for _ in range(2)]
-
-    # for the first sentence, only substitution, insertion or deletion are
-    # allowed, and they are all equally likely ( == 1)
-
-    D.append([0, 1])
-    D[-2][2] = 1
-    D[-2][1] = 1
+    D = [[]]
 
     backlinks = {}
 
-    for i in range(len(source_sents)):
-        for j in range(len(target_sents)):
-            m = []
+    for i in range(len(source_sents) + 1):
+        for j in range(len(target_sents) + 1):
+            min_dist = float('inf')
+            min_align = None
             for a in alignment_types:
-                k = D[-(1 + a[0])][j + 2 - a[1]]
-                if k > 0:
-                    p = k * align_probability(i, j, source_sents, target_sents, a, params)
-                    m.append((p, a))
+                prev_i = - 1 - a[0]
+                prev_j = j - a[1]
+                if prev_i < -len(D) or prev_j < 0:
+                    continue
+                p = D[prev_i][prev_j] + align_log_prob(i, j, source_sents, target_sents, a, params)
+                if p < min_dist:
+                    min_dist = p
+                    min_align = a
 
-            if len(m) > 0:
-                v = max(m)
-                backlinks[(i, j)] = v[1]
-                D[-1].append(v[0])
-            else:
-                backlinks[(i, j)] = (1, 1)
-                D[-1].append(0)
+            if min_dist == float('inf'):
+                min_dist = 0
 
-        D.pop(0)
-        D.append([0, 0])
+            backlinks[(i, j)] = min_align
+            D[-1].append(min_dist)
+
+        if len(D) > 2:
+            D.pop(0)
+        D.append([])
 
     return trace(backlinks, source_sents, target_sents)
 

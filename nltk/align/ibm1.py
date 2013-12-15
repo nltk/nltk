@@ -14,7 +14,7 @@
 
 from __future__  import division
 from collections import defaultdict
-from nltk.align  import AlignedSent, Alignment
+from nltk.align  import AlignedSent
 from nltk.corpus import comtrans
 
 class IBMModel1(object):
@@ -42,15 +42,15 @@ class IBMModel1(object):
     0.33333333333333337
     
     """
-    def __init__(self, alignSents, num_iter):
-        self.probabilities = self.train(alignSents, num_iter)
+    def __init__(self, align_sents, num_iter):
+        self.probabilities = self.train(align_sents, num_iter)
 
-    def train(self, alignSents, num_iter):
+    def train(self, align_sents, num_iter):
         """
         Return the translation probability model trained by IBM model 1. 
 
         Arguments:
-        alignSents   -- A list of instances of AlignedSent class, which 
+        align_sents   -- A list of instances of AlignedSent class, which
                         contains sentence pairs. 
         num_iter     -- The number of iterations.
 
@@ -61,7 +61,7 @@ class IBMModel1(object):
         # Vocabulary of each language
         fr_vocab = set()
         en_vocab = set()
-        for alignSent in alignSents:
+        for alignSent in align_sents:
             en_vocab.update(alignSent.words)
             fr_vocab.update(alignSent.mots)
         # Add the Null token
@@ -79,7 +79,7 @@ class IBMModel1(object):
             count_ef = defaultdict(lambda: defaultdict(lambda: 0.0))
             total_f = defaultdict(lambda: 0.0)
 
-            for alignSent in alignSents:
+            for alignSent in align_sents:
                 en_set = alignSent.words
                 fr_set = [None] + alignSent.mots  
 
@@ -103,7 +103,7 @@ class IBMModel1(object):
 
         return t_ef
 
-    def align(self, alignSent):
+    def align(self, align_sent):
         """
         Returns the alignment result for one sentence pair. 
         """
@@ -113,21 +113,21 @@ class IBMModel1(object):
 
         alignment = []
 
-        for j, en_word in enumerate(alignSent.words):
+        for j, en_word in enumerate(align_sent.words):
             
             # Initialize the maximum probability with Null token
-            max_alignProb = (self.probabilities[en_word][None], None)
-            for i, fr_word in enumerate(alignSent.mots):
+            max_align_prob = (self.probabilities[en_word][None], None)
+            for i, fr_word in enumerate(align_sent.mots):
                 # Find out the maximum probability
-                max_alignProb = max(max_alignProb,
+                max_align_prob = max(max_align_prob,
                     (self.probabilities[en_word][fr_word], i))
 
             # If the maximum probability is not Null token,
             # then append it to the alignment. 
-            if max_alignProb[1] is not None:
-                alignment.append((j, max_alignProb[1]))
+            if max_align_prob[1] is not None:
+                alignment.append((j, max_align_prob[1]))
 
-        return AlignedSent(alignSent.words, alignSent.mots, alignment)
+        return AlignedSent(align_sent.words, align_sent.mots, alignment)
 
 # run doctests
 if __name__ == "__main__":

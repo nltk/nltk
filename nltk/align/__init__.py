@@ -11,4 +11,4 @@ Experimental functionality for bitext alignment.
 These interfaces are prone to change.
 """
 
-from nltk.align  import AlignedSent, Alignment
+from nltk.align.api  import AlignedSent, Alignment

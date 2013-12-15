@@ -76,8 +76,8 @@ class BLEU(object):
 
     >>> for candi_raw in candidate_file:
     ...		ref_raw = ref_file.readline()
-    ...		ref_tokens = nltk.word_tokenize(ref_raw)
-    ...		candi_tokens = nltk.word_tokenize(candi_raw)
+    ...		ref_tokens = word_tokenize(ref_raw)
+    ...		candi_tokens = word_tokenize(candi_raw)
     ...		total = BLEU.compute(candi_tokens, [ref_tokens], weights)
     ...		count += 1
 
@@ -135,7 +135,7 @@ class BLEU(object):
 
         lengthes_ref = map(lambda x: abs(len(x) - c), references)
 
-        r = reduce(lambda x, y: min(x,y), lengthes_ref)
+        r = min(*lengthes_ref)
 
         if c > r:
             return 1

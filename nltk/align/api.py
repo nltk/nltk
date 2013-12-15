@@ -8,8 +8,6 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import print_function, unicode_literals
-import logging
-from collections import defaultdict
 
 from nltk import compat
 from nltk.metrics import precision, recall
