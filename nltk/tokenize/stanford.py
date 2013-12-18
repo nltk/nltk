@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 
 import tempfile
 import os
+import json
 from subprocess import PIPE
 
 from nltk import compat
@@ -23,7 +24,7 @@ _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 class StanfordTokenizer(TokenizerI):
     _JAR = 'stanford-parser.jar'
 
-    def __init__(self, path_to_jar=None, encoding='UTF-8', verbose=False, java_options='-mx1000m'):
+    def __init__(self, path_to_jar=None, encoding='UTF-8', options=None, verbose=False, java_options='-mx1000m'):
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
                 searchpath=(), url=_stanford_url,
@@ -31,6 +32,8 @@ class StanfordTokenizer(TokenizerI):
 
         self._encoding = encoding
         self.java_options = java_options
+        options = {} if options is None else options
+        self._options_cmd = ','.join('{}={}'.format(key, json.dumps(val)) for key, val in options.items())
 
     @staticmethod
     def _parse_tokenized_output(s):
@@ -47,7 +50,10 @@ class StanfordTokenizer(TokenizerI):
 
     def _execute(self, cmd, input_, verbose=False):
         encoding = self._encoding
-        cmd.extend(['-encoding', encoding])
+        cmd.extend(['-charset', encoding])
+        _options_cmd = self._options_cmd
+        if _options_cmd:
+            cmd.extend(['-options', self._options_cmd])
 
         default_options = ' '.join(_java_options)
 
