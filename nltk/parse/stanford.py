@@ -14,8 +14,7 @@ import os
 from subprocess import PIPE
 
 from nltk import compat
-from nltk.tokenize import word_tokenize
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import find_jar, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
 from nltk.tree import Tree
