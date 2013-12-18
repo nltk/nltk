@@ -71,7 +71,7 @@ class CharTokenizer(StringTokenizer):
         return list(s)
 
     def span_tokenize(self, s):
-        for i, j in enumerate(range(1, len(s+1))):
+        for i, j in enumerate(range(1, len(s) + 1)):
             yield i, j
 
 class LineTokenizer(TokenizerI):
