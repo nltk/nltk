@@ -7,7 +7,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 
 import tempfile
 import os
@@ -83,4 +83,13 @@ class StanfordTokenizer(TokenizerI):
         config_java(options=default_options, verbose=False)
 
         return stdout
+
+
+def demo():
+    tokenizer=StanfordTokenizer(
+        options={'americanize': True}
+    )
+    print(tokenizer.tokenize((
+        'the colour of the wall is blue'
+    )))
 
