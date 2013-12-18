@@ -7,7 +7,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_function
+from __future__ import unicode_literals
 
 import tempfile
 import os
@@ -43,7 +43,8 @@ class StanfordParser(ParserI):
         self._encoding = encoding
         self.java_options = java_options
 
-    def _parse_trees_output(self, output_):
+    @staticmethod
+    def _parse_trees_output(output_):
         res = []
         cur_lines = []
         for line in output_.splitlines(False):
