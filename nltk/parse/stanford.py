@@ -76,7 +76,7 @@ class StanfordParser(ParserI):
         separate tokens.
 
         :param sentences: Input sentences to parse
-        :type sentence: list(list(str))
+        :type sentences: list(list(str))
         :rtype: list(Tree)
         """
         cmd = [
