@@ -74,8 +74,6 @@ class StanfordTokenizer(TokenizerI):
             stdout, stderr = java(cmd, classpath=self._stanford_jar,
                                   stdout=PIPE, stderr=PIPE)
             stdout = stdout.decode(encoding)
-            if (not compat.PY3) and encoding == 'ascii':
-                stdout = str(stdout)
 
         os.unlink(input_file.name)
 
