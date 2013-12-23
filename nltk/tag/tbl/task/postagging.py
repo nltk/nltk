@@ -10,12 +10,16 @@
 
 import inspect, sys
 from nltk.tag.tbl import Feature, Template
+from nltk import jsontags
 
 
+@jsontags.register_tag
 class Word(Feature):
     """
     Feature which examines the text (word) of nearby tokens.
     """
+
+    json_tag = 'nltk.tag.tbl.Word'
 
     @staticmethod
     def extract_property(tokens, index):
@@ -23,16 +27,18 @@ class Word(Feature):
         return tokens[index][0]
 
 
+@jsontags.register_tag
 class Pos(Feature):
     """
     Feature which examines the tags of nearby tokens.
     """
 
+    json_tag = 'nltk.tag.tbl.Pos'
+
     @staticmethod
     def extract_property(tokens, index):
         """@return: The given token's tag."""
         return tokens[index][1]
-
 
 
 def nltkdemo18():

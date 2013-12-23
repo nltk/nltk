@@ -18,8 +18,6 @@ import time
 from nltk import tag
 from nltk.corpus import treebank
 
-
-
 from nltk.tag.tbl import error_list, Template, TaggerTrainer
 from nltk.tag.tbl.task.postagging import Word, Pos
 
@@ -121,10 +119,6 @@ def demo_high_accuracy_rules():
     but will often produce rules which are more interesting read to a human.
     """
     postag(num_sents=3000, min_acc=0.96, min_score=10)
-
-
-
-
 
 def postag(
     templates=None,

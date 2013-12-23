@@ -15,11 +15,13 @@ from collections import defaultdict
 from nltk.compat import Counter
 from nltk.tag.api import TaggerI
 from nltk.tag.tbl import template
+from nltk import jsontags
 
 ######################################################################
 ## The Brill Tagger
 ######################################################################
 
+@jsontags.register_tag
 class BrillTagger(TaggerI):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
@@ -34,6 +36,8 @@ class BrillTagger(TaggerI):
     are created by learning rules from a training corpus, using one
     of the TaggerTrainers available.
     """
+
+    json_tag='nltk.tag.tbl.BrillTagger'
 
     def __init__(self, initial_tagger, rules, training_stats=None):
         """
@@ -52,6 +56,14 @@ class BrillTagger(TaggerI):
         self._initial_tagger = initial_tagger
         self._rules = tuple(rules)
         self._training_stats = training_stats
+
+    def encode_json_obj(self):
+        return self._initial_tagger, self._rules, self._training_stats
+
+    @classmethod
+    def decode_json_obj(cls, obj):
+        _initial_tagger, _rules, _training_stats = obj
+        return cls(_initial_tagger, _rules, _training_stats)
 
     def rules(self):
         """
