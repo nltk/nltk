@@ -229,7 +229,7 @@ class DefaultTagger(SequentialBackoffTagger):
     :type tag: str
     """
 
-    json_tag = 'nltk.DefaultTagger'
+    json_tag = 'nltk.tag.sequential.DefaultTagger'
 
     def __init__(self, tag):
         self._tag = tag
@@ -274,7 +274,7 @@ class NgramTagger(ContextTagger):
         fewer than *cutoff* times, then exclude it from the
         context-to-tag table for the new tagger.
     """
-    json_tag = 'nltk.NgramTagger'
+    json_tag = 'nltk.tag.sequential.NgramTagger'
 
     def __init__(self, n, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
@@ -332,7 +332,7 @@ class UnigramTagger(NgramTagger):
     :type cutoff: int
     """
 
-    json_tag = 'nltk.UnigramTagger'
+    json_tag = 'nltk.tag.sequential.UnigramTagger'
 
     def __init__(self, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
@@ -370,7 +370,7 @@ class BigramTagger(NgramTagger):
         in order not to use the backoff tagger
     :type cutoff: int
     """
-    json_tag = 'nltk.BigramTagger'
+    json_tag = 'nltk.tag.sequential.BigramTagger'
 
     def __init__(self, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
@@ -405,7 +405,7 @@ class TrigramTagger(NgramTagger):
         in order not to use the backoff tagger
     :type cutoff: int
     """
-    json_tag = 'nltk.TrigramTagger'
+    json_tag = 'nltk.tag.sequential.TrigramTagger'
 
     def __init__(self, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
@@ -441,7 +441,7 @@ class AffixTagger(ContextTagger):
         tag of None by this tagger.
     """
 
-    json_tag = 'nltk.AffixTagger'
+    json_tag = 'nltk.tag.sequential.AffixTagger'
 
     def __init__(self, train=None, model=None, affix_length=-3,
                  min_stem_length=2, backoff=None, cutoff=0, verbose=False):
@@ -522,7 +522,7 @@ class RegexpTagger(SequentialBackoffTagger):
         assigned the tag None.
     """
 
-    json_tag = 'nltk.RegexpTagger'
+    json_tag = 'nltk.tag.sequential.RegexpTagger'
 
     def __init__(self, regexps, backoff=None):
         """
