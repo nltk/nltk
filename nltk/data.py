@@ -655,6 +655,7 @@ def retrieve(resource_url, filename=None, verbose=True):
 #: descriptions.
 FORMATS = {
     'pickle': "A serialized python object, stored using the pickle module.",
+    'json': "A serialized python object, stored using the json module.",
     'yaml': "A serialized python object, stored using the yaml module.",
     'cfg': "A context free grammar, parsed by nltk.parse_cfg().",
     'pcfg': "A probabilistic CFG, parsed by nltk.parse_pcfg().",
@@ -674,6 +675,7 @@ FORMATS = {
 #: given resource url.
 AUTO_FORMATS = {
     'pickle': 'pickle',
+    'json': 'json',
     'yaml': 'yaml',
     'cfg': 'cfg',
     'pcfg': 'pcfg',
@@ -692,6 +694,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     resource formats are currently supported:
 
       - ``pickle``
+      - ``json``
       - ``yaml``
       - ``cfg`` (context free grammars)
       - ``pcfg`` (probabilistic CFGs)
@@ -706,7 +709,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     format based on the resource name's file extension.  If that
     fails, ``load()`` will raise a ``ValueError`` exception.
 
-    For all text formats (everything except ``pickle``, ``yaml`` and ``raw``),
+    For all text formats (everything except ``pickle``, ``json``, ``yaml`` and ``raw``),
     it tries to decode the raw contents using UTF-8, and if that doesn't
     work, it tries with ISO-8859-1 (Latin-1), unless the ``encoding``
     is specified.
@@ -771,6 +774,15 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         resource_val = opened_resource.read()
     elif format == 'pickle':
         resource_val = pickle.load(opened_resource)
+    elif format == 'json':
+        import json
+        from nltk.jsontags import json_tags
+        resource_val = json.load(opened_resource)
+        tag = None
+        if len(resource_val) != 1:
+            tag = next(resource_val.keys())
+        if tag not in json_tags:
+            raise ValueError('Unknown json tag.')
     elif format == 'yaml':
         import yaml
         resource_val = yaml.load(opened_resource)

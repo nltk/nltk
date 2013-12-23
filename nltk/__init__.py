@@ -108,7 +108,7 @@ from nltk.probability import *
 from nltk.text import *
 from nltk.tree import *
 from nltk.util import *
-from nltk.yamltags import *
+from nltk.jsontags import *
 from nltk.align import *
 
 # don't import contents into top-level namespace:

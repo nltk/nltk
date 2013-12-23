@@ -10,7 +10,6 @@ from __future__ import print_function
 
 import subprocess
 import os
-import os.path
 import re
 import warnings
 import textwrap
@@ -150,10 +149,12 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
         config_java()
 
     # Set up the classpath.
-    if classpath is None:
-        classpath = NLTK_JAR
+    if isinstance(classpath, compat.string_types):
+        classpaths=[classpath]
     else:
-        classpath += os.path.pathsep + NLTK_JAR
+        classpaths=list(classpath)
+    classpaths.append(NLTK_JAR)
+    classpath=os.path.pathsep.join(classpaths)
 
     # Construct the full command string.
     cmd = list(cmd)
@@ -167,7 +168,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
 
     # Check the return code.
     if p.returncode != 0:
-        print(stderr)
+        print(stderr.decode(sys.stdout.encoding))
         raise OSError('Java command failed!')
 
     return (stdout, stderr)
@@ -235,7 +236,7 @@ def parse_str(s, start_position):
     try:
         return eval(s[start_position:match.end()]), match.end()
     except ValueError as e:
-        raise ParseError('valid string (%s)' % e, start)
+        raise ParseError('invalid string (%s)' % e)
 
 _PARSE_INT_RE = re.compile(r'-?\d+')
 def parse_int(s, start_position):
