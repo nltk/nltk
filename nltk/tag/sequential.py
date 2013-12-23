@@ -21,7 +21,7 @@ from __future__ import print_function, unicode_literals
 
 import re
 
-from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk.probability import ConditionalFreqDist
 from nltk.classify.naivebayes import NaiveBayesClassifier
 from nltk.compat import python_2_unicode_compatible
 
@@ -52,7 +52,7 @@ class SequentialBackoffTagger(TaggerI):
     @property
     def backoff(self):
         """The backoff tagger for this tagger."""
-        return (self._taggers[1] if len(self._taggers) > 1 else None)
+        return self._taggers[1] if len(self._taggers) > 1 else None
 
     def tag(self, tokens):
         # docs inherited from TaggerI
@@ -287,12 +287,12 @@ class NgramTagger(ContextTagger):
             self._train(train, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._n, self._context_to_tag
+        return self._n, self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _n, _context_to_tag = obj
-        return cls(_n, model=_context_to_tag)
+        _n, _context_to_tag, backoff = obj
+        return cls(_n, model=_context_to_tag, backoff=backoff)
 
     def context(self, tokens, index, history):
         tag_context = tuple(history[max(0,index-self._n+1):index])
@@ -340,12 +340,12 @@ class UnigramTagger(NgramTagger):
                              backoff, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._context_to_tag
+        return self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _context_to_tag = obj
-        return cls(model=_context_to_tag)
+        _context_to_tag, backoff = obj
+        return cls(model=_context_to_tag, backoff=backoff)
 
     def context(self, tokens, index, history):
         return tokens[index]
@@ -378,12 +378,12 @@ class BigramTagger(NgramTagger):
                              backoff, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._context_to_tag
+        return self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _context_to_tag = obj
-        return cls(model=_context_to_tag)
+        _context_to_tag, backoff = obj
+        return cls(model=_context_to_tag, backoff=backoff)
 
 
 @jsontags.register_tag
@@ -413,12 +413,12 @@ class TrigramTagger(NgramTagger):
                              backoff, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._context_to_tag
+        return self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _context_to_tag = obj
-        return cls(model=_context_to_tag)
+        _context_to_tag, backoff = obj
+        return cls(model=_context_to_tag, backoff=backoff)
 
 
 @jsontags.register_tag
@@ -457,15 +457,16 @@ class AffixTagger(ContextTagger):
             self._train(train, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._affix_length, self._min_word_length, self._context_to_tag
+        return self._affix_length, self._min_word_length, self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _affix_length, _min_word_length, _context_to_tag = obj
+        _affix_length, _min_word_length, _context_to_tag, backoff = obj
         return cls(
             affix_length=_affix_length,
             min_stem_length=_min_word_length - abs(_affix_length),
-            model=_context_to_tag
+            model=_context_to_tag,
+            backoff=backoff
         )
 
     def context(self, tokens, index, history):
@@ -536,15 +537,16 @@ class RegexpTagger(SequentialBackoffTagger):
         self._size=len(regexps)
 
     def encode_json_obj(self):
-        return self._map, self._regexs.pattern, self._size
+        return self._map, self._regexs.pattern, self._size, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _map, _regexs, _size = obj
+        _map, _regexs, _size, backoff = obj
         self = cls(())
         self._map = _map
         self._regexs = re.compile(_regexs)
         self._size = _size
+        SequentialBackoffTagger.__init__(self, backoff)
         return self
 
     def choose_tag(self, tokens, index, history):
@@ -639,7 +641,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         pdist = self._classifier.prob_classify(featureset)
         tag = pdist.max()
-        return (tag if pdist.prob(tag) >= self._cutoff_prob else None)
+        return tag if pdist.prob(tag) >= self._cutoff_prob else None
 
     def _train(self, tagged_corpus, classifier_builder, verbose):
         """
