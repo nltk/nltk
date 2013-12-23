@@ -33,8 +33,8 @@ class Feature(object):
     # and metaclass=abc.ABCMeta rather than NotImplementedError
     #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
 
+    json_tag = 'nltk.tag.tbl.Feature'
     PROPERTY_NAME = None
-
 
     def __init__(self, positions, end=None):
         """
@@ -91,6 +91,14 @@ class Feature(object):
 
         #set property name given in subclass, or otherwise name of subclass
         self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__
+
+    def encode_json_obj(self):
+        return self.positions
+
+    @classmethod
+    def decode_json_obj(cls, obj):
+        positions = obj
+        return cls(positions)
 
     def __repr__(self):
         return "%s(%r)" % (

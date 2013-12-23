@@ -10,8 +10,8 @@
 
 from __future__ import print_function
 
-
 from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk import jsontags
 
 ######################################################################
 ## Brill Rules
@@ -86,13 +86,16 @@ class BrillRule(object):
     # Rules must be comparable and hashable for the algorithm to work
     def __eq__(self, other):
         raise TypeError("Rules must implement __eq__()")
+
     def __ne__(self, other):
         raise TypeError("Rules must implement __ne__()")
+
     def __hash__(self):
         raise TypeError("Rules must implement __hash__()")
 
 
 @python_2_unicode_compatible
+@jsontags.register_tag
 class Rule(BrillRule):
     """
     A Rule checks the current corpus position for a certain set of conditions;
@@ -111,6 +114,9 @@ class Rule(BrillRule):
           is M{value}.
 
     """
+
+    json_tag='nltk.tag.tbl.Rule'
+
     def __init__(self, templateid, original_tag, replacement_tag, conditions):
         """
         Construct a new Rule that changes a token's tag from
@@ -132,7 +138,17 @@ class Rule(BrillRule):
         self._conditions = conditions
         self.templateid = templateid
 
+    def encode_json_obj(self):
+        return {
+            'templateid':   self.templateid,
+            'original':     self.original_tag,
+            'replacement':  self.replacement_tag,
+            'conditions':   self._conditions,
+        }
 
+    @classmethod
+    def decode_json_obj(cls, obj):
+        return cls(obj['templateid'], obj['original'], obj['replacement'], obj['conditions'])
 
     def applies(self, tokens, index):
         # Inherit docs from BrillRule
