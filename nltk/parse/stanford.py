@@ -2,11 +2,11 @@ from __future__ import print_function
 
 import tempfile
 import os
+import re
 from subprocess import PIPE
 
 from nltk import compat
-from nltk.tokenize import word_tokenize
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
 from nltk.tree import Tree
@@ -14,7 +14,7 @@ from nltk.tree import Tree
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 class StanfordParser(ParserI):
-    _MODEL_JAR = 'stanford-parser-3.3.0-models.jar'
+    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)\.(\d+)\.(\d+)-models\.jar'
     _JAR = 'stanford-parser.jar'
 
     def __init__(self, path_to_jar=None, path_to_models_jar=None,
@@ -26,10 +26,14 @@ class StanfordParser(ParserI):
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
-        self._model_jar = find_jar(
-                self._MODEL_JAR, path_to_models_jar,
+        # find the most recent model
+        self._model_jar=max(find_jar_iter(
+                self._MODEL_JAR_PATTERN, path_to_models_jar,
+                env_vars=('STANFORD_MODELS',),
                 searchpath=(), url=_stanford_url,
-                verbose=verbose)
+                verbose=verbose, is_regex=True),
+            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
+        )
 
         self.model_path = model_path
         self._encoding = encoding
