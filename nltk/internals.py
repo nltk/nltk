@@ -533,25 +533,21 @@ def find_binary(name, path_to_bin=None, env_vars=(), searchpath=(),
     return find_file(path_to_bin or name, env_vars, searchpath, binary_names,
                      url, verbose)
 
-##########################################################################
-# Find Java JAR files
-# TODO: Add support for jar names specified as regular expressions
-##########################################################################
-
-def find_jar(name, path_to_jar=None, env_vars=(),
-        searchpath=(), url=None, verbose=True):
+def find_jar(name_pattern, path_to_jar=None, env_vars=(),
+        searchpath=(), url=None, verbose=True, is_regex=False):
     """
     Search for a jar that is used by nltk.
 
-    :param name: The name of the jar file
+    :param name_pattern: The name of the jar file
     :param path_to_jar: The user-supplied jar location, or None.
     :param env_vars: A list of environment variable names to check
                      in addition to the CLASSPATH variable which is
                      checked by default.
     :param searchpath: List of directories to search.
+    :param is_regex: Whether name is a regular expression.
     """
 
-    assert isinstance(name, compat.string_types)
+    assert isinstance(name_pattern, compat.string_types)
     assert not isinstance(searchpath, compat.string_types)
     if isinstance(env_vars, compat.string_types):
         env_vars = env_vars.split()
@@ -565,7 +561,7 @@ def find_jar(name, path_to_jar=None, env_vars=(),
         if os.path.isfile(path_to_jar):
             return path_to_jar
         raise ValueError('Could not find %s jar file at %s' %
-                         (name, path_to_jar))
+                         (name_pattern, path_to_jar))
 
     # Check environment variables
     for env_var in env_vars:
@@ -573,32 +569,51 @@ def find_jar(name, path_to_jar=None, env_vars=(),
             if env_var == 'CLASSPATH':
                 classpath = os.environ['CLASSPATH']
                 for cp in classpath.split(os.path.pathsep):
-                    if os.path.isfile(cp) and os.path.basename(cp) == name:
-                        if verbose: print('[Found %s: %s]' % (name, cp))
-                        return cp
+                    if os.path.isfile(cp):
+                        filename=os.path.basename(cp)
+                        if is_regex and re.match(name_pattern, filename) or \
+                                (not is_regex and filename == name_pattern):
+                            if verbose:
+                                print('[Found %s: %s]' % (name_pattern, cp))
+                            return cp
             else:
                 path_to_jar = os.environ[env_var]
-                if os.path.isfile(path_to_jar) and os.path.basename(path_to_jar) == name:
-                    if verbose: print('[Found %s: %s]' % (name, path_to_jar))
-                    return path_to_jar
+                if os.path.isfile(path_to_jar):
+                    filename=os.path.basename(path_to_jar)
+                    if is_regex and re.match(name_pattern, filename) or \
+                            (not is_regex and filename == name_pattern):
+                        if verbose:
+                            print('[Found %s: %s]' % (name_pattern, path_to_jar))
+                        return path_to_jar
 
     # Check the path list.
     for directory in searchpath:
-        path_to_jar = os.path.join(directory, name)
-        if os.path.isfile(path_to_jar):
-            if verbose: print('[Found %s: %s]' % (name, path_to_jar))
-            return path_to_jar
+        if is_regex:
+            for filename in os.listdir(directory):
+                path_to_jar = os.path.join(directory, filename)
+                if os.path.isfile(path_to_jar):
+                    if re.match(name_pattern, filename):
+                        if verbose:
+                            print('[Found %s: %s]' % (filename, path_to_jar))
+                return path_to_jar
+        else:
+            path_to_jar = os.path.join(directory, name_pattern)
+            if os.path.isfile(path_to_jar):
+                if verbose:
+                    print('[Found %s: %s]' % (name_pattern, path_to_jar))
+                return path_to_jar
 
     # If nothing was found, raise an error
-    msg = ("NLTK was unable to find %s!" % name)
+    msg = ("NLTK was unable to find %s!" % name_pattern)
     if env_vars: msg += ' Set the %s environment variable' % env_vars[0]
     msg = textwrap.fill(msg+'.', initial_indent='  ',
                         subsequent_indent='  ')
     if searchpath:
         msg += '\n\n  Searched in:'
         msg += ''.join('\n    - %s' % d for d in searchpath)
-    if url: msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
-                    (name, url))
+    if url:
+        msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
+                (name_pattern, url))
     div = '='*75
     raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
 
