@@ -1,12 +1,20 @@
-from __future__ import print_function
+# -*- coding: utf-8 -*-
+# Natural Language Toolkit: Interface to the Stanford Parser
+#
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Xu <xxu@student.unimelb.edu.au>
+#
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+
+from __future__ import unicode_literals
 
 import tempfile
 import os
 from subprocess import PIPE
 
 from nltk import compat
-from nltk.tokenize import word_tokenize
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import find_jar, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
 from nltk.tree import Tree
@@ -35,7 +43,8 @@ class StanfordParser(ParserI):
         self._encoding = encoding
         self.java_options = java_options
 
-    def _parse_trees_output(self, output_):
+    @staticmethod
+    def _parse_trees_output(output_):
         res = []
         cur_lines = []
         for line in output_.splitlines(False):
@@ -68,7 +77,7 @@ class StanfordParser(ParserI):
         separate tokens.
 
         :param sentences: Input sentences to parse
-        :type sentence: list(list(str))
+        :type sentences: list(list(str))
         :rtype: list(Tree)
         """
         cmd = [
@@ -134,20 +143,20 @@ class StanfordParser(ParserI):
         :type sentences: list(list(tuple(str, str)))
         :rtype: Tree
         """
-        tagSeparator = '/'
+        tag_separator = '/'
         cmd = [
             'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
             '-model', self.model_path,
             '-sentences', 'newline',
             '-outputFormat', 'penn',
             '-tokenized',
-            '-tagSeparator', tagSeparator,
+            '-tagSeparator', tag_separator,
             '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer',
             '-tokenizerMethod', 'newCoreLabelTokenizerFactory',
         ]
         # We don't need to escape slashes as "splitting is done on the last instance of the character in the token"
         return self._parse_trees_output(self._execute(
-            cmd, '\n'.join(' '.join(tagSeparator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
+            cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
 
     def _execute(self, cmd, input_, verbose=False):
         encoding = self._encoding
@@ -172,8 +181,6 @@ class StanfordParser(ParserI):
             stdout, stderr = java(cmd, classpath=(self._stanford_jar, self._model_jar),
                                   stdout=PIPE, stderr=PIPE)
             stdout = stdout.decode(encoding)
-            if (not compat.PY3) and encoding == 'ascii':
-                stdout = str(stdout)
 
         os.unlink(input_file.name)
 
