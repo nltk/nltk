@@ -22,6 +22,18 @@ from nltk.tokenize.api import TokenizerI
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 class StanfordTokenizer(TokenizerI):
+    """
+    Interface to the Stanford Tokenizer
+
+    >>> from nltk.tokenize.stanford import StanfordTokenizer
+    >>> s = 'Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'
+    >>> StanfordTokenizer().tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    >>> s = 'The colour of the wall is blue.'
+    >>> StanfordTokenizer().tokenize(s, options={'americanize': True})
+    ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
+    """
+
     _JAR = 'stanford-parser.jar'
 
     def __init__(self, path_to_jar=None, encoding='UTF-8', options=None, verbose=False, java_options='-mx1000m'):
@@ -81,13 +93,4 @@ class StanfordTokenizer(TokenizerI):
         config_java(options=default_options, verbose=False)
 
         return stdout
-
-
-def demo():
-    tokenizer=StanfordTokenizer(
-        options={'americanize': True}
-    )
-    print(tokenizer.tokenize((
-        'the colour of the wall is blue'
-    )))
 
